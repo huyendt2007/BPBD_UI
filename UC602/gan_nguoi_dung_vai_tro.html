@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gán người dùng vào Vai trò</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+        body { background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); padding: var(--spacing-lg); height: 100vh; display: flex; flex-direction: column; }
+        
+        .header-title { color: var(--primary-color); font-size: 20px; font-weight: 600; margin-bottom: var(--spacing-lg); }
+
+        /* Split View Layout */
+        .split-layout { display: flex; gap: var(--spacing-lg); flex: 1; min-height: 0; }
+        .panel { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .panel-left { flex: 0 0 35%; }
+        .panel-right { flex: 1; }
+        
+        .panel-header { padding: var(--spacing-md); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--table-header-bg); border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; }
+        .panel-header h3 { color: var(--primary-color); font-size: 16px; margin: 0; }
+        
+        .panel-body { padding: var(--spacing-md); flex: 1; overflow-y: auto; }
+
+        /* Controls */
+        .form-control { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 8px 12px; width: 100%; outline: none; }
+        .form-control:focus { border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
+        .search-box { margin-bottom: var(--spacing-md); }
+
+        .btn { font-weight: 500; border-radius: var(--border-radius-md); padding: 0.5rem 1rem; transition: all 0.2s; cursor: pointer; border: none; font-size: var(--base-size); display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: var(--text-muted); color: white; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-sm { padding: 4px 8px; font-size: 12px; }
+        .btn-icon { background: none; border: none; cursor: pointer; color: var(--danger-color); padding: 4px; font-size: 16px; }
+        .btn-icon:hover { background-color: #FEE2E2; border-radius: 4px; }
+
+        /* Role List */
+        .role-list { list-style: none; }
+        .role-item { padding: 12px var(--spacing-md); border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background-color 0.2s; }
+        .role-item:hover { background-color: #F8FAFC; }
+        .role-item.active { background-color: #EFF6FF; border-left: 4px solid var(--primary-color); padding-left: 12px; }
+        .role-item strong { display: block; color: var(--primary-color); margin-bottom: 4px; }
+        .role-item span { font-size: 12px; color: var(--text-muted); }
+
+        /* Table */
+        .table { width: 100%; border-collapse: collapse; }
+        .table th { background-color: var(--table-header-bg); color: var(--primary-color); font-weight: 600; font-size: 13px; padding: 10px; border-bottom: 2px solid var(--border-color); text-align: left; }
+        .table td { padding: 10px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .table tbody tr:hover { background-color: rgba(241, 245, 249, 0.5); }
+        input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; }
+
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg-surface); border-radius: var(--border-radius-lg); width: 600px; max-width: 90%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; }
+        .modal-body { padding: 24px; overflow-y: auto; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        .toast { background-color: var(--success-color); color: white; padding: 12px 24px; border-radius: var(--border-radius-md); display: none; margin-top: 10px; box-shadow: var(--box-shadow); }
+        .toast.error { background-color: var(--danger-color); }
+        .toast.show { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">Quản lý Gán người dùng vào Vai trò</div>
+
+    <div class="split-layout">
+        <!-- Panel Left: Role List -->
+        <div class="panel panel-left">
+            <div class="panel-header">
+                <h3>Danh sách Vai trò</h3>
+            </div>
+            <div class="panel-body" style="padding: var(--spacing-md) 0 0 0;">
+                <div class="search-box" style="padding: 0 var(--spacing-md);">
+                    <input type="text" class="form-control" id="searchRole" placeholder="Tìm kiếm vai trò..." onkeyup="filterRoles()">
+                </div>
+                <ul class="role-list" id="roleList">
+                    <!-- Roles rendered via JS -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Panel Right: User List -->
+        <div class="panel panel-right">
+            <div class="panel-header">
+                <h3 id="panelRightTitle">Danh sách Cán bộ có quyền</h3>
+                <button class="btn btn-primary btn-sm" id="btnAssign" style="display: none;" onclick="openAssignModal()">+ Gán thêm</button>
+            </div>
+            <div class="panel-body">
+                <div id="noRoleSelected" style="color: var(--text-muted); text-align: center; margin-top: 50px;">
+                    Vui lòng chọn một Vai trò ở bên trái để xem và gán danh sách cán bộ.
+                </div>
+                <div id="userTableContainer" style="display: none;">
+                    <table class="table" id="assignedUsersTable">
+                        <thead>
+                            <tr>
+                                <th width="10%">STT</th>
+                                <th width="35%">Họ và tên</th>
+                                <th width="25%">Tên đăng nhập</th>
+                                <th width="20%">Đơn vị</th>
+                                <th width="10%">Bỏ gán</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assignedUsersBody">
+                            <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Add Users -->
+    <div class="modal-overlay" id="assignModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Gán Cán bộ vào Vai trò: <span id="modalRoleName"></span></h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal('assignModal')">×</button>
+            </div>
+            <div class="modal-body" style="padding: 0;">
+                <div style="padding: var(--spacing-md);">
+                    <input type="text" class="form-control" id="searchUnassigned" placeholder="Tìm tên cán bộ..." onkeyup="filterUnassignedUsers()">
+                </div>
+                <table class="table" style="margin: 0; border-top: 1px solid var(--border-color);">
+                    <thead>
+                        <tr>
+                            <th width="10%" style="text-align: center;"><input type="checkbox" id="checkAll" onclick="toggleAll()"></th>
+                            <th width="45%">Họ và tên</th>
+                            <th width="45%">Đơn vị</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table" style="margin: 0;">
+                        <tbody id="unassignedUsersBody">
+                            <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('assignModal')">Hủy</button>
+                <button class="btn btn-primary" onclick="handleAssign()">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete Confirm -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content" style="width: 400px;">
+            <div class="modal-header">
+                <h3>Xác nhận Bỏ gán quyền</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal('deleteModal')">×</button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn bỏ quyền <strong id="delRoleName"></strong> của cán bộ <strong id="delUserName"></strong> không?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Hủy</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container">
+        <div class="toast" id="toastMsg">Thao tác thành công!</div>
+    </div>
+
+    <script>
+        // Mock Roles Data
+        const roles = [
+            { id: 1, code: "R_CUC_01", name: "Lãnh đạo Cục" },
+            { id: 2, code: "R_CUC_02", name: "Quản trị viên Cục" },
+            { id: 3, code: "R_PHONG_01", name: "Lãnh đạo phòng" },
+            { id: 4, code: "R_PHONG_02", name: "Chuyên viên xử lý" },
+            { id: 5, code: "R_PHONG_03", name: "Chuyên viên tổng hợp" }
+        ];
+
+        // Mock Users Data
+        const users = [
+            { id: 101, name: "Nguyễn Văn An", username: "an_nv", dept: "Phòng Kế hoạch", roleIds: [4, 5] },
+            { id: 102, name: "Trần Thị Bình", username: "binh_tt", dept: "Phòng Nghiệp vụ 1", roleIds: [3] },
+            { id: 103, name: "Lê Hoàng Cường", username: "cuong_lh", dept: "Văn phòng Cục", roleIds: [2] },
+            { id: 104, name: "Phạm Thu Dung", username: "dung_pt", dept: "Phòng Nghiệp vụ 2", roleIds: [4] },
+            { id: 105, name: "Hoàng Tuấn Anh", username: "anh_ht", dept: "Phòng Nghiệp vụ 1", roleIds: [4] },
+            { id: 106, name: "Vũ Mai Hoa", username: "hoa_vm", dept: "Phòng Kế hoạch", roleIds: [5] },
+            { id: 107, name: "Đặng Quang Khải", username: "khai_dq", dept: "Phòng Nghiệp vụ 2", roleIds: [3, 4] },
+            { id: 108, name: "Bùi Thị Lan", username: "lan_bt", dept: "Văn phòng Cục", roleIds: [] },
+            { id: 109, name: "Đỗ Minh Nhật", username: "nhat_dm", dept: "Phòng Nghiệp vụ 1", roleIds: [4] },
+            { id: 110, name: "Ngô Thanh Phương", username: "phuong_nt", dept: "Phòng Kế hoạch", roleIds: [] }
+        ];
+
+        let activeRoleId = null;
+        let removeUserId = null;
+
+        // Render Roles
+        function renderRoles(filterText = '') {
+            const list = document.getElementById('roleList');
+            list.innerHTML = '';
+            
+            const filtered = roles.filter(r => r.name.toLowerCase().includes(filterText) || r.code.toLowerCase().includes(filterText));
+
+            filtered.forEach(role => {
+                const li = document.createElement('li');
+                li.className = `role-item ${activeRoleId === role.id ? 'active' : ''}`;
+                li.onclick = () => selectRole(role.id);
+                li.innerHTML = `
+                    <strong>${role.name}</strong>
+                    <span>Mã: ${role.code}</span>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function filterRoles() {
+            renderRoles(document.getElementById('searchRole').value.toLowerCase());
+        }
+
+        // Select Role
+        function selectRole(roleId) {
+            activeRoleId = roleId;
+            renderRoles(document.getElementById('searchRole').value.toLowerCase());
+            
+            const role = roles.find(r => r.id === roleId);
+            
+            document.getElementById('noRoleSelected').style.display = 'none';
+            document.getElementById('userTableContainer').style.display = 'block';
+            document.getElementById('btnAssign').style.display = 'inline-block';
+            document.getElementById('panelRightTitle').innerText = `Danh sách Cán bộ có quyền: ${role.name}`;
+            
+            renderAssignedUsers();
+        }
+
+        function renderAssignedUsers() {
+            const tbody = document.getElementById('assignedUsersBody');
+            tbody.innerHTML = '';
+            
+            const assigned = users.filter(u => u.roleIds.includes(activeRoleId));
+            
+            if(assigned.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Không có cán bộ nào được gán vai trò này.</td></tr>`;
+                return;
+            }
+
+            assigned.forEach((user, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${user.name}</strong></td>
+                    <td>${user.username}</td>
+                    <td>${user.dept}</td>
+                    <td style="text-align:center;">
+                        <button class="btn-icon" onclick="openDeleteModal(${user.id})" title="Bỏ gán">✖</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Modal Add
+        function openAssignModal() {
+            const role = roles.find(r => r.id === activeRoleId);
+            document.getElementById('modalRoleName').innerText = role.name;
+            document.getElementById('searchUnassigned').value = '';
+            document.getElementById('checkAll').checked = false;
+            renderUnassignedUsers('');
+            document.getElementById('assignModal').classList.add('active');
+        }
+
+        function renderUnassignedUsers(filterText) {
+            const tbody = document.getElementById('unassignedUsersBody');
+            tbody.innerHTML = '';
+            
+            const unassigned = users.filter(u => !u.roleIds.includes(activeRoleId) && u.name.toLowerCase().includes(filterText));
+            
+            if(unassigned.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Không có cán bộ nào hợp lệ.</td></tr>`;
+                return;
+            }
+
+            unassigned.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td width="10%" style="text-align: center;"><input type="checkbox" class="user-cb" value="${user.id}"></td>
+                    <td width="45%">${user.name} (${user.username})</td>
+                    <td width="45%">${user.dept}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterUnassignedUsers() {
+            renderUnassignedUsers(document.getElementById('searchUnassigned').value.toLowerCase());
+        }
+
+        function toggleAll() {
+            const checked = document.getElementById('checkAll').checked;
+            document.querySelectorAll('.user-cb').forEach(cb => cb.checked = checked);
+        }
+
+        function handleAssign() {
+            const checked = document.querySelectorAll('.user-cb:checked');
+            if(checked.length === 0) {
+                showToast("Vui lòng chọn ít nhất một người dùng", true);
+                return;
+            }
+            
+            checked.forEach(cb => {
+                const userId = parseInt(cb.value);
+                const user = users.find(u => u.id === userId);
+                user.roleIds.push(activeRoleId);
+            });
+
+            closeModal('assignModal');
+            showToast("Gán người dùng thành công!");
+            renderAssignedUsers();
+        }
+
+        // Modal Delete
+        function openDeleteModal(userId) {
+            removeUserId = userId;
+            const user = users.find(u => u.id === userId);
+            const role = roles.find(r => r.id === activeRoleId);
+            
+            document.getElementById('delUserName').innerText = user.name;
+            document.getElementById('delRoleName').innerText = role.name;
+            
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function confirmDelete() {
+            const user = users.find(u => u.id === removeUserId);
+            user.roleIds = user.roleIds.filter(id => id !== activeRoleId);
+            
+            closeModal('deleteModal');
+            showToast("Gỡ quyền thành công!");
+            renderAssignedUsers();
+        }
+
+        // Helpers
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Init
+        window.onload = () => {
+            renderRoles();
+        };
+    </script>
+</body>
+</html>

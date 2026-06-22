@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yêu cầu cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <script src="../Common/iframe_helper.js"></script>
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #CBD5E1;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --box-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Portal Header */
+        .portal-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo i {
+            font-size: 28px;
+            color: #3B82F6;
+        }
+
+        .logo-text h1 {
+            font-size: 16px;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .logo-text span {
+            font-size: 11px;
+            color: #94A3B8;
+            display: block;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            display: block;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: #94A3B8;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: #3B82F6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border: 2px solid #60A5FA;
+        }
+
+        /* Container & Navigation */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 8px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 13px;
+            align-items: center;
+        }
+
+        .breadcrumb a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb i {
+            font-size: 11px;
+            color: #94A3B8;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .step-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background-color: #E2E8F0;
+            z-index: 1;
+        }
+
+        .step-item.active:not(:last-child)::after {
+            background-color: var(--secondary-color);
+        }
+
+        .step-item.completed:not(:last-child)::after {
+            background-color: var(--success-color);
+        }
+
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #F1F5F9;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin: 0 auto 8px auto;
+            position: relative;
+            z-index: 2;
+            border: 2px solid #E2E8F0;
+            transition: all 0.3s;
+        }
+
+        .step-item.active .step-icon {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.15);
+        }
+
+        .step-item.completed .step-icon {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .step-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .step-item.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Card sections */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 24px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+
+        /* Form styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .required-mark {
+            color: var(--danger-color);
+            margin-left: 3px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 8px 12px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            box-sizing: border-box;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            outline: none;
+        }
+
+        .form-control[readonly], .form-control[disabled] {
+            background-color: #F8FAFC;
+            color: #475569;
+            border-color: #E2E8F0;
+            cursor: not-allowed;
+        }
+
+        /* Review Grid */
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .review-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        @media(max-width: 768px) {
+            .review-grid, .review-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .review-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .review-label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .review-val {
+            font-size: 13.5px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* Highlight box for main info */
+        .highlight-card {
+            background-color: #F8FAFC;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+        }
+
+        /* File Link styling */
+        .file-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .file-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Action Buttons */
+        .action-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            font-weight: 600;
+            border-radius: var(--border-radius-sm);
+            padding: 10px 20px;
+            font-size: 13.5px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #FFFFFF;
+            color: #475569;
+            border: 1px solid #CBD5E1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #F8FAFC;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin-top: 15px;
+            background: white;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .table th {
+            background-color: var(--table-header-bg);
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 12px;
+            border-bottom: 2px solid var(--border-color);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            color: var(--text-main);
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(241, 245, 249, 0.4);
+        }
+
+        /* Error/Alert box */
+        .msg-box {
+            padding: 15px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 13.5px;
+        }
+
+        .msg-error {
+            background-color: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            color: #B91C1C;
+        }
+
+        .field-error {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        /* Demo helper styling */
+        .demo-helper {
+            background-color: #FFFBEB;
+            border: 1px dashed #F59E0B;
+            border-radius: var(--border-radius-md);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 12.5px;
+            color: #B45309;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .demo-helper i {
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .demo-credentials {
+            display: inline-block;
+            margin-top: 5px;
+            background-color: rgba(245, 158, 11, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .dynamic-header-bg {
+            background-color: #F1F5F9;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 20px;
+            border-left: 4px solid #64748B;
+            text-transform: uppercase;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Portal Header -->
+    <header class="portal-header">
+        <div class="header-logo">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div class="logo-text">
+                <h1>Hệ thống Đăng ký Biện pháp Bảo đảm</h1>
+                <span>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC &bull; BỘ TƯ PHÁP</span>
+            </div>
+        </div>
+        <div class="header-user">
+            <div class="user-info">
+                <span class="user-name">Nguyễn Văn Khách</span>
+                <span class="user-role">Doanh nghiệp / Cá nhân</span>
+            </div>
+            <div class="avatar">NK</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="#" onclick="goHome(); return false;"><i class="fa-solid fa-house"></i> Trang chủ</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <a href="#">Dịch vụ trực tuyến</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span>Yêu cầu cấp bản sao văn nhận chứng nhận</span>
+        </div>
+
+        <!-- Progress steps flow -->
+        <div class="process-steps">
+            <div class="step-item active" id="step1">
+                <div class="step-icon">1</div>
+                <div class="step-label">Khởi tạo yêu cầu cấp bản sao</div>
+            </div>
+            <div class="step-item" id="step2">
+                <div class="step-icon">2</div>
+                <div class="step-label">Xem trước yêu cầu</div>
+            </div>
+            <div class="step-item" id="step3">
+                <div class="step-icon">3</div>
+                <div class="step-label">Thanh toán lệ phí & Nhận bản sao</div>
+            </div>
+        </div>
+
+        <!-- ==================== SCREEN 1: TRA CỨU & KHỞI TẠO (MH01) ==================== -->
+        <div id="screen-mh01" class="card-section" style="max-width: 500px; margin: 30px auto;">
+            <h2 class="section-title">
+                <i class="fa-solid fa-file-invoice"></i>
+                Yêu cầu cấp bản sao văn bản chứng nhận
+            </h2>
+
+            <div class="demo-helper">
+                <i class="fa-solid fa-circle-info"></i>
+                <div>
+                    <strong>Chế độ kiểm thử (Demo Codes):</strong> Nhập số đăng ký tương ứng để tải các loại hồ sơ gốc:
+                    <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 8px;">
+                        <div class="demo-credentials">Lần đầu: <strong>1505156435</strong></div>
+                        <div class="demo-credentials">Thay đổi: <strong>1505156436</strong></div>
+                        <div class="demo-credentials">Xóa đơn: <strong>1505156437</strong></div>
+                        <div class="demo-credentials">Thông báo xử lý TS: <strong>1505156438</strong></div>
+                        <div class="demo-credentials">Xóa thông báo xử lý: <strong>1505156439</strong></div>
+                        <div class="demo-credentials">CSDL lỗi: <strong>CSDL_FAIL</strong></div>
+                        <div class="demo-credentials">Chưa hoàn thành: <strong>CHUA_HT</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error container -->
+            <div id="errorMsg" class="msg-box msg-error">
+                <i class="fa-solid fa-circle-xmark"></i>
+                <span id="errorText">Thông tin không hợp lệ. Vui lòng kiểm tra lại.</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="regNum">Số đăng ký hồ sơ gốc <span class="required-mark">*</span></label>
+                <input type="text" id="regNum" class="form-control" placeholder="Nhập số đăng ký cần cấp bản sao..." style="background-color: white;">
+            </div>
+
+
+
+            <div class="form-group">
+                <label class="form-label" for="copyQty">Số lượng bản sao cần cấp <span class="required-mark">*</span></label>
+                <input type="number" id="copyQty" class="form-control" min="1" max="150" placeholder="Ví dụ: 1, 2, 3..." style="background-color: white;">
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border-color); padding-top:15px;">
+                <button class="btn btn-secondary" onclick="goHome()">Hủy</button>
+                <button id="btnContinueMH01" class="btn btn-primary" onclick="proceedToReview()">
+                    Tiếp tục <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- ==================== SCREEN 2: XEM TRƯỚC (MH02) ==================== -->
+        <div id="screen-mh02" class="hidden">
+            <!-- Thông tin Người đăng ký -->
+            <div class="card-section highlight-card">
+                <h3 class="section-title" style="color: var(--primary-color); border-bottom-color: rgba(30, 58, 138, 0.15); margin-bottom: 15px;">
+                    <i class="fa-solid fa-address-card"></i> I. Thông Tin Người Đăng Ký
+                </h3>
+                <div class="review-grid-2">
+                    <div class="review-item">
+                        <span class="review-label">Họ và tên người đăng ký:</span>
+                        <span class="review-val" id="lblRequesterName">Nguyễn Văn Khách</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Địa chỉ liên hệ:</span>
+                        <span class="review-val" id="lblRequesterAddress">25 Nguyễn Cơ Thạch, thành phố Hà Nội, Việt Nam</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin số lượng bản sao -->
+            <div class="card-section">
+                <h3 class="section-title"><i class="fa-solid fa-copy"></i> II. Thông tin số lượng bản sao</h3>
+                <div style="max-width: 300px;">
+                    <div class="form-group">
+                        <label class="form-label">Số lượng bản sao của đăng ký</label>
+                        <input type="text" id="lblCopyQtyInput" class="form-control" readonly disabled>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Khối thông tin chi tiết hồ sơ (Thay đổi động theo loại hồ sơ gốc) -->
+            <div class="card-section">
+                <div class="dynamic-header-bg" id="dynamicTitleBlock">ĐĂNG KÝ LẦN ĐẦU</div>
+
+                <div class="review-grid">
+                    <div class="review-item">
+                        <span class="review-label">Loại hình giao dịch:</span>
+                        <span class="review-val" id="lblTxType">Biện pháp bảo đảm</span>
+                    </div>
+                    <div class="review-item" id="lblMeasureTypeRow">
+                        <span class="review-label">Loại biện pháp:</span>
+                        <span class="review-val" id="lblMeasureType">Thế chấp</span>
+                    </div>
+                    <div class="review-item hidden" id="lblContractTypeRow">
+                        <span class="review-label">Loại hợp đồng:</span>
+                        <span class="review-val" id="lblContractType">Hợp đồng cho thuê tài chính</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Số hợp đồng:</span>
+                        <span class="review-val" id="lblContractNo">123/HĐ-CNTT</span>
+                    </div>
+                </div>
+
+                <div class="review-grid">
+                    <div class="review-item">
+                        <span class="review-label">Ngày có hiệu lực của hợp đồng:</span>
+                        <span class="review-val" id="lblContractDate">25/11/2025</span>
+                    </div>
+                    <div class="review-item" id="lblLoanValueRow">
+                        <span class="review-label">Giá trị khoản vay hoặc nghĩa vụ (VND):</span>
+                        <span class="review-val" id="lblLoanValue">1,800,000,000</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Quy mô bên bảo đảm:</span>
+                        <span class="review-val" id="lblScale" style="font-weight: 600; color: var(--primary-color);">Bên bảo đảm là công ty có ít hơn 10 nhân viên</span>
+                    </div>
+                </div>
+
+                <div class="review-grid">
+                    <div class="review-item">
+                        <span class="review-label">Số đăng ký của hồ sơ:</span>
+                        <span class="review-val" id="lblRefRegNum" style="font-weight: 700;">1505156435</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Thời điểm đăng ký:</span>
+                        <span class="review-val" id="lblRegTime">14/05/2026 07:58</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Hồ sơ đính kèm:</span>
+                        <span class="review-val">
+                            <a href="#" class="file-link" onclick="alert('Đang hiển thị tệp PDF hồ sơ gốc...'); return false;">
+                                <i class="fa-solid fa-file-pdf"></i> [Xem văn bản chứng nhận đăng ký biện pháp bảo đảm gốc.pdf]
+                            </a>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="review-grid hidden" id="firstRegBlock">
+                    <div class="review-item">
+                        <span class="review-label">Số đăng ký lần đầu:</span>
+                        <span class="review-val" id="lblFirstRegNum" style="font-weight: 700;">---</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Thời điểm đăng ký lần đầu:</span>
+                        <span class="review-val" id="lblFirstRegTime">---</span>
+                    </div>
+                    <div class="review-item"></div>
+                </div>
+
+                <!-- Chủ thể: Bên bảo đảm -->
+                <div style="margin-top: 25px;">
+                    <h4 style="font-size: 13.5px; font-weight: 600; color: #334155; margin-bottom: 8px;"><i class="fa-solid fa-users"></i> Danh sách Bên bảo đảm</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 200px;">LOẠI CHỦ THỂ</th>
+                                    <th style="width: 250px;">SỐ GIẤY TỜ CHỨNG MINH TƯ CÁCH PHÁP LÝ</th>
+                                    <th style="width: 250px;">TÊN</th>
+                                    <th>ĐỊA CHỈ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="securingPartiesBody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Chủ thể: Bên nhận bảo đảm -->
+                <div style="margin-top: 25px;">
+                    <h4 style="font-size: 13.5px; font-weight: 600; color: #334155; margin-bottom: 8px;"><i class="fa-solid fa-building-columns"></i> Danh sách Bên nhận bảo đảm</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 400px;">TÊN</th>
+                                    <th>ĐỊA CHỈ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="securedPartiesBody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IV. Tài sản bảo đảm -->
+            <div class="card-section">
+                <h3 class="section-title"><i class="fa-solid fa-car-rear"></i> IV. Tài sản bảo đảm</h3>
+                
+                <div class="form-group">
+                    <label class="form-label" style="color: var(--text-muted);">Mô tả chung về tài sản bảo đảm</label>
+                    <div style="background-color: #F8FAFC; padding: 12px; border-radius: 4px; border: 1px solid #E2E8F0; font-size: 13.5px;" id="lblAssetCommonDesc">
+                        Các phương tiện giao thông cơ giới đường bộ và động sản khác thuộc quyền sở hữu của bên bảo đảm.
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <label class="form-label" style="color: var(--text-muted); display: block; margin-bottom: 8px;">Danh sách phương tiện / Tài sản bảo đảm chi tiết (Giả lập đủ 7 loại tài sản)</label>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px; text-align: center;">STT</th>
+                                    <th style="width: 300px;">TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
+                                    <th style="width: 350px;">NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>
+                                    <th style="width: 220px;">SỐ KHUNG / SỐ ĐINH DANH</th>
+                                    <th>SỐ MÁY / BIỂN SỐ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assetsTableBody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="action-footer">
+                <button type="button" class="btn btn-secondary" onclick="backToMH01()">
+                    <i class="fa-solid fa-chevron-left"></i> Quay lại
+                </button>
+                <button type="button" class="btn btn-primary" style="padding: 12px 28px; font-size: 14px;" onclick="submitRequest()">
+                    Gửi đăng ký <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Business Logic -->
+    <script>
+        // Mock database
+        const mockDatabase = {
+            '1505156435': {
+                caseType: 'first', // Đăng ký lần đầu
+                caseLabel: 'ĐĂNG KÝ LẦN ĐẦU',
+                txType: 'Biện pháp bảo đảm',
+                measureType: 'Thế chấp',
+                contractNo: '123/HĐ-CNTT',
+                contractDate: '25/11/2025',
+                loanValue: '1,800,000,000',
+                regTime: '14/05/2026 07:58',
+                securingParties: [
+                    { type: 'Cá nhân trong nước', doc: '001092008421', name: 'Nguyễn Văn Nam', address: 'Số 15 Lý Thường Kiệt, Q. Hoàn Kiếm, Hà Nội' }
+                ],
+                securedParties: [
+                    { name: 'NGÂN HÀNG TMCP FPT (FPT BANK)', address: 'Số 17 Duy Tân, Q. Cầu Giấy, Hà Nội' }
+                ],
+                pin: '5635',
+                status: 'Hoàn thành'
+            },
+            '1505156436': {
+                caseType: 'change', // Đăng ký thay đổi
+                caseLabel: 'ĐĂNG KÝ THAY ĐỔI',
+                firstRegNum: '1505156435',
+                firstRegTime: '14/05/2026 07:58',
+                txType: 'Biện pháp bảo đảm',
+                measureType: 'Thế chấp',
+                contractNo: 'HĐTC-2026-FPT',
+                contractDate: '04/01/2026',
+                loanValue: '2,500,000,000',
+                regTime: '01/06/2026 15:30',
+                securingParties: [
+                    { type: 'Tổ chức trong nước', doc: '0102030405', name: 'Công ty TNHH Hải Nam', address: 'KCN Sóng Thần, Dĩ An, Bình Dương' }
+                ],
+                securedParties: [
+                    { name: 'NGÂN HÀNG TMCP FPT (FPT BANK)', address: 'Số 17 Duy Tân, Q. Cầu Giấy, Hà Nội' }
+                ],
+                pin: '5636',
+                status: 'Hoàn thành'
+            },
+            '1505156437': {
+                caseType: 'delete_reg', // Xóa đăng ký
+                caseLabel: 'XÓA ĐĂNG KÝ',
+                firstRegNum: '1505156435',
+                firstRegTime: '14/05/2026 07:58',
+                txType: 'Biện pháp bảo đảm',
+                measureType: 'Thế chấp',
+                contractNo: 'HĐ-992/2026',
+                contractDate: '10/02/2026',
+                loanValue: '750,000,000',
+                regTime: '10/06/2026 11:20',
+                securingParties: [
+                    { type: 'Cá nhân trong nước', doc: '002092001429', name: 'Trần Thị Bình', address: '456 Hai Bà Trưng, Quận 1, TP. Hồ Chí Minh' }
+                ],
+                securedParties: [
+                    { name: 'NGÂN HÀNG TMCP KỸ THƯƠNG VIỆT NAM (TECHCOMBANK)', address: '119 Trần Duy Hưng, Hà Nội' }
+                ],
+                pin: '5637',
+                status: 'Hoàn thành'
+            },
+            '1505156438': {
+                caseType: 'disposal', // Thông báo xử lý tài sản bảo đảm lần đầu
+                caseLabel: 'THÔNG BÁO XỬ LÝ TÀI SẢN ĐẢM BẢO LẦN ĐẦU',
+                firstRegNum: '1505156435',
+                firstRegTime: '14/05/2026 07:58',
+                txType: 'Biện pháp bảo đảm',
+                measureType: 'Thế chấp',
+                contractNo: 'FPT-100293/BD',
+                contractDate: '12/05/2026',
+                loanValue: '1,000,000,000',
+                regTime: '15/06/2026 14:40',
+                securingParties: [
+                    { type: 'Tổ chức trong nước', doc: '0103040506', name: 'Công ty Cổ phần Thủy sản miền Nam', address: '45 Cảng Cát Lái, Quận 2, TP.HCM' }
+                ],
+                securedParties: [
+                    { name: 'NGÂN HÀNG TMCP FPT (FPT BANK)', address: 'Số 17 Duy Tân, Q. Cầu Giấy, Hà Nội' }
+                ],
+                pin: '5638',
+                status: 'Hoàn thành'
+            },
+            '1505156439': {
+                caseType: 'delete_disposal', // Xóa đăng ký thông báo xử lý tài sản bảo đảm
+                caseLabel: 'XÓA ĐĂNG KÝ THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM',
+                firstRegNum: '1505156435',
+                firstRegTime: '14/05/2026 07:58',
+                txType: 'Biện pháp bảo đảm',
+                measureType: 'Thế chấp',
+                contractNo: 'FPT-100293/BD',
+                contractDate: '12/05/2026',
+                loanValue: '1,000,000,000',
+                regTime: '17/06/2026 09:15',
+                securingParties: [
+                    { type: 'Tổ chức trong nước', doc: '0103040506', name: 'Công ty Cổ phần Thủy sản miền Nam', address: '45 Cảng Cát Lái, Quận 2, TP.HCM' }
+                ],
+                securedParties: [
+                    { name: 'NGÂN HÀNG TMCP FPT (FPT BANK)', address: 'Số 17 Duy Tân, Q. Cầu Giấy, Hà Nội' }
+                ],
+                pin: '5639',
+                status: 'Hoàn thành'
+            }
+        };
+
+        // 7 Mock assets representing different categories
+        const mockAssets = [
+            { id: 1, name: 'Xe ô tô con Toyota Vios', desc: 'Toyota Vios, Màu đen', frame: 'TYT-VIOS-88992', machine: 'ENG-4A-FE-990 / 30H-123.45' },
+            { id: 2, name: 'Tàu cá vỏ gỗ Hải Nam', desc: 'Chủ sở hữu: Công ty TNHH Hải Nam - Cấp IV', frame: 'ĐK-99882-HP', machine: '--- / ---' },
+            { id: 3, name: 'Quyền đòi nợ phát sinh từ Hợp đồng mua bán số 12/2026/HĐMB', desc: 'Căn cứ phát sinh: Hợp đồng số 12/2026/HĐMB ký giữa Công ty A và Công ty B', frame: '---', machine: '---' },
+            { id: 4, name: 'Vườn cây cao su 5 năm tuổi', desc: 'Khu đất canh tác tại xã Ea Kly, huyện Krông Pắc, Đắk Lắk', frame: '---', machine: '---' },
+            { id: 5, name: 'Kho hạt cà phê lưu kho', desc: 'Địa chỉ kho: Số 45 Cảng Cát Lái, Quận 2, TP.HCM - Số hiệu kho: KH-CF-02', frame: '---', machine: '---' },
+            { id: 6, name: '100.000 cổ phiếu của Công ty Cổ phần Thủy sản Miền Nam', desc: 'Thời điểm đăng ký: 09 giờ 30 phút ngày 15/04/2026', frame: '---', machine: '---' },
+            { id: 7, name: 'Dây chuyền máy móc dệt may chuyên dụng', desc: 'Nhập khẩu nguyên chiếc từ Nhật Bản, Model 2025-TXT', frame: '---', machine: '---' }
+        ];
+
+        let loadedDossier = null;
+
+        // Restore values from session storage if present (on reload/back)
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedData = sessionStorage.getItem('saoLucData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('regNum').value = data.regNum || '';
+                document.getElementById('copyQty').value = data.copyQty || '';
+            }
+        });
+
+        function goHome() {
+            if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                window.top.showScreen('home');
+            } else {
+                window.location.href = '../trang_tong_the_website_khach_hang.html';
+            }
+        }
+
+        // MH01 validation and navigation to MH02
+        function proceedToReview() {
+            const regNumInput = document.getElementById('regNum');
+            const copyQtyInput = document.getElementById('copyQty');
+            const errorMsg = document.getElementById('errorMsg');
+            const errorText = document.getElementById('errorText');
+
+            // Reset errors
+            errorMsg.style.display = 'none';
+            clearInputErrors();
+
+            const regNum = regNumInput.value.trim();
+            const copyQtyRaw = copyQtyInput.value.trim();
+
+            // TH1: Check empty fields
+            let hasEmpty = false;
+            if (!regNum) {
+                showInputError(regNumInput, "Trường này bắt buộc nhập");
+                hasEmpty = true;
+            }
+            if (!copyQtyRaw) {
+                showInputError(copyQtyInput, "Trường này bắt buộc nhập");
+                hasEmpty = true;
+            }
+
+            if (hasEmpty) return;
+
+            // TH2: Quantity validation
+            const copyQty = parseInt(copyQtyRaw);
+            if (isNaN(copyQty) || copyQty <= 0 || copyQtyRaw.includes('.') || copyQtyRaw.includes(',')) {
+                showInputError(copyQtyInput, "Số lượng bản sao phải là số nguyên dương lớn hơn 0");
+                return;
+            }
+            if (copyQty > 100) {
+                showInputError(copyQtyInput, "Số lượng bản sao yêu cầu tối đa 100 bản trong một giao dịch");
+                return;
+            }
+
+            // Simulate testing codes
+            if (regNum === 'CSDL_FAIL') {
+                errorMsg.style.display = 'flex';
+                errorText.textContent = "Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.";
+                return;
+            }
+            if (regNum === 'CHUA_HT') {
+                errorMsg.style.display = 'flex';
+                errorText.textContent = "Số đăng ký này đang trong quá trình xử lý hoặc chưa được duyệt chính thức. Không thể yêu cầu cấp bản sao.";
+                return;
+            }
+            // TH3: check if registration exists in mock db
+            const record = mockDatabase[regNum];
+            if (!record) {
+                errorMsg.style.display = 'flex';
+                errorText.textContent = "Số đăng ký không tồn tại trên hệ thống. Vui lòng kiểm tra lại.";
+                return;
+            }
+
+            // Valid: Save state to session storage
+            loadedDossier = record;
+            const dataToSave = {
+                regNum: regNum,
+                copyQty: copyQty,
+                dossier: record
+            };
+            sessionStorage.setItem('saoLucData', JSON.stringify(dataToSave));
+
+            // Switch to screen MH02
+            renderMH02(dataToSave);
+        }
+
+        // Render review details (MH02)
+        function renderMH02(data) {
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step2').classList.add('active');
+
+            document.getElementById('screen-mh01').classList.add('hidden');
+            document.getElementById('screen-mh02').classList.remove('hidden');
+
+            // Bind values
+            document.getElementById('lblCopyQtyInput').value = data.copyQty + " bản";
+            
+            const dossier = data.dossier;
+            document.getElementById('dynamicTitleBlock').innerText = dossier.caseLabel;
+            document.getElementById('lblTxType').innerText = dossier.txType;
+            
+            const measureRow = document.getElementById('lblMeasureTypeRow');
+            const contractRow = document.getElementById('lblContractTypeRow');
+            if (dossier.txType === 'Biện pháp bảo đảm') {
+                measureRow.classList.remove('hidden');
+                contractRow.classList.add('hidden');
+                document.getElementById('lblMeasureType').innerText = dossier.measureType;
+            } else {
+                measureRow.classList.add('hidden');
+                contractRow.classList.remove('hidden');
+                document.getElementById('lblContractType').innerText = dossier.contractType || 'Hợp đồng thế chấp';
+            }
+
+            document.getElementById('lblContractNo').innerText = dossier.contractNo;
+            document.getElementById('lblContractDate').innerText = dossier.contractDate;
+            document.getElementById('lblLoanValue').innerText = dossier.loanValue + " VNĐ";
+            document.getElementById('lblRefRegNum').innerText = data.regNum;
+            document.getElementById('lblRegTime').innerText = dossier.regTime;
+
+            // Render first registration info dynamically if not first registration
+            const firstRegBlock = document.getElementById('firstRegBlock');
+            if (dossier.caseType === 'first') {
+                firstRegBlock.classList.add('hidden');
+            } else {
+                firstRegBlock.classList.remove('hidden');
+                document.getElementById('lblFirstRegNum').innerText = dossier.firstRegNum || '---';
+                document.getElementById('lblFirstRegTime').innerText = dossier.firstRegTime || '---';
+            }
+
+            // Render Securing Parties
+            const securingTbody = document.getElementById('securingPartiesBody');
+            securingTbody.innerHTML = dossier.securingParties.map(p => `
+                <tr>
+                    <td>${p.type}</td>
+                    <td><span style="font-family: monospace;">${p.doc}</span></td>
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.address}</td>
+                </tr>
+            `).join('');
+
+            // Render Secured Parties
+            const securedTbody = document.getElementById('securedPartiesBody');
+            securedTbody.innerHTML = dossier.securedParties.map(p => `
+                <tr>
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.address}</td>
+                </tr>
+            `).join('');
+
+            // Render 7 mock assets in 5 columns format
+            const assetsTbody = document.getElementById('assetsTableBody');
+            assetsTbody.innerHTML = mockAssets.map((a, idx) => `
+                <tr>
+                    <td style="text-align: center;">${idx + 1}</td>
+                    <td><strong>${a.name}</strong></td>
+                    <td>${a.desc}</td>
+                    <td><span style="font-family: monospace;">${a.frame}</span></td>
+                    <td>${a.machine}</td>
+                </tr>
+            `).join('');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToMH01() {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.remove('completed');
+            document.getElementById('step1').classList.add('active');
+
+            document.getElementById('screen-mh02').classList.add('hidden');
+            document.getElementById('screen-mh01').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Direct redirect to payment gateway screen
+        function submitRequest() {
+            // Generate request code BS-[YYYYMMDD]-[TỰ_TĂNG_6_SỐ]
+            const now = new Date();
+            const yyyymmdd = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+            const randNum = String(Math.floor(100000 + Math.random() * 900000));
+            const reqCode = `BS-${yyyymmdd}-${randNum}`;
+
+            const saved = sessionStorage.getItem('saoLucData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                data.reqCode = reqCode;
+                sessionStorage.setItem('saoLucData', JSON.stringify(data));
+            }
+
+            // Switch screen to payment html
+            window.location.href = 'lap_yeu_cau_sao_luc_thanh_toan.html';
+        }
+
+        // Helpers
+        function showInputError(inputElement, msg) {
+            inputElement.style.borderColor = 'var(--danger-color)';
+            inputElement.style.borderWidth = '1.5px';
+            
+            const parent = inputElement.closest('.form-group');
+            let errorSpan = parent.querySelector('.field-error');
+            if (!errorSpan) {
+                errorSpan = document.createElement('span');
+                errorSpan.className = 'field-error';
+                parent.appendChild(errorSpan);
+            }
+            errorSpan.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${msg}`;
+        }
+
+        function clearInputErrors() {
+            document.querySelectorAll('.form-control').forEach(el => {
+                el.style.borderColor = '';
+                el.style.borderWidth = '';
+            });
+            document.querySelectorAll('.field-error').forEach(el => el.remove());
+        }
+    </script>
+</body>
+</html>

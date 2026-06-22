@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Câu hỏi & Câu trả lời thường gặp</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --bg-body: #F8FAFC;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--base-size);
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.6;
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: var(--spacing-lg);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: var(--heading-size);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-row {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--spacing-md) 0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            color: var(--text-main);
+            font-size: 15px;
+        }
+
+        .qa-box {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            margin-top: 10px;
+        }
+
+        .qa-icon-q {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        .qa-icon-a {
+            color: var(--success-color);
+            font-weight: 700;
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        .btn {
+            font-weight: 500;
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem 1.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: var(--base-size);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background-color: #E2E8F0;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #CBD5E1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card-section">
+            <h2 class="section-title">
+                <i class="fa-solid fa-circle-info"></i> Chi tiết Câu hỏi & Câu trả lời thường gặp
+            </h2>
+
+            <div>
+                <div class="detail-row">
+                    <div class="detail-label">Lĩnh vực nghiệp vụ</div>
+                    <div class="detail-value" id="detail-category" style="font-weight: 600;"></div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Nội dung câu hỏi</div>
+                    <div class="qa-box" style="border-left: 4px solid var(--accent-color);">
+                        <span class="qa-icon-q">HỎI:</span>
+                        <span id="detail-question" style="font-weight: 600; font-size:15px; color: var(--primary-color);"></span>
+                        <div id="detail-question-full" style="margin-top: 10px; color: var(--text-main); font-size:14px;"></div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Nội dung giải đáp chính thức</div>
+                    <div class="qa-box" style="border-left: 4px solid var(--success-color); background-color: #F0FDF4;">
+                        <span class="qa-icon-a">ĐÁP:</span>
+                        <span id="detail-answer" style="color: #166534; font-size:14px; font-weight: 500; white-space: pre-line;"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: var(--spacing-lg); border-top: 1px solid var(--border-color); padding-top: var(--spacing-md);">
+                <button class="btn btn-secondary" onclick="closeTab()"><i class="fa-solid fa-times"></i> Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock Data Dictionary matching main page
+        const mockFaqs = [
+            { id: 1, title: 'Thời hạn có hiệu lực của đăng ký biện pháp bảo đảm bằng động sản là bao lâu?', excerpt: 'Đăng ký biện pháp bảo đảm bằng động sản có hiệu lực kể từ thời điểm đăng ký cho đến khi cơ quan đăng ký thực hiện xóa đăng ký theo yêu cầu...', content: 'Tôi muốn biết thời hạn có hiệu lực pháp luật của đăng ký biện pháp bảo đảm đối với động sản được pháp luật quy định là bao lâu tính từ thời điểm đăng ký thành công trên hệ thống trực tuyến?', answer: 'Đăng ký biện pháp bảo đảm bằng động sản có hiệu lực kể từ thời điểm đăng ký cho đến khi cơ quan đăng ký thực hiện xóa đăng ký theo yêu cầu của bên nhận bảo đảm hoặc theo thỏa thuận của các bên có liên quan.', category: 'Biện pháp bảo đảm' },
+            { id: 2, title: 'Ai có quyền yêu cầu xóa đăng ký biện pháp bảo đảm?', excerpt: 'Người yêu cầu xóa đăng ký bao gồm Bên nhận bảo đảm, Bên bảo đảm (nếu được bên nhận bảo đảm đồng ý bằng văn bản), hoặc người đại diện hợp pháp...', content: 'Trường hợp nghĩa vụ bảo đảm đã hoàn thành thì những chủ thể nào có quyền nộp đơn yêu cầu xóa đăng ký biện pháp bảo đảm trên hệ thống dịch vụ công trực tuyến?', answer: 'Người yêu cầu xóa đăng ký bao gồm Bên nhận bảo đảm, Bên bảo đảm (nếu được bên nhận bảo đảm đồng ý bằng văn bản), hoặc người đại diện hợp pháp, chi nhánh đại diện trong các điều kiện được ủy quyền theo đúng pháp luật.', category: 'Biện pháp bảo đảm' },
+            { id: 3, title: 'Các trường hợp nào được miễn phí đăng ký biện pháp bảo đảm?', excerpt: 'Miễn phí đăng ký đối với các trường hợp cá nhân, hộ gia đình vay vốn tại tổ chức tín dụng phục vụ phát triển nông nghiệp, nông thôn theo quy định...', content: 'Những cá nhân, hộ gia đình hay doanh nghiệp nào thuộc đối tượng được miễn lệ phí đăng ký biện pháp bảo đảm theo các nghị định nông nghiệp nông thôn của Chính phủ?', answer: 'Miễn phí đăng ký đối với các trường hợp cá nhân, hộ gia đình vay vốn tại tổ chức tín dụng phục vụ phát triển nông nghiệp, nông thôn theo quy định tại Nghị định phát triển nông nghiệp nông thôn của Chính phủ.', category: 'Biện pháp bảo đảm' },
+            { id: 4, title: 'Làm thế nào để sửa thông tin sai sót trên đơn đăng ký đã gửi?', excerpt: 'Trường hợp phát hiện sai sót, người dùng cần nộp đơn yêu cầu đăng ký thay đổi thông tin biện pháp bảo đảm đã đăng ký hoặc chỉnh lý thông tin...', content: 'Sau khi đã nộp đơn đăng ký biện pháp bảo đảm thành công và nhận được số PIN, nếu tôi phát hiện ra sai sót thông tin (ví dụ sai số khung xe) thì phải thực hiện các bước như thế nào để đính chính?', answer: 'Trường hợp phát hiện sai sót, người dùng cần nộp đơn yêu cầu đăng ký thay đổi thông tin biện pháp bảo đảm đã đăng ký hoặc chỉnh lý thông tin tùy theo tính chất của lỗi sai và thời điểm phát hiện.', category: 'Biện pháp bảo đảm' },
+            { id: 5, title: 'Thời gian giải quyết hồ sơ đăng ký trực tuyến là bao lâu?', excerpt: 'Hệ thống đăng ký trực tuyến biện pháp bảo đảm bằng động sản giải quyết tự động và cấp chứng nhận đăng ký ngay sau khi người dùng nộp phí thành công...', content: 'Khi thực hiện nộp hồ sơ đăng ký biện pháp bảo đảm trực tuyến bằng động sản, tôi phải chờ bao lâu mới nhận được văn bản chứng nhận kết quả đăng ký chính thức?', answer: 'Hệ thống đăng ký trực tuyến biện pháp bảo đảm bằng động sản giải quyết tự động và cấp chứng nhận đăng ký ngay sau khi người dùng nộp phí thành công qua cổng thanh toán tích hợp.', category: 'Biện pháp bảo đảm' },
+            { id: 6, title: 'Ai có quyền yêu cầu bồi thường thiệt hại theo Luật TNBTCNN?', excerpt: 'Người bị thiệt hại; Người đại diện hợp pháp của người bị thiệt hại; Người thừa kế của người bị thiệt hại trong trường hợp người bị thiệt hại đã chết...', content: 'Xin hỏi theo Luật Trách nhiệm bồi thường của Nhà nước, khi có thiệt hại xảy ra do người thi hành công vụ gây nên thì những đối tượng nào có quyền đứng ra yêu cầu bồi thường?', answer: 'Người bị thiệt hại; Người đại diện hợp pháp của người bị thiệt hại; Người thừa kế của người bị thiệt hại trong trường hợp người bị thiệt hại đã chết hoặc tổ chức bị thiệt hại đã giải thể, phá sản.', category: 'Bồi thường nhà nước' },
+            { id: 7, title: 'Thời hạn nộp hồ sơ yêu cầu bồi thường là bao lâu?', excerpt: 'Thời hạn yêu cầu bồi thường là 03 năm kể từ ngày người có quyền yêu cầu nhận được văn bản làm căn cứ yêu cầu bồi thường theo quy định pháp luật...', content: 'Thời hiệu để thực hiện quyền yêu cầu bồi thường nhà nước đối với hành vi trái pháp luật của người thi hành công vụ là bao lâu kể từ ngày nhận được văn bản làm căn cứ bồi thường?', answer: 'Thời hạn yêu cầu bồi thường là 03 năm kể từ ngày người có quyền yêu cầu nhận được văn bản làm căn cứ yêu cầu bồi thường theo quy định pháp luật, trừ trường hợp bất khả kháng hoặc trở ngại khách quan.', category: 'Bồi thường nhà nước' },
+            { id: 8, title: 'Cơ quan nào có thẩm quyền giải quyết bồi thường thiệt hại?', excerpt: 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại là cơ quan có thẩm quyền giải quyết bồi thường theo quy định của pháp luật...', content: 'Khi xác định được người thi hành công vụ gây thiệt hại, tôi cần nộp đơn yêu cầu bồi thường tại cơ quan nào để được tiếp nhận giải quyết theo đúng thẩm quyền?', answer: 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại là cơ quan có thẩm quyền giải quyết bồi thường theo quy định của pháp luật về trách nhiệm bồi thường nhà nước.', category: 'Bồi thường nhà nước' },
+            { id: 9, title: 'Quy trình thương lượng việc bồi thường được thực hiện như thế nào?', excerpt: 'Sau khi thụ lý hồ sơ, cơ quan giải quyết bồi thường tiến hành xác minh thiệt hại và tổ chức thương lượng với người yêu cầu bồi thường về các khoản bồi thường...', content: 'Trong hoạt động giải quyết bồi thường nhà nước, sau bước xác minh thiệt hại, thủ tục tổ chức thương lượng giữa cơ quan giải quyết và người yêu cầu bồi thường diễn ra như thế nào?', answer: 'Sau khi thụ lý hồ sơ, cơ quan giải quyết bồi thường tiến hành xác minh thiệt hại và tổ chức thương lượng với người yêu cầu bồi thường về các khoản bồi thường theo đúng trình tự luật định.', category: 'Bồi thường nhà nước' },
+            { id: 10, title: 'Trường hợp nào người bị thiệt hại được hỗ trợ kinh phí thuê người bảo vệ?', excerpt: 'Người bị thiệt hại là cá nhân thuộc hộ nghèo, cận nghèo, người có công với cách mạng, hoặc đối tượng bảo trợ xã hội sẽ được hỗ trợ kinh phí theo quy định...', content: 'Trường hợp người bị thiệt hại có hoàn cảnh khó khăn muốn thuê luật sư bảo vệ quyền lợi hợp pháp trong quá trình giải quyết bồi thường thì Nhà nước có chính sách hỗ trợ kinh phí không?', answer: 'Người bị thiệt hại là cá nhân thuộc hộ nghèo, cận nghèo, người có công với cách mạng, hoặc đối tượng bảo trợ xã hội sẽ được hỗ trợ kinh phí thuê luật sư hoặc người bảo vệ quyền lợi hợp pháp.', category: 'Bồi thường nhà nước' }
+        ];
+
+        // Load Detail based on Query Parameter
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = parseInt(urlParams.get('id'));
+            
+            const faq = mockFaqs.find(f => f.id === id);
+            if (faq) {
+                document.getElementById('detail-category').innerText = faq.category;
+                document.getElementById('detail-question').innerText = faq.title;
+                document.getElementById('detail-question-full').innerText = faq.content;
+                document.getElementById('detail-answer').innerText = faq.answer;
+            } else {
+                document.body.innerHTML = `<div class="card-section" style="text-align:center; padding:30px;"><h3>Không tìm thấy câu hỏi yêu cầu. Vui lòng đóng tab này.</h3></div>`;
+            }
+        });
+
+        function closeTab() {
+            window.close();
+        }
+    </script>
+</body>
+</html>

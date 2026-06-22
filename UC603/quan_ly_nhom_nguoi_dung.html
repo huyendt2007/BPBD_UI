@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Nhóm người dùng & Phân quyền</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+        body { background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); padding: var(--spacing-lg); height: 100vh; display: flex; flex-direction: column; }
+        
+        .header-title { color: var(--primary-color); font-size: 20px; font-weight: 600; margin-bottom: var(--spacing-lg); }
+
+        /* Split View Layout */
+        .split-layout { display: flex; gap: var(--spacing-lg); flex: 1; min-height: 0; }
+        .panel { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .panel-left { flex: 0 0 32%; }
+        .panel-right { flex: 1; }
+        
+        .panel-header { padding: var(--spacing-md); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--table-header-bg); border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; }
+        .panel-header h3 { color: var(--primary-color); font-size: 16px; margin: 0; }
+        
+        .panel-body { padding: var(--spacing-md); flex: 1; overflow-y: auto; }
+
+        /* Form & Buttons */
+        .form-control { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 8px 12px; width: 100%; outline: none; }
+        .form-control:focus { border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
+        .form-label { font-weight: 500; margin-bottom: 4px; display: block; }
+        .form-group { margin-bottom: var(--spacing-md); }
+        
+        .btn { font-weight: 500; border-radius: var(--border-radius-md); padding: 0.5rem 1rem; transition: all 0.2s; cursor: pointer; border: none; font-size: var(--base-size); display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: var(--text-muted); color: white; }
+        .btn-outline { background-color: white; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-sm { padding: 4px 8px; font-size: 12px; }
+
+        /* Group List */
+        .group-list { list-style: none; }
+        .group-item { padding: 12px var(--spacing-md); border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; }
+        .group-item:hover { background-color: #F8FAFC; }
+        .group-item.active { background-color: #EFF6FF; border-left: 4px solid var(--primary-color); padding-left: 12px; }
+        .group-item strong { display: block; color: var(--primary-color); margin-bottom: 4px; }
+        .group-item span { font-size: 12px; color: var(--text-muted); }
+
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: var(--spacing-md); }
+        .tab-item { padding: 12px 24px; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 500; color: var(--text-muted); }
+        .tab-item:hover { color: var(--primary-color); }
+        .tab-item.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Permissions Matrix */
+        .perm-section { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); overflow: hidden; }
+        .perm-section-header { background-color: #F8FAFC; padding: 10px 16px; font-weight: 600; color: var(--primary-color); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .perm-row { padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; }
+        .perm-row:last-child { border-bottom: none; }
+        .perm-row:hover { background-color: #F1F5F9; }
+        
+        .custom-checkbox { display: flex; align-items: center; cursor: pointer; gap: 8px; width: 100%; }
+        .custom-checkbox input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary-color); }
+        .role-desc { font-size: 12px; color: var(--text-muted); display: block; margin-top: 2px; }
+
+        /* Table */
+        .table { width: 100%; border-collapse: collapse; margin-bottom: var(--spacing-md); }
+        .table th { background-color: var(--table-header-bg); color: var(--primary-color); font-weight: 600; font-size: 13px; padding: 12px; border-bottom: 2px solid var(--border-color); text-align: left; }
+        .table td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        .toast { background-color: var(--success-color); color: white; padding: 12px 24px; border-radius: var(--border-radius-md); display: none; box-shadow: var(--box-shadow); }
+        .toast.show { display: block; animation: slideUp 0.3s forwards; }
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg-surface); border-radius: var(--border-radius-lg); width: 450px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; }
+        .error-msg { color: var(--danger-color); font-size: 12px; margin-top: 4px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">Quản lý Nhóm người dùng & Phân quyền</div>
+
+    <div class="split-layout">
+        <!-- Panel Left: Group List -->
+        <div class="panel panel-left">
+            <div class="panel-header">
+                <h3>Danh sách Nhóm người dùng</h3>
+                <button class="btn btn-primary btn-sm" onclick="openGroupModal('add')">+ Thêm Nhóm mới</button>
+            </div>
+            <div style="padding: 12px; border-bottom: 1px solid var(--border-color);">
+                <input type="text" class="form-control" placeholder="Tìm kiếm nhóm...">
+            </div>
+            <div class="panel-body" style="padding: 0;">
+                <ul class="group-list" id="groupList">
+                    <!-- Groups rendered via JS -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Panel Right: Details & Permissions -->
+        <div class="panel panel-right">
+            <div class="panel-header">
+                <h3 id="panelRightTitle">Thiết lập cho nhóm: Cán bộ giải quyết hồ sơ BPBĐ</h3>
+                <div>
+                    <button class="btn btn-outline btn-sm">+ Tạo Vai trò mới</button>
+                    <button class="btn btn-danger btn-sm">Khóa nhóm</button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="tabs">
+                    <div class="tab-item active" onclick="switchTab('permissions', this)">Phân quyền (Vai trò / Tính năng)</div>
+                    <div class="tab-item" onclick="switchTab('members', this)">Danh sách Thành viên (45)</div>
+                </div>
+
+                <!-- Tab: Phân Quyền (RBAC Checkboxes) -->
+                <div id="tab-permissions" class="tab-content active">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px; align-items: center;">
+                        <span style="color: var(--text-muted); font-size: 13px;">Tích chọn các Vai trò/Tính năng tương ứng để cấp quyền cho toàn bộ thành viên trong nhóm này.</span>
+                        <button class="btn btn-primary" onclick="savePermissions()">💾 Lưu phân quyền</button>
+                    </div>
+
+                    <!-- Khối 1: Nghiệp vụ Đăng ký BPBĐ -->
+                    <div class="perm-section">
+                        <div class="perm-section-header">
+                            <span>Khối 1: Nghiệp vụ Đăng ký BPBĐ</span>
+                            <label><input type="checkbox" checked onchange="toggleSection(this)"> Chọn tất cả</label>
+                        </div>
+                        <div class="perm-row">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" checked>
+                                <div>
+                                    <strong>Role 05 - Người xử lý hồ sơ BPBĐ</strong>
+                                    <span class="role-desc">Quyền: Tiếp nhận hồ sơ Đăng ký trực tuyến, Hủy đăng ký, Khôi phục đăng ký, Soạn thảo văn bản từ chối/trình duyệt.</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="perm-row">
+                            <label class="custom-checkbox">
+                                <input type="checkbox">
+                                <div>
+                                    <strong>Role 06 - Người ký duyệt BPBĐ</strong>
+                                    <span class="role-desc">Quyền: Ký duyệt (Ký số) cấp Giấy chứng nhận, Từ chối hồ sơ (Cấp lãnh đạo).</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="perm-row">
+                            <label class="custom-checkbox">
+                                <input type="checkbox">
+                                <div>
+                                    <strong>Role 07 - Văn thư trả kết quả</strong>
+                                    <span class="role-desc">Quyền: Đóng dấu, phát hành bản giấy và gửi bưu điện.</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Khối 2: Quản trị Nội dung & Hỗ trợ -->
+                    <div class="perm-section">
+                        <div class="perm-section-header">
+                            <span>Khối 2: Quản trị Nội dung & Hỗ trợ Khách hàng</span>
+                            <label><input type="checkbox" onchange="toggleSection(this)"> Chọn tất cả</label>
+                        </div>
+                        <div class="perm-row">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" checked>
+                                <div>
+                                    <strong>Role 13 - Chăm sóc khách hàng</strong>
+                                    <span class="role-desc">Quyền: Trả lời yêu cầu hỗ trợ (Ticket), Giải đáp thắc mắc của người dân trên Cổng.</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="perm-row">
+                            <label class="custom-checkbox">
+                                <input type="checkbox">
+                                <div>
+                                    <strong>Role 14 - Người biên tập nội dung</strong>
+                                    <span class="role-desc">Quyền: Thêm/Sửa/Xóa Bài viết pháp luật, FAQ (Chỉ được Trình duyệt).</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Khối 3: Báo cáo & Hệ thống -->
+                    <div class="perm-section">
+                        <div class="perm-section-header">
+                            <span>Khối 3: Báo cáo & Thống kê</span>
+                            <label><input type="checkbox" onchange="toggleSection(this)"> Chọn tất cả</label>
+                        </div>
+                        <div class="perm-row">
+                            <label class="custom-checkbox">
+                                <input type="checkbox">
+                                <div>
+                                    <strong>Role 17 - Xem Báo cáo Tổng hợp (Dashboard)</strong>
+                                    <span class="role-desc">Quyền: Xem biểu đồ tổng quan, Xuất báo cáo thống kê định kỳ toàn quốc.</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Tab: Thành Viên -->
+                <div id="tab-members" class="tab-content">
+                    <div style="margin-bottom: 16px; display: flex; justify-content: flex-end;">
+                        <button class="btn btn-outline btn-sm">+ Thêm thành viên vào nhóm</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Họ và tên</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Phòng ban / Đơn vị</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>Nguyễn Văn A</strong></td>
+                                <td>nguyen_va</td>
+                                <td>Phòng Nghiệp vụ 1</td>
+                                <td><button class="btn-outline" style="padding: 2px 6px; font-size:12px; border-radius:4px; border:1px solid red; color:red;">Gỡ bỏ</button></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>Trần Thị B</strong></td>
+                                <td>tran_tb</td>
+                                <td>Phòng Nghiệp vụ 2</td>
+                                <td><button class="btn-outline" style="padding: 2px 6px; font-size:12px; border-radius:4px; border:1px solid red; color:red;">Gỡ bỏ</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Thêm/Sửa Nhóm -->
+    <div class="modal-overlay" id="groupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm mới Nhóm người dùng</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Mã nhóm <span style="color:var(--danger-color)">*</span></label>
+                    <input type="text" class="form-control" id="inpGroupCode">
+                    <div class="error-msg" id="errGroupCode">Vui lòng nhập Mã nhóm</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên nhóm <span style="color:var(--danger-color)">*</span></label>
+                    <input type="text" class="form-control" id="inpGroupName">
+                    <div class="error-msg" id="errGroupName">Vui lòng nhập Tên nhóm</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phạm vi áp dụng <span style="color:var(--danger-color)">*</span></label>
+                    <select class="form-control" id="inpGroupScope" style="background:#fff;">
+                        <option value="">-- Chọn phạm vi áp dụng --</option>
+                        <option value="INTERNAL">Cán bộ / Chuyên viên (Nội bộ)</option>
+                        <option value="INDIVIDUAL">Khách hàng Cá nhân</option>
+                        <option value="ORGANIZATION">Khách hàng Tổ chức</option>
+                        <option value="AUTHORITY">Cơ quan Thẩm quyền</option>
+                        <option value="ALL">Dùng chung (Tất cả)</option>
+                    </select>
+                    <div class="error-msg" id="errGroupScope">Vui lòng chọn Phạm vi áp dụng</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="saveGroup()">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container">
+        <div class="toast" id="toastMsg">Đã lưu cấu hình phân quyền thành công!</div>
+    </div>
+
+    <script>
+        // Mock Groups Data
+        let groups = [
+            { id: 1, code: "G_CB_BPBD", name: "Cán bộ giải quyết hồ sơ BPBĐ", scope: "INTERNAL", members: 45 },
+            { id: 2, code: "G_LD_TRUNGTAM", name: "Lãnh đạo Trung tâm Đăng ký", scope: "INTERNAL", members: 5 },
+            { id: 3, code: "G_CB_CUC", name: "Cán bộ Nghiệp vụ Cục (QLNN)", scope: "INTERNAL", members: 12 },
+            { id: 4, code: "G_LD_CUC", name: "Lãnh đạo Cục (QLNN BPBĐ)", scope: "INTERNAL", members: 3 },
+            { id: 5, code: "G_KH_CANHAN", name: "Khách hàng Cá nhân", scope: "INDIVIDUAL", members: 1250 },
+            { id: 6, code: "G_KH_TOCHUC", name: "Khách hàng Tổ chức", scope: "ORGANIZATION", members: 420 },
+            { id: 7, code: "G_TOA_AN", name: "Cơ quan Tòa án", scope: "AUTHORITY", members: 60 },
+            { id: 8, code: "G_VKS", name: "Viện Kiểm sát", scope: "AUTHORITY", members: 30 },
+            { id: 9, code: "G_THADS", name: "Cơ quan Thi hành án Dân sự", scope: "AUTHORITY", members: 45 },
+            { id: 10, code: "G_CONG_AN", name: "Cơ quan Điều tra (Công an)", scope: "AUTHORITY", members: 15 }
+        ];
+
+        let activeGroupId = 1;
+        let groupMode = 'add';
+        let editGroupId = null;
+
+        function renderGroups() {
+            const list = document.getElementById('groupList');
+            list.innerHTML = '';
+            
+            const scopeColors = {
+                'INTERNAL': '#10B981', 'INDIVIDUAL': '#3B82F6', 
+                'ORGANIZATION': '#8B5CF6', 'AUTHORITY': '#F59E0B', 'ALL': '#64748B'
+            };
+            
+            groups.forEach(g => {
+                const li = document.createElement('li');
+                li.className = `group-item ${activeGroupId === g.id ? 'active' : ''}`;
+                li.onclick = () => {
+                    activeGroupId = g.id;
+                    document.getElementById('panelRightTitle').innerText = `Thiết lập cho nhóm: ${g.name}`;
+                    renderGroups();
+                };
+                
+                li.innerHTML = `
+                    <div style="flex:1;">
+                        <strong>${g.name}</strong>
+                        <span>${g.code} • ${g.members} thành viên 
+                        <span style="display:inline-block; margin-left:8px; padding:2px 6px; border-radius:10px; font-size:10px; background:${scopeColors[g.scope]}20; color:${scopeColors[g.scope]}">${g.scope}</span>
+                        </span>
+                    </div>
+                    <button class="btn-outline" style="border:none; background:none; cursor:pointer;" onclick="event.stopPropagation(); openGroupModal('edit', ${g.id})" title="Sửa thông tin nhóm">✏️</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        // Modal Logic
+        function openGroupModal(mode, id = null) {
+            groupMode = mode;
+            editGroupId = id;
+            const modal = document.getElementById('groupModal');
+            document.getElementById('errGroupCode').style.display = 'none';
+            document.getElementById('errGroupName').style.display = 'none';
+            document.getElementById('errGroupScope').style.display = 'none';
+            document.getElementById('inpGroupCode').classList.remove('error');
+            document.getElementById('inpGroupName').classList.remove('error');
+            document.getElementById('inpGroupScope').classList.remove('error');
+
+            if (mode === 'add') {
+                document.getElementById('modalTitle').innerText = 'Thêm mới Nhóm người dùng';
+                document.getElementById('inpGroupCode').value = '';
+                document.getElementById('inpGroupName').value = '';
+                document.getElementById('inpGroupScope').value = '';
+                document.getElementById('inpGroupCode').readOnly = false;
+            } else {
+                document.getElementById('modalTitle').innerText = 'Sửa thông tin Nhóm';
+                const group = groups.find(g => g.id === id);
+                document.getElementById('inpGroupCode').value = group.code;
+                document.getElementById('inpGroupName').value = group.name;
+                document.getElementById('inpGroupScope').value = group.scope || '';
+                document.getElementById('inpGroupCode').readOnly = true;
+            }
+            modal.classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('groupModal').classList.remove('active'); }
+
+        function saveGroup() {
+            const code = document.getElementById('inpGroupCode').value.trim();
+            const name = document.getElementById('inpGroupName').value.trim();
+            const scope = document.getElementById('inpGroupScope').value;
+            
+            let isValid = true;
+            if (!code) { document.getElementById('errGroupCode').style.display = 'block'; document.getElementById('inpGroupCode').classList.add('error'); isValid = false; }
+            if (!name) { document.getElementById('errGroupName').style.display = 'block'; document.getElementById('inpGroupName').classList.add('error'); isValid = false; }
+            if (!scope) { document.getElementById('errGroupScope').style.display = 'block'; document.getElementById('inpGroupScope').classList.add('error'); isValid = false; }
+            
+            if (!isValid) return;
+
+            if (groupMode === 'add') {
+                groups.unshift({ id: Date.now(), code: code, name: name, scope: scope, members: 0 });
+                showToast("Thêm mới nhóm thành công!");
+            } else {
+                const index = groups.findIndex(g => g.id === editGroupId);
+                groups[index].name = name;
+                groups[index].scope = scope;
+                showToast("Cập nhật thông tin nhóm thành công!");
+            }
+            
+            closeModal();
+            renderGroups();
+        }
+
+        // JS Tabs
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        // JS Select All Checkboxes in a section
+        function toggleSection(masterCheckbox) {
+            const section = masterCheckbox.closest('.perm-section');
+            const checkboxes = section.querySelectorAll('.perm-row input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        }
+
+        // Toast
+        function savePermissions() {
+            showToast('Đã lưu cấu hình phân quyền thành công!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // Init
+        window.onload = renderGroups;
+    </script>
+</body>
+</html>

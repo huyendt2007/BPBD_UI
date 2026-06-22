@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vai trò & Phân quyền</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Design System */
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+        body { background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); padding: var(--spacing-lg); height: 100vh; display: flex; flex-direction: column; }
+        
+        .header-title { color: var(--primary-color); font-size: 20px; font-weight: 600; margin-bottom: var(--spacing-lg); }
+
+        /* Split View Layout */
+        .split-layout { display: flex; gap: var(--spacing-lg); flex: 1; min-height: 0; }
+        
+        .panel { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .panel-left { flex: 0 0 35%; }
+        .panel-right { flex: 1; }
+        
+        .panel-header { padding: var(--spacing-md); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--table-header-bg); border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; }
+        .panel-header h3 { color: var(--primary-color); font-size: 16px; margin: 0; }
+        
+        .panel-body { padding: var(--spacing-md); flex: 1; overflow-y: auto; }
+        .panel-footer { padding: var(--spacing-md); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; }
+
+        /* Buttons */
+        .btn { font-weight: 500; border-radius: var(--border-radius-md); padding: 0.5rem 1rem; transition: all 0.2s; cursor: pointer; border: none; font-size: var(--base-size); display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: var(--text-muted); color: white; }
+        .btn-sm { padding: 4px 8px; font-size: 12px; }
+
+        /* Role List */
+        .role-list { list-style: none; }
+        .role-item { padding: 12px var(--spacing-md); border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; }
+        .role-item:hover { background-color: #F8FAFC; }
+        .role-item.active { background-color: #EFF6FF; border-left: 4px solid var(--primary-color); padding-left: 12px; }
+        .role-item-info strong { display: block; color: var(--primary-color); margin-bottom: 4px; }
+        .role-item-info span { font-size: 12px; color: var(--text-muted); }
+        .role-actions { opacity: 0; transition: opacity 0.2s; }
+        .role-item:hover .role-actions { opacity: 1; }
+        .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; }
+        .btn-icon:hover { color: var(--primary-color); }
+        .btn-icon.delete:hover { color: var(--danger-color); }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: var(--spacing-md);
+        }
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--base-size);
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: var(--secondary-color);
+        }
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Tree View */
+        .tree-view { list-style: none; padding-left: 20px; }
+        .tree-view.root { padding-left: 0; }
+        .tree-node { margin: 8px 0; }
+        .tree-node-label { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 4px; cursor: pointer; }
+        .tree-node-label:hover { background-color: #F8FAFC; }
+        .tree-node-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; }
+
+        /* Form & Modal */
+        .form-group { margin-bottom: var(--spacing-md); }
+        .form-label { font-weight: 500; margin-bottom: 4px; display: block; }
+        .form-control { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 8px 12px; width: 100%; }
+        .error-msg { color: var(--danger-color); font-size: 12px; margin-top: 4px; display: none; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg-surface); border-radius: var(--border-radius-lg); width: 400px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; }
+
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        .toast { background-color: var(--success-color); color: white; padding: 12px 24px; border-radius: var(--border-radius-md); display: none; margin-top: 10px; }
+        .toast.error { background-color: var(--danger-color); }
+        .toast.show { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">Thiết lập Vai trò & Phân quyền</div>
+
+    <div class="split-layout">
+        <!-- Panel Left: Role List -->
+        <div class="panel panel-left">
+            <div class="panel-header">
+                <h3>Danh sách Vai trò</h3>
+                <button class="btn btn-primary btn-sm" onclick="openRoleModal('add')">+ Thêm mới</button>
+            </div>
+            <div class="panel-body" style="padding: 0;">
+                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">
+                    <div class="search-box" style="margin-bottom: 0;">
+                        <i>🔍</i>
+                        <input type="text" id="inpSearchRole" placeholder="Tìm kiếm vai trò..." onkeyup="filterRoles(this.value)">
+                    </div>
+                </div>
+                <ul class="role-list" id="roleList">
+                    <!-- Roles rendered via JS -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Panel Right: Permissions Tree -->
+        <div class="panel panel-right">
+            <div class="panel-header">
+                <h3 id="permissionTitle">Phân quyền chức năng</h3>
+            </div>
+            <div class="panel-body">
+                <div id="noRoleSelected" style="color: var(--text-muted); text-align: center; margin-top: 50px;">
+                    Vui lòng chọn một Vai trò ở bên trái để thiết lập quyền.
+                </div>
+                <div id="permissionTreeContainer" style="display: none;">
+                    <ul class="tree-view root" id="permissionTree">
+                        <!-- Tree rendered via JS -->
+                    </ul>
+                </div>
+            </div>
+            <div class="panel-footer" id="permissionFooter" style="display: none;">
+                <button class="btn btn-primary" onclick="savePermissions()">Lưu phân quyền</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Vai trò -->
+    <div class="modal-overlay" id="roleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm mới Vai trò</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Mã vai trò <span style="color:var(--danger-color)">*</span></label>
+                    <input type="text" class="form-control" id="inpRoleCode" readonly style="background-color: var(--bg-body); color: var(--text-muted);">
+                    <div class="error-msg" id="errRoleCode">Vui lòng nhập Mã vai trò</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên vai trò <span style="color:var(--danger-color)">*</span></label>
+                    <input type="text" class="form-control" id="inpRoleName">
+                    <div class="error-msg" id="errRoleName">Vui lòng nhập Tên vai trò</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phạm vi áp dụng <span style="color:var(--danger-color)">*</span></label>
+                    <select class="form-control" id="inpRoleScope" style="background:#fff;">
+                        <option value="">-- Chọn phạm vi áp dụng --</option>
+                        <option value="INTERNAL">Cán bộ / Chuyên viên (Nội bộ)</option>
+                        <option value="INDIVIDUAL">Khách hàng Cá nhân</option>
+                        <option value="ORGANIZATION">Khách hàng Tổ chức</option>
+                        <option value="AUTHORITY">Cơ quan Thẩm quyền</option>
+                        <option value="ALL">Dùng chung (Tất cả)</option>
+                    </select>
+                    <div class="error-msg" id="errRoleScope">Vui lòng chọn Phạm vi áp dụng</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="saveRole()">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xóa Vai trò -->
+    <div class="modal-overlay" id="deleteRoleModal">
+        <div class="modal-content" style="width: 350px;">
+            <div class="modal-header">
+                <h3>Xác nhận xóa</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal('deleteRoleModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa vai trò <strong id="deleteRoleName"></strong>?</p>
+                <p style="color: var(--danger-color); margin-top: 10px; font-size: 13px;">Hành động này không thể hoàn tác.</p>
+                <input type="hidden" id="deleteRoleId">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteRoleModal')">Hủy</button>
+                <button class="btn" style="background-color: var(--danger-color); color: white;" onclick="executeDeleteRole()">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container">
+        <div class="toast" id="toastMsg">Thao tác thành công!</div>
+    </div>
+
+    <script>
+        // Mock Roles Data (10 records)
+        let roles = [
+            { id: 1, code: "R_CUC_01", name: "Lãnh đạo Cục", scope: "INTERNAL", permissions: ["M1", "M1_1", "M1_2", "M2", "M2_1"] },
+            { id: 2, code: "R_CUC_02", name: "Quản trị viên Cục", scope: "INTERNAL", permissions: ["M3", "M3_1", "M3_2", "M4"] },
+            { id: 3, code: "R_PHONG_01", name: "Lãnh đạo phòng", scope: "INTERNAL", permissions: ["M1", "M1_1"] },
+            { id: 4, code: "R_PHONG_02", name: "Chuyên viên xử lý", scope: "INTERNAL", permissions: ["M2", "M2_1", "M2_2"] },
+            { id: 5, code: "R_PHONG_03", name: "Chuyên viên tổng hợp", scope: "INTERNAL", permissions: ["M5"] },
+            { id: 6, code: "R_KH_01", name: "Khách hàng cá nhân chuẩn", scope: "INDIVIDUAL", permissions: ["M1_1", "M1_3"] },
+            { id: 7, code: "R_KH_02", name: "Quản trị viên Tổ chức", scope: "ORGANIZATION", permissions: ["M1_1", "M1_3", "M3_1"] },
+            { id: 8, code: "R_CQ_01", name: "Cơ quan Tòa án", scope: "AUTHORITY", permissions: ["M1_3"] },
+            { id: 9, code: "R_ALL_01", name: "Xem Bảng tin công khai", scope: "ALL", permissions: [] },
+            { id: 10, code: "R_ALL_02", name: "Tạo Yêu cầu Hỗ trợ", scope: "ALL", permissions: [] }
+        ];
+
+        // Mock System Permissions
+        const systemPermissions = [
+            {
+                id: "M1", name: "Quản lý Đăng ký BPBĐ", children: [
+                    { id: "M1_1", name: "Đăng ký mới BPBĐ" },
+                    { id: "M1_2", name: "Phê duyệt hồ sơ" },
+                    { id: "M1_3", name: "Tra cứu hồ sơ" }
+                ]
+            },
+            {
+                id: "M2", name: "Bồi thường Nhà nước", children: [
+                    { id: "M2_1", name: "Tiếp nhận hồ sơ BTNN" },
+                    { id: "M2_2", name: "Xử lý bồi thường" }
+                ]
+            },
+            {
+                id: "M3", name: "Quản trị hệ thống", children: [
+                    { id: "M3_1", name: "Quản lý Tài khoản" },
+                    { id: "M3_2", name: "Quản lý Vai trò" }
+                ]
+            },
+            { id: "M4", name: "Quản lý Danh mục", children: [] },
+            { id: "M5", name: "Báo cáo thống kê", children: [] },
+            {
+                id: "M6", name: "Quản lý Phí / Lệ phí", children: [
+                    { id: "M6_1", name: "Thu phí trực tuyến" },
+                    { id: "M6_2", name: "Đối soát" }
+                ]
+            }
+        ];
+
+        let activeRoleId = null;
+        let roleMode = 'add';
+        let editRoleId = null;
+
+        // Render Roles
+        function renderRoles() {
+            const list = document.getElementById('roleList');
+            list.innerHTML = '';
+            
+            roles.forEach(role => {
+                const li = document.createElement('li');
+                li.className = `role-item ${activeRoleId === role.id ? 'active' : ''}`;
+                li.onclick = () => selectRole(role.id);
+                
+                const scopeColors = {
+                    'INTERNAL': '#10B981', 'INDIVIDUAL': '#3B82F6', 
+                    'ORGANIZATION': '#8B5CF6', 'AUTHORITY': '#F59E0B', 'ALL': '#64748B'
+                };
+                
+                li.innerHTML = `
+                    <div class="role-item-info">
+                        <strong>${role.name}</strong>
+                        <span>Mã: ${role.code} <span style="display:inline-block; margin-left:8px; padding:2px 6px; border-radius:10px; font-size:10px; background:${scopeColors[role.scope]}20; color:${scopeColors[role.scope]}">${role.scope}</span></span>
+                    </div>
+                    <div class="role-actions">
+                        <button class="btn-icon" onclick="event.stopPropagation(); openRoleModal('edit', ${role.id})" title="Sửa">✏️</button>
+                        <button class="btn-icon delete" onclick="event.stopPropagation(); confirmDeleteRole(${role.id})" title="Xóa">🗑️</button>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+            filterRoles(document.getElementById('inpSearchRole').value);
+        }
+
+        function filterRoles(keyword) {
+            keyword = keyword.toLowerCase();
+            const items = document.querySelectorAll('.role-item');
+            items.forEach(item => {
+                const name = item.querySelector('.role-item-info strong').textContent.toLowerCase();
+                if (name.includes(keyword)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Render Tree
+        function renderTree() {
+            const tree = document.getElementById('permissionTree');
+            tree.innerHTML = '';
+            
+            const activeRole = roles.find(r => r.id === activeRoleId);
+            const userPerms = activeRole ? activeRole.permissions : [];
+
+            systemPermissions.forEach(mod => {
+                const li = document.createElement('li');
+                li.className = 'tree-node';
+                
+                const isChecked = userPerms.includes(mod.id) ? 'checked' : '';
+                
+                let childrenHtml = '';
+                if (mod.children && mod.children.length > 0) {
+                    const childNodes = mod.children.map(child => {
+                        const childChecked = userPerms.includes(child.id) ? 'checked' : '';
+                        return `
+                            <li class="tree-node">
+                                <label class="tree-node-label">
+                                    <input type="checkbox" class="perm-cb" value="${child.id}" data-parent="${mod.id}" ${childChecked}>
+                                    ${child.name}
+                                </label>
+                            </li>
+                        `;
+                    }).join('');
+                    childrenHtml = `<ul class="tree-view">${childNodes}</ul>`;
+                }
+
+                li.innerHTML = `
+                    <label class="tree-node-label">
+                        <input type="checkbox" class="perm-cb parent-cb" value="${mod.id}" ${isChecked}>
+                        <strong>${mod.name}</strong>
+                    </label>
+                    ${childrenHtml}
+                `;
+                tree.appendChild(li);
+            });
+
+            // Add Event Listeners for cascading checkboxes
+            document.querySelectorAll('.parent-cb').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const children = this.closest('li').querySelectorAll('ul .perm-cb');
+                    children.forEach(c => c.checked = this.checked);
+                });
+            });
+
+            document.querySelectorAll('.perm-cb:not(.parent-cb)').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const parentId = this.getAttribute('data-parent');
+                    const parentCb = document.querySelector(`.parent-cb[value="${parentId}"]`);
+                    const siblings = document.querySelectorAll(`.perm-cb[data-parent="${parentId}"]`);
+                    
+                    const anyChecked = Array.from(siblings).some(s => s.checked);
+                    if (parentCb) {
+                        parentCb.checked = anyChecked;
+                    }
+                });
+            });
+        }
+
+        // Select Role
+        function selectRole(id) {
+            activeRoleId = id;
+            renderRoles();
+            
+            const role = roles.find(r => r.id === id);
+            document.getElementById('noRoleSelected').style.display = 'none';
+            document.getElementById('permissionTreeContainer').style.display = 'block';
+            document.getElementById('permissionFooter').style.display = 'flex';
+            document.getElementById('permissionTitle').innerText = `Phân quyền: ${role.name}`;
+            
+            renderTree();
+        }
+
+        // Save Permissions
+        function savePermissions() {
+            if (!activeRoleId) return;
+            
+            const checkedBoxes = document.querySelectorAll('.perm-cb:checked');
+            if (checkedBoxes.length === 0) {
+                showToast("Vui lòng chọn ít nhất một chức năng để phân quyền", true);
+                return;
+            }
+
+            const newPerms = Array.from(checkedBoxes).map(cb => cb.value);
+            
+            const roleIndex = roles.findIndex(r => r.id === activeRoleId);
+            roles[roleIndex].permissions = newPerms;
+            
+            showToast("Phân quyền theo vai trò thành công!");
+        }
+
+        // Role Modal
+        function openRoleModal(mode, id = null) {
+            roleMode = mode;
+            editRoleId = id;
+            const modal = document.getElementById('roleModal');
+            document.getElementById('errRoleCode').style.display = 'none';
+            document.getElementById('errRoleName').style.display = 'none';
+            document.getElementById('errRoleScope').style.display = 'none';
+            document.getElementById('inpRoleCode').classList.remove('error');
+            document.getElementById('inpRoleName').classList.remove('error');
+            document.getElementById('inpRoleScope').classList.remove('error');
+
+            if (mode === 'add') {
+                document.getElementById('modalTitle').innerText = 'Thêm mới Vai trò';
+                document.getElementById('inpRoleCode').value = 'R_' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                document.getElementById('inpRoleName').value = '';
+                document.getElementById('inpRoleScope').value = '';
+            } else {
+                document.getElementById('modalTitle').innerText = 'Sửa Vai trò';
+                const role = roles.find(r => r.id === id);
+                document.getElementById('inpRoleCode').value = role.code;
+                document.getElementById('inpRoleName').value = role.name;
+                document.getElementById('inpRoleScope').value = role.scope || '';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal(modalId = 'roleModal') {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function saveRole() {
+            const code = document.getElementById('inpRoleCode').value.trim();
+            const name = document.getElementById('inpRoleName').value.trim();
+            const scope = document.getElementById('inpRoleScope').value;
+            
+            let isValid = true;
+            
+            if (!code) {
+                document.getElementById('errRoleCode').innerText = "Vui lòng nhập Mã vai trò";
+                document.getElementById('errRoleCode').style.display = 'block';
+                document.getElementById('inpRoleCode').classList.add('error');
+                isValid = false;
+            } else if (roleMode === 'add' && roles.some(r => r.code === code)) {
+                document.getElementById('errRoleCode').innerText = "Mã vai trò đã tồn tại";
+                document.getElementById('errRoleCode').style.display = 'block';
+                document.getElementById('inpRoleCode').classList.add('error');
+                isValid = false;
+            }
+
+            if (!name) {
+                document.getElementById('errRoleName').innerText = "Vui lòng nhập Tên vai trò";
+                document.getElementById('errRoleName').style.display = 'block';
+                document.getElementById('inpRoleName').classList.add('error');
+                isValid = false;
+            } else if (roles.some(r => r.name === name && r.id !== editRoleId)) {
+                document.getElementById('errRoleName').innerText = "Tên vai trò đã tồn tại";
+                document.getElementById('errRoleName').style.display = 'block';
+                document.getElementById('inpRoleName').classList.add('error');
+                isValid = false;
+            }
+
+            if (!scope) {
+                document.getElementById('errRoleScope').style.display = 'block';
+                document.getElementById('inpRoleScope').classList.add('error');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            if (roleMode === 'add') {
+                roles.unshift({
+                    id: Date.now(),
+                    code: code,
+                    name: name,
+                    scope: scope,
+                    permissions: []
+                });
+                showToast("Thêm mới vai trò thành công!");
+            } else {
+                const index = roles.findIndex(r => r.id === editRoleId);
+                roles[index].name = name;
+                roles[index].scope = scope;
+                showToast("Cập nhật thông tin thành công!");
+            }
+            closeModal('roleModal');
+            renderRoles();
+        }
+
+        // Delete Role
+        function confirmDeleteRole(id) {
+            const role = roles.find(r => r.id === id);
+            if (!role) return;
+            
+            document.getElementById('deleteRoleName').innerText = role.name;
+            document.getElementById('deleteRoleId').value = id;
+            document.getElementById('deleteRoleModal').classList.add('active');
+        }
+
+        function executeDeleteRole() {
+            const id = parseInt(document.getElementById('deleteRoleId').value);
+            roles = roles.filter(r => r.id !== id);
+            
+            if (activeRoleId === id) {
+                activeRoleId = null;
+                document.getElementById('noRoleSelected').style.display = 'block';
+                document.getElementById('permissionTreeContainer').style.display = 'none';
+                document.getElementById('permissionFooter').style.display = 'none';
+                document.getElementById('permissionTitle').innerText = `Phân quyền chức năng`;
+            }
+            
+            showToast("Đã xóa vai trò thành công!");
+            closeModal('deleteRoleModal');
+            renderRoles();
+        }
+
+        // Toast
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Init
+        window.onload = renderRoles;
+    </script>
+</body>
+</html>

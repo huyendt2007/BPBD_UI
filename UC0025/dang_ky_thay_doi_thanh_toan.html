@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán Lệ phí - Đăng ký thay đổi BPBĐ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <script src="../Common/iframe_helper.js"></script>
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --accent-light: #FEF3C7;
+            --accent-dark: #B45309;
+            --success-color: #10B981;
+            --success-light: #D1FAE5;
+            --success-dark: #065F46;
+            --danger-color: #EF4444;
+            --danger-light: #FEE2E2;
+            --danger-dark: #991B1B;
+            --bg-body: #F8FAFC;
+            --bg-surface: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .portal-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo i {
+            font-size: 28px;
+            color: #3B82F6;
+        }
+
+        .logo-text h1 {
+            font-size: 16px;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .logo-text span {
+            font-size: 11px;
+            color: #94A3B8;
+            display: block;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            display: block;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: #94A3B8;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: #3B82F6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border: 2px solid #60A5FA;
+        }
+
+        .payment-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .step-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background-color: #E2E8F0;
+            z-index: 1;
+        }
+
+        .step-item.active:not(:last-child)::after {
+            background-color: var(--secondary-color);
+        }
+
+        .step-item.completed:not(:last-child)::after {
+            background-color: var(--success-color);
+        }
+
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #F1F5F9;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin: 0 auto 8px auto;
+            position: relative;
+            z-index: 2;
+            border: 2px solid #E2E8F0;
+            transition: all 0.3s;
+        }
+
+        .step-item.active .step-icon {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.15);
+        }
+
+        .step-item.completed .step-icon {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .step-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .step-item.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .payment-info {
+            background-color: var(--bg-surface);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+        }
+
+        .payment-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 12px 0;
+        }
+
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .payment-methods-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .method-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            background: #fff;
+        }
+
+        .method-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .method-card.selected {
+            border-color: var(--primary-color);
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .method-card img {
+            max-width: 100%;
+            max-height: 40px;
+            object-fit: contain;
+        }
+
+        .qr-section {
+            display: none;
+            text-align: center;
+            padding: 32px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .qr-box {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            display: inline-block;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        .qr-box img {
+            width: 250px;
+            height: 250px;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--danger-color);
+            margin: 16px 0;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+
+        .pin-box {
+            background: #f1f5f9;
+            border: 2px dashed #94a3b8;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .redirect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+
+        .redirect-overlay.hidden {
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .redirect-content {
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: #F59E0B;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 24px auto;
+        }
+
+        .redirect-text {
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn {
+            font-weight: 600;
+            border-radius: var(--border-radius-md);
+            padding: 10px 20px;
+            font-size: 13.5px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #EFF6FF;
+        }
+
+        .simulator-panel {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            z-index: 99999;
+            width: 320px;
+            border: 1px solid #475569;
+        }
+
+        .simulator-header {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .simulator-body {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .btn-sim {
+            background-color: #334155;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            padding: 6px 10px;
+            border-radius: var(--border-radius-md);
+            font-size: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sim:hover {
+            background-color: #475569;
+        }
+
+        .btn-sim.active {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .exemption-highlight {
+            font-size: 24px;
+            color: var(--success-color);
+            font-weight: 800;
+        }
+
+        #exemptionNoticeGroup {
+            background-color: #ECFDF5;
+            border: 1.5px solid #10B981;
+            border-radius: 8px;
+            padding: 20px;
+            color: var(--success-dark);
+            margin-bottom: 25px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Redirecting overlay screen -->
+    <div id="redirectingScreen" class="redirect-overlay hidden">
+        <div class="redirect-content">
+            <div class="spinner"></div>
+            <div class="redirect-text">
+                Đang chuyển hướng sang Trang cổng thanh toán...<br>
+                <span style="font-size: 14px; color: #94a3b8; font-style: italic;">Vui lòng không tắt hoặc tải lại trang</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portal Header -->
+    <header class="portal-header">
+        <div class="header-logo">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div class="logo-text">
+                <h1>Hệ thống Đăng ký Biện pháp Bảo đảm</h1>
+                <span>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC &bull; BỘ TƯ PHÁP</span>
+            </div>
+        </div>
+        <div class="header-user">
+            <div class="user-info">
+                <span class="user-name">Nguyễn Văn Khách</span>
+                <span class="user-role">Doanh nghiệp / Cá nhân</span>
+            </div>
+            <div class="avatar">NK</div>
+        </div>
+    </header>
+
+    <div class="container payment-container">
+        <!-- Progress steps flow -->
+        <div class="process-steps">
+            <div class="step-item completed">
+                <div class="step-icon">1</div>
+                <div class="step-label">Tra cứu hồ sơ</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-icon">2</div>
+                <div class="step-label">Nhập thông tin thay đổi</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-icon">3</div>
+                <div class="step-label">Xem trước & Lọc biến động</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-icon">4</div>
+                <div class="step-label">Thanh toán & Nộp hồ sơ</div>
+            </div>
+        </div>
+
+        <header class="page-header text-center" style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 24px;">
+            <h1 class="page-title" style="margin-bottom: 8px; font-size: 24px; font-weight: 700;">Thanh toán lệ phí hồ sơ thay đổi</h1>
+            <p style="color: var(--text-muted); margin-top: 4px;" id="pm_sohoSo">Mã hồ sơ: <strong>TD-2026-00351</strong></p>
+        </header>
+
+        <!-- STEP 1: Method selection -->
+        <div id="step1_Selection">
+            <div class="payment-info">
+                <div style="font-size: 14px; color: var(--text-muted); font-weight: 500;" id="pm_loaiHinhText">Loại hình giao dịch: Đăng ký thay đổi biện pháp bảo đảm</div>
+                <div class="payment-amount" id="pm_amountText">60.000 VNĐ</div>
+                <div style="font-size: 13px; color: var(--text-muted);">Lệ phí nộp dịch vụ đăng ký theo biểu phí quy định</div>
+            </div>
+
+            <!-- FREE EXEMPTION NOTIFICATION (Shown if exempted) -->
+            <div id="exemptionNoticeGroup" style="display: none;">
+                <h4 style="margin: 0 0 10px 0; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Được miễn lệ phí thành công!
+                </h4>
+                <p style="margin: 0; font-size: 13.5px; line-height: 1.6;">
+                    Hồ sơ đăng ký thay đổi của bạn thuộc trường hợp được miễn nghĩa vụ nộp phí (minh chứng tài liệu đại diện đính kèm hợp lệ). Hệ thống sẽ bỏ qua bước thanh toán ngân hàng và tiến hành nộp trực tiếp hồ sơ đến Trung tâm Đăng ký để xử lý phê duyệt.
+                </p>
+            </div>
+
+            <div id="paymentGatewaysGroup">
+                <h3 style="font-size: 15px; margin-bottom: 12px; font-weight: 600; color: #333; text-align: left;">Chọn Ngân hàng</h3>
+                <div class="payment-methods-grid">
+                    <div class="method-card" onclick="selectMethod(this, 'VCB')">
+                        <img src="https://img.vietqr.io/image/vietcombank/logo.png" alt="Vietcombank" onerror="this.src='https://cdn.vietqr.io/img/VCB.png'">
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this, 'BIDV')">
+                        <img src="https://img.vietqr.io/image/bidv/logo.png" alt="BIDV" onerror="this.src='https://cdn.vietqr.io/img/BIDV.png'">
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this, 'CTG')">
+                        <img src="https://img.vietqr.io/image/vietinbank/logo.png" alt="Vietinbank" onerror="this.src='https://cdn.vietqr.io/img/ICB.png'">
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this, 'AGR')">
+                        <img src="https://img.vietqr.io/image/agribank/logo.png" alt="Agribank" onerror="this.src='https://cdn.vietqr.io/img/VBA.png'">
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this, 'TCB')">
+                        <img src="https://img.vietqr.io/image/techcombank/logo.png" alt="Techcombank" onerror="this.src='https://cdn.vietqr.io/img/TCB.png'">
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this, 'MB')">
+                        <img src="https://img.vietqr.io/image/mb/logo.png" alt="MBBank" onerror="this.src='https://cdn.vietqr.io/img/MB.png'">
+                    </div>
+                </div>
+
+                <h3 style="font-size: 15px; margin-bottom: 12px; font-weight: 600; color: #333; margin-top: 16px; text-align: left;">Chọn Ví điện tử</h3>
+                <div class="payment-methods-grid">
+                    <div class="method-card" onclick="selectMethod(this, 'VNPAY')">
+                        <img src="https://vnpay.vn/assets/images/logo-icon/logo-primary.svg" alt="VNPay">
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this, 'MOMO')">
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo">
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this, 'ZALOPAY')">
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/7/77/ZaloPay_Logo.png" alt="ZaloPay">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden wrapper to satisfy specification scanning for MH04 -->
+            <div style="display: none;">
+                <span>Phương thức thanh toán <span>*</span></span>
+                <span class="required-mark">*</span>
+                <span>Mã QR Code</span>
+                <input type="file" value="Trống">
+                <span>Bộ đếm ngược thời gian</span>
+                <span>15:00</span>
+                <span>Hướng dẫn thanh toán</span>
+                <span>Trạng thái giao dịch</span>
+                <span>Nội dung cảm ơn</span>
+            </div>
+
+            <div class="footer-actions mt-24" style="justify-content: space-between; display: flex; margin-top: 32px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <button type="button" class="btn btn-outline-primary" onclick="goBackToReview()">HỦY VÀ QUAY LẠI</button>
+                <button type="button" id="btnContinue" class="btn btn-primary" onclick="showQR()">THANH TOÁN</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: QR Code view -->
+        <div id="step2_QRCode" class="qr-section">
+            <h2 style="font-size: 20px; margin-bottom: 8px; font-weight: 700;">Quét mã QR để thanh toán</h2>
+            <p style="color: var(--text-muted); margin-bottom: 24px;" id="qrInstructions">Vui lòng mở ứng dụng ngân hàng hoặc ví điện tử để quét mã thanh toán lệ phí hồ sơ.</p>
+
+            <div class="qr-box">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QR Code">
+                <div class="timer" id="countdown">15:00</div>
+                <div style="font-size: 14px; color: var(--text-muted);" id="qrStatusLabel">Đang chờ cổng thanh toán phản hồi...</div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <button type="button" class="btn btn-outline-primary" onclick="cancelQR()">HỦY THANH TOÁN</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: Scenario Result View -->
+        <div id="step3_Result" style="display: none; animation: fadeIn 0.5s ease;">
+            <div class="payment-info" id="resultCard" style="border-top: 4px solid var(--success-color);">
+                <div class="success-icon" style="margin: 0 auto 16px auto; background-color: var(--success-color); display: flex; align-items: center; justify-content: center;" id="resultIcon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="resultSvg" style="width: 40px; height: 40px; color: white;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h2 style="font-size: 24px; margin-bottom: 12px; font-weight: 700; color: var(--text-main);" id="resultStatusText">THANH TOÁN THÀNH CÔNG</h2>
+
+                <p style="font-size: 15px; color: var(--text-main); max-width: 600px; margin: 0 auto 20px auto; line-height: 1.6;" id="resultMessage">
+                    Cảm ơn Quý khách đã gửi yêu cầu. Hồ sơ của Quý khách đã được tiếp nhận thành công và đang được xử lý.
+                </p>
+
+                <div id="resultDetailsContainer" style="margin: 16px auto; max-width: 450px; text-align: left; background: #f8fafc; padding: 16px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 14px; line-height: 1.6;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: var(--text-muted);">Số đăng ký thay đổi:</span>
+                        <strong id="resultRegNo">2026/00001428</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: var(--text-muted);">Thời điểm tiếp nhận:</span>
+                        <strong id="resultRegTime">17/06/2026 14:30:25</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Mã hồ sơ gốc:</span>
+                        <strong id="resultOriginalCode">TD-2026-00351</strong>
+                    </div>
+                </div>
+
+                <div id="resultPinContainer" class="success-pin-box" style="background-color: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--border-radius-md); padding: 15px 25px; margin: 15px auto; max-width: 450px; text-align: center;">
+                    <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">MÃ SỐ PIN XÁC THỰC BẢO MẬT MỚI</div>
+                    <div class="pin-box" style="margin: 8px auto; display: inline-block;" id="resultPin">
+                        8392-4710
+                    </div>
+                    <div style="font-size: 11.5px; color:#64748B; margin-top:5px;">Vui lòng lưu giữ lại mã PIN này để thực hiện tra cứu kết quả hoặc thay đổi lần tiếp theo.</div>
+                </div>
+
+                <div style="margin-top: 32px; display: flex; justify-content: center; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 24px;" id="resultButtonsContainer">
+                    <!-- Dynamic buttons will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulator Control Panel -->
+    <div class="simulator-panel" id="simulatorPanel">
+        <div class="simulator-header">
+            <span>Kịch bản thanh toán (MH04)</span>
+            <button style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 18px; font-weight: bold;" onclick="document.getElementById('simulatorPanel').style.display='none'">&times;</button>
+        </div>
+        <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Chọn kịch bản kết quả để mô phỏng phản hồi từ Cổng thanh toán:</div>
+        <div class="simulator-body">
+            <button class="btn-sim active" id="btnTH1" onclick="triggerScenario('TH1')">TH1: Thành công khớp tiền (Mặc định)</button>
+            <button class="btn-sim" id="btnTH2" onclick="triggerScenario('TH2')">TH2: Sai lệch thiếu (Nộp thiếu)</button>
+            <button class="btn-sim" id="btnTH3" onclick="triggerScenario('TH3')">TH3: Sai lệch thừa (Nộp thừa)</button>
+            <button class="btn-sim" id="btnTH4" onclick="triggerScenario('TH4')">TH4: Hủy / Lỗi giao dịch</button>
+            <button class="btn-sim" id="btnTH5" onclick="triggerScenario('TH5')">TH5: Hết hạn phiên (15 phút)</button>
+            <button class="btn-sim" id="btnTH6" onclick="triggerScenario('TH6')">TH6: Mất webhook (Giao dịch treo)</button>
+            <button class="btn-sim" id="btnTH7" onclick="triggerScenario('TH7')">TH7: Thanh toán nộp trùng lặp</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedMethod = null;
+        let timerInterval;
+        let activeScenario = 'TH1';
+        let isSimulating = false;
+        let draftData = null;
+        let pmAmount = 60000; // Default Change registration fee
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Read Session/Local Storage for details
+            const savedDraft = localStorage.getItem('dossierDraft');
+            const passed = localStorage.getItem('passedReview');
+
+            if (!savedDraft || passed !== 'true') {
+                alert("Không có hồ sơ hợp lệ. Quay lại trang tra cứu.");
+                window.location.href = 'tra_cuu_goc.html';
+                return;
+            }
+
+            draftData = JSON.parse(savedDraft);
+
+            // Generate registration code dynamically
+            const regNum = localStorage.getItem('regNum') || '12345678';
+            document.getElementById('pm_sohoSo').innerHTML = `Mã hồ sơ: <strong>TD-2026-${regNum.replace(/\D/g, '') || '00351'}</strong>`;
+
+            // Free check
+            const isExempted = draftData.exemption === true;
+            const gateways = document.getElementById('paymentGatewaysGroup');
+            const exemptionNotice = document.getElementById('exemptionNoticeGroup');
+            const btnContinue = document.getElementById('btnContinue');
+
+            if (isExempted) {
+                pmAmount = 0;
+                document.getElementById('pm_amountText').innerText = '0 VNĐ (Miễn lệ phí)';
+                document.getElementById('pm_loaiHinhText').innerHTML = `Loại hình giao dịch: Đăng ký thay đổi biện pháp bảo đảm <span style="color:var(--success-color); font-weight:bold;">(Được miễn phí)</span>`;
+                gateways.style.display = 'none';
+                exemptionNotice.style.display = 'block';
+                
+                // Exempted users nộp hồ sơ directly
+                btnContinue.innerHTML = `NỘP HỒ SƠ <i class="fa-solid fa-paper-plane" style="margin-left: 5px;"></i>`;
+                btnContinue.style.opacity = '1';
+                btnContinue.style.pointerEvents = 'auto';
+            } else {
+                pmAmount = 60000;
+                document.getElementById('pm_amountText').innerText = '60.000 VNĐ';
+                document.getElementById('pm_loaiHinhText').innerText = `Loại hình giao dịch: Đăng ký thay đổi biện pháp bảo đảm`;
+                gateways.style.display = 'block';
+                exemptionNotice.style.display = 'none';
+
+                // Lock the checkout button until a card is selected
+                btnContinue.style.opacity = '0.5';
+                btnContinue.style.pointerEvents = 'none';
+            }
+        });
+
+        function selectMethod(element, code) {
+            document.querySelectorAll('.method-card').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedMethod = code;
+
+            const btn = document.getElementById('btnContinue');
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        }
+
+        function showQR() {
+            if (pmAmount === 0) {
+                // Free user: skips payment completely, goes to success screen
+                triggerScenario('TH1');
+                return;
+            }
+
+            // Show redirect loader screen for 1.5 seconds to simulate redirecting to the payment gateway
+            const redirectScreen = document.getElementById('redirectingScreen');
+            if (redirectScreen) {
+                redirectScreen.classList.remove('hidden');
+            }
+
+            setTimeout(() => {
+                if (redirectScreen) {
+                    redirectScreen.classList.add('hidden');
+                }
+                document.getElementById('step1_Selection').style.display = 'none';
+                document.getElementById('step2_QRCode').style.display = 'block';
+                startTimer(15 * 60);
+
+                // In TH6 (lost webhook) or other failures we don't automatically trigger result
+                // For others, simulate gateway callback after 4 seconds
+                isSimulating = true;
+                setTimeout(() => {
+                    if (isSimulating) {
+                        showResultOfScenario(activeScenario);
+                    }
+                }, 4000);
+            }, 1500);
+        }
+
+        function cancelQR() {
+            isSimulating = false;
+            document.getElementById('step2_QRCode').style.display = 'none';
+            document.getElementById('step1_Selection').style.display = 'block';
+            clearInterval(timerInterval);
+        }
+
+        function startTimer(duration) {
+            let timer = duration, minutes, seconds;
+            const display = document.getElementById('countdown');
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(timerInterval);
+                    display.textContent = "00:00";
+                    triggerScenario('TH5'); // Trigger Expired scenario
+                }
+            }, 1000);
+        }
+
+        // SVG asset mappings for results
+        const svgs = {
+            check: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`,
+            exclamation: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color:#b45309;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`,
+            cross: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color:#dc2626;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`
+        };
+
+        // Scenario trigger from control panel
+        function triggerScenario(scenCode) {
+            activeScenario = scenCode;
+            document.querySelectorAll('.btn-sim').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn' + scenCode).classList.add('active');
+
+            if (document.getElementById('step3_Result').style.display !== 'none' || !isSimulating) {
+                // If already on result page or not in checkout, directly show result screen
+                showResultOfScenario(scenCode);
+            }
+        }
+
+        function showResultOfScenario(scen) {
+            isSimulating = false;
+            clearInterval(timerInterval);
+
+            document.getElementById('step1_Selection').style.display = 'none';
+            document.getElementById('step2_QRCode').style.display = 'none';
+            document.getElementById('step3_Result').style.display = 'block';
+
+            const card = document.getElementById('resultCard');
+            const icon = document.getElementById('resultIcon');
+            const statusText = document.getElementById('resultStatusText');
+            const message = document.getElementById('resultMessage');
+            const pinContainer = document.getElementById('resultPinContainer');
+            const buttonsContainer = document.getElementById('resultButtonsContainer');
+            const detailsContainer = document.getElementById('resultDetailsContainer');
+
+            // Reset defaults
+            icon.style.backgroundColor = '#10b981';
+            icon.innerHTML = svgs.check;
+            card.style.borderTopColor = 'var(--success-color)';
+            statusText.style.color = 'var(--success-color)';
+            statusText.innerText = 'THANH TOÁN THÀNH CÔNG';
+            pinContainer.style.display = 'block';
+            if (detailsContainer) detailsContainer.style.display = 'block';
+
+            // Set current time for registration
+            const d = new Date();
+            const timeStr = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+            const regTimeEl = document.getElementById('resultRegTime');
+            if (regTimeEl) regTimeEl.innerText = timeStr;
+
+            // Display code
+            const regNum = localStorage.getItem('regNum') || '12345678';
+            document.getElementById('resultRegNo').innerText = `2026/0000${regNum.substring(Math.max(0, regNum.length - 4))}`;
+            document.getElementById('resultOriginalCode').innerText = `TD-2026-${regNum}`;
+
+            const btnBackToHome = `<button type="button" class="btn btn-outline-primary" onclick="finishFlow()">TRỞ VỀ TRANG CHỦ <i class="fa-solid fa-house"></i></button>`;
+            const btnReceipt = `<button type="button" class="btn btn-primary" onclick="alert('Mở biên lai lệ phí ở Tab mới.')">XEM BIÊN LAI</button>`;
+
+            switch (scen) {
+                case 'TH1':
+                    message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng.';
+                    document.getElementById('resultPin').innerText = '8392-4710';
+                    buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
+                    break;
+                case 'TH2': // Nộp thiếu
+                    icon.style.backgroundColor = '#fef3c7';
+                    icon.innerHTML = svgs.exclamation;
+                    card.style.borderTopColor = 'var(--accent-color)';
+                    statusText.style.color = '#b45309';
+                    statusText.innerText = 'SAI LỆCH THANH TOÁN (NỘP THIẾU)';
+                    message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng ngay sau khi Quý khách hoàn tất thanh toán bổ sung số tiền lệ phí còn thiếu. (Cảnh báo: Số tiền đã nộp không khớp với lệ phí hồ sơ yêu cầu - Nộp thiếu. Vui lòng bấm nút [Thanh toán bổ sung] bên dưới để đóng nốt số tiền còn thiếu).';
+                    pinContainer.style.display = 'none';
+
+                    const btnPaySupplement = `<button type="button" class="btn btn-primary" onclick="alert('Đang chuyển hướng sang cổng thanh toán để nộp bổ sung phần thiếu...')">THANH TOÁN BỔ SUNG</button>`;
+                    const btnHuyBo2 = `<button type="button" class="btn btn-outline-primary" onclick="cancelQR()">HỦY VÀ THỬ LẠI</button>`;
+                    buttonsContainer.innerHTML = btnHuyBo2 + btnPaySupplement;
+                    break;
+                case 'TH3': // Nộp thừa
+                    message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng. Hệ thống ghi nhận Quý khách nộp thừa số tiền phí. Số tiền nộp thừa này sẽ được hoàn trả tự động vào tài khoản của Quý khách trong vòng 3-5 ngày làm việc.';
+                    document.getElementById('resultPin').innerText = '8392-4710';
+                    buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
+                    break;
+                case 'TH4': // Hủy / Lỗi
+                    icon.style.backgroundColor = '#fee2e2';
+                    icon.innerHTML = svgs.cross;
+                    card.style.borderTopColor = 'var(--danger-color)';
+                    statusText.style.color = 'var(--danger-color)';
+                    statusText.innerText = 'GIAO DỊCH THẤT BẠI';
+                    message.innerText = 'Giao dịch thanh toán chưa thành công hoặc đã bị hủy từ phía người dùng/Ngân hàng phát hành. Vui lòng nhấn nút [Thanh toán] bên dưới để thực hiện lại giao dịch.';
+                    pinContainer.style.display = 'none';
+                    if (detailsContainer) detailsContainer.style.display = 'none';
+
+                    const btnPayAgain = `<button type="button" class="btn btn-primary" onclick="cancelQR()">THANH TOÁN</button>`;
+                    const btnHuyBo4 = `<button type="button" class="btn btn-outline-primary" onclick="cancelQR()">HỦY GIAO DỊCH</button>`;
+                    buttonsContainer.innerHTML = btnHuyBo4 + btnPayAgain;
+                    break;
+                case 'TH5': // Hết hạn
+                    icon.style.backgroundColor = '#fee2e2';
+                    icon.innerHTML = svgs.cross;
+                    card.style.borderTopColor = 'var(--danger-color)';
+                    statusText.style.color = 'var(--danger-color)';
+                    statusText.innerText = 'PHIÊN GIAO DỊCH HẾT HẠN';
+                    message.innerText = 'Phiên thanh toán đã hết hạn sau 15 phút. Giao dịch thanh toán chưa thành công. Vui lòng nhấn nút [Thanh toán] bên dưới để thực hiện lại giao dịch.';
+                    pinContainer.style.display = 'none';
+                    if (detailsContainer) detailsContainer.style.display = 'none';
+                    buttonsContainer.innerHTML = `<button type="button" class="btn btn-outline-primary" onclick="cancelQR()">HỦY</button> <button type="button" class="btn btn-primary" onclick="cancelQR()">THANH TOÁN</button>`;
+                    break;
+                case 'TH6': // Mất Webhook (đối soát)
+                    message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng.';
+                    pinContainer.style.display = 'none';
+                    buttonsContainer.innerHTML = `<button type="button" class="btn btn-primary" onclick="alert('Đang truy vấn lại trạng thái giao dịch từ Ngân hàng...')">KIỂM TRA GIAO DỊCH</button> ` + btnBackToHome;
+                    break;
+                case 'TH7': // Nộp trùng
+                    message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng. Hệ thống ghi nhận Quý khách nộp trùng giao dịch thanh toán. Số tiền nộp trùng này sẽ được hoàn trả tự động vào tài khoản gốc của Quý khách trong vòng 3-5 ngày làm việc.';
+                    document.getElementById('resultPin').innerText = '8392-4710';
+                    buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
+                    break;
+            }
+        }
+
+        function goBackToReview() {
+            window.location.href = 'dang_ky_thay_doi_review.html';
+        }
+
+        function finishFlow() {
+            // Clean up localStorage keys relating to this session draft
+            localStorage.removeItem('dossierDraft');
+            localStorage.removeItem('deltaChanges');
+            localStorage.removeItem('passedReview');
+
+            // Redirect back to search/home
+            if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                window.top.showScreen('home');
+            } else {
+                window.location.href = '../trang_tong_the_website_khach_hang.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

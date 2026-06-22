@@ -1,0 +1,23 @@
+/* Style definitions to isolate layout when running inside an iframe */
+
+body.in-iframe .portal-header,
+body.in-iframe .global-header,
+body.in-iframe .global-nav,
+body.in-iframe .page-header,
+body.in-iframe .breadcrumb,
+body.in-iframe .process-steps,
+body.in-iframe .sticky-header-container,
+body.in-iframe .main-footer {
+    display: none !important;
+}
+
+body.in-iframe {
+    background-color: transparent !important;
+}
+
+body.in-iframe .container {
+    margin-top: 10px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 10px !important;
+}

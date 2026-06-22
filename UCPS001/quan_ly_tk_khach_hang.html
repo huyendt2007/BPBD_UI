@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Tài khoản Khách hàng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary-color:#1E3A8A; --secondary-color:#3B82F6; --success-color:#10B981; --danger-color:#EF4444; --warning-color:#F59E0B; --bg-body:#F3F4F6; --bg-surface:#FFF; --text-main:#1E293B; --text-muted:#64748B; --border-color:#E2E8F0; --table-header-bg:#F1F5F9; --font-family:'Inter',system-ui,sans-serif; }
+        * { box-sizing:border-box; margin:0; padding:0; font-family:var(--font-family); }
+        body { background:var(--bg-body); color:var(--text-main); font-size:13px; padding:24px; line-height:1.5; }
+        .card-section { background:var(--bg-surface); border-radius:8px; box-shadow:0 4px 6px -1px rgba(0,0,0,.1); padding:24px; margin-bottom:24px; border:1px solid var(--border-color); }
+        .section-title { color:var(--primary-color); font-size:18px; font-weight:600; margin-bottom:16px; padding-bottom:8px; border-bottom:2px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; }
+        .grid-2-cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .grid-3-cols { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:end; margin-bottom:16px; }
+        .grid-4-cols { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:end; margin-bottom:16px; }
+        .form-group { margin-bottom:16px; }
+        .form-label { font-weight:500; margin-bottom:6px; display:block; font-size:13px; }
+        .form-control,.form-select { border:1px solid var(--border-color); border-radius:6px; padding:8px 12px; width:100%; outline:none; font-size:13px; }
+        .form-control:focus,.form-select:focus { border-color:var(--secondary-color); box-shadow:0 0 0 3px rgba(59,130,246,.1); }
+        .form-control[readonly] { background:var(--bg-body); color:var(--text-muted); cursor:not-allowed; }
+        .btn { font-weight:500; border-radius:6px; padding:8px 16px; cursor:pointer; border:none; font-size:13px; display:inline-flex; align-items:center; gap:6px; transition:all .2s; }
+        .btn-primary { background:var(--primary-color); color:#fff; }
+        .btn-outline-primary { background:transparent; color:var(--primary-color); border:1px solid var(--primary-color); }
+        .btn-secondary { background:#E2E8F0; color:#475569; }
+        .btn-warning { background:var(--warning-color); color:#fff; }
+        .btn-danger-outline { background:transparent; color:var(--danger-color); border:1px solid var(--danger-color); }
+        .icon-btn { cursor:pointer; color:var(--text-muted); background:none; border:none; font-size:15px; margin:0 4px; }
+        .icon-btn:hover { color:var(--primary-color); }
+        .table { width:100%; border-collapse:collapse; font-size:13px; }
+        .table th { background:var(--table-header-bg); color:var(--primary-color); font-weight:600; padding:12px; border-bottom:2px solid var(--border-color); text-align:left; }
+        .table td { padding:12px; border-bottom:1px solid var(--border-color); vertical-align:middle; }
+        .tag { padding:4px 8px; border-radius:4px; font-size:12px; font-weight:500; display:inline-flex; align-items:center; gap:4px; }
+        .tag-active { background:#D1FAE5; color:var(--success-color); border:1px solid #34D399; }
+        .tag-vneid { background:#DBEAFE; color:#1E40AF; border:1px solid #93C5FD; }
+        .tag-dvc { background:#FEF3C7; color:#B45309; border:1px solid #FCD34D; }
+        .tag-manual { background:#F1F5F9; color:#475569; border:1px solid #CBD5E1; }
+        .tabs { display:flex; border-bottom:1px solid var(--border-color); margin-bottom:16px; }
+        .tab-btn { padding:10px 20px; font-weight:500; font-size:14px; cursor:pointer; border:none; background:none; color:var(--text-muted); border-bottom:2px solid transparent; transition:all .2s; }
+        .tab-btn.active { color:var(--primary-color); border-bottom:2px solid var(--primary-color); }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; animation:fadeIn .25s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+        .perm-tree { border:1px solid var(--border-color); border-radius:4px; padding:10px; background:#FFF; max-height:200px; overflow-y:auto; }
+        .perm-item { margin-bottom:6px; display:flex; align-items:flex-start; gap:8px; font-size:13px; }
+        .perm-item input[type="checkbox"] { margin-top:2px; }
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:1000; }
+        .modal-overlay.active { display:flex; }
+        .modal-content { background:var(--bg-surface); border-radius:8px; width:900px; max-height:90vh; display:flex; flex-direction:column; }
+        .modal-header { padding:16px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; }
+        .modal-body { padding:24px; overflow-y:auto; min-height:400px; }
+        .modal-footer { padding:16px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:12px; }
+        .section-divider { display:flex; align-items:center; margin:20px 0 15px; color:var(--primary-color); font-weight:600; font-size:14px; }
+        .section-divider::after { content:""; flex:1; height:1px; background:var(--border-color); margin-left:10px; }
+        .toast { position:fixed; bottom:20px; right:20px; background:var(--success-color); color:#fff; padding:12px 24px; border-radius:6px; display:none; z-index:2000; }
+        .toast.show { display:block; }
+    </style>
+</head>
+<body>
+    <div class="card-section">
+        <div class="section-title">
+            <span><i class="fas fa-users"></i> Quản lý Tài khoản Khách hàng</span>
+        </div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchMainTab('person',this)"><i class="fas fa-user"></i> Khách hàng Cá nhân</button>
+            <button class="tab-btn" onclick="switchMainTab('org',this)"><i class="fas fa-building"></i> Khách hàng Tổ chức</button>
+        </div>
+        <div class="grid-4-cols">
+            <div class="form-group" style="margin:0"><label class="form-label">Từ khóa</label><input type="text" id="filterKeyword" class="form-control" placeholder="Tên, CCCD/MST, SĐT, Email..." onkeyup="if(event.key==='Enter') searchAccounts()"></div>
+            <div class="form-group" style="margin:0"><label class="form-label">Trung tâm Đăng ký</label><select id="filterCenter" class="form-select" onchange="searchAccounts(this)"><option value="">-- Tất cả --</option><option value="Hà Nội">Hà Nội</option><option value="Đà Nẵng">Đà Nẵng</option><option value="Hồ Chí Minh">TP. Hồ Chí Minh</option></select></div>
+            <div class="form-group" style="margin:0"><label class="form-label">Trạng thái</label><select id="filterStatus" class="form-select" onchange="searchAccounts(this)"><option value="">-- Tất cả --</option><option value="Hoạt động">Hoạt động</option><option value="Bị khóa">Bị khóa</option><option value="Chờ">Chờ kích hoạt</option></select></div>
+            <div style="display:flex;gap:8px"><button class="btn btn-primary" style="height:36px;padding:0 24px" onclick="searchAccounts()"><i class="fas fa-search"></i> Tìm kiếm</button><button class="btn btn-outline-primary" style="height:36px;padding:0 24px" onclick="openAddAccountModal()"><i class="fas fa-plus"></i> Thêm mới</button></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border-color);margin:20px 0">
+        <div id="tab-person" class="tab-content active">
+            <table class="table"><thead><tr><th width="20%">Họ và tên</th><th width="10%">Số CCCD</th><th width="15%">Email</th><th width="15%">Số điện thoại</th><th width="10%">Trung tâm Đăng ký</th><th width="10%">Nguồn định danh</th><th width="10%">Trạng thái</th><th width="10%" style="text-align:center">Thao tác</th></tr></thead>
+            <tbody>
+                <tr><td>Nguyễn Văn An</td><td>001090123456</td><td>nvan@gmail.com</td><td>0987654321</td><td>Hà Nội</td><td><span class="tag tag-vneid" style="font-size:10px">VNeID</span></td><td><span class="tag tag-active">Hoạt động</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Nguyễn Văn An', '001090123456', true)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Khóa"><i class="fas fa-lock"></i></button></td></tr>
+                <tr><td>John Doe</td><td>P12345678</td><td>john@example.com</td><td>0901112222</td><td>Hà Nội</td><td><span class="tag tag-manual" style="font-size:10px">Nội bộ</span></td><td><span class="tag tag-active">Hoạt động</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'John Doe', 'P12345678', false)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Gộp tài khoản (Merge)"><i class="fas fa-link"></i></button><button class="icon-btn" title="Khóa"><i class="fas fa-lock"></i></button></td></tr>
+                <tr><td>Lê Thị Bích</td><td>030192000111</td><td>bich.le@gmail.com</td><td>0912345678</td><td>Đà Nẵng</td><td><span class="tag tag-vneid" style="font-size:10px">VNeID</span></td><td><span class="tag tag-active">Hoạt động</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Lê Thị Bích', '030192000111', true)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Khóa"><i class="fas fa-lock"></i></button></td></tr>
+                <tr><td>Phạm Văn Đồng</td><td>040088000222</td><td>dong.pv@yahoo.com</td><td>0933445566</td><td>TP. Hồ Chí Minh</td><td><span class="tag tag-vneid" style="font-size:10px">VNeID</span></td><td><span class="tag tag-active">Hoạt động</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Phạm Văn Đồng', '040088000222', true)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Khóa"><i class="fas fa-lock"></i></button></td></tr>
+                <tr><td>Hoàng Minh Quân</td><td>001099000333</td><td>quan.hm@gmail.com</td><td>0944556677</td><td>Hà Nội</td><td><span class="tag tag-vneid" style="font-size:10px">VNeID</span></td><td><span class="tag tag-manual" style="background:#FEE2E2;color:#991B1B;border-color:#F87171">Bị khóa</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Hoàng Minh Quân', '001099000333', true)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Mở khóa"><i class="fas fa-unlock"></i></button></td></tr>
+                <tr><td>Michael Smith</td><td>P98765432</td><td>michael.s@gmail.com</td><td>0966778899</td><td>TP. Hồ Chí Minh</td><td><span class="tag tag-manual" style="font-size:10px">Nội bộ</span></td><td><span class="tag tag-active">Hoạt động</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Michael Smith', 'P98765432', false)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Gộp tài khoản"><i class="fas fa-link"></i></button><button class="icon-btn" title="Khóa"><i class="fas fa-lock"></i></button></td></tr>
+                <tr><td>Vũ Đức Đam</td><td>001085000444</td><td>dam.vd@chinhphu.vn</td><td>0977889900</td><td>Hà Nội</td><td><span class="tag tag-vneid" style="font-size:10px">VNeID</span></td><td><span class="tag tag-active">Hoạt động</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Vũ Đức Đam', '001085000444', true)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Khóa"><i class="fas fa-lock"></i></button></td></tr>
+                <tr><td>Đinh Thu Hà</td><td>001095000555</td><td>ha.dt@outlook.com</td><td>0988990011</td><td>Đà Nẵng</td><td><span class="tag tag-vneid" style="font-size:10px">VNeID</span></td><td><span class="tag tag-manual" style="background:#FEF3C7;color:#B45309;border-color:#FCD34D">Chờ kích hoạt</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Đinh Thu Hà', '001095000555', true)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Kích hoạt"><i class="fas fa-check"></i></button></td></tr>
+                <tr><td>Sarah Connor</td><td>P33344455</td><td>sarah.c@cyberdyne.com</td><td>0999001122</td><td>Hà Nội</td><td><span class="tag tag-manual" style="font-size:10px">Nội bộ</span></td><td><span class="tag tag-active">Hoạt động</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Sarah Connor', 'P33344455', false)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Gộp tài khoản"><i class="fas fa-link"></i></button><button class="icon-btn" title="Khóa"><i class="fas fa-lock"></i></button></td></tr>
+                <tr><td>Ngô Kiến Huy</td><td>079088000666</td><td>huy.nk@showbiz.vn</td><td>0900112233</td><td>TP. Hồ Chí Minh</td><td><span class="tag tag-vneid" style="font-size:10px">VNeID</span></td><td><span class="tag tag-active">Hoạt động</span></td><td style="text-align:center"><button class="icon-btn" onclick="openModal('PERSON', 'Ngô Kiến Huy', '079088000666', true)" title="Sửa"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Khóa"><i class="fas fa-lock"></i></button></td></tr>
+            </tbody></table>
+        </div>
+        <div id="tab-org" class="tab-content">
+            <table class="table tree-table"><thead><tr><th width="25%">Tên Tổ chức</th><th width="15%">MST/Mã số DN</th><th width="15%">Email</th><th width="10%">Số điện thoại</th><th width="10%">Trung tâm Đăng ký</th><th width="10%">Nguồn định danh</th><th width="5%">Trạng thái</th><th width="10%" style="text-align:center">Thao tác</th></tr></thead>
+            <tbody>
+                <!-- Level 1: Hội sở VCB -->
+                <tr style="background:#F8FAFC">
+                    <td><i class="fas fa-chevron-down" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Ngân hàng TMCP Ngoại thương VN (Hội sở)</strong></td>
+                    <td>0100112437</td><td>contact@vietcombank.com</td><td>1900545413</td><td>Hà Nội</td><td><span class="tag tag-vneid" style="font-size:10px">DVC DN</span></td><td><span class="tag tag-active">HĐ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Ngân hàng TMCP Ngoại thương VN (Hội sở)', '0100112437')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+                <!-- Level 2: Chi nhánh VCB -->
+                <tr>
+                    <td style="padding-left:24px"><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Vietcombank - Chi nhánh Ba Đình</strong></td>
+                    <td>0100112437-001</td><td>badinh@vietcombank.com</td><td>0243123456</td><td>Hà Nội</td><td><span class="tag tag-vneid" style="font-size:10px">DVC DN</span></td><td><span class="tag tag-active">HĐ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Vietcombank - Chi nhánh Ba Đình', '0100112437-001')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:24px"><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Vietcombank - Chi nhánh Sài Gòn</strong></td>
+                    <td>0100112437-002</td><td>saigon@vietcombank.com</td><td>0283123456</td><td>TP. Hồ Chí Minh</td><td><span class="tag tag-vneid" style="font-size:10px">DVC DN</span></td><td><span class="tag tag-active">HĐ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Vietcombank - Chi nhánh Sài Gòn', '0100112437-002')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+                <!-- Level 1: BIDV -->
+                <tr style="background:#F8FAFC">
+                    <td><i class="fas fa-chevron-down" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Ngân hàng TMCP Đầu tư và Phát triển VN</strong></td>
+                    <td>0100150619</td><td>info@bidv.com.vn</td><td>19009247</td><td>Hà Nội</td><td><span class="tag tag-vneid" style="font-size:10px">DVC DN</span></td><td><span class="tag tag-active">HĐ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Ngân hàng TMCP Đầu tư và Phát triển VN', '0100150619')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+                <!-- Level 2: Chi nhánh BIDV -->
+                <tr>
+                    <td style="padding-left:24px"><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>BIDV - Chi nhánh Hải Châu</strong></td>
+                    <td>0100150619-005</td><td>haichau@bidv.com.vn</td><td>02363822111</td><td>Đà Nẵng</td><td><span class="tag tag-vneid" style="font-size:10px">DVC DN</span></td><td><span class="tag tag-active">HĐ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'BIDV - Chi nhánh Hải Châu', '0100150619-005')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+                <!-- Level 1: Vingroup -->
+                <tr style="background:#F8FAFC">
+                    <td><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Công ty Cổ phần Vingroup</strong></td>
+                    <td>0101245486</td><td>info@vingroup.net</td><td>02439749999</td><td>Hà Nội</td><td><span class="tag tag-dvc" style="font-size:10px">DVC DN</span></td><td><span class="tag tag-active">HĐ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Công ty Cổ phần Vingroup', '0101245486')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+                <!-- Level 1: FPT -->
+                <tr style="background:#F8FAFC">
+                    <td><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Công ty Cổ phần FPT</strong></td>
+                    <td>0101248141</td><td>contact@fpt.com.vn</td><td>02473007300</td><td>Hà Nội</td><td><span class="tag tag-vneid" style="font-size:10px">DVC DN</span></td><td><span class="tag tag-manual" style="background:#FEE2E2;color:#991B1B;border-color:#F87171">Khóa</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Công ty Cổ phần FPT', '0101248141')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+                <!-- Non-VNeID Org 1 -->
+                <tr style="background:#F8FAFC">
+                    <td><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Tổ chức Quốc tế XYZ</strong></td>
+                    <td>9901245486</td><td>xyz@international.org</td><td>02439998888</td><td>Hà Nội</td><td><span class="tag tag-manual" style="font-size:10px">Nội bộ</span></td><td><span class="tag tag-active">HĐ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Tổ chức Quốc tế XYZ', '9901245486', false)"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Gộp tài khoản (Merge)"><i class="fas fa-link"></i></button></td>
+                </tr>
+                <!-- Non-VNeID Org 2 -->
+                <tr style="background:#F8FAFC">
+                    <td><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Quỹ Đầu tư ABC Capital</strong></td>
+                    <td>8802245599</td><td>invest@abccapital.com</td><td>02837776666</td><td>TP. Hồ Chí Minh</td><td><span class="tag tag-manual" style="font-size:10px">Nội bộ</span></td><td><span class="tag tag-manual" style="background:#FEF3C7;color:#B45309;border-color:#FCD34D">Chờ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Quỹ Đầu tư ABC Capital', '8802245599', false)"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Kích hoạt"><i class="fas fa-check"></i></button></td>
+                </tr>
+                <!-- Non-VNeID Org 3 -->
+                <tr style="background:#F8FAFC">
+                    <td><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i> <strong>Global Logistics LLC</strong></td>
+                    <td>7703345500</td><td>contact@globallogistics.com</td><td>02363555444</td><td>Đà Nẵng</td><td><span class="tag tag-manual" style="font-size:10px">Nội bộ</span></td><td><span class="tag tag-active">HĐ</span></td>
+                    <td style="text-align:center"><button class="icon-btn" onclick="openModal('ORG', 'Global Logistics LLC', '7703345500', false)"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Gộp tài khoản (Merge)"><i class="fas fa-link"></i></button></td>
+                </tr>
+            </tbody></table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Chi tiết</h3>
+                <button onclick="closeModal('editModal')" style="background:none;border:none;font-size:20px;cursor:pointer"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal Tabs (ORG only) -->
+                <div class="tabs" id="modalTabs" style="display:none">
+                    <button class="tab-btn active" onclick="switchModalTab('info',this)">Thông tin chung</button>
+                    <button class="tab-btn" onclick="switchModalTab('sub',this)">Quản lý tài khoản trực thuộc</button>
+                </div>
+
+                <!-- TAB 1: Thông tin chung -->
+                <div id="mtab-info" class="tab-content active">
+                    <div id="bannerVNeID" style="background:#F0FDF4;padding:10px;border-radius:4px;font-size:13px;color:#166534;margin-bottom:15px"><i class="fas fa-shield-alt"></i> Dữ liệu định danh đồng bộ từ VNeID/DVCQG. Liên hệ và phân quyền có thể tùy chỉnh.</div>
+                    <div id="bannerInternal" style="display:none;background:#FFFBEB;padding:10px;border-radius:4px;font-size:13px;color:#92400E;margin-bottom:15px"><i class="fas fa-exclamation-triangle"></i> Tài khoản nội bộ (Không có VNeID). Tên đăng nhập không được phép thay đổi.</div>
+                    
+                    <div class="section-divider" id="lblInfoGroup"><i class="fas fa-id-card"></i> Thông tin Định danh (Khóa)</div>
+                    <div class="grid-2-cols">
+                        <div class="form-group"><label class="form-label">Họ tên / Tên tổ chức</label><input type="text" class="form-control" id="inpName" value="Nguyễn Văn An" readonly></div>
+                        <div class="form-group"><label class="form-label" id="lblInpCode">CCCD / MST</label><input type="text" class="form-control" id="inpCode" value="001090123456" readonly></div>
+                    </div>
+                    <div id="personExtraGroup" style="display:none;">
+                        <div class="grid-2-cols" style="margin-bottom:16px;">
+                            <div class="form-group" style="margin:0"><label class="form-label">Giới tính</label><select class="form-select" id="inpGender"><option>Nam</option><option>Nữ</option></select></div>
+                            <div class="form-group" style="margin:0"><label class="form-label">Ngày sinh</label><input type="text" class="form-control" id="inpDob" value="01/01/1990" placeholder="dd/mm/yyyy"></div>
+                        </div>
+                    </div>
+                    <div id="personNonVNeIDGroup" style="display:none;">
+                        <div class="grid-2-cols" style="margin-bottom:16px;">
+                            <div class="form-group" style="margin:0"><label class="form-label">Loại giấy tờ</label><select class="form-select" id="inpDocType"><option>Hộ chiếu</option><option>CCCD/CMND (Cũ)</option><option>Giấy tờ hợp lệ khác</option></select></div>
+                            <div class="form-group" style="margin:0"><label class="form-label">Quốc tịch</label><select class="form-select" id="inpNationality"><option>Nước ngoài</option><option>Việt Nam</option></select></div>
+                        </div>
+                    </div>
+                    <div id="orgNonVNeIDGroup" style="display:none;">
+                        <div class="grid-2-cols" style="margin-bottom:16px;">
+                            <div class="form-group" style="margin:0"><label class="form-label">Loại hình tổ chức</label><select class="form-select" id="inpOrgType"><option>Tổ chức nước ngoài</option><option>Tổ chức khác</option></select></div>
+                            <div class="form-group" style="margin:0"><label class="form-label">Quốc gia đăng ký</label><select class="form-select" id="inpOrgCountry"><option>Khác</option><option>Việt Nam</option></select></div>
+                        </div>
+                    </div>
+                    <div id="orgRepGroup" style="display:none;background:#F8FAFC;padding:12px;border:1px solid var(--border-color);border-radius:6px;margin-bottom:16px">
+                        <label class="form-label" style="color:var(--primary-color)"><i class="fas fa-user-tie"></i> Người đại diện pháp luật</label>
+                        <div class="grid-2-cols" style="margin-bottom:0">
+                            <div class="form-group" style="margin:0"><label class="form-label">Họ và tên</label><input type="text" class="form-control" id="inpRepName" value="Lê Đình Long" readonly></div>
+                            <div class="form-group" style="margin:0"><label class="form-label">Số CCCD / Hộ chiếu</label><input type="text" class="form-control" id="inpRepCode" value="030089123456" readonly></div>
+                        </div>
+                    </div>
+                    <div class="section-divider" id="lblContactGroup"><i class="fas fa-address-book"></i> Thông tin Liên hệ (Tùy chỉnh)</div>
+                    <div class="grid-2-cols">
+                        <div class="form-group"><label class="form-label">SĐT liên hệ *</label><input type="text" class="form-control" value="0987654321"></div>
+                        <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" value="nvan@gmail.com"></div>
+                    </div>
+                    <div class="form-group">
+                        <div style="display:flex;justify-content:space-between"><label class="form-label">Địa chỉ liên hệ</label><span style="font-size:12px;color:var(--text-muted);font-style:italic">* Mặc định lấy theo địa chỉ đồng bộ về từ DVC, có thể chỉnh sửa lại.</span></div>
+                        <div class="grid-3-cols" style="margin-bottom:8px">
+                            <select class="form-select" id="selCountry" onchange="handleCountryChange()"><option value="VN" selected>Việt Nam</option><option value="OTHER">Quốc gia khác...</option></select>
+                            <div id="vnAddr" style="display:contents"><select class="form-select"><option>TP Hà Nội</option></select><select class="form-select"><option>Phường Láng Hạ</option></select></div>
+                            <div id="intAddr" style="display:none;grid-column:span 2"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><input type="text" class="form-control"><input type="text" class="form-control"></div></div>
+                        </div>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trung tâm Đăng ký thường giao dịch (Mặc định)</label>
+                        <select class="form-select">
+                            <option value="">-- Không bắt buộc (Chọn để tự động điền khi lập hồ sơ) --</option>
+                            <option value="HN">Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội</option>
+                            <option value="HCM" selected>Trung tâm đăng ký, giao dịch tài sản tại TP HCM</option>
+                            <option value="DN">Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng</option>
+                        </select>
+                    </div>
+                    <div class="section-divider"><i class="fas fa-cogs"></i> Tùy biến Phân quyền</div>
+                    <div class="perm-tree">
+                        <div class="perm-item"><input type="checkbox" checked> 1. Đăng ký BPBĐ / Thông báo xử lý tài sản</div>
+                        <div class="perm-item"><input type="checkbox" checked> 2. Đăng ký thay đổi / Xóa BPBĐ</div>
+                        <div class="perm-item"><input type="checkbox" checked> 3. Yêu cầu cung cấp thông tin về BPBĐ</div>
+                        <div class="perm-item"><input type="checkbox" checked> 4. Yêu cầu cấp bản sao kèm thông báo</div>
+                        <div class="perm-item"><input type="checkbox" checked> 5. Yêu cầu chỉnh lý thông tin BPBĐ</div>
+                        <div class="perm-item"><input type="checkbox" checked> 6. Tra cứu thông tin BPBĐ</div>
+                        <div class="perm-item"><input type="checkbox" checked> 7. Tra cứu theo mã số truy cập CSDL</div>
+                        <div class="perm-item" id="permSubOrg"><input type="checkbox" checked> 8. Quản lý TK phụ thuộc tổ chức</div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: Quản lý tài khoản trực thuộc (ORG only) -->
+                <div id="mtab-sub" class="tab-content">
+                    <div id="subBannerVNeID" style="background:#EFF6FF;padding:10px;border:1px solid #BFDBFE;border-radius:6px;margin-bottom:15px;font-size:12px"><i class="fas fa-info-circle"></i> <strong>Cơ chế SSO VNeID:</strong> Ủy quyền cho nhân viên thông qua CCCD. Nhân viên đăng nhập Cổng DVC bằng VNeID cá nhân và chọn vai trò "Đại diện tổ chức".</div>
+                    <div id="subBannerInternal" style="display:none;background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E"><i class="fas fa-info-circle"></i> <strong>Cơ chế Nội bộ:</strong> Tổ chức cấp quyền thông qua Tài khoản nội bộ. Mật khẩu sinh tự động và gửi qua Email nhân viên.</div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:12px;align-items:center;">
+                        <strong>Danh sách tài khoản trực thuộc</strong>
+                        <div style="display:flex;gap:10px;">
+                            <input type="text" class="form-control" placeholder="Tìm tên, CCCD..." style="width:200px;height:32px;font-size:12px;">
+                            <button class="btn btn-outline-primary" id="btnAddSub" style="padding:4px 10px;font-size:12px;height:32px" onclick="toggleAddForm(true)">+ Thêm tài khoản con</button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <table class="table" style="font-size:12px" id="subTable">
+                        <thead><tr><th>Họ và tên</th><th id="subTableIdentifierHeader">Số CCCD</th><th>Email</th><th>SĐT</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                        <tbody>
+                            <tr id="row-sub-1"><td><strong>Trần Thị Bích</strong></td><td>001088998877</td><td>bich.tt@vietcombank.com</td><td>0912345678</td><td><span class="tag tag-active">Đã đồng bộ</span></td><td><button class="icon-btn" title="Sửa" onclick="editSubAccount('row-sub-1')"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Đóng tài khoản"><i class="fas fa-lock"></i></button><button class="icon-btn" title="Xóa" style="color:var(--danger-color)" onclick="deleteSubAccount('row-sub-1','Trần Thị Bích')"><i class="fas fa-trash"></i></button></td></tr>
+                            <tr id="row-sub-2"><td><strong>Nguyễn Hoàng Nam</strong></td><td>001095112233</td><td>nam.nh@vietcombank.com</td><td>0977554433</td><td><span class="tag tag-active">Đã đồng bộ</span></td><td><button class="icon-btn" title="Sửa" onclick="editSubAccount('row-sub-2')"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Đóng tài khoản"><i class="fas fa-lock"></i></button><button class="icon-btn" title="Xóa" style="color:var(--danger-color)" onclick="deleteSubAccount('row-sub-2','Nguyễn Hoàng Nam')"><i class="fas fa-trash"></i></button></td></tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Add Form VNeID (hidden) -->
+                    <div id="divCreateSubVNeID" style="display:none;background:#F8FAFC;padding:15px;border:1px solid var(--border-color);border-radius:6px;margin-top:15px">
+                        <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px" id="subFormTitleVNeID">Thêm mới Tài khoản con (VNeID SSO)</div>
+                        <div class="grid-2-cols">
+                            <div class="form-group"><label class="form-label">Số CCCD *</label><div style="display:flex;gap:8px"><input type="text" class="form-control" id="subCCCD_vneid"><button class="btn btn-secondary" onclick="showToast('Đang tra cứu dữ liệu từ hệ thống VNeID...')"><i class="fas fa-search"></i></button></div></div>
+                            <div class="form-group"><label class="form-label">Họ và tên *</label><input type="text" class="form-control" id="subName_vneid"></div>
+                        </div>
+                        <div class="grid-2-cols">
+                            <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" id="subEmail_vneid"></div>
+                            <div class="form-group"><label class="form-label">Số điện thoại *</label><input type="text" class="form-control" id="subPhone_vneid"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phân quyền</label>
+                            <div class="perm-tree">
+                                <div class="perm-item"><input type="checkbox"> 1. Đăng ký BPBĐ / Thông báo xử lý tài sản</div>
+                                <div class="perm-item"><input type="checkbox"> 2. Đăng ký thay đổi / Xóa BPBĐ</div>
+                                <div class="perm-item"><input type="checkbox"> 3. Yêu cầu cung cấp thông tin về BPBĐ</div>
+                                <div class="perm-item"><input type="checkbox"> 4. Yêu cầu cấp bản sao kèm thông báo</div>
+                                <div class="perm-item"><input type="checkbox"> 5. Yêu cầu chỉnh lý thông tin BPBĐ</div>
+                                <div class="perm-item"><input type="checkbox"> 6. Tra cứu thông tin BPBĐ</div>
+                                <div class="perm-item"><input type="checkbox"> 7. Tra cứu theo mã số truy cập CSDL</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right">
+                            <button class="btn btn-secondary" onclick="toggleAddForm(false)">Hủy</button>
+                            <button class="btn btn-primary" onclick="toggleAddForm(false);showToast('Lưu & Đồng bộ DVC thành công!')">Lưu & Đồng bộ DVC</button>
+                        </div>
+                    </div>
+
+                    <!-- Add Form Internal (hidden) -->
+                    <div id="divCreateSubInternal" style="display:none;background:#F8FAFC;padding:15px;border:1px solid var(--border-color);border-radius:6px;margin-top:15px">
+                        <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px" id="subFormTitleInternal">Thêm mới Tài khoản con (Tài khoản nội bộ)</div>
+                        <div style="background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E"><i class="fas fa-exclamation-triangle"></i> <strong>Lưu ý:</strong> Tài khoản con sẽ được tạo dưới dạng Tài khoản nội bộ. Mật khẩu sẽ được sinh ngẫu nhiên và gửi về Email của nhân viên.</div>
+                        <div class="grid-2-cols">
+                            <div class="form-group"><label class="form-label">Tên đăng nhập *</label><input type="text" class="form-control" id="subUsername_int"></div>
+                            <div class="form-group"><label class="form-label">Họ và tên *</label><input type="text" class="form-control" id="subName_int"></div>
+                        </div>
+                        <div class="grid-2-cols">
+                            <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" id="subEmail_int"></div>
+                            <div class="form-group"><label class="form-label">Số điện thoại *</label><input type="text" class="form-control" id="subPhone_int"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phân quyền</label>
+                            <div class="perm-tree">
+                                <div class="perm-item"><input type="checkbox"> 1. Đăng ký BPBĐ / Thông báo xử lý tài sản</div>
+                                <div class="perm-item"><input type="checkbox"> 2. Đăng ký thay đổi / Xóa BPBĐ</div>
+                                <div class="perm-item"><input type="checkbox"> 3. Yêu cầu cung cấp thông tin về BPBĐ</div>
+                                <div class="perm-item"><input type="checkbox"> 4. Yêu cầu cấp bản sao kèm thông báo</div>
+                                <div class="perm-item"><input type="checkbox"> 5. Yêu cầu chỉnh lý thông tin BPBĐ</div>
+                                <div class="perm-item"><input type="checkbox"> 6. Tra cứu thông tin BPBĐ</div>
+                                <div class="perm-item"><input type="checkbox"> 7. Tra cứu theo mã số truy cập CSDL</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right">
+                            <button class="btn btn-secondary" onclick="toggleAddForm(false)">Hủy</button>
+                            <button class="btn btn-primary" onclick="toggleAddForm(false);showToast('Lưu & Cấp mật khẩu thành công!')">Lưu & Cấp tài khoản</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editModal')">Đóng</button>
+                <button class="btn btn-primary" onclick="closeModal('editModal');showToast('Lưu cập nhật thành công!')"><i class="fas fa-save"></i> Lưu cập nhật</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addAccountModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Thêm mới tài khoản (Non-VNeID)</strong>
+                <button class="icon-btn" onclick="closeModal('addAccountModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="background:#fff">
+                <div style="background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Lưu ý:</strong> Tính năng này chỉ dùng để cấp tài khoản cho người nước ngoài, tổ chức nước ngoài hoặc các trường hợp đặc biệt không thể định danh qua Cổng DVCQG/VNeID. Mật khẩu sẽ được hệ thống sinh ngẫu nhiên và gửi về Email.
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại khách hàng *</label>
+                    <select class="form-select" id="addAccType" onchange="handleAddAccTypeChange()">
+                        <option value="PERSON">Cá nhân</option>
+                        <option value="ORG">Tổ chức</option>
+                    </select>
+                </div>
+
+                <!-- Form Cá nhân -->
+                <div id="addAccPersonForm">
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label">Loại giấy tờ *</label>
+                            <select class="form-select"><option>Hộ chiếu</option><option>CCCD/CMND (Cũ)</option><option>Giấy tờ hợp lệ khác</option></select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Số giấy tờ (Tên đăng nhập) *</label><input type="text" class="form-control"></div>
+                        <div class="form-group"><label class="form-label">Họ và tên *</label><input type="text" class="form-control"></div>
+                        <div class="form-group"><label class="form-label">Quốc tịch *</label><select class="form-select"><option>Nước ngoài</option><option>Việt Nam</option></select></div>
+                        <div class="form-group"><label class="form-label">Ngày sinh *</label><input type="text" class="form-control" placeholder="dd/mm/yyyy"></div>
+                        <div class="form-group"><label class="form-label">Giới tính *</label><select class="form-select"><option>Nam</option><option>Nữ</option></select></div>
+                        <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control"></div>
+                        <div class="form-group"><label class="form-label">Số điện thoại *</label><input type="text" class="form-control"></div>
+                    </div>
+                    <div class="grid-2-cols">
+                        <div class="form-group"><label class="form-label">Địa chỉ liên hệ *</label><input type="text" class="form-control"></div>
+                        <div class="form-group"><label class="form-label">Nhóm người dùng *</label><select class="form-select" disabled><option>Khách hàng Cá nhân</option></select></div>
+                    </div>
+                        <div class="grid-2-cols">
+                            <div class="form-group"><label class="form-label">Trung tâm Đăng ký mặc định</label><select class="form-select"><option value="">-- Không bắt buộc --</option><option value="HN">Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội</option><option value="HCM">Trung tâm đăng ký, giao dịch tài sản tại TP HCM</option><option value="DN">Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng</option></select></div>
+                        </div>
+                    <div class="section-divider" style="margin-top:10px"><i class="fas fa-cogs"></i> Tùy biến Phân quyền</div>
+                    <div class="perm-tree" style="max-height:150px">
+                        <div class="perm-item"><input type="checkbox" checked> 1. Đăng ký BPBĐ / Thông báo xử lý tài sản</div>
+                        <div class="perm-item"><input type="checkbox" checked> 2. Đăng ký thay đổi / Xóa BPBĐ</div>
+                        <div class="perm-item"><input type="checkbox" checked> 3. Yêu cầu cung cấp thông tin về BPBĐ</div>
+                        <div class="perm-item"><input type="checkbox" checked> 4. Yêu cầu cấp bản sao kèm thông báo</div>
+                        <div class="perm-item"><input type="checkbox" checked> 5. Yêu cầu chỉnh lý thông tin BPBĐ</div>
+                        <div class="perm-item"><input type="checkbox" checked> 6. Tra cứu thông tin BPBĐ</div>
+                        <div class="perm-item"><input type="checkbox" checked> 7. Tra cứu theo mã số truy cập CSDL</div>
+                    </div>
+                </div>
+
+                <!-- Form Tổ chức -->
+                <div id="addAccOrgForm" style="display:none">
+                    <div class="tabs" id="addOrgTabs">
+                        <button class="tab-btn active" onclick="switchAddOrgTab('info',this)">Thông tin chung</button>
+                        <button class="tab-btn" onclick="switchAddOrgTab('sub',this)">Quản lý tài khoản trực thuộc</button>
+                    </div>
+                    
+                    <div id="addOrgTab-info" class="tab-content active">
+                        <div class="grid-2-cols">
+                            <div class="form-group"><label class="form-label">Mã số tổ chức (Tên đăng nhập) *</label><input type="text" class="form-control"></div>
+                            <div class="form-group"><label class="form-label">Tên tổ chức *</label><input type="text" class="form-control"></div>
+                            <div class="form-group"><label class="form-label">Quốc gia đăng ký *</label><select class="form-select"><option>Khác</option><option>Việt Nam</option></select></div>
+                            <div class="form-group"><label class="form-label">Loại hình *</label><select class="form-select"><option>Tổ chức nước ngoài</option><option>Tổ chức khác</option></select></div>
+                            <div class="form-group"><label class="form-label">Email tổ chức *</label><input type="email" class="form-control"></div>
+                            <div class="form-group"><label class="form-label">Số điện thoại *</label><input type="text" class="form-control"></div>
+                        </div>
+                        <div class="grid-2-cols">
+                            <div class="form-group"><label class="form-label">Địa chỉ trụ sở *</label><input type="text" class="form-control"></div>
+                            <div class="form-group"><label class="form-label">Nhóm người dùng *</label><select class="form-select" disabled><option>Khách hàng Tổ chức</option></select></div>
+                        </div>
+                        <div class="grid-2-cols">
+                            <div class="form-group"><label class="form-label">Trung tâm Đăng ký mặc định</label><select class="form-select"><option value="">-- Không bắt buộc --</option><option value="HN">Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội</option><option value="HCM">Trung tâm đăng ký, giao dịch tài sản tại TP HCM</option><option value="DN">Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng</option></select></div>
+                        </div>
+                        <div style="margin-top:10px;padding-top:10px;border-top:1px dashed #ccc">
+                            <strong style="font-size:13px;display:block;margin-bottom:10px">Thông tin Người đại diện</strong>
+                            <div class="grid-2-cols">
+                                <div class="form-group"><label class="form-label">Họ và tên đại diện *</label><input type="text" class="form-control"></div>
+                                <div class="form-group"><label class="form-label">Số giấy tờ (CCCD/Hộ chiếu) *</label><input type="text" class="form-control"></div>
+                            </div>
+                        </div>
+                        <div class="section-divider" style="margin-top:10px"><i class="fas fa-cogs"></i> Tùy biến Phân quyền</div>
+                        <div class="perm-tree" style="max-height:150px">
+                            <div class="perm-item"><input type="checkbox" checked> 1. Đăng ký BPBĐ / Thông báo xử lý tài sản</div>
+                            <div class="perm-item"><input type="checkbox" checked> 2. Đăng ký thay đổi / Xóa BPBĐ</div>
+                            <div class="perm-item"><input type="checkbox" checked> 3. Yêu cầu cung cấp thông tin về BPBĐ</div>
+                            <div class="perm-item"><input type="checkbox" checked> 4. Yêu cầu cấp bản sao kèm thông báo</div>
+                            <div class="perm-item"><input type="checkbox" checked> 5. Yêu cầu chỉnh lý thông tin BPBĐ</div>
+                            <div class="perm-item"><input type="checkbox" checked> 6. Tra cứu thông tin BPBĐ</div>
+                            <div class="perm-item"><input type="checkbox" checked> 7. Tra cứu theo mã số truy cập CSDL</div>
+                            <div class="perm-item"><input type="checkbox" checked> 8. Quản lý TK phụ thuộc tổ chức</div>
+                        </div>
+                    </div>
+                    
+                    <div id="addOrgTab-sub" class="tab-content">
+                        <div style="background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E"><i class="fas fa-info-circle"></i> <strong>Tài khoản nội bộ:</strong> Các tài khoản con sẽ được sinh mật khẩu ngẫu nhiên và gửi qua Email khi bạn bấm [Lưu & Cấp tài khoản].</div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:12px;align-items:center;">
+                            <strong>Danh sách tài khoản trực thuộc</strong>
+                            <button class="btn btn-outline-primary" id="btnAddNewSub" style="padding:4px 10px;font-size:12px;height:32px" onclick="toggleAddNewSubForm(true)">+ Thêm tài khoản con</button>
+                        </div>
+                        <table class="table" style="font-size:12px" id="newSubTable">
+                            <thead><tr><th>Họ và tên</th><th>Tên đăng nhập</th><th>Email</th><th>SĐT</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                            <tbody>
+                                <tr id="noSubMsg"><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">Chưa có tài khoản con nào được thêm tạm.</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <div id="divCreateNewSubInternal" style="display:none;background:#F8FAFC;padding:15px;border:1px solid var(--border-color);border-radius:6px;margin-top:15px">
+                            <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px">Thêm mới Tài khoản con</div>
+                            <div class="grid-2-cols">
+                                <div class="form-group"><label class="form-label">Tên đăng nhập *</label><input type="text" class="form-control" id="newSubUsername"></div>
+                                <div class="form-group"><label class="form-label">Họ và tên *</label><input type="text" class="form-control" id="newSubName"></div>
+                            </div>
+                            <div class="grid-2-cols">
+                                <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" id="newSubEmail"></div>
+                                <div class="form-group"><label class="form-label">Số điện thoại *</label><input type="text" class="form-control" id="newSubPhone"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phân quyền</label>
+                                <div class="perm-tree" style="max-height:120px">
+                                    <div class="perm-item"><input type="checkbox"> 1. Đăng ký BPBĐ / Thông báo xử lý tài sản</div>
+                                    <div class="perm-item"><input type="checkbox"> 2. Đăng ký thay đổi / Xóa BPBĐ</div>
+                                    <div class="perm-item"><input type="checkbox"> 3. Yêu cầu cung cấp thông tin về BPBĐ</div>
+                                    <div class="perm-item"><input type="checkbox"> 4. Yêu cầu cấp bản sao kèm thông báo</div>
+                                    <div class="perm-item"><input type="checkbox"> 5. Yêu cầu chỉnh lý thông tin BPBĐ</div>
+                                    <div class="perm-item"><input type="checkbox"> 6. Tra cứu thông tin BPBĐ</div>
+                                    <div class="perm-item"><input type="checkbox"> 7. Tra cứu theo mã số truy cập CSDL</div>
+                                </div>
+                            </div>
+                            <div style="text-align:right">
+                                <button class="btn btn-secondary" onclick="toggleAddNewSubForm(false)">Hủy</button>
+                                <button class="btn btn-primary" onclick="saveNewSubAccountTemp()">Lưu tạm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addAccountModal')">Hủy</button>
+                <button class="btn btn-primary" onclick="closeModal('addAccountModal');showToast('Thêm mới thành công! Mật khẩu đã được gửi đến Email.')"><i class="fas fa-check"></i> Lưu & Cấp tài khoản</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toastMsg"></div>
+
+    <script>
+        function switchMainTab(id, btn) {
+            document.querySelectorAll('.card-section > .tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-person').classList.remove('active');
+            document.getElementById('tab-org').classList.remove('active');
+            document.getElementById('tab-' + id).classList.add('active');
+            if(typeof searchAccounts === 'function') searchAccounts();
+        }
+
+        function searchAccounts(selectElement) {
+            try {
+                if (selectElement && selectElement.blur) selectElement.blur();
+                else if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+                
+                const keyword = document.getElementById('filterKeyword').value.toLowerCase();
+                const center = document.getElementById('filterCenter').value;
+                const status = document.getElementById('filterStatus').value;
+                
+                const isPerson = document.getElementById('tab-person').classList.contains('active');
+                const tableSelector = isPerson ? '#tab-person .table tbody tr' : '#tab-org .table tbody tr';
+                
+                const rows = document.querySelectorAll(tableSelector);
+                let matchCount = 0;
+                
+                rows.forEach(row => {
+                    if (row.querySelector('th')) return;
+                    if (!row.cells || row.cells.length < 7) return;
+                    
+                    const text = row.innerText.toLowerCase();
+                    let centerText = row.cells[4] ? row.cells[4].innerText : "";
+                    let statusText = row.cells[6] ? row.cells[6].innerText : "";
+                    
+                    if (statusText.includes("HĐ")) statusText += " Hoạt động";
+                    
+                    const matchKeyword = keyword === '' || text.includes(keyword);
+                    const matchCenter = center === '' || centerText.includes(center);
+                    const matchStatus = status === '' || statusText.includes(status);
+                    
+                    if (matchKeyword && matchCenter && matchStatus) {
+                        row.style.display = '';
+                        matchCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                showToast(`Đã tìm thấy ${matchCount} kết quả phù hợp.`);
+            } catch (err) {
+                console.error("Filter error:", err);
+            }
+        }
+
+        function switchModalTab(id, btn) {
+            document.querySelectorAll('#modalTabs .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('mtab-info').classList.remove('active');
+            document.getElementById('mtab-sub').classList.remove('active');
+            document.getElementById('mtab-' + id).classList.add('active');
+        }
+
+        let currentOrgIsVNeID = true;
+
+        function openModal(type, name, code, isVNeID = true) {
+            const modal = document.getElementById('editModal');
+            currentOrgIsVNeID = isVNeID;
+            // Reset
+            toggleAddForm(false);
+            document.querySelectorAll('#modalTabs .tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('#modalTabs .tab-btn:first-child').classList.add('active');
+            document.getElementById('mtab-info').classList.add('active');
+            document.getElementById('mtab-sub').classList.remove('active');
+
+            if (isVNeID) {
+                document.getElementById('bannerVNeID').style.display = 'block';
+                document.getElementById('bannerInternal').style.display = 'none';
+                if(document.getElementById('subBannerVNeID')) document.getElementById('subBannerVNeID').style.display = 'block';
+                if(document.getElementById('subBannerInternal')) document.getElementById('subBannerInternal').style.display = 'none';
+                document.getElementById('lblInfoGroup').innerHTML = '<i class="fas fa-id-card"></i> Thông tin Định danh (Khóa)';
+                document.getElementById('lblContactGroup').innerHTML = '<i class="fas fa-address-book"></i> Thông tin Liên hệ (Tùy chỉnh)';
+                document.getElementById('lblInpCode').innerText = type === 'PERSON' ? 'Số CCCD' : 'MST / Mã số DN';
+                document.getElementById('inpName').readOnly = true;
+                document.getElementById('inpRepName').readOnly = true;
+                document.getElementById('inpRepCode').readOnly = true;
+                document.getElementById('subTableIdentifierHeader').innerText = 'Số CCCD';
+            } else {
+                document.getElementById('bannerVNeID').style.display = 'none';
+                document.getElementById('bannerInternal').style.display = 'block';
+                if(document.getElementById('subBannerVNeID')) document.getElementById('subBannerVNeID').style.display = 'none';
+                if(document.getElementById('subBannerInternal')) document.getElementById('subBannerInternal').style.display = 'block';
+                document.getElementById('lblInfoGroup').innerHTML = type === 'PERSON' ? '<i class="fas fa-id-card"></i> Thông tin Cá nhân và Đăng nhập' : '<i class="fas fa-id-card"></i> Thông tin Tổ chức và Đăng nhập';
+                document.getElementById('lblContactGroup').innerHTML = '<i class="fas fa-address-book"></i> Thông tin Liên hệ';
+                document.getElementById('lblInpCode').innerText = type === 'PERSON' ? 'Số giấy tờ (Tên đăng nhập)' : 'Mã số tổ chức (Tên đăng nhập)';
+                document.getElementById('inpName').readOnly = false;
+                document.getElementById('inpRepName').readOnly = false;
+                document.getElementById('inpRepCode').readOnly = false;
+                document.getElementById('subTableIdentifierHeader').innerText = 'Tên đăng nhập';
+            }
+
+            if (type === 'PERSON') {
+                document.getElementById('modalTitle').innerText = isVNeID ? "Chi tiết Khách hàng Cá nhân (VNeID)" : "Chi tiết Khách hàng Cá nhân (Nội bộ)";
+                document.getElementById('modalTabs').style.display = 'none';
+                document.getElementById('orgRepGroup').style.display = 'none';
+                document.getElementById('personExtraGroup').style.display = isVNeID ? 'none' : 'block';
+                document.getElementById('personNonVNeIDGroup').style.display = isVNeID ? 'none' : 'block';
+                document.getElementById('orgNonVNeIDGroup').style.display = 'none';
+                document.getElementById('permSubOrg').style.display = 'none';
+                document.getElementById('inpName').value = name;
+                document.getElementById('inpCode').value = code;
+            } else {
+                document.getElementById('modalTitle').innerText = "Chi tiết - " + name;
+                document.getElementById('modalTabs').style.display = 'flex';
+                document.getElementById('orgRepGroup').style.display = 'block';
+                document.getElementById('personExtraGroup').style.display = 'none';
+                document.getElementById('personNonVNeIDGroup').style.display = 'none';
+                document.getElementById('orgNonVNeIDGroup').style.display = isVNeID ? 'none' : 'block';
+                document.getElementById('permSubOrg').style.display = 'flex';
+                document.getElementById('inpName').value = name;
+                document.getElementById('inpCode').value = code;
+                
+                // Clear out mock sub-accounts if it's a branch for a cleaner demo
+                const subTableBody = document.querySelector('#subTable tbody');
+                if (code.includes('-')) {
+                    subTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">Chi nhánh này chưa ủy quyền tài khoản con nào.</td></tr>';
+                } else {
+                    if (isVNeID) {
+                        subTableBody.innerHTML = `
+                            <tr id="row-sub-1"><td><strong>Trần Thị Bích</strong></td><td>001088998877</td><td>bich.tt@vietcombank.com</td><td>0912345678</td><td><span class="tag tag-active">Đã đồng bộ</span></td><td><button class="icon-btn" title="Sửa" onclick="editSubAccount('row-sub-1')"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Đóng tài khoản"><i class="fas fa-lock"></i></button><button class="icon-btn" title="Xóa" style="color:var(--danger-color)" onclick="deleteSubAccount('row-sub-1','Trần Thị Bích')"><i class="fas fa-trash"></i></button></td></tr>
+                            <tr id="row-sub-2"><td><strong>Nguyễn Hoàng Nam</strong></td><td>001095112233</td><td>nam.nh@vietcombank.com</td><td>0977554433</td><td><span class="tag tag-active">Đã đồng bộ</span></td><td><button class="icon-btn" title="Sửa" onclick="editSubAccount('row-sub-2')"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Đóng tài khoản"><i class="fas fa-lock"></i></button><button class="icon-btn" title="Xóa" style="color:var(--danger-color)" onclick="deleteSubAccount('row-sub-2','Nguyễn Hoàng Nam')"><i class="fas fa-trash"></i></button></td></tr>
+                        `;
+                    } else {
+                        subTableBody.innerHTML = `
+                            <tr id="row-sub-1"><td><strong>Trần Thị Bích</strong></td><td>bich.tt</td><td>bich.tt@xyz.org</td><td>0912345678</td><td><span class="tag tag-active">Hoạt động</span></td><td><button class="icon-btn" title="Sửa" onclick="editSubAccount('row-sub-1')"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Đóng tài khoản"><i class="fas fa-lock"></i></button><button class="icon-btn" title="Xóa" style="color:var(--danger-color)" onclick="deleteSubAccount('row-sub-1','Trần Thị Bích')"><i class="fas fa-trash"></i></button></td></tr>
+                            <tr id="row-sub-2"><td><strong>Nguyễn Hoàng Nam</strong></td><td>nam.nh</td><td>nam.nh@xyz.org</td><td>0977554433</td><td><span class="tag tag-active">Hoạt động</span></td><td><button class="icon-btn" title="Sửa" onclick="editSubAccount('row-sub-2')"><i class="fas fa-edit"></i></button><button class="icon-btn" title="Đóng tài khoản"><i class="fas fa-lock"></i></button><button class="icon-btn" title="Xóa" style="color:var(--danger-color)" onclick="deleteSubAccount('row-sub-2','Nguyễn Hoàng Nam')"><i class="fas fa-trash"></i></button></td></tr>
+                        `;
+                    }
+                }
+            }
+            modal.classList.add('active');
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function handleCountryChange() {
+            const isVN = document.getElementById('selCountry').value === 'VN';
+            document.getElementById('vnAddr').style.display = isVN ? 'contents' : 'none';
+            document.getElementById('intAddr').style.display = isVN ? 'none' : 'block';
+        }
+
+        function toggleAddForm(show) {
+            document.getElementById('divCreateSubVNeID').style.display = (show && currentOrgIsVNeID) ? 'block' : 'none';
+            document.getElementById('divCreateSubInternal').style.display = (show && !currentOrgIsVNeID) ? 'block' : 'none';
+            document.getElementById('btnAddSub').style.display = show ? 'none' : 'inline-flex';
+            
+            if (show) { 
+                if (currentOrgIsVNeID) {
+                    document.getElementById('subFormTitleVNeID').innerText = 'Thêm mới Tài khoản con (VNeID SSO)';
+                    ['subCCCD_vneid','subName_vneid','subEmail_vneid','subPhone_vneid'].forEach(id => document.getElementById(id).value = '');
+                } else {
+                    document.getElementById('subFormTitleInternal').innerText = 'Thêm mới Tài khoản con (Tài khoản nội bộ)';
+                    ['subUsername_int','subName_int','subEmail_int','subPhone_int'].forEach(id => document.getElementById(id).value = '');
+                }
+            }
+        }
+
+        function editSubAccount(rowId) {
+            const row = document.getElementById(rowId);
+            const cells = row.querySelectorAll('td');
+            
+            if (currentOrgIsVNeID) {
+                document.getElementById('subCCCD_vneid').value = cells[1].innerText;
+                document.getElementById('subName_vneid').value = cells[0].innerText;
+                document.getElementById('subEmail_vneid').value = cells[2].innerText;
+                document.getElementById('subPhone_vneid').value = cells[3].innerText;
+                document.getElementById('subFormTitleVNeID').innerText = 'Chỉnh sửa Tài khoản: ' + cells[0].innerText;
+                document.getElementById('divCreateSubVNeID').style.display = 'block';
+            } else {
+                document.getElementById('subUsername_int').value = cells[1].innerText;
+                document.getElementById('subName_int').value = cells[0].innerText;
+                document.getElementById('subEmail_int').value = cells[2].innerText;
+                document.getElementById('subPhone_int').value = cells[3].innerText;
+                document.getElementById('subFormTitleInternal').innerText = 'Chỉnh sửa Tài khoản: ' + cells[0].innerText;
+                document.getElementById('divCreateSubInternal').style.display = 'block';
+            }
+            
+            document.getElementById('btnAddSub').style.display = 'none';
+        }
+
+        function deleteSubAccount(rowId, name) {
+            if (confirm('Bạn có chắc chắn muốn xóa tài khoản "' + name + '" không?\nHành động này sẽ thu hồi quyền đại diện tổ chức.')) {
+                document.getElementById(rowId).remove();
+                showToast('Đã xóa tài khoản "' + name + '" thành công!');
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastMsg');
+            t.innerText = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function openAddAccountModal() {
+            if (document.getElementById('tab-person').classList.contains('active')) {
+                document.getElementById('addAccType').value = 'PERSON';
+            } else {
+                document.getElementById('addAccType').value = 'ORG';
+            }
+            handleAddAccTypeChange();
+            document.getElementById('addAccountModal').classList.add('active');
+        }
+
+        function handleAddAccTypeChange() {
+            const type = document.getElementById('addAccType').value;
+            document.getElementById('addAccPersonForm').style.display = type === 'PERSON' ? 'block' : 'none';
+            document.getElementById('addAccOrgForm').style.display = type === 'ORG' ? 'block' : 'none';
+            // Reset org tabs to first when switching
+            if (type === 'ORG') {
+                const firstTab = document.querySelector('#addOrgTabs .tab-btn');
+                if(firstTab) switchAddOrgTab('info', firstTab);
+            }
+        }
+
+        function switchAddOrgTab(id, btn) {
+            document.querySelectorAll('#addOrgTabs .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('addOrgTab-info').classList.remove('active');
+            document.getElementById('addOrgTab-sub').classList.remove('active');
+            document.getElementById('addOrgTab-' + id).classList.add('active');
+        }
+
+        function toggleAddNewSubForm(show) {
+            document.getElementById('divCreateNewSubInternal').style.display = show ? 'block' : 'none';
+            document.getElementById('btnAddNewSub').style.display = show ? 'none' : 'inline-flex';
+            if (show) {
+                ['newSubUsername','newSubName','newSubEmail','newSubPhone'].forEach(id => document.getElementById(id).value = '');
+            }
+        }
+        
+        function saveNewSubAccountTemp() {
+            const name = document.getElementById('newSubName').value || 'Nguyễn Văn A';
+            const user = document.getElementById('newSubUsername').value || 'nva';
+            const email = document.getElementById('newSubEmail').value || 'nva@org.com';
+            const phone = document.getElementById('newSubPhone').value || '0900000000';
+            
+            const tbody = document.querySelector('#newSubTable tbody');
+            const noSubMsg = document.getElementById('noSubMsg');
+            if(noSubMsg) noSubMsg.remove();
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${name}</strong></td><td>${user}</td><td>${email}</td><td>${phone}</td><td><span class="tag tag-warning" style="background:#FEF3C7;color:#D97706;border:1px solid #FCD34D">Chờ cấp</span></td><td><button class="icon-btn" title="Xóa" style="color:var(--danger-color)" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>`;
+            tbody.appendChild(tr);
+            
+            toggleAddNewSubForm(false);
+            showToast('Đã lưu tạm vào lưới!');
+        }
+    </script>
+</body>
+</html>
+

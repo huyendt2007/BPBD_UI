@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Khách hàng (DVC)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); padding: var(--spacing-lg); }
+        
+        .card-section { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
+        .section-title { color: var(--primary-color); font-size: var(--heading-size); font-weight: 600; margin-bottom: var(--spacing-md); display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: var(--spacing-md); }
+        .tab { padding: 12px 24px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: 0.2s; user-select: none; }
+        .tab:hover { color: var(--primary-color); }
+        .tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+
+        /* Controls */
+        .grid-3-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); }
+        .form-label { font-weight: 500; margin-bottom: 4px; display: block; color: var(--text-muted); font-size: 13px; }
+        .form-control, .form-select { width: 100%; border: 1px solid var(--border-color); border-radius: 4px; padding: 8px 12px; font-size: 14px; outline: none; }
+        .form-control:focus, .form-select:focus { border-color: var(--secondary-color); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+        
+        .btn { padding: 8px 16px; border-radius: 4px; font-weight: 500; cursor: pointer; border: none; font-size: 14px; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-outline { background-color: white; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-danger { background-color: var(--danger-color); color: white; padding: 4px 8px; font-size: 12px; }
+
+        /* Tree Table */
+        .tree-table { width: 100%; border-collapse: collapse; }
+        .tree-table th { background-color: var(--table-header-bg); color: var(--primary-color); font-weight: 600; padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color); }
+        .tree-table td { padding: 10px 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .tree-table tr:hover { background-color: #F8FAFC; }
+
+        /* Tree Indentation Logic */
+        .level-1 .tree-col { padding-left: 12px; font-weight: 600; color: var(--primary-color); }
+        .level-2 .tree-col { padding-left: 40px; font-weight: 500; }
+        .level-3 .tree-col { padding-left: 70px; color: var(--text-muted); }
+
+        .tree-toggle { cursor: pointer; display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; border: 1px solid var(--border-color); border-radius: 4px; margin-right: 8px; font-size: 10px; background: white; user-select: none; }
+        .tree-icon { color: var(--text-muted); margin-right: 6px; }
+
+        .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .status.active { background-color: #D1FAE5; color: var(--success-color); }
+        .status.locked { background-color: #FEE2E2; color: var(--danger-color); }
+        
+        .badge { background: #E0E7FF; color: var(--primary-color); font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-left: 8px; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="card-section">
+        <div class="section-title">
+            <span>Quản trị Tài khoản Khách hàng DVC</span>
+            <button class="btn btn-primary" id="btnAddNew">+ Cấp mới tài khoản thủ công</button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab" onclick="switchTab('tab-ca-nhan', this)">1. Khách hàng Cá nhân</div>
+            <div class="tab active" onclick="switchTab('tab-to-chuc', this)">2. Khách hàng Tổ chức / Ngân hàng</div>
+            <div class="tab" onclick="switchTab('tab-co-quan', this)">3. Cơ quan Thẩm quyền (Miễn phí)</div>
+        </div>
+
+        <div class="grid-3-cols" style="align-items: end;">
+            <div>
+                <label class="form-label">Tên tổ chức / Mã số thuế</label>
+                <input type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm...">
+            </div>
+            <div>
+                <label class="form-label">Loại tài khoản</label>
+                <select class="form-select">
+                    <option>-- Tất cả --</option>
+                    <option>Hội sở chính (Master)</option>
+                    <option>Chi nhánh (Sub-Master)</option>
+                    <option>Tài khoản phụ (PGD)</option>
+                </select>
+            </div>
+            <div>
+                <button class="btn btn-outline">Làm mới</button>
+                <button class="btn btn-primary">Tìm kiếm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: CÁ NHÂN -->
+    <div id="tab-ca-nhan" class="tab-content card-section" style="padding: 0; overflow: hidden;">
+        <table class="tree-table">
+            <thead>
+                <tr>
+                    <th width="5%" style="text-align: center;">STT</th>
+                    <th width="20%">Họ và tên</th>
+                    <th width="15%">Số CCCD</th>
+                    <th width="20%">Tên đăng nhập</th>
+                    <th width="15%">Xác thực bằng</th>
+                    <th width="10%">Trạng thái</th>
+                    <th width="15%">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: center;">1</td>
+                    <td><strong>Nguyễn Văn A</strong></td>
+                    <td>001090123456</td>
+                    <td>001090123456</td>
+                    <td><span class="badge" style="background:#DBEAFE;color:#1D4ED8;">VNeID Mức 2</span></td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Xem chi tiết</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">2</td>
+                    <td><strong>Trần Thị B</strong></td>
+                    <td>034192000123</td>
+                    <td>tran.b123</td>
+                    <td><span class="badge" style="background:#F3F4F6;color:#4B5563;">Thủ công (Đã duyệt)</span></td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Xem chi tiết</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">3</td>
+                    <td><strong>Lê Hoàng C</strong></td>
+                    <td>015189001234</td>
+                    <td>lehoangc89</td>
+                    <td><span class="badge" style="background:#FEF3C7;color:#D97706;">Chờ duyệt</span></td>
+                    <td><span class="status locked">Chưa kích hoạt</span></td>
+                    <td><button class="btn btn-primary" style="padding: 4px 8px; font-size:12px;">Phê duyệt</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">4</td>
+                    <td><strong>Phạm Thị D</strong></td>
+                    <td>001290123457</td>
+                    <td>phamthid</td>
+                    <td><span class="badge" style="background:#DBEAFE;color:#1D4ED8;">VNeID Mức 2</span></td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Xem chi tiết</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">5</td>
+                    <td><strong>Đinh Văn E</strong></td>
+                    <td>035192000125</td>
+                    <td>dinhvane</td>
+                    <td><span class="badge" style="background:#F3F4F6;color:#4B5563;">Thủ công (Đã duyệt)</span></td>
+                    <td><span class="status locked">Đã khóa</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Xem chi tiết</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">6</td>
+                    <td><strong>Bùi Thị F</strong></td>
+                    <td>016189001236</td>
+                    <td>buithif</td>
+                    <td><span class="badge" style="background:#FEF3C7;color:#D97706;">Chờ duyệt</span></td>
+                    <td><span class="status locked">Chưa kích hoạt</span></td>
+                    <td><button class="btn btn-primary" style="padding: 4px 8px; font-size:12px;">Phê duyệt</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">7</td>
+                    <td><strong>Vũ Văn G</strong></td>
+                    <td>001390123458</td>
+                    <td>vuvang</td>
+                    <td><span class="badge" style="background:#DBEAFE;color:#1D4ED8;">VNeID Mức 2</span></td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Xem chi tiết</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">8</td>
+                    <td><strong>Ngô Thị H</strong></td>
+                    <td>036192000127</td>
+                    <td>ngothih</td>
+                    <td><span class="badge" style="background:#F3F4F6;color:#4B5563;">Thủ công (Đã duyệt)</span></td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Xem chi tiết</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">9</td>
+                    <td><strong>Lý Văn I</strong></td>
+                    <td>017189001238</td>
+                    <td>lyvani</td>
+                    <td><span class="badge" style="background:#FEF3C7;color:#D97706;">Chờ duyệt</span></td>
+                    <td><span class="status locked">Chưa kích hoạt</span></td>
+                    <td><button class="btn btn-primary" style="padding: 4px 8px; font-size:12px;">Phê duyệt</button></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">10</td>
+                    <td><strong>Trịnh Thị K</strong></td>
+                    <td>001490123459</td>
+                    <td>trinhthik</td>
+                    <td><span class="badge" style="background:#DBEAFE;color:#1D4ED8;">VNeID Mức 2</span></td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Xem chi tiết</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">
+            Hiển thị 1-3 trong số 12,450 cá nhân.
+        </div>
+    </div>
+
+    <!-- TAB: CƠ QUAN -->
+    <div id="tab-co-quan" class="tab-content card-section" style="padding: 0; overflow: hidden;">
+        <div style="padding: 12px 16px; background-color: #EFF6FF; border-bottom: 1px solid var(--border-color); color: var(--primary-color); font-size: 13px;">
+            <strong>Lưu ý:</strong> Các tài khoản Cơ quan thẩm quyền (Tòa án, THADS) do Admin cấp phát tại đây sẽ <b>không bị tính phí</b> khi thao tác nghiệp vụ.
+        </div>
+        <table class="tree-table">
+            <thead>
+                <tr>
+                    <th width="5%" style="text-align: center;">STT</th>
+                    <th width="30%">Tên Cơ quan / Đơn vị</th>
+                    <th width="15%">Mã định danh</th>
+                    <th width="15%">Tài khoản đại diện</th>
+                    <th width="10%">Loại Cơ quan</th>
+                    <th width="10%">Trạng thái</th>
+                    <th width="15%">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: center;">1</td>
+                    <td><strong>Tòa án nhân dân quận Đống Đa</strong></td>
+                    <td>-</td>
+                    <td>ta_dongda_01</td>
+                    <td>Tòa án</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">2</td>
+                    <td><strong>Chi cục THADS quận Cầu Giấy</strong></td>
+                    <td>-</td>
+                    <td>thads_caugiay_01</td>
+                    <td>Thi hành án</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">3</td>
+                    <td><strong>Viện kiểm sát nhân dân TP. Hà Nội</strong></td>
+                    <td>-</td>
+                    <td>vks_hanoi_01</td>
+                    <td>Viện kiểm sát</td>
+                    <td><span class="status locked">Đã khóa</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Mở khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">4</td>
+                    <td><strong>Công an TP Hà Nội</strong></td>
+                    <td>-</td>
+                    <td>ca_hanoi_01</td>
+                    <td>Công an</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">5</td>
+                    <td><strong>Tòa án nhân dân quận Thanh Xuân</strong></td>
+                    <td>-</td>
+                    <td>ta_thanhxuan_01</td>
+                    <td>Tòa án</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">6</td>
+                    <td><strong>Chi cục THADS quận Ba Đình</strong></td>
+                    <td>-</td>
+                    <td>thads_badinh_01</td>
+                    <td>Thi hành án</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">7</td>
+                    <td><strong>Viện kiểm sát nhân dân quận Tây Hồ</strong></td>
+                    <td>-</td>
+                    <td>vks_tayho_01</td>
+                    <td>Viện kiểm sát</td>
+                    <td><span class="status locked">Đã khóa</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Mở khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">8</td>
+                    <td><strong>Cục cảnh sát điều tra tội phạm</strong></td>
+                    <td>-</td>
+                    <td>csdt_01</td>
+                    <td>Công an</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">9</td>
+                    <td><strong>Tòa án nhân dân quận Hai Bà Trưng</strong></td>
+                    <td>-</td>
+                    <td>ta_haibatrung_01</td>
+                    <td>Tòa án</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">10</td>
+                    <td><strong>Chi cục THADS quận Hoàn Kiếm</strong></td>
+                    <td>-</td>
+                    <td>thads_hoankiem_01</td>
+                    <td>Thi hành án</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- TAB: TỔ CHỨC -->
+    <div id="tab-to-chuc" class="tab-content active card-section" style="padding: 0; overflow: hidden;">
+        <table class="tree-table">
+            <thead>
+                <tr>
+                    <th width="45%">Cơ cấu Tổ chức (Hội sở / Chi nhánh / PGD)</th>
+                    <th width="15%">Mã số thuế</th>
+                    <th width="15%">Đăng nhập bằng</th>
+                    <th width="10%">Trạng thái</th>
+                    <th width="15%">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- HỘI SỞ 1 -->
+                <tr class="level-1" data-id="1">
+                    <td class="tree-col">
+                        <span class="tree-toggle" onclick="toggleNode(1, this)">▼</span>
+                        <span class="tree-icon">🏢</span> Ngân hàng TMCP Ngoại thương VN (Vietcombank)
+                        <span class="badge">Hội sở</span>
+                    </td>
+                    <td>0100112437</td>
+                    <td>USB Token</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button></td>
+                </tr>
+
+                <!-- CHI NHÁNH 1.1 -->
+                <tr class="level-2" data-parent="1" data-id="1-1">
+                    <td class="tree-col">
+                        <span class="tree-toggle" onclick="toggleNode('1-1', this)">▼</span>
+                        <span class="tree-icon">🏫</span> VCB Chi nhánh Đống Đa
+                        <span class="badge">Chi nhánh</span>
+                    </td>
+                    <td>0100112437-001</td>
+                    <td>USB Token</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button></td>
+                </tr>
+
+                <!-- TÀI KHOẢN PHỤ 1.1.1 -->
+                <tr class="level-3" data-parent="1-1">
+                    <td class="tree-col">
+                        <span class="tree-icon">👤</span> vcb_dongda_nv1 (Nguyễn Văn A)
+                    </td>
+                    <td>-</td>
+                    <td>User / Pass</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+                <!-- TÀI KHOẢN PHỤ 1.1.2 -->
+                <tr class="level-3" data-parent="1-1">
+                    <td class="tree-col">
+                        <span class="tree-icon">👤</span> vcb_dongda_nv2 (Trần Thị B)
+                    </td>
+                    <td>-</td>
+                    <td>User / Pass</td>
+                    <td><span class="status locked">Đã khóa</span></td>
+                    <td>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Mở khóa</button>
+                    </td>
+                </tr>
+
+                <!-- CHI NHÁNH 1.2 -->
+                <tr class="level-2" data-parent="1" data-id="1-2">
+                    <td class="tree-col">
+                        <span class="tree-toggle" onclick="toggleNode('1-2', this)">▶</span>
+                        <span class="tree-icon">🏫</span> VCB Chi nhánh TP.Hồ Chí Minh
+                        <span class="badge">Chi nhánh</span>
+                    </td>
+                    <td>0100112437-002</td>
+                    <td>USB Token</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button></td>
+                </tr>
+                
+                <!-- TÀI KHOẢN PHỤ CỦA CHI NHÁNH 1.2 (Hidden by default) -->
+                <tr class="level-3" data-parent="1-2" style="display: none;">
+                    <td class="tree-col">
+                        <span class="tree-icon">👤</span> vcb_hcm_nv1 (Lê Thị C)
+                    </td>
+                    <td>-</td>
+                    <td>User / Pass</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-danger">Khóa</button>
+                    </td>
+                </tr>
+
+                <!-- HỘI SỞ 2 -->
+                <tr class="level-1" data-id="2">
+                    <td class="tree-col" style="border-top: 2px solid var(--border-color);">
+                        <span class="tree-toggle" onclick="toggleNode(2, this)">▶</span>
+                        <span class="tree-icon">🏢</span> Ngân hàng TMCP Kỹ thương VN (Techcombank)
+                        <span class="badge">Hội sở</span>
+                    </td>
+                    <td style="border-top: 2px solid var(--border-color);">0100234567</td>
+                    <td style="border-top: 2px solid var(--border-color);">USB Token</td>
+                    <td style="border-top: 2px solid var(--border-color);"><span class="status active">Hoạt động</span></td>
+                    <td style="border-top: 2px solid var(--border-color);"><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button></td>
+                </tr>
+                
+                <tr class="level-2" data-parent="2" style="display: none;">
+                    <td class="tree-col">
+                        <span class="tree-icon">🏫</span> TCB Chi nhánh Hà Nội
+                        <span class="badge">Chi nhánh</span>
+                    </td>
+                    <td>0100234567-001</td>
+                    <td>USB Token</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button></td>
+                </tr>
+                
+                <tr class="level-3" data-parent="2" style="display: none;">
+                    <td class="tree-col">
+                        <span class="tree-icon">👤</span> tcb_hn_nv1 (Trần Văn C)
+                    </td>
+                    <td>-</td>
+                    <td>User / Pass</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-danger">Khóa</button></td>
+                </tr>
+
+                <!-- HỘI SỞ 3 -->
+                <tr class="level-1" data-id="3">
+                    <td class="tree-col" style="border-top: 2px solid var(--border-color);">
+                        <span class="tree-toggle" onclick="toggleNode(3, this)">▶</span>
+                        <span class="tree-icon">🏢</span> Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)
+                        <span class="badge">Hội sở</span>
+                    </td>
+                    <td style="border-top: 2px solid var(--border-color);">0100345678</td>
+                    <td style="border-top: 2px solid var(--border-color);">USB Token</td>
+                    <td style="border-top: 2px solid var(--border-color);"><span class="status active">Hoạt động</span></td>
+                    <td style="border-top: 2px solid var(--border-color);"><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button></td>
+                </tr>
+
+                <tr class="level-2" data-parent="3" style="display: none;">
+                    <td class="tree-col">
+                        <span class="tree-icon">🏫</span> BIDV Chi nhánh Ba Đình
+                        <span class="badge">Chi nhánh</span>
+                    </td>
+                    <td>0100345678-001</td>
+                    <td>USB Token</td>
+                    <td><span class="status active">Hoạt động</span></td>
+                    <td><button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;">Sửa</button></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">
+            Hiển thị 1-10 trong số 245 tổ chức.
+        </div>
+    </div>
+
+    <script>
+        // JS Xử lý chuyển Tab
+        function switchTab(tabId, element) {
+            // Xóa active các tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            // Active tab được chọn
+            element.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // JS Xử lý đóng/mở Tree Table (Mô phỏng Parent - Child)
+        function toggleNode(id, element) {
+            const isExpanded = element.innerText === '▼';
+            element.innerText = isExpanded ? '▶' : '▼';
+            
+            const rows = document.querySelectorAll(`tr[data-parent="${id}"]`);
+            rows.forEach(row => {
+                row.style.display = isExpanded ? 'none' : 'table-row';
+                
+                // Thu gọn các node con bên trong nếu node cha bị đóng
+                if (isExpanded) {
+                    const childToggle = row.querySelector('.tree-toggle');
+                    if (childToggle) {
+                        childToggle.innerText = '▶';
+                    }
+                    const childId = row.getAttribute('data-id');
+                    if (childId) {
+                        const childRows = document.querySelectorAll(`tr[data-parent="${childId}"]`);
+                        childRows.forEach(cr => cr.style.display = 'none');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

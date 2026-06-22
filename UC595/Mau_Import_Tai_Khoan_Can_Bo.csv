@@ -1,0 +1,3 @@
+﻿STT,Họ và tên (*),Tên đăng nhập (*),Email (*),Số điện thoại (*),Mã Đơn vị (*),Mã Phòng ban (*),Mã Chức vụ (*),Mã Nhóm người sử dụng,Mã Vai trò
+1,Nguyễn Văn A,nva123,nva@test.com,0987654321,DV01,PB01,CV03,G_CB_CUC,R_CUC_01
+2,Trần Thị B,ttb456,ttb@test.com,0123456789,DV02,PB03,CV02,G_CB_CUC,R_CUC_02

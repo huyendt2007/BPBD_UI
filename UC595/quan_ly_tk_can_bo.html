@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý tài khoản cán bộ</title>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Design System CSS Variables */
+        :root {
+            /* Brand Colors */
+            --primary-color: #1E3A8A; /* Xanh Navy đậm */
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6; /* Xanh nhạt */
+            --accent-color: #F59E0B; /* Vàng hổ phách */
+
+            /* Semantic Colors */
+            --success-color: #10B981; 
+            --danger-color: #EF4444; 
+            --warning-color: #F59E0B; 
+            --info-color: #3B82F6; 
+
+            /* Neutral/Grayscale */
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+
+            /* Typography & Spacing */
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+            
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Reset & Base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: var(--base-size);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+
+        /* Layout & Cards */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: var(--heading-size);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-2-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .grid-3-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        .grid-4-cols {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem 0.75rem;
+            font-size: var(--base-size);
+            color: var(--text-main);
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+            font-family: var(--font-family);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            outline: none;
+        }
+        
+        .form-control:read-only {
+            background-color: var(--bg-body);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+
+        .required-mark {
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+
+        /* Buttons */
+        .btn {
+            font-weight: 500;
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: var(--base-size);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-family);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .action-toolbar {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: flex-end;
+            margin-top: var(--spacing-md);
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: var(--spacing-md);
+            min-width: 1000px;
+        }
+
+        .table th {
+            background-color: var(--table-header-bg);
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 12px;
+            border-bottom: 2px solid var(--border-color);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(241, 245, 249, 0.5);
+        }
+
+        .table .action-cell {
+            display: flex;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .icon-btn.edit { color: var(--info-color); }
+        .icon-btn.edit:hover { background-color: rgba(59, 130, 246, 0.1); }
+        
+        .icon-btn.reset-pwd { color: var(--accent-color); }
+        .icon-btn.reset-pwd:hover { background-color: rgba(245, 158, 11, 0.1); }
+        
+        .icon-btn.lock { color: var(--warning-color); }
+        .icon-btn.lock:hover { background-color: rgba(245, 158, 11, 0.1); }
+        
+        .icon-btn.delete { color: var(--danger-color); }
+        .icon-btn.delete:hover { background-color: rgba(239, 68, 68, 0.1); }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 4px;
+            margin-bottom: 4px;
+            background-color: #E2E8F0;
+            color: #475569;
+        }
+        .tag.status-active {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+        .tag.status-locked {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+        .tag.role-tag {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-20px);
+            transition: all 0.3s;
+        }
+        
+        .modal-content.modal-sm {
+            max-width: 450px;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            font-size: var(--heading-size);
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-modal:hover { color: var(--danger-color); }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .modal-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-md);
+            background-color: #F8FAFC;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+        }
+
+        /* Toast / Alert */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .toast {
+            background-color: white;
+            border-left: 4px solid var(--success-color);
+            box-shadow: var(--box-shadow);
+            padding: 16px 20px;
+            border-radius: var(--border-radius-md);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.error {
+            border-left-color: var(--danger-color);
+        }
+        .toast.error i { color: var(--danger-color); }
+        .toast.success i { color: var(--success-color); }
+
+        /* Multi-select mock */
+        .select-multiple {
+            height: 120px;
+            overflow-y: auto;
+        }
+        .select-multiple option {
+            padding: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .select-multiple option:checked {
+            background-color: var(--info-color) !important;
+            color: white;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: #CBD5E1;
+            margin-bottom: 16px;
+        }
+
+        /* Tree View */
+        .permission-tree {
+            font-size: 13px;
+        }
+        .tree-node {
+            margin-bottom: 8px;
+        }
+        .tree-node-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 4px;
+        }
+        .tree-children {
+            margin-left: 24px;
+            border-left: 1px dashed #cbd5e1;
+            padding-left: 12px;
+        }
+        .tree-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            color: var(--text-main);
+        }
+        .tree-item label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .tree-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+        }
+        .tree-badge {
+            font-size: 10px;
+            background-color: #e0e7ff;
+            color: #4338ca;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* Checklist Container */
+        .checklist-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            height: 120px;
+            overflow-y: auto;
+            background-color: var(--bg-surface);
+            padding: 4px 0;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: normal;
+            margin: 0;
+            font-size: 13px;
+        }
+        .checklist-item:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        .checklist-item input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: var(--primary-color);
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+        
+        .search-box-sm {
+            position: relative;
+            margin-bottom: 8px;
+        }
+        .search-box-sm i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .search-box-sm input {
+            width: 100%;
+            padding: 6px 10px 6px 30px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: var(--font-family);
+        }
+        .search-box-sm input:focus {
+            border-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- Title -->
+    <div style="margin-bottom: var(--spacing-lg);">
+        <h1 style="color: var(--primary-color); font-size: 24px;">Quản lý tài khoản cán bộ</h1>
+        <p style="color: var(--text-muted);">Phân hệ Quản trị hệ thống</p>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card-section">
+        <h2 class="section-title"><i class="fas fa-filter"></i> Bộ lọc tìm kiếm</h2>
+        
+        <form id="filterForm">
+            <div class="grid-4-cols">
+                <div class="form-group">
+                    <label class="form-label">Từ khóa tìm kiếm</label>
+                    <input type="text" id="filterKeyword" class="form-control" placeholder="Họ tên, Tên đăng nhập, Email...">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Đơn vị</label>
+                    <select id="filterUnit" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="DV01">Cục đăng ký giao dịch bảo đảm và bồi thường nhà nước</option>
+                        <option value="DV02">Trung tâm Đăng ký GDTS tại Hà Nội</option>
+                        <option value="DV03">Sở Tư pháp TP.HCM</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Phòng ban</label>
+                    <select id="filterDept" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <!-- Options generated by JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Chức vụ</label>
+                    <select id="filterTitle" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="CV01">Cục trưởng / Giám đốc</option>
+                        <option value="CV02">Trưởng phòng</option>
+                        <option value="CV03">Chuyên viên / Đăng ký viên</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select id="filterStatus" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="1">Đang hoạt động</option>
+                        <option value="0">Bị khóa</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="action-toolbar">
+                <button type="button" class="btn btn-primary" onclick="searchData()"><i class="fas fa-search"></i> Tìm kiếm</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="card-section">
+        <div class="section-title">
+            <span><i class="fas fa-list"></i> Danh sách cán bộ</span>
+            <div>
+                <button class="btn btn-outline-primary" onclick="openImportModal()"><i class="fas fa-file-import"></i> Import Excel</button>
+                <button class="btn btn-outline-primary" onclick="openModal('add')"><i class="fas fa-plus"></i> Thêm mới tài khoản</button>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table" id="dataTable">
+                <thead>
+                    <tr>
+                        <th width="5%">STT</th>
+                        <th width="15%">Họ và tên</th>
+                        <th width="12%">Tên đăng nhập</th>
+                        <th width="20%">Đơn vị - Phòng ban</th>
+                        <th width="12%">Chức vụ</th>
+                        <th width="15%">Nhóm / Vai trò</th>
+                        <th width="10%">Trạng thái</th>
+                        <th width="11%">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be rendered by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal Thêm/Sửa -->
+<div class="modal-overlay" id="accountModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Thêm mới tài khoản cán bộ</h3>
+            <button class="close-modal" onclick="closeModal('accountModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="accountForm">
+                <input type="hidden" id="formId">
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Họ và tên <span class="required-mark">*</span></label>
+                        <input type="text" id="formFullName" class="form-control" required>
+                        <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Nhập họ và tên</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên đăng nhập <span class="required-mark">*</span></label>
+                        <input type="text" id="formUsername" class="form-control" required>
+                        <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Nhập tên đăng nhập</span>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Email <span class="required-mark">*</span></label>
+                        <input type="email" id="formEmail" class="form-control" required>
+                        <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Ví dụ: email@moj.gov.vn</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại <span class="required-mark">*</span></label>
+                        <input type="text" id="formPhone" class="form-control" required>
+                        <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Nhập số điện thoại</span>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Đơn vị <span class="required-mark">*</span></label>
+                        <select id="formUnit" class="form-select" required onchange="loadFormDepartments()">
+                            <option value="">-- Chọn đơn vị --</option>
+                            <option value="DV01">Cục đăng ký giao dịch bảo đảm và bồi thường nhà nước</option>
+                            <option value="DV02">Trung tâm Đăng ký GDTS tại Hà Nội</option>
+                            <option value="DV03">Sở Tư pháp TP.HCM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phòng ban <span class="required-mark">*</span></label>
+                        <select id="formDept" class="form-select" required>
+                            <option value="">-- Chọn phòng ban --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Chức vụ <span class="required-mark">*</span></label>
+                        <select id="formTitle" class="form-select" required>
+                            <option value="">-- Chọn chức vụ --</option>
+                            <option value="CV01">Cục trưởng / Giám đốc</option>
+                            <option value="CV02">Trưởng phòng</option>
+                            <option value="CV03">Chuyên viên / Đăng ký viên</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 20px 0;">
+                
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Nhóm người sử dụng</label>
+                        <div class="search-box-sm">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Tìm kiếm nhóm..." onkeyup="filterChecklist('groupList', this.value)">
+                        </div>
+                        <div class="checklist-container" id="groupList">
+                            <label class="checklist-item"><input type="checkbox" value="G1" onchange="renderPermissionTree()"> Quản trị viên hệ thống (Internal)</label>
+                            <label class="checklist-item"><input type="checkbox" value="G2" onchange="renderPermissionTree()"> Cán bộ tiếp nhận và trả kết quả</label>
+                            <label class="checklist-item"><input type="checkbox" value="G3" onchange="renderPermissionTree()"> Cán bộ chuyên môn xét duyệt</label>
+                            <label class="checklist-item"><input type="checkbox" value="G4" onchange="renderPermissionTree()"> Kế toán thanh toán</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vai trò độc lập</label>
+                        <div class="search-box-sm">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Tìm kiếm vai trò..." onkeyup="filterChecklist('roleList', this.value)">
+                        </div>
+                        <div class="checklist-container" id="roleList">
+                            <label class="checklist-item"><input type="checkbox" value="R1" onchange="renderPermissionTree()"> Báo cáo thống kê</label>
+                            <label class="checklist-item"><input type="checkbox" value="R2" onchange="renderPermissionTree()"> Tra cứu lịch sử hệ thống</label>
+                            <label class="checklist-item"><input type="checkbox" value="R3" onchange="renderPermissionTree()"> Quản lý danh mục dùng chung</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fas fa-sitemap"></i> Cây phân quyền chi tiết (Cộng dồn từ Nhóm & Vai trò)</span>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <div class="search-box-sm" style="margin-bottom: 0; width: 220px;">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchTree" placeholder="Tìm quyền..." onkeyup="filterTree(this.value)">
+                            </div>
+                            <button type="button" class="btn btn-outline-primary" style="padding: 5px 10px; font-size: 13px;" onclick="renderPermissionTree()"><i class="fas fa-sync"></i> Làm mới</button>
+                        </div>
+                    </label>
+                    <div class="permission-tree" id="permissionTree" style="border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: var(--spacing-md); max-height: 250px; overflow-y: auto; background-color: #fafafa;">
+                        <!-- JS will render tree here -->
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-primary" id="btnResetPwdForm" style="display:none; margin-right: auto;" onclick="confirmResetPwdForm()"><i class="fas fa-key"></i> Đặt lại mật khẩu</button>
+            <button type="button" class="btn btn-secondary" onclick="closeModal('accountModal')">Hủy</button>
+            <button type="button" class="btn btn-primary" onclick="saveAccount()"><i class="fas fa-save"></i> Lưu lại</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Import Excel -->
+<div class="modal-overlay" id="importModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3>Import danh sách tài khoản từ Excel</h3>
+            <button class="close-modal" onclick="closeModal('importModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div style="margin-bottom: var(--spacing-md); text-align: right;">
+                <a href="Mau_Import_Tai_Khoan_Can_Bo.csv" download class="btn btn-outline-primary" style="text-decoration: none;"><i class="fas fa-download"></i> Tải file mẫu (CSV)</a>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Chọn file dữ liệu tải lên (.xls, .xlsx, .csv) <span class="required">*</span></label>
+                <input type="file" id="importFile" class="form-control" accept=".xls,.xlsx,.csv">
+            </div>
+            
+            <div style="background-color: var(--table-header-bg); padding: var(--spacing-md); border-radius: var(--border-radius-md); font-size: 13px; margin-top: var(--spacing-lg);">
+                <strong><i class="fas fa-info-circle text-info"></i> Lưu ý các điều kiện bắt buộc (Ngoại lệ):</strong>
+                <ul style="margin-top: var(--spacing-sm); padding-left: 20px; color: var(--text-muted); line-height: 1.5;">
+                    <li>Không bỏ trống các cột đánh dấu (*).</li>
+                    <li>Tên đăng nhập, Email, SĐT phải duy nhất, không trùng lặp trên hệ thống và trong file tải lên.</li>
+                    <li>Định dạng Email (có @) và SĐT (chỉ chứa số) phải hợp lệ.</li>
+                    <li>Mã Đơn vị, Phòng ban, Chức vụ, Nhóm, Vai trò phải khớp với hệ thống.</li>
+                </ul>
+                <div style="margin-top: 8px; color: var(--warning-color);">
+                    <em>* Quan trọng: Hệ thống vẫn Import thành công các dòng hợp lệ. Các dòng lỗi sẽ bị từ chối và hiển thị thông báo chi tiết để bạn chỉnh sửa.</em>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('importModal')">Hủy</button>
+            <button type="button" class="btn btn-primary" onclick="executeImport()"><i class="fas fa-upload"></i> Xác nhận Import</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xác nhận Xóa -->
+<div class="modal-overlay" id="confirmDeleteModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3>Xác nhận xóa tài khoản</h3>
+            <button class="close-modal" onclick="closeModal('confirmDeleteModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa tài khoản <strong id="deleteTargetName"></strong>?</p>
+            <p style="color: var(--danger-color); margin-top: 10px; font-size: 13px;">Hành động này không thể hoàn tác!</p>
+            <input type="hidden" id="deleteTargetId">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('confirmDeleteModal')">Hủy</button>
+            <button type="button" class="btn btn-danger" onclick="executeDelete()"><i class="fas fa-trash"></i> Xác nhận Xóa</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xác nhận Khóa -->
+<div class="modal-overlay" id="confirmLockModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3>Xác nhận <span id="lockActionText">Khóa</span> tài khoản</h3>
+            <button class="close-modal" onclick="closeModal('confirmLockModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn thay đổi trạng thái của tài khoản <strong id="lockTargetName"></strong>?</p>
+            <input type="hidden" id="lockTargetId">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('confirmLockModal')">Hủy</button>
+            <button type="button" class="btn btn-primary" onclick="executeLock()"><i class="fas fa-check"></i> Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xác nhận Reset Pwd -->
+<div class="modal-overlay" id="confirmResetPwdModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3>Đặt lại mật khẩu</h3>
+            <button class="close-modal" onclick="closeModal('confirmResetPwdModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Hệ thống sẽ tạo mật khẩu mới ngẫu nhiên và gửi về Email của cán bộ <strong id="pwdTargetName"></strong>.</p>
+            <p style="margin-top: 10px;">Bạn có chắc chắn?</p>
+            <input type="hidden" id="pwdTargetId">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('confirmResetPwdModal')">Hủy</button>
+            <button type="button" class="btn btn-primary" onclick="executeResetPwd()"><i class="fas fa-paper-plane"></i> Đồng ý gửi</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    // --- Mock Data ---
+    const MOCK_DEPARTMENTS = {
+        "DV01": [
+            { id: "PB01", name: "Phòng Nghiệp vụ 1" },
+            { id: "PB02", name: "Phòng Hành chính Tổng hợp" }
+        ],
+        "DV02": [
+            { id: "PB03", name: "Tổ Đăng ký" },
+            { id: "PB04", name: "Tổ Kế toán" }
+        ],
+        "DV03": [
+            { id: "PB05", name: "Phòng Bổ trợ tư pháp" }
+        ]
+    };
+
+    const MOCK_TITLES = {
+        "CV01": "Cục trưởng / Giám đốc",
+        "CV02": "Trưởng phòng",
+        "CV03": "Chuyên viên / Đăng ký viên"
+    };
+
+    const MOCK_UNITS = {
+        "DV01": "Cục đăng ký giao dịch bảo đảm và bồi thường nhà nước",
+        "DV02": "Trung tâm Đăng ký GDTS tại Hà Nội",
+        "DV03": "Sở Tư pháp TP.HCM"
+    };
+
+    // Mock Permissions
+    const MOCK_PERMISSIONS = [
+        {
+            id: "MOD_DANG_KY",
+            name: "Quản lý Đăng ký",
+            children: [
+                { id: "P_DK_VIEW", name: "Xem danh sách hồ sơ" },
+                { id: "P_DK_CREATE", name: "Tạo mới hồ sơ" },
+                { id: "P_DK_APPROVE", name: "Xét duyệt hồ sơ" }
+            ]
+        },
+        {
+            id: "MOD_TRA_CUU",
+            name: "Tra cứu & Cung cấp thông tin",
+            children: [
+                { id: "P_TC_VIEW", name: "Tra cứu thông tin" },
+                { id: "P_TC_EXPORT", name: "Xuất báo cáo tra cứu" }
+            ]
+        },
+        {
+            id: "MOD_HE_THONG",
+            name: "Quản trị hệ thống",
+            children: [
+                { id: "P_SYS_USER", name: "Quản lý người dùng" },
+                { id: "P_SYS_DICT", name: "Quản lý danh mục" },
+                { id: "P_SYS_LOG", name: "Xem nhật ký hệ thống" }
+            ]
+        }
+    ];
+
+    const GROUP_PERMISSIONS = {
+        "G1": ["P_DK_VIEW", "P_TC_VIEW", "P_SYS_USER", "P_SYS_DICT", "P_SYS_LOG"],
+        "G2": ["P_DK_VIEW", "P_DK_CREATE", "P_TC_VIEW"],
+        "G3": ["P_DK_VIEW", "P_DK_APPROVE"],
+        "G4": ["P_TC_VIEW"]
+    };
+
+    const ROLE_PERMISSIONS = {
+        "R1": ["P_TC_EXPORT"],
+        "R2": ["P_SYS_LOG"],
+        "R3": ["P_SYS_DICT"]
+    };
+
+    // Khởi tạo 10+ bản ghi giả lập đa dạng
+    let accounts = [
+        { id: 1, name: "Nguyễn Văn A", username: "nva_cuc", email: "nva@moj.gov.vn", phone: "0901234561", unitId: "DV01", deptId: "PB01", titleId: "CV01", status: 1, groups: ["G1"], roles: ["R1", "R2"], hasData: true },
+        { id: 2, name: "Trần Thị B", username: "ttb_hcth", email: "ttb@moj.gov.vn", phone: "0901234562", unitId: "DV01", deptId: "PB02", titleId: "CV02", status: 1, groups: ["G2"], roles: [], hasData: true },
+        { id: 3, name: "Lê Minh C", username: "lmc_ttdk", email: "lmc@moj.gov.vn", phone: "0901234563", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2", "G3"], roles: [], hasData: false },
+        { id: 4, name: "Phạm Hoàng D", username: "phd_ttdk", email: "phd@moj.gov.vn", phone: "0901234564", unitId: "DV02", deptId: "PB04", titleId: "CV03", status: 1, groups: ["G4"], roles: ["R1"], hasData: true },
+        { id: 5, name: "Vũ Tuấn E", username: "vte_stp", email: "vte@moj.gov.vn", phone: "0901234565", unitId: "DV03", deptId: "PB05", titleId: "CV02", status: 0, groups: [], roles: ["R2"], hasData: false },
+        { id: 6, name: "Hoàng Ngọc F", username: "hnf_cuc", email: "hnf@moj.gov.vn", phone: "0901234566", unitId: "DV01", deptId: "PB01", titleId: "CV03", status: 1, groups: ["G3"], roles: [], hasData: true },
+        { id: 7, name: "Đinh Công G", username: "dcg_hcth", email: "dcg@moj.gov.vn", phone: "0901234567", unitId: "DV01", deptId: "PB02", titleId: "CV03", status: 1, groups: [], roles: ["R3"], hasData: false },
+        { id: 8, name: "Bùi Thị H", username: "bth_ttdk", email: "bth@moj.gov.vn", phone: "0901234568", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2"], roles: ["R2"], hasData: true },
+        { id: 9, name: "Lý Văn I", username: "lvi_stp", email: "lvi@moj.gov.vn", phone: "0901234569", unitId: "DV03", deptId: "PB05", titleId: "CV03", status: 0, groups: ["G2"], roles: [], hasData: true },
+        { id: 10, name: "Trịnh Đức K", username: "tdk_ttdk", email: "tdk@moj.gov.vn", phone: "0901234570", unitId: "DV02", deptId: "PB04", titleId: "CV02", status: 1, groups: ["G4"], roles: ["R1", "R3"], hasData: false }
+    ];
+
+    // --- Init & Render ---
+    window.onload = function() {
+        initFilterDepartments();
+        renderTable(accounts);
+    };
+
+    // Filter Department logic
+    document.getElementById('filterUnit').addEventListener('change', function() {
+        const unitId = this.value;
+        const deptSelect = document.getElementById('filterDept');
+        deptSelect.innerHTML = '<option value="">-- Tất cả --</option>';
+        if (unitId && MOCK_DEPARTMENTS[unitId]) {
+            MOCK_DEPARTMENTS[unitId].forEach(d => {
+                deptSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+            });
+        }
+    });
+
+    // Form Department logic
+    function loadFormDepartments(selectedDeptId = '') {
+        const unitId = document.getElementById('formUnit').value;
+        const deptSelect = document.getElementById('formDept');
+        deptSelect.innerHTML = '<option value="">-- Chọn phòng ban --</option>';
+        if (unitId && MOCK_DEPARTMENTS[unitId]) {
+            MOCK_DEPARTMENTS[unitId].forEach(d => {
+                let selected = d.id === selectedDeptId ? 'selected' : '';
+                deptSelect.innerHTML += `<option value="${d.id}" ${selected}>${d.name}</option>`;
+            });
+        }
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>Không có dữ liệu phù hợp</p>
+                        </div>
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        data.forEach((item, index) => {
+            const unitName = MOCK_UNITS[item.unitId];
+            const deptObj = MOCK_DEPARTMENTS[item.unitId]?.find(d => d.id === item.deptId);
+            const deptName = deptObj ? deptObj.name : '';
+            const titleName = MOCK_TITLES[item.titleId];
+            
+            // Format Tags
+            let tagsHtml = '';
+            item.groups.forEach(g => {
+                tagsHtml += `<span class="tag role-tag"><i class="fas fa-users" style="font-size:10px; margin-right:3px;"></i>${g}</span>`;
+            });
+            item.roles.forEach(r => {
+                tagsHtml += `<span class="tag role-tag"><i class="fas fa-key" style="font-size:10px; margin-right:3px;"></i>${r}</span>`;
+            });
+
+            // Status Tag
+            const statusHtml = item.status === 1 
+                ? `<span class="tag status-active">Đang hoạt động</span>`
+                : `<span class="tag status-locked">Bị khóa</span>`;
+
+            // Row Action Icons
+            const lockIcon = item.status === 1 ? 'fa-lock' : 'fa-unlock';
+            const lockColor = item.status === 1 ? 'lock' : 'success';
+            const lockTitle = item.status === 1 ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td style="font-weight: 500;">${item.name}</td>
+                <td>${item.username}</td>
+                <td>
+                    <div style="font-weight:500;">${deptName}</div>
+                    <div style="font-size:12px; color:var(--text-muted);">${unitName}</div>
+                </td>
+                <td>${titleName}</td>
+                <td>${tagsHtml || '<span style="color:#ccc;">-</span>'}</td>
+                <td>${statusHtml}</td>
+                <td class="action-cell">
+                    <button class="icon-btn reset-pwd" title="Đặt lại mật khẩu" onclick="confirmResetPwd(${item.id})"><i class="fas fa-key"></i></button>
+                    <button class="icon-btn edit" title="Sửa thông tin" onclick="openModal('edit', ${item.id})"><i class="fas fa-edit"></i></button>
+                    <button class="icon-btn ${lockColor}" title="${lockTitle}" onclick="confirmLock(${item.id})"><i class="fas ${lockIcon}"></i></button>
+                    <button class="icon-btn delete" title="Xóa tài khoản" onclick="confirmDelete(${item.id})"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function searchData() {
+        const keyword = document.getElementById('filterKeyword').value.toLowerCase();
+        const unit = document.getElementById('filterUnit').value;
+        const dept = document.getElementById('filterDept').value;
+        const title = document.getElementById('filterTitle').value;
+        const status = document.getElementById('filterStatus').value;
+
+        const filtered = accounts.filter(item => {
+            const matchKeyword = !keyword || 
+                                 item.name.toLowerCase().includes(keyword) || 
+                                 item.username.toLowerCase().includes(keyword) || 
+                                 item.email.toLowerCase().includes(keyword) ||
+                                 item.phone.includes(keyword);
+            const matchUnit = !unit || item.unitId === unit;
+            const matchDept = !dept || item.deptId === dept;
+            const matchTitle = !title || item.titleId === title;
+            const matchStatus = status === "" || item.status.toString() === status;
+
+            return matchKeyword && matchUnit && matchDept && matchTitle && matchStatus;
+        });
+
+        renderTable(filtered);
+    }
+
+    // --- Modal Logic ---
+    function openModal(mode, id = null) {
+        const modal = document.getElementById('accountModal');
+        const form = document.getElementById('accountForm');
+        form.reset();
+        
+        if (mode === 'add') {
+            document.getElementById('modalTitle').innerText = 'Thêm mới tài khoản cán bộ';
+            document.getElementById('formId').value = '';
+            document.getElementById('formUsername').readOnly = false;
+            document.getElementById('btnResetPwdForm').style.display = 'none';
+            document.getElementById('formDept').innerHTML = '<option value="">-- Chọn phòng ban --</option>';
+            
+            // Clear selections
+            document.querySelectorAll('#groupList input[type="checkbox"], #roleList input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.search-box-sm input').forEach(input => { input.value = ''; input.dispatchEvent(new Event('keyup')); });
+            
+            renderPermissionTree();
+        } else if (mode === 'edit') {
+            document.getElementById('modalTitle').innerText = 'Sửa thông tin tài khoản cán bộ';
+            document.getElementById('btnResetPwdForm').style.display = 'block'; // Hiện nút đặt lại MK
+            
+            const item = accounts.find(a => a.id === id);
+            if (item) {
+                document.getElementById('formId').value = item.id;
+                document.getElementById('formFullName').value = item.name;
+                document.getElementById('formUsername').value = item.username;
+                document.getElementById('formUsername').readOnly = true; // Không cho sửa Username
+                document.getElementById('formEmail').value = item.email;
+                document.getElementById('formPhone').value = item.phone;
+                document.getElementById('formUnit').value = item.unitId;
+                
+                // Triger load departments and set value
+                loadFormDepartments(item.deptId);
+                
+                document.getElementById('formTitle').value = item.titleId;
+
+                // Clear first
+                document.querySelectorAll('#groupList input[type="checkbox"], #roleList input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.search-box-sm input').forEach(input => { input.value = ''; input.dispatchEvent(new Event('keyup')); });
+                
+                // Select checklists
+                item.groups.forEach(g => {
+                    const cb = document.querySelector(`#groupList input[value="${g}"]`);
+                    if (cb) cb.checked = true;
+                });
+                
+                item.roles.forEach(r => {
+                    const cb = document.querySelector(`#roleList input[value="${r}"]`);
+                    if (cb) cb.checked = true;
+                });
+                
+                renderPermissionTree();
+            }
+        }
+        
+        modal.classList.add('active');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    function getChecklistValues(containerId) {
+        const container = document.getElementById(containerId);
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+        return Array.from(checkboxes).map(cb => cb.value);
+    }
+
+    function saveAccount() {
+        const id = document.getElementById('formId').value;
+        const name = document.getElementById('formFullName').value.trim();
+        const username = document.getElementById('formUsername').value.trim();
+        const email = document.getElementById('formEmail').value.trim();
+        const phone = document.getElementById('formPhone').value.trim();
+        const unitId = document.getElementById('formUnit').value;
+        const deptId = document.getElementById('formDept').value;
+        const titleId = document.getElementById('formTitle').value;
+
+        // Validation cơ bản
+        if (!name || !username || !email || !phone || !unitId || !deptId || !titleId) {
+            showToast('Vui lòng nhập đầy đủ thông tin bắt buộc!', 'error');
+            return;
+        }
+
+        // Duplicate check logic (mock)
+        const isDuplicateUsername = accounts.some(a => a.username === username && a.id != id);
+        if (isDuplicateUsername) {
+            showToast('Tên đăng nhập đã tồn tại trên hệ thống!', 'error');
+            return;
+        }
+
+        const groups = getChecklistValues('groupList');
+        const roles = getChecklistValues('roleList');
+
+        if (id) {
+            // Edit
+            const item = accounts.find(a => a.id == id);
+            item.name = name;
+            item.email = email;
+            item.phone = phone;
+            item.unitId = unitId;
+            item.deptId = deptId;
+            item.titleId = titleId;
+            item.groups = groups;
+            item.roles = roles;
+            showToast('Cập nhật thông tin thành công!');
+        } else {
+            // Add
+            const newId = accounts.length > 0 ? Math.max(...accounts.map(a => a.id)) + 1 : 1;
+            accounts.push({
+                id: newId,
+                name, username, email, phone, unitId, deptId, titleId,
+                status: 1, // Mặc định Hoạt động
+                groups, roles,
+                hasData: false // Mới tạo chưa có data
+            });
+            showToast('Thêm mới tài khoản thành công! Mật khẩu đã được gửi qua email.');
+        }
+
+        closeModal('accountModal');
+        searchData(); // Refresh lưới
+    }
+
+    // --- Xóa logic ---
+    let currentDeleteId = null;
+    function confirmDelete(id) {
+        const item = accounts.find(a => a.id === id);
+        if (!item) return;
+        
+        currentDeleteId = id;
+        document.getElementById('deleteTargetName').innerText = `${item.name} (${item.username})`;
+        document.getElementById('confirmDeleteModal').classList.add('active');
+    }
+
+    function executeDelete() {
+        const item = accounts.find(a => a.id === currentDeleteId);
+        if (item.hasData) {
+            showToast('Không thể xóa do tài khoản đã phát sinh dữ liệu nghiệp vụ. Vui lòng sử dụng tính năng Khóa tài khoản.', 'error');
+        } else {
+            accounts = accounts.filter(a => a.id !== currentDeleteId);
+            showToast('Xóa tài khoản thành công!');
+            searchData();
+        }
+        closeModal('confirmDeleteModal');
+    }
+
+    // --- Khóa/Mở khóa logic ---
+    let currentLockId = null;
+    function confirmLock(id) {
+        const item = accounts.find(a => a.id === id);
+        if (!item) return;
+        
+        currentLockId = id;
+        document.getElementById('lockTargetName').innerText = `${item.name} (${item.username})`;
+        document.getElementById('lockActionText').innerText = item.status === 1 ? 'Khóa' : 'Mở khóa';
+        document.getElementById('confirmLockModal').classList.add('active');
+    }
+
+    function executeLock() {
+        const item = accounts.find(a => a.id === currentLockId);
+        item.status = item.status === 1 ? 0 : 1;
+        showToast('Cập nhật trạng thái thành công!');
+        searchData();
+        closeModal('confirmLockModal');
+    }
+
+    // --- Reset Password logic ---
+    let currentResetId = null;
+    function confirmResetPwd(id) {
+        const item = accounts.find(a => a.id === id);
+        if (!item) return;
+        
+        currentResetId = id;
+        document.getElementById('pwdTargetName').innerText = `${item.name} (${item.username})`;
+        document.getElementById('confirmResetPwdModal').classList.add('active');
+    }
+    
+    function confirmResetPwdForm() {
+        const id = document.getElementById('formId').value;
+        confirmResetPwd(parseInt(id));
+    }
+
+    function executeResetPwd() {
+        // Mock gửi email
+        setTimeout(() => {
+            showToast('Đã đặt lại mật khẩu và gửi Email thành công!');
+            closeModal('confirmResetPwdModal');
+        }, 500);
+    }
+
+    // --- Utils ---
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        
+        toast.innerHTML = `
+            <i class="fas ${icon} fa-lg"></i>
+            <div>${message}</div>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Show animation
+        setTimeout(() => toast.classList.add('show'), 10);
+        
+        // Hide and remove
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+    
+    function initFilterDepartments() {
+        // Trigger initial UI setup if needed
+    }
+
+    // --- Permission Tree Logic ---
+    function renderPermissionTree() {
+        const groups = getChecklistValues('groupList');
+        const roles = getChecklistValues('roleList');
+        
+        // Calculate inherited permissions
+        let inheritedPerms = new Set();
+        let permSources = {}; // To map permission to its source (group/role name)
+
+        groups.forEach(gId => {
+            const cb = document.querySelector(`#groupList input[value="${gId}"]`);
+            const groupName = cb ? cb.parentNode.textContent.trim() : gId;
+            const perms = GROUP_PERMISSIONS[gId] || [];
+            perms.forEach(p => {
+                inheritedPerms.add(p);
+                if (!permSources[p]) permSources[p] = [];
+                permSources[p].push(groupName);
+            });
+        });
+
+        roles.forEach(rId => {
+            const cb = document.querySelector(`#roleList input[value="${rId}"]`);
+            const roleName = cb ? cb.parentNode.textContent.trim() : rId;
+            const perms = ROLE_PERMISSIONS[rId] || [];
+            perms.forEach(p => {
+                inheritedPerms.add(p);
+                if (!permSources[p]) permSources[p] = [];
+                permSources[p].push(roleName);
+            });
+        });
+
+        const treeContainer = document.getElementById('permissionTree');
+        treeContainer.innerHTML = '';
+
+        MOCK_PERMISSIONS.forEach(mod => {
+            const modNode = document.createElement('div');
+            modNode.className = 'tree-node';
+            
+            // Check if all children are checked
+            const allChecked = mod.children.every(c => inheritedPerms.has(c.id));
+            const someChecked = mod.children.some(c => inheritedPerms.has(c.id));
+
+            modNode.innerHTML = `
+                <div class="tree-node-header">
+                    <input type="checkbox" id="mod_${mod.id}" ${allChecked ? 'checked' : ''} ${someChecked && !allChecked ? 'indeterminate' : ''} onchange="toggleModule('${mod.id}', this.checked)">
+                    <label for="mod_${mod.id}" style="cursor: pointer; margin: 0;"><i class="fas fa-folder-open" style="color: #fcd34d; margin-right: 4px;"></i> ${mod.name}</label>
+                </div>
+                <div class="tree-children" id="children_${mod.id}">
+                    ${mod.children.map(child => {
+                        const isInherited = inheritedPerms.has(child.id);
+                        const sourceText = isInherited ? permSources[child.id].join(', ') : '';
+                        const badgeHtml = isInherited ? `<span class="tree-badge" title="Thừa kế từ: ${sourceText}"><i class="fas fa-link"></i> Kế thừa</span>` : '';
+                        
+                        return `
+                            <div class="tree-item">
+                                <label>
+                                    <input type="checkbox" class="perm-checkbox" data-mod="${mod.id}" value="${child.id}" ${isInherited ? 'checked' : ''} onchange="updateModuleCheck('${mod.id}')">
+                                    ${child.name}
+                                    ${badgeHtml}
+                                </label>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            treeContainer.appendChild(modNode);
+            
+            // Set indeterminate state visually for module checkbox
+            const modCheckbox = document.getElementById(`mod_${mod.id}`);
+            if (someChecked && !allChecked) {
+                modCheckbox.indeterminate = true;
+            }
+        });
+    }
+
+    function toggleModule(modId, isChecked) {
+        const container = document.getElementById(`children_${modId}`);
+        const checkboxes = container.querySelectorAll('.perm-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = isChecked;
+        });
+    }
+
+    function updateModuleCheck(modId) {
+        const container = document.getElementById(`children_${modId}`);
+        const checkboxes = container.querySelectorAll('.perm-checkbox');
+        const modCheckbox = document.getElementById(`mod_${modId}`);
+        
+        let checkedCount = 0;
+        checkboxes.forEach(cb => {
+            if (cb.checked) checkedCount++;
+        });
+
+        if (checkedCount === 0) {
+            modCheckbox.checked = false;
+            modCheckbox.indeterminate = false;
+        } else if (checkedCount === checkboxes.length) {
+            modCheckbox.checked = true;
+            modCheckbox.indeterminate = false;
+        } else {
+            modCheckbox.checked = false;
+            modCheckbox.indeterminate = true;
+        }
+    }
+
+    // --- Filter Logic ---
+    function filterChecklist(containerId, keyword) {
+        keyword = keyword.toLowerCase();
+        const items = document.querySelectorAll(`#${containerId} .checklist-item`);
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(keyword)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function filterTree(keyword) {
+        keyword = keyword.toLowerCase();
+        const nodes = document.querySelectorAll('#permissionTree .tree-node');
+        
+        nodes.forEach(node => {
+            const items = node.querySelectorAll('.tree-item');
+            let hasVisibleChild = false;
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(keyword)) {
+                    item.style.display = 'flex';
+                    hasVisibleChild = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            const modLabel = node.querySelector('.tree-node-header label').textContent.toLowerCase();
+            if (modLabel.includes(keyword)) {
+                items.forEach(item => item.style.display = 'flex');
+                node.style.display = 'block';
+            } else {
+                node.style.display = hasVisibleChild ? 'block' : 'none';
+            }
+        });
+    }
+
+    // --- Import Excel Logic ---
+    function openImportModal() {
+        document.getElementById('importFile').value = '';
+        document.getElementById('importModal').classList.add('active');
+    }
+
+    function executeImport() {
+        const fileInput = document.getElementById('importFile');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            showToast('Vui lòng chọn file cần import!', 'error');
+            return;
+        }
+        
+        const fileName = fileInput.files[0].name;
+        const fileExt = fileName.split('.').pop().toLowerCase();
+        
+        if (fileExt !== 'xls' && fileExt !== 'xlsx' && fileExt !== 'csv') {
+            showToast('Định dạng file không hợp lệ! Vui lòng chọn file Excel/CSV.', 'error');
+            return;
+        }
+        
+        // Giả lập ngoại lệ random để demo báo lỗi và thành công một phần
+        const random = Math.random();
+        if (random < 0.2) {
+            showToast('Đã Import thành công 13/15 tài khoản. Có 2 bản ghi bị lỗi trùng lặp Email hoặc SĐT!', 'warning');
+            closeModal('importModal');
+            searchData();
+        } else if (random < 0.4) {
+            showToast('Đã Import thành công 14/15 tài khoản. Dòng 3 bị lỗi: Mã Đơn vị "DV99" không tồn tại!', 'warning');
+            closeModal('importModal');
+            searchData();
+        } else if (random < 0.6) {
+            showToast('Đã Import thành công 14/15 tài khoản. Dòng 5 bị lỗi: Thiếu Tên đăng nhập!', 'warning');
+            closeModal('importModal');
+            searchData();
+        } else {
+            showToast('Import thành công 15/15 tài khoản! Hệ thống đã gán quyền và gửi email thông báo.', 'success');
+            closeModal('importModal');
+            searchData(); // Refresh grid
+        }
+    }
+
+</script>
+
+</body>
+</html>

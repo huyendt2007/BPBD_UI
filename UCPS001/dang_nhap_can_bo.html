@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập hệ thống quản trị - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #001529; /* Navy dark */
+            --brand-blue: #2563EB; /* Royal Blue */
+            --brand-blue-hover: #1D4ED8;
+            --bg-body: #F1F5F9;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --danger-color: #EF4444;
+            --success-color: #10B981;
+            --border-color: #E2E8F0;
+            --border-radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Split Screen Layout */
+        .login-wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        .left-banner {
+            flex: 1.2;
+            background: linear-gradient(135deg, #0b1528 0%, #1e3a8a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 48px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .left-banner::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .banner-logo {
+            font-size: 64px;
+            color: #F59E0B; /* Amber */
+            margin-bottom: 24px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .banner-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            line-height: 1.4;
+        }
+
+        .banner-desc {
+            font-size: 14px;
+            color: #94A3B8;
+            max-width: 460px;
+            line-height: 1.6;
+        }
+
+        .right-form-container {
+            flex: 1;
+            background-color: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        .card-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Forms styling */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 13px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px 10px 38px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-main);
+            transition: all 0.2s;
+            background-color: #FAFBFD;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background-color: white;
+        }
+
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        .error-text {
+            color: var(--danger-color);
+            font-size: 11px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 12px;
+        }
+
+        .forgot-link {
+            color: var(--brand-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--brand-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--brand-blue-hover);
+        }
+
+        /* MFA OTP Code block styling */
+        .mfa-block {
+            display: none;
+            background-color: #EFF6FF;
+            border: 1px solid #DBEAFE;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .mfa-block.active {
+            display: block;
+        }
+
+        .otp-inputs {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 44px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Simulation Controls Drawer */
+        .simulator-drawer {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 320px;
+            background: #1E293B;
+            border: 1px solid #475569;
+            color: #F8FAFC;
+            border-radius: 8px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            z-index: 10000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 600px;
+            overflow: hidden;
+        }
+
+        .simulator-drawer.collapsed {
+            max-height: 44px;
+            width: 220px;
+            padding: 12px 16px;
+        }
+
+        .simulator-drawer.collapsed .sim-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .simulator-drawer.collapsed .sim-header {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .simulator-drawer .sim-content {
+            transition: opacity 0.2s ease;
+            opacity: 1;
+        }
+
+        #sim-toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .sim-header {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #94A3B8;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+        }
+
+        .sim-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11.5px;
+            transition: background 0.15s;
+            margin-bottom: 4px;
+        }
+
+        .sim-option:hover {
+            background-color: #334155;
+        }
+
+        .sim-option.active {
+            background-color: var(--brand-blue);
+            color: white;
+        }
+
+        .sim-option input {
+            margin-top: 3px;
+        }
+
+        .sim-desc {
+            font-size: 10px;
+            color: #94A3B8;
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        .sim-option.active .sim-desc {
+            color: #DBEAFE;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: white;
+            color: var(--text-main);
+            border-left: 4px solid var(--brand-blue);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 12px 24px;
+            border-radius: 4px;
+            z-index: 10005;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            border-left-color: var(--danger-color);
+        }
+
+        .toast.success {
+            border-left-color: var(--success-color);
+        }
+
+        @media (max-width: 800px) {
+            .left-banner { display: none; }
+            .simulator-drawer { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <!-- Banner trái -->
+        <div class="left-banner">
+            <i class="fa-solid fa-scale-balanced banner-logo"></i>
+            <h1 class="banner-title">Cục Đăng ký giao dịch bảo đảm<br>và Bồi thường nhà nước</h1>
+            <p class="banner-desc">Hệ thống Quản trị Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</p>
+        </div>
+
+        <!-- Form Đăng nhập phải -->
+        <div class="right-form-container">
+            <div class="login-card">
+                <div class="card-header">
+                    <h2>ĐĂNG NHẬP CÁN BỘ</h2>
+                    <p>Hệ thống Quản trị & Điều hành Nghiệp vụ</p>
+                </div>
+
+                <!-- Global Alert Error -->
+                <div id="globalError" class="error-text" style="margin-bottom:16px; padding:8px; background:#FEF2F2; border:1px solid #FEE2E2; border-radius:4px; font-size:12px; text-align:center;"></div>
+
+                <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+                    <!-- Username -->
+                    <div class="form-group" id="group_username">
+                        <label class="form-label" for="username">Tên đăng nhập <span style="color:var(--danger-color);">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fa fa-user"></i>
+                            <input type="text" class="form-control" id="username" placeholder="Nhập tên đăng nhập...">
+                        </div>
+                        <span class="error-text" id="err_username">Đây là trường bắt buộc</span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group" id="group_password">
+                        <label class="form-label" for="password">Mật khẩu <span style="color:var(--danger-color);">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fa fa-lock"></i>
+                            <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu...">
+                        </div>
+                        <span class="error-text" id="err_password">Đây là trường bắt buộc</span>
+                    </div>
+
+                    <!-- MFA Verification OTP (Hidden by default) -->
+                    <div class="mfa-block" id="mfaBlock">
+                        <label class="form-label" style="color:var(--brand-blue); display:flex; justify-content:space-between; margin-bottom: 4px;">
+                            <span>Mã xác thực OTP (MFA) <span style="color:var(--danger-color);">*</span></span>
+                            <span style="font-weight:normal; font-size:11px; text-decoration:underline; cursor:pointer;" onclick="resendMFAOtp()">Gửi lại mã</span>
+                        </label>
+                        <span style="font-size:11px; color:var(--text-muted);">Mã OTP đã được gửi đến email đăng ký cán bộ.</span>
+                        <div class="otp-inputs">
+                            <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 0)" id="otp1">
+                            <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 1)" id="otp2">
+                            <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 2)" id="otp3">
+                            <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 3)" id="otp4">
+                            <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 4)" id="otp5">
+                            <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 5)" id="otp6">
+                        </div>
+                        <span class="error-text" id="err_mfa" style="margin-top:6px;">Vui lòng nhập đầy đủ mã OTP 6 chữ số</span>
+                    </div>
+
+                    <div class="form-options" id="formOptions">
+                        <div></div>
+                        <a href="javascript:void(0)" class="forgot-link" onclick="handleForgotPassword()">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <span>ĐĂNG NHẬP</span> <i class="fa fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulator Control Panel (Right Drawer) -->
+    <div class="simulator-drawer" id="simulator-drawer">
+        <div class="sim-header" onclick="toggleSimulator()" style="cursor: pointer; user-select: none;">
+            <span>Simulator Control Panel</span>
+            <i class="fa-solid fa-chevron-up" id="sim-toggle-icon"></i>
+        </div>
+        
+        <div class="sim-content" id="sim-content">
+            <div class="sim-option active" data-sim="normal" onclick="selectSimulatorOption(this)">
+                <input type="radio" name="sim_choice" checked>
+                <div>
+                    <strong>Normal Login (Hợp lệ)</strong>
+                    <div class="sim-desc">Đăng nhập thành công và chuyển hướng đến Dashboard Quản trị.</div>
+                </div>
+            </div>
+
+            <div class="sim-option" data-sim="mfa" onclick="selectSimulatorOption(this)">
+                <input type="radio" name="sim_choice">
+                <div>
+                    <strong>Xác thực MFA OTP (TH6)</strong>
+                    <div class="sim-desc">Yêu cầu nhập mã OTP (mặc định nhập 123456) gửi qua Email để hoàn tất.</div>
+                </div>
+            </div>
+
+            <div class="sim-option" data-sim="force_change" onclick="selectSimulatorOption(this)">
+                <input type="radio" name="sim_choice">
+                <div>
+                    <strong>Đăng nhập lần đầu (TH4)</strong>
+                    <div class="sim-desc">ForcePasswordChange kích hoạt, tự động chuyển cán bộ sang Đổi mật khẩu lần đầu.</div>
+                </div>
+            </div>
+
+            <div class="sim-option" data-sim="expired" onclick="selectSimulatorOption(this)">
+                <input type="radio" name="sim_choice">
+                <div>
+                    <strong>Mật khẩu hết hạn (TH5)</strong>
+                    <div class="sim-desc">Vượt quá 90 ngày hoạt động, tự động chuyển cán bộ sang Đổi mật khẩu lần đầu.</div>
+                </div>
+            </div>
+
+            <div class="sim-option" data-sim="fail_lock" onclick="selectSimulatorOption(this)">
+                <input type="radio" name="sim_choice">
+                <div>
+                    <strong>Sai quá 5 lần (TH2)</strong>
+                    <div class="sim-desc">Nhập sai liên tục. Lần thứ 5 sẽ tự động khóa tài khoản và hiển thị thông báo.</div>
+                </div>
+            </div>
+
+            <div class="sim-option" data-sim="pre_locked" onclick="selectSimulatorOption(this)">
+                <input type="radio" name="sim_choice">
+                <div>
+                    <strong>Tài khoản bị khóa sẵn (TH3)</strong>
+                    <div class="sim-desc">Hiển thị thông báo tài khoản bị khóa liên hệ Admin ngay khi đăng nhập.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast message -->
+    <div class="toast" id="toast">
+        <i class="fa fa-info-circle"></i>
+        <span id="toastMsg">Thông báo</span>
+    </div>
+
+    <script>
+        let currentSimMode = 'normal';
+        let failedLoginAttempts = 0;
+        let isMfaStateActive = false;
+
+        function toggleSimulator() {
+            const drawer = document.getElementById('simulator-drawer');
+            const icon = document.getElementById('sim-toggle-icon');
+            
+            if (drawer.classList.contains('collapsed')) {
+                drawer.classList.remove('collapsed');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                drawer.classList.add('collapsed');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        const selectSimulatorOption = (el) => {
+            document.querySelectorAll('.sim-option').forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
+            el.querySelector('input').checked = true;
+            currentSimMode = el.getAttribute('data-sim');
+            
+            // Reset states
+            failedLoginAttempts = 0;
+            isMfaStateActive = false;
+            document.getElementById('mfaBlock').classList.remove('active');
+            document.getElementById('formOptions').style.display = 'flex';
+            document.getElementById('globalError').style.display = 'none';
+            document.querySelectorAll('.is-invalid').forEach(inp => inp.classList.remove('is-invalid'));
+            document.querySelectorAll('.error-text').forEach(tx => { if (tx.id !== 'globalError') tx.style.display = 'none'; });
+        };
+
+        const showToast = (msg, type = 'info') => {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toast.className = 'toast visible';
+            if (type === 'error') toast.classList.add('error');
+            if (type === 'success') toast.classList.add('success');
+            toastMsg.innerText = msg;
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        };
+
+        const focusNext = (el, idx) => {
+            // Numeric validation
+            el.value = el.value.replace(/\D/g, '');
+            if (el.value.length === 1 && idx < 5) {
+                document.querySelectorAll('.otp-input')[idx + 1].focus();
+            }
+        };
+
+        const resendMFAOtp = () => {
+            showToast('Mã OTP xác thực mới đã được gửi lại vào email của bạn!', 'success');
+        };
+
+        const handleForgotPassword = () => {
+            showToast('Chức năng Quên mật khẩu: Đang chuyển tiếp sang màn hình khôi phục tài khoản (UCPS002)...', 'info');
+            setTimeout(() => {
+                window.location.href = 'doi_mat_khau_lan_dau.html?mode=forgot';
+            }, 1000);
+        };
+
+        const handleLoginSubmit = (e) => {
+            e.preventDefault();
+            
+            // Clear errors
+            document.querySelectorAll('.is-invalid').forEach(inp => inp.classList.remove('is-invalid'));
+            document.querySelectorAll('.error-text').forEach(tx => { if (tx.id !== 'globalError') tx.style.display = 'none'; });
+            document.getElementById('globalError').style.display = 'none';
+
+            const userInp = document.getElementById('username');
+            const passInp = document.getElementById('password');
+            let hasError = false;
+
+            // TH1: Blank field check
+            if (!userInp.value.trim()) {
+                userInp.classList.add('is-invalid');
+                document.getElementById('err_username').style.display = 'block';
+                hasError = true;
+            }
+            if (!passInp.value.trim()) {
+                passInp.classList.add('is-invalid');
+                document.getElementById('err_password').style.display = 'block';
+                hasError = true;
+            }
+
+            if (hasError) {
+                // Focus first error field
+                const firstErr = document.querySelector('.is-invalid');
+                if (firstErr) firstErr.focus();
+                return;
+            }
+
+            // If MFA state is already active, validate MFA inputs
+            if (isMfaStateActive) {
+                const otpVal = Array.from(document.querySelectorAll('.otp-input')).map(o => o.value).join('');
+                if (otpVal.length < 6) {
+                    document.getElementById('err_mfa').style.display = 'block';
+                    document.querySelectorAll('.otp-input').forEach(o => o.classList.add('is-invalid'));
+                    return;
+                }
+                if (otpVal !== '123456') {
+                    showToast('Mã OTP xác thực không đúng. Vui lòng kiểm tra lại.', 'error');
+                    return;
+                }
+                
+                // Success MFA
+                showToast('Mã OTP xác thực hợp lệ! Đang đăng nhập...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../trang_tong_the_website_can_bo.html';
+                }, 1000);
+                return;
+            }
+
+            // Normal authentication branch simulation
+            switch(currentSimMode) {
+                case 'pre_locked':
+                    // TH3: Account locked from start
+                    const globErr3 = document.getElementById('globalError');
+                    globErr3.innerText = 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin';
+                    globErr3.style.display = 'block';
+                    showToast('Đăng nhập không thành công: Tài khoản đã bị khóa.', 'error');
+                    break;
+
+                case 'fail_lock':
+                    // TH2: Locking accounts after 5 failures
+                    failedLoginAttempts++;
+                    if (failedLoginAttempts < 5) {
+                        showToast(`Thông tin đăng nhập sai. Nhập sai lần: ${failedLoginAttempts}/5`, 'error');
+                    } else {
+                        const globErr2 = document.getElementById('globalError');
+                        globErr2.innerText = 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin';
+                        globErr2.style.display = 'block';
+                        showToast('Tài khoản bị khóa tự động do nhập sai mật khẩu quá 5 lần!', 'error');
+                    }
+                    break;
+
+                case 'force_change':
+                    // TH4: First login redirects to force change password screen
+                    showToast('Đăng nhập thành công lần đầu. Hệ thống yêu cầu bắt buộc đổi mật khẩu khởi tạo!', 'info');
+                    setTimeout(() => {
+                        window.location.href = 'doi_mat_khau_lan_dau.html?mode=force';
+                    }, 1200);
+                    break;
+
+                case 'expired':
+                    // TH5: Expired password redirects to change password screen
+                    showToast('Mật khẩu của bạn đã quá hạn 90 ngày. Vui lòng cập nhật mật khẩu mới!', 'info');
+                    setTimeout(() => {
+                        window.location.href = 'doi_mat_khau_lan_dau.html?mode=expired';
+                    }, 1200);
+                    break;
+
+                case 'mfa':
+                    // TH6: MFA OTP verification block triggers
+                    showToast('Đăng nhập đúng tài khoản. Đang kích hoạt bước xác thực đa nhân tố OTP...', 'info');
+                    isMfaStateActive = true;
+                    document.getElementById('mfaBlock').classList.add('active');
+                    document.getElementById('formOptions').style.display = 'none';
+                    document.getElementById('otp1').focus();
+                    break;
+
+                case 'normal':
+                default:
+                    // TH Hợp lệ
+                    showToast('Đăng nhập tài khoản cán bộ thành công! Đang chuyển tiếp...', 'success');
+                    // Store mock user session data
+                    sessionStorage.setItem('isAdminLoggedIn', 'true');
+                    sessionStorage.setItem('adminUsername', userInp.value.trim());
+                    setTimeout(() => {
+                        window.location.href = '../trang_tong_the_website_can_bo.html';
+                    }, 1000);
+                    break;
+            }
+        };
+    </script>
+</body>
+</html>

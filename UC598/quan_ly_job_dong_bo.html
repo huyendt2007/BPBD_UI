@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Job Đồng bộ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+        body { background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); padding: var(--spacing-lg); }
+
+        .card-section { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg); border: 1px solid var(--border-color); }
+        .section-title { color: var(--primary-color); font-size: 18px; font-weight: 600; margin-bottom: var(--spacing-md); padding-bottom: var(--spacing-sm); border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .grid-4-cols { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: var(--spacing-md); align-items: end; margin-bottom: var(--spacing-md); }
+        
+        .form-group { margin-bottom: var(--spacing-md); }
+        .form-label { font-weight: 500; margin-bottom: 4px; display: block; }
+        .form-control, .form-select { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 8px 12px; width: 100%; outline: none; }
+        .form-control:focus, .form-select:focus { border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
+        .error-text { color: var(--danger-color); font-size: 12px; margin-top: 4px; display: none; }
+        
+        .btn { font-weight: 500; border-radius: var(--border-radius-md); padding: 0.5rem 1rem; transition: all 0.2s; cursor: pointer; border: none; font-size: var(--base-size); display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: var(--text-muted); color: white; }
+        .btn-outline-primary { background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); }
+
+        .table { width: 100%; border-collapse: collapse; }
+        .table th { background-color: var(--table-header-bg); color: var(--primary-color); font-weight: 600; font-size: 13px; padding: 12px; border-bottom: 2px solid var(--border-color); text-align: left; }
+        .table td { padding: 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .table tbody tr:hover { background-color: rgba(241, 245, 249, 0.5); }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .badge-success { background-color: #D1FAE5; color: var(--success-color); }
+        .badge-danger { background-color: #FEE2E2; color: var(--danger-color); }
+
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg-surface); border-radius: var(--border-radius-lg); width: 450px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; }
+
+        /* Switch */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--success-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        .toast { background-color: var(--success-color); color: white; padding: 12px 24px; border-radius: var(--border-radius-md); display: none; margin-top: 10px; box-shadow: var(--box-shadow); }
+        .toast.error { background-color: var(--danger-color); }
+        .toast.show { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="card-section">
+        <div class="section-title">
+            <span>Tra cứu Lịch sử chạy Job Đồng bộ DVCQG</span>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-outline-primary" onclick="openParamModal()">⚙ Thay đổi tham số</button>
+                <button class="btn btn-primary" onclick="forceRunJob()">▶ Thực hiện thủ công</button>
+            </div>
+        </div>
+
+        <div class="grid-4-cols" style="margin-bottom: 0;">
+            <div class="form-group">
+                <label class="form-label">Từ ngày</label>
+                <input type="text" class="form-control" id="filterFromDate" placeholder="dd/mm/yyyy">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Đến ngày</label>
+                <input type="text" class="form-control" id="filterToDate" placeholder="dd/mm/yyyy">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Trạng thái Job</label>
+                <select class="form-select" id="filterStatus">
+                    <option value="">-- Tất cả --</option>
+                    <option value="SUCCESS">Thành công</option>
+                    <option value="ERROR">Có lỗi</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+                <button class="btn btn-primary" onclick="handleSearch()">Tìm kiếm</button>
+            </div>
+        </div>
+        <div id="dateErrorMsg" class="error-text" style="display: none; padding-top: 4px;">Từ ngày không được lớn hơn Đến ngày</div>
+    </div>
+
+    <div class="card-section">
+        <table class="table" id="dataTable">
+            <thead>
+                <tr>
+                    <th width="20%">Mã Job ID</th>
+                    <th width="25%">Thời gian bắt đầu</th>
+                    <th width="25%">Thời gian kết thúc</th>
+                    <th width="15%">Số TK tạo mới</th>
+                    <th width="15%">Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Data rendered via JS -->
+            </tbody>
+        </table>
+        <div id="noDataMsg" style="display: none; text-align: center; padding: 20px; color: var(--text-muted);">
+            Không tìm thấy dữ liệu phù hợp.
+        </div>
+    </div>
+
+    <!-- Modal Thay đổi tham số -->
+    <div class="modal-overlay" id="paramModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cập nhật tham số Job</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Chu kỳ chạy (Cron Expression) <span style="color:var(--danger-color)">*</span></label>
+                    <input type="text" class="form-control" id="inpCron" value="0 0/15 * * * ?">
+                    <small style="color: var(--text-muted);">Ví dụ: 0 0/15 * * * ? (Chạy mỗi 15 phút)</small>
+                    <div id="errCron" class="error-text">Chu kỳ thời gian không hợp lệ</div>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 12px;">
+                    <label class="form-label" style="margin: 0;">Trạng thái Job</label>
+                    <label class="switch">
+                        <input type="checkbox" id="inpStatus" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span id="statusLabel" style="font-weight: 500; color: var(--success-color);">Đang Bật</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="saveParam()">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container">
+        <div class="toast" id="toastMsg">Thao tác thành công!</div>
+    </div>
+
+    <script>
+        // Mock Data
+        const mockData = [
+            { id: "SYNC_DVC_20260511_001", start: "2026-05-11 10:00:00", end: "2026-05-11 10:00:15", count: 12, status: "SUCCESS" },
+            { id: "SYNC_DVC_20260511_002", start: "2026-05-11 09:45:00", end: "2026-05-11 09:45:10", count: 5, status: "SUCCESS" },
+            { id: "SYNC_DVC_20260511_003", start: "2026-05-11 09:30:00", end: "2026-05-11 09:32:00", count: 0, status: "ERROR" },
+            { id: "SYNC_DVC_20260511_004", start: "2026-05-11 09:15:00", end: "2026-05-11 09:15:12", count: 8, status: "SUCCESS" },
+            { id: "SYNC_DVC_20260511_005", start: "2026-05-11 09:00:00", end: "2026-05-11 09:00:15", count: 10, status: "SUCCESS" },
+            { id: "SYNC_DVC_20260511_006", start: "2026-05-11 08:45:00", end: "2026-05-11 08:46:00", count: 0, status: "ERROR" },
+            { id: "SYNC_DVC_20260511_007", start: "2026-05-11 08:30:00", end: "2026-05-11 08:30:05", count: 2, status: "SUCCESS" },
+            { id: "SYNC_DVC_20260511_008", start: "2026-05-11 08:15:00", end: "2026-05-11 08:15:10", count: 0, status: "SUCCESS" },
+            { id: "SYNC_DVC_20260511_009", start: "2026-05-11 08:00:00", end: "2026-05-11 08:00:11", count: 4, status: "SUCCESS" },
+            { id: "SYNC_DVC_20260511_010", start: "2026-05-10 23:45:00", end: "2026-05-10 23:45:20", count: 15, status: "SUCCESS" }
+        ];
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            const noDataMsg = document.getElementById('noDataMsg');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                noDataMsg.style.display = 'block';
+                return;
+            }
+            noDataMsg.style.display = 'none';
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                const badge = row.status === 'SUCCESS' 
+                    ? `<span class="badge badge-success">Thành công</span>`
+                    : `<span class="badge badge-danger">Có lỗi</span>`;
+                
+                tr.innerHTML = `
+                    <td><strong>${row.id}</strong></td>
+                    <td>${row.start}</td>
+                    <td>${row.end}</td>
+                    <td>${row.count}</td>
+                    <td>${badge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleSearch() {
+            const fromDate = document.getElementById('filterFromDate').value;
+            const toDate = document.getElementById('filterToDate').value;
+            const status = document.getElementById('filterStatus').value;
+            const errorMsg = document.getElementById('dateErrorMsg');
+
+            if (fromDate && toDate && new Date(fromDate) > new Date(toDate)) {
+                errorMsg.style.display = 'block';
+                return;
+            }
+            errorMsg.style.display = 'none';
+
+            const filtered = mockData.filter(item => {
+                const matchStatus = status === '' || item.status === status;
+                
+                // Simple Date logic mock
+                let matchDate = true;
+                const itemDate = item.start.split(' ')[0];
+                if (fromDate && itemDate < fromDate) matchDate = false;
+                if (toDate && itemDate > toDate) matchDate = false;
+
+                return matchStatus && matchDate;
+            });
+            
+            renderTable(filtered);
+        }
+
+        // Force Run
+        function forceRunJob() {
+            showToast("Đã gửi yêu cầu thực hiện Job thành công!");
+            // Mock random error
+            if(Math.random() > 0.8) {
+                setTimeout(() => showToast("Không thể kết nối đến DVCQG lúc này", true), 1000);
+            }
+        }
+
+        // Modal Param
+        function openParamModal() {
+            document.getElementById('paramModal').classList.add('active');
+            document.getElementById('errCron').style.display = 'none';
+        }
+
+        function closeModal() {
+            document.getElementById('paramModal').classList.remove('active');
+        }
+
+        document.getElementById('inpStatus').addEventListener('change', function() {
+            const label = document.getElementById('statusLabel');
+            if(this.checked) {
+                label.innerText = 'Đang Bật';
+                label.style.color = 'var(--success-color)';
+            } else {
+                label.innerText = 'Đã Tắt';
+                label.style.color = 'var(--danger-color)';
+            }
+        });
+
+        function saveParam() {
+            const cron = document.getElementById('inpCron').value.trim();
+            if(!cron) {
+                document.getElementById('errCron').style.display = 'block';
+                return;
+            }
+            
+            // Mock Cron validation (e.g. check if it has 5-6 parts separated by spaces)
+            const parts = cron.split(' ').filter(p => p !== '');
+            if(parts.length < 5) {
+                document.getElementById('errCron').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('errCron').style.display = 'none';
+            closeModal();
+            showToast("Cập nhật tham số Job thành công!");
+        }
+
+        // Toast
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        window.onload = () => renderTable(mockData);
+    </script>
+</body>
+</html>

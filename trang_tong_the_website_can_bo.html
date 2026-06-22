@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản trị nghiệp vụ - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Ant Design & Keycloak Theme Palettes aligned with login brand colors */
+            --menu-bg: #0b1528;
+            --menu-sub-bg: rgba(0, 0, 0, 0.15);
+            --menu-text: rgba(255, 255, 255, 0.75);
+            --menu-text-hover: #ffffff;
+            --menu-text-active: #ffffff;
+            --menu-bg-active: #2563EB;
+            --menu-bg-hover: rgba(255, 255, 255, 0.08);
+
+            --primary-color: #2563EB;
+            --primary-hover: #3B82F6;
+            --bg-body: #f5f5f5;
+            --bg-surface: #ffffff;
+            --text-main: #1f1f1f;
+            --text-muted: #8c8c8c;
+            --border-color: #f0f0f0;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar navigation layout - AntD style with brand gradient background */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0b1528 0%, #1e3a8a 100%);
+            color: var(--menu-text);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100%;
+            z-index: 100;
+            box-shadow: 2px 0 8px rgba(0, 21, 41, 0.15);
+        }
+
+        .sidebar-brand {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            height: 64px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand i {
+            font-size: 22px;
+            color: var(--primary-hover);
+        }
+
+        .sidebar-brand-title h1 {
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.3;
+        }
+
+        .sidebar-brand-title p {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.45);
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .sidebar-menu-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 0;
+        }
+
+        /* Custom scrollbar for sidebar menu */
+        .sidebar-menu-wrapper::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-menu-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+        }
+
+        /* Menu item node structure */
+        .menu-root-group {
+            margin-bottom: 4px;
+        }
+
+        .menu-root-item {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--menu-text);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .menu-root-item:hover {
+            color: var(--menu-text-hover);
+            background-color: var(--menu-bg-hover);
+        }
+
+        .menu-root-item.expanded {
+            color: white;
+        }
+
+        .menu-root-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-root-left i {
+            width: 16px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .menu-root-arrow {
+            font-size: 10px;
+            transition: transform 0.2s;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .menu-root-arrow.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Submenus container sliding */
+        .menu-sub-container {
+            background-color: var(--menu-sub-bg);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .menu-sub-container.expanded {
+            max-height: 2000px;
+        }
+
+        /* Sub Group Header */
+        .menu-sub-group-header {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--menu-text);
+            padding: 10px 20px 10px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .menu-sub-group-header:hover {
+            color: var(--menu-text-hover);
+            background-color: var(--menu-bg-hover);
+        }
+
+        .menu-sub-group-header.expanded {
+            color: white;
+        }
+
+        .menu-sub-group-arrow {
+            font-size: 8px;
+            transition: transform 0.2s;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .menu-sub-group-arrow.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Sub Group child list wrapper */
+        .menu-sub-group-container {
+            background-color: rgba(0, 0, 0, 0.2);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .menu-sub-group-container.expanded {
+            max-height: 800px;
+        }
+
+        /* Leaf navigation link */
+        .menu-leaf-item {
+            display: block;
+            color: var(--menu-text);
+            padding: 10px 20px 10px 48px;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .menu-leaf-item:hover {
+            color: var(--menu-text-hover);
+            background-color: var(--menu-bg-hover);
+        }
+
+        .menu-leaf-item.active {
+            color: #ffffff;
+            background-color: var(--menu-bg-active);
+            font-weight: 500;
+        }
+
+        /* Leaf items directly under root */
+        .menu-leaf-item.direct-child {
+            padding-left: 36px;
+        }
+
+        /* Level 3 leaves (grouped sub-items) */
+        .menu-leaf-item.level-3 {
+            padding-left: 54px;
+        }
+
+        .sidebar-footer {
+            padding: 14px 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.45);
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            line-height: 1.4;
+        }
+
+        /* Main Workspace Container */
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Admin Header */
+        .admin-header {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+            z-index: 10;
+        }
+
+        .header-title-section h2 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #001529;
+            letter-spacing: 0.2px;
+        }
+
+        .header-title-section p {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 280px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 6px 12px 6px 32px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 13px;
+            background-color: #fafafa;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            background-color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 9px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            color: #595959;
+            font-size: 18px;
+            transition: color 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .notification-bell:hover {
+            color: var(--primary-color);
+            background-color: rgba(0, 0, 0, 0.025);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: #ff4d4f;
+            color: white;
+            font-size: 9px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 1px solid white;
+        }
+
+        /* User Profile Dropdown Styles */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 1px solid var(--border-color);
+            padding-left: 18px;
+            cursor: pointer;
+            position: relative;
+            height: 40px;
+            user-select: none;
+        }
+
+        .user-profile:hover .user-name {
+            color: var(--primary-color);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e6f4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid #91caff;
+        }
+
+        .user-info {
+            font-size: 12px;
+            line-height: 1.3;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+            transition: color 0.2s;
+        }
+
+        .user-role {
+            color: #52c41a;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 9px;
+            margin-top: 1px;
+        }
+
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-shadow: var(--box-shadow);
+            z-index: 1000;
+            width: 170px;
+            padding: 4px 0;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: rgba(0, 0, 0, 0.85);
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .user-dropdown-menu a:hover {
+            background-color: #fafafa;
+            color: var(--primary-color);
+        }
+
+        .user-dropdown-menu a.logout-link {
+            color: #ff4d4f;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4px;
+            padding-top: 10px;
+        }
+
+        .user-dropdown-menu a.logout-link:hover {
+            background-color: #fff2f0;
+            color: #ff4d4f;
+        }
+
+        /* Breadcrumbs navigation */
+        .breadcrumbs-bar {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            height: 38px;
+            flex-shrink: 0;
+        }
+
+        .breadcrumbs-bar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumbs-bar a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumbs-bar span {
+            margin: 0 8px;
+            color: #bfbfbf;
+        }
+
+        .breadcrumbs-bar .current-path {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* Iframe loading container filling the space */
+        .content-frame-container {
+            flex: 1;
+            position: relative;
+            background-color: #f5f5f5;
+        }
+
+        .main-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #ffffff;
+            display: block;
+        }
+
+        /* Toast Feedback popup */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background-color: #FFFFFF;
+            color: #1f1f1f;
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 11000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(-80px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            font-size: 13px;
+            border-left: 4px solid #1677ff;
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { border-left-color: #52c41a; }
+        .toast.success i { color: #52c41a; }
+
+        .toast.error { border-left-color: #ff4d4f; }
+        .toast.error i { color: #ff4d4f; }
+
+        .toast.info { border-left-color: #1677ff; }
+        .toast.info i { color: #1677ff; }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand" id="brandLogo">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <div class="sidebar-brand-title">
+                <h1>Cục Đăng ký BPBĐ<br>& Bồi thường nhà nước</h1>
+                <p>Cổng Quản trị Nghiệp vụ</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu-wrapper" id="sidebarMenu">
+            <!-- Dynamic Menu Tree Rendered via script -->
+        </nav>
+
+        <div class="sidebar-footer">
+            Hệ thống Quản trị Portal<br>&copy; 2026 Bộ Tư pháp Việt Nam
+        </div>
+    </aside>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="workspace">
+        
+        <!-- HEADER -->
+        <header class="admin-header">
+            <div class="header-title-section">
+                <h2>Hệ thống quản lý Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</h2>
+                <p>Ứng dụng quản trị nghiệp vụ liên thông dành cho cán bộ công chức</p>
+            </div>
+            
+            <div class="header-controls">
+                <div class="search-box">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="actionSearch" placeholder="Tìm nhanh chức năng nghiệp vụ..." oninput="filterMenu()">
+                </div>
+                
+                <div class="notification-bell" id="notificationIcon" onclick="showToast('Hệ thống hoạt động bình thường. Không có thông báo mới.', 'info')">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="notification-badge">3</div>
+                </div>
+
+                <div class="user-profile" id="userProfileDropdown" onclick="toggleDropdown(event)">
+                    <div class="avatar">CB</div>
+                    <div class="user-info">
+                        <div class="user-name">Nguyễn Văn Cán Bộ</div>
+                        <div class="user-role">Cán bộ phê duyệt</div>
+                    </div>
+                    <i class="fa fa-caret-down" style="font-size: 10px; color: #8c8c8c; margin-left: 4px;"></i>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="user-dropdown-menu" id="userDropdown">
+                        <a href="#" onclick="showToast('Thông tin cá nhân đang phát triển', 'info')">
+                            <i class="fa fa-user"></i> Thông tin cá nhân
+                        </a>
+                        <a href="UCPS001/doi_mat_khau_lan_dau.html" target="_top">
+                            <i class="fa fa-key"></i> Đổi mật khẩu
+                        </a>
+                        <a href="UCPS001/dang_nhap_can_bo.html" class="logout-link">
+                            <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- BREADCRUMBS BAR -->
+        <div class="breadcrumbs-bar">
+            <a href="#" onclick="selectDefaultLeaf()"><i class="fa fa-home"></i> Trang chủ</a>
+            <span>/</span>
+            <span id="breadcrumbParent">Biện pháp bảo đảm</span>
+            <span>/</span>
+            <span id="breadcrumbChild" class="current-path">Kiểm tra hồ sơ BPBĐ</span>
+        </div>
+
+        <!-- MAIN IFRAME CONTENT LOADER -->
+        <div class="content-frame-container">
+            <iframe id="mainContentIframe" class="main-iframe" src="UC028/kiem_tra_ho_so.html" title="Nội dung chức năng"></iframe>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="toastMessage">Thông báo</span>
+    </div>
+
+    <script>
+        // Menu Data Model without numerical headers in titles
+        const menuData = [
+            {
+                title: "Biện pháp bảo đảm",
+                icon: "fa-solid fa-shield-halved",
+                children: [
+                    {
+                        title: "Quản lý hồ sơ BPBĐ",
+                        children: [
+                            { title: "Kiểm tra hồ sơ BPBĐ", url: "UC028/kiem_tra_ho_so.html" },
+                            { title: "Ký duyệt hồ sơ BPBĐ", url: "UC031/ky_duyet_ho_so.html" },
+                            { title: "Tra cứu hồ sơ", url: "UC190_193/tra_cuu_srs.html" },
+                            { title: "Quản lý cấp mã số sử dụng CSDL", url: "temp_placeholder.html" }
+                        ]
+                    },
+                    {
+                        title: "Quản lý phí",
+                        children: [
+                            { title: "Quản lý Biểu phí", url: "temp_placeholder.html" },
+                            { title: "Quản lý thu phí", url: "temp_placeholder.html" },
+                            { title: "Quản lý Đối soát thanh toán", url: "temp_placeholder.html" }
+                        ]
+                    },
+                    {
+                        title: "Quản lý nghiệp vụ chuyên ngành",
+                        children: [
+                            { title: "Quản lý VBQPPL và Chương trình, kế hoạch công tác", url: "temp_placeholder.html" },
+                            { title: "Quản lý kiểm tra và theo dõi thi hành pháp luật", url: "temp_placeholder.html" },
+                            { title: "Quản lý hướng dẫn nghiệp vụ và thẩm định", url: "temp_placeholder.html" },
+                            { title: "Quản lý tập huấn, hội nghị, hội thảo, tọa đàm; nghiên cứu khoa học", url: "temp_placeholder.html" },
+                            { title: "Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo", url: "temp_placeholder.html" },
+                            { title: "Quản lý hợp tác quốc tế và cải cách hành chính, tư pháp", url: "temp_placeholder.html" },
+                            { title: "Quản lý thực hiện theo phân công của lãnh đạo đơn vị", url: "temp_placeholder.html" }
+                        ]
+                    },
+                    {
+                        title: "Quản lý yêu cầu và hỗ trợ người dùng",
+                        children: [
+                            { title: "Quản lý yêu cầu hỗ trợ", url: "temp_placeholder.html" },
+                            { title: "Quản lý thông tin tư liệu VBQPPL", url: "temp_placeholder.html" },
+                            { title: "Quản lý câu hỏi và trả lời thường gặp", url: "temp_placeholder.html" }
+                        ]
+                    },
+                    { title: "Báo cáo quản lý", url: "temp_placeholder.html" }
+                ]
+            },
+            {
+                title: "Bồi thường nhà nước",
+                icon: "fa-solid fa-hand-holding-dollar",
+                children: [
+                    { title: "Quản lý việc giải quyết yêu cầu bồi thường", url: "temp_placeholder.html" },
+                    { title: "Quản lý kinh phí bồi thường", url: "temp_placeholder.html" },
+                    { title: "Quản lý xem xét trách nhiệm hoàn trả", url: "temp_placeholder.html" },
+                    { title: "Quản lý chấm điểm", url: "temp_placeholder.html" },
+                    {
+                        title: "Quản lý nghiệp vụ chuyên ngành",
+                        children: [
+                            { title: "Quản lý chiến lược, chính sách", url: "temp_placeholder.html" },
+                            { title: "Quản lý ban hành văn bản, biểu mẫu, sổ sách", url: "temp_placeholder.html" },
+                            { title: "Quản lý hợp tác quốc tế", url: "temp_placeholder.html" },
+                            { title: "Quản lý phối hợp với TAND tối cao, VKSND tối cao", url: "temp_placeholder.html" },
+                            { title: "Quản lý giải đáp vướng mắc trong BTNN", url: "temp_placeholder.html" },
+                            { title: "Quản lý đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương", url: "temp_placeholder.html" },
+                            { title: "Quản lý các CSDL có liên quan", url: "temp_placeholder.html" }
+                        ]
+                    },
+                    { title: "Quản lý hướng dẫn, bồi dưỡng kỹ năng", url: "temp_placeholder.html" },
+                    { title: "Quản lý theo dõi, đôn đốc công tác BTNN", url: "temp_placeholder.html" },
+                    { title: "Quản lý kiểm tra công tác BTNN", url: "temp_placeholder.html" },
+                    { title: "Quản lý giải quyết khiếu nại, tố cáo, xử lý vi phạm", url: "temp_placeholder.html" },
+                    { title: "Quản lý Hỗ trợ thủ tục YCBT", url: "temp_placeholder.html" },
+                    { title: "Quản lý Kiến nghị xử lý vi phạm GQBT", url: "temp_placeholder.html" },
+                    { title: "Quản lý Kiến nghị kháng nghị bản án/quyết định", url: "temp_placeholder.html" },
+                    { title: "Quản lý Yêu cầu hủy quyết định GQBT", url: "temp_placeholder.html" },
+                    { title: "Quản lý Kiến nghị xem xét lại quyết định hoàn trả", url: "temp_placeholder.html" },
+                    {
+                        title: "Quản lý yêu cầu và hỗ trợ người dùng",
+                        children: [
+                            { title: "Quản lý yêu cầu hỗ trợ", url: "temp_placeholder.html" },
+                            { title: "Quản lý thông tin tư liệu VBQPPL", url: "temp_placeholder.html" },
+                            { title: "Quản lý câu hỏi và trả lời thường gặp", url: "temp_placeholder.html" }
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "Quản lý nhà nước",
+                icon: "fa-solid fa-chart-line",
+                children: [
+                    { title: "Dashboard về đăng ký biện pháp bảo đảm", url: "temp_placeholder.html" },
+                    { title: "Dashboard về công tác bồi thường nhà nước", url: "temp_placeholder.html" },
+                    { title: "Báo cáo thống kê về BPBĐ", url: "temp_placeholder.html" },
+                    { title: "Báo cáo thống kê về BTNN", url: "temp_placeholder.html" },
+                    { title: "Quản lý nhà nước về ĐKBPBĐ của các Bộ/ Ngành khác", url: "temp_placeholder.html" }
+                ]
+            },
+            {
+                title: "Quản trị hệ thống",
+                icon: "fa-solid fa-gears",
+                children: [
+                    { title: "Quản lý nội dung (CMS)", url: "temp_placeholder.html" },
+                    { title: "Quản lý quyền", url: "UC600/quan_ly_quyen.html" },
+                    { title: "Quản lý vai trò", url: "UC600/quan_ly_vai_tro_phan_quyen.html" },
+                    { title: "Quản lý đơn vị", url: "temp_placeholder.html" },
+                    { title: "Quản lý nhóm người dùng", url: "UC603/quan_ly_nhom_nguoi_dung.html" },
+                    { title: "Quản lý người dùng", url: "UC595/quan_ly_tk_can_bo.html" },
+                    { title: "Quản lý tài khoản khách hàng", url: "UCPS001/quan_ly_tk_khach_hang.html" },
+                    { title: "Quản lý loại danh mục", url: "temp_placeholder.html" },
+                    { title: "Quản lý danh mục", url: "temp_placeholder.html" },
+                    { title: "Quản lý cấu hình", url: "temp_placeholder.html" },
+                    { title: "Quản lý nhật ký hệ thống", url: "temp_placeholder.html" },
+                    { title: "Quản lý sao lưu, phục hồi dữ liệu", url: "temp_placeholder.html" }
+                ]
+            }
+        ];
+
+        // Page initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSidebarMenu();
+            
+            // Handle query parameter to open correct leaf
+            const urlParams = new URLSearchParams(window.location.search);
+            const menuParam = urlParams.get('menu');
+            if (menuParam === 'search') {
+                toggleRootItem(0);
+                toggleSubGroup(0, 0);
+                const leaf = menuData[0].children[0].children[2]; // Tra cứu hồ sơ
+                selectLeaf(leaf, [menuData[0].title, menuData[0].children[0].title, leaf.title], 'leaf-0-0-2');
+            } else {
+                selectDefaultLeaf();
+            }
+        });
+
+        // Dynamic Menu tree generation
+        function renderSidebarMenu() {
+            const container = document.getElementById('sidebarMenu');
+            container.innerHTML = '';
+
+            menuData.forEach((root, rootIdx) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'menu-root-group';
+
+                const rootBtn = document.createElement('button');
+                rootBtn.className = 'menu-root-item';
+                rootBtn.id = `root-item-${rootIdx}`;
+                rootBtn.onclick = () => toggleRootItem(rootIdx);
+                rootBtn.innerHTML = `
+                    <div class="menu-root-left">
+                        <i class="${root.icon}"></i>
+                        <span>${root.title}</span>
+                    </div>
+                    <i class="fa fa-chevron-down menu-root-arrow" id="root-arrow-${rootIdx}"></i>
+                `;
+
+                const subContainer = document.createElement('div');
+                subContainer.className = 'menu-sub-container';
+                subContainer.id = `sub-container-${rootIdx}`;
+
+                root.children.forEach((child, childIdx) => {
+                    if (child.children) {
+                        // Sub Group Header collapsible block
+                        const subGroupDiv = document.createElement('div');
+                        subGroupDiv.className = 'menu-sub-group';
+
+                        const subGroupBtn = document.createElement('button');
+                        subGroupBtn.className = 'menu-sub-group-header';
+                        subGroupBtn.id = `subgroup-item-${rootIdx}-${childIdx}`;
+                        subGroupBtn.onclick = () => toggleSubGroup(rootIdx, childIdx);
+                        subGroupBtn.innerHTML = `
+                            <span>${child.title}</span>
+                            <i class="fa fa-chevron-down menu-sub-group-arrow" id="subgroup-arrow-${rootIdx}-${childIdx}"></i>
+                        `;
+
+                        const subGroupItemsContainer = document.createElement('div');
+                        subGroupItemsContainer.className = 'menu-sub-group-container';
+                        subGroupItemsContainer.id = `subgroup-container-${rootIdx}-${childIdx}`;
+
+                        child.children.forEach((leaf, leafIdx) => {
+                            const leafLink = document.createElement('a');
+                            leafLink.className = 'menu-leaf-item level-3';
+                            leafLink.innerText = leaf.title;
+                            leafLink.id = `leaf-${rootIdx}-${childIdx}-${leafIdx}`;
+                            leafLink.onclick = (e) => {
+                                e.preventDefault();
+                                selectLeaf(leaf, [root.title, child.title, leaf.title], leafLink.id);
+                            };
+                            subGroupItemsContainer.appendChild(leafLink);
+                        });
+
+                        subGroupDiv.appendChild(subGroupBtn);
+                        subGroupDiv.appendChild(subGroupItemsContainer);
+                        subContainer.appendChild(subGroupDiv);
+                    } else {
+                        // Leaf directly under root
+                        const leafLink = document.createElement('a');
+                        leafLink.className = 'menu-leaf-item direct-child';
+                        leafLink.innerText = child.title;
+                        leafLink.id = `leaf-${rootIdx}-${childIdx}`;
+                        leafLink.onclick = (e) => {
+                            e.preventDefault();
+                            selectLeaf(child, [root.title, child.title], leafLink.id);
+                        };
+                        subContainer.appendChild(leafLink);
+                    }
+                });
+
+                groupDiv.appendChild(rootBtn);
+                groupDiv.appendChild(subContainer);
+                container.appendChild(groupDiv);
+            });
+        }
+
+        // Toggle Root Modules accordion
+        function toggleRootItem(rootIdx) {
+            menuData.forEach((root, idx) => {
+                if (idx !== rootIdx) {
+                    const otherSub = document.getElementById(`sub-container-${idx}`);
+                    const otherArrow = document.getElementById(`root-arrow-${idx}`);
+                    const otherBtn = document.getElementById(`root-item-${idx}`);
+                    if (otherSub) otherSub.classList.remove('expanded');
+                    if (otherArrow) otherArrow.classList.remove('rotated');
+                    if (otherBtn) otherBtn.classList.remove('expanded');
+                }
+            });
+
+            const sub = document.getElementById(`sub-container-${rootIdx}`);
+            const arrow = document.getElementById(`root-arrow-${rootIdx}`);
+            const btn = document.getElementById(`root-item-${rootIdx}`);
+            if (sub) {
+                const isExpanded = sub.classList.toggle('expanded');
+                if (arrow) {
+                    if (isExpanded) arrow.classList.add('rotated');
+                    else arrow.classList.remove('rotated');
+                }
+                if (btn) {
+                    if (isExpanded) btn.classList.add('expanded');
+                    else btn.classList.remove('expanded');
+                }
+            }
+        }
+
+        // Toggle Subgroup blocks
+        function toggleSubGroup(rootIdx, childIdx) {
+            const subgroupContainer = document.getElementById(`subgroup-container-${rootIdx}-${childIdx}`);
+            const subgroupArrow = document.getElementById(`subgroup-arrow-${rootIdx}-${childIdx}`);
+            const subgroupBtn = document.getElementById(`subgroup-item-${rootIdx}-${childIdx}`);
+            if (subgroupContainer) {
+                const isExpanded = subgroupContainer.classList.toggle('expanded');
+                if (subgroupArrow) {
+                    if (isExpanded) subgroupArrow.classList.add('rotated');
+                    else subgroupArrow.classList.remove('rotated');
+                }
+                if (subgroupBtn) {
+                    if (isExpanded) subgroupBtn.classList.add('expanded');
+                    else subgroupBtn.classList.remove('expanded');
+                }
+            }
+        }
+
+        // Click handler to select and load feature page in IFrame
+        function selectLeaf(leafItem, pathArray, elementId) {
+            // Remove active classes
+            document.querySelectorAll('.menu-leaf-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Highlight selected item
+            const activeItem = document.getElementById(elementId);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+
+            // Update Breadcrumbs
+            const parentSpan = document.getElementById('breadcrumbParent');
+            const childSpan = document.getElementById('breadcrumbChild');
+            
+            if (pathArray.length === 3) {
+                parentSpan.innerText = `${pathArray[0]} / ${pathArray[1]}`;
+                childSpan.innerText = pathArray[2];
+            } else {
+                parentSpan.innerText = pathArray[0];
+                childSpan.innerText = pathArray[1];
+            }
+
+            // Update Header & loading target in iframe
+            const iframe = document.getElementById('mainContentIframe');
+            if (iframe) {
+                iframe.src = leafItem.url || 'temp_placeholder.html';
+            }
+        }
+
+        // Select the default first child leaf node on startup
+        function selectDefaultLeaf() {
+            toggleRootItem(0);
+            toggleSubGroup(0, 0);
+            const firstLeaf = menuData[0].children[0].children[0];
+            selectLeaf(firstLeaf, [menuData[0].title, menuData[0].children[0].title, firstLeaf.title], 'leaf-0-0-0');
+        }
+
+        // Global search & highlight matching menu items
+        function filterMenu() {
+            const query = document.getElementById('actionSearch').value.trim().toLowerCase();
+            
+            // Expand all menu folders if search query is entered, reset if empty
+            menuData.forEach((root, rootIdx) => {
+                const sub = document.getElementById(`sub-container-${rootIdx}`);
+                const arrow = document.getElementById(`root-arrow-${rootIdx}`);
+                const btn = document.getElementById(`root-item-${rootIdx}`);
+                
+                if (query) {
+                    if (sub) sub.classList.add('expanded');
+                    if (arrow) arrow.classList.add('rotated');
+                    if (btn) btn.classList.add('expanded');
+
+                    root.children.forEach((child, childIdx) => {
+                        if (child.children) {
+                            const subgroupContainer = document.getElementById(`subgroup-container-${rootIdx}-${childIdx}`);
+                            const subgroupArrow = document.getElementById(`subgroup-arrow-${rootIdx}-${childIdx}`);
+                            const subgroupBtn = document.getElementById(`subgroup-item-${rootIdx}-${childIdx}`);
+                            if (subgroupContainer) subgroupContainer.classList.add('expanded');
+                            if (subgroupArrow) subgroupArrow.classList.add('rotated');
+                            if (subgroupBtn) subgroupBtn.classList.add('expanded');
+                        }
+                    });
+                } else {
+                    // Reset to default on clearing search
+                    if (rootIdx !== 0) {
+                        if (sub) sub.classList.remove('expanded');
+                        if (arrow) arrow.classList.remove('rotated');
+                        if (btn) btn.classList.remove('expanded');
+                    }
+                    root.children.forEach((child, childIdx) => {
+                        if (child.children && (rootIdx !== 0 || childIdx !== 0)) {
+                            const subgroupContainer = document.getElementById(`subgroup-container-${rootIdx}-${childIdx}`);
+                            const subgroupArrow = document.getElementById(`subgroup-arrow-${rootIdx}-${childIdx}`);
+                            const subgroupBtn = document.getElementById(`subgroup-item-${rootIdx}-${childIdx}`);
+                            if (subgroupContainer) subgroupContainer.classList.remove('expanded');
+                            if (subgroupArrow) subgroupArrow.classList.remove('rotated');
+                            if (subgroupBtn) subgroupBtn.classList.remove('expanded');
+                        }
+                    });
+                }
+            });
+
+            // Filter visibility of leaf item elements
+            document.querySelectorAll('.menu-leaf-item').forEach(el => {
+                const text = el.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    el.style.display = 'block';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+        }
+
+        // Toggle user Profile dropdown
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('userDropdown');
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+        }
+
+        // Close profile dropdown on clicking elsewhere
+        window.addEventListener('click', () => {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Custom Toast Helper
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+
+            toast.className = 'toast'; // Reset
+            toast.classList.add(type);
+            toastMsg.innerText = message;
+
+            const icon = toast.querySelector('i');
+            if (type === 'success') {
+                icon.className = 'fa-solid fa-circle-check';
+            } else if (type === 'error') {
+                icon.className = 'fa-solid fa-circle-exclamation';
+            } else {
+                icon.className = 'fa-solid fa-circle-info';
+            }
+
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
