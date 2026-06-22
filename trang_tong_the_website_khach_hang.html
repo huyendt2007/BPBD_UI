@@ -2320,55 +2320,60 @@
                         <div class="login-header-banner">
                             <i class="fa-solid fa-scale-balanced"
                                 style="font-size: 32px; color: var(--accent-color); margin-bottom: 8px;"></i>
-                            <h3>Cổng đăng nhập dịch vụ công liên thông</h3>
-                            <p>Hệ thống Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp</p>
+                            <h3>Đăng nhập Hệ thống Đăng ký biện pháp bảo đảm và Bồi thường nhà nước</h3>
                         </div>
 
                         <!-- METHOD SELECTION GATEWAY GRID (Resembling Payment Gateway Options) -->
                         <div id="login-gateway-selector">
-                            <div class="login-gateway-title">Lựa chọn Phương thức đăng nhập và Xác thực</div>
-                            <div class="login-method-grid">
-                                <!-- Card 1: VNeID -->
-                                <div class="login-method-card vneid-card" onclick="switchLoginMethod('vneid')">
-                                    <div class="login-card-icon-wrapper">
-                                        <i class="fa-solid fa-id-card-clip login-card-icon"></i>
+                            <div class="login-gateway-title" style="text-align: center; font-size: 15px; font-weight: 700; margin-bottom: 20px;">Lựa chọn Phương thức đăng nhập và Xác thực</div>
+                            <div class="login-method-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px; background-color: #FFFFFF;">
+                                <!-- Card 1: Dịch vụ Công Quốc gia -->
+                                <div class="login-method-card dvcqg-card" style="border: 1px solid #E2E8F0; border-radius: var(--border-radius-lg); padding: 35px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: all 0.25s;" 
+                                     onclick="window.location.href='https://xacthuc.dichvucong.gov.vn/authenticationendpoint/login.do?acr_values=LoA1&client_id=U13hchYNhcdCqR446l2uchMqcLca&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fdktructuyen.moj.gov.vn%2Fsso%2Fdvcqg%2Fredirect&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=0faa2e4e-d87f-4bda-a925-b9d1467a189f&relyingParty=U13hchYNhcdCqR446l2uchMqcLca&type=oidc&sp=bo+tu+phap+new&isSaaSApp=false&authenticators=OpenIDConnectAuthenticator%3AVnconnect+DVC%3AIDP+BCA%3AVNeID_TC_DN%3BVnptAuthenticator%3ALOCAL'">
+                                    <div class="login-card-logo" style="margin-bottom: 5px;">
+                                        <svg width="60" height="60" viewBox="0 0 100 100" style="display: block;">
+                                            <circle cx="50" cy="50" r="48" fill="#DA251D"/>
+                                            <polygon points="50,15 60,45 90,45 66,63 75,93 50,75 25,93 34,63 10,45 40,45" fill="#FFFF00"/>
+                                        </svg>
                                     </div>
-                                    <div class="login-card-title">Tài khoản VNeID</div>
-                                    <div class="login-card-desc">Định danh điện tử mức 2 cấp bởi Bộ Công An dành cho Cá
-                                        nhân và Tổ chức.</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 16px; font-weight: 700; color: #1E293B; margin-bottom: 6px;">ĐĂNG NHẬP</div>
+                                        <div style="font-size: 13px; color: #64748B; margin-bottom: 6px;">Tài khoản cấp bởi</div>
+                                        <div style="font-size: 14px; font-weight: 600; color: #0F172A; line-height: 1.4;">Cổng dịch vụ công quốc gia</div>
+                                    </div>
                                 </div>
 
-                                <!-- Card 2: DVCQG -->
-                                <div class="login-method-card dvcqg-card" onclick="simulateDVCQGSSO()">
-                                    <div class="login-card-icon-wrapper">
-                                        <i class="fa-solid fa-shield-halved login-card-icon"></i>
+                                <!-- Card 2: Tài khoản Hệ thống đăng ký trực tuyến -->
+                                <div class="login-method-card internal-card" style="border: 1px solid #E2E8F0; border-radius: var(--border-radius-lg); padding: 35px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: all 0.25s;" 
+                                     onclick="switchLoginMethod('internal')">
+                                    <div class="login-card-logo" style="margin-bottom: 5px;">
+                                        <svg width="60" height="60" viewBox="0 0 100 100" style="display: block;">
+                                            <circle cx="50" cy="50" r="48" fill="#005A9C" stroke="#FFD700" stroke-width="2"/>
+                                            <circle cx="50" cy="50" r="42" fill="none" stroke="#FFD700" stroke-width="1" stroke-dasharray="2,2"/>
+                                            <path d="M35,40 H65 M50,40 V70 M35,40 L40,58 H30 Z M65,40 L70,58 H60 Z M42,70 H58" fill="none" stroke="#FFD700" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M45,28 Q50,22 55,28" fill="none" stroke="#FFD700" stroke-width="2"/>
+                                        </svg>
                                     </div>
-                                    <div class="login-card-title">Cổng DVC Quốc gia</div>
-                                    <div class="login-card-desc">Đăng nhập liên thông quốc gia dành cho Công dân và Cơ
-                                        quan nhà nước.</div>
-                                </div>
-
-                                <!-- Card 3: USB Token -->
-                                <div class="login-method-card usb-card" onclick="switchLoginMethod('token')">
-                                    <div class="login-card-icon-wrapper">
-                                        <i class="fa-solid fa-usb-drive login-card-icon"></i>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 16px; font-weight: 700; color: #1E293B; margin-bottom: 6px;">ĐĂNG NHẬP</div>
+                                        <div style="font-size: 13px; color: #64748B; margin-bottom: 6px;">Tài khoản cấp bởi</div>
+                                        <div style="font-size: 14px; font-weight: 600; color: #0F172A; line-height: 1.4;">Hệ thống đăng ký trực tuyến giao dịch bảo đảm</div>
                                     </div>
-                                    <div class="login-card-title">Chữ ký số USB Token</div>
-                                    <div class="login-card-desc">Dành cho Ngân hàng, Doanh nghiệp và Tổ chức Tín dụng
-                                        thực hiện ký số.</div>
-                                </div>
-
-                                <!-- Card 4: Internal NRAST Account -->
-                                <div class="login-method-card internal-card" onclick="switchLoginMethod('internal')">
-                                    <div class="login-card-icon-wrapper">
-                                        <i class="fa-solid fa-user-shield login-card-icon"></i>
-                                    </div>
-                                    <div class="login-card-title">Tài khoản NRAST</div>
-                                    <div class="login-card-desc">Tài khoản chuyên dùng đăng ký trực tiếp trên Cổng thông
-                                        tin Cục Đăng ký.</div>
                                 </div>
                             </div>
-                            <div style="text-align: center; padding: 0 0 20px 0; background-color: #F8FAFC;">
+
+                            <!-- Warning Note Box exactly matching screenshot color and text -->
+                            <div class="login-note-box" style="margin: 15px 20px; padding: 15px; border: 1px dashed #FCA5A5; font-size: 13px; line-height: 1.6; color: #DC2626; text-align: left; background-color: #FEF2F2; border-radius: var(--border-radius-md);">
+                                <div style="font-weight: 800; font-size: 13px; margin-bottom: 4px;">Chú ý:</div>
+                                <div>Công dân muốn đăng nhập lại bằng một tài khoản cổng DVCQG khác thì tiến hành.</div>
+                                <div style="margin-left: 0px; margin-top: 2px; margin-bottom: 2px;">
+                                    <div>- Xóa cache trình duyệt.</div>
+                                    <div>- Reload (F5) lại trang hiện tại.</div>
+                                </div>
+                                <div>Sau đó tiến hành đăng nhập bằng cổng DVCQG như bình thường.</div>
+                            </div>
+
+                            <div style="text-align: center; padding: 10px 0 20px 0;">
                                 <button class="btn btn-outline-primary" style="padding: 6px 20px;"
                                     onclick="showScreen('home')">
                                     <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ
