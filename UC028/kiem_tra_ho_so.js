@@ -381,7 +381,7 @@ function executeRender() {
                 <td>${row.receipt}</td>
                 <td>${row.assetType}</td>
                 <td style="text-align: center;" onclick="event.stopPropagation()">
-                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${row.id}')">Xem đối soát</button>
+                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${row.id}')"><i class="fa fa-eye"></i> Xem đối soát</button>
                 </td>
             </tr>
         `;

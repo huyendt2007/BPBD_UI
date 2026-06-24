@@ -63,67 +63,16 @@
         .card-header p {
             font-size: 12px;
             color: var(--text-muted);
+            line-height: 1.4;
         }
 
-        /* Steps progress bar */
-        .steps-indicator {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
-            gap: 8px;
-        }
-
-        .step {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--bg-body);
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            border: 2px solid var(--border-color);
-            transition: all 0.3s;
-        }
-
-        .step.active {
-            background-color: var(--brand-blue);
-            color: white;
-            border-color: var(--brand-blue);
-        }
-
-        .step.completed {
-            background-color: var(--success-color);
-            color: white;
-            border-color: var(--success-color);
-        }
-
-        .step-line {
-            flex: 1;
-            height: 2px;
-            background-color: var(--border-color);
-            max-width: 50px;
-            transition: all 0.3s;
-        }
-
-        .step-line.active {
-            background-color: var(--brand-blue);
-        }
-
-        .step-line.completed {
-            background-color: var(--success-color);
-        }
-
-        /* Step Panels */
-        .step-panel {
-            display: none;
-        }
-
-        .step-panel.active {
+        .form-panel {
             display: block;
+        }
+
+        .success-panel {
+            display: none;
+            text-align: center;
         }
 
         .form-group {
@@ -152,17 +101,13 @@
 
         .form-control {
             width: 100%;
-            padding: 10px 12px;
+            padding: 10px 12px 10px 38px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 13px;
             color: var(--text-main);
             transition: all 0.2s;
             background-color: #FAFBFD;
-        }
-
-        .form-control-icon {
-            padding-left: 38px;
         }
 
         .form-control:focus {
@@ -185,54 +130,12 @@
             font-weight: 500;
         }
 
-        /* MFA OTP verification style */
-        .otp-inputs {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            margin-top: 12px;
-            margin-bottom: 16px;
-        }
-
-        .otp-input {
-            width: 100%;
-            height: 46px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 700;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: #FAFBFD;
-            transition: all 0.2s;
-        }
-
-        .otp-input:focus {
-            outline: none;
-            border-color: var(--brand-blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: white;
-        }
-
-        .complexity-rules {
-            background-color: #F8FAFC;
-            border: 1px solid var(--border-color);
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 11px;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        .complexity-rules strong {
+        .success-desc {
+            font-size: 13px;
             color: var(--text-main);
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .complexity-rules ul {
-            padding-left: 16px;
-            margin: 0;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            text-align: justify;
         }
 
         .footer-actions {
@@ -317,28 +220,20 @@
 <body>
 
     <div class="forgot-pass-card">
+        <!-- HEADER -->
         <div class="card-header">
             <h2>Khôi phục mật khẩu</h2>
-            <p>Hệ thống Quản trị & Điều hành Nghiệp vụ cán bộ</p>
+            <p id="subHeaderDesc">Yêu cầu cấp lại mật khẩu tạm thời cho tài khoản cán bộ</p>
         </div>
 
-        <!-- Steps indicators -->
-        <div class="steps-indicator">
-            <div class="step active" id="step1">1</div>
-            <div class="step-line" id="line1"></div>
-            <div class="step" id="step2">2</div>
-            <div class="step-line" id="line2"></div>
-            <div class="step" id="step3">3</div>
-        </div>
-
-        <!-- STEP 1: Tài khoản & Email -->
-        <div class="step-panel active" id="panel1">
-            <form onsubmit="goToStep2(event)">
+        <!-- FORM PANEL -->
+        <div class="form-panel" id="formPanel">
+            <form onsubmit="handleSendRequest(event)">
                 <div class="form-group">
                     <label class="form-label" for="username">Tên đăng nhập <span style="color:var(--danger-color);">*</span></label>
                     <div class="input-wrapper">
                         <i class="fa fa-user"></i>
-                        <input type="text" class="form-control form-control-icon" id="username" placeholder="Nhập tên đăng nhập...">
+                        <input type="text" class="form-control" id="username" placeholder="Nhập tên đăng nhập cán bộ...">
                     </div>
                     <span class="error-text" id="err_username">Đây là trường bắt buộc</span>
                 </div>
@@ -347,79 +242,36 @@
                     <label class="form-label" for="email">Email công vụ đã liên kết <span style="color:var(--danger-color);">*</span></label>
                     <div class="input-wrapper">
                         <i class="fa fa-envelope"></i>
-                        <input type="email" class="form-control form-control-icon" id="email" placeholder="VD: canbo@moj.gov.vn...">
+                        <input type="email" class="form-control" id="email" placeholder="Ví dụ: canbo@moj.gov.vn...">
                     </div>
                     <span class="error-text" id="err_email">Vui lòng nhập đúng định dạng email</span>
                 </div>
 
                 <div class="footer-actions">
                     <button type="button" class="btn btn-outline" onclick="goToLogin()">QUAY LẠI</button>
-                    <button type="submit" class="btn btn-primary">GỬI MÃ OTP <i class="fa fa-paper-plane"></i></button>
+                    <button type="submit" class="btn btn-primary">GỬI YÊU CẦU <i class="fa fa-paper-plane"></i></button>
                 </div>
             </form>
         </div>
 
-        <!-- STEP 2: Xác thực OTP -->
-        <div class="step-panel" id="panel2">
-            <form onsubmit="goToStep3(event)">
-                <div class="form-group">
-                    <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>Nhập mã xác thực OTP <span style="color:var(--danger-color);">*</span></span>
-                        <span style="font-weight:normal; font-size:11px; text-decoration:underline; cursor:pointer; color:var(--brand-blue);" onclick="resendOtp()">Gửi lại mã</span>
-                    </label>
-                    <p style="font-size:11.5px; color:var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
-                        Mã OTP xác thực khôi phục mật khẩu gồm 6 chữ số đã được gửi tới email công vụ của cán bộ.
-                    </p>
-                    
-                    <div class="otp-inputs">
-                        <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 0)" id="otp1">
-                        <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 1)" id="otp2">
-                        <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 2)" id="otp3">
-                        <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 3)" id="otp4">
-                        <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 4)" id="otp5">
-                        <input type="text" maxlength="1" class="otp-input" oninput="focusNext(this, 5)" id="otp6">
-                    </div>
-                    <span class="error-text" id="err_otp">Mã xác thực OTP gồm 6 chữ số (mặc định thử nghiệm: 123456)</span>
-                </div>
+        <!-- SUCCESS PANEL -->
+        <div class="success-panel" id="successPanel">
+            <i class="fa-solid fa-circle-check" style="font-size: 54px; color: var(--success-color); margin-bottom: 20px;"></i>
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--primary-color); margin-bottom: 12px; text-transform: uppercase;">
+                Gửi yêu cầu thành công!
+            </h3>
+            
+            <p class="success-desc">
+                Hệ thống đã tự động tạo một <strong>mật khẩu tạm thời mới</strong> và gửi tới địa chỉ email công vụ của cán bộ (<span id="targetEmail" style="font-weight: 600; color: var(--brand-blue);">...</span>).
+            </p>
 
-                <div class="footer-actions">
-                    <button type="button" class="btn btn-outline" onclick="backToStep1()">QUAY LẠI</button>
-                    <button type="submit" class="btn btn-primary">XÁC MINH OTP <i class="fa fa-shield-halved"></i></button>
-                </div>
-            </form>
-        </div>
+            <p style="font-size: 12px; color: var(--text-muted); background: #F8FAFC; border: 1px dashed var(--border-color); padding: 12px; border-radius: 6px; margin-bottom: 24px; text-align: left; line-height: 1.4;">
+                <i class="fa fa-circle-info" style="color: var(--brand-blue);"></i> <strong>Lưu ý:</strong> Vui lòng kiểm tra kỹ Hòm thư đến (Inbox) hoặc Hòm thư rác (Spam/Junk) để nhận thông tin mật khẩu tạm thời và tiến hành đăng nhập lại.
+            </p>
 
-        <!-- STEP 3: Mật khẩu mới -->
-        <div class="step-panel" id="panel3">
-            <form onsubmit="handleResetPassword(event)">
-                <div class="complexity-rules">
-                    <strong>Quy tắc độ phức tạp mật khẩu:</strong>
-                    <ul>
-                        <li>Độ dài tối thiểu từ 8 đến 20 ký tự.</li>
-                        <li>Chứa ít nhất một chữ hoa (A-Z).</li>
-                        <li>Chứa ít nhất một chữ thường (a-z).</li>
-                        <li>Chứa ít nhất một chữ số (0-9).</li>
-                        <li>Chứa ít nhất một ký tự đặc biệt (!@#$%^&*...).</li>
-                    </ul>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="newPassword">Mật khẩu mới <span style="color:var(--danger-color);">*</span></label>
-                    <input type="password" class="form-control" id="newPassword" placeholder="Nhập mật khẩu mới...">
-                    <span class="error-text" id="err_newPassword">Mật khẩu mới không đạt yêu cầu</span>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="confirmPassword">Xác nhận mật khẩu mới <span style="color:var(--danger-color);">*</span></label>
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu mới...">
-                    <span class="error-text" id="err_confirmPassword">Xác nhận mật khẩu mới không khớp</span>
-                </div>
-
-                <div class="footer-actions">
-                    <button type="button" class="btn btn-outline" onclick="backToStep2()">QUAY LẠI</button>
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> LƯU & HOÀN TẤT</button>
-                </div>
-            </form>
+            <button type="button" class="btn btn-primary" style="width: 100%;" onclick="goToLogin()">
+                QUAY LẠI ĐĂNG NHẬP <i class="fa fa-arrow-right"></i>
+            </button>
         </div>
     </div>
 
@@ -446,173 +298,49 @@
             window.location.href = 'dang_nhap_can_bo.html';
         };
 
-        // Step 1 -> Step 2
-        const goToStep2 = (e) => {
+        const handleSendRequest = (e) => {
             e.preventDefault();
             
-            // Clear errors
-            document.getElementById('username').classList.remove('is-invalid');
-            document.getElementById('email').classList.remove('is-invalid');
+            const usernameInp = document.getElementById('username');
+            const emailInp = document.getElementById('email');
+
+            usernameInp.classList.remove('is-invalid');
+            emailInp.classList.remove('is-invalid');
             document.getElementById('err_username').style.display = 'none';
             document.getElementById('err_email').style.display = 'none';
 
-            const usernameVal = document.getElementById('username').value.trim();
-            const emailVal = document.getElementById('email').value.trim();
+            const usernameVal = usernameInp.value.trim();
+            const emailVal = emailInp.value.trim();
             let hasError = false;
 
             if (!usernameVal) {
-                document.getElementById('username').classList.add('is-invalid');
+                usernameInp.classList.add('is-invalid');
                 document.getElementById('err_username').style.display = 'block';
                 hasError = true;
             }
 
             if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
-                document.getElementById('email').classList.add('is-invalid');
+                emailInp.classList.add('is-invalid');
                 document.getElementById('err_email').style.display = 'block';
                 hasError = true;
             }
 
             if (hasError) return;
 
-            showToast('Mã xác thực OTP đã được gửi về email công vụ!', 'success');
-            
-            // UI switch
-            document.getElementById('panel1').classList.remove('active');
-            document.getElementById('panel2').classList.add('active');
-            
-            document.getElementById('step1').classList.add('completed');
-            document.getElementById('line1').classList.add('completed');
-            document.getElementById('step2').classList.add('active');
-            
-            setTimeout(() => {
-                document.getElementById('otp1').focus();
-            }, 300);
-        };
-
-        // Step 2 OTP Focus
-        const focusNext = (el, idx) => {
-            el.value = el.value.replace(/\D/g, '');
-            if (el.value.length === 1 && idx < 5) {
-                document.querySelectorAll('.otp-input')[idx + 1].focus();
-            }
-        };
-
-        const resendOtp = () => {
-            showToast('Đã gửi lại mã xác thực OTP mới vào email!', 'success');
-        };
-
-        const backToStep1 = () => {
-            document.getElementById('panel2').classList.remove('active');
-            document.getElementById('panel1').classList.add('active');
-            
-            document.getElementById('step1').classList.remove('completed');
-            document.getElementById('line1').classList.remove('completed');
-            document.getElementById('step2').classList.remove('active');
-        };
-
-        // Step 2 -> Step 3
-        const goToStep3 = (e) => {
-            e.preventDefault();
-            
-            const otpInputs = document.querySelectorAll('.otp-input');
-            otpInputs.forEach(i => i.classList.remove('is-invalid'));
-            document.getElementById('err_otp').style.display = 'none';
-
-            const otpVal = Array.from(otpInputs).map(i => i.value).join('');
-
-            if (otpVal.length < 6) {
-                otpInputs.forEach(i => i.classList.add('is-invalid'));
-                document.getElementById('err_otp').innerText = 'Vui lòng nhập đầy đủ mã xác thực OTP gồm 6 chữ số';
-                document.getElementById('err_otp').style.display = 'block';
-                return;
-            }
-
-            if (otpVal !== '123456') {
-                otpInputs.forEach(i => i.classList.add('is-invalid'));
-                document.getElementById('err_otp').innerText = 'Mã xác thực OTP chưa chính xác. Vui lòng thử lại';
-                document.getElementById('err_otp').style.display = 'block';
-                showToast('Mã OTP xác thực không đúng!', 'error');
-                return;
-            }
-
-            showToast('Mã xác thực OTP chính xác!', 'success');
-
-            // UI Switch
-            document.getElementById('panel2').classList.remove('active');
-            document.getElementById('panel3').classList.add('active');
-            
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step2').classList.add('completed');
-            document.getElementById('line2').classList.add('completed');
-            document.getElementById('step3').classList.add('active');
-        };
-
-        const backToStep2 = () => {
-            document.getElementById('panel3').classList.remove('active');
-            document.getElementById('panel2').classList.add('active');
-            
-            document.getElementById('step2').classList.remove('completed');
-            document.getElementById('step2').classList.add('active');
-            document.getElementById('line2').classList.remove('completed');
-            document.getElementById('step3').classList.remove('active');
-            
-            setTimeout(() => {
-                document.getElementById('otp1').focus();
-            }, 300);
-        };
-
-        // Step 3 Reset password
-        const handleResetPassword = (e) => {
-            e.preventDefault();
-
-            const newInp = document.getElementById('newPassword');
-            const confInp = document.getElementById('confirmPassword');
-
-            newInp.classList.remove('is-invalid');
-            confInp.classList.remove('is-invalid');
-            document.getElementById('err_newPassword').style.display = 'none';
-            document.getElementById('err_confirmPassword').style.display = 'none';
-
-            const newVal = newInp.value.trim();
-            const confVal = confInp.value.trim();
-
-            if (!newVal) {
-                newInp.classList.add('is-invalid');
-                document.getElementById('err_newPassword').innerText = 'Đây là trường bắt buộc';
-                document.getElementById('err_newPassword').style.display = 'block';
-                return;
-            }
-
-            // Complexity checks
-            const lengthValid = newVal.length >= 8 && newVal.length <= 20;
-            const hasUpper = /[A-Z]/.test(newVal);
-            const hasLower = /[a-z]/.test(newVal);
-            const hasDigit = /[0-9]/.test(newVal);
-            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newVal);
-
-            if (!lengthValid || !hasUpper || !hasLower || !hasDigit || !hasSpecial) {
-                newInp.classList.add('is-invalid');
-                document.getElementById('err_newPassword').innerText = 'Mật khẩu mới không đạt yêu cầu độ phức tạp';
-                document.getElementById('err_newPassword').style.display = 'block';
-                showToast('Mật khẩu không đáp ứng quy chuẩn bảo mật!', 'error');
-                return;
-            }
-
-            if (newVal !== confVal) {
-                confInp.classList.add('is-invalid');
-                document.getElementById('err_confirmPassword').style.display = 'block';
-                showToast('Mật khẩu xác nhận không khớp!', 'error');
-                return;
-            }
-
-            document.getElementById('step3').classList.remove('active');
-            document.getElementById('step3').classList.add('completed');
-
-            showToast('Khôi phục mật khẩu thành công! Đang chuyển hướng về trang Đăng nhập...', 'success');
+            // Mocking a successful request send
+            showToast('Yêu cầu đang được xử lý...', 'info');
 
             setTimeout(() => {
-                window.location.href = 'dang_nhap_can_bo.html';
-            }, 2000);
+                // Populate the email on success panel
+                document.getElementById('targetEmail').innerText = emailVal;
+                
+                // Switch panel
+                document.getElementById('formPanel').style.display = 'none';
+                document.getElementById('successPanel').style.display = 'block';
+                document.getElementById('subHeaderDesc').innerText = 'Hoàn tất yêu cầu cấp mật khẩu tạm thời';
+                
+                showToast('Hệ thống đã cấp mật khẩu tạm thời thành công!', 'success');
+            }, 1000);
         };
     </script>
 </body>

@@ -370,6 +370,8 @@
         .action-icons {
             display: flex;
             gap: 8px;
+            justify-content: center;
+            align-items: center;
         }
         .action-icon {
             background: none;
@@ -626,7 +628,7 @@
                             <th width="130px">Hình thức</th>
                             <th width="150px">Kinh phí dự kiến</th>
                             <th width="150px">Tình trạng</th>
-                            <th width="100px">Thao tác</th>
+                            <th width="100px" style="text-align: center;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="th-table-body">
@@ -876,7 +878,7 @@
                             <th width="180px">Thời gian dự kiến</th>
                             <th width="120px">Tiến độ (%)</th>
                             <th width="200px">Trạng thái</th>
-                            <th width="100px">Thao tác</th>
+                            <th width="100px" style="text-align: center;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="kh-table-body">
@@ -1242,7 +1244,7 @@
                             <th width="140px">Ngày phát sinh</th>
                             <th width="120px" style="text-align: center;">Tài liệu</th>
                             <th width="150px">Người nhập</th>
-                            <th width="100px">Thao tác</th>
+                            <th width="100px" style="text-align: center;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="lk-table-body">
@@ -1872,8 +1874,9 @@
                 <td>${th.hinhThuc}</td>
                 <td>${th.kinhPhiDukien ? Number(th.kinhPhiDukien).toLocaleString('vi-VN') + " đ" : "-"}</td>
                 <td><span class="badge ${badgeClass}">${th.tinhTrang}</span></td>
-                <td>
+                <td style="text-align: center;">
                     <div class="action-icons">
+                        <button class="action-icon" title="Xem chi tiết" onclick="openEditThForm('${th.id}')"><i class="fa-solid fa-eye"></i></button>
                         <button class="action-icon" title="Cập nhật tiến độ/kết quả" onclick="openEditThForm('${th.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button class="action-icon delete" title="Xóa" onclick="deleteTh('${th.id}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
@@ -2230,8 +2233,9 @@
                     </div>
                 </td>
                 <td><span class="badge ${badgeClass}">${kh.progressStatus}</span></td>
-                <td>
+                <td style="text-align: center;">
                     <div class="action-icons">
+                        <button class="action-icon" title="Xem chi tiết" onclick="openEditKhForm('${kh.id}')"><i class="fa-solid fa-eye"></i></button>
                         <button class="action-icon" title="Sửa/Cập nhật" onclick="openEditKhForm('${kh.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button class="action-icon delete" title="Xóa" onclick="deleteKh('${kh.id}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
@@ -2910,9 +2914,10 @@
                 <td>${lk.ngay}</td>
                 <td style="text-align: center;">${filesRep}</td>
                 <td>${lk.nguoiNhap}</td>
-                <td>
+                <td style="text-align: center;">
                     <div class="action-icons">
-                        <button class="action-icon" title="Xem/Sửa" onclick="openEditLkForm('${lk.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="action-icon" title="Xem chi tiết" onclick="openEditLkForm('${lk.id}')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Chỉnh sửa" onclick="openEditLkForm('${lk.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button class="action-icon delete" title="Xóa" onclick="deleteLk('${lk.id}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </td>

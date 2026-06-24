@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gán người dùng vào Vai trò</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #1E3A8A;
@@ -127,7 +128,7 @@
                                 <th width="35%">Họ và tên</th>
                                 <th width="25%">Tên đăng nhập</th>
                                 <th width="20%">Đơn vị</th>
-                                <th width="10%">Bỏ gán</th>
+                                <th width="12%" style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="assignedUsersBody">
@@ -279,6 +280,7 @@
                     <td>${user.username}</td>
                     <td>${user.dept}</td>
                     <td style="text-align:center;">
+                        <button class="btn-icon" style="color: var(--secondary-color); margin-right: 6px;" onclick="showToast('Xem thông tin cán bộ đang phát triển')" title="Xem"><i class="fa fa-eye"></i></button>
                         <button class="btn-icon" onclick="openDeleteModal(${user.id})" title="Bỏ gán">✖</button>
                     </td>
                 `;

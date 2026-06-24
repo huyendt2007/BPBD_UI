@@ -542,6 +542,7 @@
             display: flex;
             gap: 6px;
             align-items: center;
+            justify-content: center;
         }
 
         .action-icon {
@@ -1151,7 +1152,7 @@
                                 <th width="150px">Trạng thái kế hoạch</th>
                                 <th width="120px">Lãnh đạo ký</th>
                                 <th width="180px">Thời gian thực hiện</th>
-                                <th width="120px">Thao tác</th>
+                                <th width="120px" style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="parent-table-body">
@@ -1554,7 +1555,7 @@
                                 <th width="180px">Ngày thực tế</th>
                                 <th width="150px">Tình trạng thực hiện</th>
                                 <th width="150px">Người phụ trách đợt</th>
-                                <th width="100px">Thao tác</th>
+                                <th width="100px" style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="tiendo-table-body">
@@ -1628,7 +1629,7 @@
                                 <th width="120px">Số sai phạm</th>
                                 <th width="180px">Trạng thái xử lý</th>
                                 <th width="180px">Số kết luận / báo cáo</th>
-                                <th width="120px">Thao tác</th>
+                                <th width="120px" style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="ketqua-table-body">
@@ -2541,7 +2542,7 @@
                                 <th width="100px">Số sai phạm</th>
                                 <th width="120px">Trạng thái xử lý</th>
                                 <th width="180px">Số VB kết luận / Báo cáo</th>
-                                <th width="150px">Thao tác</th>
+                                <th width="150px" style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="child-table-body-${p.id}">
@@ -2615,9 +2616,9 @@
                         <td style="text-align: center;">${spText}</td>
                         <td>${xlBadge}</td>
                         <td>${vbLink}</td>
-                        <td>
+                        <td style="text-align: center;">
                             <div class="action-icons">
-                                <a href="#" onclick="openDirectKetquaTab('${plan.id}', '${dot.id}')" style="color: var(--success-color); font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-circle-info"></i> Xem KQ</a>
+                                <a href="#" onclick="openDirectKetquaTab('${plan.id}', '${dot.id}')" style="color: var(--success-color); font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-eye"></i> Xem KQ</a>
                             </div>
                         </td>
                     `;
@@ -3443,7 +3444,7 @@
                 <td>${dot.batDauThucte ? `${dot.batDauThucte} — ${dot.ketThucThucte || 'đang thực hiện'}` : 'Chưa diễn ra'}</td>
                 <td><span class="badge ${statusClass}">${dot.tinhTrang}</span></td>
                 <td>${dot.phuTrach || "-"}</td>
-                <td class="action-icons">
+                <td class="action-icons" style="text-align: center;">
                     <button class="action-icon edit" title="Sửa tiến độ" onclick="openEditDotForm('${dot.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button class="action-icon delete" title="Xóa đợt" onclick="deleteDot('${dot.id}')"><i class="fa-solid fa-trash"></i></button>
                 </td>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Nhóm người dùng & Phân quyền</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #1E3A8A;
@@ -240,7 +241,7 @@
                                 <th>Họ và tên</th>
                                 <th>Tên đăng nhập</th>
                                 <th>Phòng ban / Đơn vị</th>
-                                <th>Thao tác</th>
+                                <th style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -249,14 +250,20 @@
                                 <td><strong>Nguyễn Văn A</strong></td>
                                 <td>nguyen_va</td>
                                 <td>Phòng Nghiệp vụ 1</td>
-                                <td><button class="btn-outline" style="padding: 2px 6px; font-size:12px; border-radius:4px; border:1px solid red; color:red;">Gỡ bỏ</button></td>
+                                <td style="text-align: center;">
+                                    <button class="btn-outline" style="padding: 2px 6px; font-size:12px; border-radius:4px; border:1px solid var(--secondary-color); color:var(--secondary-color); margin-right: 4px;" onclick="showToast('Xem chi tiết thành viên đang phát triển!')"><i class="fa fa-eye"></i> Xem</button>
+                                    <button class="btn-outline" style="padding: 2px 6px; font-size:12px; border-radius:4px; border:1px solid red; color:red;">Gỡ bỏ</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td>2</td>
                                 <td><strong>Trần Thị B</strong></td>
                                 <td>tran_tb</td>
                                 <td>Phòng Nghiệp vụ 2</td>
-                                <td><button class="btn-outline" style="padding: 2px 6px; font-size:12px; border-radius:4px; border:1px solid red; color:red;">Gỡ bỏ</button></td>
+                                <td style="text-align: center;">
+                                    <button class="btn-outline" style="padding: 2px 6px; font-size:12px; border-radius:4px; border:1px solid var(--secondary-color); color:var(--secondary-color); margin-right: 4px;" onclick="showToast('Xem chi tiết thành viên đang phát triển!')"><i class="fa fa-eye"></i> Xem</button>
+                                    <button class="btn-outline" style="padding: 2px 6px; font-size:12px; border-radius:4px; border:1px solid red; color:red;">Gỡ bỏ</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

@@ -58,87 +58,77 @@
             color: var(--text-main);
             font-size: var(--base-size);
             line-height: 1.5;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: var(--spacing-lg);
         }
+
+
 
         /* Layout & Cards */
         .card-section {
             background-color: var(--bg-surface);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--box-shadow);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
+            padding: 20px;
+            margin-bottom: 20px;
             border: 1px solid rgba(0,0,0,0.05);
         }
 
         .section-title {
             color: var(--primary-color);
-            font-size: var(--heading-size);
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: var(--spacing-md);
-            padding-bottom: var(--spacing-sm);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
             border-bottom: 2px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .grid-2-cols {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-md);
-        }
-
-        .grid-3-cols {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: var(--spacing-md);
-        }
-        
-        .grid-4-cols {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: var(--spacing-md);
-        }
+        .grid-2, .grid-2-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3, .grid-3-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .grid-4, .grid-4-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
 
         /* Form Controls */
         .form-group {
-            margin-bottom: var(--spacing-md);
+            margin-bottom: 15px;
         }
 
         .form-control, .form-select {
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
-            padding: 0.5rem 0.75rem;
-            font-size: var(--base-size);
+            padding: 8px 12px;
+            font-size: 13px;
             color: var(--text-main);
             transition: all 0.2s ease-in-out;
             width: 100%;
+            outline: none;
             font-family: var(--font-family);
         }
 
         .form-control:focus, .form-select:focus {
             border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
         
         .form-control:read-only {
-            background-color: var(--bg-body);
+            background-color: #F8FAFC;
             color: var(--text-muted);
             cursor: not-allowed;
         }
 
         .form-label {
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-main);
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 6px;
             display: block;
+            font-size: 13px;
         }
 
         .required-mark {
@@ -148,17 +138,18 @@
 
         /* Buttons */
         .btn {
-            font-weight: 500;
+            font-weight: 600;
             border-radius: var(--border-radius-md);
-            padding: 0.5rem 1rem;
+            padding: 8px 16px;
             transition: all 0.2s;
             cursor: pointer;
-            border: none;
-            font-size: var(--base-size);
+            border: 1px solid transparent;
+            font-size: 13px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            outline: none;
             font-family: var(--font-family);
         }
 
@@ -169,7 +160,6 @@
 
         .btn-primary:hover {
             background-color: var(--primary-hover);
-            box-shadow: var(--box-shadow);
         }
 
         .btn-outline-primary {
@@ -188,61 +178,76 @@
             color: white;
         }
         .btn-danger:hover {
-            background-color: #dc2626;
+            background-color: #DC2626;
         }
 
         .btn-secondary {
-            background-color: var(--border-color);
-            color: var(--text-main);
+            background-color: #E2E8F0;
+            color: #475569;
         }
         .btn-secondary:hover {
-            background-color: #cbd5e1;
+            background-color: #CBD5E1;
         }
 
-        .action-toolbar {
+        .grid-action-toolbar {
             display: flex;
-            gap: var(--spacing-sm);
             justify-content: flex-end;
-            margin-top: var(--spacing-md);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 15px;
         }
 
         /* Table */
-        .table-responsive {
+        .table-container {
+            width: 100%;
             overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
         }
 
-        .table {
+        .custom-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: var(--spacing-md);
-            min-width: 1000px;
+            text-align: left;
+            font-size: 13px;
         }
 
-        .table th {
+        .custom-table th {
             background-color: var(--table-header-bg);
-            color: var(--primary-color);
+            color: #475569;
             font-weight: 600;
-            font-size: 13px;
-            padding: 12px;
+            padding: 12px 16px;
             border-bottom: 2px solid var(--border-color);
-            text-align: left;
             white-space: nowrap;
         }
 
-        .table td {
-            padding: 12px;
+        .custom-table td {
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
             vertical-align: middle;
         }
 
-        .table tbody tr:hover {
+        .custom-table tbody tr:hover {
             background-color: rgba(241, 245, 249, 0.5);
         }
 
-        .table .action-cell {
+        .custom-table .action-cell {
             display: flex;
             gap: 8px;
             white-space: nowrap;
+            justify-content: center;
+            align-items: center;
         }
 
         .icon-btn {
@@ -263,34 +268,29 @@
         
         .icon-btn.lock { color: var(--warning-color); }
         .icon-btn.lock:hover { background-color: rgba(245, 158, 11, 0.1); }
+
+        .icon-btn.success { color: var(--success-color); }
+        .icon-btn.success:hover { background-color: rgba(16, 185, 129, 0.1); }
         
         .icon-btn.delete { color: var(--danger-color); }
         .icon-btn.delete:hover { background-color: rgba(239, 68, 68, 0.1); }
 
-        /* Tags */
-        .tag {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-right: 4px;
-            margin-bottom: 4px;
-            background-color: #E2E8F0;
-            color: #475569;
+        /* Badge Styling */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
-        .tag.status-active {
-            background-color: #D1FAE5;
-            color: #065F46;
-        }
-        .tag.status-locked {
-            background-color: #FEE2E2;
-            color: #991B1B;
-        }
-        .tag.role-tag {
-            background-color: #DBEAFE;
-            color: #1E40AF;
-        }
+        .bg-secondary { background-color: #E2E8F0; color: #475569; }
+        .bg-info { background-color: #DBEAFE; color: #1E40AF; }
+        .bg-success { background-color: #D1FAE5; color: #065F46; }
+        .bg-danger { background-color: #FEE2E2; color: #991B1B; }
 
         /* Modals */
         .modal-overlay {
@@ -320,10 +320,12 @@
             width: 100%;
             max-width: 800px;
             max-height: 90vh;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             transform: translateY(-20px);
             transition: all 0.3s;
+            overflow: hidden;
         }
         
         .modal-content.modal-sm {
@@ -360,6 +362,8 @@
 
         .modal-body {
             padding: var(--spacing-lg);
+            overflow-y: auto;
+            flex: 1;
         }
 
         .modal-footer {
@@ -545,18 +549,16 @@
 
 <div class="container">
     
-    <!-- Title -->
-    <div style="margin-bottom: var(--spacing-lg);">
-        <h1 style="color: var(--primary-color); font-size: 24px;">Quản lý tài khoản cán bộ</h1>
-        <p style="color: var(--text-muted);">Phân hệ Quản trị hệ thống</p>
-    </div>
+
 
     <!-- Filter Card -->
-    <div class="card-section">
-        <h2 class="section-title"><i class="fas fa-filter"></i> Bộ lọc tìm kiếm</h2>
+    <div class="card-section" id="search-card" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+        <h3 style="font-size: 14px; color: var(--primary-color); font-weight: 600; margin-bottom: 12px;">
+            <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
+        </h3>
         
         <form id="filterForm">
-            <div class="grid-4-cols">
+            <div class="grid-3">
                 <div class="form-group">
                     <label class="form-label">Từ khóa tìm kiếm</label>
                     <input type="text" id="filterKeyword" class="form-control" placeholder="Họ tên, Tên đăng nhập, Email...">
@@ -569,9 +571,19 @@
                         <option value="DV01">Cục đăng ký giao dịch bảo đảm và bồi thường nhà nước</option>
                         <option value="DV02">Trung tâm Đăng ký GDTS tại Hà Nội</option>
                         <option value="DV03">Sở Tư pháp TP.HCM</option>
+                        <option value="DV04">Ngân hàng Nhà nước - Chi nhánh TP.HCM</option>
                     </select>
                 </div>
                 
+                <div class="form-group">
+                    <label class="form-label">Loại đơn vị</label>
+                    <select id="filterOrgType" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Nội bộ">Nội bộ</option>
+                        <option value="Cơ quan ngoài ngành">Cơ quan ngoài ngành</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label class="form-label">Phòng ban</label>
                     <select id="filterDept" class="form-select">
@@ -600,8 +612,9 @@
                 </div>
             </div>
             
-            <div class="action-toolbar">
-                <button type="button" class="btn btn-primary" onclick="searchData()"><i class="fas fa-search"></i> Tìm kiếm</button>
+            <div class="search-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()">Xóa bộ lọc</button>
+                <button type="button" class="btn btn-primary" onclick="searchData()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         </form>
     </div>
@@ -609,25 +622,27 @@
     <!-- Data Table Card -->
     <div class="card-section">
         <div class="section-title">
-            <span><i class="fas fa-list"></i> Danh sách cán bộ</span>
-            <div>
-                <button class="btn btn-outline-primary" onclick="openImportModal()"><i class="fas fa-file-import"></i> Import Excel</button>
-                <button class="btn btn-outline-primary" onclick="openModal('add')"><i class="fas fa-plus"></i> Thêm mới tài khoản</button>
-            </div>
+            <span><i class="fa-solid fa-list-check"></i> Danh sách tài khoản cán bộ</span>
+        </div>
+        <div class="grid-action-toolbar">
+            <button class="btn btn-primary" onclick="openModal('add')"><i class="fa fa-plus"></i> Thêm mới tài khoản</button>
+            <button class="btn btn-outline-primary" onclick="openImportModal()"><i class="fa-solid fa-file-import"></i> Import Excel</button>
         </div>
         
-        <div class="table-responsive">
-            <table class="table" id="dataTable">
+        <div class="table-container">
+            <table class="custom-table" id="dataTable">
                 <thead>
                     <tr>
-                        <th width="5%">STT</th>
-                        <th width="15%">Họ và tên</th>
-                        <th width="12%">Tên đăng nhập</th>
-                        <th width="20%">Đơn vị - Phòng ban</th>
-                        <th width="12%">Chức vụ</th>
-                        <th width="15%">Nhóm / Vai trò</th>
-                        <th width="10%">Trạng thái</th>
-                        <th width="11%">Thao tác</th>
+                        <th width="4%">STT</th>
+                        <th width="14%">Họ và tên</th>
+                        <th width="10%">Tên đăng nhập</th>
+                        <th width="18%">Đơn vị - Phòng ban</th>
+                        <th width="11%">Loại đơn vị</th>
+                        <th width="9%">Chức vụ</th>
+                        <th width="14%">Nhóm / Vai trò</th>
+                        <th width="8%">Ngày tạo</th>
+                        <th width="12%">Trạng thái</th>
+                        <th width="10%" style="text-align: center;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -683,6 +698,7 @@
                             <option value="DV01">Cục đăng ký giao dịch bảo đảm và bồi thường nhà nước</option>
                             <option value="DV02">Trung tâm Đăng ký GDTS tại Hà Nội</option>
                             <option value="DV03">Sở Tư pháp TP.HCM</option>
+                            <option value="DV04">Ngân hàng Nhà nước - Chi nhánh TP.HCM</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -722,7 +738,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Vai trò độc lập</label>
+                        <label class="form-label">Vai trò</label>
                         <div class="search-box-sm">
                             <i class="fas fa-search"></i>
                             <input type="text" placeholder="Tìm kiếm vai trò..." onkeyup="filterChecklist('roleList', this.value)">
@@ -756,7 +772,7 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-outline-primary" id="btnResetPwdForm" style="display:none; margin-right: auto;" onclick="confirmResetPwdForm()"><i class="fas fa-key"></i> Đặt lại mật khẩu</button>
             <button type="button" class="btn btn-secondary" onclick="closeModal('accountModal')">Hủy</button>
-            <button type="button" class="btn btn-primary" onclick="saveAccount()"><i class="fas fa-save"></i> Lưu lại</button>
+            <button type="button" class="btn btn-primary" onclick="saveAccount()"><i class="fas fa-save"></i> Lưu</button>
         </div>
     </div>
 </div>
@@ -853,6 +869,84 @@
     </div>
 </div>
 
+<!-- Modal Xem Chi Tiết -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Chi tiết tài khoản cán bộ</h3>
+            <button class="close-modal" onclick="closeModal('detailModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="grid-2-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <label class="form-label" style="color:var(--text-muted);">Họ và tên</label>
+                    <div id="detailFullName" style="font-weight: 600; font-size: 15px;">-</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color:var(--text-muted);">Tên đăng nhập</label>
+                    <div id="detailUsername" style="font-weight: 600; font-size: 15px;">-</div>
+                </div>
+            </div>
+            
+            <div class="grid-2-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <label class="form-label" style="color:var(--text-muted);">Email công vụ</label>
+                    <div id="detailEmail">-</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color:var(--text-muted);">Số điện thoại</label>
+                    <div id="detailPhone">-</div>
+                </div>
+            </div>
+
+            <div class="grid-2-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <label class="form-label" style="color:var(--text-muted);">Đơn vị</label>
+                    <div id="detailUnit" style="font-weight: 500;">-</div>
+                </div>
+                <div class="form-group" id="detailDeptGroup">
+                    <label class="form-label" style="color:var(--text-muted);">Phòng ban</label>
+                    <div id="detailDept">-</div>
+                </div>
+            </div>
+
+            <div class="grid-2-cols" style="margin-bottom: 12px;">
+                <div class="form-group" id="detailTitleGroup">
+                    <label class="form-label" style="color:var(--text-muted);">Chức vụ</label>
+                    <div id="detailTitle" style="font-weight: 500;">-</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color:var(--text-muted);">Trạng thái hoạt động</label>
+                    <div id="detailStatus">-</div>
+                </div>
+            </div>
+
+            <div class="grid-2-cols" style="margin-bottom: 12px;">
+                <div class="form-group" id="detailGroupsGroup">
+                    <label class="form-label" style="color:var(--text-muted);">Nhóm người sử dụng</label>
+                    <div id="detailGroups" style="display: flex; flex-wrap: wrap; gap: 4px;">-</div>
+                </div>
+                <div class="form-group" id="detailRolesGroup">
+                    <label class="form-label" style="color:var(--text-muted);">Vai trò</label>
+                    <div id="detailRoles" style="display: flex; flex-wrap: wrap; gap: 4px;">-</div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 16px;">
+                <label class="form-label" style="color:var(--text-muted);"><i class="fas fa-sitemap"></i> Cây quyền hạn được gán (Chỉ đọc)</label>
+                <div class="permission-tree" id="detailPermissionTree" style="border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: var(--spacing-md); max-height: 250px; overflow-y: auto; background-color: #fafafa;">
+                    <!-- Tree rendered by JS -->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" id="detailTargetId">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('detailModal')">Đóng</button>
+            <button type="button" class="btn btn-primary" onclick="switchToEditFromDetail()"><i class="fas fa-edit"></i> Chỉnh sửa</button>
+        </div>
+    </div>
+</div>
+
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
@@ -869,6 +963,9 @@
         ],
         "DV03": [
             { id: "PB05", name: "Phòng Bổ trợ tư pháp" }
+        ],
+        "DV04": [
+            { id: "PB06", name: "Phòng Thanh tra Giám sát" }
         ]
     };
 
@@ -881,64 +978,115 @@
     const MOCK_UNITS = {
         "DV01": "Cục đăng ký giao dịch bảo đảm và bồi thường nhà nước",
         "DV02": "Trung tâm Đăng ký GDTS tại Hà Nội",
-        "DV03": "Sở Tư pháp TP.HCM"
+        "DV03": "Sở Tư pháp TP.HCM",
+        "DV04": "Ngân hàng Nhà nước - Chi nhánh TP.HCM"
     };
 
-    // Mock Permissions
+    const UNIT_ORG_TYPES = {
+        "DV01": "Nội bộ",
+        "DV02": "Nội bộ",
+        "DV03": "Nội bộ",
+        "DV04": "Cơ quan ngoài ngành"
+    };
+
+    // Mock Permissions in 3-level hierarchy: System -> Menu -> API
     const MOCK_PERMISSIONS = [
         {
-            id: "MOD_DANG_KY",
-            name: "Quản lý Đăng ký",
+            id: "SYS_QT",
+            name: "Website quản trị",
+            type: "SYSTEM",
             children: [
-                { id: "P_DK_VIEW", name: "Xem danh sách hồ sơ" },
-                { id: "P_DK_CREATE", name: "Tạo mới hồ sơ" },
-                { id: "P_DK_APPROVE", name: "Xét duyệt hồ sơ" }
+                {
+                    id: "MOD_DANG_KY",
+                    name: "Quản lý Đăng ký",
+                    type: "MENU",
+                    children: [
+                        { id: "P_DK_VIEW", name: "Xem danh sách hồ sơ", type: "API" },
+                        { id: "P_DK_CREATE", name: "Tạo mới hồ sơ", type: "API" },
+                        { id: "P_DK_APPROVE", name: "Xét duyệt hồ sơ", type: "API" }
+                    ]
+                },
+                {
+                    id: "MOD_TRA_CUU",
+                    name: "Tra cứu & Cung cấp thông tin",
+                    type: "MENU",
+                    children: [
+                        { id: "P_TC_VIEW", name: "Tra cứu thông tin", type: "API" },
+                        { id: "P_TC_EXPORT", name: "Xuất báo cáo tra cứu", type: "API" }
+                    ]
+                },
+                {
+                    id: "MOD_HE_THONG",
+                    name: "Quản trị hệ thống",
+                    type: "MENU",
+                    children: [
+                        { id: "P_SYS_USER", name: "Quản lý người dùng", type: "API" },
+                        { id: "P_SYS_DICT", name: "Quản lý danh mục", type: "API" },
+                        { id: "P_SYS_LOG", name: "Xem nhật ký hệ thống", type: "API" }
+                    ]
+                }
             ]
         },
         {
-            id: "MOD_TRA_CUU",
-            name: "Tra cứu & Cung cấp thông tin",
+            id: "SYS_KH",
+            name: "Website Khách hàng",
+            type: "SYSTEM",
             children: [
-                { id: "P_TC_VIEW", name: "Tra cứu thông tin" },
-                { id: "P_TC_EXPORT", name: "Xuất báo cáo tra cứu" }
+                {
+                    id: "MOD_KH_PORTAL",
+                    name: "Cổng thông tin khách hàng",
+                    type: "MENU",
+                    children: [
+                        { id: "P_KH_PROFILE", name: "Quản lý thông tin cá nhân", type: "API" },
+                        { id: "P_KH_SEARCH", name: "Tra cứu công khai", type: "API" },
+                        { id: "P_KH_BILLING", name: "Thanh toán trực tuyến", type: "API" }
+                    ]
+                }
             ]
         },
         {
-            id: "MOD_HE_THONG",
-            name: "Quản trị hệ thống",
+            id: "SYS_MB",
+            name: "Ứng dụng Mobile",
+            type: "SYSTEM",
             children: [
-                { id: "P_SYS_USER", name: "Quản lý người dùng" },
-                { id: "P_SYS_DICT", name: "Quản lý danh mục" },
-                { id: "P_SYS_LOG", name: "Xem nhật ký hệ thống" }
+                {
+                    id: "MOD_MB_APP",
+                    name: "Ứng dụng di động đăng ký",
+                    type: "MENU",
+                    children: [
+                        { id: "P_MB_SCAN", name: "Quét mã QR hồ sơ", type: "API" },
+                        { id: "P_MB_NOTIF", name: "Nhận thông báo biến động", type: "API" }
+                    ]
+                }
             ]
         }
     ];
 
     const GROUP_PERMISSIONS = {
-        "G1": ["P_DK_VIEW", "P_TC_VIEW", "P_SYS_USER", "P_SYS_DICT", "P_SYS_LOG"],
-        "G2": ["P_DK_VIEW", "P_DK_CREATE", "P_TC_VIEW"],
-        "G3": ["P_DK_VIEW", "P_DK_APPROVE"],
-        "G4": ["P_TC_VIEW"]
+        "G1": ["P_DK_VIEW", "P_TC_VIEW", "P_SYS_USER", "P_SYS_DICT", "P_SYS_LOG", "P_KH_PROFILE", "P_MB_SCAN"],
+        "G2": ["P_DK_VIEW", "P_DK_CREATE", "P_TC_VIEW", "P_KH_SEARCH"],
+        "G3": ["P_DK_VIEW", "P_DK_APPROVE", "P_MB_NOTIF"],
+        "G4": ["P_TC_VIEW", "P_KH_BILLING"]
     };
 
     const ROLE_PERMISSIONS = {
         "R1": ["P_TC_EXPORT"],
-        "R2": ["P_SYS_LOG"],
-        "R3": ["P_SYS_DICT"]
+        "R2": ["P_SYS_LOG", "P_MB_NOTIF"],
+        "R3": ["P_SYS_DICT", "P_KH_BILLING"]
     };
 
     // Khởi tạo 10+ bản ghi giả lập đa dạng
     let accounts = [
-        { id: 1, name: "Nguyễn Văn A", username: "nva_cuc", email: "nva@moj.gov.vn", phone: "0901234561", unitId: "DV01", deptId: "PB01", titleId: "CV01", status: 1, groups: ["G1"], roles: ["R1", "R2"], hasData: true },
-        { id: 2, name: "Trần Thị B", username: "ttb_hcth", email: "ttb@moj.gov.vn", phone: "0901234562", unitId: "DV01", deptId: "PB02", titleId: "CV02", status: 1, groups: ["G2"], roles: [], hasData: true },
-        { id: 3, name: "Lê Minh C", username: "lmc_ttdk", email: "lmc@moj.gov.vn", phone: "0901234563", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2", "G3"], roles: [], hasData: false },
-        { id: 4, name: "Phạm Hoàng D", username: "phd_ttdk", email: "phd@moj.gov.vn", phone: "0901234564", unitId: "DV02", deptId: "PB04", titleId: "CV03", status: 1, groups: ["G4"], roles: ["R1"], hasData: true },
-        { id: 5, name: "Vũ Tuấn E", username: "vte_stp", email: "vte@moj.gov.vn", phone: "0901234565", unitId: "DV03", deptId: "PB05", titleId: "CV02", status: 0, groups: [], roles: ["R2"], hasData: false },
-        { id: 6, name: "Hoàng Ngọc F", username: "hnf_cuc", email: "hnf@moj.gov.vn", phone: "0901234566", unitId: "DV01", deptId: "PB01", titleId: "CV03", status: 1, groups: ["G3"], roles: [], hasData: true },
-        { id: 7, name: "Đinh Công G", username: "dcg_hcth", email: "dcg@moj.gov.vn", phone: "0901234567", unitId: "DV01", deptId: "PB02", titleId: "CV03", status: 1, groups: [], roles: ["R3"], hasData: false },
-        { id: 8, name: "Bùi Thị H", username: "bth_ttdk", email: "bth@moj.gov.vn", phone: "0901234568", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2"], roles: ["R2"], hasData: true },
-        { id: 9, name: "Lý Văn I", username: "lvi_stp", email: "lvi@moj.gov.vn", phone: "0901234569", unitId: "DV03", deptId: "PB05", titleId: "CV03", status: 0, groups: ["G2"], roles: [], hasData: true },
-        { id: 10, name: "Trịnh Đức K", username: "tdk_ttdk", email: "tdk@moj.gov.vn", phone: "0901234570", unitId: "DV02", deptId: "PB04", titleId: "CV02", status: 1, groups: ["G4"], roles: ["R1", "R3"], hasData: false }
+        { id: 1, name: "Nguyễn Văn A", username: "nva_cuc", email: "nva@moj.gov.vn", phone: "0901234561", unitId: "DV01", deptId: "PB01", titleId: "CV01", status: 1, groups: ["G1"], roles: ["R1", "R2"], hasData: true, orgType: "Nội bộ", createdDate: "15/01/2026" },
+        { id: 2, name: "Trần Thị B", username: "ttb_hcth", email: "ttb@moj.gov.vn", phone: "0901234562", unitId: "DV01", deptId: "PB02", titleId: "CV02", status: 1, groups: ["G2"], roles: [], hasData: true, orgType: "Nội bộ", createdDate: "22/01/2026" },
+        { id: 3, name: "Lê Minh C", username: "lmc_ttdk", email: "lmc@moj.gov.vn", phone: "0901234563", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2", "G3"], roles: [], hasData: false, orgType: "Nội bộ", createdDate: "05/02/2026" },
+        { id: 4, name: "Phạm Hoàng D", username: "phd_ttdk", email: "phd@moj.gov.vn", phone: "0901234564", unitId: "DV02", deptId: "PB04", titleId: "CV03", status: 1, groups: ["G4"], roles: ["R1"], hasData: true, orgType: "Nội bộ", createdDate: "10/02/2026" },
+        { id: 5, name: "Vũ Tuấn E", username: "vte_stp", email: "vte@moj.gov.vn", phone: "0901234565", unitId: "DV03", deptId: "PB05", titleId: "CV02", status: 0, groups: [], roles: ["R2"], hasData: false, orgType: "Nội bộ", createdDate: "18/02/2026" },
+        { id: 6, name: "Hoàng Ngọc F", username: "hnf_cuc", email: "hnf@moj.gov.vn", phone: "0901234566", unitId: "DV01", deptId: "PB01", titleId: "CV03", status: 1, groups: ["G3"], roles: [], hasData: true, orgType: "Nội bộ", createdDate: "25/02/2026" },
+        { id: 7, name: "Đinh Công G", username: "dcg_hcth", email: "dcg@moj.gov.vn", phone: "0901234567", unitId: "DV04", deptId: "PB06", titleId: "CV03", status: 1, groups: [], roles: ["R3"], hasData: false, orgType: "Cơ quan ngoài ngành", createdDate: "02/03/2026" },
+        { id: 8, name: "Bùi Thị H", username: "bth_ttdk", email: "bth@moj.gov.vn", phone: "0901234568", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2"], roles: ["R2"], hasData: true, orgType: "Nội bộ", createdDate: "12/03/2026" },
+        { id: 9, name: "Lý Văn I", username: "lvi_stp", email: "lvi@moj.gov.vn", phone: "0901234569", unitId: "DV04", deptId: "PB06", titleId: "CV03", status: 0, groups: ["G2"], roles: [], hasData: true, orgType: "Cơ quan ngoài ngành", createdDate: "20/03/2026" },
+        { id: 10, name: "Trịnh Đức K", username: "tdk_ttdk", email: "tdk@moj.gov.vn", phone: "0901234570", unitId: "DV02", deptId: "PB04", titleId: "CV02", status: 1, groups: ["G4"], roles: ["R1", "R3"], hasData: false, orgType: "Nội bộ", createdDate: "01/04/2026" }
     ];
 
     // --- Init & Render ---
@@ -979,7 +1127,7 @@
         if (data.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8">
+                    <td colspan="10">
                         <div class="empty-state">
                             <i class="fas fa-inbox"></i>
                             <p>Không có dữ liệu phù hợp</p>
@@ -998,16 +1146,16 @@
             // Format Tags
             let tagsHtml = '';
             item.groups.forEach(g => {
-                tagsHtml += `<span class="tag role-tag"><i class="fas fa-users" style="font-size:10px; margin-right:3px;"></i>${g}</span>`;
+                tagsHtml += `<span class="badge bg-info" style="margin-right: 4px; margin-bottom: 4px;"><i class="fas fa-users" style="font-size:10px; margin-right:3px;"></i>${g}</span>`;
             });
             item.roles.forEach(r => {
-                tagsHtml += `<span class="tag role-tag"><i class="fas fa-key" style="font-size:10px; margin-right:3px;"></i>${r}</span>`;
+                tagsHtml += `<span class="badge bg-info" style="margin-right: 4px; margin-bottom: 4px;"><i class="fas fa-key" style="font-size:10px; margin-right:3px;"></i>${r}</span>`;
             });
 
-            // Status Tag
+            // Status Badge
             const statusHtml = item.status === 1 
-                ? `<span class="tag status-active">Đang hoạt động</span>`
-                : `<span class="tag status-locked">Bị khóa</span>`;
+                ? `<span class="badge bg-success">Đang hoạt động</span>`
+                : `<span class="badge bg-danger">Bị khóa</span>`;
 
             // Row Action Icons
             const lockIcon = item.status === 1 ? 'fa-lock' : 'fa-unlock';
@@ -1016,17 +1164,20 @@
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td style="font-weight: 500;">${item.name}</td>
-                <td>${item.username}</td>
-                <td>
-                    <div style="font-weight:500;">${deptName}</div>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${index + 1}</td>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer; font-weight: 500;">${item.name}</td>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${item.username}</td>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">
+                    <div style="font-weight:500;">${deptName || '<span style="color:#ccc;">-</span>'}</div>
                     <div style="font-size:12px; color:var(--text-muted);">${unitName}</div>
                 </td>
-                <td>${titleName}</td>
-                <td>${tagsHtml || '<span style="color:#ccc;">-</span>'}</td>
-                <td>${statusHtml}</td>
-                <td class="action-cell">
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;"><span class="badge bg-secondary">${item.orgType}</span></td>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${titleName || '<span style="color:#ccc;">-</span>'}</td>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${tagsHtml || '<span style="color:#ccc;">-</span>'}</td>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${item.createdDate}</td>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${statusHtml}</td>
+                <td class="action-cell" style="text-align: center;">
+                    <button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${item.id})"><i class="fas fa-eye"></i></button>
                     <button class="icon-btn reset-pwd" title="Đặt lại mật khẩu" onclick="confirmResetPwd(${item.id})"><i class="fas fa-key"></i></button>
                     <button class="icon-btn edit" title="Sửa thông tin" onclick="openModal('edit', ${item.id})"><i class="fas fa-edit"></i></button>
                     <button class="icon-btn ${lockColor}" title="${lockTitle}" onclick="confirmLock(${item.id})"><i class="fas ${lockIcon}"></i></button>
@@ -1040,6 +1191,7 @@
     function searchData() {
         const keyword = document.getElementById('filterKeyword').value.toLowerCase();
         const unit = document.getElementById('filterUnit').value;
+        const orgType = document.getElementById('filterOrgType').value;
         const dept = document.getElementById('filterDept').value;
         const title = document.getElementById('filterTitle').value;
         const status = document.getElementById('filterStatus').value;
@@ -1051,14 +1203,21 @@
                                  item.email.toLowerCase().includes(keyword) ||
                                  item.phone.includes(keyword);
             const matchUnit = !unit || item.unitId === unit;
+            const matchOrgType = !orgType || item.orgType === orgType;
             const matchDept = !dept || item.deptId === dept;
             const matchTitle = !title || item.titleId === title;
             const matchStatus = status === "" || item.status.toString() === status;
 
-            return matchKeyword && matchUnit && matchDept && matchTitle && matchStatus;
+            return matchKeyword && matchUnit && matchOrgType && matchDept && matchTitle && matchStatus;
         });
 
         renderTable(filtered);
+    }
+
+    function resetFilters() {
+        document.getElementById('filterForm').reset();
+        document.getElementById('filterDept').innerHTML = '<option value="">-- Tất cả --</option>';
+        searchData();
     }
 
     // --- Modal Logic ---
@@ -1124,6 +1283,100 @@
         document.getElementById(modalId).classList.remove('active');
     }
 
+    function openDetailModal(id) {
+        const item = accounts.find(a => a.id === id);
+        if (!item) return;
+
+        document.getElementById('detailTargetId').value = item.id;
+        document.getElementById('detailFullName').innerText = item.name;
+        document.getElementById('detailUsername').innerText = item.username;
+        document.getElementById('detailEmail').innerText = item.email;
+        document.getElementById('detailPhone').innerText = item.phone;
+
+        // Đơn vị
+        document.getElementById('detailUnit').innerText = MOCK_UNITS[item.unitId] || '-';
+
+        // Phòng ban & logic ẩn
+        const deptGroup = document.getElementById('detailDeptGroup');
+        const deptObj = MOCK_DEPARTMENTS[item.unitId]?.find(d => d.id === item.deptId);
+        if (deptObj && deptObj.name) {
+            document.getElementById('detailDept').innerText = deptObj.name;
+            deptGroup.style.display = 'block';
+        } else {
+            deptGroup.style.display = 'none';
+        }
+
+        // Chức vụ & logic ẩn
+        const titleGroup = document.getElementById('detailTitleGroup');
+        const titleName = MOCK_TITLES[item.titleId];
+        if (titleName) {
+            document.getElementById('detailTitle').innerText = titleName;
+            titleGroup.style.display = 'block';
+        } else {
+            titleGroup.style.display = 'none';
+        }
+
+        // Trạng thái hoạt động
+        const statusHtml = item.status === 1 
+            ? `<span class="badge bg-success">Đang hoạt động</span>`
+            : `<span class="badge bg-danger">Bị khóa</span>`;
+        document.getElementById('detailStatus').innerHTML = statusHtml;
+
+        // Nhóm người sử dụng & logic ẩn
+        const groupsGroup = document.getElementById('detailGroupsGroup');
+        const detailGroups = document.getElementById('detailGroups');
+        detailGroups.innerHTML = '';
+        if (item.groups && item.groups.length > 0) {
+            item.groups.forEach(g => {
+                detailGroups.innerHTML += `<span class="badge bg-info" style="margin-right: 4px; margin-bottom: 4px;"><i class="fas fa-users" style="font-size:10px; margin-right:3px;"></i>${g}</span>`;
+            });
+            groupsGroup.style.display = 'block';
+        } else {
+            groupsGroup.style.display = 'none';
+        }
+
+        // Vai trò độc lập & logic ẩn
+        const rolesGroup = document.getElementById('detailRolesGroup');
+        const detailRoles = document.getElementById('detailRoles');
+        detailRoles.innerHTML = '';
+        if (item.roles && item.roles.length > 0) {
+            item.roles.forEach(r => {
+                detailRoles.innerHTML += `<span class="badge bg-info" style="margin-right: 4px; margin-bottom: 4px;"><i class="fas fa-key" style="font-size:10px; margin-right:3px;"></i>${r}</span>`;
+            });
+            rolesGroup.style.display = 'block';
+        } else {
+            rolesGroup.style.display = 'none';
+        }
+
+        // Tính toán quyền cộng dồn (Union)
+        let inheritedPerms = new Set();
+        (item.groups || []).forEach(gId => {
+            const perms = GROUP_PERMISSIONS[gId] || [];
+            perms.forEach(p => inheritedPerms.add(p));
+        });
+        (item.roles || []).forEach(rId => {
+            const perms = ROLE_PERMISSIONS[rId] || [];
+            perms.forEach(p => inheritedPerms.add(p));
+        });
+
+        // Vẽ cây quyền hạn
+        renderDetailPermissionTree(inheritedPerms);
+
+        // Hiển thị modal
+        document.getElementById('detailModal').classList.add('active');
+    }
+
+    function renderDetailPermissionTree(inheritedPerms) {
+        const treeContainer = document.getElementById('detailPermissionTree');
+        treeContainer.innerHTML = buildPermissionTreeHTML(inheritedPerms);
+    }
+
+    function switchToEditFromDetail() {
+        const id = parseInt(document.getElementById('detailTargetId').value);
+        closeModal('detailModal');
+        openModal('edit', id);
+    }
+
     function getChecklistValues(containerId) {
         const container = document.getElementById(containerId);
         const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
@@ -1167,16 +1420,26 @@
             item.titleId = titleId;
             item.groups = groups;
             item.roles = roles;
+            item.orgType = UNIT_ORG_TYPES[unitId] || "Nội bộ";
             showToast('Cập nhật thông tin thành công!');
         } else {
             // Add
             const newId = accounts.length > 0 ? Math.max(...accounts.map(a => a.id)) + 1 : 1;
+            
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            const createdDateStr = dd + '/' + mm + '/' + yyyy;
+
             accounts.push({
                 id: newId,
                 name, username, email, phone, unitId, deptId, titleId,
                 status: 1, // Mặc định Hoạt động
                 groups, roles,
-                hasData: false // Mới tạo chưa có data
+                hasData: false, // Mới tạo chưa có data
+                orgType: UNIT_ORG_TYPES[unitId] || "Nội bộ",
+                createdDate: createdDateStr
             });
             showToast('Thêm mới tài khoản thành công! Mật khẩu đã được gửi qua email.');
         }
@@ -1281,109 +1544,93 @@
         // Trigger initial UI setup if needed
     }
 
+    // --- Helper function to build permission tree HTML ---
+    function buildPermissionTreeHTML(inheritedPerms) {
+        let html = '';
+        let hasAnyPerm = false;
+
+        MOCK_PERMISSIONS.forEach(sys => {
+            let sysHasPerm = false;
+            let menuListHtml = '';
+
+            sys.children.forEach(menu => {
+                let menuHasPerm = false;
+                let apiListHtml = '';
+
+                menu.children.forEach(api => {
+                    if (inheritedPerms.has(api.id)) {
+                        menuHasPerm = true;
+                        sysHasPerm = true;
+                        hasAnyPerm = true;
+                        apiListHtml += `
+                            <div class="tree-item" style="padding: 2px 0; display: flex; align-items: center; gap: 6px;">
+                                <label style="cursor: default; display: flex; align-items: center; gap: 6px; width: 100%;">
+                                    <input type="checkbox" checked disabled style="width: 14px; height: 14px; accent-color: var(--primary-color);">
+                                    <i class="fas fa-key" style="color: #64748b; font-size: 11px;"></i> ${api.name} (${api.id})
+                                </label>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (menuHasPerm) {
+                    menuListHtml += `
+                        <div class="tree-node" style="margin-bottom: 6px;">
+                            <div class="tree-node-header" style="font-weight: 500; padding: 4px 0; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+                                <input type="checkbox" checked disabled style="width: 14px; height: 14px; accent-color: var(--primary-color);">
+                                <i class="fas fa-folder-open" style="color: #fcd34d;"></i> ${menu.name} (${menu.id})
+                            </div>
+                            <div class="tree-children" style="margin-left: 20px; border-left: 1px dashed #cbd5e1; padding-left: 10px;">
+                                ${apiListHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            if (sysHasPerm) {
+                let sysIcon = 'fa-globe';
+                if (sys.id === 'SYS_QT') sysIcon = 'fa-laptop-code';
+                if (sys.id === 'SYS_MB') sysIcon = 'fa-mobile-screen-button';
+
+                html += `
+                    <div class="tree-node" style="margin-bottom: 12px;">
+                        <div class="tree-node-header" style="font-weight: 600; padding: 6px 0; color: var(--primary-color); display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #e2e8f0;">
+                            <input type="checkbox" checked disabled style="width: 14px; height: 14px; accent-color: var(--primary-color);">
+                            <i class="fas ${sysIcon}" style="color: var(--primary-color);"></i> ${sys.name} (${sys.id})
+                        </div>
+                        <div class="tree-children" style="margin-left: 20px; border-left: 1px dashed #cbd5e1; padding-left: 10px; margin-top: 4px;">
+                            ${menuListHtml}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        if (!hasAnyPerm) {
+            return '<div style="color: var(--text-muted); font-style: italic; font-size: 12px; padding: 10px 0;">Tài khoản chưa được phân quyền hạn nào</div>';
+        }
+
+        return html;
+    }
+
     // --- Permission Tree Logic ---
     function renderPermissionTree() {
         const groups = getChecklistValues('groupList');
         const roles = getChecklistValues('roleList');
         
-        // Calculate inherited permissions
         let inheritedPerms = new Set();
-        let permSources = {}; // To map permission to its source (group/role name)
-
         groups.forEach(gId => {
-            const cb = document.querySelector(`#groupList input[value="${gId}"]`);
-            const groupName = cb ? cb.parentNode.textContent.trim() : gId;
             const perms = GROUP_PERMISSIONS[gId] || [];
-            perms.forEach(p => {
-                inheritedPerms.add(p);
-                if (!permSources[p]) permSources[p] = [];
-                permSources[p].push(groupName);
-            });
+            perms.forEach(p => inheritedPerms.add(p));
         });
-
         roles.forEach(rId => {
-            const cb = document.querySelector(`#roleList input[value="${rId}"]`);
-            const roleName = cb ? cb.parentNode.textContent.trim() : rId;
             const perms = ROLE_PERMISSIONS[rId] || [];
-            perms.forEach(p => {
-                inheritedPerms.add(p);
-                if (!permSources[p]) permSources[p] = [];
-                permSources[p].push(roleName);
-            });
+            perms.forEach(p => inheritedPerms.add(p));
         });
 
         const treeContainer = document.getElementById('permissionTree');
-        treeContainer.innerHTML = '';
-
-        MOCK_PERMISSIONS.forEach(mod => {
-            const modNode = document.createElement('div');
-            modNode.className = 'tree-node';
-            
-            // Check if all children are checked
-            const allChecked = mod.children.every(c => inheritedPerms.has(c.id));
-            const someChecked = mod.children.some(c => inheritedPerms.has(c.id));
-
-            modNode.innerHTML = `
-                <div class="tree-node-header">
-                    <input type="checkbox" id="mod_${mod.id}" ${allChecked ? 'checked' : ''} ${someChecked && !allChecked ? 'indeterminate' : ''} onchange="toggleModule('${mod.id}', this.checked)">
-                    <label for="mod_${mod.id}" style="cursor: pointer; margin: 0;"><i class="fas fa-folder-open" style="color: #fcd34d; margin-right: 4px;"></i> ${mod.name}</label>
-                </div>
-                <div class="tree-children" id="children_${mod.id}">
-                    ${mod.children.map(child => {
-                        const isInherited = inheritedPerms.has(child.id);
-                        const sourceText = isInherited ? permSources[child.id].join(', ') : '';
-                        const badgeHtml = isInherited ? `<span class="tree-badge" title="Thừa kế từ: ${sourceText}"><i class="fas fa-link"></i> Kế thừa</span>` : '';
-                        
-                        return `
-                            <div class="tree-item">
-                                <label>
-                                    <input type="checkbox" class="perm-checkbox" data-mod="${mod.id}" value="${child.id}" ${isInherited ? 'checked' : ''} onchange="updateModuleCheck('${mod.id}')">
-                                    ${child.name}
-                                    ${badgeHtml}
-                                </label>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-            treeContainer.appendChild(modNode);
-            
-            // Set indeterminate state visually for module checkbox
-            const modCheckbox = document.getElementById(`mod_${mod.id}`);
-            if (someChecked && !allChecked) {
-                modCheckbox.indeterminate = true;
-            }
-        });
-    }
-
-    function toggleModule(modId, isChecked) {
-        const container = document.getElementById(`children_${modId}`);
-        const checkboxes = container.querySelectorAll('.perm-checkbox');
-        checkboxes.forEach(cb => {
-            cb.checked = isChecked;
-        });
-    }
-
-    function updateModuleCheck(modId) {
-        const container = document.getElementById(`children_${modId}`);
-        const checkboxes = container.querySelectorAll('.perm-checkbox');
-        const modCheckbox = document.getElementById(`mod_${modId}`);
-        
-        let checkedCount = 0;
-        checkboxes.forEach(cb => {
-            if (cb.checked) checkedCount++;
-        });
-
-        if (checkedCount === 0) {
-            modCheckbox.checked = false;
-            modCheckbox.indeterminate = false;
-        } else if (checkedCount === checkboxes.length) {
-            modCheckbox.checked = true;
-            modCheckbox.indeterminate = false;
-        } else {
-            modCheckbox.checked = false;
-            modCheckbox.indeterminate = true;
-        }
+        treeContainer.innerHTML = buildPermissionTreeHTML(inheritedPerms);
     }
 
     // --- Filter Logic ---
@@ -1402,28 +1649,46 @@
 
     function filterTree(keyword) {
         keyword = keyword.toLowerCase();
-        const nodes = document.querySelectorAll('#permissionTree .tree-node');
+        const sysNodes = document.querySelectorAll('#permissionTree > .tree-node');
         
-        nodes.forEach(node => {
-            const items = node.querySelectorAll('.tree-item');
-            let hasVisibleChild = false;
+        sysNodes.forEach(sysNode => {
+            let sysVisible = false;
+            const menuNodes = sysNode.querySelectorAll('.tree-children > .tree-node');
             
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                if (text.includes(keyword)) {
-                    item.style.display = 'flex';
-                    hasVisibleChild = true;
+            menuNodes.forEach(menuNode => {
+                let menuVisible = false;
+                const apiItems = menuNode.querySelectorAll('.tree-children > .tree-item');
+                
+                apiItems.forEach(apiItem => {
+                    const text = apiItem.textContent.toLowerCase();
+                    if (text.includes(keyword)) {
+                        apiItem.style.display = 'flex';
+                        menuVisible = true;
+                        sysVisible = true;
+                    } else {
+                        apiItem.style.display = 'none';
+                    }
+                });
+                
+                const menuLabel = menuNode.querySelector('.tree-node-header').textContent.toLowerCase();
+                if (menuLabel.includes(keyword)) {
+                    apiItems.forEach(apiItem => apiItem.style.display = 'flex');
+                    menuNode.style.display = 'block';
+                    sysVisible = true;
                 } else {
-                    item.style.display = 'none';
+                    menuNode.style.display = menuVisible ? 'block' : 'none';
                 }
             });
             
-            const modLabel = node.querySelector('.tree-node-header label').textContent.toLowerCase();
-            if (modLabel.includes(keyword)) {
-                items.forEach(item => item.style.display = 'flex');
-                node.style.display = 'block';
+            const sysLabel = sysNode.querySelector('.tree-node-header').textContent.toLowerCase();
+            if (sysLabel.includes(keyword)) {
+                menuNodes.forEach(menuNode => {
+                    menuNode.style.display = 'block';
+                    menuNode.querySelectorAll('.tree-children > .tree-item').forEach(apiItem => apiItem.style.display = 'flex');
+                });
+                sysNode.style.display = 'block';
             } else {
-                node.style.display = hasVisibleChild ? 'block' : 'none';
+                sysNode.style.display = sysVisible ? 'block' : 'none';
             }
         });
     }
