@@ -432,8 +432,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .user-dropdown-menu a {
@@ -521,7 +528,7 @@
             color: #1f1f1f;
             padding: 12px 20px;
             border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 11000;
             display: flex;
             align-items: center;
@@ -538,14 +545,29 @@
             opacity: 1;
         }
 
-        .toast.success { border-left-color: #52c41a; }
-        .toast.success i { color: #52c41a; }
+        .toast.success {
+            border-left-color: #52c41a;
+        }
 
-        .toast.error { border-left-color: #ff4d4f; }
-        .toast.error i { color: #ff4d4f; }
+        .toast.success i {
+            color: #52c41a;
+        }
 
-        .toast.info { border-left-color: #1677ff; }
-        .toast.info i { color: #1677ff; }
+        .toast.error {
+            border-left-color: #ff4d4f;
+        }
+
+        .toast.error i {
+            color: #ff4d4f;
+        }
+
+        .toast.info {
+            border-left-color: #1677ff;
+        }
+
+        .toast.info i {
+            color: #1677ff;
+        }
     </style>
 </head>
 
@@ -572,21 +594,23 @@
 
     <!-- MAIN WORKSPACE -->
     <div class="workspace">
-        
+
         <!-- HEADER -->
         <header class="admin-header">
             <div class="header-title-section">
                 <h2>Hệ thống quản lý Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</h2>
                 <p>Ứng dụng quản trị nghiệp vụ liên thông dành cho cán bộ công chức</p>
             </div>
-            
+
             <div class="header-controls">
                 <div class="search-box">
                     <i class="fa fa-search"></i>
-                    <input type="text" id="actionSearch" placeholder="Tìm nhanh chức năng nghiệp vụ..." oninput="filterMenu()">
+                    <input type="text" id="actionSearch" placeholder="Tìm nhanh chức năng nghiệp vụ..."
+                        oninput="filterMenu()">
                 </div>
-                
-                <div class="notification-bell" id="notificationIcon" onclick="showToast('Hệ thống hoạt động bình thường. Không có thông báo mới.', 'info')">
+
+                <div class="notification-bell" id="notificationIcon"
+                    onclick="showToast('Hệ thống hoạt động bình thường. Không có thông báo mới.', 'info')">
                     <i class="fa-solid fa-bell"></i>
                     <div class="notification-badge">3</div>
                 </div>
@@ -598,7 +622,7 @@
                         <div class="user-role">Cán bộ phê duyệt</div>
                     </div>
                     <i class="fa fa-caret-down" style="font-size: 10px; color: #8c8c8c; margin-left: 4px;"></i>
-                    
+
                     <!-- Dropdown Menu -->
                     <div class="user-dropdown-menu" id="userDropdown">
                         <a href="#" onclick="showToast('Thông tin cá nhân đang phát triển', 'info')">
@@ -626,7 +650,8 @@
 
         <!-- MAIN IFRAME CONTENT LOADER -->
         <div class="content-frame-container">
-            <iframe id="mainContentIframe" class="main-iframe" src="UC028/kiem_tra_ho_so.html" title="Nội dung chức năng"></iframe>
+            <iframe id="mainContentIframe" class="main-iframe" src="UC028/kiem_tra_ho_so.html"
+                title="Nội dung chức năng"></iframe>
         </div>
     </div>
 
@@ -663,11 +688,11 @@
                     {
                         title: "Quản lý nghiệp vụ chuyên ngành",
                         children: [
-                            { title: "Quản lý VBQPPL và Chương trình, kế hoạch công tác", url: "temp_placeholder.html" },
-                            { title: "Quản lý kiểm tra và theo dõi thi hành pháp luật", url: "temp_placeholder.html" },
-                            { title: "Quản lý hướng dẫn nghiệp vụ và thẩm định", url: "temp_placeholder.html" },
-                            { title: "Quản lý tập huấn, hội nghị, hội thảo, tọa đàm; nghiên cứu khoa học", url: "temp_placeholder.html" },
-                            { title: "Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo", url: "temp_placeholder.html" },
+                            { title: "Quản lý tham mưu xây dựng VBQPPL,chương trình, KH công tác", url: "UC231_to_UC236/quan_ly_tham_muu_cong_tac.html" },
+                            { title: "Quản lý kiểm tra và theo dõi thi hành pháp luật", url: "UC237_to_UC244/quan_ly_kiem_tra_theo_doi.html" },
+                            { title: "Quản lý hướng dẫn nghiệp vụ và thẩm định", url: "UC245_to_UC250/quan_ly_huong_dan_tham_dinh.html" },
+                            { title: "Quản lý tập huấn, hội nghị, hội thảo, tọa đàm; nghiên cứu khoa học", url: "UC251_to_UC259/quan_ly_tap_huan_nckh.html" },
+                            { title: "Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo", url: "UC260_262/quan_ly_tiep_dan_kntc.html" },
                             { title: "Quản lý hợp tác quốc tế và cải cách hành chính, tư pháp", url: "temp_placeholder.html" },
                             { title: "Quản lý thực hiện theo phân công của lãnh đạo đơn vị", url: "temp_placeholder.html" }
                         ]
@@ -756,7 +781,7 @@
         // Page initialization
         window.addEventListener('DOMContentLoaded', () => {
             renderSidebarMenu();
-            
+
             // Handle query parameter to open correct leaf
             const urlParams = new URLSearchParams(window.location.search);
             const menuParam = urlParams.get('menu');
@@ -912,7 +937,7 @@
             // Update Breadcrumbs
             const parentSpan = document.getElementById('breadcrumbParent');
             const childSpan = document.getElementById('breadcrumbChild');
-            
+
             if (pathArray.length === 3) {
                 parentSpan.innerText = `${pathArray[0]} / ${pathArray[1]}`;
                 childSpan.innerText = pathArray[2];
@@ -939,13 +964,13 @@
         // Global search & highlight matching menu items
         function filterMenu() {
             const query = document.getElementById('actionSearch').value.trim().toLowerCase();
-            
+
             // Expand all menu folders if search query is entered, reset if empty
             menuData.forEach((root, rootIdx) => {
                 const sub = document.getElementById(`sub-container-${rootIdx}`);
                 const arrow = document.getElementById(`root-arrow-${rootIdx}`);
                 const btn = document.getElementById(`root-item-${rootIdx}`);
-                
+
                 if (query) {
                     if (sub) sub.classList.add('expanded');
                     if (arrow) arrow.classList.add('rotated');

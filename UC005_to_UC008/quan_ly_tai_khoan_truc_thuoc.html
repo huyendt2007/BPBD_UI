@@ -496,13 +496,14 @@
                 <thead>
                     <tr>
                         <th style="width: 5%; text-align: center;">STT</th>
-                        <th style="width: 15%;">Số giấy tờ</th>
-                        <th style="width: 22%; cursor: pointer;" onclick="toggleSortName()">Họ và tên <span id="sort-icon"><i class="fa-solid fa-sort"></i></span></th>
-                        <th style="width: 25%;">Email</th>
-                        <th style="width: 13%;">Số điện thoại</th>
-                        <th style="width: 10%;">Trạng thái</th>
-                        <th style="width: 10%;">Ngày tạo</th>
-                        <th style="width: 10%; text-align: center;">Thao tác</th>
+                        <th style="width: 12%;">Số giấy tờ</th>
+                        <th style="width: 18%; cursor: pointer;" onclick="toggleSortName()">Họ và tên <span id="sort-icon"><i class="fa-solid fa-sort"></i></span></th>
+                        <th style="width: 12%;">Đơn vị</th>
+                        <th style="width: 16%;">Email</th>
+                        <th style="width: 10%;">Số điện thoại</th>
+                        <th style="width: 12%; text-align: center;">Trạng thái</th>
+                        <th style="width: 8%;">Ngày tạo</th>
+                        <th style="width: 7%; text-align: center;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="staffs-table-body">
@@ -588,8 +589,13 @@
                         </div>
                     </div>
 
-                    <!-- Tỉnh/TP và Địa chỉ chi tiết -->
+                    <!-- Đơn vị và Tỉnh/TP -->
                     <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="staff-department">Đơn vị <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="staff-department" placeholder="Nhập tên đơn vị/phòng ban...">
+                            <div class="error-message" id="error-department">Trường này là bắt buộc</div>
+                        </div>
                         <div class="form-group">
                             <label class="form-label" for="staff-province">Tỉnh/Thành phố</label>
                             <!-- Container holds either Dropdown or Input text -->
@@ -604,10 +610,12 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" for="staff-address">Địa chỉ chi tiết</label>
-                            <input type="text" class="form-control" id="staff-address" placeholder="Số nhà, đường phố, thôn xóm...">
-                        </div>
+                    </div>
+
+                    <!-- Địa chỉ chi tiết -->
+                    <div class="form-group">
+                        <label class="form-label" for="staff-address">Địa chỉ chi tiết</label>
+                        <input type="text" class="form-control" id="staff-address" placeholder="Số nhà, đường phố, thôn xóm...">
                     </div>
 
                     <!-- Cây phân quyền -->
@@ -702,16 +710,16 @@
     <script>
         // Expanded Mock Data containing exactly 10 initial staff accounts (UC008)
         let staffAccounts = [
-            { id: 1, docType: 'Căn cước công dân', doc: '001092012345', name: 'Lê Văn Nhân Viên 1', email: 'nv1.fptbank@gmail.com', phone: '0987654321', nationality: 'Việt Nam', province: 'Hà Nội', address: '123 Phố Huế, Hai Bà Trưng', status: 'Đang hoạt động', dateCreated: '15/06/2026', roles: ['Đăng ký Biện pháp bảo đảm', 'Đăng ký thay đổi'] },
-            { id: 2, docType: 'Căn cước công dân', doc: '001092012346', name: 'Nguyễn Thị Nhân Viên 2', email: 'nv2.fptbank@gmail.com', phone: '0987654322', nationality: 'Việt Nam', province: 'TP. Hồ Chí Minh', address: '456 Lê Lợi, Quận 1', status: 'Đang hoạt động', dateCreated: '16/06/2026', roles: ['Xóa đăng ký', 'Quản lý yêu cầu đã đăng ký'] },
-            { id: 3, docType: 'Căn cước công dân', doc: '001092012347', name: 'Trần Văn Nhân Viên 3', email: 'nv3.fptbank@gmail.com', phone: '0987654323', nationality: 'Việt Nam', province: 'Đà Nẵng', address: '789 Nguyễn Văn Linh', status: 'Đang hoạt động', dateCreated: '17/06/2026', roles: ['Hỗ trợ khách hàng', 'Quản lý yêu cầu hỗ trợ'] },
-            { id: 4, docType: 'Hộ chiếu', doc: '001092012348', name: 'John Doe', email: 'johndoe@gmail.com', phone: '+1234567890', nationality: 'Nước ngoài', province: 'California', address: '100 Silicon Valley', status: 'Đang hoạt động', dateCreated: '18/06/2026', roles: ['Đăng ký Biện pháp bảo đảm', 'Đăng ký thông báo xử lý tài sản'] },
-            { id: 5, docType: 'Căn cước công dân', doc: '001092012349', name: 'Hoàng Văn Kiểm Soát 2', email: 'ks2.fptbank@gmail.com', phone: '0987654325', nationality: 'Việt Nam', province: 'Hải Phòng', address: '12 Lạch Tray', status: 'Đang hoạt động', dateCreated: '19/06/2026', roles: ['Yêu cầu cấp bản sao văn bản', 'Yêu cầu cấp bản sao kèm thông báo'] },
-            { id: 6, docType: 'Căn cước công dân', doc: '001092012350', name: 'Đỗ Văn Nhân Viên 4', email: 'nv4.fptbank@gmail.com', phone: '0987654326', nationality: 'Việt Nam', province: 'Hà Nội', address: '99 Cầu Giấy', status: 'Bị khóa', dateCreated: '20/06/2026', roles: ['Đăng ký Biện pháp bảo đảm'] },
-            { id: 7, docType: 'Căn cước công dân', doc: '001092012351', name: 'Vũ Thị Nhân Viên 5', email: 'nv5.fptbank@gmail.com', phone: '0987654327', nationality: 'Việt Nam', province: 'Cần Thơ', address: '88 Mậu Thân', status: 'Đang hoạt động', dateCreated: '21/06/2026', roles: ['Xóa đăng ký'] },
-            { id: 8, docType: 'Căn cước công dân', doc: '001092012352', name: 'Bùi Văn Nhân Viên 6', email: 'nv6.fptbank@gmail.com', phone: '0987654328', nationality: 'Việt Nam', province: 'Hà Nội', address: '77 Láng Hạ', status: 'Đang hoạt động', dateCreated: '22/06/2026', roles: ['Quản lý yêu cầu đã đăng ký'] },
-            { id: 9, docType: 'Căn cước công dân', doc: '001092012353', name: 'Mai Thị Kiểm Soát 3', email: 'ks3.fptbank@gmail.com', phone: '0987654329', nationality: 'Việt Nam', province: 'TP. Hồ Chí Minh', address: '101 Nguyễn Huệ', status: 'Đang hoạt động', dateCreated: '22/06/2026', roles: ['Quản lý yêu cầu đã đăng ký'] },
-            { id: 10, docType: 'Căn cước công dân', doc: '001092012354', name: 'Ngô Văn Nhân Viên 7', email: 'nv7.fptbank@gmail.com', phone: '0987654330', nationality: 'Việt Nam', province: 'Hà Nội', address: '55 Trần Hưng Đạo', status: 'Bị khóa', dateCreated: '22/06/2026', roles: ['Hỗ trợ khách hàng'] }
+            { id: 1, docType: 'Căn cước công dân', doc: '001092012345', name: 'Lê Văn Nhân Viên 1', department: 'Phòng Pháp chế', email: 'nv1.fptbank@gmail.com', phone: '0987654321', nationality: 'Việt Nam', province: 'Hà Nội', address: '123 Phố Huế, Hai Bà Trưng', status: 'Đang hoạt động', dateCreated: '15/06/2026', roles: ['Đăng ký Biện pháp bảo đảm', 'Đăng ký thay đổi'] },
+            { id: 2, docType: 'Căn cước công dân', doc: '001092012346', name: 'Nguyễn Thị Nhân Viên 2', department: 'Phòng Hành chính', email: 'nv2.fptbank@gmail.com', phone: '0987654322', nationality: 'Việt Nam', province: 'TP. Hồ Chí Minh', address: '456 Lê Lợi, Quận 1', status: 'Đang hoạt động', dateCreated: '16/06/2026', roles: ['Xóa đăng ký', 'Quản lý yêu cầu đã đăng ký'] },
+            { id: 3, docType: 'Căn cước công dân', doc: '001092012347', name: 'Trần Văn Nhân Viên 3', department: 'Phòng Kinh doanh 1', email: 'nv3.fptbank@gmail.com', phone: '0987654323', nationality: 'Việt Nam', province: 'Đà Nẵng', address: '789 Nguyễn Văn Linh', status: 'Đang hoạt động', dateCreated: '17/06/2026', roles: ['Hỗ trợ khách hàng', 'Quản lý yêu cầu hỗ trợ'] },
+            { id: 4, docType: 'Hộ chiếu', doc: '001092012348', name: 'John Doe', department: 'Trung tâm R&D', email: 'johndoe@gmail.com', phone: '+1234567890', nationality: 'Nước ngoài', province: 'California', address: '100 Silicon Valley', status: 'Đang hoạt động', dateCreated: '18/06/2026', roles: ['Đăng ký Biện pháp bảo đảm', 'Đăng ký thông báo xử lý tài sản'] },
+            { id: 5, docType: 'Căn cước công dân', doc: '001092012349', name: 'Hoàng Văn Kiểm Soát 2', department: 'Phòng Quản trị Rủi ro', email: 'ks2.fptbank@gmail.com', phone: '0987654325', nationality: 'Việt Nam', province: 'Hải Phòng', address: '12 Lạch Tray', status: 'Đang hoạt động', dateCreated: '19/06/2026', roles: ['Yêu cầu cấp bản sao văn bản', 'Yêu cầu cấp bản sao kèm thông báo'] },
+            { id: 6, docType: 'Căn cước công dân', doc: '001092012350', name: 'Đỗ Văn Nhân Viên 4', department: 'Phòng Pháp chế', email: 'nv4.fptbank@gmail.com', phone: '0987654326', nationality: 'Việt Nam', province: 'Hà Nội', address: '99 Cầu Giấy', status: 'Bị khóa', dateCreated: '20/06/2026', roles: ['Đăng ký Biện pháp bảo đảm'] },
+            { id: 7, docType: 'Căn cước công dân', doc: '001092012351', name: 'Vũ Thị Nhân Viên 5', department: 'Phòng Kinh doanh 2', email: 'nv5.fptbank@gmail.com', phone: '0987654327', nationality: 'Việt Nam', province: 'Cần Thơ', address: '88 Mậu Thân', status: 'Đang hoạt động', dateCreated: '21/06/2026', roles: ['Xóa đăng ký'] },
+            { id: 8, docType: 'Căn cước công dân', doc: '001092012352', name: 'Bùi Văn Nhân Viên 6', department: 'Ban Giám đốc', email: 'nv6.fptbank@gmail.com', phone: '0987654328', nationality: 'Việt Nam', province: 'Hà Nội', address: '77 Láng Hạ', status: 'Đang hoạt động', dateCreated: '22/06/2026', roles: ['Quản lý yêu cầu đã đăng ký'] },
+            { id: 9, docType: 'Căn cước công dân', doc: '001092012353', name: 'Mai Thị Kiểm Soát 3', department: 'Phòng Quản trị Rủi ro', email: 'ks3.fptbank@gmail.com', phone: '0987654329', nationality: 'Việt Nam', province: 'TP. Hồ Chí Minh', address: '101 Nguyễn Huệ', status: 'Đang hoạt động', dateCreated: '22/06/2026', roles: ['Quản lý yêu cầu đã đăng ký'] },
+            { id: 10, docType: 'Căn cước công dân', doc: '001092012354', name: 'Ngô Văn Nhân Viên 7', department: 'Phòng Pháp chế', email: 'nv7.fptbank@gmail.com', phone: '0987654330', nationality: 'Việt Nam', province: 'Hà Nội', address: '55 Trần Hưng Đạo', status: 'Bị khóa', dateCreated: '22/06/2026', roles: ['Hỗ trợ khách hàng'] }
         ];
 
         // Global states
@@ -812,7 +820,7 @@
             document.getElementById('total-count').innerText = filteredStaffs.length;
 
             if (filteredStaffs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có dữ liệu</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có dữ liệu</td></tr>`;
                 updatePaginationControls(0);
                 return;
             }
@@ -825,10 +833,11 @@
                     <td style="text-align: center; font-weight: 500; color: var(--text-muted);">${startIndex + idx + 1}</td>
                     <td style="font-weight: 600; color: var(--primary-color);">${s.doc}</td>
                     <td><strong>${s.name}</strong></td>
+                    <td><strong>${s.department || ''}</strong></td>
                     <td>${s.email}</td>
                     <td>${s.phone}</td>
-                    <td>
-                        <span style="background-color: ${s.status === 'Đang hoạt động' ? '#D1FAE5' : '#FEE2E2'}; color: ${s.status === 'Đang hoạt động' ? '#065F46' : '#991B1B'}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                    <td style="text-align: center;">
+                        <span style="background-color: ${s.status === 'Đang hoạt động' ? '#D1FAE5' : '#FEE2E2'}; color: ${s.status === 'Đang hoạt động' ? '#065F46' : '#991B1B'}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; display: inline-block;">
                             ${s.status}
                         </span>
                     </td>
@@ -938,6 +947,7 @@
                 document.getElementById('staff-id').value = '';
                 document.getElementById('staff-doc-type').disabled = false;
                 document.getElementById('staff-doc-num').disabled = false;
+                document.getElementById('staff-department').value = '';
                 document.getElementById('btn-save-staff').innerText = 'Lưu';
                 
                 selectedStaffId = null;
@@ -959,6 +969,7 @@
                     
                     toggleNationalityState();
                     document.getElementById('staff-phone').value = staff.phone;
+                    document.getElementById('staff-department').value = staff.department || '';
 
                     // Set province value
                     const provField = document.getElementById('staff-province');
@@ -1016,6 +1027,13 @@
             let isValid = true;
 
             const isEdit = selectedStaffId !== null;
+
+            // 0. Department
+            const department = document.getElementById('staff-department').value.trim();
+            if (!department) {
+                showFieldError('staff-department', 'error-department', 'Đơn vị là trường bắt buộc');
+                isValid = false;
+            }
 
             // 1. Doc Num
             if (!isEdit) {
@@ -1107,6 +1125,7 @@
             const phone = document.getElementById('staff-phone').value.trim();
             const province = document.getElementById('staff-province').value;
             const address = document.getElementById('staff-address').value.trim();
+            const department = document.getElementById('staff-department').value.trim();
             const selectedRights = Array.from(document.querySelectorAll('.right-item:checked')).map(cb => cb.value);
 
             const isEdit = selectedStaffId !== null;
@@ -1121,6 +1140,7 @@
                     staff.phone = phone;
                     staff.province = province;
                     staff.address = address;
+                    staff.department = department;
                     staff.roles = selectedRights;
                 }
                 showToast('Cập nhật thông tin tài khoản con thành công!', 'success');
@@ -1142,6 +1162,7 @@
                     phone: phone,
                     province: province,
                     address: address,
+                    department: department,
                     status: 'Đang hoạt động',
                     dateCreated: formattedDate,
                     roles: selectedRights

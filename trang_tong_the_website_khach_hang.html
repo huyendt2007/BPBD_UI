@@ -2184,6 +2184,69 @@
             justify-content: flex-start;
             gap: 8px;
         }
+
+        /* CSS for Asset Tooltip in UCPS007 */
+        .asset-tooltip-container {
+            position: relative;
+            cursor: pointer;
+        }
+        .asset-line-ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+            font-size: 12px;
+            color: var(--text-main);
+        }
+        .asset-tooltip-popup-fixed {
+            position: fixed;
+            z-index: 9999;
+            width: 320px;
+            max-height: calc(100vh - 190px);
+            overflow-y: auto;
+            background-color: #1E293B;
+            color: #FFF;
+            text-align: left;
+            border-radius: var(--border-radius-md);
+            padding: 10px 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            font-size: 12px;
+            line-height: 1.4;
+            pointer-events: none;
+            white-space: normal;
+            display: none;
+        }
+        /* Custom scrollbar for tooltip in dark mode */
+        .asset-tooltip-popup-fixed::-webkit-scrollbar {
+            width: 6px;
+        }
+        .asset-tooltip-popup-fixed::-webkit-scrollbar-track {
+            background: #0F172A;
+            border-radius: var(--border-radius-md);
+        }
+        .asset-tooltip-popup-fixed::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: var(--border-radius-md);
+        }
+        .asset-tooltip-popup-fixed::-webkit-scrollbar-thumb:hover {
+            background: #64748B;
+        }
+        .asset-tooltip-popup-fixed::after {
+            content: "";
+            position: absolute;
+            top: var(--arrow-top, 50%);
+            margin-top: -5px;
+            border-width: 5px;
+            border-style: solid;
+        }
+        .asset-tooltip-popup-fixed.arrow-right::after {
+            left: 100%;
+            border-color: transparent transparent transparent #1E293B;
+        }
+        .asset-tooltip-popup-fixed.arrow-left::after {
+            left: -10px;
+            border-color: transparent #1E293B transparent transparent;
+        }
     </style>
 </head>
 
@@ -4090,6 +4153,48 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="grid-3-cols" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label class="form-label">Loại hình giao dịch</label>
+                                <select class="form-select" id="regReqSearchTransType" onchange="onTransTypeFilterChange()">
+                                    <option value="Tất cả" selected>Tất cả</option>
+                                    <option value="Biện pháp bảo đảm">Biện pháp bảo đảm</option>
+                                    <option value="Hợp đồng">Hợp đồng</option>
+                                    <option value="Thông báo xử lý tài sản bảo đảm">Thông báo xử lý tài sản bảo đảm</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Loại Biện pháp/Loại HĐ</label>
+                                <select class="form-select" id="regReqSearchMeasureContractType">
+                                    <option value="Tất cả" selected>Tất cả</option>
+                                    <!-- Biện pháp bảo đảm -->
+                                    <option value="Thế chấp">Thế chấp</option>
+                                    <option value="Bảo lưu quyền sở hữu">Bảo lưu quyền sở hữu</option>
+                                    <option value="Cầm cố">Cầm cố</option>
+                                    <option value="Đặt cọc">Đặt cọc</option>
+                                    <option value="Ký cược">Ký cược</option>
+                                    <option value="Ký quỹ">Ký quỹ</option>
+                                    <!-- Hợp đồng -->
+                                    <option value="Hợp đồng cho thuê tài chính">Hợp đồng cho thuê tài chính</option>
+                                    <option value="Hợp đồng thuê tài sản có thời hạn 1 năm trở lên">Hợp đồng thuê tài sản có thời hạn 1 năm trở lên</option>
+                                    <option value="Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác">Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác</option>
+                                    <option value="Hợp đồng ký gửi">Hợp đồng ký gửi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Loại tài sản</label>
+                                <select class="form-select" id="regReqSearchAssetType">
+                                    <option value="Tất cả" selected>Tất cả</option>
+                                    <option value="Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)</option>
+                                    <option value="Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt</option>
+                                    <option value="Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</option>
+                                    <option value="Cây hằng năm, công trình tạm">Cây hằng năm, công trình tạm</option>
+                                    <option value="Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</option>
+                                    <option value="Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</option>
+                                    <option value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</option>
+                                </select>
+                            </div>
+                        </div>
 
                         <div
                             style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
@@ -4104,15 +4209,18 @@
                         <table class="table" style="font-size: 13px;">
                             <thead style="background-color: var(--table-header-bg);">
                                 <tr>
-                                    <th style="width: 4%;">STT</th>
-                                    <th style="width: 13%;">Số đăng ký</th>
-                                    <th style="width: 7%;">Số PIN</th>
-                                    <th style="width: 15%;">Loại đăng ký</th>
-                                    <th style="width: 14%;">Tên bên bảo đảm</th>
-                                    <th style="width: 14%;">Tên bên nhận bảo đảm</th>
-                                    <th style="width: 10%;">Trạng thái</th>
-                                    <th style="width: 13%;">Thời điểm đăng ký</th>
-                                    <th style="width: 10%; text-align: left; padding-left: 15px;">Thao tác</th>
+                                    <th style="width: 3%;">STT</th>
+                                    <th style="width: 9%;">Số đăng ký</th>
+                                    <th style="width: 5%;">Số PIN</th>
+                                    <th style="width: 10%;">Loại đăng ký</th>
+                                    <th style="width: 10%;">Bên bảo đảm</th>
+                                    <th style="width: 10%;">Bên nhận BĐ</th>
+                                    <th style="width: 10%;">Loại hình GD</th>
+                                    <th style="width: 10%;">Loại BP/HĐ</th>
+                                    <th style="width: 13%;">Loại tài sản</th>
+                                    <th style="width: 7%;">Trạng thái</th>
+                                    <th style="width: 7%;">Thời điểm</th>
+                                    <th style="width: 6%; text-align: left; padding-left: 5px;">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody id="registeredRequestsTableBody">
@@ -4600,6 +4708,79 @@
 
     <!-- JAVASCRIPT GLOBAL MANAGEMENT -->
     <script>
+        // Fixed Tooltip for Asset type inside scroll container
+        function showGlobalTooltip(el, event) {
+            let tooltip = document.getElementById('global-asset-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.id = 'global-asset-tooltip';
+                tooltip.className = 'asset-tooltip-popup-fixed';
+                document.body.appendChild(tooltip);
+            }
+            
+            const contentDiv = el.querySelector('.asset-tooltip-content-source');
+            if (contentDiv) {
+                tooltip.innerHTML = contentDiv.innerHTML;
+            } else {
+                return;
+            }
+            
+            tooltip.style.display = 'block';
+            
+            const rect = el.getBoundingClientRect();
+            const tooltipHeight = tooltip.offsetHeight;
+            const tooltipWidth = tooltip.offsetWidth;
+            
+            // Check sidebar visibility to determine left boundary
+            const sidebar = document.getElementById('appSidebar');
+            const minLeft = (sidebar && sidebar.classList.contains('visible')) ? 290 : 10;
+            
+            let left = rect.left - tooltipWidth - 12;
+            
+            tooltip.classList.remove('arrow-left', 'arrow-right');
+            if (left < minLeft) {
+                // Position on the right side if it doesn't fit on the left
+                left = rect.right + 12;
+                tooltip.classList.add('arrow-left');
+            } else {
+                tooltip.classList.add('arrow-right');
+            }
+            
+            let top = rect.top + (rect.height - tooltipHeight) / 2;
+            
+            // Prevent going under the sticky header (which is ~165px high)
+            const minTop = 175; 
+            if (top < minTop) {
+                top = minTop;
+            }
+            
+            // Prevent going below the viewport bottom
+            if (top + tooltipHeight > window.innerHeight - 10) {
+                top = window.innerHeight - tooltipHeight - 10;
+            }
+            
+            // Double check in case viewport is extremely small and top still went below minTop
+            if (top < minTop) {
+                top = minTop;
+            }
+            
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            
+            // Dynamically calculate arrow vertical position to point exactly to the middle of the cell
+            let arrowTop = (rect.top + rect.height / 2) - top;
+            if (arrowTop < 15) arrowTop = 15;
+            if (arrowTop > tooltipHeight - 15) arrowTop = tooltipHeight - 15;
+            tooltip.style.setProperty('--arrow-top', arrowTop + 'px');
+        }
+
+        function hideGlobalTooltip() {
+            const tooltip = document.getElementById('global-asset-tooltip');
+            if (tooltip) {
+                tooltip.style.display = 'none';
+            }
+        }
+
         // State variables
         let isUserLoggedIn = true;
         let loggedInUser = 'taikhoantestfpt@gmail.com';
@@ -5334,7 +5515,7 @@
                     if (navSearch) navSearch.classList.add('active');
                 }
             }
-            if (screenId === 'support-tracker' || screenId === 'help') document.getElementById('navHelp').classList.add('active');
+            if (screenId === 'help') document.getElementById('navHelp').classList.add('active');
 
             // Update Active state in Sidebar Menu
             document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
@@ -10190,6 +10371,17 @@
                 guarantor: "Nguyễn Văn A",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Thế chấp",
+                secAssets: [
+                    "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
+                    "Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
+                    "Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản",
+                    "Cây hằng năm, công trình tạm",
+                    "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ",
+                    "Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung",
+                    "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)"
+                ],
                 expanded: true,
                 children: [
                     {
@@ -10200,7 +10392,10 @@
                         type: "Đăng ký thay đổi",
                         guarantor: "Nguyễn Văn A",
                         securedParty: "Ngân hàng TMCP FPT",
-                        status: "Hoàn thành"
+                        status: "Hoàn thành",
+                        transType: "Biện pháp bảo đảm",
+                        measureContractType: "Thế chấp",
+                        secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"]
                     },
                     {
                         id: "1-2",
@@ -10210,7 +10405,10 @@
                         type: "Đăng ký thay đổi",
                         guarantor: "Nguyễn Văn A",
                         securedParty: "Ngân hàng TMCP FPT",
-                        status: "Chờ duyệt"
+                        status: "Chờ duyệt",
+                        transType: "Biện pháp bảo đảm",
+                        measureContractType: "Thế chấp",
+                        secAssets: ["Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản", "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)"]
                     },
                     {
                         id: "1-3",
@@ -10220,7 +10418,10 @@
                         type: "Thông báo xử lý tài sản đảm bảo lần đầu",
                         guarantor: "Nguyễn Văn A",
                         securedParty: "Ngân hàng TMCP FPT",
-                        status: "Hoàn thành"
+                        status: "Hoàn thành",
+                        transType: "Thông báo xử lý tài sản bảo đảm",
+                        measureContractType: "",
+                        secAssets: ["Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt"]
                     }
                 ]
             },
@@ -10233,6 +10434,9 @@
                 guarantor: "Trần Thị Bình",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Chờ thanh toán",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Bảo lưu quyền sở hữu",
+                secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"],
                 expanded: false,
                 children: []
             },
@@ -10245,6 +10449,9 @@
                 guarantor: "Phạm Văn Cường",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Bị từ chối",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Cầm cố",
+                secAssets: ["Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)"],
                 expanded: false,
                 children: []
             },
@@ -10257,6 +10464,9 @@
                 guarantor: "Công ty TNHH Hải Nam",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
+                transType: "Hợp đồng",
+                measureContractType: "Hợp đồng cho thuê tài chính",
+                secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)", "Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt"],
                 expanded: true,
                 children: [
                     {
@@ -10267,7 +10477,10 @@
                         type: "Xóa đăng ký",
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
-                        status: "Hoàn thành"
+                        status: "Hoàn thành",
+                        transType: "Hợp đồng",
+                        measureContractType: "Hợp đồng cho thuê tài chính",
+                        secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)", "Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt"]
                     },
                     {
                         id: "4-2",
@@ -10278,6 +10491,9 @@
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
                         status: "Hoàn thành",
+                        transType: "Thông báo xử lý tài sản bảo đảm",
+                        measureContractType: "",
+                        secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"],
                         expanded: true,
                         children: [
                             {
@@ -10288,7 +10504,10 @@
                                 type: "Thay đổi thông báo xử lý tài sản bảo đảm",
                                 guarantor: "Công ty TNHH Hải Nam",
                                 securedParty: "Ngân hàng TMCP FPT",
-                                status: "Hoàn thành"
+                                status: "Hoàn thành",
+                                transType: "Thông báo xử lý tài sản bảo đảm",
+                                measureContractType: "",
+                                secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"]
                             },
                             {
                                 id: "4-2-2",
@@ -10298,7 +10517,10 @@
                                 type: "Xóa đăng ký thông báo xử lý tài sản bảo đảm",
                                 guarantor: "Công ty TNHH Hải Nam",
                                 securedParty: "Ngân hàng TMCP FPT",
-                                status: "Chờ duyệt"
+                                status: "Chờ duyệt",
+                                transType: "Thông báo xử lý tài sản bảo đảm",
+                                measureContractType: "",
+                                secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"]
                             }
                         ]
                     }
@@ -10313,6 +10535,9 @@
                 guarantor: "Công ty CP Thủy sản miền Nam",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
+                transType: "Hợp đồng",
+                measureContractType: "Hợp đồng thuê tài sản có thời hạn 1 năm trở lên",
+                secAssets: ["Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ"],
                 expanded: true,
                 children: [
                     {
@@ -10323,7 +10548,10 @@
                         type: "Xóa đăng ký",
                         guarantor: "Công ty CP Thủy sản miền Nam",
                         securedParty: "Ngân hàng TMCP FPT",
-                        status: "Chờ duyệt"
+                        status: "Chờ duyệt",
+                        transType: "Hợp đồng",
+                        measureContractType: "Hợp đồng thuê tài sản có thời hạn 1 năm trở lên",
+                        secAssets: ["Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ"]
                     }
                 ]
             },
@@ -10336,6 +10564,9 @@
                 guarantor: "Lê Văn D",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Duyệt chờ ký",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Đặt cọc",
+                secAssets: ["Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản"],
                 expanded: false,
                 children: []
             },
@@ -10348,6 +10579,9 @@
                 guarantor: "Nguyễn Thị E",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Lưu nháp",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Ký cược",
+                secAssets: ["Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung"],
                 expanded: false,
                 children: []
             },
@@ -10360,6 +10594,9 @@
                 guarantor: "Công ty TNHH Logistics Minh Phát",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Sai lệch thanh toán",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Ký quỹ",
+                secAssets: ["Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)"],
                 expanded: false,
                 children: []
             },
@@ -10372,6 +10609,9 @@
                 guarantor: "Trần Văn F",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
+                transType: "Hợp đồng",
+                measureContractType: "Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác",
+                secAssets: ["Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản"],
                 expanded: false,
                 children: []
             },
@@ -10384,6 +10624,9 @@
                 guarantor: "Nguyễn Văn G",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
+                transType: "Hợp đồng",
+                measureContractType: "Hợp đồng ký gửi",
+                secAssets: ["Cây hằng năm, công trình tạm"],
                 expanded: false,
                 children: []
             },
@@ -10396,6 +10639,9 @@
                 guarantor: "Trần Văn H",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Thế chấp",
+                secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"],
                 expanded: false,
                 children: []
             },
@@ -10408,6 +10654,9 @@
                 guarantor: "Lê Thị I",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Thế chấp",
+                secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"],
                 expanded: false,
                 children: []
             }
@@ -10471,6 +10720,109 @@
             return null;
         }
 
+        function onTransTypeFilterChange() {
+            const transType = document.getElementById('regReqSearchTransType').value;
+            const measureSelect = document.getElementById('regReqSearchMeasureContractType');
+            if (!measureSelect) return;
+            
+            // Clear and build new options
+            measureSelect.innerHTML = '<option value="Tất cả" selected>Tất cả</option>';
+            
+            if (transType === 'Tất cả' || transType === 'Biện pháp bảo đảm') {
+                measureSelect.appendChild(new Option('Thế chấp', 'Thế chấp'));
+                measureSelect.appendChild(new Option('Bảo lưu quyền sở hữu', 'Bảo lưu quyền sở hữu'));
+                measureSelect.appendChild(new Option('Cầm cố', 'Cầm cố'));
+                measureSelect.appendChild(new Option('Đặt cọc', 'Đặt cọc'));
+                measureSelect.appendChild(new Option('Ký cược', 'Ký cược'));
+                measureSelect.appendChild(new Option('Ký quỹ', 'Ký quỹ'));
+            }
+            
+            if (transType === 'Tất cả' || transType === 'Hợp đồng') {
+                measureSelect.appendChild(new Option('Hợp đồng cho thuê tài chính', 'Hợp đồng cho thuê tài chính'));
+                measureSelect.appendChild(new Option('Hợp đồng thuê tài sản có thời hạn 1 năm trở lên', 'Hợp đồng thuê tài sản có thời hạn 1 năm trở lên'));
+                measureSelect.appendChild(new Option('Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác', 'Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác'));
+                measureSelect.appendChild(new Option('Hợp đồng ký gửi', 'Hợp đồng ký gửi'));
+            }
+        }
+
+        function renderAssetCellHtml(assets) {
+            if (!assets || assets.length === 0) return '';
+            
+            const linesHtml = assets.map((asset, index) => {
+                const suffix = (index < assets.length - 1) ? ';' : '';
+                return `<div class="asset-line-ellipsis">${asset}${suffix}</div>`;
+            }).join('');
+
+            const tooltipContent = assets.map((asset, index) => {
+                const suffix = (index < assets.length - 1) ? ';' : '';
+                return `<div>- ${asset}${suffix}</div>`;
+            }).join('');
+
+            return `
+                <div class="asset-tooltip-container" onmouseenter="showGlobalTooltip(this, event)" onmouseleave="hideGlobalTooltip()">
+                    <div>${linesHtml}</div>
+                    <div class="asset-tooltip-content-source" style="display: none;">
+                        <strong>Danh sách Loại tài sản:</strong>
+                        <div style="margin-top: 5px;">${tooltipContent}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function matchItem(item, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType) {
+            let matchNum = true;
+            if (num) {
+                matchNum = item.regNum.toLowerCase().includes(num);
+            }
+
+            let matchGuarantor = true;
+            if (guarantor) {
+                matchGuarantor = item.guarantor.toLowerCase().includes(guarantor);
+            }
+
+            let matchStatus = true;
+            if (status !== 'Tất cả') {
+                matchStatus = (item.status === status);
+            }
+
+            let matchType = true;
+            if (type !== 'Tất cả') {
+                matchType = (item.type === type);
+            }
+
+            let matchDate = true;
+            if (fromDateStr || toDateStr) {
+                const itemDate = parseDateString(item.date);
+                if (fromDateStr) {
+                    const fromParts = fromDateStr.split('/');
+                    const fromD = new Date(fromParts[2], fromParts[1] - 1, fromParts[0], 0, 0, 0);
+                    if (itemDate < fromD) matchDate = false;
+                }
+                if (toDateStr) {
+                    const toParts = toDateStr.split('/');
+                    const toD = new Date(toParts[2], toParts[1] - 1, toParts[0], 23, 59, 59);
+                    if (itemDate > toD) matchDate = false;
+                }
+            }
+
+            let matchTransType = true;
+            if (transType !== 'Tất cả') {
+                matchTransType = (item.transType === transType);
+            }
+
+            let matchMeasureType = true;
+            if (measureType !== 'Tất cả') {
+                matchMeasureType = (item.measureContractType === measureType);
+            }
+
+            let matchAssetType = true;
+            if (assetType !== 'Tất cả') {
+                matchAssetType = item.secAssets && item.secAssets.includes(assetType);
+            }
+
+            return matchNum && matchGuarantor && matchStatus && matchType && matchDate && matchTransType && matchMeasureType && matchAssetType;
+        }
+
         function executeRegReqSearch() {
             const num = document.getElementById('regReqSearchNum').value.trim().toLowerCase();
             const guarantor = document.getElementById('regReqSearchGuarantor').value.trim().toLowerCase();
@@ -10478,6 +10830,10 @@
             const type = document.getElementById('regReqSearchType').value;
             const fromDateStr = document.getElementById('regReqSearchFromDate').value.trim();
             const toDateStr = document.getElementById('regReqSearchToDate').value.trim();
+
+            const transType = document.getElementById('regReqSearchTransType').value;
+            const measureType = document.getElementById('regReqSearchMeasureContractType').value;
+            const assetType = document.getElementById('regReqSearchAssetType').value;
 
             // Validate date range
             if (fromDateStr && toDateStr) {
@@ -10517,60 +10873,17 @@
             }
 
             regReqFilteredData = registeredRequestsData.filter(item => {
-                let matchNum = true;
-                if (num) {
-                    const numInParent = item.regNum.toLowerCase().includes(num);
-                    const numInChildren = item.children && item.children.some(c => {
-                        const numInC = c.regNum.toLowerCase().includes(num);
-                        const numInGC = c.children && c.children.some(gc => gc.regNum.toLowerCase().includes(num));
-                        return numInC || numInGC;
+                const parentMatches = matchItem(item, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType);
+                
+                const childrenMatch = item.children && item.children.some(c => {
+                    const cMatches = matchItem(c, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType);
+                    const gcMatch = c.children && c.children.some(gc => {
+                        return matchItem(gc, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType);
                     });
-                    matchNum = numInParent || numInChildren;
-                }
+                    return cMatches || gcMatch;
+                });
 
-                let matchGuarantor = true;
-                if (guarantor) {
-                    const guarInParent = item.guarantor.toLowerCase().includes(guarantor);
-                    const guarInChildren = item.children && item.children.some(c => {
-                        const guarInC = c.guarantor.toLowerCase().includes(guarantor);
-                        const guarInGC = c.children && c.children.some(gc => gc.guarantor.toLowerCase().includes(guarantor));
-                        return guarInC || guarInGC;
-                    });
-                    matchGuarantor = guarInParent || guarInChildren;
-                }
-
-                let matchStatus = true;
-                if (status !== 'Tất cả') {
-                    matchStatus = (item.status === status);
-                }
-
-                let matchType = true;
-                if (type !== 'Tất cả') {
-                    const typeInParent = (item.type === type);
-                    const typeInChildren = item.children && item.children.some(c => {
-                        const typeInC = (c.type === type);
-                        const typeInGC = c.children && c.children.some(gc => gc.type === type);
-                        return typeInC || typeInGC;
-                    });
-                    matchType = typeInParent || typeInChildren;
-                }
-
-                let matchDate = true;
-                if (fromDateStr || toDateStr) {
-                    const itemDate = parseDateString(item.date);
-                    if (fromDateStr) {
-                        const fromParts = fromDateStr.split('/');
-                        const fromD = new Date(fromParts[2], fromParts[1] - 1, fromParts[0], 0, 0, 0);
-                        if (itemDate < fromD) matchDate = false;
-                    }
-                    if (toDateStr) {
-                        const toParts = toDateStr.split('/');
-                        const toD = new Date(toParts[2], toParts[1] - 1, toParts[0], 23, 59, 59);
-                        if (itemDate > toD) matchDate = false;
-                    }
-                }
-
-                return matchNum && matchGuarantor && matchStatus && matchType && matchDate;
+                return parentMatches || childrenMatch;
             });
 
             regReqCurrentPage = 1;
@@ -10592,6 +10905,9 @@
             document.getElementById('regReqSearchType').value = 'Tất cả';
             document.getElementById('regReqSearchFromDate').value = '';
             document.getElementById('regReqSearchToDate').value = '';
+            document.getElementById('regReqSearchTransType').value = 'Tất cả';
+            onTransTypeFilterChange();
+            document.getElementById('regReqSearchAssetType').value = 'Tất cả';
             regReqFilteredData = [];
             regReqCurrentPage = 1;
             renderRegisteredRequestsTable();
@@ -10618,12 +10934,15 @@
                 document.getElementById('regReqSearchStatus').value !== 'Tất cả' ||
                 document.getElementById('regReqSearchType').value !== 'Tất cả' ||
                 document.getElementById('regReqSearchFromDate').value ||
-                document.getElementById('regReqSearchToDate').value;
+                document.getElementById('regReqSearchToDate').value ||
+                document.getElementById('regReqSearchTransType').value !== 'Tất cả' ||
+                document.getElementById('regReqSearchMeasureContractType').value !== 'Tất cả' ||
+                document.getElementById('regReqSearchAssetType').value !== 'Tất cả';
 
             const dataList = isFiltered ? regReqFilteredData : registeredRequestsData;
 
             if (dataList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
                 document.getElementById('regReqCountDisplay').innerText = `Hiển thị 0-0 của 0 hồ sơ gốc`;
                 document.getElementById('regReqPagination').innerHTML = '';
                 return;
@@ -10713,6 +11032,9 @@
                         <td>${item.type}</td>
                         <td>${item.guarantor}</td>
                         <td>${item.securedParty}</td>
+                        <td>${item.transType || ''}</td>
+                        <td>${item.measureContractType || ''}</td>
+                        <td>${renderAssetCellHtml(item.secAssets)}</td>
                         <td><span class="status-badge ${getStatusClass(item.status)}">${item.status}</span></td>
                         <td>${item.date}</td>
                         <td>
@@ -10765,6 +11087,9 @@
                                 <td>${child.type}</td>
                                 <td>${child.guarantor}</td>
                                 <td>${child.securedParty}</td>
+                                <td>${child.transType || ''}</td>
+                                <td>${child.measureContractType || ''}</td>
+                                <td>${renderAssetCellHtml(child.secAssets)}</td>
                                 <td><span class="status-badge ${getStatusClass(child.status)}">${child.status}</span></td>
                                 <td>${child.date}</td>
                                 <td>
@@ -10796,6 +11121,9 @@
                                         <td>${gc.type}</td>
                                         <td>${gc.guarantor}</td>
                                         <td>${gc.securedParty}</td>
+                                        <td>${gc.transType || ''}</td>
+                                        <td>${gc.measureContractType || ''}</td>
+                                        <td>${renderAssetCellHtml(gc.secAssets)}</td>
                                         <td><span class="status-badge ${getStatusClass(gc.status)}">${gc.status}</span></td>
                                         <td>${gc.date}</td>
                                         <td>
