@@ -239,23 +239,26 @@
          }
  
          .action-cell {
-             display: flex;
-             gap: 8px;
-             justify-content: center;
-             align-items: center;
+             text-align: center;
              white-space: nowrap;
-             margin: 0 auto;
+         }
+ 
+         .action-cell .icon-btn,
+         .action-cell div {
+             margin: 0 4px;
+             vertical-align: middle;
          }
  
          /* Icon Buttons */
          .icon-btn {
-             background: none;
-             border: none;
+             background-color: var(--bg-surface);
+             border: 1px solid var(--border-color);
+             color: var(--text-muted);
              cursor: pointer;
-             font-size: 16px;
+             font-size: 14px;
              padding: 4px;
-             border-radius: 4px;
-             transition: all 0.2s;
+             border-radius: var(--border-radius-sm);
+             transition: all 0.15s ease-in-out;
              display: inline-flex;
              align-items: center;
              justify-content: center;
@@ -263,23 +266,41 @@
              height: 28px;
          }
  
-         .icon-btn.view { color: var(--primary-color); }
-         .icon-btn.view:hover { background-color: rgba(30, 58, 138, 0.1); }
+         .icon-btn.view:hover { 
+             color: var(--primary-color); 
+             border-color: var(--primary-color);
+             background-color: rgba(30, 58, 138, 0.05); 
+         }
          
-         .icon-btn.edit { color: var(--info-color); }
-         .icon-btn.edit:hover { background-color: rgba(59, 130, 246, 0.1); }
+         .icon-btn.edit:hover { 
+             color: var(--info-color); 
+             border-color: var(--info-color);
+             background-color: rgba(59, 130, 246, 0.05); 
+         }
          
-         .icon-btn.lock { color: var(--warning-color); }
-         .icon-btn.lock:hover { background-color: rgba(245, 158, 11, 0.1); }
+         .icon-btn.lock:hover { 
+             color: var(--warning-color); 
+             border-color: var(--warning-color);
+             background-color: rgba(245, 158, 11, 0.05); 
+         }
  
-         .icon-btn.success { color: var(--success-color); }
-         .icon-btn.success:hover { background-color: rgba(16, 185, 129, 0.1); }
+         .icon-btn.success:hover { 
+             color: var(--success-color); 
+             border-color: var(--success-color);
+             background-color: rgba(16, 185, 129, 0.05); 
+         }
          
-         .icon-btn.link { color: var(--secondary-color); }
-         .icon-btn.link:hover { background-color: rgba(59, 130, 246, 0.1); }
+         .icon-btn.link:hover { 
+             color: var(--secondary-color); 
+             border-color: var(--secondary-color);
+             background-color: rgba(59, 130, 246, 0.05); 
+         }
  
-         .icon-btn.delete { color: var(--danger-color); }
-         .icon-btn.delete:hover { background-color: rgba(239, 68, 68, 0.1); }
+         .icon-btn.delete:hover { 
+             color: var(--danger-color); 
+             border-color: var(--danger-color);
+             background-color: rgba(239, 68, 68, 0.05); 
+         }
  
          /* Badge Styling */
          .badge {
@@ -606,15 +627,16 @@
                  <table class="custom-table" id="personTable">
                      <thead>
                          <tr>
-                             <th width="16%">Họ và tên</th>
-                             <th width="12%">Số giấy tờ</th>
-                             <th width="14%">Email</th>
-                             <th width="10%">Số điện thoại</th>
-                             <th width="12%">Trung tâm Đăng ký</th>
-                             <th width="10%">Nguồn định danh</th>
+                             <th width="4%" style="text-align:center">STT</th>
+                             <th width="15%" class="sortable" onclick="handleSort('person', 'name')">Họ và tên <span id="person-sort-name"><i class="fas fa-sort"></i></span></th>
+                             <th width="10%">Số giấy tờ</th>
+                             <th width="12%">Email</th>
+                             <th width="9%">Số điện thoại</th>
+                             <th width="11%">Trung tâm Đăng ký</th>
+                             <th width="9%">Nguồn định danh</th>
                              <th width="10%">Loại tài khoản</th>
-                             <th width="8%">Ngày tạo</th>
-                             <th width="8%">Trạng thái</th>
+                             <th width="10%" class="sortable" onclick="handleSort('person', 'createdDate')">Ngày tạo <span id="person-sort-createdDate"><i class="fas fa-sort"></i></span></th>
+                             <th width="10%">Trạng thái</th>
                              <th width="10%" style="text-align:center">Thao tác</th>
                          </tr>
                      </thead>
