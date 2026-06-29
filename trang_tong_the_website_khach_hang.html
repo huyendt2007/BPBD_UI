@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -4112,7 +4112,7 @@
                                     <option value="Lưu nháp">Lưu nháp</option>
                                     <option value="Chờ thanh toán">Chờ thanh toán</option>
                                     <option value="Chờ duyệt">Chờ duyệt</option>
-                                    <option value="Duyệt chờ ký">Duyệt chờ ký</option>
+                                    <option value="Chờ ký">Chờ ký</option>
                                     <option value="Hoàn thành">Hoàn thành</option>
                                     <option value="Bị từ chối">Bị từ chối</option>
                                     <option value="Sai lệch thanh toán">Sai lệch thanh toán</option>
@@ -4219,7 +4219,7 @@
                                     <th style="width: 10%;">Loại BP/HĐ</th>
                                     <th style="width: 13%;">Loại tài sản</th>
                                     <th style="width: 7%;">Trạng thái</th>
-                                    <th style="width: 7%;">Thời điểm</th>
+                                    <th style="width: 7%;">Thời điểm đăng ký</th>
                                     <th style="width: 6%; text-align: left; padding-left: 5px;">Thao tác</th>
                                 </tr>
                             </thead>
@@ -10563,7 +10563,7 @@
                 type: "Đăng ký lần đầu",
                 guarantor: "Lê Văn D",
                 securedParty: "Ngân hàng TMCP FPT",
-                status: "Duyệt chờ ký",
+                status: "Chờ ký",
                 transType: "Biện pháp bảo đảm",
                 measureContractType: "Đặt cọc",
                 secAssets: ["Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản"],
@@ -10672,7 +10672,7 @@
                 case 'Lưu nháp': return 'draft';
                 case 'Chờ thanh toán': return 'pending-payment';
                 case 'Chờ duyệt': return 'pending-approval';
-                case 'Duyệt chờ ký': return 'approved-pending-signature';
+                case 'Chờ ký': return 'approved-pending-signature';
                 case 'Hoàn thành': return 'completed';
                 case 'Bị từ chối': return 'rejected';
                 case 'Sai lệch thanh toán': return 'payment-discrepancy';

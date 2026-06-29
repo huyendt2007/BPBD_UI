@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý yêu cầu và cấp mã số sử dụng CSDL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Design System CSS Variables */
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --accent-hover: #D97706;
+
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: var(--base-size);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container { max-width: 100%; margin: 0 auto; }
+
+        /* Layout & Cards */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-2-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .grid-4-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+
+        /* Form Controls */
+        .form-group { margin-bottom: 15px; }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 8px 12px;
+            font-size: 13px;
+            color: var(--text-main);
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+            outline: none;
+            font-family: var(--font-family);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .form-control:read-only {
+            background-color: #F8FAFC;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            display: block;
+            font-size: 13px;
+        }
+
+        .required-mark { color: var(--danger-color); margin-left: 4px; }
+
+        /* Buttons */
+        .btn {
+            font-weight: 600;
+            border-radius: var(--border-radius-md);
+            padding: 8px 16px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            outline: none;
+            font-family: var(--font-family);
+        }
+
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        .btn-outline-primary:hover { background-color: var(--primary-color); color: white; }
+
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-success:hover { background-color: #059669; }
+
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-danger:hover { background-color: #DC2626; }
+
+        .btn-secondary { background-color: #E2E8F0; color: #475569; }
+        .btn-secondary:hover { background-color: #CBD5E1; }
+
+        .grid-action-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .search-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        /* Table */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .custom-table th {
+            background-color: var(--table-header-bg);
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .custom-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #F0F9FF !important; /* Premium light blue visual anchor */
+        }
+
+        .custom-table .action-cell {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .action-cell .icon-btn {
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+
+        .icon-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+        }
+
+        .icon-btn.view:hover { color: var(--primary-color); border-color: var(--primary-color); background-color: rgba(30, 58, 138, 0.05); }
+        .icon-btn.edit:hover { color: var(--info-color); border-color: var(--info-color); background-color: rgba(59, 130, 246, 0.05); }
+        .icon-btn.success:hover { color: var(--success-color); border-color: var(--success-color); background-color: rgba(16, 185, 129, 0.05); }
+        .icon-btn.lock:hover { color: var(--warning-color); border-color: var(--warning-color); background-color: rgba(245, 158, 11, 0.05); }
+        .icon-btn.delete:hover { color: var(--danger-color); border-color: var(--danger-color); background-color: rgba(239, 68, 68, 0.05); }
+        .icon-btn.renew:hover { color: var(--accent-color); border-color: var(--accent-color); background-color: rgba(245, 158, 11, 0.05); }
+
+        /* Disabled action buttons styling */
+        .icon-btn.disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            background-color: #F8FAFC !important;
+            border-color: #E2E8F0 !important;
+            color: #94A3B8 !important;
+            box-shadow: none !important;
+        }
+        .icon-btn.disabled:hover {
+            background-color: #F8FAFC !important;
+            border-color: #E2E8F0 !important;
+            color: #94A3B8 !important;
+            box-shadow: none !important;
+        }
+
+        /* Toggle Switch in Action Column */
+        .action-switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 18px;
+            vertical-align: middle;
+            margin: 0 6px;
+        }
+
+        .action-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .action-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #CBD5E1;
+            transition: .25s ease-in-out;
+            border-radius: 18px;
+        }
+
+        .action-slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .25s ease-in-out;
+            border-radius: 50%;
+        }
+
+        .action-switch input:checked + .action-slider {
+            background-color: var(--success-color);
+        }
+
+        .action-switch input:checked + .action-slider:before {
+            transform: translateX(18px);
+        }
+
+        .action-switch.disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .action-switch.disabled .action-slider {
+            cursor: not-allowed;
+            background-color: #E2E8F0;
+        }
+
+        /* Badge Styling */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .bg-warning { background-color: #FEF3C7; color: #92400E; }
+        .bg-success { background-color: #D1FAE5; color: #065F46; }
+        .bg-info { background-color: #DBEAFE; color: #1E40AF; }
+        .bg-danger { background-color: #FEE2E2; color: #991B1B; }
+        .bg-secondary { background-color: #E2E8F0; color: #475569; }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .pagination-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .page-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-family);
+            font-size: 13px;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: #F1F5F9;
+            border-color: var(--text-muted);
+        }
+
+        .page-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-content {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .modal-content.modal-sm { max-width: 450px; }
+
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .modal-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            font-size: var(--heading-size);
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none; border: none;
+            font-size: 20px; color: var(--text-muted);
+            cursor: pointer; transition: color 0.2s;
+        }
+        .close-modal:hover { color: var(--danger-color); }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-md);
+            background-color: #F8FAFC;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+        }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+        .toast {
+            background-color: white;
+            border-left: 4px solid var(--success-color);
+            box-shadow: var(--box-shadow);
+            padding: 16px 20px;
+            border-radius: var(--border-radius-md);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger-color); }
+        .toast.error i { color: var(--danger-color); }
+        .toast.success i { color: var(--success-color); }
+
+        /* Detail view label-value */
+        .detail-row { display: flex; margin-bottom: 10px; }
+        .detail-label { font-weight: 600; color: var(--text-muted); width: 200px; flex-shrink: 0; font-size: 13px; }
+        .detail-value { color: var(--text-main); font-size: 13px; }
+        .detail-section-title {
+            font-size: 14px; font-weight: 600; color: var(--primary-color);
+            margin: 20px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .grid-2-cols, .grid-3-cols, .grid-4-cols { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Filter Card -->
+    <div class="card-section" id="search-card" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+        <h3 style="font-size: 14px; color: var(--primary-color); font-weight: 600; margin-bottom: 12px;">
+            <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
+        </h3>
+        
+        <form id="filterForm">
+            <div class="grid-4-cols">
+                <div class="form-group">
+                    <label class="form-label">Từ khóa tìm kiếm</label>
+                    <input type="text" id="filterKeyword" class="form-control" placeholder="Tên KH, MST/CCCD, Mã YC, Mã CSDL...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại đối tượng</label>
+                    <select id="filterLoaiDT" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="ca_nhan">Cá nhân</option>
+                        <option value="to_chuc">Tổ chức</option>
+                        <option value="co_quan">Cơ quan có thẩm quyền</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại mã số CSDL</label>
+                    <select id="filterLoaiMa" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="mot_lan">Một lần</option>
+                        <option value="thuong_xuyen">Thường xuyên</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phương thức thanh toán</label>
+                    <select id="filterPTTT" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="truc_tuyen">Thanh toán trực tuyến</option>
+                        <option value="chuyen_khoan">Chuyển khoản ngân hàng</option>
+                        <option value="tien_mat">Nộp tiền mặt</option>
+                        <option value="mien_phi">Miễn phí</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-4-cols">
+                <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select id="filterTrangThai" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="cho_kich_hoat">Chờ kích hoạt</option>
+                        <option value="hoat_dong">Hoạt động</option>
+                        <option value="da_su_dung">Đã sử dụng</option>
+                        <option value="het_han">Hết hạn</option>
+                        <option value="khoa">Khóa</option>
+                        <option value="ngung_sd">Ngưng sử dụng</option>
+                        <option value="tu_choi">Bị từ chối</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="text" id="filterTuNgay" class="form-control" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="text" id="filterDenNgay" class="form-control" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group"></div>
+            </div>
+
+            <div class="search-actions">
+                <button type="button" class="btn btn-outline-primary" onclick="clearFilters()">Xóa bộ lọc</button>
+                <button type="button" class="btn btn-primary" onclick="applyFilters()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Action Toolbar -->
+    <div class="grid-action-toolbar">
+        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> Tạo mới yêu cầu</button>
+        <button class="btn btn-outline-primary" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-container">
+        <table class="custom-table" id="mainTable">
+            <thead>
+                <tr>
+                    <th style="text-align: center; width: 50px;">STT</th>
+                    <th>Mã yêu cầu</th>
+                    <th>Mã số sử dụng CSDL</th>
+                    <th>Tên khách hàng</th>
+                    <th>Số MST/CCCD</th>
+                    <th>Loại đối tượng</th>
+                    <th style="text-align: center;">Loại mã số CSDL</th>
+                    <th>Phương thức thanh toán</th>
+                    <th style="text-align: center;">Ngày tạo</th>
+                    <th style="text-align: center;">Trạng thái</th>
+                    <th style="text-align: center; min-width: 220px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- JS sẽ render -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" id="paginationContainer">
+        <div class="pagination-info" id="paginationInfo">Hiển thị từ 1 đến 10 trong tổng số 10 bản ghi</div>
+        <div class="pagination-right">
+            <div>
+                <select class="form-select" id="pageSize" style="width: auto; display: inline-block;" onchange="changePageSize()">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+                <span style="margin-left: 4px; color: var(--text-muted);">bản ghi/trang</span>
+            </div>
+            <div class="pagination-buttons" id="paginationButtons">
+                <button class="page-btn" disabled title="Trang đầu">&laquo;</button>
+                <button class="page-btn" disabled title="Trang trước">&lsaquo;</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn" title="Trang sau">&rsaquo;</button>
+                <button class="page-btn" title="Trang cuối">&raquo;</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Tạo mới yêu cầu cấp mã số sử dụng CSDL -->
+<div class="modal-overlay" id="createModal">
+    <div class="modal-content" style="max-width: 900px;">
+        <div class="modal-header">
+            <h3 id="createModalTitle"><i class="fa-solid fa-plus-circle"></i> Tạo mới yêu cầu cấp mã số sử dụng CSDL</h3>
+            <button class="close-modal" onclick="closeModal('createModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Loại đối tượng <span class="required-mark">*</span></label>
+                    <select id="createLoaiDT" class="form-select" onchange="onCreateLoaiDTChange()">
+                        <option value="">-- Chọn loại đối tượng --</option>
+                        <option value="ca_nhan">Cá nhân</option>
+                        <option value="to_chuc">Tổ chức</option>
+                        <option value="co_quan">Cơ quan có thẩm quyền</option>
+                    </select>
+                </div>
+                <div class="form-group" id="createLoaiMaGroup">
+                    <label class="form-label">Loại mã số sử dụng CSDL <span class="required-mark">*</span></label>
+                    <select id="createLoaiMa" class="form-select">
+                        <option value="thuong_xuyen">Sử dụng thường xuyên</option>
+                        <option value="mot_lan">Sử dụng một lần</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-2-cols" id="createTKLienKetGroup" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Chọn tài khoản khách hàng liên kết <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="createTKLienKet" placeholder="Nhập MST/CCCD để tìm tài khoản...">
+                </div>
+                <div class="form-group"></div>
+            </div>
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Tên đối tượng đề nghị <span class="required-mark">*</span></label>
+                    <input type="text" id="createTenDT" class="form-control" placeholder="Nhập tên đối tượng...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số MST / CCCD</label>
+                    <input type="text" id="createMST" class="form-control" placeholder="Nhập số MST hoặc CCCD...">
+                </div>
+            </div>
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Email nhận thông tin</label>
+                    <input type="text" id="createEmail" class="form-control" placeholder="example@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số điện thoại liên hệ</label>
+                    <input type="text" id="createSDT" class="form-control" placeholder="09xxxxxxxx">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Địa chỉ liên hệ</label>
+                <input type="text" id="createDiaChi" class="form-control" placeholder="Nhập địa chỉ liên hệ...">
+            </div>
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Phương thức thanh toán</label>
+                    <select id="createPTTT" class="form-select">
+                        <option value="truc_tuyen">Thanh toán trực tuyến</option>
+                        <option value="chuyen_khoan">Chuyển khoản ngân hàng</option>
+                        <option value="tien_mat">Nộp tiền mặt</option>
+                        <option value="mien_phi">Miễn phí</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ghi chú thanh toán</label>
+                    <input type="text" id="createGhiChu" class="form-control" placeholder="Ghi chú thêm...">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('createModal')">Hủy</button>
+            <button class="btn btn-primary" id="btnSaveCreate" onclick="saveCreate('draft')"><i class="fa-solid fa-save"></i> Lưu nháp</button>
+            <button class="btn btn-success" id="btnApproveCreate" onclick="saveCreate('approve')"><i class="fa-solid fa-check-circle"></i> Cấp mã</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Xem chi tiết -->
+<div class="modal-overlay" id="viewModal">
+    <div class="modal-content" style="max-width: 900px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-eye"></i> Chi tiết yêu cầu cấp mã số sử dụng CSDL</h3>
+            <button class="close-modal" onclick="closeModal('viewModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="viewModalBody">
+            <!-- JS render -->
+        </div>
+        <div class="modal-footer" id="viewModalFooter">
+            <button class="btn btn-secondary" onclick="closeModal('viewModal')">Đóng</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Phê duyệt / Đối soát -->
+<div class="modal-overlay" id="approveModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-check-circle"></i> Kích hoạt yêu cầu cấp mã số sử dụng CSDL</h3>
+            <button class="close-modal" onclick="closeModal('approveModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Mã yêu cầu</label>
+                    <input type="text" id="approveMaYC" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại yêu cầu</label>
+                    <input type="text" id="approveLoaiYC" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Tên khách hàng</label>
+                    <input type="text" id="approveTenKH" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại đối tượng</label>
+                    <input type="text" id="approveLoaiDT" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Mức phí cần thanh toán</label>
+                    <input type="text" id="approveMucPhi" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phương thức thanh toán</label>
+                    <input type="text" id="approvePTTT" class="form-control" readonly>
+                </div>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Số biên lai / Mã giao dịch <span class="required-mark">*</span></label>
+                    <input type="text" id="approveBienLai" class="form-control" placeholder="Nhập mã giao dịch...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ngày giao dịch <span class="required-mark">*</span></label>
+                    <input type="text" id="approveNgayGD" class="form-control" placeholder="dd/mm/yyyy" value="26/06/2026">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tệp chứng từ thanh toán <span class="required-mark">*</span></label>
+                <input type="file" class="form-control" id="approveFile" accept=".pdf,.jpg,.png">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ghi chú kích hoạt</label>
+                <textarea class="form-control" id="approveGhiChu" rows="2" placeholder="Nhập ghi chú..." style="resize: vertical; font-family: var(--font-family);"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('approveModal')">Hủy</button>
+            <button class="btn btn-success" onclick="confirmApprove()"><i class="fa-solid fa-check"></i> Kích hoạt</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Từ chối -->
+<div class="modal-overlay" id="rejectModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-ban"></i> Từ chối yêu cầu</h3>
+            <button class="close-modal" onclick="closeModal('rejectModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Mã yêu cầu</label>
+                <input type="text" id="rejectMaYC" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tên đối tượng đề nghị</label>
+                <input type="text" id="rejectTenDT" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Lý do từ chối <span class="required-mark">*</span></label>
+                <textarea class="form-control" id="rejectLyDo" rows="3" placeholder="Nhập lý do từ chối..." style="resize: vertical; font-family: var(--font-family);"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('rejectModal')">Hủy</button>
+            <button class="btn btn-danger" onclick="confirmReject()"><i class="fa-solid fa-ban"></i> Xác nhận từ chối</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Gia hạn -->
+<div class="modal-overlay" id="renewModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Gia hạn mã số sử dụng CSDL</h3>
+            <button class="close-modal" onclick="closeModal('renewModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Mã số sử dụng CSDL</label>
+                    <input type="text" id="renewMaCSDL" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên đối tượng sử dụng</label>
+                    <input type="text" id="renewTenDT" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Ngày hết hạn hiện tại</label>
+                    <input type="text" id="renewNgayHH" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phí gia hạn</label>
+                    <input type="text" id="renewPhi" class="form-control" readonly value="300.000 VNĐ">
+                </div>
+            </div>
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <label class="form-label">Phương thức thanh toán <span class="required-mark">*</span></label>
+                    <select id="renewPTTT" class="form-select">
+                        <option value="chuyen_khoan">Chuyển khoản ngân hàng</option>
+                        <option value="thanh_toan_sau">Thanh toán sau (Ghi nhận công nợ)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số biên lai / Mã giao dịch</label>
+                    <input type="text" id="renewBienLai" class="form-control" placeholder="Nhập mã giao dịch...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tệp chứng từ thanh toán</label>
+                <input type="file" class="form-control" id="renewFile" accept=".pdf,.jpg,.png">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ghi chú gia hạn</label>
+                <textarea class="form-control" id="renewGhiChu" rows="2" placeholder="Nhập ghi chú..." style="resize: vertical; font-family: var(--font-family);"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('renewModal')">Hủy</button>
+            <button class="btn btn-success" onclick="confirmRenew()"><i class="fa-solid fa-check"></i> Xác nhận gia hạn</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Thay đổi trạng thái -->
+<div class="modal-overlay" id="statusModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-toggle-on"></i> Thay đổi trạng thái sử dụng</h3>
+            <button class="close-modal" onclick="closeModal('statusModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Mã số sử dụng CSDL</label>
+                <input type="text" id="statusMaCSDL" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tên đối tượng sử dụng</label>
+                <input type="text" id="statusTenDT" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Trạng thái hiện tại</label>
+                <input type="text" id="statusCurrent" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hành động yêu cầu <span class="required-mark">*</span></label>
+                <select id="statusAction" class="form-select">
+                    <option value="">-- Chọn hành động --</option>
+                    <option value="khoa">Khóa</option>
+                    <option value="ngung">Ngưng sử dụng</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Lý do thay đổi <span class="required-mark">*</span></label>
+                <textarea class="form-control" id="statusLyDo" rows="3" placeholder="Nhập lý do thay đổi..." style="resize: vertical; font-family: var(--font-family);"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('statusModal')">Hủy</button>
+            <button class="btn btn-primary" onclick="confirmStatusChange()"><i class="fa-solid fa-check"></i> Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    // ==================== MOCK DATA ====================
+    const mockData = [
+        {
+            stt: 1, maYC: 'RQ-20260625-0001', maCSDL: '—', tenKH: 'Công ty TNHH ABC',
+            mst: '0312345678', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
+            pttt: 'Chuyển khoản ngân hàng', ngayTao: '25/06/2026', trangThai: 'Chờ kích hoạt',
+            mucPhi: '300.000 VNĐ', email: 'abc@company.vn', sdt: '0281234567', diaChi: '123 Nguyễn Huệ, Q.1, TP.HCM'
+        },
+        {
+            stt: 2, maYC: 'RQ-20260624-0015', maCSDL: '—', tenKH: 'Nguyễn Văn An',
+            mst: '001234567890', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
+            pttt: 'Nộp tiền mặt', ngayTao: '24/06/2026', trangThai: 'Chờ kích hoạt',
+            mucPhi: '300.000 VNĐ', email: 'annguyen@gmail.com', sdt: '0912345678', diaChi: '45 Lê Lợi, Q.1, TP.HCM'
+        },
+        {
+            stt: 3, maYC: 'RQ-20260620-0042', maCSDL: 'TX-384521', tenKH: 'Trần Thị Bình',
+            mst: '079087654321', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
+            pttt: 'Thanh toán trực tuyến', ngayTao: '20/06/2026', trangThai: 'Hoạt động',
+            mucPhi: '300.000 VNĐ', email: 'binh.tran@gmail.com', sdt: '0987654321', diaChi: '78 Trần Hưng Đạo, Q.5, TP.HCM',
+            ngayCap: '20/06/2026', ngayHH: '31/12/2026'
+        },
+        {
+            stt: 4, maYC: 'RQ-20260618-0038', maCSDL: 'CQ-127893', tenKH: 'Cục THADS TP.HCM',
+            mst: '0101234567', loaiDT: 'Cơ quan có thẩm quyền', loaiMa: 'Thường xuyên',
+            pttt: 'Miễn phí', ngayTao: '18/06/2026', trangThai: 'Hoạt động',
+            mucPhi: 'Miễn phí', email: 'thads.hcm@moj.gov.vn', sdt: '0283456789', diaChi: '141 Nguyễn Du, Q.1, TP.HCM',
+            ngayCap: '18/06/2026', ngayHH: '—'
+        },
+        {
+            stt: 5, maYC: 'RQ-20260615-0029', maCSDL: '1L-582917', tenKH: 'Vãng lai',
+            mst: '—', loaiDT: 'Cá nhân', loaiMa: 'Một lần',
+            pttt: 'Thanh toán trực tuyến', ngayTao: '15/06/2026', trangThai: 'Đã sử dụng',
+            mucPhi: '20.000 VNĐ', email: '—', sdt: '—', diaChi: '—',
+            ngayCap: '15/06/2026', ngayHH: '15/07/2026'
+        },
+        {
+            stt: 6, maYC: 'RQ-20260610-0055', maCSDL: 'TX-291047', tenKH: 'Lê Hoàng Minh',
+            mst: '038198765432', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
+            pttt: 'Chuyển khoản ngân hàng', ngayTao: '10/06/2026', trangThai: 'Hết hạn',
+            mucPhi: '300.000 VNĐ', email: 'minh.le@yahoo.com', sdt: '0976543210', diaChi: '256 Điện Biên Phủ, Q.3, TP.HCM',
+            ngayCap: '10/06/2025', ngayHH: '31/12/2025'
+        },
+        {
+            stt: 7, maYC: 'RQ-20260608-0048', maCSDL: 'CQ-845632', tenKH: 'Sở Tư pháp Hà Nội',
+            mst: '0102345678', loaiDT: 'Cơ quan có thẩm quyền', loaiMa: 'Thường xuyên',
+            pttt: 'Miễn phí', ngayTao: '08/06/2026', trangThai: 'Hoạt động',
+            mucPhi: 'Miễn phí', email: 'sotp.hanoi@moj.gov.vn', sdt: '0241234567', diaChi: '221 Trần Phú, Ba Đình, Hà Nội',
+            ngayCap: '08/06/2026', ngayHH: '—'
+        },
+        {
+            stt: 8, maYC: 'RQ-20260605-0033', maCSDL: 'TX-673218', tenKH: 'CTCP Đầu tư XYZ',
+            mst: '0398765432', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
+            pttt: 'Chuyển khoản ngân hàng', ngayTao: '05/06/2026', trangThai: 'Khóa',
+            mucPhi: '300.000 VNĐ', email: 'info@xyz.vn', sdt: '0289876543', diaChi: '55 Pasteur, Q.1, TP.HCM',
+            ngayCap: '05/06/2026', ngayHH: '31/12/2026'
+        },
+        {
+            stt: 9, maYC: 'RQ-20260601-0021', maCSDL: '—', tenKH: 'Phạm Đức Hùng',
+            mst: '012345678901', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
+            pttt: 'Nộp tiền mặt', ngayTao: '01/06/2026', trangThai: 'Bị từ chối',
+            mucPhi: '300.000 VNĐ', email: 'hung.pham@gmail.com', sdt: '0965432109', diaChi: '89 Võ Văn Tần, Q.3, TP.HCM',
+            lyDoTuChoi: 'Chứng từ thanh toán không hợp lệ'
+        },
+        {
+            stt: 10, maYC: 'RQ-20260528-0067', maCSDL: 'TX-412876', tenKH: 'Nguyễn Thị Mai',
+            mst: '027098765432', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
+            pttt: 'Thanh toán trực tuyến', ngayTao: '28/05/2026', trangThai: 'Ngưng sử dụng',
+            mucPhi: '300.000 VNĐ', email: 'mai.nguyen@outlook.com', sdt: '0934567890', diaChi: '167 Hai Bà Trưng, Q.1, TP.HCM',
+            ngayCap: '28/05/2025', ngayHH: '31/12/2025'
+        }
+    ];
+
+    // ==================== RENDER TABLE ====================
+    let currentPage = 1;
+
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px; color: var(--text-muted);"><i class="fa-solid fa-inbox" style="font-size: 36px; display: block; margin-bottom: 10px; color: #CBD5E1;"></i>Không tìm thấy bản ghi nào</td></tr>';
+            renderPagination(0);
+            return;
+        }
+
+        const pageSize = parseInt(document.getElementById('pageSize').value) || 10;
+        const totalPages = Math.ceil(data.length / pageSize) || 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = Math.min(startIndex + pageSize, data.length);
+        const pageData = data.slice(startIndex, endIndex);
+
+        tbody.innerHTML = pageData.map((item, idx) => `
+            <tr>
+                <td style="text-align: center;">${startIndex + idx + 1}</td>
+                <td><strong>${item.maYC}</strong></td>
+                <td>${item.maCSDL === '—' ? '<span style="color: var(--text-muted);">—</span>' : '<strong style="color: var(--primary-color);">' + item.maCSDL + '</strong>'}</td>
+                <td>${item.tenKH}</td>
+                <td>${item.mst}</td>
+                <td>${item.loaiDT}</td>
+                <td style="text-align: center;">${item.loaiMa}</td>
+                <td>${item.pttt}</td>
+                <td style="text-align: center;">${item.ngayTao}</td>
+                <td style="text-align: center;">${getBadge(item)}</td>
+                <td class="action-cell">${getActions(item)}</td>
+            </tr>
+        `).join('');
+
+        renderPagination(data.length);
+    }
+
+    function getBadge(item) {
+        const status = item.trangThai;
+        const map = {
+            'Chờ kích hoạt': 'bg-warning',
+            'Hoạt động': 'bg-success',
+            'Đã sử dụng': 'bg-info',
+            'Hết hạn': 'bg-warning',
+            'Khóa': 'bg-danger',
+            'Ngưng sử dụng': 'bg-secondary',
+            'Bị từ chối': 'bg-danger'
+        };
+        const badgeClass = map[status] || 'bg-secondary';
+        if (status === 'Bị từ chối') {
+            return `<span class="badge ${badgeClass}">${status} <i class="fa-solid fa-circle-question" style="cursor: pointer; margin-left: 4px;" title="Lý do từ chối: ${item.lyDoTuChoi || 'Chứng từ không hợp lệ'}"></i></span>`;
+        }
+        return `<span class="badge ${badgeClass}">${status}</span>`;
+    }
+
+    function getActions(item) {
+        const idx = item.stt - 1; // index in mockData
+        
+        // Icon 1: Xem (Always Enabled)
+        const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="openViewModal(${idx})"><i class="fa-solid fa-eye"></i></button>`;
+        
+        // Icon 2: Sửa (Only for Chờ kích hoạt)
+        let btnEdit;
+        if (item.trangThai === 'Chờ kích hoạt') {
+            btnEdit = `<button class="icon-btn edit" title="Chỉnh sửa yêu cầu" onclick="openEditModal(${idx})"><i class="fa-solid fa-pen-to-square"></i></button>`;
+        } else {
+            btnEdit = `<button class="icon-btn edit disabled" title="Không thể thực hiện thao tác này ở trạng thái hiện tại" onclick="return false;"><i class="fa-solid fa-pen-to-square"></i></button>`;
+        }
+
+        // Icon 3: Kích hoạt (Only for Chờ kích hoạt)
+        let btnApprove;
+        if (item.trangThai === 'Chờ kích hoạt') {
+            btnApprove = `<button class="icon-btn success" title="Kích hoạt" onclick="openApproveModal(${idx})"><i class="fa-solid fa-check"></i></button>`;
+        } else {
+            btnApprove = `<button class="icon-btn success disabled" title="Không thể thực hiện thao tác này ở trạng thái hiện tại" onclick="return false;"><i class="fa-solid fa-check"></i></button>`;
+        }
+        
+        // Icon 4: Từ chối (Only for Chờ kích hoạt)
+        let btnReject;
+        if (item.trangThai === 'Chờ kích hoạt') {
+            btnReject = `<button class="icon-btn delete" title="Từ chối" onclick="openRejectModal(${idx})"><i class="fa-solid fa-ban"></i></button>`;
+        } else {
+            btnReject = `<button class="icon-btn delete disabled" title="Không thể thực hiện thao tác này ở trạng thái hiện tại" onclick="return false;"><i class="fa-solid fa-ban"></i></button>`;
+        }
+        
+        // Icon 5: Gia hạn (Only for Hoạt động (nếu có) and Hết hạn)
+        let btnRenew;
+        const canRenew = (item.trangThai === 'Hoạt động' && item.loaiDT !== 'Cơ quan có thẩm quyền') || item.trangThai === 'Hết hạn';
+        if (canRenew) {
+            btnRenew = `<button class="icon-btn renew" title="Gia hạn" onclick="openRenewModal(${idx})"><i class="fa-solid fa-clock-rotate-left"></i></button>`;
+        } else {
+            btnRenew = `<button class="icon-btn renew disabled" title="Không thể thực hiện thao tác này ở trạng thái hiện tại" onclick="return false;"><i class="fa-solid fa-clock-rotate-left"></i></button>`;
+        }
+        
+        // Icon 6: Bật/Tắt Switch
+        let isToggleDisabled = true;
+        let isToggleChecked = false;
+        let toggleTooltip = 'Không thể thực hiện thao tác này ở trạng thái hiện tại';
+        
+        if (item.trangThai === 'Hoạt động') {
+            isToggleDisabled = false;
+            isToggleChecked = true;
+            toggleTooltip = 'Gạt sang trái để khóa/ngưng sử dụng';
+        } else if (item.trangThai === 'Khóa') {
+            isToggleDisabled = false;
+            isToggleChecked = false;
+            toggleTooltip = 'Gạt sang phải để kích hoạt lại';
+        } else if (item.trangThai === 'Ngưng sử dụng') {
+            isToggleDisabled = false;
+            isToggleChecked = false;
+            toggleTooltip = 'Gạt sang phải để khôi phục/kích hoạt lại';
+        }
+        
+        const toggleSwitch = `
+            <label class="action-switch ${isToggleDisabled ? 'disabled' : ''}" title="${toggleTooltip}">
+                <input type="checkbox" ${isToggleChecked ? 'checked' : ''} ${isToggleDisabled ? 'disabled' : ''} onchange="handleToggleSwitch(this, ${idx})">
+                <span class="action-slider"></span>
+            </label>
+        `;
+        
+        return btnView + btnEdit + btnApprove + btnReject + btnRenew + toggleSwitch;
+    }
+
+    function renderPagination(totalItems) {
+        const pageSize = parseInt(document.getElementById('pageSize').value) || 10;
+        const info = document.getElementById('paginationInfo');
+        const buttons = document.getElementById('paginationButtons');
+        
+        const totalPages = Math.ceil(totalItems / pageSize) || 1;
+        const startIdx = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const endIdx = Math.min(currentPage * pageSize, totalItems);
+        
+        info.textContent = `Hiển thị từ ${startIdx} đến ${endIdx} trong tổng số ${totalItems} bản ghi`;
+        
+        const disablePrev = currentPage === 1 || totalItems <= pageSize;
+        const disableNext = currentPage === totalPages || totalItems <= pageSize;
+        
+        buttons.innerHTML = `
+            <button class="page-btn" ${disablePrev ? 'disabled' : ''} onclick="goToPage(1)" title="Trang đầu">&laquo;</button>
+            <button class="page-btn" ${disablePrev ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})" title="Trang trước">&lsaquo;</button>
+            ${Array.from({length: totalPages}, (_, i) => i + 1).map(p => `
+                <button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>
+            `).join('')}
+            <button class="page-btn" ${disableNext ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})" title="Trang sau">&rsaquo;</button>
+            <button class="page-btn" ${disableNext ? 'disabled' : ''} onclick="goToPage(${totalPages})" title="Trang cuối">&raquo;</button>
+        `;
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        applyFiltersSilent();
+    }
+
+    // ==================== MODAL HANDLERS ====================
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    let currentEditIdx = -1;
+
+    function openCreateModal() { 
+        currentEditIdx = -1;
+        
+        // Reset form fields
+        document.getElementById('createLoaiDT').value = '';
+        onCreateLoaiDTChange();
+        document.getElementById('createLoaiMa').value = 'thuong_xuyen';
+        document.getElementById('createTKLienKet').value = '';
+        document.getElementById('createTenDT').value = '';
+        document.getElementById('createMST').value = '';
+        document.getElementById('createEmail').value = '';
+        document.getElementById('createSDT').value = '';
+        document.getElementById('createDiaChi').value = '';
+        document.getElementById('createPTTT').value = 'chuyen_khoan';
+        document.getElementById('createGhiChu').value = '';
+        
+        // Reset Modal Header & Footer for Create mode
+        document.getElementById('createModalTitle').innerHTML = `<i class="fa-solid fa-plus-circle"></i> Tạo mới yêu cầu cấp mã số sử dụng CSDL`;
+        document.getElementById('btnSaveCreate').innerHTML = `<i class="fa-solid fa-save"></i> Lưu nháp`;
+        document.getElementById('btnApproveCreate').innerHTML = `<i class="fa-solid fa-check-circle"></i> Cấp mã`;
+        
+        openModal('createModal'); 
+    }
+
+    function openEditModal(idx) {
+        currentEditIdx = idx;
+        const item = mockData[idx];
+        
+        // Fill form fields
+        const mapDT = {
+            'Cá nhân': 'ca_nhan',
+            'Tổ chức': 'to_chuc',
+            'Cơ quan có thẩm quyền': 'co_quan'
+        };
+        const mapMa = {
+            'Một lần': 'mot_lan',
+            'Thường xuyên': 'thuong_xuyen'
+        };
+        const mapPT = {
+            'Thanh toán trực tuyến': 'truc_tuyen',
+            'Chuyển khoản ngân hàng': 'chuyen_khoan',
+            'Nộp tiền mặt': 'tien_mat',
+            'Miễn phí': 'mien_phi'
+        };
+        
+        document.getElementById('createLoaiDT').value = mapDT[item.loaiDT] || '';
+        onCreateLoaiDTChange();
+        document.getElementById('createLoaiMa').value = mapMa[item.loaiMa] || 'thuong_xuyen';
+        document.getElementById('createTKLienKet').value = item.mst === '—' ? '' : item.mst;
+        document.getElementById('createTenDT').value = item.tenKH;
+        document.getElementById('createMST').value = item.mst === '—' ? '' : item.mst;
+        document.getElementById('createEmail').value = item.email === '—' ? '' : item.email;
+        document.getElementById('createSDT').value = item.sdt === '—' ? '' : item.sdt;
+        document.getElementById('createDiaChi').value = item.diaChi === '—' ? '' : item.diaChi;
+        document.getElementById('createPTTT').value = mapPT[item.pttt] || 'chuyen_khoan';
+        document.getElementById('createGhiChu').value = item.ghiChu || '';
+        
+        // Change Modal Header & Footer for Edit mode
+        document.getElementById('createModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Hiệu chỉnh yêu cầu cấp mã số sử dụng CSDL`;
+        document.getElementById('btnSaveCreate').innerHTML = `<i class="fa-solid fa-save"></i> Lưu thay đổi`;
+        document.getElementById('btnApproveCreate').innerHTML = `<i class="fa-solid fa-check-circle"></i> Kích hoạt`;
+        
+        openModal('createModal');
+    }
+
+    function onCreateLoaiDTChange() {
+        const val = document.getElementById('createLoaiDT').value;
+        const loaiMaGroup = document.getElementById('createLoaiMaGroup');
+        const tkGroup = document.getElementById('createTKLienKetGroup');
+        
+        if (val === 'co_quan') {
+            loaiMaGroup.style.display = 'none';
+            tkGroup.style.display = 'none';
+        } else {
+            loaiMaGroup.style.display = 'block';
+            tkGroup.style.display = val ? 'grid' : 'none';
+        }
+    }
+
+    function saveCreate(mode) {
+        const loaiDTVal = document.getElementById('createLoaiDT').value;
+        const tenDTVal = document.getElementById('createTenDT').value.trim();
+        
+        if (!loaiDTVal) {
+            showToast('Vui lòng chọn loại đối tượng', 'error');
+            return;
+        }
+        if (!tenDTVal) {
+            showToast('Vui lòng nhập tên đối tượng đề nghị', 'error');
+            return;
+        }
+
+        const mapDTText = {
+            'ca_nhan': 'Cá nhân',
+            'to_chuc': 'Tổ chức',
+            'co_quan': 'Cơ quan có thẩm quyền'
+        };
+        const mapMaText = {
+            'mot_lan': 'Một lần',
+            'thuong_xuyen': 'Thường xuyên'
+        };
+        const mapPTText = {
+            'truc_tuyen': 'Thanh toán trực tuyến',
+            'chuyen_khoan': 'Chuyển khoản ngân hàng',
+            'tien_mat': 'Nộp tiền mặt',
+            'mien_phi': 'Miễn phí'
+        };
+
+        const loaiDTText = mapDTText[loaiDTVal];
+        const loaiMaText = loaiDTVal === 'co_quan' ? 'Thường xuyên' : mapMaText[document.getElementById('createLoaiMa').value];
+        const ptttVal = document.getElementById('createPTTT').value;
+        const ptttText = mapPTText[ptttVal];
+        const mstVal = document.getElementById('createMST').value.trim() || '—';
+        const emailVal = document.getElementById('createEmail').value.trim() || '—';
+        const sdtVal = document.getElementById('createSDT').value.trim() || '—';
+        const diaChiVal = document.getElementById('createDiaChi').value.trim() || '—';
+        const ghiChuVal = document.getElementById('createGhiChu').value.trim();
+
+        let fee = '300.000 VNĐ';
+        if (loaiDTVal === 'co_quan') {
+            fee = 'Miễn phí';
+        } else if (document.getElementById('createLoaiMa').value === 'mot_lan') {
+            fee = '20.000 VNĐ';
+        }
+
+        if (currentEditIdx === -1) {
+            // CREATE MODE
+            const newStt = mockData.length + 1;
+            const randomYC = Math.floor(1000 + Math.random() * 9000);
+            const maYCVal = `RQ-20260626-${randomYC}`;
+            
+            let trangThaiVal = 'Chờ kích hoạt';
+            let maCSDLVal = '—';
+            let ngayCapVal = '';
+            let ngayHHVal = '';
+
+            if (mode === 'approve') {
+                trangThaiVal = 'Hoạt động';
+                const randomNum = Math.floor(100000 + Math.random() * 900000);
+                if (loaiDTVal === 'co_quan') {
+                    maCSDLVal = `CQ-${randomNum}`;
+                    ngayHHVal = '—';
+                } else if (document.getElementById('createLoaiMa').value === 'mot_lan') {
+                    maCSDLVal = `1L-${randomNum}`;
+                    ngayHHVal = '26/07/2026';
+                } else {
+                    maCSDLVal = `TX-${randomNum}`;
+                    ngayHHVal = '31/12/2026';
+                }
+                ngayCapVal = '26/06/2026';
+            }
+
+            const newItem = {
+                stt: newStt,
+                maYC: maYCVal,
+                maCSDL: maCSDLVal,
+                tenKH: tenDTVal,
+                mst: mstVal,
+                loaiDT: loaiDTText,
+                loaiMa: loaiMaText,
+                pttt: ptttText,
+                ngayTao: '26/06/2026',
+                trangThai: trangThaiVal,
+                mucPhi: fee,
+                email: emailVal,
+                sdt: sdtVal,
+                diaChi: diaChiVal,
+                ghiChu: ghiChuVal,
+                ngayCap: ngayCapVal,
+                ngayHH: ngayHHVal
+            };
+
+            mockData.unshift(newItem); // put at top
+            
+            // Re-assign stt
+            mockData.forEach((item, index) => {
+                item.stt = index + 1;
+            });
+
+            closeModal('createModal');
+            showToast(mode === 'approve' ? 'Cấp mã số sử dụng CSDL thành công' : 'Đã lưu yêu cầu đăng ký cấp mã thành công', 'success');
+        } else {
+            // EDIT MODE
+            const item = mockData[currentEditIdx];
+            item.loaiDT = loaiDTText;
+            item.loaiMa = loaiMaText;
+            item.tenKH = tenDTVal;
+            item.mst = mstVal;
+            item.email = emailVal;
+            item.sdt = sdtVal;
+            item.diaChi = diaChiVal;
+            item.pttt = ptttText;
+            item.ghiChu = ghiChuVal;
+            item.mucPhi = fee;
+
+            if (mode === 'approve') {
+                item.trangThai = 'Hoạt động';
+                const randomNum = Math.floor(100000 + Math.random() * 900000);
+                if (loaiDTVal === 'co_quan') {
+                    item.maCSDL = `CQ-${randomNum}`;
+                    item.ngayHH = '—';
+                } else if (document.getElementById('createLoaiMa').value === 'mot_lan') {
+                    item.maCSDL = `1L-${randomNum}`;
+                    item.ngayHH = '26/07/2026';
+                } else {
+                    item.maCSDL = `TX-${randomNum}`;
+                    item.ngayHH = '31/12/2026';
+                }
+                item.ngayCap = '26/06/2026';
+                
+                closeModal('createModal');
+                showToast('Cấp mã số sử dụng CSDL thành công', 'success');
+            } else {
+                closeModal('createModal');
+                showToast('Đã cập nhật thông tin yêu cầu đăng ký cấp mã thành công', 'success');
+            }
+        }
+
+        renderTable(mockData);
+    }
+
+    function openViewModal(idx) {
+        const item = mockData[idx];
+        const body = document.getElementById('viewModalBody');
+        body.innerHTML = `
+            <div class="detail-section-title">Thông tin chung</div>
+            <div class="grid-2-cols">
+                <div><div class="detail-row"><span class="detail-label">Mã yêu cầu:</span><span class="detail-value"><strong>${item.maYC}</strong></span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Loại yêu cầu:</span><span class="detail-value">${item.loaiMa}</span></div></div>
+            </div>
+            <div class="grid-2-cols">
+                <div><div class="detail-row"><span class="detail-label">Ngày yêu cầu:</span><span class="detail-value">${item.ngayTao}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Trạng thái:</span><span class="detail-value">${getBadge(item.trangThai)}</span></div></div>
+            </div>
+            ${item.lyDoTuChoi ? `<div class="detail-row"><span class="detail-label">Lý do từ chối:</span><span class="detail-value" style="color: var(--danger-color);">${item.lyDoTuChoi}</span></div>` : ''}
+            <div class="grid-2-cols">
+                <div><div class="detail-row"><span class="detail-label">Loại đối tượng:</span><span class="detail-value">${item.loaiDT}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Tên khách hàng:</span><span class="detail-value">${item.tenKH}</span></div></div>
+            </div>
+            <div class="grid-2-cols">
+                <div><div class="detail-row"><span class="detail-label">Số MST / CCCD:</span><span class="detail-value">${item.mst}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${item.email || '—'}</span></div></div>
+            </div>
+            <div class="grid-2-cols">
+                <div><div class="detail-row"><span class="detail-label">Số điện thoại:</span><span class="detail-value">${item.sdt || '—'}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Địa chỉ:</span><span class="detail-value">${item.diaChi || '—'}</span></div></div>
+            </div>
+
+            ${item.maCSDL !== '—' ? `
+            <div class="detail-section-title">Thông tin mã số sử dụng CSDL</div>
+            <div class="grid-2-cols">
+                <div><div class="detail-row"><span class="detail-label">Mã số sử dụng CSDL:</span><span class="detail-value"><strong style="color: var(--primary-color);">${item.maCSDL}</strong></span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Tên đăng nhập liên kết:</span><span class="detail-value">${item.maCSDL}</span></div></div>
+            </div>
+            <div class="grid-2-cols">
+                <div><div class="detail-row"><span class="detail-label">Ngày cấp:</span><span class="detail-value">${item.ngayCap || '—'}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Ngày hết hạn:</span><span class="detail-value">${item.ngayHH || '—'}</span></div></div>
+            </div>
+            ` : ''}
+
+            <div class="detail-section-title">Thông tin đóng phí</div>
+            <div class="grid-2-cols">
+                <div><div class="detail-row"><span class="detail-label">Mức phí:</span><span class="detail-value">${item.mucPhi}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Phương thức TT:</span><span class="detail-value">${item.pttt}</span></div></div>
+            </div>
+
+            <div class="detail-section-title">Lịch sử thay đổi trạng thái</div>
+            <div class="table-container" style="margin-top: 10px;">
+                <table class="custom-table">
+                    <thead><tr>
+                        <th style="text-align: center; width: 40px;">STT</th>
+                        <th>Ngày thực hiện</th>
+                        <th>Hành động</th>
+                        <th>Người thực hiện</th>
+                        <th>Ghi chú</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">1</td>
+                            <td>${item.ngayTao} 09:15:30</td>
+                            <td>Tạo yêu cầu</td>
+                            <td>${item.tenKH === 'Vãng lai' ? 'Khách hàng' : 'Nguyễn Thị Huyền (QTHT)'}</td>
+                            <td>Tiếp nhận yêu cầu đăng ký cấp mã</td>
+                        </tr>
+                        ${item.maCSDL !== '—' ? `<tr>
+                            <td style="text-align: center;">2</td>
+                            <td>${item.ngayCap || item.ngayTao} 14:30:00</td>
+                            <td>Phê duyệt (Kích hoạt)</td>
+                            <td>Nguyễn Thị Huyền (QTHT)</td>
+                            <td>Đối soát thanh toán và kích hoạt mã số</td>
+                        </tr>` : ''}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        const footer = document.getElementById('viewModalFooter');
+        footer.innerHTML = `<button class="btn btn-secondary" onclick="closeModal('viewModal')">Đóng</button>`;
+        if (item.trangThai === 'Bị từ chối') {
+            footer.innerHTML = `
+                <button class="btn btn-primary" onclick="recreateRequest(${idx})"><i class="fa-solid fa-copy"></i> Tạo bản sao / Yêu cầu lại</button>
+                <button class="btn btn-secondary" onclick="closeModal('viewModal')">Đóng</button>
+            `;
+        }
+        openModal('viewModal');
+    }
+
+    let currentApproveIdx = -1;
+    let currentRejectIdx = -1;
+    let currentRenewIdx = -1;
+    let currentStatusIdx = -1;
+
+    function openApproveModal(idx) {
+        currentApproveIdx = idx;
+        const item = mockData[idx];
+        document.getElementById('approveMaYC').value = item.maYC;
+        document.getElementById('approveLoaiYC').value = item.loaiMa;
+        document.getElementById('approveTenKH').value = item.tenKH;
+        document.getElementById('approveLoaiDT').value = item.loaiDT;
+        document.getElementById('approveMucPhi').value = item.mucPhi;
+        document.getElementById('approvePTTT').value = item.pttt;
+        openModal('approveModal');
+    }
+
+    function confirmApprove() {
+        const item = mockData[currentApproveIdx];
+        item.trangThai = 'Hoạt động';
+        
+        // Generate a random active database code
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        if (item.loaiDT === 'Cơ quan có thẩm quyền') {
+            item.maCSDL = `CQ-${randomNum}`;
+        } else if (item.loaiMa === 'Một lần') {
+            item.maCSDL = `1L-${randomNum}`;
+        } else {
+            item.maCSDL = `TX-${randomNum}`;
+        }
+        item.ngayCap = '26/06/2026';
+        item.ngayHH = item.loaiMa === 'Một lần' ? '26/07/2026' : '31/12/2026';
+        
+        closeModal('approveModal');
+        showToast('Phê duyệt yêu cầu và kích hoạt mã số sử dụng CSDL thành công', 'success');
+        renderTable(mockData);
+    }
+
+    function openRejectModal(idx) {
+        currentRejectIdx = idx;
+        const item = mockData[idx];
+        document.getElementById('rejectMaYC').value = item.maYC;
+        document.getElementById('rejectTenDT').value = item.tenKH;
+        document.getElementById('rejectLyDo').value = '';
+        openModal('rejectModal');
+    }
+
+    function confirmReject() {
+        const lyDo = document.getElementById('rejectLyDo').value;
+        if (!lyDo.trim()) {
+            showToast('Vui lòng nhập lý do từ chối', 'error');
+            return;
+        }
+        const item = mockData[currentRejectIdx];
+        item.trangThai = 'Bị từ chối';
+        item.lyDoTuChoi = lyDo;
+        
+        closeModal('rejectModal');
+        showToast('Đã từ chối yêu cầu cấp mã số sử dụng CSDL thành công', 'success');
+        renderTable(mockData);
+    }
+
+    function openRenewModal(idx) {
+        currentRenewIdx = idx;
+        const item = mockData[idx];
+        document.getElementById('renewMaCSDL').value = item.maCSDL;
+        document.getElementById('renewTenDT').value = item.tenKH;
+        document.getElementById('renewNgayHH').value = item.ngayHH || '—';
+        openModal('renewModal');
+    }
+
+    function confirmRenew() {
+        const item = mockData[currentRenewIdx];
+        item.trangThai = 'Hoạt động';
+        item.ngayHH = '31/12/2027'; // extended date
+        
+        closeModal('renewModal');
+        showToast('Gia hạn mã số sử dụng CSDL thành công', 'success');
+        renderTable(mockData);
+    }
+
+    function openStatusModal(idx) {
+        currentStatusIdx = idx;
+        const item = mockData[idx];
+        document.getElementById('statusMaCSDL').value = item.maCSDL;
+        document.getElementById('statusTenDT').value = item.tenKH;
+        document.getElementById('statusCurrent').value = item.trangThai;
+        
+        const actionSelect = document.getElementById('statusAction');
+        actionSelect.innerHTML = '<option value="">-- Chọn hành động --</option>';
+        if (item.trangThai === 'Hoạt động') {
+            actionSelect.innerHTML += '<option value="khoa">Khóa</option><option value="ngung">Ngưng sử dụng</option>';
+        } else if (item.trangThai === 'Khóa') {
+            actionSelect.innerHTML += '<option value="kich_hoat">Kích hoạt lại</option><option value="ngung">Ngưng sử dụng</option>';
+        } else if (item.trangThai === 'Ngưng sử dụng') {
+            actionSelect.innerHTML += '<option value="kich_hoat">Kích hoạt lại</option>';
+        }
+        document.getElementById('statusLyDo').value = '';
+        openModal('statusModal');
+    }
+
+    function confirmStatusChange() {
+        const action = document.getElementById('statusAction').value;
+        const lyDo = document.getElementById('statusLyDo').value;
+        if (!action) {
+            showToast('Vui lòng chọn hành động', 'error');
+            return;
+        }
+        if (!lyDo.trim()) {
+            showToast('Vui lòng nhập lý do', 'error');
+            return;
+        }
+        
+        const item = mockData[currentStatusIdx];
+        if (action === 'khoa') {
+            item.trangThai = 'Khóa';
+            showToast('Đã khóa mã số sử dụng CSDL thành công', 'success');
+        } else if (action === 'ngung') {
+            item.trangThai = 'Ngưng sử dụng';
+            showToast('Đã chuyển trạng thái ngưng sử dụng thành công', 'success');
+        } else if (action === 'kich_hoat') {
+            item.trangThai = 'Hoạt động';
+            showToast('Đã kích hoạt lại mã số sử dụng CSDL thành công', 'success');
+        }
+        
+        closeModal('statusModal');
+        renderTable(mockData);
+    }
+
+    function handleToggleSwitch(checkbox, idx) {
+        const item = mockData[idx];
+        if (item.trangThai === 'Hoạt động') {
+            checkbox.checked = true; // revert checkbox state visually until confirmed
+            openStatusModal(idx);
+        } else if (item.trangThai === 'Khóa' || item.trangThai === 'Ngưng sử dụng') {
+            item.trangThai = 'Hoạt động';
+            showToast('Đã kích hoạt lại mã số sử dụng CSDL thành công', 'success');
+            renderTable(mockData);
+        }
+    }
+
+    function recreateRequest(idx) {
+        closeModal('viewModal');
+        const item = mockData[idx];
+        
+        openCreateModal();
+        
+        const mapDT = {
+            'Cá nhân': 'ca_nhan',
+            'Tổ chức': 'to_chuc',
+            'Cơ quan có thẩm quyền': 'co_quan'
+        };
+        const mapMa = {
+            'Một lần': 'mot_lan',
+            'Thường xuyên': 'thuong_xuyen'
+        };
+        const mapPT = {
+            'Thanh toán trực tuyến': 'truc_tuyen',
+            'Chuyển khoản ngân hàng': 'chuyen_khoan',
+            'Nộp tiền mặt': 'tien_mat',
+            'Miễn phí': 'mien_phi'
+        };
+        
+        document.getElementById('createLoaiDT').value = mapDT[item.loaiDT] || '';
+        onCreateLoaiDTChange();
+        document.getElementById('createLoaiMa').value = mapMa[item.loaiMa] || 'thuong_xuyen';
+        document.getElementById('createTenDT').value = item.tenKH;
+        document.getElementById('createMST').value = item.mst === '—' ? '' : item.mst;
+        document.getElementById('createEmail').value = item.email === '—' ? '' : item.email;
+        document.getElementById('createSDT').value = item.sdt === '—' ? '' : item.sdt;
+        document.getElementById('createDiaChi').value = item.diaChi === '—' ? '' : item.diaChi;
+        document.getElementById('createPTTT').value = mapPT[item.pttt] || 'chuyen_khoan';
+        
+        showToast('Đã tạo bản sao yêu cầu bị từ chối', 'success');
+    }
+
+    // ==================== UTILS ====================
+    function applyFilters() {
+        currentPage = 1;
+        applyFiltersSilent();
+        showToast('Đã áp dụng bộ lọc tìm kiếm', 'success');
+    }
+
+    function applyFiltersSilent() {
+        const keyword = document.getElementById('filterKeyword').value.toLowerCase().trim();
+        const loaiDT = document.getElementById('filterLoaiDT').value;
+        const loaiMa = document.getElementById('filterLoaiMa').value;
+        const pttt = document.getElementById('filterPTTT').value;
+        const trangThai = document.getElementById('filterTrangThai').value;
+        
+        let filtered = mockData.filter(item => {
+            if (keyword) {
+                const matchKeyword = 
+                    item.tenKH.toLowerCase().includes(keyword) ||
+                    item.maYC.toLowerCase().includes(keyword) ||
+                    item.maCSDL.toLowerCase().includes(keyword) ||
+                    item.mst.toLowerCase().includes(keyword);
+                if (!matchKeyword) return false;
+            }
+            if (loaiDT) {
+                const mapDT = {
+                    'ca_nhan': 'Cá nhân',
+                    'to_chuc': 'Tổ chức',
+                    'co_quan': 'Cơ quan có thẩm quyền'
+                };
+                if (item.loaiDT !== mapDT[loaiDT]) return false;
+            }
+            if (loaiMa) {
+                const mapMa = {
+                    'mot_lan': 'Một lần',
+                    'thuong_xuyen': 'Thường xuyên'
+                };
+                if (item.loaiMa !== mapMa[loaiMa]) return false;
+            }
+            if (pttt) {
+                const mapPT = {
+                    'truc_tuyen': 'Thanh toán trực tuyến',
+                    'chuyen_khoan': 'Chuyển khoản ngân hàng',
+                    'tien_mat': 'Nộp tiền mặt',
+                    'mien_phi': 'Miễn phí'
+                };
+                if (item.pttt !== mapPT[pttt]) return false;
+            }
+            if (trangThai) {
+                const mapTT = {
+                    'cho_kich_hoat': 'Chờ kích hoạt',
+                    'hoat_dong': 'Hoạt động',
+                    'da_su_dung': 'Đã sử dụng',
+                    'het_han': 'Hết hạn',
+                    'khoa': 'Khóa',
+                    'ngung_sd': 'Ngưng sử dụng',
+                    'tu_choi': 'Bị từ chối'
+                };
+                if (item.trangThai !== mapTT[trangThai]) return false;
+            }
+            return true;
+        });
+
+        renderTableSilent(filtered);
+    }
+
+    function renderTableSilent(data) {
+        const tbody = document.getElementById('tableBody');
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px; color: var(--text-muted);"><i class="fa-solid fa-inbox" style="font-size: 36px; display: block; margin-bottom: 10px; color: #CBD5E1;"></i>Không tìm thấy bản ghi nào</td></tr>';
+            renderPagination(0);
+            return;
+        }
+        
+        const pageSize = parseInt(document.getElementById('pageSize').value) || 10;
+        const totalPages = Math.ceil(data.length / pageSize) || 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+        
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = Math.min(startIndex + pageSize, data.length);
+        const pageData = data.slice(startIndex, endIndex);
+        
+        tbody.innerHTML = pageData.map((item, idx) => `
+            <tr>
+                <td style="text-align: center;">${startIndex + idx + 1}</td>
+                <td><strong>${item.maYC}</strong></td>
+                <td>${item.maCSDL === '—' ? '<span style="color: var(--text-muted);">—</span>' : '<strong style="color: var(--primary-color);">' + item.maCSDL + '</strong>'}</td>
+                <td>${item.tenKH}</td>
+                <td>${item.mst}</td>
+                <td>${item.loaiDT}</td>
+                <td style="text-align: center;">${item.loaiMa}</td>
+                <td>${item.pttt}</td>
+                <td style="text-align: center;">${item.ngayTao}</td>
+                <td style="text-align: center;">${getBadge(item)}</td>
+                <td class="action-cell">${getActions(item)}</td>
+            </tr>
+        `).join('');
+        
+        renderPagination(data.length);
+    }
+
+    function clearFilters() {
+        document.getElementById('filterForm').reset();
+        currentPage = 1;
+        renderTable(mockData);
+        showToast('Đã xóa bộ lọc', 'success');
+    }
+
+    function exportExcel() { showToast('Đang kết xuất file Excel...', 'success'); }
+
+    function changePageSize() {
+        currentPage = 1;
+        applyFiltersSilent();
+    }
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 50);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        renderTable(mockData);
+    });
+</script>
+
+</body>
+</html>

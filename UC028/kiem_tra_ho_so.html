@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kiểm tra hồ sơ đăng ký mới</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             /* Brand Colors */
@@ -240,6 +241,48 @@
         .btn-warning:hover {
             background-color: #D97706;
         }
+
+        /* Icon Buttons in Table */
+        .icon-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+        }
+        .icon-btn:hover {
+            background-color: #E2E8F0;
+        }
+        .icon-btn.view { color: var(--secondary-color); }
+        .icon-btn.approve { color: var(--success-color); }
+        .icon-btn.sign { color: var(--primary-color); }
+        .icon-btn.edit { color: var(--text-muted); }
+        .icon-btn.cancel-approve { color: var(--warning-color); }
+        .icon-btn.reject { color: var(--danger-color); }
+
+        /* Tab badges */
+        .tab-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+            color: white;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+        .tab-badge.warning { background-color: var(--warning-color); }
+        .tab-badge.info { background-color: var(--secondary-color); }
+        .tab-badge.danger { background-color: var(--danger-color); }
 
         /* Grid */
         .grid-2-cols {
@@ -683,102 +726,22 @@
 <body>
 
     <div class="container">
-        <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px;">
-            <h1 style="color: var(--primary-color); margin: 0; font-size: 24px;">HỆ THỐNG QUẢN TRỊ - ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM</h1>
-            <div>
-                <span style="background-color: #E0E7FF; color: var(--primary-color); padding: 6px 12px; border-radius: var(--border-radius-md); font-weight: 600; font-size: 12px;">
-                    Vai trò: Cán bộ nghiệp vụ TTĐK
-                </span>
-            </div>
-        </div>
+
 
         <!-- ========================================== -->
         <!-- MH01: MÀN HÌNH DANH SÁCH -->
         <!-- ========================================== -->
         <div id="view-list" class="view-section active">
             <div class="nav-tabs">
-                <div class="nav-tab active" onclick="switchListTab('choduyet', this)">Hồ sơ chờ duyệt</div>
-                <div class="nav-tab" onclick="switchListTab('duyet-choky', this)">Hồ sơ Duyệt chờ ký</div>
-                <div class="nav-tab" onclick="switchListTab('choky', this)">Hồ sơ đang xử lý</div>
+                <div class="nav-tab active" onclick="switchListTab('chonhaplieu', this)">Hồ sơ chờ nhập liệu <span class="tab-badge warning" id="badge-chonhaplieu">0</span></div>
+                <div class="nav-tab" onclick="switchListTab('choduyet', this)">Hồ sơ chờ duyệt <span class="tab-badge info" id="badge-choduyet">0</span></div>
+                <div class="nav-tab" onclick="switchListTab('duyet-choky', this)">Hồ sơ chờ ký <span class="tab-badge info" id="badge-duyet-choky">0</span></div>
+                <div class="nav-tab" onclick="switchListTab('bitralai', this)">Hồ sơ Bị trả lại <span class="tab-badge danger" id="badge-bitralai">0</span></div>
             </div>
 
             <!-- Bộ lọc tìm kiếm -->
-            <div class="card-section">
-                <!-- Xóa bỏ h2 Đăng ký mới theo quy chuẩn SRS -->
-                <div class="grid-4-cols">
-                    <div class="form-group">
-                        <label class="form-label">Mã khách hàng</label>
-                        <input type="text" class="form-control" id="filter-makh" placeholder="Nhập mã khách hàng...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Tên bên bảo đảm</label>
-                        <input type="text" class="form-control" id="filter-tenbbd" placeholder="Nhập tên bên bảo đảm...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Tên bên nhận bảo đảm</label>
-                        <input type="text" class="form-control" id="filter-tenbnbd" placeholder="Nhập tên bên nhận bảo đảm...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Số biên lai</label>
-                        <input type="text" class="form-control" id="filter-bienlai" placeholder="Nhập số biên lai lệ phí...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Từ ngày</label>
-                        <input type="date" class="form-control" id="filter-tungay">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Đến ngày</label>
-                        <input type="date" class="form-control" id="filter-denngay">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Loại đăng ký</label>
-                        <select class="form-select" id="filter-loaidangky">
-                            <option value="">Tất cả</option>
-                            <option value="Đăng ký mới">Đăng ký mới</option>
-                            <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
-                            <option value="Xóa đăng ký">Xóa đăng ký</option>
-                            <option value="Yêu cầu cung cấp bản sao">Yêu cầu cung cấp bản sao</option>
-                            <option value="Yêu cầu cung cấp bản sao kèm thông báo">Yêu cầu cung cấp bản sao kèm thông báo</option>
-                            <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
-                            <option value="Thông báo xử lý tài sản">Thông báo xử lý tài sản</option>
-                            <option value="Thay đổi thông báo xử lý tài sản">Thay đổi thông báo xử lý tài sản</option>
-                            <option value="Xóa thông báo xử lý tài sản">Xóa thông báo xử lý tài sản</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Loại hình giao dịch</label>
-                        <select class="form-select" id="cb-loaihinh" onchange="updateSubTypes()">
-                            <option value="">Tất cả</option>
-                            <option value="Biện pháp bảo đảm">Biện pháp bảo đảm</option>
-                            <option value="Hợp đồng">Hợp đồng</option>
-                            <option value="Thông báo xử lý tài sản">Thông báo xử lý tài sản</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Loại biện pháp / Hợp đồng</label>
-                        <select class="form-select" id="cb-loaibienphap">
-                            <option value="">Tất cả</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Loại tài sản đảm bảo</label>
-                        <select class="form-select" id="filter-loaitaisan">
-                            <option value="">Tất cả</option>
-                            <option value="Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)</option>
-                            <option value="Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt</option>
-                            <option value="Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</option>
-                            <option value="Cây hằng năm, công trình tạm">Cây hằng năm, công trình tạm</option>
-                            <option value="Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</option>
-                            <option value="Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</option>
-                            <option value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="text-align: right; margin-top: 15px;">
-                    <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;">Xóa bộ lọc</button>
-                    <button class="btn btn-primary" onclick="searchList()">Tìm kiếm</button>
-                </div>
+            <div class="card-section" id="filter-card-container">
+                <!-- Will be dynamically rendered based on tab -->
             </div>
 
             <!-- Bảng kết quả -->
@@ -792,12 +755,12 @@
                         <button class="btn btn-success" onclick="approveRows()">✔ Duyệt</button>
                         <button class="btn btn-primary" onclick="openModalPreview('trinhky')">📝 Trình ký</button>
                     </div>
-                    <!-- Toolbar Duyệt chờ ký (ẩn mặc định) -->
+                    <!-- Toolbar Chờ ký (ẩn mặc định) -->
                     <div id="toolbar-duyet-choky" style="display: none; gap: 8px;">
                         <button class="btn btn-danger" onclick="openModalReject()">✖ Từ chối</button>
                         <button class="btn btn-primary" onclick="openModalPreview('trinhky')">📝 Trình ký</button>
                     </div>
-                    <!-- Toolbar Duyệt chờ ký (không có nút tác vụ lô, ẩn mặc định) -->
+                    <!-- Toolbar Chờ ký (không có nút tác vụ lô, ẩn mặc định) -->
                     <div id="toolbar-choky" style="display: none;">
                         <span style="font-style: italic; font-size: 12px; color: var(--text-muted);">Lưu ý: Các hồ sơ đang chờ Lãnh đạo thực hiện ký số phê duyệt hoặc hồ sơ bị trả lại cần xử lý.</span>
                     </div>
@@ -805,65 +768,11 @@
 
                 <div style="overflow-x: auto;">
                     <table class="table" style="min-width: 1500px;">
-                        <thead>
-                            <tr>
-                                <th style="width: 40px;"><input type="checkbox" id="checkAll" onclick="toggleCheckAll(this)"></th>
-                                <th style="width: 50px;">STT</th>
-                                <th>Thời điểm đăng ký</th>
-                                <th>Số đăng ký</th>
-                                <th>Mã PIN</th>
-                                <th>Tên bên bảo đảm</th>
-                                <th>Tên bên nhận bảo đảm</th>
-                                <th>Loại đăng ký</th>
-                                <th>Loại hình GD</th>
-                                <th>Loại BP / Hợp đồng</th>
-                                <th>Trạng thái</th>
-                                <th>Mã khách hàng</th>
-                                <th>Số biên lai</th>
-                                <th>Loại tài sản</th>
-                                <th style="text-align: center; width: 110px;">Thao tác</th>
-                            </tr>
+                        <thead id="table-headers-container">
+                            <!-- Rendered dynamically -->
                         </thead>
                         <tbody id="table-data">
-                            <!-- Fallback static data in case JS loading is blocked locally -->
-                            <tr style="cursor: pointer;" onclick="openDetail('GDBD-2026-000812')">
-                                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-checkbox" value="GDBD-2026-000812"></td>
-                                <td>1</td>
-                                <td>28/06/2026 10:30</td>
-                                <td><span class="action-link" onclick="event.stopPropagation(); openDetail('GDBD-2026-000812')">GDBD-2026-000812</span></td>
-                                <td><code>847291</code></td>
-                                <td><b>Công ty Cổ phần Đầu tư Minh Tâm</b></td>
-                                <td>Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)</td>
-                                <td>Đăng ký mới</td>
-                                <td>Biện pháp bảo đảm</td>
-                                <td>Thế chấp</td>
-                                <td><span class="badge badge-warning">Chờ duyệt</span></td>
-                                <td>KH-MINHTAM-01</td>
-                                <td>BL-991827-01</td>
-                                <td>Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)</td>
-                                <td style="text-align: center;" onclick="event.stopPropagation()">
-                                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('GDBD-2026-000812')"><i class="fa fa-eye"></i> Xem đối soát</button>
-                                </td>
-                            </tr>
-                            <tr style="cursor: pointer;" onclick="openDetail('GDBD-2026-000813')">
-                                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-checkbox" value="GDBD-2026-000813"></td>
-                                <td>2</td>
-                                <td>29/06/2026 14:15</td>
-                                <td><span class="action-link" onclick="event.stopPropagation(); openDetail('GDBD-2026-000813')">GDBD-2026-000813</span></td>
-                                <td><code>182749</code></td>
-                                <td><b>Ông Nguyễn Văn Hùng</b></td>
-                                <td>Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank)</td>
-                                <td>Đăng ký thay đổi</td>
-                                <td>Biện pháp bảo đảm</td>
-                                <td>Cầm cố</td>
-                                <td><span class="badge badge-warning">Chờ duyệt</span></td>
-                                <td>KH-HUNG-02</td>
-                                <td>BL-991827-02</td>
-                                <td>Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</td>
-                                <td style="text-align: center;" onclick="event.stopPropagation()">
-                                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('GDBD-2026-000813')"><i class="fa fa-eye"></i> Xem đối soát</button>
-                                </td>
-                            </tr>
+                            <!-- Rendered dynamically -->
                         </tbody>
                     </table>
                 </div>

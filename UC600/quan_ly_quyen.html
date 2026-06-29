@@ -7,6 +7,7 @@
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="permissions_data.js"></script>
     <style>
         :root {
             /* Design System Sync with css.md */
@@ -247,7 +248,7 @@
                     <div>
                         <p class="detail-placeholder-label" id="placeholderLabel">Chọn một chức năng bên trái để xem chi tiết hoặc thêm mới</p>
                         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: var(--spacing-md);">Hoặc nhấn vào nút phía dưới để tạo chức năng gốc (Root) mới.</p>
-                        <button class="btn btn-primary" onclick="initAddRoot(event)"><i class="fa-solid fa-plus"></i> THÊM MỚI</button>
+                        <button class="btn btn-primary" onclick="initAddRoot(event)"><i class="fa-solid fa-plus"></i> Thêm mới</button>
                     </div>
                 </div>
 
@@ -408,42 +409,67 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // Mock database structures for the three Subsystems
+        // Dynamic converter from systemPermissions to subsystemDatabases flat arrays
         const subsystemDatabases = {
-            khach_hang: [
-                { id: "01", name: "Trang chủ", nameEn: "Home", type: "MENU", sortOrder: 1, path: "/home", icon: "io:IoIosHome", status: "ACTIVE", desc: "Trang chủ Website khách hàng", parentId: null },
-                { id: "02", name: "Tra cứu thông tin", nameEn: "Search Info", type: "MENU", sortOrder: 2, path: "/search", icon: "io:IoIosSearch", status: "ACTIVE", desc: "Tra cứu công khai thông tin BPBD", parentId: null },
-                { id: "0201", name: "Tra cứu đơn lẻ", nameEn: "Single Search", type: "MENU", sortOrder: 1, path: "/search/single", icon: "io:IoIosDocument", status: "ACTIVE", desc: "", parentId: "02" },
-                { id: "03", name: "Đăng ký trực tuyến", nameEn: "Online Register", type: "MENU", sortOrder: 3, path: "/register", icon: "io:IoIosCreate", status: "ACTIVE", desc: "Đăng ký BPBD trực tuyến", parentId: null },
-                { id: "04", name: "Quản lý tài khoản", nameEn: "Account Profile", type: "MENU", sortOrder: 4, path: "/profile", icon: "io:IoIosPerson", status: "ACTIVE", desc: "", parentId: null }
-            ],
-            mobile: [
-                { id: "m01", name: "Màn hình chính", nameEn: "Dashboard Mobile", type: "MENU", sortOrder: 1, path: "/mobile/home", icon: "io:IoIosGrid", status: "ACTIVE", desc: "Màn hình chính app mobile", parentId: null },
-                { id: "m02", name: "Tra cứu nhanh", nameEn: "Quick Search", type: "MENU", sortOrder: 2, path: "/mobile/quick-search", icon: "io:IoIosSearch", status: "ACTIVE", desc: "", parentId: null },
-                { id: "m03", name: "Quét mã QR", nameEn: "QR Scanner", type: "MENU", sortOrder: 3, path: "/mobile/qr-scan", icon: "io:IoIosQrScanner", status: "ACTIVE", desc: "Quét QR kiểm tra hồ sơ", parentId: null },
-                { id: "m04", name: "Cài đặt", nameEn: "Settings", type: "MENU", sortOrder: 4, path: "/mobile/settings", icon: "io:IoIosSettings", status: "ACTIVE", desc: "", parentId: null }
-            ],
-            quan_tri: [
-                { id: "01", name: "Quản trị hệ thống", nameEn: "System Administration", type: "MENU", sortOrder: 1, path: "/admin/systems", icon: "io:IoIosSettings", status: "ACTIVE", desc: "Các chức năng cấu hình hệ thống hành chính chính", parentId: null },
-                
-                { id: "0101", name: "Quản lý người dùng", nameEn: "User Management", type: "MENU", sortOrder: 1, path: "/admin/systems/users", icon: "io:IoIosPeople", status: "ACTIVE", desc: "Xem, thêm mới, phân quyền tài khoản cán bộ", parentId: "01" },
-                { id: "0101_view", name: "Xem danh sách người dùng", nameEn: "View Users", type: "API", sortOrder: 1, path: "/api/users/list", icon: "", status: "ACTIVE", desc: "", parentId: "0101" },
-                { id: "0101_add", name: "Thêm mới người dùng", nameEn: "Create User", type: "API", sortOrder: 2, path: "/api/users/create", icon: "", status: "ACTIVE", desc: "", parentId: "0101" },
-                
-                { id: "0102", name: "Quản lý vai trò", nameEn: "Role Management", type: "MENU", sortOrder: 2, path: "/admin/systems/roles", icon: "io:IoIosLock", status: "ACTIVE", desc: "Định nghĩa vai trò chức danh trong hệ thống", parentId: "01" },
-                { id: "0102_permission", name: "Cấu hình phân quyền", nameEn: "Assign Permissions", type: "API", sortOrder: 1, path: "/api/roles/permissions", icon: "", status: "ACTIVE", desc: "", parentId: "0102" },
-                
-                { id: "0103", name: "Quản lý Quyền", nameEn: "Permissions Management", type: "MENU", sortOrder: 3, path: "/admin/systems/permissions", icon: "io:IoIosKey", status: "ACTIVE", desc: "Quản lý cây thư mục và cấu trúc quyền chức năng", parentId: "01" },
-
-                { id: "02", name: "Quản lý Đăng ký BPBĐ", nameEn: "Registration Registry", type: "MENU", sortOrder: 2, path: "/admin/registrations", icon: "io:IoIosPaper", status: "ACTIVE", desc: "Xem và đối soát hồ sơ đăng ký biện pháp bảo đảm toàn hệ thống", parentId: null },
-                { id: "0201", name: "Phê duyệt hồ sơ trực tuyến", nameEn: "Approve Online Registration", type: "MENU", sortOrder: 1, path: "/admin/approve", icon: "io:IoIosCheckmarkCircle", status: "ACTIVE", desc: "", parentId: "02" },
-                { id: "0202", name: "Tra cứu hồ sơ GDBĐ", nameEn: "Query Records", type: "MENU", sortOrder: 2, path: "/admin/query", icon: "io:IoIosSearch", status: "ACTIVE", desc: "", parentId: "02" },
-
-                { id: "03", name: "Bồi thường Nhà nước (BTNN)", nameEn: "State Compensation", type: "MENU", sortOrder: 3, path: "/admin/compensation", icon: "io:IoIosCash", status: "ACTIVE", desc: "Theo dõi xử lý bồi thường nhà nước", parentId: null },
-                { id: "0301", name: "Tiếp nhận hồ sơ yêu cầu BTNN", nameEn: "Receive Compensation Claims", type: "MENU", sortOrder: 1, path: "/admin/compensation/receive", icon: "", status: "ACTIVE", desc: "", parentId: "03" },
-                { id: "0302", name: "Theo dõi tiến độ giải quyết bồi thường", nameEn: "Track Compensation Cases", type: "MENU", sortOrder: 2, path: "/admin/compensation/tracking", icon: "", status: "ACTIVE", desc: "", parentId: "03" }
-            ]
+            khach_hang: [],
+            mobile: [],
+            quan_tri: []
         };
+
+        function isCommonUserFeature(node) {
+            if (!node || !node.name) return false;
+            const nameLower = node.name.toLowerCase().replace(/\s+/g, ' ').trim();
+            const keywords = [
+                'đăng nhập',
+                'đăng xuất',
+                'quên mật khẩu',
+                'đổi mật khẩu',
+                'đặt lại mật khẩu',
+                'trang chủ',
+                'xem chi tiết tài khoản',
+                'cập nhật thông tin tài khoản'
+            ];
+            return keywords.some(kw => nameLower.includes(kw));
+        }
+
+        function flattenPermissionTree(nodes, subsystemKey, parentId = null) {
+            if (!nodes) return;
+            nodes.forEach(node => {
+                if (!node) return;
+                if (isCommonUserFeature(node)) return;
+                // If direct child of Web/App/WebAdmin, parentId is null
+                const cleanParentId = (parentId === "Web" || parentId === "App" || parentId === "WebAdmin") ? null : parentId;
+                
+                // Determine default values to avoid undefined
+                const flatNode = {
+                    id: node.id || "",
+                    name: node.name || "",
+                    nameEn: node.nameEn || "",
+                    type: node.type || (((node.id || "").split("-").length > 2) ? "API" : "MENU"), // If deep down, default to API, otherwise MENU
+                    sortOrder: node.sortOrder || 1,
+                    path: node.path || "",
+                    icon: node.icon || "",
+                    status: node.status || "ACTIVE",
+                    desc: node.desc || "",
+                    parentId: cleanParentId
+                };
+                subsystemDatabases[subsystemKey].push(flatNode);
+                
+                if (node.children && node.children.length > 0) {
+                    flattenPermissionTree(node.children, subsystemKey, node.id);
+                }
+            });
+        }
+
+        // Run flattening
+        const webRoot = systemPermissions.find(r => r.id === "Web");
+        if (webRoot) flattenPermissionTree(webRoot.children, "khach_hang", "Web");
+
+        const appRoot = systemPermissions.find(r => r.id === "App");
+        if (appRoot) flattenPermissionTree(appRoot.children, "mobile", "App");
+
+        const adminRoot = systemPermissions.find(r => r.id === "WebAdmin");
+        if (adminRoot) flattenPermissionTree(adminRoot.children, "quan_tri", "WebAdmin");
 
         // Active State Variables
         let currentSubsystem = "quan_tri";
@@ -726,9 +752,9 @@
             // Set toolbar buttons
             detailToolbar.style.display = "flex";
             detailToolbar.innerHTML = `
-                <button class="btn btn-secondary" onclick="initAddChild()"><i class="fa-solid fa-plus"></i> THÊM CON</button>
-                <button class="btn btn-secondary" onclick="initEdit()"><i class="fa-solid fa-edit"></i> SỬA</button>
-                <button class="btn btn-danger" onclick="initDelete()"><i class="fa-solid fa-trash"></i> XÓA</button>
+                <button class="btn btn-secondary" onclick="initAddChild()"><i class="fa-solid fa-plus"></i> Thêm con</button>
+                <button class="btn btn-secondary" onclick="initEdit()"><i class="fa-solid fa-edit"></i> Sửa</button>
+                <button class="btn btn-danger" onclick="initDelete()"><i class="fa-solid fa-trash"></i> Xóa</button>
             `;
         }
 
@@ -794,8 +820,8 @@
             detailFormContainer.style.display = "block";
 
             detailToolbar.innerHTML = `
-                <button class="btn btn-primary" onclick="executeSave()"><i class="fa-solid fa-save"></i> LƯU</button>
-                <button class="btn btn-secondary" onclick="cancelForm()"><i class="fa-solid fa-xmark"></i> HỦY</button>
+                <button class="btn btn-primary" onclick="executeSave()"><i class="fa-solid fa-save"></i> Lưu lại</button>
+                <button class="btn btn-secondary" onclick="cancelForm()"><i class="fa-solid fa-xmark"></i> Hủy</button>
             `;
         }
 
@@ -829,8 +855,8 @@
             detailFormContainer.style.display = "block";
 
             detailToolbar.innerHTML = `
-                <button class="btn btn-primary" onclick="executeSave()"><i class="fa-solid fa-check"></i> LƯU</button>
-                <button class="btn btn-secondary" onclick="cancelForm()"><i class="fa-solid fa-xmark"></i> HỦY</button>
+                <button class="btn btn-primary" onclick="executeSave()"><i class="fa-solid fa-check"></i> Lưu lại</button>
+                <button class="btn btn-secondary" onclick="cancelForm()"><i class="fa-solid fa-xmark"></i> Hủy</button>
             `;
 
             setTimeout(() => inpCode.focus(), 100);
@@ -873,8 +899,8 @@
 
             detailToolbar.style.display = "flex";
             detailToolbar.innerHTML = `
-                <button class="btn btn-primary" onclick="executeSave()"><i class="fa-solid fa-check"></i> LƯU</button>
-                <button class="btn btn-secondary" onclick="cancelForm()"><i class="fa-solid fa-xmark"></i> HỦY</button>
+                <button class="btn btn-primary" onclick="executeSave()"><i class="fa-solid fa-check"></i> Lưu lại</button>
+                <button class="btn btn-secondary" onclick="cancelForm()"><i class="fa-solid fa-xmark"></i> Hủy</button>
             `;
 
             setTimeout(() => inpCode.focus(), 100);

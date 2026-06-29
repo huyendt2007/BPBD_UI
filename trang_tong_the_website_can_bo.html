@@ -219,7 +219,9 @@
 
         /* Leaf navigation link */
         .menu-leaf-item {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             color: var(--menu-text);
             padding: 10px 20px 10px 48px;
             text-decoration: none;
@@ -247,6 +249,41 @@
         /* Level 3 leaves (grouped sub-items) */
         .menu-leaf-item.level-3 {
             padding-left: 54px;
+        }
+
+        /* Badge notification for pending items */
+        .menu-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .menu-badge.danger {
+            background-color: #EF4444;
+            color: white;
+        }
+
+        .menu-badge.warning {
+            background-color: #F59E0B;
+            color: white;
+        }
+
+        .menu-badge.success {
+            background-color: #10B981;
+            color: white;
+        }
+
+        .menu-leaf-text {
+            flex: 1;
         }
 
         .sidebar-footer {
@@ -669,14 +706,38 @@
                 icon: "fa-solid fa-shield-halved",
                 children: [
                     {
-                        title: "Quản lý hồ sơ BPBĐ",
+                        title: "Tiếp nhận & Nhập liệu hồ sơ",
                         children: [
-                            { title: "Kiểm tra hồ sơ BPBĐ", url: "UC028/kiem_tra_ho_so.html" },
-                            { title: "Ký duyệt hồ sơ BPBĐ", url: "UC031/ky_duyet_ho_so.html" },
-                            { title: "Tra cứu hồ sơ", url: "temp_placeholder.html" },
-                            { title: "Quản lý cấp mã số sử dụng CSDL", url: "temp_placeholder.html" }
+                            { title: "Đăng ký BPBĐ / Hợp đồng", url: "UC024/dang_ky_bpbd_can_bo.html" },
+                            { title: "Đăng ký thay đổi BPBĐ / Hợp đồng", url: "temp_placeholder.html" },
+                            { title: "Xóa đăng ký BPBĐ / Hợp đồng", url: "temp_placeholder.html" },
+                            { title: "Yêu cầu cung cấp bản sao", url: "temp_placeholder.html" },
+                            { title: "Yêu cầu cung cấp bản sao kèm thông báo", url: "temp_placeholder.html" },
+                            { title: "Yêu cầu cung cấp thông tin", url: "temp_placeholder.html" },
+                            { title: "Đăng ký thông báo xử lý tài sản", url: "temp_placeholder.html" },
+                            { title: "Thay đổi thông báo xử lý tài sản", url: "temp_placeholder.html" },
+                            { title: "Xóa thông báo xử lý tài sản", url: "temp_placeholder.html" }
                         ]
                     },
+                    { title: "Nhận chuyển tiếp hồ sơ", url: "temp_placeholder.html" },
+                    {
+                        title: "Kiểm tra và xử lý hồ sơ",
+                        children: [
+                            { title: "Hồ sơ chờ xử lý", url: "UC028/kiem_tra_ho_so.html", badge: 21, badgeType: "danger" },
+                            { title: "Hồ sơ đang xử lý", url: "UC028/kiem_tra_ho_so.html?view=dang_xu_ly", badge: 14, badgeType: "warning" },
+                            { title: "Hồ sơ đã xử lý", url: "UC028/kiem_tra_ho_so.html?view=da_xu_ly" }
+                        ]
+                    },
+                    {
+                        title: "Chỉnh lý thông tin/Hủy/Khôi phục đăng ký",
+                        children: [
+                            { title: "Lập đề nghị", url: "temp_placeholder.html" },
+                            { title: "Theo dõi & Xử lý đề nghị", url: "temp_placeholder.html", badge: 6, badgeType: "danger" }
+                        ]
+                    },
+                    { title: "Ký duyệt hồ sơ", url: "UC031/ky_duyet_ho_so.html", badge: 14, badgeType: "danger" },
+                    { title: "Tra cứu hồ sơ", url: "UC027/tra_cuu_thong_tin.html" },
+                    { title: "Quản lý cấp mã số sử dụng CSDL", url: "UC015_017/quan_ly_cap_ma_so_csdl.html" },
                     {
                         title: "Quản lý phí",
                         children: [
@@ -688,7 +749,7 @@
                     {
                         title: "Quản lý nghiệp vụ chuyên ngành",
                         children: [
-                            { title: "Quản lý tham mưu xây dựng VBQPPL,chương trình, KH công tác", url: "UC231_to_UC236/quan_ly_tham_muu_cong_tac.html" },
+                            { title: "Quản lý tham mưu xây dựng VBQPPL, chương trình, KH công tác", url: "UC231_to_UC236/quan_ly_tham_muu_cong_tac.html" },
                             { title: "Quản lý kiểm tra và theo dõi thi hành pháp luật", url: "UC237_to_UC244/quan_ly_kiem_tra_theo_doi.html" },
                             { title: "Quản lý hướng dẫn nghiệp vụ và thẩm định", url: "UC245_to_UC250/quan_ly_huong_dan_tham_dinh.html" },
                             { title: "Quản lý tập huấn, hội nghị, hội thảo, tọa đàm; nghiên cứu khoa học", url: "UC251_to_UC259/quan_ly_tap_huan_nckh.html" },
@@ -712,6 +773,12 @@
                 title: "Bồi thường nhà nước",
                 icon: "fa-solid fa-hand-holding-dollar",
                 children: [
+                    {
+                        title: "Giải quyết YCBT",
+                        children: [
+                            { title: "Phục hồi danh dự", url: "UC434_to_UC437/phuc_hoi_danh_du.html" }
+                        ]
+                    },
                     { title: "Quản lý việc giải quyết yêu cầu bồi thường", url: "temp_placeholder.html" },
                     { title: "Quản lý kinh phí bồi thường", url: "temp_placeholder.html" },
                     { title: "Quản lý xem xét trách nhiệm hoàn trả", url: "temp_placeholder.html" },
@@ -765,13 +832,13 @@
                     { title: "Quản lý nội dung (CMS)", url: "temp_placeholder.html" },
                     { title: "Quản lý quyền", url: "UC600/quan_ly_quyen.html" },
                     { title: "Quản lý vai trò", url: "UC600/quan_ly_vai_tro_phan_quyen.html" },
-                    { title: "Quản lý đơn vị", url: "temp_placeholder.html" },
+                    { title: "Quản lý đơn vị", url: "UC604_Co_cau_to_chuc/co_cau_to_chuc.html" },
                     { title: "Quản lý nhóm người dùng", url: "UC603/quan_ly_nhom_nguoi_dung.html" },
                     { title: "Quản lý tài khoản cán bộ", url: "UC595/quan_ly_tk_can_bo.html" },
                     { title: "Quản lý tài khoản khách hàng", url: "UCPS001/quan_ly_tk_khach_hang.html" },
                     { title: "Quản lý loại danh mục", url: "UCPS010/quan_ly_loai_danh_muc.html" },
                     { title: "Quản lý danh mục", url: "UC596/quan_ly_danh_muc.html" },
-                    { title: "Quản lý cấu hình", url: "temp_placeholder.html" },
+                    { title: "Quản lý cấu hình", url: "UC551_to_UC562/quan_ly_cau_hinh.html" },
                     { title: "Quản lý nhật ký hệ thống", url: "temp_placeholder.html" },
                     { title: "Quản lý sao lưu, phục hồi dữ liệu", url: "temp_placeholder.html" }
                 ]
@@ -787,9 +854,9 @@
             const menuParam = urlParams.get('menu');
             if (menuParam === 'search') {
                 toggleRootItem(0);
-                toggleSubGroup(0, 0);
-                const leaf = menuData[0].children[0].children[2]; // Tra cứu hồ sơ
-                selectLeaf(leaf, [menuData[0].title, menuData[0].children[0].title, leaf.title], 'leaf-0-0-2');
+                // Tra cứu hồ sơ is a direct leaf at index 5
+                const leaf = menuData[0].children[5]; // Tra cứu hồ sơ
+                selectLeaf(leaf, [menuData[0].title, leaf.title], 'leaf-0-5');
             } else {
                 selectDefaultLeaf();
             }
@@ -842,8 +909,22 @@
                         child.children.forEach((leaf, leafIdx) => {
                             const leafLink = document.createElement('a');
                             leafLink.className = 'menu-leaf-item level-3';
-                            leafLink.innerText = leaf.title;
                             leafLink.id = `leaf-${rootIdx}-${childIdx}-${leafIdx}`;
+                            
+                            // Create text span
+                            const textSpan = document.createElement('span');
+                            textSpan.className = 'menu-leaf-text';
+                            textSpan.innerText = leaf.title;
+                            leafLink.appendChild(textSpan);
+                            
+                            // Add badge if present
+                            if (leaf.badge) {
+                                const badge = document.createElement('span');
+                                badge.className = `menu-badge ${leaf.badgeType || 'danger'}`;
+                                badge.innerText = leaf.badge;
+                                leafLink.appendChild(badge);
+                            }
+                            
                             leafLink.onclick = (e) => {
                                 e.preventDefault();
                                 selectLeaf(leaf, [root.title, child.title, leaf.title], leafLink.id);
@@ -858,8 +939,22 @@
                         // Leaf directly under root
                         const leafLink = document.createElement('a');
                         leafLink.className = 'menu-leaf-item direct-child';
-                        leafLink.innerText = child.title;
                         leafLink.id = `leaf-${rootIdx}-${childIdx}`;
+                        
+                        // Create text span
+                        const textSpan = document.createElement('span');
+                        textSpan.className = 'menu-leaf-text';
+                        textSpan.innerText = child.title;
+                        leafLink.appendChild(textSpan);
+                        
+                        // Add badge if present
+                        if (child.badge) {
+                            const badge = document.createElement('span');
+                            badge.className = `menu-badge ${child.badgeType || 'danger'}`;
+                            badge.innerText = child.badge;
+                            leafLink.appendChild(badge);
+                        }
+                        
                         leafLink.onclick = (e) => {
                             e.preventDefault();
                             selectLeaf(child, [root.title, child.title], leafLink.id);
@@ -956,9 +1051,9 @@
         // Select the default first child leaf node on startup
         function selectDefaultLeaf() {
             toggleRootItem(0);
-            toggleSubGroup(0, 0);
-            const firstLeaf = menuData[0].children[0].children[0];
-            selectLeaf(firstLeaf, [menuData[0].title, menuData[0].children[0].title, firstLeaf.title], 'leaf-0-0-0');
+            toggleSubGroup(0, 2); // Kiểm tra và xử lý hồ sơ (index shifted from 1 to 2)
+            const firstLeaf = menuData[0].children[2].children[0]; // Hồ sơ chờ xử lý
+            selectLeaf(firstLeaf, [menuData[0].title, menuData[0].children[2].title, firstLeaf.title], 'leaf-0-2-0');
         }
 
         // Global search & highlight matching menu items
@@ -1010,7 +1105,7 @@
             document.querySelectorAll('.menu-leaf-item').forEach(el => {
                 const text = el.innerText.toLowerCase();
                 if (text.includes(query)) {
-                    el.style.display = 'block';
+                    el.style.display = 'flex';
                 } else {
                     el.style.display = 'none';
                 }

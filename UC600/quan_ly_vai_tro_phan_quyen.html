@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vai trò & Phân quyền</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="permissions_data.js"></script>
     <style>
         :root {
             /* Design System */
@@ -46,6 +48,7 @@
         .panel-header h3 { color: var(--primary-color); font-size: 16px; margin: 0; }
         
         .panel-body { padding: var(--spacing-md); flex: 1; overflow-y: auto; }
+        .panel-right > .panel-body { overflow: hidden; display: flex; flex-direction: column; }
         .panel-footer { padding: var(--spacing-md); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; }
 
         /* Buttons */
@@ -152,10 +155,15 @@
                 <div id="noRoleSelected" style="color: var(--text-muted); text-align: center; margin-top: 50px;">
                     Vui lòng chọn một Vai trò ở bên trái để thiết lập quyền.
                 </div>
-                <div id="permissionTreeContainer" style="display: none;">
-                    <ul class="tree-view root" id="permissionTree">
-                        <!-- Tree rendered via JS -->
-                    </ul>
+                <div id="permissionTreeContainer" style="display: none; flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                    <div class="search-box" style="margin-bottom: 12px; display: block;">
+                        <input type="text" id="inpSearchPerm" placeholder="Tìm kiếm chức năng nhanh..." onkeyup="filterPermTree(this.value)" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); outline: none;">
+                    </div>
+                    <div style="flex: 1; overflow-y: auto;">
+                        <ul class="tree-view root" id="permissionTree">
+                            <!-- Tree rendered via JS -->
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="panel-footer" id="permissionFooter" style="display: none;">
@@ -186,11 +194,9 @@
                     <label class="form-label">Phạm vi áp dụng <span style="color:var(--danger-color)">*</span></label>
                     <select class="form-control" id="inpRoleScope" style="background:#fff;">
                         <option value="">-- Chọn phạm vi áp dụng --</option>
-                        <option value="INTERNAL">Cán bộ / Chuyên viên (Nội bộ)</option>
-                        <option value="INDIVIDUAL">Khách hàng Cá nhân</option>
-                        <option value="ORGANIZATION">Khách hàng Tổ chức</option>
-                        <option value="AUTHORITY">Cơ quan Thẩm quyền</option>
-                        <option value="ALL">Dùng chung (Tất cả)</option>
+                        <option value="Cán bộ">Cán bộ</option>
+                        <option value="Khách hàng">Khách hàng</option>
+                        <option value="Cơ quan có thẩm quyền">Cơ quan có thẩm quyền</option>
                     </select>
                     <div class="error-msg" id="errRoleScope">Vui lòng chọn Phạm vi áp dụng</div>
                 </div>
@@ -226,50 +232,51 @@
     </div>
 
     <script>
-        // Mock Roles Data (10 records)
-        let roles = [
-            { id: 1, code: "R_CUC_01", name: "Lãnh đạo Cục", scope: "INTERNAL", permissions: ["M1", "M1_1", "M1_2", "M2", "M2_1"] },
-            { id: 2, code: "R_CUC_02", name: "Quản trị viên Cục", scope: "INTERNAL", permissions: ["M3", "M3_1", "M3_2", "M4"] },
-            { id: 3, code: "R_PHONG_01", name: "Lãnh đạo phòng", scope: "INTERNAL", permissions: ["M1", "M1_1"] },
-            { id: 4, code: "R_PHONG_02", name: "Chuyên viên xử lý", scope: "INTERNAL", permissions: ["M2", "M2_1", "M2_2"] },
-            { id: 5, code: "R_PHONG_03", name: "Chuyên viên tổng hợp", scope: "INTERNAL", permissions: ["M5"] },
-            { id: 6, code: "R_KH_01", name: "Khách hàng cá nhân chuẩn", scope: "INDIVIDUAL", permissions: ["M1_1", "M1_3"] },
-            { id: 7, code: "R_KH_02", name: "Quản trị viên Tổ chức", scope: "ORGANIZATION", permissions: ["M1_1", "M1_3", "M3_1"] },
-            { id: 8, code: "R_CQ_01", name: "Cơ quan Tòa án", scope: "AUTHORITY", permissions: ["M1_3"] },
-            { id: 9, code: "R_ALL_01", name: "Xem Bảng tin công khai", scope: "ALL", permissions: [] },
-            { id: 10, code: "R_ALL_02", name: "Tạo Yêu cầu Hỗ trợ", scope: "ALL", permissions: [] }
+        // Default Mock Roles Data (10 records matching Excel prefixes)
+        const DEFAULT_ROLES = [
+            { id: 1, code: "R_CUC_01", name: "Lãnh đạo Cục", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-01", "WebAdmin-29-04-01-01", "WebAdmin-29-04-01-02", "WebAdmin-29-05", "WebAdmin-29-06"] },
+            { id: 2, code: "R_CUC_02", name: "Quản trị viên Cục", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-10", "WebAdmin-29-10-01", "WebAdmin-29-10-02", "WebAdmin-29-10-03"] },
+            { id: 3, code: "R_PHONG_01", name: "Lãnh đạo phòng", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-01", "WebAdmin-29-04-01-01"] },
+            { id: 4, code: "R_PHONG_02", name: "Chuyên viên xử lý", scope: "Cán bộ", permissions: ["WebAdmin-29-04-01-01", "WebAdmin-29-04-01-02"] },
+            { id: 5, code: "R_PHONG_03", name: "Chuyên viên tổng hợp", scope: "Cán bộ", permissions: ["WebAdmin-29-09", "WebAdmin-29-09-01", "WebAdmin-29-09-02"] },
+            { id: 6, code: "R_KH_01", name: "Khách hàng cá nhân chuẩn", scope: "Khách hàng", permissions: ["Web-05", "Web-11", "Web-12", "Web-13", "App-01", "App-02", "App-05"] },
+            { id: 7, code: "R_KH_02", name: "Quản trị viên Tổ chức", scope: "Khách hàng", permissions: ["Web-05", "Web-10", "Web-10-01", "Web-10-02", "Web-11", "Web-12", "App-01", "App-02"] },
+            { id: 8, code: "R_CQ_01", name: "Cơ quan Tòa án", scope: "Cơ quan có thẩm quyền", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-03"] },
+            { id: 9, code: "R_ALL_01", name: "Xem Bảng tin công khai", scope: "Khách hàng", permissions: ["Web-05", "App-01"] },
+            { id: 10, code: "R_ALL_02", name: "Tạo Yêu cầu Hỗ trợ", scope: "Khách hàng", permissions: ["Web-22", "Web-22-02", "App-10"] }
         ];
 
-        // Mock System Permissions
-        const systemPermissions = [
-            {
-                id: "M1", name: "Quản lý Đăng ký BPBĐ", children: [
-                    { id: "M1_1", name: "Đăng ký mới BPBĐ" },
-                    { id: "M1_2", name: "Phê duyệt hồ sơ" },
-                    { id: "M1_3", name: "Tra cứu hồ sơ" }
-                ]
-            },
-            {
-                id: "M2", name: "Bồi thường Nhà nước", children: [
-                    { id: "M2_1", name: "Tiếp nhận hồ sơ BTNN" },
-                    { id: "M2_2", name: "Xử lý bồi thường" }
-                ]
-            },
-            {
-                id: "M3", name: "Quản trị hệ thống", children: [
-                    { id: "M3_1", name: "Quản lý Tài khoản" },
-                    { id: "M3_2", name: "Quản lý Vai trò" }
-                ]
-            },
-            { id: "M4", name: "Quản lý Danh mục", children: [] },
-            { id: "M5", name: "Báo cáo thống kê", children: [] },
-            {
-                id: "M6", name: "Quản lý Phí / Lệ phí", children: [
-                    { id: "M6_1", name: "Thu phí trực tuyến" },
-                    { id: "M6_2", name: "Đối soát" }
-                ]
+        let roles = [];
+        const savedRoles = localStorage.getItem('sys_mock_roles');
+        if (savedRoles) {
+            roles = JSON.parse(savedRoles);
+            let migrated = false;
+            roles.forEach(r => {
+                if (r.scope === 'INTERNAL') { r.scope = 'Cán bộ'; migrated = true; }
+                else if (r.scope === 'INDIVIDUAL' || r.scope === 'ORGANIZATION' || r.scope === 'ALL') { r.scope = 'Khách hàng'; migrated = true; }
+                else if (r.scope === 'AUTHORITY') { r.scope = 'Cơ quan có thẩm quyền'; migrated = true; }
+                
+                if (r.permissions) {
+                    r.permissions = r.permissions.map(p => {
+                        if (p && p.startsWith('WebAdmin-33-')) {
+                            migrated = true;
+                            return p.replace('WebAdmin-33-', 'WebAdmin-29-');
+                        }
+                        if (p === 'WebAdmin-33') {
+                            migrated = true;
+                            return 'WebAdmin-29';
+                        }
+                        return p;
+                    });
+                }
+            });
+            if (migrated) {
+                localStorage.setItem('sys_mock_roles', JSON.stringify(roles));
             }
-        ];
+        } else {
+            roles = JSON.parse(JSON.stringify(DEFAULT_ROLES));
+            localStorage.setItem('sys_mock_roles', JSON.stringify(roles));
+        }
 
         let activeRoleId = null;
         let roleMode = 'add';
@@ -286,8 +293,9 @@
                 li.onclick = () => selectRole(role.id);
                 
                 const scopeColors = {
-                    'INTERNAL': '#10B981', 'INDIVIDUAL': '#3B82F6', 
-                    'ORGANIZATION': '#8B5CF6', 'AUTHORITY': '#F59E0B', 'ALL': '#64748B'
+                    'Cán bộ': '#10B981', 
+                    'Khách hàng': '#3B82F6', 
+                    'Cơ quan có thẩm quyền': '#F59E0B'
                 };
                 
                 li.innerHTML = `
@@ -318,6 +326,14 @@
             });
         }
 
+        let collapsedPermNodes = {};
+
+        function togglePermCollapse(event, nodeId) {
+            event.stopPropagation();
+            collapsedPermNodes[nodeId] = !collapsedPermNodes[nodeId];
+            renderTree();
+        }
+
         // Render Tree
         function renderTree() {
             const tree = document.getElementById('permissionTree');
@@ -326,57 +342,171 @@
             const activeRole = roles.find(r => r.id === activeRoleId);
             const userPerms = activeRole ? activeRole.permissions : [];
 
-            systemPermissions.forEach(mod => {
-                const li = document.createElement('li');
-                li.className = 'tree-node';
-                
-                const isChecked = userPerms.includes(mod.id) ? 'checked' : '';
-                
-                let childrenHtml = '';
-                if (mod.children && mod.children.length > 0) {
-                    const childNodes = mod.children.map(child => {
-                        const childChecked = userPerms.includes(child.id) ? 'checked' : '';
-                        return `
-                            <li class="tree-node">
-                                <label class="tree-node-label">
-                                    <input type="checkbox" class="perm-cb" value="${child.id}" data-parent="${mod.id}" ${childChecked}>
-                                    ${child.name}
-                                </label>
-                            </li>
-                        `;
-                    }).join('');
-                    childrenHtml = `<ul class="tree-view">${childNodes}</ul>`;
-                }
+            // Group permissions by subsystem roots statically
+            let html = '';
+            systemPermissions.forEach(root => {
+                let displayName = '';
+                if (root.id === 'Web') displayName = 'Website khách hàng';
+                else if (root.id === 'App') displayName = 'Ứng dụng Mobile App';
+                else if (root.id === 'WebAdmin') displayName = 'Website Cán bộ';
 
-                li.innerHTML = `
-                    <label class="tree-node-label">
-                        <input type="checkbox" class="perm-cb parent-cb" value="${mod.id}" ${isChecked}>
-                        <strong>${mod.name}</strong>
-                    </label>
-                    ${childrenHtml}
+                const isCollapsed = collapsedPermNodes[root.id];
+                const toggleIcon = `<span class="perm-tree-toggle" onclick="togglePermCollapse(event, '${root.id}')" style="margin-right: 4px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`;
+
+                html += `
+                    <li class="tree-node root-category" data-id="${root.id}" style="list-style: none; margin-bottom: 8px;">
+                        <div class="tree-node-label category-header" style="display: flex; align-items: center; gap: 4px; padding: 6px; background: #f1f5f9; border-radius: 4px; font-weight: bold; color: var(--primary-color);">
+                            ${toggleIcon}
+                            <span style="user-select: none;">${displayName}</span>
+                        </div>
+                        <ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 20px; margin-top: 4px;">
+                            ${buildTreeHtml(root.children, userPerms, root.id)}
+                        </ul>
+                    </li>
                 `;
-                tree.appendChild(li);
             });
+            tree.innerHTML = html;
 
-            // Add Event Listeners for cascading checkboxes
-            document.querySelectorAll('.parent-cb').forEach(cb => {
+            // Bind checkbox change events for full cascading
+            bindCheckboxEvents();
+
+            // Reapply search filter if there is active search keyword
+            const searchKeyword = document.getElementById('inpSearchPerm').value;
+            filterPermTree(searchKeyword);
+        }
+
+        function isCommonUserFeature(node) {
+            if (!node || !node.name) return false;
+            const nameLower = node.name.toLowerCase().replace(/\s+/g, ' ').trim();
+            const keywords = [
+                'đăng nhập',
+                'đăng xuất',
+                'quên mật khẩu',
+                'đổi mật khẩu',
+                'đặt lại mật khẩu',
+                'trang chủ',
+                'xem chi tiết tài khoản',
+                'cập nhật thông tin tài khoản'
+            ];
+            return keywords.some(kw => nameLower.includes(kw));
+        }
+
+        // Recursive tree builder
+        function buildTreeHtml(nodes, userPerms, parentId = null) {
+            if (!nodes || nodes.length === 0) return '';
+            
+            let html = '';
+            nodes.forEach(node => {
+                if (!node || node.id === 'Web' || node.id === 'App' || node.id === 'WebAdmin') return;
+                if (isCommonUserFeature(node)) return;
+                const isChecked = userPerms.includes(node.id) ? 'checked' : '';
+                const hasChildren = node.children && node.children.length > 0;
+                const isCollapsed = collapsedPermNodes[node.id];
+                
+                const toggleIcon = hasChildren 
+                    ? `<span class="perm-tree-toggle" onclick="togglePermCollapse(event, '${node.id}')" style="margin-right: 4px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`
+                    : '<span style="width: 12px; display: inline-block;"></span>';
+
+                html += `
+                    <li class="tree-node" data-id="${node.id}">
+                        <div class="tree-node-label" style="display: flex; align-items: center; gap: 4px; padding: 4px 6px; border-radius: 4px;">
+                            ${toggleIcon}
+                            <input type="checkbox" class="perm-cb" value="${node.id}" ${parentId ? `data-parent="${parentId}"` : 'class="parent-cb"'} ${isChecked}>
+                            <span class="perm-name" onclick="clickPermNodeLabel(this)" style="cursor: pointer; user-select: none;">${hasChildren ? `<strong>${node.name}</strong>` : node.name}</span>
+                        </div>
+                        ${hasChildren ? `<ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 20px;">${buildTreeHtml(node.children, userPerms, node.id)}</ul>` : ''}
+                    </li>
+                `;
+            });
+            return html;
+        }
+
+        function clickPermNodeLabel(element) {
+            const cb = element.parentElement.querySelector('.perm-cb');
+            if (cb) {
+                cb.checked = !cb.checked;
+                cb.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Cascading checkbox bindings
+        function bindCheckboxEvents() {
+            document.querySelectorAll('.perm-cb').forEach(cb => {
                 cb.addEventListener('change', function() {
-                    const children = this.closest('li').querySelectorAll('ul .perm-cb');
-                    children.forEach(c => c.checked = this.checked);
+                    const checked = this.checked;
+                    // Cascade down to all descendants
+                    const li = this.closest('li');
+                    const descendants = li.querySelectorAll('.perm-cb');
+                    descendants.forEach(d => d.checked = checked);
+                    
+                    // Cascade up to parents
+                    updateParentCheckboxes(this);
                 });
             });
+        }
 
-            document.querySelectorAll('.perm-cb:not(.parent-cb)').forEach(cb => {
-                cb.addEventListener('change', function() {
-                    const parentId = this.getAttribute('data-parent');
-                    const parentCb = document.querySelector(`.parent-cb[value="${parentId}"]`);
-                    const siblings = document.querySelectorAll(`.perm-cb[data-parent="${parentId}"]`);
-                    
-                    const anyChecked = Array.from(siblings).some(s => s.checked);
-                    if (parentCb) {
-                        parentCb.checked = anyChecked;
+        function updateParentCheckboxes(cb) {
+            const li = cb.closest('li');
+            const parentLi = li.parentElement.closest('li');
+            if (!parentLi) return;
+            
+            const parentCb = parentLi.querySelector(':scope > div.tree-node-label > .perm-cb');
+            const siblingCbs = parentLi.querySelector('ul').querySelectorAll(':scope > li > div.tree-node-label > .perm-cb');
+            
+            const anyChecked = Array.from(siblingCbs).some(s => s.checked);
+            
+            if (parentCb) {
+                parentCb.checked = anyChecked;
+                updateParentCheckboxes(parentCb);
+            }
+        }
+
+        // Filter the tree nodes based on search keyword
+        function filterPermTree(keyword) {
+            keyword = keyword.trim().toLowerCase();
+            const nodes = document.querySelectorAll('#permissionTree .tree-node');
+            
+            if (!keyword) {
+                nodes.forEach(node => {
+                    node.style.display = "block";
+                    const ul = node.querySelector('ul');
+                    if (ul) {
+                        const id = node.dataset.id;
+                        ul.style.display = collapsedPermNodes[id] ? "none" : "block";
                     }
                 });
+                return;
+            }
+
+            const matchedIds = new Set();
+            function searchNodes(nodeList) {
+                nodeList.forEach(n => {
+                    if (n.name.toLowerCase().includes(keyword) || n.id.toLowerCase().includes(keyword)) {
+                        matchedIds.add(n.id);
+                        let parts = n.id.split("-");
+                        while (parts.length > 0) {
+                            matchedIds.add(parts.join("-"));
+                            parts.pop();
+                        }
+                    }
+                    if (n.children && n.children.length > 0) {
+                        searchNodes(n.children);
+                    }
+                });
+            }
+            searchNodes(systemPermissions);
+
+            nodes.forEach(node => {
+                const id = node.dataset.id;
+                if (matchedIds.has(id)) {
+                    node.style.display = "block";
+                    const ul = node.querySelector('ul');
+                    if (ul) {
+                        ul.style.display = "block";
+                    }
+                } else {
+                    node.style.display = "none";
+                }
             });
         }
 
@@ -387,7 +517,7 @@
             
             const role = roles.find(r => r.id === id);
             document.getElementById('noRoleSelected').style.display = 'none';
-            document.getElementById('permissionTreeContainer').style.display = 'block';
+            document.getElementById('permissionTreeContainer').style.display = 'flex';
             document.getElementById('permissionFooter').style.display = 'flex';
             document.getElementById('permissionTitle').innerText = `Phân quyền: ${role.name}`;
             
@@ -399,15 +529,13 @@
             if (!activeRoleId) return;
             
             const checkedBoxes = document.querySelectorAll('.perm-cb:checked');
-            if (checkedBoxes.length === 0) {
-                showToast("Vui lòng chọn ít nhất một chức năng để phân quyền", true);
-                return;
-            }
-
             const newPerms = Array.from(checkedBoxes).map(cb => cb.value);
             
             const roleIndex = roles.findIndex(r => r.id === activeRoleId);
             roles[roleIndex].permissions = newPerms;
+
+            // Save to localStorage
+            localStorage.setItem('sys_mock_roles', JSON.stringify(roles));
             
             showToast("Phân quyền theo vai trò thành công!");
         }

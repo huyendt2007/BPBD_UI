@@ -9,7 +9,7 @@ const mockNSD = [
     { id: 'BD-2026-006', pin: '****', type: 'Đăng ký lần đầu', status: 'Chờ thanh toán', transaction: 'Biện pháp bảo đảm', name: 'Phạm Văn D', date: '29/04/2026 10:15' },
     { id: 'BD-2026-007', pin: '****', type: 'Đăng ký thay đổi', status: 'Chờ duyệt', transaction: 'Hợp đồng', name: 'Trần Thị E', date: '30/04/2026 08:30' },
     { id: 'BD-2026-008', pin: '****', type: 'Xóa đăng ký', status: 'Hoàn thành', transaction: 'Biện pháp bảo đảm', name: 'Lý Công Uẩn', date: '01/05/2026 11:20' },
-    { id: 'BD-2026-009', pin: '****', type: 'Đăng ký lần đầu', status: 'Duyệt chờ ký', transaction: 'Hợp đồng', name: 'Ngô Quyền', date: '02/05/2026 09:45' },
+    { id: 'BD-2026-009', pin: '****', type: 'Đăng ký lần đầu', status: 'Chờ ký', transaction: 'Hợp đồng', name: 'Ngô Quyền', date: '02/05/2026 09:45' },
     { id: 'BD-2026-010', pin: '****', type: 'Đăng ký thay đổi', status: 'Hoàn thành', transaction: 'Biện pháp bảo đảm', name: 'Đinh Bộ Lĩnh', date: '03/05/2026 14:10' },
     { id: 'BD-2026-011', pin: '****', type: 'Xóa đăng ký', status: 'Lưu nháp', transaction: 'Hợp đồng', name: 'Lê Hoàn', date: '04/05/2026 16:00' },
     { id: 'BD-2026-012', pin: '****', type: 'Đăng ký lần đầu', status: 'Bị từ chối', transaction: 'Biện pháp bảo đảm', name: 'Công ty CP XYZ', date: '05/05/2026 10:05' }
@@ -18,12 +18,12 @@ const mockNSD = [
 const mockCanBo = [
     { stt: 1, date: '28/04/2026 10:30', id: 'BD-2026-001', type: 'Đăng ký lần đầu', transaction: 'Biện pháp bảo đảm', status: 'Hoàn thành', user: 'nguyenvana' },
     { stt: 2, date: '28/04/2026 14:15', id: 'BD-2026-002', type: 'Đăng ký thay đổi', transaction: 'Hợp đồng', status: 'Chờ duyệt', user: 'nguyenvanb' },
-    { stt: 3, date: '29/04/2026 08:15', id: 'BD-2026-003', type: 'Xóa đăng ký', transaction: 'Thông báo xử lý tài sản', status: 'Duyệt chờ ký', user: 'tranvanc' },
+    { stt: 3, date: '29/04/2026 08:15', id: 'BD-2026-003', type: 'Xóa đăng ký', transaction: 'Thông báo xử lý tài sản', status: 'Chờ ký', user: 'tranvanc' },
     { stt: 4, date: '30/04/2026 16:20', id: 'BD-2026-004', type: 'Đăng ký lần đầu', transaction: 'Hợp đồng', status: 'Bị từ chối', user: 'phamthid' },
     { stt: 5, date: '01/05/2026 09:00', id: 'BD-2026-005', type: 'Đăng ký thay đổi', transaction: 'Biện pháp bảo đảm', status: 'Chờ thanh toán', user: 'levane' },
     { stt: 6, date: '02/05/2026 10:30', id: 'BD-2026-006', type: 'Xóa đăng ký', transaction: 'Hợp đồng', status: 'Hoàn thành', user: 'hoangthif' },
     { stt: 7, date: '03/05/2026 14:45', id: 'BD-2026-007', type: 'Đăng ký lần đầu', transaction: 'Biện pháp bảo đảm', status: 'Chờ duyệt', user: 'nguyenvang' },
-    { stt: 8, date: '04/05/2026 08:20', id: 'BD-2026-008', type: 'Đăng ký thay đổi', transaction: 'Hợp đồng', status: 'Duyệt chờ ký', user: 'tranthih' },
+    { stt: 8, date: '04/05/2026 08:20', id: 'BD-2026-008', type: 'Đăng ký thay đổi', transaction: 'Hợp đồng', status: 'Chờ ký', user: 'tranthih' },
     { stt: 9, date: '05/05/2026 11:15', id: 'BD-2026-009', type: 'Xóa đăng ký', transaction: 'Thông báo xử lý tài sản', status: 'Bị từ chối', user: 'phamvani' },
     { stt: 10, date: '06/05/2026 15:30', id: 'BD-2026-010', type: 'Đăng ký lần đầu', transaction: 'Biện pháp bảo đảm', status: 'Hoàn thành', user: 'levanj' }
 ];
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.status === 'Lưu nháp') badgeClass = 'badge-warning';
             else if (item.status === 'Bị từ chối') { badgeClass = 'badge'; bgStyle = 'background: var(--danger-color); color: white;'; }
             else if (item.status === 'Chờ thanh toán' || item.status === 'Chờ duyệt') badgeClass = 'badge-warning';
-            else if (item.status === 'Duyệt chờ ký') { badgeClass = 'badge'; bgStyle = 'background: var(--primary-color); color: white;'; }
+            else if (item.status === 'Chờ ký') { badgeClass = 'badge'; bgStyle = 'background: var(--primary-color); color: white;'; }
 
             tbodyNSD.innerHTML += `
                 <tr class="data-row">
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let badgeClass = 'badge-success';
             let bgStyle = '';
             if (item.status === 'Chờ duyệt' || item.status === 'Chờ thanh toán') badgeClass = 'badge-warning';
-            else if (item.status === 'Duyệt chờ ký') { badgeClass = 'badge'; bgStyle = 'background: var(--primary-color); color: white;'; }
+            else if (item.status === 'Chờ ký') { badgeClass = 'badge'; bgStyle = 'background: var(--primary-color); color: white;'; }
             else if (item.status === 'Bị từ chối') { badgeClass = 'badge'; bgStyle = 'background: var(--danger-color); color: white;'; }
 
             tbodyCanBo.innerHTML += `
@@ -171,47 +171,17 @@ function searchCanBo() {
     }
 }
 
-// Điều hướng sang Màn hình Xem chi tiết
+// Điều hướng sang Màn hình Xem chi tiết lịch sử (UC027)
 function openDetail(id, status = '') {
-    document.getElementById('detail-id-display').innerText = id;
-
-    // Xử lý hiển thị nút Xem văn bản
-    const btnViewDoc = document.getElementById('btn-view-doc');
-    if (btnViewDoc) {
-        if (status === 'Hoàn thành' || status === 'Bị từ chối') {
-            btnViewDoc.style.display = 'inline-block';
-        } else {
-            btnViewDoc.style.display = 'none';
-        }
-    }
-
-    // Xử lý hiển thị Banner lịch sử thay đổi (UC035)
-    // Giả lập hồ sơ BD-2026-001 (được xem như hồ sơ có lịch sử biến động trong hệ thống)
-    const alertBanner = document.getElementById('history-alert-banner');
-    if (alertBanner) {
-        if (id === 'BD-2026-001' && status === 'Hoàn thành') {
-            alertBanner.style.display = 'flex';
-        } else {
-            alertBanner.style.display = 'none';
-        }
-    }
-
-    // Ẩn tất cả view
-    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-
-    // Ẩn luôn tabs role để tập trung vào màn hình chi tiết
-    document.querySelector('.nav-tabs').style.display = 'none';
-
-    // Hiển thị detail
-    document.getElementById('view-detail').classList.add('active');
+    window.location.href = 'xem_chi_tiet_lich_su_can_bo.html?id=' + id;
 }
 
-// Chuyển hướng xem lịch sử biến động chi tiết (UC035)
+// Chuyển hướng xem lịch sử biến động chi tiết (UC027)
 function viewHistoryDetails() {
     // Lưu thông tin tra cứu vào localStorage để trang sau nhận dạng
-    localStorage.setItem('regNum', '12345678');
-    localStorage.setItem('pinNum', '8888');
-    window.location.href = '../UC035/xem_chi_tiet_thay_doi.html';
+    localStorage.setItem('canBoRegNum', '12345678');
+    localStorage.setItem('canBoPinNum', '8888');
+    window.location.href = 'xem_chi_tiet_lich_su_can_bo.html';
 }
 
 // Quay lại danh sách

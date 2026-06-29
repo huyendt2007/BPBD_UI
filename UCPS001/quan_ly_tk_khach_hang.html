@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+﻿ <!DOCTYPE html>
  <html lang="vi">
  <head>
      <meta charset="UTF-8">
@@ -910,18 +910,17 @@
                      
                      <div class="grid-2-cols">
                          <div class="form-group">
-                             <label class="form-label">Nhóm người dùng *</label>
-                             <select class="form-select" id="inpGroup" disabled>
-                                 <option value="Khách hàng Cá nhân">Khách hàng Cá nhân</option>
-                                 <option value="Khách hàng Tổ chức">Khách hàng Tổ chức</option>
-                             </select>
-                         </div>
-                         <div class="form-group">
-                             <label class="form-label">Vai trò *</label>
-                             <select class="form-select" id="inpRole">
-                                 <!-- Dynamically populated in JavaScript -->
-                             </select>
-                         </div>
+                              <label class="form-label">Nhóm người dùng *</label>
+                              <select class="form-select" id="inpGroup" onchange="handleGroupChange('edit')">
+                                  <!-- Dynamically populated -->
+                              </select>
+                          </div>
+                          <div class="form-group">
+                              <label class="form-label">Vai trò *</label>
+                              <select class="form-select" id="inpRole" onchange="handleRoleChange('edit')">
+                                  <!-- Dynamically populated -->
+                              </select>
+                          </div>
                      </div>
                      
                      <div class="section-divider"><i class="fas fa-cogs"></i> Tùy biến Phân quyền</div>
@@ -1108,14 +1107,18 @@
                      </div>
                      <div class="grid-3-cols">
                          <div class="form-group"><label class="form-label">Trung tâm Đăng ký mặc định</label><select class="form-select" id="addPersonCenter"><option value="">-- Không bắt buộc --</option><option value="Hà Nội">Trung tâm Hà Nội</option><option value="Hồ Chí Minh">Trung tâm HCM</option><option value="Đà Nẵng">Trung tâm Đà Nẵng</option></select></div>
-                         <div class="form-group"><label class="form-label">Nhóm người dùng *</label><select class="form-select" disabled><option>Khách hàng Cá nhân</option></select></div>
                          <div class="form-group">
-                             <label class="form-label">Vai trò *</label>
-                             <select class="form-select" id="addPersonRole">
-                                 <option value="Khách hàng Cá nhân Thường">Khách hàng Cá nhân Thường</option>
-                                 <option value="Khách hàng Cá nhân Ưu tiên">Khách hàng Cá nhân Ưu tiên</option>
-                             </select>
-                         </div>
+                              <label class="form-label">Nhóm người dùng *</label>
+                              <select class="form-select" id="addPersonGroup" onchange="handleGroupChange('addPerson')">
+                                  <!-- Dynamically populated -->
+                              </select>
+                          </div>
+                          <div class="form-group">
+                              <label class="form-label">Vai trò *</label>
+                              <select class="form-select" id="addPersonRole" onchange="handleRoleChange('addPerson')">
+                                  <!-- Dynamically populated -->
+                              </select>
+                          </div>
                      </div>
                      <div class="section-divider" style="margin-top:10px"><i class="fas fa-cogs"></i> Tùy biến Phân quyền</div>
                      <div class="perm-tree" style="max-height:150px" id="addPersonPermTree">
@@ -1163,15 +1166,18 @@
                              </div>
                          </div>
                          <div class="grid-3-cols">
-                             <div class="form-group"><label class="form-label">Nhóm người dùng *</label><select class="form-select" disabled><option>Khách hàng Tổ chức</option></select></div>
                              <div class="form-group">
-                                 <label class="form-label">Vai trò *</label>
-                                 <select class="form-select" id="addOrgRole">
-                                     <option value="Quản trị tài khoản tổ chức">Quản trị tài khoản tổ chức</option>
-                                     <option value="Nhân viên khai báo">Nhân viên khai báo</option>
-                                     <option value="Nhân viên tra cứu">Nhân viên tra cứu</option>
-                                 </select>
-                             </div>
+                                  <label class="form-label">Nhóm người dùng *</label>
+                                  <select class="form-select" id="addOrgGroup" onchange="handleGroupChange('addOrg')">
+                                      <!-- Dynamically populated -->
+                                  </select>
+                              </div>
+                              <div class="form-group">
+                                  <label class="form-label">Vai trò *</label>
+                                  <select class="form-select" id="addOrgRole" onchange="handleRoleChange('addOrg')">
+                                      <!-- Dynamically populated -->
+                                  </select>
+                              </div>
                              <div class="form-group"><label class="form-label">Trung tâm Đăng ký mặc định</label><select class="form-select" id="addOrgCenter"><option value="">-- Không bắt buộc --</option><option value="Hà Nội">Trung tâm Hà Nội</option><option value="Hồ Chí Minh">Trung tâm HCM</option><option value="Đà Nẵng">Trung tâm Đà Nẵng</option></select></div>
                          </div>
                          <div style="margin-top:10px;padding-top:10px;border-top:1px dashed #ccc">
@@ -2057,25 +2063,9 @@
              document.getElementById('inpCenter').value = item.center || '';
              document.getElementById('inpCenter').value = item.center || '';
  
-             // Group and Role population
-             const groupSelect = document.getElementById('inpGroup');
-             const roleSelect = document.getElementById('inpRole');
-             groupSelect.value = (type === 'PERSON') ? 'Khách hàng Cá nhân' : 'Khách hàng Tổ chức';
-             
-             roleSelect.innerHTML = '';
-             if (type === 'PERSON') {
-                 roleSelect.innerHTML = `
-                     <option value="Khách hàng Cá nhân Thường">Khách hàng Cá nhân Thường</option>
-                     <option value="Khách hàng Cá nhân Ưu tiên">Khách hàng Cá nhân Ưu tiên</option>
-                 `;
-             } else {
-                 roleSelect.innerHTML = `
-                     <option value="Quản trị tài khoản tổ chức">Quản trị tài khoản tổ chức</option>
-                     <option value="Nhân viên khai báo">Nhân viên khai báo</option>
-                     <option value="Nhân viên tra cứu">Nhân viên tra cứu</option>
-                 `;
-             }
-             roleSelect.value = item.role || (type === 'PERSON' ? 'Khách hàng Cá nhân Thường' : 'Quản trị tài khoản tổ chức');
+             // Populate and pre-select Group & Role in edit mode
+              const defaultGroupId = (type === 'PERSON') ? 5 : 6;
+              populateGroupAndRoleSelects(type, 'edit', defaultGroupId, item.roleId || item.role);
  
              // Check permissions
              const checkboxes = document.querySelectorAll('#editPermTree input[type="checkbox"]');
@@ -2547,8 +2537,7 @@
              document.getElementById('addPersonAddressDetail').value = '';
              document.getElementById('addPersonCenter').value = '';
              document.getElementById('addPersonNationality').value = 'Việt Nam';
-             document.getElementById('addPersonRole').value = 'Khách hàng Cá nhân Thường';
-             updateMainPermTreeFromRole('addPerson');
+             populateGroupAndRoleSelects('PERSON', 'addPerson');
              
              document.getElementById('addOrgCode').value = '';
              document.getElementById('addOrgName').value = '';
@@ -2564,8 +2553,7 @@
              document.getElementById('addOrgRepDocType').value = 'Căn cước công dân';
              document.getElementById('addOrgRepCode').value = '';
              document.getElementById('addOrgCountry').value = 'Việt Nam';
-             document.getElementById('addOrgRole').value = 'Quản trị tài khoản tổ chức';
-             updateMainPermTreeFromRole('addOrg');
+             populateGroupAndRoleSelects('ORG', 'addOrg');
              
              // Reset subtable
              tempNewOrgSubs = [];
@@ -2907,7 +2895,170 @@
          }
  
          // Thiết lập DOM listeners khi load
-                   document.addEventListener("DOMContentLoaded", function() {
+                   
+          // -------------------------------------------------------------
+          // DYNAMIC LOADER FOR CUSTOMER GROUPS AND ROLES
+          // -------------------------------------------------------------
+          const DEFAULT_MOCK_GROUPS = [
+              { id: 5, code: 'G_KH_CANHAN', name: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng C' + String.fromCharCode(0x00e1) + ' nh' + String.fromCharCode(0x00e1) + 'n', scope: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng', roles: [6] },
+              { id: 6, code: 'G_KH_TOCHUC', name: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng T' + String.fromCharCode(0x1ed5) + ' ch' + String.fromCharCode(0x1ee9) + 'c', scope: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng', roles: [7] }
+          ];
+          const DEFAULT_MOCK_ROLES = [
+              { id: 6, code: 'R_KH_01', name: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng c' + String.fromCharCode(0x00e1) + ' nh' + String.fromCharCode(0x00e1) + 'n chu' + String.fromCharCode(0x1ea9) + 'n', scope: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng', permissions: ['Web-05', 'Web-11', 'Web-12', 'Web-13', 'App-01', 'App-02', 'App-05'] },
+              { id: 7, code: 'R_KH_02', name: 'Qu' + String.fromCharCode(0x1ea3) + 'n tr' + String.fromCharCode(0x1ecb) + ' vi' + String.fromCharCode(0x00ea) + 'n T' + String.fromCharCode(0x1ed5) + ' ch' + String.fromCharCode(0x1ee9) + 'c', scope: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng', permissions: ['Web-05', 'Web-10', 'Web-10-01', 'Web-10-02', 'Web-11', 'Web-12', 'App-01', 'App-02'] },
+              { id: 9, code: 'R_ALL_01', name: 'Xem B' + String.fromCharCode(0x1ea3) + 'ng tin c' + String.fromCharCode(0x00f4) + 'ng khai', scope: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng', permissions: ['Web-05', 'App-01'] },
+              { id: 10, code: 'R_ALL_02', name: 'T' + String.fromCharCode(0x1ea1) + 'o Y' + String.fromCharCode(0x00ea) + 'u c' + String.fromCharCode(0x1ea7) + 'u H' + String.fromCharCode(0x1edd) + ' tr' + String.fromCharCode(0x1ee3) , scope: 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng', permissions: ['Web-22', 'Web-22-02', 'App-10'] }
+          ];
+
+          let savedGroupsList = [];
+          try {
+              const sg = localStorage.getItem('sys_mock_groups');
+              if (sg) {
+                  savedGroupsList = JSON.parse(sg);
+              } else {
+                  savedGroupsList = DEFAULT_MOCK_GROUPS;
+              }
+          } catch(e) {
+              savedGroupsList = DEFAULT_MOCK_GROUPS;
+          }
+          savedGroupsList = savedGroupsList.filter(g => g.scope === 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng' || g.scope === 'INTERNAL' || g.scope === 'C' + String.fromCharCode(0x00e1) + 'n b' + String.fromCharCode(0x00f4) ? g.scope === 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng' : true);
+
+          let savedRolesList = [];
+          try {
+              const sr = localStorage.getItem('sys_mock_roles');
+              if (sr) {
+                  savedRolesList = JSON.parse(sr);
+              } else {
+                  savedRolesList = DEFAULT_MOCK_ROLES;
+              }
+          } catch(e) {
+              savedRolesList = DEFAULT_MOCK_ROLES;
+          }
+          savedRolesList.forEach(r => {
+              if (r.scope === 'INTERNAL') r.scope = 'C' + String.fromCharCode(0x00e1) + 'n b' + String.fromCharCode(0x00f4);
+              else if (r.scope === 'INDIVIDUAL' || r.scope === 'ORGANIZATION' || r.scope === 'ALL') r.scope = 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng';
+              else if (r.scope === 'AUTHORITY') r.scope = 'C' + String.fromCharCode(0x01a1) + ' quan c' + String.fromCharCode(0x00f3) + ' th' + String.fromCharCode(0x1ea9) + 'm quy' + String.fromCharCode(0x1ec1) + 'n';
+          });
+          savedRolesList = savedRolesList.filter(r => r.scope === 'Kh' + String.fromCharCode(0x00e1) + 'ch h' + String.fromCharCode(0x00e0) + 'ng');
+
+          function populateGroupAndRoleSelects(type, context, selectedGroupId = null, selectedRoleId = null) {
+              const groupSelectId = (context === 'addPerson') ? 'addPersonGroup' : ((context === 'addOrg') ? 'addOrgGroup' : 'inpGroup');
+              const roleSelectId = (context === 'addPerson') ? 'addPersonRole' : ((context === 'addOrg') ? 'addOrgRole' : 'inpRole');
+              
+              const groupSelect = document.getElementById(groupSelectId);
+              const roleSelect = document.getElementById(roleSelectId);
+              if (!groupSelect || !roleSelect) return;
+              
+              groupSelect.innerHTML = '';
+              let filteredGroups = savedGroupsList.filter(g => {
+                  if (type === 'PERSON') {
+                      return g.code.includes('CANHAN') || g.name.toLowerCase().includes('c' + String.fromCharCode(0x00e1) + ' nh' + String.fromCharCode(0x00e1) + 'n');
+                  } else {
+                      return g.code.includes('TOCHUC') || g.name.toLowerCase().includes('t' + String.fromCharCode(0x1ed5) + ' ch' + String.fromCharCode(0x1ee9) + 'c');
+                  }
+              });
+              if (filteredGroups.length === 0) filteredGroups = savedGroupsList;
+              
+              filteredGroups.forEach(g => {
+                  const option = document.createElement('option');
+                  option.value = g.id;
+                  option.innerText = g.name;
+                  groupSelect.appendChild(option);
+              });
+              
+              if (selectedGroupId) {
+                  groupSelect.value = selectedGroupId;
+              } else if (filteredGroups.length > 0) {
+                  groupSelect.value = filteredGroups[0].id;
+              }
+              
+              updateRolesForGroup(type, context, selectedRoleId);
+          }
+
+          function updateRolesForGroup(type, context, selectedRoleId = null) {
+              const groupSelectId = (context === 'addPerson') ? 'addPersonGroup' : ((context === 'addOrg') ? 'addOrgGroup' : 'inpGroup');
+              const roleSelectId = (context === 'addPerson') ? 'addPersonRole' : ((context === 'addOrg') ? 'addOrgRole' : 'inpRole');
+              
+              const groupSelect = document.getElementById(groupSelectId);
+              const roleSelect = document.getElementById(roleSelectId);
+              if (!groupSelect || !roleSelect) return;
+              
+              const groupId = groupSelect.value;
+              const groupObj = savedGroupsList.find(g => String(g.id) === String(groupId));
+              
+              roleSelect.innerHTML = '';
+              let filteredRoles = [];
+              if (groupObj && groupObj.roles && groupObj.roles.length > 0) {
+                  filteredRoles = savedRolesList.filter(r => groupObj.roles.includes(r.id) || groupObj.roles.includes(String(r.id)));
+              }
+              if (filteredRoles.length === 0) filteredRoles = savedRolesList;
+              
+              filteredRoles.forEach(r => {
+                  const option = document.createElement('option');
+                  option.value = r.id;
+                  option.innerText = r.name;
+                  roleSelect.appendChild(option);
+              });
+              
+              if (selectedRoleId) {
+                  roleSelect.value = selectedRoleId;
+              } else if (filteredRoles.length > 0) {
+                  roleSelect.value = filteredRoles[0].id;
+              }
+              
+              updatePermissionsFromSelectedRole(context);
+          }
+
+          function updatePermissionsFromSelectedRole(context) {
+              const roleSelectId = (context === 'edit') ? 'inpRole' : ((context === 'addPerson') ? 'addPersonRole' : 'addOrgRole');
+              const treeContainerId = (context === 'edit') ? 'editPermTree' : ((context === 'addPerson') ? 'addPersonPermTree' : 'addOrgPermTree');
+              
+              const roleSelect = document.getElementById(roleSelectId);
+              const container = document.getElementById(treeContainerId);
+              if (!roleSelect || !container) return;
+              
+              const roleId = roleSelect.value;
+              const roleObj = savedRolesList.find(r => String(r.id) === String(roleId));
+              
+              const mapping = {
+                  'Web-11': 'PERM1',
+                  'Web-12': 'PERM2',
+                  'Web-13': 'PERM3',
+                  'App-05': 'PERM4',
+                  'Web-05': 'PERM5',
+                  'App-01': 'PERM6',
+                  'App-02': 'PERM7',
+                  'Web-10': 'PERM8'
+              };
+              
+              let activePerms = [];
+              if (roleObj && roleObj.permissions) {
+                  roleObj.permissions.forEach(p => {
+                      for (const [key, val] of Object.entries(mapping)) {
+                          if (p.startsWith(key) || key.startsWith(p)) {
+                              if (!activePerms.includes(val)) activePerms.push(val);
+                          }
+                      }
+                  });
+              } else {
+                  activePerms = ['PERM1', 'PERM2', 'PERM6'];
+              }
+              
+              const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+              checkboxes.forEach(cb => {
+                  cb.checked = activePerms.includes(cb.value);
+              });
+          }
+
+          function handleGroupChange(context) {
+              const type = (context === 'addPerson') ? 'PERSON' : ((context === 'addOrg') ? 'ORG' : currentEditingType);
+              updateRolesForGroup(type, context);
+          }
+
+          function handleRoleChange(context) {
+              updatePermissionsFromSelectedRole(context);
+          }
+		document.addEventListener("DOMContentLoaded", function() {
 
               // Thay đổi quốc tịch cá nhân thêm mới
               const addPersonNat = document.getElementById('addPersonNationality');
