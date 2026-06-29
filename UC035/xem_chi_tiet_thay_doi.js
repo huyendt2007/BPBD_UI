@@ -4,6 +4,18 @@
  */
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Adjust layout dynamically if loaded inside an iframe (e.g. next to Customer Portal left menu)
+    if (window.top !== window.self) {
+        const portalHeader = document.querySelector('.portal-header');
+        if (portalHeader) portalHeader.style.display = 'none';
+        
+        const container = document.querySelector('.container');
+        if (container) {
+            container.style.maxWidth = '100%';
+            container.style.margin = '10px';
+            container.style.padding = '0 20px';
+        }
+    }
     // DOM Elements - Sidebar
     const timelineContainer = document.getElementById('timelineContainer');
     const timelineSearchInput = document.getElementById('timelineSearchInput');

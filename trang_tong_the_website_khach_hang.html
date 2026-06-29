@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -4295,6 +4295,11 @@
                 </div>
             </div>
 
+            <!-- SCREEN: Xem chi tiết thay đổi lịch sử hồ sơ (UC035) -->
+            <div class="app-screen" id="screen-view-detail-history" style="padding: 0;">
+                <iframe id="iframeViewDetailHistory" class="module-iframe" src="" title="Xem chi tiết lịch sử thay đổi"></iframe>
+            </div>
+
             <!-- SCREEN: Theo dõi & Tạo yêu cầu hỗ trợ (UC266 & UC267) -->
             <div class="app-screen" id="screen-support-tracker">
                 <iframe src="UC266_267/quan_ly_yeu_cau_ho_tro.html" class="module-iframe" title="Quản lý yêu cầu hỗ trợ"></iframe>
@@ -5484,7 +5489,7 @@
                 'billing-payment', 'account-details', 'update-account-details', 'staff-management',
                 'asset-disposal', 'request-copies', 'request-copies-notif', 'change-history',
                 'support-tracker', 'change-password', 'support-result',
-                'registered-requests'
+                'registered-requests', 'view-detail-history'
             ];
             if (lockedPages.includes(screenId) && !isUserLoggedIn) {
                 showToast('Vui lòng đăng nhập vào hệ thống để sử dụng chức năng này!', 'error');
@@ -5613,6 +5618,15 @@
                 const iframe = document.querySelector('#screen-request-copies-notif iframe');
                 if (iframe) {
                     iframe.src = "UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html";
+                }
+            }
+
+            if (screenId === 'view-detail-history') {
+                const sideMenuReg = document.getElementById('sideMenuRegisteredRequests');
+                if (sideMenuReg) sideMenuReg.classList.add('active');
+                const iframe = document.querySelector('#screen-view-detail-history iframe');
+                if (iframe) {
+                    iframe.src = customUrl;
                 }
             }
 
@@ -11148,11 +11162,13 @@
             localStorage.setItem('regNum', regNum);
             showToast('Đang mở xem chi tiết lịch sử hồ sơ...', 'info');
             setTimeout(() => {
+                let url = '';
                 if (versionCount <= 1) {
-                    window.location.href = `UC035/xem_chi_tiet_thay_doi.html?mode=single&regNum=${regNum}&from=registered`;
+                    url = `UC035/xem_chi_tiet_thay_doi.html?mode=single&regNum=${regNum}&from=registered`;
                 } else {
-                    window.location.href = `UC035/xem_chi_tiet_thay_doi.html?regNum=${regNum}&from=registered`;
+                    url = `UC035/xem_chi_tiet_thay_doi.html?regNum=${regNum}&from=registered`;
                 }
+                showScreen('view-detail-history', url);
             }, 400);
         }
 
