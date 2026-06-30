@@ -1,0 +1,645 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lập đề nghị Chỉnh lý / Hủy / Khôi phục đăng ký</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../Common/style_iframe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../../Common/iframe_helper.js"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            padding: 24px 0;
+            font-family: 'Inter', sans-serif;
+        }
+        .container {
+            max-width: 850px; /* Form nhỏ ở giữa màn hình */
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        /* Steps bar styling - Wizard progress line */
+        .steps-wrapper {
+            position: relative;
+            margin-bottom: 30px;
+            padding: 10px 0;
+        }
+        .steps-container {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            z-index: 2;
+        }
+        .steps-line {
+            position: absolute;
+            top: 26px;
+            left: 8%;
+            right: 8%;
+            height: 3px;
+            background-color: #e2e8f0;
+            z-index: 1;
+            border-radius: 2px;
+        }
+        .steps-line-progress {
+            position: absolute;
+            top: 26px;
+            left: 8%;
+            width: 0%; /* Dynamic progress */
+            height: 3px;
+            background-color: #10b981;
+            z-index: 1;
+            transition: width 0.4s ease;
+            border-radius: 2px;
+        }
+        .step-item {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            color: #94a3b8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+        }
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #64748b;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 0 1px #cbd5e1;
+        }
+        .step-item.active {
+            color: var(--primary-color);
+        }
+        .step-item.active .step-number {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 0 0 1px var(--primary-color), 0 0 12px rgba(59, 130, 246, 0.3);
+        }
+        .step-item.completed {
+            color: #10b981;
+        }
+        .step-item.completed .step-number {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 0 0 1px #10b981;
+        }
+
+        .readonly-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 18px;
+            background-color: #f8fafc;
+        }
+        .readonly-card h4 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            color: var(--primary-color);
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .data-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 12.5px;
+            margin-bottom: 3px;
+        }
+        .data-value {
+            color: #1e293b;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .file-upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file-upload-box:hover {
+            border-color: var(--secondary-color);
+            background-color: #f0fdf4;
+        }
+        
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background-color: #10b981;
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-success { background-color: #d1fae5; color: #10b981; }
+        .badge-danger { background-color: #fee2e2; color: #ef4444; }
+        .badge-warning { background-color: #fef3c7; color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- TIÊU ĐỀ TRANG MỎNG SANG TRỌNG -->
+        <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 14px; margin-bottom: 25px;">
+            <h2 style="font-size: 16px; color: var(--primary-color); font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-file-signature" style="color: var(--secondary-color);"></i> LẬP ĐỀ NGHỊ CHỈNH LÝ / HỦY / KHÔI PHỤC ĐĂNG KÝ
+            </h2>
+        </div>
+
+        <!-- DÒNG CÁC BƯỚC ĐANG THỰC HIỆN -->
+        <div class="steps-wrapper">
+            <div class="steps-line"></div>
+            <div class="steps-line-progress" id="stepsProgress"></div>
+            <div class="steps-container">
+                <div class="step-item active" id="step1">
+                    <span class="step-number" id="num1">1</span>
+                    <span>Tra cứu hồ sơ gốc</span>
+                </div>
+                <div class="step-item" id="step2">
+                    <span class="step-number" id="num2">2</span>
+                    <span>Xem thông tin gốc</span>
+                </div>
+                <div class="step-item" id="step3">
+                    <span class="step-number" id="num3">3</span>
+                    <span>Soạn thảo đề xuất</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KHỐI TRA CỨU HỒ SƠ GỐC STYLE MỚI THEO HÌNH ẢNH MẪU -->
+        <div id="searchCardBlock" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 25px;">
+            <div style="width: 100%; max-width: 500px;">
+                <!-- Orange Demo Mode Banner -->
+                <div style="background-color: #fffbeb; border: 1px dashed #fef08a; border-radius: 8px; padding: 12px 15px; margin-bottom: 15px; font-size: 12px; color: #b45309; line-height: 1.5;">
+                    <i class="fa-solid fa-circle-info" style="color: #d97706; margin-right: 6px;"></i><strong>Chế độ mô phỏng kiểm thử (Demo Mode):</strong> Click chọn nhanh các mã số bên dưới:
+                    <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span style="background-color: #ffffff; padding: 3px 8px; border-radius: 4px; font-weight: 600; border: 1px solid #fef08a; cursor: pointer; color: var(--primary-color);" onclick="fillDemoCode('GDBD-2026-000901')">GDBD-2026-000901</span>
+                        <span style="background-color: #ffffff; padding: 3px 8px; border-radius: 4px; font-weight: 600; border: 1px solid #fef08a; cursor: pointer; color: var(--primary-color);" onclick="fillDemoCode('GDBD-2026-000902')">GDBD-2026-000902</span>
+                        <span style="background-color: #ffffff; padding: 3px 8px; border-radius: 4px; font-weight: 600; border: 1px solid #fef08a; cursor: pointer; color: var(--primary-color);" onclick="fillDemoCode('GDBD-2026-000903')">GDBD-2026-000903</span>
+                    </div>
+                </div>
+
+                <!-- White Search Card -->
+                <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);">
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--primary-color); font-weight: 700; font-size: 14.5px; margin-bottom: 12px;">
+                        <i class="fa-solid fa-search"></i> Tra cứu hồ sơ gốc
+                    </div>
+                    <div style="border-top: 1px solid #f1f5f9; padding-top: 12px; margin-bottom: 18px; font-size: 12.5px; color: #64748b; line-height: 1.6;">
+                        Vui lòng nhập Số đăng ký lần đầu của giao dịch gốc. Hệ thống sẽ đối chiếu với CSDL để kiểm tra tính hợp lệ và tải thông tin hồ sơ liên quan.
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label class="form-label" style="font-weight: 600; font-size: 12.5px; color: #334155; margin-bottom: 6px;">Số đăng ký lần đầu <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="searchSoDK" style="height: 38px; border-radius: 6px; border: 1px solid #cbd5e1; padding: 8px 12px; font-size: 13px;" placeholder="Nhập số đăng ký lần đầu...">
+                    </div>
+                    
+                    <div style="border-top: 1px solid #f1f5f9; padding-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="btn btn-secondary" onclick="cancelProposal()" style="height: 36px; padding: 0 18px; border-radius: 6px; font-size: 13px; background-color: #f1f5f9; color: #475569; border: none; font-weight: 600; cursor: pointer;">Hủy</button>
+                        <button type="button" class="btn btn-primary" onclick="searchOriginalDossier()" style="height: 36px; padding: 0 18px; border-radius: 6px; font-size: 13px; background-color: var(--primary-color); color: white; border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">Tra cứu hồ sơ <i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRẠNG THÁI RỖNG BAN ĐẦU -->
+        <div id="noDataMsg" style="text-align: center; padding: 40px 20px; border: 1px dashed #cbd5e1; border-radius: 10px; color: #64748b; font-size: 12.5px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);">
+            <div style="background-color: #f8fafc; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+                <i class="fa-solid fa-folder-open" style="color: #94a3b8; font-size: 24px;"></i>
+            </div>
+            <h4 style="margin: 0 0 4px 0; font-weight: 600; color: #334155;">Chưa có dữ liệu tra cứu</h4>
+            <p style="margin: 0; color: #64748b;">Vui lòng nhập hoặc click chọn Số đăng ký gốc bên trên để tải thông tin hồ sơ.</p>
+        </div>
+
+        <!-- NỘI DUNG HỒ SƠ GỐC (CHỈ HIỂN THỊ KHI TRA CỨU ĐÚNG) -->
+        <div id="originalDossierBlock" style="display: none;">
+            <div style="background-color: #f1f5f9; padding: 12px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; color: #334155; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
+                <span>HỒ SƠ GỐC ĐANG XỬ LÝ: <span id="lblSoDK" style="color: var(--primary-color); font-weight: 700;"></span></span>
+                <span id="lblTrangThaiGoc" class="badge"></span>
+            </div>
+
+            <!-- Panel đối chiếu Read-only -->
+            <div class="readonly-card">
+                <h4><i class="fa-solid fa-circle-info" style="color: var(--secondary-color);"></i> Thông tin chung</h4>
+                <div class="grid-2-cols">
+                    <div>
+                        <div class="data-label">Thời điểm đăng ký:</div>
+                        <div class="data-value" id="lblThoiDiemDK">-</div>
+                    </div>
+                    <div>
+                        <div class="data-label">Loại đăng ký:</div>
+                        <div class="data-value" id="lblLoaiDK">-</div>
+                    </div>
+                    <div>
+                        <div class="data-label">Loại hình giao dịch:</div>
+                        <div class="data-value" id="lblLoaiHinhGD">-</div>
+                    </div>
+                    <div>
+                        <div class="data-label">Biện pháp / Hợp đồng:</div>
+                        <div class="data-value" id="lblSubtype">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2-cols">
+                <div class="readonly-card">
+                    <h4><i class="fa-solid fa-user-tie" style="color: var(--secondary-color);"></i> Bên bảo đảm</h4>
+                    <div>
+                        <div class="data-label">Tên bên bảo đảm:</div>
+                        <div class="data-value" id="lblBenBaoDam">-</div>
+                    </div>
+                    <div>
+                        <div class="data-label">Số định danh/MST:</div>
+                        <div class="data-value" id="lblCodeBBD">-</div>
+                    </div>
+                </div>
+
+                <div class="readonly-card">
+                    <h4><i class="fa-solid fa-building-columns" style="color: var(--secondary-color);"></i> Bên nhận bảo đảm</h4>
+                    <div>
+                        <div class="data-label">Tên bên nhận bảo đảm:</div>
+                        <div class="data-value" id="lblBenNhanBD">-</div>
+                    </div>
+                    <div>
+                        <div class="data-label">Mã số khách hàng:</div>
+                        <div class="data-value" id="lblCodeBNBD">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="readonly-card">
+                <h4><i class="fa-solid fa-car-rear" style="color: var(--secondary-color);"></i> Danh mục tài sản bảo đảm</h4>
+                <div id="lblAssetTypes" style="max-height: 150px; overflow-y: auto; font-size: 13px; color: #1e293b; line-height: 1.6;">
+                    -
+                </div>
+            </div>
+
+            <!-- FORM ĐỀ NGHỊ CHỦ TRƯƠNG -->
+            <div style="border: 1px solid #cbd5e1; border-radius: 10px; padding: 24px; background-color: #fff; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);">
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 8px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-pen-nib" style="color: var(--secondary-color);"></i> NỘI DUNG ĐỀ XUẤT CHỦ TRƯƠNG
+                </h3>
+
+                <form id="proposalForm">
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label">Loại đề xuất <span class="required-mark">*</span></label>
+                            <select class="form-select" id="proposalType" onchange="handleProposalTypeChange()">
+                                <option value="Chỉnh lý thông tin">Chỉnh lý thông tin đăng ký có sai sót</option>
+                                <option value="Hủy đăng ký một phần">Hủy đăng ký một phần</option>
+                                <option value="Hủy đăng ký toàn phần">Hủy đăng ký toàn phần</option>
+                                <option value="Khôi phục hủy đăng ký">Khôi phục hủy đăng ký</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số quyết định / Bản án căn cứ <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="proposalDocNo" placeholder="Ví dụ: QĐ-12/2026/THA, Bản án 102/DS-ST...">
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols" style="margin-top: 12px;">
+                        <div class="form-group">
+                            <label class="form-label">Ngày ban hành văn bản căn cứ <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="proposalDocDate" placeholder="dd/mm/yyyy (ví dụ: 15/06/2026)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cơ quan ban hành căn cứ <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="proposalDocIssuer" placeholder="Ví dụ: TAND Quận Đống Đa, Chi cục THADS Hà Nội...">
+                        </div>
+                    </div>
+
+                    <!-- Khu vực chọn tài sản nếu là Hủy một phần -->
+                    <div class="form-group" id="grpPartialCancelAssets" style="display: none; background-color: #fffbeb; border: 1px solid #fde68a; padding: 15px; border-radius: 8px; margin-top: 12px;">
+                        <label class="form-label" style="color: #92400e; font-weight: 600;"><i class="fa-solid fa-list-check"></i> Tích chọn tài sản bảo đảm đề xuất hủy một phần:</label>
+                        <div id="lblPartialAssetsChecklist" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                            <!-- Đẩy động từ danh mục tài sản -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label class="form-label">Lý do đề xuất / Diễn giải cụ thể <span class="required-mark">*</span></label>
+                        <textarea class="form-control" id="proposalReason" rows="3" placeholder="Nhập lý do chi tiết..."></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label class="form-label">Văn bản căn cứ pháp lý đính kèm (Scan PDF) <span class="required-mark">*</span></label>
+                        <div class="file-upload-box" onclick="triggerFileSelect()">
+                            <input type="file" id="proposalFile" accept=".pdf" style="display: none;" onchange="handleFileSelected(this)">
+                            <i class="fa-solid fa-file-pdf fa-2x" style="color: #ef4444; margin-bottom: 8px;"></i>
+                            <p style="font-size: 13px; font-weight: 500; color: #475569;" id="lblUploadStatus">Kéo thả file văn bản pháp lý hoặc Click để duyệt tìm tệp tin</p>
+                            <span style="font-size: 11px; color: #64748b;">Chỉ chấp nhận tệp PDF tối đa 15MB.</span>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER ACTIONS -->
+                    <div style="display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid #cbd5e1; padding-top: 15px; margin-top: 25px;">
+                        <button type="button" class="btn btn-secondary" onclick="cancelProposal()" style="background: #e2e8f0; color: #475569;">Hủy bỏ</button>
+                        <button type="button" class="btn btn-primary" onclick="submitProposal()"><i class="fa-solid fa-paper-plane"></i> Trình duyệt chủ trương</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast-notification">
+        <i class="fa-solid fa-circle-check"></i> <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        let currentOriginalDossier = null;
+
+        function getMockDossiers() {
+            const cached = localStorage.getItem('custom_mock_profiles');
+            if (cached) {
+                return JSON.parse(cached);
+            }
+            return [];
+        }
+
+        function fillDemoCode(code) {
+            document.getElementById('searchSoDK').value = code;
+            searchOriginalDossier();
+        }
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = msg;
+            if (type === 'error') {
+                toast.style.backgroundColor = '#ef4444';
+                toast.querySelector('i').className = 'fa-solid fa-circle-xmark';
+            } else {
+                toast.style.backgroundColor = '#10b981';
+                toast.querySelector('i').className = 'fa-solid fa-circle-check';
+            }
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        function triggerFileSelect() {
+            document.getElementById('proposalFile').click();
+        }
+
+        let selectedFileBlob = null;
+        function handleFileSelected(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.type !== 'application/pdf') {
+                    showToast('Vui lòng chọn tệp tin định dạng PDF!', 'error');
+                    input.value = '';
+                    return;
+                }
+                selectedFileBlob = file.name;
+                document.getElementById('lblUploadStatus').innerHTML = `Đã chọn: <strong style="color: var(--primary-color);">${file.name}</strong> (${(file.size/1024/1024).toFixed(2)} MB)`;
+            }
+        }
+
+        function searchOriginalDossier() {
+            const soDK = document.getElementById('searchSoDK').value.trim();
+            if (!soDK) {
+                showToast('Vui lòng nhập Số đăng ký lần đầu!', 'error');
+                return;
+            }
+
+            const list = getMockDossiers();
+            const dossier = list.find(d => d.id === soDK);
+
+            if (!dossier) {
+                showToast('Số đăng ký không tồn tại hoặc không thuộc thẩm quyền của đơn vị!', 'error');
+                return;
+            }
+
+            currentOriginalDossier = dossier;
+
+            // Cập nhật các bước và thanh tiến trình
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            const step3 = document.getElementById('step3');
+            const progress = document.getElementById('stepsProgress');
+            
+            step1.className = 'step-item completed';
+            document.getElementById('num1').innerHTML = '<i class="fa-solid fa-check"></i>';
+            step2.className = 'step-item active';
+            step3.className = 'step-item active';
+            progress.style.width = '50%'; // Progress to step 2
+
+            // Hiển thị thông tin
+            document.getElementById('noDataMsg').style.display = 'none';
+            document.getElementById('searchCardBlock').style.display = 'none'; // Ẩn khối tìm kiếm sau khi có kết quả
+            document.getElementById('originalDossierBlock').style.display = 'block';
+            
+            document.getElementById('lblSoDK').innerText = dossier.id;
+            
+            const badge = document.getElementById('lblTrangThaiGoc');
+            badge.innerText = dossier.status;
+            if (dossier.status === 'Hoàn thành') {
+                badge.className = 'badge badge-success';
+            } else if (dossier.status === 'Đã hủy') {
+                badge.className = 'badge badge-danger';
+            } else {
+                badge.className = 'badge badge-warning';
+            }
+
+            document.getElementById('lblThoiDiemDK').innerText = dossier.date;
+            document.getElementById('lblLoaiDK').innerText = dossier.registrationType || 'Đăng ký lần đầu';
+            document.getElementById('lblLoaiHinhGD').innerText = dossier.transactionType || 'Biện pháp bảo đảm';
+            document.getElementById('lblSubtype').innerText = dossier.subtype || 'Thế chấp';
+
+            document.getElementById('lblBenBaoDam').innerText = dossier.customer;
+            document.getElementById('lblCodeBBD').innerText = dossier.customerCode || '0101987654';
+            document.getElementById('lblBenNhanBD').innerText = dossier.mortgagee;
+            document.getElementById('lblCodeBNBD').innerText = dossier.mortgageeCode || 'KH-BIDV-01';
+
+            const assetDiv = document.getElementById('lblAssetTypes');
+            assetDiv.innerHTML = '';
+            if (dossier.assetType) {
+                const assets = dossier.assetType.split('|');
+                assets.forEach(asset => {
+                    const row = document.createElement('div');
+                    row.style.padding = '5px 0';
+                    row.style.borderBottom = '1px dashed #e2e8f0';
+                    row.innerHTML = `<i class="fa-solid fa-caret-right" style="color:var(--secondary-color); margin-right: 6px;"></i> ${asset.trim()}`;
+                    assetDiv.appendChild(row);
+                });
+            } else {
+                assetDiv.innerText = 'Không xác định';
+            }
+
+            const propSelect = document.getElementById('proposalType');
+            if (dossier.status === 'Đã hủy') {
+                propSelect.value = 'Khôi phục hủy đăng ký';
+                Array.from(propSelect.options).forEach(opt => {
+                    if (opt.value !== 'Khôi phục hủy đăng ký') opt.disabled = true;
+                    else opt.disabled = false;
+                });
+            } else {
+                Array.from(propSelect.options).forEach(opt => {
+                    if (opt.value === 'Khôi phục hủy đăng ký') opt.disabled = true;
+                    else opt.disabled = false;
+                });
+                propSelect.value = 'Chỉnh lý thông tin';
+            }
+            handleProposalTypeChange();
+        }
+
+        function handleProposalTypeChange() {
+            const type = document.getElementById('proposalType').value;
+            const assetGroup = document.getElementById('grpPartialCancelAssets');
+            
+            if (type === 'Hủy đăng ký một phần' && currentOriginalDossier && currentOriginalDossier.assetType) {
+                assetGroup.style.display = 'block';
+                const checklist = document.getElementById('lblPartialAssetsChecklist');
+                checklist.innerHTML = '';
+                const assets = currentOriginalDossier.assetType.split('|');
+                assets.forEach((asset, idx) => {
+                    const label = document.createElement('label');
+                    label.style.display = 'flex';
+                    label.style.alignItems = 'center';
+                    label.style.gap = '8px';
+                    label.style.cursor = 'pointer';
+                    label.style.fontSize = '13px';
+                    label.style.padding = '4px 0';
+                    label.innerHTML = `<input type="checkbox" name="cancelAsset" value="${asset.trim()}"> <span>Tài sản ${idx + 1}: ${asset.trim()}</span>`;
+                    checklist.appendChild(label);
+                });
+            } else {
+                assetGroup.style.display = 'none';
+            }
+        }
+
+        function cancelProposal() {
+            document.getElementById('proposalForm').reset();
+            document.getElementById('originalDossierBlock').style.display = 'none';
+            document.getElementById('searchCardBlock').style.display = 'flex'; // Hiện lại khối tìm kiếm
+            document.getElementById('noDataMsg').style.display = 'block';
+            selectedFileBlob = null;
+            document.getElementById('lblUploadStatus').innerText = 'Kéo thả file văn bản pháp lý hoặc Click để duyệt tìm tệp tin';
+            currentOriginalDossier = null;
+
+            // Reset steps
+            document.getElementById('step1').className = 'step-item active';
+            document.getElementById('num1').innerText = '1';
+            document.getElementById('step2').className = 'step-item';
+            document.getElementById('step3').className = 'step-item';
+            document.getElementById('stepsProgress').style.width = '0%';
+        }
+
+        function submitProposal() {
+            const type = document.getElementById('proposalType').value;
+            const docNo = document.getElementById('proposalDocNo').value.trim();
+            const docDate = document.getElementById('proposalDocDate').value.trim();
+            const issuer = document.getElementById('proposalDocIssuer').value.trim();
+            const reason = document.getElementById('proposalReason').value.trim();
+
+            if (!docNo || !docDate || !issuer || !reason || !selectedFileBlob) {
+                showToast('Vui lòng nhập đầy đủ các trường bắt buộc (*) và đính kèm file quyết định!', 'error');
+                return;
+            }
+
+            let cancelledAssets = [];
+            if (type === 'Hủy đăng ký một phần') {
+                const checks = document.querySelectorAll('input[name="cancelAsset"]:checked');
+                if (checks.length === 0) {
+                    showToast('Vui lòng chọn ít nhất 1 tài sản đề xuất hủy bảo đảm!', 'error');
+                    return;
+                }
+                checks.forEach(c => cancelledAssets.push(c.value));
+            }
+
+            let proposals = [];
+            const cached = localStorage.getItem('custom_proposals');
+            if (cached) {
+                proposals = JSON.parse(cached);
+            }
+
+            const newId = proposals.length > 0 ? Math.max(...proposals.map(p => p.id)) + 1 : 1;
+            const now = new Date();
+            const dateStr = `${now.getDate() < 10 ? '0' + now.getDate() : now.getDate()}/${now.getMonth() + 1 < 10 ? '0' + (now.getMonth()+1) : now.getMonth()+1}/${now.getFullYear()} ${now.getHours() < 10 ? '0' + now.getHours() : now.getHours()}:${now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()}`;
+
+            proposals.push({
+                id: newId,
+                proposalCode: `DN-${type === 'Chỉnh lý thông tin' ? 'CL' : type === 'Khôi phục hủy đăng ký' ? 'KP' : 'H'}-2026-${String(newId).padStart(4, '0')}`,
+                type: type,
+                originalDossierId: currentOriginalDossier.id,
+                originalDossier: currentOriginalDossier,
+                docNo: docNo,
+                docDate: docDate,
+                docIssuer: issuer,
+                reason: reason,
+                fileName: selectedFileBlob,
+                cancelledAssets: cancelledAssets,
+                creator: 'Nguyễn Văn Cán Bộ',
+                createdDate: dateStr,
+                status: 'Chờ ký',
+                rejectReason: ''
+            });
+
+            localStorage.setItem('custom_proposals', JSON.stringify(proposals));
+            
+            // Cập nhật bước 3 hoàn thành
+            document.getElementById('step3').className = 'step-item completed';
+            document.getElementById('num3').innerHTML = '<i class="fa-solid fa-check"></i>';
+            document.getElementById('step2').className = 'step-item completed';
+            document.getElementById('num2').innerHTML = '<i class="fa-solid fa-check"></i>';
+            document.getElementById('stepsProgress').style.width = '100%';
+
+            showToast('Nộp đề xuất chủ trương thành công! Trạng thái: Chờ ký');
+            
+            setTimeout(() => {
+                cancelProposal();
+            }, 1500);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const soDKParam = urlParams.get('soDK');
+            if (soDKParam) {
+                document.getElementById('searchSoDK').value = soDKParam;
+                searchOriginalDossier();
+            }
+        });
+    </script>
+</body>
+</html>

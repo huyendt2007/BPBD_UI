@@ -1,0 +1,3118 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý tập huấn, hội nghị, hội thảo, tọa đàm; nghiên cứu khoa học</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables - Đồng bộ với Cán bộ Portal */
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981; 
+            --danger-color: #EF4444; 
+            --warning-color: #F59E0B; 
+            --info-color: #3B82F6;
+            --purple-color: #8B5CF6;
+            
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: var(--base-size);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Page Header Banner */
+        .page-header {
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            color: white;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .page-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .page-header p {
+            opacity: 0.9;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            background-color: var(--bg-surface);
+            padding: 10px 10px 0 10px;
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+        .nav-tab {
+            padding: 12px 24px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+            border: 1px solid transparent;
+            border-bottom: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-tab:hover {
+            color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+        .nav-tab.active {
+            color: var(--primary-color);
+            background-color: var(--bg-body);
+            border-color: var(--border-color);
+            border-bottom: 2px solid var(--bg-body);
+            margin-bottom: -2px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Card Section Styling */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .section-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Form Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+        .required {
+            color: var(--danger-color);
+            margin-left: 3px;
+        }
+        .form-control, .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 13px;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+            font-family: var(--font-family);
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .form-control:read-only, .form-select:disabled, .form-control:disabled {
+            background-color: #F8FAFC;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Buttons Styling */
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            outline: none;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: var(--border-radius-sm);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        .btn-secondary {
+            background-color: #E2E8F0;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background-color: #CBD5E1;
+        }
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #059669;
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Layout Toolbars */
+        .grid-action-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .search-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 15px;
+        }
+
+        /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+        .custom-table th {
+            background-color: var(--table-header-bg);
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .custom-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+        .custom-table tbody tr:hover {
+            background-color: rgba(241, 245, 249, 0.5);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+        .bg-secondary { background-color: #E2E8F0; color: #475569; }
+        .bg-info { background-color: #DBEAFE; color: #1E40AF; }
+        .bg-success { background-color: #D1FAE5; color: #065F46; }
+        .bg-danger { background-color: #FEE2E2; color: #991B1B; }
+        .bg-warning { background-color: #FEF3C7; color: #92400E; }
+
+        /* File Upload Multi Control */
+        .file-upload-container {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 15px;
+            text-align: center;
+            background-color: #F8FAFC;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file-upload-container:hover {
+            border-color: var(--secondary-color);
+            background-color: #F1F5F9;
+        }
+        .file-list {
+            margin-top: 10px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: white;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-info i {
+            color: #EF4444;
+            font-size: 16px;
+        }
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .file-action-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .file-action-link.delete {
+            color: var(--danger-color);
+        }
+
+        /* Action icons */
+        .action-icons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+        }
+        .action-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        .action-icon:hover {
+            color: var(--primary-color);
+        }
+        .action-icon.delete:hover {
+            color: var(--danger-color);
+        }
+
+        .form-section-header {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 20px 0 15px 0;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-section-header:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Slider and Progress styling */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .slider-value {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 15px;
+            min-width: 50px;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .toast {
+            background-color: #1E293B;
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+        }
+        .toast.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast-error { background-color: var(--danger-color); }
+        .toast-success { background-color: var(--success-color); }
+
+        /* Preview Modal */
+        .preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .preview-modal.active {
+            display: flex;
+        }
+        .preview-modal-content {
+            background-color: white;
+            width: 80%;
+            max-width: 900px;
+            height: 85%;
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+        .preview-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        .preview-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background-color: #F1F5F9;
+        }
+        .preview-paper {
+            background-color: white;
+            min-height: 100%;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            padding: 40px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: black;
+        }
+
+        /* Delete Confirm Popup */
+        .confirm-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+        .confirm-popup.active {
+            display: flex;
+        }
+        .confirm-content {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            width: 450px;
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+        .confirm-title {
+            font-size: 16px;
+            color: var(--danger-color);
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Page Title banner -->
+    <div class="page-header">
+        <div>
+            <h1>Quản lý tập huấn, hội nghị, hội thảo, tọa đàm; nghiên cứu khoa học</h1>
+            <p>Phân hệ theo dõi và quản lý kế hoạch đào tạo, tổ chức sự kiện chuyên môn và các đề tài nghiên cứu khoa học</p>
+        </div>
+        <i class="fa-solid fa-graduation-cap" style="font-size: 32px; opacity: 0.8;"></i>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <div class="nav-tab active" onclick="switchMainTab('tab-tap-huan')">
+            <i class="fa-solid fa-calendar-check"></i> Tập huấn, hội nghị, hội thảo, tọa đàm
+        </div>
+        <div class="nav-tab" onclick="switchMainTab('tab-nckh')">
+            <i class="fa-solid fa-flask"></i> Nghiên cứu khoa học
+        </div>
+        <div class="nav-tab" onclick="switchMainTab('tab-khac')">
+            <i class="fa-solid fa-folder-plus"></i> Nội dung khác liên quan
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: TẬP HUẤN, HỘI NGHỊ, HỘI THẢO, TỌA ĐÀM -->
+    <!-- ========================================== -->
+    <div id="tab-tap-huan" class="tab-content active">
+        
+        <!-- Search filters -->
+        <div class="card-section" id="th-search-card" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px;">
+            <h3 style="font-size: 14px; color: var(--primary-color); font-weight: 600; margin-bottom: 12px;">
+                <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
+            </h3>
+            
+            <div class="grid-4">
+                <div class="form-group">
+                    <label class="form-label">Mã kế hoạch</label>
+                    <input type="text" id="th-filter-ma" class="form-control" placeholder="Ví dụ: KH-TH-2026-0001">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên kế hoạch</label>
+                    <input type="text" id="th-filter-ten" class="form-control" placeholder="Nhập từ khóa tên kế hoạch...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phân loại hoạt động</label>
+                    <select id="th-filter-loai" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Tập huấn">Tập huấn</option>
+                        <option value="Hội nghị">Hội nghị</option>
+                        <option value="Hội thảo">Hội thảo</option>
+                        <option value="Tọa đàm">Tọa đàm</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tình trạng thực hiện</label>
+                    <select id="th-filter-tinhtrang" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Chưa thực hiện">Chưa thực hiện</option>
+                        <option value="Đang triển khai">Đang triển khai</option>
+                        <option value="Đã hoàn thành">Đã hoàn thành</option>
+                        <option value="Hoãn/Hủy">Hoãn/Hủy</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="search-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetThFilters()">Xóa bộ lọc</button>
+                <button type="button" class="btn btn-primary" onclick="executeThSearch()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <!-- GridView -->
+        <div class="card-section" id="th-list-card">
+            <div class="section-title">
+                <span><i class="fa-solid fa-list-check"></i> Danh sách kế hoạch tập huấn, hội nghị, hội thảo, tọa đàm</span>
+            </div>
+            <div class="grid-action-toolbar">
+                <button class="btn btn-primary" onclick="openCreateThForm()"><i class="fa fa-plus"></i> Tạo kế hoạch mới</button>
+                <button class="btn btn-outline-primary" onclick="exportExcelTh()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
+            
+            <div class="table-container">
+                <table class="custom-table" id="th-table">
+                    <thead>
+                        <tr>
+                            <th width="50px">STT</th>
+                            <th width="140px">Mã kế hoạch</th>
+                            <th>Tên kế hoạch</th>
+                            <th width="130px">Phân loại</th>
+                            <th width="180px">Thời gian dự kiến</th>
+                            <th width="130px">Hình thức</th>
+                            <th width="150px">Kinh phí dự kiến</th>
+                            <th width="150px">Tình trạng</th>
+                            <th width="100px" style="text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="th-table-body">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Form Edit/Create -->
+        <div class="card-section" id="th-form-card" style="display: none;">
+            <div class="section-title">
+                <span id="th-form-title"><i class="fa-solid fa-edit"></i> Chi tiết kế hoạch tập huấn, hội thảo</span>
+                <button class="btn btn-secondary btn-sm" onclick="closeThForm()"><i class="fa-solid fa-times"></i> Đóng</button>
+            </div>
+            
+            <form id="form-th" onsubmit="event.preventDefault();" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md);">
+                <input type="hidden" id="th-id">
+
+                <!-- Thông tin kế hoạch -->
+                <div class="form-section-header">
+                    <span>Thông tin lập kế hoạch hoạt động</span>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Mã kế hoạch <span class="required">*</span></label>
+                        <input type="text" id="th-ma" class="form-control" readonly value="KH-TH-2026-0001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên kế hoạch <span class="required">*</span></label>
+                        <input type="text" id="th-ten" class="form-control" placeholder="Nhập tên kế hoạch..." maxlength="250">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phân loại hoạt động <span class="required">*</span></label>
+                        <select id="th-loai" class="form-select">
+                            <option value="">-- Chọn phân loại --</option>
+                            <option value="Tập huấn">Tập huấn</option>
+                            <option value="Hội nghị">Hội nghị</option>
+                            <option value="Hội thảo">Hội thảo</option>
+                            <option value="Tọa đàm">Tọa đàm</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Đơn vị chủ trì <span class="required">*</span></label>
+                        <select id="th-donvi-chutri" class="form-select">
+                            <option value="">-- Chọn đơn vị --</option>
+                            <option value="Phòng Nghiệp vụ 1">Phòng Nghiệp vụ 1</option>
+                            <option value="Phòng Nghiệp vụ 2">Phòng Nghiệp vụ 2</option>
+                            <option value="Văn phòng Cục">Văn phòng Cục</option>
+                            <option value="Phòng Hành chính - Tổng hợp">Phòng Hành chính - Tổng hợp</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đơn vị phối hợp</label>
+                        <input type="text" id="th-donvi-phoihop" class="form-control" placeholder="Ngăn cách bằng dấu phẩy...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kinh phí dự kiến (VNĐ)</label>
+                        <input type="number" id="th-kinhphi-dukien" class="form-control" placeholder="Ví dụ: 50000000">
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Hình thức tổ chức <span class="required">*</span></label>
+                        <select id="th-hinhthuc" class="form-select" onchange="toggleThDiaDiem(this.value)">
+                            <option value="Trực tiếp">Trực tiếp</option>
+                            <option value="Trực tuyến">Trực tuyến</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="th-diadiem-group">
+                        <label class="form-label">Địa điểm dự kiến <span class="required">*</span></label>
+                        <input type="text" id="th-diadiem" class="form-control" placeholder="Nhập địa điểm dự kiến...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thời gian dự kiến tổ chức <span class="required">*</span></label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" id="th-batdau-dukien" class="form-control" placeholder="Từ ngày" style="width: 50%;">
+                            <input type="text" id="th-ketthuc-dukien" class="form-control" placeholder="Đến ngày" style="width: 50%;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nội dung kế hoạch chi tiết</label>
+                    <textarea id="th-noidung" class="form-control" placeholder="Nhập tóm tắt nội dung kế hoạch..." maxlength="2000"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tài liệu đính kèm kế hoạch</label>
+                    <div class="file-upload-container" onclick="triggerFileUpload('th-upload-kh')">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
+                        <p style="font-size: 12px; color: var(--text-muted);">Tải lên các tệp kế hoạch đính kèm (.pdf, .docx, .xlsx, tối đa 20MB/file)</p>
+                        <input type="file" id="th-upload-kh" style="display: none;" onchange="handleFileSelected(this, 'th-kh-files-list')" multiple>
+                    </div>
+                    <div class="file-list" id="th-kh-files-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Tiến độ thực hiện thực tế -->
+                <div class="form-section-header" id="th-progress-header" style="display: none;">
+                    <span>Tiến độ thực hiện thực tế</span>
+                </div>
+
+                <div class="grid-3" id="th-progress-fields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Tình trạng thực hiện <span class="required">*</span></label>
+                        <select id="th-tinhtrang" class="form-select" onchange="onThTinhTrangChange(this.value)">
+                            <option value="Chưa thực hiện">Chưa thực hiện</option>
+                            <option value="Đang triển khai">Đang triển khai</option>
+                            <option value="Đã hoàn thành">Đã hoàn thành</option>
+                            <option value="Hoãn/Hủy">Hoãn/Hủy</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thời gian thực tế tổ chức</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" id="th-batdau-thucte" class="form-control" placeholder="Từ ngày" style="width: 50%;">
+                            <input type="text" id="th-ketthuc-thucte" class="form-control" placeholder="Đến ngày" style="width: 50%;">
+                        </div>
+                    </div>
+                    <div class="form-group" id="th-lydo-group">
+                        <label class="form-label">Nội dung tiến độ / Lý do điều chỉnh <span class="required" id="th-lydo-req" style="display:none;">*</span></label>
+                        <textarea id="th-lydo" class="form-control" style="min-height: 40px;" placeholder="Nhập lý do điều chỉnh hoặc mô tả tiến độ..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Kết quả thực hiện -->
+                <div class="form-section-header" id="th-result-header" style="display: none;">
+                    <span>Kết quả thực hiện hoạt động</span>
+                </div>
+
+                <div class="grid-3" id="th-result-row1" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Số lượng đại biểu tham dự thực tế <span class="required">*</span></label>
+                        <input type="number" id="th-daibieu-thucte" class="form-control" placeholder="Ví dụ: 80">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đánh giá kết quả <span class="required">*</span></label>
+                        <select id="th-danhgia" class="form-select">
+                            <option value="">-- Chọn đánh giá --</option>
+                            <option value="Xuất sắc">Xuất sắc</option>
+                            <option value="Đạt yêu cầu">Đạt yêu cầu</option>
+                            <option value="Cần rút kinh nghiệm">Cần rút kinh nghiệm</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thành phần tham dự chính <span class="required">*</span></label>
+                        <input type="text" id="th-thanhphan" class="form-control" placeholder="Các cơ quan, tổ chức tham gia...">
+                    </div>
+                </div>
+
+                <div class="form-group" id="th-result-row2" style="display: none;">
+                    <label class="form-label">Báo cáo tổng kết kết quả <span class="required">*</span></label>
+                    <textarea id="th-baocao-kq" class="form-control" placeholder="Tóm tắt kết quả đạt được, kiến nghị rút kinh nghiệm..."></textarea>
+                </div>
+
+                <div class="form-group" id="th-result-row3" style="display: none;">
+                    <label class="form-label">Tài liệu kết quả / Kỷ yếu / Nghị quyết <span class="required">*</span></label>
+                    <div class="file-upload-container" onclick="triggerFileUpload('th-upload-kq')">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
+                        <p style="font-size: 12px; color: var(--text-muted);">Tải lên tài liệu phê duyệt kết quả, kỷ yếu, slide trình bày (.pdf, .docx, .xlsx)</p>
+                        <input type="file" id="th-upload-kq" style="display: none;" onchange="handleFileSelected(this, 'th-kq-files-list')" multiple>
+                    </div>
+                    <div class="file-list" id="th-kq-files-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Form actions -->
+                <div class="search-actions" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-outline-primary" id="th-btn-export" onclick="exportProgressTh()"><i class="fa-solid fa-file-excel"></i> Kết xuất tiến độ</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeThForm()">Hủy bỏ</button>
+                    <button type="button" class="btn btn-success" id="th-btn-save" onclick="saveTh()"><i class="fa-solid fa-circle-check"></i> Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: NGHIÊN CỨU KHOA HỌC -->
+    <!-- ========================================== -->
+    <div id="tab-nckh" class="tab-content">
+        
+        <!-- Search filters -->
+        <div class="card-section" id="kh-search-card" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px;">
+            <h3 style="font-size: 14px; color: var(--primary-color); font-weight: 600; margin-bottom: 12px;">
+                <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
+            </h3>
+            
+            <div class="grid-4">
+                <div class="form-group">
+                    <label class="form-label">Mã số đề tài</label>
+                    <input type="text" id="kh-filter-ma" class="form-control" placeholder="Ví dụ: ĐT-2026-0001">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên đề tài NCKH</label>
+                    <input type="text" id="kh-filter-ten" class="form-control" placeholder="Nhập từ khóa tên đề tài...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Chủ nhiệm đề tài</label>
+                    <input type="text" id="kh-filter-chunhiem" class="form-control" placeholder="Tên chủ nhiệm...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái thực hiện</label>
+                    <select id="kh-filter-trangthai" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Đang thực hiện">Đang thực hiện</option>
+                        <option value="Đã hoàn thành tiến độ - Chờ nghiệm thu">Đã hoàn thành tiến độ - Chờ nghiệm thu</option>
+                        <option value="Đã nghiệm thu/Kết thúc">Đã nghiệm thu/Kết thúc</option>
+                        <option value="Chậm tiến độ">Chậm tiến độ</option>
+                        <option value="Tạm dừng">Tạm dừng</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="search-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetKhFilters()">Xóa bộ lọc</button>
+                <button type="button" class="btn btn-primary" onclick="executeKhSearch()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <!-- GridView -->
+        <div class="card-section" id="kh-list-card">
+            <div class="section-title">
+                <span><i class="fa-solid fa-vial-circle-check"></i> Danh sách đề tài nghiên cứu khoa học</span>
+            </div>
+            <div class="grid-action-toolbar">
+                <button class="btn btn-primary" onclick="openCreateKhForm()"><i class="fa fa-plus"></i> Đăng ký đề tài mới</button>
+                <button class="btn btn-outline-primary" onclick="exportExcelKh()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
+            
+            <div class="table-container">
+                <table class="custom-table" id="kh-table">
+                    <thead>
+                        <tr>
+                            <th width="50px">STT</th>
+                            <th width="140px">Mã số đề tài</th>
+                            <th>Tên đề tài NCKH</th>
+                            <th width="130px">Cấp quản lý</th>
+                            <th width="160px">Chủ nhiệm đề tài</th>
+                            <th width="180px">Thời gian dự kiến</th>
+                            <th width="120px">Tiến độ (%)</th>
+                            <th width="200px">Trạng thái</th>
+                            <th width="100px" style="text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="kh-table-body">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Form Edit/Create -->
+        <div class="card-section" id="kh-form-card" style="display: none;">
+            <div class="section-title">
+                <span id="kh-form-title"><i class="fa-solid fa-edit"></i> Đăng ký và Quản lý đề tài NCKH</span>
+                <button class="btn btn-secondary btn-sm" onclick="closeKhForm()"><i class="fa-solid fa-times"></i> Đóng</button>
+            </div>
+            
+            <form id="form-kh" onsubmit="event.preventDefault();" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md);">
+                <input type="hidden" id="kh-id">
+
+                <!-- Thông tin đề tài nghiên cứu -->
+                <div class="form-section-header">
+                    <span>Thông tin đề tài nghiên cứu</span>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Mã số đề tài <span class="required">*</span></label>
+                        <input type="text" id="kh-ma" class="form-control" value="ĐT-2026-0001" placeholder="Nhập hoặc để tự sinh...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên đề tài NCKH <span class="required">*</span></label>
+                        <input type="text" id="kh-ten" class="form-control" placeholder="Nhập tên đề tài nghiên cứu khoa học..." maxlength="500">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cấp quản lý đề tài <span class="required">*</span></label>
+                        <select id="kh-cap" class="form-select">
+                            <option value="Cấp Bộ">Cấp Bộ</option>
+                            <option value="Cấp Cục">Cấp Cục</option>
+                            <option value="Cấp Cơ sở">Cấp Cơ sở</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Chủ nhiệm đề tài <span class="required">*</span></label>
+                        <input type="text" id="kh-chunhiem" class="form-control" placeholder="Nhập tên cán bộ phụ trách...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đơn vị / Phòng ban chủ trì <span class="required">*</span></label>
+                        <select id="kh-donvi" class="form-select">
+                            <option value="">-- Chọn đơn vị --</option>
+                            <option value="Phòng Nghiệp vụ 1">Phòng Nghiệp vụ 1</option>
+                            <option value="Phòng Nghiệp vụ 2">Phòng Nghiệp vụ 2</option>
+                            <option value="Văn phòng Cục">Văn phòng Cục</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thành viên ban nghiên cứu</label>
+                        <input type="text" id="kh-thanhvien" class="form-control" placeholder="Họ tên các thành viên phối hợp...">
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Thời gian nghiên cứu dự kiến <span class="required">*</span></label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" id="kh-batdau-dukien" class="form-control" placeholder="Tháng/Năm bắt đầu" style="width: 50%;">
+                            <input type="text" id="kh-ketthuc-dukien" class="form-control" placeholder="Tháng/Năm kết thúc" style="width: 50%;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tổng thời gian thực hiện (Số tháng) <span class="required">*</span></label>
+                        <input type="number" id="kh-tong-thang" class="form-control" placeholder="Ví dụ: 12">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thời điểm bắt đầu & kết thúc cụ thể <span class="required">*</span></label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" id="kh-batdau-chitiet" class="form-control" placeholder="Từ ngày" style="width: 50%;">
+                            <input type="text" id="kh-ketthuc-chitiet" class="form-control" placeholder="Đến ngày" style="width: 50%;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Mục tiêu nghiên cứu</label>
+                        <textarea id="kh-muctieu" class="form-control" placeholder="Mô tả mục tiêu nghiên cứu đề tài..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phạm vi & Đối tượng nghiên cứu</label>
+                        <textarea id="kh-phamvi" class="form-control" placeholder="Mô tả phạm vi và đối tượng nghiên cứu..."></textarea>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Nội dung nghiên cứu chi tiết</label>
+                        <textarea id="kh-noidung" class="form-control" placeholder="Nội dung chính đề tài..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phương pháp nghiên cứu</label>
+                        <textarea id="kh-phuongphap" class="form-control" placeholder="Các phương pháp khoa học sử dụng..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kết quả nghiên cứu dự kiến</label>
+                        <textarea id="kh-ketqua-dukien" class="form-control" placeholder="Sản phẩm nghiên cứu khoa học dự kiến..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Bảng Milestones dự kiến -->
+                <div style="margin-bottom: 20px;">
+                    <div class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Kế hoạch triển khai theo mốc (Milestones)</span>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="kh-btn-add-milestone" onclick="addMilestoneRow()"><i class="fa fa-plus"></i> Thêm mốc</button>
+                    </div>
+                    <div class="table-container" style="margin-top: 10px; margin-bottom: 0;">
+                        <table class="custom-table" id="kh-milestone-table">
+                            <thead>
+                                <tr>
+                                    <th width="80px">Mốc</th>
+                                    <th>Nội dung công việc dự kiến</th>
+                                    <th width="150px">Từ ngày</th>
+                                    <th width="150px">Đến ngày</th>
+                                    <th width="80px" style="text-align: center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kh-milestone-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Tổng kinh phí dự kiến (VNĐ)</label>
+                        <input type="number" id="kh-kinhphi-dukien" class="form-control" placeholder="Ví dụ: 100000000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nguồn kinh phí</label>
+                        <select id="kh-nguonvốn" class="form-select">
+                            <option value="Ngân sách nhà nước">Ngân sách nhà nước</option>
+                            <option value="Quỹ phát triển KHCN">Quỹ phát triển KHCN</option>
+                            <option value="Nguồn tài trợ/Vốn tự có">Nguồn tài trợ/Vốn tự có</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chi tiết các khoản chi sơ bộ</label>
+                        <textarea id="kh-kinhphi-chitiet" class="form-control" style="min-height: 40px;" placeholder="Thù lao nghiên cứu, thuê chuyên gia, hội thảo..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tài liệu đính kèm kế hoạch (Thuyết minh đề tài, quyết định giao đề tài)</label>
+                    <div class="file-upload-container" onclick="triggerFileUpload('kh-upload-kh')">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
+                        <p style="font-size: 12px; color: var(--text-muted);">Tải lên thuyết minh đề tài đã ký duyệt, quyết định giao đề tài (.pdf, .docx)</p>
+                        <input type="file" id="kh-upload-kh" style="display: none;" onchange="handleFileSelected(this, 'kh-kh-files-list')" multiple>
+                    </div>
+                    <div class="file-list" id="kh-kh-files-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Tiến độ thực hiện thực tế (UC256) -->
+                <div class="form-section-header" id="kh-progress-header" style="display: none;">
+                    <span>Tiến độ & Mốc thực hiện thực tế</span>
+                </div>
+
+                <div id="kh-progress-section" style="display: none; margin-bottom: 20px;">
+                    <div class="table-container" style="margin-bottom: 15px;">
+                        <table class="custom-table" id="kh-progress-table">
+                            <thead>
+                                <tr>
+                                    <th width="80px">Mốc</th>
+                                    <th>Nội dung công việc dự kiến</th>
+                                    <th width="140px">Bắt đầu thực tế</th>
+                                    <th width="140px">Kết thúc thực tế</th>
+                                    <th width="160px">Tình trạng mốc</th>
+                                    <th>Ghi chú công việc đã làm</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kh-progress-body">
+                                <!-- Rendered dynamically based on milestones -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label class="form-label">Tỷ lệ hoàn thành tổng thể đề tài (%) <span class="required">*</span></label>
+                            <div class="slider-container">
+                                <input type="range" id="kh-progress-pct" min="0" max="100" class="form-control" style="padding: 0; cursor: pointer;" oninput="updatePctValue(this.value)">
+                                <span class="slider-value" id="kh-progress-pct-val">0%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tình trạng thực hiện tổng thể <span class="required">*</span></label>
+                            <select id="kh-progress-status" class="form-select" onchange="onKhStatusDropdownChange(this.value)">
+                                <option value="Đang thực hiện">Đang thực hiện</option>
+                                <option value="Đã hoàn thành tiến độ - Chờ nghiệm thu">Đã hoàn thành tiến độ - Chờ nghiệm thu</option>
+                                <option value="Chậm tiến độ">Chậm tiến độ</option>
+                                <option value="Tạm dừng">Tạm dừng</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Báo cáo tiến độ định kỳ</label>
+                            <div class="file-upload-container" style="padding: 10px;" onclick="triggerFileUpload('kh-upload-progress')">
+                                <i class="fa-solid fa-file-arrow-up" style="font-size: 16px; color: var(--text-muted);"></i>
+                                <span style="font-size: 12px; color: var(--text-muted); margin-left: 5px;">Tải lên các báo cáo tiến độ định kỳ (Max 25MB/file)</span>
+                                <input type="file" id="kh-upload-progress" style="display: none;" onchange="handleFileSelected(this, 'kh-progress-files-list')" multiple>
+                            </div>
+                            <div class="file-list" id="kh-progress-files-list">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kết quả nghiệm thu đề tài NCKH (UC257) -->
+                <div class="form-section-header" id="kh-result-header" style="display: none;">
+                    <span>Kết quả nghiệm thu đề tài nghiên cứu</span>
+                </div>
+
+                <div id="kh-result-section" style="display: none;">
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label class="form-label">Ngày nghiệm thu chính thức <span class="required">*</span></label>
+                            <input type="text" id="kh-nghiemthu-ngay" class="form-control" placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kết quả xếp loại/Đánh giá <span class="required">*</span></label>
+                            <select id="kh-nghiemthu-xeploai" class="form-select" onchange="onKhXepLoaiChange(this.value)">
+                                <option value="">-- Chọn xếp loại --</option>
+                                <option value="Xuất sắc">Xuất sắc</option>
+                                <option value="Khá">Khá</option>
+                                <option value="Trung bình">Trung bình</option>
+                                <option value="Không đạt">Không đạt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kinh phí quyết toán thực tế (VNĐ)</label>
+                            <input type="number" id="kh-kinhphi-quyettoan" class="form-control" placeholder="Ví dụ: 95000000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Thành viên Hội đồng nghiệm thu <span class="required">*</span></label>
+                        <textarea id="kh-nghiemthu-hoidong" class="form-control" placeholder="Ghi rõ danh sách Chủ tịch, Thư ký và các Ủy viên hội đồng..."></textarea>
+                    </div>
+
+                    <div class="grid-3" id="kh-decision-fields">
+                        <div class="form-group">
+                            <label class="form-label">Số quyết định công nhận <span class="required" id="kh-sqd-req">*</span></label>
+                            <input type="text" id="kh-nghiemthu-sqd" class="form-control" placeholder="Ví dụ: QĐ-124/BTP">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ngày ký quyết định <span class="required" id="kh-kq-ngay-req">*</span></label>
+                            <input type="text" id="kh-nghiemthu-ngayqd" class="form-control" placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cơ quan ban hành</label>
+                            <input type="text" id="kh-nghiemthu-coquan" class="form-control" value="Bộ Tư pháp">
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Báo cáo tổng hợp toàn văn đề tài <span class="required" id="kh-fullreport-req">*</span></label>
+                            <div class="file-upload-container" style="padding: 10px;" onclick="triggerFileUpload('kh-upload-fullreport')">
+                                <i class="fa-solid fa-file-pdf" style="color: red;"></i>
+                                <span style="font-size: 12px; color: var(--text-muted); margin-left: 5px;">Tải lên file báo cáo toàn văn (.pdf)</span>
+                                <input type="file" id="kh-upload-fullreport" style="display: none;" onchange="handleFileSelected(this, 'kh-fullreport-files-list')" multiple>
+                            </div>
+                            <div class="file-list" id="kh-fullreport-files-list">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kỷ yếu / Biên bản họp nghiệm thu <span class="required" id="kh-minutes-req">*</span></label>
+                            <div class="file-upload-container" style="padding: 10px;" onclick="triggerFileUpload('kh-upload-minutes')">
+                                <i class="fa-solid fa-file-signature" style="color: green;"></i>
+                                <span style="font-size: 12px; color: var(--text-muted); margin-left: 5px;">Tải lên file kỷ yếu/biên bản họp hội đồng</span>
+                                <input type="file" id="kh-upload-minutes" style="display: none;" onchange="handleFileSelected(this, 'kh-minutes-files-list')" multiple>
+                            </div>
+                            <div class="file-list" id="kh-minutes-files-list">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form actions -->
+                <div class="search-actions" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-outline-primary" id="kh-btn-export" onclick="exportProgressKh()"><i class="fa-solid fa-file-excel"></i> Kết xuất tiến độ nghiên cứu</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeKhForm()">Hủy bỏ</button>
+                    <button type="button" class="btn btn-outline-danger" id="kh-btn-delete-result" style="display: none;" onclick="triggerDeleteResult()"><i class="fa-solid fa-trash-can"></i> Xóa kết quả nghiệm thu</button>
+                    <button type="button" class="btn btn-success" id="kh-btn-save" onclick="saveKh()"><i class="fa-solid fa-circle-check"></i> Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: NỘI DUNG KHÁC LIÊN QUAN -->
+    <!-- ========================================== -->
+    <div id="tab-khac" class="tab-content">
+        
+        <!-- Search filters -->
+        <div class="card-section" id="lk-search-card" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px;">
+            <h3 style="font-size: 14px; color: var(--primary-color); font-weight: 600; margin-bottom: 12px;">
+                <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
+            </h3>
+            
+            <div class="grid-4">
+                <div class="form-group">
+                    <label class="form-label">Từ khóa (Tiêu đề/Mô tả)</label>
+                    <input type="text" id="lk-filter-keyword" class="form-control" placeholder="Nhập tiêu đề hoặc mô tả...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phân loại nội dung</label>
+                    <select id="lk-filter-loai" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Văn bản hướng dẫn đột xuất">Văn bản hướng dẫn đột xuất</option>
+                        <option value="Khảo sát thực địa">Khảo sát thực địa</option>
+                        <option value="Tài liệu tham khảo nước ngoài">Tài liệu tham khảo nước ngoài</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label">Khoảng thời gian phát sinh</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="lk-filter-tungay" class="form-control" placeholder="Từ ngày (dd/mm/yyyy)" style="width: 50%;">
+                        <input type="text" id="lk-filter-denngay" class="form-control" placeholder="Đến ngày (dd/mm/yyyy)" style="width: 50%;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetLkFilters()">Xóa bộ lọc</button>
+                <button type="button" class="btn btn-primary" onclick="executeLkSearch()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <!-- GridView -->
+        <div class="card-section" id="lk-list-card">
+            <div class="section-title">
+                <span><i class="fa-solid fa-folder-open"></i> Danh sách nội dung khác liên quan</span>
+            </div>
+            <div class="grid-action-toolbar">
+                <button class="btn btn-primary" onclick="openCreateLkForm()"><i class="fa fa-plus"></i> Thêm mới nội dung khác</button>
+            </div>
+            
+            <div class="table-container">
+                <table class="custom-table" id="lk-table">
+                    <thead>
+                        <tr>
+                            <th width="50px">STT</th>
+                            <th width="140px">Mã nội dung</th>
+                            <th>Tiêu đề nội dung/sự kiện</th>
+                            <th width="220px">Phân loại</th>
+                            <th width="140px">Ngày phát sinh</th>
+                            <th width="120px" style="text-align: center;">Tài liệu</th>
+                            <th width="150px">Người nhập</th>
+                            <th width="100px" style="text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lk-table-body">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Form Edit/Create -->
+        <div class="card-section" id="lk-form-card" style="display: none;">
+            <div class="section-title">
+                <span id="lk-form-title"><i class="fa-solid fa-edit"></i> Chi tiết nội dung liên quan</span>
+                <button class="btn btn-secondary btn-sm" onclick="closeLkForm()"><i class="fa-solid fa-times"></i> Đóng</button>
+            </div>
+            
+            <form id="form-lk" onsubmit="event.preventDefault();" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md);">
+                <input type="hidden" id="lk-id">
+
+                <div class="form-section-header">
+                    <span>Thông tin nội dung khác liên quan</span>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Mã nội dung <span class="required">*</span></label>
+                        <input type="text" id="lk-ma" class="form-control" readonly value="LQ-2026-0001">
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label class="form-label">Tiêu đề nội dung/Sự kiện <span class="required">*</span></label>
+                        <input type="text" id="lk-ten" class="form-control" placeholder="Nhập tiêu đề hoặc sự kiện..." maxlength="250">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Phân loại nội dung <span class="required">*</span></label>
+                        <select id="lk-loai" class="form-select">
+                            <option value="">-- Chọn phân loại --</option>
+                            <option value="Văn bản hướng dẫn đột xuất">Văn bản hướng dẫn đột xuất</option>
+                            <option value="Khảo sát thực địa">Khảo sát thực địa</option>
+                            <option value="Tài liệu tham khảo nước ngoài">Tài liệu tham khảo nước ngoài</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ngày phát sinh/Cập nhật <span class="required">*</span></label>
+                        <input type="text" id="lk-ngay" class="form-control" placeholder="dd/mm/yyyy">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nội dung mô tả chi tiết</label>
+                    <textarea id="lk-noidung" class="form-control" placeholder="Nhập mô tả nội dung liên quan chi tiết..." maxlength="4000" style="min-height: 120px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tài liệu liên quan đính kèm</label>
+                    <div class="file-upload-container" onclick="triggerFileUpload('lk-upload-files')">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
+                        <p style="font-size: 12px; color: var(--text-muted);">Tải lên tài liệu liên quan (.pdf, .docx, .xlsx, .jpg, .png; tối đa 25MB/file)</p>
+                        <input type="file" id="lk-upload-files" style="display: none;" onchange="handleFileSelected(this, 'lk-files-list')" multiple>
+                    </div>
+                    <div class="file-list" id="lk-files-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Form actions -->
+                <div class="search-actions" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeLkForm()">Hủy bỏ</button>
+                    <button type="button" class="btn btn-success" id="lk-btn-save" onclick="saveLk()"><i class="fa-solid fa-circle-check"></i> Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<!-- System Toast -->
+<div class="toast-container">
+    <div id="system-toast" class="toast">
+        <i class="fa-solid fa-info-circle"></i>
+        <span id="toast-text">Thông báo hệ thống</span>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div id="preview-modal" class="preview-modal">
+    <div class="preview-modal-content">
+        <div class="preview-header">
+            <span id="preview-title">Xem trước văn bản</span>
+            <button class="action-icon" style="color: white; font-size: 20px;" onclick="closePreview()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="preview-body">
+            <div class="preview-paper" id="preview-paper-content">
+                <!-- Injected dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Result Confirm Popup (UC257) -->
+<div id="delete-result-popup" class="confirm-popup">
+    <div class="confirm-content">
+        <div class="confirm-title">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 20px;"></i>
+            <span>Xác nhận xóa kết quả nghiệm thu</span>
+        </div>
+        <p style="font-size: 13px; color: var(--text-main); margin-bottom: 15px; line-height: 1.4;">
+            Hành động này sẽ thực hiện <strong>Xóa logic (Soft Delete)</strong> kết quả nghiệm thu đề tài khoa học và trả trạng thái đề tài về <strong>"Đã hoàn thành tiến độ - Chờ nghiệm thu"</strong>. Hành động này yêu cầu quyền quản trị cấp cao.
+        </p>
+        
+        <div class="form-group">
+            <label class="form-label">Lý do xóa kết quả <span class="required">*</span></label>
+            <textarea id="del-reason" class="form-control" style="min-height: 60px;" placeholder="Vui lòng nhập lý do xóa kết quả (tối thiểu 10 ký tự)..."></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Mật khẩu xác nhận quản trị <span class="required">*</span></label>
+            <input type="password" id="del-password" class="form-control" placeholder="Nhập mật khẩu tài khoản...">
+        </div>
+        
+        <div class="search-actions" style="margin-top: 15px; padding-top: 15px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeDeleteResultPopup()">Hủy bỏ</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDeleteResult()"><i class="fa-solid fa-trash-can"></i> Xác nhận xóa</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global Mock Data - Tập huấn, Hội nghị, Hội thảo
+    let thData = [
+        {
+            id: "KH-TH-2026-0001",
+            ten: "Tập huấn chuyên sâu về đăng ký biện pháp bảo đảm bằng quyền tài sản phát sinh từ hợp đồng mua bán nhà ở",
+            loai: "Tập huấn",
+            donViChuTri: "Phòng Nghiệp vụ 1",
+            donViPhoiHop: "Văn phòng Cục, Sở Tư pháp TP. Hà Nội",
+            kinhPhiDukien: 45000000,
+            hinhThuc: "Trực tiếp",
+            diaDiem: "Hội trường tầng 3, Cục ĐKGDBĐ",
+            batDauDukien: "15/03/2026",
+            ketThucDukien: "16/03/2026",
+            noiDung: "Nâng cao nghiệp vụ đăng ký giao dịch bảo đảm đối với các sản phẩm bất động sản hình thành trong tương lai.",
+            filesKh: [{ name: "Ke_Hoach_Tap_Huan_BDS.pdf", size: "1.2 MB" }],
+            // Tiến độ & kết quả thực tế
+            batDauThucte: "15/03/2026",
+            ketThucThucte: "16/03/2026",
+            tinhTrang: "Đã hoàn thành",
+            lyDo: "",
+            daibieuThucte: 95,
+            thanhPhan: "Cán bộ Văn phòng đăng ký đất đai, ngân hàng thương mại cổ phần trên địa bàn Hà Nội",
+            danhGia: "Xuất sắc",
+            baocaoKq: "Hội nghị tập huấn diễn ra tốt đẹp, đạt chất lượng cao. Các đại biểu thảo luận sôi nổi về vướng mắc thực tiễn.",
+            filesKq: [{ name: "Bao_Cao_Tong_Ket_signed.pdf", size: "2.1 MB" }, { name: "Tai_Lieu_Slide_Phat_Bieu.docx", size: "1.5 MB" }]
+        },
+        {
+            id: "KH-TH-2026-0002",
+            ten: "Hội thảo lấy ý kiến dự thảo Nghị định thay thế Nghị định 102/2017/NĐ-CP về đăng ký BPBĐ",
+            loai: "Hội thảo",
+            donViChuTri: "Phòng Nghiệp vụ 2",
+            donViPhoiHop: "Vụ Pháp luật Dân sự - Kinh tế",
+            kinhPhiDukien: 60000000,
+            hinhThuc: "Trực tiếp",
+            diaDiem: "Khách sạn Daewoo, Hà Nội",
+            batDauDukien: "20/04/2026",
+            ketThucDukien: "20/04/2026",
+            noiDung: "Góp ý chuyên sâu các quy định về đăng ký trực tuyến, hồ sơ thủ tục và biểu mẫu đăng ký thế chấp.",
+            filesKh: [{ name: "Thuyet_Minh_Hoi_Thao_102.pdf", size: "1.8 MB" }],
+            batDauThucte: "20/04/2026",
+            ketThucThucte: "20/04/2026",
+            tinhTrang: "Đã hoàn thành",
+            lyDo: "",
+            daibieuThucte: 120,
+            thanhPhan: "Đại diện Bộ Tư pháp, Bộ TN&MT, Hiệp hội ngân hàng, các Văn phòng đăng ký đất đai lớn.",
+            danhGia: "Xuất sắc",
+            baocaoKq: "Thu thập được hơn 40 ý kiến góp ý trực tiếp chất lượng làm cơ sở hoàn thiện dự thảo tờ trình chính phủ.",
+            filesKq: [{ name: "Nghi_quyet_Hoi_thao_signed.pdf", size: "1.1 MB" }]
+        },
+        {
+            id: "KH-TH-2026-0003",
+            ten: "Tọa đàm tháo gỡ khó khăn về đăng ký thế chấp dự án đầu tư xây dựng nhà ở xã hội",
+            loai: "Tọa đàm",
+            donViChuTri: "Phòng Nghiệp vụ 1",
+            donViPhoiHop: "Sở Xây dựng Hà Nội",
+            kinhPhiDukien: 15000000,
+            hinhThuc: "Trực tuyến",
+            diaDiem: "",
+            batDauDukien: "12/05/2026",
+            ketThucDukien: "12/05/2026",
+            noiDung: "Tìm kiếm các giải pháp đồng bộ thủ tục đăng ký thế chấp nhà ở xã hội đang triển khai.",
+            filesKh: [{ name: "Ke_Hoach_Toa_Dam_Online.pdf", size: "0.9 MB" }],
+            batDauThucte: "12/05/2026",
+            ketThucThucte: "12/05/2026",
+            tinhTrang: "Đã hoàn thành",
+            lyDo: "",
+            daibieuThucte: 60,
+            thanhPhan: "Các chủ đầu tư dự án nhà ở xã hội, ngân hàng chính sách xã hội, ngân hàng thương mại.",
+            danhGia: "Đạt yêu cầu",
+            baocaoKq: "Tọa đàm trực tuyến diễn ra thông suốt, làm rõ cơ chế phối hợp ba bên liên quan.",
+            filesKq: [{ name: "Bien_Ban_Toa_Dam.docx", size: "0.5 MB" }]
+        },
+        {
+            id: "KH-TH-2026-0004",
+            ten: "Tập huấn nghiệp vụ đăng ký biện pháp bảo đảm bằng động sản phi hàng hải cho các chi nhánh văn phòng",
+            loai: "Tập huấn",
+            donViChuTri: "Văn phòng Cục",
+            donViPhoiHop: "Trung tâm Đăng ký giao dịch tài sản",
+            kinhPhiDukien: 30000000,
+            hinhThuc: "Trực tuyến",
+            diaDiem: "",
+            batDauDukien: "25/06/2026",
+            ketThucDukien: "26/06/2026",
+            noiDung: "Cập nhật các quy trình đăng ký thế chấp phương tiện giao thông, hàng hóa luân chuyển.",
+            filesKh: [{ name: "Cong_Van_Trieu_Tap_Giao_Vien.pdf", size: "1.4 MB" }],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Đang triển khai",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
+        },
+        {
+            id: "KH-TH-2026-0005",
+            ten: "Hội nghị tổng kết công tác quản lý nhà nước về đăng ký biện pháp bảo đảm khu vực phía Nam",
+            loai: "Hội nghị",
+            donViChuTri: "Phòng Hành chính - Tổng hợp",
+            donViPhoiHop: "Các chi cục đăng ký giao dịch phía Nam",
+            kinhPhiDukien: 80000000,
+            hinhThuc: "Trực tiếp",
+            diaDiem: "Hội trường Sở Tư pháp TP. Hồ Chí Minh",
+            batDauDukien: "10/07/2026",
+            ketThucDukien: "11/07/2026",
+            noiDung: "Đánh giá tình hình thực hiện công tác đăng ký thế chấp đất đai, nhà ở, động sản tại các tỉnh phía Nam.",
+            filesKh: [{ name: "Ke_hoach_Hoi_nghi_Mien_Nam.pdf", size: "2.3 MB" }],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Chưa thực hiện",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
+        }
+    ];
+
+    // Global Mock Data - Nghiên cứu khoa học
+    let khData = [
+        {
+            id: "ĐT-2026-0001",
+            ten: "Hoàn thiện khung pháp lý về đăng ký biện pháp bảo đảm bằng quyền sử dụng đất trong bối cảnh sửa đổi Luật Đất đai",
+            cap: "Cấp Bộ",
+            chunhiem: "Trần Văn Khoa",
+            donVi: "Phòng Nghiệp vụ 1",
+            thanhVien: "Nguyễn Văn A, Lê Thị B, Phạm Hồng C",
+            batDauDukien: "01/2026",
+            ketThucDukien: "12/2026",
+            tongThang: 12,
+            batDauChitiet: "01/01/2026",
+            ketThucChitiet: "31/12/2026",
+            muctieu: "Đề xuất các quy định sửa đổi đồng bộ giữa Luật Đất đai và các văn bản hướng dẫn đăng ký giao dịch thế chấp đất đai.",
+            phamvi: "Các quy định về đăng ký thế chấp quyền sử dụng đất, tài sản gắn liền với đất trên địa bàn cả nước.",
+            noidung: "Nghiên cứu cơ sở lý luận, khảo sát thực trạng đăng ký thế chấp tại các VPĐKĐĐ, xây dựng dự thảo thông tư hướng dẫn.",
+            phuongphap: "Phương án khảo sát thực địa, hội thảo chuyên gia, phân tích so sánh đối chiếu văn bản pháp luật.",
+            ketquaDukien: "Báo cáo tổng luận khoa học, dự thảo thông tư sửa đổi về đăng ký biện pháp bảo đảm thế chấp đất đai.",
+            kinhPhiDukien: 120000000,
+            nguonVon: "Ngân sách nhà nước",
+            kinhPhiChitiet: "Thù lao nhóm nghiên cứu: 50tr, thuê chuyên gia: 30tr, khảo sát thực địa: 20tr, hội thảo: 20tr.",
+            filesKh: [{ name: "Thuyet_Minh_De_Tai_Dat_Dai.pdf", size: "2.4 MB" }],
+            // Milestones & Tiến độ thực tế
+            milestones: [
+                { mốc: "Mốc 1", noiDung: "Thu thập tài liệu và viết cơ sở lý luận", tuNgay: "01/01/2026", denNgay: "31/03/2026", batDauThucte: "01/01/2026", ketThucThucte: "28/03/2026", tinhTrangMoc: "Đã hoàn thành", ghiChu: "Hoàn thành đúng hạn, báo cáo cơ sở lý luận đạt chất lượng tốt." },
+                { mốc: "Mốc 2", noiDung: "Khảo sát thực tiễn tại các VPĐKĐĐ miền Bắc và miền Nam", tuNgay: "01/04/2026", denNgay: "31/08/2026", batDauThucte: "02/04/2026", ketThucThucte: "25/08/2026", tinhTrangMoc: "Đã hoàn thành", ghiChu: "Đã khảo sát 8 tỉnh thành phố, thu thập đủ số liệu thống kê." },
+                { mốc: "Mốc 3", noiDung: "Xây dựng báo cáo tổng hợp và viết dự thảo sản phẩm", tuNgay: "01/09/2026", denNgay: "31/12/2026", batDauThucte: "", ketThucThucte: "", tinhTrangMoc: "Đang triển khai", ghiChu: "Đang tiến hành viết báo cáo tổng kết chuyên môn." }
+            ],
+            progressPct: 75,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [{ name: "Bao_Cao_Tien_Do_Giai_Doan_1_2.pdf", size: "1.5 MB" }],
+            // Kết quả nghiệm thu
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Bộ Tư pháp",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0002",
+            ten: "Nghiên cứu cơ chế đăng ký trực tuyến biện pháp bảo đảm bằng động sản phi đăng ký bắt buộc tại Việt Nam",
+            cap: "Cấp Cục",
+            chunhiem: "Nguyễn Thị Khoa Học",
+            donVi: "Phòng Nghiệp vụ 2",
+            thanhVien: "Nguyễn Văn D, Trần Thị E",
+            batDauDukien: "03/2026",
+            ketThucDukien: "11/2026",
+            tongThang: 9,
+            batDauChitiet: "01/03/2026",
+            ketThucChitiet: "30/11/2026",
+            muctieu: "Đề xuất quy trình nâng cấp hệ thống phần mềm đăng ký trực tuyến bằng động sản bảo đảm thông suốt, tin cậy.",
+            phamvi: "Hệ thống đăng ký biện pháp bảo đảm bằng động sản phi hàng hải thuộc Cục ĐKGDBĐ.",
+            noidung: "Đánh giá hiệu năng hệ thống hiện tại, đề xuất phương án tích hợp cơ sở dữ liệu định danh VNeID.",
+            phuongphap: "Khảo sát kỹ thuật hệ thống CNTT, phân tích quy trình nghiệp vụ.",
+            noidungDukien: "Báo cáo đề xuất phương án cải tiến và nâng cấp phần mềm đăng ký trực tuyến.",
+            kinhPhiDukien: 80000000,
+            nguonVon: "Quỹ phát triển KHCN",
+            kinhPhiChitiet: "Thù lao nghiên cứu: 40tr, phân tích hệ thống: 30tr, văn phòng phẩm: 10tr.",
+            filesKh: [{ name: "Giao_nhiem_vu_Dong_san_Online.pdf", size: "1.9 MB" }],
+            milestones: [
+                { mốc: "Mốc 1", noiDung: "Khảo sát phần mềm và đánh giá thực trạng", tuNgay: "01/03/2026", denNgay: "31/05/2026", batDauThucte: "01/03/2026", ketThucThucte: "20/05/2026", tinhTrangMoc: "Đã hoàn thành", ghiChu: "Khảo sát và ghi nhận hơn 15 điểm nghẽn kỹ thuật cần xử lý." },
+                { mốc: "Mốc 2", noiDung: "Thiết kế quy trình đăng ký tích hợp định danh điện tử", tuNgay: "01/06/2026", denNgay: "30/11/2026", batDauThucte: "01/06/2026", ketThucThucte: "10/11/2026", tinhTrangMoc: "Đã hoàn thành", ghiChu: "Đã xây dựng xong quy trình phối hợp kết nối dữ liệu VNeID." }
+            ],
+            progressPct: 100,
+            progressStatus: "Đã hoàn thành tiến độ - Chờ nghiệm thu",
+            filesProgress: [{ name: "Bao_Cao_Tien_Do_Hoan_Thanh.pdf", size: "2.0 MB" }],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Cục ĐKGDBĐ và BTNN",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0003",
+            ten: "Nghiên cứu cơ chế bồi thường nhà nước đối với hành vi gây thiệt hại trong hoạt động đăng ký giao dịch bảo đảm",
+            cap: "Cấp Bộ",
+            chunhiem: "Phạm Minh Đức",
+            donVi: "Phòng Nghiệp vụ 1",
+            thanhVien: "Lê Văn T, Vũ Thị H",
+            batDauDukien: "01/2025",
+            ketThucDukien: "12/2025",
+            tongThang: 12,
+            batDauChitiet: "01/01/2025",
+            ketThucChitiet: "31/12/2025",
+            muctieu: "Làm rõ căn cứ pháp lý và trình tự thủ tục giải quyết bồi thường nhà nước trong đăng ký BPBĐ sai sót.",
+            phamvi: "Hoạt động công vụ của cán bộ đăng ký giao dịch bảo đảm và bồi thường nhà nước.",
+            noidung: "Nghiên cứu Luật Trách nhiệm bồi thường của Nhà nước, đánh giá các tình huống sai sót của đăng ký viên.",
+            phuongphap: "Hội thảo, tọa đàm bàn tròn, nghiên cứu tình huống thực tế.",
+            noidungDukien: "Sách chuyên khảo về Trách nhiệm bồi thường trong đăng ký biện pháp bảo đảm.",
+            kinhPhiDukien: 150000000,
+            nguonVon: "Ngân sách nhà nước",
+            kinhPhiChitiet: "Thù lao nghiên cứu: 70tr, hội thảo khoa học: 50tr, đi lại thu thập hồ sơ: 30tr.",
+            filesKh: [{ name: "Quyet_dinh_phe_duyet_BTNN.pdf", size: "2.1 MB" }],
+            milestones: [
+                { mốc: "Mốc 1", noiDung: "Nghiên cứu cơ sở lý thuyết bồi thường công vụ", tuNgay: "01/01/2025", denNgay: "30/04/2025", batDauThucte: "01/01/2025", ketThucThucte: "25/04/2025", tinhTrangMoc: "Đã hoàn thành", ghiChu: "Hoàn thành viết cơ sở lý luận bồi thường nhà nước." },
+                { mốc: "Mốc 2", noiDung: "Đánh giá thực trạng sai phạm gây thiệt hại đăng ký", tuNgay: "01/05/2025", denNgay: "31/12/2025", batDauThucte: "05/05/2025", ketThucThucte: "20/12/2025", tinhTrangMoc: "Đã hoàn thành", ghiChu: "Hoàn thành nghiên cứu các vụ việc bồi thường thực tế." }
+            ],
+            progressPct: 100,
+            progressStatus: "Đã nghiệm thu/Kết thúc",
+            filesProgress: [{ name: "Bao_Cao_Quyet_Toan_Tien_Do.pdf", size: "1.2 MB" }],
+            nghiemthuNgay: "26/12/2025",
+            nghiemthuXeploai: "Xuất sắc",
+            kinhPhiQuyettoan: 145000000,
+            nghiemthuHoidong: "Chủ tịch hội đồng: PGS.TS Nguyễn Văn Hải; Thư ký: TS. Lê Thị Vân; Ủy viên phản biện 1: TS. Nguyễn Ngọc Minh; Ủy viên phản biện 2: TS. Phạm Thanh Sơn.",
+            nghiemthuSqd: "QĐ-988/QĐ-BTP",
+            nghiemthuNgayqd: "15/01/2026",
+            nghiemthuCoquan: "Bộ Tư pháp",
+            filesFullReport: [{ name: "Bao_Cao_Toan_Van_BTNN_DangKy.pdf", size: "5.4 MB" }],
+            filesMinutes: [{ name: "Bien_Ban_Hoi_Dong_Nghiem_Thu.pdf", size: "1.8 MB" }]
+        }
+    ];
+
+    // Global Mock Data - Nội dung khác liên quan
+    let lkData = [
+        {
+            id: "LQ-2026-0001",
+            ten: "Văn bản hướng dẫn nghiệp vụ đăng ký biện pháp bảo đảm đột xuất của Bộ Tư pháp đối với trường hợp tái cơ cấu tổ chức tín dụng",
+            loai: "Văn bản hướng dẫn đột xuất",
+            ngay: "12/02/2026",
+            noidung: "Hướng dẫn thực hiện đăng ký thay đổi bên nhận bảo đảm khi sáp nhập ngân hàng thương mại cổ phần theo quyết định của Ngân hàng Nhà nước.",
+            files: [{ name: "Cong_van_Huong_dan_Sap_nhap_NHTM.pdf", size: "1.5 MB" }],
+            nguoiNhap: "Lê Văn Tám"
+        },
+        {
+            id: "LQ-2026-0002",
+            ten: "Báo cáo kết quả khảo sát thực địa về tình hình đăng ký giao dịch bảo đảm bằng quyền sử dụng đất nông nghiệp tại Đồng bằng sông Cửu Long",
+            loai: "Khảo sát thực địa",
+            ngay: "05/04/2026",
+            noidung: "Ghi nhận thực tế khó khăn, vướng mắc của người dân trong việc thế chấp đất lúa, đất nuôi trồng thủy hải sản và kiến nghị sửa đổi thông tư liên tịch.",
+            files: [{ name: "Bao_cao_Khao_sat_Thuc_dia_Mien_Tay.xlsx", size: "2.1 MB" }, { name: "Anh_khao_sat_Can_Tho.jpg", size: "3.4 MB" }],
+            nguoiNhap: "Nguyễn Thị Hoa"
+        },
+        {
+            id: "LQ-2026-0003",
+            ten: "Tài liệu nghiên cứu kinh nghiệm quốc tế về đăng ký trực tuyến tài sản bảo đảm của các nước thuộc khối OECD",
+            loai: "Tài liệu tham khảo nước ngoài",
+            ngay: "20/05/2026",
+            noidung: "Tổng hợp cơ chế vận hành, lưu trữ dữ liệu tập trung và biểu phí đăng ký thế chấp trực tuyến tại Singapore, Hàn Quốc và Nhật Bản.",
+            files: [{ name: "OECD_Online_Registry_Report_2025.pdf", size: "4.8 MB" }],
+            nguoiNhap: "Trần Minh Hoàng"
+        }
+    ];
+
+    // DOM Ready
+    window.onload = function() {
+        renderThTable(thData);
+        renderKhTable(khData);
+        renderLkTable(lkData);
+        
+        // Date inputs formatting logic
+        const dateFields = [
+            "th-batdau-dukien", "th-ketthuc-dukien", "th-batdau-thucte", "th-ketthuc-thucte",
+            "kh-batdau-dukien", "kh-ketthuc-dukien", "kh-batdau-chitiet", "kh-ketthuc-chitiet",
+            "kh-nghiemthu-ngay", "kh-nghiemthu-ngayqd",
+            "lk-ngay", "lk-filter-tungay", "lk-filter-denngay"
+        ];
+        
+        dateFields.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) {
+                el.addEventListener('input', function(e) {
+                    let v = e.target.value.replace(/\D/g, '');
+                    if (v.length > 8) v = v.substring(0, 8);
+                    
+                    // Month picker vs Date picker formatting
+                    if(id === "kh-batdau-dukien" || id === "kh-ketthuc-dukien") {
+                        if (v.length > 6) v = v.substring(0, 6);
+                        if (v.length > 2) {
+                            v = v.substring(0, 2) + '/' + v.substring(2);
+                        }
+                    } else {
+                        if (v.length > 4) {
+                            v = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4);
+                        } else if (v.length > 2) {
+                            v = v.substring(0, 2) + '/' + v.substring(2);
+                        }
+                    }
+                    e.target.value = v;
+                });
+            }
+        });
+    };
+
+    // SYSTEM TOASTS
+    function showToast(message, isError = false) {
+        const toast = document.getElementById("system-toast");
+        const text = document.getElementById("toast-text");
+        text.innerText = message;
+        toast.className = isError ? "toast toast-error active" : "toast toast-success active";
+        setTimeout(() => {
+            toast.className = "toast";
+        }, 3000);
+    }
+
+    // TAB MANAGEMENT
+    function switchMainTab(tabId) {
+        document.querySelectorAll(".nav-tab").forEach(tab => tab.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+
+        const clickedTab = Array.from(document.querySelectorAll(".nav-tab")).find(tab => 
+            (tabId === "tab-tap-huan" && tab.innerText.includes("Tập huấn")) || 
+            (tabId === "tab-nckh" && tab.innerText.includes("Nghiên cứu")) ||
+            (tabId === "tab-khac" && tab.innerText.includes("Khác")) ||
+            (tabId === "tab-khac" && tab.innerText.includes("khác"))
+        );
+        if(clickedTab) clickedTab.classList.add("active");
+        
+        const targetContent = document.getElementById(tabId);
+        if(targetContent) targetContent.classList.add("active");
+        
+        closeThForm();
+        closeKhForm();
+        closeLkForm();
+    }
+
+    // ========================================================
+    // FILE ATTACHMENTS (DYNAMIC MULTI-FILE UPLOAD MOCK)
+    // ========================================================
+    function triggerFileUpload(inputId) {
+        const input = document.getElementById(inputId);
+        if(input && !input.disabled) {
+            input.click();
+        }
+    }
+
+    function handleFileSelected(inputEl, listId) {
+        if(inputEl.files.length === 0) return;
+        const listContainer = document.getElementById(listId);
+        
+        for (let i = 0; i < inputEl.files.length; i++) {
+            const file = inputEl.files[i];
+            
+            // Validate file size (20MB or 25MB depending on input)
+            const isMax25Mb = inputEl.id.includes("progress") || inputEl.id.includes("lk") || inputEl.id.includes("kq");
+            const maxBytes = isMax25Mb ? 25 * 1024 * 1024 : 20 * 1024 * 1024;
+            const maxSizeMb = isMax25Mb ? 25 : 20;
+
+            if(file.size > maxBytes) {
+                showToast(`Tệp tin "${file.name}" vượt quá dung lượng cho phép (${maxSizeMb}MB)!`, true);
+                continue;
+            }
+
+            // Validate format (.pdf, .docx, .xlsx for standard, plus .jpg, .png for Tab 3)
+            const isLk = inputEl.id.includes("lk");
+            const allowedExtensions = isLk ? /(\.pdf|\.docx|\.xlsx|\.jpg|\.png)$/i : /(\.pdf|\.docx|\.xlsx)$/i;
+            if(!allowedExtensions.exec(file.name)) {
+                const extensionMsg = isLk 
+                    ? `Định dạng file "${file.name}" không hợp lệ! Chỉ hỗ trợ .pdf, .docx, .xlsx, .jpg, .png`
+                    : `Định dạng file "${file.name}" không hợp lệ! Chỉ hỗ trợ .pdf, .docx, .xlsx`;
+                showToast(extensionMsg, true);
+                continue;
+            }
+
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(1) + " MB";
+            
+            let fileIcon = "fa-file-word";
+            if (file.name.toLowerCase().endsWith('.pdf')) fileIcon = "fa-file-pdf";
+            else if (file.name.toLowerCase().endsWith('.xlsx')) fileIcon = "fa-file-excel";
+            else if (file.name.toLowerCase().endsWith('.jpg') || file.name.toLowerCase().endsWith('.png') || file.name.toLowerCase().endsWith('.jpeg')) fileIcon = "fa-file-image";
+
+            const fileDiv = document.createElement("div");
+            fileDiv.className = "file-item";
+            fileDiv.innerHTML = `
+                <div class="file-info">
+                    <i class="fa-solid ${fileIcon}"></i>
+                    <span class="file-name" style="font-weight: 500;">${file.name}</span>
+                    <span class="file-size" style="color: var(--text-muted); margin-left: 10px;">(${sizeMb})</span>
+                </div>
+                <div class="file-actions">
+                    <span class="file-action-link" onclick="previewPdf('${file.name}', 'Nội dung file đính kèm mô phỏng: ${file.name}')">Xem file</span>
+                    <span class="file-action-link delete" onclick="deleteFormFile(this, '${inputEl.id}')">Xóa file</span>
+                </div>
+            `;
+            listContainer.appendChild(fileDiv);
+            showToast(`Đã tải lên tệp "${file.name}" thành công.`);
+        }
+        
+        inputEl.value = ""; // Reset
+    }
+
+    function deleteFormFile(linkEl, inputId) {
+        if(confirm("Bạn có chắc chắn muốn gỡ bỏ file đính kèm này?")) {
+            const item = linkEl.closest(".file-item");
+            item.remove();
+            showToast("Đã gỡ file đính kèm.");
+        }
+    }
+
+    // DOCUMENT PREVIEW MODAL
+    function previewPdf(fileName, description) {
+        document.getElementById("preview-title").innerText = `Xem trước tệp tin: ${fileName}`;
+        const paper = document.getElementById("preview-paper-content");
+        
+        paper.innerHTML = `
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 13px;">
+                <div style="text-align: center; width: 45%;">
+                    BỘ TƯ PHÁP<br>
+                    CỤC ĐĂNG KÝ QUỐC GIA GIAO DỊCH BẢO ĐẢM<br>
+                    <span style="font-weight: normal; font-size: 12px;">Số: .... /QĐ-BTP</span>
+                </div>
+                <div style="text-align: center; width: 50%;">
+                    CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br>
+                    Độc lập - Tự do - Hạnh phúc<br>
+                    <span style="border-bottom: 1px solid black; display: inline-block; width: 120px; font-weight: normal;"></span><br>
+                    <span style="font-weight: normal; font-size: 13px; font-style: italic;">Hà Nội, ngày 23 tháng 06 năm 2026</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; font-weight: bold; font-size: 17px;">
+                TÀI LIỆU PHÊ DUYỆT / BÁO CÁO CÔNG TÁC PHÂN HỆ
+            </div>
+            
+            <div style="margin-top: 25px; text-indent: 20px; line-height: 1.8;">
+                Thực hiện nhiệm vụ chuyên môn và hoạt động nghiên cứu khoa học công nghệ của Bộ Tư pháp được phân công cho đơn vị chủ trì. Tài liệu dưới đây ghi nhận:
+            </div>
+            
+            <div style="margin-top: 15px; border: 1px dashed var(--border-color); padding: 15px; background-color: #F8FAFC; border-radius: 4px; font-family: sans-serif; font-size: 13px;">
+                <strong>Tên tệp:</strong> ${fileName}<br><br>
+                <strong>Mô tả tệp:</strong> ${description}<br><br>
+                <strong>Nhiệm vụ:</strong> Quản lý tập huấn, hội nghị, hội thảo, tọa đàm và nghiên cứu khoa học chuyên ngành ĐKBPBĐ.
+            </div>
+
+            <div style="margin-top: 20px; text-align: justify; text-indent: 20px; line-height: 1.8;">
+                Báo cáo kết quả và tài liệu liên quan đã được Hội đồng nghiệm thu/Hội đồng chuyên môn xem xét và thông qua. Văn bản chính thức được ký số lưu trữ trên hệ thống cơ sở dữ liệu.
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 40px;">
+                <div style="text-align: center; width: 45%; font-weight: bold;">
+                    ỦY BAN KHOA HỌC / HỘI ĐỒNG PHÊ DUYỆT<br>
+                    CỤC TRƯỞNG<br>
+                    <span style="display: inline-block; margin-top: 45px; color: red; border: 2px solid red; padding: 5px; font-size: 11px; transform: rotate(-4deg); border-radius: 4px;">ĐÃ PHÊ DUYỆT CHÍNH THỨC</span>
+                </div>
+            </div>
+        `;
+        document.getElementById("preview-modal").classList.add("active");
+    }
+
+    function closePreview() {
+        document.getElementById("preview-modal").classList.remove("active");
+    }
+
+
+    // ========================================================
+    // PHÂN HỆ 1: TẬP HUẤN, HỘI NGHỊ, HỘI THẢO, TỌA ĐÀM
+    // ========================================================
+    function renderThTable(data) {
+        const tbody = document.getElementById("th-table-body");
+        tbody.innerHTML = "";
+        
+        if(data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy kế hoạch phù hợp.</td></tr>`;
+            return;
+        }
+
+        data.forEach((th, idx) => {
+            let badgeClass = "bg-secondary";
+            if(th.tinhTrang === "Đang triển khai") badgeClass = "bg-info";
+            else if(th.tinhTrang === "Đã hoàn thành") badgeClass = "bg-success";
+            else if(th.tinhTrang === "Hoãn/Hủy") badgeClass = "bg-danger";
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><a href="#" onclick="openEditThForm('${th.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${th.id}</a></td>
+                <td style="font-weight: 600;" title="${th.ten}">${th.ten.length > 80 ? th.ten.substring(0, 77) + '...' : th.ten}</td>
+                <td>${th.loai}</td>
+                <td>${th.batDauDukien} - ${th.ketThucDukien}</td>
+                <td>${th.hinhThuc}</td>
+                <td>${th.kinhPhiDukien ? Number(th.kinhPhiDukien).toLocaleString('vi-VN') + " đ" : "-"}</td>
+                <td><span class="badge ${badgeClass}">${th.tinhTrang}</span></td>
+                <td style="text-align: center;">
+                    <div class="action-icons">
+                        <button class="action-icon" title="Xem chi tiết" onclick="openEditThForm('${th.id}')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Cập nhật tiến độ/kết quả" onclick="openEditThForm('${th.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="action-icon delete" title="Xóa" onclick="deleteTh('${th.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function executeThSearch() {
+        const ma = document.getElementById("th-filter-ma").value.toLowerCase();
+        const ten = document.getElementById("th-filter-ten").value.toLowerCase();
+        const loai = document.getElementById("th-filter-loai").value;
+        const tinhtrang = document.getElementById("th-filter-tinhtrang").value;
+
+        let filtered = thData.filter(th => {
+            if(ma && !th.id.toLowerCase().includes(ma)) return false;
+            if(ten && !th.ten.toLowerCase().includes(ten)) return false;
+            if(loai && th.loai !== loai) return false;
+            if(tinhtrang && th.tinhTrang !== tinhtrang) return false;
+            return true;
+        });
+        renderThTable(filtered);
+    }
+
+    function resetThFilters() {
+        document.getElementById("th-filter-ma").value = "";
+        document.getElementById("th-filter-ten").value = "";
+        document.getElementById("th-filter-loai").value = "";
+        document.getElementById("th-filter-tinhtrang").value = "";
+        renderThTable(thData);
+        showToast("Đã thiết lập lại bộ lọc.");
+    }
+
+    function toggleThDiaDiem(hinhThuc) {
+        const ddGroup = document.getElementById("th-diadiem-group");
+        const ddInput = document.getElementById("th-diadiem");
+        if(hinhThuc === "Trực tuyến") {
+            ddGroup.style.display = "none";
+            ddInput.value = "";
+        } else {
+            ddGroup.style.display = "block";
+        }
+    }
+
+    function onThTinhTrangChange(val) {
+        // Toggle Tiến độ & Kết quả section based on status
+        const isComplete = val === "Đã hoàn thành";
+        const isCanceled = val === "Hoãn/Hủy";
+
+        document.getElementById("th-lydo-req").style.display = isCanceled ? "inline" : "none";
+
+        // Result sections
+        const elements = ["th-result-header", "th-result-row1", "th-result-row2", "th-result-row3"];
+        elements.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.style.display = isComplete ? "block" : "none";
+        });
+        if(val === "Đã hoàn thành") {
+            document.getElementById("th-result-row1").style.display = "grid";
+        }
+    }
+
+    function openCreateThForm() {
+        document.getElementById("th-form-title").innerHTML = `<i class="fa-solid fa-circle-plus"></i> Tạo kế hoạch hoạt động mới`;
+        document.getElementById("th-id").value = "";
+        
+        const num = String(thData.length + 1).padStart(4, '0');
+        document.getElementById("th-ma").value = `KH-TH-2026-${num}`;
+        
+        document.getElementById("th-ten").value = "";
+        document.getElementById("th-loai").value = "";
+        document.getElementById("th-donvi-chutri").value = "";
+        document.getElementById("th-donvi-phoihop").value = "";
+        document.getElementById("th-kinhphi-dukien").value = "";
+        document.getElementById("th-hinhthuc").value = "Trực tiếp";
+        document.getElementById("th-diadiem").value = "";
+        document.getElementById("th-batdau-dukien").value = "";
+        document.getElementById("th-ketthuc-dukien").value = "";
+        document.getElementById("th-noidung").value = "";
+        document.getElementById("th-kh-files-list").innerHTML = "";
+
+        // Hide progress & result sections
+        document.getElementById("th-progress-header").style.display = "none";
+        document.getElementById("th-progress-fields").style.display = "none";
+        onThTinhTrangChange("Chưa thực hiện");
+
+        // Hide export
+        document.getElementById("th-btn-export").style.display = "none";
+
+        document.getElementById("th-search-card").style.display = "none";
+        document.getElementById("th-list-card").style.display = "none";
+        document.getElementById("th-form-card").style.display = "block";
+    }
+
+    function openEditThForm(id) {
+        const th = thData.find(item => item.id === id);
+        if(!th) return;
+
+        document.getElementById("th-form-title").innerHTML = `<i class="fa-solid fa-edit"></i> Cập nhật hoạt động: ${th.id}`;
+        document.getElementById("th-id").value = th.id;
+        document.getElementById("th-ma").value = th.id;
+        document.getElementById("th-ten").value = th.ten;
+        document.getElementById("th-loai").value = th.loai;
+        document.getElementById("th-donvi-chutri").value = th.donViChuTri;
+        document.getElementById("th-donvi-phoihop").value = th.donViPhoiHop;
+        document.getElementById("th-kinhphi-dukien").value = th.kinhPhiDukien;
+        document.getElementById("th-hinhthuc").value = th.hinhThuc;
+        toggleThDiaDiem(th.hinhThuc);
+        document.getElementById("th-diadiem").value = th.diaDiem;
+        document.getElementById("th-batdau-dukien").value = th.batDauDukien;
+        document.getElementById("th-ketthuc-dukien").value = th.ketThucDukien;
+        document.getElementById("th-noidung").value = th.noiDung;
+
+        // Render file list
+        const fileListContainer = document.getElementById("th-kh-files-list");
+        fileListContainer.innerHTML = "";
+        th.filesKh.forEach(f => {
+            fileListContainer.innerHTML += `
+                <div class="file-item">
+                    <div class="file-info">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span class="file-name">${f.name}</span>
+                    </div>
+                    <div class="file-actions">
+                        <span class="file-action-link" onclick="previewPdf('${f.name}', 'Công văn kế hoạch đã duyệt.')">Xem file</span>
+                        <span class="file-action-link delete" onclick="deleteFormFile(this, 'th-upload-kh')">Xóa file</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Show progress section
+        document.getElementById("th-progress-header").style.display = "block";
+        document.getElementById("th-progress-fields").style.display = "grid";
+        document.getElementById("th-tinhtrang").value = th.tinhTrang;
+        document.getElementById("th-batdau-thucte").value = th.batDauThucte || "";
+        document.getElementById("th-ketthuc-thucte").value = th.ketThucThucte || "";
+        document.getElementById("th-lydo").value = th.lyDo || "";
+
+        onThTinhTrangChange(th.tinhTrang);
+
+        // If completed, fill results fields
+        if(th.tinhTrang === "Đã hoàn thành") {
+            document.getElementById("th-daibieu-thucte").value = th.daibieuThucte || "";
+            document.getElementById("th-danhgia").value = th.danhGia || "";
+            document.getElementById("th-thanhphan").value = th.thanhPhan || "";
+            document.getElementById("th-baocao-kq").value = th.baocaoKq || "";
+            
+            const kqFileList = document.getElementById("th-kq-files-list");
+            kqFileList.innerHTML = "";
+            th.filesKq.forEach(f => {
+                kqFileList.innerHTML += `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <i class="fa-solid fa-file-signature"></i>
+                            <span class="file-name">${f.name}</span>
+                        </div>
+                        <div class="file-actions">
+                            <span class="file-action-link" onclick="previewPdf('${f.name}', 'Tài liệu báo cáo kết quả và phụ lục.')">Xem file</span>
+                            <span class="file-action-link delete" onclick="deleteFormFile(this, 'th-upload-kq')">Xóa file</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Show export button
+        document.getElementById("th-btn-export").style.display = "inline-flex";
+
+        document.getElementById("th-search-card").style.display = "none";
+        document.getElementById("th-list-card").style.display = "none";
+        document.getElementById("th-form-card").style.display = "block";
+    }
+
+    function closeThForm() {
+        document.getElementById("th-form-card").style.display = "none";
+        document.getElementById("th-search-card").style.display = "block";
+        document.getElementById("th-list-card").style.display = "block";
+    }
+
+    function saveTh() {
+        const id = document.getElementById("th-id").value;
+        const ma = document.getElementById("th-ma").value;
+        const ten = document.getElementById("th-ten").value.trim();
+        const loai = document.getElementById("th-loai").value;
+        const donviChutri = document.getElementById("th-donvi-chutri").value;
+        const hinhthuc = document.getElementById("th-hinhthuc").value;
+        const diadiem = document.getElementById("th-diadiem").value.trim();
+        const batdauDukien = document.getElementById("th-batdau-dukien").value;
+        const ketthucDukien = document.getElementById("th-ketthuc-dukien").value;
+
+        // Validation for plan info
+        if(!ten || !loai || !donviChutri || !batdauDukien || !ketthucDukien) {
+            showToast("Vui lòng nhập đầy đủ các trường thông tin kế hoạch bắt buộc!", true);
+            return;
+        }
+        if(hinhthuc === "Trực tiếp" && !diadiem) {
+            showToast("Địa điểm dự kiến là bắt buộc khi chọn Hình thức Trực tiếp!", true);
+            return;
+        }
+
+        // Collect files
+        const filesKh = [];
+        document.querySelectorAll("#th-kh-files-list .file-name").forEach(span => {
+            filesKh.push({ name: span.innerText });
+        });
+
+        const isNew = !id;
+        
+        if(!isNew) {
+            // Update mode, validate progress & results
+            const status = document.getElementById("th-tinhtrang").value;
+            const batdauThucte = document.getElementById("th-batdau-thucte").value;
+            const ketthucThucte = document.getElementById("th-ketthuc-thucte").value;
+            const lydo = document.getElementById("th-lydo").value.trim();
+
+            if(status === "Hoãn/Hủy" && !lydo) {
+                showToast("Lý do điều chỉnh là bắt buộc khi trạng thái Hoãn/Hủy!", true);
+                return;
+            }
+
+            let daibieuThucte = 0, danhGia = "", thanhPhan = "", baocaoKq = "", filesKq = [];
+            
+            if(status === "Đã hoàn thành") {
+                daibieuThucte = parseInt(document.getElementById("th-daibieu-thucte").value);
+                danhGia = document.getElementById("th-danhgia").value;
+                thanhPhan = document.getElementById("th-thanhphan").value.trim();
+                baocaoKq = document.getElementById("th-baocao-kq").value.trim();
+
+                if(!daibieuThucte || !danhGia || !thanhPhan || !baocaoKq) {
+                    showToast("Vui lòng điền đầy đủ các thông tin Kết quả thực hiện!", true);
+                    return;
+                }
+
+                document.querySelectorAll("#th-kq-files-list .file-name").forEach(span => {
+                    filesKq.push({ name: span.innerText });
+                });
+                if(filesKq.length === 0) {
+                    showToast("Vui lòng tải lên tài liệu kết quả/kỷ yếu sự kiện!", true);
+                    return;
+                }
+            }
+
+            // Update global data
+            const th = thData.find(item => item.id === id);
+            th.ten = ten;
+            th.loai = loai;
+            th.donViChuTri = donviChutri;
+            th.donViPhoiHop = document.getElementById("th-donvi-phoihop").value;
+            th.kinhPhiDukien = document.getElementById("th-kinhphi-dukien").value;
+            th.hinhThuc = hinhthuc;
+            th.diaDiem = diadiem;
+            th.batDauDukien = batdauDukien;
+            th.ketThucDukien = ketthucDukien;
+            th.noiDung = document.getElementById("th-noidung").value;
+            th.filesKh = filesKh;
+
+            th.tinhTrang = status;
+            th.batDauThucte = batdauThucte;
+            th.ketThucThucte = ketthucThucte;
+            th.lyDo = lydo;
+            th.daibieuThucte = daibieuThucte;
+            th.thanhPhan = thanhPhan;
+            th.danhGia = danhGia;
+            th.baocaoKq = baocaoKq;
+            th.filesKq = filesKq;
+
+            showToast("Cập nhật thông tin và tiến độ kế hoạch thành công.");
+        } else {
+            // Create mode
+            thData.push({
+                id: ma,
+                ten: ten,
+                loai: loai,
+                donViChuTri: donviChutri,
+                donViPhoiHop: document.getElementById("th-donvi-phoihop").value,
+                kinhPhiDukien: document.getElementById("th-kinhphi-dukien").value || 0,
+                hinhThuc: hinhthuc,
+                diaDiem: diadiem,
+                batDauDukien: batdauDukien,
+                ketThucDukien: ketthucDukien,
+                noiDung: document.getElementById("th-noidung").value,
+                filesKh: filesKh.length > 0 ? filesKh : [{ name: "Ke_Hoach_Moi_Tao.pdf" }],
+                tinhTrang: "Chưa thực hiện",
+                batDauThucte: "",
+                ketThucThucte: "",
+                lyDo: "",
+                daibieuThucte: 0,
+                thanhPhan: "",
+                danhGia: "",
+                baocaoKq: "",
+                filesKq: []
+            });
+            showToast("Tạo mới kế hoạch tập huấn thành công.");
+        }
+
+        renderThTable(thData);
+        closeThForm();
+    }
+
+    function deleteTh(id) {
+        if(confirm(`Bạn có chắc chắn muốn xóa kế hoạch ${id}?`)) {
+            thData = thData.filter(item => item.id !== id);
+            renderThTable(thData);
+            showToast("Đã xóa kế hoạch thành công.");
+        }
+    }
+
+    function exportExcelTh() {
+        showToast("Đang kết xuất Sổ theo dõi tập huấn, hội nghị ra Excel...");
+    }
+
+    function exportProgressTh() {
+        showToast("Đang kết xuất báo cáo tiến độ hoạt động ra Excel...");
+    }
+
+
+    // ========================================================
+    // PHÂN HỆ 2: NGHIÊN CỨU KHOA HỌC
+    // ========================================================
+    let currentMilestoneId = 0;
+
+    function renderKhTable(data) {
+        const tbody = document.getElementById("kh-table-body");
+        tbody.innerHTML = "";
+        
+        if(data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy đề tài nghiên cứu khoa học.</td></tr>`;
+            return;
+        }
+
+        data.forEach((kh, idx) => {
+            let badgeClass = "bg-secondary";
+            if(kh.progressStatus === "Đang thực hiện") badgeClass = "bg-info";
+            else if(kh.progressStatus === "Đã hoàn thành tiến độ - Chờ nghiệm thu") badgeClass = "bg-warning";
+            else if(kh.progressStatus === "Đã nghiệm thu/Kết thúc") badgeClass = "bg-success";
+            else if(kh.progressStatus === "Chậm tiến độ" || kh.progressStatus === "Tạm dừng") badgeClass = "bg-danger";
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><a href="#" onclick="openEditKhForm('${kh.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${kh.id}</a></td>
+                <td style="font-weight: 600;" title="${kh.ten}">${kh.ten.length > 80 ? kh.ten.substring(0, 77) + '...' : kh.ten}</td>
+                <td>${kh.cap}</td>
+                <td>${kh.chunhiem}</td>
+                <td>${kh.batDauDukien} - ${kh.ketThucDukien}</td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span style="font-weight:700;">${kh.progressPct}%</span>
+                        <div style="width:50px; background-color:#CBD5E1; height:6px; border-radius:3px; overflow:hidden;">
+                            <div style="background-color:var(--secondary-color); width:${kh.progressPct}%; height:100%;"></div>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="badge ${badgeClass}">${kh.progressStatus}</span></td>
+                <td style="text-align: center;">
+                    <div class="action-icons">
+                        <button class="action-icon" title="Xem chi tiết" onclick="openEditKhForm('${kh.id}')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Sửa/Cập nhật" onclick="openEditKhForm('${kh.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="action-icon delete" title="Xóa" onclick="deleteKh('${kh.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function executeKhSearch() {
+        const ma = document.getElementById("kh-filter-ma").value.toLowerCase();
+        const ten = document.getElementById("kh-filter-ten").value.toLowerCase();
+        const chunhiem = document.getElementById("kh-filter-chunhiem").value.toLowerCase();
+        const trangthai = document.getElementById("kh-filter-trangthai").value;
+
+        let filtered = khData.filter(kh => {
+            if(ma && !kh.id.toLowerCase().includes(ma)) return false;
+            if(ten && !kh.ten.toLowerCase().includes(ten)) return false;
+            if(chunhiem && !kh.chunhiem.toLowerCase().includes(chunhiem)) return false;
+            if(trangthai && kh.progressStatus !== trangthai) return false;
+            return true;
+        });
+        renderKhTable(filtered);
+    }
+
+    function resetKhFilters() {
+        document.getElementById("kh-filter-ma").value = "";
+        document.getElementById("kh-filter-ten").value = "";
+        document.getElementById("kh-filter-chunhiem").value = "";
+        document.getElementById("kh-filter-trangthai").value = "";
+        renderKhTable(khData);
+        showToast("Đã thiết lập lại bộ lọc đề tài.");
+    }
+
+    // Dynamic Milestone rows management
+    function addMilestoneRow(data = { mốc: "", noiDung: "", tuNgay: "", denNgay: "" }) {
+        const tbody = document.getElementById("kh-milestone-body");
+        const idx = tbody.children.length + 1;
+        
+        const tr = document.createElement("tr");
+        tr.dataset.idx = idx;
+        tr.innerHTML = `
+            <td style="font-weight:700;"><input type="text" class="form-control m-moc" value="${data.mốc || 'Mốc ' + idx}" style="border:none; background:transparent; font-weight:700;"></td>
+            <td><input type="text" class="form-control m-noidung" value="${data.noiDung}" placeholder="Nội dung dự kiến công việc..."></td>
+            <td><input type="text" class="form-control m-tungay" value="${data.tuNgay}" placeholder="dd/mm/yyyy"></td>
+            <td><input type="text" class="form-control m-denngay" value="${data.denNgay}" placeholder="dd/mm/yyyy"></td>
+            <td style="text-align: center;">
+                <button type="button" class="action-icon delete" onclick="this.closest('tr').remove(); reorderMilestoneRows();"><i class="fa fa-trash"></i></button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+
+        // Bind format listener
+        const formatInput = (el) => {
+            el.addEventListener('input', function(e) {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length > 8) v = v.substring(0, 8);
+                if (v.length > 4) {
+                    v = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4);
+                } else if (v.length > 2) {
+                    v = v.substring(0, 2) + '/' + v.substring(2);
+                }
+                e.target.value = v;
+            });
+        };
+        formatInput(tr.querySelector('.m-tungay'));
+        formatInput(tr.querySelector('.m-denngay'));
+    }
+
+    function reorderMilestoneRows() {
+        const rows = document.getElementById("kh-milestone-body").children;
+        for(let i=0; i<rows.length; i++) {
+            rows[i].dataset.idx = i + 1;
+            rows[i].querySelector('.m-moc').value = "Mốc " + (i + 1);
+        }
+    }
+
+    function updatePctValue(val) {
+        document.getElementById("kh-progress-pct-val").innerText = val + "%";
+        // If 100%, check status
+        if(parseInt(val) === 100) {
+            document.getElementById("kh-progress-status").value = "Đã hoàn thành tiến độ - Chờ nghiệm thu";
+            onKhStatusDropdownChange("Đã hoàn thành tiến độ - Chờ nghiệm thu");
+        }
+    }
+
+    function onKhStatusDropdownChange(val) {
+        const showNghiemThu = val === "Đã hoàn thành tiến độ - Chờ nghiệm thu" || val === "Đã nghiệm thu/Kết thúc";
+        
+        document.getElementById("kh-result-header").style.display = showNghiemThu ? "block" : "none";
+        document.getElementById("kh-result-section").style.display = showNghiemThu ? "block" : "none";
+        
+        if (val === "Đã hoàn thành tiến độ - Chờ nghiệm thu") {
+            document.getElementById("kh-progress-pct").value = 100;
+            document.getElementById("kh-progress-pct-val").innerText = "100%";
+        }
+    }
+
+    function onKhXepLoaiChange(val) {
+        const isDạt = val === "Xuất sắc" || val === "Khá" || val === "Trung bình";
+        const isKhongDat = val === "Không đạt";
+        
+        // Show/hide requirement tags
+        document.getElementById("kh-sqd-req").style.display = isDạt ? "inline" : "none";
+        document.getElementById("kh-kq-ngay-req").style.display = isDạt ? "inline" : "none";
+        document.getElementById("kh-fullreport-req").style.display = isDạt ? "inline" : "none";
+        
+        // Minutes is required for "Không đạt"
+        document.getElementById("kh-minutes-req").style.display = isKhongDat ? "inline" : "none";
+    }
+
+    function openCreateKhForm() {
+        document.getElementById("kh-form-title").innerHTML = `<i class="fa-solid fa-circle-plus"></i> Đăng ký đề tài nghiên cứu khoa học`;
+        document.getElementById("kh-id").value = "";
+        
+        const num = String(khData.length + 1).padStart(4, '0');
+        document.getElementById("kh-ma").value = `ĐT-2026-${num}`;
+        document.getElementById("kh-ma").readOnly = false;
+        
+        document.getElementById("kh-ten").value = "";
+        document.getElementById("kh-cap").value = "Cấp Bộ";
+        document.getElementById("kh-chunhiem").value = "";
+        document.getElementById("kh-donvi").value = "";
+        document.getElementById("kh-thanhvien").value = "";
+        document.getElementById("kh-batdau-dukien").value = "";
+        document.getElementById("kh-ketthuc-dukien").value = "";
+        document.getElementById("kh-tong-thang").value = "";
+        document.getElementById("kh-batdau-chitiet").value = "";
+        document.getElementById("kh-ketthuc-chitiet").value = "";
+        document.getElementById("kh-muctieu").value = "";
+        document.getElementById("kh-phamvi").value = "";
+        document.getElementById("kh-noidung").value = "";
+        document.getElementById("kh-phuongphap").value = "";
+        document.getElementById("kh-ketqua-dukien").value = "";
+        
+        document.getElementById("kh-milestone-body").innerHTML = "";
+        // Pre-populate with 2 default milestones
+        addMilestoneRow({ mốc: "Mốc 1", noiDung: "Nghiên cứu cơ sở lý luận", tuNgay: "", denNgay: "" });
+        addMilestoneRow({ mốc: "Mốc 2", noiDung: "Thu thập số liệu thực tiễn", tuNgay: "", denNgay: "" });
+
+        document.getElementById("kh-kinhphi-dukien").value = "";
+        document.getElementById("kh-nguonvốn").value = "Ngân sách nhà nước";
+        document.getElementById("kh-kinhphi-chitiet").value = "";
+        document.getElementById("kh-kh-files-list").innerHTML = "";
+
+        // Hide progress section & result section
+        document.getElementById("kh-progress-header").style.display = "none";
+        document.getElementById("kh-progress-section").style.display = "none";
+        document.getElementById("kh-result-header").style.display = "none";
+        document.getElementById("kh-result-section").style.display = "none";
+
+        // Hide special delete & export buttons
+        document.getElementById("kh-btn-delete-result").style.display = "none";
+        document.getElementById("kh-btn-export").style.display = "none";
+
+        document.getElementById("kh-search-card").style.display = "none";
+        document.getElementById("kh-list-card").style.display = "none";
+        document.getElementById("kh-form-card").style.display = "block";
+    }
+
+    function openEditKhForm(id) {
+        const kh = khData.find(item => item.id === id);
+        if(!kh) return;
+
+        document.getElementById("kh-form-title").innerHTML = `<i class="fa-solid fa-edit"></i> Quản lý đề tài: ${kh.id}`;
+        document.getElementById("kh-id").value = kh.id;
+        document.getElementById("kh-ma").value = kh.id;
+        document.getElementById("kh-ma").readOnly = true;
+        document.getElementById("kh-ten").value = kh.ten;
+        document.getElementById("kh-cap").value = kh.cap;
+        document.getElementById("kh-chunhiem").value = kh.chunhiem;
+        document.getElementById("kh-donvi").value = kh.donVi;
+        document.getElementById("kh-thanhvien").value = kh.thanhVien;
+        document.getElementById("kh-batdau-dukien").value = kh.batDauDukien;
+        document.getElementById("kh-ketthuc-dukien").value = kh.ketThucDukien;
+        document.getElementById("kh-tong-thang").value = kh.tongThang;
+        document.getElementById("kh-batdau-chitiet").value = kh.batDauChitiet;
+        document.getElementById("kh-ketthuc-chitiet").value = kh.ketThucChitiet;
+        document.getElementById("kh-muctieu").value = kh.muctieu;
+        document.getElementById("kh-phamvi").value = kh.phamvi;
+        document.getElementById("kh-noidung").value = kh.noidung;
+        document.getElementById("kh-phuongphap").value = kh.phuongphap;
+        document.getElementById("kh-ketqua-dukien").value = kh.ketquaDukien || "";
+        document.getElementById("kh-kinhphi-dukien").value = kh.kinhPhiDukien;
+        document.getElementById("kh-nguonvốn").value = kh.nguonVon;
+        document.getElementById("kh-kinhphi-chitiet").value = kh.kinhPhiChitiet;
+
+        // Render plan files
+        const listKh = document.getElementById("kh-kh-files-list");
+        listKh.innerHTML = "";
+        kh.filesKh.forEach(f => {
+            listKh.innerHTML += `
+                <div class="file-item">
+                    <div class="file-info">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span class="file-name">${f.name}</span>
+                    </div>
+                    <div class="file-actions">
+                        <span class="file-action-link" onclick="previewPdf('${f.name}', 'Thuyết minh đề tài nghiên cứu khoa học.')">Xem file</span>
+                        <span class="file-action-link delete" onclick="deleteFormFile(this, 'kh-upload-kh')">Xóa file</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Load milestones to dynamic plan table
+        const milestoneTbody = document.getElementById("kh-milestone-body");
+        milestoneTbody.innerHTML = "";
+        kh.milestones.forEach(m => {
+            addMilestoneRow({ mốc: m.mốc, noiDung: m.noiDung, tuNgay: m.tuNgay, denNgay: m.denNgay });
+        });
+
+        // Load progress section (UC256)
+        document.getElementById("kh-progress-header").style.display = "block";
+        document.getElementById("kh-progress-section").style.display = "block";
+        
+        // Render actual milestones update table
+        const progressTbody = document.getElementById("kh-progress-body");
+        progressTbody.innerHTML = "";
+        kh.milestones.forEach((m, idx) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td style="font-weight:700;">${m.mốc}</td>
+                <td><small>${m.noiDung}</small></td>
+                <td><input type="text" class="form-control p-start" value="${m.batDauThucte || ''}" placeholder="dd/mm/yyyy"></td>
+                <td><input type="text" class="form-control p-end" value="${m.ketThucThucte || ''}" placeholder="dd/mm/yyyy"></td>
+                <td>
+                    <select class="form-select p-status">
+                        <option value="Chưa thực hiện" ${m.tinhTrangMoc==='Chưa thực hiện'?'selected':''}>Chưa thực hiện</option>
+                        <option value="Đang triển khai" ${m.tinhTrangMoc==='Đang triển khai'?'selected':''}>Đang triển khai</option>
+                        <option value="Đã hoàn thành" ${m.tinhTrangMoc==='Đã hoàn thành'?'selected':''}>Đã hoàn thành</option>
+                        <option value="Trễ hạn" ${m.tinhTrangMoc==='Trễ hạn'?'selected':''}>Trễ hạn</option>
+                    </select>
+                </td>
+                <td><textarea class="form-control p-notes" style="min-height:35px; font-size:12px;">${m.ghiChu || ''}</textarea></td>
+            `;
+            progressTbody.appendChild(tr);
+
+            // Bind format listener
+            const formatInput = (el) => {
+                el.addEventListener('input', function(e) {
+                    let v = e.target.value.replace(/\D/g, '');
+                    if (v.length > 8) v = v.substring(0, 8);
+                    if (v.length > 4) {
+                        v = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4);
+                    } else if (v.length > 2) {
+                        v = v.substring(0, 2) + '/' + v.substring(2);
+                    }
+                    e.target.value = v;
+                });
+            };
+            formatInput(tr.querySelector('.p-start'));
+            formatInput(tr.querySelector('.p-end'));
+        });
+
+        // Set Slider % and status dropdown
+        document.getElementById("kh-progress-pct").value = kh.progressPct;
+        document.getElementById("kh-progress-pct-val").innerText = kh.progressPct + "%";
+        document.getElementById("kh-progress-status").value = kh.progressStatus;
+
+        // Render progress reports files
+        const listProgress = document.getElementById("kh-progress-files-list");
+        listProgress.innerHTML = "";
+        kh.filesProgress.forEach(f => {
+            listProgress.innerHTML += `
+                <div class="file-item">
+                    <div class="file-info">
+                        <i class="fa-solid fa-file-word"></i>
+                        <span class="file-name">${f.name}</span>
+                    </div>
+                    <div class="file-actions">
+                        <span class="file-action-link" onclick="previewPdf('${f.name}', 'Báo cáo tiến độ khoa học.')">Xem file</span>
+                        <span class="file-action-link delete" onclick="deleteFormFile(this, 'kh-upload-progress')">Xóa file</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        onKhStatusDropdownChange(kh.progressStatus);
+
+        // Fill Results section if exists
+        const hasResult = kh.progressStatus === "Đã nghiệm thu/Kết thúc";
+        if(hasResult) {
+            document.getElementById("kh-nghiemthu-ngay").value = kh.nghiemthuNgay || "";
+            document.getElementById("kh-nghiemthu-xeploai").value = kh.nghiemthuXeploai || "";
+            onKhXepLoaiChange(kh.nghiemthuXeploai);
+            document.getElementById("kh-kinhphi-quyettoan").value = kh.kinhPhiQuyettoan || "";
+            document.getElementById("kh-nghiemthu-hoidong").value = kh.nghiemthuHoidong || "";
+            document.getElementById("kh-nghiemthu-sqd").value = kh.nghiemthuSqd || "";
+            document.getElementById("kh-nghiemthu-ngayqd").value = kh.nghiemthuNgayqd || "";
+            document.getElementById("kh-nghiemthu-coquan").value = kh.nghiemthuCoquan || "Bộ Tư pháp";
+
+            // Render output report
+            const listReport = document.getElementById("kh-fullreport-files-list");
+            listReport.innerHTML = "";
+            kh.filesFullReport.forEach(f => {
+                listReport.innerHTML += `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span class="file-name">${f.name}</span>
+                        </div>
+                        <div class="file-actions">
+                            <span class="file-action-link" onclick="previewPdf('${f.name}', 'Sản phẩm nghiên cứu toàn văn.')">Xem file</span>
+                            <span class="file-action-link delete" onclick="deleteFormFile(this, 'kh-upload-fullreport')">Xóa file</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render council minutes
+            const listMin = document.getElementById("kh-minutes-files-list");
+            listMin.innerHTML = "";
+            kh.filesMinutes.forEach(f => {
+                listMin.innerHTML += `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <i class="fa-solid fa-file-signature"></i>
+                            <span class="file-name">${f.name}</span>
+                        </div>
+                        <div class="file-actions">
+                            <span class="file-action-link" onclick="previewPdf('${f.name}', 'Biên bản hội đồng nghiệm thu.')">Xem file</span>
+                            <span class="file-action-link delete" onclick="deleteFormFile(this, 'kh-upload-minutes')">Xóa file</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Show delete result button (Admin privilege)
+            document.getElementById("kh-btn-delete-result").style.display = "inline-flex";
+        } else {
+            document.getElementById("kh-nghiemthu-ngay").value = "";
+            document.getElementById("kh-nghiemthu-xeploai").value = "";
+            document.getElementById("kh-kinhphi-quyettoan").value = "";
+            document.getElementById("kh-nghiemthu-hoidong").value = "";
+            document.getElementById("kh-nghiemthu-sqd").value = "";
+            document.getElementById("kh-nghiemthu-ngayqd").value = "";
+            
+            document.getElementById("kh-fullreport-files-list").innerHTML = "";
+            document.getElementById("kh-minutes-files-list").innerHTML = "";
+            document.getElementById("kh-btn-delete-result").style.display = "none";
+        }
+
+        // Show export button
+        document.getElementById("kh-btn-export").style.display = "inline-flex";
+
+        document.getElementById("kh-search-card").style.display = "none";
+        document.getElementById("kh-list-card").style.display = "none";
+        document.getElementById("kh-form-card").style.display = "block";
+    }
+
+    function closeKhForm() {
+        document.getElementById("kh-form-card").style.display = "none";
+        document.getElementById("kh-search-card").style.display = "block";
+        document.getElementById("kh-list-card").style.display = "block";
+    }
+
+    function saveKh() {
+        const id = document.getElementById("kh-id").value;
+        const ma = document.getElementById("kh-ma").value.trim();
+        const ten = document.getElementById("kh-ten").value.trim();
+        const cap = document.getElementById("kh-cap").value;
+        const chunhiem = document.getElementById("kh-chunhiem").value.trim();
+        const donvi = document.getElementById("kh-donvi").value;
+        const batdauDukien = document.getElementById("kh-batdau-dukien").value;
+        const ketthucDukien = document.getElementById("kh-ketthuc-dukien").value;
+        const tongThang = document.getElementById("kh-tong-thang").value;
+        const batdauChitiet = document.getElementById("kh-batdau-chitiet").value;
+        const ketthucChitiet = document.getElementById("kh-ketthuc-chitiet").value;
+
+        // Basic plan validation
+        if(!ma || !ten || !chunhiem || !donvi || !batdauDukien || !ketthucDukien || !tongThang || !batdauChitiet || !ketthucChitiet) {
+            showToast("Vui lòng nhập đầy đủ các trường thông tin kế hoạch đề tài bắt buộc!", true);
+            return;
+        }
+
+        // Gather milestones from plan table
+        const milestoneRows = document.getElementById("kh-milestone-body").children;
+        if(milestoneRows.length === 0) {
+            showToast("Đề tài nghiên cứu phải có ít nhất 1 mốc tiến độ thực hiện!", true);
+            return;
+        }
+
+        const milestones = [];
+        for(let i=0; i<milestoneRows.length; i++) {
+            const row = milestoneRows[i];
+            const m_moc = row.querySelector('.m-moc').value.trim();
+            const m_noidung = row.querySelector('.m-noidung').value.trim();
+            const m_tungay = row.querySelector('.m-tungay').value;
+            const m_denngay = row.querySelector('.m-denngay').value;
+
+            if(!m_moc || !m_noidung || !m_tungay || !m_denngay) {
+                showToast(`Vui lòng điền đủ thông tin cho dòng mốc thứ ${i+1}!`, true);
+                return;
+            }
+            milestones.push({
+                mốc: m_moc,
+                noiDung: m_noidung,
+                tuNgay: m_tungay,
+                denNgay: m_denngay,
+                batDauThucte: "",
+                ketThucThucte: "",
+                tinhTrangMoc: "Chưa thực hiện",
+                ghiChu: ""
+            });
+        }
+
+        // Collect plan files
+        const filesKh = [];
+        document.querySelectorAll("#kh-kh-files-list .file-name").forEach(span => {
+            filesKh.push({ name: span.innerText });
+        });
+
+        const isNew = !id;
+
+        if(!isNew) {
+            // Update mode: Gather actual milestone progress from progress table
+            const progressRows = document.getElementById("kh-progress-body").children;
+            const status = document.getElementById("kh-progress-status").value;
+            const pct = parseInt(document.getElementById("kh-progress-pct").value);
+
+            for(let i=0; i<progressRows.length; i++) {
+                const row = progressRows[i];
+                const p_start = row.querySelector('.p-start').value;
+                const p_end = row.querySelector('.p-end').value;
+                const p_status = row.querySelector('.p-status').value;
+                const p_notes = row.querySelector('.p-notes').value.trim();
+
+                // Validation: Chậm tiến độ / Tạm dừng -> Ghi chú mốc hiện tại bắt buộc
+                if((status === "Chậm tiến độ" || status === "Tạm dừng") && p_status === "Đang triển khai" && !p_notes) {
+                    showToast(`Bắt buộc nhập lý do vào Ghi chú mốc đang thực hiện thứ ${i+1} khi tổng thể bị Chậm/Tạm dừng!`, true);
+                    return;
+                }
+
+                milestones[i].batDauThucte = p_start;
+                milestones[i].ketThucThucte = p_end;
+                milestones[i].tinhTrangMoc = p_status;
+                milestones[i].ghiChu = p_notes;
+            }
+
+            // Progress report files
+            const filesProgress = [];
+            document.querySelectorAll("#kh-progress-files-list .file-name").forEach(span => {
+                filesProgress.push({ name: span.innerText });
+            });
+
+            // Results validation (UC257)
+            let nghiemthuNgay = "", nghiemthuXeploai = "", kinhPhiQuyettoan = 0, nghiemthuHoidong = "", nghiemthuSqd = "", nghiemthuNgayqd = "", filesFullReport = [], filesMinutes = [];
+            
+            if(status === "Đã hoàn thành tiến độ - Chờ nghiệm thu" || status === "Đã nghiệm thu/Kết thúc") {
+                nghiemthuNgay = document.getElementById("kh-nghiemthu-ngay").value;
+                nghiemthuXeploai = document.getElementById("kh-nghiemthu-xeploai").value;
+                kinhPhiQuyettoan = document.getElementById("kh-kinhphi-quyettoan").value;
+                nghiemthuHoidong = document.getElementById("kh-nghiemthu-hoidong").value.trim();
+
+                if(!nghiemthuNgay || !nghiemthuXeploai || !nghiemthuHoidong) {
+                    showToast("Vui lòng nhập Ngày nghiệm thu, Xếp loại, Hội đồng đánh giá!", true);
+                    return;
+                }
+
+                const isDạt = nghiemthuXeploai === "Xuất sắc" || nghiemthuXeploai === "Khá" || nghiemthuXeploai === "Trung bình";
+                const isKhongDat = nghiemthuXeploai === "Không đạt";
+                
+                nghiemthuSqd = document.getElementById("kh-nghiemthu-sqd").value.trim();
+                nghiemthuNgayqd = document.getElementById("kh-nghiemthu-ngayqd").value;
+
+                if(isDạt && (!nghiemthuSqd || !nghiemthuNgayqd)) {
+                    showToast("Bắt buộc điền Số quyết định và Ngày ký quyết định công nhận kết quả khi đạt chất lượng!", true);
+                    return;
+                }
+
+                document.querySelectorAll("#kh-fullreport-files-list .file-name").forEach(span => {
+                    filesFullReport.push({ name: span.innerText });
+                });
+                if(isDạt && filesFullReport.length === 0) {
+                    showToast("Bắt buộc đính kèm File báo cáo tổng luận đề tài toàn văn (PDF) khi đạt!", true);
+                    return;
+                }
+
+                document.querySelectorAll("#kh-minutes-files-list .file-name").forEach(span => {
+                    filesMinutes.push({ name: span.innerText });
+                });
+                if(isKhongDat && filesMinutes.length === 0) {
+                    showToast("Bắt buộc đính kèm Biên bản họp hội đồng khi Không đạt nghiệm thu!", true);
+                    return;
+                }
+
+                // If saved with final result, change status
+                if(status === "Đã hoàn thành tiến độ - Chờ nghiệm thu" && (nghiemthuXeploai)) {
+                    // Auto advance status to final
+                    document.getElementById("kh-progress-status").value = "Đã nghiệm thu/Kết thúc";
+                }
+            }
+
+            // Save to DB
+            const kh = khData.find(item => item.id === id);
+            kh.ten = ten;
+            kh.cap = cap;
+            kh.chunhiem = chunhiem;
+            kh.donVi = donvi;
+            kh.thanhVien = document.getElementById("kh-thanhvien").value;
+            kh.batDauDukien = batdauDukien;
+            kh.ketThucDukien = ketthucDukien;
+            kh.tongThang = tongThang;
+            kh.batDauChitiet = batdauChitiet;
+            kh.ketThucChitiet = ketthucChitiet;
+            kh.muctieu = document.getElementById("kh-muctieu").value;
+            kh.phamvi = document.getElementById("kh-phamvi").value;
+            kh.noidung = document.getElementById("kh-noidung").value;
+            kh.phuongphap = document.getElementById("kh-phuongphap").value;
+            kh.ketquaDukien = document.getElementById("kh-ketqua-dukien").value;
+            kh.kinhPhiDukien = document.getElementById("kh-kinhphi-dukien").value;
+            kh.nguonVon = document.getElementById("kh-nguonvốn").value;
+            kh.kinhPhiChitiet = document.getElementById("kh-kinhphi-chitiet").value;
+            kh.filesKh = filesKh;
+
+            kh.milestones = milestones;
+            kh.progressPct = pct;
+            kh.progressStatus = document.getElementById("kh-progress-status").value;
+            kh.filesProgress = filesProgress;
+
+            kh.nghiemthuNgay = nghiemthuNgay;
+            kh.nghiemthuXeploai = nghiemthuXeploai;
+            kh.kinhPhiQuyettoan = kinhPhiQuyettoan;
+            kh.nghiemthuHoidong = nghiemthuHoidong;
+            kh.nghiemthuSqd = nghiemthuSqd;
+            kh.nghiemthuNgayqd = nghiemthuNgayqd;
+            kh.filesFullReport = filesFullReport;
+            kh.filesMinutes = filesMinutes;
+
+            showToast("Cập nhật thông tin tiến độ và nghiệm thu đề tài NCKH thành công.");
+        } else {
+            // New Scientific project
+            khData.push({
+                id: ma,
+                ten: ten,
+                cap: cap,
+                chunhiem: chunhiem,
+                donVi: donvi,
+                thanhVien: document.getElementById("kh-thanhvien").value,
+                batDauDukien: batdauDukien,
+                ketThucDukien: ketthucDukien,
+                tongThang: tongThang,
+                batDauChitiet: batdauChitiet,
+                ketThucChitiet: ketthucChitiet,
+                muctieu: document.getElementById("kh-muctieu").value,
+                phamvi: document.getElementById("kh-phamvi").value,
+                noidung: document.getElementById("kh-noidung").value,
+                phuongphap: document.getElementById("kh-phuongphap").value,
+                ketquaDukien: document.getElementById("kh-ketqua-dukien").value,
+                kinhPhiDukien: document.getElementById("kh-kinhphi-dukien").value || 0,
+                nguonVon: document.getElementById("kh-nguonvốn").value,
+                kinhPhiChitiet: document.getElementById("kh-kinhphi-chitiet").value,
+                filesKh: filesKh.length > 0 ? filesKh : [{ name: "Thuyet_Minh_De_Tai_Signed.pdf" }],
+                
+                milestones: milestones,
+                progressPct: 0,
+                progressStatus: "Đang thực hiện",
+                filesProgress: [],
+                
+                nghiemthuNgay: "",
+                nghiemthuXeploai: "",
+                kinhPhiQuyettoan: 0,
+                nghiemthuHoidong: "",
+                nghiemthuSqd: "",
+                nghiemthuNgayqd: "",
+                nghiemthuCoquan: "Bộ Tư pháp",
+                filesFullReport: [],
+                filesMinutes: []
+            });
+            showToast("Đăng ký đề tài khoa học mới thành công.");
+        }
+
+        renderKhTable(khData);
+        closeKhForm();
+    }
+
+    function deleteKh(id) {
+        if(confirm(`Bạn có chắc chắn muốn xóa đề tài NCKH ${id}?`)) {
+            khData = khData.filter(item => item.id !== id);
+            renderKhTable(khData);
+            showToast("Đã xóa đề tài khoa học thành công.");
+        }
+    }
+
+    function exportExcelKh() {
+        showToast("Đang kết xuất Sổ theo dõi đề tài khoa học ra Excel...");
+    }
+
+    function exportProgressKh() {
+        showToast("Đang kết xuất báo cáo tiến độ mốc thực hiện thực tế đề tài...");
+    }
+
+    // ========================================================
+    // DELETE SCIENTIFIC RESULT POPUP (UC257 Action C)
+    // ========================================================
+    function triggerDeleteResult() {
+        document.getElementById("del-reason").value = "";
+        document.getElementById("del-password").value = "";
+        document.getElementById("delete-result-popup").classList.add("active");
+    }
+
+    function closeDeleteResultPopup() {
+        document.getElementById("delete-result-popup").classList.remove("active");
+    }
+
+    function confirmDeleteResult() {
+        const id = document.getElementById("kh-id").value;
+        const reason = document.getElementById("del-reason").value.trim();
+        const pwd = document.getElementById("del-password").value;
+
+        if(!reason || reason.length < 10) {
+            showToast("Lý do xóa bắt buộc phải nhập và dài từ 10 ký tự trở lên!", true);
+            return;
+        }
+        if(!pwd) {
+            showToast("Vui lòng nhập mật khẩu xác nhận quyền quản trị!", true);
+            return;
+        }
+
+        // Soft Delete simulation for results in DB
+        const kh = khData.find(item => item.id === id);
+        if(kh) {
+            kh.nghiemthuNgay = "";
+            kh.nghiemthuXeploai = "";
+            kh.kinhPhiQuyettoan = 0;
+            kh.nghiemthuHoidong = "";
+            kh.nghiemthuSqd = "";
+            kh.nghiemthuNgayqd = "";
+            kh.filesFullReport = [];
+            kh.filesMinutes = [];
+            
+            // Revert state
+            kh.progressStatus = "Đã hoàn thành tiến độ - Chờ nghiệm thu";
+            kh.progressPct = 100;
+        }
+
+        renderKhTable(khData);
+        closeDeleteResultPopup();
+        closeKhForm();
+        showToast("Đã xóa logic (Soft Delete) kết quả nghiệm thu thành công. Đề tài quay về Chờ nghiệm thu.");
+    }
+
+    // ========================================================
+    // PHÂN HỆ 3: NỘI DUNG KHÁC LIÊN QUAN (UC259)
+    // ========================================================
+    function renderLkTable(data) {
+        const tbody = document.getElementById("lk-table-body");
+        tbody.innerHTML = "";
+        
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy nội dung liên quan nào.</td></tr>`;
+            return;
+        }
+
+        data.forEach((lk, idx) => {
+            // Generate attachment representation
+            let filesRep = "-";
+            if (lk.files && lk.files.length > 0) {
+                filesRep = lk.files.map(f => {
+                    let fileIcon = "fa-file-pdf";
+                    if (f.name.toLowerCase().endsWith('.pdf')) fileIcon = "fa-file-pdf";
+                    else if (f.name.toLowerCase().endsWith('.xlsx')) fileIcon = "fa-file-excel";
+                    else if (f.name.toLowerCase().endsWith('.jpg') || f.name.toLowerCase().endsWith('.png') || f.name.toLowerCase().endsWith('.jpeg')) fileIcon = "fa-file-image";
+                    else fileIcon = "fa-file-word";
+                    return `<span class="file-action-link" onclick="previewPdf('${f.name}', 'Tài liệu liên quan.')" title="Xem ${f.name}"><i class="fa-solid ${fileIcon}"></i> 📎</span>`;
+                }).join(" ");
+            }
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><a href="#" onclick="openEditLkForm('${lk.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${lk.id}</a></td>
+                <td style="font-weight: 600;" title="${lk.ten}">${lk.ten.length > 70 ? lk.ten.substring(0, 67) + '...' : lk.ten}</td>
+                <td><span class="badge bg-info" style="text-transform: none;">${lk.loai}</span></td>
+                <td>${lk.ngay}</td>
+                <td style="text-align: center;">${filesRep}</td>
+                <td>${lk.nguoiNhap}</td>
+                <td style="text-align: center;">
+                    <div class="action-icons">
+                        <button class="action-icon" title="Xem chi tiết" onclick="openEditLkForm('${lk.id}')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Chỉnh sửa" onclick="openEditLkForm('${lk.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="action-icon delete" title="Xóa" onclick="deleteLk('${lk.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function executeLkSearch() {
+        const keyword = document.getElementById("lk-filter-keyword").value.toLowerCase().trim();
+        const loai = document.getElementById("lk-filter-loai").value;
+        const tuNgayRaw = document.getElementById("lk-filter-tungay").value;
+        const denNgayRaw = document.getElementById("lk-filter-denngay").value;
+
+        // Parse date DD/MM/YYYY to Date object
+        const parseDate = (dStr) => {
+            if (!dStr) return null;
+            const parts = dStr.split("/");
+            if (parts.length !== 3) return null;
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        };
+
+        const tuNgay = parseDate(tuNgayRaw);
+        const denNgay = parseDate(denNgayRaw);
+
+        let filtered = lkData.filter(lk => {
+            if (keyword && !lk.ten.toLowerCase().includes(keyword) && !lk.noidung.toLowerCase().includes(keyword)) return false;
+            if (loai && lk.loai !== loai) return false;
+            
+            if (tuNgay || denNgay) {
+                const lkDate = parseDate(lk.ngay);
+                if (lkDate) {
+                    if (tuNgay && lkDate < tuNgay) return false;
+                    if (denNgay && lkDate > denNgay) return false;
+                } else {
+                    return false; // exclude if date is unparseable but we filter by date
+                }
+            }
+            return true;
+        });
+
+        renderLkTable(filtered);
+    }
+
+    function resetLkFilters() {
+        document.getElementById("lk-filter-keyword").value = "";
+        document.getElementById("lk-filter-loai").value = "";
+        document.getElementById("lk-filter-tungay").value = "";
+        document.getElementById("lk-filter-denngay").value = "";
+        renderLkTable(lkData);
+        showToast("Đã thiết lập lại bộ lọc nội dung khác.");
+    }
+
+    function openCreateLkForm() {
+        document.getElementById("lk-form-title").innerHTML = `<i class="fa-solid fa-circle-plus"></i> Thêm mới nội dung khác`;
+        document.getElementById("lk-id").value = "";
+        
+        // Auto generate ID: LQ-[Năm]-[STT]
+        const currentYear = new Date().getFullYear();
+        const num = String(lkData.length + 1).padStart(4, '0');
+        document.getElementById("lk-ma").value = `LQ-${currentYear}-${num}`;
+
+        document.getElementById("lk-ten").value = "";
+        document.getElementById("lk-loai").value = "";
+        
+        // Mặc định ngày phát sinh là ngày hiện tại (dd/mm/yyyy)
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        document.getElementById("lk-ngay").value = `${dd}/${mm}/${yyyy}`;
+        
+        document.getElementById("lk-noidung").value = "";
+        document.getElementById("lk-files-list").innerHTML = "";
+
+        document.getElementById("lk-search-card").style.display = "none";
+        document.getElementById("lk-list-card").style.display = "none";
+        document.getElementById("lk-form-card").style.display = "block";
+    }
+
+    function openEditLkForm(id) {
+        const lk = lkData.find(item => item.id === id);
+        if (!lk) return;
+
+        document.getElementById("lk-form-title").innerHTML = `<i class="fa-solid fa-edit"></i> Cập nhật nội dung liên quan: ${lk.id}`;
+        document.getElementById("lk-id").value = lk.id;
+        document.getElementById("lk-ma").value = lk.id;
+        document.getElementById("lk-ten").value = lk.ten;
+        document.getElementById("lk-loai").value = lk.loai;
+        document.getElementById("lk-ngay").value = lk.ngay;
+        document.getElementById("lk-noidung").value = lk.noidung || "";
+
+        // Render file list
+        const fileListContainer = document.getElementById("lk-files-list");
+        fileListContainer.innerHTML = "";
+        if (lk.files && lk.files.length > 0) {
+            lk.files.forEach(f => {
+                let fileIcon = "fa-file-word";
+                if (f.name.toLowerCase().endsWith('.pdf')) fileIcon = "fa-file-pdf";
+                else if (f.name.toLowerCase().endsWith('.xlsx')) fileIcon = "fa-file-excel";
+                else if (f.name.toLowerCase().endsWith('.jpg') || f.name.toLowerCase().endsWith('.png') || f.name.toLowerCase().endsWith('.jpeg')) fileIcon = "fa-file-image";
+
+                fileListContainer.innerHTML += `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <i class="fa-solid ${fileIcon}"></i>
+                            <span class="file-name" style="font-weight: 500;">${f.name}</span>
+                        </div>
+                        <div class="file-actions">
+                            <span class="file-action-link" onclick="previewPdf('${f.name}', 'Tài liệu liên quan.')">Xem file</span>
+                            <span class="file-action-link delete" onclick="deleteFormFile(this, 'lk-upload-files')">Xóa file</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById("lk-search-card").style.display = "none";
+        document.getElementById("lk-list-card").style.display = "none";
+        document.getElementById("lk-form-card").style.display = "block";
+    }
+
+    function closeLkForm() {
+        document.getElementById("lk-form-card").style.display = "none";
+        document.getElementById("lk-search-card").style.display = "block";
+        document.getElementById("lk-list-card").style.display = "block";
+    }
+
+    function saveLk() {
+        const id = document.getElementById("lk-id").value;
+        const ma = document.getElementById("lk-ma").value;
+        const ten = document.getElementById("lk-ten").value.trim();
+        const loai = document.getElementById("lk-loai").value;
+        const ngay = document.getElementById("lk-ngay").value;
+        const noidung = document.getElementById("lk-noidung").value.trim();
+
+        // Validation: Tiêu đề không được trống
+        if (!ten) {
+            showToast("Tiêu đề nội dung/Sự kiện bắt buộc không được bỏ trống!", true);
+            return;
+        }
+        if (!loai) {
+            showToast("Vui lòng chọn Phân loại nội dung!", true);
+            return;
+        }
+        if (!ngay) {
+            showToast("Vui lòng nhập Ngày phát sinh!", true);
+            return;
+        }
+
+        // Collect files
+        const files = [];
+        document.querySelectorAll("#lk-files-list .file-name").forEach(span => {
+            files.push({ name: span.innerText });
+        });
+
+        const isNew = !id;
+        
+        if (!isNew) {
+            // Update mode
+            const lk = lkData.find(item => item.id === id);
+            if (lk) {
+                lk.ten = ten;
+                lk.loai = loai;
+                lk.ngay = ngay;
+                lk.noidung = noidung;
+                lk.files = files;
+                showToast("Cập nhật nội dung liên quan thành công.");
+            }
+        } else {
+            // Create mode
+            lkData.push({
+                id: ma,
+                ten: ten,
+                loai: loai,
+                ngay: ngay,
+                noidung: noidung,
+                files: files.length > 0 ? files : [{ name: "Tai_Lieu_Dinh_Kem_Mac_Dinh.pdf" }],
+                nguoiNhap: "Cán bộ Nghiệp vụ"
+            });
+            showToast("Tạo mới nội dung liên quan thành công.");
+        }
+
+        renderLkTable(lkData);
+        closeLkForm();
+    }
+
+    function deleteLk(id) {
+        if (confirm(`Bạn có chắc chắn muốn xóa nội dung liên quan ${id}?`)) {
+            lkData = lkData.filter(item => item.id !== id);
+            renderLkTable(lkData);
+            showToast("Đã xóa logic nội dung liên quan thành công.");
+        }
+    }
+</script>
+
+</body>
+</html>

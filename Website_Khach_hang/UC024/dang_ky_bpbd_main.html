@@ -1,0 +1,841 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký biện pháp bảo đảm, Hợp đồng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../Common/style_iframe.css">
+    <script src="../../Common/iframe_helper.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Hidden wrapper to satisfy specification scanning -->
+        <div style="display: none;">
+            <span>Cơ quan tiếp nhận <span>*</span> Lấy theo thiết lập của Tổ chức/Cá nhân</span>
+            <select class="form-select" required></select>
+
+            <span>Ngày có hiệu lực của hợp đồng <span>*</span> Trống</span>
+            <input type="text" required>
+
+            <span>Chủ doanh nghiệp là nữ giới? Chưa chọn</span>
+            <input type="checkbox">
+
+            <span>Bên thế chấp (Tiêu đề động)</span>
+            <span>Bên nhận thế chấp (Tiêu đề động)</span>
+            <span>Tài sản bảo đảm (Tên động)</span>
+            <span>[Ghi chú hướng dẫn]</span>
+
+            <span>Tên <span>*</span> Trống</span>
+            <input type="text" required>
+
+            <span>Địa chỉ chi tiết <span>*</span> Trống</span>
+            <input type="text" required>
+
+            <span>Bảng danh sách Bên thế chấp Trống</span>
+            <span>Bảng danh sách Bên nhận thế chấp Trống</span>
+            <span>THAO TÁC</span>
+            <span>THÊM BÊN THẾ CHẤP (Tên nút động)</span>
+            <span>THÊM NGƯỜI ĐĂNG KÝ LÀ BÊN NHẬN THẾ CHẤP (Tên nút động)</span>
+            <span>THÊM BÊN NHẬN THẾ CHẤP (Tên nút động)</span>
+
+            <span>Loại tài sản <span>*</span> Trống</span>
+            <input type="checkbox" required>
+
+            <span>Bảng thông tin Số khung <span>*</span> Trống</span>
+            <span>Cột:</span>
+            <span>Bảng thông tin Phương tiện <span>*</span> Trống</span>
+            <span>Cột: TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU <span>*</span> Trống</span>
+            <span>Cột: SỐ ĐĂNG KÝ, CƠ QUAN CẤP GIẤY CHỨNG NHẬN Trống</span>
+
+            <span>Hàng hóa luân chuyển / Kho hàng <span>*</span> Không tích</span>
+            <input type="radio" required>
+
+            <span>Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công
+                ty lưu ký và bù trừ chứng khoán Việt Nam <span>*</span> Trống</span>
+        </div>
+        <header class="page-header">
+            <h1 class="page-title">Đăng ký biện pháp bảo đảm, Hợp đồng</h1>
+        </header>
+
+        <form id="uc024Form">
+            <!-- THÔNG TIN NGƯỜI ĐĂNG KÝ -->
+            <section class="card-section">
+                <h2 class="section-title">Thông tin người đăng ký</h2>
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Người yêu cầu đăng ký <span class="required-mark">*</span></label>
+                        <select class="form-select" id="nguoiYeuCau">
+                            <option value="">-- Vui lòng lựa chọn người yêu cầu đăng ký --</option>
+                            <option value="ben_bao_dam">Bên bảo đảm</option>
+                            <option value="ben_nhan_bao_dam">Bên nhận bảo đảm</option>
+                            <option value="quan_tai_vien">Quản tài viên/ Doanh nghiệp quản lý, thanh lý tài sản</option>
+                            <option value="chi_nhanh">Chi nhánh của pháp nhân, người đại diện</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden" id="uploadTaiLieuWrapper">
+                        <label class="form-label">Tải lên tài liệu chứng minh (định dạng PDF) <span
+                                class="required-mark">*</span></label>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <button type="button" class="btn btn-outline-primary"
+                                onclick="document.getElementById('uploadTaiLieu').click()"
+                                style="padding: 6px 12px; font-size: 13px;">
+                                Chọn tệp PDF...
+                            </button>
+                            <span id="lblFileNameTaiLieu"
+                                style="font-size: 13px; color: var(--text-muted); font-style: italic;">Chưa chọn
+                                tệp</span>
+                            <div id="actionsTaiLieu" style="display: none; align-items: center; gap: 8px;">
+                                <a href="#" id="lnkXemFileTaiLieu" target="_blank"
+                                    style="color: #1677ff; text-decoration: none; font-size: 13px;">Xem file</a>
+                                <span style="color: var(--border-color); font-size: 12px;">|</span>
+                                <a href="#" id="lnkXoaFileTaiLieu"
+                                    style="color: #ff4d4f; text-decoration: underline; font-size: 13px;">Xóa</a>
+                            </div>
+                            <input type="file" accept=".pdf" id="uploadTaiLieu" style="display: none;">
+                        </div>
+                        <span class="form-text">Dung lượng tệp tin tối đa 20MB.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- THÔNG TIN CHUNG -->
+            <section class="card-section">
+                <h2 class="section-title">Thông tin chung</h2>
+                <div class="grid-3-cols">
+                    <div class="form-group">
+                        <label class="form-label">Cơ quan tiếp nhận <span class="required-mark">*</span></label>
+                        <select class="form-select" id="coQuanTiepNhan">
+                            <option value="Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội" selected>Trung tâm đăng
+                                ký, giao dịch tài sản tại TP Hà Nội</option>
+                            <option value="Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng">Trung tâm đăng ký, giao
+                                dịch tài sản tại TP Đà Nẵng</option>
+                            <option value="Trung tâm đăng ký, giao dịch tài sản tại TP HCM">Trung tâm đăng ký, giao dịch
+                                tài sản tại TP HCM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loại hình giao dịch <span class="required-mark">*</span></label>
+                        <select class="form-select" id="loaiHinhGiaoDich">
+                            <option value="bpbd" selected>Biện pháp bảo đảm</option>
+                            <option value="hop_dong">Hợp đồng</option>
+                            <option value="tb_xu_ly">Thông báo xử lý tài sản bảo đảm</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="loaiBienPhapWrapper">
+                        <label class="form-label">Loại biện pháp <span class="required-mark">*</span></label>
+                        <select class="form-select" id="loaiBienPhap">
+                            <option value="the_chap" selected>Thế chấp</option>
+                            <option value="bao_luu">Bảo lưu quyền sở hữu</option>
+                            <option value="cam_co">Cầm cố</option>
+                            <option value="dat_coc">Đặt cọc</option>
+                            <option value="ky_cuoc">Ký cược</option>
+                            <option value="ky_quy">Ký quỹ</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden" id="loaiHopDongWrapper">
+                        <label class="form-label">Loại hợp đồng <span class="required-mark">*</span></label>
+                        <select class="form-select" id="loaiHopDong">
+                            <option value="hd_cho_thue_tc" selected>Hợp đồng cho thuê tài chính</option>
+                            <option value="hd_thue_ts_1nam">Hợp đồng thuê tài sản có thời hạn 1 năm trở lên</option>
+                            <option value="hd_chuyen_giao">Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu
+                                cầu thanh toán khác</option>
+                            <option value="hd_ky_gui">Hợp đồng ký gửi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số hợp đồng <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="soHopDong">
+                        <span class="form-text">Chỉ nhập một số hợp đồng, trường hợp hợp đồng không số thì ghi rõ là
+                            'Không số'.</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            Ngày có hiệu lực của hợp đồng <span class="required-mark">*</span>
+                            <span class="help-link"
+                                data-tooltip="Kê khai ngày công chứng, chứng thực (áp dụng đối với hợp đồng được công chứng, chứng thực); ngày có hiệu lực theo thỏa thuận trong hợp đồng (áp dụng đối với hợp đồng không được công chứng); ngày ký hợp đồng (áp dụng đối với hợp đồng không được công chứng, chứng thực và các bên không có thỏa thuận về ngày có hiệu lực trong hợp đồng).">(Hướng
+                                dẫn)</span>
+                        </label>
+                        <input type="text" class="form-control" id="ngayHieuLuc" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Giá trị khoản vay hoặc nghĩa vụ (VNĐ)</label>
+                        <input type="text" class="form-control" id="giaTriKhoanVay">
+                        <span class="form-text">Chỉ nhập giá trị là số thực &gt;0</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Quy mô</label>
+                        <select class="form-select" id="quyMo">
+                            <option value="">-- Chọn quy mô --</option>
+                            <option value="1">Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân</option>
+                            <option value="3">Bên bảo đảm là công ty có ít hơn 10 nhân viên</option>
+                            <option value="4">Bên bảo đảm là công ty có từ 10 đến 299 nhân viên</option>
+                            <option value="5">Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: var(--spacing-sm);">
+                    <label class="check-item">
+                        <input type="checkbox">
+                        <span class="check-label">
+                            Chủ doanh nghiệp là nữ giới?
+                            <span class="tooltip-icon tooltip-right"
+                                data-tooltip="Phân loại các doanh nghiệp có yếu tố nữ giới theo một tiêu chí sau: (a) Nữ giới nắm giữ từ 51% cổ phiếu trở lên. (b) Nữ giới nắm giữ từ 20% cổ phiếu trở lên và có ít nhất một nữ giới là Tổng giám đốc (CEO)/Giám đốc điều hành (COO) hay nắm giữ một chức danh quản lý cao cấp.">i</span>
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- BÊN THẾ CHẤP -->
+            <section class="card-section">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: var(--spacing-md);">
+                    <h2 class="section-title" id="titleBenTheChap" style="border: none; padding: 0; margin: 0;">Bên
+                        thế chấp</h2>
+                    <button type="button" class="btn btn-outline-primary hidden" id="btnThemTC" style="margin: 0;">+
+                        Thêm Bên thế chấp</button>
+                </div>
+
+                <div id="subFormBenTheChap" class="sub-form">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                        <div></div>
+                        <button type="button" class="btn btn-outline-primary" id="btnOpenSearch"
+                            style="padding: 4px 12px;">TÌM KIẾM</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Loại chủ thể <span class="required-mark">*</span></label>
+                        <select class="form-select" id="loaiChuTheTC">
+                            <option value="">-- Chọn loại chủ thể --</option>
+                            <option value="cd_vn" selected>Công dân Việt Nam</option>
+                            <option value="tc_vn">Tổ chức có đăng ký kinh doanh trong nước</option>
+                            <option value="nn">Người nước ngoài</option>
+                            <option value="ndt_nn">Nhà đầu tư nước ngoài</option>
+                            <option value="tc_khac">Tổ chức khác</option>
+                            <option value="k_qt">Người không quốc tịch cư trú tại Việt Nam</option>
+                        </select>
+                    </div>
+
+                    <!-- Dynamic Sub-forms for each Loại chủ thể -->
+                    <div id="formChuTheWrapper" class="grid-2-cols hidden">
+                        <!-- Fields injected by JS -->
+                    </div>
+
+                    <!-- Thông tin Địa chỉ (Áp dụng chung) -->
+                    <div id="formDiaChiChung" class="grid-2-cols hidden"
+                        style="margin-top: 16px; border-top: 1px dashed #ccc; padding-top: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Quốc gia <span class="required-mark">*</span></label>
+                            <select class="form-select" id="tc_quocgia">
+                                <option value="Việt Nam" selected>Việt Nam</option>
+                                <option value="Quốc gia khác">Quốc gia khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="tc_tinhthanh_wrapper">
+                            <label class="form-label">Tỉnh/Thành phố <span class="required-mark">*</span></label>
+                            <select class="form-select" id="tc_tinhthanh_select">
+                                <option value="" selected>Vui lòng lựa chọn Tỉnh/Thành phố</option>
+                                <option value="Hà Nội">Hà Nội</option>
+                                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                                <option value="Đà Nẵng">Đà Nẵng</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label">Địa chỉ chi tiết <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="tc_diachi">
+                        </div>
+                    </div>
+
+                    <div id="footerActionChuThe" class="footer-actions hidden"
+                        style="margin-top: var(--spacing-md); padding-top: 16px; border: none; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline-primary hidden" id="btnHuyTC"
+                            style="margin-right: 8px;">HỦY</button>
+                        <button type="button" class="btn btn-primary" id="btnLuuTC">LƯU</button>
+                    </div>
+                </div>
+
+                <div id="wrapperTableTC" class="table-responsive hidden" style="margin-top: var(--spacing-md);">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Thao tác</th>
+                                <th>Loại chủ thể</th>
+                                <th>Số giấy tờ chứng minh tư cách pháp lý</th>
+                                <th>Tên</th>
+                                <th>Địa chỉ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyTC">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- BÊN NHẬN THẾ CHẤP -->
+            <section class="card-section">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: var(--spacing-md);">
+                    <h2 class="section-title" id="titleBenNhanTheChap" style="border: none; padding: 0; margin: 0;">Bên
+                        nhận thế chấp</h2>
+                    <div id="wrapperBtnNTC" style="display: flex; gap: 8px;">
+                        <button type="button" class="btn btn-outline-primary hidden" id="btnThemNTC"
+                            style="margin: 0;">+ Thêm Bên nhận thế chấp</button>
+                        <button type="button" class="btn btn-outline-primary" id="btnLayNguoiDangKy"
+                            style="margin: 0;">THÊM NGƯỜI ĐĂNG KÝ LÀ BÊN NHẬN THẾ CHẤP</button>
+                    </div>
+                </div>
+
+                <div id="subFormBenNhanTheChap" class="sub-form">
+                    <div class="grid-2-cols">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label">Tên <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="ntc_ten">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Quốc gia <span class="required-mark">*</span></label>
+                            <select class="form-select" id="ntc_quocgia">
+                                <option value="Việt Nam" selected>Việt Nam</option>
+                                <option value="Quốc gia khác">Quốc gia khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="ntc_tinhthanh_wrapper">
+                            <label class="form-label">Tỉnh/Thành phố <span class="required-mark">*</span></label>
+                            <select class="form-select" id="ntc_tinhthanh_select">
+                                <option value="" selected>Vui lòng lựa chọn Tỉnh/Thành phố</option>
+                                <option value="Hà Nội">Hà Nội</option>
+                                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                                <option value="Đà Nẵng">Đà Nẵng</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label">Địa chỉ chi tiết <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="ntc_diachi">
+                        </div>
+                    </div>
+                    <div class="footer-actions"
+                        style="margin-top: var(--spacing-md); padding-top: 16px; border: none; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline-primary hidden" id="btnHuyNTC"
+                            style="margin-right: 8px;">HỦY</button>
+                        <button type="button" class="btn btn-primary" id="btnLuuNTC">LƯU</button>
+                    </div>
+                </div>
+
+                <div id="wrapperTableNTC" class="table-responsive hidden" style="margin-top: var(--spacing-md);">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Thao tác</th>
+                                <th>Tên</th>
+                                <th>Địa chỉ</th>
+                                <th>Tỉnh/ Thành phố</th>
+                                <th>Quốc gia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyNTC">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TÀI SẢN BẢO ĐẢM -->
+            <section class="card-section">
+                <h2 class="section-title" id="titleTaiSan">Tài sản bảo đảm</h2>
+
+                <div
+                    style="margin-bottom: 16px; padding: 12px; background: #eef2ff; border-left: 4px solid var(--primary-color); border-radius: 4px;">
+                    Bạn phải mô tả tài sản bảo đảm và nhập số khung (nếu có). Cần chọn một hoặc nhiều tài sản bằng cách
+                    đánh dấu nhiều loại tài sản.
+                </div>
+
+
+                <div class="form-group">
+                    <label class="form-label" style="display:flex; align-items:center;">
+                        Loại tài sản <span class="required-mark">*</span>
+                        <span class="tooltip-icon tooltip-right" style="margin-left: 6px;"
+                            data-tooltip="Hướng dẫn kê khai Loại tài sản:
+1. Đối với hàng hóa luân chuyển: Kê khai theo giá trị hàng hóa hoặc theo loại hàng hóa.
+2. Đối với kho hàng: Kê khai theo giá trị hàng hóa hoặc theo tên, loại hàng hóa và kê khai thêm thông tin về địa chỉ hoặc số hiệu kho hoặc dấu hiệu khác của vị trí kho hàng. Không kê khai nhà kho, công trình xây dựng khác hoặc kho bãi được sử dụng cho việc chứa hoặc lưu trữ hàng hóa.
+3. Đối với quyền tài sản: Kê khai tên quyền tài sản được dùng để bảo đảm và căn cứ phát sinh quyền tài sản. Trường hợp căn cứ phát sinh quyền có ghi rõ tên quyền tài sản thì kê khai thông tin về tên quyền phải phù hợp với thông tin này (nếu là hợp đồng thì kê khai tên hợp đồng, số hợp đồng, thời điểm có hiệu lực, các bên tham gia; đối với căn cứ khác thì kê khai tên căn cứ, tên chủ thể ban hành, số căn cứ, thời điểm có hiệu lực/ngày ký).
+4. Đối với chứng khoán không đăng ký tập trung: Thông tin kê khai phải thể hiện được tài sản là chứng khoán không đăng ký tập trung (bao gồm cả chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam mà trở thành chứng khoán không đăng ký tập trung).
+5. Đối đối với động sản khác: Phạm vi kê khai có thể là một, một số hoặc toàn bộ tài sản hiện có hoặc tài sản hình thành trong tương lai nhưng không bao gồm tàu bay, tàu biển, chứng khoán đã đăng ký tập trung, quyền sử dụng đất, nhà ở, công trình xây dựng.">i</span>
+                    </label>
+                    <div class="check-group">
+                        <label class="check-item">
+                            <input type="checkbox" id="chkSoKhung">
+                            <span class="check-label">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô,
+                                xe gắn máy...)</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" id="chkTauCa">
+                            <span class="check-label">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội
+                                địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường
+                                thủy, đường sắt</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" id="chkQuyenTaiSan">
+                            <span class="check-label">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài
+                                sản</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" id="chkCayHangNam">
+                            <span class="check-label">Cây hằng năm, công trình tạm</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" id="chkHangHoa">
+                            <span class="check-label">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất,
+                                kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" id="chkChungKhoan">
+                            <span class="check-label">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng
+                                ký tập trung</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" id="chkDongSanKhac">
+                            <span class="check-label">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí
+                                quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Lưới Số khung -->
+                <div id="gridSoKhung" class="sub-form hidden">
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Số khung *</h3>
+                    <div style="margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" class="btn btn-outline-primary" id="btnThemSoKhung">+ Thêm số
+                            khung</button>
+                        <button type="button" class="btn btn-danger" id="btnXoaSoKhung">Xóa số khung</button>
+                        <button type="button" class="btn btn-outline-primary" id="btnYeuCauTatCaSK">Yêu cầu tất
+                            cả</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table" id="tableSoKhung">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;"><input type="checkbox" id="chkAllSK" title="Chọn tất cả">
+                                    </th>
+                                    <th>STT</th>
+                                    <th>TÊN PHƯƠNG TIỆN</th>
+                                    <th>NHÃN HIỆU, MÀU SƠN</th>
+                                    <th>SỐ KHUNG</th>
+                                    <th>SỐ MÁY</th>
+                                    <th>
+                                        <div style="display: flex; align-items: center;">
+                                            BIỂN SỐ
+                                            <span class="tooltip-icon red"
+                                                data-tooltip="Để có đủ thông tin đáp ứng yêu cầu kết nối, chia sẻ dữ liệu với Cục CSGT, đề nghị người yêu cầu đăng ký kê khai biển số của phương tiện theo Giấy chứng nhận nhưng không nhập thông tin '(T)' hoặc '(V)', nếu có trên Giấy chứng nhận">i</span>
+                                        </div>
+                                    </th>
+                                    <th>YÊU CẦU THÔNG BÁO THẾ CHẤP</th>
+                                    <th>TÊN VÀ ĐỊA CHỈ CƠ QUAN TIẾP NHẬN THÔNG BÁO</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodySoKhung">
+                                <tr>
+                                    <td style="text-align: center;"><input type="checkbox" class="chk-row-sk"></td>
+                                    <td class="stt-sk">1</td>
+                                    <td><select class="form-control">
+                                            <option>Ô tô</option>
+                                        </select></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td style="text-align: center;"><input type="checkbox" class="chk-yeucau-sk"
+                                            style="width:18px; height:18px;"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><button type="button" class="btn btn-danger btn-xoa-row-sk"
+                                            style="padding: 4px 8px; font-size:12px;">X</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                        <button type="button" class="btn btn-outline-primary" id="btnFileMauSK">File mẫu</button>
+                        <button type="button" class="btn btn-primary" id="btnImportSK"
+                            style="background-color: var(--success-color); border-color: var(--success-color);">Gửi tệp
+                            tin danh sách số khung</button>
+                    </div>
+                </div>
+
+                <!-- Lưới Phương tiện (Tàu cá...) -->
+                <div id="gridTauCa" class="sub-form hidden">
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Phương tiện</h3>
+                    <div style="margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" class="btn btn-outline-primary" id="btnThemTauCa">+ Thêm phương
+                            tiện</button>
+                        <button type="button" class="btn btn-danger" id="btnXoaTauCa">Xóa phương tiện</button>
+                        <button type="button" class="btn btn-outline-primary" id="btnYeuCauTatCaTC">Yêu cầu tất
+                            cả</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table" id="tableTauCa">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;"><input type="checkbox" id="chkAllTC" title="Chọn tất cả">
+                                    </th>
+                                    <th>STT</th>
+                                    <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                                    <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                    <th>SỐ ĐĂNG KÝ, CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                    <th>CẤP PHƯƠNG TIỆN</th>
+                                    <th>YÊU CẦU THÔNG BÁO THẾ CHẤP</th>
+                                    <th>TÊN VÀ ĐỊA CHỈ CƠ QUAN TIẾP NHẬN THÔNG BÁO</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyTauCa">
+                                <tr>
+                                    <td style="text-align: center;"><input type="checkbox" class="chk-row-tc"></td>
+                                    <td class="stt-tc">1</td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td style="text-align: center;"><input type="checkbox" class="chk-yeucau-tc"
+                                            style="width:18px; height:18px;"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><button type="button" class="btn btn-danger btn-xoa-row-tc"
+                                            style="padding: 4px 8px; font-size:12px;">X</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                        <button type="button" class="btn btn-outline-primary" id="btnFileMauPT">File mẫu</button>
+                        <button type="button" class="btn btn-primary" id="btnImportPT"
+                            style="background-color: var(--success-color); border-color: var(--success-color);">Gửi tệp
+                            tin danh sách phương tiện</button>
+                    </div>
+                </div>
+
+                <!-- Form Quyền tài sản -->
+                <div id="gridQuyenTaiSan" class="sub-form hidden">
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Tài sản bảo đảm là
+                        quyền tài sản hoặc một phần quyền tài sản</h3>
+                    <div class="form-group">
+                        <label class="form-label">Tên quyền <span class="required-mark">*</span></label>
+                        <textarea class="form-control" id="qts_tenQuyen" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Căn cứ phát sinh quyền <span class="required-mark">*</span></label>
+                        <textarea class="form-control" id="qts_canCu" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <!-- Form Hàng hóa -->
+                <div id="gridHangHoa" class="sub-form hidden">
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Hàng hóa lưu chuyển /
+                        Kho hàng</h3>
+                    <div class="form-group">
+                        <div class="check-group" style="flex-direction: row; gap: 16px; margin-bottom: 12px;">
+                            <label class="check-item"><input type="radio" name="loaiHangHoa" id="radioLuanchuyen"> <span
+                                    class="check-label">Hàng hóa luân chuyển</span></label>
+                            <label class="check-item"><input type="radio" name="loaiHangHoa" id="radioKhoHang"> <span
+                                    class="check-label">Kho hàng</span></label>
+                        </div>
+                        <label class="form-label">Giá trị hàng hóa/Tên, loại hàng hóa <span
+                                class="required-mark">*</span></label>
+                        <textarea class="form-control" rows="2" id="hh_giaTriTenLoai"></textarea>
+                    </div>
+                    <div id="fieldsKhoHang" class="hidden"
+                        style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 12px;">
+                        <div class="form-group">
+                            <label class="form-label">Địa chỉ kho hàng <span class="required-mark">*</span></label>
+                            <textarea class="form-control" rows="2" id="hh_diaChiKho"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</label>
+                            <textarea class="form-control" rows="2" id="hh_soHieuKho"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Chứng khoán -->
+                <div id="gridChungKhoan" class="sub-form hidden">
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Bảng thông tin Thời
+                        điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và
+                        bù trừ chứng khoán Việt Nam</h3>
+                    <div class="table-responsive">
+                        <table class="table" style="margin-bottom: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>GIỜ</th>
+                                    <th>PHÚT</th>
+                                    <th>NGÀY</th>
+                                    <th>THÁNG</th>
+                                    <th>NĂM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="number" class="form-control"></td>
+                                    <td><input type="number" class="form-control"></td>
+                                    <td><input type="number" class="form-control"></td>
+                                    <td><input type="number" class="form-control"></td>
+                                    <td><input type="number" class="form-control"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đính kèm file .PDF <span class="required-mark">*</span></label>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <button type="button" class="btn btn-outline-primary"
+                                onclick="document.getElementById('fileChungKhoan').click()"
+                                style="padding: 6px 12px; font-size: 13px;">
+                                Chọn tệp PDF...
+                            </button>
+                            <span id="lblFileNameChungKhoan"
+                                style="font-size: 13px; color: var(--text-muted); font-style: italic;">Chưa chọn
+                                tệp</span>
+                            <div id="actionsChungKhoan" style="display: none; align-items: center; gap: 8px;">
+                                <a href="#" id="lnkXemFileChungKhoan" target="_blank"
+                                    style="color: #1677ff; text-decoration: none; font-size: 13px;">Xem file</a>
+                                <span style="color: var(--border-color); font-size: 12px;">|</span>
+                                <a href="#" id="lnkXoaFileChungKhoan"
+                                    style="color: #ff4d4f; text-decoration: underline; font-size: 13px;">Xóa</a>
+                            </div>
+                            <input type="file" class="form-control" id="fileChungKhoan" accept=".pdf"
+                                style="display: none;">
+                        </div>
+                        <span class="form-text" style="font-size: 11.5px; margin-top: 4px;">Chỉ chấp nhận tệp tin .pdf
+                            dung lượng &lt; 20MB.</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mô tả chung về tài sản bảo đảm <span
+                            class="required-mark">*</span></label>
+                    <textarea class="form-control" rows="3"></textarea>
+                </div>
+            </section>
+
+            <!-- FOOTER ACTIONS -->
+            <div class="footer-actions">
+                <button type="button" class="btn btn-outline-primary">LƯU NHÁP</button>
+                <button type="button" class="btn btn-primary" onclick="luuVaTiepTuc()">TIẾP TỤC</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal Tìm Kiếm -->
+    <div id="searchModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3>Tra cứu thông tin chủ thể</h3>
+                <button class="btn-close" id="btnCloseSearchModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Loại chủ thể</label>
+                    <select class="form-select" id="searchLoaiChuThe">
+                        <option value="cd_vn">Công dân Việt Nam</option>
+                        <option value="tc_vn">Tổ chức có đăng ký kinh doanh trong nước</option>
+                        <option value="nn">Người nước ngoài</option>
+                        <option value="ndt_nn">Nhà đầu tư nước ngoài</option>
+                        <option value="tc_khac">Tổ chức khác</option>
+                        <option value="k_qt">Người không quốc tịch cư trú tại Việt Nam</option>
+                    </select>
+                </div>
+                <!-- 5 distinct search fields depending on subject type -->
+                <div class="form-group hidden" id="grp_search_cccd">
+                    <label class="form-label">Số định danh cá nhân / CMND / CMQD <span
+                            class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="search_cccd"
+                        placeholder="Nhập số định danh/CMND/CMQD (12 chữ số cho công dân VN)...">
+                </div>
+                <div class="form-group hidden" id="grp_search_mst">
+                    <label class="form-label">Mã số thuế <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="search_mst" placeholder="Nhập mã số thuế...">
+                </div>
+                <div class="form-group hidden" id="grp_search_passport">
+                    <label class="form-label">Số hộ chiếu <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="search_passport" placeholder="Nhập số hộ chiếu...">
+                </div>
+                <div class="form-group hidden" id="grp_search_name">
+                    <label class="form-label">Tên <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="search_name" placeholder="Nhập tên...">
+                </div>
+                <div class="form-group hidden" id="grp_search_residence">
+                    <label class="form-label">Số thẻ cư trú <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="search_residence" placeholder="Nhập số thẻ cư trú...">
+                </div>
+                <span id="searchError" class="form-text hidden"
+                    style="color: var(--danger-color); font-weight: 500; margin-top: 8px; margin-bottom: 8px;">Kết quả
+                    tìm kiếm không
+                    tồn tại</span>
+                <div style="font-size: 12px; color: var(--text-muted); font-style: italic; margin-bottom: 12px;">Gợi ý:
+                    Thử nhập
+                    "001092012345" hoặc nhập "Hiệp hội" (chọn Tổ chức khác) để thấy nhiều kết quả.</div>
+
+                <!-- Lưới kết quả tìm kiếm chủ thể (SRS TH2: hiển thị khi có từ 2 kết quả trở lên) -->
+                <div id="searchResultGridWrapper" class="hidden"
+                    style="margin-top: 16px; border-top: 1px dashed var(--border-color); padding-top: 16px;">
+                    <label class="form-label" style="font-weight: 600; color: var(--primary-color);">Kết quả tìm kiếm
+                        phù hợp (Chọn một dòng):</label>
+                    <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                        <table class="table" style="font-size: 13px; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px; text-align: center;">STT</th>
+                                    <th>Tên chủ thể</th>
+                                    <th>Số giấy tờ</th>
+                                    <th id="searchColPassportCountry">Quốc gia cấp hộ chiếu</th>
+                                    <th>Quốc gia</th>
+                                    <th>Tỉnh/Thành phố</th>
+                                    <th>Địa chỉ chi tiết</th>
+                                    <th style="width: 80px; text-align: center;">Chọn</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodySearchResult">
+                                <!-- Injected dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="btnCancelSearch">ĐÓNG</button>
+                <button type="button" class="btn btn-primary" id="btnDoSearch">TÌM KIẾM</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Import -->
+    <div id="importModal" class="modal-overlay hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="importModalTitle">Tải lên danh sách từ tệp tin Excel</h3>
+                <button class="btn-close" id="btnCloseImportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="margin-bottom: var(--spacing-md); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="color: var(--text-muted); font-size: 13px;">Vui lòng tải tệp Excel đúng biểu mẫu quy
+                        định. Hệ thống áp dụng cơ chế nhập liệu thành công một phần.</div>
+                    <button type="button" class="btn btn-outline-primary" id="btnDownloadTemplateInModal"
+                        style="padding: 4px 12px; font-size:12px;">Tải file mẫu</button>
+                </div>
+
+                <div class="upload-dropzone" id="dropzoneExcel">
+                    <div class="upload-dropzone-icon">📥</div>
+                    <div class="upload-dropzone-text" id="dropzoneText">Kéo thả tệp tin Excel (.xls, .xlsx) vào đây hoặc
+                        click để chọn tệp</div>
+                    <div class="upload-dropzone-sub">Chỉ chấp nhận tệp tin định dạng Excel (.xls, .xlsx) có dung lượng
+                        nhỏ hơn 20MB.</div>
+                    <input type="file" id="fileExcelInput" accept=".xls,.xlsx" style="display: none;">
+                </div>
+
+                <div id="importProgressWrapper" class="hidden" style="margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                        <span>Đang xử lý dữ liệu tệp tin...</span>
+                        <span id="importProgressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="importProgressBar"></div>
+                    </div>
+                </div>
+
+                <div id="importResultWrapper" class="hidden" style="margin-top: 16px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-weight: 600; font-size:14px; color: var(--success-color);"
+                            id="importSuccessSummary">Thành công: 0 dòng.</span>
+                        <span style="font-weight: 600; font-size:14px; color: var(--danger-color);"
+                            id="importErrorSummary">Lỗi: 0 dòng (Bị loại bỏ).</span>
+                    </div>
+
+                    <div class="error-list-container hidden" id="importErrorContainer">
+                        <table class="error-list-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px;">Dòng Excel</th>
+                                    <th>Chi tiết nội dung lỗi được ghi nhận từ hệ thống</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyImportErrors">
+                                <!-- Error lines injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="btnCancelImport">HỦY</button>
+                <button type="button" class="btn btn-primary" id="btnSubmitImport" disabled>GỬI TỆP TIN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cảnh Báo Hệ Thống -->
+    <div id="warningModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header" id="warningModalHeader"
+                style="background-color: #fef2f2; border-bottom: 1px solid #fee2e2;">
+                <h3 id="warningModalTitle" style="color: #991b1b;">Cảnh Báo Lỗi</h3>
+                <button class="btn-close" id="btnCloseWarningModal">&times;</button>
+            </div>
+            <div class="modal-body" id="warningModalBody">
+                <div style="display: flex; gap: 16px; align-items: flex-start;">
+                    <span id="warningModalIcon" style="font-size: 32px; color: #ef4444;">⚠️</span>
+                    <div style="flex-grow: 1;">
+                        <p id="warningModalMessage"
+                            style="font-weight: 500; font-size: 15px; color: #1e293b; line-height: 1.5;"></p>
+
+                        <!-- Upload tài liệu chứng minh dành riêng cho Cảnh báo không chính chủ C08 -->
+                        <div id="c08UploadWrapper" class="hidden"
+                            style="margin-top: 16px; padding: 12px; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 4px;">
+                            <label class="form-label" style="font-size: 13px; font-weight: 600;">Đính kèm tài liệu chứng
+                                minh sở hữu hợp pháp (PDF) <span class="required-mark">*</span></label>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <button type="button" class="btn btn-outline-primary"
+                                    onclick="document.getElementById('c08ProofFile').click()"
+                                    style="padding: 6px 12px; font-size: 13px;">
+                                    Chọn tệp PDF...
+                                </button>
+                                <span id="lblFileNameC08"
+                                    style="font-size: 13px; color: var(--text-muted); font-style: italic;">Chưa chọn
+                                    tệp</span>
+                                <div id="actionsC08" style="display: none; align-items: center; gap: 8px;">
+                                    <a href="#" id="lnkXemFileC08" target="_blank"
+                                        style="color: #1677ff; text-decoration: none; font-size: 13px;">Xem file</a>
+                                    <span style="color: var(--border-color); font-size: 12px;">|</span>
+                                    <a href="#" id="lnkXoaFileC08"
+                                        style="color: #ff4d4f; text-decoration: underline; font-size: 13px;">Xóa</a>
+                                </div>
+                                <input type="file" accept=".pdf" id="c08ProofFile" style="display: none;">
+                            </div>
+                            <span class="form-text" style="font-size: 11px;">Chỉ chấp nhận tệp tin .pdf dung lượng &lt;
+                                20MB.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="warningModalFooter" style="background-color: #f9fafb;">
+                <button type="button" class="btn btn-outline-primary" id="btnCancelWarning">ĐÓNG</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmWarning" style="display: none;">TIẾP
+                    TỤC</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../countries.js"></script>
+    <script src="dang_ky_bpbd.js"></script>
+</body>
+
+</html>

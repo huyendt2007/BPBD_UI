@@ -1,0 +1,832 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu Hồ sơ gốc - Đăng ký thay đổi BPBĐ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../Common/style_iframe.css">
+    <script src="../../Common/iframe_helper.js"></script>
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+            --bg-body: #F8FAFC;
+            --bg-surface: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            --box-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Portal Header */
+        .portal-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo i {
+            font-size: 28px;
+            color: #3B82F6;
+        }
+
+        .logo-text h1 {
+            font-size: 16px;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .logo-text span {
+            font-size: 11px;
+            color: #94A3B8;
+            display: block;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            display: block;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: #94A3B8;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: #3B82F6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border: 2px solid #60A5FA;
+        }
+
+        /* Container & Navigation */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 8px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 13px;
+            align-items: center;
+        }
+
+        .breadcrumb a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb i {
+            font-size: 11px;
+            color: #94A3B8;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .step-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background-color: #E2E8F0;
+            z-index: 1;
+        }
+
+        .step-item.active:not(:last-child)::after {
+            background-color: var(--secondary-color);
+        }
+
+        .step-item.completed:not(:last-child)::after {
+            background-color: var(--success-color);
+        }
+
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #F1F5F9;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin: 0 auto 8px auto;
+            position: relative;
+            z-index: 2;
+            border: 2px solid #E2E8F0;
+            transition: all 0.3s;
+        }
+
+        .step-item.active .step-icon {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.15);
+        }
+
+        .step-item.completed .step-icon {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .step-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .step-item.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Search Panel Card */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .card-section:hover {
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .section-title i {
+            color: var(--secondary-color);
+        }
+
+        .hint-text {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 13.5px;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 20px;
+            align-items: flex-end;
+            margin-bottom: 30px;
+        }
+
+        @media(max-width: 768px) {
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 13.5px;
+        }
+
+        .form-label span {
+            color: var(--danger-color);
+            margin-left: 3px;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+        }
+
+        .form-control {
+            border: 1px solid #CBD5E1;
+            border-radius: var(--border-radius-md);
+            padding: 12px 14px 12px 40px;
+            font-size: 14px;
+            color: var(--text-main);
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #F8FAFC;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            outline: none;
+            background-color: white;
+        }
+
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+        }
+
+        .error-text {
+            color: var(--danger-color) !important;
+            font-size: 12px !important;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .btn {
+            font-weight: 600;
+            border-radius: var(--border-radius-md);
+            padding: 12px 24px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            transform: translateY(-1px);
+        }
+
+        /* Baseline Timeline Wrapper */
+        .timeline-wrapper {
+            display: none;
+            margin-top: 30px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 30px;
+            animation: slideDown 0.4s ease-out forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .timeline-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+        }
+
+        @media(max-width: 900px) {
+            .timeline-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            margin-left: 20px;
+            border-left: 2px dashed #CBD5E1;
+        }
+
+        .timeline-node {
+            position: relative;
+            margin-bottom: 30px;
+            cursor: pointer;
+            padding: 15px 20px;
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-node:hover {
+            border-color: var(--secondary-color);
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+            transform: translateX(5px);
+        }
+
+        .timeline-node.selected {
+            border-color: var(--secondary-color);
+            background-color: #EFF6FF;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.12);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .timeline-node::before {
+            content: '';
+            position: absolute;
+            left: -42px;
+            top: 22px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid #94A3B8;
+            transition: all 0.3s;
+            z-index: 5;
+        }
+
+        .timeline-node.selected::before {
+            background-color: var(--secondary-color);
+            border-color: #DBEAFE;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .timeline-node.latest::before {
+            border-color: var(--success-color);
+        }
+
+        .timeline-node.latest.selected::before {
+            background-color: var(--success-color);
+            border-color: #D1FAE5;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+
+        .node-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .badge-primary {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .badge-success {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .badge-warning {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+
+        .node-title {
+            font-weight: 700;
+            font-size: 14.5px;
+            margin: 0 0 4px 0;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .node-date {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .node-desc {
+            font-size: 13px;
+            color: #475569;
+            margin: 0;
+        }
+
+        .pdf-download-btn {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .pdf-download-btn:hover {
+            background-color: #DBEAFE;
+            color: var(--primary-hover);
+        }
+
+        /* Detail Sidebar Panel */
+        .detail-panel {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .detail-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-header h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .detail-header p {
+            margin: 0;
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #E2E8F0;
+            font-size: 13px;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            text-align: right;
+            color: var(--text-main);
+        }
+
+        .changes-summary {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .summary-list {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 12.5px;
+            color: #475569;
+        }
+
+        .summary-list li {
+            margin-bottom: 6px;
+        }
+
+        .action-bar {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* Message Box styling */
+        .msg-box {
+            padding: 15px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 13.5px;
+        }
+
+        .msg-error {
+            background-color: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            color: #B91C1C;
+            display: none;
+        }
+
+        .msg-success {
+            background-color: #ECFDF5;
+            border: 1px solid #6EE7B7;
+            color: #047857;
+        }
+
+        /* Demo helper styling */
+        .demo-helper {
+            background-color: #FFFBEB;
+            border: 1px dashed #F59E0B;
+            border-radius: var(--border-radius-md);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 12.5px;
+            color: #B45309;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .demo-helper i {
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .demo-helper strong {
+            color: #92400E;
+        }
+
+        .demo-credentials {
+            display: inline-block;
+            margin-top: 5px;
+            background-color: rgba(245, 158, 11, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Portal Header -->
+    <header class="portal-header">
+        <div class="header-logo">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div class="logo-text">
+                <h1>Hệ thống Đăng ký Biện pháp Bảo đảm</h1>
+                <span>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC &bull; BỘ TƯ PHÁP</span>
+            </div>
+        </div>
+        <div class="header-user">
+            <div class="user-info">
+                <span class="user-name">Nguyễn Văn Khách</span>
+                <span class="user-role">Doanh nghiệp / Cá nhân</span>
+            </div>
+            <div class="avatar">NK</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="#" onclick="goHome(); return false;"><i class="fa-solid fa-house"></i> Trang chủ</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <a href="#">Dịch vụ trực tuyến</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span>Thay đổi nội dung đăng ký</span>
+        </div>
+
+        <!-- Progress steps flow -->
+        <div class="process-steps">
+            <div class="step-item active">
+                <div class="step-icon">1</div>
+                <div class="step-label">Tra cứu hồ sơ</div>
+            </div>
+            <div class="step-item">
+                <div class="step-icon">2</div>
+                <div class="step-label">Nhập thông tin thay đổi</div>
+            </div>
+            <div class="step-item">
+                <div class="step-icon">3</div>
+                <div class="step-label">Xem trước & Lọc biến động</div>
+            </div>
+            <div class="step-item">
+                <div class="step-icon">4</div>
+                <div class="step-label">Thanh toán & Nộp hồ sơ</div>
+            </div>
+        </div>
+
+        <!-- Demo Help Bar -->
+        <div class="demo-helper">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>
+                <strong>Chế độ mô phỏng kiểm thử (Demo Mode):</strong> Thử các trường hợp kiểm thử sau:
+                <div style="margin-top: 5px;">
+                    <div class="demo-credentials" style="margin-right: 10px;">
+                        Hồ sơ hợp lệ: Số đăng ký: <strong>12345678</strong> | PIN: <strong>8888</strong> (Tự động chuyển hướng sang MH02)
+                    </div>
+                    <div class="demo-credentials">
+                        Đang chờ xử lý (Bị chặn): Số đăng ký: <strong>99999999</strong> | PIN: <strong>8888</strong> (Báo lỗi song song)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Card Section -->
+        <div class="card-section" style="max-width: 500px; margin: 30px auto;">
+            <h2 class="section-title">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Tra cứu Giao dịch & Xác thực hồ sơ gốc
+            </h2>
+            
+            <p class="hint-text">
+                Vui lòng nhập Số đăng ký lần đầu và Mã số PIN tương ứng của giao dịch gốc. Hệ thống sẽ đối chiếu với CSDL để kiểm tra tính hợp lệ. Nếu thông tin khớp, bạn sẽ được tự động chuyển sang bước Nhập thông tin thay đổi.
+            </p>
+
+            <!-- Error message container -->
+            <div id="errorMsg" class="msg-box msg-error">
+                <i class="fa-solid fa-circle-xmark"></i>
+                <span id="errorText">Thông tin đăng ký không hợp lệ. Vui lòng kiểm tra lại.</span>
+            </div>
+
+            <!-- Search inputs form -->
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label class="form-label" for="regNum">Số đăng ký lần đầu <span style="color: var(--danger-color); font-weight: bold;">*</span></label>
+                <input type="text" id="regNum" class="form-control" placeholder="Nhập số đăng ký lần đầu..." style="padding-left: 12px; background-color: white;">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label class="form-label" for="pinNum">Mã số PIN xác thực <span style="color: var(--danger-color); font-weight: bold;">*</span></label>
+                <input type="password" id="pinNum" class="form-control" placeholder="Nhập mã PIN bảo mật..." style="padding-left: 12px; background-color: white;">
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border-color); padding-top:15px;">
+                <button class="btn btn-outline-primary" onclick="goHome()">Hủy</button>
+                <button id="btnSearch" class="btn btn-primary">
+                    Kiểm tra thông tin <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Timeline Baseline Selection Section -->
+        <div id="timelineWrapper" class="timeline-wrapper">
+            <h2 class="section-title">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Lịch sử phiên bản Đăng ký (Baselines)
+            </h2>
+            <p class="hint-text">
+                Hồ sơ gốc có nhiều phiên bản lịch sử đã được phê duyệt. Vui lòng chọn phiên bản mốc (Baseline) mà bạn muốn kế thừa thông tin để thực hiện đăng ký thay đổi:
+            </p>
+            
+            <div class="timeline-layout">
+                <!-- Left side: Timeline flow of versions -->
+                <div class="timeline-container" id="timelineNodes">
+                    <!-- Dynamic timeline nodes rendered by JS -->
+                </div>
+                
+                <!-- Right side: Detail Panel of selected baseline version -->
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <h3 id="previewTitle">Chi tiết phiên bản</h3>
+                        <p id="previewSubtitle">Thông tin tóm tắt</p>
+                    </div>
+                    
+                    <div class="detail-body">
+                        <div class="detail-row">
+                            <span class="detail-label">Số đăng ký</span>
+                            <span class="detail-value" id="previewRegCode">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Thời điểm phê duyệt</span>
+                            <span class="detail-value" id="previewDate">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Bên bảo đảm</span>
+                            <span class="detail-value" id="previewBaoDam">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Bên nhận bảo đảm</span>
+                            <span class="detail-value" id="previewNhanBaoDam">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Tài sản bảo đảm</span>
+                            <span class="detail-value" id="previewAssetCount">-</span>
+                        </div>
+                        
+                        <div class="changes-summary">
+                            <div class="summary-title">
+                                <i class="fa-solid fa-list-check" style="color: var(--secondary-color);"></i>
+                                Các biến động so với phiên bản trước đó:
+                            </div>
+                            <ul class="summary-list" id="previewChanges">
+                                <!-- Dynamic changes summary list -->
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="action-bar">
+                        <button id="btnProceed" class="btn btn-success">
+                            Kế thừa thông tin & Tiếp tục <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script connection -->
+    <script src="tra_cuu_goc.js"></script>
+</body>
+</html>

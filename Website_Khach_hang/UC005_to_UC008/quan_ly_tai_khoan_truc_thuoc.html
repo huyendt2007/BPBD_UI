@@ -1,0 +1,1205 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Tài khoản Trực thuộc</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --bg-body: #F8FAFC;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--base-size);
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.5;
+            padding: var(--spacing-md);
+        }
+
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: var(--heading-size);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-3-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .grid-2-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        /* Form Control styles */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+            font-size: 13px;
+        }
+
+        .required-mark {
+            color: var(--danger-color);
+            margin-left: 3px;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem 0.75rem;
+            font-size: var(--base-size);
+            color: var(--text-main);
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+            background-color: white;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            outline: none;
+        }
+
+        .form-control:disabled, .form-select:disabled {
+            background-color: #F1F5F9;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Buttons */
+        .btn {
+            font-weight: 500;
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem 1.25rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: var(--base-size);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #E2E8F0;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #CBD5E1;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 12px;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .alert-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px var(--spacing-md);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid transparent;
+        }
+
+        .alert-box.info {
+            background-color: #EFF6FF;
+            border-color: #BFDBFE;
+            color: #1E40AF;
+        }
+
+        .alert-icon {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        /* Tables & Pagination */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+        }
+
+        .table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background-color: var(--table-header-bg);
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 12px;
+            border-bottom: 2px solid var(--border-color);
+            text-align: left;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-table-action {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            transition: color 0.15s;
+        }
+
+        .btn-table-action:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-table-action.delete:hover {
+            color: var(--danger-color);
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--spacing-md);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #F1F5F9;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .pagination-btn:disabled {
+            color: #CBD5E1;
+            cursor: not-allowed;
+            background-color: #F8FAFC;
+        }
+
+        /* Modal styling */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+            overflow-y: auto;
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            padding: 16px var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F8FAFC;
+            border-top-left-radius: var(--border-radius-lg);
+            border-top-right-radius: var(--border-radius-lg);
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .modal-footer {
+            padding: 12px var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background-color: #F8FAFC;
+            border-bottom-left-radius: var(--border-radius-lg);
+            border-bottom-right-radius: var(--border-radius-lg);
+        }
+
+        /* Tree Checkbox styling */
+        .tree-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: var(--spacing-md);
+            background-color: #F8FAFC;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .tree-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .tree-node {
+            margin-left: 20px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .tree-node-parent {
+            margin-left: 0;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .tree-node input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Input field error highlights */
+        .form-control.error, .form-select.error {
+            border-color: var(--danger-color);
+            background-color: #FEF2F2;
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 11px;
+            margin-top: 4px;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: var(--spacing-lg);
+            right: var(--spacing-lg);
+            color: white;
+            padding: 12px var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .toast.success {
+            background-color: var(--success-color);
+        }
+
+        .toast.error {
+            background-color: var(--danger-color);
+        }
+
+        .toast.info {
+            background-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: TRA CỨU TÀI KHOẢN TRỰC THUỘC (UC008) -->
+    <div class="card-section">
+        <div class="section-title">
+            <span><i class="fa-solid fa-users-gear"></i> Quản lý tài khoản con trực thuộc</span>
+        </div>
+
+        <!-- Bộ lọc tìm kiếm -->
+        <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+            <div class="grid-2-cols" style="margin-bottom: 0;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="search-keyword">Từ khóa tìm kiếm</label>
+                    <input type="text" class="form-control" id="search-keyword" placeholder="Họ tên, email, SĐT hoặc Số định danh...">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="search-status">Trạng thái hoạt động</label>
+                    <select class="form-select" id="search-status">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Đang hoạt động">Đang hoạt động</option>
+                        <option value="Bị khóa">Bị khóa</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <button class="btn btn-outline-primary" onclick="resetFilters()">Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="searchStaffs()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <!-- Action Toolbar -->
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: var(--spacing-md); margin-top: var(--spacing-md);">
+            <button class="btn btn-primary" onclick="openModal('add')"><i class="fa fa-user-plus"></i> Thêm tài khoản</button>
+            <button class="btn btn-secondary" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+        </div>
+
+        <!-- Bảng danh sách tài khoản con -->
+        <div class="table-responsive" style="margin-top: var(--spacing-md);">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%; text-align: center;">STT</th>
+                        <th style="width: 12%;">Số giấy tờ</th>
+                        <th style="width: 18%; cursor: pointer;" onclick="toggleSortName()">Họ và tên <span id="sort-icon"><i class="fa-solid fa-sort"></i></span></th>
+                        <th style="width: 12%;">Đơn vị</th>
+                        <th style="width: 16%;">Email</th>
+                        <th style="width: 10%;">Số điện thoại</th>
+                        <th style="width: 12%; text-align: center;">Trạng thái</th>
+                        <th style="width: 8%;">Ngày tạo</th>
+                        <th style="width: 7%; text-align: center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="staffs-table-body">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div class="pagination-info">
+                Hiển thị 
+                <select class="form-select" id="page-size" style="width: 80px; display: inline-block; padding: 4px;" onchange="changePageSize()">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                </select>
+                bản ghi/trang. Tổng số: <span id="total-count">0</span> tài khoản con.
+            </div>
+            <div class="pagination-controls">
+                <button class="pagination-btn" id="btn-page-first" onclick="goPage('first')"><i class="fa fa-angle-double-left"></i></button>
+                <button class="pagination-btn" id="btn-page-prev" onclick="goPage('prev')"><i class="fa fa-angle-left"></i></button>
+                <span id="page-num" style="font-size: 13px; font-weight: 600; margin: 0 10px;">Trang 1 / 1</span>
+                <button class="pagination-btn" id="btn-page-next" onclick="goPage('next')"><i class="fa fa-angle-right"></i></button>
+                <button class="pagination-btn" id="btn-page-last" onclick="goPage('last')"><i class="fa fa-angle-double-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 2 & 3: FORM POPUP THÊM MỚI / CẬP NHẬT TÀI KHOẢN (UC005 & UC006) -->
+    <div class="modal" id="staff-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Thêm mới tài khoản trực thuộc</h3>
+                <button class="btn-tool" onclick="closeModal('staff')" style="background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="staff-form" autocomplete="off" onsubmit="event.preventDefault();">
+                    <input type="hidden" id="staff-id">
+                    
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="staff-doc-type">Loại giấy tờ <span class="required-mark">*</span></label>
+                            <select class="form-select" id="staff-doc-type">
+                                <option value="Căn cước công dân" selected>Căn cước công dân</option>
+                                <option value="Chứng minh nhân dân">Chứng minh nhân dân</option>
+                                <option value="Hộ chiếu">Hộ chiếu</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="staff-doc-num">Số giấy tờ (Tên đăng nhập) <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="staff-doc-num" placeholder="Nhập số CCCD/CMND/Hộ chiếu...">
+                            <div class="error-message" id="error-doc-num">Trường này là bắt buộc</div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="staff-name">Họ và tên <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="staff-name" placeholder="Nhập họ và tên...">
+                            <div class="error-message" id="error-name">Trường này là bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="staff-email">Email <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="staff-email" placeholder="Nhập địa chỉ email...">
+                            <div class="error-message" id="error-email">Trường này là bắt buộc</div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="staff-nationality">Quốc tịch <span class="required-mark">*</span></label>
+                            <select class="form-select" id="staff-nationality" onchange="toggleNationalityState()">
+                                <option value="Việt Nam" selected>Việt Nam</option>
+                                <option value="Nước ngoài">Nước ngoài</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="staff-phone">Số điện thoại <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="staff-phone" placeholder="Nhập số điện thoại liên lạc...">
+                            <div class="error-message" id="error-phone">Trường này là bắt buộc</div>
+                        </div>
+                    </div>
+
+                    <!-- Đơn vị và Tỉnh/TP -->
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="staff-department">Đơn vị <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="staff-department" placeholder="Nhập tên đơn vị/phòng ban...">
+                            <div class="error-message" id="error-department">Trường này là bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="staff-province">Tỉnh/Thành phố</label>
+                            <!-- Container holds either Dropdown or Input text -->
+                            <div id="province-field-container">
+                                <select class="form-select" id="staff-province">
+                                    <option value="" selected>Vui lòng lựa chọn Tỉnh/Thành phố</option>
+                                    <option value="Hà Nội">Hà Nội</option>
+                                    <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                                    <option value="Đà Nẵng">Đà Nẵng</option>
+                                    <option value="Hải Phòng">Hải Phòng</option>
+                                    <option value="Cần Thơ">Cần Thơ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Địa chỉ chi tiết -->
+                    <div class="form-group">
+                        <label class="form-label" for="staff-address">Địa chỉ chi tiết</label>
+                        <input type="text" class="form-control" id="staff-address" placeholder="Số nhà, đường phố, thôn xóm...">
+                    </div>
+
+                    <!-- Cây phân quyền -->
+                    <div class="form-group">
+                        <label class="form-label">Cây Phân quyền tương ứng với Vai trò của Cá nhân <span class="required-mark">*</span></label>
+                        <div class="tree-container">
+                            <div class="tree-toolbar">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="checkAllRights(true)"><i class="fa fa-check-square"></i> Chọn tất cả</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="checkAllRights(false)"><i class="fa fa-square"></i> Bỏ chọn tất cả</button>
+                            </div>
+                            
+                            <!-- Parent node removed -->
+                            
+                            <!-- Sub nodes list -->
+                            <div id="rights-sub-list">
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-reg-bpbd" value="Đăng ký Biện pháp bảo đảm">
+                                    <label for="right-reg-bpbd">Đăng ký Biện pháp bảo đảm</label>
+                                </div>
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-reg-change" value="Đăng ký thay đổi">
+                                    <label for="right-reg-change">Đăng ký thay đổi</label>
+                                </div>
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-reg-delete" value="Xóa đăng ký">
+                                    <label for="right-reg-delete">Xóa đăng ký</label>
+                                </div>
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-reg-disposal" value="Đăng ký thông báo xử lý tài sản">
+                                    <label for="right-reg-disposal">Đăng ký thông báo xử lý tài sản</label>
+                                </div>
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-req-copy" value="Yêu cầu cấp bản sao văn bản">
+                                    <label for="right-req-copy">Yêu cầu cấp bản sao văn bản</label>
+                                </div>
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-req-copy-notify" value="Yêu cầu cấp bản sao kèm thông báo">
+                                    <label for="right-req-copy-notify">Yêu cầu cấp bản sao kèm thông báo</label>
+                                </div>
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-manage-reg" value="Quản lý yêu cầu đã đăng ký">
+                                    <label for="right-manage-reg">Quản lý yêu cầu đã đăng ký</label>
+                                </div>
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-manage-support" value="Quản lý yêu cầu hỗ trợ">
+                                    <label for="right-manage-support">Quản lý yêu cầu hỗ trợ</label>
+                                </div>
+                                <div class="tree-node">
+                                    <input type="checkbox" class="right-item" id="right-customer-help" value="Hỗ trợ khách hàng">
+                                    <label for="right-customer-help">Hỗ trợ khách hàng</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-rights">Vui lòng tích chọn phân quyền ít nhất một tính năng.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('staff')">Hủy</button>
+                <button class="btn btn-primary" id="btn-save-staff" onclick="saveStaff()">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 4: POPUP XÁC NHẬN KHÓA/MỞ KHÓA TÀI KHOẢN (UC007) -->
+    <div class="modal" id="lock-modal" style="align-items: center;">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header" style="background-color: #FEF2F2;">
+                <h3 style="color: var(--danger-color);"><i class="fa-solid fa-triangle-exclamation"></i> Xác nhận thao tác</h3>
+                <button class="btn-tool" onclick="closeModal('lock')" style="background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted);"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="text-align: center; padding: var(--spacing-lg);">
+                <div class="alert-icon" style="color: var(--danger-color); font-size: 40px; margin-bottom: 12px;"><i class="fa-solid fa-circle-question"></i></div>
+                <h4 id="lock-message" style="font-weight: 600; font-size: 15px; line-height: 1.5; color: var(--text-main);">Bạn có chắc chắn muốn khóa tài khoản này?</h4>
+                <p style="font-size:12px; color: var(--text-muted); margin-top:8px;">Hành động này sẽ thay đổi trạng thái đăng nhập của nhân viên trực thuộc trong hệ thống.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('lock')">Hủy</button>
+                <button class="btn btn-danger" id="btn-confirm-lock" onclick="confirmToggleLock()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast-notif">
+        <i class="fa-solid fa-circle-info"></i> <span id="toast-message">Thông báo</span>
+    </div>
+
+
+    <!-- JAVASCRIPT BUSINESS LOGIC -->
+    <script>
+        // Expanded Mock Data containing exactly 10 initial staff accounts (UC008)
+        let staffAccounts = [
+            { id: 1, docType: 'Căn cước công dân', doc: '001092012345', name: 'Lê Văn Nhân Viên 1', department: 'Phòng Pháp chế', email: 'nv1.fptbank@gmail.com', phone: '0987654321', nationality: 'Việt Nam', province: 'Hà Nội', address: '123 Phố Huế, Hai Bà Trưng', status: 'Đang hoạt động', dateCreated: '15/06/2026', roles: ['Đăng ký Biện pháp bảo đảm', 'Đăng ký thay đổi'] },
+            { id: 2, docType: 'Căn cước công dân', doc: '001092012346', name: 'Nguyễn Thị Nhân Viên 2', department: 'Phòng Hành chính', email: 'nv2.fptbank@gmail.com', phone: '0987654322', nationality: 'Việt Nam', province: 'TP. Hồ Chí Minh', address: '456 Lê Lợi, Quận 1', status: 'Đang hoạt động', dateCreated: '16/06/2026', roles: ['Xóa đăng ký', 'Quản lý yêu cầu đã đăng ký'] },
+            { id: 3, docType: 'Căn cước công dân', doc: '001092012347', name: 'Trần Văn Nhân Viên 3', department: 'Phòng Kinh doanh 1', email: 'nv3.fptbank@gmail.com', phone: '0987654323', nationality: 'Việt Nam', province: 'Đà Nẵng', address: '789 Nguyễn Văn Linh', status: 'Đang hoạt động', dateCreated: '17/06/2026', roles: ['Hỗ trợ khách hàng', 'Quản lý yêu cầu hỗ trợ'] },
+            { id: 4, docType: 'Hộ chiếu', doc: '001092012348', name: 'John Doe', department: 'Trung tâm R&D', email: 'johndoe@gmail.com', phone: '+1234567890', nationality: 'Nước ngoài', province: 'California', address: '100 Silicon Valley', status: 'Đang hoạt động', dateCreated: '18/06/2026', roles: ['Đăng ký Biện pháp bảo đảm', 'Đăng ký thông báo xử lý tài sản'] },
+            { id: 5, docType: 'Căn cước công dân', doc: '001092012349', name: 'Hoàng Văn Kiểm Soát 2', department: 'Phòng Quản trị Rủi ro', email: 'ks2.fptbank@gmail.com', phone: '0987654325', nationality: 'Việt Nam', province: 'Hải Phòng', address: '12 Lạch Tray', status: 'Đang hoạt động', dateCreated: '19/06/2026', roles: ['Yêu cầu cấp bản sao văn bản', 'Yêu cầu cấp bản sao kèm thông báo'] },
+            { id: 6, docType: 'Căn cước công dân', doc: '001092012350', name: 'Đỗ Văn Nhân Viên 4', department: 'Phòng Pháp chế', email: 'nv4.fptbank@gmail.com', phone: '0987654326', nationality: 'Việt Nam', province: 'Hà Nội', address: '99 Cầu Giấy', status: 'Bị khóa', dateCreated: '20/06/2026', roles: ['Đăng ký Biện pháp bảo đảm'] },
+            { id: 7, docType: 'Căn cước công dân', doc: '001092012351', name: 'Vũ Thị Nhân Viên 5', department: 'Phòng Kinh doanh 2', email: 'nv5.fptbank@gmail.com', phone: '0987654327', nationality: 'Việt Nam', province: 'Cần Thơ', address: '88 Mậu Thân', status: 'Đang hoạt động', dateCreated: '21/06/2026', roles: ['Xóa đăng ký'] },
+            { id: 8, docType: 'Căn cước công dân', doc: '001092012352', name: 'Bùi Văn Nhân Viên 6', department: 'Ban Giám đốc', email: 'nv6.fptbank@gmail.com', phone: '0987654328', nationality: 'Việt Nam', province: 'Hà Nội', address: '77 Láng Hạ', status: 'Đang hoạt động', dateCreated: '22/06/2026', roles: ['Quản lý yêu cầu đã đăng ký'] },
+            { id: 9, docType: 'Căn cước công dân', doc: '001092012353', name: 'Mai Thị Kiểm Soát 3', department: 'Phòng Quản trị Rủi ro', email: 'ks3.fptbank@gmail.com', phone: '0987654329', nationality: 'Việt Nam', province: 'TP. Hồ Chí Minh', address: '101 Nguyễn Huệ', status: 'Đang hoạt động', dateCreated: '22/06/2026', roles: ['Quản lý yêu cầu đã đăng ký'] },
+            { id: 10, docType: 'Căn cước công dân', doc: '001092012354', name: 'Ngô Văn Nhân Viên 7', department: 'Phòng Pháp chế', email: 'nv7.fptbank@gmail.com', phone: '0987654330', nationality: 'Việt Nam', province: 'Hà Nội', address: '55 Trần Hưng Đạo', status: 'Bị khóa', dateCreated: '22/06/2026', roles: ['Hỗ trợ khách hàng'] }
+        ];
+
+        // Global states
+        let filteredStaffs = [];
+        let currentPage = 1;
+        let pageSize = 20;
+        let sortAsc = true;
+        let selectedStaffId = null;
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast-notif');
+            document.getElementById('toast-message').innerText = message;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Init load
+        window.addEventListener('load', () => {
+            applyFilters();
+        });
+
+        // Filter functions
+        function applyFilters() {
+            const kw = document.getElementById('search-keyword').value.trim().toLowerCase();
+            const status = document.getElementById('search-status').value;
+
+            filteredStaffs = staffAccounts.filter(s => {
+                // Filter status
+                if (status !== 'Tất cả' && s.status !== status) return false;
+
+                // Filter keyword
+                if (kw) {
+                    const matchKw = s.name.toLowerCase().includes(kw) ||
+                                    s.email.toLowerCase().includes(kw) ||
+                                    s.phone.includes(kw) ||
+                                    s.doc === kw; // Exact doc code check
+                    if (!matchKw) return false;
+                }
+                return true;
+            });
+
+            // Default Sort by DateCreated descending
+            sortStaffs();
+            currentPage = 1;
+            renderTable();
+        }
+
+        function sortStaffs() {
+            filteredStaffs.sort((a, b) => {
+                // Custom name sort if triggered
+                if (sortingByName) {
+                    const nameA = a.name.toUpperCase();
+                    const nameB = b.name.toUpperCase();
+                    if (nameA < nameB) return sortAsc ? -1 : 1;
+                    if (nameA > nameB) return sortAsc ? 1 : -1;
+                    return 0;
+                }
+                // Else sort by date descending
+                const partsA = a.dateCreated.split('/');
+                const partsB = b.dateCreated.split('/');
+                const dateA = new Date(partsA[2], partsA[1] - 1, partsA[0]);
+                const dateB = new Date(partsB[2], partsB[1] - 1, partsB[0]);
+                return dateB - dateA;
+            });
+        }
+
+        let sortingByName = false;
+        function toggleSortName() {
+            sortingByName = true;
+            sortAsc = !sortAsc;
+            const sortIcon = document.getElementById('sort-icon');
+            sortIcon.innerHTML = sortAsc ? '<i class="fa-solid fa-sort-up"></i>' : '<i class="fa-solid fa-sort-down"></i>';
+            sortStaffs();
+            renderTable();
+        }
+
+        function searchStaffs() {
+            applyFilters();
+            showToast(`Đã tìm thấy ${filteredStaffs.length} kết quả phù hợp`, 'success');
+        }
+
+        function resetFilters() {
+            document.getElementById('search-keyword').value = '';
+            document.getElementById('search-status').value = 'Tất cả';
+            sortingByName = false;
+            document.getElementById('sort-icon').innerHTML = '<i class="fa-solid fa-sort"></i>';
+            applyFilters();
+            showToast('Đã xóa bộ lọc và hiển thị danh sách mặc định', 'info');
+        }
+
+        // Render functions
+        function renderTable() {
+            const tbody = document.getElementById('staffs-table-body');
+            document.getElementById('total-count').innerText = filteredStaffs.length;
+
+            if (filteredStaffs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có dữ liệu</td></tr>`;
+                updatePaginationControls(0);
+                return;
+            }
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const paginated = filteredStaffs.slice(startIndex, startIndex + pageSize);
+
+            tbody.innerHTML = paginated.map((s, idx) => `
+                <tr>
+                    <td style="text-align: center; font-weight: 500; color: var(--text-muted);">${startIndex + idx + 1}</td>
+                    <td style="font-weight: 600; color: var(--primary-color);">${s.doc}</td>
+                    <td><strong>${s.name}</strong></td>
+                    <td><strong>${s.department || ''}</strong></td>
+                    <td>${s.email}</td>
+                    <td>${s.phone}</td>
+                    <td style="text-align: center;">
+                        <span style="background-color: ${s.status === 'Đang hoạt động' ? '#D1FAE5' : '#FEE2E2'}; color: ${s.status === 'Đang hoạt động' ? '#065F46' : '#991B1B'}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; display: inline-block;">
+                            ${s.status}
+                        </span>
+                    </td>
+                    <td>${s.dateCreated}</td>
+                    <td style="text-align: center;">
+                        <div class="table-actions">
+                            <button class="btn-table-action" onclick="openModal('edit', ${s.id})" title="Chỉnh sửa thông tin"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="btn-table-action" onclick="openLockModal(${s.id})" title="${s.status === 'Đang hoạt động' ? 'Khóa tài khoản' : 'Mở khóa'}">
+                                <i class="fa-solid ${s.status === 'Đang hoạt động' ? 'fa-lock' : 'fa-lock-open'}" style="color: ${s.status === 'Đang hoạt động' ? 'var(--text-muted)' : 'var(--success-color)'};"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            updatePaginationControls(filteredStaffs.length);
+        }
+
+        function updatePaginationControls(totalItems) {
+            const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+            document.getElementById('page-num').innerText = `Trang ${currentPage} / ${totalPages}`;
+
+            document.getElementById('btn-page-first').disabled = currentPage === 1;
+            document.getElementById('btn-page-prev').disabled = currentPage === 1;
+            document.getElementById('btn-page-next').disabled = currentPage === totalPages;
+            document.getElementById('btn-page-last').disabled = currentPage === totalPages;
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('page-size').value);
+            currentPage = 1;
+            renderTable();
+        }
+
+        function goPage(action) {
+            const totalPages = Math.ceil(filteredStaffs.length / pageSize);
+            if (action === 'first') currentPage = 1;
+            else if (action === 'prev' && currentPage > 1) currentPage--;
+            else if (action === 'next' && currentPage < totalPages) currentPage++;
+            else if (action === 'last') currentPage = totalPages;
+            renderTable();
+        }
+
+        // Export Excel simulated (UC008.Excel)
+        function exportToExcel() {
+            if (filteredStaffs.length === 0) {
+                showToast('Không có dữ liệu để xuất Excel.', 'error');
+                return;
+            }
+            showToast('Kết xuất danh sách tài khoản con ra file Excel thành công!', 'success');
+        }
+
+        // Toggle Nationality inputs (CCCD vs passport validation trigger)
+        function toggleNationalityState() {
+            const isVN = document.getElementById('staff-nationality').value === 'Việt Nam';
+            const provContainer = document.getElementById('province-field-container');
+            
+            if (isVN) {
+                provContainer.innerHTML = `
+                    <select class="form-select" id="staff-province">
+                        <option value="" selected>Vui lòng lựa chọn Tỉnh/Thành phố</option>
+                        <option value="Hà Nội">Hà Nội</option>
+                        <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                        <option value="Đà Nẵng">Đà Nẵng</option>
+                        <option value="Hải Phòng">Hải Phòng</option>
+                        <option value="Cần Thơ">Cần Thơ</option>
+                    </select>
+                `;
+            } else {
+                provContainer.innerHTML = `
+                    <input type="text" class="form-control" id="staff-province" placeholder="Nhập Tỉnh/TP/Bang nước ngoài...">
+                `;
+            }
+        }
+
+        // Right Tree Controls
+        function toggleParentCheck(parentCheckbox) {
+            const checked = parentCheckbox.checked;
+            const subCheckboxes = document.querySelectorAll('.right-item');
+            subCheckboxes.forEach(cb => {
+                cb.checked = checked;
+            });
+        }
+
+        function checkAllRights(checked) {
+            const rightParent = document.getElementById('right-parent');
+            if (rightParent) rightParent.checked = checked;
+            const subCheckboxes = document.querySelectorAll('.right-item');
+            subCheckboxes.forEach(cb => {
+                cb.checked = checked;
+            });
+        }
+
+        // Modal triggers
+        function openModal(mode, id = null) {
+            const form = document.getElementById('staff-form');
+            form.reset();
+            clearValidationErrors();
+
+            // Set default inputs
+            document.getElementById('staff-nationality').value = 'Việt Nam';
+            toggleNationalityState();
+            checkAllRights(false);
+
+            if (mode === 'add') {
+                document.getElementById('modal-title').innerText = 'Thêm mới tài khoản trực thuộc';
+                document.getElementById('staff-id').value = '';
+                document.getElementById('staff-doc-type').disabled = false;
+                document.getElementById('staff-doc-num').disabled = false;
+                document.getElementById('staff-department').value = '';
+                document.getElementById('btn-save-staff').innerText = 'Lưu';
+                
+                selectedStaffId = null;
+            } else if (mode === 'edit') {
+                document.getElementById('modal-title').innerText = 'Cập nhật thông tin tài khoản trực thuộc';
+                document.getElementById('btn-save-staff').innerText = 'Cập nhật';
+                
+                const staff = staffAccounts.find(s => s.id === id);
+                if (staff) {
+                    selectedStaffId = id;
+                    document.getElementById('staff-id').value = staff.id;
+                    document.getElementById('staff-doc-type').value = staff.docType;
+                    document.getElementById('staff-doc-type').disabled = true;
+                    document.getElementById('staff-doc-num').value = staff.doc;
+                    document.getElementById('staff-doc-num').disabled = true;
+                    document.getElementById('staff-name').value = staff.name;
+                    document.getElementById('staff-email').value = staff.email;
+                    document.getElementById('staff-nationality').value = staff.nationality;
+                    
+                    toggleNationalityState();
+                    document.getElementById('staff-phone').value = staff.phone;
+                    document.getElementById('staff-department').value = staff.department || '';
+
+                    // Set province value
+                    const provField = document.getElementById('staff-province');
+                    if (provField) provField.value = staff.province || '';
+                    
+                    document.getElementById('staff-address').value = staff.address || '';
+
+                    // Check right items based on staff.roles
+                    const subCheckboxes = document.querySelectorAll('.right-item');
+                    let checkedCount = 0;
+                    subCheckboxes.forEach(cb => {
+                        const hasRole = staff.roles.includes(cb.value);
+                        cb.checked = hasRole;
+                        if (hasRole) checkedCount++;
+                    });
+                    
+                    const rightParent = document.getElementById('right-parent');
+                    if (rightParent && checkedCount === subCheckboxes.length) {
+                        rightParent.checked = true;
+                    }
+                }
+            }
+
+            document.getElementById('staff-modal').classList.add('visible');
+        }
+
+        function closeModal(modalType) {
+            if (modalType === 'staff') {
+                document.getElementById('staff-modal').classList.remove('visible');
+            } else if (modalType === 'lock') {
+                document.getElementById('lock-modal').classList.remove('visible');
+            }
+        }
+
+        // Validate Forms
+        function clearValidationErrors() {
+            const inputs = document.querySelectorAll('.form-control, .form-select');
+            inputs.forEach(i => i.classList.remove('error'));
+            const errors = document.querySelectorAll('.error-message');
+            errors.forEach(e => e.style.display = 'none');
+        }
+
+        function showFieldError(fieldId, errorId, message) {
+            const input = document.getElementById(fieldId);
+            if (input) input.classList.add('error');
+            const errMsg = document.getElementById(errorId);
+            if (errMsg) {
+                errMsg.innerText = message;
+                errMsg.style.display = 'block';
+            }
+        }
+
+        function validateStaffForm() {
+            clearValidationErrors();
+            let isValid = true;
+
+            const isEdit = selectedStaffId !== null;
+
+            // 0. Department
+            const department = document.getElementById('staff-department').value.trim();
+            if (!department) {
+                showFieldError('staff-department', 'error-department', 'Đơn vị là trường bắt buộc');
+                isValid = false;
+            }
+
+            // 1. Doc Num
+            if (!isEdit) {
+                const docNum = document.getElementById('staff-doc-num').value.trim();
+                if (!docNum) {
+                    showFieldError('staff-doc-num', 'error-doc-num', 'Số giấy tờ (Tên đăng nhập) là trường bắt buộc');
+                    isValid = false;
+                } else {
+                    // Check duplicate on system
+                    const isDup = staffAccounts.some(s => s.doc === docNum);
+                    if (isDup) {
+                        showFieldError('staff-doc-num', 'error-doc-num', 'Số giấy tờ (Tên đăng nhập) đã tồn tại trên hệ thống');
+                        isValid = false;
+                    }
+                }
+            }
+
+            // 2. Name
+            const name = document.getElementById('staff-name').value.trim();
+            if (!name) {
+                showFieldError('staff-name', 'error-name', 'Họ và tên là trường bắt buộc');
+                isValid = false;
+            }
+
+            // 3. Email
+            const email = document.getElementById('staff-email').value.trim();
+            const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+            if (!email) {
+                showFieldError('staff-email', 'error-email', 'Email là trường bắt buộc');
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                showFieldError('staff-email', 'error-email', 'Địa chỉ Email không đúng định dạng');
+                isValid = false;
+            } else {
+                // Check duplicate email
+                const isDup = staffAccounts.some(s => s.email === email && s.id !== selectedStaffId);
+                if (isDup) {
+                    showFieldError('staff-email', 'error-email', 'Địa chỉ Email đã được đăng ký bởi tài khoản khác');
+                    isValid = false;
+                }
+            }
+
+            // 4. Phone number
+            const phone = document.getElementById('staff-phone').value.trim();
+            const isVN = document.getElementById('staff-nationality').value === 'Việt Nam';
+            const vnPhoneRegex = /^0[35789]\d{8}$/;
+            const foreignPhoneRegex = /^\+?[1-9]\d{7,14}$/;
+
+            if (!phone) {
+                showFieldError('staff-phone', 'error-phone', 'Số điện thoại là trường bắt buộc');
+                isValid = false;
+            } else if (isVN && !vnPhoneRegex.test(phone)) {
+                showFieldError('staff-phone', 'error-phone', 'SĐT Việt Nam không hợp lệ (Phải đủ 10 số, bắt đầu bằng 03, 05, 07, 08, 09)');
+                isValid = false;
+            } else if (!isVN && !foreignPhoneRegex.test(phone)) {
+                showFieldError('staff-phone', 'error-phone', 'SĐT nước ngoài không hợp lệ (Độ dài 8-15 ký tự)');
+                isValid = false;
+            } else {
+                // Check duplicate phone
+                const isDup = staffAccounts.some(s => s.phone === phone && s.id !== selectedStaffId);
+                if (isDup) {
+                    showFieldError('staff-phone', 'error-phone', 'Số điện thoại đã được đăng ký bởi tài khoản khác');
+                    isValid = false;
+                }
+            }
+
+            // 5. Rights Checkboxes
+            const selectedRights = Array.from(document.querySelectorAll('.right-item:checked')).map(cb => cb.value);
+            if (selectedRights.length === 0) {
+                document.getElementById('error-rights').style.display = 'block';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Save / Update Staff function (Happy Path)
+        function saveStaff() {
+            if (!validateStaffForm()) {
+                showToast('Vui lòng kiểm tra lại thông tin biểu mẫu!', 'error');
+                return;
+            }
+
+            const docType = document.getElementById('staff-doc-type').value;
+            const docNum = document.getElementById('staff-doc-num').value.trim();
+            const name = document.getElementById('staff-name').value.trim();
+            const email = document.getElementById('staff-email').value.trim();
+            const nationality = document.getElementById('staff-nationality').value;
+            const phone = document.getElementById('staff-phone').value.trim();
+            const province = document.getElementById('staff-province').value;
+            const address = document.getElementById('staff-address').value.trim();
+            const department = document.getElementById('staff-department').value.trim();
+            const selectedRights = Array.from(document.querySelectorAll('.right-item:checked')).map(cb => cb.value);
+
+            const isEdit = selectedStaffId !== null;
+
+            if (isEdit) {
+                // Update mode
+                const staff = staffAccounts.find(s => s.id === selectedStaffId);
+                if (staff) {
+                    staff.name = name;
+                    staff.email = email;
+                    staff.nationality = nationality;
+                    staff.phone = phone;
+                    staff.province = province;
+                    staff.address = address;
+                    staff.department = department;
+                    staff.roles = selectedRights;
+                }
+                showToast('Cập nhật thông tin tài khoản con thành công!', 'success');
+            } else {
+                // Create mode
+                const today = new Date();
+                const dd = String(today.getDate()).padStart(2, '0');
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const yyyy = today.getFullYear();
+                const formattedDate = `${dd}/${mm}/${yyyy}`;
+
+                const newStaff = {
+                    id: staffAccounts.length + 1,
+                    docType: docType,
+                    doc: docNum,
+                    name: name,
+                    email: email,
+                    nationality: nationality,
+                    phone: phone,
+                    province: province,
+                    address: address,
+                    department: department,
+                    status: 'Đang hoạt động',
+                    dateCreated: formattedDate,
+                    roles: selectedRights
+                };
+                staffAccounts.unshift(newStaff); // Put at top
+                showToast('Thêm tài khoản con trực thuộc thành công! Mật khẩu đã gửi vào email.', 'success');
+            }
+
+            closeModal('staff');
+            applyFilters();
+        }
+
+        // Lock / Unlock Confirmation (UC007)
+        function openLockModal(id) {
+            const staff = staffAccounts.find(s => s.id === id);
+            if (!staff) return;
+
+            selectedStaffId = id;
+            const msg = staff.status === 'Đang hoạt động' 
+                ? `Bạn có chắc chắn muốn khóa tài khoản [${staff.name}]?` 
+                : `Bạn có chắc chắn muốn mở khóa tài khoản [${staff.name}]?`;
+            
+            document.getElementById('lock-message').innerText = msg;
+            document.getElementById('lock-modal').classList.add('visible');
+        }
+
+        function confirmToggleLock() {
+            const staff = staffAccounts.find(s => s.id === selectedStaffId);
+            if (staff) {
+                const oldStatus = staff.status;
+                staff.status = oldStatus === 'Đang hoạt động' ? 'Bị khóa' : 'Đang hoạt động';
+                
+                showToast('Cập nhật trạng thái tài khoản trực thuộc thành công!', 'success');
+                closeModal('lock');
+                applyFilters();
+            }
+        }
+    </script>
+</body>
+</html>

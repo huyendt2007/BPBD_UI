@@ -1,0 +1,1202 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Loại danh mục</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Design System CSS Variables */
+        :root {
+            --primary-color: #1E3A8A; /* Xanh Navy đậm */
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6; /* Xanh nhạt */
+            --accent-color: #F59E0B; /* Vàng hổ phách */
+
+            /* Semantic Colors */
+            --success-color: #10B981; 
+            --danger-color: #EF4444; 
+            --warning-color: #F59E0B; 
+            --info-color: #3B82F6; 
+
+            /* Neutral/Grayscale */
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+
+            /* Typography & Spacing */
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+            
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Reset & Base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: var(--base-size);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Layout & Cards */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-3 { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr auto; 
+            gap: 15px; 
+            align-items: end;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 8px 12px;
+            font-size: 13px;
+            color: var(--text-main);
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+            outline: none;
+            font-family: var(--font-family);
+            background-color: var(--bg-surface);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        
+        .form-control:read-only {
+            background-color: #F8FAFC;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            display: block;
+            font-size: 13px;
+        }
+
+        .required-mark {
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+
+        /* Buttons */
+        .btn {
+            font-weight: 600;
+            border-radius: var(--border-radius-md);
+            padding: 8px 16px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            outline: none;
+            font-family: var(--font-family);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #E2E8F0;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background-color: #CBD5E1;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+
+        .grid-action-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Table */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .custom-table th {
+            background-color: var(--table-header-bg);
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .custom-table th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .custom-table th.sortable:hover {
+            background-color: #E2E8F0;
+        }
+
+        .custom-table th.sortable span {
+            margin-left: 5px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .custom-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: rgba(241, 245, 249, 0.5);
+        }
+
+        /* Action Buttons */
+        .action-cell {
+            display: flex;
+            gap: 6px;
+            justify-content: center; /* Center aligned */
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--text-muted);
+        }
+
+        .icon-btn:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+
+        .icon-btn.delete:hover {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 50px;
+            text-align: center;
+        }
+
+        .bg-success {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .bg-danger {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Pagination Style */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px 5px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .pagination-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .pagination-info select {
+            padding: 4px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            outline: none;
+            font-size: 13px;
+            color: var(--text-main);
+            background-color: var(--bg-surface);
+        }
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 6px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: var(--bg-surface);
+            color: var(--text-main);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+        .page-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .page-btn:disabled {
+            color: var(--text-muted);
+            background-color: #F3F4F6;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Modals & Dialogs */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        /* Sticky Modal Header & Footer from agents.md standards */
+        .modal-content {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh; /* Keep the height within viewport boundaries */
+            overflow: hidden; /* Prevent container scrolling */
+        }
+
+        @keyframes modalSlide {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-surface);
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .close-modal:hover {
+            color: var(--danger-color);
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto; /* Enable independent vertical scrolling */
+            flex: 1; /* Allow body to grow and fill available space */
+        }
+
+        .modal-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background-color: #F8FAFC;
+        }
+
+        /* Toast Feedback */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background-color: #FFFFFF;
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(-80px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            font-size: 13px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left-color: var(--success-color);
+        }
+
+        .toast.success i {
+            color: var(--success-color);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger-color);
+        }
+
+        .toast.error i {
+            color: var(--danger-color);
+        }
+
+        /* Form validation error text */
+        .error-message {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- SEARCH FILTER -->
+        <section class="card-section">
+            <div class="section-title">
+                <span>Bộ lọc tìm kiếm loại danh mục</span>
+            </div>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label" for="filterKeyword">Từ khóa tìm kiếm</label>
+                    <input type="text" id="filterKeyword" class="form-control" placeholder="Mã loại danh mục, Tên loại danh mục, Mô tả...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="filterStatus">Trạng thái</label>
+                    <select id="filterStatus" class="form-select">
+                        <option value="All" selected>Tất cả</option>
+                        <option value="Đang hoạt động">Đang hoạt động</option>
+                        <option value="Ngừng hoạt động">Ngừng hoạt động</option>
+                    </select>
+                </div>
+                <div class="form-group search-actions">
+                    <button class="btn btn-primary" onclick="searchData()">
+                        <i class="fa fa-search"></i> Tìm kiếm
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetSearch()">
+                        <i class="fa fa-rotate-left"></i> Làm mới
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DATA LIST -->
+        <section class="card-section">
+            <div class="section-title">
+                <span>Danh sách Loại danh mục</span>
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fa fa-plus"></i> Thêm mới
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="custom-table" id="dataListTable">
+                    <thead>
+                        <tr>
+                            <th width="5%" style="text-align:center">STT</th>
+                            <th width="15%" class="sortable" onclick="handleSort('code')">Mã loại danh mục <span id="sort-code"><i class="fas fa-sort"></i></span></th>
+                            <th width="25%" class="sortable" onclick="handleSort('name')">Tên loại danh mục <span id="sort-name"><i class="fas fa-sort"></i></span></th>
+                            <th width="35%">Mô tả</th>
+                            <th width="10%" class="sortable" onclick="handleSort('status')">Trạng thái <span id="sort-status"><i class="fas fa-sort"></i></span></th>
+                            <th width="10%" style="text-align:center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Rendered dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION BAR -->
+            <div class="pagination-container" id="paginationBar">
+                <!-- Rendered dynamically -->
+            </div>
+        </section>
+    </div>
+
+    <!-- DETAIL MODAL -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chi tiết loại danh mục</h3>
+                <button class="close-modal" onclick="closeDetailModal()"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Mã loại danh mục</label>
+                    <input type="text" id="detCode" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên loại danh mục</label>
+                    <input type="text" id="detName" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mô tả</label>
+                    <textarea id="detDescription" class="form-control" rows="3" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <input type="text" id="detStatus" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="formModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm mới loại danh mục</h3>
+                <button class="close-modal" onclick="closeFormModal()"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="typeForm">
+                    <div class="form-group">
+                        <label class="form-label" for="inpCode">Mã loại danh mục</label>
+                        <input type="text" id="inpCode" class="form-control" placeholder="Sinh tự động nếu để trống (LDM_xxxx)">
+                        <div class="error-message" id="errCode">Mã loại danh mục đã tồn tại trong hệ thống.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inpName">Tên loại danh mục <span class="required-mark">*</span></label>
+                        <input type="text" id="inpName" class="form-control" placeholder="Nhập tên loại danh mục" required>
+                        <div class="error-message" id="errName">Tên loại danh mục không được để trống.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inpDescription">Mô tả</label>
+                        <textarea id="inpDescription" class="form-control" rows="3" placeholder="Nhập thông tin mô tả loại danh mục"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái <span class="required-mark">*</span></label>
+                        <div style="display:flex; gap: 20px; margin-top: 8px;">
+                            <label style="display:flex; align-items:center; gap: 6px; cursor:pointer;">
+                                <input type="radio" name="status" value="Đang hoạt động" checked> Đang hoạt động
+                            </label>
+                            <label style="display:flex; align-items:center; gap: 6px; cursor:pointer;">
+                                <input type="radio" name="status" value="Ngừng hoạt động"> Ngừng hoạt động
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeFormModal()">HỦY</button>
+                <button class="btn btn-primary" onclick="saveData()">LƯU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="confirmDeleteModal">
+        <div class="modal-content" style="max-width: 420px;">
+            <div class="modal-header" style="border-bottom:none;">
+                <h3>Xác nhận xóa</h3>
+                <button class="close-modal" onclick="closeDeleteModal()"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top:0; text-align:center;">
+<button class="btn btn-danger" id="btnConfirmDelete" onclick="deleteItem()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="toastMessage">Thông báo</span>
+    </div>
+
+    <script>
+        // Default Mock Data for Category Types
+        const DEFAULT_TYPES = [
+            { code: "DM_01", name: "Loại hình giao dịch", status: "Đang hoạt động" },
+            { code: "DM_02", name: "Loại biện pháp bảo đảm", status: "Đang hoạt động" },
+            { code: "DM_03", name: "Loại hợp đồng", status: "Đang hoạt động" },
+            { code: "DM_04", name: "Loại hình đăng ký", status: "Đang hoạt động" },
+            { code: "DM_05", name: "Trạng thái tài sản bảo đảm", status: "Đang hoạt động" },
+            { code: "DM_06", name: "Loại bên bảo đảm (Chủ thể)", status: "Đang hoạt động" },
+            { code: "DM_07", name: "Loại tài sản bảo đảm", status: "Đang hoạt động" },
+            { code: "DM_08", name: "Trung tâm giao dịch bảo đảm", status: "Đang hoạt động" },
+            { code: "DM_09", name: "Quốc tịch / Quốc gia", status: "Đang hoạt động" },
+            { code: "DM_10", name: "Loại giấy tờ pháp lý", status: "Đang hoạt động" },
+            { code: "DM_11", name: "Loại hình tổ chức", status: "Đang hoạt động" },
+            { code: "DM_12", name: "Quy mô bên bảo đảm", status: "Đang hoạt động" },
+            { code: "DM_TOOLTIP", name: "Tooltip/Hướng dẫn dùng chung", status: "Đang hoạt động" },
+            { code: "DM_EMAIL_TEMPLATE", name: "Mẫu email hệ thống", status: "Đang hoạt động" },
+            { code: "DM_17", name: "Danh mục Người yêu cầu đăng ký", status: "Đang hoạt động" },
+            { code: "DM_19", name: "Danh mục Căn cứ xóa đăng ký", status: "Đang hoạt động" },
+            { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", status: "Đang hoạt động" },
+            { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Đang hoạt động" }
+        ];
+
+        // Default Mock Data for Categories (to check if Category Type is in use before deleting)
+        const DEFAULT_CATEGORIES = [
+            // DM_01 (Loại hình giao dịch)
+            { typeCode: "DM_01", code: "GD_01", name: "Biện pháp bảo đảm", nameEn: "Secured measures", val: "", valEn: "", parentCode: "", notes: "Đăng ký biện pháp bảo đảm", status: "Hoạt động" },
+            { typeCode: "DM_01", code: "GD_02", name: "Hợp đồng", nameEn: "Contract", val: "", valEn: "", parentCode: "", notes: "Đăng ký hợp đồng", status: "Hoạt động" },
+            { typeCode: "DM_01", code: "GD_03", name: "Thông báo xử lý tài sản", nameEn: "Asset disposal notice", val: "", valEn: "", parentCode: "", notes: "Thông báo xử lý tài sản thế chấp", status: "Hoạt động" },
+
+            // DM_02 (Loại biện pháp bảo đảm)
+            { typeCode: "DM_02", code: "BP_01", name: "Thế chấp", nameEn: "Mortgage", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_02", code: "BP_02", name: "Cầm cố", nameEn: "Pledge", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_02", code: "BP_03", name: "Bảo lưu quyền sở hữu", nameEn: "Retention of ownership", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_02", code: "BP_04", name: "Đặt cọc", nameEn: "Deposit", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_02", code: "BP_05", name: "Ký cược", nameEn: "Security deposit", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_02", code: "BP_06", name: "Ký quỹ", nameEn: "Escrow", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_03 (Loại hợp đồng)
+            { typeCode: "DM_03", code: "HD_01", name: "Hợp đồng cho thuê tài chính", nameEn: "Financial lease contract", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_03", code: "HD_02", name: "Hợp đồng thuê tài sản có thời hạn 1 năm trở lên", nameEn: "Asset lease contract with term of 1 year or more", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_03", code: "HD_03", name: "Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác", nameEn: "Transfer contract of debt claim, accounts receivable, or other payment claims", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_03", code: "HD_04", name: "Hợp đồng ký gửi", nameEn: "Consignment contract", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_04 (Loại hình đăng ký)
+            { typeCode: "DM_04", code: "DK_01", name: "Đăng ký lần đầu", nameEn: "Initial registration", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_02", name: "Đăng ký thay đổi", nameEn: "Registration of change", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_03", name: "Xóa đăng ký", nameEn: "Deregistration", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_04", name: "Thông báo xử lý tài sản đảm bảo lần đầu", nameEn: "Initial notice of secured asset disposal", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_05", name: "Thay đổi thông báo xử lý tài sản bảo đảm", nameEn: "Change of notice of secured asset disposal", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_06", name: "Xóa đăng ký thông báo xử lý tài sản bảo đảm", nameEn: "Deregistration of notice of secured asset disposal", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_07", name: "Yêu cầu cung cấp bản sao", nameEn: "Request for copy provision", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_08", name: "Yêu cầu cung cấp bản sao kèm thông báo", nameEn: "Request for copy provision with notice", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_09", name: "Yêu cầu cung cấp thông tin", nameEn: "Request for information provision", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_10", name: "Chỉnh lý thông tin", nameEn: "Information correction", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_11", name: "Hủy đăng ký", nameEn: "Cancellation of registration", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_04", code: "DK_12", name: "Khôi phục hủy đăng ký", nameEn: "Restoration of cancelled registration", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_05 (Trạng thái tài sản bảo đảm)
+            { typeCode: "DM_05", code: "TSBD_01", name: "Đang bảo đảm", nameEn: "Secured", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_05", code: "TSBD_02", name: "Đã giải chấp", nameEn: "Released", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_05", code: "TSBD_03", name: "Đã hủy", nameEn: "Cancelled", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_06 (Loại bên bảo đảm)
+            { typeCode: "DM_06", code: "CT_01", name: "Công dân Việt Nam", nameEn: "Vietnamese citizen", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_06", code: "CT_02", name: "Tổ chức có đăng ký kinh doanh trong nước", nameEn: "Domestic business organization", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_06", code: "CT_03", name: "Người nước ngoài", nameEn: "Foreign national", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_06", code: "CT_04", name: "Nhà đầu tư nước ngoài", nameEn: "Foreign investor", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_06", code: "CT_05", name: "Tổ chức khác", nameEn: "Other organization", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_06", code: "CT_06", name: "Người không quốc tịch cư trú tại Việt Nam", nameEn: "Stateless person residing in Vietnam", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_07 (Loại tài sản bảo đảm)
+            { typeCode: "DM_07", code: "TS_01", name: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)", nameEn: "Road motor vehicle WITH chassis number (cars, motorcycles...)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_07", code: "TS_02", name: "Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt", nameEn: "Secured asset is fishing vessel; inland waterway, railway, or specialized road vehicle", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_07", code: "TS_03", name: "Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản", nameEn: "Secured asset is property right or part of property right", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_07", code: "TS_04", name: "Cây hằng năm, công trình tạm", nameEn: "Annual plant, temporary work", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_07", code: "TS_05", name: "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ", nameEn: "Secured asset is inventory/goods in production process, warehouse (not road vehicle)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_07", code: "TS_06", name: "Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung", nameEn: "Centrally registered securities becoming non-centrally registered", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_07", code: "TS_07", name: "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)", nameEn: "Other personal property (Money, valuable papers, consumer goods, metals, crops...)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_08 (Trung tâm giao dịch bảo đảm)
+            { typeCode: "DM_08", code: "TTGD_01", name: "Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội", nameEn: "Registry and Asset Transaction Center in Hanoi City", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_08", code: "TTGD_02", name: "Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng", nameEn: "Registry and Asset Transaction Center in Da Nang City", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_08", code: "TTGD_03", name: "Trung tâm đăng ký, giao dịch tài sản tại TP HCM", nameEn: "Registry and Asset Transaction Center in Ho Chi Minh City", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_09 (Quốc tịch / Quốc gia)
+            { typeCode: "DM_09", code: "VN", name: "Việt Nam", nameEn: "Vietnam", val: "VN", valEn: "VN", parentCode: "", notes: "Mã nước Việt Nam", status: "Hoạt động" },
+            { typeCode: "DM_09", code: "US", name: "Hoa Kỳ", nameEn: "United States", val: "US", valEn: "US", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_09", code: "JP", name: "Nhật Bản", nameEn: "Japan", val: "JP", valEn: "JP", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_09", code: "KR", name: "Hàn Quốc", nameEn: "South Korea", val: "KR", valEn: "KR", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_09", code: "CN", name: "Trung Quốc", nameEn: "China", val: "CN", valEn: "CN", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_10 (Loại giấy tờ pháp lý)
+            { typeCode: "DM_10", code: "GT_01", name: "CMND/CCCD/Chứng minh quân đội", nameEn: "ID Card/Citizen ID/Military ID", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_10", code: "GT_02", name: "Hộ chiếu", nameEn: "Passport", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_10", code: "GT_03", name: "Thẻ thường trú", nameEn: "Permanent Residence Card", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_10", code: "GT_04", name: "Mã số thuế", nameEn: "Tax Identification Number", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_11 (Loại hình tổ chức)
+            { typeCode: "DM_11", code: "TC_01", name: "Tổ chức nước ngoài", nameEn: "Foreign organization", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_11", code: "TC_02", name: "Tổ chức quốc tế", nameEn: "International organization", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_11", code: "TC_03", name: "Tổ chức khác", nameEn: "Other organization", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_12 (Quy mô bên bảo đảm)
+            { typeCode: "DM_12", code: "QM_01", name: "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân", nameEn: "Securing party using loan for personal consumption", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_12", code: "QM_02", name: "Bên bảo đảm là công ty có ít hơn 10 nhân viên", nameEn: "Securing party is company with fewer than 10 employees", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_12", code: "QM_03", name: "Bên bảo đảm là công ty có từ 10 đến 299 nhân viên", nameEn: "Securing party is company with 10 to 299 employees", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_12", code: "QM_04", name: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn", nameEn: "Securing party is company with 300 or more employees", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // Tooltips / Hướng dẫn (Table 5 in 04_Danh_muc_va_Phu_luc.md)
+            { typeCode: "DM_TOOLTIP", code: "TT_01", name: "Tooltip Hướng dẫn Ngày có hiệu lực HĐ", nameEn: "Tooltip Instruction Contract Effective Date", val: "Kê khai ngày công chứng, chứng thực (áp dụng đối với hợp đồng được công chứng, chứng thực); ngày có hiệu lực theo thỏa thuận trong hợp đồng (áp dụng đối với hợp đồng không được công chứng); ngày ký hợp đồng (áp dụng đối với hợp đồng không được công chứng, chứng thực và các bên không có thỏa thuận về ngày có hiệu lực trong hợp đồng).", valEn: "Declare the date of notarization (for notarized contracts); effective date by agreement (for non-notarized contracts); signing date (for non-notarized contracts without effective date agreement).", parentCode: "", notes: "Theo Phụ lục V, mục 1", status: "Hoạt động" },
+            { typeCode: "DM_TOOLTIP", code: "TT_02", name: "Tooltip Hướng dẫn Chủ doanh nghiệp là nữ giới", nameEn: "Tooltip Instruction Female Enterprise Owner", val: "Phân loại các doanh nghiệp có yếu tố nữ giới theo một tiêu chí sau:\n(a) Nữ giới nắm giữ từ 51% cổ phiếu trở lên.\n(b) Nữ giới nắm giữ từ 20% cổ phiếu trở lên và có ít nhất một nữ giới là Tổng giám đốc (CEO)/Giám đốc điều hành (COO) hay nắm giữ một chức danh quản lý cao cấp.", valEn: "Classify female-led enterprises by one of: (a) Female holds 51% shares or more; (b) Female holds 20%+ shares and at least one female is CEO/COO or high manager.", parentCode: "", notes: "Theo Phụ lục V, mục 2", status: "Hoạt động" },
+            { typeCode: "DM_TOOLTIP", code: "TT_03", name: "Hướng dẫn thanh toán QR Code", nameEn: "QR Code Payment Instruction", val: "Quét mã QR bằng ứng dụng ngân hàng hoặc ví điện tử để thanh toán.\nLưu ý: Không thay đổi nội dung chuyển khoản để hệ thống tự động gạch nợ.", valEn: "Scan QR code using bank/wallet app. Note: Do not change transfer message to auto-clear debt.", parentCode: "", notes: "Theo Phụ lục V, mục 3", status: "Hoạt động" },
+            { typeCode: "DM_TOOLTIP", code: "TT_04", name: "Tooltip Hướng dẫn Số giấy tờ", nameEn: "Tooltip Instruction Document Number", val: "Kê khai chứng minh quân đội đối với người đang công tác trong quân đội và không có Chứng minh thư nhân dân, căn cước công dân", valEn: "Declare military ID for active duty personnel without citizen ID card", parentCode: "", notes: "Theo Phụ lục V, mục 3.b", status: "Hoạt động" },
+            { typeCode: "DM_TOOLTIP", code: "TT_05", name: "Tooltip Hướng dẫn Loại tài sản", nameEn: "Tooltip Instruction Asset Type", val: "1. Đối với hàng hóa luân chuyển trong quá trình sản xuất kinh doanh: Kê khai theo giá trị hàng hóa hoặc theo loại hàng hóa.\n2. Đối với kho hàng: Kê khai theo giá trị hàng hóa hoặc theo tên, loại hàng hóa và kê khai thêm thông tin về địa chỉ hoặc số hiệu kho hoặc dấu hiệu khác của vị trí kho hàng. Không kê khai nhà kho, công trình xây dựng khác hoặc kho bãi được sử dụng cho việc chứa hoặc lưu trữ hàng hóa.\n4. Đối với quyền tài sản: Kê khai tên quyền tài sản được dùng để bảo đảm và căn cứ phát sinh quyền tài sản. Trường hợp căn cứ phát sinh quyền có ghi rõ tên quyền tài sản thì kê khai thông tin về tên quyền phải phù hợp với thông tin này.\n4.1. Trường hợp căn cứ phát sinh quyền tài sản là hợp đồng: Kê khai tên hợp đồng, số hợp đồng (nếu có); thời điểm có hiệu lực của hợp đồng; các bên tham gia xác lập hợp đồng.\n4.2. Trường hợp quyền tài sản phát sinh từ căn cứ khác: Kê khai tên căn cứ, tên chủ thể ban hành căn cứ, số căn cứ (nếu có); thời điểm có hiệu lực hoặc thời điểm ký.\n5. Đối với chứng khoán không đăng ký tập trung: Thông tin kê khai phải thể hiện được tài sản là chứng khoán không đăng ký tập trung, bao gồm cả chứng khoán đã đăng ký tập trung tại Tổng công quy lưu ký và bù trừ chứng khoán Việt Nam mà trở thành chứng khoán không đăng ký tập trung.\n6. Đối với động sản khác: Phạm vi kê khai có thể là một, một số hoặc toàn bộ tài sản hiện có hoặc tài sản hình thành trong tương lai nhưng không bao gồm tàu bay, tàu biển, chứng khoán đã đăng ký tập trung, quyền sử dụng đất, quyền sở hữu nhà ở, quyền sở hữu tài sản khác gắn liền với đất, quyền sử dụng khu vực biển, quyền sở hữu tài sản gắn liền với khu vực biển, quyền sở hữu, quyền khác phải đăng ký đối với tàu bay theo quy định của pháp luật về hàng không, đối với tàu biển theo quy định của pháp luật về hàng hải; quyền sở hữu đối với chứng khoán đã đăng ký tập trung theo quy định của pháp luật về chứng khoán. Trường hợp tài sản bảo đảm là động sản được lắp đặt, đặt tại hoặc đặt trên đất, nhà ở, công trình xây dựng khác thì thông tin kê khai phải thể hiện được tài sản đó là động sản, không phải là tài sản gắn liền với đất đai, nhà ở, công trình xây dựng.\nTrường hợp tài sản bảo đảm là vật có vật phụ, vật đồng bộ hoặc vật đặc định: Thông tin kê khai phải thể hiện được đặc điểm theo quy định của Bộ luật Dân sự để xác định được vật này.", valEn: "1. For inventories: Declare by value or type.\n2. For warehouse: Declare by value/name/type with address/ID. Exclude building/yard.\n3. For property rights: Declare name and origins (contracts or other documents).\n4. For non-centrally registered securities: Show details clearly.\n5. For other personal property: Specify descriptions per Civil Code.", parentCode: "", notes: "Theo Phụ lục V, mục 4", status: "Hoạt động" },
+            { typeCode: "DM_TOOLTIP", code: "TT_06", name: "Tooltip Hướng dẫn Biển số", nameEn: "Tooltip Instruction License Plate", val: "Để có đủ thông tin đáp ứng yêu cầu kết nối, chia sẻ dữ liệu với Cục CSGT, đề nghị người yêu cầu đăng ký kê khai biển số của phương tiện theo Giấy chứng nhận nhưng không nhập thông tin \"(T)\" hoặc \"(V)\", nếu có trên Giấy chứng nhận.", valEn: "For CSGT data sharing, declare vehicle plate per Certificate but omit '(T)' or '(V)'.", parentCode: "", notes: "Theo Phụ lục V, mục 5", status: "Hoạt động" },
+
+            // Mẫu email hệ thống (Table 6 in 04_Danh_muc_va_Phu_luc.md)
+            { typeCode: "DM_EMAIL_TEMPLATE", code: "EM_01", name: "Email Tạo tài khoản thành công", nameEn: "Account Created Email Template", val: "Tiêu đề Email: [Tên hệ thống] Thông báo khởi tạo tài khoản thành công\nNội dung Email:\nKính gửi [Họ và tên cán bộ/khách hàng],\nTài khoản truy cập hệ thống của bạn đã được khởi tạo thành công.\n- Tên đăng nhập: [Tên đăng nhập]\n- Mật khẩu tạm thời: [Mật khẩu]\nVui lòng đăng nhập tại link: [Link hệ thống] và tiến hành đổi mật khẩu ngay ở lần đăng nhập đầu tiên.\nTrân trọng.", valEn: "Subject: [System] Account Created Successfully\nDear [Full name],\nYour account has been created.\n- Username: [Username]\n- Temporary Password: [Password]\nPlease log in at [System Link] and change password.", parentCode: "", notes: "Gửi khi tạo mới TK", status: "Hoạt động" },
+            { typeCode: "DM_EMAIL_TEMPLATE", code: "EM_02", name: "Email Đặt lại mật khẩu", nameEn: "Password Reset Email Template", val: "Tiêu đề Email: [Tên hệ thống] Thông báo cấp lại mật khẩu\nNội dung Email:\nKính gửi [Họ và tên cán bộ/khách hàng],\nMật khẩu truy cập hệ thống của bạn đã được đặt lại.\n- Mật khẩu tạm thời mới: [Mật khẩu]\nVui lòng đăng nhập tại link: [Link hệ thống] và tiến hành đổi mật khẩu ngay ở lần đăng nhập đầu tiên.\nTrân trọng.", valEn: "Subject: [System] Password Reset Notification\nDear [Full name],\nYour password has been reset.\n- New Temporary Password: [Password]\nPlease log in at [System Link] and change password.", parentCode: "", notes: "Gửi khi cán bộ bấm reset", status: "Hoạt động" },
+            { typeCode: "DM_EMAIL_TEMPLATE", code: "EM_03", name: "Email gửi mã OTP xác thực đăng nhập", nameEn: "Login OTP Authentication Email Template", val: "Tiêu đề Email: [Tên hệ thống] Mã xác thực OTP đăng nhập\nNội dung Email:\nKính gửi [Họ và tên cán bộ/khách hàng],\nMã xác thực OTP của bạn để hoàn tất đăng nhập vào hệ thống là: **[Mã OTP]**.\nMã xác thực này có hiệu lực trong vòng 120 giây kể từ thời điểm yêu cầu.\nNếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email.\nTrân trọng.", valEn: "Subject: [System] Login Verification OTP Code\nDear [Full name],\nYour OTP code is: **[OTP]** (valid for 120s).\nIf you didn't request this, please ignore.", parentCode: "", notes: "Gửi khi đăng nhập 2FA", status: "Hoạt động" },
+            { typeCode: "DM_EMAIL_TEMPLATE", code: "EM_04", name: "Email thông báo tài khoản con được kích hoạt qua VNeID", nameEn: "Sub-account Activation via VNeID Email Template", val: "Tiêu đề Email: [Tên hệ thống] Thông báo tài khoản trực thuộc được kích hoạt\nNội dung Email:\nKính gửi [Họ và tên nhân viên],\nTài khoản trực thuộc của bạn trên hệ thống đã được kích hoạt thành công qua nguồn định danh VNeID.\n- Tên đăng nhập: [Tên đăng nhập (Số giấy tờ)]\nVui lòng đăng nhập hệ thống bằng tài khoản VNeID cá nhân của bạn tại link: [Link hệ thống].\nTrân trọng.", valEn: "Subject: [System] Sub-account Activated via VNeID\nDear [Employee Name],\nYour sub-account has been activated via VNeID.\n- Username: [Username (ID No)]\nPlease log in using VNeID.", parentCode: "", notes: "Dành cho nhân viên tổ chức", status: "Hoạt động" },
+            { typeCode: "DM_EMAIL_TEMPLATE", code: "EM_05", name: "Email thông báo khởi tạo tài khoản con Nội bộ", nameEn: "Sub-account Creation (Internal Source) Email Template", val: "Tiêu đề Email: [Tên hệ thống] Thông báo khởi tạo tài khoản trực thuộc thành công\nNội dung Email:\nKính gửi [Họ và tên nhân viên],\nTài khoản trực thuộc của bạn trên hệ thống đã được tạo thành công với nguồn xác thực nội bộ.\n- Tên đăng nhập: [Tên đăng nhập (Số giấy tờ)]\n- Mật khẩu tạm thời: [Mật khẩu]\nVui lòng đăng nhập tại link: [Link hệ thống] và tiến hành đổi mật khẩu ngay ở lần đăng nhập đầu tiên.\nTrân trọng.", valEn: "Subject: [System] Sub-account Created Internally\nDear [Employee Name],\nYour sub-account has been created with internal auth.\n- Username: [Username (ID No)]\n- Temporary Password: [Password]\nPlease log in and change password.", parentCode: "", notes: "Nhân viên nội bộ tổ chức", status: "Hoạt động" },
+            { typeCode: "DM_EMAIL_TEMPLATE", code: "EM_06", name: "Email Biên nhận thanh toán lệ phí", nameEn: "Fee Receipt Email Template", val: "Tiêu đề Email: [Tên hệ thống] Biên nhận thanh toán lệ phí hồ sơ [Mã hồ sơ]\nNội dung Email:\nKính gửi [Họ và tên khách hàng],\nHệ thống đăng ký biện pháp bảo đảm xác nhận đã nhận đủ số tiền thanh toán lệ phí cho hồ sơ dịch vụ công trực tuyến của quý khách.\n- Mã hồ sơ: [Mã hồ sơ]\n- Số tiền thanh toán: [Số tiền] VND\n- Mã giao dịch: [Mã giao dịch cổng thanh toán]\n- Thời gian thanh toán: [Thời gian thanh toán]\n- Trạng thái hồ sơ hiện tại: Chờ duyệt\n- Mã PIN tra cứu hồ sơ: [Mã PIN]\nQuý khách có thể sử dụng mã PIN này để tra cứu kết quả giải quyết hồ sơ tại địa chỉ: [Link hệ thống].\nBiên nhận này được gửi tự động từ hệ thống. Quý khách vui lòng không trả lời trực tiếp email này.\nTrân trọng.", valEn: "Subject: [System] Fee Receipt for Dossier [Dossier Code]\nDear [Client Name],\nWe have received your payment for dossier fee.\n- Dossier Code: [Dossier Code]\n- Amount Paid: [Amount] VND\n- Transaction ID: [Transaction ID]\n- Payment Time: [Time]\n- Status: Pending\n- Lookup PIN: [PIN]\nPlease look up at [Link].", parentCode: "", notes: "Gửi sau khi thanh toán", status: "Hoạt động" },
+            { typeCode: "DM_EMAIL_TEMPLATE", code: "EM_07", name: "Email Tiếp nhận yêu cầu hỗ trợ", nameEn: "Support Request Acknowledged Email Template", val: "Tiêu đề Email: [Hệ thống BPBĐ] Tiếp nhận yêu cầu hỗ trợ số [Mã yêu cầu hỗ trợ]\nNội dung Email:\nKính gửi [Họ và tên người gửi],\nHệ thống tiếp nhận yêu cầu hỗ trợ của bạn.\n- Mã yêu cầu hỗ trợ: [Mã yêu cầu hỗ trợ]\n- Loại yêu cầu hỗ trợ: [Loại yêu cầu hỗ trợ]\n- Mức độ ưu tiên: [Mức độ ưu tiên]\n- Tiêu đề: [Tiêu đề]\n- Nội dung: [Nội dung]\n- File đính kèm: [Danh sách tên file đính kèm hoặc Không có]\n- Thời gian gửi: [Thời gian gửi]\nBạn có thể theo dõi tiến độ xử lý và phản hồi của cán bộ tại Màn hình Theo dõi yêu cầu hỗ trợ ([Link theo dõi]).\nTrân trọng.", valEn: "Subject: [System] Received support request [Support Code]\nDear [Sender Name],\nYour support request has been received.\n- Support Code: [Support Code]\n- Type: [Type]\n- Priority: [Priority]\n- Title: [Title]\n- Content: [Content]\n- Attachments: [Attachments]\n- Time: [Time]\nTrack progress at [Link].", parentCode: "", notes: "Gửi khi submit hỗ trợ", status: "Hoạt động" },
+
+            // DM_17 (Danh mục Người yêu cầu đăng ký)
+            { typeCode: "DM_17", code: "YCDK_01", name: "Bên bảo đảm", nameEn: "Securing party", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_02", name: "Bên nhận bảo đảm", nameEn: "Secured party", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_03", name: "Bên bảo đảm mới", nameEn: "New securing party", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_04", name: "Bên nhận bảo đảm mới", nameEn: "New secured party", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_05", name: "Quản tài viên/Doanh nghiệp quản lý, thanh lý tài sản", nameEn: "Asset manager/Asset liquidation enterprise", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_06", name: "Cơ quan khác có thẩm quyền, người khác có thẩm quyền", nameEn: "Other competent authority/competent person", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_07", name: "Cơ quan thi hành án dân sự, Chấp hành viên", nameEn: "Civil judgment enforcement agency, Enforcement officer", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_08", name: "Chi nhánh của pháp nhân, người đại diện", nameEn: "Branch of legal entity, Representative", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_09", name: "Bên kế thừa bên bảo đảm, bên nhận bảo đảm", nameEn: "Successor of securing/secured party", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_17", code: "YCDK_10", name: "Tổ chức, cá nhân khác", nameEn: "Other organization/individual", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_19 (Danh mục Căn cứ xóa đăng ký)
+            { typeCode: "DM_19", code: "CCX_01", name: "Theo thỏa thuận giữa bên bảo đảm và bên nhận bảo đảm", nameEn: "Under agreement between securing and secured parties", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_02", name: "Toàn bộ nghĩa vụ được bảo đảm bị chấm dứt", nameEn: "All secured obligations are terminated", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_03", name: "Toàn bộ/một phần nội dung hợp đồng bảo đảm có biện pháp bảo đảm bị hủy bỏ", nameEn: "All/part of security contract has secured measures cancelled", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_04", name: "Biện pháp bảo đảm được thay thế bằng biện pháp bảo đảm khác", nameEn: "Secured measure is replaced with another measure", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_05", name: "Tài sản bảo đảm không còn", nameEn: "Secured asset no longer exists", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_06", name: "Tài sản bảo đảm đã được xử lý xong bởi bên nhận bảo đảm/cơ quan thi hành án dân sự", nameEn: "Secured asset is fully disposed by secured party/civil enforcement agency", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_07", name: "Tài sản bảo đảm là Cây hằng năm, công trình tạm trên đất thuê trả tiền hàng năm mà Nhà nước thu hồi đất", nameEn: "Secured asset is annual plants/temporary works on leased land with annual payment reclaimed by State", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_08", name: "Cây hằng năm được thu hoạch, công trình tạm bị phá dỡ", nameEn: "Annual plants harvested, temporary works demolished", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_09", name: "Bên nhận bảo đảm là pháp nhân bị giải thể", nameEn: "Secured party is dissolved legal entity", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_10", name: "Theo bản án, quyết định có hiệu lực pháp luật của Tòa án (Khách hàng không chọn căn cứ này)", nameEn: "Under legally effective judgment/decision of Court (Not client-selectable)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_19", code: "CCX_11", name: "Đã thực hiện thủ tục chuyển tiếp đăng ký thế chấp tại Văn phòng đăng ký đất đai (Khách hàng không chọn căn cứ này)", nameEn: "Transition of mortgage registration completed at Land Registry Office (Not client-selectable)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_20 (Danh mục Căn cứ hủy đăng ký)
+            { typeCode: "DM_20", code: "CCH_01", name: "Biện pháp bảo đảm đã được đăng ký mà cơ quan đăng ký nhận được bản án, quyết định của Tòa án có hiệu lực pháp luật hoặc quyết định của Trọng tài thương mại có hiệu lực pháp luật có nội dung quyết định về việc cơ quan đăng ký phải hủy toàn bộ hoặc một phần nội dung đăng ký (Điểm a Khoản 1 Điều 21)", nameEn: "Court judgment/ruling or arbitration decision requiring registry to cancel registration (Article 21.1.a)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_20", code: "CCH_02", name: "Biện pháp bảo đảm đã được đăng ký nhưng cơ quan đăng ký phát hiện nội dung đăng ký có sai sót do lỗi của cơ quan đăng ký, của người yêu cầu đăng ký mà nội dung sai sót đó không thuộc trường hợp đăng ký thay đổi hoặc không thể khắc phục bằng việc đăng ký thay đổi (Điểm b Khoản 1 Điều 21)", nameEn: "Errors in registration discovered by registry and cannot be fixed by registration of changes (Article 21.1.b)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+
+            // DM_21 (Loại văn bản quy phạm pháp luật)
+            { typeCode: "DM_21", code: "VB_01", name: "Luật", nameEn: "Law", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_21", code: "VB_02", name: "Nghị định", nameEn: "Decree", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_21", code: "VB_03", name: "Thông tư", nameEn: "Circular", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_21", code: "VB_04", name: "Quyết định", nameEn: "Decision", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_21", code: "VB_05", name: "Nghị quyết", nameEn: "Resolution", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_21", code: "VB_06", name: "Chỉ thị", nameEn: "Directive", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_21", code: "VB_07", name: "Thông tư liên tịch", nameEn: "Joint Circular", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_21", code: "VB_08", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" }
+        ];
+
+
+        // State variables
+        let dataList = [];
+        let curPage = 1;
+        let pageSize = 5;
+        let sortState = { field: 'code', dir: 'asc' };
+        let activeEditId = null; // null for add, string code for edit
+        let deleteCandidateId = null;
+
+        // Load data from LocalStorage
+        function initData() {
+            const storedTypes = localStorage.getItem('categoryTypes');
+            const storedCategories = localStorage.getItem('masterCategories');
+            
+            // Check if stored data is obsolete (lacks nameEn field or contains DM_13)
+            const isObsolete = !storedTypes || !storedCategories || 
+                               !storedTypes.includes('DM_EMAIL_TEMPLATE') || 
+                               storedTypes.includes('DM_13') || 
+                               !storedCategories.includes('nameEn') || 
+                               storedCategories.includes('DM_13') || 
+                               !storedCategories.includes('TT_06') ||
+                               !storedCategories.includes('CCX_01');
+
+            if (isObsolete) {
+                localStorage.setItem('categoryTypes', JSON.stringify(DEFAULT_TYPES));
+                localStorage.setItem('masterCategories', JSON.stringify(DEFAULT_CATEGORIES));
+            }
+            dataList = JSON.parse(localStorage.getItem('categoryTypes'));
+        }
+
+        function saveDataToStorage() {
+            localStorage.setItem('categoryTypes', JSON.stringify(dataList));
+        }
+
+        // Render functions
+        function renderTable() {
+            const keyword = document.getElementById('filterKeyword').value.trim().toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+            const tableBody = document.getElementById('tableBody');
+
+            // Filter
+            let filtered = dataList.filter(item => {
+                const matchKeyword = !keyword || 
+                                     item.code.toLowerCase().includes(keyword) || 
+                                     item.name.toLowerCase().includes(keyword) || 
+                                     (item.description && item.description.toLowerCase().includes(keyword));
+                const matchStatus = status === 'All' || item.status === status;
+                return matchKeyword && matchStatus;
+            });
+
+            // Sort
+            filtered.sort((a, b) => {
+                let valA = (a[sortState.field] || '').toLowerCase();
+                let valB = (b[sortState.field] || '').toLowerCase();
+                if (valA < valB) return sortState.dir === 'asc' ? -1 : 1;
+                if (valA > valB) return sortState.dir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            // Pagination calculations
+            const totalItems = filtered.length;
+            const totalPages = Math.ceil(totalItems / pageSize) || 1;
+            if (curPage > totalPages) curPage = totalPages;
+            if (curPage < 1) curPage = 1;
+
+            const startIdx = (curPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, totalItems);
+            const pageItems = filtered.slice(startIdx, endIdx);
+
+            // Render Rows
+            tableBody.innerHTML = '';
+            if (pageItems.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:30px;">Không có bản ghi nào phù hợp.</td></tr>`;
+                renderPagination(totalItems, 0, 0, totalPages);
+                return;
+            }
+
+            pageItems.forEach((item, index) => {
+                const stt = startIdx + index + 1;
+                const statusBadge = item.status === 'Đang hoạt động' 
+                    ? `<span class="badge bg-success">Đang hoạt động</span>`
+                    : `<span class="badge bg-danger">Ngừng hoạt động</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align:center">${stt}</td>
+                    <td style="font-weight:600; color:var(--primary-color);">${item.code}</td>
+                    <td style="font-weight:500;">${item.name}</td>
+                    <td>${item.description || '<span style="color:var(--text-muted); font-style:italic;">Chưa cập nhật</span>'}</td>
+                    <td style="text-align:center">${statusBadge}</td>
+                    <td style="text-align:center">
+                        <div class="action-cell">
+                            <button class="icon-btn" title="Xem chi tiết" onclick="openDetailModal('${item.code}')"><i class="fa fa-eye"></i></button>
+                            <button class="icon-btn" title="Chỉnh sửa" onclick="openEditModal('${item.code}')"><i class="fa fa-edit"></i></button>
+                            <button class="icon-btn delete" title="Xóa" onclick="openConfirmDeleteModal('${item.code}')"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            renderPagination(totalItems, startIdx + 1, endIdx, totalPages);
+        }
+
+        function renderPagination(totalItems, fromItem, toItem, totalPages) {
+            const paginationBar = document.getElementById('paginationBar');
+            if (totalItems === 0) {
+                paginationBar.innerHTML = '';
+                return;
+            }
+
+            const options = [5, 10, 20, 50].map(sz => `<option value="${sz}" ${pageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+            let html = `
+                <div class="pagination-info">
+                    <span>Hiển thị từ <strong>${fromItem}</strong> đến <strong>${toItem}</strong> trong tổng số <strong>${totalItems}</strong> bản ghi</span>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span>Số bản ghi hiển thị:</span>
+                        <select onchange="changePageSize(parseInt(this.value))">
+                            ${options}
+                        </select>
+                    </div>
+                </div>
+                <div class="pagination-buttons">
+                    <button class="page-btn" ${curPage === 1 ? 'disabled' : ''} onclick="changePage(1)" title="Trang đầu"><i class="fas fa-angle-double-left"></i></button>
+                    <button class="page-btn" ${curPage === 1 ? 'disabled' : ''} onclick="changePage(${curPage - 1})" title="Trang trước"><i class="fas fa-angle-left"></i></button>
+            `;
+
+            let startPage = Math.max(1, curPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            for (let p = startPage; p <= endPage; p++) {
+                if (p > 0) {
+                    html += `
+                        <button class="page-btn ${p === curPage ? 'active' : ''}" onclick="changePage(${p})">${p}</button>
+                    `;
+                }
+            }
+
+            html += `
+                    <button class="page-btn" ${curPage === totalPages ? 'disabled' : ''} onclick="changePage(${curPage + 1})" title="Trang sau"><i class="fas fa-angle-right"></i></button>
+                    <button class="page-btn" ${curPage === totalPages ? 'disabled' : ''} onclick="changePage(${totalPages})" title="Trang cuối"><i class="fas fa-angle-double-right"></i></button>
+                </div>
+            `;
+            paginationBar.innerHTML = html;
+        }
+
+        // Event helpers
+        function changePage(page) {
+            curPage = page;
+            renderTable();
+        }
+
+        // Detail functions
+        function openDetailModal(code) {
+            const item = dataList.find(x => x.code === code);
+            if (!item) return;
+            document.getElementById('detCode').value = item.code;
+            document.getElementById('detName').value = item.name;
+            document.getElementById('detDescription').value = item.description || 'Chưa cập nhật';
+            document.getElementById('detStatus').value = item.status;
+            document.getElementById('detailModal').classList.add('active');
+        }
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        function changePageSize(size) {
+            pageSize = size;
+            curPage = 1;
+            renderTable();
+        }
+
+        function handleSort(field) {
+            if (sortState.field === field) {
+                sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortState.field = field;
+                sortState.dir = 'asc';
+            }
+            // Update icons
+            ['code', 'name', 'status'].forEach(f => {
+                const el = document.getElementById(`sort-${f}`);
+                if (el) el.innerHTML = '<i class="fas fa-sort"></i>';
+            });
+            const activeEl = document.getElementById(`sort-${field}`);
+            if (activeEl) {
+                activeEl.innerHTML = sortState.dir === 'asc' ? '<i class="fas fa-sort-up"></i>' : '<i class="fas fa-sort-down"></i>';
+            }
+            renderTable();
+        }
+
+        // Form operations
+        function openAddModal() {
+            activeEditId = null;
+            document.getElementById('modalTitle').innerText = "Thêm mới loại danh mục";
+            document.getElementById('inpCode').readOnly = false;
+            document.getElementById('inpCode').value = '';
+            document.getElementById('inpName').value = '';
+            document.getElementById('inpDescription').value = '';
+            document.querySelector('input[name="status"][value="Đang hoạt động"]').checked = true;
+            
+            // Clear errors
+            document.getElementById('errCode').style.display = 'none';
+            document.getElementById('errName').style.display = 'none';
+            
+            document.getElementById('formModal').classList.add('active');
+        }
+
+        function openEditModal(code) {
+            activeEditId = code;
+            const item = dataList.find(x => x.code === code);
+            if (!item) return;
+
+            document.getElementById('modalTitle').innerText = "Chỉnh sửa loại danh mục";
+            document.getElementById('inpCode').value = item.code;
+            document.getElementById('inpCode').readOnly = true;
+            document.getElementById('inpName').value = item.name;
+            document.getElementById('inpDescription').value = item.description || '';
+            document.querySelector(`input[name="status"][value="${item.status}"]`).checked = true;
+
+            // Clear errors
+            document.getElementById('errCode').style.display = 'none';
+            document.getElementById('errName').style.display = 'none';
+
+            document.getElementById('formModal').classList.add('active');
+        }
+
+        function closeFormModal() {
+            document.getElementById('formModal').classList.remove('active');
+        }
+
+        function saveData() {
+            const code = document.getElementById('inpCode').value.trim();
+            const name = document.getElementById('inpName').value.trim();
+            const description = document.getElementById('inpDescription').value.trim();
+            const status = document.querySelector('input[name="status"]:checked').value;
+
+            let valid = true;
+
+            // Validate Name
+            if (!name) {
+                document.getElementById('errName').style.display = 'block';
+                document.getElementById('inpName').focus();
+                valid = false;
+            } else {
+                document.getElementById('errName').style.display = 'none';
+            }
+
+            // Validate Code
+            if (activeEditId === null) {
+                if (code) {
+                    const exists = dataList.some(x => x.code.toLowerCase() === code.toLowerCase());
+                    if (exists) {
+                        document.getElementById('errCode').innerText = "Mã loại danh mục đã tồn tại trong hệ thống.";
+                        document.getElementById('errCode').style.display = 'block';
+                        document.getElementById('inpCode').focus();
+                        valid = false;
+                    } else {
+                        document.getElementById('errCode').style.display = 'none';
+                    }
+                }
+            }
+
+            if (!valid) return;
+
+            if (activeEditId === null) {
+                const finalCode = code || "LDM_" + Math.random().toString(36).substr(2, 4).toUpperCase();
+                let verifiedCode = finalCode;
+                let counter = 1;
+                while (dataList.some(x => x.code.toLowerCase() === verifiedCode.toLowerCase())) {
+                    verifiedCode = finalCode + counter;
+                    counter++;
+                }
+
+                dataList.push({
+                    code: verifiedCode,
+                    name: name,
+                    description: description,
+                    status: status
+                });
+                showToast("Thêm mới loại danh mục thành công!", "success");
+            } else {
+                const index = dataList.findIndex(x => x.code === activeEditId);
+                if (index !== -1) {
+                    dataList[index].name = name;
+                    dataList[index].description = description;
+                    dataList[index].status = status;
+                }
+                showToast("Cập nhật loại danh mục thành công!", "success");
+            }
+
+            saveDataToStorage();
+            closeFormModal();
+            renderTable();
+        }
+
+        // Delete operations
+        function openConfirmDeleteModal(code) {
+            deleteCandidateId = code;
+            const item = dataList.find(x => x.code === code);
+            if (!item) return;
+            document.getElementById('deleteMessage').innerHTML = `Bạn có chắc chắn muốn xóa loại danh mục <strong>${item.name} (${item.code})</strong>?`;
+            document.getElementById('confirmDeleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('confirmDeleteModal').classList.remove('active');
+            deleteCandidateId = null;
+        }
+
+        function deleteItem() {
+            if (!deleteCandidateId) return;
+
+            const masterCategories = JSON.parse(localStorage.getItem('masterCategories')) || [];
+            const inUse = masterCategories.some(cat => cat.typeCode === deleteCandidateId);
+
+            if (inUse) {
+                showToast("Không thể xóa do Loại danh mục này đang được sử dụng. Vui lòng đổi trạng thái thành Ngừng hoạt động.", "error");
+                closeDeleteModal();
+                return;
+            }
+
+            const index = dataList.findIndex(x => x.code === deleteCandidateId);
+            if (index !== -1) {
+                const deletedName = dataList[index].name;
+                dataList.splice(index, 1);
+                saveDataToStorage();
+                showToast(`Đã xóa thành công loại danh mục ${deletedName}!`, "success");
+            }
+
+            closeDeleteModal();
+            renderTable();
+        }
+
+        function searchData() {
+            curPage = 1;
+            renderTable();
+        }
+
+        function resetSearch() {
+            document.getElementById('filterKeyword').value = '';
+            document.getElementById('filterStatus').value = 'All';
+            curPage = 1;
+            renderTable();
+        }
+
+        // Toast Helper
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.className = 'toast';
+            toast.classList.add(type);
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> <span>${message}</span>`;
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initData();
+            renderTable();
+        });
+    </script>
+</body>
+</html>

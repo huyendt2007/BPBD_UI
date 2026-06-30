@@ -1,0 +1,3448 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981; 
+            --danger-color: #EF4444; 
+            --warning-color: #F59E0B; 
+            --info-color: #3B82F6;
+            
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: var(--base-size);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Page Header Banner */
+        .page-header {
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            color: white;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .page-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .page-header p {
+            opacity: 0.9;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Card Section Styling */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .section-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Grid layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+        .required {
+            color: var(--danger-color);
+            margin-left: 3px;
+        }
+        .form-control, .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 13px;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+            font-family: var(--font-family);
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .form-control:read-only, .form-select:disabled, .form-control:disabled {
+            background-color: #F8FAFC;
+            color: var(--text-muted);
+            cursor: not-allowed;
+            border-color: #E2E8F0;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 20px;
+            padding: 8px 0;
+        }
+        .radio-label, .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Buttons Styling */
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            outline: none;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: var(--border-radius-sm);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        .btn-secondary {
+            background-color: #E2E8F0;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background-color: #CBD5E1;
+        }
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #059669;
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Action Toolbar */
+        .grid-action-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .search-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 15px;
+        }
+
+        /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+        .custom-table th {
+            background-color: var(--table-header-bg);
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .custom-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+        .custom-table tbody tr:hover {
+            background-color: rgba(241, 245, 249, 0.5);
+        }
+        .row-deleted {
+            background-color: #FFF7ED !important;
+            color: #9A3412;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+        .bg-new { background-color: #E2E8F0; color: #475569; }
+        .bg-processing { background-color: #DBEAFE; color: #1E40AF; }
+        .bg-pending { background-color: #FEF3C7; color: #92400E; }
+        .bg-resolved { background-color: #D1FAE5; color: #065F46; }
+        .bg-transferred { background-color: #E0F2FE; color: #0369A1; }
+        .bg-rejected { background-color: #FEE2E2; color: #991B1B; }
+        .bg-deleted { background-color: #FFEDD5; color: #C2410C; }
+
+        /* File Upload */
+        .file-upload-container {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 15px;
+            text-align: center;
+            background-color: #F8FAFC;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file-upload-container:hover {
+            border-color: var(--secondary-color);
+            background-color: #F1F5F9;
+        }
+        /* Premium File Items Styling */
+        .file-list {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background: #FFFFFF;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .file-item:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+            transform: translateY(-1px);
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 70%;
+        }
+        .file-icon {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--border-radius-sm);
+            background-color: #FEF2F2;
+            color: #EF4444;
+            transition: all 0.2s;
+        }
+        .file-icon.image {
+            background-color: #ECFDF5;
+            color: #10B981;
+        }
+        .file-icon.doc {
+            background-color: #EFF6FF;
+            color: #3B82F6;
+        }
+        .file-name {
+            font-weight: 500;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 13px;
+        }
+        .file-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .file-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: var(--border-radius-sm);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .file-btn-view {
+            color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+        .file-btn-view:hover {
+            color: white;
+            background-color: var(--primary-color);
+        }
+        .file-btn-delete {
+            color: var(--danger-color);
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+        .file-btn-delete:hover {
+            color: white;
+            background-color: var(--danger-color);
+        }
+
+        /* Action Icons */
+        .action-icons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        .action-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        .action-icon:hover {
+            color: var(--primary-color);
+        }
+        .action-icon.delete:hover {
+            color: var(--danger-color);
+        }
+
+        .form-section-header {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 20px 0 15px 0;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 6px;
+        }
+        .form-section-header:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Dynamic display */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Modals style */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            width: 500px;
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-title.danger {
+            color: var(--danger-color);
+        }
+        .modal-title.success {
+            color: var(--success-color);
+        }
+        .modal-body {
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .toast {
+            background-color: #1E293B;
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+        }
+        .toast.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast-success { background-color: var(--success-color); }
+        .toast-error { background-color: var(--danger-color); }
+        .toast-info { background-color: var(--info-color); }
+
+        /* Autocomplete search dropdown mockup */
+        .autocomplete-wrapper {
+            position: relative;
+        }
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 10;
+            box-shadow: var(--box-shadow);
+        }
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .suggestion-item:hover {
+            background-color: var(--table-header-bg);
+            color: var(--primary-color);
+        }
+
+        /* Status warning alert banner */
+        .alert-banner {
+            padding: 12px 16px;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-banner.warning {
+            background-color: #FEF3C7;
+            color: #92400E;
+            border-left: 4px solid var(--warning-color);
+        }
+        .alert-banner.danger {
+            background-color: #FEE2E2;
+            color: #991B1B;
+            border-left: 4px solid var(--danger-color);
+        }
+        .text-center {
+            text-align: center !important;
+        }
+
+        /* Document Preview Modal Styling */
+        .preview-modal-content {
+            background-color: #1E293B;
+            border-radius: var(--border-radius-lg);
+            width: 850px;
+            max-width: 95vw;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            color: white;
+            overflow: hidden;
+        }
+        .preview-header {
+            padding: 12px 20px;
+            background-color: #0F172A;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+        .preview-title-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .preview-title-info h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0;
+            color: #F8FAFC;
+        }
+        .preview-toolbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .preview-btn {
+            background: #334155;
+            border: none;
+            color: #E2E8F0;
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .preview-btn:hover {
+            background: #475569;
+            color: white;
+        }
+        .preview-body {
+            flex: 1;
+            padding: 30px;
+            background-color: #475569;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .document-paper {
+            background: white;
+            width: 100%;
+            max-width: 700px;
+            min-height: 850px;
+            padding: 50px 60px;
+            color: #0F172A;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            font-family: "Times New Roman", Times, serif;
+            position: relative;
+        }
+        .doc-header-national {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .doc-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+        .doc-meta {
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .doc-content-body {
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+        .doc-signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+        .signature-box {
+            text-align: center;
+            width: 200px;
+        }
+        .stamp-container {
+            position: relative;
+            height: 80px;
+            margin-top: 10px;
+        }
+        .red-stamp {
+            position: absolute;
+            top: -10px;
+            left: 50px;
+            width: 90px;
+            height: 90px;
+            border: 3px double #EF4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #EF4444;
+            font-weight: bold;
+            font-size: 9px;
+            text-align: center;
+            transform: rotate(-15deg);
+            opacity: 0.85;
+            pointer-events: none;
+            background-color: rgba(254, 242, 242, 0.2);
+        }
+        .red-stamp-text {
+            line-height: 1.1;
+        }
+        .digital-sig-box {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            border: 2px solid #10B981;
+            background-color: rgba(240, 253, 250, 0.95);
+            border-radius: var(--border-radius-sm);
+            padding: 8px 12px;
+            width: 220px;
+            font-family: var(--font-family);
+            font-size: 11px;
+            color: #065F46;
+            text-align: left;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .digital-sig-box i {
+            font-size: 14px;
+            margin-right: 4px;
+            color: #10B981;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Page Header Banner -->
+    <div class="page-header">
+        <div>
+            <h1>Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo</h1>
+            <p>Hệ thống tiếp nhận ý kiến, đơn thư khiếu nại, tố cáo, kiến nghị, phản ánh liên quan đến Đăng ký biện pháp bảo đảm</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="user-role-selector" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: var(--border-radius-md); font-size: 13px; border: 1px solid rgba(255,255,255,0.25);">
+                <i class="fa-solid fa-user-gear" style="color: #F59E0B;"></i>
+                <span style="font-weight: 500;">Tài khoản hiện tại:</span>
+                <select id="current-user-select" onchange="changeCurrentUser(this.value)" style="background: #1E293B; color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: var(--border-radius-sm); font-size: 12px; padding: 4px 8px; outline: none; font-weight: 600; cursor: pointer;">
+                    <option value="Nguyễn Văn Cán Bộ|Cán bộ">Nguyễn Văn Cán Bộ (Cán bộ trực tiếp nhập)</option>
+                    <option value="Lê Văn Thanh Tra|Cán bộ">Lê Văn Thanh Tra (Cán bộ xử lý khác)</option>
+                    <option value="Trần Minh Cục Trưởng|Lãnh đạo đơn vị">Trần Minh Cục Trưởng (Lãnh đạo đơn vị)</option>
+                </select>
+            </div>
+            <i class="fa-solid fa-scale-unbalanced" style="font-size: 32px; opacity: 0.8;"></i>
+        </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- MÀN HÌNH TRA CỨU HỒ SƠ TIẾP DÂN & KNTC (UC261) -->
+    <!-- ======================================================= -->
+    <div id="section-list">
+        
+        <!-- Search filters -->
+        <div class="card-section" style="background-color: #FAFAFA;">
+            <h3 style="font-size: 14px; color: var(--primary-color); font-weight: 600; margin-bottom: 12px;">
+                <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
+            </h3>
+            
+            <div class="grid-4">
+                <div class="form-group">
+                    <label class="form-label">Mã hồ sơ tiếp công dân</label>
+                    <input type="text" id="filter-ma-hoso" class="form-control" placeholder="Ví dụ: TCD-2026-06-0001" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại vụ việc</label>
+                    <select id="filter-loai-vuviec" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Khiếu nại">Khiếu nại</option>
+                        <option value="Tố cáo">Tố cáo</option>
+                        <option value="Kiến nghị">Kiến nghị</option>
+                        <option value="Phản ánh">Phản ánh</option>
+                        <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái hồ sơ</label>
+                    <select id="filter-trangthai" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Mới tiếp nhận">Mới tiếp nhận</option>
+                        <option value="Đang xử lý">Đang xử lý</option>
+                        <option value="Chờ bổ sung hồ sơ">Chờ bổ sung hồ sơ</option>
+                        <option value="Đã trả lời">Đã trả lời</option>
+                        <option value="Đã chuyển đơn">Đã chuyển đơn</option>
+                        <option value="Không thụ lý">Không thụ lý</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Họ tên/Tên tổ chức gửi đơn</label>
+                    <input type="text" id="filter-hoten" class="form-control" placeholder="Nhập tên người gửi..." autocomplete="off">
+                </div>
+            </div>
+
+            <div class="grid-4">
+                <div class="form-group">
+                    <label class="form-label">Số định danh (CCCD/MST/Hộ chiếu)</label>
+                    <input type="text" id="filter-cccd" class="form-control" placeholder="Nhập số CCCD/MST/Hộ chiếu..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số đăng ký BPBĐ liên quan</label>
+                    <input type="text" id="filter-sodangky" class="form-control" placeholder="Nhập số đăng ký BPBĐ..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ngày tiếp nhận</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="filter-tungay" class="form-control" placeholder="Từ ngày (dd/mm/yyyy)" readonly onfocus="this.removeAttribute('readonly');" autocomplete="new-password">
+                        <input type="text" id="filter-denngay" class="form-control" placeholder="Đến ngày (dd/mm/yyyy)" readonly onfocus="this.removeAttribute('readonly');" autocomplete="new-password">
+                    </div>
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 8px;">
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="filter-quahan" onchange="toggleFilterQuaHan()"> Quá hạn xử lý
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()">Xóa bộ lọc</button>
+                <button type="button" class="btn btn-primary" onclick="executeSearch()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <!-- GridView -->
+        <div class="card-section">
+            <div class="section-title">
+                <span><i class="fa-solid fa-list-check"></i> Sổ theo dõi tiếp công dân và giải quyết KNTC</span>
+            </div>
+            <div class="grid-action-toolbar">
+                <button class="btn btn-primary" onclick="openCreateForm()"><i class="fa fa-plus"></i> Thêm mới hồ sơ</button>
+                <button class="btn btn-outline-primary" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
+            
+            <div class="table-container">
+                <table class="custom-table" id="hoso-table">
+                    <thead>
+                        <tr>
+                            <th width="40px" class="text-center">STT</th>
+                            <th width="140px">Mã hồ sơ</th>
+                            <th width="125px">Ngày tiếp nhận</th>
+                            <th width="110px">Loại vụ việc</th>
+                            <th>Họ tên / Tổ chức</th>
+                            <th width="130px">Số ĐK BPBĐ</th>
+                            <th>Tóm tắt nội dung yêu cầu, phản ánh</th>
+                            <th width="140px">Trạng thái</th>
+                            <th width="105px">Hạn xử lý</th>
+                            <th width="130px">Cán bộ xử lý</th>
+                            <th width="110px" class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hoso-table-body">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- FORM NHẬP MỚI / CHI TIẾT & XỬ LÝ HỒ SƠ TIẾP DÂN (UC260) -->
+    <!-- ======================================================= -->
+    <div id="section-form" class="card-section hidden">
+        <div class="section-title">
+            <span id="form-title"><i class="fa-solid fa-edit"></i> Hồ sơ tiếp công dân và giải quyết khiếu nại, tố cáo</span>
+            <button class="btn btn-secondary btn-sm" onclick="closeForm()"><i class="fa-solid fa-times"></i> Quay lại danh sách</button>
+        </div>
+
+        <!-- Overdue warning banner if close to deadline -->
+        <div id="due-warning-banner" class="alert-banner warning hidden">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>Hồ sơ sắp đến hạn xử lý! Thời hạn xử lý còn lại dưới 5 ngày.</span>
+        </div>
+
+        <form id="hoso-form" onsubmit="event.preventDefault();" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md);">
+            <input type="hidden" id="hoso-id">
+
+            <!-- ======================================================= -->
+            <!-- KHỐI A – THÔNG TIN TIẾP NHẬN -->
+            <!-- ======================================================= -->
+            <div class="form-section-header">
+                <span>Khối A – Thông tin tiếp nhận hồ sơ</span>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label">Mã hồ sơ tiếp công dân</label>
+                    <input type="text" id="a-ma-hoso" class="form-control" readonly value="TCD-2026-06-0001">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ngày tiếp nhận <span class="required">*</span></label>
+                    <input type="text" id="a-ngay-tiepnhan" class="form-control" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hình thức tiếp nhận <span class="required">*</span></label>
+                    <select id="a-hinhthuc-tiepnhan" class="form-select">
+                        <option value="Trực tiếp tại trụ sở">Trực tiếp tại trụ sở</option>
+                        <option value="Qua bưu điện">Qua bưu điện</option>
+                        <option value="Qua email">Qua email</option>
+                        <option value="Qua điện thoại">Qua điện thoại</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label">Loại vụ việc <span class="required">*</span></label>
+                    <select id="a-loai-vuviec" class="form-select" onchange="onLoaiVuViecChange(this.value)">
+                        <option value="Khiếu nại">Khiếu nại</option>
+                        <option value="Tố cáo">Tố cáo</option>
+                        <option value="Kiến nghị">Kiến nghị</option>
+                        <option value="Phản ánh">Phản ánh</option>
+                        <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cán bộ tiếp nhận</label>
+                    <input type="text" id="a-canbo-tiepnhan" class="form-control" readonly value="Nguyễn Văn Cán Bộ">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đơn vị tiếp nhận</label>
+                    <input type="text" id="a-donvi-tiepnhan" class="form-control" readonly value="Cục Đăng ký giao dịch bảo đảm - Bộ Tư pháp">
+                </div>
+            </div>
+
+            <!-- ======================================================= -->
+            <!-- KHỐI B – THÔNG TIN NGƯỜI ĐẾN (CÔNG DÂN / TỔ CHỨC) -->
+            <!-- ======================================================= -->
+            <div class="form-section-header">
+                <span>Khối B – Thông tin người gửi phản ánh, khiếu nại, tố cáo</span>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label">Loại đối tượng <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="b-loai-doituong" value="Cá nhân" checked onchange="toggleLoaiDoiTuong(this.value)"> Cá nhân
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="b-loai-doituong" value="Tổ chức" onchange="toggleLoaiDoiTuong(this.value)"> Tổ chức
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="b-lbl-hoten">Họ và tên công dân <span class="required">*</span></label>
+                    <input type="text" id="b-hoten" class="form-control" placeholder="Nhập họ và tên...">
+                </div>
+                <div class="form-group" id="b-group-cccd">
+                    <label class="form-label">Số CMND/CCCD/Hộ chiếu <span class="required">*</span></label>
+                    <input type="text" id="b-cccd" class="form-control" placeholder="Nhập số CMND/CCCD...">
+                </div>
+                <div class="form-group hidden" id="b-group-mst">
+                    <label class="form-label">Mã số thuế / Số đăng ký doanh nghiệp <span class="required">*</span></label>
+                    <input type="text" id="b-mst" class="form-control" placeholder="Nhập mã số thuế...">
+                </div>
+            </div>
+
+            <div class="grid-3" id="b-group-canhan-fields">
+                <div class="form-group">
+                    <label class="form-label">Ngày sinh <span class="required">*</span></label>
+                    <input type="text" id="b-ngaysinh" class="form-control" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Giới tính <span class="required">*</span></label>
+                    <select id="b-gioitinh" class="form-select">
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ngày cấp định danh</label>
+                    <input type="text" id="b-ngaycap" class="form-control" placeholder="dd/mm/yyyy">
+                </div>
+            </div>
+
+            <div class="grid-3 hidden" id="b-group-tochuc-fields">
+                <div class="form-group">
+                    <label class="form-label">Người đại diện pháp luật <span class="required">*</span></label>
+                    <input type="text" id="b-daidien-phapluat" class="form-control" placeholder="Nhập người đại diện...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Chức vụ đại diện</label>
+                    <input type="text" id="b-chucvu-daidien" class="form-control" placeholder="Ví dụ: Giám đốc...">
+                </div>
+                <div class="form-group"></div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label">Số điện thoại liên hệ <span class="required">*</span></label>
+                    <input type="text" id="b-sodienthoai" class="form-control" placeholder="Nhập số điện thoại...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email nhận phản hồi <span class="required" id="email-req-star">*</span></label>
+                    <input type="text" id="b-email" class="form-control" placeholder="Nhập địa chỉ email...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tỉnh/Thành phố <span class="required">*</span></label>
+                    <select id="b-tinhthanh" class="form-select">
+                        <option value="" selected>Vui lòng lựa chọn Tỉnh/Thành phố</option>
+                        <option value="Hà Nội">Thành phố Hà Nội</option>
+                        <option value="Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
+                        <option value="Đà Nẵng">Thành phố Đà Nẵng</option>
+                        <option value="Hải Phòng">Thành phố Hải Phòng</option>
+                        <option value="Cần Thơ">Thành phố Cần Thơ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Địa chỉ liên hệ / Thường trú <span class="required">*</span></label>
+                <input type="text" id="b-diachi" class="form-control" placeholder="Nhập số nhà, tên đường, phường/xã, quận/huyện...">
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="b-co-uyquyen" onchange="toggleUyQuyen(this.checked)"> Có văn bản ủy quyền hợp pháp của bên liên quan
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid-3 hidden" id="b-group-uyquyen-fields">
+                <div class="form-group">
+                    <label class="form-label">Họ tên người được ủy quyền <span class="required">*</span></label>
+                    <input type="text" id="b-hoten-uyquyen" class="form-control" placeholder="Họ tên người nhận ủy quyền...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">CMND/CCCD người được ủy quyền <span class="required">*</span></label>
+                    <input type="text" id="b-cccd-uyquyen" class="form-control" placeholder="Số CMND/CCCD...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tệp đính kèm văn bản ủy quyền <span class="required">*</span></label>
+                    <input type="file" id="b-file-uyquyen" class="form-control">
+                </div>
+            </div>
+
+            <!-- ======================================================= -->
+            <!-- KHỐI C – NỘI DUNG VỤ VIỆC LIÊN QUAN ĐẾN BPBĐ -->
+            <!-- ======================================================= -->
+            <div class="form-section-header">
+                <span>Khối C – Nội dung vụ việc liên quan đăng ký biện pháp bảo đảm</span>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group autocomplete-wrapper">
+                    <label class="form-label">Số đăng ký BPBĐ liên quan</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="c-sodangky-bpbd" class="form-control" placeholder="Nhập để tìm liên thông..." oninput="showSuggestions(this.value)">
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="lienthongDuLieu()"><i class="fa fa-sync"></i> Liên thông</button>
+                    </div>
+                    <div id="suggestions-box" class="autocomplete-suggestions hidden"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số hợp đồng bảo đảm</label>
+                    <input type="text" id="c-sohopdong" class="form-control" placeholder="Số hợp đồng liên kết...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại hình giao dịch</label>
+                    <input type="text" id="c-loaihinh-giaodich" class="form-control" placeholder="Thế chấp/Cầm cố/Thông báo xử lý tài sản...">
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label">Bên bảo đảm</label>
+                    <input type="text" id="c-ben-baodam" class="form-control" placeholder="Tên bên bảo đảm (Bên thế chấp)...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bên nhận bảo đảm</label>
+                    <input type="text" id="c-ben-nhanbaodam" class="form-control" placeholder="Tên bên nhận bảo đảm...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tài sản bảo đảm mô tả</label>
+                    <input type="text" id="c-taisan-baodam" class="form-control" placeholder="Mô tả tài sản bảo đảm liên quan...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tóm tắt nội dung yêu cầu, phản ánh <span class="required">*</span></label>
+                <input type="text" id="c-tomtat-noidung" class="form-control" placeholder="Tóm tắt ngắn gọn nội dung vụ việc (tối đa 250 ký tự)..." maxlength="250">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nội dung chi tiết vụ việc <span class="required">*</span></label>
+                <textarea id="c-noidung-chitiet" class="form-control" placeholder="Trình bày chi tiết vụ việc, nội dung phản ánh, khiếu nại hoặc tố cáo..."></textarea>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Căn cứ pháp lý do công dân nêu</label>
+                    <textarea id="c-cancu-phaply" class="form-control" placeholder="Ví dụ: Khoản 2 Điều 10 Luật Tiếp công dân..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Yêu cầu cụ thể của công dân</label>
+                    <textarea id="c-yeucau-cuthe" class="form-control" placeholder="Yêu cầu cụ thể đề nghị giải quyết..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tài liệu, tài sản chứng minh đính kèm</label>
+                <div class="file-upload-container" onclick="triggerFormFileUpload()">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--text-muted); margin-bottom: 5px;"></i>
+                    <p style="font-size: 12px; color: var(--text-muted);">Kéo thả hoặc click để đính kèm Đơn khiếu nại/tố cáo gốc, giấy tờ tài sản, CCCD...</p>
+                    <input type="file" id="form-files-upload" style="display: none;" onchange="handleFormFilesSelected(this)" multiple>
+                </div>
+                <div class="file-list" id="form-files-list">
+                    <!-- Dynamic loaded -->
+                </div>
+            </div>
+
+            <!-- ======================================================= -->
+            <!-- KHỐI D – PHÂN CÔNG VÀ THEO DÕI XỬ LÝ (DÀNH CHO CÁN BỘ) -->
+            <!-- ======================================================= -->
+            <div class="form-section-header">
+                <span>Khối D – Phân công, theo dõi giải quyết và cập nhật kết quả</span>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label">Cán bộ được phân công xử lý <span class="required">*</span></label>
+                    <select id="d-canbo-xuly" class="form-select">
+                        <option value="Nguyễn Văn Cán Bộ">Nguyễn Văn Cán Bộ (Đang đăng nhập)</option>
+                        <option value="Trần Thị Nghiệp Vụ">Trần Thị Nghiệp Vụ</option>
+                        <option value="Lê Văn Thanh Tra">Lê Văn Thanh Tra</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái xử lý hồ sơ <span class="required">*</span></label>
+                    <select id="d-trangthai-hoso" class="form-select" onchange="onTrangThaiXulyChange(this.value)">
+                        <option value="Mới tiếp nhận">Mới tiếp nhận</option>
+                        <option value="Đang xử lý">Đang xử lý</option>
+                        <option value="Chờ bổ sung hồ sơ">Chờ bổ sung hồ sơ</option>
+                        <option value="Đã trả lời">Đã trả lời</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Thời hạn giải quyết theo luật định</label>
+                    <input type="text" id="d-han-giaiquyet" class="form-control" value="23/07/2026" placeholder="dd/mm/yyyy">
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label">Phân loại nội dung xử lý <span class="required">*</span></label>
+                    <select id="d-phanloai-xuly" class="form-select" onchange="onPhanLoaiXulyChange(this.value)">
+                        <option value="">-- Vui lòng chọn phân loại --</option>
+                        <option value="Thuộc thẩm quyền">Thuộc thẩm quyền giải quyết</option>
+                        <option value="Chuyển cơ quan khác">Chuyển cơ quan có thẩm quyền khác</option>
+                        <option value="Không đủ điều kiện thụ lý">Không đủ điều kiện thụ lý (Trả hồ sơ)</option>
+                    </select>
+                </div>
+                <div class="form-group"></div>
+                <div class="form-group"></div>
+            </div>
+
+            <!-- DYNAMIC BLOCKS BASED ON OFFICER ACTIONS -->
+            
+            <!-- 1. Yêu cầu bổ sung hồ sơ Block -->
+            <div id="block-yeucau-bosung" class="card-section hidden" style="background-color: #FEF3C7; border: 1px solid #FCD34D;">
+                <h4 style="font-size: 13px; color: #92400E; font-weight: 600; margin-bottom: 10px;">Yêu cầu người dân hoàn thiện, bổ sung tài liệu</h4>
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label" style="color: #92400E;">Hình thức thông báo yêu cầu bổ sung <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label" style="color: #92400E;">
+                                <input type="checkbox" id="d-bs-email" checked> Gửi Email tự động cho người dân
+                            </label>
+                            <label class="checkbox-label" style="color: #92400E;">
+                                <input type="checkbox" id="d-bs-giay" onchange="toggleNutInPhieu(this.checked)"> In Phiếu yêu cầu bổ sung hồ sơ (Bản giấy)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end; justify-content: flex-end;">
+                        <button type="button" id="btn-in-phieu-bs" class="btn btn-outline-primary btn-sm hidden" onclick="exportPhieuYeuCauBS()"><i class="fa fa-print"></i> In Phiếu yêu cầu bổ sung (Mẫu 02/TCD)</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" style="color: #92400E;">Nội dung yêu cầu bổ sung chi tiết <span class="required">*</span></label>
+                    <textarea id="d-noidung-yeucau-bs" class="form-control" placeholder="Liệt kê chi tiết danh mục hồ sơ thiếu, tài liệu không hợp lệ..."></textarea>
+                </div>
+            </div>
+
+            <!-- 2. Chuyển cơ quan khác Block -->
+            <div id="block-chuyen-coquan" class="card-section hidden" style="background-color: #F0F9FF; border: 1px solid #BAE6FD;">
+                <h4 style="font-size: 13px; color: #0369A1; font-weight: 600; margin-bottom: 10px;">Chuyển cơ quan có thẩm quyền xử lý</h4>
+                
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label" style="color: #0369A1;">Cơ quan được chuyển đến <span class="required">*</span></label>
+                        <select id="d-chuyen-coquan" class="form-select">
+                            <option value="">-- Chọn đơn vị --</option>
+                            <option value="Sở Tư pháp TP Hà Nội">Sở Tư pháp TP Hà Nội</option>
+                            <option value="Văn phòng Đăng ký Đất đai">Văn phòng Đăng ký Đất đai</option>
+                            <option value="Thanh tra Bộ Tư pháp">Thanh tra Bộ Tư pháp</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color: #0369A1;">Số văn bản chuyển đơn <span class="required">*</span></label>
+                        <input type="text" id="d-chuyen-sovanban" class="form-control" placeholder="Ví dụ: 125/CĐ-DKBPBD">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color: #0369A1;">Tải lên Công văn chuyển đơn (.pdf) <span class="required">*</span></label>
+                        <input type="file" id="d-chuyen-file" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Không thụ lý giải quyết Block -->
+            <div id="block-khong-thuly" class="card-section hidden" style="background-color: #FEF2F2; border: 1px solid #FCA5A5;">
+                <h4 style="font-size: 13px; color: #991B1B; font-weight: 600; margin-bottom: 10px;">Từ chối thụ lý hồ sơ tiếp công dân</h4>
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label" style="color: #991B1B;">Lý do từ chối thụ lý (nêu rõ căn cứ) <span class="required">*</span></label>
+                        <textarea id="d-khongthuly-lydo" class="form-control" placeholder="Không thuộc phạm vi điều chỉnh của Luật Khiếu nại/Tố cáo..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color: #991B1B;">Đính kèm Văn bản từ chối thụ lý (.pdf) <span class="required">*</span></label>
+                        <input type="file" id="d-khongthuly-file" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Ban hành Kết quả giải quyết Block -->
+            <div id="block-kethuc-giaiquyet" class="card-section hidden" style="background-color: #F0FDF4; border: 1px solid #BBF7D0;">
+                <h4 style="font-size: 13px; color: #166534; font-weight: 600; margin-bottom: 10px;">Kết quả giải quyết vụ việc</h4>
+                
+                <div class="grid-4">
+                    <div class="form-group">
+                        <label class="form-label" style="color: #166534;">Kết luận giải quyết <span class="required">*</span></label>
+                        <select id="d-kq-ketluan" class="form-select">
+                            <option value="">-- Chọn kết luận --</option>
+                            <option value="Chấp nhận toàn bộ">Chấp nhận toàn bộ</option>
+                            <option value="Chấp nhận một phần">Chấp nhận một phần</option>
+                            <option value="Bác đơn">Bác đơn phản ánh</option>
+                            <option value="Đình chỉ">Đình chỉ giải quyết</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color: #166534;">Số văn bản kết quả <span class="required">*</span></label>
+                        <input type="text" id="d-kq-sovanban" class="form-control" placeholder="Ví dụ: 302/QĐ-GQKN">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color: #166534;">Ngày ban hành kết quả <span class="required">*</span></label>
+                        <input type="text" id="d-kq-ngaybanhanh" class="form-control" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="color: #166534;">Hình thức gửi kết quả <span class="required">*</span></label>
+                        <div class="checkbox-group" style="padding-top: 4px;">
+                            <label class="checkbox-label" style="color: #166534;">
+                                <input type="checkbox" id="d-kq-send-email" checked> Email
+                            </label>
+                            <label class="checkbox-label" style="color: #166534;">
+                                <input type="checkbox" id="d-kq-send-giay"> Bản giấy
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" style="color: #166534;">Tóm tắt kết luận trả lời công dân <span class="required">*</span></label>
+                    <textarea id="d-kq-noidung-kl" class="form-control" placeholder="Tóm tắt nội dung xử lý của Cục để phản hồi qua email của người dân..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" style="color: #166534;">Tải lên Quyết định giải quyết chính thức (.pdf) <span class="required">*</span></label>
+                    <input type="file" id="d-kq-file" class="form-control">
+                </div>
+            </div>
+
+            <!-- Ghi chú nội bộ & Bảo mật -->
+            <div class="form-group">
+                <label class="form-label">Ghi chú nội bộ cơ quan (Chỉ hiển thị cho cán bộ, ẩn với người dân)</label>
+                <textarea id="d-ghichu-noibo" class="form-control" placeholder="Nhập diễn biến xử lý, ý kiến chỉ đạo của lãnh đạo Cục..."></textarea>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group" id="group-co-baomat" style="display: flex; align-items: center;">
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="d-co-baomat"> **Bảo mật thông tin danh tính người tố cáo** (Ẩn tên/thông tin liên hệ trên mọi biểu mẫu kết xuất)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions buttons sticky footer style -->
+            <div class="search-actions" style="margin-top: 25px;">
+                <button type="button" id="btn-cancel-form" class="btn btn-secondary" onclick="closeForm()">Hủy bỏ</button>
+                <button type="button" id="btn-save-draft" class="btn btn-secondary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
+                <button type="button" id="btn-complete" class="btn btn-success" onclick="completeProcess()"><i class="fa-solid fa-circle-check"></i> Hoàn thành giải quyết</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ======================================================= -->
+<!-- MODAL HỘP THOẠI XÁC NHẬN HÀNH ĐỘNG (UC262) -->
+<!-- ======================================================= -->
+
+<!-- Modal Xóa mềm -->
+<div class="modal" id="modal-soft-delete">
+    <div class="modal-content">
+        <div class="modal-title danger">
+            <i class="fa-solid fa-trash-can"></i>
+            <span>Xác nhận xóa mềm hồ sơ</span>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 12px;">Bạn có chắc chắn muốn xóa mềm hồ sơ tiếp công dân <strong id="soft-delete-code">TCD-2026-06-0001</strong>?</p>
+            <p style="color: var(--text-muted); margin-bottom: 12px;">Hồ sơ sẽ bị ẩn khỏi danh sách chính nhưng vẫn có thể khôi phục trong vòng 30 ngày.</p>
+            
+            <div class="form-group">
+                <label class="form-label">Lý do xóa hồ sơ tiếp dân <span class="required">*</span></label>
+                <textarea id="soft-delete-reason" class="form-control" placeholder="Nhập lý do nhập sai, nhập trùng lặp..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" onclick="closeSoftDeleteModal()">Hủy</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmSoftDelete()">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Khôi phục -->
+<div class="modal" id="modal-restore">
+    <div class="modal-content">
+        <div class="modal-title success">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>Khôi phục hồ sơ đã xóa mềm</span>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 12px;">Khôi phục hồ sơ tiếp công dân <strong id="restore-code">TCD-2026-06-0001</strong> về danh sách theo dõi bình thường?</p>
+            
+            <div class="form-group">
+                <label class="form-label">Lý do khôi phục dữ liệu <span class="required">*</span></label>
+                <textarea id="restore-reason" class="form-control" placeholder="Nhập lý do khôi phục..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" onclick="closeRestoreModal()">Hủy</button>
+            <button class="btn btn-success btn-sm" onclick="confirmRestore()">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xóa vĩnh viễn (Hard Delete) -->
+<div class="modal" id="modal-hard-delete">
+    <div class="modal-content">
+        <div class="modal-title danger">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>CẢNH BÁO: XÓA VĨNH VIỄN HỒ SƠ</span>
+        </div>
+        <div class="modal-body">
+            <div style="background-color: #FEF2F2; padding: 12px; border-radius: var(--border-radius-md); border: 1px solid #FCA5A5; margin-bottom: 12px; color: #991B1B;">
+                <i class="fa-solid fa-circle-exclamation"></i> <strong>HÀNH ĐỘNG KHÔNG THỂ KHÔI PHỤC!</strong> Dữ liệu hồ sơ sẽ bị xóa sạch khỏi cơ sở dữ liệu và lưu vết snapshot lịch sử.
+            </div>
+            <p style="margin-bottom: 12px;">Hồ sơ thực hiện: <strong id="hard-delete-code">TCD-2026-06-0001</strong></p>
+            
+            <div class="form-group">
+                <label class="form-label">Nhập mật khẩu xác thực quản trị <span class="required">*</span></label>
+                <input type="password" id="hard-delete-password" class="form-control" placeholder="Nhập mật khẩu cán bộ...">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Mã xác thực OTP gửi qua Email <span class="required">*</span></label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="hard-delete-otp" class="form-control" placeholder="Mã 6 chữ số">
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="sendHardDeleteOtp()">Nhận OTP</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" onclick="closeHardDeleteModal()">Hủy</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmHardDelete()">Xóa vĩnh viễn</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xem trước tài liệu -->
+<div class="modal" id="modal-preview-doc">
+    <div class="preview-modal-content">
+        <div class="preview-header">
+            <div class="preview-title-info">
+                <i class="fa-solid fa-file-pdf" style="color: #EF4444; font-size: 20px;"></i>
+                <h3 id="preview-filename">Don_khieu_nai_goc.pdf</h3>
+            </div>
+            <div class="preview-toolbar">
+                <button class="preview-btn" onclick="showToast('Đang kết nối máy in...', 'info')"><i class="fa-solid fa-print"></i> In tài liệu</button>
+                <button class="preview-btn" onclick="showToast('Tải xuống tài liệu thành công!', 'success')"><i class="fa-solid fa-download"></i> Tải xuống</button>
+                <button class="preview-btn" style="background-color: #EF4444;" onclick="closePreviewModal()"><i class="fa-solid fa-times"></i> Đóng</button>
+            </div>
+        </div>
+        <div class="preview-body">
+            <div class="document-paper">
+                <div class="doc-header-national">
+                    <strong>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br>
+                    <u>Độc lập - Tự do - Hạnh phúc</u>
+                </div>
+                
+                <div class="doc-title" id="preview-doc-title">
+                    ĐƠN KHIẾU NẠI
+                </div>
+                
+                <div class="doc-meta" id="preview-doc-meta">
+                    <strong>Kính gửi:</strong> Cục Đăng ký quốc gia giao dịch bảo đảm - Bộ Tư pháp<br><br>
+                    <strong>Người làm đơn:</strong> <span id="preview-doc-sender">Nguyễn Văn Hùng</span><br>
+                    <strong>Số định danh:</strong> <span id="preview-doc-id">001085002931</span><br>
+                    <strong>Địa chỉ:</strong> <span id="preview-doc-address">Số 15 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội</span><br>
+                    <strong>Điện thoại:</strong> <span id="preview-doc-phone">0912345678</span>
+                </div>
+                
+                <div class="doc-content-body" id="preview-doc-content">
+                    Vào ngày 15/06/2026, tôi có tiến hành nộp hồ sơ trực tuyến đăng ký biện pháp bảo đảm thế chấp tài sản là phương tiện giao thông (xe ô tô Toyota Camry, biển kiểm soát 30A-999.99). Hồ sơ của tôi đã được hệ thống ghi nhận thành công và nộp đủ các khoản phí, lệ phí theo đúng quy định.<br><br>
+                    Tuy nhiên, đến nay đã quá thời gian quy định nhưng hồ sơ của tôi vẫn chưa được giải quyết và trả kết quả, gây ảnh hưởng nghiêm trọng đến tiến độ giải ngân vốn vay của gia đình tôi tại Ngân hàng.<br><br>
+                    Tôi viết đơn này kính đề nghị Cục Đăng ký quốc gia giao dịch bảo đảm kiểm tra, xác minh làm rõ lý do chậm trễ và thực hiện phê duyệt, trả kết quả đăng ký biện pháp bảo đảm cho tôi theo đúng quy định của pháp luật.
+                </div>
+                
+                <div class="doc-signatures">
+                    <div class="signature-box">
+                        <strong>Cán bộ tiếp nhận</strong><br>
+                        <span style="font-size: 11px; color: var(--text-muted);">(Ký, ghi rõ họ tên)</span>
+                        <div class="stamp-container">
+                            <div class="red-stamp">
+                                <div class="red-stamp-text">
+                                    CỤC ĐKGDBĐ<br>
+                                    BỘ TƯ PHÁP
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <strong>Nguyễn Văn Cán Bộ</strong>
+                    </div>
+                    <div class="signature-box">
+                        <strong>Người làm đơn</strong><br>
+                        <span style="font-size: 11px; color: var(--text-muted);">(Ký, ghi rõ họ tên)</span>
+                        <br><br><br><br>
+                        <strong id="preview-doc-signature-name">Nguyễn Văn Hùng</strong>
+                    </div>
+                </div>
+
+                <div class="digital-sig-box" id="preview-digital-sig">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <strong>TÀI LIỆU KÝ SỐ HỢP LỆ</strong><br>
+                    <span>Ký bởi: Cục Đăng ký quốc gia giao dịch bảo đảm</span><br>
+                    <span>Thời gian ký: <span id="preview-sig-time">15/06/2026 09:30:15</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-area"></div>
+
+<!-- ======================================================= -->
+<!-- JAVASCRIPT MOCK LOGIC -->
+<!-- ======================================================= -->
+<script>
+    // Global Mock Database
+    let mockDatabase = [
+        {
+            id: 1,
+            maHoso: "TCD-2026-06-0001",
+            ngayTiepNhan: "15/06/2026",
+            hinhThucTiepNhan: "Trực tiếp tại trụ sở",
+            loaiVuViec: "Khiếu nại",
+            loaiDoituong: "Cá nhân",
+            hoten: "Nguyễn Văn Hùng",
+            cccd: "001085002931",
+            ngaySinh: "12/04/1985",
+            gioiTinh: "Nam",
+            ngayCap: "20/09/2021",
+            sodienthoai: "0912345678",
+            email: "hung.nguyen@gmail.com",
+            tinhthanh: "Hà Nội",
+            diachi: "Số 15 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội",
+            coUyQuyen: false,
+            sodangkyBpbd: "12039401",
+            soHopDong: "HĐTC-2026/BIDV",
+            loaihinhGiaodich: "Biện pháp bảo đảm (Thế chấp)",
+            benBaodam: "Nguyễn Văn Hùng",
+            benNhanBaodam: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)",
+            taisanBaodam: "Xe ô tô Toyota Camry, Biển kiểm soát 30A-999.99, Số khung: RU238491",
+            tomtatNoidung: "Khiếu nại cán bộ không giải quyết hồ sơ đăng ký thế chấp xe ô tô mặc dù đã nộp đủ hồ sơ hợp lệ.",
+            noidungChitiet: "Tôi nộp hồ sơ đăng ký thế chấp lúc 9h sáng ngày 15/06/2026 nhưng đến ngày 20/06/2026 vẫn nhận được phản hồi là hồ sơ bị vướng mắc mà không nêu rõ lý do...",
+            cancuPhaply: "Nghị định 99/2022/NĐ-CP về đăng ký biện pháp bảo đảm.",
+            yeucauCuthe: "Yêu cầu hoàn thành thủ tục đăng ký và trả kết quả cho tôi.",
+            canboXuly: "Nguyễn Văn Cán Bộ",
+            trangThai: "Đang xử lý",
+            hanGiaiQuyet: "15/07/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Don_khieu_nai_goc.pdf", "Giay_to_dang_ky_xe_oto.jpg"],
+            ghiChuNoibo: "Đã kiểm tra liên thông CSDL thế chấp, hồ sơ bị chậm do lỗi hệ thống thanh toán. Đang xử lý chuyển tiếp.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 2,
+            maHoso: "TCD-2026-06-0002",
+            ngayTiepNhan: "20/06/2026",
+            hinhThucTiepNhan: "Qua bưu điện",
+            loaiVuViec: "Kiến nghị",
+            loaiDoituong: "Tổ chức",
+            hoten: "Công ty Cổ phần Thép Việt",
+            mst: "0102938475",
+            daidienPhapluat: "Trần Minh Đức",
+            chucvuDaidien: "Tổng Giám đốc",
+            sodienthoai: "0243999888",
+            email: "contact@thepviet.com.vn",
+            tinhthanh: "Hồ Chí Minh",
+            diachi: "Khu công nghiệp Cát Lái, Quận 2, TP. Hồ Chí Minh",
+            coUyQuyen: true,
+            hotenUyQuyen: "Lê Văn Sơn",
+            cccdUyQuyen: "079090001234",
+            sodangkyBpbd: "13506921",
+            soHopDong: "HĐTC-2025/Vietinbank",
+            loaihinhGiaodich: "Biện pháp bảo đảm (Thế chấp)",
+            benBaodam: "Công ty Cổ phần Thép Việt",
+            benNhanBaodam: "Ngân hàng TMCP Công thương Việt Nam (Vietinbank)",
+            taisanBaodam: "Dây chuyền máy móc sản xuất thép cán nóng và nguyên vật liệu tồn kho",
+            tomtatNoidung: "Kiến nghị hướng dẫn tháo gỡ khó khăn về việc đăng ký thay đổi tài sản thế chấp là hàng hóa luân chuyển.",
+            noidungChitiet: "Chúng tôi có nhu cầu xuất kho bán hàng để nhập nguyên liệu mới nhưng trung tâm giao dịch bảo đảm hướng dẫn chưa thống nhất, gây ách tắc hoạt động sản xuất...",
+            cancuPhaply: "Điều 321 Bộ luật Dân sự 2015.",
+            yeucauCuthe: "Hướng dẫn bằng văn bản để làm thủ tục xuất bán tài sản bảo đảm.",
+            canboXuly: "Trần Thị Nghiệp Vụ",
+            trangThai: "Chờ bổ sung hồ sơ",
+            hanGiaiQuyet: "10/07/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Cong_van_kien_nghi.docx", "Giay_uy_quyen_hop_phap.pdf"],
+            ghiChuNoibo: "Cần công dân bổ sung bản sao hợp đồng sửa đổi để chứng minh có thỏa thuận được bán hàng hóa luân chuyển.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 3,
+            maHoso: "TCD-2026-06-0003",
+            ngayTiepNhan: "22/06/2026",
+            hinhThucTiepNhan: "Qua email",
+            loaiVuViec: "Tố cáo",
+            loaiDoituong: "Cá nhân",
+            hoten: "Vũ Thị Hạnh",
+            cccd: "030090012483",
+            ngaySinh: "15/08/1990",
+            gioiTinh: "Nữ",
+            ngayCap: "12/12/2022",
+            sodienthoai: "0988776655",
+            email: "hanh.vu90@gmail.com",
+            tinhthanh: "Đà Nẵng",
+            diachi: "99 Bạch Đằng, Hải Châu, Đà Nẵng",
+            coUyQuyen: false,
+            sodangkyBpbd: "14839401",
+            soHopDong: "HĐTC-Taisan/VPBank",
+            loaihinhGiaodich: "Biện pháp bảo đảm (Thế chấp)",
+            benBaodam: "Trần Văn Cường",
+            benNhanBaodam: "Ngân hàng TMCP Việt Nam Thịnh Vượng (VPBank)",
+            taisanBaodam: "Quyền đòi nợ từ Hợp đồng mua bán căn hộ chung cư Sunrise",
+            tomtatNoidung: "Tố cáo hành vi giả mạo chữ ký để đăng ký thế chấp tài sản quyền đòi nợ.",
+            noidungChitiet: "Tôi phát hiện chữ ký của tôi trong vai trò người cùng sở hữu tài sản bị giả mạo trên Đơn đăng ký thế chấp nộp tại hệ thống trực tuyến...",
+            cancuPhaply: "Luật Tố cáo 2018.",
+            yeucauCuthe: "Yêu cầu kiểm tra, hủy đăng ký thế chấp giả mạo và chuyển cơ quan công an xử lý.",
+            canboXuly: "Lê Văn Thanh Tra",
+            trangThai: "Mới tiếp nhận",
+            hanGiaiQuyet: "22/07/2026",
+            phanLoaiXuly: "",
+            files: ["Don_to_cao.pdf", "Ban_sao_hop_dong_goc.pdf"],
+            ghiChuNoibo: "",
+            coBaomat: true,
+            isDeleted: 0
+        },
+        {
+            id: 4,
+            maHoso: "TCD-2026-06-0004",
+            ngayTiepNhan: "15/05/2026",
+            hinhThucTiepNhan: "Trực tiếp tại trụ sở",
+            loaiVuViec: "Khiếu nại",
+            loaiDoituong: "Cá nhân",
+            hoten: "Lê Minh Triết",
+            cccd: "001092003841",
+            ngaySinh: "05/10/1992",
+            gioiTinh: "Nam",
+            ngayCap: "10/10/2021",
+            sodienthoai: "0904123456",
+            email: "triet.le@gmail.com",
+            tinhthanh: "Hà Nội",
+            diachi: "Số 23 Láng Hạ, Đống Đa, Hà Nội",
+            coUyQuyen: false,
+            sodangkyBpbd: "15920384",
+            soHopDong: "HĐTC/2024/Agribank",
+            loaihinhGiaodich: "Biện pháp bảo đảm (Thế chấp)",
+            benBaodam: "Lê Minh Triết",
+            benNhanBaodam: "Ngân hàng Nông nghiệp và Phát triển Nông thôn (Agribank)",
+            taisanBaodam: "Phương tiện giao thông đường thủy nội địa (Tàu sắt chở hàng)",
+            tomtatNoidung: "Khiếu nại việc chậm trả kết quả đăng ký thay đổi thông tin thế chấp tàu thủy.",
+            noidungChitiet: "Tôi nộp hồ sơ từ ngày 15/05/2026 nhưng đến nay đã quá thời hạn giải quyết luật định 30 ngày mà chưa nhận được thông tin phản hồi từ cơ quan tiếp nhận...",
+            cancuPhaply: "Điều 35 Luật Tiếp công dân.",
+            yeucauCuthe: "Đề nghị giải thích lý do chậm trễ và thực hiện đăng ký ngay lập tức.",
+            canboXuly: "Nguyễn Văn Cán Bộ",
+            trangThai: "Đang xử lý",
+            hanGiaiQuyet: "15/06/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Don_khieu_nai_tau.pdf"],
+            ghiChuNoibo: "Hồ sơ bị chậm do phía ngân hàng Agribank chưa xác nhận giao dịch liên thông. Cần liên hệ thúc giục.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 5,
+            maHoso: "TCD-2026-06-0005",
+            ngayTiepNhan: "10/05/2026",
+            hinhThucTiepNhan: "Qua email",
+            loaiVuViec: "Kiến nghị",
+            loaiDoituong: "Tổ chức",
+            hoten: "Hợp tác xã Nông nghiệp Xanh",
+            mst: "0309876543",
+            daidienPhapluat: "Trần Văn Bình",
+            chucvuDaidien: "Chủ tịch HTX",
+            sodienthoai: "02838123456",
+            email: "nongnghiepxanh@gmail.com",
+            tinhthanh: "Hồ Chí Minh",
+            diachi: "Ấp 3, Xã Bình Chánh, Huyện Bình Chánh, TP. Hồ Chí Minh",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Kiến nghị tháo gỡ vướng mắc đăng ký thế chấp đất nông nghiệp và cây hằng năm.",
+            noidungChitiet: "Đề nghị hướng dẫn làm rõ việc cây trồng hằng năm (lúa, hoa màu) có bắt buộc phải mô tả chi tiết trong đơn đăng ký biện pháp bảo đảm hay không...",
+            cancuPhaply: "Nghị định 99/2022/NĐ-CP.",
+            yeucauCuthe: "Hướng dẫn cụ thể cho hợp tác xã để thực hiện đúng quy định pháp luật.",
+            canboXuly: "Trần Thị Nghiệp Vụ",
+            trangThai: "Mới tiếp nhận",
+            hanGiaiQuyet: "30/05/2026",
+            phanLoaiXuly: "",
+            files: ["Van_ban_kien_nghi_HTX.pdf"],
+            ghiChuNoibo: "Đã trễ hạn do hồ sơ lưu nhầm thư mục. Cần ưu tiên xử lý gấp.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 6,
+            maHoso: "TCD-2026-06-0006",
+            ngayTiepNhan: "01/06/2026",
+            hinhThucTiepNhan: "Trực tiếp tại trụ sở",
+            loaiVuViec: "Phản ánh",
+            loaiDoituong: "Cá nhân",
+            hoten: "Trần Hoàng Nam",
+            cccd: "079089001234",
+            ngaySinh: "25/12/1989",
+            gioiTinh: "Nam",
+            ngayCap: "15/05/2022",
+            sodienthoai: "0918777666",
+            email: "nam.tran@gmail.com",
+            tinhthanh: "Hồ Chí Minh",
+            diachi: "456 Nguyễn Thị Minh Khai, Quận 3, TP. Hồ Chí Minh",
+            coUyQuyen: false,
+            sodangkyBpbd: "12039401",
+            soHopDong: "HĐTC-2026/BIDV",
+            loaihinhGiaodich: "Thế chấp",
+            benBaodam: "Trần Hoàng Nam",
+            benNhanBaodam: "BIDV Chi nhánh TP.HCM",
+            taisanBaodam: "Xe ô tô Kia Morning, Biển kiểm soát 51G-888.88",
+            tomtatNoidung: "Phản ánh thái độ làm việc của cán bộ tiếp nhận hồ sơ đăng ký thế chấp ngày 30/05/2026.",
+            noidungChitiet: "Tôi đến nộp hồ sơ nhưng cán bộ tiếp nhận có thái độ thờ ơ, giải thích không rõ ràng và yêu cầu bổ sung giấy tờ ngoài quy định pháp luật...",
+            cancuPhaply: "Luật Tiếp công dân 2013.",
+            yeucauCuthe: "Đề nghị kiểm tra và chấn chỉnh tác phong làm việc của cán bộ tại quầy.",
+            canboXuly: "Lê Văn Thanh Tra",
+            trangThai: "Đã trả lời",
+            hanGiaiQuyet: "21/06/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            kqKetLuan: "Chấp nhận toàn bộ",
+            kqSovanban: "182/KL-TTR",
+            kqNgaybanhanh: "18/06/2026",
+            kqNoidungKl: "Đã xác minh phản ánh là đúng sự thật. Đã tiến hành phê bình cán bộ tiếp nhận tại buổi họp giao ban tuần, đồng thời điều chuyển bộ phận công tác.",
+            files: ["Don_phan_anh_thai_do.pdf"],
+            ghiChuNoibo: "Đã xử lý kỷ luật cảnh cáo cán bộ vi phạm.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 7,
+            maHoso: "TCD-2026-06-0007",
+            ngayTiepNhan: "05/06/2026",
+            hinhThucTiepNhan: "Qua bưu điện",
+            loaiVuViec: "Kiến nghị",
+            loaiDoituong: "Tổ chức",
+            hoten: "Công ty TNHH Đầu tư Minh Phát",
+            mst: "0204958372",
+            daidienPhapluat: "Nguyễn Minh Phát",
+            chucvuDaidien: "Giám đốc",
+            sodienthoai: "02253888999",
+            email: "minhphatinvest@gmail.com",
+            tinhthanh: "Hải Phòng",
+            diachi: "Số 8 Lê Hồng Phong, Ngô Quyền, Hải Phòng",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Kiến nghị về việc phân chia thẩm quyền đăng ký thế chấp quyền sử dụng đất.",
+            noidungChitiet: "Kiến nghị tháo gỡ chồng chéo giữa Trung tâm Giao dịch bảo đảm và Văn phòng Đăng ký đất đai khi đăng ký thế chấp tài sản gắn liền với đất...",
+            cancuPhaply: "Luật Đất đai 2024.",
+            yeucauCuthe: "Chuyển đơn thư kiến nghị đến cơ quan có thẩm quyền xử lý.",
+            canboXuly: "Trần Thị Nghiệp Vụ",
+            trangThai: "Đã chuyển đơn",
+            hanGiaiQuyet: "25/06/2026",
+            phanLoaiXuly: "Chuyển cơ quan khác",
+            chuyenCoquan: "Thanh tra Bộ Tài nguyên và Môi trường",
+            chuyenSovanban: "88/CV-CĐ",
+            files: ["Don_kien_nghi_thanh_tra.pdf"],
+            ghiChuNoibo: "Vấn đề thuộc quản lý của Bộ TN&MT nên đã làm thủ tục chuyển đơn.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 8,
+            maHoso: "TCD-2026-06-0008",
+            ngayTiepNhan: "02/06/2026",
+            hinhThucTiepNhan: "Qua email",
+            loaiVuViec: "Khiếu nại",
+            loaiDoituong: "Cá nhân",
+            hoten: "Phạm Thanh Bình",
+            cccd: "031084001928",
+            ngaySinh: "12/03/1984",
+            gioiTinh: "Nam",
+            ngayCap: "20/05/2022",
+            sodienthoai: "0904333222",
+            email: "binhpham.hp@gmail.com",
+            tinhthanh: "Hải Phòng",
+            diachi: "12 Trần Hưng Đạo, Hồng Bàng, Hải Phòng",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Khiếu nại quyết định phạt hành chính của UBND Quận Hồng Bàng liên quan đến xây dựng.",
+            noidungChitiet: "Tôi nộp đơn khiếu nại quyết định cưỡng chế công trình xây dựng của UBND quận nhưng gửi nhầm đến Cục Đăng ký Giao dịch bảo đảm...",
+            cancuPhaply: "Luật Khiếu nại 2011.",
+            yeucauCuthe: "Đề nghị Cục giải quyết hủy quyết định xử phạt hành chính của UBND quận.",
+            canboXuly: "Nguyễn Văn Cán Bộ",
+            trangThai: "Không thụ lý",
+            hanGiaiQuyet: "02/07/2026",
+            phanLoaiXuly: "Không đủ điều kiện thụ lý",
+            khongthulyLydo: "Nội dung đơn thư khiếu nại không thuộc thẩm quyền giải quyết của Cục Đăng ký giao dịch bảo đảm (thuộc thẩm quyền của UBND TP Hải Phòng).",
+            files: ["Quyet_dinh_phat_UBND.pdf"],
+            ghiChuNoibo: "Đơn gửi sai địa chỉ cơ quan, đã hướng dẫn công dân gửi lại đúng nơi có thẩm quyền.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 9,
+            maHoso: "TCD-2026-06-0009",
+            ngayTiepNhan: "23/06/2026",
+            hinhThucTiepNhan: "Trực tiếp tại trụ sở",
+            loaiVuViec: "Yêu cầu cung cấp thông tin",
+            loaiDoituong: "Tổ chức",
+            hoten: "Ngân hàng TMCP Quốc tế VIB - Chi nhánh Hà Nội",
+            mst: "0100234567-001",
+            daidienPhapluat: "Lê Hữu Đạt",
+            chucvuDaidien: "Giám đốc Chi nhánh",
+            sodienthoai: "02436888999",
+            email: "dat.lh@vib.com.vn",
+            tinhthanh: "Hà Nội",
+            diachi: "Số 64-68 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội",
+            coUyQuyen: true,
+            hotenUyQuyen: "Nguyễn Minh Ngọc",
+            cccdUyQuyen: "001095018392",
+            sodangkyBpbd: "13506921",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Yêu cầu trích xuất dữ liệu lịch sử đăng ký thế chấp của Công ty Cổ phần Thép Việt.",
+            noidungChitiet: "Chúng tôi cần thông tin lịch sử giao dịch bảo đảm của khách hàng phục vụ quá trình tố tụng tranh chấp tài sản tại Tòa án nhân dân quận Hoàn Kiếm...",
+            cancuPhaply: "Thông tư liên tịch số 05/2016 về cung cấp thông tin BPBĐ.",
+            yeucauCuthe: "Cung cấp bản sao có chứng thực sổ đăng ký biện pháp bảo đảm liên quan.",
+            canboXuly: "Trần Thị Nghiệp Vụ",
+            trangThai: "Mới tiếp nhận",
+            hanGiaiQuyet: "03/07/2026",
+            phanLoaiXuly: "",
+            files: ["Cong_van_yeu_cau_VIB.pdf", "Quyet_dinh_toa_an.pdf"],
+            ghiChuNoibo: "",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 10,
+            maHoso: "TCD-2026-06-0010",
+            ngayTiepNhan: "18/06/2026",
+            hinhThucTiepNhan: "Qua email",
+            loaiVuViec: "Khiếu nại",
+            loaiDoituong: "Cá nhân",
+            hoten: "Đặng Thị Mai",
+            cccd: "001095000213",
+            ngaySinh: "08/09/1995",
+            gioiTinh: "Nữ",
+            ngayCap: "20/12/2020",
+            sodienthoai: "0977123987",
+            email: "dangmai95@gmail.com",
+            tinhthanh: "Hà Nội",
+            diachi: "Căn hộ 12A05, Tòa S2.05 Vinhomes Ocean Park, Gia Lâm, Hà Nội",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Khiếu nại việc chậm trả thông báo giải chấp tài sản thế chấp căn hộ chung cư.",
+            noidungChitiet: "Tôi đã thực hiện đầy đủ nghĩa vụ trả nợ và gửi đơn xóa đăng ký thế chấp trực tuyến nhưng qua 5 ngày làm việc vẫn ở trạng thái chờ duyệt...",
+            cancuPhaply: "Điều 8 Nghị định 99/2022/NĐ-CP.",
+            yeucauCuthe: "Yêu cầu thực hiện xóa đăng ký ngay để tôi tiến hành chuyển nhượng căn hộ.",
+            canboXuly: "Nguyễn Văn Cán Bộ",
+            trangThai: "Đang xử lý",
+            hanGiaiQuyet: "18/07/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Phieu_nhan_giai_chap.pdf"],
+            ghiChuNoibo: "Lỗi hệ thống đồng bộ CSDL của Sở Xây dựng dẫn đến hồ sơ treo. Đang khắc phục thủ công.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 11,
+            maHoso: "TCD-2026-06-0011",
+            ngayTiepNhan: "19/06/2026",
+            hinhThucTiepNhan: "Qua bưu điện",
+            loaiVuViec: "Phản ánh",
+            loaiDoituong: "Cá nhân",
+            hoten: "Ngô Quốc Bảo",
+            cccd: "079085002938",
+            ngaySinh: "10/01/1985",
+            gioiTinh: "Nam",
+            ngayCap: "15/07/2021",
+            sodienthoai: "0933111000",
+            email: "baongo85@yahoo.com",
+            tinhthanh: "Hồ Chí Minh",
+            diachi: "789 Nguyễn Trãi, Quận 5, TP. Hồ Chí Minh",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Phản ánh phần mềm đăng ký biện pháp bảo đảm trực tuyến liên tục bị nghẽn mạng.",
+            noidungChitiet: "Tôi cố gắng thực hiện khai báo hồ sơ trực tuyến từ ngày 15/06 đến nay liên tục gặp thông báo lỗi kết nối máy chủ vào các khung giờ hành chính...",
+            cancuPhaply: "Nghị định 99/2022/NĐ-CP.",
+            yeucauCuthe: "Đề nghị kiểm tra hạ tầng công nghệ thông tin và nâng cấp đường truyền hệ thống.",
+            canboXuly: "Lê Văn Thanh Tra",
+            trangThai: "Chờ bổ sung hồ sơ",
+            hanGiaiQuyet: "09/07/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Anh_chup_man_hinh_loi.jpg"],
+            ghiChuNoibo: "Đã chuyển phản ánh đến phòng hạ tầng CNTT xác minh thời gian gián đoạn.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 12,
+            maHoso: "TCD-2026-06-0012",
+            ngayTiepNhan: "12/06/2026",
+            hinhThucTiepNhan: "Qua email",
+            loaiVuViec: "Kiến nghị",
+            loaiDoituong: "Tổ chức",
+            hoten: "Công ty Cổ phần Thủy sản Minh Phú",
+            mst: "3700123456",
+            daidienPhapluat: "Lê Văn Quang",
+            chucvuDaidien: "Chủ tịch HĐQT",
+            sodienthoai: "02903888999",
+            email: "info@minhphu.com",
+            tinhthanh: "Cần Thơ",
+            diachi: "Khu công nghiệp Trà Nóc, Quận Bình Thủy, TP Cần Thơ",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Kiến nghị tháo gỡ khó khăn về việc đăng ký thế chấp thủy sản đông lạnh.",
+            noidungChitiet: "Hàng hóa đông lạnh liên tục biến động và xuất nhập khẩu nên gặp khó khăn khi mô tả chi tiết danh mục tài sản bảo đảm trong biểu mẫu...",
+            cancuPhaply: "Bộ luật Dân sự 2015.",
+            yeucauCuthe: "Hướng dẫn giải pháp mô tả chung tài sản hàng hóa luân chuyển linh hoạt.",
+            canboXuly: "Trần Thị Nghiệp Vụ",
+            trangThai: "Đang xử lý",
+            hanGiaiQuyet: "02/07/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Cong_van_kien_nghi_MinhPhu.pdf"],
+            ghiChuNoibo: "Đang soạn dự thảo văn bản trả lời hướng dẫn doanh nghiệp theo hướng mở rộng danh mục mô tả.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 13,
+            maHoso: "TCD-2026-06-0013",
+            ngayTiepNhan: "20/06/2026",
+            hinhThucTiepNhan: "Trực tiếp tại trụ sở",
+            loaiVuViec: "Yêu cầu cung cấp thông tin",
+            loaiDoituong: "Cá nhân",
+            hoten: "Bùi Văn Long",
+            cccd: "001090002138",
+            ngaySinh: "15/05/1990",
+            gioiTinh: "Nam",
+            ngayCap: "12/12/2021",
+            sodienthoai: "0904888123",
+            email: "longbv.90@gmail.com",
+            tinhthanh: "Hà Nội",
+            diachi: "Số 9 Hàng Tre, Hoàn Kiếm, Hà Nội",
+            coUyQuyen: false,
+            sodangkyBpbd: "12039401",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Yêu cầu cung cấp thông tin đăng ký thế chấp của cá nhân tên Nguyễn Văn Hùng.",
+            noidungChitiet: "Tôi cần xác minh chiếc xe ô tô biển số 30A-999.99 có đang bị thế chấp tại ngân hàng hay không để thực hiện giao dịch mua bán...",
+            cancuPhaply: "Nghị định 99/2022/NĐ-CP.",
+            yeucauCuthe: "Cấp văn bản xác nhận thông tin đăng ký biện pháp bảo đảm.",
+            canboXuly: "Nguyễn Văn Cán Bộ",
+            trangThai: "Mới tiếp nhận",
+            hanGiaiQuyet: "30/06/2026",
+            phanLoaiXuly: "",
+            files: ["Phieu_yeu_cau_thong_tin.pdf"],
+            ghiChuNoibo: "",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 14,
+            maHoso: "TCD-2026-06-0014",
+            ngayTiepNhan: "28/05/2026",
+            hinhThucTiepNhan: "Qua bưu điện",
+            loaiVuViec: "Khiếu nại",
+            loaiDoituong: "Tổ chức",
+            hoten: "Công ty Cổ phần Bất động sản Đất Việt",
+            mst: "0304567890",
+            daidienPhapluat: "Hoàng Văn Tuấn",
+            chucvuDaidien: "Tổng Giám đốc",
+            sodienthoai: "02838999111",
+            email: "phaply@datvietland.com.vn",
+            tinhthanh: "Hồ Chí Minh",
+            diachi: "123 Lê Lợi, Quận 1, TP. Hồ Chí Minh",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Khiếu nại việc từ chối thụ lý đăng ký thế chấp dự án nhà ở xã hội.",
+            noidungChitiet: "Hồ sơ thế chấp dự án của chúng tôi bị Trung tâm giao dịch bảo đảm trả lại với lý do chưa đủ giấy phép xây dựng, trong khi dự án thuộc diện miễn phép...",
+            cancuPhaply: "Luật Nhà ở 2023.",
+            yeucauCuthe: "Yêu cầu Trung tâm chấp nhận thụ lý và thực hiện đăng ký thế chấp tài sản.",
+            canboXuly: "Lê Văn Thanh Tra",
+            trangThai: "Đang xử lý",
+            hanGiaiQuyet: "27/06/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Don_khieu_nai_du_an.pdf", "Ho_so_phap_ly_kem_theo.zip"],
+            ghiChuNoibo: "Vụ việc phức tạp liên quan đến Luật Nhà ở mới có hiệu lực. Đang xin ý kiến chỉ đạo của Cục trưởng.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 15,
+            maHoso: "TCD-2026-06-0015",
+            ngayTiepNhan: "22/06/2026",
+            hinhThucTiepNhan: "Qua email",
+            loaiVuViec: "Tố cáo",
+            loaiDoituong: "Cá nhân",
+            hoten: "Nguyễn Thị Lan",
+            cccd: "017096001248",
+            ngaySinh: "10/11/1996",
+            gioiTinh: "Nữ",
+            ngayCap: "01/06/2023",
+            sodienthoai: "0966444333",
+            email: "lannuyen.96@gmail.com",
+            tinhthanh: "Hà Nội",
+            diachi: "Số 56 Ngõ 12 Quang Trung, Hà Đông, Hà Nội",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Tố cáo cán bộ tiếp nhận có hành vi tiêu cực vòi vĩnh chi phí bôi trơn.",
+            noidungChitiet: "Tôi đi đăng ký thế chấp nhà đất ngày 18/06/2026 và được gợi ý nộp thêm 2 triệu đồng để giải quyết nhanh trong ngày...",
+            cancuPhaply: "Luật Phòng, chống tham nhũng 2018.",
+            yeucauCuthe: "Xử lý nghiêm hành vi tiêu cực của cán bộ tiếp nhận để đảm bảo tính minh bạch.",
+            canboXuly: "Lê Văn Thanh Tra",
+            trangThai: "Đang xử lý",
+            hanGiaiQuyet: "22/07/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Don_to_cao_tieu_cuc.pdf", "File_ghi_am_kem_theo.mp3"],
+            ghiChuNoibo: "Vụ việc nhạy cảm liên quan đến đạo đức công vụ. Đã niêm phong camera giám sát tại quầy số 3 ngày 18/06 để trích xuất hình ảnh.",
+            coBaomat: true,
+            isDeleted: 0
+        },
+        {
+            id: 16,
+            maHoso: "TCD-2026-06-0016",
+            ngayTiepNhan: "05/05/2026",
+            hinhThucTiepNhan: "Trực tiếp tại trụ sở",
+            loaiVuViec: "Kiến nghị",
+            loaiDoituong: "Cá nhân",
+            hoten: "Hoàng Văn Hùng",
+            cccd: "038080001248",
+            ngaySinh: "12/08/1980",
+            gioiTinh: "Nam",
+            ngayCap: "10/05/2021",
+            sodienthoai: "0912111222",
+            email: "hung.hoang@gmail.com",
+            tinhthanh: "Hồ Chí Minh",
+            diachi: "90 Trần Não, Quận 2, TP. Hồ Chí Minh",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Kiến nghị sửa đổi quy định về thời hạn có hiệu lực của đăng ký biện pháp bảo đảm.",
+            noidungChitiet: "Quy định hiện tại gây bất tiện cho người dân khi thực hiện hợp đồng vay vốn trung và dài hạn, kiến nghị kéo dài thời hạn...",
+            cancuPhaply: "Luật Ban hành văn bản quy phạm pháp luật.",
+            yeucauCuthe: "Gửi ý kiến đóng góp lên cơ quan có thẩm quyền soạn thảo văn bản luật.",
+            canboXuly: "Trần Thị Nghiệp Vụ",
+            trangThai: "Đang xử lý",
+            hanGiaiQuyet: "25/05/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Kien_nghi_sua_luat.docx"],
+            ghiChuNoibo: "Hồ sơ tồn đọng do chuyển phòng ban chuyên môn chậm trễ. Đang khẩn trương chuẩn bị công văn phúc đáp.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 17,
+            maHoso: "TCD-2026-06-0017",
+            ngayTiepNhan: "21/06/2026",
+            hinhThucTiepNhan: "Qua email",
+            loaiVuViec: "Phản ánh",
+            loaiDoituong: "Tổ chức",
+            hoten: "Công ty TNHH Logistics Sao Vàng",
+            mst: "0108923485",
+            daidienPhapluat: "Trần Thế Nam",
+            chucvuDaidien: "Giám đốc vận hành",
+            sodienthoai: "02431234567",
+            email: "ops@saovanglogistics.com",
+            tinhthanh: "Hà Nội",
+            diachi: "Khu công nghiệp Sài Đồng, Long Biên, Hà Nội",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Phản ánh biểu mẫu trực tuyến thiếu trường thông tin phương tiện giao thông nước ngoài.",
+            noidungChitiet: "Khi làm thủ tục thế chấp xe container nhập khẩu chưa có biển số Việt Nam, hệ thống bắt buộc nhập biển kiểm soát gây tắc nghẽn...",
+            cancuPhaply: "Nghị định 99/2022/NĐ-CP.",
+            yeucauCuthe: "Bổ sung tùy chọn nhập số khung/số máy đối với xe chưa đăng ký biển số trên giao diện.",
+            canboXuly: "Nguyễn Văn Cán Bộ",
+            trangThai: "Mới tiếp nhận",
+            hanGiaiQuyet: "11/07/2026",
+            phanLoaiXuly: "",
+            files: ["Phan_anh_logistics.pdf"],
+            ghiChuNoibo: "",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 18,
+            maHoso: "TCD-2026-06-0018",
+            ngayTiepNhan: "08/06/2026",
+            hinhThucTiepNhan: "Qua bưu điện",
+            loaiVuViec: "Khiếu nại",
+            loaiDoituong: "Cá nhân",
+            hoten: "Đỗ Minh Khang",
+            cccd: "001091002384",
+            ngaySinh: "20/04/1991",
+            gioiTinh: "Nam",
+            ngayCap: "10/05/2022",
+            sodienthoai: "0906222888",
+            email: "khangdm91@gmail.com",
+            tinhthanh: "Hà Nội",
+            diachi: "Số 45 Lê Đại Hành, Hai Bà Trưng, Hà Nội",
+            coUyQuyen: false,
+            sodangkyBpbd: "13506921",
+            soHopDong: "HĐTC/2025/Vietinbank",
+            loaihinhGiaodich: "Thế chấp",
+            benBaodam: "Đỗ Minh Khang",
+            benNhanBaodam: "Vietinbank Chi nhánh Hà Nội",
+            taisanBaodam: "Quyền sử dụng đất và tài sản gắn liền với đất tại Hoài Đức, Hà Nội",
+            tomtatNoidung: "Khiếu nại cán bộ giải quyết đăng ký thế chấp sai lệch diện tích đất.",
+            noidungChitiet: "Diện tích thực tế trên sổ đỏ thế chấp là 150m2 nhưng trong chứng nhận đăng ký biện pháp bảo đảm ghi nhầm thành 120m2...",
+            cancuPhaply: "Điều 43 Nghị định 99/2022/NĐ-CP.",
+            yeucauCuthe: "Yêu cầu đính chính lại thông tin và cấp lại bản chứng nhận đăng ký thế chấp đúng thực tế.",
+            canboXuly: "Trần Thị Nghiệp Vụ",
+            trangThai: "Đã trả lời",
+            hanGiaiQuyet: "08/07/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            kqKetLuan: "Chấp nhận toàn bộ",
+            kqSovanban: "152/QĐ-ĐC",
+            kqNgaybanhanh: "15/06/2026",
+            kqNoidungKl: "Đã xác minh lỗi nhập liệu do cán bộ nghiệp vụ. Cục đã tiến hành đính chính thông tin diện tích trên CSDL quốc gia và cấp lại giấy chứng nhận mới gửi chuyển phát nhanh miễn phí cho công dân ngày 16/06/2026.",
+            files: ["Don_khieu_nai_dien_tich.pdf", "Giay_chung_nhan_sai_lech.pdf"],
+            ghiChuNoibo: "Đã phê bình cán bộ nhập liệu sai sót.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 19,
+            maHoso: "TCD-2026-06-0019",
+            ngayTiepNhan: "14/06/2026",
+            hinhThucTiepNhan: "Qua email",
+            loaiVuViec: "Phản ánh",
+            loaiDoituong: "Tổ chức",
+            hoten: "Doanh nghiệp Tư nhân Toàn Thắng",
+            mst: "3501239845",
+            daidienPhapluat: "Hoàng Toàn Thắng",
+            chucvuDaidien: "Chủ doanh nghiệp",
+            sodienthoai: "02543851123",
+            email: "toanthang_vungtau@gmail.com",
+            tinhthanh: "Hồ Chí Minh",
+            diachi: "15 Trương Công Định, Phường 3, TP Vũng Tàu",
+            coUyQuyen: false,
+            sodangkyBpbd: "",
+            soHopDong: "",
+            loaihinhGiaodich: "",
+            benBaodam: "",
+            benNhanBaodam: "",
+            taisanBaodam: "",
+            tomtatNoidung: "Phản ánh việc thu phí dịch vụ đăng ký không có hóa đơn điện tử.",
+            noidungChitiet: "Doanh nghiệp thanh toán lệ phí qua cổng thanh toán trực tuyến nhưng hệ thống báo lỗi không sinh hóa đơn điện tử phục vụ báo cáo thuế...",
+            cancuPhaply: "Luật Quản lý thuế 2019.",
+            yeucauCuthe: "Cấp lại hóa đơn điện tử cho các giao dịch đã thực hiện trong tháng 5/2026.",
+            canboXuly: "Nguyễn Văn Cán Bộ",
+            trangThai: "Đang xử lý",
+            hanGiaiQuyet: "04/07/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Lich_su_chuyen_tien.pdf"],
+            ghiChuNoibo: "Đang phối hợp với VNPT để tra soát giao dịch ngân hàng và xuất hóa đơn bổ sung cho doanh nghiệp.",
+            coBaomat: false,
+            isDeleted: 0
+        },
+        {
+            id: 20,
+            maHoso: "TCD-2026-06-0020",
+            ngayTiepNhan: "16/06/2026",
+            hinhThucTiepNhan: "Trực tiếp tại trụ sở",
+            loaiVuViec: "Kiến nghị",
+            loaiDoituong: "Cá nhân",
+            hoten: "Phan Thanh Hà",
+            cccd: "001090001284",
+            ngaySinh: "05/11/1990",
+            gioiTinh: "Nữ",
+            ngayCap: "15/04/2022",
+            sodienthoai: "0915666777",
+            email: "ha.phan90@gmail.com",
+            tinhthanh: "Hà Nội",
+            diachi: "12 Lý Nam Đế, Hoàn Kiếm, Hà Nội",
+            coUyQuyen: false,
+            sodangkyBpbd: "15920384",
+            soHopDong: "HĐTC/2024/Agribank",
+            loaihinhGiaodich: "Thế chấp",
+            benBaodam: "Phan Thanh Hà",
+            benNhanBaodam: "Agribank Chi nhánh Hà Tây",
+            taisanBaodam: "Quyền đòi nợ từ Hợp đồng thi công xây dựng công trình cầu",
+            tomtatNoidung: "Kiến nghị hướng dẫn thủ tục đăng ký thế chấp quyền đòi nợ hình thành trong tương lai.",
+            noidungChitiet: "Tôi gặp vướng mắc về thủ tục đăng ký do hồ sơ ngân hàng yêu cầu khác với hướng dẫn của Cục Đăng ký giao dịch bảo đảm...",
+            cancuPhaply: "Thông tư 02/2023/TT-BTP.",
+            yeucauCuthe: "Hướng dẫn thống nhất quy trình làm việc giữa văn phòng đăng ký và tổ chức tín dụng.",
+            canboXuly: "Trần Thị Nghiệp Vụ",
+            trangThai: "Chờ bổ sung hồ sơ",
+            hanGiaiQuyet: "26/06/2026",
+            phanLoaiXuly: "Thuộc thẩm quyền",
+            files: ["Ho_so_thiet_ke.pdf"],
+            ghiChuNoibo: "Cần công dân bổ sung bản sao văn bản chấp thuận của chủ đầu tư dự án đối với việc chuyển nhượng quyền đòi nợ.",
+            coBaomat: false,
+            isDeleted: 0
+        }
+    ];
+
+    // Mock BPBD database for Autocomplete and linking
+    const mockBpbdDb = [
+        { sodk: "12039401", sohd: "HĐTC-2026/BIDV", loai: "Biện pháp bảo đảm (Thế chấp)", bbđ: "Nguyễn Văn Hùng", bnbđ: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)", ts: "Xe ô tô Toyota Camry, Biển kiểm soát 30A-999.99, Số khung: RU238491" },
+        { sodk: "13506921", sohd: "HĐTC-2025/Vietinbank", loai: "Biện pháp bảo đảm (Thế chấp)", bbđ: "Công ty Cổ phần Thép Việt", bnbđ: "Ngân hàng TMCP Công thương Việt Nam (Vietinbank)", ts: "Dây chuyền máy móc sản xuất thép cán nóng và nguyên vật liệu tồn kho" },
+        { sodk: "14839401", sohd: "HĐTC-Taisan/VPBank", loai: "Biện pháp bảo đảm (Thế chấp)", bbđ: "Trần Văn Cường", bnbđ: "Ngân hàng TMCP Việt Nam Thịnh Vượng (VPBank)", ts: "Quyền đòi nợ từ Hợp đồng mua bán căn hộ chung cư Sunrise" },
+        { sodk: "15920384", sohd: "HĐTC-2024/Agribank", loai: "Biện pháp bảo đảm (Thế chấp)", bbđ: "Phạm Văn Bình", bnbđ: "Ngân hàng Nông nghiệp và Phát triển Nông thôn (Agribank)", ts: "Phương tiện giao thông đường thủy nội địa (Tàu sắt chở hàng)" }
+    ];
+
+    let currentSelectedId = null;
+    let fileUploadMockStore = [];
+    let softDeleteTargetId = null;
+    let restoreTargetId = null;
+    let hardDeleteTargetId = null;
+
+    let currentUser = "Nguyễn Văn Cán Bộ";
+    let currentUserRole = "Cán bộ";
+
+    // Khởi tạo thuộc tính canboTiepNhan cho tất cả các bản ghi có sẵn trong CSDL
+    mockDatabase.forEach(item => {
+        if (!item.canboTiepNhan) {
+            item.canboTiepNhan = "Nguyễn Văn Cán Bộ";
+        }
+    });
+
+    function changeCurrentUser(val) {
+        const parts = val.split('|');
+        currentUser = parts[0];
+        currentUserRole = parts[1];
+        showToast(`Đã chuyển đổi sang tài khoản: ${currentUser} (${currentUserRole})`, "info");
+        
+        // Đồng bộ hóa với header của trang tổng thể cha (nếu có) - bọc trong try-catch tránh lỗi SecurityError khi chạy file://
+        try {
+            if (window.parent && window.parent !== window && window.parent.document) {
+                const parentDoc = window.parent.document;
+                const parentUserName = parentDoc.querySelector('.user-name');
+                const parentUserRole = parentDoc.querySelector('.user-role');
+                const parentAvatar = parentDoc.querySelector('.avatar');
+                
+                if (parentUserName) {
+                    parentUserName.innerText = currentUser;
+                }
+                if (parentUserRole) {
+                    let roleText = "Cán bộ nghiệp vụ";
+                    if (currentUserRole === "Lãnh đạo đơn vị") {
+                        roleText = "Lãnh đạo đơn vị";
+                    } else if (currentUser === "Nguyễn Văn Cán Bộ") {
+                        roleText = "Cán bộ phê duyệt";
+                    }
+                    parentUserRole.innerText = roleText;
+                }
+                if (parentAvatar) {
+                    const words = currentUser.split(' ');
+                    if (words.length >= 2) {
+                        const w1 = words[words.length - 2][0];
+                        const w2 = words[words.length - 1][0];
+                        parentAvatar.innerText = (w1 + w2).toUpperCase();
+                    } else {
+                        parentAvatar.innerText = currentUser[0].toUpperCase();
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn("Cross-origin frame access blocked or parent header not accessible:", e);
+        }
+        
+        executeSearch(); // Refresh list to apply secure masking
+    }
+
+    function parseDate(str) {
+        if (!str) return null;
+        const parts = str.split('/');
+        if (parts.length !== 3) return null;
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
+        const date = new Date(year, month, day);
+        if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) return null;
+        return date;
+    }
+
+    // Helper functions to calculate overdue state
+    function isRecordOverdue(item) {
+        if (item.isDeleted === 1) return false;
+        const completedStatuses = ["Đã trả lời", "Đã chuyển đơn", "Không thụ lý"];
+        if (completedStatuses.includes(item.trangThai)) return false;
+        if (!item.hanGiaiQuyet) return false;
+        
+        const parts = item.hanGiaiQuyet.split('/');
+        if (parts.length !== 3) return false;
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
+        
+        const deadlineDate = new Date(year, month, day);
+        const currentDate = new Date();
+        deadlineDate.setHours(0,0,0,0);
+        currentDate.setHours(0,0,0,0);
+        
+        return deadlineDate < currentDate;
+    }
+
+    function isRecordNearDeadline(item) {
+        if (item.isDeleted === 1) return false;
+        const completedStatuses = ["Đã trả lời", "Đã chuyển đơn", "Không thụ lý"];
+        if (completedStatuses.includes(item.trangThai)) return false;
+        if (!item.hanGiaiQuyet) return false;
+        
+        const parts = item.hanGiaiQuyet.split('/');
+        if (parts.length !== 3) return false;
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
+        
+        const deadlineDate = new Date(year, month, day);
+        const currentDate = new Date();
+        deadlineDate.setHours(0,0,0,0);
+        currentDate.setHours(0,0,0,0);
+        
+        const diffTime = deadlineDate - currentDate;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays >= 0 && diffDays <= 5;
+    }
+
+    // Load initial table list
+    window.addEventListener('DOMContentLoaded', () => {
+        renderTableList();
+        
+        // Force clear any browser autofill on filter inputs
+        setTimeout(() => {
+            const tun = document.getElementById('filter-tungay');
+            const denn = document.getElementById('filter-denngay');
+            if (tun) {
+                tun.value = '';
+                tun.setAttribute('autocomplete', 'new-password');
+            }
+            if (denn) {
+                denn.value = '';
+                denn.setAttribute('autocomplete', 'new-password');
+            }
+        }, 100);
+        
+        // Trigger date format standards on placeholder
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        document.getElementById('a-ngay-tiepnhan').value = `${dd}/${mm}/${yyyy}`;
+    });
+
+    // Render table grid
+    function renderTableList(dataToRender) {
+        const tbody = document.getElementById('hoso-table-body');
+        tbody.innerHTML = '';
+
+        let displayList = dataToRender;
+        if (!displayList) {
+            displayList = mockDatabase.filter(item => item.isDeleted === 0);
+            
+            const quahan = document.getElementById('filter-quahan').checked;
+            if (quahan) {
+                displayList = displayList.filter(item => isRecordOverdue(item));
+            }
+        }
+
+        if (displayList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-muted);">Không tìm thấy hồ sơ phù hợp.</td></tr>`;
+            return;
+        }
+
+        displayList.forEach((item, idx) => {
+            const tr = document.createElement('tr');
+            if (item.isDeleted === 1) {
+                tr.className = 'row-deleted';
+            }
+
+            // Get badge color class
+            let badgeClass = "bg-new";
+            let statusName = item.trangThai;
+            if (item.isDeleted === 1) {
+                badgeClass = "bg-deleted";
+                statusName = "Đã xóa mềm";
+            } else {
+                switch(item.trangThai) {
+                    case "Đang xử lý": badgeClass = "bg-processing"; break;
+                    case "Chờ bổ sung hồ sơ": badgeClass = "bg-pending"; break;
+                    case "Đã trả lời": badgeClass = "bg-resolved"; break;
+                    case "Đã chuyển đơn": badgeClass = "bg-transferred"; break;
+                    case "Không thụ lý": badgeClass = "bg-rejected"; break;
+                }
+            }
+            // Secure identity check
+            let citizenName = item.hoten;
+            const canViewSecure = (currentUserRole === "Lãnh đạo đơn vị" || item.canboTiepNhan === currentUser || !item.canboTiepNhan || item.canboTiepNhan === "Nguyễn Văn Cán Bộ" && currentUser === "Nguyễn Văn Cán Bộ");
+            if (item.loaiVuViec === "Tố cáo" && item.coBaomat && item.isDeleted === 0) {
+                if (!canViewSecure) {
+                    citizenName = `<i class="fa-solid fa-user-shield" style="color:var(--primary-color);"></i> [Được bảo mật danh tính]`;
+                } else {
+                    citizenName = `<i class="fa-solid fa-user-shield" style="color:var(--success-color);" title="Bạn có quyền xem thông tin bảo mật"></i> ${item.hoten}`;
+                }
+            }            // Actions mapping based on status
+            let actionsHtml = "";
+            if (item.isDeleted === 1) {
+                actionsHtml = `
+                    <button class="action-icon" title="Khôi phục" onclick="openRestoreModal(${item.id})"><i class="fa-solid fa-arrows-rotate" style="color:var(--success-color);"></i></button>
+                    <button class="action-icon delete" title="Xóa vĩnh viễn" onclick="openHardDeleteModal(${item.id})"><i class="fa-solid fa-trash-can" style="color:var(--danger-color);"></i></button>
+                `;
+            } else {
+                actionsHtml = `
+                    <button class="action-icon" title="Xem chi tiết" onclick="openViewForm(${item.id})"><i class="fa-solid fa-eye"></i></button>
+                    <button class="action-icon" title="Chỉnh sửa" onclick="openEditForm(${item.id})"><i class="fa-solid fa-edit"></i></button>
+                    <button class="action-icon delete" title="Xóa mềm" onclick="openSoftDeleteModal(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                `;
+            }
+
+            // Determine if overdue or near deadline
+            let deadlineHtml = item.hanGiaiQuyet;
+            if (isRecordOverdue(item)) {
+                deadlineHtml = `<span style="color: var(--danger-color); font-weight: bold;" title="Quá hạn xử lý"><i class="fa-solid fa-circle-exclamation"></i> ${item.hanGiaiQuyet}</span>`;
+            } else if (isRecordNearDeadline(item)) {
+                deadlineHtml = `<span style="color: var(--warning-color); font-weight: 600;" title="Sắp hết hạn"><i class="fa-solid fa-clock"></i> ${item.hanGiaiQuyet}</span>`;
+            }
+
+            tr.innerHTML = `
+                <td class="text-center">${idx + 1}</td>
+                <td><a href="#" style="text-decoration:none; font-weight:600; color:var(--primary-color);" onclick="openEditForm(${item.id})">${item.maHoso}</a></td>
+                <td>${item.ngayTiepNhan}</td>
+                <td>${item.loaiVuViec}</td>
+                <td>${citizenName}</td>
+                <td>${item.sodangkyBpbd || '-'}</td>
+                <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.tomtatNoidung}">${item.tomtatNoidung}</td>
+                <td><span class="badge ${badgeClass}">${statusName}</span></td>
+                <td>${deadlineHtml}</td>
+                <td>${item.canboXuly || 'Chưa phân công'}</td>
+                <td class="action-icons text-center">${actionsHtml}</td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Toggle overdue filter checkbox
+    function toggleFilterQuaHan() {
+        executeSearch();
+    }
+
+    // Reset Search filter UI
+    function resetFilters() {
+        document.getElementById('filter-ma-hoso').value = '';
+        document.getElementById('filter-loai-vuviec').value = '';
+        document.getElementById('filter-trangthai').value = '';
+        document.getElementById('filter-hoten').value = '';
+        document.getElementById('filter-cccd').value = '';
+        document.getElementById('filter-sodangky').value = '';
+        document.getElementById('filter-tungay').value = '';
+        document.getElementById('filter-denngay').value = '';
+        document.getElementById('filter-quahan').checked = false;
+        executeSearch();
+    }
+
+    // Execute mock filters
+    function executeSearch() {
+        const ma = document.getElementById('filter-ma-hoso').value.trim().toLowerCase();
+        const loai = document.getElementById('filter-loai-vuviec').value;
+        const trangthai = document.getElementById('filter-trangthai').value;
+        const name = document.getElementById('filter-hoten').value.trim().toLowerCase();
+        const cccd = document.getElementById('filter-cccd').value.trim().toLowerCase();
+        const sodk = document.getElementById('filter-sodangky').value.trim().toLowerCase();
+        const tungay = document.getElementById('filter-tungay').value.trim();
+        const denngay = document.getElementById('filter-denngay').value.trim();
+        const quahan = document.getElementById('filter-quahan').checked;
+
+        let filtered = mockDatabase;
+
+        if (ma) filtered = filtered.filter(item => item.maHoso.toLowerCase().includes(ma));
+        if (loai) filtered = filtered.filter(item => item.loaiVuViec === loai);
+        if (trangthai) filtered = filtered.filter(item => item.trangThai === trangthai);
+        if (name) filtered = filtered.filter(item => item.hoten.toLowerCase().includes(name));
+        if (cccd) filtered = filtered.filter(item => (item.cccd && item.cccd.includes(cccd)) || (item.mst && item.mst.includes(cccd)));
+        if (sodk) filtered = filtered.filter(item => item.sodangkyBpbd && item.sodangkyBpbd.includes(sodk));
+
+        if (tungay) {
+            const parts = tungay.split('/');
+            if (parts.length === 3) {
+                const tuDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                filtered = filtered.filter(item => {
+                    const itemParts = item.ngayTiepNhan.split('/');
+                    const itemDate = new Date(itemParts[2], itemParts[1] - 1, itemParts[0]);
+                    return itemDate >= tuDate;
+                });
+            }
+        }
+        if (denngay) {
+            const parts = denngay.split('/');
+            if (parts.length === 3) {
+                const denDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                filtered = filtered.filter(item => {
+                    const itemParts = item.ngayTiepNhan.split('/');
+                    const itemDate = new Date(itemParts[2], itemParts[1] - 1, itemParts[0]);
+                    return itemDate <= denDate;
+                });
+            }
+        }
+
+        if (quahan) {
+            filtered = filtered.filter(item => isRecordOverdue(item));
+        }
+
+        // Filter out deleted items by default in search as well
+        filtered = filtered.filter(item => item.isDeleted === 0);
+
+        renderTableList(filtered);
+        showToast("Đã lọc danh sách kết quả", "success");
+    }
+
+    // Open detail form for viewing only (Read-only mode)
+    function openViewForm(id) {
+        openEditForm(id);
+        setFormFieldsReadOnly(true);
+        document.getElementById('form-title').innerHTML = `<i class="fa-solid fa-eye"></i> Chi tiết hồ sơ tiếp công dân: <strong style="color:var(--primary-color);">${document.getElementById('a-ma-hoso').value}</strong>`;
+    }
+
+    // Open detail form for editing
+    function openEditForm(id) {
+        currentSelectedId = id;
+        const item = mockDatabase.find(x => x.id === id);
+        if (!item) return;
+
+        // Reset
+        document.getElementById('hoso-form').reset();
+        document.getElementById('form-files-list').innerHTML = '';
+        fileUploadMockStore = [...item.files];
+        renderFormFileList();
+
+        // Populate Blocks A, B, C, D
+        document.getElementById('hoso-id').value = item.id;
+        document.getElementById('a-ma-hoso').value = item.maHoso;
+        document.getElementById('a-ngay-tiepnhan').value = item.ngayTiepNhan;
+        document.getElementById('a-hinhthuc-tiepnhan').value = item.hinhThucTiepNhan;
+        document.getElementById('a-loai-vuviec').value = item.loaiVuViec;
+        document.getElementById('a-canbo-tiepnhan').value = item.canboTiepNhan || "Nguyễn Văn Cán Bộ";
+        document.getElementById('a-donvi-tiepnhan').value = item.donviTiepNhan || "Cục Đăng ký giao dịch bảo đảm - Bộ Tư pháp";
+
+        // Subject type
+        if (item.loaiDoituong === "Cá nhân") {
+            document.querySelector('input[name="b-loai-doituong"][value="Cá nhân"]').checked = true;
+            toggleLoaiDoiTuong("Cá nhân");
+        } else {
+            document.querySelector('input[name="b-loai-doituong"][value="Tổ chức"]').checked = true;
+            toggleLoaiDoiTuong("Tổ chức");
+        }
+
+        // Role-based security check for Tố cáo
+        const canViewSecure = (currentUserRole === "Lãnh đạo đơn vị" || item.canboTiepNhan === currentUser || !item.canboTiepNhan || item.canboTiepNhan === "Nguyễn Văn Cán Bộ" && currentUser === "Nguyễn Văn Cán Bộ");
+        const showSecure = !(item.loaiVuViec === "Tố cáo" && item.coBaomat && !canViewSecure);
+
+        document.getElementById('b-hoten').value = showSecure ? item.hoten : "[Được bảo mật danh tính]";
+        document.getElementById('b-cccd').value = showSecure ? (item.cccd || '') : "[Được bảo mật danh tính]";
+        document.getElementById('b-mst').value = showSecure ? (item.mst || '') : "[Được bảo mật danh tính]";
+        document.getElementById('b-ngaysinh').value = showSecure ? (item.ngaySinh || '') : "[Được bảo mật danh tính]";
+        document.getElementById('b-gioitinh').value = item.gioiTinh || 'Nam';
+        document.getElementById('b-ngaycap').value = showSecure ? (item.ngayCap || '') : "[Được bảo mật danh tính]";
+        document.getElementById('b-daidien-phapluat').value = showSecure ? (item.daidienPhapluat || '') : "[Được bảo mật danh tính]";
+        document.getElementById('b-chucvu-daidien').value = showSecure ? (item.chucvuDaidien || '') : "[Được bảo mật danh tính]";
+        document.getElementById('b-sodienthoai').value = showSecure ? item.sodienthoai : "[Được bảo mật danh tính]";
+        document.getElementById('b-email').value = showSecure ? item.email : "[Được bảo mật danh tính]";
+        document.getElementById('b-tinhthanh').value = item.tinhthanh || '';
+        document.getElementById('b-diachi').value = showSecure ? item.diachi : "[Được bảo mật danh tính]";
+
+        // Lock form fields if secure info is hidden
+        if (!showSecure) {
+            document.getElementById('b-hoten').disabled = true;
+            document.getElementById('b-hoten').readOnly = true;
+            document.getElementById('b-cccd').disabled = true;
+            document.getElementById('b-cccd').readOnly = true;
+            document.getElementById('b-mst').disabled = true;
+            document.getElementById('b-mst').readOnly = true;
+            document.getElementById('b-ngaysinh').disabled = true;
+            document.getElementById('b-ngaysinh').readOnly = true;
+            document.getElementById('b-daidien-phapluat').disabled = true;
+            document.getElementById('b-daidien-phapluat').readOnly = true;
+            document.getElementById('b-chucvu-daidien').disabled = true;
+            document.getElementById('b-chucvu-daidien').readOnly = true;
+            document.getElementById('b-sodienthoai').disabled = true;
+            document.getElementById('b-sodienthoai').readOnly = true;
+            document.getElementById('b-email').disabled = true;
+            document.getElementById('b-email').readOnly = true;
+            document.getElementById('b-diachi').disabled = true;
+            document.getElementById('b-diachi').readOnly = true;
+        }
+
+        // Authorization
+        document.getElementById('b-co-uyquyen').checked = item.coUyQuyen;
+        toggleUyQuyen(item.coUyQuyen);
+        if (item.coUyQuyen) {
+            document.getElementById('b-hoten-uyquyen').value = item.hotenUyQuyen || '';
+            document.getElementById('b-cccd-uyquyen').value = item.cccdUyQuyen || '';
+        }
+
+        // Block C
+        document.getElementById('c-sodangky-bpbd').value = item.sodangkyBpbd || '';
+        document.getElementById('c-sohopdong').value = item.soHopDong || '';
+        document.getElementById('c-loaihinh-giaodich').value = item.loaihinhGiaodich || '';
+        document.getElementById('c-ben-baodam').value = item.benBaodam || '';
+        document.getElementById('c-ben-nhanbaodam').value = item.benNhanBaodam || '';
+        document.getElementById('c-taisan-baodam').value = item.taisanBaodam || '';
+        document.getElementById('c-tomtat-noidung').value = item.tomtatNoidung;
+        document.getElementById('c-noidung-chitiet').value = item.noidungChitiet;
+        document.getElementById('c-cancu-phaply').value = item.cancuPhaply || '';
+        document.getElementById('c-yeucau-cuthe').value = item.yeucauCuthe || '';
+
+        // Block D
+        document.getElementById('d-canbo-xuly').value = item.canboXuly || "Nguyễn Văn Cán Bộ";
+        document.getElementById('d-trangthai-hoso').value = item.trangThai;
+        document.getElementById('d-han-giaiquyet').value = item.hanGiaiQuyet;
+        document.getElementById('d-phanloai-xuly').value = item.phanLoaiXuly || '';
+        document.getElementById('d-ghichu-noibo').value = item.ghiChuNoibo || '';
+        document.getElementById('d-co-baomat').checked = item.coBaomat;
+
+        // Populate results fields if they exist
+        if (item.kqKetLuan) document.getElementById('d-kq-ketluan').value = item.kqKetLuan;
+        if (item.kqSovanban) document.getElementById('d-kq-sovanban').value = item.kqSovanban;
+        if (item.kqNgaybanhanh) document.getElementById('d-kq-ngaybanhanh').value = item.kqNgaybanhanh;
+        if (item.kqNoidungKl) document.getElementById('d-kq-noidung-kl').value = item.kqNoidungKl;
+        if (item.bsYeuCauNoidung) document.getElementById('d-noidung-yeucau-bs').value = item.bsYeuCauNoidung;
+        if (item.bsSendEmail) document.getElementById('d-bs-email').checked = item.bsSendEmail;
+        if (item.bsSendGiay) {
+            document.getElementById('d-bs-giay').checked = item.bsSendGiay;
+            toggleNutInPhieu(item.bsSendGiay);
+        }
+        if (item.chuyenCoquan) document.getElementById('d-chuyen-coquan').value = item.chuyenCoquan;
+        if (item.chuyenSovanban) document.getElementById('d-chuyen-sovanban').value = item.chuyenSovanban;
+        if (item.khongthulyLydo) document.getElementById('d-khongthuly-lydo').value = item.khongthulyLydo;
+
+        // Triggers UI states
+        onLoaiVuViecChange(item.loaiVuViec);
+        onTrangThaiXulyChange(item.trangThai);
+        onPhanLoaiXulyChange(item.phanLoaiXuly);
+
+        // Under deadline alert
+        if (item.maHoso === "TCD-2026-06-0001" && item.trangThai !== "Đã trả lời") {
+            document.getElementById('due-warning-banner').classList.remove('hidden');
+        } else {
+            document.getElementById('due-warning-banner').classList.add('hidden');
+        }
+
+        // Show/Hide page views
+        document.getElementById('section-list').classList.add('hidden');
+        document.getElementById('section-form').classList.remove('hidden');
+        
+        document.getElementById('form-title').innerHTML = `<i class="fa-solid fa-edit"></i> Xem & Xử lý hồ sơ: <strong style="color:var(--primary-color);">${item.maHoso}</strong>`;
+        
+        // Show Cancel and complete buttons
+        document.getElementById('btn-save-draft').classList.remove('hidden');
+        document.getElementById('btn-complete').classList.remove('hidden');
+        
+        // Check standard cancel logic: if list has items, show cancel/close.
+        // Form fields state locking (if resolved)
+        setFormFieldsReadOnly(item.trangThai === "Đã trả lời" || item.trangThai === "Đã chuyển đơn" || item.trangThai === "Không thụ lý");
+    }    // Lock/Unlock form inputs
+    function setFormFieldsReadOnly(isLocked) {
+        const inputs = document.querySelectorAll('#hoso-form input, #hoso-form select, #hoso-form textarea');
+        inputs.forEach(el => {
+            const isAlwaysReadOnly = (el.id === 'hoso-id' || el.id === 'a-ma-hoso' || el.id === 'a-canbo-tiepnhan' || el.id === 'a-donvi-tiepnhan');
+            if (isAlwaysReadOnly) {
+                el.disabled = false;
+                el.readOnly = true;
+            } else {
+                if (isLocked) {
+                    el.disabled = true;
+                    if (el.classList.contains('form-control')) el.readOnly = true;
+                } else {
+                    el.disabled = false;
+                    if (el.classList.contains('form-control')) el.readOnly = false;
+                }
+            }
+        });
+        
+        // Buttons
+        if (isLocked) {
+            document.getElementById('btn-save-draft').classList.add('hidden');
+            document.getElementById('btn-complete').classList.add('hidden');
+        } else {
+            document.getElementById('btn-save-draft').classList.remove('hidden');
+            document.getElementById('btn-complete').classList.remove('hidden');
+        }
+        
+        const btnCancel = document.getElementById('btn-cancel-form');
+        if (btnCancel) {
+            btnCancel.innerHTML = isLocked ? '<i class="fa-solid fa-times"></i> Đóng' : 'Hủy bỏ';
+        }
+
+        // Re-render file list to adapt to isLocked mode
+        renderFormFileList(isLocked);
+    }
+    // Toggle subjects Cá nhân/Tổ chức
+    function toggleLoaiDoiTuong(val) {
+        if (val === "Cá nhân") {
+            document.getElementById('b-lbl-hoten').innerText = "Họ và tên công dân *";
+            document.getElementById('b-group-cccd').classList.remove('hidden');
+            document.getElementById('b-group-canhan-fields').classList.remove('hidden');
+            document.getElementById('b-group-mst').classList.add('hidden');
+            document.getElementById('b-group-tochuc-fields').classList.add('hidden');
+        } else {
+            document.getElementById('b-lbl-hoten').innerText = "Tên tổ chức/doanh nghiệp *";
+            document.getElementById('b-group-cccd').classList.add('hidden');
+            document.getElementById('b-group-canhan-fields').classList.add('hidden');
+            document.getElementById('b-group-mst').classList.remove('hidden');
+            document.getElementById('b-group-tochuc-fields').classList.remove('hidden');
+        }
+    }
+
+    // Toggle representative authorization fields
+    function toggleUyQuyen(checked) {
+        if (checked) {
+            document.getElementById('b-group-uyquyen-fields').classList.remove('hidden');
+        } else {
+            document.getElementById('b-group-uyquyen-fields').classList.add('hidden');
+        }
+    }
+
+    // Loai vu viec -> Auto compute resolution date
+    function onLoaiVuViecChange(val) {
+        // Toggle cờ bảo mật chỉ hiển thị khi loại = Tố cáo
+        if (val === "Tố cáo") {
+            document.getElementById('group-co-baomat').classList.remove('hidden');
+        } else {
+            document.getElementById('group-co-baomat').classList.add('hidden');
+        }
+
+        // Auto compute dead line based on type
+        // Khiếu nại, Tố cáo = 30 ngày. Kiến nghị, Phản ánh = 20 ngày.
+        const today = new Date();
+        let days = 30;
+        if (val === "Kiến nghị" || val === "Phản ánh") days = 20;
+        else if (val === "Yêu cầu cung cấp thông tin") days = 10;
+
+        const due = new Date();
+        due.setDate(today.getDate() + days);
+        const dd = String(due.getDate()).padStart(2, '0');
+        const mm = String(due.getMonth() + 1).padStart(2, '0');
+        const yyyy = due.getFullYear();
+        document.getElementById('d-han-giaiquyet').value = `${dd}/${mm}/${yyyy}`;
+    }
+
+    // Phân loại xử lý logic (locks blocks A, B, C and enables/opens D)
+    function onPhanLoaiXulyChange(val) {
+        // Khóa các trường A, B, C khi thuộc thẩm quyền thụ lý
+        if (val === "Thuộc thẩm quyền") {
+            setABCBlocksState(true);
+            document.getElementById('block-chuyen-coquan').classList.add('hidden');
+            document.getElementById('block-khong-thuly').classList.add('hidden');
+        } 
+        else if (val === "Chuyển cơ quan khác") {
+            setABCBlocksState(false);
+            document.getElementById('block-chuyen-coquan').classList.remove('hidden');
+            document.getElementById('block-khong-thuly').classList.add('hidden');
+            document.getElementById('block-kethuc-giaiquyet').classList.add('hidden');
+        } 
+        else if (val === "Không đủ điều kiện thụ lý") {
+            setABCBlocksState(false);
+            document.getElementById('block-chuyen-coquan').classList.add('hidden');
+            document.getElementById('block-khong-thuly').classList.remove('hidden');
+            document.getElementById('block-kethuc-giaiquyet').classList.add('hidden');
+        } 
+        else {
+            setABCBlocksState(false);
+            document.getElementById('block-chuyen-coquan').classList.add('hidden');
+            document.getElementById('block-khong-thuly').classList.add('hidden');
+        }
+    }
+
+    // Set locks on Blocks A, B, C
+    function setABCBlocksState(isLocked) {
+        const abcInputs = document.querySelectorAll('#hoso-form input[id^="a-"], #hoso-form select[id^="a-"], #hoso-form input[id^="b-"], #hoso-form select[id^="b-"], #hoso-form textarea[id^="b-"], #hoso-form input[id^="c-"], #hoso-form select[id^="c-"], #hoso-form textarea[id^="c-"], input[name="b-loai-doituong"]');
+        abcInputs.forEach(el => {
+            if (el.id !== 'a-ma-hoso' && el.id !== 'a-canbo-tiepnhan' && el.id !== 'a-donvi-tiepnhan') {
+                el.disabled = isLocked;
+                if (el.classList.contains('form-control')) el.readOnly = isLocked;
+            }
+        });
+    }
+
+    // Trạng thái xử lý change trigger blocks display
+    function onTrangThaiXulyChange(val) {
+        const phanLoai = document.getElementById('d-phanloai-xuly').value;
+
+        if (val === "Chờ bổ sung hồ sơ") {
+            document.getElementById('block-yeucau-bosung').classList.remove('hidden');
+            document.getElementById('block-kethuc-giaiquyet').classList.add('hidden');
+            
+            // Set Email as strongly required if notifying by email
+            document.getElementById('email-req-star').classList.remove('hidden');
+        } 
+        else if (val === "Đã trả lời") {
+            document.getElementById('block-yeucau-bosung').classList.add('hidden');
+            if (phanLoai === "Thuộc thẩm quyền") {
+                document.getElementById('block-kethuc-giaiquyet').classList.remove('hidden');
+                
+                // Prefill date of result standard
+                const today = new Date();
+                const dd = String(today.getDate()).padStart(2, '0');
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const yyyy = today.getFullYear();
+                document.getElementById('d-kq-ngaybanhanh').value = `${dd}/${mm}/${yyyy}`;
+            } else {
+                document.getElementById('block-kethuc-giaiquyet').classList.add('hidden');
+            }
+        } 
+        else {
+            document.getElementById('block-yeucau-bosung').classList.add('hidden');
+            document.getElementById('block-kethuc-giaiquyet').classList.add('hidden');
+        }
+    }
+
+    // Toggle supplementary print button
+    function toggleNutInPhieu(checked) {
+        if (checked) {
+            document.getElementById('btn-in-phieu-bs').classList.remove('hidden');
+        } else {
+            document.getElementById('btn-in-phieu-bs').classList.add('hidden');
+        }
+    }
+
+    // Open Create Form at counter
+    function openCreateForm() {
+        currentSelectedId = null;
+        document.getElementById('hoso-form').reset();
+        document.getElementById('hoso-id').value = '';
+        fileUploadMockStore = [];
+        renderFormFileList();
+
+        // Autogenerate Code Standard
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const num = String(mockDatabase.length + 1).padStart(4, '0');
+        document.getElementById('a-ma-hoso').value = `TCD-${yyyy}-${mm}-${num}`;
+        
+        // Preset default date dd/mm/yyyy standard
+        const dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('a-ngay-tiepnhan').value = `${dd}/${mm}/${yyyy}`;
+
+        // Reset UI triggers
+        toggleLoaiDoiTuong("Cá nhân");
+        toggleUyQuyen(false);
+        onLoaiVuViecChange("Khiếu nại");
+        onTrangThaiXulyChange("Mới tiếp nhận");
+        onPhanLoaiXulyChange("");
+
+        document.getElementById('due-warning-banner').classList.add('hidden');
+        document.getElementById('section-list').classList.add('hidden');
+        document.getElementById('section-form').classList.remove('hidden');
+        
+        document.getElementById('form-title').innerHTML = `<i class="fa-solid fa-plus"></i> Thêm mới hồ sơ tiếp công dân`;
+        
+        setFormFieldsReadOnly(false);
+        
+        // Hide/Show drafts cancel button logic
+        // First row of database constraint: if database was empty, we hide cancel button. But here we have items, so we show it.
+    }
+
+    // Close form and return to list
+    function closeForm() {
+        document.getElementById('section-form').classList.add('hidden');
+        document.getElementById('section-list').classList.remove('hidden');
+        renderTableList();
+    }
+
+    // Form files selectors mock
+    function triggerFormFileUpload() {
+        document.getElementById('form-files-upload').click();
+    }
+
+    function handleFormFilesSelected(input) {
+        for (let i = 0; i < input.files.length; i++) {
+            fileUploadMockStore.push(input.files[i].name);
+        }
+        renderFormFileList();
+        showToast("Đã tải tệp lên thành công", "success");
+    }
+
+    function renderFormFileList(isReadOnly) {
+        if (isReadOnly === undefined) {
+            // Determine dynamically from save draft button status
+            const btnSave = document.getElementById('btn-save-draft');
+            isReadOnly = btnSave ? btnSave.classList.contains('hidden') : false;
+        }
+
+        const listDiv = document.getElementById('form-files-list');
+        listDiv.innerHTML = '';
+        
+        fileUploadMockStore.forEach((filename, idx) => {
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            
+            // Determine file icon based on extension
+            let iconClass = 'fa-file-pdf';
+            let fileTypeClass = '';
+            if (filename.endsWith('.jpg') || filename.endsWith('.jpeg') || filename.endsWith('.png')) {
+                iconClass = 'fa-file-image';
+                fileTypeClass = 'image';
+            } else if (filename.endsWith('.doc') || filename.endsWith('.docx')) {
+                iconClass = 'fa-file-word';
+                fileTypeClass = 'doc';
+            } else if (filename.endsWith('.xls') || filename.endsWith('.xlsx')) {
+                iconClass = 'fa-file-excel';
+                fileTypeClass = 'doc';
+            }
+            
+            let actionHtml = '';
+            if (isReadOnly) {
+                actionHtml = `<button type="button" class="file-btn file-btn-view" onclick="previewMockFile('${filename}')"><i class="fa-solid fa-eye"></i> Xem</button>`;
+            } else {
+                actionHtml = `
+                    <button type="button" class="file-btn file-btn-view" onclick="previewMockFile('${filename}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                    <button type="button" class="file-btn file-btn-delete" onclick="removeFormFile(${idx})"><i class="fa-solid fa-trash"></i> Xóa</button>
+                `;
+            }
+            
+            item.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon ${fileTypeClass}">
+                        <i class="fa-solid ${iconClass}"></i>
+                    </div>
+                    <span class="file-name" title="${filename}">${filename}</span>
+                </div>
+                <div class="file-actions">
+                    ${actionHtml}
+                </div>
+            `;
+            listDiv.appendChild(item);
+        });
+    }
+
+    function removeFormFile(idx) {
+        fileUploadMockStore.splice(idx, 1);
+        renderFormFileList();
+        showToast("Đã gỡ bỏ tệp đính kèm", "info");
+    }
+    // Save Draft logic
+    function saveDraft() {
+        const hoten = document.getElementById('b-hoten').value.trim();
+        const loai = document.getElementById('a-loai-vuviec').value;
+        const tomtat = document.getElementById('c-tomtat-noidung').value.trim();
+
+        if (!hoten) {
+            showToast("Vui lòng nhập Họ tên công dân trước khi lưu nháp", "error");
+            return;
+        }
+
+        // Validate draft date if provided
+        const dateReceived = parseDate(document.getElementById('a-ngay-tiepnhan').value);
+        const dateDue = parseDate(document.getElementById('d-han-giaiquyet').value);
+        if (dateReceived && dateDue) {
+            const diffTime = dateDue - dateReceived;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            let maxDays = 30;
+            if (loai === "Kiến nghị" || loai === "Phản ánh") maxDays = 20;
+            else if (loai === "Yêu cầu cung cấp thông tin") maxDays = 10;
+            
+            if (diffDays > maxDays) {
+                showToast(`Hạn giải quyết không được vượt quá thời hạn tối đa ${maxDays} ngày kể từ Ngày tiếp nhận`, "error");
+                return;
+            }
+            if (diffDays < 0) {
+                showToast(`Hạn giải quyết không được trước Ngày tiếp nhận`, "error");
+                return;
+            }
+        }
+        const id = document.getElementById('hoso-id').value;
+        
+        if (id) {
+            // Update
+            const record = mockDatabase.find(x => x.id == id);
+            if (record) {
+                record.hoten = hoten;
+                record.loaiVuViec = loai;
+                record.tomtatNoidung = tomtat;
+                record.trangThai = document.getElementById('d-trangthai-hoso').value;
+                record.phanLoaiXuly = document.getElementById('d-phanloai-xuly').value;
+                record.ghiChuNoibo = document.getElementById('d-ghichu-noibo').value;
+                record.files = [...fileUploadMockStore];
+            }
+        } else {
+            // Insert new draft
+            const code = document.getElementById('a-ma-hoso').value;
+            const today = new Date();
+            const dateStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+            
+            const newRecord = {
+                id: mockDatabase.length + 1,
+                maHoso: code,
+                ngayTiepNhan: dateStr,
+                hinhThucTiepNhan: document.getElementById('a-hinhthuc-tiepnhan').value,
+                loaiVuViec: loai,
+                loaiDoituong: document.querySelector('input[name="b-loai-doituong"]:checked').value,
+                hoten: hoten,
+                sodienthoai: document.getElementById('b-sodienthoai').value,
+                email: document.getElementById('b-email').value,
+                diachi: document.getElementById('b-diachi').value,
+                tomtatNoidung: tomtat || "Hồ sơ tiếp dân lưu nháp",
+                noidungChitiet: document.getElementById('c-noidung-chitiet').value,
+                trangThai: document.getElementById('d-trangthai-hoso').value,
+                hanGiaiQuyet: document.getElementById('d-han-giaiquyet').value,
+                canboXuly: "Nguyễn Văn Cán Bộ",
+                canboTiepNhan: currentUser,
+                files: [...fileUploadMockStore],
+                isDeleted: 0
+            };
+            mockDatabase.push(newRecord);
+        }
+
+        showToast("Đã lưu nháp dữ liệu hồ sơ tiếp công dân thành công!", "success");
+        closeForm();
+    }
+
+    // Complete processing & validate standard
+    function completeProcess() {
+        // Validate required fields
+        const hoten = document.getElementById('b-hoten').value.trim();
+        const sdt = document.getElementById('b-sodienthoai').value.trim();
+        const email = document.getElementById('b-email').value.trim();
+        const diachi = document.getElementById('b-diachi').value.trim();
+        const tomtat = document.getElementById('c-tomtat-noidung').value.trim();
+        const noidung = document.getElementById('c-noidung-chitiet').value.trim();
+        const phanloai = document.getElementById('d-phanloai-xuly').value;
+        const trangthai = document.getElementById('d-trangthai-hoso').value;
+        
+        // Subject details
+        const isCaNhan = document.querySelector('input[name="b-loai-doituong"]:checked').value === "Cá nhân";
+        const cccd = document.getElementById('b-cccd').value.trim();
+        const mst = document.getElementById('b-mst').value.trim();
+
+        if (!hoten || !sdt || !diachi || !tomtat || !noidung || !phanloai) {
+            showToast("Vui lòng điền đầy đủ các thông tin bắt buộc (*)", "error");
+            return;
+        }
+
+        // Validate Hạn giải quyết logic (exceeds max limit based on type)
+        const dateReceived = parseDate(document.getElementById('a-ngay-tiepnhan').value);
+        const dateDue = parseDate(document.getElementById('d-han-giaiquyet').value);
+        if (!dateReceived || !dateDue) {
+            showToast("Định dạng Ngày tiếp nhận hoặc Hạn giải quyết không hợp lệ (dd/mm/yyyy)", "error");
+            return;
+        }
+        const diffTime = dateDue - dateReceived;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const loaiVuViec = document.getElementById('a-loai-vuviec').value;
+        
+        let maxDays = 30;
+        if (loaiVuViec === "Kiến nghị" || loaiVuViec === "Phản ánh") maxDays = 20;
+        else if (loaiVuViec === "Yêu cầu cung cấp thông tin") maxDays = 10;
+
+        if (diffDays > maxDays) {
+            showToast(`Hạn giải quyết không được vượt quá thời hạn tối đa ${maxDays} ngày kể từ Ngày tiếp nhận đối với vụ việc: ${loaiVuViec}`, "error");
+            return;
+        }
+        if (diffDays < 0) {
+            showToast(`Hạn giải quyết không được trước Ngày tiếp nhận`, "error");
+            return;
+        }
+
+        if (isCaNhan && !cccd) {
+            showToast("Vui lòng nhập Số CMND/CCCD/Hộ chiếu", "error");
+            return;
+        }
+        if (!isCaNhan && !mst) {
+            showToast("Vui lòng nhập Mã số thuế của tổ chức", "error");
+            return;
+        }
+
+        // Email is strictly required when notifying via Email or for electronic delivery
+        if (!email) {
+            showToast("Vui lòng nhập Email để hệ thống gửi thông báo kết quả/bổ sung hồ sơ tự động", "error");
+            return;
+        }
+
+        // Validate dynamic blocks based on selection
+        if (trangthai === "Chờ bổ sung hồ sơ") {
+            const noidungBs = document.getElementById('d-noidung-yeucau-bs').value.trim();
+            if (!noidungBs) {
+                showToast("Vui lòng điền nội dung yêu cầu bổ sung hồ sơ chi tiết", "error");
+                return;
+            }
+        } 
+        else if (trangthai === "Đã trả lời" && phanloai === "Thuộc thẩm quyền") {
+            const ketluan = document.getElementById('d-kq-ketluan').value;
+            const sovanban = document.getElementById('d-kq-sovanban').value.trim();
+            const noidungKq = document.getElementById('d-kq-noidung-kl').value.trim();
+
+            if (!ketluan || !sovanban || !noidungKq) {
+                showToast("Vui lòng điền kết luận giải quyết, số văn bản và nội dung tóm tắt kết quả", "error");
+                return;
+            }
+        }
+        else if (phanloai === "Chuyển cơ quan khác") {
+            const cq = document.getElementById('d-chuyen-coquan').value;
+            const vb = document.getElementById('d-chuyen-sovanban').value.trim();
+            if (!cq || !vb) {
+                showToast("Vui lòng nhập cơ quan nhận chuyển giao và số văn bản chuyển đơn", "error");
+                return;
+            }
+        }
+        else if (phanloai === "Không đủ điều kiện thụ lý") {
+            const lydo = document.getElementById('d-khongthuly-lydo').value.trim();
+            if (!lydo) {
+                showToast("Vui lòng nhập lý do từ chối thụ lý", "error");
+                return;
+            }
+        }
+
+        // Update database record
+        const id = document.getElementById('hoso-id').value;
+        let record = mockDatabase.find(x => x.id == id);
+        
+        if (!record) {
+            // Create new complete record directly
+            const code = document.getElementById('a-ma-hoso').value;
+            record = {
+                id: mockDatabase.length + 1,
+                maHoso: code,
+                ngayTiepNhan: document.getElementById('a-ngay-tiepnhan').value,
+                hinhThucTiepNhan: document.getElementById('a-hinhthuc-tiepnhan').value,
+                loaiVuViec: document.getElementById('a-loai-vuviec').value,
+                loaiDoituong: document.querySelector('input[name="b-loai-doituong"]:checked').value,
+                hoten: hoten,
+                cccd: cccd,
+                mst: mst,
+                sodienthoai: sdt,
+                email: email,
+                diachi: diachi,
+                tomtatNoidung: tomtat,
+                noidungChitiet: noidung,
+                canboTiepNhan: currentUser,
+                files: [...fileUploadMockStore],
+                isDeleted: 0
+            };
+            mockDatabase.push(record);
+        }
+
+        // Save data to record
+        record.trangThai = trangthai;
+        record.phanLoaiXuly = phanloai;
+        record.ghiChuNoibo = document.getElementById('d-ghichu-noibo').value;
+        record.coBaomat = document.getElementById('d-co-baomat').checked;
+
+        // Sub-flows updates
+        if (trangthai === "Chờ bổ sung hồ sơ") {
+            record.bsYeuCauNoidung = document.getElementById('d-noidung-yeucau-bs').value;
+            record.bsSendEmail = document.getElementById('d-bs-email').checked;
+            record.bsSendGiay = document.getElementById('d-bs-giay').checked;
+            
+            let message = "Hồ sơ đã chuyển trạng thái chờ bổ sung.";
+            if (record.bsSendEmail) {
+                message += " Đã gửi Email tự động yêu cầu tài liệu đính kèm đến công dân thành công!";
+            }
+            showToast(message, "success");
+        } 
+        else if (trangthai === "Đã trả lời") {
+            if (phanloai === "Thuộc thẩm quyền") {
+                record.kqKetLuan = document.getElementById('d-kq-ketluan').value;
+                record.kqSovanban = document.getElementById('d-kq-sovanban').value;
+                record.kqNgaybanhanh = document.getElementById('d-kq-ngaybanhanh').value;
+                record.kqNoidungKl = document.getElementById('d-kq-noidung-kl').value;
+                
+                showToast("Ban hành quyết định giải quyết thành công! Đã gửi Email kết quả PDF tự động đến công dân.", "success");
+            } 
+            else if (phanloai === "Chuyển cơ quan khác") {
+                record.trangThai = "Đã chuyển đơn";
+                record.chuyenCoquan = document.getElementById('d-chuyen-coquan').value;
+                record.chuyenSovanban = document.getElementById('d-chuyen-sovanban').value;
+                showToast("Đã chuyển đơn thư đến cơ quan có thẩm quyền. Đã gửi Email thông báo kèm bản sao công văn.", "success");
+            } 
+            else if (phanloai === "Không đủ điều kiện thụ lý") {
+                record.trangThai = "Không thụ lý";
+                record.khongthulyLydo = document.getElementById('d-khongthuly-lydo').value;
+                showToast("Từ chối thụ lý giải quyết hồ sơ thành công. Đã gửi Email thông báo kèm file PDF.", "success");
+            }
+        } 
+        else {
+            showToast("Cập nhật tiến trình xử lý hồ sơ tiếp công dân thành công!", "success");
+        }
+
+        closeForm();
+    }
+
+    // Autocomplete mock logic for BPBD registry
+    function showSuggestions(val) {
+        const box = document.getElementById('suggestions-box');
+        if (!val.trim()) {
+            box.classList.add('hidden');
+            return;
+        }
+
+        const matches = mockBpbdDb.filter(x => x.sodk.includes(val) || x.bbđ.toLowerCase().includes(val.toLowerCase()));
+        if (matches.length === 0) {
+            box.classList.add('hidden');
+            return;
+        }
+
+        box.innerHTML = '';
+        matches.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            div.innerText = `Số ĐK: ${item.sodk} - Bên BĐ: ${item.bbđ}`;
+            div.onclick = () => selectSuggestion(item);
+            box.appendChild(div);
+        });
+        box.classList.remove('hidden');
+    }
+
+    function selectSuggestion(item) {
+        document.getElementById('c-sodangky-bpbd').value = item.sodk;
+        document.getElementById('c-sohopdong').value = item.sohd;
+        document.getElementById('c-loaihinh-giaodich').value = item.loai;
+        document.getElementById('c-ben-baodam').value = item.bbđ;
+        document.getElementById('c-ben-nhanbaodam').value = item.bnbđ;
+        document.getElementById('c-taisan-baodam').value = item.ts;
+
+        document.getElementById('suggestions-box').classList.add('hidden');
+        showToast("Đã đối chiếu thông tin đăng ký liên thông tự động thành công!", "success");
+    }
+
+    function lienthongDuLieu() {
+        const sodk = document.getElementById('c-sodangky-bpbd').value.trim();
+        const matched = mockBpbdDb.find(x => x.sodk === sodk);
+        if (matched) {
+            selectSuggestion(matched);
+        } else {
+            showToast("Không tìm thấy Số đăng ký này trên CSDL đăng ký BPBĐ. Cán bộ vui lòng tự nhập tay các thông tin.", "error");
+        }
+    }
+
+    // Export Excel / PDF mock
+    function exportExcel() {
+        let count = mockDatabase.filter(item => item.isDeleted === 0).length;
+        if (count > 10000) count = 10000;
+        showToast(`Hệ thống đang kết xuất Sổ theo dõi tiếp công dân và giải quyết KNTC ra file Excel (.xlsx) với ${count} dòng dữ liệu (tối đa giới hạn 10.000 dòng)...`, "info");
+        setTimeout(() => {
+            showToast("Kết xuất file Excel thành công! Trình duyệt bắt đầu tải xuống.", "success");
+        }, 1500);
+    }
+
+    function exportPhieuYeuCauBS() {
+        showToast("Hệ thống đang sinh Phiếu yêu cầu sửa đổi, bổ sung hồ sơ theo Mẫu số 02/TCD...", "info");
+        setTimeout(() => {
+            showToast("Đã xuất file Word phiếu yêu cầu bổ sung thành công! Bấm In để in ấn ra giấy.", "success");
+        }, 1500);
+    }
+
+    // Modal Xóa mềm (Soft delete UC262)
+    function openSoftDeleteModal(id) {
+        softDeleteTargetId = id;
+        const record = mockDatabase.find(x => x.id == id);
+        if (!record) return;
+
+        document.getElementById('soft-delete-code').innerText = record.maHoso;
+        document.getElementById('soft-delete-reason').value = '';
+        document.getElementById('modal-soft-delete').classList.add('active');
+    }
+
+    function closeSoftDeleteModal() {
+        document.getElementById('modal-soft-delete').classList.remove('active');
+        softDeleteTargetId = null;
+    }
+
+    function confirmSoftDelete() {
+        const reason = document.getElementById('soft-delete-reason').value.trim();
+        if (!reason) {
+            showToast("Vui lòng nhập lý do xóa hồ sơ tiếp dân!", "error");
+            return;
+        }
+
+        const record = mockDatabase.find(x => x.id == softDeleteTargetId);
+        if (record) {
+            record.isDeleted = 1;
+            record.deleteReason = reason;
+            record.deletedAt = new Date();
+            
+            showToast(`Đã xóa mềm hồ sơ ${record.maHoso} thành công!`, "success");
+            closeSoftDeleteModal();
+            renderTableList();
+        }
+    }
+
+    // Modal Khôi phục (Restore UC262)
+    function openRestoreModal(id) {
+        restoreTargetId = id;
+        const record = mockDatabase.find(x => x.id == id);
+        if (!record) return;
+
+        document.getElementById('restore-code').innerText = record.maHoso;
+        document.getElementById('restore-reason').value = '';
+        document.getElementById('modal-restore').classList.add('active');
+    }
+
+    function closeRestoreModal() {
+        document.getElementById('modal-restore').classList.remove('active');
+        restoreTargetId = null;
+    }
+
+    function confirmRestore() {
+        const reason = document.getElementById('restore-reason').value.trim();
+        if (!reason) {
+            showToast("Vui lòng nhập lý do khôi phục hồ sơ tiếp dân!", "error");
+            return;
+        }
+
+        const record = mockDatabase.find(x => x.id == restoreTargetId);
+        if (record) {
+            record.isDeleted = 0;
+            record.restoreReason = reason;
+            record.restoredAt = new Date();
+            
+            showToast(`Đã khôi phục hồ sơ ${record.maHoso} thành công!`, "success");
+            closeRestoreModal();
+            renderTableList();
+        }
+    }
+
+    // Modal Xóa vĩnh viễn (Hard delete UC262)
+    function openHardDeleteModal(id) {
+        hardDeleteTargetId = id;
+        const record = mockDatabase.find(x => x.id == id);
+        if (!record) return;
+
+        document.getElementById('hard-delete-code').innerText = record.maHoso;
+        document.getElementById('hard-delete-password').value = '';
+        document.getElementById('hard-delete-otp').value = '';
+        document.getElementById('modal-hard-delete').classList.add('active');
+    }
+
+    function closeHardDeleteModal() {
+        document.getElementById('modal-hard-delete').classList.remove('active');
+        hardDeleteTargetId = null;
+    }
+
+    function sendHardDeleteOtp() {
+        showToast("Mã OTP xác minh 6 chữ số đã được gửi qua email quản trị viên của bạn.", "info");
+        document.getElementById('hard-delete-otp').value = "482019"; // Prefill mock OTP
+    }
+
+    function confirmHardDelete() {
+        const password = document.getElementById('hard-delete-password').value;
+        const otp = document.getElementById('hard-delete-otp').value.trim();
+
+        if (!password || !otp) {
+            showToast("Vui lòng nhập mật khẩu quản trị và mã OTP xác thực!", "error");
+            return;
+        }
+
+        if (password !== "admin" && password !== "123456") {
+            showToast("Mật khẩu xác nhận không chính xác!", "error");
+            return;
+        }
+
+        if (otp !== "482019") {
+            showToast("Mã xác thực OTP không chính xác hoặc đã hết hạn!", "error");
+            return;
+        }
+
+        // hard delete record
+        const recordIdx = mockDatabase.findIndex(x => x.id == hardDeleteTargetId);
+        if (recordIdx > -1) {
+            const code = mockDatabase[recordIdx].maHoso;
+            mockDatabase.splice(recordIdx, 1);
+            showToast(`Đã xóa vĩnh viễn hồ sơ ${code} khỏi cơ sở dữ liệu. Lịch sử snapshot được lưu vào TCD_HardDeleteLog!`, "success");
+            closeHardDeleteModal();
+            renderTableList();
+        }
+    }
+
+    // Document Preview Mock Logic
+    function previewMockFile(filename) {
+        document.getElementById('preview-filename').innerText = filename;
+        
+        // Retrieve info from current form inputs to generate context-relevant content
+        const hoten = document.getElementById('b-hoten').value || "Người gửi";
+        const cccd = document.getElementById('b-cccd').value || document.getElementById('b-mst').value || "Chưa cung cấp";
+        const diachi = document.getElementById('b-diachi').value || "Chưa cung cấp";
+        const sdt = document.getElementById('b-sodienthoai').value || "Chưa cung cấp";
+        const tomtat = document.getElementById('c-tomtat-noidung').value || "Nội dung phản ánh giải quyết khiếu nại, tố cáo về đăng ký biện pháp bảo đảm.";
+        const noidung = document.getElementById('c-noidung-chitiet').value || "Chi tiết vụ việc.";
+        const loai = document.getElementById('a-loai-vuviec').value || "Khiếu nại";
+        const ngay = document.getElementById('a-ngay-tiepnhan').value || "15/06/2026";
+        
+        document.getElementById('preview-doc-title').innerText = "ĐƠN " + loai.toUpperCase();
+        document.getElementById('preview-doc-sender').innerText = hoten;
+        document.getElementById('preview-doc-id').innerText = cccd;
+        document.getElementById('preview-doc-address').innerText = diachi;
+        document.getElementById('preview-doc-phone').innerText = sdt;
+        document.getElementById('preview-doc-signature-name').innerText = hoten;
+        document.getElementById('preview-sig-time').innerText = ngay + " 09:30:15";
+        
+        // Generate document text content based on request type
+        let docText = "";
+        if (loai === "Khiếu nại") {
+            docText = `Tôi viết đơn này để thực hiện quyền khiếu nại liên quan đến vụ việc: <strong>${tomtat}</strong>. <br><br>
+                       <strong>Chi tiết nội dung vụ việc như sau:</strong> ${noidung}<br><br>
+                       Tôi kính mong cơ quan có thẩm quyền sớm tiến hành thụ lý giải quyết, làm rõ sự việc và bảo vệ quyền lợi hợp pháp của tôi. Tôi cam đoan các thông tin nêu trên hoàn toàn đúng sự thật.`;
+        } else if (loai === "Tố cáo") {
+            docText = `Tôi viết đơn này để tố cáo hành vi vi phạm quy định pháp luật: <strong>${tomtat}</strong>. <br><br>
+                       <strong>Nội dung sự việc tố cáo chi tiết:</strong> ${noidung}<br><br>
+                       Kính đề nghị cơ quan điều tra, thanh tra tiến hành làm rõ hành vi sai phạm của các cá nhân, tổ chức liên quan để xử lý nghiêm minh theo pháp luật. Tôi cam kết chịu trách nhiệm trước pháp luật về tính trung thực của các nội dung tố cáo này.`;
+        } else {
+            docText = `Đơn thư về việc: <strong>${tomtat}</strong>. <br><br>
+                       <strong>Chi tiết nội dung phản ánh/kiến nghị:</strong> ${noidung}<br><br>
+                       Rất mong quý cơ quan phản hồi và xử lý vướng mắc để tạo điều kiện thuận lợi cho việc thực hiện các thủ tục hành chính liên quan.`;
+        }
+        document.getElementById('preview-doc-content').innerHTML = docText;
+        
+        // Open the modal
+        document.getElementById('modal-preview-doc').classList.add('active');
+        showToast("Đang mở hộp xem trước tài liệu đính kèm...", "info");
+    }
+
+    function closePreviewModal() {
+        document.getElementById('modal-preview-doc').classList.remove('active');
+    }
+
+    // Global Toast Area Helper
+    function showToast(message, type = 'info') {
+        const area = document.getElementById('toast-area');
+        
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let iconClass = 'fa-solid fa-circle-info';
+        if (type === 'success') iconClass = 'fa-solid fa-circle-check';
+        else if (type === 'error') iconClass = 'fa-solid fa-triangle-exclamation';
+
+        toast.innerHTML = `
+            <i class="${iconClass}"></i>
+            <span>${message}</span>
+        `;
+        
+        area.appendChild(toast);
+        
+        // Trigger reflow
+        toast.offsetHeight;
+        toast.classList.add('active');
+
+        setTimeout(() => {
+            toast.classList.remove('active');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 4000);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đổi mật khẩu tài khoản cán bộ - Cục Đăng ký BPBĐ & BTNN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #001529;
+            --brand-blue: #2563EB;
+            --brand-blue-hover: #1D4ED8;
+            --bg-body: #F1F5F9;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --danger-color: #EF4444;
+            --success-color: #10B981;
+            --border-color: #E2E8F0;
+            --border-radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .change-pass-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 460px;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .card-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-main);
+            transition: all 0.2s;
+            background-color: #FAFBFD;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background-color: white;
+        }
+
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        .error-text {
+            color: var(--danger-color);
+            font-size: 11px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .complexity-rules {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .complexity-rules strong {
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .complexity-rules ul {
+            padding-left: 16px;
+            margin: 0;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--brand-blue-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border-color: var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background-color: #F1F5F9;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: white;
+            color: var(--text-main);
+            border-left: 4px solid var(--brand-blue);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 12px 24px;
+            border-radius: 4px;
+            z-index: 10005;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            border-left-color: var(--danger-color);
+        }
+
+        .toast.success {
+            border-left-color: var(--success-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="change-pass-card">
+        <div class="card-header">
+            <h2 id="pageTitle">ĐỔI MẬT KHẨU BẮT BUỘC</h2>
+            <p id="pageDesc">Vui lòng cập nhật mật khẩu mới cho tài khoản cán bộ của bạn.</p>
+        </div>
+
+        <div class="complexity-rules">
+            <strong>Quy tắc độ phức tạp mật khẩu mới:</strong>
+            <ul>
+                <li>Độ dài bắt buộc từ 8 đến 20 ký tự.</li>
+                <li>Chứa ít nhất một chữ viết hoa (A-Z).</li>
+                <li>Chứa ít nhất một chữ viết thường (a-z).</li>
+                <li>Chứa ít nhất một số thực (0-9).</li>
+                <li>Chứa ít nhất một ký tự đặc biệt (!@#$%^&*...).</li>
+            </ul>
+        </div>
+
+        <form id="changePassForm" onsubmit="handleChangePass(event)">
+            <!-- Mật khẩu hiện tại -->
+            <div class="form-group">
+                <label class="form-label" for="oldPassword">Mật khẩu hiện tại <span style="color:var(--danger-color);">*</span></label>
+                <input type="password" class="form-control" id="oldPassword" placeholder="Nhập mật khẩu hiện tại...">
+                <span class="error-text" id="err_oldPassword">Đây là trường bắt buộc</span>
+            </div>
+
+            <!-- Mật khẩu mới -->
+            <div class="form-group">
+                <label class="form-label" for="newPassword">Mật khẩu mới <span style="color:var(--danger-color);">*</span></label>
+                <input type="password" class="form-control" id="newPassword" placeholder="Nhập mật khẩu mới...">
+                <span class="error-text" id="err_newPassword">Đây là trường bắt buộc</span>
+            </div>
+
+            <!-- Xác nhận mật khẩu mới -->
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">Xác nhận mật khẩu mới <span style="color:var(--danger-color);">*</span></label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận lại mật khẩu mới...">
+                <span class="error-text" id="err_confirmPassword">Đây là trường bắt buộc</span>
+            </div>
+
+            <div class="footer-actions">
+                <button type="button" class="btn btn-outline" onclick="handleCancel()">HỦY</button>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> LƯU MẬT KHẨU</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Toast message -->
+    <div class="toast" id="toast">
+        <i class="fa fa-info-circle"></i>
+        <span id="toastMsg">Thông báo</span>
+    </div>
+
+    <script>
+        // Check URL parameters to adapt titles
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+
+        const pageTitle = document.getElementById('pageTitle');
+        const pageDesc = document.getElementById('pageDesc');
+
+        if (mode === 'expired') {
+            pageTitle.innerText = 'MẬT KHẨU ĐÃ HẾT HẠN';
+            pageDesc.innerText = 'Đã quá thời hạn 90 ngày sử dụng. Vui lòng thiết lập mật khẩu mới.';
+        } else if (mode === 'forgot') {
+            pageTitle.innerText = 'KHÔI PHỤC MẬT KHẨU';
+            pageDesc.innerText = 'Thiết lập lại mật khẩu đăng nhập mới cho tài khoản cán bộ.';
+        } else if (mode === 'force') {
+            pageTitle.innerText = 'ĐỔI MẬT KHẨU LẦN ĐẦU';
+            pageDesc.innerText = 'Tài khoản mới được khởi tạo. Bạn bắt buộc phải đổi mật khẩu lần đầu.';
+        }
+
+        const showToast = (msg, type = 'info') => {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toast.className = 'toast visible';
+            if (type === 'error') toast.classList.add('error');
+            if (type === 'success') toast.classList.add('success');
+            toastMsg.innerText = msg;
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        };
+
+        const handleCancel = () => {
+            showToast('Hủy thao tác đổi mật khẩu. Đang chuyển hướng quay lại...', 'info');
+            setTimeout(() => {
+                window.location.href = 'dang_nhap_can_bo.html';
+            }, 1000);
+        };
+
+        const handleChangePass = (e) => {
+            e.preventDefault();
+
+            // Clear errors
+            document.querySelectorAll('.is-invalid').forEach(inp => inp.classList.remove('is-invalid'));
+            document.querySelectorAll('.error-text').forEach(tx => tx.style.display = 'none');
+
+            const oldInp = document.getElementById('oldPassword');
+            const newInp = document.getElementById('newPassword');
+            const confInp = document.getElementById('confirmPassword');
+
+            let hasError = false;
+
+            // TH1: Empty check
+            if (!oldInp.value.trim()) {
+                oldInp.classList.add('is-invalid');
+                document.getElementById('err_oldPassword').innerText = 'Đây là trường bắt buộc';
+                document.getElementById('err_oldPassword').style.display = 'block';
+                hasError = true;
+            }
+            if (!newInp.value.trim()) {
+                newInp.classList.add('is-invalid');
+                document.getElementById('err_newPassword').innerText = 'Đây là trường bắt buộc';
+                document.getElementById('err_newPassword').style.display = 'block';
+                hasError = true;
+            }
+            if (!confInp.value.trim()) {
+                confInp.classList.add('is-invalid');
+                document.getElementById('err_confirmPassword').innerText = 'Đây là trường bắt buộc';
+                document.getElementById('err_confirmPassword').style.display = 'block';
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            const oldVal = oldInp.value.trim();
+            const newVal = newInp.value.trim();
+            const confVal = confInp.value.trim();
+
+            // TH4: New matches old password check
+            if (newVal === oldVal) {
+                newInp.classList.add('is-invalid');
+                const err = document.getElementById('err_newPassword');
+                err.innerText = 'Mật khẩu mới không được trùng với mật khẩu cũ';
+                err.style.display = 'block';
+                showToast('Không hợp lệ: Mật khẩu mới trùng mật khẩu hiện tại.', 'error');
+                return;
+            }
+
+            // TH2: Complexity validation check
+            // Length: 8-20, uppercase, lowercase, digit, special char
+            const lengthValid = newVal.length >= 8 && newVal.length <= 20;
+            const hasUpper = /[A-Z]/.test(newVal);
+            const hasLower = /[a-z]/.test(newVal);
+            const hasDigit = /[0-9]/.test(newVal);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newVal);
+
+            if (!lengthValid || !hasUpper || !hasLower || !hasDigit || !hasSpecial) {
+                newInp.classList.add('is-invalid');
+                const err = document.getElementById('err_newPassword');
+                err.innerText = 'Mật khẩu mới không đạt yêu cầu độ phức tạp hệ thống quy định';
+                err.style.display = 'block';
+                showToast('Mật khẩu mới không đạt yêu cầu bảo mật!', 'error');
+                return;
+            }
+
+            // TH3: Confirmation match check
+            if (newVal !== confVal) {
+                confInp.classList.add('is-invalid');
+                const err = document.getElementById('err_confirmPassword');
+                err.innerText = 'Xác nhận mật khẩu mới không khớp';
+                err.style.display = 'block';
+                showToast('Mật khẩu xác nhận không trùng khớp!', 'error');
+                return;
+            }
+
+            // Success case
+            showToast('Đổi mật khẩu thành công! Đang lưu thông tin và đăng nhập...', 'success');
+            sessionStorage.setItem('isAdminLoggedIn', 'true');
+            sessionStorage.setItem('adminUsername', 'admin_sys');
+            setTimeout(() => {
+                window.location.href = '../trang_tong_the_website_can_bo.html';
+            }, 1500);
+        };
+    </script>
+</body>
+</html>

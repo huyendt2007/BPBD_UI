@@ -1,0 +1,819 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Nhóm người dùng & Phân quyền</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../UC600/permissions_data.js"></script>
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+        body { background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); padding: var(--spacing-lg); height: 100vh; display: flex; flex-direction: column; }
+        
+        .header-title { color: var(--primary-color); font-size: 20px; font-weight: 600; margin-bottom: var(--spacing-lg); }
+
+        /* Split View Layout */
+        .split-layout { display: flex; gap: var(--spacing-lg); flex: 1; min-height: 0; }
+        .panel { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .panel-left { flex: 0 0 32%; }
+        .panel-right { flex: 1; }
+        
+        .panel-header { padding: var(--spacing-md); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--table-header-bg); border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; }
+        .panel-header h3 { color: var(--primary-color); font-size: 16px; margin: 0; }
+        
+        .panel-body { padding: var(--spacing-md); flex: 1; overflow-y: auto; }
+
+        /* Form & Buttons */
+        .form-control { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 8px 12px; width: 100%; outline: none; }
+        .form-control:focus { border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
+        .form-label { font-weight: 500; margin-bottom: 4px; display: block; }
+        .form-group { margin-bottom: var(--spacing-md); }
+        
+        .btn { font-weight: 500; border-radius: var(--border-radius-md); padding: 0.5rem 1rem; transition: all 0.2s; cursor: pointer; border: none; font-size: var(--base-size); display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: var(--text-muted); color: white; }
+        .btn-outline { background-color: white; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-sm { padding: 4px 8px; font-size: 12px; }
+        /* Group List */
+        .group-list { list-style: none; }
+        .group-item { padding: 12px var(--spacing-md); border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; }
+        .group-item:hover { background-color: #F8FAFC; }
+        .group-item.active { background-color: #EFF6FF; border-left: 4px solid var(--primary-color); padding-left: 12px; }
+        .group-item strong { display: block; color: var(--primary-color); margin-bottom: 4px; }
+        .group-item span { font-size: 12px; color: var(--text-muted); }
+        .group-actions { opacity: 0; transition: opacity 0.2s; display: flex; gap: 4px; }
+        .group-item:hover .group-actions { opacity: 1; }
+        .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; font-size: 14px; }
+        .btn-icon:hover { color: var(--primary-color); }
+        .btn-icon.delete:hover { color: var(--danger-color); }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--base-size);
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: var(--secondary-color);
+        }
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Permissions Matrix */s Matrix */
+        .perm-section { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); overflow: hidden; }
+        .perm-section-header { background-color: #F8FAFC; padding: 10px 16px; font-weight: 600; color: var(--primary-color); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .perm-row { padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; }
+        .perm-row:last-child { border-bottom: none; }
+        .perm-row:hover { background-color: #F1F5F9; }
+        
+        .custom-checkbox { display: flex; align-items: center; cursor: pointer; gap: 8px; width: 100%; }
+        .custom-checkbox input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary-color); }
+        .role-desc { font-size: 12px; color: var(--text-muted); display: block; margin-top: 2px; }
+
+        /* Tree View */
+        .tree-view { list-style: none; padding-left: 20px; }
+        .tree-view.root { padding-left: 0; }
+        .tree-node { margin: 8px 0; }
+        .tree-node-label { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 4px; }
+        .tree-node-label:hover { background-color: #F8FAFC; }
+        .tree-node-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; }
+        
+        /* Inherited Badge */
+        .inherited-badge {
+            font-size: 11px;
+            background-color: #ECFDF5;
+            color: #047857;
+            padding: 2px 6px;
+            border-radius: 12px;
+            margin-left: 8px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* Table */
+        .table { width: 100%; border-collapse: collapse; margin-bottom: var(--spacing-md); }
+        .table th { background-color: var(--table-header-bg); color: var(--primary-color); font-weight: 600; font-size: 13px; padding: 12px; border-bottom: 2px solid var(--border-color); text-align: left; }
+        .table td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        .toast { background-color: var(--success-color); color: white; padding: 12px 24px; border-radius: var(--border-radius-md); display: none; box-shadow: var(--box-shadow); }
+        .toast.show { display: block; animation: slideUp 0.3s forwards; }
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--bg-surface); border-radius: var(--border-radius-lg); width: 450px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; }
+        .error-msg { color: var(--danger-color); font-size: 12px; margin-top: 4px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">Quản lý Nhóm người dùng & Phân quyền</div>
+
+    <div class="split-layout">
+        <!-- Panel Left: Group List -->
+        <div class="panel panel-left">
+            <div class="panel-header">
+                <h3>Danh sách Nhóm người dùng</h3>
+                <button class="btn btn-primary btn-sm" onclick="openGroupModal('add')">+ Thêm Nhóm mới</button>
+            </div>
+            <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">
+                <div class="search-box" style="margin-bottom: 0;">
+                    <i class="fa fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" id="inpSearchGroup" placeholder="Tìm kiếm nhóm..." onkeyup="filterGroups(this.value)">
+                </div>
+            </div>
+            <div class="panel-body" style="padding: 0;">
+                <ul class="group-list" id="groupList">
+                    <!-- Groups rendered via JS -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Panel Right: Details & Permissions -->
+        <div class="panel panel-right">
+            <div class="panel-header">
+                <h3 id="panelRightTitle">Thiết lập cho nhóm: Cán bộ giải quyết hồ sơ BPBĐ</h3>
+                <div>
+                    <button class="btn btn-danger btn-sm" id="lockGroupBtn" onclick="toggleLockGroup()">🔒 Khóa nhóm</button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <!-- Group Permissions Setup -->
+                <div id="groupPermissionsContainer">
+                    <div style="margin-bottom: 16px;">
+                        <span style="color: var(--text-muted); font-size: 13px;">Gán Vai trò cho nhóm người dùng này. Các tính năng kế thừa sẽ tự động đồng bộ theo vai trò tương ứng.</span>
+                    </div>
+
+                    <!-- Vai trò của Nhóm -->
+                    <div class="perm-section">
+                        <div class="perm-section-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Vai trò của Nhóm</span>
+                            <div class="search-box" style="margin: 0; width: 220px; position: relative;">
+                                <i class="fa fa-search" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 11px;"></i>
+                                <input type="text" id="inpSearchGroupRole" placeholder="Tìm kiếm vai trò..." onkeyup="filterGroupRoles(this.value)" style="width: 100%; padding: 4px 8px 4px 24px; font-size: 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); outline: none;">
+                            </div>
+                        </div>
+                        <div id="rolesCheckboxContainer" style="padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <!-- Dynamically rendered roles with checkboxes -->
+                        </div>
+                    </div>
+
+                    <!-- Danh sách chức năng kế thừa -->
+                    <div class="perm-section">
+                        <div class="perm-section-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Danh sách chức năng kế thừa</span>
+                            <div class="search-box" style="margin: 0; width: 220px; position: relative;">
+                                <i class="fa fa-search" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 11px;"></i>
+                                <input type="text" id="inpSearchInheritedPerm" placeholder="Tìm kiếm chức năng..." onkeyup="filterInheritedPermTree(this.value)" style="width: 100%; padding: 4px 8px 4px 24px; font-size: 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); outline: none;">
+                            </div>
+                        </div>
+                        <div style="padding: 16px; max-height: 400px; overflow-y: auto;">
+                            <ul class="tree-view root" id="inheritedPermissionsTree">
+                                <!-- Dynamically rendered read-only tree -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer" id="groupPermissionsFooter">
+                <button class="btn btn-primary" onclick="savePermissions()">Lưu phân quyền</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Thêm/Sửa Nhóm -->
+    <div class="modal-overlay" id="groupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm mới Nhóm người dùng</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Mã nhóm <span style="color:var(--danger-color)">*</span></label>
+                    <input type="text" class="form-control" id="inpGroupCode">
+                    <div class="error-msg" id="errGroupCode">Vui lòng nhập Mã nhóm</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên nhóm <span style="color:var(--danger-color)">*</span></label>
+                    <input type="text" class="form-control" id="inpGroupName">
+                    <div class="error-msg" id="errGroupName">Vui lòng nhập Tên nhóm</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phạm vi áp dụng <span style="color:var(--danger-color)">*</span></label>
+                    <select class="form-control" id="inpGroupScope" style="background:#fff;">
+                        <option value="">-- Chọn phạm vi áp dụng --</option>
+                        <option value="Cán bộ">Cán bộ</option>
+                        <option value="Khách hàng">Khách hàng</option>
+                        <option value="Cơ quan có thẩm quyền">Cơ quan có thẩm quyền</option>
+                    </select>
+                    <div class="error-msg" id="errGroupScope">Vui lòng chọn Phạm vi áp dụng</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="saveGroup()">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xác nhận xóa Nhóm -->
+    <div class="modal-overlay" id="deleteGroupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Xác nhận xóa Nhóm người dùng</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal('deleteGroupModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa nhóm người dùng <strong id="deleteGroupName"></strong>?</p>
+                <p style="color: var(--danger-color); margin-top: 10px; font-size: 13px;">Hành động này không thể hoàn tác.</p>
+                <input type="hidden" id="deleteGroupId">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteGroupModal')">Hủy</button>
+                <button class="btn btn-danger" onclick="executeDeleteGroup()">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container">
+        <div class="toast" id="toastMsg">Đã lưu cấu hình phân quyền thành công!</div>
+    </div>
+
+    <script>
+        // Default Mock Groups Data (with assigned role IDs)
+        const DEFAULT_GROUPS = [
+            { id: 1, code: "G_CB_BPBD", name: "Cán bộ giải quyết hồ sơ BPBĐ", scope: "Cán bộ", members: 45, roles: [4, 5] },
+            { id: 2, code: "G_LD_TRUNGTAM", name: "Lãnh đạo Trung tâm Đăng ký", scope: "Cán bộ", members: 5, roles: [3] },
+            { id: 3, code: "G_CB_CUC", name: "Cán bộ Nghiệp vụ Cục (QLNN)", scope: "Cán bộ", members: 12, roles: [4] },
+            { id: 4, code: "G_LD_CUC", name: "Lãnh đạo Cục (QLNN BPBĐ)", scope: "Cán bộ", members: 3, roles: [1] },
+            { id: 5, code: "G_KH_CANHAN", name: "Khách hàng Cá nhân", scope: "Khách hàng", members: 1250, roles: [6] },
+            { id: 6, code: "G_KH_TOCHUC", name: "Khách hàng Tổ chức", scope: "Khách hàng", members: 420, roles: [7] },
+            { id: 7, code: "G_TOA_AN", name: "Cơ quan Tòa án", scope: "Cơ quan có thẩm quyền", members: 60, roles: [8] },
+            { id: 8, code: "G_VKS", name: "Viện Kiểm sát", scope: "Cơ quan có thẩm quyền", members: 30, roles: [8] },
+            { id: 9, code: "G_THADS", name: "Cơ quan Thi hành án Dân sự", scope: "Cơ quan có thẩm quyền", members: 45, roles: [8] },
+            { id: 10, code: "G_CONG_AN", name: "Cơ quan Điều tra (Công an)", scope: "Cơ quan có thẩm quyền", members: 15, roles: [8] }
+        ];
+
+        // Default Mock Roles Data (as fallback)
+        const DEFAULT_ROLES = [
+            { id: 1, code: "R_CUC_01", name: "Lãnh đạo Cục", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-01", "WebAdmin-29-04-01-01", "WebAdmin-29-04-01-02", "WebAdmin-29-05", "WebAdmin-29-06"] },
+            { id: 2, code: "R_CUC_02", name: "Quản trị viên Cục", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-10", "WebAdmin-29-10-01", "WebAdmin-29-10-02", "WebAdmin-29-10-03"] },
+            { id: 3, code: "R_PHONG_01", name: "Lãnh đạo phòng", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-01", "WebAdmin-29-04-01-01"] },
+            { id: 4, code: "R_PHONG_02", name: "Chuyên viên xử lý", scope: "Cán bộ", permissions: ["WebAdmin-29-04-01-01", "WebAdmin-29-04-01-02"] },
+            { id: 5, code: "R_PHONG_03", name: "Chuyên viên tổng hợp", scope: "Cán bộ", permissions: ["WebAdmin-29-09", "WebAdmin-29-09-01", "WebAdmin-29-09-02"] },
+            { id: 6, code: "R_KH_01", name: "Khách hàng cá nhân chuẩn", scope: "Khách hàng", permissions: ["Web-05", "Web-11", "Web-12", "Web-13", "App-01", "App-02", "App-05"] },
+            { id: 7, code: "R_KH_02", name: "Quản trị viên Tổ chức", scope: "Khách hàng", permissions: ["Web-05", "Web-10", "Web-10-01", "Web-10-02", "Web-11", "Web-12", "App-01", "App-02"] },
+            { id: 8, code: "R_CQ_01", name: "Cơ quan Tòa án", scope: "Cơ quan có thẩm quyền", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-03"] },
+            { id: 9, code: "R_ALL_01", name: "Xem Bảng tin công khai", scope: "Khách hàng", permissions: ["Web-05", "App-01"] },
+            { id: 10, code: "R_ALL_02", name: "Tạo Yêu cầu Hỗ trợ", scope: "Khách hàng", permissions: ["Web-22", "Web-22-02", "App-10"] }
+        ];
+
+        let groups = [];
+        const savedGroups = localStorage.getItem('sys_mock_groups');
+        if (savedGroups) {
+            groups = JSON.parse(savedGroups);
+            let migrated = false;
+            groups.forEach(g => {
+                if (g.scope === 'INTERNAL') { g.scope = 'Cán bộ'; migrated = true; }
+                else if (g.scope === 'INDIVIDUAL' || g.scope === 'ORGANIZATION' || g.scope === 'ALL') { g.scope = 'Khách hàng'; migrated = true; }
+                else if (g.scope === 'AUTHORITY') { g.scope = 'Cơ quan có thẩm quyền'; migrated = true; }
+            });
+            if (migrated) {
+                localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
+            }
+        } else {
+            groups = JSON.parse(JSON.stringify(DEFAULT_GROUPS));
+            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
+        }
+
+        let activeGroupId = 1;
+        let groupMode = 'add';
+        let editGroupId = null;
+
+        function renderGroups() {
+            const list = document.getElementById('groupList');
+            list.innerHTML = '';
+            
+            const scopeColors = {
+                'Cán bộ': '#10B981', 
+                'Khách hàng': '#3B82F6', 
+                'Cơ quan có thẩm quyền': '#F59E0B'
+            };
+            
+            groups.forEach(g => {
+                if (!g.status) g.status = 'ACTIVE';
+                const li = document.createElement('li');
+                li.className = `group-item ${activeGroupId === g.id ? 'active' : ''}`;
+                li.onclick = () => {
+                    activeGroupId = g.id;
+                    selectGroup(g);
+                };
+                
+                const statusBadge = g.status === 'LOCKED' 
+                    ? `<span style="display:inline-block; margin-left:8px; padding:2px 6px; border-radius:10px; font-size:10px; background:#EF444420; color:#EF4444">ĐÃ KHÓA</span>`
+                    : '';
+                
+                li.innerHTML = `
+                    <div style="flex:1;">
+                        <strong>${g.name} ${statusBadge}</strong>
+                        <span>${g.code} • ${g.members} thành viên 
+                        <span style="display:inline-block; margin-left:8px; padding:2px 6px; border-radius:10px; font-size:10px; background:${scopeColors[g.scope]}20; color:${scopeColors[g.scope]}">${g.scope}</span>
+                        </span>
+                    </div>
+                    <div class="group-actions">
+                        <button class="btn-icon" onclick="event.stopPropagation(); openGroupModal('edit', ${g.id})" title="Sửa">✏️</button>
+                        <button class="btn-icon delete" onclick="event.stopPropagation(); confirmDeleteGroup(${g.id})" title="Xóa">🗑️</button>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function selectGroup(g) {
+            document.getElementById('panelRightTitle').innerText = `Thiết lập cho nhóm: ${g.name}`;
+            
+            // Set search values back to empty
+            document.getElementById('inpSearchGroupRole').value = '';
+            document.getElementById('inpSearchInheritedPerm').value = '';
+            
+            // Update lock button style and text
+            const lockBtn = document.getElementById('lockGroupBtn');
+            if (g.status === 'LOCKED') {
+                lockBtn.innerHTML = '🔒 Mở khóa';
+                lockBtn.className = 'btn btn-secondary btn-sm';
+                lockBtn.style.backgroundColor = '#10B981';
+                lockBtn.style.color = 'white';
+            } else {
+                lockBtn.innerHTML = '🔒 Khóa nhóm';
+                lockBtn.className = 'btn btn-danger btn-sm';
+                lockBtn.style.backgroundColor = '';
+                lockBtn.style.color = '';
+            }
+
+            renderGroups();
+            renderRolesChecklist();
+            renderInheritedTree();
+        }
+
+        function filterGroups(keyword) {
+            keyword = keyword.toLowerCase();
+            const items = document.querySelectorAll('.group-item');
+            items.forEach(item => {
+                const name = item.querySelector('strong').textContent.toLowerCase();
+                const code = item.querySelector('span').textContent.toLowerCase();
+                if (name.includes(keyword) || code.includes(keyword)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function filterGroupRoles(keyword) {
+            keyword = keyword.trim().toLowerCase();
+            const items = document.querySelectorAll('#rolesCheckboxContainer .perm-row');
+            items.forEach(item => {
+                const name = item.querySelector('strong').textContent.toLowerCase();
+                const code = item.querySelector('span').textContent.toLowerCase();
+                if (name.includes(keyword) || code.includes(keyword)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleLockGroup() {
+            const currentGroup = groups.find(g => g.id === activeGroupId);
+            if (!currentGroup) return;
+
+            if (currentGroup.status === 'LOCKED') {
+                currentGroup.status = 'ACTIVE';
+                showToast(`Đã mở khóa nhóm: ${currentGroup.name}`);
+            } else {
+                currentGroup.status = 'LOCKED';
+                showToast(`Đã khóa nhóm: ${currentGroup.name}`);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
+            selectGroup(currentGroup);
+        }
+
+        function confirmDeleteGroup(id) {
+            const group = groups.find(g => g.id === id);
+            if (!group) return;
+
+            document.getElementById('deleteGroupId').value = group.id;
+            document.getElementById('deleteGroupName').innerText = group.name;
+            document.getElementById('deleteGroupModal').classList.add('active');
+        }
+
+        function executeDeleteGroup() {
+            const id = parseInt(document.getElementById('deleteGroupId').value);
+            groups = groups.filter(g => g.id !== id);
+
+            // Save to localStorage
+            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
+            closeModal('deleteGroupModal');
+            showToast("Đã xóa nhóm người dùng thành công!");
+
+            // Reset active group
+            if (groups.length > 0) {
+                activeGroupId = groups[0].id;
+                selectGroup(groups[0]);
+            } else {
+                activeGroupId = null;
+                document.getElementById('panelRightTitle').innerText = 'Không có nhóm nào';
+                document.getElementById('rolesCheckboxContainer').innerHTML = '';
+                document.getElementById('inheritedPermissionsTree').innerHTML = '';
+                renderGroups();
+            }
+        }
+
+        // Render Roles Checklist for Group
+        function renderRolesChecklist() {
+            const container = document.getElementById('rolesCheckboxContainer');
+            container.innerHTML = '';
+
+            const currentGroup = groups.find(g => g.id === activeGroupId);
+            if (!currentGroup) return;
+
+            // Load shared roles from localStorage
+            let currentRoles = [];
+            const savedRoles = localStorage.getItem('sys_mock_roles');
+            if (savedRoles) {
+                currentRoles = JSON.parse(savedRoles);
+            } else {
+                currentRoles = DEFAULT_ROLES;
+            }
+
+            currentRoles.forEach(role => {
+                const isChecked = currentGroup.roles.includes(role.id) ? 'checked' : '';
+                
+                const div = document.createElement('div');
+                div.className = 'perm-row';
+                div.style.padding = '8px 12px';
+                div.style.border = '1px solid var(--border-color)';
+                div.style.borderRadius = 'var(--border-radius-md)';
+                div.innerHTML = `
+                    <label class="custom-checkbox" style="gap: 10px;">
+                        <input type="checkbox" ${isChecked} onchange="toggleRoleForGroup(${role.id}, this.checked)">
+                        <div>
+                            <strong>${role.name}</strong>
+                            <span style="font-size: 11px; color: var(--text-muted);">Mã: ${role.code} • Phạm vi: ${role.scope}</span>
+                        </div>
+                    </label>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleRoleForGroup(roleId, isChecked) {
+            const currentGroup = groups.find(g => g.id === activeGroupId);
+            if (!currentGroup) return;
+
+            if (isChecked) {
+                if (!currentGroup.roles.includes(roleId)) {
+                    currentGroup.roles.push(roleId);
+                }
+            } else {
+                currentGroup.roles = currentGroup.roles.filter(id => id !== roleId);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
+
+            // Update permissions tree
+            renderInheritedTree();
+        }
+
+        let collapsedInheritedNodes = {};
+
+        function toggleInheritedCollapse(event, nodeId) {
+            event.stopPropagation();
+            collapsedInheritedNodes[nodeId] = !collapsedInheritedNodes[nodeId];
+            renderInheritedTree();
+        }
+
+        function isCommonUserFeature(node) {
+            if (!node || !node.name) return false;
+            const nameLower = node.name.toLowerCase().replace(/\s+/g, ' ').trim();
+            const keywords = [
+                'đăng nhập',
+                'đăng xuất',
+                'quên mật khẩu',
+                'đổi mật khẩu',
+                'đặt lại mật khẩu',
+                'trang chủ',
+                'xem chi tiết tài khoản',
+                'cập nhật thông tin tài khoản'
+            ];
+            return keywords.some(kw => nameLower.includes(kw));
+        }
+
+        function hasGrantedDescendant(node, activeGroupRoles) {
+            if (isCommonUserFeature(node)) return false;
+            const isSelfGranted = activeGroupRoles.some(r => r.permissions.includes(node.id));
+            if (isSelfGranted) return true;
+            
+            if (node.children && node.children.length > 0) {
+                return node.children.some(child => hasGrantedDescendant(child, activeGroupRoles));
+            }
+            return false;
+        }
+
+        // Render Inherited Permissions Tree
+        function renderInheritedTree() {
+            const container = document.getElementById('inheritedPermissionsTree');
+            container.innerHTML = '';
+
+            const currentGroup = groups.find(g => g.id === activeGroupId);
+            if (!currentGroup) return;
+
+            // Load shared roles
+            let currentRoles = [];
+            const savedRoles = localStorage.getItem('sys_mock_roles');
+            if (savedRoles) {
+                currentRoles = JSON.parse(savedRoles);
+            } else {
+                currentRoles = DEFAULT_ROLES;
+            }
+
+            // Get active roles for this group
+            const activeGroupRoles = currentRoles.filter(r => currentGroup.roles.includes(r.id));
+
+            // Render tree HTML grouping by root categories statically
+            let html = '';
+            systemPermissions.forEach(root => {
+                if (!hasGrantedDescendant(root, activeGroupRoles)) return;
+
+                let displayName = '';
+                if (root.id === 'Web') displayName = 'Website khách hàng';
+                else if (root.id === 'App') displayName = 'Ứng dụng Mobile App';
+                else if (root.id === 'WebAdmin') displayName = 'Website Cán bộ';
+
+                const isCollapsed = collapsedInheritedNodes[root.id];
+                const toggleIcon = `<span class="perm-tree-toggle" onclick="toggleInheritedCollapse(event, '${root.id}')" style="margin-right: 4px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`;
+
+                html += `
+                    <li class="tree-node root-category" data-id="${root.id}" style="list-style: none; margin-bottom: 8px;">
+                        <div class="tree-node-label category-header" style="display: flex; align-items: center; gap: 4px; padding: 6px; background: #f1f5f9; border-radius: 4px; font-weight: bold; color: var(--primary-color);">
+                            ${toggleIcon}
+                            <span style="user-select: none;">${displayName}</span>
+                        </div>
+                        <ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 20px; margin-top: 4px;">
+                            ${buildInheritedTreeHtml(root.children, activeGroupRoles, root.id)}
+                        </ul>
+                    </li>
+                `;
+            });
+            container.innerHTML = html;
+
+            // Reapply search filter if there is active search keyword
+            const searchKeyword = document.getElementById('inpSearchInheritedPerm').value;
+            filterInheritedPermTree(searchKeyword);
+        }
+
+        function buildInheritedTreeHtml(nodes, activeGroupRoles, parentId = null) {
+            if (!nodes || nodes.length === 0) return '';
+
+            let html = '';
+            nodes.forEach(node => {
+                if (!node || node.id === 'Web' || node.id === 'App' || node.id === 'WebAdmin') return;
+                if (isCommonUserFeature(node)) return;
+                if (!hasGrantedDescendant(node, activeGroupRoles)) return;
+
+                const grantingRoles = activeGroupRoles.filter(r => r.permissions.includes(node.id)).map(r => r.name);
+                const isChecked = grantingRoles.length > 0 ? 'checked' : '';
+                const badge = grantingRoles.length > 0 ? `<span class="inherited-badge">Kế thừa: ${grantingRoles.join(', ')}</span>` : '';
+
+                const hasChildren = node.children && node.children.length > 0;
+                const isCollapsed = collapsedInheritedNodes[node.id];
+
+                const toggleIcon = hasChildren 
+                    ? `<span class="perm-tree-toggle" onclick="toggleInheritedCollapse(event, '${node.id}')" style="margin-right: 4px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`
+                    : '<span style="width: 12px; display: inline-block;"></span>';
+
+                html += `
+                    <li class="tree-node" data-id="${node.id}">
+                        <div class="tree-node-label" style="display: flex; align-items: center; gap: 4px; padding: 4px 6px; border-radius: 4px;">
+                            ${toggleIcon}
+                            <input type="checkbox" disabled ${isChecked} value="${node.id}">
+                            <span>${hasChildren ? `<strong>${node.name}</strong>` : node.name}</span>
+                            ${badge}
+                        </div>
+                        ${hasChildren ? `<ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 20px;">${buildInheritedTreeHtml(node.children, activeGroupRoles, node.id)}</ul>` : ''}
+                    </li>
+                `;
+            });
+            return html;
+        }
+
+        // Filter the inherited tree nodes based on search keyword
+        function filterInheritedPermTree(keyword) {
+            keyword = keyword.trim().toLowerCase();
+            const nodes = document.querySelectorAll('#inheritedPermissionsTree .tree-node');
+            
+            if (!keyword) {
+                nodes.forEach(node => {
+                    node.style.display = "block";
+                    const ul = node.querySelector('ul');
+                    if (ul) {
+                        const id = node.dataset.id;
+                        ul.style.display = collapsedInheritedNodes[id] ? "none" : "block";
+                    }
+                });
+                return;
+            }
+
+            const matchedIds = new Set();
+            function searchNodes(nodeList) {
+                nodeList.forEach(n => {
+                    if (n.name.toLowerCase().includes(keyword) || n.id.toLowerCase().includes(keyword)) {
+                        matchedIds.add(n.id);
+                        let parts = n.id.split("-");
+                        while (parts.length > 0) {
+                            matchedIds.add(parts.join("-"));
+                            parts.pop();
+                        }
+                    }
+                    if (n.children && n.children.length > 0) {
+                        searchNodes(n.children);
+                    }
+                });
+            }
+            searchNodes(systemPermissions);
+
+            nodes.forEach(node => {
+                const id = node.dataset.id;
+                if (matchedIds.has(id)) {
+                    node.style.display = "block";
+                    const ul = node.querySelector('ul');
+                    if (ul) {
+                        ul.style.display = "block";
+                    }
+                } else {
+                    node.style.display = "none";
+                }
+            });
+        }
+
+        // Modal Logic
+        function openGroupModal(mode, id = null) {
+            groupMode = mode;
+            editGroupId = id;
+            const modal = document.getElementById('groupModal');
+            document.getElementById('errGroupCode').style.display = 'none';
+            document.getElementById('errGroupName').style.display = 'none';
+            document.getElementById('errGroupScope').style.display = 'none';
+            document.getElementById('inpGroupCode').classList.remove('error');
+            document.getElementById('inpGroupName').classList.remove('error');
+            document.getElementById('inpGroupScope').classList.remove('error');
+
+            if (mode === 'add') {
+                document.getElementById('modalTitle').innerText = 'Thêm mới Nhóm người dùng';
+                document.getElementById('inpGroupCode').value = '';
+                document.getElementById('inpGroupName').value = '';
+                document.getElementById('inpGroupScope').value = '';
+                document.getElementById('inpGroupCode').readOnly = false;
+            } else {
+                document.getElementById('modalTitle').innerText = 'Sửa thông tin Nhóm';
+                const group = groups.find(g => g.id === id);
+                document.getElementById('inpGroupCode').value = group.code;
+                document.getElementById('inpGroupName').value = group.name;
+                document.getElementById('inpGroupScope').value = group.scope || '';
+                document.getElementById('inpGroupCode').readOnly = true;
+            }
+            modal.classList.add('active');
+        }
+
+        function closeModal(modalId = 'groupModal') {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function saveGroup() {
+            const code = document.getElementById('inpGroupCode').value.trim();
+            const name = document.getElementById('inpGroupName').value.trim();
+            const scope = document.getElementById('inpGroupScope').value;
+            
+            let isValid = true;
+            if (!code) { document.getElementById('errGroupCode').style.display = 'block'; document.getElementById('inpGroupCode').classList.add('error'); isValid = false; }
+            if (!name) { document.getElementById('errGroupName').style.display = 'block'; document.getElementById('inpGroupName').classList.add('error'); isValid = false; }
+            if (!scope) { document.getElementById('errGroupScope').style.display = 'block'; document.getElementById('inpGroupScope').classList.add('error'); isValid = false; }
+            
+            if (!isValid) return;
+
+            if (groupMode === 'add') {
+                groups.unshift({ id: Date.now(), code: code, name: name, scope: scope, members: 0, roles: [], status: 'ACTIVE' });
+                showToast("Thêm mới nhóm thành công!");
+            } else {
+                const index = groups.findIndex(g => g.id === editGroupId);
+                groups[index].name = name;
+                groups[index].scope = scope;
+                showToast("Cập nhật thông tin nhóm thành công!");
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
+
+            closeModal();
+            renderGroups();
+            renderRolesChecklist();
+            renderInheritedTree();
+        }
+
+        // Toast
+        function savePermissions() {
+            showToast('Đã lưu cấu hình phân quyền cho nhóm thành công!');
+        }
+
+        // Init
+        function initPage() {
+            // Migrate shared roles if present
+            const savedRoles = localStorage.getItem('sys_mock_roles');
+            if (savedRoles) {
+                try {
+                    const parsedRoles = JSON.parse(savedRoles);
+                    let migrated = false;
+                    parsedRoles.forEach(r => {
+                        if (r.scope === 'INTERNAL') { r.scope = 'Cán bộ'; migrated = true; }
+                        else if (r.scope === 'INDIVIDUAL' || r.scope === 'ORGANIZATION' || r.scope === 'ALL') { r.scope = 'Khách hàng'; migrated = true; }
+                        else if (r.scope === 'AUTHORITY') { r.scope = 'Cơ quan có thẩm quyền'; migrated = true; }
+                        
+                        if (r.permissions) {
+                            r.permissions = r.permissions.map(p => {
+                                if (p && p.startsWith('WebAdmin-33-')) {
+                                    migrated = true;
+                                    return p.replace('WebAdmin-33-', 'WebAdmin-29-');
+                                }
+                                if (p === 'WebAdmin-33') {
+                                    migrated = true;
+                                    return 'WebAdmin-29';
+                                }
+                                return p;
+                            });
+                        }
+                    });
+                    if (migrated) {
+                        localStorage.setItem('sys_mock_roles', JSON.stringify(parsedRoles));
+                    }
+                } catch(e) {}
+            }
+
+            const currentGroup = groups.find(g => g.id === activeGroupId);
+            if (currentGroup) {
+                selectGroup(currentGroup);
+            } else {
+                renderGroups();
+                renderRolesChecklist();
+                renderInheritedTree();
+            }
+        }
+
+        window.onload = initPage;
+    </script>
+</body>
+</html>

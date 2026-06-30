@@ -1,0 +1,1877 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý đơn vị - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563EB;
+            --primary-hover: #1D4ED8;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+            --accent-color: #8B5CF6;
+            --bg-body: #F8FAFC;
+            --bg-surface: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            padding: 20px;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Style */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        .header-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1E293B;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title h1 i {
+            color: var(--primary-color);
+        }
+
+        .header-title p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Buttons styling */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #0D9488;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            border-color: var(--border-color);
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background-color: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+
+        /* Main Workspace Split-View */
+        .split-container {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Left Panel - Tree View */
+        .left-panel {
+            width: 350px;
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #F8FAFC;
+        }
+
+        .panel-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1E293B;
+            margin-bottom: 10px;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 11px;
+            color: var(--text-muted);
+        }
+
+        .tree-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        /* Tree Node Styles */
+        .tree-node {
+            margin-left: 15px;
+        }
+
+        .tree-node.root {
+            margin-left: 0;
+        }
+
+        .node-content {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            user-select: none;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+
+        .node-content:hover {
+            background-color: #F1F5F9;
+        }
+
+        .node-content.active {
+            background-color: #E0F2FE;
+            color: #0369A1;
+            font-weight: 500;
+        }
+
+        .node-toggle {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .node-toggle i {
+            font-size: 10px;
+        }
+
+        .node-icon {
+            color: #FFB020;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .node-icon.co-quan-ngoai {
+            color: #3B82F6;
+        }
+
+        .node-label {
+            font-size: 13px;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .node-children {
+            display: block;
+        }
+
+        .node-children.collapsed {
+            display: none;
+        }
+
+        /* Right Panel - Tab & Detail View */
+        .right-panel {
+            flex: 1;
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .detail-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F8FAFC;
+            flex-shrink: 0;
+        }
+
+        .detail-header-info h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1E293B;
+        }
+
+        .detail-header-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 20px;
+            background-color: #FAFAFA;
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .detail-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: var(--text-main);
+            padding: 10px;
+            background-color: #F8FAFC;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-value.full-width {
+            grid-column: span 2;
+        }
+
+        /* Status badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #ECFDF5;
+            color: #047857;
+        }
+
+        .badge-danger {
+            background-color: #FEF2F2;
+            color: #B91C1C;
+        }
+
+        /* Officer Table Styling */
+        .table-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+        }
+
+        .officer-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .officer-table th {
+            background-color: #F8FAFC;
+            color: #334155;
+            font-weight: 600;
+            padding: 12px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .officer-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .officer-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .officer-table tr:hover td {
+            background-color: #F8FAFC;
+        }
+
+        .detail-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background-color: #F8FAFC;
+            flex-shrink: 0;
+        }
+
+        /* Modal Overlays and Dialogs */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            width: 650px;
+            max-width: 95%;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            overflow: hidden;
+            animation: modalFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F8FAFC;
+            flex-shrink: 0;
+        }
+
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1E293B;
+        }
+
+        .close-modal-btn {
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .close-modal-btn:hover {
+            color: var(--text-main);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background-color: #F8FAFC;
+            flex-shrink: 0;
+        }
+
+        /* Form Grid styling inside Modals */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .required {
+            color: var(--danger-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+        .form-control[readonly] {
+            background-color: #F1F5F9;
+            cursor: not-allowed;
+        }
+
+        /* Dynamic Options Lists / Checklist inside successor configuration */
+        .successor-checklist {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 8px 12px;
+            background-color: #FAFAFA;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* System feedback toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background-color: #FFFFFF;
+            color: #0F172A;
+            padding: 12px 20px;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            z-index: 20000;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            border-left: 4px solid var(--info-color);
+        }
+
+        .toast.success {
+            border-left-color: var(--success-color);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger-color);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .toast i {
+            font-size: 16px;
+        }
+
+        .toast.success i {
+            color: var(--success-color);
+        }
+
+        .toast.error i {
+            color: var(--danger-color);
+        }
+
+        .toast.warning i {
+            color: var(--warning-color);
+        }
+
+        /* General layout helpers */
+        .form-alert {
+            display: flex;
+            gap: 10px;
+            background-color: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            color: #1E40AF;
+            padding: 12px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .form-alert i {
+            margin-top: 2px;
+            color: #3B82F6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="header-title">
+            <h1><i class="fa-solid fa-sitemap"></i> Quản lý đơn vị</h1>
+            <p>Sơ đồ cơ cấu tổ chức và danh sách cán bộ trực thuộc</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="openCreateModal(true)"><i class="fa-solid fa-plus"></i> Thêm mới
+                đơn vị gốc</button>
+        </div>
+    </div>
+
+    <!-- MAIN WORKSPACE SPLIT VIEW -->
+    <div class="split-container">
+
+        <!-- LEFT PANEL - TREE VIEW -->
+        <div class="left-panel">
+            <div class="panel-header">
+                <h3>Sơ đồ tổ chức</h3>
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="treeSearch" placeholder="Tìm kiếm đơn vị nhanh..." oninput="filterTree()">
+                </div>
+            </div>
+            <div class="tree-container" id="treeViewContainer">
+                <!-- JavaScript renders tree structures here -->
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL - DETAILS VIEW -->
+        <div class="right-panel">
+            <div class="detail-header">
+                <div class="detail-header-info">
+                    <h2 id="activeNodeTitle">Cục Đăng ký quốc gia giao dịch bảo đảm</h2>
+                    <p id="activeNodeSubtitle">Loại: Nội bộ | Cấp: Cấp Cục / Trung tâm trực thuộc</p>
+                </div>
+                <div>
+                    <span class="badge badge-success" id="activeNodeStatus"><i class="fa-solid fa-circle-check"></i>
+                        Đang hoạt động</span>
+                </div>
+            </div>
+
+            <!-- Tabs Selection -->
+            <div class="tab-bar">
+                <button class="tab-btn active" id="tabInfoBtn" onclick="switchTab('info')"><i
+                        class="fa-solid fa-circle-info"></i> Thông tin chung</button>
+                <button class="tab-btn" id="tabOfficersBtn" onclick="switchTab('officers')"><i
+                        class="fa-solid fa-users"></i> Cán bộ trực thuộc (<span id="officerCount">3</span>)</button>
+            </div>
+
+            <!-- Detail Contents -->
+            <div class="detail-body">
+
+                <!-- TAB 1: THÔNG TIN CHUNG -->
+                <div class="tab-content active" id="tabInfoContent">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Mã đơn vị</span>
+                            <div class="info-value" id="dMaDonVi">CĐK01</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tên đầy đủ đơn vị</span>
+                            <div class="info-value" id="dTenDonVi">Cục Đăng ký quốc gia giao dịch bảo đảm</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Loại đơn vị</span>
+                            <div class="info-value" id="dLoaiDonVi">Nội bộ</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Cấp đơn vị</span>
+                            <div class="info-value" id="dCapDonVi">Cấp Cục/Trung tâm</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Mã số thuế</span>
+                            <div class="info-value" id="dMaSoThue">0102030405</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tỉnh / Thành phố</span>
+                            <div class="info-value" id="dTinhThanh">Thành phố Hà Nội</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Người đại diện</span>
+                            <div class="info-value" id="dNguoiDaiDien">Nguyễn Văn Cục Trưởng</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Số điện thoại liên hệ</span>
+                            <div class="info-value" id="dSoDienThoai">0243123456</div>
+                        </div>
+                        <div class="info-item" style="grid-column: span 2;">
+                            <span class="info-label">Địa chỉ trụ sở chính</span>
+                            <div class="info-value" id="dDiaChi">Số 57 Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: CÁN BỘ TRỰC THUỘC -->
+                <div class="tab-content" id="tabOfficersContent">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="font-size: 14px; font-weight: 600; color: #1E293B;">Danh sách cán bộ thuộc đơn vị
+                        </h4>
+                        <div class="search-wrapper" style="width: 250px; margin-bottom: 0;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="officerSearch" placeholder="Tìm kiếm cán bộ nhanh..."
+                                oninput="filterOfficers()">
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="officer-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px; text-align: center;">STT</th>
+                                    <th>Họ và tên</th>
+                                    <th>Tên đăng nhập</th>
+                                    <th>Email</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Vai trò</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="officersTableBody">
+                                <!-- JS Renders rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Toolbar Actions -->
+            <div class="detail-footer">
+                <button class="btn btn-danger" onclick="openDeleteModal()"><i class="fa-solid fa-trash-can"></i> Xóa đơn
+                    vị</button>
+                <button class="btn btn-secondary" onclick="openEditModal()"><i class="fa-solid fa-pen-to-square"></i>
+                    Chỉnh sửa</button>
+                <button class="btn btn-primary" onclick="openCreateModal(false)"><i class="fa-solid fa-plus"></i> Thêm
+                    mới đơn vị con</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL 1: THÊM MỚI / CHỈNH SỬA ĐƠN VỊ -->
+    <div class="modal-overlay" id="unitModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm mới Đơn vị con</h3>
+                <button class="close-modal-btn" onclick="closeModal('unitModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Đơn vị cha</label>
+                        <input type="text" class="form-control" id="mParentUnit" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mã đơn vị <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="mMaDonVi" placeholder="Ví dụ: CĐK02">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên đơn vị <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="mTenDonVi" placeholder="Nhập tên đầy đủ đơn vị...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loại đơn vị <span class="required">*</span></label>
+                        <select class="form-control" id="mLoaiDonVi" onchange="handleLoaiDonViChange()">
+                            <option value="Nội bộ">Nội bộ</option>
+                            <option value="Cơ quan ngoài ngành">Cơ quan ngoài ngành</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cấp đơn vị <span class="required">*</span></label>
+                        <select class="form-control" id="mCapDonVi">
+                            <option value="Cấp Trung ương">Cấp Trung ương (Bộ, Cục, Ngành...)</option>
+                            <option value="Cấp Tỉnh/Thành phố">Cấp Tỉnh/Thành phố (Tòa án tỉnh, STP...)</option>
+                            <option value="Cấp Quận/Huyện">Cấp Quận/Huyện (Tòa án huyện...)</option>
+                            <option value="Cấp Chi nhánh/Phòng ban">Cấp Chi nhánh/Phòng ban (Trung tâm đăng ký, Phòng
+                                chuyên môn...)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mã số thuế</label>
+                        <input type="text" class="form-control" id="mMaSoThue" placeholder="Nhập mã số thuế...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tỉnh / Thành phố</label>
+                        <select class="form-control" id="mTinhThanh">
+                            <option value="">-- Chọn Tỉnh/Thành phố --</option>
+                            <option value="Thành phố Hà Nội">Thành phố Hà Nội</option>
+                            <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
+                            <option value="Thành phố Đà Nẵng">Thành phố Đà Nẵng</option>
+                            <option value="Tỉnh Hải Phòng">Tỉnh Hải Phòng</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Người đại diện pháp luật</label>
+                        <input type="text" class="form-control" id="mNguoiDaiDien" placeholder="Nhập họ tên...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại liên hệ</label>
+                        <input type="text" class="form-control" id="mSoDienThoai" placeholder="Nhập 10 chữ số...">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Địa chỉ trụ sở chính</label>
+                        <input type="text" class="form-control" id="mDiaChi"
+                            placeholder="Số nhà, tên đường, phường/xã...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái <span class="required">*</span></label>
+                        <select class="form-control" id="mTrangThai">
+                            <option value="Đang hoạt động">Đang hoạt động</option>
+                            <option value="Ngừng hoạt động">Ngừng hoạt động</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('unitModal')">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="saveUnit()"><i class="fa-solid fa-save"></i> Lưu thông
+                    tin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: CẤU HÌNH BIẾN ĐỘNG TỔ CHỨC -->
+    <div class="modal-overlay" id="biendanModal">
+        <div class="modal-content" style="width: 700px;">
+            <div class="modal-header">
+                <h3>Cấu hình Biến động & Kế thừa Đơn vị</h3>
+                <button class="close-modal-btn" onclick="closeModal('biendanModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-alert">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span><strong>Lưu ý:</strong> Việc thiết lập biến động sẽ tự động chuyển trạng thái của các đơn vị
+                        bị sáp nhập/tách/giải thể thành <strong>Ngừng hoạt động</strong> và khóa tài khoản các cán bộ
+                        trực thuộc của đơn vị cũ.</span>
+                </div>
+                <div class="form-grid">
+                    <!-- SECTION 1: THÔNG TIN PHÁP LÝ -->
+                    <div class="form-group full-width">
+                        <h4
+                            style="border-left: 3px solid var(--primary-color); padding-left: 8px; margin-bottom: 5px; color: #1E293B;">
+                            I. Quyết định pháp lý</h4>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loại biến động <span class="required">*</span></label>
+                        <select class="form-control" id="mLoaiBienDong" onchange="handleBienDongTypeChange()">
+                            <option value="Sáp nhập">Sáp nhập (Nhiều đơn vị gộp thành 1)</option>
+                            <option value="Chia tách">Chia tách (1 đơn vị chia thành nhiều)</option>
+                            <option value="Giải thể">Giải thể (Giải thể hoàn toàn)</option>
+                            <option value="Đổi tên">Đổi tên (Thay đổi tên pháp lý)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số quyết định / văn bản pháp lý <span
+                                class="required">*</span></label>
+                        <input type="text" class="form-control" id="mSoVanBan" placeholder="Ví dụ: 668/QĐ-BTP">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cơ quan ban hành quyết định <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="mCoQuanBanHanh"
+                            placeholder="Ví dụ: Bộ trưởng Bộ Tư pháp">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ngày quyết định có hiệu lực <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="mNgayHieuLuc" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Mô tả tóm tắt</label>
+                        <textarea class="form-control" id="mMoTaBienDong" rows="2"
+                            placeholder="Nhập tóm tắt văn bản pháp lý..."></textarea>
+                    </div>
+
+                    <!-- SECTION 2: THIẾT LẬP KẾ THỪA (DYNAMIC BASED ON TYPE) -->
+                    <div class="form-group full-width" style="margin-top: 10px;">
+                        <h4
+                            style="border-left: 3px solid var(--primary-color); padding-left: 8px; margin-bottom: 5px; color: #1E293B;">
+                            II. Thiết lập Kế thừa & Successor</h4>
+                    </div>
+
+                    <!-- MERGE OPTIONS -->
+                    <div class="form-group full-width dynamic-bd" id="bdSapNhap">
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label class="form-label">Các cơ quan bị sáp nhập (Ngừng hoạt động) <span
+                                        class="required">*</span></label>
+                                <div class="successor-checklist" id="mergeOldList">
+                                    <!-- Dynamic checklists -->
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cơ quan mới kế thừa (Nhận bàn giao) <span
+                                        class="required">*</span></label>
+                                <select class="form-control" id="mergeNewOrg">
+                                    <!-- Dynamic dropdown -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SPLIT OPTIONS -->
+                    <div class="form-group full-width dynamic-bd" id="bdChiaTach" style="display: none;">
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label class="form-label">Cơ quan cũ bị chia tách (Ngừng hoạt động) <span
+                                        class="required">*</span></label>
+                                <select class="form-control" id="splitOldOrg">
+                                    <!-- Dynamic dropdown -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Các cơ quan mới nhận kế thừa <span
+                                        class="required">*</span></label>
+                                <div class="successor-checklist" id="splitNewList">
+                                    <!-- Dynamic checklists -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DISSOLVE OPTIONS -->
+                    <div class="form-group full-width dynamic-bd" id="bdGiaiThe" style="display: none;">
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label class="form-label">Cơ quan bị giải thể (Ngừng hoạt động) <span
+                                        class="required">*</span></label>
+                                <select class="form-control" id="dissolveOrg">
+                                    <!-- Dynamic dropdown -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Đơn vị chịu trách nhiệm giải quyết hậu quả</label>
+                                <input type="text" class="form-control" id="dissolveReceiver" readonly
+                                    value="Cơ quan ban hành quyết định giải thể">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RENAME OPTIONS -->
+                    <div class="form-group full-width dynamic-bd" id="bdDoiTen" style="display: none;">
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label class="form-label">Đơn vị cần đổi tên <span class="required">*</span></label>
+                                <select class="form-control" id="renameOldOrg">
+                                    <!-- Dynamic dropdown -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tên mới pháp lý <span class="required">*</span></label>
+                                <input type="text" class="form-control" id="renameNewName"
+                                    placeholder="Nhập tên mới...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('biendanModal')">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="saveBienDong()"><i class="fa-solid fa-save"></i> Áp dụng biến
+                    động</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: XÁC NHẬN XÓA -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content" style="width: 450px;">
+            <div class="modal-header" style="border-bottom: none; background-color: white;">
+                <h3 style="color: var(--danger-color); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Xác nhận xóa Đơn vị
+                </h3>
+                <button class="close-modal-btn" onclick="closeModal('deleteModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 10px 24px 20px 24px;">
+                <p id="deleteMsg">Bạn có chắc chắn muốn xóa đơn vị <strong>Phòng Quản lý nghiệp vụ</strong> ra khỏi sơ
+                    đồ cơ cấu tổ chức không?</p>
+                <p style="color: var(--text-muted); font-size: 12px; margin-top: 10px;"><i
+                        class="fa-solid fa-circle-exclamation"></i> Việc xóa đơn vị chỉ được phép khi đơn vị không chứa
+                    đơn vị con và không có cán bộ trực thuộc.</p>
+            </div>
+            <div class="modal-footer" style="border-top: none; background-color: white;">
+                <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Quay lại</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Đồng ý xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SYSTEM TOAST FEEDBACK -->
+    <div class="toast" id="systemToast">
+        <i class="fa-solid fa-circle-info" id="toastIcon"></i>
+        <span id="toastMessage">Thông báo</span>
+    </div>
+
+    <!-- TREE VIEW DATA AND SCRIPTS -->
+    <script>
+        // Organization tree structure raw database
+        let orgData = [
+            {
+                id: "BTP-01",
+                name: "Bộ Tư pháp",
+                stt: "",
+                parentId: null,
+                loai: "Nội bộ",
+                cap: "Cấp Trung ương",
+                maSoThue: "0100224466",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Lê Thành Long",
+                dienThoai: "02438234567",
+                diaChi: "Số 58-60 Trần Phú, Ba Đình, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Đặng Hoàng Oanh", username: "oanhdh", email: "oanhdh@moj.gov.vn", tel: "0901234567", role: "Lãnh đạo Bộ", status: "Đang hoạt động" },
+                    { name: "Mai Lương Khôi", username: "khoiml", email: "khoiml@moj.gov.vn", tel: "0902345678", role: "Lãnh đạo Bộ", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "CĐK-01",
+                name: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
+                stt: "",
+                parentId: "BTP-01",
+                loai: "Nội bộ",
+                cap: "Cấp Trung ương",
+                maSoThue: "0102030405",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Nguyễn Văn Cục Trưởng",
+                dienThoai: "0243123456",
+                diaChi: "Số 57 Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Nguyễn Văn Cán Bộ", username: "canbonv", email: "canbonv@moj.gov.vn", tel: "0912345678", role: "Cán bộ nghiệp vụ", status: "Đang hoạt động" },
+                    { name: "Trần Thị Duyệt", username: "duyettt", email: "duyettt@moj.gov.vn", tel: "0913456789", role: "Cán bộ phê duyệt", status: "Đang hoạt động" },
+                    { name: "Lê Văn Admin", username: "adminlv", email: "adminlv@moj.gov.vn", tel: "0914567890", role: "Quản trị hệ thống", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "VP-01",
+                name: "Văn phòng Cục",
+                stt: "",
+                parentId: "CĐK-01",
+                loai: "Nội bộ",
+                cap: "Cấp Chi nhánh/Phòng ban",
+                maSoThue: "0102030405-001",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Trần Văn Chánh Văn Phòng",
+                dienThoai: "0243123457",
+                diaChi: "Số 57 Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Nguyễn Thị Thư Ký", username: "thukynt", email: "thukynt@moj.gov.vn", tel: "0915678901", role: "Cán bộ hành chính", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "PLN-01",
+                name: "Phòng Quản lý nghiệp vụ về đăng ký biện pháp bảo đảm",
+                stt: "",
+                parentId: "CĐK-01",
+                loai: "Nội bộ",
+                cap: "Cấp Chi nhánh/Phòng ban",
+                maSoThue: "0102030405-002",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Lê Thị Trưởng Phòng",
+                dienThoai: "0243123458",
+                diaChi: "Số 57 Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Nguyễn Hoàng Nam", username: "namnh", email: "namnh@moj.gov.vn", tel: "0976543210", role: "Chuyên viên", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "PLN-02",
+                name: "Phòng Quản lý nghiệp vụ về bồi thường nhà nước",
+                stt: "",
+                parentId: "CĐK-01",
+                loai: "Nội bộ",
+                cap: "Cấp Chi nhánh/Phòng ban",
+                maSoThue: "0102030405-003",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Trần Văn Bồi Thường",
+                dienThoai: "0243123459",
+                diaChi: "Số 57 Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [], // This unit is empty of officers
+                collapsed: false
+            },
+            {
+                id: "PLN-03",
+                name: "Phòng Quản lý đăng ký trực tuyến và thông tin dữ liệu",
+                stt: "",
+                parentId: "CĐK-01",
+                loai: "Nội bộ",
+                cap: "Cấp Chi nhánh/Phòng ban",
+                maSoThue: "0102030405-004",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Bùi Thế Anh",
+                dienThoai: "0243123460",
+                diaChi: "Số 57 Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Bùi Thế Anh", username: "anhbt", email: "anhbt@moj.gov.vn", tel: "0988776655", role: "Phó trưởng phòng", status: "Đang hoạt động" },
+                    { name: "Vũ Quốc Việt", username: "vietvq", email: "vietvq@moj.gov.vn", tel: "0909112233", role: "Quản trị CSDL", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "TT1-01",
+                name: "Trung tâm Đăng ký giao dịch, tài sản tại Thành phố Hà Nội",
+                stt: "",
+                parentId: "CĐK-01",
+                loai: "Nội bộ",
+                cap: "Cấp Chi nhánh/Phòng ban",
+                maSoThue: "0102030405-005",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Phạm Văn Giám Đốc",
+                dienThoai: "02438888888",
+                diaChi: "Số 12 Vạn Phúc, Ba Đình, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Hoàng Văn Đăng Ký viên", username: "dangkyvh", email: "dangkyvh@moj.gov.vn", tel: "0987654321", role: "Cán bộ nghiệp vụ", status: "Đang hoạt động" },
+                    { name: "Trần Thị Thu", username: "thutt", email: "thutt@moj.gov.vn", tel: "0944556677", role: "Kế toán viên", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "TT2-01",
+                name: "Trung tâm Đăng ký giao dịch, tài sản tại Thành phố Đà Nẵng",
+                stt: "",
+                parentId: "CĐK-01",
+                loai: "Nội bộ",
+                cap: "Cấp Chi nhánh/Phòng ban",
+                maSoThue: "0102030405-006",
+                tinhThanh: "Thành phố Đà Nẵng",
+                nguoiDaiDien: "Nguyễn Hữu Cảnh",
+                dienThoai: "02363888888",
+                diaChi: "Số 45 Lê Lợi, Hải Châu, Đà Nẵng",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Nguyễn Hữu Cảnh", username: "canhnh", email: "canhnh@moj.gov.vn", tel: "0933221100", role: "Giám đốc Chi nhánh", status: "Đang hoạt động" },
+                    { name: "Phan Thanh Thảo", username: "thaopt", email: "thaopt@moj.gov.vn", tel: "0966778899", role: "Cán bộ tiếp nhận", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "TT3-01",
+                name: "Trung tâm Đăng ký giao dịch, tài sản tại Thành phố Hồ Chí Minh",
+                stt: "",
+                parentId: "CĐK-01",
+                loai: "Nội bộ",
+                cap: "Cấp Chi nhánh/Phòng ban",
+                maSoThue: "0102030405-007",
+                tinhThanh: "Thành phố Hồ Chí Minh",
+                nguoiDaiDien: "Lâm Văn Minh",
+                dienThoai: "02839999999",
+                diaChi: "Số 30 Trần Cao Vân, Quận 3, TP.HCM",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Lâm Văn Minh", username: "minhlv", email: "minhlv@moj.gov.vn", tel: "0911223344", role: "Phó giám đốc", status: "Đang hoạt động" },
+                    { name: "Đỗ Thị Thu Trang", username: "trangdtt", email: "trangdtt@moj.gov.vn", tel: "0955443322", role: "Cán bộ phê duyệt", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "BCA-01",
+                name: "Bộ Công an",
+                stt: "",
+                parentId: null,
+                loai: "Cơ quan ngoài ngành",
+                cap: "Cấp Trung ương",
+                maSoThue: "0100888999",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Lương Tam Quang",
+                dienThoai: "02437683112",
+                diaChi: "Số 44 Yết Kiêu, Hoàn Kiếm, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Trần Quốc Hoàn", username: "hoantq", email: "hoantq@mps.gov.vn", tel: "0989001122", role: "Đại diện liên ngành", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            },
+            {
+                id: "BCT-01",
+                name: "Bộ Công Thương",
+                stt: "",
+                parentId: null,
+                loai: "Cơ quan ngoài ngành",
+                cap: "Cấp Trung ương",
+                maSoThue: "0100777666",
+                tinhThanh: "Thành phố Hà Nội",
+                nguoiDaiDien: "Nguyễn Hồng Diên",
+                dienThoai: "02422202116",
+                diaChi: "Số 54 Hai Bà Trưng, Hoàn Kiếm, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Nguyễn Hoàng Giang", username: "giangnh", email: "giangnh@moit.gov.vn", tel: "0966554433", role: "Cán bộ phối hợp", status: "Đang hoạt động" }
+                ],
+                collapsed: false
+            }
+        ];
+
+        // Active State variables
+        let selectedNodeId = "CĐK-01";
+        let activeTab = "info";
+        let modalMode = "create"; // create or edit
+        let modalIsRoot = false;
+
+        // Window Init
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTreeView();
+            selectNode(selectedNodeId);
+        });
+
+        // Tree Render function
+        function renderTreeView(filterText = "") {
+            const container = document.getElementById('treeViewContainer');
+            container.innerHTML = "";
+
+            // Find all root nodes
+            const roots = orgData.filter(node => node.parentId === null);
+            roots.forEach(root => {
+                const rootElement = buildNodeElement(root, filterText);
+                if (rootElement) {
+                    container.appendChild(rootElement);
+                }
+            });
+        }
+
+        function buildNodeElement(node, filterText) {
+            const children = orgData.filter(n => n.parentId === node.id);
+
+            // Check if matching filter
+            let isMatch = node.name.toLowerCase().includes(filterText.toLowerCase()) ||
+                node.id.toLowerCase().includes(filterText.toLowerCase());
+
+            // Build children elements
+            const childrenContainer = document.createElement('div');
+            childrenContainer.className = "node-children";
+            if (node.collapsed) {
+                childrenContainer.classList.add('collapsed');
+            }
+
+            let hasVisibleChild = false;
+            children.forEach(child => {
+                const childEl = buildNodeElement(child, filterText);
+                if (childEl) {
+                    childrenContainer.appendChild(childEl);
+                    hasVisibleChild = true;
+                }
+            });
+
+            // If filtering, show node if it matches OR if any child matches
+            if (filterText !== "" && !isMatch && !hasVisibleChild) {
+                return null;
+            }
+
+            // Create Node Wrapper
+            const nodeDiv = document.createElement('div');
+            nodeDiv.className = "tree-node";
+            if (node.parentId === null) {
+                nodeDiv.classList.add('root');
+            }
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = "node-content";
+            if (node.id === selectedNodeId) {
+                contentDiv.classList.add('active');
+            }
+            contentDiv.onclick = (e) => {
+                if (e.target.classList.contains('node-toggle') || e.target.parentElement.classList.contains('node-toggle') || e.target.parentElement.parentElement.classList.contains('node-toggle')) {
+                    // clicked toggle arrow
+                    node.collapsed = !node.collapsed;
+                    renderTreeView(filterText);
+                } else {
+                    selectNode(node.id);
+                }
+            };
+
+            // Toggle Icon (Arrow)
+            const toggleSpan = document.createElement('span');
+            toggleSpan.className = "node-toggle";
+            if (children.length > 0) {
+                toggleSpan.innerHTML = node.collapsed ? `<i class="fa-solid fa-angle-right"></i>` : `<i class="fa-solid fa-angle-down"></i>`;
+            }
+
+            // Node Icon
+            const iconSpan = document.createElement('span');
+            iconSpan.className = "node-icon";
+            if (node.loai === "Nội bộ") {
+                iconSpan.innerHTML = node.parentId === null ? `<i class="fa-solid fa-building-shield"></i>` : `<i class="fa-solid fa-building"></i>`;
+            } else {
+                iconSpan.className += " co-quan-ngoai";
+                iconSpan.innerHTML = `<i class="fa-solid fa-building-columns"></i>`;
+            }
+
+            // Node Label
+            const labelSpan = document.createElement('span');
+            labelSpan.className = "node-label";
+            labelSpan.innerText = (node.stt ? node.stt + ". " : "") + node.name;
+            labelSpan.title = node.name;
+
+            contentDiv.appendChild(toggleSpan);
+            contentDiv.appendChild(iconSpan);
+            contentDiv.appendChild(labelSpan);
+            nodeDiv.appendChild(contentDiv);
+
+            if (children.length > 0) {
+                nodeDiv.appendChild(childrenContainer);
+            }
+
+            return nodeDiv;
+        }
+
+        // Select Node
+        function selectNode(id) {
+            selectedNodeId = id;
+
+            // Re-render tree view to highlight active node
+            const searchVal = document.getElementById('treeSearch').value;
+            renderTreeView(searchVal);
+
+            const node = orgData.find(n => n.id === id);
+            if (!node) return;
+
+            // Load header values
+            document.getElementById('activeNodeTitle').innerText = node.name;
+            document.getElementById('activeNodeSubtitle').innerText = `Mã: ${node.id} | Loại: ${node.loai} | Cấp: ${node.cap}`;
+
+            const badge = document.getElementById('activeNodeStatus');
+            if (node.trangThai === "Đang hoạt động") {
+                badge.className = "badge badge-success";
+                badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> Đang hoạt động`;
+            } else {
+                badge.className = "badge badge-danger";
+                badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Ngừng hoạt động`;
+            }
+
+            // Load Tab 1 values
+            document.getElementById('dMaDonVi').innerText = node.id;
+            document.getElementById('dTenDonVi').innerText = node.name;
+            document.getElementById('dLoaiDonVi').innerText = node.loai;
+            document.getElementById('dCapDonVi').innerText = node.cap;
+            document.getElementById('dMaSoThue').innerText = node.maSoThue || "Không có";
+            document.getElementById('dTinhThanh').innerText = node.tinhThanh || "Chưa khai báo";
+            document.getElementById('dNguoiDaiDien').innerText = node.nguoiDaiDien || "Chưa khai báo";
+            document.getElementById('dSoDienThoai').innerText = node.dienThoai || "Chưa khai báo";
+            document.getElementById('dDiaChi').innerText = node.diaChi || "Chưa khai báo";
+
+            // Reset officer search filter
+            const offSearch = document.getElementById('officerSearch');
+            if (offSearch) offSearch.value = "";
+
+            // Load Tab 2 counts & lists
+            document.getElementById('officerCount').innerText = node.officers ? node.officers.length : 0;
+            renderOfficersTable(node.officers);
+        }
+
+        // Switch Tab
+        function switchTab(tab) {
+            activeTab = tab;
+            document.getElementById('tabInfoBtn').classList.remove('active');
+            document.getElementById('tabOfficersBtn').classList.remove('active');
+            document.getElementById('tabInfoContent').classList.remove('active');
+            document.getElementById('tabOfficersContent').classList.remove('active');
+
+            if (tab === 'info') {
+                document.getElementById('tabInfoBtn').classList.add('active');
+                document.getElementById('tabInfoContent').classList.add('active');
+            } else {
+                document.getElementById('tabOfficersBtn').classList.add('active');
+                document.getElementById('tabOfficersContent').classList.add('active');
+            }
+        }
+
+        // Render Officers List
+        function renderOfficersTable(officersList, filterText = "") {
+            const tbody = document.getElementById('officersTableBody');
+            tbody.innerHTML = "";
+
+            if (!officersList || officersList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Không có tài khoản cán bộ trực thuộc đơn vị này.</td></tr>`;
+                return;
+            }
+
+            let filtered = officersList;
+            if (filterText !== "") {
+                const searchLower = filterText.toLowerCase();
+                filtered = officersList.filter(off =>
+                    off.name.toLowerCase().includes(searchLower) ||
+                    off.username.toLowerCase().includes(searchLower) ||
+                    off.email.toLowerCase().includes(searchLower) ||
+                    off.tel.toLowerCase().includes(searchLower) ||
+                    off.role.toLowerCase().includes(searchLower)
+                );
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Không tìm thấy cán bộ khớp với điều kiện tìm kiếm.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((off, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align: center;">${idx + 1}</td>
+                    <td style="font-weight: 600;">${off.name}</td>
+                    <td><code>${off.username}</code></td>
+                    <td>${off.email}</td>
+                    <td>${off.tel}</td>
+                    <td><span style="font-weight: 500; color: var(--primary-color);">${off.role}</span></td>
+                    <td><span class="badge ${off.status === 'Đang hoạt động' ? 'badge-success' : 'badge-danger'}">${off.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter Officers List
+        function filterOfficers() {
+            const node = orgData.find(n => n.id === selectedNodeId);
+            if (!node) return;
+            const searchVal = document.getElementById('officerSearch').value;
+            renderOfficersTable(node.officers, searchVal);
+        }
+
+        // Filter tree view
+        function filterTree() {
+            const searchVal = document.getElementById('treeSearch').value;
+            renderTreeView(searchVal);
+        }
+
+        // Modal triggers
+        function openModal(id) {
+            document.getElementById(id).style.display = "flex";
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        // Thêm mới đơn vị
+        function openCreateModal(isRoot = false) {
+            modalMode = "create";
+            modalIsRoot = isRoot;
+
+            document.getElementById('modalTitle').innerText = isRoot ? "Thêm mới Đơn vị gốc (Hệ thống/Bộ/Ngành)" : "Thêm mới Đơn vị con";
+
+            const activeNode = orgData.find(n => n.id === selectedNodeId);
+            document.getElementById('mParentUnit').value = isRoot ? "Không có (Tạo đơn vị gốc mới)" : `${activeNode.id} - ${activeNode.name}`;
+
+            // Clear values
+            document.getElementById('mMaDonVi').value = `DV-${Math.floor(Math.random() * 9000) + 1000}`;
+            document.getElementById('mMaDonVi').readOnly = false;
+            document.getElementById('mTenDonVi').value = "";
+            document.getElementById('mLoaiDonVi').value = isRoot ? "Nội bộ" : activeNode.loai;
+            document.getElementById('mLoaiDonVi').disabled = false;
+            document.getElementById('mCapDonVi').value = isRoot ? "Cấp Trung ương" : "Cấp Chi nhánh/Phòng ban";
+            document.getElementById('mMaSoThue').value = "";
+            document.getElementById('mTinhThanh').value = "Thành phố Hà Nội";
+            document.getElementById('mNguoiDaiDien').value = "";
+            document.getElementById('mSoDienThoai').value = "";
+            document.getElementById('mDiaChi').value = "";
+            document.getElementById('mTrangThai').value = "Đang hoạt động";
+
+            openModal('unitModal');
+        }
+
+        // Sửa đơn vị
+        function openEditModal() {
+            modalMode = "edit";
+            document.getElementById('modalTitle').innerText = "Chỉnh sửa thông tin Đơn vị";
+
+            const node = orgData.find(n => n.id === selectedNodeId);
+            if (!node) return;
+
+            const parentNode = orgData.find(n => n.id === node.parentId);
+            document.getElementById('mParentUnit').value = parentNode ? `${parentNode.id} - ${parentNode.name}` : "Không có (Đơn vị gốc)";
+
+            // Populate
+            document.getElementById('mMaDonVi').value = node.id;
+            document.getElementById('mMaDonVi').readOnly = true; // Lock code in edit mode
+            document.getElementById('mTenDonVi').value = node.name;
+            document.getElementById('mLoaiDonVi').value = node.loai;
+            document.getElementById('mLoaiDonVi').disabled = true; // Lock type in edit mode
+            document.getElementById('mCapDonVi').value = node.cap;
+            document.getElementById('mMaSoThue').value = node.maSoThue || "";
+            document.getElementById('mTinhThanh').value = node.tinhThanh || "";
+            document.getElementById('mNguoiDaiDien').value = node.nguoiDaiDien || "";
+            document.getElementById('mSoDienThoai').value = node.dienThoai || "";
+            document.getElementById('mDiaChi').value = node.diaChi || "";
+            document.getElementById('mTrangThai').value = node.trangThai;
+
+            openModal('unitModal');
+        }
+
+        function handleLoaiDonViChange() {
+            // Business constraints based on type
+        }
+
+        // Save Unit
+        function saveUnit() {
+            const idVal = document.getElementById('mMaDonVi').value.trim();
+            const nameVal = document.getElementById('mTenDonVi').value.trim();
+            const loaiVal = document.getElementById('mLoaiDonVi').value;
+            const capVal = document.getElementById('mCapDonVi').value;
+            const mstVal = document.getElementById('mMaSoThue').value.trim();
+            const tinhVal = document.getElementById('mTinhThanh').value;
+            const repVal = document.getElementById('mNguoiDaiDien').value.trim();
+            const telVal = document.getElementById('mSoDienThoai').value.trim();
+            const addVal = document.getElementById('mDiaChi').value.trim();
+            const statusVal = document.getElementById('mTrangThai').value;
+
+            if (!idVal || !nameVal) {
+                showToast("Vui lòng nhập đầy đủ các trường bắt buộc (*)", "error");
+                return;
+            }
+
+            if (telVal && !/^\d{10}$/.test(telVal)) {
+                showToast("Số điện thoại không hợp lệ (yêu cầu 10 chữ số)", "error");
+                return;
+            }
+
+            if (modalMode === "create") {
+                // Check duplicate ID
+                if (orgData.some(n => n.id.toLowerCase() === idVal.toLowerCase())) {
+                    showToast("Mã đơn vị đã tồn tại trên hệ thống", "error");
+                    return;
+                }
+
+                const activeNode = orgData.find(n => n.id === selectedNodeId);
+                const newUnit = {
+                    id: idVal,
+                    name: nameVal,
+                    parentId: modalIsRoot ? null : activeNode.id,
+                    loai: loaiVal,
+                    cap: capVal,
+                    maSoThue: mstVal,
+                    tinhThanh: tinhVal,
+                    nguoiDaiDien: repVal,
+                    dienThoai: telVal,
+                    diaChi: addVal,
+                    trangThai: statusVal,
+                    officers: [],
+                    collapsed: false
+                };
+
+                orgData.push(newUnit);
+                selectedNodeId = idVal;
+                showToast("Thêm mới đơn vị thành công", "success");
+            } else {
+                // Edit
+                const node = orgData.find(n => n.id === selectedNodeId);
+                if (node) {
+                    node.name = nameVal;
+                    node.cap = capVal;
+                    node.maSoThue = mstVal;
+                    node.tinhThanh = tinhVal;
+                    node.nguoiDaiDien = repVal;
+                    node.dienThoai = telVal;
+                    node.diaChi = addVal;
+                    node.trangThai = statusVal;
+                    showToast("Cập nhật thông tin đơn vị thành công", "success");
+                }
+            }
+
+            closeModal('unitModal');
+            renderTreeView();
+            selectNode(selectedNodeId);
+        }
+
+        // Xóa đơn vị
+        function openDeleteModal() {
+            const node = orgData.find(n => n.id === selectedNodeId);
+            if (!node) return;
+
+            document.getElementById('deleteMsg').innerHTML = `Bạn có chắc chắn muốn xóa đơn vị <strong>${node.name}</strong> ra khỏi sơ đồ cơ cấu tổ chức không?`;
+            openModal('deleteModal');
+        }
+
+        function confirmDelete() {
+            const node = orgData.find(n => n.id === selectedNodeId);
+            if (!node) return;
+
+            // Rule 1: Check child nodes
+            const hasChildren = orgData.some(n => n.parentId === node.id);
+            if (hasChildren) {
+                showToast("Không thể xóa do Đơn vị này đang chứa các đơn vị/phòng ban con", "error");
+                closeModal('deleteModal');
+                return;
+            }
+
+            // Rule 2: Check active officers
+            if (node.officers && node.officers.length > 0) {
+                showToast("Không thể xóa do Đơn vị này đang có tài khoản cán bộ trực thuộc. Vui lòng thuyên chuyển cán bộ trước khi xóa.", "error");
+                closeModal('deleteModal');
+                return;
+            }
+
+            // Proceed deleting
+            const parentId = node.parentId;
+            orgData = orgData.filter(n => n.id !== node.id);
+            showToast("Xóa đơn vị thành công", "success");
+
+            closeModal('deleteModal');
+
+            // Set active selection to parent or first root
+            if (parentId) {
+                selectedNodeId = parentId;
+            } else {
+                selectedNodeId = orgData[0].id;
+            }
+            renderTreeView();
+            selectNode(selectedNodeId);
+        }
+
+        // Cấu hình Biến động tổ chức
+        function openBiendanModal() {
+            populateBienDongForm();
+            handleBienDongTypeChange();
+            openModal('biendanModal');
+        }
+
+        function handleBienDongTypeChange() {
+            const type = document.getElementById('mLoaiBienDong').value;
+
+            // Hide all dynamic panels
+            document.querySelectorAll('.dynamic-bd').forEach(el => el.style.display = "none");
+
+            if (type === "Sáp nhập") {
+                document.getElementById('bdSapNhap').style.display = "block";
+            } else if (type === "Chia tách") {
+                document.getElementById('bdChiaTach').style.display = "block";
+            } else if (type === "Giải thể") {
+                document.getElementById('bdGiaiThe').style.display = "block";
+            } else if (type === "Đổi tên") {
+                document.getElementById('bdDoiTen').style.display = "block";
+            }
+        }
+
+        function populateBienDongForm() {
+            // Load dropdowns and checklists
+            const mergeOldList = document.getElementById('mergeOldList');
+            const mergeNewOrg = document.getElementById('mergeNewOrg');
+            const splitOldOrg = document.getElementById('splitOldOrg');
+            const splitNewList = document.getElementById('splitNewList');
+            const dissolveOrg = document.getElementById('dissolveOrg');
+            const renameOldOrg = document.getElementById('renameOldOrg');
+
+            mergeOldList.innerHTML = "";
+            splitNewList.innerHTML = "";
+            mergeNewOrg.innerHTML = "";
+            splitOldOrg.innerHTML = "";
+            dissolveOrg.innerHTML = "";
+            renameOldOrg.innerHTML = "";
+
+            orgData.forEach(node => {
+                if (node.trangThai === "Đang hoạt động" && node.parentId !== null) {
+                    // Checklists for MergeOld
+                    mergeOldList.innerHTML += `
+                        <label class="checklist-item">
+                            <input type="checkbox" name="mergeOldOrgs" value="${node.id}"> ${node.name}
+                        </label>
+                    `;
+
+                    // Checklists for SplitNew
+                    splitNewList.innerHTML += `
+                        <label class="checklist-item">
+                            <input type="checkbox" name="splitNewOrgs" value="${node.id}"> ${node.name}
+                        </label>
+                    `;
+
+                    // Dropdowns
+                    mergeNewOrg.innerHTML += `<option value="${node.id}">${node.name}</option>`;
+                    splitOldOrg.innerHTML += `<option value="${node.id}">${node.name}</option>`;
+                    dissolveOrg.innerHTML += `<option value="${node.id}">${node.name}</option>`;
+                    renameOldOrg.innerHTML += `<option value="${node.id}">${node.name}</option>`;
+                }
+            });
+        }
+
+        function saveBienDong() {
+            const type = document.getElementById('mLoaiBienDong').value;
+            const docNo = document.getElementById('mSoVanBan').value.trim();
+            const issuer = document.getElementById('mCoQuanBanHanh').value.trim();
+            const dateEff = document.getElementById('mNgayHieuLuc').value.trim();
+
+            if (!docNo || !issuer || !dateEff) {
+                showToast("Vui lòng điền đầy đủ các thông tin pháp lý bắt buộc (*)", "error");
+                return;
+            }
+
+            if (type === "Sáp nhập") {
+                const checkedOrgs = Array.from(document.querySelectorAll('input[name="mergeOldOrgs"]:checked')).map(el => el.value);
+                const targetOrgId = document.getElementById('mergeNewOrg').value;
+
+                if (checkedOrgs.length === 0) {
+                    showToast("Vui lòng chọn ít nhất 01 cơ quan bị sáp nhập", "error");
+                    return;
+                }
+
+                if (checkedOrgs.includes(targetOrgId)) {
+                    showToast("Cơ quan mới kế thừa không thể trùng với cơ quan bị sáp nhập", "error");
+                    return;
+                }
+
+                // Execute merger background logic
+                checkedOrgs.forEach(oldId => {
+                    const node = orgData.find(n => n.id === oldId);
+                    if (node) {
+                        node.trangThai = "Ngừng hoạt động";
+                        // Deactivate all officers of this old node
+                        if (node.officers) {
+                            node.officers.forEach(off => off.status = "Khóa tài khoản (Do biến động)");
+                        }
+                    }
+                });
+
+                showToast(`Đã thiết lập sáp nhập thành công theo Quyết định ${docNo}.`, "success");
+            } else if (type === "Giải thể") {
+                const targetId = document.getElementById('dissolveOrg').value;
+                const node = orgData.find(n => n.id === targetId);
+                if (node) {
+                    node.trangThai = "Ngừng hoạt động";
+                    if (node.officers) {
+                        node.officers.forEach(off => off.status = "Khóa tài khoản (Do giải thể)");
+                    }
+                }
+                showToast(`Đã ghi nhận giải thể cơ quan ${node.name} thành công.`, "success");
+            } else if (type === "Đổi tên") {
+                const targetId = document.getElementById('renameOldOrg').value;
+                const newName = document.getElementById('renameNewName').value.trim();
+                if (!newName) {
+                    showToast("Vui lòng nhập tên mới cho đơn vị", "error");
+                    return;
+                }
+                const node = orgData.find(n => n.id === targetId);
+                if (node) {
+                    node.name = newName;
+                }
+                showToast(`Đã đổi tên cơ quan thành công sang: ${newName}.`, "success");
+            } else if (type === "Chia tách") {
+                const oldId = document.getElementById('splitOldOrg').value;
+                const checkedOrgs = Array.from(document.querySelectorAll('input[name="splitNewOrgs"]:checked')).map(el => el.value);
+
+                if (checkedOrgs.length === 0) {
+                    showToast("Vui lòng chọn các cơ quan mới nhận bàn giao kế thừa", "error");
+                    return;
+                }
+
+                const node = orgData.find(n => n.id === oldId);
+                if (node) {
+                    node.trangThai = "Ngừng hoạt động";
+                    if (node.officers) {
+                        node.officers.forEach(off => off.status = "Khóa tài khoản (Chờ thuyên chuyển)");
+                    }
+                }
+                showToast(`Đã ghi nhận chia tách cơ quan ${node.name} thành công.`, "success");
+            }
+
+            closeModal('biendanModal');
+            renderTreeView();
+            selectNode(selectedNodeId);
+        }
+
+        // Show toast notifications
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('systemToast');
+            const msg = document.getElementById('toastMessage');
+            const icon = document.getElementById('toastIcon');
+
+            toast.className = 'toast'; // Reset
+            toast.classList.add(type);
+            msg.innerText = message;
+
+            icon.className = 'fa-solid';
+            if (type === 'success') icon.classList.add('fa-circle-check');
+            else if (type === 'error') icon.classList.add('fa-circle-exclamation');
+            else if (type === 'warning') icon.classList.add('fa-triangle-exclamation');
+            else icon.classList.add('fa-circle-info');
+
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

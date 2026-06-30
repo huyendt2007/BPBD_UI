@@ -1,0 +1,699 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực hiện Chỉnh lý / Hủy đăng ký biện pháp bảo đảm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../Common/style_iframe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../../Common/iframe_helper.js"></script>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .header-summary {
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .modified-highlight {
+            border-color: #eab308 !important;
+            background-color: #fefce8 !important;
+            box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.15) !important;
+        }
+
+        .modified-tag {
+            font-size: 10px;
+            background-color: #fef3c7;
+            color: #d97706;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-left: 8px;
+            display: inline-block;
+        }
+
+        .card-section {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-success { background-color: #d1fae5; color: #10b981; }
+        .badge-danger { background-color: #fee2e2; color: #ef4444; }
+        .badge-warning { background-color: #fef3c7; color: #f59e0b; }
+        
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background-color: #10b981;
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .required-mark {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- TIÊU ĐỀ TRANG -->
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">
+            <h2 style="font-size: 18px; color: var(--primary-color); font-weight: 700; margin: 0;" id="pageTitleHeader">
+                <i class="fa-solid fa-gears"></i> THỰC HIỆN TÁC NGHIỆP CSDL
+            </h2>
+            <span class="badge badge-warning" id="lblStepBadge">Bước 3: Thực hiện thay đổi</span>
+        </div>
+
+        <!-- TÓM TẮT ĐỀ XUẤT CHỦ TRƯƠNG ĐÃ DUYỆT -->
+        <div class="header-summary">
+            <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: #1e293b;">
+                <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Đề xuất đã phê duyệt chủ trương: <span id="lblProposalCode" style="color: var(--primary-color);">DN-2026-0001</span>
+            </div>
+            <div class="grid-3-cols">
+                <div><strong>Loại đề xuất:</strong> <span id="lblProposalType">-</span></div>
+                <div><strong>Số đăng ký gốc:</strong> <span id="lblSoDKGoc">-</span></div>
+                <div><strong>Văn bản căn cứ:</strong> <span id="lblDocRef">-</span></div>
+            </div>
+            <div style="margin-top: 8px; border-top: 1px dashed #cbd5e1; padding-top: 6px;">
+                <strong>Lý do phê duyệt chủ trương:</strong> <span id="lblProposalReason" style="font-style: italic; color: #475569;">-</span>
+            </div>
+        </div>
+
+        <!-- DƯỚI ĐÂY LÀ CÁC BIỂU MẪU ĐƯỢC LOAD ĐỘNG THEO TỪNG LOẠI ĐỀ NGHỊ HỒ SƠ -->
+
+        <!-- 1. BIỂU MẪU ĐĂNG KÝ LẦN ĐẦU (KẾ THỪA UC024/dang_ky_bpbd_main.html) -->
+        <div id="formFirstRegistration" style="display: none;">
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-circle-info"></i> I. THÔNG TIN CHUNG HỒ SƠ ĐĂNG KÝ LẦN ĐẦU</span></div>
+                <div class="grid-3-cols">
+                    <div class="form-group">
+                        <label class="form-label">Loại hình giao dịch <span class="required-mark">*</span></label>
+                        <select class="form-select" id="reg1_TransType" onchange="markFieldAsModified(this)">
+                            <option value="Biện pháp bảo đảm" selected>Biện pháp bảo đảm</option>
+                            <option value="Hợp đồng">Hợp đồng</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Biện pháp / Hợp đồng <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg1_Subtype" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số biên lai gốc <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg1_Receipt" oninput="markFieldAsModified(this)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-user-tie"></i> II. THÔNG TIN BÊN BẢO ĐẢM (BÊN THẾ CHẤP)</span></div>
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Tên bên bảo đảm <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg1_Customer" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mã số thuế / Số định danh <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg1_CustomerCode" oninput="markFieldAsModified(this)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-building-columns"></i> III. THÔNG TIN BÊN NHẬN BẢO ĐẢM</span></div>
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Tên bên nhận bảo đảm <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg1_Mortgagee" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mã số tài khoản liên kết <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg1_MortgageeCode" oninput="markFieldAsModified(this)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-car-rear"></i> IV. DANH MỤC TÀI SẢN BẢO ĐẢM</span></div>
+                <div class="form-group">
+                    <label class="form-label">Chi tiết tài sản bảo đảm (ngăn cách bằng '|') <span class="required-mark">*</span></label>
+                    <textarea class="form-control" id="reg1_Assets" rows="3" oninput="markFieldAsModified(this)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. BIỂU MẪU ĐĂNG KÝ THAY ĐỔI (KẾ THỪA UC0025/dang_ky_thay_doi_main.html) -->
+        <div id="formChangeRegistration" style="display: none;">
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-rotate"></i> I. THÔNG TIN CHUNG ĐĂNG KÝ THAY ĐỔI</span></div>
+                <div class="grid-3-cols">
+                    <div class="form-group">
+                        <label class="form-label">Số đăng ký thay đổi</label>
+                        <input type="text" class="form-control" id="reg2_ChangeId" readonly value="GDBD-2026-CH0902" style="background:#f1f5f9;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số đăng ký gốc bị thay đổi <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg2_OriginalId" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thời điểm đăng ký thay đổi</label>
+                        <input type="text" class="form-control" id="reg2_Date" readonly style="background:#f1f5f9;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-list-check"></i> II. CÁC NỘI DUNG YÊU CẦU THAY ĐỔI</span></div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 10px;">
+                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="chk2_ChangeBBD" onchange="markFieldAsModified(this)" checked> Thay đổi thông tin bên bảo đảm</label>
+                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="chk2_ChangeBNBD" onchange="markFieldAsModified(this)"> Thay đổi thông tin bên nhận bảo đảm</label>
+                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="chk2_RemoveAsset" onchange="markFieldAsModified(this)"> Rút bớt tài sản bảo đảm</label>
+                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="chk2_AddAsset" onchange="markFieldAsModified(this)" checked> Bổ sung tài sản bảo đảm</label>
+                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="chk2_ChangeOther" onchange="markFieldAsModified(this)"> Thay đổi nội dung khác</label>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-pen-to-square"></i> III. NỘI DUNG THAY ĐỔI CHI TIẾT</span></div>
+                <div class="form-group">
+                    <label class="form-label">Mô tả cụ thể nội dung thay đổi <span class="required-mark">*</span></label>
+                    <textarea class="form-control" id="reg2_ChangeDetail" rows="3" oninput="markFieldAsModified(this)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. BIỂU MẪU XÓA ĐĂNG KÝ (KẾ THỪA UC026/xoa_dang_ky_main.html) -->
+        <div id="formDeleteRegistration" style="display: none;">
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-trash-can"></i> I. THÔNG TIN YÊU CẦU XÓA ĐĂNG KÝ</span></div>
+                <div class="grid-3-cols">
+                    <div class="form-group">
+                        <label class="form-label">Số đăng ký xóa</label>
+                        <input type="text" class="form-control" id="reg3_DeleteId" readonly value="GDBD-2026-DEL0903" style="background:#f1f5f9;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số đăng ký gốc cần xóa <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg3_OriginalId" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thời điểm đăng ký xóa</label>
+                        <input type="text" class="form-control" id="reg3_Date" readonly style="background:#f1f5f9;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-circle-question"></i> II. LÝ DO XÓA ĐĂNG KÝ</span></div>
+                <div class="form-group">
+                    <label class="form-label">Lý do xóa đăng ký biện pháp bảo đảm <span class="required-mark">*</span></label>
+                    <select class="form-select" id="reg3_DeleteReason" onchange="markFieldAsModified(this)">
+                        <option value="Hoàn thành nghĩa vụ bảo đảm">Giải chấp do hoàn thành toàn bộ nghĩa vụ nợ bảo đảm</option>
+                        <option value="Giải chấp tài sản">Giải chấp toàn bộ tài sản bảo đảm</option>
+                        <option value="Thỏa thuận các bên">Các bên thỏa thuận xóa đăng ký biện pháp bảo đảm</option>
+                        <option value="Cơ quan thi hành án quyết định">Xóa theo bản án/quyết định của Tòa án hoặc cơ quan THADS có hiệu lực</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label class="form-label">Giải trình lý do cụ thể <span class="required-mark">*</span></label>
+                    <textarea class="form-control" id="reg3_ReasonDetail" rows="3" oninput="markFieldAsModified(this)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. BIỂU MẪU THÔNG BÁO XỬ LÝ TÀI SẢN -->
+        <div id="formDisposalNotification" style="display: none;">
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-circle-exclamation"></i> I. THÔNG TIN YÊU CẦU THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM</span></div>
+                <div class="grid-3-cols">
+                    <div class="form-group">
+                        <label class="form-label">Mã thông báo xử lý</label>
+                        <input type="text" class="form-control" id="reg4_DisposalId" readonly value="GDBD-2026-DIS0904" style="background:#f1f5f9;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số đăng ký gốc liên quan <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg4_OriginalId" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Người thông báo xử lý (Bên nhận bảo đảm) <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg4_Mortgagee" oninput="markFieldAsModified(this)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-boxes-packing"></i> II. CHI TIẾT TÀI SẢN BẢO ĐẢM BỊ XỬ LÝ</span></div>
+                <div class="form-group">
+                    <label class="form-label">Mô tả tài sản xử lý và Lý do xử lý <span class="required-mark">*</span></label>
+                    <textarea class="form-control" id="reg4_DisposalReason" rows="3" oninput="markFieldAsModified(this)"></textarea>
+                </div>
+                <div class="grid-2-cols" style="margin-top: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Thời gian dự kiến bắt đầu xử lý <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg4_DisposalTime" placeholder="dd/mm/yyyy" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phương thức xử lý dự kiến <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg4_DisposalMethod" placeholder="Bán đấu giá / Bán trực tiếp..." oninput="markFieldAsModified(this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. BIỂU MẪU THAY ĐỔI THÔNG BÁO XỬ LÝ TÀI SẢN -->
+        <div id="formChangeDisposal" style="display: none;">
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-screwdriver-wrench"></i> I. THÔNG TIN THAY ĐỔI THÔNG BÁO XỬ LÝ TÀI SẢN</span></div>
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Số thông báo xử lý gốc cần thay đổi <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg5_OriginalId" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ngày thông báo xử lý gốc <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg5_OriginalDate" oninput="markFieldAsModified(this)">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label class="form-label">Mô tả cụ thể nội dung thay đổi thông báo xử lý <span class="required-mark">*</span></label>
+                    <textarea class="form-control" id="reg5_ChangeDetail" rows="3" oninput="markFieldAsModified(this)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. BIỂU MẪU XÓA THÔNG BÁO XỬ LÝ TÀI SẢN -->
+        <div id="formDeleteDisposal" style="display: none;">
+            <div class="card-section">
+                <div class="card-title"><span><i class="fa-solid fa-rectangle-xmark"></i> I. THÔNG TIN YÊU CẦU XÓA THÔNG BÁO XỬ LÝ TÀI SẢN</span></div>
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Số thông báo xử lý gốc cần xóa <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg6_OriginalId" oninput="markFieldAsModified(this)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Lý do rút thông báo xử lý <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="reg6_Reason" placeholder="Đã cơ cấu lại nợ / Đã tất toán..." oninput="markFieldAsModified(this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. BIỂU MẪU HỦY ĐĂNG KÝ / HỦY MỘT PHẦN / KHÔI PHỤC (CÓ XÁC NHẬN PHÁP LÝ) -->
+        <div id="formCancelOrRestore" style="display: none;">
+            <div class="card-section" id="divConfirmBox">
+                <div class="card-title" id="confirmBoxTitle">
+                    <span><i class="fa-solid fa-triangle-exclamation"></i> XÁC NHẬN THỰC THI THAY ĐỔI CSDL</span>
+                </div>
+                <p style="font-size: 13px; line-height: 1.6;" id="confirmBoxMsg">
+                    Đề xuất thay đổi hiệu lực pháp lý đang ở trạng thái chờ thực hiện. Bấm Hoàn thành tác nghiệp để xác nhận lưu thay đổi vào cơ sở dữ liệu quốc gia.
+                </p>
+                
+                <!-- Đối với Hủy một phần, hiển thị checklist tài sản rút bớt -->
+                <div id="grpPartialAssetsContainer" style="display: none; background-color: #fff; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; margin: 15px 0;">
+                    <strong style="font-size:13px; color:var(--primary-color); display:block; margin-bottom:8px;">Danh sách tài sản rút bớt:</strong>
+                    <div id="divListPartialAssets" style="display:flex; flex-direction:column; gap:6px;">
+                        <!-- Render dynamic assets -->
+                    </div>
+                </div>
+
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">Tóm tắt hồ sơ gốc bị tác động:</div>
+                    <div class="grid-2-cols" style="font-size: 12px; gap: 10px;">
+                        <div><strong>Số hồ sơ gốc:</strong> <span id="confSoDK">-</span></div>
+                        <div><strong>Bên bảo đảm:</strong> <span id="confBenBaoDam">-</span></div>
+                        <div><strong>Bên nhận bảo đảm:</strong> <span id="confBenNhanBD">-</span></div>
+                        <div><strong>Loại hình giao dịch:</strong> <span id="confLoaiHinhGD">-</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER ACTIONS -->
+        <div style="display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 20px;">
+            <button type="button" class="btn btn-secondary" onclick="goBackToDashboard()" style="background: #e2e8f0; color: #475569;">Đóng</button>
+            <button type="button" class="btn btn-primary" id="btnConfirmAction" onclick="saveCorrectionChanges()"><i class="fa-solid fa-circle-check"></i> Hoàn thành tác nghiệp</button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast-notification">
+        <i class="fa-solid fa-circle-check"></i> <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        let currentProposal = null;
+        let originalDossier = null;
+        const modifiedFields = new Set();
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = msg;
+            if (type === 'error') {
+                toast.style.backgroundColor = '#ef4444';
+                toast.querySelector('i').className = 'fa-solid fa-circle-xmark';
+            } else {
+                toast.style.backgroundColor = '#10b981';
+                toast.querySelector('i').className = 'fa-solid fa-circle-check';
+            }
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        function loadProposalData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const proposalId = parseInt(urlParams.get('proposalId'));
+            
+            if (!proposalId) {
+                alert('Không tìm thấy ID đề xuất chủ trương hợp lệ!');
+                goBackToDashboard();
+                return;
+            }
+
+            const proposals = JSON.parse(localStorage.getItem('custom_proposals') || '[]');
+            const proposal = proposals.find(p => p.id === proposalId);
+
+            if (!proposal) {
+                alert('Đề xuất không tồn tại trên hệ thống!');
+                goBackToDashboard();
+                return;
+            }
+
+            currentProposal = proposal;
+            originalDossier = proposal.originalDossier;
+
+            // Nạp thông tin tóm tắt đề xuất
+            document.getElementById('lblProposalCode').innerText = proposal.proposalCode;
+            document.getElementById('lblProposalType').innerText = proposal.type;
+            document.getElementById('lblSoDKGoc').innerText = proposal.originalDossierId;
+            document.getElementById('lblDocRef').innerText = `${proposal.docIssuer} - Số ${proposal.docNo} ngày ${proposal.docDate}`;
+            document.getElementById('lblProposalReason').innerText = proposal.reason;
+
+            // Ẩn tất cả các form trước
+            document.getElementById('formFirstRegistration').style.display = 'none';
+            document.getElementById('formChangeRegistration').style.display = 'none';
+            document.getElementById('formDeleteRegistration').style.display = 'none';
+            document.getElementById('formDisposalNotification').style.display = 'none';
+            document.getElementById('formChangeDisposal').style.display = 'none';
+            document.getElementById('formDeleteDisposal').style.display = 'none';
+            document.getElementById('formCancelOrRestore').style.display = 'none';
+
+            // PHÂN LOẠI LOẠI BIỂU MẪU ĐỂ LOAD ĐÚNG
+            if (proposal.type === 'Chỉnh lý thông tin') {
+                document.getElementById('pageTitleHeader').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> THỰC HIỆN CHỈNH LÝ THÔNG TIN SAI SÓT`;
+
+                // Đăng ký lần đầu
+                if (originalDossier.type === 'Đăng ký mới' && originalDossier.transactionType === 'Biện pháp bảo đảm') {
+                    document.getElementById('formFirstRegistration').style.display = 'block';
+                    
+                    document.getElementById('reg1_TransType').value = originalDossier.transactionType;
+                    document.getElementById('reg1_Subtype').value = originalDossier.subtype === 'the_chap' ? 'Thế chấp' : originalDossier.subtype;
+                    document.getElementById('reg1_Receipt').value = originalDossier.receiptNo || 'BL-99182';
+                    document.getElementById('reg1_Customer').value = originalDossier.customer;
+                    document.getElementById('reg1_CustomerCode').value = originalDossier.customerCode || '0101987654';
+                    document.getElementById('reg1_Mortgagee').value = originalDossier.mortgagee;
+                    document.getElementById('reg1_MortgageeCode').value = originalDossier.mortgageeCode || 'KH-VCB-04';
+                    document.getElementById('reg1_Assets').value = originalDossier.assetType || '';
+                } 
+                // Đăng ký thay đổi
+                else if (originalDossier.type === 'Đăng ký thay đổi') {
+                    document.getElementById('formChangeRegistration').style.display = 'block';
+
+                    document.getElementById('reg2_OriginalId').value = originalDossier.id;
+                    document.getElementById('reg2_Date').value = originalDossier.date;
+                    document.getElementById('reg2_ChangeDetail').value = 'Thay đổi bổ sung thêm tài sản thế chấp theo phụ lục hợp đồng.';
+                }
+                // Xóa đăng ký
+                else if (originalDossier.type === 'Xóa đăng ký') {
+                    document.getElementById('formDeleteRegistration').style.display = 'block';
+
+                    document.getElementById('reg3_OriginalId').value = originalDossier.id;
+                    document.getElementById('reg3_Date').value = originalDossier.date;
+                    document.getElementById('reg3_ReasonDetail').value = 'Giải chấp tài sản do bên bảo đảm hoàn thành toàn bộ nghĩa vụ nợ.';
+                }
+                // Thông báo xử lý tài sản
+                else if (originalDossier.type === 'Thông báo xử lý tài sản') {
+                    document.getElementById('formDisposalNotification').style.display = 'block';
+
+                    document.getElementById('reg4_OriginalId').value = originalDossier.id;
+                    document.getElementById('reg4_Mortgagee').value = originalDossier.mortgagee;
+                    document.getElementById('reg4_DisposalReason').value = originalDossier.assetType || 'Xử lý ô tô BKS 30K-771.22 do bên bảo đảm quá hạn thanh toán.';
+                    document.getElementById('reg4_DisposalTime').value = '15/07/2026';
+                    document.getElementById('reg4_DisposalMethod').value = 'Bán đấu giá công khai';
+                }
+                // Thay đổi thông báo xử lý tài sản
+                else if (originalDossier.type === 'Thay đổi thông báo xử lý tài sản') {
+                    document.getElementById('formChangeDisposal').style.display = 'block';
+
+                    document.getElementById('reg5_OriginalId').value = originalDossier.id;
+                    document.getElementById('reg5_OriginalDate').value = originalDossier.date;
+                    document.getElementById('reg5_ChangeDetail').value = 'Gia hạn thời gian dự kiến xử lý tài sản sang ngày 30/08/2026.';
+                }
+                // Xóa thông báo xử lý tài sản
+                else if (originalDossier.type === 'Xóa thông báo xử lý tài sản') {
+                    document.getElementById('formDeleteDisposal').style.display = 'block';
+
+                    document.getElementById('reg6_OriginalId').value = originalDossier.id;
+                    document.getElementById('reg6_Reason').value = 'Khách hàng đã nộp tiền khắc phục nợ xấu.';
+                }
+                // Mặc định hoặc loại khác
+                else {
+                    document.getElementById('formFirstRegistration').style.display = 'block';
+                    
+                    document.getElementById('reg1_TransType').value = originalDossier.transactionType || 'Biện pháp bảo đảm';
+                    document.getElementById('reg1_Subtype').value = originalDossier.subtype || 'Thế chấp';
+                    document.getElementById('reg1_Receipt').value = originalDossier.receiptNo || 'BL-99182';
+                    document.getElementById('reg1_Customer').value = originalDossier.customer;
+                    document.getElementById('reg1_CustomerCode').value = originalDossier.customerCode || '';
+                    document.getElementById('reg1_Mortgagee').value = originalDossier.mortgagee;
+                    document.getElementById('reg1_MortgageeCode').value = originalDossier.mortgageeCode || '';
+                    document.getElementById('reg1_Assets').value = originalDossier.assetType || '';
+                }
+            } 
+            else {
+                // Các trường hợp hủy đăng ký một phần / hủy đăng ký toàn phần / khôi phục hủy đăng ký
+                document.getElementById('formCancelOrRestore').style.display = 'block';
+                const divConfirm = document.getElementById('divConfirmBox');
+                const pnlAssets = document.getElementById('grpPartialAssetsContainer');
+                
+                if (proposal.type === 'Hủy đăng ký một phần') {
+                    document.getElementById('pageTitleHeader').innerHTML = `<i class="fa-solid fa-list-check"></i> THỰC HIỆN HỦY ĐĂNG KÝ MỘT PHẦN`;
+                    divConfirm.style.backgroundColor = '#fffbeb';
+                    divConfirm.style.borderColor = '#fde68a';
+                    document.getElementById('confirmBoxTitle').style.color = '#d97706';
+                    document.getElementById('confirmBoxMsg').innerHTML = `Lãnh đạo đã phê duyệt chủ trương rút bớt (hủy một phần) tài sản bảo đảm. Bấm <strong>Hoàn thành tác nghiệp</strong> để lưu lại.`;
+                    
+                    pnlAssets.style.display = 'block';
+                    const listDiv = document.getElementById('divListPartialAssets');
+                    listDiv.innerHTML = '';
+                    if (proposal.cancelledAssets && proposal.cancelledAssets.length > 0) {
+                        proposal.cancelledAssets.forEach((asset, idx) => {
+                            const div = document.createElement('div');
+                            div.style.padding = '6px 12px';
+                            div.style.backgroundColor = '#fee2e2';
+                            div.style.borderLeft = '4px solid #ef4444';
+                            div.style.borderRadius = '4px';
+                            div.style.fontSize = '12px';
+                            div.innerHTML = `<i class="fa-solid fa-trash-can" style="color:#ef4444"></i> <strong>Tài sản ${idx+1}:</strong> ${asset}`;
+                            listDiv.appendChild(div);
+                        });
+                    }
+                } 
+                else if (proposal.type === 'Hủy đăng ký toàn phần') {
+                    document.getElementById('pageTitleHeader').innerHTML = `<i class="fa-solid fa-circle-xmark"></i> THỰC HIỆN HỦY ĐĂNG KÝ TOÀN PHẦN`;
+                    divConfirm.style.backgroundColor = '#fee2e2';
+                    divConfirm.style.borderColor = '#fca5a5';
+                    document.getElementById('confirmBoxTitle').style.color = '#b91c1c';
+                    document.getElementById('confirmBoxMsg').innerHTML = `Lãnh đạo đã phê duyệt chủ trương hủy toàn bộ hiệu lực hồ sơ này. Bấm <strong>Hoàn thành tác nghiệp</strong> để vô hiệu hóa hoàn toàn.`;
+                } 
+                else {
+                    document.getElementById('pageTitleHeader').innerHTML = `<i class="fa-solid fa-rotate-left"></i> THỰC HIỆN KHÔI PHỤC HỦY ĐĂNG KÝ`;
+                    divConfirm.style.backgroundColor = '#f0fdf4';
+                    divConfirm.style.borderColor = '#bbf7d0';
+                    document.getElementById('confirmBoxTitle').style.color = '#15803d';
+                    document.getElementById('confirmBoxMsg').innerHTML = `Lãnh đạo đã phê duyệt chủ trương khôi phục hiệu lực hồ sơ đăng ký đã hủy nhầm. Bấm <strong>Hoàn thành tác nghiệp</strong> để kích hoạt lại hồ sơ gốc.`;
+                }
+
+                // Điền thông tin đối chiếu
+                document.getElementById('confSoDK').innerText = originalDossier.id;
+                document.getElementById('confBenBaoDam').innerText = originalDossier.customer;
+                document.getElementById('confBenNhanBD').innerText = originalDossier.mortgagee;
+                document.getElementById('confLoaiHinhGD').innerText = originalDossier.transactionType || 'Biện pháp bảo đảm';
+            }
+        }
+
+        function markFieldAsModified(element) {
+            if (!element.classList.contains('modified-highlight')) {
+                element.classList.add('modified-highlight');
+                
+                const label = element.previousElementSibling;
+                if (label && !label.querySelector('.modified-tag')) {
+                    const tag = document.createElement('span');
+                    tag.className = 'modified-tag';
+                    tag.innerHTML = `<i class="fa-solid fa-marker"></i> Đã sửa`;
+                    label.appendChild(tag);
+                }
+            }
+            modifiedFields.add(element.id);
+        }
+
+        function saveCorrectionChanges() {
+            const mockDossiers = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+            const idx = mockDossiers.findIndex(d => d.id === originalDossier.id);
+
+            if (idx === -1) {
+                showToast('Hồ sơ gốc không tồn tại trên hệ thống!', 'error');
+                return;
+            }
+
+            const dossier = mockDossiers[idx];
+
+            if (currentProposal.type === 'Chỉnh lý thông tin') {
+                if (originalDossier.type === 'Đăng ký mới' && originalDossier.transactionType === 'Biện pháp bảo đảm') {
+                    // Đọc từ form đăng ký mới
+                    dossier.transactionType = document.getElementById('reg1_TransType').value;
+                    dossier.subtype = document.getElementById('reg1_Subtype').value;
+                    dossier.receiptNo = document.getElementById('reg1_Receipt').value;
+                    dossier.customer = document.getElementById('reg1_Customer').value;
+                    dossier.customerCode = document.getElementById('reg1_CustomerCode').value;
+                    dossier.mortgagee = document.getElementById('reg1_Mortgagee').value;
+                    dossier.mortgageeCode = document.getElementById('reg1_MortgageeCode').value;
+                    dossier.assetType = document.getElementById('reg1_Assets').value;
+                } 
+                else if (originalDossier.type === 'Đăng ký thay đổi') {
+                    // Cập nhật thông tin chi tiết thay đổi
+                    dossier.assetType = document.getElementById('reg2_ChangeDetail').value;
+                }
+                else if (originalDossier.type === 'Xóa đăng ký') {
+                    dossier.status = 'Đã giải chấp';
+                }
+                else if (originalDossier.type === 'Thông báo xử lý tài sản') {
+                    dossier.assetType = document.getElementById('reg4_DisposalReason').value;
+                }
+
+                if (!dossier.timeline) dossier.timeline = [];
+                dossier.timeline.push({
+                    id: `node-${dossier.timeline.length + 1}`,
+                    title: 'Chỉnh lý thông tin',
+                    date: currentProposal.createdDate,
+                    status: 'Hoàn thành',
+                    active: true
+                });
+            } 
+            else if (currentProposal.type === 'Hủy đăng ký một phần') {
+                let originalAssets = dossier.assetType.split('|').map(a => a.trim());
+                let cancelList = currentProposal.cancelledAssets;
+
+                let remainingAssets = originalAssets.filter(a => !cancelList.includes(a));
+                dossier.assetType = remainingAssets.join(' | ');
+
+                if (!dossier.timeline) dossier.timeline = [];
+                dossier.timeline.push({
+                    id: `node-${dossier.timeline.length + 1}`,
+                    title: 'Hủy một phần đăng ký',
+                    date: currentProposal.createdDate,
+                    status: 'Hoàn thành',
+                    active: true
+                });
+            }
+            else if (currentProposal.type === 'Hủy đăng ký toàn phần') {
+                dossier.status = 'Đã hủy';
+                
+                if (!dossier.timeline) dossier.timeline = [];
+                dossier.timeline.push({
+                    id: `node-${dossier.timeline.length + 1}`,
+                    title: 'Hủy đăng ký toàn phần',
+                    date: currentProposal.createdDate,
+                    status: 'Hoàn thành',
+                    active: true
+                });
+            }
+            else if (currentProposal.type === 'Khôi phục hủy đăng ký') {
+                dossier.status = 'Hoàn thành';
+                
+                if (!dossier.timeline) dossier.timeline = [];
+                dossier.timeline.push({
+                    id: `node-${dossier.timeline.length + 1}`,
+                    title: 'Khôi phục hủy đăng ký',
+                    date: currentProposal.createdDate,
+                    status: 'Hoàn thành',
+                    active: true
+                });
+            }
+
+            // Lưu lại danh sách hồ sơ gốc
+            localStorage.setItem('custom_mock_profiles', JSON.stringify(mockDossiers));
+
+            // Cập nhật trạng thái đề xuất thành Đã xử lý
+            const proposals = JSON.parse(localStorage.getItem('custom_proposals') || '[]');
+            const propIdx = proposals.findIndex(p => p.id === currentProposal.id);
+            if (propIdx !== -1) {
+                proposals[propIdx].status = 'Đã xử lý';
+                localStorage.setItem('custom_proposals', JSON.stringify(proposals));
+            }
+
+            showToast('Hoàn thành thực thi thay đổi vào CSDL! Đang sinh thông báo kết quả...');
+
+            setTimeout(() => {
+                goBackToDashboard();
+            }, 2000);
+        }
+
+        function goBackToDashboard() {
+            window.location.href = 'theo_doi_xu_ly_de_nghi.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProposalData();
+        });
+    </script>
+</body>
+</html>

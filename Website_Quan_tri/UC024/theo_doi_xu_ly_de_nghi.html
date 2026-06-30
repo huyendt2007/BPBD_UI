@@ -1,0 +1,843 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo dõi & Xử lý đề nghị Chỉnh lý / Hủy / Khôi phục</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../Common/style_iframe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../../Common/iframe_helper.js"></script>
+    <style>
+        .container {
+            max-width: 1400px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        /* Navigation Tabs style matching Hồ sơ chờ xử lý */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 6px 6px 0 0;
+            padding: 0 10px;
+            gap: 5px;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            padding: 14px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        
+        .nav-tab:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .tab-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+        
+        .nav-tab.active .tab-badge {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .tab-badge.danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        .tab-badge.warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+        .tab-badge.info {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        /* Filter area styling matching standard card section */
+        .card-section {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Modal for approvals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 650px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8fafc;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background-color: #10b981;
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-success { background-color: #d1fae5; color: #10b981; }
+        .badge-danger { background-color: #fee2e2; color: #ef4444; }
+        .badge-warning { background-color: #fef3c7; color: #f59e0b; }
+        .badge-info { background-color: #e0f2fe; color: #0284c7; }
+        .badge-secondary { background-color: #e2e8f0; color: #475569; }
+        
+        .detail-row {
+            display: flex;
+            border-bottom: 1px dashed #f1f5f9;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        .detail-label {
+            width: 180px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .detail-value {
+            flex: 1;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- TIÊU ĐỀ TRANG -->
+        <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">
+            <h2 style="font-size: 16px; color: var(--primary-color); font-weight: 700; margin: 0;">
+                <i class="fa-solid fa-folder-tree"></i> THEO DÕI VÀ XỬ LÝ ĐỀ NGHỊ CHỈNH LÝ / HỦY / KHÔI PHỤC
+            </h2>
+        </div>
+
+        <!-- TABS HEADER -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('cho_duyet', this)">
+                <i class="fa-solid fa-clock-rotate-left"></i> Đề nghị/Hồ sơ chờ ký
+                <span class="tab-badge warning" id="badge-cho_duyet">0</span>
+            </div>
+            <div class="nav-tab" onclick="switchTab('cho_thuc_hien', this)">
+                <i class="fa-solid fa-gears"></i> Hồ sơ chờ thực hiện
+                <span class="tab-badge info" id="badge-cho_thuc_hien">0</span>
+            </div>
+            <div class="nav-tab" onclick="switchTab('bi_tra_lai', this)">
+                <i class="fa-solid fa-circle-exclamation"></i> Đề nghị/Hồ sơ bị trả lại
+                <span class="tab-badge danger" id="badge-bi_tra_lai">0</span>
+            </div>
+            <div class="nav-tab" onclick="switchTab('da_xuly', this)">
+                <i class="fa-solid fa-circle-check"></i> Đề nghị/Hồ sơ đã xử lý
+                <span class="tab-badge success" id="badge-da_xuly">0</span>
+            </div>
+        </div>
+
+        <!-- BỘ LỌC TÌM KIẾM NÂNG CAO -->
+        <div class="card-section">
+            <div class="grid-4-cols" style="gap: 15px;">
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label" style="font-size: 12px;">Số đăng ký gốc</label>
+                    <input type="text" class="form-control" id="filterSoDK" oninput="applyFilters()" placeholder="Nhập số đăng ký gốc...">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label" style="font-size: 12px;">Loại đề xuất</label>
+                    <select class="form-select" id="filterType" onchange="applyFilters()">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Chỉnh lý thông tin">Chỉnh lý thông tin</option>
+                        <option value="Hủy đăng ký một phần">Hủy một phần</option>
+                        <option value="Hủy đăng ký toàn phần">Hủy toàn phần</option>
+                        <option value="Khôi phục hủy đăng ký">Khôi phục hủy đăng ký</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label" style="font-size: 12px;">Từ ngày</label>
+                    <input type="text" class="form-control" id="filterFromDate" oninput="applyFilters()" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label" style="font-size: 12px;">Đến ngày</label>
+                    <input type="text" class="form-control" id="filterToDate" oninput="applyFilters()" placeholder="dd/mm/yyyy">
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-eraser"></i> Xóa bộ lọc</button>
+            </div>
+        </div>
+
+        <!-- BẢNG KẾT QUẢ HIỂN THỊ -->
+        <div class="table-responsive" style="overflow-x: auto; max-width: 100%;">
+            <table class="table" style="width: 100%; border-collapse: collapse; min-width: 1300px; font-size: 13px;">
+                <thead>
+                    <tr style="background-color: var(--table-header-bg);">
+                        <th style="width: 50px; text-align: center;">STT</th>
+                        <th style="width: 130px; text-align: center;">Mã đề nghị</th>
+                        <th style="width: 180px; text-align: center;">Loại đề xuất</th>
+                        <th style="width: 140px; text-align: center;">Số đăng ký gốc</th>
+                        <th>Lý do đề xuất / Diễn giải</th>
+                        <th style="width: 150px; text-align: center;">Cán bộ lập đề xuất</th>
+                        <th style="width: 140px; text-align: center;">Thời điểm lập</th>
+                        <th style="width: 130px; text-align: center;">Trạng thái</th>
+                        <th style="width: 150px; text-align: center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="proposal-tbody">
+                    <!-- Render by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL XEM CHI TIẾT ĐỀ NGHỊ CHỜ KÝ -->
+    <div class="modal-overlay" id="approvalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="mdlTitle">ĐỀ NGHỊ CHỜ KÝ DUYỆT</h3>
+                <button onclick="closeApprovalModal()" style="border:none; background:none; cursor:pointer; font-size:16px;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-row">
+                    <div class="detail-label">Mã đề xuất:</div>
+                    <div class="detail-value" id="mdlProposalCode" style="font-weight: 700;">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Loại đề xuất:</div>
+                    <div class="detail-value" id="mdlProposalType">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Số đăng ký gốc:</div>
+                    <div class="detail-value" id="mdlSoDKGoc" style="color: var(--primary-color); font-weight: 600;">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Lập bởi cán bộ:</div>
+                    <div class="detail-value" id="mdlCreator">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Thời điểm lập:</div>
+                    <div class="detail-value" id="mdlCreatedDate">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Căn cứ pháp lý:</div>
+                    <div class="detail-value" id="mdlDocRef">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Tài liệu scan:</div>
+                    <div class="detail-value">
+                        <a href="#" onclick="alert('Đang tải tài liệu PDF đính kèm...')" id="mdlDocFile" style="color: var(--secondary-color); font-weight: 600; text-decoration: underline;"><i class="fa-solid fa-file-pdf" style="color:#ef4444"></i> QuyetDinhChiTiet.pdf</a>
+                    </div>
+                </div>
+                <div class="detail-row" style="border-bottom: none;">
+                    <div class="detail-label">Lý do/Diễn giải:</div>
+                    <div class="detail-value" id="mdlReason" style="background-color: #f8fafc; padding: 8px; border-radius: 4px; border: 1px solid #e2e8f0; min-height: 50px;">-</div>
+                </div>
+
+                <div class="form-group" id="grpRejectReason" style="display: none; margin-top: 15px;">
+                    <label class="form-label" style="font-weight: 600; color: #ef4444;">Lý do từ chối (Lãnh đạo trả lại)</label>
+                    <div id="mdlRejectReasonText" style="background-color: #fee2e2; border: 1px solid #fca5a5; padding: 10px; border-radius: 4px; color: #b91c1c; font-size: 13px;">-</div>
+                </div>
+
+                <div class="form-group" id="grpApprovalOpinion" style="margin-top: 15px;">
+                    <label class="form-label" style="font-weight: 600;">Ý kiến của Lãnh đạo / Chỉ đạo tác nghiệp</label>
+                    <textarea class="form-control" id="txtOpinion" rows="2" placeholder="Nhập ý kiến chỉ đạo..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeApprovalModal()" style="background:#e2e8f0; color:#475569;">Đóng</button>
+                <div id="divApprovalActions" style="display: inline-flex; gap: 10px;">
+                    <button type="button" class="btn btn-danger" onclick="executeApproval('Từ chối')"><i class="fa-solid fa-circle-xmark"></i> Từ chối ký</button>
+                    <button type="button" class="btn btn-primary" onclick="executeApproval('Đã ký')"><i class="fa-solid fa-signature"></i> Phê duyệt & Ký số</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast-notification">
+        <i class="fa-solid fa-circle-check"></i> <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        let currentTab = 'cho_duyet';
+        let proposals = [];
+        let selectedProposal = null;
+
+        // Khởi tạo CSDL profiles mẫu đủ 10 dòng
+        function initMockProfiles() {
+            let list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+            
+            // Nếu danh sách rỗng hoặc chưa đủ 10 hồ sơ mẫu, khởi tạo danh sách đầy đủ
+            const mockCount = list.filter(p => p.id.startsWith('GDBD-2026-0009')).length;
+            if (mockCount < 10) {
+                const getPastDateStr = (daysAgo) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - daysAgo);
+                    const pad = (n) => n < 10 ? '0' + n : n;
+                    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} 09:00`;
+                };
+
+                const initialDossiers = [
+                    { id: 'GDBD-2026-000901', date: getPastDateStr(10), customer: 'Công ty TNHH Cơ khí Hải Phong', mortgagee: 'Ngân hàng TMCP Ngoại thương VN (Vietcombank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0101987654', receiptNo: 'BL-9921', assetType: 'Xe ô tô Mazda 3 BKS 30G-123.45 | Xe ô tô Toyota Camry BKS 30H-889.21', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000902', date: getPastDateStr(9), customer: 'Ông Nguyễn Văn Long', mortgagee: 'Ngân hàng TMCP Quân đội (MB Bank)', type: 'Đăng ký thay đổi', transactionType: 'Biện pháp bảo đảm', subtype: 'dat_coc', status: 'Hoàn thành', customerCode: '001090123456', receiptNo: 'BL-9922', assetType: 'Quyền tài sản phát sinh từ hợp đồng mua bán căn hộ chung cư số 102', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000903', date: getPastDateStr(8), customer: 'Công ty Vận tải Mai Linh', mortgagee: 'Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)', type: 'Xóa đăng ký', transactionType: 'Biện pháp bảo đảm', subtype: 'cam_co', status: 'Hoàn thành', customerCode: '0101234567', receiptNo: 'BL-9923', assetType: 'Xe tải KIA Frontier BKS 29C-990.11', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000904', date: getPastDateStr(7), customer: 'Bà Trần Thị Mai', mortgagee: 'Ngân hàng TMCP Kỹ thương Việt Nam (Techcombank)', type: 'Thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'ky_quy', status: 'Hoàn thành', customerCode: '030099887711', receiptNo: 'BL-9924', assetType: 'Xe ô tô Ford Ranger BKS 30K-771.22', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000905', date: getPastDateStr(6), customer: 'Công ty Cổ phần Alpha', mortgagee: 'Ngân hàng TMCP Công thương Việt Nam (VietinBank)', type: 'Thay đổi thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0109928172', receiptNo: 'BL-9925', assetType: 'Tàu đánh bắt cá công suất lớn số hiệu HP-90812-TS', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000906', date: getPastDateStr(5), customer: 'Ông Lê Văn Nam', mortgagee: 'Bà Nguyễn Thị Lan', type: 'Xóa thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '034091000999', receiptNo: 'BL-9926', assetType: 'Xe ô tô Hyundai Accent BKS 29A-882.19', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000907', date: getPastDateStr(4), customer: 'Công ty TNHH Hưng Phát', mortgagee: 'Ngân hàng TMCP Thịnh Vượng (VPBank)', type: 'Hủy đăng ký', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0108871625', receiptNo: 'BL-9927', assetType: 'Xe xúc lật Komatsu số khung KM-99120', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000908', date: getPastDateStr(3), customer: 'Ông Phạm Văn Đồng', mortgagee: 'Ngân hàng Nông nghiệp & PTNT VN (Agribank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '001085000444', receiptNo: 'BL-9928', assetType: 'Xe ô tô Toyota Vios BKS 30E-991.23 | Xe máy Honda SH BKS 30F-122.99', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000909', date: getPastDateStr(2), customer: 'Công ty TNHH Sao Vàng', mortgagee: 'Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0200887261', receiptNo: 'BL-9929', assetType: 'Dây chuyền máy móc sản xuất bao bì tự động nhập khẩu', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
+                    { id: 'GDBD-2026-000910', date: getPastDateStr(1), customer: 'Ông Vũ Đức Đam', mortgagee: 'Ngân hàng Phát triển Việt Nam (VDB)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Đã hủy', customerCode: '001080001111', receiptNo: 'BL-9930', assetType: 'Nhà xưởng thép tiền chế tại khu công nghiệp Quang Minh', handlingOfficer: 'Nguyễn Văn Cán Bộ' }
+                ];
+
+                // Ghi đè hoặc thêm mới
+                initialDossiers.forEach(d => {
+                    const exIdx = list.findIndex(l => l.id === d.id);
+                    if (exIdx !== -1) {
+                        list[exIdx] = d;
+                    } else {
+                        list.push(d);
+                    }
+                });
+
+                localStorage.setItem('custom_mock_profiles', JSON.stringify(list));
+            }
+        }
+
+        // Khởi tạo các đề nghị mẫu
+        function initMockProposalsIfEmpty() {
+            initMockProfiles();
+
+            const cached = localStorage.getItem('custom_proposals');
+            if (cached) {
+                proposals = JSON.parse(cached);
+                return;
+            }
+
+            const mockDossiers = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+            const getDossier = (id) => mockDossiers.find(d => d.id === id) || mockDossiers[0];
+
+            proposals = [
+                // 3 đề nghị Chờ ký (Tab 1)
+                {
+                    id: 1,
+                    proposalCode: 'DN-CL-2026-0001',
+                    type: 'Chỉnh lý thông tin',
+                    originalDossierId: 'GDBD-2026-000901',
+                    originalDossier: getDossier('GDBD-2026-000901'),
+                    docNo: 'QĐ-01/2026/THA',
+                    docDate: '10/06/2026',
+                    docIssuer: 'Chi cục THADS Quận Hoàn Kiếm',
+                    reason: 'Chỉnh lý thông tin bên bảo đảm từ Công ty Hải Phong thành Công ty Hải Phong New.',
+                    fileName: 'QuyetDinhSuaLoiChinhTa_01.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '25/06/2026 09:30',
+                    status: 'Chờ ký',
+                    rejectReason: ''
+                },
+                {
+                    id: 2,
+                    proposalCode: 'DN-H-2026-0002',
+                    type: 'Hủy đăng ký toàn phần',
+                    originalDossierId: 'GDBD-2026-000902',
+                    originalDossier: getDossier('GDBD-2026-000902'),
+                    docNo: 'Bản án 45/2026/DS-ST',
+                    docDate: '12/06/2026',
+                    docIssuer: 'TAND Thành phố Hà Nội',
+                    reason: 'Hủy đăng ký toàn phần do Hợp đồng thế chấp mua bán căn hộ bị tuyên vô hiệu.',
+                    fileName: 'BanAn_45_VohieuHDTC.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '26/06/2026 14:15',
+                    status: 'Chờ ký',
+                    rejectReason: ''
+                },
+                {
+                    id: 3,
+                    proposalCode: 'DN-KP-2026-0003',
+                    type: 'Khôi phục hủy đăng ký',
+                    originalDossierId: 'GDBD-2026-000910',
+                    originalDossier: getDossier('GDBD-2026-000910'),
+                    docNo: 'QĐ-212/THA',
+                    docDate: '14/06/2026',
+                    docIssuer: 'Cục THADS Hà Nội',
+                    reason: 'Khôi phục hiệu lực hồ sơ bị hủy sai địa chỉ số khung nhà xưởng.',
+                    fileName: 'QuyetDinhKhoiPhuc_212.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '27/06/2026 10:00',
+                    status: 'Chờ ký',
+                    rejectReason: ''
+                },
+                // 5 hồ sơ Chờ thực hiện (Tab 2) - Trạng thái Hoàn thành
+                {
+                    id: 4,
+                    proposalCode: 'DN-CL-2026-0004',
+                    type: 'Chỉnh lý thông tin',
+                    originalDossierId: 'GDBD-2026-000901',
+                    originalDossier: getDossier('GDBD-2026-000901'), // Đăng ký lần đầu
+                    docNo: 'QĐ-52/THA',
+                    docDate: '01/06/2026',
+                    docIssuer: 'Chi cục THADS Hoàn Kiếm',
+                    reason: 'Chỉnh lý lại Số khung Xe ô tô Mazda 3 trong hồ sơ Đăng ký lần đầu.',
+                    fileName: 'QuyetDinhChinhLyBBD.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '20/06/2026 15:30',
+                    status: 'Hoàn thành',
+                    rejectReason: ''
+                },
+                {
+                    id: 5,
+                    proposalCode: 'DN-CL-2026-0005',
+                    type: 'Chỉnh lý thông tin',
+                    originalDossierId: 'GDBD-2026-000902',
+                    originalDossier: getDossier('GDBD-2026-000902'), // Đăng ký thay đổi
+                    docNo: 'QĐ-122/THA',
+                    docDate: '03/06/2026',
+                    docIssuer: 'Chi cục THADS Hoàn Kiếm',
+                    reason: 'Chỉnh lý lại Số hợp đồng chuyển nhượng trong hồ sơ Đăng ký thay đổi.',
+                    fileName: 'ChinhLyThayDoi.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '21/06/2026 09:00',
+                    status: 'Hoàn thành',
+                    rejectReason: ''
+                },
+                {
+                    id: 6,
+                    proposalCode: 'DN-CL-2026-0006',
+                    type: 'Chỉnh lý thông tin',
+                    originalDossierId: 'GDBD-2026-000903',
+                    originalDossier: getDossier('GDBD-2026-000903'), // Xóa đăng ký
+                    docNo: 'Biên bản số 09',
+                    docDate: '05/06/2026',
+                    docIssuer: 'Trung tâm đăng ký',
+                    reason: 'Chỉnh lý thông tin lý do giải chấp trong đơn Xóa đăng ký.',
+                    fileName: 'BienBanXoaDK.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '22/06/2026 10:20',
+                    status: 'Hoàn thành',
+                    rejectReason: ''
+                },
+                {
+                    id: 7,
+                    proposalCode: 'DN-H-2026-0007',
+                    type: 'Hủy đăng ký một phần',
+                    originalDossierId: 'GDBD-2026-000908',
+                    originalDossier: getDossier('GDBD-2026-000908'),
+                    docNo: 'QĐ-88/THA',
+                    docDate: '08/06/2026',
+                    docIssuer: 'Cục THADS Hà Nội',
+                    reason: 'Hủy đăng ký một phần (hủy bảo đảm đối với Xe máy Honda SH).',
+                    fileName: 'QuyetDinhHuy1Phan.pdf',
+                    cancelledAssets: ['Xe máy Honda SH BKS 30F-122.99'],
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '23/06/2026 11:30',
+                    status: 'Hoàn thành',
+                    rejectReason: ''
+                },
+                {
+                    id: 8,
+                    proposalCode: 'DN-H-2026-0008',
+                    type: 'Hủy đăng ký toàn phần',
+                    originalDossierId: 'GDBD-2026-000909',
+                    originalDossier: getDossier('GDBD-2026-000909'),
+                    docNo: 'Bản án 102/DS-ST',
+                    docDate: '10/06/2026',
+                    docIssuer: 'TAND Quận Hai Bà Trưng',
+                    reason: 'Hủy toàn phần do bên nhận bảo đảm tuyên bố chấm dứt quan hệ tín dụng.',
+                    fileName: 'BanAnVohieuSacombank.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '24/06/2026 14:00',
+                    status: 'Hoàn thành',
+                    rejectReason: ''
+                },
+                // 1 Đề xuất bị từ chối/trả lại (Tab 3)
+                {
+                    id: 9,
+                    proposalCode: 'DN-CL-2026-0009',
+                    type: 'Chỉnh lý thông tin',
+                    originalDossierId: 'GDBD-2026-000903',
+                    originalDossier: getDossier('GDBD-2026-000903'),
+                    docNo: 'Đơn đề nghị',
+                    docDate: '12/06/2026',
+                    docIssuer: 'Công ty Mai Linh',
+                    reason: 'Chỉnh lý lại Số định danh chủ doanh nghiệp do gõ nhầm.',
+                    fileName: 'DonDeNghiSuaLoi.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '25/06/2026 11:00',
+                    status: 'Bị trả lại',
+                    rejectReason: 'Không đính kèm văn bản đồng ý phê duyệt của Ngân hàng BIDV. Yêu cầu đăng ký viên lấy xác nhận ngân hàng trước khi nộp lại.'
+                },
+                // Đã xử lý (Tab 4) - Đầy đủ dữ liệu giả lập
+                {
+                    id: 10,
+                    proposalCode: 'DN-KP-2026-0010',
+                    type: 'Khôi phục hủy đăng ký',
+                    originalDossierId: 'GDBD-2026-000910',
+                    originalDossier: getDossier('GDBD-2026-000910'),
+                    docNo: 'QĐ-112/THA',
+                    docDate: '15/06/2026',
+                    docIssuer: 'Cục THADS Hà Nội',
+                    reason: 'Khôi phục hiệu lực đăng ký gốc đã bị hủy nhầm.',
+                    fileName: 'QuyetDinhKhoiPhucHieuLuc.pdf',
+                    creator: 'Nguyễn Văn Cán Bộ',
+                    createdDate: '26/06/2026 10:10',
+                    status: 'Đã xử lý',
+                    rejectReason: ''
+                }
+            ];
+
+            localStorage.setItem('custom_proposals', JSON.stringify(proposals));
+        }
+
+        function switchTab(tabName, element) {
+            currentTab = tabName;
+            
+            document.querySelectorAll('.nav-tab').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            renderTableData();
+        }
+
+        // Chuyển đổi định dạng ngày dd/mm/yyyy sang đối tượng Date để so sánh
+        function parseDateStr(str) {
+            if (!str) return null;
+            const parts = str.split(' ')[0].split('/');
+            if (parts.length !== 3) return null;
+            // new Date(year, monthIndex, day)
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+
+        function getFilteredProposals() {
+            const soDK = document.getElementById('filterSoDK').value.trim().toLowerCase();
+            const type = document.getElementById('filterType').value;
+            const fromDateStr = document.getElementById('filterFromDate').value.trim();
+            const toDateStr = document.getElementById('filterToDate').value.trim();
+
+            const fromDate = parseDateStr(fromDateStr);
+            const toDate = parseDateStr(toDateStr);
+
+            let list = proposals.filter(p => {
+                if (currentTab === 'cho_duyet') return p.status === 'Chờ ký';
+                if (currentTab === 'cho_thuc_hien') return p.status === 'Hoàn thành';
+                if (currentTab === 'bi_tra_lai') return p.status === 'Bị trả lại';
+                if (currentTab === 'da_xuly') return p.status === 'Đã xử lý';
+                return false;
+            });
+
+            if (soDK) {
+                list = list.filter(p => p.originalDossierId.toLowerCase().includes(soDK));
+            }
+            if (type) {
+                list = list.filter(p => p.type === type);
+            }
+            if (fromDate) {
+                list = list.filter(p => {
+                    const d = parseDateStr(p.createdDate);
+                    return d && d >= fromDate;
+                });
+            }
+            if (toDate) {
+                list = list.filter(p => {
+                    const d = parseDateStr(p.createdDate);
+                    return d && d <= toDate;
+                });
+            }
+
+            return list;
+        }
+
+        function renderTableData() {
+            const tbody = document.getElementById('proposal-tbody');
+            tbody.innerHTML = '';
+
+            const list = getFilteredProposals();
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #64748b; padding: 40px; font-style: italic;">Không tìm thấy đề xuất nào phù hợp.</td></tr>`;
+                return;
+            }
+
+            list.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid var(--border-color)';
+                
+                let statusBadge = '';
+                if (item.status === 'Chờ ký') statusBadge = `<span class="badge badge-warning">Chờ ký</span>`;
+                else if (item.status === 'Hoàn thành') statusBadge = `<span class="badge badge-success">Hoàn thành</span>`;
+                else if (item.status === 'Bị trả lại') statusBadge = `<span class="badge badge-danger">Bị từ chối</span>`;
+                else if (item.status === 'Đã xử lý') statusBadge = `<span class="badge badge-info">Đã xử lý</span>`;
+
+                let actions = '';
+                if (item.status === 'Chờ ký') {
+                    // Thao tác chỉ có Xem
+                    actions = `
+                        <button class="icon-btn view" title="Xem chi tiết" onclick="openApprovalModal(${item.id})">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    `;
+                } else if (item.status === 'Hoàn thành') {
+                    // Hồ sơ chờ thực hiện -> Thao tác Thực hiện
+                    actions = `
+                        <button class="btn btn-primary" style="padding: 4px 10px; font-size: 12px;" onclick="executeCorrection(${item.id})">
+                            <i class="fa-solid fa-gears"></i> Thực hiện
+                        </button>
+                    `;
+                } else if (item.status === 'Bị trả lại') {
+                    // Bị trả lại -> Sửa đề nghị
+                    actions = `
+                        <button class="btn btn-outline-primary" style="padding: 4px 10px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="resubmitProposal(${item.id})">
+                            <i class="fa-solid fa-pen-to-square"></i> Sửa đề nghị
+                        </button>
+                    `;
+                } else if (item.status === 'Đã xử lý') {
+                    // Đã xử lý -> Xem + Tải thông báo
+                    actions = `
+                        <button class="icon-btn view" title="Xem chi tiết" style="margin-right: 8px;" onclick="openApprovalModal(${item.id})">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button class="icon-btn view" style="color: #ef4444 !important;" title="Tải văn bản kết quả" onclick="downloadNotice(${item.id})">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </button>
+                    `;
+                }
+
+                const reasonDisplay = item.reason.length > 80 ? item.reason.substring(0, 80) + '...' : item.reason;
+
+                tr.innerHTML = `
+                    <td style="text-align: center;">${idx + 1}</td>
+                    <td style="text-align: center; font-weight: 600;">${item.proposalCode}</td>
+                    <td style="text-align: center;">${item.type}</td>
+                    <td style="text-align: center; color: var(--primary-color); font-weight: 600;">${item.originalDossierId}</td>
+                    <td title="${item.reason}">${reasonDisplay}</td>
+                    <td style="text-align: center;">${item.creator}</td>
+                    <td style="text-align: center;">${item.createdDate}</td>
+                    <td style="text-align: center;">${statusBadge}</td>
+                    <td style="text-align: center;">${actions}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateBadges() {
+            const counts = {
+                cho_duyet: proposals.filter(p => p.status === 'Chờ ký').length,
+                cho_thuc_hien: proposals.filter(p => p.status === 'Hoàn thành').length,
+                bi_tra_lai: proposals.filter(p => p.status === 'Bị trả lại').length,
+                da_xuly: proposals.filter(p => p.status === 'Đã xử lý').length
+            };
+
+            document.getElementById('badge-cho_duyet').innerText = counts.cho_duyet;
+            document.getElementById('badge-cho_thuc_hien').innerText = counts.cho_thuc_hien;
+            document.getElementById('badge-bi_tra_lai').innerText = counts.bi_tra_lai;
+            document.getElementById('badge-da_xuly').innerText = counts.da_xuly;
+        }
+
+        function applyFilters() {
+            renderTableData();
+        }
+
+        function resetFilters() {
+            document.getElementById('filterSoDK').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterFromDate').value = '';
+            document.getElementById('filterToDate').value = '';
+            applyFilters();
+        }
+
+        function openApprovalModal(id) {
+            const proposal = proposals.find(p => p.id === id);
+            if (!proposal) return;
+
+            selectedProposal = proposal;
+
+            document.getElementById('mdlProposalCode').innerText = proposal.proposalCode;
+            document.getElementById('mdlProposalType').innerText = proposal.type;
+            document.getElementById('mdlSoDKGoc').innerText = proposal.originalDossierId;
+            document.getElementById('mdlCreator').innerText = proposal.creator;
+            document.getElementById('mdlCreatedDate').innerText = proposal.createdDate;
+            document.getElementById('mdlDocRef').innerText = `${proposal.docIssuer} - Số ${proposal.docNo} ngày ${proposal.docDate}`;
+            document.getElementById('mdlDocFile').innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444"></i> ${proposal.fileName}`;
+            document.getElementById('mdlReason').innerText = proposal.reason;
+
+            // Hiển thị lý do từ chối nếu có
+            const grpReject = document.getElementById('grpRejectReason');
+            if (proposal.status === 'Bị trả lại') {
+                grpReject.style.display = 'block';
+                document.getElementById('mdlRejectReasonText').innerText = proposal.rejectReason || 'Không rõ lý do';
+            } else {
+                grpReject.style.display = 'none';
+            }
+
+            // Tùy biến nút hành động và phần ghi chú Lãnh đạo dựa theo tab
+            const divActions = document.getElementById('divApprovalActions');
+            const grpOpinion = document.getElementById('grpApprovalOpinion');
+            const mdlTitle = document.getElementById('mdlTitle');
+
+            if (currentTab === 'cho_duyet') {
+                // Tab Chờ ký -> Cho phép ký duyệt
+                divActions.style.display = 'block';
+                grpOpinion.style.display = 'block';
+                mdlTitle.innerText = 'ĐỀ NGHỊ CHỜ PHÊ DUYỆT & KÝ SỐ';
+            } else {
+                // Các tab khác -> Chỉ Xem (Read-only)
+                divActions.style.display = 'none';
+                grpOpinion.style.display = 'none';
+                mdlTitle.innerText = 'CHI TIẾT YÊU CẦU ĐỀ NGHỊ';
+            }
+
+            document.getElementById('txtOpinion').value = '';
+            document.getElementById('approvalModal').classList.add('active');
+        }
+
+        function closeApprovalModal() {
+            document.getElementById('approvalModal').classList.remove('active');
+            selectedProposal = null;
+        }
+
+        function executeApproval(decision) {
+            if (!selectedProposal) return;
+            const opinion = document.getElementById('txtOpinion').value.trim();
+
+            if (decision === 'Từ chối' && !opinion) {
+                showToast('Vui lòng nhập lý do từ chối trước khi trả lại!', 'error');
+                return;
+            }
+
+            selectedProposal.status = decision === 'Đã ký' ? 'Hoàn thành' : 'Bị trả lại';
+            if (decision === 'Từ chối') {
+                selectedProposal.rejectReason = opinion;
+            } else {
+                selectedProposal.rejectReason = '';
+            }
+
+            localStorage.setItem('custom_proposals', JSON.stringify(proposals));
+
+            showToast(decision === 'Đã ký' ? 'Ký số CA phê duyệt chủ trương thành công! Chuyển tác vụ chờ thực hiện.' : 'Đã từ chối đề xuất chủ trương chỉnh sửa!');
+            
+            closeApprovalModal();
+            updateBadges();
+            renderTableData();
+        }
+
+        function executeCorrection(id) {
+            window.location.href = `thuc_hien_chinh_ly_form.html?proposalId=${id}`;
+        }
+
+        function resubmitProposal(id) {
+            const proposal = proposals.find(p => p.id === id);
+            if (proposal) {
+                window.location.href = `lap_de_nghi_chinh_ly.html?soDK=${proposal.originalDossierId}`;
+            }
+        }
+
+        function downloadNotice(id) {
+            const proposal = proposals.find(p => p.id === id);
+            if (proposal) {
+                alert(`Đang tải văn bản kết quả chính thức: TB-${proposal.type === 'Chỉnh lý thông tin' ? 'CL' : 'H'}-2026.pdf (Đã ký số CA của Cục Đăng ký)`);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initMockProposalsIfEmpty();
+            updateBadges();
+            renderTableData();
+        });
+    </script>
+</body>
+</html>
