@@ -586,8 +586,8 @@
                     <th style="text-align: center; width: 50px;">STT</th>
                     <th>Mã yêu cầu</th>
                     <th>Mã số sử dụng CSDL</th>
-                    <th>Tên khách hàng</th>
-                    <th>Số MST/CCCD</th>
+                    <th>Tên đối tượng đề nghị</th>
+                    <th>Số CCCD/MST</th>
                     <th>Loại đối tượng</th>
                     <th style="text-align: center;">Loại mã số CSDL</th>
                     <th>Phương thức thanh toán</th>
@@ -634,7 +634,7 @@
             <button class="close-modal" onclick="closeModal('createModal')">&times;</button>
         </div>
         <div class="modal-body">
-            <div class="grid-2-cols">
+            <div class="grid-4-cols">
                 <div class="form-group">
                     <label class="form-label">Loại đối tượng <span class="required-mark">*</span></label>
                     <select id="createLoaiDT" class="form-select" onchange="onCreateLoaiDTChange()">
@@ -646,18 +646,28 @@
                 </div>
                 <div class="form-group" id="createLoaiMaGroup">
                     <label class="form-label">Loại mã số sử dụng CSDL <span class="required-mark">*</span></label>
-                    <select id="createLoaiMa" class="form-select">
+                    <select id="createLoaiMa" class="form-select" onchange="onCreateLoaiMaChange()">
                         <option value="thuong_xuyen">Sử dụng thường xuyên</option>
                         <option value="mot_lan">Sử dụng một lần</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Ngày tạo</label>
+                    <input type="text" id="createNgayTao" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ngày hết hạn</label>
+                    <input type="text" id="createNgayHetHan" class="form-control" readonly>
+                </div>
             </div>
             <div class="grid-2-cols" id="createTKLienKetGroup" style="display: none;">
                 <div class="form-group">
-                    <label class="form-label">Chọn tài khoản khách hàng liên kết <span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" id="createTKLienKet" placeholder="Nhập MST/CCCD để tìm tài khoản...">
+                    <label class="form-label">Mã Tài khoản trực tuyến (Tên đăng nhập) <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="createTKLienKet" placeholder="Nhập tên đăng nhập để liên kết..." onchange="onTkLienKetChange()">
                 </div>
-                <div class="form-group"></div>
+                <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 15px;">
+                    <span id="tkSearchStatus" style="font-size: 12px; font-weight: 500;"></span>
+                </div>
             </div>
             <div class="grid-2-cols">
                 <div class="form-group">
@@ -665,8 +675,8 @@
                     <input type="text" id="createTenDT" class="form-control" placeholder="Nhập tên đối tượng...">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Số MST / CCCD</label>
-                    <input type="text" id="createMST" class="form-control" placeholder="Nhập số MST hoặc CCCD...">
+                    <label class="form-label">Số CCCD/MST</label>
+                    <input type="text" id="createMST" class="form-control" placeholder="Nhập số CCCD hoặc MST...">
                 </div>
             </div>
             <div class="grid-2-cols">
@@ -683,15 +693,19 @@
                 <label class="form-label">Địa chỉ liên hệ</label>
                 <input type="text" id="createDiaChi" class="form-control" placeholder="Nhập địa chỉ liên hệ...">
             </div>
-            <div class="grid-2-cols">
+            <div class="grid-3-cols">
                 <div class="form-group">
                     <label class="form-label">Phương thức thanh toán</label>
-                    <select id="createPTTT" class="form-select">
+                    <select id="createPTTT" class="form-select" onchange="updateCreateFee()">
                         <option value="truc_tuyen">Thanh toán trực tuyến</option>
                         <option value="chuyen_khoan">Chuyển khoản ngân hàng</option>
                         <option value="tien_mat">Nộp tiền mặt</option>
                         <option value="mien_phi">Miễn phí</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mức phí cần thu</label>
+                    <input type="text" id="createMucPhiVal" class="form-control" readonly>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Ghi chú thanh toán</label>
@@ -701,6 +715,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeModal('createModal')">Hủy</button>
+            <button class="btn btn-outline-primary" id="btnPrintReceipt" onclick="printReceipt()" style="display: none;"><i class="fa-solid fa-print"></i> In biên lai</button>
             <button class="btn btn-primary" id="btnSaveCreate" onclick="saveCreate('draft')"><i class="fa-solid fa-save"></i> Lưu nháp</button>
             <button class="btn btn-success" id="btnApproveCreate" onclick="saveCreate('approve')"><i class="fa-solid fa-check-circle"></i> Cấp mã</button>
         </div>
@@ -737,13 +752,13 @@
                     <input type="text" id="approveMaYC" class="form-control" readonly>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Loại yêu cầu</label>
+                    <label class="form-label">Loại mã số sử dụng CSDL</label>
                     <input type="text" id="approveLoaiYC" class="form-control" readonly>
                 </div>
             </div>
             <div class="grid-2-cols">
                 <div class="form-group">
-                    <label class="form-label">Tên khách hàng</label>
+                    <label class="form-label">Tên đối tượng đề nghị</label>
                     <input type="text" id="approveTenKH" class="form-control" readonly>
                 </div>
                 <div class="form-group">
@@ -849,7 +864,7 @@
                     <label class="form-label">Phương thức thanh toán <span class="required-mark">*</span></label>
                     <select id="renewPTTT" class="form-select">
                         <option value="chuyen_khoan">Chuyển khoản ngân hàng</option>
-                        <option value="thanh_toan_sau">Thanh toán sau (Ghi nhận công nợ)</option>
+                        <option value="tien_mat">Nộp tiền mặt</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -858,8 +873,16 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Tệp chứng từ thanh toán</label>
-                <input type="file" class="form-control" id="renewFile" accept=".pdf,.jpg,.png">
+                <label class="form-label">Tệp chứng từ thanh toán (Tối đa 3 tệp) <span class="required-mark">*</span></label>
+                <input type="file" id="renewFile" accept=".pdf,.jpg,.png" multiple style="display: none;" onchange="handleRenewFileChange(this)">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div>
+                        <button type="button" id="btnUploadRenewFile" class="btn btn-secondary" onclick="document.getElementById('renewFile').click()"><i class="fa-solid fa-upload"></i> Tải lên tệp chứng từ</button>
+                    </div>
+                    <div id="renewFileList" style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+                        <span style="font-size: 13px; color: var(--text-muted);">Chưa có tệp nào được chọn</span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label">Ghi chú gia hạn</label>
@@ -916,20 +939,39 @@
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- Modal: In biên lai thu phí -->
+<div class="modal-overlay" id="receiptModal">
+    <div class="modal-content modal-sm" style="max-width: 500px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-receipt"></i> Biên lai thu phí, lệ phí</h3>
+            <button class="close-modal" onclick="closeModal('receiptModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="receiptModalBody">
+            <!-- Sẽ render động nội dung biên lai -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('receiptModal')">Đóng</button>
+            <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> In ngay</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // ==================== MOCK DATA ====================
     const mockData = [
         {
-            stt: 1, maYC: 'RQ-20260625-0001', maCSDL: '—', tenKH: 'Công ty TNHH ABC',
+            stt: 1, maYC: 'RQ-20260625-0001', maCSDL: 'TX-948210', tenKH: 'Công ty TNHH ABC',
             mst: '0312345678', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
             pttt: 'Chuyển khoản ngân hàng', ngayTao: '25/06/2026', trangThai: 'Chờ kích hoạt',
-            mucPhi: '300.000 VNĐ', email: 'abc@company.vn', sdt: '0281234567', diaChi: '123 Nguyễn Huệ, Q.1, TP.HCM'
+            mucPhi: '300.000 VNĐ', email: 'abc@company.vn', sdt: '0281234567', diaChi: '123 Nguyễn Huệ, Q.1, TP.HCM',
+            tkLienKet: 'abc_company'
         },
         {
-            stt: 2, maYC: 'RQ-20260624-0015', maCSDL: '—', tenKH: 'Nguyễn Văn An',
+            stt: 2, maYC: 'RQ-20260624-0015', maCSDL: 'TX-724185', tenKH: 'Nguyễn Văn An',
             mst: '001234567890', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
             pttt: 'Nộp tiền mặt', ngayTao: '24/06/2026', trangThai: 'Chờ kích hoạt',
-            mucPhi: '300.000 VNĐ', email: 'annguyen@gmail.com', sdt: '0912345678', diaChi: '45 Lê Lợi, Q.1, TP.HCM'
+            mucPhi: '300.000 VNĐ', email: 'annguyen@gmail.com', sdt: '0912345678', diaChi: '45 Lê Lợi, Q.1, TP.HCM',
+            tkLienKet: 'annguyen'
         },
         {
             stt: 3, maYC: 'RQ-20260620-0042', maCSDL: 'TX-384521', tenKH: 'Trần Thị Bình',
@@ -1076,9 +1118,9 @@
             btnReject = `<button class="icon-btn delete disabled" title="Không thể thực hiện thao tác này ở trạng thái hiện tại" onclick="return false;"><i class="fa-solid fa-ban"></i></button>`;
         }
         
-        // Icon 5: Gia hạn (Only for Hoạt động (nếu có) and Hết hạn)
+        // Icon 5: Gia hạn (Only for Hết hạn)
         let btnRenew;
-        const canRenew = (item.trangThai === 'Hoạt động' && item.loaiDT !== 'Cơ quan có thẩm quyền') || item.trangThai === 'Hết hạn';
+        const canRenew = item.trangThai === 'Hết hạn';
         if (canRenew) {
             btnRenew = `<button class="icon-btn renew" title="Gia hạn" onclick="openRenewModal(${idx})"><i class="fa-solid fa-clock-rotate-left"></i></button>`;
         } else {
@@ -1150,6 +1192,184 @@
 
     let currentEditIdx = -1;
 
+    // Mock accounts database for online accounts link
+    const mockAccounts = {
+        'bidv_agent': { tenDT: 'Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)', mst: '0100150619', email: 'contact@bidv.com.vn', sdt: '19009247', diaChi: 'Tháp BIDV, 35 Hàng Vôi, Hoàn Kiếm, Hà Nội' },
+        'vcb_user': { tenDT: 'Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank)', mst: '0100112437', email: 'contact@vietcombank.com.vn', sdt: '1900545413', diaChi: '198 Trần Quang Khải, Hoàn Kiếm, Hà Nội' },
+        'annguyen': { tenDT: 'Nguyễn Văn An', mst: '001234567890', email: 'annguyen@gmail.com', sdt: '0912345678', diaChi: '45 Lê Lợi, Q.1, TP.HCM' },
+        'vietanh': { tenDT: 'Trần Việt Anh', mst: '0123456789', email: 'vietanh@gmail.com', sdt: '0988889999', diaChi: '100 Cầu Giấy, Hà Nội' },
+        'abc_company': { tenDT: 'Công ty TNHH ABC', mst: '0312345678', email: 'abc@company.vn', sdt: '0281234567', diaChi: '123 Nguyễn Huệ, Q.1, TP.HCM' },
+        'thads_hcm': { tenDT: 'Cục THADS TP.HCM', mst: '0101234567', email: 'thads.hcm@moj.gov.vn', sdt: '0283456789', diaChi: '141 Nguyễn Du, Q.1, TP.HCM' },
+        'sotp_hanoi': { tenDT: 'Sở Tư pháp Hà Nội', mst: '0102345678', email: 'sotp.hanoi@moj.gov.vn', sdt: '0241234567', diaChi: '221 Trần Phú, Ba Đình, Hà Nội' }
+    };
+
+    function calculateFee(loaiDT, loaiMa, dateStr) {
+        if (loaiDT === 'co_quan') return 'Miễn phí';
+        
+        let date = new Date();
+        if (dateStr) {
+            const parts = dateStr.split(' ')[0].split('/');
+            if (parts.length === 3) {
+                date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+            }
+        }
+        
+        const compareDate = new Date(date.getFullYear(), 6, 1); // 1/7
+        if (date < compareDate) {
+            return loaiMa === 'mot_lan' ? '20.000 VNĐ' : '300.000 VNĐ';
+        } else {
+            return loaiMa === 'mot_lan' ? '25.000 VNĐ' : '350.000 VNĐ';
+        }
+    }
+
+    function updateCreateFee() {
+        const loaiDT = document.getElementById('createLoaiDT').value;
+        const loaiMa = document.getElementById('createLoaiMa').value;
+        const ngayTao = document.getElementById('createNgayTao').value;
+        const fee = calculateFee(loaiDT, loaiMa, ngayTao);
+        document.getElementById('createMucPhiVal').value = fee;
+        
+        const ptttSelect = document.getElementById('createPTTT');
+        if (fee === 'Miễn phí') {
+            ptttSelect.value = 'mien_phi';
+            ptttSelect.disabled = true;
+        } else {
+            if (ptttSelect.value === 'mien_phi') {
+                ptttSelect.value = 'chuyen_khoan';
+            }
+            ptttSelect.disabled = false;
+        }
+        
+        updateReceiptButtonVisibility();
+    }
+
+    function updateReceiptButtonVisibility() {
+        const feeVal = document.getElementById('createMucPhiVal').value;
+        const btnPrint = document.getElementById('btnPrintReceipt');
+        if (feeVal === 'Miễn phí' || !feeVal) {
+            btnPrint.style.display = 'none';
+        } else {
+            btnPrint.style.display = 'inline-flex';
+        }
+    }
+
+    function updateTKLienKetVisibility() {
+        const loaiDT = document.getElementById('createLoaiDT').value;
+        const loaiMa = document.getElementById('createLoaiMa').value;
+        const tkGroup = document.getElementById('createTKLienKetGroup');
+        
+        const shouldShow = ((loaiDT === 'ca_nhan' || loaiDT === 'to_chuc') && loaiMa === 'thuong_xuyen') || (loaiDT === 'co_quan');
+        
+        if (shouldShow) {
+            tkGroup.style.display = 'grid';
+            document.getElementById('createTKLienKet').required = true;
+        } else {
+            tkGroup.style.display = 'none';
+            document.getElementById('createTKLienKet').required = false;
+            setFieldsReadonly(false);
+        }
+    }
+
+    function onCreateLoaiMaChange() {
+        updateTKLienKetVisibility();
+        updateCreateFee();
+    }
+
+    function onTkLienKetChange() {
+        const username = document.getElementById('createTKLienKet').value.trim();
+        const statusSpan = document.getElementById('tkSearchStatus');
+        
+        if (!username) {
+            statusSpan.innerHTML = '';
+            setFieldsReadonly(false);
+            return;
+        }
+        
+        const acc = mockAccounts[username];
+        if (acc) {
+            statusSpan.innerHTML = '<span style="color: var(--success-color); font-weight: 600;"><i class="fa-solid fa-check-circle"></i> Đã tìm thấy tài khoản liên kết!</span>';
+            
+            document.getElementById('createTenDT').value = acc.tenDT;
+            document.getElementById('createMST').value = acc.mst;
+            document.getElementById('createEmail').value = acc.email;
+            document.getElementById('createSDT').value = acc.sdt;
+            document.getElementById('createDiaChi').value = acc.diaChi;
+            
+            setFieldsReadonly(true);
+        } else {
+            statusSpan.innerHTML = '<span style="color: var(--danger-color); font-weight: 600;"><i class="fa-solid fa-circle-xmark"></i> Không tìm thấy tài khoản.</span>';
+            setFieldsReadonly(false);
+        }
+    }
+    
+    function setFieldsReadonly(isReadonly) {
+        const fields = ['createTenDT', 'createMST', 'createEmail', 'createSDT', 'createDiaChi'];
+        fields.forEach(fid => {
+            const el = document.getElementById(fid);
+            if (el) {
+                if (isReadonly) {
+                    el.setAttribute('readonly', 'true');
+                    el.style.backgroundColor = '#F8FAFC';
+                    el.style.color = 'var(--text-muted)';
+                } else {
+                    el.removeAttribute('readonly');
+                    el.style.backgroundColor = '';
+                    el.style.color = '';
+                }
+            }
+        });
+    }
+
+    function printReceipt() {
+        const loaiDT = document.getElementById('createLoaiDT').value;
+        const tenDT = document.getElementById('createTenDT').value || 'Chưa nhập';
+        const cccdMst = document.getElementById('createMST').value || '—';
+        const loaiMa = document.getElementById('createLoaiMa').value;
+        const fee = document.getElementById('createMucPhiVal').value;
+        const ngayTao = document.getElementById('createNgayTao').value;
+        const randomReceiptNo = 'BL-' + Math.floor(100000 + Math.random() * 900000);
+
+        const body = document.getElementById('receiptModalBody');
+        body.innerHTML = `
+            <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px dashed var(--border-color); padding-bottom: 15px;">
+                <h4 style="color: var(--primary-color); font-size: 14px; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">Cục Đăng ký giao dịch bảo đảm</h4>
+                <p style="font-size: 11px; color: var(--text-muted);">Số 10 Tạ Quang Bửu, Hai Bà Trưng, Hà Nội</p>
+                <h3 style="font-size: 16px; font-weight: 700; margin-top: 15px; color: var(--text-main);">BIÊN LAI THU PHÍ & LỆ PHÍ</h3>
+                <p style="font-size: 12px; font-style: italic;">Số hóa đơn: <strong>${randomReceiptNo}</strong></p>
+                <p style="font-size: 11px; color: var(--text-muted);">Ngày in: ${ngayTao}</p>
+            </div>
+            <div style="font-size: 13px; line-height: 1.6; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-muted);">Đơn vị/Người đề nghị:</span>
+                    <strong style="color: var(--text-main); text-align: right;">${tenDT}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-muted);">Số CCCD/MST:</span>
+                    <span style="color: var(--text-main);">${cccdMst}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-muted);">Nội dung thu:</span>
+                    <span style="color: var(--text-main);">Cấp mã số sử dụng CSDL (${loaiMa === 'mot_lan' ? 'Sử dụng một lần' : 'Sử dụng thường xuyên'})</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                    <span style="color: var(--text-muted);">Phương thức thanh toán:</span>
+                    <span style="color: var(--text-main); font-weight: 500;">
+                        ${document.getElementById('createPTTT').value === 'truc_tuyen' ? 'Thanh toán trực tuyến' : 
+                          document.getElementById('createPTTT').value === 'chuyen_khoan' ? 'Chuyển khoản ngân hàng' : 'Tiền mặt'}
+                    </span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-top: 2px dashed var(--border-color); padding-top: 12px; font-size: 15px;">
+                    <strong style="color: var(--primary-color);">TỔNG TIỀN THU:</strong>
+                    <strong style="color: var(--danger-color);">${fee}</strong>
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 15px;">
+                (Biên lai tự động xuất từ Hệ thống Quản trị nghiệp vụ)
+            </div>
+        `;
+        openModal('receiptModal');
+    }
+
     function openCreateModal() { 
         currentEditIdx = -1;
         
@@ -1165,6 +1385,19 @@
         document.getElementById('createDiaChi').value = '';
         document.getElementById('createPTTT').value = 'chuyen_khoan';
         document.getElementById('createGhiChu').value = '';
+        
+        // Gán Ngày tạo
+        const now = new Date();
+        const formattedNow = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth()+1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        document.getElementById('createNgayTao').value = formattedNow;
+        
+        // Gán Ngày hết hạn
+        document.getElementById('createNgayHetHan').value = `31/12/${now.getFullYear()}`;
+        
+        // Cập nhật mức phí & trạng thái readonly
+        updateCreateFee();
+        document.getElementById('tkSearchStatus').innerHTML = '';
+        setFieldsReadonly(false);
         
         // Reset Modal Header & Footer for Create mode
         document.getElementById('createModalTitle').innerHTML = `<i class="fa-solid fa-plus-circle"></i> Tạo mới yêu cầu cấp mã số sử dụng CSDL`;
@@ -1198,7 +1431,11 @@
         document.getElementById('createLoaiDT').value = mapDT[item.loaiDT] || '';
         onCreateLoaiDTChange();
         document.getElementById('createLoaiMa').value = mapMa[item.loaiMa] || 'thuong_xuyen';
-        document.getElementById('createTKLienKet').value = item.mst === '—' ? '' : item.mst;
+        
+        // Cập nhật hiển thị tài khoản liên kết
+        updateTKLienKetVisibility();
+        document.getElementById('createTKLienKet').value = item.tkLienKet || '';
+        
         document.getElementById('createTenDT').value = item.tenKH;
         document.getElementById('createMST').value = item.mst === '—' ? '' : item.mst;
         document.getElementById('createEmail').value = item.email === '—' ? '' : item.email;
@@ -1206,6 +1443,21 @@
         document.getElementById('createDiaChi').value = item.diaChi === '—' ? '' : item.diaChi;
         document.getElementById('createPTTT').value = mapPT[item.pttt] || 'chuyen_khoan';
         document.getElementById('createGhiChu').value = item.ghiChu || '';
+        
+        // Điền ngày tạo, ngày hết hạn
+        document.getElementById('createNgayTao').value = item.ngayTao;
+        document.getElementById('createNgayHetHan').value = item.ngayHH || `31/12/${new Date().getFullYear()}`;
+        
+        // Cập nhật mức phí
+        updateCreateFee();
+        
+        if (item.tkLienKet) {
+            document.getElementById('tkSearchStatus').innerHTML = '<span style="color: var(--success-color); font-weight: 600;"><i class="fa-solid fa-check-circle"></i> Đã liên kết tài khoản!</span>';
+            setFieldsReadonly(true);
+        } else {
+            document.getElementById('tkSearchStatus').innerHTML = '';
+            setFieldsReadonly(false);
+        }
         
         // Change Modal Header & Footer for Edit mode
         document.getElementById('createModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Hiệu chỉnh yêu cầu cấp mã số sử dụng CSDL`;
@@ -1218,15 +1470,15 @@
     function onCreateLoaiDTChange() {
         const val = document.getElementById('createLoaiDT').value;
         const loaiMaGroup = document.getElementById('createLoaiMaGroup');
-        const tkGroup = document.getElementById('createTKLienKetGroup');
         
         if (val === 'co_quan') {
             loaiMaGroup.style.display = 'none';
-            tkGroup.style.display = 'none';
         } else {
             loaiMaGroup.style.display = 'block';
-            tkGroup.style.display = val ? 'grid' : 'none';
         }
+        
+        updateTKLienKetVisibility();
+        updateCreateFee();
     }
 
     function saveCreate(mode) {
@@ -1267,13 +1519,11 @@
         const sdtVal = document.getElementById('createSDT').value.trim() || '—';
         const diaChiVal = document.getElementById('createDiaChi').value.trim() || '—';
         const ghiChuVal = document.getElementById('createGhiChu').value.trim();
+        const tkLienKetVal = document.getElementById('createTKLienKet').value.trim();
 
-        let fee = '300.000 VNĐ';
-        if (loaiDTVal === 'co_quan') {
-            fee = 'Miễn phí';
-        } else if (document.getElementById('createLoaiMa').value === 'mot_lan') {
-            fee = '20.000 VNĐ';
-        }
+        const fee = document.getElementById('createMucPhiVal').value;
+        const ngayTaoVal = document.getElementById('createNgayTao').value;
+        const ngayHHVal = document.getElementById('createNgayHetHan').value;
 
         if (currentEditIdx === -1) {
             // CREATE MODE
@@ -1282,24 +1532,22 @@
             const maYCVal = `RQ-20260626-${randomYC}`;
             
             let trangThaiVal = 'Chờ kích hoạt';
-            let maCSDLVal = '—';
+            const randomNum = Math.floor(100000 + Math.random() * 900000);
+            let maCSDLVal = '';
+            
+            if (loaiDTVal === 'co_quan') {
+                maCSDLVal = `CQ-${randomNum}`;
+            } else if (document.getElementById('createLoaiMa').value === 'mot_lan') {
+                maCSDLVal = `1L-${randomNum}`;
+            } else {
+                maCSDLVal = `TX-${randomNum}`;
+            }
+
             let ngayCapVal = '';
-            let ngayHHVal = '';
 
             if (mode === 'approve') {
                 trangThaiVal = 'Hoạt động';
-                const randomNum = Math.floor(100000 + Math.random() * 900000);
-                if (loaiDTVal === 'co_quan') {
-                    maCSDLVal = `CQ-${randomNum}`;
-                    ngayHHVal = '—';
-                } else if (document.getElementById('createLoaiMa').value === 'mot_lan') {
-                    maCSDLVal = `1L-${randomNum}`;
-                    ngayHHVal = '26/07/2026';
-                } else {
-                    maCSDLVal = `TX-${randomNum}`;
-                    ngayHHVal = '31/12/2026';
-                }
-                ngayCapVal = '26/06/2026';
+                ngayCapVal = ngayTaoVal.split(' ')[0];
             }
 
             const newItem = {
@@ -1311,13 +1559,14 @@
                 loaiDT: loaiDTText,
                 loaiMa: loaiMaText,
                 pttt: ptttText,
-                ngayTao: '26/06/2026',
+                ngayTao: ngayTaoVal.split(' ')[0],
                 trangThai: trangThaiVal,
                 mucPhi: fee,
                 email: emailVal,
                 sdt: sdtVal,
                 diaChi: diaChiVal,
                 ghiChu: ghiChuVal,
+                tkLienKet: tkLienKetVal,
                 ngayCap: ngayCapVal,
                 ngayHH: ngayHHVal
             };
@@ -1344,21 +1593,13 @@
             item.pttt = ptttText;
             item.ghiChu = ghiChuVal;
             item.mucPhi = fee;
+            item.tkLienKet = tkLienKetVal;
+            item.ngayTao = ngayTaoVal.split(' ')[0];
+            item.ngayHH = ngayHHVal;
 
             if (mode === 'approve') {
                 item.trangThai = 'Hoạt động';
-                const randomNum = Math.floor(100000 + Math.random() * 900000);
-                if (loaiDTVal === 'co_quan') {
-                    item.maCSDL = `CQ-${randomNum}`;
-                    item.ngayHH = '—';
-                } else if (document.getElementById('createLoaiMa').value === 'mot_lan') {
-                    item.maCSDL = `1L-${randomNum}`;
-                    item.ngayHH = '26/07/2026';
-                } else {
-                    item.maCSDL = `TX-${randomNum}`;
-                    item.ngayHH = '31/12/2026';
-                }
-                item.ngayCap = '26/06/2026';
+                item.ngayCap = ngayTaoVal.split(' ')[0];
                 
                 closeModal('createModal');
                 showToast('Cấp mã số sử dụng CSDL thành công', 'success');
@@ -1378,19 +1619,19 @@
             <div class="detail-section-title">Thông tin chung</div>
             <div class="grid-2-cols">
                 <div><div class="detail-row"><span class="detail-label">Mã yêu cầu:</span><span class="detail-value"><strong>${item.maYC}</strong></span></div></div>
-                <div><div class="detail-row"><span class="detail-label">Loại yêu cầu:</span><span class="detail-value">${item.loaiMa}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Loại mã số sử dụng CSDL:</span><span class="detail-value">${item.loaiMa}</span></div></div>
             </div>
             <div class="grid-2-cols">
                 <div><div class="detail-row"><span class="detail-label">Ngày yêu cầu:</span><span class="detail-value">${item.ngayTao}</span></div></div>
-                <div><div class="detail-row"><span class="detail-label">Trạng thái:</span><span class="detail-value">${getBadge(item.trangThai)}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Trạng thái:</span><span class="detail-value">${getBadge(item)}</span></div></div>
             </div>
             ${item.lyDoTuChoi ? `<div class="detail-row"><span class="detail-label">Lý do từ chối:</span><span class="detail-value" style="color: var(--danger-color);">${item.lyDoTuChoi}</span></div>` : ''}
             <div class="grid-2-cols">
                 <div><div class="detail-row"><span class="detail-label">Loại đối tượng:</span><span class="detail-value">${item.loaiDT}</span></div></div>
-                <div><div class="detail-row"><span class="detail-label">Tên khách hàng:</span><span class="detail-value">${item.tenKH}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Tên đối tượng đề nghị:</span><span class="detail-value">${item.tenKH}</span></div></div>
             </div>
             <div class="grid-2-cols">
-                <div><div class="detail-row"><span class="detail-label">Số MST / CCCD:</span><span class="detail-value">${item.mst}</span></div></div>
+                <div><div class="detail-row"><span class="detail-label">Số CCCD/MST:</span><span class="detail-value">${item.mst}</span></div></div>
                 <div><div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${item.email || '—'}</span></div></div>
             </div>
             <div class="grid-2-cols">
@@ -1477,17 +1718,19 @@
         const item = mockData[currentApproveIdx];
         item.trangThai = 'Hoạt động';
         
-        // Generate a random active database code
-        const randomNum = Math.floor(100000 + Math.random() * 900000);
-        if (item.loaiDT === 'Cơ quan có thẩm quyền') {
-            item.maCSDL = `CQ-${randomNum}`;
-        } else if (item.loaiMa === 'Một lần') {
-            item.maCSDL = `1L-${randomNum}`;
-        } else {
-            item.maCSDL = `TX-${randomNum}`;
+        // Giữ nguyên maCSDL hoặc tự sinh nếu chưa có
+        if (item.maCSDL === '—' || !item.maCSDL) {
+            const randomNum = Math.floor(100000 + Math.random() * 900000);
+            if (item.loaiDT === 'Cơ quan có thẩm quyền') {
+                item.maCSDL = `CQ-${randomNum}`;
+            } else if (item.loaiMa === 'Một lần' || item.loaiMa === '1 lần') {
+                item.maCSDL = `1L-${randomNum}`;
+            } else {
+                item.maCSDL = `TX-${randomNum}`;
+            }
         }
         item.ngayCap = '26/06/2026';
-        item.ngayHH = item.loaiMa === 'Một lần' ? '26/07/2026' : '31/12/2026';
+        item.ngayHH = item.ngayHH && item.ngayHH !== '—' ? item.ngayHH : (item.loaiMa === 'Một lần' || item.loaiMa === '1 lần' ? '26/07/2026' : `31/12/${new Date().getFullYear()}`);
         
         closeModal('approveModal');
         showToast('Phê duyệt yêu cầu và kích hoạt mã số sử dụng CSDL thành công', 'success');
@@ -1518,13 +1761,82 @@
         renderTable(mockData);
     }
 
+    let renewFilesList = [];
+
     function openRenewModal(idx) {
         currentRenewIdx = idx;
         const item = mockData[idx];
         document.getElementById('renewMaCSDL').value = item.maCSDL;
         document.getElementById('renewTenDT').value = item.tenKH;
         document.getElementById('renewNgayHH').value = item.ngayHH || '—';
+        clearRenewFile();
         openModal('renewModal');
+    }
+
+    function handleRenewFileChange(input) {
+        if (!input.files || input.files.length === 0) return;
+        
+        const newFiles = Array.from(input.files);
+        
+        if (renewFilesList.length + newFiles.length > 3) {
+            showToast('Chỉ được phép đính kèm tối đa 3 tệp chứng từ', 'error');
+            const allowedCount = 3 - renewFilesList.length;
+            if (allowedCount > 0) {
+                renewFilesList = renewFilesList.concat(newFiles.slice(0, allowedCount));
+            }
+        } else {
+            renewFilesList = renewFilesList.concat(newFiles);
+        }
+        
+        input.value = '';
+        renderRenewFiles();
+    }
+
+    function removeRenewFile(index) {
+        renewFilesList.splice(index, 1);
+        renderRenewFiles();
+    }
+
+    function renderRenewFiles() {
+        const fileListContainer = document.getElementById('renewFileList');
+        const uploadBtn = document.getElementById('btnUploadRenewFile');
+        
+        if (renewFilesList.length === 0) {
+            fileListContainer.innerHTML = `<span style="font-size: 13px; color: var(--text-muted);">Chưa có tệp nào được chọn</span>`;
+            uploadBtn.removeAttribute('disabled');
+            uploadBtn.style.opacity = '1';
+            uploadBtn.style.pointerEvents = 'auto';
+            return;
+        }
+        
+        fileListContainer.innerHTML = renewFilesList.map((file, idx) => {
+            const fileUrl = URL.createObjectURL(file);
+            return `
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                    <span style="color: var(--text-main); font-weight: 500; word-break: break-all;">${file.name}</span>
+                    <span style="white-space: nowrap;">
+                        (<a href="${fileUrl}" target="_blank" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Xem file</a>
+                        <span style="color: var(--border-color);">/</span>
+                        <a href="javascript:void(0)" onclick="removeRenewFile(${idx})" style="color: var(--danger-color); text-decoration: none; font-weight: 500;">Xóa</a>)
+                    </span>
+                </div>
+            `;
+        }).join('');
+        
+        if (renewFilesList.length >= 3) {
+            uploadBtn.setAttribute('disabled', 'true');
+            uploadBtn.style.opacity = '0.5';
+            uploadBtn.style.pointerEvents = 'none';
+        } else {
+            uploadBtn.removeAttribute('disabled');
+            uploadBtn.style.opacity = '1';
+            uploadBtn.style.pointerEvents = 'auto';
+        }
+    }
+
+    function clearRenewFile() {
+        renewFilesList = [];
+        renderRenewFiles();
     }
 
     function confirmRenew() {

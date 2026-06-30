@@ -68,7 +68,7 @@ let mockProfiles = [
         type: 'Xóa đăng ký',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Bảo lưu quyền sở hữu',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '291830',
         customerId: 'KH-LAN-03',
@@ -77,7 +77,7 @@ let mockProfiles = [
         channel: 'Cách thức điện tử',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '15/04/2026 08:30', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 08:30', status: 'Chờ ký', active: true }
+            { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 08:30', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 09:00', user: 'Đăng ký viên Nguyễn Văn B', action: 'Phê duyệt', comment: 'Hồ sơ đầy đủ căn cứ pháp lý giải chấp. Chờ trình ký Lãnh đạo.' },
@@ -92,7 +92,7 @@ let mockProfiles = [
         type: 'Yêu cầu cung cấp bản sao',
         transactionType: 'Hợp đồng',
         subtype: 'Hợp đồng cho thuê tài chính',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '102938',
         customerId: 'KH-VCB-04',
@@ -114,7 +114,7 @@ let mockProfiles = [
         type: 'Yêu cầu cung cấp bản sao kèm thông báo',
         transactionType: 'Hợp đồng',
         subtype: 'Hợp đồng ký gửi',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '908172',
         customerId: 'KH-TRIVIET-05',
@@ -136,7 +136,7 @@ let mockProfiles = [
         type: 'Yêu cầu cung cấp thông tin',
         transactionType: 'Hợp đồng',
         subtype: 'Hợp đồng thuê tài sản có thời hạn 1 năm trở lên',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '283749',
         customerId: 'KH-DUC-06',
@@ -158,7 +158,7 @@ let mockProfiles = [
         type: 'Thông báo xử lý tài sản',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '482719',
         customerId: 'KH-BIDV-07',
@@ -167,7 +167,7 @@ let mockProfiles = [
         channel: 'Qua bưu chính',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/01/2026 09:00', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Thông báo xử lý tài sản', date: '30/06/2026 15:30', status: 'Chờ ký', active: true }
+            { id: 'node-2', title: 'Thông báo xử lý tài sản', date: '30/06/2026 15:30', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 15:32', user: 'Hệ thống', action: 'Đối soát tài sản', comment: 'Xác định yêu cầu xử lý 1/2 tài sản bảo đảm trong hồ sơ gốc.' }
@@ -181,7 +181,7 @@ let mockProfiles = [
         type: 'Thay đổi thông báo xử lý tài sản',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '581920',
         customerId: 'KH-TCB-08',
@@ -191,7 +191,7 @@ let mockProfiles = [
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '05/01/2026 10:00', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Thông báo xử lý tài sản', date: '25/05/2026 15:00', status: 'Hoàn thành', active: false },
-            { id: 'node-3', title: 'Thay đổi thông báo xử lý', date: '30/06/2026 16:15', status: 'Chờ ký', active: true }
+            { id: 'node-3', title: 'Thay đổi thông báo xử lý', date: '30/06/2026 16:15', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 16:18', user: 'Hệ thống', action: 'Đối soát thay đổi', comment: 'Phát hiện thay đổi Địa điểm xử lý tài sản sang Hải Phòng.' }
@@ -205,7 +205,7 @@ let mockProfiles = [
         type: 'Xóa thông báo xử lý tài sản',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '681920',
         customerId: 'KH-MB-09',
@@ -215,7 +215,7 @@ let mockProfiles = [
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '01/01/2026 09:00', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Thông báo xử lý tài sản', date: '12/04/2026 11:00', status: 'Hoàn thành', active: false },
-            { id: 'node-3', title: 'Xóa thông báo xử lý', date: '30/06/2026 17:00', status: 'Chờ ký', active: true }
+            { id: 'node-3', title: 'Xóa thông báo xử lý', date: '30/06/2026 17:00', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 17:02', user: 'Hệ thống', action: 'Khôi phục trạng thái', comment: 'Thiết lập khôi phục trạng thái bình thường cho các tài sản bảo đảm.' }
@@ -258,6 +258,7 @@ let mockProfiles = [
         receipt: 'BL-991827-11',
         assetType: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)',
         channel: 'Cách thức điện tử',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '02/02/2026 09:30', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 17:30', status: 'Bị trả lại', active: true }
@@ -275,7 +276,7 @@ let mockProfiles = [
         type: 'Xóa đăng ký',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '901827',
         customerId: 'KH-TRANSPERCO-12',
@@ -284,7 +285,7 @@ let mockProfiles = [
         channel: 'Trực tiếp tại quầy',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/03/2026 08:00', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 17:45', status: 'Chờ ký', active: true }
+            { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 17:45', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 17:47', user: 'Cán bộ nghiệp vụ TTĐK', action: 'Trình ký', comment: 'Hoàn tất thủ tục trình duyệt giải chấp.' }
@@ -439,6 +440,7 @@ let mockProfiles = [
         customerId: 'KH-THEPVIET-12',
         receipt: 'BL-991827-13',
         assetType: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ...)',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/02/2026 09:30', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 18:45', status: 'Bị trả lại', active: true }
@@ -660,7 +662,7 @@ let mockProfiles = [
         type: 'Xóa đăng ký',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '392018',
         customerId: 'KH-NGUYENTHIMINH',
@@ -668,7 +670,7 @@ let mockProfiles = [
         assetType: 'Cây hằng năm, công trình tạm',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '12/03/2026 08:30', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 09:15', status: 'Chờ ký', active: true }
+            { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 09:15', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 09:20', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký xóa đăng ký thế chấp cây trồng.' }
@@ -682,14 +684,14 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '492019',
         customerId: 'KH-HUNGTHINH',
         receipt: 'BL-991827-04',
         assetType: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất...',
         timeline: [
-            { id: 'node-1', title: 'Đăng ký lần đầu', date: '30/06/2026 10:30', status: 'Chờ ký', active: true }
+            { id: 'node-1', title: 'Đăng ký lần đầu', date: '30/06/2026 10:30', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 10:32', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Hồ sơ đầy đủ, trình ký duyệt.' }
@@ -725,7 +727,7 @@ let mockProfiles = [
         type: 'Xóa đăng ký',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '692019',
         customerId: 'KH-PHAMTHITUYET',
@@ -733,10 +735,80 @@ let mockProfiles = [
         assetType: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ...)',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '15/01/2026 08:30', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 14:00', status: 'Chờ ký', active: true }
+            { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 14:00', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 14:05', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký xóa thế chấp tiền gửi tiết kiệm.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000860',
+        date: '29/06/2026 15:30',
+        customer: 'Công ty Cổ phần Cơ điện lạnh Việt Nam',
+        mortgagee: 'Ngân hàng TMCP Quốc tế Việt Nam (VIB)',
+        type: 'Đăng ký thay đổi',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Thế chấp',
+        status: 'Bị trả lại',
+        statusClass: 'badge-danger',
+        pin: '394857',
+        customerId: 'KH-REE-01',
+        receipt: 'BL-991827-60',
+        assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Cách thức điện tử',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
+        timeline: [
+            { id: 'node-1', title: 'Đăng ký lần đầu', date: '01/03/2026 09:00', status: 'Hoàn thành', active: false },
+            { id: 'node-2', title: 'Đăng ký thay đổi', date: '29/06/2026 15:30', status: 'Bị trả lại', active: true }
+        ],
+        internalLogs: [
+            { time: '29/06/2026 16:00', user: 'Lãnh đạo Cục', action: 'Trả lại', comment: 'Thông tin mô tả tài sản bảo đảm (số khung xe ô tô) không trùng khớp với đăng ký gốc.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000861',
+        date: '30/06/2026 10:20',
+        customer: 'Ông Lâm Thành Phát',
+        mortgagee: 'Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)',
+        type: 'Đăng ký mới',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Thế chấp',
+        status: 'Bị trả lại',
+        statusClass: 'badge-danger',
+        pin: '284759',
+        customerId: 'KH-PHAT-02',
+        receipt: 'BL-991827-61',
+        assetType: 'Các động sản khác (tiền, giấy tờ có giá, hàng tiêu dùng, máy móc thiết bị...)',
+        channel: 'Trực tiếp tại quầy',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
+        timeline: [
+            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 10:20', status: 'Bị trả lại', active: true }
+        ],
+        internalLogs: [
+            { time: '30/06/2026 10:50', user: 'Đăng ký viên Nguyễn Văn Cán Bộ', action: 'Trả lại', comment: 'Thiếu chữ ký của Bên nhận bảo đảm trên biểu mẫu đăng ký bằng văn bản giấy.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000862',
+        date: '30/06/2026 11:45',
+        customer: 'Bà Nguyễn Thị Mai',
+        mortgagee: 'Ngân hàng TMCP Kỹ thương Việt Nam (Techcombank)',
+        type: 'Đăng ký mới',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Thế chấp',
+        status: 'Bị trả lại',
+        statusClass: 'badge-danger',
+        pin: '194857',
+        customerId: 'KH-MAI-03',
+        receipt: 'BL-991827-62',
+        assetType: 'Các động sản khác (tiền gửi tiết kiệm, vàng, đá quý...)',
+        channel: 'Cách thức điện tử',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
+        timeline: [
+            { id: 'node-1', title: 'Tiếp nhận điện tử', date: '30/06/2026 11:45', status: 'Bị trả lại', active: true }
+        ],
+        internalLogs: [
+            { time: '30/06/2026 13:10', user: 'Đăng ký viên Nguyễn Văn Cán Bộ', action: 'Trả lại', comment: 'Bản scan của Hợp đồng bảo đảm mờ, không đọc được số hợp đồng và ngày ký.' }
         ]
     }
 ];
@@ -767,16 +839,41 @@ function renderTable(resetPage = false) {
     // 2. Determine target status based on current active tab
     let targetStatuses = ['Chờ duyệt'];
     if (currentListTab === 'chonhaplieu') targetStatuses = ['Chờ nhập liệu'];
-    else if (currentListTab === 'duyet-choky') targetStatuses = ['Chờ ký'];
+    else if (currentListTab === 'duyet-choky') targetStatuses = ['Duyệt chờ ký'];
     else if (currentListTab === 'bitralai') targetStatuses = ['Bị trả lại'];
     else if (currentListTab === 'dang_xu_ly') targetStatuses = ['Chờ ký'];
     else if (currentListTab === 'da_xu_ly') targetStatuses = ['Hoàn thành', 'Bị từ chối'];
 
     // 3. Filter the complete mock profiles array plus custom localStorage data
+    const currentVersion = 'v3';
+    const savedVersion = localStorage.getItem('mock_profiles_version');
+    if (savedVersion !== currentVersion) {
+        localStorage.removeItem('custom_mock_profiles');
+        localStorage.setItem('mock_profiles_version', currentVersion);
+    }
+
     let allProfiles = [...mockProfiles];
     const cached = localStorage.getItem('custom_mock_profiles');
     if (cached) {
-        const customList = JSON.parse(cached);
+        let customList = JSON.parse(cached);
+        let upgraded = false;
+        const pendingForSigIds = ['GDBD-2026-000801', 'GDBD-2026-000802', 'GDBD-2026-000805'];
+        customList.forEach(p => {
+            if (pendingForSigIds.includes(p.id)) {
+                if (p.status === 'Duyệt chờ ký') {
+                    p.status = 'Chờ ký';
+                    upgraded = true;
+                }
+            } else {
+                if (p.status === 'Chờ ký') {
+                    p.status = 'Duyệt chờ ký';
+                    upgraded = true;
+                }
+            }
+        });
+        if (upgraded) {
+            localStorage.setItem('custom_mock_profiles', JSON.stringify(customList));
+        }
         const customIds = customList.map(c => c.id);
         allProfiles = allProfiles.filter(p => !customIds.includes(p.id));
         allProfiles = [...customList, ...allProfiles];
@@ -1300,7 +1397,7 @@ function approveDossierSingle(id) {
     const p = mockProfiles.find(prof => prof.id === id);
     if (!p) return;
 
-    p.status = 'Chờ ký';
+    p.status = 'Duyệt chờ ký';
     p.statusClass = 'badge-info';
     p.internalLogs.unshift({
         time: 'Vừa xong',
@@ -1348,10 +1445,32 @@ function updateTabBadges() {
         'duyet-choky': 0,
         bitralai: 0
     };
-    mockProfiles.forEach(p => {
+    
+    let allProfiles = [...mockProfiles];
+    const cached = localStorage.getItem('custom_mock_profiles');
+    if (cached) {
+        let customList = JSON.parse(cached);
+        const pendingForSigIds = ['GDBD-2026-000801', 'GDBD-2026-000802', 'GDBD-2026-000805'];
+        customList.forEach(p => {
+            if (pendingForSigIds.includes(p.id)) {
+                if (p.status === 'Duyệt chờ ký') {
+                    p.status = 'Chờ ký';
+                }
+            } else {
+                if (p.status === 'Chờ ký') {
+                    p.status = 'Duyệt chờ ký';
+                }
+            }
+        });
+        const customIds = customList.map(c => c.id);
+        allProfiles = allProfiles.filter(p => !customIds.includes(p.id));
+        allProfiles = [...customList, ...allProfiles];
+    }
+
+    allProfiles.forEach(p => {
         if (p.status === 'Chờ nhập liệu') counts.chonhaplieu++;
         else if (p.status === 'Chờ duyệt') counts.choduyet++;
-        else if (p.status === 'Chờ ký') counts['duyet-choky']++;
+        else if (p.status === 'Duyệt chờ ký') counts['duyet-choky']++;
         else if (p.status === 'Bị trả lại') counts.bitralai++;
     });
 
@@ -1599,7 +1718,7 @@ function renderDetailActionButtons() {
             <button class="btn btn-success" onclick="handleDetailAction('duyet')">✔ Duyệt</button>
             <button class="btn btn-primary" onclick="handleDetailAction('trinhky')">📝 Trình ký</button>
         `;
-    } else if (status === 'Chờ ký') {
+    } else if (status === 'Duyệt chờ ký') {
         opinionGroup.style.display = 'block';
         document.getElementById('opinion-req-star').style.display = 'none';
         buttonsContainer.innerHTML = `
@@ -2113,7 +2232,7 @@ function handleDetailAction(action) {
 
     if (action === 'duyet') {
         alert(`Hồ sơ ${currentProfile.id} phê duyệt thành công! Chuyển sang danh mục Chờ ký.`);
-        currentProfile.status = 'Chờ ký';
+        currentProfile.status = 'Duyệt chờ ký';
         currentProfile.statusClass = 'badge-info';
 
         // Ghi log xử lý nội bộ
@@ -2258,7 +2377,7 @@ function confirmPreviewAction() {
     closeModal('modalPreview');
     const reason = document.getElementById('rejectReason')?.value.trim() || 'Từ chối giải quyết hồ sơ.';
 
-    const statusVal = currentPreviewType === 'trinhky' ? 'Chờ ký' : 'Bị từ chối';
+    const statusVal = currentPreviewType === 'trinhky' ? 'Duyệt chờ ký' : 'Bị từ chối';
     const statusClassVal = currentPreviewType === 'trinhky' ? 'badge-info' : 'badge-danger';
 
     if (singleRejectId) {
@@ -2319,7 +2438,7 @@ function approveRows() {
     selected.forEach(id => {
         const profile = mockProfiles.find(p => p.id === id);
         if (profile) {
-            profile.status = 'Chờ ký';
+            profile.status = 'Duyệt chờ ký';
             profile.statusClass = 'badge-info';
             profile.internalLogs.unshift({
                 time: 'Vừa xong',
@@ -2387,11 +2506,7 @@ function initViewMode() {
 
     // Gán cán bộ xử lý cho mock data để mô phỏng
     mockProfiles.forEach((p, idx) => {
-        if (!p.handlingOfficer) {
-            if (idx % 3 === 1) p.handlingOfficer = "Lê Anh Tuấn";
-            else if (idx % 3 === 2) p.handlingOfficer = "Trần Quốc Khánh";
-            else p.handlingOfficer = "Nguyễn Văn Cán Bộ";
-        }
+        p.handlingOfficer = "Nguyễn Văn Cán Bộ";
     });
     localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
     const urlParams = new URLSearchParams(window.location.search);
@@ -2468,3 +2583,4 @@ function getSortIcon(column) {
         ? '<i class="fa-solid fa-sort-up" style="font-size: 11px; margin-left: 4px; color: var(--secondary-color);"></i>'
         : '<i class="fa-solid fa-sort-down" style="font-size: 11px; margin-left: 4px; color: var(--secondary-color);"></i>';
 }
+

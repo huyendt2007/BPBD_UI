@@ -2341,8 +2341,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Dynamic titles for Securing Parties / Secured Parties
         const isContract = currData.transactionType === 'Hợp đồng';
         if (isContract) {
-            if (securingPartiesTitleLabel) securingPartiesTitleLabel.textContent = 'Bên thứ nhất';
-            if (securedPartiesTitleLabel) securedPartiesTitleLabel.textContent = 'Bên thứ hai';
+            if (securingPartiesTitleLabel) securingPartiesTitleLabel.textContent = 'Bên bảo đảm';
+            if (securedPartiesTitleLabel) securedPartiesTitleLabel.textContent = 'Bên nhận bảo đảm';
         } else {
             const measure = currData.measureType;
             if (measure === 'Thế chấp') {
@@ -2384,11 +2384,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (party.status === 'Bổ sung mới') {
                     rowClass = 'row-added';
                     statusTag = '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
-                    addListSummaryRow(isContract ? 'Bên thứ nhất' : 'Bên bảo đảm', party.name, 'Thêm mới', '-', `${party.name} (${party.typeName})`);
+                    addListSummaryRow(isContract ? 'Bên bảo đảm' : 'Bên bảo đảm', party.name, 'Thêm mới', '-', `${party.name} (${party.typeName})`);
                 } else if (party.status === 'Rút bớt') {
                     rowClass = 'row-removed';
                     statusTag = '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Rút bớt</span>';
-                    addListSummaryRow(isContract ? 'Bên thứ nhất' : 'Bên bảo đảm', party.name, 'Rút bớt', `${party.name} (${party.typeName})`, '-');
+                    addListSummaryRow(isContract ? 'Bên bảo đảm' : 'Bên bảo đảm', party.name, 'Rút bớt', `${party.name} (${party.typeName})`, '-');
                 } else if (party.status === 'Sửa thông tin') {
                     rowClass = 'row-modified';
                     statusTag = '<span class="table-status-tag tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>';
@@ -2457,11 +2457,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (party.status === 'Bổ sung mới') {
                     rowClass = 'row-added';
                     statusTag = '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
-                    addListSummaryRow(isContract ? 'Bên thứ hai' : 'Bên nhận bảo đảm', party.name, 'Thêm mới', '-', party.name);
+                    addListSummaryRow(isContract ? 'Bên nhận bảo đảm' : 'Bên nhận bảo đảm', party.name, 'Thêm mới', '-', party.name);
                 } else if (party.status === 'Rút bớt') {
                     rowClass = 'row-removed';
                     statusTag = '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Rút bớt</span>';
-                    addListSummaryRow(isContract ? 'Bên thứ hai' : 'Bên nhận bảo đảm', party.name, 'Rút bớt', party.name, '-');
+                    addListSummaryRow(isContract ? 'Bên nhận bảo đảm' : 'Bên nhận bảo đảm', party.name, 'Rút bớt', party.name, '-');
                 } else if (party.status === 'Sửa thông tin') {
                     rowClass = 'row-modified';
                     statusTag = '<span class="table-status-tag tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>';

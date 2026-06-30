@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Xử lý logic SPA cho UC028 - Màn hình Xem chi tiết hồ sơ (Three-Pane Layout)
  * Áp dụng tổng quát cho cả 9 loại hồ sơ theo quy chuẩn Design System.
  */
@@ -247,6 +247,7 @@ let mockProfiles = [
         customerId: 'KH-HOABINH-11',
         receipt: 'BL-991827-11',
         assetType: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '02/02/2026 09:30', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 17:30', status: 'Bị trả lại', active: true }
@@ -427,6 +428,7 @@ let mockProfiles = [
         customerId: 'KH-THEPVIET-12',
         receipt: 'BL-991827-13',
         assetType: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ...)',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/02/2026 09:30', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 18:45', status: 'Bị trả lại', active: true }
@@ -725,6 +727,76 @@ let mockProfiles = [
         ],
         internalLogs: [
             { time: '30/06/2026 14:05', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký xóa thế chấp tiền gửi tiết kiệm.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000860',
+        date: '29/06/2026 15:30',
+        customer: 'Công ty Cổ phần Cơ điện lạnh Việt Nam',
+        mortgagee: 'Ngân hàng TMCP Quốc tế Việt Nam (VIB)',
+        type: 'Đăng ký thay đổi',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Thế chấp',
+        status: 'Bị trả lại',
+        statusClass: 'badge-danger',
+        pin: '394857',
+        customerId: 'KH-REE-01',
+        receipt: 'BL-991827-60',
+        assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Cách thức điện tử',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
+        timeline: [
+            { id: 'node-1', title: 'Đăng ký lần đầu', date: '01/03/2026 09:00', status: 'Hoàn thành', active: false },
+            { id: 'node-2', title: 'Đăng ký thay đổi', date: '29/06/2026 15:30', status: 'Bị trả lại', active: true }
+        ],
+        internalLogs: [
+            { time: '29/06/2026 16:00', user: 'Lãnh đạo Cục', action: 'Trả lại', comment: 'Thông tin mô tả tài sản bảo đảm (số khung xe ô tô) không trùng khớp với đăng ký gốc.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000861',
+        date: '30/06/2026 10:20',
+        customer: 'Ông Lâm Thành Phát',
+        mortgagee: 'Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)',
+        type: 'Đăng ký mới',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Thế chấp',
+        status: 'Bị trả lại',
+        statusClass: 'badge-danger',
+        pin: '284759',
+        customerId: 'KH-PHAT-02',
+        receipt: 'BL-991827-61',
+        assetType: 'Các động sản khác (tiền, giấy tờ có giá, hàng tiêu dùng, máy móc thiết bị...)',
+        channel: 'Trực tiếp tại quầy',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
+        timeline: [
+            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 10:20', status: 'Bị trả lại', active: true }
+        ],
+        internalLogs: [
+            { time: '30/06/2026 10:50', user: 'Đăng ký viên Nguyễn Văn Cán Bộ', action: 'Trả lại', comment: 'Thiếu chữ ký của Bên nhận bảo đảm trên biểu mẫu đăng ký bằng văn bản giấy.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000862',
+        date: '30/06/2026 11:45',
+        customer: 'Bà Nguyễn Thị Mai',
+        mortgagee: 'Ngân hàng TMCP Kỹ thương Việt Nam (Techcombank)',
+        type: 'Đăng ký mới',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Thế chấp',
+        status: 'Bị trả lại',
+        statusClass: 'badge-danger',
+        pin: '194857',
+        customerId: 'KH-MAI-03',
+        receipt: 'BL-991827-62',
+        assetType: 'Các động sản khác (tiền gửi tiết kiệm, vàng, đá quý...)',
+        channel: 'Cách thức điện tử',
+        handlingOfficer: 'Nguyễn Văn Cán Bộ',
+        timeline: [
+            { id: 'node-1', title: 'Tiếp nhận điện tử', date: '30/06/2026 11:45', status: 'Bị trả lại', active: true }
+        ],
+        internalLogs: [
+            { time: '30/06/2026 13:10', user: 'Đăng ký viên Nguyễn Văn Cán Bộ', action: 'Trả lại', comment: 'Bản scan của Hợp đồng bảo đảm mờ, không đọc được số hợp đồng và ngày ký.' }
         ]
     }
 ];
@@ -2383,3 +2455,4 @@ function getSortIcon(column) {
         ? '<i class="fa-solid fa-sort-up" style="font-size: 11px; margin-left: 4px; color: var(--secondary-color);"></i>' 
         : '<i class="fa-solid fa-sort-down" style="font-size: 11px; margin-left: 4px; color: var(--secondary-color);"></i>';
 }
+
