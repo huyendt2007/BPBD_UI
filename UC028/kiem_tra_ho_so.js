@@ -734,6 +734,18 @@ let pageSize = 10;
 let currentPage = 1;
 let filteredProfiles = []; // Store currently filtered records for pagination paging
 
+function formatAssetTypeCell(assetType) {
+    if (!assetType) return '<td>-</td>';
+    const list = assetType.split(/[\|\n]|\s+\/\s+/).map(x => x.trim()).filter(Boolean);
+    if (list.length === 0) return '<td>-</td>';
+    const tooltipText = list.join('\n');
+    const displayLines = list.map(item => {
+        const truncated = item.length > 30 ? item.substring(0, 30) + '...' : item;
+        return `<div class="asset-type-line" style="margin-bottom: 2px;">${truncated}</div>`;
+    }).join('');
+    return `<td class="asset-type-cell" title="${tooltipText}" style="cursor: help; vertical-align: middle;">${displayLines}</td>`;
+}
+
 // Khởi tạo bảng dữ liệu ban đầu kết hợp lọc & phân trang
 function renderTable(resetPage = false) {
     if (resetPage) {
@@ -768,6 +780,7 @@ function renderTable(resetPage = false) {
         const filterDenngay = document.getElementById('filter-denngay')?.value || '';
 
         filteredProfiles = allProfiles.filter(p => {
+            if (p.handlingOfficer && p.handlingOfficer !== "Nguyễn Văn Cán Bộ") return false;
             if (!targetStatuses.includes(p.status)) return false;
 
             if (searchTerm && !p.customer.toLowerCase().includes(searchTerm) && !p.phone?.toLowerCase().includes(searchTerm)) return false;
@@ -814,6 +827,7 @@ function renderTable(resetPage = false) {
         const filterDenngay = document.getElementById('filter-denngay')?.value || '';
 
         filteredProfiles = allProfiles.filter(p => {
+            if (p.handlingOfficer && p.handlingOfficer !== "Nguyễn Văn Cán Bộ") return false;
             if (!targetStatuses.includes(p.status)) return false;
 
             if (searchTerm && !p.id.toLowerCase().includes(searchTerm) && !p.pin.toLowerCase().includes(searchTerm) && !p.customer.toLowerCase().includes(searchTerm) && !p.mortgagee.toLowerCase().includes(searchTerm)) return false;
@@ -881,6 +895,7 @@ function executeRender() {
                 <th style="width: 150px;">Hình thức trả kết quả</th>
                 <th style="width: 120px;">Số biên lai</th>
                 <th style="width: 120px;">Trạng thái</th>
+                <th style="width: 140px;">Cán bộ xử lý</th>
                 <th style="text-align: center; width: 100px; min-width: 100px;">Thao tác</th>
             </tr>
         `;
@@ -907,13 +922,14 @@ function executeRender() {
                 <th style="width: 250px;">Loại tài sản</th>
                 <th style="width: 110px;">Số biên lai</th>
                 <th style="width: 110px;">Trạng thái</th>
+                <th style="width: 140px;">Cán bộ xử lý</th>
                 <th style="text-align: center; width: ${actionsMinWidth}; min-width: ${actionsMinWidth};">Thao tác</th>
             </tr>
         `;
     }
 
     const totalCount = filteredProfiles.length;
-    const colSpanCount = currentListTab === 'chonhaplieu' ? 13 : 14;
+    const colSpanCount = currentListTab === 'chonhaplieu' ? 14 : 15;
 
     if (totalCount === 0) {
         tbody.innerHTML = `<tr><td colspan="${colSpanCount}" style="text-align: center; padding: 30px; color: var(--text-muted);"><i>Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm.</i></td></tr>`;
@@ -950,6 +966,7 @@ function executeRender() {
                     <td>${resultMethodText}</td>
                     <td><code>${row.receipt || '-'}</code></td>
                     <td><span class="badge badge-warning">Chờ nhập liệu</span></td>
+                    <td>${row.handlingOfficer || '-'}</td>
                     <td style="text-align: center;" onclick="event.stopPropagation()">
                         <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px; background-color: var(--secondary-color);" onclick="startDigitize('${row.id}')">
                             <i class="fa-solid fa-keyboard"></i> Nhập liệu
@@ -993,9 +1010,10 @@ function executeRender() {
                     <td>${row.type}</td>
                     <td>${row.transactionType}</td>
                     <td>${row.subtype}</td>
-                    <td>${row.assetType}</td>
+                    ${formatAssetTypeCell(row.assetType)}
                     <td><code>${row.receipt || '-'}</code></td>
                     <td><span class="badge ${row.statusClass}">${row.status}</span></td>
+                    <td>${row.handlingOfficer || '-'}</td>
                     <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
                         ${actionsHtml}
                     </td>
@@ -1085,6 +1103,7 @@ function switchListTab(tab, element) {
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     if (element) element.classList.add('active');
     currentListTab = tab;
+    sessionStorage.setItem('activeListTab', tab);
 
     // Quản lý hiển thị các toolbar và checkbox cột
     document.getElementById('toolbar-choduyet').style.display = 'none';
@@ -1408,7 +1427,20 @@ function toggleDiffOnlyMode(checkbox) {
 
 // Mở màn hình Xem chi tiết hồ sơ
 function openDetail(id) {
-    window.location.href = '../UC027/xem_chi_tiet_lich_su_can_bo.html?id=' + id + '&from=kiem_tra';
+    sessionStorage.setItem('prevCanBoPage', window.location.href);
+    
+    // Tìm kiếm node đang active để truyền tham số focusId
+    let focusId = '';
+    const cached = localStorage.getItem('custom_mock_profiles');
+    if (cached) {
+        const list = JSON.parse(cached);
+        const matched = list.find(p => p.id === id);
+        if (matched && matched.timeline) {
+            const activeNode = matched.timeline.find(n => n.active);
+            if (activeNode) focusId = activeNode.id;
+        }
+    }
+    window.location.href = '../UC027/xem_chi_tiet_lich_su_can_bo.html?id=' + id + (focusId ? '&focusId=' + focusId : '') + '&from=kiem_tra';
 }
 
 // Render Trục Vòng đời Giao dịch (Vùng 1)
@@ -2291,6 +2323,16 @@ function initViewMode() {
     } else {
         localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
     }
+
+    // Gán cán bộ xử lý cho mock data để mô phỏng
+    mockProfiles.forEach((p, idx) => {
+        if (!p.handlingOfficer) {
+            if (idx % 3 === 1) p.handlingOfficer = "Lê Anh Tuấn";
+            else if (idx % 3 === 2) p.handlingOfficer = "Trần Quốc Khánh";
+            else p.handlingOfficer = "Nguyễn Văn Cán Bộ";
+        }
+    });
+    localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
     const urlParams = new URLSearchParams(window.location.search);
     const viewMode = urlParams.get('view');
 
@@ -2314,10 +2356,34 @@ function initViewMode() {
     } else {
         if (navTabs) navTabs.style.display = 'flex';
         if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ CHỜ XỬ LÝ';
-        currentListTab = 'chonhaplieu';
+        
+        const savedTab = sessionStorage.getItem('activeListTab');
+        if (savedTab && ['chonhaplieu', 'choduyet', 'duyet-choky', 'bitralai'].includes(savedTab)) {
+            currentListTab = savedTab;
+            if (navTabs) {
+                navTabs.querySelectorAll('.nav-tab').forEach(t => {
+                    const onclickAttr = t.getAttribute('onclick') || '';
+                    if (onclickAttr.includes(`'${savedTab}'`) || onclickAttr.includes(`"${savedTab}"`)) {
+                        navTabs.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
+                        t.classList.add('active');
+                    }
+                });
+            }
+        } else {
+            currentListTab = 'chonhaplieu';
+        }
+        
         document.getElementById('toolbar-choduyet').style.display = 'none';
         document.getElementById('toolbar-duyet-choky').style.display = 'none';
         document.getElementById('toolbar-choky').style.display = 'none';
+        
+        if (currentListTab === 'choduyet') {
+            document.getElementById('toolbar-choduyet').style.display = 'flex';
+        } else if (currentListTab === 'duyet-choky') {
+            document.getElementById('toolbar-duyet-choky').style.display = 'flex';
+        } else if (currentListTab === 'choky' || currentListTab === 'bitralai') {
+            document.getElementById('toolbar-choky').style.display = 'block';
+        }
     }
 
     renderFilterPanel();

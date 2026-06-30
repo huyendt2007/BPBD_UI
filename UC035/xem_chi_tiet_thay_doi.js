@@ -2215,21 +2215,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (portalParam === 'can_bo') {
                 if (fromParam === 'search' || fromParam === 'tthc') {
-                    window.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
+                    if (window.top !== window.self) {
+                        window.top.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
+                    } else {
+                        window.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
+                    }
                 } else {
-                    window.location.href = '../trang_tong_the_website_can_bo.html';
+                    if (window.top !== window.self) {
+                        window.top.location.href = '../trang_tong_the_website_can_bo.html';
+                    } else {
+                        window.location.href = '../trang_tong_the_website_can_bo.html';
+                    }
                 }
             } else {
-                if (fromParam === 'search') {
-                    window.location.href = '../trang_tong_the_website_khach_hang.html?screen=search';
-                } else if (fromParam === 'tthc') {
-                    window.location.href = '../trang_tong_the_website_khach_hang.html?screen=search&tab=tthc';
-                } else if (fromParam === 'change') {
-                    window.location.href = '../trang_tong_the_website_khach_hang.html?screen=change-registration';
-                } else if (fromParam === 'registered') {
-                    window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                if (window.parent && window.parent !== window && typeof window.parent.showScreen === 'function') {
+                    if (fromParam === 'search') {
+                        window.parent.showScreen('search');
+                    } else if (fromParam === 'tthc') {
+                        window.parent.showScreen('search', 'tthc');
+                    } else if (fromParam === 'change') {
+                        window.parent.showScreen('change-registration');
+                    } else {
+                        window.parent.showScreen('registered-requests');
+                    }
                 } else {
-                    window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                    if (fromParam === 'search') {
+                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=search';
+                    } else if (fromParam === 'tthc') {
+                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=search&tab=tthc';
+                    } else if (fromParam === 'change') {
+                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=change-registration';
+                    } else if (fromParam === 'registered') {
+                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                    } else {
+                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                    }
                 }
             }
         });

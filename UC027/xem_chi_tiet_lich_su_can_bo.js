@@ -1249,26 +1249,133 @@ document.addEventListener('DOMContentLoaded', function () {
     const isSingleMode = urlParams.get('mode') === 'single';
     const mockTimelineData = [];
 
-    // Phân loại hồ sơ để giả lập (Một phiên bản gốc vs Nhiều phiên bản lịch sử)
-    const isSingleDossier = regNumParam.includes('000812') || 
-                            regNumParam === '1505156440' || 
-                            regNumParam === '1505156441' || 
-                            regNumParam === '1505156442' || 
-                            regNumParam === '1505156443';
+    // Kiểm tra xem hồ sơ có tồn tại trong custom_mock_profiles của localStorage không
+    const cached = localStorage.getItem('custom_mock_profiles');
+    let matchedProfile = null;
+    if (cached) {
+        try {
+            const list = JSON.parse(cached);
+            matchedProfile = list.find(p => {
+                if (!p || !p.id) return false;
+                const pid = p.id.toLowerCase();
+                const rnp = regNumParam.toLowerCase();
+                return pid === rnp || pid.replace(/-/g, '') === rnp.replace(/-/g, '');
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
-    if (isSingleDossier) {
-        // Hồ sơ gốc chỉ có duy nhất 1 phiên bản
-        mockTimelineData.push(v1);
-    } else if (regNumParam.includes('000813') || regNumParam.includes('000814') || regNumParam === '1505156438' || regNumParam === '1505156439') {
-        // Hồ sơ có 2 phiên bản lịch sử thay đổi
-        mockTimelineData.push(h38_v2);
-        mockTimelineData.push(h38_v1);
-    } else if (regNumParam === '1505156435' || regNumParam === '1505156436' || regNumParam === '1505156437') {
-        // Hồ sơ có 3 phiên bản lịch sử thay đổi
-        mockTimelineData.push(h35_v3);
-        mockTimelineData.push(h35_v2);
-        mockTimelineData.push(h35_v1);
+    if (matchedProfile && matchedProfile.timeline && matchedProfile.timeline.length > 0) {
+        // Dựng timeline động từ custom mock profile
+        matchedProfile.timeline.forEach((node, idx) => {
+            const assetLines = (matchedProfile.assetType || '').split('\n').filter(Boolean);
+            const assets = assetLines.map((line, aIdx) => {
+                return {
+                    id: `asset-${aIdx + 1}`,
+                    type: "Phương tiện giao thông cơ giới đường bộ có số khung",
+                    description: line,
+                    frameNo: `FN-${matchedProfile.pin || '9920'}-${aIdx}`,
+                    engineNo: `EN-${matchedProfile.pin || '8830'}-${aIdx}`,
+                    plateNo: `29D-${matchedProfile.pin || '123'}.${aIdx}0`,
+                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
+                };
+            });
+
+            const v = {
+                version: idx + 1,
+                label: node.title,
+                badgeClass: node.title.includes("lần đầu") || node.title.includes("mới") || node.title.includes("Gốc") ? "badge-initial" : 
+                            (node.title.includes("thay đổi") ? "badge-change" : 
+                            (node.title.includes("Xóa") ? "badge-delete" : "badge-other")),
+                title: `${node.title} (${node.status})`,
+                statusText: node.status,
+                date: node.date,
+                regCode: matchedProfile.id,
+                description: `${node.title} cho tài sản bảo đảm`,
+                active: node.active || false,
+                isPending: ["Chờ duyệt", "Chờ ký", "Chờ thanh toán"].includes(node.status),
+                nodeId: node.id,
+                data: {
+                    registrantName: matchedProfile.customer,
+                    registrantAddress: "Số 25 Trần Hưng Đạo, Quận Hoàn Kiếm, TP. Hà Nội, Việt Nam",
+                    registrantDoc: `Giay_dang_ky_${matchedProfile.id}.pdf`,
+                    regCase: node.title,
+                    firstRegNo: matchedProfile.id,
+                    firstRegDate: matchedProfile.date,
+                    viewOriginalDoc: `GCN_Goc_${matchedProfile.id}.pdf`,
+                    receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản quốc gia",
+                    transactionType: matchedProfile.transactionType || "Biện pháp bảo đảm",
+                    measureType: matchedProfile.subtype || "Thế chấp",
+                    contractType: "",
+                    contractNo: `HĐTC-${matchedProfile.pin || '2026'}`,
+                    contractDate: "14/06/2026",
+                    loanValue: "1.500.000.000 VNĐ",
+                    scale: "Doanh nghiệp",
+                    femaleOwner: "Không",
+                    securingParties: [
+                        {
+                            type: "tc_vn",
+                            typeName: "Tổ chức trong nước",
+                            name: matchedProfile.customer,
+                            paperNo: matchedProfile.customerId || "0102030405",
+                            address: "Số 25 Trần Hưng Đạo, Quận Hoàn Kiếm, TP. Hà Nội, Việt Nam",
+                            status: "Không thay đổi"
+                        }
+                    ],
+                    securedParties: [
+                        {
+                            typeName: "Tổ chức",
+                            paperNo: "0100112437",
+                            name: matchedProfile.mortgagee,
+                            address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                            status: "Không thay đổi"
+                        }
+                    ],
+                    assets: assets
+                }
+            };
+
+            if (node.title.includes("Xóa")) {
+                v.data.deRegBasis = "Khoản 1 Điều 21 Nghị định 99/2022/NĐ-CP (Các bên thỏa thuận xóa đăng ký biện pháp bảo đảm)";
+            }
+            if (node.title.includes("Hủy")) {
+                v.data.cancelRegBasis = "Hủy đăng ký theo quyết định của cơ quan nhà nước có thẩm quyền";
+            }
+            if (node.status === "Bị từ chối") {
+                v.data.hasRejection = true;
+                v.data.rejectionReason = "Hồ sơ không hợp lệ do thông tin bên bảo đảm không khớp với cơ sở dữ liệu quốc gia về dân cư.";
+                v.data.rejectionDate = node.date;
+                v.data.rejectionUser = "Nguyễn Văn Cán Bộ";
+            }
+
+            mockTimelineData.push(v);
+        });
+
+        // Sắp xếp đưa phiên bản mới nhất lên đầu
+        mockTimelineData.sort((a, b) => b.version - a.version);
+
     } else {
+        // Phân loại hồ sơ để giả lập (Một phiên bản gốc vs Nhiều phiên bản lịch sử)
+        const isSingleDossier = regNumParam.includes('000812') || 
+                                regNumParam === '1505156440' || 
+                                regNumParam === '1505156441' || 
+                                regNumParam === '1505156442' || 
+                                regNumParam === '1505156443';
+
+        if (isSingleDossier) {
+            // Hồ sơ gốc chỉ có duy nhất 1 phiên bản
+            mockTimelineData.push(v1);
+        } else if (regNumParam.includes('000813') || regNumParam.includes('000814') || regNumParam.includes('1505156438') || regNumParam.includes('1505156439')) {
+            // Hồ sơ có 2 phiên bản lịch sử thay đổi
+            mockTimelineData.push(h38_v2);
+            mockTimelineData.push(h38_v1);
+        } else if (regNumParam.includes('1505156435') || regNumParam.includes('1505156436') || regNumParam.includes('1505156437')) {
+            // Hồ sơ có 3 phiên bản lịch sử thay đổi
+            mockTimelineData.push(h35_v3);
+            mockTimelineData.push(h35_v2);
+            mockTimelineData.push(h35_v1);
+        } else {
         // Mặc định (BD-2026-001) với 8 phiên bản + 8 phiên bản nháp (tổng cộng 17 phiên bản timeline)
         if (isSingleMode) {
             mockTimelineData.push(v1);
@@ -1304,6 +1411,7 @@ document.addEventListener('DOMContentLoaded', function () {
             mockTimelineData.sort((a, b) => b.version - a.version);
         }
     }
+}
 
     let currentSelectedVersion = null;
     let currentRole = 'canbo';
@@ -1420,16 +1528,36 @@ document.addEventListener('DOMContentLoaded', function () {
             const nodeEl = document.createElement('div');
             nodeEl.className = 'timeline-node';
             nodeEl.setAttribute('data-reg-code', node.regCode);
+            nodeEl.setAttribute('data-node-id', node.nodeId || '');
             if (currentSelectedVersion && currentSelectedVersion.version === node.version) {
                 nodeEl.classList.add('selected');
             }
             
+            let statusClass = 'status-rejected';
+            let statusTextHtml = `<i class="fa-solid fa-circle-xmark"></i> Bị từ chối`;
+            
+            if (node.statusText === 'Hoàn thành') {
+                statusClass = 'status-completed';
+                statusTextHtml = `<i class="fa-solid fa-circle-check"></i> Hoàn thành`;
+            } else if (["Chờ duyệt", "Chờ ký", "Duyệt chờ ký", "Chờ thanh toán", "Chờ nhập liệu", "Đang xử lý"].includes(node.statusText)) {
+                statusClass = 'status-pending';
+                statusTextHtml = `<i class="fa-solid fa-clock"></i> ${node.statusText}`;
+            } else if (node.statusText) {
+                if (node.statusText.includes("trả lại") || node.statusText.includes("chỉnh sửa") || node.statusText.includes("Trả lại")) {
+                    statusClass = 'status-pending';
+                    statusTextHtml = `<i class="fa-solid fa-rotate-left"></i> ${node.statusText}`;
+                } else {
+                    statusClass = 'status-rejected';
+                    statusTextHtml = `<i class="fa-solid fa-circle-xmark"></i> ${node.statusText}`;
+                }
+            }
+
             const isCompleted = node.statusText === 'Hoàn thành';
             nodeEl.innerHTML = `
                 <div class="node-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span class="node-badge ${node.badgeClass}">${node.label}</span>
-                    <span class="node-status-badge ${isCompleted ? 'status-completed' : 'status-rejected'}">
-                        ${isCompleted ? '<i class="fa-solid fa-circle-check"></i> Hoàn thành' : '<i class="fa-solid fa-circle-xmark"></i> Bị từ chối'}
+                    <span class="node-status-badge ${statusClass}">
+                        ${statusTextHtml}
                     </span>
                 </div>
                 <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; margin-bottom: 4px;">${node.title}</div>
@@ -1478,10 +1606,28 @@ document.addEventListener('DOMContentLoaded', function () {
             let clicked = false;
             
             if (focusId) {
-                const fid = focusId.toLowerCase();
+                let fid = focusId.toLowerCase();
+                // Ánh xạ các mã ID cấu trúc của cây sang mã regCode tương ứng trong timeline giả lập
+                if (fid.includes('1505156435')) {
+                    if (fid.includes('td1') || fid.includes('tđ1') || fid.includes('td2') || fid.includes('tđ2')) {
+                        fid = '1505156436';
+                    } else if (fid.includes('tbxl')) {
+                        fid = '1505156437';
+                    } else {
+                        fid = '1505156435';
+                    }
+                } else if (fid.includes('1505156438')) {
+                    if (fid.includes('tbxl') || fid.includes('xóa') || fid.includes('xoa')) {
+                        fid = '1505156439';
+                    } else {
+                        fid = '1505156438';
+                    }
+                }
+
                 const matchedEl = Array.from(timelineContainer.querySelectorAll('.timeline-node')).find(el => {
                     const code = el.getAttribute('data-reg-code').toLowerCase();
-                    return code === fid || 
+                    const nodeId = (el.getAttribute('data-node-id') || '').toLowerCase();
+                    return code === fid || nodeId === fid ||
                            (fid === 'bd-2026-001-t1' && code === 'bd-2026-001-td01') ||
                            (fid === 'bd-2026-001-cl' && code === 'bd-2026-001-cl01') ||
                            (fid === 'bd-2026-001-x1' && code === 'bd-2026-001-xd01');
@@ -2609,19 +2755,33 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         window.goBack = function() {
-            const fromParam = urlParams.get('from');
-            if (fromParam === 'ky_duyet') {
-                window.location.href = '../UC031/ky_duyet_ho_so.html';
-            } else if (fromParam === 'kiem_tra') {
-                window.location.href = '../UC028/kiem_tra_ho_so.html';
-            } else if (fromParam === 'tra_cuu') {
-                window.location.href = 'tra_cuu_thong_tin.html';
+            const prevPage = sessionStorage.getItem('prevCanBoPage');
+            if (prevPage) {
+                sessionStorage.removeItem('prevCanBoPage');
+                window.location.href = prevPage;
             } else {
-                const fromParamLower = (fromParam || '').toLowerCase();
-                if (fromParamLower === 'search' || fromParamLower === 'tthc') {
-                    window.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
+                const fromParam = urlParams.get('from');
+                if (fromParam === 'ky_duyet') {
+                    window.location.href = '../UC031/ky_duyet_ho_so.html';
+                } else if (fromParam === 'kiem_tra') {
+                    window.location.href = '../UC028/kiem_tra_ho_so.html';
+                } else if (fromParam === 'tra_cuu') {
+                    window.location.href = 'tra_cuu_thong_tin.html';
                 } else {
-                    window.location.href = '../trang_tong_the_website_can_bo.html';
+                    const fromParamLower = (fromParam || '').toLowerCase();
+                    if (fromParamLower === 'search' || fromParamLower === 'tthc') {
+                        if (window.top !== window.self) {
+                            window.top.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
+                        } else {
+                            window.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
+                        }
+                    } else {
+                        if (window.top !== window.self) {
+                            window.top.location.href = '../trang_tong_the_website_can_bo.html';
+                        } else {
+                            window.location.href = '../trang_tong_the_website_can_bo.html';
+                        }
+                    }
                 }
             }
         };
@@ -2638,9 +2798,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function goHome() {
-    if (window.top !== window.self && typeof window.top.showScreen === 'function') {
-        window.top.showScreen('home');
+    if (window.top !== window.self) {
+        window.top.location.href = '../trang_tong_the_website_can_bo.html';
     } else {
-        window.location.href = '../trang_tong_the_website_khach_hang.html';
+        window.location.href = '../trang_tong_the_website_can_bo.html';
     }
 }
