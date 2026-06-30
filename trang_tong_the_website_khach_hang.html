@@ -4210,16 +4210,16 @@
                             <thead style="background-color: var(--table-header-bg);">
                                 <tr>
                                     <th style="width: 3%;">STT</th>
-                                    <th style="width: 9%;">Số đăng ký</th>
+                                    <th style="width: 9%; cursor: pointer;" onclick="toggleRegReqSort('regNum')" id="reg-header-regNum">Số đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
                                     <th style="width: 5%;">Số PIN</th>
                                     <th style="width: 10%;">Loại đăng ký</th>
-                                    <th style="width: 10%;">Bên bảo đảm</th>
-                                    <th style="width: 10%;">Bên nhận BĐ</th>
+                                    <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('guarantor')" id="reg-header-guarantor">Bên bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                                    <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('mortgagee')" id="reg-header-mortgagee">Bên nhận BĐ <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
                                     <th style="width: 10%;">Loại hình GD</th>
                                     <th style="width: 10%;">Loại BP/HĐ</th>
                                     <th style="width: 13%;">Loại tài sản</th>
                                     <th style="width: 7%;">Trạng thái</th>
-                                    <th style="width: 7%;">Thời điểm đăng ký</th>
+                                    <th style="width: 7%; cursor: pointer;" onclick="toggleRegReqSort('date')" id="reg-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
                                     <th style="width: 6%; text-align: left; padding-left: 5px;">Thao tác</th>
                                 </tr>
                             </thead>
@@ -10374,6 +10374,8 @@
         let regReqCurrentPage = 1;
         let regReqPageSize = 10;
         let regReqFilteredData = [];
+        let regReqSortField = '';
+        let regReqSortOrder = 'asc';
 
         let registeredRequestsData = [
             {
@@ -10953,7 +10955,49 @@
                 document.getElementById('regReqSearchMeasureContractType').value !== 'Tất cả' ||
                 document.getElementById('regReqSearchAssetType').value !== 'Tất cả';
 
-            const dataList = isFiltered ? regReqFilteredData : registeredRequestsData;
+            let dataList = isFiltered ? regReqFilteredData : registeredRequestsData;
+
+            // Sắp xếp dữ liệu nếu có cột được chọn
+            if (regReqSortField) {
+                dataList = [...dataList].sort((a, b) => {
+                    let valA = '';
+                    let valB = '';
+                    
+                    if (regReqSortField === 'date') {
+                        const parseDate = (dStr) => {
+                            if (!dStr) return 0;
+                            const parts = dStr.trim().split(' ');
+                            const dateParts = parts[0].split('/');
+                            if (dateParts.length !== 3) return 0;
+                            const day = parseInt(dateParts[0], 10);
+                            const month = parseInt(dateParts[1], 10) - 1;
+                            const year = parseInt(dateParts[2], 10);
+                            let h = 0, m = 0;
+                            if (parts.length > 1) {
+                                const timeParts = parts[1].split(':');
+                                h = parseInt(timeParts[0], 10) || 0;
+                                m = parseInt(timeParts[1], 10) || 0;
+                            }
+                            return new Date(year, month, day, h, m).getTime();
+                        };
+                        valA = parseDate(a.date);
+                        valB = parseDate(b.date);
+                    } else if (regReqSortField === 'regNum') {
+                        valA = (a.regNum || '').toLowerCase();
+                        valB = (b.regNum || '').toLowerCase();
+                    } else if (regReqSortField === 'guarantor') {
+                        valA = (a.guarantor || '').toLowerCase();
+                        valB = (b.guarantor || '').toLowerCase();
+                    } else if (regReqSortField === 'mortgagee') {
+                        valA = (a.securedParty || '').toLowerCase();
+                        valB = (b.securedParty || '').toLowerCase();
+                    }
+                    
+                    if (valA < valB) return regReqSortOrder === 'asc' ? -1 : 1;
+                    if (valA > valB) return regReqSortOrder === 'asc' ? 1 : -1;
+                    return 0;
+                });
+            }
 
             if (dataList.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
@@ -11156,6 +11200,35 @@
             });
 
             tbody.innerHTML = html;
+        }
+
+        function toggleRegReqSort(field) {
+            if (regReqSortField === field) {
+                regReqSortOrder = (regReqSortOrder === 'asc') ? 'desc' : 'asc';
+            } else {
+                regReqSortField = field;
+                regReqSortOrder = 'asc';
+            }
+            
+            // Cập nhật icon sắp xếp trong DOM
+            const fields = ['regNum', 'guarantor', 'mortgagee', 'date'];
+            fields.forEach(f => {
+                const header = document.getElementById(`reg-header-${f}`);
+                if (!header) return;
+                const icon = header.querySelector('i');
+                if (!icon) return;
+                
+                if (f === regReqSortField) {
+                    icon.className = (regReqSortOrder === 'asc') ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+                    icon.style.color = '#3B82F6';
+                } else {
+                    icon.className = 'fa-solid fa-sort';
+                    icon.style.color = '#94A3B8';
+                }
+            });
+            
+            regReqCurrentPage = 1;
+            renderRegisteredRequestsTable();
         }
 
         function viewRegisteredRequest(regNum, type, versionCount) {

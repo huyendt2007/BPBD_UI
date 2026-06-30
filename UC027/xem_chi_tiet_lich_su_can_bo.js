@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const timelineSearchInput = document.getElementById('timelineSearchInput');
     const filterFromDate = document.getElementById('filterFromDate');
     const filterToDate = document.getElementById('filterToDate');
+
+    if (filterFromDate) filterFromDate.value = '';
+    if (filterToDate) filterToDate.value = '';
     const btnLoadMoreTimeline = document.getElementById('btnLoadMoreTimeline');
     const timelineMoreBtnContainer = document.getElementById('timelineMoreBtnContainer');
 
@@ -150,11 +153,61 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     id: 2,
                     typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa, đường sắt, hoặc chuyên dùng",
-                    name: "Xe tải ben 5 tấn",
-                    brandColor: "Hyundai HD120, Màu xanh",
-                    frameNo: "HYU-BEN-771122",
-                    engineNo: "ENG-D6GA-88221",
-                    plateNo: "29C-567.89",
+                    name: "Tàu cá vỏ gỗ Yamaha 200HP",
+                    brandColor: "Công suất 150CV, Trắng xanh",
+                    frameNo: "TC-9988-VN",
+                    engineNo: "ENG-YAM-55331",
+                    plateNo: "QB-90827-TS",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 3,
+                    typeName: "Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản",
+                    name: "Quyền đòi nợ trị giá 2.000.000.000 VNĐ",
+                    brandColor: "Phát sinh từ Hợp đồng mua bán số 01/2026/HĐMB đối với Công ty ABC",
+                    frameNo: "QTD-2026-001",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 4,
+                    typeName: "Cây hằng năm, công trình tạm",
+                    name: "Vườn cây cao su đang thu hoạch",
+                    brandColor: "Diện tích 5ha tại Nông trường Bình Phước",
+                    frameNo: "VCCS-2026-88",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 5,
+                    typeName: "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ",
+                    name: "Kho hàng hạt tiêu xuất khẩu",
+                    brandColor: "Khối lượng 50 tấn tại Cảng Hải Phòng",
+                    frameNo: "HT-50T-HP",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 6,
+                    typeName: "Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung",
+                    name: "50.000 cổ phiếu tự do chuyển nhượng",
+                    brandColor: "Mã HBC của Công ty Cổ phần Xây dựng Hòa Bình",
+                    frameNo: "CP-HBC-50K",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 7,
+                    typeName: "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)",
+                    name: "Dây chuyền sản xuất sợi cotton Rieter",
+                    brandColor: "Nhập khẩu Thụy Sĩ mới 100%, Model 2025",
+                    frameNo: "DC-RIETER-09",
+                    engineNo: "ENG-RIET-01",
+                    plateNo: "-",
                     status: "Đang bảo đảm"
                 }
             ]
@@ -836,8 +889,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label: "Đăng ký gốc",
         badgeClass: "badge-initial",
         title: "Đăng ký lần đầu (Gốc)",
-        statusText: "Hoàn thành",
-        date: "14/05/2026 07:58:12",
+        date: "05/06/2026 09:00:00",
         regCode: "1505156435",
         description: "Đăng ký biện pháp bảo đảm lần đầu bằng 01 phương tiện ô tô Toyota Vios",
         data: {
@@ -846,7 +898,7 @@ document.addEventListener('DOMContentLoaded', function () {
             registrantDoc: "Giay_dang_ky_1505156435.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156435",
-            firstRegDate: "14/05/2026 07:58:12",
+            firstRegDate: "05/06/2026 09:00:00",
             viewOriginalDoc: "GCN_Goc_1505156435.pdf",
             receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
             transactionType: "Biện pháp bảo đảm",
@@ -931,8 +983,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label: "Đăng ký gốc",
         badgeClass: "badge-initial",
         title: "Đăng ký lần đầu (Gốc)",
-        statusText: "Hoàn thành",
-        date: "15/06/2026 14:40:22",
+        date: "10/06/2026 11:20:00",
         regCode: "1505156438",
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô tải Hyundai Porter",
         data: {
@@ -941,7 +992,7 @@ document.addEventListener('DOMContentLoaded', function () {
             registrantDoc: "Giay_dang_ky_1505156438.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156438",
-            firstRegDate: "15/06/2026 14:40:22",
+            firstRegDate: "10/06/2026 11:20:00",
             viewOriginalDoc: "GCN_Goc_1505156438.pdf",
             receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
             transactionType: "Biện pháp bảo đảm",
@@ -1010,8 +1061,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label: "Đăng ký gốc",
         badgeClass: "badge-initial",
         title: "Đăng ký lần đầu (Gốc)",
-        statusText: "Hoàn thành",
-        date: "15/06/2026 10:20:30",
+        date: "21/06/2026 09:30:00",
         regCode: "1505156440",
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô Toyota Camry",
         data: {
@@ -1020,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', function () {
             registrantDoc: "Passport_JohnSmith.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156440",
-            firstRegDate: "15/06/2026 10:20:30",
+            firstRegDate: "21/06/2026 09:30:00",
             receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
             transactionType: "Biện pháp bảo đảm",
             measureType: "Thế chấp",
@@ -1070,8 +1120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label: "Đăng ký gốc",
         badgeClass: "badge-initial",
         title: "Đăng ký lần đầu (Gốc)",
-        statusText: "Hoàn thành",
-        date: "16/06/2026 11:30:40",
+        date: "23/06/2026 11:20:00",
         regCode: "1505156441",
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô Honda Civic",
         data: {
@@ -1080,7 +1129,7 @@ document.addEventListener('DOMContentLoaded', function () {
             registrantDoc: "ResidenceCard_Petrov.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156441",
-            firstRegDate: "16/06/2026 11:30:40",
+            firstRegDate: "23/06/2026 11:20:00",
             receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
             transactionType: "Biện pháp bảo đảm",
             measureType: "Thế chấp",
@@ -1130,8 +1179,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label: "Đăng ký gốc",
         badgeClass: "badge-initial",
         title: "Đăng ký lần đầu (Gốc)",
-        statusText: "Hoàn thành",
-        date: "17/06/2026 14:10:15",
+        date: "26/06/2026 14:00:00",
         regCode: "1505156442",
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô BMW X5",
         data: {
@@ -1140,7 +1188,7 @@ document.addEventListener('DOMContentLoaded', function () {
             registrantDoc: "GPDT_Global.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156442",
-            firstRegDate: "17/06/2026 14:10:15",
+            firstRegDate: "26/06/2026 14:00:00",
             receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
             transactionType: "Biện pháp bảo đảm",
             measureType: "Thế chấp",
@@ -1190,8 +1238,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label: "Đăng ký gốc",
         badgeClass: "badge-initial",
         title: "Đăng ký lần đầu (Gốc)",
-        statusText: "Hoàn thành",
-        date: "18/06/2026 09:05:00",
+        date: "28/06/2026 10:00:00",
         regCode: "1505156443",
         description: "Đăng ký biện pháp bảo đảm lần đầu xe tải Suzuki Carry",
         data: {
@@ -1200,7 +1247,7 @@ document.addEventListener('DOMContentLoaded', function () {
             registrantDoc: "QDTL_QuyetThang.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156443",
-            firstRegDate: "18/06/2026 09:05:00",
+            firstRegDate: "28/06/2026 10:00:00",
             receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
             transactionType: "Biện pháp bảo đảm",
             measureType: "Thế chấp",
@@ -1245,7 +1292,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     const urlParams = new URLSearchParams(window.location.search);
-    const regNumParam = urlParams.get('regNum') || urlParams.get('id') || localStorage.getItem('canBoRegNum') || '';
+    let regNumParam = urlParams.get('regNum') || urlParams.get('id') || localStorage.getItem('canBoRegNum') || '';
     const isSingleMode = urlParams.get('mode') === 'single';
     const mockTimelineData = [];
 
@@ -1266,21 +1313,88 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Fallback if not matched any dynamic or static profile
+    const validRegNums = ['1505156435', '1505156436', '1505156437', '1505156438', '1505156439', '1505156440', '1505156441', '1505156442', '1505156443', '1505156444'];
+    const hasValidMatch = validRegNums.some(r => regNumParam.includes(r));
+    if (!matchedProfile && !hasValidMatch) {
+        regNumParam = '1505156435';
+    }
+
     if (matchedProfile && matchedProfile.timeline && matchedProfile.timeline.length > 0) {
         // Dựng timeline động từ custom mock profile
         matchedProfile.timeline.forEach((node, idx) => {
-            const assetLines = (matchedProfile.assetType || '').split('\n').filter(Boolean);
-            const assets = assetLines.map((line, aIdx) => {
-                return {
-                    id: `asset-${aIdx + 1}`,
-                    type: "Phương tiện giao thông cơ giới đường bộ có số khung",
-                    description: line,
-                    frameNo: `FN-${matchedProfile.pin || '9920'}-${aIdx}`,
-                    engineNo: `EN-${matchedProfile.pin || '8830'}-${aIdx}`,
-                    plateNo: `29D-${matchedProfile.pin || '123'}.${aIdx}0`,
+            const assets = [
+                {
+                    id: 1,
+                    typeName: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
+                    name: "Xe ô tô con 5 chỗ hiệu TOYOTA VIOS",
+                    brandColor: "Màu đỏ",
+                    frameNo: `FN-${matchedProfile.pin || '9920'}-1`,
+                    engineNo: `EN-${matchedProfile.pin || '8830'}-1`,
+                    plateNo: `29D-${matchedProfile.pin || '123'}.10`,
                     status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
-                };
-            });
+                },
+                {
+                    id: 2,
+                    typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa, đường sắt, hoặc chuyên dùng",
+                    name: "Tàu cá vỏ gỗ Yamaha 200HP",
+                    brandColor: "Công suất 150CV, Trắng xanh",
+                    frameNo: `FN-${matchedProfile.pin || '9920'}-2`,
+                    engineNo: `EN-${matchedProfile.pin || '8830'}-2`,
+                    plateNo: `QB-90827-TS`,
+                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
+                },
+                {
+                    id: 3,
+                    typeName: "Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản",
+                    name: "Quyền đòi nợ trị giá 2.000.000.000 VNĐ",
+                    brandColor: "Phát sinh từ Hợp đồng mua bán số 01/2026/HĐMB đối với Công ty ABC",
+                    frameNo: `FN-${matchedProfile.pin || '9920'}-3`,
+                    engineNo: `EN-${matchedProfile.pin || '8830'}-3`,
+                    plateNo: `-`,
+                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
+                },
+                {
+                    id: 4,
+                    typeName: "Cây hằng năm, công trình tạm",
+                    name: "Vườn cây cao su đang thu hoạch",
+                    brandColor: "Diện tích 5ha tại Nông trường Bình Phước",
+                    frameNo: `FN-${matchedProfile.pin || '9920'}-4`,
+                    engineNo: `EN-${matchedProfile.pin || '8830'}-4`,
+                    plateNo: `-`,
+                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
+                },
+                {
+                    id: 5,
+                    typeName: "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ",
+                    name: "Kho hàng hạt tiêu xuất khẩu",
+                    brandColor: "Khối lượng 50 tấn tại Cảng Hải Phòng",
+                    frameNo: `FN-${matchedProfile.pin || '9920'}-5`,
+                    engineNo: `EN-${matchedProfile.pin || '8830'}-5`,
+                    plateNo: `-`,
+                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
+                },
+                {
+                    id: 6,
+                    typeName: "Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung",
+                    name: "50.000 cổ phiếu tự do chuyển nhượng",
+                    brandColor: "Mã HBC của Công ty Cổ phần Xây dựng Hòa Bình",
+                    frameNo: `FN-${matchedProfile.pin || '9920'}-6`,
+                    engineNo: `EN-${matchedProfile.pin || '8830'}-6`,
+                    plateNo: `-`,
+                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
+                },
+                {
+                    id: 7,
+                    typeName: "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)",
+                    name: "Dây chuyền sản xuất sợi cotton Rieter",
+                    brandColor: "Nhập khẩu Thụy Sĩ mới 100%, Model 2025",
+                    frameNo: `FN-${matchedProfile.pin || '9920'}-7`,
+                    engineNo: `EN-${matchedProfile.pin || '8830'}-7`,
+                    plateNo: `-`,
+                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
+                }
+            ];
 
             const v = {
                 version: idx + 1,
@@ -1356,62 +1470,402 @@ document.addEventListener('DOMContentLoaded', function () {
         mockTimelineData.sort((a, b) => b.version - a.version);
 
     } else {
-        // Phân loại hồ sơ để giả lập (Một phiên bản gốc vs Nhiều phiên bản lịch sử)
-        const isSingleDossier = regNumParam.includes('000812') || 
-                                regNumParam === '1505156440' || 
-                                regNumParam === '1505156441' || 
-                                regNumParam === '1505156442' || 
-                                regNumParam === '1505156443';
-
-        if (isSingleDossier) {
-            // Hồ sơ gốc chỉ có duy nhất 1 phiên bản
-            mockTimelineData.push(v1);
-        } else if (regNumParam.includes('000813') || regNumParam.includes('000814') || regNumParam.includes('1505156438') || regNumParam.includes('1505156439')) {
-            // Hồ sơ có 2 phiên bản lịch sử thay đổi
-            mockTimelineData.push(h38_v2);
-            mockTimelineData.push(h38_v1);
-        } else if (regNumParam.includes('1505156435') || regNumParam.includes('1505156436') || regNumParam.includes('1505156437')) {
-            // Hồ sơ có 3 phiên bản lịch sử thay đổi
+        // Ánh xạ chính xác theo mã hồ sơ tra cứu của Cán bộ (Đảm bộ đồng bộ 100% giữa UC027 lookup và timeline detail)
+        if (regNumParam.includes('1505156435')) {
+            // 1505156435: Nhiều nhánh, có hồ sơ đang chờ duyệt
+            const h35_v4 = {
+                version: 4,
+                label: "Thay đổi 2",
+                badgeClass: "badge-initial",
+                title: "Thay đổi nội dung đăng ký lần 2 (Chờ duyệt)",
+                statusText: "Chờ duyệt",
+                date: "06/06/2026 10:15:00",
+                regCode: "1505156435-TĐ2",
+                description: "Yêu cầu thay đổi bên nhận bảo đảm sang Chi nhánh mới",
+                data: JSON.parse(JSON.stringify(h35_v2.data))
+            };
+            h35_v4.data.loanValue = "1.000.000.000 VNĐ";
+            h35_v4.data.modifiedFields = {
+                loanValue: { old: "800.000.000 VNĐ" }
+            };
+            
+            // h35_v3 là Thông báo xử lý tài sản bảo đảm lần đầu
+            h35_v3.label = "Thông báo xử lý";
+            h35_v3.title = "Thông báo xử lý tài sản bảo đảm (Hoàn thành)";
+            h35_v3.date = "05/06/2026 15:30:00";
+            h35_v3.regCode = "1505156435-TBXL";
+            
+            mockTimelineData.push(h35_v4);
             mockTimelineData.push(h35_v3);
             mockTimelineData.push(h35_v2);
             mockTimelineData.push(h35_v1);
-        } else {
-        // Mặc định (BD-2026-001) với 8 phiên bản + 8 phiên bản nháp (tổng cộng 17 phiên bản timeline)
-        if (isSingleMode) {
-            mockTimelineData.push(v1);
-        } else {
-            // Đưa các phiên bản mới lên trước
-            mockTimelineData.push(v8);
-            mockTimelineData.push(v7);
-            mockTimelineData.push(v6);
-            mockTimelineData.push(v5);
-            mockTimelineData.push(v4);
-            mockTimelineData.push(v3);
-            mockTimelineData.push(v2);
+        } else if (regNumParam.includes('1505156436')) {
+            // 1505156436: Chỉ có 1 nhánh và là Chờ thanh toán
+            const h36_v1 = {
+                version: 1,
+                label: "Đăng ký gốc",
+                badgeClass: "badge-initial",
+                title: "Đăng ký lần đầu (Gốc) (Chờ thanh toán)",
+                statusText: "Chờ thanh toán",
+                date: "06/06/2026 08:30:00",
+                regCode: "1505156436",
+                description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô Toyota",
+                data: JSON.parse(JSON.stringify(h35_v1.data))
+            };
+            h36_v1.data.registrantName = "Trần Thị Bình";
+            mockTimelineData.push(h36_v1);
+        } else if (regNumParam.includes('1505156437')) {
+            // 1505156437: Chỉ có 1 nhánh và bị Từ chối
+            const h37_v1 = {
+                version: 1,
+                label: "Đăng ký gốc",
+                badgeClass: "badge-initial",
+                title: "Đăng ký lần đầu (Gốc) (Bị từ chối)",
+                statusText: "Bị từ chối",
+                date: "08/06/2026 16:45:00",
+                regCode: "1505156437",
+                description: "Đăng ký biện pháp bảo đảm lần đầu bằng các động sản khác",
+                data: JSON.parse(JSON.stringify(h35_v1.data))
+            };
+            h37_v1.data.registrantName = "Phạm Văn Cường";
+            h37_v1.data.hasRejection = true;
+            h37_v1.data.rejectionReason = "Hồ sơ không hợp lệ do thông tin bên bảo đảm không khớp với cơ sở dữ liệu quốc gia về dân cư.";
+            h37_v1.data.rejectionDate = "08/06/2026 17:00:00";
+            h37_v1.data.rejectionUser = "Nguyễn Văn Cán Bộ";
+            mockTimelineData.push(h37_v1);
+        } else if (regNumParam.includes('1505156438')) {
+            // 1505156438: Nhiều nhánh, có cả Xóa thông báo xử lý đang Chờ duyệt
+            const h38_v3 = {
+                version: 3,
+                label: "Thông báo xử lý",
+                badgeClass: "badge-change",
+                title: "Thông báo xử lý tài sản đảm bảo lần đầu (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "15/06/2026 10:00:00",
+                regCode: "1505156438-TBXL",
+                description: "Đăng ký thông báo xử lý tài sản bảo đảm",
+                data: JSON.parse(JSON.stringify(h38_v1.data))
+            };
+            h38_v3.data.assets.forEach(a => a.status = "Đang xử lý tài sản");
 
-            // Bổ sung các phiên bản phụ
-            for (let i = 8; i >= 1; i--) {
-                mockTimelineData.push({
-                    version: i + 10,
-                    label: `Thay đổi phụ ${i}`,
-                    badgeClass: "badge-change",
-                    title: `Thay đổi thông tin phụ lần ${i}`,
-                    statusText: "Hoàn thành",
-                    date: `1${i}/03/2026 10:00:00`,
-                    regCode: `BD-2026-001-TD${i + 2}`,
-                    description: `Thay đổi thông tin nhỏ liên quan đến quy trình lần thứ ${i}`,
-                    data: JSON.parse(JSON.stringify(v4.data))
-                });
+            const h38_v4 = {
+                version: 4,
+                label: "Thay đổi thông báo",
+                badgeClass: "badge-change",
+                title: "Thay đổi thông báo xử lý tài sản bảo đảm (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "16/06/2026 09:30:00",
+                regCode: "1505156438-TBXL-TĐ1",
+                description: "Thay đổi thông tin địa điểm xử lý tài sản bảo đảm",
+                data: JSON.parse(JSON.stringify(h38_v3.data))
+            };
+
+            const h38_v5 = {
+                version: 5,
+                label: "Xóa thông báo",
+                badgeClass: "badge-initial",
+                title: "Xóa đăng ký thông báo xử lý tài sản bảo đảm (Chờ duyệt)",
+                statusText: "Chờ duyệt",
+                date: "18/06/2026 14:00:00",
+                regCode: "1505156438-TBXL-X1",
+                description: "Yêu cầu xóa đăng ký thông báo xử lý tài sản bảo đảm",
+                data: JSON.parse(JSON.stringify(h38_v4.data))
+            };
+            h38_v5.data.assets.forEach(a => a.status = "Đang bảo đảm");
+
+            // Cập nhật lại h38_v2 thành Xóa đăng ký (Hoàn thành) của 1505156438-XÓA
+            h38_v2.label = "Xóa đăng ký";
+            h38_v2.title = "Xóa đăng ký (Hoàn thành)";
+            h38_v2.date = "12/06/2026 15:30:00";
+            h38_v2.regCode = "1505156438-XÓA";
+            h38_v2.data.hasDeRegistration = true;
+            h38_v2.data.deRegDate = "12/06/2026 15:30:00";
+            h38_v2.data.assets.forEach(a => a.status = "Đã giải chấp");
+
+            mockTimelineData.push(h38_v5);
+            mockTimelineData.push(h38_v4);
+            mockTimelineData.push(h38_v3);
+            mockTimelineData.push(h38_v2);
+            mockTimelineData.push(h38_v1);
+        } else if (regNumParam.includes('1505156439')) {
+            // 1505156439: Chỉ có 1 nhánh duy nhất (Hoàn thành)
+            const h39_v1 = {
+                version: 1,
+                label: "Đăng ký gốc",
+                badgeClass: "badge-initial",
+                title: "Đăng ký lần đầu (Gốc) (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "20/06/2026 10:00:00",
+                regCode: "1505156439",
+                description: "Đăng ký biện pháp bảo đảm lần đầu hàng hóa luân chuyển",
+                data: JSON.parse(JSON.stringify(h35_v1.data))
+            };
+            h39_v1.data.registrantName = "Công ty CP Thủy sản miền Nam";
+            mockTimelineData.push(h39_v1);
+        } else if (regNumParam.includes('1505156440')) {
+            // 1505156440: Nhiều nhánh nhưng đều hoàn thành rồi (2 phiên bản)
+            const h40_v2 = {
+                version: 2,
+                label: "Hủy đăng ký",
+                badgeClass: "badge-delete",
+                title: "Hủy đăng ký (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "22/06/2026 14:00:00",
+                regCode: "1505156440-HUY",
+                description: "Hủy đăng ký biện pháp bảo đảm theo quyết định tòa án",
+                data: JSON.parse(JSON.stringify(h40_v1.data))
+            };
+            h40_v2.data.hasCancelReg = true;
+            h40_v2.data.cancelRegBasis = "Hủy đăng ký theo quyết định của cơ quan nhà nước có thẩm quyền";
+            h40_v2.data.assets.forEach(a => a.status = "Đã giải chấp");
+
+            mockTimelineData.push(h40_v2);
+            mockTimelineData.push(h40_v1);
+        } else if (regNumParam.includes('1505156441')) {
+            // 1505156441: Nhiều nhánh nhưng đều hoàn thành rồi (3 phiên bản)
+            const h41_v2 = {
+                version: 2,
+                label: "Hủy đăng ký",
+                badgeClass: "badge-delete",
+                title: "Hủy đăng ký (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "24/06/2026 10:15:00",
+                regCode: "1505156441-HUY",
+                description: "Hủy đăng ký biện pháp bảo đảm theo văn bản cơ quan thi hành án",
+                data: JSON.parse(JSON.stringify(h41_v1.data))
+            };
+            h41_v2.data.hasCancelReg = true;
+            h41_v2.data.cancelRegBasis = "Hủy đăng ký theo quyết định của cơ quan nhà nước có thẩm quyền";
+            h41_v2.data.assets.forEach(a => a.status = "Đã giải chấp");
+
+            const h41_v3 = {
+                version: 3,
+                label: "Khôi phục hủy",
+                badgeClass: "badge-initial",
+                title: "Khôi phục hủy đăng ký (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "25/06/2026 15:40:00",
+                regCode: "1505156441-KP",
+                description: "Khôi phục trạng thái đăng ký ban đầu theo quyết định hành chính",
+                data: JSON.parse(JSON.stringify(h41_v1.data))
+            };
+            h41_v3.data.assets.forEach(a => a.status = "Đang bảo đảm");
+
+            mockTimelineData.push(h41_v3);
+            mockTimelineData.push(h41_v2);
+            mockTimelineData.push(h41_v1);
+        } else if (regNumParam.includes('1505156442')) {
+            // 1505156442: Nhiều nhánh đều hoàn thành rồi (2 phiên bản)
+            const h42_v2 = {
+                version: 2,
+                label: "Thay đổi 1",
+                badgeClass: "badge-change",
+                title: "Thay đổi nội dung đăng ký lần 1 (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "27/06/2026 11:30:00",
+                regCode: "1505156442-TĐ1",
+                description: "Thay đổi tăng giá trị tài sản thế chấp",
+                data: JSON.parse(JSON.stringify(h42_v1.data))
+            };
+            h42_v2.data.loanValue = "4.000.000.000 VNĐ";
+
+            mockTimelineData.push(h42_v2);
+            mockTimelineData.push(h42_v1);
+        } else if (regNumParam.includes('1505156443')) {
+            // 1505156443: Nhiều nhánh đều hoàn thành rồi (2 phiên bản)
+            const h43_v2 = {
+                version: 2,
+                label: "Xóa đăng ký",
+                badgeClass: "badge-removed",
+                title: "Xóa đăng ký (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "29/06/2026 16:30:00",
+                regCode: "1505156443-XD1",
+                description: "Xóa đăng ký toàn bộ tài sản bảo đảm",
+                data: JSON.parse(JSON.stringify(h43_v1.data))
+            };
+            h43_v2.data.hasDeRegistration = true;
+            h43_v2.data.deRegDate = "29/06/2026 16:30:00";
+            h43_v2.data.assets.forEach(a => a.status = "Đã giải chấp");
+
+            mockTimelineData.push(h43_v2);
+            mockTimelineData.push(h43_v1);
+        } else if (regNumParam.includes('1505156444')) {
+            // 1505156444: Chỉ có 1 nhánh duy nhất (Hoàn thành)
+            const h44_v1 = {
+                version: 1,
+                label: "Đăng ký gốc",
+                badgeClass: "badge-initial",
+                title: "Đăng ký lần đầu (Gốc) (Hoàn thành)",
+                statusText: "Hoàn thành",
+                date: "30/06/2026 08:30:00",
+                regCode: "1505156444",
+                description: "Đăng ký biện pháp bảo đảm lần đầu cây hằng năm",
+                data: JSON.parse(JSON.stringify(h35_v1.data))
+            };
+            h44_v1.data.registrantName = "Hợp tác xã Nông nghiệp Tiến Phát";
+            h44_v1.data.measureType = "Thế chấp";
+            h44_v1.data.assets = [
+                {
+                    id: 1,
+                    typeName: "Cây hằng năm, công trình tạm",
+                    name: "Vườn cây cao su đang thu hoạch",
+                    brandColor: "Diện tích 5ha tại Nông trường Bình Phước",
+                    frameNo: "VCCS-2026-88",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                }
+            ];
+            mockTimelineData.push(h44_v1);
+        } else if (regNumParam.includes('000812') || regNumParam.includes('000813') || regNumParam.includes('000814')) {
+            // Trường hợp từ trang kiểm tra hồ sơ
+            if (regNumParam.includes('000812')) {
+                mockTimelineData.push(v1);
+            } else {
+                mockTimelineData.push(h38_v2);
+                mockTimelineData.push(h38_v1);
             }
-            
-            // Đăng ký gốc ở cuối cùng
-            mockTimelineData.push(v1);
+        } else {
+            // Mặc định (BD-2026-001) với 8 phiên bản + 8 phiên bản nháp (tổng cộng 17 phiên bản timeline)
+            if (isSingleMode) {
+                mockTimelineData.push(v1);
+            } else {
+                // Đưa các phiên bản mới lên trước
+                mockTimelineData.push(v8);
+                mockTimelineData.push(v7);
+                mockTimelineData.push(v6);
+                mockTimelineData.push(v5);
+                mockTimelineData.push(v4);
+                mockTimelineData.push(v3);
+                mockTimelineData.push(v2);
 
-            // Sắp xếp giảm dần theo phiên bản
-            mockTimelineData.sort((a, b) => b.version - a.version);
+                // Bổ sung các phiên bản phụ
+                for (let i = 8; i >= 1; i--) {
+                    mockTimelineData.push({
+                        version: i + 10,
+                        label: `Thay đổi phụ ${i}`,
+                        badgeClass: "badge-change",
+                        title: `Thay đổi thông tin phụ lần ${i}`,
+                        statusText: "Hoàn thành",
+                        date: `1${i}/03/2026 10:00:00`,
+                        regCode: `BD-2026-001-TD${i + 2}`,
+                        description: `Thay đổi thông tin nhỏ liên quan đến quy trình lần thứ ${i}`,
+                        data: JSON.parse(JSON.stringify(v4.data))
+                    });
+                }
+                
+                // Đăng ký gốc ở cuối cùng
+                mockTimelineData.push(v1);
+            }
         }
+        // Sắp xếp giảm dần theo phiên bản
+        mockTimelineData.sort((a, b) => b.version - a.version);
     }
-}
+
+    // Cập nhật giả lập các trường thông tin chung theo yêu cầu
+    mockTimelineData.forEach(node => {
+        if (!node.statusText) {
+            node.statusText = "Hoàn thành";
+        }
+        if (node.data) {
+            node.data.transactionType = "Hợp đồng";
+            node.data.contractType = "Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác";
+            node.data.scale = "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân";
+            node.data.receivingAgency = "Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội";
+
+            // Bảng Loại tài sản giả lập đủ 7 loại tài sản
+            const baseAssets = [
+                {
+                    id: 1,
+                    typeName: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
+                    name: "Xe ô tô con 5 chỗ",
+                    brandColor: "Toyota Camry 2.5Q, Màu đen",
+                    frameNo: "CAMRY-88992211",
+                    engineNo: "ENG-2AR-998811",
+                    plateNo: "30H-123.45",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 2,
+                    typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
+                    name: "Tàu cá vỏ gỗ Yamaha 200HP",
+                    brandColor: "Công suất 150CV, Trắng xanh",
+                    frameNo: "TC-9988-VN",
+                    engineNo: "ENG-YAM-55331",
+                    plateNo: "QB-90827-TS",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 3,
+                    typeName: "Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản",
+                    name: "Quyền đòi nợ trị giá 2.000.000.000 VNĐ",
+                    brandColor: "Phát sinh từ Hợp đồng mua bán số 01/2026/HĐMB đối với Công ty ABC",
+                    frameNo: "QTD-2026-001",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 4,
+                    typeName: "Cây hằng năm, công trình tạm",
+                    name: "Vườn cây cao su đang thu hoạch",
+                    brandColor: "Diện tích 5ha tại Nông trường Bình Phước",
+                    frameNo: "VCCS-2026-88",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 5,
+                    typeName: "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ",
+                    name: "Kho hàng hạt tiêu xuất khẩu",
+                    brandColor: "Khối lượng 50 tấn tại Cảng Hải Phòng",
+                    frameNo: "HT-50T-HP",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 6,
+                    typeName: "Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung",
+                    name: "50.000 cổ phiếu tự do chuyển nhượng",
+                    brandColor: "Mã HBC của Công ty Cổ phần Xây dựng Hòa Bình",
+                    frameNo: "CP-HBC-50K",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                },
+                {
+                    id: 7,
+                    typeName: "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)",
+                    name: "Dây chuyền sản xuất sợi cotton Rieter",
+                    brandColor: "Nhập khẩu Thụy Sĩ mới 100%, Model 2025",
+                    frameNo: "DC-RIETER-09",
+                    engineNo: "ENG-RIET-01",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                }
+            ];
+
+            // Determine if the node is Xóa/Hủy/Giải chấp
+            const isRemoved = node.title.toLowerCase().includes("xóa") || 
+                              node.title.toLowerCase().includes("hủy") || 
+                              node.statusText === "Đã giải chấp" ||
+                              (node.data && (node.data.hasDeRegistration || node.data.hasCancelReg));
+
+            if (isRemoved) {
+                baseAssets.forEach(a => a.status = "Đã giải chấp");
+            } else if (node.title.toLowerCase().includes("thay đổi") || node.label.toLowerCase().includes("thay đổi") || node.version > 1) {
+                baseAssets[3].status = "Sửa thông tin";
+                baseAssets[3].prevName = "Vườn cây cao su non";
+                baseAssets[3].prevBrandColor = "Diện tích 4ha tại Nông trường Bình Phước";
+                baseAssets[4].status = "Bổ sung mới";
+            }
+
+            node.data.assets = baseAssets;
+        }
+    });
 
     let currentSelectedVersion = null;
     let currentRole = 'canbo';
@@ -1450,6 +1904,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Helper to parse dd/mm/yyyy date string to Date object
     function parseDate(dateStr) {
         if (!dateStr) return null;
+        if (dateStr.includes('-')) {
+            const parts = dateStr.split('-');
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
         // Accept dd/mm/yyyy or dd/mm/yyyy hh:mm:ss
         const parts = dateStr.trim().split(' ');
         const dateParts = parts[0].split('/');
@@ -1606,31 +2064,11 @@ document.addEventListener('DOMContentLoaded', function () {
             let clicked = false;
             
             if (focusId) {
-                let fid = focusId.toLowerCase();
-                // Ánh xạ các mã ID cấu trúc của cây sang mã regCode tương ứng trong timeline giả lập
-                if (fid.includes('1505156435')) {
-                    if (fid.includes('td1') || fid.includes('tđ1') || fid.includes('td2') || fid.includes('tđ2')) {
-                        fid = '1505156436';
-                    } else if (fid.includes('tbxl')) {
-                        fid = '1505156437';
-                    } else {
-                        fid = '1505156435';
-                    }
-                } else if (fid.includes('1505156438')) {
-                    if (fid.includes('tbxl') || fid.includes('xóa') || fid.includes('xoa')) {
-                        fid = '1505156439';
-                    } else {
-                        fid = '1505156438';
-                    }
-                }
-
+                let fid = focusId.toLowerCase().trim();
                 const matchedEl = Array.from(timelineContainer.querySelectorAll('.timeline-node')).find(el => {
-                    const code = el.getAttribute('data-reg-code').toLowerCase();
-                    const nodeId = (el.getAttribute('data-node-id') || '').toLowerCase();
-                    return code === fid || nodeId === fid ||
-                           (fid === 'bd-2026-001-t1' && code === 'bd-2026-001-td01') ||
-                           (fid === 'bd-2026-001-cl' && code === 'bd-2026-001-cl01') ||
-                           (fid === 'bd-2026-001-x1' && code === 'bd-2026-001-xd01');
+                    const code = el.getAttribute('data-reg-code').toLowerCase().trim();
+                    const nodeId = (el.getAttribute('data-node-id') || '').toLowerCase().trim();
+                    return code === fid || nodeId === fid || code.includes(fid) || fid.includes(code);
                 });
                 
                 if (matchedEl) {
@@ -1666,7 +2104,8 @@ document.addEventListener('DOMContentLoaded', function () {
         sectionRejectionInfo.style.display = 'none';
 
         // 11. Rejection block (only if version is Bị từ chối)
-        if (versionNode.statusText === 'Bị từ chối' || versionNode.data.hasRejection) {
+        const isPendingOrCompleted = ["Chờ duyệt", "Chờ ký", "Duyệt chờ ký", "Chờ thanh toán", "Chờ nhập liệu", "Đang xử lý", "Hoàn thành"].includes(versionNode.statusText);
+        if (!isPendingOrCompleted && (versionNode.statusText === 'Bị từ chối' || versionNode.data.hasRejection)) {
             sectionRejectionInfo.style.display = 'block';
             rejectDateVal.textContent = versionNode.data.rejectDate || versionNode.date;
             rejectReasonVal.textContent = versionNode.data.rejectReason || "Không có lý do chi tiết.";
@@ -2491,6 +2930,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Set up event listeners
     function setupEventListeners() {
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: () => renderTimeline(false) });
+            flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: () => renderTimeline(false) });
+        }
         // Toggle Switch
         diffToggle.addEventListener('change', applyDiffFilter);
 
@@ -2756,7 +3199,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         window.goBack = function() {
             const prevPage = sessionStorage.getItem('prevCanBoPage');
-            if (prevPage) {
+            if (prevPage && !prevPage.includes('trang_tong_the_website_can_bo.html')) {
                 sessionStorage.removeItem('prevCanBoPage');
                 window.location.href = prevPage;
             } else {
@@ -2765,23 +3208,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     window.location.href = '../UC031/ky_duyet_ho_so.html';
                 } else if (fromParam === 'kiem_tra') {
                     window.location.href = '../UC028/kiem_tra_ho_so.html';
-                } else if (fromParam === 'tra_cuu') {
-                    window.location.href = 'tra_cuu_thong_tin.html';
                 } else {
-                    const fromParamLower = (fromParam || '').toLowerCase();
-                    if (fromParamLower === 'search' || fromParamLower === 'tthc') {
-                        if (window.top !== window.self) {
-                            window.top.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
-                        } else {
-                            window.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
-                        }
-                    } else {
-                        if (window.top !== window.self) {
-                            window.top.location.href = '../trang_tong_the_website_can_bo.html';
-                        } else {
-                            window.location.href = '../trang_tong_the_website_can_bo.html';
-                        }
-                    }
+                    window.location.href = 'tra_cuu_thong_tin.html';
                 }
             }
         };
@@ -2798,9 +3226,5 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function goHome() {
-    if (window.top !== window.self) {
-        window.top.location.href = '../trang_tong_the_website_can_bo.html';
-    } else {
-        window.location.href = '../trang_tong_the_website_can_bo.html';
-    }
+    window.location.href = '../UC028/kiem_tra_ho_so.html';
 }

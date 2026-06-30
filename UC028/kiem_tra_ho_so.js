@@ -27,6 +27,7 @@ let mockProfiles = [
         customerId: 'KH-MINHTAM-01',
         receipt: 'BL-991827-01',
         assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Cách thức điện tử',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '28/06/2026 10:30', status: 'Chờ duyệt', active: true }
         ],
@@ -49,6 +50,7 @@ let mockProfiles = [
         customerId: 'KH-HUNG-02',
         receipt: 'BL-991827-02',
         assetType: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+        channel: 'Trực tiếp tại quầy',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '20/04/2026 09:00', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Đăng ký thay đổi', date: '29/06/2026 14:15', status: 'Chờ duyệt', active: true }
@@ -72,6 +74,7 @@ let mockProfiles = [
         customerId: 'KH-LAN-03',
         receipt: 'BL-991827-03',
         assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Cách thức điện tử',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '15/04/2026 08:30', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 08:30', status: 'Chờ ký', active: true }
@@ -95,6 +98,7 @@ let mockProfiles = [
         customerId: 'KH-VCB-04',
         receipt: 'BL-991827-04',
         assetType: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)',
+        channel: 'Qua bưu chính',
         timeline: [
             { id: 'node-1', title: 'Yêu cầu cung cấp bản sao', date: '30/06/2026 09:45', status: 'Chờ duyệt', active: true }
         ],
@@ -116,6 +120,7 @@ let mockProfiles = [
         customerId: 'KH-TRIVIET-05',
         receipt: 'BL-991827-05',
         assetType: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ',
+        channel: 'Cách thức điện tử',
         timeline: [
             { id: 'node-1', title: 'Yêu cầu bản sao + Thông báo', date: '30/06/2026 11:00', status: 'Chờ duyệt', active: true }
         ],
@@ -137,6 +142,7 @@ let mockProfiles = [
         customerId: 'KH-DUC-06',
         receipt: 'BL-991827-06',
         assetType: 'Cây hằng năm, công trình tạm',
+        channel: 'Cách thức điện tử',
         timeline: [
             { id: 'node-1', title: 'Yêu cầu cung cấp thông tin', date: '30/06/2026 14:00', status: 'Chờ duyệt', active: true }
         ],
@@ -158,6 +164,7 @@ let mockProfiles = [
         customerId: 'KH-BIDV-07',
         receipt: 'BL-991827-07',
         assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Qua bưu chính',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/01/2026 09:00', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Thông báo xử lý tài sản', date: '30/06/2026 15:30', status: 'Chờ ký', active: true }
@@ -180,6 +187,7 @@ let mockProfiles = [
         customerId: 'KH-TCB-08',
         receipt: 'BL-991827-08',
         assetType: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
+        channel: 'Cách thức điện tử',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '05/01/2026 10:00', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Thông báo xử lý tài sản', date: '25/05/2026 15:00', status: 'Hoàn thành', active: false },
@@ -203,6 +211,7 @@ let mockProfiles = [
         customerId: 'KH-MB-09',
         receipt: 'BL-991827-09',
         assetType: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt',
+        channel: 'Trực tiếp tại quầy',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '01/01/2026 09:00', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Thông báo xử lý tài sản', date: '12/04/2026 11:00', status: 'Hoàn thành', active: false },
@@ -226,6 +235,7 @@ let mockProfiles = [
         customerId: 'KH-ANPHAT-10',
         receipt: 'BL-991827-10',
         assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Cách thức điện tử',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '30/06/2026 17:15', status: 'Bị từ chối', active: true }
         ],
@@ -247,6 +257,7 @@ let mockProfiles = [
         customerId: 'KH-HOABINH-11',
         receipt: 'BL-991827-11',
         assetType: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)',
+        channel: 'Cách thức điện tử',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '02/02/2026 09:30', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 17:30', status: 'Bị trả lại', active: true }
@@ -270,6 +281,7 @@ let mockProfiles = [
         customerId: 'KH-TRANSPERCO-12',
         receipt: 'BL-991827-12',
         assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Trực tiếp tại quầy',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/03/2026 08:00', status: 'Hoàn thành', active: false },
             { id: 'node-2', title: 'Xóa đăng ký', date: '30/06/2026 17:45', status: 'Chờ ký', active: true }
@@ -791,14 +803,16 @@ function renderTable(resetPage = false) {
 
             if (filterTungay) {
                 const rowDate = parseDateString(p.date);
-                const fromDate = new Date(filterTungay);
-                if (rowDate < fromDate) return false;
+                const fromDate = parseDateString(filterTungay);
+                if (rowDate && fromDate && rowDate < fromDate) return false;
             }
             if (filterDenngay) {
                 const rowDate = parseDateString(p.date);
-                const toDate = new Date(filterDenngay);
-                toDate.setHours(23, 59, 59, 999);
-                if (rowDate > toDate) return false;
+                const toDate = parseDateString(filterDenngay);
+                if (rowDate && toDate) {
+                    toDate.setHours(23, 59, 59, 999);
+                    if (rowDate > toDate) return false;
+                }
             }
             return true;
         });
@@ -838,14 +852,16 @@ function renderTable(resetPage = false) {
 
             if (filterTungay) {
                 const rowDate = parseDateString(p.date);
-                const fromDate = new Date(filterTungay);
-                if (rowDate < fromDate) return false;
+                const fromDate = parseDateString(filterTungay);
+                if (rowDate && fromDate && rowDate < fromDate) return false;
             }
             if (filterDenngay) {
                 const rowDate = parseDateString(p.date);
-                const toDate = new Date(filterDenngay);
-                toDate.setHours(23, 59, 59, 999);
-                if (rowDate > toDate) return false;
+                const toDate = parseDateString(filterDenngay);
+                if (rowDate && toDate) {
+                    toDate.setHours(23, 59, 59, 999);
+                    if (rowDate > toDate) return false;
+                }
             }
             return true;
         });
@@ -905,6 +921,8 @@ function executeRender() {
             actionsMinWidth = '80px';
         } else if (currentListTab === 'bitralai') {
             actionsMinWidth = '110px';
+        } else if (currentListTab === 'choduyet') {
+            actionsMinWidth = '185px';
         }
 
         thead.innerHTML = `
@@ -922,6 +940,7 @@ function executeRender() {
                 <th style="width: 250px;">Loại tài sản</th>
                 <th style="width: 110px;">Số biên lai</th>
                 <th style="width: 110px;">Trạng thái</th>
+                <th style="width: 140px;">Nguồn tiếp nhận</th>
                 <th style="width: 140px;">Cán bộ xử lý</th>
                 <th style="text-align: center; width: ${actionsMinWidth}; min-width: ${actionsMinWidth};">Thao tác</th>
             </tr>
@@ -929,7 +948,7 @@ function executeRender() {
     }
 
     const totalCount = filteredProfiles.length;
-    const colSpanCount = currentListTab === 'chonhaplieu' ? 14 : 15;
+    const colSpanCount = currentListTab === 'chonhaplieu' ? 14 : 16;
 
     if (totalCount === 0) {
         tbody.innerHTML = `<tr><td colspan="${colSpanCount}" style="text-align: center; padding: 30px; color: var(--text-muted);"><i>Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm.</i></td></tr>`;
@@ -984,7 +1003,15 @@ function executeRender() {
                 const btnApprove = `<button class="icon-btn approve" title="Duyệt hồ sơ" onclick="event.stopPropagation(); approveDossierSingle('${row.id}')"><i class="fa fa-check"></i></button>`;
                 const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); submitForSignatureSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 const btnReject = `<button class="icon-btn reject" title="Từ chối hồ sơ" onclick="event.stopPropagation(); openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>`;
-                actionsHtml = `${btnView}${btnApprove}${btnSign}${btnReject}`;
+                
+                const isOfficerInput = (row.channel !== 'Cách thức điện tử');
+                let btnEdit = '';
+                if (isOfficerInput) {
+                    btnEdit = `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                } else {
+                    btnEdit = `<button class="icon-btn edit" title="Hồ sơ từ nguồn Khách hàng không được cập nhật" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                }
+                actionsHtml = `${btnView}${btnEdit}${btnApprove}${btnSign}${btnReject}`;
             } else if (currentListTab === 'duyet-choky') {
                 const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); submitForSignatureSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 const btnCancelApprove = `<button class="icon-btn cancel-approve" title="Hủy duyệt" onclick="event.stopPropagation(); cancelApprovalSingle('${row.id}')"><i class="fa-solid fa-rotate-left"></i></button>`;
@@ -1013,6 +1040,7 @@ function executeRender() {
                     ${formatAssetTypeCell(row.assetType)}
                     <td><code>${row.receipt || '-'}</code></td>
                     <td><span class="badge ${row.statusClass}">${row.status}</span></td>
+                    <td>${(row.channel === 'Cách thức điện tử') ? 'Khách hàng' : 'Cán bộ nhập liệu'}</td>
                     <td>${row.handlingOfficer || '-'}</td>
                     <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
                         ${actionsHtml}
@@ -1122,10 +1150,15 @@ function switchListTab(tab, element) {
     renderTable(true);
 }
 
-// Bổ sung hàm render bộ lọc và các hàm hành động đơn lẻ cho Cán bộ
 function renderFilterPanel() {
     const container = document.getElementById('filter-card-container');
     if (!container) return;
+
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    const defFromDate = `01/${month}/${year}`;
+    const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
 
     if (currentListTab === 'chonhaplieu') {
         container.innerHTML = `
@@ -1171,11 +1204,11 @@ function renderFilterPanel() {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
-                    <input type="date" class="form-control" id="filter-tungay">
+                    <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
-                    <input type="date" class="form-control" id="filter-denngay">
+                    <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
                 </div>
             </div>
             <div style="text-align: right; margin-top: 15px;">
@@ -1234,11 +1267,11 @@ function renderFilterPanel() {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
-                    <input type="date" class="form-control" id="filter-tungay">
+                    <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
-                    <input type="date" class="form-control" id="filter-denngay">
+                    <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
                 </div>
             </div>
             <div style="text-align: right; margin-top: 15px;">
@@ -1247,6 +1280,11 @@ function renderFilterPanel() {
             </div>
         `;
         updateSubTypes();
+    }
+
+    if (typeof flatpickr !== 'undefined') {
+        flatpickr("#filter-tungay", { dateFormat: "d/m/Y", allowInput: true });
+        flatpickr("#filter-denngay", { dateFormat: "d/m/Y", allowInput: true });
     }
     
     // Clear browser autofill values after rendering
@@ -1353,11 +1391,25 @@ function searchList() {
 }
 
 function parseDateString(dateStr) {
-    // format: "dd/mm/yyyy hh:mm"
-    const parts = dateStr.split(' ');
+    if (!dateStr) return null;
+    if (dateStr.includes('-')) {
+        const parts = dateStr.split('-');
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+    const parts = dateStr.trim().split(' ');
     const dmy = parts[0].split('/');
-    const hm = parts[1].split(':');
-    return new Date(dmy[2], dmy[1] - 1, dmy[0], hm[0], hm[1]);
+    if (dmy.length !== 3) return null;
+    const day = parseInt(dmy[0], 10);
+    const month = parseInt(dmy[1], 10) - 1;
+    const year = parseInt(dmy[2], 10);
+    
+    let h = 0, m = 0;
+    if (parts.length > 1 && parts[1]) {
+        const hm = parts[1].split(':');
+        h = parseInt(hm[0], 10) || 0;
+        m = parseInt(hm[1], 10) || 0;
+    }
+    return new Date(year, month, day, h, m);
 }
 
 // Xóa bộ lọc MH01
@@ -2309,13 +2361,22 @@ if (document.readyState === 'loading') {
 }
 
 function initViewMode() {
+    const originalStaticProfiles = [...mockProfiles];
     const cachedProfiles = localStorage.getItem('custom_mock_profiles');
     if (cachedProfiles) {
         const customList = JSON.parse(cachedProfiles);
-        if (customList.length < mockProfiles.length) {
+        const hasChannel = customList.some(p => p.id === 'GDBD-2026-000812' && p.channel);
+        if (!hasChannel || customList.length < originalStaticProfiles.length) {
             const customIds = customList.map(c => c.id);
-            const missing = mockProfiles.filter(p => !customIds.includes(p.id));
+            const missing = originalStaticProfiles.filter(p => !customIds.includes(p.id));
             mockProfiles = [...customList, ...missing];
+            // Overwrite missing channel data for GDBD-2026-000812 to GDBD-2026-000823
+            mockProfiles.forEach(p => {
+                const original = originalStaticProfiles.find(o => o.id === p.id);
+                if (original && original.channel) {
+                    p.channel = original.channel;
+                }
+            });
             localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
         } else {
             mockProfiles = customList;

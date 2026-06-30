@@ -4,10 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Xem chi tiết lịch sử Hồ sơ - UCPS003. Cho phép xem dòng thời gian các phiên bản, tra cứu lịch sử thay đổi, chỉnh lý, hủy, xóa đăng ký giao dịch bảo đảm và hợp đồng.">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="description"
+        content="Xem chi tiết lịch sử Hồ sơ - UCPS003. Cho phép xem dòng thời gian các phiên bản, tra cứu lịch sử thay đổi, chỉnh lý, hủy, xóa đăng ký giao dịch bảo đảm và hợp đồng.">
     <title>Xem chi tiết Hồ sơ lịch sử</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         :root {
             --primary-color: #1E3A8A;
@@ -685,7 +690,8 @@
 
         /* Highlight modified cells */
         .grid-view-table td.cell-modified {
-            border: 1.5px solid #FCD34D !important; /* viền màu vàng/cam nhạt */
+            border: 1.5px solid #FCD34D !important;
+            /* viền màu vàng/cam nhạt */
             background-color: #FFFDF5;
         }
 
@@ -693,11 +699,14 @@
         .grid-view-table tr.row-added td {
             border-top: 1.5px solid var(--success-color) !important;
             border-bottom: 1.5px solid var(--success-color) !important;
-            background-color: #F0FDF4; /* Nền xanh lá nhạt */
+            background-color: #F0FDF4;
+            /* Nền xanh lá nhạt */
         }
+
         .grid-view-table tr.row-added td:first-child {
             border-left: 1.5px solid var(--success-color) !important;
         }
+
         .grid-view-table tr.row-added td:last-child {
             border-right: 1.5px solid var(--success-color) !important;
         }
@@ -707,6 +716,7 @@
             background-color: #FEF2F2 !important;
             opacity: 0.85;
         }
+
         .grid-view-table tr.row-removed td {
             text-decoration: line-through;
             color: #991B1B !important;
@@ -716,9 +726,11 @@
             border-top: 1.5px solid #FCD34D !important;
             border-bottom: 1.5px solid #FCD34D !important;
         }
+
         .grid-view-table tr.row-modified td:first-child {
             border-left: 1.5px solid #FCD34D !important;
         }
+
         .grid-view-table tr.row-modified td:last-child {
             border-right: 1.5px solid #FCD34D !important;
         }
@@ -729,11 +741,12 @@
             color: #15803d !important;
             font-weight: 600;
         }
-        
+
         .grid-view-table tr.asset-removed {
             /* highlight nền đỏ nhạt #FEF2F2, gạch ngang toàn dòng <del>, chữ đỏ sẫm */
             background-color: #FEF2F2 !important;
         }
+
         .grid-view-table tr.asset-removed td {
             text-decoration: line-through;
             color: #991B1B !important;
@@ -743,9 +756,11 @@
             border-top: 1.5px solid #FDE68A !important;
             border-bottom: 1.5px solid #FDE68A !important;
         }
+
         .grid-view-table tr.asset-modified td:first-child {
             border-left: 1.5px solid #FDE68A !important;
         }
+
         .grid-view-table tr.asset-modified td:last-child {
             border-right: 1.5px solid #FDE68A !important;
         }
@@ -937,7 +952,8 @@
         <div class="breadcrumb">
             <a href="#" onclick="goHome(); return false;"><i class="fa-solid fa-house"></i> Trang chủ</a>
             <i class="fa-solid fa-chevron-right"></i>
-            <a href="../UC190_193/tra_cuu_srs.html">Tra cứu thông tin</a>
+            <a href="tra_cuu_thong_tin.html" onclick="window.location.href='tra_cuu_thong_tin.html'; return false;">Tra
+                cứu hồ sơ</a>
             <i class="fa-solid fa-chevron-right"></i>
             <span>Xem chi tiết lịch sử Hồ sơ</span>
         </div>
@@ -983,14 +999,14 @@
                         <label class="field-label"
                             style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 4px;">Từ
                             ngày</label>
-                        <input type="text" id="filterFromDate" placeholder="dd/mm/yyyy"
+                        <input type="text" id="filterFromDate" placeholder="dd/mm/yyyy" autocomplete="off"
                             style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 12px; box-sizing: border-box;">
                     </div>
                     <div>
                         <label class="field-label"
                             style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 4px;">Đến
                             ngày</label>
-                        <input type="text" id="filterToDate" placeholder="dd/mm/yyyy"
+                        <input type="text" id="filterToDate" placeholder="dd/mm/yyyy" autocomplete="off"
                             style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 12px; box-sizing: border-box;">
                     </div>
                 </div>
@@ -1213,7 +1229,8 @@
                 <!-- SECTION 4: BÊN BẢO ĐẢM -->
                 <section class="detail-section" id="sectionSecuringParties">
                     <h3 class="detail-section-title">
-                        <i class="fa-solid fa-user-shield"></i> <label id="securingPartiesTitleLabel">Bên bảo đảm</label>
+                        <i class="fa-solid fa-user-shield"></i> <label id="securingPartiesTitleLabel">Bên bảo
+                            đảm</label>
                     </h3>
                     <div style="overflow-x: auto;">
                         <table class="grid-view-table" id="securingPartiesTable">
@@ -1240,7 +1257,8 @@
                 <!-- SECTION 5: BÊN NHẬN BẢO ĐẢM -->
                 <section class="detail-section" id="sectionSecuredParties">
                     <h3 class="detail-section-title">
-                        <i class="fa-solid fa-building-columns"></i> <label id="securedPartiesTitleLabel">Bên nhận bảo đảm</label>
+                        <i class="fa-solid fa-building-columns"></i> <label id="securedPartiesTitleLabel">Bên nhận bảo
+                            đảm</label>
                     </h3>
                     <div style="overflow-x: auto;">
                         <table class="grid-view-table" id="securedPartiesTable">
@@ -1463,8 +1481,10 @@
                     </div>
                 </section>
                 <!-- panel-actions card for dynamic buttons based on status -->
-                <div class="panel-actions-card" style="margin-top: 25px; padding: 15px 20px; display: flex; justify-content: flex-end; gap: 12px; background-color: #F8FAFC; border-top: 1px solid var(--border-color); border-radius: var(--border-radius-lg); box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);">
-                    <div id="action-buttons-container" style="display: flex; justify-content: flex-end; gap: 12px; align-items: center; width: 100%;">
+                <div class="panel-actions-card"
+                    style="margin-top: 25px; padding: 15px 20px; display: flex; justify-content: flex-end; gap: 12px; background-color: #F8FAFC; border-top: 1px solid var(--border-color); border-radius: var(--border-radius-lg); box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);">
+                    <div id="action-buttons-container"
+                        style="display: flex; justify-content: flex-end; gap: 12px; align-items: center; width: 100%;">
                         <!-- Dynamic buttons go here -->
                     </div>
                 </div>
@@ -1485,7 +1505,7 @@
     <!-- ========================================== -->
     <!-- MODALS FOR OFFICER ACTIONS -->
     <!-- ========================================== -->
-    
+
     <!-- Modal Ký số (Nhập mã PIN) -->
     <div class="modal-overlay" id="modalSign">
         <div class="modal-content-popup">
@@ -1494,7 +1514,8 @@
                 <button class="close-btn" onclick="closeModal('modalSign')">&times;</button>
             </div>
             <div class="modal-body" style="padding: 20px;">
-                <div style="background-color: #F0F9FF; border: 1px solid #B9E6FE; color: #026AA2; padding: 16px; border-radius: var(--border-radius-md); margin-bottom: 16px; display: flex; align-items: flex-start; gap: 8px;">
+                <div
+                    style="background-color: #F0F9FF; border: 1px solid #B9E6FE; color: #026AA2; padding: 16px; border-radius: var(--border-radius-md); margin-bottom: 16px; display: flex; align-items: flex-start; gap: 8px;">
                     <i class="fa-solid fa-circle-info" style="margin-top: 2px;"></i>
                     <div>
                         <div style="font-weight: 600;">Thông tin Chứng thư số</div>
@@ -1503,14 +1524,23 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" style="font-weight:500; font-size:13px; margin-bottom:6px; display:block;">Nhập mã PIN xác thực chữ ký số <span class="required-mark" style="color:var(--danger-color)">*</span></label>
-                    <input type="password" class="form-control" id="pinCode" placeholder="Nhập mã PIN token (1234)..." style="padding: 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); width:100%; box-sizing:border-box;">
-                    <div class="error-message" id="pinError" style="color:var(--danger-color); font-size:12px; margin-top:5px; display:none;">Mã PIN xác thực không chính xác (Mã PIN đúng là 1234). Vui lòng thử lại.</div>
+                    <label class="form-label"
+                        style="font-weight:500; font-size:13px; margin-bottom:6px; display:block;">Nhập mã PIN xác thực
+                        chữ ký số <span class="required-mark" style="color:var(--danger-color)">*</span></label>
+                    <input type="password" class="form-control" id="pinCode" placeholder="Nhập mã PIN token (1234)..."
+                        style="padding: 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); width:100%; box-sizing:border-box;">
+                    <div class="error-message" id="pinError"
+                        style="color:var(--danger-color); font-size:12px; margin-top:5px; display:none;">Mã PIN xác thực
+                        không chính xác (Mã PIN đúng là 1234). Vui lòng thử lại.</div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-back" style="padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: none; cursor: pointer; font-size:13px;" onclick="closeModal('modalSign')">Hủy bỏ</button>
-                <button class="btn-back" style="padding: 8px 16px; border-radius: var(--border-radius-md); background: var(--primary-color); color: white; border: none; cursor: pointer; font-weight: 600; margin-left: 8px; font-size:13px;" onclick="submitSign()">Xác nhận Ký số</button>
+                <button class="btn-back"
+                    style="padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: none; cursor: pointer; font-size:13px;"
+                    onclick="closeModal('modalSign')">Hủy bỏ</button>
+                <button class="btn-back"
+                    style="padding: 8px 16px; border-radius: var(--border-radius-md); background: var(--primary-color); color: white; border: none; cursor: pointer; font-weight: 600; margin-left: 8px; font-size:13px;"
+                    onclick="submitSign()">Xác nhận Ký số</button>
             </div>
         </div>
     </div>
@@ -1524,31 +1554,49 @@
             </div>
             <div class="modal-body" style="padding: 20px;">
                 <div class="form-group">
-                    <label class="form-label" id="reasonLabel" style="font-weight:500; font-size:13px; margin-bottom:6px; display:block;">Nội dung lý do cụ thể <span class="required-mark" style="color:var(--danger-color)">*</span></label>
-                    <textarea class="form-control" id="reasonText" rows="4" placeholder="Nhập lý do..." style="padding: 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); width:100%; box-sizing:border-box; font-family:inherit; font-size:13px;"></textarea>
-                    <div class="error-message" id="reasonError" style="color:var(--danger-color); font-size:12px; margin-top:5px; display:none;">Vui lòng nhập lý do để tiếp tục.</div>
+                    <label class="form-label" id="reasonLabel"
+                        style="font-weight:500; font-size:13px; margin-bottom:6px; display:block;">Nội dung lý do cụ thể
+                        <span class="required-mark" style="color:var(--danger-color)">*</span></label>
+                    <textarea class="form-control" id="reasonText" rows="4" placeholder="Nhập lý do..."
+                        style="padding: 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); width:100%; box-sizing:border-box; font-family:inherit; font-size:13px;"></textarea>
+                    <div class="error-message" id="reasonError"
+                        style="color:var(--danger-color); font-size:12px; margin-top:5px; display:none;">Vui lòng nhập
+                        lý do để tiếp tục.</div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-back" style="padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: none; cursor: pointer; font-size:13px;" onclick="closeModal('modalReason')">Hủy bỏ</button>
-                <button class="btn-back" id="btnConfirmReason" style="padding: 8px 16px; border-radius: var(--border-radius-md); background: var(--danger-color); color: white; border: none; cursor: pointer; font-weight: 600; margin-left: 8px; font-size:13px;" onclick="submitReason()">Xác nhận</button>
+                <button class="btn-back"
+                    style="padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: none; cursor: pointer; font-size:13px;"
+                    onclick="closeModal('modalReason')">Hủy bỏ</button>
+                <button class="btn-back" id="btnConfirmReason"
+                    style="padding: 8px 16px; border-radius: var(--border-radius-md); background: var(--danger-color); color: white; border: none; cursor: pointer; font-weight: 600; margin-left: 8px; font-size:13px;"
+                    onclick="submitReason()">Xác nhận</button>
             </div>
         </div>
     </div>
 
     <!-- Demo Switcher for Officer Portal -->
-    <div id="demoSwitcher" style="position: fixed; bottom: 20px; left: 20px; background-color: #1E2937; color: white; padding: 10px 16px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); display: flex; gap: 10px; align-items: center; z-index: 1000; font-size: 13px; font-family: 'Inter', sans-serif;">
-        <span style="font-weight: 600; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-half-stroke" style="color: #3B82F6;"></i> Vai trò:</span>
-        <select id="roleSelector" style="background-color: #4B5563; color: white; border: none; padding: 4px 8px; border-radius: 12px; font-weight: 600; font-size: 12px; cursor: pointer; outline:none;" onchange="switchRoleDemo(this.value)">
+    <div id="demoSwitcher"
+        style="position: fixed; bottom: 20px; left: 20px; background-color: #1E2937; color: white; padding: 10px 16px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); display: flex; gap: 10px; align-items: center; z-index: 1000; font-size: 13px; font-family: 'Inter', sans-serif;">
+        <span style="font-weight: 600; display: inline-flex; align-items: center; gap: 6px;"><i
+                class="fa-solid fa-circle-half-stroke" style="color: #3B82F6;"></i> Vai trò:</span>
+        <select id="roleSelector"
+            style="background-color: #4B5563; color: white; border: none; padding: 4px 8px; border-radius: 12px; font-weight: 600; font-size: 12px; cursor: pointer; outline:none;"
+            onchange="switchRoleDemo(this.value)">
             <option value="canbo">Cán bộ (Đăng ký viên)</option>
             <option value="lanhdao">Lãnh đạo phê duyệt</option>
         </select>
         <span style="color: #4B5563;">|</span>
-        <button id="btnSwitchHistory" style="background-color: #3B82F6; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s;">Phiên bản lịch sử</button>
-        <button id="btnSwitchSingle" style="background-color: #4B5563; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s;">Gốc (Ẩn Timeline)</button>
+        <button id="btnSwitchHistory"
+            style="background-color: #3B82F6; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s;">Phiên
+            bản lịch sử</button>
+        <button id="btnSwitchSingle"
+            style="background-color: #4B5563; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s;">Gốc
+            (Ẩn Timeline)</button>
     </div>
 
-    <script src="xem_chi_tiet_lich_su_can_bo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="xem_chi_tiet_lich_su_can_bo.js?v=20260630_v2"></script>
 </body>
 
 </html>

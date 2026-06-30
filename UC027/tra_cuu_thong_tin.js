@@ -89,7 +89,7 @@ let canBoDossiersData = [
         id: "3",
         regNum: "1505156437",
         pin: "5637",
-        date: "20/05/2026 16:45",
+        date: "08/06/2026 16:45",
         type: "Đăng ký lần đầu",
         guarantor: "Phạm Văn Cường",
         securedParty: "Ngân hàng TMCP FPT",
@@ -106,7 +106,7 @@ let canBoDossiersData = [
         id: "4",
         regNum: "1505156438",
         pin: "5638",
-        date: "15/05/2026 11:20",
+        date: "10/06/2026 11:20",
         type: "Đăng ký lần đầu",
         guarantor: "Công ty TNHH Hải Nam",
         securedParty: "Ngân hàng TMCP FPT",
@@ -122,7 +122,7 @@ let canBoDossiersData = [
                 id: "4-1",
                 regNum: "1505156438-XÓA",
                 pin: "5638-X1",
-                date: "25/05/2026 15:30",
+                date: "12/06/2026 15:30",
                 type: "Xóa đăng ký",
                 guarantor: "Công ty TNHH Hải Nam",
                 securedParty: "Ngân hàng TMCP FPT",
@@ -137,7 +137,7 @@ let canBoDossiersData = [
                 id: "4-2",
                 regNum: "1505156438-TBXL",
                 pin: "5638-B1",
-                date: "26/05/2026 10:00",
+                date: "15/06/2026 10:00",
                 type: "Thông báo xử lý tài sản đảm bảo lần đầu",
                 guarantor: "Công ty TNHH Hải Nam",
                 securedParty: "Ngân hàng TMCP FPT",
@@ -153,7 +153,7 @@ let canBoDossiersData = [
                         id: "4-2-1",
                         regNum: "1505156438-TBXL-TĐ1",
                         pin: "5638-B1-T1",
-                        date: "28/05/2026 09:30",
+                        date: "16/06/2026 09:30",
                         type: "Thay đổi thông báo xử lý tài sản bảo đảm",
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
@@ -167,7 +167,7 @@ let canBoDossiersData = [
                         id: "4-2-2",
                         regNum: "1505156438-TBXL-X1",
                         pin: "5638-B1-X1",
-                        date: "30/05/2026 14:00",
+                        date: "18/06/2026 14:00",
                         type: "Xóa đăng ký thông báo xử lý tài sản bảo đảm",
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
@@ -185,7 +185,7 @@ let canBoDossiersData = [
         id: "5",
         regNum: "1505156439",
         pin: "5639",
-        date: "10/05/2026 10:00",
+        date: "20/06/2026 10:00",
         type: "Đăng ký lần đầu",
         guarantor: "Công ty CP Thủy sản miền Nam",
         securedParty: "Ngân hàng TMCP FPT",
@@ -202,7 +202,7 @@ let canBoDossiersData = [
         id: "6",
         regNum: "1505156440",
         pin: "5640",
-        date: "05/05/2026 09:30",
+        date: "21/06/2026 09:30",
         type: "Đăng ký lần đầu",
         guarantor: "Vũ Văn Giang",
         securedParty: "Ngân hàng TMCP FPT",
@@ -218,7 +218,7 @@ let canBoDossiersData = [
                 id: "6-1",
                 regNum: "1505156440-HUY",
                 pin: "5640-H1",
-                date: "08/05/2026 14:00",
+                date: "22/06/2026 14:00",
                 type: "Hủy đăng ký",
                 guarantor: "Vũ Văn Giang",
                 securedParty: "Ngân hàng TMCP FPT",
@@ -235,7 +235,7 @@ let canBoDossiersData = [
         id: "7",
         regNum: "1505156441",
         pin: "5641",
-        date: "01/05/2026 11:20",
+        date: "23/06/2026 11:20",
         type: "Đăng ký lần đầu",
         guarantor: "Phan Thanh Giản",
         securedParty: "Ngân hàng TMCP FPT",
@@ -251,7 +251,7 @@ let canBoDossiersData = [
                 id: "7-1",
                 regNum: "1505156441-HUY",
                 pin: "5641-H1",
-                date: "03/05/2026 10:15",
+                date: "24/06/2026 10:15",
                 type: "Hủy đăng ký",
                 guarantor: "Phan Thanh Giản",
                 securedParty: "Ngân hàng TMCP FPT",
@@ -267,7 +267,7 @@ let canBoDossiersData = [
                         id: "7-1-1",
                         regNum: "1505156441-KP",
                         pin: "5641-K1",
-                        date: "05/05/2026 15:40",
+                        date: "25/06/2026 15:40",
                         type: "Khôi phục hủy đăng ký",
                         guarantor: "Phan Thanh Giản",
                         securedParty: "Ngân hàng TMCP FPT",
@@ -286,7 +286,7 @@ let canBoDossiersData = [
         id: "8",
         regNum: "1505156442",
         pin: "5642",
-        date: "25/04/2026 14:00",
+        date: "26/06/2026 14:00",
         type: "Đăng ký lần đầu",
         guarantor: "Hoàng Minh Tuấn",
         securedParty: "Ngân hàng TMCP FPT",
@@ -302,7 +302,7 @@ let canBoDossiersData = [
                 id: "8-1",
                 regNum: "1505156442-TĐ1",
                 pin: "5642-T1",
-                date: "28/04/2026 11:30",
+                date: "27/06/2026 11:30",
                 type: "Đăng ký thay đổi",
                 guarantor: "Hoàng Minh Tuấn",
                 securedParty: "Ngân hàng TMCP FPT",
@@ -319,7 +319,7 @@ let canBoDossiersData = [
         id: "9",
         regNum: "1505156443",
         pin: "5643",
-        date: "20/04/2026 10:00",
+        date: "28/06/2026 10:00",
         type: "Đăng ký lần đầu",
         guarantor: "Doanh nghiệp Hải Long",
         securedParty: "Ngân hàng TMCP FPT",
@@ -335,7 +335,7 @@ let canBoDossiersData = [
                 id: "9-1",
                 regNum: "1505156443-XD1",
                 pin: "5643-X1",
-                date: "22/04/2026 16:30",
+                date: "29/06/2026 16:30",
                 type: "Xóa đăng ký",
                 guarantor: "Doanh nghiệp Hải Long",
                 securedParty: "Ngân hàng TMCP FPT",
@@ -352,7 +352,7 @@ let canBoDossiersData = [
         id: "10",
         regNum: "1505156444",
         pin: "5644",
-        date: "15/04/2026 08:30",
+        date: "30/06/2026 08:30",
         type: "Đăng ký lần đầu",
         guarantor: "Hợp tác xã Nông nghiệp Tiến Phát",
         securedParty: "Ngân hàng TMCP FPT",
@@ -392,11 +392,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (container) container.style.maxWidth = '100%';
     }
 
+    // Thiết lập mặc định Từ ngày đầu tháng đến ngày hiện tại
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    const fromDateVal = `01/${month}/${year}`;
+    const toDateVal = `${day}/${month}/${year}`;
+    
+    if (typeof flatpickr !== 'undefined') {
+        flatpickr("#cb-fromDate", { dateFormat: "d/m/Y", allowInput: true });
+        flatpickr("#cb-toDate", { dateFormat: "d/m/Y", allowInput: true });
+    }
+    
+    const fromDateInput = document.getElementById('cb-fromDate');
+    const toDateInput = document.getElementById('cb-toDate');
+    if (fromDateInput) fromDateInput.value = fromDateVal;
+    if (toDateInput) toDateInput.value = toDateVal;
+
     // Render bảng khách hàng NSD
     renderNSDTable();
 
-    // Khởi tạo bảng Cán bộ
-    renderCanBoTable();
+    // Khởi tạo bảng Cán bộ với bộ lọc mặc định
+    searchCanBo();
 
     // Event listener click ra ngoài đóng Dropdown
     document.addEventListener('click', (e) => {
@@ -517,6 +535,10 @@ function toggleCbTree(id, event) {
 // Hàm đối sánh chuỗi ngày tháng
 function parseDateString(dateStr) {
     if (!dateStr) return null;
+    if (dateStr.includes('-')) {
+        const parts = dateStr.split('-');
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
     const parts = dateStr.split(' ');
     const dateParts = parts[0].split('/');
     const timeParts = parts.length > 1 ? parts[1].split(':') : [0,0];

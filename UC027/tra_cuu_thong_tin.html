@@ -6,6 +6,7 @@
     <title>Tra cứu thông tin đăng ký</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Tái sử dụng CSS chung hoặc định nghĩa inline các biến từ css.md -->
     <style>
         :root {
@@ -369,11 +370,11 @@
             <div class="grid-3-cols" style="margin-top: 10px;">
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
-                    <input type="text" class="form-control" id="cb-fromDate" placeholder="dd/mm/yyyy">
+                    <input type="text" class="form-control flatpickr-input" id="cb-fromDate" placeholder="dd/mm/yyyy">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
-                    <input type="text" class="form-control" id="cb-toDate" placeholder="dd/mm/yyyy">
+                    <input type="text" class="form-control flatpickr-input" id="cb-toDate" placeholder="dd/mm/yyyy">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Loại đăng ký</label>
@@ -566,6 +567,7 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="tra_cuu_thong_tin.js"></script>
 </body>
 </html>

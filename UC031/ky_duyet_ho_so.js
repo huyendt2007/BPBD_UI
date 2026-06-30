@@ -792,14 +792,16 @@ function renderTable(resetPage = false) {
 
             if (filterTungay) {
                 const rowDate = parseDateString(p.date);
-                const fromDate = new Date(filterTungay);
-                if (rowDate < fromDate) return false;
+                const fromDate = parseDateString(filterTungay);
+                if (rowDate && fromDate && rowDate < fromDate) return false;
             }
             if (filterDenngay) {
                 const rowDate = parseDateString(p.date);
-                const toDate = new Date(filterDenngay);
-                toDate.setHours(23, 59, 59, 999);
-                if (rowDate > toDate) return false;
+                const toDate = parseDateString(filterDenngay);
+                if (rowDate && toDate) {
+                    toDate.setHours(23, 59, 59, 999);
+                    if (rowDate > toDate) return false;
+                }
             }
             return true;
         });
@@ -840,14 +842,16 @@ function renderTable(resetPage = false) {
 
             if (filterTungay) {
                 const rowDate = parseDateString(p.date);
-                const fromDate = new Date(filterTungay);
-                if (rowDate < fromDate) return false;
+                const fromDate = parseDateString(filterTungay);
+                if (rowDate && fromDate && rowDate < fromDate) return false;
             }
             if (filterDenngay) {
                 const rowDate = parseDateString(p.date);
-                const toDate = new Date(filterDenngay);
-                toDate.setHours(23, 59, 59, 999);
-                if (rowDate > toDate) return false;
+                const toDate = parseDateString(filterDenngay);
+                if (rowDate && toDate) {
+                    toDate.setHours(23, 59, 59, 999);
+                    if (rowDate > toDate) return false;
+                }
             }
             return true;
         });
@@ -903,6 +907,9 @@ function executeRender() {
         `;
     } else {
         let actionsMinWidth = '145px';
+        if (currentListTab === 'choduyet') {
+            actionsMinWidth = '185px';
+        }
 
         thead.innerHTML = `
             <tr>
@@ -981,7 +988,15 @@ function executeRender() {
                 const btnApprove = `<button class="icon-btn approve" title="Duyệt hồ sơ" onclick="event.stopPropagation(); approveDossierSingle('${row.id}')"><i class="fa fa-check"></i></button>`;
                 const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); submitForSignatureSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 const btnReject = `<button class="icon-btn reject" title="Từ chối hồ sơ" onclick="event.stopPropagation(); openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>`;
-                actionsHtml = `${btnView}${btnApprove}${btnSign}${btnReject}`;
+                
+                const isOfficerInput = (row.channel !== 'Cách thức điện tử');
+                let btnEdit = '';
+                if (isOfficerInput) {
+                    btnEdit = `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                } else {
+                    btnEdit = `<button class="icon-btn edit" title="Hồ sơ từ nguồn Khách hàng không được cập nhật" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                }
+                actionsHtml = `${btnView}${btnEdit}${btnApprove}${btnSign}${btnReject}`;
             } else if (currentListTab === 'duyet-choky') {
                 const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); submitForSignatureSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 const btnCancelApprove = `<button class="icon-btn cancel-approve" title="Hủy duyệt" onclick="event.stopPropagation(); cancelApprovalSingle('${row.id}')"><i class="fa-solid fa-rotate-left"></i></button>`;
@@ -1118,10 +1133,15 @@ function switchListTab(tab, element) {
     renderTable(true);
 }
 
-// Bổ sung hàm render bộ lọc và các hàm hành động đơn lẻ cho Cán bộ
 function renderFilterPanel() {
     const container = document.getElementById('filter-card-container');
     if (!container) return;
+
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    const defFromDate = `01/${month}/${year}`;
+    const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
     
     if (currentListTab === 'chonhaplieu') {
         container.innerHTML = `
@@ -1167,11 +1187,11 @@ function renderFilterPanel() {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
-                    <input type="date" class="form-control" id="filter-tungay">
+                    <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
-                    <input type="date" class="form-control" id="filter-denngay">
+                    <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Cán bộ xử lý</label>
@@ -1239,11 +1259,11 @@ function renderFilterPanel() {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
-                    <input type="date" class="form-control" id="filter-tungay">
+                    <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
-                    <input type="date" class="form-control" id="filter-denngay">
+                    <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Cán bộ xử lý</label>
@@ -1261,6 +1281,11 @@ function renderFilterPanel() {
             </div>
         `;
         updateSubTypes();
+    }
+
+    if (typeof flatpickr !== 'undefined') {
+        flatpickr("#filter-tungay", { dateFormat: "d/m/Y", allowInput: true });
+        flatpickr("#filter-denngay", { dateFormat: "d/m/Y", allowInput: true });
     }
     
     // Clear browser autofill values after rendering
@@ -1367,11 +1392,25 @@ function searchList() {
 }
 
 function parseDateString(dateStr) {
-    // format: "dd/mm/yyyy hh:mm"
-    const parts = dateStr.split(' ');
+    if (!dateStr) return null;
+    if (dateStr.includes('-')) {
+        const parts = dateStr.split('-');
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+    const parts = dateStr.trim().split(' ');
     const dmy = parts[0].split('/');
-    const hm = parts[1].split(':');
-    return new Date(dmy[2], dmy[1] - 1, dmy[0], hm[0], hm[1]);
+    if (dmy.length !== 3) return null;
+    const day = parseInt(dmy[0], 10);
+    const month = parseInt(dmy[1], 10) - 1;
+    const year = parseInt(dmy[2], 10);
+    
+    let h = 0, m = 0;
+    if (parts.length > 1 && parts[1]) {
+        const hm = parts[1].split(':');
+        h = parseInt(hm[0], 10) || 0;
+        m = parseInt(hm[1], 10) || 0;
+    }
+    return new Date(year, month, day, h, m);
 }
 
 // Xóa bộ lọc MH01

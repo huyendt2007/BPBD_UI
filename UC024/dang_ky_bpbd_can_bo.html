@@ -1100,10 +1100,10 @@
     <!-- SCRIPT ĐIỀU HỢP CÁN BỘ & ĐỐI SOÁT LIÊN KẾT -->
     <script>
         const bankAccounts = [
-            { id: "KH-VCB-04", name: "Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank)", address: "198 Trần Quang Khải, Hoàn Kiếm, Hà Nội", representative: "Nguyễn Văn An", cccd: "001090909091" },
-            { id: "KH-BIDV-01", name: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)", address: "35 Hàng Vôi, Hoàn Kiếm, Hà Nội", representative: "Trần Văn Bình", cccd: "001090909092" },
-            { id: "KH-AGRI-02", name: "Ngân hàng Nông nghiệp & Phát triển Nông thôn VN (Agribank)", address: "2 Láng Hạ, Ba Đình, Hà Nội", representative: "Phạm Văn Chung", cccd: "001090909093" },
-            { id: "KH-MB-03", name: "Ngân hàng TMCP Quân đội (MB Bank)", address: "21 Cát Linh, Đống Đa, Hà Nội", representative: "Lê Văn Dũng", cccd: "001090909094" }
+            { id: "KH-VCB-04", name: "Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank)", address: "198 Trần Quang Khải, Hoàn Kiếm, Hà Nội", representative: "Nguyễn Văn An", cccd: "001090909091", phone: "0901234567", email: "vcb_contact@vietcombank.com.vn" },
+            { id: "KH-BIDV-01", name: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)", address: "35 Hàng Vôi, Hoàn Kiếm, Hà Nội", representative: "Trần Văn Bình", cccd: "001090909092", phone: "0911223344", email: "bidv_contact@bidv.com.vn" },
+            { id: "KH-AGRI-02", name: "Ngân hàng Nông nghiệp & Phát triển Nông thôn VN (Agribank)", address: "2 Láng Hạ, Ba Đình, Hà Nội", representative: "Phạm Văn Chung", cccd: "001090909093", phone: "0922334455", email: "agribank_contact@agribank.com.vn" },
+            { id: "KH-MB-03", name: "Ngân hàng TMCP Quân đội (MB Bank)", address: "21 Cát Linh, Đống Đa, Hà Nội", representative: "Lê Văn Dũng", cccd: "001090909094", phone: "0933445566", email: "mb_contact@mbbank.com.vn" }
         ];
 
         let selectedAccount = null;
@@ -1128,14 +1128,16 @@
                 loadDossierData(editingId);
                 
                 const sectionIntake = document.getElementById('sectionIntake');
-                if (sectionIntake) sectionIntake.style.display = 'none';
+                if (sectionIntake) sectionIntake.style.display = 'block';
 
                 const btnSaveDraft = document.getElementById('btnSaveDraft');
                 const btnPrintReceipt = document.getElementById('btnPrintReceipt');
                 const btnSubmitOfficer = document.getElementById('btnSubmitOfficer');
                 if (btnSaveDraft) btnSaveDraft.style.display = 'none';
                 if (btnPrintReceipt) btnPrintReceipt.style.display = 'none';
-                if (btnSubmitOfficer) btnSubmitOfficer.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Gửi hồ sơ';
+                if (btnSubmitOfficer) btnSubmitOfficer.innerHTML = '<i class="fa-solid fa-save"></i> Cập nhật';
+                const pageTitle = document.querySelector('.page-title');
+                if (pageTitle) pageTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT BIỆN PHÁP BẢO ĐẢM, HỢP ĐỒNG (CÁN BỘ)';
             }
         });
 
@@ -1423,7 +1425,8 @@
             if (status === 'Chờ duyệt') statusClass = 'badge-warning';
             if (status === 'Bản nháp') statusClass = 'badge-info';
 
-            const editingId = localStorage.getItem('selected_dossier_id') || `GDBD-2026-${Math.floor(100000 + Math.random()*900000)}`;
+            const activeEditingId = localStorage.getItem('selected_dossier_id');
+            const editingId = activeEditingId || `GDBD-2026-${Math.floor(100000 + Math.random()*900000)}`;
 
             // Collect parties
             const tbodyTC = document.getElementById('tbodyTC');
@@ -1448,7 +1451,7 @@
                 status: status,
                 statusClass: statusClass,
                 pin: String(Math.floor(100000 + Math.random()*900000)),
-                customerId: document.getElementById('khVangLai').checked ? 'KH-VANGLAI' : (selectedAccount ? selectedAccount.id : 'KH-DINHDANH'),
+                customerId: document.getElementById('khVangLai').checked ? 'KH-VANGLAI' : (window.selectedAccount ? window.selectedAccount.id : 'KH-DINHDANH'),
                 receipt: pay === 'mien_phi' ? 'Miễn phí' : `BL-${Math.floor(100000 + Math.random()*900000)}`,
                 assetType: checkedAssetTypes.length > 0 ? checkedAssetTypes[0] : 'Chưa nhập liệu',
                 timeline: [
@@ -1465,13 +1468,43 @@
                 currentMock = JSON.parse(cached);
             }
 
+            const existingDossier = currentMock.find(p => p.id === editingId);
+            if (existingDossier) {
+                newDossier.pin = existingDossier.pin;
+                newDossier.customerId = existingDossier.customerId || newDossier.customerId;
+                newDossier.receipt = existingDossier.receipt || newDossier.receipt;
+                
+                // If it is 'Bị trả lại', after Cập nhật we submit it for review -> 'Chờ duyệt'
+                if (existingDossier.status === 'Bị trả lại') {
+                    newDossier.status = 'Chờ duyệt';
+                    newDossier.statusClass = 'badge-warning';
+                } else {
+                    newDossier.status = existingDossier.status;
+                    newDossier.statusClass = existingDossier.statusClass;
+                }
+                
+                newDossier.handlingOfficer = existingDossier.handlingOfficer;
+                newDossier.channel = existingDossier.channel || 'Trực tiếp tại quầy';
+                newDossier.timeline = existingDossier.timeline;
+                
+                const timeNow = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour12: false}).substring(0, 5);
+                newDossier.internalLogs = [
+                    { time: timeNow, user: 'Cán bộ nghiệp vụ TTĐK', action: 'Cập nhật', comment: 'Cập nhật hồ sơ thành công.' },
+                    ...existingDossier.internalLogs
+                ];
+            }
+
             currentMock = currentMock.filter(p => p.id !== editingId);
             currentMock.unshift(newDossier);
 
             localStorage.setItem('custom_mock_profiles', JSON.stringify(currentMock));
             localStorage.removeItem('selected_dossier_id');
 
-            alert(`Lưu hồ sơ ${editingId} thành công ở trạng thái [${status}].`);
+            if (activeEditingId) {
+                alert(`Cập nhật hồ sơ ${editingId} thành công.`);
+            } else {
+                alert(`Lưu hồ sơ ${editingId} thành công ở trạng thái [${status}].`);
+            }
             goBack();
         }
 
@@ -1500,24 +1533,375 @@
             }
             isScanCompleted = true;
 
-            // Điền sẵn dữ liệu ngầm cho các trường tiếp nhận để qua được validate khi gửi
-            const elTen = document.getElementById('tenNguoiNop');
-            const elCccd = document.getElementById('cccdNguoiNop');
-            const elSdt = document.getElementById('sdtKhachHang');
-            const elEmail = document.getElementById('emailKhachHang');
-            
-            if (elTen) elTen.value = selectedItem.customer || 'Khách hàng vãng lai';
-            if (elCccd) elCccd.value = selectedItem.cccd || '001090909090';
-            if (elSdt) elSdt.value = selectedItem.phone || '0901234567';
-            if (elEmail) elEmail.value = selectedItem.email || 'customer@example.com';
+            // Kênh tiếp nhận
+            if (selectedItem.channel) {
+                const kenh = document.getElementById('kenhTiepNhan');
+                if (kenh) {
+                    if (selectedItem.channel.includes('Trực tiếp')) {
+                        kenh.value = 'truc_tiep';
+                    } else if (selectedItem.channel.includes('bưu')) {
+                        kenh.value = 'buu_dien';
+                    } else if (selectedItem.channel.includes('Fax')) {
+                        kenh.value = 'fax';
+                    } else if (selectedItem.channel.includes('Email') || selectedItem.channel.includes('điện tử')) {
+                        kenh.value = 'email';
+                    }
+                    kenh.dispatchEvent(new Event('change'));
+                }
+            }
+
+            // Chọn phân loại khách hàng & tìm tài khoản
+            const isDinhDanh = selectedItem.channel === 'Cách thức điện tử' || selectedItem.channel === 'Điện tử';
+            if (isDinhDanh) {
+                document.getElementById('khDinhDanh').checked = true;
+                toggleCustomerType();
+                const acc = bankAccounts.find(a => 
+                    a.name.toLowerCase().includes((selectedItem.mortgagee || '').toLowerCase()) || 
+                    a.name.toLowerCase().includes((selectedItem.customer || '').toLowerCase()) ||
+                    (selectedItem.mortgagee || '').toLowerCase().includes(a.name.toLowerCase())
+                ) || bankAccounts[0];
+                
+                selectedAccount = acc;
+                document.getElementById('maTaiKhoanTrucTuyen').value = acc.id;
+                document.getElementById('sdtKhachHang').value = acc.phone;
+                document.getElementById('emailKhachHang').value = acc.email;
+                document.getElementById('tenNguoiNop').value = acc.representative;
+                document.getElementById('cccdNguoiNop').value = acc.cccd;
+            } else {
+                document.getElementById('khVangLai').checked = true;
+                toggleCustomerType();
+                document.getElementById('tenNguoiNop').value = selectedItem.customer || 'Khách hàng vãng lai';
+                document.getElementById('cccdNguoiNop').value = '001090909090';
+                document.getElementById('sdtKhachHang').value = '0901234567';
+                document.getElementById('emailKhachHang').value = 'customer@example.com';
+            }
 
             if (isSection2Collapsed) {
                 toggleCollapsible();
             }
 
+            // Điền quy mô & cơ quan tiếp nhận
+            const quyMo = document.getElementById('quyMo');
+            if (quyMo) {
+                quyMo.value = '1';
+                quyMo.dispatchEvent(new Event('change'));
+            }
+
+            const coQuanTiepNhan = document.getElementById('coQuanTiepNhan');
+            if (coQuanTiepNhan) {
+                coQuanTiepNhan.value = 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội';
+                coQuanTiepNhan.dispatchEvent(new Event('change'));
+            }
+
             // Prefill Section 2 fields matching the dossier details
             document.getElementById('soHopDong').value = `HDTC/${selectedItem.id}`;
             document.getElementById('ngayHieuLuc').value = selectedItem.date.split(' ')[0];
+
+            // 1. Set loại hình giao dịch (Biện pháp bảo đảm / Hợp đồng)
+            const loaiHinhGiaoDich = document.getElementById('loaiHinhGiaoDich');
+            if (loaiHinhGiaoDich) {
+                loaiHinhGiaoDich.value = selectedItem.transactionType === 'Biện pháp bảo đảm' ? 'bpbd' : 'hop_dong';
+                loaiHinhGiaoDich.dispatchEvent(new Event('change'));
+            }
+
+            // 2. Set subtype
+            setTimeout(() => {
+                if (selectedItem.transactionType === 'Biện pháp bảo đảm') {
+                    const loaiBienPhap = document.getElementById('loaiBienPhap');
+                    if (loaiBienPhap) {
+                        let subtypeVal = 'the_chap';
+                        if (selectedItem.subtype === 'Thế chấp') subtypeVal = 'the_chap';
+                        else if (selectedItem.subtype === 'Cầm cố') subtypeVal = 'cam_co';
+                        else if (selectedItem.subtype === 'Bảo lưu quyền sở hữu') subtypeVal = 'bao_luu';
+                        else if (selectedItem.subtype === 'Đặt cọc') subtypeVal = 'dat_coc';
+                        else if (selectedItem.subtype === 'Ký cược') subtypeVal = 'ky_cuoc';
+                        else if (selectedItem.subtype === 'Ký quỹ') subtypeVal = 'ky_quy';
+                        loaiBienPhap.value = subtypeVal;
+                        loaiBienPhap.dispatchEvent(new Event('change'));
+                    }
+                } else {
+                    const loaiHopDong = document.getElementById('loaiHopDong');
+                    if (loaiHopDong) {
+                        let subtypeVal = 'hd_cho_thue_tc';
+                        if (selectedItem.subtype.includes('cho thuê tài chính')) subtypeVal = 'hd_cho_thue_tc';
+                        else if (selectedItem.subtype.includes('thuê tài sản')) subtypeVal = 'hd_thue_ts_1nam';
+                        else if (selectedItem.subtype.includes('chuyển giao quyền đòi nợ') || selectedItem.subtype.includes('khoản phải thu')) subtypeVal = 'hd_chuyen_giao';
+                        else if (selectedItem.subtype.includes('ký gửi')) subtypeVal = 'hd_ky_gui';
+                        loaiHopDong.value = subtypeVal;
+                        loaiHopDong.dispatchEvent(new Event('change'));
+                    }
+                }
+            }, 50);
+
+            // Ẩn hiển thị các phần nhập liệu chủ thể ban đầu, hiện lưới và nút thêm mới
+            const subFormBenTheChap = document.getElementById('subFormBenTheChap');
+            const btnThemTC = document.getElementById('btnThemTC');
+            const btnHuyTC = document.getElementById('btnHuyTC');
+            if (subFormBenTheChap) subFormBenTheChap.classList.add('hidden');
+            if (btnThemTC) btnThemTC.classList.remove('hidden');
+            if (btnHuyTC) btnHuyTC.classList.add('hidden');
+
+            const subFormBenNhanTheChap = document.getElementById('subFormBenNhanTheChap');
+            const btnThemNTC = document.getElementById('btnThemNTC');
+            const btnHuyNTC = document.getElementById('btnHuyNTC');
+            if (subFormBenNhanTheChap) subFormBenNhanTheChap.classList.add('hidden');
+            if (btnThemNTC) btnThemNTC.classList.remove('hidden');
+            if (btnHuyNTC) btnHuyNTC.classList.add('hidden');
+
+            // 3. Số hóa Bên bảo đảm (tbodyTC)
+            const tbodyTC = document.getElementById('tbodyTC');
+            const wrapperTableTC = document.getElementById('wrapperTableTC');
+            if (tbodyTC) {
+                tbodyTC.innerHTML = '';
+                if (wrapperTableTC) wrapperTableTC.classList.remove('hidden');
+
+                let loaiKey = 'cd_vn';
+                let loaiText = 'Công dân Việt Nam';
+                const lowerCustomer = (selectedItem.customer || '').toLowerCase();
+                if (lowerCustomer.includes('công ty') || lowerCustomer.includes('doanh nghiệp') || lowerCustomer.includes('tập đoàn') || lowerCustomer.includes('global') || lowerCustomer.includes('hợp tác xã') || lowerCustomer.includes('htx') || lowerCustomer.includes('quản lý')) {
+                    loaiKey = 'tc_vn';
+                    loaiText = 'Tổ chức trong nước';
+                } else if (lowerCustomer.includes('john') || lowerCustomer.includes('petrov') || lowerCustomer.includes('smith') || lowerCustomer.includes('ivan')) {
+                    loaiKey = 'nn';
+                    loaiText = 'Người nước ngoài';
+                }
+
+                const tr = document.createElement('tr');
+                tr.dataset.loai = loaiKey;
+                tr.dataset.ten = selectedItem.customer;
+                tr.dataset.giayTo = selectedItem.customerId || '001092008421';
+                tr.dataset.diachi = 'Số 15 Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, Hà Nội';
+                tr.dataset.tinhthanh = 'Hà Nội';
+                tr.dataset.quocgia = 'Việt Nam';
+
+                tr.innerHTML = `
+                    <td>
+                        <button type="button" class="btn btn-outline-primary btn-sua-tc" style="padding: 4px 8px; font-size: 12px;">Sửa</button>
+                        <button type="button" class="btn btn-danger btn-xoa-tc" style="padding: 4px 8px; font-size: 12px;">Xóa</button>
+                    </td>
+                    <td>${loaiText}</td>
+                    <td>${tr.dataset.giayTo}</td>
+                    <td><b>${selectedItem.customer}</b></td>
+                    <td>Số 15 Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, Hà Nội</td>
+                `;
+
+                // Wire delete event
+                tr.querySelector('.btn-xoa-tc').addEventListener('click', () => {
+                    tr.remove();
+                    if (tbodyTC.children.length === 0) tbodyTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                });
+
+                // Wire edit event
+                tr.querySelector('.btn-sua-tc').addEventListener('click', () => {
+                    editingRowTC = tr;
+                    loaiChuTheTC.value = tr.dataset.loai;
+                    loaiChuTheTC.dispatchEvent(new Event('change'));
+
+                    setTimeout(() => {
+                        const tenInput = document.getElementById('tt_ten') || document.querySelector('#formChuTheWrapper input[id$="ten"]');
+                        const giaytoInput = document.getElementById('tt_sogiayto') || document.querySelector('#formChuTheWrapper input[id$="giayto"]') || document.querySelector('#formChuTheWrapper input[id$="sogiayto"]');
+                        const diachiInput = document.getElementById('tc_diachi');
+                        const quocgiaInput = document.getElementById('tc_quocgia');
+                        
+                        if (tenInput) tenInput.value = tr.dataset.ten;
+                        if (giaytoInput) giaytoInput.value = tr.dataset.giayTo;
+                        if (diachiInput) diachiInput.value = tr.dataset.diachi;
+                        if (quocgiaInput) {
+                            quocgiaInput.value = tr.dataset.quocgia;
+                            quocgiaInput.dispatchEvent(new Event('change'));
+                        }
+                    }, 50);
+
+                    const btnLuuTC = document.getElementById('btnLuuTC');
+                    if (btnLuuTC) btnLuuTC.innerText = 'CẬP NHẬT';
+                    if (subFormBenTheChap) subFormBenTheChap.classList.remove('hidden');
+                    if (btnThemTC) btnThemTC.classList.add('hidden');
+                    if (btnHuyTC) btnHuyTC.classList.remove('hidden');
+                });
+
+                tbodyTC.appendChild(tr);
+            }
+
+            // 4. Số hóa Bên nhận bảo đảm (tbodyNTC)
+            const tbodyNTC = document.getElementById('tbodyNTC');
+            const wrapperTableNTC = document.getElementById('wrapperTableNTC');
+            if (tbodyNTC) {
+                tbodyNTC.innerHTML = '';
+                if (wrapperTableNTC) wrapperTableNTC.classList.remove('hidden');
+
+                const tr = document.createElement('tr');
+                tr.dataset.loai = 'tc_vn';
+                tr.dataset.ten = selectedItem.mortgagee;
+                tr.dataset.giayTo = '0100112437';
+                tr.dataset.diachi = 'Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội';
+                tr.dataset.tinhthanh = 'Hà Nội';
+                tr.dataset.quocgia = 'Việt Nam';
+
+                tr.innerHTML = `
+                    <td>
+                        <button type="button" class="btn btn-outline-primary btn-sua-ntc" style="padding: 4px 8px; font-size: 12px;">Sửa</button>
+                        <button type="button" class="btn btn-danger btn-xoa-ntc" style="padding: 4px 8px; font-size: 12px;">Xóa</button>
+                    </td>
+                    <td>Tổ chức trong nước</td>
+                    <td>0100112437</td>
+                    <td><b>${selectedItem.mortgagee}</b></td>
+                    <td>Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội</td>
+                `;
+
+                // Wire delete event
+                tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {
+                    tr.remove();
+                    if (tbodyNTC.children.length === 0) tbodyNTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                });
+
+                // Wire edit event
+                tr.querySelector('.btn-sua-ntc').addEventListener('click', () => {
+                    editingRowNTC = tr;
+                    const subFormBenNhanTheChap = document.getElementById('subFormBenNhanTheChap');
+                    if (subFormBenNhanTheChap) subFormBenNhanTheChap.classList.remove('hidden');
+                    
+                    document.getElementById('ntc_ten').value = tr.dataset.ten;
+                    document.getElementById('ntc_quocgia').value = tr.dataset.quocgia;
+                    document.getElementById('ntc_quocgia').dispatchEvent(new Event('change'));
+                    
+                    setTimeout(() => {
+                        const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
+                        if (ttField) ttField.value = tr.dataset.tinhthanh;
+                        document.getElementById('ntc_diachi').value = tr.dataset.diachi;
+                    }, 50);
+
+                    const btnLuuNTC = document.getElementById('btnLuuNTC');
+                    if (btnLuuNTC) btnLuuNTC.innerText = 'CẬP NHẬT';
+                    if (btnThemNTC) btnThemNTC.classList.add('hidden');
+                    if (btnHuyNTC) btnHuyNTC.classList.remove('hidden');
+                });
+
+                tbodyNTC.appendChild(tr);
+            }
+
+            // 5. Select Asset Checkbox & Populate Mock Asset Data
+            setTimeout(() => {
+                const assetText = selectedItem.assetType || '';
+                let targetChkId = '';
+                if (assetText.includes('số khung')) targetChkId = 'chkSoKhung';
+                else if (assetText.includes('tàu cá') || assetText.includes('đường thủy')) targetChkId = 'chkTauCa';
+                else if (assetText.includes('quyền tài sản')) targetChkId = 'chkQuyenTaiSan';
+                else if (assetText.includes('Cây hằng năm') || assetText.includes('công trình tạm')) targetChkId = 'chkCayHangNam';
+                else if (assetText.includes('hàng hóa luân chuyển')) targetChkId = 'chkHangHoa';
+                else if (assetText.includes('Chứng khoán')) targetChkId = 'chkChungKhoan';
+                else targetChkId = 'chkDongSanKhac';
+
+                const targetChk = document.getElementById(targetChkId);
+                if (targetChk) {
+                    targetChk.checked = true;
+                    targetChk.dispatchEvent(new Event('change'));
+
+                    // Populate mock asset details
+                    setTimeout(() => {
+                        if (targetChkId === 'chkSoKhung') {
+                            const tbody = document.getElementById('tbodySoKhung');
+                            if (tbody) {
+                                tbody.innerHTML = '';
+                                const tr1 = document.createElement('tr');
+                                tr1.innerHTML = `
+                                    <td style="text-align: center;"><input type="checkbox" class="chk-row-sk"></td>
+                                    <td class="stt-sk">1</td>
+                                    <td>
+                                        <select class="form-control" required>
+                                            <option value="Ô tô" selected>Ô tô</option>
+                                            <option value="Mô tô">Mô tô</option>
+                                        </select>
+                                    </td>
+                                    <td><input type="text" class="form-control" value="Toyota Camry" required></td>
+                                    <td><input type="text" class="form-control" value="TYT-CAMRY-9988" required></td>
+                                    <td><input type="text" class="form-control" value="2AR-5566"></td>
+                                    <td><input type="text" class="form-control" value="30H-123.45"></td>
+                                    <td style="text-align: center;"><input type="checkbox" class="chk-yeucau-sk" style="width:18px; height:18px;" checked></td>
+                                    <td><input type="text" class="form-control" value="Cục Cảnh sát Giao thông"></td>
+                                    <td><button type="button" class="btn btn-danger btn-xoa-row-sk" style="padding: 4px 8px; font-size:12px;">X</button></td>
+                                `;
+                                tbody.appendChild(tr1);
+                            }
+                        } else if (targetChkId === 'chkTauCa') {
+                            const tbody = document.getElementById('tbodyTauCa');
+                            if (tbody) {
+                                tbody.innerHTML = '';
+                                const tr1 = document.createElement('tr');
+                                tr1.innerHTML = `
+                                    <td style="text-align: center;"><input type="checkbox" class="chk-row-tc"></td>
+                                    <td class="stt-tc">1</td>
+                                    <td><input type="text" class="form-control" value="Tàu cá vỏ gỗ Yamaha" required></td>
+                                    <td><input type="text" class="form-control" value="${selectedItem.customer}" required></td>
+                                    <td><input type="text" class="form-control" value="QB-90827-TS"></td>
+                                    <td><input type="text" class="form-control" value="Cấp IV"></td>
+                                    <td style="text-align: center;"><input type="checkbox" class="chk-yeucau-tc" style="width:18px; height:18px;" checked></td>
+                                    <td><input type="text" class="form-control" value="Chi cục Thủy sản Quảng Bình"></td>
+                                    <td><button type="button" class="btn btn-danger btn-xoa-row-tc" style="padding: 4px 8px; font-size:12px;">X</button></td>
+                                `;
+                                tbody.appendChild(tr1);
+                            }
+                        } else if (targetChkId === 'chkQuyenTaiSan') {
+                            const tenQuyenInput = document.getElementById('qts_tenQuyen');
+                            const canCuInput = document.getElementById('qts_canCu');
+                            if (tenQuyenInput) tenQuyenInput.value = "Quyền đòi nợ trị giá 2.000.000.000 VNĐ phát sinh từ Hợp đồng mua bán số 01/2026/HĐMB";
+                            if (canCuInput) canCuInput.value = "Hợp đồng mua bán số 01/2026/HĐMB ký ngày 04/01/2026 giữa các bên";
+                        } else if (targetChkId === 'chkCayHangNam') {
+                            const tbody = document.getElementById('tbodyCayHangNam') || document.querySelector('#gridCayHangNam tbody');
+                            if (tbody) {
+                                tbody.innerHTML = `
+                                    <tr>
+                                        <td style="text-align: center;"><input type="checkbox" class="chk-row-chn"></td>
+                                        <td class="stt-chn">1</td>
+                                        <td><input type="text" class="form-control" value="Vườn cây cao su" required></td>
+                                        <td><input type="text" class="form-control" value="Diện tích 5ha tại Nông trường Bình Phước" required></td>
+                                        <td><input type="text" class="form-control" value="Thửa 88 tờ bản đồ số 12"></td>
+                                        <td><button type="button" class="btn btn-danger btn-xoa-row-chn" style="padding: 4px 8px; font-size:12px;">X</button></td>
+                                    </tr>
+                                `;
+                            }
+                        } else if (targetChkId === 'chkHangHoa') {
+                            const phanLoai = document.getElementById('hh_phanLoai');
+                            if (phanLoai) phanLoai.value = 'Kho hàng';
+                            const taVal = document.getElementById('hh_giaTriTenLoai');
+                            if (taVal) taVal.value = "Kho hàng hạt tiêu xuất khẩu, khối lượng 50 tấn";
+                            const taAddr = document.getElementById('hh_diaChiKho');
+                            const taCode = document.getElementById('hh_soHieuKho');
+                            if (taAddr) taAddr.value = "Cảng Hải Phòng, Hải Phòng";
+                            if (taCode) taCode.value = "KHO-HT-01";
+                        } else if (targetChkId === 'chkChungKhoan') {
+                            const tbody = document.querySelector('#gridChungKhoan tbody');
+                            if (tbody) {
+                                tbody.innerHTML = `
+                                    <tr>
+                                        <td style="text-align: center;"><input type="checkbox" class="chk-row-ck"></td>
+                                        <td class="stt-ck">1</td>
+                                        <td><input type="text" class="form-control" value="50.000 cổ phiếu tự do chuyển nhượng" required></td>
+                                        <td><input type="text" class="form-control" value="Mã HBC của Công ty Cổ phần Xây dựng Hòa Bình" required></td>
+                                        <td><input type="text" class="form-control" value="CP-HBC-50K"></td>
+                                        <td><button type="button" class="btn btn-danger btn-xoa-row-ck" style="padding: 4px 8px; font-size:12px;">X</button></td>
+                                    </tr>
+                                `;
+                            }
+                        } else {
+                            const tbody = document.querySelector('#gridDongSanKhac tbody');
+                            if (tbody) {
+                                tbody.innerHTML = `
+                                    <tr>
+                                        <td style="text-align: center;"><input type="checkbox" class="chk-row-dsk"></td>
+                                        <td class="stt-dsk">1</td>
+                                        <td><input type="text" class="form-control" value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý...)" required></td>
+                                        <td><button type="button" class="btn btn-danger btn-xoa-row-dsk" style="padding: 4px 8px; font-size:12px;">X</button></td>
+                                    </tr>
+                                `;
+                            }
+                        }
+                        const elMoTaChung = document.querySelector('textarea:not([rows="2"]):not([rows="1"])');
+                        if (elMoTaChung) {
+                            elMoTaChung.value = "Tài sản bảo đảm là " + assetText;
+                        }
+                    }, 100);
+                }
+            }, 100);
         }
     </script>
 </body>

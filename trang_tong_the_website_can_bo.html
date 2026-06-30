@@ -1044,6 +1044,9 @@
             // Update Header & loading target in iframe
             const iframe = document.getElementById('mainContentIframe');
             if (iframe) {
+                if (leafItem.url && leafItem.url.includes('dang_ky_bpbd_can_bo.html')) {
+                    localStorage.removeItem('selected_dossier_id');
+                }
                 iframe.src = leafItem.url || 'temp_placeholder.html';
             }
         }
