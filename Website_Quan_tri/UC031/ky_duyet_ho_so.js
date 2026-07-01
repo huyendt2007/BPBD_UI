@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Xử lý logic SPA cho UC028 - Màn hình Xem chi tiết hồ sơ (Three-Pane Layout)
  * Áp dụng tổng quát cho cả 9 loại hồ sơ theo quy chuẩn Design System.
  */
@@ -1212,7 +1212,14 @@ function renderFilterPanel() {
     const today = new Date();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
-    const defFromDate = `01/${month}/${year}`;
+    
+    // Default from date: 30 days ago to show all recent mock profiles
+    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const fromMonth = String(thirtyDaysAgo.getMonth() + 1).padStart(2, '0');
+    const fromDay = String(thirtyDaysAgo.getDate()).padStart(2, '0');
+    const fromYear = thirtyDaysAgo.getFullYear();
+    const defFromDate = `${fromDay}/${fromMonth}/${fromYear}`;
+    
     const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
     
     if (currentListTab === 'chonhaplieu') {
@@ -2412,6 +2419,57 @@ function initViewMode() {
             else p.handlingOfficer = "Nguyễn Văn Cán Bộ";
         }
     });
+
+    // Shift all mock data dates so that the most recent profile is "today"
+    let maxDate = null;
+    mockProfiles.forEach(p => {
+        const d = parseDateString(p.date);
+        if (d && (!maxDate || d > maxDate)) {
+            maxDate = d;
+        }
+    });
+
+    if (maxDate) {
+        const today = new Date();
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        if (maxDate < todayStart) {
+            const todayWithTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), maxDate.getHours(), maxDate.getMinutes(), maxDate.getSeconds());
+            const diffMs = todayWithTime.getTime() - maxDate.getTime();
+
+            const formatDate = (date) => {
+                const dd = String(date.getDate()).padStart(2, '0');
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                const hh = String(date.getHours()).padStart(2, '0');
+                const min = String(date.getMinutes()).padStart(2, '0');
+                return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+            };
+
+            const shiftDateString = (dateStr) => {
+                const d = parseDateString(dateStr);
+                if (!d) return dateStr;
+                const shifted = new Date(d.getTime() + diffMs);
+                return formatDate(shifted);
+            };
+
+            mockProfiles.forEach(p => {
+                p.date = shiftDateString(p.date);
+                if (p.timeline) {
+                    p.timeline.forEach(t => {
+                        t.date = shiftDateString(t.date);
+                    });
+                }
+                if (p.internalLogs) {
+                    p.internalLogs.forEach(l => {
+                        if (l.time && l.time !== 'Vừa xong' && l.time.includes('/')) {
+                            l.time = shiftDateString(l.time);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
     localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
     
     const navTabs = document.querySelector('.nav-tabs');

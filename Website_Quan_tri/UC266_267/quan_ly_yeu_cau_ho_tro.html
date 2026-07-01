@@ -1,0 +1,1914 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý yêu cầu hỗ trợ</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--base-size);
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.5;
+            padding: var(--spacing-md);
+        }
+
+        /* Common Classes */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: var(--heading-size);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .grid-2-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .grid-3-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .grid-4-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+
+        .required-mark {
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem 0.75rem;
+            font-size: var(--base-size);
+            color: var(--text-main);
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            outline: none;
+        }
+
+        .form-control:disabled {
+            background-color: #F8FAFC;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        /* Buttons */
+        .btn {
+            font-weight: 500;
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: var(--base-size);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn-secondary {
+            background-color: #E2E8F0;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #CBD5E1;
+        }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 12px;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* Tabs */
+        .tab-container {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Tables */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .table th {
+            background-color: var(--table-header-bg);
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 12px;
+            border-bottom: 2px solid var(--border-color);
+            text-align: left;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(241, 245, 249, 0.5);
+        }
+
+        /* Badges & Tags */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 9999px;
+            text-align: center;
+        }
+
+        .badge-low {
+            background-color: #E6F4EA;
+            color: var(--success-color);
+        }
+
+        .badge-medium {
+            background-color: #FFF3CD;
+            color: #D39E00;
+        }
+
+        .badge-high {
+            background-color: #FCE8E6;
+            color: var(--danger-color);
+        }
+
+        .badge-status-pending {
+            background-color: #E8F0FE;
+            color: #1A73E8;
+        }
+
+        .badge-status-processing {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+
+        .badge-status-clarify {
+            background-color: #F3E8FF;
+            color: #7C3AED;
+        }
+
+        .badge-status-completed {
+            background-color: #DEF7EC;
+            color: #03543F;
+        }
+
+        /* Custom UI Blocks */
+        .alert-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px var(--spacing-md);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid transparent;
+        }
+
+        .alert-box.info {
+            background-color: #EFF6FF;
+            border-color: #BFDBFE;
+            color: #1E40AF;
+        }
+
+        .alert-icon {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .app-screen {
+            display: none;
+        }
+
+        .app-screen.active {
+            display: block;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 500px;
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-footer {
+            margin-top: var(--spacing-md);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Details styling */
+        .detail-row {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--spacing-sm) 0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            width: 200px;
+            font-weight: 600;
+            color: var(--text-main);
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            color: var(--text-main);
+            flex-grow: 1;
+            word-break: break-word;
+        }
+
+        .response-box {
+            background-color: #F8FAFC;
+            border-left: 4px solid var(--primary-color);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+        }
+
+        .rating-box {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            background-color: #FFFDF5;
+        }
+
+        .rating-options {
+            display: flex;
+            gap: 20px;
+            margin: var(--spacing-sm) 0;
+        }
+
+        .rating-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .rating-option input {
+            cursor: pointer;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: var(--spacing-lg);
+            right: var(--spacing-lg);
+            background-color: var(--text-main);
+            color: white;
+            padding: 12px var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            z-index: 1100;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .toast.success {
+            background-color: var(--success-color);
+        }
+
+        .toast.error {
+            background-color: var(--danger-color);
+        }
+
+        .file-list-preview {
+            margin-top: var(--spacing-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #F1F5F9;
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            font-size: 13px;
+        }
+
+        .file-item-delete {
+            color: var(--danger-color);
+            cursor: pointer;
+        }
+
+        /* Actions Dropdown Styles */
+        .actions-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .actions-dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 4px);
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            min-width: 140px;
+            padding: 4px 0;
+        }
+
+        .actions-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer;
+            text-align: left;
+            border: none;
+            background: none;
+            width: 100%;
+        }
+
+        .actions-dropdown-item:hover {
+            background-color: var(--bg-body);
+            color: var(--primary-color);
+        }
+
+        .actions-dropdown-item i {
+            font-size: 13px;
+            width: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: THEO DÕI YÊU CẦU HỖ TRỢ (UC267.MH01) -->
+    <div class="app-screen active" id="screen-tracker">
+        <div class="card-section">
+            <h2 class="section-title">Theo dõi yêu cầu hỗ trợ</h2>
+            
+            <div class="tab-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" id="tab-bpbd" onclick="switchTab('bpbd')">Biện pháp bảo đảm</button>
+                    <button class="tab-btn" id="tab-btnn" onclick="switchTab('btnn')">Bồi thường nhà nước</button>
+                </div>
+
+                <!-- Filters -->
+                <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+                    <div class="grid-3-cols" style="margin-bottom: 0;">
+                        <!-- Row 1 -->
+                        <div class="form-group" style="grid-column: span 2; margin-bottom: var(--spacing-md);">
+                            <label class="form-label" for="filter-keyword">Từ khóa tìm kiếm</label>
+                            <input type="text" class="form-control" id="filter-keyword" placeholder="Tìm kiếm theo Tiêu đề hoặc Nội dung của yêu cầu...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: var(--spacing-md);">
+                            <label class="form-label" for="filter-status">Trạng thái</label>
+                            <select class="form-select" id="filter-status" onchange="filterTable()">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
+                                <option value="Đang xử lý">Đang xử lý</option>
+                                <option value="Yêu cầu làm rõ">Yêu cầu làm rõ</option>
+                                <option value="Hoàn thành">Hoàn thành</option>
+                            </select>
+                        </div>
+                        <!-- Row 2 -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label" for="filter-from-date">Từ ngày</label>
+                            <input type="date" class="form-control" id="filter-from-date" onchange="filterTable()">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label" for="filter-to-date">Đến ngày</label>
+                            <input type="date" class="form-control" id="filter-to-date" onchange="filterTable()">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label" for="filter-priority">Mức độ ưu tiên</label>
+                            <select class="form-select" id="filter-priority" onchange="filterTable()">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Thấp">Thấp</option>
+                                <option value="Trung bình">Trung bình</option>
+                                <option value="Cao">Cao</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <button class="btn btn-outline-primary" onclick="resetFilters()">Xóa bộ lọc</button>
+                        <button class="btn btn-primary" onclick="filterTable()"><i class="fa fa-search"></i> Tìm kiếm</button>
+                    </div>
+                </div>
+
+                <!-- Action Toolbar -->
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: var(--spacing-md); margin-top: var(--spacing-md);">
+                    <button class="btn btn-primary" onclick="goToCreateScreen()"><i class="fa fa-plus"></i> Tạo yêu cầu hỗ trợ</button>
+                    <button class="btn btn-outline-primary" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất (Excel)</button>
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table" id="support-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px; text-align: center;">STT</th>
+                                <th style="width: 15%;">Tiêu đề</th>
+                                <th style="width: 150px;">Loại yêu cầu hỗ trợ</th>
+                                <th>Nội dung</th>
+                                <th>Nội dung phản hồi</th>
+                                <th style="width: 110px; text-align: center;">Mức độ ưu tiên</th>
+                                <th style="width: 130px; text-align: center;">Trạng thái</th>
+                                <th style="width: 130px;">Ngày tạo</th>
+                                <th style="width: 100px; text-align: center;">Đánh giá</th>
+                                <th style="width: 120px; text-align: center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Rows dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SCREEN 2: TẠO YÊU CẦU HỖ TRỢ (UC266.MH01) -->
+    <div class="app-screen" id="screen-create">
+        <div class="card-section" style="max-width: 800px; margin: 0 auto;">
+            <h2 class="section-title">Tạo yêu cầu hỗ trợ nghiệp vụ</h2>
+            
+            <form id="create-request-form" onsubmit="event.preventDefault(); submitCreateRequest();">
+                <div class="form-group">
+                    <label class="form-label" for="create-type">Loại yêu cầu hỗ trợ</label>
+                    <input type="text" class="form-control" id="create-type" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="create-priority">Mức độ ưu tiên <span class="required-mark">*</span></label>
+                    <select class="form-select" id="create-priority">
+                        <option value="Thấp" selected>Thấp</option>
+                        <option value="Trung bình">Trung bình</option>
+                        <option value="Cao">Cao</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="create-title">Tiêu đề <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="create-title" maxlength="200" placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ...">
+                    <div class="error-message" id="error-create-title">Trường này bắt buộc nhập</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="create-content">Nội dung <span class="required-mark">*</span></label>
+                    <textarea class="form-control" id="create-content" rows="6" maxlength="2000" placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..."></textarea>
+                    <div class="error-message" id="error-create-content">Trường này bắt buộc nhập</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="create-files">File đính kèm</label>
+                    <input type="file" class="form-control" id="create-files" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event)">
+                    <div class="error-message" id="error-create-files"></div>
+                    <small style="color: var(--text-muted); display: block; margin-top: 4px;">Cho phép đính kèm tối đa 3 tệp tin (.pdf, .jpg, .jpeg, .png). Dung lượng tối đa 20MB/tệp.</small>
+                    <div class="file-list-preview" id="file-list-preview"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: var(--spacing-lg);">
+                    <button type="button" class="btn btn-secondary" onclick="cancelCreate()"><i class="fa fa-times"></i> Hủy</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- SCREEN 3: KẾT QUẢ GỬI YÊU CẦU HỖ TRỢ (UC266.MH02) -->
+    <div class="app-screen" id="screen-result">
+        <div class="card-section" style="max-width: 600px; margin: 40px auto; text-align: center;">
+            <div style="font-size: 64px; color: var(--success-color); margin-bottom: var(--spacing-md);">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h2 class="section-title" style="border-bottom: none; margin-bottom: var(--spacing-md);">Kết quả gửi yêu cầu hỗ trợ</h2>
+            
+            <p style="margin-bottom: var(--spacing-lg); line-height: 1.6;">
+                Yêu cầu hỗ trợ của bạn đã được gửi thành công đến cơ quan quản lý. Hệ thống đã gửi email xác nhận kèm thông tin chi tiết. Trân trọng!
+            </p>
+
+            <div style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: var(--spacing-md); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg);">
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Mã số yêu cầu hỗ trợ:</div>
+                <div id="lbl-result-ticket-id" style="font-size: 20px; color: var(--primary-color); font-weight: 700; letter-spacing: 0.5px;">HT-20260619-000001</div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button class="btn btn-secondary" onclick="backToMainPortal()"><i class="fa fa-home"></i> Trở lại trang chủ</button>
+                <button class="btn btn-primary" onclick="backToTracker()"><i class="fa fa-list"></i> Theo dõi yêu cầu</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SCREEN 4: CHI TIẾT YÊU CẦU HỖ TRỢ (UC267.MH02) -->
+    <div class="app-screen" id="screen-detail">
+        <div class="card-section" style="max-width: 900px; margin: 0 auto;">
+            <h2 class="section-title">Chi tiết yêu cầu hỗ trợ</h2>
+
+            <div style="margin-bottom: var(--spacing-lg);">
+                <!-- Request details -->
+                <div class="detail-row">
+                    <div class="detail-label">Mã yêu cầu hỗ trợ</div>
+                    <div class="detail-value" id="detail-ticket-id" style="font-weight: 600; color: var(--primary-color);"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Ngày tạo</div>
+                    <div class="detail-value" id="detail-created-at"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Loại yêu cầu hỗ trợ</div>
+                    <div class="detail-value" id="detail-category"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Mức độ ưu tiên</div>
+                    <div class="detail-value" id="detail-priority"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Trạng thái</div>
+                    <div class="detail-value" id="detail-status"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Tiêu đề</div>
+                    <div class="detail-value" id="detail-title" style="font-weight: 500;"></div>
+                </div>
+                <div class="detail-row" style="align-items: flex-start;">
+                    <div class="detail-label">Nội dung yêu cầu</div>
+                    <div class="detail-value" id="detail-content" style="white-space: pre-line; line-height: 1.6;"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">File đính kèm</div>
+                    <div class="detail-value" id="detail-attachments"></div>
+                </div>
+            </div>
+
+            <!-- Response block -->
+            <div id="detail-response-section" style="display: none; margin-bottom: var(--spacing-lg);">
+                <h3 style="color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: var(--spacing-sm);"><i class="fa-solid fa-reply"></i> Lịch sử phản hồi từ Cán bộ</h3>
+                <div id="detail-replies-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Multiple response boxes will be dynamically generated here -->
+                </div>
+            </div>
+
+            <!-- Evaluation block -->
+            <div id="detail-rating-section" style="display: none; margin-bottom: var(--spacing-lg);">
+                <div class="rating-box">
+                    <h3 style="font-size: 14px; font-weight: 600; color: #856404; margin-bottom: 6px;"><i class="fa-solid fa-star"></i> Đánh giá câu trả lời</h3>
+                    
+                    <div id="rating-form-block">
+                        <div class="form-group" style="margin-bottom: var(--spacing-sm);">
+                            <label class="form-label">Mức độ hài lòng <span class="required-mark">*</span></label>
+                            <div class="rating-options">
+                                <label class="rating-option">
+                                    <input type="radio" name="detail-rating-option" value="Hài lòng" onchange="toggleFeedbackReason(this.value)">
+                                    <span style="color: var(--success-color);"><i class="fa-solid fa-thumbs-up"></i> Hài lòng</span>
+                                </label>
+                                <label class="rating-option">
+                                    <input type="radio" name="detail-rating-option" value="Không hài lòng" onchange="toggleFeedbackReason(this.value)">
+                                    <span style="color: var(--danger-color);"><i class="fa-solid fa-thumbs-down"></i> Không hài lòng</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="detail-rating-reason-group" style="display: none;">
+                            <label class="form-label" for="detail-rating-reason">Ý kiến đóng góp / Lý do không hài lòng <span class="required-mark">*</span></label>
+                            <textarea class="form-control" id="detail-rating-reason" rows="3" maxlength="500" placeholder="Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng..."></textarea>
+                            <div class="error-message" id="error-detail-rating-reason">Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng.</div>
+                        </div>
+
+                        <button class="btn btn-primary btn-sm" style="margin-top: 5px;" onclick="submitDetailRating()"><i class="fa-solid fa-paper-plane"></i> Gửi đánh giá</button>
+                    </div>
+
+                    <div id="rating-done-block" style="display: none; line-height: 1.6;">
+                        <div><strong>Kết quả đánh giá:</strong> <span id="lbl-rating-done-value"></span></div>
+                        <div id="div-rating-done-reason" style="margin-top: 4px; display: none;"><strong>Ý kiến đóng góp:</strong> <span id="lbl-rating-done-reason"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Action footer -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: var(--spacing-md);">
+                <button class="btn btn-secondary" onclick="backToTracker()"><i class="fa fa-arrow-left"></i> Quay lại</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SCREEN 5: CẬP NHẬT YÊU CẦU HỖ TRỢ (Update for Clarification request) -->
+    <div class="app-screen" id="screen-edit">
+        <div class="card-section" style="max-width: 800px; margin: 0 auto;">
+            <h2 class="section-title">Cập nhật yêu cầu hỗ trợ</h2>
+            
+            <!-- Lịch sử phản hồi từ Cán bộ (Để người dùng đối chiếu nội dung cần bổ sung làm rõ) -->
+            <div id="edit-response-section" style="display: none; margin-bottom: var(--spacing-lg);">
+                <h3 style="color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: var(--spacing-sm);"><i class="fa-solid fa-reply"></i> Lịch sử phản hồi từ Cán bộ</h3>
+                <div id="edit-replies-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <!-- Lịch sử phản hồi hiển thị dạng danh sách tại đây -->
+                </div>
+            </div>
+            
+            <form id="edit-request-form" onsubmit="event.preventDefault(); submitUpdateRequest();">
+                <div class="form-group">
+                    <label class="form-label" for="edit-type">Loại yêu cầu hỗ trợ</label>
+                    <input type="text" class="form-control" id="edit-type" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="edit-priority">Mức độ ưu tiên <span class="required-mark">*</span></label>
+                    <select class="form-select" id="edit-priority">
+                        <option value="Thấp">Thấp</option>
+                        <option value="Trung bình">Trung bình</option>
+                        <option value="Cao">Cao</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="edit-title">Tiêu đề <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="edit-title" maxlength="200" placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ...">
+                    <div class="error-message" id="error-edit-title">Trường này bắt buộc nhập</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="edit-content">Nội dung <span class="required-mark">*</span></label>
+                    <textarea class="form-control" id="edit-content" rows="6" maxlength="2000" placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..."></textarea>
+                    <div class="error-message" id="error-edit-content">Trường này bắt buộc nhập</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="edit-files">File đính kèm</label>
+                    <input type="file" class="form-control" id="edit-files" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleEditFileSelect(event)">
+                    <div class="error-message" id="error-edit-files"></div>
+                    <small style="color: var(--text-muted); display: block; margin-top: 4px;">Cho phép đính kèm tối đa 3 tệp tin (.pdf, .jpg, .jpeg, .png). Dung lượng tối đa 20MB/tệp.</small>
+                    <div class="file-list-preview" id="edit-file-list-preview"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: var(--spacing-lg);">
+                    <button type="button" class="btn btn-secondary" onclick="backToTracker()"><i class="fa fa-arrow-left"></i> Quay lại</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- MODAL POPUP: ĐÁNH GIÁ KHÔNG HÀI LÒNG NHANH -->
+    <div class="modal" id="dislike-modal">
+        <div class="modal-content">
+            <div class="modal-header">Đánh giá câu trả lời - Không hài lòng</div>
+            <div class="form-group">
+                <label class="form-label" for="quick-feedback-reason">Ý kiến đóng góp / Lý do không hài lòng <span class="required-mark">*</span></label>
+                <textarea class="form-control" id="quick-feedback-reason" rows="4" maxlength="500" placeholder="Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng..."></textarea>
+                <div class="error-message" id="error-quick-feedback-reason">Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng.</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" onclick="closeDislikeModal()"><i class="fa fa-times"></i> Hủy</button>
+                <button class="btn btn-primary btn-sm" onclick="submitQuickDislike()"><i class="fa-solid fa-paper-plane"></i> Gửi đánh giá</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast" id="toast-notify">
+        <span id="toast-icon"></span>
+        <span id="toast-text"></span>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC & MOCK DATA -->
+    <script>
+        // Set dynamic date values
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1;
+        let dd = today.getDate();
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+        
+        const currentDateFormatted = dd + '/' + mm + '/' + yyyy;
+        const inputDateFormat = yyyy + '-' + mm + '-' + dd;
+
+        document.getElementById('filter-to-date').value = inputDateFormat;
+
+        // Current Active Tab
+        let activeTab = 'bpbd'; // 'bpbd' or 'btnn'
+
+        // File upload tracking (Max 3 files)
+        let selectedFiles = [];
+
+        // Support Tickets Mock Database (10 records initially)
+        let supportTickets = [
+            {
+                id: "HT-20260601-000049",
+                category: "Biện pháp bảo đảm",
+                created_at: "01/06/2026 09:15",
+                priority: "Cao",
+                title: "Lỗi ký số văn bản hồ sơ thay đổi biện pháp bảo đảm",
+                content: "Tôi thực hiện nộp hồ sơ đăng ký thay đổi biện pháp bảo đảm, hệ thống báo lỗi không thể đọc chứng thư số khi ký văn bản kết quả PDF. Đã thử cài đặt lại plugin ký số nhưng vẫn không khắc phục được. Mong kỹ thuật hỗ trợ xác minh.",
+                status: "Hoàn thành",
+                files: ["loi_chu_ky_so.png"],
+                replies: [
+                    {
+                        reply_user: "Trần Thế Dũng - Trung tâm CNTT Cục Đăng ký",
+                        reply_date: "01/06/2026 14:30",
+                        reply_content: "Hệ thống vừa cập nhật phiên bản plugin ký số mới v2.4 để tương thích với bản cập nhật Google Chrome. Anh/chị vui lòng tải và cài đặt lại bộ cài hỗ trợ ký số tại trang chủ của Cổng dịch vụ để sửa lỗi này. Trân trọng cảm ơn.",
+                        reply_files: ["huong_dan_cai_dat_v2.4.pdf"]
+                    }
+                ],
+                rating: "Hài lòng",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260602-000058",
+                category: "Biện pháp bảo đảm",
+                created_at: "02/06/2026 10:40",
+                priority: "Trung bình",
+                title: "Tra cứu không thấy lịch sử thay đổi của hợp đồng gốc số 4859/2025",
+                content: "Tôi thực hiện tra cứu theo Số đăng ký của đăng ký lần đầu số 4859/2025 nhưng danh sách TreeView kết quả không hiển thị phiên bản sửa đổi ngày 15/05/2026 mặc dù cán bộ đã duyệt thành công. Vui lòng kiểm tra lại dữ liệu.",
+                status: "Đang xử lý",
+                files: ["anh_chup_tra_cuu.png"],
+                replies: [],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260603-000062",
+                category: "Bồi thường nhà nước",
+                created_at: "03/06/2026 14:20",
+                priority: "Thấp",
+                title: "Hỏi về biểu mẫu yêu cầu bồi thường theo Nghị định 68",
+                content: "Tôi muốn tải biểu mẫu số 01/BTNN yêu cầu giải quyết bồi thường nhà nước mới nhất. Trang thông tin biểu mẫu của Cổng dịch vụ công đang bị lỗi liên kết tải xuống. Vui lòng gửi lại link tải hoặc đính kèm tệp tin cho tôi.",
+                status: "Hoàn thành",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Lê Minh Hương - Phòng Bồi thường nhà nước",
+                        reply_date: "04/06/2026 09:10",
+                        reply_content: "Chào Anh/Chị, tệp liên kết tại trang thông tin đã được khắc phục. Đồng thời, Cục gửi đính kèm file Biểu mẫu số 01a ban hành kèm theo Thông tư số 04/2025/TT-BTP quy định chi tiết hoạt động bồi thường nhà nước để anh chị sử dụng trực tiếp.",
+                        reply_files: ["Mau_01a_Yeu_cau_boi_thuong.docx"]
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260605-000075",
+                category: "Biện pháp bảo đảm",
+                created_at: "05/06/2026 16:30",
+                priority: "Cao",
+                title: "Yêu cầu làm rõ thông tin hồ sơ bị từ chối đăng ký",
+                content: "Hồ sơ đăng ký biện pháp bảo đảm mã số 84920/2026 của tôi bị từ chối với lý do 'Mô tả tài sản không phù hợp với giấy tờ gốc'. Tuy nhiên, tôi đã đối chiếu rất kỹ thông số số khung số máy đều khớp 100%. Đề nghị cán bộ kiểm tra chi tiết lại giúp tôi.",
+                status: "Yêu cầu làm rõ",
+                files: ["giay_dang_ky_xe_goi.pdf", "giay_khai_thac_thong_tin.pdf"],
+                replies: [
+                    {
+                        reply_user: "Phạm Văn Hùng - Văn phòng Đăng ký Mỹ Đình",
+                        reply_date: "05/06/2026 18:00",
+                        reply_content: "Chúng tôi thấy ảnh chụp giấy tờ đăng ký xe đính kèm bị mờ góc dưới bên phải, không đọc được số khung hoàn chỉnh. Anh/chị vui lòng kiểm tra và chụp/quét lại bản rõ nét hơn.",
+                        reply_files: []
+                    },
+                    {
+                        reply_user: "Phạm Văn Hùng - Văn phòng Đăng ký Mỹ Đình",
+                        reply_date: "06/06/2026 10:15",
+                        reply_content: "Anh/Chị vui lòng tải lên bản quét (scan) màu có công chứng của Giấy chứng nhận quyền sở hữu phương tiện để chúng tôi đối chiếu lại phần thông tin bị mờ trên ảnh quét cũ.",
+                        reply_files: []
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260608-000088",
+                category: "Biện pháp bảo đảm",
+                created_at: "08/06/2026 08:30",
+                priority: "Thấp",
+                title: "Thắc mắc về thời hạn hiệu lực của mã số sử dụng CSDL",
+                content: "Tôi vừa đóng phí cấp mã CSDL thường xuyên vào ngày 01/06/2026. Cho hỏi thời hạn sử dụng của mã này kéo dài đến khi nào? Có phải tròn 1 năm từ ngày kích hoạt không?",
+                status: "Hoàn thành",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Nguyễn Thị Thủy - Bộ phận kế toán Văn phòng Cục",
+                        reply_date: "08/06/2026 11:20",
+                        reply_content: "Chào bạn, theo quy định hiện hành đối với mã số sử dụng CSDL loại thường xuyên cho Tổ chức/Cá nhân, mã sẽ có hiệu lực kể từ ngày thanh toán thành công đến hết ngày 31/12 của năm cấp mã đó. Do đó, mã của bạn sẽ hết hạn vào ngày 31/12/2026.",
+                        reply_files: []
+                    }
+                ],
+                rating: "Không hài lòng",
+                rating_comment: "Thu phí cả năm nhưng chỉ sử dụng đến hết năm tài chính là không hợp lý cho khách hàng đăng ký vào giữa năm."
+            },
+            {
+                id: "HT-20260610-000102",
+                category: "Bồi thường nhà nước",
+                created_at: "10/06/2026 11:15",
+                priority: "Trung bình",
+                title: "Tra cứu tiến độ giải quyết đơn thư khiếu nại bồi thường",
+                content: "Đơn khiếu nại về quyết định bồi thường số 12/QĐ-UBND của tôi đã gửi bưu điện từ ngày 25/05/2026. Hệ thống dịch vụ công chưa cập nhật tiến độ thụ lý hồ sơ của Cục. Xin hỏi đơn của tôi đã được tiếp nhận chưa?",
+                status: "Chờ tiếp nhận",
+                files: ["bien_lai_gui_buu_dien.jpg"],
+                replies: [],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260612-000114",
+                category: "Biện pháp bảo đảm",
+                created_at: "12/06/2026 15:45",
+                priority: "Thấp",
+                title: "Hỏi về mức phí khi xóa đăng ký giao dịch bảo đảm trực tuyến",
+                content: "Cổng dịch vụ đang cấu hình mức phí cho dịch vụ Xóa đăng ký biện pháp bảo đảm bằng động sản. Vui lòng cung cấp văn bản quy định cụ thể mức phí này.",
+                status: "Hoàn thành",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Đinh Xuân Bách - Phòng Quản lý Nghiệp vụ",
+                        reply_date: "13/06/2026 09:30",
+                        reply_content: "Chào bạn, theo Thông tư số 121/2025/TT-BTC quy định về biểu phí đăng ký giao dịch bảo đảm, giao dịch Xóa đăng ký biện pháp bảo đảm bằng động sản trực tuyến được miễn hoàn toàn lệ phí đăng ký trực tuyến. Bạn có thể thực hiện xóa hồ sơ mà không phải nộp phí.",
+                        reply_files: ["Thong_tu_121_2025_TT_BTC.pdf"]
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260614-000125",
+                category: "Bồi thường nhà nước",
+                created_at: "14/06/2026 14:00",
+                priority: "Cao",
+                title: "Sai lệch thông tin họ tên trên Quyết định giải quyết bồi thường",
+                content: "Tôi nhận được bản điện tử Quyết định bồi thường số 09/QĐ-BTNN nhưng phần họ tên bị sai chữ đệm từ 'Nguyễn Văn Hùng' thành 'Nguyễn Hùng'. Kính đề nghị Quý cơ quan hiệu chỉnh lại bản chính thức.",
+                status: "Đang xử lý",
+                files: ["quyet_dinh_dien_tu_loi.pdf"],
+                replies: [],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260615-000130",
+                category: "Biện pháp bảo đảm",
+                created_at: "15/06/2026 09:00",
+                priority: "Trung bình",
+                title: "Tài khoản liên kết bị mất quyền đăng ký trực tuyến",
+                content: "Tài khoản doanh nghiệp của tôi trước đó vẫn thực hiện nộp hồ sơ bình thường. Sáng nay đăng nhập hệ thống báo tài khoản chưa được phân quyền đăng ký trực tuyến. Kính mong hỗ trợ kiểm tra tài khoản đại diện mã số thuế 0102948291.",
+                status: "Chờ tiếp nhận",
+                files: [],
+                replies: [],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260616-000142",
+                category: "Bồi thường nhà nước",
+                created_at: "16/06/2026 13:50",
+                priority: "Thấp",
+                title: "Yêu cầu hướng dẫn nộp hồ sơ bồi thường nhà nước trực tuyến",
+                content: "Tôi là cá nhân muốn nộp hồ sơ bồi thường trực tiếp trên web nhưng chưa tìm thấy menu nộp hồ sơ nghiệp vụ BTNN. Nhờ admin gửi tài liệu hướng dẫn từng bước.",
+                status: "Hoàn thành",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Lê Minh Hương - Phòng Bồi thường nhà nước",
+                        reply_date: "17/06/2026 10:20",
+                        reply_content: "Chào anh/chị, chức năng nộp hồ sơ BTNN trực tuyến nằm tại menu Hành chính công -> Nộp hồ sơ dịch vụ công -> Chọn lĩnh vực Bồi thường nhà nước. Chi tiết tài liệu hướng dẫn bằng hình ảnh được đính kèm bên dưới để anh chị theo dõi.",
+                        reply_files: ["Huong_dan_nop_ho_so_BTNN.pdf"]
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            }
+        ];
+
+        // Track dynamic Quick feedback ticket ID
+        let quickDislikeTicketId = "";
+
+        // Form Edit / Update helpers for Clarification
+        let currentEditTicketId = "";
+        let editSelectedFiles = [];
+
+        // Actions Dropdown Toggle Logic
+        function toggleActionsDropdown(event, ticketId) {
+            try {
+                event.stopPropagation();
+                const dropdownMenu = document.getElementById(`dropdown-${ticketId}`);
+                const allMenus = document.querySelectorAll('.actions-dropdown-menu');
+                
+                // Hide other dropdowns
+                allMenus.forEach(menu => {
+                    if (menu.id !== `dropdown-${ticketId}`) {
+                        menu.style.display = 'none';
+                    }
+                });
+
+                if (dropdownMenu) {
+                    if (dropdownMenu.style.display === 'block') {
+                        dropdownMenu.style.display = 'none';
+                    } else {
+                        dropdownMenu.style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function hideAllActionsDropdowns() {
+            try {
+                document.querySelectorAll('.actions-dropdown-menu').forEach(menu => {
+                    menu.style.display = 'none';
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        window.addEventListener('click', function() {
+            hideAllActionsDropdowns();
+        });
+
+        function goToEditScreen(ticketId) {
+            try {
+                const ticket = supportTickets.find(t => t.id === ticketId);
+                if (!ticket) return;
+
+                currentEditTicketId = ticketId;
+                
+                document.getElementById('edit-type').value = ticket.category;
+                document.getElementById('edit-priority').value = ticket.priority;
+                document.getElementById('edit-title').value = ticket.title;
+                document.getElementById('edit-content').value = ticket.content;
+                
+                // Clear errors
+                document.getElementById('error-edit-title').style.display = 'none';
+                document.getElementById('error-edit-content').style.display = 'none';
+                document.getElementById('error-edit-files').style.display = 'none';
+                document.getElementById('edit-files').value = '';
+                
+                // Set file previews
+                editSelectedFiles = [...(ticket.files || [])];
+                renderEditSelectedFiles();
+
+                // Populate officer response history on the Edit Screen for alignment
+                const editRepliesListDiv = document.getElementById('edit-replies-list');
+                const editRespSection = document.getElementById('edit-response-section');
+                if (editRepliesListDiv) editRepliesListDiv.innerHTML = '';
+                
+                if (ticket.replies && ticket.replies.length > 0) {
+                    editRespSection.style.display = 'block';
+                    ticket.replies.forEach((rep, rIdx) => {
+                        let repAttHtml = '';
+                        if (rep.reply_files && rep.reply_files.length > 0) {
+                            rep.reply_files.forEach(file => {
+                                repAttHtml += `<div style="margin-top: 4px;"><strong>Tệp đính kèm phản hồi:</strong> <a href="#" style="color: var(--secondary-color); font-weight: 500;" onclick="event.preventDefault(); downloadMockFile('${file}')"><i class="fa-solid fa-file-pdf"></i> ${file}</a></div>`;
+                            });
+                        }
+                        
+                        editRepliesListDiv.innerHTML += `
+                            <div class="response-box" style="margin-top: 0; margin-bottom: 10px; background-color: #F8FAFC; border-left: 4px solid var(--primary-color); padding: 12px; border-radius: 0 4px 4px 0;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px; color: var(--text-muted);">
+                                    <div><strong>Lần phản hồi #${rIdx + 1}</strong> | Cán bộ: <span style="color: var(--primary-color); font-weight: 600;">${rep.reply_user}</span></div>
+                                    <div>Thời gian: <strong>${rep.reply_date}</strong></div>
+                                </div>
+                                <div style="white-space: pre-line; line-height: 1.6; font-size: 13px;">${rep.reply_content}</div>
+                                ${repAttHtml ? `<div style="margin-top: 8px; font-size: 12px; border-top: 1px dotted var(--border-color); padding-top: 6px;">${repAttHtml}</div>` : ''}
+                            </div>
+                        `;
+                    });
+                } else {
+                    editRespSection.style.display = 'none';
+                }
+
+                switchScreen('screen-edit');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function handleEditFileSelect(event) {
+            const files = event.target.files;
+            const errorDiv = document.getElementById('error-edit-files');
+            errorDiv.style.display = 'none';
+            
+            if (editSelectedFiles.length + files.length > 3) {
+                errorDiv.innerText = "Hệ thống chỉ hỗ trợ đính kèm tối đa 3 tệp tin.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (!['pdf', 'jpg', 'jpeg', 'png'].includes(ext)) {
+                    errorDiv.innerText = `Định dạng tệp tin ${file.name} không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png.`;
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                if (file.size > 20 * 1024 * 1024) {
+                    errorDiv.innerText = `Dung lượng tệp tin ${file.name} vượt quá 20MB. Vui lòng kiểm tra lại.`;
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                editSelectedFiles.push(file.name);
+            }
+            renderEditSelectedFiles();
+        }
+
+        function renderEditSelectedFiles() {
+            const previewDiv = document.getElementById('edit-file-list-preview');
+            if (!previewDiv) return;
+            previewDiv.innerHTML = '';
+            editSelectedFiles.forEach((file, index) => {
+                previewDiv.innerHTML += `
+                    <div class="file-item" style="margin-top: 5px;">
+                        <span><i class="fa-solid fa-paperclip"></i> ${file}</span>
+                        <span class="file-item-delete" style="cursor:pointer;" onclick="removeEditFile(${index})"><i class="fa-solid fa-trash"></i></span>
+                    </div>
+                `;
+            });
+        }
+
+        function removeEditFile(index) {
+            editSelectedFiles.splice(index, 1);
+            renderEditSelectedFiles();
+        }
+
+        function submitUpdateRequest() {
+            const title = document.getElementById('edit-title').value.trim();
+            const content = document.getElementById('edit-content').value.trim();
+            const priority = document.getElementById('edit-priority').value;
+            
+            let hasError = false;
+            if (!title) {
+                document.getElementById('error-edit-title').style.display = 'block';
+                hasError = true;
+            } else {
+                document.getElementById('error-edit-title').style.display = 'none';
+            }
+            
+            if (!content) {
+                document.getElementById('error-edit-content').style.display = 'block';
+                hasError = true;
+            } else {
+                document.getElementById('error-edit-content').style.display = 'none';
+            }
+            
+            if (hasError) return;
+            
+            const ticket = supportTickets.find(t => t.id === currentEditTicketId);
+            if (ticket) {
+                ticket.title = title;
+                ticket.content = content;
+                ticket.priority = priority;
+                ticket.files = [...editSelectedFiles];
+                ticket.status = "Chờ tiếp nhận";
+            }
+            
+            showToast("Cập nhật yêu cầu hỗ trợ thành công!", "success");
+            backToTracker();
+        }
+
+        // Function to switch category Tab
+        function switchTab(tabName) {
+            try {
+                activeTab = tabName;
+                document.getElementById('tab-bpbd').classList.remove('active');
+                document.getElementById('tab-btnn').classList.remove('active');
+                
+                if (tabName === 'bpbd') {
+                    document.getElementById('tab-bpbd').classList.add('active');
+                } else {
+                    document.getElementById('tab-btnn').classList.add('active');
+                }
+                
+                filterTable();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Render Table Data based on filters
+        function renderTable(dataList) {
+            try {
+                const tbody = document.getElementById('table-body');
+                tbody.innerHTML = '';
+
+                if (dataList.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có dữ liệu phù hợp</td></tr>`;
+                    return;
+                }
+
+                dataList.forEach((ticket, idx) => {
+                    // Priority tag
+                    let priorityBadge = '';
+                    if (ticket.priority === 'Thấp') priorityBadge = '<span class="badge badge-low">Thấp</span>';
+                    else if (ticket.priority === 'Trung bình') priorityBadge = '<span class="badge badge-medium">Trung bình</span>';
+                    else if (ticket.priority === 'Cao') priorityBadge = '<span class="badge badge-high">Cao</span>';
+
+                    // Status tag
+                    let statusBadge = '';
+                    if (ticket.status === 'Chờ tiếp nhận') statusBadge = '<span class="badge badge-status-pending">Chờ tiếp nhận</span>';
+                    else if (ticket.status === 'Đang xử lý') statusBadge = '<span class="badge badge-status-processing">Đang xử lý</span>';
+                    else if (ticket.status === 'Yêu cầu làm rõ') statusBadge = '<span class="badge badge-status-clarify">Yêu cầu làm rõ</span>';
+                    else if (ticket.status === 'Hoàn thành') statusBadge = '<span class="badge badge-status-completed">Hoàn thành</span>';
+
+                    // Content truncation
+                    const contentTruncated = ticket.content.length > 100 ? ticket.content.substring(0, 100) + '...' : ticket.content;
+                    
+                    // Most recent reply text
+                    const lastReply = ticket.replies && ticket.replies.length > 0 ? ticket.replies[ticket.replies.length - 1] : null;
+                    const replyText = lastReply ? lastReply.reply_content : '-';
+                    const replyTruncated = replyText.length > 100 ? replyText.substring(0, 100) + '...' : replyText;
+
+                    // File icon directly inline in the Title column to save column space
+                    let titleWithIcon = ticket.title;
+                    if (ticket.files && ticket.files.length > 0) {
+                        titleWithIcon += ` <i class="fa-solid fa-paperclip" style="color: var(--secondary-color); cursor: pointer; font-size: 12px; margin-left: 6px;" title="Tải xuống tệp đính kèm: ${ticket.files.join(', ')}" onclick="event.stopPropagation(); downloadMockFile('${ticket.files[0]}')"></i>`;
+                    }
+
+                    // Rating text markup (text only, no icons)
+                    let ratingMarkup = '-';
+                    if (ticket.rating === 'Hài lòng') {
+                        ratingMarkup = '<span style="color: var(--success-color); font-weight:600;">Hài lòng</span>';
+                    } else if (ticket.rating === 'Không hài lòng') {
+                        ratingMarkup = '<span style="color: var(--danger-color); font-weight:600;">Không hài lòng</span>';
+                    }
+
+                    // Action buttons (vertically stacked, each button occupies its own line, unified width 95px)
+                    let actionButtons = `<div style="display: flex; flex-direction: column; gap: 4px; justify-content: center; align-items: center; width: 100%;">`;
+                    actionButtons += `<button class="btn btn-outline-primary btn-sm" style="padding: 4px 8px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px; width: 95px; height: 26px; white-space: nowrap;" onclick="event.stopPropagation(); showDetail('${ticket.id}')"><i class="fa-regular fa-eye"></i> Xem</button>`;
+                    
+                    if (ticket.status === 'Hoàn thành' && !ticket.rating) {
+                        actionButtons += `
+                            <div class="actions-dropdown" style="width: 95px;">
+                                <button class="btn btn-outline-primary btn-sm" style="padding: 4px 8px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px; width: 95px; height: 26px; white-space: nowrap;" onclick="toggleActionsDropdown(event, '${ticket.id}')">
+                                    Đánh giá <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
+                                </button>
+                                <div class="actions-dropdown-menu" id="dropdown-${ticket.id}" style="min-width: 130px;">
+                                    <button class="actions-dropdown-item" onclick="event.stopPropagation(); hideAllActionsDropdowns(); evaluateQuickLike('${ticket.id}')">
+                                        <i class="fa-regular fa-thumbs-up" style="color: var(--success-color);"></i> Hài lòng
+                                    </button>
+                                    <button class="actions-dropdown-item" onclick="event.stopPropagation(); hideAllActionsDropdowns(); evaluateQuickDislike('${ticket.id}')" style="border-top: 1px solid var(--border-color);">
+                                        <i class="fa-regular fa-thumbs-down" style="color: var(--danger-color);"></i> Không hài lòng
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    } else if (ticket.status === 'Yêu cầu làm rõ') {
+                        actionButtons += `
+                            <button class="btn btn-primary btn-sm" style="background-color: var(--success-color); border: none; padding: 4px 8px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px; width: 95px; height: 26px; white-space: nowrap;" onclick="event.stopPropagation(); goToEditScreen('${ticket.id}')"><i class="fa-regular fa-pen-to-square"></i> Cập nhật</button>
+                        `;
+                    }
+                    actionButtons += `</div>`;
+
+                    const row = document.createElement('tr');
+                    row.style.cursor = 'pointer';
+                    row.onclick = () => showDetail(ticket.id);
+                    row.innerHTML = `
+                        <td style="text-align: center; font-weight: 600; color: var(--text-muted);">${idx + 1}</td>
+                        <td style="font-weight: 500;">${titleWithIcon}</td>
+                        <td>${ticket.category}</td>
+                        <td title="${ticket.content.replace(/"/g, '&quot;')}">${contentTruncated}</td>
+                        <td title="${(replyText || '').replace(/"/g, '&quot;')}">${replyTruncated}</td>
+                        <td style="text-align: center;">${priorityBadge}</td>
+                        <td style="text-align: center;">${statusBadge}</td>
+                        <td>${ticket.created_at}</td>
+                        <td style="text-align: center;">${ratingMarkup}</td>
+                        <td style="text-align: center; vertical-align: middle;">${actionButtons}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-from-date').value = '';
+            document.getElementById('filter-to-date').value = '';
+            document.getElementById('filter-priority').value = 'Tất cả';
+            document.getElementById('filter-status').value = 'Tất cả';
+            document.getElementById('filter-keyword').value = '';
+            filterTable();
+            showToast('Đã xóa bộ lọc.', 'info');
+        }
+
+        // Filter Table function
+        function filterTable() {
+            try {
+                // Clear selection focus
+                const filterPrioritySelect = document.getElementById('filter-priority');
+                if (filterPrioritySelect) filterPrioritySelect.blur();
+                const filterStatusSelect = document.getElementById('filter-status');
+                if (filterStatusSelect) filterStatusSelect.blur();
+
+                const categoryFilter = activeTab === 'bpbd' ? 'Biện pháp bảo đảm' : 'Bồi thường nhà nước';
+                const fromDateVal = document.getElementById('filter-from-date').value;
+                const toDateVal = document.getElementById('filter-to-date').value;
+                const priorityVal = document.getElementById('filter-priority').value;
+                const statusVal = document.getElementById('filter-status').value;
+                const keywordVal = document.getElementById('filter-keyword').value.trim().toLowerCase();
+
+                let filtered = supportTickets.filter(ticket => ticket.category === categoryFilter);
+
+                // Filter by Priority
+                if (priorityVal !== 'Tất cả') {
+                    filtered = filtered.filter(ticket => ticket.priority === priorityVal);
+                }
+
+                // Filter by Status
+                if (statusVal !== 'Tất cả') {
+                    filtered = filtered.filter(ticket => ticket.status === statusVal);
+                }
+
+                // Filter by Keyword (Title or Content)
+                if (keywordVal) {
+                    filtered = filtered.filter(ticket => 
+                        ticket.title.toLowerCase().includes(keywordVal) || 
+                        ticket.content.toLowerCase().includes(keywordVal)
+                    );
+                }
+
+                // Filter by dates
+                if (fromDateVal) {
+                    const fromDateObj = new Date(fromDateVal + "T00:00:00");
+                    filtered = filtered.filter(ticket => {
+                        const tDateParts = ticket.created_at.split(' ')[0].split('/');
+                        const ticketDate = new Date(`${tDateParts[2]}-${tDateParts[1]}-${tDateParts[0]}T00:00:00`);
+                        return ticketDate >= fromDateObj;
+                    });
+                }
+                if (toDateVal) {
+                    const toDateObj = new Date(toDateVal + "T23:59:59");
+                    filtered = filtered.filter(ticket => {
+                        const tDateParts = ticket.created_at.split(' ')[0].split('/');
+                        const ticketDate = new Date(`${tDateParts[2]}-${tDateParts[1]}-${tDateParts[0]}T00:00:00`);
+                        return ticketDate <= toDateObj;
+                    });
+                }
+
+                renderTable(filtered);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Show Toast Notifications
+        function showToast(message, type = 'success') {
+            try {
+                const toast = document.getElementById('toast-notify');
+                const toastText = document.getElementById('toast-text');
+                const toastIcon = document.getElementById('toast-icon');
+
+                toastText.innerText = message;
+                toast.className = 'toast ' + type;
+                
+                if (type === 'success') {
+                    toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                } else {
+                    toastIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+                }
+
+                toast.style.display = 'flex';
+
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Simulated file download
+        function downloadMockFile(fileName) {
+            showToast(`Đang tải xuống tệp tin: ${fileName}...`, 'success');
+        }
+
+        // Export Excel Simulation
+        function exportToExcel() {
+            try {
+                const dateStr = yyyy + mm + dd;
+                const fileName = `Danh_sach_Yeu_cau_Ho_tro_${dateStr}.xlsx`;
+                showToast(`Kết xuất thành công. Đang tải xuống file ${fileName}`, 'success');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Switch Screen helper
+        function switchScreen(screenId) {
+            try {
+                document.querySelectorAll('.app-screen').forEach(scr => scr.classList.remove('active'));
+                document.getElementById(screenId).classList.add('active');
+                window.scrollTo(0, 0);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Navigate to Create Screen
+        function goToCreateScreen() {
+            try {
+                const categoryName = activeTab === 'bpbd' ? 'Biện pháp bảo đảm' : 'Bồi thường nhà nước';
+                document.getElementById('create-type').value = categoryName;
+                document.getElementById('create-priority').value = 'Thấp';
+                document.getElementById('create-title').value = '';
+                document.getElementById('create-content').value = '';
+                document.getElementById('create-files').value = '';
+                document.getElementById('error-create-title').style.display = 'none';
+                document.getElementById('error-create-content').style.display = 'none';
+                document.getElementById('error-create-files').style.display = 'none';
+                document.getElementById('create-title').style.borderColor = '';
+                document.getElementById('create-content').style.borderColor = '';
+                selectedFiles = [];
+                renderSelectedFiles();
+                
+                switchScreen('screen-create');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Cancel Create Screen
+        function cancelCreate() {
+            switchScreen('screen-tracker');
+            filterTable();
+        }
+
+        // Handle File Select & Validate size/count/type
+        function handleFileSelect(event) {
+            try {
+                const files = event.target.files;
+                const errorMsg = document.getElementById('error-create-files');
+                errorMsg.style.display = 'none';
+
+                if (selectedFiles.length + files.length > 3) {
+                    errorMsg.innerText = 'Hệ thống chỉ hỗ trợ đính kèm tối đa 3 tệp tin.';
+                    errorMsg.style.display = 'block';
+                    event.target.value = '';
+                    return;
+                }
+
+                const validExtensions = ['.pdf', '.jpg', '.jpeg', '.png'];
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+                    
+                    if (!validExtensions.includes(extension)) {
+                        errorMsg.innerText = `Định dạng tệp tin ${file.name} không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png.`;
+                        errorMsg.style.display = 'block';
+                        event.target.value = '';
+                        return;
+                    }
+
+                    if (file.size > 20 * 1024 * 1024) {
+                        errorMsg.innerText = `Dung lượng tệp tin ${file.name} vượt quá 20MB. Vui lòng kiểm tra lại.`;
+                        errorMsg.style.display = 'block';
+                        event.target.value = '';
+                        return;
+                    }
+
+                    selectedFiles.push(file);
+                }
+
+                event.target.value = '';
+                renderSelectedFiles();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Render selected files preview
+        function renderSelectedFiles() {
+            try {
+                const preview = document.getElementById('file-list-preview');
+                preview.innerHTML = '';
+                selectedFiles.forEach((file, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'file-item';
+                    item.innerHTML = `
+                        <span><i class="fa-regular fa-file"></i> ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                        <span class="file-item-delete" onclick="removeSelectedFile(${index})"><i class="fa fa-trash"></i></span>
+                    `;
+                    preview.appendChild(item);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Remove selected file
+        function removeSelectedFile(index) {
+            selectedFiles.splice(index, 1);
+            renderSelectedFiles();
+        }
+
+        // Submit support request
+        function submitCreateRequest() {
+            try {
+                const titleInput = document.getElementById('create-title');
+                const contentInput = document.getElementById('create-content');
+                const priority = document.getElementById('create-priority').value;
+                const category = document.getElementById('create-type').value;
+
+                let hasError = false;
+
+                // Validate Title
+                if (!titleInput.value.trim()) {
+                    document.getElementById('error-create-title').style.display = 'block';
+                    titleInput.style.borderColor = 'var(--danger-color)';
+                    hasError = true;
+                } else {
+                    document.getElementById('error-create-title').style.display = 'none';
+                    titleInput.style.borderColor = '';
+                }
+
+                // Validate Content
+                if (!contentInput.value.trim()) {
+                    document.getElementById('error-create-content').style.display = 'block';
+                    contentInput.style.borderColor = 'var(--danger-color)';
+                    hasError = true;
+                } else {
+                    document.getElementById('error-create-content').style.display = 'none';
+                    contentInput.style.borderColor = '';
+                }
+
+                if (hasError) return;
+
+                // Create dynamic ID
+                const ticketNum = String(supportTickets.length + 1).padStart(6, '0');
+                const ticketId = `HT-${yyyy}${mm}${dd}-${ticketNum}`;
+
+                // Create mock file strings
+                const fileNames = selectedFiles.map(f => f.name);
+
+                // Add to CSDL
+                const newTicket = {
+                    id: ticketId,
+                    category: category,
+                    created_at: currentDateFormatted + ' ' + String(today.getHours()).padStart(2, '0') + ':' + String(today.getMinutes()).padStart(2, '0'),
+                    priority: priority,
+                    title: titleInput.value.trim(),
+                    content: contentInput.value.trim(),
+                    status: 'Chờ tiếp nhận',
+                    files: fileNames,
+                    replies: [],
+                    rating: "",
+                    rating_comment: ""
+                };
+
+                supportTickets.unshift(newTicket); // Prepend to lists
+
+                // Show result screen
+                document.getElementById('lbl-result-ticket-id').innerText = ticketId;
+                switchScreen('screen-result');
+                showToast(`Tiếp nhận yêu cầu hỗ trợ thành công!`, 'success');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Return to main client portal (emulated)
+        function backToMainPortal() {
+            showToast("Đang quay về Trang chủ Website Khách hàng...", "success");
+            // Switch back inside frame as well
+            switchScreen('screen-tracker');
+            filterTable();
+        }
+
+        // Return to tracker from screens
+        function backToTracker() {
+            switchScreen('screen-tracker');
+            filterTable();
+        }
+
+        // Show Ticket detail screen
+        let currentDetailTicketId = "";
+        function showDetail(ticketId) {
+            try {
+                const ticket = supportTickets.find(t => t.id === ticketId);
+                if (!ticket) return;
+
+                currentDetailTicketId = ticketId;
+
+                // Set values
+                document.getElementById('detail-ticket-id').innerText = ticket.id;
+                document.getElementById('detail-created-at').innerText = ticket.created_at;
+                document.getElementById('detail-category').innerText = ticket.category;
+                document.getElementById('detail-priority').innerText = ticket.priority;
+                document.getElementById('detail-title').innerText = ticket.title;
+                document.getElementById('detail-content').innerText = ticket.content;
+
+                // Status Tag
+                const statusDiv = document.getElementById('detail-status');
+                statusDiv.innerHTML = '';
+                let statusBadge = '';
+                if (ticket.status === 'Chờ tiếp nhận') statusBadge = '<span class="badge badge-status-pending">Chờ tiếp nhận</span>';
+                else if (ticket.status === 'Đang xử lý') statusBadge = '<span class="badge badge-status-processing">Đang xử lý</span>';
+                else if (ticket.status === 'Yêu cầu làm rõ') statusBadge = '<span class="badge badge-status-clarify">Yêu cầu làm rõ</span>';
+                else if (ticket.status === 'Hoàn thành') statusBadge = '<span class="badge badge-status-completed">Hoàn thành</span>';
+                statusDiv.innerHTML = statusBadge;
+
+                // Attachments
+                const attDiv = document.getElementById('detail-attachments');
+                attDiv.innerHTML = '';
+                if (ticket.files && ticket.files.length > 0) {
+                    ticket.files.forEach(file => {
+                        attDiv.innerHTML += `<div><a href="#" style="color: var(--secondary-color); font-weight: 500;" onclick="event.preventDefault(); downloadMockFile('${file}')"><i class="fa-solid fa-paperclip"></i> ${file}</a></div>`;
+                    });
+                } else {
+                    attDiv.innerText = 'Không có tệp tin đính kèm';
+                }
+
+                // Response Block (Only if not pending)
+                const respSection = document.getElementById('detail-response-section');
+                const repliesListDiv = document.getElementById('detail-replies-list');
+                if (repliesListDiv) repliesListDiv.innerHTML = '';
+                
+                if (ticket.replies && ticket.replies.length > 0) {
+                    respSection.style.display = 'block';
+                    ticket.replies.forEach((rep, rIdx) => {
+                        let repAttHtml = '';
+                        if (rep.reply_files && rep.reply_files.length > 0) {
+                            rep.reply_files.forEach(file => {
+                                repAttHtml += `<div style="margin-top: 4px;"><strong>Tệp đính kèm phản hồi:</strong> <a href="#" style="color: var(--secondary-color); font-weight: 500;" onclick="event.preventDefault(); downloadMockFile('${file}')"><i class="fa-solid fa-file-pdf"></i> ${file}</a></div>`;
+                            });
+                        }
+                        
+                        repliesListDiv.innerHTML += `
+                            <div class="response-box" style="margin-top: 0; margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px; color: var(--text-muted);">
+                                    <div><strong>Lần phản hồi #${rIdx + 1}</strong> | Cán bộ: <span style="color: var(--primary-color); font-weight: 600;">${rep.reply_user}</span></div>
+                                    <div>Thời gian: <strong>${rep.reply_date}</strong></div>
+                                </div>
+                                <div style="white-space: pre-line; line-height: 1.6; font-size: 13px;">${rep.reply_content}</div>
+                                ${repAttHtml ? `<div style="margin-top: 8px; font-size: 12px; border-top: 1px dotted var(--border-color); padding-top: 6px;">${repAttHtml}</div>` : ''}
+                            </div>
+                        `;
+                    });
+                } else if (ticket.status !== 'Chờ tiếp nhận') {
+                    respSection.style.display = 'block';
+                    if (repliesListDiv) {
+                        repliesListDiv.innerHTML = `
+                            <div class="response-box" style="margin-top: 0;">
+                                <div style="font-size: 13px; color: var(--text-muted);">Bộ phận hỗ trợ đã tiếp nhận yêu cầu và đang tiến hành kiểm tra xử lý...</div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    respSection.style.display = 'none';
+                }
+
+                // Rating Block (Only if completed)
+                const ratingSection = document.getElementById('detail-rating-section');
+                if (ticket.status === 'Hoàn thành') {
+                    ratingSection.style.display = 'block';
+                    const formBlock = document.getElementById('rating-form-block');
+                    const doneBlock = document.getElementById('rating-done-block');
+                    
+                    if (ticket.rating) {
+                        formBlock.style.display = 'none';
+                        doneBlock.style.display = 'block';
+                        
+                        let ratingDoneText = '';
+                        if (ticket.rating === 'Hài lòng') {
+                            ratingDoneText = '<span style="color: var(--success-color); font-weight:600;"><i class="fa-solid fa-thumbs-up"></i> Hài lòng</span>';
+                        } else {
+                            ratingDoneText = '<span style="color: var(--danger-color); font-weight:600;"><i class="fa-solid fa-thumbs-down"></i> Không hài lòng</span>';
+                        }
+                        document.getElementById('lbl-rating-done-value').innerHTML = ratingDoneText;
+
+                        if (ticket.rating_comment) {
+                            document.getElementById('div-rating-done-reason').style.display = 'block';
+                            document.getElementById('lbl-rating-done-reason').innerText = ticket.rating_comment;
+                        } else {
+                            document.getElementById('div-rating-done-reason').style.display = 'none';
+                        }
+                    } else {
+                        formBlock.style.display = 'block';
+                        doneBlock.style.display = 'none';
+                        
+                        // Reset form fields
+                        const radios = document.getElementsByName('detail-rating-option');
+                        radios.forEach(r => r.checked = false);
+                        document.getElementById('detail-rating-reason-group').style.display = 'none';
+                        document.getElementById('detail-rating-reason').value = '';
+                        document.getElementById('error-detail-rating-reason').style.display = 'none';
+                    }
+                } else {
+                    ratingSection.style.display = 'none';
+                }
+
+                switchScreen('screen-detail');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Toggle Reason textarea based on rating
+        function toggleFeedbackReason(value) {
+            try {
+                const group = document.getElementById('detail-rating-reason-group');
+                if (value === 'Không hài lòng') {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Submit Rating on Detail view
+        function submitDetailRating() {
+            try {
+                const radios = document.getElementsByName('detail-rating-option');
+                let selectedVal = "";
+                radios.forEach(r => {
+                    if (r.checked) selectedVal = r.value;
+                });
+
+                if (!selectedVal) {
+                    showToast('Vui lòng chọn mức độ hài lòng trước khi gửi.', 'error');
+                    return;
+                }
+
+                const reasonInput = document.getElementById('detail-rating-reason');
+                let reasonVal = reasonInput.value.trim();
+
+                if (selectedVal === 'Không hài lòng' && !reasonVal) {
+                    document.getElementById('error-detail-rating-reason').style.display = 'block';
+                    reasonInput.style.borderColor = 'var(--danger-color)';
+                    return;
+                } else {
+                    document.getElementById('error-detail-rating-reason').style.display = 'none';
+                    reasonInput.style.borderColor = '';
+                }
+
+                // Update CSDL
+                const ticket = supportTickets.find(t => t.id === currentDetailTicketId);
+                if (ticket) {
+                    ticket.rating = selectedVal;
+                    ticket.rating_comment = selectedVal === 'Không hài lòng' ? reasonVal : '';
+                }
+
+                showToast('Gửi đánh giá thành công. Trân trọng cảm ơn ý kiến của bạn!', 'success');
+                showDetail(currentDetailTicketId); // Reload details view to update UI
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Quick rating Hài lòng (Yes/Like) directly from grid table row
+        function evaluateQuickLike(ticketId) {
+            try {
+                if (confirm("Bạn có chắc chắn muốn đánh giá Hài lòng cho câu trả lời của yêu cầu hỗ trợ này?")) {
+                    const ticket = supportTickets.find(t => t.id === ticketId);
+                    if (ticket) {
+                        ticket.rating = 'Hài lòng';
+                        ticket.rating_comment = '';
+                    }
+                    showToast('Gửi đánh giá thành công. Trân trọng cảm ơn ý kiến của bạn!', 'success');
+                    filterTable(); // Refresh table view
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Quick rating Không hài lòng (No/Dislike) directly from grid table row - opens modal
+        function evaluateQuickDislike(ticketId) {
+            try {
+                quickDislikeTicketId = ticketId;
+                document.getElementById('quick-feedback-reason').value = '';
+                document.getElementById('error-quick-feedback-reason').style.display = 'none';
+                document.getElementById('quick-feedback-reason').style.borderColor = '';
+                document.getElementById('dislike-modal').classList.add('show');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function closeDislikeModal() {
+            document.getElementById('dislike-modal').classList.remove('show');
+        }
+
+        function submitQuickDislike() {
+            try {
+                const reasonInput = document.getElementById('quick-feedback-reason');
+                const reasonVal = reasonInput.value.trim();
+
+                if (!reasonVal) {
+                    document.getElementById('error-quick-feedback-reason').style.display = 'block';
+                    reasonInput.style.borderColor = 'var(--danger-color)';
+                    return;
+                }
+
+                // Update database
+                const ticket = supportTickets.find(t => t.id === quickDislikeTicketId);
+                if (ticket) {
+                    ticket.rating = 'Không hài lòng';
+                    ticket.rating_comment = reasonVal;
+                }
+
+                closeDislikeModal();
+                showToast('Gửi đánh giá thành công.', 'success');
+                filterTable(); // Refresh table view
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Initialize Table View
+        filterTable();
+    </script>
+</body>
+</html>

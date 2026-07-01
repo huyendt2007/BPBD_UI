@@ -1,0 +1,573 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu thông tin đăng ký</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Tái sử dụng CSS chung hoặc định nghĩa inline các biến từ css.md -->
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            font-size: var(--base-size);
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: var(--spacing-lg);
+        }
+        .nav-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        .nav-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Card Section */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .section-title {
+            color: var(--primary-color);
+            font-size: var(--heading-size);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* Forms */
+        .grid-3-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); }
+        .form-group { margin-bottom: var(--spacing-sm); }
+        .form-label { font-weight: 500; margin-bottom: var(--spacing-sm); display: block; }
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem 0.75rem;
+            font-size: var(--base-size);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        /* Buttons */
+        .btn {
+            font-weight: 500;
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border: none;
+            font-size: var(--base-size);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-outline-primary { background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); }
+        .btn-outline-primary:hover { background-color: var(--primary-color); color: white; }
+
+        /* Tables */
+        .table { width: 100%; border-collapse: collapse; margin-bottom: var(--spacing-md); }
+        .table th { background-color: var(--table-header-bg); color: var(--primary-color); font-weight: 600; padding: 12px 10px; text-align: left; border-bottom: 2px solid var(--border-color); }
+        .table td { padding: 12px 10px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .table tbody tr:hover { background-color: rgba(241, 245, 249, 0.5); }
+        
+        .action-link { color: var(--secondary-color); text-decoration: underline; cursor: pointer; }
+        
+        /* Dropdown styles for table actions */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            min-width: 200px;
+            border-radius: var(--border-radius-md);
+            text-align: left;
+            padding: 5px 0;
+        }
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 8px 16px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 13px;
+            box-sizing: border-box;
+            transition: background-color 0.15s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            text-align: left;
+        }
+        .dropdown-item:hover {
+            background-color: #F1F5F9;
+            color: var(--primary-color);
+        }
+        .dropdown-item i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .dropdown-item:hover i {
+            color: var(--primary-color);
+        }
+        
+        /* Status Badges */
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+        .badge-success { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+        .badge-warning { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .status-badge.draft {
+            background-color: #F1F5F9;
+            color: #475569;
+            border: 1px solid #E2E8F0;
+        }
+        .status-badge.pending-payment {
+            background-color: #FFF7ED;
+            color: #C2410C;
+            border: 1px solid #FFEDD5;
+        }
+        .status-badge.pending-approval {
+            background-color: #FEF9C3;
+            color: #A16207;
+            border: 1px solid #FEF08A;
+        }
+        .status-badge.approved-pending-signature {
+            background-color: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #DBEAFE;
+        }
+        .status-badge.completed {
+            background-color: #ECFDF5;
+            color: #047857;
+            border: 1px solid #D1FAE5;
+        }
+        .status-badge.rejected {
+            background-color: #FEF2F2;
+            color: #B91C1C;
+            border: 1px solid #FEE2E2;
+        }
+
+        /* Tree Styles */
+        .tree-row {
+            transition: background-color 0.2s ease;
+        }
+        .tree-row.depth-0 {
+            background-color: var(--bg-surface) !important;
+            font-weight: 600;
+        }
+        .tree-row.depth-1 {
+            background-color: #F8FAFC !important;
+            color: var(--text-main);
+        }
+        .tree-row.depth-1 td:nth-child(1) {
+            padding-left: 15px;
+        }
+        .tree-row.depth-2 {
+            background-color: #F8FAFC !important;
+            color: var(--text-main);
+        }
+        .tree-row.depth-2 td:nth-child(1) {
+            padding-left: 30px;
+        }
+        .tree-toggle {
+            cursor: pointer;
+            margin-right: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+        .tree-toggle:hover {
+            background-color: rgba(30, 58, 138, 0.08);
+            color: var(--primary-color);
+        }
+        .tree-toggle i {
+            transition: transform 0.2s ease;
+        }
+        .tree-toggle.collapsed i {
+            transform: rotate(-90deg);
+        }
+        .tree-indent-line {
+            color: #94A3B8;
+            margin-right: 6px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 13px;
+            user-select: none;
+        }
+        
+        /* Details Grid */
+        .detail-row { display: flex; padding: 8px 0; border-bottom: 1px dashed var(--border-color); }
+        .detail-label { width: 30%; color: var(--text-muted); font-weight: 500; }
+        .detail-value { width: 70%; font-weight: 600; }
+
+        /* Pagination styles */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            font-size: 13px;
+        }
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .page-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-btn:hover:not(:disabled) {
+            background-color: #F1F5F9;
+            border-color: var(--text-muted);
+        }
+        .page-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div id="portalHeader" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 style="color: var(--primary-color); font-size: 20px;">Hệ thống Đăng ký trực tuyến BPBĐ</h1>
+        <div>
+            <span style="margin-right: 15px;">Xin chào, <b>Nguyễn Văn A</b></span>
+        </div>
+    </div>
+
+
+
+    <!-- ========================================== -->
+    <!-- MH02: TRA CỨU DÀNH CHO CÁN BỘ TTĐK -->
+    <!-- ========================================== -->
+    <div id="view-canbo" class="view-section active">
+        <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
+            <div class="grid-3-cols">
+                <div class="form-group">
+                    <label class="form-label">Số đăng ký BĐ / Từ khóa</label>
+                    <input type="text" class="form-control" id="cb-regNum" placeholder="Nhập số đăng ký / từ khóa...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên bên bảo đảm</label>
+                    <input type="text" class="form-control" id="cb-guarantor" placeholder="Nhập tên bên bảo đảm...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái hồ sơ</label>
+                    <select class="form-select" id="cb-status">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Lưu nháp">Lưu nháp</option>
+                        <option value="Chờ thanh toán">Chờ thanh toán</option>
+                        <option value="Chờ duyệt">Chờ duyệt</option>
+                        <option value="Chờ ký">Chờ ký</option>
+                        <option value="Hoàn thành">Hoàn thành</option>
+                        <option value="Bị từ chối">Bị từ chối</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid-3-cols" style="margin-top: 10px;">
+                <div class="form-group">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="text" class="form-control flatpickr-input" id="cb-fromDate" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="text" class="form-control flatpickr-input" id="cb-toDate" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại đăng ký</label>
+                    <select class="form-select" id="cb-regType">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Đăng ký lần đầu">Đăng ký lần đầu</option>
+                        <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
+                        <option value="Xóa đăng ký">Xóa đăng ký</option>
+                        <option value="Thông báo xử lý tài sản đảm bảo lần đầu">Thông báo xử lý tài sản đảm bảo lần đầu</option>
+                        <option value="Thay đổi thông báo xử lý tài sản bảo đảm">Thay đổi thông báo xử lý tài sản bảo đảm</option>
+                        <option value="Xóa đăng ký thông báo xử lý tài sản bảo đảm">Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
+                        <option value="Yêu cầu cung cấp bản sao">Yêu cầu cung cấp bản sao</option>
+                        <option value="Yêu cầu cung cấp bản sao kèm thông báo">Yêu cầu cung cấp bản sao kèm thông báo</option>
+                        <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
+                        <option value="Chỉnh lý thông tin">Chỉnh lý thông tin</option>
+                        <option value="Hủy đăng ký">Hủy đăng ký</option>
+                        <option value="Khôi phục hủy đăng ký">Khôi phục hủy đăng ký</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-3-cols" style="margin-top: 10px;">
+                <div class="form-group">
+                    <label class="form-label">Loại hình giao dịch</label>
+                    <select class="form-select" id="cb-transType" onchange="onCbTransTypeChange()">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Biện pháp bảo đảm">Biện pháp bảo đảm</option>
+                        <option value="Hợp đồng">Hợp đồng</option>
+                        <option value="Thông báo xử lý tài sản bảo đảm">Thông báo xử lý tài sản bảo đảm</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại Biện pháp/Loại HĐ</label>
+                    <select class="form-select" id="cb-measureType">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Thế chấp">Thế chấp</option>
+                        <option value="Bảo lưu quyền sở hữu">Bảo lưu quyền sở hữu</option>
+                        <option value="Cầm cố">Cầm cố</option>
+                        <option value="Đặt cọc">Đặt cọc</option>
+                        <option value="Ký cược">Ký cược</option>
+                        <option value="Ký quỹ">Ký quỹ</option>
+                        <option value="Hợp đồng cho thuê tài chính">Hợp đồng cho thuê tài chính</option>
+                        <option value="Hợp đồng thuê tài sản có thời hạn 1 năm trở lên">Hợp đồng thuê tài sản có thời hạn 1 năm trở lên</option>
+                        <option value="Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác">Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác</option>
+                        <option value="Hợp đồng ký gửi">Hợp đồng ký gửi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại tài sản</label>
+                    <select class="form-select" id="cb-assetType">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)</option>
+                        <option value="Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt</option>
+                        <option value="Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</option>
+                        <option value="Cây hằng năm, công trình tạm">Cây hằng năm, công trình tạm</option>
+                        <option value="Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</option>
+                        <option value="Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</option>
+                        <option value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-3-cols" style="margin-top: 10px;">
+                <div class="form-group">
+                    <label class="form-label">Cán bộ xử lý</label>
+                    <select class="form-select" id="cb-handlingOfficer">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Nguyễn Văn Cán Bộ">Nguyễn Văn Cán Bộ</option>
+                        <option value="Lê Anh Tuấn">Lê Anh Tuấn</option>
+                        <option value="Trần Quốc Khánh">Trần Quốc Khánh</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <button class="btn btn-outline-primary" onclick="resetCanBoSearch()">Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="searchCanBo()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <div class="card-section">
+            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px;">
+                <button class="btn btn-outline-primary" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
+            
+            <div class="table-responsive" style="border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); overflow: hidden;">
+                <table class="table" style="font-size: 13px; margin-bottom: 0;">
+                    <thead style="background-color: var(--table-header-bg);">
+                        <tr>
+                            <th style="width: 3%; text-align: center;">STT</th>
+                            <th style="width: 10%; cursor: pointer;" onclick="toggleCbSort('date')" id="cb-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                            <th style="width: 8%;">Số đăng ký</th>
+                            <th style="width: 5%;">Mã PIN</th>
+                            <th style="width: 12%; cursor: pointer;" onclick="toggleCbSort('guarantor')" id="cb-header-guarantor">Tên bên bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                            <th style="width: 12%; cursor: pointer;" onclick="toggleCbSort('mortgagee')" id="cb-header-mortgagee">Tên bên nhận bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                            <th style="width: 10%;">Loại đăng ký</th>
+                            <th style="width: 8%;">Loại hình GD</th>
+                            <th style="width: 8%;">Loại BP/HĐ</th>
+                            <th style="width: 10%;">Loại tài sản</th>
+                            <th style="width: 8%; text-align: center;">Trạng thái</th>
+                            <th style="width: 8%;">Số biên lai</th>
+                            <th style="width: 8%;">Cán bộ xử lý</th>
+                            <th style="text-align: center; min-width: 180px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="canbo-table-body">
+                        <!-- Populated dynamically by javascript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-container" id="cb-pagination-container">
+                <div id="cb-count-display">Hiển thị 1-10 của 10 hồ sơ</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span>Hiển thị</span>
+                        <select class="form-select" id="cb-pageSize" style="width: auto; padding: 4px 8px; font-size: 12px;" onchange="changeCbPageSize()">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>bản ghi/trang</span>
+                    </div>
+                    <div class="pagination-buttons" id="cb-pagination">
+                        <!-- Dynamic pagination buttons -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MH03: XEM CHI TIẾT HỒ SƠ -->
+    <!-- ========================================== -->
+    <div id="view-detail" class="view-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: var(--primary-color);">Chi tiết hồ sơ: <span id="detail-id-display">BD-2026-001</span></h2>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" id="btn-view-doc" style="display: none;" onclick="alert('Đang tải PDF Văn bản kết quả (Giấy chứng nhận/Thông báo từ chối)...')">📄 Xem Văn bản kết quả</button>
+                <button class="btn btn-outline-primary" onclick="closeDetail()">🔙 Quay lại</button>
+            </div>
+        </div>
+
+        <!-- History Alert Banner for UC035 redirection -->
+        <div id="history-alert-banner" style="display: none; background-color: #FEF3C7; border: 1px solid #FCD34D; color: #92400E; padding: 15px 20px; border-radius: 6px; margin-bottom: 20px; font-weight: 500; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-circle-info" style="font-size: 18px; color: #D97706;"></i>
+                <span>Hồ sơ gốc này có lịch sử thay đổi qua nhiều phiên bản. Bạn có muốn xem chi tiết biến động?</span>
+            </div>
+            <button class="btn" style="background-color: #D97706; color: white; padding: 6px 12px; font-size: 12px; cursor: pointer; border: none; border-radius: 4px; font-weight: 600;" onclick="viewHistoryDetails()">Xem chi tiết biến động</button>
+        </div>
+
+        <div class="card-section">
+            <h2 class="section-title">Thông tin chung</h2>
+            <div class="detail-row"><div class="detail-label">Thời điểm đăng ký</div><div class="detail-value">28/04/2026 10:30:00</div></div>
+            <div class="detail-row"><div class="detail-label">Loại hình giao dịch</div><div class="detail-value">Biện pháp bảo đảm</div></div>
+            <div class="detail-row"><div class="detail-label">Loại biện pháp</div><div class="detail-value">Thế chấp</div></div>
+            <div class="detail-row"><div class="detail-label">Giá trị khoản vay</div><div class="detail-value">1,000,000,000 VNĐ</div></div>
+        </div>
+
+        <div class="card-section">
+            <h2 class="section-title">Bên thế chấp</h2>
+            <table class="table">
+                <thead>
+                    <tr><th>Loại chủ thể</th><th>Số giấy tờ chứng minh</th><th>Tên chủ thể</th><th>Địa chỉ</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Tổ chức có đăng ký kinh doanh trong nước</td><td>0123456789</td><td>Công ty TNHH ABC</td><td>Hà Nội, Việt Nam</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-section">
+            <h2 class="section-title">Tài sản thế chấp</h2>
+            <div class="detail-row"><div class="detail-label">Danh mục tài sản</div><div class="detail-value">Phương tiện giao thông cơ giới CÓ số khung</div></div>
+            <div class="detail-row" style="flex-direction: column;">
+                <div class="detail-label" style="width: 100%; margin-bottom: 8px;">Số khung chi tiết:</div>
+                <table class="table" style="margin-top: 10px;">
+                    <thead><tr><th>STT</th><th>Tên phương tiện</th><th>Nhãn hiệu</th><th>Số khung</th></tr></thead>
+                    <tbody><tr><td>1</td><td>Ô tô con</td><td>Toyota Vios</td><td>12345ABCD</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="btn btn-outline-primary" onclick="closeDetail()">Quay lại danh sách</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="tra_cuu_thong_tin.js"></script>
+</body>
+</html>
