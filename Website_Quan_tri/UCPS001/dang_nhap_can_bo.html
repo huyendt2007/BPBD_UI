@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -410,7 +410,7 @@
         <div class="right-form-container">
             <div class="login-card">
                 <div class="card-header">
-                    <h2>ĐĂNG NHẬP CÁN BỘ</h2>
+                    <h2>ĐĂNG NHẬP</h2>
                     <p>Hệ thống Quản trị & Điều hành Nghiệp vụ</p>
                 </div>
 
@@ -457,7 +457,9 @@
                     </div>
 
                     <div class="form-options" id="formOptions">
-                        <div></div>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="rememberMe" style="width: 14px; height: 14px; accent-color: var(--brand-blue);"> Ghi nhớ tài khoản
+                        </label>
                         <a href="javascript:void(0)" class="forgot-link" onclick="handleForgotPassword()">Quên mật khẩu?</a>
                     </div>
 
@@ -470,10 +472,10 @@
     </div>
 
     <!-- Simulator Control Panel (Right Drawer) -->
-    <div class="simulator-drawer" id="simulator-drawer">
+    <div class="simulator-drawer collapsed" id="simulator-drawer">
         <div class="sim-header" onclick="toggleSimulator()" style="cursor: pointer; user-select: none;">
             <span>Simulator Control Panel</span>
-            <i class="fa-solid fa-chevron-up" id="sim-toggle-icon"></i>
+            <i class="fa-solid fa-chevron-up" id="sim-toggle-icon" style="transform: rotate(180deg);"></i>
         </div>
         
         <div class="sim-content" id="sim-content">
@@ -592,10 +594,7 @@
         };
 
         const handleForgotPassword = () => {
-            showToast('Chức năng Quên mật khẩu: Đang chuyển tiếp sang màn hình khôi phục tài khoản...', 'info');
-            setTimeout(() => {
-                window.location.href = 'quen_mat_khau.html';
-            }, 1000);
+            window.location.href = 'quen_mat_khau.html';
         };
 
         const handleLoginSubmit = (e) => {

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -662,10 +662,10 @@
 
                     <!-- Dropdown Menu -->
                     <div class="user-dropdown-menu" id="userDropdown">
-                        <a href="#" onclick="showToast('Thông tin cá nhân đang phát triển', 'info')">
+                        <a href="#" onclick="openUserProfilePage(); event.preventDefault();">
                             <i class="fa fa-user"></i> Thông tin cá nhân
                         </a>
-                        <a href="UCPS001/doi_mat_khau_lan_dau.html" target="_top">
+                        <a href="#" onclick="openChangePasswordPage(); event.preventDefault();">
                             <i class="fa fa-key"></i> Đổi mật khẩu
                         </a>
                         <a href="UCPS001/dang_nhap_can_bo.html" class="logout-link">
@@ -1058,6 +1058,81 @@
             const firstLeaf = menuData[0].children[2].children[0]; // Hồ sơ chờ xử lý
             selectLeaf(firstLeaf, [menuData[0].title, menuData[0].children[2].title, firstLeaf.title], 'leaf-0-2-0');
         }
+
+        // Navigate main workspace iframe to User Profile page
+        function openUserProfilePage() {
+            // Remove active classes from sidebar leaves
+            document.querySelectorAll('.menu-leaf-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Update breadcrumbs
+            document.getElementById('breadcrumbParent').innerText = "Hệ thống";
+            document.getElementById('breadcrumbChild').innerText = "Thông tin cá nhân Cán bộ";
+            
+            // Update iframe source
+            const iframe = document.getElementById('mainContentIframe');
+            if (iframe) {
+                iframe.src = 'UCPS001/thong_tin_ca_nhan_can_bo.html';
+            }
+        }
+
+        let previousIframeUrl = '';
+        let previousBreadcrumbs = { parent: '', child: '' };
+        let previousActiveLeafId = '';
+
+        function openChangePasswordPage() {
+            const iframe = document.getElementById('mainContentIframe');
+            if (iframe && !iframe.src.includes('doi_mat_khau_lan_dau.html')) {
+                previousIframeUrl = iframe.src;
+                previousBreadcrumbs.parent = document.getElementById('breadcrumbParent').innerText;
+                previousBreadcrumbs.child = document.getElementById('breadcrumbChild').innerText;
+                
+                // Find currently active sidebar leaf and save its ID
+                const activeLeaf = document.querySelector('.menu-leaf-item.active');
+                if (activeLeaf) {
+                    previousActiveLeafId = activeLeaf.id;
+                } else {
+                    previousActiveLeafId = '';
+                }
+            }
+
+            // Remove active class from sidebar leaves
+            document.querySelectorAll('.menu-leaf-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Update Breadcrumbs
+            document.getElementById('breadcrumbParent').innerText = "Hệ thống";
+            document.getElementById('breadcrumbChild').innerText = "Đổi mật khẩu tài khoản Cán bộ";
+
+            // Load password change inside the IFrame
+            if (iframe) {
+                iframe.src = 'UCPS001/doi_mat_khau_lan_dau.html?from=iframe';
+            }
+        }
+
+        window.restorePreviousPage = function() {
+            const iframe = document.getElementById('mainContentIframe');
+            if (iframe && previousIframeUrl) {
+                iframe.src = previousIframeUrl;
+                document.getElementById('breadcrumbParent').innerText = previousBreadcrumbs.parent;
+                document.getElementById('breadcrumbChild').innerText = previousBreadcrumbs.child;
+                
+                // Restore active sidebar highlight
+                document.querySelectorAll('.menu-leaf-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                if (previousActiveLeafId) {
+                    const prevLeaf = document.getElementById(previousActiveLeafId);
+                    if (prevLeaf) {
+                        prevLeaf.classList.add('active');
+                    }
+                }
+            } else {
+                selectDefaultLeaf();
+            }
+        };
 
         // Global search & highlight matching menu items
         function filterMenu() {

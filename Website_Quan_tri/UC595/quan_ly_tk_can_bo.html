@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -1606,6 +1606,7 @@
                     menuListHtml += `
                         <div class="tree-node" style="margin-bottom: 6px;">
                             <div class="tree-node-header" style="font-weight: 500; padding: 4px 0; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-caret-down toggle-caret" style="cursor: pointer; width: 12px; color: var(--text-muted);" onclick="toggleTreeNode(this)"></i>
                                 <input type="checkbox" checked disabled style="width: 14px; height: 14px; accent-color: var(--primary-color);">
                                 <i class="fas fa-folder-open" style="color: #fcd34d;"></i> ${menu.name} (${menu.id})
                             </div>
@@ -1625,6 +1626,7 @@
                 html += `
                     <div class="tree-node" style="margin-bottom: 12px;">
                         <div class="tree-node-header" style="font-weight: 600; padding: 6px 0; color: var(--primary-color); display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #e2e8f0;">
+                            <i class="fas fa-caret-down toggle-caret" style="cursor: pointer; width: 12px; color: var(--text-muted);" onclick="toggleTreeNode(this)"></i>
                             <input type="checkbox" checked disabled style="width: 14px; height: 14px; accent-color: var(--primary-color);">
                             <i class="fas ${sysIcon}" style="color: var(--primary-color);"></i> ${sys.name} (${sys.id})
                         </div>
@@ -1641,6 +1643,26 @@
         }
 
         return html;
+    }
+
+    function toggleTreeNode(caretEl) {
+        const header = caretEl.parentElement;
+        const node = header.parentElement;
+        const children = node.querySelector('.tree-children');
+        if (children) {
+            const isCollapsed = children.style.display === 'none';
+            if (isCollapsed) {
+                children.style.display = 'block';
+                caretEl.className = 'fas fa-caret-down toggle-caret';
+                const folderIcon = header.querySelector('.fa-folder, .fa-folder-open');
+                if (folderIcon) folderIcon.className = 'fas fa-folder-open';
+            } else {
+                children.style.display = 'none';
+                caretEl.className = 'fas fa-caret-right toggle-caret';
+                const folderIcon = header.querySelector('.fa-folder, .fa-folder-open');
+                if (folderIcon) folderIcon.className = 'fas fa-folder';
+            }
+        }
     }
 
     // --- Permission Tree Logic ---
@@ -1707,6 +1729,16 @@
                 } else {
                     menuNode.style.display = menuVisible ? 'block' : 'none';
                 }
+
+                // Auto expand menu children when filtering
+                const menuChildren = menuNode.querySelector('.tree-children');
+                const menuCaret = menuNode.querySelector('.toggle-caret');
+                if (menuChildren) {
+                    if (keyword && menuVisible) {
+                        menuChildren.style.display = 'block';
+                        if (menuCaret) menuCaret.className = 'fas fa-caret-down toggle-caret';
+                    }
+                }
             });
             
             const sysLabel = sysNode.querySelector('.tree-node-header').textContent.toLowerCase();
@@ -1718,6 +1750,16 @@
                 sysNode.style.display = 'block';
             } else {
                 sysNode.style.display = sysVisible ? 'block' : 'none';
+            }
+
+            // Auto expand system children when filtering
+            const sysChildren = sysNode.querySelector('.tree-children');
+            const sysCaret = sysNode.querySelector('.toggle-caret');
+            if (sysChildren) {
+                if (keyword && sysVisible) {
+                    sysChildren.style.display = 'block';
+                    if (sysCaret) sysCaret.className = 'fas fa-caret-down toggle-caret';
+                }
             }
         });
     }

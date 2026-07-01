@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -263,6 +263,7 @@
         // Check URL parameters to adapt titles
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode');
+        const fromIframe = urlParams.get('from') === 'iframe';
 
         const pageTitle = document.getElementById('pageTitle');
         const pageDesc = document.getElementById('pageDesc');
@@ -278,6 +279,11 @@
             pageDesc.innerText = 'Tài khoản mới được khởi tạo. Bạn bắt buộc phải đổi mật khẩu lần đầu.';
         }
 
+        // Align background if loaded within layout iframe
+        if (window.top !== window.self) {
+            document.body.style.backgroundColor = '#F1F5F9';
+        }
+
         const showToast = (msg, type = 'info') => {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
@@ -291,10 +297,11 @@
         };
 
         const handleCancel = () => {
-            showToast('Hủy thao tác đổi mật khẩu. Đang chuyển hướng quay lại...', 'info');
-            setTimeout(() => {
+            if (fromIframe && window.parent && typeof window.parent.restorePreviousPage === 'function') {
+                window.parent.restorePreviousPage();
+            } else {
                 window.location.href = 'dang_nhap_can_bo.html';
-            }, 1000);
+            }
         };
 
         const handleChangePass = (e) => {
@@ -374,12 +381,13 @@
             }
 
             // Success case
-            showToast('Đổi mật khẩu thành công! Đang lưu thông tin và đăng nhập...', 'success');
             sessionStorage.setItem('isAdminLoggedIn', 'true');
             sessionStorage.setItem('adminUsername', 'admin_sys');
-            setTimeout(() => {
+            if (fromIframe && window.parent && typeof window.parent.restorePreviousPage === 'function') {
+                window.parent.restorePreviousPage();
+            } else {
                 window.location.href = '../trang_tong_the_website_can_bo.html';
-            }, 1500);
+            }
         };
     </script>
 </body>
