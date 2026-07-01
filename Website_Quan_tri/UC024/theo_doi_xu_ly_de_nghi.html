@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +20,6 @@
             border-radius: 8px;
         }
         
-        /* Navigation Tabs style matching Hồ sơ chờ xử lý */
         .nav-tabs {
             display: flex;
             border-bottom: 2px solid var(--border-color);
@@ -83,7 +82,6 @@
             color: white;
         }
         
-        /* Filter area styling matching standard card section */
         .card-section {
             background-color: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -92,7 +90,6 @@
             margin-bottom: 20px;
         }
         
-        /* Modal for approvals */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -116,7 +113,7 @@
             background-color: #fff;
             border-radius: 8px;
             width: 90%;
-            max-width: 650px;
+            max-width: 700px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
@@ -182,7 +179,6 @@
         .badge-danger { background-color: #fee2e2; color: #ef4444; }
         .badge-warning { background-color: #fef3c7; color: #f59e0b; }
         .badge-info { background-color: #e0f2fe; color: #0284c7; }
-        .badge-secondary { background-color: #e2e8f0; color: #475569; }
         
         .detail-row {
             display: flex;
@@ -198,6 +194,23 @@
         .detail-value {
             flex: 1;
             color: #1e293b;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .compare-table th {
+            border: 1px solid #cbd5e1;
+            padding: 6px;
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+        }
+        .compare-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px;
         }
     </style>
 </head>
@@ -284,7 +297,7 @@
         </div>
     </div>
 
-    <!-- MODAL XEM CHI TIẾT ĐỀ NGHỊ CHỜ KÝ -->
+    <!-- MODAL PHÊ DUYỆT CHỦ TRƯƠNG ĐỀ NGHỊ -->
     <div class="modal-overlay" id="approvalModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -324,7 +337,30 @@
                 </div>
                 <div class="detail-row" style="border-bottom: none;">
                     <div class="detail-label">Lý do/Diễn giải:</div>
-                    <div class="detail-value" id="mdlReason" style="background-color: #f8fafc; padding: 8px; border-radius: 4px; border: 1px solid #e2e8f0; min-height: 50px;">-</div>
+                    <div class="detail-value" id="mdlReason" style="background-color: #f8fafc; padding: 8px; border-radius: 4px; border: 1px solid #e2e8f0; min-height: 40px;">-</div>
+                </div>
+
+                <!-- B4: BẢNG SO SÁNH TRƯỜNG CỦA LÃNH ĐẠO XEM ĐỐI CHIẾU CHỦ TRƯƠNG -->
+                <div id="mdlCorrectionFieldsGroup" style="display: none; margin-top: 15px; background: #fafafa; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px;">
+                    <div style="font-weight: 700; font-size: 12.5px; margin-bottom: 8px; color: var(--primary-color);">
+                        <i class="fa-solid fa-list-check"></i> Chi tiết các trường đề xuất chỉnh lý (Chủ trương):
+                    </div>
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th>Trường thông tin</th>
+                                <th>Giá trị hiện tại</th>
+                                <th>Giá trị đề xuất sửa</th>
+                                <th>Lý do sai sót</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mdlTblCorrectionRows">
+                            <!-- Render dynamic rows -->
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 10px; font-size: 11.5px; font-weight: 600; color: #b45309;" id="mdlLblScope">
+                        <!-- Cascading scope label -->
+                    </div>
                 </div>
 
                 <div class="form-group" id="grpRejectReason" style="display: none; margin-top: 15px;">
@@ -357,11 +393,8 @@
         let proposals = [];
         let selectedProposal = null;
 
-        // Khởi tạo CSDL profiles mẫu đủ 10 dòng
         function initMockProfiles() {
             let list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
-            
-            // Nếu danh sách rỗng hoặc chưa đủ 10 hồ sơ mẫu, khởi tạo danh sách đầy đủ
             const mockCount = list.filter(p => p.id.startsWith('GDBD-2026-0009')).length;
             if (mockCount < 10) {
                 const getPastDateStr = (daysAgo) => {
@@ -372,19 +405,18 @@
                 };
 
                 const initialDossiers = [
-                    { id: 'GDBD-2026-000901', date: getPastDateStr(10), customer: 'Công ty TNHH Cơ khí Hải Phong', mortgagee: 'Ngân hàng TMCP Ngoại thương VN (Vietcombank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0101987654', receiptNo: 'BL-9921', assetType: 'Xe ô tô Mazda 3 BKS 30G-123.45 | Xe ô tô Toyota Camry BKS 30H-889.21', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000902', date: getPastDateStr(9), customer: 'Ông Nguyễn Văn Long', mortgagee: 'Ngân hàng TMCP Quân đội (MB Bank)', type: 'Đăng ký thay đổi', transactionType: 'Biện pháp bảo đảm', subtype: 'dat_coc', status: 'Hoàn thành', customerCode: '001090123456', receiptNo: 'BL-9922', assetType: 'Quyền tài sản phát sinh từ hợp đồng mua bán căn hộ chung cư số 102', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000903', date: getPastDateStr(8), customer: 'Công ty Vận tải Mai Linh', mortgagee: 'Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)', type: 'Xóa đăng ký', transactionType: 'Biện pháp bảo đảm', subtype: 'cam_co', status: 'Hoàn thành', customerCode: '0101234567', receiptNo: 'BL-9923', assetType: 'Xe tải KIA Frontier BKS 29C-990.11', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000904', date: getPastDateStr(7), customer: 'Bà Trần Thị Mai', mortgagee: 'Ngân hàng TMCP Kỹ thương Việt Nam (Techcombank)', type: 'Thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'ky_quy', status: 'Hoàn thành', customerCode: '030099887711', receiptNo: 'BL-9924', assetType: 'Xe ô tô Ford Ranger BKS 30K-771.22', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000905', date: getPastDateStr(6), customer: 'Công ty Cổ phần Alpha', mortgagee: 'Ngân hàng TMCP Công thương Việt Nam (VietinBank)', type: 'Thay đổi thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0109928172', receiptNo: 'BL-9925', assetType: 'Tàu đánh bắt cá công suất lớn số hiệu HP-90812-TS', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000906', date: getPastDateStr(5), customer: 'Ông Lê Văn Nam', mortgagee: 'Bà Nguyễn Thị Lan', type: 'Xóa thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '034091000999', receiptNo: 'BL-9926', assetType: 'Xe ô tô Hyundai Accent BKS 29A-882.19', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000907', date: getPastDateStr(4), customer: 'Công ty TNHH Hưng Phát', mortgagee: 'Ngân hàng TMCP Thịnh Vượng (VPBank)', type: 'Hủy đăng ký', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0108871625', receiptNo: 'BL-9927', assetType: 'Xe xúc lật Komatsu số khung KM-99120', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000908', date: getPastDateStr(3), customer: 'Ông Phạm Văn Đồng', mortgagee: 'Ngân hàng Nông nghiệp & PTNT VN (Agribank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '001085000444', receiptNo: 'BL-9928', assetType: 'Xe ô tô Toyota Vios BKS 30E-991.23 | Xe máy Honda SH BKS 30F-122.99', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000909', date: getPastDateStr(2), customer: 'Công ty TNHH Sao Vàng', mortgagee: 'Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0200887261', receiptNo: 'BL-9929', assetType: 'Dây chuyền máy móc sản xuất bao bì tự động nhập khẩu', handlingOfficer: 'Nguyễn Văn Cán Bộ' },
-                    { id: 'GDBD-2026-000910', date: getPastDateStr(1), customer: 'Ông Vũ Đức Đam', mortgagee: 'Ngân hàng Phát triển Việt Nam (VDB)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Đã hủy', customerCode: '001080001111', receiptNo: 'BL-9930', assetType: 'Nhà xưởng thép tiền chế tại khu công nghiệp Quang Minh', handlingOfficer: 'Nguyễn Văn Cán Bộ' }
+                    { id: 'GDBD-2026-000901', date: getPastDateStr(10), customer: 'Công ty TNHH Cơ khí Hải Phong', mortgagee: 'Ngân hàng TMCP Ngoại thương VN (Vietcombank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0101987654', receiptNo: 'BL-9921', assetType: 'Xe ô tô Mazda 3 BKS 30G-123.45 | Xe ô tô Toyota Camry BKS 30H-889.21', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000902', date: getPastDateStr(9), customer: 'Ông Nguyễn Văn Long', mortgagee: 'Ngân hàng TMCP Quân đội (MB Bank)', type: 'Đăng ký thay đổi', transactionType: 'Biện pháp bảo đảm', subtype: 'dat_coc', status: 'Hoàn thành', customerCode: '001090123456', receiptNo: 'BL-9922', assetType: 'Quyền tài sản phát sinh từ hợp đồng mua bán căn hộ chung cư số 102', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000903', date: getPastDateStr(8), customer: 'Công ty Vận tải Mai Linh', mortgagee: 'Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)', type: 'Xóa đăng ký', transactionType: 'Biện pháp bảo đảm', subtype: 'cam_co', status: 'Hoàn thành', customerCode: '0101234567', receiptNo: 'BL-9923', assetType: 'Xe tải KIA Frontier BKS 29C-990.11', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000904', date: getPastDateStr(7), customer: 'Bà Trần Thị Mai', mortgagee: 'Ngân hàng TMCP Kỹ thương Việt Nam (Techcombank)', type: 'Thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'ky_quy', status: 'Hoàn thành', customerCode: '030099887711', receiptNo: 'BL-9924', assetType: 'Xe ô tô Ford Ranger BKS 30K-771.22', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000905', date: getPastDateStr(6), customer: 'Công ty Cổ phần Alpha', mortgagee: 'Ngân hàng TMCP Công thương Việt Nam (VietinBank)', type: 'Thay đổi thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0109928172', receiptNo: 'BL-9925', assetType: 'Tàu đánh bắt cá công suất lớn số hiệu HP-90812-TS', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000906', date: getPastDateStr(5), customer: 'Ông Lê Văn Nam', mortgagee: 'Bà Nguyễn Thị Lan', type: 'Xóa thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '034091000999', receiptNo: 'BL-9926', assetType: 'Xe ô tô Hyundai Accent BKS 29A-882.19', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000907', date: getPastDateStr(4), customer: 'Công ty TNHH Hưng Phát', mortgagee: 'Ngân hàng TMCP Thịnh Vượng (VPBank)', type: 'Hủy đăng ký', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0108871625', receiptNo: 'BL-9927', assetType: 'Xe xúc lật Komatsu số khung KM-99120', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000908', date: getPastDateStr(3), customer: 'Ông Phạm Văn Đồng', mortgagee: 'Ngân hàng Nông nghiệp & PTNT VN (Agribank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '001085000444', receiptNo: 'BL-9928', assetType: 'Xe ô tô Toyota Vios BKS 30E-991.23 | Xe máy Honda SH BKS 30F-122.99', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000909', date: getPastDateStr(2), customer: 'Công ty TNHH Sao Vàng', mortgagee: 'Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0200887261', receiptNo: 'BL-9929', assetType: 'Dây chuyền máy móc sản xuất bao bì tự động nhập khẩu', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
+                    { id: 'GDBD-2026-000910', date: getPastDateStr(1), customer: 'Ông Vũ Đức Đam', mortgagee: 'Ngân hàng Phát triển Việt Nam (VDB)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Đã hủy', customerCode: '001080001111', receiptNo: 'BL-9930', assetType: 'Nhà xưởng thép tiền chế tại khu công nghiệp Quang Minh', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] }
                 ];
 
-                // Ghi đè hoặc thêm mới
                 initialDossiers.forEach(d => {
                     const exIdx = list.findIndex(l => l.id === d.id);
                     if (exIdx !== -1) {
@@ -398,7 +430,6 @@
             }
         }
 
-        // Khởi tạo các đề nghị mẫu
         function initMockProposalsIfEmpty() {
             initMockProfiles();
 
@@ -412,7 +443,6 @@
             const getDossier = (id) => mockDossiers.find(d => d.id === id) || mockDossiers[0];
 
             proposals = [
-                // 3 đề nghị Chờ ký (Tab 1)
                 {
                     id: 1,
                     proposalCode: 'DN-CL-2026-0001',
@@ -422,12 +452,17 @@
                     docNo: 'QĐ-01/2026/THA',
                     docDate: '10/06/2026',
                     docIssuer: 'Chi cục THADS Quận Hoàn Kiếm',
-                    reason: 'Chỉnh lý thông tin bên bảo đảm từ Công ty Hải Phong thành Công ty Hải Phong New.',
+                    reason: 'Chỉnh lý thông tin bên bảo đảm và MST do lỗi cán bộ gõ nhầm.',
                     fileName: 'QuyetDinhSuaLoiChinhTa_01.pdf',
                     creator: 'Nguyễn Văn Cán Bộ',
                     createdDate: '25/06/2026 09:30',
                     status: 'Chờ ký',
-                    rejectReason: ''
+                    rejectReason: '',
+                    proposalScope: 'cascade_future',
+                    correctionTable: [
+                        { field: 'customer', fieldName: 'Tên bên bảo đảm', oldValue: 'Công ty TNHH Cơ khí Hải Phong', newValue: 'Công ty TNHH Cơ khí Hải Phong New', reason: 'Sai lỗi chính tả tên công ty' },
+                        { field: 'customerCode', fieldName: 'Số định danh/CCCD bên bảo đảm', oldValue: '0101987654', newValue: '0101987655', reason: 'Sai số cuối MST doanh nghiệp' }
+                    ]
                 },
                 {
                     id: 2,
@@ -467,48 +502,60 @@
                     proposalCode: 'DN-CL-2026-0004',
                     type: 'Chỉnh lý thông tin',
                     originalDossierId: 'GDBD-2026-000901',
-                    originalDossier: getDossier('GDBD-2026-000901'), // Đăng ký lần đầu
+                    originalDossier: getDossier('GDBD-2026-000901'),
                     docNo: 'QĐ-52/THA',
                     docDate: '01/06/2026',
                     docIssuer: 'Chi cục THADS Hoàn Kiếm',
-                    reason: 'Chỉnh lý lại Số khung Xe ô tô Mazda 3 trong hồ sơ Đăng ký lần đầu.',
+                    reason: 'Chỉnh lý lại Tên bên nhận bảo đảm do gõ nhầm.',
                     fileName: 'QuyetDinhChinhLyBBD.pdf',
                     creator: 'Nguyễn Văn Cán Bộ',
                     createdDate: '20/06/2026 15:30',
                     status: 'Hoàn thành',
-                    rejectReason: ''
+                    rejectReason: '',
+                    proposalScope: 'cascade_future',
+                    correctionTable: [
+                        { field: 'mortgagee', fieldName: 'Tên bên nhận bảo đảm', oldValue: 'Ngân hàng TMCP Ngoại thương VN (Vietcombank)', newValue: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Hoàn Kiếm', reason: 'Sai thông tin chi nhánh thụ lý' }
+                    ]
                 },
                 {
                     id: 5,
                     proposalCode: 'DN-CL-2026-0005',
                     type: 'Chỉnh lý thông tin',
                     originalDossierId: 'GDBD-2026-000902',
-                    originalDossier: getDossier('GDBD-2026-000902'), // Đăng ký thay đổi
+                    originalDossier: getDossier('GDBD-2026-000902'),
                     docNo: 'QĐ-122/THA',
                     docDate: '03/06/2026',
                     docIssuer: 'Chi cục THADS Hoàn Kiếm',
-                    reason: 'Chỉnh lý lại Số hợp đồng chuyển nhượng trong hồ sơ Đăng ký thay đổi.',
+                    reason: 'Chỉnh lý lại Số biên lai gốc bị nhập sai ký tự.',
                     fileName: 'ChinhLyThayDoi.pdf',
                     creator: 'Nguyễn Văn Cán Bộ',
                     createdDate: '21/06/2026 09:00',
                     status: 'Hoàn thành',
-                    rejectReason: ''
+                    rejectReason: '',
+                    proposalScope: 'only_this',
+                    correctionTable: [
+                        { field: 'receiptNo', fieldName: 'Số biên lai gốc', oldValue: 'BL-9922', newValue: 'BL-9922-A', reason: 'Thiếu hậu tố phân loại biên lai' }
+                    ]
                 },
                 {
                     id: 6,
                     proposalCode: 'DN-CL-2026-0006',
                     type: 'Chỉnh lý thông tin',
                     originalDossierId: 'GDBD-2026-000903',
-                    originalDossier: getDossier('GDBD-2026-000903'), // Xóa đăng ký
+                    originalDossier: getDossier('GDBD-2026-000903'),
                     docNo: 'Biên bản số 09',
                     docDate: '05/06/2026',
                     docIssuer: 'Trung tâm đăng ký',
-                    reason: 'Chỉnh lý thông tin lý do giải chấp trong đơn Xóa đăng ký.',
+                    reason: 'Chỉnh lý thông tin mô tả tài sản bảo đảm.',
                     fileName: 'BienBanXoaDK.pdf',
                     creator: 'Nguyễn Văn Cán Bộ',
                     createdDate: '22/06/2026 10:20',
                     status: 'Hoàn thành',
-                    rejectReason: ''
+                    rejectReason: '',
+                    proposalScope: 'cascade_future',
+                    correctionTable: [
+                        { field: 'assetType', fieldName: 'Mô tả tài sản bảo đảm', oldValue: 'Xe tải KIA Frontier BKS 29C-990.11', newValue: 'Xe tải KIA Frontier BKS 29C-990.11 (Có kèm theo thùng kín phía sau)', reason: 'Cán bộ nhập thiếu phụ lục đặc điểm thùng xe' }
+                    ]
                 },
                 {
                     id: 7,
@@ -560,7 +607,7 @@
                     status: 'Bị trả lại',
                     rejectReason: 'Không đính kèm văn bản đồng ý phê duyệt của Ngân hàng BIDV. Yêu cầu đăng ký viên lấy xác nhận ngân hàng trước khi nộp lại.'
                 },
-                // Đã xử lý (Tab 4) - Đầy đủ dữ liệu giả lập
+                // Đã xử lý (Tab 4)
                 {
                     id: 10,
                     proposalCode: 'DN-KP-2026-0010',
@@ -593,12 +640,10 @@
             renderTableData();
         }
 
-        // Chuyển đổi định dạng ngày dd/mm/yyyy sang đối tượng Date để so sánh
         function parseDateStr(str) {
             if (!str) return null;
             const parts = str.split(' ')[0].split('/');
             if (parts.length !== 3) return null;
-            // new Date(year, monthIndex, day)
             return new Date(parts[2], parts[1] - 1, parts[0]);
         }
 
@@ -664,28 +709,24 @@
 
                 let actions = '';
                 if (item.status === 'Chờ ký') {
-                    // Thao tác chỉ có Xem
                     actions = `
                         <button class="icon-btn view" title="Xem chi tiết" onclick="openApprovalModal(${item.id})">
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     `;
                 } else if (item.status === 'Hoàn thành') {
-                    // Hồ sơ chờ thực hiện -> Thao tác Thực hiện
                     actions = `
                         <button class="btn btn-primary" style="padding: 4px 10px; font-size: 12px;" onclick="executeCorrection(${item.id})">
                             <i class="fa-solid fa-gears"></i> Thực hiện
                         </button>
                     `;
                 } else if (item.status === 'Bị trả lại') {
-                    // Bị trả lại -> Sửa đề nghị
                     actions = `
                         <button class="btn btn-outline-primary" style="padding: 4px 10px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="resubmitProposal(${item.id})">
                             <i class="fa-solid fa-pen-to-square"></i> Sửa đề nghị
                         </button>
                     `;
                 } else if (item.status === 'Đã xử lý') {
-                    // Đã xử lý -> Xem + Tải thông báo
                     actions = `
                         <button class="icon-btn view" title="Xem chi tiết" style="margin-right: 8px;" onclick="openApprovalModal(${item.id})">
                             <i class="fa-solid fa-eye"></i>
@@ -755,7 +796,34 @@
             document.getElementById('mdlDocFile').innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444"></i> ${proposal.fileName}`;
             document.getElementById('mdlReason').innerText = proposal.reason;
 
-            // Hiển thị lý do từ chối nếu có
+            // B4: Render bảng trường thông tin đối chiếu chủ trương
+            const corrFieldsGroup = document.getElementById('mdlCorrectionFieldsGroup');
+            const tbodyCorr = document.getElementById('mdlTblCorrectionRows');
+            const lblScope = document.getElementById('mdlLblScope');
+
+            if (proposal.type === 'Chỉnh lý thông tin' && proposal.correctionTable && proposal.correctionTable.length > 0) {
+                corrFieldsGroup.style.display = 'block';
+                tbodyCorr.innerHTML = '';
+                
+                proposal.correctionTable.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight:600;">${row.fieldName || row.field}</td>
+                        <td style="color:#64748b;">${row.oldValue}</td>
+                        <td style="color:#1e293b; font-weight:600; background:#f0fdf4;">${row.newValue}</td>
+                        <td>${row.reason}</td>
+                    `;
+                    tbodyCorr.appendChild(tr);
+                });
+
+                const scopeText = proposal.proposalScope === 'cascade_future' 
+                    ? '⚡ Phạm vi áp dụng: Chỉnh lý XUYÊN SUỐT từ phiên bản này trở đi.'
+                    : '📌 Phạm vi áp dụng: Chỉ chỉnh lý tại PHIÊN BẢN ĐANG CHỌN.';
+                lblScope.innerText = scopeText;
+            } else {
+                corrFieldsGroup.style.display = 'none';
+            }
+
             const grpReject = document.getElementById('grpRejectReason');
             if (proposal.status === 'Bị trả lại') {
                 grpReject.style.display = 'block';
@@ -764,18 +832,15 @@
                 grpReject.style.display = 'none';
             }
 
-            // Tùy biến nút hành động và phần ghi chú Lãnh đạo dựa theo tab
             const divActions = document.getElementById('divApprovalActions');
             const grpOpinion = document.getElementById('grpApprovalOpinion');
             const mdlTitle = document.getElementById('mdlTitle');
 
             if (currentTab === 'cho_duyet') {
-                // Tab Chờ ký -> Cho phép ký duyệt
                 divActions.style.display = 'block';
                 grpOpinion.style.display = 'block';
                 mdlTitle.innerText = 'ĐỀ NGHỊ CHỜ PHÊ DUYỆT & KÝ SỐ';
             } else {
-                // Các tab khác -> Chỉ Xem (Read-only)
                 divActions.style.display = 'none';
                 grpOpinion.style.display = 'none';
                 mdlTitle.innerText = 'CHI TIẾT YÊU CẦU ĐỀ NGHỊ';

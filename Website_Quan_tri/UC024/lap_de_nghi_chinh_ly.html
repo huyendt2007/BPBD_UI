@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
             font-family: 'Inter', sans-serif;
         }
         .container {
-            max-width: 850px; /* Form nhỏ ở giữa màn hình */
+            max-width: 850px;
             margin: 0 auto;
             padding: 30px;
             background-color: #ffffff;
@@ -25,7 +25,6 @@
             border: 1px solid #e2e8f0;
         }
         
-        /* Steps bar styling - Wizard progress line */
         .steps-wrapper {
             position: relative;
             margin-bottom: 30px;
@@ -51,7 +50,7 @@
             position: absolute;
             top: 26px;
             left: 8%;
-            width: 0%; /* Dynamic progress */
+            width: 0%;
             height: 3px;
             background-color: #10b981;
             z-index: 1;
@@ -102,6 +101,64 @@
             box-shadow: 0 0 0 1px #10b981;
         }
 
+        .search-container {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+        
+        .search-input-group {
+            display: flex;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+        }
+        .search-input-group:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .search-input-group .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 16px;
+            pointer-events: none;
+        }
+        .search-input-group .form-control {
+            padding-left: 42px;
+            border: none !important;
+            border-radius: 0 !important;
+            height: 44px;
+            font-size: 13.5px;
+            margin: 0;
+            box-shadow: none !important;
+            flex: 1;
+        }
+        .search-input-group .btn-search {
+            border-radius: 0 !important;
+            height: 44px;
+            padding: 0 24px;
+            font-size: 13.5px;
+            font-weight: 600;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-input-group .btn-search:hover {
+            background-color: var(--secondary-color);
+        }
+
         .readonly-card {
             border: 1px solid #e2e8f0;
             border-radius: 8px;
@@ -131,6 +188,7 @@
             color: #1e293b;
             font-size: 13px;
             margin-bottom: 12px;
+            position: relative;
         }
         .file-upload-box {
             border: 2px dashed #cbd5e1;
@@ -175,11 +233,38 @@
         .badge-success { background-color: #d1fae5; color: #10b981; }
         .badge-danger { background-color: #fee2e2; color: #ef4444; }
         .badge-warning { background-color: #fef3c7; color: #f59e0b; }
+
+        /* Wrench icon style for modified fields */
+        .wrench-icon {
+            color: #eab308;
+            margin-left: 6px;
+            cursor: help;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12.5px;
+        }
+        .compare-table th {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+        }
+        .compare-table td {
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- TIÊU ĐỀ TRANG MỎNG SANG TRỌNG -->
+        <!-- TIÊU ĐỀ TRANG -->
         <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 14px; margin-bottom: 25px;">
             <h2 style="font-size: 16px; color: var(--primary-color); font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-file-signature" style="color: var(--secondary-color);"></i> LẬP ĐỀ NGHỊ CHỈNH LÝ / HỦY / KHÔI PHỤC ĐĂNG KÝ
@@ -206,7 +291,7 @@
             </div>
         </div>
 
-        <!-- KHỐI TRA CỨU HỒ SƠ GỐC STYLE MỚI THEO HÌNH ẢNH MẪU -->
+        <!-- KHỐI TRA CỨU HỒ SƠ GỐC -->
         <div id="searchCardBlock" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 25px;">
             <div style="width: 100%; max-width: 500px;">
                 <!-- Orange Demo Mode Banner -->
@@ -313,6 +398,22 @@
                 </div>
             </div>
 
+            <!-- HIỂN THỊ 2 BẢNG LỊCH SỬ RIÊNG BIỆT (THEO YÊU CẦU B3 KIẾN TRÚC DỮ LIỆU) -->
+            <div class="grid-2-cols" style="gap: 15px; margin-top: 20px;">
+                <div class="readonly-card" style="margin-bottom: 0;">
+                    <h4 style="color: var(--primary-color); border-bottom: 2px solid var(--primary-color);"><i class="fa-solid fa-history"></i> Lịch sử Đăng ký thay đổi (Nghiệp vụ)</h4>
+                    <div id="divBizHistory" style="font-size:12px; display:flex; flex-direction:column; gap:8px;">
+                        <!-- Biz history timeline -->
+                    </div>
+                </div>
+                <div class="readonly-card" style="margin-bottom: 0;">
+                    <h4 style="color: #d97706; border-bottom: 2px solid #d97706;"><i class="fa-solid fa-wrench"></i> Lịch sử Chỉnh lý sai sót (Hệ thống)</h4>
+                    <div id="divCorrectionHistory" style="font-size:12px; display:flex; flex-direction:column; gap:8px; color: #475569;">
+                        <!-- System correction history -->
+                    </div>
+                </div>
+            </div>
+
             <!-- FORM ĐỀ NGHỊ CHỦ TRƯƠNG -->
             <div style="border: 1px solid #cbd5e1; border-radius: 10px; padding: 24px; background-color: #fff; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);">
                 <h3 style="font-size: 14px; font-weight: 700; color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 8px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
@@ -345,6 +446,42 @@
                             <label class="form-label">Cơ quan ban hành căn cứ <span class="required-mark">*</span></label>
                             <input type="text" class="form-control" id="proposalDocIssuer" placeholder="Ví dụ: TAND Quận Đống Đa, Chi cục THADS Hà Nội...">
                         </div>
+                    </div>
+
+                    <!-- B2: PHẠM VI ÁP DỤNG -->
+                    <div class="form-group" style="margin-top: 15px;" id="grpProposalScope">
+                        <label class="form-label" style="font-weight: 600;">Phạm vi áp dụng chỉnh lý <span class="required-mark">*</span></label>
+                        <div style="display: flex; gap: 20px; margin-top: 5px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                                <input type="radio" name="proposalScope" value="cascade_future" checked>
+                                <span>Chỉnh lý xuyên suốt từ phiên bản này trở đi (Áp dụng cho V hiện tại + các V sau)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+                                <input type="radio" name="proposalScope" value="only_this">
+                                <span>Chỉnh lý chỉ tại phiên bản đang chọn (Chỉ sửa lỗi cục bộ ở version này)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- B4: BẢNG SO SÁNH KHAI BÁO CHI TIẾT TỪNG TRƯỜNG CẦN SỬA -->
+                    <div class="form-group" style="margin-top: 20px;" id="grpCorrectionFields">
+                        <label class="form-label" style="font-weight: 700; color: var(--primary-color);">Khai báo chi tiết các trường thông tin đề xuất chỉnh sửa:</label>
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">STT</th>
+                                    <th style="width: 180px;">Trường thông tin</th>
+                                    <th>Giá trị hiện tại (Auto-fill)</th>
+                                    <th>Giá trị đề xuất sửa <span class="required-mark">*</span></th>
+                                    <th>Lý do sai sót <span class="required-mark">*</span></th>
+                                    <th style="width: 60px;">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblCorrectionRows">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-outline-primary" style="margin-top: 10px; padding: 5px 12px; font-size: 12px;" onclick="addCorrectionRow()"><i class="fa-solid fa-plus"></i> Thêm trường chỉnh sửa</button>
                     </div>
 
                     <!-- Khu vực chọn tài sản nếu là Hủy một phần -->
@@ -389,11 +526,7 @@
         let currentOriginalDossier = null;
 
         function getMockDossiers() {
-            const cached = localStorage.getItem('custom_mock_profiles');
-            if (cached) {
-                return JSON.parse(cached);
-            }
-            return [];
+            return JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
         }
 
         function fillDemoCode(code) {
@@ -436,6 +569,67 @@
             }
         }
 
+        // B4: Quản lý hàng chỉnh lý động
+        const fieldMapping = {
+            'customer': 'Tên bên bảo đảm',
+            'customerCode': 'Số định danh/CCCD bên bảo đảm',
+            'mortgagee': 'Tên bên nhận bảo đảm',
+            'receiptNo': 'Số biên lai gốc',
+            'assetType': 'Mô tả tài sản bảo đảm'
+        };
+
+        function addCorrectionRow() {
+            const tbody = document.getElementById('tblCorrectionRows');
+            const rowCount = tbody.rows.length;
+            const tr = document.createElement('tr');
+            
+            let options = '<option value="">-- Chọn trường thông tin --</option>';
+            for (const key in fieldMapping) {
+                options += `<option value="${key}">${fieldMapping[key]}</option>`;
+            }
+
+            tr.innerHTML = `
+                <td style="text-align: center; font-weight: bold;">${rowCount + 1}</td>
+                <td>
+                    <select class="form-select" style="font-size:12px; height: 32px;" onchange="onFieldSelected(this)">
+                        ${options}
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control" style="font-size:12px; height:32px; background:#f1f5f9;" readonly placeholder="Tự động điền...">
+                </td>
+                <td>
+                    <input type="text" class="form-control field-new-val" style="font-size:12px; height:32px;" placeholder="Nhập giá trị mới...">
+                </td>
+                <td>
+                    <input type="text" class="form-control field-reason" style="font-size:12px; height:32px;" placeholder="Lý do sai sót...">
+                </td>
+                <td style="text-align: center;">
+                    <button type="button" class="btn btn-outline-danger" style="padding: 2px 6px; font-size: 11px;" onclick="this.closest('tr').remove(); reorderRows();"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function onFieldSelected(select) {
+            const tr = select.closest('tr');
+            const fieldKey = select.value;
+            const currentValInput = tr.cells[2].querySelector('input');
+            
+            if (fieldKey && currentOriginalDossier) {
+                currentValInput.value = currentOriginalDossier[fieldKey] || '';
+            } else {
+                currentValInput.value = '';
+            }
+        }
+
+        function reorderRows() {
+            const tbody = document.getElementById('tblCorrectionRows');
+            Array.from(tbody.rows).forEach((row, idx) => {
+                row.cells[0].innerText = idx + 1;
+            });
+        }
+
         function searchOriginalDossier() {
             const soDK = document.getElementById('searchSoDK').value.trim();
             if (!soDK) {
@@ -463,11 +657,11 @@
             document.getElementById('num1').innerHTML = '<i class="fa-solid fa-check"></i>';
             step2.className = 'step-item active';
             step3.className = 'step-item active';
-            progress.style.width = '50%'; // Progress to step 2
+            progress.style.width = '50%';
 
             // Hiển thị thông tin
             document.getElementById('noDataMsg').style.display = 'none';
-            document.getElementById('searchCardBlock').style.display = 'none'; // Ẩn khối tìm kiếm sau khi có kết quả
+            document.getElementById('searchCardBlock').style.display = 'none';
             document.getElementById('originalDossierBlock').style.display = 'block';
             
             document.getElementById('lblSoDK').innerText = dossier.id;
@@ -482,14 +676,25 @@
                 badge.className = 'badge badge-warning';
             }
 
+            // Gắn cờ icon 🔧 nếu trường đã từng bị chỉnh lý trước đây
+            const checkCorrectionWrench = (fieldKey, elementId, content) => {
+                const el = document.getElementById(elementId);
+                const hasCorrected = dossier.correctionLogs && dossier.correctionLogs.some(log => log.field === fieldKey);
+                if (hasCorrected) {
+                    el.innerHTML = `${content} <i class="fa-solid fa-wrench wrench-icon" title="Trường này đã được chỉnh lý hệ thống trước đây."></i>`;
+                } else {
+                    el.innerText = content;
+                }
+            };
+
             document.getElementById('lblThoiDiemDK').innerText = dossier.date;
             document.getElementById('lblLoaiDK').innerText = dossier.registrationType || 'Đăng ký lần đầu';
             document.getElementById('lblLoaiHinhGD').innerText = dossier.transactionType || 'Biện pháp bảo đảm';
             document.getElementById('lblSubtype').innerText = dossier.subtype || 'Thế chấp';
 
-            document.getElementById('lblBenBaoDam').innerText = dossier.customer;
-            document.getElementById('lblCodeBBD').innerText = dossier.customerCode || '0101987654';
-            document.getElementById('lblBenNhanBD').innerText = dossier.mortgagee;
+            checkCorrectionWrench('customer', 'lblBenBaoDam', dossier.customer);
+            checkCorrectionWrench('customerCode', 'lblCodeBBD', dossier.customerCode || '0101987654');
+            checkCorrectionWrench('mortgagee', 'lblBenNhanBD', dossier.mortgagee);
             document.getElementById('lblCodeBNBD').innerText = dossier.mortgageeCode || 'KH-BIDV-01';
 
             const assetDiv = document.getElementById('lblAssetTypes');
@@ -507,6 +712,48 @@
                 assetDiv.innerText = 'Không xác định';
             }
 
+            // B3: Hiển thị 2 loại lịch sử
+            // 1. Lịch sử Đăng ký thay đổi (Biz timeline)
+            const divBiz = document.getElementById('divBizHistory');
+            divBiz.innerHTML = '';
+            const bizLogs = [
+                { title: 'Đăng ký lần đầu (V0)', date: dossier.date, note: 'Khởi tạo đăng ký gốc hoàn thành' }
+            ];
+            if (dossier.type === 'Đăng ký thay đổi') {
+                bizLogs.push({ title: 'Đăng ký thay đổi (V1)', date: dossier.date, note: 'Thay đổi bổ sung tài sản thế chấp' });
+            }
+            bizLogs.forEach(log => {
+                const div = document.createElement('div');
+                div.style.padding = '6px';
+                div.style.borderLeft = '3px solid var(--primary-color)';
+                div.style.backgroundColor = '#f8fafc';
+                div.innerHTML = `<strong>${log.title}</strong> - <span style="color:#64748b;">${log.date}</span><br><span style="font-size:11px;">${log.note}</span>`;
+                divBiz.appendChild(div);
+            });
+
+            // 2. Lịch sử Chỉnh lý sai sót (System repair)
+            const divCorr = document.getElementById('divCorrectionHistory');
+            divCorr.innerHTML = '';
+            if (dossier.correctionLogs && dossier.correctionLogs.length > 0) {
+                dossier.correctionLogs.forEach(log => {
+                    const div = document.createElement('div');
+                    div.style.padding = '6px';
+                    div.style.borderLeft = '3px solid #d97706';
+                    div.style.backgroundColor = '#fffbgc';
+                    div.innerHTML = `🔧 <strong>Chỉnh lý trường: ${fieldMapping[log.field] || log.field}</strong><br>` +
+                                    `<span style="color:#64748b; font-size:11px;">Ngày thực hiện: ${log.date}</span><br>` +
+                                    `<span style="font-size:11px; color:#b45309;">Giá trị cũ: "${log.oldValue}" → Giá trị mới: "${log.newValue}"</span>`;
+                    divCorr.appendChild(div);
+                });
+            } else {
+                divCorr.innerHTML = `<div style="font-style:italic; color:#94a3b8; padding:10px 0;">Hồ sơ này chưa có lịch sử chỉnh lý sai sót.</div>`;
+            }
+
+            // Tự động thêm sẵn 1 dòng chỉnh sửa trống để cán bộ nhập ngay
+            document.getElementById('tblCorrectionRows').innerHTML = '';
+            addCorrectionRow();
+
+            // Mở khóa các option loại đề xuất
             const propSelect = document.getElementById('proposalType');
             if (dossier.status === 'Đã hủy') {
                 propSelect.value = 'Khôi phục hủy đăng ký';
@@ -527,9 +774,18 @@
         function handleProposalTypeChange() {
             const type = document.getElementById('proposalType').value;
             const assetGroup = document.getElementById('grpPartialCancelAssets');
+            const corrFieldsGroup = document.getElementById('grpCorrectionFields');
+            const scopeGroup = document.getElementById('grpProposalScope');
             
-            if (type === 'Hủy đăng ký một phần' && currentOriginalDossier && currentOriginalDossier.assetType) {
+            if (type === 'Chỉnh lý thông tin') {
+                corrFieldsGroup.style.display = 'block';
+                scopeGroup.style.display = 'block';
+                assetGroup.style.display = 'none';
+            } else if (type === 'Hủy đăng ký một phần' && currentOriginalDossier && currentOriginalDossier.assetType) {
                 assetGroup.style.display = 'block';
+                corrFieldsGroup.style.display = 'none';
+                scopeGroup.style.display = 'none';
+                
                 const checklist = document.getElementById('lblPartialAssetsChecklist');
                 checklist.innerHTML = '';
                 const assets = currentOriginalDossier.assetType.split('|');
@@ -546,19 +802,20 @@
                 });
             } else {
                 assetGroup.style.display = 'none';
+                corrFieldsGroup.style.display = 'none';
+                scopeGroup.style.display = 'none';
             }
         }
 
         function cancelProposal() {
             document.getElementById('proposalForm').reset();
             document.getElementById('originalDossierBlock').style.display = 'none';
-            document.getElementById('searchCardBlock').style.display = 'flex'; // Hiện lại khối tìm kiếm
+            document.getElementById('searchCardBlock').style.display = 'flex';
             document.getElementById('noDataMsg').style.display = 'block';
             selectedFileBlob = null;
             document.getElementById('lblUploadStatus').innerText = 'Kéo thả file văn bản pháp lý hoặc Click để duyệt tìm tệp tin';
             currentOriginalDossier = null;
 
-            // Reset steps
             document.getElementById('step1').className = 'step-item active';
             document.getElementById('num1').innerText = '1';
             document.getElementById('step2').className = 'step-item';
@@ -576,6 +833,37 @@
             if (!docNo || !docDate || !issuer || !reason || !selectedFileBlob) {
                 showToast('Vui lòng nhập đầy đủ các trường bắt buộc (*) và đính kèm file quyết định!', 'error');
                 return;
+            }
+
+            let correctionTable = [];
+            if (type === 'Chỉnh lý thông tin') {
+                const rows = document.querySelectorAll('#tblCorrectionRows tr');
+                let valid = true;
+                
+                rows.forEach((row, idx) => {
+                    const fieldSelect = row.cells[1].querySelector('select');
+                    const fieldKey = fieldSelect.value;
+                    const curVal = row.cells[2].querySelector('input').value;
+                    const newVal = row.cells[3].querySelector('input').value.trim();
+                    const fReason = row.cells[4].querySelector('input').value.trim();
+
+                    if (!fieldKey || !newVal || !fReason) {
+                        valid = false;
+                    } else {
+                        correctionTable.push({
+                            field: fieldKey,
+                            fieldName: fieldMapping[fieldKey],
+                            oldValue: curVal,
+                            newValue: newVal,
+                            reason: fReason
+                        });
+                    }
+                });
+
+                if (!valid || correctionTable.length === 0) {
+                    showToast('Vui lòng khai báo đầy đủ các trường cần chỉnh lý thông tin!', 'error');
+                    return;
+                }
             }
 
             let cancelledAssets = [];
@@ -598,6 +886,8 @@
             const now = new Date();
             const dateStr = `${now.getDate() < 10 ? '0' + now.getDate() : now.getDate()}/${now.getMonth() + 1 < 10 ? '0' + (now.getMonth()+1) : now.getMonth()+1}/${now.getFullYear()} ${now.getHours() < 10 ? '0' + now.getHours() : now.getHours()}:${now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()}`;
 
+            const scopeVal = document.querySelector('input[name="proposalScope"]:checked')?.value || 'cascade_future';
+
             proposals.push({
                 id: newId,
                 proposalCode: `DN-${type === 'Chỉnh lý thông tin' ? 'CL' : type === 'Khôi phục hủy đăng ký' ? 'KP' : 'H'}-2026-${String(newId).padStart(4, '0')}`,
@@ -610,6 +900,8 @@
                 reason: reason,
                 fileName: selectedFileBlob,
                 cancelledAssets: cancelledAssets,
+                correctionTable: correctionTable, // B4: Bảng so sánh trường
+                proposalScope: scopeVal,           // B2: Phạm vi áp dụng
                 creator: 'Nguyễn Văn Cán Bộ',
                 createdDate: dateStr,
                 status: 'Chờ ký',
@@ -618,7 +910,6 @@
 
             localStorage.setItem('custom_proposals', JSON.stringify(proposals));
             
-            // Cập nhật bước 3 hoàn thành
             document.getElementById('step3').className = 'step-item completed';
             document.getElementById('num3').innerHTML = '<i class="fa-solid fa-check"></i>';
             document.getElementById('step2').className = 'step-item completed';
