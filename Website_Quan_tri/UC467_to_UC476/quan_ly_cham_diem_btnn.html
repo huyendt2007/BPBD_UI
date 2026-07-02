@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +13,11 @@
     <!-- flatpickr CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
+
     <!-- Tom Select CSS & JS -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-    
+
     <style>
         :root {
             /* Design Tokens matching css_standards.md */
@@ -93,6 +94,7 @@
             height: auto !important;
             box-shadow: none !important;
         }
+
         .ts-control {
             border-radius: var(--border-radius-md) !important;
             border: 1px solid var(--border-color) !important;
@@ -102,12 +104,14 @@
             background-color: #fff !important;
             color: var(--text-main) !important;
         }
+
         .ts-wrapper.single .ts-control {
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E") !important;
             background-repeat: no-repeat !important;
             background-position: right 0.75rem center !important;
             background-size: 16px 12px !important;
         }
+
         .ts-dropdown {
             font-size: 13px !important;
             border-radius: var(--border-radius-md) !important;
@@ -116,12 +120,29 @@
         }
 
         /* Grid layouts */
-        .grid-2-cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .grid-3-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .grid-4-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .grid-2-cols {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .grid-3-cols {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .grid-4-cols {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
 
         @media (max-width: 768px) {
-            .grid-2-cols, .grid-3-cols, .grid-4-cols {
+
+            .grid-2-cols,
+            .grid-3-cols,
+            .grid-4-cols {
                 grid-template-columns: 1fr;
             }
         }
@@ -291,13 +312,22 @@
         }
 
         .custom-table tbody tr:hover {
-            background-color: #F0F9FF; /* Visual anchor */
+            background-color: #F0F9FF;
+            /* Visual anchor */
         }
 
         /* Alignments */
-        .text-center { text-align: center; }
-        .text-left { text-align: left; }
-        .text-right { text-align: right; }
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
 
         /* Badges */
         .badge {
@@ -310,12 +340,35 @@
             line-height: 1;
         }
 
-        .badge-gray { background-color: #E2E8F0; color: #475569; }
-        .badge-blue { background-color: #DBEAFE; color: #1E40AF; }
-        .badge-yellow { background-color: #FEF3C7; color: #92400E; }
-        .badge-orange { background-color: #FFEDD5; color: #C2410C; }
-        .badge-green { background-color: #D1FAE5; color: #065F46; }
-        .badge-red { background-color: #FEE2E2; color: #991B1B; }
+        .badge-gray {
+            background-color: #E2E8F0;
+            color: #475569;
+        }
+
+        .badge-blue {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .badge-yellow {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+
+        .badge-orange {
+            background-color: #FFEDD5;
+            color: #C2410C;
+        }
+
+        .badge-green {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .badge-red {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
 
         /* Pagination style */
         .pagination-container {
@@ -388,10 +441,29 @@
             margin: 0 3px;
         }
 
-        .icon-btn.view:hover { color: var(--primary-color); border-color: var(--primary-color); background-color: rgba(30, 58, 138, 0.05); }
-        .icon-btn.edit:hover { color: var(--info-color); border-color: var(--info-color); background-color: rgba(59, 130, 246, 0.05); }
-        .icon-btn.success:hover { color: var(--success-color); border-color: var(--success-color); background-color: rgba(16, 185, 129, 0.05); }
-        .icon-btn.delete:hover { color: var(--danger-color); border-color: var(--danger-color); background-color: rgba(239, 68, 68, 0.05); }
+        .icon-btn.view:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+
+        .icon-btn.edit:hover {
+            color: var(--info-color);
+            border-color: var(--info-color);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .icon-btn.success:hover {
+            color: var(--success-color);
+            border-color: var(--success-color);
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+
+        .icon-btn.delete:hover {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+            background-color: rgba(239, 68, 68, 0.05);
+        }
 
         /* Top Role Switcher Header */
         .page-header {
@@ -475,7 +547,7 @@
             border: 1px solid var(--border-color);
             padding: 15px;
             align-self: flex-start;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .stepper-content {
@@ -552,7 +624,7 @@
             padding: 12px 20px;
             border-radius: var(--border-radius-md);
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -566,7 +638,7 @@
         }
 
         .score-summary-section {
-            border-right: 1px solid rgba(255,255,255,0.2);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
             padding-right: 15px;
         }
 
@@ -582,7 +654,7 @@
             font-weight: 700;
             font-size: 15px;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         /* Form sections */
@@ -733,16 +805,25 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             width: 90%;
             max-width: 650px;
-            max-height: 90vh; /* Keep the height within viewport boundaries */
+            max-height: 90vh;
+            /* Keep the height within viewport boundaries */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent container scrolling */
+            overflow: hidden;
+            /* Prevent container scrolling */
             animation: modalSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes modalSlide {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .modal-header {
@@ -771,8 +852,10 @@
 
         .modal-body {
             padding: 20px;
-            overflow-y: auto; /* Enable independent vertical scrolling */
-            flex: 1; /* Allow body to grow and fill available space */
+            overflow-y: auto;
+            /* Enable independent vertical scrolling */
+            flex: 1;
+            /* Allow body to grow and fill available space */
             font-size: 13.5px;
             line-height: 1.5;
         }
@@ -830,18 +913,30 @@
             opacity: 1;
         }
 
-        .toast-notif.success { border-left-color: #52c41a; }
-        .toast-notif.success i { color: #52c41a; }
-        .toast-notif.error { border-left-color: #ff4d4f; }
-        .toast-notif.error i { color: #ff4d4f; }
+        .toast-notif.success {
+            border-left-color: #52c41a;
+        }
+
+        .toast-notif.success i {
+            color: #52c41a;
+        }
+
+        .toast-notif.error {
+            border-left-color: #ff4d4f;
+        }
+
+        .toast-notif.error i {
+            color: #ff4d4f;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Header bar with Role Switcher -->
     <div class="page-header">
         <h1>Chấm điểm Bộ tiêu chí đánh giá công tác Bồi thường nhà nước (BTNN)</h1>
-        
+
         <div class="role-selector">
             <i class="fa-solid fa-users-gear"></i>
             <span>Vai trò thao tác:</span>
@@ -858,7 +953,8 @@
     <!-- ==================== SCREEN 1: PERIODS LIST ==================== -->
     <div id="screenList" class="screen-block">
         <!-- Filter Card -->
-        <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+        <div class="card-section"
+            style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
             <div class="grid-4-cols">
                 <div class="form-group">
                     <label class="form-label">Năm đánh giá</label>
@@ -904,7 +1000,7 @@
                     </select>
                 </div>
             </div>
-            
+
             <div class="grid-2-cols" style="margin-top: 5px;">
                 <div class="form-group">
                     <label class="form-label">Hạn nộp từ ngày</label>
@@ -921,17 +1017,22 @@
                     </div>
                 </div>
             </div>
-            
-            <div style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+
+            <div
+                style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
                 <button type="button" class="btn btn-outline-primary" onclick="resetFilters()">Xóa bộ lọc</button>
-                <button type="button" class="btn btn-primary" onclick="filterData()"><i class="fa fa-search"></i> Tìm kiếm</button>
+                <button type="button" class="btn btn-primary" onclick="filterData()"><i class="fa fa-search"></i> Tìm
+                    kiếm</button>
             </div>
         </div>
 
         <!-- Action Toolbar -->
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 12px; margin-top: 12px;">
-            <button class="btn btn-primary" id="btnCreatePeriod" style="display: none;" onclick="openCreatePeriodModal()"><i class="fa-solid fa-plus-circle"></i> Khởi tạo Kỳ chấm điểm mới</button>
-            <button class="btn btn-outline-success" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            <button class="btn btn-primary" id="btnCreatePeriod" style="display: none;"
+                onclick="openCreatePeriodModal()"><i class="fa-solid fa-plus-circle"></i> Khởi tạo Kỳ chấm điểm
+                mới</button>
+            <button class="btn btn-outline-success" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết
+                xuất Excel</button>
         </div>
 
         <!-- Data Grid -->
@@ -941,13 +1042,17 @@
                     <thead>
                         <tr>
                             <th style="text-align: center; width: 50px;">STT</th>
-                            <th class="sortable-th text-center" onclick="sortByColumn('year')" style="text-align: center;">Kỳ đánh giá <span class="sort-icon" id="sort-year"><i class="fa-solid fa-sort"></i></span></th>
+                            <th class="sortable-th text-center" onclick="sortByColumn('year')"
+                                style="text-align: center;">Kỳ đánh giá <span class="sort-icon" id="sort-year"><i
+                                        class="fa-solid fa-sort"></i></span></th>
                             <th style="text-align: center;">Đơn vị STP</th>
                             <th style="text-align: center;">Trạng thái</th>
                             <th style="text-align: center;">Điểm tự chấm</th>
                             <th style="text-align: center;">Điểm BTP đánh giá</th>
                             <th style="text-align: center;">Xếp loại</th>
-                            <th class="sortable-th text-center" onclick="sortByColumn('deadline')" style="width: 110px; text-align: center;">Hạn nộp <span class="sort-icon" id="sort-deadline"><i class="fa-solid fa-sort"></i></span></th>
+                            <th class="sortable-th text-center" onclick="sortByColumn('deadline')"
+                                style="width: 110px; text-align: center;">Hạn nộp <span class="sort-icon"
+                                    id="sort-deadline"><i class="fa-solid fa-sort"></i></span></th>
                             <th style="text-align: center; min-width: 140px;">Thao tác</th>
                         </tr>
                     </thead>
@@ -956,12 +1061,13 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- Pagination -->
             <div class="pagination-container" id="paginationBar">
                 <div id="paginationInfo">Hiển thị từ 1 đến 5 trong tổng số 10 bản ghi</div>
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <select class="form-control" style="width: 70px; padding: 4px;" id="pageSizeSelect" onchange="changePageSize(this.value)">
+                    <select class="form-control" style="width: 70px; padding: 4px;" id="pageSizeSelect"
+                        onchange="changePageSize(this.value)">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="20">20</option>
@@ -982,9 +1088,11 @@
     <div id="screenStpScoring" class="screen-block" style="display: none;">
         <!-- Back and title block -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <button class="btn btn-secondary" onclick="showScreenList()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
+            <button class="btn btn-secondary" onclick="showScreenList()"><i class="fa-solid fa-arrow-left"></i> Quay lại
+                danh sách</button>
             <div style="display: flex; gap: 10px;">
-                <button class="btn btn-outline-primary" id="btnToggleViewMode" onclick="toggleViewMode()">Chế độ Bảng tổng hợp</button>
+                <button class="btn btn-outline-primary" id="btnToggleViewMode" onclick="toggleViewMode()">Chế độ Bảng
+                    tổng hợp</button>
             </div>
         </div>
 
@@ -1001,7 +1109,8 @@
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
                 <div class="score-summary-total">TỔNG: <span id="barTotal">0</span>/100</div>
-                <div style="font-weight: 600;">Xếp loại dự kiến: <span id="barGrade" style="text-decoration: underline;">Yếu</span></div>
+                <div style="font-weight: 600;">Xếp loại dự kiến: <span id="barGrade"
+                        style="text-decoration: underline;">Yếu</span></div>
                 <div style="font-size: 11px; opacity: 0.9;" id="scoringProgressText">Đã chấm: 0/19 tiêu chí</div>
             </div>
         </div>
@@ -1012,23 +1121,29 @@
             <div class="stepper-sidebar">
                 <div class="step-item active" id="step-0" onclick="jumpToStep(0)">
                     <div class="step-number">I</div>
-                    <div class="step-label">Nhóm I: Đánh giá thực hiện quản lý nhà nước về công tác bồi thường nhà nước</div>
+                    <div class="step-label">Nhóm I: Đánh giá thực hiện quản lý nhà nước về công tác bồi thường nhà nước
+                    </div>
                 </div>
                 <div class="step-item" id="step-1" onclick="jumpToStep(1)">
                     <div class="step-number">II</div>
-                    <div class="step-label">Nhóm II: Đánh giá tổ chức các hoạt động phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước</div>
+                    <div class="step-label">Nhóm II: Đánh giá tổ chức các hoạt động phối hợp thực hiện quản lý nhà nước
+                        về công tác bồi thường nhà nước</div>
                 </div>
                 <div class="step-item" id="step-2" onclick="jumpToStep(2)">
                     <div class="step-number">III</div>
-                    <div class="step-label">Nhóm III: Đánh giá tham gia giải quyết yêu cầu bồi thường theo quy định tại khoản 4 Điều 45 và khoản 3 Điều 46 Luật Trách nhiệm bồi thường của Nhà nước</div>
+                    <div class="step-label">Nhóm III: Đánh giá tham gia giải quyết yêu cầu bồi thường theo quy định tại
+                        khoản 4 Điều 45 và khoản 3 Điều 46 Luật Trách nhiệm bồi thường của Nhà nước</div>
                 </div>
                 <div class="step-item" id="step-3" onclick="jumpToStep(3)">
                     <div class="step-number">IV</div>
-                    <div class="step-label">Nhóm IV: Đánh giá điều kiện bảo đảm thực hiện quản lý nhà nước về công tác bồi thường nhà nước</div>
+                    <div class="step-label">Nhóm IV: Đánh giá điều kiện bảo đảm thực hiện quản lý nhà nước về công tác
+                        bồi thường nhà nước</div>
                 </div>
                 <div class="step-item" id="step-4" onclick="jumpToStep(4)">
                     <div class="step-number">V</div>
-                    <div class="step-label">Nhóm V: Đánh giá của cơ quan giải quyết bồi thường, cơ quan nhà nước khác có liên quan tại địa phương trong việc thực hiện quản lý nhà nước về công tác bồi thường nhà nước và tham gia giải quyết yêu cầu bồi thường</div>
+                    <div class="step-label">Nhóm V: Đánh giá của cơ quan giải quyết bồi thường, cơ quan nhà nước khác có
+                        liên quan tại địa phương trong việc thực hiện quản lý nhà nước về công tác bồi thường nhà nước
+                        và tham gia giải quyết yêu cầu bồi thường</div>
                 </div>
                 <div class="step-item" id="step-5" onclick="jumpToStep(5)">
                     <div class="step-number">VI</div>
@@ -1047,13 +1162,18 @@
         </div>
 
         <!-- Form Actions Bar -->
-        <div class="card-section" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;" id="scoringActionsBar">
+        <div class="card-section"
+            style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;"
+            id="scoringActionsBar">
             <div>
-                <button class="btn btn-secondary" id="btnStepPrev" onclick="moveStep(-1)"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+                <button class="btn btn-secondary" id="btnStepPrev" onclick="moveStep(-1)"><i
+                        class="fa-solid fa-arrow-left"></i> Quay lại</button>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button class="btn btn-outline-primary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
-                <button class="btn btn-primary" id="btnStepNext" onclick="moveStep(1)">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn btn-outline-primary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i>
+                    Lưu nháp</button>
+                <button class="btn btn-primary" id="btnStepNext" onclick="moveStep(1)">Tiếp tục <i
+                        class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
     </div>
@@ -1062,17 +1182,20 @@
     <div id="screenBtpEvaluation" class="screen-block" style="display: none; padding: 5px 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="display: flex; gap: 10px;">
-                <button class="btn btn-secondary" onclick="showScreenList()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
-                <button class="btn btn-success" id="btnBtpStartEval" onclick="switchToEvaluationMode()" style="display: none;"><i class="fa-solid fa-clipboard-check"></i> Tiến hành đánh giá</button>
+                <button class="btn btn-secondary" onclick="showScreenList()"><i class="fa-solid fa-arrow-left"></i> Quay
+                    lại danh sách</button>
+                <button class="btn btn-success" id="btnBtpStartEval" onclick="switchToEvaluationMode()"
+                    style="display: none;"><i class="fa-solid fa-clipboard-check"></i> Tiến hành đánh giá</button>
             </div>
-            <h2 style="color: var(--primary-color); font-size: 14.5px; font-weight: 600;" id="btpEvalTitle">Đánh giá kỳ chấm điểm: 2026 - Sở Tư pháp Hà Nội</h2>
+            <h2 style="color: var(--primary-color); font-size: 14.5px; font-weight: 600;" id="btpEvalTitle">Đánh giá kỳ
+                chấm điểm: 2026 - Sở Tư pháp Hà Nội</h2>
         </div>
 
         <div class="card-section" style="padding: 10px 15px; margin-bottom: 10px;">
             <div class="section-title" style="margin-bottom: 6px; padding-bottom: 4px; font-size: 13.5px;">
                 <span>BẢNG SO SÁNH ĐÁNH GIÁ CHẤM ĐIỂM (STP vs BTP)</span>
             </div>
-            
+
             <div class="table-container" style="max-height: 68vh; overflow-y: auto;">
                 <table class="custom-table" style="font-size: 12px;">
                     <thead>
@@ -1097,27 +1220,39 @@
         <!-- BTP evaluation summary cards -->
         <div class="grid-3-cols" style="margin-bottom: 10px;">
             <div class="card-section" style="margin-bottom: 0; padding: 12px;">
-                <h4 style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">TỔNG KẾT SỞ TƯ PHÁP TỰ CHẤM</h4>
-                <p style="font-size: 16px; font-weight: 700; color: var(--primary-color);" id="btpStpTotalSummary">0 điểm</p>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Xếp loại dự kiến: <span id="btpStpGradeSummary" style="font-weight: 600;">Yếu</span></p>
+                <h4 style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">TỔNG KẾT SỞ
+                    TƯ PHÁP TỰ CHẤM</h4>
+                <p style="font-size: 16px; font-weight: 700; color: var(--primary-color);" id="btpStpTotalSummary">0
+                    điểm</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Xếp loại dự kiến: <span
+                        id="btpStpGradeSummary" style="font-weight: 600;">Yếu</span></p>
             </div>
             <div class="card-section" style="margin-bottom: 0; padding: 12px;">
-                <h4 style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">TỔNG KẾT BỘ TƯ PHÁP ĐÁNH GIÁ</h4>
-                <p style="font-size: 16px; font-weight: 700; color: var(--accent-color);" id="btpEvalTotalSummary">0 điểm</p>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Xếp loại kết luận: <span id="btpEvalGradeSummary" style="font-weight: 600; color: var(--accent-color);">Yếu</span></p>
+                <h4 style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">TỔNG KẾT BỘ
+                    TƯ PHÁP ĐÁNH GIÁ</h4>
+                <p style="font-size: 16px; font-weight: 700; color: var(--accent-color);" id="btpEvalTotalSummary">0
+                    điểm</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Xếp loại kết luận: <span
+                        id="btpEvalGradeSummary" style="font-weight: 600; color: var(--accent-color);">Yếu</span></p>
             </div>
-            <div class="card-section" style="margin-bottom: 0; padding: 10px 15px; display: flex; flex-direction: column; justify-content: center; gap: 6px;">
+            <div class="card-section"
+                style="margin-bottom: 0; padding: 10px 15px; display: flex; flex-direction: column; justify-content: center; gap: 6px;">
                 <div style="display: flex; gap: 8px; width: 100%;">
-                    <button class="btn btn-outline-primary" style="flex: 1; font-size:12.5px; padding: 6px 12px;" id="btnBtpSaveDraft" onclick="saveBtpDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
-                    <button class="btn btn-outline-info" style="flex: 1; font-size:12.5px; padding: 6px 12px;" onclick="exportBtpReport()"><i class="fa-solid fa-file-word"></i> Xuất Phụ lục II</button>
+                    <button class="btn btn-outline-primary" style="flex: 1; font-size:12.5px; padding: 6px 12px;"
+                        id="btnBtpSaveDraft" onclick="saveBtpDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu
+                        nháp</button>
+                    <button class="btn btn-outline-info" style="flex: 1; font-size:12.5px; padding: 6px 12px;"
+                        onclick="exportBtpReport()"><i class="fa-solid fa-file-word"></i> Xuất Phụ lục II</button>
                 </div>
-                <button class="btn btn-success" style="width: 100%; font-size:12.5px; padding: 6px 12px;" id="btnBtpComplete" onclick="completeBtpEvaluation()"><i class="fa-solid fa-circle-check"></i> Hoàn thành đánh giá & Xếp loại</button>
+                <button class="btn btn-success" style="width: 100%; font-size:12.5px; padding: 6px 12px;"
+                    id="btnBtpComplete" onclick="completeBtpEvaluation()"><i class="fa-solid fa-circle-check"></i> Hoàn
+                    thành đánh giá & Xếp loại</button>
             </div>
         </div>
     </div>
 
     <!-- ==================== MODALS ==================== -->
-    
+
     <!-- Guidelines Help Modal (Sticky Header & Footer) -->
     <div class="modal" id="modalGuide">
         <div class="modal-content">
@@ -1143,8 +1278,10 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="form-label">Tên sáng kiến/giải pháp bồi thường nhà nước <span style="color:red;">*</span></label>
-                    <input type="text" class="form-control" id="initName" placeholder="Nhập tên giải pháp, sáng kiến kinh nghiệm...">
+                    <label class="form-label">Tên sáng kiến/giải pháp bồi thường nhà nước <span
+                            style="color:red;">*</span></label>
+                    <input type="text" class="form-control" id="initName"
+                        placeholder="Nhập tên giải pháp, sáng kiến kinh nghiệm...">
                 </div>
                 <div class="grid-2-cols">
                     <div class="form-group">
@@ -1163,7 +1300,8 @@
                     <label class="form-label">Quyết định công nhận đính kèm <span style="color:red;">*</span></label>
                     <div class="file-upload-container">
                         <div class="file-upload-btn-wrapper">
-                            <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-paperclip"></i> Chọn tệp Quyết định</button>
+                            <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-paperclip"></i> Chọn tệp
+                                Quyết định</button>
                             <input type="file" id="initFileInput" onchange="handleModalFileUpload(this)">
                         </div>
                         <div class="uploaded-files-list" id="modalUploadedFiles">
@@ -1197,7 +1335,8 @@
                 <div class="form-group">
                     <label class="form-label">Hạn nộp tự chấm <span style="color:red;">*</span></label>
                     <div class="input-group-date">
-                        <input type="text" class="form-control" id="newPeriodDeadline" value="08/12/2027" placeholder="dd/mm/yyyy">
+                        <input type="text" class="form-control" id="newPeriodDeadline" value="08/12/2027"
+                            placeholder="dd/mm/yyyy">
                         <i class="fa-regular fa-calendar-days"></i>
                     </div>
                 </div>
@@ -1226,245 +1365,263 @@
     <script>
         // MOCK DATA FOR 63 STP UNITS PERIODS LIST (at least 2 pages)
         const initialMockPeriods = [
-            { id: 1, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đang tự chấm", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 2, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Đã gửi BTP", selfScore: 82, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Không", "V.1": 0, "V.2": 0, "V.3": 0 }, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
-            { id: 3, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 4, year: "2026", unit: "Sở Tư pháp Hải Phòng", status: "Hoàn thành", selfScore: 92, btpScore: 92, grade: "Tốt", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [{name:"Ứng dụng số hóa tra cứu YCBT", decNo:"32/QĐ-STP", date:"10/05/2026", file:"QD32_SoHoa.pdf"}], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 5, year: "2026", unit: "Sở Tư pháp Cần Thơ", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 6, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 86, btpScore: 81, grade: "Khá", deadline: "08/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
-            { id: 7, year: "2025", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 78, btpScore: 78, grade: "Khá", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 8, year: "2025", unit: "Sở Tư pháp Cần Thơ", status: "Hoàn thành", selfScore: 48, btpScore: 48, grade: "Yếu", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 9, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 90, btpScore: 90, grade: "Tốt", deadline: "08/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 10, year: "2024", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 83, btpScore: 83, grade: "Khá", deadline: "08/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true }
+            // Hà Nội (12 bản ghi)
+            { id: 1, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đang tự chấm", selfScore: 45, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: { "I.1": 6, "I.2": 6 }, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 2, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 3, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đã gửi BTP", selfScore: 85, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Không", "V.1": 0, "V.2": 0, "V.3": 0 }, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
+            { id: 4, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "BTP đang đánh giá", selfScore: 88, btpScore: 82, grade: "Chưa xếp loại", deadline: "15/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 3, stpApproved: true, btpApproved: false },
+            { id: 5, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 6, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 86, btpScore: 81, grade: "Khá", deadline: "15/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
+            { id: 7, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 95, btpScore: 95, grade: "Tốt", deadline: "15/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [{ name: "Ứng dụng số hóa tra cứu YCBT", decNo: "32/QĐ-STP", date: "10/05/2025", file: "QD32_SoHoa.pdf" }], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 8, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 9, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 68, btpScore: 65, grade: "Trung bình", deadline: "15/12/2025", details: {}, bonus: [], penalty: 2, stpApproved: true, btpApproved: true },
+            { id: 10, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 90, btpScore: 90, grade: "Tốt", deadline: "15/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 11, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 78, btpScore: 78, grade: "Khá", deadline: "15/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 12, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 48, btpScore: 45, grade: "Yếu", deadline: "15/12/2024", details: {}, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
+
+            // Các đơn vị khác (13 bản ghi)
+            { id: 13, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Đã gửi BTP", selfScore: 82, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
+            { id: 14, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "BTP đang đánh giá", selfScore: 85, btpScore: 79, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
+            { id: 15, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 16, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 17, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Đang tự chấm", selfScore: 50, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 18, year: "2026", unit: "Sở Tư pháp Hải Phòng", status: "Hoàn thành", selfScore: 92, btpScore: 92, grade: "Tốt", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 19, year: "2026", unit: "Sở Tư pháp Cần Thơ", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 20, year: "2025", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 78, btpScore: 78, grade: "Khá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 21, year: "2025", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 22, year: "2025", unit: "Sở Tư pháp Đà Nẵng", status: "Hoàn thành", selfScore: 84, btpScore: 80, grade: "Khá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 23, year: "2025", unit: "Sở Tư pháp Hải Phòng", status: "Hoàn thành", selfScore: 88, btpScore: 88, grade: "Khá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 24, year: "2025", unit: "Sở Tư pháp Cần Thơ", status: "Hoàn thành", selfScore: 48, btpScore: 48, grade: "Yếu", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 25, year: "2024", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 83, btpScore: 83, grade: "Khá", deadline: "15/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true }
         ];
 
         // CRITERIA DICTIONARY WITH POPUP HELP
         const criteriaData = {
-            "I.1": { 
-                code: "I.1", 
-                title: "1. Hướng dẫn nghiệp vụ giải quyết bồi thường theo thẩm quyền", 
-                maxScore: 6, 
+            "I.1": {
+                code: "I.1",
+                title: "1. Hướng dẫn nghiệp vụ giải quyết bồi thường theo thẩm quyền",
+                maxScore: 6,
                 options: [
                     { text: "a. Hướng dẫn nghiệp vụ giải quyết bồi thường đầy đủ theo yêu cầu của cơ quan giải quyết bồi thường hoặc cơ quan khác có liên quan đến công tác bồi thường nhà nước", score: 6 },
                     { text: "b. Hướng dẫn nghiệp vụ giải quyết bồi thường không đầy đủ theo yêu cầu của cơ quan giải quyết bồi thường hoặc cơ quan khác có liên quan đến công tác bồi thường nhà nước", score: 3 },
                     { text: "c. Không thực hiện hướng dẫn nghiệp vụ giải quyết bồi thường", score: 0 }
-                ], 
-                help: "Hình thức hướng dẫn nghiệp vụ giải quyết bồi thường thực hiện theo quy định tại điểm a khoản 1 Điều 3 Thông tư số 08/2019/TT-BTP. Việc hướng dẫn nghiệp vụ giải quyết bồi thường được coi là đầy đủ khi có văn bản yêu cầu hướng dẫn và văn bản hướng dẫn nghiệp vụ đáp ứng các nội dung nghiệp vụ theo quy định pháp luật." 
+                ],
+                help: "Hình thức hướng dẫn nghiệp vụ giải quyết bồi thường thực hiện theo quy định tại điểm a khoản 1 Điều 3 Thông tư số 08/2019/TT-BTP. Việc hướng dẫn nghiệp vụ giải quyết bồi thường được coi là đầy đủ khi có văn bản yêu cầu hướng dẫn và văn bản hướng dẫn nghiệp vụ đáp ứng các nội dung nghiệp vụ theo quy định pháp luật."
             },
-            "I.2": { 
-                code: "I.2", 
-                title: "2. Bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước", 
-                maxScore: 6, 
+            "I.2": {
+                code: "I.2",
+                title: "2. Bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước",
+                maxScore: 6,
                 options: [
                     { text: "a. Tổ chức bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước theo chỉ đạo của Bộ Tư pháp hoặc Ủy ban nhân dân cấp tỉnh", score: 6 },
                     { text: "b. Không tổ chức bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước theo chỉ đạo của Bộ Tư pháp hoặc Ủy ban nhân dân cấp tỉnh", score: 0 }
-                ], 
-                help: "Hình thức bồi dưỡng kỹ năng nghiệp vụ giải quyết bồi thường bao gồm: tổ chức hội nghị bồi dưỡng chuyên đề hoặc lồng ghép nội dung bồi dưỡng trong các hội nghị tập huấn pháp luật khác, tọa đàm nghiệp vụ, biên soạn tờ rơi, tờ gấp phát miễn phí cho người thực hiện." 
+                ],
+                help: "Hình thức bồi dưỡng kỹ năng nghiệp vụ giải quyết bồi thường bao gồm: tổ chức hội nghị bồi dưỡng chuyên đề hoặc lồng ghép nội dung bồi dưỡng trong các hội nghị tập huấn pháp luật khác, tọa đàm nghiệp vụ, biên soạn tờ rơi, tờ gấp phát miễn phí cho người thực hiện."
             },
-            "I.3a": { 
-                code: "I.3a", 
-                title: "3.a Xác định cơ quan giải quyết bồi thường theo quy định tại điểm a, điểm b khoản 1 Điều 40 Luật Trách nhiệm bồi thường của Nhà nước", 
-                maxScore: 2, 
+            "I.3a": {
+                code: "I.3a",
+                title: "3.a Xác định cơ quan giải quyết bồi thường theo quy định tại điểm a, điểm b khoản 1 Điều 40 Luật Trách nhiệm bồi thường của Nhà nước",
+                maxScore: 2,
                 options: [
                     { text: "- Xác định cơ quan giải quyết bồi thường", score: 2 },
                     { text: "- Không xác định cơ quan giải quyết bồi thường", score: 0 }
-                ], 
-                help: "Việc xác định cơ quan giải quyết bồi thường được thực hiện theo quy định tại điểm a, điểm b khoản 1 Điều 40 Luật Trách nhiệm bồi thường của Nhà nước (Luật TNBTCNN) và khoản 2 và khoản 3 Điều 32 Nghị định số 68/2018/NĐ-CP." 
+                ],
+                help: "Việc xác định cơ quan giải quyết bồi thường được thực hiện theo quy định tại điểm a, điểm b khoản 1 Điều 40 Luật Trách nhiệm bồi thường của Nhà nước (Luật TNBTCNN) và khoản 2 và khoản 3 Điều 32 Nghị định số 68/2018/NĐ-CP."
             },
-            "I.3b": { 
-                code: "I.3b", 
-                title: "3.b Xác định cơ quan giải quyết bồi thường theo quy định tại khoản 4 Điều 41 Luật Trách nhiệm bồi thường của Nhà nước", 
-                maxScore: 2, 
+            "I.3b": {
+                code: "I.3b",
+                title: "3.b Xác định cơ quan giải quyết bồi thường theo quy định tại khoản 4 Điều 41 Luật Trách nhiệm bồi thường của Nhà nước",
+                maxScore: 2,
                 options: [
                     { text: "- Xác định cơ quan giải quyết bồi thường theo đúng thời hạn quy định của pháp luật", score: 2 },
                     { text: "- Xác định cơ quan giải quyết bồi thường không đúng thời hạn quy định của pháp luật hoặc không xác định", score: 0 }
-                ], 
-                help: "Thời hạn xác định cơ quan giải quyết bồi thường được xác định theo quy định tại khoản 1 và khoản 2 Điều 33 Nghị định số 68/2018/NĐ-CP." 
+                ],
+                help: "Thời hạn xác định cơ quan giải quyết bồi thường được xác định theo quy định tại khoản 1 và khoản 2 Điều 33 Nghị định số 68/2018/NĐ-CP."
             },
-            "I.4": { 
-                code: "I.4", 
-                title: "4. Hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường theo thẩm quyền", 
-                maxScore: 6, 
+            "I.4": {
+                code: "I.4",
+                title: "4. Hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường theo thẩm quyền",
+                maxScore: 6,
                 options: [
                     { text: "a. Hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường đầy đủ theo yêu cầu của người bị thiệt hại", score: 6 },
                     { text: "b. Hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường không đầy đủ theo yêu cầu", score: 3 },
                     { text: "c. Không hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường", score: 0 }
-                ], 
-                help: "Nội dung hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường được xác định theo quy định tại Điều 6 Thông tư số 09/2019/TT- BTP ngày 10/12/2019 của Bộ trưởng Bộ Tư pháp quy định biện pháp hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường nhà nước (Thông tư số 09/2019/TT-BTP)." 
+                ],
+                help: "Nội dung hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường được xác định theo quy định tại Điều 6 Thông tư số 09/2019/TT- BTP ngày 10/12/2019 của Bộ trưởng Bộ Tư pháp quy định biện pháp hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường nhà nước (Thông tư số 09/2019/TT-BTP)."
             },
-            "I.5a": { 
-                code: "I.5a", 
-                title: "5.a Thực hiện theo dõi công tác bồi thường nhà nước", 
-                maxScore: 3, 
+            "I.5a": {
+                code: "I.5a",
+                title: "5.a Thực hiện theo dõi công tác bồi thường nhà nước",
+                maxScore: 3,
                 options: [
                     { text: "- Có thực hiện theo dõi công tác bồi thường nhà nước khi có căn cứ theo quy định của pháp luật", score: 3 },
                     { text: "- Không thực hiện theo dõi công tác bồi thường nhà nước khi có căn cứ theo quy định của pháp luật", score: 0 }
-                ], 
-                help: "Căn cứ thực hiện theo dõi công tác bồi thường nhà nước được xác định tại quy định tại khoản 1 Điều 9 Thông tư số 08/2019/TT-BTP." 
+                ],
+                help: "Căn cứ thực hiện theo dõi công tác bồi thường nhà nước được xác định tại quy định tại khoản 1 Điều 9 Thông tư số 08/2019/TT-BTP."
             },
-            "I.5b": { 
-                code: "I.5b", 
-                title: "5.b Lập danh mục vụ việc giải quyết yêu cầu bồi thường", 
-                maxScore: 3, 
+            "I.5b": {
+                code: "I.5b",
+                title: "5.b Lập danh mục vụ việc giải quyết yêu cầu bồi thường",
+                maxScore: 3,
                 options: [
                     { text: "- Lập danh mục đầy đủ các vụ việc giải quyết yêu cầu bồi thường và các vụ việc trong danh mục có đầy đủ nội dung theo quy định của pháp luật", score: 3 },
                     { text: "- Lập danh mục không đầy đủ các vụ việc giải quyết yêu cầu bồi thường hoặc vụ việc trong danh mục không đầy đủ nội dung theo quy định của pháp luật", score: 1 },
                     { text: "- Không lập danh mục vụ việc giải quyết yêu cầu bồi thường", score: 0 }
-                ], 
-                help: "Đầy đủ các vụ việc được đưa vào danh mục. Từng vụ việc có đầy đủ nội dung (theo tiến trình giải quyết vụ việc tính đến thời điểm tự đánh giá, chấm điểm) quy định tại Biểu mẫu số 01 ban hành kèm theo Thông tư số 08/2019/TT- BTP." 
+                ],
+                help: "Đầy đủ các vụ việc được đưa vào danh mục. Từng vụ việc có đầy đủ nội dung (theo tiến trình giải quyết vụ việc tính đến thời điểm tự đánh giá, chấm điểm) quy định tại Biểu mẫu số 01 ban hành kèm theo Thông tư số 08/2019/TT- BTP."
             },
-            "I.6": { 
-                code: "I.6", 
-                title: "6. Đôn đốc công tác bồi thường nhà nước", 
-                maxScore: 5, 
+            "I.6": {
+                code: "I.6",
+                title: "6. Đôn đốc công tác bồi thường nhà nước",
+                maxScore: 5,
                 options: [
                     { text: "a. Thực hiện đôn đốc công tác bồi thường nhà nước khi có căn cứ theo quy định của pháp luật", score: 5 },
                     { text: "b. Không thực hiện đôn đốc công tác bồi thường nhà nước khi có căn cứ theo quy định của pháp luật", score: 0 }
-                ], 
-                help: "Căn cứ đôn đốc công tác bồi thường nhà nước được xác định theo quy định tại Điều 14 Thông tư số 08/2019/TT- BTP" 
+                ],
+                help: "Căn cứ đôn đốc công tác bồi thường nhà nước được xác định theo quy định tại Điều 14 Thông tư số 08/2019/TT- BTP"
             },
-            "I.7": { 
-                code: "I.7", 
-                title: "7. Thanh tra, kiểm tra công tác bồi thường nhà nước", 
-                maxScore: 6, 
+            "I.7": {
+                code: "I.7",
+                title: "7. Thanh tra, kiểm tra công tác bồi thường nhà nước",
+                maxScore: 6,
                 options: [
                     { text: "a. Ban hành và thực hiện kế hoạch thanh tra, kiểm tra công tác bồi thường nhà nước theo quy định của pháp luật", score: 6 },
                     { text: "b. Ban hành nhưng không thực hiện kế hoạch thanh tra, kiểm tra hoặc không ban hành kế hoạch thanh tra, kiểm tra công tác bồi thường nhà nước theo quy định của pháp luật", score: 0 }
-                ], 
-                help: "Việc ban hành kế hoạch thanh tra, kiểm tra được thực hiện theo quy định tại khoản 2 và khoản 3 Điều 34 Nghị định số 68/2018/NĐ-CP và Điều 19 Thông tư số 08/2019/TT-BTP. Việc tổ chức kế hoạch thanh tra, kiểm tra được thực hiện theo quy định tại Điều 20, 21, 22 và Điều 23 Thông tư số 08/2019/TT-BTP." 
+                ],
+                help: "Việc ban hành kế hoạch thanh tra, kiểm tra được thực hiện theo quy định tại khoản 2 và khoản 3 Điều 34 Nghị định số 68/2018/NĐ-CP và Điều 19 Thông tư số 08/2019/TT-BTP. Việc tổ chức kế hoạch thanh tra, kiểm tra được thực hiện theo quy định tại Điều 20, 21, 22 và Điều 23 Thông tư số 08/2019/TT-BTP."
             },
-            "I.8a": { 
-                code: "I.8a", 
-                title: "8.a Thời hạn thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước", 
-                maxScore: 4, 
+            "I.8a": {
+                code: "I.8a",
+                title: "8.a Thời hạn thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước",
+                maxScore: 4,
                 options: [
                     { text: "- Thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước gửi Bộ Tư pháp đúng thời hạn quy định của pháp luật hoặc đúng yêu cầu của cơ quan nhà nước có thẩm quyền", score: 4 },
                     { text: "- Thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước gửi Bộ Tư pháp không đúng thời hạn quy định của pháp luật hoặc không đúng yêu cầu của cơ quan nhà nước có thẩm quyền", score: 2 },
                     { text: "- Không thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước", score: 0 }
-                ], 
-                help: "Thời hạn thống kê, báo cáo được thực hiện theo quy định tại Điều 25 Thông tư số 08/2019/TT-BTP. Cơ quan nhà nước có thẩm quyền được xác định theo quy định tại khoản 2 Điều 35 Nghị định số 68/2018/NĐ-CP." 
+                ],
+                help: "Thời hạn thống kê, báo cáo được thực hiện theo quy định tại Điều 25 Thông tư số 08/2019/TT-BTP. Cơ quan nhà nước có thẩm quyền được xác định theo quy định tại khoản 2 Điều 35 Nghị định số 68/2018/NĐ-CP."
             },
-            "I.8b": { 
-                code: "I.8b", 
-                title: "8.b Nội dung thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước", 
-                maxScore: 4, 
+            "I.8b": {
+                code: "I.8b",
+                title: "8.b Nội dung thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước",
+                maxScore: 4,
                 options: [
                     { text: "- Nội dung thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước đúng quy định của pháp luật hoặc đúng yêu cầu của cơ quan nhà nước có thẩm quyền", score: 4 },
                     { text: "- Nội dung thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước không đúng quy định của pháp luật hoặc không đúng yêu cầu của cơ quan nhà nước có thẩm quyền", score: 0 }
-                ], 
-                help: "Nội dung thống kê, báo cáo được xác định theo Điều 24 và Biểu mẫu số 2, 3 và 4 ban hành kèm theo Thông tư số 08/2019/TT-BTP." 
+                ],
+                help: "Nội dung thống kê, báo cáo được xác định theo Điều 24 và Biểu mẫu số 2, 3 và 4 ban hành kèm theo Thông tư số 08/2019/TT-BTP."
             },
-            "I.9": { 
-                code: "I.9", 
-                title: "9. Kiến nghị cơ quan có thẩm quyền xử lý vi phạm trong việc giải quyết bồi thường, thực hiện trách nhiệm hoàn trả trong phạm vi do mình quản lý; kiến nghị người có thẩm quyền kháng nghị bản án, quyết định của Tòa án có nội dung giải quyết bồi thường theo quy định của pháp luật; yêu cầu Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại hủy quyết định giải quyết bồi thường trong trường hợp có một trong các căn cứ quy định tại khoản 1 và điểm a khoản 3 Điều 48 của Luật Trách nhiệm bồi thường của Nhà nước mà không ra quyết định hủy", 
-                maxScore: 3, 
+            "I.9": {
+                code: "I.9",
+                title: "9. Kiến nghị cơ quan có thẩm quyền xử lý vi phạm trong việc giải quyết bồi thường, thực hiện trách nhiệm hoàn trả trong phạm vi do mình quản lý; kiến nghị người có thẩm quyền kháng nghị bản án, quyết định của Tòa án có nội dung giải quyết bồi thường theo quy định của pháp luật; yêu cầu Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại hủy quyết định giải quyết bồi thường trong trường hợp có một trong các căn cứ quy định tại khoản 1 và điểm a khoản 3 Điều 48 của Luật Trách nhiệm bồi thường của Nhà nước mà không ra quyết định hủy",
+                maxScore: 3,
                 options: [
                     { text: "- Kiến nghị, yêu cầu theo thẩm quyền khi có căn cứ theo quy định của pháp luật", score: 3 },
                     { text: "- Không thực hiện kiến nghị, yêu cầu theo thẩm quyền khi có căn cứ theo quy định của pháp luật", score: 0 }
-                ], 
-                help: "Chỉ cần thực hiện một trong các nội dung của mục này thì Sở Tư pháp tự chấm điểm tối đa." 
+                ],
+                help: "Chỉ cần thực hiện một trong các nội dung của mục này thì Sở Tư pháp tự chấm điểm tối đa."
             },
-            "II.1": { 
-                code: "II.1", 
-                title: "1. Họp liên ngành hoặc trao đổi bằng văn bản khi có phát sinh nội dung cần phối hợp theo quy định của pháp luật", 
-                maxScore: 20, 
+            "II.1": {
+                code: "II.1",
+                title: "1. Họp liên ngành hoặc trao đổi bằng văn bản khi có phát sinh nội dung cần phối hợp theo quy định của pháp luật",
+                maxScore: 20,
                 options: [
                     { text: "- Họp liên ngành hoặc trao đổi bằng văn bản khi có phát sinh nội dung cần phối hợp", score: 20 },
                     { text: "- Không tổ chức họp liên ngành hoặc không trao đổi bằng văn bản khi có phát sinh nội dung cần phối hợp theo quy định của pháp luật", score: 0 }
-                ], 
-                help: "Họp liên ngành hoặc trao đổi văn bản thống nhất giải quyết vụ việc hoặc tháo gỡ khó khăn vướng mắc công tác BTNN." 
+                ],
+                help: "Họp liên ngành hoặc trao đổi văn bản thống nhất giải quyết vụ việc hoặc tháo gỡ khó khăn vướng mắc công tác BTNN."
             },
-            "III.1": { 
-                code: "III.1", 
-                title: "1. Cử đại diện tham gia xác minh thiệt hại theo quy định tại khoản 4 Điều 45 của Luật Trách nhiệm bồi thường của Nhà nước và Điều 19 của Nghị định số 68/2018/NĐ-CP ngày 15/5/2018 quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước", 
-                maxScore: 5, 
+            "III.1": {
+                code: "III.1",
+                title: "1. Cử đại diện tham gia xác minh thiệt hại theo quy định tại khoản 4 Điều 45 của Luật Trách nhiệm bồi thường của Nhà nước và Điều 19 của Nghị định số 68/2018/NĐ-CP ngày 15/5/2018 quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước",
+                maxScore: 5,
                 options: [
                     { text: "a. Cử đại diện tham gia xác minh thiệt hại đúng thời hạn theo quy định của pháp luật", score: 5 },
                     { text: "b. Cử đại diện tham gia xác minh thiệt hại không đúng thời hạn theo quy định của pháp luật", score: 2 },
                     { text: "c. Không cử đại diện tham gia xác minh thiệt hại", score: 0 }
-                ], 
-                help: "Thời hạn cử đại diện tham gia xác minh thiệt hại trong thời hạn 02 ngày làm việc kể từ ngày nhận được đề nghị của cơ quan giải quyết bồi thường." 
+                ],
+                help: "Thời hạn cử đại diện tham gia xác minh thiệt hại trong thời hạn 02 ngày làm việc kể từ ngày nhận được đề nghị của cơ quan giải quyết bồi thường."
             },
-            "III.2": { 
-                code: "III.2", 
-                title: "2. Tham gia thương lượng việc bồi thường theo quy định tại Điều 46 của Luật Trách nhiệm bồi thường của Nhà nước và Điều 21 của Nghị định số 68/2018/NĐ-CP ngày 15/5/2018 quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước", 
-                maxScore: 5, 
+            "III.2": {
+                code: "III.2",
+                title: "2. Tham gia thương lượng việc bồi thường theo quy định tại Điều 46 của Luật Trách nhiệm bồi thường của Nhà nước và Điều 21 của Nghị định số 68/2018/NĐ-CP ngày 15/5/2018 quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước",
+                maxScore: 5,
                 options: [
                     { text: "a. Cử đại diện tham gia thương lượng việc bồi thường và đại diện được cử thực hiện đầy đủ các nhiệm vụ theo quy định của pháp luật", score: 5 },
                     { text: "b. Cử đại diện tham gia thương lượng việc bồi thường nhưng đại diện được cử không thực hiện đầy đủ các nhiệm vụ theo quy định của pháp luật", score: 2 },
                     { text: "c. Không cử đại diện tham gia thương lượng việc bồi thường", score: 0 }
-                ], 
-                help: "Đại diện tham gia thương lượng việc bồi thường có phát biểu ý kiến tại buổi thương lượng việc bồi thường và có ký vào biên bản kết quả thương lượng." 
+                ],
+                help: "Đại diện tham gia thương lượng việc bồi thường có phát biểu ý kiến tại buổi thương lượng việc bồi thường và có ký vào biên bản kết quả thương lượng."
             },
-            "IV.1": { 
-                code: "IV.1", 
-                title: "1. Ban hành và tổ chức thực hiện kế hoạch công tác bồi thường nhà nước", 
-                maxScore: 4, 
+            "IV.1": {
+                code: "IV.1",
+                title: "1. Ban hành và tổ chức thực hiện kế hoạch công tác bồi thường nhà nước",
+                maxScore: 4,
                 options: [
                     { text: "a. Ban hành và tổ chức thực hiện kế hoạch về công tác bồi thường nhà nước đúng thời hạn theo chỉ đạo của cơ quan quản lý nhà nước về công tác bồi thường nhà nước cấp trên hoặc cơ quan có thẩm quyền", score: 4 },
                     { text: "b. Ban hành nhưng không tổ chức kế hoạch về công tác bồi thường nhà nước theo chỉ đạo của cơ quan quản lý nhà nước về công tác bồi thường nhà nước cấp trên hoặc cơ quan có thẩm quyền hoặc không ban hành kế hoạch", score: 0 }
-                ], 
-                help: "Kế hoạch công tác bồi thường nhà nước có thể xây dựng Kế hoạch riêng hoặc lồng ghép trong Kế hoạch về công tác tư pháp của địa phương." 
+                ],
+                help: "Kế hoạch công tác bồi thường nhà nước có thể xây dựng Kế hoạch riêng hoặc lồng ghép trong Kế hoạch về công tác tư pháp của địa phương."
             },
-            "IV.2a": { 
-                code: "IV.2a", 
-                title: "2.a Phân công công chức thực hiện công tác bồi thường nhà nước", 
-                maxScore: 2, 
+            "IV.2a": {
+                code: "IV.2a",
+                title: "2.a Phân công công chức thực hiện công tác bồi thường nhà nước",
+                maxScore: 2,
                 options: [
                     { text: "- Phân công công chức thực hiện công tác bồi thường nhà nước", score: 2 },
                     { text: "- Không phân công công chức thực hiện công tác bồi thường nhà nước", score: 0 }
-                ], 
-                help: "Có phân công công chức thực hiện công tác bồi thường nhà nước (kiêm nhiệm hoặc chuyên trách) thì Sở Tư pháp đều tự chấm điểm tối đa." 
+                ],
+                help: "Có phân công công chức thực hiện công tác bồi thường nhà nước (kiêm nhiệm hoặc chuyên trách) thì Sở Tư pháp đều tự chấm điểm tối đa."
             },
-            "IV.2b": { 
-                code: "IV.2b", 
-                title: "2.b Bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước", 
-                maxScore: 2, 
+            "IV.2b": {
+                code: "IV.2b",
+                title: "2.b Bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước",
+                maxScore: 2,
                 options: [
                     { text: "- Thực hiện bồi dưỡng kỹ năng, nghiệp vụ", score: 2 },
                     { text: "- Không thực hiện bồi dưỡng kỹ năng, nghiệp vụ", score: 0 }
-                ], 
-                help: "Bồi dưỡng kỹ năng nghiệp vụ công tác bồi thường nhà nước thực hiện thông qua việc tự bồi dưỡng (có bài viết trên tạp chí, tự nghiên cứu, học tập, v.v.) hoặc tham gia lớp bồi dưỡng do Bộ Tư pháp (Cục Bồi thường nhà nước) tổ chức." 
+                ],
+                help: "Bồi dưỡng kỹ năng nghiệp vụ công tác bồi thường nhà nước thực hiện thông qua việc tự bồi dưỡng (có bài viết trên tạp chí, tự nghiên cứu, học tập, v.v.) hoặc tham gia lớp bồi dưỡng do Bộ Tư pháp (Cục Bồi thường nhà nước) tổ chức."
             },
-            "IV.2c": { 
-                code: "IV.2c", 
-                title: "2.c Kinh phí thực hiện công tác bồi thường nhà nước", 
-                maxScore: 2, 
+            "IV.2c": {
+                code: "IV.2c",
+                title: "2.c Kinh phí thực hiện công tác bồi thường nhà nước",
+                maxScore: 2,
                 options: [
                     { text: "- Bố trí kinh phí để thực hiện công tác bồi thường nhà nước", score: 2 },
                     { text: "- Không bố trí kinh phí để thực hiện công tác bồi thường nhà nước", score: 0 }
-                ], 
-                help: "Sở Tư pháp có đề xuất kinh phí để thực hiện các nhiệm vụ quản lý nhà nước về công tác bồi thường nhà nước và Sở Tài chính cấp hoặc không cấp thì tự chấm điểm tối đa." 
+                ],
+                help: "Sở Tư pháp có đề xuất kinh phí để thực hiện các nhiệm vụ quản lý nhà nước về công tác bồi thường nhà nước và Sở Tài chính cấp hoặc không cấp thì tự chấm điểm tối đa."
             },
-            "V.1": { 
-                code: "V.1", 
-                title: "1. Đánh giá việc thực hiện quản lý nhà nước về công tác bồi thường nhà nước tại địa phương", 
-                maxScore: 4, 
+            "V.1": {
+                code: "V.1",
+                title: "1. Đánh giá việc thực hiện quản lý nhà nước về công tác bồi thường nhà nước tại địa phương",
+                maxScore: 4,
                 options: [
                     { text: "a. Thực hiện quản lý nhà nước về công tác bồi thường nhà nước quy định tại Điều 5 của Bộ tiêu chí này", score: 4 },
                     { text: "b. Không thực hiện quản lý nhà nước về công tác bồi thường nhà nước quy định tại Điều 4 của Bộ tiêu chí này", score: 0 }
-                ], 
-                help: "Trường hợp không được cấp kinh phí hoặc không có sự hỗ trợ kinh phí thì Sở Tư pháp không đánh giá, chấm điểm đối với nhóm tiêu chí này." 
+                ],
+                help: "Trường hợp không được cấp kinh phí hoặc không có sự hỗ trợ kinh phí thì Sở Tư pháp không đánh giá, chấm điểm đối với nhóm tiêu chí này."
             },
-            "V.2": { 
-                code: "V.2", 
-                title: "2. Đánh giá công tác phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước", 
-                maxScore: 3, 
+            "V.2": {
+                code: "V.2",
+                title: "2. Đánh giá công tác phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước",
+                maxScore: 3,
                 options: [
                     { text: "a. Phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước quy định tại Điều 5 của Bộ tiêu chí này", score: 3 },
                     { text: "b. Không phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước quy định tại Điều 5 của Bộ tiêu chí này", score: 0 }
-                ], 
-                help: "Việc lấy ý kiến đánh giá có thể được tổ chức thông qua khảo sát, phỏng vấn, v.v." 
+                ],
+                help: "Việc lấy ý kiến đánh giá có thể được tổ chức thông qua khảo sát, phỏng vấn, v.v."
             },
-            "V.3": { 
-                code: "V.3", 
-                title: "3. Đánh giá việc tham gia giải quyết yêu cầu bồi thường", 
-                maxScore: 3, 
+            "V.3": {
+                code: "V.3",
+                title: "3. Đánh giá việc tham gia giải quyết yêu cầu bồi thường",
+                maxScore: 3,
                 options: [
                     { text: "a. Tham gia giải quyết yêu cầu bồi thường quy định tại Điều 6 của Bộ tiêu chí này", score: 3 },
                     { text: "b. Không tham gia giải quyết yêu cầu bồi thường quy định tại Điều 6 của Bộ tiêu chí này", score: 0 }
-                ], 
-                help: "Việc lấy ý kiến đánh giá có thể được tổ chức thông qua khảo sát, phỏng vấn, v.v." 
+                ],
+                help: "Việc lấy ý kiến đánh giá có thể được tổ chức thông qua khảo sát, phỏng vấn, v.v."
             }
         };
 
@@ -1475,7 +1632,7 @@
         let pageSize = 5;
         let currentSortColumn = "year";
         let currentSortDir = "desc";
-        
+
         let editingPeriodId = null;
         let selectedPeriod = null;
         let isBtpEvaluationMode = false;
@@ -1486,7 +1643,7 @@
             let cleanTitle = title.replace(/^\d+(\.[a-z])?\s*-?\s*/i, '').trim();
             return `${code}. ${cleanTitle}`;
         }
-        
+
         // STP wizard variables
         let scoringCurrentStep = 0;
         let scoringViewMode = "stepper"; // stepper / table
@@ -1499,22 +1656,22 @@
             // Load from storage or set default
             let allData;
             try {
-                allData = JSON.parse(localStorage.getItem('btnn_scoring_periods'));
+                allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
             } catch (e) {
                 allData = null;
             }
             if (!allData || !Array.isArray(allData) || allData.length === 0) {
-                localStorage.setItem('btnn_scoring_periods', JSON.stringify(initialMockPeriods));
+                localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(initialMockPeriods));
                 allData = initialMockPeriods;
             }
             currentPeriods = allData;
-            
+
             // Set date inputs to first day of current month to current date
             const today = new Date();
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0');
             const day = String(today.getDate()).padStart(2, '0');
-            
+
             const defaultFromDateStr = `01/${month}/${year}`;
             const defaultToDateStr = `${day}/${month}/${year}`;
 
@@ -1555,14 +1712,14 @@
                 tsYear = new TomSelect("#filterYear", {
                     create: false,
                     allowEmptyOption: true,
-                    onChange: function() {
+                    onChange: function () {
                         filterData();
                     }
                 });
                 tsStp = new TomSelect("#filterStp", {
                     create: false,
                     allowEmptyOption: true,
-                    onChange: function() {
+                    onChange: function () {
                         filterData();
                     }
                 });
@@ -1578,7 +1735,7 @@
         function switchRole(roleVal) {
             activeRole = roleVal;
             document.getElementById('roleSelector').value = roleVal;
-            
+
             const filterStpGroup = document.getElementById('filterStpGroup');
             const btnCreatePeriod = document.getElementById('btnCreatePeriod');
             if (activeRole === 'stp') {
@@ -1594,10 +1751,10 @@
                 filterStpGroup.style.display = "block";
                 if (btnCreatePeriod) btnCreatePeriod.style.display = "block";
             }
-            
+
             // Show alert deadlines banner based on role
             renderAlertBanner();
-            
+
             showScreenList();
             filterData();
         }
@@ -1606,7 +1763,7 @@
         function renderAlertBanner() {
             const container = document.getElementById('alertBannerContainer');
             container.innerHTML = '';
-            
+
             if (activeRole === 'stp') {
                 container.innerHTML = `
                     <div class="alert-banner alert-warning">
@@ -1639,8 +1796,8 @@
             const statusVal = document.getElementById('filterStatus').value;
             const gradeVal = document.getElementById('filterGrade').value;
 
-            let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
-            
+            let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+
             let filtered = allData.filter(item => {
                 if (yearVal && item.year !== yearVal) return false;
                 if (stpVal && item.unit !== stpVal) return false;
@@ -1649,19 +1806,19 @@
                 return true;
             });
 
-            // Sort data
+            // Sort data safely (defensive sort comparator)
             filtered.sort((a, b) => {
-                let valA = a[currentSortColumn];
-                let valB = b[currentSortColumn];
-                
-                // Compare Year or Deadline
+                let valA = a[currentSortColumn] || "";
+                let valB = b[currentSortColumn] || "";
+
                 if (currentSortColumn === 'year') {
-                    return currentSortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                    return currentSortDir === 'asc' ? String(valA).localeCompare(String(valB)) : String(valB).localeCompare(String(valA));
                 } else if (currentSortColumn === 'deadline') {
-                    // Simple parse dd/mm/yyyy
                     const parseDate = str => {
+                        if (!str || typeof str !== 'string') return new Date(0);
                         const parts = str.split('/');
-                        return new Date(parts[2], parts[1]-1, parts[0]);
+                        if (parts.length !== 3) return new Date(0);
+                        return new Date(parts[2], parts[1] - 1, parts[0]);
                     };
                     return currentSortDir === 'asc' ? parseDate(valA) - parseDate(valB) : parseDate(valB) - parseDate(valA);
                 }
@@ -1688,7 +1845,7 @@
             const totalRecords = data.length;
             const totalPages = Math.ceil(totalRecords / pageSize);
             if (currentPage > totalPages) currentPage = totalPages || 1;
-            
+
             const startIdx = (currentPage - 1) * pageSize;
             const endIdx = Math.min(startIdx + pageSize, totalRecords);
             const paginatedData = data.slice(startIdx, endIdx);
@@ -1718,7 +1875,7 @@
             // Render Rows with Fixed Action Slots (Mandatory Rule 3)
             paginatedData.forEach((item, index) => {
                 const row = document.createElement('tr');
-                
+
                 // Status Badge styling
                 let badgeClass = "badge-gray";
                 if (item.status === 'Đang tự chấm') badgeClass = "badge-blue";
@@ -1730,7 +1887,7 @@
                 // Thao tac slots action buttons
                 // Slot 1: Xem chi tiet (Always active)
                 const btnView = `<button class="icon-btn view" onclick="openDetailView(${item.id})" title="Xem chi tiết điểm"><i class="fa-solid fa-eye"></i></button>`;
-                
+
                 // Slot 2: Tu cham diem (Active for STP when status is draft/not started)
                 let btnScore = "";
                 const isStpAllowed = (activeRole === 'stp' && item.unit === "Sở Tư pháp Hà Nội" && (item.status === 'Chưa bắt đầu' || item.status === 'Đang tự chấm'));
@@ -1775,10 +1932,10 @@
         function resetFilters() {
             if (tsYear && typeof tsYear.setValue === "function") tsYear.setValue("");
             else document.getElementById('filterYear').value = "";
-            
+
             document.getElementById('filterStatus').value = "";
             document.getElementById('filterGrade').value = "";
-            
+
             if (activeRole !== 'stp') {
                 if (tsStp && typeof tsStp.setValue === "function") tsStp.setValue("");
                 else document.getElementById('filterStp').value = "";
@@ -1796,7 +1953,7 @@
                 currentSortColumn = col;
                 currentSortDir = 'desc'; // default date to desc
             }
-            
+
             // Render sort icons
             document.querySelectorAll('.sort-icon').forEach(el => el.innerHTML = '<i class="fa-solid fa-sort"></i>');
             const targetIcon = document.getElementById(`sort-${col}`);
@@ -1809,7 +1966,7 @@
 
         // PAGINATION NAVIGATION
         function goToPage(dir) {
-            let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
+            let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
             if (activeRole === 'stp') {
                 allData = allData.filter(i => i.unit === "Sở Tư pháp Hà Nội");
             }
@@ -1846,13 +2003,13 @@
         // ==================== WIZARD / STEPPER LOGIC FOR STP ====================
         function startStpScoring(id) {
             editingPeriodId = id;
-            const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
+            const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
             selectedPeriod = allData.find(p => p.id === id);
-            
+
             // Set state to "Đang tự chấm" if "Chưa bắt đầu"
             if (selectedPeriod.status === 'Chưa bắt đầu') {
                 selectedPeriod.status = "Đang tự chấm";
-                localStorage.setItem('btnn_scoring_periods', JSON.stringify(allData));
+                localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allData));
                 filterData();
             }
 
@@ -1881,7 +2038,7 @@
         function calculateTotals() {
             // Group 1: I.1 to I.9 (max 50)
             const sumGroup1 = Number(scoringData["I.1"] || 0) + Number(scoringData["I.2"] || 0) + Number(scoringData["I.3a"] || 0) + Number(scoringData["I.3b"] || 0) + Number(scoringData["I.4"] || 0) + Number(scoringData["I.5a"] || 0) + Number(scoringData["I.5b"] || 0) + Number(scoringData["I.6"] || 0) + Number(scoringData["I.7"] || 0) + Number(scoringData["I.8a"] || 0) + Number(scoringData["I.8b"] || 0) + Number(scoringData["I.9"] || 0);
-            
+
             // Group 2: II.1 (max 20)
             const sumGroup2 = Number(scoringData["II.1"] || 0);
 
@@ -1907,7 +2064,7 @@
             }
 
             const totalScore = Math.max(0, Math.min(100, sumGroup1 + sumGroup2 + sumGroup3 + sumGroup4 + sumGroup5 + sumBonus - sumPenalty));
-            
+
             // Xếp loại (Điều 11)
             let grade = "Yếu";
             if (totalScore >= 85) grade = "Tốt";
@@ -1948,7 +2105,7 @@
         // STEPPER JUMPS
         function jumpToStep(stepIdx) {
             scoringCurrentStep = stepIdx;
-            
+
             // Highlight step list item
             document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`step-${stepIdx}`).classList.add('active');
@@ -1968,7 +2125,7 @@
         function renderStepContent() {
             const panel = document.getElementById('stepperContentPanel');
             panel.innerHTML = '';
-            
+
             // Stepper controls disabled states
             document.getElementById('btnStepPrev').disabled = (scoringCurrentStep === 0);
             document.getElementById('btnStepNext').innerHTML = scoringCurrentStep === 6 ? 'Tổng kết & Gửi <i class="fa-solid fa-arrow-right"></i>' : 'Tiếp tục <i class="fa-solid fa-arrow-right"></i>';
@@ -2357,7 +2514,7 @@
         function handleFileUpload(code, input, suffix = "") {
             if (!input.files || input.files.length === 0) return;
             const file = input.files[0];
-            
+
             if (file.size > 10 * 1024 * 1024) {
                 showToast("Dung lượng tệp đính kèm không được vượt quá 10MB!", "error");
                 return;
@@ -2368,7 +2525,7 @@
             }
             scoringData[`files_${code}`].push(file.name);
             showToast(`Đã đính kèm tệp ${file.name} thành công!`, "success");
-            
+
             // Re-render
             const elementId = suffix ? `${suffix}FilesList_${code}` : `filesList_${code}`;
             const container = document.getElementById(elementId);
@@ -2394,11 +2551,11 @@
         // TOGGLE NO ISSUE (Happy-path Auto scores)
         function toggleNoIssue(code, maxVal, isChecked) {
             scoringData[`no_issue_${code}`] = isChecked;
-            
+
             const optionSelect = document.getElementById(`option_select_${code}`);
             const badge = document.getElementById(`score_badge_${code}`);
             const noteText = document.getElementById(`note_${code}`);
-            
+
             if (isChecked) {
                 scoringData[code] = maxVal;
                 if (optionSelect) {
@@ -2410,7 +2567,7 @@
                 }
                 noteText.value = `Không phát sinh hồ sơ nghiệp vụ liên quan đến tiêu chí ${code} trong năm. Đơn vị tự chấm điểm tối đa ${maxVal}đ theo quy định tại Điều 9.2 QĐ 3062.`;
                 scoringData[`note_${code}`] = noteText.value;
-                
+
                 // Hide multi cases if present
                 const casesSec = document.getElementById(`casesSection_${code}`);
                 if (casesSec) casesSec.style.display = "none";
@@ -2425,7 +2582,7 @@
                 }
                 noteText.value = "";
                 scoringData[`note_${code}`] = "";
-                
+
                 // Show multi cases
                 const casesSec = document.getElementById(`casesSection_${code}`);
                 if (casesSec) {
@@ -2463,11 +2620,11 @@
             if (!scoringData[`cases_${code}`]) {
                 scoringData[`cases_${code}`] = [];
             }
-            
+
             const caseIdx = scoringData[`cases_${code}`].length;
             const newCase = { name: `Vụ việc phát sinh số ${caseIdx + 1}`, score: criteriaData[code].options[0].score };
             scoringData[`cases_${code}`].push(newCase);
-            
+
             renderCasesRows(code);
             recalculateAverageCaseScore(code);
         }
@@ -2475,10 +2632,10 @@
         function renderCasesRows(code) {
             const tbody = document.getElementById(`tbodyCases_${code}`);
             tbody.innerHTML = '';
-            
+
             const cases = scoringData[`cases_${code}`] || [];
             const item = criteriaData[code];
-            
+
             cases.forEach((c, idx) => {
                 let options = "";
                 item.options.forEach(opt => {
@@ -2524,12 +2681,8 @@
             const cases = scoringData[`cases_${code}`] || [];
             if (cases.length === 0) return;
             const sum = cases.reduce((acc, curr) => acc + Number(curr.score), 0);
-        function recalculateAverageCaseScore(code) {
-            const cases = scoringData[`cases_${code}`] || [];
-            if (cases.length === 0) return;
-            const sum = cases.reduce((acc, curr) => acc + Number(curr.score), 0);
             const avg = Math.round((sum / cases.length) * 10) / 10; // 1 decimal point
-            
+
             scoringData[code] = avg;
             const badge = document.getElementById(`score_badge_${code}`);
             if (badge) {
@@ -2538,39 +2691,39 @@
             calculateTotals();
         }
 
-        // NHÓM V RADIO SWITCH
-        function toggleGroup5Funding(val) {
-            scoringData["funding"] = val;
-            const grp5Box = document.getElementById('group5CriteriaContainer');
-            if (val === 'Có') {
-                grp5Box.style.display = "block";
-                scoringData["V.1"] = criteriaData["V.1"].maxScore;
-                scoringData["V.2"] = criteriaData["V.2"].maxScore;
-                scoringData["V.3"] = criteriaData["V.3"].maxScore;
-            } else {
-                grp5Box.style.display = "none";
-                scoringData["V.1"] = 0;
-                scoringData["V.2"] = 0;
-                scoringData["V.3"] = 0;
-            }
-            calculateTotals();
-            // Re-render Step Content to align input values
-            renderStepContent();
-        }
-
-        // SÁNG KIẾN KINH NGHIỆM TABLE
-        function renderInitiativesTable() {
-            const tbody = document.getElementById('initiativesTableBody');
-            tbody.innerHTML = '';
-            
-            if (initiativeList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center" style="color:var(--text-muted); padding:15px; font-style:italic;">Chưa khai báo sáng kiến, cải tiến kinh nghiệm bồi thường nhà nước</td></tr>`;
-                return;
+            // NHÓM V RADIO SWITCH
+            function toggleGroup5Funding(val) {
+                scoringData["funding"] = val;
+                const grp5Box = document.getElementById('group5CriteriaContainer');
+                if (val === 'Có') {
+                    grp5Box.style.display = "block";
+                    scoringData["V.1"] = criteriaData["V.1"].maxScore;
+                    scoringData["V.2"] = criteriaData["V.2"].maxScore;
+                    scoringData["V.3"] = criteriaData["V.3"].maxScore;
+                } else {
+                    grp5Box.style.display = "none";
+                    scoringData["V.1"] = 0;
+                    scoringData["V.2"] = 0;
+                    scoringData["V.3"] = 0;
+                }
+                calculateTotals();
+                // Re-render Step Content to align input values
+                renderStepContent();
             }
 
-            initiativeList.forEach((item, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
+            // SÁNG KIẾN KINH NGHIỆM TABLE
+            function renderInitiativesTable() {
+                const tbody = document.getElementById('initiativesTableBody');
+                tbody.innerHTML = '';
+
+                if (initiativeList.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center" style="color:var(--text-muted); padding:15px; font-style:italic;">Chưa khai báo sáng kiến, cải tiến kinh nghiệm bồi thường nhà nước</td></tr>`;
+                    return;
+                }
+
+                initiativeList.forEach((item, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
                     <td class="text-center">${idx + 1}</td>
                     <td><strong>${item.name}</strong></td>
                     <td>${item.decNo}</td>
@@ -2580,27 +2733,27 @@
                         <button class="icon-btn delete" onclick="removeInitiative(${idx})"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
-        }
+                    tbody.appendChild(tr);
+                });
+            }
 
-        function openInitiativeModal() {
-            document.getElementById('initName').value = "";
-            document.getElementById('initDecNo').value = "";
-            document.getElementById('initDate').value = "";
-            modalTempFiles = [];
-            document.getElementById('modalUploadedFiles').innerHTML = "";
-            
-            document.getElementById('modalInitiative').classList.add('visible');
-        }
+            function openInitiativeModal() {
+                document.getElementById('initName').value = "";
+                document.getElementById('initDecNo').value = "";
+                document.getElementById('initDate').value = "";
+                modalTempFiles = [];
+                document.getElementById('modalUploadedFiles').innerHTML = "";
 
-        function handleModalFileUpload(input) {
-            if (!input.files || input.files.length === 0) return;
-            const file = input.files[0];
-            modalTempFiles = [file.name]; // limit to 1 decision file
-            
-            // Render file link
-            document.getElementById('modalUploadedFiles').innerHTML = `
+                document.getElementById('modalInitiative').classList.add('visible');
+            }
+
+            function handleModalFileUpload(input) {
+                if (!input.files || input.files.length === 0) return;
+                const file = input.files[0];
+                modalTempFiles = [file.name]; // limit to 1 decision file
+
+                // Render file link
+                document.getElementById('modalUploadedFiles').innerHTML = `
                 <div class="uploaded-file-item">
                     <span class="uploaded-file-name"><i class="fa-regular fa-file-pdf" style="color:red;"></i> ${file.name}</span>
                     <div class="uploaded-file-actions">
@@ -2608,89 +2761,89 @@
                     </div>
                 </div>
             `;
-        }
-
-        function saveInitiative() {
-            const name = document.getElementById('initName').value.trim();
-            const decNo = document.getElementById('initDecNo').value.trim();
-            const date = document.getElementById('initDate').value.trim();
-            
-            if (!name || !decNo || !date || modalTempFiles.length === 0) {
-                showToast("Vui lòng điền đầy đủ các thông tin bắt buộc và đính kèm tệp quyết định công nhận!", "error");
-                return;
             }
 
-            initiativeList.push({
-                name: name,
-                decNo: decNo,
-                date: date,
-                file: modalTempFiles[0]
-            });
+            function saveInitiative() {
+                const name = document.getElementById('initName').value.trim();
+                const decNo = document.getElementById('initDecNo').value.trim();
+                const date = document.getElementById('initDate').value.trim();
 
-            closeModal('modalInitiative');
-            showToast("Đã thêm sáng kiến cải tiến thành công!", "success");
-            
-            calculateTotals();
-            renderStepContent();
-        }
+                if (!name || !decNo || !date || modalTempFiles.length === 0) {
+                    showToast("Vui lòng điền đầy đủ các thông tin bắt buộc và đính kèm tệp quyết định công nhận!", "error");
+                    return;
+                }
 
-        function removeInitiative(idx) {
-            if (confirm("Bạn có chắc chắn muốn xóa sáng kiến kinh nghiệm này không?")) {
-                initiativeList.splice(idx, 1);
-                calculateTotals();
-                renderStepContent();
-                showToast("Đã xóa sáng kiến thành công!");
-            }
-        }
-
-        // VIEW MODE TOGGLE (Stepper vs Big Table)
-        function toggleViewMode() {
-            const btn = document.getElementById('btnToggleViewMode');
-            const stepperLayout = document.getElementById('stepperLayout');
-            const actionsBar = document.getElementById('scoringActionsBar');
-            
-            if (scoringViewMode === 'stepper') {
-                scoringViewMode = "table";
-                btn.innerText = "Chế độ Từng bước";
-                stepperLayout.style.display = "none";
-                actionsBar.style.display = "none";
-                
-                // Render Big Table Mode
-                renderBigTableMode();
-            } else {
-                scoringViewMode = "stepper";
-                btn.innerText = "Chế độ Bảng tổng hợp";
-                stepperLayout.style.display = "flex";
-                actionsBar.style.display = "flex";
-                
-                // Remove big table if present
-                const bigTableCard = document.getElementById('bigTableCard');
-                if (bigTableCard) bigTableCard.remove();
-                
-                // Re-jump to active step
-                jumpToStep(scoringCurrentStep);
-            }
-        }
-
-        function renderBigTableMode() {
-            const wrapper = document.createElement('div');
-            wrapper.id = "bigTableCard";
-            wrapper.className = "card-section";
-            wrapper.style.marginTop = "15px";
-            
-            let tbodyHtml = "";
-            Object.keys(criteriaData).forEach((code, idx) => {
-                const item = criteriaData[code];
-                const currentVal = scoringData[code];
-                const currentScore = currentVal !== undefined ? Number(currentVal) : 0;
-                
-                // Options dropdown
-                let options = "";
-                item.options.forEach(opt => {
-                    options += `<option value="${opt.score}" ${currentScore === opt.score ? 'selected' : ''}>${opt.text} (${opt.score}đ)</option>`;
+                initiativeList.push({
+                    name: name,
+                    decNo: decNo,
+                    date: date,
+                    file: modalTempFiles[0]
                 });
 
-                tbodyHtml += `
+                closeModal('modalInitiative');
+                showToast("Đã thêm sáng kiến cải tiến thành công!", "success");
+
+                calculateTotals();
+                renderStepContent();
+            }
+
+            function removeInitiative(idx) {
+                if (confirm("Bạn có chắc chắn muốn xóa sáng kiến kinh nghiệm này không?")) {
+                    initiativeList.splice(idx, 1);
+                    calculateTotals();
+                    renderStepContent();
+                    showToast("Đã xóa sáng kiến thành công!");
+                }
+            }
+
+            // VIEW MODE TOGGLE (Stepper vs Big Table)
+            function toggleViewMode() {
+                const btn = document.getElementById('btnToggleViewMode');
+                const stepperLayout = document.getElementById('stepperLayout');
+                const actionsBar = document.getElementById('scoringActionsBar');
+
+                if (scoringViewMode === 'stepper') {
+                    scoringViewMode = "table";
+                    btn.innerText = "Chế độ Từng bước";
+                    stepperLayout.style.display = "none";
+                    actionsBar.style.display = "none";
+
+                    // Render Big Table Mode
+                    renderBigTableMode();
+                } else {
+                    scoringViewMode = "stepper";
+                    btn.innerText = "Chế độ Bảng tổng hợp";
+                    stepperLayout.style.display = "flex";
+                    actionsBar.style.display = "flex";
+
+                    // Remove big table if present
+                    const bigTableCard = document.getElementById('bigTableCard');
+                    if (bigTableCard) bigTableCard.remove();
+
+                    // Re-jump to active step
+                    jumpToStep(scoringCurrentStep);
+                }
+            }
+
+            function renderBigTableMode() {
+                const wrapper = document.createElement('div');
+                wrapper.id = "bigTableCard";
+                wrapper.className = "card-section";
+                wrapper.style.marginTop = "15px";
+
+                let tbodyHtml = "";
+                Object.keys(criteriaData).forEach((code, idx) => {
+                    const item = criteriaData[code];
+                    const currentVal = scoringData[code];
+                    const currentScore = currentVal !== undefined ? Number(currentVal) : 0;
+
+                    // Options dropdown
+                    let options = "";
+                    item.options.forEach(opt => {
+                        options += `<option value="${opt.score}" ${currentScore === opt.score ? 'selected' : ''}>${opt.text} (${opt.score}đ)</option>`;
+                    });
+
+                    tbodyHtml += `
                     <tr>
                         <td class="text-center">${idx + 1}</td>
                         <td>${getFormattedCriteriaTitle(code, item.title)}</td>
@@ -2719,9 +2872,9 @@
                         </td>
                     </tr>
                 `;
-            });
+                });
 
-            wrapper.innerHTML = `
+                wrapper.innerHTML = `
                 <div class="section-title">
                     <span>CHẾ ĐỘ TỰ CHẤM ĐIỂM NHANH — BẢNG PHỤ LỤC I</span>
                 </div>
@@ -2747,111 +2900,111 @@
                     <button class="btn btn-primary" onclick="toggleViewMode()">Quay lại Stepper</button>
                 </div>
             `;
-            
-            // Insert big table card right below the summary bar
-            document.getElementById('screenStpScoring').appendChild(wrapper);
-        }
 
-
-        // SAVE DRAFT
-        function saveDraft() {
-            const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods'));
-            const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
-            if (idx !== -1) {
-                allPeriods[idx].details = scoringData;
-                allPeriods[idx].selfScore = selectedPeriod.selfScore;
-                allPeriods[idx].grade = selectedPeriod.grade;
-                allPeriods[idx].bonus = initiativeList;
-                allPeriods[idx].status = "Đang tự chấm";
-                
-                localStorage.setItem('btnn_scoring_periods', JSON.stringify(allPeriods));
-                showToast("Đã lưu nháp bảng tự chấm điểm thành công!", "success");
-                filterData();
-            }
-        }
-
-        // SUBMIT TO BTP
-        function submitToBtp() {
-            const chk = document.getElementById('chkDeclare');
-            if (!chk || !chk.checked) {
-                showToast("Bạn cần tích chọn cam đoan thông tin số liệu trước khi gửi!", "error");
-                return;
+                // Insert big table card right below the summary bar
+                document.getElementById('screenStpScoring').appendChild(wrapper);
             }
 
-            const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods'));
-            const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
-            if (idx !== -1) {
-                allPeriods[idx].details = scoringData;
-                allPeriods[idx].selfScore = selectedPeriod.selfScore;
-                allPeriods[idx].grade = selectedPeriod.grade;
-                allPeriods[idx].bonus = initiativeList;
-                allPeriods[idx].status = "Đã gửi BTP"; // change status
-                allPeriods[idx].stpApproved = true;
-                
-                localStorage.setItem('btnn_scoring_periods', JSON.stringify(allPeriods));
-                showToast("Đã nộp bảng tự chấm điểm thành công cho Bộ Tư pháp!", "success");
-                showScreenList();
-                filterData();
-            }
-        }
 
-        function exportReport1() {
-            showToast("Đã xuất báo cáo Phụ lục I thành công!", "success");
-        }
+            // SAVE DRAFT
+            function saveDraft() {
+                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
+                if (idx !== -1) {
+                    allPeriods[idx].details = scoringData;
+                    allPeriods[idx].selfScore = selectedPeriod.selfScore;
+                    allPeriods[idx].grade = selectedPeriod.grade;
+                    allPeriods[idx].bonus = initiativeList;
+                    allPeriods[idx].status = "Đang tự chấm";
 
-        // ==================== BTP EVALUATION LOGIC ====================
-        function startBtpEvaluation(id) {
-            editingPeriodId = id;
-            isBtpEvaluationMode = true; // Evaluation Mode!
-            const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
-            selectedPeriod = allData.find(p => p.id === id);
-            
-            // Set state to "BTP đang đánh giá"
-            if (selectedPeriod.status === 'Đã gửi BTP') {
-                selectedPeriod.status = "BTP đang đánh giá";
-                localStorage.setItem('btnn_scoring_periods', JSON.stringify(allData));
-                filterData();
+                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+                    showToast("Đã lưu nháp bảng tự chấm điểm thành công!", "success");
+                    filterData();
+                }
             }
 
-            scoringData = selectedPeriod.details || {};
-            initiativeList = selectedPeriod.bonus || [];
+            // SUBMIT TO BTP
+            function submitToBtp() {
+                const chk = document.getElementById('chkDeclare');
+                if (!chk || !chk.checked) {
+                    showToast("Bạn cần tích chọn cam đoan thông tin số liệu trước khi gửi!", "error");
+                    return;
+                }
 
-            // Load BTP evaluation draft or fallback to STP self scores
-            if (!selectedPeriod.btpDetails) {
-                selectedPeriod.btpDetails = {};
-                // Default BTP scores to STP self scores
-                Object.keys(criteriaData).forEach(key => {
-                    selectedPeriod.btpDetails[key] = scoringData[key] || 0;
-                    selectedPeriod.btpDetails[`note_${key}`] = "";
-                });
+                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
+                if (idx !== -1) {
+                    allPeriods[idx].details = scoringData;
+                    allPeriods[idx].selfScore = selectedPeriod.selfScore;
+                    allPeriods[idx].grade = selectedPeriod.grade;
+                    allPeriods[idx].bonus = initiativeList;
+                    allPeriods[idx].status = "Đã gửi BTP"; // change status
+                    allPeriods[idx].stpApproved = true;
+
+                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+                    showToast("Đã nộp bảng tự chấm điểm thành công cho Bộ Tư pháp!", "success");
+                    showScreenList();
+                    filterData();
+                }
             }
 
-            document.getElementById('btpEvalTitle').innerText = `Đánh giá kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
-            
-            // Toggle buttons visibility
-            document.getElementById('btnBtpStartEval').style.display = 'none';
-            document.getElementById('btnBtpSaveDraft').style.display = 'block';
-            document.getElementById('btnBtpComplete').style.display = 'block';
-            document.getElementById('alertBannerContainer').style.display = 'none';
-            
-            renderBtpCompareTable();
-            calculateBtpTotals();
-
-            document.querySelectorAll('.screen-block').forEach(s => s.style.display = 'none');
-            document.getElementById('screenBtpEvaluation').style.display = 'block';
-        }
-
-        // BTP FILE UPLOAD HELPERS
-        function renderBtpFileList(code) {
-            if (!selectedPeriod || !selectedPeriod.btpDetails) return "";
-            const files = selectedPeriod.btpDetails[`files_${code}`] || [];
-            if (files.length === 0) {
-                return `<div style="font-size:11px; color:var(--text-muted); font-style:italic;">Chưa đính kèm tài liệu thẩm định</div>`;
+            function exportReport1() {
+                showToast("Đã xuất báo cáo Phụ lục I thành công!", "success");
             }
 
-            let html = "";
-            files.forEach((file, idx) => {
-                html += `
+            // ==================== BTP EVALUATION LOGIC ====================
+            function startBtpEvaluation(id) {
+                editingPeriodId = id;
+                isBtpEvaluationMode = true; // Evaluation Mode!
+                const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+                selectedPeriod = allData.find(p => p.id === id);
+
+                // Set state to "BTP đang đánh giá"
+                if (selectedPeriod.status === 'Đã gửi BTP') {
+                    selectedPeriod.status = "BTP đang đánh giá";
+                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allData));
+                    filterData();
+                }
+
+                scoringData = selectedPeriod.details || {};
+                initiativeList = selectedPeriod.bonus || [];
+
+                // Load BTP evaluation draft or fallback to STP self scores
+                if (!selectedPeriod.btpDetails) {
+                    selectedPeriod.btpDetails = {};
+                    // Default BTP scores to STP self scores
+                    Object.keys(criteriaData).forEach(key => {
+                        selectedPeriod.btpDetails[key] = scoringData[key] || 0;
+                        selectedPeriod.btpDetails[`note_${key}`] = "";
+                    });
+                }
+
+                document.getElementById('btpEvalTitle').innerText = `Đánh giá kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
+
+                // Toggle buttons visibility
+                document.getElementById('btnBtpStartEval').style.display = 'none';
+                document.getElementById('btnBtpSaveDraft').style.display = 'block';
+                document.getElementById('btnBtpComplete').style.display = 'block';
+                document.getElementById('alertBannerContainer').style.display = 'none';
+
+                renderBtpCompareTable();
+                calculateBtpTotals();
+
+                document.querySelectorAll('.screen-block').forEach(s => s.style.display = 'none');
+                document.getElementById('screenBtpEvaluation').style.display = 'block';
+            }
+
+            // BTP FILE UPLOAD HELPERS
+            function renderBtpFileList(code) {
+                if (!selectedPeriod || !selectedPeriod.btpDetails) return "";
+                const files = selectedPeriod.btpDetails[`files_${code}`] || [];
+                if (files.length === 0) {
+                    return `<div style="font-size:11px; color:var(--text-muted); font-style:italic;">Chưa đính kèm tài liệu thẩm định</div>`;
+                }
+
+                let html = "";
+                files.forEach((file, idx) => {
+                    html += `
                     <div class="uploaded-file-item" style="margin-top: 4px; display: flex; align-items: center; justify-content: space-between; background-color: #F8FAFC; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
                         <span class="uploaded-file-name" title="${file}" style="font-size:11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;"><i class="fa-regular fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${file}</span>
                         <div class="uploaded-file-actions" style="font-size:10px; display: flex; gap: 4px;">
@@ -2861,95 +3014,95 @@
                         </div>
                     </div>
                 `;
-            });
-            return html;
-        }
-
-        function renderBtpFileListReadOnly(code) {
-            if (!selectedPeriod || !selectedPeriod.btpDetails) return "";
-            const files = selectedPeriod.btpDetails[`files_${code}`] || [];
-            if (files.length === 0) {
-                return `<div style="font-size:11px; color:var(--text-muted); font-style:italic;">Chưa đính kèm tài liệu thẩm định</div>`;
+                });
+                return html;
             }
 
-            let html = "";
-            files.forEach(file => {
-                html += `
+            function renderBtpFileListReadOnly(code) {
+                if (!selectedPeriod || !selectedPeriod.btpDetails) return "";
+                const files = selectedPeriod.btpDetails[`files_${code}`] || [];
+                if (files.length === 0) {
+                    return `<div style="font-size:11px; color:var(--text-muted); font-style:italic;">Chưa đính kèm tài liệu thẩm định</div>`;
+                }
+
+                let html = "";
+                files.forEach(file => {
+                    html += `
                     <div style="margin-top: 2px;">
                         <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="color:var(--primary-color); font-weight:600; font-size:11px;" title="${file}"><i class="fa-solid fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${file} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(Xem file)</span></a>
                     </div>
                 `;
-            });
-            return html;
-        }
-
-        function handleBtpFileUpload(code, input) {
-            if (!input.files || input.files.length === 0) return;
-            const file = input.files[0];
-            
-            if (file.size > 10 * 1024 * 1024) {
-                showToast("Dung lượng tệp đính kèm không được vượt quá 10MB!", "error");
-                return;
+                });
+                return html;
             }
 
-            if (!selectedPeriod.btpDetails[`files_${code}`]) {
-                selectedPeriod.btpDetails[`files_${code}`] = [];
-            }
-            selectedPeriod.btpDetails[`files_${code}`].push(file.name);
-            showToast(`Đã đính kèm tệp thẩm định ${file.name} thành công!`, "success");
-            
-            document.getElementById(`btpFilesList_${code}`).innerHTML = renderBtpFileList(code);
-        }
+            function handleBtpFileUpload(code, input) {
+                if (!input.files || input.files.length === 0) return;
+                const file = input.files[0];
 
-        function removeBtpUploadedFile(code, idx) {
-            if (confirm("Bạn có chắc chắn muốn xóa tệp tin đính kèm thẩm định này không?")) {
-                selectedPeriod.btpDetails[`files_${code}`].splice(idx, 1);
+                if (file.size > 10 * 1024 * 1024) {
+                    showToast("Dung lượng tệp đính kèm không được vượt quá 10MB!", "error");
+                    return;
+                }
+
+                if (!selectedPeriod.btpDetails[`files_${code}`]) {
+                    selectedPeriod.btpDetails[`files_${code}`] = [];
+                }
+                selectedPeriod.btpDetails[`files_${code}`].push(file.name);
+                showToast(`Đã đính kèm tệp thẩm định ${file.name} thành công!`, "success");
+
                 document.getElementById(`btpFilesList_${code}`).innerHTML = renderBtpFileList(code);
-                showToast("Đã xóa tệp tin thẩm định thành công!");
             }
-        }
 
-        function switchToEvaluationMode() {
-            isBtpEvaluationMode = true;
-            document.getElementById('btpEvalTitle').innerText = `Đánh giá kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
-            document.getElementById('btnBtpStartEval').style.display = 'none';
-            document.getElementById('btnBtpSaveDraft').style.display = 'block';
-            document.getElementById('btnBtpComplete').style.display = 'block';
-            document.getElementById('alertBannerContainer').style.display = 'none';
-            
-            // Set state to BTP đang đánh giá if it was Đã gửi BTP
-            if (selectedPeriod.status === 'Đã gửi BTP') {
-                const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
-                const idx = allData.findIndex(p => p.id === selectedPeriod.id);
-                if (idx !== -1) {
-                    allData[idx].status = "BTP đang đánh giá";
-                    selectedPeriod.status = "BTP đang đánh giá";
-                    localStorage.setItem('btnn_scoring_periods', JSON.stringify(allData));
-                    filterData();
+            function removeBtpUploadedFile(code, idx) {
+                if (confirm("Bạn có chắc chắn muốn xóa tệp tin đính kèm thẩm định này không?")) {
+                    selectedPeriod.btpDetails[`files_${code}`].splice(idx, 1);
+                    document.getElementById(`btpFilesList_${code}`).innerHTML = renderBtpFileList(code);
+                    showToast("Đã xóa tệp tin thẩm định thành công!");
                 }
             }
-            
-            renderBtpCompareTable();
-        }
 
-        // RENDER SO SANH STP VS BTP
-        function renderBtpCompareTable() {
-            const tbody = document.getElementById('btpCompareTableBody');
-            tbody.innerHTML = '';
-            
-            const isFunding = scoringData["funding"] === "Có";
-            let index = 1;
+            function switchToEvaluationMode() {
+                isBtpEvaluationMode = true;
+                document.getElementById('btpEvalTitle').innerText = `Đánh giá kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
+                document.getElementById('btnBtpStartEval').style.display = 'none';
+                document.getElementById('btnBtpSaveDraft').style.display = 'block';
+                document.getElementById('btnBtpComplete').style.display = 'block';
+                document.getElementById('alertBannerContainer').style.display = 'none';
 
-            Object.keys(criteriaData).forEach(code => {
-                const item = criteriaData[code];
-                
-                // If Group V is inactive and funding is No, render row differently or mark as N/A
-                const isGroupV = code.startsWith('V');
-                if (isGroupV && !isFunding) {
-                    // Skip or render row as N/A
-                    const tr = document.createElement('tr');
-                    tr.style.backgroundColor = "#F8FAFC";
-                    tr.innerHTML = `
+                // Set state to BTP đang đánh giá if it was Đã gửi BTP
+                if (selectedPeriod.status === 'Đã gửi BTP') {
+                    const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+                    const idx = allData.findIndex(p => p.id === selectedPeriod.id);
+                    if (idx !== -1) {
+                        allData[idx].status = "BTP đang đánh giá";
+                        selectedPeriod.status = "BTP đang đánh giá";
+                        localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allData));
+                        filterData();
+                    }
+                }
+
+                renderBtpCompareTable();
+            }
+
+            // RENDER SO SANH STP VS BTP
+            function renderBtpCompareTable() {
+                const tbody = document.getElementById('btpCompareTableBody');
+                tbody.innerHTML = '';
+
+                const isFunding = scoringData["funding"] === "Có";
+                let index = 1;
+
+                Object.keys(criteriaData).forEach(code => {
+                    const item = criteriaData[code];
+
+                    // If Group V is inactive and funding is No, render row differently or mark as N/A
+                    const isGroupV = code.startsWith('V');
+                    if (isGroupV && !isFunding) {
+                        // Skip or render row as N/A
+                        const tr = document.createElement('tr');
+                        tr.style.backgroundColor = "#F8FAFC";
+                        tr.innerHTML = `
                         <td class="text-center">${index++}</td>
                         <td><span style="color:var(--text-muted);">${getFormattedCriteriaTitle(code, item.title)}</span></td>
                         <td class="text-center">10 (Nhóm)</td>
@@ -2959,45 +3112,45 @@
                         <td class="text-center"><i class="fa-solid fa-circle-check" style="color:var(--success-color);"></i></td>
                         <td><span style="color:var(--text-muted); font-style:italic;">Hệ thống tự động bỏ qua</span></td>
                     `;
-                    tbody.appendChild(tr);
-                    return;
-                }
+                        tbody.appendChild(tr);
+                        return;
+                    }
 
-                const stpScore = scoringData[code] || 0;
-                const btpScore = selectedPeriod.btpDetails[code] || 0;
-                const btpNote = selectedPeriod.btpDetails[`note_${code}`] || "";
-                
-                // Compare status
-                const isDiff = Number(stpScore) !== Number(btpScore);
-                const compareIcon = isDiff ? `<i class="fa-solid fa-triangle-exclamation" style="color:var(--warning-color);" title="Có chênh lệch điểm số!"></i>` : `<i class="fa-solid fa-circle-check" style="color:var(--success-color);"></i>`;
+                    const stpScore = scoringData[code] || 0;
+                    const btpScore = selectedPeriod.btpDetails[code] || 0;
+                    const btpNote = selectedPeriod.btpDetails[`note_${code}`] || "";
 
-                // STP selected option description
-                const stpSelectedOption = item.options.find(opt => opt.score === Number(stpScore)) || { text: "Chưa chọn", score: 0 };
-                const btpSelectedOption = item.options.find(opt => opt.score === Number(btpScore)) || { text: "Chưa chọn", score: 0 };
+                    // Compare status
+                    const isDiff = Number(stpScore) !== Number(btpScore);
+                    const compareIcon = isDiff ? `<i class="fa-solid fa-triangle-exclamation" style="color:var(--warning-color);" title="Có chênh lệch điểm số!"></i>` : `<i class="fa-solid fa-circle-check" style="color:var(--success-color);"></i>`;
 
-                // BTP Options dropdown values
-                let btpOptions = "";
-                item.options.forEach(opt => {
-                    btpOptions += `<option value="${opt.score}" ${Number(btpScore) === opt.score ? 'selected' : ''}>${opt.text} (${opt.score}đ)</option>`;
-                });
+                    // STP selected option description
+                    const stpSelectedOption = item.options.find(opt => opt.score === Number(stpScore)) || { text: "Chưa chọn", score: 0 };
+                    const btpSelectedOption = item.options.find(opt => opt.score === Number(btpScore)) || { text: "Chưa chọn", score: 0 };
 
-                // Attach files link if exists
-                let filesLink = "";
-                const files = scoringData[`files_${code}`] || [];
-                if (files.length > 0) {
-                    filesLink = `<div style="margin-bottom: 5px;"><strong style="font-size:11px; display:block;">File kiểm chứng STP gửi:</strong>`;
-                    files.forEach(f => {
-                        filesLink += `<div style="margin-bottom: 2px;"><a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="color:var(--primary-color); font-weight:600; font-size:11px;" title="${f}"><i class="fa-solid fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${f} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(Xem file)</span></a></div>`;
+                    // BTP Options dropdown values
+                    let btpOptions = "";
+                    item.options.forEach(opt => {
+                        btpOptions += `<option value="${opt.score}" ${Number(btpScore) === opt.score ? 'selected' : ''}>${opt.text} (${opt.score}đ)</option>`;
                     });
-                    filesLink += `</div>`;
-                }
 
-                // Render dynamic cells depending on BTP evaluation mode vs view mode
-                let btpColHtml = "";
-                let btpNoteColHtml = "";
-                
-                if (isBtpEvaluationMode) {
-                    btpColHtml = `
+                    // Attach files link if exists
+                    let filesLink = "";
+                    const files = scoringData[`files_${code}`] || [];
+                    if (files.length > 0) {
+                        filesLink = `<div style="margin-bottom: 5px;"><strong style="font-size:11px; display:block;">File kiểm chứng STP gửi:</strong>`;
+                        files.forEach(f => {
+                            filesLink += `<div style="margin-bottom: 2px;"><a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="color:var(--primary-color); font-weight:600; font-size:11px;" title="${f}"><i class="fa-solid fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${f} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(Xem file)</span></a></div>`;
+                        });
+                        filesLink += `</div>`;
+                    }
+
+                    // Render dynamic cells depending on BTP evaluation mode vs view mode
+                    let btpColHtml = "";
+                    let btpNoteColHtml = "";
+
+                    if (isBtpEvaluationMode) {
+                        btpColHtml = `
                         <div style="display: flex; flex-direction: column; gap: 4px;">
                             <select class="form-control" style="padding: 4px; font-size:11px; max-width: 100%; white-space: normal; line-height:1.3; height: auto;" onchange="updateBtpScore('${code}', this.value)">
                                 ${btpOptions}
@@ -3005,7 +3158,7 @@
                             <div style="font-size: 11.5px; font-weight:600; text-align: center;">Điểm thẩm định: <span id="btpScoreVal_${code}" style="color:var(--primary-color); font-size:12.5px;">${btpScore}</span>đ</div>
                         </div>
                     `;
-                    btpNoteColHtml = `
+                        btpNoteColHtml = `
                         <textarea class="form-control" style="padding: 4px; min-height: 40px; font-size:12px;" id="btpNote_${code}" placeholder="Nhập ý kiến thẩm định nếu hạ hoặc nâng điểm..." oninput="updateBtpNote('${code}', this.value)">${btpNote}</textarea>
                         
                         <!-- BTP File uploads -->
@@ -3019,12 +3172,12 @@
                             </div>
                         </div>
                     `;
-                } else {
-                    btpColHtml = `
+                    } else {
+                        btpColHtml = `
                         <div style="text-align: center; margin-bottom: 4px;"><strong style="color:var(--accent-color); font-size:12.5px;">${btpScore}đ</strong></div>
                         <div style="color:#1b5e20; font-style:italic; background-color: #E8F5E9; padding: 4px 6px; border-radius: 4px; border: 1px dashed #A5D6A7;">${btpSelectedOption.text}</div>
                     `;
-                    btpNoteColHtml = `
+                        btpNoteColHtml = `
                         <div style="font-size: 12px; color: #334155; padding: 6px; background: #F8FAFC; border-radius: 4px; min-height: 40px; border: 1px solid #E2E8F0; margin-bottom: 5px;">
                             ${btpNote || '<span style="color:var(--text-muted); font-style:italic;">Không có ý kiến thẩm định</span>'}
                         </div>
@@ -3033,10 +3186,10 @@
                             ${renderBtpFileListReadOnly(code)}
                         </div>
                     `;
-                }
+                    }
 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
                     <td class="text-center">${index++}</td>
                     <td>${getFormattedCriteriaTitle(code, item.title)}</td>
                     <td class="text-center" style="font-weight:600;">${item.maxScore}</td>
@@ -3056,173 +3209,173 @@
                         ${btpNoteColHtml}
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // BTP CALCULATES CUMULATIVE SCORE
-        function calculateBtpTotals() {
-            let sumBtp = 0;
-            const isFunding = scoringData["funding"] === "Có";
-            
-            Object.keys(criteriaData).forEach(code => {
-                const isGroupV = code.startsWith('V');
-                if (isGroupV && !isFunding) return; // skip
-                sumBtp += Number(selectedPeriod.btpDetails[code] || 0);
-            });
-
-            // Add Initiatives
-            const bonus = initiativeList.length * 5;
-            
-            // Deduct Penalty
-            const penalty = selectedPeriod ? selectedPeriod.penalty : 0;
-
-            const finalBtpTotal = Math.max(0, Math.min(100, sumBtp + bonus - penalty));
-            
-            // Xếp loại
-            let grade = "Yếu";
-            if (finalBtpTotal >= 85) grade = "Tốt";
-            else if (finalBtpTotal >= 70) grade = "Khá";
-            else if (finalBtpTotal >= 50) grade = "Trung bình";
-
-            document.getElementById('btpStpTotalSummary').innerText = `${selectedPeriod.selfScore} điểm`;
-            document.getElementById('btpStpGradeSummary').innerText = selectedPeriod.grade;
-            
-            document.getElementById('btpEvalTotalSummary').innerText = `${finalBtpTotal} điểm`;
-            document.getElementById('btpEvalGradeSummary').innerText = grade;
-
-            selectedPeriod.btpScore = finalBtpTotal;
-            selectedPeriod.btpGrade = grade; // for confirmation
-        }
-
-        function updateBtpScore(code, val) {
-            selectedPeriod.btpDetails[code] = Number(val);
-            
-            // Update difference icon dynamically
-            const stpVal = scoringData[code] || 0;
-            const isDiff = Number(stpVal) !== Number(val);
-            const diffCell = document.getElementById(`diffIcon_${code}`);
-            if (diffCell) {
-                diffCell.innerHTML = isDiff ? `<i class="fa-solid fa-triangle-exclamation" style="color:var(--warning-color);" title="Có chênh lệch điểm số!"></i>` : `<i class="fa-solid fa-circle-check" style="color:var(--success-color);"></i>`;
-            }
-
-            const btpScoreValSpan = document.getElementById(`btpScoreVal_${code}`);
-            if (btpScoreValSpan) {
-                btpScoreValSpan.innerText = val;
-            }
-
-            calculateBtpTotals();
-        }
-
-        function updateBtpNote(code, val) {
-            selectedPeriod.btpDetails[`note_${code}`] = val;
-        }
-
-        // SAVE BTP DRAFT
-        function saveBtpDraft() {
-            const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods'));
-            const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
-            if (idx !== -1) {
-                allPeriods[idx].btpDetails = selectedPeriod.btpDetails;
-                allPeriods[idx].status = "BTP đang đánh giá";
-                localStorage.setItem('btnn_scoring_periods', JSON.stringify(allPeriods));
-                showToast("Đã lưu nháp kết quả thẩm định của BTP!", "success");
-                filterData();
-            }
-        }
-
-        // COMPLETE BTP EVALUATION
-        function completeBtpEvaluation() {
-            // Validate: check if notes are filled for all mismatches
-            let isValid = true;
-            let firstInvalidCode = null;
-            const isFunding = scoringData["funding"] === "Có";
-
-            Object.keys(criteriaData).forEach(code => {
-                const isGroupV = code.startsWith('V');
-                if (isGroupV && !isFunding) return;
-
-                const stpVal = scoringData[code] || 0;
-                const btpVal = selectedPeriod.btpDetails[code] || 0;
-                const note = selectedPeriod.btpDetails[`note_${code}`] || "";
-
-                if (Number(stpVal) !== Number(btpVal) && !note.trim()) {
-                    isValid = false;
-                    if (!firstInvalidCode) firstInvalidCode = code;
-                    const textEl = document.getElementById(`btpNote_${code}`);
-                    if (textEl) textEl.style.borderColor = "var(--danger-color)";
-                }
-            });
-
-            if (!isValid) {
-                showToast("Bắt buộc nhập ý kiến lý do của BTP đối với các tiêu chí chênh lệch điểm tự chấm!", "error");
-                return;
-            }
-
-            const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods'));
-            const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
-            if (idx !== -1) {
-                allPeriods[idx].btpDetails = selectedPeriod.btpDetails;
-                allPeriods[idx].status = "Hoàn thành";
-                allPeriods[idx].btpScore = selectedPeriod.btpScore;
-                allPeriods[idx].grade = selectedPeriod.btpGrade; // Final grade
-                allPeriods[idx].btpApproved = true;
-                
-                localStorage.setItem('btnn_scoring_periods', JSON.stringify(allPeriods));
-                showToast("Đã hoàn thành đánh giá và xếp loại kỳ chấm điểm thành công!", "success");
-                showScreenList();
-                filterData();
-            }
-        }
-
-        function exportBtpReport() {
-            showToast("Đã xuất báo cáo Phụ lục II kết quả chấm điểm của 63 STP thành công!", "success");
-        }
-
-        // VIEW COMPLETED DETAILS
-        function openDetailView(id) {
-            editingPeriodId = id;
-            isBtpEvaluationMode = false; // Read-only View Mode!
-            const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
-            selectedPeriod = allData.find(p => p.id === id);
-
-            if (selectedPeriod.status === 'Chưa bắt đầu' || selectedPeriod.status === 'Đang tự chấm') {
-                showToast("Kỳ đánh giá chưa được nộp lên Bộ Tư pháp, chưa có bảng điểm hoàn tất để xem.", "error");
-                return;
-            }
-
-            scoringData = selectedPeriod.details || {};
-            initiativeList = selectedPeriod.bonus || [];
-
-            if (!selectedPeriod.btpDetails) {
-                selectedPeriod.btpDetails = {};
-                Object.keys(criteriaData).forEach(key => {
-                    selectedPeriod.btpDetails[key] = scoringData[key] || 0;
-                    selectedPeriod.btpDetails[`note_${key}`] = "";
+                    tbody.appendChild(tr);
                 });
             }
 
-            document.getElementById('btpEvalTitle').innerText = `Xem chi tiết kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
-            
-            // Toggle buttons visibility
-            const isBtpAllowed = (activeRole === 'btp' && (selectedPeriod.status === 'Đã gửi BTP' || selectedPeriod.status === 'BTP đang đánh giá'));
-            document.getElementById('btnBtpStartEval').style.display = isBtpAllowed ? 'block' : 'none';
-            document.getElementById('btnBtpSaveDraft').style.display = 'none';
-            document.getElementById('btnBtpComplete').style.display = 'none';
-            document.getElementById('alertBannerContainer').style.display = 'none';
-            
-            renderBtpCompareTable();
-            calculateBtpTotals();
+            // BTP CALCULATES CUMULATIVE SCORE
+            function calculateBtpTotals() {
+                let sumBtp = 0;
+                const isFunding = scoringData["funding"] === "Có";
 
-            document.querySelectorAll('.screen-block').forEach(s => s.style.display = 'none');
-            document.getElementById('screenBtpEvaluation').style.display = 'block';
-        }
+                Object.keys(criteriaData).forEach(code => {
+                    const isGroupV = code.startsWith('V');
+                    if (isGroupV && !isFunding) return; // skip
+                    sumBtp += Number(selectedPeriod.btpDetails[code] || 0);
+                });
 
-        // MODAL HELPERS (Sticky headers & footers compliance)
-        function openGuideModal(code) {
-            const item = criteriaData[code];
-            document.getElementById('modalGuideTitle').innerText = `Hướng dẫn chấm điểm: Tiêu chí ${code}`;
-            document.getElementById('modalGuideBody').innerHTML = `
+                // Add Initiatives
+                const bonus = initiativeList.length * 5;
+
+                // Deduct Penalty
+                const penalty = selectedPeriod ? selectedPeriod.penalty : 0;
+
+                const finalBtpTotal = Math.max(0, Math.min(100, sumBtp + bonus - penalty));
+
+                // Xếp loại
+                let grade = "Yếu";
+                if (finalBtpTotal >= 85) grade = "Tốt";
+                else if (finalBtpTotal >= 70) grade = "Khá";
+                else if (finalBtpTotal >= 50) grade = "Trung bình";
+
+                document.getElementById('btpStpTotalSummary').innerText = `${selectedPeriod.selfScore} điểm`;
+                document.getElementById('btpStpGradeSummary').innerText = selectedPeriod.grade;
+
+                document.getElementById('btpEvalTotalSummary').innerText = `${finalBtpTotal} điểm`;
+                document.getElementById('btpEvalGradeSummary').innerText = grade;
+
+                selectedPeriod.btpScore = finalBtpTotal;
+                selectedPeriod.btpGrade = grade; // for confirmation
+            }
+
+            function updateBtpScore(code, val) {
+                selectedPeriod.btpDetails[code] = Number(val);
+
+                // Update difference icon dynamically
+                const stpVal = scoringData[code] || 0;
+                const isDiff = Number(stpVal) !== Number(val);
+                const diffCell = document.getElementById(`diffIcon_${code}`);
+                if (diffCell) {
+                    diffCell.innerHTML = isDiff ? `<i class="fa-solid fa-triangle-exclamation" style="color:var(--warning-color);" title="Có chênh lệch điểm số!"></i>` : `<i class="fa-solid fa-circle-check" style="color:var(--success-color);"></i>`;
+                }
+
+                const btpScoreValSpan = document.getElementById(`btpScoreVal_${code}`);
+                if (btpScoreValSpan) {
+                    btpScoreValSpan.innerText = val;
+                }
+
+                calculateBtpTotals();
+            }
+
+            function updateBtpNote(code, val) {
+                selectedPeriod.btpDetails[`note_${code}`] = val;
+            }
+
+            // SAVE BTP DRAFT
+            function saveBtpDraft() {
+                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
+                if (idx !== -1) {
+                    allPeriods[idx].btpDetails = selectedPeriod.btpDetails;
+                    allPeriods[idx].status = "BTP đang đánh giá";
+                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+                    showToast("Đã lưu nháp kết quả thẩm định của BTP!", "success");
+                    filterData();
+                }
+            }
+
+            // COMPLETE BTP EVALUATION
+            function completeBtpEvaluation() {
+                // Validate: check if notes are filled for all mismatches
+                let isValid = true;
+                let firstInvalidCode = null;
+                const isFunding = scoringData["funding"] === "Có";
+
+                Object.keys(criteriaData).forEach(code => {
+                    const isGroupV = code.startsWith('V');
+                    if (isGroupV && !isFunding) return;
+
+                    const stpVal = scoringData[code] || 0;
+                    const btpVal = selectedPeriod.btpDetails[code] || 0;
+                    const note = selectedPeriod.btpDetails[`note_${code}`] || "";
+
+                    if (Number(stpVal) !== Number(btpVal) && !note.trim()) {
+                        isValid = false;
+                        if (!firstInvalidCode) firstInvalidCode = code;
+                        const textEl = document.getElementById(`btpNote_${code}`);
+                        if (textEl) textEl.style.borderColor = "var(--danger-color)";
+                    }
+                });
+
+                if (!isValid) {
+                    showToast("Bắt buộc nhập ý kiến lý do của BTP đối với các tiêu chí chênh lệch điểm tự chấm!", "error");
+                    return;
+                }
+
+                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
+                if (idx !== -1) {
+                    allPeriods[idx].btpDetails = selectedPeriod.btpDetails;
+                    allPeriods[idx].status = "Hoàn thành";
+                    allPeriods[idx].btpScore = selectedPeriod.btpScore;
+                    allPeriods[idx].grade = selectedPeriod.btpGrade; // Final grade
+                    allPeriods[idx].btpApproved = true;
+
+                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+                    showToast("Đã hoàn thành đánh giá và xếp loại kỳ chấm điểm thành công!", "success");
+                    showScreenList();
+                    filterData();
+                }
+            }
+
+            function exportBtpReport() {
+                showToast("Đã xuất báo cáo Phụ lục II kết quả chấm điểm của 63 STP thành công!", "success");
+            }
+
+            // VIEW COMPLETED DETAILS
+            function openDetailView(id) {
+                editingPeriodId = id;
+                isBtpEvaluationMode = false; // Read-only View Mode!
+                const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+                selectedPeriod = allData.find(p => p.id === id);
+
+                if (selectedPeriod.status === 'Chưa bắt đầu' || selectedPeriod.status === 'Đang tự chấm') {
+                    showToast("Kỳ đánh giá chưa được nộp lên Bộ Tư pháp, chưa có bảng điểm hoàn tất để xem.", "error");
+                    return;
+                }
+
+                scoringData = selectedPeriod.details || {};
+                initiativeList = selectedPeriod.bonus || [];
+
+                if (!selectedPeriod.btpDetails) {
+                    selectedPeriod.btpDetails = {};
+                    Object.keys(criteriaData).forEach(key => {
+                        selectedPeriod.btpDetails[key] = scoringData[key] || 0;
+                        selectedPeriod.btpDetails[`note_${key}`] = "";
+                    });
+                }
+
+                document.getElementById('btpEvalTitle').innerText = `Xem chi tiết kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
+
+                // Toggle buttons visibility
+                const isBtpAllowed = (activeRole === 'btp' && (selectedPeriod.status === 'Đã gửi BTP' || selectedPeriod.status === 'BTP đang đánh giá'));
+                document.getElementById('btnBtpStartEval').style.display = isBtpAllowed ? 'block' : 'none';
+                document.getElementById('btnBtpSaveDraft').style.display = 'none';
+                document.getElementById('btnBtpComplete').style.display = 'none';
+                document.getElementById('alertBannerContainer').style.display = 'none';
+
+                renderBtpCompareTable();
+                calculateBtpTotals();
+
+                document.querySelectorAll('.screen-block').forEach(s => s.style.display = 'none');
+                document.getElementById('screenBtpEvaluation').style.display = 'block';
+            }
+
+            // MODAL HELPERS (Sticky headers & footers compliance)
+            function openGuideModal(code) {
+                const item = criteriaData[code];
+                document.getElementById('modalGuideTitle').innerText = `Hướng dẫn chấm điểm: Tiêu chí ${code}`;
+                document.getElementById('modalGuideBody').innerHTML = `
                 <div style="background-color:#FAFBFD; padding:12px; border-left:4px solid var(--info-color); margin-bottom:15px; font-weight:500;">
                     ${item.title} (Điểm tối đa: ${item.maxScore}đ)
                 </div>
@@ -3232,114 +3385,115 @@
                     <p style="font-size:12px; color:var(--text-muted); font-style:italic;">Trích lục Phụ lục I - Quyết định số 3062/QĐ-BTP ngày 11/12/2019 của Bộ trưởng Bộ Tư pháp.</p>
                 </div>
             `;
-            document.getElementById('modalGuide').classList.add('visible');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('visible');
-        }
-
-        function openCreatePeriodModal() {
-            document.getElementById('newPeriodYear').value = "2027";
-            document.getElementById('newPeriodDeadline').value = "08/12/2027";
-            document.getElementById('newPeriodScope').value = "all";
-            document.getElementById('modalCreatePeriod').classList.add('visible');
-        }
-
-        function saveNewPeriod() {
-            const year = document.getElementById('newPeriodYear').value;
-            const deadline = document.getElementById('newPeriodDeadline').value;
-            const scope = document.getElementById('newPeriodScope').value;
-            
-            if (!deadline.trim()) {
-                showToast("Vui lòng nhập hạn nộp tự chấm!", "error");
-                return;
+                document.getElementById('modalGuide').classList.add('visible');
             }
 
-            let allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
-            
-            // Check if year already exists
-            const exists = allPeriods.some(p => p.year === year && p.unit === "Sở Tư pháp Hà Nội");
-            if (exists && scope === 'selected') {
-                showToast(`Kỳ chấm điểm năm ${year} cho Sở Tư pháp Hà Nội đã tồn tại!`, "error");
-                return;
+            function closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('visible');
             }
 
-            let newRecords = [];
-            const newIdStart = allPeriods.length > 0 ? Math.max(...allPeriods.map(p => p.id)) + 1 : 1;
-
-            if (scope === 'all') {
-                const provinces = ["Sở Tư pháp Hà Nội", "Sở Tư pháp TP. Hồ Chí Minh", "Sở Tư pháp Đà Nẵng", "Sở Tư pháp Hải Phòng", "Sở Tư pháp Cần Thơ"];
-                provinces.forEach((prov, idx) => {
-                    const yearExists = allPeriods.some(p => p.year === year && p.unit === prov);
-                    if (!yearExists) {
-                        newRecords.push({
-                            id: newIdStart + idx,
-                            year: year,
-                            unit: prov,
-                            status: "Chưa bắt đầu",
-                            selfScore: 0,
-                            btpScore: 0,
-                            grade: "Chưa xếp loại",
-                            deadline: deadline,
-                            details: {},
-                            bonus: [],
-                            penalty: 0,
-                            stpApproved: false,
-                            btpApproved: false
-                        });
-                    }
-                });
-            } else {
-                newRecords.push({
-                    id: newIdStart,
-                    year: year,
-                    unit: "Sở Tư pháp Hà Nội",
-                    status: "Chưa bắt đầu",
-                    selfScore: 0,
-                    btpScore: 0,
-                    grade: "Chưa xếp loại",
-                    deadline: deadline,
-                    details: {},
-                    bonus: [],
-                    penalty: 0,
-                    stpApproved: false,
-                    btpApproved: false
-                });
+            function openCreatePeriodModal() {
+                document.getElementById('newPeriodYear').value = "2027";
+                document.getElementById('newPeriodDeadline').value = "08/12/2027";
+                document.getElementById('newPeriodScope').value = "all";
+                document.getElementById('modalCreatePeriod').classList.add('visible');
             }
 
-            if (newRecords.length === 0) {
-                showToast(`Kỳ chấm điểm năm ${year} cho các đơn vị đã tồn tại sẵn!`, "error");
+            function saveNewPeriod() {
+                const year = document.getElementById('newPeriodYear').value;
+                const deadline = document.getElementById('newPeriodDeadline').value;
+                const scope = document.getElementById('newPeriodScope').value;
+
+                if (!deadline.trim()) {
+                    showToast("Vui lòng nhập hạn nộp tự chấm!", "error");
+                    return;
+                }
+
+                let allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+
+                // Check if year already exists
+                const exists = allPeriods.some(p => p.year === year && p.unit === "Sở Tư pháp Hà Nội");
+                if (exists && scope === 'selected') {
+                    showToast(`Kỳ chấm điểm năm ${year} cho Sở Tư pháp Hà Nội đã tồn tại!`, "error");
+                    return;
+                }
+
+                let newRecords = [];
+                const newIdStart = allPeriods.length > 0 ? Math.max(...allPeriods.map(p => p.id)) + 1 : 1;
+
+                if (scope === 'all') {
+                    const provinces = ["Sở Tư pháp Hà Nội", "Sở Tư pháp TP. Hồ Chí Minh", "Sở Tư pháp Đà Nẵng", "Sở Tư pháp Hải Phòng", "Sở Tư pháp Cần Thơ"];
+                    provinces.forEach((prov, idx) => {
+                        const yearExists = allPeriods.some(p => p.year === year && p.unit === prov);
+                        if (!yearExists) {
+                            newRecords.push({
+                                id: newIdStart + idx,
+                                year: year,
+                                unit: prov,
+                                status: "Chưa bắt đầu",
+                                selfScore: 0,
+                                btpScore: 0,
+                                grade: "Chưa xếp loại",
+                                deadline: deadline,
+                                details: {},
+                                bonus: [],
+                                penalty: 0,
+                                stpApproved: false,
+                                btpApproved: false
+                            });
+                        }
+                    });
+                } else {
+                    newRecords.push({
+                        id: newIdStart,
+                        year: year,
+                        unit: "Sở Tư pháp Hà Nội",
+                        status: "Chưa bắt đầu",
+                        selfScore: 0,
+                        btpScore: 0,
+                        grade: "Chưa xếp loại",
+                        deadline: deadline,
+                        details: {},
+                        bonus: [],
+                        penalty: 0,
+                        stpApproved: false,
+                        btpApproved: false
+                    });
+                }
+
+                if (newRecords.length === 0) {
+                    showToast(`Kỳ chấm điểm năm ${year} cho các đơn vị đã tồn tại sẵn!`, "error");
+                    closeModal('modalCreatePeriod');
+                    return;
+                }
+
+                allPeriods = [...newRecords, ...allPeriods];
+                localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+
+                showToast(`Khởi tạo thành công kỳ chấm điểm năm ${year} cho các đơn vị!`, "success");
                 closeModal('modalCreatePeriod');
-                return;
+                currentPage = 1;
+                filterData();
             }
 
-            allPeriods = [...newRecords, ...allPeriods];
-            localStorage.setItem('btnn_scoring_periods', JSON.stringify(allPeriods));
-            
-            showToast(`Khởi tạo thành công kỳ chấm điểm năm ${year} cho các đơn vị!`, "success");
-            closeModal('modalCreatePeriod');
-            currentPage = 1;
-            filterData();
-        }
+            // CUSTOM TOAST NOTIFICATION
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                toast.className = 'toast-notif'; // Reset
+                toast.classList.add(type);
+                toast.querySelector('span').innerText = message;
 
-        // CUSTOM TOAST NOTIFICATION
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.className = 'toast-notif'; // Reset
-            toast.classList.add(type);
-            toast.querySelector('span').innerText = message;
-            
-            const icon = toast.querySelector('i');
-            if (type === 'success') icon.className = 'fa-solid fa-circle-check';
-            else if (type === 'error') icon.className = 'fa-solid fa-circle-exclamation';
-            else icon.className = 'fa-solid fa-circle-info';
+                const icon = toast.querySelector('i');
+                if (type === 'success') icon.className = 'fa-solid fa-circle-check';
+                else if (type === 'error') icon.className = 'fa-solid fa-circle-exclamation';
+                else icon.className = 'fa-solid fa-circle-info';
 
-            toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-            }, 3000);
-        }
+                toast.classList.add('visible');
+                setTimeout(() => {
+                    toast.classList.remove('visible');
+                }, 3000);
+            }
     </script>
 </body>
+
 </html>

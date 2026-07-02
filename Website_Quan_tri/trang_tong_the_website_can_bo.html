@@ -1123,7 +1123,11 @@
                 if (leafItem.url && leafItem.url.includes('dang_ky_bpbd_can_bo.html')) {
                     localStorage.removeItem('selected_dossier_id');
                 }
-                iframe.src = leafItem.url || '../temp_placeholder.html';
+                let targetUrl = leafItem.url || '../temp_placeholder.html';
+                if (targetUrl !== '../temp_placeholder.html') {
+                    targetUrl += (targetUrl.indexOf('?') !== -1 ? '&' : '?') + 't=' + Date.now();
+                }
+                iframe.src = targetUrl;
             }
         }
 
