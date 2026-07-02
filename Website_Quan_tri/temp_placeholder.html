@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xem tài liệu kiểm chứng - Hệ thống quản lý đánh giá BTNN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --secondary-color: #3B82F6;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --bg-body: #F1F5F9;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .pdf-viewer-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .viewer-toolbar {
+            background-color: #1E293B;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .doc-title {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .doc-title i {
+            color: #EF4444;
+            font-size: 16px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-tool {
+            background: transparent;
+            border: none;
+            color: #94A3B8;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-tool:hover {
+            color: #FFFFFF;
+            background-color: #334155;
+        }
+
+        .btn-download {
+            background-color: var(--secondary-color);
+            color: #FFFFFF;
+        }
+
+        .btn-download:hover {
+            background-color: #2563EB;
+        }
+
+        .document-page {
+            padding: 60px 80px;
+            min-height: 1000px;
+            background-color: #FFFFFF;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .header-left {
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .header-right {
+            text-align: center;
+        }
+
+        .doc-body {
+            margin-top: 20px;
+        }
+
+        h2.main-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #1E293B;
+            text-transform: uppercase;
+        }
+
+        .section-heading {
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 4px;
+        }
+
+        p.text-p {
+            font-size: 14px;
+            color: #334155;
+            margin-bottom: 12px;
+            text-align: justify;
+            text-indent: 30px;
+        }
+
+        ul.list-items {
+            margin-left: 50px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        ul.list-items li {
+            margin-bottom: 6px;
+        }
+
+        .doc-footer {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer-left {
+            width: 40%;
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+
+        .footer-right {
+            width: 45%;
+            text-align: center;
+            font-size: 13.5px;
+        }
+
+        .sign-title {
+            font-weight: 600;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+        }
+
+        .sign-name {
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .stamp-mock {
+            width: 100px;
+            height: 100px;
+            border: 3px double #DC2626;
+            border-radius: 50%;
+            color: #DC2626;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: center;
+            opacity: 0.85;
+            position: absolute;
+            bottom: 80px;
+            right: 180px;
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
+
+        .stamp-mock::after {
+            content: "ĐÃ PHÊ DUYỆT";
+            border: 2px solid #DC2626;
+            padding: 2px 4px;
+            font-size: 7px;
+            margin-top: 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pdf-viewer-container">
+        <!-- TOOLBAR -->
+        <div class="viewer-toolbar">
+            <div class="doc-title">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span id="fileNameLabel">TaiLieuKiemChung.pdf</span>
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn-tool" onclick="window.print()"><i class="fa-solid fa-print"></i> In tài liệu</button>
+                <a href="#" class="btn-tool btn-download" onclick="alert('Đang tải file về máy tính của bạn...')"><i class="fa-solid fa-download"></i> Tải xuống</a>
+            </div>
+        </div>
+
+        <!-- DOCUMENT CONTENT -->
+        <div class="document-page">
+            <div class="doc-header">
+                <div class="header-left">
+                    <p>SỞ TƯ PHÁP TỈNH / THÀNH PHỐ</p>
+                    <p style="font-weight: bold; text-decoration: underline;">HÀ NỘI</p>
+                    <p style="font-size: 11px; margin-top: 4px;">Số: 145/BC-STP</p>
+                </div>
+                <div class="header-right">
+                    <p style="font-weight: bold;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
+                    <p style="font-weight: bold; text-decoration: underline;">Độc lập - Tự do - Hạnh phúc</p>
+                    <p style="font-style: italic; font-size: 11px; margin-top: 4px;">Hà Nội, ngày 28 tháng 10 năm 2026</p>
+                </div>
+            </div>
+
+            <div class="doc-body">
+                <h2 class="main-title">BÁO CÁO MINH CHỨNG KẾT QUẢ THỰC HIỆN<br>TIÊU CHÍ ĐÁNH GIÁ CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC</h2>
+                
+                <p class="text-p">
+                    Kính gửi: Cục Bồi thường nhà nước - Bộ Tư pháp.
+                </p>
+                
+                <p class="text-p">
+                    Thực hiện Quyết định số 3062/QĐ-BTP của Bộ trưởng Bộ Tư pháp ban hành Bộ tiêu chí đánh giá kết quả thực hiện công tác bồi thường nhà nước, Sở Tư pháp xin báo cáo thuyết minh chi tiết kèm theo tài liệu kiểm chứng minh chứng cho việc tự chấm điểm tiêu chí nghiệp vụ liên quan như sau:
+                </p>
+
+                <div class="section-heading">I. Nội dung công việc triển khai thực tế</div>
+                <p class="text-p">
+                    Đơn vị đã nghiêm túc triển khai toàn diện các nhiệm vụ trọng tâm theo đúng quy định của Luật Trách nhiệm bồi thường của Nhà nước. Cụ thể, các kết quả đạt được bao gồm:
+                </p>
+                <ul class="list-items">
+                    <li>Ban hành đầy đủ văn bản hướng dẫn nghiệp vụ giải quyết bồi thường theo đúng thẩm quyền và thời hạn pháp luật quy định.</li>
+                    <li>Đảm bảo 100% hồ sơ yêu cầu bồi thường được tiếp nhận, thụ lý và theo dõi chặt chẽ, đúng quy trình thủ tục.</li>
+                    <li>Tổ chức các lớp tập huấn kỹ năng giải quyết bồi thường cho đội ngũ cán bộ, công chức làm công tác bổ trợ tư pháp trên địa bàn.</li>
+                    <li>Kịp thời phối hợp với các cơ quan liên quan trong quá trình thương lượng, xác minh thiệt hại để bảo vệ quyền lợi hợp pháp của công dân.</li>
+                </ul>
+
+                <div class="section-heading">II. Danh mục tài liệu chứng minh gửi kèm</div>
+                <p class="text-p">
+                    Các tài liệu đính kèm hệ thống phần mềm này bao gồm: quyết định thành lập tổ công tác, biên bản họp liên ngành phối hợp giải quyết vụ việc, các kế hoạch công tác năm và biểu mẫu tự đánh giá chi tiết được phê duyệt bởi Giám đốc Sở.
+                </p>
+                
+                <p class="text-p">
+                    Sở Tư pháp cam kết toàn bộ thông tin kê khai thuyết minh và tài liệu gửi kèm là chính xác, trung thực và hoàn toàn chịu trách nhiệm trước pháp luật.
+                </p>
+            </div>
+
+            <div class="doc-footer">
+                <div class="footer-left">
+                    <p style="font-weight: bold; font-style: italic;">Nơi nhận:</p>
+                    <p>- Như trên;</p>
+                    <p>- Lưu VT, STP.</p>
+                </div>
+                <div class="footer-right">
+                    <p style="font-weight: bold; margin-bottom: 2px;">KT. GIÁM ĐỐC</p>
+                    <p class="sign-title">PHÓ GIÁM ĐỐC</p>
+                    <p class="sign-name">Nguyễn Văn Bình</p>
+                </div>
+            </div>
+
+            <!-- Fake stamp -->
+            <div class="stamp-mock">
+                SỞ TƯ PHÁP<br>THÀNH PHỐ<br>HÀ NỘI
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set document file name dynamically from URL search query
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fileParam = urlParams.get('file');
+            if (fileParam) {
+                document.getElementById('fileNameLabel').innerText = fileParam;
+                document.title = "Xem file: " + fileParam;
+            }
+        });
+    </script>
+</body>
+</html>

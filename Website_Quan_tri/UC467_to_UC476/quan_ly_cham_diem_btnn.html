@@ -298,6 +298,9 @@
             padding: 12px 16px;
             border-bottom: 2px solid var(--border-color);
             white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .custom-table td {
@@ -733,6 +736,7 @@
             border-radius: var(--border-radius-sm);
             font-size: 12px;
             border: 1px solid #DBEAFE;
+            gap: 8px;
         }
 
         .uploaded-file-name {
@@ -741,12 +745,15 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            max-width: 80%;
+            flex: 1;
+            min-width: 0;
         }
 
         .uploaded-file-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .uploaded-file-actions a {
@@ -1340,12 +1347,20 @@
                         <i class="fa-regular fa-calendar-days"></i>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="position: relative;">
                     <label class="form-label">Phạm vi áp dụng <span style="color:red;">*</span></label>
-                    <select class="form-control" id="newPeriodScope">
-                        <option value="all">Tất cả các Sở Tư pháp trên toàn quốc (63 tỉnh/thành)</option>
-                        <option value="selected">Sở Tư pháp Hà Nội</option>
-                    </select>
+                    <div class="custom-dropdown-container" id="newPeriodScopeContainer">
+                        <div class="dropdown-trigger" id="newPeriodScopeTrigger" style="font-size:13px; padding: 8px 12px; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 38px;">
+                            <span id="newPeriodScopeText" style="color: var(--text-main); font-weight: 500;">Tất cả các Sở Tư pháp trên toàn quốc (63 tỉnh/thành)</span>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--text-muted);"></i>
+                        </div>
+                        <div class="dropdown-panel" id="newPeriodScopePanel" style="display: none; position: absolute; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); box-shadow: 0 4px 15px rgba(0,0,0,0.15); z-index: 1000; width: 100%; margin-top: 4px; padding: 8px; box-sizing: border-box;">
+                            <input type="text" class="dropdown-search-input" id="newPeriodScopeSearch" placeholder="Tìm kiếm nhanh theo tên đơn vị..." style="width: 100%; padding: 6px 10px; margin-bottom: 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); font-size: 12.5px; box-sizing: border-box;">
+                            <div class="dropdown-items-list" id="newPeriodScopeList" style="max-height: 180px; overflow-y: auto;">
+                                <!-- Checkboxes will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1638,6 +1653,25 @@
         let isBtpEvaluationMode = false;
         let tsYear = null;
         let tsStp = null;
+        let fpNewPeriodDeadline = null;
+        const scopeUnitsList = [
+            { value: "all", label: "Tất cả các Sở Tư pháp trên toàn quốc (63 tỉnh/thành)" },
+            { value: "Sở Tư pháp Hà Nội", label: "Sở Tư pháp Hà Nội" },
+            { value: "Sở Tư pháp TP. Hồ Chí Minh", label: "Sở Tư pháp TP. Hồ Chí Minh" },
+            { value: "Sở Tư pháp Đà Nẵng", label: "Sở Tư pháp Đà Nẵng" },
+            { value: "Sở Tư pháp Hải Phòng", label: "Sở Tư pháp Hải Phòng" },
+            { value: "Sở Tư pháp Cần Thơ", label: "Sở Tư pháp Cần Thơ" },
+            { value: "Sở Tư pháp Quảng Ninh", label: "Sở Tư pháp Quảng Ninh" },
+            { value: "Sở Tư pháp Nghệ An", label: "Sở Tư pháp Nghệ An" },
+            { value: "Sở Tư pháp Thanh Hóa", label: "Sở Tư pháp Thanh Hóa" },
+            { value: "Sở Tư pháp Khánh Hòa", label: "Sở Tư pháp Khánh Hòa" },
+            { value: "Sở Tư pháp Lâm Đồng", label: "Sở Tư pháp Lâm Đồng" },
+            { value: "Sở Tư pháp Bình Dương", label: "Sở Tư pháp Bình Dương" },
+            { value: "Sở Tư pháp Đồng Nai", label: "Sở Tư pháp Đồng Nai" },
+            { value: "Sở Tư pháp Bà Rịa - Vũng Tàu", label: "Sở Tư pháp Bà Rịa - Vũng Tàu" },
+            { value: "Sở Tư pháp Đắk Lắk", label: "Sở Tư pháp Đắk Lắk" },
+            { value: "Sở Tư pháp Cà Mau", label: "Sở Tư pháp Cà Mau" }
+        ];
 
         function getFormattedCriteriaTitle(code, title) {
             let cleanTitle = title.replace(/^\d+(\.[a-z])?\s*-?\s*/i, '').trim();
@@ -1726,6 +1760,95 @@
             } catch (e) {
                 console.warn("TomSelect library is not loaded:", e);
             }
+
+            // Initialize new period modal components
+            try {
+                fpNewPeriodDeadline = flatpickr("#newPeriodDeadline", {
+                    dateFormat: "d/m/Y",
+                    allowInput: true
+                });
+            } catch (e) {
+                console.warn("Error initializing flatpickr:", e);
+            }
+
+            // Populate custom checkbox list for Scope selection
+            const scopeListContainer = document.getElementById('newPeriodScopeList');
+            if (scopeListContainer) {
+                scopeListContainer.innerHTML = '';
+                scopeUnitsList.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = "dropdown-item-checkbox";
+                    div.style.display = "flex";
+                    div.style.alignItems = "center";
+                    div.style.gap = "8px";
+                    div.style.padding = "6px 8px";
+                    div.style.cursor = "pointer";
+                    div.style.fontSize = "13px";
+                    div.style.borderRadius = "4px";
+                    div.innerHTML = `
+                        <input type="checkbox" value="${item.value}" id="scope_cb_${item.value}" style="cursor:pointer; margin:0;">
+                        <label for="scope_cb_${item.value}" style="cursor:pointer; flex:1; margin:0; user-select:none; font-weight:normal; line-height:1.2;">${item.label}</label>
+                    `;
+                    
+                    // Hover effects
+                    div.onmouseenter = () => { div.style.backgroundColor = "#F1F5F9"; };
+                    div.onmouseleave = () => { div.style.backgroundColor = "transparent"; };
+
+                    const cb = div.querySelector('input');
+                    
+                    // Click row to toggle checkbox
+                    div.onclick = (e) => {
+                        if (e.target !== cb && e.target.tagName !== 'LABEL') {
+                            cb.checked = !cb.checked;
+                            cb.dispatchEvent(new Event('change'));
+                        }
+                    };
+
+                    cb.onchange = () => {
+                        handleScopeCheckboxChange(cb.value, cb.checked);
+                    };
+
+                    scopeListContainer.appendChild(div);
+                });
+            }
+
+            // Setup Custom Dropdown toggle & search handlers
+            const trigger = document.getElementById('newPeriodScopeTrigger');
+            const panel = document.getElementById('newPeriodScopePanel');
+            const searchInput = document.getElementById('newPeriodScopeSearch');
+
+            if (trigger && panel) {
+                trigger.onclick = (e) => {
+                    e.stopPropagation();
+                    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                    if (panel.style.display === 'block' && searchInput) {
+                        searchInput.value = "";
+                        searchInput.focus();
+                        // Reset items visibility
+                        document.querySelectorAll('#newPeriodScopeList .dropdown-item-checkbox').forEach(item => {
+                            item.style.display = 'flex';
+                        });
+                    }
+                };
+            }
+
+            if (searchInput) {
+                searchInput.oninput = (e) => {
+                    const q = e.target.value.toLowerCase().trim();
+                    document.querySelectorAll('#newPeriodScopeList .dropdown-item-checkbox').forEach(item => {
+                        const text = item.innerText.toLowerCase();
+                        item.style.display = text.includes(q) ? 'flex' : 'none';
+                    });
+                };
+            }
+
+            // Close panel on clicking outside
+            document.addEventListener('click', (e) => {
+                const container = document.getElementById('newPeriodScopeContainer');
+                if (container && panel && !container.contains(e.target)) {
+                    panel.style.display = 'none';
+                }
+            });
 
             // Initialize Layout
             switchRole("stp");
@@ -1913,6 +2036,7 @@
                 }
 
                 // Column alignment rules: STP vs BTP centering
+                const actionCellHtml = activeRole === 'btp' ? `${btnView} ${btnEval}` : `${btnView} ${btnScore}`;
                 row.innerHTML = `
                     <td class="text-center">${startIdx + index + 1}</td>
                     <td class="text-center"><strong>Kỳ chấm năm ${item.year}</strong></td>
@@ -1922,7 +2046,7 @@
                     <td class="text-center" style="font-weight: 500;">${item.status !== 'Hoàn thành' ? '-' : item.btpScore + '/100'}</td>
                     <td class="text-center" style="font-weight: 600;">${item.grade}</td>
                     <td class="text-center">${item.deadline}</td>
-                    <td class="text-center action-cell">${btnView} ${btnScore} ${btnEval}</td>
+                    <td class="text-center action-cell">${actionCellHtml}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -2015,13 +2139,46 @@
 
             // Load saved criteria scores
             scoringData = selectedPeriod.details || {};
-            // Initialize empty criteria defaults
+            
+            // Initialize empty criteria defaults and default checkboxes
             Object.keys(criteriaData).forEach(key => {
+                const maxVal = criteriaData[key].maxScore;
+                const hasCheckbox = ["I.1", "I.3a", "I.3b", "I.4", "I.5a", "I.6", "I.9", "II.1", "III.1", "III.2"].includes(key);
+                
                 if (scoringData[key] === undefined) {
-                    // Default to max score for criteria if unchecked, or 0
-                    scoringData[key] = 0;
+                    if (hasCheckbox) {
+                        scoringData[`no_issue_${key}`] = true;
+                        scoringData[key] = maxVal;
+                    } else {
+                        scoringData[key] = 0;
+                    }
+                } else if (hasCheckbox && scoringData[`no_issue_${key}`] === undefined) {
+                    // If the score is equal to maxVal, assume no_issue was true
+                    if (Number(scoringData[key]) === maxVal) {
+                        scoringData[`no_issue_${key}`] = true;
+                    } else {
+                        scoringData[`no_issue_${key}`] = false;
+                    }
                 }
             });
+
+            // Dynamically mock files for any score > 0 to enrich the BTP evaluation/read-only view
+            Object.keys(criteriaData).forEach(code => {
+                if (scoringData[code] > 0 && (!scoringData[`files_${code}`] || scoringData[`files_${code}`].length === 0)) {
+                    let prefix = "TaiLieuKiemChung";
+                    if (code === "I.1") prefix = "BaoCao_HuongDan_NghiepVu";
+                    else if (code === "I.2") prefix = "KeHoach_BoiDuong_NghiepVu";
+                    else if (code === "I.3a") prefix = "QuyetDinh_XacDinh_CQGQBT";
+                    else if (code === "I.4") prefix = "VanBan_HuongDan_ThuTuc";
+                    else if (code === "I.6") prefix = "VanBan_DonDoc_ThiHanh";
+                    else if (code === "II.1") prefix = "BienBan_Hop_PhoiHop";
+                    else if (code === "III.1") prefix = "BienBan_XacMinh_ThietHai";
+                    else if (code === "III.2") prefix = "BienBan_ThuongLuong_BoiThuong";
+                    
+                    scoringData[`files_${code}`] = [`${prefix}_${code}.pdf`];
+                }
+            });
+
             if (scoringData["funding"] === undefined) scoringData["funding"] = "Không";
 
             initiativeList = selectedPeriod.bonus || [];
@@ -2454,7 +2611,7 @@
                         <div class="form-group">
                             <label class="form-label">Nội dung đánh giá tự chấm</label>
                             <div style="display: flex; gap: 8px; align-items: center;">
-                                <select class="form-control" id="option_select_${code}" ${isNoIssueChecked || isMultiCase ? 'disabled' : ''} onchange="updateCriterionScoreFromOption('${code}', this.value)" style="flex: 1;">
+                                <select class="form-control" id="option_select_${code}" ${isNoIssueChecked || (isMultiCase && scoringData[`cases_${code}`] && scoringData[`cases_${code}`].length > 1) ? 'disabled' : ''} onchange="updateCriterionScoreFromOption('${code}', this.value)" style="flex: 1; padding-right: 24px;">
                                     ${dropdownOptions}
                                 </select>
                                 <span class="badge" id="score_badge_${code}" style="background-color: var(--primary-color); color: #fff; padding: 8px 12px; border-radius: 4px; font-weight: bold; font-size: 13px; white-space: nowrap;">
@@ -2501,7 +2658,7 @@
                     <div class="uploaded-file-item">
                         <span class="uploaded-file-name" title="${file}"><i class="fa-regular fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${file}</span>
                         <div class="uploaded-file-actions">
-                            <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');">Xem file</a>
+                            <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html?file=' + encodeURIComponent('${file.replace(/'/g, "\\'")}'), '_blank');">Xem file</a>
                             <span>|</span>
                             <a href="#" class="delete-file" onclick="event.preventDefault(); removeUploadedFile('${code}', ${idx}, '${suffix}')">Xóa</a>
                         </div>
@@ -2608,6 +2765,12 @@
             if (badge) {
                 badge.innerText = `${val}đ`;
             }
+            // Keep first case in sync if there's exactly 1 case
+            const cases = scoringData[`cases_${code}`];
+            if (cases && cases.length === 1) {
+                cases[0].score = Number(val);
+                renderCasesRows(code);
+            }
             calculateTotals();
         }
 
@@ -2646,7 +2809,7 @@
                 tr.innerHTML = `
                     <td><input type="text" class="form-control" style="padding: 4px;" value="${c.name}" oninput="updateCaseName('${code}', ${idx}, this.value)"></td>
                     <td>
-                        <select class="form-control" style="padding: 4px; font-size:12px;" onchange="updateCaseScore('${code}', ${idx}, this.value)">
+                        <select class="form-control" style="padding: 4px 24px 4px 8px; font-size:12px;" onchange="updateCaseScore('${code}', ${idx}, this.value)">
                             ${options}
                         </select>
                     </td>
@@ -2728,7 +2891,7 @@
                     <td><strong>${item.name}</strong></td>
                     <td>${item.decNo}</td>
                     <td>${item.date}</td>
-                    <td><a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="color: var(--primary-color); font-weight:600;"><i class="fa-regular fa-file-pdf"></i> ${item.file}</a></td>
+                    <td><a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html?file=' + encodeURIComponent('${item.file.replace(/'/g, "\\'")}'), '_blank');" style="color: var(--primary-color); font-weight:600;"><i class="fa-regular fa-file-pdf"></i> ${item.file}</a></td>
                     <td class="text-center">
                         <button class="icon-btn delete" onclick="removeInitiative(${idx})"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -2850,7 +3013,7 @@
                         <td class="text-right" style="font-weight:600;">${item.maxScore}</td>
                         <td>
                             <div style="display: flex; flex-direction: column; gap: 4px;">
-                                <select class="form-control" style="padding: 4px; font-size:12px; max-width: 320px;" onchange="updateCriterionScoreFromOption('${code}', this.value); document.getElementById('big_table_badge_${code}').innerText = this.value + 'đ';">
+                                <select class="form-control" style="padding: 4px 24px 4px 8px; font-size:12px; max-width: 320px;" onchange="updateCriterionScoreFromOption('${code}', this.value); document.getElementById('big_table_badge_${code}').innerText = this.value;">
                                     ${options}
                                 </select>
                                 <div style="font-size:11.5px; font-weight:bold; color:var(--primary-color);">Điểm tự chấm: <span id="big_table_badge_${code}">${currentScore}</span>đ</div>
@@ -2878,7 +3041,7 @@
                 <div class="section-title">
                     <span>CHẾ ĐỘ TỰ CHẤM ĐIỂM NHANH — BẢNG PHỤ LỤC I</span>
                 </div>
-                <div class="table-container">
+                <div class="table-container" style="max-height: 68vh; overflow-y: auto;">
                     <table class="custom-table" style="font-size: 12.5px;">
                         <thead>
                             <tr>
@@ -2897,7 +3060,7 @@
                 </div>
                 <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
                     <button class="btn btn-outline-primary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp bảng điểm</button>
-                    <button class="btn btn-primary" onclick="toggleViewMode()">Quay lại Stepper</button>
+                    <button class="btn btn-primary" onclick="toggleViewMode()"><i class="fa-solid fa-chevron-left"></i> Quay lại tự chấm từng bước</button>
                 </div>
             `;
 
@@ -2967,6 +3130,24 @@
                 }
 
                 scoringData = selectedPeriod.details || {};
+                
+                // Dynamically mock files for any score > 0 to enrich the BTP evaluation view
+                Object.keys(criteriaData).forEach(code => {
+                    if (scoringData[code] > 0 && (!scoringData[`files_${code}`] || scoringData[`files_${code}`].length === 0)) {
+                        let prefix = "TaiLieuKiemChung";
+                        if (code === "I.1") prefix = "BaoCao_HuongDan_NghiepVu";
+                        else if (code === "I.2") prefix = "KeHoach_BoiDuong_NghiepVu";
+                        else if (code === "I.3a") prefix = "QuyetDinh_XacDinh_CQGQBT";
+                        else if (code === "I.4") prefix = "VanBan_HuongDan_ThuTuc";
+                        else if (code === "I.6") prefix = "VanBan_DonDoc_ThiHanh";
+                        else if (code === "II.1") prefix = "BienBan_Hop_PhoiHop";
+                        else if (code === "III.1") prefix = "BienBan_XacMinh_ThietHai";
+                        else if (code === "III.2") prefix = "BienBan_ThuongLuong_BoiThuong";
+                        
+                        scoringData[`files_${code}`] = [`${prefix}_${code}.pdf`];
+                    }
+                });
+
                 initiativeList = selectedPeriod.bonus || [];
 
                 // Load BTP evaluation draft or fallback to STP self scores
@@ -3008,7 +3189,7 @@
                     <div class="uploaded-file-item" style="margin-top: 4px; display: flex; align-items: center; justify-content: space-between; background-color: #F8FAFC; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
                         <span class="uploaded-file-name" title="${file}" style="font-size:11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;"><i class="fa-regular fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${file}</span>
                         <div class="uploaded-file-actions" style="font-size:10px; display: flex; gap: 4px;">
-                            <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');">Xem</a>
+                            <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html?file=' + encodeURIComponent('${file.replace(/'/g, "\\'")}'), '_blank');">Xem</a>
                             <span style="color:#CBD5E1;">|</span>
                             <a href="#" class="delete-file" onclick="event.preventDefault(); removeBtpUploadedFile('${code}', ${idx})">Xóa</a>
                         </div>
@@ -3029,7 +3210,7 @@
                 files.forEach(file => {
                     html += `
                     <div style="margin-top: 2px;">
-                        <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="color:var(--primary-color); font-weight:600; font-size:11px;" title="${file}"><i class="fa-solid fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${file} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(Xem file)</span></a>
+                        <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html?file=' + encodeURIComponent('${file.replace(/'/g, "\\'")}'), '_blank');" style="color:var(--primary-color); font-weight:600; font-size:11px;" title="${file}"><i class="fa-solid fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${file} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(Xem file)</span></a>
                     </div>
                 `;
                 });
@@ -3138,9 +3319,16 @@
                     let filesLink = "";
                     const files = scoringData[`files_${code}`] || [];
                     if (files.length > 0) {
-                        filesLink = `<div style="margin-bottom: 5px;"><strong style="font-size:11px; display:block;">File kiểm chứng STP gửi:</strong>`;
+                        filesLink = `<div style="margin-bottom: 8px;"><strong style="font-size:11px; display:block; margin-bottom:4px; color:#475569;">File kiểm chứng STP gửi:</strong>`;
                         files.forEach(f => {
-                            filesLink += `<div style="margin-bottom: 2px;"><a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="color:var(--primary-color); font-weight:600; font-size:11px;" title="${f}"><i class="fa-solid fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${f} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(Xem file)</span></a></div>`;
+                            filesLink += `
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background-color: #EFF6FF; padding: 4px 8px; border-radius: 4px; border: 1px solid #DBEAFE; margin-bottom: 4px; font-size: 11px;">
+                                    <span style="font-weight: 500; color: #1E40AF; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; flex: 1; min-width: 0;" title="${f}">
+                                        <i class="fa-regular fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${f}
+                                    </span>
+                                    <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html?file=' + encodeURIComponent('${f.replace(/'/g, "\\'")}'), '_blank');" style="color: var(--primary-color); font-weight: 600; flex-shrink: 0; white-space: nowrap; text-decoration: none;">Xem file</a>
+                                </div>
+                            `;
                         });
                         filesLink += `</div>`;
                     }
@@ -3152,7 +3340,7 @@
                     if (isBtpEvaluationMode) {
                         btpColHtml = `
                         <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <select class="form-control" style="padding: 4px; font-size:11px; max-width: 100%; white-space: normal; line-height:1.3; height: auto;" onchange="updateBtpScore('${code}', this.value)">
+                            <select class="form-control" style="padding: 4px 24px 4px 8px; font-size:11px; max-width: 100%; white-space: normal; line-height:1.3; height: auto;" onchange="updateBtpScore('${code}', this.value)">
                                 ${btpOptions}
                             </select>
                             <div style="font-size: 11.5px; font-weight:600; text-align: center;">Điểm thẩm định: <span id="btpScoreVal_${code}" style="color:var(--primary-color); font-size:12.5px;">${btpScore}</span>đ</div>
@@ -3345,6 +3533,24 @@
                 }
 
                 scoringData = selectedPeriod.details || {};
+                
+                // Dynamically mock files for any score > 0 to enrich the BTP read-only view
+                Object.keys(criteriaData).forEach(code => {
+                    if (scoringData[code] > 0 && (!scoringData[`files_${code}`] || scoringData[`files_${code}`].length === 0)) {
+                        let prefix = "TaiLieuKiemChung";
+                        if (code === "I.1") prefix = "BaoCao_HuongDan_NghiepVu";
+                        else if (code === "I.2") prefix = "KeHoach_BoiDuong_NghiepVu";
+                        else if (code === "I.3a") prefix = "QuyetDinh_XacDinh_CQGQBT";
+                        else if (code === "I.4") prefix = "VanBan_HuongDan_ThuTuc";
+                        else if (code === "I.6") prefix = "VanBan_DonDoc_ThiHanh";
+                        else if (code === "II.1") prefix = "BienBan_Hop_PhoiHop";
+                        else if (code === "III.1") prefix = "BienBan_XacMinh_ThietHai";
+                        else if (code === "III.2") prefix = "BienBan_ThuongLuong_BoiThuong";
+                        
+                        scoringData[`files_${code}`] = [`${prefix}_${code}.pdf`];
+                    }
+                });
+
                 initiativeList = selectedPeriod.bonus || [];
 
                 if (!selectedPeriod.btpDetails) {
@@ -3395,14 +3601,95 @@
             function openCreatePeriodModal() {
                 document.getElementById('newPeriodYear').value = "2027";
                 document.getElementById('newPeriodDeadline').value = "08/12/2027";
-                document.getElementById('newPeriodScope').value = "all";
+                
+                // Clear search input
+                const searchInput = document.getElementById('newPeriodScopeSearch');
+                if (searchInput) searchInput.value = "";
+                // Show all list items in case they were filtered
+                document.querySelectorAll('#newPeriodScopeList .dropdown-item-checkbox').forEach(item => {
+                    item.style.display = 'flex';
+                });
+
+                // Check "all" and check all others by default
+                const allCbs = Array.from(document.querySelectorAll('#newPeriodScopeList input[type="checkbox"]'));
+                allCbs.forEach(c => {
+                    c.checked = true;
+                });
+                updateScopeTriggerText();
+
+                // Close panel
+                const panel = document.getElementById('newPeriodScopePanel');
+                if (panel) panel.style.display = 'none';
+
                 document.getElementById('modalCreatePeriod').classList.add('visible');
+            }
+
+            function handleScopeCheckboxChange(val, checked) {
+                const allCbs = Array.from(document.querySelectorAll('#newPeriodScopeList input[type="checkbox"]'));
+                const mainCb = allCbs.find(c => c.value === 'all');
+                const otherCbs = allCbs.filter(c => c.value !== 'all');
+
+                if (val === 'all') {
+                    otherCbs.forEach(c => {
+                        c.checked = checked;
+                    });
+                } else {
+                    if (!checked) {
+                        if (mainCb) mainCb.checked = false;
+                    } else {
+                        const allOthersChecked = otherCbs.every(c => c.checked);
+                        if (allOthersChecked && mainCb) {
+                            mainCb.checked = true;
+                        }
+                    }
+                }
+                updateScopeTriggerText();
+            }
+
+            function updateScopeTriggerText() {
+                const allCbs = Array.from(document.querySelectorAll('#newPeriodScopeList input[type="checkbox"]'));
+                const mainCb = allCbs.find(c => c.value === 'all');
+                const checkedOthers = allCbs.filter(c => c.value !== 'all' && c.checked);
+
+                const textEl = document.getElementById('newPeriodScopeText');
+                if (!textEl) return;
+
+                if (mainCb && mainCb.checked) {
+                    textEl.innerText = "Tất cả các Sở Tư pháp trên toàn quốc (63 tỉnh/thành)";
+                } else if (checkedOthers.length === 0) {
+                    textEl.innerText = "Chọn phạm vi áp dụng...";
+                    textEl.style.color = "var(--text-muted)";
+                    return;
+                } else if (checkedOthers.length === 1) {
+                    textEl.innerText = checkedOthers[0].value;
+                } else if (checkedOthers.length === allCbs.length - 1) {
+                    textEl.innerText = "Tất cả các Sở Tư pháp trên toàn quốc (63 tỉnh/thành)";
+                    if (mainCb) mainCb.checked = true;
+                } else {
+                    textEl.innerText = `Đã chọn: ${checkedOthers.length} đơn vị (${checkedOthers.map(c => c.value.replace("Sở Tư pháp ", "")).slice(0, 3).join(", ")}${checkedOthers.length > 3 ? '...' : ''})`;
+                }
+                textEl.style.color = "var(--text-main)";
             }
 
             function saveNewPeriod() {
                 const year = document.getElementById('newPeriodYear').value;
                 const deadline = document.getElementById('newPeriodDeadline').value;
-                const scope = document.getElementById('newPeriodScope').value;
+                
+                const allCbs = Array.from(document.querySelectorAll('#newPeriodScopeList input[type="checkbox"]'));
+                const mainCb = allCbs.find(c => c.value === 'all');
+                const checkedOthers = allCbs.filter(c => c.value !== 'all' && c.checked);
+
+                let unitsToCreate = [];
+                if (mainCb && mainCb.checked) {
+                    unitsToCreate = ["Sở Tư pháp Hà Nội", "Sở Tư pháp TP. Hồ Chí Minh", "Sở Tư pháp Đà Nẵng", "Sở Tư pháp Hải Phòng", "Sở Tư pháp Cần Thơ", "Sở Tư pháp Quảng Ninh", "Sở Tư pháp Nghệ An", "Sở Tư pháp Thanh Hóa"];
+                } else {
+                    unitsToCreate = checkedOthers.map(c => c.value);
+                }
+
+                if (unitsToCreate.length === 0) {
+                    showToast("Vui lòng chọn phạm vi áp dụng!", "error");
+                    return;
+                }
 
                 if (!deadline.trim()) {
                     showToast("Vui lòng nhập hạn nộp tự chấm!", "error");
@@ -3410,56 +3697,29 @@
                 }
 
                 let allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
-
-                // Check if year already exists
-                const exists = allPeriods.some(p => p.year === year && p.unit === "Sở Tư pháp Hà Nội");
-                if (exists && scope === 'selected') {
-                    showToast(`Kỳ chấm điểm năm ${year} cho Sở Tư pháp Hà Nội đã tồn tại!`, "error");
-                    return;
-                }
-
                 let newRecords = [];
-                const newIdStart = allPeriods.length > 0 ? Math.max(...allPeriods.map(p => p.id)) + 1 : 1;
+                let newIdStart = allPeriods.length > 0 ? Math.max(...allPeriods.map(p => p.id)) + 1 : 1;
 
-                if (scope === 'all') {
-                    const provinces = ["Sở Tư pháp Hà Nội", "Sở Tư pháp TP. Hồ Chí Minh", "Sở Tư pháp Đà Nẵng", "Sở Tư pháp Hải Phòng", "Sở Tư pháp Cần Thơ"];
-                    provinces.forEach((prov, idx) => {
-                        const yearExists = allPeriods.some(p => p.year === year && p.unit === prov);
-                        if (!yearExists) {
-                            newRecords.push({
-                                id: newIdStart + idx,
-                                year: year,
-                                unit: prov,
-                                status: "Chưa bắt đầu",
-                                selfScore: 0,
-                                btpScore: 0,
-                                grade: "Chưa xếp loại",
-                                deadline: deadline,
-                                details: {},
-                                bonus: [],
-                                penalty: 0,
-                                stpApproved: false,
-                                btpApproved: false
-                            });
-                        }
-                    });
-                } else {
-                    newRecords.push({
-                        id: newIdStart,
-                        year: year,
-                        unit: "Sở Tư pháp Hà Nội",
-                        status: "Chưa bắt đầu",
-                        selfScore: 0,
-                        btpScore: 0,
-                        grade: "Chưa xếp loại",
-                        deadline: deadline,
-                        details: {},
-                        bonus: [],
-                        penalty: 0,
-                        stpApproved: false,
-                        btpApproved: false
-                    });
-                }
+                unitsToCreate.forEach((prov, idx) => {
+                    const yearExists = allPeriods.some(p => p.year === year && p.unit === prov);
+                    if (!yearExists) {
+                        newRecords.push({
+                            id: newIdStart + idx,
+                            year: year,
+                            unit: prov,
+                            status: "Chưa bắt đầu",
+                            selfScore: 0,
+                            btpScore: 0,
+                            grade: "Chưa xếp loại",
+                            deadline: deadline,
+                            details: {},
+                            bonus: [],
+                            penalty: 0,
+                            stpApproved: false,
+                            btpApproved: false
+                        });
+                    }
+                });
 
                 if (newRecords.length === 0) {
                     showToast(`Kỳ chấm điểm năm ${year} cho các đơn vị đã tồn tại sẵn!`, "error");
