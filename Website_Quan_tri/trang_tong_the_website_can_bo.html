@@ -605,6 +605,10 @@
         .toast.info i {
             color: #1677ff;
         }
+
+        .notif-item:hover {
+            background-color: #f8fafc;
+        }
     </style>
 </head>
 
@@ -646,10 +650,83 @@
                         oninput="filterMenu()">
                 </div>
 
-                <div class="notification-bell" id="notificationIcon"
-                    onclick="showToast('Hệ thống hoạt động bình thường. Không có thông báo mới.', 'info')">
-                    <i class="fa-solid fa-bell"></i>
-                    <div class="notification-badge">3</div>
+                <div class="notification-container"
+                    style="position: relative; display: flex; align-items: center; justify-content: center;">
+                    <div class="notification-bell" id="notificationIcon" onclick="toggleNotifDropdown(event)">
+                        <i class="fa-solid fa-bell"></i>
+                        <div class="notification-badge" id="notifBadge">3</div>
+                    </div>
+
+                    <!-- Notification Dropdown Menu -->
+                    <div class="notif-dropdown-menu" id="notifDropdown"
+                        style="display: none; position: absolute; top: 45px; right: 0; background: white; border: 1px solid var(--border-color); border-radius: 6px; box-shadow: var(--box-shadow); z-index: 1000; width: 340px; padding: 0; animation: fadeIn 0.15s ease-out; text-align: left;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border-color); background-color: #FAFBFD; border-top-left-radius: 6px; border-top-right-radius: 6px; width: 100%;">
+                            <span style="font-weight: 600; color: var(--primary-color); font-size: 13px;">Thông báo gần
+                                đây</span>
+                            <span
+                                style="font-size: 11px; color: var(--primary-color); cursor: pointer; font-weight: 500;"
+                                onclick="markAllNotifsRead(event)">Đánh dấu đã đọc</span>
+                        </div>
+                        <div style="max-height: 280px; overflow-y: auto;" id="notifItemsWrapper">
+                            <!-- Item 1 -->
+                            <div class="notif-item"
+                                style="display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;"
+                                onclick="clickNotifItem('UC028/kiem_tra_ho_so.html', 'Kiểm tra hồ sơ BPBĐ', 'Biện pháp bảo đảm')">
+                                <div
+                                    style="width: 32px; height: 32px; border-radius: 50%; background-color: #EFF6FF; display: flex; align-items: center; justify-content: center; color: #3B82F6; flex-shrink: 0;">
+                                    <i class="fa-solid fa-file-circle-plus" style="font-size: 14px;"></i>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <p
+                                        style="font-size: 12.5px; color: #1E293B; margin-bottom: 4px; line-height: 1.4; font-weight: normal; margin-top: 0;">
+                                        Hồ sơ đăng ký thế chấp số <b
+                                            style="color:var(--primary-color);">GDBD-2026-000823</b> vừa gửi tới.</p>
+                                    <span style="font-size: 11px; color: var(--text-muted);"><i
+                                            class="fa-regular fa-clock"></i> 5 phút trước</span>
+                                </div>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="notif-item"
+                                style="display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;"
+                                onclick="clickNotifItem('UC028/kiem_tra_ho_so.html', 'Kiểm tra hồ sơ BPBĐ', 'Biện pháp bảo đảm')">
+                                <div
+                                    style="width: 32px; height: 32px; border-radius: 50%; background-color: #EFF6FF; display: flex; align-items: center; justify-content: center; color: #3B82F6; flex-shrink: 0;">
+                                    <i class="fa-solid fa-file-circle-plus" style="font-size: 14px;"></i>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <p
+                                        style="font-size: 12.5px; color: #1E293B; margin-bottom: 4px; line-height: 1.4; font-weight: normal; margin-top: 0;">
+                                        Hồ sơ đăng ký thế chấp số <b
+                                            style="color:var(--primary-color);">GDBD-2026-000824</b> vừa gửi tới.</p>
+                                    <span style="font-size: 11px; color: var(--text-muted);"><i
+                                            class="fa-regular fa-clock"></i> 15 phút trước</span>
+                                </div>
+                            </div>
+                            <!-- Item 3 -->
+                            <div class="notif-item"
+                                style="display: flex; gap: 12px; padding: 12px 16px; border-bottom: none; cursor: pointer; transition: background 0.2s;"
+                                onclick="clickNotifItem('UCPS001/thong_tin_ca_nhan_can_bo.html', 'Thông tin cá nhân Cán bộ', 'Hệ thống')">
+                                <div
+                                    style="width: 32px; height: 32px; border-radius: 50%; background-color: #FFFBEB; display: flex; align-items: center; justify-content: center; color: #D97706; flex-shrink: 0;">
+                                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 14px;"></i>
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <p
+                                        style="font-size: 12.5px; color: #1E293B; margin-bottom: 4px; line-height: 1.4; font-weight: normal; margin-top: 0;">
+                                        Yêu cầu thay đổi mật khẩu định kỳ của bạn sẽ đến hạn sau <b>5 ngày</b>.</p>
+                                    <span style="font-size: 11px; color: var(--text-muted);"><i
+                                            class="fa-regular fa-clock"></i> 1 giờ trước</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            style="padding: 10px; border-top: 1px solid var(--border-color); text-align: center; background-color: #FAFBFD; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;">
+                            <a href="#" id="toggleAllNotifsBtn" onclick="toggleLoadAllNotifs(event);"
+                                style="text-decoration: none; color: var(--primary-color); font-weight: 600; font-size: 12px;">Xem
+                                tất cả thông báo</a>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="user-profile" id="userProfileDropdown" onclick="toggleDropdown(event)">
@@ -761,9 +838,9 @@
                     {
                         title: "Quản lý yêu cầu và hỗ trợ người dùng",
                         children: [
-                            { title: "Quản lý yêu cầu hỗ trợ", url: "UC266_267/quan_ly_yeu_cau_ho_tro.html" },
-                            { title: "Quản lý thông tin tư liệu VBQPPL", url: "../temp_placeholder.html" },
-                            { title: "Quản lý câu hỏi và trả lời thường gặp", url: "../temp_placeholder.html" }
+                            { title: "Quản lý yêu cầu hỗ trợ", url: "UC268_272/quan_ly_yeu_cau_ho_tro.html" },
+                            { title: "Quản lý thông tin tư liệu VBQPPL", url: "UC274_to_UC279/quan_ly_tu_lieu_vbqppl.html" },
+                            { title: "Quản lý câu hỏi và trả lời thường gặp", url: "UC274_to_UC279/quan_ly_cau_hoi_faq.html" }
                         ]
                     },
                     { title: "Báo cáo quản lý", url: "../temp_placeholder.html" }
@@ -782,7 +859,7 @@
                     { title: "Quản lý việc giải quyết yêu cầu bồi thường", url: "../temp_placeholder.html" },
                     { title: "Quản lý kinh phí bồi thường", url: "../temp_placeholder.html" },
                     { title: "Quản lý xem xét trách nhiệm hoàn trả", url: "../temp_placeholder.html" },
-                    { title: "Quản lý chấm điểm", url: "../temp_placeholder.html" },
+                    { title: "Quản lý chấm điểm", url: "UC467_to_UC476/quan_ly_cham_diem_btnn.html" },
                     {
                         title: "Quản lý nghiệp vụ chuyên ngành",
                         children: [
@@ -807,9 +884,8 @@
                     {
                         title: "Quản lý yêu cầu và hỗ trợ người dùng",
                         children: [
-                            { title: "Quản lý yêu cầu hỗ trợ", url: "../temp_placeholder.html" },
-                            { title: "Quản lý thông tin tư liệu VBQPPL", url: "../temp_placeholder.html" },
-                            { title: "Quản lý câu hỏi và trả lời thường gặp", url: "../temp_placeholder.html" }
+                            { title: "Quản lý thông tin tư liệu VBQPPL", url: "UC505_UC510/quan_ly_tu_lieu_vbqppl.html" },
+                            { title: "Quản lý câu hỏi và trả lời thường gặp", url: "UC505_UC510/quan_ly_cau_hoi_faq.html" }
                         ]
                     }
                 ]
@@ -1065,11 +1141,11 @@
             document.querySelectorAll('.menu-leaf-item').forEach(item => {
                 item.classList.remove('active');
             });
-            
+
             // Update breadcrumbs
             document.getElementById('breadcrumbParent').innerText = "Hệ thống";
             document.getElementById('breadcrumbChild').innerText = "Thông tin cá nhân Cán bộ";
-            
+
             // Update iframe source
             const iframe = document.getElementById('mainContentIframe');
             if (iframe) {
@@ -1087,7 +1163,7 @@
                 previousIframeUrl = iframe.src;
                 previousBreadcrumbs.parent = document.getElementById('breadcrumbParent').innerText;
                 previousBreadcrumbs.child = document.getElementById('breadcrumbChild').innerText;
-                
+
                 // Find currently active sidebar leaf and save its ID
                 const activeLeaf = document.querySelector('.menu-leaf-item.active');
                 if (activeLeaf) {
@@ -1112,13 +1188,13 @@
             }
         }
 
-        window.restorePreviousPage = function() {
+        window.restorePreviousPage = function () {
             const iframe = document.getElementById('mainContentIframe');
             if (iframe && previousIframeUrl) {
                 iframe.src = previousIframeUrl;
                 document.getElementById('breadcrumbParent').innerText = previousBreadcrumbs.parent;
                 document.getElementById('breadcrumbChild').innerText = previousBreadcrumbs.child;
-                
+
                 // Restore active sidebar highlight
                 document.querySelectorAll('.menu-leaf-item').forEach(item => {
                     item.classList.remove('active');
@@ -1193,17 +1269,121 @@
         // Toggle user Profile dropdown
         function toggleDropdown(event) {
             event.stopPropagation();
+            const notifDropdown = document.getElementById('notifDropdown');
+            if (notifDropdown) notifDropdown.style.display = 'none';
+
             const dropdown = document.getElementById('userDropdown');
             const isVisible = dropdown.style.display === 'block';
             dropdown.style.display = isVisible ? 'none' : 'block';
         }
 
-        // Close profile dropdown on clicking elsewhere
+        // Toggle notification dropdown
+        window.toggleNotifDropdown = function (event) {
+            event.stopPropagation();
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown) userDropdown.style.display = 'none';
+
+            const dropdown = document.getElementById('notifDropdown');
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+        }
+
+        window.markAllNotifsRead = function (event) {
+            event.stopPropagation();
+            const badge = document.getElementById('notifBadge');
+            if (badge) {
+                badge.style.display = 'none';
+            }
+            showToast('Đã đánh dấu đọc tất cả thông báo', 'success');
+            document.getElementById('notifDropdown').style.display = 'none';
+        }
+
+        window.clickNotifItem = function (url, childTitle, parentTitle) {
+            document.getElementById('notifDropdown').style.display = 'none';
+            const iframe = document.getElementById('mainContentIframe');
+            if (iframe) {
+                if (url.includes('thong_tin_ca_nhan_can_bo.html')) {
+                    if (typeof openUserProfilePage === 'function') {
+                        openUserProfilePage();
+                        return;
+                    }
+                }
+                iframe.src = url;
+                document.getElementById('breadcrumbParent').innerText = parentTitle;
+                document.getElementById('breadcrumbChild').innerText = childTitle;
+                document.querySelectorAll('.menu-leaf-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+            }
+        }
+
+        let isAllNotifsLoaded = false;
+
+        window.toggleLoadAllNotifs = function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const wrapper = document.getElementById('notifItemsWrapper');
+            const toggleLink = document.getElementById('toggleAllNotifsBtn');
+
+            if (!isAllNotifsLoaded) {
+                // Load all notifications
+                const extraItemsHTML = `
+                    <!-- Item 4 -->
+                    <div class="notif-item extra-notif" style="display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;" onclick="clickNotifItem('UC031/ky_duyet_ho_so.html', 'Hồ sơ duyệt chờ ký', 'Biện pháp bảo đảm')">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #D1FAE5; display: flex; align-items: center; justify-content: center; color: #047857; flex-shrink: 0;">
+                            <i class="fa-solid fa-circle-check" style="font-size: 14px;"></i>
+                        </div>
+                        <div style="flex-grow: 1;">
+                            <p style="font-size: 12.5px; color: #1E293B; margin-bottom: 4px; line-height: 1.4; font-weight: normal; margin-top: 0;">Lãnh đạo đã ký số phê duyệt hồ sơ thế chấp số <b style="color:var(--primary-color);">GDBD-2026-000780</b>.</p>
+                            <span style="font-size: 11px; color: var(--text-muted);"><i class="fa-regular fa-clock"></i> Hôm qua, 16:30</span>
+                        </div>
+                    </div>
+                    <!-- Item 5 -->
+                    <div class="notif-item extra-notif" style="display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #EFF6FF; display: flex; align-items: center; justify-content: center; color: #3B82F6; flex-shrink: 0;">
+                            <i class="fa-solid fa-gears" style="font-size: 14px;"></i>
+                        </div>
+                        <div style="flex-grow: 1;">
+                            <p style="font-size: 12.5px; color: #1E293B; margin-bottom: 4px; line-height: 1.4; font-weight: normal; margin-top: 0;">Hệ thống hoàn tất cập nhật phiên bản nâng cấp định kỳ <b>v2.4.1</b>.</p>
+                            <span style="font-size: 11px; color: var(--text-muted);"><i class="fa-regular fa-clock"></i> 3 ngày trước</span>
+                        </div>
+                    </div>
+                    <!-- Item 6 -->
+                    <div class="notif-item extra-notif" style="display: flex; gap: 12px; padding: 12px 16px; border-bottom: none; cursor: pointer; transition: background 0.2s;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #EFF6FF; display: flex; align-items: center; justify-content: center; color: #3B82F6; flex-shrink: 0;">
+                            <i class="fa-solid fa-plane-departure" style="font-size: 14px;"></i>
+                        </div>
+                        <div style="flex-grow: 1;">
+                            <p style="font-size: 12.5px; color: #1E293B; margin-bottom: 4px; line-height: 1.4; font-weight: normal; margin-top: 0;">Đã tiếp nhận yêu cầu đăng ký thế chấp tàu bay số <b style="color:var(--primary-color);">GDBD-2026-000755</b>.</p>
+                            <span style="font-size: 11px; color: var(--text-muted);"><i class="fa-regular fa-clock"></i> 5 ngày trước</span>
+                        </div>
+                    </div>
+                `;
+                // Make Item 3 have bottom border since it's no longer the last item
+                const item3 = wrapper.children[2];
+                if (item3) item3.style.borderBottom = '1px solid #f1f5f9';
+
+                wrapper.insertAdjacentHTML('beforeend', extraItemsHTML);
+                toggleLink.innerText = 'Thu gọn thông báo';
+                isAllNotifsLoaded = true;
+            } else {
+                // Collapse notifications (remove extra-notif items)
+                document.querySelectorAll('.extra-notif').forEach(el => el.remove());
+                const item3 = wrapper.children[2];
+                if (item3) item3.style.borderBottom = 'none';
+
+                toggleLink.innerText = 'Xem tất cả thông báo';
+                isAllNotifsLoaded = false;
+            }
+        }
+
+        // Close dropdowns on clicking elsewhere
         window.addEventListener('click', () => {
             const dropdown = document.getElementById('userDropdown');
-            if (dropdown) {
-                dropdown.style.display = 'none';
-            }
+            if (dropdown) dropdown.style.display = 'none';
+
+            const notifDropdown = document.getElementById('notifDropdown');
+            if (notifDropdown) notifDropdown.style.display = 'none';
         });
 
         // Custom Toast Helper

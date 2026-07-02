@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,8 @@
     <title>Quản lý yêu cầu và cấp mã số sử dụng CSDL</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
         /* Design System CSS Variables */
@@ -938,6 +940,9 @@
 
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <!-- Modal: In biên lai thu phí -->
 <div class="modal-overlay" id="receiptModal">
@@ -1957,8 +1962,24 @@
         const loaiMa = document.getElementById('filterLoaiMa').value;
         const pttt = document.getElementById('filterPTTT').value;
         const trangThai = document.getElementById('filterTrangThai').value;
+        const tuNgay = document.getElementById('filterTuNgay').value;
+        const denNgay = document.getElementById('filterDenNgay').value;
         
         let filtered = mockData.filter(item => {
+            if (tuNgay) {
+                const parts = tuNgay.split('/');
+                const fromDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+                const itemParts = item.ngayTao.split('/');
+                const itemDate = new Date(`${itemParts[2]}-${itemParts[1]}-${itemParts[0]}T00:00:00`);
+                if (itemDate < fromDate) return false;
+            }
+            if (denNgay) {
+                const parts = denNgay.split('/');
+                const toDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T23:59:59`);
+                const itemParts = item.ngayTao.split('/');
+                const itemDate = new Date(`${itemParts[2]}-${itemParts[1]}-${itemParts[0]}T00:00:00`);
+                if (itemDate > toDate) return false;
+            }
             if (keyword) {
                 const matchKeyword = 
                     item.tenKH.toLowerCase().includes(keyword) ||
@@ -2047,8 +2068,35 @@
 
     function clearFilters() {
         document.getElementById('filterForm').reset();
+        
+        const today = new Date();
+        const twoMonthsAgo = new Date();
+        twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+        const formatDate = (date) => {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            const yyyy = date.getFullYear();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        const defaultFrom = formatDate(twoMonthsAgo);
+        const defaultTo = formatDate(today);
+
+        document.getElementById('filterTuNgay').value = defaultFrom;
+        document.getElementById('filterDenNgay').value = defaultTo;
+
+        if (document.getElementById('filterTuNgay')._flatpickr) {
+            document.getElementById('filterTuNgay')._flatpickr.setDate(defaultFrom);
+        }
+        if (document.getElementById('filterDenNgay')._flatpickr) {
+            document.getElementById('filterDenNgay')._flatpickr.setDate(defaultTo);
+        }
+
         currentPage = 1;
-        renderTable(mockData);
+        applyFiltersSilent();
         showToast('Đã xóa bộ lọc', 'success');
     }
 
@@ -2074,7 +2122,31 @@
 
     // ==================== INIT ====================
     document.addEventListener('DOMContentLoaded', () => {
-        renderTable(mockData);
+        const today = new Date();
+        const twoMonthsAgo = new Date();
+        twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+        const formatDate = (date) => {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            const yyyy = date.getFullYear();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        const defaultFrom = formatDate(twoMonthsAgo);
+        const defaultTo = formatDate(today);
+
+        document.getElementById('filterTuNgay').value = defaultFrom;
+        document.getElementById('filterDenNgay').value = defaultTo;
+
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr("#filterTuNgay", { dateFormat: "d/m/Y", allowInput: true, onChange: applyFiltersSilent });
+            flatpickr("#filterDenNgay", { dateFormat: "d/m/Y", allowInput: true, onChange: applyFiltersSilent });
+        }
+
+        applyFiltersSilent();
     });
 </script>
 

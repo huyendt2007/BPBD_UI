@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,8 @@
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
         :root {
@@ -996,6 +998,9 @@
                             <!-- Dynamic loaded -->
                         </tbody>
                     </table>
+                    <div class="pagination-container" id="t1-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                        <!-- Rendered dynamically -->
+                    </div>
                 </div>
             </div>
 
@@ -1109,6 +1114,9 @@
                             <!-- Dynamic loaded -->
                         </tbody>
                     </table>
+                    <div class="pagination-container" id="t2-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                        <!-- Rendered dynamically -->
+                    </div>
                 </div>
             </div>
 
@@ -1265,6 +1273,9 @@
                             <!-- Dynamic loaded -->
                         </tbody>
                     </table>
+                    <div class="pagination-container" id="t3-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                        <!-- Rendered dynamically -->
+                    </div>
                 </div>
 
                 <!-- Batch Actions (UC236 requirement) -->
@@ -1273,7 +1284,7 @@
                         <i class="fa-solid fa-circle-info" style="color: var(--secondary-color); margin-right: 6px;"></i>
                         Tích chọn dòng để xuất file theo lô:
                     </span>
-                    <button class="btn btn-outline-secondary btn-sm" onclick="exportBatchTab3('Excel')"><i class="fa-solid fa-file-excel" style="color: var(--success-color);"></i> Xuất Excel</button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="exportBatchTab3('Excel')"><i class="fa-solid fa-file-excel" style="color: var(--success-color);"></i> Kết xuất Excel</button>
                     <button class="btn btn-outline-secondary btn-sm" onclick="exportBatchTab3('Word')"><i class="fa-solid fa-file-word" style="color: var(--secondary-color);"></i> Xuất Word</button>
                     <button class="btn btn-outline-secondary btn-sm" onclick="exportBatchTab3('PDF')"><i class="fa-solid fa-file-pdf" style="color: var(--danger-color);"></i> Xuất PDF</button>
                 </div>
@@ -1816,14 +1827,30 @@
             { id: 1, maHoso: "TM-VB-2026-0001", tenDuthao: "Luật Đăng ký biện pháp bảo đảm bằng động sản", loaiVanban: "Luật", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Quản lý nghiệp vụ", donviPhoihop: ["Phòng Thanh tra pháp chế"], canboPhutrach: "Nguyễn Văn Cán Bộ", ngayBatdau: "15/01/2026", ngayDukien: "15/12/2026", ngayThucte: "", trangThai: "Đang soạn thảo", files: ["Duthao_Luat_Dangky_BPBD_V1.pdf", "Totrinh_soan_thao.docx"], ghichu: "Đang nghiên cứu và tổng hợp kinh nghiệm quốc tế về đăng ký trực tuyến.", isDeleted: 0 },
             { id: 2, maHoso: "TM-VB-2026-0002", tenDuthao: "Nghị định quy định chi tiết Luật Đăng ký biện pháp bảo đảm", loaiVanban: "Nghị định", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Quản lý nghiệp vụ", donviPhoihop: ["Phòng Hướng dẫn chuyên môn", "Phòng Công nghệ thông tin"], canboPhutrach: "Lê Văn Thanh Tra", ngayBatdau: "20/02/2026", ngayDukien: "20/10/2026", ngayThucte: "", trangThai: "Đang lấy ý kiến", files: ["Duthao_Nghidinh_V2.pdf", "Banquyet_ykien_gopy.xlsx"], ghichu: "Đã gửi công văn lấy ý kiến góp ý của 63 Sở Tư pháp địa phương.", isDeleted: 0 },
             { id: 3, maHoso: "TM-VB-2026-0003", tenDuthao: "Thông tư hướng dẫn đăng ký biện pháp bảo đảm trực tuyến bằng động sản", loaiVanban: "Thông tư", vaiTro: "Phối hợp soạn thảo", donviChutri: "Phòng Hướng dẫn chuyên môn", donviPhoihop: ["Phòng Công nghệ thông tin"], canboPhutrach: "Nguyễn Văn Cán Bộ", ngayBatdau: "10/03/2026", ngayDukien: "10/09/2026", ngayThucte: "", trangThai: "Đang thẩm định", files: ["Duthao_Thongtu_BTP.pdf"], ghichu: "Chờ Hội đồng thẩm định Bộ Tư pháp họp cho ý kiến chính thức.", isDeleted: 0 },
-            { id: 4, maHoso: "TM-VB-2026-0004", tenDuthao: "Nghị định sửa đổi, bổ sung một số điều của Nghị định 99/2022/NĐ-CP", loaiVanban: "Nghị định", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Thanh tra pháp chế", donviPhoihop: ["Phòng Quản lý nghiệp vụ"], canboPhutrach: "Lê Văn Thanh Tra", ngayBatdau: "05/01/2026", ngayDukien: "05/05/2026", ngayThucte: "03/05/2026", trangThai: "Đã ban hành", files: ["Congvan_Trinhky.pdf", "Nghidinh_Sua_doi_99_Chinhthuc.pdf"], ghichu: "Đã ban hành thành công theo đúng chương trình công tác đề ra.", isDeleted: 0 }
+            { id: 4, maHoso: "TM-VB-2026-0004", tenDuthao: "Nghị định sửa đổi, bổ sung một số điều của Nghị định 99/2022/NĐ-CP", loaiVanban: "Nghị định", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Thanh tra pháp chế", donviPhoihop: ["Phòng Quản lý nghiệp vụ"], canboPhutrach: "Lê Văn Thanh Tra", ngayBatdau: "05/01/2026", ngayDukien: "05/05/2026", ngayThucte: "03/05/2026", trangThai: "Đã ban hành", files: ["Congvan_Trinhky.pdf", "Nghidinh_Sua_doi_99_Chinhthuc.pdf"], ghichu: "Đã ban hành thành công theo đúng chương trình công tác đề ra.", isDeleted: 0 },
+            { id: 5, maHoso: "TM-VB-2026-0005", tenDuthao: "Thông tư liên tịch hướng dẫn cơ chế phối hợp trong cưỡng chế thi hành án dân sự liên quan đến tài sản thế chấp", loaiVanban: "Thông tư liên tịch", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Thanh tra pháp chế", donviPhoihop: ["Phòng Hướng dẫn chuyên môn"], canboPhutrach: "Nguyễn Văn Cán Bộ", ngayBatdau: "15/02/2026", ngayDukien: "15/10/2026", ngayThucte: "", trangThai: "Đang soạn thảo", files: [], ghichu: "Đang tổng hợp ý kiến tham gia của Bộ Công an và Viện kiểm sát nhân dân tối cao.", isDeleted: 0 },
+            { id: 6, maHoso: "TM-VB-2026-0006", tenDuthao: "Quyết định ban hành Quy chế quản lý, vận hành và khai thác Cơ sở dữ liệu quốc gia về đăng ký biện pháp bảo đảm", loaiVanban: "Quyết định", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Công nghệ thông tin", donviPhoihop: ["Phòng Quản lý nghiệp vụ"], canboPhutrach: "Lê Văn Thanh Tra", ngayBatdau: "01/03/2026", ngayDukien: "01/09/2026", ngayThucte: "", trangThai: "Đang lấy ý kiến", files: [], ghichu: "Đang hoàn thiện dự thảo quy chế phân quyền người dùng khai thác dữ liệu trực tuyến.", isDeleted: 0 },
+            { id: 7, maHoso: "TM-VB-2026-0007", tenDuthao: "Luật sửa đổi, bổ sung một số điều của Luật Đất đai liên quan đến thế chấp quyền sử dụng đất", loaiVanban: "Luật", vaiTro: "Phối hợp soạn thảo", donviChutri: "Phòng Quản lý nghiệp vụ", donviPhoihop: ["Phòng Hướng dẫn chuyên môn"], canboPhutrach: "Nguyễn Văn Cán Bộ", ngayBatdau: "12/03/2026", ngayDukien: "15/11/2026", ngayThucte: "", trangThai: "Đang soạn thảo", files: [], ghichu: "Đang phối hợp với tổ biên tập của Bộ Tài nguyên và Môi trường.", isDeleted: 0 },
+            { id: 8, maHoso: "TM-VB-2026-0008", tenDuthao: "Thông tư quy định về phí đăng ký và cung cấp thông tin về biện pháp bảo đảm bằng động sản", loaiVanban: "Thông tư", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Thanh tra pháp chế", donviPhoihop: ["Phòng Công nghệ thông tin"], canboPhutrach: "Lê Văn Thanh Tra", ngayBatdau: "15/03/2026", ngayDukien: "15/09/2026", ngayThucte: "", trangThai: "Đang soạn thảo", files: [], ghichu: "Đang xây dựng báo cáo đánh giá tác động thủ tục hành chính.", isDeleted: 0 },
+            { id: 9, maHoso: "TM-VB-2026-0009", tenDuthao: "Nghị định quy định về đăng ký biện pháp bảo đảm bằng quyền sử dụng đất, tài sản gắn liền với đất", loaiVanban: "Nghị định", vaiTro: "Phối hợp soạn thảo", donviChutri: "Phòng Hướng dẫn chuyên môn", donviPhoihop: ["Phòng Quản lý nghiệp vụ"], canboPhutrach: "Nguyễn Văn Cán Bộ", ngayBatdau: "22/03/2026", ngayDukien: "30/11/2026", ngayThucte: "", trangThai: "Đang soạn thảo", files: [], ghichu: "Đang rà soát tính thống nhất với quy định mới của Luật Đất đai.", isDeleted: 0 },
+            { id: 10, maHoso: "TM-VB-2026-0010", tenDuthao: "Thông tư hướng dẫn về đăng ký biện pháp bảo đảm bằng tàu bay, tàu biển", loaiVanban: "Thông tư", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Quản lý nghiệp vụ", donviPhoihop: ["Phòng Hướng dẫn chuyên môn"], canboPhutrach: "Lê Văn Thanh Tra", ngayBatdau: "01/04/2026", ngayDukien: "01/10/2026", ngayThucte: "", trangThai: "Đang soạn thảo", files: [], ghichu: "Đang tổ chức khảo sát thực tế tại các cảng vụ hàng hải lớn.", isDeleted: 0 },
+            { id: 11, maHoso: "TM-VB-2026-0011", tenDuthao: "Nghị quyết của Quốc hội về thí điểm cơ chế đăng ký trực tuyến tài sản bảo đảm là động sản phi đăng ký", loaiVanban: "Nghị quyết", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Quản lý nghiệp vụ", donviPhoihop: ["Phòng Thanh tra pháp chế"], canboPhutrach: "Nguyễn Văn Cán Bộ", ngayBatdau: "15/04/2026", ngayDukien: "15/12/2026", ngayThucte: "", trangThai: "Đang soạn thảo", files: [], ghichu: "Đang xin ý kiến thẩm định của Bộ Tư pháp đối với dự thảo Đề án thí điểm.", isDeleted: 0 },
+            { id: 12, maHoso: "TM-VB-2026-0012", tenDuthao: "Quyết định công bố thủ tục hành chính mới trong lĩnh vực đăng ký biện pháp bảo đảm bằng động sản", loaiVanban: "Quyết định", vaiTro: "Chủ trì soạn thảo", donviChutri: "Phòng Hướng dẫn chuyên môn", donviPhoihop: ["Phòng Công nghệ thông tin"], canboPhutrach: "Lê Văn Thanh Tra", ngayBatdau: "25/04/2026", ngayDukien: "10/08/2026", ngayThucte: "", trangThai: "Đang soạn thảo", files: [], ghichu: "Đang chuẩn bị hồ sơ gửi Cục Kiểm soát thủ tục hành chính.", isDeleted: 0 }
         ];
 
         let dbTab2 = [
             { id: 1, maKehoach: "KH-CT-2026-0001", tenKehoach: "Chương trình công tác trọng tâm năm 2026 của Cục ĐKGDBĐ", noidung: "Xác định các nhiệm vụ cốt lõi về xây dựng VBQPPL, quản lý nhà nước về đăng ký giao dịch bảo đảm bằng động sản toàn quốc.", donviChutri: "Phòng Quản lý nghiệp vụ", donviThuchien: "Phòng Quản lý nghiệp vụ", soQuyetdinh: "24/QĐ-BTP", ngayBanhanh: "15/01/2026", ngayTrienkai: "15/01/2026", ngayHandinh: "31/12/2026", phantram: 50, ngayHoanthanh: "", trangThai: "Đang triển khai", files: ["Kehoach_Trongtam_2026_Cuc.pdf"], canboPhutrach: "Nguyễn Văn Cán Bộ", isDeleted: 0 },
             { id: 2, maKehoach: "KH-CT-2026-0002", tenKehoach: "Đề án nâng cấp Hệ thống đăng ký trực tuyến biện pháp bảo đảm bằng động sản", noidung: "Chuyển đổi hạ tầng, cơ sở dữ liệu lớn và tối ưu hóa thời gian xử lý thủ tục hành chính trực tuyến dịch vụ công trực tuyến.", donviChutri: "Phòng Công nghệ thông tin", donviThuchien: "Phòng Công nghệ thông tin", soQuyetdinh: "105/QĐ-BTP", ngayBanhanh: "10/02/2026", ngayTrienkai: "15/02/2026", ngayHandinh: "15/08/2026", phantram: 80, ngayHoanthanh: "", trangThai: "Đang triển khai", files: ["De_an_Nangcap_He_thong.pdf", "Thuyet_minh_ky_thuat.docx"], canboPhutrach: "Lê Văn Thanh Tra", isDeleted: 0 },
             { id: 3, maKehoach: "KH-CT-2026-0003", tenKehoach: "Kế hoạch tập huấn hướng dẫn nghiệp vụ khu vực miền Nam năm 2026", noidung: "Tổ chức hội nghị tập huấn quy định mới về đăng ký biện pháp bảo đảm cho Cán bộ tư pháp và Văn phòng đăng ký đất đai.", donviChutri: "Phòng Hướng dẫn chuyên môn", donviThuchien: "Phòng Hướng dẫn chuyên môn", soQuyetdinh: "148/QĐ-BTP", ngayBanhanh: "20/02/2026", ngayTrienkai: "01/03/2026", ngayHandinh: "30/06/2026", phantram: 100, ngayHoanthanh: "28/06/2026", trangThai: "Đã hoàn thành", files: ["Quyetdinh_to_chuc_taphuan.pdf", "Baocao_tongket_mNam.pdf"], canboPhutrach: "Nguyễn Văn Cán Bộ", isDeleted: 0 },
-            { id: 4, maKehoach: "KH-CT-2026-0004", tenKehoach: "Kế hoạch thanh tra công tác đăng ký giao dịch bảo đảm tại các chi nhánh ngân hàng", noidung: "Tiến hành thanh kiểm tra thực tế việc chấp hành đăng ký giao dịch bảo đảm tài sản là động sản của một số tổ chức tín dụng.", donviChutri: "Phòng Thanh tra pháp chế", donviThuchien: "Phòng Thanh tra pháp chế", soQuyetdinh: "", ngayBanhanh: "", ngayTrienkai: "10/04/2026", ngayHandinh: "30/05/2026", phantram: 0, ngayHoanthanh: "", trangThai: "Chưa thực hiện", files: ["Du_thao_Kehoach_Thanhtra.docx"], canboPhutrach: "Lê Văn Thanh Tra", isDeleted: 0 }
+            { id: 4, maKehoach: "KH-CT-2026-0004", tenKehoach: "Kế hoạch thanh tra công tác đăng ký giao dịch bảo đảm tại các chi nhánh ngân hàng", noidung: "Tiến hành thanh kiểm tra thực tế việc chấp hành đăng ký giao dịch bảo đảm tài sản là động sản của một số tổ chức tín dụng.", donviChutri: "Phòng Thanh tra pháp chế", donviThuchien: "Phòng Thanh tra pháp chế", soQuyetdinh: "", ngayBanhanh: "", ngayTrienkai: "10/04/2026", ngayHandinh: "30/05/2026", phantram: 0, ngayHoanthanh: "", trangThai: "Chưa thực hiện", files: ["Du_thao_Kehoach_Thanhtra.docx"], canboPhutrach: "Lê Văn Thanh Tra", isDeleted: 0 },
+            { id: 5, maKehoach: "KH-CT-2026-0005", tenKehoach: "Kế hoạch rà soát văn bản quy phạm pháp luật về đăng ký biện pháp bảo đảm năm 2026", noidung: "Rà soát toàn diện các thông tư, nghị định và luật liên quan để phát hiện chồng chéo, bất cập với Luật Đất đai mới.", donviChutri: "Phòng Thanh tra pháp chế", donviThuchien: "Phòng Thanh tra pháp chế", soQuyetdinh: "88/QĐ-BTP", ngayBanhanh: "18/02/2026", ngayTrienkai: "20/02/2026", ngayHandinh: "30/11/2026", phantram: 30, ngayHoanthanh: "", trangThai: "Đang triển khai", files: [], canboPhutrach: "Nguyễn Văn Cán Bộ", isDeleted: 0 },
+            { id: 6, maKehoach: "KH-CT-2026-0006", tenKehoach: "Kế hoạch kiểm tra việc chấp hành pháp luật về bồi thường nhà nước trong đăng ký biện pháp bảo đảm tại miền Bắc", noidung: "Kiểm tra thực tế quy trình giải quyết hồ sơ bồi thường nhà nước tại một số Sở Tư pháp tỉnh phía Bắc.", donviChutri: "Phòng Bồi thường nhà nước", donviThuchien: "Phòng Bồi thường nhà nước", soQuyetdinh: "112/QĐ-BTP", ngayBanhanh: "25/02/2026", ngayTrienkai: "05/03/2026", ngayHandinh: "15/09/2026", phantram: 40, ngayHoanthanh: "", trangThai: "Đang triển khai", files: [], canboPhutrach: "Lê Văn Thanh Tra", isDeleted: 0 },
+            { id: 7, maKehoach: "KH-CT-2026-0007", tenKehoach: "Kế hoạch truyền thông và phổ biến pháp luật về đăng ký biện pháp bảo đảm trực tuyến giai đoạn II", noidung: "Tuyên truyền trên các phương tiện thông tin đại chúng và tổ chức các chuyên mục hướng dẫn trực tuyến cho người dân.", donviChutri: "Văn phòng Cục", donviThuchien: "Văn phòng Cục", soQuyetdinh: "135/QĐ-BTP", ngayBanhanh: "05/03/2026", ngayTrienkai: "10/03/2026", ngayHandinh: "31/12/2026", phantram: 20, ngayHoanthanh: "", trangThai: "Đang triển khai", files: [], canboPhutrach: "Nguyễn Văn Cán Bộ", isDeleted: 0 },
+            { id: 8, maKehoach: "KH-CT-2026-0008", tenKehoach: "Kế hoạch tập huấn, bồi dưỡng nghiệp vụ cho đăng ký viên giao dịch bảo đảm năm 2026", noidung: "Tổ chức 3 lớp tập huấn cho toàn bộ đăng ký viên và cán bộ nghiệp vụ của các Trung tâm đăng ký trực thuộc Cục.", donviChutri: "Phòng Hướng dẫn chuyên môn", donviThuchien: "Phòng Hướng dẫn chuyên môn", soQuyetdinh: "", ngayBanhanh: "", ngayTrienkai: "15/03/2026", ngayHandinh: "15/10/2026", phantram: 10, ngayHoanthanh: "", trangThai: "Đang triển khai", files: [], canboPhutrach: "Nguyễn Văn Cán Bộ", isDeleted: 0 },
+            { id: 9, maKehoach: "KH-CT-2026-0009", tenKehoach: "Kế hoạch nâng cao năng lực ứng dụng công nghệ thông tin phục vụ cải cách hành chính năm 2026", noidung: "Đào tạo kỹ năng khai thác hệ thống mới, sử dụng chữ ký số và bảo mật thông tin tài khoản cho cán bộ các Trung tâm.", donviChutri: "Phòng Công nghệ thông tin", donviThuchien: "Phòng Công nghệ thông tin", soQuyetdinh: "205/QĐ-BTP", ngayBanhanh: "22/03/2026", ngayTrienkai: "01/04/2026", ngayHandinh: "30/11/2026", phantram: 50, ngayHoanthanh: "", trangThai: "Đang triển khai", files: [], canboPhutrach: "Lê Văn Thanh Tra", isDeleted: 0 },
+            { id: 10, maKehoach: "KH-CT-2026-0010", tenKehoach: "Kế hoạch liên ngành trao đổi dữ liệu về tài sản bảo đảm với Tổng cục Thi hành án dân sự", noidung: "Xác định quy trình kỹ thuật và quy chế vận hành kết nối chia sẻ cơ sở dữ liệu ngăn chặn giao dịch tài sản.", donviChutri: "Phòng Công nghệ thông tin", donviThuchien: "Phòng Công nghệ thông tin", soQuyetdinh: "220/QĐ-BTP", ngayBanhanh: "01/04/2026", ngayTrienkai: "15/04/2026", ngayHandinh: "15/12/2026", phantram: 15, ngayHoanthanh: "", trangThai: "Đang triển khai", files: [], canboPhutrach: "Lê Văn Thanh Tra", isDeleted: 0 },
+            { id: 11, maKehoach: "KH-CT-2026-0011", tenKehoach: "Kế hoạch xây dựng Đề án vị trí việc làm và cơ cấu viên chức theo chức danh nghề nghiệp", noidung: "Rà soát định biên nhân sự, xây dựng bảng mô tả công việc và cơ cấu lại biên chế các đơn vị sự nghiệp trực thuộc.", donviChutri: "Phòng Hành chính - Tổng hợp", donviThuchien: "Phòng Hành chính - Tổng hợp", soQuyetdinh: "", ngayBanhanh: "", ngayTrienkai: "15/04/2026", ngayHandinh: "30/09/2026", phantram: 0, ngayHoanthanh: "", trangThai: "Chưa thực hiện", files: [], canboPhutrach: "Nguyễn Văn Cán Bộ", isDeleted: 0 },
+            { id: 12, maKehoach: "KH-CT-2026-0012", tenKehoach: "Kế hoạch kiểm tra việc chấp hành quy trình đăng ký giao dịch bảo đảm tại khu vực miền Trung", noidung: "Kiểm tra định kỳ việc thực hiện quy chế một cửa, thu phí và trả kết quả đăng ký của Trung tâm số 2.", donviChutri: "Phòng Hướng dẫn chuyên môn", donviThuchien: "Phòng Hướng dẫn chuyên môn", soQuyetdinh: "250/QĐ-BTP", ngayBanhanh: "25/04/2026", ngayTrienkai: "10/05/2026", ngayHandinh: "10/08/2026", phantram: 0, ngayHoanthanh: "", trangThai: "Chưa thực hiện", files: [], canboPhutrach: "Nguyễn Văn Cán Bộ", isDeleted: 0 }
         ];
 
         let dbTab3 = [
@@ -1961,15 +1988,323 @@
                 files: ["Ketqua_Phapdien_Demuc_222B.pdf"], 
                 canboPhutrach: "Lê Văn Thanh Tra",
                 isDeleted: 0 
+            },
+            { 
+                id: 5, 
+                maHoso: "PD-2026-0002", 
+                tenVanban: "Pháp điển Đề mục Bồi thường nhà nước trong hoạt động quản lý hành chính", 
+                soKieu: "Luật TNBTCNN 2017",
+                loaiVanban: "Luật",
+                coquanBanhanh: "Quốc hội",
+                ngayBanhanh: "20/06/2017",
+                loaiThamMuu: "Pháp điển", 
+                linhVuc: "Bồi thường NN", 
+                namThuchien: "2026", 
+                kqRasoat: "Còn phù hợp", 
+                kqKiennghi: "Giữ nguyên hiệu lực",
+                kqNoidungsang: "",
+                kqChongcheo: "",
+                kqBatcap: "",
+                kqCoquanthamquyen: "Bộ Tư pháp",
+                kqUutien: "Bình thường",
+                kqThoihan: "",
+                pdHinhthuc: "Pháp điển cập nhật đề mục",
+                pdDemuccapnhat: "Đề mục 2. Bồi thường nhà nước",
+                pdChude: "Chủ đề 22 - Dân sự",
+                pdTen: "Trách nhiệm bồi thường của Nhà nước",
+                pdMa: "22.3.C",
+                pdVitri: "Đề mục số 3 trong Chủ đề Dân sự",
+                pdCoquans: "Bộ Tư pháp",
+                pdNgayhoanthanh: "25/05/2026",
+                tiendoTrangthai: "Hoàn thành", 
+                tiendoCancu: "Theo văn bản quy phạm mới ban hành",
+                tiendoGiaidoan: "Hoàn thành báo cáo",
+                tiendoNgaybatdau: "01/05/2026",
+                tiendoNgaydukien: "30/05/2026",
+                tiendoNgaythucte: "25/05/2026",
+                tiendoGhichu: "Cục Bồi thường nhà nước đã thông qua kết quả pháp điển cập nhật.",
+                files: [], 
+                canboPhutrach: "Lê Văn Thanh Tra",
+                isDeleted: 0 
+            },
+            { 
+                id: 6, 
+                maHoso: "HN-2026-0002", 
+                tenVanban: "Hợp nhất Pháp lệnh phí, lệ phí và các văn bản quy định chi tiết thế chấp", 
+                soKieu: "Luật Phí và lệ phí 2015",
+                loaiVanban: "Luật",
+                coquanBanhanh: "Quốc hội",
+                ngayBanhanh: "25/11/2015",
+                loaiThamMuu: "Hợp nhất", 
+                linhVuc: "GDBĐ", 
+                namThuchien: "2026", 
+                kqRasoat: "Cần sửa đổi", 
+                kqKiennghi: "Lập kế hoạch sửa đổi",
+                kqNoidungsang: "Cần tích hợp quy định miễn phí đăng ký biện pháp bảo đảm đối với hộ gia đình vay vốn phát triển nông nghiệp.",
+                kqChongcheo: "Không thống nhất giữa quy định của Luật Phí và Nghị định về nông nghiệp.",
+                kqBatcap: "Các tổ chức tín dụng lúng túng khi áp dụng miễn giảm phí.",
+                kqCoquanthamquyen: "Bộ Tài chính",
+                kqUutien: "Cao",
+                kqThoihan: "31/12/2026",
+                tiendoTrangthai: "Đang thực hiện", 
+                tiendoCancu: "Theo Kế hoạch công tác năm",
+                tiendoGiaidoan: "Soạn thảo dự thảo kết quả",
+                tiendoNgaybatdau: "15/02/2026",
+                tiendoNgaydukien: "15/08/2026",
+                tiendoNgaythucte: "",
+                tiendoGhichu: "Đang tổ chức lấy ý kiến Bộ Tài chính về cơ chế miễn phí.",
+                files: [], 
+                canboPhutrach: "Nguyễn Văn Cán Bộ",
+                isDeleted: 0 
+            },
+            { 
+                id: 7, 
+                maHoso: "RS-2026-0003", 
+                tenVanban: "Luật Đất đai năm 2024 (quy định thế chấp quyền sử dụng đất)", 
+                soKieu: "Luật số 31/2024/QH15",
+                loaiVanban: "Luật",
+                coquanBanhanh: "Quốc hội",
+                ngayBanhanh: "18/01/2024",
+                loaiThamMuu: "Rà soát", 
+                linhVuc: "GDBĐ", 
+                namThuchien: "2026", 
+                kqRasoat: "Cần sửa đổi", 
+                kqKiennghi: "Lập kế hoạch sửa đổi",
+                kqNoidungsang: "Quy chuẩn hóa hồ sơ thế chấp đất đai hình thành trong tương lai.",
+                kqChongcheo: "Xung đột quy định Luật Nhà ở và Luật Đất đai về thời điểm đăng ký thế chấp.",
+                kqBatcap: "Người mua nhà gặp khó khăn khi làm thủ tục thế chấp vay vốn tại ngân hàng.",
+                kqCoquanthamquyen: "Quốc hội",
+                kqUutien: "Khẩn cấp",
+                kqThoihan: "30/09/2026",
+                tiendoTrangthai: "Đang thực hiện", 
+                tiendoCancu: "Theo văn bản quy phạm mới ban hành",
+                tiendoGiaidoan: "Xây dựng đề cương rà soát",
+                tiendoNgaybatdau: "01/03/2026",
+                tiendoNgaydukien: "30/06/2026",
+                tiendoNgaythucte: "",
+                tiendoGhichu: "Đang soạn thảo báo cáo chuyên đề gửi Tổ biên tập của Quốc hội.",
+                files: [], 
+                canboPhutrach: "Nguyễn Văn Cán Bộ",
+                isDeleted: 0 
+            },
+            { 
+                id: 8, 
+                maHoso: "RS-2026-0004", 
+                tenVanban: "Nghị định 99/2022/NĐ-CP về đăng ký biện pháp bảo đảm (phần đất đai)", 
+                soKieu: "99/2022/NĐ-CP",
+                loaiVanban: "Nghị định",
+                coquanBanhanh: "Chính phủ",
+                ngayBanhanh: "30/11/2022",
+                loaiThamMuu: "Rà soát", 
+                linhVuc: "GDBĐ", 
+                namThuchien: "2026", 
+                kqRasoat: "Cần sửa đổi", 
+                kqKiennghi: "Lập kế hoạch sửa đổi",
+                kqNoidungsang: "Quy định bổ sung về hồ sơ xóa thế chấp dự án nhà ở khi đã bàn giao căn hộ.",
+                kqChongcheo: "Chưa đồng bộ với quy trình cấp sổ hồng của Luật Đất đai 2024.",
+                kqBatcap: "Dự án bị treo giao dịch thế chấp căn hộ lẻ do chưa xóa thế chấp dự án tổng thể.",
+                kqCoquanthamquyen: "Chính phủ",
+                kqUutien: "Cao",
+                kqThoihan: "15/11/2026",
+                tiendoTrangthai: "Đang thực hiện", 
+                tiendoCancu: "Theo văn bản quy phạm mới ban hành",
+                tiendoGiaidoan: "Khảo sát thực tế",
+                tiendoNgaybatdau: "10/03/2026",
+                tiendoNgaydukien: "15/07/2026",
+                tiendoNgaythucte: "",
+                tiendoGhichu: "Đang tiến hành khảo sát thực tiễn tại TP.HCM và Hà Nội.",
+                files: [], 
+                canboPhutrach: "Lê Văn Thanh Tra",
+                isDeleted: 0 
+            },
+            { 
+                id: 9, 
+                maHoso: "HN-2026-0003", 
+                tenVanban: "Hợp nhất Thông tư hướng dẫn về đăng ký giao dịch bảo đảm bằng động sản phi hàng hải", 
+                soKieu: "Thông tư số 01/2023/TT-BTP",
+                loaiVanban: "Thông tư",
+                coquanBanhanh: "Bộ Tư pháp",
+                ngayBanhanh: "15/02/2023",
+                loaiThamMuu: "Hợp nhất", 
+                linhVuc: "GDBĐ", 
+                namThuchien: "2026", 
+                kqRasoat: "Còn phù hợp", 
+                kqKiennghi: "Giữ nguyên hiệu lực",
+                kqNoidungsang: "",
+                kqChongcheo: "",
+                kqBatcap: "",
+                kqCoquanthamquyen: "Bộ Tư pháp",
+                kqUutien: "Bình thường",
+                kqThoihan: "",
+                hnVbgoc: "Thông tư số 01/2023/TT-BTP",
+                hnVbsuadoi: "Thông tư số 05/2025/TT-BTP sửa đổi bổ sung Thông tư 01",
+                hnSo: "05/VBHN-BTP",
+                hnNguoiky: "Trần Minh Cục Trưởng",
+                hnNgayky: "12/05/2026",
+                hnThoihanqd: "Trong vòng 5 ngày",
+                hnGhichu: "Hợp nhất thành công văn bản hướng dẫn động sản.",
+                tiendoTrangthai: "Hoàn thành", 
+                tiendoCancu: "Theo văn bản quy phạm mới ban hành",
+                tiendoGiaidoan: "Hoàn thành báo cáo",
+                tiendoNgaybatdau: "01/05/2026",
+                tiendoNgaydukien: "15/05/2026",
+                tiendoNgaythucte: "12/05/2026",
+                tiendoGhichu: "Đã ban hành văn bản hợp nhất số 05/VBHN-BTP.",
+                files: [], 
+                canboPhutrach: "Nguyễn Văn Cán Bộ",
+                isDeleted: 0 
+            },
+            { 
+                id: 10, 
+                maHoso: "PD-2026-0003", 
+                tenVanban: "Pháp điển Đề mục Thế chấp quyền đòi nợ hình thành trong tương lai", 
+                soKieu: "Bộ luật Dân sự 2015",
+                loaiVanban: "Bộ luật",
+                coquanBanhanh: "Quốc hội",
+                ngayBanhanh: "24/11/2015",
+                loaiThamMuu: "Pháp điển", 
+                linhVuc: "GDBĐ", 
+                namThuchien: "2026", 
+                kqRasoat: "Còn phù hợp", 
+                kqKiennghi: "Giữ nguyên hiệu lực",
+                kqNoidungsang: "",
+                kqChongcheo: "",
+                kqBatcap: "",
+                kqCoquanthamquyen: "Bộ Tư pháp",
+                kqUutien: "Bình thường",
+                kqThoihan: "",
+                pdHinhthuc: "Pháp điển cập nhật đề mục",
+                pdDemuccapnhat: "Đề mục 2. Đăng ký biện pháp bảo đảm",
+                pdChude: "Chủ đề 22 - Dân sự",
+                pdTen: "Đăng ký biện pháp bảo đảm bằng động sản",
+                pdMa: "22.2.D",
+                pdVitri: "Đề mục số 2 trong Chủ đề Dân sự",
+                pdCoquans: "Bộ Tư pháp",
+                pdNgayhoanthanh: "28/05/2026",
+                tiendoTrangthai: "Hoàn thành", 
+                tiendoCancu: "Theo văn bản quy phạm mới ban hành",
+                tiendoGiaidoan: "Hoàn thành báo cáo",
+                tiendoNgaybatdau: "15/05/2026",
+                tiendoNgaydukien: "31/05/2026",
+                tiendoNgaythucte: "28/05/2026",
+                tiendoGhichu: "Hội đồng nghiệm thu đã chính thức thông qua kết quả đề mục.",
+                files: [], 
+                canboPhutrach: "Lê Văn Thanh Tra",
+                isDeleted: 0 
+            },
+            { 
+                id: 11, 
+                maHoso: "RS-2026-0005", 
+                tenVanban: "Nghị định 59/2012/NĐ-CP về theo dõi thi hành pháp luật (phần bồi thường nhà nước)", 
+                soKieu: "59/2012/NĐ-CP",
+                loaiVanban: "Nghị định",
+                coquanBanhanh: "Chính phủ",
+                ngayBanhanh: "23/07/2012",
+                loaiThamMuu: "Rà soát", 
+                linhVuc: "Bồi thường NN", 
+                namThuchien: "2026", 
+                kqRasoat: "Cần sửa đổi", 
+                kqKiennghi: "Lập kế hoạch sửa đổi",
+                kqNoidungsang: "Quy định quy trình phối hợp xác minh thiệt hại trong theo dõi thi hành pháp luật bồi thường.",
+                kqChongcheo: "Không thống nhất giữa thời hạn xác minh thiệt hại của Nghị định 59 và Luật TNBTCNN.",
+                kqBatcap: "Cơ quan giải quyết bồi thường kéo dài thời gian xác minh gây bức xúc cho công dân.",
+                kqCoquanthamquyen: "Chính phủ",
+                kqUutien: "Cao",
+                kqThoihan: "15/12/2026",
+                tiendoTrangthai: "Đang thực hiện", 
+                tiendoCancu: "Theo Kế hoạch công tác năm",
+                tiendoGiaidoan: "Khảo sát lấy ý kiến",
+                tiendoNgaybatdau: "01/04/2026",
+                tiendoNgaydukien: "15/08/2026",
+                tiendoNgaythucte: "",
+                tiendoGhichu: "Đang xây dựng phiếu khảo sát lấy ý kiến các cơ quan chuyên môn.",
+                files: [], 
+                canboPhutrach: "Nguyễn Văn Cán Bộ",
+                isDeleted: 0 
+            },
+            { 
+                id: 12, 
+                maHoso: "RS-2026-0006", 
+                tenVanban: "Quyết định số 24/2014/QĐ-TTg về chức năng, nhiệm vụ của Cục ĐKGDBĐ", 
+                soKieu: "24/2014/QĐ-TTg",
+                loaiVanban: "Quyết định",
+                coquanBanhanh: "Thủ tướng Chính phủ",
+                ngayBanhanh: "20/03/2014",
+                loaiThamMuu: "Rà soát", 
+                linhVuc: "GDBĐ", 
+                namThuchien: "2026", 
+                kqRasoat: "Cần ban hành mới", 
+                kqKiennghi: "Thay thế văn bản",
+                kqNoidungsang: "Bổ sung chức năng quản lý nhà nước về bồi thường nhà nước trong hoạt động đăng ký GDBĐ.",
+                kqChongcheo: "Chồng chéo với quyết định chức năng nhiệm vụ của Cục Bồi thường nhà nước.",
+                kqBatcap: "Khó khăn trong phân định thẩm quyền hướng dẫn và thanh tra nghiệp vụ liên ngành.",
+                kqCoquanthamquyen: "Thủ tướng Chính phủ",
+                kqUutien: "Cao",
+                kqThoihan: "31/12/2026",
+                tiendoTrangthai: "Đang thực hiện", 
+                tiendoCancu: "Theo văn bản quy phạm mới ban hành",
+                tiendoGiaidoan: "Xây dựng dự thảo Tờ trình",
+                tiendoNgaybatdau: "15/04/2026",
+                tiendoNgaydukien: "15/09/2026",
+                tiendoNgaythucte: "",
+                tiendoGhichu: "Đang họp xin ý kiến Vụ Tổ chức cán bộ - Bộ Tư pháp.",
+                files: [], 
+                canboPhutrach: "Lê Văn Thanh Tra",
+                isDeleted: 0 
             }
         ];
 
+
+        let t1CurrentPage = 1;
+        let t1PageSize = 10;
+        let t1FilteredData = null;
+
+        let t2CurrentPage = 1;
+        let t2PageSize = 10;
+        let t2FilteredData = null;
+
+        let t3CurrentPage = 1;
+        let t3PageSize = 10;
+        let t3FilteredData = null;
+
         // Load databases on page init
         window.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defaultFrom = formatDate(twoMonthsAgo);
+            const defaultTo = formatDate(today);
+            
+            const elT1Start = document.getElementById("t1-filter-start");
+            if (elT1Start) elT1Start.value = defaultFrom;
+            const elT1End = document.getElementById("t1-filter-end");
+            if (elT1End) elT1End.value = defaultTo;
+
+            const elStart = document.getElementById("t3-filter-startdate");
+            if (elStart) elStart.value = defaultFrom;
+            const elEnd = document.getElementById("t3-filter-enddate");
+            if (elEnd) elEnd.value = defaultTo;
+
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr("#t1-filter-start", { dateFormat: "d/m/Y", allowInput: true, onChange: searchTab1 });
+                flatpickr("#t1-filter-end", { dateFormat: "d/m/Y", allowInput: true, onChange: searchTab1 });
+                flatpickr("#t3-filter-startdate", { dateFormat: "d/m/Y", allowInput: true, onChange: searchTab3 });
+                flatpickr("#t3-filter-enddate", { dateFormat: "d/m/Y", allowInput: true, onChange: searchTab3 });
+            }
+
             applyRolePrivileges();
             updateKPIs();
         });
-
         // Simulating current user and synchronization with parent header
         function changeCurrentUser(val) {
             const parts = val.split('|');
@@ -2092,17 +2427,26 @@
         let fileUploadMockStoreTab1 = [];
 
         function renderTab1Table(data = null) {
+            t1FilteredData = data || dbTab1.filter(item => item.isDeleted === 0);
+            const total = t1FilteredData.length;
+            const totalPages = Math.ceil(total / t1PageSize) || 1;
+            if (t1CurrentPage > totalPages) t1CurrentPage = totalPages;
+            if (t1CurrentPage < 1) t1CurrentPage = 1;
+
+            const startIndex = (t1CurrentPage - 1) * t1PageSize;
+            const endIndex = Math.min(startIndex + t1PageSize, total);
+            const pageData = t1FilteredData.slice(startIndex, endIndex);
+
             const tbody = document.getElementById('t1-table-body');
             tbody.innerHTML = '';
             
-            const list = data || dbTab1.filter(item => item.isDeleted === 0);
-            
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-muted);">Không tìm thấy kết quả phù hợp</td></tr>`;
+            if (pageData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; color: var(--text-muted);">Không tìm thấy kết quả phù hợp</td></tr>`;
+                renderT1PaginationControls(0);
                 return;
             }
             
-            list.forEach((item, idx) => {
+            pageData.forEach((item, idx) => {
                 let badgeColor = 'bg-new';
                 switch(item.trangThai) {
                     case "Đang soạn thảo": badgeColor = 'bg-new'; break;
@@ -2116,7 +2460,7 @@
                 const canEdit = (currentUserRole === "Lãnh đạo đơn vị" || item.canboPhutrach === currentUser);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="text-center">${idx + 1}</td>
+                    <td class="text-center">${startIndex + idx + 1}</td>
                     <td><a href="#" class="row-link" onclick="viewDetailTab1(${item.id})">${item.maHoso}</a></td>
                     <td style="font-weight: 500;">${item.tenDuthao}</td>
                     <td>${item.donviChutri}</td>
@@ -2140,6 +2484,67 @@
             document.getElementById('t1-kpi-total').innerText = dbTab1.filter(item => item.isDeleted === 0).length;
             document.getElementById('t1-kpi-drafting').innerText = dbTab1.filter(item => item.isDeleted === 0 && item.trangThai === 'Đang soạn thảo').length;
             document.getElementById('t1-kpi-published').innerText = dbTab1.filter(item => item.isDeleted === 0 && item.trangThai === 'Đã ban hành').length;
+
+            renderT1PaginationControls(total);
+        }
+
+        function renderT1PaginationControls(total) {
+            const totalPages = Math.ceil(total / t1PageSize) || 1;
+            const container = document.getElementById("t1-pagination");
+            if (!container) return;
+
+            if (total === 0) {
+                container.style.display = "none";
+                return;
+            }
+            container.style.display = "flex";
+
+            let buttonsHtml = `
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT1Page(1)" ${t1CurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT1Page(${t1CurrentPage - 1})" ${t1CurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                buttonsHtml += `
+                    <button class="${i === t1CurrentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToT1Page(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+                `;
+            }
+
+            buttonsHtml += `
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT1Page(${t1CurrentPage + 1})" ${t1CurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT1Page(${totalPages})" ${t1CurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+            `;
+
+            const sizes = [10, 20, 50, 100];
+            let sizeOptions = sizes.map(sz => `<option value="${sz}" ${t1PageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+            container.innerHTML = `
+                <div style="color: var(--text-muted); font-size: 13px;">
+                    Đang hiển thị <strong>${(t1CurrentPage - 1) * t1PageSize + 1}</strong>–<strong>${Math.min(t1CurrentPage * t1PageSize, total)}</strong> trong tổng số <strong>${total}</strong> hồ sơ
+                </div>
+                <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                        <span>Số bản ghi/trang:</span>
+                        <select class="form-select" onchange="changeT1PageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                            ${sizeOptions}
+                        </select>
+                    </div>
+                    <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                        ${buttonsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function goToT1Page(page) {
+            t1CurrentPage = page;
+            renderTab1Table(t1FilteredData);
+        }
+
+        function changeT1PageSize(size) {
+            t1PageSize = parseInt(size, 10);
+            t1CurrentPage = 1;
+            renderTab1Table(t1FilteredData);
         }
 
         function searchTab1() {
@@ -2178,6 +2583,7 @@
                 }
             }
             
+            t1CurrentPage = 1;
             renderTab1Table(filtered);
             showToast("Đã lọc kết quả xây dựng VBQPPL", "success");
         }
@@ -2187,8 +2593,35 @@
             document.getElementById('t1-filter-type').value = '';
             document.getElementById('t1-filter-status').value = '';
             document.getElementById('t1-filter-officer').value = '';
-            document.getElementById('t1-filter-start').value = '';
-            document.getElementById('t1-filter-end').value = '';
+            
+            const today = new Date();
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defaultFrom = formatDate(twoMonthsAgo);
+            const defaultTo = formatDate(today);
+
+            const elStart = document.getElementById('t1-filter-start');
+            const elEnd = document.getElementById('t1-filter-end');
+            if (elStart) {
+                elStart.value = defaultFrom;
+                if (elStart._flatpickr) elStart._flatpickr.setDate(defaultFrom);
+            }
+            if (elEnd) {
+                elEnd.value = defaultTo;
+                if (elEnd._flatpickr) elEnd._flatpickr.setDate(defaultTo);
+            }
+
+            t1CurrentPage = 1;
             renderTab1Table();
         }
 
@@ -2708,17 +3141,26 @@
         let fileUploadMockStoreTab2 = [];
 
         function renderTab2Table(data = null) {
+            t2FilteredData = data || dbTab2.filter(item => item.isDeleted === 0);
+            const total = t2FilteredData.length;
+            const totalPages = Math.ceil(total / t2PageSize) || 1;
+            if (t2CurrentPage > totalPages) t2CurrentPage = totalPages;
+            if (t2CurrentPage < 1) t2CurrentPage = 1;
+
+            const startIndex = (t2CurrentPage - 1) * t2PageSize;
+            const endIndex = Math.min(startIndex + t2PageSize, total);
+            const pageData = t2FilteredData.slice(startIndex, endIndex);
+
             const tbody = document.getElementById('t2-table-body');
             tbody.innerHTML = '';
             
-            const list = data || dbTab2.filter(item => item.isDeleted === 0);
-            
-            if (list.length === 0) {
+            if (pageData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; color: var(--text-muted);">Không tìm thấy kết quả phù hợp</td></tr>`;
+                renderT2PaginationControls(0);
                 return;
             }
             
-            list.forEach((item, idx) => {
+            pageData.forEach((item, idx) => {
                 let badgeColor = 'bg-new';
                 switch(item.trangThai) {
                     case "Chưa thực hiện": badgeColor = 'bg-new'; break;
@@ -2735,7 +3177,7 @@
                 const canEdit = (currentUserRole === "Lãnh đạo đơn vị" || item.canboPhutrach === currentUser);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="text-center">${idx + 1}</td>
+                    <td class="text-center">${startIndex + idx + 1}</td>
                     <td><a href="#" class="row-link" onclick="viewDetailTab2(${item.id})">${item.maKehoach}</a></td>
                     <td style="font-weight: 500;">${item.tenKehoach}</td>
                     <td>${item.donviChutri}</td>
@@ -2766,6 +3208,67 @@
             document.getElementById('t2-kpi-total').innerText = dbTab2.filter(item => item.isDeleted === 0).length;
             document.getElementById('t2-kpi-progress').innerText = dbTab2.filter(item => item.isDeleted === 0 && item.trangThai === 'Đang triển khai').length;
             document.getElementById('t2-kpi-completed').innerText = dbTab2.filter(item => item.isDeleted === 0 && item.trangThai === 'Đã hoàn thành').length;
+
+            renderT2PaginationControls(total);
+        }
+
+        function renderT2PaginationControls(total) {
+            const totalPages = Math.ceil(total / t2PageSize) || 1;
+            const container = document.getElementById("t2-pagination");
+            if (!container) return;
+
+            if (total === 0) {
+                container.style.display = "none";
+                return;
+            }
+            container.style.display = "flex";
+
+            let buttonsHtml = `
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT2Page(1)" ${t2CurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT2Page(${t2CurrentPage - 1})" ${t2CurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                buttonsHtml += `
+                    <button class="${i === t2CurrentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToT2Page(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+                `;
+            }
+
+            buttonsHtml += `
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT2Page(${t2CurrentPage + 1})" ${t2CurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT2Page(${totalPages})" ${t2CurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+            `;
+
+            const sizes = [10, 20, 50, 100];
+            let sizeOptions = sizes.map(sz => `<option value="${sz}" ${t2PageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+            container.innerHTML = `
+                <div style="color: var(--text-muted); font-size: 13px;">
+                    Đang hiển thị <strong>${(t2CurrentPage - 1) * t2PageSize + 1}</strong>–<strong>${Math.min(t2CurrentPage * t2PageSize, total)}</strong> trong tổng số <strong>${total}</strong> kế hoạch
+                </div>
+                <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                        <span>Số bản ghi/trang:</span>
+                        <select class="form-select" onchange="changeT2PageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                            ${sizeOptions}
+                        </select>
+                    </div>
+                    <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                        ${buttonsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function goToT2Page(page) {
+            t2CurrentPage = page;
+            renderTab2Table(t2FilteredData);
+        }
+
+        function changeT2PageSize(size) {
+            t2PageSize = parseInt(size, 10);
+            t2CurrentPage = 1;
+            renderTab2Table(t2FilteredData);
         }
 
         function searchTab2() {
@@ -2781,6 +3284,7 @@
             if (unit) filtered = filtered.filter(item => item.donviChutri === unit);
             if (status) filtered = filtered.filter(item => item.trangThai === status);
             
+            t2CurrentPage = 1;
             renderTab2Table(filtered);
             showToast("Đã lọc kế hoạch công tác", "success");
         }
@@ -2789,6 +3293,7 @@
             document.getElementById('t2-filter-keyword').value = '';
             document.getElementById('t2-filter-unit').value = '';
             document.getElementById('t2-filter-status').value = '';
+            t2CurrentPage = 1;
             renderTab2Table();
         }
 
@@ -3188,17 +3693,26 @@
         let standardEditTargetIdTab3 = null;
 
         function renderTab3Table(data = null) {
+            t3FilteredData = data || dbTab3.filter(item => item.isDeleted === 0);
+            const total = t3FilteredData.length;
+            const totalPages = Math.ceil(total / t3PageSize) || 1;
+            if (t3CurrentPage > totalPages) t3CurrentPage = totalPages;
+            if (t3CurrentPage < 1) t3CurrentPage = 1;
+
+            const startIndex = (t3CurrentPage - 1) * t3PageSize;
+            const endIndex = Math.min(startIndex + t3PageSize, total);
+            const pageData = t3FilteredData.slice(startIndex, endIndex);
+
             const tbody = document.getElementById('t3-table-body');
             tbody.innerHTML = '';
             
-            const list = data || dbTab3.filter(item => item.isDeleted === 0);
-            
-            if (list.length === 0) {
+            if (pageData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Không tìm thấy hồ sơ phù hợp</td></tr>`;
+                renderT3PaginationControls(0);
                 return;
             }
             
-            list.forEach((item, idx) => {
+            pageData.forEach((item, idx) => {
                 let badgeType = 'bg-new';
                 switch(item.loaiThamMuu) {
                     case "Rà soát": badgeType = 'bg-processing'; break;
@@ -3221,10 +3735,8 @@
                 
                 const canEdit = (currentUserRole === "Lãnh đạo đơn vị" || item.canboPhutrach === currentUser);
                 const tr = document.createElement('tr');
-                // Row click behavior (UC236 requirement - clicking row opens detail pane)
                 tr.style.cursor = 'pointer';
                 tr.onclick = (e) => {
-                    // prevent trigger if checking box or clicking actions
                     if (e.target.type === 'checkbox' || e.target.closest('.action-icon') || e.target.closest('a')) {
                         return;
                     }
@@ -3248,9 +3760,69 @@
                 tbody.appendChild(tr);
             });
             
-            // Sync checkboxes header
             const headerCheck = document.getElementById('t3-select-all-checkbox');
             if (headerCheck) headerCheck.checked = false;
+
+            renderT3PaginationControls(total);
+        }
+
+        function renderT3PaginationControls(total) {
+            const totalPages = Math.ceil(total / t3PageSize) || 1;
+            const container = document.getElementById("t3-pagination");
+            if (!container) return;
+
+            if (total === 0) {
+                container.style.display = "none";
+                return;
+            }
+            container.style.display = "flex";
+
+            let buttonsHtml = `
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT3Page(1)" ${t3CurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT3Page(${t3CurrentPage - 1})" ${t3CurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                buttonsHtml += `
+                    <button class="${i === t3CurrentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToT3Page(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+                `;
+            }
+
+            buttonsHtml += `
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT3Page(${t3CurrentPage + 1})" ${t3CurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="goToT3Page(${totalPages})" ${t3CurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+            `;
+
+            const sizes = [10, 20, 50, 100];
+            let sizeOptions = sizes.map(sz => `<option value="${sz}" ${t3PageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+            container.innerHTML = `
+                <div style="color: var(--text-muted); font-size: 13px;">
+                    Đang hiển thị <strong>${(t3CurrentPage - 1) * t3PageSize + 1}</strong>–<strong>${Math.min(t3CurrentPage * t3PageSize, total)}</strong> trong tổng số <strong>${total}</strong> hồ sơ
+                </div>
+                <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                        <span>Số bản ghi/trang:</span>
+                        <select class="form-select" onchange="changeT3PageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                            ${sizeOptions}
+                        </select>
+                    </div>
+                    <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                        ${buttonsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function goToT3Page(page) {
+            t3CurrentPage = page;
+            renderTab3Table(t3FilteredData);
+        }
+
+        function changeT3PageSize(size) {
+            t3PageSize = parseInt(size, 10);
+            t3CurrentPage = 1;
+            renderTab3Table(t3FilteredData);
         }
 
         function updateKPIs() {
@@ -3306,6 +3878,7 @@
                 }
             }
             
+            t3CurrentPage = 1;
             renderTab3Table(filtered);
             showToast("Đã tìm kiếm và làm mới danh mục thống kê", "success");
             
@@ -3323,8 +3896,35 @@
             document.getElementById('t3-filter-result').value = '';
             document.getElementById('t3-filter-status').value = '';
             document.getElementById('t3-filter-year').value = '';
-            document.getElementById('t3-filter-startdate').value = '';
-            document.getElementById('t3-filter-enddate').value = '';
+            
+            const today = new Date();
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defaultFrom = formatDate(twoMonthsAgo);
+            const defaultTo = formatDate(today);
+
+            const elStart = document.getElementById('t3-filter-startdate');
+            const elEnd = document.getElementById('t3-filter-enddate');
+            if (elStart) {
+                elStart.value = defaultFrom;
+                if (elStart._flatpickr) elStart._flatpickr.setDate(defaultFrom);
+            }
+            if (elEnd) {
+                elEnd.value = defaultTo;
+                if (elEnd._flatpickr) elEnd._flatpickr.setDate(defaultTo);
+            }
+            
+            t3CurrentPage = 1;
             renderTab3Table();
             updateKPIs();
             closeDetailTab3();
@@ -4257,5 +4857,7 @@
             closeDeleteModal();
         }
     </script>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 </html>

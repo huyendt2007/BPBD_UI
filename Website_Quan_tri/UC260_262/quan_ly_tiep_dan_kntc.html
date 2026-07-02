@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,8 @@
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
         :root {
@@ -854,6 +856,9 @@
                         <!-- Loaded dynamically -->
                     </tbody>
                 </table>
+                <div class="pagination-container" id="hoso-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
         </div>
     </div>
@@ -2207,6 +2212,9 @@
     let softDeleteTargetId = null;
     let restoreTargetId = null;
     let hardDeleteTargetId = null;
+    let currentPage = 1;
+    let pageSize = 10;
+    let filteredDataList = null;
 
     let currentUser = "Nguyễn Văn Cán Bộ";
     let currentUserRole = "Cán bộ";
@@ -2321,18 +2329,42 @@
     window.addEventListener('DOMContentLoaded', () => {
         renderTableList();
         
-        // Force clear any browser autofill on filter inputs
+        // Force clear any browser autofill on filter inputs and set default dates
         setTimeout(() => {
             const tun = document.getElementById('filter-tungay');
             const denn = document.getElementById('filter-denngay');
+            const today = new Date();
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defFromDate = formatDate(twoMonthsAgo);
+            const defToDate = formatDate(today);
+
             if (tun) {
-                tun.value = '';
+                tun.value = defFromDate;
                 tun.setAttribute('autocomplete', 'new-password');
             }
             if (denn) {
-                denn.value = '';
+                denn.value = defToDate;
                 denn.setAttribute('autocomplete', 'new-password');
             }
+
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr("#filter-tungay", { dateFormat: "d/m/Y", allowInput: true, onChange: executeSearch });
+                flatpickr("#filter-denngay", { dateFormat: "d/m/Y", allowInput: true, onChange: executeSearch });
+            }
+            
+            // Execute search to apply initial date range filter on startup
+            executeSearch();
         }, 100);
         
         // Trigger date format standards on placeholder
@@ -2345,25 +2377,35 @@
 
     // Render table grid
     function renderTableList(dataToRender) {
-        const tbody = document.getElementById('hoso-table-body');
-        tbody.innerHTML = '';
-
-        let displayList = dataToRender;
-        if (!displayList) {
-            displayList = mockDatabase.filter(item => item.isDeleted === 0);
+        filteredDataList = dataToRender;
+        if (!filteredDataList) {
+            filteredDataList = mockDatabase.filter(item => item.isDeleted === 0);
             
             const quahan = document.getElementById('filter-quahan').checked;
             if (quahan) {
-                displayList = displayList.filter(item => isRecordOverdue(item));
+                filteredDataList = filteredDataList.filter(item => isRecordOverdue(item));
             }
         }
 
-        if (displayList.length === 0) {
+        const total = filteredDataList.length;
+        const totalPages = Math.ceil(total / pageSize) || 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = Math.min(startIndex + pageSize, total);
+        const pageData = filteredDataList.slice(startIndex, endIndex);
+
+        const tbody = document.getElementById('hoso-table-body');
+        tbody.innerHTML = '';
+
+        if (pageData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-muted);">Không tìm thấy hồ sơ phù hợp.</td></tr>`;
+            renderPaginationControls(0);
             return;
         }
 
-        displayList.forEach((item, idx) => {
+        pageData.forEach((item, idx) => {
             const tr = document.createElement('tr');
             if (item.isDeleted === 1) {
                 tr.className = 'row-deleted';
@@ -2447,8 +2489,34 @@
         document.getElementById('filter-hoten').value = '';
         document.getElementById('filter-cccd').value = '';
         document.getElementById('filter-sodangky').value = '';
-        document.getElementById('filter-tungay').value = '';
-        document.getElementById('filter-denngay').value = '';
+        
+        const today = new Date();
+        const twoMonthsAgo = new Date();
+        twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+        const formatDate = (date) => {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            const yyyy = date.getFullYear();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        const defFromDate = formatDate(twoMonthsAgo);
+        const defToDate = formatDate(today);
+
+        const elStart = document.getElementById("filter-tungay");
+        const elEnd = document.getElementById("filter-denngay");
+        if (elStart) {
+            elStart.value = defFromDate;
+            if (elStart._flatpickr) elStart._flatpickr.setDate(defFromDate);
+        }
+        if (elEnd) {
+            elEnd.value = defToDate;
+            if (elEnd._flatpickr) elEnd._flatpickr.setDate(defToDate);
+        }
+        
         document.getElementById('filter-quahan').checked = false;
         executeSearch();
     }
@@ -2504,8 +2572,68 @@
         // Filter out deleted items by default in search as well
         filtered = filtered.filter(item => item.isDeleted === 0);
 
+        currentPage = 1;
         renderTableList(filtered);
         showToast("Đã lọc danh sách kết quả", "success");
+    }
+
+    function renderPaginationControls(total) {
+        const totalPages = Math.ceil(total / pageSize) || 1;
+        const container = document.getElementById("hoso-pagination");
+        if (!container) return;
+
+        if (total === 0) {
+            container.style.display = "none";
+            return;
+        }
+        container.style.display = "flex";
+
+        let buttonsHtml = `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            buttonsHtml += `
+                <button class="${i === currentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToPage(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+            `;
+        }
+
+        buttonsHtml += `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+        `;
+
+        const sizes = [10, 20, 50, 100];
+        let sizeOptions = sizes.map(sz => `<option value="${sz}" ${pageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+        container.innerHTML = `
+            <div style="color: var(--text-muted); font-size: 13px;">
+                Đang hiển thị <strong>${(currentPage - 1) * pageSize + 1}</strong>–<strong>${Math.min(currentPage * pageSize, total)}</strong> trong tổng số <strong>${total}</strong> hồ sơ
+            </div>
+            <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                    <span>Số bản ghi/trang:</span>
+                    <select class="form-select" onchange="changePageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                        ${sizeOptions}
+                    </select>
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                    ${buttonsHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        renderTableList(filteredDataList);
+    }
+
+    function changePageSize(size) {
+        pageSize = parseInt(size, 10);
+        currentPage = 1;
+        renderTableList(filteredDataList);
     }
 
     // Open detail form for viewing only (Read-only mode)
@@ -3444,5 +3572,7 @@
         }, 4000);
     }
 </script>
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 </html>

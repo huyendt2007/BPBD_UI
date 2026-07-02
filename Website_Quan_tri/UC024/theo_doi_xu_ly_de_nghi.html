@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="../../Common/style_iframe.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../../Common/iframe_helper.js"></script>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         .container {
             max-width: 1400px;
@@ -776,8 +778,34 @@
         function resetFilters() {
             document.getElementById('filterSoDK').value = '';
             document.getElementById('filterType').value = '';
-            document.getElementById('filterFromDate').value = '';
-            document.getElementById('filterToDate').value = '';
+            
+            const today = new Date();
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defaultFrom = formatDate(twoMonthsAgo);
+            const defaultTo = formatDate(today);
+
+            const elStart = document.getElementById('filterFromDate');
+            const elEnd = document.getElementById('filterToDate');
+            if (elStart) {
+                elStart.value = defaultFrom;
+                if (elStart._flatpickr) elStart._flatpickr.setDate(defaultFrom);
+            }
+            if (elEnd) {
+                elEnd.value = defaultTo;
+                if (elEnd._flatpickr) elEnd._flatpickr.setDate(defaultTo);
+            }
+
             applyFilters();
         }
 
@@ -900,9 +928,36 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             initMockProposalsIfEmpty();
+
+            const today = new Date();
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defaultFrom = formatDate(twoMonthsAgo);
+            const defaultTo = formatDate(today);
+
+            document.getElementById('filterFromDate').value = defaultFrom;
+            document.getElementById('filterToDate').value = defaultTo;
+
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: applyFilters });
+                flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: applyFilters });
+            }
+
             updateBadges();
             renderTableData();
         });
     </script>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 </html>

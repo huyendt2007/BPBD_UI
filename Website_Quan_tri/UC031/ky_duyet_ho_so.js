@@ -1128,6 +1128,22 @@ function renderPagination(totalCount) {
         return;
     }
     
+    // Nút Đầu (Trang đầu)
+    const firstBtn = document.createElement('button');
+    firstBtn.className = 'btn btn-outline-secondary';
+    firstBtn.style.padding = '4px 10px';
+    firstBtn.style.fontSize = '12px';
+    firstBtn.style.borderRadius = '4px';
+    firstBtn.innerText = 'Trang đầu';
+    if (currentPage === 1) firstBtn.disabled = true;
+    firstBtn.onclick = () => {
+        if (currentPage > 1) {
+            currentPage = 1;
+            executeRender();
+        }
+    };
+    container.appendChild(firstBtn);
+
     // Nút Trước
     const prevBtn = document.createElement('button');
     prevBtn.className = 'btn btn-outline-secondary';
@@ -1174,6 +1190,22 @@ function renderPagination(totalCount) {
         }
     };
     container.appendChild(nextBtn);
+
+    // Nút Cuối (Trang cuối)
+    const lastBtn = document.createElement('button');
+    lastBtn.className = 'btn btn-outline-secondary';
+    lastBtn.style.padding = '4px 10px';
+    lastBtn.style.fontSize = '12px';
+    lastBtn.style.borderRadius = '4px';
+    lastBtn.innerText = 'Trang cuối';
+    if (currentPage === totalPages) lastBtn.disabled = true;
+    lastBtn.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage = totalPages;
+            executeRender();
+        }
+    };
+    container.appendChild(lastBtn);
 }
 
 function changePageSize(size) {
@@ -1213,13 +1245,8 @@ function renderFilterPanel() {
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = today.getFullYear();
     
-    // Default from date: 30 days ago to show all recent mock profiles
-    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const fromMonth = String(thirtyDaysAgo.getMonth() + 1).padStart(2, '0');
-    const fromDay = String(thirtyDaysAgo.getDate()).padStart(2, '0');
-    const fromYear = thirtyDaysAgo.getFullYear();
-    const defFromDate = `${fromDay}/${fromMonth}/${fromYear}`;
-    
+    // Default from date: first day of current month
+    const defFromDate = `01/${month}/${year}`;
     const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
     
     if (currentListTab === 'chonhaplieu') {
@@ -1496,7 +1523,7 @@ function parseDateString(dateStr) {
 function resetFilters() {
     const ids = [
         'filter-makh', 'filter-tenbbd', 'filter-tenbnbd', 'filter-bienlai',
-        'filter-tungay', 'filter-denngay', 'filter-loaidangky', 'cb-loaihinh',
+        'filter-loaidangky', 'cb-loaihinh',
         'filter-loaitaisan', 'filter-search-term', 'filter-kenh-tiep-nhan',
         'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra',
         'filter-handlingOfficer'
@@ -1505,6 +1532,17 @@ function resetFilters() {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
+    
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    const defFromDate = `01/${month}/${year}`;
+    const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
+
+    const elFrom = document.getElementById('filter-tungay');
+    if (elFrom) elFrom.value = defFromDate;
+    const elTo = document.getElementById('filter-denngay');
+    if (elTo) elTo.value = defToDate;
     
     const cbLoaiHinh = document.getElementById('cb-loaihinh');
     if (cbLoaiHinh) {
@@ -2420,55 +2458,37 @@ function initViewMode() {
         }
     });
 
-    // Shift all mock data dates so that the most recent profile is "today"
-    let maxDate = null;
-    mockProfiles.forEach(p => {
-        const d = parseDateString(p.date);
-        if (d && (!maxDate || d > maxDate)) {
-            maxDate = d;
+    // Shift all mock data dates so that they fall within the current month/day (from 1st to today)
+    const today = new Date();
+    const currentDay = today.getDate();
+    const currentMonth = String(today.getMonth() + 1).padStart(2, '0');
+    const currentYear = today.getFullYear();
+
+    const shiftDateToCurrentMonth = (dateStr, index) => {
+        const d = parseDateString(dateStr);
+        if (!d) return dateStr;
+        const targetDay = (index % currentDay) + 1;
+        const formattedDay = String(targetDay).padStart(2, '0');
+        const hh = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        return `${formattedDay}/${currentMonth}/${currentYear} ${hh}:${min}`;
+    };
+
+    mockProfiles.forEach((p, idx) => {
+        p.date = shiftDateToCurrentMonth(p.date, idx);
+        if (p.timeline) {
+            p.timeline.forEach(t => {
+                t.date = shiftDateToCurrentMonth(t.date, idx);
+            });
         }
-    });
-
-    if (maxDate) {
-        const today = new Date();
-        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        if (maxDate < todayStart) {
-            const todayWithTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), maxDate.getHours(), maxDate.getMinutes(), maxDate.getSeconds());
-            const diffMs = todayWithTime.getTime() - maxDate.getTime();
-
-            const formatDate = (date) => {
-                const dd = String(date.getDate()).padStart(2, '0');
-                const mm = String(date.getMonth() + 1).padStart(2, '0');
-                const yyyy = date.getFullYear();
-                const hh = String(date.getHours()).padStart(2, '0');
-                const min = String(date.getMinutes()).padStart(2, '0');
-                return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
-            };
-
-            const shiftDateString = (dateStr) => {
-                const d = parseDateString(dateStr);
-                if (!d) return dateStr;
-                const shifted = new Date(d.getTime() + diffMs);
-                return formatDate(shifted);
-            };
-
-            mockProfiles.forEach(p => {
-                p.date = shiftDateString(p.date);
-                if (p.timeline) {
-                    p.timeline.forEach(t => {
-                        t.date = shiftDateString(t.date);
-                    });
-                }
-                if (p.internalLogs) {
-                    p.internalLogs.forEach(l => {
-                        if (l.time && l.time !== 'Vừa xong' && l.time.includes('/')) {
-                            l.time = shiftDateString(l.time);
-                        }
-                    });
+        if (p.internalLogs) {
+            p.internalLogs.forEach(l => {
+                if (l.time && l.time !== 'Vừa xong' && l.time.includes('/')) {
+                    l.time = shiftDateToCurrentMonth(l.time, idx);
                 }
             });
         }
-    }
+    });
 
     localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
     

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../../Common/style_iframe.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../../Common/iframe_helper.js"></script>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         .container {
             max-width: 1200px;
@@ -440,11 +442,11 @@
                     <!-- Hàng 3 -->
                     <div class="form-group">
                         <label class="form-label">Từ ngày</label>
-                        <input type="date" class="form-control" id="filterFromDate" onchange="filterDossiers()">
+                        <input type="text" class="form-control" id="filterFromDate" onchange="filterDossiers()" placeholder="dd/mm/yyyy">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Đến ngày</label>
-                        <input type="date" class="form-control" id="filterToDate" onchange="filterDossiers()">
+                        <input type="text" class="form-control" id="filterToDate" onchange="filterDossiers()" placeholder="dd/mm/yyyy">
                     </div>
                 </div>
 
@@ -1718,9 +1720,9 @@
 
         function parseInputDate(inputVal) {
             if (!inputVal) return null;
-            const parts = inputVal.split('-');
+            const parts = inputVal.split('/');
             if (parts.length === 3) {
-                return new Date(parts[0], parts[1] - 1, parts[2]);
+                return new Date(parts[2], parts[1] - 1, parts[0]);
             }
             return null;
         }
@@ -1997,11 +1999,31 @@
             document.getElementById('filterCustomerType').value = '';
 
             const now = new Date();
-            const pad = (n) => n < 10 ? '0' + n : n;
-            const firstDay = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-01`;
-            const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-            document.getElementById('filterFromDate').value = firstDay;
-            document.getElementById('filterToDate').value = today;
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(now.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defaultFrom = formatDate(twoMonthsAgo);
+            const defaultTo = formatDate(now);
+
+            const elStart = document.getElementById('filterFromDate');
+            const elEnd = document.getElementById('filterToDate');
+            if (elStart) {
+                elStart.value = defaultFrom;
+                if (elStart._flatpickr) elStart._flatpickr.setDate(defaultFrom);
+            }
+            if (elEnd) {
+                elEnd.value = defaultTo;
+                if (elEnd._flatpickr) elEnd._flatpickr.setDate(defaultTo);
+            }
 
             filterDossiers();
         }
@@ -2213,11 +2235,28 @@
             } else {
                 initMockDossiersIfEmpty();
 
-                // Mặc định khoảng lọc từ đầu tháng đến ngày hiện tại
-                const firstDay = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-01`;
-                const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-                document.getElementById('filterFromDate').value = firstDay;
-                document.getElementById('filterToDate').value = today;
+                const twoMonthsAgo = new Date();
+                twoMonthsAgo.setMonth(now.getMonth() - 2);
+
+                const formatDate = (date) => {
+                    let dd = date.getDate();
+                    let mm = date.getMonth() + 1;
+                    const yyyy = date.getFullYear();
+                    if (dd < 10) dd = '0' + dd;
+                    if (mm < 10) mm = '0' + mm;
+                    return `${dd}/${mm}/${yyyy}`;
+                };
+
+                const defaultFrom = formatDate(twoMonthsAgo);
+                const defaultTo = formatDate(now);
+
+                document.getElementById('filterFromDate').value = defaultFrom;
+                document.getElementById('filterToDate').value = defaultTo;
+
+                if (typeof flatpickr !== 'undefined') {
+                    flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: filterDossiers });
+                    flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: filterDossiers });
+                }
 
                 filterDossiers();
 
@@ -2999,6 +3038,8 @@
             }, 100);
         }
     </script>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 
 </html>

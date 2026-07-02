@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý câu hỏi và trả lời thường gặp (FAQ)</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #1E3A8A;     /* Navy Blue */
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;   /* Light Blue */
+            --accent-color: #F59E0B;      /* Gold */
+            --accent-hover: #D97706;
+            
+            --success-color: #10B981;     /* Green */
+            --danger-color: #EF4444;      /* Red */
+            --warning-color: #F59E0B;     /* Orange/Yellow */
+            --info-color: #3B82F6;        /* Info Blue */
+            
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: var(--base-size);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Header Styling */
+        .page-header {
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            color: white;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .page-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .page-header p {
+            opacity: 0.9;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Role switcher toggle panel */
+        .role-switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+        }
+        .role-switch-container select {
+            background-color: white;
+            color: var(--text-main);
+            border: none;
+            outline: none;
+            padding: 4px 8px;
+            border-radius: var(--border-radius-sm);
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Card Section Styling */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .section-title {
+            color: var(--primary-color);
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* KPI Quick Stats Row */
+        .stats-badge-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stat-badge-btn {
+            background-color: #E2E8F0;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-badge-btn:hover {
+            background-color: #CBD5E1;
+        }
+        .stat-badge-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .stat-badge-btn .count {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .stat-badge-btn.active .count {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Search Filter layout rules */
+        .search-filters-box {
+            background-color: #FAFAFA;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius-md);
+        }
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+        .form-control, .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 13.5px;
+            outline: none;
+            transition: all 0.15s;
+            font-family: var(--font-family);
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+        }
+        .date-input-container {
+            position: relative;
+        }
+        .date-input-container i {
+            position: absolute;
+            right: 12px;
+            top: 11px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Filter Action row */
+        .filter-actions {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            font-family: var(--font-family);
+            outline: none;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        .btn-outline-primary {
+            background-color: transparent;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .btn-outline-primary:hover {
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+        .btn-outline-success {
+            background-color: transparent;
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+        .btn-outline-success:hover {
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+        .btn-secondary {
+            background-color: #E2E8F0;
+            color: var(--text-main);
+            border-color: #CBD5E1;
+        }
+        .btn-secondary:hover {
+            background-color: #CBD5E1;
+        }
+
+        /* Action Toolbar above table */
+        .action-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 12px;
+            margin-top: 12px;
+        }
+
+        /* Table design and header cells alignment rule */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: white;
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+        .custom-table th {
+            background-color: var(--table-header-bg);
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+            user-select: none;
+        }
+        .custom-table th.sortable {
+            cursor: pointer;
+        }
+        .custom-table th.sortable:hover {
+            background-color: #E2E8F0;
+        }
+        .custom-table th.sortable i {
+            margin-left: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .custom-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+        .custom-table tr:hover {
+            background-color: #F0F9FF; /* Blue tint Row hover anchor */
+            transition: background 0.15s;
+        }
+
+        /* Specific Cell Alignments */
+        .cell-center {
+            text-align: center;
+        }
+        .cell-left {
+            text-align: left;
+        }
+        .cell-right {
+            text-align: right;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-secondary {
+            background-color: #E2E8F0;
+            color: #475569;
+        }
+        .badge-warning {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        .badge-success {
+            background-color: #D1FAE5;
+            color: #047857;
+        }
+        .badge-danger {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        /* Action columns styling (Fixed-Slot) */
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            border-radius: 50%;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            margin: 0 2px;
+        }
+        .icon-btn:hover {
+            color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.08);
+        }
+        .icon-btn.view:hover {
+            color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.08);
+        }
+        .icon-btn.edit:hover {
+            color: var(--info-color);
+            background-color: rgba(59, 130, 246, 0.08);
+        }
+        .icon-btn.delete:hover {
+            color: var(--danger-color);
+            background-color: rgba(239, 68, 68, 0.08);
+        }
+        .icon-btn.send:hover {
+            color: var(--success-color);
+            background-color: rgba(16, 185, 129, 0.08);
+        }
+
+        /* Pagination container design */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .page-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .page-btn:hover:not(:disabled) {
+            background-color: #F1F5F9;
+            border-color: var(--text-muted);
+        }
+        .page-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+        .page-btn:disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        /* Sticky Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh; /* Keep the height within viewport boundaries */
+            overflow: hidden; /* Prevent container scrolling */
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F8FAFC;
+        }
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .modal-close-btn:hover {
+            color: var(--danger-color);
+        }
+        .modal-body {
+            overflow-y: auto; /* Enable independent vertical scrolling */
+            flex: 1; /* Allow body to grow and fill available space */
+            padding: 24px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background-color: #F8FAFC;
+        }
+
+        /* Stepper-like sections in Modal Body */
+        .form-section {
+            margin-bottom: 24px;
+        }
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Upload Area styling */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 20px;
+            background-color: #FAFAFA;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: #F0F9FF;
+        }
+        .upload-area i {
+            font-size: 28px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .upload-area p {
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+        .upload-area span {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* Attachment List Item styling */
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            background-color: transparent;
+            border: none;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .attachment-item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+        .attachment-item-info i {
+            color: #0284C7;
+        }
+        .attachment-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .attachment-actions a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .attachment-actions a:hover {
+            text-decoration: underline;
+        }
+        .attachment-actions button {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-weight: 500;
+            font-family: var(--font-family);
+        }
+        .attachment-actions button:hover {
+            text-decoration: underline;
+        }
+
+        /* Progress Bar mock */
+        .progress-container {
+            width: 100%;
+            background-color: #E2E8F0;
+            border-radius: var(--border-radius-sm);
+            height: 6px;
+            overflow: hidden;
+            margin-top: 5px;
+            display: none;
+        }
+        .progress-bar-fill {
+            background-color: var(--primary-color);
+            width: 0%;
+            height: 100%;
+            transition: width 0.2s;
+        }
+
+        /* Rich Text Editor Mock */
+        .rich-text-mock {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+        .rich-text-toolbar {
+            background-color: #F8FAFC;
+            border-bottom: 1px solid var(--border-color);
+            padding: 6px 10px;
+            display: flex;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .rich-text-toolbar i {
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .rich-text-toolbar i:hover {
+            background-color: #CBD5E1;
+            color: var(--text-main);
+        }
+        .rich-text-body {
+            min-height: 240px;
+            padding: 10px;
+            outline: none;
+            background-color: white;
+            font-size: 13.5px;
+        }
+
+        /* Field Error styling */
+        .field-error-text {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #1E293B;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        .toast.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success i {
+            color: #10B981;
+        }
+        .toast.error i {
+            color: #EF4444;
+        }
+        .toast.warning i {
+            color: #F59E0B;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Quản lý câu hỏi và trả lời thường gặp (FAQ)</h1>
+                <p>Quản lý danh sách câu hỏi hướng dẫn nghiệp vụ ĐKBPBĐ và phê duyệt xuất bản FAQ</p>
+            </div>
+            <!-- Switch Role to test UI -->
+            <div class="role-switch-container">
+                <span>Vai trò kiểm thử:</span>
+                <select id="roleSelector" onchange="switchRole()">
+                    <option value="officer" selected>Cán bộ nghiệp vụ</option>
+                    <option value="approver">Cán bộ phê duyệt (Có thẩm quyền)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filter Panel -->
+        <div class="card-section search-filters-box">
+            <div class="grid-layout" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label">Từ khóa</label>
+                    <input type="text" id="filterKeyword" class="form-control" placeholder="Tìm theo nội dung câu hỏi hoặc câu trả lời...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nhóm chủ đề</label>
+                    <select id="filterTopic" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Đăng ký biện pháp bảo đảm">Đăng ký biện pháp bảo đảm</option>
+                        <option value="Lệ phí và thanh toán">Lệ phí và thanh toán</option>
+                        <option value="Tài khoản và phân quyền">Tài khoản và phân quyền</option>
+                        <option value="Xử lý hồ sơ và biểu mẫu">Xử lý hồ sơ và biểu mẫu</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select id="filterStatus" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Lưu nháp">Lưu nháp</option>
+                        <option value="Chờ duyệt">Chờ duyệt</option>
+                        <option value="Đã duyệt">Đã duyệt</option>
+                        <option value="Từ chối">Từ chối</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Từ ngày tạo</label>
+                    <div class="date-input-container">
+                        <input type="text" id="filterFromDate" class="form-control" placeholder="dd/mm/yyyy">
+                        <i class="fa-regular fa-calendar"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày tạo</label>
+                    <div class="date-input-container">
+                        <input type="text" id="filterToDate" class="form-control" placeholder="dd/mm/yyyy">
+                        <i class="fa-regular fa-calendar"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-outline-primary" onclick="clearFilters()">Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="searchData()"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <!-- KPI Quick Filters & Action Buttons -->
+        <div class="card-section" style="padding: 15px 20px; border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <!-- KPI Filter Buttons -->
+                <div class="stats-badge-row" id="kpiStatsRow">
+                    <button class="stat-badge-btn active" onclick="filterByKpi('all')" id="kpiBtnAll">
+                        Tất cả <span class="count" id="countAll">0</span>
+                    </button>
+                    <button class="stat-badge-btn" onclick="filterByKpi('Chờ duyệt')" id="kpiBtnPending">
+                        Chờ duyệt <span class="count" id="countPending">0</span>
+                    </button>
+                    <button class="stat-badge-btn" onclick="filterByKpi('Từ chối')" id="kpiBtnRejected">
+                        Từ chối <span class="count" id="countRejected">0</span>
+                    </button>
+                </div>
+                
+                <!-- Action Buttons Toolbar -->
+                <div class="action-toolbar" style="margin-top: 0; margin-bottom: 0;">
+                    <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa fa-plus"></i> Thêm mới</button>
+                    <button class="btn btn-outline-success" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GridView / Table -->
+        <div class="table-container">
+            <table class="custom-table" id="faqTable">
+                <thead>
+                    <tr>
+                        <th class="cell-center" style="width: 50px;">STT</th>
+                        <th class="sortable" onclick="sortTable('cauHoi')">Câu hỏi <i class="fa-solid fa-sort" id="sort_cauHoi"></i></th>
+                        <th class="sortable" onclick="sortTable('nhomChuDe')" style="width: 250px;">Nhóm chủ đề <i class="fa-solid fa-sort" id="sort_nhomChuDe"></i></th>
+                        <th class="sortable cell-center" onclick="sortTable('thuTuHienThi')" style="width: 130px;">Thứ tự hiển thị <i class="fa-solid fa-sort" id="sort_thuTuHienThi"></i></th>
+                        <th class="sortable cell-center" onclick="sortTable('ngayTao')" style="width: 130px;">Ngày tạo <i class="fa-solid fa-sort" id="sort_ngayTao"></i></th>
+                        <th class="cell-center" style="width: 120px;">Trạng thái</th>
+                        <th class="cell-center" style="width: 160px; min-width: 160px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- JavaScript Dynamic Render -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Section -->
+        <div class="pagination-container" id="paginationBox">
+            <div id="pageInfo">Hiển thị từ 0 đến 0 trong tổng số 0 bản ghi</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <span>Số bản ghi:</span>
+                    <select id="pageSizeSelector" class="form-select" style="width: 70px; padding: 4px;" onchange="changePageSize()">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="pagination-buttons" id="paginationBtns">
+                    <!-- Navigation Buttons -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky Modal Dialog -->
+    <div class="modal-overlay" id="faqModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm mới câu hỏi thường gặp</h3>
+                <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="faqForm">
+                    <input type="hidden" id="faqId">
+                    
+                    <!-- Section 1: Information -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <i class="fa-solid fa-circle-question"></i> Nội dung câu hỏi & Trả lời
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label class="form-label">Câu hỏi <span style="color: var(--danger-color);">*</span></label>
+                            <textarea id="faqQuestion" class="form-control" rows="3" placeholder="Nhập câu hỏi thường gặp..."></textarea>
+                            <span class="field-error-text" id="error_faqQuestion">Câu hỏi không được để trống</span>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label class="form-label">Nội dung trả lời <span style="color: var(--danger-color);">*</span></label>
+                            <div class="rich-text-mock">
+                                <div class="rich-text-toolbar">
+                                    <i class="fa-solid fa-bold" title="In đậm" onclick="showToast('Mock: Bold text formatting applied', 'info')"></i>
+                                    <i class="fa-solid fa-italic" title="In nghiêng" onclick="showToast('Mock: Italic text formatting applied', 'info')"></i>
+                                    <i class="fa-solid fa-list-ul" title="Danh sách không thứ tự" onclick="showToast('Mock: Bullet list applied', 'info')"></i>
+                                    <i class="fa-solid fa-list-ol" title="Danh sách có thứ tự" onclick="showToast('Mock: Numbered list applied', 'info')"></i>
+                                    <i class="fa-solid fa-link" title="Chèn liên kết" onclick="showToast('Mock: Insert link modal opened', 'info')"></i>
+                                </div>
+                                <div class="rich-text-body" id="faqAnswer" contenteditable="true" placeholder="Nhập nội dung câu trả lời chi tiết..."></div>
+                            </div>
+                            <span class="field-error-text" id="error_faqAnswer">Nội dung câu trả lời không được để trống</span>
+                        </div>
+                        
+                        <div class="grid-layout" style="grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px;">
+                            <div class="form-group">
+                                <label class="form-label">Nhóm chủ đề <span style="color: var(--danger-color);">*</span></label>
+                                <select id="faqTopic" class="form-select">
+                                    <option value="">-- Lựa chọn --</option>
+                                    <option value="Đăng ký biện pháp bảo đảm">Đăng ký biện pháp bảo đảm</option>
+                                    <option value="Lệ phí và thanh toán">Lệ phí và thanh toán</option>
+                                    <option value="Tài khoản và phân quyền">Tài khoản và phân quyền</option>
+                                    <option value="Xử lý hồ sơ và biểu mẫu">Xử lý hồ sơ và biểu mẫu</option>
+                                </select>
+                                <span class="field-error-text" id="error_faqTopic">Vui lòng chọn nhóm chủ đề</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Thứ tự hiển thị</label>
+                                <input type="number" id="faqOrder" class="form-control" min="1" placeholder="Ví dụ: 1, 2, 3...">
+                                <span class="field-error-text" id="error_faqOrder">Thứ tự hiển thị phải là số nguyên dương</span>
+                            </div>
+
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label class="form-label">Tags / Từ khóa</label>
+                                <input type="text" id="faqTags" class="form-control" placeholder="Tối đa 10 tags, phân tách bằng dấu phẩy...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Files Upload -->
+                    <div class="form-section" id="uploadSection">
+                        <div class="form-section-title">
+                            <i class="fa-solid fa-file-arrow-up"></i> Tài liệu hướng dẫn đi kèm
+                        </div>
+                        
+                        <div class="grid-layout" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px;">
+                            <div style="min-width: 0;">
+                                <label class="form-label" style="font-weight: 600;">File tài liệu đính kèm (PDF, JPG, PNG)</label>
+                                <div class="upload-area" onclick="triggerFileInput('docFileInput')">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <p>Kéo thả hoặc Click để tải lên</p>
+                                    <span>Định dạng: PDF, JPG, PNG (Tối đa 10MB/file, tối đa 5 file)</span>
+                                </div>
+                                <input type="file" id="docFileInput" style="display: none;" multiple accept=".pdf,image/*" onchange="handleFileSelected(this, 'doc')">
+                                <div class="progress-container" id="docProgressContainer">
+                                    <div class="progress-bar-fill" id="docProgressBar"></div>
+                                </div>
+                                <div id="docFilesList" style="margin-top: 10px;"></div>
+                            </div>
+                            
+                            <div style="min-width: 0;">
+                                <label class="form-label" style="font-weight: 600;">File hướng dẫn media (MP4, MP3)</label>
+                                <div class="upload-area" onclick="triggerFileInput('mediaFileInput')">
+                                    <i class="fa-solid fa-photo-film"></i>
+                                    <p>Kéo thả hoặc Click để tải lên</p>
+                                    <span>Định dạng: MP4, MP3 (Tối đa 50MB/file, tối đa 3 file)</span>
+                                </div>
+                                <input type="file" id="mediaFileInput" style="display: none;" multiple accept="audio/*,video/*" onchange="handleFileSelected(this, 'media')">
+                                <div class="progress-container" id="mediaProgressContainer">
+                                    <div class="progress-bar-fill" id="mediaProgressBar"></div>
+                                </div>
+                                <div id="mediaFilesList" style="margin-top: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Approver Decision controls -->
+                    <div class="form-section" id="approveSection" style="display: none; background-color: #FFFBEB; border: 1px solid #FEF3C7; padding: 15px; border-radius: var(--border-radius-md);">
+                        <div class="form-section-title" style="color: #D97706; border-bottom-color: #FEF3C7;">
+                            <i class="fa-solid fa-gavel"></i> Cán bộ phê duyệt câu hỏi FAQ
+                        </div>
+                        
+                        <div class="grid-layout" style="grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 10px;">
+                            <div class="form-group">
+                                <label class="form-label">Người tạo / gửi duyệt</label>
+                                <input type="text" id="creatorName" class="form-control" readOnly style="background-color: #E2E8F0;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ngày gửi duyệt</label>
+                                <input type="text" id="submitDate" class="form-control" readOnly style="background-color: #E2E8F0;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Lý do từ chối (Bắt buộc khi chọn Từ chối)</label>
+                            <textarea id="rejectReason" class="form-control" rows="2" placeholder="Nhập lý do từ chối phê duyệt FAQ..."></textarea>
+                            <span class="field-error-text" id="error_rejectReason">Lý do từ chối là bắt buộc</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <!-- Close/Cancel -->
+                <button class="btn btn-secondary" onclick="closeModal()" id="btnCancel">Hủy</button>
+                <!-- Draft and Submit Actions for Officer -->
+                <button class="btn btn-outline-primary" onclick="saveData('Lưu nháp')" id="btnSaveDraft">Lưu nháp</button>
+                <button class="btn btn-primary" onclick="saveData('Chờ duyệt')" id="btnSubmitApproval">Gửi duyệt</button>
+                <!-- Approver Actions -->
+                <button class="btn btn-danger" onclick="approveDecision('Từ chối')" id="btnReject" style="display: none;"><i class="fa-solid fa-ban"></i> Từ chối</button>
+                <button class="btn btn-primary" style="background-color: var(--success-color); border-color: var(--success-color);" onclick="approveDecision('Đã duyệt')" id="btnApprove" style="display: none;"><i class="fa-solid fa-file-signature"></i> Phê duyệt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast message -->
+    <div class="toast" id="toast">
+        <i class="fa-solid"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // MOCK DATA INITIALIZATION - Expanded to 20 records with all statuses
+        let initialMockFaqs = [
+            { id: 1, cauHoi: "Quy trình đăng ký biện pháp bảo đảm bằng ô tô trực tuyến cần những giấy tờ gì?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 1, ngayTao: "15/01/2026", tomTat: "Hướng dẫn chuẩn hồ sơ đính kèm và biểu mẫu đăng ký thế chấp ô tô trên cổng dịch vụ công.", tags: "ô tô, đăng ký thế chấp, trực tuyến", files: ["Huongdan_Dangky_Oto.pdf"], media: [], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/01/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "16/01/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Để đăng ký thế chấp ô tô trực tuyến, bạn cần chuẩn bị:<br>1. Bản scan Phiếu yêu cầu đăng ký theo mẫu quy định (PDF).<br>2. Hợp đồng thế chấp hoặc văn bản thỏa thuận thế chấp tài sản.<br>3. Bản scan Giấy chứng nhận đăng ký xe ô tô (cả 2 mặt).<br>Tất cả tải lên hệ thống dịch vụ công và thực hiện ký số trực tuyến." },
+            { id: 2, cauHoi: "Làm thế nào để thanh toán phí đăng ký biện pháp bảo đảm qua thẻ nội địa/mã QR?", nhomChuDe: "Lệ phí và thanh toán", thuTuHienThi: 2, ngayTao: "20/01/2026", tomTat: "Giải thích các phương thức thanh toán trực tuyến qua Napas và VNPay.", tags: "thanh toán, lệ phí, Napas, QR", files: [], media: ["Video_huongdan_thanhtoan.mp4"], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/01/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "21/01/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Hệ thống hỗ trợ thanh toán phí thông qua cổng thanh toán VNPay. Bạn có thể chọn quét mã QR ngân hàng hoặc nhập thông tin thẻ ATM nội địa để trừ tiền trực tiếp. Biên lai điện tử sẽ được phát hành ngay khi giao dịch thành công." },
+            { id: 3, cauHoi: "Tài khoản khách hàng bị khóa do nhập sai mật khẩu quá 5 lần thì xử lý thế nào?", nhomChuDe: "Tài khoản và phân quyền", thuTuHienThi: 1, ngayTao: "10/02/2026", tomTat: "Quy trình kích hoạt lại tài khoản khách hàng thông qua email và xác thực OTP.", tags: "tài khoản bị khóa, quên mật khẩu", files: ["Huongdan_Laylai_Matkhau.pdf"], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "10/02/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Hệ thống tự động khóa tài khoản trong 30 phút để bảo mật. Khách hàng có thể nhấn vào liên kết 'Quên mật khẩu' trên màn hình đăng nhập để tự khôi phục thông qua địa chỉ email đã đăng ký." },
+            { id: 4, cauHoi: "Thời gian xử lý hồ sơ xóa đăng ký biện pháp bảo đảm là bao lâu?", nhomChuDe: "Xử lý hồ sơ và biểu mẫu", thuTuHienThi: 3, ngayTao: "15/02/2026", tomTat: "Thời gian luật định cho việc trả kết quả thủ tục hành chính xóa đăng ký.", tags: "thời gian xử lý, xóa thế chấp", files: [], media: [], trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/02/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Theo quy định mới, thời gian xử lý thủ tục hành chính xóa đăng ký biện pháp bảo đảm tối đa không quá 01 ngày làm việc kể từ thời điểm tiếp nhận hồ sơ hợp lệ trên hệ thống." },
+            { id: 5, cauHoi: "Làm thế nào để đăng ký tài khoản doanh nghiệp cho văn phòng công chứng?", nhomChuDe: "Tài khoản và phân quyền", thuTuHienThi: 2, ngayTao: "12/02/2026", tomTat: "Xác minh thông tin đăng ký tài khoản tổ chức hành nghề công chứng bằng chữ ký số USB Token.", tags: "văn phòng công chứng, tài khoản doanh nghiệp", files: ["Huongdan_Tao_TK_ToChuc.pdf"], media: [], trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "12/02/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "14/02/2026", lyDoTuChoi: "Nội dung trả lời chưa cập nhật quy định sử dụng chữ ký số công cộng theo Luật giao dịch điện tử mới năm 2024.", isDeleted: 0, traLoi: "Đại diện VPCC cần truy cập vào mục Đăng ký tài khoản doanh nghiệp, nhập mã số thuế và cắm USB Token chứa chứng thư số doanh nghiệp vào để thực hiện ký xác nhận thông tin đăng ký." },
+            { id: 6, cauHoi: "Đăng ký biện pháp bảo đảm đối với quyền đòi nợ hình thành trong tương lai cần lưu ý gì?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 4, ngayTao: "01/03/2026", tomTat: "Mô tả tài sản và quyền tài sản hình thành trong tương lai.", tags: "quyền đòi nợ, tài sản hình thành trong tương lai", files: ["Luu_y_Quyendomno.pdf"], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "01/03/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Hồ sơ đăng ký phải mô tả rõ hợp đồng gốc phát sinh quyền đòi nợ, thông tin bên có nghĩa vụ trả nợ và giá trị dự kiến của khoản nợ." },
+            { id: 7, cauHoi: "Có được đăng ký thế chấp cho kho hàng hóa luân chuyển liên tục không?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 5, ngayTao: "15/03/2026", tomTat: "Quy chuẩn đăng ký thế chấp kho hàng luân chuyển trong kho.", tags: "kho hàng, hàng hóa luân chuyển", files: [], media: [], trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/03/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Cho phép đăng ký thế chấp đối với hàng hóa luân chuyển trong sản xuất kinh doanh. Hợp đồng thế chấp phải quy định rõ địa chỉ kho hàng và cơ chế kiểm soát, đối soát định kỳ của ngân hàng nhận thế chấp." },
+            { id: 8, cauHoi: "Làm thế nào để tra cứu mã số định danh biện pháp bảo đảm trực tuyến?", nhomChuDe: "Xử lý hồ sơ và biểu mẫu", thuTuHienThi: 1, ngayTao: "22/03/2026", tomTat: "Tra cứu thông tin tài sản bằng mã định danh quốc gia.", tags: "tra cứu, mã định danh, tài sản", files: ["Huongdan_Tracuu.pdf"], media: [], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "22/03/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "23/03/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Khách hàng đăng nhập, vào chức năng Tra cứu dữ liệu, nhập số khung xe ô tô hoặc số hiệu tài sản để kiểm tra xem tài sản đó đang bị đăng ký thế chấp tại tổ chức tín dụng nào hay không." },
+            { id: 9, cauHoi: "Quy trình xử lý hồ sơ đăng ký bị lỗi mạng thanh toán Napas?", nhomChuDe: "Lệ phí và thanh toán", thuTuHienThi: 3, ngayTao: "28/03/2026", tomTat: "Xử lý lỗi lệch soát thanh toán giữa ngân hàng và hệ thống cổng dịch vụ.", tags: "lỗi thanh toán, lỗi Napas", files: [], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "28/03/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Nếu tài khoản ngân hàng đã bị trừ tiền nhưng hồ sơ vẫn báo chưa thanh toán, cán bộ cần liên hệ bộ phận đối soát tài chính hoặc chờ hệ thống chạy tác vụ đồng bộ đối soát tự động mỗi 15 phút." },
+            { id: 10, cauHoi: "Đăng ký thay đổi thông tin bên bảo đảm do sáp nhập doanh nghiệp?", nhomChuDe: "Xử lý hồ sơ và biểu mẫu", thuTuHienThi: 2, ngayTao: "05/04/2026", tomTat: "Hồ sơ thay đổi chủ thể khi thực hiện sáp nhập ngân hàng hoặc công ty.", tags: "sáp nhập doanh nghiệp, đăng ký thay đổi", files: ["Huongdan_SapNhap_DoanhNghiep.pdf"], media: [], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "05/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "06/04/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Bên nhận thế chấp nộp hồ sơ đăng ký thay đổi chủ thể kèm theo Quyết định sáp nhập của cơ quan có thẩm quyền để hệ thống cập nhật đồng loạt thông tin chủ sở hữu tài sản bảo đảm." },
+            { id: 11, cauHoi: "Sử dụng chữ ký số cá nhân để phê duyệt hồ sơ đăng ký biện pháp bảo đảm?", nhomChuDe: "Tài khoản và phân quyền", thuTuHienThi: 4, ngayTao: "12/04/2026", tomTat: "Quy chuẩn sử dụng chữ ký số cá nhân SmartOTP hoặc USB Token.", tags: "chữ ký số cá nhân, SmartOTP", files: [], media: [], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "12/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "13/04/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Khách hàng cá nhân có thể sử dụng chữ ký số cá nhân do các nhà cung cấp CA công cộng cấp dưới dạng SIM ký số, USB Token hoặc ứng dụng SmartCA tương thích cổng dịch vụ công quốc gia." },
+            { id: 12, cauHoi: "Cán bộ nghiệp vụ một cửa từ chối hồ sơ thế chấp khi thiếu giấy tờ gì?", nhomChuDe: "Xử lý hồ sơ và biểu mẫu", thuTuHienThi: 6, ngayTao: "15/04/2026", tomTat: "Các trường hợp bắt buộc phải trả lại hồ sơ đăng ký.", tags: "từ chối hồ sơ, trả lại hồ sơ", files: [], media: [], trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "18/04/2026", lyDoTuChoi: "Nội dung câu trả lời cần bổ sung thêm liên kết tải 5 mẫu văn bản từ chối chuẩn ban hành kèm theo Thông tư.", isDeleted: 0, traLoi: "Hồ sơ sẽ bị cán bộ từ chối tiếp nhận nếu thiếu chữ ký hợp lệ của bên thế chấp, thông tin tài sản mô tả bị sai lệch số hiệu hoặc không đính kèm giấy chứng nhận sở hữu tài sản." },
+            // Additional Mock records to hit 20 records (ensure 5+ records per status for 2-page pagination testing)
+            { id: 13, cauHoi: "Xử lý giao dịch thế chấp bị trùng lặp số khung xe máy trên Cổng thông tin?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 6, ngayTao: "16/04/2026", tomTat: "Quy trình kiểm tra số khung thực tế và xác minh tính hợp pháp của đăng ký xe.", tags: "số khung, xe máy, trùng lặp", files: ["Huongdan_Trunghop_Sokhung.pdf"], media: [], trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "16/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "18/04/2026", lyDoTuChoi: "Bản hướng dẫn chưa có sơ đồ xử lý trực quan đối với đăng ký viên.", isDeleted: 0, traLoi: "Cán bộ một cửa cần yêu cầu bên nhận thế chấp bổ sung hồ sơ gốc xe máy của cơ quan Công an cấp để kiểm tra xem có sự sai lệch ký tự số khung trong nhập liệu hay không." },
+            { id: 14, cauHoi: "Làm thế nào để đăng ký bổ sung tài sản thế chấp mới vào hợp đồng hiện hữu?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 7, ngayTao: "18/04/2026", tomTat: "Đăng ký thay đổi nội dung biện pháp bảo đảm đã đăng ký.", tags: "đăng ký bổ sung, hợp đồng thế chấp", files: [], media: [], trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "18/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Người nộp hồ sơ chọn thủ tục 'Đăng ký thay đổi nội dung biện pháp bảo đảm đã đăng ký', tích chọn ô 'Bổ sung tài sản bảo đảm' và nhập thông tin tài sản mới vào hệ thống." },
+            { id: 15, cauHoi: "Cấp lại biên lai thu phí đăng ký biện pháp bảo đảm do bị mất?", nhomChuDe: "Lệ phí và thanh toán", thuTuHienThi: 4, ngayTao: "20/04/2026", tomTat: "Thủ tục xin cấp lại biên lai/hóa đơn điện tử thu phí đăng ký.", tags: "cấp lại biên lai, hóa đơn điện tử", files: ["Huongdan_CapLai_BienLai.pdf"], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Do hệ thống phát hành hóa đơn điện tử e-Invoice, khách hàng chỉ cần đăng nhập tài khoản, vào Lịch sử giao dịch để tải về file PDF hóa đơn gốc bất cứ lúc nào." },
+            { id: 16, cauHoi: "Phân quyền cho nhân viên tín dụng đăng ký thay cho chi nhánh ngân hàng?", nhomChuDe: "Tài khoản và phân quyền", thuTuHienThi: 5, ngayTao: "22/04/2026", tomTat: "Hướng dẫn phân quyền tài khoản phụ và tạo nhóm người dùng doanh nghiệp.", tags: "phân quyền, tài khoản phụ, ngân hàng", files: [], media: [], trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "22/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "23/04/2026", lyDoTuChoi: "Nội dung trả lời chưa hướng dẫn thủ tục ủy quyền bằng văn bản pháp lý của Giám đốc Chi nhánh.", isDeleted: 0, traLoi: "Tài khoản Admin của Ngân hàng có thể vào cấu hình Tổ chức, nhấn nút 'Thêm thành viên', nhập email nhân viên và gán quyền 'Đăng ký viên' để đại diện thực hiện thủ tục." },
+            { id: 17, cauHoi: "Biểu phí đăng ký biện pháp bảo đảm mới áp dụng từ năm 2026?", nhomChuDe: "Lệ phí và thanh toán", thuTuHienThi: 5, ngayTao: "24/04/2026", tomTat: "Cập nhật các biểu phí đăng ký thế chấp, xóa đăng ký thế chấp theo thông tư mới.", tags: "biểu phí mới, lệ phí 2026", files: ["BieuPhi_DangKy_2026.pdf"], media: [], trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "24/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "25/04/2026", lyDoTuChoi: "Thông tin mức lệ phí xóa thế chấp bị ghi sai lệch so với Thông tư gốc của Bộ Tài chính.", isDeleted: 0, traLoi: "Theo quy định mới, mức phí đăng ký thế chấp là 80.000 đồng/hồ sơ; phí xóa thế chấp là 20.000 đồng/hồ sơ; phí cung cấp thông tin tài sản là 30.000 đồng/lần tra cứu." },
+            { id: 18, cauHoi: "Hồ sơ đăng ký biện pháp bảo đảm qua bưu điện được xử lý như thế nào?", nhomChuDe: "Xử lý hồ sơ và biểu mẫu", thuTuHienThi: 7, ngayTao: "26/04/2026", tomTat: "Quy trình tiếp nhận và thời hạn trả kết quả đối với hồ sơ gửi qua dịch vụ bưu chính.", tags: "hồ sơ bưu điện, tiếp nhận bưu chính", files: [], media: [], trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "26/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Hồ sơ gửi qua bưu điện được cán bộ một cửa tiếp nhận và cập nhật thời điểm nhận vào sổ công văn. Thời hạn xử lý tính từ giờ cán bộ nhập thông tin vào hệ thống phần mềm nghiệp vụ." },
+            { id: 19, cauHoi: "Đăng ký thế chấp đối với quyền sử dụng đất và tài sản gắn liền với đất hình thành trong tương lai?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 8, ngayTao: "28/04/2026", tomTat: "Các lưu ý đặc biệt khi thế chấp nhà chung cư chưa bàn giao.", tags: "nhà chung cư, tài sản hình thành trong tương lai, đất đai", files: ["Huongdan_NhaO_TuongLai.pdf"], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "28/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Bên thế chấp phải đính kèm Hợp đồng mua bán căn hộ ký với chủ đầu tư, Biên bản đóng tiền theo tiến độ và văn bản đồng ý cho thế chấp của chủ đầu tư dự án." },
+            { id: 20, cauHoi: "Đăng ký thay đổi thông tin tài sản thế chấp do thay đổi số khung số máy sau khi cải tạo xe?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 9, ngayTao: "30/04/2026", tomTat: "Quy trình đổi số hiệu xe cải tạo trong CSDL quốc gia.", tags: "cải tạo xe, đổi số máy, đăng ký thay đổi", files: [], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "30/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Bên nhận thế chấp thực hiện nộp hồ sơ đăng ký thay đổi thông tin tài sản bảo đảm, cung cấp văn bản xác nhận thay đổi số khung/số máy do Cơ quan Đăng ký xe của Công an cấp." }
+        ];
+
+        // LOCAL STORAGE STORAGE FOR CRUD STATE
+        if (!localStorage.getItem('faq_documents')) {
+            localStorage.setItem('faq_documents', JSON.stringify(initialMockFaqs));
+        }
+
+        // STATE VARIABLES
+        let documents = JSON.parse(localStorage.getItem('faq_documents'));
+
+        // DYNAMIC SHIFT DATES TO CURRENT MONTH (guarantees results are visible under default filters)
+        shiftDatesToCurrentMonth();
+
+        let currentRole = "officer"; 
+        let activeKpiFilter = "all"; 
+        
+        let currentPage = 1;
+        let pageSize = 5;
+        let sortColumn = "ngayTao";
+        let sortOrder = "desc";
+
+        // Current temporary files list in Modal
+        let tempDocFiles = [];
+        let tempMediaFiles = [];
+
+        // DYNAMIC DATE SHIFTING HELPER
+        function shiftDatesToCurrentMonth() {
+            const today = new Date();
+            const currentMonth = String(today.getMonth() + 1).padStart(2, '0');
+            const currentYear = today.getFullYear();
+            const currentDay = today.getDate();
+
+            documents.forEach((doc, index) => {
+                const targetDay = (index % currentDay) + 1;
+                const dayStr = String(targetDay).padStart(2, '0');
+                
+                doc.ngayTao = `${dayStr}/${currentMonth}/${currentYear}`;
+                if (doc.ngayDuyet) {
+                    doc.ngayDuyet = `${dayStr}/${currentMonth}/${currentYear}`;
+                }
+            });
+        }
+
+        function openApproveModal(id) {
+            openDetailModal(id);
+            setTimeout(() => {
+                const approveSec = document.getElementById('approveSection');
+                if (approveSec) approveSec.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function openRejectModal(id) {
+            openDetailModal(id);
+            setTimeout(() => {
+                const approveSec = document.getElementById('approveSection');
+                if (approveSec) approveSec.scrollIntoView({ behavior: 'smooth' });
+                const reasonInput = document.getElementById('rejectReason');
+                if (reasonInput && !reasonInput.disabled) reasonInput.focus();
+            }, 300);
+        }
+
+        // ON LOAD INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set date defaults in filters
+            const today = new Date();
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defFromDate = formatDate(twoMonthsAgo);
+            const defToDate = formatDate(today);
+            
+            document.getElementById('filterFromDate').value = defFromDate;
+            document.getElementById('filterToDate').value = defToDate;
+
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: refreshTable });
+                flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: refreshTable });
+            }
+
+            switchRole(); // Initialize visual controls according to role
+            refreshTable();
+        });
+
+        // ROLE SWITCH FUNCTION
+        function switchRole() {
+            currentRole = document.getElementById('roleSelector').value;
+            refreshTable();
+        }
+
+        // KPI REFRESH & COUNTER UPDATES
+        function updateKpiCounters() {
+            const list = documents.filter(d => !d.isDeleted);
+            
+            // All
+            document.getElementById('countAll').innerText = list.length;
+            // Pending
+            document.getElementById('countPending').innerText = list.filter(d => d.trangThai === 'Chờ duyệt').length;
+            // Rejected
+            document.getElementById('countRejected').innerText = list.filter(d => d.trangThai === 'Từ chối').length;
+        }
+
+        function filterByKpi(status) {
+            activeKpiFilter = status;
+            document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (status === 'all') {
+                document.getElementById('kpiBtnAll').classList.add('active');
+            } else if (status === 'Chờ duyệt') {
+                document.getElementById('kpiBtnPending').classList.add('active');
+            } else if (status === 'Từ chối') {
+                document.getElementById('kpiBtnRejected').classList.add('active');
+            }
+            
+            currentPage = 1;
+            refreshTable();
+        }
+
+        // DATE UTILS
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            const parts = dateStr.split('/');
+            if (parts.length !== 3) return null;
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+
+        function formatDateToString(date) {
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        }
+
+        // FILTER, SORT, PAGINATE & RENDER
+        function refreshTable() {
+            let list = documents.filter(d => !d.isDeleted);
+
+            // 1. Apply Filter panel criteria
+            const kw = document.getElementById('filterKeyword').value.trim().toLowerCase();
+            const topic = document.getElementById('filterTopic').value;
+            const status = document.getElementById('filterStatus').value;
+            const fromD = parseDate(document.getElementById('filterFromDate').value);
+            const toD = parseDate(document.getElementById('filterToDate').value);
+
+            if (kw) {
+                list = list.filter(d => d.cauHoi.toLowerCase().includes(kw) || d.traLoi.toLowerCase().includes(kw));
+            }
+            if (topic) {
+                list = list.filter(d => d.nhomChuDe === topic);
+            }
+            if (status) {
+                list = list.filter(d => d.trangThai === status);
+            }
+            if (fromD) {
+                list = list.filter(d => {
+                    const dDate = parseDate(d.ngayTao);
+                    return dDate && dDate >= fromD;
+                });
+            }
+            if (toD) {
+                list = list.filter(d => {
+                    const dDate = parseDate(d.ngayTao);
+                    return dDate && dDate <= toD;
+                });
+            }
+
+            // 2. Apply KPI quick status filter
+            if (activeKpiFilter !== 'all') {
+                list = list.filter(d => d.trangThai === activeKpiFilter);
+            }
+
+            // Update the counters
+            updateKpiCounters();
+
+            // 3. Sorting
+            list.sort((a, b) => {
+                let valA = a[sortColumn];
+                let valB = b[sortColumn];
+
+                if (sortColumn === 'ngayTao') {
+                    valA = parseDate(valA) || new Date(0);
+                    valB = parseDate(valB) || new Date(0);
+                } else if (sortColumn === 'thuTuHienThi') {
+                    valA = parseInt(valA) || 999;
+                    valB = parseInt(valB) || 999;
+                } else {
+                    valA = (valA || '').toString().toLowerCase();
+                    valB = (valB || '').toString().toLowerCase();
+                }
+
+                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            // Update Sort Indicators visually
+            document.querySelectorAll('.custom-table th i').forEach(icon => {
+                icon.className = "fa-solid fa-sort";
+            });
+            const activeSortIcon = document.getElementById(`sort_${sortColumn}`);
+            if (activeSortIcon) {
+                activeSortIcon.className = sortOrder === 'asc' ? "fa-solid fa-sort-up" : "fa-solid fa-sort-down";
+            }
+
+            // 4. Pagination sizing
+            const totalRecords = list.length;
+            const totalPages = Math.ceil(totalRecords / pageSize) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, totalRecords);
+            const paginatedList = list.slice(startIdx, endIdx);
+
+            // Render Table Body
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (paginatedList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="cell-center" style="color: var(--text-muted); padding: 30px;">
+                            <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                            Không tìm thấy câu hỏi FAQ nào phù hợp.
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('pageInfo').innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
+                document.getElementById('paginationBox').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('paginationBox').style.display = 'flex';
+            document.getElementById('pageInfo').innerText = `Hiển thị từ ${startIdx + 1} đến ${endIdx} trong tổng số ${totalRecords} bản ghi`;
+
+            paginatedList.forEach((faq, index) => {
+                const tr = document.createElement('tr');
+                
+                // STT
+                const tdStt = document.createElement('td');
+                tdStt.className = "cell-center";
+                tdStt.innerText = startIdx + index + 1;
+                tr.appendChild(tdStt);
+
+                // FAQ Question Name
+                const tdQuestion = document.createElement('td');
+                tdQuestion.innerHTML = `<a href="javascript:void(0)" onclick="openDetailModal(${faq.id})" style="color: var(--primary-color); font-weight: 500; text-decoration: none;">${faq.cauHoi}</a>`;
+                tr.appendChild(tdQuestion);
+
+                // Topic
+                const tdTopic = document.createElement('td');
+                tdTopic.innerText = faq.nhomChuDe;
+                tr.appendChild(tdTopic);
+
+                // Display order
+                const tdOrder = document.createElement('td');
+                tdOrder.className = "cell-center";
+                tdOrder.innerText = faq.thuTuHienThi || "—";
+                tr.appendChild(tdOrder);
+
+                // Create Date
+                const tdDate = document.createElement('td');
+                tdDate.className = "cell-center";
+                tdDate.innerText = faq.ngayTao;
+                tr.appendChild(tdDate);
+
+                // Status Badge
+                const tdStatus = document.createElement('td');
+                tdStatus.className = "cell-center";
+                let badgeClass = "badge-secondary";
+                if (faq.trangThai === "Chờ duyệt") badgeClass = "badge-warning";
+                else if (faq.trangThai === "Đã duyệt") badgeClass = "badge-success";
+                else if (faq.trangThai === "Từ chối") badgeClass = "badge-danger";
+                tdStatus.innerHTML = `<span class="badge ${badgeClass}">${faq.trangThai}</span>`;
+                tr.appendChild(tdStatus);
+
+                // Action Column Fixed Slots alignment
+                const tdActions = document.createElement('td');
+                tdActions.className = "cell-center";
+                
+                // Slot 1: Xem (Always available)
+                const viewBtn = `<button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${faq.id})"><i class="fa-solid fa-eye"></i></button>`;
+                
+                if (currentRole === 'officer') {
+                    // Cán bộ nghiệp vụ (4 slots: Xem, Sửa, Xóa, Gửi duyệt)
+                    let editBtn = '';
+                    if (faq.trangThai === 'Lưu nháp' || faq.trangThai === 'Từ chối') {
+                        editBtn = `<button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal(${faq.id})"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                    } else {
+                        editBtn = `<button class="icon-btn edit" title="Chỉ chỉnh sửa khi ở trạng thái Lưu nháp hoặc Từ chối" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                    }
+
+                    let delBtn = '';
+                    if (faq.trangThai === 'Lưu nháp') {
+                        delBtn = `<button class="icon-btn delete" title="Xóa câu hỏi FAQ" onclick="deleteFaq(${faq.id})"><i class="fa-solid fa-trash-can"></i></button>`;
+                    } else {
+                        delBtn = `<button class="icon-btn delete" title="Chỉ được xóa câu hỏi ở trạng thái Lưu nháp" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-trash-can"></i></button>`;
+                    }
+
+                    let sendBtn = '';
+                    if (faq.trangThai === 'Lưu nháp' || faq.trangThai === 'Từ chối') {
+                        sendBtn = `<button class="icon-btn send" title="Gửi phê duyệt" onclick="sendToApproval(${faq.id})"><i class="fa-solid fa-paper-plane"></i></button>`;
+                    } else {
+                        sendBtn = `<button class="icon-btn send" title="Chỉ được gửi phê duyệt câu hỏi Lưu nháp hoặc Từ chối" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-paper-plane"></i></button>`;
+                    }
+
+                    tdActions.innerHTML = viewBtn + editBtn + delBtn + sendBtn;
+                } else {
+                    // Cán bộ phê duyệt (3 slots: Xem, Phê duyệt, Từ chối)
+                    let approveBtn = '';
+                    if (faq.trangThai === 'Chờ duyệt') {
+                        approveBtn = `<button class="icon-btn send" style="color: var(--success-color); border-color: var(--success-color);" title="Phê duyệt" onclick="openApproveModal(${faq.id})"><i class="fa-solid fa-file-signature"></i></button>`;
+                    } else {
+                        approveBtn = `<button class="icon-btn send" title="Chỉ phê duyệt câu hỏi ở trạng thái Chờ duyệt" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-file-signature"></i></button>`;
+                    }
+
+                    let rejectBtn = '';
+                    if (faq.trangThai === 'Chờ duyệt') {
+                        rejectBtn = `<button class="icon-btn delete" style="color: var(--danger-color); border-color: var(--danger-color);" title="Từ chối" onclick="openRejectModal(${faq.id})"><i class="fa-solid fa-ban"></i></button>`;
+                    } else {
+                        rejectBtn = `<button class="icon-btn delete" title="Chỉ từ chối câu hỏi ở trạng thái Chờ duyệt" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-ban"></i></button>`;
+                    }
+
+                    tdActions.innerHTML = viewBtn + approveBtn + rejectBtn;
+                }
+                tr.appendChild(tdActions);
+
+                tbody.appendChild(tr);
+            });
+
+            // Pagination Buttons
+            renderPaginationControls(totalPages);
+        }
+
+        // RENDER PAGINATION BUTTONS
+        function renderPaginationControls(totalPages) {
+            const container = document.getElementById('paginationBtns');
+            container.innerHTML = '';
+
+            // First page button
+            const firstBtn = document.createElement('button');
+            firstBtn.className = "page-btn";
+            firstBtn.innerHTML = '<i class="fa-solid fa-angles-left"></i>';
+            firstBtn.disabled = (currentPage === 1);
+            firstBtn.onclick = () => { currentPage = 1; refreshTable(); };
+            container.appendChild(firstBtn);
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = "page-btn";
+            prevBtn.innerHTML = '<i class="fa-solid fa-angle-left"></i>';
+            prevBtn.disabled = (currentPage === 1);
+            prevBtn.onclick = () => { currentPage--; refreshTable(); };
+            container.appendChild(prevBtn);
+
+            // Numeric page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const numBtn = document.createElement('button');
+                numBtn.className = `page-btn ${currentPage === i ? 'active' : ''}`;
+                numBtn.innerText = i;
+                numBtn.onclick = () => { currentPage = i; refreshTable(); };
+                container.appendChild(numBtn);
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = "page-btn";
+            nextBtn.innerHTML = '<i class="fa-solid fa-angle-right"></i>';
+            nextBtn.disabled = (currentPage === totalPages);
+            nextBtn.onclick = () => { currentPage++; refreshTable(); };
+            container.appendChild(nextBtn);
+
+            // Last page button
+            const lastBtn = document.createElement('button');
+            lastBtn.className = "page-btn";
+            lastBtn.innerHTML = '<i class="fa-solid fa-angles-right"></i>';
+            lastBtn.disabled = (currentPage === totalPages);
+            lastBtn.onclick = () => { currentPage = totalPages; refreshTable(); };
+            container.appendChild(lastBtn);
+
+            // Lock pagination state
+            if (totalPages <= 1) {
+                firstBtn.disabled = true;
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                lastBtn.disabled = true;
+            }
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSizeSelector').value);
+            currentPage = 1;
+            refreshTable();
+        }
+
+        function sortTable(column) {
+            if (sortColumn === column) {
+                sortOrder = (sortOrder === "asc") ? "desc" : "asc";
+            } else {
+                sortColumn = column;
+                sortOrder = "asc";
+            }
+            refreshTable();
+        }
+
+        // CLEAR FILTERS
+        function clearFilters() {
+            document.getElementById('filterKeyword').value = '';
+            document.getElementById('filterTopic').value = '';
+            document.getElementById('filterStatus').value = '';
+
+            const today = new Date();
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+            const formatDate = (date) => {
+                let dd = date.getDate();
+                let mm = date.getMonth() + 1;
+                const yyyy = date.getFullYear();
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                return `${dd}/${mm}/${yyyy}`;
+            };
+
+            const defFromDate = formatDate(twoMonthsAgo);
+            const defToDate = formatDate(today);
+
+            const elStart = document.getElementById("filterFromDate");
+            const elEnd = document.getElementById("filterToDate");
+            if (elStart) {
+                elStart.value = defFromDate;
+                if (elStart._flatpickr) elStart._flatpickr.setDate(defFromDate);
+            }
+            if (elEnd) {
+                elEnd.value = defToDate;
+                if (elEnd._flatpickr) elEnd._flatpickr.setDate(defToDate);
+            }
+            
+            activeKpiFilter = 'all';
+            document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('kpiBtnAll').classList.add('active');
+
+            currentPage = 1;
+            refreshTable();
+            showToast("Đã xóa bộ lọc tìm kiếm", "success");
+        }
+
+        function searchData() {
+            currentPage = 1;
+            refreshTable();
+            showToast("Đã thực hiện tìm kiếm", "success");
+        }
+
+        function exportExcel() {
+            showToast("Đã kết xuất Excel danh sách câu hỏi FAQ thành công", "success");
+        }
+
+        // DELETING FAQ (SOFT DELETE)
+        function deleteFaq(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa câu hỏi FAQ này không?")) {
+                const index = documents.findIndex(d => d.id === id);
+                if (index !== -1) {
+                    documents[index].isDeleted = 1;
+                    localStorage.setItem('faq_documents', JSON.stringify(documents));
+                    refreshTable();
+                    showToast("Đã xóa bản ghi thành công", "success");
+                }
+            }
+        }
+
+        // QUICK SEND TO APPROVAL
+        function sendToApproval(id) {
+            const index = documents.findIndex(d => d.id === id);
+            if (index !== -1) {
+                documents[index].trangThai = "Chờ duyệt";
+                documents[index].ngayTao = formatDateToString(new Date());
+                localStorage.setItem('faq_documents', JSON.stringify(documents));
+                
+                // Keep dates aligned to current month
+                shiftDatesToCurrentMonth();
+                
+                refreshTable();
+                showToast("Đã gửi hồ sơ lên Cán bộ phê duyệt", "success");
+            }
+        }
+
+        // MODAL FILE MANAGEMENT
+        function triggerFileInput(inputId) {
+            const input = document.getElementById(inputId);
+            if (input && !input.disabled) {
+                input.click();
+            }
+        }
+
+        function handleFileSelected(input, type) {
+            const progressContainer = document.getElementById(`${type}ProgressContainer`);
+            const progressBar = document.getElementById(`${type}ProgressBar`);
+            
+            if (input.files.length === 0) return;
+
+            // Show Mock progress bar animation
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                        // Add files to list
+                        for (let i = 0; i < input.files.length; i++) {
+                            const file = input.files[i];
+                            if (type === 'doc') {
+                                tempDocFiles.push(file.name);
+                            } else {
+                                tempMediaFiles.push(file.name);
+                            }
+                        }
+                        renderUploadedFiles();
+                        showToast("Tải lên tệp thành công", "success");
+                    }, 300);
+                } else {
+                    width += 20;
+                    progressBar.style.width = width + '%';
+                }
+            }, 100);
+        }
+
+        function renderUploadedFiles() {
+            const isViewOnly = document.getElementById('faqQuestion').disabled;
+            
+            // Render Docs List
+            const docsContainer = document.getElementById('docFilesList');
+            docsContainer.innerHTML = '';
+            tempDocFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = "attachment-item";
+                item.style.display = "flex";
+                item.style.alignItems = "center";
+                item.style.justifyContent = "space-between";
+                item.style.gap = "10px";
+                item.style.minWidth = "0";
+                item.style.width = "100%";
+                item.innerHTML = `
+                    <div class="attachment-item-info" style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                        <i class="fa-regular fa-file-pdf" style="flex-shrink: 0;"></i>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${file}">${file}</span>
+                    </div>
+                    <div class="attachment-actions" style="flex-shrink: 0; white-space: nowrap;">
+                        <a href="#" target="_blank">Xem file</a>
+                        ${!isViewOnly ? ` <span style="color: var(--border-color); margin: 0 4px;">|</span> <button type="button" onclick="removeFile('doc', ${index})">Xóa</button>` : ''}
+                    </div>
+                `;
+                docsContainer.appendChild(item);
+            });
+
+            // Render Media List
+            const mediaContainer = document.getElementById('mediaFilesList');
+            mediaContainer.innerHTML = '';
+            tempMediaFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = "attachment-item";
+                item.style.display = "flex";
+                item.style.alignItems = "center";
+                item.style.justifyContent = "space-between";
+                item.style.gap = "10px";
+                item.style.minWidth = "0";
+                item.style.width = "100%";
+                item.innerHTML = `
+                    <div class="attachment-item-info" style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                        <i class="fa-regular fa-file-video" style="flex-shrink: 0;"></i>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${file}">${file}</span>
+                    </div>
+                    <div class="attachment-actions" style="flex-shrink: 0; white-space: nowrap;">
+                        <a href="#" target="_blank">Xem file</a>
+                        ${!isViewOnly ? ` <span style="color: var(--border-color); margin: 0 4px;">|</span> <button type="button" onclick="removeFile('media', ${index})">Xóa</button>` : ''}
+                    </div>
+                `;
+                mediaContainer.appendChild(item);
+            });
+        }
+
+        function removeFile(type, index) {
+            if (type === 'doc') {
+                tempDocFiles.splice(index, 1);
+            } else {
+                tempMediaFiles.splice(index, 1);
+            }
+            renderUploadedFiles();
+            showToast("Đã xóa file đính kèm", "success");
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.field-error-text').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        }
+
+        function showModal(title, viewMode = false, editMode = false) {
+            document.getElementById('modalTitle').innerText = title;
+            clearErrors();
+            
+            // Set enabled states
+            document.getElementById('faqQuestion').disabled = viewMode;
+            document.getElementById('faqAnswer').contentEditable = !viewMode;
+            document.getElementById('faqTopic').disabled = viewMode;
+            document.getElementById('faqOrder').disabled = viewMode;
+            document.getElementById('faqTags').disabled = viewMode;
+
+            // Background editor styling if disabled
+            document.getElementById('faqAnswer').style.backgroundColor = viewMode ? "#F1F5F9" : "white";
+
+            // File inputs disabling
+            document.getElementById('docFileInput').disabled = viewMode;
+            document.getElementById('mediaFileInput').disabled = viewMode;
+
+            // Form Footer button rules
+            const isDraftEmpty = (documents.filter(d => !d.isDeleted).length === 0);
+            
+            // Nút Hủy (Cancel button) logic on Form
+            // Hidden if table is empty on new creation
+            const btnCancel = document.getElementById('btnCancel');
+            if (isDraftEmpty && !editMode && !viewMode) {
+                btnCancel.style.display = 'none';
+            } else {
+                btnCancel.style.display = 'inline-flex';
+            }
+
+            // Reset decision fields
+            document.getElementById('rejectReason').value = '';
+
+            if (viewMode) {
+                document.getElementById('btnSaveDraft').style.display = 'none';
+                document.getElementById('btnSubmitApproval').style.display = 'none';
+                
+                const currentFaqId = parseInt(document.getElementById('faqId').value);
+                const currentDoc = documents.find(d => d.id === currentFaqId);
+
+                // Show approval section if Chờ duyệt
+                if (currentDoc && currentDoc.trangThai === 'Chờ duyệt') {
+                    if (currentRole === 'approver') {
+                        document.getElementById('approveSection').style.display = 'block';
+                        document.getElementById('creatorName').value = currentDoc.nguoiTao || "Cán bộ nghiệp vụ";
+                        document.getElementById('submitDate').value = currentDoc.ngayTao || formatDateToString(new Date());
+                        
+                        document.getElementById('btnApprove').style.display = 'inline-flex';
+                        document.getElementById('btnReject').style.display = 'inline-flex';
+                    } else {
+                        document.getElementById('approveSection').style.display = 'none';
+                        document.getElementById('btnApprove').style.display = 'none';
+                        document.getElementById('btnReject').style.display = 'none';
+                    }
+                } else if (currentDoc && currentDoc.trangThai === 'Từ chối') {
+                    // Show rejected reasons
+                    document.getElementById('approveSection').style.display = 'block';
+                    document.getElementById('creatorName').value = currentDoc.nguoiTao || "Cán bộ nghiệp vụ";
+                    document.getElementById('submitDate').value = currentDoc.ngayTao || "";
+                    document.getElementById('rejectReason').value = currentDoc.lyDoTuChoi;
+                    document.getElementById('rejectReason').disabled = true;
+                    
+                    document.getElementById('btnApprove').style.display = 'none';
+                    document.getElementById('btnReject').style.display = 'none';
+                } else {
+                    document.getElementById('approveSection').style.display = 'none';
+                    document.getElementById('btnApprove').style.display = 'none';
+                    document.getElementById('btnReject').style.display = 'none';
+                }
+            } else {
+                // Creation or editing mode for Officer
+                document.getElementById('approveSection').style.display = 'none';
+                document.getElementById('btnApprove').style.display = 'none';
+                document.getElementById('btnReject').style.display = 'none';
+
+                document.getElementById('btnSaveDraft').style.display = 'inline-flex';
+                document.getElementById('btnSubmitApproval').style.display = 'inline-flex';
+            }
+
+            document.getElementById('faqModal').classList.add('active');
+        }
+
+        // CLOSE MODAL
+        function closeModal() {
+            document.getElementById('faqModal').classList.remove('active');
+        }
+
+        // OPEN MODAL FOR CREATION
+        function openCreateModal() {
+            document.getElementById('faqForm').reset();
+            document.getElementById('faqId').value = '';
+            document.getElementById('faqAnswer').innerHTML = '';
+            
+            tempDocFiles = [];
+            tempMediaFiles = [];
+            renderUploadedFiles();
+
+            showModal("Thêm mới câu hỏi thường gặp (FAQ)", false, false);
+        }
+
+        // OPEN MODAL FOR VIEW DETAIL
+        function openDetailModal(id) {
+            const faq = documents.find(d => d.id === id);
+            if (!faq) return;
+
+            document.getElementById('faqId').value = faq.id;
+            document.getElementById('faqQuestion').value = faq.cauHoi;
+            document.getElementById('faqAnswer').innerHTML = faq.traLoi;
+            document.getElementById('faqTopic').value = faq.nhomChuDe;
+            document.getElementById('faqOrder').value = faq.thuTuHienThi || '';
+            document.getElementById('faqTags').value = faq.tags;
+
+            tempDocFiles = [...faq.files];
+            tempMediaFiles = [...faq.media];
+            renderUploadedFiles();
+
+            showModal("Chi tiết câu hỏi thường gặp", true, false);
+        }
+
+        // OPEN MODAL FOR EDITING
+        function openEditModal(id) {
+            const faq = documents.find(d => d.id === id);
+            if (!faq) return;
+
+            document.getElementById('faqId').value = faq.id;
+            document.getElementById('faqQuestion').value = faq.cauHoi;
+            document.getElementById('faqAnswer').innerHTML = faq.traLoi;
+            document.getElementById('faqTopic').value = faq.nhomChuDe;
+            document.getElementById('faqOrder').value = faq.thuTuHienThi || '';
+            document.getElementById('faqTags').value = faq.tags;
+
+            tempDocFiles = [...faq.files];
+            tempMediaFiles = [...faq.media];
+            renderUploadedFiles();
+
+            showModal("Chỉnh sửa câu hỏi thường gặp", false, true);
+        }
+
+        // VALIDATION & SAVING
+        function saveData(status) {
+            clearErrors();
+            let isValid = true;
+
+            const question = document.getElementById('faqQuestion').value.trim();
+            const answer = document.getElementById('faqAnswer').innerHTML.trim();
+            const topic = document.getElementById('faqTopic').value;
+            const orderStr = document.getElementById('faqOrder').value;
+
+            if (!question) {
+                document.getElementById('faqQuestion').classList.add('is-invalid');
+                document.getElementById('error_faqQuestion').style.display = 'block';
+                isValid = false;
+            }
+            if (!answer || answer === '<br>' || answer === '') {
+                document.getElementById('error_faqAnswer').style.display = 'block';
+                isValid = false;
+            }
+            if (!topic) {
+                document.getElementById('faqTopic').classList.add('is-invalid');
+                document.getElementById('error_faqTopic').style.display = 'block';
+                isValid = false;
+            }
+
+            if (orderStr) {
+                const order = parseInt(orderStr);
+                if (isNaN(order) || order <= 0) {
+                    document.getElementById('faqOrder').classList.add('is-invalid');
+                    document.getElementById('error_faqOrder').style.display = 'block';
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                showToast("Vui lòng nhập đầy đủ các trường bắt buộc", "error");
+                return;
+            }
+
+            const id = document.getElementById('faqId').value;
+            if (id) {
+                // Update
+                const idx = documents.findIndex(d => d.id === parseInt(id));
+                if (idx !== -1) {
+                    let newStatus = status;
+                    if (documents[idx].trangThai === 'Từ chối' && status === 'Lưu nháp') {
+                        newStatus = 'Lưu nháp';
+                    }
+
+                    documents[idx].cauHoi = question;
+                    documents[idx].traLoi = answer;
+                    documents[idx].nhomChuDe = topic;
+                    documents[idx].thuTuHienThi = orderStr ? parseInt(orderStr) : "";
+                    documents[idx].tags = document.getElementById('faqTags').value.trim();
+                    documents[idx].files = [...tempDocFiles];
+                    documents[idx].media = [...tempMediaFiles];
+                    documents[idx].trangThai = newStatus;
+                    documents[idx].ngayTao = formatDateToString(new Date());
+                }
+            } else {
+                // Create new
+                const newFaq = {
+                    id: Date.now(),
+                    cauHoi: question,
+                    traLoi: answer,
+                    nhomChuDe: topic,
+                    thuTuHienThi: orderStr ? parseInt(orderStr) : "",
+                    tags: document.getElementById('faqTags').value.trim(),
+                    files: [...tempDocFiles],
+                    media: [...tempMediaFiles],
+                    trangThai: status,
+                    nguoiTao: "Nguyễn Văn Cán Bộ",
+                    ngayTao: formatDateToString(new Date()),
+                    nguoiDuyet: "",
+                    ngayDuyet: "",
+                    lyDoTuChoi: "",
+                    isDeleted: 0
+                };
+                documents.push(newFaq);
+            }
+
+            localStorage.setItem('faq_documents', JSON.stringify(documents));
+            
+            // Re-align dates on load state
+            shiftDatesToCurrentMonth();
+            
+            closeModal();
+            refreshTable();
+            showToast(status === 'Lưu nháp' ? "Đã lưu nháp câu hỏi thành công" : "Đã gửi câu hỏi lên Cán bộ phê duyệt thành công", "success");
+        }
+
+        // APPROVER DECISION (Phê duyệt / Từ chối)
+        function approveDecision(decisionStatus) {
+            clearErrors();
+            const rejectReason = document.getElementById('rejectReason').value.trim();
+            
+            if (decisionStatus === 'Từ chối' && !rejectReason) {
+                document.getElementById('rejectReason').classList.add('is-invalid');
+                document.getElementById('error_rejectReason').style.display = 'block';
+                showToast("Lý do từ chối là bắt buộc", "error");
+                return;
+            }
+
+            const id = parseInt(document.getElementById('faqId').value);
+            const idx = documents.findIndex(d => d.id === id);
+            
+            if (idx !== -1) {
+                documents[idx].trangThai = decisionStatus;
+                documents[idx].nguoiDuyet = "Trần Minh Cục Trưởng";
+                documents[idx].ngayDuyet = formatDateToString(new Date());
+                if (decisionStatus === 'Từ chối') {
+                    documents[idx].lyDoTuChoi = rejectReason;
+                } else {
+                    documents[idx].lyDoTuChoi = "";
+                }
+
+                localStorage.setItem('faq_documents', JSON.stringify(documents));
+                closeModal();
+                refreshTable();
+                showToast(decisionStatus === 'Đã duyệt' ? "Đã phê duyệt FAQ thành công" : "Đã từ chối phê duyệt FAQ", "success");
+            }
+        }
+
+        // CUSTOM TOAST MESSAGE
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+
+            toast.className = 'toast';
+            toast.classList.add(type);
+            toastMsg.innerText = message;
+
+            if (type === 'success') {
+                icon.className = 'fa-solid fa-circle-check';
+            } else if (type === 'error') {
+                icon.className = 'fa-solid fa-circle-exclamation';
+            } else if (type === 'warning') {
+                icon.className = 'fa-solid fa-circle-info';
+            } else {
+                icon.className = 'fa-solid fa-bell';
+            }
+
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+    </script>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</body>
+</html>

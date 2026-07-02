@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,8 @@
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
         /* CSS Variables - Đồng bộ với can bo portal */
@@ -648,6 +650,9 @@
                         <!-- Rendered by JS -->
                     </tbody>
                 </table>
+                <div class="pagination-container" id="hd-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
         </div>
 
@@ -869,6 +874,9 @@
                         <!-- Rendered by JS -->
                     </tbody>
                 </table>
+                <div class="pagination-container" id="td-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
         </div>
 
@@ -1104,6 +1112,111 @@
             filesYc: [{ name: "CV_Danang_Nha_O_Xa_Hoi.pdf", size: "2.8 MB" }],
             filesTraLoi: [],
             trangThai: "Quá hạn"
+        },
+        {
+            id: "YCHD-2026-0006",
+            donVi: "Sở Tư pháp Tỉnh Hòa Bình",
+            tomTat: "Xin ý kiến về đăng ký biện pháp bảo đảm bằng quyền sử dụng đất lúa.",
+            ngayTiepNhan: "05/01/2026",
+            hanXuly: "20/01/2026",
+            soVbTraLoi: "15/BTP-ĐKGDBĐ",
+            ngayBanHanh: "18/01/2026",
+            nguoiKy: "Trần Thị B - Phó Cục trưởng",
+            trichYeu: "Văn bản trả lời về đất lúa.",
+            tuKhoa: ["Quyền sử dụng đất"],
+            filesYc: [],
+            filesTraLoi: [],
+            trangThai: "Đã ban hành văn bản trả lời"
+        },
+        {
+            id: "YCHD-2026-0007",
+            donVi: "Sở Tư pháp Tỉnh Ninh Bình",
+            tomTat: "Hỏi về đăng ký thế chấp tài sản là cây lâu năm gắn liền với đất lâm nghiệp.",
+            ngayTiepNhan: "12/02/2026",
+            hanXuly: "27/02/2026",
+            soVbTraLoi: "",
+            ngayBanHanh: "",
+            nguoiKy: "",
+            trichYeu: "",
+            tuKhoa: ["Tài sản gắn liền với đất"],
+            filesYc: [],
+            filesTraLoi: [],
+            trangThai: "Đang xử lý"
+        },
+        {
+            id: "YCHD-2026-0008",
+            donVi: "Sở Tư pháp Tỉnh Thanh Hóa",
+            tomTat: "Vướng mắc về thế chấp quyền tài sản phát sinh từ hợp đồng mua bán nhà ở thương mại.",
+            ngayTiepNhan: "18/03/2026",
+            hanXuly: "02/04/2026",
+            soVbTraLoi: "42/BTP-ĐKGDBĐ",
+            ngayBanHanh: "29/03/2026",
+            nguoiKy: "Nguyễn Văn A - Cục trưởng",
+            trichYeu: "Trả lời thế chấp nhà ở thương mại.",
+            tuKhoa: ["Quyền tài sản"],
+            filesYc: [],
+            filesTraLoi: [],
+            trangThai: "Đã ban hành văn bản trả lời"
+        },
+        {
+            id: "YCHD-2026-0009",
+            donVi: "Sở Tư pháp Tỉnh Nghệ An",
+            tomTat: "Thủ tục đăng ký thế chấp tàu cá của hộ gia đình.",
+            ngayTiepNhan: "20/04/2026",
+            hanXuly: "05/05/2026",
+            soVbTraLoi: "",
+            ngayBanHanh: "",
+            nguoiKy: "",
+            trichYeu: "",
+            tuKhoa: ["Phương tiện giao thông"],
+            filesYc: [],
+            filesTraLoi: [],
+            trangThai: "Mới tiếp nhận"
+        },
+        {
+            id: "YCHD-2026-0010",
+            donVi: "Sở Tư pháp Tỉnh Hà Tĩnh",
+            tomTat: "Thẩm quyền đăng ký thế chấp quyền sử dụng đất của cơ sở tôn giáo.",
+            ngayTiepNhan: "22/04/2026",
+            hanXuly: "07/05/2026",
+            soVbTraLoi: "",
+            ngayBanHanh: "",
+            nguoiKy: "",
+            trichYeu: "",
+            tuKhoa: ["Thẩm quyền đăng ký"],
+            filesYc: [],
+            filesTraLoi: [],
+            trangThai: "Mới tiếp nhận"
+        },
+        {
+            id: "YCHD-2026-0011",
+            donVi: "Sở Tư pháp Tỉnh Quảng Bình",
+            tomTat: "Xóa đăng ký thế chấp đối với tài sản bảo đảm đã xử lý xong.",
+            ngayTiepNhan: "25/04/2026",
+            hanXuly: "10/05/2026",
+            soVbTraLoi: "68/BTP-ĐKGDBĐ",
+            ngayBanHanh: "05/05/2026",
+            nguoiKy: "Nguyễn Văn A - Cục trưởng",
+            trichYeu: "Trả lời xóa đăng ký thế chấp.",
+            tuKhoa: ["Hồ sơ, thủ tục"],
+            filesYc: [],
+            filesTraLoi: [],
+            trangThai: "Đã ban hành văn bản trả lời"
+        },
+        {
+            id: "YCHD-2026-0012",
+            donVi: "Sở Tư pháp Tỉnh Quảng Trị",
+            tomTat: "Xin ý kiến về đăng ký bảo lưu quyền sở hữu tài sản mua trả chậm, trả dần.",
+            ngayTiepNhan: "28/04/2026",
+            hanXuly: "13/05/2026",
+            soVbTraLoi: "",
+            ngayBanHanh: "",
+            nguoiKy: "",
+            trichYeu: "",
+            tuKhoa: ["Thẩm quyền đăng ký"],
+            filesYc: [],
+            filesTraLoi: [],
+            trangThai: "Đang xử lý"
         }
     ];
 
@@ -1160,6 +1273,110 @@
             filesGoc: [{ name: "Thuyet_Minh_Du_An_VNeID.pdf", size: "6.2 MB" }],
             filesBaoCao: [],
             trangThai: "Chờ xử lý"
+        },
+        {
+            id: "TDGY-2026-0005",
+            tenDuThao: "Dự thảo Thông tư hướng dẫn về đăng ký biện pháp bảo đảm bằng động sản không phải là tàu bay, tàu biển.",
+            coQuanChuTri: "Bộ Tư pháp",
+            loaiHinh: "Văn bản QPPL",
+            ngayTiepNhan: "10/01/2026",
+            hanHoanThanh: "30/01/2026",
+            noiDung: "Thẩm định tính thống nhất và khả thi của các quy định đăng ký thế chấp động sản.",
+            ketLuan: "Đạt chất lượng",
+            filesGoc: [],
+            filesBaoCao: [],
+            trangThai: "Đã hoàn thành ban hành văn bản góp ý"
+        },
+        {
+            id: "TDGY-2026-0006",
+            tenDuThao: "Dự thảo Thông tư quy định về phí đăng ký và cung cấp thông tin về biện pháp bảo đảm.",
+            coQuanChuTri: "Bộ Tài chính",
+            loaiHinh: "Văn bản QPPL",
+            ngayTiepNhan: "15/02/2026",
+            hanHoanThanh: "05/03/2026",
+            noiDung: "Góp ý mức phí và các trường hợp miễn giảm phí cho người dân và doanh nghiệp.",
+            ketLuan: "Đạt nhưng cần chỉnh sửa",
+            filesGoc: [],
+            filesBaoCao: [],
+            trangThai: "Đã hoàn thành ban hành văn bản góp ý"
+        },
+        {
+            id: "TDGY-2026-0007",
+            tenDuThao: "Đề án nâng cấp Hệ thống đăng ký trực tuyến biện pháp bảo đảm bằng động sản.",
+            coQuanChuTri: "Phòng Đăng ký biện pháp bảo đảm",
+            loaiHinh: "Đề án",
+            ngayTiepNhan: "01/03/2026",
+            hanHoanThanh: "20/03/2026",
+            noiDung: "Thẩm định đề xuất giải pháp kỹ thuật và hạ tầng công nghệ thông tin cho hệ thống mới.",
+            ketLuan: "Đạt chất lượng",
+            filesGoc: [],
+            filesBaoCao: [],
+            trangThai: "Đã hoàn thành ban hành văn bản góp ý"
+        },
+        {
+            id: "TDGY-2026-0008",
+            tenDuThao: "Dự thảo Nghị định quy định chi tiết thi hành một số điều của Luật Đất đai 2024.",
+            coQuanChuTri: "Bộ Tài nguyên và Môi trường",
+            loaiHinh: "Văn bản QPPL",
+            ngayTiepNhan: "20/03/2026",
+            hanHoanThanh: "15/04/2026",
+            noiDung: "Tham gia ý kiến đối với các quy định về đăng ký thế chấp quyền sử dụng đất, tài sản gắn liền với đất.",
+            ketLuan: "Đạt nhưng cần chỉnh sửa",
+            filesGoc: [],
+            filesBaoCao: [],
+            trangThai: "Đã hoàn thành ban hành văn bản góp ý"
+        },
+        {
+            id: "TDGY-2026-0009",
+            tenDuThao: "Dự thảo Thông tư quy định về mẫu biểu dùng trong đăng ký, cung cấp thông tin về biện pháp bảo đảm.",
+            coQuanChuTri: "Bộ Tư pháp",
+            loaiHinh: "Văn bản QPPL",
+            ngayTiepNhan: "05/04/2026",
+            hanHoanThanh: "25/04/2026",
+            noiDung: "Thẩm định tính đơn giản, dễ sử dụng của các mẫu tờ khai đăng ký biện pháp bảo đảm.",
+            ketLuan: "",
+            filesGoc: [],
+            filesBaoCao: [],
+            trangThai: "Đang thẩm định"
+        },
+        {
+            id: "TDGY-2026-0010",
+            tenDuThao: "Dự án xây dựng Kho dữ liệu số về giao dịch bảo đảm quốc gia giai đoạn I.",
+            coQuanChuTri: "Phòng Bồi thường nhà nước",
+            loaiHinh: "Dự án",
+            ngayTiepNhan: "12/04/2026",
+            hanHoanThanh: "05/05/2026",
+            noiDung: "Thẩm định đề án thiết kế kỹ thuật, giải pháp bảo mật và phân quyền khai thác CSDL.",
+            ketLuan: "",
+            filesGoc: [],
+            filesBaoCao: [],
+            trangThai: "Đang thẩm định"
+        },
+        {
+            id: "TDGY-2026-0011",
+            tenDuThao: "Dự thảo Thông tư liên tịch hướng dẫn trao đổi thông tin về tài sản bảo đảm giữa cơ quan đăng ký và cơ quan thi hành án.",
+            coQuanChuTri: "Bộ Tư pháp - Ngân hàng Nhà nước",
+            loaiHinh: "Văn bản QPPL",
+            ngayTiepNhan: "18/04/2026",
+            hanHoanThanh: "10/05/2026",
+            noiDung: "Thẩm định quy chế chia sẻ dữ liệu và cơ chế phối hợp trong cưỡng chế thi hành án.",
+            ketLuan: "",
+            filesGoc: [],
+            filesBaoCao: [],
+            trangThai: "Chờ xử lý"
+        },
+        {
+            id: "TDGY-2026-0012",
+            tenDuThao: "Đề án cải cách thủ tục hành chính trong đăng ký biện pháp bảo đảm trực tuyến giai đoạn 2026-2028.",
+            coQuanChuTri: "Phòng Đăng ký biện pháp bảo đảm",
+            loaiHinh: "Đề án",
+            ngayTiepNhan: "25/04/2026",
+            hanHoanThanh: "15/05/2026",
+            noiDung: "Đánh giá tính đơn giản hóa quy trình, cắt giảm thời gian xử lý và giảm thiểu giấy tờ nộp kèm.",
+            ketLuan: "",
+            filesGoc: [],
+            filesBaoCao: [],
+            trangThai: "Chờ xử lý"
         }
     ];
 
@@ -1170,8 +1387,42 @@
         { id: 3, time: "22/06/2026 16:45", user: "Nguyễn Văn Cán Bộ", action: "Cập nhật hồ sơ", ip: "192.168.1.15", desc: "Cập nhật văn bản trả lời cho mã hồ sơ YCHD-2026-0002" }
     ];
 
+    let hdCurrentPage = 1;
+    let hdPageSize = 10;
+    let hdFilteredData = hdData;
+
+    let tdCurrentPage = 1;
+    let tdPageSize = 10;
+    let tdFilteredData = tdData;
+
     // DOM Ready
     window.onload = function() {
+        const today = new Date();
+        const twoMonthsAgo = new Date();
+        twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+        const formatDate = (date) => {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            const yyyy = date.getFullYear();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        const defFromDate = formatDate(twoMonthsAgo);
+        const defToDate = formatDate(today);
+        
+        const elFrom = document.getElementById("hd-filter-tungay");
+        if (elFrom) elFrom.value = defFromDate;
+        const elTo = document.getElementById("hd-filter-denngay");
+        if (elTo) elTo.value = defToDate;
+
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr("#hd-filter-tungay", { dateFormat: "d/m/Y", allowInput: true, onChange: executeHdSearch });
+            flatpickr("#hd-filter-denngay", { dateFormat: "d/m/Y", allowInput: true, onChange: executeHdSearch });
+        }
+
         renderHdTable(hdData);
         renderTdTable(tdData);
         renderAuditTable();
@@ -1276,15 +1527,26 @@
     // MODULE 1: HƯỚNG DẪN NGHIỆP VỤ (UC245)
     // ==========================================
     function renderHdTable(data) {
+        hdFilteredData = data;
+        const total = data.length;
+        const totalPages = Math.ceil(total / hdPageSize) || 1;
+        if (hdCurrentPage > totalPages) hdCurrentPage = totalPages;
+        if (hdCurrentPage < 1) hdCurrentPage = 1;
+
+        const startIndex = (hdCurrentPage - 1) * hdPageSize;
+        const endIndex = Math.min(startIndex + hdPageSize, total);
+        const pageData = data.slice(startIndex, endIndex);
+
         const tbody = document.getElementById("hd-table-body");
         tbody.innerHTML = "";
         
-        if(data.length === 0) {
+        if(pageData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy dữ liệu yêu cầu hướng dẫn nghiệp vụ.</td></tr>`;
+            renderHdPaginationControls(0);
             return;
         }
 
-        data.forEach((hd, idx) => {
+        pageData.forEach((hd, idx) => {
             let badgeClass = "bg-secondary";
             if(hd.trangThai === "Đang xử lý") badgeClass = "bg-info";
             else if(hd.trangThai === "Đã ban hành văn bản trả lời") badgeClass = "bg-success";
@@ -1292,7 +1554,7 @@
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${idx + 1}</td>
+                <td>${startIndex + idx + 1}</td>
                 <td><a href="#" onclick="openEditHdForm('${hd.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${hd.id}</a></td>
                 <td style="font-weight: 600;">${hd.donVi}</td>
                 <td title="${hd.tomTat}">${hd.tomTat.length > 100 ? hd.tomTat.substring(0, 97) + '...' : hd.tomTat}</td>
@@ -1311,6 +1573,67 @@
             `;
             tbody.appendChild(tr);
         });
+
+        renderHdPaginationControls(total);
+    }
+
+    function renderHdPaginationControls(total) {
+        const totalPages = Math.ceil(total / hdPageSize) || 1;
+        const container = document.getElementById("hd-pagination");
+        if (!container) return;
+
+        if (total === 0) {
+            container.style.display = "none";
+            return;
+        }
+        container.style.display = "flex";
+
+        let buttonsHtml = `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToHdPage(1)" ${hdCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToHdPage(${hdCurrentPage - 1})" ${hdCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            buttonsHtml += `
+                <button class="${i === hdCurrentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToHdPage(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+            `;
+        }
+
+        buttonsHtml += `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToHdPage(${hdCurrentPage + 1})" ${hdCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToHdPage(${totalPages})" ${hdCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+        `;
+
+        const sizes = [10, 20, 50, 100];
+        let sizeOptions = sizes.map(sz => `<option value="${sz}" ${hdPageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+        container.innerHTML = `
+            <div style="color: var(--text-muted); font-size: 13px;">
+                Đang hiển thị <strong>${(hdCurrentPage - 1) * hdPageSize + 1}</strong>–<strong>${Math.min(hdCurrentPage * hdPageSize, total)}</strong> trong tổng số <strong>${total}</strong> yêu cầu
+            </div>
+            <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                    <span>Số bản ghi/trang:</span>
+                    <select class="form-select" onchange="changeHdPageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                        ${sizeOptions}
+                    </select>
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                    ${buttonsHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    function goToHdPage(page) {
+        hdCurrentPage = page;
+        renderHdTable(hdFilteredData);
+    }
+
+    function changeHdPageSize(size) {
+        hdPageSize = parseInt(size, 10);
+        hdCurrentPage = 1;
+        renderHdTable(hdFilteredData);
     }
 
     function executeHdSearch() {
@@ -1343,6 +1666,7 @@
             return true;
         });
 
+        hdCurrentPage = 1;
         renderHdTable(filtered);
         addAuditEntry("Tìm kiếm", `Lọc danh sách hướng dẫn chuyên môn. Kết quả: ${filtered.length} bản ghi`);
         showToast(`Tìm thấy ${filtered.length} hồ sơ hướng dẫn.`);
@@ -1352,9 +1676,36 @@
         document.getElementById("hd-filter-ma").value = "";
         document.getElementById("hd-filter-donvi").value = "";
         document.getElementById("hd-filter-sohieu").value = "";
-        document.getElementById("hd-filter-tungay").value = "";
-        document.getElementById("hd-filter-denngay").value = "";
+        
+        const today = new Date();
+        const twoMonthsAgo = new Date();
+        twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+        const formatDate = (date) => {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            const yyyy = date.getFullYear();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        const defFromDate = formatDate(twoMonthsAgo);
+        const defToDate = formatDate(today);
+
+        const elStart = document.getElementById("hd-filter-tungay");
+        const elEnd = document.getElementById("hd-filter-denngay");
+        if (elStart) {
+            elStart.value = defFromDate;
+            if (elStart._flatpickr) elStart._flatpickr.setDate(defFromDate);
+        }
+        if (elEnd) {
+            elEnd.value = defToDate;
+            if (elEnd._flatpickr) elEnd._flatpickr.setDate(defToDate);
+        }
+        
         document.getElementById("hd-filter-trangthai").value = "";
+        hdCurrentPage = 1;
         renderHdTable(hdData);
         addAuditEntry("Xóa bộ lọc", "Thiết lập lại bộ lọc danh sách hướng dẫn");
         showToast("Đã reset bộ lọc.");
@@ -1723,22 +2074,33 @@
     // MODULE 2: THẨM ĐỊNH & GÓP Ý (UC247)
     // ==========================================
     function renderTdTable(data) {
+        tdFilteredData = data;
+        const total = data.length;
+        const totalPages = Math.ceil(total / tdPageSize) || 1;
+        if (tdCurrentPage > totalPages) tdCurrentPage = totalPages;
+        if (tdCurrentPage < 1) tdCurrentPage = 1;
+
+        const startIndex = (tdCurrentPage - 1) * tdPageSize;
+        const endIndex = Math.min(startIndex + tdPageSize, total);
+        const pageData = data.slice(startIndex, endIndex);
+
         const tbody = document.getElementById("td-table-body");
         tbody.innerHTML = "";
         
-        if(data.length === 0) {
+        if(pageData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy hồ sơ thẩm định/góp ý dự thảo nào.</td></tr>`;
+            renderTdPaginationControls(0);
             return;
         }
 
-        data.forEach((td, idx) => {
+        pageData.forEach((td, idx) => {
             let badgeClass = "bg-secondary";
             if(td.trangThai === "Đang thẩm định") badgeClass = "bg-info";
             else if(td.trangThai === "Đã hoàn thành ban hành văn bản góp ý") badgeClass = "bg-success";
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${idx + 1}</td>
+                <td>${startIndex + idx + 1}</td>
                 <td><a href="#" onclick="openEditTdForm('${td.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${td.id}</a></td>
                 <td style="font-weight: 600;" title="${td.tenDuThao}">${td.tenDuThao.length > 80 ? td.tenDuThao.substring(0, 77) + '...' : td.tenDuThao}</td>
                 <td>${td.coQuanChuTri}</td>
@@ -1757,6 +2119,67 @@
             `;
             tbody.appendChild(tr);
         });
+
+        renderTdPaginationControls(total);
+    }
+
+    function renderTdPaginationControls(total) {
+        const totalPages = Math.ceil(total / tdPageSize) || 1;
+        const container = document.getElementById("td-pagination");
+        if (!container) return;
+
+        if (total === 0) {
+            container.style.display = "none";
+            return;
+        }
+        container.style.display = "flex";
+
+        let buttonsHtml = `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToTdPage(1)" ${tdCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToTdPage(${tdCurrentPage - 1})" ${tdCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            buttonsHtml += `
+                <button class="${i === tdCurrentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToTdPage(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+            `;
+        }
+
+        buttonsHtml += `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToTdPage(${tdCurrentPage + 1})" ${tdCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToTdPage(${totalPages})" ${tdCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+        `;
+
+        const sizes = [10, 20, 50, 100];
+        let sizeOptions = sizes.map(sz => `<option value="${sz}" ${tdPageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+        container.innerHTML = `
+            <div style="color: var(--text-muted); font-size: 13px;">
+                Đang hiển thị <strong>${(tdCurrentPage - 1) * tdPageSize + 1}</strong>–<strong>${Math.min(tdCurrentPage * tdPageSize, total)}</strong> trong tổng số <strong>${total}</strong> hồ sơ
+            </div>
+            <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                    <span>Số bản ghi/trang:</span>
+                    <select class="form-select" onchange="changeTdPageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                        ${sizeOptions}
+                    </select>
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                    ${buttonsHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    function goToTdPage(page) {
+        tdCurrentPage = page;
+        renderTdTable(tdFilteredData);
+    }
+
+    function changeTdPageSize(size) {
+        tdPageSize = parseInt(size, 10);
+        tdCurrentPage = 1;
+        renderTdTable(tdFilteredData);
     }
 
     function executeTdSearch() {
@@ -1775,6 +2198,7 @@
             return true;
         });
 
+        tdCurrentPage = 1;
         renderTdTable(filtered);
         addAuditEntry("Tìm kiếm", `Lọc danh sách hồ sơ thẩm định/góp ý. Kết quả: ${filtered.length} bản ghi`);
         showToast(`Tìm thấy ${filtered.length} hồ sơ thẩm định.`);
@@ -1786,6 +2210,7 @@
         document.getElementById("td-filter-coquan").value = "";
         document.getElementById("td-filter-loaihinh").value = "";
         document.getElementById("td-filter-trangthai").value = "";
+        tdCurrentPage = 1;
         renderTdTable(tdData);
         addAuditEntry("Xóa bộ lọc", "Thiết lập lại bộ lọc danh sách thẩm định");
         showToast("Đã reset bộ lọc.");
@@ -2080,6 +2505,7 @@
         document.getElementById("preview-modal").classList.remove("active");
     }
 </script>
-
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 </html>

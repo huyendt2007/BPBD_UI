@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <!-- Flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <style>
         :root {
             --primary-color: #1E3A8A;
@@ -59,7 +63,7 @@
             box-shadow: var(--box-shadow);
             padding: var(--spacing-lg);
             margin-bottom: var(--spacing-lg);
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .section-title {
@@ -106,7 +110,8 @@
             margin-left: 4px;
         }
 
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
             padding: 0.5rem 0.75rem;
@@ -116,7 +121,8 @@
             width: 100%;
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--secondary-color);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
             outline: none;
@@ -524,28 +530,126 @@
             width: 16px;
             text-align: center;
         }
+
+        /* Action buttons styling (Fixed-Slot, only icons) */
+        .icon-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            margin: 0 2px;
+            outline: none;
+        }
+
+        .icon-btn:hover {
+            color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.08);
+            border-color: var(--primary-color);
+        }
+
+        .icon-btn.view:hover {
+            color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.08);
+            border-color: var(--primary-color);
+        }
+
+        .icon-btn.evaluate {
+            color: #EAB308;
+            /* Star color gold */
+            border-color: #FEF08A;
+            background-color: #FEFDF0;
+        }
+
+        .icon-btn.evaluate:hover {
+            color: #CA8A04;
+            background-color: #FEF9C3;
+            border-color: #CA8A04;
+        }
+
+        .icon-btn.edit {
+            color: var(--success-color);
+            border-color: #A7F3D0;
+            background-color: #ECFDF5;
+        }
+
+        .icon-btn.edit:hover {
+            color: #047857;
+            background-color: #D1FAE5;
+            border-color: #047857;
+        }
+
+        /* Rating badges styling matching the mockup image */
+        .badge-rating-like {
+            background-color: #E6F4EA;
+            color: #137333;
+            border: 1px solid #A3E2D4;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .badge-rating-dislike {
+            background-color: #FCE8E6;
+            color: #C5221F;
+            border: 1px solid #FAD2CF;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .badge-rating-other {
+            background-color: #F1F3F4;
+            color: #3C4043;
+            border: 1px solid #DADCE0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- SCREEN 1: THEO DÕI YÊU CẦU HỖ TRỢ (UC267.MH01) -->
     <div class="app-screen active" id="screen-tracker">
         <div class="card-section">
-            <h2 class="section-title">Theo dõi yêu cầu hỗ trợ</h2>
-            
+
             <div class="tab-container">
-                <div class="tabs-header">
+                <div class="tabs-header" style="display: none;">
                     <button class="tab-btn active" id="tab-bpbd" onclick="switchTab('bpbd')">Biện pháp bảo đảm</button>
                     <button class="tab-btn" id="tab-btnn" onclick="switchTab('btnn')">Bồi thường nhà nước</button>
                 </div>
 
                 <!-- Filters -->
-                <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+                <div class="card-section"
+                    style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
                     <div class="grid-3-cols" style="margin-bottom: 0;">
                         <!-- Row 1 -->
                         <div class="form-group" style="grid-column: span 2; margin-bottom: var(--spacing-md);">
                             <label class="form-label" for="filter-keyword">Từ khóa tìm kiếm</label>
-                            <input type="text" class="form-control" id="filter-keyword" placeholder="Tìm kiếm theo Tiêu đề hoặc Nội dung của yêu cầu...">
+                            <input type="text" class="form-control" id="filter-keyword"
+                                placeholder="Tìm kiếm theo Tiêu đề hoặc Nội dung của yêu cầu...">
                         </div>
                         <div class="form-group" style="margin-bottom: var(--spacing-md);">
                             <label class="form-label" for="filter-status">Trạng thái</label>
@@ -560,11 +664,21 @@
                         <!-- Row 2 -->
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label" for="filter-from-date">Từ ngày</label>
-                            <input type="date" class="form-control" id="filter-from-date" onchange="filterTable()">
+                            <div style="position: relative; width: 100%;">
+                                <input type="text" class="form-control" id="filter-from-date" placeholder="dd/mm/yyyy"
+                                    style="padding-right: 30px; font-family: var(--font-family);">
+                                <i class="fa-regular fa-calendar"
+                                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"></i>
+                            </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label" for="filter-to-date">Đến ngày</label>
-                            <input type="date" class="form-control" id="filter-to-date" onchange="filterTable()">
+                            <div style="position: relative; width: 100%;">
+                                <input type="text" class="form-control" id="filter-to-date" placeholder="dd/mm/yyyy"
+                                    style="padding-right: 30px; font-family: var(--font-family);">
+                                <i class="fa-regular fa-calendar"
+                                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"></i>
+                            </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label" for="filter-priority">Mức độ ưu tiên</label>
@@ -576,17 +690,22 @@
                             </select>
                         </div>
                     </div>
-                    
-                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+
+                    <div
+                        style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                         <button class="btn btn-outline-primary" onclick="resetFilters()">Xóa bộ lọc</button>
-                        <button class="btn btn-primary" onclick="filterTable()"><i class="fa fa-search"></i> Tìm kiếm</button>
+                        <button class="btn btn-primary" onclick="filterTable()"><i class="fa fa-search"></i> Tìm
+                            kiếm</button>
                     </div>
                 </div>
 
                 <!-- Action Toolbar -->
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: var(--spacing-md); margin-top: var(--spacing-md);">
-                    <button class="btn btn-primary" onclick="goToCreateScreen()"><i class="fa fa-plus"></i> Tạo yêu cầu hỗ trợ</button>
-                    <button class="btn btn-outline-primary" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất (Excel)</button>
+                <div
+                    style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: var(--spacing-md); margin-top: var(--spacing-md);">
+                    <button class="btn btn-primary" onclick="goToCreateScreen()"><i class="fa fa-plus"></i> Tạo yêu cầu
+                        hỗ trợ</button>
+                    <button class="btn btn-outline-primary" onclick="exportToExcel()"><i
+                            class="fa-solid fa-file-excel"></i> Kết xuất (Excel)</button>
                 </div>
 
                 <!-- Table -->
@@ -596,7 +715,6 @@
                             <tr>
                                 <th style="width: 50px; text-align: center;">STT</th>
                                 <th style="width: 15%;">Tiêu đề</th>
-                                <th style="width: 150px;">Loại yêu cầu hỗ trợ</th>
                                 <th>Nội dung</th>
                                 <th>Nội dung phản hồi</th>
                                 <th style="width: 110px; text-align: center;">Mức độ ưu tiên</th>
@@ -620,15 +738,29 @@
     <div class="app-screen" id="screen-create">
         <div class="card-section" style="max-width: 800px; margin: 0 auto;">
             <h2 class="section-title">Tạo yêu cầu hỗ trợ nghiệp vụ</h2>
-            
+
             <form id="create-request-form" onsubmit="event.preventDefault(); submitCreateRequest();">
                 <div class="form-group">
                     <label class="form-label" for="create-type">Loại yêu cầu hỗ trợ</label>
                     <input type="text" class="form-control" id="create-type" disabled>
                 </div>
 
+                <div class="grid-2-cols" style="margin-bottom: var(--spacing-md);">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="create-user-name">Người yêu cầu <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="create-user-name" placeholder="Họ và tên người yêu cầu...">
+                        <div class="error-message" id="error-create-user-name">Trường này bắt buộc nhập</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="create-user-email">Email <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="create-user-email" placeholder="Email liên hệ...">
+                        <div class="error-message" id="error-create-user-email">Trường này bắt buộc nhập</div>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label class="form-label" for="create-priority">Mức độ ưu tiên <span class="required-mark">*</span></label>
+                    <label class="form-label" for="create-priority">Mức độ ưu tiên <span
+                            class="required-mark">*</span></label>
                     <select class="form-select" id="create-priority">
                         <option value="Thấp" selected>Thấp</option>
                         <option value="Trung bình">Trung bình</option>
@@ -638,27 +770,35 @@
 
                 <div class="form-group">
                     <label class="form-label" for="create-title">Tiêu đề <span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" id="create-title" maxlength="200" placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ...">
+                    <input type="text" class="form-control" id="create-title" maxlength="200"
+                        placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ...">
                     <div class="error-message" id="error-create-title">Trường này bắt buộc nhập</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="create-content">Nội dung <span class="required-mark">*</span></label>
-                    <textarea class="form-control" id="create-content" rows="6" maxlength="2000" placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..."></textarea>
+                    <textarea class="form-control" id="create-content" rows="6" maxlength="2000"
+                        placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..."></textarea>
                     <div class="error-message" id="error-create-content">Trường này bắt buộc nhập</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="create-files">File đính kèm</label>
-                    <input type="file" class="form-control" id="create-files" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event)">
+                    <div style="position: relative; display: flex; align-items: center; width: 100%; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 6px 12px; background-color: white;">
+                        <button type="button" class="btn btn-secondary btn-sm" style="background-color: #E2E8F0; border: 1px solid #CBD5E1; color: var(--text-main); font-weight: 500;" onclick="document.getElementById('create-files').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp</button>
+                        <span id="create-file-count" style="color: var(--text-muted); font-size: 13px; margin-left: 10px;">Chưa có tệp nào được chọn</span>
+                        <input type="file" id="create-files" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleFileSelect(event)">
+                    </div>
                     <div class="error-message" id="error-create-files"></div>
                     <small style="color: var(--text-muted); display: block; margin-top: 4px;">Cho phép đính kèm tối đa 3 tệp tin (.pdf, .jpg, .jpeg, .png). Dung lượng tối đa 20MB/tệp.</small>
                     <div class="file-list-preview" id="file-list-preview"></div>
                 </div>
 
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: var(--spacing-lg);">
-                    <button type="button" class="btn btn-secondary" onclick="cancelCreate()"><i class="fa fa-times"></i> Hủy</button>
-                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelCreate()"><i class="fa fa-times"></i>
+                        Hủy</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Gửi yêu
+                        cầu</button>
                 </div>
             </form>
         </div>
@@ -671,20 +811,29 @@
             <div style="font-size: 64px; color: var(--success-color); margin-bottom: var(--spacing-md);">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
-            <h2 class="section-title" style="border-bottom: none; margin-bottom: var(--spacing-md);">Kết quả gửi yêu cầu hỗ trợ</h2>
-            
+            <h2 class="section-title" style="border-bottom: none; margin-bottom: var(--spacing-md);">Kết quả gửi yêu cầu
+                hỗ trợ</h2>
+
             <p style="margin-bottom: var(--spacing-lg); line-height: 1.6;">
-                Yêu cầu hỗ trợ của bạn đã được gửi thành công đến cơ quan quản lý. Hệ thống đã gửi email xác nhận kèm thông tin chi tiết. Trân trọng!
+                Yêu cầu hỗ trợ của bạn đã được gửi thành công đến cơ quan quản lý. Hệ thống đã gửi email xác nhận kèm
+                thông tin chi tiết. Trân trọng!
             </p>
 
-            <div style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: var(--spacing-md); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Mã số yêu cầu hỗ trợ:</div>
-                <div id="lbl-result-ticket-id" style="font-size: 20px; color: var(--primary-color); font-weight: 700; letter-spacing: 0.5px;">HT-20260619-000001</div>
+            <div
+                style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: var(--spacing-md); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg);">
+                <div
+                    style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">
+                    Mã số yêu cầu hỗ trợ:</div>
+                <div id="lbl-result-ticket-id"
+                    style="font-size: 20px; color: var(--primary-color); font-weight: 700; letter-spacing: 0.5px;">
+                    HT-20260619-000001</div>
             </div>
 
             <div style="display: flex; justify-content: center; gap: 10px;">
-                <button class="btn btn-secondary" onclick="backToMainPortal()"><i class="fa fa-home"></i> Trở lại trang chủ</button>
-                <button class="btn btn-primary" onclick="backToTracker()"><i class="fa fa-list"></i> Theo dõi yêu cầu</button>
+                <button class="btn btn-secondary" onclick="backToMainPortal()"><i class="fa fa-home"></i> Trở lại trang
+                    chủ</button>
+                <button class="btn btn-primary" onclick="backToTracker()"><i class="fa fa-list"></i> Theo dõi yêu
+                    cầu</button>
             </div>
         </div>
     </div>
@@ -699,7 +848,8 @@
                 <!-- Request details -->
                 <div class="detail-row">
                     <div class="detail-label">Mã yêu cầu hỗ trợ</div>
-                    <div class="detail-value" id="detail-ticket-id" style="font-weight: 600; color: var(--primary-color);"></div>
+                    <div class="detail-value" id="detail-ticket-id"
+                        style="font-weight: 600; color: var(--primary-color);"></div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Ngày tạo</div>
@@ -723,7 +873,8 @@
                 </div>
                 <div class="detail-row" style="align-items: flex-start;">
                     <div class="detail-label">Nội dung yêu cầu</div>
-                    <div class="detail-value" id="detail-content" style="white-space: pre-line; line-height: 1.6;"></div>
+                    <div class="detail-value" id="detail-content" style="white-space: pre-line; line-height: 1.6;">
+                    </div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">File đính kèm</div>
@@ -733,7 +884,10 @@
 
             <!-- Response block -->
             <div id="detail-response-section" style="display: none; margin-bottom: var(--spacing-lg);">
-                <h3 style="color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: var(--spacing-sm);"><i class="fa-solid fa-reply"></i> Lịch sử phản hồi từ Cán bộ</h3>
+                <h3
+                    style="color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: var(--spacing-sm);">
+                    <i class="fa-solid fa-reply"></i> Lịch sử phản hồi từ Cán bộ
+                </h3>
                 <div id="detail-replies-list" style="display: flex; flex-direction: column; gap: 12px;">
                     <!-- Multiple response boxes will be dynamically generated here -->
                 </div>
@@ -742,42 +896,60 @@
             <!-- Evaluation block -->
             <div id="detail-rating-section" style="display: none; margin-bottom: var(--spacing-lg);">
                 <div class="rating-box">
-                    <h3 style="font-size: 14px; font-weight: 600; color: #856404; margin-bottom: 6px;"><i class="fa-solid fa-star"></i> Đánh giá câu trả lời</h3>
-                    
+                    <h3 style="font-size: 14px; font-weight: 600; color: #856404; margin-bottom: 6px;"><i
+                            class="fa-solid fa-star"></i> Đánh giá câu trả lời</h3>
+
                     <div id="rating-form-block">
                         <div class="form-group" style="margin-bottom: var(--spacing-sm);">
                             <label class="form-label">Mức độ hài lòng <span class="required-mark">*</span></label>
                             <div class="rating-options">
                                 <label class="rating-option">
-                                    <input type="radio" name="detail-rating-option" value="Hài lòng" onchange="toggleFeedbackReason(this.value)">
-                                    <span style="color: var(--success-color);"><i class="fa-solid fa-thumbs-up"></i> Hài lòng</span>
+                                    <input type="radio" name="detail-rating-option" value="Hài lòng"
+                                        onchange="toggleFeedbackReason(this.value)">
+                                    <span style="color: var(--success-color);"><i class="fa-solid fa-thumbs-up"></i> Hài
+                                        lòng</span>
                                 </label>
                                 <label class="rating-option">
-                                    <input type="radio" name="detail-rating-option" value="Không hài lòng" onchange="toggleFeedbackReason(this.value)">
-                                    <span style="color: var(--danger-color);"><i class="fa-solid fa-thumbs-down"></i> Không hài lòng</span>
+                                    <input type="radio" name="detail-rating-option" value="Không hài lòng"
+                                        onchange="toggleFeedbackReason(this.value)">
+                                    <span style="color: var(--danger-color);"><i class="fa-solid fa-thumbs-down"></i>
+                                        Không hài lòng</span>
+                                </label>
+                                <label class="rating-option">
+                                    <input type="radio" name="detail-rating-option" value="Khác"
+                                        onchange="toggleFeedbackReason(this.value)">
+                                    <span style="color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Ý
+                                        kiến khác</span>
                                 </label>
                             </div>
                         </div>
 
                         <div class="form-group" id="detail-rating-reason-group" style="display: none;">
-                            <label class="form-label" for="detail-rating-reason">Ý kiến đóng góp / Lý do không hài lòng <span class="required-mark">*</span></label>
-                            <textarea class="form-control" id="detail-rating-reason" rows="3" maxlength="500" placeholder="Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng..."></textarea>
-                            <div class="error-message" id="error-detail-rating-reason">Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng.</div>
+                            <label class="form-label" for="detail-rating-reason">Ý kiến đóng góp / Lý do không hài lòng
+                                <span class="required-mark">*</span></label>
+                            <textarea class="form-control" id="detail-rating-reason" rows="3" maxlength="500"
+                                placeholder="Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng..."></textarea>
+                            <div class="error-message" id="error-detail-rating-reason">Vui lòng nhập lý do/ý kiến đóng
+                                góp khi đánh giá Không hài lòng.</div>
                         </div>
 
-                        <button class="btn btn-primary btn-sm" style="margin-top: 5px;" onclick="submitDetailRating()"><i class="fa-solid fa-paper-plane"></i> Gửi đánh giá</button>
+                        <button class="btn btn-primary btn-sm" style="margin-top: 5px;"
+                            onclick="submitDetailRating()"><i class="fa-solid fa-paper-plane"></i> Gửi đánh giá</button>
                     </div>
 
                     <div id="rating-done-block" style="display: none; line-height: 1.6;">
                         <div><strong>Kết quả đánh giá:</strong> <span id="lbl-rating-done-value"></span></div>
-                        <div id="div-rating-done-reason" style="margin-top: 4px; display: none;"><strong>Ý kiến đóng góp:</strong> <span id="lbl-rating-done-reason"></span></div>
+                        <div id="div-rating-done-reason" style="margin-top: 4px; display: none;"><strong>Ý kiến đóng
+                                góp:</strong> <span id="lbl-rating-done-reason"></span></div>
                     </div>
                 </div>
             </div>
 
             <!-- Detail Action footer -->
-            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: var(--spacing-md);">
-                <button class="btn btn-secondary" onclick="backToTracker()"><i class="fa fa-arrow-left"></i> Quay lại</button>
+            <div
+                style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: var(--spacing-md);">
+                <button class="btn btn-secondary" onclick="backToTracker()"><i class="fa fa-arrow-left"></i> Quay
+                    lại</button>
             </div>
         </div>
     </div>
@@ -787,15 +959,19 @@
     <div class="app-screen" id="screen-edit">
         <div class="card-section" style="max-width: 800px; margin: 0 auto;">
             <h2 class="section-title">Cập nhật yêu cầu hỗ trợ</h2>
-            
+
             <!-- Lịch sử phản hồi từ Cán bộ (Để người dùng đối chiếu nội dung cần bổ sung làm rõ) -->
             <div id="edit-response-section" style="display: none; margin-bottom: var(--spacing-lg);">
-                <h3 style="color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: var(--spacing-sm);"><i class="fa-solid fa-reply"></i> Lịch sử phản hồi từ Cán bộ</h3>
-                <div id="edit-replies-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                <h3
+                    style="color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: var(--spacing-sm);">
+                    <i class="fa-solid fa-reply"></i> Lịch sử phản hồi từ Cán bộ
+                </h3>
+                <div id="edit-replies-list"
+                    style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
                     <!-- Lịch sử phản hồi hiển thị dạng danh sách tại đây -->
                 </div>
             </div>
-            
+
             <form id="edit-request-form" onsubmit="event.preventDefault(); submitUpdateRequest();">
                 <div class="form-group">
                     <label class="form-label" for="edit-type">Loại yêu cầu hỗ trợ</label>
@@ -803,7 +979,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="edit-priority">Mức độ ưu tiên <span class="required-mark">*</span></label>
+                    <label class="form-label" for="edit-priority">Mức độ ưu tiên <span
+                            class="required-mark">*</span></label>
                     <select class="form-select" id="edit-priority">
                         <option value="Thấp">Thấp</option>
                         <option value="Trung bình">Trung bình</option>
@@ -813,26 +990,33 @@
 
                 <div class="form-group">
                     <label class="form-label" for="edit-title">Tiêu đề <span class="required-mark">*</span></label>
-                    <input type="text" class="form-control" id="edit-title" maxlength="200" placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ...">
+                    <input type="text" class="form-control" id="edit-title" maxlength="200"
+                        placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ...">
                     <div class="error-message" id="error-edit-title">Trường này bắt buộc nhập</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="edit-content">Nội dung <span class="required-mark">*</span></label>
-                    <textarea class="form-control" id="edit-content" rows="6" maxlength="2000" placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..."></textarea>
+                    <textarea class="form-control" id="edit-content" rows="6" maxlength="2000"
+                        placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..."></textarea>
                     <div class="error-message" id="error-edit-content">Trường này bắt buộc nhập</div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="edit-files">File đính kèm</label>
-                    <input type="file" class="form-control" id="edit-files" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleEditFileSelect(event)">
+                    <div style="position: relative; display: flex; align-items: center; width: 100%; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 6px 12px; background-color: white;">
+                        <button type="button" class="btn btn-secondary btn-sm" style="background-color: #E2E8F0; border: 1px solid #CBD5E1; color: var(--text-main); font-weight: 500;" onclick="document.getElementById('edit-files').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp</button>
+                        <span id="edit-file-count" style="color: var(--text-muted); font-size: 13px; margin-left: 10px;">Chưa có tệp nào được chọn</span>
+                        <input type="file" id="edit-files" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="handleEditFileSelect(event)">
+                    </div>
                     <div class="error-message" id="error-edit-files"></div>
                     <small style="color: var(--text-muted); display: block; margin-top: 4px;">Cho phép đính kèm tối đa 3 tệp tin (.pdf, .jpg, .jpeg, .png). Dung lượng tối đa 20MB/tệp.</small>
                     <div class="file-list-preview" id="edit-file-list-preview"></div>
                 </div>
 
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: var(--spacing-lg);">
-                    <button type="button" class="btn btn-secondary" onclick="backToTracker()"><i class="fa fa-arrow-left"></i> Quay lại</button>
+                    <button type="button" class="btn btn-secondary" onclick="backToTracker()"><i
+                            class="fa fa-arrow-left"></i> Quay lại</button>
                     <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Cập nhật</button>
                 </div>
             </form>
@@ -845,13 +1029,18 @@
         <div class="modal-content">
             <div class="modal-header">Đánh giá câu trả lời - Không hài lòng</div>
             <div class="form-group">
-                <label class="form-label" for="quick-feedback-reason">Ý kiến đóng góp / Lý do không hài lòng <span class="required-mark">*</span></label>
-                <textarea class="form-control" id="quick-feedback-reason" rows="4" maxlength="500" placeholder="Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng..."></textarea>
-                <div class="error-message" id="error-quick-feedback-reason">Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng.</div>
+                <label class="form-label" for="quick-feedback-reason">Ý kiến đóng góp / Lý do không hài lòng <span
+                        class="required-mark">*</span></label>
+                <textarea class="form-control" id="quick-feedback-reason" rows="4" maxlength="500"
+                    placeholder="Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng..."></textarea>
+                <div class="error-message" id="error-quick-feedback-reason">Vui lòng nhập lý do/ý kiến đóng góp khi đánh
+                    giá Không hài lòng.</div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" onclick="closeDislikeModal()"><i class="fa fa-times"></i> Hủy</button>
-                <button class="btn btn-primary btn-sm" onclick="submitQuickDislike()"><i class="fa-solid fa-paper-plane"></i> Gửi đánh giá</button>
+                <button class="btn btn-secondary btn-sm" onclick="closeDislikeModal()"><i class="fa fa-times"></i>
+                    Hủy</button>
+                <button class="btn btn-primary btn-sm" onclick="submitQuickDislike()"><i
+                        class="fa-solid fa-paper-plane"></i> Gửi đánh giá</button>
             </div>
         </div>
     </div>
@@ -868,16 +1057,22 @@
     <script>
         // Set dynamic date values
         const today = new Date();
-        const yyyy = today.getFullYear();
-        let mm = today.getMonth() + 1;
-        let dd = today.getDate();
-        if (dd < 10) dd = '0' + dd;
-        if (mm < 10) mm = '0' + mm;
-        
-        const currentDateFormatted = dd + '/' + mm + '/' + yyyy;
-        const inputDateFormat = yyyy + '-' + mm + '-' + dd;
+        const twoMonthsAgo = new Date();
+        twoMonthsAgo.setMonth(today.getMonth() - 2);
 
-        document.getElementById('filter-to-date').value = inputDateFormat;
+        const formatDate = (date) => {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            const yyyy = date.getFullYear();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        const defaultFrom = formatDate(twoMonthsAgo);
+        const defaultTo = formatDate(today);
+
+
 
         // Current Active Tab
         let activeTab = 'bpbd'; // 'bpbd' or 'btnn'
@@ -885,163 +1080,256 @@
         // File upload tracking (Max 3 files)
         let selectedFiles = [];
 
-        // Support Tickets Mock Database (10 records initially)
-        let supportTickets = [
+        // Unified support tickets mock list
+        const defaultSupportTickets = [
             {
-                id: "HT-20260601-000049",
+                id: "HT-20260701-000001",
                 category: "Biện pháp bảo đảm",
-                created_at: "01/06/2026 09:15",
+                created_at: "01/07/2026 09:15",
+                assigned_at: "",
+                completed_at: "",
+                updated_at: "01/07/2026 09:15",
                 priority: "Cao",
+                priority_val: 3,
+                user_name: "Lê Văn Hùng",
+                user_email: "hunglv@gmail.com",
                 title: "Lỗi ký số văn bản hồ sơ thay đổi biện pháp bảo đảm",
                 content: "Tôi thực hiện nộp hồ sơ đăng ký thay đổi biện pháp bảo đảm, hệ thống báo lỗi không thể đọc chứng thư số khi ký văn bản kết quả PDF. Đã thử cài đặt lại plugin ký số nhưng vẫn không khắc phục được. Mong kỹ thuật hỗ trợ xác minh.",
-                status: "Hoàn thành",
+                status: "Chờ tiếp nhận",
+                assigned_to: "",
+                assign_notes: "",
                 files: ["loi_chu_ky_so.png"],
+                replies: [],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260701-000002",
+                category: "Biện pháp bảo đảm",
+                created_at: "01/07/2026 10:20",
+                assigned_at: "",
+                completed_at: "",
+                updated_at: "01/07/2026 10:20",
+                priority: "Trung bình",
+                priority_val: 2,
+                user_name: "Nguyễn Hoàng An",
+                user_email: "annh@gmail.com",
+                title: "Lỗi thanh toán trực tuyến qua cổng NAPAS",
+                content: "Hệ thống trừ tiền tài khoản ngân hàng thành công nhưng hồ sơ vẫn ở trạng thái Chờ thanh toán, không tự động chuyển tiếp nhận xử lý. Kèm theo bản chụp giao dịch thành công.",
+                status: "Chờ tiếp nhận",
+                assigned_to: "",
+                assign_notes: "",
+                files: ["bien_lai_chuyen_tien.pdf"],
+                replies: [],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260701-000003",
+                category: "Biện pháp bảo đảm",
+                created_at: "01/07/2026 10:40",
+                assigned_at: "01/07/2026 10:45",
+                completed_at: "",
+                updated_at: "01/07/2026 10:45",
+                priority: "Trung bình",
+                priority_val: 2,
+                user_name: "Nguyễn Thị Mai",
+                user_email: "maintt@yahoo.com",
+                title: "Tra cứu không thấy lịch sử thay đổi của hợp đồng gốc số 4859/2025",
+                content: "Tôi thực hiện tra cứu theo Số đăng ký của đăng ký lần đầu số 4859/2025 nhưng danh sách TreeView kết quả không hiển thị phiên bản sửa đổi ngày 15/05/2026 mặc dù cán bộ đã duyệt thành công. Vui lòng kiểm tra lại dữ liệu.",
+                status: "Đang xử lý",
+                assigned_to: "namnh",
+                assign_notes: "Nhờ Nam kiểm tra lại CSDL xem dữ liệu lịch sử của hợp đồng này đã được đồng bộ sang ElasticSearch chưa.",
+                files: ["anh_chup_tra_cuu.png"],
                 replies: [
                     {
-                        reply_user: "Trần Thế Dũng - Trung tâm CNTT Cục Đăng ký",
-                        reply_date: "01/06/2026 14:30",
-                        reply_content: "Hệ thống vừa cập nhật phiên bản plugin ký số mới v2.4 để tương thích với bản cập nhật Google Chrome. Anh/chị vui lòng tải và cài đặt lại bộ cài hỗ trợ ký số tại trang chủ của Cổng dịch vụ để sửa lỗi này. Trân trọng cảm ơn.",
-                        reply_files: ["huong_dan_cai_dat_v2.4.pdf"]
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "01/07/2026 10:45",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Nguyễn Hoàng Nam. Nội dung chỉ đạo: \"Nhờ Nam kiểm tra lại CSDL xem dữ liệu lịch sử của hợp đồng này đã được đồng bộ sang ElasticSearch chưa.\""
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260701-000004",
+                category: "Bồi thường nhà nước",
+                created_at: "01/07/2026 11:20",
+                assigned_at: "01/07/2026 11:25",
+                completed_at: "",
+                updated_at: "01/07/2026 11:25",
+                priority: "Thấp",
+                priority_val: 1,
+                user_name: "Trần Quốc Bảo",
+                user_email: "baotq@outlook.com",
+                title: "Hỏi về biểu mẫu hướng dẫn nộp đăng ký trực tuyến",
+                content: "Tôi muốn tải biểu mẫu số 01/BTNN yêu cầu giải quyết bồi thường nhà nước mới nhất. Trang thông tin biểu mẫu của Cổng dịch vụ công đang bị lỗi liên kết tải xuống. Vui lòng gửi lại link tải hoặc đính kèm tệp tin cho tôi.",
+                status: "Đang xử lý",
+                assigned_to: "lanpt",
+                assign_notes: "Lan gửi lại file biểu mẫu hướng dẫn đăng ký trực tuyến cho người dùng.",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "01/07/2026 11:25",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Phạm Thị Lan. Nội dung chỉ đạo: \"Lan gửi lại file biểu mẫu hướng dẫn đăng ký trực tuyến cho người dùng.\""
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260628-000099",
+                category: "Biện pháp bảo đảm",
+                created_at: "28/06/2026 14:00",
+                assigned_at: "28/06/2026 14:10",
+                completed_at: "",
+                updated_at: "28/06/2026 16:30",
+                priority: "Cao",
+                priority_val: 3,
+                user_name: "Hoàng Kim Oanh",
+                user_email: "oanhhk@gmail.com",
+                title: "Yêu cầu làm rõ thông tin hồ sơ bị từ chối đăng ký",
+                content: "Hồ sơ đăng ký biện pháp bảo đảm mã số 84920/2026 của tôi bị từ chối với lý do 'Mô tả tài sản không phù hợp với giấy tờ gốc'. Tuy nhiên, tôi đã đối chiếu rất kỹ thông số số khung số máy đều khớp 100%. Đề nghị cán bộ kiểm tra chi tiết lại giúp tôi.",
+                status: "Yêu cầu làm rõ",
+                assigned_to: "tuanla",
+                assign_notes: "Anh Tuấn xem xét hồ sơ bị từ chối và phản hồi lại xem cán bộ nghiệp vụ từ chối có đúng quy định không.",
+                files: ["giay_dang_ky_xe_goi.pdf"],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "28/06/2026 14:10",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Lê Anh Tuấn. Nội dung chỉ đạo: \"Anh Tuấn xem xét hồ sơ bị từ chối và phản hồi lại xem cán bộ nghiệp vụ từ chối có đúng quy định không.\""
+                    },
+                    {
+                        reply_user: "Lê Anh Tuấn (Chuyên viên Nghiệp vụ)",
+                        reply_date: "28/06/2026 16:30",
+                        reply_content: "Anh/chị vui lòng tải lên bản quét (scan) màu có công chứng của Giấy chứng nhận quyền sở hữu phương tiện để chúng tôi đối chiếu lại phần thông tin bị mờ trên ảnh quét cũ."
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260627-000077",
+                category: "Biện pháp bảo đảm",
+                created_at: "27/06/2026 09:30",
+                assigned_at: "27/06/2026 10:00",
+                completed_at: "",
+                updated_at: "27/06/2026 11:15",
+                priority: "Trung bình",
+                priority_val: 2,
+                user_name: "Phạm Minh Tiến",
+                user_email: "tienpm@gmail.com",
+                title: "Hồ sơ đăng ký thay đổi thông tin bên nhận bảo đảm bị lỗi",
+                content: "Tôi thực hiện cập nhật thông tin tên chi nhánh mới của ngân hàng nhưng hệ thống báo lỗi MST không khớp dữ liệu quốc gia. Gửi kèm bản scan Giấy phép hoạt động.",
+                status: "Yêu cầu làm rõ",
+                assigned_to: "namnh",
+                assign_notes: "Nam kiểm tra lại kết nối API Tổng cục Thuế xem có bị gián đoạn không.",
+                files: ["giay_phep_hoat_dong.pdf"],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "27/06/2026 10:00",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Nguyễn Hoàng Nam. Nội dung chỉ đạo: \"Nam kiểm tra lại kết nối API Tổng cục Thuế xem có bị gián đoạn không.\""
+                    },
+                    {
+                        reply_user: "Nguyễn Hoàng Nam (Chuyên viên CNTT)",
+                        reply_date: "27/06/2026 11:15",
+                        reply_content: "Yêu cầu làm rõ bổ sung thông tin:\n\"Anh/chị vui lòng cung cấp ảnh chụp Đăng ký kinh doanh thay đổi của ngân hàng hoặc thông tin Mã số thuế chính xác để chúng tôi đối chiếu thủ công.\""
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260620-000088",
+                category: "Biện pháp bảo đảm",
+                created_at: "20/06/2026 08:30",
+                assigned_at: "20/06/2026 09:00",
+                completed_at: "20/06/2026 11:20",
+                updated_at: "20/06/2026 11:20",
+                priority: "Thấp",
+                priority_val: 1,
+                user_name: "Đỗ Minh Tuấn",
+                user_email: "tuandm@techcombank.com.vn",
+                title: "Thắc mắc về thời hạn hiệu lực của mã số sử dụng CSDL",
+                content: "Tôi vừa đóng phí cấp mã CSDL thường xuyên vào ngày 01/06/2026. Cho hỏi thời hạn sử dụng của mã này kéo dài đến khi nào? Có phải tròn 1 năm từ ngày kích hoạt không?",
+                status: "Hoàn thành",
+                assigned_to: "vietdq",
+                assign_notes: "Việt phản hồi cho khách hàng theo quy định của thông tư.",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "20/06/2026 09:00",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Đặng Quốc Việt. Nội dung chỉ đạo: \"Việt phản hồi cho khách hàng theo quy định của thông tư.\""
+                    },
+                    {
+                        reply_user: "Đặng Quốc Việt (Chuyên viên Hỗ trợ)",
+                        reply_date: "20/06/2026 11:20",
+                        reply_content: "Chào bạn, theo quy định hiện hành đối với mã số sử dụng CSDL loại thường xuyên cho Tổ chức/Cá nhân, mã sẽ có hiệu lực kể từ ngày thanh toán thành công đến hết ngày 31/12 của năm cấp mã đó. Do đó, mã của bạn sẽ hết hạn vào ngày 31/12/2026."
                     }
                 ],
                 rating: "Hài lòng",
                 rating_comment: ""
             },
             {
-                id: "HT-20260602-000058",
-                category: "Biện pháp bảo đảm",
-                created_at: "02/06/2026 10:40",
-                priority: "Trung bình",
-                title: "Tra cứu không thấy lịch sử thay đổi của hợp đồng gốc số 4859/2025",
-                content: "Tôi thực hiện tra cứu theo Số đăng ký của đăng ký lần đầu số 4859/2025 nhưng danh sách TreeView kết quả không hiển thị phiên bản sửa đổi ngày 15/05/2026 mặc dù cán bộ đã duyệt thành công. Vui lòng kiểm tra lại dữ liệu.",
-                status: "Đang xử lý",
-                files: ["anh_chup_tra_cuu.png"],
-                replies: [],
-                rating: "",
-                rating_comment: ""
-            },
-            {
-                id: "HT-20260603-000062",
+                id: "HT-20260618-000055",
                 category: "Bồi thường nhà nước",
-                created_at: "03/06/2026 14:20",
-                priority: "Thấp",
-                title: "Hỏi về biểu mẫu yêu cầu bồi thường theo Nghị định 68",
-                content: "Tôi muốn tải biểu mẫu số 01/BTNN yêu cầu giải quyết bồi thường nhà nước mới nhất. Trang thông tin biểu mẫu của Cổng dịch vụ công đang bị lỗi liên kết tải xuống. Vui lòng gửi lại link tải hoặc đính kèm tệp tin cho tôi.",
-                status: "Hoàn thành",
-                files: [],
-                replies: [
-                    {
-                        reply_user: "Lê Minh Hương - Phòng Bồi thường nhà nước",
-                        reply_date: "04/06/2026 09:10",
-                        reply_content: "Chào Anh/Chị, tệp liên kết tại trang thông tin đã được khắc phục. Đồng thời, Cục gửi đính kèm file Biểu mẫu số 01a ban hành kèm theo Thông tư số 04/2025/TT-BTP quy định chi tiết hoạt động bồi thường nhà nước để anh chị sử dụng trực tiếp.",
-                        reply_files: ["Mau_01a_Yeu_cau_boi_thuong.docx"]
-                    }
-                ],
-                rating: "",
-                rating_comment: ""
-            },
-            {
-                id: "HT-20260605-000075",
-                category: "Biện pháp bảo đảm",
-                created_at: "05/06/2026 16:30",
+                created_at: "18/06/2026 15:45",
+                assigned_at: "18/06/2026 16:00",
+                completed_at: "18/06/2026 17:30",
+                updated_at: "18/06/2026 17:30",
                 priority: "Cao",
-                title: "Yêu cầu làm rõ thông tin hồ sơ bị từ chối đăng ký",
-                content: "Hồ sơ đăng ký biện pháp bảo đảm mã số 84920/2026 của tôi bị từ chối với lý do 'Mô tả tài sản không phù hợp với giấy tờ gốc'. Tuy nhiên, tôi đã đối chiếu rất kỹ thông số số khung số máy đều khớp 100%. Đề nghị cán bộ kiểm tra chi tiết lại giúp tôi.",
-                status: "Yêu cầu làm rõ",
-                files: ["giay_dang_ky_xe_goi.pdf", "giay_khai_thac_thong_tin.pdf"],
+                priority_val: 3,
+                user_name: "Vũ Hoài Nam",
+                user_email: "namvh@vpbank.com.vn",
+                title: "Lỗi không xuất được báo cáo thống kê giao dịch theo quý",
+                content: "Tôi nhấn nút xuất excel báo cáo quý 2 nhưng hệ thống báo lỗi Gateway Timeout 504 sau 2 phút chờ đợi. Đã gửi kèm file hình chụp log lỗi.",
+                status: "Hoàn thành",
+                assigned_to: "namnh",
+                assign_notes: "Nam tối ưu lại câu lệnh truy vấn báo cáo và index cơ sở dữ liệu.",
+                files: ["anh_chup_loi_504.png"],
                 replies: [
                     {
-                        reply_user: "Phạm Văn Hùng - Văn phòng Đăng ký Mỹ Đình",
-                        reply_date: "05/06/2026 18:00",
-                        reply_content: "Chúng tôi thấy ảnh chụp giấy tờ đăng ký xe đính kèm bị mờ góc dưới bên phải, không đọc được số khung hoàn chỉnh. Anh/chị vui lòng kiểm tra và chụp/quét lại bản rõ nét hơn.",
-                        reply_files: []
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "18/06/2026 16:00",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Nguyễn Hoàng Nam. Nội dung chỉ đạo: \"Nam tối ưu lại câu lệnh truy vấn báo cáo và index cơ sở dữ liệu.\""
                     },
                     {
-                        reply_user: "Phạm Văn Hùng - Văn phòng Đăng ký Mỹ Đình",
-                        reply_date: "06/06/2026 10:15",
-                        reply_content: "Anh/Chị vui lòng tải lên bản quét (scan) màu có công chứng của Giấy chứng nhận quyền sở hữu phương tiện để chúng tôi đối chiếu lại phần thông tin bị mờ trên ảnh quét cũ.",
-                        reply_files: []
-                    }
-                ],
-                rating: "",
-                rating_comment: ""
-            },
-            {
-                id: "HT-20260608-000088",
-                category: "Biện pháp bảo đảm",
-                created_at: "08/06/2026 08:30",
-                priority: "Thấp",
-                title: "Thắc mắc về thời hạn hiệu lực của mã số sử dụng CSDL",
-                content: "Tôi vừa đóng phí cấp mã CSDL thường xuyên vào ngày 01/06/2026. Cho hỏi thời hạn sử dụng của mã này kéo dài đến khi nào? Có phải tròn 1 năm từ ngày kích hoạt không?",
-                status: "Hoàn thành",
-                files: [],
-                replies: [
-                    {
-                        reply_user: "Nguyễn Thị Thủy - Bộ phận kế toán Văn phòng Cục",
-                        reply_date: "08/06/2026 11:20",
-                        reply_content: "Chào bạn, theo quy định hiện hành đối với mã số sử dụng CSDL loại thường xuyên cho Tổ chức/Cá nhân, mã sẽ có hiệu lực kể từ ngày thanh toán thành công đến hết ngày 31/12 của năm cấp mã đó. Do đó, mã của bạn sẽ hết hạn vào ngày 31/12/2026.",
-                        reply_files: []
+                        reply_user: "Nguyễn Hoàng Nam (Chuyên viên CNTT)",
+                        reply_date: "18/06/2026 17:30",
+                        reply_content: "Chúng tôi đã tối ưu hóa câu lệnh truy vấn báo cáo SQL và tạo thêm index cho bảng giao dịch. Quá trình xuất excel hiện tại diễn ra ổn định và nhanh chóng trong vòng 5 giây."
                     }
                 ],
                 rating: "Không hài lòng",
-                rating_comment: "Thu phí cả năm nhưng chỉ sử dụng đến hết năm tài chính là không hợp lý cho khách hàng đăng ký vào giữa năm."
-            },
-            {
-                id: "HT-20260610-000102",
-                category: "Bồi thường nhà nước",
-                created_at: "10/06/2026 11:15",
-                priority: "Trung bình",
-                title: "Tra cứu tiến độ giải quyết đơn thư khiếu nại bồi thường",
-                content: "Đơn khiếu nại về quyết định bồi thường số 12/QĐ-UBND của tôi đã gửi bưu điện từ ngày 25/05/2026. Hệ thống dịch vụ công chưa cập nhật tiến độ thụ lý hồ sơ của Cục. Xin hỏi đơn của tôi đã được tiếp nhận chưa?",
-                status: "Chờ tiếp nhận",
-                files: ["bien_lai_gui_buu_dien.jpg"],
-                replies: [],
-                rating: "",
-                rating_comment: ""
-            },
-            {
-                id: "HT-20260612-000114",
-                category: "Biện pháp bảo đảm",
-                created_at: "12/06/2026 15:45",
-                priority: "Thấp",
-                title: "Hỏi về mức phí khi xóa đăng ký giao dịch bảo đảm trực tuyến",
-                content: "Cổng dịch vụ đang cấu hình mức phí cho dịch vụ Xóa đăng ký biện pháp bảo đảm bằng động sản. Vui lòng cung cấp văn bản quy định cụ thể mức phí này.",
-                status: "Hoàn thành",
-                files: [],
-                replies: [
-                    {
-                        reply_user: "Đinh Xuân Bách - Phòng Quản lý Nghiệp vụ",
-                        reply_date: "13/06/2026 09:30",
-                        reply_content: "Chào bạn, theo Thông tư số 121/2025/TT-BTC quy định về biểu phí đăng ký giao dịch bảo đảm, giao dịch Xóa đăng ký biện pháp bảo đảm bằng động sản trực tuyến được miễn hoàn toàn lệ phí đăng ký trực tuyến. Bạn có thể thực hiện xóa hồ sơ mà không phải nộp phí.",
-                        reply_files: ["Thong_tu_121_2025_TT_BTC.pdf"]
-                    }
-                ],
-                rating: "",
-                rating_comment: ""
+                rating_comment: "Câu trả lời đúng kỹ thuật nhưng thời gian xử lý hơi lâu, làm gián đoạn công việc báo cáo."
             },
             {
                 id: "HT-20260614-000125",
                 category: "Bồi thường nhà nước",
                 created_at: "14/06/2026 14:00",
+                assigned_at: "14/06/2026 14:05",
+                completed_at: "",
+                updated_at: "14/06/2026 14:05",
                 priority: "Cao",
+                priority_val: 3,
+                user_name: "Nguyễn Văn Hùng",
+                user_email: "hungnv@gmail.com",
                 title: "Sai lệch thông tin họ tên trên Quyết định giải quyết bồi thường",
                 content: "Tôi nhận được bản điện tử Quyết định bồi thường số 09/QĐ-BTNN nhưng phần họ tên bị sai chữ đệm từ 'Nguyễn Văn Hùng' thành 'Nguyễn Hùng'. Kính đề nghị Quý cơ quan hiệu chỉnh lại bản chính thức.",
                 status: "Đang xử lý",
+                assigned_to: "lanpt",
+                assign_notes: "Lan hỗ trợ kiểm tra đối chiếu hồ sơ gốc của anh Hùng.",
                 files: ["quyet_dinh_dien_tu_loi.pdf"],
-                replies: [],
-                rating: "",
-                rating_comment: ""
-            },
-            {
-                id: "HT-20260615-000130",
-                category: "Biện pháp bảo đảm",
-                created_at: "15/06/2026 09:00",
-                priority: "Trung bình",
-                title: "Tài khoản liên kết bị mất quyền đăng ký trực tuyến",
-                content: "Tài khoản doanh nghiệp của tôi trước đó vẫn thực hiện nộp hồ sơ bình thường. Sáng nay đăng nhập hệ thống báo tài khoản chưa được phân quyền đăng ký trực tuyến. Kính mong hỗ trợ kiểm tra tài khoản đại diện mã số thuế 0102948291.",
-                status: "Chờ tiếp nhận",
-                files: [],
-                replies: [],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "14/06/2026 14:05",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Phạm Thị Lan. Nội dung chỉ đạo: \"Lan hỗ trợ kiểm tra đối chiếu hồ sơ gốc của anh Hùng.\""
+                    }
+                ],
                 rating: "",
                 rating_comment: ""
             },
@@ -1049,12 +1337,25 @@
                 id: "HT-20260616-000142",
                 category: "Bồi thường nhà nước",
                 created_at: "16/06/2026 13:50",
+                assigned_at: "16/06/2026 14:00",
+                completed_at: "",
+                updated_at: "16/06/2026 14:00",
                 priority: "Thấp",
+                priority_val: 1,
+                user_name: "Phạm Thị Thanh",
+                user_email: "thanhpt@gmail.com",
                 title: "Yêu cầu hướng dẫn nộp hồ sơ bồi thường nhà nước trực tuyến",
                 content: "Tôi là cá nhân muốn nộp hồ sơ bồi thường trực tiếp trên web nhưng chưa tìm thấy menu nộp hồ sơ nghiệp vụ BTNN. Nhờ admin gửi tài liệu hướng dẫn từng bước.",
                 status: "Hoàn thành",
+                assigned_to: "lanpt",
+                assign_notes: "Lan gửi hướng dẫn nộp hồ sơ bồi thường nhà nước cho khách hàng.",
                 files: [],
                 replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "16/06/2026 14:00",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Phạm Thị Lan. Nội dung chỉ đạo: \"Lan gửi hướng dẫn nộp hồ sơ bồi thường nhà nước cho khách hàng.\""
+                    },
                     {
                         reply_user: "Lê Minh Hương - Phòng Bồi thường nhà nước",
                         reply_date: "17/06/2026 10:20",
@@ -1062,10 +1363,176 @@
                         reply_files: ["Huong_dan_nop_ho_so_BTNN.pdf"]
                     }
                 ],
+                rating: "Khác",
+                rating_comment: "Câu trả lời hữu ích nhưng tôi đề xuất hệ thống nên có thêm tính năng thông báo qua SMS."
+            },
+            {
+                id: "HT-20260701-000020",
+                category: "Biện pháp bảo đảm",
+                created_at: "01/07/2026 09:30",
+                assigned_at: "01/07/2026 09:40",
+                completed_at: "01/07/2026 11:30",
+                updated_at: "01/07/2026 11:30",
+                priority: "Trung bình",
+                priority_val: 2,
+                user_name: "Lê Thị Lan",
+                user_email: "lanlt@gmail.com",
+                title: "Yêu cầu khôi phục tài khoản đăng ký biện pháp bảo đảm",
+                content: "Tài khoản của đơn vị chúng tôi bị khóa sau khi đăng nhập sai quá 5 lần. Đã bấm nút quên mật khẩu nhưng không nhận được email mã xác thực OTP. Đề nghị cán bộ kiểm tra mở khóa tài khoản giúp.",
+                status: "Hoàn thành",
+                assigned_to: "namnh",
+                assign_notes: "Nam kiểm tra lịch sử khóa tài khoản và mở khóa thủ công, reset mật khẩu.",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "01/07/2026 09:40",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Nguyễn Hoàng Nam. Nội dung chỉ đạo: \"Nam kiểm tra lịch sử khóa tài khoản và mở khóa thủ công, reset mật khẩu.\""
+                    },
+                    {
+                        reply_user: "Nguyễn Hoàng Nam (Chuyên viên CNTT)",
+                        reply_date: "01/07/2026 11:30",
+                        reply_content: "Chào chị Lan, tài khoản của chị đã được mở khóa thủ công trên hệ thống quản trị và mật khẩu mặc định đã được gửi về số điện thoại đăng ký của chị. Vui lòng đăng nhập lại và tiến hành đổi mật khẩu ngay sau đó."
+                    }
+                ],
+                rating: "Không hài lòng",
+                rating_comment: "Thời gian mở khóa thủ công hơi lâu, làm ảnh hưởng đến thời hạn nộp hồ sơ của chúng tôi."
+            },
+            {
+                id: "HT-20260701-000021",
+                category: "Biện pháp bảo đảm",
+                created_at: "01/07/2026 10:15",
+                assigned_at: "01/07/2026 10:30",
+                completed_at: "01/07/2026 14:30",
+                updated_at: "01/07/2026 14:30",
+                priority: "Thấp",
+                priority_val: 1,
+                user_name: "Hoàng Văn Tuấn",
+                user_email: "tuanhv@yahoo.com",
+                title: "Thắc mắc về quy định gửi kết quả đăng ký qua bưu điện",
+                content: "Đơn vị chúng tôi ở xa nên muốn đăng ký nhận bản chính kết quả qua đường chuyển phát nhanh. Xin hỏi có cần phải nộp kèm phong bì dán sẵn tem hay không? Lệ phí chuyển phát tính như thế nào?",
+                status: "Hoàn thành",
+                assigned_to: "vietdq",
+                assign_notes: "Việt giải đáp chi tiết quy trình gửi nhận bưu điện cho khách hàng.",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "01/07/2026 10:30",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Đặng Quốc Việt. Nội dung chỉ đạo: \"Việt giải đáp chi tiết quy trình gửi nhận bưu điện cho khách hàng.\""
+                    },
+                    {
+                        reply_user: "Đặng Quốc Việt (Chuyên viên Hỗ trợ)",
+                        reply_date: "01/07/2026 14:30",
+                        reply_content: "Chào anh Tuấn, theo quy định đăng ký dịch vụ công trực tuyến, khi nộp hồ sơ anh có thể tích chọn mục 'Nhận kết quả qua bưu điện'. Chi phí dịch vụ bưu chính sẽ được thanh toán trực tiếp cho nhân viên bưu tá khi phát kết quả, anh không cần chuẩn bị phong bì dán tem."
+                    }
+                ],
+                rating: "Khác",
+                rating_comment: "Ý kiến khác: Đề xuất hệ thống tích hợp sẵn việc tính toán lệ phí bưu chính vào cổng thanh toán trực tuyến."
+            },
+            {
+                id: "HT-20260701-000022",
+                category: "Biện pháp bảo đảm",
+                created_at: "01/07/2026 11:00",
+                assigned_at: "01/07/2026 11:15",
+                completed_at: "01/07/2026 15:30",
+                updated_at: "01/07/2026 15:30",
+                priority: "Trung bình",
+                priority_val: 2,
+                user_name: "Trần Văn Cường",
+                user_email: "cuongtv@gmail.com",
+                title: "Hỏi về cách khai báo thông tin số khung số máy ô tô",
+                content: "Đơn vị chúng tôi đăng ký biện pháp bảo đảm đối với tài sản là xe ô tô. Cho hỏi phần mô tả số khung số máy viết hoa hay viết thường? Có cần ghi thêm số sườn hay không?",
+                status: "Hoàn thành",
+                assigned_to: "vietdq",
+                assign_notes: "Việt hướng dẫn khách hàng cách khai báo chuẩn trên hệ thống.",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "01/07/2026 11:15",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Đặng Quốc Việt. Nội dung chỉ đạo: \"Việt hướng dẫn khách hàng cách khai báo chuẩn trên hệ thống.\""
+                    },
+                    {
+                        reply_user: "Đặng Quốc Việt (Chuyên viên Hỗ trợ)",
+                        reply_date: "01/07/2026 15:30",
+                        reply_content: "Chào bạn, khi mô tả số khung số máy xe ô tô, bạn nên nhập chữ in hoa không dấu đúng theo thông tin ghi trên Giấy chứng nhận đăng ký xe. Phần số sườn không bắt buộc ghi thêm trừ khi có thỏa thuận khác."
+                    }
+                ],
+                rating: "",
+                rating_comment: ""
+            },
+            {
+                id: "HT-20260701-000023",
+                category: "Biện pháp bảo đảm",
+                created_at: "01/07/2026 11:45",
+                assigned_at: "01/07/2026 11:50",
+                completed_at: "01/07/2026 16:00",
+                updated_at: "01/07/2026 16:00",
+                priority: "Cao",
+                priority_val: 3,
+                user_name: "Nguyễn Minh Thu",
+                user_email: "thunm@gmail.com",
+                title: "Lỗi không tải được biên lai điện tử lệ phí đăng ký",
+                content: "Đơn vị chúng tôi đã hoàn tất thanh toán lệ phí đăng ký giao dịch bảo đảm trực tuyến. Tuy nhiên, khi bấm nút 'Tải biên lai', hệ thống báo lỗi Internal Server Error 500. Vui lòng hỗ trợ cung cấp lại biên lai cho chúng tôi.",
+                status: "Hoàn thành",
+                assigned_to: "namnh",
+                assign_notes: "Nam trích xuất file biên lai lệ phí và phản hồi cho khách hàng.",
+                files: [],
+                replies: [
+                    {
+                        reply_user: "Lãnh đạo đơn vị",
+                        reply_date: "01/07/2026 11:50",
+                        reply_content: "Lãnh đạo đã phân công xử lý yêu cầu cho cán bộ: Nguyễn Hoàng Nam. Nội dung chỉ đạo: \"Nam trích xuất file biên lai lệ phí và phản hồi cho khách hàng.\""
+                    },
+                    {
+                        reply_user: "Nguyễn Hoàng Nam (Chuyên viên CNTT)",
+                        reply_date: "01/07/2026 16:00",
+                        reply_content: "Chào bạn, chúng tôi đã trích xuất thành công biên lai điện tử của giao dịch nêu trên. Biên lai chính thức đã được gửi kèm vào phản hồi này hoặc gửi trực tiếp tới email đăng ký của đơn vị."
+                    }
+                ],
                 rating: "",
                 rating_comment: ""
             }
         ];
+
+        // Versioning and synchronization initialization
+        const SUPPORT_DB_VERSION = "v9";
+        try {
+            if (localStorage.getItem('support_tickets_version') !== SUPPORT_DB_VERSION) {
+                localStorage.removeItem('support_tickets');
+                localStorage.setItem('support_tickets_version', SUPPORT_DB_VERSION);
+            }
+        } catch (err) {
+            console.error("Không thể ghi phiên bản database support vào localStorage:", err);
+        }
+
+        let supportTickets = [];
+        try {
+            const savedTickets = localStorage.getItem('support_tickets');
+            if (savedTickets) {
+                supportTickets = JSON.parse(savedTickets);
+            }
+        } catch (e) {
+            console.error("Lỗi đọc dữ liệu support_tickets từ localStorage:", e);
+        }
+
+        if (!supportTickets || supportTickets.length === 0) {
+            supportTickets = [...defaultSupportTickets];
+            try {
+                localStorage.setItem('support_tickets', JSON.stringify(supportTickets));
+            } catch (err) {
+                console.error("Lỗi lưu support_tickets mặc định:", err);
+            }
+        }
+
+        function saveSupportTicketsToStorage() {
+            try {
+                localStorage.setItem('support_tickets', JSON.stringify(supportTickets));
+            } catch (err) {
+                console.error("Lỗi lưu support_tickets vào localStorage:", err);
+            }
+        }
 
         // Track dynamic Quick feedback ticket ID
         let quickDislikeTicketId = "";
@@ -1080,7 +1547,7 @@
                 event.stopPropagation();
                 const dropdownMenu = document.getElementById(`dropdown-${ticketId}`);
                 const allMenus = document.querySelectorAll('.actions-dropdown-menu');
-                
+
                 // Hide other dropdowns
                 allMenus.forEach(menu => {
                     if (menu.id !== `dropdown-${ticketId}`) {
@@ -1111,7 +1578,7 @@
         }
 
         // Close dropdowns when clicking outside
-        window.addEventListener('click', function() {
+        window.addEventListener('click', function () {
             hideAllActionsDropdowns();
         });
 
@@ -1121,18 +1588,18 @@
                 if (!ticket) return;
 
                 currentEditTicketId = ticketId;
-                
+
                 document.getElementById('edit-type').value = ticket.category;
                 document.getElementById('edit-priority').value = ticket.priority;
                 document.getElementById('edit-title').value = ticket.title;
                 document.getElementById('edit-content').value = ticket.content;
-                
+
                 // Clear errors
                 document.getElementById('error-edit-title').style.display = 'none';
                 document.getElementById('error-edit-content').style.display = 'none';
                 document.getElementById('error-edit-files').style.display = 'none';
                 document.getElementById('edit-files').value = '';
-                
+
                 // Set file previews
                 editSelectedFiles = [...(ticket.files || [])];
                 renderEditSelectedFiles();
@@ -1141,7 +1608,7 @@
                 const editRepliesListDiv = document.getElementById('edit-replies-list');
                 const editRespSection = document.getElementById('edit-response-section');
                 if (editRepliesListDiv) editRepliesListDiv.innerHTML = '';
-                
+
                 if (ticket.replies && ticket.replies.length > 0) {
                     editRespSection.style.display = 'block';
                     ticket.replies.forEach((rep, rIdx) => {
@@ -1151,7 +1618,7 @@
                                 repAttHtml += `<div style="margin-top: 4px;"><strong>Tệp đính kèm phản hồi:</strong> <a href="#" style="color: var(--secondary-color); font-weight: 500;" onclick="event.preventDefault(); downloadMockFile('${file}')"><i class="fa-solid fa-file-pdf"></i> ${file}</a></div>`;
                             });
                         }
-                        
+
                         editRepliesListDiv.innerHTML += `
                             <div class="response-box" style="margin-top: 0; margin-bottom: 10px; background-color: #F8FAFC; border-left: 4px solid var(--primary-color); padding: 12px; border-radius: 0 4px 4px 0;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px; color: var(--text-muted);">
@@ -1177,28 +1644,32 @@
             const files = event.target.files;
             const errorDiv = document.getElementById('error-edit-files');
             errorDiv.style.display = 'none';
-            
+
             if (editSelectedFiles.length + files.length > 3) {
                 errorDiv.innerText = "Hệ thống chỉ hỗ trợ đính kèm tối đa 3 tệp tin.";
                 errorDiv.style.display = 'block';
+                event.target.value = '';
                 return;
             }
-            
+
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const ext = file.name.split('.').pop().toLowerCase();
                 if (!['pdf', 'jpg', 'jpeg', 'png'].includes(ext)) {
                     errorDiv.innerText = `Định dạng tệp tin ${file.name} không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png.`;
                     errorDiv.style.display = 'block';
+                    event.target.value = '';
                     return;
                 }
                 if (file.size > 20 * 1024 * 1024) {
                     errorDiv.innerText = `Dung lượng tệp tin ${file.name} vượt quá 20MB. Vui lòng kiểm tra lại.`;
                     errorDiv.style.display = 'block';
+                    event.target.value = '';
                     return;
                 }
                 editSelectedFiles.push(file.name);
             }
+            event.target.value = '';
             renderEditSelectedFiles();
         }
 
@@ -1206,11 +1677,27 @@
             const previewDiv = document.getElementById('edit-file-list-preview');
             if (!previewDiv) return;
             previewDiv.innerHTML = '';
+            
+            const countSpan = document.getElementById('edit-file-count');
+            if (countSpan) {
+                if (editSelectedFiles.length > 0) {
+                    countSpan.innerText = `Đã chọn ${editSelectedFiles.length} tệp`;
+                } else {
+                    countSpan.innerText = 'Chưa có tệp nào được chọn';
+                }
+            }
+
             editSelectedFiles.forEach((file, index) => {
                 previewDiv.innerHTML += `
-                    <div class="file-item" style="margin-top: 5px;">
-                        <span><i class="fa-solid fa-paperclip"></i> ${file}</span>
-                        <span class="file-item-delete" style="cursor:pointer;" onclick="removeEditFile(${index})"><i class="fa-solid fa-trash"></i></span>
+                    <div class="file-item" style="display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); background-color: #F1F5F9; padding: 6px 12px; border-radius: var(--border-radius-sm); font-size: 13px; margin-top: 5px;">
+                        <div style="display: flex; align-items: center; gap: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 65%;">
+                            <i class="fa-solid fa-paperclip" style="flex-shrink: 0; color: var(--text-muted);"></i>
+                            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${file}">${file}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+                            <a href="#" onclick="event.preventDefault(); downloadMockFile('${file}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="#" onclick="event.preventDefault(); removeEditFile(${index});" style="color: var(--danger-color); text-decoration: none; font-weight: 500;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                        </div>
                     </div>
                 `;
             });
@@ -1225,7 +1712,7 @@
             const title = document.getElementById('edit-title').value.trim();
             const content = document.getElementById('edit-content').value.trim();
             const priority = document.getElementById('edit-priority').value;
-            
+
             let hasError = false;
             if (!title) {
                 document.getElementById('error-edit-title').style.display = 'block';
@@ -1233,16 +1720,16 @@
             } else {
                 document.getElementById('error-edit-title').style.display = 'none';
             }
-            
+
             if (!content) {
                 document.getElementById('error-edit-content').style.display = 'block';
                 hasError = true;
             } else {
                 document.getElementById('error-edit-content').style.display = 'none';
             }
-            
+
             if (hasError) return;
-            
+
             const ticket = supportTickets.find(t => t.id === currentEditTicketId);
             if (ticket) {
                 ticket.title = title;
@@ -1250,8 +1737,9 @@
                 ticket.priority = priority;
                 ticket.files = [...editSelectedFiles];
                 ticket.status = "Chờ tiếp nhận";
+                saveSupportTicketsToStorage();
             }
-            
+
             showToast("Cập nhật yêu cầu hỗ trợ thành công!", "success");
             backToTracker();
         }
@@ -1262,13 +1750,13 @@
                 activeTab = tabName;
                 document.getElementById('tab-bpbd').classList.remove('active');
                 document.getElementById('tab-btnn').classList.remove('active');
-                
+
                 if (tabName === 'bpbd') {
                     document.getElementById('tab-bpbd').classList.add('active');
                 } else {
                     document.getElementById('tab-btnn').classList.add('active');
                 }
-                
+
                 filterTable();
             } catch (err) {
                 console.error(err);
@@ -1282,7 +1770,7 @@
                 tbody.innerHTML = '';
 
                 if (dataList.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có dữ liệu phù hợp</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có dữ liệu phù hợp</td></tr>`;
                     return;
                 }
 
@@ -1302,7 +1790,7 @@
 
                     // Content truncation
                     const contentTruncated = ticket.content.length > 100 ? ticket.content.substring(0, 100) + '...' : ticket.content;
-                    
+
                     // Most recent reply text
                     const lastReply = ticket.replies && ticket.replies.length > 0 ? ticket.replies[ticket.replies.length - 1] : null;
                     const replyText = lastReply ? lastReply.reply_content : '-';
@@ -1314,23 +1802,25 @@
                         titleWithIcon += ` <i class="fa-solid fa-paperclip" style="color: var(--secondary-color); cursor: pointer; font-size: 12px; margin-left: 6px;" title="Tải xuống tệp đính kèm: ${ticket.files.join(', ')}" onclick="event.stopPropagation(); downloadMockFile('${ticket.files[0]}')"></i>`;
                     }
 
-                    // Rating text markup (text only, no icons)
+                    // Rating badge markup matching the user's uploaded mockup image
                     let ratingMarkup = '-';
                     if (ticket.rating === 'Hài lòng') {
-                        ratingMarkup = '<span style="color: var(--success-color); font-weight:600;">Hài lòng</span>';
+                        ratingMarkup = '<span class="badge-rating-like"><i class="fa-solid fa-thumbs-up"></i> Hài lòng</span>';
                     } else if (ticket.rating === 'Không hài lòng') {
-                        ratingMarkup = '<span style="color: var(--danger-color); font-weight:600;">Không hài lòng</span>';
+                        ratingMarkup = '<span class="badge-rating-dislike"><i class="fa-solid fa-thumbs-down"></i> Không hài lòng</span>';
+                    } else if (ticket.rating === 'Khác') {
+                        ratingMarkup = '<span class="badge-rating-other"><i class="fa-solid fa-circle-info"></i> Ý kiến khác</span>';
                     }
 
-                    // Action buttons (vertically stacked, each button occupies its own line, unified width 95px)
-                    let actionButtons = `<div style="display: flex; flex-direction: column; gap: 4px; justify-content: center; align-items: center; width: 100%;">`;
-                    actionButtons += `<button class="btn btn-outline-primary btn-sm" style="padding: 4px 8px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px; width: 95px; height: 26px; white-space: nowrap;" onclick="event.stopPropagation(); showDetail('${ticket.id}')"><i class="fa-regular fa-eye"></i> Xem</button>`;
-                    
+                    // Action buttons (Fixed-Slot, horizontal layout with only icons)
+                    const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); showDetail('${ticket.id}')"><i class="fa-regular fa-eye"></i></button>`;
+
+                    let btnEvaluate = '';
                     if (ticket.status === 'Hoàn thành' && !ticket.rating) {
-                        actionButtons += `
-                            <div class="actions-dropdown" style="width: 95px;">
-                                <button class="btn btn-outline-primary btn-sm" style="padding: 4px 8px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px; width: 95px; height: 26px; white-space: nowrap;" onclick="toggleActionsDropdown(event, '${ticket.id}')">
-                                    Đánh giá <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
+                        btnEvaluate = `
+                            <div class="actions-dropdown" style="display: inline-block;">
+                                <button class="icon-btn evaluate" title="Đánh giá" onclick="toggleActionsDropdown(event, '${ticket.id}')">
+                                    <i class="fa-regular fa-star"></i>
                                 </button>
                                 <div class="actions-dropdown-menu" id="dropdown-${ticket.id}" style="min-width: 130px;">
                                     <button class="actions-dropdown-item" onclick="event.stopPropagation(); hideAllActionsDropdowns(); evaluateQuickLike('${ticket.id}')">
@@ -1339,15 +1829,24 @@
                                     <button class="actions-dropdown-item" onclick="event.stopPropagation(); hideAllActionsDropdowns(); evaluateQuickDislike('${ticket.id}')" style="border-top: 1px solid var(--border-color);">
                                         <i class="fa-regular fa-thumbs-down" style="color: var(--danger-color);"></i> Không hài lòng
                                     </button>
+                                    <button class="actions-dropdown-item" onclick="event.stopPropagation(); hideAllActionsDropdowns(); evaluateQuickOther('${ticket.id}')" style="border-top: 1px solid var(--border-color);">
+                                        <i class="fa-regular fa-lightbulb" style="color: var(--text-muted);"></i> Ý kiến khác
+                                    </button>
                                 </div>
                             </div>
                         `;
-                    } else if (ticket.status === 'Yêu cầu làm rõ') {
-                        actionButtons += `
-                            <button class="btn btn-primary btn-sm" style="background-color: var(--success-color); border: none; padding: 4px 8px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 4px; width: 95px; height: 26px; white-space: nowrap;" onclick="event.stopPropagation(); goToEditScreen('${ticket.id}')"><i class="fa-regular fa-pen-to-square"></i> Cập nhật</button>
-                        `;
+                    } else {
+                        btnEvaluate = `<button class="icon-btn evaluate" title="Chỉ đánh giá khi yêu cầu ở trạng thái Hoàn thành và chưa đánh giá" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-star"></i></button>`;
                     }
-                    actionButtons += `</div>`;
+
+                    let btnEdit = '';
+                    if (ticket.status === 'Yêu cầu làm rõ') {
+                        btnEdit = `<button class="icon-btn edit" title="Cập nhật thông tin" onclick="event.stopPropagation(); goToEditScreen('${ticket.id}')"><i class="fa-regular fa-pen-to-square"></i></button>`;
+                    } else {
+                        btnEdit = `<button class="icon-btn edit" title="Chỉ cập nhật khi có yêu cầu làm rõ từ cán bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-pen-to-square"></i></button>`;
+                    }
+
+                    let actionButtons = `<div style="display: flex; gap: 4px; justify-content: center; align-items: center; width: 100%;">${btnView}${btnEvaluate}${btnEdit}</div>`;
 
                     const row = document.createElement('tr');
                     row.style.cursor = 'pointer';
@@ -1355,7 +1854,6 @@
                     row.innerHTML = `
                         <td style="text-align: center; font-weight: 600; color: var(--text-muted);">${idx + 1}</td>
                         <td style="font-weight: 500;">${titleWithIcon}</td>
-                        <td>${ticket.category}</td>
                         <td title="${ticket.content.replace(/"/g, '&quot;')}">${contentTruncated}</td>
                         <td title="${(replyText || '').replace(/"/g, '&quot;')}">${replyTruncated}</td>
                         <td style="text-align: center;">${priorityBadge}</td>
@@ -1411,15 +1909,21 @@
 
                 // Filter by Keyword (Title or Content)
                 if (keywordVal) {
-                    filtered = filtered.filter(ticket => 
-                        ticket.title.toLowerCase().includes(keywordVal) || 
+                    filtered = filtered.filter(ticket =>
+                        ticket.title.toLowerCase().includes(keywordVal) ||
                         ticket.content.toLowerCase().includes(keywordVal)
                     );
                 }
 
                 // Filter by dates
                 if (fromDateVal) {
-                    const fromDateObj = new Date(fromDateVal + "T00:00:00");
+                    const parts = fromDateVal.split('/');
+                    let fromDateObj;
+                    if (parts.length === 3) {
+                        fromDateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+                    } else {
+                        fromDateObj = new Date(fromDateVal + "T00:00:00");
+                    }
                     filtered = filtered.filter(ticket => {
                         const tDateParts = ticket.created_at.split(' ')[0].split('/');
                         const ticketDate = new Date(`${tDateParts[2]}-${tDateParts[1]}-${tDateParts[0]}T00:00:00`);
@@ -1427,7 +1931,13 @@
                     });
                 }
                 if (toDateVal) {
-                    const toDateObj = new Date(toDateVal + "T23:59:59");
+                    const parts = toDateVal.split('/');
+                    let toDateObj;
+                    if (parts.length === 3) {
+                        toDateObj = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T23:59:59`);
+                    } else {
+                        toDateObj = new Date(toDateVal + "T23:59:59");
+                    }
                     filtered = filtered.filter(ticket => {
                         const tDateParts = ticket.created_at.split(' ')[0].split('/');
                         const ticketDate = new Date(`${tDateParts[2]}-${tDateParts[1]}-${tDateParts[0]}T00:00:00`);
@@ -1450,7 +1960,7 @@
 
                 toastText.innerText = message;
                 toast.className = 'toast ' + type;
-                
+
                 if (type === 'success') {
                     toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
                 } else {
@@ -1475,7 +1985,11 @@
         // Export Excel Simulation
         function exportToExcel() {
             try {
-                const dateStr = yyyy + mm + dd;
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const dateStr = `${yyyy}${mm}${dd}`;
                 const fileName = `Danh_sach_Yeu_cau_Ho_tro_${dateStr}.xlsx`;
                 showToast(`Kết xuất thành công. Đang tải xuống file ${fileName}`, 'success');
             } catch (err) {
@@ -1510,8 +2024,74 @@
                 document.getElementById('create-content').style.borderColor = '';
                 selectedFiles = [];
                 renderSelectedFiles();
-                
+
+                // Auto-fill user information based on login status
+                let parentUser = null;
+                let parentName = null;
+                try {
+                    if (window.parent) {
+                        if (typeof window.parent.loggedInUser !== 'undefined') parentUser = window.parent.loggedInUser;
+                        if (typeof window.parent.loggedInDisplayName !== 'undefined') parentName = window.parent.loggedInDisplayName;
+                    }
+                } catch (e) {}
+
+                const elName = document.getElementById('create-user-name');
+                const elEmail = document.getElementById('create-user-email');
+
+                if (parentUser && parentUser !== 'null' && parentUser !== 'KH_VNeID_MộtLần') {
+                    // Logged in
+                    if (elName) {
+                        elName.value = parentName || 'Ngân hàng TMCP FPT';
+                        elName.disabled = true;
+                    }
+                    if (elEmail) {
+                        elEmail.value = parentUser;
+                        elEmail.disabled = true;
+                    }
+                } else {
+                    // Anonymous/Guest client
+                    if (elName) {
+                        elName.value = '';
+                        elName.disabled = false;
+                        elName.placeholder = 'Nhập họ và tên người yêu cầu...';
+                    }
+                    if (elEmail) {
+                        elEmail.value = '';
+                        elEmail.disabled = false;
+                        elEmail.placeholder = 'Nhập email liên hệ...';
+                    }
+                }
+
+                document.getElementById('error-create-user-name').style.display = 'none';
+                document.getElementById('error-create-user-email').style.display = 'none';
+                if (elName) elName.style.borderColor = '';
+                if (elEmail) elEmail.style.borderColor = '';
+
                 switchScreen('screen-create');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Reset Filters function
+        function resetFilters() {
+            try {
+                document.getElementById('filter-keyword').value = '';
+                document.getElementById('filter-status').value = 'Tất cả';
+                document.getElementById('filter-priority').value = 'Tất cả';
+
+                const elFrom = document.getElementById('filter-from-date');
+                const elTo = document.getElementById('filter-to-date');
+                if (elFrom) {
+                    elFrom.value = defaultFrom;
+                    if (elFrom._flatpickr) elFrom._flatpickr.setDate(defaultFrom);
+                }
+                if (elTo) {
+                    elTo.value = defaultTo;
+                    if (elTo._flatpickr) elTo._flatpickr.setDate(defaultTo);
+                }
+
+                filterTable();
             } catch (err) {
                 console.error(err);
             }
@@ -1541,7 +2121,7 @@
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-                    
+
                     if (!validExtensions.includes(extension)) {
                         errorMsg.innerText = `Định dạng tệp tin ${file.name} không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png.`;
                         errorMsg.style.display = 'block';
@@ -1571,12 +2151,29 @@
             try {
                 const preview = document.getElementById('file-list-preview');
                 preview.innerHTML = '';
+
+                const countSpan = document.getElementById('create-file-count');
+                if (countSpan) {
+                    if (selectedFiles.length > 0) {
+                        countSpan.innerText = `Đã chọn ${selectedFiles.length} tệp`;
+                    } else {
+                        countSpan.innerText = 'Chưa có tệp nào được chọn';
+                    }
+                }
+
                 selectedFiles.forEach((file, index) => {
                     const item = document.createElement('div');
                     item.className = 'file-item';
+                    item.style = 'display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); background-color: #F1F5F9; padding: 6px 12px; border-radius: var(--border-radius-sm); font-size: 13px; margin-top: 5px;';
                     item.innerHTML = `
-                        <span><i class="fa-regular fa-file"></i> ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-                        <span class="file-item-delete" onclick="removeSelectedFile(${index})"><i class="fa fa-trash"></i></span>
+                        <div style="display: flex; align-items: center; gap: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 65%;">
+                            <i class="fa-regular fa-file" style="flex-shrink: 0; color: var(--text-muted);"></i>
+                            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${file.name}">${file.name}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+                            <a href="#" onclick="event.preventDefault(); downloadMockFile('${file.name}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="#" onclick="event.preventDefault(); removeSelectedFile(${index});" style="color: var(--danger-color); text-decoration: none; font-weight: 500;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                        </div>
                     `;
                     preview.appendChild(item);
                 });
@@ -1598,8 +2195,37 @@
                 const contentInput = document.getElementById('create-content');
                 const priority = document.getElementById('create-priority').value;
                 const category = document.getElementById('create-type').value;
+                const nameInput = document.getElementById('create-user-name');
+                const emailInput = document.getElementById('create-user-email');
 
                 let hasError = false;
+
+                // Validate User Name
+                if (nameInput && !nameInput.value.trim()) {
+                    document.getElementById('error-create-user-name').style.display = 'block';
+                    nameInput.style.borderColor = 'var(--danger-color)';
+                    hasError = true;
+                } else if (nameInput) {
+                    document.getElementById('error-create-user-name').style.display = 'none';
+                    nameInput.style.borderColor = '';
+                }
+
+                // Validate Email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailInput && !emailInput.value.trim()) {
+                    document.getElementById('error-create-user-email').innerText = 'Trường này bắt buộc nhập';
+                    document.getElementById('error-create-user-email').style.display = 'block';
+                    emailInput.style.borderColor = 'var(--danger-color)';
+                    hasError = true;
+                } else if (emailInput && !emailRegex.test(emailInput.value.trim())) {
+                    document.getElementById('error-create-user-email').innerText = 'Định dạng email không hợp lệ';
+                    document.getElementById('error-create-user-email').style.display = 'block';
+                    emailInput.style.borderColor = 'var(--danger-color)';
+                    hasError = true;
+                } else if (emailInput) {
+                    document.getElementById('error-create-user-email').style.display = 'none';
+                    emailInput.style.borderColor = '';
+                }
 
                 // Validate Title
                 if (!titleInput.value.trim()) {
@@ -1624,6 +2250,10 @@
                 if (hasError) return;
 
                 // Create dynamic ID
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
                 const ticketNum = String(supportTickets.length + 1).padStart(6, '0');
                 const ticketId = `HT-${yyyy}${mm}${dd}-${ticketNum}`;
 
@@ -1634,8 +2264,10 @@
                 const newTicket = {
                     id: ticketId,
                     category: category,
-                    created_at: currentDateFormatted + ' ' + String(today.getHours()).padStart(2, '0') + ':' + String(today.getMinutes()).padStart(2, '0'),
+                    created_at: `${dd}/${mm}/${yyyy} ${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`,
                     priority: priority,
+                    user_name: nameInput ? nameInput.value.trim() : 'Khách hàng vãng lai',
+                    user_email: emailInput ? emailInput.value.trim() : '',
                     title: titleInput.value.trim(),
                     content: contentInput.value.trim(),
                     status: 'Chờ tiếp nhận',
@@ -1646,6 +2278,7 @@
                 };
 
                 supportTickets.unshift(newTicket); // Prepend to lists
+                saveSupportTicketsToStorage();
 
                 // Show result screen
                 document.getElementById('lbl-result-ticket-id').innerText = ticketId;
@@ -1712,7 +2345,7 @@
                 const respSection = document.getElementById('detail-response-section');
                 const repliesListDiv = document.getElementById('detail-replies-list');
                 if (repliesListDiv) repliesListDiv.innerHTML = '';
-                
+
                 if (ticket.replies && ticket.replies.length > 0) {
                     respSection.style.display = 'block';
                     ticket.replies.forEach((rep, rIdx) => {
@@ -1722,7 +2355,7 @@
                                 repAttHtml += `<div style="margin-top: 4px;"><strong>Tệp đính kèm phản hồi:</strong> <a href="#" style="color: var(--secondary-color); font-weight: 500;" onclick="event.preventDefault(); downloadMockFile('${file}')"><i class="fa-solid fa-file-pdf"></i> ${file}</a></div>`;
                             });
                         }
-                        
+
                         repliesListDiv.innerHTML += `
                             <div class="response-box" style="margin-top: 0; margin-bottom: 10px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px; color: var(--text-muted);">
@@ -1753,18 +2386,31 @@
                     ratingSection.style.display = 'block';
                     const formBlock = document.getElementById('rating-form-block');
                     const doneBlock = document.getElementById('rating-done-block');
-                    
+
                     if (ticket.rating) {
                         formBlock.style.display = 'none';
                         doneBlock.style.display = 'block';
-                        
+
                         let ratingDoneText = '';
                         if (ticket.rating === 'Hài lòng') {
                             ratingDoneText = '<span style="color: var(--success-color); font-weight:600;"><i class="fa-solid fa-thumbs-up"></i> Hài lòng</span>';
-                        } else {
+                        } else if (ticket.rating === 'Không hài lòng') {
                             ratingDoneText = '<span style="color: var(--danger-color); font-weight:600;"><i class="fa-solid fa-thumbs-down"></i> Không hài lòng</span>';
+                        } else if (ticket.rating === 'Khác') {
+                            ratingDoneText = '<span style="color: var(--text-muted); font-weight:600;"><i class="fa-solid fa-circle-info"></i> Ý kiến khác</span>';
                         }
                         document.getElementById('lbl-rating-done-value').innerHTML = ratingDoneText;
+
+                        const lblTitle = document.querySelector('#div-rating-done-reason strong');
+                        if (lblTitle) {
+                            if (ticket.rating === 'Không hài lòng') {
+                                lblTitle.innerText = 'Lý do không hài lòng:';
+                            } else if (ticket.rating === 'Khác') {
+                                lblTitle.innerText = 'Nội dung khác:';
+                            } else {
+                                lblTitle.innerText = 'Ý kiến đóng góp:';
+                            }
+                        }
 
                         if (ticket.rating_comment) {
                             document.getElementById('div-rating-done-reason').style.display = 'block';
@@ -1775,7 +2421,7 @@
                     } else {
                         formBlock.style.display = 'block';
                         doneBlock.style.display = 'none';
-                        
+
                         // Reset form fields
                         const radios = document.getElementsByName('detail-rating-option');
                         radios.forEach(r => r.checked = false);
@@ -1797,8 +2443,21 @@
         function toggleFeedbackReason(value) {
             try {
                 const group = document.getElementById('detail-rating-reason-group');
-                if (value === 'Không hài lòng') {
+                const label = document.querySelector('label[for="detail-rating-reason"]');
+                const textarea = document.getElementById('detail-rating-reason');
+                const errorDiv = document.getElementById('error-detail-rating-reason');
+
+                if (value === 'Không hài lòng' || value === 'Khác') {
                     group.style.display = 'block';
+                    if (value === 'Khác') {
+                        if (label) label.innerHTML = 'Nội dung ý kiến khác <span class="required-mark">*</span>';
+                        if (textarea) textarea.placeholder = 'Vui lòng nhập nội dung ý kiến đóng góp khác...';
+                        if (errorDiv) errorDiv.innerText = 'Vui lòng nhập nội dung ý kiến đóng góp khác.';
+                    } else {
+                        if (label) label.innerHTML = 'Ý kiến đóng góp / Lý do không hài lòng <span class="required-mark">*</span>';
+                        if (textarea) textarea.placeholder = 'Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng...';
+                        if (errorDiv) errorDiv.innerText = 'Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng.';
+                    }
                 } else {
                     group.style.display = 'none';
                 }
@@ -1824,7 +2483,7 @@
                 const reasonInput = document.getElementById('detail-rating-reason');
                 let reasonVal = reasonInput.value.trim();
 
-                if (selectedVal === 'Không hài lòng' && !reasonVal) {
+                if ((selectedVal === 'Không hài lòng' || selectedVal === 'Khác') && !reasonVal) {
                     document.getElementById('error-detail-rating-reason').style.display = 'block';
                     reasonInput.style.borderColor = 'var(--danger-color)';
                     return;
@@ -1837,7 +2496,8 @@
                 const ticket = supportTickets.find(t => t.id === currentDetailTicketId);
                 if (ticket) {
                     ticket.rating = selectedVal;
-                    ticket.rating_comment = selectedVal === 'Không hài lòng' ? reasonVal : '';
+                    ticket.rating_comment = (selectedVal === 'Không hài lòng' || selectedVal === 'Khác') ? reasonVal : '';
+                    saveSupportTicketsToStorage();
                 }
 
                 showToast('Gửi đánh giá thành công. Trân trọng cảm ơn ý kiến của bạn!', 'success');
@@ -1855,6 +2515,7 @@
                     if (ticket) {
                         ticket.rating = 'Hài lòng';
                         ticket.rating_comment = '';
+                        saveSupportTicketsToStorage();
                     }
                     showToast('Gửi đánh giá thành công. Trân trọng cảm ơn ý kiến của bạn!', 'success');
                     filterTable(); // Refresh table view
@@ -1864,10 +2525,39 @@
             }
         }
 
+        let quickRatingType = "Không hài lòng";
+
         // Quick rating Không hài lòng (No/Dislike) directly from grid table row - opens modal
         function evaluateQuickDislike(ticketId) {
             try {
                 quickDislikeTicketId = ticketId;
+                quickRatingType = "Không hài lòng";
+
+                document.querySelector('#dislike-modal .modal-header').innerText = 'Đánh giá câu trả lời - Không hài lòng';
+                document.querySelector('#dislike-modal label[for="quick-feedback-reason"]').innerHTML = 'Ý kiến đóng góp / Lý do không hài lòng <span class="required-mark">*</span>';
+                document.getElementById('quick-feedback-reason').placeholder = 'Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng...';
+                document.getElementById('error-quick-feedback-reason').innerText = 'Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng.';
+
+                document.getElementById('quick-feedback-reason').value = '';
+                document.getElementById('error-quick-feedback-reason').style.display = 'none';
+                document.getElementById('quick-feedback-reason').style.borderColor = '';
+                document.getElementById('dislike-modal').classList.add('show');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Quick rating Ý kiến khác directly from grid table row - opens modal
+        function evaluateQuickOther(ticketId) {
+            try {
+                quickDislikeTicketId = ticketId;
+                quickRatingType = "Khác";
+
+                document.querySelector('#dislike-modal .modal-header').innerText = 'Đánh giá câu trả lời - Ý kiến khác';
+                document.querySelector('#dislike-modal label[for="quick-feedback-reason"]').innerHTML = 'Nội dung ý kiến khác <span class="required-mark">*</span>';
+                document.getElementById('quick-feedback-reason').placeholder = 'Vui lòng nhập nội dung ý kiến đóng góp khác...';
+                document.getElementById('error-quick-feedback-reason').innerText = 'Vui lòng nhập nội dung ý kiến đóng góp khác.';
+
                 document.getElementById('quick-feedback-reason').value = '';
                 document.getElementById('error-quick-feedback-reason').style.display = 'none';
                 document.getElementById('quick-feedback-reason').style.borderColor = '';
@@ -1895,8 +2585,9 @@
                 // Update database
                 const ticket = supportTickets.find(t => t.id === quickDislikeTicketId);
                 if (ticket) {
-                    ticket.rating = 'Không hài lòng';
+                    ticket.rating = quickRatingType;
                     ticket.rating_comment = reasonVal;
+                    saveSupportTicketsToStorage();
                 }
 
                 closeDislikeModal();
@@ -1907,8 +2598,19 @@
             }
         }
 
-        // Initialize Table View
+        // Initialize Date inputs and Table View directly
+        const elFromVal = document.getElementById('filter-from-date');
+        const elToVal = document.getElementById('filter-to-date');
+        if (elFromVal) elFromVal.value = defaultFrom;
+        if (elToVal) elToVal.value = defaultTo;
+
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr("#filter-from-date", { dateFormat: "d/m/Y", allowInput: true, onChange: filterTable });
+            flatpickr("#filter-to-date", { dateFormat: "d/m/Y", allowInput: true, onChange: filterTable });
+        }
+
         filterTable();
     </script>
 </body>
+
 </html>

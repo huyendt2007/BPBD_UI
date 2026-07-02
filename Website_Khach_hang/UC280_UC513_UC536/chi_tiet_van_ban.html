@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -368,6 +368,32 @@
             color: #10b981;
             font-size: 16px;
         }
+
+        /* Sidebar Metadata CSS */
+        .sidebar {
+            width: 320px;
+            background-color: #ffffff;
+            border-left: 1px solid #E2E8F0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+            color: #1E293B;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.05);
+            z-index: 90;
+            --primary-color: #1E3A8A;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --success-color: #10B981;
+        }
+        .sidebar.collapsed {
+            width: 0;
+            padding: 0 0;
+            overflow: hidden;
+            border-left: none;
+            box-shadow: none;
+        }
     </style>
 </head>
 <body>
@@ -393,69 +419,127 @@
         </div>
 
         <div class="toolbar-section">
+            <button class="btn-tool" onclick="toggleSidebar()" title="Thuộc tính văn bản"><i class="fa-solid fa-circle-info"></i></button>
             <button class="btn-tool" onclick="showToast('Xoay tài liệu thành công')" title="Xoay"><i class="fa-solid fa-rotate-right"></i></button>
             <button class="btn-tool" onclick="downloadPdf()" title="Tải xuống"><i class="fa-solid fa-download"></i></button>
             <button class="btn-tool" onclick="printPdf()" title="In ấn"><i class="fa-solid fa-print"></i></button>
         </div>
     </div>
 
-    <!-- Scrollable container for PDF page sheet -->
-    <div class="pdf-container">
-        <div class="pdf-page" id="pdf-sheet">
-            
-            <!-- Government Header -->
-            <div class="pdf-header">
-                <div class="pdf-header-left">
-                    <div class="gov-title" id="doc-org-full">[CƠ QUAN BAN HÀNH]</div>
-                    <div class="doc-number">Số: <span id="doc-number-text">[Số văn bản]</span></div>
-                </div>
-                <div class="pdf-header-right">
-                    <div class="gov-title">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-                    <div class="gov-title" style="font-size:12px; margin-top:2px;">Độc lập - Tự do - Hạnh phúc</div>
-                    <div class="gov-sub-title"></div>
-                    <div class="doc-date">Hà Nội, ngày <span id="doc-date-text">[Ngày văn bản]</span></div>
-                </div>
-            </div>
-
-            <!-- Title block -->
-            <div class="pdf-title-block">
-                <div class="pdf-doc-type" id="doc-type-text">NGHỊ ĐỊNH</div>
-                <div class="pdf-doc-excerpt" id="doc-excerpt-text">Về việc hướng dẫn chi tiết một số điều trong công tác hỗ trợ khách hàng và cung cấp thông tin pháp lý</div>
-            </div>
-
-            <!-- Body text -->
-            <div class="pdf-body" id="doc-body-content">
-                <!-- Content will load dynamically -->
-            </div>
-
-            <!-- Footer Signatures & Stamp -->
-            <div class="pdf-footer">
-                <div class="pdf-footer-left">
-                    <div class="pdf-footer-left-title">Nơi nhận:</div>
-                    - Như Điều 3;<br>
-                    - Thủ tướng Chính phủ;<br>
-                    - Bộ trưởng Bộ Tư pháp;<br>
-                    - Cổng TTĐT Chính phủ;<br>
-                    - Lưu: VT, Văn phòng.
-                </div>
-                <div class="pdf-footer-right">
-                    <div class="signer-title" id="signer-title-text">THỦ TƯỚNG</div>
-                    
-                    <!-- Digital Stamp Mockup -->
-                    <div class="digital-stamp">
-                        <div class="digital-stamp-header">
-                            <i class="fa-solid fa-signature"></i>
-                            <span>KÝ BỞI: <span id="stamp-signer">[Ký bởi]</span></span>
-                        </div>
-                        Email: admin@chinhphu.vn<br>
-                        Cơ quan: <span id="stamp-org">[Cơ quan]</span><br>
-                        Thời gian ký: <span id="stamp-time">[Thời gian]</span>
+    <!-- Main flex layout wrapper -->
+    <div style="flex: 1; display: flex; overflow: hidden; position: relative;">
+        <!-- Scrollable container for PDF page sheet -->
+        <div class="pdf-container">
+            <div class="pdf-page" id="pdf-sheet">
+                
+                <!-- Government Header -->
+                <div class="pdf-header">
+                    <div class="pdf-header-left">
+                        <div class="gov-title" id="doc-org-full">[CƠ QUAN BAN HÀNH]</div>
+                        <div class="doc-number">Số: <span id="doc-number-text">[Số văn bản]</span></div>
                     </div>
+                    <div class="pdf-header-right">
+                        <div class="gov-title">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                        <div class="gov-title" style="font-size:12px; margin-top:2px;">Độc lập - Tự do - Hạnh phúc</div>
+                        <div class="gov-sub-title"></div>
+                        <div class="doc-date">Hà Nội, ngày <span id="doc-date-text">[Ngày văn bản]</span></div>
+                    </div>
+                </div>
 
-                    <div class="signer-name" id="signer-name-text">Phạm Minh Chính</div>
+                <!-- Title block -->
+                <div class="pdf-title-block">
+                    <div class="pdf-doc-type" id="doc-type-text">NGHỊ ĐỊNH</div>
+                    <div class="pdf-doc-excerpt" id="doc-excerpt-text">Về việc hướng dẫn chi tiết một số điều trong công tác hỗ trợ khách hàng và cung cấp thông tin pháp lý</div>
+                </div>
+
+                <!-- Body text -->
+                <div class="pdf-body" id="doc-body-content">
+                    <!-- Content will load dynamically -->
+                </div>
+
+                <!-- Footer Signatures & Stamp -->
+                <div class="pdf-footer">
+                    <div class="pdf-footer-left">
+                        <div class="pdf-footer-left-title">Nơi nhận:</div>
+                        - Như Điều 3;<br>
+                        - Thủ tướng Chính phủ;<br>
+                        - Bộ trưởng Bộ Tư pháp;<br>
+                        - Cổng TTĐT Chính phủ;<br>
+                        - Lưu: VT, Văn phòng.
+                    </div>
+                    <div class="pdf-footer-right">
+                        <div class="signer-title" id="signer-title-text">THỦ TƯỚNG</div>
+                        
+                        <!-- Digital Stamp Mockup -->
+                        <div class="digital-stamp">
+                            <div class="digital-stamp-header">
+                                <i class="fa-solid fa-signature"></i>
+                                <span>KÝ BỞI: <span id="stamp-signer">[Ký bởi]</span></span>
+                            </div>
+                            Email: admin@chinhphu.vn<br>
+                            Cơ quan: <span id="stamp-org">[Cơ quan]</span><br>
+                            Thời gian ký: <span id="stamp-time">[Thời gian]</span>
+                        </div>
+
+                        <div class="signer-name" id="signer-name-text">Phạm Minh Chính</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Metadata Sidebar -->
+        <div id="metadata-sidebar" class="sidebar">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 12px; margin-bottom: 20px;">
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 8px; margin: 0; text-transform: uppercase;"><i class="fa-solid fa-circle-info"></i> Thuộc tính văn bản</h3>
+                <button onclick="toggleSidebar()" style="background: none; border: none; font-size: 16px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Số hiệu văn bản</label>
+                    <div id="side-doc-number" style="font-weight: 600; font-size: 13.5px; color: var(--text-main);"></div>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Loại văn bản</label>
+                    <div id="side-doc-type" style="font-weight: 500; font-size: 13.5px; color: var(--text-main);"></div>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Cơ quan ban hành</label>
+                    <div id="side-doc-publisher" style="font-weight: 500; font-size: 13.5px; color: var(--text-main);"></div>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Ngày ban hành</label>
+                    <div id="side-doc-date" style="font-weight: 500; font-size: 13.5px; color: var(--text-main);"></div>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Ngày có hiệu lực</label>
+                    <div id="side-doc-effect-date" style="font-weight: 600; font-size: 13.5px; color: var(--success-color);"></div>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Trạng thái hiệu lực</label>
+                    <div style="margin-top: 4px;"><span class="badge" style="background-color: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px;">Đang có hiệu lực</span></div>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Lĩnh vực nghiệp vụ</label>
+                    <div id="side-doc-category" style="font-weight: 500; font-size: 13.5px; color: var(--text-main);"></div>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Người ký / chức danh</label>
+                    <div id="side-doc-signer" style="font-weight: 500; font-size: 13.5px; color: var(--text-main);"></div>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Nội dung trích yếu</label>
+                    <div id="side-doc-excerpt" style="font-weight: 500; font-size: 12.5px; color: var(--text-main); line-height: 1.4; text-align: justify; margin-bottom: 15px;"></div>
+                </div>
+                <div style="border-top: 1px dashed #E2E8F0; padding-top: 12px; margin-top: 5px;">
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Tài liệu đính kèm liên quan</label>
+                    <div id="side-doc-files" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                </div>
+                <div style="border-top: 1px dashed #E2E8F0; padding-top: 12px; margin-top: 5px; margin-bottom: 10px;">
+                    <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Media hướng dẫn</label>
+                    <div id="side-doc-media" style="display: flex; flex-direction: column; gap: 6px;"></div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -471,180 +555,210 @@
                 id: 1, 
                 number: '99/2022/NĐ-CP', 
                 date: '30/11/2022', 
+                effectDate: '15/01/2023',
                 publisher: 'Chính phủ', 
                 excerpt: 'Nghị định về đăng ký biện pháp bảo đảm', 
                 category: 'BPBD',
                 signer: 'Thủ tướng',
                 signerName: 'Phạm Minh Chính',
+                files: ["Nghidinh_99_2022_BPBD.pdf"],
+                media: [],
                 body: `
-                    <p>Căn cứ Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015; Luật sửa đổi, bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức chính quyền địa phương ngày 22 tháng 11 năm 2019;</p>
-                    <p>Căn cứ Bộ luật Dân sự ngày 24 tháng 11 năm 2015;</p>
-                    <p>Theo đề nghị của Bộ trưởng Bộ Tư pháp;</p>
-                    <p style="text-align: center; font-weight: bold; margin-top:20px; text-indent:0;">QUYẾT NGHỊ / QUYẾT ĐỊNH:</p>
-                    <div class="clause-title">Điều 1. Phạm vi điều chỉnh</div>
-                    <p>Nghị định này quy định về đăng ký, cung cấp thông tin về biện pháp bảo đảm thực hiện nghĩa vụ bằng tài sản là động sản, trừ tàu bay, tàu biển; đăng ký thay đổi, xóa đăng ký biện pháp bảo đảm và quản lý nhà nước về đăng ký biện pháp bảo đảm.</p>
-                    <div class="clause-title">Điều 2. Đối tượng áp dụng</div>
-                    <p>1. Cơ quan, tổ chức, cá nhân tham gia hoặc có liên quan đến đăng ký biện pháp bảo đảm, tìm hiểu thông tin về biện pháp bảo đảm.</p>
-                    <p>2. Văn phòng đăng ký đất đai, Chi nhánh Văn phòng đăng ký đất đai trực thuộc cơ quan Tài nguyên và Môi trường.</p>
-                    <div class="clause-title">Điều 3. Hiệu lực thi hành</div>
-                    <p>Nghị định này có hiệu lực thi hành từ ngày 15 tháng 01 năm 2023 và thay thế Nghị định số 102/2017/NĐ-CP ngày 01 tháng 9 năm 2017 của Chính phủ về đăng ký biện pháp bảo đảm.</p>
+                     <p>Căn cứ Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015; Luật sửa đổi, bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức chính quyền địa phương ngày 22 tháng 11 năm 2019;</p>
+                     <p>Căn cứ Bộ luật Dân sự ngày 24 tháng 11 năm 2015;</p>
+                     <p>Theo đề nghị của Bộ trưởng Bộ Tư pháp;</p>
+                     <p style="text-align: center; font-weight: bold; margin-top:20px; text-indent:0;">QUYẾT NGHỊ / QUYẾT ĐỊNH:</p>
+                     <div class="clause-title">Điều 1. Phạm vi điều chỉnh</div>
+                     <p>Nghị định này quy định về đăng ký, cung cấp thông tin về biện pháp bảo đảm thực hiện nghĩa vụ bằng tài sản là động sản, trừ tàu bay, tàu biển; đăng ký thay đổi, xóa đăng ký biện pháp bảo đảm và quản lý nhà nước về đăng ký biện pháp bảo đảm.</p>
+                     <div class="clause-title">Điều 2. Đối tượng áp dụng</div>
+                     <p>1. Cơ quan, tổ chức, cá nhân tham gia hoặc có liên quan đến đăng ký biện pháp bảo đảm, tìm hiểu thông tin về biện pháp bảo đảm.</p>
+                     <p>2. Văn phòng đăng ký đất đai, Chi nhánh Văn phòng đăng ký đất đai trực thuộc cơ quan Tài nguyên và Môi trường.</p>
+                     <div class="clause-title">Điều 3. Hiệu lực thi hành</div>
+                     <p>Nghị định này có hiệu lực thi hành từ ngày 15 tháng 01 năm 2023 và thay thế Nghị định số 102/2017/NĐ-CP ngày 01 tháng 9 năm 2017 của Chính phủ về đăng ký biện pháp bảo đảm.</p>
                 `
             },
             { 
                 id: 2, 
                 number: '102/2017/NĐ-CP', 
                 date: '01/09/2017', 
+                effectDate: '15/09/2017',
                 publisher: 'Chính phủ', 
                 excerpt: 'Nghị định về đăng ký biện pháp bảo đảm (hết hiệu lực một phần)', 
                 category: 'BPBD',
                 signer: 'Thủ tướng',
                 signerName: 'Nguyễn Xuân Phúc',
+                files: ["Nghidinh_102_2017_BPBD.pdf"],
+                media: [],
                 body: `
-                    <p>Căn cứ Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015;</p>
-                    <p>Căn cứ Bộ luật Dân sự ngày 24 tháng 11 năm 2015;</p>
-                    <p>Theo đề nghị của Bộ trưởng Bộ Tư pháp;</p>
-                    <p style="text-align: center; font-weight: bold; margin-top:20px; text-indent:0;">QUYẾT ĐỊNH:</p>
-                    <div class="clause-title">Điều 1. Nguyên tắc đăng ký biện pháp bảo đảm</div>
-                    <p>1. Người yêu cầu đăng ký chịu trách nhiệm trước pháp luật về tính chính xác, trung thực của thông tin kê khai trên đơn yêu cầu đăng ký.</p>
-                    <p>2. Cơ quan đăng ký thực hiện việc đăng ký theo đúng thông tin trên đơn yêu cầu đăng ký, không yêu cầu nộp thêm các tài liệu khác ngoài quy định.</p>
-                    <div class="clause-title">Điều 2. Các biện pháp bảo đảm phải đăng ký</div>
-                    <p>Đăng ký thế chấp quyền sử dụng đất; thế chấp tài sản gắn liền với đất; thế chấp tàu bay, tàu biển và các động sản khác theo quy định pháp luật dân sự.</p>
+                     <p>Căn cứ Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015;</p>
+                     <p>Căn cứ Bộ luật Dân sự ngày 24 tháng 11 năm 2015;</p>
+                     <p>Theo đề nghị của Bộ trưởng Bộ Tư pháp;</p>
+                     <p style="text-align: center; font-weight: bold; margin-top:20px; text-indent:0;">QUYẾT ĐỊNH:</p>
+                     <div class="clause-title">Điều 1. Nguyên tắc đăng ký biện pháp bảo đảm</div>
+                     <p>1. Người yêu cầu đăng ký chịu trách nhiệm trước pháp luật về tính chính xác, trung thực của thông tin kê khai trên đơn yêu cầu đăng ký.</p>
+                     <p>2. Cơ quan đăng ký thực hiện việc đăng ký theo đúng thông tin trên đơn yêu cầu đăng ký, không yêu cầu nộp thêm các tài liệu khác ngoài quy định.</p>
+                     <div class="clause-title">Điều 2. Các biện pháp bảo đảm phải đăng ký</div>
+                     <p>Đăng ký thế chấp quyền sử dụng đất; thế chấp tài sản gắn liền với đất; thế chấp tàu bay, tàu biển và các động sản khác theo quy định pháp luật dân sự.</p>
                 `
             },
             { 
                 id: 3, 
                 number: '07/2019/TT-BTP', 
                 date: '25/11/2019', 
+                effectDate: '10/01/2020',
                 publisher: 'Bộ Tư pháp', 
                 excerpt: 'Hướng dẫn một số nội dung về đăng ký biện pháp bảo đảm bằng tàu bay, tàu biển', 
                 category: 'BPBD',
                 signer: 'Bộ trưởng',
                 signerName: 'Lê Thành Long',
+                files: ["Thongtu_07_2019_TT_BTP.pdf"],
+                media: [],
                 body: `
-                    <p>Căn cứ Nghị định số 96/2017/NĐ-CP ngày 16 tháng 8 năm 2017 của Chính phủ quy định chức năng, nhiệm vụ, quyền hạn và cơ cấu tổ chức của Bộ Tư pháp;</p>
-                    <p>Căn cứ Nghị định số 102/2017/NĐ-CP ngày 01 tháng 9 năm 2017 của Chính phủ về đăng ký biện pháp bảo đảm;</p>
-                    <p>Bộ trưởng Bộ Tư pháp ban hành Thông tư hướng dẫn một số nội dung đăng ký biện pháp bảo đảm bằng tàu bay, tàu biển.</p>
-                    <div class="clause-title">Điều 1. Phạm vi áp dụng</div>
-                    <p>Thông tư này hướng dẫn chi tiết hồ sơ, thủ tục đăng ký, đăng ký thay đổi, xóa đăng ký và cung cấp thông tin về biện pháp bảo đảm bằng tàu bay, tàu biển.</p>
-                    <div class="clause-title">Điều 2. Biểu mẫu sử dụng</div>
-                    <p>Ban hành kèm theo Thông tư này hệ thống biểu mẫu dùng cho đăng ký thế chấp tàu bay, thế chấp tàu biển và các yêu cầu cung cấp thông tin liên quan khác.</p>
+                     <p>Căn cứ Nghị định số 96/2017/NĐ-CP ngày 16 tháng 8 năm 2017 của Chính phủ quy định chức năng, nhiệm vụ, quyền hạn và cơ cấu tổ chức của Bộ Tư pháp;</p>
+                     <p>Căn cứ Nghị định số 102/2017/NĐ-CP ngày 01 tháng 9 năm 2017 của Chính phủ về đăng ký biện pháp bảo đảm;</p>
+                     <p>Bộ trưởng Bộ Tư pháp ban hành Thông tư hướng dẫn một số nội dung đăng ký biện pháp bảo đảm bằng tàu bay, tàu biển.</p>
+                     <div class="clause-title">Điều 1. Phạm vi áp dụng</div>
+                     <p>Thông tư này hướng dẫn chi tiết hồ sơ, thủ tục đăng ký, đăng ký thay đổi, xóa đăng ký và cung cấp thông tin về biện pháp bảo đảm bằng tàu bay, tàu biển.</p>
+                     <div class="clause-title">Điều 2. Biểu mẫu sử dụng</div>
+                     <p>Ban hành kèm theo Thông tư này hệ thống biểu mẫu dùng cho đăng ký thế chấp tàu bay, thế chấp tàu biển và các yêu cầu cung cấp thông tin liên quan khác.</p>
                 `
             },
             { 
                 id: 4, 
                 number: '05/2020/TT-BTP', 
                 date: '28/08/2020', 
+                effectDate: '15/10/2020',
                 publisher: 'Bộ Tư pháp', 
                 excerpt: 'Quy định chi tiết một số điều của Nghị định số 102/2017/NĐ-CP', 
                 category: 'BPBD',
                 signer: 'Bộ trưởng',
                 signerName: 'Lê Thành Long',
+                files: ["Thongtu_05_2020_TT_BTP.pdf"],
+                media: ["Video_huongdan_nghiepvu.mp4"],
                 body: `
-                    <p>Căn cứ Nghị định số 96/2017/NĐ-CP ngày 16 tháng 8 năm 2017 của Chính phủ;</p>
-                    <p>Bộ trưởng Bộ Tư pháp ban hành Thông tư hướng dẫn nghiệp vụ đăng ký giao dịch bảo đảm bằng động sản.</p>
-                    <div class="clause-title">Điều 1. Kiểm tra thông tin trên đơn đăng ký</div>
-                    <p>Cơ quan đăng ký thực hiện đối chiếu thông tin trên Đơn yêu cầu đăng ký với cơ sở dữ liệu quốc gia. Trường hợp thông tin trùng khớp và hợp lệ, thực hiện ghi nhận thông tin đăng ký vào sổ đăng ký hoặc hệ thống cơ sở dữ liệu quốc gia trong thời hạn quy định.</p>
+                     <p>Căn cứ Nghị định số 96/2017/NĐ-CP ngày 16 tháng 8 năm 2017 của Chính phủ;</p>
+                     <p>Bộ trưởng Bộ Tư pháp ban hành Thông tư hướng dẫn nghiệp vụ đăng ký giao dịch bảo đảm bằng động sản.</p>
+                     <div class="clause-title">Điều 1. Kiểm tra thông tin trên đơn đăng ký</div>
+                     <p>Cơ quan đăng ký thực hiện đối chiếu thông tin trên Đơn yêu cầu đăng ký với cơ sở dữ liệu quốc gia. Trường hợp thông tin trùng khớp và hợp lệ, thực hiện ghi nhận thông tin đăng ký vào sổ đăng ký hoặc hệ thống cơ sở dữ liệu quốc gia trong thời hạn quy định.</p>
                 `
             },
             { 
                 id: 5, 
                 number: '91/2018/QH14', 
                 date: '20/06/2018', 
+                effectDate: '01/01/2019',
                 publisher: 'Quốc hội', 
                 excerpt: 'Luật sửa đổi, bổ sung một số điều của Luật Giao dịch điện tử', 
                 category: 'BPBD',
                 signer: 'Chủ tịch Quốc hội',
                 signerName: 'Nguyễn Thị Kim Ngân',
+                files: ["Luat_91_2018_QH14.pdf"],
+                media: [],
                 body: `
-                    <p>Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam;</p>
-                    <p>Quốc hội ban hành Luật sửa đổi, bổ sung một số điều của Luật Giao dịch điện tử số 51/2005/QH11.</p>
-                    <div class="clause-title">Điều 1. Sửa đổi, bổ sung một số điều</div>
-                    <p>Sửa đổi các quy định liên quan đến chữ ký số, giá trị pháp lý của chứng thư điện tử, hoạt động dịch vụ tin cậy và công tác lưu trữ tài liệu số hóa thay thế tài liệu giấy gốc đối với các thủ tục hành chính trực tuyến công vụ.</p>
+                     <p>Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam;</p>
+                     <p>Quốc hội ban hành Luật sửa đổi, bổ sung một số điều của Luật Giao dịch điện tử số 51/2005/QH11.</p>
+                     <div class="clause-title">Điều 1. Sửa đổi, bổ sung một số điều</div>
+                     <p>Sửa đổi các quy định liên quan đến chữ ký số, giá trị pháp lý của chứng thư điện tử, hoạt động dịch vụ tin cậy và công tác lưu trữ tài liệu số hóa thay thế tài liệu giấy gốc đối với các thủ tục hành chính trực tuyến công vụ.</p>
                 `
             },
             { 
                 id: 6, 
                 number: '11/2017/QH14', 
                 date: '20/06/2017', 
+                effectDate: '01/07/2018',
                 publisher: 'Quốc hội', 
                 excerpt: 'Luật Trách nhiệm bồi thường của Nhà nước', 
                 category: 'BTNN',
                 signer: 'Chủ tịch Quốc hội',
                 signerName: 'Nguyễn Thị Kim Ngân',
+                files: ["Luat_TrachNhiemBoiThuong_2017.pdf", "Huongdan_Nghiepvu_BoiThuong.docx"],
+                media: [],
                 body: `
-                    <p>Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam;</p>
-                    <p>Quốc hội ban hành Luật Trách nhiệm bồi thường của Nhà nước.</p>
-                    <div class="clause-title">Điều 1. Phạm vi điều chỉnh</div>
-                    <p>Luật này quy định trách nhiệm bồi thường của Nhà nước đối với cá nhân, tổ chức bị thiệt hại do người thi hành công vụ gây ra trong hoạt động quản lý hành chính, tố tụng và thi hành án; thủ tục giải quyết bồi thường; quyền yêu cầu hoàn trả; kinh phí bồi thường và quản lý nhà nước về công tác bồi thường nhà nước.</p>
-                    <div class="clause-title">Điều 2. Thời hiệu yêu cầu bồi thường</div>
-                    <p>1. Thời hiệu yêu cầu bồi thường là 03 năm kể từ ngày người có quyền yêu cầu nhận được văn bản làm căn cứ yêu cầu bồi thường.</p>
-                    <p>2. Thời gian xảy ra sự kiện bất khả kháng hoặc trở ngại khách quan không tính vào thời hiệu yêu cầu bồi thường quy định tại Khoản 1 Điều này.</p>
+                     <p>Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam;</p>
+                     <p>Quốc hội ban hành Luật Trách nhiệm bồi thường của Nhà nước.</p>
+                     <div class="clause-title">Điều 1. Phạm vi điều chỉnh</div>
+                     <p>Luật này quy định trách nhiệm bồi thường của Nhà nước đối với cá nhân, tổ chức bị thiệt hại do người thi hành công vụ gây ra trong hoạt động quản lý hành chính, tố tụng và thi hành án; thủ tục giải quyết bồi thường; quyền yêu cầu hoàn trả; kinh phí bồi thường và quản lý nhà nước về công tác bồi thường nhà nước.</p>
+                     <div class="clause-title">Điều 2. Thời hiệu yêu cầu bồi thường</div>
+                     <p>1. Thời hiệu yêu cầu bồi thường là 03 năm kể từ ngày người có quyền yêu cầu nhận được văn bản làm căn cứ yêu cầu bồi thường.</p>
+                     <p>2. Thời gia xảy ra sự kiện bất khả kháng hoặc trở ngại khách quan không tính vào thời hiệu yêu cầu bồi thường quy định tại Khoản 1 Điều này.</p>
                 `
             },
             { 
                 id: 7, 
                 number: '68/2018/NĐ-CP', 
                 date: '15/05/2018', 
+                effectDate: '01/07/2018',
                 publisher: 'Chính phủ', 
                 excerpt: 'Quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước', 
                 category: 'BTNN',
                 signer: 'Thủ tướng',
                 signerName: 'Nguyễn Xuân Phúc',
+                files: ["Nghidinh_68_2018_ND_CP.pdf", "Phuluc_Bieumau_68.docx", "Huongdan_thithanh_68.pdf"],
+                media: ["Video_gioi_thieu_luat_tnbtnn.mp4"],
                 body: `
-                    <p>Căn cứ Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015;</p>
-                    <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước ngày 20 tháng 6 năm 2017;</p>
-                    <p>Theo đề nghị của Bộ trưởng Bộ Tư pháp;</p>
-                    <p>Chính phủ ban hành Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước.</p>
-                    <div class="clause-title">Điều 1. Xác định cơ quan giải quyết bồi thường</div>
-                    <p>Nghị định này hướng dẫn chi tiết việc xác định cơ quan có nghĩa vụ giải quyết bồi thường trong trường hợp cơ quan đó đã được sáp nhập, chia tách, giải thể hoặc có nhiều người thi hành công vụ cùng gây thiệt hại.</p>
+                     <p>Căn cứ Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015;</p>
+                     <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước ngày 20 tháng 6 năm 2017;</p>
+                     <p>Theo đề nghị của Bộ trưởng Bộ Tư pháp;</p>
+                     <p>Chính phủ ban hành Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước.</p>
+                     <div class="clause-title">Điều 1. Xác định cơ quan giải quyết bồi thường</div>
+                     <p>Nghị định này hướng dẫn chi tiết việc xác định cơ quan có nghĩa vụ giải quyết bồi thường trong trường hợp cơ quan đó đã được sáp nhập, chia tách, giải thể hoặc có nhiều người thi hành công vụ cùng gây thiệt hại.</p>
                 `
             },
             { 
                 id: 8, 
                 number: '04/2018/TT-BTP', 
                 date: '17/05/2018', 
+                effectDate: '01/07/2018',
                 publisher: 'Bộ Tư pháp', 
                 excerpt: 'Ban hành một số biểu mẫu trong hoạt động giải quyết bồi thường của Nhà nước', 
                 category: 'BTNN',
                 signer: 'Bộ trưởng',
                 signerName: 'Lê Thành Long',
+                files: ["Thongtu_04_2018_TT_BTP.pdf", "Bieumau_Thongtu_04.docx"],
+                media: [],
                 body: `
-                    <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước ngày 20 tháng 6 năm 2017;</p>
-                    <p>Bộ trưởng Bộ Tư pháp ban hành biểu mẫu sử dụng trong hoạt động giải quyết bồi thường.</p>
-                    <div class="clause-title">Điều 1. Ban hành biểu mẫu</div>
-                    <p>Ban hành kèm theo Thông tư này các biểu mẫu hành chính phục vụ công tác thụ lý hồ sơ, biên bản thương lượng, quyết định bồi thường và các quyết định hoàn trả công vụ hành chính nhà nước.</p>
+                     <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước ngày 20 tháng 6 năm 2017;</p>
+                     <p>Bộ trưởng Bộ Tư pháp ban hành biểu mẫu sử dụng trong hoạt động giải quyết bồi thường.</p>
+                     <div class="clause-title">Điều 1. Ban hành biểu mẫu</div>
+                     <p>Ban hành kèm theo Thông tư này các biểu mẫu hành chính phục vụ công tác thụ lý hồ sơ, biên bản thương lượng, quyết định bồi thường và các quyết định hoàn trả công vụ hành chính nhà nước.</p>
                 `
             },
             { 
                 id: 9, 
                 number: '09/2019/TT-BTP', 
                 date: '10/12/2019', 
+                effectDate: '25/01/2020',
                 publisher: 'Bộ Tư pháp', 
                 excerpt: 'Biện pháp thực hiện hoạt động quản lý nhà nước về công tác bồi thường nhà nước', 
                 category: 'BTNN',
                 signer: 'Bộ trưởng',
                 signerName: 'Lê Thành Long',
+                files: ["Thongtu_09_2019_TT_BTP.pdf", "Tailieu_Huongdan_09.pdf"],
+                media: [],
                 body: `
-                    <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước ngày 20 tháng 6 năm 2017;</p>
-                    <p>Bộ trưởng Bộ Tư pháp ban hành biện pháp thực hiện quản lý hành chính nhà nước về công tác bồi thường.</p>
-                    <div class="clause-title">Điều 1. Trách nhiệm phối hợp</div>
-                    <p>Các bộ, cơ quan ngang bộ và Ủy ban nhân dân cấp tỉnh có trách nhiệm phối hợp chặt chẽ với Bộ Tư pháp trong việc thực hiện thanh tra, kiểm tra định kỳ công tác bồi thường nhà nước trong phạm vi quản lý của mình.</p>
+                     <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước ngày 20 tháng 6 năm 2017;</p>
+                     <p>Bộ trưởng Bộ Tư pháp ban hành biện pháp thực hiện quản lý hành chính nhà nước về công tác bồi thường.</p>
+                     <div class="clause-title">Điều 1. Trách nhiệm phối hợp</div>
+                     <p>Các bộ, cơ quan ngang bộ và Ủy ban nhân dân cấp tỉnh có trách nhiệm phối hợp chặt chẽ với Bộ Tư pháp trong việc thực hiện thanh tra, kiểm tra định kỳ công tác bồi thường nhà nước trong phạm vi quản lý của mình.</p>
                 `
             },
             { 
                 id: 10, 
                 number: '02/2023/TT-BTP', 
                 date: '15/03/2023', 
+                effectDate: '01/05/2023',
                 publisher: 'Bộ Tư pháp', 
                 excerpt: 'Hướng dẫn nghiệp vụ giải quyết bồi thường nhà nước và kỹ năng hỗ trợ người bị thiệt hại', 
                 category: 'BTNN',
                 signer: 'Bộ trưởng',
                 signerName: 'Lê Thành Long',
+                files: ["Thongtu_02_2023_TT_BTP.pdf", "Slide_huong_dan_nghiep_vu.pdf", "Bieumau_YeuCau_BoiThuong.docx"],
+                media: ["Slide_huong_dan_nghiep_vu.pdf"],
                 body: `
-                    <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước ngày 20 tháng 6 năm 2017;</p>
-                    <p>Bộ trưởng Bộ Tư pháp hướng dẫn chi tiết các kỹ năng nghiệp vụ giải quyết bồi thường và tiếp công dân.</p>
-                    <div class="clause-title">Điều 1. Kỹ năng xác minh thiệt hại</div>
-                    <p>Hướng dẫn chi tiết quy trình thẩm định hồ sơ hóa đơn, chứng từ thực tế để làm cơ sở tính toán chính xác giá trị thiệt hại vật chất, tinh thần và thiệt hại thực tế của cá nhân/tổ chức bị ảnh hưởng công vụ hành chính công.</p>
+                     <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước ngày 20 tháng 6 năm 2017;</p>
+                     <p>Bộ trưởng Bộ Tư pháp hướng dẫn chi tiết các kỹ năng nghiệp vụ giải quyết bồi thường và tiếp công dân.</p>
+                     <div class="clause-title">Điều 1. Kỹ năng xác minh thiệt hại</div>
+                     <p>Hướng dẫn chi tiết quy trình thẩm định hồ sơ hóa đơn, chứng từ thực tế để làm cơ sở tính toán chính xác giá trị thiệt hại vật chất, tinh thần và thiệt hại thực tế của cá nhân/tổ chức bị ảnh hưởng công vụ hành chính công.</p>
                 `
             }
         ];
@@ -653,46 +767,177 @@
         const pdfSheet = document.getElementById('pdf-sheet');
 
         // Load Document Details based on URL Parameter
-        window.addEventListener('load', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = parseInt(urlParams.get('id')) || 1;
-            
-            const doc = mockDocs.find(d => d.id === id);
-            if (doc) {
-                // Set window and toolbar title
-                document.title = `${doc.number.replace(/\//g, '_')}.pdf`;
-                document.getElementById('filename-text').innerText = `${doc.number.replace(/\//g, '_')}.pdf`;
+        function initDocumentDetails() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const idStr = urlParams.get('id');
+                const id = idStr ? parseInt(idStr) : 1;
+                console.log("Loading document ID:", id);
                 
-                // Render document header/metadata
-                document.getElementById('doc-org-full').innerText = doc.publisher.toUpperCase();
-                document.getElementById('doc-number-text').innerText = doc.number;
-                document.getElementById('doc-date-text').innerText = doc.date;
-                
-                // Render document title block
-                const typeMap = { 'NĐ-CP': 'NGHỊ ĐỊNH', 'TT-BTP': 'THÔNG TƯ', 'QH14': 'LUẬT' };
-                let docType = 'VĂN BẢN';
-                for (let key in typeMap) {
-                    if (doc.number.includes(key)) {
-                        docType = typeMap[key];
-                        break;
+                // Dynamic Document Loading with version buster to clean old stale mock databases
+                const DB_VERSION = "v5";
+                try {
+                    if (localStorage.getItem('vbqppl_documents_version') !== DB_VERSION) {
+                        localStorage.removeItem('vbqppl_documents');
+                        localStorage.setItem('vbqppl_documents_version', DB_VERSION);
                     }
+                } catch (err) {
+                    console.error("Không thể ghi dữ liệu phiên bản vào localStorage:", err);
                 }
-                document.getElementById('doc-type-text').innerText = docType;
-                document.getElementById('doc-excerpt-text').innerText = doc.excerpt;
-                
-                // Signer info
-                document.getElementById('signer-title-text').innerText = doc.signer.toUpperCase();
-                document.getElementById('signer-name-text').innerText = doc.signerName;
-                document.getElementById('stamp-signer').innerText = doc.publisher;
-                document.getElementById('stamp-org').innerText = doc.publisher;
-                document.getElementById('stamp-time').innerText = `${doc.date} 16:40:18 +07:00`;
-                
-                // Document Body Content
-                document.getElementById('doc-body-content').innerHTML = doc.body;
-            } else {
-                document.body.innerHTML = `<div style="color:white; text-align:center; padding-top:100px;"><h3>Không tìm thấy văn bản quy phạm pháp luật yêu cầu.</h3></div>`;
+
+                // Try loading from localStorage first to get real-time edits from Admin portal
+                let docList = mockDocs;
+                try {
+                    const savedDocs = localStorage.getItem('vbqppl_documents');
+                    if (savedDocs) {
+                        const parsed = JSON.parse(savedDocs);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            docList = parsed.filter(d => d).map(d => {
+                                const ten = d.tenVanban || '';
+                                const tags = d.tags || '';
+                                const checkText = (ten + ' ' + tags).toLowerCase();
+                                const cat = (checkText.includes('bồi thường') || checkText.includes('btnn')) ? 'BTNN' : 'BPBD';
+                                return {
+                                    id: d.id,
+                                    number: d.soHieu || '',
+                                    date: d.ngayBanhanh || '',
+                                    effectDate: d.ngayCoHieuLuc || d.ngayBanhanh || '',
+                                    publisher: d.coquanBanhanh || '',
+                                    excerpt: ten,
+                                    category: cat,
+                                    signer: d.chucDanh || 'Người ký',
+                                    signerName: d.nguoiKy || 'Chưa cập nhật',
+                                    body: d.tomTat ? `<p>${d.tomTat}</p><p>Nội dung chi tiết vui lòng xem tệp đính kèm chính thức dưới đây.</p>` : `<p>Nội dung toàn văn của văn bản quy phạm pháp luật.</p>`,
+                                    files: Array.isArray(d.files) ? d.files : [],
+                                    media: Array.isArray(d.media) ? d.media : []
+                                };
+                            });
+                        }
+                    }
+                } catch(e) {
+                    console.error("Lỗi đọc dữ liệu từ localStorage:", e);
+                }
+
+                const doc = docList.find(d => String(d.id) === String(id));
+                if (doc) {
+                    const docNumber = doc.number || '';
+                    const docPublisher = doc.publisher || '';
+                    const docDate = doc.date || '';
+                    const docExcerpt = doc.excerpt || '';
+                    const docSigner = doc.signer || 'Người ký';
+                    const docSignerName = doc.signerName || 'Chưa cập nhật';
+                    const docBody = doc.body || '';
+                    const docEffectDate = doc.effectDate || '';
+                    const docCategory = doc.category || 'BPBD';
+
+                    // Set window and toolbar title
+                    document.title = `${docNumber.replace(/\//g, '_')}.pdf`;
+                    document.getElementById('filename-text').innerText = `${docNumber.replace(/\//g, '_')}.pdf`;
+                    
+                    // Render document header/metadata
+                    document.getElementById('doc-org-full').innerText = docPublisher.toUpperCase();
+                    document.getElementById('doc-number-text').innerText = docNumber;
+                    document.getElementById('doc-date-text').innerText = docDate;
+                    
+                    // Render document title block
+                    const typeMap = { 'NĐ-CP': 'NGHỊ ĐỊNH', 'TT-BTP': 'THÔNG TƯ', 'QH14': 'LUẬT' };
+                    let docType = 'VĂN BẢN';
+                    for (let key in typeMap) {
+                        if (docNumber.includes(key)) {
+                            docType = typeMap[key];
+                            break;
+                        }
+                    }
+                    document.getElementById('doc-type-text').innerText = docType;
+                    document.getElementById('doc-excerpt-text').innerText = docExcerpt;
+                    
+                    // Signer info
+                    document.getElementById('signer-title-text').innerText = docSigner.toUpperCase();
+                    document.getElementById('signer-name-text').innerText = docSignerName;
+                    document.getElementById('stamp-signer').innerText = docPublisher;
+                    document.getElementById('stamp-org').innerText = docPublisher;
+                    document.getElementById('stamp-time').innerText = `${docDate} 16:40:18 +07:00`;
+                    
+                    // Document Body Content
+                    document.getElementById('doc-body-content').innerHTML = docBody;
+
+                    // Populate Sidebar
+                    document.getElementById('side-doc-number').innerText = docNumber;
+                    document.getElementById('side-doc-type').innerText = docType;
+                    document.getElementById('side-doc-publisher').innerText = docPublisher;
+                    document.getElementById('side-doc-date').innerText = docDate;
+                    document.getElementById('side-doc-effect-date').innerText = docEffectDate;
+                    document.getElementById('side-doc-category').innerText = docCategory === 'BPBD' || docCategory === 'QH14' ? 'Đăng ký biện pháp bảo đảm' : 'Bồi thường nhà nước';
+                    document.getElementById('side-doc-signer').innerText = `${docSignerName} (${docSigner})`;
+                    document.getElementById('side-doc-excerpt').innerText = docExcerpt;
+
+                    // Render Attached Files List in Sidebar
+                    const filesContainer = document.getElementById('side-doc-files');
+                    filesContainer.innerHTML = '';
+                    const docFilesList = (doc.files && doc.files.length > 0) ? doc.files : [`Taptin_${docNumber.replace(/\//g, '_')}.pdf`];
+                    docFilesList.forEach(file => {
+                        const isDocx = file.toLowerCase().endsWith('.docx');
+                        const iconClass = isDocx ? 'fa-regular fa-file-word' : 'fa-regular fa-file-pdf';
+                        const iconColor = isDocx ? '#2b579a' : '#ef4444';
+                        
+                        const item = document.createElement('div');
+                        item.style.display = "flex";
+                        item.style.alignItems = "center";
+                        item.style.justifyContent = "space-between";
+                        item.style.gap = "8px";
+                        item.style.fontSize = "12.5px";
+                        item.style.padding = "4px 0";
+                        item.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;">
+                                <i class="${iconClass}" style="color: ${iconColor}; flex-shrink: 0; font-size: 14px;"></i>
+                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${file}">${file}</span>
+                            </div>
+                            <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
+                                <a href="#" onclick="event.preventDefault(); openMockFile('${file}');" style="color: #1E3A8A; text-decoration: none; font-weight: 600; font-size: 11.5px;">Xem file</a>
+                                <span style="color: #CBD5E1; font-size: 11px;">|</span>
+                                <a href="#" onclick="event.preventDefault(); showToast('Tải về thành công tệp: ${file}');" style="color: #1E3A8A; text-decoration: none; font-weight: 600; font-size: 11.5px;">Tải về</a>
+                            </div>
+                        `;
+                        filesContainer.appendChild(item);
+                    });
+
+                    // Render Attached Media List in Sidebar
+                    const mediaContainer = document.getElementById('side-doc-media');
+                    mediaContainer.innerHTML = '';
+                    if (doc.media && doc.media.length > 0) {
+                        doc.media.forEach(file => {
+                            const item = document.createElement('div');
+                            item.style.display = "flex";
+                            item.style.alignItems = "center";
+                            item.style.justifyContent = "space-between";
+                            item.style.gap = "8px";
+                            item.style.fontSize = "12.5px";
+                            item.style.padding = "4px 0";
+                            item.innerHTML = `
+                                <div style="display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;">
+                                    <i class="fa-regular fa-file-video" style="color: #3b82f6; flex-shrink: 0; font-size: 14px;"></i>
+                                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${file}">${file}</span>
+                                </div>
+                                <a href="#" onclick="event.preventDefault(); showToast('Đang phát video hướng dẫn: ${file}');" style="color: #1E3A8A; text-decoration: none; font-weight: 600; font-size: 11.5px; flex-shrink: 0;">Xem media</a>
+                            `;
+                            mediaContainer.appendChild(item);
+                        });
+                    } else {
+                        mediaContainer.innerHTML = '<div style="color: #64748B; font-size: 12px; font-style: italic; padding: 2px 0;">Không kèm video/media hướng dẫn</div>';
+                    }
+                } else {
+                    document.body.innerHTML = `<div style="color:white; text-align:center; padding-top:100px;"><h3>Không tìm thấy văn bản quy phạm pháp luật yêu cầu.</h3></div>`;
+                }
+            } catch (err) {
+                console.error("Lỗi hiển thị chi tiết văn bản:", err);
+                document.body.innerHTML = `<div style="color:white; text-align:center; padding-top:100px;"><h3>Có lỗi xảy ra khi tải nội dung văn bản.</h3><p style="font-size:12px; color:#aaa;">Chi tiết: ${err.message}</p></div>`;
             }
-        });
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('metadata-sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
 
         // Zoom Helpers
         function adjustZoom(factor) {
@@ -728,6 +973,53 @@
                 toast.style.display = 'none';
             }, 3000);
         }
+
+        // Mock File Viewer
+        function openMockFile(filename) {
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(`
+                <html>
+                <head>
+                    <title>Xem file: ${filename}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+                    <style>
+                        body {
+                            font-family: 'Inter', sans-serif;
+                            background-color: #f1f5f9;
+                            margin: 0;
+                            padding: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                        }
+                        .preview-card {
+                            background: white;
+                            padding: 40px;
+                            border-radius: 8px;
+                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                            max-width: 800px;
+                            width: 100%;
+                        }
+                        h2 { color: #1e3a8a; margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+                        p { color: #334155; line-height: 1.6; }
+                    </style>
+                </head>
+                <body>
+                    <div class="preview-card">
+                        <h2>Xem trước tài liệu: ${filename}</h2>
+                        <p>Đây là nội dung hiển thị xem trước trực tuyến của tệp đính kèm <strong>${filename}</strong> thuộc Văn bản Quy phạm Pháp luật.</p>
+                        <p>Nội dung chi tiết bao gồm các điều khoản thi hành, hướng dẫn kỹ năng nghiệp vụ thực tế, biểu mẫu kê khai đính kèm đã được phê duyệt chính thức bởi cơ quan ban hành.</p>
+                        <p style="color: #64748b; font-size: 13px; font-style: italic; margin-top: 30px; border-top: 1px dashed #e2e8f0; padding-top: 15px;">Hệ thống Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp</p>
+                    </div>
+                </body>
+                </html>
+            `);
+            newWindow.document.close();
+        }
+
+        // Initialize document details
+        initDocumentDetails();
     </script>
 </body>
 </html>

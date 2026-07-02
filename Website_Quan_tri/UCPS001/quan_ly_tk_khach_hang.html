@@ -1,4 +1,4 @@
-﻿ <!DOCTYPE html>
+ <!DOCTYPE html>
  <html lang="vi">
  <head>
      <meta charset="UTF-8">
@@ -644,6 +644,7 @@
                          <!-- Rendered by JS -->
                      </tbody>
                  </table>
+                 <div class="pagination-container" id="personPagination"></div>
              </div>
          </div>
  
@@ -664,12 +665,13 @@
                               <th width="9%" class="sortable" onclick="handleSort('org', 'createdDate')">Ngày tạo <span id="org-sort-createdDate"><i class="fas fa-sort"></i></span></th>
                               <th width="9%">Trạng thái</th>
                               <th width="10%" style="text-align:center">Thao tác</th>
-</tr>
+                         </tr>
                      </thead>
                      <tbody id="orgTableBody">
                          <!-- Rendered by JS -->
                      </tbody>
-                 </table>`r`n                  <div class="pagination-container" id="orgPagination"></div>
+                 </table>
+                 <div class="pagination-container" id="orgPagination"></div>
              </div>
          </div>
      </div>
@@ -796,9 +798,9 @@
                              </tr>
                          </thead>
                          <tbody id="detailSubTableBody">
-                             <!-- Rendered by JS -->
-                         </tbody>
-                     </table>
+                              <!-- Rendered by JS -->
+                          </tbody>
+                      </table>
                  </div>
              </div>
              <div class="modal-footer">
@@ -812,7 +814,6 @@
  
      <!-- MODAL CHỈNH SỬA (Edit Modal) -->
      <div class="modal-overlay" id="editModal">
-         <div class="modal-content">
              <div class="modal-header">
                  <h3 id="modalTitle">Chỉnh sửa tài khoản khách hàng</h3>
                  <button class="close-modal" onclick="closeModal('editModal')"><i class="fas fa-times"></i></button>

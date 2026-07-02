@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,8 @@
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
         /* CSS Variables - Đồng bộ với Cán bộ Portal */
@@ -635,6 +637,9 @@
                         <!-- Rendered by JS -->
                     </tbody>
                 </table>
+                <div class="pagination-container" id="th-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
         </div>
 
@@ -885,6 +890,9 @@
                         <!-- Rendered by JS -->
                     </tbody>
                 </table>
+                <div class="pagination-container" id="kh-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
         </div>
 
@@ -1251,6 +1259,9 @@
                         <!-- Rendered by JS -->
                     </tbody>
                 </table>
+                <div class="pagination-container" id="lk-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%;">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
         </div>
 
@@ -1492,6 +1503,167 @@
             danhGia: "",
             baocaoKq: "",
             filesKq: []
+        },
+        {
+            id: "KH-TH-2026-0006",
+            ten: "Hội thảo quốc tế về kinh nghiệm đăng ký biện pháp bảo đảm bằng động sản",
+            loai: "Hội thảo",
+            donViChuTri: "Phòng Nghiệp vụ 2",
+            donViPhoiHop: "Bộ Ngoại giao, ADB",
+            kinhPhiDukien: 120000000,
+            hinhThuc: "Trực tiếp",
+            diaDiem: "Hội trường Lotte, Hà Nội",
+            batDauDukien: "05/08/2026",
+            ketThucDukien: "06/08/2026",
+            noiDung: "Chia sẻ kinh nghiệm xây dựng hệ thống đăng ký trực tuyến động sản của các nước ASEAN.",
+            filesKh: [],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Chưa thực hiện",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
+        },
+        {
+            id: "KH-TH-2026-0007",
+            ten: "Tập huấn về Luật trách nhiệm bồi thường của Nhà nước trong đăng ký biện pháp bảo đảm",
+            loai: "Tập huấn",
+            donViChuTri: "Phòng Bồi thường nhà nước",
+            donViPhoiHop: "Sở Tư pháp các tỉnh miền Trung",
+            kinhPhiDukien: 50000000,
+            hinhThuc: "Trực tiếp",
+            diaDiem: "Hội trường Khách sạn Mường Thanh, Đà Nẵng",
+            batDauDukien: "15/08/2026",
+            ketThucDukien: "16/08/2026",
+            noiDung: "Nghiên cứu các hành vi gây thiệt hại phải bồi thường trong công tác đăng ký giao dịch bảo đảm.",
+            filesKh: [],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Chưa thực hiện",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
+        },
+        {
+            id: "KH-TH-2026-0008",
+            ten: "Tọa đàm trực tuyến giải quyết vướng mắc về đăng ký thế chấp tàu bay, tàu biển",
+            loai: "Tọa đàm",
+            donViChuTri: "Phòng Nghiệp vụ 1",
+            donViPhoiHop: "Cục Hàng hải Việt Nam, Cục Hàng không Việt Nam",
+            kinhPhiDukien: 10000000,
+            hinhThuc: "Trực tuyến",
+            diaDiem: "",
+            batDauDukien: "22/08/2026",
+            ketThucDukien: "22/08/2026",
+            noiDung: "Trao đổi nghiệp vụ liên thông dữ liệu thế chấp tàu bay, tàu biển.",
+            filesKh: [],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Chưa thực hiện",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
+        },
+        {
+            id: "KH-TH-2026-0009",
+            ten: "Tập huấn kỹ năng sử dụng Hệ thống đăng ký biện pháp bảo đảm trực tuyến mới",
+            loai: "Tập huấn",
+            donViChuTri: "Văn phòng Cục",
+            donViPhoiHop: "Trung tâm Công nghệ thông tin",
+            kinhPhiDukien: 25000000,
+            hinhThuc: "Trực tuyến",
+            diaDiem: "",
+            batDauDukien: "10/09/2026",
+            ketThucDukien: "11/09/2026",
+            noiDung: "Hướng dẫn thao tác đăng ký trực tuyến, nộp phí điện tử và ký số tờ khai cho cán bộ ngân hàng.",
+            filesKh: [],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Chưa thực hiện",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
+        },
+        {
+            id: "KH-TH-2026-0010",
+            ten: "Hội nghị thường niên về đăng ký giao dịch bảo đảm toàn quốc năm 2026",
+            loai: "Hội nghị",
+            donViChuTri: "Phòng Hành chính - Tổng hợp",
+            donViPhoiHop: "Các đơn vị thuộc Cục",
+            kinhPhiDukien: 150000000,
+            hinhThuc: "Trực tiếp",
+            diaDiem: "Hội trường Bộ Tư pháp, Hà Nội",
+            batDauDukien: "05/11/2026",
+            ketThucDukien: "06/11/2026",
+            noiDung: "Đánh giá kết quả hoạt động đăng ký giao dịch bảo đảm năm 2026 và phương hướng nhiệm vụ năm 2027.",
+            filesKh: [],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Chưa thực hiện",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
+        },
+        {
+            id: "KH-TH-2026-0011",
+            ten: "Hội thảo về tích hợp dữ liệu đăng ký biện pháp bảo đảm với cơ sở dữ liệu đất đai quốc gia",
+            loai: "Hội thảo",
+            donViChuTri: "Phòng Nghiệp vụ 2",
+            donViPhoiHop: "Cục Đăng ký dữ liệu thông tin đất đai - Bộ TN&MT",
+            kinhPhiDukien: 70000000,
+            hinhThuc: "Trực tiếp",
+            diaDiem: "Hội trường tầng 5, Cục ĐKGDBĐ",
+            batDauDukien: "18/11/2026",
+            ketThucDukien: "18/11/2026",
+            noiDung: "Thảo luận phương án kỹ thuật chia sẻ thông tin thế chấp quyền sử dụng đất theo thời gian thực.",
+            filesKh: [],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Chưa thực hiện",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
+        },
+        {
+            id: "KH-TH-2026-0012",
+            ten: "Tọa đàm về hoàn thiện quy trình giải quyết bồi thường nhà nước trong lĩnh vực đăng ký biện pháp bảo đảm",
+            loai: "Tọa đàm",
+            donViChuTri: "Phòng Bồi thường nhà nước",
+            donViPhoiHop: "Vụ Pháp luật Dân sự - Kinh tế",
+            kinhPhiDukien: 20000000,
+            hinhThuc: "Trực tiếp",
+            diaDiem: "Phòng họp số 2, Cục ĐKGDBĐ",
+            batDauDukien: "12/12/2026",
+            ketThucDukien: "12/12/2026",
+            noiDung: "Đánh giá thực tiễn thi hành và đề xuất giải pháp rút ngắn thời gian thương lượng bồi thường.",
+            filesKh: [],
+            batDauThucte: "",
+            ketThucThucte: "",
+            tinhTrang: "Chưa thực hiện",
+            lyDo: "",
+            daibieuThucte: 0,
+            thanhPhan: "",
+            danhGia: "",
+            baocaoKq: "",
+            filesKq: []
         }
     ];
 
@@ -1613,6 +1785,321 @@
             nghiemthuCoquan: "Bộ Tư pháp",
             filesFullReport: [{ name: "Bao_Cao_Toan_Van_BTNN_DangKy.pdf", size: "5.4 MB" }],
             filesMinutes: [{ name: "Bien_Ban_Hoi_Dong_Nghiem_Thu.pdf", size: "1.8 MB" }]
+        },
+        {
+            id: "ĐT-2026-0004",
+            ten: "Nghiên cứu ứng dụng công nghệ Blockchain trong việc lưu trữ và xác thực thông tin đăng ký biện pháp bảo đảm",
+            cap: "Cấp Cục",
+            chunhiem: "Vũ Minh Tuấn",
+            donVi: "Văn phòng Cục",
+            thanhVien: "Phan Văn Đ, Đỗ Thị E",
+            batDauDukien: "04/2026",
+            ketThucDukien: "12/2026",
+            tongThang: 9,
+            batDauChitiet: "01/04/2026",
+            ketThucChitiet: "31/12/2026",
+            muctieu: "Đánh giá tính khả thi và thiết kế mô hình thử nghiệm ứng dụng Blockchain bảo đảm tính toàn vẹn dữ liệu giao dịch.",
+            phamvi: "Cơ sở dữ liệu đăng ký giao dịch bảo đảm quốc gia.",
+            noidung: "Phân tích công nghệ, khảo sát hạ tầng hiện tại và đề xuất kiến trúc tích hợp Blockchain.",
+            phuongphap: "Nghiên cứu lý thuyết kỹ thuật công nghệ thông tin, mô phỏng hệ thống.",
+            ketquaDukien: "Báo cáo đề xuất giải pháp kỹ thuật và mô hình thử nghiệm Blockchain.",
+            kinhPhiDukien: 95000000,
+            nguonVon: "Quỹ phát triển KHCN",
+            kinhPhiChitiet: "Thù lao nghiên cứu công nghệ: 50tr, thử nghiệm mô hình: 35tr, tài liệu: 10tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 20,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Cục ĐKGDBĐ và BTNN",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0005",
+            ten: "Thực trạng và giải pháp nâng cao hiệu quả giải quyết bồi thường nhà nước tại khu vực miền Trung - Tây Nguyên",
+            cap: "Cấp Bộ",
+            chunhiem: "Lê Thị Thanh",
+            donVi: "Phòng Bồi thường nhà nước",
+            thanhVien: "Nguyễn Văn H, Trần Thị K",
+            batDauDukien: "02/2026",
+            ketThucDukien: "11/2026",
+            tongThang: 10,
+            batDauChitiet: "01/02/2026",
+            ketThucChitiet: "30/11/2026",
+            muctieu: "Đánh giá thực trạng giải quyết bồi thường nhà nước và kiến nghị hoàn thiện quy trình phối hợp liên ngành.",
+            phamvi: "Các vụ việc bồi thường nhà nước phát sinh tại miền Trung và Tây Nguyên.",
+            noidung: "Khảo sát thực tiễn tại các cơ quan thi hành án, tòa án và ủy ban nhân dân tỉnh.",
+            phuongphap: "Phát phiếu khảo sát, thống kê phân tích số liệu, phỏng vấn trực tiếp cán bộ chuyên trách.",
+            ketquaDukien: "Báo cáo thực trạng bồi thường nhà nước và bộ kiến nghị giải pháp hỗ trợ nghiệp vụ.",
+            kinhPhiDukien: 110000000,
+            nguonVon: "Ngân sách nhà nước",
+            kinhPhiChitiet: "Công tác phí khảo sát 5 tỉnh: 40tr, thù lao viết báo cáo chuyên đề: 50tr, hội thảo: 20tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 40,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Bộ Tư pháp",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0006",
+            ten: "Nghiên cứu tích hợp Cơ sở dữ liệu quốc gia về đăng ký biện pháp bảo đảm với Cơ sở dữ liệu quốc gia về dân cư",
+            cap: "Cấp Bộ",
+            chunhiem: "Hoàng Minh Long",
+            donVi: "Văn phòng Cục",
+            thanhVien: "Phạm Văn L, Nguyễn Thị M",
+            batDauDukien: "03/2026",
+            ketThucDukien: "12/2026",
+            tongThang: 10,
+            batDauChitiet: "01/03/2026",
+            ketThucChitiet: "31/12/2026",
+            muctieu: "Xây dựng phương án kết nối, chia sẻ dữ liệu phục vụ xác thực thông tin chủ tài sản bảo đảm bằng số định danh cá nhân.",
+            phamvi: "Cơ sở dữ liệu ĐKGDBĐ quốc gia và CSDL dân cư.",
+            noidung: "Nghiên cứu các quy chuẩn kỹ thuật kết nối dữ liệu, quy định bảo mật thông tin cá nhân.",
+            phuongphap: "Hội thảo kỹ thuật, nghiên cứu giải pháp bảo mật mã hóa đường truyền.",
+            ketquaDukien: "Đề án kết nối dữ liệu và dự thảo quy chế phối hợp khai thác thông tin.",
+            kinhPhiDukien: 130000000,
+            nguonVon: "Ngân sách nhà nước",
+            kinhPhiChitiet: "Thù lao nghiên cứu: 60tr, thiết kế mô hình kết nối: 40tr, thẩm định an toàn thông tin: 30tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 30,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Bộ Tư pháp",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0007",
+            ten: "Hoàn thiện pháp luật về đăng ký biện pháp bảo đảm bằng quyền sở hữu trí tuệ tại Việt Nam",
+            cap: "Cấp Bộ",
+            chunhiem: "Đỗ Hồng Hạnh",
+            donVi: "Phòng Nghiệp vụ 2",
+            thanhVien: "Lê Văn P, Trần Thị Q",
+            batDauDukien: "05/2026",
+            ketThucDukien: "12/2026",
+            tongThang: 8,
+            batDauChitiet: "01/05/2026",
+            ketThucChitiet: "31/12/2026",
+            muctieu: "Đề xuất sửa đổi các quy định về đăng ký thế chấp quyền tác giả, nhãn hiệu và sáng chế đồng bộ với Luật Sở hữu trí tuệ.",
+            phamvi: "Quy định đăng ký thế chấp tài sản trí tuệ tại Việt Nam.",
+            noidung: "Khảo sát thực tiễn đăng ký thế chấp quyền SHTT, nghiên cứu kinh nghiệm quốc tế.",
+            phuongphap: "Hội thảo chuyên đề, nghiên cứu tài liệu lý thuyết.",
+            ketquaDukien: "Báo cáo chuyên khảo và đề xuất sửa đổi bổ sung Nghị định về đăng ký biện pháp bảo đảm.",
+            kinhPhiDukien: 100000000,
+            nguonVon: "Ngân sách nhà nước",
+            kinhPhiChitiet: "Thù lao nhóm nghiên cứu: 50tr, dịch thuật tài liệu quốc tế: 20tr, hội thảo khoa học: 30tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 10,
+            progressStatus: "Mới phê duyệt",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Bộ Tư pháp",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0008",
+            ten: "Đăng ký biện pháp bảo đảm bằng quyền tài sản phát sinh từ dự án xây dựng nhà ở xã hội - Những vướng mắc pháp lý và thực tiễn",
+            cap: "Cấp Cục",
+            chunhiem: "Phạm Minh Hoàng",
+            donVi: "Phòng Nghiệp vụ 1",
+            thanhVien: "Vũ Văn T, Nguyễn Ngọc V",
+            batDauDukien: "01/2026",
+            ketThucDukien: "09/2026",
+            tongThang: 9,
+            batDauChitiet: "01/01/2026",
+            ketThucChitiet: "30/09/2026",
+            muctieu: "Làm rõ quy trình, thủ tục thế chấp dự án nhà ở xã hội và quyền tài sản phát sinh từ dự án.",
+            phamvi: "Hoạt động đăng ký thế chấp dự án nhà ở xã hội.",
+            noidung: "Phân tích các quy định pháp luật nhà ở, đất đai và giao dịch bảo đảm liên quan.",
+            phuongphap: "Tọa đàm khoa học, khảo sát ý kiến doanh nghiệp và ngân hàng.",
+            ketquaDukien: "Báo cáo khuyến nghị và hướng dẫn nghiệp vụ đăng ký thế chấp nhà ở xã hội.",
+            kinhPhiDukien: 60000000,
+            nguonVon: "Quỹ phát triển KHCN",
+            kinhPhiChitiet: "Thù lao nghiên cứu chuyên đề: 30tr, tọa đàm bàn tròn: 20tr, tài liệu: 10tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 80,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Cục ĐKGDBĐ và BTNN",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0009",
+            ten: "Nghiên cứu cơ chế hậu kiểm trong hoạt động đăng ký biện pháp bảo đảm trực tuyến bằng động sản",
+            cap: "Cấp Cục",
+            chunhiem: "Trần Thu Trang",
+            donVi: "Phòng Nghiệp vụ 2",
+            thanhVien: "Bùi Văn X, Lê Thị Y",
+            batDauDukien: "03/2026",
+            ketThucDukien: "11/2026",
+            tongThang: 8,
+            batDauChitiet: "01/03/2026",
+            ketThucChitiet: "30/11/2026",
+            muctieu: "Đề xuất quy trình và công cụ tự động phát hiện thông tin đăng ký sai lệch hoặc giả mạo.",
+            phamvi: "Hoạt động đăng ký giao dịch bảo đảm động sản trực tuyến.",
+            noidung: "Xây dựng các tiêu chí đánh giá rủi ro thông tin đăng ký, quy trình phối hợp kiểm tra định kỳ.",
+            phuongphap: "Nghiên cứu công nghệ xử lý dữ liệu lớn, phân tích lỗi nghiệp vụ thường gặp.",
+            ketquaDukien: "Báo cáo đề xuất phương án nâng cấp tính năng tự động hậu kiểm của phần mềm.",
+            kinhPhiDukien: 70000000,
+            nguonVon: "Quỹ phát triển KHCN",
+            kinhPhiChitiet: "Thù lao nghiên cứu quy trình: 40tr, lập trình thử nghiệm tính năng lọc rủi ro: 30tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 60,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Cục ĐKGDBĐ và BTNN",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0010",
+            ten: "Thống nhất quy chuẩn thông tin tài sản bảo đảm trong Cơ sở dữ liệu quốc gia về đăng ký biện pháp bảo đảm",
+            cap: "Cấp Cục",
+            chunhiem: "Phan Văn Nam",
+            donVi: "Văn phòng Cục",
+            thanhVien: "Đặng Thị Z, Nguyễn Văn K",
+            batDauDukien: "04/2026",
+            ketThucDukien: "12/2026",
+            tongThang: 8,
+            batDauChitiet: "01/04/2026",
+            ketThucChitiet: "31/12/2026",
+            muctieu: "Xây dựng danh mục chuẩn hóa thông tin mô tả tài sản bảo đảm (số khung, số máy, số đăng ký).",
+            phamvi: "Cơ sở dữ liệu đăng ký biện pháp bảo đảm.",
+            noidung: "Khảo sát dữ liệu hiện tại, phân tích các trường hợp sai lệch định dạng, thiết lập bộ quy tắc chuẩn hóa dữ liệu đầu vào.",
+            phuongphap: "Rà soát dữ liệu lớn, đối chiếu quy chuẩn kỹ thuật quốc gia.",
+            ketquaDukien: "Bộ quy chuẩn dữ liệu tài sản bảo đảm áp dụng trên toàn hệ thống.",
+            kinhPhiDukien: 80000000,
+            nguonVon: "Quỹ phát triển KHCN",
+            kinhPhiChitiet: "Thù lao khảo sát dữ liệu lỗi: 30tr, viết quy tắc chuẩn hóa: 40tr, văn phòng phẩm: 10tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 50,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Cục ĐKGDBĐ và BTNN",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0011",
+            ten: "Nghiên cứu cơ chế chia sẻ thông tin giao dịch bảo đảm phục vụ hoạt động phòng chống rửa tiền",
+            cap: "Cấp Bộ",
+            chunhiem: "Lê Ngọc Bích",
+            donVi: "Phòng Hành chính - Tổng hợp",
+            thanhVien: "Nguyễn Văn P, Trần Thị Q",
+            batDauDukien: "02/2026",
+            ketThucDukien: "11/2026",
+            tongThang: 9,
+            batDauChitiet: "01/02/2026",
+            ketThucChitiet: "30/11/2026",
+            muctieu: "Xây dựng cơ chế báo cáo và chia sẻ thông tin giao dịch bảo đảm có dấu hiệu đáng ngờ với Cục Phòng chống rửa tiền.",
+            phamvi: "Hệ thống thông tin giao dịch bảo đảm quốc gia.",
+            noidung: "Nghiên cứu Luật Phòng chống rửa tiền, xác định các tiêu chí nhận diện giao dịch bảo đảm đáng ngờ.",
+            phuongphap: "Tọa đàm chuyên gia liên ngành Ngân hàng Nhà nước và Bộ Tư pháp.",
+            ketquaDukien: "Báo cáo nghiên cứu và dự thảo quy chế phối hợp chia sẻ thông tin.",
+            kinhPhiDukien: 120000000,
+            nguonVon: "Ngân sách nhà nước",
+            kinhPhiChitiet: "Thù lao nhóm nghiên cứu: 60tr, khảo sát thực tiễn: 20tr, hội thảo liên ngành: 40tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 70,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Bộ Tư pháp",
+            filesFullReport: [],
+            filesMinutes: []
+        },
+        {
+            id: "ĐT-2026-0012",
+            ten: "Hoàn thiện quy chế quản lý và khai thác CSDL quốc gia về đăng ký biện pháp bảo đảm",
+            cap: "Cấp Cục",
+            chunhiem: "Nguyễn Văn Hưng",
+            donVi: "Văn phòng Cục",
+            thanhVien: "Trần Thị Lan, Phạm Văn Đông",
+            batDauDukien: "03/2026",
+            ketThucDukien: "10/2026",
+            tongThang: 7,
+            batDauChitiet: "01/03/2026",
+            ketThucChitiet: "31/10/2026",
+            muctieu: "Xây dựng dự thảo Quyết định ban hành Quy chế khai thác CSDL thay thế quy định cũ.",
+            phamvi: "Các tổ chức, cá nhân khai thác dữ liệu giao dịch bảo đảm.",
+            noidung: "Đánh giá thực trạng khai thác dữ liệu trực tuyến, đề xuất mức phân quyền bảo mật thông tin.",
+            phuongphap: "Rà soát quy định bảo vệ dữ liệu cá nhân, tổ chức lấy ý kiến các ngân hàng.",
+            ketquaDukien: "Dự thảo Quy chế quản lý, vận hành và khai thác cơ sở dữ liệu.",
+            kinhPhiDukien: 50000000,
+            nguonVon: "Quỹ phát triển KHCN",
+            kinhPhiChitiet: "Thù lao soạn thảo quy chế: 30tr, tổ chức hội thảo lấy ý kiến: 20tr.",
+            filesKh: [],
+            milestones: [],
+            progressPct: 90,
+            progressStatus: "Đang thực hiện",
+            filesProgress: [],
+            nghiemthuNgay: "",
+            nghiemthuXeploai: "",
+            kinhPhiQuyettoan: 0,
+            nghiemthuHoidong: "",
+            nghiemthuSqd: "",
+            nghiemthuNgayqd: "",
+            nghiemthuCoquan: "Cục ĐKGDBĐ và BTNN",
+            filesFullReport: [],
+            filesMinutes: []
         }
     ];
 
@@ -1644,11 +2131,130 @@
             noidung: "Tổng hợp cơ chế vận hành, lưu trữ dữ liệu tập trung và biểu phí đăng ký thế chấp trực tuyến tại Singapore, Hàn Quốc và Nhật Bản.",
             files: [{ name: "OECD_Online_Registry_Report_2025.pdf", size: "4.8 MB" }],
             nguoiNhap: "Trần Minh Hoàng"
+        },
+        {
+            id: "LQ-2026-0004",
+            ten: "Quy chế phối hợp liên ngành giữa Bộ Tư pháp và Ngân hàng Nhà nước về chia sẻ dữ liệu giao dịch bảo đảm động sản",
+            loai: "Quy chế phối hợp",
+            ngay: "10/01/2026",
+            noidung: "Quy định trách nhiệm trao đổi thông tin, thiết lập đường truyền chuyên dùng bảo đảm an toàn dữ liệu dư nợ và tài sản thế chấp.",
+            files: [],
+            nguoiNhap: "Lê Minh Tuấn"
+        },
+        {
+            id: "LQ-2026-0005",
+            ten: "Báo cáo phân tích rủi ro pháp lý đối với hình thức thế chấp tài sản trí tuệ trong các hợp đồng vay vốn doanh nghiệp khởi nghiệp",
+            loai: "Báo cáo phân tích chuyên đề",
+            ngay: "20/02/2026",
+            noidung: "Đánh giá các vụ việc tranh chấp quyền sở hữu trí tuệ đã xử lý, đề xuất phương án thẩm định giá trị tài sản trí tuệ khi đăng ký thế chấp.",
+            files: [],
+            nguoiNhap: "Phan Văn Nam"
+        },
+        {
+            id: "LQ-2026-0006",
+            ten: "Tài liệu tập huấn kỹ năng tra cứu trực tuyến thông tin tài sản bảo đảm dành cho hệ thống các tổ chức hành nghề công chứng",
+            loai: "Tài liệu tập huấn nghiệp vụ",
+            ngay: "05/03/2026",
+            noidung: "Hướng dẫn chi tiết quy trình tra cứu nhanh, kiểm tra trạng thái ngăn chặn giao dịch của tài sản bảo đảm trước khi thực hiện công chứng hợp đồng.",
+            files: [],
+            nguoiNhap: "Trần Thu Trang"
+        },
+        {
+            id: "LQ-2026-0007",
+            ten: "Thông báo kết quả rà soát dữ liệu đăng ký biện pháp bảo đảm trùng lặp hệ thống năm 2025",
+            loai: "Thông báo kết quả rà soát",
+            ngay: "15/03/2026",
+            noidung: "Kết quả quét tự động phát hiện và xử lý hơn 120 hồ sơ đăng ký trùng lặp thông tin số khung số máy do lỗi nhập liệu của khách hàng.",
+            files: [],
+            nguoiNhap: "Nguyễn Văn Hưng"
+        },
+        {
+            id: "LQ-2026-0008",
+            ten: "Đề án kết nối Cơ sở dữ liệu quốc gia về đăng ký biện pháp bảo đảm với CSDL thi hành án dân sự",
+            loai: "Đề án kết nối dữ liệu",
+            ngay: "01/04/2026",
+            noidung: "Phương án chia sẻ dữ liệu phục vụ tự động khóa/mở khóa đăng ký biện pháp bảo đảm đối với tài sản bị kê biên thi hành án.",
+            files: [],
+            nguoiNhap: "Hoàng Minh Long"
+        },
+        {
+            id: "LQ-2026-0009",
+            ten: "Báo cáo đánh giá sự tương thích của phần mềm đăng ký giao dịch bảo đảm trực tuyến với trình duyệt di động",
+            loai: "Báo cáo đánh giá phần mềm",
+            ngay: "12/04/2026",
+            noidung: "Kết quả kiểm thử giao diện người dùng trên điện thoại di động Android và iOS, các điểm nghẽn về hiển thị và tốc độ tải trang.",
+            files: [],
+            nguoiNhap: "Vũ Minh Tuấn"
+        },
+        {
+            id: "LQ-2026-0010",
+            ten: "Quy chuẩn mã định danh tài sản bảo đảm thống nhất áp dụng trên toàn quốc giai đoạn thí điểm",
+            loai: "Quy chuẩn kỹ thuật",
+            ngay: "20/04/2026",
+            noidung: "Hướng dẫn cách sinh mã định danh tài sản tự động dựa trên loại tài sản, số khung, số máy để tránh trùng lặp.",
+            files: [],
+            nguoiNhap: "Lê Ngọc Bích"
+        },
+        {
+            id: "LQ-2026-0011",
+            ten: "Biên bản họp liên ngành thống nhất quy trình xóa đăng ký thế chấp đối với tài sản tịch thu sung công quỹ nhà nước",
+            loai: "Biên bản họp liên ngành",
+            ngay: "25/04/2026",
+            noidung: "Thống nhất thủ tục xóa đăng ký thế chấp nhanh chóng cho các cơ quan tài chính khi tiếp nhận tài sản tịch thu theo bản án hình sự.",
+            files: [],
+            nguoiNhap: "Đỗ Hồng Hạnh"
+        },
+        {
+            id: "LQ-2026-0012",
+            ten: "Thông báo hướng dẫn nghiệp vụ đăng ký biện pháp bảo đảm bằng quyền đòi nợ hình thành từ hợp đồng thuê tài sản",
+            loai: "Thông báo hướng dẫn",
+            ngay: "28/04/2026",
+            noidung: "Làm rõ hồ sơ và thẩm quyền đăng ký thế chấp dòng tiền thu được từ hoạt động cho thuê nhà xưởng, khu công nghiệp.",
+            files: [],
+            nguoiNhap: "Phạm Minh Hoàng"
         }
     ];
 
+    let thCurrentPage = 1;
+    let thPageSize = 10;
+    let thFilteredData = thData;
+
+    let khCurrentPage = 1;
+    let khPageSize = 10;
+    let khFilteredData = khData;
+
+    let lkCurrentPage = 1;
+    let lkPageSize = 10;
+    let lkFilteredData = lkData;
+
     // DOM Ready
     window.onload = function() {
+        const today = new Date();
+        const twoMonthsAgo = new Date();
+        twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+        const formatDate = (date) => {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            const yyyy = date.getFullYear();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        const defFromDate = formatDate(twoMonthsAgo);
+        const defToDate = formatDate(today);
+        
+        const elFrom = document.getElementById("lk-filter-tungay");
+        if (elFrom) elFrom.value = defFromDate;
+        const elTo = document.getElementById("lk-filter-denngay");
+        if (elTo) elTo.value = defToDate;
+
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr("#lk-filter-tungay", { dateFormat: "d/m/Y", allowInput: true, onChange: executeLkSearch });
+            flatpickr("#lk-filter-denngay", { dateFormat: "d/m/Y", allowInput: true, onChange: executeLkSearch });
+        }
+
         renderThTable(thData);
         renderKhTable(khData);
         renderLkTable(lkData);
@@ -1850,15 +2456,26 @@
     // PHÂN HỆ 1: TẬP HUẤN, HỘI NGHỊ, HỘI THẢO, TỌA ĐÀM
     // ========================================================
     function renderThTable(data) {
+        thFilteredData = data;
+        const total = data.length;
+        const totalPages = Math.ceil(total / thPageSize) || 1;
+        if (thCurrentPage > totalPages) thCurrentPage = totalPages;
+        if (thCurrentPage < 1) thCurrentPage = 1;
+
+        const startIndex = (thCurrentPage - 1) * thPageSize;
+        const endIndex = Math.min(startIndex + thPageSize, total);
+        const pageData = data.slice(startIndex, endIndex);
+
         const tbody = document.getElementById("th-table-body");
         tbody.innerHTML = "";
         
-        if(data.length === 0) {
+        if(pageData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy kế hoạch phù hợp.</td></tr>`;
+            renderThPaginationControls(0);
             return;
         }
 
-        data.forEach((th, idx) => {
+        pageData.forEach((th, idx) => {
             let badgeClass = "bg-secondary";
             if(th.tinhTrang === "Đang triển khai") badgeClass = "bg-info";
             else if(th.tinhTrang === "Đã hoàn thành") badgeClass = "bg-success";
@@ -1866,7 +2483,7 @@
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${idx + 1}</td>
+                <td>${startIndex + idx + 1}</td>
                 <td><a href="#" onclick="openEditThForm('${th.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${th.id}</a></td>
                 <td style="font-weight: 600;" title="${th.ten}">${th.ten.length > 80 ? th.ten.substring(0, 77) + '...' : th.ten}</td>
                 <td>${th.loai}</td>
@@ -1884,6 +2501,67 @@
             `;
             tbody.appendChild(tr);
         });
+
+        renderThPaginationControls(total);
+    }
+
+    function renderThPaginationControls(total) {
+        const totalPages = Math.ceil(total / thPageSize) || 1;
+        const container = document.getElementById("th-pagination");
+        if (!container) return;
+
+        if (total === 0) {
+            container.style.display = "none";
+            return;
+        }
+        container.style.display = "flex";
+
+        let buttonsHtml = `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToThPage(1)" ${thCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToThPage(${thCurrentPage - 1})" ${thCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            buttonsHtml += `
+                <button class="${i === thCurrentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToThPage(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+            `;
+        }
+
+        buttonsHtml += `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToThPage(${thCurrentPage + 1})" ${thCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToThPage(${totalPages})" ${thCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+        `;
+
+        const sizes = [10, 20, 50, 100];
+        let sizeOptions = sizes.map(sz => `<option value="${sz}" ${thPageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+        container.innerHTML = `
+            <div style="color: var(--text-muted); font-size: 13px;">
+                Đang hiển thị <strong>${(thCurrentPage - 1) * thPageSize + 1}</strong>–<strong>${Math.min(thCurrentPage * thPageSize, total)}</strong> trong tổng số <strong>${total}</strong> kế hoạch
+            </div>
+            <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                    <span>Số bản ghi/trang:</span>
+                    <select class="form-select" onchange="changeThPageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                        ${sizeOptions}
+                    </select>
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                    ${buttonsHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    function goToThPage(page) {
+        thCurrentPage = page;
+        renderThTable(thFilteredData);
+    }
+
+    function changeThPageSize(size) {
+        thPageSize = parseInt(size, 10);
+        thCurrentPage = 1;
+        renderThTable(thFilteredData);
     }
 
     function executeThSearch() {
@@ -1899,6 +2577,7 @@
             if(tinhtrang && th.tinhTrang !== tinhtrang) return false;
             return true;
         });
+        thCurrentPage = 1;
         renderThTable(filtered);
     }
 
@@ -1907,6 +2586,7 @@
         document.getElementById("th-filter-ten").value = "";
         document.getElementById("th-filter-loai").value = "";
         document.getElementById("th-filter-tinhtrang").value = "";
+        thCurrentPage = 1;
         renderThTable(thData);
         showToast("Đã thiết lập lại bộ lọc.");
     }
@@ -2201,15 +2881,26 @@
     let currentMilestoneId = 0;
 
     function renderKhTable(data) {
+        khFilteredData = data;
+        const total = data.length;
+        const totalPages = Math.ceil(total / khPageSize) || 1;
+        if (khCurrentPage > totalPages) khCurrentPage = totalPages;
+        if (khCurrentPage < 1) khCurrentPage = 1;
+
+        const startIndex = (khCurrentPage - 1) * khPageSize;
+        const endIndex = Math.min(startIndex + khPageSize, total);
+        const pageData = data.slice(startIndex, endIndex);
+
         const tbody = document.getElementById("kh-table-body");
         tbody.innerHTML = "";
         
-        if(data.length === 0) {
+        if(pageData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy đề tài nghiên cứu khoa học.</td></tr>`;
+            renderKhPaginationControls(0);
             return;
         }
 
-        data.forEach((kh, idx) => {
+        pageData.forEach((kh, idx) => {
             let badgeClass = "bg-secondary";
             if(kh.progressStatus === "Đang thực hiện") badgeClass = "bg-info";
             else if(kh.progressStatus === "Đã hoàn thành tiến độ - Chờ nghiệm thu") badgeClass = "bg-warning";
@@ -2218,7 +2909,7 @@
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${idx + 1}</td>
+                <td>${startIndex + idx + 1}</td>
                 <td><a href="#" onclick="openEditKhForm('${kh.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${kh.id}</a></td>
                 <td style="font-weight: 600;" title="${kh.ten}">${kh.ten.length > 80 ? kh.ten.substring(0, 77) + '...' : kh.ten}</td>
                 <td>${kh.cap}</td>
@@ -2243,6 +2934,67 @@
             `;
             tbody.appendChild(tr);
         });
+
+        renderKhPaginationControls(total);
+    }
+
+    function renderKhPaginationControls(total) {
+        const totalPages = Math.ceil(total / khPageSize) || 1;
+        const container = document.getElementById("kh-pagination");
+        if (!container) return;
+
+        if (total === 0) {
+            container.style.display = "none";
+            return;
+        }
+        container.style.display = "flex";
+
+        let buttonsHtml = `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToKhPage(1)" ${khCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToKhPage(${khCurrentPage - 1})" ${khCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            buttonsHtml += `
+                <button class="${i === khCurrentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToKhPage(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+            `;
+        }
+
+        buttonsHtml += `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToKhPage(${khCurrentPage + 1})" ${khCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToKhPage(${totalPages})" ${khCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+        `;
+
+        const sizes = [10, 20, 50, 100];
+        let sizeOptions = sizes.map(sz => `<option value="${sz}" ${khPageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+        container.innerHTML = `
+            <div style="color: var(--text-muted); font-size: 13px;">
+                Đang hiển thị <strong>${(khCurrentPage - 1) * khPageSize + 1}</strong>–<strong>${Math.min(khCurrentPage * khPageSize, total)}</strong> trong tổng số <strong>${total}</strong> đề tài
+            </div>
+            <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                    <span>Số bản ghi/trang:</span>
+                    <select class="form-select" onchange="changeKhPageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                        ${sizeOptions}
+                    </select>
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                    ${buttonsHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    function goToKhPage(page) {
+        khCurrentPage = page;
+        renderKhTable(khFilteredData);
+    }
+
+    function changeKhPageSize(size) {
+        khPageSize = parseInt(size, 10);
+        khCurrentPage = 1;
+        renderKhTable(khFilteredData);
     }
 
     function executeKhSearch() {
@@ -2258,6 +3010,7 @@
             if(trangthai && kh.progressStatus !== trangthai) return false;
             return true;
         });
+        khCurrentPage = 1;
         renderKhTable(filtered);
     }
 
@@ -2266,6 +3019,7 @@
         document.getElementById("kh-filter-ten").value = "";
         document.getElementById("kh-filter-chunhiem").value = "";
         document.getElementById("kh-filter-trangthai").value = "";
+        khCurrentPage = 1;
         renderKhTable(khData);
         showToast("Đã thiết lập lại bộ lọc đề tài.");
     }
@@ -2883,15 +3637,26 @@
     // PHÂN HỆ 3: NỘI DUNG KHÁC LIÊN QUAN (UC259)
     // ========================================================
     function renderLkTable(data) {
+        lkFilteredData = data;
+        const total = data.length;
+        const totalPages = Math.ceil(total / lkPageSize) || 1;
+        if (lkCurrentPage > totalPages) lkCurrentPage = totalPages;
+        if (lkCurrentPage < 1) lkCurrentPage = 1;
+
+        const startIndex = (lkCurrentPage - 1) * lkPageSize;
+        const endIndex = Math.min(startIndex + lkPageSize, total);
+        const pageData = data.slice(startIndex, endIndex);
+
         const tbody = document.getElementById("lk-table-body");
         tbody.innerHTML = "";
         
-        if (data.length === 0) {
+        if (pageData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy nội dung liên quan nào.</td></tr>`;
+            renderLkPaginationControls(0);
             return;
         }
 
-        data.forEach((lk, idx) => {
+        pageData.forEach((lk, idx) => {
             // Generate attachment representation
             let filesRep = "-";
             if (lk.files && lk.files.length > 0) {
@@ -2907,7 +3672,7 @@
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${idx + 1}</td>
+                <td>${startIndex + idx + 1}</td>
                 <td><a href="#" onclick="openEditLkForm('${lk.id}')" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">${lk.id}</a></td>
                 <td style="font-weight: 600;" title="${lk.ten}">${lk.ten.length > 70 ? lk.ten.substring(0, 67) + '...' : lk.ten}</td>
                 <td><span class="badge bg-info" style="text-transform: none;">${lk.loai}</span></td>
@@ -2924,6 +3689,67 @@
             `;
             tbody.appendChild(tr);
         });
+
+        renderLkPaginationControls(total);
+    }
+
+    function renderLkPaginationControls(total) {
+        const totalPages = Math.ceil(total / lkPageSize) || 1;
+        const container = document.getElementById("lk-pagination");
+        if (!container) return;
+
+        if (total === 0) {
+            container.style.display = "none";
+            return;
+        }
+        container.style.display = "flex";
+
+        let buttonsHtml = `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToLkPage(1)" ${lkCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang đầu</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToLkPage(${lkCurrentPage - 1})" ${lkCurrentPage === 1 ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">◀</button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            buttonsHtml += `
+                <button class="${i === lkCurrentPage ? 'btn btn-primary btn-sm' : 'btn btn-outline-secondary btn-sm'}" onclick="goToLkPage(${i})" style="padding: 4px 10px; font-size: 11px;">${i}</button>
+            `;
+        }
+
+        buttonsHtml += `
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToLkPage(${lkCurrentPage + 1})" ${lkCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">▶</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="goToLkPage(${totalPages})" ${lkCurrentPage === totalPages ? 'disabled' : ''} style="padding: 4px 8px; font-size: 11px;">Trang cuối</button>
+        `;
+
+        const sizes = [10, 20, 50, 100];
+        let sizeOptions = sizes.map(sz => `<option value="${sz}" ${lkPageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+
+        container.innerHTML = `
+            <div style="color: var(--text-muted); font-size: 13px;">
+                Đang hiển thị <strong>${(lkCurrentPage - 1) * lkPageSize + 1}</strong>–<strong>${Math.min(lkCurrentPage * lkPageSize, total)}</strong> trong tổng số <strong>${total}</strong> nội dung
+            </div>
+            <div class="pagination-controls" style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                    <span>Số bản ghi/trang:</span>
+                    <select class="form-select" onchange="changeLkPageSize(this.value)" style="width: 80px; padding: 4px 8px; height: auto; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                        ${sizeOptions}
+                    </select>
+                </div>
+                <div class="pagination-buttons" style="display: flex; gap: 4px;">
+                    ${buttonsHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    function goToLkPage(page) {
+        lkCurrentPage = page;
+        renderLkTable(lkFilteredData);
+    }
+
+    function changeLkPageSize(size) {
+        lkPageSize = parseInt(size, 10);
+        lkCurrentPage = 1;
+        renderLkTable(lkFilteredData);
     }
 
     function executeLkSearch() {
@@ -2959,14 +3785,42 @@
             return true;
         });
 
+        lkCurrentPage = 1;
         renderLkTable(filtered);
     }
 
     function resetLkFilters() {
         document.getElementById("lk-filter-keyword").value = "";
         document.getElementById("lk-filter-loai").value = "";
-        document.getElementById("lk-filter-tungay").value = "";
-        document.getElementById("lk-filter-denngay").value = "";
+        
+        const today = new Date();
+        const twoMonthsAgo = new Date();
+        twoMonthsAgo.setMonth(today.getMonth() - 2);
+
+        const formatDate = (date) => {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            const yyyy = date.getFullYear();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        const defFromDate = formatDate(twoMonthsAgo);
+        const defToDate = formatDate(today);
+
+        const elStart = document.getElementById("lk-filter-tungay");
+        const elEnd = document.getElementById("lk-filter-denngay");
+        if (elStart) {
+            elStart.value = defFromDate;
+            if (elStart._flatpickr) elStart._flatpickr.setDate(defFromDate);
+        }
+        if (elEnd) {
+            elEnd.value = defToDate;
+            if (elEnd._flatpickr) elEnd._flatpickr.setDate(defToDate);
+        }
+        
+        lkCurrentPage = 1;
         renderLkTable(lkData);
         showToast("Đã thiết lập lại bộ lọc nội dung khác.");
     }
@@ -3113,6 +3967,7 @@
         }
     }
 </script>
-
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 </html>
