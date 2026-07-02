@@ -8,6 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <!-- Tom Select CSS & JS -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     
     <style>
         :root {
@@ -76,6 +84,35 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        /* Tom Select Theme Customization */
+        .ts-wrapper.form-control {
+            padding: 0 !important;
+            border: none !important;
+            height: auto !important;
+            box-shadow: none !important;
+        }
+        .ts-control {
+            border-radius: var(--border-radius-md) !important;
+            border: 1px solid var(--border-color) !important;
+            padding: 8px 12px !important;
+            font-size: 13px !important;
+            font-family: var(--font-family) !important;
+            background-color: #fff !important;
+            color: var(--text-main) !important;
+        }
+        .ts-wrapper.single .ts-control {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 0.75rem center !important;
+            background-size: 16px 12px !important;
+        }
+        .ts-dropdown {
+            font-size: 13px !important;
+            border-radius: var(--border-radius-md) !important;
+            border: 1px solid var(--border-color) !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
         }
 
         /* Grid layouts */
@@ -431,7 +468,7 @@
         }
 
         .stepper-sidebar {
-            width: 250px;
+            width: 290px;
             flex-shrink: 0;
             background-color: var(--bg-surface);
             border-radius: var(--border-radius-lg);
@@ -447,7 +484,7 @@
 
         .step-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
             margin-bottom: 15px;
             cursor: pointer;
@@ -472,6 +509,8 @@
             color: var(--text-muted);
             background-color: #FFFFFF;
             font-size: 12px;
+            flex-shrink: 0;
+            margin-top: 1px;
         }
 
         .step-label {
@@ -831,7 +870,7 @@
                     </select>
                 </div>
                 <div class="form-group" id="filterStpGroup">
-                    <label class="form-label">Đơn vị STP</label>
+                    <label class="form-label">Đơn vị Sở Tư pháp</label>
                     <select class="form-control" id="filterStp" onchange="filterData()">
                         <option value="">-- Tất cả --</option>
                         <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
@@ -973,23 +1012,23 @@
             <div class="stepper-sidebar">
                 <div class="step-item active" id="step-0" onclick="jumpToStep(0)">
                     <div class="step-number">I</div>
-                    <div class="step-label">Nhóm I: Thực hiện QLNN về BTNN</div>
+                    <div class="step-label">Nhóm I: Đánh giá thực hiện quản lý nhà nước về công tác bồi thường nhà nước</div>
                 </div>
                 <div class="step-item" id="step-1" onclick="jumpToStep(1)">
                     <div class="step-number">II</div>
-                    <div class="step-label">Nhóm II: Tổ chức phối hợp</div>
+                    <div class="step-label">Nhóm II: Đánh giá tổ chức các hoạt động phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước</div>
                 </div>
                 <div class="step-item" id="step-2" onclick="jumpToStep(2)">
                     <div class="step-number">III</div>
-                    <div class="step-label">Nhóm III: Tham gia giải quyết YCBT</div>
+                    <div class="step-label">Nhóm III: Đánh giá tham gia giải quyết yêu cầu bồi thường theo quy định tại khoản 4 Điều 45 và khoản 3 Điều 46 Luật Trách nhiệm bồi thường của Nhà nước</div>
                 </div>
                 <div class="step-item" id="step-3" onclick="jumpToStep(3)">
                     <div class="step-number">IV</div>
-                    <div class="step-label">Nhóm IV: Điều kiện bảo đảm</div>
+                    <div class="step-label">Nhóm IV: Đánh giá điều kiện bảo đảm thực hiện quản lý nhà nước về công tác bồi thường nhà nước</div>
                 </div>
                 <div class="step-item" id="step-4" onclick="jumpToStep(4)">
                     <div class="step-number">V</div>
-                    <div class="step-label">Nhóm V: Đánh giá cơ quan GQBT</div>
+                    <div class="step-label">Nhóm V: Đánh giá của cơ quan giải quyết bồi thường, cơ quan nhà nước khác có liên quan tại địa phương trong việc thực hiện quản lý nhà nước về công tác bồi thường nhà nước và tham gia giải quyết yêu cầu bồi thường</div>
                 </div>
                 <div class="step-item" id="step-5" onclick="jumpToStep(5)">
                     <div class="step-number">VI</div>
@@ -1020,27 +1059,30 @@
     </div>
 
     <!-- ==================== SCREEN 3: BTP EVALUATION ==================== -->
-    <div id="screenBtpEvaluation" class="screen-block" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <button class="btn btn-secondary" onclick="showScreenList()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
-            <h2 style="color: var(--primary-color); font-size: 15px; font-weight: 600;" id="btpEvalTitle">Đánh giá kỳ chấm điểm: 2026 - Sở Tư pháp Hà Nội</h2>
+    <div id="screenBtpEvaluation" class="screen-block" style="display: none; padding: 5px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" onclick="showScreenList()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
+                <button class="btn btn-success" id="btnBtpStartEval" onclick="switchToEvaluationMode()" style="display: none;"><i class="fa-solid fa-clipboard-check"></i> Tiến hành đánh giá</button>
+            </div>
+            <h2 style="color: var(--primary-color); font-size: 14.5px; font-weight: 600;" id="btpEvalTitle">Đánh giá kỳ chấm điểm: 2026 - Sở Tư pháp Hà Nội</h2>
         </div>
 
-        <div class="card-section">
-            <div class="section-title">
+        <div class="card-section" style="padding: 10px 15px; margin-bottom: 10px;">
+            <div class="section-title" style="margin-bottom: 6px; padding-bottom: 4px; font-size: 13.5px;">
                 <span>BẢNG SO SÁNH ĐÁNH GIÁ CHẤM ĐIỂM (STP vs BTP)</span>
             </div>
             
-            <div class="table-container" style="max-height: 60vh; overflow-y: auto;">
-                <table class="custom-table" style="font-size: 12.5px;">
+            <div class="table-container" style="max-height: 68vh; overflow-y: auto;">
+                <table class="custom-table" style="font-size: 12px;">
                     <thead>
                         <tr>
                             <th style="width: 50px; text-align: center;">STT</th>
-                            <th style="min-width: 250px;">Tiêu chí đánh giá</th>
-                            <th style="width: 80px; text-align: right;">Điểm tối đa</th>
-                            <th style="width: 90px; text-align: right;">STT tự chấm</th>
+                            <th style="min-width: 380px;">Tiêu chí đánh giá</th>
+                            <th style="width: 80px; text-align: center;">Điểm tối đa</th>
+                            <th style="width: 260px; text-align: center;">STP tự chấm</th>
                             <th style="width: 200px;">Tài liệu kiểm chứng / Giải trình STP</th>
-                            <th style="width: 100px; text-align: center;">BTP chấm</th>
+                            <th style="width: 260px; text-align: center;">BTP chấm</th>
                             <th style="width: 60px; text-align: center;">Lệch</th>
                             <th style="min-width: 200px;">Ghi chú ý kiến của BTP (Bắt buộc nếu lệch)</th>
                         </tr>
@@ -1053,23 +1095,23 @@
         </div>
 
         <!-- BTP evaluation summary cards -->
-        <div class="grid-3-cols" style="margin-bottom: 20px;">
-            <div class="card-section" style="margin-bottom: 0; padding: 15px;">
-                <h4 style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">TỔNG KẾT STP TỰ CHẤM</h4>
-                <p style="font-size: 18px; font-weight: 700; color: var(--primary-color);" id="btpStpTotalSummary">0 điểm</p>
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Xếp loại dự kiến: <span id="btpStpGradeSummary" style="font-weight: 600;">Yếu</span></p>
+        <div class="grid-3-cols" style="margin-bottom: 10px;">
+            <div class="card-section" style="margin-bottom: 0; padding: 12px;">
+                <h4 style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">TỔNG KẾT SỞ TƯ PHÁP TỰ CHẤM</h4>
+                <p style="font-size: 16px; font-weight: 700; color: var(--primary-color);" id="btpStpTotalSummary">0 điểm</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Xếp loại dự kiến: <span id="btpStpGradeSummary" style="font-weight: 600;">Yếu</span></p>
             </div>
-            <div class="card-section" style="margin-bottom: 0; padding: 15px;">
-                <h4 style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">TỔNG KẾT BTP ĐÁNH GIÁ</h4>
-                <p style="font-size: 18px; font-weight: 700; color: var(--accent-color);" id="btpEvalTotalSummary">0 điểm</p>
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Xếp loại kết luận: <span id="btpEvalGradeSummary" style="font-weight: 600; color: var(--accent-color);">Yếu</span></p>
+            <div class="card-section" style="margin-bottom: 0; padding: 12px;">
+                <h4 style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;">TỔNG KẾT BỘ TƯ PHÁP ĐÁNH GIÁ</h4>
+                <p style="font-size: 16px; font-weight: 700; color: var(--accent-color);" id="btpEvalTotalSummary">0 điểm</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Xếp loại kết luận: <span id="btpEvalGradeSummary" style="font-weight: 600; color: var(--accent-color);">Yếu</span></p>
             </div>
-            <div class="card-section" style="margin-bottom: 0; padding: 15px; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
-                <div style="display: flex; gap: 10px; width: 100%;">
-                    <button class="btn btn-outline-primary" style="flex: 1;" onclick="saveBtpDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp đánh giá</button>
-                    <button class="btn btn-outline-info" style="flex: 1;" onclick="exportBtpReport()"><i class="fa-solid fa-file-word"></i> Xuất Phụ lục II</button>
+            <div class="card-section" style="margin-bottom: 0; padding: 10px 15px; display: flex; flex-direction: column; justify-content: center; gap: 6px;">
+                <div style="display: flex; gap: 8px; width: 100%;">
+                    <button class="btn btn-outline-primary" style="flex: 1; font-size:12.5px; padding: 6px 12px;" id="btnBtpSaveDraft" onclick="saveBtpDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
+                    <button class="btn btn-outline-info" style="flex: 1; font-size:12.5px; padding: 6px 12px;" onclick="exportBtpReport()"><i class="fa-solid fa-file-word"></i> Xuất Phụ lục II</button>
                 </div>
-                <button class="btn btn-success" style="width: 100%;" onclick="completeBtpEvaluation()"><i class="fa-solid fa-circle-check"></i> Hoàn thành đánh giá & Xếp loại</button>
+                <button class="btn btn-success" style="width: 100%; font-size:12.5px; padding: 6px 12px;" id="btnBtpComplete" onclick="completeBtpEvaluation()"><i class="fa-solid fa-circle-check"></i> Hoàn thành đánh giá & Xếp loại</button>
             </div>
         </div>
     </div>
@@ -1198,28 +1240,232 @@
 
         // CRITERIA DICTIONARY WITH POPUP HELP
         const criteriaData = {
-            "I.1": { code: "I.1", title: "Tiêu chí I.1 — Hướng dẫn nghiệp vụ GQBT theo thẩm quyền", maxScore: 6, values: [6, 3, 0], help: "Hình thức hướng dẫn nghiệp vụ giải quyết bồi thường thực hiện theo quy định tại điểm a khoản 1 Điều 3 Thông tư số 08/2019/TT-BTP. Việc hướng dẫn nghiệp vụ giải quyết bồi thường được coi là đầy đủ khi có văn bản yêu cầu hướng dẫn và văn bản hướng dẫn nghiệp vụ đáp ứng các nội dung nghiệp vụ theo quy định pháp luật." },
-            "I.2": { code: "I.2", title: "Tiêu chí I.2 — Bồi dưỡng kỹ năng nghiệp vụ BTNN", maxScore: 6, values: [6, 0], help: "Hình thức bồi dưỡng kỹ năng nghiệp vụ giải quyết bồi thường bao gồm: tổ chức hội nghị bồi dưỡng chuyên đề hoặc lồng ghép nội dung bồi dưỡng trong các hội nghị tập huấn pháp luật khác, tọa đàm nghiệp vụ, biên soạn tờ rơi, tờ gấp phát miễn phí cho người thực hiện." },
-            "I.3a": { code: "I.3a", title: "Tiêu chí I.3a — Xác định cơ quan giải quyết bồi thường (Theo điểm a, b khoản 1 Điều 40 Luật TNBTNN)", maxScore: 2, values: [2, 0], help: "Thực hiện xác định cơ quan giải quyết bồi thường theo đúng thủ tục và trình tự quy định tại khoản 2, 3 Điều 32 Nghị định số 68/2018/NĐ-CP." },
-            "I.3b": { code: "I.3b", title: "Tiêu chí I.3b — Xác định cơ quan giải quyết bồi thường (Theo khoản 4 Điều 41 Luật TNBTNN)", maxScore: 2, values: [2, 0], help: "Thực hiện xác định đúng thời hạn quy định tại khoản 1, 2 Điều 33 Nghị định số 68/2018/NĐ-CP." },
-            "I.4": { code: "I.4", title: "Tiêu chí I.4 — Hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường", maxScore: 6, values: [6, 3, 0], help: "Nội dung hướng dẫn người bị thiệt hại kê khai yêu cầu bồi thường thực hiện theo quy định tại Điều 6 Thông tư số 09/2019/TT-BTP." },
-            "I.5a": { code: "I.5a", title: "Tiêu chí I.5a — Theo dõi hoạt động giải quyết bồi thường", maxScore: 3, values: [3, 0], help: "Nội dung theo dõi căn cứ vào khoản 1 Điều 9 Thông tư số 08/2019/TT-BTP khi có phát sinh vụ việc." },
-            "I.5b": { code: "I.5b", title: "Tiêu chí I.5b — Lập danh mục vụ việc giải quyết yêu cầu bồi thường", maxScore: 3, values: [3, 1, 0], help: "Lập đầy đủ thông tin vụ việc theo đúng Biểu mẫu số 01 ban hành kèm theo Thông tư số 08/2019/TT-BTP." },
-            "I.6": { code: "I.6", title: "Tiêu chí I.6 — Đôn đốc hoạt động giải quyết bồi thường khi có căn cứ", maxScore: 5, values: [5, 0], help: "Ban hành công văn đôn đốc khi phát sinh các căn cứ quy định tại Điều 14 Thông tư số 08/2019/TT-BTP." },
-            "I.7": { code: "I.7", title: "Tiêu chí I.7 — Thanh tra, kiểm tra công tác bồi thường nhà nước", maxScore: 6, values: [6, 0], help: "Kế hoạch thanh tra, kiểm tra công tác BTNN được ban hành theo quy chuẩn khoản 2, 3 Điều 34 Nghị định 68 và được tổ chức thực hiện thực tế." },
-            "I.8a": { code: "I.8a", title: "Tiêu chí I.8a — Thống kê, báo cáo công tác bồi thường (Thời hạn gửi)", maxScore: 4, values: [4, 2, 0], help: "Gửi báo cáo định kỳ đúng thời hạn quy định tại Điều 25 Thông tư số 08/2019/TT-BTP." },
-            "I.8b": { code: "I.8b", title: "Tiêu chí I.8b — Thống kê, báo cáo công tác bồi thường (Nội dung và Biểu mẫu)", maxScore: 4, values: [4, 0], help: "Nội dung báo cáo đầy đủ, biểu mẫu số liệu chính xác theo Biểu mẫu số 2, 3, 4 ban hành kèm theo Thông tư số 08/2019/TT-BTP." },
-            "I.9": { code: "I.9", title: "Tiêu chí I.9 — Thực hiện kiến nghị, yêu cầu theo thẩm quyền khi có căn cứ", maxScore: 3, values: [3, 0], help: "Thực hiện kiến nghị xử lý vi phạm hoặc yêu cầu hủy quyết định giải quyết bồi thường trái pháp luật." },
-            "II.1": { code: "II.1", title: "Tiêu chí II.1 — Tổ chức họp liên ngành hoặc trao đổi ý kiến bằng văn bản", maxScore: 20, values: [20, 0], help: "Họp liên ngành hoặc trao đổi văn bản thống nhất giải quyết vụ việc hoặc tháo gỡ khó khăn vướng mắc công tác BTNN." },
-            "III.1": { code: "III.1", title: "Tiêu chí III.1 — Cử đại diện tham gia xác minh thiệt hại đúng thời hạn", maxScore: 5, values: [5, 2, 0], help: "Cử đại diện tham gia xác minh thiệt hại trong vòng 02 ngày làm việc kể từ ngày nhận được đề xuất của cơ quan giải quyết bồi thường." },
-            "III.2": { code: "III.2", title: "Tiêu chí III.2 — Tham gia thương lượng việc bồi thường", maxScore: 5, values: [5, 2, 0], help: "Tham gia thương lượng đầy đủ bao gồm cử đại diện, phát biểu ý kiến nghiệp vụ và ký biên bản kết quả thương lượng." },
-            "IV.1": { code: "IV.1", title: "Tiêu chí IV.1 — Ban hành và thực hiện kế hoạch công tác bồi thường nhà nước", maxScore: 4, values: [4, 0], help: "Ban hành kế hoạch công tác năm của Sở Tư pháp đúng thời hạn theo chỉ đạo hướng dẫn của Bộ Tư pháp hoặc UBND tỉnh." },
-            "IV.2a": { code: "IV.2a", title: "Tiêu chí IV.2a — Phân công công chức thực hiện công tác bồi thường nhà nước", maxScore: 2, values: [2, 0], help: "Đã có quyết định hoặc văn bản phân công công chức chuyên trách hoặc kiêm nhiệm theo dõi công tác BTNN." },
-            "IV.2b": { code: "IV.2b", title: "Tiêu chí IV.2b — Tổ chức bồi dưỡng, nâng cao năng lực cho đội ngũ công chức", maxScore: 2, values: [2, 0], help: "Tổ chức hoặc cử cán bộ tham gia các khóa đào tạo, tập huấn kỹ năng nghiệp vụ BTNN." },
-            "IV.2c": { code: "IV.2c", title: "Tiêu chí IV.2c — Đảm bảo kinh phí hỗ trợ hoạt động quản lý nhà nước về BTNN", maxScore: 2, values: [2, 0], help: "Sở Tư pháp có lập dự toán đề xuất kinh phí quản lý nhà nước về công tác BTNN hàng năm trình cấp có thẩm quyền phê duyệt." },
-            "V.1": { code: "V.1", title: "Tiêu chí V.1 — Đánh giá công tác thực hiện QLNN về bồi thường nhà nước tại cơ sở", maxScore: 4, values: [4, 0], help: "Cơ quan giải quyết bồi thường tại địa phương đánh giá việc hướng dẫn hỗ trợ của Sở Tư pháp đạt hiệu quả." },
-            "V.2": { code: "V.2", title: "Tiêu chí V.2 — Đánh giá công tác phối hợp liên ngành giải quyết bồi thường", maxScore: 3, values: [3, 0], help: "Cơ quan phối hợp đánh giá cao cơ chế chia sẻ thông tin và tính kịp thời của Sở Tư pháp." },
-            "V.3": { code: "V.3", title: "Tiêu chí V.3 — Đánh giá tính chuyên nghiệp, kịp thời trong tham gia giải quyết bồi thường", maxScore: 3, values: [3, 0], help: "Đại diện Sở Tư pháp tham gia xác minh, thương lượng chuyên nghiệp và đúng thời gian luật định." }
+            "I.1": { 
+                code: "I.1", 
+                title: "1. Hướng dẫn nghiệp vụ giải quyết bồi thường theo thẩm quyền", 
+                maxScore: 6, 
+                options: [
+                    { text: "a. Hướng dẫn nghiệp vụ giải quyết bồi thường đầy đủ theo yêu cầu của cơ quan giải quyết bồi thường hoặc cơ quan khác có liên quan đến công tác bồi thường nhà nước", score: 6 },
+                    { text: "b. Hướng dẫn nghiệp vụ giải quyết bồi thường không đầy đủ theo yêu cầu của cơ quan giải quyết bồi thường hoặc cơ quan khác có liên quan đến công tác bồi thường nhà nước", score: 3 },
+                    { text: "c. Không thực hiện hướng dẫn nghiệp vụ giải quyết bồi thường", score: 0 }
+                ], 
+                help: "Hình thức hướng dẫn nghiệp vụ giải quyết bồi thường thực hiện theo quy định tại điểm a khoản 1 Điều 3 Thông tư số 08/2019/TT-BTP. Việc hướng dẫn nghiệp vụ giải quyết bồi thường được coi là đầy đủ khi có văn bản yêu cầu hướng dẫn và văn bản hướng dẫn nghiệp vụ đáp ứng các nội dung nghiệp vụ theo quy định pháp luật." 
+            },
+            "I.2": { 
+                code: "I.2", 
+                title: "2. Bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước", 
+                maxScore: 6, 
+                options: [
+                    { text: "a. Tổ chức bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước theo chỉ đạo của Bộ Tư pháp hoặc Ủy ban nhân dân cấp tỉnh", score: 6 },
+                    { text: "b. Không tổ chức bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước theo chỉ đạo của Bộ Tư pháp hoặc Ủy ban nhân dân cấp tỉnh", score: 0 }
+                ], 
+                help: "Hình thức bồi dưỡng kỹ năng nghiệp vụ giải quyết bồi thường bao gồm: tổ chức hội nghị bồi dưỡng chuyên đề hoặc lồng ghép nội dung bồi dưỡng trong các hội nghị tập huấn pháp luật khác, tọa đàm nghiệp vụ, biên soạn tờ rơi, tờ gấp phát miễn phí cho người thực hiện." 
+            },
+            "I.3a": { 
+                code: "I.3a", 
+                title: "3.a Xác định cơ quan giải quyết bồi thường theo quy định tại điểm a, điểm b khoản 1 Điều 40 Luật Trách nhiệm bồi thường của Nhà nước", 
+                maxScore: 2, 
+                options: [
+                    { text: "- Xác định cơ quan giải quyết bồi thường", score: 2 },
+                    { text: "- Không xác định cơ quan giải quyết bồi thường", score: 0 }
+                ], 
+                help: "Việc xác định cơ quan giải quyết bồi thường được thực hiện theo quy định tại điểm a, điểm b khoản 1 Điều 40 Luật Trách nhiệm bồi thường của Nhà nước (Luật TNBTCNN) và khoản 2 và khoản 3 Điều 32 Nghị định số 68/2018/NĐ-CP." 
+            },
+            "I.3b": { 
+                code: "I.3b", 
+                title: "3.b Xác định cơ quan giải quyết bồi thường theo quy định tại khoản 4 Điều 41 Luật Trách nhiệm bồi thường của Nhà nước", 
+                maxScore: 2, 
+                options: [
+                    { text: "- Xác định cơ quan giải quyết bồi thường theo đúng thời hạn quy định của pháp luật", score: 2 },
+                    { text: "- Xác định cơ quan giải quyết bồi thường không đúng thời hạn quy định của pháp luật hoặc không xác định", score: 0 }
+                ], 
+                help: "Thời hạn xác định cơ quan giải quyết bồi thường được xác định theo quy định tại khoản 1 và khoản 2 Điều 33 Nghị định số 68/2018/NĐ-CP." 
+            },
+            "I.4": { 
+                code: "I.4", 
+                title: "4. Hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường theo thẩm quyền", 
+                maxScore: 6, 
+                options: [
+                    { text: "a. Hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường đầy đủ theo yêu cầu của người bị thiệt hại", score: 6 },
+                    { text: "b. Hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường không đầy đủ theo yêu cầu", score: 3 },
+                    { text: "c. Không hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường", score: 0 }
+                ], 
+                help: "Nội dung hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường được xác định theo quy định tại Điều 6 Thông tư số 09/2019/TT- BTP ngày 10/12/2019 của Bộ trưởng Bộ Tư pháp quy định biện pháp hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường nhà nước (Thông tư số 09/2019/TT-BTP)." 
+            },
+            "I.5a": { 
+                code: "I.5a", 
+                title: "5.a Thực hiện theo dõi công tác bồi thường nhà nước", 
+                maxScore: 3, 
+                options: [
+                    { text: "- Có thực hiện theo dõi công tác bồi thường nhà nước khi có căn cứ theo quy định của pháp luật", score: 3 },
+                    { text: "- Không thực hiện theo dõi công tác bồi thường nhà nước khi có căn cứ theo quy định của pháp luật", score: 0 }
+                ], 
+                help: "Căn cứ thực hiện theo dõi công tác bồi thường nhà nước được xác định tại quy định tại khoản 1 Điều 9 Thông tư số 08/2019/TT-BTP." 
+            },
+            "I.5b": { 
+                code: "I.5b", 
+                title: "5.b Lập danh mục vụ việc giải quyết yêu cầu bồi thường", 
+                maxScore: 3, 
+                options: [
+                    { text: "- Lập danh mục đầy đủ các vụ việc giải quyết yêu cầu bồi thường và các vụ việc trong danh mục có đầy đủ nội dung theo quy định của pháp luật", score: 3 },
+                    { text: "- Lập danh mục không đầy đủ các vụ việc giải quyết yêu cầu bồi thường hoặc vụ việc trong danh mục không đầy đủ nội dung theo quy định của pháp luật", score: 1 },
+                    { text: "- Không lập danh mục vụ việc giải quyết yêu cầu bồi thường", score: 0 }
+                ], 
+                help: "Đầy đủ các vụ việc được đưa vào danh mục. Từng vụ việc có đầy đủ nội dung (theo tiến trình giải quyết vụ việc tính đến thời điểm tự đánh giá, chấm điểm) quy định tại Biểu mẫu số 01 ban hành kèm theo Thông tư số 08/2019/TT- BTP." 
+            },
+            "I.6": { 
+                code: "I.6", 
+                title: "6. Đôn đốc công tác bồi thường nhà nước", 
+                maxScore: 5, 
+                options: [
+                    { text: "a. Thực hiện đôn đốc công tác bồi thường nhà nước khi có căn cứ theo quy định của pháp luật", score: 5 },
+                    { text: "b. Không thực hiện đôn đốc công tác bồi thường nhà nước khi có căn cứ theo quy định của pháp luật", score: 0 }
+                ], 
+                help: "Căn cứ đôn đốc công tác bồi thường nhà nước được xác định theo quy định tại Điều 14 Thông tư số 08/2019/TT- BTP" 
+            },
+            "I.7": { 
+                code: "I.7", 
+                title: "7. Thanh tra, kiểm tra công tác bồi thường nhà nước", 
+                maxScore: 6, 
+                options: [
+                    { text: "a. Ban hành và thực hiện kế hoạch thanh tra, kiểm tra công tác bồi thường nhà nước theo quy định của pháp luật", score: 6 },
+                    { text: "b. Ban hành nhưng không thực hiện kế hoạch thanh tra, kiểm tra hoặc không ban hành kế hoạch thanh tra, kiểm tra công tác bồi thường nhà nước theo quy định của pháp luật", score: 0 }
+                ], 
+                help: "Việc ban hành kế hoạch thanh tra, kiểm tra được thực hiện theo quy định tại khoản 2 và khoản 3 Điều 34 Nghị định số 68/2018/NĐ-CP và Điều 19 Thông tư số 08/2019/TT-BTP. Việc tổ chức kế hoạch thanh tra, kiểm tra được thực hiện theo quy định tại Điều 20, 21, 22 và Điều 23 Thông tư số 08/2019/TT-BTP." 
+            },
+            "I.8a": { 
+                code: "I.8a", 
+                title: "8.a Thời hạn thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước", 
+                maxScore: 4, 
+                options: [
+                    { text: "- Thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước gửi Bộ Tư pháp đúng thời hạn quy định của pháp luật hoặc đúng yêu cầu của cơ quan nhà nước có thẩm quyền", score: 4 },
+                    { text: "- Thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước gửi Bộ Tư pháp không đúng thời hạn quy định của pháp luật hoặc không đúng yêu cầu của cơ quan nhà nước có thẩm quyền", score: 2 },
+                    { text: "- Không thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước", score: 0 }
+                ], 
+                help: "Thời hạn thống kê, báo cáo được thực hiện theo quy định tại Điều 25 Thông tư số 08/2019/TT-BTP. Cơ quan nhà nước có thẩm quyền được xác định theo quy định tại khoản 2 Điều 35 Nghị định số 68/2018/NĐ-CP." 
+            },
+            "I.8b": { 
+                code: "I.8b", 
+                title: "8.b Nội dung thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước", 
+                maxScore: 4, 
+                options: [
+                    { text: "- Nội dung thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước đúng quy định của pháp luật hoặc đúng yêu cầu của cơ quan nhà nước có thẩm quyền", score: 4 },
+                    { text: "- Nội dung thống kê, báo cáo việc thực hiện công tác bồi thường nhà nước không đúng quy định của pháp luật hoặc không đúng yêu cầu của cơ quan nhà nước có thẩm quyền", score: 0 }
+                ], 
+                help: "Nội dung thống kê, báo cáo được xác định theo Điều 24 và Biểu mẫu số 2, 3 và 4 ban hành kèm theo Thông tư số 08/2019/TT-BTP." 
+            },
+            "I.9": { 
+                code: "I.9", 
+                title: "9. Kiến nghị cơ quan có thẩm quyền xử lý vi phạm trong việc giải quyết bồi thường, thực hiện trách nhiệm hoàn trả trong phạm vi do mình quản lý; kiến nghị người có thẩm quyền kháng nghị bản án, quyết định của Tòa án có nội dung giải quyết bồi thường theo quy định của pháp luật; yêu cầu Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại hủy quyết định giải quyết bồi thường trong trường hợp có một trong các căn cứ quy định tại khoản 1 và điểm a khoản 3 Điều 48 của Luật Trách nhiệm bồi thường của Nhà nước mà không ra quyết định hủy", 
+                maxScore: 3, 
+                options: [
+                    { text: "- Kiến nghị, yêu cầu theo thẩm quyền khi có căn cứ theo quy định của pháp luật", score: 3 },
+                    { text: "- Không thực hiện kiến nghị, yêu cầu theo thẩm quyền khi có căn cứ theo quy định của pháp luật", score: 0 }
+                ], 
+                help: "Chỉ cần thực hiện một trong các nội dung của mục này thì Sở Tư pháp tự chấm điểm tối đa." 
+            },
+            "II.1": { 
+                code: "II.1", 
+                title: "1. Họp liên ngành hoặc trao đổi bằng văn bản khi có phát sinh nội dung cần phối hợp theo quy định của pháp luật", 
+                maxScore: 20, 
+                options: [
+                    { text: "- Họp liên ngành hoặc trao đổi bằng văn bản khi có phát sinh nội dung cần phối hợp", score: 20 },
+                    { text: "- Không tổ chức họp liên ngành hoặc không trao đổi bằng văn bản khi có phát sinh nội dung cần phối hợp theo quy định của pháp luật", score: 0 }
+                ], 
+                help: "Họp liên ngành hoặc trao đổi văn bản thống nhất giải quyết vụ việc hoặc tháo gỡ khó khăn vướng mắc công tác BTNN." 
+            },
+            "III.1": { 
+                code: "III.1", 
+                title: "1. Cử đại diện tham gia xác minh thiệt hại theo quy định tại khoản 4 Điều 45 của Luật Trách nhiệm bồi thường của Nhà nước và Điều 19 của Nghị định số 68/2018/NĐ-CP ngày 15/5/2018 quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước", 
+                maxScore: 5, 
+                options: [
+                    { text: "a. Cử đại diện tham gia xác minh thiệt hại đúng thời hạn theo quy định của pháp luật", score: 5 },
+                    { text: "b. Cử đại diện tham gia xác minh thiệt hại không đúng thời hạn theo quy định của pháp luật", score: 2 },
+                    { text: "c. Không cử đại diện tham gia xác minh thiệt hại", score: 0 }
+                ], 
+                help: "Thời hạn cử đại diện tham gia xác minh thiệt hại trong thời hạn 02 ngày làm việc kể từ ngày nhận được đề nghị của cơ quan giải quyết bồi thường." 
+            },
+            "III.2": { 
+                code: "III.2", 
+                title: "2. Tham gia thương lượng việc bồi thường theo quy định tại Điều 46 của Luật Trách nhiệm bồi thường của Nhà nước và Điều 21 của Nghị định số 68/2018/NĐ-CP ngày 15/5/2018 quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước", 
+                maxScore: 5, 
+                options: [
+                    { text: "a. Cử đại diện tham gia thương lượng việc bồi thường và đại diện được cử thực hiện đầy đủ các nhiệm vụ theo quy định của pháp luật", score: 5 },
+                    { text: "b. Cử đại diện tham gia thương lượng việc bồi thường nhưng đại diện được cử không thực hiện đầy đủ các nhiệm vụ theo quy định của pháp luật", score: 2 },
+                    { text: "c. Không cử đại diện tham gia thương lượng việc bồi thường", score: 0 }
+                ], 
+                help: "Đại diện tham gia thương lượng việc bồi thường có phát biểu ý kiến tại buổi thương lượng việc bồi thường và có ký vào biên bản kết quả thương lượng." 
+            },
+            "IV.1": { 
+                code: "IV.1", 
+                title: "1. Ban hành và tổ chức thực hiện kế hoạch công tác bồi thường nhà nước", 
+                maxScore: 4, 
+                options: [
+                    { text: "a. Ban hành và tổ chức thực hiện kế hoạch về công tác bồi thường nhà nước đúng thời hạn theo chỉ đạo của cơ quan quản lý nhà nước về công tác bồi thường nhà nước cấp trên hoặc cơ quan có thẩm quyền", score: 4 },
+                    { text: "b. Ban hành nhưng không tổ chức kế hoạch về công tác bồi thường nhà nước theo chỉ đạo của cơ quan quản lý nhà nước về công tác bồi thường nhà nước cấp trên hoặc cơ quan có thẩm quyền hoặc không ban hành kế hoạch", score: 0 }
+                ], 
+                help: "Kế hoạch công tác bồi thường nhà nước có thể xây dựng Kế hoạch riêng hoặc lồng ghép trong Kế hoạch về công tác tư pháp của địa phương." 
+            },
+            "IV.2a": { 
+                code: "IV.2a", 
+                title: "2.a Phân công công chức thực hiện công tác bồi thường nhà nước", 
+                maxScore: 2, 
+                options: [
+                    { text: "- Phân công công chức thực hiện công tác bồi thường nhà nước", score: 2 },
+                    { text: "- Không phân công công chức thực hiện công tác bồi thường nhà nước", score: 0 }
+                ], 
+                help: "Có phân công công chức thực hiện công tác bồi thường nhà nước (kiêm nhiệm hoặc chuyên trách) thì Sở Tư pháp đều tự chấm điểm tối đa." 
+            },
+            "IV.2b": { 
+                code: "IV.2b", 
+                title: "2.b Bồi dưỡng kỹ năng, nghiệp vụ công tác bồi thường nhà nước", 
+                maxScore: 2, 
+                options: [
+                    { text: "- Thực hiện bồi dưỡng kỹ năng, nghiệp vụ", score: 2 },
+                    { text: "- Không thực hiện bồi dưỡng kỹ năng, nghiệp vụ", score: 0 }
+                ], 
+                help: "Bồi dưỡng kỹ năng nghiệp vụ công tác bồi thường nhà nước thực hiện thông qua việc tự bồi dưỡng (có bài viết trên tạp chí, tự nghiên cứu, học tập, v.v.) hoặc tham gia lớp bồi dưỡng do Bộ Tư pháp (Cục Bồi thường nhà nước) tổ chức." 
+            },
+            "IV.2c": { 
+                code: "IV.2c", 
+                title: "2.c Kinh phí thực hiện công tác bồi thường nhà nước", 
+                maxScore: 2, 
+                options: [
+                    { text: "- Bố trí kinh phí để thực hiện công tác bồi thường nhà nước", score: 2 },
+                    { text: "- Không bố trí kinh phí để thực hiện công tác bồi thường nhà nước", score: 0 }
+                ], 
+                help: "Sở Tư pháp có đề xuất kinh phí để thực hiện các nhiệm vụ quản lý nhà nước về công tác bồi thường nhà nước và Sở Tài chính cấp hoặc không cấp thì tự chấm điểm tối đa." 
+            },
+            "V.1": { 
+                code: "V.1", 
+                title: "1. Đánh giá việc thực hiện quản lý nhà nước về công tác bồi thường nhà nước tại địa phương", 
+                maxScore: 4, 
+                options: [
+                    { text: "a. Thực hiện quản lý nhà nước về công tác bồi thường nhà nước quy định tại Điều 5 của Bộ tiêu chí này", score: 4 },
+                    { text: "b. Không thực hiện quản lý nhà nước về công tác bồi thường nhà nước quy định tại Điều 4 của Bộ tiêu chí này", score: 0 }
+                ], 
+                help: "Trường hợp không được cấp kinh phí hoặc không có sự hỗ trợ kinh phí thì Sở Tư pháp không đánh giá, chấm điểm đối với nhóm tiêu chí này." 
+            },
+            "V.2": { 
+                code: "V.2", 
+                title: "2. Đánh giá công tác phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước", 
+                maxScore: 3, 
+                options: [
+                    { text: "a. Phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước quy định tại Điều 5 của Bộ tiêu chí này", score: 3 },
+                    { text: "b. Không phối hợp thực hiện quản lý nhà nước về công tác bồi thường nhà nước quy định tại Điều 5 của Bộ tiêu chí này", score: 0 }
+                ], 
+                help: "Việc lấy ý kiến đánh giá có thể được tổ chức thông qua khảo sát, phỏng vấn, v.v." 
+            },
+            "V.3": { 
+                code: "V.3", 
+                title: "3. Đánh giá việc tham gia giải quyết yêu cầu bồi thường", 
+                maxScore: 3, 
+                options: [
+                    { text: "a. Tham gia giải quyết yêu cầu bồi thường quy định tại Điều 6 của Bộ tiêu chí này", score: 3 },
+                    { text: "b. Không tham gia giải quyết yêu cầu bồi thường quy định tại Điều 6 của Bộ tiêu chí này", score: 0 }
+                ], 
+                help: "Việc lấy ý kiến đánh giá có thể được tổ chức thông qua khảo sát, phỏng vấn, v.v." 
+            }
         };
 
         // RUNTIME STATE
@@ -1232,6 +1478,14 @@
         
         let editingPeriodId = null;
         let selectedPeriod = null;
+        let isBtpEvaluationMode = false;
+        let tsYear = null;
+        let tsStp = null;
+
+        function getFormattedCriteriaTitle(code, title) {
+            let cleanTitle = title.replace(/^\d+(\.[a-z])?\s*-?\s*/i, '').trim();
+            return `${code}. ${cleanTitle}`;
+        }
         
         // STP wizard variables
         let scoringCurrentStep = 0;
@@ -1243,10 +1497,17 @@
         // Check date logic helper
         window.addEventListener('DOMContentLoaded', () => {
             // Load from storage or set default
-            if (!localStorage.getItem('btnn_scoring_periods')) {
-                localStorage.setItem('btnn_scoring_periods', JSON.stringify(initialMockPeriods));
+            let allData;
+            try {
+                allData = JSON.parse(localStorage.getItem('btnn_scoring_periods'));
+            } catch (e) {
+                allData = null;
             }
-            currentPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods'));
+            if (!allData || !Array.isArray(allData) || allData.length === 0) {
+                localStorage.setItem('btnn_scoring_periods', JSON.stringify(initialMockPeriods));
+                allData = initialMockPeriods;
+            }
+            currentPeriods = allData;
             
             // Set date inputs to first day of current month to current date
             const today = new Date();
@@ -1254,16 +1515,60 @@
             const month = String(today.getMonth() + 1).padStart(2, '0');
             const day = String(today.getDate()).padStart(2, '0');
             
-            document.getElementById('filterFromDate').value = `01/${month}/${year}`;
-            document.getElementById('filterToDate').value = `${day}/${month}/${year}`;
+            const defaultFromDateStr = `01/${month}/${year}`;
+            const defaultToDateStr = `${day}/${month}/${year}`;
 
-            // Add calendar click handler simulation
-            document.querySelectorAll('.input-group-date i').forEach(el => {
+            // Initialize flatpickr DatePickers
+            let fpFrom, fpTo;
+            try {
+                fpFrom = flatpickr("#filterFromDate", {
+                    dateFormat: "d/m/Y",
+                    defaultDate: defaultFromDateStr,
+                    allowInput: true
+                });
+                fpTo = flatpickr("#filterToDate", {
+                    dateFormat: "d/m/Y",
+                    defaultDate: defaultToDateStr,
+                    allowInput: true
+                });
+            } catch (e) {
+                console.warn("flatpickr library is not loaded:", e);
+                document.getElementById('filterFromDate').value = defaultFromDateStr;
+                document.getElementById('filterToDate').value = defaultToDateStr;
+            }
+
+            // Add calendar click handler to trigger flatpickr
+            document.querySelectorAll('.input-group-date i').forEach((el, idx) => {
                 el.style.cursor = 'pointer';
                 el.onclick = () => {
-                    showToast("Chọn ngày từ lịch giả lập thành công!");
+                    if (typeof flatpickr !== "undefined" && fpFrom && fpTo) {
+                        if (idx === 0) fpFrom.open();
+                        else fpTo.open();
+                    } else {
+                        showToast("Lịch chọn ngày hiện không khả dụng!");
+                    }
                 };
             });
+
+            // Initialize Tom Select for searchable dropdowns
+            try {
+                tsYear = new TomSelect("#filterYear", {
+                    create: false,
+                    allowEmptyOption: true,
+                    onChange: function() {
+                        filterData();
+                    }
+                });
+                tsStp = new TomSelect("#filterStp", {
+                    create: false,
+                    allowEmptyOption: true,
+                    onChange: function() {
+                        filterData();
+                    }
+                });
+            } catch (e) {
+                console.warn("TomSelect library is not loaded:", e);
+            }
 
             // Initialize Layout
             switchRole("stp");
@@ -1278,12 +1583,14 @@
             const btnCreatePeriod = document.getElementById('btnCreatePeriod');
             if (activeRole === 'stp') {
                 // STP role only sees Hanoi
-                document.getElementById('filterStp').value = "Sở Tư pháp Hà Nội";
+                if (tsStp && typeof tsStp.setValue === "function") tsStp.setValue("Sở Tư pháp Hà Nội");
+                else document.getElementById('filterStp').value = "Sở Tư pháp Hà Nội";
                 filterStpGroup.style.display = "none";
                 if (btnCreatePeriod) btnCreatePeriod.style.display = "none";
             } else {
                 // BTP role sees everything
-                document.getElementById('filterStp').value = "";
+                if (tsStp && typeof tsStp.setValue === "function") tsStp.setValue("");
+                else document.getElementById('filterStp').value = "";
                 filterStpGroup.style.display = "block";
                 if (btnCreatePeriod) btnCreatePeriod.style.display = "block";
             }
@@ -1327,8 +1634,8 @@
 
         // FILTER & RENDER MAIN DATA TABLE
         function filterData() {
-            const yearVal = document.getElementById('filterYear').value;
-            const stpVal = document.getElementById('filterStp').value;
+            const yearVal = (tsYear && typeof tsYear.getValue === "function") ? tsYear.getValue() : document.getElementById('filterYear').value;
+            const stpVal = (tsStp && typeof tsStp.getValue === "function") ? tsStp.getValue() : document.getElementById('filterStp').value;
             const statusVal = document.getElementById('filterStatus').value;
             const gradeVal = document.getElementById('filterGrade').value;
 
@@ -1466,11 +1773,15 @@
 
         // RESET FILTERS (Rule 1: "Xóa bộ lọc")
         function resetFilters() {
-            document.getElementById('filterYear').value = "";
+            if (tsYear && typeof tsYear.setValue === "function") tsYear.setValue("");
+            else document.getElementById('filterYear').value = "";
+            
             document.getElementById('filterStatus').value = "";
             document.getElementById('filterGrade').value = "";
+            
             if (activeRole !== 'stp') {
-                document.getElementById('filterStp').value = "";
+                if (tsStp && typeof tsStp.setValue === "function") tsStp.setValue("");
+                else document.getElementById('filterStp').value = "";
             }
             showToast("Đã xóa bộ lọc tìm kiếm thành công!");
             currentPage = 1;
@@ -1522,6 +1833,7 @@
         function showScreenList() {
             document.querySelectorAll('.screen-block').forEach(s => s.style.display = 'none');
             document.getElementById('screenList').style.display = 'block';
+            document.getElementById('alertBannerContainer').style.display = 'block';
             editingPeriodId = null;
             selectedPeriod = null;
         }
@@ -1666,7 +1978,7 @@
                 // Nhóm I: QLNN về BTNN (50đ)
                 panel.innerHTML = `
                     <div class="card-section" style="background-color:#FAFBFD; border-left:4px solid var(--primary-color);">
-                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 1: NHÓM TIÊU CHÍ I — THỰC HIỆN QUẢN LÝ NHÀ NƯỚC VỀ CÔNG TÁC BTNN (TỐI ĐA 50 ĐIỂM)</h4>
+                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 1: NHÓM TIÊU CHÍ I — NHÓM TIÊU CHÍ ĐÁNH GIÁ THỰC HIỆN QUẢN LÝ NHÀ NƯỚC VỀ CÔNG CỤ/CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC (TỐI ĐA 50 ĐIỂM)</h4>
                         <p style="font-size:12.5px; color:var(--text-muted);">
                             Hệ thống tự động hỗ trợ bạn chấm điểm tối đa cho các tiêu chí không phát sinh yêu cầu thụ lý hoặc hoạt động nghiệp vụ trong năm (Theo Điều 9.2).
                         </p>
@@ -1706,7 +2018,7 @@
                 // Nhóm II: Phối hợp (20đ)
                 panel.innerHTML = `
                     <div class="card-section" style="background-color:#FAFBFD; border-left:4px solid var(--primary-color);">
-                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 2: NHÓM TIÊU CHÍ II — TỔ CHỨC HOẠT ĐỘNG PHỐI HỢP LIÊN NGÀNH (TỐI ĐA 20 ĐIỂM)</h4>
+                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 2: NHÓM TIÊU CHÍ II — NHÓM TIÊU CHÍ ĐÁNH GIÁ TỔ CHỨC CÁC HOẠT ĐỘNG PHỐI HỢP THỰC HIỆN QUẢN LÝ NHÀ NƯỚC VỀ CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC (TỐI ĐA 20 ĐIỂM)</h4>
                     </div>
                     ${renderCriterionForm("II.1", "Không phát sinh nội dung cần họp phối hợp hoặc trao đổi")}
                 `;
@@ -1714,7 +2026,7 @@
                 // Nhóm III: Tham gia giải quyết YCBT (10đ)
                 panel.innerHTML = `
                     <div class="card-section" style="background-color:#FAFBFD; border-left:4px solid var(--primary-color);">
-                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 3: NHÓM TIÊU CHÍ III — THAM GIA GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG (TỐI ĐA 10 ĐIỂM)</h4>
+                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 3: NHÓM TIÊU CHÍ III — NHÓM TIÊU CHÍ ĐÁNH GIÁ THAM GIA GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG THEO QUY ĐỊNH TẠI KHOẢN 4 ĐIỀU 45 VÀ KHOẢN 3 ĐIỀU 46 LUẬT TRÁCH NHIỆM BỒI THƯỜNG CỦA NHÀ NƯỚC (TỐI ĐA 10 ĐIỂM)</h4>
                     </div>
                     ${renderCriterionForm("III.1", "Không phát sinh hồ sơ yêu cầu xác minh thiệt hại cần tham gia")}
                     ${renderCriterionForm("III.2", "Không phát sinh hoạt động thương lượng bồi thường cần tham gia")}
@@ -1723,7 +2035,7 @@
                 // Nhóm IV: Điều kiện bảo đảm (10đ)
                 panel.innerHTML = `
                     <div class="card-section" style="background-color:#FAFBFD; border-left:4px solid var(--primary-color);">
-                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 4: NHÓM TIÊU CHÍ IV — ĐIỀU KIỆN BẠO ĐẢM CHO CÔNG TÁC QLNN (TỐI ĐA 10 ĐIỂM)</h4>
+                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 4: NHÓM TIÊU CHÍ IV — NHÓM TIÊU CHÍ ĐÁNH GIÁ ĐIỀU KIỆN BẢO ĐẢM THỰC HIỆN QUẢN LÝ NHÀ NƯỚC VỀ CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC (TỐI ĐA 10 ĐIỂM)</h4>
                     </div>
                     ${renderCriterionForm("IV.1", null)}
                     ${renderCriterionForm("IV.2a", null)}
@@ -1735,7 +2047,7 @@
                 const isFunding = scoringData["funding"] === "Có";
                 panel.innerHTML = `
                     <div class="card-section" style="background-color:#FAFBFD; border-left:4px solid var(--primary-color);">
-                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 5: NHÓM TIÊU CHÍ V — ĐÁNH GIÁ CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (TỐI ĐA 10 ĐIỂM)</h4>
+                        <h4 style="font-weight:600; margin-bottom:5px; color:var(--primary-color);">BƯỚC 5: NHÓM TIÊU CHÍ V — NHÓM TIÊU CHÍ ĐÁNH GIÁ CỦA CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG, CƠ QUAN NHÀ NƯỚC KHÁC CÓ LIÊN QUAN TẠI ĐỊA PHƯƠNG TRONG VIỆC THỰC HIỆN QUẢN LÝ NHÀ NƯỚC VỀ CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC VÀ THAM GIA GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG (TỐI ĐA 10 ĐIỂM)</h4>
                         <p style="font-size:12.5px; color:var(--text-muted);">
                             Hệ thống chỉ yêu cầu chấm Nhóm V khi cơ quan được cấp kinh phí hoặc hỗ trợ kinh phí phục vụ khảo sát lấy ý kiến.
                         </p>
@@ -1926,16 +2238,18 @@
         }
 
         // DYNAMIC CRITERION WIDGET RENDERER (Includes Checkboxes, Dropdowns, TBC Calculators)
+        // DYNAMIC CRITERION WIDGET RENDERER (Includes Checkboxes, Option Dropdowns, TBC Calculators)
         function renderCriterionForm(code, checkboxLabel) {
             const item = criteriaData[code];
             const currentVal = scoringData[code];
             const savedNote = scoringData[`note_${code}`] || "";
             const isNoIssueChecked = scoringData[`no_issue_${code}`] === true;
 
-            // Prepare Dropdown points
+            // Prepare Dropdown options based on criteria options
             let dropdownOptions = "";
-            item.values.forEach(v => {
-                dropdownOptions += `<option value="${v}" ${Number(currentVal) === v ? 'selected' : ''}>${v} điểm</option>`;
+            const currentScore = currentVal !== undefined ? Number(currentVal) : 0;
+            item.options.forEach(opt => {
+                dropdownOptions += `<option value="${opt.score}" ${currentScore === opt.score ? 'selected' : ''}>${opt.text} (${opt.score} điểm)</option>`;
             });
 
             // Generate multi cases wrapper if needed (I.1, II.1, III.1, III.2 support dynamic addition)
@@ -1949,7 +2263,7 @@
                             <thead>
                                 <tr>
                                     <th>Chi tiết sự vụ / Số hiệu văn bản</th>
-                                    <th style="width: 140px;">Mức tự chấm</th>
+                                    <th style="width: 250px;">Nội dung đánh giá</th>
                                     <th style="width: 60px; text-align:center;">Xóa</th>
                                 </tr>
                             </thead>
@@ -1981,10 +2295,15 @@
                     <div class="grid-2-cols" id="inputsBlock_${code}">
                         <!-- Point score selector -->
                         <div class="form-group">
-                            <label class="form-label">Điểm tự chấm</label>
-                            <select class="form-control" id="score_${code}" ${isNoIssueChecked || isMultiCase ? 'disabled' : ''} onchange="updateCriterionScore('${code}', this.value)">
-                                ${dropdownOptions}
-                            </select>
+                            <label class="form-label">Nội dung đánh giá tự chấm</label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <select class="form-control" id="option_select_${code}" ${isNoIssueChecked || isMultiCase ? 'disabled' : ''} onchange="updateCriterionScoreFromOption('${code}', this.value)" style="flex: 1;">
+                                    ${dropdownOptions}
+                                </select>
+                                <span class="badge" id="score_badge_${code}" style="background-color: var(--primary-color); color: #fff; padding: 8px 12px; border-radius: 4px; font-weight: bold; font-size: 13px; white-space: nowrap;">
+                                    ${currentScore}đ
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Attach file -->
@@ -2013,7 +2332,7 @@
         }
 
         // FILE LIST RENDER (Rule 6: Việt hóa đính kèm với "Xem file" và "Xóa")
-        function renderFileList(code) {
+        function renderFileList(code, suffix = "") {
             const files = scoringData[`files_${code}`] || [];
             if (files.length === 0) {
                 return `<div style="font-size:11px; color:var(--text-muted); font-style:italic;">Chưa đính kèm tài liệu kiểm chứng</div>`;
@@ -2027,7 +2346,7 @@
                         <div class="uploaded-file-actions">
                             <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');">Xem file</a>
                             <span>|</span>
-                            <a href="#" class="delete-file" onclick="event.preventDefault(); removeUploadedFile('${code}', ${idx})">Xóa</a>
+                            <a href="#" class="delete-file" onclick="event.preventDefault(); removeUploadedFile('${code}', ${idx}, '${suffix}')">Xóa</a>
                         </div>
                     </div>
                 `;
@@ -2035,7 +2354,7 @@
             return html;
         }
 
-        function handleFileUpload(code, input) {
+        function handleFileUpload(code, input, suffix = "") {
             if (!input.files || input.files.length === 0) return;
             const file = input.files[0];
             
@@ -2051,14 +2370,22 @@
             showToast(`Đã đính kèm tệp ${file.name} thành công!`, "success");
             
             // Re-render
-            document.getElementById(`filesList_${code}`).innerHTML = renderFileList(code);
+            const elementId = suffix ? `${suffix}FilesList_${code}` : `filesList_${code}`;
+            const container = document.getElementById(elementId);
+            if (container) {
+                container.innerHTML = renderFileList(code, suffix);
+            }
             calculateTotals();
         }
 
-        function removeUploadedFile(code, idx) {
+        function removeUploadedFile(code, idx, suffix = "") {
             if (confirm("Bạn có chắc chắn muốn xóa tệp tin đính kèm kiểm chứng này không?")) {
                 scoringData[`files_${code}`].splice(idx, 1);
-                document.getElementById(`filesList_${code}`).innerHTML = renderFileList(code);
+                const elementId = suffix ? `${suffix}FilesList_${code}` : `filesList_${code}`;
+                const container = document.getElementById(elementId);
+                if (container) {
+                    container.innerHTML = renderFileList(code, suffix);
+                }
                 showToast("Đã xóa tệp tin thành công!");
                 calculateTotals();
             }
@@ -2068,14 +2395,18 @@
         function toggleNoIssue(code, maxVal, isChecked) {
             scoringData[`no_issue_${code}`] = isChecked;
             
-            const scoreSelect = document.getElementById(`score_${code}`);
+            const optionSelect = document.getElementById(`option_select_${code}`);
+            const badge = document.getElementById(`score_badge_${code}`);
             const noteText = document.getElementById(`note_${code}`);
             
             if (isChecked) {
                 scoringData[code] = maxVal;
-                if (scoreSelect) {
-                    scoreSelect.value = maxVal;
-                    scoreSelect.disabled = true;
+                if (optionSelect) {
+                    optionSelect.value = maxVal;
+                    optionSelect.disabled = true;
+                }
+                if (badge) {
+                    badge.innerText = `${maxVal}đ`;
                 }
                 noteText.value = `Không phát sinh hồ sơ nghiệp vụ liên quan đến tiêu chí ${code} trong năm. Đơn vị tự chấm điểm tối đa ${maxVal}đ theo quy định tại Điều 9.2 QĐ 3062.`;
                 scoringData[`note_${code}`] = noteText.value;
@@ -2085,9 +2416,12 @@
                 if (casesSec) casesSec.style.display = "none";
             } else {
                 scoringData[code] = 0;
-                if (scoreSelect) {
-                    scoreSelect.value = 0;
-                    scoreSelect.disabled = false;
+                if (optionSelect) {
+                    optionSelect.value = 0;
+                    optionSelect.disabled = false;
+                }
+                if (badge) {
+                    badge.innerText = `0đ`;
                 }
                 noteText.value = "";
                 scoringData[`note_${code}`] = "";
@@ -2111,6 +2445,19 @@
             calculateTotals();
         }
 
+        function updateCriterionScoreFromOption(code, val) {
+            scoringData[code] = Number(val);
+            const badge = document.getElementById(`score_badge_${code}`);
+            if (badge) {
+                badge.innerText = `${val}đ`;
+            }
+            calculateTotals();
+        }
+
+        function updateCriterionNote(code, val) {
+            scoringData[`note_${code}`] = val;
+        }
+
         // DYNAMIC MULTI CASES HANDLERS (calculates average)
         function addCaseRow(code) {
             if (!scoringData[`cases_${code}`]) {
@@ -2118,7 +2465,7 @@
             }
             
             const caseIdx = scoringData[`cases_${code}`].length;
-            const newCase = { name: `Vụ việc phát sinh số ${caseIdx + 1}`, score: criteriaData[code].maxScore };
+            const newCase = { name: `Vụ việc phát sinh số ${caseIdx + 1}`, score: criteriaData[code].options[0].score };
             scoringData[`cases_${code}`].push(newCase);
             
             renderCasesRows(code);
@@ -2134,15 +2481,15 @@
             
             cases.forEach((c, idx) => {
                 let options = "";
-                item.values.forEach(v => {
-                    options += `<option value="${v}" ${Number(c.score) === v ? 'selected' : ''}>${v}đ</option>`;
+                item.options.forEach(opt => {
+                    options += `<option value="${opt.score}" ${Number(c.score) === opt.score ? 'selected' : ''}>${opt.text} (${opt.score}đ)</option>`;
                 });
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><input type="text" class="form-control" style="padding: 4px;" value="${c.name}" oninput="updateCaseName('${code}', ${idx}, this.value)"></td>
                     <td>
-                        <select class="form-control" style="padding: 4px;" onchange="updateCaseScore('${code}', ${idx}, this.value)">
+                        <select class="form-control" style="padding: 4px; font-size:12px;" onchange="updateCaseScore('${code}', ${idx}, this.value)">
                             ${options}
                         </select>
                     </td>
@@ -2177,24 +2524,16 @@
             const cases = scoringData[`cases_${code}`] || [];
             if (cases.length === 0) return;
             const sum = cases.reduce((acc, curr) => acc + Number(curr.score), 0);
+        function recalculateAverageCaseScore(code) {
+            const cases = scoringData[`cases_${code}`] || [];
+            if (cases.length === 0) return;
+            const sum = cases.reduce((acc, curr) => acc + Number(curr.score), 0);
             const avg = Math.round((sum / cases.length) * 10) / 10; // 1 decimal point
             
             scoringData[code] = avg;
-            const scoreSelect = document.getElementById(`score_${code}`);
-            if (scoreSelect) {
-                // If the average score isn't a direct dropdown option, add it temporarily
-                let foundOption = false;
-                for (let i = 0; i < scoreSelect.options.length; i++) {
-                    if (Number(scoreSelect.options[i].value) === avg) {
-                        foundOption = true;
-                        break;
-                    }
-                }
-                if (!foundOption) {
-                    const newOpt = new Option(`${avg} điểm (TBC)`, avg);
-                    scoreSelect.add(newOpt);
-                }
-                scoreSelect.value = avg;
+            const badge = document.getElementById(`score_badge_${code}`);
+            if (badge) {
+                badge.innerText = `${avg}đ`;
             }
             calculateTotals();
         }
@@ -2312,7 +2651,7 @@
             
             if (scoringViewMode === 'stepper') {
                 scoringViewMode = "table";
-                btn.innerText = "Chế độ Stepper";
+                btn.innerText = "Chế độ Từng bước";
                 stepperLayout.style.display = "none";
                 actionsBar.style.display = "none";
                 
@@ -2343,25 +2682,40 @@
             Object.keys(criteriaData).forEach((code, idx) => {
                 const item = criteriaData[code];
                 const currentVal = scoringData[code];
+                const currentScore = currentVal !== undefined ? Number(currentVal) : 0;
                 
-                // Filter dropdowns
+                // Options dropdown
                 let options = "";
-                item.values.forEach(v => {
-                    options += `<option value="${v}" ${Number(currentVal) === v ? 'selected' : ''}>${v}đ</option>`;
+                item.options.forEach(opt => {
+                    options += `<option value="${opt.score}" ${currentScore === opt.score ? 'selected' : ''}>${opt.text} (${opt.score}đ)</option>`;
                 });
 
                 tbodyHtml += `
                     <tr>
                         <td class="text-center">${idx + 1}</td>
-                        <td><strong>${code}</strong> - ${item.title}</td>
-                        <td class="text-right">${item.maxScore}</td>
+                        <td>${getFormattedCriteriaTitle(code, item.title)}</td>
+                        <td class="text-right" style="font-weight:600;">${item.maxScore}</td>
                         <td>
-                            <select class="form-control" style="padding: 4px;" onchange="updateCriterionScore('${code}', this.value); calculateTotals();">
-                                ${options}
-                            </select>
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                <select class="form-control" style="padding: 4px; font-size:12px; max-width: 320px;" onchange="updateCriterionScoreFromOption('${code}', this.value); document.getElementById('big_table_badge_${code}').innerText = this.value + 'đ';">
+                                    ${options}
+                                </select>
+                                <div style="font-size:11.5px; font-weight:bold; color:var(--primary-color);">Điểm tự chấm: <span id="big_table_badge_${code}">${currentScore}</span>đ</div>
+                            </div>
                         </td>
                         <td>
-                            <textarea class="form-control" style="padding: 4px; min-height: 40px;" placeholder="Nhập diễn giải..." oninput="updateCriterionNote('${code}', this.value); calculateTotals();">${scoringData[`note_${code}`] || ''}</textarea>
+                            <div class="file-upload-container">
+                                <div class="file-upload-btn-wrapper">
+                                    <button class="btn btn-secondary btn-sm" style="font-size:11px; padding: 2px 6px;"><i class="fa-solid fa-paperclip"></i> Đính kèm</button>
+                                    <input type="file" onchange="handleFileUpload('${code}', this, 'bigTable')" style="font-size:11px;">
+                                </div>
+                                <div class="uploaded-files-list" id="bigTableFilesList_${code}" style="margin-top: 4px;">
+                                    ${renderFileList(code, 'bigTable')}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <textarea class="form-control" style="padding: 4px; min-height: 50px; font-size: 12px;" placeholder="Nhập diễn giải..." oninput="updateCriterionNote('${code}', this.value);">${scoringData[`note_${code}`] || ''}</textarea>
                         </td>
                     </tr>
                 `;
@@ -2376,9 +2730,10 @@
                         <thead>
                             <tr>
                                 <th style="width: 50px; text-align: center;">STT</th>
-                                <th>Tiêu chí đánh giá</th>
+                                <th style="min-width: 380px;">Tiêu chí đánh giá</th>
                                 <th style="width: 80px; text-align: right;">Điểm tối đa</th>
-                                <th style="width: 120px;">Tự chấm</th>
+                                <th style="width: 330px;">Tự chấm</th>
+                                <th style="width: 250px;">Tài liệu kiểm chứng</th>
                                 <th>Cơ sở chứng minh / Diễn giải</th>
                             </tr>
                         </thead>
@@ -2396,6 +2751,7 @@
             // Insert big table card right below the summary bar
             document.getElementById('screenStpScoring').appendChild(wrapper);
         }
+
 
         // SAVE DRAFT
         function saveDraft() {
@@ -2446,6 +2802,7 @@
         // ==================== BTP EVALUATION LOGIC ====================
         function startBtpEvaluation(id) {
             editingPeriodId = id;
+            isBtpEvaluationMode = true; // Evaluation Mode!
             const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
             selectedPeriod = allData.find(p => p.id === id);
             
@@ -2471,11 +2828,108 @@
 
             document.getElementById('btpEvalTitle').innerText = `Đánh giá kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
             
+            // Toggle buttons visibility
+            document.getElementById('btnBtpStartEval').style.display = 'none';
+            document.getElementById('btnBtpSaveDraft').style.display = 'block';
+            document.getElementById('btnBtpComplete').style.display = 'block';
+            document.getElementById('alertBannerContainer').style.display = 'none';
+            
             renderBtpCompareTable();
             calculateBtpTotals();
 
             document.querySelectorAll('.screen-block').forEach(s => s.style.display = 'none');
             document.getElementById('screenBtpEvaluation').style.display = 'block';
+        }
+
+        // BTP FILE UPLOAD HELPERS
+        function renderBtpFileList(code) {
+            if (!selectedPeriod || !selectedPeriod.btpDetails) return "";
+            const files = selectedPeriod.btpDetails[`files_${code}`] || [];
+            if (files.length === 0) {
+                return `<div style="font-size:11px; color:var(--text-muted); font-style:italic;">Chưa đính kèm tài liệu thẩm định</div>`;
+            }
+
+            let html = "";
+            files.forEach((file, idx) => {
+                html += `
+                    <div class="uploaded-file-item" style="margin-top: 4px; display: flex; align-items: center; justify-content: space-between; background-color: #F8FAFC; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
+                        <span class="uploaded-file-name" title="${file}" style="font-size:11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;"><i class="fa-regular fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${file}</span>
+                        <div class="uploaded-file-actions" style="font-size:10px; display: flex; gap: 4px;">
+                            <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');">Xem</a>
+                            <span style="color:#CBD5E1;">|</span>
+                            <a href="#" class="delete-file" onclick="event.preventDefault(); removeBtpUploadedFile('${code}', ${idx})">Xóa</a>
+                        </div>
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        function renderBtpFileListReadOnly(code) {
+            if (!selectedPeriod || !selectedPeriod.btpDetails) return "";
+            const files = selectedPeriod.btpDetails[`files_${code}`] || [];
+            if (files.length === 0) {
+                return `<div style="font-size:11px; color:var(--text-muted); font-style:italic;">Chưa đính kèm tài liệu thẩm định</div>`;
+            }
+
+            let html = "";
+            files.forEach(file => {
+                html += `
+                    <div style="margin-top: 2px;">
+                        <a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="color:var(--primary-color); font-weight:600; font-size:11px;" title="${file}"><i class="fa-solid fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${file} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(Xem file)</span></a>
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        function handleBtpFileUpload(code, input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            
+            if (file.size > 10 * 1024 * 1024) {
+                showToast("Dung lượng tệp đính kèm không được vượt quá 10MB!", "error");
+                return;
+            }
+
+            if (!selectedPeriod.btpDetails[`files_${code}`]) {
+                selectedPeriod.btpDetails[`files_${code}`] = [];
+            }
+            selectedPeriod.btpDetails[`files_${code}`].push(file.name);
+            showToast(`Đã đính kèm tệp thẩm định ${file.name} thành công!`, "success");
+            
+            document.getElementById(`btpFilesList_${code}`).innerHTML = renderBtpFileList(code);
+        }
+
+        function removeBtpUploadedFile(code, idx) {
+            if (confirm("Bạn có chắc chắn muốn xóa tệp tin đính kèm thẩm định này không?")) {
+                selectedPeriod.btpDetails[`files_${code}`].splice(idx, 1);
+                document.getElementById(`btpFilesList_${code}`).innerHTML = renderBtpFileList(code);
+                showToast("Đã xóa tệp tin thẩm định thành công!");
+            }
+        }
+
+        function switchToEvaluationMode() {
+            isBtpEvaluationMode = true;
+            document.getElementById('btpEvalTitle').innerText = `Đánh giá kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
+            document.getElementById('btnBtpStartEval').style.display = 'none';
+            document.getElementById('btnBtpSaveDraft').style.display = 'block';
+            document.getElementById('btnBtpComplete').style.display = 'block';
+            document.getElementById('alertBannerContainer').style.display = 'none';
+            
+            // Set state to BTP đang đánh giá if it was Đã gửi BTP
+            if (selectedPeriod.status === 'Đã gửi BTP') {
+                const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
+                const idx = allData.findIndex(p => p.id === selectedPeriod.id);
+                if (idx !== -1) {
+                    allData[idx].status = "BTP đang đánh giá";
+                    selectedPeriod.status = "BTP đang đánh giá";
+                    localStorage.setItem('btnn_scoring_periods', JSON.stringify(allData));
+                    filterData();
+                }
+            }
+            
+            renderBtpCompareTable();
         }
 
         // RENDER SO SANH STP VS BTP
@@ -2497,9 +2951,9 @@
                     tr.style.backgroundColor = "#F8FAFC";
                     tr.innerHTML = `
                         <td class="text-center">${index++}</td>
-                        <td><span style="color:var(--text-muted);">${item.title}</span></td>
-                        <td class="text-right">10 (Nhóm)</td>
-                        <td class="text-right">-</td>
+                        <td><span style="color:var(--text-muted);">${getFormattedCriteriaTitle(code, item.title)}</span></td>
+                        <td class="text-center">10 (Nhóm)</td>
+                        <td class="text-center">-</td>
                         <td style="color:var(--text-muted); font-style:italic;">Không được cấp kinh phí đánh giá</td>
                         <td class="text-center">0 (N/A)</td>
                         <td class="text-center"><i class="fa-solid fa-circle-check" style="color:var(--success-color);"></i></td>
@@ -2517,41 +2971,89 @@
                 const isDiff = Number(stpScore) !== Number(btpScore);
                 const compareIcon = isDiff ? `<i class="fa-solid fa-triangle-exclamation" style="color:var(--warning-color);" title="Có chênh lệch điểm số!"></i>` : `<i class="fa-solid fa-circle-check" style="color:var(--success-color);"></i>`;
 
-                // BTP Dropdown values
-                let dropdownOpts = "";
-                item.values.forEach(v => {
-                    dropdownOpts += `<option value="${v}" ${Number(btpScore) === v ? 'selected' : ''}>${v}đ</option>`;
+                // STP selected option description
+                const stpSelectedOption = item.options.find(opt => opt.score === Number(stpScore)) || { text: "Chưa chọn", score: 0 };
+                const btpSelectedOption = item.options.find(opt => opt.score === Number(btpScore)) || { text: "Chưa chọn", score: 0 };
+
+                // BTP Options dropdown values
+                let btpOptions = "";
+                item.options.forEach(opt => {
+                    btpOptions += `<option value="${opt.score}" ${Number(btpScore) === opt.score ? 'selected' : ''}>${opt.text} (${opt.score}đ)</option>`;
                 });
 
                 // Attach files link if exists
                 let filesLink = "";
                 const files = scoringData[`files_${code}`] || [];
                 if (files.length > 0) {
-                    filesLink = `<div style="margin-bottom: 5px;"><strong style="font-size:11px; display:block;">File kiểm chứng:</strong>`;
+                    filesLink = `<div style="margin-bottom: 5px;"><strong style="font-size:11px; display:block;">File kiểm chứng STP gửi:</strong>`;
                     files.forEach(f => {
-                        filesLink += `<a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="display:inline-block; margin-right:8px; color:var(--primary-color); font-weight:600; font-size:11.5px;"><i class="fa-solid fa-file-pdf"></i> Xem file</a>`;
+                        filesLink += `<div style="margin-bottom: 2px;"><a href="#" onclick="event.preventDefault(); window.open('../temp_placeholder.html', '_blank');" style="color:var(--primary-color); font-weight:600; font-size:11px;" title="${f}"><i class="fa-solid fa-file-pdf" style="color:var(--danger-color); margin-right:4px;"></i> ${f} <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(Xem file)</span></a></div>`;
                     });
                     filesLink += `</div>`;
+                }
+
+                // Render dynamic cells depending on BTP evaluation mode vs view mode
+                let btpColHtml = "";
+                let btpNoteColHtml = "";
+                
+                if (isBtpEvaluationMode) {
+                    btpColHtml = `
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <select class="form-control" style="padding: 4px; font-size:11px; max-width: 100%; white-space: normal; line-height:1.3; height: auto;" onchange="updateBtpScore('${code}', this.value)">
+                                ${btpOptions}
+                            </select>
+                            <div style="font-size: 11.5px; font-weight:600; text-align: center;">Điểm thẩm định: <span id="btpScoreVal_${code}" style="color:var(--primary-color); font-size:12.5px;">${btpScore}</span>đ</div>
+                        </div>
+                    `;
+                    btpNoteColHtml = `
+                        <textarea class="form-control" style="padding: 4px; min-height: 40px; font-size:12px;" id="btpNote_${code}" placeholder="Nhập ý kiến thẩm định nếu hạ hoặc nâng điểm..." oninput="updateBtpNote('${code}', this.value)">${btpNote}</textarea>
+                        
+                        <!-- BTP File uploads -->
+                        <div class="file-upload-container" style="margin-top: 5px;">
+                            <div class="file-upload-btn-wrapper">
+                                <button class="btn btn-secondary btn-sm" style="font-size:10px; padding: 2px 6px;"><i class="fa-solid fa-paperclip"></i> Đính kèm file BTP</button>
+                                <input type="file" onchange="handleBtpFileUpload('${code}', this)" style="font-size:10px;">
+                            </div>
+                            <div class="uploaded-files-list" id="btpFilesList_${code}" style="margin-top: 4px;">
+                                ${renderBtpFileList(code)}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    btpColHtml = `
+                        <div style="text-align: center; margin-bottom: 4px;"><strong style="color:var(--accent-color); font-size:12.5px;">${btpScore}đ</strong></div>
+                        <div style="color:#1b5e20; font-style:italic; background-color: #E8F5E9; padding: 4px 6px; border-radius: 4px; border: 1px dashed #A5D6A7;">${btpSelectedOption.text}</div>
+                    `;
+                    btpNoteColHtml = `
+                        <div style="font-size: 12px; color: #334155; padding: 6px; background: #F8FAFC; border-radius: 4px; min-height: 40px; border: 1px solid #E2E8F0; margin-bottom: 5px;">
+                            ${btpNote || '<span style="color:var(--text-muted); font-style:italic;">Không có ý kiến thẩm định</span>'}
+                        </div>
+                        <div>
+                            <strong style="font-size:11px; display:block; margin-bottom:2px;">Tài liệu thẩm định:</strong>
+                            ${renderBtpFileListReadOnly(code)}
+                        </div>
+                    `;
                 }
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="text-center">${index++}</td>
-                    <td><strong>${code}</strong> - ${item.title}</td>
-                    <td class="text-right" style="font-weight:600;">${item.maxScore}</td>
-                    <td class="text-right" style="font-weight:600; color:var(--primary-color);">${stpScore}</td>
-                    <td>
-                        ${filesLink}
-                        <div style="font-size:11.5px; line-height:1.3; color:#475569;">${scoringData[`note_${code}`] || '<span style="color:var(--text-muted); font-style:italic;">Không có giải trình</span>'}</div>
+                    <td>${getFormattedCriteriaTitle(code, item.title)}</td>
+                    <td class="text-center" style="font-weight:600;">${item.maxScore}</td>
+                    <td style="font-size: 11px; line-height: 1.3;">
+                        <div style="text-align: center; margin-bottom: 4px;"><strong style="color:var(--primary-color); font-size:12.5px;">${stpScore}đ</strong></div>
+                        <div style="color:#475569; font-style:italic; background-color: #F8FAFC; padding: 4px 6px; border-radius: 4px; border: 1px dashed #E2E8F0;">${stpSelectedOption.text}</div>
                     </td>
                     <td>
-                        <select class="form-control" style="padding: 4px;" onchange="updateBtpScore('${code}', this.value)">
-                            ${dropdownOpts}
-                        </select>
+                        ${filesLink}
+                        <div style="font-size:11px; line-height:1.3; color:#475569;"><strong>Giải trình của STP:</strong> ${scoringData[`note_${code}`] || '<span style="color:var(--text-muted); font-style:italic;">Không có giải trình</span>'}</div>
+                    </td>
+                    <td style="font-size: 11px; line-height: 1.3;">
+                        ${btpColHtml}
                     </td>
                     <td class="text-center" id="diffIcon_${code}">${compareIcon}</td>
                     <td>
-                        <textarea class="form-control" style="padding: 4px; min-height: 40px; font-size:12px;" id="btpNote_${code}" placeholder="Bắt buộc nhập nếu hạ hoặc nâng điểm..." oninput="updateBtpNote('${code}', this.value)">${btpNote}</textarea>
+                        ${btpNoteColHtml}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2602,6 +3104,11 @@
             const diffCell = document.getElementById(`diffIcon_${code}`);
             if (diffCell) {
                 diffCell.innerHTML = isDiff ? `<i class="fa-solid fa-triangle-exclamation" style="color:var(--warning-color);" title="Có chênh lệch điểm số!"></i>` : `<i class="fa-solid fa-circle-check" style="color:var(--success-color);"></i>`;
+            }
+
+            const btpScoreValSpan = document.getElementById(`btpScoreVal_${code}`);
+            if (btpScoreValSpan) {
+                btpScoreValSpan.innerText = val;
             }
 
             calculateBtpTotals();
@@ -2675,6 +3182,7 @@
         // VIEW COMPLETED DETAILS
         function openDetailView(id) {
             editingPeriodId = id;
+            isBtpEvaluationMode = false; // Read-only View Mode!
             const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods')) || [];
             selectedPeriod = allData.find(p => p.id === id);
 
@@ -2683,16 +3191,31 @@
                 return;
             }
 
-            // Mock opening detail view in comparison style read-only modal or display
-            startBtpEvaluation(id);
-            // Disable all selects and inputs in table to show read-only details
-            setTimeout(() => {
-                document.querySelectorAll('#btpCompareTableBody select').forEach(s => s.disabled = true);
-                document.querySelectorAll('#btpCompareTableBody textarea').forEach(t => t.disabled = true);
-                // hide action buttons
-                document.querySelector('.btn-success').style.display = "none";
-                document.querySelector('.btn-outline-primary').style.display = "none";
-            }, 100);
+            scoringData = selectedPeriod.details || {};
+            initiativeList = selectedPeriod.bonus || [];
+
+            if (!selectedPeriod.btpDetails) {
+                selectedPeriod.btpDetails = {};
+                Object.keys(criteriaData).forEach(key => {
+                    selectedPeriod.btpDetails[key] = scoringData[key] || 0;
+                    selectedPeriod.btpDetails[`note_${key}`] = "";
+                });
+            }
+
+            document.getElementById('btpEvalTitle').innerText = `Xem chi tiết kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
+            
+            // Toggle buttons visibility
+            const isBtpAllowed = (activeRole === 'btp' && (selectedPeriod.status === 'Đã gửi BTP' || selectedPeriod.status === 'BTP đang đánh giá'));
+            document.getElementById('btnBtpStartEval').style.display = isBtpAllowed ? 'block' : 'none';
+            document.getElementById('btnBtpSaveDraft').style.display = 'none';
+            document.getElementById('btnBtpComplete').style.display = 'none';
+            document.getElementById('alertBannerContainer').style.display = 'none';
+            
+            renderBtpCompareTable();
+            calculateBtpTotals();
+
+            document.querySelectorAll('.screen-block').forEach(s => s.style.display = 'none');
+            document.getElementById('screenBtpEvaluation').style.display = 'block';
         }
 
         // MODAL HELPERS (Sticky headers & footers compliance)
