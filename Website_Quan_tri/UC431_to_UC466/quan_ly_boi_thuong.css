@@ -545,7 +545,7 @@ textarea.form-control {
 }
 
 .btn-upload-rust {
-    background-color: #C27857;
+    background-color: var(--secondary-color);
     color: white;
     border: none;
     border-radius: var(--border-radius-sm);
@@ -561,7 +561,7 @@ textarea.form-control {
 }
 
 .btn-upload-rust:hover {
-    background-color: #A96241;
+    background-color: #1d4ed8;
 }
 
 .attached-file-info {

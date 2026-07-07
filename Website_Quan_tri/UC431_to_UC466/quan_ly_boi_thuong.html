@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -332,6 +332,21 @@
             gap: 16px;
         }
 
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        textarea.form-control.auto-expand {
+            resize: none;
+            min-height: 38px;
+            height: 38px;
+            line-height: 1.5;
+            padding: 8px 12px;
+            overflow-y: hidden;
+        }
+
         .form-group {
             margin-bottom: 16px;
         }
@@ -560,7 +575,7 @@
         }
 
         .btn-upload-rust {
-            background-color: #C27857;
+            background-color: var(--secondary-color);
             color: white;
             border: none;
             border-radius: var(--border-radius-sm);
@@ -576,7 +591,7 @@
         }
 
         .btn-upload-rust:hover {
-            background-color: #A96241;
+            background-color: #1d4ed8;
         }
 
         .attached-file-info {
@@ -822,7 +837,7 @@
     <!-- TOP NAVIGATION PORTAL HEADER -->
     <div class="role-switch-container">
         <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền xem Cán bộ:</span>
-        <select class="role-selector" id="roleSelectorMain" onchange="renderClaimsTable()">
+        <select class="role-selector" id="roleSelectorMain" onchange="syncRole(this)">
             <option value="chuyen-vien">Chuyên viên Thụ lý nghiệp vụ</option>
             <option value="thu-truong">Thủ trưởng Cơ quan giải quyết</option>
         </select>
@@ -855,12 +870,12 @@
                         <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
                         <select class="form-control" id="searchFieldGroup">
                             <option value="">Tất cả</option>
-                            <option value="hành chính">Trong hoạt động quản lý hành chính</option>
-                            <option value="hình sự">Trong hoạt động tố tụng hình sự</option>
-                            <option value="dân sự">Trong hoạt động tố tụng dân sự</option>
-                            <option value="tố tụng hành chính">Trong hoạt động tố tụng hành chính</option>
-                            <option value="thi hành án hình sự">Trong hoạt động thi hành án hình sự</option>
-                            <option value="thi hành án dân sự">Trong hoạt động thi hành án dân sự</option>
+                            <option value="hành chính">TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH</option>
+                            <option value="hình sự">TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ</option>
+                            <option value="dân sự">TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ</option>
+                            <option value="tố tụng hành chính">TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH</option>
+                            <option value="thi hành án hình sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ</option>
+                            <option value="thi hành án dân sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ</option>
                         </select>
                     </div>
                 </div>
@@ -904,8 +919,10 @@
                     <div></div>
                     <div
                         style="display: flex; justify-content: flex-end; gap: 8px; align-items: flex-end; height: 100%;">
-                        <button class="btn btn-secondary" onclick="clearFilters()">Xóa bộ lọc</button>
-                        <button class="btn btn-primary" onclick="triggerSearchClaims()">Tìm kiếm</button>
+                        <button class="btn btn-secondary" onclick="resetClaimsFilter()"><i
+                                class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                        <button class="btn btn-primary" onclick="currentClaimsPage=1; renderClaimsTable()"><i
+                                class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                     </div>
                 </div>
             </div>
@@ -916,7 +933,7 @@
                 <div class="role-switch-container"
                     style="display: inline-flex; align-items: center; gap: 6px; margin-bottom: 0;">
                     <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền giả lập</span>
-                    <select class="role-selector" id="roleSelectorGiaLap" onchange="renderClaimsTable()"
+                    <select class="role-selector" id="roleSelectorGiaLap" onchange="syncRole(this)"
                         style="padding: 6px 10px; font-size: 12.5px;">
                         <option value="chuyen-vien">Cán bộ xử lý hồ sơ</option>
                         <option value="thu-truong">Thủ trưởng cơ quan giải quyết</option>
@@ -935,8 +952,6 @@
                 <table class="custom-table" id="claimsTable">
                     <thead>
                         <tr>
-                            <th style="width: 40px; text-align: center;"><input type="checkbox" id="checkAllClaims">
-                            </th>
                             <th style="width: 50px; text-align: center;">STT</th>
                             <th style="width: 110px; text-align: center;">Mã yêu cầu</th>
                             <th style="min-width: 140px;">Tên người yêu cầu</th>
@@ -994,72 +1009,67 @@
 
             <div class="inline-form-body">
                 <!-- TÌM KIẾM ĐỂ NHẬP NHANH -->
-                <div
-                    style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 16px; border-radius: var(--border-radius-sm); margin-bottom: 20px;">
-                    <span class="form-label" style="font-weight: 700; color: var(--primary-light); margin-bottom: 8px;">
-                        <i class="fa-solid fa-magnifying-glass"></i> TÌM KIẾM HỒ SƠ XÁC ĐỊNH CƠ QUAN BỒI THƯỜNG (NHẬP
-                        NHANH)
-                    </span>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text                    <!-- I. THÔNG TIN CHUNG -->
-                    <div class=" info-group-title">I. Thông tin chung
+                <div class="quick-search-container" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1.5px solid #bfdbfe; padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);">
+                    <div style="font-weight: 700; color: #1e3a8a; margin-bottom: 12px; font-size: 14.5px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-magnifying-glass-chart" style="color: #2563eb; font-size: 16px;"></i>
+                        TÌM KIẾM HỒ SƠ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (NHẬP NHANH DỮ LIỆU)
                     </div>
-                    <div class="grid-3-cols" style="margin-bottom: 16px;">
-                        <div class="form-group">
-                            <span class="form-label">Hình thức tiếp nhận hồ sơ</span>
-                            <select class="form-control" id="claimNopKenh">
-                                <option value="truc-tiep">Tiếp nhận trực tiếp tại một cửa</option>
-                                <option value="buu-chinh">Nhận qua bưu điện/bưu chính</option>
-                                <option value="dvc">Đồng bộ từ Cổng Dịch vụ công trực tuyến</option>
-                            </select>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <div style="flex: 1; position: relative;">
+                            <i class="fa-solid fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
+                            <input type="text" class="form-control" id="quickFillCode" placeholder="Nhập mã hồ sơ xác định cơ quan giải quyết (Ví dụ: XD-2026-001 hoặc XD-2026-002)..." style="padding-left: 36px; border-color: #93c5fd; height: 42px; font-size: 13.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
-                            <select class="form-control" id="claimFieldGroup"
-                                onchange="toggleAdvanceByLinhVuc(this.value)">
-                                <option value="hành chính">Trong hoạt động quản lý hành chính</option>
-                                <option value="hình sự">Trong hoạt động tố tụng hình sự</option>
-                                <option value="dân sự">Trong hoạt động tố tụng dân sự</option>
-                                <option value="tố tụng hành chính">Trong hoạt động tố tụng hành chính</option>
-                                <option value="thi hành án hình sự">Trong hoạt động thi hành án hình sự</option>
-                                <option value="thi hành án dân sự">Trong hoạt động thi hành án dân sự</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Cơ quan giải quyết bồi thường</span>
-                            <input type="text" class="form-control" id="claimCqNhan"
-                                placeholder="Chọn hoặc nhập cơ quan giải quyết..." list="cqNhanList">
-                            <datalist id="cqNhanList">
-                                <option value="Sở Tư pháp TP. Hà Nội"></option>
-                                <option value="UBND Quận Cầu Giấy"></option>
-                                <option value="Tòa án nhân dân TP. Hà Nội"></option>
-                                <option value="Cục Thi hành án dân sự Hà Nội"></option>
-                            </datalist>
-                        </div>
+                        <button class="btn btn-primary" onclick="triggerQuickFill()" style="height: 42px; padding: 0 24px; font-weight: 600; font-size: 13.5px; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                     </div>
+                    <div style="margin-top: 8px; font-size: 12px; color: #1e40af; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Gợi ý mã hồ sơ giả lập: <strong style="cursor: pointer; text-decoration: underline;" onclick="document.getElementById('quickFillCode').value='XD-2026-001'; triggerQuickFill();">XD-2026-001 (Nguyễn Văn Nam)</strong> hoặc <strong style="cursor: pointer; text-decoration: underline;" onclick="document.getElementById('quickFillCode').value='XD-2026-002'; triggerQuickFill();">XD-2026-002 (Lê Hoàng Hải)</strong></span>
+                    </div>
+                </div>
 
-                    <div class="grid-2-cols" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <span class="form-label">Hình thức thụ lý giải quyết bồi thường</span>
-                            <select class="form-control" id="claimThulyVenue">
-                                <option value="cơ quan quản lý">Thụ lý tại cơ quan trực tiếp quản lý người thi hành công
-                                    vụ gây thiệt hại (Điều 41)</option>
-                                <option value="tòa án dân sự A">Thụ lý tại Tòa án - Khởi kiện vụ án dân sự (Điểm a Khoản
-                                    1 Điều 52)</option>
-                                <option value="tòa án dân sự B">Thụ lý tại Tòa án - Khởi kiện vụ án dân sự (Điểm b Khoản
-                                    1 & Khoản 2 Điều 52)</option>
-                                <option value="tòa án tố tụng">Thụ lý tại Tòa án - Yêu cầu bồi thường trong tố tụng hình
-                                    sự, tố tụng hành chính (Điều 55)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Văn bản làm căn cứ yêu cầu bồi thường<span
-                                    class="required">*</span></span>
-                            <input type="text" class="form-control" id="claimDocBase"
-                                placeholder="Bản án oan sai, quyết định trái luật...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
-                        </div>
+                <!-- I. THÔNG TIN CHUNG -->
+                <div class="info-group-title">I. Thông tin chung</div>
+                <div class="grid-3-cols" style="margin-bottom: 16px;">
+                    <div class="form-group">
+                        <span class="form-label">Hình thức tiếp nhận hồ sơ</span>
+                        <select class="form-control" id="claimNopKenh">
+                            <option value="truc-tiep">Tiếp nhận trực tiếp tại một cửa</option>
+                            <option value="buu-chinh">Nhận qua bưu điện/bưu chính</option>
+                            <option value="dvc">Đồng bộ từ Cổng Dịch vụ công trực tuyến</option>
+                        </select>
                     </div>
+                    <div class="form-group">
+                        <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
+                        <select class="form-control" id="claimFieldGroup"
+                            onchange="toggleAdvanceByLinhVuc(this.value)">
+                            <option value="hành chính">TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH</option>
+                            <option value="hình sự">TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ</option>
+                            <option value="dân sự">TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ</option>
+                            <option value="tố tụng hành chính">TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH</option>
+                            <option value="thi hành án hình sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ</option>
+                            <option value="thi hành án dân sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Cơ quan giải quyết bồi thường</span>
+                        <input type="text" class="form-control" id="claimCqNhan"
+                            placeholder="Chọn hoặc nhập cơ quan giải quyết..." list="cqNhanList">
+                        <datalist id="cqNhanList">
+                            <option value="Sở Tư pháp TP. Hà Nội"></option>
+                            <option value="UBND Quận Cầu Giấy"></option>
+                            <option value="Tòa án nhân dân TP. Hà Nội"></option>
+                            <option value="Cục Thi hành án dân sự Hà Nội"></option>
+                        </datalist>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <span class="form-label">Văn bản làm căn cứ yêu cầu bồi thường<span
+                            class="required">*</span></span>
+                    <input type="text" class="form-control" id="claimDocBase"
+                        placeholder="Bản án oan sai, quyết định trái luật...">
+                    <div class="error-message">Đây là trường bắt buộc</div>
+                </div>
 
                     <!-- THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG -->
                     <div
@@ -1245,60 +1255,60 @@
                                     <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_1"
                                             onchange="toggleClaimThietHaiRow(1)"></td>
                                     <td>1. Tài sản bị xâm phạm</td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_1"
-                                            placeholder="Ví dụ: Giá trị căn nhà gỗ tháo dỡ" disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_1" placeholder="0" oninput="sumClaimThietHai()"
+                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_1"
+                                            rows="1" placeholder="Ví dụ: Giá trị căn nhà gỗ tháo dỡ" disabled oninput="autoExpandTextarea(this)"></textarea></td>
+                                    <td><input type="text" class="form-control" style="text-align: right;"
+                                            id="claimThietHaiVal_1" placeholder="0" oninput="formatCurrencyInput(this)"
                                             disabled></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_2"
                                             onchange="toggleClaimThietHaiRow(2)"></td>
                                     <td>2. Thu nhập thực tế bị mất/giảm sút</td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_2"
-                                            placeholder="Ví dụ: Lương 3 tháng không đi làm được" disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_2" placeholder="0" oninput="sumClaimThietHai()"
+                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_2"
+                                            rows="1" placeholder="Ví dụ: Lương 3 tháng không đi làm được" disabled oninput="autoExpandTextarea(this)"></textarea></td>
+                                    <td><input type="text" class="form-control" style="text-align: right;"
+                                            id="claimThietHaiVal_2" placeholder="0" oninput="formatCurrencyInput(this)"
                                             disabled></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_3"
                                             onchange="toggleClaimThietHaiRow(3)"></td>
                                     <td>3. Vật chất do người bị thiệt hại chết</td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_3"
-                                            placeholder="Ví dụ: Chi phí mai táng, cấp dưỡng con nhỏ" disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_3" placeholder="0" oninput="sumClaimThietHai()"
+                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_3"
+                                            rows="1" placeholder="Ví dụ: Chi phí mai táng, cấp dưỡng con nhỏ" disabled oninput="autoExpandTextarea(this)"></textarea></td>
+                                    <td><input type="text" class="form-control" style="text-align: right;"
+                                            id="claimThietHaiVal_3" placeholder="0" oninput="formatCurrencyInput(this)"
                                             disabled></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_4"
                                             onchange="toggleClaimThietHaiRow(4)"></td>
                                     <td>4. Vật chất do sức khỏe bị xâm phạm</td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_4"
-                                            placeholder="Ví dụ: Chi phí viện phí, thuốc men điều trị" disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_4" placeholder="0" oninput="sumClaimThietHai()"
+                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_4"
+                                            rows="1" placeholder="Ví dụ: Chi phí viện phí, thuốc men điều trị" disabled oninput="autoExpandTextarea(this)"></textarea></td>
+                                    <td><input type="text" class="form-control" style="text-align: right;"
+                                            id="claimThietHaiVal_4" placeholder="0" oninput="formatCurrencyInput(this)"
                                             disabled></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_5"
                                             onchange="toggleClaimThietHaiRow(5)"></td>
                                     <td>5. Thiệt hại về tinh thần</td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_5"
-                                            placeholder="Quy đổi số ngày tù oan, giam giữ..." disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_5" placeholder="0" oninput="sumClaimThietHai()"
+                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_5"
+                                            rows="1" placeholder="Quy đổi số ngày tù oan, giam giữ..." disabled oninput="autoExpandTextarea(this)"></textarea></td>
+                                    <td><input type="text" class="form-control" style="text-align: right;"
+                                            id="claimThietHaiVal_5" placeholder="0" oninput="formatCurrencyInput(this)"
                                             disabled></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_6"
                                             onchange="toggleClaimThietHaiRow(6)"></td>
                                     <td>6. Các chi phí hợp lý khác</td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_6"
-                                            placeholder="Ví dụ: Chi phí đi lại nộp đơn khiếu nại" disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_6" placeholder="0" oninput="sumClaimThietHai()"
+                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_6"
+                                            rows="1" placeholder="Ví dụ: Chi phí đi lại nộp đơn khiếu nại" disabled oninput="autoExpandTextarea(this)"></textarea></td>
+                                    <td><input type="text" class="form-control" style="text-align: right;"
+                                            id="claimThietHaiVal_6" placeholder="0" oninput="formatCurrencyInput(this)"
                                             disabled></td>
                                 </tr>
                                 <tr style="background-color: #F8FAFC; font-weight: 700;">
@@ -1535,9 +1545,9 @@
                             <thead>
                                 <tr style="background-color: var(--table-header-bg);">
                                     <th style="width: 50px; text-align: center;">STT</th>
-                                    <th>Tên thành phần hồ sơ</th>
-                                    <th style="width: 320px;">Đính kèm tệp tin</th>
-                                    <th style="min-width: 140px; text-align: center;">Thao Tác</th>
+                                    <th>Tên tài liệu</th>
+                                    <th style="width: 320px;">File đính kèm</th>
+                                    <th style="width: 180px; text-align: center;">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody id="claimDynamicDocsBody">
@@ -2265,6 +2275,57 @@
 
     <!-- MAIN DATA AND LOGIC SCRIPTS -->
     <script>
+        // Synchronize Role Selectors and update table
+        function syncRole(el) {
+            const val = el.value;
+            const selMain = document.getElementById('roleSelectorMain');
+            const selGiaLap = document.getElementById('roleSelectorGiaLap');
+            if (selMain) selMain.value = val;
+            if (selGiaLap) selGiaLap.value = val;
+            renderClaimsTable();
+        }
+
+        // Get full uppercase name for fieldGroup
+        function getFieldGroupName(val) {
+            switch(val) {
+                case 'hành chính': return 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
+                case 'hình sự': return 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ';
+                case 'dân sự': return 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ';
+                case 'tố tụng hành chính': return 'TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH';
+                case 'thi hành án hình sự': return 'TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ';
+                case 'thi hành án dân sự': return 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ';
+                default: return val ? val.toUpperCase() : '';
+            }
+        }
+
+        // Auto-expand textarea height
+        function autoExpandTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        // Format currency input automatically
+        function formatCurrencyInput(input) {
+            let selectionStart = input.selectionStart;
+            let selectionEnd = input.selectionEnd;
+            let originalLength = input.value.length;
+
+            let value = input.value.replace(/\D/g, '');
+            if (value) {
+                let formatted = parseInt(value, 10).toLocaleString('vi-VN');
+                formatted = formatted.replace(/,/g, '.');
+                input.value = formatted;
+            } else {
+                input.value = '';
+            }
+
+            let newLength = input.value.length;
+            let lengthDiff = newLength - originalLength;
+            input.setSelectionRange(selectionStart + lengthDiff, selectionEnd + lengthDiff);
+
+            sumClaimThietHai();
+        }
+
         // Local simulation data for Quick-Fill
         const xdRequestList = [
             {
@@ -2934,13 +2995,16 @@
             const endIdx = Math.min(startIdx + claimsPageSize, total);
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy hồ sơ nào phù hợp</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy hồ sơ nào phù hợp</td></tr>`;
                 document.getElementById('claimsCurrentRange').innerText = "0-0";
                 return;
             }
 
             document.getElementById('claimsCurrentRange').innerText = `${startIdx + 1}-${endIdx}`;
             const pageData = filtered.slice(startIdx, endIdx);
+
+            const selMain = document.getElementById('roleSelectorMain');
+            const currentRole = selMain ? selMain.value : 'chuyen-vien';
 
             pageData.forEach((item, index) => {
                 const tr = document.createElement('tr');
@@ -2963,7 +3027,7 @@
                 else if (item.status === 'Chờ ban hành QĐ') badgeClass = 'badge-warning';
                 else if (item.status === 'Chờ thực thi') badgeClass = 'badge-warning';
 
-                // Fixed 6-slot Action Column Alignment
+                // Fixed slots
                 const isDraft = item.status === 'Lưu nháp';
                 const isPending = item.status === 'Chờ tiếp nhận';
                 const hasUpdateRights = ['Lưu nháp', 'Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi'].includes(item.status);
@@ -2995,27 +3059,39 @@
                     denyBtn = `<button class="icon-btn reject" title="Từ chối thụ lý" onclick="event.stopPropagation(); changeStatus('${item.id}', 'Bị từ chối', 'Đã từ chối thụ lý hồ sơ!')"><i class="fa-solid fa-ban"></i></button>`;
                 }
 
+                let actionsHtml = '';
+                if (currentRole === 'thu-truong') {
+                    actionsHtml = `
+                        ${viewBtn}
+                        ${acceptBtn}
+                        ${denyBtn}
+                    `;
+                } else {
+                    actionsHtml = `
+                        ${viewBtn}
+                        ${updateBtn}
+                        ${deleteBtn}
+                        ${acceptBtn}
+                        ${suppBtn}
+                        ${denyBtn}
+                    `;
+                }
+
                 const shortenedHanhVi = item.hanhVi.length > 35 ? item.hanhVi.slice(0, 35) + '...' : item.hanhVi;
 
                 tr.innerHTML = `
-                    <td style="text-align:center;"><input type="checkbox"></td>
                     <td style="text-align:center;">${startIdx + index + 1}</td>
                     <td style="text-align:center;"><strong>${item.code}</strong></td>
                     <td><strong>${item.nyc}</strong></td>
                     <td title="${item.hanhVi}">${shortenedHanhVi}</td>
-                    <td style="font-size:12px; color:var(--text-muted);">${item.fieldGroup}</td>
+                    <td style="font-size:12px; color:var(--text-muted);">${getFieldGroupName(item.fieldGroup)}</td>
                     <td style="font-size:12px; color:var(--text-muted);">${item.agency || "Chưa phân công"}</td>
                     <td style="text-align:center;">${item.date}</td>
                     <td style="text-align:center; font-weight: 500; color: #b45309;">${item.deadline || "--"}</td>
                     <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                     <td style="text-align:center;">
                         <div class="action-flex">
-                            ${viewBtn}
-                            ${updateBtn}
-                            ${deleteBtn}
-                            ${acceptBtn}
-                            ${suppBtn}
-                            ${denyBtn}
+                            ${actionsHtml}
                         </div>
                     </td>
                 `;
@@ -3166,8 +3242,10 @@
 
             for (let i = 1; i <= 6; i++) {
                 document.getElementById(`claimThietHaiCb_${i}`).checked = false;
-                document.getElementById(`claimThietHaiCalc_${i}`).value = '';
-                document.getElementById(`claimThietHaiCalc_${i}`).disabled = true;
+                const calcEl = document.getElementById(`claimThietHaiCalc_${i}`);
+                calcEl.value = '';
+                calcEl.style.height = '38px';
+                calcEl.disabled = true;
                 document.getElementById(`claimThietHaiVal_${i}`).value = '';
                 document.getElementById(`claimThietHaiVal_${i}`).disabled = true;
             }
@@ -3300,7 +3378,9 @@
         function sumClaimThietHai() {
             let total = 0;
             for (let i = 1; i <= 6; i++) {
-                const val = parseFloat(document.getElementById(`claimThietHaiVal_${i}`).value) || 0;
+                const valEl = document.getElementById(`claimThietHaiVal_${i}`);
+                const cleanValStr = valEl.value.replace(/\./g, '');
+                const val = parseFloat(cleanValStr) || 0;
                 total += val;
             }
             document.getElementById('claimTotalNumText').innerText = `${total.toLocaleString('vi-VN')} đồng`;
@@ -3340,50 +3420,73 @@
         }
 
         function initDocsList(role = "Người bị thiệt hại") {
-            currentDocsList = [
-                {
+            currentDocsList = [];
+
+            // 1. Giấy tờ chứng minh nhân thân của người bị thiệt hại (Chỉ hiển thị khi Tư cách người yêu cầu = "Người bị thiệt hại")
+            if (role === "Người bị thiệt hại") {
+                currentDocsList.push({
                     name: "Giấy tờ chứng minh nhân thân của người bị thiệt hại",
-                    required: (role === "Người bị thiệt hại"),
-                    file: (role === "Người bị thiệt hại") ? "Giay_to_chung_minh_nhan_than_bi_thiet_hai.pdf" : null,
-                    isCustom: false
-                },
-                {
-                    name: "Tài liệu, chứng cứ có liên quan tới yêu cầu bồi thường (nếu có)",
-                    required: false,
-                    file: "Tai_lieu_chung_cu_kem_theo.pdf",
-                    isCustom: false
-                },
-                {
-                    name: "Văn bản làm căn cứ yêu cầu bồi thường, trừ trường hợp người bị thiệt hại không được gửi hoặc không thể có văn bản làm căn cứ yêu cầu bồi thường",
                     required: true,
-                    file: "Van_ban_lam_can_cu_yeu_cau_boi_thuong.pdf",
+                    file: "Giay_to_chung_minh_nhan_than_bi_thiet_hai.pdf",
                     isCustom: false
-                },
-                {
-                    name: "Văn bản yêu cầu bồi thường (Hệ thống tự động gen ra theo Mẫu 01/BTNN)",
-                    required: true,
-                    file: "Mau_01_BTNN_He_Thong_Tu_Sinh.pdf",
-                    isCustom: false
-                },
-                {
+                });
+            }
+
+            // 2. Tài liệu, chứng cứ có liên quan tới yêu cầu bồi thường (nếu có)
+            currentDocsList.push({
+                name: "Tài liệu, chứng cứ có liên quan tới yêu cầu bồi thường (nếu có)",
+                required: false,
+                file: "Tai_lieu_chung_cu_kem_theo.pdf",
+                isCustom: false
+            });
+
+            // 3. Văn bản làm căn cứ yêu cầu bồi thường, trừ trường hợp người bị thiệt hại không được gửi hoặc không thể có văn bản làm căn cứ yêu cầu bồi thường
+            currentDocsList.push({
+                name: "Văn bản làm căn cứ yêu cầu bồi thường, trừ trường hợp người bị thiệt hại không được gửi hoặc không thể có văn bản làm căn cứ yêu cầu bồi thường",
+                required: true,
+                file: "Van_ban_lam_can_cu_yeu_cau_boi_thuong.pdf",
+                isCustom: false
+            });
+
+            // 4. Văn bản yêu cầu bồi thường (Hệ thống tự động gen ra theo Mẫu 01/BTNN)
+            currentDocsList.push({
+                name: "Văn bản yêu cầu bồi thường (Hệ thống tự động gen ra theo Mẫu 01/BTNN)",
+                required: true,
+                file: "Mau_01_BTNN_He_Thong_Tu_Sinh.pdf",
+                isCustom: false
+            });
+
+            // 5. Giấy tờ chứng minh nhân thân của người thừa kế, người đại diện của người bị thiệt hại
+            if (role === "Người thừa kế của người bị thiệt hại" ||
+                role === "Người đại diện theo pháp luật của người bị thiệt hại" ||
+                role === "Cá nhân, pháp nhân được ủy quyền hợp pháp") {
+                currentDocsList.push({
                     name: "Giấy tờ chứng minh nhân thân của người thừa kế, người đại diện của người bị thiệt hại",
-                    required: (role === "Người thừa kế của người bị thiệt hại" || role === "Người đại diện theo pháp luật của người bị thiệt hại" || role === "Cá nhân, pháp nhân được ủy quyền hợp pháp"),
-                    file: (role === "Người thừa kế của người bị thiệt hại" || role === "Người đại diện theo pháp luật của người bị thiệt hại" || role === "Cá nhân, pháp nhân được ủy quyền hợp pháp") ? "Chung_minh_nhan_than_nguoi_dai_dien_thua_ke.pdf" : null,
+                    required: true,
+                    file: "Chung_minh_nhan_than_nguoi_dai_dien_thua_ke.pdf",
                     isCustom: false
-                },
-                {
+                });
+            }
+
+            // 6. Trường hợp người bị thiệt hại chết mà có di chúc thì người yêu cầu bồi thường phải cung cấp di chúc, trường hợp không có di chúc thì phải có văn bản hợp pháp về quyền thừa kế
+            if (role === "Người thừa kế của người bị thiệt hại") {
+                currentDocsList.push({
                     name: "Trường hợp người bị thiệt hại chết mà có di chúc thì người yêu cầu bồi thường phải cung cấp di chúc, trường hợp không có di chúc thì phải có văn bản hợp pháp về quyền thừa kế",
-                    required: (role === "Người thừa kế của người bị thiệt hại"),
-                    file: (role === "Người thừa kế của người bị thiệt hại") ? "Di_chuc_hoac_van_ban_thua_ke_hop_phap.pdf" : null,
+                    required: true,
+                    file: "Di_chuc_hoac_van_ban_thua_ke_hop_phap.pdf",
                     isCustom: false
-                },
-                {
+                });
+            }
+
+            // 7. Văn bản ủy quyền hợp pháp trong trường hợp đại diện theo ủy quyền
+            if (role === "Cá nhân, pháp nhân được ủy quyền hợp pháp") {
+                currentDocsList.push({
                     name: "Văn bản ủy quyền hợp pháp trong trường hợp đại diện theo ủy quyền",
-                    required: (role === "Cá nhân, pháp nhân được ủy quyền hợp pháp"),
-                    file: (role === "Cá nhân, pháp nhân được ủy quyền hợp pháp") ? "Van_ban_uy_quyen_hop_phap.pdf" : null,
+                    required: true,
+                    file: "Van_ban_uy_quyen_hop_phap.pdf",
                     isCustom: false
-                }
-            ];
+                });
+            }
         }
 
         function toggleDocsByRole(role) {
@@ -3393,6 +3496,7 @@
 
         function renderDocsTable() {
             const tbody = document.getElementById('claimDynamicDocsBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             currentDocsList.forEach((doc, idx) => {
@@ -3400,7 +3504,7 @@
 
                 let nameHtml = '';
                 if (doc.isCustom) {
-                    nameHtml = '<input type="text" class="form-control" placeholder="Nhập tên thành phần hồ sơ..." value="' + doc.name + '" oninput="updateCustomDocName(' + idx + ', this.value)">';
+                    nameHtml = '<input type="text" class="form-control" placeholder="Nhập tên tài liệu..." value="' + doc.name + '" oninput="updateCustomDocName(' + idx + ', this.value)">';
                 } else {
                     nameHtml = '<strong>' + doc.name + '</strong>';
                     if (doc.required) {
@@ -3409,48 +3513,53 @@
                 }
 
                 let fileHtml = '';
-                if (doc.file) {
-                    fileHtml = '<div class="attached-file-info" style="display: flex; align-items: center; gap: 8px;">' +
-                        '<i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>' +
-                        '<span class="file-name" style="font-weight: 600; color: #166534;">' + doc.file + '</span>' +
-                        '<a href="#" onclick="viewDocFile(' + idx + '); return false;" style="margin-left: 10px; font-size: 12px; color: var(--secondary-color); text-decoration: underline;">Xem file</a>' +
-                        '<a href="#" onclick="clearDocFile(' + idx + '); return false;" style="margin-left: 8px; font-size: 12px; color: #ef4444; text-decoration: underline;">Xóa</a>' +
-                        '</div>';
-                } else {
-                    fileHtml = '<button class="btn-upload-rust" onclick="this.nextElementSibling.click()">Chọn tệp đính kèm +</button>' +
-                        '<input type="file" style="display: none;" onchange="uploadDocFile(this, ' + idx + ')">';
-                }
-
-                let btnXem = '';
-                let btnTaiXuong = '';
-                let btnXoa = '';
+                let actionsHtml = '';
 
                 if (doc.file) {
-                    btnXem = '<button class="icon-btn view" title="Xem chi tiết" onclick="viewDocFile(' + idx + ')"><i class="fa-regular fa-eye"></i></button>';
-                    btnTaiXuong = '<button class="icon-btn" title="Tải xuống" style="color: #3b82f6;" onclick="downloadDocFile(' + idx + ')"><i class="fa-solid fa-file-arrow-down"></i></button>';
-
-                    if (doc.isCustom) {
-                        btnXoa = '<button class="icon-btn delete" title="Xóa thành phần hồ sơ" onclick="deleteDocRow(' + idx + ')"><i class="fa-solid fa-trash-can"></i></button>';
-                    } else {
-                        btnXoa = '<button class="icon-btn delete" title="Xóa tệp đính kèm" onclick="clearDocFile(' + idx + ')"><i class="fa-solid fa-trash-can"></i></button>';
-                    }
+                    fileHtml = `
+                        <span class="file-name" style="font-weight: 600; color: #166534; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; display: inline-flex; align-items: center;" title="${doc.file}">
+                            <i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i>${doc.file}
+                        </span>
+                    `;
+                    actionsHtml = `
+                        <div style="display: flex; gap: 8px; justify-content: center; align-items: center; white-space: nowrap;">
+                            <a href="javascript:void(0)" onclick="viewDocFile(${idx})" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-regular fa-eye"></i> Xem file</a>
+                            <span style="color: #cbd5e1;">|</span>
+                            <a href="javascript:void(0)" onclick="${doc.isCustom ? `deleteDocRow(${idx})` : `clearDocFile(${idx})`}" style="color: var(--danger-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                        </div>
+                    `;
                 } else {
-                    btnXem = '<button class="icon-btn view" title="Chưa có tệp đính kèm để xem" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-eye"></i></button>';
-                    btnTaiXuong = '<button class="icon-btn" title="Chưa có tệp đính kèm để tải xuống" style="opacity: 0.35; pointer-events: none; cursor: not-allowed; color: #3b82f6;"><i class="fa-solid fa-file-arrow-down"></i></button>';
-
+                    fileHtml = `
+                        <div style="display: flex; align-items: center; width: 100%;">
+                            <button class="btn-upload-rust" onclick="this.nextElementSibling.click()" style="height: 34px; padding: 4px 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn file</button>
+                            <input type="file" style="display: none;" onchange="uploadDocFile(this, ${idx})">
+                        </div>
+                    `;
                     if (doc.isCustom) {
-                        btnXoa = '<button class="icon-btn delete" title="Xóa thành phần hồ sơ" onclick="deleteDocRow(' + idx + ')"><i class="fa-solid fa-trash-can"></i></button>';
+                        actionsHtml = `
+                            <div style="display: flex; gap: 8px; justify-content: center; align-items: center; white-space: nowrap;">
+                                <span style="font-weight: 600; opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-eye"></i> Xem file</span>
+                                <span style="color: #cbd5e1;">|</span>
+                                <a href="javascript:void(0)" onclick="deleteDocRow(${idx})" style="color: var(--danger-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                            </div>
+                        `;
                     } else {
-                        btnXoa = '<button class="icon-btn delete" title="Không có tệp để xóa" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-trash-can"></i></button>';
+                        actionsHtml = `
+                            <div style="display: flex; gap: 8px; justify-content: center; align-items: center; opacity: 0.35; pointer-events: none; cursor: not-allowed; white-space: nowrap;">
+                                <span style="font-weight: 600;"><i class="fa-regular fa-eye"></i> Xem file</span>
+                                <span style="color: #cbd5e1;">|</span>
+                                <span style="font-weight: 600;"><i class="fa-solid fa-trash-can"></i> Xóa</span>
+                            </div>
+                        `;
                     }
                 }
 
-                const actionsHtml = '<div class="action-flex">' + btnXem + btnTaiXuong + btnXoa + '</div>';
-
-                tr.innerHTML = '<td style="text-align:center; vertical-align: middle;">' + (idx + 1) + '</td>' +
-                    '<td style="vertical-align: middle;">' + nameHtml + '</td>' +
-                    '<td style="vertical-align: middle;">' + fileHtml + '</td>' +
-                    '<td style="text-align:center; vertical-align: middle;">' + actionsHtml + '</td>';
+                tr.innerHTML = `
+                    <td style="text-align:center; vertical-align: middle;">${idx + 1}</td>
+                    <td style="vertical-align: middle;">${nameHtml}</td>
+                    <td style="vertical-align: middle;">${fileHtml}</td>
+                    <td style="text-align:center; vertical-align: middle;">${actionsHtml}</td>
+                `;
                 tbody.appendChild(tr);
             });
         }
@@ -3512,7 +3621,9 @@
                     const checked = document.getElementById(`claimThietHaiCb_${i}`).checked;
                     if (checked) {
                         const calc = document.getElementById(`claimThietHaiCalc_${i}`).value || "-";
-                        const val = parseFloat(document.getElementById(`claimThietHaiVal_${i}`).value) || 0;
+                        const valEl = document.getElementById(`claimThietHaiVal_${i}`);
+                        const cleanValStr = valEl.value.replace(/\./g, '');
+                        const val = parseFloat(cleanValStr) || 0;
                         total += val;
                         thietHaiRowsHtml += `<tr>
                             <td style="border: 1px solid black; padding: 8px; text-align: center;">${i}</td>
@@ -3795,7 +3906,7 @@
             const nopKenh = document.getElementById('claimNopKenh').value;
             const fieldGroup = document.getElementById('claimFieldGroup').value;
             const cqNhan = document.getElementById('claimCqNhan').value.trim();
-            const thulyVenue = document.getElementById('claimThulyVenue').value;
+            const thulyVenue = document.getElementById('claimThulyVenue') ? document.getElementById('claimThulyVenue').value : 'cơ quan quản lý';
             const role = document.getElementById('claimNYCRole').value;
 
             const name = document.getElementById('claimNYCName').value.trim();
@@ -3895,7 +4006,9 @@
                 const checked = document.getElementById(`claimThietHaiCb_${i}`).checked;
                 if (checked) {
                     const calc = document.getElementById(`claimThietHaiCalc_${i}`).value.trim();
-                    const val = parseFloat(document.getElementById(`claimThietHaiVal_${i}`).value) || 0;
+                    const valEl = document.getElementById(`claimThietHaiVal_${i}`);
+                    const cleanValStr = valEl.value.replace(/\./g, '');
+                    const val = parseFloat(cleanValStr) || 0;
                     if (!isDraft && (!calc || val <= 0)) {
                         showToast(`Thiếu cách tính hoặc số tiền cho mục thiệt hại được tích chọn!`, "error");
                         return;
@@ -4371,52 +4484,52 @@
                 html += ` <a href="javascript:void(0)" class="action-link" style="color: var(--primary-color); font-size: 12.5px; font-weight: 600; margin-left: 8px;" onclick="viewPhddMockFile('${fileName}')">Xem file</a>`;
                 if (isEdit) {
                     html += ` <span style="color: #cbd5e1; margin: 0 4px;">|</span>`;
-                    html += ` <a href="javascript:void(0)" class="action-link" style="color: #ef4444; font-size: 12.5px; font-weight: 600;" onclick="removePhddStepFile(${step})">XÃ³a</a>`;
+                    html += ` <a href="javascript:void(0)" class="action-link" style="color: #ef4444; font-size: 12.5px; font-weight: 600;" onclick="removePhddStepFile(${step})">Xóa</a>`;
                 }
                 wrapper.innerHTML = html;
             } else {
                 if (isEdit) {
                     wrapper.innerHTML = `
                         <label class="btn-brown" style="cursor: pointer; padding: 6px 12px; font-size: 13px; margin: 0;">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Chá»n tá»‡p Ä‘Ã­nh kÃ¨m
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm
                             <input type="file" style="display: none;" onchange="handlePhddStepFile(${step}, this)">
                         </label>
-                        <span style="font-size: 13px; color: #64748b; font-style: italic;">ChÆ°a cÃ³ tá»‡p Ä‘Ã­nh kÃ¨m</span>
+                        <span style="font-size: 13px; color: #64748b; font-style: italic;">Chưa có tệp đính kèm</span>
                     `;
                 } else {
-                    wrapper.innerHTML = `<span style="font-size: 13px; color: #94a3b8; font-style: italic;">KhÃ´ng cÃ³ tÃ i liá»‡u Ä‘Ã­nh kÃ¨m</span>`;
+                    wrapper.innerHTML = `<span style="font-size: 13px; color: #94a3b8; font-style: italic;">Không có tài liệu đính kèm</span>`;
                 }
             }
         }
 
         function removePhddStepFile(step) {
-            showConfirmModal("Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n gá»¡ tá»‡p Ä‘Ã­nh kÃ¨m nÃ y khÃ´ng?", () => {
+            showConfirmModal("Bạn có chắc chắn muốn gỡ tệp đính kèm này không?", () => {
                 setPhddStepFile(step, null);
-                showToast("ÄÃ£ gá»¡ tá»‡p Ä‘Ã­nh kÃ¨m thÃ nh cÃ´ng!", "info");
+                showToast("Đã gỡ tệp đính kèm thành công!", "info");
             });
         }
 
         function viewPhddMockFile(fileName) {
             const win = window.open("", "_blank");
-            win.document.write(`<html><head><title>Xem tÃ i liá»‡u: ${fileName}</title>
+            win.document.write(`<html><head><title>Xem tài liệu: ${fileName}</title>
             <style>body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f1f5f9; margin: 0; }
             .card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; max-width: 500px; }</style>
             </head><body><div class="card">
-            <h1 style="color: #0f766e; font-size: 22px;">Xem tÃ i liá»‡u Ä‘Ã­nh kÃ¨m</h1>
-            <p>TÃªn tÃ i liá»‡u: <strong>${fileName}</strong></p>
-            <p style="font-style: italic; color: #64748b; font-size: 13px; line-height:1.6;">Há»‡ thá»‘ng Ä‘ang mÃ´ phá»ng xem tá»‡p Ä‘Ã­nh kÃ¨m. File thá»±c táº¿ sáº½ Ä‘Æ°á»£c hiá»ƒn thá»‹ táº¡i Ä‘Ã¢y.</p>
-            <button onclick="window.close()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-top:15px;">ÄÃ³ng cá»­a sá»•</button>
-            </div></body></html>`);
+            <h1 style="color: #0f766e; font-size: 22px;">Xem tài liệu đính kèm</h1>
+            <p>Tên tài liệu: <strong>${fileName}</strong></p>
+            <p style="font-style: italic; color: #64748b; font-size: 13px; line-height:1.6;">Hệ thống đang mô phỏng xem tệp đính kèm. File thực tế sẽ được hiển thị tại đây.</p>
+            <button onclick="window.close()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-top:15px;">Đóng cửa sổ</button>
+            </div>`);
             win.document.close();
         }
 
         function toggleStep3FormInputs(val) {
             const direct = document.getElementById('editPhddStep3DirectGroup');
             const news = document.getElementById('editPhddStep3NewsGroup');
-            if (val === 'Trá»±c tiáº¿p xin lá»—i') {
+            if (val === 'Trực tiếp xin lỗi') {
                 direct.style.display = 'block';
                 news.style.display = 'none';
-            } else if (val === 'ÄÄƒng bÃ¡o xin lá»—i') {
+            } else if (val === 'Đăng báo xin lỗi') {
                 direct.style.display = 'none';
                 news.style.display = 'block';
             } else {
@@ -4430,40 +4543,40 @@
             const s1Badge = document.getElementById('phddStep1Badge');
             if (claim.phddStep1No && claim.phddStep1Date) {
                 s1Badge.className = "badge bg-success";
-                s1Badge.innerText = "ÄÃ£ thÃ´ng bÃ¡o chá»§ Ä‘á»™ng";
+                s1Badge.innerText = "Đã thông báo chủ động";
             } else {
                 s1Badge.className = "badge bg-teal";
-                s1Badge.innerText = "Äang thá»±c hiá»‡n";
+                s1Badge.innerText = "Đang thực hiện";
             }
 
             // Step 2 Badge
             const s2Badge = document.getElementById('phddStep2Badge');
             if (claim.phddStep2Opinion) {
                 s2Badge.className = "badge bg-success";
-                s2Badge.innerText = "ÄÃ£ pháº£n há»“i: " + claim.phddStep2Opinion;
+                s2Badge.innerText = "Đã phản hồi: " + claim.phddStep2Opinion;
             } else {
                 s2Badge.className = "badge bg-secondary";
-                s2Badge.innerText = "Chá» cáº­p nháº­t Ã½ kiáº¿n";
+                s2Badge.innerText = "Chờ cập nhật ý kiến";
             }
 
             // Step 3 Badge
             const s3Badge = document.getElementById('phddStep3Badge');
             if (claim.phddStep3No && claim.phddStep3Date) {
                 s3Badge.className = "badge bg-success";
-                s3Badge.innerText = "ÄÃ£ thÃ´ng bÃ¡o tá»• chá»©c";
+                s3Badge.innerText = "Đã thông báo tổ chức";
             } else {
                 s3Badge.className = "badge bg-secondary";
-                s3Badge.innerText = "Chá» cáº­p nháº­t lá»‹ch";
+                s3Badge.innerText = "Chờ cập nhật lịch";
             }
 
             // Step 4 Badge
             const s4Badge = document.getElementById('phddStep4Badge');
             if (claim.phddStep4DateAct) {
                 s4Badge.className = "badge bg-success";
-                s4Badge.innerText = "HoÃ n thÃ nh thá»±c thi";
+                s4Badge.innerText = "Hoàn thành thực thi";
             } else {
                 s4Badge.className = "badge bg-secondary";
-                s4Badge.innerText = "Chá» cáº­p nháº­t káº¿t quáº£";
+                s4Badge.innerText = "Chờ cập nhật kết quả";
             }
         }
 
@@ -4503,17 +4616,17 @@
             if (claim.restoreHonor) {
                 if (demandBox) {
                     demandBox.style.display = 'block';
-                    document.getElementById('phddDemandStatus').innerHTML = '<span class="badge bg-success">CÃ“ Äá»€ NGHá»Š PHDD</span>';
+                    document.getElementById('phddDemandStatus').innerHTML = '<span class="badge bg-success">CÓ ĐỀ NGHỊ PHDD</span>';
 
                     const forms = [];
-                    if (claim.phddFormApology !== false) forms.push("Trá»±c tiáº¿p xin lá»—i (Äiá»u 58)");
-                    if (claim.phddFormNews) forms.push("ÄÄƒng bÃ¡o xin lá»—i (Äiá»u 59)");
-                    document.getElementById('phddDemandFormsText').innerText = forms.join(" vÃ  ") || "ChÆ°a lá»±a chá»n hÃ¬nh thá»©c";
+                    if (claim.phddFormApology !== false) forms.push("Trực tiếp xin lỗi (Điều 58)");
+                    if (claim.phddFormNews) forms.push("Đăng báo xin lỗi (Điều 59)");
+                    document.getElementById('phddDemandFormsText').innerText = forms.join(" và ") || "Chưa lựa chọn hình thức";
                 }
             } else {
                 if (demandBox) {
                     demandBox.style.display = 'block';
-                    document.getElementById('phddDemandStatus').innerHTML = '<span class="badge bg-secondary">KHÃ”NG Äá»€ NGHá»Š PHDD</span>';
+                    document.getElementById('phddDemandStatus').innerHTML = '<span class="badge bg-secondary">KHÔNG ĐỀ NGHỊ PHDD</span>';
                     document.getElementById('phddDemandFormsText').innerText = "--";
                 }
             }
@@ -4525,7 +4638,7 @@
             phddStepFileNames[1] = claim.phddStep1File || null;
 
             // Step 2 values (UC436)
-            const step2Opinion = claim.phddStep2Opinion || "Äá»“ng Ã½";
+            const step2Opinion = claim.phddStep2Opinion || "Đồng ý";
             const step2Radios = document.getElementsByName('editPhddStep2Opinion');
             step2Radios.forEach(radio => {
                 radio.checked = (radio.value === step2Opinion);
@@ -4537,11 +4650,11 @@
             document.getElementById('editPhddStep3No').value = claim.phddStep3No || "";
             document.getElementById('editPhddStep3Date').value = claim.phddStep3Date || "";
 
-            let suggestedType = "Trá»±c tiáº¿p xin lá»—i";
+            let suggestedType = "Trực tiếp xin lỗi";
             if (claim.phddFormApology !== false && claim.phddFormNews) {
-                suggestedType = "Cáº£ hai hÃ¬nh thá»©c";
+                suggestedType = "Cả hai hình thức";
             } else if (claim.phddFormNews) {
-                suggestedType = "ÄÄƒng bÃ¡o xin lá»—i";
+                suggestedType = "Đăng báo xin lỗi";
             }
             const step3Type = claim.phddStep3Type || suggestedType;
             document.getElementById('editPhddStep3Type').value = step3Type;
@@ -4570,7 +4683,7 @@
 
             // Render buttons before rendering attachment display blocks
             const editButtons = document.getElementById('editPhddButtons');
-            const canEdit = isDetailEditMode && (claim.status === 'Chá» thá»±c thi' || claim.status === 'Äang thÆ°Æ¡ng lÆ°á»£ng' || claim.status === 'Äang xÃ¡c minh thiá»‡t háº¡i' || claim.status === 'Chá» thá»¥ lÃ½');
+            const canEdit = isDetailEditMode && (claim.status === 'Chờ thực thi' || claim.status === 'Đang thương lượng' || claim.status === 'Đang xác minh thiệt hại' || claim.status === 'Chờ thụ lý');
 
             if (canEdit) {
                 editButtons.style.display = 'flex';
@@ -4590,34 +4703,34 @@
 
         function cancelActionUpdate() {
             showCaseDetail(selectedClaimId, false);
-            showToast("ÄÃ£ há»§y bá» cáº­p nháº­t thÃ´ng tin!", "info");
+            showToast("Đã hủy bỏ cập nhật thông tin!", "info");
         }
 
         function submitBoSungUpdate() {
             const content = document.getElementById('editBoSungContent').value.trim();
             if (!content) {
-                showToast("Vui lÃ²ng nháº­p ná»™i dung Ä‘Ã£ bá»• sung!", "error");
+                showToast("Vui lòng nhập nội dung đã bổ sung!", "error");
                 return;
             }
 
             const claim = claimsList.find(c => c.id === selectedClaimId);
             if (claim) {
-                claim.status = 'Chá» tiáº¿p nháº­n';
+                claim.status = 'Chờ tiếp nhận';
                 if (!claim.bosungLogs) claim.bosungLogs = [];
                 claim.bosungLogs.push({
                     date: new Date().toLocaleDateString('vi-VN'),
-                    sender: "NgÆ°á»i dÃ¢n bá»• sung",
-                    content: "Bá»• sung há»“ sÆ¡ thÃ nh cÃ´ng: " + content
+                    sender: "Người dân bổ sung",
+                    content: "Bổ sung hồ sơ thành công: " + content
                 });
 
                 claim.timeline.push({
-                    title: "Bá»• sung há»“ sÆ¡",
+                    title: "Bổ sung hồ sơ",
                     date: new Date().toLocaleDateString('vi-VN'),
-                    desc: "NgÆ°á»i dÃ¢n Ä‘Ã£ bá»• sung há»“ sÆ¡. Tráº¡ng thÃ¡i quay láº¡i [Chá» tiáº¿p nháº­n]",
+                    desc: "Người dân đã bổ sung hồ sơ. Trạng thái quay lại [Chờ tiếp nhận]",
                     status: "completed"
                 });
 
-                showToast("ÄÃ£ cáº­p nháº­t káº¿t quáº£ bá»• sung. Há»“ sÆ¡ chuyá»ƒn sang [Chá» tiáº¿p nháº­n]!", "success");
+                showToast("Đã cập nhật kết quả bổ sung. Hồ sơ chuyển sang [Chờ tiếp nhận]!", "success");
                 showCaseDetail(selectedClaimId, false);
             }
         }
@@ -4628,22 +4741,22 @@
                 const val = parseFloat(document.getElementById('editXmVal1').value) || 0;
                 const note = document.getElementById('editXmNote1').value.trim();
 
-                claim.status = 'Äang thÆ°Æ¡ng lÆ°á»£ng';
+                claim.status = 'Đang thương lượng';
                 claim.xmTotalAmount = val;
                 claim.otherRestore = document.getElementById('editXacMinhOtherRestore').value;
 
                 claim.timeline.push({
-                    title: "XÃ¡c minh thiá»‡t háº¡i",
+                    title: "Xác minh thiệt hại",
                     date: new Date().toLocaleDateString('vi-VN'),
-                    desc: `HoÃ n thÃ nh bÃ¡o cÃ¡o xÃ¡c minh thiá»‡t háº¡i thá»±c táº¿. Sá»‘ tiá»n xÃ¡c Ä‘á»‹nh: ${val.toLocaleString('vi-VN')}Ä‘. Ghi chÃº: ${note}`,
+                    desc: `Hoàn thành báo cáo xác minh thiệt hại thực tế. Số tiền xác định: ${val.toLocaleString('vi-VN')}đ. Ghi chú: ${note}`,
                     status: "completed"
                 });
 
                 claim.tlTimeExp = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleString('vi-VN');
-                claim.tlVenueExp = "PhÃ²ng há»p cÆ¡ quan giáº£i quyáº¿t bá»“i thÆ°á»ng";
-                claim.tlMembersExp = "Äáº¡i diá»‡n cÆ¡ quan, Ã´ng/bÃ  " + claim.nyc;
+                claim.tlVenueExp = "Phòng họp cơ quan giải quyết bồi thường";
+                claim.tlMembersExp = "Đại diện cơ quan, ông/bà " + claim.nyc;
 
-                showToast("HoÃ n thÃ nh xÃ¡c minh thiá»‡t háº¡i. Há»“ sÆ¡ chuyá»ƒn sang [Äang thÆ°Æ¡ng lÆ°á»£ng]!", "success");
+                showToast("Hoàn thành xác minh thiệt hại. Hồ sơ chuyển sang [Đang thương lượng]!", "success");
                 showCaseDetail(selectedClaimId, false);
             }
         }
@@ -4655,7 +4768,7 @@
                 claim.tlVenueExp = document.getElementById('editTlVenueExp').value;
                 claim.tlMembersExp = document.getElementById('editTlMembersExp').value;
 
-                showToast("ÄÃ£ lÆ°u nhÃ¡p thÃ´ng tin dá»± kiáº¿n phiÃªn thÆ°Æ¡ng lÆ°á»£ng!", "success");
+                showToast("Đã lưu nháp thông tin dự kiến phiên thương lượng!", "success");
                 showCaseDetail(selectedClaimId, false);
             }
         }
@@ -4669,7 +4782,7 @@
                 const result = document.getElementById('editTlResult').value;
 
                 if (!time || !venue || !members) {
-                    showToast("Vui lÃ²ng Ä‘iá»n Ä‘á»§ cÃ¡c thÃ´ng tin thá»±c táº¿ há»p thÆ°Æ¡ng lÆ°á»£ng cÃ³ dáº¥u *!", "error");
+                    showToast("Vui lòng điền đủ các thông tin thực tế họp thương lượng có dấu *!", "error");
                     return;
                 }
 
@@ -4678,24 +4791,24 @@
                 claim.tlMembersAct = members;
                 claim.tlResult = result;
 
-                if (result === 'ThÆ°Æ¡ng lÆ°á»£ng thÃ nh cÃ´ng') {
-                    claim.status = 'Chá» ban hÃ nh QÄ';
+                if (result === 'Thương lượng thành công') {
+                    claim.status = 'Chờ ban hành QĐ';
                     claim.timeline.push({
-                        title: "ThÆ°Æ¡ng lÆ°á»£ng bá»“i thÆ°á»ng",
+                        title: "Thương lượng bồi thường",
                         date: new Date().toLocaleDateString('vi-VN'),
-                        desc: "ThÆ°Æ¡ng lÆ°á»£ng bá»“i thÆ°á»ng thÃ nh cÃ´ng. Chuyá»ƒn há»“ sÆ¡ sang [Chá» ban hÃ nh QÄ]",
+                        desc: "Thương lượng bồi thường thành công. Chuyển hồ sơ sang [Chờ ban hành QĐ]",
                         status: "completed"
                     });
-                    showToast("ThÆ°Æ¡ng lÆ°á»£ng thÃ nh cÃ´ng! Há»“ sÆ¡ chuyá»ƒn sang [Chá» ban hÃ nh QÄ]!", "success");
+                    showToast("Thương lượng thành công! Hồ sơ chuyển sang [Chờ ban hành QĐ]!", "success");
                 } else {
-                    claim.status = 'ThÆ°Æ¡ng lÆ°á»£ng khÃ´ng thÃ nh cÃ´ng';
+                    claim.status = 'Thương lượng không thành công';
                     claim.timeline.push({
-                        title: "ThÆ°Æ¡ng lÆ°á»£ng bá»“i thÆ°á»ng",
+                        title: "Thương lượng bồi thường",
                         date: new Date().toLocaleDateString('vi-VN'),
-                        desc: "ThÆ°Æ¡ng lÆ°á»£ng bá»“i thÆ°á»ng khÃ´ng thÃ nh cÃ´ng. Káº¿t thÃºc luá»“ng giáº£i quyáº¿t hÃ nh chÃ­nh.",
+                        desc: "Thương lượng bồi thường không thành công. Kết thúc luồng giải quyết hành chính.",
                         status: "completed"
                     });
-                    showToast("ThÆ°Æ¡ng lÆ°á»£ng tháº¥t báº¡i. Há»“ sÆ¡ chuyá»ƒn sang [ThÆ°Æ¡ng lÆ°á»£ng khÃ´ng thÃ nh cÃ´ng]!", "info");
+                    showToast("Thương lượng thất bại. Hồ sơ chuyển sang [Thương lượng không thành công]!", "info");
                 }
 
                 showCaseDetail(selectedClaimId, false);
@@ -4719,7 +4832,7 @@
             const content = document.getElementById('decContentInput').value.trim();
 
             if (!no || !date || amount <= 0) {
-                showToast("Vui lÃ²ng nháº­p Ä‘áº§y Ä‘á»§ Sá»‘ QÄ, NgÃ y QÄ vÃ  Sá»‘ tiá»n!", "error");
+                showToast("Vui lòng nhập đầy đủ Số QĐ, Ngày QĐ và Số tiền!", "error");
                 return;
             }
 
@@ -4730,17 +4843,17 @@
                 claim.decAmount = amount;
                 claim.decContent = content;
 
-                if (decStatus === 'Chá» kÃ½') {
-                    claim.status = 'Chá» thá»±c thi';
+                if (decStatus === 'Chờ ký') {
+                    claim.status = 'Chờ thực thi';
                     claim.timeline.push({
-                        title: "Quyáº¿t Ä‘á»‹nh giáº£i quyáº¿t bá»“i thÆ°á»ng",
+                        title: "Quyết định giải quyết bồi thường",
                         date: new Date().toLocaleDateString('vi-VN'),
-                        desc: `KÃ½ duyá»‡t vÃ  ban hÃ nh QÄ giáº£i quyáº¿t bá»“i thÆ°á»ng sá»‘ ${no}. Sá»‘ tiá»n: ${amount.toLocaleString('vi-VN')}Ä‘`,
+                        desc: `Ký duyệt và ban hành QĐ giải quyết bồi thường số ${no}. Số tiền: ${amount.toLocaleString('vi-VN')}đ`,
                         status: "completed"
                     });
-                    showToast("Quyáº¿t Ä‘á»‹nh Ä‘Ã£ Ä‘Æ°á»£c duyá»‡t kÃ½ sá»‘ thÃ nh cÃ´ng. Há»“ sÆ¡ chuyá»ƒn sang [Chá» thá»±c thi]!", "success");
+                    showToast("Quyết định đã được duyệt ký số thành công. Hồ sơ chuyển sang [Chờ thực thi]!", "success");
                 } else {
-                    showToast("ÄÃ£ lÆ°u nhÃ¡p dá»± tháº£o Quyáº¿t Ä‘á»‹nh giáº£i quyáº¿t bá»“i thÆ°á»ng!", "info");
+                    showToast("Đã lưu nháp dự thảo Quyết định giải quyết bồi thường!", "info");
                 }
 
                 closeCreateDecisionForm();
@@ -4753,24 +4866,24 @@
             const note = document.getElementById('thucthiNoteInput').value.trim();
 
             if (!time) {
-                showToast("Vui lÃ²ng Ä‘iá»n ngÃ y chi tráº£ thá»±c táº¿!", "error");
+                showToast("Vui lòng điền ngày chi trả thực tế!", "error");
                 return;
             }
 
             const claim = claimsList.find(c => c.id === selectedClaimId);
             if (claim) {
-                claim.status = 'HoÃ n thÃ nh';
+                claim.status = 'Hoàn thành';
                 claim.thucthiDate = time;
-                claim.thucthiNote = note || "ÄÃ£ hoÃ n thÃ nh thá»±c thi chi tráº£ bá»“i thÆ°á»ng.";
+                claim.thucthiNote = note || "Đã hoàn thành thực thi chi trả bồi thường.";
 
                 claim.timeline.push({
-                    title: "Thá»±c thi giáº£i quyáº¿t bá»“i thÆ°á»ng",
+                    title: "Thực thi giải quyết bồi thường",
                     date: new Date().toLocaleDateString('vi-VN'),
-                    desc: "ÄÃ£ hoÃ n thÃ nh chi tráº£ tiá»n bá»“i thÆ°á»ng.",
+                    desc: "Đã hoàn thành chi trả tiền bồi thường.",
                     status: "completed"
                 });
 
-                showToast("ÄÃ£ hoÃ n thÃ nh thá»±c thi há»“ sÆ¡ bá»“i thÆ°á»ng!", "success");
+                showToast("Đã hoàn thành thực thi hồ sơ bồi thường!", "success");
                 showCaseDetail(selectedClaimId, false);
             }
         }
@@ -4793,7 +4906,7 @@
                 errMsg.style.fontSize = '11.5px';
                 errMsg.style.marginTop = '4px';
                 errMsg.style.fontWeight = 'bold';
-                errMsg.innerText = 'ÄÃ¢y lÃ  trÆ°á»ng báº¯t buá»™c';
+                errMsg.innerText = 'Đây là trường bắt buộc';
                 parent.appendChild(errMsg);
             } else {
                 el.classList.remove('is-invalid');
@@ -4819,7 +4932,7 @@
                 errMsg.style.fontSize = '11.5px';
                 errMsg.style.marginTop = '4px';
                 errMsg.style.fontWeight = 'bold';
-                errMsg.innerText = 'ÄÃ¢y lÃ  trÆ°á»ng báº¯t buá»™c';
+                errMsg.innerText = 'Đây là trường bắt buộc';
                 parent.appendChild(errMsg);
             } else {
                 wrapper.style.border = 'none';
@@ -4848,7 +4961,7 @@
             const s1Signer = document.getElementById('editPhddStep1Signer').value.trim();
             const s1File = phddStepFileNames[1];
 
-            const s2Opinion = document.querySelector('input[name="editPhddStep2Opinion"]:checked') ? document.querySelector('input[name="editPhddStep2Opinion"]:checked').value : 'Äá»“ng Ã½';
+            const s2Opinion = document.querySelector('input[name="editPhddStep2Opinion"]:checked') ? document.querySelector('input[name="editPhddStep2Opinion"]:checked').value : 'Đồng ý';
             const s2Text = document.getElementById('editPhddStep2OpinionText').value.trim();
             const s2File = phddStepFileNames[2];
 
@@ -4927,7 +5040,7 @@
                     validatePhddInput('editPhddStep3DateExp', true);
                     if (!firstInvalid) firstInvalid = document.getElementById('editPhddStep3DateExp');
                 }
-                if (s3Type === 'Trá»±c tiáº¿p xin lá»—i' || s3Type === 'Cáº£ hai hÃ¬nh thá»©c') {
+                if (s3Type === 'Trực tiếp xin lỗi' || s3Type === 'Cả hai hình thức') {
                     if (!s3DirectVenue) {
                         validatePhddInput('editPhddStep3DirectVenue', true);
                         if (!firstInvalid) firstInvalid = document.getElementById('editPhddStep3DirectVenue');
@@ -5011,7 +5124,7 @@
             claim.phddStep4ResultDesc = s4ResultDesc || null;
             claim.phddStep4File = s4File || null;
 
-            showToast("LÆ°u thÃ´ng tin phá»¥c há»“i danh dá»± thÃ nh cÃ´ng!", "success");
+            showToast("Lưu thông tin phục hồi danh dự thành công!", "success");
             showCaseDetail(selectedClaimId, false);
         }
 

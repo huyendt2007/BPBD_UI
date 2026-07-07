@@ -2,6 +2,3 @@
 # Muốn bỏ qua 1 file cụ thể: Viết thẳng tên file (Ví dụ: matkhau.txt)
 # Muốn bỏ qua cả thư mục: Thêm dấu gạch chéo ở cuối (Ví dụ: node_modules/)
 # Muốn bỏ qua tất cả file cùng loại: Dùng dấu sao * (Ví dụ: *.mp4 sẽ bỏ qua mọi file video đuôi mp4).
-quan_ly_boi_thuong.css
-quan_ly_boi_thuong.html
-quan_ly_boi_thuong.js
