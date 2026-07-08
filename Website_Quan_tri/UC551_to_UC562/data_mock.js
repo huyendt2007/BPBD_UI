@@ -1,4 +1,4 @@
-// Metadata definition for 12 system configuration UCs
+﻿// Metadata definition for 12 system configuration UCs
 const ucMetadata = {
     UC551: {
         code: 'UC551',

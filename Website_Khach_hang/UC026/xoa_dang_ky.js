@@ -1,4 +1,4 @@
-/**
+﻿/**
  * xoa_dang_ky.js - UC026
  * Quản lý logic màn hình nhập thông tin xóa đăng ký (MH02)
  */

@@ -1,4 +1,4 @@
-const initApp = () => {
+﻿const initApp = () => {
     // Early variables initialization to avoid TDZ reference errors
     let editingRowTC = null;
     let editingRowNTC = null;

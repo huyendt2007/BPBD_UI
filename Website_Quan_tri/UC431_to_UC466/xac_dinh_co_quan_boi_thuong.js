@@ -1,4 +1,4 @@
-// Mock Data: 12 items for testing pagination
+﻿// Mock Data: 12 items for testing pagination
 let requestList = [
     {
         id: "REQ1",

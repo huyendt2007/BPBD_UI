@@ -1,4 +1,4 @@
-/* JavaScript Helper to inject body.in-iframe class when loaded within an iframe */
+﻿/* JavaScript Helper to inject body.in-iframe class when loaded within an iframe */
 
 (function() {
     function checkIframe() {

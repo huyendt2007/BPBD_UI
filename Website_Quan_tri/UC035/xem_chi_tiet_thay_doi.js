@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UC035 - Xem chi tiết Hồ sơ lịch sử (UCPS003)
  * Logic xử lý hiển thị Timeline đa phiên bản, bộ lọc nâng cao, phân trang và so sánh biến động chi tiết (Diff Viewer).
  */

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Xử lý logic SPA cho UC027 - Tra cứu thông tin đăng ký (Website Cán bộ)
  * Tích hợp bảng dạng cây (Tree-view), phân trang đầy đủ, bộ lọc nâng cao và dropdown Thao tác khác
  */

@@ -940,6 +940,11 @@ function renderTable(resetPage = false) {
         filteredProfiles = allProfiles.filter(p => {
             if (p.handlingOfficer && p.handlingOfficer !== "Nguyễn Văn Cán Bộ") return false;
             if (!targetStatuses.includes(p.status)) return false;
+            
+            if (currentListTab === 'da_xu_ly') {
+                const filterStatusVal = document.getElementById('filter-status-xu-ly')?.value;
+                if (filterStatusVal && p.status !== filterStatusVal) return false;
+            }
 
             if (searchTerm && !p.id.toLowerCase().includes(searchTerm) && !p.pin.toLowerCase().includes(searchTerm) && !p.customer.toLowerCase().includes(searchTerm) && !p.mortgagee.toLowerCase().includes(searchTerm)) return false;
             if (filterLoaidangky && p.type !== filterLoaidangky) return false;
@@ -1348,6 +1353,20 @@ function renderFilterPanel() {
             </div>
         `;
     } else {
+        let statusFilterHtml = '';
+        if (currentListTab === 'da_xu_ly') {
+            statusFilterHtml = `
+                <div class="form-group">
+                    <label class="form-label">Trạng thái xử lý</label>
+                    <select class="form-select" id="filter-status-xu-ly">
+                        <option value="">Tất cả</option>
+                        <option value="Hoàn thành">Hoàn thành</option>
+                        <option value="Bị từ chối">Bị từ chối</option>
+                    </select>
+                </div>
+            `;
+        }
+
         container.innerHTML = `
             <div class="grid-4-cols">
                 <div class="form-group">
@@ -1396,6 +1415,7 @@ function renderFilterPanel() {
                         <option value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</option>
                     </select>
                 </div>
+                ${statusFilterHtml}
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
                     <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
@@ -1571,7 +1591,8 @@ function resetFilters() {
         'filter-makh', 'filter-tenbbd', 'filter-tenbnbd', 'filter-bienlai',
         'filter-loaidangky', 'cb-loaihinh',
         'filter-loaitaisan', 'filter-search-term', 'filter-kenh-tiep-nhan',
-        'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra'
+        'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra',
+        'filter-status-xu-ly'
     ];
     ids.forEach(id => {
         const el = document.getElementById(id);
