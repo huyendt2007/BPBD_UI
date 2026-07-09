@@ -833,11 +833,12 @@
                         <th style="min-width: 150px; text-align: left;">Loại đề nghị</th>
                         <th style="width: 120px; text-align: left;">Mã YCBT</th>
                         <th style="min-width: 160px; text-align: left;">Tên người yêu cầu</th>
+                        <th style="min-width: 150px; text-align: left;">Tư cách người yêu cầu</th>
                         <th style="width: 160px; text-align: left;">Số tiền đề nghị (VNĐ)</th>
                         <th style="min-width: 150px; text-align: left;">Cán bộ xử lý</th>
                         <th style="width: 110px; text-align: left;">Ngày đề nghị</th>
                         <th style="width: 110px; text-align: left;">Trạng thái</th>
-                        <th style="width: 150px; text-align: left; min-width: 150px;">Thao tác</th>
+                        <th style="width: 150px; text-align: center; min-width: 150px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="proposalsTableBody">
@@ -869,8 +870,8 @@
     <!-- ======================================================== -->
     <div id="inlineProposalFormPanel" class="inline-form-panel">
         <div class="inline-form-header">
-            <span class="inline-form-title" id="formProposalTitle"><i class="fa-solid fa-file-invoice"></i> LẬP ĐỀ NGHỊ
-                CẤP PHÁT KINH PHÍ BỒI THƯỜNG</span>
+            <span class="inline-form-title" id="formProposalTitle"><i class="fa-solid fa-file-invoice"></i> LẬP ĐỀ NGHỊ CẤP PHÁT KINH PHÍ BỒI THƯỜNG</span>
+            <span id="formProposalStatusBadge" class="badge" style="display: none; padding: 6px 12px; font-size: 13.5px; font-weight: 700; border-radius: var(--border-radius-sm);">TRẠNG THÁI</span>
         </div>
 
         <div class="inline-form-body">

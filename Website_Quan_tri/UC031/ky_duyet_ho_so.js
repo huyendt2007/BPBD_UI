@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Xử lý logic SPA cho UC028 - Màn hình Xem chi tiết hồ sơ (Three-Pane Layout)
  * Áp dụng tổng quát cho cả 9 loại hồ sơ theo quy chuẩn Design System.
  */
@@ -996,8 +996,10 @@ function executeRender() {
                 <th style="width: 110px;">Loại hình GD</th>
                 <th style="width: 140px;">Loại biện pháp / Hợp đồng</th>
                 <th style="width: 250px;">Loại tài sản</th>
+                <th style="width: 120px;">Mã khách hàng</th>
                 <th style="width: 110px;">Số biên lai</th>
                 <th style="width: 110px;">Trạng thái</th>
+                <th style="width: 150px;">Người yêu cầu</th>
                 <th style="width: 140px;">Cán bộ xử lý</th>
                 <th style="text-align: center; width: ${actionsMinWidth}; min-width: ${actionsMinWidth};">Thao tác</th>
             </tr>
@@ -1005,7 +1007,7 @@ function executeRender() {
     }
 
     const totalCount = filteredProfiles.length;
-    const colSpanCount = currentListTab === 'chonhaplieu' ? 14 : 15;
+    const colSpanCount = currentListTab === 'chonhaplieu' ? 14 : 17;
     
     if (totalCount === 0) {
         tbody.innerHTML = `<tr><td colspan="${colSpanCount}" style="text-align: center; padding: 30px; color: var(--text-muted);"><i>Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm.</i></td></tr>`;
@@ -1095,8 +1097,10 @@ function executeRender() {
                     <td>${row.transactionType}</td>
                     <td>${row.subtype}</td>
                     ${formatAssetTypeCell(row.assetType)}
+                    <td><code>${row.customerId || '-'}</code></td>
                     <td><code>${row.receipt || '-'}</code></td>
                     <td><span class="badge ${row.statusClass}">${row.status}</span></td>
+                    <td>${row.requestor || row.customer}</td>
                     <td>${row.handlingOfficer || '-'}</td>
                     <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
                         ${actionsHtml}

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -460,8 +460,8 @@
                 <button class="btn btn-outline-primary" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
             
-            <div class="table-responsive" style="border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); overflow: hidden;">
-                <table class="table" style="font-size: 13px; margin-bottom: 0;">
+            <div class="table-responsive" style="border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); overflow-x: auto; max-width: 100%;">
+                <table class="table" style="font-size: 13px; margin-bottom: 0; min-width: 1800px;">
                     <thead style="background-color: var(--table-header-bg);">
                         <tr>
                             <th style="width: 3%; text-align: center;">STT</th>
@@ -475,6 +475,8 @@
                             <th style="width: 8%;">Loại BP/HĐ</th>
                             <th style="width: 10%;">Loại tài sản</th>
                             <th style="width: 8%; text-align: center;">Trạng thái</th>
+                            <th style="width: 12%;">Người yêu cầu</th>
+                            <th style="width: 10%;">Mã khách hàng</th>
                             <th style="width: 8%;">Số biên lai</th>
                             <th style="width: 8%;">Cán bộ xử lý</th>
                             <th style="text-align: center; min-width: 180px;">Thao tác</th>

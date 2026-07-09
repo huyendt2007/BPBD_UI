@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Xử lý logic SPA cho UC027 - Tra cứu thông tin đăng ký (Website Cán bộ)
  * Tích hợp bảng dạng cây (Tree-view), phân trang đầy đủ, bộ lọc nâng cao và dropdown Thao tác khác
  */
@@ -722,7 +722,7 @@ function renderCanBoTable() {
     }
 
     if (dataList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="16" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
         document.getElementById('cb-count-display').innerText = `Hiển thị 0-0 của 0 hồ sơ gốc`;
         document.getElementById('cb-pagination').innerHTML = '';
         return;
@@ -958,6 +958,8 @@ function renderCanBoTable() {
                 <td>${parent.measureContractType || ''}</td>
                 ${renderAssetTypeCell(parent.secAssets)}
                 <td style="text-align: center;"><span class="status-badge ${parent.status === 'Hoàn thành' ? 'completed' : (parent.status === 'Chờ duyệt' ? 'pending-approval' : (parent.status === 'Chờ thanh toán' ? 'pending-payment' : (parent.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${parent.status}</span></td>
+                <td>${parent.requestor || parent.guarantor}</td>
+                <td><code>${parent.customerId || ('KH-' + parent.pin)}</code></td>
                 <td><strong>${parent.receiptNo || '-'}</strong></td>
                 <td>${parent.handlingOfficer || '-'}</td>
                 <td style="text-align: center;">
@@ -989,6 +991,8 @@ function renderCanBoTable() {
                         <td>${child.measureContractType || ''}</td>
                         ${renderAssetTypeCell(child.secAssets)}
                         <td style="text-align: center;"><span class="status-badge ${child.status === 'Hoàn thành' ? 'completed' : (child.status === 'Chờ duyệt' ? 'pending-approval' : (child.status === 'Chờ thanh toán' ? 'pending-payment' : (child.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${child.status}</span></td>
+                        <td>${child.requestor || child.guarantor}</td>
+                        <td><code>${child.customerId || ('KH-' + child.pin)}</code></td>
                         <td><strong>${child.receiptNo || '-'}</strong></td>
                         <td>${child.handlingOfficer || '-'}</td>
                         <td style="text-align: center;">
@@ -1015,6 +1019,8 @@ function renderCanBoTable() {
                                 <td>${gc.measureContractType || ''}</td>
                                 ${renderAssetTypeCell(gc.secAssets)}
                                 <td style="text-align: center;"><span class="status-badge ${gc.status === 'Hoàn thành' ? 'completed' : (gc.status === 'Chờ duyệt' ? 'pending-approval' : (gc.status === 'Chờ thanh toán' ? 'pending-payment' : (gc.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${gc.status}</span></td>
+                                <td>${gc.requestor || gc.guarantor}</td>
+                                <td><code>${gc.customerId || ('KH-' + gc.pin)}</code></td>
                                 <td><strong>${gc.receiptNo || '-'}</strong></td>
                                 <td>${gc.handlingOfficer || '-'}</td>
                                 <td style="text-align: center;">

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -466,7 +466,7 @@
 
                 <div class="table-responsive" style="overflow-x: auto; max-width: 100%;">
                     <table class="table"
-                        style="width: 100%; border-collapse: collapse; min-width: 1500px; font-size: 13px;">
+                        style="width: 100%; border-collapse: collapse; min-width: 1800px; font-size: 13px;">
                         <thead>
                             <tr style="background-color: var(--table-header-bg);">
                                 <th style="width: 50px; text-align: center;">STT</th>
@@ -487,8 +487,10 @@
                                 <th style="width: 120px; text-align: center;">Loại hình GD</th>
                                 <th style="width: 150px; text-align: center;">Loại biện pháp / Hợp đồng</th>
                                 <th style="width: 250px; text-align: center;">Loại tài sản</th>
+                                <th style="width: 120px; text-align: center;">Mã khách hàng</th>
                                 <th style="width: 110px; text-align: center;">Số biên lai</th>
                                 <th style="width: 110px; text-align: center;">Trạng thái</th>
+                                <th style="width: 150px; text-align: center;">Người yêu cầu</th>
                                 <th style="text-align: center; width: 180px; min-width: 180px;">Thao tác</th>
                             </tr>
                         </thead>
@@ -1811,7 +1813,7 @@
 
             const total = listFilteredDossiers.length;
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="15" style="text-align: center; padding: 30px; color: var(--text-muted);"><i>Không có hồ sơ nào phù hợp với điều kiện tìm kiếm.</i></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="17" style="text-align: center; padding: 30px; color: var(--text-muted);"><i>Không có hồ sơ nào phù hợp với điều kiện tìm kiếm.</i></td></tr>`;
                 document.getElementById('list-start-index').innerText = '0';
                 document.getElementById('list-end-index').innerText = '0';
                 document.getElementById('list-total-records').innerText = '0';
@@ -1878,8 +1880,10 @@
                         <td>${row.transactionType}</td>
                         <td>${subtypeText}</td>
                         ${formatAssetTypeCell(row.assetType)}
+                        <td><code>${row.customerId || '-'}</code></td>
                         <td><code>${row.receipt || '-'}</code></td>
                         <td style="text-align: center;"><span class="badge ${row.statusClass}">${row.status}</span></td>
+                        <td>${row.requestor || row.customer}</td>
                         <td style="text-align: center; white-space: nowrap;">
                             ${btnView}${btnEdit}${btnDelete}${btnSend}
                         </td>

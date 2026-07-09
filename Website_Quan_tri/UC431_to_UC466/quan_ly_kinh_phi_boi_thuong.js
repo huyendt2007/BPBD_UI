@@ -530,6 +530,64 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProposalsTable();
     updateBudgetStats();
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const embed = urlParams.get('embed') === 'true';
+    if (embed) {
+        // Clear document body background & margins
+        document.body.style.backgroundColor = 'white';
+        document.body.style.padding = '0';
+        document.body.style.margin = '0';
+
+        const header = document.querySelector('.page-header');
+        if (header) header.style.display = 'none';
+
+        const stats = document.getElementById('dashboardStats');
+        if (stats) stats.style.display = 'none';
+
+        const list = document.getElementById('contentListProposals');
+        if (list) list.style.display = 'none';
+
+        const panel = document.getElementById('inlineProposalFormPanel');
+        if (panel) {
+            panel.style.boxShadow = 'none';
+            panel.style.border = 'none';
+            panel.style.margin = '0';
+            panel.style.padding = '0';
+            panel.style.backgroundColor = 'white';
+        }
+
+        // Make form Selector Block borderless and zero-padded
+        const selectorBlock = document.getElementById('formSelectorBlock');
+        if (selectorBlock) {
+            selectorBlock.style.backgroundColor = 'white';
+            selectorBlock.style.border = 'none';
+            selectorBlock.style.padding = '0';
+            selectorBlock.style.marginBottom = '15px';
+        }
+
+        // Optimize inline form body for single scrolling container
+        const formBody = document.querySelector('#inlineProposalFormPanel .inline-form-body');
+        if (formBody) {
+            formBody.style.padding = '10px 0';
+            formBody.style.maxHeight = 'none';
+            formBody.style.overflowY = 'visible';
+        }
+
+        const formHeader = document.querySelector('#inlineProposalFormPanel .inline-form-header');
+        if (formHeader) formHeader.style.display = 'none';
+
+        const footer = document.querySelector('#inlineProposalFormPanel .inline-form-footer');
+        if (footer) footer.style.display = 'none';
+    }
+
+    const viewCode = urlParams.get('viewCode');
+    if (viewCode) {
+        const prop = proposalsList.find(p => p.code === viewCode);
+        if (prop) {
+            viewProposalDetail(prop.id);
+        }
+    }
+
     // Bind keypress for quick claim code search
     document.getElementById('formClaimSearchInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
@@ -623,7 +681,7 @@ function renderProposalsTable() {
     const endIdx = Math.min(startIdx + pageSize, total);
 
     if (total === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy đề xuất cấp phát nào phù hợp</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy đề xuất cấp phát nào phù hợp</td></tr>`;
         document.getElementById('currentRange').innerText = "0-0";
         renderPaginationPages(1);
         return;
@@ -694,6 +752,7 @@ function renderProposalsTable() {
             <td style="font-weight: 500; font-size:12.5px; text-align:left; vertical-align:middle;">${item.type === 'Cấp tạm ứng' ? 'Đề nghị tạm ứng' : 'Đề nghị cấp kinh phí bồi thường'}</td>
             <td style="text-align:left; vertical-align:middle;"><a href="javascript:void(0)" onclick="showToast('Xem thông tin hồ sơ gốc ${item.ycbtCode}', 'info')" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
             <td style="text-align:left; vertical-align:middle;"><strong>${item.nycName}</strong></td>
+            <td style="text-align:left; vertical-align:middle;">${item.nycRole || 'Người bị thiệt hại'}</td>
             <td style="text-align:left; font-weight:700; vertical-align:middle;">${amtVal.toLocaleString('vi-VN')}</td>
             <td style="text-align:left; vertical-align:middle;">${item.user}</td>
             <td style="text-align:left; vertical-align:middle;">${item.date}</td>
@@ -1422,6 +1481,9 @@ function openCreateProposalForm() {
     const panel = document.getElementById('inlineProposalFormPanel');
     panel.style.display = 'flex';
 
+    const badge = document.getElementById('formProposalStatusBadge');
+    if (badge) badge.style.display = 'none';
+
     document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> LẬP ĐỀ NGHỊ CẤP PHÁT KINH PHÍ BỒI THƯỜNG`;
 
     // Enable selector block
@@ -1792,6 +1854,17 @@ function viewProposalDetail(id) {
     document.getElementById('btnSubmitProposal').style.display = 'none';
 
     document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-circle-info"></i> CHI TIẾT ĐỀ NGHỊ KINH PHÍ: ${item.code}`;
+    const badge = document.getElementById('formProposalStatusBadge');
+    if (badge) {
+        let statusClass = 'badge-draft';
+        if (item.status === 'Chờ duyệt' || item.status === 'Chờ phê duyệt') statusClass = 'badge-pending';
+        else if (item.status === 'Đã duyệt' || item.status === 'Đã cấp kinh phí') statusClass = 'badge-success';
+        else if (item.status === 'Từ chối') statusClass = 'badge-danger';
+        
+        badge.className = 'badge ' + statusClass;
+        badge.innerText = item.status;
+        badge.style.display = 'inline-block';
+    }
 
     // Set dynamic section title based on proposal type
     const secTitle = document.getElementById('formProposalSectionTitle');
