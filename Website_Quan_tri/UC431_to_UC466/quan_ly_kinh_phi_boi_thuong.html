@@ -1278,6 +1278,60 @@
                                     = Tổng kinh phí duyệt - Tạm ứng đã cấp</div>
                             </div>
                         </div>
+
+                        <!-- Thông tin người nhận và Phương thức chi trả (Kinh phí bồi thường) -->
+                        <div style="border-top: 1px dashed var(--border-color); padding-top: 15px; margin-top: 15px;">
+                            <div
+                                style="font-weight: 700; color: var(--primary-light); margin-bottom: 12px; font-size: 13px;">
+                                <i class="fa-solid fa-user-tag"></i> Thông tin người nhận và Phương thức chi trả
+                            </div>
+                            <div class="grid-3-cols">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Họ và tên người nhận</span>
+                                    <input type="text" class="form-control" id="kpRecName" disabled
+                                        style="background-color: #F8FAFC;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Giấy tờ thân nhân</span>
+                                    <input type="text" class="form-control" id="kpRecCard" disabled
+                                        style="background-color: #F8FAFC;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Địa chỉ</span>
+                                    <input type="text" class="form-control" id="kpRecAddress" disabled
+                                        style="background-color: #F8FAFC;">
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; max-width: 350px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Phương thức nhận tiền</span>
+                                    <input type="text" class="form-control" id="kpRecMethod" disabled
+                                        style="background-color: #F8FAFC; font-weight: 600;">
+                                </div>
+                            </div>
+                            <div id="kpRecBankWrapper" style="display: none; margin-top: 12px;" class="grid-4-cols">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Chủ tài khoản</span>
+                                    <input type="text" class="form-control" id="kpBankUser" disabled
+                                        style="background-color: #F8FAFC;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Số tài khoản</span>
+                                    <input type="text" class="form-control" id="kpBankAccount" disabled
+                                        style="background-color: #F8FAFC;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Tên ngân hàng</span>
+                                    <input type="text" class="form-control" id="kpBankName" disabled
+                                        style="background-color: #F8FAFC;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Chi nhánh</span>
+                                    <input type="text" class="form-control" id="kpBankBranch" disabled
+                                        style="background-color: #F8FAFC;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1327,6 +1381,14 @@
                     <textarea class="form-control" id="formLeaderOpinion" rows="2"
                         placeholder="Ghi ý kiến chỉ đạo, lý do duyệt hoặc từ chối tờ trình cấp phát..."></textarea>
                 </div>
+                
+                <!-- Lịch sử phê duyệt / từ chối trước đó -->
+                <div id="leaderOpinionHistoryWrapper" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #E2E8F0;">
+                    <div style="font-weight: 600; color: #475569; font-size: 12px; margin-bottom: 8px;">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử ý kiến Lãnh đạo (Các lần trình trước)
+                    </div>
+                    <div id="leaderOpinionHistoryContainer"></div>
+                </div>
             </div>
 
             <!-- V. THÔNG TIN CHI TRẢ THỰC TẾ (Chỉ hiển thị khi thực hiện chi trả hoặc đã hoàn thành chi trả) -->
@@ -1371,10 +1433,14 @@
                     </div>
 
                     <!-- Trường động tùy thuộc phương thức chi trả -->
-                    <div id="payoutBankFields" class="grid-2-cols" style="margin-top: 10px;">
+                    <div id="payoutBankFields" class="grid-3-cols" style="margin-top: 10px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Số tài khoản <span class="required">*</span></span>
                             <input type="text" class="form-control" id="payoutBankAccount" placeholder="Nhập số tài khoản...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Tên ngân hàng <span class="required">*</span></span>
+                            <input type="text" class="form-control" id="payoutBankName" placeholder="Nhập tên ngân hàng...">
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Tên chủ tài khoản <span class="required">*</span></span>

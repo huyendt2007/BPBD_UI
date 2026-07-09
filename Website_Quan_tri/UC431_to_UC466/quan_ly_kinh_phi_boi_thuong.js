@@ -75,6 +75,11 @@ let mockClaims = [
         field: "Trong hoạt động tố tụng hành chính",
         amount: 250000000,
         status: "Chờ thực thi",
+        advanceRecKenh: "chuyen-khoan",
+        advanceBankUser: "LÊ VĂN D",
+        advanceBankAccount: "123456789012",
+        advanceBankName: "Vietcombank",
+        advanceBankBranch: "Chi nhánh Đống Đa",
 
         // Damage breakdown
         selectedDamages: {
@@ -127,13 +132,31 @@ let proposalsList = [
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
         notes: "Trình duyệt chi trả kinh phí bồi thường cho vụ việc của ông Lê Văn D.",
-        files: [{ name: "Tờ trình chi trả Lê Văn D", file: "To_trinh_Le_Van_D_signed.pdf" }],
+        leaderOpinion: "Đồng ý phê duyệt tờ trình đề xuất kinh phí bồi thường của ông Lê Văn D.",
+        files: [{ name: "Tờ trình chi trả Lê Văn D", file: "To_trinh_chi_tra_Le_Van_D_signed.pdf" }],
         approvedDamages: {
             taiSan: 50000000,
             thuNhap: 30000000,
             tinhThan: 150000000,
             chiPhiKhac: 20000000
-        }
+        },
+        rejectHistory: [
+            {
+                date: "28/04/2026",
+                leader: "Nguyễn Thế Anh (Lãnh đạo)",
+                opinion: "Từ chối phê duyệt do tờ trình chưa đính kèm Quyết định giải quyết bồi thường có hiệu lực pháp luật để đối chiếu số tiền."
+            }
+        ],
+        payoutDate: "05/05/2026",
+        payoutAmountReal: 250000000,
+        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutRecName: "Lê Văn D",
+        payoutRecAddress: "Số 234 Láng Hạ, Đống Đa, Hà Nội",
+        payoutBankAccount: "123456789012",
+        payoutBankUser: "LÊ VĂN D",
+        payoutBankName: "Vietcombank",
+        payoutBankBranch: "Chi nhánh Đống Đa",
+        payoutFile: "Chung_tu_chi_tra_KP_LeVanD.pdf"
     },
     {
         id: "P2",
@@ -293,6 +316,86 @@ let proposalsList = [
             tinhThan: 80000000,
             chiPhiKhac: 20000000
         }
+    },
+    {
+        id: "P10",
+        code: "KP-2026-010",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-015",
+        nycName: "Phạm Văn C",
+        amount: 50000000,
+        user: "Nguyễn Văn Thụ",
+        date: "10/05/2026",
+        status: "Hoàn thành",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Đã hoàn thành cấp tạm ứng bồi thường cho ông Phạm Văn C.",
+        leaderOpinion: "Đồng ý tạm ứng 50.000.000 VNĐ.",
+        files: [{ name: "Tờ trình tạm ứng Phạm Văn C", file: "To_trinh_tam_ung_C.pdf" }],
+        advApproveTinhThan: 30000000,
+        advApproveKhac: 20000000,
+        payoutDate: "12/05/2026",
+        payoutAmountReal: 50000000,
+        payoutMethod: "Tiền mặt",
+        payoutRecName: "Phạm Văn C",
+        payoutRecAddress: "Số 15 đường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
+        payoutReceiptNo: "BL-2026-088",
+        payoutFile: "Bien_lai_chi_tam_ung_C.pdf"
+    },
+    {
+        id: "P11",
+        code: "KP-2026-011",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-002",
+        nycName: "Trần Thị B",
+        amount: 100000000,
+        user: "Nguyễn Văn Thụ",
+        date: "20/05/2026",
+        status: "Hoàn thành",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Đã hoàn thành cấp tạm ứng bồi thường cho bà Trần Thị B.",
+        leaderOpinion: "Đồng ý cấp tạm ứng 100 triệu.",
+        files: [{ name: "Tờ trình tạm ứng Trần Thị B", file: "To_trinh_tam_ung_B.pdf" }],
+        advApproveTinhThan: 60000000,
+        advApproveKhac: 40000000,
+        payoutDate: "22/05/2026",
+        payoutAmountReal: 100000000,
+        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutRecName: "Trần Thị B",
+        payoutRecAddress: "Số 88 đường Lạch Tray, Ngô Quyền, Hải Phòng",
+        payoutBankAccount: "190333444555",
+        payoutBankName: "Techcombank",
+        payoutBankUser: "TRẦN THỊ B",
+        payoutFile: "Bien_lai_chuyen_khoan_tam_ung_B.pdf"
+    },
+    {
+        id: "P12",
+        code: "KP-2026-012",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-011",
+        nycName: "Trần Thị G",
+        amount: 300000000,
+        user: "Lê Văn Nam",
+        date: "25/05/2026",
+        status: "Hoàn thành",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Đã thực hiện chi trả kinh phí bồi thường tiền mặt cho bà Trần Thị G.",
+        leaderOpinion: "Đồng ý phê duyệt cấp kinh phí bồi thường.",
+        files: [{ name: "Tờ trình kinh phí bồi thường", file: "To_trinh_KPBT_G.pdf" }],
+        approvedDamages: {
+            taiSan: 100000000,
+            sucKhoe: 80000000,
+            tinhThan: 120000000
+        },
+        payoutDate: "27/05/2026",
+        payoutAmountReal: 300000000,
+        payoutMethod: "Tiền mặt",
+        payoutRecName: "Trần Thị G",
+        payoutRecAddress: "Phường Tràng Tiền, Hoàn Kiếm, Hà Nội",
+        payoutReceiptNo: "BL-2026-099",
+        payoutFile: "Bien_lai_chi_tra_tien_mat_G.pdf"
     }
 ];
 
@@ -306,8 +409,8 @@ let payoutAttachedFile = null;
 // Sync claimsList and proposalsList from localStorage on DOMContentLoaded
 function syncFromLocalStorage() {
     // Force reset if version is old to fetch updated files and statuses
-    if (localStorage.getItem('proposals_version') !== 'v13') {
-        localStorage.setItem('proposals_version', 'v13');
+    if (localStorage.getItem('proposals_version') !== 'v16') {
+        localStorage.setItem('proposals_version', 'v16');
         localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
     }
 
@@ -784,6 +887,17 @@ function clearClaimDetails() {
     document.getElementById('kpApproveAdvancePaid').value = '';
     document.getElementById('kpApproveRemaining').value = '';
 
+    // Clear kinh phi recipient fields
+    document.getElementById('kpRecName').value = '';
+    document.getElementById('kpRecCard').value = '';
+    document.getElementById('kpRecAddress').value = '';
+    document.getElementById('kpRecMethod').value = '';
+    document.getElementById('kpRecBankWrapper').style.display = 'none';
+    document.getElementById('kpBankUser').value = '';
+    document.getElementById('kpBankAccount').value = '';
+    document.getElementById('kpBankName').value = '';
+    document.getElementById('kpBankBranch').value = '';
+
     // Clear attached files table
     proposalAttachedDocs = [];
     renderProposalAttachedDocs();
@@ -918,6 +1032,21 @@ function handleClaimSelected(code) {
         } else {
             // Kinh phí bồi thường
             renderKinhPhiDamageGrids(claim);
+
+            document.getElementById('kpRecName').value = claim.nyc;
+            document.getElementById('kpRecCard').value = claim.cardNo;
+            document.getElementById('kpRecAddress').value = claim.address;
+            document.getElementById('kpRecMethod').value = claim.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt';
+
+            if (claim.advanceRecKenh === 'chuyen-khoan') {
+                document.getElementById('kpRecBankWrapper').style.display = 'grid';
+                document.getElementById('kpBankUser').value = claim.advanceBankUser || claim.nyc;
+                document.getElementById('kpBankAccount').value = claim.advanceBankAccount || "";
+                document.getElementById('kpBankName').value = claim.advanceBankName || "";
+                document.getElementById('kpBankBranch').value = claim.advanceBankBranch || "";
+            } else {
+                document.getElementById('kpRecBankWrapper').style.display = 'none';
+            }
         }
 
         document.getElementById('formProposalNotes').value = `Tờ trình đề xuất duyệt cấp phát kinh phí chi trả bồi thường cho vụ việc của người yêu cầu ${claim.nyc}. Số hồ sơ thụ lý liên kết ${claim.code}.`;
@@ -1333,6 +1462,9 @@ function openCreateProposalForm() {
     document.getElementById('payoutRecName').value = '';
     document.getElementById('payoutRecAddress').value = '';
     document.getElementById('payoutBankAccount').value = '';
+    if (document.getElementById('payoutBankName')) {
+        document.getElementById('payoutBankName').value = '';
+    }
     document.getElementById('payoutBankUser').value = '';
     document.getElementById('payoutReceiptNo').value = '';
     document.getElementById('payoutMethod').value = 'Chuyển khoản qua ngân hàng';
@@ -1798,6 +1930,21 @@ function viewProposalDetail(id) {
             }
         });
 
+        document.getElementById('kpRecName').value = claimDetails.nyc;
+        document.getElementById('kpRecCard').value = claimDetails.cardNo;
+        document.getElementById('kpRecAddress').value = claimDetails.address;
+        document.getElementById('kpRecMethod').value = claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt';
+
+        if (claimDetails.advanceRecKenh === 'chuyen-khoan') {
+            document.getElementById('kpRecBankWrapper').style.display = 'grid';
+            document.getElementById('kpBankUser').value = claimDetails.advanceBankUser || claimDetails.nyc;
+            document.getElementById('kpBankAccount').value = claimDetails.advanceBankAccount || "";
+            document.getElementById('kpBankName').value = claimDetails.advanceBankName || "";
+            document.getElementById('kpBankBranch').value = claimDetails.advanceBankBranch || "";
+        } else {
+            document.getElementById('kpRecBankWrapper').style.display = 'none';
+        }
+
         calculateKinhPhiApproveTotal();
     }
 
@@ -1832,6 +1979,11 @@ function viewProposalDetail(id) {
 
         document.getElementById('payoutBankAccount').value = item.payoutBankAccount || "";
         document.getElementById('payoutBankAccount').disabled = true;
+
+        if (document.getElementById('payoutBankName')) {
+            document.getElementById('payoutBankName').value = item.payoutBankName || "";
+            document.getElementById('payoutBankName').disabled = true;
+        }
 
         document.getElementById('payoutBankUser').value = item.payoutBankUser || "";
         document.getElementById('payoutBankUser').disabled = true;
@@ -1883,7 +2035,7 @@ function viewProposalDetail(id) {
         document.getElementById('btnLeaderApprove').style.display = 'none';
 
         // If it is in Read-only or Approved status, hide form actions too except cancel
-        if (item.status === 'Hoàn thành' || item.status === 'Chờ chi trả' || isLeader) {
+        if (item.status === 'Hoàn thành' || item.status === 'Chờ chi trả' || item.status === 'Bị từ chối' || isLeader) {
             document.getElementById('btnSaveDraft').style.display = 'none';
             document.getElementById('btnSubmitProposal').style.display = 'none';
 
@@ -1891,6 +2043,26 @@ function viewProposalDetail(id) {
                 document.getElementById('sectionLeaderApproval').style.display = 'block';
                 document.getElementById('formLeaderOpinion').value = item.leaderOpinion;
                 document.getElementById('formLeaderOpinion').disabled = true;
+            }
+        }
+
+        // Render opinion history
+        const historyWrapper = document.getElementById('leaderOpinionHistoryWrapper');
+        const historyContainer = document.getElementById('leaderOpinionHistoryContainer');
+        if (historyWrapper && historyContainer) {
+            if (item.rejectHistory && item.rejectHistory.length > 0) {
+                historyWrapper.style.display = 'block';
+                historyContainer.innerHTML = item.rejectHistory.map(h => `
+                    <div style="background-color: #F8FAFC; border-left: 3px solid var(--danger-color); padding: 8px 12px; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 12px; text-align: left;">
+                        <div style="display: flex; justify-content: space-between; font-weight: 600; color: #64748B; margin-bottom: 4px;">
+                            <span>Lần từ chối ngày ${h.date} - ${h.leader}</span>
+                        </div>
+                        <div style="color: #334155;"><strong>Lý do từ chối:</strong> ${h.opinion}</div>
+                    </div>
+                `).join('');
+            } else {
+                historyWrapper.style.display = 'none';
+                historyContainer.innerHTML = '';
             }
         }
     }
@@ -2079,6 +2251,12 @@ function payProposalDirect(id) {
         payoutBankAccountInput.disabled = false;
         payoutBankAccountInput.value = claimDetails.advanceBankAccount || "";
 
+        const payoutBankNameInput = document.getElementById('payoutBankName');
+        if (payoutBankNameInput) {
+            payoutBankNameInput.disabled = false;
+            payoutBankNameInput.value = claimDetails.advanceBankName || "";
+        }
+
         const payoutBankUserInput = document.getElementById('payoutBankUser');
         payoutBankUserInput.disabled = false;
         payoutBankUserInput.value = claimDetails.advanceBankUser || item.nycName;
@@ -2188,9 +2366,13 @@ function submitPayoutReal() {
         }
     } else {
         const payoutBankAccount = document.getElementById('payoutBankAccount').value.trim();
+        const payoutBankName = document.getElementById('payoutBankName') ? document.getElementById('payoutBankName').value.trim() : '';
         const payoutBankUser = document.getElementById('payoutBankUser').value.trim();
         if (!payoutBankAccount) {
             triggerError('payoutBankAccount', 'Đây là trường bắt buộc');
+        }
+        if (document.getElementById('payoutBankName') && !payoutBankName) {
+            triggerError('payoutBankName', 'Đây là trường bắt buộc');
         }
         if (!payoutBankUser) {
             triggerError('payoutBankUser', 'Đây là trường bắt buộc');
@@ -2226,6 +2408,7 @@ function submitPayoutReal() {
             item.payoutBankUser = '';
         } else {
             item.payoutBankAccount = document.getElementById('payoutBankAccount').value.trim();
+            item.payoutBankName = document.getElementById('payoutBankName') ? document.getElementById('payoutBankName').value.trim() : '';
             item.payoutBankUser = document.getElementById('payoutBankUser').value.trim();
             item.payoutReceiptNo = '';
         }
