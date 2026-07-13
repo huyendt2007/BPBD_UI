@@ -1078,7 +1078,7 @@
                     <div class="grid-3-cols">
                         <div class="form-group">
                             <span class="form-label">Số quyết định/dự thảo số<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="decFormNo" placeholder="Ví dụ: 22/QĐ-GQBT">
+                            <input type="text" class="form-control" id="decFormNo" value="[Hệ thống tự động cấp số sau khi ký]" disabled style="background-color:#f1f5f9; font-style:italic; font-weight:600;">
                         </div>
                         <div class="form-group">
                             <span class="form-label">Đơn vị ban hành quyết định<span class="required">*</span></span>
@@ -1103,7 +1103,7 @@
                     <div class="grid-2-cols">
                         <div class="form-group">
                             <span class="form-label">Ngày ký ban hành quyết định<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="decFormDate" placeholder="dd/mm/yyyy">
+                            <input type="text" class="form-control" id="decFormDate" value="[Tự động lấy ngày ký số]" disabled style="background-color:#f1f5f9; font-style:italic;">
                         </div>
                         <div class="form-group">
                             <span class="form-label">Ngày có hiệu lực thi hành quyết định<span class="required">*</span></span>
@@ -1289,10 +1289,10 @@
             },
             {
                 id: "D2",
-                decNo: "23/QĐ-GQBT",
+                decNo: "Chưa cấp số",
                 agency: "Tòa án nhân dân TP. Hà Nội",
                 approver: "Lê Hoàng Quân (Phó giám đốc)",
-                date: "02/07/2026",
+                date: "Chưa ban hành",
                 activeDate: "19/07/2026",
                 signer: "Lê Hoàng Quân",
                 position: "Phó giám đốc Sở Tư pháp Hà Nội",
@@ -1331,10 +1331,10 @@
             },
             {
                 id: "D4",
-                decNo: "24/QĐ-GQBT",
+                decNo: "Chưa cấp số",
                 agency: "Tòa án nhân dân TP. Hà Nội",
                 approver: "Hoàng Minh Tiến (Thẩm phán TAND Quận)",
-                date: "03/07/2026",
+                date: "Chưa ban hành",
                 activeDate: "20/07/2026",
                 signer: "Hoàng Minh Tiến",
                 position: "Thẩm phán TAND Quận",
@@ -1373,10 +1373,10 @@
             },
             {
                 id: "D6",
-                decNo: "05/QĐ-GQBT",
+                decNo: "Chưa cấp số",
                 agency: "UBND Quận Cầu Giấy",
                 approver: "Trần Văn Bản (Chánh án TAND Tỉnh)",
-                date: "04/07/2026",
+                date: "Chưa ban hành",
                 activeDate: "19/07/2026",
                 signer: "Trần Văn Bản",
                 position: "Chánh án TAND Tỉnh",
@@ -1658,11 +1658,14 @@
 
                 // Split signer name for nice display
                 const signerClean = item.approver ? item.approver.split(' (')[0] : item.signer;
+                
+                const displayNo = item.decNo === 'Chưa cấp số' ? '<span style="color:#94a3b8; font-style:italic; font-weight:normal;">Chưa cấp số</span>' : `<strong>${item.decNo}</strong>`;
+                const displayDate = item.date === 'Chưa ban hành' ? '<span style="color:#94a3b8; font-style:italic;">Chưa ban hành</span>' : item.date;
 
                 tr.innerHTML = `
                     <td style="text-align:center;">${startIdx + idx + 1}</td>
-                    <td style="text-align:center;"><strong>${item.decNo}</strong></td>
-                    <td style="text-align:center;">${item.date}</td>
+                    <td style="text-align:center;">${displayNo}</td>
+                    <td style="text-align:center;">${displayDate}</td>
                     <td style="text-align:center;">${item.activeDate}</td>
                     <td><strong>${signerClean}</strong></td>
                     <td class="excerpt-col" title="${item.excerpt}">${item.excerpt}</td>
@@ -1828,10 +1831,10 @@
             enableFormInputs(true);
 
             // Reset inputs
-            document.getElementById('decFormNo').value = '';
+            document.getElementById('decFormNo').value = '[Hệ thống tự động cấp số sau khi ký]';
             document.getElementById('decFormAgency').value = 'Sở Tư pháp Hà Nội';
             document.getElementById('decFormApprover').value = 'Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)';
-            document.getElementById('decFormDate').value = new Date().toLocaleDateString('vi-VN');
+            document.getElementById('decFormDate').value = '[Tự động lấy ngày ký số]';
             document.getElementById('decFormActiveDate').value = '';
             document.getElementById('decFormExcerpt').value = '';
             
@@ -1863,10 +1866,10 @@
 
         // Enable or disable form inputs for readonly mode
         function enableFormInputs(editable) {
-            document.getElementById('decFormNo').disabled = !editable;
+            document.getElementById('decFormNo').disabled = true; // Always mờ/disabled
             document.getElementById('decFormAgency').disabled = !editable;
             document.getElementById('decFormApprover').disabled = !editable;
-            document.getElementById('decFormDate').disabled = !editable;
+            document.getElementById('decFormDate').disabled = true; // Always mờ/disabled
             document.getElementById('decFormActiveDate').disabled = !editable;
             document.getElementById('decFormExcerpt').disabled = !editable;
             document.getElementById('decFormCompensationAmount').disabled = !editable;
@@ -1917,19 +1920,28 @@
             const advAmount = parseFormattedMoney(document.getElementById('decFormAdvanceAmount').value);
             const phdd = document.getElementById('decFormPhdd').checked;
 
-            if (!no || !date || !activeDate || !excerpt || !ycbtCode) {
+            if (!activeDate || !excerpt || !ycbtCode) {
                 showToast("Vui lòng nhập đầy đủ các thông tin bắt buộc và liên kết Hồ sơ YCBT!", "error");
                 return;
+            }
+
+            let savedNo = no;
+            let savedDate = date;
+            if (no === '[Hệ thống tự động cấp số sau khi ký]') {
+                savedNo = 'Chưa cấp số';
+            }
+            if (date === '[Tự động lấy ngày ký số]') {
+                savedDate = 'Chưa ban hành';
             }
 
             if (selectedDecId) {
                 // Update
                 const item = decisionsList.find(d => d.id === selectedDecId);
                 if (item) {
-                    item.decNo = no;
+                    item.decNo = savedNo;
                     item.agency = agency;
                     item.approver = approver;
-                    item.date = date;
+                    item.date = savedDate;
                     item.activeDate = activeDate;
                     item.excerpt = excerpt;
                     item.compAmount = compAmount;
@@ -1941,15 +1953,15 @@
                         item.rejectReason = ""; // Clear reason on resubmit
                     }
                 }
-                showToast(statusStr === 'Chờ ký' ? `Đã trình ký quyết định số ${no} lên lãnh đạo!` : `Đã cập nhật dự thảo quyết định ${no}!`, "success");
+                showToast(statusStr === 'Chờ ký' ? `Đã trình ký quyết định bồi thường lên lãnh đạo!` : `Đã cập nhật dự thảo quyết định bồi thường!`, "success");
             } else {
                 // Insert
                 decisionsList.unshift({
                     id: "D" + (decisionsList.length + 1),
-                    decNo: no,
+                    decNo: savedNo,
                     agency: agency,
                     approver: approver,
-                    date: date,
+                    date: savedDate,
                     activeDate: activeDate,
                     signer: approver.split(' (')[0],
                     position: approver.split(' (')[1] ? approver.split(' (')[1].replace(')', '') : 'Lãnh đạo',
@@ -1965,7 +1977,7 @@
                     status: statusStr,
                     rejectReason: ""
                 });
-                showToast(statusStr === 'Chờ ký' ? `Tạo mới và trình ký quyết định số ${no} thành công!` : `Lưu nháp quyết định số ${no} thành công!`, "success");
+                showToast(statusStr === 'Chờ ký' ? `Tạo mới và trình ký quyết định bồi thường thành công!` : `Lưu nháp quyết định bồi thường thành công!`, "success");
             }
 
             closeCreateDecForm();
@@ -1981,10 +1993,10 @@
             document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT DỰ THẢO QUYẾT ĐỊNH: ${item.decNo}`;
             document.getElementById('autofillClaimBlock').style.display = 'none';
 
-            document.getElementById('decFormNo').value = item.decNo;
+            document.getElementById('decFormNo').value = (item.decNo === 'Chưa cấp số') ? '[Hệ thống tự động cấp số sau khi ký]' : item.decNo;
             document.getElementById('decFormAgency').value = item.agency || 'Sở Tư pháp Hà Nội';
             document.getElementById('decFormApprover').value = item.approver || 'Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)';
-            document.getElementById('decFormDate').value = item.date;
+            document.getElementById('decFormDate').value = (item.date === 'Chưa ban hành') ? '[Tự động lấy ngày ký số]' : item.date;
             document.getElementById('decFormActiveDate').value = item.activeDate;
             document.getElementById('decFormExcerpt').value = item.excerpt;
 
@@ -2024,10 +2036,10 @@
             document.getElementById('autofillClaimBlock').style.display = 'none';
 
             // Prefill form
-            document.getElementById('decFormNo').value = item.decNo;
+            document.getElementById('decFormNo').value = (item.decNo === 'Chưa cấp số') ? '[Hệ thống tự động cấp số sau khi ký]' : item.decNo;
             document.getElementById('decFormAgency').value = item.agency || 'Sở Tư pháp Hà Nội';
             document.getElementById('decFormApprover').value = item.approver || 'Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)';
-            document.getElementById('decFormDate').value = item.date;
+            document.getElementById('decFormDate').value = (item.date === 'Chưa ban hành') ? '[Tự động lấy ngày ký số]' : item.date;
             document.getElementById('decFormActiveDate').value = item.activeDate;
             document.getElementById('decFormExcerpt').value = item.excerpt;
 
@@ -2044,11 +2056,11 @@
             // Readonly form inputs
             enableFormInputs(false);
 
-            // Enable Split Layout & Visual Document Paper
-            document.getElementById('formBodyLayout').classList.add('split-layout');
-            document.getElementById('visualDocumentColumn').style.display = 'block';
+            // Disable inline split layout and hide inline visual document preview (as per new BA specification)
+            document.getElementById('formBodyLayout').classList.remove('split-layout');
+            document.getElementById('visualDocumentColumn').style.display = 'none';
 
-            // Generate Administrative decision paper on the right column
+            // Generate Administrative decision paper for modal use on demand
             const paperHtml = generateDecisionPaperHtml({
                 no: item.decNo,
                 agency: item.agency || 'Sở Tư pháp Hà Nội',
@@ -2067,10 +2079,13 @@
 
             // Render Actions Footer based on active role & record status
             const footer = document.getElementById('formDecFooter');
+            const previewBtnLabel = item.status === 'Đã ký' ? 'Xem văn bản đã ký số' : 'Xem dự thảo văn bản';
+            const previewBtnIcon = item.status === 'Đã ký' ? 'fa-solid fa-file-signature text-danger' : 'fa-solid fa-file-lines';
             
             if (currentRole === 'leader' && item.status === 'Chờ ký') {
                 footer.innerHTML = `
                     <button class="btn btn-secondary" onclick="closeCreateDecForm()">Quay lại</button>
+                    <button class="btn btn-secondary" onclick="previewDecisionDocument()"><i class="${previewBtnIcon}"></i> ${previewBtnLabel}</button>
                     <button class="btn btn-danger" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối ký</button>
                     <button class="btn btn-success" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i> Ký số / Phê duyệt</button>
                 `;
@@ -2081,7 +2096,8 @@
                 }
                 footer.innerHTML = `
                     ${rejectReasonAlert}
-                    <button class="btn btn-primary" onclick="closeCreateDecForm()">Quay lại danh sách</button>
+                    <button class="btn btn-secondary" onclick="closeCreateDecForm()"><i class="fa-solid fa-arrow-left-long"></i> Quay lại danh sách</button>
+                    <button class="btn btn-primary" onclick="previewDecisionDocument()"><i class="${previewBtnIcon}"></i> ${previewBtnLabel}</button>
                 `;
             }
         }
@@ -2090,7 +2106,18 @@
         function signDecisionDirect(id) {
             const item = decisionsList.find(d => d.id === id);
             if (item) {
-                showConfirmModal(`Bạn có chắc chắn muốn thực hiện ký số điện tử để phê duyệt và ban hành Quyết định số ${item.decNo} không?`, () => {
+                const targetNo = (item.decNo === 'Chưa cấp số' || item.decNo.includes('[Hệ thống') || !item.decNo) ? 
+                    `${decisionsList.filter(d => d.status === 'Đã ký').length + 1}/QĐ-GQBT` : item.decNo;
+                
+                showConfirmModal(`Bạn có chắc chắn muốn thực hiện ký số điện tử để phê duyệt và ban hành Quyết định số ${targetNo} không?`, () => {
+                    item.decNo = targetNo;
+                    
+                    const today = new Date();
+                    const d = String(today.getDate()).padStart(2, '0');
+                    const m = String(today.getMonth() + 1).padStart(2, '0');
+                    const y = today.getFullYear();
+                    item.date = `${d}/${m}/${y}`;
+                    
                     item.status = 'Đã ký';
                     item.rejectReason = "";
                     showToast(`Ký số phê duyệt thành công! Quyết định ${item.decNo} đã chính thức được ban hành.`, "success");
