@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC559 Cấu hình thông tin biểu phí - Hệ thống Quản trị nghiệp vụ</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        :root {
+            /* Design System Tokens synced with css_standards.md */
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --accent-hover: #D97706;
+
+            /* Semantic Colors */
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+
+            /* Grayscale */
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --transition-speed: 0.2s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: var(--base-size);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header block */
+        .header-section {
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title i {
+            font-size: 18px;
+            color: var(--secondary-color);
+        }
+
+        .header-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Card Section Component */
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Forms Layout & Inputs */
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 3;
+        }
+
+        .form-group.span-2 {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        label .required {
+            color: var(--danger-color);
+            margin-left: 2px;
+        }
+
+        .input-control {
+            width: 100%;
+            height: 38px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 13px;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            transition: all var(--transition-speed);
+        }
+
+        .input-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .input-control:disabled,
+        .input-control.readonly {
+            background-color: #F1F5F9;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        textarea.input-control {
+            height: auto;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Input Date Picker Container */
+        .date-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .date-input-container input {
+            padding-right: 36px;
+        }
+
+        .date-input-container i {
+            position: absolute;
+            right: 12px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Input Validation Styles */
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+            background-color: #FEF2F2 !important;
+        }
+
+        .invalid-feedback {
+            color: var(--danger-color);
+            font-size: 11.5px;
+            font-weight: 500;
+            margin-top: 2px;
+            display: none;
+        }
+
+        .is-invalid+.invalid-feedback,
+        .is-invalid~.invalid-feedback {
+            display: block;
+        }
+
+        /* Buttons styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 38px;
+            padding: 0 16px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            border: 1px solid transparent;
+            user-select: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+
+        .btn-outline-success {
+            background-color: transparent;
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .btn-outline-success:hover {
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+
+        .btn-secondary {
+            background-color: #FFFFFF;
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #F8FAFC;
+            border-color: var(--text-muted);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: #FFFFFF;
+        }
+
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+
+        /* Action Toolbar */
+        .action-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 12px;
+            margin-top: 12px;
+        }
+
+        /* Data Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            background-color: var(--bg-surface);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .custom-table th {
+            background-color: var(--table-header-bg);
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .custom-table th.sortable {
+            cursor: pointer;
+        }
+
+        .custom-table th.sortable:hover {
+            background-color: #E2E8F0;
+        }
+
+        .custom-table th i {
+            margin-left: 5px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .custom-table th.sorted-asc i {
+            color: var(--primary-color);
+        }
+
+        .custom-table th.sorted-desc i {
+            color: var(--primary-color);
+        }
+
+        .custom-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+            line-height: 1.5;
+        }
+
+        /* Hover visual anchor */
+        .custom-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #F0F9FF !important;
+        }
+
+        /* Alignments */
+        .text-center {
+            text-align: center !important;
+        }
+
+        .text-left {
+            text-align: left !important;
+        }
+
+        .text-right {
+            text-align: right !important;
+        }
+
+        /* Badges status */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        .badge-active {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .badge-inactive {
+            background-color: #F3F4F6;
+            color: #374151;
+        }
+
+        .badge-draft {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+
+        /* Actions Column Slots */
+        .action-cell {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .icon-btn {
+            margin: 0 4px;
+            vertical-align: middle;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+        }
+
+        .icon-btn.view:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+
+        .icon-btn.edit:hover {
+            color: var(--info-color);
+            border-color: var(--info-color);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .icon-btn.delete:hover {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+
+        /* Table Empty State */
+        .empty-row-text {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 40px !important;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        /* Pagination Component dính liền Card */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .pagination-left {
+            color: var(--text-muted);
+        }
+
+        .pagination-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .page-size-select {
+            padding: 4px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: #FFFFFF;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .page-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            min-width: 30px;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: #F1F5F9;
+            border-color: var(--text-muted);
+        }
+
+        .page-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        /* Modal Dialog Component with Sticky Headers & Footers */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 700px;
+            max-width: 95%;
+            transform: scale(0.95);
+            transition: transform 0.2s ease-out;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+
+        /* Modal Sticky Header & Footer */
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #FAFBFD;
+            border-top-left-radius: var(--border-radius-lg);
+            border-top-right-radius: var(--border-radius-lg);
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.15s;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--danger-color);
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background-color: #FAFBFD;
+            border-bottom-left-radius: var(--border-radius-lg);
+            border-bottom-right-radius: var(--border-radius-lg);
+        }
+
+        /* Delete Confirmation Dialog Modal (Custom) */
+        .confirm-modal-container {
+            width: 420px;
+        }
+
+        .confirm-modal-body {
+            padding: 24px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .confirm-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #FEF2F2;
+            color: var(--danger-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .confirm-message h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0F172A;
+            margin-bottom: 8px;
+        }
+
+        .confirm-message p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Details Section read-only */
+        .info-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .info-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .info-detail-item.full-width {
+            grid-column: span 2;
+        }
+
+        .info-detail-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .info-detail-value {
+            font-size: 13.5px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Toast Popup styles */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background-color: #FFFFFF;
+            color: #1f1f1f;
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(-80px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            font-size: 13px;
+            border-left: 4px solid var(--secondary-color);
+            pointer-events: none;
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left-color: var(--success-color);
+        }
+
+        .toast.success i {
+            color: var(--success-color);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger-color);
+        }
+
+        .toast.error i {
+            color: var(--danger-color);
+        }
+
+        .toast.info {
+            border-left-color: var(--info-color);
+        }
+
+        .toast.info i {
+            color: var(--info-color);
+        }
+
+        .alert-info-box {
+            background-color: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: var(--border-radius-md);
+            padding: 12px 16px;
+            color: #1E40AF;
+            font-size: 12.5px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .alert-info-box i {
+            font-size: 15px;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BREADCRUMBS & TITLE BAR -->
+    <div class="header-section">
+        <div class="header-title">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <h2>Cấu hình thông tin biểu phí</h2>
+        </div>
+        <p class="header-desc">Quản lý danh mục biểu phí, lệ phí quy định cho từng loại hồ sơ và thực hiện dịch vụ công
+            trực tuyến</p>
+    </div>
+
+    <!-- 1. SEARCH/FILTER SECTION (Quy chuẩn Thiết kế Khối lọc tìm kiếm) -->
+    <div class="card-section"
+        style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+        <div class="form-grid-3">
+            <div class="form-group">
+                <label for="searchKeyword">Từ khóa tìm kiếm</label>
+                <input type="text" id="searchKeyword" class="input-control"
+                    placeholder="Mã biểu phí hoặc Tên biểu phí...">
+            </div>
+            <div class="form-group">
+                <label for="searchCategory">Loại dịch vụ</label>
+                <select id="searchCategory" class="input-control">
+                    <option value="">-- Tất cả dịch vụ --</option>
+                    <option value="Đăng ký giao dịch bảo đảm">Đăng ký giao dịch bảo đảm</option>
+                    <option value="Thông báo xử lý tài sản">Thông báo xử lý tài sản</option>
+                    <option value="Thay đổi thông tin">Thay đổi thông tin</option>
+                    <option value="Xóa đăng ký">Xóa đăng ký</option>
+                    <option value="Cung cấp thông tin">Cung cấp thông tin</option>
+                    <option value="Cấp bản sao">Cấp bản sao</option>
+                    <option value="Cấp mã số CSDL Một lần">Cấp mã số CSDL Một lần</option>
+                    <option value="Cấp mã số CSDL thường xuyên">Cấp mã số CSDL thường xuyên</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Trạng thái</label>
+                <select id="searchStatus" class="input-control">
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="Active">Hoạt động</option>
+                    <option value="Inactive">Hết hiệu lực</option>
+                    <option value="Draft">Lưu nháp</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Hiệu lực từ ngày</label>
+                <div class="date-input-container">
+                    <input type="text" id="searchFromDate" class="input-control" placeholder="dd/mm/yyyy">
+                    <i class="fa-regular fa-calendar"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Hiệu lực đến ngày</label>
+                <div class="date-input-container">
+                    <input type="text" id="searchToDate" class="input-control" placeholder="dd/mm/yyyy">
+                    <i class="fa-regular fa-calendar"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút thao tác lọc tìm kiếm -->
+        <div
+            style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+            <button class="btn btn-outline-primary" onclick="resetFilters()">
+                <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+            </button>
+            <button class="btn btn-primary" onclick="performSearch()">
+                <i class="fa fa-search"></i> Tìm kiếm
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. ACTION TOOLBAR & RESULTS -->
+    <div class="card-section">
+        <div class="section-title">
+            <span>Danh sách cấu hình biểu phí hệ thống</span>
+            <div style="font-size: 13px; font-weight: normal; color: var(--text-muted);">
+                Áp dụng quy chuẩn Thông tư 64/2025/TT-BTC và Thông tư 61/2023/TT-BTC
+            </div>
+        </div>
+
+        <!-- Quy tắc 11: Nút chức năng phía trên lưới, nằm bên PHẢI -->
+        <div class="action-toolbar">
+            <button class="btn btn-primary" onclick="openAddModal()">
+                <i class="fa fa-plus"></i> Thêm mới
+            </button>
+            <button class="btn btn-outline-success" onclick="exportExcel()">
+                <i class="fa-solid fa-file-excel"></i> Kết xuất Excel
+            </button>
+        </div>
+
+        <!-- 3. DATA GRID -->
+        <div class="table-container">
+            <table class="custom-table" id="feeTable">
+                <thead>
+                    <tr>
+                        <th style="text-align: center; width: 60px;">STT</th>
+                        <th style="text-align: left; width: 100px;">Mã biểu phí</th>
+                        <th style="text-align: left; min-width: 250px;">Tên biểu phí</th>
+                        <th style="text-align: left; width: 180px;">Loại dịch vụ</th>
+                        <th style="text-align: right; width: 140px;">Mức phí (VNĐ)</th>
+                        <th class="sortable" onclick="handleSort('effective_from')"
+                            style="text-align: center; width: 130px;" id="th_effective_from">
+                            Thời điểm áp dụng <i class="fa-solid fa-sort"></i>
+                        </th>
+                        <th style="text-align: center; width: 120px;">Trạng thái</th>
+                        <th style="text-align: center; min-width: 140px; width: 140px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Loaded dynamically via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 4. PAGINATION PANEL -->
+        <div class="pagination-container" id="paginationContainer">
+            <div class="pagination-left" id="paginationInfo">
+                Hiển thị từ 1 đến 10 trong tổng số 12 bản ghi
+            </div>
+            <div class="pagination-right">
+                <div class="page-size-selector">
+                    <span>Số bản ghi:</span>
+                    <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize(this.value)">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <div class="pagination-buttons" id="paginationButtons">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Miễn phí note from the image -->
+        <div class="alert-info-box">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>
+                <strong>Trường hợp được miễn phí đăng ký:</strong> Cá nhân, hộ gia đình vay vốn tại tổ chức tín dụng
+                phục vụ phát triển nông nghiệp nông thôn theo quy định tại Nghị định số 55/2015/NĐ-CP về chính sách tín
+                dụng phục vụ phát triển nông nghiệp, nông thôn.
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. POPUP THÊM MỚI / CẬP NHẬT CẤU HÌNH BIỂU PHÍ (UC559.MH02) -->
+    <div class="modal-overlay" id="addEditModal">
+        <div class="modal-container">
+            <div class="modal-content">
+                <!-- Sticky Header -->
+                <div class="modal-header">
+                    <h3 id="modalTitle">Thêm mới cấu hình biểu phí</h3>
+                    <button class="modal-close-btn" onclick="closeAddModal()">&times;</button>
+                </div>
+                <!-- Scrollable Body -->
+                <div class="modal-body">
+                    <form id="feeForm" novalidate>
+                        <input type="hidden" id="formMode" value="create">
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="feeCode">Mã biểu phí <span class="required">*</span></label>
+                                <input type="text" id="feeCode" class="input-control" placeholder="Ví dụ: FE-REG-01"
+                                    required>
+                                <span class="invalid-feedback" id="feeCodeError">Mã biểu phí là trường bắt buộc</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="feeCategory">Loại dịch vụ <span class="required">*</span></label>
+                                <select id="feeCategory" class="input-control" required>
+                                    <option value="">-- Lựa chọn dịch vụ --</option>
+                                    <option value="Đăng ký giao dịch bảo đảm">Đăng ký giao dịch bảo đảm</option>
+                                    <option value="Thông báo xử lý tài sản">Thông báo xử lý tài sản</option>
+                                    <option value="Thay đổi thông tin">Thay đổi thông tin</option>
+                                    <option value="Xóa đăng ký">Xóa đăng ký</option>
+                                    <option value="Cung cấp thông tin">Cung cấp thông tin</option>
+                                    <option value="Cấp bản sao">Cấp bản sao</option>
+                                    <option value="Cấp mã số CSDL Một lần">Cấp mã số CSDL Một lần</option>
+                                    <option value="Cấp mã số CSDL thường xuyên">Cấp mã số CSDL thường xuyên</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                                <span class="invalid-feedback">Vui lòng chọn loại dịch vụ</span>
+                            </div>
+                            <div class="form-group span-2">
+                                <label for="feeName">Tên biểu phí <span class="required">*</span></label>
+                                <input type="text" id="feeName" class="input-control"
+                                    placeholder="Nhập tên mô tả của biểu phí..." required>
+                                <span class="invalid-feedback">Tên biểu phí là trường bắt buộc</span>
+                            </div>
+                            <div class="form-group span-2">
+                                <label for="feeNameEn">Tên biểu phí (EN) <span class="required">*</span></label>
+                                <input type="text" id="feeNameEn" class="input-control"
+                                    placeholder="Enter English description of the fee..." required>
+                                <span class="invalid-feedback">Tên biểu phí (EN) là trường bắt buộc</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="feeAmount">Mức phí (VNĐ) <span class="required">*</span></label>
+                                <input type="text" id="feeAmount" class="input-control" placeholder="0"
+                                    required>
+                                <span class="invalid-feedback" id="feeAmountError">Mức phí là trường bắt buộc</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="effectiveFrom">Ngày áp dụng <span class="required">*</span></label>
+                                <div class="date-input-container">
+                                    <input type="text" id="effectiveFrom" class="input-control" placeholder="dd/mm/yyyy"
+                                        required>
+                                    <i class="fa-regular fa-calendar"></i>
+                                </div>
+                                <span class="invalid-feedback" id="effectiveFromError">Ngày áp dụng là trường bắt
+                                    buộc</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Trạng thái</label>
+                                <div style="display: flex; align-items: center; gap: 20px; height: 38px;">
+                                    <label
+                                        style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: normal;">
+                                        <input type="radio" name="feeStatus" value="Active" checked
+                                            style="accent-color: var(--primary-color);"> Hoạt động (Active)
+                                    </label>
+                                    <label
+                                        style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: normal;">
+                                        <input type="radio" name="feeStatus" value="Draft"
+                                            style="accent-color: var(--primary-color);"> Lưu nháp (Draft)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group span-2">
+                                <label for="feeDesc">Mô tả / Ghi chú</label>
+                                <textarea id="feeDesc" class="input-control"
+                                    placeholder="Nhập văn bản thông tư hoặc ghi chú áp dụng..."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- Sticky Footer -->
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeAddModal()">Hủy</button>
+                    <button class="btn btn-primary" onclick="submitFeeForm()">Lưu cấu hình</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. POPUP XEM CHI TIẾT BIỂU PHÍ (READ-ONLY VIEW) -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-container">
+            <div class="modal-content">
+                <!-- Sticky Header -->
+                <div class="modal-header">
+                    <h3>Chi tiết cấu hình biểu phí</h3>
+                    <button class="modal-close-btn" onclick="closeDetailModal()">&times;</button>
+                </div>
+                <!-- Scrollable Body -->
+                <div class="modal-body">
+                    <div class="info-detail-grid">
+                        <div class="info-detail-item">
+                            <span class="info-detail-label">Mã biểu phí</span>
+                            <span class="info-detail-value" id="dtFeeCode">-</span>
+                        </div>
+                        <div class="info-detail-item">
+                            <span class="info-detail-label">Loại dịch vụ</span>
+                            <span class="info-detail-value" id="dtCategory">-</span>
+                        </div>
+                        <div class="info-detail-item full-width">
+                            <span class="info-detail-label">Tên biểu phí</span>
+                            <span class="info-detail-value" id="dtFeeName">-</span>
+                        </div>
+                        <div class="info-detail-item full-width">
+                            <span class="info-detail-label">Tên biểu phí (EN)</span>
+                            <span class="info-detail-value" id="dtFeeNameEn">-</span>
+                        </div>
+                        <div class="info-detail-item">
+                            <span class="info-detail-label">Mức phí áp dụng</span>
+                            <span class="info-detail-value" id="dtFeeAmount"
+                                style="color: var(--primary-color); font-size: 15px;">-</span>
+                        </div>
+                        <div class="info-detail-item">
+                            <span class="info-detail-label">Thời điểm áp dụng</span>
+                            <span class="info-detail-value" id="dtEffectiveFrom">-</span>
+                        </div>
+                        <div class="info-detail-item">
+                            <span class="info-detail-label">Trạng thái cấu hình</span>
+                            <span id="dtStatusBadge">-</span>
+                        </div>
+                        <div class="info-detail-item">
+                            <span class="info-detail-label">Người cập nhật cuối</span>
+                            <span class="info-detail-value">Nguyễn Văn Cán Bộ</span>
+                        </div>
+                        <div class="info-detail-item full-width">
+                            <span class="info-detail-label">Thông tin pháp lý / Mô tả</span>
+                            <span class="info-detail-value" id="dtFeeDesc"
+                                style="font-weight: normal; line-height: 1.6;">-</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sticky Footer -->
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeDetailModal()">Đóng</button>
+                    <button class="btn btn-primary" id="btnEditFromDetail" onclick="editFromDetail()">
+                        <i class="fa-solid fa-pen-to-square"></i> Chỉnh sửa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. POPUP XÁC NHẬN XÓA (Custom Confirmation Modal - Rule 10) -->
+    <div class="modal-overlay" id="confirmDeleteModal">
+        <div class="modal-container confirm-modal-container">
+            <div class="modal-content">
+                <!-- Sticky Header -->
+                <div class="modal-header" style="border-bottom: none; background-color: #FFFFFF;">
+                    <h3 style="color: var(--danger-color);"><i class="fa-solid fa-circle-exclamation"></i> Xác nhận xóa
+                    </h3>
+                    <button class="modal-close-btn" onclick="closeDeleteConfirm()">&times;</button>
+                </div>
+                <!-- Body -->
+                <div class="confirm-modal-body">
+                    <div class="confirm-icon">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+                    <div class="confirm-message">
+                        <h4>Xóa cấu hình biểu phí?</h4>
+                        <p>Bạn có chắc chắn muốn xóa cấu hình biểu phí <strong id="deleteTargetCode">FE-001</strong>?
+                            Hành động này sẽ chuyển trạng thái biểu phí thành ngưng hoạt động và lưu trữ lịch sử pháp
+                            lý.</p>
+                    </div>
+                </div>
+                <!-- Sticky Footer -->
+                <div class="modal-footer" style="border-top: none; background-color: #FFFFFF;">
+                    <button class="btn btn-secondary" onclick="closeDeleteConfirm()">Hủy bỏ</button>
+                    <button class="btn btn-danger" onclick="executeDelete()">Đồng ý xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION FOR USER FEEDBACK -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-info" id="toastIcon"></i>
+        <span id="toastMessage">Thông báo tác vụ thành công!</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initial mock data containing 12 items (at least 2 pages) to satisfy pagination testing
+        // Matches the 8 items from the image (6 circulars + 2 databases) + historical circulars
+        let rawMockData = [
+            {
+                code: "FE-001",
+                name: "Phí đăng ký biện pháp bảo đảm lần đầu bằng động sản (trừ chứng khoán đã đăng ký tập trung, tàu bay, tàu biển), cây hằng năm, công trình tạm",
+                name_en: "Fee for initial registration of security interest with chattels (except centrally registered securities, aircraft, sea vessels), annual trees, temporary works",
+                category: "Đăng ký giao dịch bảo đảm",
+                amount: 80000,
+                effective_from: "01/07/2025",
+                status: "Active",
+                desc: "Áp dụng theo quy định tại Thông tư số 64/2025/TT-BTC ngày 30/6/2025 của Bộ trưởng Bộ Tài chính."
+            },
+            {
+                code: "FE-002",
+                name: "Phí đăng ký thông báo xử lý tài sản bảo đảm, đăng ký thay đổi thông báo xử lý tài sản bảo đảm",
+                name_en: "Fee for registration of notice of disposal of collateral, registration of modification of notice of disposal of collateral",
+                category: "Thông báo xử lý tài sản",
+                amount: 30000,
+                effective_from: "01/07/2025",
+                status: "Active",
+                desc: "Áp dụng theo quy định tại Thông tư số 64/2025/TT-BTC ngày 30/6/2025 của Bộ trưởng Bộ Tài chính."
+            },
+            {
+                code: "FE-003",
+                name: "Phí đăng ký thay đổi nội dung biện pháp bảo đảm đã đăng ký",
+                name_en: "Fee for registration of modification of registered security interest contents",
+                category: "Thay đổi thông tin",
+                amount: 60000,
+                effective_from: "01/07/2025",
+                status: "Active",
+                desc: "Áp dụng theo quy định tại Thông tư số 64/2025/TT-BTC ngày 30/6/2025 của Bộ trưởng Bộ Tài chính."
+            },
+            {
+                code: "FE-004",
+                name: "Phí xóa đăng ký biện pháp bảo đảm, xóa đăng ký thông báo xử lý tài sản bảo đảm",
+                name_en: "Fee for deletion of registration of security interest, deletion of registration of notice of disposal of collateral",
+                category: "Xóa đăng ký",
+                amount: 20000,
+                effective_from: "01/07/2025",
+                status: "Active",
+                desc: "Áp dụng theo quy định tại Thông tư số 64/2025/TT-BTC ngày 30/6/2025 của Bộ trưởng Bộ Tài chính."
+            },
+            {
+                code: "FE-005",
+                name: "Phí cung cấp thông tin về giao dịch bảo đảm bằng động sản (trừ chứng khoán đã đăng ký tập trung, tàu bay, tàu biển), cây hằng năm, công trình tạm",
+                name_en: "Fee for provision of information on security interest with chattels (except centrally registered securities, aircraft, sea vessels), annual trees, temporary works",
+                category: "Cung cấp thông tin",
+                amount: 15000,
+                effective_from: "01/07/2025",
+                status: "Active",
+                desc: "Áp dụng theo quy định tại Thông tư số 64/2025/TT-BTC ngày 30/6/2025 của Bộ trưởng Bộ Tài chính."
+            },
+            {
+                code: "FE-006",
+                name: "Phí cấp bản sao văn bản chứng nhận nội dung đăng ký biện pháp bảo đảm",
+                name_en: "Fee for issuance of copy of security interest registration certificate",
+                category: "Cấp bản sao",
+                amount: 25000,
+                effective_from: "01/07/2025",
+                status: "Active",
+                desc: "Áp dụng theo quy định tại Thông tư số 64/2025/TT-BTC ngày 30/6/2025 của Bộ trưởng Bộ Tài chính."
+            },
+            {
+                code: "FE-007",
+                name: "Phí cấp mã số sử dụng để tự tra cứu một lần (tra cứu dữ liệu theo tiêu chí cơ bản)",
+                name_en: "Fee for database access code for single lookup (data search by basic criteria)",
+                category: "Cấp mã số CSDL Một lần",
+                amount: 10000,
+                effective_from: "01/07/2025",
+                status: "Active",
+                desc: "Đơn giá: 10.000 đồng/lần tra cứu. Cấp tại Cục Đăng ký quốc gia giao dịch bảo đảm."
+            },
+            {
+                code: "FE-008",
+                name: "Phí cấp mã số sử dụng để tự tra cứu thường xuyên (tra cứu dữ liệu theo tiêu chí cơ bản)",
+                name_en: "Fee for database access code for regular lookup (data search by basic criteria)",
+                category: "Cấp mã số CSDL thường xuyên",
+                amount: 300000,
+                effective_from: "01/07/2025",
+                status: "Active",
+                desc: "Phí cấp mã số sử dụng để tự tra cứu thường xuyên (tra cứu dữ liệu theo tiêu chí cơ bản): 300.000 đồng/khách hàng/năm, trong đó năm thực hiện tính phí được tính từ ngày 01/01 đến hết ngày 31/12 năm dương lịch. Trường hợp khách hàng đăng ký sử dụng mã số sử dụng cơ sở dữ liệu sau ngày 01/7 thì mức phí sử dụng mã số sử dụng cơ sở dữ liệu của năm đó là 50% mức phí quy định."
+            },
+            {
+                code: "FE-009",
+                name: "Phí đăng ký biện pháp bảo đảm lần đầu bằng động sản (Thông tư 61/2023)",
+                name_en: "Fee for initial registration of security interest with chattels (Circular 61/2023)",
+                category: "Đăng ký giao dịch bảo đảm",
+                amount: 80000,
+                effective_from: "15/11/2023",
+                status: "Inactive",
+                desc: "Đã hết hiệu lực kể từ 01/07/2025, thay thế bởi Thông tư 64/2025/TT-BTC. Được lưu giữ phục vụ đối soát lịch sử."
+            },
+            {
+                code: "FE-010",
+                name: "Phí đăng ký thay đổi nội dung biện pháp bảo đảm đã đăng ký (Thông tư 61/2023)",
+                name_en: "Fee for registration of modification of registered security interest contents (Circular 61/2023)",
+                category: "Thay đổi thông tin",
+                amount: 60000,
+                effective_from: "15/11/2023",
+                status: "Inactive",
+                desc: "Đã hết hiệu lực kể từ 01/07/2025, thay thế bởi Thông tư 64/2025/TT-BTC."
+            },
+            {
+                code: "FE-011",
+                name: "Phí thẩm định hồ sơ đăng ký thử nghiệm (Dự thảo bổ sung 2026)",
+                name_en: "Fee for evaluation of trial registration dossier (Draft 2026)",
+                category: "Khác",
+                amount: 50000,
+                effective_from: "20/07/2026",
+                status: "Draft",
+                desc: "Hồ sơ dự thảo mức phí thí điểm phục vụ việc tinh gọn thời gian xử lý thủ tục hành chính công."
+            },
+            {
+                code: "FE-012",
+                name: "Phí cấp lại văn bản chứng nhận đăng ký bị mất, hỏng hoặc rách",
+                name_en: "Fee for re-issuance of lost or damaged registration certificate",
+                category: "Cấp bản sao",
+                amount: 10000,
+                effective_from: "01/01/2026",
+                status: "Active",
+                desc: "Áp dụng cho trường hợp cấp lại bản gốc do sự cố mất mát từ phía khách hàng."
+            }
+        ];
+
+        // State variables
+        let feeList = [...rawMockData];
+        let currentPage = 1;
+        let pageSize = 10;
+        let sortedColumn = "effective_from";
+        let sortDirection = "desc"; // desc by default
+        let deleteTargetId = null;
+        let fpFrom, fpTo, fpEffective;
+
+        // Initialize Page
+        document.addEventListener("DOMContentLoaded", () => {
+            // Set default date values for Search DatePicker inputs
+            // Rule 2: "Mặc định giá trị Từ ngày là ngày đầu tháng hiện tại, Đến ngày là ngày hiện tại" (July 2026)
+            const today = new Date();
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            document.getElementById("searchFromDate").value = formatDate(startOfMonth);
+            document.getElementById("searchToDate").value = formatDate(today);
+            document.getElementById("effectiveFrom").value = formatDate(today);
+
+            // Format feeAmount with thousands separator (dots) as the user types
+            document.getElementById("feeAmount").addEventListener("input", function(e) {
+                let value = this.value.replace(/\D/g, "");
+                if (value === "") {
+                    this.value = "";
+                    return;
+                }
+                this.value = Number(value).toLocaleString("vi-VN");
+            });
+
+            // Initialize flatpickr DatePickers
+            try {
+                fpFrom = flatpickr("#searchFromDate", {
+                    dateFormat: "d/m/Y",
+                    allowInput: true
+                });
+                fpTo = flatpickr("#searchToDate", {
+                    dateFormat: "d/m/Y",
+                    allowInput: true
+                });
+                fpEffective = flatpickr("#effectiveFrom", {
+                    dateFormat: "d/m/Y",
+                    allowInput: true
+                });
+            } catch (e) {
+                console.warn("flatpickr library is not loaded:", e);
+            }
+
+            // Set sorting indicators and render
+            updateSortHeaderUI();
+            renderTable();
+        });
+
+        // Date helper formatting to dd/mm/yyyy
+        function formatDate(date) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        // Parse date string dd/mm/yyyy to Date object for comparing
+        function parseDateString(str) {
+            if (!str) return null;
+            const parts = str.split('/');
+            if (parts.length !== 3) return null;
+            return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+
+        // Validate dd/mm/yyyy string pattern
+        function isValidDateString(str) {
+            const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+            if (!regex.test(str)) return false;
+
+            const parts = str.split('/');
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const year = parseInt(parts[2], 10);
+
+            if (month < 1 || month > 12) return false;
+            if (day < 1 || day > 31) return false;
+
+            const daysInMonth = new Date(year, month, 0).getDate();
+            return day <= daysInMonth;
+        }
+
+        // Update Sort Header Icons UI
+        function updateSortHeaderUI() {
+            const headers = document.querySelectorAll('.custom-table th.sortable');
+            headers.forEach(h => {
+                h.classList.remove('sorted-asc', 'sorted-desc');
+                const icon = h.querySelector('i');
+                if (icon) icon.className = "fa-solid fa-sort";
+            });
+
+            const currentHeader = document.getElementById("th_" + sortedColumn);
+            if (currentHeader) {
+                currentHeader.classList.add(sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                const icon = currentHeader.querySelector('i');
+                if (icon) {
+                    icon.className = sortDirection === 'asc' ? "fa-solid fa-sort-up" : "fa-solid fa-sort-down";
+                }
+            }
+        }
+
+        // Sort data based on column and direction
+        function sortData() {
+            feeList.sort((a, b) => {
+                let valA = a[sortedColumn];
+                let valB = b[sortedColumn];
+
+                if (sortedColumn === 'effective_from') {
+                    // Date comparisons
+                    const dateA = parseDateString(valA) || new Date(0);
+                    const dateB = parseDateString(valB) || new Date(0);
+                    return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+                } else if (sortedColumn === 'amount') {
+                    // Number comparisons
+                    return sortDirection === 'asc' ? valA - valB : valB - valA;
+                } else {
+                    // String comparisons
+                    valA = String(valA).toLowerCase();
+                    valB = String(valB).toLowerCase();
+                    if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+                    if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+        }
+
+        // Trigger sorting on column click
+        function handleSort(column) {
+            if (sortedColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortedColumn = column;
+                sortDirection = 'desc'; // Default to desc for dates/amounts
+            }
+            updateSortHeaderUI();
+            renderTable();
+        }
+
+        // Render Table Body & Pagination
+        function renderTable() {
+            sortData();
+
+            const tbody = document.getElementById("tableBody");
+            tbody.innerHTML = "";
+
+            if (feeList.length === 0) {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td colspan="8" class="empty-row-text">Không tìm thấy biểu phí nào phù hợp với bộ lọc tìm kiếm.</td>`;
+                tbody.appendChild(tr);
+
+                // Hide pagination if empty
+                document.getElementById("paginationContainer").style.display = "none";
+                return;
+            }
+
+            document.getElementById("paginationContainer").style.display = "flex";
+
+            // Pagination indexes
+            const totalRecords = feeList.length;
+            const totalPages = Math.ceil(totalRecords / pageSize);
+
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, totalRecords);
+
+            // Display range
+            document.getElementById("paginationInfo").innerText = `Hiển thị từ ${startIndex + 1} đến ${endIndex} trong tổng số ${totalRecords} bản ghi`;
+
+            // Render current page items
+            for (let i = startIndex; i < endIndex; i++) {
+                const item = feeList[i];
+                const tr = document.createElement("tr");
+
+                // Badge color based on status
+                let badgeClass = "badge-active";
+                let statusText = "Hoạt động";
+                if (item.status === 'Inactive') {
+                    badgeClass = "badge-inactive";
+                    statusText = "Hết hiệu lực";
+                } else if (item.status === 'Draft') {
+                    badgeClass = "badge-draft";
+                    statusText = "Lưu nháp";
+                }
+
+                // Rule 3: Fixed-Slot Action Column Alignment (Mandatory)
+                // Always render View, Edit, and Delete/Ngưng áp dụng.
+                let btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal('${item.code}')"><i class="fa-solid fa-eye"></i></button>`;
+                let btnEdit = "";
+                let btnDelete = "";
+
+                if (item.status === 'Inactive') {
+                    // For inactive historical circulars, edit and delete are locked.
+                    btnEdit = `<button class="icon-btn edit" title="Biểu phí đã hết hiệu lực, không được phép chỉnh sửa" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                    btnDelete = `<button class="icon-btn delete" title="Biểu phí đã hết hiệu lực ngưng hoạt động" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-trash-can"></i></button>`;
+                } else if (item.status === 'Active') {
+                    // Active files can be edited and deactivated.
+                    btnEdit = `<button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal('${item.code}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                    btnDelete = `<button class="icon-btn delete" title="Ngưng áp dụng (Xóa)" onclick="openDeleteConfirm('${item.code}')"><i class="fa-solid fa-trash-can"></i></button>`;
+                } else { // Draft
+                    // Draft records can be edited and deleted completely.
+                    btnEdit = `<button class="icon-btn edit" title="Chỉnh sửa hồ sơ nháp" onclick="openEditModal('${item.code}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                    btnDelete = `<button class="icon-btn delete" title="Xóa vĩnh viễn bản nháp" onclick="openDeleteConfirm('${item.code}')"><i class="fa-solid fa-trash-can"></i></button>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="text-center">${i + 1}</td>
+                    <td class="text-left font-weight-bold" style="color: var(--primary-color); font-weight: 600;">${item.code}</td>
+                    <td class="text-left">
+                        <div>${item.name}</div>
+                        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 3px; font-style: italic;">
+                            ${item.name_en || ''}
+                        </div>
+                    </td>
+                    <td class="text-left">${item.category}</td>
+                    <td class="text-right font-weight-bold" style="font-weight: 600;">${item.amount.toLocaleString('vi-VN')}</td>
+                    <td class="text-center">${item.effective_from}</td>
+                    <td class="text-center"><span class="badge ${badgeClass}">${statusText}</span></td>
+                    <td class="action-cell">${btnView}${btnEdit}${btnDelete}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            // Render Pagination buttons
+            renderPaginationButtons(totalPages);
+        }
+
+        // Render Page controls
+        function renderPaginationButtons(totalPages) {
+            const container = document.getElementById("paginationButtons");
+            container.innerHTML = "";
+
+            // First page button
+            const firstBtn = document.createElement("button");
+            firstBtn.className = "page-btn";
+            firstBtn.innerHTML = '<i class="fa-solid fa-angles-left"></i>';
+            firstBtn.title = "Trang đầu";
+            firstBtn.disabled = (currentPage === 1);
+            firstBtn.onclick = () => { currentPage = 1; renderTable(); };
+            container.appendChild(firstBtn);
+
+            // Prev page button
+            const prevBtn = document.createElement("button");
+            prevBtn.className = "page-btn";
+            prevBtn.innerHTML = '<i class="fa-solid fa-angle-left"></i>';
+            prevBtn.title = "Trang trước";
+            prevBtn.disabled = (currentPage === 1);
+            prevBtn.onclick = () => { currentPage--; renderTable(); };
+            container.appendChild(prevBtn);
+
+            // Specific page number buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement("button");
+                pageBtn.className = `page-btn ${currentPage === i ? 'active' : ''}`;
+                pageBtn.innerText = i;
+                pageBtn.onclick = () => { currentPage = i; renderTable(); };
+                container.appendChild(pageBtn);
+            }
+
+            // Next page button
+            const nextBtn = document.createElement("button");
+            nextBtn.className = "page-btn";
+            nextBtn.innerHTML = '<i class="fa-solid fa-angle-right"></i>';
+            nextBtn.title = "Trang sau";
+            nextBtn.disabled = (currentPage === totalPages);
+            nextBtn.onclick = () => { currentPage++; renderTable(); };
+            container.appendChild(nextBtn);
+
+            // Last page button
+            const lastBtn = document.createElement("button");
+            lastBtn.className = "page-btn";
+            lastBtn.innerHTML = '<i class="fa-solid fa-angles-right"></i>';
+            lastBtn.title = "Trang cuối";
+            lastBtn.disabled = (currentPage === totalPages);
+            lastBtn.onclick = () => { currentPage = totalPages; renderTable(); };
+            container.appendChild(lastBtn);
+
+            // Lock pagination state if total pages <= 1
+            if (totalPages <= 1) {
+                firstBtn.disabled = true;
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                lastBtn.disabled = true;
+            }
+        }
+
+        // Handle page size selector change
+        function changePageSize(size) {
+            pageSize = parseInt(size);
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Show Toast Notification
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("toast");
+            const icon = document.getElementById("toastIcon");
+            const msg = document.getElementById("toastMessage");
+
+            msg.innerText = message;
+
+            // Set style based on type
+            toast.className = "toast visible " + type;
+            if (type === "success") {
+                icon.className = "fa-solid fa-circle-check";
+            } else if (type === "error") {
+                icon.className = "fa-solid fa-circle-xmark";
+            } else {
+                icon.className = "fa-solid fa-circle-info";
+            }
+
+            // Slide out after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove("visible");
+            }, 3000);
+        }
+
+        // Filter / Search Action
+        function performSearch() {
+            const keyword = document.getElementById("searchKeyword").value.trim().toLowerCase();
+            const category = document.getElementById("searchCategory").value;
+            const status = document.getElementById("searchStatus").value;
+            const fromDateStr = document.getElementById("searchFromDate").value.trim();
+            const toDateStr = document.getElementById("searchToDate").value.trim();
+
+            const fromDate = parseDateString(fromDateStr);
+            const toDate = parseDateString(toDateStr);
+
+            // Validate date fields first if entered
+            if (fromDateStr && !isValidDateString(fromDateStr)) {
+                showToast("Định dạng từ ngày không hợp lệ (dd/mm/yyyy)", "error");
+                return;
+            }
+            if (toDateStr && !isValidDateString(toDateStr)) {
+                showToast("Định dạng đến ngày không hợp lệ (dd/mm/yyyy)", "error");
+                return;
+            }
+
+            feeList = rawMockData.filter(item => {
+                // Keyword match (code or name)
+                const matchKeyword = !keyword ||
+                    item.code.toLowerCase().includes(keyword) ||
+                    item.name.toLowerCase().includes(keyword);
+
+                // Category match
+                const matchCategory = !category || item.category === category;
+
+                // Status match
+                const matchStatus = !status || item.status === status;
+
+                // Effective date range matches
+                let matchDate = true;
+                const itemDate = parseDateString(item.effective_from);
+
+                if (itemDate) {
+                    if (fromDate && itemDate < fromDate) matchDate = false;
+                    if (toDate && itemDate > toDate) matchDate = false;
+                }
+
+                return matchKeyword && matchCategory && matchStatus && matchDate;
+            });
+
+            currentPage = 1;
+            renderTable();
+            showToast("Đã lọc danh sách biểu phí thành công!", "info");
+        }
+
+        // Reset Filter (Rule 1: "Xóa bộ lọc")
+        function resetFilters() {
+            document.getElementById("searchKeyword").value = "";
+            document.getElementById("searchCategory").value = "";
+            document.getElementById("searchStatus").value = "";
+
+            // Set back standard date defaults (first of current month, today)
+            const today = new Date();
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            if (fpFrom) fpFrom.setDate(startOfMonth);
+            else document.getElementById("searchFromDate").value = formatDate(startOfMonth);
+
+            if (fpTo) fpTo.setDate(today);
+            else document.getElementById("searchToDate").value = formatDate(today);
+
+            feeList = [...rawMockData];
+            currentPage = 1;
+            renderTable();
+            showToast("Đã xóa bộ lọc tìm kiếm và tải lại danh sách!", "info");
+        }
+
+        // Export Excel Action
+        function exportExcel() {
+            showToast("Đang kết xuất danh sách biểu phí ra file Excel...", "info");
+            setTimeout(() => {
+                showToast("Kết xuất Excel thành công!", "success");
+            }, 1000);
+        }
+
+        // Open Add Modal
+        function openAddModal() {
+            // Reset validation classes
+            clearValidationErrors();
+
+            document.getElementById("formMode").value = "create";
+            document.getElementById("modalTitle").innerText = "Thêm mới cấu hình biểu phí";
+            document.getElementById("feeCode").value = "";
+            document.getElementById("feeCode").readOnly = false;
+            document.getElementById("feeCode").classList.remove("readonly");
+
+            document.getElementById("feeCategory").value = "";
+            document.getElementById("feeName").value = "";
+            document.getElementById("feeNameEn").value = "";
+            document.getElementById("feeAmount").value = "";
+
+            const today = new Date();
+            if (fpEffective) fpEffective.setDate(today);
+            else document.getElementById("effectiveFrom").value = formatDate(today);
+            document.querySelector('input[name="feeStatus"][value="Active"]').checked = true;
+            document.getElementById("feeDesc").value = "";
+
+            document.getElementById("addEditModal").classList.add("active");
+
+            // Autofocus
+            setTimeout(() => {
+                document.getElementById("feeCode").focus();
+            }, 100);
+        }
+
+        // Clear validation markers
+        function clearValidationErrors() {
+            const inputs = document.querySelectorAll("#feeForm .input-control");
+            inputs.forEach(input => {
+                input.classList.remove("is-invalid");
+            });
+        }
+
+        // Close Add Modal
+        function closeAddModal() {
+            document.getElementById("addEditModal").classList.remove("active");
+        }
+
+        // Open Edit Modal
+        function openEditModal(code) {
+            clearValidationErrors();
+
+            const item = rawMockData.find(x => x.code === code);
+            if (!item) return;
+
+            document.getElementById("formMode").value = "edit";
+            document.getElementById("modalTitle").innerText = `Chỉnh sửa cấu hình biểu phí [${item.code}]`;
+
+            // Code is read-only on edit
+            document.getElementById("feeCode").value = item.code;
+            document.getElementById("feeCode").readOnly = true;
+            document.getElementById("feeCode").classList.add("readonly");
+
+            document.getElementById("feeCategory").value = item.category;
+            document.getElementById("feeName").value = item.name;
+            document.getElementById("feeNameEn").value = item.name_en || "";
+            document.getElementById("feeAmount").value = Number(item.amount).toLocaleString("vi-VN");
+            if (fpEffective) fpEffective.setDate(parseDateString(item.effective_from));
+            else document.getElementById("effectiveFrom").value = item.effective_from;
+
+            document.querySelector(`input[name="feeStatus"][value="${item.status}"]`).checked = true;
+            document.getElementById("feeDesc").value = item.desc || "";
+
+            document.getElementById("addEditModal").classList.add("active");
+
+            // Autofocus on first editable field
+            setTimeout(() => {
+                document.getElementById("feeCategory").focus();
+            }, 100);
+        }
+
+        // Open Read-Only Detail Modal
+        function openDetailModal(code) {
+            const item = rawMockData.find(x => x.code === code);
+            if (!item) return;
+
+            document.getElementById("dtFeeCode").innerText = item.code;
+            document.getElementById("dtCategory").innerText = item.category;
+            document.getElementById("dtFeeName").innerText = item.name;
+            document.getElementById("dtFeeNameEn").innerText = item.name_en || "N/A";
+            document.getElementById("dtFeeAmount").innerText = item.amount.toLocaleString('vi-VN') + " VNĐ";
+            document.getElementById("dtEffectiveFrom").innerText = item.effective_from;
+            document.getElementById("dtFeeDesc").innerText = item.desc || "Không có ghi chú thêm.";
+
+            const badge = document.getElementById("dtStatusBadge");
+            if (item.status === 'Active') {
+                badge.className = "badge badge-active";
+                badge.innerText = "Hoạt động";
+            } else if (item.status === 'Inactive') {
+                badge.className = "badge badge-inactive";
+                badge.innerText = "Hết hiệu lực";
+            } else {
+                badge.className = "badge badge-draft";
+                badge.innerText = "Lưu nháp";
+            }
+
+            // Hide or style edit button based on status
+            const btnEdit = document.getElementById("btnEditFromDetail");
+            if (item.status === 'Inactive') {
+                btnEdit.style.opacity = "0.35";
+                btnEdit.style.pointerEvents = "none";
+                btnEdit.style.cursor = "not-allowed";
+                btnEdit.title = "Biểu phí đã hết hiệu lực, không được phép chỉnh sửa";
+            } else {
+                btnEdit.style.opacity = "1";
+                btnEdit.style.pointerEvents = "auto";
+                btnEdit.style.cursor = "pointer";
+                btnEdit.title = "Chỉnh sửa biểu phí";
+                // store click callback
+                btnEdit.setAttribute("onclick", `editFromDetail('${item.code}')`);
+            }
+
+            document.getElementById("detailModal").classList.add("active");
+        }
+
+        function closeDetailModal() {
+            document.getElementById("detailModal").classList.remove("active");
+        }
+
+        function editFromDetail(code) {
+            closeDetailModal();
+            setTimeout(() => {
+                openEditModal(code);
+            }, 150);
+        }
+
+        // Form Submit with Validation Logic (Rule 9: Red alert warnings, autofocus)
+        function submitFeeForm() {
+            clearValidationErrors();
+
+            const mode = document.getElementById("formMode").value;
+            const codeInput = document.getElementById("feeCode");
+            const catInput = document.getElementById("feeCategory");
+            const nameInput = document.getElementById("feeName");
+            const nameEnInput = document.getElementById("feeNameEn");
+            const amountInput = document.getElementById("feeAmount");
+            const dateInput = document.getElementById("effectiveFrom");
+            const statusVal = document.querySelector('input[name="feeStatus"]:checked').value;
+            const descVal = document.getElementById("feeDesc").value.trim();
+
+            let firstErrorElement = null;
+
+            // 1. Validate required fields
+            if (!codeInput.value.trim()) {
+                codeInput.classList.add("is-invalid");
+                document.getElementById("feeCodeError").innerText = "Đây là trường bắt buộc";
+                if (!firstErrorElement) firstErrorElement = codeInput;
+            }
+
+            if (!catInput.value) {
+                catInput.classList.add("is-invalid");
+                if (!firstErrorElement) firstErrorElement = catInput;
+            }
+
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add("is-invalid");
+                if (!firstErrorElement) firstErrorElement = nameInput;
+            }
+
+            if (!nameEnInput.value.trim()) {
+                nameEnInput.classList.add("is-invalid");
+                if (!firstErrorElement) firstErrorElement = nameEnInput;
+            }
+
+            // 2. Validate Amount (strip dots before parsing)
+            const rawAmountStr = amountInput.value.replace(/\./g, "");
+            const amtVal = parseInt(rawAmountStr, 10);
+            if (isNaN(amtVal) || amountInput.value.trim() === "") {
+                amountInput.classList.add("is-invalid");
+                document.getElementById("feeAmountError").innerText = "Đây là trường bắt buộc";
+                if (!firstErrorElement) firstErrorElement = amountInput;
+            } else if (amtVal < 0) {
+                amountInput.classList.add("is-invalid");
+                document.getElementById("feeAmountError").innerText = "Mức phí dịch vụ không được phép nhỏ hơn 0 VNĐ";
+                if (!firstErrorElement) firstErrorElement = amountInput;
+            }
+
+            // 3. Validate Date format
+            const dateValStr = dateInput.value.trim();
+            if (!dateValStr) {
+                dateInput.classList.add("is-invalid");
+                document.getElementById("effectiveFromError").innerText = "Đây là trường bắt buộc";
+                if (!firstErrorElement) firstErrorElement = dateInput;
+            } else if (!isValidDateString(dateValStr)) {
+                dateInput.classList.add("is-invalid");
+                document.getElementById("effectiveFromError").innerText = "Định dạng ngày không hợp lệ (dd/mm/yyyy)";
+                if (!firstErrorElement) firstErrorElement = dateInput;
+            } else if (mode === "create") {
+                // Days must be >= today
+                const parsedApplyDate = parseDateString(dateValStr);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (parsedApplyDate < today) {
+                    dateInput.classList.add("is-invalid");
+                    document.getElementById("effectiveFromError").innerText = "Ngày áp dụng phải lớn hơn hoặc bằng ngày hiện tại";
+                    if (!firstErrorElement) firstErrorElement = dateInput;
+                }
+            }
+
+            // 4. Validate unique code on create
+            if (mode === "create" && codeInput.value.trim()) {
+                const enteredCode = codeInput.value.trim().toUpperCase();
+                const exists = rawMockData.some(x => x.code === enteredCode);
+                if (exists) {
+                    codeInput.classList.add("is-invalid");
+                    document.getElementById("feeCodeError").innerText = "Mã biểu phí đã tồn tại";
+                    if (!firstErrorElement) firstErrorElement = codeInput;
+                }
+            }
+
+            // Focus on first error if found
+            if (firstErrorElement) {
+                firstErrorElement.focus();
+                return; // halt execution
+            }
+
+            // Valid form: save
+            const saveItem = {
+                code: codeInput.value.trim().toUpperCase(),
+                category: catInput.value,
+                name: nameInput.value.trim(),
+                name_en: nameEnInput.value.trim(),
+                amount: amtVal,
+                effective_from: dateValStr,
+                status: statusVal,
+                desc: descVal
+            };
+
+            if (mode === "create") {
+                rawMockData.unshift(saveItem);
+                showToast("Thêm mới biểu phí thành công!", "success");
+            } else {
+                // Update
+                const idx = rawMockData.findIndex(x => x.code === saveItem.code);
+                if (idx !== -1) {
+                    rawMockData[idx] = { ...rawMockData[idx], ...saveItem };
+                }
+                showToast("Cập nhật biểu phí thành công!", "success");
+            }
+
+            // Refresh table
+            feeList = [...rawMockData];
+            closeAddModal();
+            renderTable();
+        }
+
+        // Delete Confirm Handling (Rule 10: Custom confirmation modal)
+        function openDeleteConfirm(code) {
+            deleteTargetId = code;
+            document.getElementById("deleteTargetCode").innerText = code;
+            document.getElementById("confirmDeleteModal").classList.add("active");
+        }
+
+        function closeDeleteConfirm() {
+            document.getElementById("confirmDeleteModal").classList.remove("active");
+            deleteTargetId = null;
+        }
+
+        function executeDelete() {
+            if (!deleteTargetId) return;
+
+            const idx = rawMockData.findIndex(x => x.code === deleteTargetId);
+            if (idx !== -1) {
+                const item = rawMockData[idx];
+                if (item.status === 'Draft') {
+                    // Physical delete draft
+                    rawMockData.splice(idx, 1);
+                    showToast(`Đã xóa vĩnh viễn cấu hình nháp [${deleteTargetId}]!`, "success");
+                } else {
+                    // Soft delete/Inactive for active to protect accounting reports
+                    rawMockData[idx].status = 'Inactive';
+                    showToast(`Đã ngừng hoạt động cấu hình biểu phí [${deleteTargetId}] thành công!`, "success");
+                }
+            }
+
+            feeList = [...rawMockData];
+            closeDeleteConfirm();
+            renderTable();
+        }
+    </script>
+</body>
+
+</html>

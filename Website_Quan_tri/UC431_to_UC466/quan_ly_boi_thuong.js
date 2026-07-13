@@ -5714,39 +5714,8 @@
             const claim = claimsList.find(c => c.id === selectedClaimId);
             if (claim) {
                 if (claim.restoreHonor) {
-                    const isDeceased = (claim.victimAlive === 'no');
-                    const s3Type = claim.phddStep3Type;
-                    
-                    const hasS1 = claim.phddStep1No && claim.phddStep1Date && claim.phddStep1Signer && claim.phddStep1File;
-                    const hasS2 = isDeceased ? true : (claim.phddStep2Opinion && claim.phddStep2OpinionText && claim.phddStep2File);
-                    const hasS3 = claim.phddStep3No && claim.phddStep3Date && claim.phddStep3DateExp && s3Type && claim.phddStep3File;
-                    
-                    let s3Specific = false;
-                    if (hasS3) {
-                        if (s3Type === 'Trực tiếp xin lỗi') {
-                            s3Specific = !!(claim.phddStep3DirectVenue && claim.phddStep3DirectMembers);
-                        } else if (s3Type === 'Đăng báo xin lỗi') {
-                            s3Specific = !!(claim.phddStep3NewsCentral || claim.phddStep3NewsLocal);
-                        } else { // Cả hai
-                            s3Specific = !!(claim.phddStep3DirectVenue && claim.phddStep3DirectMembers && (claim.phddStep3NewsCentral || claim.phddStep3NewsLocal));
-                        }
-                    }
-
-                    const hasS4 = claim.phddStep4DateAct && claim.phddStep4File;
-                    let s4Specific = false;
-                    if (hasS4 && s3Type) {
-                        if (s3Type === 'Trực tiếp xin lỗi') {
-                            s4Specific = !!(claim.phddStep4VenueAct && claim.phddStep4MembersAct);
-                        } else if (s3Type === 'Đăng báo xin lỗi') {
-                            s4Specific = !!((claim.phddStep4NewsCentralAct || claim.phddStep4NewsLocalAct) && claim.phddStep4NewsNumbers && claim.phddStep4CommuneDate && claim.phddStep4CommuneReceiver);
-                        } else { // Cả hai
-                            s4Specific = !!(claim.phddStep4VenueAct && claim.phddStep4MembersAct && (claim.phddStep4NewsCentralAct || claim.phddStep4NewsLocalAct) && claim.phddStep4NewsNumbers && claim.phddStep4CommuneDate && claim.phddStep4CommuneReceiver);
-                        }
-                    }
-
-                    if (!hasS1 || !hasS2 || !hasS3 || !s3Specific || !hasS4 || !s4Specific) {
-                        showToast("Hồ sơ yêu cầu Phục hồi danh dự chưa nhập đủ thông tin! Vui lòng hoàn tất đủ 4 bước phục hồi danh dự trước khi Hoàn thành thực thi.", "error");
-                        
+                    if (claim.status !== 'Hoàn thành') {
+                        showToast("Vui lòng hoàn tất các bước phục hồi danh dự (Section 1, 2, 3) trước khi Hoàn thành thực thi.", "error");
                         // Switch tab to Tab 2
                         switchDetailTab('xu-ly');
                         // Switch sub-tab to PHDD
