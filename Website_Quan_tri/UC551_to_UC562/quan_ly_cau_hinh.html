@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -198,9 +198,7 @@
             white-space: nowrap;
         }
         .icon-btn {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
+            border: none;
             cursor: pointer;
             font-size: 13px;
             padding: 4px;
@@ -213,11 +211,45 @@
             height: 28px;
             margin: 0 2px;
         }
-        .icon-btn.view:hover { color: var(--primary-color); border-color: var(--primary-color); background-color: rgba(30, 58, 138, 0.05); }
-        .icon-btn.edit:hover { color: var(--info-color); border-color: var(--info-color); background-color: rgba(59, 130, 246, 0.05); }
-        .icon-btn.delete:hover { color: var(--danger-color); border-color: var(--danger-color); background-color: rgba(239, 68, 68, 0.05); }
-        .icon-btn.success:hover { color: var(--success-color); border-color: var(--success-color); background-color: rgba(16, 185, 129, 0.05); }
-        .icon-btn.test:hover { color: var(--accent-color); border-color: var(--accent-color); background-color: rgba(245, 158, 11, 0.05); }
+        .icon-btn.view { 
+            color: #2563EB; 
+            background-color: #EFF6FF; 
+        }
+        .icon-btn.view:hover { 
+            background-color: #DBEAFE; 
+        }
+        
+        .icon-btn.edit { 
+            color: #D97706; 
+            background-color: #FFFBEB; 
+        }
+        .icon-btn.edit:hover { 
+            background-color: #FEF3C7; 
+        }
+        
+        .icon-btn.delete { 
+            color: #EF4444; 
+            background-color: #FEF2F2; 
+        }
+        .icon-btn.delete:hover { 
+            background-color: #FEE2E2; 
+        }
+
+        .icon-btn.success { 
+            color: #10B981; 
+            background-color: #ECFDF5; 
+        }
+        .icon-btn.success:hover { 
+            background-color: #D1FAE5; 
+        }
+
+        .icon-btn.test { 
+            color: #8B5CF6; 
+            background-color: #F5F3FF; 
+        }
+        .icon-btn.test:hover { 
+            background-color: #EDE9FE; 
+        }
 
         /* Primary and secondary button definitions */
         .btn {

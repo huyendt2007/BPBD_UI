@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -263,26 +263,36 @@
             width: 28px;
             height: 28px;
             border-radius: var(--border-radius-sm);
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-surface);
+            border: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.15s;
-            color: var(--text-muted);
         }
 
-        .icon-btn:hover {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.05);
+        .icon-btn.view { 
+            color: #2563EB; 
+            background-color: #EFF6FF; 
         }
-
-        .icon-btn.delete:hover {
-            color: var(--danger-color);
-            border-color: var(--danger-color);
-            background-color: rgba(239, 68, 68, 0.05);
+        .icon-btn.view:hover { 
+            background-color: #DBEAFE; 
+        }
+        
+        .icon-btn.edit { 
+            color: #D97706; 
+            background-color: #FFFBEB; 
+        }
+        .icon-btn.edit:hover { 
+            background-color: #FEF3C7; 
+        }
+        
+        .icon-btn.delete { 
+            color: #EF4444; 
+            background-color: #FEF2F2; 
+        }
+        .icon-btn.delete:hover { 
+            background-color: #FEE2E2; 
         }
 
         /* Status Badges */
@@ -1120,8 +1130,8 @@
                     <td style="text-align:center">${statusBadge}</td>
                     <td style="text-align:center">
                         <div class="action-cell">
-                            <button class="icon-btn" title="Xem chi tiết" onclick="openDetailModal(${item.originalIndex})"><i class="fa fa-eye"></i></button>
-                            <button class="icon-btn" title="Chỉnh sửa" onclick="openEditModal(${item.originalIndex})"><i class="fa fa-edit"></i></button>
+                            <button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${item.originalIndex})"><i class="fa fa-eye"></i></button>
+                            <button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal(${item.originalIndex})"><i class="fa fa-edit"></i></button>
                             <button class="icon-btn delete" title="Xóa" onclick="openConfirmDeleteModal(${item.originalIndex})"><i class="fa fa-trash"></i></button>
                         </div>
                     </td>

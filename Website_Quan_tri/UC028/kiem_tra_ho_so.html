@@ -243,29 +243,97 @@
             background-color: #D97706;
         }
 
-        /* Icon Buttons in Table */
+        /* Icon Buttons in Table (Colored Circular Action Buttons) */
         .icon-btn {
-            background: transparent;
             border: none;
             cursor: pointer;
-            font-size: 16px;
-            padding: 4px 8px;
-            border-radius: var(--border-radius-sm);
-            transition: all 0.2s;
+            font-size: 13px;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             vertical-align: middle;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin: 0 4px;
         }
-        .icon-btn:hover {
+
+        /* 1. Tác vụ Xem chi tiết (Màu xanh dương) */
+        .icon-btn.view {
+            background-color: #EFF6FF;
+            color: #2563EB;
+        }
+        .icon-btn.view:hover {
+            background-color: #DBEAFE;
+            color: #1D4ED8;
+            transform: translateY(-1px);
+        }
+
+        /* 2. Tác vụ Tiếp nhận/Thụ lý/Duyệt (Màu xanh lục) */
+        .icon-btn.approve {
+            background-color: #ECFDF5;
+            color: #10B981;
+        }
+        .icon-btn.approve:hover {
+            background-color: #D1FAE5;
+            color: #047857;
+            transform: translateY(-1px);
+        }
+
+        /* 3. Tác vụ Ký duyệt (Màu xanh Navy đậm) */
+        .icon-btn.sign {
+            background-color: #EEF2F6;
+            color: #1E3A8A;
+        }
+        .icon-btn.sign:hover {
             background-color: #E2E8F0;
+            color: #1E40AF;
+            transform: translateY(-1px);
         }
-        .icon-btn.view { color: var(--secondary-color); }
-        .icon-btn.approve { color: var(--success-color); }
-        .icon-btn.sign { color: var(--primary-color); }
-        .icon-btn.edit { color: var(--text-muted); }
-        .icon-btn.cancel-approve { color: var(--warning-color); }
-        .icon-btn.reject { color: var(--danger-color); }
+
+        /* 4. Tác vụ Chỉnh sửa (Màu cam) */
+        .icon-btn.edit {
+            background-color: #FFF7ED;
+            color: #F59E0B;
+        }
+        .icon-btn.edit:hover {
+            background-color: #FFEDD5;
+            color: #B45309;
+            transform: translateY(-1px);
+        }
+
+        /* 5. Tác vụ Hủy duyệt/Gia hạn (Màu vàng/cam) */
+        .icon-btn.cancel-approve {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        .icon-btn.cancel-approve:hover {
+            background-color: #FDE68A;
+            color: #B45309;
+            transform: translateY(-1px);
+        }
+
+        /* 6. Tác vụ Từ chối/Xóa (Màu đỏ) */
+        .icon-btn.reject, .icon-btn.delete {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
+        .icon-btn.reject:hover, .icon-btn.delete:hover {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+            transform: translateY(-1px);
+        }
+
+        /* Trạng thái Vô hiệu hóa (Disabled State) */
+        .icon-btn.disabled, .icon-btn[disabled] {
+            background-color: #F1F5F9 !important;
+            color: #94A3B8 !important;
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+            transform: none !important;
+        }
 
         /* Tab badges */
         .tab-badge {

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -292,9 +292,8 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 4px;
-            border-radius: var(--border-radius-sm);
-            transition: all 0.15s;
+            border-radius: 50%;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -302,14 +301,14 @@
             height: 28px;
         }
 
-        .icon-btn.view { color: var(--secondary-color); background-color: #EFF6FF; }
+        .icon-btn.view { color: #2563EB; background-color: #EFF6FF; }
         .icon-btn.view:hover { background-color: #DBEAFE; }
-        .icon-btn.edit { color: var(--accent-color); background-color: #FFFBEB; }
-        .icon-btn.edit:hover { background-color: #FEF3C7; }
-        .icon-btn.delete { color: var(--danger-color); background-color: #FEF2F2; }
+        .icon-btn.edit { color: #F59E0B; background-color: #FFF7ED; }
+        .icon-btn.edit:hover { background-color: #FFEDD5; }
+        .icon-btn.delete { color: #EF4444; background-color: #FEF2F2; }
         .icon-btn.delete:hover { background-color: #FEE2E2; }
-        .icon-btn.print { color: #64748B; background-color: #F1F5F9; }
-        .icon-btn.print:hover { background-color: #E2E8F0; }
+        .icon-btn.print { color: #8B5CF6; background-color: #F5F3FF; }
+        .icon-btn.print:hover { background-color: #EDE9FE; }
 
         /* Search Filter Section */
         .filter-grid {
@@ -1891,7 +1890,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('modalCreateKinhPhi')">Đóng lại</button>
+                <button class="btn btn-secondary" onclick="closeModal('modalCreateKinhPhi')">Đóng</button>
                 <button class="btn btn-success" id="kpSubmitBtn" onclick="saveNewKinhPhi" disabled><i class="fa-solid fa-share-from-square"></i> Trình duyệt đề nghị cấp kinh phí</button>
             </div>
         </div>
@@ -1944,7 +1943,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('modalCreateCouncil')">Đóng lại</button>
+                <button class="btn btn-secondary" onclick="closeModal('modalCreateCouncil')">Đóng</button>
                 <button class="btn btn-primary" onclick="saveNewCouncil"><i class="fa-solid fa-users-line"></i> Ban hành quyết định thành lập hội đồng</button>
             </div>
         </div>
@@ -2577,7 +2576,6 @@
                     <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                     <td style="text-align:center;">${slaTag}</td>
                     <td style="text-align:center;">
-                        <button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation; showCaseDetail('${item.id}')"><i class="fa-solid fa-eye"></i></button>
                         ${btnActionHtml}
                     </td>
                 `;

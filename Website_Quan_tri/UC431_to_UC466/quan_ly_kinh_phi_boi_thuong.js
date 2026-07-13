@@ -739,6 +739,12 @@ function renderProposalsTable() {
 
     pageData.forEach((item, idx) => {
         const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.onclick = (e) => {
+            if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && e.target.tagName !== 'A') {
+                viewProposalDetail(item.id);
+            }
+        };
 
         let badgeClass = 'badge-info';
         if (item.status === 'Hoàn thành') badgeClass = 'badge-success';
@@ -747,9 +753,7 @@ function renderProposalsTable() {
         else if (item.status === 'Bị từ chối') badgeClass = 'badge-danger';
         else if (item.status === 'Chờ lập đề nghị') badgeClass = 'badge-info';
 
-        const viewBtn = `<button class="icon-btn view" title="Xem chi tiết" onclick="viewProposalDetail('${item.id}')"><i class="fa-solid fa-eye"></i></button>`;
-
-        let actionsHtml = viewBtn;
+        let actionsHtml = '';
 
         if (isLeader) {
             let approveBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ phê duyệt đề xuất ở trạng thái Chờ duyệt"><i class="fa-solid fa-circle-check"></i></button>`;
@@ -759,7 +763,7 @@ function renderProposalsTable() {
                 approveBtn = `<button class="icon-btn accept" title="Phê duyệt đề xuất" onclick="approveProposalDirect('${item.id}', 'Chờ chi trả')"><i class="fa-solid fa-circle-check"></i></button>`;
                 rejectBtn = `<button class="icon-btn reject" title="Từ chối phê duyệt" onclick="rejectProposalDirect('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
             }
-            actionsHtml += ` ${approveBtn} ${rejectBtn}`;
+            actionsHtml = `${approveBtn} ${rejectBtn}`;
         } else {
             // Specialist role
             let fillBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ lập đề nghị cho đề xuất ở trạng thái Chờ lập đề nghị"><i class="fa-solid fa-file-signature"></i></button>`;
@@ -773,7 +777,7 @@ function renderProposalsTable() {
             } else if (item.status === 'Chờ chi trả') {
                 payBtn = `<button class="icon-btn accept" title="Thực hiện chi trả" onclick="payProposalDirect('${item.id}')"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
             }
-            actionsHtml += ` ${fillBtn} ${updateBtn} ${payBtn}`;
+            actionsHtml = `${fillBtn} ${updateBtn} ${payBtn}`;
         }
 
         const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;

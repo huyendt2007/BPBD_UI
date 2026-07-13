@@ -1,4 +1,4 @@
-﻿// Mock Data: 12 items for testing pagination
+// Mock Data: 12 items for testing pagination
 let requestList = [
     {
         id: "REQ1",
@@ -1051,6 +1051,12 @@ function renderTable() {
 
     pageData.forEach((item, index) => {
         const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.onclick = (e) => {
+            if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && e.target.type !== 'checkbox') {
+                showDetailScreen(item.id);
+            }
+        };
 
         // Status Badges
         let badgeClass = 'badge-draft';
@@ -1064,21 +1070,18 @@ function renderTable() {
         const isVerifying = item.status === 'Đang xác minh';
         const isCompleted = item.status === 'Hoàn thành';
 
-        // View Details
-        const viewBtn = `<button class="icon-btn view" title="Xem chi tiết" onclick="showDetailScreen('${item.id}')"><i class="fa-solid fa-eye"></i></button>`;
-
-        // Accept button
-        let acceptBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ tiếp nhận khi ở trạng thái Chờ tiếp nhận"><i class="fa-solid fa-check-double"></i></button>`;
+        // Accept button (single checkmark)
+        let acceptBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ tiếp nhận khi ở trạng thái Chờ tiếp nhận"><i class="fa-solid fa-check"></i></button>`;
         if (isPending) {
-            acceptBtn = `<button class="icon-btn accept" title="Tiếp nhận hồ sơ" onclick="acceptRequest('${item.id}')"><i class="fa-solid fa-check-double"></i></button>`;
+            acceptBtn = `<button class="icon-btn accept" title="Tiếp nhận hồ sơ" onclick="acceptRequest('${item.id}')"><i class="fa-solid fa-check"></i></button>`;
         }
 
-        // Update button
-        let updateBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ cập nhật khi ở trạng thái Lưu nháp hoặc Đang xác minh"><i class="fa-solid fa-pen-to-square"></i></button>`;
-        if (isDraft) {
+        // Update button (always active)
+        let updateBtn;
+        if (isVerifying) {
+            updateBtn = `<button class="icon-btn edit" title="Cập nhật kết quả xác minh" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-scale-balanced"></i></button>`;
+        } else {
             updateBtn = `<button class="icon-btn edit" title="Chỉnh sửa thông tin" onclick="showFormScreen('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-        } else if (isVerifying) {
-            updateBtn = `<button class="icon-btn edit" title="Cập nhật kết quả xác minh" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i></button>`;
         }
 
         // Create claim button - title adjusted to "Tạo yêu cầu bồi thường"
@@ -1087,10 +1090,10 @@ function renderTable() {
             claimBtn = `<button class="icon-btn claim" title="Tạo yêu cầu bồi thường" onclick="showCreateClaimScreen('${item.id}')"><i class="fa-solid fa-file-invoice"></i></button>`;
         }
 
-        // Delete button
-        let deleteBtn = `<button class="icon-btn delete" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ được phép xóa hồ sơ Lưu nháp"><i class="fa-solid fa-trash-can"></i></button>`;
-        if (isDraft) {
-            deleteBtn = `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>`;
+        // Delete button (active for Draft and Pending)
+        let deleteBtn = `<button class="icon-btn delete" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ được phép xóa hồ sơ Lưu nháp hoặc Chờ tiếp nhận"><i class="fa-solid fa-trash"></i></button>`;
+        if (isDraft || isPending) {
+            deleteBtn = `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash"></i></button>`;
         }
 
         tr.innerHTML = `
@@ -1100,11 +1103,11 @@ function renderTable() {
             <td style="text-align:center;">${item.nycPhone || '(Chưa nhập)'}</td>
             <td style="font-size:12px; color:var(--text-muted);">${item.linhVuc.replace("TRONG HOẠT ĐỘNG ", "")}</td>
             <td style="font-size:12px; color:var(--text-muted);" title="${item.hanhVi}">${item.hanhVi.length > 50 ? item.hanhVi.slice(0, 50) + "..." : item.hanhVi}</td>
+            <td style="text-align:center;">${item.date}</td>
             <td style="text-align:center; font-weight:700; color:#8B5CF6;">${item.claimCode}</td>
             <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
             <td style="text-align:center;">
                 <div class="action-flex">
-                    ${viewBtn}
                     ${acceptBtn}
                     ${updateBtn}
                     ${claimBtn}

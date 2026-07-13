@@ -266,40 +266,44 @@
              height: 28px;
          }
  
+         .icon-btn.view { 
+             color: #2563EB; 
+             background-color: #EFF6FF; 
+         }
          .icon-btn.view:hover { 
-             color: var(--primary-color); 
-             border-color: var(--primary-color);
-             background-color: rgba(30, 58, 138, 0.05); 
+             background-color: #DBEAFE; 
          }
          
+         .icon-btn.edit { 
+             color: #D97706; 
+             background-color: #FFFBEB; 
+         }
          .icon-btn.edit:hover { 
-             color: var(--info-color); 
-             border-color: var(--info-color);
-             background-color: rgba(59, 130, 246, 0.05); 
+             background-color: #FEF3C7; 
          }
          
+         .icon-btn.lock { 
+             color: #475569; 
+             background-color: #F1F5F9; 
+         }
          .icon-btn.lock:hover { 
-             color: var(--warning-color); 
-             border-color: var(--warning-color);
-             background-color: rgba(245, 158, 11, 0.05); 
+             background-color: #E2E8F0; 
          }
  
+         .icon-btn.success { 
+             color: #10B981; 
+             background-color: #ECFDF5; 
+         }
          .icon-btn.success:hover { 
-             color: var(--success-color); 
-             border-color: var(--success-color);
-             background-color: rgba(16, 185, 129, 0.05); 
+             background-color: #D1FAE5; 
          }
          
-         .icon-btn.link:hover { 
-             color: var(--secondary-color); 
-             border-color: var(--secondary-color);
-             background-color: rgba(59, 130, 246, 0.05); 
+         .icon-btn.delete { 
+             color: #EF4444; 
+             background-color: #FEF2F2; 
          }
- 
          .icon-btn.delete:hover { 
-             color: var(--danger-color); 
-             border-color: var(--danger-color);
-             background-color: rgba(239, 68, 68, 0.05); 
+             background-color: #FEE2E2; 
          }
  
          /* Badge Styling */
@@ -366,6 +370,204 @@
              to { opacity: 1; transform: translateY(0); }
          }
  
+         /* Pagination styles matching standard */
+         .pagination-container {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 12px 16px;
+             background-color: var(--bg-surface);
+             border: 1px solid var(--border-color);
+             border-top: none;
+             border-bottom-left-radius: var(--border-radius-lg);
+             border-bottom-right-radius: var(--border-radius-lg);
+             font-size: 13px;
+         }
+ 
+         .pagination-buttons {
+             display: flex;
+             align-items: center;
+             gap: 6px;
+         }
+ 
+         .page-btn {
+             background-color: var(--bg-surface);
+             border: 1px solid var(--border-color);
+             color: var(--text-main);
+             padding: 6px 12px;
+             font-size: 13px;
+             font-weight: 500;
+             border-radius: var(--border-radius-sm);
+             cursor: pointer;
+             transition: all 0.15s ease;
+             display: inline-flex;
+             align-items: center;
+             justify-content: center;
+             min-width: 32px;
+             height: 32px;
+             font-family: var(--font-family);
+         }
+ 
+         .page-btn:hover:not([disabled]) {
+             background-color: #F1F5F9;
+             border-color: #CBD5E1;
+         }
+ 
+         .page-btn.active {
+             background-color: var(--primary-color);
+             border-color: var(--primary-color);
+             color: #FFFFFF;
+             font-weight: 600;
+         }
+ 
+         .page-btn[disabled] {
+             opacity: 0.4;
+             cursor: not-allowed;
+             background-color: #F8FAFC;
+         }
+ 
+          /* Custom Searchable Multi-select dropdown styles */
+          .multiselect-container {
+              position: relative;
+              width: 100%;
+          }
+          .multiselect-trigger-wrapper {
+              position: relative;
+              display: flex;
+              align-items: center;
+              width: 100%;
+          }
+          .multiselect-trigger-input {
+              width: 100%;
+              border: 1px solid var(--border-color);
+              border-radius: var(--border-radius-sm);
+              padding: 8px 30px 8px 12px;
+              font-size: 13px;
+              background-color: #FFFFFF;
+              outline: none;
+              min-height: 38px;
+              cursor: text;
+          }
+          .multiselect-trigger-input:focus {
+              border-color: var(--secondary-color);
+              box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+          }
+          .multiselect-arrow {
+              position: absolute;
+              right: 12px;
+              font-size: 11px;
+              color: var(--text-muted);
+              cursor: pointer;
+              pointer-events: all;
+          }
+          .multiselect-dropdown {
+              position: absolute;
+              top: 100%;
+              left: 0;
+              right: 0;
+              background-color: #FFFFFF;
+              border: 1px solid var(--border-color);
+              border-radius: var(--border-radius-sm);
+              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+              margin-top: 4px;
+              z-index: 1050;
+              display: none;
+              flex-direction: column;
+              max-height: 220px;
+          }
+          .multiselect-dropdown.active {
+              display: flex;
+          }
+          .multiselect-options-list {
+              overflow-y: auto;
+              flex: 1;
+              padding: 4px 0;
+          }
+          .multiselect-option {
+              display: flex;
+              align-items: center;
+              padding: 8px 12px;
+              font-size: 13px;
+              cursor: pointer;
+              gap: 8px;
+              color: var(--text-main);
+              transition: background-color 0.15s;
+          }
+          .multiselect-option:hover {
+              background-color: #F8FAFC;
+          }
+          .multiselect-option input[type="checkbox"] {
+              cursor: pointer;
+              width: 15px;
+              height: 15px;
+              margin: 0;
+          }
+          .multiselect-option span {
+              pointer-events: none;
+          }
+          
+          /* Checklist Box styles for Group and Role */
+          .checklist-container {
+              border: 1px solid var(--border-color);
+              border-radius: var(--border-radius-sm);
+              height: 120px;
+              overflow-y: auto;
+              background-color: #FFFFFF;
+              padding: 4px 0;
+              text-align: left;
+          }
+          .checklist-item {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              padding: 6px 12px;
+              cursor: pointer;
+              transition: background-color 0.2s;
+              font-weight: normal;
+              margin: 0;
+              font-size: 13px;
+              color: var(--text-main);
+              justify-content: flex-start;
+          }
+          .checklist-item:hover {
+              background-color: rgba(59, 130, 246, 0.05);
+          }
+          .checklist-item input[type="checkbox"] {
+              cursor: pointer;
+              accent-color: var(--primary-color);
+              width: 16px;
+              height: 16px;
+              flex-shrink: 0;
+              margin: 0;
+          }
+          .search-box-sm {
+              position: relative;
+              margin-bottom: 8px;
+          }
+          .search-box-sm i {
+              position: absolute;
+              left: 10px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: var(--text-muted);
+              font-size: 12px;
+          }
+          .search-box-sm input {
+              width: 100%;
+              padding: 6px 10px 6px 30px;
+              border: 1px solid var(--border-color);
+              border-radius: var(--border-radius-sm);
+              font-size: 13px;
+              outline: none;
+              transition: border-color 0.2s;
+              font-family: var(--font-family);
+              min-height: 32px;
+              background: #FFFFFF;
+          }
+          .search-box-sm input:focus {
+              border-color: var(--secondary-color);
+          }
+
          /* Modal dialog standard rules */
          .modal-overlay {
              position: fixed;
@@ -814,6 +1016,7 @@
  
      <!-- MODAL CHỈNH SỬA (Edit Modal) -->
      <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
              <div class="modal-header">
                  <h3 id="modalTitle">Chỉnh sửa tài khoản khách hàng</h3>
                  <button class="close-modal" onclick="closeModal('editModal')"><i class="fas fa-times"></i></button>
@@ -909,20 +1112,31 @@
                          </select>
                      </div>
                      
-                     <div class="grid-2-cols">
-                         <div class="form-group">
-                              <label class="form-label">Nhóm người dùng *</label>
-                              <select class="form-select" id="inpGroup" onchange="handleGroupChange('edit')">
+                      <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 15px 0;">
+                      <div class="grid-2-cols">
+                          <div class="form-group">
+                              <label class="form-label">Nhóm người sử dụng *</label>
+                              <select id="inpGroup" multiple style="display:none;" onchange="handleGroupChange('edit')"></select>
+                              <div class="search-box-sm">
+                                  <i class="fas fa-search"></i>
+                                  <input type="text" placeholder="Tìm kiếm nhóm..." onkeyup="filterChecklist('inpGroup', this.value)">
+                              </div>
+                              <div class="checklist-container" id="inpGroup_checklist">
                                   <!-- Dynamically populated -->
-                              </select>
+                              </div>
                           </div>
                           <div class="form-group">
                               <label class="form-label">Vai trò *</label>
-                              <select class="form-select" id="inpRole" onchange="handleRoleChange('edit')">
+                              <select id="inpRole" multiple style="display:none;" onchange="handleRoleChange('edit')"></select>
+                              <div class="search-box-sm">
+                                  <i class="fas fa-search"></i>
+                                  <input type="text" placeholder="Tìm kiếm vai trò..." onkeyup="filterChecklist('inpRole', this.value)">
+                              </div>
+                              <div class="checklist-container" id="inpRole_checklist">
                                   <!-- Dynamically populated -->
-                              </select>
+                              </div>
                           </div>
-                     </div>
+                      </div>
                      
                      <div class="section-divider"><i class="fas fa-cogs"></i> Tùy biến Phân quyền</div>
                      <div class="perm-tree" id="editPermTree">
@@ -1054,6 +1268,7 @@
              </div>
          </div>
      </div>
+</div>
  
      <!-- MODAL THÊM MỚI TÀI KHOẢN (Add Account Modal) -->
      <div class="modal-overlay" id="addAccountModal">
@@ -1106,21 +1321,39 @@
                              <input type="text" class="form-control" id="addPersonAddressDetail" placeholder="Số nhà, đường phố...">
                          </div>
                      </div>
-                     <div class="grid-3-cols">
-                         <div class="form-group"><label class="form-label">Trung tâm Đăng ký mặc định</label><select class="form-select" id="addPersonCenter"><option value="">-- Không bắt buộc --</option><option value="Hà Nội">Trung tâm Hà Nội</option><option value="Hồ Chí Minh">Trung tâm HCM</option><option value="Đà Nẵng">Trung tâm Đà Nẵng</option></select></div>
-                         <div class="form-group">
-                              <label class="form-label">Nhóm người dùng *</label>
-                              <select class="form-select" id="addPersonGroup" onchange="handleGroupChange('addPerson')">
+                      <div class="form-group">
+                          <label class="form-label">Trung tâm Đăng ký mặc định</label>
+                          <select class="form-select" id="addPersonCenter">
+                              <option value="">-- Không bắt buộc (Chọn để tự động điền khi lập hồ sơ) --</option>
+                              <option value="Hà Nội">Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội</option>
+                              <option value="Hồ Chí Minh">Trung tâm đăng ký, giao dịch tài sản tại TP HCM</option>
+                              <option value="Đà Nẵng">Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng</option>
+                          </select>
+                      </div>
+                      <div class="grid-2-cols">
+                          <div class="form-group">
+                              <label class="form-label">Nhóm người sử dụng *</label>
+                              <select id="addPersonGroup" multiple style="display:none;" onchange="handleGroupChange('addPerson')"></select>
+                              <div class="search-box-sm">
+                                  <i class="fas fa-search"></i>
+                                  <input type="text" placeholder="Tìm kiếm nhóm..." onkeyup="filterChecklist('addPersonGroup', this.value)">
+                              </div>
+                              <div class="checklist-container" id="addPersonGroup_checklist">
                                   <!-- Dynamically populated -->
-                              </select>
+                              </div>
                           </div>
                           <div class="form-group">
                               <label class="form-label">Vai trò *</label>
-                              <select class="form-select" id="addPersonRole" onchange="handleRoleChange('addPerson')">
+                              <select id="addPersonRole" multiple style="display:none;" onchange="handleRoleChange('addPerson')"></select>
+                              <div class="search-box-sm">
+                                  <i class="fas fa-search"></i>
+                                  <input type="text" placeholder="Tìm kiếm vai trò..." onkeyup="filterChecklist('addPersonRole', this.value)">
+                              </div>
+                              <div class="checklist-container" id="addPersonRole_checklist">
                                   <!-- Dynamically populated -->
-                              </select>
+                              </div>
                           </div>
-                     </div>
+                      </div>
                      <div class="section-divider" style="margin-top:10px"><i class="fas fa-cogs"></i> Tùy biến Phân quyền</div>
                      <div class="perm-tree" style="max-height:150px" id="addPersonPermTree">
                          <div class="perm-item"><input type="checkbox" value="PERM1" checked> <span>1. Đăng ký BPBĐ / Thông báo xử lý tài sản</span></div>
@@ -1166,21 +1399,39 @@
                                  <input type="text" class="form-control" id="addOrgAddressDetail" placeholder="Số nhà, đường phố...">
                              </div>
                          </div>
-                         <div class="grid-3-cols">
-                             <div class="form-group">
-                                  <label class="form-label">Nhóm người dùng *</label>
-                                  <select class="form-select" id="addOrgGroup" onchange="handleGroupChange('addOrg')">
-                                      <!-- Dynamically populated -->
-                                  </select>
+                      <div class="form-group">
+                          <label class="form-label">Trung tâm Đăng ký mặc định</label>
+                          <select class="form-select" id="addOrgCenter">
+                              <option value="">-- Không bắt buộc (Chọn để tự động điền khi lập hồ sơ) --</option>
+                              <option value="Hà Nội">Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội</option>
+                              <option value="Hồ Chí Minh">Trung tâm đăng ký, giao dịch tài sản tại TP HCM</option>
+                              <option value="Đà Nẵng">Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng</option>
+                          </select>
+                      </div>
+                      <div class="grid-2-cols">
+                          <div class="form-group">
+                              <label class="form-label">Nhóm người sử dụng *</label>
+                              <select id="addOrgGroup" multiple style="display:none;" onchange="handleGroupChange('addOrg')"></select>
+                              <div class="search-box-sm">
+                                  <i class="fas fa-search"></i>
+                                  <input type="text" placeholder="Tìm kiếm nhóm..." onkeyup="filterChecklist('addOrgGroup', this.value)">
                               </div>
-                              <div class="form-group">
-                                  <label class="form-label">Vai trò *</label>
-                                  <select class="form-select" id="addOrgRole" onchange="handleRoleChange('addOrg')">
-                                      <!-- Dynamically populated -->
-                                  </select>
+                              <div class="checklist-container" id="addOrgGroup_checklist">
+                                  <!-- Dynamically populated -->
                               </div>
-                             <div class="form-group"><label class="form-label">Trung tâm Đăng ký mặc định</label><select class="form-select" id="addOrgCenter"><option value="">-- Không bắt buộc --</option><option value="Hà Nội">Trung tâm Hà Nội</option><option value="Hồ Chí Minh">Trung tâm HCM</option><option value="Đà Nẵng">Trung tâm Đà Nẵng</option></select></div>
-                         </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="form-label">Vai trò *</label>
+                              <select id="addOrgRole" multiple style="display:none;" onchange="handleRoleChange('addOrg')"></select>
+                              <div class="search-box-sm">
+                                  <i class="fas fa-search"></i>
+                                  <input type="text" placeholder="Tìm kiếm vai trò..." onkeyup="filterChecklist('addOrgRole', this.value)">
+                              </div>
+                              <div class="checklist-container" id="addOrgRole_checklist">
+                                  <!-- Dynamically populated -->
+                              </div>
+                          </div>
+                      </div>
                          <div style="margin-top:10px;padding-top:10px;border-top:1px dashed #ccc">
                              <strong style="font-size:13px;display:block;margin-bottom:10px">Thông tin Người đại diện</strong>
                              <div class="grid-3-cols">
@@ -1519,16 +1770,17 @@
               const options = [5, 10, 20, 50].map(sz => `<option value="${sz}" ${pageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
 
               let paginationHtml = `
-                  <div class="pagination-info">
-                      <span>Hiển thị từ <strong>${fromItem}</strong> đến <strong>${toItem}</strong> trong tổng số <strong>${totalItems}</strong> bản ghi</span>
-                      <div style="display:flex; align-items:center; gap:8px;">
-                          <span>Số bản ghi hiển thị:</span>
-                          <select onchange="changePageSize('${tab}', parseInt(this.value))">
-                              ${options}
-                          </select>
-                      </div>
+                  <!-- Left Group: Page Size and Info -->
+                  <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-main);">
+                      <span>Số dòng hiển thị:</span>
+                      <select onchange="changePageSize('${tab}', parseInt(this.value))" style="height: 32px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background-color: #FFFFFF; font-size: 13px; outline: none; cursor: pointer; margin-right: 8px;">
+                          ${options}
+                      </select>
+                      <span style="color: var(--text-muted);">Hiển thị ${fromItem}-${toItem} trong số ${totalItems} bản ghi</span>
                   </div>
-                  <div class="pagination-buttons">
+
+                  <!-- Right Group: Buttons -->
+                  <div class="pagination-buttons" style="display: flex; align-items: center; gap: 6px;">
                       <button class="page-btn" ${curPage === 1 ? 'disabled' : ''} onclick="changePage('${tab}', 1)" title="Trang đầu"><i class="fas fa-angle-double-left"></i></button>
                       <button class="page-btn" ${curPage === 1 ? 'disabled' : ''} onclick="changePage('${tab}', ${curPage - 1})" title="Trang trước"><i class="fas fa-angle-left"></i></button>
               `;
@@ -1683,7 +1935,7 @@
                       // Key button is rendered as a placeholder for VNeID
                       const resetPwdBtn = item.identitySource === 'Nội bộ'
                           ? `<button class="icon-btn success" title="Đặt lại mật khẩu" onclick="resetPassword(${item.id}, 'PERSON')"><i class="fas fa-key"></i></button>`
-                          : `<div style="width: 28px; height: 28px; display: inline-block; margin: 0 4px; vertical-align: middle;"></div>`;
+                          : `<button class="icon-btn success" title="Tài khoản liên kết định danh VNeID không sử dụng mật khẩu nội bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fas fa-key"></i></button>`;
                       
                       tr.innerHTML = `
                           <td style="text-align:center">${stt}</td>
@@ -1793,7 +2045,7 @@
                       // Key button is rendered as a placeholder for VNeID
                       const resetPwdBtn = item.identitySource === 'Nội bộ'
                           ? `<button class="icon-btn success" title="Đặt lại mật khẩu" onclick="resetPassword(${item.id}, 'ORG')"><i class="fas fa-key"></i></button>`
-                          : `<div style="width: 28px; height: 28px; display: inline-block; margin: 0 4px; vertical-align: middle;"></div>`;
+                          : `<button class="icon-btn success" title="Tài khoản liên kết định danh VNeID không sử dụng mật khẩu nội bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fas fa-key"></i></button>`;
                       
                       const hasSubMatch = keyword && item.subs && item.subs.some(sub => sub.code.toLowerCase().includes(keyword));
                       const subMatchBadge = hasSubMatch ? `<span class="badge bg-warning" style="margin-left:8px;">(Tìm thấy tài khoản con trùng Số giấy tờ)</span>` : '';
@@ -2160,7 +2412,8 @@
              item.province = province;
              item.addressDetail = addressDetail;
              item.center = center;
-             item.role = document.getElementById('inpRole').value;
+              const selectedRoles = Array.from(document.getElementById('inpRole').selectedOptions).map(o => o.text);
+              item.role = selectedRoles.length > 0 ? selectedRoles.join(', ') : 'Khách hàng Cá nhân Thường';
  
              if (type === 'PERSON') {
                  if (item.identitySource === 'Nội bộ') {
@@ -2774,7 +3027,8 @@
                      perms.push(cb.value);
                  });
  
-                 const role = document.getElementById('addPersonRole').value;
+                 const selectedRoles = Array.from(document.getElementById('addPersonRole').selectedOptions).map(o => o.text);
+                 const role = selectedRoles.length > 0 ? selectedRoles.join(', ') : 'Khách hàng Cá nhân Thường';
                  const newId = personAccounts.length > 0 ? Math.max(...personAccounts.map(p => p.id)) + 1 : 1;
                  personAccounts.push({
                      id: newId,
@@ -2829,7 +3083,8 @@
  
                  const subs = JSON.parse(JSON.stringify(tempNewOrgSubs));
  
-                 const role = document.getElementById('addOrgRole').value;
+                 const selectedRoles = Array.from(document.getElementById('addOrgRole').selectedOptions).map(o => o.text);
+                 const role = selectedRoles.length > 0 ? selectedRoles.join(', ') : 'Quản trị tài khoản tổ chức';
                  const newId = orgAccounts.length > 0 ? Math.max(...orgAccounts.map(o => o.id)) + 1 : 101;
                  orgAccounts.push({
                      id: newId,
@@ -2977,6 +3232,7 @@
               }
               
               updateRolesForGroup(type, context, selectedRoleId);
+              rebuildCustomMultiselect(groupSelectId);
           }
 
           function updateRolesForGroup(type, context, selectedRoleId = null) {
@@ -2987,15 +3243,25 @@
               const roleSelect = document.getElementById(roleSelectId);
               if (!groupSelect || !roleSelect) return;
               
-              const groupId = groupSelect.value;
-              const groupObj = savedGroupsList.find(g => String(g.id) === String(groupId));
+              const selectedGroupIds = Array.from(groupSelect.selectedOptions).map(o => o.value);
               
               roleSelect.innerHTML = '';
               let filteredRoles = [];
-              if (groupObj && groupObj.roles && groupObj.roles.length > 0) {
-                  filteredRoles = savedRolesList.filter(r => groupObj.roles.includes(r.id) || groupObj.roles.includes(String(r.id)));
+              selectedGroupIds.forEach(gId => {
+                  const groupObj = savedGroupsList.find(g => String(g.id) === String(gId));
+                  if (groupObj && groupObj.roles) {
+                      groupObj.roles.forEach(rId => {
+                          const roleObj = savedRolesList.find(r => String(r.id) === String(rId));
+                          if (roleObj && !filteredRoles.some(fr => fr.id === roleObj.id)) {
+                              filteredRoles.push(roleObj);
+                          }
+                      });
+                  }
+              });
+              
+              if (filteredRoles.length === 0) {
+                  filteredRoles = savedRolesList;
               }
-              if (filteredRoles.length === 0) filteredRoles = savedRolesList;
               
               filteredRoles.forEach(r => {
                   const option = document.createElement('option');
@@ -3005,12 +3271,16 @@
               });
               
               if (selectedRoleId) {
-                  roleSelect.value = selectedRoleId;
+                  const selectIds = String(selectedRoleId).split(',').map(s => s.trim());
+                  Array.from(roleSelect.options).forEach(opt => {
+                      opt.selected = selectIds.includes(String(opt.value)) || selectIds.includes(opt.text);
+                  });
               } else if (filteredRoles.length > 0) {
-                  roleSelect.value = filteredRoles[0].id;
+                  roleSelect.selectedIndex = 0;
               }
               
               updatePermissionsFromSelectedRole(context);
+              rebuildCustomMultiselect(roleSelectId);
           }
 
           function updatePermissionsFromSelectedRole(context) {
@@ -3021,8 +3291,7 @@
               const container = document.getElementById(treeContainerId);
               if (!roleSelect || !container) return;
               
-              const roleId = roleSelect.value;
-              const roleObj = savedRolesList.find(r => String(r.id) === String(roleId));
+              const selectedRoleIds = Array.from(roleSelect.selectedOptions).map(o => o.value);
               
               const mapping = {
                   'Web-11': 'PERM1',
@@ -3036,15 +3305,20 @@
               };
               
               let activePerms = [];
-              if (roleObj && roleObj.permissions) {
-                  roleObj.permissions.forEach(p => {
-                      for (const [key, val] of Object.entries(mapping)) {
-                          if (p.startsWith(key) || key.startsWith(p)) {
-                              if (!activePerms.includes(val)) activePerms.push(val);
+              selectedRoleIds.forEach(rId => {
+                  const roleObj = savedRolesList.find(r => String(r.id) === String(rId));
+                  if (roleObj && roleObj.permissions) {
+                      roleObj.permissions.forEach(p => {
+                          for (const [key, val] of Object.entries(mapping)) {
+                              if (p.startsWith(key) || key.startsWith(p)) {
+                                  if (!activePerms.includes(val)) activePerms.push(val);
+                              }
                           }
-                      }
-                  });
-              } else {
+                      });
+                  }
+              });
+              
+              if (selectedRoleIds.length === 0) {
                   activePerms = ['PERM1', 'PERM2', 'PERM6'];
               }
               
@@ -3053,6 +3327,200 @@
                   cb.checked = activePerms.includes(cb.value);
               });
           }
+          /* Helper functions for custom searchable multi-select dropdown */
+          function openMultiselectDropdown(selectId) {
+              document.querySelectorAll('.multiselect-dropdown').forEach(d => {
+                  if (d.id !== selectId + 'Dropdown') d.classList.remove('active');
+              });
+              const dropdown = document.getElementById(selectId + 'Dropdown');
+              if (dropdown) dropdown.classList.add('active');
+              
+              const input = document.getElementById(selectId + 'TriggerInput');
+              if (input) {
+                  const selectEl = document.getElementById(selectId);
+                  const selectedTexts = Array.from(selectEl.selectedOptions).map(o => o.text);
+                  if (selectedTexts.length > 0) {
+                      input.placeholder = selectedTexts.join(', ');
+                  } else {
+                      input.placeholder = selectId.includes('Group') ? 'Chọn nhóm người dùng...' : 'Chọn vai trò...';
+                  }
+                  input.value = '';
+                  filterMultiselectDirect(selectId, '');
+              }
+          }
+
+          function toggleMultiselectDropdownDirect(selectId) {
+              const dropdown = document.getElementById(selectId + 'Dropdown');
+              if (dropdown) {
+                  if (dropdown.classList.contains('active')) {
+                      dropdown.classList.remove('active');
+                      restoreMultiselectInput(selectId);
+                  } else {
+                      openMultiselectDropdown(selectId);
+                      document.getElementById(selectId + 'TriggerInput').focus();
+                  }
+              }
+          }
+
+          function filterMultiselectDirect(selectId, query) {
+              const dropdown = document.getElementById(selectId + 'Dropdown');
+              if (!dropdown) return;
+              const q = query.trim().toLowerCase();
+              dropdown.querySelectorAll('.multiselect-option').forEach(opt => {
+                  const label = opt.querySelector('span').innerText.toLowerCase();
+                  if (label.includes(q)) {
+                      opt.style.display = 'flex';
+                  } else {
+                      opt.style.display = 'none';
+                  }
+              });
+          }
+
+          function restoreMultiselectInput(selectId) {
+              const selectEl = document.getElementById(selectId);
+              const input = document.getElementById(selectId + 'TriggerInput');
+              if (!selectEl || !input) return;
+              
+              const selectedTexts = Array.from(selectEl.selectedOptions).map(o => o.text);
+              if (selectedTexts.length === 0) {
+                  input.value = '';
+                  input.placeholder = selectId.includes('Group') ? 'Chọn nhóm người dùng...' : 'Chọn vai trò...';
+              } else {
+                  input.value = selectedTexts.join(', ');
+              }
+          }
+
+          function updateMultiselectTriggerText(selectId) {
+              const dropdown = document.getElementById(selectId + 'Dropdown');
+              if (dropdown && !dropdown.classList.contains('active')) {
+                  restoreMultiselectInput(selectId);
+              } else {
+                  const selectEl = document.getElementById(selectId);
+                  const input = document.getElementById(selectId + 'TriggerInput');
+                  if (selectEl && input) {
+                      const selectedTexts = Array.from(selectEl.selectedOptions).map(o => o.text);
+                      if (selectedTexts.length > 0) {
+                          input.placeholder = selectedTexts.join(', ');
+                      } else {
+                          input.placeholder = selectId.includes('Group') ? 'Chọn nhóm người dùng...' : 'Chọn vai trò...';
+                      }
+                  }
+              }
+          }
+
+           function rebuildCustomMultiselect(selectId) {
+               const selectEl = document.getElementById(selectId);
+               if (!selectEl) return;
+ 
+               const checklistContainer = document.getElementById(selectId + '_checklist');
+               if (checklistContainer) {
+                   checklistContainer.innerHTML = '';
+                   const options = Array.from(selectEl.options);
+                   if (options.length === 0) {
+                       checklistContainer.innerHTML = '<div style="padding:10px;color:var(--text-muted);font-size:12px;text-align:center;">Không có dữ liệu</div>';
+                       return;
+                   }
+                   options.forEach(opt => {
+                       const label = document.createElement('label');
+                       label.className = 'checklist-item';
+                       
+                       const checkbox = document.createElement('input');
+                       checkbox.type = 'checkbox';
+                       checkbox.value = opt.value;
+                       checkbox.checked = opt.selected;
+                       
+                       checkbox.onchange = function(e) {
+                           e.stopPropagation();
+                           opt.selected = checkbox.checked;
+                           selectEl.dispatchEvent(new Event('change'));
+                       };
+                       
+                       const span = document.createElement('span');
+                       span.innerText = opt.text;
+                       
+                       label.appendChild(checkbox);
+                       label.appendChild(span);
+                       
+                       checklistContainer.appendChild(label);
+                   });
+                   return;
+               }
+ 
+               const customContainer = document.getElementById(selectId + '_custom');
+               if (!customContainer) return;
+ 
+               const listContainer = customContainer.querySelector('.multiselect-options-list');
+               if (!listContainer) return;
+ 
+               listContainer.innerHTML = '';
+               const options = Array.from(selectEl.options);
+               if (options.length === 0) {
+                   listContainer.innerHTML = '<div class="cell-center" style="padding:10px;color:var(--text-muted);font-size:12px;">Không có dữ liệu</div>';
+                   updateMultiselectTriggerText(selectId);
+                   return;
+               }
+ 
+               options.forEach(opt => {
+                   const optDiv = document.createElement('div');
+                   optDiv.className = 'multiselect-option';
+                   
+                   const checkbox = document.createElement('input');
+                   checkbox.type = 'checkbox';
+                   checkbox.value = opt.value;
+                   checkbox.checked = opt.selected;
+                   
+                   checkbox.onchange = function(e) {
+                       e.stopPropagation();
+                       opt.selected = checkbox.checked;
+                       selectEl.dispatchEvent(new Event('change'));
+                       updateMultiselectTriggerText(selectId);
+                   };
+ 
+                   const span = document.createElement('span');
+                   span.innerText = opt.text;
+ 
+                   optDiv.appendChild(checkbox);
+                   optDiv.appendChild(span);
+                   
+                   optDiv.onclick = function(e) {
+                       if (e.target !== checkbox) {
+                           checkbox.checked = !checkbox.checked;
+                           opt.selected = checkbox.checked;
+                           selectEl.dispatchEvent(new Event('change'));
+                           updateMultiselectTriggerText(selectId);
+                       }
+                   };
+ 
+                   listContainer.appendChild(optDiv);
+               });
+ 
+               updateMultiselectTriggerText(selectId);
+           }
+ 
+           function filterChecklist(selectId, query) {
+               const checklistContainer = document.getElementById(selectId + '_checklist');
+               if (!checklistContainer) return;
+               const q = query.trim().toLowerCase();
+               checklistContainer.querySelectorAll('.checklist-item').forEach(item => {
+                   const text = item.querySelector('span').innerText.toLowerCase();
+                   if (text.includes(q)) {
+                       item.style.setProperty('display', 'flex', 'important');
+                   } else {
+                       item.style.setProperty('display', 'none', 'important');
+                   }
+               });
+           }
+
+          // Close dropdown when clicking outside
+          document.addEventListener('click', function(e) {
+              if (!e.target.closest('.multiselect-container')) {
+                  document.querySelectorAll('.multiselect-dropdown.active').forEach(d => {
+                      d.classList.remove('active');
+                      const selectId = d.id.replace('Dropdown', '');
+                      restoreMultiselectInput(selectId);
+                  });
+              }
+          });
 
           function handleGroupChange(context) {
               const type = (context === 'addPerson') ? 'PERSON' : ((context === 'addOrg') ? 'ORG' : currentEditingType);

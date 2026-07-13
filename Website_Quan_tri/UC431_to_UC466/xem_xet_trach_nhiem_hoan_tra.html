@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -971,7 +971,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('progressModal')">Đóng cửa sổ</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('progressModal')">Đóng</button>
                 <button type="button" class="btn btn-primary" onclick="saveProgress()"><i class="fa-solid fa-check"></i> Hoàn tất cập nhật</button>
             </div>
         </div>
@@ -1161,16 +1161,18 @@
 
             filtered.forEach((d, index) => {
                 const tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = (e) => {
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn')) {
+                        openDetailModal(d.id);
+                    }
+                };
                 const paid = getDossierPaid(d);
                 const percent = Math.min(100, Math.round((paid / d.refundTotal) * 100)) || 0;
                 
                 const statusBadge = d.status === 'Đã hoàn thành' 
                     ? '<span class="badge badge-success">Đã hoàn thành</span>' 
                     : '<span class="badge badge-warning">Đang thu hồi</span>';
-
-                // Fixed slots (Rule 3)
-                // Slot 1: Xem chi tiết (Always enabled)
-                const viewBtn = `<button class="icon-btn view" title="Xem chi tiết hồ sơ hoàn trả" onclick="openDetailModal('${d.id}')"><i class="fa-solid fa-eye"></i></button>`;
                 
                 // Slot 2: Ghi nhận thu hồi (Only enabled for active dossiers, disabled for completed ones)
                 let progBtn = `<button class="icon-btn edit" title="Cập nhật tiến độ thu hồi" onclick="openProgressModal('${d.id}')"><i class="fa-solid fa-clock-rotate-left"></i></button>`;
@@ -1205,7 +1207,6 @@
                     <td style="text-align:center;">
                         <div class="action-flex">
                             ${progBtn}
-                            ${viewBtn}
                             ${deleteBtn}
                         </div>
                     </td>

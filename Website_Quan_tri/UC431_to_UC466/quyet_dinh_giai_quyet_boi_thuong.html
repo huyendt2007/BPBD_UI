@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -794,7 +794,7 @@
                 <!-- Populated dynamically -->
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeClaimDetailModal()">Đóng cửa sổ</button>
+                <button class="btn btn-primary" onclick="closeClaimDetailModal()">Đóng</button>
             </div>
         </div>
     </div>
@@ -1038,6 +1038,12 @@
 
             pageData.forEach((item, idx) => {
                 const tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = (e) => {
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && e.target.type !== 'checkbox' && e.target.tagName !== 'A') {
+                        viewDecisionDetail(item.id);
+                    }
+                };
 
                 let badgeClass = 'badge-draft';
                 if (item.status === 'Đã ký') badgeClass = 'badge-success';
@@ -1047,8 +1053,6 @@
                 // Fixed 5-slot Action Column Alignment (Rule 3)
                 const isDraft = item.status === 'Lưu nháp';
                 const isPending = item.status === 'Chờ ký';
-
-                const viewBtn = `<button class="icon-btn view" title="Xem quyết định" onclick="viewDecisionDetail('${item.id}')"><i class="fa-solid fa-eye"></i></button>`;
                 
                 let editBtn = `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ cập nhật quyết định nháp/bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 if (isDraft || item.status === 'Bị từ chối') {
@@ -1082,7 +1086,6 @@
                     <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                     <td style="text-align:center;">
                         <div class="action-flex">
-                            ${viewBtn}
                             ${editBtn}
                             ${deleteBtn}
                             ${acceptBtn}

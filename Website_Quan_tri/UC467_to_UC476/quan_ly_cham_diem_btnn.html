@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -428,44 +428,83 @@
         }
 
         .icon-btn {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
+            margin: 0 4px;
+            vertical-align: middle;
+            border: none;
             cursor: pointer;
             font-size: 13px;
-            padding: 4px;
-            border-radius: var(--border-radius-sm);
-            transition: all 0.15s ease-in-out;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 28px;
             height: 28px;
-            margin: 0 3px;
+            border-radius: 50%;
         }
 
+        /* Tác vụ Xem chi tiết (Màu xanh dương) */
+        .icon-btn.view {
+            background-color: #EFF6FF;
+            color: #2563EB;
+        }
         .icon-btn.view:hover {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.05);
+            background-color: #DBEAFE;
+            color: #1D4ED8;
+            transform: translateY(-1px);
         }
 
+        /* Tác vụ Tiếp nhận/Thụ lý/Duyệt/Thành công (Màu xanh lục) */
+        .icon-btn.accept, .icon-btn.success {
+            background-color: #ECFDF5;
+            color: #10B981;
+        }
+        .icon-btn.accept:hover, .icon-btn.success:hover {
+            background-color: #D1FAE5;
+            color: #047857;
+            transform: translateY(-1px);
+        }
+
+        /* Tác vụ Chỉnh sửa / Cập nhật (Màu cam) */
+        .icon-btn.edit {
+            background-color: #FFF7ED;
+            color: #F59E0B;
+        }
         .icon-btn.edit:hover {
-            color: var(--info-color);
-            border-color: var(--info-color);
-            background-color: rgba(59, 130, 246, 0.05);
+            background-color: #FFEDD5;
+            color: #B45309;
+            transform: translateY(-1px);
         }
 
-        .icon-btn.success:hover {
-            color: var(--success-color);
-            border-color: var(--success-color);
-            background-color: rgba(16, 185, 129, 0.05);
+        /* Tác vụ In ấn / Tài liệu / Lịch sử (Màu tím) */
+        .icon-btn.print {
+            background-color: #F5F3FF;
+            color: #8B5CF6;
+        }
+        .icon-btn.print:hover {
+            background-color: #EDE9FE;
+            color: #6D28D9;
+            transform: translateY(-1px);
         }
 
-        .icon-btn.delete:hover {
-            color: var(--danger-color);
-            border-color: var(--danger-color);
-            background-color: rgba(239, 68, 68, 0.05);
+        /* Tác vụ Xóa / Từ chối (Màu đỏ) */
+        .icon-btn.delete, .icon-btn.reject {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
+        .icon-btn.delete:hover, .icon-btn.reject:hover {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+            transform: translateY(-1px);
+        }
+
+        /* Trạng thái Vô hiệu hóa (Disabled State) */
+        .icon-btn.disabled, .icon-btn[disabled] {
+            background-color: #F1F5F9 !important;
+            color: #94A3B8 !important;
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         /* Top Role Switcher Header */
@@ -1998,6 +2037,12 @@
             // Render Rows with Fixed Action Slots (Mandatory Rule 3)
             paginatedData.forEach((item, index) => {
                 const row = document.createElement('tr');
+                row.style.cursor = 'pointer';
+                row.onclick = (e) => {
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn')) {
+                        openDetailView(item.id);
+                    }
+                };
 
                 // Status Badge styling
                 let badgeClass = "badge-gray";
@@ -2008,9 +2053,6 @@
                 else if (item.status === 'Không đánh giá') badgeClass = "badge-red";
 
                 // Thao tac slots action buttons
-                // Slot 1: Xem chi tiet (Always active)
-                const btnView = `<button class="icon-btn view" onclick="openDetailView(${item.id})" title="Xem chi tiết điểm"><i class="fa-solid fa-eye"></i></button>`;
-
                 // Slot 2: Tu cham diem (Active for STP when status is draft/not started)
                 let btnScore = "";
                 const isStpAllowed = (activeRole === 'stp' && item.unit === "Sở Tư pháp Hà Nội" && (item.status === 'Chưa bắt đầu' || item.status === 'Đang tự chấm'));
@@ -2036,7 +2078,7 @@
                 }
 
                 // Column alignment rules: STP vs BTP centering
-                const actionCellHtml = activeRole === 'btp' ? `${btnView} ${btnEval}` : `${btnView} ${btnScore}`;
+                const actionCellHtml = activeRole === 'btp' ? btnEval : btnScore;
                 row.innerHTML = `
                     <td class="text-center">${startIdx + index + 1}</td>
                     <td class="text-center"><strong>Kỳ chấm năm ${item.year}</strong></td>

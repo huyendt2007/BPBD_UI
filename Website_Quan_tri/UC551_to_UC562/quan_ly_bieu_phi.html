@@ -404,37 +404,81 @@
         .icon-btn {
             margin: 0 4px;
             vertical-align: middle;
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
+            border: none;
             cursor: pointer;
             font-size: 13px;
-            padding: 4px;
-            border-radius: var(--border-radius-sm);
-            transition: all 0.15s ease-in-out;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 28px;
             height: 28px;
+            border-radius: 50%;
         }
 
+        /* Tác vụ Xem chi tiết (Màu xanh dương) */
+        .icon-btn.view {
+            background-color: #EFF6FF;
+            color: #2563EB;
+        }
         .icon-btn.view:hover {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.05);
+            background-color: #DBEAFE;
+            color: #1D4ED8;
+            transform: translateY(-1px);
         }
 
+        /* Tác vụ Phê duyệt / Tiếp nhận / Thụ lý (Màu xanh lục) */
+        .icon-btn.accept {
+            background-color: #ECFDF5;
+            color: #10B981;
+        }
+        .icon-btn.accept:hover {
+            background-color: #D1FAE5;
+            color: #047857;
+            transform: translateY(-1px);
+        }
+
+        /* Tác vụ Chỉnh sửa / Cập nhật (Màu cam) */
+        .icon-btn.edit {
+            background-color: #FFF7ED;
+            color: #F59E0B;
+        }
         .icon-btn.edit:hover {
-            color: var(--info-color);
-            border-color: var(--info-color);
-            background-color: rgba(59, 130, 246, 0.05);
+            background-color: #FFEDD5;
+            color: #B45309;
+            transform: translateY(-1px);
         }
 
-        .icon-btn.delete:hover {
-            color: var(--danger-color);
-            border-color: var(--danger-color);
-            background-color: rgba(239, 68, 68, 0.05);
+        /* Tác vụ In ấn / Tài liệu / Lịch sử (Màu tím) */
+        .icon-btn.print {
+            background-color: #F5F3FF;
+            color: #8B5CF6;
+        }
+        .icon-btn.print:hover {
+            background-color: #EDE9FE;
+            color: #6D28D9;
+            transform: translateY(-1px);
+        }
+
+        /* Tác vụ Xóa / Từ chối (Màu đỏ) */
+        .icon-btn.delete, .icon-btn.reject {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
+        .icon-btn.delete:hover, .icon-btn.reject:hover {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+            transform: translateY(-1px);
+        }
+
+        /* Trạng thái Vô hiệu hóa (Disabled State) */
+        .icon-btn.disabled, .icon-btn[disabled] {
+            background-color: #F1F5F9 !important;
+            color: #94A3B8 !important;
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         /* Table Empty State */

@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tra cứu Phục hồi danh dự - Cán bộ</title>
+    <title>Tra cứu Phục hồi danh dự</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Flatpickr CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
+
     <!-- Shared stylesheet -->
     <link rel="stylesheet" href="quan_ly_boi_thuong.css">
 
@@ -23,14 +23,17 @@
             padding: 20px;
             margin-bottom: 20px;
         }
+
         .page-container {
             max-width: 1400px;
             margin: 0 auto;
         }
+
         th.sortable {
             cursor: pointer;
             user-select: none;
         }
+
         th.sortable:hover {
             background-color: #f1f5f9;
         }
@@ -49,7 +52,8 @@
                 </select>
             </div>
             <div>
-                <span style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left: 10px;">Cán bộ đang đăng nhập:</span>
+                <span style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left: 10px;">Cán bộ đang
+                    đăng nhập:</span>
                 <select class="role-selector" id="currentOfficerSelector">
                     <option value="Nguyễn Văn Chuyên Viên">Nguyễn Văn Chuyên Viên (CB1)</option>
                     <option value="Trần Thị Chuyên Viên">Trần Thị Chuyên Viên (CB2)</option>
@@ -60,7 +64,8 @@
 
         <div class="page-header">
             <div class="page-title">
-                <h2><i class="fa-solid fa-ribbon" style="color: #1e3a8a; margin-right: 8px;"></i>TRA CỨU TIẾN TRÌNH PHỤC HỒI DANH DỰ</h2>
+                <h2><i class="fa-solid fa-ribbon" style="color: #1e3a8a; margin-right: 8px;"></i>TRA CỨU TIẾN TRÌNH PHỤC
+                    HỒI DANH DỰ</h2>
                 <p>Danh sách hồ sơ bồi thường nhà nước yêu cầu tổ chức phục hồi danh dự cho người bị thiệt hại</p>
             </div>
         </div>
@@ -78,7 +83,8 @@
                 </div>
                 <div>
                     <span class="form-label">Cơ quan giải quyết bồi thường</span>
-                    <input type="text" class="form-control" id="filterAgency" list="agencySuggestions" placeholder="Nhập cơ quan giải quyết...">
+                    <input type="text" class="form-control" id="filterAgency" list="agencySuggestions"
+                        placeholder="Nhập cơ quan giải quyết...">
                     <datalist id="agencySuggestions">
                         <option value="Sở Tư pháp Hà Nội">
                         <option value="Tòa án nhân dân TP. Hà Nội">
@@ -114,14 +120,16 @@
                     <span class="form-label">Thời điểm cập nhật: Từ ngày</span>
                     <div style="position: relative;">
                         <input type="text" class="form-control" id="filterFromDate" placeholder="dd/mm/yyyy">
-                        <i class="fa-solid fa-calendar" style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
+                        <i class="fa-solid fa-calendar"
+                            style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
                     </div>
                 </div>
                 <div>
                     <span class="form-label">Thời điểm cập nhật: Đến ngày</span>
                     <div style="position: relative;">
                         <input type="text" class="form-control" id="filterToDate" placeholder="dd/mm/yyyy">
-                        <i class="fa-solid fa-calendar" style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
+                        <i class="fa-solid fa-calendar"
+                            style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
                     </div>
                 </div>
             </div>
@@ -136,7 +144,8 @@
         </div>
 
         <!-- GRID HEADER & ACTION BUTTONS -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 24px;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 24px;">
             <div style="font-weight: 600; color: #475569;">
                 Danh sách kết quả tra cứu tiến trình PHDD
             </div>
@@ -190,7 +199,8 @@
     </div>
 
     <!-- Toast Notification -->
-    <div class="toast-notif success" id="toast" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 9999;">
+    <div class="toast-notif success" id="toast"
+        style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 9999;">
         <i class="fa-solid fa-circle-check"></i>
         <span id="toastMessage">Thông báo</span>
     </div>
@@ -228,7 +238,7 @@
                     if (c) {
                         item.nyc = c.nyc;
                         item.agency = c.agency || item.agency;
-                        
+
                         // Map claimsList state to PHDD states
                         if (c.status === 'Hoàn thành') {
                             item.status = 'Hoàn thành';
@@ -247,14 +257,14 @@
                     }
                 });
             }
-            
+
             // Set up date pickers
             const today = new Date();
             const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-            
+
             flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true });
             flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true });
-            
+
             document.getElementById('filterFromDate').value = formatDateVi(firstDay);
             document.getElementById('filterToDate').value = formatDateVi(today);
 
@@ -285,7 +295,7 @@
             document.getElementById('filterAgency').value = '';
             document.getElementById('filterStatus').value = '';
             document.getElementById('filterType').value = '';
-            
+
             const today = new Date();
             const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
             document.getElementById('filterFromDate').value = formatDateVi(firstDay);
@@ -379,7 +389,7 @@
                 else if (item.status === 'Chờ thực thi' || item.status === 'Chờ thực hiện') statusBadge = '<span class="badge badge-warning">Chờ thực hiện</span>';
                 else if (item.status === 'Từ chối') statusBadge = '<span class="badge badge-danger">Từ chối</span>';
                 else if (item.status === 'Tạm hoãn') statusBadge = '<span class="badge badge-info">Tạm hoãn</span>';
-                
+
                 let limitBadge = '';
                 if (item.deadlineStatus.includes('🟢')) limitBadge = `<span style="color:var(--success-color); font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px; margin-right:4px;"></i> ${item.deadlineStatus.replace('🟢 ', '')}</span>`;
                 else if (item.deadlineStatus.includes('🟡')) limitBadge = `<span style="color:var(--accent-color); font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px; margin-right:4px;"></i> ${item.deadlineStatus.replace('🟡 ', '')}</span>`;
@@ -387,6 +397,12 @@
                 else limitBadge = `<span style="color:var(--text-muted);">${item.deadlineStatus}</span>`;
 
                 const tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = (e) => {
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn')) {
+                        goToDetail(item.code);
+                    }
+                };
                 tr.innerHTML = `
                     <td style="text-align: center;">${i + 1}</td>
                     <td style="text-align: center; font-weight:600; color:var(--primary-light);">${item.code}</td>
@@ -397,9 +413,7 @@
                     <td style="text-align: center;">${limitBadge}</td>
                     <td style="text-align: center;">${item.updatedDate}</td>
                     <td style="text-align: center;">
-                        <button class="icon-btn view" title="Xem chi tiết" onclick="goToDetail('${item.code}')">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
+                        <span style="color:var(--text-muted); font-size:12px; font-style:italic;">Chọn dòng để xem</span>
                     </td>
                 `;
                 tbody.appendChild(tr);

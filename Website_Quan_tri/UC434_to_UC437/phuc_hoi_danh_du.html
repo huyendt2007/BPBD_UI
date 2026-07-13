@@ -1,13 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phục hồi danh dự - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
+    <title>Tra cứu Phục hồi danh dự - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flatpickr (DatePicker) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <style>
         :root {
             /* Design System Tokens synced with css_standards.md */
@@ -83,79 +87,20 @@
             margin-top: 4px;
         }
 
-        /* Stat Dashboard Cards Row */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background-color: var(--bg-surface);
+        /* Advanced Filter Panel */
+        .filter-panel {
+            background-color: #FAFAFA;
+            border: 1px solid var(--border-color);
             border-radius: var(--border-radius-lg);
-            box-shadow: var(--box-shadow);
-            padding: 15px 20px;
-            border-left: 4px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .stat-card.total { border-left-color: var(--primary-color); }
-        .stat-card.processing { border-left-color: var(--info-color); }
-        .stat-card.pending { border-left-color: var(--warning-color); }
-        .stat-card.completed { border-left-color: var(--success-color); }
-
-        .stat-info h3 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .stat-info p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
-            font-weight: 500;
-        }
-
-        .stat-icon {
-            font-size: 24px;
-            opacity: 0.3;
-        }
-        .stat-card.total .stat-icon { color: var(--primary-color); }
-        .stat-card.processing .stat-icon { color: var(--info-color); }
-        .stat-card.pending .stat-icon { color: var(--warning-color); }
-        .stat-card.completed .stat-icon { color: var(--success-color); }
-
-        /* Card Section Component */
-        .card-section {
-            background-color: var(--bg-surface);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--box-shadow);
-            padding: 20px;
+            padding: 16px 20px;
             margin-bottom: 20px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: var(--box-shadow);
         }
 
-        .section-title {
-            color: var(--primary-color);
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Filter block styling */
         .filter-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            gap: 16px;
         }
 
         .form-group {
@@ -165,25 +110,24 @@
         }
 
         .form-label {
+            font-size: 12px;
             font-weight: 600;
-            font-size: 13px;
             color: var(--text-main);
-        }
-
-        .form-label span.required {
-            color: var(--danger-color);
-            margin-left: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .form-control {
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            padding: 8px 12px;
-            font-size: 13px;
             width: 100%;
+            height: 38px;
+            padding: 8px 12px;
+            font-size: 13.5px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background-color: var(--bg-surface);
+            color: var(--text-main);
             outline: none;
             transition: all var(--transition-speed);
-            background-color: var(--bg-surface);
         }
 
         .form-control:focus {
@@ -191,2438 +135,1055 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        .form-control:disabled {
-            background-color: #F8FAFC;
+        .date-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .date-input-container i {
+            position: absolute;
+            right: 12px;
             color: var(--text-muted);
-            cursor: not-allowed;
-            border-color: #E2E8F0;
+            pointer-events: none;
+            font-size: 14px;
         }
 
         .filter-actions {
-            margin-top: 15px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
             grid-column: span 4;
-        }
-
-        /* Date Range custom layout */
-        .date-range-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .date-range-group span {
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-
-        /* Toolbar above tables */
-        .toolbar {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-top: 8px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 12px;
         }
 
-        /* Button configurations */
+        /* Buttons styling */
         .btn {
+            height: 38px;
+            padding: 0 16px;
+            font-size: 13.5px;
             font-weight: 500;
             border-radius: var(--border-radius-md);
-            padding: 8px 16px;
-            transition: all var(--transition-speed);
             cursor: pointer;
-            border: none;
-            font-size: 13px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            outline: none;
             justify-content: center;
+            gap: 8px;
+            transition: all var(--transition-speed);
         }
 
         .btn-primary {
             background-color: var(--primary-color);
-            color: white;
+            border: 1px solid var(--primary-color);
+            color: #FFFFFF;
         }
 
         .btn-primary:hover {
             background-color: var(--primary-hover);
-        }
-
-        .btn-outline-primary {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .btn-outline-primary:hover {
-            background-color: rgba(30, 58, 138, 0.05);
-        }
-
-        .btn-outline-success {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--success-color);
-            color: var(--success-color);
-        }
-
-        .btn-outline-success:hover {
-            background-color: rgba(16, 185, 129, 0.05);
+            border-color: var(--primary-hover);
         }
 
         .btn-secondary {
-            background-color: #E2E8F0;
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
             color: var(--text-main);
         }
 
         .btn-secondary:hover {
-            background-color: #CBD5E1;
+            background-color: #F8FAFC;
+            border-color: #CBD5E1;
         }
 
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #059669;
-        }
-
-        .btn-accent {
-            background-color: var(--accent-color);
-            color: white;
-        }
-        .btn-accent:hover {
-            background-color: var(--accent-hover);
-        }
-
-        /* Table containers & standard pagination */
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        /* Results table card */
+        .results-card {
             background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .results-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Excel Download Button */
+        .excel-btn {
+            background-color: #ECFDF5;
+            border: 1px solid #10B981;
+            color: #047857;
+        }
+        .excel-btn:hover {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        /* Modern Custom Table styling */
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
         }
 
         .custom-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
             text-align: left;
         }
 
         .custom-table th {
             background-color: var(--table-header-bg);
-            color: #475569;
+            color: var(--text-main);
             font-weight: 600;
+            font-size: 13px;
             padding: 12px 16px;
-            border-bottom: 2px solid var(--border-color);
-            white-space: nowrap;
+            border-bottom: 1.5px solid var(--border-color);
+            letter-spacing: 0.3px;
+            user-select: none;
+        }
+
+        .custom-table th.sortable {
+            cursor: pointer;
+        }
+
+        .custom-table th.sortable:hover {
+            background-color: #E2E8F0;
+        }
+
+        .custom-table th i {
+            margin-left: 4px;
+            font-size: 11px;
+            color: var(--text-muted);
         }
 
         .custom-table td {
-            padding: 12px 16px;
+            padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
-            color: var(--text-main);
+            font-size: 13.5px;
             vertical-align: middle;
+            color: var(--text-main);
         }
 
-        .custom-table tr:hover {
-            background-color: #F0F9FF; /* Hover row style as per standards */
-            transition: background-color var(--transition-speed);
+        .custom-table tbody tr {
+            transition: background-color 0.15s ease;
         }
 
-        /* Table Alignments */
-        .text-center { text-align: center !important; }
-        .text-left { text-align: left !important; }
-        .text-right { text-align: right !important; }
+        .custom-table tbody tr:hover {
+            background-color: #F8FAFC;
+        }
 
-        /* Badge design */
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 11px;
+        /* Alignment Utilities */
+        .cell-center {
+            text-align: center !important;
+        }
+
+        .cell-right {
+            text-align: right !important;
+        }
+
+        /* Link Styling */
+        .text-link {
+            color: var(--secondary-color);
             font-weight: 600;
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+
+        .text-link:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        /* Status tags styling */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border-radius: 50px;
+            line-height: 1.2;
             text-align: center;
-            white-space: nowrap;
+        }
+
+        .badge-draft {
+            background-color: #F1F5F9;
+            color: #475569;
+        }
+
+        .badge-pending {
+            background-color: #EFF6FF;
+            color: #1E40AF;
+        }
+
+        .badge-notice {
+            background-color: #F5F3FF;
+            color: #6D28D9;
+        }
+
+        .badge-processing {
+            background-color: #FFF7ED;
+            color: #C2410C;
         }
 
         .badge-success {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success-color);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-
-        .badge-danger {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger-color);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background-color: #ECFDF5;
+            color: #047857;
         }
 
         .badge-warning {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: var(--warning-color);
-            border: 1px solid rgba(245, 158, 11, 0.2);
+            background-color: #FEF3C7;
+            color: #B45309;
         }
 
-        .badge-info {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: var(--info-color);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+        .badge-danger {
+            background-color: #FEF2F2;
+            color: #EF4444;
         }
 
-        .badge-gray {
-            background-color: #F1F5F9;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
+        /* Term indicators */
+        .term-normal {
+            color: var(--text-main);
         }
 
-        /* Action Buttons in Grid - Fixed Slot rule */
-        .action-cell {
-            text-align: center;
-            white-space: nowrap;
+        .term-warning {
+            color: #D97706;
+            font-weight: 600;
+        }
+
+        .term-critical {
+            color: var(--danger-color);
+            font-weight: 700;
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* Action columns styling (Fixed-Slot - Colored Circular Action Buttons) */
+        .action-flex {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
         }
 
         .icon-btn {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
+            border: none;
             cursor: pointer;
             font-size: 13px;
-            padding: 4px;
-            border-radius: var(--border-radius-sm);
-            transition: all 0.15s ease-in-out;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 28px;
             height: 28px;
+            border-radius: 50%;
             margin: 0 4px;
         }
 
-        .icon-btn.view:hover { color: var(--primary-color); border-color: var(--primary-color); background-color: rgba(30, 58, 138, 0.05); }
-        .icon-btn.edit:hover { color: var(--info-color); border-color: var(--info-color); background-color: rgba(59, 130, 246, 0.05); }
-        .icon-btn.print:hover { color: var(--success-color); border-color: var(--success-color); background-color: rgba(16, 185, 129, 0.05); }
+        /* Tác vụ Xem chi tiết (Màu xanh dương) */
+        .icon-btn.view {
+            background-color: #EFF6FF;
+            color: #2563EB;
+        }
 
-        /* Pagination Container aligned under Table */
+        .icon-btn.view:hover {
+            background-color: #DBEAFE;
+            color: #1D4ED8;
+            transform: translateY(-1px);
+        }
+
+        /* Pagination container design */
         .pagination-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
+            padding: 12px 20px;
             background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-top: none;
-            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .pagination-info {
             font-size: 13px;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
+            color: var(--text-muted);
         }
 
         .pagination-controls {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 6px;
         }
 
-        .pagination-buttons {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .page-btn {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 6px 12px;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
+        .page-item {
+            min-width: 32px;
+            height: 32px;
+            padding: 0 6px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid var(--border-color);
+            background-color: #FFFFFF;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            user-select: none;
+            transition: all var(--transition-speed);
         }
 
-        .page-btn:hover:not(:disabled) {
-            background-color: #F1F5F9;
-            border-color: var(--text-muted);
+        .page-item:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            background-color: #F8FAFC;
         }
 
-        .page-btn.active {
+        .page-item.active {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             color: #FFFFFF;
         }
 
-        .page-btn:disabled {
-            opacity: 0.4;
+        .page-item.disabled {
+            opacity: 0.5;
             cursor: not-allowed;
+            pointer-events: none;
+            background-color: #F1F5F9;
         }
 
-        /* Modal Dialog Structure - Sticky Modal Headers & Footers (Rule 1) */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn var(--transition-speed);
-        }
-
-        .modal-content {
-            background-color: white;
-            border-radius: var(--border-radius-lg);
-            width: 85%;
-            max-width: 1050px;
-            max-height: 90vh; /* Keep within viewport boundaries */
+        .page-size-selector {
             display: flex;
-            flex-direction: column;
-            overflow: hidden; /* Prevent container scrolling */
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .modal-header {
-            padding: 16px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-shrink: 0; /* Header stays static */
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
-        .modal-header h3 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .close-modal-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 18px;
+        .page-size-select {
+            height: 32px;
+            padding: 4px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: #FFFFFF;
+            font-size: 13px;
+            outline: none;
             cursor: pointer;
-            opacity: 0.8;
-            transition: opacity var(--transition-speed);
         }
 
-        .close-modal-btn:hover {
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #1E293B;
+            color: #FFFFFF;
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toast.visible {
+            transform: translateY(0);
             opacity: 1;
         }
 
-        .modal-body {
-            padding: 20px;
-            overflow-y: auto; /* Enable independent vertical scrolling */
-            flex: 1; /* Allow body to grow and fill available space */
-            background-color: #F8FAFC;
+        .toast.success {
+            border-left: 4px solid var(--success-color);
         }
 
-        .modal-footer {
-            padding: 14px 20px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #FFFFFF;
-            flex-shrink: 0; /* Footer stays static */
+        .toast i {
+            font-size: 16px;
         }
 
-        /* Stepper Layout (Officer Wizard) */
-        .stepper-container {
-            background-color: white;
-            border-radius: var(--border-radius-md);
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-            border: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-            z-index: 2;
-            cursor: pointer;
-            background: white;
-            padding: 0 10px;
-        }
-
-        .step-num {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 2px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 12px;
-            color: var(--text-muted);
-            background-color: #F8FAFC;
-            transition: all var(--transition-speed);
-        }
-
-        .step-label {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-muted);
-            transition: all var(--transition-speed);
-        }
-
-        .step.active .step-num {
-            border-color: var(--primary-color);
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .step.active .step-label {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .step.completed .step-num {
-            border-color: var(--success-color);
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .step.completed .step-label {
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        .step.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .step.disabled .step-num {
-            background-color: #E2E8F0;
-            border-color: #CBD5E1;
-            color: #94A3B8;
-        }
-
-        .stepper-line {
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            right: 5%;
-            height: 2px;
-            background-color: var(--border-color);
-            z-index: 1;
-            transform: translateY(-50%);
-        }
-
-        .stepper-line-active {
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            width: 0%;
-            height: 2px;
-            background-color: var(--success-color);
-            z-index: 1;
-            transform: translateY(-50%);
-            transition: width 0.3s ease;
-        }
-
-        /* Form Wizard Steps container */
-        .step-content {
-            display: none;
-            background-color: white;
-            border-radius: var(--border-radius-md);
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-            animation: fadeIn 0.3s;
-        }
-
-        .step-content.active {
-            display: block;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .grid-full-width {
-            grid-column: span 2;
-        }
-
-        /* Custom file upload stylings */
-        .file-upload-container {
-            border: 1px dashed var(--border-color);
-            border-radius: var(--border-radius-sm);
-            padding: 15px;
-            background-color: #F8FAFC;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color var(--transition-speed);
-        }
-
-        .file-upload-container:hover {
-            border-color: var(--secondary-color);
-        }
-
-        .file-upload-container i {
-            font-size: 24px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        .file-upload-container p {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .file-list {
-            margin-top: 10px;
-            list-style: none;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 10px;
-            background-color: #F1F5F9;
-            border-radius: var(--border-radius-sm);
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-
-        .file-item a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .file-item button {
-            background: none;
-            border: none;
-            color: var(--danger-color);
-            cursor: pointer;
-        }
-
-        /* Radio & Checkbox grids */
-        .options-group {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            height: 38px;
-        }
-
-        .option-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .option-item input {
-            cursor: pointer;
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Alert block in forms */
-        .form-alert {
-            background-color: #EFF6FF;
-            border-left: 4px solid var(--info-color);
-            padding: 12px 15px;
-            border-radius: var(--border-radius-sm);
-            font-size: 12px;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .form-alert.warning {
-            background-color: #FFFBEB;
-            border-left-color: var(--warning-color);
-            color: #B45309;
-        }
-
-        .form-alert.danger {
-            background-color: #FEF2F2;
-            border-left-color: var(--danger-color);
-            color: #B91C1C;
-        }
-
-        .form-alert i {
-            font-size: 14px;
-            margin-top: 1px;
-        }
-
-        /* Document Template Preview */
-        .template-preview {
-            background-color: #FAFBFD;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            padding: 15px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #334155;
-            max-height: 150px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Notification Toast styles */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: white;
-            color: var(--text-main);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            padding: 12px 20px;
-            border-radius: var(--border-radius-md);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            border-left: 4px solid var(--primary-color);
-            font-size: 13px;
-            animation: slideIn 0.3s forwards;
-        }
-
-        .toast.success { border-left-color: var(--success-color); }
-        .toast.error { border-left-color: var(--danger-color); }
-        .toast.warning { border-left-color: var(--warning-color); }
-
-        @keyframes slideIn {
-            from { transform: translateX(120%); }
-            to { transform: translateX(0); }
+        .toast.success i {
+            color: var(--success-color);
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Header Section -->
+    <!-- HEADER -->
     <div class="header-section">
         <h2 class="header-title">
-            <i class="fa-solid fa-scale-balanced"></i>
-            Phục hồi danh dự (Mã QT8.2)
+            <i class="fa-solid fa-folder-tree"></i>
+            Tra cứu Phục hồi danh dự
         </h2>
-        <p class="header-desc">Hệ thống theo dõi hồ sơ, ban hành thông báo và cập nhật kết quả khôi phục uy tín, danh dự cho người bị thiệt hại theo quy định.</p>
+        <p class="header-desc">
+            Tra cứu danh sách tiến trình, thời hạn thực hiện phục hồi danh dự kế thừa tự động từ hồ sơ giải quyết bồi thường.
+        </p>
     </div>
 
-    <!-- Quick Stats Cards Row -->
-    <div class="stats-container">
-        <div class="stat-card total">
-            <div class="stat-info">
-                <h3 id="statTotal">10</h3>
-                <p>Tổng số hồ sơ phục hồi danh dự</p>
-            </div>
-            <div class="stat-icon"><i class="fa-solid fa-folder-open"></i></div>
-        </div>
-        <div class="stat-card processing">
-            <div class="stat-info">
-                <h3 id="statProcessing">3</h3>
-                <p>Đang xử lý (Bước 1 - 2)</p>
-            </div>
-            <div class="stat-icon"><i class="fa-solid fa-spinner"></i></div>
-        </div>
-        <div class="stat-card pending">
-            <div class="stat-info">
-                <h3 id="statPending">2</h3>
-                <p>Đang chờ ý kiến (Bước 3)</p>
-            </div>
-            <div class="stat-icon"><i class="fa-solid fa-comments"></i></div>
-        </div>
-        <div class="stat-card completed">
-            <div class="stat-info">
-                <h3 id="statCompleted">5</h3>
-                <p>Đã hoàn thành / Đã đóng</p>
-            </div>
-            <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-        </div>
-    </div>
-
-    <!-- Search Filters Section -->
-    <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+    <!-- ADVANCED FILTER PANEL -->
+    <div class="filter-panel">
         <div class="filter-grid">
+            <!-- Mã hồ sơ -->
             <div class="form-group">
-                <label class="form-label">Mã hồ sơ YCBT</label>
-                <input type="text" class="form-control" id="searchMaHoSo" placeholder="Nhập mã hồ sơ...">
+                <label class="form-label" for="filterCode">Mã hồ sơ</label>
+                <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã hồ sơ...">
             </div>
+
+            <!-- Người bị thiệt hại -->
             <div class="form-group">
-                <label class="form-label">Tên người bị thiệt hại</label>
-                <input type="text" class="form-control" id="searchTenNguoiBiThietHai" placeholder="Nhập họ tên...">
+                <label class="form-label" for="filterNtc">Người bị thiệt hại</label>
+                <input type="text" class="form-control" id="filterNtc" placeholder="Nhập họ và tên...">
             </div>
+
+            <!-- Cơ quan giải quyết -->
             <div class="form-group">
-                <label class="form-label">Hình thức phục hồi danh dự</label>
-                <select class="form-control" id="searchHinhThuc">
-                    <option value="">-- Tất cả --</option>
-                    <option value="Xin lỗi trực tiếp">Xin lỗi trực tiếp</option>
-                    <option value="Đăng báo">Đăng báo</option>
-                    <option value="Cả hai">Cả hai</option>
+                <label class="form-label" for="filterAgency">Cơ quan giải quyết bồi thường</label>
+                <select class="form-control" id="filterAgency">
+                    <option value="">-- Tất cả cơ quan --</option>
+                    <option value="Tòa án nhân dân TP. Hà Nội">Tòa án nhân dân TP. Hà Nội</option>
+                    <option value="Công an Quận 1, TP. HCM">Công an Quận 1, TP. HCM</option>
+                    <option value="Viện kiểm sát nhân dân Tỉnh Long An">Viện kiểm sát nhân dân Tỉnh Long An</option>
+                    <option value="Cục Thi hành án dân sự tỉnh Bình Dương">Cục Thi hành án dân sự tỉnh Bình Dương</option>
+                    <option value="Tòa án nhân dân Quận Đống Đa">Tòa án nhân dân Quận Đống Đa</option>
+                    <option value="Công an Huyện Gia Lâm">Công an Huyện Gia Lâm</option>
+                    <option value="Viện kiểm sát nhân dân TP. Đà Nẵng">Viện kiểm sát nhân dân TP. Đà Nẵng</option>
+                    <option value="Tòa án nhân dân Tỉnh Quảng Ninh">Tòa án nhân dân Tỉnh Quảng Ninh</option>
+                    <option value="Cục Cảnh sát hình sự (C02)">Cục Cảnh sát hình sự (C02)</option>
+                    <option value="Tòa án nhân dân Tỉnh Đồng Nai">Tòa án nhân dân Tỉnh Đồng Nai</option>
                 </select>
             </div>
+
+            <!-- Trạng thái -->
             <div class="form-group">
-                <label class="form-label">Trạng thái quy trình</label>
-                <select class="form-control" id="searchTrangThai">
-                    <option value="">-- Tất cả --</option>
-                    <option value="Chưa bắt đầu">Chưa bắt đầu</option>
-                    <option value="Đang xử lý">Đang xử lý</option>
-                    <option value="Chờ ý kiến">Chờ ý kiến</option>
-                    <option value="Tạm dừng">Tạm dừng</option>
-                    <option value="Đã đóng">Đã đóng</option>
+                <label class="form-label" for="filterStatus">Trạng thái giải quyết</label>
+                <select class="form-control" id="filterStatus">
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="Lưu nháp">Lưu nháp</option>
+                    <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
+                    <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
+                    <option value="Chờ thụ lý">Chờ thụ lý</option>
+                    <option value="Từ chối tiếp nhận">Từ chối tiếp nhận</option>
+                    <option value="Từ chối thụ lý">Từ chối thụ lý</option>
+                    <option value="Đang xác minh thiệt hại">Đang xác minh thiệt hại</option>
+                    <option value="Đang thương lượng">Đang thương lượng</option>
+                    <option value="Thương lượng không thành công">Thương lượng không thành công</option>
+                    <option value="Chờ ban hành QĐ">Chờ ban hành QĐ</option>
+                    <option value="Chờ thực thi">Chờ thực thi</option>
                     <option value="Hoàn thành">Hoàn thành</option>
                 </select>
             </div>
+
+            <!-- Hình thức phục hồi danh dự -->
             <div class="form-group">
-                <label class="form-label">Trạng thái NBT</label>
-                <select class="form-control" id="searchTrangThaiNBT">
-                    <option value="">-- Tất cả --</option>
-                    <option value="Còn sống">Còn sống</option>
-                    <option value="Đã mất">Đã mất</option>
+                <label class="form-label" for="filterHinhThuc">Hình thức phục hồi danh dự</label>
+                <select class="form-control" id="filterHinhThuc">
+                    <option value="">-- Tất cả hình thức --</option>
+                    <option value="Trực tiếp xin lỗi">Trực tiếp xin lỗi</option>
+                    <option value="Đăng báo">Đăng báo</option>
+                    <option value="Cả hai hình thức">Cả hai hình thức</option>
                 </select>
             </div>
+
+            <!-- Cặp ngày cập nhật -->
             <div class="form-group">
-                <label class="form-label">Đơn vị xử lý</label>
-                <select class="form-control" id="searchDonVi">
-                    <option value="">-- Tất cả --</option>
-                    <option value="Bộ Tư pháp">Bộ Tư pháp</option>
-                    <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
-                    <option value="Sở Tư pháp TP.HCM">Sở Tư pháp TP.HCM</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Khoảng thời gian thụ lý</label>
-                <div class="date-range-group">
-                    <input type="text" class="form-control" id="searchTuNgay" placeholder="dd/mm/yyyy">
-                    <span>đến</span>
-                    <input type="text" class="form-control" id="searchDenNgay" placeholder="dd/mm/yyyy">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Hạn xử lý</label>
-                <div class="date-range-group">
-                    <input type="text" class="form-control" id="searchHanTu" placeholder="dd/mm/yyyy">
-                    <span>đến</span>
-                    <input type="text" class="form-control" id="searchHanDen" placeholder="dd/mm/yyyy">
+                <label class="form-label" for="filterFromDate">Cập nhật từ ngày</label>
+                <div class="date-input-container">
+                    <input type="text" class="form-control" id="filterFromDate" placeholder="dd/mm/yyyy">
+                    <i class="fa-regular fa-calendar"></i>
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="form-label" for="filterToDate">Cập nhật đến ngày</label>
+                <div class="date-input-container">
+                    <input type="text" class="form-control" id="filterToDate" placeholder="dd/mm/yyyy">
+                    <i class="fa-regular fa-calendar"></i>
+                </div>
+            </div>
+
+            <!-- Empty slot for alignment layout -->
+            <div class="form-group"></div>
+
+            <!-- Action buttons -->
             <div class="filter-actions">
-                <button class="btn btn-outline-primary" onclick="resetFilters()">Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="applyFilters()"><i class="fa fa-search"></i> Tìm kiếm</button>
+                <button class="btn btn-secondary" onclick="resetFilters()">
+                    <i class="fa-solid fa-filter-circle-xmark"></i>
+                    Xóa bộ lọc
+                </button>
+                <button class="btn btn-primary" onclick="searchData()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Tìm kiếm
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Action Toolbar below filter -->
-    <div class="toolbar" style="justify-content: space-between; align-items: center;">
-        <div style="font-weight: 600; font-size: 14px; color: var(--primary-color);">Danh sách hồ sơ phục hồi danh dự</div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn btn-success" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> Lập hồ sơ phục hồi danh dự</button>
-            <button class="btn btn-outline-success" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+    <!-- DATA GRID RESULTS CARD -->
+    <div class="results-card">
+        <div class="results-header">
+            <div class="results-title">
+                <i class="fa-solid fa-list-check"></i>
+                Danh sách kết quả tra cứu
+            </div>
+            <button class="btn btn-secondary excel-btn" onclick="exportExcel()">
+                <i class="fa-solid fa-file-excel"></i>
+                Kết xuất Excel
+            </button>
         </div>
-    </div>
 
-    <!-- Grid View Results Card -->
-    <div class="card-section" style="padding: 0; overflow: hidden;">
-        <div class="table-container">
-            <table class="custom-table" id="dossierTable">
+        <div class="table-responsive">
+            <table class="custom-table" id="resultsTable">
                 <thead>
                     <tr>
-                        <th style="text-align: center; width: 50px;">STT</th>
-                        <th>Mã hồ sơ</th>
-                        <th>Tên người bị thiệt hại</th>
-                        <th>Hình thức phục hồi danh dự</th>
-                        <th style="text-align: center;">Bước hiện tại</th>
-                        <th style="text-align: center;">Hạn xử lý</th>
-                        <th>Ngày thụ lý</th>
-                        <th>Hạn hoàn thành</th>
-                        <th>Cán bộ xử lý</th>
-                        <th style="text-align: center; min-width: 140px;">Thao tác</th>
+                        <th style="width: 55px;" class="cell-center">STT</th>
+                        <th class="sortable" onclick="handleSort('maHoSo')" style="width: 130px;">Mã hồ sơ <i class="fa-solid fa-sort" id="sort_maHoSo"></i></th>
+                        <th class="sortable" onclick="handleSort('nguoiBiThietHai')" style="min-width: 150px;">Người yêu cầu <i class="fa-solid fa-sort" id="sort_nguoiBiThietHai"></i></th>
+                        <th style="min-width: 180px;">Cơ quan giải quyết bồi thường</th>
+                        <th style="width: 170px;">Hình thức phục hồi</th>
+                        <th class="sortable cell-center" onclick="handleSort('ngayTiepNhan')" style="width: 140px;">Ngày tiếp nhận <i class="fa-solid fa-sort" id="sort_ngayTiepNhan"></i></th>
+                        <th style="width: 160px;" class="cell-center">Trạng thái</th>
+                        <th style="width: 150px;">Thời hạn thực hiện</th>
+                        <th class="sortable cell-center" onclick="handleSort('ngayCapNhat')" style="width: 140px;">Ngày cập nhật <i class="fa-solid fa-sort" id="sort_ngayCapNhat"></i></th>
+                        <th style="width: 95px;" class="cell-center">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
-                    <!-- Dynamic Rows Rendered by JS -->
+                    <!-- Dynamic rendering rows -->
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination Bar -->
-        <div class="pagination-container" id="paginationBar">
-            <div id="paginationInfo">Hiển thị từ 1 đến 10 trong tổng số 10 bản ghi</div>
-            <div class="pagination-controls">
-                <select class="form-control" style="width: 70px; padding: 4px;" id="pageSizeSelector" onchange="changePageSize()">
+        <!-- PAGINATION BAR -->
+        <div class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background-color: var(--bg-surface); border-top: 1px solid var(--border-color);">
+            <!-- Left Group: Page Size and Info -->
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-main);">
+                <span>Số dòng hiển thị:</span>
+                <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize()" style="height: 32px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background-color: #FFFFFF; font-size: 13px; outline: none; cursor: pointer; margin-right: 8px;">
+                    <option value="5" selected>5</option>
                     <option value="10">10</option>
                     <option value="20">20</option>
-                    <option value="50">50</option>
                 </select>
-                <div class="pagination-buttons">
-                    <button class="page-btn" id="btnFirst" onclick="gotoPage(1)">«</button>
-                    <button class="page-btn" id="btnPrev" onclick="gotoPage(currentPage - 1)">‹</button>
-                    <div id="pageNumbers" style="display: inline-flex; gap: 5px;">
-                        <!-- Dynamic page numbers -->
-                    </div>
-                    <button class="page-btn" id="btnNext" onclick="gotoPage(currentPage + 1)">›</button>
-                    <button class="page-btn" id="btnLast" onclick="gotoPage(totalPages)">»</button>
-                </div>
+                <span id="paginationInfo" style="color: var(--text-muted);">Hiển thị 1-5 trong số 10 bản ghi</span>
+            </div>
+
+            <!-- Right Group: Controls -->
+            <div class="pagination-controls" id="paginationButtons" style="display: flex; align-items: center; gap: 6px;">
+                <!-- Page Navigation items -->
             </div>
         </div>
     </div>
 
-    <!-- WIZARD STEPPER DETAIL MODAL (UC434 - UC437) -->
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal-content">
-            <!-- Modal Header (Static) -->
-            <div class="modal-header">
-                <h3 id="modalTitle">CHI TIẾT HỒ SƠ PHỤC HỒI DANH DỰ</h3>
-                <button class="close-modal-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <!-- Modal Body (Scrollable) -->
-            <div class="modal-body">
-                <!-- Stepper Progress Header -->
-                <div class="stepper-container">
-                    <div class="stepper-line"></div>
-                    <div class="stepper-line-active" id="activeStepperLine"></div>
-                    
-                    <div class="step active" id="step1Header" onclick="goToStep(1)">
-                        <div class="step-num">1</div>
-                        <div class="step-label">Thông tin phục hồi danh dự</div>
-                    </div>
-                    <div class="step" id="step2Header" onclick="goToStep(2)">
-                        <div class="step-num">2</div>
-                        <div class="step-label">Thông báo thực hiện</div>
-                    </div>
-                    <div class="step" id="step3Header" onclick="goToStep(3)">
-                        <div class="step-num">3</div>
-                        <div class="step-label">Ý kiến người bị hại</div>
-                    </div>
-                    <div class="step" id="step4Header" onclick="goToStep(4)">
-                        <div class="step-num">4</div>
-                        <div class="step-label">Kết quả thực hiện</div>
-                    </div>
-                </div>
-
-                <!-- STEP 1 CONTENT: NHẬP THÔNG TIN PHỤC HỒI DANH DỰ (UC434) -->
-                <div class="step-content active" id="step1Content">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Mã hồ sơ YCBT <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mMaHoSo" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Họ tên người bị thiệt hại <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mTenNguoiBiThietHai" placeholder="Nhập họ và tên...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Loại người bị thiệt hại <span class="required">*</span></label>
-                            <div class="options-group">
-                                <label class="option-item">
-                                    <input type="radio" name="mLoaiNBT" value="Cá nhân" checked onchange="toggleLoaiNBT()"> Cá nhân
-                                </label>
-                                <label class="option-item">
-                                    <input type="radio" name="mLoaiNBT" value="Pháp nhân thương mại" onchange="toggleLoaiNBT()"> Pháp nhân thương mại
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group grid-full-width" id="nbtCaNhanFields">
-                            <label class="form-label">Nơi cư trú người bị thiệt hại <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mNoiCuTru" placeholder="Nhập địa chỉ cư trú...">
-                        </div>
-                        <div class="form-group grid-full-width" id="nbtPhapNhanFields" style="display: none;">
-                            <label class="form-label">Nơi đặt trụ sở <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mNoiDatTruSo" placeholder="Nhập địa chỉ trụ sở doanh nghiệp...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Người bị thiệt hại còn sống <span class="required">*</span></label>
-                            <div class="options-group">
-                                <label class="option-item">
-                                    <input type="radio" name="mConSong" value="Còn sống" checked onchange="toggleConSong()"> Còn sống
-                                </label>
-                                <label class="option-item">
-                                    <input type="radio" name="mConSong" value="Đã mất" onchange="toggleConSong()"> Đã mất
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Lý do thiệt hại <span class="required">*</span></label>
-                            <select class="form-control" id="mLyDo" onchange="checkLyDoRanhBuoc()">
-                                <option value="Tố tụng hình sự">Tố tụng hình sự</option>
-                                <option value="Buộc thôi việc trái PL">Buộc thôi việc trái PL</option>
-                                <option value="Biện pháp hành chính">Biện pháp hành chính</option>
-                            </select>
-                        </div>
-                        <div class="form-group grid-full-width">
-                            <label class="form-label">Hình thức phục hồi danh dự <span class="required">*</span></label>
-                            <div class="options-group" style="height: auto; align-items: flex-start; flex-direction: column; gap: 8px;">
-                                <label class="option-item">
-                                    <input type="checkbox" id="mHinhThucXinLoi" value="Xin lỗi trực tiếp"> Trực tiếp xin lỗi và cải chính công khai
-                                </label>
-                                <label class="option-item">
-                                    <input type="checkbox" id="mHinhThucDangBao" value="Đăng báo"> Đăng báo xin lỗi và cải chính công khai
-                                </label>
-                            </div>
-                            <div class="form-alert warning" id="rinhBuocHinhThucAlert" style="display: none; margin-top: 10px; margin-bottom: 0;">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                                <span>Do lý do thiệt hại thuộc nhóm hành chính/buộc thôi việc hoặc người bị hại đã mất, luật quy định hình thức bắt buộc là <strong>Đăng báo</strong> và không áp dụng xin lỗi trực tiếp.</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Cơ quan chủ trì thực hiện <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mCoQuanChuTri" value="Sở Tư pháp Hà Nội">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Cấp cơ quan <span class="required">*</span></label>
-                            <div class="options-group">
-                                <label class="option-item">
-                                    <input type="radio" name="mCapCoQuan" value="Trung ương" checked> Trung ương
-                                </label>
-                                <label class="option-item">
-                                    <input type="radio" name="mCapCoQuan" value="Địa phương"> Địa phương
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Cơ quan phối hợp</label>
-                            <input type="text" class="form-control" id="mCoQuanPhoiHop" placeholder="Ví dụ: UBND Quận Hoàn Kiếm, Tòa án nhân dân TP. Hà Nội...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Ngày có văn bản làm căn cứ <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mNgayVanBanCanCu" placeholder="dd/mm/yyyy" oninput="calculateHanThongBao(this.value)">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Hạn gửi thông báo cho NBT (Auto +15 ngày) <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mHanGuiThongBao" readonly style="background-color: #F1F5F9; font-weight: bold; color: var(--danger-color);">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Thời gian dự kiến thực hiện <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mThoiGianDuKien" placeholder="dd/mm/yyyy">
-                        </div>
-                        <div class="form-group grid-full-width">
-                            <label class="form-label">Địa điểm dự kiến thực hiện <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mDiaDiemDuKien">
-                        </div>
-                        <div class="form-group grid-full-width">
-                            <label class="form-label">Ghi chú</label>
-                            <textarea class="form-control" id="mGhiChuStep1" rows="3" placeholder="Nhập thêm các lưu ý hoặc thông tin đặc thù của vụ việc..."></textarea>
-                        </div>
-                        <div class="form-group grid-full-width">
-                            <label class="form-label">File văn bản làm căn cứ đính kèm</label>
-                            <div class="file-upload-container" onclick="triggerFileUpload('fileStep1')">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <p>Nhấp vào đây để tải tài liệu lên (PDF, DOCX, tối đa 10MB)</p>
-                                <input type="file" id="fileStep1" style="display: none;" onchange="handleFileSelect(event, 'fileListStep1')">
-                            </div>
-                            <ul class="file-list" id="fileListStep1">
-                                <!-- File items -->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STEP 2 CONTENT: THÔNG BÁO TỔ CHỨC THỰC HIỆN (UC435) -->
-                <div class="step-content" id="step2Content">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Số hiệu văn bản thông báo <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mSoHieuTB" value="TB-PHDD/2026/089" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Ngày thông báo <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mNgayTB" value="29/06/2026" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Hình thức phục hồi danh dự dự kiến (từ bước 1)</label>
-                            <input type="text" class="form-control" id="mHinhThucPreview" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Thời gian tổ chức dự kiến (từ bước 1)</label>
-                            <input type="text" class="form-control" id="mThoiGianPreview" readonly>
-                        </div>
-                        <div class="form-group grid-full-width">
-                            <label class="form-label">Địa điểm tổ chức dự kiến (từ bước 1)</label>
-                            <input type="text" class="form-control" id="mDiaDiemPreview" readonly>
-                        </div>
-                        <div class="form-group grid-full-width">
-                            <label class="form-label">Thành phần tham dự dự kiến <span class="required">*</span></label>
-                            <textarea class="form-control" id="mThanhPhanDuKien" rows="3">Lãnh đạo cơ quan chủ trì thực hiện; Lãnh đạo cơ quan tố tụng ra văn bản làm căn cứ bồi thường; Đại diện chính quyền địa phương (UBND Phường); Người bị thiệt hại hoặc người đại diện hợp pháp.</textarea>
-                        </div>
-                        <div class="form-group grid-full-width">
-                            <label class="form-label">Nội dung thông báo (Mẫu phát sinh) <span class="required">*</span></label>
-                            <div class="template-preview" id="mNoiDungTBPreview">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Thời hạn người bị hại phản hồi ý kiến <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mHanPhanHoi" placeholder="dd/mm/yyyy">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Danh sách người/đơn vị nhận thông báo <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="mNguoiNhanTB" value="Nguyễn Văn A (Người bị hại), UBND phường nơi cư trú, các bên liên quan">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Kênh gửi thông báo <span class="required">*</span></label>
-                            <div class="options-group">
-                                <label class="option-item">
-                                    <input type="checkbox" id="mKenhTrucTiep" checked> Trực tiếp
-                                </label>
-                                <label class="option-item">
-                                    <input type="checkbox" id="mKenhBuuDien" checked> Bưu điện
-                                </label>
-                                <label class="option-item">
-                                    <input type="checkbox" id="mKenhDienTu"> Điện tử
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Bằng chứng gửi thông báo đi <span class="required">*</span></label>
-                            <div class="file-upload-container" onclick="triggerFileUpload('fileStep2Prove')">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <p>Tải lên Biên nhận bưu gửi hoặc Giấy biên nhận ký nhận trực tiếp (PDF, ảnh)</p>
-                                <input type="file" id="fileStep2Prove" style="display: none;" onchange="handleFileSelect(event, 'fileListStep2Prove')">
-                            </div>
-                            <ul class="file-list" id="fileListStep2Prove">
-                                <!-- File items -->
-                            </ul>
-                        </div>
-                        <div class="form-group grid-full-width">
-                            <label class="form-label">File văn bản thông báo đã ký đóng dấu</label>
-                            <div class="file-upload-container" onclick="triggerFileUpload('fileStep2Doc')">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <p>Tải lên File thông báo chính thức có chữ ký số (PDF)</p>
-                                <input type="file" id="fileStep2Doc" style="display: none;" onchange="handleFileSelect(event, 'fileListStep2Doc')">
-                            </div>
-                            <ul class="file-list" id="fileListStep2Doc">
-                                <!-- File items -->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STEP 3 CONTENT: Ý KIẾN NGƯỜI BỊ THIỆT HẠI (UC436) -->
-                <div class="step-content" id="step3Content">
-                    <div class="form-alert info" id="step3AliveNotice" style="display: none;">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>Thông tin: Do người bị hại <strong>Đã mất</strong> ở thông tin ban đầu, Bước 3 được bỏ qua tự động theo quy định của Luật Trách nhiệm bồi thường của Nhà nước (Điều 57.6).</span>
-                    </div>
-
-                    <div id="step3FormWrapper">
-                        <div class="form-grid">
-                            <div class="form-group grid-full-width">
-                                <div class="form-alert" style="margin-bottom: 0;">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                    <span>Thông tin thông báo đã gửi: Số hiệu <strong><span id="pSoHieuTB"></span></strong> gửi ngày <strong><span id="pNgayTB"></span></strong>. Hình thức phục hồi danh dự dự kiến: <strong><span id="pHinhThucTB"></span></strong>.</span>
-                                </div>
-                            </div>
-                            <div class="form-group grid-full-width">
-                                <label class="form-label">Loại ý kiến phản hồi từ người bị thiệt hại <span class="required">*</span></label>
-                                <div class="options-group" style="height: auto; flex-wrap: wrap; gap: 15px; margin-top: 5px;">
-                                    <label class="option-item">
-                                        <input type="radio" name="mLoaiYKien" value="Đồng ý" checked onchange="toggleYKienPanel()"> Đồng ý với phương án dự kiến
-                                    </label>
-                                    <label class="option-item">
-                                        <input type="radio" name="mLoaiYKien" value="Không đồng ý" onchange="toggleYKienPanel()"> Không đồng ý (Có đề nghị khác)
-                                    </label>
-                                    <label class="option-item">
-                                        <input type="radio" name="mLoaiYKien" value="Đề nghị chưa thực hiện" onchange="toggleYKienPanel()"> Đề nghị chưa thực hiện
-                                    </label>
-                                    <label class="option-item">
-                                        <input type="radio" name="mLoaiYKien" value="Từ chối" onchange="toggleYKienPanel()"> Từ chối phục hồi danh dự
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Ngày nhận ý kiến <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="mNgayNhanYKien" placeholder="dd/mm/yyyy">
-                            </div>
-                            <div class="form-group grid-full-width">
-                                <label class="form-label">Nội dung ý kiến chi tiết</label>
-                                <textarea class="form-control" id="mNoiDungYKienChiTiet" rows="3" placeholder="Ghi nhận cụ thể nội dung ý kiến phản hồi..."></textarea>
-                            </div>
-
-                            <!-- Panel ý kiến Không đồng ý -->
-                            <div class="form-group grid-full-width" id="panelKhongDongY" style="display: none;">
-                                <div class="form-alert warning" style="margin-bottom: 12px;">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                    <span>Hệ thống ghi nhận ý kiến không đồng ý. Cán bộ xem xét nội dung đề nghị dưới đây để điều chỉnh và thực hiện ban hành lại thông báo (Bước 2).</span>
-                                </div>
-                                <label class="form-label">Nội dung đề nghị cụ thể của người bị hại <span class="required">*</span></label>
-                                <textarea class="form-control" id="mDeNghiCuThe" rows="3" placeholder="Nhập cụ thể các nội dung đề nghị thay đổi về thời gian, địa điểm, thành phần tham gia..."></textarea>
-                            </div>
-
-                            <!-- Panel Từ chối -->
-                            <div class="form-group grid-full-width" id="panelTuChoi" style="display: none;">
-                                <div class="form-alert danger" style="margin-bottom: 12px;">
-                                    <i class="fa-solid fa-circle-xmark"></i>
-                                    <span>Cảnh báo: Nếu người bị hại Từ chối phục hồi danh dự bằng văn bản hoặc lời nói, hệ thống sẽ tiến hành <strong>ĐÓNG HỒ SƠ</strong> và kết thúc quyền yêu cầu phục hồi danh dự vĩnh viễn (Điều 57.5).</span>
-                                </div>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="form-label">Hình thức từ chối <span class="required">*</span></label>
-                                        <div class="options-group">
-                                            <label class="option-item">
-                                                <input type="radio" name="mHinhThucTuChoi" value="Bằng văn bản" checked onchange="toggleTuChoiUploads()"> Bằng văn bản gửi cơ quan
-                                            </label>
-                                            <label class="option-item">
-                                                <input type="radio" name="mHinhThucTuChoi" value="Bằng lời nói" onchange="toggleTuChoiUploads()"> Bằng lời nói (lập biên bản)
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group" id="tuChoiVanBanUpload">
-                                        <label class="form-label">Tải lên Văn bản từ chối của người bị hại <span class="required">*</span></label>
-                                        <input type="file" id="fileTuChoiVB" onchange="handleFileSelectDirect(this, 'refuseFilePreview')">
-                                        <div id="refuseFilePreview" style="margin-top: 5px; font-size: 12px;"></div>
-                                    </div>
-                                    <div class="form-group" id="tuChoiLoiNoiUpload" style="display: none;">
-                                        <label class="form-label">Tải lên Biên bản làm việc (có chữ ký/điểm chỉ) <span class="required">*</span></label>
-                                        <input type="file" id="fileTuChoiBB" onchange="handleFileSelectDirect(this, 'refuseMinutesPreview')">
-                                        <div id="refuseMinutesPreview" style="margin-top: 5px; font-size: 12px;"></div>
-                                    </div>
-                                    <div class="form-group grid-full-width">
-                                        <label class="option-item">
-                                            <input type="checkbox" id="mCheckConfirmTuChoi"> <strong>Xác nhận chấm dứt quyền phục hồi danh dự:</strong> Tôi xác nhận người bị thiệt hại đã từ chối nhận thông báo hoặc từ chối thực hiện phục hồi danh dự theo đúng biên bản/văn bản kèm theo.
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group grid-full-width">
-                                <label class="form-label">File biên bản ghi nhận ý kiến đính kèm</label>
-                                <div class="file-upload-container" onclick="triggerFileUpload('fileStep3')">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <p>Tải lên biên bản làm việc, biên bản ghi nhận ý kiến nếu có (tối đa 10MB)</p>
-                                    <input type="file" id="fileStep3" style="display: none;" onchange="handleFileSelect(event, 'fileListStep3')">
-                                </div>
-                                <ul class="file-list" id="fileListStep3">
-                                    <!-- File items -->
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STEP 4 CONTENT: CẬP NHẬT KẾT QUẢ THỰC HIỆN (UC437) -->
-                <div class="step-content" id="step4Content">
-                    <!-- Xin lỗi trực tiếp Sub-Form -->
-                    <div id="formXinLoiTrucTiep" style="display: none; margin-bottom: 20px; border-bottom: 2px dashed var(--border-color); padding-bottom: 20px;">
-                        <h4 style="color: var(--primary-color); margin-bottom: 15px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-handshake-angle"></i> Kết quả tổ chức buổi xin lỗi trực tiếp (Điều 58)
-                        </h4>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Ngày tổ chức buổi xin lỗi thực tế <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="mNgayXinLoiThucTe" placeholder="dd/mm/yyyy">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Địa điểm tổ chức thực tế <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="mDiaDiemXinLoiThucTe">
-                            </div>
-                            <div class="form-group grid-full-width">
-                                <label class="form-label">Thành phần tham dự thực tế <span class="required">*</span></label>
-                                <textarea class="form-control" id="mThanhPhanThucTe" rows="3" placeholder="Nhập chi tiết các cơ quan, cá nhân có mặt dự buổi xin lỗi..."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Kết quả tổ chức <span class="required">*</span></label>
-                                <select class="form-control" id="mKetQuaXinLoi">
-                                    <option value="Đã thực hiện">Đã thực hiện hoàn thành tốt đẹp</option>
-                                    <option value="Thực hiện một phần">Thực hiện một phần</option>
-                                    <option value="Chưa thực hiện">Chưa thực hiện được</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Tài liệu đính kèm (Biên bản buổi xin lỗi) <span class="required">*</span></label>
-                                <input type="file" id="fileBBSinLoi" onchange="handleFileSelectDirect(this, 'bbXinLoiPreview')">
-                                <div id="bbXinLoiPreview" style="margin-top: 5px; font-size: 12px;"></div>
-                            </div>
-                            <div class="form-group grid-full-width">
-                                <label class="form-label">Mô tả chi tiết kết quả</label>
-                                <textarea class="form-control" id="mMoTaKetQuaXinLoi" rows="3" placeholder="Nhập tóm tắt diễn biến và kết quả buổi lễ xin lỗi..."></textarea>
-                            </div>
-                            <div class="form-group grid-full-width">
-                                <label class="form-label">Ảnh/Video minh chứng (nếu có)</label>
-                                <div class="file-upload-container" onclick="triggerFileUpload('fileStep4Images')">
-                                    <i class="fa-solid fa-images"></i>
-                                    <p>Tải ảnh, video ghi nhận buổi xin lỗi trực tiếp</p>
-                                    <input type="file" id="fileStep4Images" style="display: none;" multiple onchange="handleFileSelect(event, 'fileListStep4Images')">
-                                </div>
-                                <ul class="file-list" id="fileListStep4Images">
-                                    <!-- File items -->
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Đăng báo Sub-Form -->
-                    <div id="formDangBao" style="display: none; padding-top: 10px;">
-                        <h4 style="color: var(--primary-color); margin-bottom: 15px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-newspaper"></i> Kết quả thực hiện đăng báo xin lỗi và cải chính (Điều 59)
-                        </h4>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Cấp cơ quan (xác định từ bước 1)</label>
-                                <input type="text" class="form-control" id="mCapCoQuanPreview" readonly style="font-weight: bold; background-color: #F8FAFC;">
-                            </div>
-                            <div class="form-group" id="groupBaoTW" style="display: none;">
-                                <label class="form-label">Tên báo Trung ương đăng tải <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="mTenBaoTW" placeholder="Ví dụ: Báo Nhân Dân, Báo Pháp Luật Việt Nam...">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Tên báo Địa phương đăng tải <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="mTenBaoDiaPhuong" placeholder="Ví dụ: Báo Hà Nội Mới, Báo Sài Gòn Giải Phóng...">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Số kỳ đăng liên tiếp theo quy định <span class="required">*</span></label>
-                                <input type="number" class="form-control" value="3" readonly style="background-color: #F1F5F9; font-weight: bold;">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Ngày đăng số báo đầu tiên <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="mNgayDangDauTien" placeholder="dd/mm/yyyy">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">File scan tờ báo của 3 số liên tiếp làm minh chứng <span class="required">*</span></label>
-                                <input type="file" id="fileScanBao" multiple onchange="handleFileSelectDirectMultiple(this, 'scanBaoPreview')">
-                                <div id="scanBaoPreview" style="margin-top: 5px; font-size: 12px; display: flex; flex-direction: column; gap: 4px;"></div>
-                            </div>
-                            <div class="form-group grid-full-width">
-                                <label class="form-label">Các nhiệm vụ phối hợp đăng tải khác</label>
-                                <div class="options-group" style="height: auto; align-items: flex-start; flex-direction: column; gap: 10px; margin-top: 5px;">
-                                    <label class="option-item">
-                                        <input type="checkbox" id="mDangCongThongTin" checked> Đã đăng tải nội dung xin lỗi trên Cổng thông tin điện tử của cơ quan
-                                    </label>
-                                    <label class="option-item">
-                                        <input type="checkbox" id="mGuiBaoChoNBT" checked> Đã thực hiện gửi các số báo đăng cải chính cho người bị thiệt hại (Điều 59.1.c)
-                                    </label>
-                                    <label class="option-item">
-                                        <input type="checkbox" id="mGuiBaoChoXa" checked> Đã gửi báo đăng cải chính cho UBND cấp xã nơi cư trú/đặt trụ sở để niêm yết công khai (Điều 59.1.c)
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Ngày gửi báo đi niêm yết / cho NBT <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="mNgayGuiBao" placeholder="dd/mm/yyyy">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Tài liệu minh chứng gửi báo (Biên lai/Biên nhận) <span class="required">*</span></label>
-                                <input type="file" id="fileBienNhanBao" onchange="handleFileSelectDirect(this, 'bienNhanBaoPreview')">
-                                <div id="bienNhanBaoPreview" style="margin-top: 5px; font-size: 12px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal Footer (Static) -->
-            <div class="modal-footer">
-                <div>
-                    <button class="btn btn-secondary" id="btnBackStep" onclick="prevStep()" style="display: none;"><i class="fa-solid fa-chevron-left"></i> Quay lại</button>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-primary" id="btnSaveStep" onclick="saveActiveStep()"><i class="fa-solid fa-save"></i> Lưu tạm</button>
-                    <button class="btn btn-success" id="btnSendNotice" onclick="sendNotification()" style="display: none;"><i class="fa-solid fa-paper-plane"></i> Gửi thông báo</button>
-                    <button class="btn btn-accent" id="btnNextStep" onclick="nextStep()">Tiếp tục <i class="fa-solid fa-chevron-right"></i></button>
-                    <button class="btn btn-success" id="btnCompleteFlow" onclick="completeWorkflow()" style="display: none;"><i class="fa-solid fa-circle-check"></i> Hoàn thành hồ sơ</button>
-                </div>
-            </div>
-        </div>
+    <!-- CUSTOM TOAST -->
+    <div id="customToast" class="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMessage">Thông báo</span>
     </div>
 
-    <!-- Notification Toast -->
-    <div class="toast" id="systemToast">
-        <i class="fa-solid fa-circle-info" id="toastIcon"></i>
-        <span id="toastMessage">Thông báo từ hệ thống</span>
-    </div>
-
-    <!-- MOCKUP DATABASES & SCRIPTS -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Mock data base of 10 cases conforming to standards and statuses
-        let mockCases = [
+        // Standard Vietnamese Mock Database matching exactly user requirements (10 items)
+        const mockDatabase = [
             {
                 stt: 1,
-                maHoSo: "HS-2026-001",
-                tenNguoiBiThietHai: "Nguyễn Văn A",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "12 Lý Thường Kiệt, P. Trần Hưng Đạo, Q. Hoàn Kiếm, Hà Nội",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Tố tụng hình sự",
-                hinhThuc: "Xin lỗi trực tiếp",
-                buocHienTai: 4,
-                trangThaiHan: "Đang xử lý",
-                ngayThuLy: "15/06/2026",
-                hanHoanThanh: "30/06/2026",
-                canBo: "Nguyễn Văn Cán Bộ",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "UBND Quận Hoàn Kiếm",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "15/06/2026",
-                hanGuiThongBao: "30/06/2026",
-                thoiGianDuKien: "25/06/2026",
-                diaDiemDuKien: "Hội trường UBND Phường Trần Hưng Đạo",
-                soHieuTB: "TB-PHDD/2026-001",
-                ngayTB: "18/06/2026",
-                thanhPhanDuKien: "Đại diện Sở Tư pháp, VKSND Quận Hoàn Kiếm, người bị hại Nguyễn Văn A và gia đình.",
-                hanPhanHoi: "23/06/2026",
-                loaiYKien: "Đồng ý",
-                ngayNhanYKien: "22/06/2026",
-                noiDungYKienChiTiet: "Đồng ý hoàn toàn với kế hoạch và thời gian tổ chức.",
-                ngayXinLoiThucTe: "25/06/2026",
-                diaDiemXinLoiThucTe: "Hội trường UBND Phường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
-                thanhPhanThucTe: "Đại diện Sở Tư pháp, đại diện VKSND, UBND Phường Trần Hưng Đạo, ông Nguyễn Văn A và người thân.",
-                ketQuaXinLoi: "Đã thực hiện",
-                moTaKetQuaXinLoi: "Buổi xin lỗi diễn ra nghiêm túc, đúng quy định pháp luật. Người bị thiệt hại đã nhận lời xin lỗi và ký biên bản.",
-                filesStep1: ["QuyetDinhDinhChiDieuTra.pdf"],
-                filesStep2Prove: ["BienLaiBuuGui_TB01.pdf"],
-                filesStep2Doc: ["ThongBaoToChucXLLT.pdf"],
-                filesStep3: ["BienBanGhiNhanYKien_NVA.pdf"],
-                fileBBSinLoi: "BienBanBuoiXinLoi_NVA.pdf",
-                filesStep4Images: ["AnhBuoiXinLoi1.jpg", "AnhBuoiXinLoi2.jpg"]
+                maHoSo: "BT-2026-001",
+                nguoiBiThietHai: "Nguyễn Văn A",
+                coQuan: "Tòa án nhân dân TP. Hà Nội",
+                hinhThuc: "Trực tiếp xin lỗi",
+                ngayTiepNhan: "10/06/2026",
+                trangThai: "Chờ thực thi",
+                thoiHan: "Còn 12 ngày",
+                thoiHanLoai: "normal",
+                ngayCapNhat: "12/07/2026"
             },
             {
                 stt: 2,
-                maHoSo: "HS-2026-002",
-                tenNguoiBiThietHai: "Trần Thị B",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "45 Lê Lợi, Quận 1, TP. Hồ Chí Minh",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Buộc thôi việc trái PL",
+                maHoSo: "BT-2026-002",
+                nguoiBiThietHai: "Trần Thị B",
+                coQuan: "Công an Quận 1, TP. HCM",
                 hinhThuc: "Đăng báo",
-                buocHienTai: 1,
-                trangThaiHan: "Chưa bắt đầu",
-                ngayThuLy: "28/06/2026",
-                hanHoanThanh: "13/07/2026",
-                canBo: "Lê Thị D",
-                coQuanChuTri: "Sở Tư pháp TP.HCM",
-                coQuanPhoiHop: "Sở GD&ĐT TP.HCM",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "28/06/2026",
-                hanGuiThongBao: "13/07/2026",
-                thoiGianDuKien: "10/07/2026",
-                diaDiemDuKien: "Báo Pháp luật TP.HCM",
-                soHieuTB: "",
-                ngayTB: "",
-                thanhPhanDuKien: "",
-                hanPhanHoi: "",
-                loaiYKien: "",
-                ngayNhanYKien: "",
-                noiDungYKienChiTiet: "",
-                filesStep1: [],
-                filesStep2Prove: [],
-                filesStep2Doc: [],
-                filesStep3: [],
-                filesStep4Images: []
+                ngayTiepNhan: "12/06/2026",
+                trangThai: "Chờ thực thi",
+                thoiHan: "Còn 5 ngày",
+                thoiHanLoai: "normal",
+                ngayCapNhat: "10/07/2026"
             },
             {
                 stt: 3,
-                maHoSo: "HS-2026-003",
-                tenNguoiBiThietHai: "Lê Văn C",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "78 Nguyễn Chí Thanh, Láng Hạ, Đống Đa, Hà Nội",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Tố tụng hình sự",
-                hinhThuc: "Cả hai",
-                buocHienTai: 3,
-                trangThaiHan: "Quá hạn",
-                ngayThuLy: "10/06/2026",
-                hanHoanThanh: "25/06/2026",
-                canBo: "Nguyễn Văn Cán Bộ",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "UBND Quận Đống Đa, Công an TP. Hà Nội",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "10/06/2026",
-                hanGuiThongBao: "25/06/2026",
-                thoiGianDuKien: "22/06/2026",
-                diaDiemDuKien: "Hội trường UBND Phường Láng Hạ",
-                soHieuTB: "TB-PHDD/2026-003",
-                ngayTB: "12/06/2026",
-                thanhPhanDuKien: "Đại diện Công an, đại diện VKS, đại diện UBND Phường Láng Hạ.",
-                hanPhanHoi: "20/06/2026",
-                loaiYKien: "Đồng ý",
-                ngayNhanYKien: "18/06/2026",
-                noiDungYKienChiTiet: "Người bị thiệt hại đồng ý phương án.",
-                filesStep1: ["QDCaChinh.pdf"],
-                filesStep2Prove: ["BienNhanBuuDien.pdf"],
-                filesStep2Doc: ["VBThongBaoSo03.pdf"],
-                filesStep3: [],
-                filesStep4Images: []
+                maHoSo: "BT-2026-003",
+                nguoiBiThietHai: "Lê Hoàng C",
+                coQuan: "Viện kiểm sát nhân dân Tỉnh Long An",
+                hinhThuc: "Cả hai hình thức",
+                ngayTiepNhan: "15/06/2026",
+                trangThai: "Đang thương lượng",
+                thoiHan: "Quá hạn 2 ngày",
+                thoiHanLoai: "critical",
+                ngayCapNhat: "09/07/2026"
             },
             {
                 stt: 4,
-                maHoSo: "HS-2026-004",
-                tenNguoiBiThietHai: "Phạm Văn D",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "Thôn Đông, Xã Kim Nỗ, Đông Anh, Hà Nội",
-                noiDatTruSo: "",
-                conSong: "Đã mất",
-                lyDo: "Biện pháp hành chính",
-                hinhThuc: "Đăng báo",
-                buocHienTai: 4,
-                trangThaiHan: "Đang xử lý",
-                ngayThuLy: "01/06/2026",
-                hanHoanThanh: "16/06/2026",
-                canBo: "Lê Thị D",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "UBND Huyện Đông Anh",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "01/06/2026",
-                hanGuiThongBao: "16/06/2026",
-                thoiGianDuKien: "12/06/2026",
-                diaDiemDuKien: "Báo Hà Nội Mới",
-                soHieuTB: "TB-PHDD/2026-004",
-                ngayTB: "03/06/2026",
-                thanhPhanDuKien: "Không họp do người bị thiệt hại đã mất, đăng tin xin lỗi trên báo.",
-                hanPhanHoi: "10/06/2026",
-                loaiYKien: "", // Skipped Step 3 as NBT died
-                ngayNhanYKien: "",
-                noiDungYKienChiTiet: "",
-                tenBaoTW: "",
-                tenBaoDiaPhuong: "Báo Hà Nội Mới",
-                ngayDangDauTien: "10/06/2026",
-                ngayGuiBao: "12/06/2026",
-                filesStep1: ["QuyetDinhSuaSaiHanhChinh.pdf"],
-                filesStep2Prove: ["ChungTuBuuDien.pdf"],
-                filesStep2Doc: ["TB_HoSo04.pdf"],
-                filesStep3: [],
-                filesStep4Images: []
+                maHoSo: "BT-2026-004",
+                nguoiBiThietHai: "Phạm Minh D",
+                coQuan: "Cục Thi hành án dân sự tỉnh Bình Dương",
+                hinhThuc: "Trực tiếp xin lỗi",
+                ngayTiepNhan: "01/06/2026",
+                trangThai: "Hoàn thành",
+                thoiHan: "Đã hoàn thành",
+                thoiHanLoai: "muted",
+                ngayCapNhat: "05/07/2026"
             },
             {
                 stt: 5,
-                maHoSo: "HS-2026-005",
-                tenNguoiBiThietHai: "Hoàng Thị E",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "102 Kim Mã, Ngọc Khánh, Ba Đình, Hà Nội",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Tố tụng hình sự",
-                hinhThuc: "Xin lỗi trực tiếp",
-                buocHienTai: 2,
-                trangThaiHan: "Sắp hết hạn",
-                ngayThuLy: "20/06/2026",
-                hanHoanThanh: "05/07/2026",
-                canBo: "Nguyễn Văn Cán Bộ",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "UBND Quận Ba Đình",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "20/06/2026",
-                hanGuiThongBao: "05/07/2026",
-                thoiGianDuKien: "02/07/2026",
-                diaDiemDuKien: "UBND Phường Ngọc Khánh",
-                soHieuTB: "",
-                ngayTB: "",
-                thanhPhanDuKien: "",
-                hanPhanHoi: "",
-                loaiYKien: "",
-                ngayNhanYKien: "",
-                noiDungYKienChiTiet: "",
-                filesStep1: [],
-                filesStep2Prove: [],
-                filesStep2Doc: [],
-                filesStep3: [],
-                filesStep4Images: []
+                maHoSo: "BT-2026-005",
+                nguoiBiThietHai: "Hoàng Ngọc E",
+                coQuan: "Tòa án nhân dân Quận Đống Đa",
+                hinhThuc: "Đăng báo",
+                ngayTiepNhan: "20/06/2026",
+                trangThai: "Chờ thực thi",
+                thoiHan: "Theo tiến trình kinh phí",
+                thoiHanLoai: "muted",
+                ngayCapNhat: "13/07/2026"
             },
             {
                 stt: 6,
-                maHoSo: "HS-2026-006",
-                tenNguoiBiThietHai: "Vũ Văn F",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "P.402 Nhà A5, Tập thể Giảng Võ, Ba Đình, Hà Nội",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Biện pháp hành chính",
-                hinhThuc: "Đăng báo",
-                buocHienTai: 3,
-                trangThaiHan: "Tạm dừng",
-                ngayThuLy: "05/06/2026",
-                hanHoanThanh: "20/06/2026",
-                canBo: "Lê Thị D",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "Cơ sở cai nghiện số 2 Hà Nội",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "05/06/2026",
-                hanGuiThongBao: "20/06/2026",
-                thoiGianDuKien: "18/06/2026",
-                diaDiemDuKien: "Báo Pháp luật & Đời sống",
-                soHieuTB: "TB-PHDD/2026-006",
-                ngayTB: "07/06/2026",
-                thanhPhanDuKien: "UBND xã và thân nhân gia đình.",
-                hanPhanHoi: "15/06/2026",
-                loaiYKien: "Đề nghị chưa thực hiện",
-                ngayNhanYKien: "12/06/2026",
-                noiDungYKienChiTiet: "Người bị thiệt hại đang đi chữa bệnh ở xa, đề nghị tạm hoãn thực hiện cho đến tháng 8/2026.",
-                filesStep1: ["QDCaiNghienSai.pdf"],
-                filesStep2Prove: ["BienLaiGuiBao_F.pdf"],
-                filesStep2Doc: ["ThongBaoBuoc2_F.pdf"],
-                filesStep3: ["DonXinHoanThucHien_VVF.pdf"],
-                filesStep4Images: []
+                maHoSo: "BT-2026-006",
+                nguoiBiThietHai: "Vũ Đình F",
+                coQuan: "Công an Huyện Gia Lâm",
+                hinhThuc: "Trực tiếp xin lỗi",
+                ngayTiepNhan: "18/06/2026",
+                trangThai: "Đang xác minh thiệt hại",
+                thoiHan: "Còn 8 ngày",
+                thoiHanLoai: "normal",
+                ngayCapNhat: "11/07/2026"
             },
             {
                 stt: 7,
-                maHoSo: "HS-2026-007",
-                tenNguoiBiThietHai: "Ngô Thị G",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "Số 9 Ngõ 19, Kim Giang, Thanh Xuân, Hà Nội",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Tố tụng hình sự",
-                hinhThuc: "Xin lỗi trực tiếp",
-                buocHienTai: 3,
-                trangThaiHan: "Đã đóng",
-                ngayThuLy: "02/06/2026",
-                hanHoanThanh: "17/06/2026",
-                canBo: "Nguyễn Văn Cán Bộ",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "UBND Quận Thanh Xuân",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "02/06/2026",
-                hanGuiThongBao: "17/06/2026",
-                thoiGianDuKien: "12/06/2026",
-                diaDiemDuKien: "UBND Phường Kim Giang",
-                soHieuTB: "TB-PHDD/2026-007",
-                ngayTB: "04/06/2026",
-                thanhPhanDuKien: "UBND Phường và VKSND Quận Thanh Xuân.",
-                hanPhanHoi: "12/06/2026",
-                loaiYKien: "Từ chối",
-                ngayNhanYKien: "10/06/2026",
-                noiDungYKienChiTiet: "Người bị thiệt hại làm đơn từ chối nhận xin lỗi trực tiếp và đăng báo vì không muốn gợi lại chuyện cũ.",
-                filesStep1: ["QDBD_G.pdf"],
-                filesStep2Prove: ["ChungTuBuuDien_G.pdf"],
-                filesStep2Doc: ["TB_G.pdf"],
-                filesStep3: ["DonTuChoiPhucHoiDanhDu_G.pdf"],
-                filesStep4Images: []
+                maHoSo: "BT-2026-007",
+                nguoiBiThietHai: "Đỗ Thu G",
+                coQuan: "Viện kiểm sát nhân dân TP. Đà Nẵng",
+                hinhThuc: "Cả hai hình thức",
+                ngayTiepNhan: "22/06/2026",
+                trangThai: "Chờ tiếp nhận",
+                thoiHan: "Còn 14 ngày",
+                thoiHanLoai: "normal",
+                ngayCapNhat: "13/07/2026"
             },
             {
                 stt: 8,
-                maHoSo: "HS-2026-008",
-                tenNguoiBiThietHai: "Công ty TNHH MTV Hoàng Gia",
-                loaiNguoiBiThietHai: "Pháp nhân thương mại",
-                noiCuTru: "",
-                noiDatTruSo: "246 Phố Huế, Q. Hai Bà Trưng, Hà Nội",
-                conSong: "Còn sống",
-                lyDo: "Buộc thôi việc trái PL",
+                maHoSo: "BT-2026-008",
+                nguoiBiThietHai: "Tạ Minh H",
+                coQuan: "Tòa án nhân dân Tỉnh Quảng Ninh",
                 hinhThuc: "Đăng báo",
-                buocHienTai: 4,
-                trangThaiHan: "Hoàn thành",
-                ngayThuLy: "22/05/2026",
-                hanHoanThanh: "06/06/2026",
-                canBo: "Nguyễn Văn Cán Bộ",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "Sở Lao động Thương binh Xã hội Hà Nội",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "22/05/2026",
-                hanGuiThongBao: "06/06/2026",
-                thoiGianDuKien: "01/06/2026",
-                diaDiemDuKien: "Báo Pháp Luật TP.HCM",
-                soHieuTB: "TB-PHDD/2026-008",
-                ngayTB: "24/05/2026",
-                thanhPhanDuKien: "Doanh nghiệp và UBND Quận Hai Bà Trưng.",
-                hanPhanHoi: "29/05/2026",
-                loaiYKien: "Đồng ý",
-                ngayNhanYKien: "28/05/2026",
-                noiDungYKienChiTiet: "Đại diện pháp luật của doanh nghiệp đồng ý đăng báo Pháp Luật TP.HCM.",
-                tenBaoTW: "",
-                tenBaoDiaPhuong: "Báo Pháp Luật TP.HCM",
-                ngayDangDauTien: "01/06/2026",
-                ngayGuiBao: "03/06/2026",
-                filesStep1: ["QDCaChinhDoanhNghiep.pdf"],
-                filesStep2Prove: ["BienLaiGuiBuuDien_DoanhNghiep.pdf"],
-                filesStep2Doc: ["TB_HoSo08.pdf"],
-                filesStep3: ["VBDongYDoanhNghiep.pdf"],
-                filesStep4Images: []
+                ngayTiepNhan: "25/05/2026",
+                trangThai: "Hoàn thành",
+                thoiHan: "Đã hoàn thành",
+                thoiHanLoai: "muted",
+                ngayCapNhat: "01/07/2026"
             },
             {
                 stt: 9,
-                maHoSo: "HS-2026-009",
-                tenNguoiBiThietHai: "Bùi Văn I",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "Phố Nhổn, Phường Tây Tựu, Bắc Từ Liêm, Hà Nội",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Tố tụng hình sự",
-                hinhThuc: "Cả hai",
-                buocHienTai: 2,
-                trangThaiHan: "Đúng hạn",
-                ngayThuLy: "25/06/2026",
-                hanHoanThanh: "10/07/2026",
-                canBo: "Lê Thị D",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "TAND Quận Bắc Từ Liêm",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "25/06/2026",
-                hanGuiThongBao: "10/07/2026",
-                thoiGianDuKien: "08/07/2026",
-                diaDiemDuKien: "UBND Phường Tây Tựu",
-                soHieuTB: "",
-                ngayTB: "",
-                thanhPhanDuKien: "",
-                hanPhanHoi: "",
-                loaiYKien: "",
-                ngayNhanYKien: "",
-                noiDungYKienChiTiet: "",
-                filesStep1: [],
-                filesStep2Prove: [],
-                filesStep2Doc: [],
-                filesStep3: [],
-                filesStep4Images: []
+                maHoSo: "BT-2026-009",
+                nguoiBiThietHai: "Bùi Tiến I",
+                coQuan: "Cục Cảnh sát hình sự (C02)",
+                hinhThuc: "Trực tiếp xin lỗi",
+                ngayTiepNhan: "28/06/2026",
+                trangThai: "Yêu cầu bổ sung",
+                thoiHan: "Còn 1 ngày",
+                thoiHanLoai: "warning",
+                ngayCapNhat: "12/07/2026"
             },
             {
                 stt: 10,
-                maHoSo: "HS-2026-010",
-                tenNguoiBiThietHai: "Dương Thị K",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "15 Lê Đại Hành, Hai Bà Trưng, Hà Nội",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Tố tụng hình sự",
-                hinhThuc: "Xin lỗi trực tiếp",
-                buocHienTai: 4,
-                trangThaiHan: "Hoàn thành",
-                ngayThuLy: "18/05/2026",
-                hanHoanThanh: "02/06/2026",
-                canBo: "Nguyễn Văn Cán Bộ",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "UBND Phường Lê Đại Hành, VKSND TP. Hà Nội",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "18/05/2026",
-                hanGuiThongBao: "02/06/2026",
-                thoiGianDuKien: "28/05/2026",
-                diaDiemDuKien: "Hội trường UBND Phường Lê Đại Hành",
-                soHieuTB: "TB-PHDD/2026-010",
-                ngayTB: "20/05/2026",
-                thanhPhanDuKien: "Đại diện Sở Tư pháp, VKSND TP. Hà Nội, bà Dương Thị K.",
-                hanPhanHoi: "25/05/2026",
-                loaiYKien: "Đồng ý",
-                ngayNhanYKien: "24/05/2026",
-                noiDungYKienChiTiet: "Đồng ý nhận xin lỗi vào ngày 28/05.",
-                ngayXinLoiThucTe: "28/05/2026",
-                diaDiemXinLoiThucTe: "Hội trường UBND Phường Lê Đại Hành",
-                thanhPhanThucTe: "Có mặt đầy đủ đại diện Sở Tư pháp, VKSND, UBND phường và bà K.",
-                ketQuaXinLoi: "Đã thực hiện",
-                moTaKetQuaXinLoi: "Đã tổ chức tốt, phát sóng tin cải chính trên kênh truyền hình địa phương.",
-                filesStep1: ["QDCaChinhBaK.pdf"],
-                filesStep2Prove: ["BienNhanTB_K.pdf"],
-                filesStep2Doc: ["VBToChucXinLoi_K.pdf"],
-                filesStep3: ["BienBanLamViecYKien_K.pdf"],
-                fileBBSinLoi: "BienBanXinLoi_K.pdf",
-                filesStep4Images: []
+                maHoSo: "BT-2026-010",
+                nguoiBiThietHai: "Ngô Quốc K",
+                coQuan: "Tòa án nhân dân Tỉnh Đồng Nai",
+                hinhThuc: "Cả hai hình thức",
+                ngayTiepNhan: "02/06/2026",
+                trangThai: "Chờ ban hành QĐ",
+                thoiHan: "Còn 7 ngày",
+                thoiHanLoai: "normal",
+                ngayCapNhat: "08/07/2026"
             }
         ];
 
-        // Active State trackers
-        let activeCasesData = JSON.parse(JSON.stringify(mockCases));
-        let filteredCases = [];
+        let filteredList = [...mockDatabase];
+
+        // State control variables
+        let pageSize = 5;
         let currentPage = 1;
-        let pageSize = 10;
-        let totalPages = 1;
+        let sortColumn = "ngayCapNhat";
+        let sortOrder = "desc";
 
-        let activeCaseIndex = -1;
-        let activeStep = 1;
-        let filesStorage = {
-            step1: [],
-            step2Prove: [],
-            step2Doc: [],
-            step3: [],
-            step4Images: []
-        };
+        // Initialize flatpickr date pickers conforming to Vietnamese dd/mm/yyyy format
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-        // Window load initialization
-        window.addEventListener('DOMContentLoaded', () => {
-            applyFilters();
-        });
-
-        // Setup mock statistic counts
-        function updateStatCounters() {
-            let total = activeCasesData.length;
-            let processing = activeCasesData.filter(c => c.buocHienTai < 3 && c.trangThaiHan !== "Đã đóng" && c.trangThaiHan !== "Hoàn thành").length;
-            let pending = activeCasesData.filter(c => c.buocHienTai === 3 && c.trangThaiHan !== "Đã đóng" && c.trangThaiHan !== "Hoàn thành").length;
-            let completed = activeCasesData.filter(c => c.trangThaiHan === "Hoàn thành" || c.trangThaiHan === "Đã đóng").length;
-
-            document.getElementById('statTotal').innerText = total;
-            document.getElementById('statProcessing').innerText = processing;
-            document.getElementById('statPending').innerText = pending;
-            document.getElementById('statCompleted').innerText = completed;
-        }
-
-        // Render table records based on filter and paging
-        function renderTable() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            let startIdx = (currentPage - 1) * pageSize;
-            let endIdx = Math.min(startIdx + pageSize, filteredCases.length);
-
-            if (filteredCases.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="text-center" style="color: var(--text-muted); padding: 30px;">Không tìm thấy hồ sơ phục hồi danh dự nào phù hợp.</td></tr>`;
-                document.getElementById('paginationBar').style.display = 'none';
-                return;
-            }
-
-            document.getElementById('paginationBar').style.display = 'flex';
-            document.getElementById('paginationInfo').innerText = `Hiển thị từ ${startIdx + 1} đến ${endIdx} trong tổng số ${filteredCases.length} bản ghi`;
-
-            for (let i = startIdx; i < endIdx; i++) {
-                let item = filteredCases[i];
-                let row = document.createElement('tr');
-
-                // Determine badge classes
-                let statusBadge = '';
-                if (item.trangThaiHan === "Đúng hạn") statusBadge = '<span class="badge badge-success">Đúng hạn</span>';
-                else if (item.trangThaiHan === "Sắp hết hạn") statusBadge = '<span class="badge badge-warning">Sắp hết hạn</span>';
-                else if (item.trangThaiHan === "Quá hạn") statusBadge = '<span class="badge badge-danger">Quá hạn</span>';
-                else if (item.trangThaiHan === "Tạm dừng") statusBadge = '<span class="badge badge-info">Tạm dừng</span>';
-                else if (item.trangThaiHan === "Đã đóng") statusBadge = '<span class="badge badge-gray">Đã đóng</span>';
-                else if (item.trangThaiHan === "Hoàn thành") statusBadge = '<span class="badge badge-success">Hoàn thành</span>';
-                else if (item.trangThaiHan === "Chưa bắt đầu") statusBadge = '<span class="badge badge-gray">Chưa bắt đầu</span>';
-                else if (item.trangThaiHan === "Đang xử lý") statusBadge = '<span class="badge badge-info">Đang xử lý</span>';
-
-                // Fixed Slots Action Column based on status and user rules (Luôn hiển thị đầy đủ, không được phép thì mờ ẩn)
-                let btnEditHtml = `<button class="icon-btn edit" title="Chỉnh sửa hồ sơ" onclick="openDetail('${item.maHoSo}', 'edit')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                
-                // If case is closed or completed, dim and disable "Chỉnh sửa" instead of hiding
-                if (item.trangThaiHan === "Đã đóng" || item.trangThaiHan === "Hoàn thành") {
-                    btnEditHtml = `<button class="icon-btn edit" title="Hồ sơ đã đóng hoặc hoàn thành, không được phép chỉnh sửa" style="opacity: 0.35; cursor: not-allowed; pointer-events: none;"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                }
-
-                let btnPrintHtml = `<button class="icon-btn print" title="In hồ sơ phục hồi danh dự" onclick="printDossier('${item.maHoSo}')"><i class="fa-solid fa-print"></i></button>`;
-
-                row.innerHTML = `
-                    <td class="text-center">${i + 1}</td>
-                    <td><a href="#" style="color: var(--primary-color); font-weight: 600; text-decoration: none;" onclick="openDetail('${item.maHoSo}', 'view')">${item.maHoSo}</a></td>
-                    <td><strong>${item.tenNguoiBiThietHai}</strong><br><span style="font-size: 11px; color: var(--text-muted);">${item.loaiNguoiBiThietHai} (${item.conSong})</span></td>
-                    <td>${item.hinhThuc}</td>
-                    <td class="text-center"><span class="badge badge-info">Bước ${item.buocHienTai}</span></td>
-                    <td class="text-center">${statusBadge}</td>
-                    <td>${item.ngayThuLy}</td>
-                    <td style="color: ${item.trangThaiHan === 'Quá hạn' ? 'var(--danger-color)' : 'inherit'}; font-weight: ${item.trangThaiHan === 'Quá hạn' ? 'bold' : 'normal'};">${item.hanHoanThanh}</td>
-                    <td>${item.canBo}</td>
-                    <td class="action-cell">
-                        <button class="icon-btn view" title="Xem chi tiết" onclick="openDetail('${item.maHoSo}', 'view')"><i class="fa-solid fa-eye"></i></button>
-                        ${btnEditHtml}
-                        ${btnPrintHtml}
-                    </td>
-                `;
-                tbody.appendChild(row);
-            }
-
-            renderPaginationControls();
-        }
-
-        // Search Filter handlers
-        function applyFilters() {
-            let searchMa = document.getElementById('searchMaHoSo').value.trim().toLowerCase();
-            let searchTen = document.getElementById('searchTenNguoiBiThietHai').value.trim().toLowerCase();
-            let searchHinhThuc = document.getElementById('searchHinhThuc').value;
-            let searchTrangThai = document.getElementById('searchTrangThai').value;
-            let searchTrangThaiNBT = document.getElementById('searchTrangThaiNBT').value;
-            let searchDonVi = document.getElementById('searchDonVi').value;
-
-            filteredCases = activeCasesData.filter(item => {
-                if (searchMa && !item.maHoSo.toLowerCase().includes(searchMa)) return false;
-                if (searchTen && !item.tenNguoiBiThietHai.toLowerCase().includes(searchTen)) return false;
-                if (searchHinhThuc && item.hinhThuc !== searchHinhThuc && item.hinhThuc !== "Cả hai") return false;
-                
-                // Process process statuses
-                if (searchTrangThai) {
-                    if (searchTrangThai === "Chưa bắt đầu" && item.buocHienTai !== 1) return false;
-                    if (searchTrangThai === "Đang xử lý" && (item.buocHienTai !== 2 && item.buocHienTai !== 4)) return false;
-                    if (searchTrangThai === "Chờ ý kiến" && item.buocHienTai !== 3) return false;
-                    if (searchTrangThai === "Tạm dừng" && item.trangThaiHan !== "Tạm dừng") return false;
-                    if (searchTrangThai === "Đã đóng" && item.trangThaiHan !== "Đã đóng") return false;
-                    if (searchTrangThai === "Hoàn thành" && item.trangThaiHan !== "Hoàn thành") return false;
-                }
-
-                if (searchTrangThaiNBT && item.conSong !== searchTrangThaiNBT) return false;
-                if (searchDonVi && item.coQuanChuTri !== searchDonVi) return false;
-
-                return true;
-            });
-
-            totalPages = Math.ceil(filteredCases.length / pageSize);
-            if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
-            
-            updateStatCounters();
-            renderTable();
-        }
-
-        function resetFilters() {
-            document.getElementById('searchMaHoSo').value = '';
-            document.getElementById('searchTenNguoiBiThietHai').value = '';
-            document.getElementById('searchHinhThuc').value = '';
-            document.getElementById('searchTrangThai').value = '';
-            document.getElementById('searchTrangThaiNBT').value = '';
-            document.getElementById('searchDonVi').value = '';
-            document.getElementById('searchTuNgay').value = '';
-            document.getElementById('searchDenNgay').value = '';
-            document.getElementById('searchHanTu').value = '';
-            document.getElementById('searchHanDen').value = '';
-
-            currentPage = 1;
-            applyFilters();
-        }
-
-        // Paging Logic
-        function gotoPage(page) {
-            if (page < 1 || page > totalPages) return;
-            currentPage = page;
-            renderTable();
-        }
-
-        function changePageSize() {
-            pageSize = parseInt(document.getElementById('pageSizeSelector').value);
-            currentPage = 1;
-            totalPages = Math.ceil(filteredCases.length / pageSize);
-            renderTable();
-        }
-
-        // Pagination buttons rendering
-        function renderPaginationControls() {
-            let pageNumDiv = document.getElementById('pageNumbers');
-            pageNumDiv.innerHTML = '';
-
-            // Handle disabling prev/first buttons
-            document.getElementById('btnFirst').disabled = (currentPage === 1);
-            document.getElementById('btnPrev').disabled = (currentPage === 1);
-            document.getElementById('btnNext').disabled = (currentPage === totalPages || totalPages === 0);
-            document.getElementById('btnLast').disabled = (currentPage === totalPages || totalPages === 0);
-
-            for (let i = 1; i <= totalPages; i++) {
-                let btn = document.createElement('button');
-                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                btn.innerText = i;
-                btn.onclick = () => gotoPage(i);
-                pageNumDiv.appendChild(btn);
-            }
-        }
-
-        // File upload custom handlers
-        function triggerFileUpload(id) {
-            document.getElementById(id).click();
-        }
-
-        function handleFileSelect(event, listId) {
-            const files = event.target.files;
-            const fileList = document.getElementById(listId);
-            for (let i = 0; i < files.length; i++) {
-                let file = files[i];
-                let li = document.createElement('li');
-                li.className = 'file-item';
-                li.innerHTML = `
-                    <a href="#"><i class="fa-solid fa-file-lines"></i> ${file.name} (${(file.size/(1024*1024)).toFixed(2)} MB)</a>
-                    <button type="button" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash-can"></i></button>
-                `;
-                fileList.appendChild(li);
-            }
-        }
-
-        // Directly upload display helper
-        function handleFileSelectDirect(input, previewId) {
-            const file = input.files[0];
-            const div = document.getElementById(previewId);
-            if (file) {
-                div.innerHTML = `<span style="color: var(--success-color); font-weight: bold;"><i class="fa-solid fa-circle-check"></i> Đã chọn: ${file.name}</span>`;
-            }
-        }
-
-        function handleFileSelectDirectMultiple(input, previewId) {
-            const files = input.files;
-            const div = document.getElementById(previewId);
-            div.innerHTML = '';
-            for (let i = 0; i < files.length; i++) {
-                div.innerHTML += `<span style="color: var(--success-color); font-weight: bold;"><i class="fa-solid fa-circle-check"></i> Kỳ ${i+1}: ${files[i].name}</span>`;
-            }
-        }
-
-        function openCreateModal() {
-            // Generate unique case ID
-            let newIdNum = activeCasesData.length + 1;
-            let newMaHoSo = `HS-2026-${String(newIdNum).padStart(3, '0')}`;
-            
-            let newCase = {
-                stt: newIdNum,
-                maHoSo: newMaHoSo,
-                tenNguoiBiThietHai: "",
-                loaiNguoiBiThietHai: "Cá nhân",
-                noiCuTru: "",
-                noiDatTruSo: "",
-                conSong: "Còn sống",
-                lyDo: "Tố tụng hình sự",
-                hinhThuc: "Xin lỗi trực tiếp",
-                buocHienTai: 1,
-                trangThaiHan: "Đang xử lý",
-                ngayThuLy: new Date().toLocaleDateString('vi-VN'),
-                hanHoanThanh: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
-                canBo: "Nguyễn Văn Cán Bộ",
-                coQuanChuTri: "Sở Tư pháp Hà Nội",
-                coQuanPhoiHop: "",
-                capCoQuan: "Địa phương",
-                ngayVanBanCanCu: "",
-                hanGuiThongBao: "",
-                thoiGianDuKien: "",
-                diaDiemDuKien: "",
-                soHieuTB: "",
-                ngayTB: "",
-                thanhPhanDuKien: "",
-                hanPhanHoi: "",
-                loaiYKien: "",
-                ngayNhanYKien: "",
-                noiDungYKienChiTiet: "",
-                filesStep1: [],
-                filesStep2Prove: [],
-                filesStep2Doc: [],
-                filesStep3: [],
-                filesStep4Images: []
+            const formatDate = (date) => {
+                const d = String(date.getDate()).padStart(2, '0');
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const y = date.getFullYear();
+                return `${d}/${m}/${y}`;
             };
 
-            // Push to active data
-            activeCasesData.push(newCase);
-            activeCaseIndex = activeCasesData.length - 1;
+            flatpickr("#filterFromDate", {
+                dateFormat: "d/m/Y",
+                allowInput: true
+            });
+            flatpickr("#filterToDate", {
+                dateFormat: "d/m/Y",
+                allowInput: true
+            });
 
-            // Open detail modal in create mode
-            openDetail(newMaHoSo, 'create');
-            
-            // Adjust title for create mode
-            document.getElementById('modalTitle').innerText = `LẬP HỒ SƠ PHỤC HỒI DANH DỰ MỚI`;
+            document.getElementById("filterFromDate").value = formatDate(firstDayOfMonth);
+            document.getElementById("filterToDate").value = formatDate(today);
+
+            // Fetch and render initial database list
+            applyFilteringAndSorting();
+        });
+
+        // Parse date from string "dd/mm/yyyy" for comparison
+        function parseDateString(str) {
+            if (!str) return null;
+            const parts = str.split('/');
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+            }
+            return null;
         }
 
-        // Stepper Form modal logic
-        function openDetail(maHoSo, mode) {
-            activeCaseIndex = activeCasesData.findIndex(c => c.maHoSo === maHoSo);
-            if (activeCaseIndex === -1) return;
+        // Apply filtering, sorting, and render output
+        function applyFilteringAndSorting() {
+            let list = [...mockDatabase];
 
-            let item = activeCasesData[activeCaseIndex];
-            
-            // Set basic values
-            document.getElementById('modalTitle').innerText = `${mode === 'view' ? 'XEM HỒ SƠ' : (mode === 'create' ? 'LẬP HỒ SƠ' : 'CHỈNH SỬA HỒ SƠ')} PHỤC HỒI DANH DỰ - ${item.maHoSo}`;
-            document.getElementById('mMaHoSo').value = item.maHoSo;
-            document.getElementById('mMaHoSo').readOnly = (mode !== 'create');
-            document.getElementById('mTenNguoiBiThietHai').value = item.tenNguoiBiThietHai || '';
+            // 1. Filter checks
+            const code = document.getElementById("filterCode").value.trim().toLowerCase();
+            const ntc = document.getElementById("filterNtc").value.trim().toLowerCase();
+            const agency = document.getElementById("filterAgency").value;
+            const status = document.getElementById("filterStatus").value;
+            const hinhThuc = document.getElementById("filterHinhThuc").value;
+            const fromDateStr = document.getElementById("filterFromDate").value;
+            const toDateStr = document.getElementById("filterToDate").value;
 
-            // Load values to Step 1 Form
-            document.querySelector(`input[name="mLoaiNBT"][value="${item.loaiNguoiBiThietHai}"]`).checked = true;
-            document.getElementById('mNoiCuTru').value = item.noiCuTru || '';
-            document.getElementById('mNoiDatTruSo').value = item.noiDatTruSo || '';
-            document.querySelector(`input[name="mConSong"][value="${item.conSong}"]`).checked = true;
-            document.getElementById('mLyDo').value = item.lyDo;
-
-            // Checkboxes
-            document.getElementById('mHinhThucXinLoi').checked = (item.hinhThuc === "Xin lỗi trực tiếp" || item.hinhThuc === "Cả hai");
-            document.getElementById('mHinhThucDangBao').checked = (item.hinhThuc === "Đăng báo" || item.hinhThuc === "Cả hai");
-
-            document.getElementById('mCoQuanChuTri').value = item.coQuanChuTri || 'Sở Tư pháp Hà Nội';
-            document.querySelector(`input[name="mCapCoQuan"][value="${item.capCoQuan}"]`).checked = true;
-            document.getElementById('mCoQuanPhoiHop').value = item.coQuanPhoiHop || '';
-            document.getElementById('mNgayVanBanCanCu').value = item.ngayVanBanCanCu || '';
-            document.getElementById('mHanGuiThongBao').value = item.hanGuiThongBao || '';
-            document.getElementById('mThoiGianDuKien').value = item.thoiGianDuKien || '';
-            document.getElementById('mDiaDiemDuKien').value = item.diaDiemDuKien || '';
-
-            // Step 2 Form populate
-            document.getElementById('mSoHieuTB').value = item.soHieuTB || `TB-PHDD/2026/${Math.floor(Math.random()*900)+100}`;
-            document.getElementById('mNgayTB').value = item.ngayTB || "29/06/2026";
-            document.getElementById('mThanhPhanDuKien').value = item.thanhPhanDuKien || "Lãnh đạo cơ quan chủ trì thực hiện; Lãnh đạo cơ quan tố tụng ra văn bản làm căn cứ bồi thường; Đại diện chính quyền địa phương (UBND Phường); Người bị thiệt hại hoặc người đại diện hợp pháp.";
-            document.getElementById('mHanPhanHoi').value = item.hanPhanHoi || "";
-            document.getElementById('mNguoiNhanTB').value = item.mNguoiNhanTB || `${item.tenNguoiBiThietHai} (Người bị hại), UBND phường nơi cư trú, các bên liên quan`;
-
-            // Step 3 Form populate
-            if (item.loaiYKien) {
-                document.querySelector(`input[name="mLoaiYKien"][value="${item.loaiYKien}"]`).checked = true;
-            } else {
-                document.querySelector('input[name="mLoaiYKien"][value="Đồng ý"]').checked = true;
+            if (code) {
+                list = list.filter(item => item.maHoSo.toLowerCase().includes(code));
             }
-            document.getElementById('mNgayNhanYKien').value = item.ngayNhanYKien || "";
-            document.getElementById('mNoiDungYKienChiTiet').value = item.noiDungYKienChiTiet || "";
+            if (ntc) {
+                list = list.filter(item => item.nguoiBiThietHai.toLowerCase().includes(ntc));
+            }
+            if (agency) {
+                list = list.filter(item => item.coQuan === agency);
+            }
+            if (status) {
+                list = list.filter(item => item.trangThai === status);
+            }
+            if (hinhThuc) {
+                list = list.filter(item => item.hinhThuc === hinhThuc);
+            }
 
-            // Step 4 Form populate
-            document.getElementById('mNgayXinLoiThucTe').value = item.ngayXinLoiThucTe || "";
-            document.getElementById('mDiaDiemXinLoiThucTe').value = item.diaDiemXinLoiThucTe || "";
-            document.getElementById('mThanhPhanThucTe').value = item.thanhPhanThucTe || "";
-            document.getElementById('mKetQuaXinLoi').value = item.ketQuaXinLoi || "Đã thực hiện";
-            document.getElementById('mMoTaKetQuaXinLoi').value = item.moTaKetQuaXinLoi || "";
+            const fromDate = parseDateString(fromDateStr);
+            const toDate = parseDateString(toDateStr);
 
-            document.getElementById('mTenBaoTW').value = item.tenBaoTW || "";
-            document.getElementById('mTenBaoDiaPhuong').value = item.tenBaoDiaPhuong || "";
-            document.getElementById('mNgayDangDauTien').value = item.ngayDangDauTien || "";
-            document.getElementById('mNgayGuiBao').value = item.ngayGuiBao || "";
-
-            // Clear file lists and previews
-            document.getElementById('fileListStep1').innerHTML = '';
-            document.getElementById('fileListStep2Prove').innerHTML = '';
-            document.getElementById('fileListStep2Doc').innerHTML = '';
-            document.getElementById('fileListStep3').innerHTML = '';
-            document.getElementById('fileListStep4Images').innerHTML = '';
-            document.getElementById('refuseFilePreview').innerHTML = '';
-            document.getElementById('refuseMinutesPreview').innerHTML = '';
-            document.getElementById('bbXinLoiPreview').innerHTML = '';
-            document.getElementById('scanBaoPreview').innerHTML = '';
-            document.getElementById('bienNhanBaoPreview').innerHTML = '';
-
-            // Handle File pre-populations if view mode
-            if (item.filesStep1 && item.filesStep1.length > 0) {
-                item.filesStep1.forEach(f => {
-                    let li = document.createElement('li');
-                    li.className = 'file-item';
-                    li.innerHTML = `<a href="#"><i class="fa-solid fa-file-pdf"></i> ${f}</a>`;
-                    document.getElementById('fileListStep1').appendChild(li);
+            if (fromDate || toDate) {
+                list = list.filter(item => {
+                    const itemDate = parseDateString(item.ngayCapNhat);
+                    if (!itemDate) return false;
+                    if (fromDate && itemDate < fromDate) return false;
+                    if (toDate && itemDate > toDate) return false;
+                    return true;
                 });
             }
 
-            // UI triggers for layouts
-            toggleLoaiNBT();
-            toggleConSong();
-            checkLyDoRanhBuoc();
-            toggleYKienPanel();
+            // 2. Sorting
+            list.sort((a, b) => {
+                let valA = a[sortColumn];
+                let valB = b[sortColumn];
 
-            // Set Form controls access based on mode
-            setFormReadOnly(mode === 'view' || item.trangThaiHan === "Đã đóng" || item.trangThaiHan === "Hoàn thành");
-
-            // Open Step 1 by default
-            goToStep(1);
-
-            document.getElementById('detailModal').style.display = 'flex';
-        }
-
-        function setFormReadOnly(isReadOnly) {
-            const inputs = document.getElementById('detailModal').querySelectorAll('input, select, textarea');
-            inputs.forEach(el => {
-                if (el.id !== 'mMaHoSo' && el.id !== 'mHanGuiThongBao' && el.id !== 'mSoHieuTB' && el.id !== 'mNgayTB' && el.id !== 'mHinhThucPreview' && el.id !== 'mThoiGianPreview' && el.id !== 'mDiaDiemPreview' && el.id !== 'mCapCoQuanPreview') {
-                    el.disabled = isReadOnly;
+                if (sortColumn === 'ngayCapNhat' || sortColumn === 'ngayTiepNhan') {
+                    valA = parseDateString(valA) || new Date(0);
+                    valB = parseDateString(valB) || new Date(0);
+                } else {
+                    valA = (valA || '').toString().toLowerCase();
+                    valB = (valB || '').toString().toLowerCase();
                 }
+
+                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                return 0;
             });
 
-            // Hide/Show upload blocks
-            const uploads = document.querySelectorAll('.file-upload-container, input[type="file"]');
-            uploads.forEach(el => {
-                el.style.pointerEvents = isReadOnly ? 'none' : 'auto';
-                if (isReadOnly && el.tagName === 'INPUT') el.style.display = 'none';
+            // Update Sort indicators
+            document.querySelectorAll('.custom-table th i').forEach(icon => {
+                icon.className = "fa-solid fa-sort";
             });
+            const activeSortIcon = document.getElementById(`sort_${sortColumn}`);
+            if (activeSortIcon) {
+                activeSortIcon.className = sortOrder === 'asc' ? "fa-solid fa-sort-up" : "fa-solid fa-sort-down";
+            }
 
-            // Save active step button hiding
-            document.getElementById('btnSaveStep').style.display = isReadOnly ? 'none' : 'inline-flex';
-            document.getElementById('btnSendNotice').style.display = isReadOnly ? 'none' : 'inline-flex';
-            document.getElementById('btnCompleteFlow').style.display = isReadOnly ? 'none' : 'inline-flex';
+            filteredList = list;
+            currentPage = 1; // Reset to page 1 on filter/sort change
+            renderPage();
         }
 
-        function closeModal() {
-            document.getElementById('detailModal').style.display = 'none';
-        }
+        // Render target page on table
+        function renderPage() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
 
-        // Stepper Form wizard switches
-        function goToStep(stepNum) {
-            let item = activeCasesData[activeCaseIndex];
-            
-            // Check if step 3 is bypassed because NBT is dead
-            const isDead = document.querySelector('input[name="mConSong"]:checked').value === "Đã mất";
-            if (stepNum === 3 && isDead) {
-                showToast("Bước 3 được bỏ qua vì người bị thiệt hại đã mất.", "warning");
+            const totalRecords = filteredList.length;
+            const totalPages = Math.ceil(totalRecords / pageSize) || 1;
+
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, totalRecords);
+            const pageData = filteredList.slice(startIdx, endIdx);
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="cell-center" style="color: var(--text-muted); padding: 30px;">
+                            <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                            Không tìm thấy kết quả nào phù hợp.
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('paginationInfo').innerText = `Hiển thị 0 trong số 0 bản ghi`;
+                document.getElementById('paginationButtons').innerHTML = '';
                 return;
             }
 
-            activeStep = stepNum;
-
-            // Update headers class
-            for (let i = 1; i <= 4; i++) {
-                let header = document.getElementById(`step${i}Header`);
-                let content = document.getElementById(`step${i}Content`);
-                header.classList.remove('active', 'completed');
-                content.classList.remove('active');
-
-                if (i < activeStep) {
-                    header.classList.add('completed');
-                } else if (i === activeStep) {
-                    header.classList.add('active');
-                    content.classList.add('active');
-                }
-            }
-
-            // Bypassed step 3 styling
-            if (isDead) {
-                document.getElementById('step3Header').classList.add('disabled');
-            } else {
-                document.getElementById('step3Header').classList.remove('disabled');
-            }
-
-            // Update line indicator
-            let percentage = ((activeStep - 1) / 3) * 90;
-            document.getElementById('activeStepperLine').style.width = `${percentage}%`;
-
-            // Dynamic Steps Data loading on switch
-            if (activeStep === 2) {
-                // Populate details from Step 1
-                let formsOfPHDD = [];
-                if (document.getElementById('mHinhThucXinLoi').checked) formsOfPHDD.push("Xin lỗi trực tiếp");
-                if (document.getElementById('mHinhThucDangBao').checked) formsOfPHDD.push("Đăng báo");
-                
-                let textHinhThuc = formsOfPHDD.join(" và ");
-                document.getElementById('mHinhThucPreview').value = textHinhThuc;
-                document.getElementById('mThoiGianPreview').value = document.getElementById('mThoiGianDuKien').value;
-                document.getElementById('mDiaDiemPreview').value = document.getElementById('mDiaDiemDuKien').value;
-
-                // Load preview template
-                loadNotificationTemplate(textHinhThuc);
-            }
-
-            if (activeStep === 3) {
-                document.getElementById('pSoHieuTB').innerText = document.getElementById('mSoHieuTB').value;
-                document.getElementById('pNgayTB').innerText = document.getElementById('mNgayTB').value;
-                document.getElementById('pHinhThucTB').innerText = document.getElementById('mHinhThucPreview').value;
-            }
-
-            if (activeStep === 4) {
-                let isXinLoi = document.getElementById('mHinhThucXinLoi').checked;
-                let isDangBao = document.getElementById('mHinhThucDangBao').checked;
-
-                document.getElementById('formXinLoiTrucTiep').style.display = isXinLoi ? 'block' : 'none';
-                document.getElementById('formDangBao').style.display = isDangBao ? 'block' : 'none';
-
-                let capCoQuan = document.querySelector('input[name="mCapCoQuan"]:checked').value;
-                document.getElementById('mCapCoQuanPreview').value = capCoQuan;
-                document.getElementById('groupBaoTW').style.display = capCoQuan === 'Trung ương' ? 'block' : 'none';
-            }
-
-            // Update footer buttons layout
-            document.getElementById('btnBackStep').style.display = activeStep === 1 ? 'none' : 'inline-flex';
-            
-            // Show Gửi thông báo at Step 2
-            let isViewOnly = document.getElementById('btnSaveStep').style.display === 'none';
-            document.getElementById('btnSendNotice').style.display = (activeStep === 2 && !isViewOnly) ? 'inline-flex' : 'none';
-
-            // Show Hoàn thành at Step 4
-            document.getElementById('btnCompleteFlow').style.display = (activeStep === 4 && !isViewOnly) ? 'inline-flex' : 'none';
-            document.getElementById('btnNextStep').style.display = activeStep === 4 ? 'none' : 'inline-flex';
-        }
-
-        function nextStep() {
-            const isDead = document.querySelector('input[name="mConSong"]:checked').value === "Đã mất";
-            let targetStep = activeStep + 1;
-            if (targetStep === 3 && isDead) {
-                targetStep = 4; // Bypass Step 3
-            }
-            if (targetStep <= 4) goToStep(targetStep);
-        }
-
-        // Form templates generator for UC435
-        function prevStep() {
-            const isDead = document.querySelector('input[name="mConSong"]:checked').value === "Đã mất";
-            let targetStep = activeStep - 1;
-            if (targetStep === 3 && isDead) {
-                targetStep = 2; // Bypass Step 3 back
-            }
-            if (targetStep >= 1) goToStep(targetStep);
-        }
-
-        function loadNotificationTemplate(hinhThuc) {
-            let tenNBT = activeCasesData[activeCaseIndex].tenNguoiBiThietHai;
-            let coQuan = document.getElementById('mCoQuanChuTri').value;
-            let ngay = document.getElementById('mThoiGianDuKien').value || "__/__/____";
-            let diaDiem = document.getElementById('mDiaDiemDuKien').value || "_________________";
-            
-            let temp = `CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\n\nTHÔNG BÁO VỀ VIỆC TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ\n\nKính gửi: Ông/Bà ${tenNBT}\n\nCăn cứ Luật Trách nhiệm bồi thường của Nhà nước, ${coQuan} trân trọng thông báo về phương án tổ chức phục hồi danh dự cho ông/bà như sau:\n`;
-            
-            if (hinhThuc.includes("Xin lỗi trực tiếp")) {
-                temp += `- Tổ chức Buổi trực tiếp xin lỗi và cải chính công khai:\n  + Thời gian: ${ngay}\n  + Địa điểm: ${diaDiem}\n`;
-            }
-            if (hinhThuc.includes("Đăng báo")) {
-                temp += `- Thực hiện đăng thông tin xin lỗi và cải chính công khai liên tiếp 03 kỳ trên báo theo quy định.\n`;
-            }
-            
-            temp += `\nĐề nghị Ông/Bà phản hồi ý kiến đồng ý hoặc có đề nghị điều chỉnh trước ngày ${document.getElementById('mHanPhanHoi').value || "__/__/____"} để chúng tôi chính thức triển khai.`;
-            
-            document.getElementById('mNoiDungTBPreview').innerText = temp;
-        }
-
-        // Step 1 Ràng buộc nghiệp vụ triggers (Radio buttons, checkboxes)
-        function toggleLoaiNBT() {
-            let val = document.querySelector('input[name="mLoaiNBT"]:checked').value;
-            if (val === 'Cá nhân') {
-                document.getElementById('nbtCaNhanFields').style.display = 'block';
-                document.getElementById('nbtPhapNhanFields').style.display = 'none';
-            } else {
-                document.getElementById('nbtCaNhanFields').style.display = 'none';
-                document.getElementById('nbtPhapNhanFields').style.display = 'block';
-            }
-        }
-
-        function toggleConSong() {
-            let val = document.querySelector('input[name="mConSong"]:checked').value;
-            let reason = document.getElementById('mLyDo').value;
-            applyBusinessRules(val, reason);
-        }
-
-        function checkLyDoRanhBuoc() {
-            let isAlive = document.querySelector('input[name="mConSong"]:checked').value;
-            let reason = document.getElementById('mLyDo').value;
-            applyBusinessRules(isAlive, reason);
-        }
-
-        function applyBusinessRules(isAlive, reason) {
-            let mustDangBao = false;
-            
-            // Rules from Law:
-            // 1. If NBT is dead (Đã mất) -> Only Đăng báo, lock Xin lỗi trực tiếp (Điều 57.6)
-            // 2. If reason is Buộc thôi việc / Biện pháp hành chính -> Only Đăng báo, lock Xin lỗi trực tiếp (Điều 56.2)
-            if (isAlive === "Đã mất" || reason === "Buộc thôi việc trái PL" || reason === "Biện pháp hành chính") {
-                mustDangBao = true;
-            }
-
-            const chkXinLoi = document.getElementById('mHinhThucXinLoi');
-            const chkDangBao = document.getElementById('mHinhThucDangBao');
-            const alertBox = document.getElementById('rinhBuocHinhThucAlert');
-
-            if (mustDangBao) {
-                chkDangBao.checked = true;
-                chkDangBao.disabled = true;
-                chkXinLoi.checked = false;
-                chkXinLoi.disabled = true;
-                alertBox.style.display = 'flex';
-            } else {
-                chkDangBao.disabled = false;
-                chkXinLoi.disabled = false;
-                alertBox.style.display = 'none';
-            }
-        }
-
-        function calculateHanThongBao(val) {
-            // Check if format matches dd/mm/yyyy
-            const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-            if (regex.test(val)) {
-                let parts = val.split('/');
-                let date = new Date(parts[2], parts[1] - 1, parts[0]);
-                
-                // Add 15 days as per Law (Điều 57.1)
-                date.setDate(date.getDate() + 15);
-                
-                let day = String(date.getDate()).padStart(2, '0');
-                let month = String(date.getMonth() + 1).padStart(2, '0');
-                let year = date.getFullYear();
-                
-                document.getElementById('mHanGuiThongBao').value = `${day}/${month}/${year}`;
-                
-                // Also update Step 2 default phản hồi deadline (e.g. +7 days from notice date)
-                let today = new Date();
-                today.setDate(today.getDate() + 7);
-                let tDay = String(today.getDate()).padStart(2, '0');
-                let tMonth = String(today.getMonth() + 1).padStart(2, '0');
-                let tYear = today.getFullYear();
-                document.getElementById('mHanPhanHoi').value = `${tDay}/${tMonth}/${tYear}`;
-            } else {
-                document.getElementById('mHanGuiThongBao').value = '';
-            }
-        }
-
-        // Step 3 opinion toggles
-        function toggleYKienPanel() {
-            let val = document.querySelector('input[name="mLoaiYKien"]:checked').value;
-            
-            document.getElementById('panelKhongDongY').style.display = val === 'Không đồng ý' ? 'block' : 'none';
-            document.getElementById('panelTuChoi').style.display = val === 'Từ chối' ? 'block' : 'none';
-
-            toggleTuChoiUploads();
-        }
-
-        function toggleTuChoiUploads() {
-            let isTuChoi = document.querySelector('input[name="mLoaiYKien"]:checked').value === 'Từ chối';
-            if (isTuChoi) {
-                let hinhThuc = document.querySelector('input[name="mHinhThucTuChoi"]:checked').value;
-                document.getElementById('tuChoiVanBanUpload').style.display = hinhThuc === 'Bằng văn bản' ? 'block' : 'none';
-                document.getElementById('tuChoiLoiNoiUpload').style.display = hinhThuc === 'Bằng lời nói' ? 'block' : 'none';
-            } else {
-                document.getElementById('tuChoiVanBanUpload').style.display = 'none';
-                document.getElementById('tuChoiLoiNoiUpload').style.display = 'none';
-            }
-        }
-
-        // Action workflow buttons trigger
-        function saveActiveStep() {
-            if (activeCaseIndex === -1) return;
-            
-            let item = activeCasesData[activeCaseIndex];
-            
-            // Save active form elements back to DB
-            if (activeStep === 1) {
-                let name = document.getElementById('mTenNguoiBiThietHai').value.trim();
-                let code = document.getElementById('mMaHoSo').value.trim();
-                
-                if (!code) {
-                    showToast("Vui lòng nhập mã hồ sơ.", "error");
-                    return;
-                }
-                if (!name) {
-                    showToast("Vui lòng nhập họ tên người bị thiệt hại.", "error");
-                    return;
-                }
-                
-                item.maHoSo = code;
-                item.tenNguoiBiThietHai = name;
-                item.loaiNguoiBiThietHai = document.querySelector('input[name="mLoaiNBT"]:checked').value;
-                item.noiCuTru = document.getElementById('mNoiCuTru').value;
-                item.noiDatTruSo = document.getElementById('mNoiDatTruSo').value;
-                item.conSong = document.querySelector('input[name="mConSong"]:checked').value;
-                item.lyDo = document.getElementById('mLyDo').value;
-
-                let forms = [];
-                if (document.getElementById('mHinhThucXinLoi').checked) forms.push("Xin lỗi trực tiếp");
-                if (document.getElementById('mHinhThucDangBao').checked) forms.push("Đăng báo");
-                item.hinhThuc = forms.length === 2 ? "Cả hai" : forms[0] || "Chưa chọn";
-
-                item.coQuanChuTri = document.getElementById('mCoQuanChuTri').value;
-                item.capCoQuan = document.querySelector('input[name="mCapCoQuan"]:checked').value;
-                item.coQuanPhoiHop = document.getElementById('mCoQuanPhoiHop').value;
-                item.ngayVanBanCanCu = document.getElementById('mNgayVanBanCanCu').value;
-                item.hanGuiThongBao = document.getElementById('mHanGuiThongBao').value;
-                item.thoiGianDuKien = document.getElementById('mThoiGianDuKien').value;
-                item.diaDiemDuKien = document.getElementById('mDiaDiemDuKien').value;
-
-                if (item.buocHienTai === 1) {
-                    item.buocHienTai = 2; // Unlock step 2
-                }
-            } else if (activeStep === 3) {
-                item.loaiYKien = document.querySelector('input[name="mLoaiYKien"]:checked').value;
-                item.ngayNhanYKien = document.getElementById('mNgayNhanYKien').value;
-                item.noiDungYKienChiTiet = document.getElementById('mNoiDungYKienChiTiet').value;
-
-                if (item.loaiYKien === 'Từ chối') {
-                    if (!document.getElementById('mCheckConfirmTuChoi').checked) {
-                        showToast("Vui lòng tick chọn Xác nhận chấm dứt quyền phục hồi danh dự trước khi lưu.", "error");
-                        return;
+            // Populate rows
+            pageData.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = (e) => {
+                    // Prevent redirection if clicking on links or buttons inside cells
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && e.target.tagName !== 'A') {
+                        goToDetail(item.maHoSo);
                     }
-                    item.trangThaiHan = "Đã đóng";
-                    closeModal();
-                    showToast("Đã ghi nhận ý kiến từ chối và đóng hồ sơ.", "success");
-                    applyFilters();
-                    return;
-                } else if (item.loaiYKien === 'Không đồng ý') {
-                    showToast("Hệ thống ghi nhận ý kiến không đồng ý. Đã kích hoạt ban hành thông báo mới.", "warning");
-                    item.buocHienTai = 2; // Go back to notify
-                    closeModal();
-                    applyFilters();
-                    return;
-                } else if (item.loaiYKien === 'Đề nghị chưa thực hiện') {
-                    item.trangThaiHan = "Tạm dừng";
-                    closeModal();
-                    showToast("Đã tạm dừng quy trình phục hồi danh dự theo đề nghị của NBT.", "info");
-                    applyFilters();
-                    return;
-                } else if (item.loaiYKien === 'Đồng ý') {
-                    if (item.buocHienTai === 3) {
-                        item.buocHienTai = 4; // Unlock Step 4
-                    }
-                }
-            }
+                };
 
-            showToast("Đã lưu nháp thông tin thành công.", "success");
-            applyFilters();
+                // STT
+                const tdStt = document.createElement('td');
+                tdStt.className = "cell-center";
+                tdStt.innerText = startIdx + index + 1;
+                tr.appendChild(tdStt);
+
+                // Mã hồ sơ
+                const tdCode = document.createElement('td');
+                tdCode.innerHTML = `<a href="javascript:void(0)" onclick="goToDetail('${item.maHoSo}')" class="text-link">${item.maHoSo}</a>`;
+                tr.appendChild(tdCode);
+
+                // Người bị thiệt hại
+                const tdNtc = document.createElement('td');
+                tdNtc.style.fontWeight = '600';
+                tdNtc.innerText = item.nguoiBiThietHai;
+                tr.appendChild(tdNtc);
+
+                // Cơ quan
+                const tdAgency = document.createElement('td');
+                tdAgency.innerText = item.coQuan;
+                tr.appendChild(tdAgency);
+
+                // Hình thức
+                const tdHinhThuc = document.createElement('td');
+                tdHinhThuc.innerText = item.hinhThuc;
+                tr.appendChild(tdHinhThuc);
+
+                // Ngày tiếp nhận
+                const tdTiepNhan = document.createElement('td');
+                tdTiepNhan.className = "cell-center";
+                tdTiepNhan.innerText = item.ngayTiepNhan || "—";
+                tr.appendChild(tdTiepNhan);
+
+                // Trạng thái badge
+                const tdStatus = document.createElement('td');
+                tdStatus.className = "cell-center";
+                let badgeClass = "badge-draft";
+                if (item.trangThai === "Chờ thực thi") badgeClass = "badge-notice";
+                else if (item.trangThai === "Hoàn thành") badgeClass = "badge-success";
+                else if (item.trangThai === "Chờ tiếp nhận" || item.trangThai === "Chờ thụ lý" || item.trangThai === "Chờ ban hành QĐ") badgeClass = "badge-pending";
+                else if (item.trangThai === "Yêu cầu bổ sung" || item.trangThai === "Đang thương lượng" || item.trangThai === "Đang xác minh thiệt hại") badgeClass = "badge-warning";
+                else if (item.trangThai === "Từ chối tiếp nhận" || item.trangThai === "Từ chối thụ lý" || item.trangThai === "Thương lượng không thành công") badgeClass = "badge-danger";
+                tdStatus.innerHTML = `<span class="badge ${badgeClass}">${item.trangThai}</span>`;
+                tr.appendChild(tdStatus);
+
+                // Thời hạn thực hiện
+                const tdTerm = document.createElement('td');
+                let termClass = "term-normal";
+                if (item.thoiHanLoai === "critical") termClass = "term-critical";
+                else if (item.thoiHanLoai === "warning") termClass = "term-warning";
+                else if (item.thoiHanLoai === "muted") termClass = "text-muted";
+                tdTerm.innerHTML = `<span class="${termClass}">${item.thoiHan}</span>`;
+                tr.appendChild(tdTerm);
+
+                // Ngày cập nhật
+                const tdDate = document.createElement('td');
+                tdDate.className = "cell-center";
+                tdDate.innerText = item.ngayCapNhat;
+                tr.appendChild(tdDate);
+
+                // Thao tác
+                const tdActions = document.createElement('td');
+                tdActions.className = "cell-center";
+                tdActions.innerHTML = `
+                    <div class="action-flex">
+                        <button class="icon-btn view" title="Xem chi tiết" onclick="goToDetail('${item.maHoSo}')">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                `;
+                tr.appendChild(tdActions);
+
+                tbody.appendChild(tr);
+            });
+
+            // Update Pagination info
+            document.getElementById('paginationInfo').innerText = `Hiển thị ${startIdx + 1}-${endIdx} trong số ${totalRecords} bản ghi`;
+
+            // Render Pagination Buttons
+            renderPaginationButtons(totalPages);
         }
 
-        function sendNotification() {
-            if (activeCaseIndex === -1) return;
-            let item = activeCasesData[activeCaseIndex];
-            
-            // Save step 2 info
-            item.soHieuTB = document.getElementById('mSoHieuTB').value;
-            item.ngayTB = document.getElementById('mNgayTB').value;
-            item.thanhPhanDuKien = document.getElementById('mThanhPhanDuKien').value;
-            item.hanPhanHoi = document.getElementById('mHanPhanHoi').value;
-            
-            // Advance process
-            if (item.buocHienTai === 2) {
-                if (item.conSong === "Đã mất") {
-                    item.buocHienTai = 4; // Bypass Step 3
-                    showToast("Đã gửi thông báo. Quy trình được chuyển thẳng sang Bước 4 (Cập nhật kết quả) do người bị hại đã mất.", "success");
-                } else {
-                    item.buocHienTai = 3;
-                    showToast("Đã gửi thông báo thành công cho người bị thiệt hại và các bên liên quan.", "success");
-                }
+        // Render pagination controls
+        function renderPaginationButtons(totalPages) {
+            const container = document.getElementById('paginationButtons');
+            container.innerHTML = '';
+
+            // First Page
+            const btnFirst = document.createElement('button');
+            btnFirst.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            btnFirst.innerHTML = `<i class="fa-solid fa-angles-left"></i>`;
+            btnFirst.onclick = () => { if (currentPage > 1) { currentPage = 1; renderPage(); } };
+            container.appendChild(btnFirst);
+
+            // Prev Page
+            const btnPrev = document.createElement('button');
+            btnPrev.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            btnPrev.innerHTML = `<i class="fa-solid fa-angle-left"></i>`;
+            btnPrev.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(); } };
+            container.appendChild(btnPrev);
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const btnPage = document.createElement('button');
+                btnPage.className = `page-item ${currentPage === i ? 'active' : ''}`;
+                btnPage.innerText = i;
+                btnPage.onclick = () => { currentPage = i; renderPage(); };
+                container.appendChild(btnPage);
             }
-            
-            closeModal();
-            applyFilters();
+
+            // Next Page
+            const btnNext = document.createElement('button');
+            btnNext.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            btnNext.innerHTML = `<i class="fa-solid fa-angle-right"></i>`;
+            btnNext.onclick = () => { if (currentPage < totalPages) { currentPage++; renderPage(); } };
+            container.appendChild(btnNext);
+
+            // Last Page
+            const btnLast = document.createElement('button');
+            btnLast.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            btnLast.innerHTML = `<i class="fa-solid fa-angles-right"></i>`;
+            btnLast.onclick = () => { if (currentPage < totalPages) { currentPage = totalPages; renderPage(); } };
+            container.appendChild(btnLast);
         }
 
-        function completeWorkflow() {
-            if (activeCaseIndex === -1) return;
-            let item = activeCasesData[activeCaseIndex];
-
-            // Validate step 4 inputs
-            if (item.hinhThuc === "Xin lỗi trực tiếp" || item.hinhThuc === "Cả hai") {
-                if (!document.getElementById('mNgayXinLoiThucTe').value || !document.getElementById('mDiaDiemXinLoiThucTe').value) {
-                    showToast("Vui lòng điền đầy đủ ngày và địa điểm tổ chức thực tế.", "error");
-                    return;
-                }
+        // Handle sort change
+        function handleSort(col) {
+            if (sortColumn === col) {
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = col;
+                sortOrder = 'asc';
             }
-            if (item.hinhThuc === "Đăng báo" || item.hinhThuc === "Cả hai") {
-                if (!document.getElementById('mTenBaoDiaPhuong').value || !document.getElementById('mNgayDangDauTien').value) {
-                    showToast("Vui lòng điền tên báo địa phương và ngày đăng số đầu tiên.", "error");
-                    return;
-                }
-            }
-
-            // Save details
-            item.trangThaiHan = "Hoàn thành";
-            
-            showToast("Chúc mừng! Đã cập nhật kết quả và hoàn thành hồ sơ phục hồi danh dự.", "success");
-            closeModal();
-            applyFilters();
+            applyFilteringAndSorting();
         }
 
-        // Global functions for Excel and PDF prints
+        // Reset Filter values
+        function resetFilters() {
+            document.getElementById("filterCode").value = "";
+            document.getElementById("filterNtc").value = "";
+            document.getElementById("filterAgency").value = "";
+            document.getElementById("filterStatus").value = "";
+            document.getElementById("filterHinhThuc").value = "";
+
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const formatDate = (date) => {
+                const d = String(date.getDate()).padStart(2, '0');
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const y = date.getFullYear();
+                return `${d}/${m}/${y}`;
+            };
+            document.getElementById("filterFromDate").value = formatDate(firstDayOfMonth);
+            document.getElementById("filterToDate").value = formatDate(today);
+
+            applyFilteringAndSorting();
+            showToastMessage("Đã xóa bộ lọc tìm kiếm", "success");
+        }
+
+        // Trigger search
+        function searchData() {
+            applyFilteringAndSorting();
+            showToastMessage("Đã tìm kiếm dữ liệu", "success");
+        }
+
+        // Change page size rows
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSizeSelect').value);
+            currentPage = 1;
+            renderPage();
+        }
+
+        // Simulated export to Excel function
         function exportExcel() {
-            showToast("Bắt đầu xuất dữ liệu danh sách ra tệp Excel...", "success");
+            showToastMessage("Kết xuất tệp Excel thành công", "success");
         }
 
-        function printDossier(maHoSo) {
-            showToast(`Đang kết xuất bản in PDF cho hồ sơ ${maHoSo}...`, "success");
+        // Navigation to case details in parent layout or page redirect
+        function goToDetail(maHoSo) {
+            // Find parent window references or load as normal
+            if (window.parent && window.parent !== window && typeof window.parent.clickNotifItem === 'function') {
+                // If loaded inside frame, simulate clicking notifications to redirect correctly
+                window.parent.clickNotifItem('UC431_to_UC466/quan_ly_boi_thuong.html?id=' + maHoSo + '&focusTab=phdd', 'Giải quyết yêu cầu bồi thường', 'Giải quyết yêu cầu bồi thường');
+            } else {
+                // Standalone page redirection
+                window.location.href = '../UC431_to_UC466/quan_ly_boi_thuong.html?id=' + maHoSo + '&focusTab=phdd';
+            }
         }
 
-        // Toast feedback popup helper
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('systemToast');
-            const msg = document.getElementById('toastMessage');
-            const icon = document.getElementById('toastIcon');
-
-            toast.className = 'toast'; // Reset
-            toast.classList.add(type);
-            msg.innerText = message;
-
-            icon.className = 'fa-solid';
-            if (type === 'success') icon.classList.add('fa-circle-check');
-            else if (type === 'error') icon.classList.add('fa-circle-exclamation');
-            else if (type === 'warning') icon.classList.add('fa-triangle-exclamation');
-            else icon.classList.add('fa-circle-info');
-
-            toast.style.display = 'flex';
+        // Toast display message
+        function showToastMessage(message, type = 'success') {
+            const toast = document.getElementById("customToast");
+            const msgSpan = document.getElementById("toastMessage");
+            msgSpan.innerText = message;
+            toast.className = `toast visible ${type}`;
             setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3500);
+                toast.classList.remove("visible");
+            }, 3000);
         }
     </script>
 </body>

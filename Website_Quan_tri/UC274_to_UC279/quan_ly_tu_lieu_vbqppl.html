@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -362,42 +362,80 @@
             color: #B91C1C;
         }
 
-        /* Action columns styling (Fixed-Slot) */
+        /* Action columns styling (Fixed-Slot - Colored Circular Action Buttons) */
+        .action-flex {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
         .icon-btn {
-            background: transparent;
             border: none;
-            color: var(--text-muted);
             cursor: pointer;
-            font-size: 14px;
-            padding: 4px;
-            border-radius: 50%;
-            transition: all 0.15s ease-in-out;
+            font-size: 13px;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 28px;
             height: 28px;
-            margin: 0 2px;
+            border-radius: 50%;
+            margin: 0 4px;
         }
-        .icon-btn:hover {
-            color: var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.08);
+
+        /* 1. Tác vụ Xem chi tiết (Màu xanh dương) */
+        .icon-btn.view {
+            background-color: #EFF6FF;
+            color: #2563EB;
         }
         .icon-btn.view:hover {
-            color: var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.08);
+            background-color: #DBEAFE;
+            color: #1D4ED8;
+            transform: translateY(-1px);
+        }
+
+        /* 2. Tác vụ Chỉnh sửa / Cập nhật (Màu cam) */
+        .icon-btn.edit {
+            background-color: #FFF7ED;
+            color: #F59E0B;
         }
         .icon-btn.edit:hover {
-            color: var(--info-color);
-            background-color: rgba(59, 130, 246, 0.08);
+            background-color: #FFEDD5;
+            color: #B45309;
+            transform: translateY(-1px);
         }
-        .icon-btn.delete:hover {
-            color: var(--danger-color);
-            background-color: rgba(239, 68, 68, 0.08);
+
+        /* 3. Tác vụ Gửi phê duyệt / Phê duyệt (Màu xanh lá) */
+        .icon-btn.send, .icon-btn.accept, .icon-btn.success {
+            background-color: #ECFDF5;
+            color: #10B981;
         }
-        .icon-btn.send:hover {
-            color: var(--success-color);
-            background-color: rgba(16, 185, 129, 0.08);
+        .icon-btn.send:hover, .icon-btn.accept:hover, .icon-btn.success:hover {
+            background-color: #D1FAE5;
+            color: #047857;
+            transform: translateY(-1px);
+        }
+
+        /* 4. Tác vụ Xóa / Từ chối (Màu đỏ) */
+        .icon-btn.delete, .icon-btn.reject {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
+        .icon-btn.delete:hover, .icon-btn.reject:hover {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+            transform: translateY(-1px);
+        }
+
+        /* Trạng thái Vô hiệu hóa (Disabled State) */
+        .icon-btn.disabled, .icon-btn[disabled] {
+            background-color: #F1F5F9 !important;
+            color: #94A3B8 !important;
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         /* Pagination container design */
@@ -1335,6 +1373,12 @@
 
             paginatedList.forEach((doc, index) => {
                 const tr = document.createElement('tr');
+                tr.style.cursor = 'pointer';
+                tr.onclick = (e) => {
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && e.target.tagName !== 'A') {
+                        openDetailModal(doc.id);
+                    }
+                };
                 
                 // STT
                 const tdStt = document.createElement('td');
@@ -1388,9 +1432,6 @@
                 const tdActions = document.createElement('td');
                 tdActions.className = "cell-center";
                 
-                // Slot 1: Xem (Always available)
-                const viewBtn = `<button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${doc.id})"><i class="fa-solid fa-eye"></i></button>`;
-
                 if (currentRole === 'officer') {
                     // Cán bộ nghiệp vụ (4 slots: Xem, Sửa, Xóa, Gửi duyệt)
                     let editBtn = '';
@@ -1414,7 +1455,7 @@
                         sendBtn = `<button class="icon-btn send" title="Chỉ được gửi phê duyệt hồ sơ Lưu nháp hoặc Từ chối" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-paper-plane"></i></button>`;
                     }
 
-                    tdActions.innerHTML = viewBtn + editBtn + delBtn + sendBtn;
+                    tdActions.innerHTML = `<div class="action-flex">${editBtn}${delBtn}${sendBtn}</div>`;
                 } else {
                     // Cán bộ phê duyệt (3 slots: Xem, Phê duyệt, Từ chối)
                     let approveBtn = '';
@@ -1431,7 +1472,7 @@
                         rejectBtn = `<button class="icon-btn delete" title="Chỉ từ chối hồ sơ ở trạng thái Chờ duyệt" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-ban"></i></button>`;
                     }
 
-                    tdActions.innerHTML = viewBtn + approveBtn + rejectBtn;
+                    tdActions.innerHTML = `<div class="action-flex">${approveBtn}${rejectBtn}</div>`;
                 }
 
                 tr.appendChild(tdActions);
