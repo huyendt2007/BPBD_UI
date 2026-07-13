@@ -748,9 +748,6 @@
             line-height: 1.5;
             font-size: 14.5px;
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
         }
 
         .paper-meta-grid {
@@ -2241,7 +2238,7 @@
                 bottomSignerName = `<div class="paper-signer-name">${signerName}</div>`;
             } else {
                 signatureStamp = `
-                    <div style="color: #94a3b8; font-style: italic; font-size: 12.5px; margin-top: 15px; text-align: center; border: 1px dashed #cbd5e1; padding: 10px; border-radius: 4px; display: inline-block; font-family: var(--font-family); line-height: 1.2;">
+                    <div style="color: #94a3b8; font-style: italic; font-size: 12.5px; text-align: center; border: 1px dashed #cbd5e1; padding: 10px; border-radius: 4px; display: inline-block; font-family: var(--font-family); line-height: 1.2;">
                         (Ký số, đóng dấu phê duyệt)
                     </div>
                 `;
