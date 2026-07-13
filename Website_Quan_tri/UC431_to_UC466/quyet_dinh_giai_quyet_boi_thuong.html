@@ -574,6 +574,329 @@
             justify-content: flex-end;
             gap: 10px;
         }
+
+        /* Segmented Control Switcher */
+        .segmented-control {
+            display: flex;
+            background: #e2e8f0;
+            padding: 2px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .role-tab {
+            padding: 6px 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .role-tab:hover {
+            color: #1e293b;
+        }
+
+        .role-tab.active {
+            background: #1e3a8a !important;
+            color: #ffffff !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        /* File Upload styling matching resolve claim screen */
+        .file-upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .file-upload-trigger {
+            border: 1px dashed #CBD5E1;
+            border-radius: var(--border-radius-sm);
+            padding: 16px 20px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #F8FAFC;
+            color: #475569;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .file-upload-trigger:hover {
+            background-color: #EFF6FF;
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .file-upload-trigger i {
+            font-size: 22px;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .file-upload-trigger p {
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+
+        .file-upload-trigger span {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .attached-file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background-color: #F0FDF4;
+            border: 1px solid #BBF7D0;
+            border-radius: var(--border-radius-sm);
+            font-size: 13px;
+            margin-top: 6px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #166534;
+            flex: 1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .action-link {
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .action-link.view-link {
+            color: var(--secondary-color);
+        }
+
+        .action-link.delete-link {
+            color: var(--danger-color);
+        }
+
+        /* Table Excerpt cell styling */
+        .excerpt-col {
+            max-width: 280px;
+            white-space: normal !important;
+            word-break: break-word;
+            line-height: 1.45;
+            text-align: justify;
+        }
+
+        /* Administrative Document styles conforming to Decree 30/2020/NĐ-CP */
+        .decision-paper-container {
+            padding: 20px;
+            background-color: #cbd5e1;
+            border-radius: var(--border-radius-md);
+            overflow-y: auto;
+            max-height: 70vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .decision-paper {
+            font-family: 'Times New Roman', Times, serif;
+            color: #000000;
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 650px; /* A4 width proxy */
+            min-height: 800px;
+            padding: 40px 50px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            line-height: 1.5;
+            font-size: 14.5px;
+            box-sizing: border-box;
+        }
+
+        .paper-meta-grid {
+            display: grid;
+            grid-template-columns: 5fr 7fr;
+            margin-bottom: 25px;
+            font-size: 13.5px;
+        }
+
+        .paper-meta-left {
+            text-align: center;
+        }
+
+        .paper-meta-left-parent {
+            font-size: 12.5px;
+            text-transform: uppercase;
+        }
+
+        .paper-meta-left-agency {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13.5px;
+            margin-top: 2px;
+        }
+
+        .paper-meta-left-no {
+            margin-top: 4px;
+            font-size: 13px;
+        }
+
+        .paper-meta-right {
+            text-align: center;
+        }
+
+        .paper-meta-right-motto {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13.5px;
+            letter-spacing: 0.2px;
+        }
+
+        .paper-meta-right-ideals {
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 2px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 4px;
+        }
+
+        .paper-meta-right-ideals::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 15%;
+            width: 70%;
+            height: 1px;
+            background-color: #000000;
+        }
+
+        .paper-meta-right-date {
+            margin-top: 8px;
+            font-style: italic;
+            font-size: 13.5px;
+        }
+
+        .paper-doc-title-block {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .paper-doc-title {
+            font-weight: bold;
+            font-size: 17px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .paper-doc-excerpt {
+            font-weight: bold;
+            font-size: 14.5px;
+            font-style: normal;
+        }
+
+        .paper-signer-pos-center {
+            text-align: center;
+            font-weight: bold;
+            font-size: 15px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .paper-doc-content {
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .paper-basis {
+            font-style: italic;
+            text-indent: 30px;
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        .paper-decide-header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 15px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .paper-article-item {
+            text-align: justify;
+            margin-bottom: 12px;
+        }
+
+        .paper-article-name {
+            font-weight: bold;
+            text-indent: 30px;
+            display: inline-block;
+            margin-bottom: 2px;
+        }
+
+        .paper-footer-grid {
+            display: grid;
+            grid-template-columns: 5fr 7fr;
+            margin-top: 40px;
+            font-size: 13.5px;
+            line-height: 1.45;
+        }
+
+        .paper-footer-left {
+            text-align: left;
+        }
+
+        .paper-recipients-title {
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+
+        .paper-recipients-list {
+            font-size: 12px;
+            padding-left: 10px;
+            line-height: 1.5;
+        }
+
+        .paper-footer-right {
+            text-align: center;
+        }
+
+        .paper-signature-title {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .paper-signature-desc {
+            font-style: italic;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .paper-signature-stamp-area {
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .paper-signer-name {
+            font-weight: bold;
+            font-size: 14.5px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 
@@ -584,6 +907,11 @@
         <div class="page-title">
             <h2>Quyết định giải quyết bồi thường</h2>
             <p>Hệ thống quản lý, ban hành và ký duyệt các quyết định giải quyết bồi thường Nhà nước</p>
+        </div>
+        <!-- Persona Switcher -->
+        <div class="segmented-control">
+            <button class="role-tab active" id="roleBtnOfficer" onclick="switchUserRole('officer')"><i class="fa-solid fa-user-tie"></i> Cán bộ xử lý</button>
+            <button class="role-tab" id="roleBtnLeader" onclick="switchUserRole('leader')"><i class="fa-solid fa-user-shield"></i> Lãnh đạo phê duyệt</button>
         </div>
     </div>
 
@@ -649,13 +977,12 @@
             <table class="custom-table" id="decisionsTable">
                 <thead>
                     <tr>
-                        <th style="width: 40px; text-align: center;"><input type="checkbox"></th>
                         <th style="width: 50px; text-align: center;">STT</th>
                         <th style="width: 140px; text-align: center;">Số quyết định</th>
                         <th style="width: 110px; text-align: center;">Ngày ban hành</th>
                         <th style="width: 110px; text-align: center;">Ngày hiệu lực</th>
                         <th style="min-width: 130px;">Người ký</th>
-                        <th style="min-width: 250px;">Trích yếu quyết định</th>
+                        <th style="max-width: 280px; min-width: 220px;">Trích yếu quyết định</th>
                         <th style="width: 120px; text-align: center;">Mã YCBT</th>
                         <th style="width: 110px; text-align: center;">Trạng thái</th>
                         <th style="width: 200px; text-align: center; min-width: 200px;">Thao tác</th>
@@ -693,91 +1020,178 @@
     <!-- ======================================================== -->
     <div id="inlineDecFormPanel" class="inline-form-panel">
         <div class="inline-form-header">
-            <span class="inline-form-title" id="formDecTitle"><i class="fa-solid fa-file-invoice"></i> BAN HÀNH QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG</span>
+            <span class="inline-form-title" id="formDecTitle"><i class="fa-solid fa-file-invoice"></i> TRÌNH KÝ QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG</span>
             <button class="btn btn-secondary btn-sm" onclick="closeCreateDecForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
         </div>
 
-        <div class="inline-form-body">
-            <!-- AUTO-FILL SEARCH BLOCK (Select claims in 'Chờ ban hành QĐ') -->
-            <div id="autofillClaimBlock" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 18px; border-radius: var(--border-radius-sm); margin-bottom: 20px;">
-                <span class="form-label" style="font-weight: 700; color: var(--primary-light); margin-bottom: 8px;">
-                    <i class="fa-solid fa-magnifying-glass"></i> TÌM KIẾM HỒ SƠ YÊU CẦU BỒI THƯỜNG (TRẠNG THÁI: CHỜ BAN HÀNH QĐ)
-                </span>
-                <div style="display: flex; gap: 8px;">
-                    <select class="form-control" id="autofillClaimSelector" style="flex: 1.2;">
-                        <option value="">-- Chọn hồ sơ chờ ban hành QĐ --</option>
-                        <!-- Populated by JS -->
-                    </select>
-                    <button class="btn btn-primary" onclick="triggerClaimAutoFill()"><i class="fa-solid fa-file-import"></i> Tự động điền</button>
+        <div class="inline-form-body" id="formBodyLayout">
+            <!-- LEFT COLUMN: Form Inputs -->
+            <div class="form-inputs-column">
+                <!-- AUTO-FILL SEARCH BLOCK (Select claims in 'Chờ ban hành QĐ') -->
+                <div id="autofillClaimBlock" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 18px; border-radius: var(--border-radius-sm); margin-bottom: 20px;">
+                    <span class="form-label" style="font-weight: 700; color: var(--primary-light); margin-bottom: 8px;">
+                        <i class="fa-solid fa-magnifying-glass"></i> TÌM KIẾM HỒ SƠ YÊU CẦU BỒI THƯỜNG (TRẠNG THÁI: CHỜ BAN HÀNH QĐ)
+                    </span>
+                    <div style="display: flex; gap: 8px;">
+                        <select class="form-control" id="autofillClaimSelector" style="flex: 1.2;">
+                            <option value="">-- Chọn hồ sơ chờ ban hành QĐ --</option>
+                            <!-- Populated by JS -->
+                        </select>
+                        <button class="btn btn-primary" onclick="triggerClaimAutoFill()"><i class="fa-solid fa-file-import"></i> Tự động điền</button>
+                    </div>
+                </div>
+
+                <!-- DECISION INPUT FIELDS -->
+                <div>
+                    <div class="info-block-title">I. Thông tin dự thảo quyết định hành chính</div>
+                    <div class="grid-3-cols">
+                        <div class="form-group">
+                            <span class="form-label">Số quyết định/dự thảo số<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="decFormNo" placeholder="Ví dụ: 22/QĐ-GQBT">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Đơn vị ban hành quyết định<span class="required">*</span></span>
+                            <select class="form-control" id="decFormAgency">
+                                <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
+                                <option value="Tòa án nhân dân TP. Hà Nội">Tòa án nhân dân TP. Hà Nội</option>
+                                <option value="UBND Quận Cầu Giấy">UBND Quận Cầu Giấy</option>
+                                <option value="Cục Thi hành án dân sự Hà Nội">Cục Thi hành án dân sự Hà Nội</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Lãnh đạo phê duyệt/ký ban hành<span class="required">*</span></span>
+                            <select class="form-control" id="decFormApprover">
+                                <option value="Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)">Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)</option>
+                                <option value="Lê Hoàng Quân (Phó giám đốc)">Lê Hoàng Quân (Phó giám đốc)</option>
+                                <option value="Nguyễn Văn Chức (Phó chủ tịch UBND Quận)">Nguyễn Văn Chức (Phó chủ tịch UBND Quận)</option>
+                                <option value="Bùi Thị Nhàn (Thủ trưởng cơ quan giải quyết)">Bùi Thị Nhàn (Thủ trưởng cơ quan giải quyết)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <span class="form-label">Ngày ký ban hành quyết định<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="decFormDate" placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Ngày có hiệu lực thi hành quyết định<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="decFormActiveDate" placeholder="dd/mm/yyyy">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="form-label">Tóm tắt nội dung/Trích yếu quyết định<span class="required">*</span></span>
+                        <textarea class="form-control" id="decFormExcerpt" rows="3" placeholder="Nhập trích yếu quyết định bồi thường..."></textarea>
+                    </div>
+
+                    <div class="info-block-title">II. Liên kết Hồ sơ yêu cầu bồi thường (YCBT)</div>
+                    <div class="grid-3-cols">
+                        <div class="form-group">
+                            <span class="form-label">Mã YCBT liên kết</span>
+                            <input type="text" class="form-control" id="decFormYcbtCode" disabled style="background-color:#f1f5f9;">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Họ và tên người yêu cầu</span>
+                            <input type="text" class="form-control" id="decFormYcbtNyc" disabled style="background-color:#f1f5f9;">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Đơn vị thụ lý bồi thường</span>
+                            <input type="text" class="form-control" id="decFormYcbtAgency" disabled style="background-color:#f1f5f9;">
+                        </div>
+                    </div>
+
+                    <div class="info-block-title">III. Chi tiết phương án giải quyết chi trả bồi thường</div>
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <span class="form-label">Số tiền bồi thường thiệt hại (đồng)</span>
+                            <input type="text" class="form-control" id="decFormCompensationAmount" style="font-weight: 700; color: var(--danger-color);" placeholder="Nhập số tiền bồi thường..." oninput="formatMoneyInput(this)">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Số tiền tạm ứng (nếu có, đồng)</span>
+                            <input type="text" class="form-control" id="decFormAdvanceAmount" style="font-weight: 700; color: var(--success-color);" placeholder="Nhập số tiền tạm ứng..." oninput="formatMoneyInput(this)">
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px; margin-bottom: 20px;">
+                        <input type="checkbox" id="decFormPhdd" style="width: 18px; height: 18px; cursor: pointer;">
+                        <label for="decFormPhdd" style="font-weight: 600; cursor: pointer; color: var(--primary-light);">Xác nhận hồ sơ có nội dung Phục hồi danh dự</label>
+                    </div>
+
+                    <div class="info-block-title">IV. Tài liệu đính kèm văn bản pháp lý</div>
+                    <div class="form-group">
+                        <span class="form-label">Tài liệu, văn bản đính kèm quyết định (Tờ trình, Dự thảo văn bản...)</span>
+                        <div class="file-upload-container">
+                            <div class="file-upload-trigger" id="fileUploadZone" onclick="document.getElementById('decFormFiles').click()">
+                                <i class="fa-solid fa-file-arrow-up"></i>
+                                <p>Kéo thả hoặc nhấp chọn tài liệu tải lên</p>
+                                <span>Hỗ trợ tải lên nhiều tệp cùng lúc định dạng PDF, Word (Tối đa 15MB)</span>
+                            </div>
+                            <input type="file" id="decFormFiles" style="display:none;" multiple onchange="handleFileUploaderChange(this)">
+                            <div id="uploadedFilesList" style="margin-top: 6px;">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- DECISION INPUT FIELDS -->
-            <div>
-                <div class="info-block-title">I. Thông tin quyết định</div>
-                <div class="grid-3-cols">
-                    <div class="form-group">
-                        <span class="form-label">Số quyết định bồi thường<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="decFormNo" placeholder="Ví dụ: 25/QĐ-GQBT">
+            <!-- RIGHT COLUMN: Visual Document Paper (For details / leadership view) -->
+            <div class="visual-document-column" id="visualDocumentColumn" style="display:none;">
+                <div class="info-block-title" style="margin-top:0;"><i class="fa-solid fa-file-pdf"></i> Văn bản quyết định giải quyết (Dự thảo trực quan)</div>
+                <div class="decision-paper-container">
+                    <div class="decision-paper" id="decisionPaperPreview">
+                        <!-- Loaded dynamically -->
                     </div>
-                    <div class="form-group">
-                        <span class="form-label">Ngày ban hành quyết định<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="decFormDate" placeholder="dd/mm/yyyy">
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Ngày có hiệu lực pháp luật<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="decFormActiveDate" placeholder="dd/mm/yyyy">
-                    </div>
-                </div>
-
-                <div class="grid-2-cols">
-                    <div class="form-group">
-                        <span class="form-label">Họ và tên người ký ban hành<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="decFormSigner" placeholder="Họ tên thủ trưởng/người ký...">
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Chức vụ người ký ban hành<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="decFormPosition" placeholder="Ví dụ: Cục trưởng Cục QLNV bồi thường...">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <span class="form-label">Trích yếu nội dung quyết định<span class="required">*</span></span>
-                    <textarea class="form-control" id="decFormExcerpt" rows="2" placeholder="Ghi tóm tắt nội dung quyết định..."></textarea>
-                </div>
-
-                <div class="info-block-title">II. Thông tin Hồ sơ YCBT được liên kết</div>
-                <div class="grid-3-cols">
-                    <div class="form-group">
-                        <span class="form-label">Mã YCBT liên kết</span>
-                        <input type="text" class="form-control" id="decFormYcbtCode" disabled>
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Họ tên người yêu cầu</span>
-                        <input type="text" class="form-control" id="decFormYcbtNyc" disabled>
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Số tiền bồi thường xác định (đồng)</span>
-                        <input type="number" class="form-control" id="decFormYcbtAmount" disabled style="font-weight: 700; color: var(--danger-color);">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <span class="form-label">Đơn vị chịu trách nhiệm chi trả bồi thường</span>
-                    <input type="text" class="form-control" id="decFormYcbtAgency" disabled>
-                </div>
-
-                <div class="form-group">
-                    <span class="form-label">Tài liệu quyết định gốc đã đóng dấu đỏ (Scan PDF)</span>
-                    <input type="file" class="form-control">
                 </div>
             </div>
         </div>
 
-        <div class="inline-form-footer" style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button class="btn btn-secondary" onclick="closeCreateDecForm()">Hủy bỏ</button>
-            <button class="btn btn-primary" onclick="saveDecision('Lưu nháp')">Lưu nháp</button>
-            <button class="btn btn-success" onclick="saveDecision('Chờ ký')"><i class="fa-solid fa-paper-plane"></i> Trình duyệt ký số</button>
+        <!-- Footer actions bar -->
+        <div class="inline-form-footer" id="formDecFooter" style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <!-- Populated dynamically based on role/status -->
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PREVIEW DECISION ADMINISTRATIVE PAPER MODAL -->
+    <!-- ======================================================== -->
+    <div class="modal-overlay" id="previewDecModal" style="display:none; z-index:1100;">
+        <div class="modal-content" style="max-width: 750px; width: 90%;">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fa-solid fa-file-magnifying-glass"></i> Xem trước Quyết định Giải quyết yêu cầu bồi thường</span>
+                <button class="btn btn-secondary btn-sm" onclick="closePreviewDecModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="background-color: #f1f5f9; padding: 20px; display: flex; justify-content: center; max-height:75vh; overflow-y:auto;">
+                <div class="decision-paper" id="modalDecisionPaperPreview">
+                    <!-- Dynamic simulated document -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closePreviewDecModal()">Đóng bản xem trước</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- LEADER REJECTION REASON MODAL -->
+    <!-- ======================================================== -->
+    <div class="modal-overlay" id="leaderRejectModal" style="display:none; z-index:1100;">
+        <div class="modal-content" style="max-width: 500px; width: 90%;">
+            <div class="modal-header" style="color: var(--danger-color); font-weight: 600;">
+                <span class="modal-title"><i class="fa-solid fa-circle-exclamation"></i> Yêu cầu hiệu chỉnh dự thảo Quyết định</span>
+                <button class="btn btn-secondary btn-sm" onclick="closeLeaderRejectModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" style="margin-top:0;">
+                    <span class="form-label" style="font-weight:600;">Lý do từ chối phê duyệt (Yêu cầu cán bộ chỉnh sửa)<span class="required">*</span></span>
+                    <textarea class="form-control" id="rejectReasonInput" rows="4" placeholder="Nhập lý do chi tiết từ chối ký duyệt..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeLeaderRejectModal()">Hủy bỏ</button>
+                <button class="btn btn-danger" onclick="submitLeaderRejection()">Xác nhận từ chối</button>
+            </div>
         </div>
     </div>
 
@@ -806,6 +1220,9 @@
     </div>
 
     <script>
+        // Current user role state: 'officer' or 'leader'
+        let currentRole = 'officer';
+
         // Mock data of Claims in status "Chờ ban hành QĐ"
         const pendingClaimsList = [
             { code: "BT-2026-011", nyc: "Trần Thị G", amount: 300000000, agency: "Sở Tư pháp Hà Nội", fieldGroup: "hành chính" },
@@ -818,6 +1235,8 @@
             {
                 id: "D1",
                 decNo: "22/QĐ-GQBT",
+                agency: "Sở Tư pháp Hà Nội",
+                approver: "Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)",
                 date: "01/07/2026",
                 activeDate: "17/07/2026",
                 signer: "Phan Văn Trị",
@@ -827,11 +1246,21 @@
                 ycbtNyc: "Nguyễn Văn Nam",
                 ycbtAmount: 150000000,
                 ycbtAgency: "Sở Tư pháp Hà Nội",
-                status: "Đã ký"
+                compAmount: 150000000,
+                advAmount: 0,
+                phdd: false,
+                files: [
+                    { name: "Don_yeu_cau_boi_thuong_BT-2026-001.pdf", url: "#" },
+                    { name: "To_trinh_trinh_ky_dieu_chinh.pdf", url: "#" }
+                ],
+                status: "Đã ký",
+                rejectReason: ""
             },
             {
                 id: "D2",
                 decNo: "23/QĐ-GQBT",
+                agency: "Tòa án nhân dân TP. Hà Nội",
+                approver: "Lê Hoàng Quân (Phó giám đốc)",
                 date: "02/07/2026",
                 activeDate: "19/07/2026",
                 signer: "Lê Hoàng Quân",
@@ -841,11 +1270,18 @@
                 ycbtNyc: "Trần Thị B",
                 ycbtAmount: 350000000,
                 ycbtAgency: "Tòa án nhân dân TP. Hà Nội",
-                status: "Chờ ký"
+                compAmount: 350000000,
+                advAmount: 50000000,
+                phdd: true,
+                files: [{ name: "Ho_so_dinh_kem_thiet_hai.pdf", url: "#" }],
+                status: "Chờ ký",
+                rejectReason: ""
             },
             {
                 id: "D3",
                 decNo: "12/QĐ-GQBT",
+                agency: "UBND Quận Cầu Giấy",
+                approver: "Nguyễn Văn Chức (Phó chủ tịch UBND Quận)",
                 date: "02/07/2026",
                 activeDate: "17/07/2026",
                 signer: "Nguyễn Văn Chức",
@@ -855,11 +1291,18 @@
                 ycbtNyc: "Công ty Hải Phát",
                 ycbtAmount: 4800000000,
                 ycbtAgency: "UBND Quận Cầu Giấy",
-                status: "Đã ký"
+                compAmount: 4800000000,
+                advAmount: 0,
+                phdd: false,
+                files: [],
+                status: "Đã ký",
+                rejectReason: ""
             },
             {
                 id: "D4",
                 decNo: "24/QĐ-GQBT",
+                agency: "Tòa án nhân dân TP. Hà Nội",
+                approver: "Hoàng Minh Tiến (Thẩm phán TAND Quận)",
                 date: "03/07/2026",
                 activeDate: "20/07/2026",
                 signer: "Hoàng Minh Tiến",
@@ -869,25 +1312,39 @@
                 ycbtNyc: "Trần Minh T",
                 ycbtAmount: 75000000,
                 ycbtAgency: "Tòa án nhân dân quận Hoàn Kiếm",
-                status: "Lưu nháp"
+                compAmount: 75000000,
+                advAmount: 10000000,
+                phdd: false,
+                files: [],
+                status: "Lưu nháp",
+                rejectReason: ""
             },
             {
                 id: "D5",
                 decNo: "15/QĐ-GQBT",
+                agency: "Sở Tư pháp Hà Nội",
+                approver: "Lê Văn Tiến (Giám đốc Sở)",
                 date: "03/07/2026",
                 activeDate: "18/07/2026",
                 signer: "Lê Văn Tiến",
-                position: "Giám đốc Sở Tư pháp Hải Phòng",
+                position: "Giám đốc Sở",
                 excerpt: "Quyết định bồi thường thiệt hại do chậm cấp phép xây dựng cho ông Lê Văn D.",
                 ycbtCode: "BT-2026-005",
                 ycbtNyc: "Lê Văn D",
                 ycbtAmount: 250000000,
-                ycbtAgency: "Sở Tư pháp Hải Phòng",
-                status: "Đã ký"
+                ycbtAgency: "Sở Tư pháp Hà Nội",
+                compAmount: 250000000,
+                advAmount: 0,
+                phdd: false,
+                files: [],
+                status: "Đã ký",
+                rejectReason: ""
             },
             {
                 id: "D6",
                 decNo: "05/QĐ-GQBT",
+                agency: "UBND Quận Cầu Giấy",
+                approver: "Trần Văn Bản (Chánh án TAND Tỉnh)",
                 date: "04/07/2026",
                 activeDate: "19/07/2026",
                 signer: "Trần Văn Bản",
@@ -896,12 +1353,19 @@
                 ycbtCode: "BT-2026-009",
                 ycbtNyc: "Nguyễn Văn E",
                 ycbtAmount: 60000000,
-                ycbtAgency: "UBND Quận Đống Đa",
-                status: "Bị từ chối"
+                ycbtAgency: "UBND Quận Cầu Giấy",
+                compAmount: 60000000,
+                advAmount: 0,
+                phdd: false,
+                files: [],
+                status: "Bị từ chối",
+                rejectReason: "Cần làm rõ lại mức định giá thiệt hại tài sản theo phụ lục báo cáo."
             },
             {
                 id: "D7",
                 decNo: "08/QĐ-GQBT",
+                agency: "Cục Thi hành án dân sự Hà Nội",
+                approver: "Nguyễn Văn Hùng (Thủ trưởng cơ quan thi hành án)",
                 date: "05/07/2026",
                 activeDate: "20/07/2026",
                 signer: "Nguyễn Văn Hùng",
@@ -911,11 +1375,18 @@
                 ycbtNyc: "Lê Văn H",
                 ycbtAmount: 850000000,
                 ycbtAgency: "Cục Thi hành án dân sự Hà Nội",
-                status: "Đã ký"
+                compAmount: 850000000,
+                advAmount: 200000000,
+                phdd: false,
+                files: [],
+                status: "Đã ký",
+                rejectReason: ""
             },
             {
                 id: "D8",
                 decNo: "26/QĐ-GQBT",
+                agency: "Sở Tư pháp Hà Nội",
+                approver: "Bùi Thị Nhàn (Thủ trưởng cơ quan giải quyết)",
                 date: "06/07/2026",
                 activeDate: "21/07/2026",
                 signer: "Bùi Thị Nhàn",
@@ -925,7 +1396,12 @@
                 ycbtNyc: "Trần Thị G",
                 ycbtAmount: 300000000,
                 ycbtAgency: "Sở Tư pháp Hà Nội",
-                status: "Chờ ký"
+                compAmount: 300000000,
+                advAmount: 0,
+                phdd: true,
+                files: [],
+                status: "Chờ ký",
+                rejectReason: ""
             }
         ];
 
@@ -933,6 +1409,25 @@
         let currentDecPage = 1;
         let decPageSize = 5;
         let selectedDecId = null;
+        let uploadedFiles = [];
+        let pendingRejectDecId = null;
+
+        // Auto format money on type with dot separator
+        function formatMoneyInput(input) {
+            let cleanVal = input.value.replace(/\D/g, '');
+            if (cleanVal) {
+                input.value = Number(cleanVal).toLocaleString('vi-VN');
+            } else {
+                input.value = '';
+            }
+        }
+
+        // Strip dots and convert back to float
+        function parseFormattedMoney(str) {
+            if (!str) return 0;
+            const cleanStr = str.toString().replace(/\./g, '');
+            return parseFloat(cleanStr) || 0;
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             flatpickr("#searchDecFromDate", { dateFormat: "d/m/Y", allowInput: true });
@@ -962,13 +1457,34 @@
             renderDecTable();
         });
 
+        // Switch role: Officer vs Leader
+        function switchUserRole(role) {
+            currentRole = role;
+            document.getElementById('roleBtnOfficer').classList.toggle('active', role === 'officer');
+            document.getElementById('roleBtnLeader').classList.toggle('active', role === 'leader');
+            
+            // Show/hide "Tạo mới" action
+            const createBtn = document.querySelector('button[onclick="openCreateDecForm()"]');
+            if (createBtn) {
+                createBtn.style.display = role === 'officer' ? 'inline-flex' : 'none';
+            }
+            
+            // Close form if open
+            closeCreateDecForm();
+            
+            renderDecTable();
+            showToast("Đã chuyển sang vai trò: " + (role === 'officer' ? "Cán bộ xử lý" : "Lãnh đạo phê duyệt"), "info");
+        }
+
         // Fill autofill dropdown
         function populateAutofillClaims() {
             const selector = document.getElementById('autofillClaimSelector');
-            selector.innerHTML = `<option value="">-- Chọn hồ sơ chờ ban hành QĐ --</option>`;
-            pendingClaimsList.forEach(c => {
-                selector.innerHTML += `<option value="${c.code}">${c.code} - ${c.nyc} (${c.amount.toLocaleString('vi-VN')} đ)</option>`;
-            });
+            if (selector) {
+                selector.innerHTML = `<option value="">-- Chọn hồ sơ chờ ban hành QĐ --</option>`;
+                pendingClaimsList.forEach(c => {
+                    selector.innerHTML += `<option value="${c.code}">${c.code} - ${c.nyc} (${c.amount.toLocaleString('vi-VN')} đ)</option>`;
+                });
+            }
         }
 
         // Search decision list
@@ -988,7 +1504,7 @@
 
             if (decNo) filtered = filtered.filter(item => item.decNo.toLowerCase().includes(decNo));
             if (ycbtCode) filtered = filtered.filter(item => item.ycbtCode.toLowerCase().includes(ycbtCode));
-            if (signer) filtered = filtered.filter(item => item.signer.toLowerCase().includes(signer));
+            if (signer) filtered = filtered.filter(item => item.approver.toLowerCase().includes(signer) || item.signer.toLowerCase().includes(signer));
             if (status) filtered = filtered.filter(item => item.status === status);
 
             const parseDateVi = (str) => {
@@ -1028,7 +1544,7 @@
             const endIdx = Math.min(startIdx + decPageSize, total);
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy quyết định nào phù hợp</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy quyết định nào phù hợp</td></tr>`;
                 document.getElementById('decCurrentRange').innerText = "0-0";
                 return;
             }
@@ -1053,39 +1569,50 @@
                 // Fixed 5-slot Action Column Alignment (Rule 3)
                 const isDraft = item.status === 'Lưu nháp';
                 const isPending = item.status === 'Chờ ký';
+                const isRejected = item.status === 'Bị từ chối';
                 
-                let editBtn = `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ cập nhật quyết định nháp/bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                if (isDraft || item.status === 'Bị từ chối') {
+                // Slot 1: View (Always active)
+                const viewBtn = `<button class="icon-btn view" title="Xem chi tiết quyết định" onclick="viewDecisionDetail('${item.id}')"><i class="fa-solid fa-eye"></i></button>`;
+                
+                // Slot 2: Edit (Active for Officer on draft/rejected)
+                let editBtn = `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ cán bộ mới được chỉnh sửa quyết định nháp hoặc bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                if (currentRole === 'officer' && (isDraft || isRejected)) {
                     editBtn = `<button class="icon-btn edit" title="Cập nhật quyết định" onclick="editDecision('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 }
 
-                let deleteBtn = `<button class="icon-btn delete" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ được xóa quyết định ở trạng thái Lưu nháp"><i class="fa-solid fa-trash-can"></i></button>`;
-                if (isDraft) {
+                // Slot 3: Delete (Active for Officer on draft)
+                let deleteBtn = `<button class="icon-btn delete" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ cán bộ mới được xóa quyết định ở trạng thái Lưu nháp"><i class="fa-solid fa-trash-can"></i></button>`;
+                if (currentRole === 'officer' && isDraft) {
                     deleteBtn = `<button class="icon-btn delete" title="Xóa quyết định" onclick="deleteDecision('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>`;
                 }
 
-                let acceptBtn = `<button class="icon-btn accept" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ ký duyệt quyết định ở trạng thái Chờ ký"><i class="fa-solid fa-file-signature"></i></button>`;
-                if (isPending) {
-                    acceptBtn = `<button class="icon-btn accept" title="Ký duyệt quyết định" onclick="signDecision('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
+                // Slot 4: Sign (Active for Leader on pending)
+                let acceptBtn = `<button class="icon-btn accept" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ lãnh đạo mới được ký số duyệt quyết định chờ ký"><i class="fa-solid fa-file-signature"></i></button>`;
+                if (currentRole === 'leader' && isPending) {
+                    acceptBtn = `<button class="icon-btn accept" title="Ký duyệt quyết định" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 }
 
-                let rejectBtn = `<button class="icon-btn reject" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ từ chối ký khi ở trạng thái Chờ ký"><i class="fa-solid fa-ban"></i></button>`;
-                if (isPending) {
-                    rejectBtn = `<button class="icon-btn reject" title="Từ chối ký duyệt" onclick="rejectDecision('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
+                // Slot 5: Reject (Active for Leader on pending)
+                let rejectBtn = `<button class="icon-btn reject" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ lãnh đạo mới được từ chối ký quyết định chờ ký"><i class="fa-solid fa-ban"></i></button>`;
+                if (currentRole === 'leader' && isPending) {
+                    rejectBtn = `<button class="icon-btn reject" title="Từ chối ký duyệt" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
                 }
+
+                // Split signer name for nice display
+                const signerClean = item.approver ? item.approver.split(' (')[0] : item.signer;
 
                 tr.innerHTML = `
-                    <td style="text-align:center;"><input type="checkbox"></td>
                     <td style="text-align:center;">${startIdx + idx + 1}</td>
                     <td style="text-align:center;"><strong>${item.decNo}</strong></td>
                     <td style="text-align:center;">${item.date}</td>
                     <td style="text-align:center;">${item.activeDate}</td>
-                    <td><strong>${item.signer}</strong></td>
-                    <td title="${item.excerpt}">${item.excerpt.length > 45 ? item.excerpt.slice(0, 45) + '...' : item.excerpt}</td>
+                    <td><strong>${signerClean}</strong></td>
+                    <td class="excerpt-col" title="${item.excerpt}">${item.excerpt}</td>
                     <td style="text-align:center;"><a href="javascript:void(0)" onclick="openClaimDetailModal('${item.ycbtCode}')" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
                     <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                     <td style="text-align:center;">
-                        <div class="action-flex">
+                        <div class="action-flex" style="justify-content: center; gap: 4px;">
+                            ${viewBtn}
                             ${editBtn}
                             ${deleteBtn}
                             ${acceptBtn}
@@ -1098,22 +1625,27 @@
 
             // Page active markers
             const totalPages = Math.ceil(total / decPageSize) || 1;
-            document.getElementById('decPageNum1').classList.toggle('active', currentDecPage === 1);
-            if (totalPages >= 2) {
-                document.getElementById('decPageNum2').style.display = 'inline-block';
-                document.getElementById('decPageNum2').classList.toggle('active', currentDecPage === 2);
-            } else {
-                document.getElementById('decPageNum2').style.display = 'none';
+            const p1 = document.getElementById('decPageNum1');
+            const p2 = document.getElementById('decPageNum2');
+            if (p1) p1.classList.toggle('active', currentDecPage === 1);
+            if (p2) {
+                if (totalPages >= 2) {
+                    p2.style.display = 'inline-block';
+                    p2.classList.toggle('active', currentDecPage === 2);
+                } else {
+                    p2.style.display = 'none';
+                }
             }
         }
 
-        // Page handlers
+        // Page size change handler
         function changeDecPageSize(val) {
             decPageSize = parseInt(val);
             currentDecPage = 1;
             renderDecTable();
         }
 
+        // Page navigation handlers
         function decGoPage(page) {
             if (page === 'last') {
                 const total = parseInt(document.getElementById('decTotalCount').innerText);
@@ -1145,8 +1677,19 @@
             document.getElementById('searchYcbtCode').value = '';
             document.getElementById('searchSigner').value = '';
             document.getElementById('searchDecStatus').value = '';
-            document.getElementById('searchDecFromDate').value = '';
-            document.getElementById('searchDecToDate').value = '';
+            
+            const today = new Date();
+            const threeMonthsAgo = new Date();
+            threeMonthsAgo.setMonth(today.getMonth() - 3);
+            
+            const formatDate = (date) => {
+                const d = String(date.getDate()).padStart(2, '0');
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const y = date.getFullYear();
+                return `${d}/${m}/${y}`;
+            };
+            document.getElementById('searchDecFromDate').value = formatDate(threeMonthsAgo);
+            document.getElementById('searchDecToDate').value = formatDate(today);
             
             currentDecPage = 1;
             renderDecTable();
@@ -1158,36 +1701,124 @@
             renderDecTable();
         }
 
-        // Form actions: Create / Edit Quyết định
+        // Multi-file Uploader simulation
+        function handleFileUploaderChange(input) {
+            const files = input.files;
+            if (files.length === 0) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                uploadedFiles.push({
+                    name: files[i].name,
+                    url: "#"
+                });
+            }
+            renderUploadedFiles();
+            showToast(`Đã tải lên thành công ${files.length} tệp tin!`, "success");
+            input.value = ''; // Reset input selection
+        }
+
+        // Remove uploaded file with custom delete confirmation modal
+        function removeUploadedFile(index) {
+            showConfirmModal("Bạn có chắc chắn muốn gỡ bỏ tệp tin đính kèm này?", () => {
+                uploadedFiles.splice(index, 1);
+                renderUploadedFiles();
+                showToast("Đã gỡ bỏ tệp đính kèm thành công!", "success");
+            });
+        }
+
+        function renderUploadedFiles(readonly = false) {
+            const container = document.getElementById('uploadedFilesList');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            if (uploadedFiles.length === 0) {
+                container.innerHTML = '<div style="font-size:12px; color:var(--text-muted); font-style:italic; margin-top:6px;">Chưa có tệp tin nào được đính kèm.</div>';
+                return;
+            }
+
+            uploadedFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'attached-file-info';
+                
+                const deleteBtnHtml = readonly ? '' : `<a href="javascript:void(0)" class="action-link delete-link" onclick="removeUploadedFile(${index})">Xóa</a>`;
+                
+                item.innerHTML = `
+                    <span class="file-icon" style="color:#ef4444;"><i class="fa-solid fa-file-pdf"></i></span>
+                    <span class="file-name">${file.name}</span>
+                    <a href="${file.url}" target="_blank" class="action-link view-link" style="margin-right: 10px;">Xem file</a>
+                    ${deleteBtnHtml}
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Form actions: Create / Edit / View
         function openCreateDecForm() {
             selectedDecId = null;
+            uploadedFiles = [];
+            
             document.getElementById('contentListDecisions').style.display = 'none';
+            document.getElementById('inlineDecFormPanel').style.display = 'block';
             
-            const formPanel = document.getElementById('inlineDecFormPanel');
-            formPanel.style.display = 'flex';
-            
-            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> BAN HÀNH QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG MỚI`;
+            // Adjust title and header blocks
+            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> TRÌNH KÝ QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG MỚI`;
             document.getElementById('autofillClaimBlock').style.display = 'block';
+            document.getElementById('visualDocumentColumn').style.display = 'none';
+            document.getElementById('formBodyLayout').classList.remove('split-layout');
+
+            // Set inputs editable
+            enableFormInputs(true);
 
             // Reset inputs
             document.getElementById('decFormNo').value = '';
+            document.getElementById('decFormAgency').value = 'Sở Tư pháp Hà Nội';
+            document.getElementById('decFormApprover').value = 'Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)';
             document.getElementById('decFormDate').value = new Date().toLocaleDateString('vi-VN');
             document.getElementById('decFormActiveDate').value = '';
-            document.getElementById('decFormSigner').value = 'Nguyễn Văn Cán Bộ';
-            document.getElementById('decFormPosition').value = 'Giám đốc Sở Tư pháp';
             document.getElementById('decFormExcerpt').value = '';
             
             document.getElementById('decFormYcbtCode').value = '';
             document.getElementById('decFormYcbtNyc').value = '';
-            document.getElementById('decFormYcbtAmount').value = '';
             document.getElementById('decFormYcbtAgency').value = '';
+            document.getElementById('decFormCompensationAmount').value = '';
+            document.getElementById('decFormAdvanceAmount').value = '';
+            document.getElementById('decFormPhdd').checked = false;
             document.getElementById('autofillClaimSelector').value = '';
+            
+            renderUploadedFiles(false);
+
+            // Render officer footer actions
+            const footer = document.getElementById('formDecFooter');
+            footer.innerHTML = `
+                <button class="btn btn-secondary" onclick="closeCreateDecForm()">Hủy bỏ</button>
+                <button class="btn btn-secondary" onclick="saveDecision('Lưu nháp')" style="background-color:#f1f5f9; border-color:#cbd5e1;"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
+                <button class="btn btn-secondary" onclick="previewDecisionDocument()"><i class="fa-solid fa-file-invoice"></i> Xem trước QĐ</button>
+                <button class="btn btn-primary" onclick="saveDecision('Chờ ký')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
+            `;
         }
 
         function closeCreateDecForm() {
             document.getElementById('inlineDecFormPanel').style.display = 'none';
             document.getElementById('contentListDecisions').style.display = 'block';
             renderDecTable();
+        }
+
+        // Enable or disable form inputs for readonly mode
+        function enableFormInputs(editable) {
+            document.getElementById('decFormNo').disabled = !editable;
+            document.getElementById('decFormAgency').disabled = !editable;
+            document.getElementById('decFormApprover').disabled = !editable;
+            document.getElementById('decFormDate').disabled = !editable;
+            document.getElementById('decFormActiveDate').disabled = !editable;
+            document.getElementById('decFormExcerpt').disabled = !editable;
+            document.getElementById('decFormCompensationAmount').disabled = !editable;
+            document.getElementById('decFormAdvanceAmount').disabled = !editable;
+            document.getElementById('decFormPhdd').disabled = !editable;
+            
+            const fileZone = document.getElementById('fileUploadZone');
+            if (fileZone) {
+                fileZone.style.display = editable ? 'block' : 'none';
+            }
         }
 
         // Auto-fill logic from Claims
@@ -1201,29 +1832,34 @@
             if (found) {
                 document.getElementById('decFormYcbtCode').value = found.code;
                 document.getElementById('decFormYcbtNyc').value = found.nyc;
-                document.getElementById('decFormYcbtAmount').value = found.amount;
                 document.getElementById('decFormYcbtAgency').value = found.agency;
+                document.getElementById('decFormCompensationAmount').value = found.amount ? Number(found.amount).toLocaleString('vi-VN') : '';
+                document.getElementById('decFormAdvanceAmount').value = '0';
                 
-                document.getElementById('decFormExcerpt').value = `Quyết định giải quyết bồi thường oan sai trong hoạt động công vụ đối với ông/bà ${found.nyc}. Số tiền bồi thường là ${found.amount.toLocaleString('vi-VN')} đồng.`;
+                document.getElementById('decFormExcerpt').value = `Quyết định giải quyết bồi thường oan sai trong hoạt động công vụ đối với ông/bài ${found.nyc}. Số tiền bồi thường thiệt hại được xác định là ${found.amount.toLocaleString('vi-VN')} đồng.`;
 
                 showToast("Đã tự động điền đầy đủ dữ liệu từ Hồ sơ Yêu cầu bồi thường!", "success");
             }
         }
 
+        // Save / Trình ký action
         function saveDecision(statusStr) {
             const no = document.getElementById('decFormNo').value.trim();
+            const agency = document.getElementById('decFormAgency').value;
+            const approver = document.getElementById('decFormApprover').value;
             const date = document.getElementById('decFormDate').value.trim();
             const activeDate = document.getElementById('decFormActiveDate').value.trim();
-            const signer = document.getElementById('decFormSigner').value.trim();
-            const position = document.getElementById('decFormPosition').value.trim();
             const excerpt = document.getElementById('decFormExcerpt').value.trim();
             
             const ycbtCode = document.getElementById('decFormYcbtCode').value;
             const ycbtNyc = document.getElementById('decFormYcbtNyc').value;
-            const ycbtAmount = parseFloat(document.getElementById('decFormYcbtAmount').value) || 0;
             const ycbtAgency = document.getElementById('decFormYcbtAgency').value;
+            
+            const compAmount = parseFormattedMoney(document.getElementById('decFormCompensationAmount').value);
+            const advAmount = parseFormattedMoney(document.getElementById('decFormAdvanceAmount').value);
+            const phdd = document.getElementById('decFormPhdd').checked;
 
-            if (!no || !date || !activeDate || !signer || !excerpt || !ycbtCode) {
+            if (!no || !date || !activeDate || !excerpt || !ycbtCode) {
                 showToast("Vui lòng nhập đầy đủ các thông tin bắt buộc và liên kết Hồ sơ YCBT!", "error");
                 return;
             }
@@ -1233,117 +1869,365 @@
                 const item = decisionsList.find(d => d.id === selectedDecId);
                 if (item) {
                     item.decNo = no;
+                    item.agency = agency;
+                    item.approver = approver;
                     item.date = date;
                     item.activeDate = activeDate;
-                    item.signer = signer;
-                    item.position = position;
                     item.excerpt = excerpt;
+                    item.compAmount = compAmount;
+                    item.advAmount = advAmount;
+                    item.phdd = phdd;
+                    item.files = [...uploadedFiles];
                     item.status = statusStr;
+                    if (statusStr === 'Chờ ký') {
+                        item.rejectReason = ""; // Clear reason on resubmit
+                    }
                 }
-                showToast(`Đã cập nhật quyết định ${no} thành công!`, "success");
+                showToast(statusStr === 'Chờ ký' ? `Đã trình ký quyết định số ${no} lên lãnh đạo!` : `Đã cập nhật dự thảo quyết định ${no}!`, "success");
             } else {
                 // Insert
                 decisionsList.unshift({
                     id: "D" + (decisionsList.length + 1),
                     decNo: no,
+                    agency: agency,
+                    approver: approver,
                     date: date,
                     activeDate: activeDate,
-                    signer: signer,
-                    position: position,
+                    signer: approver.split(' (')[0],
+                    position: approver.split(' (')[1] ? approver.split(' (')[1].replace(')', '') : 'Lãnh đạo',
                     excerpt: excerpt,
                     ycbtCode: ycbtCode,
                     ycbtNyc: ycbtNyc,
-                    ycbtAmount: ycbtAmount,
+                    ycbtAmount: compAmount,
                     ycbtAgency: ycbtAgency,
-                    status: statusStr
+                    compAmount: compAmount,
+                    advAmount: advAmount,
+                    phdd: phdd,
+                    files: [...uploadedFiles],
+                    status: statusStr,
+                    rejectReason: ""
                 });
-                showToast(`Tạo mới Quyết định ${no} thành công dưới dạng ${statusStr}!`, "success");
+                showToast(statusStr === 'Chờ ký' ? `Tạo mới và trình ký quyết định số ${no} thành công!` : `Lưu nháp quyết định số ${no} thành công!`, "success");
             }
 
             closeCreateDecForm();
         }
 
+        // Edit draft/rejected decisions
         function editDecision(id) {
             const item = decisionsList.find(d => d.id === id);
             if (!item) return;
 
             openCreateDecForm();
             selectedDecId = id;
-            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT QUYẾT ĐỊNH BAN HÀNH: ${item.decNo}`;
+            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT DỰ THẢO QUYẾT ĐỊNH: ${item.decNo}`;
             document.getElementById('autofillClaimBlock').style.display = 'none';
 
             document.getElementById('decFormNo').value = item.decNo;
+            document.getElementById('decFormAgency').value = item.agency || 'Sở Tư pháp Hà Nội';
+            document.getElementById('decFormApprover').value = item.approver || 'Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)';
             document.getElementById('decFormDate').value = item.date;
             document.getElementById('decFormActiveDate').value = item.activeDate;
-            document.getElementById('decFormSigner').value = item.signer;
-            document.getElementById('decFormPosition').value = item.position;
             document.getElementById('decFormExcerpt').value = item.excerpt;
 
             document.getElementById('decFormYcbtCode').value = item.ycbtCode;
             document.getElementById('decFormYcbtNyc').value = item.ycbtNyc;
-            document.getElementById('decFormYcbtAmount').value = item.ycbtAmount;
             document.getElementById('decFormYcbtAgency').value = item.ycbtAgency;
+            document.getElementById('decFormCompensationAmount').value = item.compAmount ? Number(item.compAmount).toLocaleString('vi-VN') : '';
+            document.getElementById('decFormAdvanceAmount').value = item.advAmount ? Number(item.advAmount).toLocaleString('vi-VN') : '0';
+            document.getElementById('decFormPhdd').checked = item.phdd || false;
+            
+            uploadedFiles = [...(item.files || [])];
+            renderUploadedFiles(false);
         }
 
-        function viewDecisionDetail(id) {
-            const item = decisionsList.find(d => d.id === id);
-            if (!item) return;
-
-            openCreateDecForm();
-            selectedDecId = null;
-            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-circle-info"></i> CHI TIẾT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`;
-            document.getElementById('autofillClaimBlock').style.display = 'none';
-
-            // Disable all form elements
-            document.getElementById('decFormNo').value = item.decNo;
-            document.getElementById('decFormDate').value = item.date;
-            document.getElementById('decFormActiveDate').value = item.activeDate;
-            document.getElementById('decFormSigner').value = item.signer;
-            document.getElementById('decFormPosition').value = item.position;
-            document.getElementById('decFormExcerpt').value = item.excerpt;
-
-            document.getElementById('decFormYcbtCode').value = item.ycbtCode;
-            document.getElementById('decFormYcbtNyc').value = item.ycbtNyc;
-            document.getElementById('decFormYcbtAmount').value = item.ycbtAmount;
-            document.getElementById('decFormYcbtAgency').value = item.ycbtAgency;
-
-            // Hide action buttons in footer except close
-            const footer = document.querySelector('.inline-form-footer');
-            footer.innerHTML = `<button class="btn btn-primary" onclick="closeCreateDecForm()">Quay lại danh sách</button>`;
-        }
-
+        // Delete draft decisions
         function deleteDecision(id) {
             const index = decisionsList.findIndex(d => d.id === id);
             if (index !== -1) {
-                showConfirmModal("Bạn có chắc chắn muốn xóa Quyết định lưu nháp này không?", () => {
+                showConfirmModal("Bạn có chắc chắn muốn xóa dự thảo Quyết định này không?", () => {
                     decisionsList.splice(index, 1);
-                    showToast("Đã xóa vĩnh viễn Quyết định lưu nháp!", "success");
+                    showToast("Đã xóa vĩnh viễn dự thảo Quyết định!", "success");
                     renderDecTable();
                 });
             }
         }
 
-        function signDecision(id) {
+        // View details (For Officer view-only, or Leader review)
+        function viewDecisionDetail(id) {
+            const item = decisionsList.find(d => d.id === id);
+            if (!item) return;
+
+            selectedDecId = id;
+            document.getElementById('contentListDecisions').style.display = 'none';
+            document.getElementById('inlineDecFormPanel').style.display = 'block';
+            
+            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-circle-info"></i> CHI TIẾT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`;
+            document.getElementById('autofillClaimBlock').style.display = 'none';
+
+            // Prefill form
+            document.getElementById('decFormNo').value = item.decNo;
+            document.getElementById('decFormAgency').value = item.agency || 'Sở Tư pháp Hà Nội';
+            document.getElementById('decFormApprover').value = item.approver || 'Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)';
+            document.getElementById('decFormDate').value = item.date;
+            document.getElementById('decFormActiveDate').value = item.activeDate;
+            document.getElementById('decFormExcerpt').value = item.excerpt;
+
+            document.getElementById('decFormYcbtCode').value = item.ycbtCode;
+            document.getElementById('decFormYcbtNyc').value = item.ycbtNyc;
+            document.getElementById('decFormYcbtAgency').value = item.ycbtAgency;
+            document.getElementById('decFormCompensationAmount').value = item.compAmount ? Number(item.compAmount).toLocaleString('vi-VN') : '';
+            document.getElementById('decFormAdvanceAmount').value = item.advAmount ? Number(item.advAmount).toLocaleString('vi-VN') : '0';
+            document.getElementById('decFormPhdd').checked = item.phdd || false;
+            
+            uploadedFiles = [...(item.files || [])];
+            renderUploadedFiles(true);
+
+            // Readonly form inputs
+            enableFormInputs(false);
+
+            // Enable Split Layout & Visual Document Paper
+            document.getElementById('formBodyLayout').classList.add('split-layout');
+            document.getElementById('visualDocumentColumn').style.display = 'block';
+
+            // Generate Administrative decision paper on the right column
+            const paperHtml = generateDecisionPaperHtml({
+                no: item.decNo,
+                agency: item.agency || 'Sở Tư pháp Hà Nội',
+                approver: item.approver || 'Phan Văn Trị (Cục trưởng Cục QLNV bồi thường)',
+                date: item.date,
+                activeDate: item.activeDate,
+                nyc: item.ycbtNyc,
+                compAmount: item.compAmount,
+                advAmount: item.advAmount,
+                phdd: item.phdd || false,
+                excerpt: item.excerpt,
+                status: item.status,
+                rejectReason: item.rejectReason
+            });
+            document.getElementById('decisionPaperPreview').innerHTML = paperHtml;
+
+            // Render Actions Footer based on active role & record status
+            const footer = document.getElementById('formDecFooter');
+            
+            if (currentRole === 'leader' && item.status === 'Chờ ký') {
+                footer.innerHTML = `
+                    <button class="btn btn-secondary" onclick="closeCreateDecForm()">Quay lại</button>
+                    <button class="btn btn-danger" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối ký</button>
+                    <button class="btn btn-success" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i> Ký số / Phê duyệt</button>
+                `;
+            } else {
+                let rejectReasonAlert = '';
+                if (item.status === 'Bị từ chối' && item.rejectReason) {
+                    rejectReasonAlert = `<div style="margin-right:auto; color:var(--danger-color); font-weight:600; font-size:12.5px;"><i class="fa-solid fa-circle-exclamation"></i> Ý kiến hiệu chỉnh từ Lãnh đạo: "${item.rejectReason}"</div>`;
+                }
+                footer.innerHTML = `
+                    ${rejectReasonAlert}
+                    <button class="btn btn-primary" onclick="closeCreateDecForm()">Quay lại danh sách</button>
+                `;
+            }
+        }
+
+        // Leader Approve & Reject handlers (Directly from table row or within detail form)
+        function signDecisionDirect(id) {
             const item = decisionsList.find(d => d.id === id);
             if (item) {
-                item.status = 'Đã ký';
-                showToast(`Ký duyệt và ban hành số quyết định bồi thường ${item.decNo} thành công!`, "success");
+                showConfirmModal(`Bạn có chắc chắn muốn thực hiện ký số điện tử để phê duyệt và ban hành Quyết định số ${item.decNo} không?`, () => {
+                    item.status = 'Đã ký';
+                    item.rejectReason = "";
+                    showToast(`Ký số phê duyệt thành công! Quyết định ${item.decNo} đã chính thức được ban hành.`, "success");
+                    closeCreateDecForm();
+                    renderDecTable();
+                });
+            }
+        }
+
+        function rejectDecisionDirect(id) {
+            pendingRejectDecId = id;
+            document.getElementById('rejectReasonInput').value = '';
+            document.getElementById('leaderRejectModal').style.display = 'flex';
+        }
+
+        function closeLeaderRejectModal() {
+            document.getElementById('leaderRejectModal').style.display = 'none';
+            pendingRejectDecId = null;
+        }
+
+        function submitLeaderRejection() {
+            const reason = document.getElementById('rejectReasonInput').value.trim();
+            if (!reason) {
+                showToast("Vui lòng nhập lý do từ chối ký duyệt dự thảo!", "error");
+                return;
+            }
+            const item = decisionsList.find(d => d.id === pendingRejectDecId);
+            if (item) {
+                item.status = 'Bị từ chối';
+                item.rejectReason = reason;
+                showToast(`Từ chối ký duyệt thành công! Dự thảo ${item.decNo} đã được trả về trạng thái yêu cầu chỉnh sửa.`, "info");
+                closeLeaderRejectModal();
+                closeCreateDecForm();
                 renderDecTable();
             }
         }
 
-        function rejectDecision(id) {
-            const item = decisionsList.find(d => d.id === id);
-            if (item) {
-                item.status = 'Bị từ chối';
-                showToast(`Từ chối ký duyệt dự thảo Quyết định ${item.decNo}!`, "info");
-                renderDecTable();
+        // Preview Decision administrative document in modal (for Officer)
+        function previewDecisionDocument() {
+            const no = document.getElementById('decFormNo').value.trim() || "[SỐ QUYẾT ĐỊNH]";
+            const agency = document.getElementById('decFormAgency').value;
+            const approver = document.getElementById('decFormApprover').value;
+            const date = document.getElementById('decFormDate').value.trim() || new Date().toLocaleDateString('vi-VN');
+            const activeDate = document.getElementById('decFormActiveDate').value.trim() || "[NGÀY CÓ HIỆU LỰC]";
+            
+            const ycbtCode = document.getElementById('decFormYcbtCode').value || "[MÃ HỒ SƠ]";
+            const ycbtNyc = document.getElementById('decFormYcbtNyc').value || "[HỌ TÊN NGƯỜI YÊU CẦU]";
+            const compAmount = parseFormattedMoney(document.getElementById('decFormCompensationAmount').value);
+            const advAmount = parseFormattedMoney(document.getElementById('decFormAdvanceAmount').value);
+            const phdd = document.getElementById('decFormPhdd').checked;
+            const excerpt = document.getElementById('decFormExcerpt').value.trim() || "[NỘI DUNG TÓM TẮT QUYẾT ĐỊNH]";
+
+            const paperHtml = generateDecisionPaperHtml({
+                no: no,
+                agency: agency,
+                approver: approver,
+                date: date,
+                activeDate: activeDate,
+                nyc: ycbtNyc,
+                compAmount: compAmount,
+                advAmount: advAmount,
+                phdd: phdd,
+                excerpt: excerpt,
+                status: "Xem trước",
+                rejectReason: ""
+            });
+
+            document.getElementById('modalDecisionPaperPreview').innerHTML = paperHtml;
+            document.getElementById('previewDecModal').style.display = 'flex';
+        }
+
+        function closePreviewDecModal() {
+            document.getElementById('previewDecModal').style.display = 'none';
+        }
+
+        // Generate Simulated Administrative Document HTML (Times New Roman, standard government layout)
+        function generateDecisionPaperHtml(data) {
+            const signerName = data.approver.split(' (')[0];
+            const signerPos = data.approver.split(' (')[1] ? data.approver.split(' (')[1].replace(')', '') : 'Người ký';
+            
+            const dateParts = data.date.split('/');
+            const dateString = dateParts.length === 3 ? `ngày ${dateParts[0]} tháng ${dateParts[1]} năm ${dateParts[2]}` : `ngày ... tháng ... năm ...`;
+            
+            let phddParagraph = '';
+            if (data.phdd) {
+                phddParagraph = `
+                    <div class="paper-article-item">
+                        <span class="paper-article-name">Điều 2. Phục hồi danh dự:</span><br>
+                        Cơ quan có trách nhiệm giải quyết bồi thường chủ trì phối hợp với các cơ quan địa phương tổ chức phục hồi danh dự công khai cho ông/bà <strong>${data.nyc}</strong> theo đúng trình tự, quy định pháp luật bồi thường Nhà nước năm 2017.
+                    </div>
+                `;
             }
+
+            const netCompensation = Math.max(0, data.compAmount - data.advAmount);
+
+            let signatureStamp = '';
+            if (data.status === 'Đã ký') {
+                signatureStamp = `
+                    <div style="margin-top:5px; padding:6px 10px; border:2px double #ef4444; border-radius:6px; color:#ef4444; font-weight:bold; font-size:11px; text-transform:uppercase; display:inline-block; transform:rotate(-4deg); background:rgba(239,68,68,0.05); font-family:var(--font-family); line-height:1.2; text-align:center;">
+                        <i class="fa-solid fa-signature"></i> ĐÃ KÝ SỐ<br>
+                        ${signerName}<br>
+                        ${data.agency}
+                    </div>
+                `;
+            }
+
+            let rejectStampAlert = '';
+            if (data.status === 'Bị từ chối' && data.rejectReason) {
+                rejectStampAlert = `
+                    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:4px; padding:10px; margin-bottom:20px; font-family:var(--font-family); font-size:12.5px; line-height:1.4;">
+                        <strong style="color:var(--danger-color);"><i class="fa-solid fa-circle-exclamation"></i> Ý kiến yêu cầu hiệu chỉnh của Lãnh đạo:</strong>
+                        <p style="color:#334155; margin-top:4px; font-style:italic;">"${data.rejectReason}"</p>
+                    </div>
+                `;
+            }
+
+            // Determine if parent agency is applicable (e.g. Cục/UBND/Tòa án)
+            let parentAgencyHtml = 'BỘ TƯ PHÁP';
+            if (data.agency.includes("Tòa án")) {
+                parentAgencyHtml = 'TÒA ÁN NHÂN DÂN TỐI CAO';
+            } else if (data.agency.includes("UBND")) {
+                parentAgencyHtml = 'ỦY BAN NHÂN DÂN TP. HÀ NỘI';
+            }
+
+            return `
+                ${rejectStampAlert}
+                <div class="paper-meta-grid">
+                    <div class="paper-meta-left">
+                        <div class="paper-meta-left-parent">${parentAgencyHtml}</div>
+                        <div class="paper-meta-left-agency">${data.agency.toUpperCase()}</div>
+                        <div class="paper-meta-left-no">Số: ${data.no}/QĐ-GQBT</div>
+                    </div>
+                    <div class="paper-meta-right">
+                        <div class="paper-meta-right-motto">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                        <div class="paper-meta-right-ideals">Độc lập - Tự do - Hạnh phúc</div>
+                        <div class="paper-meta-right-date">..., ${dateString}</div>
+                    </div>
+                </div>
+
+                <div class="paper-doc-title-block">
+                    <div class="paper-doc-title">QUYẾT ĐỊNH</div>
+                    <div class="paper-doc-excerpt">Về việc giải quyết bồi thường thiệt hại Nhà nước</div>
+                </div>
+
+                <div class="paper-signer-pos-center">
+                    ${signerPos.toUpperCase()}
+                </div>
+
+                <div class="paper-doc-content">
+                    <div class="paper-basis">Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017;</div>
+                    <div class="paper-basis">Căn cứ hồ sơ yêu cầu bồi thường thiệt hại đã được thụ lý, thẩm định;</div>
+                    <div class="paper-basis">Xét kết quả thương lượng bồi thường giữa cơ quan giải quyết bồi thường và người yêu cầu bồi thường;</div>
+                    <div class="paper-basis">Theo đề nghị của Cán bộ thụ lý hồ sơ giải quyết bồi thường nhà nước.</div>
+                </div>
+
+                <div class="paper-decide-header">QUYẾT ĐỊNH:</div>
+
+                <div class="paper-article-item">
+                    <span class="paper-article-name">Điều 1. Bồi thường thiệt hại:</span><br>
+                    Chi trả bồi thường cho ông/bà <strong>${data.nyc}</strong> các khoản thiệt hại được xác định theo luật định:<br>
+                    - Tổng số tiền bồi thường được duyệt: <strong>${data.compAmount.toLocaleString('vi-VN')} đồng</strong>.<br>
+                    - Số tiền đã tạm ứng chi trả trước đó (nếu có): <strong>${data.advAmount.toLocaleString('vi-VN')} đồng</strong>.<br>
+                    - Số tiền thực lĩnh còn lại nhận sau quyết định này: <strong style="color:#b91c1c;">${netCompensation.toLocaleString('vi-VN')} đồng</strong> (Bằng chữ: ..........................................................................................).
+                </div>
+
+                ${phddParagraph}
+
+                <div class="paper-article-item">
+                    <span class="paper-article-name">Điều 3. Hiệu lực thi hành:</span><br>
+                    Quyết định này có hiệu lực pháp luật kể từ ngày <strong>${data.activeDate}</strong>. Các cá nhân, tổ chức chịu trách nhiệm thi hành quyết định bồi thường nghiêm túc thực hiện việc chi trả bồi thường theo đúng tiến độ và quy định của pháp luật hiện hành.
+                </div>
+
+                <div class="paper-footer-grid">
+                    <div class="paper-footer-left">
+                        <div class="paper-recipients-title">Nơi nhận:</div>
+                        <div class="paper-recipients-list">
+                            - Người yêu cầu bồi thường;<br>
+                            - Cơ quan tài chính cùng cấp;<br>
+                            - Lưu văn thư, hồ sơ vụ việc.
+                        </div>
+                    </div>
+                    <div class="paper-footer-right">
+                        <div class="paper-signature-title">${signerPos}</div>
+                        <div class="paper-signature-desc">(Ký, ghi rõ họ tên và đóng dấu)</div>
+                        <div class="paper-signature-stamp-area">
+                            ${signatureStamp}
+                        </div>
+                        <div class="paper-signer-name">${signerName}</div>
+                    </div>
+                </div>
+            `;
         }
 
         // Detailed Claim Modal (Sticky Modal conforming to Rule 1)
         function openClaimDetailModal(claimCode) {
-            // Find in mock claims list
             const found = pendingClaimsList.find(c => c.code === claimCode) || {
                 code: claimCode, nyc: "Nguyễn Văn Nam", amount: 150000000, agency: "Sở Tư pháp Hà Nội", fieldGroup: "hành chính"
             };
