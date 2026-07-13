@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu Phục hồi danh dự - Cán bộ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <!-- Shared stylesheet -->
+    <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+
+    <style>
+        .filter-panel {
+            background-color: #fafafa;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        th.sortable:hover {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <!-- TOP NAVIGATION PORTAL HEADER -->
+        <div class="role-switch-container" style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+            <div>
+                <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền xem Cán bộ:</span>
+                <select class="role-selector" id="roleSelectorMain">
+                    <option value="chuyen-vien">Chuyên viên Thụ lý nghiệp vụ</option>
+                    <option value="thu-truong">Thủ trưởng Cơ quan giải quyết</option>
+                </select>
+            </div>
+            <div>
+                <span style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left: 10px;">Cán bộ đang đăng nhập:</span>
+                <select class="role-selector" id="currentOfficerSelector">
+                    <option value="Nguyễn Văn Chuyên Viên">Nguyễn Văn Chuyên Viên (CB1)</option>
+                    <option value="Trần Thị Chuyên Viên">Trần Thị Chuyên Viên (CB2)</option>
+                    <option value="Lê Văn Chuyên Viên">Lê Văn Chuyên Viên (CB3)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="page-header">
+            <div class="page-title">
+                <h2><i class="fa-solid fa-ribbon" style="color: #1e3a8a; margin-right: 8px;"></i>TRA CỨU TIẾN TRÌNH PHỤC HỒI DANH DỰ</h2>
+                <p>Danh sách hồ sơ bồi thường nhà nước yêu cầu tổ chức phục hồi danh dự cho người bị thiệt hại</p>
+            </div>
+        </div>
+
+        <!-- BỘ LỌC NÂNG CAO (FAFAFA Background) -->
+        <div class="filter-panel">
+            <div class="grid-4-cols" style="margin-bottom: 16px;">
+                <div>
+                    <span class="form-label">Mã hồ sơ</span>
+                    <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã hồ sơ...">
+                </div>
+                <div>
+                    <span class="form-label">Người bị thiệt hại</span>
+                    <input type="text" class="form-control" id="filterNyc" placeholder="Nhập họ và tên...">
+                </div>
+                <div>
+                    <span class="form-label">Cơ quan giải quyết bồi thường</span>
+                    <input type="text" class="form-control" id="filterAgency" list="agencySuggestions" placeholder="Nhập cơ quan giải quyết...">
+                    <datalist id="agencySuggestions">
+                        <option value="Sở Tư pháp Hà Nội">
+                        <option value="Tòa án nhân dân TP. Hà Nội">
+                        <option value="Sở Tư pháp Hải Phòng">
+                        <option value="Cục Thi hành án dân sự Hà Nội">
+                        <option value="Viện kiểm sát nhân dân Tối cao">
+                    </datalist>
+                </div>
+                <div>
+                    <span class="form-label">Trạng thái</span>
+                    <select class="form-control" id="filterStatus">
+                        <option value="">Tất cả</option>
+                        <option value="Chờ thông báo">Chờ thông báo</option>
+                        <option value="Chờ phản hồi">Chờ phản hồi</option>
+                        <option value="Chờ thực hiện">Chờ thực hiện</option>
+                        <option value="Tạm hoãn">Tạm hoãn</option>
+                        <option value="Từ chối">Từ chối</option>
+                        <option value="Hoàn thành">Hoàn thành</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 16px;">
+                <div>
+                    <span class="form-label">Hình thức phục hồi danh dự</span>
+                    <select class="form-control" id="filterType">
+                        <option value="">Tất cả</option>
+                        <option value="Trực tiếp xin lỗi">Trực tiếp xin lỗi</option>
+                        <option value="Đăng báo xin lỗi">Đăng báo xin lỗi</option>
+                        <option value="Cả hai hình thức">Cả hai hình thức</option>
+                    </select>
+                </div>
+                <div>
+                    <span class="form-label">Thời điểm cập nhật: Từ ngày</span>
+                    <div style="position: relative;">
+                        <input type="text" class="form-control" id="filterFromDate" placeholder="dd/mm/yyyy">
+                        <i class="fa-solid fa-calendar" style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="form-label">Thời điểm cập nhật: Đến ngày</span>
+                    <div style="position: relative;">
+                        <input type="text" class="form-control" id="filterToDate" placeholder="dd/mm/yyyy">
+                        <i class="fa-solid fa-calendar" style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn btn-secondary" onclick="resetFilters()">
+                    <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                </button>
+                <button class="btn btn-primary" onclick="searchData()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                </button>
+            </div>
+        </div>
+
+        <!-- GRID HEADER & ACTION BUTTONS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 24px;">
+            <div style="font-weight: 600; color: #475569;">
+                Danh sách kết quả tra cứu tiến trình PHDD
+            </div>
+            <div>
+                <button class="btn btn-secondary" onclick="exportToExcel()">
+                    <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> Kết xuất Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- DATA GRID -->
+        <div class="table-container">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px; text-align: center;">STT</th>
+                        <th style="width: 120px; text-align: center;">Mã hồ sơ</th>
+                        <th style="min-width: 140px;">Người bị thiệt hại</th>
+                        <th style="min-width: 240px;">Cơ quan giải quyết bồi thường</th>
+                        <th style="min-width: 160px;">Hình thức</th>
+                        <th style="width: 130px; text-align: center;">Trạng thái</th>
+                        <th style="width: 140px; text-align: center;">Thời hạn thực hiện</th>
+                        <th style="width: 150px; text-align: center;" class="sortable" onclick="toggleSort()">
+                            Ngày cập nhật <i class="fa-solid fa-sort" id="sortIcon" style="margin-left: 4px;"></i>
+                        </th>
+                        <th style="width: 100px; text-align: center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="gridBody">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINATION BAR -->
+        <div class="pagination-bar" id="gridPagination">
+            <div class="pagination-left">
+                <span>Số dòng hiển thị:</span>
+                <select class="page-size-select" onchange="changePageSize(this.value)">
+                    <option value="10">10</option>
+                    <option value="30">30</option>
+                    <option value="50">50</option>
+                </select>
+                <span>Hiển thị <span id="currentRange" style="font-weight: 600;">1-10</span> trong tổng số
+                    <span id="totalCount" style="font-weight: 600;">12</span> bản ghi</span>
+            </div>
+            <div class="pagination-pages" id="pageContainer">
+                <!-- Pages buttons -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-notif success" id="toast" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 9999;">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMessage">Thông báo</span>
+    </div>
+
+    <script>
+        // Initial Mock Data (12 records for 2 pages pagination testing)
+        let mockDataList = [
+            { id: "HS1", code: "BT-2026-001", nyc: "Nguyễn Văn A", agency: "Sở Tư pháp Hà Nội", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "10/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "10/07/2026" },
+            { id: "HS2", code: "BT-2026-002", nyc: "Trần Thị B", agency: "Tòa án nhân dân TP. Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "15/07/2026", deadlineStatus: "🟡 Sắp hết hạn (5 ngày)", updatedDate: "08/07/2026" },
+            { id: "HS3", code: "BT-2026-003", nyc: "Công ty Hải Phát", agency: "UBND thành phố Hà Nội", type: "Trực tiếp xin lỗi", status: "Hoàn thành", deadline: "25/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "25/06/2026" },
+            { id: "HS5", code: "BT-2026-005", nyc: "Lê Văn D", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Chờ thực hiện", deadline: "18/07/2026", deadlineStatus: "🟡 Sắp hết hạn (8 ngày)", updatedDate: "10/07/2026" },
+            { id: "HS11", code: "BT-2026-011", nyc: "Trần Thị G", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ thông báo", deadline: "22/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "09/07/2026" },
+            { id: "HS12", code: "BT-2026-012", nyc: "Lê Văn H", agency: "Cục Thi hành án dân sự Hà Nội", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "28/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "20/07/2026" },
+            { id: "HS15", code: "BT-2026-015", nyc: "Phạm Văn C", agency: "UBND Quận Cầu Giấy", type: "Trực tiếp xin lỗi", status: "Chờ thông báo", deadline: "02/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "02/07/2026" },
+            { id: "HS16", code: "BT-2026-016", nyc: "Hoàng Văn K", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Từ chối", deadline: "12/06/2026", deadlineStatus: "🔴 Quá hạn", updatedDate: "15/06/2026" },
+            { id: "HS21", code: "BT-2026-021", nyc: "Đỗ Văn L", agency: "Tòa án nhân dân TP. Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ phản hồi", deadline: "13/07/2026", deadlineStatus: "🟡 Sắp hết hạn (3 ngày)", updatedDate: "10/07/2026" },
+            { id: "HS22", code: "BT-2026-022", nyc: "Nguyễn Thị M", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Tạm hoãn", deadline: "12/07/2026", deadlineStatus: "🟢 Tạm hoãn", updatedDate: "10/07/2026" },
+            { id: "HS23", code: "BT-2026-023", nyc: "Vũ Văn N", agency: "Sở Tư pháp Hải Dương", type: "Trực tiếp xin lỗi", status: "Chờ thực hiện", deadline: "12/07/2026", deadlineStatus: "🟡 Sắp hết hạn (2 ngày)", updatedDate: "10/07/2026" },
+            { id: "HS24", code: "BT-2026-024", nyc: "Phan Văn O", agency: "UBND tỉnh Quảng Ninh", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "30/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "10/07/2026" }
+        ];
+
+        let filteredList = [...mockDataList];
+        let currentPage = 1;
+        let pageSize = 10;
+        let isSortAsc = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if claimsList is in local storage to keep state sync
+            const storedClaims = localStorage.getItem('claimsList');
+            if (storedClaims) {
+                const claims = JSON.parse(storedClaims);
+                // Update our mock list using status & PHDD values from claimsList if they match
+                mockDataList.forEach(item => {
+                    const c = claims.find(claim => claim.code === item.code);
+                    if (c) {
+                        item.nyc = c.nyc;
+                        item.agency = c.agency || item.agency;
+                        
+                        // Map claimsList state to PHDD states
+                        if (c.status === 'Hoàn thành') {
+                            item.status = 'Hoàn thành';
+                        }
+                        if (c.phddStep1No && c.phddStep1Date) {
+                            if (item.status === 'Chờ thông báo') item.status = 'Chờ phản hồi';
+                        }
+                        if (c.phddStep2Opinion) {
+                            if (c.phddStep2Opinion === 'Từ chối') item.status = 'Từ chối';
+                            else if (c.phddStep2Opinion === 'Chưa thực hiện') item.status = 'Tạm hoãn';
+                            else if (item.status === 'Chờ phản hồi') item.status = 'Chờ thực hiện';
+                        }
+                        if (c.phddStep4DateAct) {
+                            item.status = 'Hoàn thành';
+                        }
+                    }
+                });
+            }
+            
+            // Set up date pickers
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true });
+            flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true });
+            
+            document.getElementById('filterFromDate').value = formatDateVi(firstDay);
+            document.getElementById('filterToDate').value = formatDateVi(today);
+
+            filteredList = [...mockDataList];
+            searchData();
+        });
+
+        function formatDateVi(date) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        function parseDateVi(str) {
+            if (!str) return null;
+            const parts = str.split('/');
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            return null;
+        }
+
+        // RESET FILTERS
+        function resetFilters() {
+            document.getElementById('filterCode').value = '';
+            document.getElementById('filterNyc').value = '';
+            document.getElementById('filterAgency').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterType').value = '';
+            
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('filterFromDate').value = formatDateVi(firstDay);
+            document.getElementById('filterToDate').value = formatDateVi(today);
+
+            searchData();
+            showToast("Đã xóa bộ lọc tìm kiếm!", "success");
+        }
+
+        // SEARCH FUNCTION
+        function searchData() {
+            const code = document.getElementById('filterCode').value.trim().toLowerCase();
+            const nyc = document.getElementById('filterNyc').value.trim().toLowerCase();
+            const agency = document.getElementById('filterAgency').value.trim().toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+            const type = document.getElementById('filterType').value;
+            const fromDate = parseDateVi(document.getElementById('filterFromDate').value);
+            const toDate = parseDateVi(document.getElementById('filterToDate').value);
+
+            filteredList = mockDataList.filter(item => {
+                if (code && !item.code.toLowerCase().includes(code)) return false;
+                if (nyc && !item.nyc.toLowerCase().includes(nyc)) return false;
+                if (agency && !item.agency.toLowerCase().includes(agency)) return false;
+                if (status && item.status !== status) return false;
+                if (type && !item.type.includes(type)) return false;
+
+                if (fromDate || toDate) {
+                    const itemDate = parseDateVi(item.updatedDate);
+                    if (!itemDate) return false;
+                    if (fromDate && itemDate < fromDate) return false;
+                    if (toDate && itemDate > toDate) return false;
+                }
+                return true;
+            });
+
+            // Default Sort
+            sortList();
+            currentPage = 1;
+            renderGrid();
+        }
+
+        // SORT COLUMN
+        function toggleSort() {
+            isSortAsc = !isSortAsc;
+            const icon = document.getElementById('sortIcon');
+            if (isSortAsc) {
+                icon.className = 'fa-solid fa-sort-up';
+            } else {
+                icon.className = 'fa-solid fa-sort-down';
+            }
+            sortList();
+            renderGrid();
+        }
+
+        function sortList() {
+            filteredList.sort((a, b) => {
+                const dateA = parseDateVi(a.updatedDate) || new Date(0);
+                const dateB = parseDateVi(b.updatedDate) || new Date(0);
+                return isSortAsc ? (dateA - dateB) : (dateB - dateA);
+            });
+        }
+
+        // RENDER DATA GRID
+        function renderGrid() {
+            const tbody = document.getElementById('gridBody');
+            tbody.innerHTML = '';
+
+            const total = filteredList.length;
+            document.getElementById('totalCount').innerText = total;
+
+            const maxPages = Math.ceil(total / pageSize) || 1;
+            if (currentPage > maxPages) currentPage = maxPages;
+
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, total);
+
+            document.getElementById('currentRange').innerText = total > 0 ? `${startIdx + 1}-${endIdx}` : '0-0';
+
+            if (total === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 24px;">Không tìm thấy dữ liệu phục hồi danh dự phù hợp</td></tr>`;
+                renderPagination(maxPages);
+                return;
+            }
+
+            for (let i = startIdx; i < endIdx; i++) {
+                const item = filteredList[i];
+                let statusBadge = '';
+                if (item.status === 'Hoàn thành') statusBadge = '<span class="badge badge-success">Hoàn thành</span>';
+                else if (item.status === 'Chờ thông báo') statusBadge = '<span class="badge badge-draft">Chờ thông báo</span>';
+                else if (item.status === 'Chờ phản hồi') statusBadge = '<span class="badge badge-pending">Chờ phản hồi</span>';
+                else if (item.status === 'Chờ thực thi' || item.status === 'Chờ thực hiện') statusBadge = '<span class="badge badge-warning">Chờ thực hiện</span>';
+                else if (item.status === 'Từ chối') statusBadge = '<span class="badge badge-danger">Từ chối</span>';
+                else if (item.status === 'Tạm hoãn') statusBadge = '<span class="badge badge-info">Tạm hoãn</span>';
+                
+                let limitBadge = '';
+                if (item.deadlineStatus.includes('🟢')) limitBadge = `<span style="color:var(--success-color); font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px; margin-right:4px;"></i> ${item.deadlineStatus.replace('🟢 ', '')}</span>`;
+                else if (item.deadlineStatus.includes('🟡')) limitBadge = `<span style="color:var(--accent-color); font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px; margin-right:4px;"></i> ${item.deadlineStatus.replace('🟡 ', '')}</span>`;
+                else if (item.deadlineStatus.includes('🔴')) limitBadge = `<span style="color:var(--danger-color); font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px; margin-right:4px;"></i> ${item.deadlineStatus.replace('🔴 ', '')}</span>`;
+                else limitBadge = `<span style="color:var(--text-muted);">${item.deadlineStatus}</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align: center;">${i + 1}</td>
+                    <td style="text-align: center; font-weight:600; color:var(--primary-light);">${item.code}</td>
+                    <td>${item.nyc}</td>
+                    <td>${item.agency}</td>
+                    <td>${item.type}</td>
+                    <td style="text-align: center;">${statusBadge}</td>
+                    <td style="text-align: center;">${limitBadge}</td>
+                    <td style="text-align: center;">${item.updatedDate}</td>
+                    <td style="text-align: center;">
+                        <button class="icon-btn view" title="Xem chi tiết" onclick="goToDetail('${item.code}')">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            renderPagination(maxPages);
+        }
+
+        // RENDER PAGINATION
+        function renderPagination(maxPages) {
+            const container = document.getElementById('pageContainer');
+            container.innerHTML = '';
+
+            const firstBtn = document.createElement('span');
+            firstBtn.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            firstBtn.innerHTML = '|&lt;&lt;';
+            firstBtn.onclick = () => { if (currentPage > 1) { currentPage = 1; renderGrid(); } };
+            container.appendChild(firstBtn);
+
+            const prevBtn = document.createElement('span');
+            prevBtn.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevBtn.innerHTML = '&lt;';
+            prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderGrid(); } };
+            container.appendChild(prevBtn);
+
+            for (let i = 1; i <= maxPages; i++) {
+                const pageBtn = document.createElement('span');
+                pageBtn.className = `page-item ${currentPage === i ? 'active' : ''}`;
+                pageBtn.innerText = i;
+                pageBtn.onclick = () => { currentPage = i; renderGrid(); };
+                container.appendChild(pageBtn);
+            }
+
+            const nextBtn = document.createElement('span');
+            nextBtn.className = `page-item ${currentPage === maxPages ? 'disabled' : ''}`;
+            nextBtn.innerHTML = '&gt;';
+            nextBtn.onclick = () => { if (currentPage < maxPages) { currentPage++; renderGrid(); } };
+            container.appendChild(nextBtn);
+
+            const lastBtn = document.createElement('span');
+            lastBtn.className = `page-item ${currentPage === maxPages ? 'disabled' : ''}`;
+            lastBtn.innerHTML = '&gt;&gt;|';
+            lastBtn.onclick = () => { if (currentPage < maxPages) { currentPage = maxPages; renderGrid(); } };
+            container.appendChild(lastBtn);
+        }
+
+        function changePageSize(val) {
+            pageSize = parseInt(val, 10);
+            currentPage = 1;
+            renderGrid();
+        }
+
+        // NAVIGATION REDIRECT
+        function goToDetail(code) {
+            window.location.href = `quan_ly_boi_thuong.html?viewCode=${code}&subTab=phdd`;
+        }
+
+        // MOCK EXPORT
+        function exportToExcel() {
+            showToast("Đang kết xuất danh sách tiến trình Phục hồi danh dự ra Excel...", "success");
+        }
+
+        // TOAST NOTIFICATION
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.className = `toast-notif ${type}`;
+            document.getElementById('toastMessage').innerText = message;
+            toast.style.display = 'flex';
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => { toast.style.display = 'none'; }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

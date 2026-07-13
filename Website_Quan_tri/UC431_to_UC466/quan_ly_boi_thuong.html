@@ -1130,6 +1130,21 @@
                     </div>
                 </div>
 
+                <!-- YÊU CẦU BỔ SUNG CỦA CÁN BỘ (CHỈ HIỂN THỊ KHI CẬP NHẬT TRẠNG THÁI YÊU CẦU BỔ SUNG) -->
+                <div id="editFormBosungAlertBlock" style="display: none; background-color: #FEF3C7; border: 1.5px solid #F59E0B; padding: 16px; border-radius: var(--border-radius-md); margin-bottom: 24px;">
+                    <div style="font-weight: 700; color: #B45309; margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-triangle-exclamation" style="color: #D97706; font-size: 16px;"></i> THÔNG TIN YÊU CẦU BỔ SUNG HỒ SƠ
+                    </div>
+                    <div style="font-size: 12.5px; background: white; padding: 12px; border-radius: 4px; border: 1px solid #FDE68A;">
+                        <div style="margin-bottom: 6px;"><strong style="color: #9A3412;">Ý kiến/Yêu cầu bổ sung của Cán bộ:</strong></div>
+                        <p style="margin: 0 0 12px 0; color: #1F2937; font-style: italic; line-height: 1.5;" id="editFormBosungReasonText">--</p>
+                        <div style="font-size: 12px; color: var(--text-muted); border-top: 1px dashed #e2e8f0; padding-top: 8px; display: flex; justify-content: space-between;">
+                            <span><strong style="color: #475569;">Cán bộ yêu cầu:</strong> <span id="editFormBosungOfficerText" style="font-weight: 600;">--</span></span>
+                            <span><strong style="color: #475569;">Ngày giờ yêu cầu:</strong> <span id="editFormBosungDateText" style="font-weight: 600;">--</span></span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Ý KIẾN GIẢI TRÌNH CỦA CẤN BỘ (CHỈ HIỂN THỊ KHI ĐIỀU CHỈNH HỒ SƠ BỊ TỪ CHỐI THỤ LÝ) -->
                 <div id="editFormThulyRejectBlock" style="display: none; background-color: #FFFBEB; border: 1.5px solid #FCD34D; padding: 15px; border-radius: var(--border-radius-md); margin-bottom: 24px;">
                     <div style="font-weight: 700; color: #B45309; margin-bottom: 8px; font-size: 13.5px;">
@@ -1141,6 +1156,13 @@
                     <div style="font-size: 12.5px; background: white; padding: 10px; border-radius: 4px; border: 1px solid #FDE68A; margin-bottom: 15px;">
                         <strong style="color: #9A3412;">Lý do từ chối hiện tại của Lãnh đạo:</strong>
                         <p style="margin: 4px 0 0 0; color: #1F2937; font-style: italic; line-height: 1.5;" id="editFormRejectReasonText">--</p>
+                    </div>
+                    <!-- Lịch sử Từ chối thụ lý lũy kế -->
+                    <div style="margin-bottom: 15px; display: none;" id="editFormRejectHistoryContainer">
+                        <strong style="color: #9A3412; font-size: 12.5px; display: block; margin-bottom: 8px;">Lịch sử từ chối thụ lý lũy kế (3 lần trước đó):</strong>
+                        <div style="display: flex; flex-direction: column; gap: 8px;" id="editFormRejectHistoryList">
+                            <!-- Rendered dynamically -->
+                        </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label" style="font-weight: 600; color: #78350F; margin-bottom: 6px; display: block;">Ý kiến giải trình cập nhật hồ sơ *:</label>
@@ -1767,6 +1789,10 @@
                     <button class="btn btn-danger" onclick="triggerRejectFromEdit()"><i class="fa-solid fa-ban"></i> Từ chối tiếp nhận</button>
                     <button class="btn btn-success" onclick="triggerResubmitFromEdit()"><i class="fa-solid fa-paper-plane"></i> Trình lại Lãnh đạo</button>
                 </div>
+                <div id="bosungFlowButtonsContainer" style="display: none; gap: 10px; width: 100%; justify-content: flex-end;">
+                    <button class="btn btn-secondary" onclick="closeInlineClaimForm()">Hủy bỏ</button>
+                    <button class="btn btn-success" onclick="saveNewClaim(false)"><i class="fa-solid fa-circle-check"></i> Bổ sung hồ sơ</button>
+                </div>
             </div>
         </div>
 
@@ -2047,12 +2073,14 @@
                                 </div>
                                 <div class="form-group">
                                     <span class="form-label">Biên bản họp thương lượng đính kèm *</span>
-                                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
-                                        <label class="btn btn-outline-secondary btn-sm" style="cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 6px; background-color: white;">
+                                    <div style="margin-top: 6px;">
+                                        <label class="btn btn-sm" style="cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 6px; background-color: var(--primary-light); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-sm); font-weight: 500; font-size: 13px;">
                                             <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm
-                                            <input type="file" style="display: none;" onchange="this.parentElement.nextElementSibling.innerText = this.files[0] ? this.files[0].name : 'Chưa có tệp đính kèm';">
+                                            <input type="file" id="editTlFilesInput" style="display: none;" multiple onchange="handleTlFilesSelected()">
                                         </label>
-                                        <span style="font-size: 13px; color: #64748b; font-style: italic;">Chưa có tệp đính kèm</span>
+                                        <div id="editTlFilesList" style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;">
+                                            <!-- Populated dynamically -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2120,6 +2148,11 @@
                                         </label>
                                         <span style="font-size: 13px; color: #64748b; font-style: italic;">Chưa có tệp đính kèm</span>
                                     </div>
+                                </div>
+                                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px dashed #D8B4FE; padding-top: 15px;">
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="closeCreateDecisionForm()">Hủy bỏ</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="saveDecisionStatus('Lưu nháp')"><i class="fa-regular fa-bookmark"></i> Lưu nháp</button>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="saveDecisionStatus('Chờ ký')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
                                 </div>
 
                             </div>
@@ -2516,10 +2549,8 @@
 
                     <!-- Update action buttons -->
                     <div id="editPhddButtons"
-                        style="display: none; justify-content: flex-end; gap: 8px; margin-top: 20px; border-top: 1px solid #CFFAFE; padding-top: 15px;">
-                        <button class="btn btn-secondary btn-sm" onclick="cancelActionUpdate()">Hủy bỏ</button>
-                        <button class="btn btn-success btn-sm" onclick="submitHonorUpdate()"><i
-                                class="fa-solid fa-floppy-disk"></i> Lưu cập nhật phục hồi danh dự</button>
+                        style="display: none; justify-content: flex-end; margin-top: 20px; border-top: 1px solid #CFFAFE; padding-top: 15px;">
+                        <button class="btn btn-success" onclick="submitHonorUpdate()" style="min-width: 250px; font-weight: 600; padding: 8px 24px; font-size: 13.5px;"><i class="fa-solid fa-floppy-disk"></i> Lưu cập nhật phục hồi danh dự</button>
                     </div>
                 </div>
             </div>
@@ -3198,6 +3229,13 @@
                 agency: "Tòa án nhân dân Tỉnh Lâm Đồng",
                 deadline: "15/08/2026",
                 files: [{ name: "Biên bản thương lượng không thành.pdf", url: "#" }],
+                tlSessionIndex: 1,
+                tlTimeAct: "02/07/2026 09:00",
+                tlVenueAct: "Phòng họp số 2 - TAND Tỉnh Lâm Đồng",
+                tlMembersAct: "Đại diện Tòa án, Chuyên viên thụ lý Lê Văn C, Người yêu cầu bồi thường Nguyễn Văn F.",
+                tlDisputeProgress: "Người yêu cầu bồi thường đề nghị bồi thường thêm các khoản chi phí không có hóa đơn tài chính hợp lệ. Cơ quan giải quyết giải thích rõ quy định pháp luật nhưng hai bên không tìm được tiếng nói chung.",
+                tlDisagreementReason: "Chênh lệch lớn về mức bồi thường thiệt hại thực tế đối với các khoản chi phí không có chứng từ chứng minh pháp lý.",
+                tlFiles: [{ name: "Bien_ban_thuong_luong_khong_thanh_lan1.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "15/05/2026", desc: "Hồ sơ tiếp nhận trực tuyến", status: "completed" },
                     { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "18/05/2026", desc: "Đã thụ lý giải quyết bồi thường", status: "completed" },
@@ -3662,6 +3700,105 @@
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "26/06/2026", desc: "Hồ sơ tiếp nhận trực tiếp từ người nộp.", status: "completed" }
                 ]
+            },
+            {
+                id: "HS22",
+                code: "BT-2026-022",
+                fieldGroup: "hành chính",
+                date: "20/05/2026",
+                nyc: "Trần Văn Phú",
+                cardType: "Cá nhân",
+                cardNo: "001088002931",
+                address: "Số 120 đường Nguyễn Trãi, Thanh Xuân, Hà Nội",
+                phone: "0966778899",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định buộc thôi việc trái pháp luật số 55/QĐ-CC",
+                hanhVi: "Buộc thôi việc trái pháp luật đối với công chức chuyên môn.",
+                nhanQua: "Mất tiền lương và các chế độ phụ cấp công tác thực tế.",
+                status: "Chờ ban hành QĐ",
+                thulyVenue: "cơ quan quản lý",
+                totalNum: 180000000,
+                advanceNum: 0,
+                slaDays: 6,
+                slaStatus: "normal",
+                slaText: "Chờ ban hành quyết định bồi thường",
+                restoreHonor: false,
+                agency: "Sở Tư pháp Hà Nội",
+                deadline: "20/09/2026",
+                files: [{ name: "Quyet_dinh_buoc_thoi_viec_va_ho_so.pdf", url: "#" }],
+                tlSessionIndex: 2,
+                tlTimeAct: "08/07/2026 14:00",
+                tlVenueAct: "Phòng họp số 1 - Sở Tư pháp",
+                tlMembersAct: "Đại diện Sở Tư pháp, ông Trần Văn Phú, Chuyên viên thụ lý.",
+                tlResult: "Thương lượng thành công",
+                tlFiles: [{ name: "Bien_ban_thuong_luong_thanh_cong.pdf", url: "#" }],
+                tlHistory: [
+                    {
+                        sessionIndex: 1,
+                        date: "25/06/2026 09:00",
+                        venue: "Phòng họp số 3 - Sở Tư pháp",
+                        members: "Đại diện Sở, ông Trần Văn Phú, Chuyên viên.",
+                        result: "Thương lượng không thành công",
+                        disputeProgress: "Hai bên tranh chấp gay gắt về mức bồi thường thiệt hại tinh thần cho thời gian nghỉ việc oan sai.",
+                        disagreementReason: "Người yêu cầu đòi bồi thường tinh thần gấp 3 lần mức luật quy định.",
+                        files: [{ name: "Bien_ban_thuong_luong_khong_thanh_lan1.pdf", url: "#" }]
+                    },
+                    {
+                        sessionIndex: 2,
+                        date: "08/07/2026 14:00",
+                        venue: "Phòng họp số 1 - Sở Tư pháp",
+                        members: "Đại diện Sở Tư pháp, ông Trần Văn Phú, Chuyên viên.",
+                        result: "Thương lượng thành công",
+                        disputeProgress: "Cán bộ giải thích cặn kẽ biểu mức luật định và đưa ra phương án hỗ trợ bổ sung quyền lợi bảo hiểm xã hội. Hai bên đồng ý.",
+                        files: [{ name: "Bien_ban_thuong_luong_thanh_cong.pdf", url: "#" }]
+                    }
+                ],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "20/05/2026", desc: "Hồ sơ tiếp nhận trực tiếp", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "23/05/2026", desc: "Thụ lý giải quyết bồi thường", status: "completed" },
+                    { title: "Xác minh thiệt hại", date: "15/06/2026", desc: "Ban hành báo cáo xác minh thiệt hại thực tế", status: "completed" },
+                    { title: "Thương lượng bồi thường (Lần 1)", date: "25/06/2026", desc: "Thương lượng không thành công do không thống nhất mức bồi thường tinh thần.", status: "completed" },
+                    { title: "Thương lượng bồi thường (Lần 2)", date: "08/07/2026", desc: "Thương lượng thành công. Ký biên bản thỏa thuận.", status: "completed" }
+                ]
+            },
+            {
+                id: "HS23",
+                code: "BT-2026-023",
+                fieldGroup: "hình sự",
+                date: "22/06/2026",
+                nyc: "Phạm Văn Nam",
+                cardType: "Cá nhân",
+                cardNo: "001093004832",
+                address: "Số 56 đường Lê Lợi, Ngô Quyền, Hải Phòng",
+                phone: "0987654321",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định đình chỉ vụ án bị can oan sai",
+                hanhVi: "Bắt giữ oan sai do sai sót nghiệp vụ công tố.",
+                status: "Chờ ban hành QĐ",
+                thulyVenue: "tòa án tố tụng",
+                totalNum: 160000000,
+                advanceNum: 0,
+                slaDays: 3,
+                slaStatus: "normal",
+                slaText: "Chờ ban hành quyết định bồi thường",
+                restoreHonor: false,
+                agency: "Viện kiểm sát nhân dân TP. Hải Phòng",
+                deadline: "22/09/2026",
+                files: [{ name: "Quyet_dinh_dinh_chi_dieu_tra.pdf", url: "#" }],
+                decNo: "88/QĐ-BT",
+                decDate: "10/07/2026",
+                decAmount: 160000000,
+                decContent: "Bồi thường oan sai cho ông Phạm Văn Nam số tiền 160.000.000đ.",
+                decStatus: "Chờ ký",
+                decPublishDate: "--",
+                decEffectiveDate: "--",
+                decSigner: "Chưa ký (Chờ duyệt ký số)",
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "22/06/2026", desc: "Hồ sơ tiếp nhận trực tiếp", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "25/06/2026", desc: "Thụ lý giải quyết bồi thường", status: "completed" },
+                    { title: "Xác minh thiệt hại", date: "02/07/2026", desc: "Báo cáo xác minh hoàn thành", status: "completed" },
+                    { title: "Thương lượng bồi thường", date: "08/07/2026", desc: "Thương lượng thành công, ký biên bản thỏa thuận.", status: "completed" }
+                ]
             }
         ];
 
@@ -3977,7 +4114,7 @@
                 // Fixed slots
                 const isDraft = item.status === 'Lưu nháp';
                 const isPending = item.status === 'Chờ tiếp nhận';
-                const hasUpdateRights = ['Lưu nháp', 'Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Từ chối thụ lý'].includes(item.status);
+                const hasUpdateRights = ['Lưu nháp', 'Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Từ chối thụ lý', 'Bị từ chối'].includes(item.status);
 
                 const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
                 const isAssignedToOther = (currentRole === 'chuyen-vien') && item.assignedOfficer && (item.assignedOfficer !== currentOfficer);
@@ -3989,8 +4126,8 @@
                     if (isAssignedToOther) {
                         updateBtn = `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Hồ sơ được giao cho cán bộ ${item.assignedOfficer}. Bạn chỉ có quyền Xem."><i class="fa-solid fa-pen-to-square"></i></button>`;
                     } else {
-                        if (isDraft) {
-                            updateBtn = `<button class="icon-btn edit" title="Cập nhật hồ sơ nháp" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                        if (isDraft || item.status === 'Yêu cầu bổ sung' || item.status === 'Từ chối thụ lý' || item.status === 'Bị từ chối') {
+                            updateBtn = `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
                         } else {
                             updateBtn = `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); showCaseDetail('${item.id}', true)"><i class="fa-solid fa-pen-to-square"></i></button>`;
                         }
@@ -4612,20 +4749,69 @@
             const claim = id ? claimsList.find(c => c.id === id) : null;
 
             if (claim) {
-                if (claim.status === 'Từ chối thụ lý') {
+                if (claim.status === 'Từ chối thụ lý' || claim.status === 'Bị từ chối') {
                     document.getElementById('editFormThulyRejectBlock').style.display = 'block';
                     document.getElementById('editFormRejectReasonText').innerText = claim.rejectReason || 'Không có lý do.';
+                    
                     const explArea = document.getElementById('editFormExplanationTextarea');
                     explArea.value = '';
                     explArea.classList.remove('is-invalid');
                     document.getElementById('editFormExplanationError').style.display = 'none';
 
+                    // Lịch sử Từ chối thụ lý lũy kế
+                    const histContainer = document.getElementById('editFormRejectHistoryContainer');
+                    const histList = document.getElementById('editFormRejectHistoryList');
+                    if (histContainer && histList) {
+                        histList.innerHTML = '';
+                        // Lọc các log bị từ chối
+                        const rejections = (claim.rejectionLog || []).filter(log => log.action === 'Từ chối thụ lý' || log.action === 'Từ chối tiếp nhận' || log.action === 'Bị từ chối');
+                        if (rejections.length > 0) {
+                            rejections.forEach((rej, index) => {
+                                const rejDiv = document.createElement('div');
+                                rejDiv.style.cssText = "background: #fff; padding: 10px; border-radius: 4px; border: 1px solid #FDE68A; font-size: 12px; line-height: 1.5;";
+                                rejDiv.innerHTML = `
+                                    <div style="display: flex; justify-content: space-between; font-weight: 600; color: #78350F; margin-bottom: 4px;">
+                                        <span>Lần ${index + 1}: ${rej.date}</span>
+                                        <span>Người thực hiện: ${rej.officer}</span>
+                                    </div>
+                                    <div style="color: #374151;"><strong>Lý do từ chối:</strong> ${rej.reason}</div>
+                                `;
+                                histList.appendChild(rejDiv);
+                            });
+                            histContainer.style.display = 'block';
+                        } else {
+                            histContainer.style.display = 'none';
+                        }
+                    }
+
+                    document.getElementById('editFormBosungAlertBlock').style.display = 'none';
                     document.getElementById('rejectFlowButtonsContainer').style.display = 'flex';
                     document.getElementById('defaultFormButtons').style.display = 'none';
+                    document.getElementById('bosungFlowButtonsContainer').style.display = 'none';
+
+                    // Smooth scroll to reject history block
+                    setTimeout(() => {
+                        const rejectBlock = document.getElementById('editFormThulyRejectBlock');
+                        if (rejectBlock) {
+                            rejectBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 250);
+                } else if (claim.status === 'Yêu cầu bổ sung') {
+                    document.getElementById('editFormBosungAlertBlock').style.display = 'block';
+                    document.getElementById('editFormBosungReasonText').innerText = claim.rejectReason || 'Yêu cầu bổ sung hồ sơ';
+                    document.getElementById('editFormBosungOfficerText').innerText = claim.rejectOfficer || 'Cán bộ thụ lý';
+                    document.getElementById('editFormBosungDateText').innerText = claim.rejectDate || new Date().toLocaleDateString('vi-VN');
+                    
+                    document.getElementById('editFormThulyRejectBlock').style.display = 'none';
+                    document.getElementById('rejectFlowButtonsContainer').style.display = 'none';
+                    document.getElementById('defaultFormButtons').style.display = 'none';
+                    document.getElementById('bosungFlowButtonsContainer').style.display = 'flex';
                 } else {
+                    document.getElementById('editFormBosungAlertBlock').style.display = 'none';
                     document.getElementById('editFormThulyRejectBlock').style.display = 'none';
                     document.getElementById('rejectFlowButtonsContainer').style.display = 'none';
                     document.getElementById('defaultFormButtons').style.display = 'flex';
+                    document.getElementById('bosungFlowButtonsContainer').style.display = 'none';
                 }
 
                 // Populate form inputs from claim
@@ -4720,6 +4906,7 @@
                 renderDocsList();
 
             } else {
+                document.getElementById('editFormBosungAlertBlock').style.display = 'none';
                 document.getElementById('editFormThulyRejectBlock').style.display = 'none';
                 document.getElementById('rejectFlowButtonsContainer').style.display = 'none';
                 document.getElementById('defaultFormButtons').style.display = 'flex';
@@ -5685,7 +5872,27 @@
                     claim.docBase = docBase || "Chưa có căn cứ chính thức";
                     claim.hanhVi = hanhVi || "Hành vi gây thiệt hại chưa tóm tắt";
                     claim.nhanQua = nhanQua || "Mối quan hệ nhân quả chưa mô tả";
-                    claim.status = isDraft ? "Lưu nháp" : "Chờ tiếp nhận";
+                    if (claim.status === 'Yêu cầu bổ sung') {
+                        claim.status = isDraft ? 'Yêu cầu bổ sung' : 'Chờ tiếp nhận';
+                        if (!isDraft) {
+                            if (!claim.bosungLogs) claim.bosungLogs = [];
+                            claim.bosungLogs.push({
+                                date: new Date().toLocaleDateString('vi-VN'),
+                                sender: "Người dân bổ sung",
+                                content: "Người dân đã cập nhật lại thông tin chi tiết và đính kèm hồ sơ bổ sung trực tiếp trên biểu mẫu yêu cầu."
+                            });
+
+                            if (!claim.timeline) claim.timeline = [];
+                            claim.timeline.push({
+                                title: "Bổ sung hồ sơ",
+                                date: new Date().toLocaleDateString('vi-VN'),
+                                desc: "Người dân đã bổ sung hồ sơ. Trạng thái quay lại [Chờ tiếp nhận]",
+                                status: "completed"
+                            });
+                        }
+                    } else {
+                        claim.status = isDraft ? "Lưu nháp" : "Chờ tiếp nhận";
+                    }
                     claim.agency = cqNhan || "Chưa phân công";
                     claim.totalNum = total;
                     claim.advanceNum = adv;
@@ -5811,6 +6018,11 @@
 
             const claim = claimsList.find(c => c.id === id);
             if (!claim) return;
+
+            if (editMode && (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Từ chối thụ lý' || claim.status === 'Bị từ chối')) {
+                openInlineClaimForm(id);
+                return;
+            }
 
             const selMain = document.getElementById('roleSelectorMain');
             const currentRole = selMain ? selMain.value : 'chuyen-vien';
@@ -6020,24 +6232,15 @@
                     break;
                     
                 case 'Từ chối tiếp nhận':
-                case 'Bị từ chối':
                     // Only Close button
                     break;
 
                 case 'Từ chối thụ lý':
+                case 'Bị từ chối':
                     if (currentRole === 'chuyen-vien') {
-                        if (isDetailEditMode) {
-                            buttonsHtml = `
-                                <button class="btn btn-success" onclick="submitTuChoiThulyTrinhLai()"><i class="fa-solid fa-paper-plane"></i> Trình lại Lãnh đạo</button>
-                                <button class="btn btn-danger" onclick="submitTuChoiThulyTuChoiTiepNhan()"><i class="fa-solid fa-ban"></i> Từ chối tiếp nhận</button>
-                                ${cancelActionBtnHtml}
-                            `;
-                            showCloseButton = false;
-                        } else {
-                            buttonsHtml = `
-                                <button class="btn btn-primary" onclick="switchToEditMode('tuthoithuly')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
-                            `;
-                        }
+                        buttonsHtml = `
+                            <button class="btn btn-primary" onclick="switchToEditMode('tuthoithuly')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
+                        `;
                     }
                     break;
 
@@ -6072,16 +6275,21 @@
 
                 case 'Thương lượng không thành công':
                     buttonsHtml = `
-                        <button class="btn btn-primary" onclick="claimRedoNegotiation('${claim.id}')"><i class="fa-solid fa-rotate-left"></i> Cập nhật lại KQ thương lượng</button>
+                        <button class="btn btn-primary" onclick="claimRedoNegotiation('${claim.id}')"><i class="fa-solid fa-rotate-left"></i> Cập nhật lại kết quả thương lượng</button>
                     `;
                     break;
 
                 case 'Chờ ban hành QĐ':
-                    buttonsHtml = `
-                        <button class="btn btn-outline-primary" onclick="saveDecisionStatus('Lưu nháp')"><i class="fa-regular fa-bookmark"></i> Lưu nháp QĐ</button>
-                        <button class="btn btn-success" onclick="saveDecisionStatus('Chờ ký')"><i class="fa-solid fa-paper-plane"></i> Gửi duyệt ký số</button>
-                        <button class="btn btn-secondary" onclick="closeCreateDecisionForm()">Hủy bỏ</button>
-                    `;
+                    if (currentRole === 'thu-truong' && claim.decStatus === 'Chờ ký') {
+                        buttonsHtml = `
+                            <button class="btn btn-success" onclick="approveAndSignDecision('${claim.id}')"><i class="fa-solid fa-file-signature"></i> Duyệt ký số QĐ</button>
+                            <button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>
+                        `;
+                    } else {
+                        buttonsHtml = `
+                            <button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>
+                        `;
+                    }
                     showCloseButton = false;
                     break;
 
@@ -6118,7 +6326,7 @@
         }
 
         function switchToEditMode(actionType = null) {
-            if (actionType === 'tuthoithuly') {
+            if (actionType === 'tuthoithuly' || actionType === 'bosung') {
                 openInlineClaimForm(selectedClaimId);
             } else {
                 showCaseDetail(selectedClaimId, true, actionType);
@@ -6935,7 +7143,8 @@
             const phddTabBtn = document.getElementById('detailSubTab2Btn');
             const kqxlTabBtn = document.getElementById('detailSubTab1Btn');
 
-            if (claim.restoreHonor) {
+            const showPhdd = claim.restoreHonor && ['Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status);
+            if (showPhdd) {
                 if (subTabsContainer) subTabsContainer.style.display = 'flex';
                 if (phddTabBtn) phddTabBtn.style.display = 'inline-block';
                 if (kqxlTabBtn) kqxlTabBtn.innerHTML = '<i class="fa-solid fa-scale-balanced"></i> Kết quả xử lý hồ sơ';
@@ -7180,14 +7389,106 @@
                 document.getElementById('editTlVenueAct').value = claim.tlVenueExp || "";
                 document.getElementById('editTlMembersAct').value = claim.tlMembersExp || "";
                 document.getElementById('editTlDesc').value = "";
+                
+                // Initialize files list
+                tlSelectedFiles = claim.tlFiles ? [...claim.tlFiles] : [];
+                renderTlFiles();
             } else {
-                if (claim.tlResult || ['Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status)) {
+                let tlHistoryHtml = '';
+                if (claim.tlHistory && claim.tlHistory.length > 0) {
+                    claim.tlHistory.forEach(hist => {
+                        const isSuccess = hist.result === 'Thương lượng thành công';
+                        const color = isSuccess ? 'var(--success-color)' : 'var(--danger-color)';
+                        
+                        let histFilesHtml = '';
+                        if (hist.files && hist.files.length > 0) {
+                            hist.files.forEach(f => {
+                                histFilesHtml += `<div style="margin-top:2px;"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> <a href="#" onclick="event.preventDefault(); viewPhddMockFile('${f.name}')" class="action-link view-link">${f.name}</a></div>`;
+                            });
+                        }
+
+                        tlHistoryHtml += `
+                            <div style="margin-bottom: 12px; padding: 10px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size:12.5px;">
+                                <div style="font-weight:700; color:${color}; margin-bottom: 4px;">Phiên họp thứ ${hist.sessionIndex}: ${hist.result}</div>
+                                <div style="color:#475569; font-size:11.5px; margin-bottom: 4px;">
+                                    <span><strong>Thời gian:</strong> ${hist.date}</span> | <span><strong>Địa điểm:</strong> ${hist.venue}</span>
+                                </div>
+                                ${hist.disputeProgress ? `<p style="margin:2px 0;"><strong>Diễn biến:</strong> ${hist.disputeProgress}</p>` : ''}
+                                ${hist.disagreementReason ? `<p style="margin:2px 0;"><strong>Lý do không thành:</strong> ${hist.disagreementReason}</p>` : ''}
+                                <div style="margin-top:4px;"><strong>Tài liệu đính kèm:</strong> ${histFilesHtml || 'Không có'}</div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (claim.status === 'Thương lượng không thành công') {
+                    let tlFilesHtml = '';
+                    if (claim.tlFiles && claim.tlFiles.length > 0) {
+                        claim.tlFiles.forEach(file => {
+                            tlFilesHtml += `
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                    <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+                                    <a href="#" onclick="event.preventDefault(); viewPhddMockFile('${file.name}')" class="action-link view-link" style="font-weight:500;">${file.name}</a>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        tlFilesHtml = `
+                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+                                <a href="#" onclick="event.preventDefault(); viewPhddMockFile('Bien_ban_thuong_luong_khong_thanh.pdf')" class="action-link view-link" style="font-weight:500;">Bien_ban_thuong_luong_khong_thanh.pdf</a>
+                            </div>
+                        `;
+                    }
+
+                    tlRead.innerHTML = `
+                        <div style="font-size:13px; line-height:1.6;">
+                            <p><strong>Kết quả họp thương lượng:</strong> <span style="font-weight:700; color:var(--danger-color);">Thương lượng không thành công</span></p>
+                            <p><strong>Phiên họp thứ:</strong> Lần ${claim.tlSessionIndex || 1}</p>
+                            <p><strong>Thời gian thực tế:</strong> ${claim.tlTimeAct || "02/07/2026 09:00"}</p>
+                            <p><strong>Địa điểm thực tế:</strong> ${claim.tlVenueAct || "Phòng họp Tòa án"}</p>
+                            <p><strong>Diễn biến tranh chấp:</strong> ${claim.tlDisputeProgress || "Hai bên không thống nhất được mức bồi thường."}</p>
+                            <p><strong>Lý do không đạt thỏa thuận:</strong> ${claim.tlDisagreementReason || "Chênh lệch ý kiến về chi phí thiệt hại."}</p>
+                            <div style="margin-top: 4px;">
+                                <strong>Biên bản họp thương lượng không thành (có chữ ký số):</strong>
+                                <div style="margin-top: 4px; display:flex; flex-direction:column; gap:4px;">
+                                    ${tlFilesHtml}
+                                </div>
+                            </div>
+                            ${tlHistoryHtml ? `<div style="margin-top:15px; border-top:1px solid #e2e8f0; padding-top:15px;"><strong>Lịch sử các phiên họp thương lượng trước đó:</strong>${tlHistoryHtml}</div>` : ''}
+                        </div>`;
+                } else if (claim.tlResult || ['Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status)) {
+                    let tlFilesHtml = '';
+                    if (claim.tlFiles && claim.tlFiles.length > 0) {
+                        claim.tlFiles.forEach(file => {
+                            tlFilesHtml += `
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                    <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+                                    <a href="#" onclick="event.preventDefault(); viewPhddMockFile('${file.name}')" class="action-link view-link" style="font-weight:500;">${file.name}</a>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        tlFilesHtml = `
+                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+                                <a href="#" onclick="event.preventDefault(); viewPhddMockFile('Bien_ban_thuong_luong_co_chu_ky.pdf')" class="action-link view-link" style="font-weight:500;">Bien_ban_thuong_luong_co_chu_ky.pdf</a>
+                            </div>
+                        `;
+                    }
+
                     tlRead.innerHTML = `
                         <div style="font-size:13px; line-height:1.6;">
                             <p><strong>Kết quả họp thương lượng:</strong> <span style="font-weight:700; color:var(--success-color);">${claim.tlResult || "Thương lượng thành công"}</span></p>
                             <p><strong>Thời gian thực tế:</strong> ${claim.tlTimeAct || "08/07/2026 09:00"}</p>
                             <p><strong>Địa điểm thực tế:</strong> ${claim.tlVenueAct || "Phòng họp Sở Tư pháp"}</p>
-                            <p><strong>Biên bản họp thương lượng:</strong> <a href="#" target="_blank" class="action-link view-link"><i class="fa-solid fa-file-pdf"></i> Bien_ban_thuong_luong_co_chu_ky.pdf</a></p>
+                            <div style="margin-top: 4px;">
+                                <strong>Biên bản họp thương lượng:</strong>
+                                <div style="margin-top: 4px; display:flex; flex-direction:column; gap:4px;">
+                                    ${tlFilesHtml}
+                                </div>
+                            </div>
+                            ${tlHistoryHtml ? `<div style="margin-top:15px; border-top:1px solid #e2e8f0; padding-top:15px;"><strong>Lịch sử các phiên họp thương lượng trước đó:</strong>${tlHistoryHtml}</div>` : ''}
                         </div>`;
                 } else {
                     tlRead.innerHTML = `<div style="font-size:12.5px; color:var(--text-muted); font-style:italic;">Chưa tiến hành họp thương lượng giải quyết</div>`;
@@ -7200,24 +7501,59 @@
             qdRead.innerHTML = '';
             qdEdit.style.display = 'none';
 
-            if (claim.status === 'Chờ ban hành QĐ' && isDetailEditMode) {
-                qdEdit.style.display = 'block';
-                document.getElementById('decAmountInput').value = claim.xmTotalAmount || claim.totalNum;
-                document.getElementById('decDateInput').value = new Date().toLocaleDateString('vi-VN');
-                document.getElementById('decNoInput').value = '';
-                document.getElementById('decContentInput').value = `Quyết định bồi thường thiệt hại vật chất số tiền ${(claim.xmTotalAmount || claim.totalNum).toLocaleString('vi-VN')}đ cho ông/bà ${claim.nyc}`;
-            } else {
-                if (claim.decNo || ['Chờ thực thi', 'Hoàn thành'].includes(claim.status)) {
+            const decStatus = claim.decStatus || 'Chưa tạo';
+
+            if (decStatus === 'Chưa tạo') {
+                if (claim.status === 'Chờ ban hành QĐ') {
                     qdRead.innerHTML = `
-                        <div style="font-size:13px; line-height:1.6;">
-                            <p><strong>Số Quyết định bồi thường:</strong> <span style="font-weight:700; color:var(--primary-hover);">${claim.decNo || "104/QĐ-BT"}</span></p>
-                            <p><strong>Ngày ban hành:</strong> ${claim.decDate || "02/04/2026"}</p>
-                            <p><strong>Số tiền quyết định bồi thường:</strong> <span style="font-weight:700; color:var(--danger-color);">${(claim.decAmount || claim.totalNum).toLocaleString('vi-VN')} đ</span></p>
-                            <p><strong>Tài liệu Quyết định gốc:</strong> <a href="#" target="_blank" class="action-link view-link"><i class="fa-solid fa-file-pdf"></i> Quyet_dinh_boi_thuong_da_ky.pdf</a></p>
-                        </div>`;
+                        <div style="font-size:13px; line-height:1.6; display:flex; flex-direction:column; gap:10px; padding: 15px; background-color:#f8fafc; border:1px dashed #cbd5e1; border-radius:6px; align-items:center; justify-content:center;">
+                            <span style="font-style:italic; color:#64748b;"><i class="fa-solid fa-file-circle-exclamation" style="font-size:24px; color:#94a3b8; margin-bottom:8px; display:block; text-align:center;"></i> Chưa có quyết định giải quyết bồi thường liên kết với hồ sơ này.</span>
+                            <button class="btn btn-primary btn-sm" id="btnCreateNewDecision" onclick="openCreateDecisionForm()"><i class="fa-solid fa-plus"></i> Thêm quyết định</button>
+                        </div>
+                    `;
                 } else {
                     qdRead.innerHTML = `<div style="font-size:12.5px; color:var(--text-muted); font-style:italic;">Chưa ban hành Quyết định giải quyết bồi thường chính thức</div>`;
                 }
+            } else {
+                // Kịch bản 2: Đã tạo Quyết định trước đó
+                const isHoanThanh = decStatus === 'Hoàn thành';
+                
+                // Data Masking Rule
+                const displayNo = isHoanThanh ? (claim.decNo || '--') : '--';
+                const displayDate = isHoanThanh ? (claim.decDate || '--') : '--';
+                const displayContent = isHoanThanh ? (claim.decContent || '--') : '--';
+                
+                const displayPublishDate = claim.decPublishDate || '--';
+                const displayEffectiveDate = claim.decEffectiveDate || '--';
+                const displaySigner = claim.decSigner || '--';
+                
+                let badgeClass = 'bg-secondary';
+                if (decStatus === 'Lưu nháp') badgeClass = 'bg-secondary';
+                else if (decStatus === 'Chờ ký') badgeClass = 'bg-warning';
+                else if (decStatus === 'Bị từ chối') badgeClass = 'bg-danger';
+                else if (decStatus === 'Hoàn thành') badgeClass = 'bg-success';
+                
+                qdRead.innerHTML = `
+                    <div style="font-size:13px; line-height:1.6; display:grid; grid-template-columns:1fr 1fr; gap:12px 24px; padding:15px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px;">
+                        <div>
+                            <p style="margin:4px 0;"><strong>Số Quyết định:</strong> <span style="font-weight:700; color:var(--primary-color);">${displayNo}</span></p>
+                            <p style="margin:4px 0;"><strong>Ngày Quyết định:</strong> ${displayDate}</p>
+                            <p style="margin:4px 0;"><strong>Trích yếu nội dung:</strong> ${displayContent}</p>
+                            <p style="margin:4px 0;"><strong>Trạng thái QĐ:</strong> <span class="badge ${badgeClass}" style="font-size:11px; padding:4px 8px; font-weight:500; color:#fff;">${decStatus}</span></p>
+                        </div>
+                        <div>
+                            <p style="margin:4px 0;"><strong>Ngày ban hành:</strong> ${displayPublishDate}</p>
+                            <p style="margin:4px 0;"><strong>Ngày hiệu lực:</strong> ${displayEffectiveDate}</p>
+                            <p style="margin:4px 0;"><strong>Người ký duyệt:</strong> ${displaySigner}</p>
+                            <p style="margin:4px 0;"><strong>Tài liệu đính kèm:</strong> 
+                                ${isHoanThanh 
+                                    ? `<a href="#" onclick="event.preventDefault(); viewPhddMockFile('Quyet_dinh_boi_thuong_chinh_thuc.pdf')" class="action-link view-link"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> Quyet_dinh_boi_thuong_chinh_thuc.pdf</a>`
+                                    : `<span style="color:#94a3b8; font-style:italic;">(Chưa ban hành chính thức)</span>`
+                                }
+                            </p>
+                        </div>
+                    </div>
+                `;
             }
 
             // 6. Thực thi Quyết định
@@ -7745,6 +8081,7 @@
                 claim.tlTimeExp = document.getElementById('editTlTimeExp').value;
                 claim.tlVenueExp = document.getElementById('editTlVenueExp').value;
                 claim.tlMembersExp = document.getElementById('editTlMembersExp').value;
+                claim.tlFiles = [...tlSelectedFiles];
 
                 showToast("Đã lưu nháp thông tin dự kiến phiên thương lượng!", "success");
                 showCaseDetail(selectedClaimId, false);
@@ -7758,6 +8095,7 @@
                 const venue = document.getElementById('editTlVenueAct').value.trim();
                 const members = document.getElementById('editTlMembersAct').value.trim();
                 const result = document.getElementById('editTlResult').value;
+                const desc = document.getElementById('editTlDesc').value.trim();
 
                 if (!time || !venue || !members) {
                     showToast("Vui lòng điền đủ các thông tin thực tế họp thương lượng có dấu *!", "error");
@@ -7768,28 +8106,91 @@
                 claim.tlVenueAct = venue;
                 claim.tlMembersAct = members;
                 claim.tlResult = result;
+                claim.tlFiles = [...tlSelectedFiles];
+
+                claim.tlSessionIndex = (claim.tlSessionIndex || 0) + 1;
+                claim.tlDisputeProgress = desc || "Hai bên không thống nhất được mức bồi thường.";
+                claim.tlDisagreementReason = desc || "Chênh lệch ý kiến về chi phí thiệt hại.";
+
+                if (!claim.tlHistory) claim.tlHistory = [];
+                claim.tlHistory.push({
+                    sessionIndex: claim.tlSessionIndex,
+                    date: time,
+                    venue: venue,
+                    members: members,
+                    result: result,
+                    disputeProgress: claim.tlDisputeProgress,
+                    disagreementReason: result === 'Thương lượng không thành công' ? claim.tlDisagreementReason : '',
+                    files: [...tlSelectedFiles]
+                });
 
                 if (result === 'Thương lượng thành công') {
                     claim.status = 'Chờ ban hành QĐ';
                     claim.timeline.push({
-                        title: "Thương lượng bồi thường",
+                        title: `Thương lượng bồi thường (Phiên ${claim.tlSessionIndex})`,
                         date: new Date().toLocaleDateString('vi-VN'),
-                        desc: "Thương lượng bồi thường thành công. Chuyển hồ sơ sang [Chờ ban hành QĐ]",
+                        desc: `Thương lượng bồi thường thành công tại phiên thứ ${claim.tlSessionIndex}. Chuyển hồ sơ sang [Chờ ban hành QĐ]`,
                         status: "completed"
                     });
                     showToast("Thương lượng thành công! Hồ sơ chuyển sang [Chờ ban hành QĐ]!", "success");
                 } else {
                     claim.status = 'Thương lượng không thành công';
                     claim.timeline.push({
-                        title: "Thương lượng bồi thường",
+                        title: `Thương lượng bồi thường (Phiên ${claim.tlSessionIndex})`,
                         date: new Date().toLocaleDateString('vi-VN'),
-                        desc: "Thương lượng bồi thường không thành công. Kết thúc luồng giải quyết hành chính.",
+                        desc: `Thương lượng bồi thường không thành công tại phiên thứ ${claim.tlSessionIndex}.`,
                         status: "completed"
                     });
                     showToast("Thương lượng thất bại. Hồ sơ chuyển sang [Thương lượng không thành công]!", "success");
                 }
 
+                saveClaimsToLocal();
                 showCaseDetail(selectedClaimId, false);
+            }
+        }
+
+        function claimRedoNegotiation(id) {
+            const claim = claimsList.find(c => c.id === id);
+            if (claim) {
+                claim.status = 'Đang thương lượng';
+                claim.tlTimeAct = '';
+                claim.tlVenueAct = '';
+                claim.tlMembersAct = '';
+                claim.tlResult = 'Thương lượng thành công';
+                claim.tlFiles = [];
+                
+                saveClaimsToLocal();
+                renderClaimsTable();
+                showCaseDetail(id, true);
+                showToast("Đã thiết lập lại trạng thái Đang thương lượng để tổ chức phiên tiếp theo!", "success");
+            }
+        }
+
+        function approveAndSignDecision(id) {
+            const claim = claimsList.find(c => c.id === id);
+            if (claim) {
+                showConfirmModal("Bạn có chắc chắn muốn duyệt ký số quyết định bồi thường này không?", () => {
+                    const todayStr = new Date().toLocaleDateString('vi-VN');
+                    
+                    claim.decStatus = 'Hoàn thành';
+                    claim.status = 'Chờ thực thi';
+                    
+                    claim.decPublishDate = todayStr;
+                    claim.decEffectiveDate = todayStr;
+                    claim.decSigner = "Lãnh đạo Cơ quan giải quyết bồi thường";
+                    
+                    claim.timeline.push({
+                        title: "Duyệt ký số quyết định",
+                        date: todayStr,
+                        desc: `Lãnh đạo phê duyệt và ký số Quyết định bồi thường số ${claim.decNo || '104/QĐ-BT'}. Hồ sơ chuyển sang [Chờ thực thi]`,
+                        status: "completed"
+                    });
+                    
+                    saveClaimsToLocal();
+                    renderClaimsTable();
+                    showCaseDetail(id, false);
+                    showToast("Duyệt ký số Quyết định thành công! Hồ sơ đã chuyển sang Chờ thực thi.", "success");
+                });
             }
         }
 
@@ -7804,15 +8205,48 @@
         }
 
         function saveDecisionStatus(decStatus) {
+            let invalidEl = null;
+            const fields = [
+                { id: 'decNoInput', msg: 'Đây là trường bắt buộc' },
+                { id: 'decDateInput', msg: 'Đây là trường bắt buộc' },
+                { id: 'decAmountInput', msg: 'Đây là trường bắt buộc' }
+            ];
+
+            fields.forEach(f => {
+                const el = document.getElementById(f.id);
+                if (el) {
+                    el.classList.remove('is-invalid');
+                    let grp = el.closest('.form-group');
+                    let err = grp.querySelector('.error-message');
+                    if (err) err.style.display = 'none';
+
+                    const val = el.value.trim();
+                    if (!val || (f.id === 'decAmountInput' && parseFloat(val) <= 0)) {
+                        el.classList.add('is-invalid');
+                        if (!err) {
+                            err = document.createElement('div');
+                            err.className = 'error-message';
+                            err.style.color = '#ef4444';
+                            err.style.fontSize = '12px';
+                            err.style.marginTop = '4px';
+                            err.innerText = f.msg;
+                            grp.appendChild(err);
+                        }
+                        err.style.display = 'block';
+                        if (!invalidEl) invalidEl = el;
+                    }
+                }
+            });
+
+            if (invalidEl) {
+                invalidEl.focus();
+                return;
+            }
+
             const no = document.getElementById('decNoInput').value.trim();
             const date = document.getElementById('decDateInput').value.trim();
             const amount = parseFloat(document.getElementById('decAmountInput').value) || 0;
             const content = document.getElementById('decContentInput').value.trim();
-
-            if (!no || !date || amount <= 0) {
-                showToast("Vui lòng nhập đầy đủ Số QĐ, Ngày QĐ và Số tiền!", "error");
-                return;
-            }
 
             const claim = claimsList.find(c => c.id === selectedClaimId);
             if (claim) {
@@ -7820,21 +8254,23 @@
                 claim.decDate = date;
                 claim.decAmount = amount;
                 claim.decContent = content;
+                claim.decStatus = decStatus;
 
                 if (decStatus === 'Chờ ký') {
-                    claim.status = 'Chờ thực thi';
                     claim.timeline.push({
-                        title: "Quyết định giải quyết bồi thường",
+                        title: "Trình ký quyết định bồi thường",
                         date: new Date().toLocaleDateString('vi-VN'),
-                        desc: `Ký duyệt và ban hành QĐ giải quyết bồi thường số ${no}. Số tiền: ${amount.toLocaleString('vi-VN')}đ`,
+                        desc: `Trình ký quyết định giải quyết bồi thường số ${no}. Số tiền: ${amount.toLocaleString('vi-VN')}đ`,
                         status: "completed"
                     });
-                    showToast("Quyết định đã được duyệt ký số thành công. Hồ sơ chuyển sang [Chờ thực thi]!", "success");
+                    showToast("Quyết định đã được trình ký thành công. Đang chờ lãnh đạo phê duyệt duyệt ký số!", "success");
                 } else {
                     showToast("Đã lưu nháp dự thảo Quyết định giải quyết bồi thường!", "success");
                 }
 
                 closeCreateDecisionForm();
+                saveClaimsToLocal();
+                renderClaimsTable();
                 showCaseDetail(selectedClaimId, false);
             }
         }
@@ -8281,6 +8717,48 @@
             showConfirmModal("Bạn có chắc chắn muốn gỡ tệp đính kèm này không?", () => {
                 xmSelectedFiles.splice(idx, 1);
                 renderXmFiles();
+            });
+        }
+
+        let tlSelectedFiles = [];
+
+        function renderTlFiles() {
+            const listDiv = document.getElementById('editTlFilesList');
+            if (!listDiv) return;
+            listDiv.innerHTML = '';
+            tlSelectedFiles.forEach((file, idx) => {
+                const item = document.createElement('div');
+                item.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 13px;";
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+                        <span class="file-name" style="font-weight: 500; color: #334155;">${file.name}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <a href="#" onclick="event.preventDefault(); viewPhddMockFile('${file.name}')" style="color: var(--primary-light); font-weight: 500;">Xem file</a>
+                        <span style="color: #cbd5e1;">|</span>
+                        <a href="#" onclick="event.preventDefault(); removeTlFile(${idx})" style="color: #ef4444; font-weight: 500;">Xóa</a>
+                    </div>
+                `;
+                listDiv.appendChild(item);
+            });
+        }
+
+        function handleTlFilesSelected() {
+            const input = document.getElementById('editTlFilesInput');
+            if (input && input.files) {
+                for (let i = 0; i < input.files.length; i++) {
+                    tlSelectedFiles.push({ name: input.files[i].name, url: '#' });
+                }
+                renderTlFiles();
+                showToast("Tải tệp đính kèm lên thành công!", "success");
+            }
+        }
+
+        function removeTlFile(idx) {
+            showConfirmModal("Bạn có chắc chắn muốn gỡ tệp đính kèm này không?", () => {
+                tlSelectedFiles.splice(idx, 1);
+                renderTlFiles();
             });
         }
 
