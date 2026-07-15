@@ -56,6 +56,12 @@ let requestList = [
         procTargetAgency: "Cục Thi hành án dân sự tỉnh Lâm Đồng",
         procReason: "Tài sản thuộc diện thi hành cưỡng chế bởi cơ quan thi hành án và cơ quan địa chính địa phương cùng phối hợp thực hiện.",
         procDecisionFile: "Quyet_dinh_xac_minh_so_12.pdf",
+        procOfficerName: "Đỗ Xuân Tài",
+        procOfficerPosition: "Điều tra viên trung cấp",
+        procOfficerAgency: "Công an tỉnh Lâm Đồng",
+        procOfficerStatus: "Vẫn công tác tại đơn vị cũ",
+        procOfficerCurrentAgency: "Công an tỉnh Lâm Đồng",
+        procOfficerCurrentPosition: "Điều tra viên trung cấp",
         claimCode: "-"
     },
     {
@@ -523,13 +529,23 @@ function showProcessScreen(id) {
 
     // Prefill process fields
     document.getElementById('procBasis').value = item.procBasis || "Khoản 2 Điều 40 - Có sự tham gia của nhiều cơ quan cùng gây thiệt hại";
-    
+
     // Set searchable dropdown values
     const agencyVal = item.procTargetAgency || "Sở Tư pháp Thành phố Hà Nội";
     document.getElementById('procTargetAgencyInput').value = agencyVal;
     document.getElementById('procTargetAgency').value = agencyVal;
-    
+
     document.getElementById('procReason').value = item.procReason || "";
+
+    // Prefill officer fields
+    document.getElementById('procOfficerName').value = item.procOfficerName || "";
+    document.getElementById('procOfficerPosition').value = item.procOfficerPosition || "";
+    document.getElementById('procOfficerAgency').value = item.procOfficerAgency || "";
+    const officerStatus = item.procOfficerStatus || "Vẫn công tác tại đơn vị cũ";
+    document.getElementById('procOfficerStatus').value = officerStatus;
+    document.getElementById('procOfficerCurrentAgency').value = item.procOfficerCurrentAgency || "";
+    document.getElementById('procOfficerCurrentPosition').value = item.procOfficerCurrentPosition || "";
+    toggleProcOfficerCurrentStatus(); // Trigger to show/hide current agency fields
 
     clearAttachedFile('procDecisionFile', 'procFileAttachmentInfo');
     if (item.procDecisionFile) {
@@ -586,11 +602,27 @@ function showDetailScreen(id) {
 
     // Verification Result block
     const verificationBlock = document.getElementById('dtVerificationResultBlock');
-    if (item.status === 'Đang xác minh' || item.status === 'Hoàn thành') {
+    if (['Hoàn thành', 'Đã hoàn thành xác định', 'Đã có kết quả'].includes(item.status)) {
         verificationBlock.style.display = 'block';
         document.getElementById('dtProcBasis').innerText = item.procBasis || 'Đang xác minh, chưa có căn cứ';
         document.getElementById('dtProcTargetAgency').innerText = item.procTargetAgency || 'Đang tiến hành chỉ định';
         document.getElementById('dtProcReason').innerText = item.procReason || 'Đang cập nhật báo cáo kết luận...';
+
+        // Populate officer fields
+        document.getElementById('dtOfficerName').innerText = item.procOfficerName || 'Đỗ Xuân Tài';
+        document.getElementById('dtOfficerPosition').innerText = item.procOfficerPosition || 'Điều tra viên trung cấp';
+        document.getElementById('dtOfficerAgency').innerText = item.procOfficerAgency || 'Công an tỉnh Lâm Đồng';
+        const officerStatus = item.procOfficerStatus || 'Vẫn công tác tại đơn vị cũ';
+        document.getElementById('dtOfficerStatus').innerText = officerStatus;
+        if (officerStatus === 'Đã chuyển công tác') {
+            document.getElementById('dtOfficerCurrentAgencyRow').style.display = 'flex';
+            document.getElementById('dtOfficerCurrentPositionRow').style.display = 'flex';
+            document.getElementById('dtOfficerCurrentAgency').innerText = item.procOfficerCurrentAgency || '';
+            document.getElementById('dtOfficerCurrentPosition').innerText = item.procOfficerCurrentPosition || '';
+        } else {
+            document.getElementById('dtOfficerCurrentAgencyRow').style.display = 'none';
+            document.getElementById('dtOfficerCurrentPositionRow').style.display = 'none';
+        }
 
         if (item.procDecisionFile) {
             document.getElementById('dtProcDecisionFile').innerHTML = `
@@ -616,7 +648,7 @@ function showDetailScreen(id) {
 
     // Populate Footer Workflow buttons
     const footer = document.getElementById('detailWorkflowActions');
-    footer.innerHTML = `<button class="btn btn-secondary" onclick="showListScreen()">Đóng lại</button>`;
+    footer.innerHTML = `<button class="btn btn-secondary" onclick="showListScreen()">Đóng</button>`;
 
     if (item.status === 'Chờ tiếp nhận') {
         footer.innerHTML += `<button class="btn btn-success" onclick="acceptRequest('${item.id}', true)"><i class="fa-solid fa-circle-check"></i> Tiếp nhận hồ sơ</button>`;
@@ -652,6 +684,17 @@ function showCreateClaimScreen(id) {
 
     document.getElementById('claimDocBase').value = `Quyết định chuyển giao cơ quan GQBT số 04/QĐ-XĐCQ đính kèm: ${item.procDecisionFile || 'QD.pdf'}`;
     document.getElementById('claimHanhVi').value = item.hanhVi;
+
+    document.getElementById('claimOfficerName').value = item.procOfficerName || '';
+    document.getElementById('claimOfficerPosition').value = item.procOfficerPosition || '';
+    document.getElementById('claimOfficerAgency').value = item.procOfficerAgency || '';
+    document.getElementById('claimOfficerStatus').value = item.procOfficerStatus || '';
+    if (item.procOfficerStatus === 'Đã chuyển công tác') {
+        document.getElementById('claimOfficerCurrentGroup').style.display = 'block';
+        document.getElementById('claimOfficerCurrentAgency').value = item.procOfficerCurrentAgency || '';
+    } else {
+        document.getElementById('claimOfficerCurrentGroup').style.display = 'none';
+    }
 
     document.getElementById('claimTotalAmount').value = '';
     clearAttachedFile('claimFile', 'claimFileAttachmentInfo');
@@ -891,13 +934,13 @@ function saveForm(isDraft) {
 function saveProcessResult(isComplete) {
     const id = document.getElementById('processRequestId').value;
     const basis = document.getElementById('procBasis').value.trim();
-    
+
     // Support either select choice or custom inputted values in searchable dropdown
     let agency = document.getElementById('procTargetAgency').value;
     if (!agency) {
         agency = document.getElementById('procTargetAgencyInput').value.trim();
     }
-    
+
     const reason = document.getElementById('procReason').value.trim();
     const file = fileCache['procDecisionFile'];
 
@@ -922,6 +965,13 @@ function saveProcessResult(isComplete) {
         item.procTargetAgency = agency;
         item.procReason = reason;
         item.procDecisionFile = file || "Quyet_dinh_chuyen_giao.pdf";
+
+        item.procOfficerName = document.getElementById('procOfficerName').value.trim();
+        item.procOfficerPosition = document.getElementById('procOfficerPosition').value.trim();
+        item.procOfficerAgency = document.getElementById('procOfficerAgency').value.trim();
+        item.procOfficerStatus = document.getElementById('procOfficerStatus').value;
+        item.procOfficerCurrentAgency = document.getElementById('procOfficerCurrentAgency').value.trim();
+        item.procOfficerCurrentPosition = document.getElementById('procOfficerCurrentPosition').value.trim();
 
         if (isComplete) {
             item.status = 'Hoàn thành';
@@ -1203,7 +1253,7 @@ function showConfirmModal(message, callback) {
     const overlay = document.getElementById('customConfirmOverlay');
     document.getElementById('customConfirmMessage').innerText = message;
     confirmCallback = callback;
-    
+
     overlay.style.display = 'flex';
     setTimeout(() => {
         overlay.classList.add('visible');
@@ -1234,7 +1284,7 @@ function filterSearchableOptions() {
     const filter = input.value.trim().toLowerCase();
     const dropdown = document.getElementById('procTargetAgencyDropdown');
     const options = dropdown.getElementsByClassName('searchable-select-option');
-    
+
     dropdown.style.display = 'block';
     for (let i = 0; i < options.length; i++) {
         const text = options[i].textContent || options[i].innerText;
@@ -1254,7 +1304,7 @@ function selectAgencyOption(val) {
 }
 
 // Close the dropdown when clicking outside
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     const wrapper = document.querySelector('.searchable-select-wrapper');
     if (wrapper && !wrapper.contains(event.target)) {
         const dropdown = document.getElementById('procTargetAgencyDropdown');

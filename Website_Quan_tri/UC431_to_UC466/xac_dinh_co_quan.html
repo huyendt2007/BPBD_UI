@@ -227,9 +227,17 @@
         }
 
         @keyframes pulse-danger {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
 
         /* Buttons Layout */
@@ -301,14 +309,41 @@
             height: 28px;
         }
 
-        .icon-btn.view { color: #2563EB; background-color: #EFF6FF; }
-        .icon-btn.view:hover { background-color: #DBEAFE; }
-        .icon-btn.edit { color: #F59E0B; background-color: #FFF7ED; }
-        .icon-btn.edit:hover { background-color: #FFEDD5; }
-        .icon-btn.delete { color: #EF4444; background-color: #FEF2F2; }
-        .icon-btn.delete:hover { background-color: #FEE2E2; }
-        .icon-btn.print { color: #8B5CF6; background-color: #F5F3FF; }
-        .icon-btn.print:hover { background-color: #EDE9FE; }
+        .icon-btn.view {
+            color: #2563EB;
+            background-color: #EFF6FF;
+        }
+
+        .icon-btn.view:hover {
+            background-color: #DBEAFE;
+        }
+
+        .icon-btn.edit {
+            color: #F59E0B;
+            background-color: #FFF7ED;
+        }
+
+        .icon-btn.edit:hover {
+            background-color: #FFEDD5;
+        }
+
+        .icon-btn.delete {
+            color: #EF4444;
+            background-color: #FEF2F2;
+        }
+
+        .icon-btn.delete:hover {
+            background-color: #FEE2E2;
+        }
+
+        .icon-btn.print {
+            color: #8B5CF6;
+            background-color: #F5F3FF;
+        }
+
+        .icon-btn.print:hover {
+            background-color: #EDE9FE;
+        }
 
         /* Search Filter Section */
         .filter-grid {
@@ -546,11 +581,13 @@
             border-radius: var(--border-radius-lg);
             width: 100%;
             max-width: 900px;
-            max-height: 90vh; /* Keep height within boundaries */
+            max-height: 90vh;
+            /* Keep height within boundaries */
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent container scroll */
+            overflow: hidden;
+            /* Prevent container scroll */
             animation: modal-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -559,8 +596,13 @@
         }
 
         @keyframes modal-slide {
-            from { transform: translateY(20px); }
-            to { transform: translateY(0); }
+            from {
+                transform: translateY(20px);
+            }
+
+            to {
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
@@ -570,7 +612,8 @@
             justify-content: space-between;
             align-items: center;
             background-color: var(--table-header-bg);
-            flex-shrink: 0; /* Keep header sticky */
+            flex-shrink: 0;
+            /* Keep header sticky */
         }
 
         .modal-title {
@@ -595,14 +638,16 @@
         }
 
         .modal-close:hover {
-            background-color: rgba(0,0,0,0.05);
+            background-color: rgba(0, 0, 0, 0.05);
             color: var(--text-main);
         }
 
         .modal-body {
             padding: 20px;
-            overflow-y: auto; /* Enable vertical scroll inside body only */
-            flex: 1; /* Allow body to fill remaining space */
+            overflow-y: auto;
+            /* Enable vertical scroll inside body only */
+            flex: 1;
+            /* Allow body to fill remaining space */
         }
 
         .modal-footer {
@@ -612,7 +657,8 @@
             justify-content: flex-end;
             gap: 10px;
             background-color: var(--table-header-bg);
-            flex-shrink: 0; /* Keep footer sticky */
+            flex-shrink: 0;
+            /* Keep footer sticky */
         }
 
         /* Inline form panel styling matching screenshot 2 */
@@ -622,17 +668,25 @@
             box-shadow: var(--box-shadow);
             border: 1px solid var(--border-color);
             margin-bottom: 20px;
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
             flex-direction: column;
             overflow: hidden;
             animation: fadeIn 0.25s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         .inline-form-header {
             padding: 16px 24px;
             border-bottom: 1px solid var(--border-color);
@@ -771,8 +825,13 @@
             opacity: 1;
         }
 
-        .toast-notif.success { border-left: 4px solid var(--success-color); }
-        .toast-notif.error { border-left: 4px solid var(--danger-color); }
+        .toast-notif.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast-notif.error {
+            border-left: 4px solid var(--danger-color);
+        }
 
         /* Badge status colors */
         .badge {
@@ -784,10 +843,25 @@
             border-radius: 9999px;
         }
 
-        .badge-info { background-color: #EFF6FF; color: #1E40AF; }
-        .badge-success { background-color: #ECFDF5; color: #065F46; }
-        .badge-warning { background-color: #FFFBEB; color: #92400E; }
-        .badge-danger { background-color: #FEF2F2; color: #991B1B; }
+        .badge-info {
+            background-color: #EFF6FF;
+            color: #1E40AF;
+        }
+
+        .badge-success {
+            background-color: #ECFDF5;
+            color: #065F46;
+        }
+
+        .badge-warning {
+            background-color: #FFFBEB;
+            color: #92400E;
+        }
+
+        .badge-danger {
+            background-color: #FEF2F2;
+            color: #991B1B;
+        }
 
         /* Reimbursement calculator styles */
         .calc-panel {
@@ -845,7 +919,8 @@
             <p>Đặc tả giao diện và giả lập quy trình nghiệp vụ số hóa theo Luật TNBTCNN 2017</p>
         </div>
         <div class="role-switch-container">
-            <span style="font-size: 12.5px; font-weight: 600; color: var(--text-muted);"><i class="fa-solid fa-user-shield"></i> Vai trò mô phỏng:</span>
+            <span style="font-size: 12.5px; font-weight: 600; color: var(--text-muted);"><i
+                    class="fa-solid fa-user-shield"></i> Vai trò mô phỏng:</span>
             <select class="role-selector" id="roleSelector" onchange="changeRole(this.value)">
                 <option value="chuyen-vien">Chuyên viên thụ lý giải quyết</option>
                 <option value="thu-truong">Thủ trưởng cơ quan giải quyết</option>
@@ -872,11 +947,14 @@
     <!-- ============================================== -->
     <div id="contentGiaiQuyet" class="tab-content-panel">
         <!-- SUB-TABS SELECTOR FOR TAB 1 -->
-        <div style="display: flex; gap: 8px; margin-bottom: 15px; background: white; padding: 10px 16px; border-radius: var(--border-radius-lg); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <button class="btn btn-primary" id="btnSubTabResolver" onclick="switchSubTabResolver('resolver')" style="font-weight: 600;">
+        <div
+            style="display: flex; gap: 8px; margin-bottom: 15px; background: white; padding: 10px 16px; border-radius: var(--border-radius-lg); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <button class="btn btn-primary" id="btnSubTabResolver" onclick="switchSubTabResolver('resolver')"
+                style="font-weight: 600;">
                 <i class="fa-solid fa-gavel"></i> 1A. Thụ lý & Giải quyết bồi thường chính thức ( -)
             </button>
-            <button class="btn btn-secondary" id="btnSubTabDeterminer" onclick="switchSubTabResolver('determiner')" style="font-weight: 600;">
+            <button class="btn btn-secondary" id="btnSubTabDeterminer" onclick="switchSubTabResolver('determiner')"
+                style="font-weight: 600;">
                 <i class="fa-solid fa-compass"></i> 1B. Xác định cơ quan giải quyết bồi thường (Sở Tư pháp - -)
             </button>
         </div>
@@ -887,7 +965,7 @@
                 <div class="section-title">
                     <span><i class="fa-solid fa-list"></i> DANH SÁCH HỒ SƠ YÊU CẦU BỒI THƯỜNG CHÍNH THỨC</span>
                     <button class="btn btn-primary btn-sm" onclick="openInlineClaimForm">
-                        <i class="fa-solid fa-plus"></i> Tiếp nhận hồ sơ yêu cầu bồi thường mới 
+                        <i class="fa-solid fa-plus"></i> Tiếp nhận hồ sơ yêu cầu bồi thường mới
                     </button>
                 </div>
 
@@ -922,634 +1000,729 @@
                         </select>
                     </div>
                 </div>
-                </div>
-
-                <!-- COLLAPSIBLE STATISTICAL REPORT CARD (TT 08/2019/TT-BTP) -->
-                <div style="border: 1px solid var(--border-color); border-radius: var(--border-radius-md); margin-bottom: 18px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                    <div style="background-color: #F8FAFC; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;" onclick="toggleReportsPanel">
-                        <span style="font-weight: 600; color: var(--primary-color); font-size: 13.5px;"><i class="fa-solid fa-chart-line"></i> BÁO CÁO THỐNG KÊ SỐ LIỆU VÀ DANH MỤC VỤ VIỆC (THÔNG TƯ SỐ 08/2019/TT-BTP)</span>
-                        <span id="reportsPanelArrow" style="transition: transform 0.2s;"><i class="fa-solid fa-chevron-down"></i></span>
-                    </div>
-                    <div id="reportsPanelContent" style="display: none; padding: 16px; border-top: 1px solid var(--border-color); background: white;">
-                        <!-- Sub tab selector within reports -->
-                        <div style="display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                            <button class="btn btn-primary btn-sm" id="btnReportTabA" onclick="switchReportTab('A')" style="font-weight: 600;">
-                                <i class="fa-solid fa-list-ol"></i> Mẫu A: Danh mục vụ việc bồi thường
-                            </button>
-                            <button class="btn btn-secondary btn-sm" id="btnReportTabB" onclick="switchReportTab('B')" style="font-weight: 600;">
-                                <i class="fa-solid fa-table"></i> Mẫu B: Số liệu tổng hợp thống kê (24 cột chỉ tiêu)
-                            </button>
-                            <button class="btn btn-secondary btn-sm" onclick="showToast('Đang kết xuất báo cáo thống kê Excel...', 'success')" style="margin-left: auto; font-weight: 600;">
-                                <i class="fa-file-excel fa-solid"></i> Kết xuất Excel
-                            </button>
-                        </div>
-
-                        <!-- Report Tab A content (Image 1) -->
-                        <div id="reportTabA" style="display: block;">
-                            <div class="table-container" style="max-height: 45vh; overflow-y: auto;">
-                                <table class="custom-table" style="font-size: 12.5px;">
-                                    <thead>
-                                        <tr style="background-color: var(--table-header-bg);">
-                                            <th style="width: 50px; text-align: center;">STT</th>
-                                            <th style="min-width: 140px;">Họ và tên người yêu cầu (1)</th>
-                                            <th style="min-width: 160px;">Địa chỉ của người yêu cầu (2)</th>
-                                            <th style="min-width: 180px;">Cơ quan giải quyết bồi thường (3)</th>
-                                            <th style="min-width: 180px;">Pháp luật áp dụng để giải quyết (4)</th>
-                                            <th style="width: 130px; text-align: center;">Tình hình giải quyết (5)</th>
-                                            <th style="width: 130px; text-align: right;">Chi trả tiền bồi thường (6)</th>
-                                            <th style="min-width: 150px;">Khó khăn, vướng mắc (7)</th>
-                                            <th style="width: 80px;">Ghi chú (8)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="reportTableABody">
-                                        <!-- Populated dynamically by JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Report Tab B content (Image 2) -->
-                        <div id="reportTabB" style="display: none;">
-                            <div class="table-container" style="max-height: 45vh; overflow-y: auto;">
-                                <table class="custom-table" style="font-size: 11px; text-align: center;">
-                                    <thead>
-                                        <tr style="background-color: var(--table-header-bg);">
-                                            <th rowspan="3" style="width: 40px; vertical-align: middle;">STT</th>
-                                            <th rowspan="3" style="min-width: 150px; vertical-align: middle; text-align: left;">Lĩnh vực hoạt động</th>
-                                            <th colspan="8" style="vertical-align: middle;">Thụ lý vụ việc (vụ việc)</th>
-                                            <th colspan="12" style="vertical-align: middle;">Tình hình giải quyết vụ việc (vụ việc)</th>
-                                            <th colspan="2" style="vertical-align: middle;">Chi trả tiền bồi thường</th>
-                                        </tr>
-                                        <tr style="background-color: var(--table-header-bg);">
-                                            <th rowspan="2" style="width: 50px; vertical-align: middle;">Tổng số</th>
-                                            <th colspan="4">Số vụ việc thụ lý mới</th>
-                                            <th colspan="3">Kỳ trước chuyển sang</th>
-                                            <th rowspan="2" style="width: 50px; vertical-align: middle;">Tổng số đã GQ</th>
-                                            <th colspan="4">Đã có văn bản giải quyết bồi thường có hiệu lực</th>
-                                            <th colspan="3">Đang giải quyết</th>
-                                            <th colspan="2">Đình chỉ</th>
-                                            <th colspan="2">Tạm đình chỉ</th>
-                                            <th rowspan="2" style="width: 60px; vertical-align: middle;">Số vụ chi xong</th>
-                                            <th rowspan="2" style="width: 80px; vertical-align: middle;">Số tiền đã chi (đ)</th>
-                                        </tr>
-                                        <tr style="background-color: var(--table-header-bg);">
-                                            <th>Tổng</th>
-                                            <th>Tại CQ GQ</th>
-                                            <th>Tòa án (Dân sự)</th>
-                                            <th>Tòa án (Hình sự)</th>
-                                            <th>Tổng</th>
-                                            <th>Tại CQ GQ</th>
-                                            <th>Tòa án</th>
-                                            <th>Tổng</th>
-                                            <th>Tại CQ GQ</th>
-                                            <th>Tòa án (Dân sự)</th>
-                                            <th>Tòa án (Hình sự)</th>
-                                            <th>Tổng</th>
-                                            <th>Tại CQ GQ</th>
-                                            <th>Tòa án</th>
-                                            <th>Tổng</th>
-                                            <th>Tại CQ GQ</th>
-                                            <th>Tổng</th>
-                                            <th>Tại CQ GQ</th>
-                                        </tr>
-                                        <tr style="background-color: #E2E8F0; font-weight: bold; font-size: 10px;">
-                                            <td>-</td>
-                                            <td style="text-align: left;">Cột chỉ tiêu</td>
-                                            <td>1</td>
-                                            <td>2 = 3+4+5</td>
-                                            <td>3</td>
-                                            <td>4</td>
-                                            <td>5</td>
-                                            <td>6 = 7+8</td>
-                                            <td>7</td>
-                                            <td>8</td>
-                                            <td>9 = 10+14+17</td>
-                                            <td>10 = 11+12+13</td>
-                                            <td>11</td>
-                                            <td>12</td>
-                                            <td>13</td>
-                                            <td>14 = 15+16</td>
-                                            <td>15</td>
-                                            <td>16</td>
-                                            <td>17 = 18+19</td>
-                                            <td>18</td>
-                                            <td>19</td>
-                                            <td>20</td>
-                                            <td>21</td>
-                                            <td>22</td>
-                                            <td>23</td>
-                                            <td>24</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="reportTableBBody">
-                                        <!-- Populated dynamically by JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TABLE OF CLAIMS (MANDATORY RULE 4, 3 & STICKY HEADER) -->
-                <div class="table-container" style="max-height: 60vh; overflow-y: auto;">
-                    <table class="custom-table" id="claimsTable">
-                        <thead>
-                            <tr>
-                                <th style="width: 50px; text-align: center;">STT</th>
-                                <th style="width: 110px; text-align: center;">Mã hồ sơ</th>
-                                <th style="width: 110px; text-align: center;">Ngày tiếp nhận</th>
-                                <th style="min-width: 160px;">Người yêu cầu</th>
-                                <th style="min-width: 200px;">Hành vi gây thiệt hại</th>
-                                <th style="width: 140px; text-align: center;">Trạng thái</th>
-                                <th style="width: 120px; text-align: center;">Hạn SLA</th>
-                                <th style="width: 100px; text-align: center; min-width: 100px;">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="claimsTableBody">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- PAGINATION BAR (MANDATORY RULE 4) -->
-                <div class="pagination-bar" id="claimsPagination">
-                    <div class="pagination-info">
-                        Hiển thị <span id="claimsCurrentRange">1-5</span> trong số <span id="claimsTotalCount">8</span> bản ghi
-                    </div>
-                    <div class="pagination-pages">
-                        <span class="page-item" id="claimsPageFirst" onclick="claimsGoPage(1)" title="Đầu">&lt;&lt;</span>
-                        <span class="page-item" id="claimsPagePrev" onclick="claimsPrevPage" title="Trước">&lt;</span>
-                        <span class="page-item active" id="claimsPageNum1" onclick="claimsGoPage(1)">1</span>
-                        <span class="page-item" id="claimsPageNum2" onclick="claimsGoPage(2)">2</span>
-                        <span class="page-item" id="claimsPageNext" onclick="claimsNextPage" title="Sau">&gt;</span>
-                        <span class="page-item" id="claimsPageLast" onclick="claimsGoPage(2)" title="Cuối">&gt;&gt;</span>
-                    </div>
-                </div>
             </div>
-        </div>
 
-        <!-- INLINE CLAIM FORM PANEL ( REDESIGN) -->
-        <div id="inlineClaimFormPanel" class="inline-form-panel">
-            <div class="inline-form-header">
-                <span class="inline-form-title"><i class="fa-solid fa-file-signature"></i> TIẾP NHẬN HỒ SƠ YÊU CẦU BỒI THƯỜNG MỚI (MẪU 01/BTNN)</span>
-                <button class="btn btn-secondary btn-sm" onclick="closeInlineClaimForm"><i class="fa-solid fa-xmark"></i> Đóng</button>
-            </div>
-            
-            <div class="inline-form-body">
-                <!-- Tab Menu for Mẫu 01 structure -->
-                <div style="display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); margin-bottom: 20px;">
-                    <button class="tab-btn active" id="btnSubTabInfo" onclick="switchSubTabClaim('info')"><i class="fa-solid fa-user"></i> 1. Thông tin chung</button>
-                    <button class="tab-btn" id="btnSubTabThietHai" onclick="switchSubTabClaim('thiet-hai')"><i class="fa-solid fa-coins"></i> 2. Các mục thiệt hại</button>
-                    <button class="tab-btn" id="btnSubTabTamUng" onclick="switchSubTabClaim('tam-ung')"><i class="fa-solid fa-hand-holding-dollar"></i> 3. Đề nghị tạm ứng</button>
-                    <button class="tab-btn" id="btnSubTabKemTheo" onclick="switchSubTabClaim('kem-theo')"><i class="fa-solid fa-paperclip"></i> 4. Các nội dung khác & tài liệu đính kèm</button>
+            <!-- COLLAPSIBLE STATISTICAL REPORT CARD (TT 08/2019/TT-BTP) -->
+            <div
+                style="border: 1px solid var(--border-color); border-radius: var(--border-radius-md); margin-bottom: 18px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="background-color: #F8FAFC; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;"
+                    onclick="toggleReportsPanel">
+                    <span style="font-weight: 600; color: var(--primary-color); font-size: 13.5px;"><i
+                            class="fa-solid fa-chart-line"></i> BÁO CÁO THỐNG KÊ SỐ LIỆU VÀ DANH MỤC VỤ VIỆC (THÔNG TƯ
+                        SỐ 08/2019/TT-BTP)</span>
+                    <span id="reportsPanelArrow" style="transition: transform 0.2s;"><i
+                            class="fa-solid fa-chevron-down"></i></span>
                 </div>
-
-                <!-- Sub-tab 1: Thông tin chung -->
-                <div id="subTabClaimInfo" class="sub-tab-panel">
-                    <div class="grid-3-cols" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <span class="form-label">Hình thức tiếp nhận hồ sơ</span>
-                            <select class="form-control" id="claimNopKenh" onchange="toggleClaimKenh(this.value)">
-                                <option value="truc-tiep">Tiếp nhận trực tiếp tại một cửa</option>
-                                <option value="buu-chinh">Nhận qua bưu điện/bưu chính</option>
-                                <option value="dvc">Đồng bộ từ Cổng Dịch vụ công trực tuyến</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Lĩnh vực phát sinh thiệt hại (TT 08/2019)</span>
-                            <select class="form-control" id="claimFieldGroup">
-                                <option value="hành chính">I. Hoạt động quản lý hành chính</option>
-                                <option value="hình sự">II. Hoạt động tố tụng hình sự</option>
-                                <option value="dân sự">III. Hoạt động tố tụng dân sự</option>
-                                <option value="tố tụng hành chính">IV. Hoạt động tố tụng hành chính</option>
-                                <option value="thi hành án hình sự">V. Hoạt động thi hành án hình sự</option>
-                                <option value="thi hành án dân sự">VI. Hoạt động thi hành án dân sự</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Cơ quan giải quyết (Kính gửi)</span>
-                            <select class="form-control" id="claimCqNhan">
-                                <option value="Sở Tư pháp TP. Hà Nội">Sở Tư pháp TP. Hà Nội</option>
-                                <option value="UBND quận Cầu Giấy">UBND quận Cầu Giấy</option>
-                                <option value="Cục Thi hành án dân sự tỉnh Lâm Đồng">Cục Thi hành án dân sự tỉnh Lâm Đồng</option>
-                            </select>
-                        </div>
+                <div id="reportsPanelContent"
+                    style="display: none; padding: 16px; border-top: 1px solid var(--border-color); background: white;">
+                    <!-- Sub tab selector within reports -->
+                    <div
+                        style="display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                        <button class="btn btn-primary btn-sm" id="btnReportTabA" onclick="switchReportTab('A')"
+                            style="font-weight: 600;">
+                            <i class="fa-solid fa-list-ol"></i> Mẫu A: Danh mục vụ việc bồi thường
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="btnReportTabB" onclick="switchReportTab('B')"
+                            style="font-weight: 600;">
+                            <i class="fa-solid fa-table"></i> Mẫu B: Số liệu tổng hợp thống kê (24 cột chỉ tiêu)
+                        </button>
+                        <button class="btn btn-secondary btn-sm"
+                            onclick="showToast('Đang kết xuất báo cáo thống kê Excel...', 'success')"
+                            style="margin-left: auto; font-weight: 600;">
+                            <i class="fa-file-excel fa-solid"></i> Kết xuất Excel
+                        </button>
                     </div>
 
-                    <!-- DVC additional fields -->
-                    <div id="claimDvcGroup" style="display: none; background-color: #ECFDF5; border: 1px solid #A7F3D0; padding: 15px; border-radius: var(--border-radius-md); margin-bottom: 20px;" class="grid-3-cols">
-                        <div>
-                            <span class="form-label" style="color: #065F46;">Mã hồ sơ dịch vụ công</span>
-                            <input type="text" class="form-control" id="claimDvcCode" value="DVC-2027-88992">
-                        </div>
-                        <div>
-                            <span class="form-label" style="color: #065F46;">Xác thực điện tử</span>
-                            <input type="text" class="form-control" value="Tài khoản định danh VNeID Cấp 2" disabled>
-                        </div>
-                        <div>
-                            <span class="form-label" style="color: #065F46;">Ký số tài liệu điện tử</span>
-                            <input type="text" class="form-control" value="Đã chứng thực chữ ký số công cộng" disabled>
-                        </div>
-                    </div>
-
-                    <div class="grid-3-cols" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <span class="form-label">Họ và tên / Tên tổ chức NYC</span>
-                            <input type="text" class="form-control" id="claimNYCName" placeholder="Tên người nộp đơn bồi thường">
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Loại người yêu cầu</span>
-                            <select class="form-control" id="claimNYCtype" onchange="toggleNYCtype(this.value)">
-                                <option value="ca-nhan">Cá nhân (Công dân)</option>
-                                <option value="to-chuc">Tổ chức (Doanh nghiệp/Đoàn thể)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Tư cách người yêu cầu bồi thường (Là:)</span>
-                            <select class="form-control" id="claimNYCRole" onchange="toggleClaimNYCRole(this.value)">
-                                <option value="1">1. Người bị thiệt hại</option>
-                                <option value="2">2. Người thừa kế của người bị thiệt hại</option>
-                                <option value="3">3. Người đại diện cho những người thừa kế</option>
-                                <option value="4">4. Đại diện cho tổ chức kế thừa nghĩa vụ</option>
-                                <option value="5">5. Người đại diện theo pháp luật của người bị thiệt hại</option>
-                                <option value="6">6. Người/pháp nhân được ủy quyền hợp pháp</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Details of other inheritors if option 3 chosen -->
-                    <div class="form-group" id="claimInheritorGroup" style="display: none; margin-bottom: 20px;">
-                        <span class="form-label">Danh sách những người thừa kế còn lại cử đại diện (Họ tên):</span>
-                        <input type="text" class="form-control" id="claimInheritorList" placeholder="Nguyễn Văn X, Nguyễn Thị Y (Đính kèm Biên bản cử đại diện)">
-                    </div>
-
-                    <div class="grid-3-cols" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <span class="form-label">Loại giấy tờ thân nhân</span>
-                            <select class="form-control" id="claimNYCCardType">
-                                <option value="CCCD">Căn cước công dân / CCCD</option>
-                                <option value="TheCanCuoc">Thẻ Căn cước mới (2024)</option>
-                                <option value="HoChieu">Hộ chiếu</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Số giấy tờ</span>
-                            <input type="text" class="form-control" id="claimNYCCardNo" placeholder="Số định danh/CCCD/ĐKKD...">
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Ngày cấp / Nơi cấp</span>
-                            <input type="text" class="form-control" id="claimNYCCardDetail" placeholder="01/01/2020 - Công an TP. Hà Nội">
-                        </div>
-                    </div>
-
-                    <div class="grid-3-cols" style="margin-bottom: 20px;">
-                        <div class="form-group" style="grid-column: span 2;">
-                            <span class="form-label">Địa chỉ liên hệ</span>
-                            <input type="text" class="form-control" id="claimNYCAddress" placeholder="Nơi cư trú hoặc trụ sở chính">
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Số điện thoại / Email</span>
-                            <input type="text" class="form-control" id="claimNYCContact" placeholder="0901234567 / nyc@mail.com">
-                        </div>
-                    </div>
-
-                    <!-- Checkbox Phục hồi danh dự đặt tại Tab 1 (User request) -->
-                    <div class="form-group" style="background-color: #F0F9FF; border: 1px solid #BDE0FE; padding: 16px; border-radius: var(--border-radius-lg); margin-bottom: 20px;">
-                        <label style="font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" id="claimNeedRestoreHonor"> YÊU CẦU CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG PHỤC HỒI DANH DỰ (ÁP DỤNG VỚI OAN SAI HÌNH SỰ)
-                        </label>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px; margin-left: 22px; line-height: 1.5;">
-                            Tích chọn nếu muốn hệ thống kích hoạt luồng **Phục hồi danh dự** chạy song song độc lập (Điều 57 Luật TNBTCNN 2017) để thực hiện cải chính công khai, xin lỗi trực tiếp tại nơi cư trú / nơi làm việc.
-                        </p>
-                    </div>
-
-                    <div class="info-group-title">VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG & HÀNH VI</div>
-                    <div class="grid-2-cols" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <span class="form-label">Văn bản làm căn cứ bồi thường (Số hiệu, CQ ban hành, Ngày ký)</span>
-                            <input type="text" class="form-control" id="claimDocBase" placeholder="Ví dụ: Bản án số 22/2026/HS-ST ngày 12/03/2026 của TAND quận Cầu Giấy">
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Cơ quan có công chức thi hành công vụ gây thiệt hại</span>
-                            <input type="text" class="form-control" id="claimCqGayHai" placeholder="Cơ quan quản lý công chức sai phạm">
-                        </div>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <span class="form-label">Tóm tắt hành vi gây thiệt hại của người thi hành công vụ</span>
-                        <textarea class="form-control" id="claimHanhVi" style="min-height: 60px;" placeholder="Mô tả tóm tắt hành vi sai phạm gây hại của công chức..."></textarea>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <span class="form-label">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại</span>
-                        <textarea class="form-control" id="claimNhanQua" style="min-height: 60px;" placeholder="Giải trình tính nhân quả giữa hành vi làm sai và thiệt hại phát sinh..."></textarea>
-                    </div>
-                </div>
-
-                <!-- Sub-tab 2: Các mục thiệt hại -->
-                <div id="subTabClaimThietHai" class="sub-tab-panel" style="display: none;">
-                    <div class="sla-tag sla-warning" style="width: 100%; padding: 10px; margin-bottom: 15px; font-size: 12.5px;">
-                        <i class="fa-solid fa-circle-exclamation"></i> <strong>Quy tắc nhập liệu:</strong> Tích chọn mục nào thì bắt buộc nhập đầy đủ diễn giải "Cách tính" và "Số tiền yêu cầu" của mục đó.
-                    </div>
-                    
-                    <div class="table-container" style="max-height: 50vh; overflow-y: auto; margin-bottom: 20px;">
-                        <table class="custom-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 40px; text-align: center;">Chọn</th>
-                                    <th style="width: 250px;">Mục thiệt hại yêu cầu bồi thường</th>
-                                    <th style="min-width: 300px;">Cách tính / Diễn giải công thức áp dụng</th>
-                                    <th style="width: 180px; text-align: right;">Số tiền yêu cầu bồi thường (đồng)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_1" onchange="toggleClaimThietHaiRow(1)"></td>
-                                    <td><strong>1. Tài sản bị xâm phạm</strong></td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_1" placeholder="Cách tính tài sản bị hư hỏng, mất mát..." disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;" id="claimThietHaiVal_1" placeholder="0" oninput="sumClaimThietHai" disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_2" onchange="toggleClaimThietHaiRow(2)"></td>
-                                    <td><strong>2. Thu nhập thực tế bị mất/giảm sút</strong></td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_2" placeholder="Cách tính số ngày công lao động bị mất..." disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;" id="claimThietHaiVal_2" placeholder="0" oninput="sumClaimThietHai" disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_3" onchange="toggleClaimThietHaiRow(3)"></td>
-                                    <td><strong>3. Vật chất do người bị thiệt hại chết</strong></td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_3" placeholder="Cách tính chi phí mai táng, nghĩa vụ cấp dưỡng..." disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;" id="claimThietHaiVal_3" placeholder="0" oninput="sumClaimThietHai" disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_4" onchange="toggleClaimThietHaiRow(4)"></td>
-                                    <td><strong>4. Vật chất do sức khỏe bị xâm phạm</strong></td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_4" placeholder="Cách tính chi phí chữa trị, thuốc men..." disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;" id="claimThietHaiVal_4" placeholder="0" oninput="sumClaimThietHai" disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_5" onchange="toggleClaimThietHaiRow(5)"></td>
-                                    <td><strong>5. Thiệt hại về tinh thần</strong></td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_5" placeholder="Cách tính quy đổi theo ngày tạm giữ, tù oan..." disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;" id="claimThietHaiVal_5" placeholder="0" oninput="sumClaimThietHai" disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_6" onchange="toggleClaimThietHaiRow(6)"></td>
-                                    <td><strong>6. Các chi phí hợp lý khác</strong></td>
-                                    <td><input type="text" class="form-control" id="claimThietHaiCalc_6" placeholder="Cách tính chi phí đi lại làm hồ sơ, thuê luật sư..." disabled></td>
-                                    <td><input type="number" class="form-control" style="text-align: right;" id="claimThietHaiVal_6" placeholder="0" oninput="sumClaimThietHai" disabled></td>
-                                </tr>
-                                <tr style="background-color: #F8FAFC; font-weight: 700;">
-                                    <td colspan="2" style="text-align: right;">TỔNG CỘNG SỐ TIỀN:</td>
-                                    <td colspan="2">
-                                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                                            <div style="font-size: 15px; color: var(--primary-color);" id="claimTotalNumText">0 đồng</div>
-                                            <div style="font-size: 11.5px; font-style: italic; font-weight: normal; color: var(--text-muted);" id="claimTotalWordText">Viết bằng chữ: Không đồng</div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Sub-tab 3: Đề nghị tạm ứng -->
-                <div id="subTabClaimTamUng" class="sub-tab-panel" style="display: none;">
-                    <div style="margin-bottom: 15px;">
-                        <label style="font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" id="claimNeedAdvance" onchange="toggleClaimAdvancePanel(this.checked)"> II. ĐỀ NGHỊ TẠM ỨNG KINH PHÍ BỒI THƯỜNG (NẾU CÓ)
-                        </label>
-                    </div>
-
-                    <div id="claimAdvancePanel" style="display: none; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-lg); background-color: #FAF5FF; margin-bottom: 20px;">
-                        <div class="grid-2-cols" style="margin-bottom: 20px;">
-                            <div class="form-group">
-                                <span class="form-label">Tạm ứng Thiệt hại tinh thần (đồng)</span>
-                                <input type="number" class="form-control" id="claimAdvanceTinhThan" placeholder="Nhập số tiền..." oninput="sumClaimAdvance">
-                                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-                                    (Validate: Chỉ cho phép nhập nếu Thiệt hại tinh thần đã được chọn ở phần 2. Tối đa 50% mức yêu cầu).
-                                </p>
-                            </div>
-                            <div class="form-group">
-                                <span class="form-label">Tài liệu đính kèm chứng minh tạm ứng tinh thần</span>
-                                <input type="file" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="grid-2-cols" style="margin-bottom: 20px;">
-                            <div class="form-group">
-                                <span class="form-label">Tạm ứng Thiệt hại khác tính được ngay (đồng)</span>
-                                <div style="display: flex; gap: 8px;">
-                                    <input type="text" class="form-control" style="flex: 1.5;" id="claimAdvanceKhacName" placeholder="Ghi rõ loại thiệt hại...">
-                                    <input type="number" class="form-control" style="flex: 1;" id="claimAdvanceKhacVal" placeholder="Số tiền..." oninput="sumClaimAdvance">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <span class="form-label">Tài liệu chứng cứ kèm tạm ứng thiệt hại khác</span>
-                                <input type="file" class="form-control">
-                            </div>
-                        </div>
-
-                        <div style="background-color: white; border: 1px solid var(--border-color); padding: 15px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
-                            <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">TỔNG SỐ TIỀN ĐỀ NGHỊ TẠM ỨNG:</span>
-                            <span id="claimAdvanceTotalText" style="font-size: 14px; font-weight: 700; color: var(--primary-color); margin-left: 8px;">0 đồng (Viết bằng chữ: Không đồng)</span>
-                        </div>
-
-                        <div class="info-group-title" style="margin-top: 5px;">THÔNG TIN NGƯỜI NHẬN TẠM ỨNG (CÓ THỂ KHÁC VỚI NGƯỜI YÊU CẦU)</div>
-                        <div class="grid-3-cols" style="margin-bottom: 20px;">
-                            <div class="form-group">
-                                <span class="form-label">Họ tên người nhận</span>
-                                <input type="text" class="form-control" id="claimAdvanceRecName">
-                            </div>
-                            <div class="form-group">
-                                <span class="form-label">CCCD/Hộ chiếu người nhận</span>
-                                <input type="text" class="form-control" id="claimAdvanceRecCard">
-                            </div>
-                            <div class="form-group">
-                                <span class="form-label">Địa chỉ người nhận</span>
-                                <input type="text" class="form-control" id="claimAdvanceRecAddress">
-                            </div>
-                        </div>
-                        <div class="grid-2-cols">
-                            <div class="form-group">
-                                <span class="form-label">Phương thức nhận tiền tạm ứng</span>
-                                <select class="form-control" id="claimAdvanceRecKenh" onchange="toggleAdvanceRecKenh(this.value)">
-                                    <option value="tien-mat">Nhận trực tiếp bằng tiền mặt tại kho bạc</option>
-                                    <option value="chuyen-khoan">Nhận qua tài khoản chuyển khoản</option>
-                                </select>
-                            </div>
-                            <div class="form-group" id="claimAdvanceRecBankGroup" style="display: none;">
-                                <span class="form-label">Thông tin tài khoản ngân hàng nhận tiền</span>
-                                <input type="text" class="form-control" id="claimAdvanceRecBankInfo" placeholder="Số tài khoản - Tên chủ tài khoản - Ngân hàng mở">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sub-tab 4: Các nội dung khác & Đính kèm -->
-                <div id="subTabClaimKemTheo" class="sub-tab-panel" style="display: none;">
-                    <div class="grid-2-cols" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <span class="form-label">Đề nghị thu thập văn bản làm căn cứ hộ (nếu không có khả năng)</span>
-                            <input type="text" class="form-control" id="claimDocHelp" placeholder="Tên văn bản cần thu thập + địa chỉ cơ quan đang lưu">
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Yêu cầu khôi phục các quyền và lợi ích hợp pháp khác (nếu có)</span>
-                            <input type="text" class="form-control" id="claimOtherRestore" placeholder="Các quyền lợi công vụ khác yêu cầu khôi phục theo Điều 29...">
-                        </div>
-                    </div>
-
-                    <div class="grid-2-cols" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <span class="form-label">Địa điểm lập đơn</span>
-                            <input type="text" class="form-control" id="claimCreatePlace" value="Hà Nội">
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Ảnh quét scan chữ ký / điểm chỉ</span>
-                            <input type="file" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="info-group-title"><i class="fa-solid fa-folder-open"></i> THÀNH PHẦN HỒ SƠ YÊU CẦU BỒI THƯỜNG (ĐỘNG THEO VAI TRÒ)</div>
-                    <div style="border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 20px; background-color: #F8FAFC;">
-                        
-                        <div class="table-container" style="margin-bottom: 15px; overflow-x: auto;">
-                            <table class="custom-table" style="font-size: 13px;">
+                    <!-- Report Tab A content (Image 1) -->
+                    <div id="reportTabA" style="display: block;">
+                        <div class="table-container" style="max-height: 45vh; overflow-y: auto;">
+                            <table class="custom-table" style="font-size: 12.5px;">
                                 <thead>
                                     <tr style="background-color: var(--table-header-bg);">
                                         <th style="width: 50px; text-align: center;">STT</th>
-                                        <th>Tên thành phần hồ sơ</th>
-                                        <th style="width: 320px;">Đính kèm tệp tin</th>
-                                        <th style="width: 120px; text-align: center;">Thao tác</th>
+                                        <th style="min-width: 140px;">Họ và tên người yêu cầu (1)</th>
+                                        <th style="min-width: 160px;">Địa chỉ của người yêu cầu (2)</th>
+                                        <th style="min-width: 180px;">Cơ quan giải quyết bồi thường (3)</th>
+                                        <th style="min-width: 180px;">Pháp luật áp dụng để giải quyết (4)</th>
+                                        <th style="width: 130px; text-align: center;">Tình hình giải quyết (5)</th>
+                                        <th style="width: 130px; text-align: right;">Chi trả tiền bồi thường (6)</th>
+                                        <th style="min-width: 150px;">Khó khăn, vướng mắc (7)</th>
+                                        <th style="width: 80px;">Ghi chú (8)</th>
                                     </tr>
                                 </thead>
-                                <tbody id="claimDynamicDocsBody">
-                                    <!-- Populated dynamically by JS renderDynamicRequiredDocuments -->
+                                <tbody id="reportTableABody">
+                                    <!-- Populated dynamically by JS -->
                                 </tbody>
                             </table>
                         </div>
+                    </div>
 
-                        <!-- Add custom document button (matching screenshot) -->
-                        <div style="display: flex; justify-content: center; margin-top: 10px;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="addCustomDocumentRow" style="width: 100%; border-style: dashed; border-color: var(--primary-color); background-color: #EFF6FF; color: var(--primary-hover); font-weight: 600; padding: 8px;">
-                                <i class="fa-solid fa-circle-plus"></i> Thêm thành phần hồ sơ
-                            </button>
+                    <!-- Report Tab B content (Image 2) -->
+                    <div id="reportTabB" style="display: none;">
+                        <div class="table-container" style="max-height: 45vh; overflow-y: auto;">
+                            <table class="custom-table" style="font-size: 11px; text-align: center;">
+                                <thead>
+                                    <tr style="background-color: var(--table-header-bg);">
+                                        <th rowspan="3" style="width: 40px; vertical-align: middle;">STT</th>
+                                        <th rowspan="3"
+                                            style="min-width: 150px; vertical-align: middle; text-align: left;">Lĩnh vực
+                                            hoạt động</th>
+                                        <th colspan="8" style="vertical-align: middle;">Thụ lý vụ việc (vụ việc)</th>
+                                        <th colspan="12" style="vertical-align: middle;">Tình hình giải quyết vụ việc
+                                            (vụ việc)</th>
+                                        <th colspan="2" style="vertical-align: middle;">Chi trả tiền bồi thường</th>
+                                    </tr>
+                                    <tr style="background-color: var(--table-header-bg);">
+                                        <th rowspan="2" style="width: 50px; vertical-align: middle;">Tổng số</th>
+                                        <th colspan="4">Số vụ việc thụ lý mới</th>
+                                        <th colspan="3">Kỳ trước chuyển sang</th>
+                                        <th rowspan="2" style="width: 50px; vertical-align: middle;">Tổng số đã GQ</th>
+                                        <th colspan="4">Đã có văn bản giải quyết bồi thường có hiệu lực</th>
+                                        <th colspan="3">Đang giải quyết</th>
+                                        <th colspan="2">Đình chỉ</th>
+                                        <th colspan="2">Tạm đình chỉ</th>
+                                        <th rowspan="2" style="width: 60px; vertical-align: middle;">Số vụ chi xong</th>
+                                        <th rowspan="2" style="width: 80px; vertical-align: middle;">Số tiền đã chi (đ)
+                                        </th>
+                                    </tr>
+                                    <tr style="background-color: var(--table-header-bg);">
+                                        <th>Tổng</th>
+                                        <th>Tại CQ GQ</th>
+                                        <th>Tòa án (Dân sự)</th>
+                                        <th>Tòa án (Hình sự)</th>
+                                        <th>Tổng</th>
+                                        <th>Tại CQ GQ</th>
+                                        <th>Tòa án</th>
+                                        <th>Tổng</th>
+                                        <th>Tại CQ GQ</th>
+                                        <th>Tòa án (Dân sự)</th>
+                                        <th>Tòa án (Hình sự)</th>
+                                        <th>Tổng</th>
+                                        <th>Tại CQ GQ</th>
+                                        <th>Tòa án</th>
+                                        <th>Tổng</th>
+                                        <th>Tại CQ GQ</th>
+                                        <th>Tổng</th>
+                                        <th>Tại CQ GQ</th>
+                                    </tr>
+                                    <tr style="background-color: #E2E8F0; font-weight: bold; font-size: 10px;">
+                                        <td>-</td>
+                                        <td style="text-align: left;">Cột chỉ tiêu</td>
+                                        <td>1</td>
+                                        <td>2 = 3+4+5</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>5</td>
+                                        <td>6 = 7+8</td>
+                                        <td>7</td>
+                                        <td>8</td>
+                                        <td>9 = 10+14+17</td>
+                                        <td>10 = 11+12+13</td>
+                                        <td>11</td>
+                                        <td>12</td>
+                                        <td>13</td>
+                                        <td>14 = 15+16</td>
+                                        <td>15</td>
+                                        <td>16</td>
+                                        <td>17 = 18+19</td>
+                                        <td>18</td>
+                                        <td>19</td>
+                                        <td>20</td>
+                                        <td>21</td>
+                                        <td>22</td>
+                                        <td>23</td>
+                                        <td>24</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportTableBBody">
+                                    <!-- Populated dynamically by JS -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="inline-form-footer">
-                <button class="btn btn-secondary" onclick="closeInlineClaimForm">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="saveNewClaim"><i class="fa-solid fa-floppy-disk"></i> Lưu hồ sơ bồi thường</button>
+
+            <!-- TABLE OF CLAIMS (MANDATORY RULE 4, 3 & STICKY HEADER) -->
+            <div class="table-container" style="max-height: 60vh; overflow-y: auto;">
+                <table class="custom-table" id="claimsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">STT</th>
+                            <th style="width: 110px; text-align: center;">Mã hồ sơ</th>
+                            <th style="width: 110px; text-align: center;">Ngày tiếp nhận</th>
+                            <th style="min-width: 160px;">Người yêu cầu</th>
+                            <th style="min-width: 200px;">Hành vi gây thiệt hại</th>
+                            <th style="width: 140px; text-align: center;">Trạng thái</th>
+                            <th style="width: 120px; text-align: center;">Hạn SLA</th>
+                            <th style="width: 100px; text-align: center; min-width: 100px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="claimsTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION BAR (MANDATORY RULE 4) -->
+            <div class="pagination-bar" id="claimsPagination">
+                <div class="pagination-info">
+                    Hiển thị <span id="claimsCurrentRange">1-5</span> trong số <span id="claimsTotalCount">8</span> bản
+                    ghi
+                </div>
+                <div class="pagination-pages">
+                    <span class="page-item" id="claimsPageFirst" onclick="claimsGoPage(1)" title="Đầu">&lt;&lt;</span>
+                    <span class="page-item" id="claimsPagePrev" onclick="claimsPrevPage" title="Trước">&lt;</span>
+                    <span class="page-item active" id="claimsPageNum1" onclick="claimsGoPage(1)">1</span>
+                    <span class="page-item" id="claimsPageNum2" onclick="claimsGoPage(2)">2</span>
+                    <span class="page-item" id="claimsPageNext" onclick="claimsNextPage" title="Sau">&gt;</span>
+                    <span class="page-item" id="claimsPageLast" onclick="claimsGoPage(2)" title="Cuối">&gt;&gt;</span>
+                </div>
             </div>
         </div>
     </div>
 
-        <!-- SUB-TAB 1B: XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG -->
-        <div id="subTabContentDeterminer" style="display: none;">
-            <div class="card-section">
-                <div class="section-title">
-                    <span><i class="fa-solid fa-compass"></i> THỦ TỤC XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (SỞ TƯ PHÁP -)</span>
-                    <button class="btn btn-primary btn-sm" onclick="openModalCreateDetermination">
-                        <i class="fa-solid fa-plus"></i> Nhập yêu cầu xác định cơ quan mới 
-                    </button>
-                </div>
+    <!-- INLINE CLAIM FORM PANEL ( REDESIGN) -->
+    <div id="inlineClaimFormPanel" class="inline-form-panel">
+        <div class="inline-form-header">
+            <span class="inline-form-title"><i class="fa-solid fa-file-signature"></i> TIẾP NHẬN HỒ SƠ YÊU CẦU BỒI
+                THƯỜNG MỚI (MẪU 01/BTNN)</span>
+            <button class="btn btn-secondary btn-sm" onclick="closeInlineClaimForm"><i class="fa-solid fa-xmark"></i>
+                Đóng</button>
+        </div>
 
-                <!-- SEARCH FILTERS (MANDATORY RULE 1 & 2) -->
-                <div class="filter-grid">
-                    <div>
-                        <span class="form-label">Mã yêu cầu</span>
-                        <input type="text" class="form-control" id="searchDetCode" placeholder="Nhập mã yêu cầu...">
+        <div class="inline-form-body">
+            <!-- Tab Menu for Mẫu 01 structure -->
+            <div style="display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); margin-bottom: 20px;">
+                <button class="tab-btn active" id="btnSubTabInfo" onclick="switchSubTabClaim('info')"><i
+                        class="fa-solid fa-user"></i> 1. Thông tin chung</button>
+                <button class="tab-btn" id="btnSubTabThietHai" onclick="switchSubTabClaim('thiet-hai')"><i
+                        class="fa-solid fa-coins"></i> 2. Các mục thiệt hại</button>
+                <button class="tab-btn" id="btnSubTabTamUng" onclick="switchSubTabClaim('tam-ung')"><i
+                        class="fa-solid fa-hand-holding-dollar"></i> 3. Đề nghị tạm ứng</button>
+                <button class="tab-btn" id="btnSubTabKemTheo" onclick="switchSubTabClaim('kem-theo')"><i
+                        class="fa-solid fa-paperclip"></i> 4. Các nội dung khác & tài liệu đính kèm</button>
+            </div>
+
+            <!-- Sub-tab 1: Thông tin chung -->
+            <div id="subTabClaimInfo" class="sub-tab-panel">
+                <div class="grid-3-cols" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <span class="form-label">Hình thức tiếp nhận hồ sơ</span>
+                        <select class="form-control" id="claimNopKenh" onchange="toggleClaimKenh(this.value)">
+                            <option value="truc-tiep">Tiếp nhận trực tiếp tại một cửa</option>
+                            <option value="buu-chinh">Nhận qua bưu điện/bưu chính</option>
+                            <option value="dvc">Đồng bộ từ Cổng Dịch vụ công trực tuyến</option>
+                        </select>
                     </div>
-                    <div>
-                        <span class="form-label">Người nộp đơn</span>
-                        <input type="text" class="form-control" id="searchDetName" placeholder="Tên người nộp...">
+                    <div class="form-group">
+                        <span class="form-label">Lĩnh vực phát sinh thiệt hại (TT 08/2019)</span>
+                        <select class="form-control" id="claimFieldGroup">
+                            <option value="hành chính">I. Hoạt động quản lý hành chính</option>
+                            <option value="hình sự">II. Hoạt động tố tụng hình sự</option>
+                            <option value="dân sự">III. Hoạt động tố tụng dân sự</option>
+                            <option value="tố tụng hành chính">IV. Hoạt động tố tụng hành chính</option>
+                            <option value="thi hành án hình sự">V. Hoạt động thi hành án hình sự</option>
+                            <option value="thi hành án dân sự">VI. Hoạt động thi hành án dân sự</option>
+                        </select>
                     </div>
-                    <div>
-                        <span class="form-label">Trạng thái xử lý</span>
-                        <select class="form-control" id="searchDetStatus">
-                            <option value="">Tất cả trạng thái</option>
-                            <option value="Chưa xử lý">Chưa xử lý</option>
-                            <option value="Đang xử lý">Đang xử lý</option>
-                            <option value="Đã chuyển giao">Đã chuyển giao</option>
+                    <div class="form-group">
+                        <span class="form-label">Cơ quan giải quyết (Kính gửi)</span>
+                        <select class="form-control" id="claimCqNhan">
+                            <option value="Sở Tư pháp TP. Hà Nội">Sở Tư pháp TP. Hà Nội</option>
+                            <option value="UBND quận Cầu Giấy">UBND quận Cầu Giấy</option>
+                            <option value="Cục Thi hành án dân sự tỉnh Lâm Đồng">Cục Thi hành án dân sự tỉnh Lâm Đồng
+                            </option>
                         </select>
                     </div>
                 </div>
-                <div class="filter-buttons">
-                    <button class="btn btn-primary" onclick="applyDetFilter">
-                        <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
-                    </button>
-                    <button class="btn btn-secondary" onclick="clearDetFilter">
-                        <i class="fa-filter-circle-xmark fa-solid"></i> Xóa bộ lọc
-                    </button>
+
+                <!-- DVC additional fields -->
+                <div id="claimDvcGroup"
+                    style="display: none; background-color: #ECFDF5; border: 1px solid #A7F3D0; padding: 15px; border-radius: var(--border-radius-md); margin-bottom: 20px;"
+                    class="grid-3-cols">
+                    <div>
+                        <span class="form-label" style="color: #065F46;">Mã hồ sơ dịch vụ công</span>
+                        <input type="text" class="form-control" id="claimDvcCode" value="DVC-2027-88992">
+                    </div>
+                    <div>
+                        <span class="form-label" style="color: #065F46;">Xác thực điện tử</span>
+                        <input type="text" class="form-control" value="Tài khoản định danh VNeID Cấp 2" disabled>
+                    </div>
+                    <div>
+                        <span class="form-label" style="color: #065F46;">Ký số tài liệu điện tử</span>
+                        <input type="text" class="form-control" value="Đã chứng thực chữ ký số công cộng" disabled>
+                    </div>
                 </div>
 
-                <!-- TABLE OF DETERMINATION REQUESTS (MANDATORY RULE 4, 3 & STICKY HEADER) -->
-                <div class="table-container" style="max-height: 50vh; overflow-y: auto;">
-                    <table class="custom-table" id="detTable">
+                <div class="grid-3-cols" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <span class="form-label">Họ và tên / Tên tổ chức NYC</span>
+                        <input type="text" class="form-control" id="claimNYCName"
+                            placeholder="Tên người nộp đơn bồi thường">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Loại người yêu cầu</span>
+                        <select class="form-control" id="claimNYCtype" onchange="toggleNYCtype(this.value)">
+                            <option value="ca-nhan">Cá nhân (Công dân)</option>
+                            <option value="to-chuc">Tổ chức (Doanh nghiệp/Đoàn thể)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Tư cách người yêu cầu bồi thường (Là:)</span>
+                        <select class="form-control" id="claimNYCRole" onchange="toggleClaimNYCRole(this.value)">
+                            <option value="1">1. Người bị thiệt hại</option>
+                            <option value="2">2. Người thừa kế của người bị thiệt hại</option>
+                            <option value="3">3. Người đại diện cho những người thừa kế</option>
+                            <option value="4">4. Đại diện cho tổ chức kế thừa nghĩa vụ</option>
+                            <option value="5">5. Người đại diện theo pháp luật của người bị thiệt hại</option>
+                            <option value="6">6. Người/pháp nhân được ủy quyền hợp pháp</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Details of other inheritors if option 3 chosen -->
+                <div class="form-group" id="claimInheritorGroup" style="display: none; margin-bottom: 20px;">
+                    <span class="form-label">Danh sách những người thừa kế còn lại cử đại diện (Họ tên):</span>
+                    <input type="text" class="form-control" id="claimInheritorList"
+                        placeholder="Nguyễn Văn X, Nguyễn Thị Y (Đính kèm Biên bản cử đại diện)">
+                </div>
+
+                <div class="grid-3-cols" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <span class="form-label">Loại giấy tờ thân nhân</span>
+                        <select class="form-control" id="claimNYCCardType">
+                            <option value="CCCD">Căn cước công dân / CCCD</option>
+                            <option value="TheCanCuoc">Thẻ Căn cước mới (2024)</option>
+                            <option value="HoChieu">Hộ chiếu</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Số giấy tờ</span>
+                        <input type="text" class="form-control" id="claimNYCCardNo"
+                            placeholder="Số định danh/CCCD/ĐKKD...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Ngày cấp / Nơi cấp</span>
+                        <input type="text" class="form-control" id="claimNYCCardDetail"
+                            placeholder="01/01/2020 - Công an TP. Hà Nội">
+                    </div>
+                </div>
+
+                <div class="grid-3-cols" style="margin-bottom: 20px;">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <span class="form-label">Địa chỉ liên hệ</span>
+                        <input type="text" class="form-control" id="claimNYCAddress"
+                            placeholder="Nơi cư trú hoặc trụ sở chính">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Số điện thoại / Email</span>
+                        <input type="text" class="form-control" id="claimNYCContact"
+                            placeholder="0901234567 / nyc@mail.com">
+                    </div>
+                </div>
+
+                <!-- Checkbox Phục hồi danh dự đặt tại Tab 1 (User request) -->
+                <div class="form-group"
+                    style="background-color: #F0F9FF; border: 1px solid #BDE0FE; padding: 16px; border-radius: var(--border-radius-lg); margin-bottom: 20px;">
+                    <label
+                        style="font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="claimNeedRestoreHonor"> YÊU CẦU CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG PHỤC
+                        HỒI DANH DỰ (ÁP DỤNG VỚI OAN SAI HÌNH SỰ)
+                    </label>
+                    <p
+                        style="font-size: 12px; color: var(--text-muted); margin-top: 6px; margin-left: 22px; line-height: 1.5;">
+                        Tích chọn nếu muốn hệ thống kích hoạt luồng **Phục hồi danh dự** chạy song song độc lập (Điều 57
+                        Luật TNBTCNN 2017) để thực hiện cải chính công khai, xin lỗi trực tiếp tại nơi cư trú / nơi làm
+                        việc.
+                    </p>
+                </div>
+
+                <div class="info-group-title">VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG & HÀNH VI</div>
+                <div class="grid-2-cols" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <span class="form-label">Văn bản làm căn cứ bồi thường (Số hiệu, CQ ban hành, Ngày ký)</span>
+                        <input type="text" class="form-control" id="claimDocBase"
+                            placeholder="Ví dụ: Bản án số 22/2026/HS-ST ngày 12/03/2026 của TAND quận Cầu Giấy">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Cơ quan có công chức thi hành công vụ gây thiệt hại</span>
+                        <input type="text" class="form-control" id="claimCqGayHai"
+                            placeholder="Cơ quan quản lý công chức sai phạm">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <span class="form-label">Tóm tắt hành vi gây thiệt hại của người thi hành công vụ</span>
+                    <textarea class="form-control" id="claimHanhVi" style="min-height: 60px;"
+                        placeholder="Mô tả tóm tắt hành vi sai phạm gây hại của công chức..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <span class="form-label">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt
+                        hại</span>
+                    <textarea class="form-control" id="claimNhanQua" style="min-height: 60px;"
+                        placeholder="Giải trình tính nhân quả giữa hành vi làm sai và thiệt hại phát sinh..."></textarea>
+                </div>
+            </div>
+
+            <!-- Sub-tab 2: Các mục thiệt hại -->
+            <div id="subTabClaimThietHai" class="sub-tab-panel" style="display: none;">
+                <div class="sla-tag sla-warning"
+                    style="width: 100%; padding: 10px; margin-bottom: 15px; font-size: 12.5px;">
+                    <i class="fa-solid fa-circle-exclamation"></i> <strong>Quy tắc nhập liệu:</strong> Tích chọn mục nào
+                    thì bắt buộc nhập đầy đủ diễn giải "Cách tính" và "Số tiền yêu cầu" của mục đó.
+                </div>
+
+                <div class="table-container" style="max-height: 50vh; overflow-y: auto; margin-bottom: 20px;">
+                    <table class="custom-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; text-align: center;">STT</th>
-                                <th style="width: 120px; text-align: center;">Mã yêu cầu</th>
-                                <th style="width: 120px; text-align: center;">Ngày tiếp nhận</th>
-                                <th style="min-width: 160px;">Người nộp đơn</th>
-                                <th style="min-width: 250px;">Văn bản căn cứ / Hành vi phản ánh</th>
-                                <th style="width: 140px; text-align: center;">Trạng thái</th>
-                                <th style="width: 180px; text-align: center;">Cơ quan được chỉ định</th>
-                                <th style="width: 100px; text-align: center; min-width: 100px;">Thao tác</th>
+                                <th style="width: 40px; text-align: center;">Chọn</th>
+                                <th style="width: 250px;">Mục thiệt hại yêu cầu bồi thường</th>
+                                <th style="min-width: 300px;">Cách tính / Diễn giải công thức áp dụng</th>
+                                <th style="width: 180px; text-align: right;">Số tiền yêu cầu bồi thường (đồng)</th>
                             </tr>
                         </thead>
-                        <tbody id="detTableBody">
-                            <!-- Populated by JS -->
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_1"
+                                        onchange="toggleClaimThietHaiRow(1)"></td>
+                                <td><strong>1. Tài sản bị xâm phạm</strong></td>
+                                <td><input type="text" class="form-control" id="claimThietHaiCalc_1"
+                                        placeholder="Cách tính tài sản bị hư hỏng, mất mát..." disabled></td>
+                                <td><input type="number" class="form-control" style="text-align: right;"
+                                        id="claimThietHaiVal_1" placeholder="0" oninput="sumClaimThietHai" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_2"
+                                        onchange="toggleClaimThietHaiRow(2)"></td>
+                                <td><strong>2. Thu nhập thực tế bị mất/giảm sút</strong></td>
+                                <td><input type="text" class="form-control" id="claimThietHaiCalc_2"
+                                        placeholder="Cách tính số ngày công lao động bị mất..." disabled></td>
+                                <td><input type="number" class="form-control" style="text-align: right;"
+                                        id="claimThietHaiVal_2" placeholder="0" oninput="sumClaimThietHai" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_3"
+                                        onchange="toggleClaimThietHaiRow(3)"></td>
+                                <td><strong>3. Vật chất do người bị thiệt hại chết</strong></td>
+                                <td><input type="text" class="form-control" id="claimThietHaiCalc_3"
+                                        placeholder="Cách tính chi phí mai táng, nghĩa vụ cấp dưỡng..." disabled></td>
+                                <td><input type="number" class="form-control" style="text-align: right;"
+                                        id="claimThietHaiVal_3" placeholder="0" oninput="sumClaimThietHai" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_4"
+                                        onchange="toggleClaimThietHaiRow(4)"></td>
+                                <td><strong>4. Vật chất do sức khỏe bị xâm phạm</strong></td>
+                                <td><input type="text" class="form-control" id="claimThietHaiCalc_4"
+                                        placeholder="Cách tính chi phí chữa trị, thuốc men..." disabled></td>
+                                <td><input type="number" class="form-control" style="text-align: right;"
+                                        id="claimThietHaiVal_4" placeholder="0" oninput="sumClaimThietHai" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_5"
+                                        onchange="toggleClaimThietHaiRow(5)"></td>
+                                <td><strong>5. Thiệt hại về tinh thần</strong></td>
+                                <td><input type="text" class="form-control" id="claimThietHaiCalc_5"
+                                        placeholder="Cách tính quy đổi theo ngày tạm giữ, tù oan..." disabled></td>
+                                <td><input type="number" class="form-control" style="text-align: right;"
+                                        id="claimThietHaiVal_5" placeholder="0" oninput="sumClaimThietHai" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_6"
+                                        onchange="toggleClaimThietHaiRow(6)"></td>
+                                <td><strong>6. Các chi phí hợp lý khác</strong></td>
+                                <td><input type="text" class="form-control" id="claimThietHaiCalc_6"
+                                        placeholder="Cách tính chi phí đi lại làm hồ sơ, thuê luật sư..." disabled></td>
+                                <td><input type="number" class="form-control" style="text-align: right;"
+                                        id="claimThietHaiVal_6" placeholder="0" oninput="sumClaimThietHai" disabled>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #F8FAFC; font-weight: 700;">
+                                <td colspan="2" style="text-align: right;">TỔNG CỘNG SỐ TIỀN:</td>
+                                <td colspan="2">
+                                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                                        <div style="font-size: 15px; color: var(--primary-color);"
+                                            id="claimTotalNumText">0 đồng</div>
+                                        <div style="font-size: 11.5px; font-style: italic; font-weight: normal; color: var(--text-muted);"
+                                            id="claimTotalWordText">Viết bằng chữ: Không đồng</div>
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-                <!-- PAGINATION BAR (MANDATORY RULE 4) -->
-                <div class="pagination-bar">
-                    <div class="pagination-info">
-                        Hiển thị <span id="detRangeText">1-2</span> trong số <span id="detTotalText">2</span> bản ghi
+            <!-- Sub-tab 3: Đề nghị tạm ứng -->
+            <div id="subTabClaimTamUng" class="sub-tab-panel" style="display: none;">
+                <div style="margin-bottom: 15px;">
+                    <label
+                        style="font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="claimNeedAdvance" onchange="toggleClaimAdvancePanel(this.checked)">
+                        II. ĐỀ NGHỊ TẠM ỨNG KINH PHÍ BỒI THƯỜNG (NẾU CÓ)
+                    </label>
+                </div>
+
+                <div id="claimAdvancePanel"
+                    style="display: none; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-lg); background-color: #FAF5FF; margin-bottom: 20px;">
+                    <div class="grid-2-cols" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <span class="form-label">Tạm ứng Thiệt hại tinh thần (đồng)</span>
+                            <input type="number" class="form-control" id="claimAdvanceTinhThan"
+                                placeholder="Nhập số tiền..." oninput="sumClaimAdvance">
+                            <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                                (Validate: Chỉ cho phép nhập nếu Thiệt hại tinh thần đã được chọn ở phần 2. Tối đa 50%
+                                mức yêu cầu).
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Tài liệu đính kèm chứng minh tạm ứng tinh thần</span>
+                            <input type="file" class="form-control">
+                        </div>
                     </div>
-                    <div class="pagination-pages">
-                        <span class="page-item disabled" title="Đầu">&lt;&lt;</span>
-                        <span class="page-item disabled" title="Trước">&lt;</span>
-                        <span class="page-item active">1</span>
-                        <span class="page-item disabled" title="Sau">&gt;</span>
-                        <span class="page-item disabled" title="Cuối">&gt;&gt;</span>
+
+                    <div class="grid-2-cols" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <span class="form-label">Tạm ứng Thiệt hại khác tính được ngay (đồng)</span>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" class="form-control" style="flex: 1.5;" id="claimAdvanceKhacName"
+                                    placeholder="Ghi rõ loại thiệt hại...">
+                                <input type="number" class="form-control" style="flex: 1;" id="claimAdvanceKhacVal"
+                                    placeholder="Số tiền..." oninput="sumClaimAdvance">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Tài liệu chứng cứ kèm tạm ứng thiệt hại khác</span>
+                            <input type="file" class="form-control">
+                        </div>
+                    </div>
+
+                    <div
+                        style="background-color: white; border: 1px solid var(--border-color); padding: 15px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
+                        <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">TỔNG SỐ TIỀN ĐỀ NGHỊ
+                            TẠM ỨNG:</span>
+                        <span id="claimAdvanceTotalText"
+                            style="font-size: 14px; font-weight: 700; color: var(--primary-color); margin-left: 8px;">0
+                            đồng (Viết bằng chữ: Không đồng)</span>
+                    </div>
+
+                    <div class="info-group-title" style="margin-top: 5px;">THÔNG TIN NGƯỜI NHẬN TẠM ỨNG (CÓ THỂ KHÁC VỚI
+                        NGƯỜI YÊU CẦU)</div>
+                    <div class="grid-3-cols" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <span class="form-label">Họ tên người nhận</span>
+                            <input type="text" class="form-control" id="claimAdvanceRecName">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">CCCD/Hộ chiếu người nhận</span>
+                            <input type="text" class="form-control" id="claimAdvanceRecCard">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Địa chỉ người nhận</span>
+                            <input type="text" class="form-control" id="claimAdvanceRecAddress">
+                        </div>
+                    </div>
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <span class="form-label">Phương thức nhận tiền tạm ứng</span>
+                            <select class="form-control" id="claimAdvanceRecKenh"
+                                onchange="toggleAdvanceRecKenh(this.value)">
+                                <option value="tien-mat">Nhận trực tiếp bằng tiền mặt tại kho bạc</option>
+                                <option value="chuyen-khoan">Nhận qua tài khoản chuyển khoản</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="claimAdvanceRecBankGroup" style="display: none;">
+                            <span class="form-label">Thông tin tài khoản ngân hàng nhận tiền</span>
+                            <input type="text" class="form-control" id="claimAdvanceRecBankInfo"
+                                placeholder="Số tài khoản - Tên chủ tài khoản - Ngân hàng mở">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-tab 4: Các nội dung khác & Đính kèm -->
+            <div id="subTabClaimKemTheo" class="sub-tab-panel" style="display: none;">
+                <div class="grid-2-cols" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <span class="form-label">Đề nghị thu thập văn bản làm căn cứ hộ (nếu không có khả năng)</span>
+                        <input type="text" class="form-control" id="claimDocHelp"
+                            placeholder="Tên văn bản cần thu thập + địa chỉ cơ quan đang lưu">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Yêu cầu khôi phục các quyền và lợi ích hợp pháp khác (nếu có)</span>
+                        <input type="text" class="form-control" id="claimOtherRestore"
+                            placeholder="Các quyền lợi công vụ khác yêu cầu khôi phục theo Điều 29...">
+                    </div>
+                </div>
+
+                <div class="grid-2-cols" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <span class="form-label">Địa điểm lập đơn</span>
+                        <input type="text" class="form-control" id="claimCreatePlace" value="Hà Nội">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Ảnh quét scan chữ ký / điểm chỉ</span>
+                        <input type="file" class="form-control">
+                    </div>
+                </div>
+
+                <div class="info-group-title"><i class="fa-solid fa-folder-open"></i> THÀNH PHẦN HỒ SƠ YÊU CẦU BỒI
+                    THƯỜNG (ĐỘNG THEO VAI TRÒ)</div>
+                <div
+                    style="border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 20px; background-color: #F8FAFC;">
+
+                    <div class="table-container" style="margin-bottom: 15px; overflow-x: auto;">
+                        <table class="custom-table" style="font-size: 13px;">
+                            <thead>
+                                <tr style="background-color: var(--table-header-bg);">
+                                    <th style="width: 50px; text-align: center;">STT</th>
+                                    <th>Tên thành phần hồ sơ</th>
+                                    <th style="width: 320px;">Đính kèm tệp tin</th>
+                                    <th style="width: 120px; text-align: center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="claimDynamicDocsBody">
+                                <!-- Populated dynamically by JS renderDynamicRequiredDocuments -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Add custom document button (matching screenshot) -->
+                    <div style="display: flex; justify-content: center; margin-top: 10px;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="addCustomDocumentRow"
+                            style="width: 100%; border-style: dashed; border-color: var(--primary-color); background-color: #EFF6FF; color: var(--primary-hover); font-weight: 600; padding: 8px;">
+                            <i class="fa-solid fa-circle-plus"></i> Thêm thành phần hồ sơ
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TIMELINE/STEPPER INTEGRATED VIEW FOR DETAILED CASE -->
-        <div class="card-section" id="caseDetailSection" style="display: none;">
+        <div class="inline-form-footer">
+            <button class="btn btn-secondary" onclick="closeInlineClaimForm">Hủy bỏ</button>
+            <button class="btn btn-primary" onclick="saveNewClaim"><i class="fa-solid fa-floppy-disk"></i> Lưu hồ sơ bồi
+                thường</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- SUB-TAB 1B: XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG -->
+    <div id="subTabContentDeterminer" style="display: none;">
+        <div class="card-section">
             <div class="section-title">
-                <span id="caseDetailTitle"><i class="fa-solid fa-circle-info"></i> CHI TIẾT TIẾN TRÌNH GIẢI QUYẾT VỤ VIỆC</span>
-                <button class="btn btn-secondary btn-sm" onclick="closeCaseDetail"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
+                <span><i class="fa-solid fa-compass"></i> THỦ TỤC XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (SỞ TƯ PHÁP
+                    -)</span>
+                <button class="btn btn-primary btn-sm" onclick="openModalCreateDetermination">
+                    <i class="fa-solid fa-plus"></i> Nhập yêu cầu xác định cơ quan mới
+                </button>
             </div>
-            
-            <div class="timeline-dashboard">
-                <!-- Left: read-only info from Mẫu 01 -->
-                <div class="timeline-left">
-                    <h3 style="color: var(--primary-color); font-size: 14px; font-weight: 700; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">
-                        I. THÔNG TIN HỒ SƠ YÊU CẦU BỒI THƯỜNG (MẪU 01/BTNN)
-                    </h3>
-                    <div id="readOnlyClaimInfo">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
 
-                <!-- Right: Timeline Stepper -->
-                <div class="timeline-right">
-                    <h3 style="color: var(--primary-color); font-size: 14px; font-weight: 700; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">
-                        II. TRỤC TIẾN TRÌNH XỬ LÝ NGHIỆP VỤ (STEPPER)
-                    </h3>
-                    
-                    <div class="stepper-container" id="timelineStepper">
-                        <!-- Dynamic stepper node structures populated by JS based on current case state -->
-                    </div>
+            <!-- SEARCH FILTERS (MANDATORY RULE 1 & 2) -->
+            <div class="filter-grid">
+                <div>
+                    <span class="form-label">Mã yêu cầu</span>
+                    <input type="text" class="form-control" id="searchDetCode" placeholder="Nhập mã yêu cầu...">
+                </div>
+                <div>
+                    <span class="form-label">Người nộp đơn</span>
+                    <input type="text" class="form-control" id="searchDetName" placeholder="Tên người nộp...">
+                </div>
+                <div>
+                    <span class="form-label">Trạng thái xử lý</span>
+                    <select class="form-control" id="searchDetStatus">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Chưa xử lý">Chưa xử lý</option>
+                        <option value="Đang xử lý">Đang xử lý</option>
+                        <option value="Đã chuyển giao">Đã chuyển giao</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-buttons">
+                <button class="btn btn-primary" onclick="applyDetFilter">
+                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                </button>
+                <button class="btn btn-secondary" onclick="clearDetFilter">
+                    <i class="fa-filter-circle-xmark fa-solid"></i> Xóa bộ lọc
+                </button>
+            </div>
+
+            <!-- TABLE OF DETERMINATION REQUESTS (MANDATORY RULE 4, 3 & STICKY HEADER) -->
+            <div class="table-container" style="max-height: 50vh; overflow-y: auto;">
+                <table class="custom-table" id="detTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">STT</th>
+                            <th style="width: 120px; text-align: center;">Mã yêu cầu</th>
+                            <th style="width: 120px; text-align: center;">Ngày tiếp nhận</th>
+                            <th style="min-width: 160px;">Người nộp đơn</th>
+                            <th style="min-width: 250px;">Văn bản căn cứ / Hành vi phản ánh</th>
+                            <th style="width: 140px; text-align: center;">Trạng thái</th>
+                            <th style="width: 180px; text-align: center;">Cơ quan được chỉ định</th>
+                            <th style="width: 100px; text-align: center; min-width: 100px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION BAR (MANDATORY RULE 4) -->
+            <div class="pagination-bar">
+                <div class="pagination-info">
+                    Hiển thị <span id="detRangeText">1-2</span> trong số <span id="detTotalText">2</span> bản ghi
+                </div>
+                <div class="pagination-pages">
+                    <span class="page-item disabled" title="Đầu">&lt;&lt;</span>
+                    <span class="page-item disabled" title="Trước">&lt;</span>
+                    <span class="page-item active">1</span>
+                    <span class="page-item disabled" title="Sau">&gt;</span>
+                    <span class="page-item disabled" title="Cuối">&gt;&gt;</span>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- TIMELINE/STEPPER INTEGRATED VIEW FOR DETAILED CASE -->
+    <div class="card-section" id="caseDetailSection" style="display: none;">
+        <div class="section-title">
+            <span id="caseDetailTitle"><i class="fa-solid fa-circle-info"></i> CHI TIẾT TIẾN TRÌNH GIẢI QUYẾT VỤ
+                VIỆC</span>
+            <button class="btn btn-secondary btn-sm" onclick="closeCaseDetail"><i class="fa-solid fa-arrow-left"></i>
+                Quay lại danh sách</button>
+        </div>
+
+        <div class="timeline-dashboard">
+            <!-- Left: read-only info from Mẫu 01 -->
+            <div class="timeline-left">
+                <h3
+                    style="color: var(--primary-color); font-size: 14px; font-weight: 700; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">
+                    I. THÔNG TIN HỒ SƠ YÊU CẦU BỒI THƯỜNG (MẪU 01/BTNN)
+                </h3>
+                <div id="readOnlyClaimInfo">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Right: Timeline Stepper -->
+            <div class="timeline-right">
+                <h3
+                    style="color: var(--primary-color); font-size: 14px; font-weight: 700; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">
+                    II. TRỤC TIẾN TRÌNH XỬ LÝ NGHIỆP VỤ (STEPPER)
+                </h3>
+
+                <div class="stepper-container" id="timelineStepper">
+                    <!-- Dynamic stepper node structures populated by JS based on current case state -->
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 
     <!-- ============================================== -->
@@ -1560,14 +1733,17 @@
             <div class="section-title">
                 <span><i class="fa-solid fa-cash-register"></i> QUẢN LÝ KINH PHÍ VÀ CHI TRẢ BỒI THƯỜNG</span>
                 <button class="btn btn-success btn-sm" onclick="openModalCreateKinhPhi">
-                    <i class="fa-solid fa-receipt"></i> Lập đề nghị cấp kinh phí bồi thường 
+                    <i class="fa-solid fa-receipt"></i> Lập đề nghị cấp kinh phí bồi thường
                 </button>
             </div>
 
             <!-- WARNING BOX ON 3 YEARS DANGER LIMIT (DIỀU 62.6) -->
-            <div class="sla-tag sla-danger" style="display: flex; width: 100%; padding: 12px; margin-bottom: 15px; border-radius: var(--border-radius-lg); font-size: 12.5px;">
+            <div class="sla-tag sla-danger"
+                style="display: flex; width: 100%; padding: 12px; margin-bottom: 15px; border-radius: var(--border-radius-lg); font-size: 12.5px;">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                <strong>Cảnh báo quản lý thời hạn (Điều 62.6):</strong> Hồ sơ bồi thường quá 3 năm kể từ ngày thông báo nhận tiền mà người bị thiệt hại vẫn chưa nhận thì hệ thống sẽ tự động đề xuất làm thủ tục sung công quỹ và khóa chi trả.
+                <strong>Cảnh báo quản lý thời hạn (Điều 62.6):</strong> Hồ sơ bồi thường quá 3 năm kể từ ngày thông báo
+                nhận tiền mà người bị thiệt hại vẫn chưa nhận thì hệ thống sẽ tự động đề xuất làm thủ tục sung công quỹ
+                và khóa chi trả.
             </div>
 
             <!-- TABLE OF FUNDS -->
@@ -1605,10 +1781,10 @@
                 <div class="section-title">
                     <span><i class="fa-solid fa-people-group"></i> HỘI ĐỒNG XEM XÉT TRÁCH NHIỆM HOÀN TRẢ</span>
                     <button class="btn btn-primary btn-sm" onclick="openModalCreateCouncil">
-                        <i class="fa-solid fa-user-plus"></i> Thành lập Hội đồng mới 
+                        <i class="fa-solid fa-user-plus"></i> Thành lập Hội đồng mới
                     </button>
                 </div>
-                
+
                 <div class="table-container" style="max-height: 45vh; overflow-y: auto;">
                     <table class="custom-table" id="councilsTable">
                         <thead>
@@ -1639,32 +1815,42 @@
                             <span>Lương tháng của công chức (đồng):</span>
                             <span style="color: var(--primary-color);" id="calcSalaryText">12.000.000đ</span>
                         </div>
-                        <input type="range" class="calc-slider" id="calcSalary" min="5000000" max="40000000" step="500000" value="12000000" oninput="runCalculator">
+                        <input type="range" class="calc-slider" id="calcSalary" min="5000000" max="40000000"
+                            step="500000" value="12000000" oninput="runCalculator">
                     </div>
                     <div class="calc-slider-group">
                         <div class="calc-slider-header">
                             <span>Tổng số tiền Nhà nước đã bồi thường (đồng):</span>
                             <span style="color: var(--primary-color);" id="calcAmountText">150.000.000đ</span>
                         </div>
-                        <input type="range" class="calc-slider" id="calcAmount" min="10000000" max="500000000" step="5000000" value="150000000" oninput="runCalculator">
+                        <input type="range" class="calc-slider" id="calcAmount" min="10000000" max="500000000"
+                            step="5000000" value="150000000" oninput="runCalculator">
                     </div>
                     <div class="form-group" style="margin-bottom: 12px;">
-                        <span class="form-label" style="font-weight: 600; color: var(--text-main);">Đánh giá mức độ lỗi của công chức:</span>
+                        <span class="form-label" style="font-weight: 600; color: var(--text-main);">Đánh giá mức độ lỗi
+                            của công chức:</span>
                         <div style="display: flex; gap: 15px; margin-top: 4px;">
-                            <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="calcLoi" value="voi" checked onchange="runCalculator"> Lỗi vô ý (Tối đa 3 tháng lương)
+                            <label
+                                style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="calcLoi" value="voi" checked onchange="runCalculator"> Lỗi vô
+                                ý (Tối đa 3 tháng lương)
                             </label>
-                            <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="calcLoi" value="coi-hanh-chinh" onchange="runCalculator"> Lỗi cố ý, không xử lý hình sự (Tối đa 36 tháng lương)
+                            <label
+                                style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="calcLoi" value="coi-hanh-chinh" onchange="runCalculator"> Lỗi
+                                cố ý, không xử lý hình sự (Tối đa 36 tháng lương)
                             </label>
-                            <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                                <input type="radio" name="calcLoi" value="coi-hinh-su" onchange="runCalculator"> Lỗi cố ý + bị truy cứu hình sự (Bồi thường 100%)
+                            <label
+                                style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                <input type="radio" name="calcLoi" value="coi-hinh-su" onchange="runCalculator"> Lỗi cố
+                                ý + bị truy cứu hình sự (Bồi thường 100%)
                             </label>
                         </div>
                     </div>
-                    
+
                     <div class="calc-result-box">
-                        <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Mức tiền công chức phải hoàn trả tối đa:</span>
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Mức tiền công chức
+                            phải hoàn trả tối đa:</span>
                         <span class="calc-result-val" id="calcResult">36.000.000 đ</span>
                     </div>
                 </div>
@@ -1674,9 +1860,10 @@
         <!-- REPAYMENT MONTHLY Payroll deduction details -->
         <div class="card-section">
             <div class="section-title">
-                <span><i class="fa-solid fa-file-invoice-dollar"></i> CHI TIẾT THU NỘP HOÀN TRẢ QUA LƯƠNG HẰNG THÁNG ( - DIỀU 68)</span>
+                <span><i class="fa-solid fa-file-invoice-dollar"></i> CHI TIẾT THU NỘP HOÀN TRẢ QUA LƯƠNG HẰNG THÁNG ( -
+                    DIỀU 68)</span>
             </div>
-            
+
             <div style="display: grid; grid-template-columns: 280px 1fr; gap: 20px;">
                 <!-- Left: select officer -->
                 <div style="border-right: 1px solid var(--border-color); padding-right: 20px;">
@@ -1697,10 +1884,13 @@
                         </p>
                     </div>
                     <div style="margin-top: 15px;">
-                        <label style="font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                            <input type="checkbox" id="repayPostpone" onchange="togglePostponeRepay(this.checked)"> Đề nghị hoãn hoàn trả (Điều 68.3)
+                        <label
+                            style="font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            <input type="checkbox" id="repayPostpone" onchange="togglePostponeRepay(this.checked)"> Đề
+                            nghị hoãn hoàn trả (Điều 68.3)
                         </label>
-                        <select class="form-control" id="repayPostponeReason" style="display: none; margin-top: 8px;" onchange="updatePostponeReason(this.value)">
+                        <select class="form-control" id="repayPostponeReason" style="display: none; margin-top: 8px;"
+                            onchange="updatePostponeReason(this.value)">
                             <option value="nu-mang-thai">Công chức nữ đang mang thai</option>
                             <option value="nuoi-con-nho">Công chức đang nuôi con dưới 36 tháng tuổi</option>
                         </select>
@@ -1739,7 +1929,8 @@
     <div class="modal" id="modalCreateDetermination">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-file-signature"></i> NHẬP HỒ SƠ YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG </span>
+                <span class="modal-title"><i class="fa-solid fa-file-signature"></i> NHẬP HỒ SƠ YÊU CẦU XÁC ĐỊNH CƠ QUAN
+                    GIẢI QUYẾT BỒI THƯỜNG </span>
                 <button class="modal-close" onclick="closeModal('modalCreateDetermination')">&times;</button>
             </div>
             <div class="modal-body">
@@ -1765,15 +1956,19 @@
                 </div>
                 <div class="form-group">
                     <span class="form-label">Văn bản làm căn cứ yêu cầu bồi thường (nếu có)</span>
-                    <input type="text" class="form-control" id="detDocBase" placeholder="Ví dụ: Bản án số... Quyết định xử phạt số...">
+                    <input type="text" class="form-control" id="detDocBase"
+                        placeholder="Ví dụ: Bản án số... Quyết định xử phạt số...">
                 </div>
                 <div class="form-group">
                     <span class="form-label">Cơ quan bị phản ánh hành vi gây thiệt hại</span>
-                    <input type="text" class="form-control" id="detRefAgency" placeholder="Cơ quan thi hành công vụ sai phạm...">
+                    <input type="text" class="form-control" id="detRefAgency"
+                        placeholder="Cơ quan thi hành công vụ sai phạm...">
                 </div>
                 <div class="form-group">
-                    <span class="form-label">Tóm tắt nội dung phản ánh & Lý do chưa tự xác định được cơ quan giải quyết bồi thường</span>
-                    <textarea class="form-control" id="detContent" style="min-height: 80px;" placeholder="Mô tả vụ việc và lý do..."></textarea>
+                    <span class="form-label">Tóm tắt nội dung phản ánh & Lý do chưa tự xác định được cơ quan giải quyết
+                        bồi thường</span>
+                    <textarea class="form-control" id="detContent" style="min-height: 80px;"
+                        placeholder="Mô tả vụ việc và lý do..."></textarea>
                 </div>
                 <div class="form-group">
                     <span class="form-label">Đính kèm đơn đề nghị xác định cơ quan và tài liệu chứng minh</span>
@@ -1782,7 +1977,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('modalCreateDetermination')">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="saveNewDetermination"><i class="fa-solid fa-floppy-disk"></i> Tiếp nhận hồ sơ yêu cầu</button>
+                <button class="btn btn-primary" onclick="saveNewDetermination"><i class="fa-solid fa-floppy-disk"></i>
+                    Tiếp nhận hồ sơ yêu cầu</button>
             </div>
         </div>
     </div>
@@ -1791,50 +1987,197 @@
     <div class="modal" id="modalProcessDetermination">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-balance-scale"></i> XỬ LÝ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG ( -)</span>
+                <span class="modal-title"><i class="fa-solid fa-balance-scale"></i> XỬ LÝ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT
+                    BỒI THƯỜNG ( -)</span>
                 <button class="modal-close" onclick="closeModal('modalProcessDetermination')">&times;</button>
             </div>
             <div class="modal-body">
-                <div style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: 12px; border-radius: var(--border-radius-md); margin-bottom: 15px; font-size: 13px; line-height: 1.6;">
-                    <strong style="color: var(--primary-color);">Thông tin yêu cầu xác định:</strong>
-                    <div class="grid-2-cols" style="margin-top: 8px;">
-                        <p><strong>Người nộp đơn:</strong> <span id="lblDetNYC"></span></p>
-                        <p><strong>Số CCCD:</strong> <span id="lblDetCard"></span></p>
-                        <p><strong>Địa chỉ:</strong> <span id="lblDetAddress"></span></p>
-                        <p><strong>Văn bản căn cứ:</strong> <span id="lblDetDoc"></span></p>
+                <div id="detProcEditForm">
+                    <div
+                        style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: 12px; border-radius: var(--border-radius-md); margin-bottom: 15px; font-size: 13px; line-height: 1.6;">
+                        <strong style="color: var(--primary-color);">Thông tin yêu cầu xác định:</strong>
+                        <div class="grid-2-cols" style="margin-top: 8px;">
+                            <p><strong>Người nộp đơn:</strong> <span id="lblDetNYC"></span></p>
+                            <p><strong>Số CCCD:</strong> <span id="lblDetCard"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span id="lblDetAddress"></span></p>
+                            <p><strong>Văn bản căn cứ:</strong> <span id="lblDetDoc"></span></p>
+                        </div>
+                        <p style="margin-top: 8px;"><strong>Nội dung phản ánh:</strong> <span id="lblDetContent"
+                                style="color: var(--text-muted);"></span></p>
                     </div>
-                    <p style="margin-top: 8px;"><strong>Nội dung phản ánh:</strong> <span id="lblDetContent" style="color: var(--text-muted);"></span></p>
+
+                    <div class="info-group-title">NỘI DUNG XÁC ĐỊNH THẨM QUYỀN (DIỀU 40 LUẬT TNBTCNN)</div>
+                    <div class="form-group">
+                        <span class="form-label">Căn cứ pháp lý xác định (Điều 40)</span>
+                        <select class="form-control" id="detProcBasis">
+                            <option value="1">Khoản 1 - Trường hợp cơ quan bị tách, nhập, giải thể</option>
+                            <option value="2">Khoản 2 - Có sự tham gia của nhiều cơ quan cùng gây thiệt hại</option>
+                            <option value="3">Khoản 3 - Vụ việc phức tạp, chồng chéo thẩm quyền hành chính và tố tụng
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Chỉ định Cơ quan có thẩm quyền giải quyết bồi thường</span>
+                        <select class="form-control" id="detProcTargetAgency">
+                            <option value="Sở Tư pháp TP. Hà Nội">Sở Tư pháp TP. Hà Nội</option>
+                            <option value="UBND quận Cầu Giấy">UBND quận Cầu Giấy</option>
+                            <option value="Cục Thi hành án dân sự tỉnh Lâm Đồng">Cục Thi hành án dân sự tỉnh Lâm Đồng
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Nhận định lý do xác định chi tiết</span>
+                        <textarea class="form-control" id="detProcReason" style="min-height: 80px;"
+                            placeholder="Lập luận, phân tích lý do chỉ định cơ quan giải quyết này..."></textarea>
+                    </div>
+
+                    <div class="info-group-title" style="margin-top: 15px;">THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI</div>
+                    <div class="grid-2-cols" style="margin-bottom: 15px;">
+                        <div class="form-group">
+                            <span class="form-label">Họ và tên cán bộ gây thiệt hại <span
+                                    style="color: red;">*</span></span>
+                            <input type="text" class="form-control" id="detProcOfficerName"
+                                placeholder="Nhập họ và tên...">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Chức vụ tại thời điểm gây thiệt hại <span
+                                    style="color: red;">*</span></span>
+                            <input type="text" class="form-control" id="detProcOfficerPosition"
+                                placeholder="Ví dụ: Điều tra viên sơ cấp, Kiểm sát viên...">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <span class="form-label">Cơ quan công tác tại thời điểm gây thiệt hại <span
+                                style="color: red;">*</span></span>
+                        <input type="text" class="form-control" id="detProcOfficerAgency"
+                            placeholder="Nhập cơ quan công tác...">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <span class="form-label">Tình trạng công tác hiện tại <span style="color: red;">*</span></span>
+                        <select class="form-control" id="detProcOfficerStatus"
+                            onchange="toggleDetProcOfficerCurrentStatus()">
+                            <option value="Vẫn công tác tại đơn vị cũ">Vẫn công tác tại đơn vị cũ</option>
+                            <option value="Đã chuyển công tác">Đã chuyển công tác</option>
+                            <option value="Đã nghỉ hưu / nghỉ việc">Đã nghỉ hưu / nghỉ việc</option>
+                        </select>
+                    </div>
+                    <div class="grid-2-cols" id="detProcOfficerCurrentGroup"
+                        style="display: none; margin-bottom: 15px;">
+                        <div class="form-group">
+                            <span class="form-label">Cơ quan công tác hiện tại <span style="color: red;">*</span></span>
+                            <input type="text" class="form-control" id="detProcOfficerCurrentAgency"
+                                placeholder="Nhập cơ quan hiện tại...">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Chức vụ hiện tại <span style="color: red;">*</span></span>
+                            <input type="text" class="form-control" id="detProcOfficerCurrentPosition"
+                                placeholder="Nhập chức vụ hiện tại...">
+                        </div>
+                    </div>
+                    <script>
+                        function toggleDetProcOfficerCurrentStatus() {
+                            const status = document.getElementById('detProcOfficerStatus').value;
+                            const group = document.getElementById('detProcOfficerCurrentGroup');
+                            if (status === 'Đã chuyển công tác') {
+                                group.style.display = 'grid';
+                            } else {
+                                group.style.display = 'none';
+                            }
+                        }
+                    </script>
+
+                    <div class="form-group">
+                        <span class="form-label">Tải lên file scan dự thảo Quyết định xác định cơ quan</span>
+                        <input type="file" class="form-control">
+                    </div>
                 </div>
 
-                <div class="info-group-title">NỘI DUNG XÁC ĐỊNH THẨM QUYỀN (DIỀU 40 LUẬT TNBTCNN)</div>
-                <div class="form-group">
-                    <span class="form-label">Căn cứ pháp lý xác định (Điều 40)</span>
-                    <select class="form-control" id="detProcBasis">
-                        <option value="1">Khoản 1 - Trường hợp cơ quan bị tách, nhập, giải thể</option>
-                        <option value="2">Khoản 2 - Có sự tham gia của nhiều cơ quan cùng gây thiệt hại</option>
-                        <option value="3">Khoản 3 - Vụ việc phức tạp, chồng chéo thẩm quyền hành chính và tố tụng</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Chỉ định Cơ quan có thẩm quyền giải quyết bồi thường</span>
-                    <select class="form-control" id="detProcTargetAgency">
-                        <option value="Sở Tư pháp TP. Hà Nội">Sở Tư pháp TP. Hà Nội</option>
-                        <option value="UBND quận Cầu Giấy">UBND quận Cầu Giấy</option>
-                        <option value="Cục Thi hành án dân sự tỉnh Lâm Đồng">Cục Thi hành án dân sự tỉnh Lâm Đồng</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Nhận định lý do xác định chi tiết</span>
-                    <textarea class="form-control" id="detProcReason" style="min-height: 80px;" placeholder="Lập luận, phân tích lý do chỉ định cơ quan giải quyết này..."></textarea>
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Tải lên file scan dự thảo Quyết định xác định cơ quan</span>
-                    <input type="file" class="form-control">
+                <!-- READ-ONLY COMPLETED VIEW (Hidden by default) -->
+                <div id="detProcReadOnlyView" style="display: none; font-size: 13px; line-height: 1.8;">
+                    <div class="info-group-title">Khối 1: Thông tin xác định cơ quan giải quyết bồi thường</div>
+                    <div
+                        style="background-color: white; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--border-radius-md);">
+                        <div class="grid-2-cols" style="column-gap: 30px; row-gap: 8px;">
+                            <div style="display: flex; align-items: baseline;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Mã yêu cầu:</strong>
+                                <span style="font-weight: 600; color: var(--primary-color);"
+                                    id="roDetCode">XD-2026-002</span></div>
+                            <div style="display: flex; align-items: baseline;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Họ tên người yêu
+                                    cầu:</strong> <span style="font-weight: 600;" id="roDetNYC">Trần Thị Bích</span>
+                            </div>
+
+                            <div style="display: flex; align-items: baseline;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Số điện
+                                    thoại:</strong> <span id="roDetPhone">0904888999</span></div>
+                            <div style="display: flex; align-items: baseline;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Lĩnh vực phát sinh
+                                    thiệt hại:</strong> <span style="font-weight: 600; color: var(--danger-color);"
+                                    id="roDetField">TỐ TỤNG HÌNH SỰ</span></div>
+
+                            <div style="display: flex; align-items: baseline; grid-column: span 2;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Hành vi gây thiệt
+                                    hại:</strong> <span id="roDetAction" style="flex: 1;">Bị tạm giam giữ trái pháp luật
+                                    của Công an tỉnh Lâm Đồng làm suy sụp sức khỏe nghiêm trọng.</span></div>
+
+                            <div
+                                style="display: flex; align-items: baseline; grid-column: span 2; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color);">
+                                <strong style="width: 250px; color: var(--primary-color); flex-shrink: 0;">Cơ quan được
+                                    chỉ định giải quyết:</strong> <span
+                                    style="font-weight: 700; color: var(--primary-hover);" id="roDetTargetAgency">Cục
+                                    Thi hành án dân sự tỉnh Lâm Đồng</span>
+                            </div>
+
+                            <div style="display: flex; align-items: baseline; grid-column: span 2;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Cơ quan công tác lúc
+                                    gây thiệt hại:</strong> <span id="roDetOfficerAgency">Cơ quan Cảnh sát điều tra Công
+                                    an tỉnh Lâm Đồng</span></div>
+
+                            <div style="display: flex; align-items: baseline;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Cán bộ trực tiếp gây
+                                    thiệt hại:</strong> <span style="font-weight: 600;" id="roDetOfficerName">Nguyễn Văn
+                                    Đạt</span></div>
+                            <div style="display: flex; align-items: baseline;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Chức vụ lúc gây
+                                    thiệt hại:</strong> <span id="roDetOfficerPosition">Điều tra viên sơ cấp</span>
+                            </div>
+
+                            <div style="display: flex; align-items: baseline;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Tình trạng công tác
+                                    hiện tại:</strong> <span id="roDetOfficerStatus">Đã chuyển công tác</span></div>
+                            <div style="display: flex; align-items: baseline;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Cơ quan công tác
+                                    hiện tại:</strong> <span id="roDetOfficerCurrentAgency">Phòng Cảnh sát hình sự
+                                    (PC02) - Công an thành phố Đà Nẵng</span></div>
+
+                            <div style="display: flex; align-items: baseline; grid-column: span 2;"><strong
+                                    style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Chức vụ hiện
+                                    tại:</strong> <span id="roDetOfficerCurrentPosition">Phó đội trưởng Đội Trọng
+                                    án</span></div>
+
+                            <div
+                                style="display: flex; align-items: baseline; grid-column: span 2; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color);">
+                                <strong style="width: 250px; color: var(--text-muted); flex-shrink: 0;">Quyết định xác
+                                    định cơ quan đính kèm:</strong>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+                                    <span id="roDetFile"
+                                        style="font-weight: 500; color: #1E293B;">Quyet_dinh_xac_minh_so_12.pdf</span>
+                                    <span style="color: var(--text-muted); font-size: 12px;">(1.2 MB)</span>
+                                    <a href="#" class="action-link view-link"
+                                        style="margin-left: 8px; text-decoration: none; color: var(--secondary-color); font-weight: 600;"><i
+                                            class="fa-solid fa-up-right-from-square"></i> Xem file</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('modalProcessDetermination')">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="saveProcessDetermination"><i class="fa-solid fa-file-signature"></i> Ký số & Ban hành Quyết định chuyển giao </button>
+            <div class="modal-footer" id="detProcModalFooter">
+                <button class="btn btn-secondary" onclick="closeModal('modalProcessDetermination')"
+                    id="btnDetProcCancel">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="saveProcessDetermination" id="btnDetProcSave"><i
+                        class="fa-solid fa-file-signature"></i> Ký số & Ban hành Quyết định chuyển giao </button>
             </div>
         </div>
     </div>
@@ -1844,7 +2187,8 @@
     <div class="modal" id="modalCreateKinhPhi">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-file-invoice-dollar"></i> LẬP ĐỀ NGHỊ CẤP KINH PHÍ BỒI THƯỜNG CHÍNH THỨC </span>
+                <span class="modal-title"><i class="fa-solid fa-file-invoice-dollar"></i> LẬP ĐỀ NGHỊ CẤP KINH PHÍ BỒI
+                    THƯỜNG CHÍNH THỨC </span>
                 <button class="modal-close" onclick="closeModal('modalCreateKinhPhi')">&times;</button>
             </div>
             <div class="modal-body">
@@ -1856,19 +2200,24 @@
                     </select>
                 </div>
 
-                <div id="kpFormFields" style="display: none; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;">
+                <div id="kpFormFields"
+                    style="display: none; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;">
                     <div class="grid-3-cols">
                         <div class="form-group">
                             <span class="form-label">Tổng tiền bồi thường chính thức (đồng)</span>
                             <input type="text" class="form-control" id="kpTotalAmount" readonly>
                         </div>
                         <div class="form-group">
-                            <span class="form-label" style="color: var(--accent-hover);">Số tiền đã tạm ứng trước đó (khấu trừ)</span>
-                            <input type="text" class="form-control" id="kpOffsetAmount" style="font-weight: bold; color: var(--accent-hover);" readonly>
+                            <span class="form-label" style="color: var(--accent-hover);">Số tiền đã tạm ứng trước đó
+                                (khấu trừ)</span>
+                            <input type="text" class="form-control" id="kpOffsetAmount"
+                                style="font-weight: bold; color: var(--accent-hover);" readonly>
                         </div>
                         <div class="form-group">
-                            <span class="form-label" style="color: var(--success-color);">Số tiền đề nghị cấp bổ sung thực tế</span>
-                            <input type="text" class="form-control" id="kpFinalAmount" style="font-weight: bold; color: var(--success-color);" readonly>
+                            <span class="form-label" style="color: var(--success-color);">Số tiền đề nghị cấp bổ sung
+                                thực tế</span>
+                            <input type="text" class="form-control" id="kpFinalAmount"
+                                style="font-weight: bold; color: var(--success-color);" readonly>
                         </div>
                     </div>
 
@@ -1879,7 +2228,8 @@
                         </div>
                         <div class="form-group">
                             <span class="form-label">Thời hạn gửi hồ sơ tài chính (SLA - 2 ngày)</span>
-                            <input type="text" class="form-control" id="kpSlaTime" value="08/07/2026 - Còn lại 2 ngày" disabled>
+                            <input type="text" class="form-control" id="kpSlaTime" value="08/07/2026 - Còn lại 2 ngày"
+                                disabled>
                         </div>
                     </div>
 
@@ -1891,7 +2241,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('modalCreateKinhPhi')">Đóng</button>
-                <button class="btn btn-success" id="kpSubmitBtn" onclick="saveNewKinhPhi" disabled><i class="fa-solid fa-share-from-square"></i> Trình duyệt đề nghị cấp kinh phí</button>
+                <button class="btn btn-success" id="kpSubmitBtn" onclick="saveNewKinhPhi" disabled><i
+                        class="fa-solid fa-share-from-square"></i> Trình duyệt đề nghị cấp kinh phí</button>
             </div>
         </div>
     </div>
@@ -1900,7 +2251,8 @@
     <div class="modal" id="modalCreateCouncil">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title"><i class="fa-solid fa-users-gear"></i> THÀNH LẬP HỘI ĐỒNG XEM XÉT TRÁCH NHIỆM HOÀN TRẢ </span>
+                <span class="modal-title"><i class="fa-solid fa-users-gear"></i> THÀNH LẬP HỘI ĐỒNG XEM XÉT TRÁCH NHIỆM
+                    HOÀN TRẢ </span>
                 <button class="modal-close" onclick="closeModal('modalCreateCouncil')">&times;</button>
             </div>
             <div class="modal-body">
@@ -1910,26 +2262,30 @@
                         <option value="HS1">Nguyễn Văn A - Trấn áp oan sai 150.000.000đ (Chi xong: 02/07/2026)</option>
                     </select>
                 </div>
-                
+
                 <div class="info-group-title">PHÂN CÔNG THÀNH PHẦN HỘI ĐỒNG (5 VAI TRÒ BẮT BUỘC)</div>
                 <div class="grid-2-cols">
                     <div class="form-group">
                         <span class="form-label">Chủ tịch Hội đồng hoàn trả (Lãnh đạo cơ quan)</span>
-                        <input type="text" class="form-control" id="councilBoss" value="Nguyễn Hoàng Nam - Phó Giám đốc Sở">
+                        <input type="text" class="form-control" id="councilBoss"
+                            value="Nguyễn Hoàng Nam - Phó Giám đốc Sở">
                     </div>
                     <div class="form-group">
                         <span class="form-label">Ủy viên đại diện tổ chức công đoàn</span>
-                        <input type="text" class="form-control" id="councilUnion" value="Lê Thị Mai - Chủ tịch Công đoàn">
+                        <input type="text" class="form-control" id="councilUnion"
+                            value="Lê Thị Mai - Chủ tịch Công đoàn">
                     </div>
                 </div>
                 <div class="grid-2-cols">
                     <div class="form-group">
                         <span class="form-label">Ủy viên đại diện đơn vị tài chính / kế toán</span>
-                        <input type="text" class="form-control" id="councilFin" value="Phạm Văn Dũng - Trưởng phòng Kế hoạch Tài chính">
+                        <input type="text" class="form-control" id="councilFin"
+                            value="Phạm Văn Dũng - Trưởng phòng Kế hoạch Tài chính">
                     </div>
                     <div class="form-group">
                         <span class="form-label">Ủy viên đại diện đơn vị quản lý cán bộ trực tiếp</span>
-                        <input type="text" class="form-control" id="councilManage" value="Hoàng Minh Tuấn - Trưởng phòng Tổ chức cán bộ">
+                        <input type="text" class="form-control" id="councilManage"
+                            value="Hoàng Minh Tuấn - Trưởng phòng Tổ chức cán bộ">
                     </div>
                 </div>
                 <div class="form-group">
@@ -1944,7 +2300,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('modalCreateCouncil')">Đóng</button>
-                <button class="btn btn-primary" onclick="saveNewCouncil"><i class="fa-solid fa-users-line"></i> Ban hành quyết định thành lập hội đồng</button>
+                <button class="btn btn-primary" onclick="saveNewCouncil"><i class="fa-solid fa-users-line"></i> Ban hành
+                    quyết định thành lập hội đồng</button>
             </div>
         </div>
     </div>
@@ -1953,7 +2310,8 @@
     <div class="modal" id="modalCreateRequest">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title" id="reqModalTitle"><i class="fa-solid fa-circle-question"></i> YÊU CẦU BỔ SUNG / LÀM RÕ HỒ SƠ</span>
+                <span class="modal-title" id="reqModalTitle"><i class="fa-solid fa-circle-question"></i> YÊU CẦU BỔ SUNG
+                    / LÀM RÕ HỒ SƠ</span>
                 <button class="modal-close" onclick="closeModal('modalCreateRequest')">&times;</button>
             </div>
             <div class="modal-body">
@@ -1969,11 +2327,16 @@
                     <div class="form-group">
                         <span class="form-label">Checklist danh mục giấy tờ thiếu cần bổ sung:</span>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
-                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers" value="CCCD"> Giấy tờ chứng minh nhân thân</label>
-                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers" value="VBCanCu"> Văn bản làm căn cứ bồi thường</label>
-                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers" value="TaiLieuThietHai"> Tài liệu chứng minh thiệt hại tài sản</label>
-                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers" value="ChungTuChiPhi"> Hóa đơn chi phí khám chữa bệnh</label>
-                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers" value="GiayUyQuyen"> Giấy ủy quyền hợp pháp</label>
+                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers" value="CCCD"> Giấy
+                                tờ chứng minh nhân thân</label>
+                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers" value="VBCanCu">
+                                Văn bản làm căn cứ bồi thường</label>
+                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers"
+                                    value="TaiLieuThietHai"> Tài liệu chứng minh thiệt hại tài sản</label>
+                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers"
+                                    value="ChungTuChiPhi"> Hóa đơn chi phí khám chữa bệnh</label>
+                            <label style="font-size:13px;"><input type="checkbox" name="reqBsPapers"
+                                    value="GiayUyQuyen"> Giấy ủy quyền hợp pháp</label>
                         </div>
                     </div>
                 </div>
@@ -1989,20 +2352,23 @@
                         </div>
                         <div class="form-group">
                             <span class="form-label">Văn bản cần làm rõ</span>
-                            <input type="text" class="form-control" id="reqDocRef" placeholder="Số hiệu văn bản cần làm rõ...">
+                            <input type="text" class="form-control" id="reqDocRef"
+                                placeholder="Số hiệu văn bản cần làm rõ...">
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <span class="form-label">Nội dung yêu cầu chi tiết</span>
-                    <textarea class="form-control" id="reqContent" style="min-height: 70px;" placeholder="Nhập chi tiết nội dung cần làm rõ/bổ sung..."></textarea>
+                    <textarea class="form-control" id="reqContent" style="min-height: 70px;"
+                        placeholder="Nhập chi tiết nội dung cần làm rõ/bổ sung..."></textarea>
                 </div>
 
                 <div class="grid-2-cols">
                     <div class="form-group">
                         <span class="form-label">Thời hạn phản hồi tối đa (SLA)</span>
-                        <input type="text" class="form-control" id="reqSlaText" value="08/07/2026 - Còn lại 5 ngày làm việc" disabled>
+                        <input type="text" class="form-control" id="reqSlaText"
+                            value="08/07/2026 - Còn lại 5 ngày làm việc" disabled>
                     </div>
                     <div class="form-group">
                         <span class="form-label">Đính kèm văn bản yêu cầu chính thức</span>
@@ -2012,7 +2378,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('modalCreateRequest')">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="saveNewRequest"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>
+                <button class="btn btn-primary" onclick="saveNewRequest"><i class="fa-solid fa-paper-plane"></i> Gửi yêu
+                    cầu</button>
             </div>
         </div>
     </div>
@@ -2048,18 +2415,18 @@
                 id: "DET2",
                 code: "XD-2026-002",
                 date: "30/06/2026",
-                nyc: "Phạm Thị Dung",
+                nyc: "Trần Thị Bích",
                 cardType: "Cá nhân",
                 cardNo: "002094009923",
                 address: "Số 88 Hàng Gai, Hoàn Kiếm, Hà Nội",
-                phone: "0901112223",
+                phone: "0904888999",
                 role: "Người bị thiệt hại",
-                refAgency: "UBND quận Hoàn Kiếm và UBND quận Ba Đình",
-                content: "Quyết định cưỡng chế chồng chéo địa giới hành chính liên quận làm phong tỏa mặt bằng kinh doanh.",
-                status: "Đang xử lý",
-                determinedAgency: "",
-                reason: "",
-                docBase: "Quyết định cưỡng chế số 104/QD-CC"
+                refAgency: "Công an tỉnh Lâm Đồng",
+                content: "Bị tạm giam giữ trái pháp luật của Công an tỉnh Lâm Đồng làm suy sụp sức khỏe nghiêm trọng.",
+                status: "Hoàn thành",
+                determinedAgency: "Cục Thi hành án dân sự tỉnh Lâm Đồng",
+                reason: "Thuộc thẩm quyền thi hành án",
+                docBase: "Quyết định xác minh số 12"
             }
         ];
 
@@ -2081,6 +2448,12 @@
                 docBase: "Quyết định xử phạt trái luật số 12/QD-XPVHC ngày 10/02/2026 của UBND quận Cầu Giấy",
                 hanhVi: "Cưỡng chế tháo dỡ nhà ở khi chưa có quyết định hành chính có hiệu lực pháp luật.",
                 nhanQua: "Việc đập phá công trình gây sụp đổ căn nhà và hư hỏng toàn bộ tài sản bên trong.",
+                officerName: "Đỗ Xuân Tài",
+                officerPosition: "Chủ tịch UBND Phường",
+                officerAgency: "UBND Phường Dịch Vọng Hậu",
+                officerStatus: "Vẫn công tác tại đơn vị cũ",
+                officerCurrentAgency: "UBND Phường Dịch Vọng Hậu",
+                officerCurrentPosition: "Chủ tịch UBND Phường",
                 status: "Đang thương lượng",
                 totalNum: 150000000,
                 advanceNum: 30000000,
@@ -2223,11 +2596,11 @@
         document.addEventListener('DOMContentLoaded',  => {
             flatpickr("#searchFromDate", { dateFormat: "d/m/Y", allowInput: true });
             flatpickr("#searchToDate", { dateFormat: "d/m/Y", allowInput: true });
-            
+
             // Set query parameters if nav tabs matched
             const params = new URLSearchParams(window.location.search);
             const tabParam = params.get('tab');
-            if (tabParam) {
+            if(tabParam) {
                 switchMainTab(tabParam);
             } else {
                 renderClaimsTable;
@@ -2328,7 +2701,7 @@
         function applyDetFilter {
             renderDetTable;
         }
-        
+
         function clearDetFilter {
             document.getElementById('searchDetCode').value = '';
             document.getElementById('searchDetName').value = '';
@@ -2357,7 +2730,7 @@
 
             const newId = "DET" + (determinationList.length + 1);
             const newCode = "XD-2026-0" + (determinationList.length + 1);
-            
+
             determinationList.unshift({
                 id: newId,
                 code: newCode,
@@ -2395,7 +2768,7 @@
             document.getElementById('lblDetContent').innerText = det.content;
 
             document.getElementById('detProcReason').value = "Căn cứ vào thẩm quyền của cơ quan hành chính nhà nước cấp quận theo Điều 33 Luật TNBTCNN 2017...";
-            
+
             openModal('modalProcessDetermination');
         }
 
@@ -2500,7 +2873,7 @@
             tbody.innerHTML = '';
 
             let filtered = [...claimsList];
-            
+
             // Apply simple search filtering
             const searchCode = document.getElementById('searchCode').value.trim.toLowerCase;
             const searchName = document.getElementById('searchName').value.trim.toLowerCase;
@@ -2519,10 +2892,10 @@
             // Pagination calculation
             const total = filtered.length;
             document.getElementById('claimsTotalCount').innerText = total;
-            
+
             const startIdx = (currentClaimsPage - 1) * claimsPageSize;
             const endIdx = Math.min(startIdx + claimsPageSize, total);
-            
+
             if (total === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy hồ sơ nào phù hợp</td></tr>`;
                 document.getElementById('claimsCurrentRange').innerText = "0-0";
@@ -2559,7 +2932,7 @@
                 // FIXED SLOT ACTION COLUMN (Rule 3)
                 const currentRole = document.getElementById('roleSelector').value;
                 const showDuyetBtn = currentRole === 'thu-truong' && item.status === 'Chưa thụ lý';
-                
+
                 let btnActionHtml = '';
                 if (showDuyetBtn) {
                     btnActionHtml = `<button class="icon-btn edit" title="Thụ lý hồ sơ" onclick="event.stopPropagation; triggerThuly('${item.id}')"><i class="fa-solid fa-square-check"></i></button>`;
@@ -2636,10 +3009,10 @@
 
             document.getElementById('caseDetailSection').style.display = 'block';
             document.getElementById('caseDetailTitle').innerHTML = `<i class="fa-solid fa-circle-info"></i> CHI TIẾT TIẾN TRÌNH VỤ VIỆC: ${claim.nyc} (${claim.code})`;
-            
+
             // Populate Read Only Claim details
             const detailDiv = document.getElementById('readOnlyClaimInfo');
-            
+
             // Render file list with Rule 7: link "Xem file"
             let filesHtml = '';
             claim.files.forEach(f => {
@@ -2657,7 +3030,18 @@
                     <div style="background-color:#F8FAFC; border:1px dashed var(--border-color); padding:10px; border-radius:var(--border-radius-md); margin:12px 0;">
                         <strong style="color:var(--primary-color);">Tóm tắt hành vi gây thiệt hại:</strong>
                         <p style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">${claim.hanhVi}</p>
-                        <strong style="color:var(--primary-color); display:block; margin-top:8px;">Thiệt hại yêu cầu:</strong>
+                        
+                        <div style="font-weight:700; color:var(--primary-color); border-top:1px dashed var(--border-color); padding-top:8px; margin-top:12px;">THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI:</div>
+                        <div class="grid-2-cols" style="font-size:12.5px; margin-top:4px; gap:4px;">
+                            <div><strong style="color:var(--text-muted);">Cán bộ trực tiếp:</strong> <span style="font-weight:600; color:var(--text-main);">${claim.officerName || 'Đỗ Xuân Tài'}</span></div>
+                            <div><strong style="color:var(--text-muted);">Chức vụ lúc đó:</strong> ${claim.officerPosition || 'Chủ tịch UBND Phường'}</div>
+                            <div><strong style="color:var(--text-muted);">Cơ quan lúc đó:</strong> ${claim.officerAgency || 'UBND Phường Dịch Vọng Hậu'}</div>
+                            <div><strong style="color:var(--text-muted);">Tình trạng hiện tại:</strong> ${claim.officerStatus || 'Vẫn công tác tại đơn vị cũ'}</div>
+                            <div><strong style="color:var(--text-muted);">Cơ quan hiện tại:</strong> ${claim.officerCurrentAgency || 'UBND Phường Dịch Vọng Hậu'}</div>
+                            <div><strong style="color:var(--text-muted);">Chức vụ hiện tại:</strong> ${claim.officerCurrentPosition || 'Chủ tịch UBND Phường'}</div>
+                        </div>
+
+                        <strong style="color:var(--primary-color); display:block; margin-top:12px; border-top:1px dashed var(--border-color); padding-top:8px;">Thiệt hại yêu cầu:</strong>
                         <p style="font-weight:600; color:var(--danger-color); font-size:13.5px; margin-top:4px;">${claim.totalNum.toLocaleString('vi-VN')} đồng</p>
                     </div>
 
@@ -2674,7 +3058,7 @@
             claim.timeline.forEach((step, idx) => {
                 const node = document.createElement('div');
                 node.className = `step-node ${step.status}`;
-                
+
                 // If paused due to Tạm đình chỉ (Rule F)
                 if (claim.postponed && claim.postponedStep === step.title) {
                     node.className = `step-node paused`;
@@ -2925,11 +3309,11 @@
 
             claimActiveDocs.forEach((doc, idx) => {
                 const tr = document.createElement('tr');
-                
-                let badge = doc.required ? 
-                    `<span class="badge" style="background-color: var(--danger-color); color: white; padding: 2px 6px; font-size: 11px; font-weight: bold;">Bắt buộc</span>` : 
+
+                let badge = doc.required ?
+                    `<span class="badge" style="background-color: var(--danger-color); color: white; padding: 2px 6px; font-size: 11px; font-weight: bold;">Bắt buộc</span>` :
                     `<span class="badge" style="background-color: #64748B; color: white; padding: 2px 6px; font-size: 11px; font-weight: bold;">Tùy chọn</span>`;
-                
+
                 let fileSlot = '';
                 if (doc.file) {
                     fileSlot = `
@@ -3138,7 +3522,7 @@
 
             const newId = "HS" + (claimsList.length + 1);
             const newCode = "BT-2026-0" + (claimsList.length + 1);
-            
+
             claimsList.unshift({
                 id: newId,
                 code: newCode,
@@ -3192,7 +3576,7 @@
                 // Offset calculation ( check details)
                 const totalClaim = item.totalNum;
                 const advance = item.advanceNum || 0;
-                
+
                 // Show actual balance still unpaid
                 const paidAmt = item.status === 'Đã có quyết định' ? (totalClaim - advance) : 0;
                 const statusColor = item.status === 'Đã có quyết định' ? 'badge-success' : 'badge-warning';
@@ -3226,7 +3610,7 @@
         function updateClaimDropdowns {
             const sel = document.getElementById('kpSelectCase');
             sel.innerHTML = '<option value="">-- Vui lòng chọn hồ sơ bồi thường --</option>';
-            
+
             // Only suggest cases that have been decided but not yet fully funded
             claimsList.filter(c => c.status === 'Đã có quyết định').forEach(c => {
                 sel.innerHTML += `<option value="${c.id}">${c.code} - ${c.nyc} (${c.totalNum.toLocaleString('vi-VN')}đ)</option>`;
@@ -3274,7 +3658,7 @@
         function renderCouncilsTable {
             const tbody = document.getElementById('councilsTableBody');
             tbody.innerHTML = '';
-            
+
             councilsList.forEach((hd, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -3339,7 +3723,7 @@
             tbody.innerHTML = '';
 
             const list = repaymentList[key] || [];
-            
+
             // Recalculate meta texts
             const salary = key === 'HST1' ? 12000000 : 25000000;
             const deduct = salary * 0.2; // 20%
@@ -3355,7 +3739,7 @@
                 const tr = document.createElement('tr');
                 const isPaid = item.status === 'Đã thu nộp';
                 const statusColor = isPaid ? 'badge-success' : 'badge-warning';
-                
+
                 tr.innerHTML = `
                     <td style="text-align:center;">${item.month}</td>
                     <td style="text-align:right; font-weight:600;">${item.amount.toLocaleString('vi-VN')} đ</td>
@@ -3420,7 +3804,7 @@
             // Show the inline form panel
             const formPanel = document.getElementById('inlineClaimFormPanel');
             formPanel.style.display = 'flex';
-            
+
             // Reset to first tab & default role
             document.getElementById('claimNYCRole').value = "1";
             renderDynamicRequiredDocuments("1");
@@ -3546,7 +3930,7 @@
                         // Status & payment info
                         const isDecided = item.status === 'Đã có quyết định';
                         const payoutAmt = isDecided ? item.totalNum.toLocaleString('vi-VN') + " đ" : "-";
-                        
+
                         tr.innerHTML = `
                             <td style="text-align: center;">${index + 1}</td>
                             <td><strong>${item.nyc}</strong></td>
@@ -3687,22 +4071,22 @@
         // VIETNAMESE CURRENCY NUMBER TO WORDS CONVERTER
         function convertNumberToVietnameseWords(number) {
             if (number === 0) return "Không";
-            
+
             const units = ["", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
             const classes = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ"];
-            
+
             let result = "";
             let classIdx = 0;
-            
+
             while (number > 0) {
                 let ClassVal = number % 1000;
                 number = Math.floor(number / 1000);
-                
+
                 if (ClassVal > 0) {
                     let hundred = Math.floor(ClassVal / 100);
                     let ten = Math.floor((ClassVal % 100) / 10);
                     let unit = ClassVal % 10;
-                    
+
                     let part = "";
                     if (hundred > 0 || result !== "") {
                         part += units[hundred] + " trăm ";
@@ -3713,18 +4097,18 @@
                     } else if (hundred > 0 && unit > 0) {
                         part += "linh ";
                     }
-                    
+
                     if (unit > 0) {
                         if (unit === 1 && ten > 1) part += "mốt ";
                         else if (unit === 5 && ten > 0) part += "lăm ";
                         else part += units[unit] + " ";
                     }
-                    
+
                     result = part + classes[classIdx] + " " + result;
                 }
                 classIdx++;
             }
-            
+
             result = result.trim;
             return result.charAt(0).toUpperCase + result.slice(1) + " đồng";
         }

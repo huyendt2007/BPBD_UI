@@ -396,6 +396,52 @@
                 <textarea class="form-control" id="procReason" rows="4" placeholder="Nhập lập luận, phân tích lý do chỉ định cơ quan giải quyết này dựa trên hồ sơ xác minh..."></textarea>
             </div>
 
+            <!-- ADDED: THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI -->
+            <div class="sub-section-title" style="margin-top: 20px;">THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI</div>
+            <div class="grid-2" style="margin-bottom: 15px;">
+                <div class="form-group">
+                    <span class="form-label">Họ và tên cán bộ gây thiệt hại<span class="required">*</span></span>
+                    <input type="text" class="form-control" id="procOfficerName" placeholder="Nhập họ và tên cán bộ...">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Chức vụ tại thời điểm gây thiệt hại<span class="required">*</span></span>
+                    <input type="text" class="form-control" id="procOfficerPosition" placeholder="Ví dụ: Điều tra viên sơ cấp...">
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Cơ quan công tác tại thời điểm gây thiệt hại<span class="required">*</span></span>
+                <input type="text" class="form-control" id="procOfficerAgency" placeholder="Nhập cơ quan công tác...">
+            </div>
+            <div class="form-group">
+                <span class="form-label">Tình trạng công tác hiện tại<span class="required">*</span></span>
+                <select class="form-control" id="procOfficerStatus" onchange="toggleProcOfficerCurrentStatus()">
+                    <option value="Vẫn công tác tại đơn vị cũ">Vẫn công tác tại đơn vị cũ</option>
+                    <option value="Đã chuyển công tác">Đã chuyển công tác</option>
+                    <option value="Đã nghỉ hưu / nghỉ việc">Đã nghỉ hưu / nghỉ việc</option>
+                </select>
+            </div>
+            <div class="grid-2" id="procOfficerCurrentGroup" style="display: none; margin-bottom: 15px;">
+                <div class="form-group">
+                    <span class="form-label">Cơ quan công tác hiện tại<span class="required">*</span></span>
+                    <input type="text" class="form-control" id="procOfficerCurrentAgency" placeholder="Nhập cơ quan hiện tại...">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Chức vụ hiện tại<span class="required">*</span></span>
+                    <input type="text" class="form-control" id="procOfficerCurrentPosition" placeholder="Nhập chức vụ hiện tại...">
+                </div>
+            </div>
+            <script>
+                function toggleProcOfficerCurrentStatus() {
+                    const status = document.getElementById('procOfficerStatus').value;
+                    const group = document.getElementById('procOfficerCurrentGroup');
+                    if (status === 'Đã chuyển công tác') {
+                        group.style.display = 'grid';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                }
+            </script>
+
             <div class="form-group">
                 <span class="form-label">Tải lên file scan quyết định xác định cơ quan giải quyết bồi thường</span>
                 <div class="file-upload-container">
@@ -507,6 +553,33 @@
                         <div class="detail-label">Nhận định lý do chi tiết</div>
                         <div class="detail-value" style="line-height: 1.5;" id="dtProcReason"></div>
                     </div>
+                    
+                    <div class="sub-section-title" style="color: var(--warning-color); margin-top: 15px;">V. THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI</div>
+                    <div class="detail-row">
+                        <div class="detail-label">Cán bộ trực tiếp gây thiệt hại</div>
+                        <div class="detail-value" style="font-weight: 600;" id="dtOfficerName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Chức vụ lúc gây thiệt hại</div>
+                        <div class="detail-value" id="dtOfficerPosition"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Cơ quan công tác lúc gây thiệt hại</div>
+                        <div class="detail-value" id="dtOfficerAgency"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Tình trạng công tác hiện tại</div>
+                        <div class="detail-value" id="dtOfficerStatus"></div>
+                    </div>
+                    <div class="detail-row" id="dtOfficerCurrentAgencyRow" style="display: none;">
+                        <div class="detail-label">Cơ quan công tác hiện tại</div>
+                        <div class="detail-value" id="dtOfficerCurrentAgency"></div>
+                    </div>
+                    <div class="detail-row" id="dtOfficerCurrentPositionRow" style="display: none;">
+                        <div class="detail-label">Chức vụ hiện tại</div>
+                        <div class="detail-value" id="dtOfficerCurrentPosition"></div>
+                    </div>
+
                     <div class="detail-row">
                         <div class="detail-label">Quyết định chuyển giao đính kèm</div>
                         <div class="detail-value" id="dtProcDecisionFile"></div>
@@ -577,6 +650,34 @@
                 <span class="form-label">Hành vi phản ánh gây thiệt hại</span>
                 <textarea class="form-control" id="claimHanhVi" rows="2" readonly></textarea>
             </div>
+
+            <div class="sub-section-title" style="margin-top: 20px;">III. THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI (KẾ THỪA TỪ KẾT QUẢ XÁC MINH)</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <span class="form-label">Cán bộ trực tiếp gây thiệt hại</span>
+                    <input type="text" class="form-control" id="claimOfficerName" readonly style="font-weight: 600;">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Chức vụ lúc gây thiệt hại</span>
+                    <input type="text" class="form-control" id="claimOfficerPosition" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Cơ quan công tác lúc gây thiệt hại</span>
+                <input type="text" class="form-control" id="claimOfficerAgency" readonly>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <span class="form-label">Tình trạng công tác hiện tại</span>
+                    <input type="text" class="form-control" id="claimOfficerStatus" readonly>
+                </div>
+                <div class="form-group" id="claimOfficerCurrentGroup" style="display: none;">
+                    <span class="form-label">Cơ quan công tác hiện tại</span>
+                    <input type="text" class="form-control" id="claimOfficerCurrentAgency" readonly>
+                </div>
+            </div>
+
+            <div class="sub-section-title" style="margin-top: 20px;">IV. MỨC ĐỘ THIỆT HẠI & TÀI LIỆU CHỨNG MINH</div>
             <div class="grid-2">
                 <div class="form-group">
                     <span class="form-label">Tổng số tiền yêu cầu bồi thường (đồng)<span class="required">*</span></span>

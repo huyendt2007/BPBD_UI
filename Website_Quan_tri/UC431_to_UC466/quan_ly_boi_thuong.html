@@ -1503,6 +1503,67 @@
                     <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
 
+                <!-- ADDED: THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI -->
+                <div id="claimOfficerContainerForm" style="display: none;">
+                    <div
+                        style="font-size: 13.5px; font-weight: 700; color: #334155; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 16px; margin-top: 10px;">
+                        THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI (KẾ THỪA TỪ KẾT QUẢ XÁC MINH)
+                    </div>
+                    <div
+                        style="background: #f8fafc; padding: 20px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); margin-bottom: 20px;">
+                        <div class="grid-2" style="margin-bottom: 15px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Họ và tên cán bộ gây thiệt hại</span>
+                                <input type="text" class="form-control" id="claimOfficerNameForm"
+                                    placeholder="Nhập họ và tên cán bộ (nếu rõ)...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Chức vụ tại thời điểm gây thiệt hại</span>
+                                <input type="text" class="form-control" id="claimOfficerPositionForm"
+                                    placeholder="Ví dụ: Điều tra viên sơ cấp...">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <span class="form-label">Cơ quan công tác tại thời điểm gây thiệt hại</span>
+                            <input type="text" class="form-control" id="claimOfficerAgencyForm"
+                                placeholder="Nhập cơ quan công tác (nếu rõ)...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <span class="form-label">Tình trạng công tác hiện tại</span>
+                            <select class="form-control" id="claimOfficerStatusForm"
+                                onchange="toggleClaimOfficerCurrentStatus()">
+                                <option value="Vẫn công tác tại đơn vị cũ">Vẫn công tác tại đơn vị cũ</option>
+                                <option value="Đã chuyển công tác">Đã chuyển công tác</option>
+                                <option value="Đã nghỉ hưu / nghỉ việc">Đã nghỉ hưu / nghỉ việc</option>
+                                <option value="Không rõ">Không rõ</option>
+                            </select>
+                        </div>
+                        <div class="grid-2" id="claimOfficerCurrentGroupForm" style="display: none; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Cơ quan công tác hiện tại</span>
+                                <input type="text" class="form-control" id="claimOfficerCurrentAgencyForm"
+                                    placeholder="Nhập cơ quan hiện tại...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Chức vụ hiện tại</span>
+                                <input type="text" class="form-control" id="claimOfficerCurrentPositionForm"
+                                    placeholder="Nhập chức vụ hiện tại...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function toggleClaimOfficerCurrentStatus() {
+                        const status = document.getElementById('claimOfficerStatusForm').value;
+                        const group = document.getElementById('claimOfficerCurrentGroupForm');
+                        if (status === 'Đã chuyển công tác') {
+                            group.style.display = 'grid';
+                        } else {
+                            group.style.display = 'none';
+                        }
+                    }
+                </script>
+
                 <!-- II. THIỆT HẠI YÊU CẦU BỒI THƯỜNG -->
                 <div id="claimMoneySection">
                     <div class="info-group-title">II. Thiệt hại yêu cầu bồi thường</div>
@@ -1906,7 +1967,7 @@
                     style="display: none; gap: 10px; width: 100%; justify-content: flex-end;">
                     <button class="btn btn-secondary" onclick="closeInlineClaimForm()">Hủy bỏ</button>
                     <button class="btn btn-success" onclick="saveNewClaim(false)"><i
-                            class="fa-solid fa-circle-check"></i> Bổ sung hồ sơ</button>
+                            class="fa-solid fa-paper-plane"></i> Gửi lại yêu cầu</button>
                 </div>
             </div>
         </div>
@@ -2118,6 +2179,74 @@
                                     <textarea class="form-control" id="editXacMinhOtherInfo" rows="3"
                                         placeholder="Nhập các thông tin, kết quả đối soát hoặc kết luận xác minh thiệt hại khác..."></textarea>
                                 </div>
+
+                                <!-- XÁC MINH/BỔ SUNG THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI -->
+                                <div
+                                    style="background-color: #FFFBEB; border: 1px solid #FCD34D; padding: 15px; border-radius: var(--border-radius-md); margin-top: 15px;">
+                                    <div
+                                        style="font-weight: 700; color: #B45309; margin-bottom: 12px; font-size: 13.5px;">
+                                        <i class="fa-solid fa-user-shield"></i> XÁC MINH/BỔ SUNG THÔNG TIN ĐỐI TƯỢNG GÂY
+                                        THIỆT HẠI
+                                        <p
+                                            style="font-size: 11.5px; color: #92400E; margin-top: 4px; font-weight: normal; font-style: italic;">
+                                            (Cán bộ cần điền đầy đủ thông tin này nếu người yêu cầu bồi thường chưa cung
+                                            cấp lúc nộp đơn)</p>
+                                    </div>
+                                    <div class="grid-2" style="margin-bottom: 10px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <span class="form-label">Họ và tên cán bộ gây thiệt hại<span
+                                                    class="required">*</span></span>
+                                            <input type="text" class="form-control" id="editXmOfficerName"
+                                                placeholder="Nhập họ và tên cán bộ...">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <span class="form-label">Chức vụ tại thời điểm gây thiệt hại</span>
+                                            <input type="text" class="form-control" id="editXmOfficerPosition"
+                                                placeholder="Ví dụ: Điều tra viên sơ cấp...">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <span class="form-label">Cơ quan công tác tại thời điểm gây thiệt hại<span
+                                                class="required">*</span></span>
+                                        <input type="text" class="form-control" id="editXmOfficerAgency"
+                                            placeholder="Nhập cơ quan công tác...">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 10px;">
+                                        <span class="form-label">Tình trạng công tác hiện tại</span>
+                                        <select class="form-control" id="editXmOfficerStatus"
+                                            onchange="toggleEditXmOfficerStatus()">
+                                            <option value="Vẫn công tác tại đơn vị cũ">Vẫn công tác tại đơn vị cũ
+                                            </option>
+                                            <option value="Đã chuyển công tác">Đã chuyển công tác</option>
+                                            <option value="Đã nghỉ hưu / nghỉ việc">Đã nghỉ hưu / nghỉ việc</option>
+                                            <option value="Không rõ">Không rõ</option>
+                                        </select>
+                                    </div>
+                                    <div class="grid-2" id="editXmOfficerCurrentGroup"
+                                        style="display: none; margin-bottom: 0;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <span class="form-label">Cơ quan công tác hiện tại</span>
+                                            <input type="text" class="form-control" id="editXmOfficerCurrentAgency"
+                                                placeholder="Nhập cơ quan hiện tại...">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <span class="form-label">Chức vụ hiện tại</span>
+                                            <input type="text" class="form-control" id="editXmOfficerCurrentPosition"
+                                                placeholder="Nhập chức vụ hiện tại...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    function toggleEditXmOfficerStatus() {
+                                        const status = document.getElementById('editXmOfficerStatus').value;
+                                        const group = document.getElementById('editXmOfficerCurrentGroup');
+                                        if (status === 'Đã chuyển công tác') {
+                                            group.style.display = 'grid';
+                                        } else {
+                                            group.style.display = 'none';
+                                        }
+                                    }
+                                </script>
                                 <div class="form-group" style="margin-top: 15px;">
                                     <span class="form-label">Khôi phục quyền, lợi ích hợp pháp khác (nếu có)</span>
                                     <input type="text" class="form-control" id="editXacMinhOtherRestore"
@@ -3311,7 +3440,13 @@
                 nycAddressDetail: "Số 20 Trần Hưng Đạo, Hoàn Kiếm",
                 hanhVi: "UBND Phường đã thực hiện lập biên bản phạt hành chính sai thẩm quyền đối với hộ kinh doanh.",
                 procTargetAgency: "Sở Tư pháp TP. Hà Nội",
-                fieldGroup: "hành chính"
+                fieldGroup: "hành chính",
+                officerName: "Đỗ Xuân Tài",
+                officerPosition: "Chủ tịch UBND Phường",
+                officerAgency: "UBND Phường Dịch Vọng Hậu",
+                officerStatus: "Vẫn công tác tại đơn vị cũ",
+                officerCurrentAgency: "",
+                officerCurrentPosition: ""
             },
             {
                 code: "XD-2026-002",
@@ -3330,7 +3465,13 @@
                 nycAddressDetail: "Số 45 Lê Lợi, Ngô Quyền",
                 hanhVi: "Bắt tạm giam khẩn cấp không phê chuẩn của Viện kiểm sát.",
                 procTargetAgency: "Tòa án nhân dân TP. Hà Nội",
-                fieldGroup: "hình sự"
+                fieldGroup: "hình sự",
+                officerName: "Nguyễn Trung Dũng",
+                officerPosition: "Điều tra viên sơ cấp",
+                officerAgency: "Công an Quận Ngô Quyền",
+                officerStatus: "Đã chuyển công tác",
+                officerCurrentAgency: "Công an Thành phố Hải Phòng",
+                officerCurrentPosition: "Điều tra viên trung cấp"
             }
         ];
 
@@ -3345,6 +3486,90 @@
 
         // Claim Mock Data
         let claimsList = [
+            {
+                id: "HS6",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-006",
+                fieldGroup: "hành chính",
+                date: "01/07/2026",
+                nyc: "Hoàng Tuấn C",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "001090112233",
+                address: "KĐT Times City, Hai Bà Trưng, Hà Nội",
+                phone: "0901234567",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định hủy bỏ Quyết định xử phạt hành chính số 111/QĐ-UBND",
+                hanhVi: "Tịch thu phương tiện kinh doanh không đúng quy định.",
+                nhanQua: "Thiệt hại doanh thu do ngừng hoạt động kinh doanh 3 tháng.",
+                officerName: "Phạm Minh Đ",
+                officerPosition: "Cán bộ Đội Quản lý trật tự đô thị",
+                officerAgency: "UBND Phường Vĩnh Tuy",
+                officerStatus: "Đã chuyển công tác",
+                officerCurrentAgency: "UBND Phường Mai Động",
+                officerCurrentPosition: "Phó Chủ tịch UBND Phường",
+                status: "Lưu nháp",
+                thulyVenue: "cơ quan quản lý",
+                totalNum: 100000000,
+                advanceNum: 0,
+                slaDays: 20,
+                slaStatus: "normal",
+                slaText: "Đang tiến hành xác minh thiệt hại (hạn còn 20 ngày)",
+                restoreHonor: false,
+                agency: "UBND Quận Hai Bà Trưng",
+                deadline: "30/08/2026",
+                files: [
+                    { name: "Don_yeu_cau_boi_thuong.pdf", url: "#" }
+                ],
+                thietHaiList: [
+                    { type: 2, calc: "Thu nhập thực tế bị mất trong 3 tháng: 100.000.000 đ", val: 100000000 }
+                ],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "01/07/2026", desc: "Hồ sơ tiếp nhận trực tiếp", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "05/07/2026", desc: "Quyết định thụ lý số 112/QĐ-TLHS.", status: "completed" },
+                    { title: "Xác minh thiệt hại", date: "10/07/2026", desc: "Đang tổ chức xác minh thiệt hại.", status: "active" }
+                ]
+            },
+            {
+                id: "HS7",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-007",
+                fieldGroup: "hình sự",
+                date: "05/07/2026",
+                nyc: "Phạm Văn D",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "001095445566",
+                address: "Thanh Xuân, Hà Nội",
+                phone: "0987654321",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định đình chỉ điều tra vụ án hình sự",
+                hanhVi: "Khởi tố và bắt tạm giam 15 ngày trái pháp luật.",
+                nhanQua: "Ảnh hưởng danh dự và tổn thất thu nhập.",
+                // Missing officer fields deliberately
+                status: "Đang xác minh thiệt hại",
+                thulyVenue: "cơ quan quản lý",
+                totalNum: 50000000,
+                advanceNum: 0,
+                slaDays: 25,
+                slaStatus: "normal",
+                slaText: "Đang tiến hành xác minh thiệt hại (hạn còn 25 ngày)",
+                restoreHonor: true,
+                agency: "Công an Quận Thanh Xuân",
+                deadline: "10/09/2026",
+                files: [
+                    { name: "Don_yeu_cau_boi_thuong_HS5.pdf", url: "#" }
+                ],
+                thietHaiList: [
+                    { type: 2, calc: "Thu nhập bị mất 15 ngày: 15.000.000 đ", val: 15000000 },
+                    { type: 5, calc: "Thiệt hại tinh thần: 35.000.000 đ", val: 35000000 }
+                ],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "05/07/2026", desc: "Hồ sơ nộp trực tuyến", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "08/07/2026", desc: "Quyết định thụ lý số 115/QĐ-TLHS.", status: "completed" },
+                    { title: "Xác minh thiệt hại", date: "11/07/2026", desc: "Đang tổ chức xác minh thiệt hại.", status: "active" }
+                ]
+            },
             {
                 id: "HS1",
                 assignedOfficer: "Nguyễn Văn Chuyên Viên",
@@ -3361,6 +3586,12 @@
                 docBase: "Quyết định xử phạt trái luật số 12/QD-XPVHC ngày 10/02/2026 của UBND quận Cầu Giấy",
                 hanhVi: "Cưỡng chế tháo dỡ nhà ở khi chưa có quyết định hành chính có hiệu lực pháp luật.",
                 nhanQua: "Việc đập phá công trình gây sụp đổ căn nhà và hư hỏng toàn bộ tài sản bên trong.",
+                officerName: "Đỗ Xuân Tài",
+                officerPosition: "Chủ tịch UBND Phường",
+                officerAgency: "UBND Phường Dịch Vọng Hậu",
+                officerStatus: "Vẫn công tác tại đơn vị cũ",
+                officerCurrentAgency: "UBND Phường Dịch Vọng Hậu",
+                officerCurrentPosition: "Chủ tịch UBND Phường",
                 status: "Đang thương lượng",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 150000000,
@@ -3439,6 +3670,12 @@
                 docBase: "Bản án hình sự oan sai số 15/2026/HS-ST ngày 28/02/2026 của TAND tỉnh Lâm Đồng",
                 hanhVi: "Bắt giam giữ oan sai trong thời gian 3 tháng liên tiếp.",
                 nhanQua: "Gây tổn thương sức khỏe và tinh thần nghiêm trọng trong thời gian giam giữ trái luật.",
+                officerName: "Nguyễn Trung Dũng",
+                officerPosition: "Điều tra viên sơ cấp",
+                officerAgency: "Công an Quận Ngô Quyền",
+                officerStatus: "Đã chuyển công tác",
+                officerCurrentAgency: "Công an Thành phố Hải Phòng",
+                officerCurrentPosition: "Điều tra viên trung cấp",
                 status: "Chờ thực thi",
                 thulyVenue: "tòa án tố tụng",
                 totalNum: 350000000,
@@ -3495,7 +3732,7 @@
                 decEffectiveDate: "25/03/2023",
                 decSigner: "Nguyễn Văn Hoạt",
                 decPosition: "Giám đốc Sở",
-                assignedOfficer: "Lê Văn Chuyên Viên",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
                 code: "BT-2026-003",
                 fieldGroup: "hành chính",
                 date: "05/01/2023",
@@ -3509,6 +3746,12 @@
                 docBase: "Quyết định thu hồi đất trái pháp luật số 888/QD-UBND ngày 20/12/2022 của UBND thành phố",
                 hanhVi: "Thu hồi đất dự án xây dựng trái thẩm quyền làm ngưng trệ thi công.",
                 nhanQua: "Làm phát sinh chi phí phạt hợp đồng thầu phụ và khấu hao thiết bị dừng thi công vô lý.",
+                officerName: "Lê Đình E",
+                officerPosition: "Trưởng phòng Tài nguyên Môi trường",
+                officerAgency: "UBND Thành phố",
+                officerStatus: "Đã chuyển công tác",
+                officerCurrentAgency: "Sở Tài nguyên Môi trường",
+                officerCurrentPosition: "Phó Giám đốc Sở",
                 status: "Chờ thực thi",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 4800000000,
@@ -3587,7 +3830,7 @@
                 decEffectiveDate: "26/03/2023",
                 decSigner: "Nguyễn Văn Hoạt",
                 decPosition: "Giám đốc Sở",
-                assignedOfficer: "Lê Văn Chuyên Viên",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
                 code: "BT-2026-003-A",
                 fieldGroup: "hành chính",
                 date: "06/01/2023",
@@ -3601,6 +3844,10 @@
                 docBase: "Quyết định thu hồi đất trái pháp luật",
                 hanhVi: "Thu hồi đất dự án xây dựng trái thẩm quyền",
                 nhanQua: "Thiệt hại hợp đồng thầu phụ",
+                officerName: "Lê Đình E",
+                officerPosition: "Trưởng phòng Tài nguyên Môi trường",
+                officerAgency: "UBND Thành phố",
+                officerStatus: "Đã nghỉ hưu / nghỉ việc",
                 status: "Chờ thực thi",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 2000000000,
@@ -3650,7 +3897,7 @@
                 decEffectiveDate: "27/03/2023",
                 decSigner: "Nguyễn Văn Hoạt",
                 decPosition: "Giám đốc Sở",
-                assignedOfficer: "Lê Văn Chuyên Viên",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
                 MaHoSo: "BT-2026-003-B",
                 TenKhachHang: "Nguyễn Văn D",
                 HinhThucPhucHoi: "Đăng báo xin lỗi và cải chính công khai",
@@ -3706,6 +3953,7 @@
             {
                 id: "HS4",
                 code: "BT-2026-004",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
                 fieldGroup: "dân sự",
                 date: "04/04/2026",
                 nyc: "Trần Minh T",
@@ -4722,6 +4970,9 @@
             document.getElementById('searchToDate').value = formatDate(today);
             document.getElementById('claimCreateDate').value = formatDate(today);
 
+            // Force reset mock data for testing updates
+            localStorage.removeItem('claimsList');
+
             // Load claimsList from localStorage if present
             const localClaims = localStorage.getItem('claimsList');
             if (localClaims) {
@@ -4817,7 +5068,12 @@
                 filtered = filtered.filter(item => item.fieldGroup === fieldGroup);
             }
             if (status) {
-                filtered = filtered.filter(item => item.status === status);
+                filtered = filtered.filter(item => {
+                    if (!item.status) return false;
+                    // Robust comparison to handle potential encoding/NFC/NFD differences
+                    const normalizeStr = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim();
+                    return normalizeStr(item.status) === normalizeStr(status);
+                });
             }
 
             const parseDateVi = (str) => {
@@ -4913,10 +5169,13 @@
                 // Fixed slots
                 const isDraft = item.status === 'Lưu nháp';
                 const isPending = item.status === 'Chờ tiếp nhận';
-                const hasUpdateRights = ['Lưu nháp', 'Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Từ chối thụ lý', 'Bị từ chối'].includes(item.status);
+                const nStatus = item.status ? item.status.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
+                const hasUpdateRights = ['luu nhap', 'yeu cau bo sung', 'dang xac minh thiet hai', 'dang thuong luong', 'cho ban hanh qd', 'cho thuc thi', 'tu choi thu ly', 'bi tu choi'].includes(nStatus);
 
                 const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
-                const isAssignedToOther = (currentRole === 'chuyen-vien') && item.assignedOfficer && (item.assignedOfficer !== currentOfficer);
+                const nAssigned = item.assignedOfficer ? item.assignedOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
+                const nCurrent = currentOfficer ? currentOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
+                const isAssignedToOther = (currentRole === 'chuyen-vien') && nAssigned && (nAssigned !== nCurrent);
 
                 const viewBtn = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); showCaseDetail('${item.id}', false)"><i class="fa-solid fa-eye"></i></button>`;
 
@@ -5688,7 +5947,10 @@
                 opinionRadios.forEach(r => {
                     r.checked = (r.value === (claim.phddStep2Opinion || 'Đồng ý'));
                 });
-                document.getElementById('claimRestoreHonorDesc').value = claim.phddStep2OpinionText || '';
+                const descElem = document.getElementById('claimRestoreHonorDesc');
+                if (descElem) {
+                    descElem.value = claim.phddStep2OpinionText || '';
+                }
 
                 // Docs files checklist
                 currentDocsList = [];
@@ -5776,7 +6038,10 @@
                 if (opinionRadios.length > 0) {
                     opinionRadios[0].checked = true;
                 }
-                document.getElementById('claimRestoreHonorDesc').value = '';
+                const descElem2 = document.getElementById('claimRestoreHonorDesc');
+                if (descElem2) {
+                    descElem2.value = '';
+                }
 
                 initDocsList();
                 toggleDocsByRole("Người bị thiệt hại");
@@ -5838,6 +6103,30 @@
             }
             document.getElementById('claimNYCAddress').value = found.nycAddressDetail;
             document.getElementById('claimHanhVi').value = found.hanhVi;
+
+            // Populate Officer Fields
+            document.getElementById('claimOfficerContainerForm').style.display = 'block';
+            document.getElementById('claimOfficerNameForm').value = found.officerName || '';
+            document.getElementById('claimOfficerNameForm').setAttribute('readonly', 'readonly');
+
+            document.getElementById('claimOfficerPositionForm').value = found.officerPosition || '';
+            document.getElementById('claimOfficerPositionForm').setAttribute('readonly', 'readonly');
+
+            document.getElementById('claimOfficerAgencyForm').value = found.officerAgency || '';
+            document.getElementById('claimOfficerAgencyForm').setAttribute('readonly', 'readonly');
+
+            document.getElementById('claimOfficerStatusForm').value = found.officerStatus || 'Vẫn công tác tại đơn vị cũ';
+            document.getElementById('claimOfficerStatusForm').setAttribute('disabled', 'disabled');
+
+            if (found.officerStatus === 'Đã chuyển công tác') {
+                document.getElementById('claimOfficerCurrentGroupForm').style.display = 'grid';
+                document.getElementById('claimOfficerCurrentAgencyForm').value = found.officerCurrentAgency || '';
+                document.getElementById('claimOfficerCurrentAgencyForm').setAttribute('readonly', 'readonly');
+                document.getElementById('claimOfficerCurrentPositionForm').value = found.officerCurrentPosition || '';
+                document.getElementById('claimOfficerCurrentPositionForm').setAttribute('readonly', 'readonly');
+            } else {
+                document.getElementById('claimOfficerCurrentGroupForm').style.display = 'none';
+            }
 
             document.getElementById('claimDocBase').value = `Văn bản xác định thẩm quyền số 02/QĐ-XĐCQ ban hành ngày 01/07/2026`;
 
@@ -6826,7 +7115,9 @@
             const selMain = document.getElementById('roleSelectorMain');
             const currentRole = selMain ? selMain.value : 'chuyen-vien';
             const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
-            const isAssignedToOther = (currentRole === 'chuyen-vien') && claim.assignedOfficer && (claim.assignedOfficer !== currentOfficer);
+            const nAssigned = claim.assignedOfficer ? claim.assignedOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
+            const nCurrent = currentOfficer ? currentOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
+            const isAssignedToOther = (currentRole === 'chuyen-vien') && nAssigned && (nAssigned !== nCurrent);
 
             if (isAssignedToOther && editMode) {
                 editMode = false;
@@ -6970,7 +7261,9 @@
             const selMain = document.getElementById('roleSelectorMain');
             const currentRole = selMain ? selMain.value : 'chuyen-vien';
             const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
-            const isAssignedToOther = (currentRole === 'chuyen-vien') && claim.assignedOfficer && (claim.assignedOfficer !== currentOfficer);
+            const nAssigned = claim.assignedOfficer ? claim.assignedOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
+            const nCurrent = currentOfficer ? currentOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
+            const isAssignedToOther = (currentRole === 'chuyen-vien') && nAssigned && (nAssigned !== nCurrent);
 
             // Close button (only shown in read-only mode)
             const closeBtnHtml = `<button class="btn btn-secondary" onclick="closeCaseDetailWithCheck()"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
@@ -6988,14 +7281,30 @@
             let buttonsHtml = '';
             let showCloseButton = true; // by default we show Close button in read-only
 
-            switch (claim.status) {
-                case 'Lưu nháp':
+            let sStat = claim.status ? claim.status.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
+            let normalizedStatus = claim.status;
+            if (sStat === 'luu nhap') normalizedStatus = 'Lưu nháp';
+            else if (sStat === 'cho tiep nhan') normalizedStatus = 'Chờ tiếp nhận';
+            else if (sStat === 'yeu cau bo sung') normalizedStatus = 'Yêu cầu bổ sung';
+            else if (sStat === 'cho thu ly') normalizedStatus = 'Chờ thụ lý';
+            else if (sStat === 'tu choi tiep nhan') normalizedStatus = 'Từ chối tiếp nhận';
+            else if (sStat === 'tu choi thu ly') normalizedStatus = 'Từ chối thụ lý';
+            else if (sStat === 'bi tu choi') normalizedStatus = 'Bị từ chối';
+            else if (sStat === 'dang xac minh thiet hai') normalizedStatus = 'Đang xác minh thiệt hại';
+            else if (sStat === 'dang thuong luong') normalizedStatus = 'Đang thương lượng';
+            else if (sStat === 'thuong luong khong thanh cong') normalizedStatus = 'Thương lượng không thành công';
+            else if (sStat === 'cho ban hanh qd') normalizedStatus = 'Chờ ban hành QĐ';
+            else if (sStat === 'cho thuc thi') normalizedStatus = 'Chờ thực thi';
+            else if (sStat === 'hoan thanh') normalizedStatus = 'Hoàn thành';
+
+            switch (sStat) {
+                case 'luu nhap':
                     buttonsHtml = `
                         <button class="btn btn-primary" onclick="openInlineClaimForm('${claim.id}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
                     `;
                     break;
 
-                case 'Chờ tiếp nhận':
+                case 'cho tiep nhan':
                     if (currentRole === 'chuyen-vien') {
                         buttonsHtml = `
                             <button class="btn btn-success" onclick="triggerAcceptClaim('${claim.id}')"><i class="fa-solid fa-square-check"></i> Tiếp nhận</button>
@@ -7005,21 +7314,13 @@
                     }
                     break;
 
-                case 'Yêu cầu bổ sung':
-                    if (isDetailEditMode) {
-                        buttonsHtml = `
-                            <button class="btn btn-success" onclick="submitBoSungUpdate()"><i class="fa-solid fa-circle-check"></i> Bổ sung hồ sơ</button>
-                            ${cancelBtnHtml}
-                        `;
-                        showCloseButton = false;
-                    } else {
-                        buttonsHtml = `
-                            <button class="btn btn-primary" onclick="switchToEditMode('bosung')"><i class="fa-solid fa-circle-check"></i> Bổ sung hồ sơ</button>
-                        `;
-                    }
+                case 'yeu cau bo sung':
+                    buttonsHtml = `
+                        <button class="btn btn-primary" onclick="switchToEditMode('bosung')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
+                    `;
                     break;
 
-                case 'Chờ thụ lý':
+                case 'cho thu ly':
                     if (currentRole === 'thu-truong') {
                         buttonsHtml = `
                             <button class="btn btn-success" onclick="triggerLeaderAcceptClaim('${claim.id}')"><i class="fa-solid fa-circle-check"></i> Thụ lý</button>
@@ -7030,12 +7331,12 @@
                     }
                     break;
 
-                case 'Từ chối tiếp nhận':
+                case 'tu choi tiep nhan':
                     // Only Close button
                     break;
 
-                case 'Từ chối thụ lý':
-                case 'Bị từ chối':
+                case 'tu choi thu ly':
+                case 'bi tu choi':
                     if (currentRole === 'chuyen-vien') {
                         buttonsHtml = `
                             <button class="btn btn-primary" onclick="switchToEditMode('tuthoithuly')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
@@ -7043,7 +7344,7 @@
                     }
                     break;
 
-                case 'Đang xác minh thiệt hại':
+                case 'dang xac minh thiet hai':
                     if (isDetailEditMode) {
                         buttonsHtml = `
                             <button class="btn btn-success" onclick="submitXacMinhUpdate()"><i class="fa-solid fa-circle-check"></i> Hoàn thành xác minh</button>
@@ -7057,7 +7358,7 @@
                     }
                     break;
 
-                case 'Đang thương lượng':
+                case 'dang thuong luong':
                     if (isDetailEditMode) {
                         buttonsHtml = `
                             <button class="btn btn-outline-primary" onclick="submitTlDraftUpdate()"><i class="fa-regular fa-bookmark"></i> Cập nhật</button>
@@ -7072,13 +7373,13 @@
                     }
                     break;
 
-                case 'Thương lượng không thành công':
+                case 'thuong luong khong thanh cong':
                     buttonsHtml = `
                         <button class="btn btn-primary" onclick="claimRedoNegotiation('${claim.id}')"><i class="fa-solid fa-rotate-left"></i> Cập nhật lại kết quả thương lượng</button>
                     `;
                     break;
 
-                case 'Chờ ban hành QĐ':
+                case 'cho ban hanh qd':
                     if (currentRole === 'thu-truong' && claim.decStatus === 'Chờ ký') {
                         buttonsHtml = `
                             <button class="btn btn-success" onclick="approveAndSignDecision('${claim.id}')"><i class="fa-solid fa-file-signature"></i> Duyệt ký số QĐ</button>
@@ -7092,7 +7393,7 @@
                     showCloseButton = false;
                     break;
 
-                case 'Chờ thực thi':
+                case 'cho thuc thi':
                     if (isDetailEditMode) {
                         buttonsHtml = `
                             <button class="btn btn-success" onclick="submitThucThiUpdate()"><i class="fa-solid fa-circle-check"></i> Hoàn thành thực thi</button>
@@ -7106,7 +7407,7 @@
                     }
                     break;
 
-                case 'Hoàn thành':
+                case 'hoan thanh':
                     // Only Close button
                     break;
             }
@@ -7666,6 +7967,17 @@
                         </div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Hành vi gây thiệt hại của người thi hành công vụ:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.hanhVi}</span></div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.nhanQua}</span></div>
+                        
+                        ${(claim.officerName || (claim.status && !/nhap|tiep nhan|thu ly|bo sung/i.test(claim.status.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd')))) ? `
+                        <!-- ADDED: THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI -->
+                        <div style="grid-column: span 3; font-weight:700; color:var(--primary-color); border-bottom:1px solid #E2E8F0; padding-bottom:4px; margin-top:8px;">THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI</div>
+                        <div><strong style="color:var(--text-muted);">Cán bộ trực tiếp gây thiệt hại:</strong> <br><span style="font-weight:600; color:var(--text-main);">${claim.officerName || '<span style="color:#94a3b8; font-style:italic;">Chưa cập nhật</span>'}</span></div>
+                        <div><strong style="color:var(--text-muted);">Chức vụ lúc gây thiệt hại:</strong> <br>${claim.officerPosition || 'Chưa xác định'}</div>
+                        <div><strong style="color:var(--text-muted);">Cơ quan công tác lúc đó:</strong> <br>${claim.officerAgency || 'Chưa xác định'}</div>
+                        <div><strong style="color:var(--text-muted);">Tình trạng công tác hiện tại:</strong> <br>${claim.officerStatus || 'Chưa xác định'}</div>
+                        <div style="grid-column: span 2;"><strong style="color:var(--text-muted);">Cơ quan hiện tại:</strong> <br>${claim.officerCurrentAgency || 'Không'}</div>
+                        <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Chức vụ hiện tại:</strong> <br>${claim.officerCurrentPosition || 'Không'}</div>
+                        ` : ''}
                     </div>
                 </div>
 
@@ -8100,6 +8412,19 @@
                 document.getElementById('editXacMinhOtherInfo').value = claim.xmOtherInfo || '';
                 document.getElementById('editXacMinhOtherRestore').value = claim.otherRestore || '';
                 document.getElementById('editXacMinhMethod').value = claim.xmMethod || 'chuyen-khoan';
+
+                // Populate officer fields
+                document.getElementById('editXmOfficerName').value = claim.officerName || '';
+                document.getElementById('editXmOfficerPosition').value = claim.officerPosition || '';
+                document.getElementById('editXmOfficerAgency').value = claim.officerAgency || '';
+                document.getElementById('editXmOfficerStatus').value = claim.officerStatus || 'Vẫn công tác tại đơn vị cũ';
+                if (claim.officerStatus === 'Đã chuyển công tác') {
+                    document.getElementById('editXmOfficerCurrentGroup').style.display = 'grid';
+                    document.getElementById('editXmOfficerCurrentAgency').value = claim.officerCurrentAgency || '';
+                    document.getElementById('editXmOfficerCurrentPosition').value = claim.officerCurrentPosition || '';
+                } else {
+                    document.getElementById('editXmOfficerCurrentGroup').style.display = 'none';
+                }
 
                 // Populate dynamic table
                 let tableHtml = '';
@@ -9998,7 +10323,7 @@
                     opinionFormGroup.style.display = 'block';
                 }
             }
-            
+
             const fileLabel = document.querySelector('#phddStep2DeclineUploadContainer label');
             if (fileLabel) {
                 if (disabled) fileLabel.style.display = 'none';
@@ -10623,13 +10948,13 @@
                 document.getElementById('editPhddStep1Position').value = "Cục trưởng Cục Thi hành án dân sự TP Hà Nội";
                 document.getElementById('editPhddStep1SendDate').value = "29/05/2026";
 
-                if(document.getElementById('editPhddStep1ExpectedAgency')) document.getElementById('editPhddStep1ExpectedAgency').value = "Cục Thi hành án dân sự thành phố Hà Nội";
-                if(document.getElementById('editPhddStep1ExpectedDate')) document.getElementById('editPhddStep1ExpectedDate').value = "12/06/2026";
-                if(document.getElementById('editPhddStep1ExpectedVenue')) document.getElementById('editPhddStep1ExpectedVenue').value = "Hội trường tầng 3, Ủy ban nhân dân phường Láng Hạ, số 97 Láng Hạ, quận Đống Đa, TP Hà Nội";
+                if (document.getElementById('editPhddStep1ExpectedAgency')) document.getElementById('editPhddStep1ExpectedAgency').value = "Cục Thi hành án dân sự thành phố Hà Nội";
+                if (document.getElementById('editPhddStep1ExpectedDate')) document.getElementById('editPhddStep1ExpectedDate').value = "12/06/2026";
+                if (document.getElementById('editPhddStep1ExpectedVenue')) document.getElementById('editPhddStep1ExpectedVenue').value = "Hội trường tầng 3, Ủy ban nhân dân phường Láng Hạ, số 97 Láng Hạ, quận Đống Đa, TP Hà Nội";
 
-                if(document.getElementById('phddStep1ExpectedMember_totung')) document.getElementById('phddStep1ExpectedMember_totung').checked = true;
-                if(document.getElementById('phddStep1ExpectedMember_coquan')) document.getElementById('phddStep1ExpectedMember_coquan').checked = true;
-                if(document.getElementById('phddStep1ExpectedMember_canhan')) document.getElementById('phddStep1ExpectedMember_canhan').checked = false;
+                if (document.getElementById('phddStep1ExpectedMember_totung')) document.getElementById('phddStep1ExpectedMember_totung').checked = true;
+                if (document.getElementById('phddStep1ExpectedMember_coquan')) document.getElementById('phddStep1ExpectedMember_coquan').checked = true;
+                if (document.getElementById('phddStep1ExpectedMember_canhan')) document.getElementById('phddStep1ExpectedMember_canhan').checked = false;
 
                 // Override Khối 2
                 document.getElementById('editPhddStep2ReceiveDate').value = "02/06/2026";
@@ -10637,12 +10962,12 @@
                 radios.forEach(r => { r.checked = (r.value === "Đồng ý thực hiện"); });
 
                 // Override Khối 3
-                if(document.getElementById('editPhddStep3Agency')) document.getElementById('editPhddStep3Agency').value = "Sở Tư pháp Hà Nội";
-                if(document.getElementById('editPhddStep3DateExp')) document.getElementById('editPhddStep3DateExp').value = "12/06/2026";
-                if(document.getElementById('editPhddStep3DirectVenue')) document.getElementById('editPhddStep3DirectVenue').value = "Hội trường tầng 3, UBND phường Láng Hạ, số 97 Láng Hạ, quận Đống Đa, TP Hà Nội";
-                if(document.getElementById('phddStep3Member_totung')) document.getElementById('phddStep3Member_totung').checked = true;
-                if(document.getElementById('phddStep3Member_coquan')) document.getElementById('phddStep3Member_coquan').checked = true;
-                if(document.getElementById('phddStep3Member_canhan')) document.getElementById('phddStep3Member_canhan').checked = false;
+                if (document.getElementById('editPhddStep3Agency')) document.getElementById('editPhddStep3Agency').value = "Sở Tư pháp Hà Nội";
+                if (document.getElementById('editPhddStep3DateExp')) document.getElementById('editPhddStep3DateExp').value = "12/06/2026";
+                if (document.getElementById('editPhddStep3DirectVenue')) document.getElementById('editPhddStep3DirectVenue').value = "Hội trường tầng 3, UBND phường Láng Hạ, số 97 Láng Hạ, quận Đống Đa, TP Hà Nội";
+                if (document.getElementById('phddStep3Member_totung')) document.getElementById('phddStep3Member_totung').checked = true;
+                if (document.getElementById('phddStep3Member_coquan')) document.getElementById('phddStep3Member_coquan').checked = true;
+                if (document.getElementById('phddStep3Member_canhan')) document.getElementById('phddStep3Member_canhan').checked = false;
             } else {
                 // Reset all pointer events & opacity for edit/active states
                 sec1.style.pointerEvents = 'auto'; sec1.style.opacity = '1';
@@ -10875,6 +11200,14 @@
                 claim.xmOtherInfo = document.getElementById('editXacMinhOtherInfo').value.trim();
                 claim.otherRestore = document.getElementById('editXacMinhOtherRestore').value.trim();
                 claim.xmMethod = document.getElementById('editXacMinhMethod').value;
+
+                // Save officer fields
+                claim.officerName = document.getElementById('editXmOfficerName').value.trim();
+                claim.officerPosition = document.getElementById('editXmOfficerPosition').value.trim();
+                claim.officerAgency = document.getElementById('editXmOfficerAgency').value.trim();
+                claim.officerStatus = document.getElementById('editXmOfficerStatus').value;
+                claim.officerCurrentAgency = document.getElementById('editXmOfficerCurrentAgency').value.trim();
+                claim.officerCurrentPosition = document.getElementById('editXmOfficerCurrentPosition').value.trim();
                 claim.xmFiles = [...xmSelectedFiles];
 
                 claim.timeline.push({
@@ -11696,24 +12029,28 @@
                 <span class="close" onclick="closePreviewM17()"
                     style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
             </div>
-            <div class="modal-body" style="padding: 40px; flex: 1; overflow-y: auto; font-family: 'Times New Roman', serif; font-size: 14pt; line-height: 1.5; color: black; position: relative;">
+            <div class="modal-body"
+                style="padding: 40px; flex: 1; overflow-y: auto; font-family: 'Times New Roman', serif; font-size: 14pt; line-height: 1.5; color: black; position: relative;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; text-align: center;">
                     <div style="flex: 1;">
                         <div style="text-transform: uppercase;">UBND THÀNH PHỐ HÀ NỘI</div>
-                        <div style="font-weight: bold; text-transform: uppercase;" id="previewM17CoQuan0">................................</div>
+                        <div style="font-weight: bold; text-transform: uppercase;" id="previewM17CoQuan0">
+                            ................................</div>
                         <hr style="width: 40%; margin: 5px auto; border-top: 1px solid black;">
                         <div>Số: <span id="previewM17SoTb">.../TB-...</span></div>
                     </div>
                     <div style="flex: 1.2;">
-                        <div style="font-weight: bold; text-transform: uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                        <div style="font-weight: bold; text-transform: uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                        </div>
                         <div style="font-weight: bold;">Độc lập - Tự do - Hạnh phúc</div>
                         <hr style="width: 40%; margin: 5px auto; border-top: 1px solid black;">
                         <div style="text-align: right; margin-top: 10px;">
-                            <em style="margin-right: 20px;">........, ngày <span id="previewM17Ngay">...</span> tháng <span id="previewM17Thang">...</span> năm <span id="previewM17Nam">...</span></em>
+                            <em style="margin-right: 20px;">........, ngày <span id="previewM17Ngay">...</span> tháng
+                                <span id="previewM17Thang">...</span> năm <span id="previewM17Nam">...</span></em>
                         </div>
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-bottom: 20px;">
                     <div style="font-weight: bold; font-size: 16pt;">THÔNG BÁO</div>
                     <div style="font-weight: bold;">Về việc tổ chức thực hiện phục hồi danh dự</div>
@@ -11729,20 +12066,29 @@
                         <div style="flex: 1;" id="previewM17DiaChi"></div>
                     </div>
                 </div>
-                
+
                 <div style="margin-top: 20px; text-align: justify; text-indent: 1.27cm;">
-                    Căn cứ Điều 57 Luật Trách nhiệm bồi thường của Nhà nước về chủ động phục hồi danh dự; Điều 22 Nghị định số 68/2018/NĐ-CP ngày 15 tháng 5 năm 2018 của Chính phủ quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước, cơ quan <span id="previewM17CoQuan1" style="font-weight: bold;"></span> dự kiến tổ chức thực hiện phục hồi danh dự đối với <span id="previewM17OngBa" style="font-weight: bold;"></span>, cụ thể như sau:
+                    Căn cứ Điều 57 Luật Trách nhiệm bồi thường của Nhà nước về chủ động phục hồi danh dự; Điều 22 Nghị
+                    định số 68/2018/NĐ-CP ngày 15 tháng 5 năm 2018 của Chính phủ quy định chi tiết một số điều và biện
+                    pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước, cơ quan <span id="previewM17CoQuan1"
+                        style="font-weight: bold;"></span> dự kiến tổ chức thực hiện phục hồi danh dự đối với <span
+                        id="previewM17OngBa" style="font-weight: bold;"></span>, cụ thể như sau:
                 </div>
-                
+
                 <div id="previewM17Content" style="margin-top: 10px; margin-left: 1.27cm; text-align: justify;">
                     <!-- NỘI DUNG SẼ ĐƯỢC BIND BỞI JS -->
                 </div>
-                
+
                 <div style="margin-top: 10px; text-align: justify; text-indent: 1.27cm;">
-                    Trong thời hạn 10 ngày kể từ ngày nhận được Thông báo này, đề nghị <span id="previewM17OngBa2" style="font-weight: bold;"></span> ghi ý kiến trả lời của mình vào phần sau của Thông báo này và gửi lại cho <span id="previewM17CoQuan2" style="font-weight: bold;"></span> hoặc trả lời trực tiếp bằng lời nói tại trụ sở <span id="previewM17CoQuan3" style="font-weight: bold;"></span>.
+                    Trong thời hạn 10 ngày kể từ ngày nhận được Thông báo này, đề nghị <span id="previewM17OngBa2"
+                        style="font-weight: bold;"></span> ghi ý kiến trả lời của mình vào phần sau của Thông báo này và
+                    gửi lại cho <span id="previewM17CoQuan2" style="font-weight: bold;"></span> hoặc trả lời trực tiếp
+                    bằng lời nói tại trụ sở <span id="previewM17CoQuan3" style="font-weight: bold;"></span>.
                 </div>
                 <div style="margin-top: 10px; text-align: justify; text-indent: 1.27cm;">
-                    Hết thời hạn trả lời nêu trên mà <span id="previewM17OngBa3" style="font-weight: bold;"></span> không trả lời thì việc phục hồi danh dự sẽ được thực hiện khi <span id="previewM17OngBa4" style="font-weight: bold;"></span> có yêu cầu bằng văn bản./.
+                    Hết thời hạn trả lời nêu trên mà <span id="previewM17OngBa3" style="font-weight: bold;"></span>
+                    không trả lời thì việc phục hồi danh dự sẽ được thực hiện khi <span id="previewM17OngBa4"
+                        style="font-weight: bold;"></span> có yêu cầu bằng văn bản./.
                 </div>
 
                 <div style="display: flex; justify-content: space-between; margin-top: 20px;">
@@ -11759,14 +12105,16 @@
                 </div>
 
                 <hr style="border: 0; border-top: 1px dashed black; margin: 30px 0;">
-                
+
                 <div style="text-align: center; font-weight: bold; margin-bottom: 20px;">
                     PHẦN GHI Ý KIẾN CỦA NGƯỜI BỊ THIỆT HẠI
                 </div>
-                
+
                 <div style="text-align: justify; line-height: 2;">
-                    Ngày... tháng... năm..., tôi là .............................................................., địa chỉ ..............................................................<br>
-                    đã nhận được Thông báo số... ngày.../.../... về việc tổ chức thực hiện phục hồi danh dự cho tôi. Tôi đã đọc và có ý kiến như sau:<br>
+                    Ngày... tháng... năm..., tôi là .............................................................., địa
+                    chỉ ..............................................................<br>
+                    đã nhận được Thông báo số... ngày.../.../... về việc tổ chức thực hiện phục hồi danh dự cho tôi. Tôi
+                    đã đọc và có ý kiến như sau:<br>
                     ............................................................................................................................................................<br>
                     ............................................................................................................................................................<br>
                     ............................................................................................................................................................<br>
@@ -11774,7 +12122,7 @@
                     ............................................................................................................................................................<br>
                     ............................................................................................................................................................
                 </div>
-                
+
                 <div style="display: flex; justify-content: flex-end; margin-top: 30px; text-align: center;">
                     <div>
                         <div style="font-style: italic;">........, ngày ... tháng ... năm ......</div>
@@ -11783,7 +12131,7 @@
                         <div style="height: 80px;"></div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="modal-footer"
                 style="padding: 15px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc; flex-shrink: 0;">
@@ -11829,7 +12177,7 @@
 
             const soTb = document.getElementById('editPhddStep1No') ? document.getElementById('editPhddStep1No').value : '';
             const ngayBanHanh = document.getElementById('editPhddStep1Date') ? document.getElementById('editPhddStep1Date').value : '';
-            
+
             // Extract day, month, year from dd/mm/yyyy
             let dd = '...', mm = '...', yyyy = '......';
             if (ngayBanHanh && ngayBanHanh.includes('/')) {
@@ -11841,28 +12189,28 @@
 
             document.getElementById('previewM17SoTb').textContent = soTb || '.../TB-BTNN';
             document.getElementById('previewM17Ngay').textContent = dd;
-            if(document.getElementById('previewM17Thang')) document.getElementById('previewM17Thang').textContent = mm;
-            if(document.getElementById('previewM17Nam')) document.getElementById('previewM17Nam').textContent = yyyy;
-            
+            if (document.getElementById('previewM17Thang')) document.getElementById('previewM17Thang').textContent = mm;
+            if (document.getElementById('previewM17Nam')) document.getElementById('previewM17Nam').textContent = yyyy;
+
             const name = claim.TenKhachHang || claim.nyc || '.............................................';
             const isOrg = claim.cardType === 'Tổ chức';
             const danhXung = isOrg ? 'Tổ chức' : 'Ông/Bà';
-            
+
             document.getElementById('previewM17NguoiNhan').textContent = name;
             document.getElementById('previewM17DiaChi').textContent = claim.address || '.............................................';
-            
+
             const agency = document.getElementById('editPhddStep1ExpectedAgency') && document.getElementById('editPhddStep1ExpectedAgency').value ? document.getElementById('editPhddStep1ExpectedAgency').value : 'Sở Tư pháp thành phố Hà Nội';
-            
-            if(document.getElementById('previewM17CoQuan0')) document.getElementById('previewM17CoQuan0').textContent = agency;
-            if(document.getElementById('previewM17CoQuan1')) document.getElementById('previewM17CoQuan1').textContent = agency;
-            if(document.getElementById('previewM17CoQuan2')) document.getElementById('previewM17CoQuan2').textContent = agency;
-            if(document.getElementById('previewM17CoQuan3')) document.getElementById('previewM17CoQuan3').textContent = agency;
-            
-            if(document.getElementById('previewM17OngBa')) document.getElementById('previewM17OngBa').textContent = danhXung;
-            if(document.getElementById('previewM17OngBa2')) document.getElementById('previewM17OngBa2').textContent = danhXung;
-            if(document.getElementById('previewM17OngBa3')) document.getElementById('previewM17OngBa3').textContent = danhXung;
-            if(document.getElementById('previewM17OngBa4')) document.getElementById('previewM17OngBa4').textContent = danhXung;
-            if(document.getElementById('previewM17OngBa5')) document.getElementById('previewM17OngBa5').textContent = danhXung;
+
+            if (document.getElementById('previewM17CoQuan0')) document.getElementById('previewM17CoQuan0').textContent = agency;
+            if (document.getElementById('previewM17CoQuan1')) document.getElementById('previewM17CoQuan1').textContent = agency;
+            if (document.getElementById('previewM17CoQuan2')) document.getElementById('previewM17CoQuan2').textContent = agency;
+            if (document.getElementById('previewM17CoQuan3')) document.getElementById('previewM17CoQuan3').textContent = agency;
+
+            if (document.getElementById('previewM17OngBa')) document.getElementById('previewM17OngBa').textContent = danhXung;
+            if (document.getElementById('previewM17OngBa2')) document.getElementById('previewM17OngBa2').textContent = danhXung;
+            if (document.getElementById('previewM17OngBa3')) document.getElementById('previewM17OngBa3').textContent = danhXung;
+            if (document.getElementById('previewM17OngBa4')) document.getElementById('previewM17OngBa4').textContent = danhXung;
+            if (document.getElementById('previewM17OngBa5')) document.getElementById('previewM17OngBa5').textContent = danhXung;
 
             const formType = claim.HinhThucPhucHoi || claim.phddForm || "Trực tiếp xin lỗi, cải chính công khai";
             const isApology = formType.includes("Trực tiếp xin lỗi") || formType.includes("Cả hai hình thức");
@@ -11892,7 +12240,7 @@
                     const provNews = document.getElementById('editPhddStep1ExpectedNewsNameProvince') ? document.getElementById('editPhddStep1ExpectedNewsNameProvince').value : '...';
                     newsInfo = `Báo địa phương: ${provNews}`;
                 }
-                
+
                 const portalCheck = document.getElementById('phddStep1ExpectedNewsPortalCheck') && document.getElementById('phddStep1ExpectedNewsPortalCheck').checked;
                 let portalText = '';
                 if (portalCheck) {
@@ -11918,7 +12266,7 @@
                     <div style="font-size: 12px;">Ngày ký: 28/05/2026 10:15:30</div>
                 </div>`;
             }
-            if(document.getElementById('previewM17Signature')) document.getElementById('previewM17Signature').innerHTML = signatureHtml;
+            if (document.getElementById('previewM17Signature')) document.getElementById('previewM17Signature').innerHTML = signatureHtml;
 
             document.getElementById('modalPreviewM17').style.display = 'flex';
         }
