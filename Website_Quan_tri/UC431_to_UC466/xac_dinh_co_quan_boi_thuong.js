@@ -592,7 +592,6 @@ function showDetailScreen(id) {
     document.getElementById('dtHanhVi').innerText = item.hanhVi;
     document.getElementById('dtHinhThucNhan').innerText = item.hinhThucNhan;
 
-
     // Status Badge
     let badgeClass = 'badge-draft';
     if (item.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
