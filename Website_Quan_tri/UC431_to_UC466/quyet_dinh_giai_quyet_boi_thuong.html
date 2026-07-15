@@ -1309,10 +1309,10 @@
                         <table class="audit-log-table" style="width: 100%; border-collapse: collapse; text-align: left;" id="docTable">
                             <thead>
                                 <tr>
-                                    <th style="width: 60px; text-align: center;">STT</th>
-                                    <th>Tên văn bản / Căn cứ</th>
-                                    <th style="width: 250px;">File đính kèm</th>
-                                    <th style="width: 140px; text-align: center;">Thao tác</th>
+                                    <th style="width: 50px; text-align: center;">STT</th>
+                                    <th style="width: 35%;">Tên văn bản / Căn cứ</th>
+                                    <th>File đính kèm</th>
+                                    <th style="width: 100px; text-align: center;">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody id="docTableBody">
@@ -2094,7 +2094,7 @@
             let viewBtnHtml = `<button class="icon-btn view" title="Chưa có tệp đính kèm" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-eye"></i></button>`;
             
             if (fileName) {
-                fileHtml = `<span style="font-weight: 500; font-size: 13px; color: var(--primary-color);">${fileName}</span>`;
+                fileHtml = `<span title="${fileName}" style="display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; font-size: 13px; color: var(--primary-color);">${fileName}</span>`;
                 viewBtnHtml = `<button class="icon-btn view" title="Xem file" onclick="window.open('${fileUrl || '#'}', '_blank')"><i class="fa-solid fa-eye"></i></button>`;
             }
 
@@ -2105,10 +2105,10 @@
                 </td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <button class="btn btn-primary btn-sm" style="padding: 4px 10px; font-size: 12px; background-color: #3b82f6; border-color: #3b82f6;" onclick="document.getElementById('fileInput_${tr.id}').click()">
+                        <button class="btn btn-primary btn-sm" style="padding: 6px 12px; font-size: 13px; background-color: #3b82f6; border-color: #3b82f6; flex-shrink: 0;" onclick="document.getElementById('fileInput_${tr.id}').click()">
                             <i class="fa-solid fa-folder-open"></i> Chọn file
                         </button>
-                        <div class="doc-file-name" style="flex: 1; word-break: break-all;">
+                        <div class="doc-file-name" style="flex: 1; overflow: hidden; display: flex; align-items: center;">
                             ${fileHtml}
                         </div>
                         <input type="file" id="fileInput_${tr.id}" style="display:none;" onchange="handleDocFileSelect(this, '${tr.id}')">
@@ -2130,7 +2130,7 @@
                 const file = input.files[0];
                 const tr = document.getElementById(rowId);
                 if (tr) {
-                    tr.querySelector('.doc-file-name').innerHTML = `<span style="font-weight: 500; font-size: 13px; color: var(--primary-color);">${file.name}</span>`;
+                    tr.querySelector('.doc-file-name').innerHTML = `<span title="${file.name}" style="display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; font-size: 13px; color: var(--primary-color);">${file.name}</span>`;
                     tr.querySelector('.view-btn-container').innerHTML = `<button class="icon-btn view" title="Xem file" onclick="showToast('Đang mở file ${file.name}', 'info')"><i class="fa-solid fa-eye"></i></button>`;
                 }
             }
