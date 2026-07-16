@@ -6421,4 +6421,119 @@
                 if (iframe) iframe.src = 'about:blank';
             }, 200);
         }
+
+// ======== NEW LOGIC FOR VERDICT (BẢN ÁN) ========
+function toggleVerdictFields(isChecked) {
+    const verdictBlock = document.getElementById('verdictFieldsBlock');
+    const docBaseBlock = document.getElementById('docBaseBlock');
+    const advanceSection = document.getElementById('advancePaymentSection');
+    const labels1 = document.querySelectorAll('.verdict-group-label');
+    const labels2 = document.querySelectorAll('.verdict-sub-label');
     
+    if (isChecked) {
+        if(verdictBlock) verdictBlock.style.display = 'block';
+        if(docBaseBlock) docBaseBlock.style.display = 'none';
+        if(advanceSection) advanceSection.style.display = 'none';
+        
+        labels1.forEach(l => l.style.display = 'inline');
+        labels2.forEach(l => l.style.display = 'inline');
+        
+        addVerdictDocumentRow();
+    } else {
+        if(verdictBlock) verdictBlock.style.display = 'none';
+        if(docBaseBlock) docBaseBlock.style.display = 'block';
+        if(advanceSection) advanceSection.style.display = 'block';
+        
+        labels1.forEach(l => l.style.display = 'none');
+        labels2.forEach(l => l.style.display = 'none');
+        
+        removeVerdictDocumentRow();
+    }
+}
+
+function toggleVerdictSource(source) {
+    const originGroup = document.getElementById('verdictOriginClaimGroup');
+    if (source === 'Điều 52') {
+        if(originGroup) originGroup.style.display = 'block';
+    } else {
+        if(originGroup) originGroup.style.display = 'none';
+    }
+}
+
+function handleVerdictOriginChange(value) {
+    if (value && value.includes('Đang thực thi theo bản án')) {
+        showToast("Đã liên kết với Hồ sơ gốc. Hồ sơ gốc sẽ được cập nhật trạng thái 'Đang thực thi theo bản án' khi lưu.", "info");
+        
+        let linkWrapper = document.getElementById('mockOriginLinkWrapper');
+        if (!linkWrapper) {
+            linkWrapper = document.createElement('div');
+            linkWrapper.id = 'mockOriginLinkWrapper';
+            linkWrapper.style.marginTop = '8px';
+            const originInput = document.getElementById('verdictOriginClaim');
+            originInput.parentNode.appendChild(linkWrapper);
+        }
+        linkWrapper.innerHTML = `<a href="#" onclick="openMockOriginClaim(); return false;" style="font-size: 13px; color: var(--primary-color); text-decoration: underline;"><i class="fa-solid fa-up-right-from-square"></i> Xem chi tiết hồ sơ gốc đã liên kết</a>`;
+    } else {
+        const linkWrapper = document.getElementById('mockOriginLinkWrapper');
+        if (linkWrapper) linkWrapper.innerHTML = '';
+    }
+}
+
+function openMockOriginClaim() {
+    alert("Giả lập: Mở popup hoặc tab chi tiết cho Hồ sơ gốc HS-2023-001 ở trạng thái Đang thực thi theo bản án.");
+}
+
+function addVerdictDocumentRow() {
+    const tableBody = document.getElementById('claimDocsTableBody');
+    if (!tableBody) return;
+    
+    // Check if exists
+    if(document.getElementById('docRowVerdict')) return;
+    
+    const tr = document.createElement('tr');
+    tr.id = 'docRowVerdict';
+    tr.innerHTML = `
+        <td style="text-align: center;">V</td>
+        <td>
+            <strong>Bản án/Quyết định của Tòa án <span class="required">*</span></strong><br>
+            <span style="font-size: 12px; color: var(--text-muted);">Bản sao y, bản trích lục (cho phép tải nhiều tệp)</span>
+        </td>
+        <td><span class="badge badge-draft">Chưa có tệp</span></td>
+        <td style="text-align: center;">
+            <div class="upload-wrapper" style="display: inline-block;">
+                <input type="file" id="uploadVerdict" multiple style="display:none" onchange="handleVerdictDocUpload(this)">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('uploadVerdict').click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Tải lên
+                </button>
+            </div>
+            <div id="verdictFilesContainer" style="margin-top: 5px; text-align: left;"></div>
+        </td>
+    `;
+    tableBody.insertBefore(tr, tableBody.firstChild);
+}
+
+function removeVerdictDocumentRow() {
+    const row = document.getElementById('docRowVerdict');
+    if(row) row.remove();
+}
+
+function handleVerdictDocUpload(input) {
+    const container = document.getElementById('verdictFilesContainer');
+    const files = input.files;
+    if(files.length === 0) return;
+    
+    const tr = document.getElementById('docRowVerdict');
+    if(tr) tr.querySelector('.badge').className = 'badge badge-success';
+    if(tr) tr.querySelector('.badge').innerText = files.length + ' tệp đính kèm';
+    
+    let html = '';
+    for(let i=0; i<files.length; i++) {
+        html += \`<div style="font-size: 12px; margin-top: 3px;">
+            <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> \${files[i].name} 
+            <a href="#" style="color:var(--primary-color); margin-left: 5px;">Xem file</a>
+            <a href="#" style="color:var(--danger-color); margin-left: 5px;" onclick="this.parentElement.remove(); return false;">Xóa</a>
+        </div>\`;
+    }
+    container.innerHTML = html;
+    showToast("Đã tải lên tệp tin bản án thành công!", "success");
+}

@@ -1745,11 +1745,42 @@
             // Populate grid list
             renderDecTable();
 
-            // Handle query parameters for independent detail view in new tab
+            // Handle query parameters for independent detail view in new tab or embedded iframe
             const urlParams = new URLSearchParams(window.location.search);
             const paramId = urlParams.get('id');
             const paramMode = urlParams.get('mode');
-            if (paramId && paramMode === 'view') {
+            const paramEmbed = urlParams.get('embed');
+            const paramDecNo = urlParams.get('decNo');
+
+            if (paramEmbed === 'true') {
+                // Remove layout constraints for iframe embedding
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.style.display = 'none';
+                const header = document.querySelector('.header');
+                if (header) header.style.display = 'none';
+                const mainContent = document.querySelector('.main-content');
+                if (mainContent) {
+                    mainContent.style.marginLeft = '0';
+                    mainContent.style.marginTop = '0';
+                    mainContent.style.height = '100vh';
+                    mainContent.style.padding = '0';
+                }
+
+                setTimeout(() => {
+                    let targetId = 'D5'; // fallback
+                    if (paramDecNo) {
+                        const matched = decisionsList.find(d => d.decNo === paramDecNo);
+                        if (matched) targetId = matched.id;
+                    }
+                    viewDecisionDetail(targetId);
+                    
+                    // Hide header and footers to look seamless in parent modal
+                    const formHeader = document.querySelector('.inline-form-header');
+                    if (formHeader) formHeader.style.display = 'none';
+                    const formFooter = document.getElementById('formDecFooter');
+                    if (formFooter) formFooter.style.display = 'none';
+                }, 150);
+            } else if (paramId && paramMode === 'view') {
                 setTimeout(() => {
                     viewDecisionDetail(paramId);
                     // Hide search or list view and customize back buttons for stand-alone window
@@ -1772,6 +1803,7 @@
                 }, 150);
             }
         });
+
 
         // Switch role: Officer vs Leader
         function switchUserRole(role) {
