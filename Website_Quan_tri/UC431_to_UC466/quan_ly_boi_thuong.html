@@ -1069,7 +1069,8 @@
                             <option value="Tiếp nhận trực tiếp">Tiếp nhận trực tiếp</option>
                             <option value="Nhận qua bưu điện/Bưu chính">Nhận qua bưu điện/Bưu chính</option>
                             <option value="Dịch vụ công">Dịch vụ công</option>
-                            <option value="Cán bộ chủ động nhập theo tố tụng/thi hành án">Cán bộ chủ động nhập theo tố tụng/thi hành án</option>
+                            <option value="Cán bộ chủ động nhập theo tố tụng/thi hành án">Cán bộ chủ động nhập theo tố
+                                tụng/thi hành án</option>
                         </select>
                     </div>
                     <div></div>
@@ -1159,7 +1160,8 @@
         <!-- INLINE CLAIM FORM PANEL -->
         <div id="inlineClaimFormPanel" class="inline-form-panel">
             <div class="inline-form-header">
-                <span class="inline-form-title"><i class="fa-solid fa-file-signature"></i> LẬP HỒ SƠ YÊU CẦU BỒI THƯỜNG</span>
+                <span class="inline-form-title"><i class="fa-solid fa-file-signature"></i> LẬP HỒ SƠ YÊU CẦU BỒI
+                    THƯỜNG</span>
                 <button class="btn btn-secondary btn-sm" onclick="closeInlineClaimForm()"><i
                         class="fa-solid fa-xmark"></i> Đóng</button>
             </div>
@@ -1263,23 +1265,31 @@
                 <div class="info-group-title">I. Thông tin Hồ sơ yêu cầu</div>
 
                 <!-- INITIALIZATION SECTION -->
-                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #86efac; padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.1);">
-                    
+                <div
+                    style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #86efac; padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.1);">
+
                     <div class="grid-2" style="gap: 24px;">
                         <!-- LOẠI YÊU CẦU BỒI THƯỜNG -->
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label" style="font-weight: 700; color: #14532d; margin-bottom: 8px;">Loại yêu cầu giải quyết bồi thường <span class="required">*</span></span>
+                            <span class="form-label" style="font-weight: 700; color: #14532d; margin-bottom: 8px;">Loại
+                                yêu cầu giải quyết bồi thường <span class="required">*</span></span>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
-                                    <input type="radio" name="claimRequestType" value="both" checked onchange="handleRequestTypeChange(this.value)">
+                                <label
+                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
+                                    <input type="radio" name="claimRequestType" value="both" checked
+                                        onchange="handleRequestTypeChange(this.value)">
                                     Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)
                                 </label>
-                                <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
-                                    <input type="radio" name="claimRequestType" value="money" onchange="handleRequestTypeChange(this.value)">
+                                <label
+                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
+                                    <input type="radio" name="claimRequestType" value="money"
+                                        onchange="handleRequestTypeChange(this.value)">
                                     Chỉ yêu cầu bồi thường thiệt hại bằng tiền
                                 </label>
-                                <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
-                                    <input type="radio" name="claimRequestType" value="honor" onchange="handleRequestTypeChange(this.value)">
+                                <label
+                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
+                                    <input type="radio" name="claimRequestType" value="honor"
+                                        onchange="handleRequestTypeChange(this.value)">
                                     Chỉ yêu cầu phục hồi danh dự
                                 </label>
                             </div>
@@ -1287,22 +1297,28 @@
 
                         <!-- TÌNH TRẠNG BẢN ÁN -->
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label" style="font-weight: 700; color: #14532d; margin-bottom: 8px;">Tình trạng Pháp lý <span class="required">*</span></span>
+                            <span class="form-label" style="font-weight: 700; color: #14532d; margin-bottom: 8px;">Tình
+                                trạng Pháp lý <span class="required">*</span></span>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
-                                    <input type="radio" name="claimHasVerdictRadio" value="false" checked onchange="toggleVerdictFields(false)">
+                                <label
+                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
+                                    <input type="radio" name="claimHasVerdictRadio" value="false" checked
+                                        onchange="toggleVerdictFields(false)">
                                     Chưa có Bản án/Quyết định
                                 </label>
-                                <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--primary-color);">
-                                    <input type="radio" name="claimHasVerdictRadio" value="true" onchange="toggleVerdictFields(true)">
-                                    Đã có Bản án/Quyết định của Tòa án xác định mức bồi thường
+                                <label
+                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--primary-color);">
+                                    <input type="radio" name="claimHasVerdictRadio" value="true"
+                                        onchange="toggleVerdictFields(true)">
+                                    Đã có Bản án/Quyết định
                                 </label>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="verdictFieldsBlock" style="display: none; background-color: #f8fafc; padding: 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); margin-bottom: 20px;">
+                <div id="verdictFieldsBlock"
+                    style="display: none; background-color: #f8fafc; padding: 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); margin-bottom: 20px;">
                     <div class="grid-2" style="gap: 16px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Nguồn phát sinh bản án<span class="required">*</span></span>
@@ -1313,7 +1329,9 @@
                         </div>
                         <div class="form-group" id="verdictOriginClaimGroup" style="margin-bottom: 0;">
                             <span class="form-label">Hồ sơ yêu cầu bồi thường gốc liên quan</span>
-                            <input type="text" class="form-control" id="verdictOriginClaim" placeholder="Nhập hoặc chọn mã hồ sơ..." list="originClaimList" onchange="handleVerdictOriginChange(this.value)">
+                            <input type="text" class="form-control" id="verdictOriginClaim"
+                                placeholder="Nhập hoặc chọn mã hồ sơ..." list="originClaimList"
+                                onchange="handleVerdictOriginChange(this.value)">
                             <datalist id="originClaimList">
                                 <option value="HS-2023-001 (Nguyễn Văn A) - Đang thực thi theo bản án"></option>
                                 <option value="HS-2023-005 (Trần Thị B) - Chờ thụ lý"></option>
@@ -1321,13 +1339,16 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Số Bản án/Quyết định<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="verdictNumber" placeholder="Nhập số Bản án/Quyết định...">
+                            <input type="text" class="form-control" id="verdictNumber"
+                                placeholder="Nhập số Bản án/Quyết định...">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Ngày Bản án/Quyết định có hiệu lực<span class="required">*</span></span>
+                            <span class="form-label">Ngày Bản án/Quyết định có hiệu lực<span
+                                    class="required">*</span></span>
                             <div class="date-input-wrapper">
-                                <input type="text" class="form-control" id="verdictEffectiveDate" placeholder="dd/mm/yyyy">
+                                <input type="text" class="form-control" id="verdictEffectiveDate"
+                                    placeholder="dd/mm/yyyy">
                                 <i class="fa-regular fa-calendar-days"></i>
                             </div>
                             <div class="error-message">Đây là trường bắt buộc</div>
@@ -1342,7 +1363,8 @@
                             <option value="Tiếp nhận trực tiếp">Tiếp nhận trực tiếp</option>
                             <option value="Nhận qua bưu điện/Bưu chính">Nhận qua bưu điện/Bưu chính</option>
                             <option value="Dịch vụ công">Dịch vụ công</option>
-                            <option value="Cán bộ chủ động nhập theo tố tụng/thi hành án">Cán bộ chủ động nhập theo tố tụng/thi hành án</option>
+                            <option value="Cán bộ chủ động nhập theo tố tụng/thi hành án">Cán bộ chủ động nhập theo tố
+                                tụng/thi hành án</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1357,7 +1379,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="form-group" style="margin-bottom: 16px;">
                     <span class="form-label">Cơ quan giải quyết bồi thường</span>
                     <input type="text" class="form-control" id="claimCqNhan"
@@ -1389,12 +1411,16 @@
                         <div
                             style="font-weight: 600; color: var(--primary-color); margin-bottom: 4px; font-size: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
                             <i class="fa-solid fa-user" style="color: var(--primary-color);"></i> Thông tin cá nhân
-                            & Liên hệ <span class="verdict-group-label" style="display:none; color: #ea580c; font-size: 13px; font-weight: normal; margin-left: 8px;">(Nhóm 1: Theo bản án)</span>
+                            & Liên hệ <span class="verdict-group-label"
+                                style="display:none; color: #ea580c; font-size: 13px; font-weight: normal; margin-left: 8px;">(Nhóm
+                                1: Theo bản án)</span>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Họ và tên người yêu cầu bồi thường<span
-                                    class="required">*</span><span class="verdict-sub-label" style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối chiếu theo bản án đính kèm)</span></span>
+                                    class="required">*</span><span class="verdict-sub-label"
+                                    style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
+                                    chiếu theo bản án đính kèm)</span></span>
                             <input type="text" class="form-control" id="claimNYCName" placeholder="Nhập họ và tên...">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
@@ -1425,7 +1451,10 @@
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Ngày tháng năm sinh<span class="required">*</span><span class="verdict-sub-label" style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối chiếu theo bản án đính kèm)</span></span>
+                                <span class="form-label">Ngày tháng năm sinh<span class="required">*</span><span
+                                        class="verdict-sub-label"
+                                        style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
+                                        chiếu theo bản án đính kèm)</span></span>
                                 <input type="text" class="form-control" id="claimNYCBirth" placeholder="dd/mm/yyyy">
                                 <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
@@ -1433,8 +1462,10 @@
 
                         <!-- Trạng thái người bị thiệt hại (căn cứ Điều 57.6) -->
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Trạng thái người bị thiệt hại <span
-                                    class="required">*</span><span class="verdict-sub-label" style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối chiếu theo bản án đính kèm)</span></span>
+                            <span class="form-label">Trạng thái người bị thiệt hại <span class="required">*</span><span
+                                    class="verdict-sub-label"
+                                    style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
+                                    chiếu theo bản án đính kèm)</span></span>
                             <div
                                 style="display: flex; gap: 20px; align-items: center; height: 38px; padding-left: 5px;">
                                 <label
@@ -1471,7 +1502,9 @@
                         <div
                             style="font-weight: 600; color: var(--primary-color); margin-bottom: 4px; font-size: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
                             <i class="fa-solid fa-address-book" style="color: var(--primary-color);"></i> Giấy tờ
-                            pháp lý & Địa chỉ <span class="verdict-group-label" style="display:none; color: #ea580c; font-size: 13px; font-weight: normal; margin-left: 8px;">(Nhóm 2: Bổ sung ngoài bản án)</span>
+                            pháp lý & Địa chỉ <span class="verdict-group-label"
+                                style="display:none; color: #ea580c; font-size: 13px; font-weight: normal; margin-left: 8px;">(Nhóm
+                                2: Bổ sung ngoài bản án)</span>
                         </div>
 
                         <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
@@ -1535,7 +1568,10 @@
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Địa chỉ chi tiết<span class="required">*</span><span class="verdict-sub-label" style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối chiếu theo bản án đính kèm)</span></span>
+                            <span class="form-label">Địa chỉ chi tiết<span class="required">*</span><span
+                                    class="verdict-sub-label"
+                                    style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
+                                    chiếu theo bản án đính kèm)</span></span>
                             <input type="text" class="form-control" id="claimNYCAddress"
                                 placeholder="Nhập địa chỉ nhà, tên đường, phường/xã...">
                             <div class="error-message">Đây là trường bắt buộc</div>
@@ -2759,7 +2795,8 @@
                                 <div class="form-group" style="margin-bottom: 12px;">
                                     <span class="form-label">Địa điểm tổ chức dự kiến</span>
                                     <input type="text" class="form-control" id="editPhddStep1ExpectedVenue"
-                                        placeholder="Ví dụ: Hội trường UBND xã/phường..." value="Hội trường Sở Tư pháp Thành phố Hà Nội">
+                                        placeholder="Ví dụ: Hội trường UBND xã/phường..."
+                                        value="Hội trường Sở Tư pháp Thành phố Hà Nội">
                                 </div>
                                 <div class="form-group" style="margin: 0;">
                                     <span class="form-label">Thành phần tham gia dự kiến</span>
@@ -2823,7 +2860,8 @@
                                             <span class="form-label">Tên tờ báo Trung ương dự kiến</span>
                                             <input type="text" class="form-control"
                                                 id="editPhddStep1ExpectedNewsNameCentral"
-                                                placeholder="Ví dụ: Báo Nhân Dân, Báo Pháp luật Việt Nam..." value="Báo Pháp luật Việt Nam">
+                                                placeholder="Ví dụ: Báo Nhân Dân, Báo Pháp luật Việt Nam..."
+                                                value="Báo Pháp luật Việt Nam">
                                         </div>
                                         <div class="form-group" style="margin-bottom: 0;">
                                             <span class="form-label">Tên báo Địa phương nơi cư trú/đặt trụ sở dự
@@ -2855,7 +2893,8 @@
                                 <div class="form-group" style="margin-bottom: 12px;">
                                     <label
                                         style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: normal;">
-                                        <input type="checkbox" id="phddStep1ExpectedNewsPortalCheck" checked> Đăng tải lên Cổng
+                                        <input type="checkbox" id="phddStep1ExpectedNewsPortalCheck" checked> Đăng tải
+                                        lên Cổng
                                         thông tin điện tử dự kiến
                                     </label>
                                 </div>
@@ -6194,7 +6233,7 @@
             const section = document.getElementById('advancePaymentSection');
             const hasVerdictRadio = document.querySelector('input[name="claimHasVerdictRadio"]:checked');
             const hasVerdict = hasVerdictRadio && hasVerdictRadio.value === 'true';
-            
+
             if (section) {
                 if (hasVerdict) {
                     section.style.display = 'none';
@@ -12537,94 +12576,94 @@
                 if (typeof toggleNewsPortalUrl === 'function') toggleNewsPortalUrl(portalChecked);
             };
         });
-// ======== NEW LOGIC FOR VERDICT (BẢN ÁN) ========
-function toggleVerdictFields(isChecked) {
-    const verdictBlock = document.getElementById('verdictFieldsBlock');
-    const docBaseBlock = document.getElementById('docBaseBlock');
-    const advanceSection = document.getElementById('advancePaymentSection');
-    const quickSearch = document.getElementById('quickSearchContainer');
-    const claimNopKenh = document.getElementById('claimNopKenh');
-    const labels1 = document.querySelectorAll('.verdict-group-label');
-    const labels2 = document.querySelectorAll('.verdict-sub-label');
-    const officerBlock = document.getElementById('claimOfficerContainerForm');
-    
-    if (isChecked) {
-        if(verdictBlock) verdictBlock.style.display = 'block';
-        if(docBaseBlock) docBaseBlock.style.display = 'none';
-        if(advanceSection) advanceSection.style.display = 'none';
-        if(quickSearch) quickSearch.style.display = 'none';
-        
-        if(claimNopKenh) {
-            claimNopKenh.value = 'Cán bộ chủ động nhập theo tố tụng/thi hành án';
-            claimNopKenh.setAttribute('disabled', 'true');
-        }
-        
-        labels1.forEach(l => l.style.display = 'inline');
-        labels2.forEach(l => l.style.display = 'inline');
-        
-        if (officerBlock) officerBlock.style.display = 'block';
-        
-        addVerdictDocumentRow();
-    } else {
-        if(verdictBlock) verdictBlock.style.display = 'none';
-        if(docBaseBlock) docBaseBlock.style.display = 'block';
-        if(advanceSection) advanceSection.style.display = 'block';
-        if(quickSearch) quickSearch.style.display = 'block';
-        
-        if(claimNopKenh) {
-            claimNopKenh.removeAttribute('disabled');
-        }
-        
-        labels1.forEach(l => l.style.display = 'none');
-        labels2.forEach(l => l.style.display = 'none');
-        
-        if (officerBlock) officerBlock.style.display = 'none';
-        
-        removeVerdictDocumentRow();
-    }
-}
+        // ======== NEW LOGIC FOR VERDICT (BẢN ÁN) ========
+        function toggleVerdictFields(isChecked) {
+            const verdictBlock = document.getElementById('verdictFieldsBlock');
+            const docBaseBlock = document.getElementById('docBaseBlock');
+            const advanceSection = document.getElementById('advancePaymentSection');
+            const quickSearch = document.getElementById('quickSearchContainer');
+            const claimNopKenh = document.getElementById('claimNopKenh');
+            const labels1 = document.querySelectorAll('.verdict-group-label');
+            const labels2 = document.querySelectorAll('.verdict-sub-label');
+            const officerBlock = document.getElementById('claimOfficerContainerForm');
 
-function toggleVerdictSource(source) {
-    const originGroup = document.getElementById('verdictOriginClaimGroup');
-    if (source === 'Điều 52') {
-        if(originGroup) originGroup.style.display = 'block';
-    } else {
-        if(originGroup) originGroup.style.display = 'none';
-    }
-}
+            if (isChecked) {
+                if (verdictBlock) verdictBlock.style.display = 'block';
+                if (docBaseBlock) docBaseBlock.style.display = 'none';
+                if (advanceSection) advanceSection.style.display = 'none';
+                if (quickSearch) quickSearch.style.display = 'none';
 
-function handleVerdictOriginChange(value) {
-    if (value && value.includes('Đang thực thi theo bản án')) {
-        showToast("Đã lấy thông tin từ Hồ sơ gốc. Tự động điền dữ liệu thành công.", "success");
-        
-        let linkWrapper = document.getElementById('mockOriginLinkWrapper');
-        if (!linkWrapper) {
-            linkWrapper = document.createElement('div');
-            linkWrapper.id = 'mockOriginLinkWrapper';
-            linkWrapper.style.marginTop = '12px';
-            const originInput = document.getElementById('verdictOriginClaim');
-            originInput.parentNode.appendChild(linkWrapper);
+                if (claimNopKenh) {
+                    claimNopKenh.value = 'Cán bộ chủ động nhập theo tố tụng/thi hành án';
+                    claimNopKenh.setAttribute('disabled', 'true');
+                }
+
+                labels1.forEach(l => l.style.display = 'inline');
+                labels2.forEach(l => l.style.display = 'inline');
+
+                if (officerBlock) officerBlock.style.display = 'block';
+
+                addVerdictDocumentRow();
+            } else {
+                if (verdictBlock) verdictBlock.style.display = 'none';
+                if (docBaseBlock) docBaseBlock.style.display = 'block';
+                if (advanceSection) advanceSection.style.display = 'block';
+                if (quickSearch) quickSearch.style.display = 'block';
+
+                if (claimNopKenh) {
+                    claimNopKenh.removeAttribute('disabled');
+                }
+
+                labels1.forEach(l => l.style.display = 'none');
+                labels2.forEach(l => l.style.display = 'none');
+
+                if (officerBlock) officerBlock.style.display = 'none';
+
+                removeVerdictDocumentRow();
+            }
         }
-        linkWrapper.innerHTML = `<a href="#" onclick="openMockOriginClaim(); return false;" style="font-size: 14px; font-weight: 700; color: #d97706; text-decoration: underline; background-color: #fef3c7; padding: 6px 12px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #fde68a; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;"><i class="fa-solid fa-up-right-from-square"></i> Xem chi tiết hồ sơ gốc đã liên kết</a>`;
 
-        // Auto-fill Data
-        if(document.getElementById('claimNYCName')) document.getElementById('claimNYCName').value = "Nguyễn Văn A";
-        if(document.getElementById('claimNYCCmnd')) document.getElementById('claimNYCCmnd').value = "001090123456";
-        if(document.getElementById('claimNYCIssueDate')) document.getElementById('claimNYCIssueDate').value = "12/05/2018";
-        if(document.getElementById('claimNYCIssuePlace')) document.getElementById('claimNYCIssuePlace').value = "Cục CSQLHC về TTXH";
-        if(document.getElementById('claimNYCPhone')) document.getElementById('claimNYCPhone').value = "0901234567";
-        if(document.getElementById('claimNYCAddress')) document.getElementById('claimNYCAddress').value = "Số 12, ngõ 34, đường Nguyễn Trãi, Quận Thanh Xuân, Hà Nội";
-        
-        if(document.getElementById('claimOfficerNameForm')) document.getElementById('claimOfficerNameForm').value = "Lê Hồng Quân";
-        if(document.getElementById('claimOfficerPositionForm')) document.getElementById('claimOfficerPositionForm').value = "Chuyên viên";
-        if(document.getElementById('claimOfficerAgencyForm')) document.getElementById('claimOfficerAgencyForm').value = "Sở Tư pháp Hà Nội";
-        
-        if(document.getElementById('claimHanhVi')) document.getElementById('claimHanhVi').value = "Ra quyết định xử phạt vi phạm hành chính sai thẩm quyền và không đúng quy định pháp luật.";
-        if(document.getElementById('claimNhanQua')) document.getElementById('claimNhanQua').value = "Hành vi sai phạm trực tiếp dẫn đến thiệt hại về tài sản cho người yêu cầu.";
-        
-        const damagesBody = document.getElementById('claimDamagesTableBody');
-        if (damagesBody) {
-            damagesBody.innerHTML = `
+        function toggleVerdictSource(source) {
+            const originGroup = document.getElementById('verdictOriginClaimGroup');
+            if (source === 'Điều 52') {
+                if (originGroup) originGroup.style.display = 'block';
+            } else {
+                if (originGroup) originGroup.style.display = 'none';
+            }
+        }
+
+        function handleVerdictOriginChange(value) {
+            if (value && value.includes('Đang thực thi theo bản án')) {
+                showToast("Đã lấy thông tin từ Hồ sơ gốc. Tự động điền dữ liệu thành công.", "success");
+
+                let linkWrapper = document.getElementById('mockOriginLinkWrapper');
+                if (!linkWrapper) {
+                    linkWrapper = document.createElement('div');
+                    linkWrapper.id = 'mockOriginLinkWrapper';
+                    linkWrapper.style.marginTop = '12px';
+                    const originInput = document.getElementById('verdictOriginClaim');
+                    originInput.parentNode.appendChild(linkWrapper);
+                }
+                linkWrapper.innerHTML = `<a href="#" onclick="openMockOriginClaim(); return false;" style="font-size: 14px; font-weight: 700; color: #d97706; text-decoration: underline; background-color: #fef3c7; padding: 6px 12px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #fde68a; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;"><i class="fa-solid fa-up-right-from-square"></i> Xem chi tiết hồ sơ gốc đã liên kết</a>`;
+
+                // Auto-fill Data
+                if (document.getElementById('claimNYCName')) document.getElementById('claimNYCName').value = "Nguyễn Văn A";
+                if (document.getElementById('claimNYCCmnd')) document.getElementById('claimNYCCmnd').value = "001090123456";
+                if (document.getElementById('claimNYCIssueDate')) document.getElementById('claimNYCIssueDate').value = "12/05/2018";
+                if (document.getElementById('claimNYCIssuePlace')) document.getElementById('claimNYCIssuePlace').value = "Cục CSQLHC về TTXH";
+                if (document.getElementById('claimNYCPhone')) document.getElementById('claimNYCPhone').value = "0901234567";
+                if (document.getElementById('claimNYCAddress')) document.getElementById('claimNYCAddress').value = "Số 12, ngõ 34, đường Nguyễn Trãi, Quận Thanh Xuân, Hà Nội";
+
+                if (document.getElementById('claimOfficerNameForm')) document.getElementById('claimOfficerNameForm').value = "Lê Hồng Quân";
+                if (document.getElementById('claimOfficerPositionForm')) document.getElementById('claimOfficerPositionForm').value = "Chuyên viên";
+                if (document.getElementById('claimOfficerAgencyForm')) document.getElementById('claimOfficerAgencyForm').value = "Sở Tư pháp Hà Nội";
+
+                if (document.getElementById('claimHanhVi')) document.getElementById('claimHanhVi').value = "Ra quyết định xử phạt vi phạm hành chính sai thẩm quyền và không đúng quy định pháp luật.";
+                if (document.getElementById('claimNhanQua')) document.getElementById('claimNhanQua').value = "Hành vi sai phạm trực tiếp dẫn đến thiệt hại về tài sản cho người yêu cầu.";
+
+                const damagesBody = document.getElementById('claimDamagesTableBody');
+                if (damagesBody) {
+                    damagesBody.innerHTML = `
                 <tr>
                     <td>Thiệt hại do tài sản bị xâm phạm</td>
                     <td>Thiệt hại đối với tiền bị tịch thu oan</td>
@@ -12644,12 +12683,12 @@ function handleVerdictOriginChange(value) {
                     </td>
                 </tr>
             `;
-            if (typeof calculateTotalDamages === 'function') calculateTotalDamages();
-        }
-        
-        const docsBody = document.getElementById('claimDocsTableBody');
-        if (docsBody) {
-            docsBody.innerHTML += `
+                    if (typeof calculateTotalDamages === 'function') calculateTotalDamages();
+                }
+
+                const docsBody = document.getElementById('claimDocsTableBody');
+                if (docsBody) {
+                    docsBody.innerHTML += `
                 <tr>
                     <td style="text-align: center;">4</td>
                     <td>
@@ -12667,27 +12706,27 @@ function handleVerdictOriginChange(value) {
                     </td>
                 </tr>
             `;
+                }
+            } else {
+                const linkWrapper = document.getElementById('mockOriginLinkWrapper');
+                if (linkWrapper) linkWrapper.innerHTML = '';
+            }
         }
-    } else {
-        const linkWrapper = document.getElementById('mockOriginLinkWrapper');
-        if (linkWrapper) linkWrapper.innerHTML = '';
-    }
-}
 
-function openMockOriginClaim() {
-    alert("Giả lập: Mở popup hoặc tab chi tiết cho Hồ sơ gốc HS-2023-001 ở trạng thái Đang thực thi theo bản án.");
-}
+        function openMockOriginClaim() {
+            alert("Giả lập: Mở popup hoặc tab chi tiết cho Hồ sơ gốc HS-2023-001 ở trạng thái Đang thực thi theo bản án.");
+        }
 
-function addVerdictDocumentRow() {
-    const tableBody = document.getElementById('claimDocsTableBody');
-    if (!tableBody) return;
-    
-    // Check if exists
-    if(document.getElementById('docRowVerdict')) return;
-    
-    const tr = document.createElement('tr');
-    tr.id = 'docRowVerdict';
-    tr.innerHTML = `
+        function addVerdictDocumentRow() {
+            const tableBody = document.getElementById('claimDocsTableBody');
+            if (!tableBody) return;
+
+            // Check if exists
+            if (document.getElementById('docRowVerdict')) return;
+
+            const tr = document.createElement('tr');
+            tr.id = 'docRowVerdict';
+            tr.innerHTML = `
         <td style="text-align: center;">V</td>
         <td>
             <strong>Bản án/Quyết định của Tòa án <span class="required">*</span></strong><br>
@@ -12704,34 +12743,34 @@ function addVerdictDocumentRow() {
             <div id="verdictFilesContainer" style="margin-top: 5px; text-align: left;"></div>
         </td>
     `;
-    tableBody.insertBefore(tr, tableBody.firstChild);
-}
+            tableBody.insertBefore(tr, tableBody.firstChild);
+        }
 
-function removeVerdictDocumentRow() {
-    const row = document.getElementById('docRowVerdict');
-    if(row) row.remove();
-}
+        function removeVerdictDocumentRow() {
+            const row = document.getElementById('docRowVerdict');
+            if (row) row.remove();
+        }
 
-function handleVerdictDocUpload(input) {
-    const container = document.getElementById('verdictFilesContainer');
-    const files = input.files;
-    if(files.length === 0) return;
-    
-    const tr = document.getElementById('docRowVerdict');
-    if(tr) tr.querySelector('.badge').className = 'badge badge-success';
-    if(tr) tr.querySelector('.badge').innerText = files.length + ' tệp đính kèm';
-    
-    let html = '';
-    for(let i=0; i<files.length; i++) {
-        html += `<div style="font-size: 12px; margin-top: 3px;">
+        function handleVerdictDocUpload(input) {
+            const container = document.getElementById('verdictFilesContainer');
+            const files = input.files;
+            if (files.length === 0) return;
+
+            const tr = document.getElementById('docRowVerdict');
+            if (tr) tr.querySelector('.badge').className = 'badge badge-success';
+            if (tr) tr.querySelector('.badge').innerText = files.length + ' tệp đính kèm';
+
+            let html = '';
+            for (let i = 0; i < files.length; i++) {
+                html += `<div style="font-size: 12px; margin-top: 3px;">
             <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${files[i].name} 
             <a href="#" style="color:var(--primary-color); margin-left: 5px;">Xem file</a>
             <a href="#" style="color:var(--danger-color); margin-left: 5px;" onclick="this.parentElement.remove(); return false;">Xóa</a>
         </div>`;
-    }
-    container.innerHTML = html;
-    showToast("Đã tải lên tệp tin bản án thành công!", "success");
-}
+            }
+            container.innerHTML = html;
+            showToast("Đã tải lên tệp tin bản án thành công!", "success");
+        }
     </script>
 </body>
 
