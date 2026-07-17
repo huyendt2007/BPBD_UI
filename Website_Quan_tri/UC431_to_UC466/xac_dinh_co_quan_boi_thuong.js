@@ -564,6 +564,29 @@ function showDetailScreen(id) {
 
     document.getElementById('detailRequestId').value = id;
     document.getElementById('dtCode').innerText = item.code;
+
+    // Display rejection details if status is Bị từ chối
+    const rejectionBlock = document.getElementById('dtRejectionBlock');
+    if (rejectionBlock) {
+        if (item.status === 'Bị từ chối') {
+            rejectionBlock.style.display = 'block';
+            document.getElementById('dtRejectionReason').innerText = item.rejectionReason || item.procReason || 'Không có lý do.';
+            const fileLink = document.getElementById('dtRejectionFileLink');
+            const fileVal = item.rejectionFile || item.procDecisionFile;
+            if (fileVal) {
+                fileLink.innerHTML = `
+                    <span style="font-weight: 600; color: #0F766E;">
+                        <i class="fa-solid fa-file-pdf"></i> ${fileVal}
+                        <a href="#" target="_blank" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>
+                    </span>
+                `;
+            } else {
+                fileLink.innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Không có tệp đính kèm</span>`;
+            }
+        } else {
+            rejectionBlock.style.display = 'none';
+        }
+    }
     document.getElementById('dtHinhThucTiepNhan').innerText = item.hinhThucTiepNhan;
     document.getElementById('dtLinhVuc').innerText = item.linhVuc;
     document.getElementById('dtNYCName').innerText = item.nycName;
@@ -640,6 +663,7 @@ function showDetailScreen(id) {
     footer.innerHTML = `<button class="btn btn-secondary" onclick="showListScreen()">Đóng</button>`;
 
     if (item.status === 'Chờ tiếp nhận') {
+        footer.innerHTML += `<button class="btn btn-danger" onclick="openRejectAcceptanceModal('${item.id}')"><i class="fa-solid fa-circle-xmark"></i> Từ chối tiếp nhận</button>`;
         footer.innerHTML += `<button class="btn btn-success" onclick="acceptRequest('${item.id}', true)"><i class="fa-solid fa-circle-check"></i> Tiếp nhận hồ sơ</button>`;
     } else if (item.status === 'Đang xác minh') {
         footer.innerHTML += `<button class="btn btn-primary" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i> Cập nhật kết quả xác minh</button>`;
@@ -1369,7 +1393,11 @@ function openOfficerModal() {
     document.getElementById('modalClaimOfficerCurrentPosition').value = '';
     toggleModalClaimOfficerStatus();
     
-    document.getElementById('claimOfficerModal').style.display = 'flex';
+    const modal = document.getElementById('claimOfficerModal');
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('visible');
+    }, 10);
 }
 
 function editOfficer(index) {
@@ -1383,11 +1411,19 @@ function editOfficer(index) {
     document.getElementById('modalClaimOfficerCurrentPosition').value = off.currentPosition || '';
     toggleModalClaimOfficerStatus();
     
-    document.getElementById('claimOfficerModal').style.display = 'flex';
+    const modal = document.getElementById('claimOfficerModal');
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('visible');
+    }, 10);
 }
 
 function closeClaimOfficerModal() {
-    document.getElementById('claimOfficerModal').style.display = 'none';
+    const modal = document.getElementById('claimOfficerModal');
+    modal.classList.remove('visible');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 200);
 }
 
 function toggleModalClaimOfficerStatus() {
@@ -1438,4 +1474,92 @@ function confirmDeleteOfficer(index) {
         renderOfficerTable();
         showToast("Đã xóa người thi hành công vụ khỏi danh sách", "success");
     });
+}
+
+let currentRejectFile = null;
+
+function handleRejectFileUpload(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        currentRejectFile = file.name;
+        
+        const container = document.getElementById('rejectAcceptanceFilesContainer');
+        container.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; margin-top: 5px; background: #F3F4F6; padding: 6px 12px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); width: fit-content;">
+                <i class="fa-solid fa-file-pdf" style="color: #EF4444;"></i>
+                <span style="font-weight: 500;">${file.name}</span>
+                <a href="#" onclick="event.preventDefault(); alert('Xem thử file: ' + '${file.name}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 10px;">Xem file</a>
+                <a href="#" onclick="event.preventDefault(); removeRejectFile();" style="color: #EF4444; text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 5px;">Xóa</a>
+            </div>
+        `;
+    }
+}
+
+function removeRejectFile() {
+    currentRejectFile = null;
+    document.getElementById('rejectAcceptanceFileInput').value = '';
+    document.getElementById('rejectAcceptanceFilesContainer').innerHTML = '';
+}
+
+function clearRejectAcceptanceValidation() {
+    const el = document.getElementById('rejectAcceptanceReason');
+    if (el) {
+        el.classList.remove('is-invalid');
+        const parent = el.closest('.form-group');
+        if (parent) {
+            const errMsg = parent.querySelector('.error-message');
+            if (errMsg) errMsg.style.display = 'none';
+        }
+    }
+}
+
+function openRejectAcceptanceModal(id) {
+    document.getElementById('modalRejectRequestId').value = id;
+    document.getElementById('rejectAcceptanceReason').value = '';
+    removeRejectFile();
+    clearRejectAcceptanceValidation();
+    
+    const modal = document.getElementById('rejectAcceptanceModal');
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('visible');
+    }, 10);
+}
+
+function closeRejectAcceptanceModal() {
+    const modal = document.getElementById('rejectAcceptanceModal');
+    modal.classList.remove('visible');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        clearRejectAcceptanceValidation();
+    }, 200);
+}
+
+function submitRejectAcceptance() {
+    clearRejectAcceptanceValidation();
+    const reason = document.getElementById('rejectAcceptanceReason').value.trim();
+    if (!reason) {
+        const el = document.getElementById('rejectAcceptanceReason');
+        el.classList.add('is-invalid');
+        const parent = el.closest('.form-group');
+        if (parent) {
+            const errMsg = parent.querySelector('.error-message');
+            if (errMsg) errMsg.style.display = 'block';
+        }
+        el.focus();
+        return;
+    }
+    
+    const id = document.getElementById('modalRejectRequestId').value;
+    const item = requestList.find(r => r.id === id);
+    if (item) {
+        item.status = 'Bị từ chối';
+        item.rejectionReason = reason;
+        item.rejectionFile = currentRejectFile;
+        
+        showToast("Đã từ chối tiếp nhận hồ sơ thành công", "success");
+        closeRejectAcceptanceModal();
+        showListScreen();
+        renderTable();
+    }
 }
