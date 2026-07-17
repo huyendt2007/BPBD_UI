@@ -396,51 +396,35 @@
                 <textarea class="form-control" id="procReason" rows="4" placeholder="Nhập lập luận, phân tích lý do chỉ định cơ quan giải quyết này dựa trên hồ sơ xác minh..."></textarea>
             </div>
 
-            <!-- ADDED: THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI -->
-            <div class="sub-section-title" style="margin-top: 20px;">THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI</div>
-            <div class="grid-2" style="margin-bottom: 15px;">
-                <div class="form-group">
-                    <span class="form-label">Họ và tên cán bộ gây thiệt hại<span class="required">*</span></span>
-                    <input type="text" class="form-control" id="procOfficerName" placeholder="Nhập họ và tên cán bộ...">
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Chức vụ tại thời điểm gây thiệt hại<span class="required">*</span></span>
-                    <input type="text" class="form-control" id="procOfficerPosition" placeholder="Ví dụ: Điều tra viên sơ cấp...">
-                </div>
+            <!-- THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; margin-bottom: 10px;">
+                <div class="sub-section-title" style="margin: 0; border: none; padding: 0;">THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI</div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openOfficerModal()"><i class="fa-solid fa-plus"></i> Thêm người thi hành công vụ</button>
             </div>
-            <div class="form-group">
-                <span class="form-label">Cơ quan công tác tại thời điểm gây thiệt hại<span class="required">*</span></span>
-                <input type="text" class="form-control" id="procOfficerAgency" placeholder="Nhập cơ quan công tác...">
+            
+            <div class="table-container" style="margin-bottom: 20px;">
+                <table class="custom-table" id="officerTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">STT</th>
+                            <th style="min-width: 150px;">Họ và tên</th>
+                            <th style="min-width: 150px;">Chức vụ lúc gây thiệt hại</th>
+                            <th style="min-width: 180px;">Cơ quan lúc gây thiệt hại</th>
+                            <th style="min-width: 150px;">Tình trạng hiện tại</th>
+                            <th style="min-width: 150px;">Chức vụ hiện tại</th>
+                            <th style="min-width: 180px;">Đơn vị hiện tại</th>
+                            <th style="width: 100px; text-align: center; min-width: 100px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="officerTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: var(--text-muted); font-style: italic;">
+                                Chưa có dữ liệu cán bộ gây thiệt hại. Bấm "Thêm người thi hành công vụ" để thêm mới.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="form-group">
-                <span class="form-label">Tình trạng công tác hiện tại<span class="required">*</span></span>
-                <select class="form-control" id="procOfficerStatus" onchange="toggleProcOfficerCurrentStatus()">
-                    <option value="Vẫn công tác tại đơn vị cũ">Vẫn công tác tại đơn vị cũ</option>
-                    <option value="Đã chuyển công tác">Đã chuyển công tác</option>
-                    <option value="Đã nghỉ hưu / nghỉ việc">Đã nghỉ hưu / nghỉ việc</option>
-                </select>
-            </div>
-            <div class="grid-2" id="procOfficerCurrentGroup" style="display: none; margin-bottom: 15px;">
-                <div class="form-group">
-                    <span class="form-label">Cơ quan công tác hiện tại<span class="required">*</span></span>
-                    <input type="text" class="form-control" id="procOfficerCurrentAgency" placeholder="Nhập cơ quan hiện tại...">
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Chức vụ hiện tại<span class="required">*</span></span>
-                    <input type="text" class="form-control" id="procOfficerCurrentPosition" placeholder="Nhập chức vụ hiện tại...">
-                </div>
-            </div>
-            <script>
-                function toggleProcOfficerCurrentStatus() {
-                    const status = document.getElementById('procOfficerStatus').value;
-                    const group = document.getElementById('procOfficerCurrentGroup');
-                    if (status === 'Đã chuyển công tác') {
-                        group.style.display = 'grid';
-                    } else {
-                        group.style.display = 'none';
-                    }
-                }
-            </script>
 
             <div class="form-group">
                 <span class="form-label">Tải lên file scan quyết định xác định cơ quan giải quyết bồi thường</span>
@@ -554,30 +538,29 @@
                         <div class="detail-value" style="line-height: 1.5;" id="dtProcReason"></div>
                     </div>
                     
-                    <div class="sub-section-title" style="color: var(--warning-color); margin-top: 15px;">V. THÔNG TIN ĐỐI TƯỢNG GÂY THIỆT HẠI</div>
-                    <div class="detail-row">
-                        <div class="detail-label">Cán bộ trực tiếp gây thiệt hại</div>
-                        <div class="detail-value" style="font-weight: 600;" id="dtOfficerName"></div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Chức vụ lúc gây thiệt hại</div>
-                        <div class="detail-value" id="dtOfficerPosition"></div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Cơ quan công tác lúc gây thiệt hại</div>
-                        <div class="detail-value" id="dtOfficerAgency"></div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Tình trạng công tác hiện tại</div>
-                        <div class="detail-value" id="dtOfficerStatus"></div>
-                    </div>
-                    <div class="detail-row" id="dtOfficerCurrentAgencyRow" style="display: none;">
-                        <div class="detail-label">Cơ quan công tác hiện tại</div>
-                        <div class="detail-value" id="dtOfficerCurrentAgency"></div>
-                    </div>
-                    <div class="detail-row" id="dtOfficerCurrentPositionRow" style="display: none;">
-                        <div class="detail-label">Chức vụ hiện tại</div>
-                        <div class="detail-value" id="dtOfficerCurrentPosition"></div>
+                    <!-- THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI (READ-ONLY TABLE) -->
+                    <div class="sub-section-title" style="color: var(--warning-color); margin-top: 15px;">V. THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI</div>
+                    <div class="table-container" style="margin-bottom: 20px;">
+                        <table class="custom-table" id="dtOfficerTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px; text-align: center;">STT</th>
+                                    <th style="min-width: 150px;">Họ và tên</th>
+                                    <th style="min-width: 150px;">Chức vụ lúc gây thiệt hại</th>
+                                    <th style="min-width: 180px;">Cơ quan lúc gây thiệt hại</th>
+                                    <th style="min-width: 150px;">Tình trạng hiện tại</th>
+                                    <th style="min-width: 150px;">Chức vụ hiện tại</th>
+                                    <th style="min-width: 180px;">Đơn vị hiện tại</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dtOfficerTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); font-style: italic;">
+                                        Không có dữ liệu người thi hành công vụ gây thiệt hại.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="detail-row">
@@ -712,6 +695,60 @@
     <div class="toast-notif success" id="toast">
         <i class="fa-solid fa-circle-check"></i>
         <span>Thông báo thành công!</span>
+    </div>
+
+    <!-- POPUP MODAL FOR ADDING/EDITING OFFICER -->
+    <div id="claimOfficerModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-container" style="max-width: 650px; width: 90%;">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0;">
+                    <h3 style="margin: 0; font-size: 16px; color: var(--primary-color);">
+                        <i class="fa-solid fa-user-shield"></i> Thông tin Người thi hành công vụ gây thiệt hại
+                    </h3>
+                    <span onclick="closeClaimOfficerModal()" style="cursor: pointer; font-size: 18px; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></span>
+                </div>
+                <div class="modal-body" style="padding: 20px; overflow-y: auto; flex: 1;">
+                    <input type="hidden" id="modalClaimOfficerId">
+                    <div class="grid-2" style="margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Họ và tên cán bộ gây thiệt hại</span>
+                            <input type="text" class="form-control" id="modalClaimOfficerName" placeholder="Nhập họ và tên cán bộ...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Chức vụ tại thời điểm gây thiệt hại</span>
+                            <input type="text" class="form-control" id="modalClaimOfficerPosition" placeholder="Ví dụ: Điều tra viên sơ cấp...">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <span class="form-label">Cơ quan công tác tại thời điểm gây thiệt hại</span>
+                        <input type="text" class="form-control" id="modalClaimOfficerAgency" placeholder="Nhập cơ quan công tác...">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <span class="form-label">Tình trạng công tác hiện tại</span>
+                        <select class="form-control" id="modalClaimOfficerStatus" onchange="toggleModalClaimOfficerStatus()">
+                            <option value="Vẫn công tác tại đơn vị cũ">Vẫn công tác tại đơn vị cũ</option>
+                            <option value="Đã chuyển công tác">Đã chuyển công tác</option>
+                            <option value="Đã nghỉ hưu / nghỉ việc">Đã nghỉ hưu / nghỉ việc</option>
+                            <option value="Không rõ">Không rõ</option>
+                        </select>
+                    </div>
+                    <div class="grid-2" id="modalClaimOfficerCurrentGroup" style="display: none; margin-bottom: 0;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Cơ quan công tác hiện tại</span>
+                            <input type="text" class="form-control" id="modalClaimOfficerCurrentAgency" placeholder="Nhập cơ quan hiện tại...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Chức vụ hiện tại</span>
+                            <input type="text" class="form-control" id="modalClaimOfficerCurrentPosition" placeholder="Nhập chức vụ hiện tại...">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--border-color); padding: 15px 20px; text-align: right; background: #f8fafc; flex-shrink: 0; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="closeClaimOfficerModal()">Hủy bỏ</button>
+                    <button class="btn btn-primary" onclick="saveClaimOfficerModal()">Lưu lại</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Custom Confirmation Modal HTML -->

@@ -56,12 +56,16 @@ let requestList = [
         procTargetAgency: "Cục Thi hành án dân sự tỉnh Lâm Đồng",
         procReason: "Tài sản thuộc diện thi hành cưỡng chế bởi cơ quan thi hành án và cơ quan địa chính địa phương cùng phối hợp thực hiện.",
         procDecisionFile: "Quyet_dinh_xac_minh_so_12.pdf",
-        procOfficerName: "Đỗ Xuân Tài",
-        procOfficerPosition: "Điều tra viên trung cấp",
-        procOfficerAgency: "Công an tỉnh Lâm Đồng",
-        procOfficerStatus: "Vẫn công tác tại đơn vị cũ",
-        procOfficerCurrentAgency: "Công an tỉnh Lâm Đồng",
-        procOfficerCurrentPosition: "Điều tra viên trung cấp",
+        officers: [
+            {
+                name: "Đỗ Xuân Tài",
+                position: "Điều tra viên trung cấp",
+                agency: "Công an tỉnh Lâm Đồng",
+                status: "Vẫn công tác tại đơn vị cũ",
+                currentAgency: "Công an tỉnh Lâm Đồng",
+                currentPosition: "Điều tra viên trung cấp"
+            }
+        ],
         claimCode: "-"
     },
     {
@@ -538,14 +542,9 @@ function showProcessScreen(id) {
     document.getElementById('procReason').value = item.procReason || "";
 
     // Prefill officer fields
-    document.getElementById('procOfficerName').value = item.procOfficerName || "";
-    document.getElementById('procOfficerPosition').value = item.procOfficerPosition || "";
-    document.getElementById('procOfficerAgency').value = item.procOfficerAgency || "";
-    const officerStatus = item.procOfficerStatus || "Vẫn công tác tại đơn vị cũ";
-    document.getElementById('procOfficerStatus').value = officerStatus;
-    document.getElementById('procOfficerCurrentAgency').value = item.procOfficerCurrentAgency || "";
-    document.getElementById('procOfficerCurrentPosition').value = item.procOfficerCurrentPosition || "";
-    toggleProcOfficerCurrentStatus(); // Trigger to show/hide current agency fields
+    // Prefill officer fields
+    currentOfficers = item.officers ? JSON.parse(JSON.stringify(item.officers)) : [];
+    renderOfficerTable();
 
     clearAttachedFile('procDecisionFile', 'procFileAttachmentInfo');
     if (item.procDecisionFile) {
@@ -603,27 +602,16 @@ function showDetailScreen(id) {
 
     // Verification Result block
     const verificationBlock = document.getElementById('dtVerificationResultBlock');
-    if (['Hoàn thành', 'Đã hoàn thành xác định', 'Đã có kết quả'].includes(item.status)) {
+    if (['Hoàn thành', 'Đã hoàn thành xác định', 'Đã có kết quả', 'Đang xác minh'].includes(item.status)) {
         verificationBlock.style.display = 'block';
         document.getElementById('dtProcBasis').innerText = item.procBasis || 'Đang xác minh, chưa có căn cứ';
         document.getElementById('dtProcTargetAgency').innerText = item.procTargetAgency || 'Đang tiến hành chỉ định';
         document.getElementById('dtProcReason').innerText = item.procReason || 'Đang cập nhật báo cáo kết luận...';
 
         // Populate officer fields
-        document.getElementById('dtOfficerName').innerText = item.procOfficerName || 'Đỗ Xuân Tài';
-        document.getElementById('dtOfficerPosition').innerText = item.procOfficerPosition || 'Điều tra viên trung cấp';
-        document.getElementById('dtOfficerAgency').innerText = item.procOfficerAgency || 'Công an tỉnh Lâm Đồng';
-        const officerStatus = item.procOfficerStatus || 'Vẫn công tác tại đơn vị cũ';
-        document.getElementById('dtOfficerStatus').innerText = officerStatus;
-        if (officerStatus === 'Đã chuyển công tác') {
-            document.getElementById('dtOfficerCurrentAgencyRow').style.display = 'flex';
-            document.getElementById('dtOfficerCurrentPositionRow').style.display = 'flex';
-            document.getElementById('dtOfficerCurrentAgency').innerText = item.procOfficerCurrentAgency || '';
-            document.getElementById('dtOfficerCurrentPosition').innerText = item.procOfficerCurrentPosition || '';
-        } else {
-            document.getElementById('dtOfficerCurrentAgencyRow').style.display = 'none';
-            document.getElementById('dtOfficerCurrentPositionRow').style.display = 'none';
-        }
+        // Populate officer fields
+        currentOfficers = item.officers ? JSON.parse(JSON.stringify(item.officers)) : [];
+        renderDtOfficerTable();
 
         if (item.procDecisionFile) {
             document.getElementById('dtProcDecisionFile').innerHTML = `
@@ -686,13 +674,14 @@ function showCreateClaimScreen(id) {
     document.getElementById('claimDocBase').value = `Quyết định chuyển giao cơ quan GQBT số 04/QĐ-XĐCQ đính kèm: ${item.procDecisionFile || 'QD.pdf'}`;
     document.getElementById('claimHanhVi').value = item.hanhVi;
 
-    document.getElementById('claimOfficerName').value = item.procOfficerName || '';
-    document.getElementById('claimOfficerPosition').value = item.procOfficerPosition || '';
-    document.getElementById('claimOfficerAgency').value = item.procOfficerAgency || '';
-    document.getElementById('claimOfficerStatus').value = item.procOfficerStatus || '';
-    if (item.procOfficerStatus === 'Đã chuyển công tác') {
+    const firstOfficer = item.officers && item.officers.length > 0 ? item.officers[0] : {};
+    document.getElementById('claimOfficerName').value = firstOfficer.name || '';
+    document.getElementById('claimOfficerPosition').value = firstOfficer.position || '';
+    document.getElementById('claimOfficerAgency').value = firstOfficer.agency || '';
+    document.getElementById('claimOfficerStatus').value = firstOfficer.status || 'Vẫn công tác tại đơn vị cũ';
+    if (firstOfficer.status === 'Đã chuyển công tác') {
         document.getElementById('claimOfficerCurrentGroup').style.display = 'block';
-        document.getElementById('claimOfficerCurrentAgency').value = item.procOfficerCurrentAgency || '';
+        document.getElementById('claimOfficerCurrentAgency').value = firstOfficer.currentAgency || '';
     } else {
         document.getElementById('claimOfficerCurrentGroup').style.display = 'none';
     }
@@ -967,12 +956,7 @@ function saveProcessResult(isComplete) {
         item.procReason = reason;
         item.procDecisionFile = file || "Quyet_dinh_chuyen_giao.pdf";
 
-        item.procOfficerName = document.getElementById('procOfficerName').value.trim();
-        item.procOfficerPosition = document.getElementById('procOfficerPosition').value.trim();
-        item.procOfficerAgency = document.getElementById('procOfficerAgency').value.trim();
-        item.procOfficerStatus = document.getElementById('procOfficerStatus').value;
-        item.procOfficerCurrentAgency = document.getElementById('procOfficerCurrentAgency').value.trim();
-        item.procOfficerCurrentPosition = document.getElementById('procOfficerCurrentPosition').value.trim();
+        item.officers = JSON.parse(JSON.stringify(currentOfficers));
 
         if (isComplete) {
             item.status = 'Hoàn thành';
@@ -1312,3 +1296,146 @@ document.addEventListener('click', function (event) {
         if (dropdown) dropdown.style.display = 'none';
     }
 });
+
+
+// ==========================================
+// OFFICER CRUD LOGIC FOR XAC_DINH_CO_QUAN
+// ==========================================
+let currentOfficers = [];
+
+function renderOfficerTable() {
+    const tbody = document.getElementById('officerTableBody');
+    if (!tbody) return;
+    
+    if (!currentOfficers || currentOfficers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); font-style: italic;">Chưa có dữ liệu cán bộ gây thiệt hại. Bấm "Thêm người thi hành công vụ" để thêm mới.</td></tr>`;
+        return;
+    }
+    
+    let html = '';
+    currentOfficers.forEach((off, idx) => {
+        html += `
+        <tr>
+            <td style="text-align: center;">${idx + 1}</td>
+            <td style="font-weight: 600;">${off.name}</td>
+            <td>${off.position}</td>
+            <td>${off.agency}</td>
+            <td>${off.status}</td>
+            <td>${off.status === 'Đã chuyển công tác' && off.currentPosition ? off.currentPosition : '-'}</td>
+            <td>${off.status === 'Đã chuyển công tác' && off.currentAgency ? off.currentAgency : '-'}</td>
+            <td style="text-align: center;">
+                <button type="button" class="icon-btn edit" onclick="editOfficer(${idx})" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="button" class="icon-btn delete" onclick="confirmDeleteOfficer(${idx})" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+        </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function renderDtOfficerTable() {
+    const tbody = document.getElementById('dtOfficerTableBody');
+    if (!tbody) return;
+    
+    if (!currentOfficers || currentOfficers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); font-style: italic;">Không có dữ liệu người thi hành công vụ gây thiệt hại.</td></tr>`;
+        return;
+    }
+    
+    let html = '';
+    currentOfficers.forEach((off, idx) => {
+        html += `
+        <tr>
+            <td style="text-align: center;">${idx + 1}</td>
+            <td style="font-weight: 600;">${off.name}</td>
+            <td>${off.position}</td>
+            <td>${off.agency}</td>
+            <td>${off.status}</td>
+            <td>${off.status === 'Đã chuyển công tác' && off.currentPosition ? off.currentPosition : '-'}</td>
+            <td>${off.status === 'Đã chuyển công tác' && off.currentAgency ? off.currentAgency : '-'}</td>
+        </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function openOfficerModal() {
+    document.getElementById('modalClaimOfficerId').value = '';
+    document.getElementById('modalClaimOfficerName').value = '';
+    document.getElementById('modalClaimOfficerPosition').value = '';
+    document.getElementById('modalClaimOfficerAgency').value = '';
+    document.getElementById('modalClaimOfficerStatus').value = 'Vẫn công tác tại đơn vị cũ';
+    document.getElementById('modalClaimOfficerCurrentAgency').value = '';
+    document.getElementById('modalClaimOfficerCurrentPosition').value = '';
+    toggleModalClaimOfficerStatus();
+    
+    document.getElementById('claimOfficerModal').style.display = 'flex';
+}
+
+function editOfficer(index) {
+    const off = currentOfficers[index];
+    document.getElementById('modalClaimOfficerId').value = index;
+    document.getElementById('modalClaimOfficerName').value = off.name;
+    document.getElementById('modalClaimOfficerPosition').value = off.position;
+    document.getElementById('modalClaimOfficerAgency').value = off.agency;
+    document.getElementById('modalClaimOfficerStatus').value = off.status;
+    document.getElementById('modalClaimOfficerCurrentAgency').value = off.currentAgency || '';
+    document.getElementById('modalClaimOfficerCurrentPosition').value = off.currentPosition || '';
+    toggleModalClaimOfficerStatus();
+    
+    document.getElementById('claimOfficerModal').style.display = 'flex';
+}
+
+function closeClaimOfficerModal() {
+    document.getElementById('claimOfficerModal').style.display = 'none';
+}
+
+function toggleModalClaimOfficerStatus() {
+    const status = document.getElementById('modalClaimOfficerStatus').value;
+    const group = document.getElementById('modalClaimOfficerCurrentGroup');
+    if (status === 'Đã chuyển công tác') {
+        if (group) group.style.display = 'grid';
+    } else {
+        if (group) group.style.display = 'none';
+        document.getElementById('modalClaimOfficerCurrentAgency').value = '';
+        document.getElementById('modalClaimOfficerCurrentPosition').value = '';
+    }
+}
+
+function saveClaimOfficerModal() {
+    const name = document.getElementById('modalClaimOfficerName').value.trim();
+    const position = document.getElementById('modalClaimOfficerPosition').value.trim();
+    const agency = document.getElementById('modalClaimOfficerAgency').value.trim();
+    const status = document.getElementById('modalClaimOfficerStatus').value;
+    const currentAgency = document.getElementById('modalClaimOfficerCurrentAgency').value.trim();
+    const currentPosition = document.getElementById('modalClaimOfficerCurrentPosition').value.trim();
+    
+    if (!name) {
+        showToast("Vui lòng nhập Họ và tên cán bộ!", "error");
+        return;
+    }
+    
+    const off = {
+        name, position, agency, status, currentAgency, currentPosition
+    };
+    
+    const idx = document.getElementById('modalClaimOfficerId').value;
+    if (idx !== '') {
+        currentOfficers[parseInt(idx)] = off;
+        showToast("Đã cập nhật thông tin cán bộ", "success");
+    } else {
+        currentOfficers.push(off);
+        showToast("Đã thêm cán bộ vào danh sách", "success");
+    }
+    
+    closeClaimOfficerModal();
+    renderOfficerTable();
+}
+
+function confirmDeleteOfficer(index) {
+    showConfirmModal("Bạn có chắc chắn muốn xóa người thi hành công vụ này ra khỏi danh sách không?", () => {
+        currentOfficers.splice(index, 1);
+        renderOfficerTable();
+        showToast("Đã xóa người thi hành công vụ khỏi danh sách", "success");
+    });
+}

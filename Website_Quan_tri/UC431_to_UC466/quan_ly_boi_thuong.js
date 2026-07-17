@@ -1,4 +1,4 @@
-// Synchronize Role Selectors and update table
+﻿// Synchronize Role Selectors and update table
         function syncRole(el) {
             const val = el.value;
             const selMain = document.getElementById('roleSelectorMain');
@@ -165,6 +165,7 @@
         ];
 
         // Claim Mock Data
+        let currentClaimOfficers = [];
         let claimsList = [
             {
                 id: "HS1",
@@ -6536,4 +6537,145 @@ function handleVerdictDocUpload(input) {
     }
     container.innerHTML = html;
     showToast("Đã tải lên tệp tin bản án thành công!", "success");
+}
+// --- OFFICER CRUD LOGIC CHO QUAN_LY_BOI_THUONG ---
+let activeOfficerTableId = 'claimOfficerTableBody'; // cÃ³ thá»ƒ lÃ  'claimOfficerTableBody' hoáº·c 'xmOfficerTableBody'
+
+function renderClaimOfficerTable() {
+    activeOfficerTableId = 'claimOfficerTableBody';
+    _renderAnyOfficerTable('claimOfficerTableBody');
+}
+
+function renderXmOfficerTable() {
+    activeOfficerTableId = 'xmOfficerTableBody';
+    _renderAnyOfficerTable('xmOfficerTableBody');
+}
+
+function _renderAnyOfficerTable(tbodyId) {
+    const tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    
+    if (currentClaimOfficers.length === 0) {
+        tbody.innerHTML = <tr><td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic;">ChÆ°a cÃ³ dá»¯ liá»‡u cÃ¡n bá»™.</td></tr>;
+        return;
+    }
+    
+    let html = '';
+    currentClaimOfficers.forEach((off, idx) => {
+        html += 
+        <tr>
+            <td style="text-align: center;">+${idx + 1}+</td>
+            <td style="font-weight: 600;">+${off.name}+</td>
+            <td>+${off.position}+</td>
+            <td>+${off.agency}+</td>
+            <td>
+                +${off.status}+
+                +${off.status === 'ÄÃ£ chuyá»ƒn cÃ´ng tÃ¡c' && off.currentAgency ? <br><span style="font-size: 11px; color: var(--text-muted);">(Hiá»‡n táº¡i: )</span> : ''}+
+            </td>
+            <td style="text-align: center;">
+                <button type="button" class="icon-btn edit" onclick="editClaimOfficer(+${idx}+)" title="Sá»­a"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="button" class="icon-btn delete" onclick="confirmDeleteClaimOfficer(+${idx}+)" title="XÃ³a"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+        </tr>
+        ;
+    });
+    tbody.innerHTML = html;
+}
+
+function openClaimOfficerModal() {
+    activeOfficerTableId = 'claimOfficerTableBody';
+    _openOfficerModal();
+}
+
+function openEditXmOfficerModal() {
+    activeOfficerTableId = 'xmOfficerTableBody';
+    _openOfficerModal();
+}
+
+function _openOfficerModal() {
+    document.getElementById('modalClaimOfficerId').value = '';
+    document.getElementById('modalClaimOfficerName').value = '';
+    document.getElementById('modalClaimOfficerPosition').value = '';
+    document.getElementById('modalClaimOfficerAgency').value = '';
+    document.getElementById('modalClaimOfficerStatus').value = 'Váº«n cÃ´ng tÃ¡c táº¡i Ä‘Æ¡n vá»‹ cÅ©';
+    document.getElementById('modalClaimOfficerCurrentAgency').value = '';
+    document.getElementById('modalClaimOfficerCurrentPosition').value = '';
+    toggleModalClaimOfficerStatus();
+    
+    document.getElementById('claimOfficerModal').style.display = 'flex';
+}
+
+function editClaimOfficer(index) {
+    const off = currentClaimOfficers[index];
+    document.getElementById('modalClaimOfficerId').value = index;
+    document.getElementById('modalClaimOfficerName').value = off.name;
+    document.getElementById('modalClaimOfficerPosition').value = off.position;
+    document.getElementById('modalClaimOfficerAgency').value = off.agency;
+    document.getElementById('modalClaimOfficerStatus').value = off.status;
+    document.getElementById('modalClaimOfficerCurrentAgency').value = off.currentAgency || '';
+    document.getElementById('modalClaimOfficerCurrentPosition').value = off.currentPosition || '';
+    toggleModalClaimOfficerStatus();
+    
+    document.getElementById('claimOfficerModal').style.display = 'flex';
+}
+
+function closeClaimOfficerModal() {
+    document.getElementById('claimOfficerModal').style.display = 'none';
+}
+
+function toggleModalClaimOfficerStatus() {
+    const status = document.getElementById('modalClaimOfficerStatus').value;
+    const group = document.getElementById('modalClaimOfficerCurrentGroup');
+    if (status === 'ÄÃ£ chuyá»ƒn cÃ´ng tÃ¡c') {
+        group.style.display = 'grid';
+    } else {
+        group.style.display = 'none';
+        document.getElementById('modalClaimOfficerCurrentAgency').value = '';
+        document.getElementById('modalClaimOfficerCurrentPosition').value = '';
+    }
+}
+
+function saveClaimOfficerModal() {
+    const name = document.getElementById('modalClaimOfficerName').value.trim();
+    const position = document.getElementById('modalClaimOfficerPosition').value.trim();
+    const agency = document.getElementById('modalClaimOfficerAgency').value.trim();
+    const status = document.getElementById('modalClaimOfficerStatus').value;
+    const currentAgency = document.getElementById('modalClaimOfficerCurrentAgency').value.trim();
+    const currentPosition = document.getElementById('modalClaimOfficerCurrentPosition').value.trim();
+    
+    if (!name) {
+        showToast("Vui lÃ²ng nháº­p Há» vÃ  tÃªn cÃ¡n bá»™!", "error");
+        return;
+    }
+    
+    const off = { name, position, agency, status, currentAgency, currentPosition };
+    const idx = document.getElementById('modalClaimOfficerId').value;
+    
+    if (idx !== '') {
+        currentClaimOfficers[parseInt(idx)] = off;
+    } else {
+        currentClaimOfficers.push(off);
+    }
+    
+    _renderAnyOfficerTable(activeOfficerTableId);
+    closeClaimOfficerModal();
+}
+
+let claimOfficerToDelete = -1;
+function confirmDeleteClaimOfficer(index) {
+    claimOfficerToDelete = index;
+    document.getElementById('customConfirmMessage').innerText = "Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n xÃ³a cÃ¡n bá»™ nÃ y khá»i danh sÃ¡ch?";
+    document.getElementById('customConfirmOverlay').style.display = 'flex';
+    
+    if (!window.originalCloseConfirmModal) window.originalCloseConfirmModal = window.closeConfirmModal;
+    window.closeConfirmModal = function(confirmed) {
+        document.getElementById('customConfirmOverlay').style.display = 'none';
+        if (confirmed && claimOfficerToDelete > -1) {
+            currentClaimOfficers.splice(claimOfficerToDelete, 1);
+            _renderAnyOfficerTable(activeOfficerTableId);
+            showToast("ÄÃ£ xÃ³a cÃ¡n bá»™ thÃ nh cÃ´ng", "success");
+        }
+        claimOfficerToDelete = -1;
+        window.closeConfirmModal = window.originalCloseConfirmModal;
+    };
 }

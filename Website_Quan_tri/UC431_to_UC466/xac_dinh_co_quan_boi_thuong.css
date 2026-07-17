@@ -720,3 +720,16 @@ body {
 .searchable-select-option:hover {
     background-color: #F1F5F9;
 }
+
+/* Sticky Modal Headers & Footers (Standard Rule 1) */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Keep the height within viewport boundaries */
+    overflow: hidden; /* Prevent container scrolling */
+}
+
+.modal-body {
+    overflow-y: auto; /* Enable independent vertical scrolling */
+    flex: 1; /* Allow body to grow and fill available space */
+}
