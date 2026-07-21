@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -195,6 +195,54 @@
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
             background-color: rgba(30, 58, 138, 0.03);
+        }
+
+        /* Nav Dropdown Menu Fix */
+        .nav-links li.nav-dropdown {
+            position: relative;
+        }
+
+        .nav-links li.nav-dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 320px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+            z-index: 1050;
+            padding: 6px 0;
+            list-style: none;
+        }
+
+        .nav-links li.nav-dropdown:hover .dropdown-menu,
+        .nav-links li.nav-dropdown.show .dropdown-menu,
+        .nav-links li.nav-dropdown:focus-within .dropdown-menu {
+            display: block;
+        }
+
+        .nav-links li.nav-dropdown .dropdown-menu li a {
+            display: block;
+            padding: 10px 16px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            border-bottom: 1px solid #F1F5F9;
+            white-space: normal;
+            line-height: 1.4;
+        }
+
+        .nav-links li.nav-dropdown .dropdown-menu li:last-child a {
+            border-bottom: none;
+        }
+
+        .nav-links li.nav-dropdown .dropdown-menu li a:hover {
+            background-color: #F8FAFC;
+            color: var(--primary-color);
+            border-bottom-color: #F1F5F9;
         }
 
         .nav-user-panel {
@@ -2256,6 +2304,486 @@
             left: -10px;
             border-color: transparent #1E293B transparent transparent;
         }
+
+        /* AI Chatbot Floating Widget Styles */
+        .ai-chatbot-trigger {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            color: #FFFFFF;
+            padding: 10px 18px 10px 12px;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.35);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-chatbot-trigger:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(30, 58, 138, 0.45);
+        }
+
+        .ai-chatbot-trigger-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            position: relative;
+        }
+
+        .ai-chatbot-trigger-icon::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 9px;
+            height: 9px;
+            background-color: #10B981;
+            border: 2px solid #1E3A8A;
+            border-radius: 50%;
+        }
+
+        .ai-chatbot-trigger-text {
+            font-weight: 700;
+            font-size: 13.5px;
+            letter-spacing: 0.2px;
+        }
+
+        .ai-chatbot-window {
+            position: fixed;
+            bottom: 95px;
+            right: 25px;
+            width: 400px;
+            max-width: calc(100vw - 30px);
+            height: 570px;
+            max-height: calc(100vh - 120px);
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25), 0 5px 15px rgba(0, 0, 0, 0.08);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: bottom right;
+        }
+
+        .ai-chatbot-window.hidden {
+            display: none;
+            opacity: 0;
+            transform: scale(0.85);
+        }
+
+        .ai-chatbot-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+            color: #FFFFFF;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .ai-chatbot-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ai-chatbot-avatar {
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--accent-color);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .ai-chatbot-header-text h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .ai-chatbot-header-text span {
+            font-size: 11px;
+            color: #93C5FD;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+        }
+
+        .ai-chatbot-close-btn {
+            background: none;
+            border: none;
+            color: #FFFFFF;
+            font-size: 22px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .ai-chatbot-close-btn:hover {
+            opacity: 1;
+        }
+
+        .ai-chatbot-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background-color: #F8FAFC;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-msg-bubble {
+            max-width: 88%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .ai-msg-bubble.bot {
+            align-self: flex-start;
+            background-color: #FFFFFF;
+            color: #1E293B;
+            border: 1px solid #E2E8F0;
+            border-top-left-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .ai-msg-bubble.user {
+            align-self: flex-end;
+            background-color: #1E3A8A;
+            color: #FFFFFF;
+            border-top-right-radius: 2px;
+        }
+
+        .ai-chips-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .ai-chip-btn {
+            background-color: #EFF6FF;
+            color: #1E3A8A;
+            border: 1px solid #BFDBFE;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-chip-btn:hover {
+            background-color: #3B82F6;
+            color: #FFFFFF;
+            border-color: #3B82F6;
+        }
+
+        .ai-chip-btn.out-of-scope {
+            background-color: #FEF2F2;
+            color: #991B1B;
+            border-color: #FCA5A5;
+        }
+
+        .ai-chip-btn.out-of-scope:hover {
+            background-color: #EF4444;
+            color: #FFFFFF;
+            border-color: #EF4444;
+        }
+
+        .ai-chatbot-footer {
+            padding: 12px;
+            background-color: #FFFFFF;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .ai-chatbot-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .ai-chatbot-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .ai-chatbot-send-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .ai-chatbot-send-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .ai-typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 14px;
+            background-color: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            align-self: flex-start;
+            width: fit-content;
+        }
+
+        .ai-typing-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #94A3B8;
+            border-radius: 50%;
+            animation: bounceDot 1.4s infinite ease-in-out both;
+        }
+
+        .ai-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .ai-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounceDot {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* AI Chatbot History Panel & Header Toggle Styles */
+        .ai-header-history-btn {
+            background: rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ai-header-history-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .ai-live-chat-panel {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .ai-live-chat-panel.hidden {
+            display: none;
+        }
+
+        .ai-history-panel {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            background-color: #F8FAFC;
+        }
+
+        .ai-history-panel.hidden {
+            display: none;
+        }
+
+        .ai-history-top-bar {
+            padding: 10px 14px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ai-history-tabs {
+            display: flex;
+            gap: 4px;
+            background-color: #F1F5F9;
+            padding: 3px;
+            border-radius: 8px;
+        }
+
+        .ai-history-tab-btn {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 6px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .ai-history-tab-btn.active {
+            background-color: #FFFFFF;
+            color: var(--primary-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .ai-history-controls-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .ai-history-search-input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 11.5px;
+            outline: none;
+        }
+
+        .ai-history-search-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .ai-history-select {
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 11px;
+            background-color: #FFFFFF;
+            outline: none;
+        }
+
+        .ai-history-adv-filter-box {
+            padding: 10px;
+            background-color: #F1F5F9;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .ai-history-adv-filter-box.hidden {
+            display: none;
+        }
+
+        .ai-history-list-body {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ai-history-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ai-history-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+
+        .ai-history-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 10px;
+        }
+
+        .ai-history-badge.bpbd {
+            background-color: #EFF6FF;
+            color: #1E3A8A;
+        }
+
+        .ai-history-badge.btnn {
+            background-color: #ECFDF5;
+            color: #065F46;
+        }
+
+        .ai-history-badge.rejected {
+            background-color: #FEF2F2;
+            color: #991B1B;
+        }
+
+        .ai-history-question {
+            font-weight: 600;
+            font-size: 12.5px;
+            color: #1E293B;
+        }
+
+        .ai-history-answer {
+            font-size: 11.5px;
+            color: #475569;
+            line-height: 1.4;
+            background-color: #F8FAFC;
+            padding: 8px;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-color);
+            white-space: pre-wrap;
+        }
+
+        .ai-history-footer {
+            padding: 10px 14px;
+            background-color: #FFFFFF;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
     </style>
 </head>
 
@@ -2302,6 +2830,13 @@
                 <li id="navHelp"><a href="#" onclick="showScreen('help')"><i class="fa fa-question-circle"></i> Hỗ trợ
                         khách
                         hàng</a></li>
+                <li class="nav-dropdown" id="navLinksDropdown">
+                    <a href="javascript:void(0)" onclick="toggleNavDropdown(event)"><i class="fa-solid fa-link"></i> Liên kết <i class="fa-solid fa-chevron-down" style="font-size: 11px; margin-left: 4px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="https://moj.gov.vn/portal/trang-chu.html" target="_blank" rel="noopener noreferrer" onclick="handleLinkClick(this, event)"><i class="fa-solid fa-globe" style="color: var(--primary-color); margin-right: 6px;"></i> Cổng thông tin điện tử Bộ Tư pháp</a></li>
+                        <li><a href="https://dkgd.moj.gov.vn/portal/trang-chu.html" target="_blank" rel="noopener noreferrer" onclick="handleLinkClick(this, event)"><i class="fa-solid fa-building-columns" style="color: var(--primary-color); margin-right: 6px;"></i> Trang thông tin Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</a></li>
+                    </ul>
+                </li>
             </ul>
             <div class="nav-user-panel" id="navUserPanel">
                 <!-- Dynamically populated by JS (Login buttons or User profile) -->
@@ -5579,18 +6114,15 @@
             }
 
             // Update Active state in Global Nav
-            document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
-            if (screenId === 'home') document.getElementById('navHome').classList.add('active');
+            if (screenId === 'home') setActiveNavTab('navHome');
             if (screenId === 'search') {
                 if (customUrl === 'tthc') {
-                    const navTthc = document.getElementById('navSearchTTHC');
-                    if (navTthc) navTthc.classList.add('active');
+                    setActiveNavTab('navSearchTTHC');
                 } else {
-                    const navSearch = document.getElementById('navSearch');
-                    if (navSearch) navSearch.classList.add('active');
+                    setActiveNavTab('navSearch');
                 }
             }
-            if (screenId === 'help') document.getElementById('navHelp').classList.add('active');
+            if (screenId === 'help') setActiveNavTab('navHelp');
 
             // Update Active state in Sidebar Menu
             document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
@@ -11409,7 +11941,518 @@
                 document.getElementById('disposalCaseType').value = "Xóa đăng ký thông báo xử lý tài sản bảo đảm";
             }, 400);
         }
+
+        /* Nav Dropdown Event Handlers (Fix for Freeze & Active Tab Bug) */
+        function setActiveNavTab(tabId) {
+            document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+        }
+
+        function toggleNavDropdown(event) {
+            if (event) event.stopPropagation();
+            setActiveNavTab('navLinksDropdown');
+            const dropdown = document.getElementById('navLinksDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        }
+
+        function handleLinkClick(element, event) {
+            setActiveNavTab('navLinksDropdown');
+            if (element && typeof element.blur === 'function') {
+                element.blur();
+            }
+            const dropdown = document.getElementById('navLinksDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+            }
+            setTimeout(() => {
+                if (dropdown) dropdown.classList.remove('show');
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    document.activeElement.blur();
+                }
+            }, 100);
+        }
+
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('navLinksDropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        window.addEventListener('focus', function() {
+            const dropdown = document.getElementById('navLinksDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+            }
+        });
+
+        /* AI Chatbot Logic (Strict 2-Domain Scope Enforcement) */
+        function toggleAiChatWindow() {
+            const win = document.getElementById('aiChatWindow');
+            if (win) {
+                win.classList.toggle('hidden');
+                if (!win.classList.contains('hidden')) {
+                    document.getElementById('aiChatInput').focus();
+                }
+            }
+        }
+
+        function handleAiChatKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendUserAiMessage();
+            }
+        }
+
+        function sendQuickAiQuery(queryText) {
+            document.getElementById('aiChatInput').value = queryText;
+            sendUserAiMessage();
+        }
+
+        function sendUserAiMessage() {
+            const input = document.getElementById('aiChatInput');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const chatBody = document.getElementById('aiChatBody');
+
+            // 1. Render User Message
+            const userBubble = document.createElement('div');
+            userBubble.className = 'ai-msg-bubble user';
+            userBubble.innerText = query;
+            chatBody.appendChild(userBubble);
+
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Remove quick chips after first message
+            const chips = document.getElementById('aiQuickChips');
+            if (chips) chips.style.display = 'none';
+
+            // 2. Render Typing Indicator
+            const typing = document.createElement('div');
+            typing.className = 'ai-typing-indicator';
+            typing.id = 'aiTypingIndicator';
+            typing.innerHTML = '<div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>';
+            chatBody.appendChild(typing);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // 3. Evaluate Response after 600ms
+            setTimeout(() => {
+                const indicator = document.getElementById('aiTypingIndicator');
+                if (indicator) indicator.remove();
+
+                const responseHtml = evaluateAiResponse(query);
+                const botBubble = document.createElement('div');
+                botBubble.className = 'ai-msg-bubble bot';
+                botBubble.innerHTML = responseHtml;
+                chatBody.appendChild(botBubble);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 600);
+        }
+
+        function evaluateAiResponse(rawQuery) {
+            const q = rawQuery.toLowerCase();
+
+            // Out-of-scope explicit keywords
+            const outOfScopeKeywords = ['sổ đỏ', 'đất đai', 'thuế', 'kết hôn', 'ly hôn', 'công chứng', 'hộ khẩu', 'bảo hiểm', 'sang tên đất', 'xây dựng', 'giao thông', 'visa', 'hộ chiếu', 'thừa kế đất'];
+            const isExplicitOutOfScope = outOfScopeKeywords.some(kw => q.includes(kw));
+
+            // Domain 1 Keywords: Đăng ký Biện pháp bảo đảm
+            const domain1Keywords = ['thế chấp', 'cầm cố', 'bảo lưu', 'đặt cọc', 'ký cược', 'ký quỹ', 'động sản', 'ô tô', 'xe máy', 'mã hồ sơ', 'tra cứu mã', 'lệ phí', 'xóa đăng ký', 'đăng ký thay đổi', 'đăng ký mới', 'nghị định 99', 'hàng hóa', 'kho hàng', 'tàu bay', 'tàu biển', 'biện pháp bảo đảm', 'bpbđ', 'gdbđ', 'bên thế chấp', 'bên nhận thế chấp', 'bản sao'];
+
+            // Domain 2 Keywords: Bồi thường nhà nước
+            const domain2Keywords = ['bồi thường', 'btnn', 'thiệt hại', 'cơ quan bồi thường', 'luật trách nhiệm bồi thường', 'người có quyền', 'thương lượng', 'công vụ', 'oan sai', 'người thi hành công vụ', 'tố tụng', 'thi hành án', 'thụ lý bồi thường'];
+
+            const isDomain1 = domain1Keywords.some(kw => q.includes(kw));
+            const isDomain2 = domain2Keywords.some(kw => q.includes(kw));
+
+            // Case B: OUT OF SCOPE REJECTION (Fixed Exact Template)
+            if (isExplicitOutOfScope || (!isDomain1 && !isDomain2)) {
+                const rejMsg = `Xin lỗi bạn, tôi là Trợ lý AI chuyên biệt và <strong>chỉ hỗ trợ tư vấn trong 02 lĩnh vực</strong>: <strong>Đăng ký Biện pháp bảo đảm</strong> và <strong>Bồi thường nhà nước</strong>.<br><br>Rất tiếc câu hỏi của bạn nằm ngoài phạm vi hỗ trợ của tôi. Vui lòng liên hệ Đường dây nóng <strong>1900.xxxx</strong> hoặc gửi phản hồi tại mục <strong>Hỗ trợ khách hàng</strong> trên Website để được giải đáp.`;
+                saveAiHistoryRecord(rawQuery, rejMsg, 'Từ chối tư vấn', 'Từ chối tư vấn', 'N/A');
+                return rejMsg;
+            }
+
+            // Case A1: Domain 1 Response
+            if (isDomain1) {
+                if (q.includes('mã hồ sơ') || q.includes('tra cứu mã')) {
+                    const ans = `<strong>[Lĩnh vực: Đăng ký Biện pháp bảo đảm]</strong><br><br>Chào bạn, để tra cứu mã hồ sơ đăng ký thế chấp xe ô tô/động sản, bạn thực hiện như sau:<br>1. Truy cập vào menu <strong>"Tra cứu mã hồ sơ"</strong> trên thanh công cụ chính.<br>2. Nhập <strong>Mã số hồ sơ</strong> (được cấp khi nộp thành công) và <strong>Mã xác thực</strong>.<br>3. Bấm <strong>"Tìm kiếm"</strong> để xem trạng thái xử lý và kết quả đăng ký.<br><br>🔗 <em><a href="#" onclick="showScreen('search', 'tthc'); toggleAiChatWindow(); return false;" style="color: #1E3A8A; font-weight: 600; text-decoration: underline;">Chuyển hướng ngay sang trang Tra cứu mã hồ sơ</a></em>`;
+                    saveAiHistoryRecord(rawQuery, ans, 'Biện pháp bảo đảm', 'Đã trả lời', 'Nghị định 99/2022/NĐ-CP');
+                    return ans;
+                }
+
+                if (q.includes('xóa') || q.includes('giải chấp')) {
+                    const ans = `<strong>[Lĩnh vực: Đăng ký Biện pháp bảo đảm]</strong><br><br>Chào bạn, thủ tục Xóa đăng ký biện pháp bảo đảm (Giải chấp) được thực hiện như sau:<br>• <strong>Điều kiện:</strong> Nghĩa vụ bảo đảm bị chấm dứt hoặc theo thỏa thuận giữa các bên.<br>• <strong>Lệ phí:</strong> Hoàn toàn <strong>MIỄN PHÍ</strong> lệ phí dịch vụ công.<br>• <strong>Các bước thực hiện:</strong><br>1. Đăng nhập hệ thống Portal Khách hàng.<br>2. Chọn menu <strong>"Xóa đăng ký"</strong> trên danh mục trái.<br>3. Tra cứu <strong>Số đăng ký</strong> và <strong>Số PIN</strong> hồ sơ gốc.<br>4. Kiểm tra thông tin, chọn căn cứ xóa và nộp hồ sơ.<br><br>• <strong>Căn cứ pháp lý:</strong> Nghị định số 99/2022/NĐ-CP của Chính phủ.`;
+                    saveAiHistoryRecord(rawQuery, ans, 'Biện pháp bảo đảm', 'Đã trả lời', 'Nghị định 99/2022/NĐ-CP');
+                    return ans;
+                }
+
+                const ans = `<strong>[Lĩnh vực: Đăng ký Biện pháp bảo đảm]</strong><br><br>Chào bạn, đối với thủ tục đăng ký và cung cấp thông tin biện pháp bảo đảm bằng động sản:<br>• Hệ thống tiếp nhận 100% hồ sơ trực tuyến: Đăng ký mới, Đăng ký thay đổi, Xóa đăng ký, Thông báo xử lý tài sản bảo đảm và Yêu cầu cấp bản sao.<br>• Thời gian xử lý: Tiếp nhận và trả kết quả trong ngày làm việc.<br>• <strong>Căn cứ pháp lý:</strong> Nghị định số 99/2022/NĐ-CP của Chính phủ.`;
+                saveAiHistoryRecord(rawQuery, ans, 'Biện pháp bảo đảm', 'Đã trả lời', 'Nghị định 99/2022/NĐ-CP');
+                return ans;
+            }
+
+            // Case A2: Domain 2 Response
+            if (isDomain2) {
+                if (q.includes('ai') || q.includes('quyền') || q.includes('đối tượng')) {
+                    const ans = `<strong>[Lĩnh vực: Bồi thường nhà nước]</strong><br><br>Chào bạn, người có quyền yêu cầu Nhà nước bồi thường bao gồm:<br>• Người bị thiệt hại trực tiếp do hành vi trái pháp luật của người thi hành công vụ gây ra.<br>• Người thừa kế của người bị thiệt hại (trường hợp người bị thiệt hại chết).<br>• Tổ chức kế thừa quyền, nghĩa vụ (trường hợp tổ chức bị thiệt hại đã giải thể/sáp nhập).<br>• Đại diện theo pháp luật hoặc Đại diện theo ủy quyền của các đối tượng trên.<br><br>• <strong>Căn cứ pháp lý:</strong> Điều 5 Luật Trách nhiệm bồi thường của Nhà nước.`;
+                    saveAiHistoryRecord(rawQuery, ans, 'Bồi thường nhà nước', 'Đã trả lời', 'Điều 5 Luật Trách nhiệm bồi thường của Nhà nước');
+                    return ans;
+                }
+
+                const ans = `<strong>[Lĩnh vực: Bồi thường nhà nước]</strong><br><br>Chào bạn, về thủ tục giải quyết Bồi thường nhà nước:<br>• <strong>Thời hạn giải quyết:</strong> Thụ lý hồ sơ trong 05 ngày làm việc; Thời hạn thương lượng bồi thường không quá 40 ngày kể từ ngày thụ lý.<br>• <strong>Cơ quan giải quyết:</strong> Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại có trách nhiệm giải quyết.<br>• <strong>Căn cứ pháp lý:</strong> Luật Trách nhiệm bồi thường của Nhà nước.`;
+                saveAiHistoryRecord(rawQuery, ans, 'Bồi thường nhà nước', 'Đã trả lời', 'Luật Trách nhiệm bồi thường của Nhà nước');
+                return ans;
+            }
+        }
+
+        /* Option A: Chatbot History Management & Excel Export Functions */
+        let currentAiHistoryTopic = 'bpbd'; // default topic tab: Biện pháp bảo đảm
+
+        function getInitialAiHistorySeed() {
+            return [
+                {
+                    id: 'QA-1001',
+                    topic: 'Biện pháp bảo đảm',
+                    status: 'Đã trả lời',
+                    timestamp: '21/07/2026 09:15',
+                    question: 'Tôi muốn tra cứu mã hồ sơ đăng ký thế chấp xe ô tô thì làm thế nào?',
+                    answer: '[Lĩnh vực: Đăng ký Biện pháp bảo đảm]\nChào bạn, để tra cứu mã hồ sơ đăng ký thế chấp xe ô tô/động sản, bạn truy cập vào menu "Tra cứu mã hồ sơ" trên thanh công cụ chính, nhập Mã số hồ sơ và Mã xác thực, bấm Tìm kiếm.\nCăn cứ pháp lý: Nghị định 99/2022/NĐ-CP.',
+                    legalBasis: 'Nghị định 99/2022/NĐ-CP'
+                },
+                {
+                    id: 'QA-1002',
+                    topic: 'Biện pháp bảo đảm',
+                    status: 'Đã trả lời',
+                    timestamp: '21/07/2026 08:30',
+                    question: 'Thủ tục xóa đăng ký biện pháp bảo đảm thực hiện ra sao?',
+                    answer: '[Lĩnh vực: Đăng ký Biện pháp bảo đảm]\nChào bạn, thủ tục Xóa đăng ký biện pháp bảo đảm (Giải chấp) hoàn toàn MIỄN PHÍ lệ phí dịch vụ công. Bạn đăng nhập hệ thống, chọn menu Xóa đăng ký và nhập Số đăng ký + PIN hồ sơ gốc.\nCăn cứ pháp lý: Nghị định 99/2022/NĐ-CP.',
+                    legalBasis: 'Nghị định 99/2022/NĐ-CP'
+                },
+                {
+                    id: 'QA-1003',
+                    topic: 'Bồi thường nhà nước',
+                    status: 'Đã trả lời',
+                    timestamp: '20/07/2026 14:20',
+                    question: 'Ai có quyền nộp hồ sơ yêu cầu bồi thường nhà nước?',
+                    answer: '[Lĩnh vực: Bồi thường nhà nước]\nChào bạn, người có quyền yêu cầu Nhà nước bồi thường gồm: Người bị thiệt hại trực tiếp, Người thừa kế của người bị thiệt hại, Tổ chức kế thừa hoặc Người đại diện hợp pháp.\nCăn cứ pháp lý: Điều 5 Luật Trách nhiệm bồi thường của Nhà nước.',
+                    legalBasis: 'Điều 5 Luật Trách nhiệm bồi thường của Nhà nước'
+                },
+                {
+                    id: 'QA-1004',
+                    topic: 'Từ chối tư vấn',
+                    status: 'Từ chối tư vấn',
+                    timestamp: '20/07/2026 11:05',
+                    question: 'Cho hỏi thủ tục sang tên sổ đỏ đất đai cần những giấy tờ gì?',
+                    answer: 'Xin lỗi bạn, tôi là Trợ lý AI chuyên biệt và chỉ hỗ trợ tư vấn trong 02 lĩnh vực: Đăng ký Biện pháp bảo đảm và Bồi thường nhà nước.\nRất tiếc câu hỏi về thủ tục đất đai nằm ngoài phạm vi hỗ trợ của tôi.',
+                    legalBasis: 'N/A'
+                }
+            ];
+        }
+
+        function getStoredAiHistory() {
+            try {
+                const stored = localStorage.getItem('ai_chat_history');
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            const seed = getInitialAiHistorySeed();
+            localStorage.setItem('ai_chat_history', JSON.stringify(seed));
+            return seed;
+        }
+
+        function saveAiHistoryRecord(question, answerHtml, topic, status, legalBasis) {
+            const history = getStoredAiHistory();
+            const cleanAnswer = answerHtml.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '');
+            const newRecord = {
+                id: 'QA-' + Math.floor(1000 + Math.random() * 9000),
+                topic: topic,
+                status: status,
+                timestamp: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}),
+                question: question,
+                answer: cleanAnswer,
+                legalBasis: legalBasis || 'N/A'
+            };
+            history.unshift(newRecord);
+            localStorage.setItem('ai_chat_history', JSON.stringify(history));
+            if (!document.getElementById('aiHistoryPanel').classList.contains('hidden')) {
+                filterAiHistory();
+            }
+        }
+
+        function toggleAiHistoryScreen() {
+            const livePanel = document.getElementById('aiLiveChatPanel');
+            const historyPanel = document.getElementById('aiHistoryPanel');
+            const btnBtn = document.getElementById('aiHistoryToggleBtn');
+            const titleText = document.getElementById('aiChatTitleText');
+
+            if (historyPanel.classList.contains('hidden')) {
+                // Switch to History View
+                livePanel.classList.add('hidden');
+                historyPanel.classList.remove('hidden');
+                btnBtn.innerHTML = '<i class="fa-solid fa-arrow-left"></i> <span>Quay lại Chat</span>';
+                titleText.innerText = 'Lịch sử Hỏi đáp AI';
+                filterAiHistory();
+            } else {
+                // Switch back to Live Chat
+                historyPanel.classList.add('hidden');
+                livePanel.classList.remove('hidden');
+                btnBtn.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> <span>Lịch sử</span>';
+                titleText.innerText = 'Trợ lý AI Trực tuyến';
+            }
+        }
+
+        function switchAiHistoryTopic(topic) {
+            currentAiHistoryTopic = topic;
+            document.querySelectorAll('.ai-history-tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (topic === 'bpbd') document.getElementById('aiTabBpbd').classList.add('active');
+            if (topic === 'btnn') document.getElementById('aiTabBtnn').classList.add('active');
+            if (topic === 'all') document.getElementById('aiTabAll').classList.add('active');
+            filterAiHistory();
+        }
+
+        function toggleAiAdvFilterDrawer() {
+            const drawer = document.getElementById('aiHistoryAdvFilterDrawer');
+            if (drawer) drawer.classList.toggle('hidden');
+        }
+
+        function resetAiHistoryFilters() {
+            document.getElementById('aiHistorySearchInput').value = '';
+            document.getElementById('aiFilterDateFrom').value = '';
+            document.getElementById('aiFilterDateTo').value = '';
+            document.getElementById('aiFilterStatusSelect').value = 'all';
+            document.getElementById('aiHistorySortSelect').value = 'newest';
+            switchAiHistoryTopic('bpbd');
+        }
+
+        function filterAiHistory() {
+            const history = getStoredAiHistory();
+            const keyword = document.getElementById('aiHistorySearchInput').value.trim().toLowerCase();
+            const sortOrder = document.getElementById('aiHistorySortSelect').value;
+            const statusFilter = document.getElementById('aiFilterStatusSelect').value;
+
+            let filtered = history.filter(item => {
+                let match = true;
+
+                // Domain Topic Filter
+                if (currentAiHistoryTopic === 'bpbd' && item.topic !== 'Biện pháp bảo đảm') match = false;
+                if (currentAiHistoryTopic === 'btnn' && item.topic !== 'Bồi thường nhà nước') match = false;
+
+                // Status Filter
+                if (statusFilter !== 'all' && item.status !== statusFilter) match = false;
+
+                // Keyword Filter
+                if (keyword) {
+                    const fullText = (item.question + ' ' + item.answer + ' ' + item.legalBasis).toLowerCase();
+                    if (!fullText.includes(keyword)) match = false;
+                }
+
+                return match;
+            });
+
+            // Sorting
+            if (sortOrder === 'oldest') {
+                filtered.reverse();
+            }
+
+            renderAiHistoryCards(filtered);
+        }
+
+        function renderAiHistoryCards(list) {
+            const container = document.getElementById('aiHistoryListBody');
+            const countDisplay = document.getElementById('aiHistoryCountDisplay');
+            countDisplay.innerText = `Hiển thị ${list.length} câu hỏi`;
+
+            if (list.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 30px 10px; font-size: 12px;">Không tìm thấy lịch sử hỏi đáp phù hợp.</div>`;
+                return;
+            }
+
+            let html = '';
+            list.forEach(item => {
+                let badgeClass = 'bpbd';
+                if (item.topic === 'Bồi thường nhà nước') badgeClass = 'btnn';
+                if (item.status === 'Từ chối tư vấn') badgeClass = 'rejected';
+
+                html += `
+                    <div class="ai-history-card">
+                        <div class="ai-history-card-header">
+                            <span class="ai-history-badge ${badgeClass}">${item.topic}</span>
+                            <span style="color: var(--text-muted);">${item.timestamp}</span>
+                        </div>
+                        <div class="ai-history-question">Q: ${escapeHtml(item.question)}</div>
+                        <div class="ai-history-answer">${escapeHtml(item.answer)}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function exportAiHistoryExcel() {
+            const history = getStoredAiHistory();
+            const keyword = document.getElementById('aiHistorySearchInput').value.trim().toLowerCase();
+            const statusFilter = document.getElementById('aiFilterStatusSelect').value;
+
+            let filtered = history.filter(item => {
+                let match = true;
+                if (currentAiHistoryTopic === 'bpbd' && item.topic !== 'Biện pháp bảo đảm') match = false;
+                if (currentAiHistoryTopic === 'btnn' && item.topic !== 'Bồi thường nhà nước') match = false;
+                if (statusFilter !== 'all' && item.status !== statusFilter) match = false;
+                if (keyword) {
+                    const fullText = (item.question + ' ' + item.answer + ' ' + item.legalBasis).toLowerCase();
+                    if (!fullText.includes(keyword)) match = false;
+                }
+                return match;
+            });
+
+            if (filtered.length === 0) {
+                showToast('Không có dữ liệu lịch sử phù hợp để xuất Excel!', 'warning');
+                return;
+            }
+
+            let csvContent = "\uFEFF"; // UTF-8 BOM for Excel Vietnamese display
+            csvContent += "STT,Mã câu hỏi,Lĩnh vực,Trạng thái,Thời gian,Câu hỏi,Nội dung trả lời AI,Căn cứ pháp lý\n";
+
+            filtered.forEach((item, idx) => {
+                const q = `"${item.question.replace(/"/g, '""')}"`;
+                const a = `"${item.answer.replace(/"/g, '""')}"`;
+                const lb = `"${(item.legalBasis || 'N/A').replace(/"/g, '""')}"`;
+                csvContent += `${idx + 1},${item.id},"${item.topic}","${item.status}","${item.timestamp}",${q},${a},${lb}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `Lich_su_hoi_dap_Chatbot_AI_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast(`Đã kết xuất thành công tệp Excel Lịch sử hỏi đáp AI (${filtered.length} bản ghi)!`, 'success');
+        }
     </script>
+
+    <!-- Floating AI Chatbot Widget -->
+    <div class="ai-chatbot-trigger" onclick="toggleAiChatWindow()">
+        <div class="ai-chatbot-trigger-icon">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="ai-chatbot-trigger-text">Trợ lý AI Trực tuyến</div>
+    </div>
+
+    <!-- AI Chatbot Window -->
+    <div class="ai-chatbot-window hidden" id="aiChatWindow">
+        <!-- Chatbot Header with History Toggle -->
+        <div class="ai-chatbot-header">
+            <div class="ai-chatbot-title">
+                <div class="ai-chatbot-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="ai-chatbot-header-text">
+                    <h4 id="aiChatTitleText">Trợ lý AI Trực tuyến</h4>
+                    <span><i class="fa-solid fa-circle" style="color: #10B981; font-size: 8px;"></i> Cục Đăng ký GDBĐ & BTNN</span>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="ai-header-history-btn" id="aiHistoryToggleBtn" onclick="toggleAiHistoryScreen()">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Lịch sử</span>
+                </button>
+                <button class="ai-chatbot-close-btn" onclick="toggleAiChatWindow()">&times;</button>
+            </div>
+        </div>
+
+        <!-- 1. LIVE CHAT PANEL -->
+        <div class="ai-live-chat-panel" id="aiLiveChatPanel">
+            <div class="ai-chatbot-body" id="aiChatBody">
+                <div class="ai-msg-bubble bot">Xin chào! Tôi là Trợ lý AI chính thức của <strong>Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp</strong>.
+
+Tôi <strong>chỉ hỗ trợ tư vấn trong 02 lĩnh vực</strong>:
+1. 🔹 <strong>Đăng ký Biện pháp bảo đảm</strong>
+2. 🔹 <strong>Bồi thường nhà nước</strong>
+
+Bạn cần thông tin hỗ trợ gì về 2 lĩnh vực này?</div>
+
+                <div class="ai-chips-wrapper" id="aiQuickChips">
+                    <button class="ai-chip-btn" onclick="sendQuickAiQuery('Tôi muốn tra cứu mã hồ sơ đăng ký thế chấp xe ô tô thì làm thế nào?')">🔍 Tra cứu mã hồ sơ ô tô</button>
+                    <button class="ai-chip-btn" onclick="sendQuickAiQuery('Thủ tục xóa đăng ký biện pháp bảo đảm thực hiện ra sao?')">📝 Thủ tục xóa thế chấp</button>
+                    <button class="ai-chip-btn" onclick="sendQuickAiQuery('Ai có quyền nộp hồ sơ yêu cầu bồi thường nhà nước?')">⚖️ Quyền yêu cầu BTNN</button>
+                    <button class="ai-chip-btn out-of-scope" onclick="sendQuickAiQuery('Cho hỏi thủ tục sang tên sổ đỏ đất đai cần những giấy tờ gì?')">❌ Hỏi sang tên sổ đỏ (Test từ chối)</button>
+                </div>
+            </div>
+
+            <div class="ai-chatbot-footer">
+                <input type="text" class="ai-chatbot-input" id="aiChatInput" placeholder="Nhập câu hỏi hỗ trợ tư vấn..." onkeydown="handleAiChatKeyPress(event)">
+                <button class="ai-chatbot-send-btn" onclick="sendUserAiMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <!-- 2. HISTORY LIST PANEL (OPTION A) -->
+        <div class="ai-history-panel hidden" id="aiHistoryPanel">
+            <div class="ai-history-top-bar">
+                <!-- Topic Filter Tabs -->
+                <div class="ai-history-tabs">
+                    <button class="ai-history-tab-btn active" id="aiTabBpbd" onclick="switchAiHistoryTopic('bpbd')">Biện pháp bảo đảm</button>
+                    <button class="ai-history-tab-btn" id="aiTabBtnn" onclick="switchAiHistoryTopic('btnn')">Bồi thường nhà nước</button>
+                    <button class="ai-history-tab-btn" id="aiTabAll" onclick="switchAiHistoryTopic('all')">Tất cả</button>
+                </div>
+
+                <!-- Search & Sort Controls Row -->
+                <div class="ai-history-controls-row">
+                    <input type="text" class="ai-history-search-input" id="aiHistorySearchInput" placeholder="Tìm theo câu hỏi, từ khóa, căn cứ..." oninput="filterAiHistory()">
+                    <select class="ai-history-select" id="aiHistorySortSelect" onchange="filterAiHistory()">
+                        <option value="newest" selected>Mới nhất</option>
+                        <option value="oldest">Cũ nhất</option>
+                    </select>
+                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="toggleAiAdvFilterDrawer()" title="Lọc nâng cao"><i class="fa-solid fa-filter"></i></button>
+                </div>
+
+                <!-- Advanced Filter Drawer -->
+                <div class="ai-history-adv-filter-box hidden" id="aiHistoryAdvFilterDrawer">
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <input type="text" class="ai-history-search-input" id="aiFilterDateFrom" placeholder="Từ ngày (dd/mm/yyyy)">
+                        <input type="text" class="ai-history-search-input" id="aiFilterDateTo" placeholder="Đến ngày (dd/mm/yyyy)">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                        <select class="ai-history-select" id="aiFilterStatusSelect" style="width: 60%;" onchange="filterAiHistory()">
+                            <option value="all" selected>Tất cả trạng thái</option>
+                            <option value="Đã trả lời">Đã trả lời</option>
+                            <option value="Từ chối tư vấn">Từ chối tư vấn</option>
+                        </select>
+                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="resetAiHistoryFilters()">Xóa bộ lọc</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrollable Cards Body -->
+            <div class="ai-history-list-body" id="aiHistoryListBody">
+                <!-- Dynamically populated by renderAiHistoryCards() -->
+            </div>
+
+            <!-- Footer Export & Count -->
+            <div class="ai-history-footer">
+                <div style="color: var(--text-muted);" id="aiHistoryCountDisplay">Hiển thị 0 câu hỏi</div>
+                <button class="btn btn-primary" style="padding: 5px 12px; font-size: 11.5px;" onclick="exportAiHistoryExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
