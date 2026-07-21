@@ -1099,7 +1099,10 @@
     <div id="inlineDecDetailPanel" class="inline-form-panel" style="display: none;">
         <div class="inline-form-header" style="display: flex; justify-content: space-between; align-items: center;">
             <span class="inline-form-title"><i class="fa-solid fa-circle-info"></i> CHI TIẾT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG</span>
-            <span id="detailStatusBadge" class="badge" style="font-size: 14px; padding: 6px 12px;"></span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span id="detailStatusBadge" class="badge" style="font-size: 14px; padding: 6px 12px;"></span>
+                <button class="btn btn-secondary btn-sm" onclick="closeCreateDecForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+            </div>
         </div>
         <div class="inline-form-body" style="padding: 20px; overflow-y: auto; max-height: 75vh;">
             <div class="info-block-title">I. Thông tin định danh & Thẩm quyền</div>
@@ -1173,7 +1176,7 @@
     <!-- ======================================================== -->
     <!-- CREATE/EDIT DECISION FORM PANEL (WITH AUTOFILL CLAIMS) -->
     <!-- ======================================================== -->
-    <div id="inlineDecFormPanel" class="inline-form-panel">
+    <div id="inlineDecFormPanel" class="inline-form-panel" style="display: none;">
         <div class="inline-form-header">
             <span class="inline-form-title" id="formDecTitle"><i class="fa-solid fa-file-invoice"></i> TRÌNH KÝ QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG</span>
             <button class="btn btn-secondary btn-sm" onclick="closeCreateDecForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
@@ -1342,7 +1345,6 @@
                         </table>
                     </div>
                 </div>
-            </div>
 
             <!-- RIGHT COLUMN: Visual Document Paper (For details / leadership view) -->
             <div class="visual-document-column" id="visualDocumentColumn" style="display:none;">
@@ -1860,7 +1862,7 @@
                         <th style="width: auto; min-width: 300px;">Trích yếu quyết định</th>
                         <th style="width: 120px; text-align: center;">Mã YCBT</th>
                         <th style="width: 110px; text-align: center;">Trạng thái</th>
-                        <th style="width: 140px; text-align: center;">Thao tác</th>
+                        <th style="width: 130px; text-align: center; min-width: 130px;">Thao tác</th>
                     </tr>
                 `;
             } else {
@@ -1874,7 +1876,7 @@
                         <th style="width: auto; min-width: 300px;">Trích yếu quyết định</th>
                         <th style="width: 120px; text-align: center;">Mã YCBT</th>
                         <th style="width: 110px; text-align: center;">Trạng thái</th>
-                        <th style="width: 200px; text-align: center; min-width: 200px;">Thao tác</th>
+                        <th style="width: 130px; text-align: center; min-width: 130px;">Thao tác</th>
                     </tr>
                 `;
             }
@@ -1959,35 +1961,37 @@
                 else if (item.status === 'Chờ ký') badgeClass = 'badge-pending';
                 else if (item.status === 'Bị từ chối') badgeClass = 'badge-danger';
 
-                // Action Column Alignment
+                // Action Column Alignment (Strict 3 slots for each role)
                 const isDraft = item.status === 'Lưu nháp';
                 const isPending = item.status === 'Chờ ký';
                 const isRejected = item.status === 'Bị từ chối';
                 
-                // Slot 1: View (Opens directly in inline panel)
+                // Slot 1: View (Opens directly in inline panel on current screen)
                 const viewBtn = `<button class="icon-btn view" title="Xem chi tiết quyết định" onclick="viewDecisionDetail('${item.id}')" style="display:inline-flex; align-items:center; justify-content:center;"><i class="fa-solid fa-eye"></i></button>`;
                 
-                let editBtn = '';
-                let deleteBtn = '';
-                let acceptBtn = '';
-                let rejectBtn = '';
-
-                if (currentRole === 'officer') {
-                    editBtn = (isDraft || isRejected) ? `<button class="icon-btn edit" title="Cập nhật quyết định" onclick="editDecision('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>` : `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ cán bộ mới được chỉnh sửa quyết định nháp hoặc bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                    deleteBtn = isDraft ? `<button class="icon-btn delete" title="Xóa quyết định" onclick="deleteDecision('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>` : `<button class="icon-btn delete" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ cán bộ mới được xóa quyết định ở trạng thái Lưu nháp"><i class="fa-solid fa-trash-can"></i></button>`;
-                    acceptBtn = `<button class="icon-btn accept" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ lãnh đạo mới được ký số duyệt"><i class="fa-solid fa-file-signature"></i></button>`;
-                    rejectBtn = `<button class="icon-btn reject" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ lãnh đạo mới được từ chối ký"><i class="fa-solid fa-ban"></i></button>`;
-                } else {
-                    if (isPending) {
-                        acceptBtn = `<button class="icon-btn accept" title="Ký duyệt quyết định" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
-                        rejectBtn = `<button class="icon-btn reject" title="Từ chối ký duyệt" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
-                    }
-                }
-
                 let actionHtml = '';
+
                 if (currentRole === 'officer') {
-                    actionHtml = `${viewBtn}${editBtn}${deleteBtn}${acceptBtn}${rejectBtn}`;
+                    // Officer Role: Slot 1 View, Slot 2 Edit, Slot 3 Delete (No Sign/Reject buttons)
+                    const editBtn = (isDraft || isRejected) 
+                        ? `<button class="icon-btn edit" title="Cập nhật quyết định" onclick="editDecision('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>` 
+                        : `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ được hiệu chỉnh quyết định ở trạng thái Lưu nháp hoặc Bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                    
+                    const deleteBtn = isDraft 
+                        ? `<button class="icon-btn delete" title="Xóa quyết định" onclick="deleteDecision('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>` 
+                        : `<button class="icon-btn delete" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ được xóa quyết định ở trạng thái Lưu nháp"><i class="fa-solid fa-trash-can"></i></button>`;
+
+                    actionHtml = `${viewBtn}${editBtn}${deleteBtn}`;
                 } else {
+                    // Leader Role: Slot 1 View, Slot 2 Sign, Slot 3 Reject
+                    const acceptBtn = isPending 
+                        ? `<button class="icon-btn accept" title="Ký duyệt quyết định" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>` 
+                        : `<button class="icon-btn accept" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Quyết định đã được xử lý"><i class="fa-solid fa-file-signature"></i></button>`;
+                    
+                    const rejectBtn = isPending 
+                        ? `<button class="icon-btn reject" title="Từ chối ký duyệt" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i></button>` 
+                        : `<button class="icon-btn reject" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Quyết định đã được xử lý"><i class="fa-solid fa-ban"></i></button>`;
+
                     actionHtml = `${viewBtn}${acceptBtn}${rejectBtn}`;
                 }
 
@@ -2230,6 +2234,7 @@
 
             // Render officer footer actions
             const footer = document.getElementById('formDecFooter');
+            footer.style.display = 'flex';
             footer.innerHTML = `
                 <button class="btn btn-primary" onclick="previewDecisionDocument()" style="background-color:#0284c7; border-color:#0284c7;"><i class="fa-solid fa-file-magnifying-glass"></i> Xem Trước Quyết định</button>
                 <button class="btn btn-secondary" onclick="saveDecision('Lưu nháp')" style="background-color:#f1f5f9; border-color:#cbd5e1;"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
@@ -2560,8 +2565,8 @@
             
             if (currentRole === 'leader' && item.status === 'Chờ ký') {
                 footer.innerHTML = `
-                    <button class="btn btn-danger" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối ký</button>
-                    <button class="btn btn-success" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i> Ký số / Phê duyệt</button>
+                    <button class="btn btn-danger" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>
+                    <button class="btn btn-success" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i> Phê duyệt</button>
                     <button class="btn btn-secondary" onclick="closeCreateDecForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                 `;
             } else {
@@ -2694,23 +2699,42 @@
             const item = decisionsList.find(d => d.id === id);
             if (item) {
                 const targetNo = (item.decNo === 'Chưa cấp số' || item.decNo.includes('[Hệ thống') || !item.decNo) ? 
-                    `${decisionsList.filter(d => d.status === 'Đã ký').length + 1}/QĐ-GQBT` : item.decNo;
+                    `${decisionsList.filter(d => d.status === 'Đã ký' || d.status === 'Đã ban hành').length + 1}/QĐ-GQBT` : item.decNo;
                 
-                showConfirmModal(`Bạn có chắc chắn muốn thực hiện ký số điện tử để phê duyệt và ban hành Quyết định số ${targetNo} không?`, () => {
-                    item.decNo = targetNo;
-                    
-                    const today = new Date();
-                    const d = String(today.getDate()).padStart(2, '0');
-                    const m = String(today.getMonth() + 1).padStart(2, '0');
-                    const y = today.getFullYear();
-                    item.date = `${d}/${m}/${y}`;
-                    
-                    item.status = 'Đã ký';
-                    item.rejectReason = "";
-                    showToast(`Ký số phê duyệt thành công! Quyết định ${item.decNo} đã chính thức được ban hành.`, "success");
-                    closeCreateDecForm();
-                    renderDecTable();
-                });
+                const promptMsg = (item.decNo && item.decNo !== 'Chưa cấp số' && !item.decNo.includes('[Hệ thống')) ? 
+                    `Bạn có chắc chắn muốn phê duyệt Quyết định giải quyết bồi thường số ${item.decNo} không?` : 
+                    `Bạn có chắc chắn muốn phê duyệt Quyết định giải quyết bồi thường số ${targetNo} không?`;
+
+                showConfirmModal(
+                    promptMsg, 
+                    () => {
+                        item.decNo = targetNo;
+                        
+                        const today = new Date();
+                        const d = String(today.getDate()).padStart(2, '0');
+                        const m = String(today.getMonth() + 1).padStart(2, '0');
+                        const y = today.getFullYear();
+                        item.date = `${d}/${m}/${y}`;
+                        
+                        item.status = 'Đã ký';
+                        item.rejectReason = "";
+                        
+                        if (!item.historyLogs) item.historyLogs = [];
+                        item.historyLogs.unshift({
+                            time: `${d}/${m}/${y} ${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`,
+                            actor: item.approver || "Ngô Anh Tuấn - Lãnh đạo phê duyệt",
+                            action: '<span style="color:var(--success-color);">Phê duyệt</span>',
+                            content: 'Phê duyệt ban hành Quyết định giải quyết bồi thường'
+                        });
+
+                        showToast(`Phê duyệt thành công Quyết định giải quyết bồi thường số ${item.decNo}!`, "success");
+                        closeCreateDecForm();
+                        renderDecTable();
+                    },
+                    "Xác nhận phê duyệt",
+                    "Phê duyệt",
+                    false
+                );
             }
         }
 
@@ -3122,9 +3146,34 @@
         // Custom Confirmation Modal Helper
         let confirmCallback = null;
 
-        function showConfirmModal(message, callback) {
+        function showConfirmModal(message, callback, title = "Xác nhận xóa", confirmBtnText = "Đồng ý", isDanger = true) {
             const overlay = document.getElementById('customConfirmOverlay');
             document.getElementById('customConfirmMessage').innerText = message;
+            
+            const titleEl = document.getElementById('customConfirmTitle');
+            const iconEl = document.getElementById('customConfirmIcon');
+            const okBtn = document.getElementById('customConfirmOkBtn');
+
+            if (titleEl) titleEl.innerText = title;
+            
+            if (iconEl) {
+                iconEl.className = isDanger ? "fa-solid fa-circle-exclamation" : "fa-solid fa-circle-check";
+                iconEl.style.color = isDanger ? "#ef4444" : "#10b981";
+            }
+            
+            if (okBtn) {
+                okBtn.innerText = confirmBtnText;
+                if (isDanger) {
+                    okBtn.className = "btn btn-danger btn-sm";
+                    okBtn.style.backgroundColor = "#ef4444";
+                    okBtn.style.borderColor = "#ef4444";
+                } else {
+                    okBtn.className = "btn btn-success btn-sm";
+                    okBtn.style.backgroundColor = "#10b981";
+                    okBtn.style.borderColor = "#10b981";
+                }
+            }
+
             confirmCallback = callback;
             
             overlay.style.display = 'flex';
@@ -3151,14 +3200,14 @@
     <div id="customConfirmOverlay" class="confirm-modal-overlay">
         <div class="confirm-modal-container">
             <div class="confirm-modal-header">
-                <i class="fa-solid fa-circle-exclamation"></i> Xác nhận xóa
+                <i id="customConfirmIcon" class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> <span id="customConfirmTitle">Xác nhận xóa</span>
             </div>
             <div class="confirm-modal-body" id="customConfirmMessage">
                 Bạn có chắc chắn muốn xóa quyết định lưu nháp này không?
             </div>
             <div class="confirm-modal-footer">
                 <button class="btn btn-secondary btn-sm" onclick="closeConfirmModal(false)">Hủy bỏ</button>
-                <button class="btn btn-danger btn-sm" onclick="closeConfirmModal(true)" style="background-color: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-sm); font-weight: 500; cursor: pointer;">Đồng ý</button>
+                <button id="customConfirmOkBtn" class="btn btn-danger btn-sm" onclick="closeConfirmModal(true)">Đồng ý</button>
             </div>
         </div>
     </div>
