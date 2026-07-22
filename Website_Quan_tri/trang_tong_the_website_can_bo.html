@@ -1223,7 +1223,7 @@
         }
 
         // Click handler to select and load feature page in IFrame
-        function selectLeaf(leafItem, pathArray, elementId) {
+        function selectLeaf(leafItem, pathArray, elementId, overrideUrl = null) {
             // Remove active classes
             document.querySelectorAll('.menu-leaf-item').forEach(item => {
                 item.classList.remove('active');
@@ -1253,13 +1253,78 @@
                 if (leafItem.url && leafItem.url.includes('dang_ky_bpbd_can_bo.html')) {
                     localStorage.removeItem('selected_dossier_id');
                 }
-                let targetUrl = leafItem.url || '../temp_placeholder.html';
+                let targetUrl = overrideUrl || leafItem.url || '../temp_placeholder.html';
                 if (targetUrl !== '../temp_placeholder.html') {
                     targetUrl += (targetUrl.indexOf('?') !== -1 ? '&' : '?') + 't=' + Date.now();
                 }
                 iframe.src = targetUrl;
             }
         }
+
+        function normalizeMenuUrl(url) {
+            return String(url || '').split('?')[0].replace(/^(\.\.\/)+/, '');
+        }
+
+        function findMenuLeafByUrl(targetUrl) {
+            const target = normalizeMenuUrl(targetUrl);
+            for (let rootIdx = 0; rootIdx < menuData.length; rootIdx++) {
+                const root = menuData[rootIdx];
+                for (let childIdx = 0; childIdx < root.children.length; childIdx++) {
+                    const child = root.children[childIdx];
+                    if (child.children) {
+                        for (let leafIdx = 0; leafIdx < child.children.length; leafIdx++) {
+                            const leaf = child.children[leafIdx];
+                            if (normalizeMenuUrl(leaf.url) === target) {
+                                return {
+                                    rootIdx,
+                                    childIdx,
+                                    leaf,
+                                    path: [root.title, child.title, leaf.title],
+                                    elementId: `leaf-${rootIdx}-${childIdx}-${leafIdx}`
+                                };
+                            }
+                        }
+                    } else if (normalizeMenuUrl(child.url) === target) {
+                        return {
+                            rootIdx,
+                            childIdx,
+                            leaf: child,
+                            path: [root.title, child.title],
+                            elementId: `leaf-${rootIdx}-${childIdx}`
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        window.openAdminModule = function (url, activeUrl = url) {
+            const match = findMenuLeafByUrl(activeUrl);
+            if (!match) {
+                const iframe = document.getElementById('mainContentIframe');
+                if (iframe) iframe.src = url;
+                return;
+            }
+
+            const rootContainer = document.getElementById(`sub-container-${match.rootIdx}`);
+            if (!rootContainer || !rootContainer.classList.contains('expanded')) {
+                toggleRootItem(match.rootIdx);
+            }
+
+            const subGroupContainer = document.getElementById(`subgroup-container-${match.rootIdx}-${match.childIdx}`);
+            if (subGroupContainer && !subGroupContainer.classList.contains('expanded')) {
+                toggleSubGroup(match.rootIdx, match.childIdx);
+            }
+
+            selectLeaf(match.leaf, match.path, match.elementId, url);
+        };
+
+        window.addEventListener('message', (event) => {
+            const data = event.data || {};
+            if (data.type === 'admin:navigate' && data.url) {
+                window.openAdminModule(data.url, data.activeUrl || data.url);
+            }
+        });
 
         // Select the default first child leaf node on startup
         function selectDefaultLeaf() {

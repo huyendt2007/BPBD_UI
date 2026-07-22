@@ -3440,6 +3440,37 @@
         // ==============================================
         // CASE DETAIL & EDIT TABS VIEW LOGIC
         // ==============================================
+        function getLinkedDetailReturnUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('returnUrl') || '';
+        }
+
+        function navigateBackFromLinkedClaimDetail() {
+            const returnUrl = getLinkedDetailReturnUrl();
+            if (!returnUrl) return false;
+
+            const shellReturnUrl = returnUrl.indexOf('UC431_to_UC466/') === 0
+                ? returnUrl
+                : `UC431_to_UC466/${returnUrl}`;
+            const activeReturnUrl = shellReturnUrl.split('?')[0];
+
+            if (window.parent && window.parent !== window) {
+                if (typeof window.parent.openAdminModule === 'function') {
+                    window.parent.openAdminModule(shellReturnUrl, activeReturnUrl);
+                    return true;
+                }
+                window.parent.postMessage({
+                    type: 'admin:navigate',
+                    url: shellReturnUrl,
+                    activeUrl: activeReturnUrl
+                }, '*');
+                return true;
+            }
+
+            window.location.href = returnUrl;
+            return true;
+        }
+
         function showCaseDetail(id, editMode = false, actionType = null) {
             selectedClaimId = id;
             isDetailEditMode = editMode;
@@ -3549,6 +3580,7 @@
         }
 
         function closeCaseDetail() {
+            if (navigateBackFromLinkedClaimDetail()) return;
             document.getElementById('caseDetailSection').style.display = 'none';
             document.getElementById('subTabContentResolver').style.display = 'block';
             renderClaimsTable();

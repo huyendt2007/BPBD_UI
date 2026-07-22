@@ -868,7 +868,7 @@ function renderTreasuryCell(item, info = getTreasuryInfo(item)) {
         `;
     }
     if (!item.noticeReceivedDate) {
-        return `<span style="font-size:12px; color:#94a3b8; font-style:italic;">Chưa khởi tạo hạn 3 năm</span>`;
+        return `<span style="font-size:12px; color:#94a3b8;">-</span>`;
     }
 
     if (info.isEligible) {
@@ -905,6 +905,27 @@ function filterTreasuryEligible() {
     }
     renderProposalsTable();
     showToast('Đang hiển thị các khoản đủ điều kiện sung quỹ.', 'info');
+}
+
+function openLinkedClaimDetail(ycbtCode) {
+    const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}`;
+    const shellDetailUrl = `UC431_to_UC466/${detailUrl}`;
+    const activeClaimUrl = 'UC431_to_UC466/quan_ly_boi_thuong.html';
+
+    if (window.parent && window.parent !== window) {
+        if (typeof window.parent.openAdminModule === 'function') {
+            window.parent.openAdminModule(shellDetailUrl, activeClaimUrl);
+            return;
+        }
+        window.parent.postMessage({
+            type: 'admin:navigate',
+            url: shellDetailUrl,
+            activeUrl: activeClaimUrl
+        }, '*');
+        return;
+    }
+
+    window.location.href = detailUrl;
 }
 
 function requestTreasuryForfeit(id) {
@@ -1421,7 +1442,7 @@ function renderProposalsTable() {
             <td style="text-align:center; vertical-align:middle;">${startIdx + idx + 1}</td>
             <td style="text-align:left; vertical-align:middle;"><strong>${item.code}</strong></td>
             <td style="font-weight: 500; font-size:12.5px; text-align:left; vertical-align:middle;">${item.type === 'Cấp tạm ứng' ? 'Đề nghị tạm ứng' : 'Đề nghị cấp kinh phí bồi thường'}</td>
-            <td style="text-align:left; vertical-align:middle;"><a href="javascript:void(0)" onclick="showToast('Xem thông tin hồ sơ gốc ${item.ycbtCode}', 'info')" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
+            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
             <td style="text-align:left; vertical-align:middle;"><strong>${item.nycName}</strong></td>
             <td style="text-align:left; vertical-align:middle;">${item.nycRole || 'Người bị thiệt hại'}</td>
             <td style="text-align:left; font-weight:700; vertical-align:middle;">${amtVal.toLocaleString('vi-VN')}</td>
