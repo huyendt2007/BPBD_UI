@@ -237,6 +237,19 @@
          .custom-table tbody tr:hover {
              background-color: rgba(241, 245, 249, 0.5);
          }
+
+         .link-button {
+             background: none;
+             border: none;
+             padding: 0;
+             cursor: pointer;
+             text-align: left;
+             font: inherit;
+         }
+
+         .link-button:hover {
+             text-decoration: underline;
+         }
  
          .action-cell {
              text-align: center;
@@ -773,7 +786,7 @@
              <div class="grid-3">
                  <div class="form-group">
                      <label class="form-label">Từ khóa tìm kiếm</label>
-                     <input type="text" id="filterKeyword" class="form-control" placeholder="Họ tên, CCCD/MST, Số điện thoại, Email...">
+                     <input type="text" id="filterKeyword" class="form-control" placeholder="Mã khách hàng, họ tên, CCCD/MST, Số điện thoại, Email...">
                  </div>
  
                  <div class="form-group">
@@ -830,15 +843,16 @@
                      <thead>
                          <tr>
                              <th width="4%" style="text-align:center">STT</th>
-                             <th width="15%" class="sortable" onclick="handleSort('person', 'name')">Họ và tên <span id="person-sort-name"><i class="fas fa-sort"></i></span></th>
+                             <th width="10%">Mã khách hàng</th>
+                             <th width="14%" class="sortable" onclick="handleSort('person', 'name')">Họ và tên <span id="person-sort-name"><i class="fas fa-sort"></i></span></th>
                              <th width="10%">Số giấy tờ</th>
                              <th width="12%">Email</th>
                              <th width="9%">Số điện thoại</th>
                              <th width="11%">Trung tâm Đăng ký</th>
-                             <th width="9%">Nguồn định danh</th>
-                             <th width="10%">Loại tài khoản</th>
-                             <th width="10%" class="sortable" onclick="handleSort('person', 'createdDate')">Ngày tạo <span id="person-sort-createdDate"><i class="fas fa-sort"></i></span></th>
-                             <th width="10%">Trạng thái</th>
+                             <th width="8%">Nguồn định danh</th>
+                             <th width="9%">Loại tài khoản</th>
+                             <th width="9%" class="sortable" onclick="handleSort('person', 'createdDate')">Ngày tạo <span id="person-sort-createdDate"><i class="fas fa-sort"></i></span></th>
+                             <th width="8%">Trạng thái</th>
                              <th width="10%" style="text-align:center">Thao tác</th>
                          </tr>
                      </thead>
@@ -856,17 +870,19 @@
                  <table class="custom-table" id="orgTable">
                      <thead>
                          <tr>
-                              <th width="5%" style="text-align:center">STT</th>
-                              <th width="17%" class="sortable" onclick="handleSort('org', 'name')">Tên Tổ chức <span id="org-sort-name"><i class="fas fa-sort"></i></span></th>
-                              <th width="11%">MST / Số đăng ký</th>
+                              <th width="4%" style="text-align:center">STT</th>
+                              <th width="9%">Mã tổ chức</th>
+                              <th width="13%" class="sortable" onclick="handleSort('org', 'name')">Tên tổ chức <span id="org-sort-name"><i class="fas fa-sort"></i></span></th>
+                              <th width="10%">Mã số thuế / Mã số doanh nghiệp</th>
+                              <th width="10%">Người đại diện</th>
                               <th width="11%">Email</th>
-                              <th width="9%">Số điện thoại</th>
-                              <th width="11%">Trung tâm Đăng ký</th>
-                              <th width="9%">Nguồn định danh</th>
-                              <th width="9%">Loại tài khoản</th>
-                              <th width="9%" class="sortable" onclick="handleSort('org', 'createdDate')">Ngày tạo <span id="org-sort-createdDate"><i class="fas fa-sort"></i></span></th>
-                              <th width="9%">Trạng thái</th>
-                              <th width="10%" style="text-align:center">Thao tác</th>
+                              <th width="8%">Số điện thoại</th>
+                              <th width="10%">Trung tâm Đăng ký</th>
+                              <th width="8%">Nguồn định danh</th>
+                              <th width="8%">Loại tài khoản</th>
+                              <th width="8%" class="sortable" onclick="handleSort('org', 'createdDate')">Ngày tạo <span id="org-sort-createdDate"><i class="fas fa-sort"></i></span></th>
+                              <th width="8%">Trạng thái</th>
+                              <th width="8%" style="text-align:center">Thao tác</th>
                          </tr>
                      </thead>
                      <tbody id="orgTableBody">
@@ -897,6 +913,14 @@
                      <div id="detailBannerVNeID" style="background:#F0FDF4;padding:10px;border-radius:4px;font-size:13px;color:#166534;margin-bottom:15px"><i class="fas fa-shield-alt"></i> Dữ liệu định danh đồng bộ từ VNeID/DVCQG.</div>
                      <div id="detailBannerInternal" style="display:none;background:#FFFBEB;padding:10px;border-radius:4px;font-size:13px;color:#92400E;margin-bottom:15px"><i class="fas fa-exclamation-triangle"></i> Tài khoản nội bộ (Không có VNeID).</div>
                      
+                     <div class="section-divider"><i class="fas fa-fingerprint"></i> Thông tin định danh hệ thống</div>
+                     <div class="grid-2-cols">
+                         <div class="form-group">
+                             <label class="form-label" style="color:var(--text-muted)">Mã khách hàng</label>
+                             <div id="detailCustomerCode" style="font-weight:700; color:var(--primary-color); font-size:14px; padding: 6px 0;">-</div>
+                         </div>
+                     </div>
+
                      <div class="section-divider"><i class="fas fa-id-card"></i> Thông tin định danh</div>
                      <div class="grid-2-cols">
                          <div class="form-group">
@@ -910,11 +934,11 @@
                      </div>
                      
                      <div class="grid-2-cols" id="detailPersonExtraGroup">
-                         <div class="form-group">
+                         <div class="form-group" id="detailGenderGroup">
                              <label class="form-label" style="color:var(--text-muted)">Giới tính</label>
                              <div id="detailGender" style="padding: 6px 0;">-</div>
                          </div>
-                         <div class="form-group">
+                         <div class="form-group" id="detailDobGroup">
                              <label class="form-label" style="color:var(--text-muted)">Ngày sinh</label>
                              <div id="detailDob" style="padding: 6px 0;">-</div>
                          </div>
@@ -962,17 +986,17 @@
                      </div>
                      
                      <div class="grid-2-cols">
-                         <div class="form-group">
+                         <div class="form-group" id="detailProvinceGroup">
                              <label class="form-label" style="color:var(--text-muted)">Tỉnh/TP</label>
                              <div id="detailProvince" style="padding: 6px 0;">-</div>
                          </div>
-                         <div class="form-group">
+                         <div class="form-group" id="detailAddressDetailGroup">
                              <label class="form-label" style="color:var(--text-muted)">Địa chỉ chi tiết</label>
                              <div id="detailAddressDetail" style="padding: 6px 0;">-</div>
                          </div>
                      </div>
  
-                     <div class="form-group">
+                     <div class="form-group" id="detailCenterGroup">
                          <label class="form-label" style="color:var(--text-muted)">Trung tâm Đăng ký giao dịch mặc định</label>
                          <div id="detailCenter" style="padding: 6px 0;">-</div>
                      </div>
@@ -1009,7 +1033,7 @@
                  <input type="hidden" id="detailTargetId">
                  <input type="hidden" id="detailTargetType">
                  <button class="btn btn-secondary" onclick="closeModal('detailModal')">Đóng</button>
-                 <button class="btn btn-primary" onclick="switchToEditFromDetail()"><i class="fas fa-edit"></i> Chỉnh sửa</button>
+                 <button type="button" class="btn btn-primary" onclick="switchToEditFromDetail()"><i class="fas fa-edit"></i> Cập nhật</button>
              </div>
          </div>
      </div>
@@ -1033,6 +1057,11 @@
                      <div id="bannerVNeID" style="background:#F0FDF4;padding:10px;border-radius:4px;font-size:13px;color:#166534;margin-bottom:15px"><i class="fas fa-shield-alt"></i> Dữ liệu định danh đồng bộ từ VNeID/DVCQG. Liên hệ và phân quyền có thể tùy chỉnh.</div>
                      <div id="bannerInternal" style="display:none;background:#FFFBEB;padding:10px;border-radius:4px;font-size:13px;color:#92400E;margin-bottom:15px"><i class="fas fa-exclamation-triangle"></i> Tài khoản nội bộ (Không có VNeID). Tên đăng nhập không được phép thay đổi.</div>
                      
+                     <div class="section-divider"><i class="fas fa-fingerprint"></i> Thông tin định danh hệ thống</div>
+                     <div class="grid-2-cols">
+                         <div class="form-group"><label class="form-label">Mã khách hàng</label><input type="text" class="form-control" id="inpCustomerCode" readonly disabled></div>
+                     </div>
+
                      <div class="section-divider" id="lblInfoGroup"><i class="fas fa-id-card"></i> Thông tin Định danh (Khóa)</div>
                      <div class="grid-2-cols">
                          <div class="form-group"><label class="form-label">Họ tên / Tên tổ chức</label><input type="text" class="form-control" id="inpName" readonly></div>
@@ -1756,6 +1785,13 @@
               }
           }
 
+          function getCustomerCode(item, type) {
+              if (!item) return '-';
+              if (item.customerCode) return item.customerCode;
+              const prefix = type === 'PERSON' ? 'KH-CN' : 'KH-TC';
+              return `${prefix}-${String(item.id).padStart(6, '0')}`;
+          }
+
           function renderPagination(tab, totalItems, fromItem, toItem, curPage, totalPages) {
               const containerId = tab === 'person' ? 'personPagination' : 'orgPagination';
               const container = document.getElementById(containerId);
@@ -1860,7 +1896,9 @@
                   
                   // Lọc
                   let filtered = personAccounts.filter(item => {
+                      const customerCode = getCustomerCode(item, 'PERSON').toLowerCase();
                       const matchKeyword = !keyword || 
+                                           customerCode.includes(keyword) ||
                                            item.name.toLowerCase().includes(keyword) || 
                                            item.code.toLowerCase().includes(keyword) || 
                                            item.email.toLowerCase().includes(keyword) || 
@@ -1903,7 +1941,7 @@
                   renderPagination('person', totalItems, totalItems > 0 ? startIdx + 1 : 0, endIdx, personPage, totalPages);
                   
                   if (pageItems.length === 0) {
-                      personBody.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy kết quả phù hợp.</td></tr>';
+                      personBody.innerHTML = '<tr><td colspan="12" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy kết quả phù hợp.</td></tr>';
                       return;
                   }
                   
@@ -1913,10 +1951,6 @@
                       tr.onclick = function(e) { handleRowClick(e, 'PERSON', item.id); };
                       
                       const stt = startIdx + index + 1;
-                      const sourceBadge = item.identitySource === 'VNeID' 
-                          ? `<span class="badge" style="background-color: #DBEAFE; color: #1E40AF;">VNeID</span>`
-                          : `<span class="badge bg-secondary">Nội bộ</span>`;
-                          
                       let statusClass = 'bg-success';
                       if (item.status === 'Bị khóa') statusClass = 'bg-danger';
                       if (item.status === 'Chờ kích hoạt') statusClass = 'bg-warning';
@@ -1924,21 +1958,25 @@
                       if (item.status === 'Hết hạn') statusClass = 'bg-danger';
                       if (item.status === 'Lưu nháp') statusClass = 'bg-secondary';
                       const statusBadge = `<span class="badge ${statusClass}">${item.status}</span>`;
+                      const sourceBadge = item.identitySource === 'VNeID'
+                          ? `<span class="badge" style="background-color: #DBEAFE; color: #1E40AF;">VNeID</span>`
+                          : `<span class="badge bg-secondary">Nội bộ</span>`;
                       
                       // Action buttons
-                      const viewBtn = `<button class="icon-btn view" title="Xem" onclick="openDetailModal('PERSON', ${item.id})"><i class="fas fa-eye"></i></button>`;
-                      const editBtn = `<button class="icon-btn edit" title="Sửa" onclick="openEditModal('PERSON', ${item.id})"><i class="fas fa-edit"></i></button>`;
+                      const viewBtn = `<button type="button" class="icon-btn view" title="Xem" onclick="event.preventDefault(); event.stopPropagation(); openDetailModal('PERSON', ${item.id})"><i class="fas fa-eye"></i></button>`;
+                      const editBtn = `<button type="button" class="icon-btn edit" title="Sửa" onclick="event.preventDefault(); event.stopPropagation(); openEditModal('PERSON', ${item.id})"><i class="fas fa-edit"></i></button>`;
                       const lockIcon = item.status === 'Bị khóa' ? 'fa-unlock' : 'fa-lock';
                       const lockTitle = item.status === 'Bị khóa' ? 'Mở khóa' : 'Khóa';
-                      const lockBtn = `<button class="icon-btn lock" title="${lockTitle}" onclick="toggleLock('PERSON', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
+                      const lockBtn = `<button type="button" class="icon-btn lock" title="${lockTitle}" onclick="event.preventDefault(); event.stopPropagation(); toggleLock('PERSON', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
                       
                       // Key button is rendered as a placeholder for VNeID
                       const resetPwdBtn = item.identitySource === 'Nội bộ'
-                          ? `<button class="icon-btn success" title="Đặt lại mật khẩu" onclick="resetPassword(${item.id}, 'PERSON')"><i class="fas fa-key"></i></button>`
-                          : `<button class="icon-btn success" title="Tài khoản liên kết định danh VNeID không sử dụng mật khẩu nội bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fas fa-key"></i></button>`;
+                          ? `<button type="button" class="icon-btn success" title="Đặt lại mật khẩu" onclick="event.preventDefault(); event.stopPropagation(); resetPassword(${item.id}, 'PERSON')"><i class="fas fa-key"></i></button>`
+                          : `<button type="button" class="icon-btn success" title="Tài khoản liên kết định danh VNeID không sử dụng mật khẩu nội bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fas fa-key"></i></button>`;
                       
                       tr.innerHTML = `
                           <td style="text-align:center">${stt}</td>
+                          <td><button type="button" class="link-button" style="font-weight:700; color:var(--primary-color);" onclick="event.preventDefault(); event.stopPropagation(); openDetailModal('PERSON', ${item.id})">${getCustomerCode(item, 'PERSON')}</button></td>
                           <td style="font-weight: 600;">${item.name}</td>
                           <td>${item.code}</td>
                           <td>${item.email}</td>
@@ -1963,7 +2001,9 @@
                   
                   // Lọc
                   let filtered = orgAccounts.filter(item => {
+                      const customerCode = getCustomerCode(item, 'ORG').toLowerCase();
                       const matchKeyword = !keyword || 
+                                           customerCode.includes(keyword) ||
                                            item.name.toLowerCase().includes(keyword) || 
                                            item.code.toLowerCase().includes(keyword) || 
                                            item.email.toLowerCase().includes(keyword) || 
@@ -2007,7 +2047,7 @@
                   renderPagination('org', totalItems, totalItems > 0 ? startIdx + 1 : 0, endIdx, orgPage, totalPages);
                   
                   if (pageItems.length === 0) {
-                      orgBody.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy kết quả phù hợp.</td></tr>';
+                      orgBody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy kết quả phù hợp.</td></tr>';
                       return;
                   }
                   
@@ -2017,10 +2057,6 @@
                       tr.onclick = function(e) { handleRowClick(e, 'ORG', item.id); };
                       
                       const stt = startIdx + index + 1;
-                      const sourceBadge = item.identitySource === 'VNeID' 
-                          ? `<span class="badge" style="background-color: #DBEAFE; color: #1E40AF;">VNeID</span>`
-                          : `<span class="badge bg-secondary">Nội bộ</span>`;
-                          
                       let statusClass = 'bg-success';
                       if (item.status === 'Bị khóa') statusClass = 'bg-danger';
                       if (item.status === 'Chờ kích hoạt') statusClass = 'bg-warning';
@@ -2028,6 +2064,9 @@
                       if (item.status === 'Hết hạn') statusClass = 'bg-danger';
                       if (item.status === 'Lưu nháp') statusClass = 'bg-secondary';
                       const statusBadge = `<span class="badge ${statusClass}">${item.status}</span>`;
+                      const sourceBadge = item.identitySource === 'VNeID'
+                          ? `<span class="badge" style="background-color: #DBEAFE; color: #1E40AF;">VNeID</span>`
+                          : `<span class="badge bg-secondary">Nội bộ</span>`;
                       
                       const isBranch = item.code.includes('-');
                       const paddingLeftStyle = isBranch ? 'padding-left: 28px;' : '';
@@ -2036,24 +2075,26 @@
                           : `<i class="fas fa-chevron-down" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i>`;
                       
                       // Action buttons
-                      const viewBtn = `<button class="icon-btn view" title="Xem" onclick="openDetailModal('ORG', ${item.id})"><i class="fas fa-eye"></i></button>`;
-                      const editBtn = `<button class="icon-btn edit" title="Sửa" onclick="openEditModal('ORG', ${item.id})"><i class="fas fa-edit"></i></button>`;
+                      const viewBtn = `<button type="button" class="icon-btn view" title="Xem" onclick="event.preventDefault(); event.stopPropagation(); openDetailModal('ORG', ${item.id})"><i class="fas fa-eye"></i></button>`;
+                      const editBtn = `<button type="button" class="icon-btn edit" title="Sửa" onclick="event.preventDefault(); event.stopPropagation(); openEditModal('ORG', ${item.id})"><i class="fas fa-edit"></i></button>`;
                       const lockIcon = item.status === 'Bị khóa' ? 'fa-unlock' : 'fa-lock';
                       const lockTitle = item.status === 'Bị khóa' ? 'Mở khóa' : 'Khóa';
-                      const lockBtn = `<button class="icon-btn lock" title="${lockTitle}" onclick="toggleLock('ORG', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
+                      const lockBtn = `<button type="button" class="icon-btn lock" title="${lockTitle}" onclick="event.preventDefault(); event.stopPropagation(); toggleLock('ORG', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
                       
                       // Key button is rendered as a placeholder for VNeID
                       const resetPwdBtn = item.identitySource === 'Nội bộ'
-                          ? `<button class="icon-btn success" title="Đặt lại mật khẩu" onclick="resetPassword(${item.id}, 'ORG')"><i class="fas fa-key"></i></button>`
-                          : `<button class="icon-btn success" title="Tài khoản liên kết định danh VNeID không sử dụng mật khẩu nội bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fas fa-key"></i></button>`;
+                          ? `<button type="button" class="icon-btn success" title="Đặt lại mật khẩu" onclick="event.preventDefault(); event.stopPropagation(); resetPassword(${item.id}, 'ORG')"><i class="fas fa-key"></i></button>`
+                          : `<button type="button" class="icon-btn success" title="Tài khoản liên kết định danh VNeID không sử dụng mật khẩu nội bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fas fa-key"></i></button>`;
                       
                       const hasSubMatch = keyword && item.subs && item.subs.some(sub => sub.code.toLowerCase().includes(keyword));
                       const subMatchBadge = hasSubMatch ? `<span class="badge bg-warning" style="margin-left:8px;">(Tìm thấy tài khoản con trùng Số giấy tờ)</span>` : '';
                       
                       tr.innerHTML = `
                           <td style="text-align:center">${stt}</td>
+                          <td><button type="button" class="link-button" style="font-weight:700; color:var(--primary-color);" onclick="event.preventDefault(); event.stopPropagation(); openDetailModal('ORG', ${item.id})">${getCustomerCode(item, 'ORG')}</button></td>
                           <td style="${paddingLeftStyle} font-weight: 600;">${iconPrefix} ${item.name} ${subMatchBadge}</td>
                           <td>${item.code}</td>
+                          <td>${item.repName || '-'}</td>
                           <td>${item.email}</td>
                           <td>${item.phone}</td>
                           <td>${item.center}</td>
@@ -2098,6 +2139,7 @@
              document.getElementById('detailTargetType').value = type;
  
              document.getElementById('detailName').innerText = item.name;
+             document.getElementById('detailCustomerCode').innerText = getCustomerCode(item, type);
              document.getElementById('lblDetailCode').innerText = type === 'PERSON' ? 'Số CCCD' : 'MST / Mã số DN';
              document.getElementById('detailCode').innerText = item.code;
  
@@ -2255,6 +2297,7 @@
              document.getElementById('editTargetType').value = type;
  
              document.getElementById('inpName').value = item.name;
+             document.getElementById('inpCustomerCode').value = getCustomerCode(item, type);
              document.getElementById('lblInpCode').innerText = type === 'PERSON' ? 'Số CCCD' : 'MST / Mã số DN';
              document.getElementById('inpCode').value = item.code;
  

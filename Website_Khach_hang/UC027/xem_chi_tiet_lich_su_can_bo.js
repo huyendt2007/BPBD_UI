@@ -1295,6 +1295,18 @@ document.addEventListener('DOMContentLoaded', function () {
     let regNumParam = urlParams.get('regNum') || urlParams.get('id') || localStorage.getItem('canBoRegNum') || '';
     const isSingleMode = urlParams.get('mode') === 'single';
     const mockTimelineData = [];
+    let registeredDetailContext = null;
+    try {
+        const rawDetailContext = sessionStorage.getItem('registeredRequestDetailContext');
+        if (rawDetailContext) {
+            const parsed = JSON.parse(rawDetailContext);
+            if (parsed && parsed.regNum === regNumParam) {
+                registeredDetailContext = parsed;
+            }
+        }
+    } catch (e) {
+        console.warn('Không đọc được ngữ cảnh hồ sơ khách hàng', e);
+    }
 
     // Kiểm tra xem hồ sơ có tồn tại trong custom_mock_profiles của localStorage không
     const cached = localStorage.getItem('custom_mock_profiles');
@@ -1314,7 +1326,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Fallback if not matched any dynamic or static profile
-    const validRegNums = ['1505156435', '1505156436', '1505156437', '1505156438', '1505156439', '1505156440', '1505156441', '1505156442', '1505156443', '1505156444'];
+    const validRegNums = ['1505156435', '1505156436', '1505156437', '1505156438', '1505156439', '1505156440', '1505156441', '1505156442', '1505156443', '1505156444', '1505156445', '1505156446', '1505156447'];
     const hasValidMatch = validRegNums.some(r => regNumParam.includes(r));
     if (!matchedProfile && !hasValidMatch) {
         regNumParam = '1505156435';
@@ -1868,8 +1880,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     let currentSelectedVersion = null;
-    let currentRole = 'canbo';
-    let activeAction = '';
     let summaryIdx = 1;
     let visibleCount = 10;
     let filteredData = [...mockTimelineData];
@@ -2093,8 +2103,10 @@ document.addEventListener('DOMContentLoaded', function () {
         currentSelectedVersion = versionNode;
         
         // Update title/status headers
-        currentVersionTitle.textContent = `${versionNode.title} - Trạng thái: ${versionNode.statusText}`;
-        currentVersionSubtitle.textContent = `Số đăng ký: ${versionNode.regCode} | Thời điểm thực hiện: ${versionNode.date}`;
+        const detailStatusText = registeredDetailContext ? registeredDetailContext.status : versionNode.statusText;
+        const detailRegCode = registeredDetailContext ? registeredDetailContext.regNum : versionNode.regCode;
+        currentVersionTitle.textContent = `${versionNode.title} - Trạng thái: ${detailStatusText}`;
+        currentVersionSubtitle.textContent = `Số đăng ký: ${detailRegCode} | Thời điểm thực hiện: ${versionNode.date}`;
 
         // Reset display of special blocks
         sectionDeRegistration.style.display = 'none';
@@ -2996,24 +3008,26 @@ document.addEventListener('DOMContentLoaded', function () {
             renderTimeline(true);
         });
 
-        // Demo switcher event handlers
+        // View mode switcher is optional on the customer detail screen.
         const btnSwitchHistory = document.getElementById('btnSwitchHistory');
         const btnSwitchSingle = document.getElementById('btnSwitchSingle');
 
-        if (isSingleMode) {
-            btnSwitchSingle.style.backgroundColor = '#3B82F6';
-            btnSwitchHistory.style.backgroundColor = '#4B5563';
-        } else {
-            btnSwitchHistory.style.backgroundColor = '#3B82F6';
-            btnSwitchSingle.style.backgroundColor = '#4B5563';
-        }
+        if (btnSwitchHistory && btnSwitchSingle) {
+            if (isSingleMode) {
+                btnSwitchSingle.style.backgroundColor = '#3B82F6';
+                btnSwitchHistory.style.backgroundColor = '#4B5563';
+            } else {
+                btnSwitchHistory.style.backgroundColor = '#3B82F6';
+                btnSwitchSingle.style.backgroundColor = '#4B5563';
+            }
 
-        btnSwitchHistory.addEventListener('click', function() {
-            window.location.search = '?mode=multi';
-        });
-        btnSwitchSingle.addEventListener('click', function() {
-            window.location.search = '?mode=single';
-        });
+            btnSwitchHistory.addEventListener('click', function() {
+                window.location.search = '?mode=multi';
+            });
+            btnSwitchSingle.addEventListener('click', function() {
+                window.location.search = '?mode=single';
+            });
+        }
     }
 
         // Setup listener for asset audit trail toggle
@@ -3026,7 +3040,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Render dynamic officer actions
+        // Render dynamic customer actions
         function renderActionButtons() {
             const container = document.getElementById('action-buttons-container');
             if (!container) return;
@@ -3034,166 +3048,227 @@ document.addEventListener('DOMContentLoaded', function () {
             container.innerHTML = '';
             if (!currentSelectedVersion) return;
 
-            // Map mockup statuses for demonstration of the flow
-            let status = currentSelectedVersion.statusText || 'Hoàn thành';
-            if (currentSelectedVersion.version === 6) {
-                status = 'Chờ duyệt';
-            } else if (currentSelectedVersion.version === 7) {
-                status = 'Duyệt chờ ký';
-            } else if (currentSelectedVersion.version === 8) {
-                status = 'Chờ ký';
+            const node = currentSelectedVersion;
+            const context = registeredDetailContext;
+            const normalize = (value) => String(value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'D')
+                .toLowerCase();
+            const typeText = context ? context.type : `${node.title || ''} ${node.label || ''} ${node.data?.regCase || ''}`;
+            const title = normalize(typeText);
+            const status = context ? context.status : (node.statusText || 'Hoàn thành');
+            const statusNorm = normalize(status);
+            const isCompleted = statusNorm === normalize('Hoàn thành');
+            const isDraft = statusNorm === normalize('Lưu nháp');
+            const isPendingPayment = statusNorm === normalize('Chờ thanh toán');
+            const isInfoRequestType = [
+                'Yêu cầu cung cấp bản sao',
+                'Yêu cầu cung cấp bản sao kèm thông báo',
+                'Yêu cầu cung cấp thông tin'
+            ].some(label => title.includes(normalize(label)));
+            const rootDescendants = context ? (context.rootDescendants || []) : [];
+            const itemDescendants = context ? (context.itemDescendants || []) : [];
+            const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Chờ ký', 'Sai lệch thanh toán'].map(normalize);
+            const isActiveStatus = (item) => activeStatuses.includes(normalize(item.status));
+            const hasType = (item, keyword) => normalize(item.type).includes(normalize(keyword));
+            const isRootFirstRegistration = isCompleted && (context
+                ? context.isRoot && title.includes(normalize('Đăng ký lần đầu'))
+                : (node.version === 1 || title.includes(normalize('Đăng ký lần đầu')) || title.includes(normalize('Đăng ký gốc'))));
+            const isFirstAssetNotice = isCompleted && (context
+                ? !context.isRoot && title.includes(normalize('Thông báo xử lý')) && title.includes(normalize('lần đầu'))
+                : title.includes(normalize('Thông báo xử lý')))
+                && !title.includes(normalize('Thay đổi thông báo'))
+                && !title.includes(normalize('Xóa thông báo'))
+                && !title.includes(normalize('Xóa đăng ký thông báo'));
+
+            const hasActiveChangeRegistration = rootDescendants.some(item => hasType(item, 'Đăng ký thay đổi') && isActiveStatus(item));
+            const hasAnyAssetNotice = rootDescendants.some(item => hasType(item, 'Thông báo xử lý'));
+            const hasAnyDeleteRegistration = rootDescendants.some(item => hasType(item, 'Xóa đăng ký') && !hasType(item, 'Thông báo'));
+            const hasActiveChangeNotice = itemDescendants.some(item => hasType(item, 'Thay đổi thông báo') && isActiveStatus(item));
+            const hasAnyDeleteNotice = itemDescendants.some(item => hasType(item, 'Xóa') && hasType(item, 'Thông báo'));
+
+            const primaryButtons = [];
+            const otherActions = [];
+            const addPrimaryButton = (label, action, icon, variant = 'warning') => {
+                const bg = {
+                    warning: 'var(--warning-color)',
+                    primary: 'var(--primary-color)'
+                }[variant] || 'var(--primary-color)';
+                primaryButtons.push(`
+                    <button class="btn-back" style="background-color:${bg}; color:white; border:none; padding:8px 14px; border-radius:var(--border-radius-md); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13px;" onclick="customerAction('${action}')">
+                        <i class="${icon}"></i> ${label}
+                    </button>
+                `);
+            };
+            const addOtherAction = (label, action, icon) => {
+                otherActions.push(`
+                    <button type="button" onclick="customerAction('${action}')" style="width:100%; border:none; background:white; padding:9px 12px; text-align:left; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-main);">
+                        <i class="${icon}" style="width:16px; color:var(--primary-color);"></i> ${label}
+                    </button>
+                `);
+            };
+
+            if (isPendingPayment) {
+                addPrimaryButton('Thanh toán', 'payment', 'fa-solid fa-credit-card', 'warning');
+            }
+            if (isDraft) {
+                addPrimaryButton('Cập nhật', 'update', 'fa-solid fa-pen-to-square', 'primary');
             }
 
-            let buttonsHtml = '';
-
-            if (status === 'Chờ duyệt') {
-                buttonsHtml = `
-                    <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('duyet')"><i class="fa fa-check"></i> Duyệt</button>
-                    <button class="btn-back" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('trinhky')"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
-                    <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
-                    <button class="btn-back" style="margin-left: auto; font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
-                `;
-            } else if (status === 'Duyệt chờ ký') {
-                buttonsHtml = `
-                    <button class="btn-back" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('trinhky')"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
-                    <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
-                    <button class="btn-back" style="background-color: #64748B; color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('huyduyet')"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
-                    <button class="btn-back" style="margin-left: auto; font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
-                `;
-            } else if (status === 'Chờ ký') {
-                if (currentRole === 'lanhdao') {
-                    buttonsHtml = `
-                        <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('kyduyet')"><i class="fa-solid fa-signature"></i> Ký duyệt</button>
-                        <button class="btn-back" style="background-color: var(--accent-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('tralai')"><i class="fa-solid fa-reply"></i> Trả lại</button>
-                        <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
-                        <button class="btn-back" style="margin-left: auto; font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
-                    `;
-                } else {
-                    buttonsHtml = `
-                        <span style="font-size: 13px; color: var(--text-muted); margin-right: auto; font-style: italic;">
-                            <i class="fa-solid fa-lock"></i> Hồ sơ ở trạng thái Chờ ký (Chỉ Lãnh đạo mới có quyền ký duyệt)
-                        </span>
-                        <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
-                    `;
+            if (isRootFirstRegistration) {
+                if (!hasActiveChangeRegistration) {
+                    addOtherAction('Đăng ký thay đổi', 'change-registration', 'fa-solid fa-file-pen');
                 }
-            } else {
-                buttonsHtml = `
-                    <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
-                `;
+                if (!hasAnyAssetNotice) {
+                    addOtherAction('Thông báo xử lý tài sản', 'asset-disposal', 'fa-solid fa-bullhorn');
+                }
+                if (!hasAnyDeleteRegistration) {
+                    addOtherAction('Xóa đăng ký', 'delete-registration', 'fa-solid fa-file-circle-minus');
+                }
             }
 
-            container.innerHTML = buttonsHtml;
+            if (isFirstAssetNotice) {
+                if (!hasActiveChangeNotice) {
+                    addOtherAction('Thay đổi thông báo', 'change-notice', 'fa-solid fa-pen-to-square');
+                }
+                if (!hasAnyDeleteNotice) {
+                    addOtherAction('Xóa thông báo', 'delete-notice', 'fa-solid fa-trash-can');
+                }
+            }
+
+            if (isCompleted && !isInfoRequestType) {
+                addOtherAction('Yêu cầu cung cấp thông tin', 'request-info', 'fa-solid fa-magnifying-glass');
+                addOtherAction('Yêu cầu cung cấp bản sao', 'request-copy', 'fa-solid fa-copy');
+                addOtherAction('Yêu cầu cung cấp bản sao kèm thông báo', 'request-copy-notice', 'fa-solid fa-file-circle-check');
+            }
+
+            const moreActionsHtml = otherActions.length ? `
+                <div style="position:relative;">
+                    <button type="button" class="btn-back" onclick="toggleDetailOtherActions(event)" style="background:#fff; border:1px solid var(--border-color); color:var(--primary-color); padding:8px 14px; border-radius:var(--border-radius-md); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13px;">
+                        <i class="fa-solid fa-ellipsis-vertical"></i> Thao tác khác
+                    </button>
+                    <div id="detailOtherActionsMenu" style="display:none; position:absolute; right:0; bottom:42px; width:280px; background:white; border:1px solid var(--border-color); border-radius:var(--border-radius-md); box-shadow:0 12px 28px rgba(15,23,42,.18); overflow:hidden; z-index:50;">
+                        ${otherActions.join('')}
+                    </div>
+                </div>
+            ` : '';
+
+            container.innerHTML = `
+                ${primaryButtons.join('')}
+                ${moreActionsHtml}
+                <button class="btn-back" style="margin-left:auto; font-size:13px;" onclick="goBack()">
+                    <i class="fa fa-times"></i> Đóng
+                </button>
+            `;
         }
 
         // Global functions exposed to window object for click handlers
-        window.closeModal = function(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('active');
-            }
-            document.getElementById('pinError').style.display = 'none';
-            document.getElementById('reasonError').style.display = 'none';
-        };
+        function getActiveRegNum() {
+            const node = currentSelectedVersion;
+            return registeredDetailContext?.regNum || (node && (node.data?.firstRegNo || node.regCode)) || regNumParam || localStorage.getItem('regNum') || '1505156435';
+        }
 
-        window.switchRoleDemo = function(role) {
-            currentRole = role;
-            renderActionButtons();
-        };
-
-        window.executeAction = function(action) {
-            activeAction = action;
-            if (action === 'kyduyet') {
-                const modal = document.getElementById('modalSign');
-                if (modal) {
-                    document.getElementById('pinCode').value = '';
-                    document.getElementById('pinError').style.display = 'none';
-                    modal.classList.add('active');
-                }
-            } else if (action === 'tuchoi') {
-                const modal = document.getElementById('modalReason');
-                if (modal) {
-                    document.getElementById('reasonTitle').textContent = 'Nhập lý do Từ chối hồ sơ';
-                    document.getElementById('reasonLabel').textContent = 'Lý do từ chối cụ thể *';
-                    document.getElementById('reasonText').value = '';
-                    document.getElementById('reasonError').style.display = 'none';
-                    modal.classList.add('active');
-                }
-            } else if (action === 'tralai') {
-                const modal = document.getElementById('modalReason');
-                if (modal) {
-                    document.getElementById('reasonTitle').textContent = 'Nhập lý do Trả lại hồ sơ';
-                    document.getElementById('reasonLabel').textContent = 'Lý do trả lại cụ thể *';
-                    document.getElementById('reasonText').value = '';
-                    document.getElementById('reasonError').style.display = 'none';
-                    modal.classList.add('active');
-                }
-            } else if (action === 'duyet') {
-                if (currentSelectedVersion) {
-                    currentSelectedVersion.statusText = 'Duyệt chờ ký';
-                    currentVersionTitle.textContent = `${currentSelectedVersion.title} - Trạng thái: Duyệt chờ ký`;
-                    renderActionButtons();
-                    alert('Đã duyệt hồ sơ thành công! Trạng thái hồ sơ chuyển thành: Duyệt chờ ký.');
-                }
-            } else if (action === 'trinhky') {
-                if (currentSelectedVersion) {
-                    currentSelectedVersion.statusText = 'Chờ ký';
-                    currentVersionTitle.textContent = `${currentSelectedVersion.title} - Trạng thái: Chờ ký`;
-                    renderActionButtons();
-                    alert('Đã trình ký hồ sơ thành công! Trạng thái hồ sơ chuyển thành: Chờ ký.');
-                }
-            } else if (action === 'huyduyet') {
-                if (currentSelectedVersion) {
-                    currentSelectedVersion.statusText = 'Chờ duyệt';
-                    currentVersionTitle.textContent = `${currentSelectedVersion.title} - Trạng thái: Chờ duyệt`;
-                    renderActionButtons();
-                    alert('Đã hủy duyệt hồ sơ thành công! Trạng thái hồ sơ chuyển thành: Chờ duyệt.');
-                }
-            }
-        };
-
-        window.submitSign = function() {
-            const pinCode = document.getElementById('pinCode').value;
-            const pinError = document.getElementById('pinError');
-            if (pinCode !== '1234') {
-                pinError.style.display = 'block';
+        function navigateCustomerModule(screenId, customUrl) {
+            if (window.parent && window.parent !== window && typeof window.parent.showScreen === 'function') {
+                window.parent.showScreen(screenId, customUrl);
                 return;
             }
-
-            pinError.style.display = 'none';
-            closeModal('modalSign');
-
-            if (currentSelectedVersion) {
-                currentSelectedVersion.statusText = 'Hoàn thành';
-                currentVersionTitle.textContent = `${currentSelectedVersion.title} - Trạng thái: Hoàn thành`;
-                renderActionButtons();
-                alert('Ký số hồ sơ thành công! Trạng thái chuyển thành: Hoàn thành.');
-            }
-        };
-
-        window.submitReason = function() {
-            const reasonText = document.getElementById('reasonText').value.trim();
-            const reasonError = document.getElementById('reasonError');
-            if (!reasonText) {
-                reasonError.style.display = 'block';
+            if (screenId === 'search') {
+                const tab = customUrl === 'tthc' ? 'tthc' : 'reg';
+                window.location.href = `../UC190_193/tra_cuu_srs.html?tab=${tab}`;
                 return;
             }
+            const fallbackUrls = {
+                'billing-payment': '../trang_tong_the_website_khach_hang.html?screen=billing-payment',
+                'asset-disposal': '../trang_tong_the_website_khach_hang.html?screen=asset-disposal',
+                'request-copies': '../UC149/lap_yeu_cau_sao_luc_main.html',
+                'request-copies-notif': '../UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html'
+            };
+            if (!customUrl && fallbackUrls[screenId]) {
+                window.location.href = fallbackUrls[screenId];
+                return;
+            }
+            if (customUrl) {
+                window.location.href = `../${customUrl}`;
+                return;
+            }
+            window.location.href = '../trang_tong_the_website_khach_hang.html';
+        }
 
-            reasonError.style.display = 'none';
-            closeModal('modalReason');
+        window.toggleDetailOtherActions = function(event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById('detailOtherActionsMenu');
+            if (!menu) return;
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        };
 
-            if (currentSelectedVersion) {
-                const nextStatus = activeAction === 'tuchoi' ? 'Bị từ chối' : 'Bị trả lại';
-                currentSelectedVersion.statusText = nextStatus;
-                currentVersionTitle.textContent = `${currentSelectedVersion.title} - Trạng thái: ${nextStatus}`;
-                
-                if (nextStatus === 'Bị từ chối') {
-                    sectionRejectionInfo.style.display = 'block';
-                    rejectDateVal.textContent = new Date().toLocaleString();
-                    rejectReasonVal.textContent = reasonText;
-                }
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('detailOtherActionsMenu');
+            if (!menu) return;
+            const clickedInside = event.target.closest('#detailOtherActionsMenu') || event.target.closest('[onclick^="toggleDetailOtherActions"]');
+            if (!clickedInside) {
+                menu.style.display = 'none';
+            }
+        });
 
-                renderActionButtons();
-                alert(`Hồ sơ đã được xử lý thành công! Trạng thái chuyển thành: ${nextStatus}.`);
+        window.customerAction = function(action) {
+            const otherMenu = document.getElementById('detailOtherActionsMenu');
+            if (otherMenu) otherMenu.style.display = 'none';
+            const regNum = getActiveRegNum();
+            const pin = registeredDetailContext?.pin || currentSelectedVersion?.data?.pin || '5635';
+
+            switch (action) {
+                case 'payment':
+                    navigateCustomerModule('billing-payment');
+                    break;
+                case 'update':
+                    if (window.parent && window.parent !== window && typeof window.parent.updateRegisteredRequest === 'function') {
+                        window.parent.updateRegisteredRequest(regNum, registeredDetailContext?.type || '');
+                    } else {
+                        navigateCustomerModule('change-registration', `UC0025/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                    }
+                    break;
+                case 'change-registration':
+                    navigateCustomerModule('change-registration', `UC0025/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                    break;
+                case 'asset-disposal':
+                    if (window.parent && window.parent !== window && typeof window.parent.openAssetDisposalInMode === 'function') {
+                        window.parent.openAssetDisposalInMode(regNum, 'first');
+                    } else {
+                        navigateCustomerModule('asset-disposal');
+                    }
+                    break;
+                case 'delete-registration':
+                    navigateCustomerModule('delete-registration', `UC026/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                    break;
+                case 'change-notice':
+                    if (window.parent && window.parent !== window && typeof window.parent.openAssetDisposalInMode === 'function') {
+                        window.parent.openAssetDisposalInMode(regNum, 'change');
+                    } else {
+                        navigateCustomerModule('asset-disposal');
+                    }
+                    break;
+                case 'delete-notice':
+                    if (window.parent && window.parent !== window && typeof window.parent.openAssetDisposalInMode === 'function') {
+                        window.parent.openAssetDisposalInMode(regNum, 'delete');
+                    } else {
+                        navigateCustomerModule('asset-disposal');
+                    }
+                    break;
+                case 'request-info':
+                    navigateCustomerModule('search', 'reg');
+                    break;
+                case 'request-copy':
+                    navigateCustomerModule('request-copies');
+                    break;
+                case 'request-copy-notice':
+                    navigateCustomerModule('request-copies-notif');
+                    break;
+                default:
+                    goBack();
+                    break;
             }
         };
 
@@ -3204,7 +3279,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.href = prevPage;
             } else {
                 const fromParam = urlParams.get('from');
-                if (fromParam === 'ky_duyet') {
+                if (fromParam === 'registered') {
+                    if (window.parent && window.parent !== window && typeof window.parent.showScreen === 'function') {
+                        window.parent.showScreen('registered-requests');
+                    } else {
+                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                    }
+                } else if (fromParam === 'search' || fromParam === 'tthc') {
+                    const tab = fromParam === 'tthc' ? 'tthc' : 'reg';
+                    window.location.href = `../UC190_193/tra_cuu_srs.html?tab=${tab}`;
+                } else if (fromParam === 'ky_duyet') {
                     window.location.href = '../UC031/ky_duyet_ho_so.html';
                 } else if (fromParam === 'kiem_tra') {
                     window.location.href = '../UC028/kiem_tra_ho_so.html';

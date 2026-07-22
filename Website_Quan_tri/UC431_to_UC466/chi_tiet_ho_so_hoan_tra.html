@@ -907,7 +907,7 @@
         <div class="page-title">
             <h2 id="pageHeaderTitle"><i class="fa-solid fa-folder-open"></i> Hồ sơ trách nhiệm hoàn trả: HT-2026-001
             </h2>
-            <p>Vụ việc bồi thường gốc: <a id="pageHeaderClaimLink" href="#" target="_blank"
+            <p>Vụ việc bồi thường gốc: <a id="pageHeaderClaimLink" href="#"
                     style="color:var(--secondary-color); font-weight:700; text-decoration:underline; display:inline-flex; align-items:center; gap:4px;">BT-2026-001
                     <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[👁️ Xem hồ sơ
                         gốc]</span></a> - <span id="pageHeaderClaimTitle">Cưỡng chế tháo dỡ nhà ở tại Cầu Giấy</span>
@@ -1002,7 +1002,7 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <div class="info-label">Mã hồ sơ bồi thường</div>
-                            <div class="info-value"><a id="s1ClaimCodeLink" href="#" target="_blank"
+                            <div class="info-value"><a id="s1ClaimCodeLink" href="#"
                                     style="color:var(--secondary-color); text-decoration:underline; font-weight:700;">BT-2026-001
                                     <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i></a>
                             </div>
@@ -2232,6 +2232,37 @@
         <!-- JAVASCRIPT SYSTEM ENGINE LOGIC -->
         <!-- ========================================== -->
         <script>
+            function getRefundDetailReturnUrl() {
+                const params = new URLSearchParams(window.location.search);
+                const dossierId = params.get('id') || (typeof activeDossier !== 'undefined' && activeDossier ? activeDossier.id : '');
+                return dossierId
+                    ? `chi_tiet_ho_so_hoan_tra.html?id=${encodeURIComponent(dossierId)}`
+                    : 'chi_tiet_ho_so_hoan_tra.html';
+            }
+
+            function openLinkedClaimDetail(claimCode) {
+                const returnUrl = getRefundDetailReturnUrl();
+                const returnActiveUrl = 'xem_xet_trach_nhiem_hoan_tra.html';
+                const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(claimCode)}&from=hoan_tra_detail&returnUrl=${encodeURIComponent(returnUrl)}&returnActiveUrl=${encodeURIComponent(returnActiveUrl)}`;
+                const shellDetailUrl = `UC431_to_UC466/${detailUrl}`;
+                const activeClaimUrl = 'UC431_to_UC466/quan_ly_boi_thuong.html';
+
+                if (window.parent && window.parent !== window) {
+                    if (typeof window.parent.openAdminModule === 'function') {
+                        window.parent.openAdminModule(shellDetailUrl, activeClaimUrl);
+                        return;
+                    }
+                    window.parent.postMessage({
+                        type: 'admin:navigate',
+                        url: shellDetailUrl,
+                        activeUrl: activeClaimUrl
+                    }, '*');
+                    return;
+                }
+
+                window.location.href = detailUrl;
+            }
+
             // Real database state
             let dossiersList = [
                 {
@@ -2598,7 +2629,12 @@
                 document.getElementById('pageHeaderTitle').innerHTML = `<i class="fa-solid fa-folder-open"></i> Hồ sơ trách nhiệm hoàn trả: ${activeDossier.code}`;
                 const headerLink = document.getElementById('pageHeaderClaimLink');
                 if (headerLink) {
-                    headerLink.href = `quan_ly_boi_thuong.html?id=${activeDossier.claimCode}`;
+                    headerLink.href = `quan_ly_boi_thuong.html?id=${activeDossier.claimCode}&from=hoan_tra_detail&returnUrl=${encodeURIComponent(getRefundDetailReturnUrl())}&returnActiveUrl=${encodeURIComponent('xem_xet_trach_nhiem_hoan_tra.html')}`;
+                    headerLink.removeAttribute('target');
+                    headerLink.onclick = (event) => {
+                        event.preventDefault();
+                        openLinkedClaimDetail(activeDossier.claimCode);
+                    };
                     headerLink.innerHTML = `${activeDossier.claimCode} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[👁️ Xem hồ sơ gốc]</span>`;
                 }
                 document.getElementById('pageHeaderClaimTitle').innerText = activeDossier.claimTitle;
@@ -2812,7 +2848,12 @@
             function renderStep1() {
                 const linkEl = document.getElementById('s1ClaimCodeLink');
                 if (linkEl) {
-                    linkEl.href = `quan_ly_boi_thuong.html?id=${activeDossier.claimCode}`;
+                    linkEl.href = `quan_ly_boi_thuong.html?id=${activeDossier.claimCode}&from=hoan_tra_detail&returnUrl=${encodeURIComponent(getRefundDetailReturnUrl())}&returnActiveUrl=${encodeURIComponent('xem_xet_trach_nhiem_hoan_tra.html')}`;
+                    linkEl.removeAttribute('target');
+                    linkEl.onclick = (event) => {
+                        event.preventDefault();
+                        openLinkedClaimDetail(activeDossier.claimCode);
+                    };
                     linkEl.innerHTML = `${activeDossier.claimCode} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i>`;
                 }
                 document.getElementById('s1ClaimDate').innerText = activeDossier.claimDate;

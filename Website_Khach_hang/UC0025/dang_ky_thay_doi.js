@@ -3397,13 +3397,10 @@ function openHistoryModal() {
         regNum = 'BD-2026-001';
     }
 
-    let url = `../UC035/xem_chi_tiet_thay_doi.html?regNum=${regNum}&from=change`;
+    let url = `../UC027/xem_chi_tiet_lich_su_can_bo.html?regNum=${regNum}&focusId=${regNum}&from=change`;
 
-    if (window.parent && window.parent !== window) {
-        window.parent.location.href = url;
-    } else {
-        window.location.href = url;
-    }
+    sessionStorage.setItem('prevCanBoPage', window.location.href);
+    window.location.href = url;
 }
 
 // Đóng modal Lịch sử thay đổi
@@ -3829,5 +3826,4 @@ function setSaveScenario(scen) {
         }
     }
 }
-
 

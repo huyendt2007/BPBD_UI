@@ -1305,6 +1305,28 @@
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
     <script>
+        function openLinkedClaimDetail(claimCode) {
+            const returnUrl = 'xem_xet_trach_nhiem_hoan_tra.html';
+            const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(claimCode)}&from=hoan_tra&returnUrl=${encodeURIComponent(returnUrl)}`;
+            const shellDetailUrl = `UC431_to_UC466/${detailUrl}`;
+            const activeClaimUrl = 'UC431_to_UC466/quan_ly_boi_thuong.html';
+
+            if (window.parent && window.parent !== window) {
+                if (typeof window.parent.openAdminModule === 'function') {
+                    window.parent.openAdminModule(shellDetailUrl, activeClaimUrl);
+                    return;
+                }
+                window.parent.postMessage({
+                    type: 'admin:navigate',
+                    url: shellDetailUrl,
+                    activeUrl: activeClaimUrl
+                }, '*');
+                return;
+            }
+
+            window.location.href = detailUrl;
+        }
+
         let dossiersList = [
             {
                 id: "HT-2026-001",
@@ -1721,7 +1743,7 @@
                     <td style="text-align:center; font-weight:600; color:var(--primary-color);">${d.code}</td>
                     <td>${getOfficersColumnHtml(d.refundOfficers)}</td>
                     <td>${agencyDisplay}</td>
-                    <td style="text-align:center; font-weight:600;"><a href="quan_ly_boi_thuong.html?id=${d.claimCode}" target="_blank" onclick="event.stopPropagation();" style="color: var(--secondary-color); text-decoration: underline; font-weight: 700;">${d.claimCode}</a></td>
+                    <td style="text-align:center; font-weight:600;"><a href="quan_ly_boi_thuong.html?id=${d.claimCode}&from=hoan_tra&returnUrl=${encodeURIComponent('xem_xet_trach_nhiem_hoan_tra.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${d.claimCode}'); return false;" style="color: var(--secondary-color); text-decoration: underline; font-weight: 700;">${d.claimCode}</a></td>
                     <td style="text-align:right; font-weight:600;">${d.claimAmt.toLocaleString('vi-VN')}</td>
                     <td style="text-align:right; font-weight:600; color:var(--danger-color);">${d.refundTotal > 0 ? d.refundTotal.toLocaleString('vi-VN') : '--'}</td>
                     <td>

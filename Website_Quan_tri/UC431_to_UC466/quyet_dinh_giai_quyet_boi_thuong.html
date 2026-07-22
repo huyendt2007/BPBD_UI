@@ -1430,6 +1430,28 @@
     </div>
 
     <script>
+        function openLinkedClaimDetail(claimCode) {
+            const returnUrl = 'quyet_dinh_giai_quyet_boi_thuong.html';
+            const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(claimCode)}&from=quyet_dinh&returnUrl=${encodeURIComponent(returnUrl)}`;
+            const shellDetailUrl = `UC431_to_UC466/${detailUrl}`;
+            const activeClaimUrl = 'UC431_to_UC466/quan_ly_boi_thuong.html';
+
+            if (window.parent && window.parent !== window) {
+                if (typeof window.parent.openAdminModule === 'function') {
+                    window.parent.openAdminModule(shellDetailUrl, activeClaimUrl);
+                    return;
+                }
+                window.parent.postMessage({
+                    type: 'admin:navigate',
+                    url: shellDetailUrl,
+                    activeUrl: activeClaimUrl
+                }, '*');
+                return;
+            }
+
+            window.location.href = detailUrl;
+        }
+
         // Current user role state: 'officer' or 'leader'
         let currentRole = 'officer';
 
@@ -2010,7 +2032,7 @@
                         <td style="text-align:center;">${item.activeDate}</td>
                         <td><strong>${item.officerName || 'Lê Thị Chuyên Viên'}</strong></td>
                         <td class="excerpt-col" title="${item.excerpt}">${item.excerpt}</td>
-                        <td style="text-align:center;"><a href="quan_ly_boi_thuong.html?id=${item.ycbtCode}" target="_blank" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
+                        <td style="text-align:center;"><a href="quan_ly_boi_thuong.html?id=${item.ycbtCode}&from=quyet_dinh&returnUrl=${encodeURIComponent('quyet_dinh_giai_quyet_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
                         <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                         <td style="text-align:center;">
                             <div class="action-flex" style="justify-content: center; gap: 4px;">
@@ -2026,7 +2048,7 @@
                         <td style="text-align:center;">${item.activeDate}</td>
                         <td><strong>${signerClean}</strong></td>
                         <td class="excerpt-col" title="${item.excerpt}">${item.excerpt}</td>
-                        <td style="text-align:center;"><a href="quan_ly_boi_thuong.html?id=${item.ycbtCode}" target="_blank" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
+                        <td style="text-align:center;"><a href="quan_ly_boi_thuong.html?id=${item.ycbtCode}&from=quyet_dinh&returnUrl=${encodeURIComponent('quyet_dinh_giai_quyet_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
                         <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                         <td style="text-align:center;">
                             <div class="action-flex" style="justify-content: center; gap: 4px;">

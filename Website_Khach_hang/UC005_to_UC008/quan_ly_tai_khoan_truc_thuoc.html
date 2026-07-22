@@ -544,6 +544,13 @@
             <div class="modal-body">
                 <form id="staff-form" autocomplete="off" onsubmit="event.preventDefault();">
                     <input type="hidden" id="staff-id">
+
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="owner-customer-code">Mã khách hàng (Tổ chức chủ quản)</label>
+                            <input type="text" class="form-control" id="owner-customer-code" disabled>
+                        </div>
+                    </div>
                     
                     <div class="grid-2-cols">
                         <div class="form-group">
@@ -555,7 +562,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="staff-doc-num">Số giấy tờ (Tên đăng nhập) <span class="required-mark">*</span></label>
+                            <label class="form-label" for="staff-doc-num">Mã người dùng / Số CCCD / Hộ chiếu (Tên đăng nhập) <span class="required-mark">*</span></label>
                             <input type="text" class="form-control" id="staff-doc-num" placeholder="Nhập số CCCD/CMND/Hộ chiếu...">
                             <div class="error-message" id="error-doc-num">Trường này là bắt buộc</div>
                         </div>
@@ -728,6 +735,17 @@
         let pageSize = 20;
         let sortAsc = true;
         let selectedStaffId = null;
+        const OWNER_CUSTOMER_CODE = 'KH-TC-000101';
+
+        function getOwnerCustomerCode() {
+            try {
+                const parentCode = window.parent?.document?.getElementById('lblCustomerCode')?.innerText?.trim();
+                if (parentCode && parentCode !== '-') return parentCode;
+            } catch (e) {
+                // Standalone mode uses mock organization code.
+            }
+            return OWNER_CUSTOMER_CODE;
+        }
 
         // Toast Helper
         function showToast(message, type = 'success') {
@@ -938,6 +956,7 @@
             clearValidationErrors();
 
             // Set default inputs
+            document.getElementById('owner-customer-code').value = getOwnerCustomerCode();
             document.getElementById('staff-nationality').value = 'Việt Nam';
             toggleNationalityState();
             checkAllRights(false);
@@ -1154,6 +1173,7 @@
 
                 const newStaff = {
                     id: staffAccounts.length + 1,
+                    ownerCustomerCode: getOwnerCustomerCode(),
                     docType: docType,
                     doc: docNum,
                     name: name,

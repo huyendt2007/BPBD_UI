@@ -3524,18 +3524,30 @@
 
             <!-- SCREEN: Đăng ký biện pháp bảo đảm (UC024 - New Registration) -->
             <div class="app-screen" id="screen-new-registration">
+                <div class="registered-draft-update-bar" style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
+                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong class="registered-draft-code"></strong></span>
+                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;" onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                </div>
                 <iframe src="UC024/dang_ky_bpbd_main.html" class="module-iframe"
                     title="ÄÄƒng kÃ½ biá»‡n phÃ¡p báº£o Ä‘áº£m"></iframe>
             </div>
 
             <!-- SCREEN: ÄÄƒng kÃ½ thay Ä‘á»•i (UC025 - Change Registration) -->
             <div class="app-screen" id="screen-change-registration">
+                <div class="registered-draft-update-bar" style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
+                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong class="registered-draft-code"></strong></span>
+                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;" onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                </div>
                 <iframe src="UC0025/dang_ky_thay_doi_main.html" class="module-iframe"
                     title="ÄÄƒng kÃ½ thay Ä‘á»•i"></iframe>
             </div>
 
             <!-- SCREEN: XÃ³a Ä‘Äƒng kÃ½ (UC026 - Cancellation) -->
             <div class="app-screen" id="screen-delete-registration">
+                <div class="registered-draft-update-bar" style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
+                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong class="registered-draft-code"></strong></span>
+                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;" onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                </div>
                 <iframe src="UC026/xoa_dang_ky_main.html" class="module-iframe" title="XÃ³a Ä‘Äƒng kÃ½"></iframe>
             </div>
 
@@ -3592,6 +3604,12 @@
                         Thông tin chung & liên lạc của Tổ chức</h3>
                     <div class="grid-2-cols"
                         style="gap: 15px var(--spacing-lg); margin-bottom: 30px; background-color: #F8FAFC; padding: 20px; border-radius: var(--border-radius-md); border: 1px solid var(--border-color);">
+                        <div>
+                            <span
+                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Mã
+                                khách hàng:</span>
+                            <span id="lblCustomerCode" style="font-weight: 700; color: var(--primary-color); font-size: 14px;">-</span>
+                        </div>
                         <div>
                             <span
                                 style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Mã
@@ -3684,6 +3702,10 @@
                         style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase;">
                         Thông tin chung & liên lạc của Tổ chức</h3>
                     <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label">Mã khách hàng</label>
+                            <input type="text" class="form-control" id="editCustomerCode" disabled>
+                        </div>
                         <div class="form-group">
                             <label class="form-label">Mã số tổ chức (Tên đăng nhập)</label>
                             <input type="text" class="form-control" id="editOrgMST" disabled>
@@ -4803,7 +4825,7 @@
                         <table class="table" style="font-size: 13px;">
                             <thead style="background-color: var(--table-header-bg);">
                                 <tr>
-                                    <th style="width: 3%;">STT</th>
+                                    <th style="width: 3%; text-align: center;">STT</th>
                                     <th style="width: 9%; cursor: pointer;" onclick="toggleRegReqSort('regNum')"
                                         id="reg-header-regNum">Số đăng ký <i class="fa-solid fa-sort"
                                             style="margin-left: 4px; color: #94A3B8;"></i></th>
@@ -4822,7 +4844,7 @@
                                     <th style="width: 7%; cursor: pointer;" onclick="toggleRegReqSort('date')"
                                         id="reg-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort"
                                             style="margin-left: 4px; color: #94A3B8;"></i></th>
-                                    <th style="width: 6%; text-align: left; padding-left: 5px;">Thao tác</th>
+                                    <th style="width: 6%; text-align: center;">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody id="registeredRequestsTableBody">
@@ -5115,6 +5137,29 @@
     </div>
 
     <!-- MODAL: Thêm tài khoản nhân viên trực thuộc (Tổ chức) -->
+    <div id="modalDeleteRegisteredRequest" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#FEF2F2;">
+                <h3 style="color:var(--danger-color);"><i class="fa-solid fa-triangle-exclamation"></i> Xác nhận xóa hồ sơ</h3>
+                <button class="btn-close" onclick="closeDeleteRegisteredRequestModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; gap:12px; align-items:flex-start; padding:12px; border:1px solid #FECACA; border-radius:var(--border-radius-md); background:#FFF7F7;">
+                    <i class="fa-solid fa-trash-can" style="color:var(--danger-color); font-size:22px; margin-top:2px;"></i>
+                    <div style="font-size:13px; color:var(--text-main); line-height:1.6;">
+                        <div style="font-weight:700; margin-bottom:4px;">Bạn có chắc chắn muốn xóa hồ sơ nháp này?</div>
+                        <div>Hồ sơ: <strong id="deleteRegisteredRequestCode">-</strong></div>
+                        <div style="color:var(--text-muted); margin-top:4px;">Thao tác này chỉ áp dụng với hồ sơ ở trạng thái Lưu nháp.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" onclick="closeDeleteRegisteredRequestModal()">Hủy</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteRegisteredRequest()"><i class="fa-solid fa-trash-can"></i> Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modalAddStaff" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -5399,6 +5444,7 @@
 
         // Organization profile and credentials state
         let orgDetails = {
+            customerCode: 'KH-TC-000101',
             mst: '0109201234',
             name: 'Ngân hàng Thương mại Cổ phần FPT (FPT Bank)',
             type: 'Tổ chức tín dụng',
@@ -6112,6 +6158,11 @@
                 activeScreen.classList.add('active');
                 currentActiveScreen = screenId;
             }
+            if (!['new-registration', 'change-registration', 'delete-registration'].includes(screenId)) {
+                editingDraftRegisteredRequest = null;
+                currentUpdatingRegNum = '';
+            }
+            syncRegisteredDraftUpdateBars(screenId);
 
             // Update Active state in Global Nav
             if (screenId === 'home') setActiveNavTab('navHome');
@@ -10475,6 +10526,7 @@
         // Account Details Rendering and Updating (UC002 & UC003)
         function renderAccountDetails() {
             // Read-only view
+            document.getElementById('lblCustomerCode').innerText = orgDetails.customerCode || 'KH-TC-000101';
             document.getElementById('lblOrgMST').innerText = orgDetails.mst;
             document.getElementById('lblOrgName').innerText = orgDetails.name;
             document.getElementById('lblOrgType').innerText = orgDetails.type;
@@ -10492,6 +10544,7 @@
             document.getElementById('lblRepDocNum').innerText = orgDetails.repDocNum;
 
             // Editable form fields
+            document.getElementById('editCustomerCode').value = orgDetails.customerCode || 'KH-TC-000101';
             document.getElementById('editOrgMST').value = orgDetails.mst;
             document.getElementById('editOrgName').value = orgDetails.name;
             document.getElementById('editOrgType').value = orgDetails.type;
@@ -10973,11 +11026,13 @@
 
         // --- UCPS007: QUẢN LÝ YÊU CẦU ĐÃ ĐĂNG KÝ ---
         let currentUpdatingRegNum = '';
+        let editingDraftRegisteredRequest = null;
         let regReqCurrentPage = 1;
         let regReqPageSize = 10;
         let regReqFilteredData = [];
         let regReqSortField = '';
         let regReqSortOrder = 'asc';
+        let pendingDeleteRegisteredRequestRegNum = '';
 
         let registeredRequestsData = [
             {
@@ -11277,6 +11332,21 @@
                 secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"],
                 expanded: false,
                 children: []
+            },
+            {
+                id: "13",
+                regNum: "1505156447",
+                pin: "5647",
+                date: "02/04/2026 08:20",
+                type: "Đăng ký lần đầu",
+                guarantor: "Công ty TNHH An Phú",
+                securedParty: "Ngân hàng TMCP FPT",
+                status: "Hoàn thành",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Thế chấp",
+                secAssets: ["Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản"],
+                expanded: false,
+                children: []
             }
         ];
 
@@ -11320,22 +11390,109 @@
             }
         }
 
-        function findRegisteredRequest(regNum) {
-            for (let i = 0; i < registeredRequestsData.length; i++) {
-                const item = registeredRequestsData[i];
-                if (item.regNum === regNum) return item;
-                if (item.children) {
-                    const child = item.children.find(c => c.regNum === regNum);
-                    if (child) return child;
-                    for (let j = 0; j < item.children.length; j++) {
-                        if (item.children[j].children) {
-                            const gc = item.children[j].children.find(g => g.regNum === regNum);
-                            if (gc) return gc;
-                        }
-                    }
+        function normalizeRegReqText(value) {
+            return String(value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'D')
+                .toLowerCase();
+        }
+
+        function flattenRegReqChildren(item) {
+            const result = [];
+            const walk = (node) => {
+                (node.children || []).forEach(child => {
+                    result.push(child);
+                    walk(child);
+                });
+            };
+            if (item) walk(item);
+            return result;
+        }
+
+        function findRegisteredRequestContext(regNum) {
+            const walk = (node, root, parent, depth) => {
+                if (node.regNum === regNum) {
+                    return { item: node, root, parent, depth };
                 }
+                for (const child of (node.children || [])) {
+                    const found = walk(child, root, node, depth + 1);
+                    if (found) return found;
+                }
+                return null;
+            };
+
+            for (const root of registeredRequestsData) {
+                const found = walk(root, root, null, 0);
+                if (found) return found;
             }
             return null;
+        }
+
+        function isRegReqStatus(item, expectedStatus) {
+            return normalizeRegReqText(item && item.status) === normalizeRegReqText(expectedStatus);
+        }
+
+        function isRegisteredInfoRequestType(type) {
+            const typeNorm = normalizeRegReqText(type);
+            return [
+                'Yêu cầu cung cấp bản sao',
+                'Yêu cầu cung cấp bản sao kèm thông báo',
+                'Yêu cầu cung cấp thông tin'
+            ].some(label => typeNorm.includes(normalizeRegReqText(label)));
+        }
+
+        function syncRegisteredDraftUpdateBars(screenId) {
+            const shouldShow = !!editingDraftRegisteredRequest && ['new-registration', 'change-registration', 'delete-registration'].includes(screenId);
+            document.querySelectorAll('.registered-draft-update-bar').forEach(bar => {
+                bar.style.display = shouldShow ? 'flex' : 'none';
+            });
+            document.querySelectorAll('.registered-draft-code').forEach(el => {
+                el.textContent = shouldShow ? editingDraftRegisteredRequest.regNum : '';
+            });
+        }
+
+        function cancelRegisteredDraftUpdate() {
+            editingDraftRegisteredRequest = null;
+            currentUpdatingRegNum = '';
+            showScreen('registered-requests');
+            showToast('Đã hủy cập nhật hồ sơ nháp.', 'info');
+        }
+
+        function removeRegisteredRequestByRegNum(regNum) {
+            const removeFrom = (items) => {
+                const idx = items.findIndex(item => item.regNum === regNum);
+                if (idx >= 0) {
+                    items.splice(idx, 1);
+                    return true;
+                }
+                return items.some(item => item.children && removeFrom(item.children));
+            };
+            return removeFrom(registeredRequestsData);
+        }
+
+        function buildRegisteredRequestDetailContext(regNum) {
+            const context = findRegisteredRequestContext(regNum);
+            if (!context) return null;
+            return {
+                regNum: context.item.regNum,
+                pin: context.item.pin,
+                type: context.item.type,
+                status: context.item.status,
+                rootRegNum: context.root.regNum,
+                rootType: context.root.type,
+                rootStatus: context.root.status,
+                depth: context.depth,
+                isRoot: context.depth === 0,
+                rootDescendants: flattenRegReqChildren(context.root).map(({ regNum, type, status }) => ({ regNum, type, status })),
+                itemDescendants: flattenRegReqChildren(context.item).map(({ regNum, type, status }) => ({ regNum, type, status }))
+            };
+        }
+
+        function findRegisteredRequest(regNum) {
+            const context = findRegisteredRequestContext(regNum);
+            return context ? context.item : null;
         }
 
         function onTransTypeFilterChange() {
@@ -11543,6 +11700,117 @@
             renderRegisteredRequestsTable();
         }
 
+        function renderRegisteredRequestRowActions(item, versionCount) {
+            const iconBtnStyle = 'width:30px; height:30px; padding:0; font-size:12px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;';
+            const disabledStyle = `${iconBtnStyle} opacity:.35; filter:grayscale(1); cursor:not-allowed;`;
+            const renderIconButton = ({ enabled, className, title, disabledTitle, icon, onClick }) => enabled
+                ? `<button class="${className}" style="${iconBtnStyle}" title="${title}" aria-label="${title}" onclick="event.stopPropagation(); ${onClick}"><i class="${icon}"></i></button>`
+                : `<button class="${className}" style="${disabledStyle}" title="${disabledTitle || title}" aria-label="${disabledTitle || title}" disabled><i class="${icon}"></i></button>`;
+            const viewBtn = `<button class="btn btn-outline-primary" style="${iconBtnStyle}" title="Xem chi tiết" aria-label="Xem chi tiết" onclick="event.stopPropagation(); viewRegisteredRequest('${item.regNum}', '${item.type}', ${versionCount})"><i class="fa-solid fa-eye"></i></button>`;
+            const payBtn = renderIconButton({
+                enabled: isRegReqStatus(item, 'Chờ thanh toán'),
+                className: 'btn btn-warning',
+                title: 'Thanh toán',
+                disabledTitle: 'Chỉ thanh toán được hồ sơ ở trạng thái Chờ thanh toán',
+                icon: 'fa-solid fa-credit-card',
+                onClick: `payRegisteredRequest('${item.regNum}')`
+            });
+            const updateBtn = renderIconButton({
+                enabled: isRegReqStatus(item, 'Lưu nháp'),
+                className: 'btn btn-success',
+                title: 'Cập nhật hồ sơ nháp',
+                disabledTitle: 'Chỉ cập nhật được hồ sơ ở trạng thái Lưu nháp',
+                icon: 'fa-solid fa-pen-to-square',
+                onClick: `updateRegisteredRequest('${item.regNum}', '${item.type}')`
+            });
+            const deleteBtn = renderIconButton({
+                enabled: isRegReqStatus(item, 'Lưu nháp'),
+                className: 'btn btn-danger',
+                title: 'Xóa hồ sơ nháp',
+                disabledTitle: 'Chỉ xóa được hồ sơ ở trạng thái Lưu nháp',
+                icon: 'fa-solid fa-trash-can',
+                onClick: `deleteDraftRegisteredRequest('${item.regNum}')`
+            });
+
+            return `${viewBtn}${payBtn}${updateBtn}${deleteBtn}`;
+        }
+
+        function renderRegisteredRequestMoreActions(item) {
+            const context = findRegisteredRequestContext(item.regNum);
+            if (!context) {
+                return `
+                    <button class="btn btn-outline-primary" style="width:30px; height:30px; padding:0; font-size:12px; display:inline-flex; align-items:center; justify-content:center; opacity:.35; filter:grayscale(1); cursor:not-allowed;" title="Không có thao tác khác phù hợp" aria-label="Không có thao tác khác phù hợp" disabled>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                `;
+            }
+
+            const typeNorm = normalizeRegReqText(item.type);
+            const rootDescendants = flattenRegReqChildren(context.root);
+            const itemDescendants = flattenRegReqChildren(item);
+            const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Chờ ký', 'Sai lệch thanh toán'].map(normalizeRegReqText);
+            const hasType = (candidate, keyword) => normalizeRegReqText(candidate.type).includes(normalizeRegReqText(keyword));
+            const isActiveStatus = (candidate) => activeStatuses.includes(normalizeRegReqText(candidate.status));
+            const isCompleted = isRegReqStatus(item, 'Hoàn thành');
+            const canRequestFollowUp = isCompleted && !isRegisteredInfoRequestType(item.type);
+            const isRootFirstRegistration = isCompleted && context.depth === 0 && typeNorm.includes(normalizeRegReqText('Đăng ký lần đầu'));
+            const isFirstAssetNotice = isCompleted && context.depth > 0
+                && typeNorm.includes(normalizeRegReqText('Thông báo xử lý'))
+                && typeNorm.includes(normalizeRegReqText('lần đầu'))
+                && !typeNorm.includes(normalizeRegReqText('Thay đổi thông báo'))
+                && !typeNorm.includes(normalizeRegReqText('Xóa thông báo'))
+                && !typeNorm.includes(normalizeRegReqText('Xóa đăng ký thông báo'));
+
+            const hasActiveChangeRegistration = rootDescendants.some(candidate => hasType(candidate, 'Đăng ký thay đổi') && isActiveStatus(candidate));
+            const hasAnyAssetNotice = rootDescendants.some(candidate => hasType(candidate, 'Thông báo xử lý'));
+            const hasAnyDeleteRegistration = rootDescendants.some(candidate => hasType(candidate, 'Xóa đăng ký') && !hasType(candidate, 'Thông báo'));
+            const hasActiveChangeNotice = itemDescendants.some(candidate => hasType(candidate, 'Thay đổi thông báo') && isActiveStatus(candidate));
+            const hasAnyDeleteNotice = itemDescendants.some(candidate => hasType(candidate, 'Xóa') && hasType(candidate, 'Thông báo'));
+            const actions = [];
+            const addAction = (label, handler, icon) => {
+                actions.push(`<a class="dropdown-item" onclick="${handler}"><i class="${icon}"></i> ${label}</a>`);
+            };
+
+            if (isRootFirstRegistration) {
+                if (!hasActiveChangeRegistration) addAction('Đăng ký thay đổi', `shortcutChangeRegistration('${item.regNum}')`, 'fa-solid fa-file-pen');
+                if (!hasAnyAssetNotice) addAction('Thông báo xử lý tài sản', `shortcutAssetDisposal('${item.regNum}')`, 'fa-solid fa-bullhorn');
+                if (!hasAnyDeleteRegistration) addAction('Xóa đăng ký', `shortcutDeleteRegistration('${item.regNum}')`, 'fa-solid fa-file-circle-minus');
+            }
+
+            if (isFirstAssetNotice) {
+                if (!hasActiveChangeNotice) addAction('Thay đổi thông báo', `shortcutChangeAssetDisposal('${item.regNum}')`, 'fa-solid fa-file-pen');
+                if (!hasAnyDeleteNotice) addAction('Xóa thông báo', `shortcutDeleteAssetDisposal('${item.regNum}')`, 'fa-solid fa-file-circle-minus');
+            }
+
+            if (canRequestFollowUp) {
+                addAction('Yêu cầu cung cấp thông tin', `shortcutRequestInformation('${item.regNum}')`, 'fa-solid fa-magnifying-glass');
+                addAction('Yêu cầu cung cấp bản sao', `shortcutRequestCopy('${item.regNum}')`, 'fa-solid fa-copy');
+                addAction('Yêu cầu cung cấp bản sao kèm thông báo', `shortcutRequestCopyNotice('${item.regNum}')`, 'fa-solid fa-file-circle-check');
+            }
+
+            if (isCompleted && typeNorm.includes(normalizeRegReqText('Hủy đăng ký'))) {
+                addAction('Khôi phục hủy đăng ký', `shortcutRestoreRegistration('${item.regNum}')`, 'fa-solid fa-trash-arrow-up');
+            }
+
+            if (!actions.length) {
+                return `
+                    <button class="btn btn-outline-primary" style="width:30px; height:30px; padding:0; font-size:12px; display:inline-flex; align-items:center; justify-content:center; opacity:.35; filter:grayscale(1); cursor:not-allowed;" title="Không có thao tác khác phù hợp" aria-label="Không có thao tác khác phù hợp" disabled>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                `;
+            }
+            return `
+                <div class="dropdown" style="position: relative; display: inline-block;">
+                    <button class="btn btn-outline-primary dropdown-toggle" style="width:30px; height:30px; padding:0; font-size:12px; display:inline-flex; align-items:center; justify-content:center;" title="Thao tác khác" aria-label="Thao tác khác" onclick="toggleRowDropdown(this, event)">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        ${actions.join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         function renderRegisteredRequestsTable() {
             const tbody = document.getElementById('registeredRequestsTableBody');
             if (!tbody) return;
@@ -11646,47 +11914,11 @@
                     ? `<span class="tree-toggle ${item.expanded ? '' : 'collapsed'}" onclick="toggleRegReqTree('${item.id}', event)"><i class="fa-solid fa-chevron-down"></i></span>`
                     : `<span style="margin-left: 28px;"></span>`;
 
-                const payBtn = item.status === 'Chờ thanh toán'
-                    ? `<button class="btn btn-warning" style="padding: 4px 8px; font-size: 11px;" onclick="payRegisteredRequest('${item.regNum}')"><i class="fa-solid fa-credit-card"></i> Thanh toán</button>`
-                    : '';
-
-                const updateBtn = (item.status === 'Chờ duyệt' || item.status === 'Bị từ chối')
-                    ? `<button class="btn btn-success" style="padding: 4px 8px; font-size: 11px;" onclick="updateRegisteredRequest('${item.regNum}', '${item.type}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`
-                    : '';
-
-                // Dropdown menu for Completed root dossiers
-                let moreActionsHtml = '';
-                if (item.status === 'Hoàn thành') {
-                    if (item.type === 'Đăng ký lần đầu') {
-                        moreActionsHtml = `
-                            <div class="dropdown" style="position: relative; display: inline-block;">
-                                <button class="btn btn-outline-primary dropdown-toggle" style="padding: 4px 8px; font-size: 11px;" onclick="toggleRowDropdown(this, event)">
-                                    Thao tác khác <i class="fa fa-caret-down"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" onclick="shortcutChangeRegistration('${item.regNum}')"><i class="fa-solid fa-file-pen"></i> Đăng ký thay đổi</a>
-                                    <a class="dropdown-item" onclick="shortcutAssetDisposal('${item.regNum}')"><i class="fa-solid fa-bullhorn"></i> Thông báo xử lý tài sản</a>
-                                    <a class="dropdown-item" onclick="shortcutDeleteRegistration('${item.regNum}')"><i class="fa-solid fa-file-circle-minus"></i> Xóa đăng ký</a>
-                                </div>
-                            </div>
-                        `;
-                    } else if (item.type === 'Hủy đăng ký') {
-                        moreActionsHtml = `
-                            <div class="dropdown" style="position: relative; display: inline-block;">
-                                <button class="btn btn-outline-primary dropdown-toggle" style="padding: 4px 8px; font-size: 11px;" onclick="toggleRowDropdown(this, event)">
-                                    Thao tác khác <i class="fa fa-caret-down"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" onclick="shortcutRestoreRegistration('${item.regNum}')"><i class="fa-solid fa-trash-arrow-up"></i> Khôi phục hủy đăng ký</a>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
+                const moreActionsHtml = renderRegisteredRequestMoreActions(item);
 
                 html += `
                     <tr class="tree-row depth-0">
-                        <td><strong>${stt++}</strong></td>
+                        <td style="text-align: center;"><strong>${stt++}</strong></td>
                         <td>${toggleHtml} <strong>${formatRegNumForDisplay(item.regNum)}</strong></td>
                         <td><span style="font-family: monospace;">${item.pin}</span></td>
                         <td>${item.type}</td>
@@ -11698,10 +11930,8 @@
                         <td><span class="status-badge ${getStatusClass(item.status)}">${item.status}</span></td>
                         <td>${item.date}</td>
                         <td>
-                            <div style="display:flex; gap:5px; justify-content: flex-start; align-items: center; padding-left: 15px;">
-                                <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px; width: 60px; flex-shrink: 0;" onclick="viewRegisteredRequest('${item.regNum}', '${item.type}', ${hasChildren ? item.children.length : 0})"><i class="fa-solid fa-eye"></i> Xem</button>
-                                ${payBtn}
-                                ${updateBtn}
+                            <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
+                                ${renderRegisteredRequestRowActions(item, hasChildren ? item.children.length : 0)}
                                 ${moreActionsHtml}
                             </div>
                         </td>
@@ -11715,33 +11945,11 @@
                             ? `<span class="tree-toggle ${child.expanded ? '' : 'collapsed'}" onclick="toggleRegReqTree('${child.id}', event)"><i class="fa-solid fa-chevron-down"></i></span>`
                             : `<span style="margin-left: 28px;"></span>`;
 
-                        const childPayBtn = child.status === 'Chờ thanh toán'
-                            ? `<button class="btn btn-warning" style="padding: 4px 8px; font-size: 11px;" onclick="payRegisteredRequest('${child.regNum}')"><i class="fa-solid fa-credit-card"></i> Thanh toán</button>`
-                            : '';
-
-                        const childUpdateBtn = (child.status === 'Chờ duyệt' || child.status === 'Bị từ chối')
-                            ? `<button class="btn btn-success" style="padding: 4px 8px; font-size: 11px;" onclick="updateRegisteredRequest('${child.regNum}', '${child.type}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`
-                            : '';
-
-                        // Dropdown menu for Completed child notices
-                        let childMoreActionsHtml = '';
-                        if (child.status === 'Hoàn thành' && child.type === 'Thông báo xử lý tài sản đảm bảo lần đầu') {
-                            childMoreActionsHtml = `
-                                <div class="dropdown" style="position: relative; display: inline-block;">
-                                    <button class="btn btn-outline-primary dropdown-toggle" style="padding: 4px 8px; font-size: 11px;" onclick="toggleRowDropdown(this, event)">
-                                        Thao tác khác <i class="fa fa-caret-down"></i>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" onclick="shortcutChangeAssetDisposal('${child.regNum}')"><i class="fa-solid fa-file-pen"></i> Thay đổi thông báo</a>
-                                        <a class="dropdown-item" onclick="shortcutDeleteAssetDisposal('${child.regNum}')"><i class="fa-solid fa-file-circle-minus"></i> Xóa thông báo</a>
-                                    </div>
-                                </div>
-                            `;
-                        }
+                        const childMoreActionsHtml = renderRegisteredRequestMoreActions(child);
 
                         html += `
                             <tr class="tree-row depth-1">
-                                <td></td>
+                                <td style="text-align: center;"></td>
                                 <td><span class="tree-indent-line">├──</span> ${childToggleHtml} <span>${formatRegNumForDisplay(child.regNum)}</span></td>
                                 <td><span style="font-family: monospace;">${child.pin}</span></td>
                                 <td>${child.type}</td>
@@ -11753,10 +11961,8 @@
                                 <td><span class="status-badge ${getStatusClass(child.status)}">${child.status}</span></td>
                                 <td>${child.date}</td>
                                 <td>
-                                    <div style="display:flex; gap:5px; justify-content: flex-start; align-items: center; padding-left: 15px;">
-                                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px; width: 60px; flex-shrink: 0;" onclick="viewRegisteredRequest('${child.regNum}', '${child.type}', ${hasGrandchildren ? child.children.length : 0})"><i class="fa-solid fa-eye"></i> Xem</button>
-                                        ${childPayBtn}
-                                        ${childUpdateBtn}
+                                    <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
+                                        ${renderRegisteredRequestRowActions(child, hasGrandchildren ? child.children.length : 0)}
                                         ${childMoreActionsHtml}
                                     </div>
                                 </td>
@@ -11765,17 +11971,11 @@
 
                         if (hasGrandchildren && child.expanded) {
                             child.children.forEach(gc => {
-                                const gcPayBtn = gc.status === 'Chờ thanh toán'
-                                    ? `<button class="btn btn-warning" style="padding: 4px 8px; font-size: 11px;" onclick="payRegisteredRequest('${gc.regNum}')"><i class="fa-solid fa-credit-card"></i> Thanh toán</button>`
-                                    : '';
-
-                                const gcUpdateBtn = (gc.status === 'Chờ duyệt' || gc.status === 'Bị từ chối')
-                                    ? `<button class="btn btn-success" style="padding: 4px 8px; font-size: 11px;" onclick="updateRegisteredRequest('${gc.regNum}', '${gc.type}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`
-                                    : '';
+                                const gcMoreActionsHtml = renderRegisteredRequestMoreActions(gc);
 
                                 html += `
                                     <tr class="tree-row depth-2" style="background-color: #F8FAFC;">
-                                        <td></td>
+                                        <td style="text-align: center;"></td>
                                         <td><span class="tree-indent-line">└──</span> <span>${formatRegNumForDisplay(gc.regNum)}</span></td>
                                         <td><span style="font-family: monospace;">${gc.pin}</span></td>
                                         <td>${gc.type}</td>
@@ -11787,10 +11987,9 @@
                                         <td><span class="status-badge ${getStatusClass(gc.status)}">${gc.status}</span></td>
                                         <td>${gc.date}</td>
                                         <td>
-                                            <div style="display:flex; gap:5px; justify-content: flex-start; align-items: center; padding-left: 15px;">
-                                                <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px; width: 60px; flex-shrink: 0;" onclick="viewRegisteredRequest('${gc.regNum}', '${gc.type}', 0)"><i class="fa-solid fa-eye"></i> Xem</button>
-                                                ${gcPayBtn}
-                                                ${gcUpdateBtn}
+                                            <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
+                                                ${renderRegisteredRequestRowActions(gc, 0)}
+                                                ${gcMoreActionsHtml}
                                             </div>
                                         </td>
                                     </tr>
@@ -11835,16 +12034,59 @@
 
         function viewRegisteredRequest(regNum, type, versionCount) {
             localStorage.setItem('regNum', regNum);
+            const detailContext = buildRegisteredRequestDetailContext(regNum);
+            if (detailContext) {
+                sessionStorage.setItem('registeredRequestDetailContext', JSON.stringify(detailContext));
+            }
             showToast('Đang mở xem chi tiết lịch sử hồ sơ...', 'info');
             setTimeout(() => {
                 let url = '';
                 if (versionCount <= 1) {
-                    url = `UC035/xem_chi_tiet_thay_doi.html?mode=single&regNum=${regNum}&from=registered`;
+                    url = `UC027/xem_chi_tiet_lich_su_can_bo.html?mode=single&regNum=${regNum}&focusId=${regNum}&from=registered`;
                 } else {
-                    url = `UC035/xem_chi_tiet_thay_doi.html?regNum=${regNum}&from=registered`;
+                    url = `UC027/xem_chi_tiet_lich_su_can_bo.html?regNum=${regNum}&focusId=${regNum}&from=registered`;
                 }
                 showScreen('view-detail-history', url);
             }, 400);
+        }
+
+        function deleteDraftRegisteredRequest(regNum) {
+            const item = findRegisteredRequest(regNum);
+            if (!item || !isRegReqStatus(item, 'Lưu nháp')) {
+                showToast('Chỉ được xóa hồ sơ ở trạng thái Lưu nháp.', 'error');
+                return;
+            }
+
+            pendingDeleteRegisteredRequestRegNum = regNum;
+            const codeEl = document.getElementById('deleteRegisteredRequestCode');
+            if (codeEl) codeEl.innerText = formatRegNumForDisplay(regNum);
+            document.getElementById('modalDeleteRegisteredRequest')?.classList.add('visible');
+        }
+
+        function closeDeleteRegisteredRequestModal() {
+            pendingDeleteRegisteredRequestRegNum = '';
+            document.getElementById('modalDeleteRegisteredRequest')?.classList.remove('visible');
+        }
+
+        function confirmDeleteRegisteredRequest() {
+            const regNum = pendingDeleteRegisteredRequestRegNum;
+            if (!regNum) {
+                closeDeleteRegisteredRequestModal();
+                return;
+            }
+
+            const item = findRegisteredRequest(regNum);
+            if (!item || !isRegReqStatus(item, 'Lưu nháp')) {
+                closeDeleteRegisteredRequestModal();
+                showToast('Chỉ được xóa hồ sơ ở trạng thái Lưu nháp.', 'error');
+                return;
+            }
+
+            if (removeRegisteredRequestByRegNum(regNum)) {
+                showToast(`Đã xóa hồ sơ nháp ${regNum}.`, 'success');
+                renderRegisteredRequestsTable();
+            }
+            closeDeleteRegisteredRequestModal();
         }
 
         function payRegisteredRequest(regNum) {
@@ -11856,16 +12098,23 @@
         }
 
         function updateRegisteredRequest(regNum, type) {
+            const item = findRegisteredRequest(regNum);
+            if (!item || !isRegReqStatus(item, 'Lưu nháp')) {
+                showToast('Chỉ được cập nhật hồ sơ ở trạng thái Lưu nháp.', 'error');
+                return;
+            }
+
             currentUpdatingRegNum = regNum;
+            editingDraftRegisteredRequest = { regNum, type };
             showToast(`Đang tải dữ liệu hồ sơ ${regNum} để thực hiện Cập nhật...`, 'info');
 
             setTimeout(() => {
-                const item = findRegisteredRequest(regNum);
                 const pin = item ? item.pin : '5635';
-                if (type.includes('thay đổi') || type.includes('Thay đổi')) {
+                const typeNorm = normalizeRegReqText(type);
+                if (typeNorm.includes(normalizeRegReqText('thay đổi'))) {
                     showScreen('change-registration', `UC0025/tra_cuu_goc.html?regNum=${regNum}&pin=${pin}&bypass=true`);
                     showToast('Đã điền sẵn dữ liệu. Bạn có thể chỉnh sửa và bấm nộp để lưu cập nhật.', 'success');
-                } else if (type.includes('xóa') || type.includes('Xóa')) {
+                } else if (typeNorm.includes(normalizeRegReqText('xóa'))) {
                     showScreen('delete-registration', `UC026/tra_cuu_goc.html?regNum=${regNum}&pin=${pin}&bypass=true`);
                     showToast('Đã điền sẵn dữ liệu. Bạn có thể chỉnh sửa và bấm nộp để lưu cập nhật.', 'success');
                 } else {
@@ -11880,7 +12129,7 @@
             const menu = button.nextElementSibling;
             const isOpen = menu.style.display === 'block';
 
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
+            document.querySelectorAll('.dropdown .dropdown-menu').forEach(m => m.style.display = 'none');
 
             if (!isOpen) {
                 menu.style.display = 'block';
@@ -11889,7 +12138,7 @@
 
         window.addEventListener('click', function (e) {
             if (!e.target.matches('.dropdown-toggle') && !e.target.closest('.dropdown-toggle')) {
-                document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
+                document.querySelectorAll('.dropdown .dropdown-menu').forEach(m => m.style.display = 'none');
             }
         });
 
@@ -11916,6 +12165,30 @@
                 const item = findRegisteredRequest(regNum);
                 const pin = item ? item.pin : '5635';
                 showScreen('delete-registration', `UC026/tra_cuu_goc.html?regNum=${regNum}&pin=${pin}&bypass=true`);
+            }, 400);
+        }
+
+        function shortcutRequestInformation(regNum) {
+            localStorage.setItem('regNum', regNum);
+            showToast(`Đang mở luồng Yêu cầu cung cấp thông tin cho hồ sơ ${regNum}...`, 'info');
+            setTimeout(() => {
+                showScreen('search', 'reg');
+            }, 400);
+        }
+
+        function shortcutRequestCopy(regNum) {
+            localStorage.setItem('regNum', regNum);
+            showToast(`Đang mở luồng Yêu cầu cung cấp bản sao cho hồ sơ ${regNum}...`, 'info');
+            setTimeout(() => {
+                showScreen('request-copies');
+            }, 400);
+        }
+
+        function shortcutRequestCopyNotice(regNum) {
+            localStorage.setItem('regNum', regNum);
+            showToast(`Đang mở luồng Yêu cầu cung cấp bản sao kèm thông báo cho hồ sơ ${regNum}...`, 'info');
+            setTimeout(() => {
+                showScreen('request-copies-notif');
             }, 400);
         }
 
@@ -11954,6 +12227,8 @@
             setActiveNavTab('navLinksDropdown');
             const dropdown = document.getElementById('navLinksDropdown');
             if (dropdown) {
+                const menu = dropdown.querySelector('.dropdown-menu');
+                if (menu) menu.style.display = '';
                 dropdown.classList.toggle('show');
             }
         }
@@ -11966,12 +12241,18 @@
             const dropdown = document.getElementById('navLinksDropdown');
             if (dropdown) {
                 dropdown.classList.remove('show');
+                const menu = dropdown.querySelector('.dropdown-menu');
+                if (menu) menu.style.display = '';
             }
             if (document.activeElement && typeof document.activeElement.blur === 'function') {
                 document.activeElement.blur();
             }
             setTimeout(() => {
-                if (dropdown) dropdown.classList.remove('show');
+                if (dropdown) {
+                    dropdown.classList.remove('show');
+                    const menu = dropdown.querySelector('.dropdown-menu');
+                    if (menu) menu.style.display = '';
+                }
                 if (document.activeElement && typeof document.activeElement.blur === 'function') {
                     document.activeElement.blur();
                 }
@@ -11982,6 +12263,8 @@
             const dropdown = document.getElementById('navLinksDropdown');
             if (dropdown && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('show');
+                const menu = dropdown.querySelector('.dropdown-menu');
+                if (menu) menu.style.display = '';
             }
         });
 
@@ -11989,6 +12272,8 @@
             const dropdown = document.getElementById('navLinksDropdown');
             if (dropdown) {
                 dropdown.classList.remove('show');
+                const menu = dropdown.querySelector('.dropdown-menu');
+                if (menu) menu.style.display = '';
             }
             if (document.activeElement && typeof document.activeElement.blur === 'function') {
                 document.activeElement.blur();

@@ -2194,17 +2194,14 @@
                 portalParam = '&portal=can_bo';
             }
         }
-        let url = `../UC035/xem_chi_tiet_thay_doi.html?regNum=${rootCode}&focusId=${regCode}&from=${fromMode}${portalParam}`;
+        let url = `../UC027/xem_chi_tiet_lich_su_can_bo.html?regNum=${rootCode}&focusId=${regCode}&from=${fromMode}${portalParam}`;
         const matched = mockRegistrations[rootCode];
         if (matched && (!matched.children || matched.children.length === 0)) {
             url += `&mode=single`;
         }
 
-        if (window.parent && window.parent !== window) {
-            window.parent.location.href = url;
-        } else {
-            window.location.href = url;
-        }
+        sessionStorage.setItem('prevCanBoPage', window.location.href);
+        window.location.href = url;
     }
 
     function exportPDF(tab) {
