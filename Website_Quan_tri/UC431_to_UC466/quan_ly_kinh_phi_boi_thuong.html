@@ -779,7 +779,10 @@
                         <option value="">Tất cả</option>
                         <option value="Chờ lập đề nghị">Chờ lập đề nghị</option>
                         <option value="Chờ duyệt">Chờ duyệt</option>
+                        <option value="Chưa">Chưa hoàn thành chi trả</option>
                         <option value="Chờ chi trả">Chờ chi trả</option>
+                        <option value="Chi trả một phần">Chi trả một phần</option>
+                        <option value="Đã sung quỹ">Đã sung quỹ</option>
                         <option value="Bị từ chối">Bị từ chối</option>
                         <option value="Hoàn thành">Hoàn thành</option>
                     </select>
@@ -814,6 +817,11 @@
             </div>
         </div>
 
+        <div class="card-section" id="treasuryWarningPanel"
+            style="display:none; background:#fff7ed; border:1px solid #fed7aa; padding:14px 16px; margin-bottom:20px; border-radius:var(--border-radius-md);">
+            <!-- Populated dynamically -->
+        </div>
+
         <!-- ACTION TOOLBAR (Gen_ui rule 11) -->
         <div
             style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: var(--spacing-md); margin-top: var(--spacing-md);">
@@ -837,6 +845,7 @@
                         <th style="width: 160px; text-align: left;">Số tiền đề nghị (VNĐ)</th>
                         <th style="min-width: 150px; text-align: left;">Cán bộ xử lý</th>
                         <th style="width: 110px; text-align: left;">Ngày đề nghị</th>
+                        <th style="width: 180px; text-align: left;">Hạn nhận / Sung quỹ</th>
                         <th style="width: 110px; text-align: left;">Trạng thái</th>
                         <th style="width: 150px; text-align: center; min-width: 150px;">Thao tác</th>
                     </tr>
@@ -1392,6 +1401,80 @@
                 </div>
             </div>
 
+            <!-- V. THÔNG TIN THÔNG BÁO NHẬN KINH PHÍ VÀ HẠN 3 NĂM -->
+            <div id="sectionNoticeTracking"
+                style="display: none; background-color:#fff7ed; border:2px solid #fed7aa; padding:20px; border-radius:var(--border-radius-md); margin-top:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+                    <div style="font-weight: 700; color:#9a3412; font-size: 14px;">
+                        <i class="fa-solid fa-bell"></i> THÔNG TIN THÔNG BÁO NHẬN KINH PHÍ VÀ HẠN 3 NĂM
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" id="btnSaveNoticeTracking" onclick="saveNoticeTracking()" style="display: none;">
+                        <i class="fa-solid fa-bell"></i> Lưu thông báo
+                    </button>
+                </div>
+                <div class="grid-3-cols">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <span class="form-label">Ngày người yêu cầu nhận thông báo <span class="required">*</span></span>
+                        <input type="text" class="form-control" id="noticeTrackingDate" placeholder="dd/mm/yyyy" oninput="previewNoticeTrackingDeadline()">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <span class="form-label">Hạn nhận kinh phí</span>
+                        <input type="text" class="form-control" id="noticeTrackingDeadline" placeholder="Tự động + 3 năm" disabled>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <span class="form-label">Tệp chứng minh đã thông báo <span class="required">*</span></span>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="btnNoticeTrackingUpload" onclick="triggerNoticeTrackingUpload()" style="font-size:12px; padding:5px 10px;">
+                            <i class="fa-solid fa-paperclip"></i> Chọn file
+                        </button>
+                        <input type="file" id="noticeTrackingFileInput" style="display:none;" multiple onchange="handleNoticeTrackingFileChange(this)">
+                        <div id="noticeTrackingFileLink" style="font-size:12.5px; color:var(--text-muted); margin-top:6px;">Chưa có tệp thông báo</div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:12px; margin-bottom:0;">
+                    <span class="form-label">Ghi chú thông báo</span>
+                    <textarea class="form-control" id="noticeTrackingNote" rows="2" placeholder="Nhập hình thức gửi, số văn bản, kết quả liên hệ..."></textarea>
+                </div>
+                <div id="noticeTrackingHint" style="font-size:12.5px; color:#9a3412; margin-top:10px; font-weight:600;">
+                    Sau khi lưu ngày nhận thông báo, hệ thống sẽ bắt đầu tính hạn 3 năm để cảnh báo sung quỹ nếu khoản chi vẫn ở trạng thái Chờ chi trả.
+                </div>
+            </div>
+
+            <!-- VI. THÔNG TIN SUNG QUỸ NHÀ NƯỚC -->
+            <div id="sectionTreasuryForfeit"
+                style="display:none; background-color:#f8fafc; border:2px solid #94a3b8; padding:20px; border-radius:var(--border-radius-md); margin-top:20px;">
+                <div style="font-weight: 700; color:#334155; font-size: 14px; margin-bottom: 16px;">
+                    <i class="fa-solid fa-building-columns"></i> THÔNG TIN SUNG QUỸ NHÀ NƯỚC
+                </div>
+                <div class="grid-3-cols">
+                    <div class="form-group">
+                        <span class="form-label">Số chứng từ / quyết định sung quỹ <span class="required">*</span></span>
+                        <input type="text" class="form-control" id="treasuryVoucherNo" placeholder="Nhập số chứng từ...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Ngày sung quỹ <span class="required">*</span></span>
+                        <input type="text" class="form-control" id="treasuryForfeitDate" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Số tiền sung quỹ (VNĐ) <span class="required">*</span></span>
+                        <input type="text" class="form-control" id="treasuryForfeitAmount" placeholder="Nhập số tiền...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Căn cứ / lý do sung quỹ <span class="required">*</span></span>
+                    <textarea class="form-control" id="treasuryForfeitReason" rows="2" placeholder="Nhập căn cứ, lý do sung quỹ..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <span class="form-label">Tài liệu liên quan <span class="required">*</span></span>
+                    <div style="display:flex; align-items:center; gap:15px; background:white; padding:10px; border:1px solid var(--border-color); border-radius:var(--border-radius-sm);">
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="btnTreasuryFileUpload" onclick="triggerTreasuryFileUpload()" style="font-size:12px; padding:5px 10px;">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tài liệu
+                        </button>
+                        <input type="file" id="treasuryFileInput" style="display:none;" multiple onchange="handleTreasuryFileChange(this)">
+                        <div id="treasuryFileLink" style="font-size:13px; font-weight:500; color:var(--text-color);">Chưa có tài liệu sung quỹ</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- V. THÔNG TIN CHI TRẢ THỰC TẾ (Chỉ hiển thị khi thực hiện chi trả hoặc đã hoàn thành chi trả) -->
             <div id="sectionPayoutReal"
                 style="display: none; background-color: var(--bg-surface); border: 2px solid var(--success-color); padding: 20px; border-radius: var(--border-radius-md); margin-top: 20px;">
@@ -1406,6 +1489,33 @@
                     <div class="form-group">
                         <span class="form-label">Số tiền thực tế chi trả (VNĐ) <span class="required">*</span></span>
                         <input type="text" class="form-control" id="payoutAmountReal" placeholder="Nhập số tiền thực tế...">
+                    </div>
+                </div>
+
+                <div style="background-color:#fff7ed; padding:15px; border:1px solid #fed7aa; border-radius:var(--border-radius-sm); margin-bottom:15px;">
+                    <div style="font-weight:700; color:#9a3412; font-size:13px; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-bell"></i> THÔNG TIN THÔNG BÁO NHẬN KINH PHÍ VÀ HẠN 3 NĂM
+                    </div>
+                    <div class="grid-3-cols">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Ngày người yêu cầu nhận thông báo <span class="required">*</span></span>
+                            <input type="text" class="form-control" id="payoutNoticeReceivedDate" placeholder="dd/mm/yyyy" oninput="previewTreasuryDeadline()">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Hạn nhận kinh phí</span>
+                            <input type="text" class="form-control" id="payoutTreasuryDeadline" placeholder="Tự động + 3 năm" disabled>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Tệp chứng minh đã thông báo</span>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="btnNoticeUpload" onclick="triggerNoticeProofUpload()" style="font-size:12px; padding:5px 10px;">
+                                <i class="fa-solid fa-paperclip"></i> Chọn file
+                            </button>
+                            <input type="file" id="noticeProofFileInput" style="display:none;" onchange="handleNoticeProofFileChange(this)">
+                            <div id="noticeProofFileLink" style="font-size:12.5px; color:var(--text-muted); margin-top:6px;">Chưa có tệp thông báo</div>
+                        </div>
+                    </div>
+                    <div id="payoutTreasuryHint" style="font-size:12.5px; color:#9a3412; margin-top:10px; font-weight:600;">
+                        Hệ thống sẽ cảnh báo nếu sau 3 năm kể từ ngày nhận thông báo vẫn còn kinh phí chưa hoàn thành chi trả.
                     </div>
                 </div>
                 
@@ -1467,6 +1577,11 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="payoutTreasuryResultBox"
+                    style="display:none; background:#f8fafc; border:1px dashed #cbd5e1; padding:14px 16px; border-radius:var(--border-radius-sm); margin-top:15px;">
+                    <!-- Populated dynamically -->
+                </div>
             </div>
         </div>
 
@@ -1477,12 +1592,15 @@
             <button class="btn btn-success" id="btnViewActionFill" onclick="startActionFromView('Lập đề nghị')" style="display: none;"><i class="fa-solid fa-file-signature"></i> Lập đề nghị</button>
             <button class="btn btn-success" id="btnViewActionUpdate" onclick="startActionFromView('Cập nhật đề nghị')" style="display: none;"><i class="fa-solid fa-pen-to-square"></i> Cập nhật đề nghị</button>
             <button class="btn btn-success" id="btnViewActionPay" onclick="startActionFromView('Cập nhật chi trả')" style="display: none;"><i class="fa-solid fa-hand-holding-dollar"></i> Cập nhật chi trả</button>
+            <button class="btn btn-danger" id="btnViewActionForfeit" onclick="startTreasuryForfeitFromDetail()" style="display: none;"><i class="fa-solid fa-building-columns"></i> Sung quỹ</button>
             
             <button class="btn btn-secondary" id="btnSaveDraft" onclick="saveProposal('Lưu nháp')" style="display: none;">Lưu nháp</button>
             <button class="btn btn-success" id="btnSubmitProposal" onclick="saveProposal('Chờ duyệt')"><i
                     class="fa-solid fa-paper-plane"></i> Trình phê duyệt</button>
             <button class="btn btn-success" id="btnCompletePayout" onclick="submitPayoutReal()" style="display: none;"><i
                     class="fa-solid fa-circle-check"></i> Hoàn thành chi trả</button>
+            <button class="btn btn-success" id="btnCompleteTreasuryForfeit" onclick="completeTreasuryForfeit()" style="display: none;"><i
+                    class="fa-solid fa-circle-check"></i> Hoàn thành sung quỹ</button>
             <button class="btn btn-danger" id="btnLeaderReject" onclick="submitLeaderApproval('Bị từ chối')" style="display: none;"><i
                     class="fa-solid fa-ban"></i> Từ chối</button>
             <button class="btn btn-success" id="btnLeaderApprove" onclick="submitLeaderApproval('Đã duyệt')" style="display: none;"><i
