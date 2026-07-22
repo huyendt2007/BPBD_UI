@@ -430,6 +430,217 @@
             margin-top: 2px;
         }
 
+        .guest-support-layout {
+            display: none;
+            grid-template-columns: minmax(360px, 4.2fr) minmax(460px, 5.8fr);
+            gap: var(--spacing-lg);
+            align-items: start;
+        }
+
+        body.guest-mode .guest-support-layout {
+            display: grid;
+        }
+
+        body.guest-mode .logged-support-area {
+            display: none !important;
+        }
+
+        .guest-create-card {
+            padding: var(--spacing-md);
+            background-color: #FBFCFE;
+        }
+
+        .guest-form-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: var(--spacing-sm);
+        }
+
+        .guest-form-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .required-mark {
+            color: var(--danger-color);
+        }
+
+        .field-error {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 5px;
+            min-height: 18px;
+        }
+
+        .form-control.invalid,
+        .form-select.invalid {
+            border-color: var(--danger-color);
+            background-color: #FEF2F2;
+        }
+
+        .upload-note {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .native-file-input {
+            display: none;
+        }
+
+        .file-pick-button {
+            width: 100%;
+            border: 1px dashed #93C5FD;
+            background-color: #EFF6FF;
+            color: var(--primary-color);
+            justify-content: center;
+            padding: 10px 12px;
+        }
+
+        .file-pick-button:hover {
+            background-color: #DBEAFE;
+            border-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        .guest-file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .guest-file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 8px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: #F8FAFC;
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .guest-file-main {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guest-file-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+            font-weight: 600;
+        }
+
+        .guest-file-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .file-action-link {
+            border: none;
+            background: none;
+            color: var(--secondary-color);
+            cursor: pointer;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 0;
+        }
+
+        .file-action-link.danger {
+            color: var(--danger-color);
+        }
+
+        .quick-support-card {
+            position: sticky;
+            top: var(--spacing-md);
+            border: 1px solid #BFDBFE;
+            box-shadow: 0 10px 24px -16px rgba(37, 99, 235, 0.45);
+        }
+
+        .quick-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .quick-tab-btn {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: #F8FAFC;
+            color: var(--text-muted);
+            padding: 8px 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .quick-tab-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        .quick-result-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 650px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .quick-result-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background-color: #FFFFFF;
+            padding: 12px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        }
+
+        .quick-result-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .quick-result-meta {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .quick-result-text {
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        @media (max-width: 980px) {
+            .guest-support-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-support-card {
+                position: static;
+            }
+        }
+
         /* Toast Notifications */
         .toast {
             position: fixed;
@@ -458,8 +669,84 @@
 
 <body class="in-iframe">
 
+    <div class="guest-support-layout" id="guest-support-layout">
+        <div class="card-section guest-create-card">
+            <div class="guest-form-header">
+                <div>
+                    <div class="guest-form-title"><i class="fa-solid fa-headset"></i> Tạo yêu cầu hỗ trợ</div>
+                    <div style="color: var(--text-muted); font-size: 13px;">Khách chưa đăng nhập có thể gửi yêu cầu hỗ trợ trực tiếp tới cơ quan quản lý.</div>
+                </div>
+            </div>
+
+            <form id="guest-support-form" onsubmit="event.preventDefault(); submitGuestSupportRequest();">
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label" for="guest-requester">Người yêu cầu <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="guest-requester" placeholder="Nhập họ và tên người yêu cầu...">
+                        <div class="field-error" id="guest-requester-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="guest-email">Email <span class="required-mark">*</span></label>
+                        <input type="email" class="form-control" id="guest-email" placeholder="Nhập email liên hệ...">
+                        <div class="field-error" id="guest-email-error"></div>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label" for="guest-priority">Mức độ ưu tiên <span class="required-mark">*</span></label>
+                        <select class="form-select" id="guest-priority">
+                            <option value="Thấp" selected>Thấp</option>
+                            <option value="Trung bình">Trung bình</option>
+                            <option value="Cao">Cao</option>
+                        </select>
+                        <div class="field-error" id="guest-priority-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="guest-title">Tiêu đề <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="guest-title" placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ..." oninput="syncGuestQuickSearchFromForm()">
+                        <div class="field-error" id="guest-title-error"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="guest-content">Nội dung <span class="required-mark">*</span></label>
+                    <textarea class="form-control" id="guest-content" rows="7" placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..." oninput="syncGuestQuickSearchFromForm()"></textarea>
+                    <div class="field-error" id="guest-content-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="guest-files">File đính kèm</label>
+                    <input type="file" class="native-file-input" id="guest-files" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleGuestSupportFiles(this.files)">
+                    <button type="button" class="btn file-pick-button" onclick="document.getElementById('guest-files').click()">
+                        <i class="fa-solid fa-folder-open"></i> Chọn tệp đính kèm
+                    </button>
+                    <div class="upload-note">Tối đa 3 tệp, định dạng PDF/JPG/JPEG/PNG, dung lượng tối đa 20MB/tệp.</div>
+                    <div class="guest-file-list" id="guest-file-list"></div>
+                    <div class="field-error" id="guest-files-error"></div>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border-color); padding-top:15px;">
+                    <button type="button" class="btn btn-secondary" onclick="resetGuestSupportForm()"><i class="fa-solid fa-rotate-left"></i> Hủy</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-section quick-support-card">
+            <div class="guest-form-title" style="font-size:16px;"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu nhanh trước khi gửi yêu cầu</div>
+            <div style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">Hệ thống gợi ý câu hỏi thường gặp và văn bản liên quan theo nội dung bạn nhập.</div>
+            <input type="text" class="form-control" id="guest-quick-search" placeholder="Nhập từ khóa cần tra cứu..." oninput="renderGuestQuickResults()">
+            <div class="quick-tabs">
+                <button type="button" class="quick-tab-btn active" id="guest-quick-faq-btn" onclick="switchGuestQuickTab('faq')"><i class="fa-solid fa-circle-question"></i> Câu hỏi thường gặp</button>
+                <button type="button" class="quick-tab-btn" id="guest-quick-doc-btn" onclick="switchGuestQuickTab('docs')"><i class="fa-solid fa-scale-balanced"></i> Văn bản QPPL</button>
+            </div>
+            <div class="quick-result-list" id="guest-quick-results"></div>
+        </div>
+    </div>
+
     <!-- Top Module Switcher -->
-    <div class="module-nav">
+    <div class="module-nav logged-support-area" id="loggedSupportModulesNav">
         <button class="module-btn active" id="module-legal-docs-btn" onclick="switchModule('legal-docs')">
             <i class="fa-solid fa-scale-balanced"></i> Văn bản Quy phạm Pháp luật
         </button>
@@ -469,7 +756,7 @@
     </div>
 
     <!-- MODULE 1: VĂN BẢN QUY PHẠM PHÁP LUẬT (UC536) -->
-    <div id="module-legal-docs">
+    <div id="module-legal-docs" class="logged-support-area">
 
         <!-- SCREEN: DANH SÁCH VĂN BẢN (UC536.MH01) -->
         <div id="screen-docs-list">
@@ -673,7 +960,7 @@
     </div>
 
     <!-- MODULE 2: CÂU HỎI THƯỜNG GẶP (FAQs) (UC280 & UC513) -->
-    <div id="module-faqs" style="display: none;">
+    <div id="module-faqs" class="logged-support-area" style="display: none;">
         <div class="card-section">
             <!-- Inner Tabs -->
             <div class="tab-container">
@@ -799,6 +1086,8 @@
         let faqsPageSize = 30;
         let faqsCurrentPage = 1;
         let filteredFaqs = [];
+        let guestQuickTab = 'faq';
+        let guestSupportFiles = [];
 
         // Dynamic Document Loading with version buster to clean old stale mock databases
         const DB_VERSION = "v5";
@@ -863,6 +1152,11 @@
 
         // Initialize App
         window.addEventListener('load', () => {
+            if (isGuestSupportMode()) {
+                initGuestSupportMode();
+                return;
+            }
+
             populatePublisherDropdown();
             switchModule('legal-docs');
 
@@ -877,6 +1171,240 @@
                 switchModule('faqs');
             }
         });
+
+        function isGuestSupportMode() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('guest') === '1';
+        }
+
+        function initGuestSupportMode() {
+            document.body.classList.add('guest-mode');
+            guestQuickTab = 'faq';
+            renderGuestQuickResults();
+        }
+
+        function setGuestFieldError(fieldId, message) {
+            const input = document.getElementById(fieldId);
+            const error = document.getElementById(`${fieldId}-error`);
+            if (input) input.classList.toggle('invalid', Boolean(message));
+            if (error) error.innerText = message || '';
+        }
+
+        function clearGuestSupportErrors() {
+            ['guest-requester', 'guest-email', 'guest-priority', 'guest-title', 'guest-content', 'guest-files'].forEach(id => {
+                setGuestFieldError(id, '');
+            });
+        }
+
+        function syncGuestQuickSearchFromForm() {
+            const quickInput = document.getElementById('guest-quick-search');
+            if (!quickInput) return;
+            const title = document.getElementById('guest-title')?.value.trim() || '';
+            const content = document.getElementById('guest-content')?.value.trim() || '';
+            const source = title || content;
+            quickInput.value = source.slice(0, 80);
+            renderGuestQuickResults();
+        }
+
+        function switchGuestQuickTab(tab) {
+            guestQuickTab = tab;
+            document.getElementById('guest-quick-faq-btn').classList.toggle('active', tab === 'faq');
+            document.getElementById('guest-quick-doc-btn').classList.toggle('active', tab === 'docs');
+            renderGuestQuickResults();
+        }
+
+        function normalizeGuestText(text) {
+            return String(text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function getGuestKeyword() {
+            return normalizeGuestText(document.getElementById('guest-quick-search')?.value || '');
+        }
+
+        function renderGuestQuickResults() {
+            const container = document.getElementById('guest-quick-results');
+            if (!container) return;
+
+            const keyword = getGuestKeyword();
+            if (guestQuickTab === 'faq') {
+                const data = mockFaqs
+                    .filter(item => !keyword || normalizeGuestText(`${item.title} ${item.excerpt} ${item.content}`).includes(keyword))
+                    .slice(0, 6);
+
+                container.innerHTML = data.length ? data.map(item => `
+                    <div class="quick-result-item">
+                        <div class="quick-result-title">${item.title}</div>
+                        <div class="quick-result-meta">${item.category === 'BTNN' ? 'Bồi thường nhà nước' : 'Biện pháp bảo đảm'}</div>
+                        <div class="quick-result-text">${item.excerpt}</div>
+                        <div style="margin-top:10px;">
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openFaqDetail(${item.id})"><i class="fa fa-eye"></i> Xem câu trả lời</button>
+                        </div>
+                    </div>
+                `).join('') : '<div style="color:var(--text-muted); font-size:13px; padding:12px;">Chưa tìm thấy câu hỏi thường gặp phù hợp.</div>';
+                return;
+            }
+
+            const docs = activeDocs
+                .filter(item => !keyword || normalizeGuestText(`${item.number} ${item.excerpt} ${item.publisher}`).includes(keyword))
+                .slice(0, 6);
+
+            container.innerHTML = docs.length ? docs.map(item => `
+                <div class="quick-result-item">
+                    <div class="quick-result-title">${item.number}</div>
+                    <div class="quick-result-meta">${item.publisher} - Hiệu lực: ${item.effectDate || item.date}</div>
+                    <div class="quick-result-text">${item.excerpt}</div>
+                    <div style="margin-top:10px;">
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openDocDetail(${item.id})"><i class="fa fa-eye"></i> Xem văn bản</button>
+                    </div>
+                </div>
+            `).join('') : '<div style="color:var(--text-muted); font-size:13px; padding:12px;">Chưa tìm thấy văn bản phù hợp.</div>';
+        }
+
+        function handleGuestSupportFiles(fileList) {
+            const files = Array.from(fileList || []);
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+            const allowedExts = ['pdf', 'jpg', 'jpeg', 'png'];
+            const maxSize = 20 * 1024 * 1024;
+
+            setGuestFieldError('guest-files', '');
+            if (files.length > 3) {
+                revokeGuestFileUrls();
+                guestSupportFiles = [];
+                document.getElementById('guest-files').value = '';
+                renderGuestFileList();
+                setGuestFieldError('guest-files', 'Chỉ được đính kèm tối đa 3 tệp tin.');
+                return;
+            }
+
+            const invalid = files.find(file => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                return (!allowedTypes.includes(file.type) && !allowedExts.includes(ext)) || file.size > maxSize;
+            });
+
+            if (invalid) {
+                revokeGuestFileUrls();
+                guestSupportFiles = [];
+                document.getElementById('guest-files').value = '';
+                renderGuestFileList();
+                setGuestFieldError('guest-files', 'Tệp đính kèm phải là PDF/JPG/JPEG/PNG và không vượt quá 20MB/tệp.');
+                return;
+            }
+
+            revokeGuestFileUrls();
+            guestSupportFiles = files.map(file => ({
+                file,
+                url: URL.createObjectURL(file)
+            }));
+            renderGuestFileList();
+        }
+
+        function renderGuestFileList() {
+            const list = document.getElementById('guest-file-list');
+            if (!list) return;
+            list.innerHTML = guestSupportFiles.map((item, index) => `
+                <div class="guest-file-item">
+                    <div class="guest-file-main">
+                        <i class="${getGuestFileIcon(item.file.name)}" style="color:var(--secondary-color);"></i>
+                        <span class="guest-file-name" title="${item.file.name}">${item.file.name}</span>
+                        <span style="color:var(--text-muted);">(${formatGuestFileSize(item.file.size)})</span>
+                    </div>
+                    <div class="guest-file-actions">
+                        <button type="button" class="file-action-link" onclick="viewGuestSupportFile(${index})"><i class="fa-regular fa-eye"></i> Xem file</button>
+                        <button type="button" class="file-action-link danger" onclick="removeGuestSupportFile(${index})"><i class="fa-regular fa-trash-can"></i> Xóa</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getGuestFileIcon(fileName) {
+            const ext = String(fileName || '').split('.').pop().toLowerCase();
+            if (ext === 'pdf') return 'fa-regular fa-file-pdf';
+            return 'fa-regular fa-file-image';
+        }
+
+        function formatGuestFileSize(size) {
+            if (size >= 1024 * 1024) {
+                return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+            }
+            return `${Math.max(1, Math.round(size / 1024))} KB`;
+        }
+
+        function viewGuestSupportFile(index) {
+            const item = guestSupportFiles[index];
+            if (!item) return;
+            window.open(item.url, '_blank');
+        }
+
+        function removeGuestSupportFile(index) {
+            const item = guestSupportFiles[index];
+            if (item?.url) URL.revokeObjectURL(item.url);
+            guestSupportFiles.splice(index, 1);
+            document.getElementById('guest-files').value = '';
+            setGuestFieldError('guest-files', '');
+            renderGuestFileList();
+        }
+
+        function revokeGuestFileUrls() {
+            guestSupportFiles.forEach(item => {
+                if (item?.url) URL.revokeObjectURL(item.url);
+            });
+        }
+
+        function validateGuestSupportForm() {
+            clearGuestSupportErrors();
+            let valid = true;
+            const requester = document.getElementById('guest-requester').value.trim();
+            const email = document.getElementById('guest-email').value.trim();
+            const priority = document.getElementById('guest-priority').value;
+            const title = document.getElementById('guest-title').value.trim();
+            const content = document.getElementById('guest-content').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!requester) {
+                setGuestFieldError('guest-requester', 'Vui lòng nhập người yêu cầu.');
+                valid = false;
+            }
+            if (!email || !emailRegex.test(email)) {
+                setGuestFieldError('guest-email', 'Vui lòng nhập đúng định dạng email.');
+                valid = false;
+            }
+            if (!priority) {
+                setGuestFieldError('guest-priority', 'Vui lòng chọn mức độ ưu tiên.');
+                valid = false;
+            }
+            if (!title) {
+                setGuestFieldError('guest-title', 'Vui lòng nhập tiêu đề yêu cầu.');
+                valid = false;
+            }
+            if (!content) {
+                setGuestFieldError('guest-content', 'Vui lòng nhập nội dung yêu cầu.');
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        function resetGuestSupportForm() {
+            const form = document.getElementById('guest-support-form');
+            if (form) form.reset();
+            document.getElementById('guest-priority').value = 'Thấp';
+            revokeGuestFileUrls();
+            guestSupportFiles = [];
+            clearGuestSupportErrors();
+            renderGuestFileList();
+            renderGuestQuickResults();
+        }
+
+        function submitGuestSupportRequest() {
+            if (!validateGuestSupportForm()) {
+                showToast('Vui lòng kiểm tra lại các thông tin bắt buộc.', 'info');
+                return;
+            }
+
+            const ticketId = `HT-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+            showToast(`Gửi yêu cầu hỗ trợ thành công! Mã yêu cầu: ${ticketId}`, 'success');
+            resetGuestSupportForm();
+        }
 
         // Module Switcher
         function switchModule(module) {

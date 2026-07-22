@@ -6264,7 +6264,9 @@
             }
             if (screenId === 'help') {
                 const iframe = document.querySelector('#screen-help iframe');
-                if (iframe) iframe.src = "UC280_UC513_UC536/ho_tro_khach_hang_main.html";
+                if (iframe) iframe.src = isUserLoggedIn
+                    ? "UC280_UC513_UC536/ho_tro_khach_hang_main.html"
+                    : "UC280_UC513_UC536/ho_tro_khach_hang_main.html?guest=1";
             }
             if (screenId === 'change-password') {
                 resetChangePasswordForm();
