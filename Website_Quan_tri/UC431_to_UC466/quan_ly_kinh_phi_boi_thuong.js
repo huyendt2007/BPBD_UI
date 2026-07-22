@@ -1415,6 +1415,7 @@ function renderProposalsTable() {
         }
 
         const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;
+        const actionAlign = isLeader ? 'center' : 'flex-start';
 
         tr.innerHTML = `
             <td style="text-align:center; vertical-align:middle;">${startIdx + idx + 1}</td>
@@ -1428,8 +1429,8 @@ function renderProposalsTable() {
             <td style="text-align:left; vertical-align:middle;">${item.date}</td>
             <td style="text-align:left; vertical-align:middle;">${treasuryHtml}</td>
             <td style="text-align:left; vertical-align:middle;"><span class="badge ${badgeClass}">${item.status}</span></td>
-            <td style="text-align:left; vertical-align:middle;">
-                <div class="action-flex" style="display:flex; justify-content:flex-start; gap:6px;">
+            <td style="text-align:${isLeader ? 'center' : 'left'}; vertical-align:middle;">
+                <div class="action-flex" style="display:flex; justify-content:${actionAlign}; gap:6px;">
                     ${actionsHtml}
                 </div>
             </td>
