@@ -432,7 +432,7 @@
 
         .guest-support-layout {
             display: none;
-            grid-template-columns: minmax(360px, 4.2fr) minmax(460px, 5.8fr);
+            grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.85fr);
             gap: var(--spacing-lg);
             align-items: start;
         }
@@ -446,8 +446,22 @@
         }
 
         .guest-create-card {
-            padding: var(--spacing-md);
+            grid-column: 2;
+            grid-row: 2;
+            width: 100%;
+            max-width: none;
+            padding: 14px;
             background-color: #FBFCFE;
+        }
+
+        .guest-create-card .grid-2-cols {
+            grid-template-columns: 1fr;
+            gap: 0;
+            margin-bottom: 0 !important;
+        }
+
+        .guest-create-card .form-group {
+            margin-bottom: 10px;
         }
 
         .guest-form-header {
@@ -455,14 +469,14 @@
             align-items: flex-start;
             justify-content: space-between;
             gap: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: var(--spacing-sm);
         }
 
         .guest-form-title {
             color: var(--primary-color);
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             margin-bottom: 4px;
         }
@@ -500,7 +514,7 @@
             background-color: #EFF6FF;
             color: var(--primary-color);
             justify-content: center;
-            padding: 10px 12px;
+            padding: 8px 10px;
         }
 
         .file-pick-button:hover {
@@ -567,10 +581,15 @@
         }
 
         .quick-support-card {
-            position: sticky;
-            top: var(--spacing-md);
+            grid-column: 2;
+            grid-row: 1;
+            position: static;
             border: 1px solid #BFDBFE;
             box-shadow: 0 10px 24px -16px rgba(37, 99, 235, 0.45);
+        }
+
+        .guest-right-column {
+            display: contents;
         }
 
         .quick-tabs {
@@ -600,7 +619,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 650px;
+            max-height: 250px;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -631,13 +650,132 @@
             font-size: 12px;
         }
 
+        .contact-card {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+            border: 1px solid #DBEAFE;
+            background: #FFFFFF;
+            box-shadow: 0 10px 28px -24px rgba(30, 58, 138, 0.45);
+        }
+
+        .contact-grid {
+            display: block;
+        }
+
+        .contact-item {
+            border: none;
+            border-radius: 0;
+            background-color: transparent;
+            padding: 9px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-title {
+            color: #B91C1C;
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .contact-line {
+            color: var(--text-main);
+            font-size: 13px;
+            line-height: 1.62;
+        }
+
+        .contact-line a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .logged-contact-card {
+            border: 1px solid #DBEAFE;
+            background-color: #FFFFFF;
+            box-shadow: 0 10px 28px -24px rgba(30, 58, 138, 0.4);
+        }
+
+        .logged-contact-layout {
+            display: grid;
+            grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.35fr);
+            gap: var(--spacing-md);
+            align-items: start;
+        }
+
+        .logged-contact-panel {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background-color: #F8FAFC;
+            padding: 12px;
+        }
+
+        .logged-contact-panel-title {
+            color: #B91C1C;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .logged-contact-group {
+            padding: 8px 0;
+            border-bottom: 1px dashed #CBD5E1;
+        }
+
+        .logged-contact-group:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .logged-contact-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .logged-contact-line {
+            color: var(--text-main);
+            font-size: 12.5px;
+            line-height: 1.55;
+        }
+
+        .logged-contact-line a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .logged-center-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
         @media (max-width: 980px) {
             .guest-support-layout {
                 grid-template-columns: 1fr;
             }
 
-            .quick-support-card {
-                position: static;
+            .contact-card,
+            .quick-support-card,
+            .guest-create-card {
+                grid-column: 1;
+                grid-row: auto;
+            }
+
+            .guest-right-column {
+                display: contents;
+            }
+
+            .logged-contact-layout,
+            .logged-center-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -674,7 +812,7 @@
             <div class="guest-form-header">
                 <div>
                     <div class="guest-form-title"><i class="fa-solid fa-headset"></i> Tạo yêu cầu hỗ trợ</div>
-                    <div style="color: var(--text-muted); font-size: 13px;">Khách chưa đăng nhập có thể gửi yêu cầu hỗ trợ trực tiếp tới cơ quan quản lý.</div>
+                    <div style="color: var(--text-muted); font-size: 13px;">Nếu thông tin liên hệ và nội dung tra cứu chưa giải đáp được vướng mắc, bạn có thể gửi yêu cầu hỗ trợ tại đây.</div>
                 </div>
             </div>
 
@@ -703,15 +841,27 @@
                         <div class="field-error" id="guest-priority-error"></div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="guest-title">Tiêu đề <span class="required-mark">*</span></label>
-                        <input type="text" class="form-control" id="guest-title" placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ..." oninput="syncGuestQuickSearchFromForm()">
-                        <div class="field-error" id="guest-title-error"></div>
+                        <label class="form-label" for="guest-receiving-agency">Cơ quan tiếp nhận <span class="required-mark">*</span></label>
+                        <select class="form-select" id="guest-receiving-agency">
+                            <option value="" selected>Chọn cơ quan tiếp nhận...</option>
+                            <option value="Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước">Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</option>
+                            <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội">Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội</option>
+                            <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Hồ Chí Minh">Trung tâm đăng ký giao dịch, tài sản tại TP Hồ Chí Minh</option>
+                            <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Đà Nẵng">Trung tâm đăng ký giao dịch, tài sản tại TP Đà Nẵng</option>
+                        </select>
+                        <div class="field-error" id="guest-receiving-agency-error"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label" for="guest-title">Tiêu đề <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="guest-title" placeholder="Nhập tiêu đề tóm tắt ngắn gọn nội dung cần hỗ trợ..." oninput="syncGuestQuickSearchFromForm()">
+                    <div class="field-error" id="guest-title-error"></div>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label" for="guest-content">Nội dung <span class="required-mark">*</span></label>
-                    <textarea class="form-control" id="guest-content" rows="7" placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..." oninput="syncGuestQuickSearchFromForm()"></textarea>
+                    <textarea class="form-control" id="guest-content" rows="4" placeholder="Nhập chi tiết nội dung sự việc, câu hỏi hoặc vấn đề cần hỗ trợ giải đáp..." oninput="syncGuestQuickSearchFromForm()"></textarea>
                     <div class="field-error" id="guest-content-error"></div>
                 </div>
 
@@ -733,15 +883,124 @@
             </form>
         </div>
 
-        <div class="card-section quick-support-card">
-            <div class="guest-form-title" style="font-size:16px;"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu nhanh trước khi gửi yêu cầu</div>
-            <div style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">Hệ thống gợi ý câu hỏi thường gặp và văn bản liên quan theo nội dung bạn nhập.</div>
-            <input type="text" class="form-control" id="guest-quick-search" placeholder="Nhập từ khóa cần tra cứu..." oninput="renderGuestQuickResults()">
-            <div class="quick-tabs">
-                <button type="button" class="quick-tab-btn active" id="guest-quick-faq-btn" onclick="switchGuestQuickTab('faq')"><i class="fa-solid fa-circle-question"></i> Câu hỏi thường gặp</button>
-                <button type="button" class="quick-tab-btn" id="guest-quick-doc-btn" onclick="switchGuestQuickTab('docs')"><i class="fa-solid fa-scale-balanced"></i> Văn bản QPPL</button>
+        <div class="guest-right-column">
+            <div class="card-section contact-card">
+                <div class="guest-form-title" style="font-size:16px;"><i class="fa-solid fa-address-book"></i> Thông tin liên hệ</div>
+                <div style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">Thông tin liên hệ hệ thống, hỗ trợ kỹ thuật, nghiệp vụ, thanh toán và các Trung tâm đăng ký giao dịch tài sản.</div>
+                <div class="contact-grid">
+                    <div class="contact-item full">
+                        <div class="contact-title">Đường dây nóng tiếp nhận phản ánh, kiến nghị</div>
+                        <div class="contact-line"><strong>024.62739690</strong></div>
+                    </div>
+                    <div class="contact-item full">
+                        <div class="contact-title">Liên hệ về cấp mới, cấp lại mã số sử dụng cơ sở dữ liệu, tài khoản đăng ký trực tuyến và hỗ trợ kỹ thuật sử dụng hệ thống</div>
+                        <div class="contact-line"><strong>Phòng Quản lý đăng ký trực tuyến và thông tin dữ liệu về biện pháp bảo đảm</strong></div>
+                        <div class="contact-line">Điện thoại: <strong>024.62739677</strong></div>
+                        <div class="contact-line">Email: <a href="mailto:tt_csdl@moj.gov.vn">tt_csdl@moj.gov.vn</a></div>
+                    </div>
+                    <div class="contact-item full">
+                        <div class="contact-title">Liên hệ về thủ tục, chứng từ thanh toán phí sử dụng mã số sử dụng cơ sở dữ liệu</div>
+                        <div class="contact-line"><strong>Văn phòng Cục (Bộ phận Tài chính, kế toán)</strong></div>
+                        <div class="contact-line">Điện thoại: <strong>024.62739678</strong></div>
+                        <div class="contact-line">Email: <a href="mailto:dangky@moj.gov.vn">dangky@moj.gov.vn</a></div>
+                    </div>
+                    <div class="contact-item full">
+                        <div class="contact-title">Hướng dẫn, giải đáp pháp luật về đăng ký biện pháp bảo đảm</div>
+                        <div class="contact-line"><strong>Phòng Quản lý nghiệp vụ</strong></div>
+                        <div class="contact-line">Điện thoại: <strong>024.62739676</strong></div>
+                    </div>
+                    <div class="contact-item full">
+                        <div class="contact-title">Liên hệ về tiếp nhận, giải quyết và trả kết quả đăng ký biện pháp bảo đảm; phí đăng ký, cung cấp thông tin biện pháp bảo đảm</div>
+                        <div class="contact-line">Liên hệ tại một trong ba Trung tâm đăng ký giao dịch, tài sản sau đây:</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-title">Trung tâm đăng ký giao dịch tài sản tại Hà Nội</div>
+                        <div class="contact-line">Địa chỉ: Ngõ 25 Nguyễn Cơ Thạch, Phường Mỹ Đình 2, Quận Nam Từ Liêm, Hà Nội</div>
+                        <div class="contact-line">Điện thoại: <strong>024.37227501 - 024.37227428</strong> (bộ phận đăng ký); <strong>024.37227500</strong> (bộ phận kế toán); <strong>024.37227427</strong> (bộ phận văn thư).</div>
+                        <div class="contact-line">Email: <a href="mailto:trungtamdangky1@moj.gov.vn">trungtamdangky1@moj.gov.vn</a> / <a href="mailto:dangkytt1@gmail.com">dangkytt1@gmail.com</a></div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-title">Trung tâm đăng ký giao dịch tài sản tại TP. Hồ Chí Minh</div>
+                        <div class="contact-line">Địa chỉ: số 30 Trần Cao Vân, Phường 6, Quận 3, TP. Hồ Chí Minh</div>
+                        <div class="contact-line">Điện thoại: <strong>028.22433557 - 028.22433558</strong> (bộ phận đăng ký); <strong>028.22433556, 028.22455201</strong> (bộ phận kế toán); <strong>028.22102461</strong> (bộ phận văn thư).</div>
+                        <div class="contact-line">Fax: <strong>02839291866</strong></div>
+                        <div class="contact-line">Email: <a href="mailto:trungtamdangky2@moj.gov.vn">trungtamdangky2@moj.gov.vn</a> / <a href="mailto:trungtamhcm@gmail.com">trungtamhcm@gmail.com</a></div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-title">Trung tâm đăng ký giao dịch tài sản tại Đà Nẵng</div>
+                        <div class="contact-line">Địa chỉ: số 109 Hoàng Sỹ Khải, phường An Hải Bắc, quận Sơn Trà, TP. Đà Nẵng.</div>
+                        <div class="contact-line">Điện thoại: <strong>0236.3933111 - 0236.3933555</strong> (bộ phận đăng ký); <strong>0236.3938355</strong> (bộ phận kế toán); <strong>0236.3505638</strong> (Giám đốc); <strong>0236.3700486</strong> (Phó giám đốc).</div>
+                        <div class="contact-line">Email: <a href="mailto:trungtamdangkydanang@gmail.com">trungtamdangkydanang@gmail.com</a> / <a href="mailto:trungtamdangky3@moj.gov.vn">trungtamdangky3@moj.gov.vn</a></div>
+                    </div>
+                </div>
             </div>
-            <div class="quick-result-list" id="guest-quick-results"></div>
+
+            <div class="card-section quick-support-card">
+                <div class="guest-form-title" style="font-size:16px;"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu nhanh trước khi gửi yêu cầu</div>
+                <div style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">Hệ thống gợi ý câu hỏi thường gặp và văn bản liên quan theo nội dung bạn nhập.</div>
+                <input type="text" class="form-control" id="guest-quick-search" placeholder="Nhập từ khóa cần tra cứu..." oninput="renderGuestQuickResults()">
+                <div class="quick-tabs">
+                    <button type="button" class="quick-tab-btn active" id="guest-quick-faq-btn" onclick="switchGuestQuickTab('faq')"><i class="fa-solid fa-circle-question"></i> Câu hỏi thường gặp</button>
+                    <button type="button" class="quick-tab-btn" id="guest-quick-doc-btn" onclick="switchGuestQuickTab('docs')"><i class="fa-solid fa-scale-balanced"></i> Văn bản QPPL</button>
+                </div>
+                <div class="quick-result-list" id="guest-quick-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-section logged-support-area logged-contact-card">
+        <div class="guest-form-title" style="font-size:17px;"><i class="fa-solid fa-address-book"></i> Thông tin liên hệ</div>
+        <div style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">Kênh liên hệ nhanh cho hỗ trợ kỹ thuật, nghiệp vụ, thanh toán và các Trung tâm đăng ký giao dịch tài sản.</div>
+        <div class="logged-contact-layout">
+            <div class="logged-contact-panel">
+                <div class="logged-contact-panel-title">Liên hệ nhanh</div>
+                <div class="logged-contact-group">
+                    <div class="logged-contact-title">Đường dây nóng tiếp nhận phản ánh, kiến nghị</div>
+                    <div class="logged-contact-line"><strong>024.62739690</strong></div>
+                </div>
+                <div class="logged-contact-group">
+                    <div class="logged-contact-title">Cấp mới, cấp lại mã số CSDL, tài khoản trực tuyến và hỗ trợ kỹ thuật</div>
+                    <div class="logged-contact-line"><strong>Phòng Quản lý đăng ký trực tuyến và thông tin dữ liệu về biện pháp bảo đảm</strong></div>
+                    <div class="logged-contact-line">Điện thoại: <strong>024.62739677</strong></div>
+                    <div class="logged-contact-line">Email: <a href="mailto:tt_csdl@moj.gov.vn">tt_csdl@moj.gov.vn</a></div>
+                </div>
+                <div class="logged-contact-group">
+                    <div class="logged-contact-title">Thủ tục, chứng từ thanh toán phí sử dụng mã số CSDL</div>
+                    <div class="logged-contact-line"><strong>Văn phòng Cục (Bộ phận Tài chính, kế toán)</strong></div>
+                    <div class="logged-contact-line">Điện thoại: <strong>024.62739678</strong></div>
+                    <div class="logged-contact-line">Email: <a href="mailto:dangky@moj.gov.vn">dangky@moj.gov.vn</a></div>
+                </div>
+                <div class="logged-contact-group">
+                    <div class="logged-contact-title">Hướng dẫn, giải đáp pháp luật về đăng ký biện pháp bảo đảm</div>
+                    <div class="logged-contact-line"><strong>Phòng Quản lý nghiệp vụ</strong></div>
+                    <div class="logged-contact-line">Điện thoại: <strong>024.62739676</strong></div>
+                </div>
+            </div>
+
+            <div class="logged-contact-panel">
+                <div class="logged-contact-panel-title">Trung tâm đăng ký giao dịch tài sản</div>
+                <div class="logged-center-grid">
+                    <div class="logged-contact-group">
+                        <div class="logged-contact-title">Hà Nội</div>
+                        <div class="logged-contact-line">Địa chỉ: Ngõ 25 Nguyễn Cơ Thạch, Phường Mỹ Đình 2, Quận Nam Từ Liêm, Hà Nội</div>
+                        <div class="logged-contact-line">Điện thoại: <strong>024.37227501 - 024.37227428</strong> (bộ phận đăng ký); <strong>024.37227500</strong> (bộ phận kế toán); <strong>024.37227427</strong> (bộ phận văn thư).</div>
+                        <div class="logged-contact-line">Email: <a href="mailto:trungtamdangky1@moj.gov.vn">trungtamdangky1@moj.gov.vn</a> / <a href="mailto:dangkytt1@gmail.com">dangkytt1@gmail.com</a></div>
+                    </div>
+                    <div class="logged-contact-group">
+                        <div class="logged-contact-title">TP. Hồ Chí Minh</div>
+                        <div class="logged-contact-line">Địa chỉ: số 30 Trần Cao Vân, Phường 6, Quận 3, TP. Hồ Chí Minh</div>
+                        <div class="logged-contact-line">Điện thoại: <strong>028.22433557 - 028.22433558</strong> (bộ phận đăng ký); <strong>028.22433556, 028.22455201</strong> (bộ phận kế toán); <strong>028.22102461</strong> (bộ phận văn thư).</div>
+                        <div class="logged-contact-line">Fax: <strong>02839291866</strong></div>
+                        <div class="logged-contact-line">Email: <a href="mailto:trungtamdangky2@moj.gov.vn">trungtamdangky2@moj.gov.vn</a> / <a href="mailto:trungtamhcm@gmail.com">trungtamhcm@gmail.com</a></div>
+                    </div>
+                    <div class="logged-contact-group">
+                        <div class="logged-contact-title">Đà Nẵng</div>
+                        <div class="logged-contact-line">Địa chỉ: số 109 Hoàng Sỹ Khải, phường An Hải Bắc, quận Sơn Trà, TP. Đà Nẵng.</div>
+                        <div class="logged-contact-line">Điện thoại: <strong>0236.3933111 - 0236.3933555</strong> (bộ phận đăng ký); <strong>0236.3938355</strong> (bộ phận kế toán); <strong>0236.3505638</strong> (Giám đốc); <strong>0236.3700486</strong> (Phó giám đốc).</div>
+                        <div class="logged-contact-line">Email: <a href="mailto:trungtamdangkydanang@gmail.com">trungtamdangkydanang@gmail.com</a> / <a href="mailto:trungtamdangky3@moj.gov.vn">trungtamdangky3@moj.gov.vn</a></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1191,7 +1450,7 @@
         }
 
         function clearGuestSupportErrors() {
-            ['guest-requester', 'guest-email', 'guest-priority', 'guest-title', 'guest-content', 'guest-files'].forEach(id => {
+            ['guest-requester', 'guest-email', 'guest-priority', 'guest-receiving-agency', 'guest-title', 'guest-content', 'guest-files'].forEach(id => {
                 setGuestFieldError(id, '');
             });
         }
@@ -1356,6 +1615,7 @@
             const requester = document.getElementById('guest-requester').value.trim();
             const email = document.getElementById('guest-email').value.trim();
             const priority = document.getElementById('guest-priority').value;
+            const receivingAgency = document.getElementById('guest-receiving-agency').value;
             const title = document.getElementById('guest-title').value.trim();
             const content = document.getElementById('guest-content').value.trim();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -1370,6 +1630,10 @@
             }
             if (!priority) {
                 setGuestFieldError('guest-priority', 'Vui lòng chọn mức độ ưu tiên.');
+                valid = false;
+            }
+            if (!receivingAgency) {
+                setGuestFieldError('guest-receiving-agency', 'Vui lòng chọn cơ quan tiếp nhận.');
                 valid = false;
             }
             if (!title) {
@@ -1388,6 +1652,7 @@
             const form = document.getElementById('guest-support-form');
             if (form) form.reset();
             document.getElementById('guest-priority').value = 'Thấp';
+            document.getElementById('guest-receiving-agency').value = '';
             revokeGuestFileUrls();
             guestSupportFiles = [];
             clearGuestSupportErrors();

@@ -758,14 +758,27 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="create-priority">Mức độ ưu tiên <span
-                            class="required-mark">*</span></label>
-                    <select class="form-select" id="create-priority">
-                        <option value="Thấp" selected>Thấp</option>
-                        <option value="Trung bình">Trung bình</option>
-                        <option value="Cao">Cao</option>
-                    </select>
+                <div class="grid-2-cols" style="margin-bottom: var(--spacing-md);">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="create-priority">Mức độ ưu tiên <span
+                                class="required-mark">*</span></label>
+                        <select class="form-select" id="create-priority">
+                            <option value="Thấp" selected>Thấp</option>
+                            <option value="Trung bình">Trung bình</option>
+                            <option value="Cao">Cao</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="create-receiving-agency">Cơ quan tiếp nhận <span class="required-mark">*</span></label>
+                        <select class="form-select" id="create-receiving-agency">
+                            <option value="" selected>Chọn cơ quan tiếp nhận...</option>
+                            <option value="Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước">Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</option>
+                            <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội">Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội</option>
+                            <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Hồ Chí Minh">Trung tâm đăng ký giao dịch, tài sản tại TP Hồ Chí Minh</option>
+                            <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Đà Nẵng">Trung tâm đăng ký giao dịch, tài sản tại TP Đà Nẵng</option>
+                        </select>
+                        <div class="error-message" id="error-create-receiving-agency">Trường này bắt buộc chọn</div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -2014,12 +2027,15 @@
                 const categoryName = activeTab === 'bpbd' ? 'Biện pháp bảo đảm' : 'Bồi thường nhà nước';
                 document.getElementById('create-type').value = categoryName;
                 document.getElementById('create-priority').value = 'Thấp';
+                document.getElementById('create-receiving-agency').value = '';
                 document.getElementById('create-title').value = '';
                 document.getElementById('create-content').value = '';
                 document.getElementById('create-files').value = '';
+                document.getElementById('error-create-receiving-agency').style.display = 'none';
                 document.getElementById('error-create-title').style.display = 'none';
                 document.getElementById('error-create-content').style.display = 'none';
                 document.getElementById('error-create-files').style.display = 'none';
+                document.getElementById('create-receiving-agency').style.borderColor = '';
                 document.getElementById('create-title').style.borderColor = '';
                 document.getElementById('create-content').style.borderColor = '';
                 selectedFiles = [];
@@ -2197,6 +2213,7 @@
                 const category = document.getElementById('create-type').value;
                 const nameInput = document.getElementById('create-user-name');
                 const emailInput = document.getElementById('create-user-email');
+                const receivingAgencyInput = document.getElementById('create-receiving-agency');
 
                 let hasError = false;
 
@@ -2225,6 +2242,16 @@
                 } else if (emailInput) {
                     document.getElementById('error-create-user-email').style.display = 'none';
                     emailInput.style.borderColor = '';
+                }
+
+                // Validate Receiving Agency
+                if (!receivingAgencyInput.value) {
+                    document.getElementById('error-create-receiving-agency').style.display = 'block';
+                    receivingAgencyInput.style.borderColor = 'var(--danger-color)';
+                    hasError = true;
+                } else {
+                    document.getElementById('error-create-receiving-agency').style.display = 'none';
+                    receivingAgencyInput.style.borderColor = '';
                 }
 
                 // Validate Title
@@ -2266,6 +2293,7 @@
                     category: category,
                     created_at: `${dd}/${mm}/${yyyy} ${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`,
                     priority: priority,
+                    receiving_agency: receivingAgencyInput.value,
                     user_name: nameInput ? nameInput.value.trim() : 'Khách hàng vãng lai',
                     user_email: emailInput ? emailInput.value.trim() : '',
                     title: titleInput.value.trim(),
