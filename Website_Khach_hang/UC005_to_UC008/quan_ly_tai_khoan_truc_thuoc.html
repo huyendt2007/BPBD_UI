@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -372,31 +372,74 @@
             border-bottom-right-radius: var(--border-radius-lg);
         }
 
-        /* Tree Checkbox styling */
-        .tree-container {
+        /* REQ-UI-SUBACCOUNT-MODAL-01: Modal sizing & layout optimization */
+        #staff-modal .modal-content {
+            max-width: 800px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #staff-modal .modal-header {
+            padding: 12px 20px;
+            flex-shrink: 0;
+            background-color: #F8FAFC;
+        }
+
+        #staff-modal .modal-body {
+            padding: 12px 20px;
+            overflow-y: auto;
+            flex: 1;
+            max-height: calc(90vh - 110px);
+        }
+
+        #staff-modal .form-group {
+            margin-bottom: 8px !important;
+        }
+
+        #staff-modal .form-control,
+        #staff-modal .form-select {
+            height: 34px;
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+
+        #staff-modal .modal-footer {
+            padding: 10px 20px;
+            flex-shrink: 0;
+            background-color: #F8FAFC;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Tree Checkbox styling - 3 columns inline grid */
+        #staff-modal #rights-sub-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px 12px;
+        }
+
+        #staff-modal .tree-container {
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
-            padding: var(--spacing-md);
+            padding: 8px 12px;
             background-color: #F8FAFC;
-            max-height: 250px;
+            max-height: 120px;
             overflow-y: auto;
         }
 
-        .tree-toolbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-            border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 8px;
-        }
-
-        .tree-node {
-            margin-left: 20px;
-            margin-bottom: 8px;
+        #staff-modal .tree-node {
+            margin-left: 0;
+            margin-bottom: 0;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
+            gap: 6px;
+            font-size: 12.5px;
+        }
+
+        #staff-modal .tree-toolbar {
+            margin-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .tree-node-parent {
@@ -575,24 +618,24 @@
                             <div class="error-message" id="error-name">Trường này là bắt buộc</div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="staff-email">Email <span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="staff-email" placeholder="Nhập địa chỉ email...">
-                            <div class="error-message" id="error-email">Trường này là bắt buộc</div>
+                            <label class="form-label" for="staff-phone">Số điện thoại <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="staff-phone" placeholder="Nhập số điện thoại liên lạc...">
+                            <div class="error-message" id="error-phone">Trường này là bắt buộc</div>
                         </div>
                     </div>
 
                     <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="staff-email">Email <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="staff-email" placeholder="Nhập địa chỉ email...">
+                            <div class="error-message" id="error-email">Trường này là bắt buộc</div>
+                        </div>
                         <div class="form-group">
                             <label class="form-label" for="staff-nationality">Quốc tịch <span class="required-mark">*</span></label>
                             <select class="form-select" id="staff-nationality" onchange="toggleNationalityState()">
                                 <option value="Việt Nam" selected>Việt Nam</option>
                                 <option value="Nước ngoài">Nước ngoài</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="staff-phone">Số điện thoại <span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="staff-phone" placeholder="Nhập số điện thoại liên lạc...">
-                            <div class="error-message" id="error-phone">Trường này là bắt buộc</div>
                         </div>
                     </div>
 
