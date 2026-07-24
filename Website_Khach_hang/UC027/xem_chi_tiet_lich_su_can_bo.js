@@ -3197,6 +3197,28 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = '../trang_tong_the_website_khach_hang.html';
         }
 
+        function runParentCustomerShortcut(functionName, regNum) {
+            if (window.parent && window.parent !== window && typeof window.parent[functionName] === 'function') {
+                window.parent[functionName](regNum);
+                return true;
+            }
+            return false;
+        }
+
+        function buildCopyRequestUrl(regNum, withNotice = false) {
+            const targetRegNum = registeredDetailContext?.rootRegNum || regNum;
+            const modulePath = withNotice
+                ? 'UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html'
+                : 'UC149/lap_yeu_cau_sao_luc_main.html';
+            const focusParam = withNotice ? 'continue' : 'copyQty';
+            sessionStorage.setItem('registeredRequestCopyContext', JSON.stringify({
+                action: withNotice ? 'request-copy-notice' : 'request-copy',
+                selectedRegNum: regNum,
+                firstRegNum: targetRegNum
+            }));
+            return `${modulePath}?from=registered&regNum=${encodeURIComponent(targetRegNum)}&focus=${focusParam}`;
+        }
+
         window.toggleDetailOtherActions = function(event) {
             if (event) event.stopPropagation();
             const menu = document.getElementById('detailOtherActionsMenu');
@@ -3217,11 +3239,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const otherMenu = document.getElementById('detailOtherActionsMenu');
             if (otherMenu) otherMenu.style.display = 'none';
             const regNum = getActiveRegNum();
-            const pin = registeredDetailContext?.pin || currentSelectedVersion?.data?.pin || '5635';
+            const pin = registeredDetailContext?.rootPin || registeredDetailContext?.pin || currentSelectedVersion?.data?.pin || '5635';
 
             switch (action) {
                 case 'payment':
-                    navigateCustomerModule('billing-payment');
+                    if (!runParentCustomerShortcut('payRegisteredRequest', regNum)) {
+                        navigateCustomerModule('billing-payment');
+                    }
                     break;
                 case 'update':
                     if (window.parent && window.parent !== window && typeof window.parent.updateRegisteredRequest === 'function') {
@@ -3231,29 +3255,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     break;
                 case 'change-registration':
-                    navigateCustomerModule('change-registration', `UC0025/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                    if (!runParentCustomerShortcut('shortcutChangeRegistration', regNum)) {
+                        navigateCustomerModule('change-registration', `UC0025/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                    }
                     break;
                 case 'asset-disposal':
-                    if (window.parent && window.parent !== window && typeof window.parent.openAssetDisposalInMode === 'function') {
-                        window.parent.openAssetDisposalInMode(regNum, 'first');
-                    } else {
+                    if (!runParentCustomerShortcut('shortcutAssetDisposal', regNum)) {
                         navigateCustomerModule('asset-disposal');
                     }
                     break;
                 case 'delete-registration':
-                    navigateCustomerModule('delete-registration', `UC026/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                    if (!runParentCustomerShortcut('shortcutDeleteRegistration', regNum)) {
+                        navigateCustomerModule('delete-registration', `UC026/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                    }
                     break;
                 case 'change-notice':
-                    if (window.parent && window.parent !== window && typeof window.parent.openAssetDisposalInMode === 'function') {
-                        window.parent.openAssetDisposalInMode(regNum, 'change');
-                    } else {
+                    if (!runParentCustomerShortcut('shortcutChangeAssetDisposal', regNum)) {
                         navigateCustomerModule('asset-disposal');
                     }
                     break;
                 case 'delete-notice':
-                    if (window.parent && window.parent !== window && typeof window.parent.openAssetDisposalInMode === 'function') {
-                        window.parent.openAssetDisposalInMode(regNum, 'delete');
-                    } else {
+                    if (!runParentCustomerShortcut('shortcutDeleteAssetDisposal', regNum)) {
                         navigateCustomerModule('asset-disposal');
                     }
                     break;
@@ -3261,10 +3283,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     navigateCustomerModule('search', 'reg');
                     break;
                 case 'request-copy':
-                    navigateCustomerModule('request-copies');
+                    if (!runParentCustomerShortcut('shortcutRequestCopy', regNum)) {
+                        navigateCustomerModule('request-copies', buildCopyRequestUrl(regNum, false));
+                    }
                     break;
                 case 'request-copy-notice':
-                    navigateCustomerModule('request-copies-notif');
+                    if (!runParentCustomerShortcut('shortcutRequestCopyNotice', regNum)) {
+                        navigateCustomerModule('request-copies-notif', buildCopyRequestUrl(regNum, true));
+                    }
                     break;
                 default:
                     goBack();

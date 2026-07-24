@@ -373,12 +373,19 @@
         }
 
         /* REQ-UI-SUBACCOUNT-MODAL-01: Modal sizing & layout optimization */
+        #staff-modal {
+            align-items: flex-start;
+            overflow: hidden;
+            padding: 12px 16px;
+        }
+
         #staff-modal .modal-content {
             max-width: 800px;
-            max-height: 90vh;
+            max-height: min(680px, calc(100vh - 24px));
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            margin: 0 auto;
         }
 
         #staff-modal .modal-header {
@@ -391,7 +398,9 @@
             padding: 12px 20px;
             overflow-y: auto;
             flex: 1;
-            max-height: calc(90vh - 110px);
+            min-height: 0;
+            max-height: none;
+            overscroll-behavior: contain;
         }
 
         #staff-modal .form-group {
@@ -424,7 +433,7 @@
             border-radius: var(--border-radius-sm);
             padding: 8px 12px;
             background-color: #F8FAFC;
-            max-height: 120px;
+            max-height: 96px;
             overflow-y: auto;
         }
 
@@ -1056,6 +1065,8 @@
             }
 
             document.getElementById('staff-modal').classList.add('visible');
+            const modalBody = document.querySelector('#staff-modal .modal-body');
+            if (modalBody) modalBody.scrollTop = 0;
         }
 
         function closeModal(modalType) {

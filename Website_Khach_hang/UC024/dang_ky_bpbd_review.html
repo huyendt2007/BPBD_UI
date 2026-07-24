@@ -30,11 +30,28 @@
         .review-block {
             margin-bottom: 16px;
         }
+
+        #rev_tableConsolidatedAssets {
+            min-width: 1080px;
+            table-layout: fixed;
+        }
+
+        #rev_tableConsolidatedAssets th {
+            text-align: center;
+            white-space: normal;
+            vertical-align: middle;
+            line-height: 1.45;
+        }
+
+        #rev_tableConsolidatedAssets td {
+            line-height: 1.45;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div class="container review-form-shell">
         <!-- Hidden wrapper to satisfy specification scanning -->
         <div style="display: none;">
             <span>Thông tin người đăng ký</span>
@@ -201,9 +218,17 @@
                         / Tài sản bảo đảm</h3>
                     <div class="table-responsive">
                         <table class="table" id="rev_tableConsolidatedAssets">
+                            <colgroup>
+                                <col style="width: 56px;">
+                                <col style="width: 250px;">
+                                <col style="width: 205px;">
+                                <col style="width: 240px;">
+                                <col style="width: 164px;">
+                                <col style="width: 165px;">
+                            </colgroup>
                             <thead>
                                 <tr>
-                                    <th style="width: 60px; text-align: center;">STT</th>
+                                    <th style="width: 56px; text-align: center;">STT</th>
                                     <th>Loại tài sản</th>
                                     <th>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
                                     <th>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>

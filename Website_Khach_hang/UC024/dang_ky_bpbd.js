@@ -605,9 +605,11 @@
             tr.dataset.quocgia = valQuocGia;
 
             tr.innerHTML = `
-                <td>
-                    <button type="button" class="btn btn-outline-primary btn-sua-tc" style="padding: 4px 8px; font-size: 12px;">Sửa</button>
-                    <button type="button" class="btn btn-danger btn-xoa-tc" style="padding: 4px 8px; font-size: 12px;">Xóa</button>
+                <td style="text-align: center;">
+                    <div class="grid-row-actions">
+                        <button type="button" class="grid-action-btn edit btn-sua-tc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
+                        <button type="button" class="grid-action-btn delete btn-xoa-tc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
+                    </div>
                 </td>
                 <td>${loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text}</td>
                 <td>${valGiayTo}</td>
@@ -758,9 +760,11 @@
             tr.dataset.quocgia = valQuocGia;
 
             tr.innerHTML = `
-                <td>
-                    <button type="button" class="btn btn-outline-primary btn-sua-ntc" style="padding: 4px 8px; font-size: 12px;">Sửa</button>
-                    <button type="button" class="btn btn-danger btn-xoa-ntc" style="padding: 4px 8px; font-size: 12px;">Xóa</button>
+                <td style="text-align: center;">
+                    <div class="grid-row-actions">
+                        <button type="button" class="grid-action-btn edit btn-sua-ntc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
+                        <button type="button" class="grid-action-btn delete btn-xoa-ntc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
+                    </div>
                 </td>
                 <td>${valTen}</td>
                 <td>${fullAddr}</td>
@@ -1835,9 +1839,11 @@
                     tr.dataset.quocgia = r.quocGia;
 
                     tr.innerHTML = `
-                        <td>
-                            <button type="button" class="btn btn-outline-primary btn-sua-tc" style="padding: 4px 8px; font-size: 12px;">Sửa</button>
-                            <button type="button" class="btn btn-danger btn-xoa-tc" style="padding: 4px 8px; font-size: 12px;">Xóa</button>
+                        <td style="text-align: center;">
+                            <div class="grid-row-actions">
+                                <button type="button" class="grid-action-btn edit btn-sua-tc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
+                                <button type="button" class="grid-action-btn delete btn-xoa-tc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
+                            </div>
                         </td>
                         <td>${r.loai}</td>
                         <td>${r.giayTo}</td>
@@ -1897,9 +1903,11 @@
                     tr.dataset.quocgia = r.quocGia;
 
                     tr.innerHTML = `
-                        <td>
-                            <button type="button" class="btn btn-outline-primary btn-sua-ntc" style="padding: 4px 8px; font-size: 12px;">Sửa</button>
-                            <button type="button" class="btn btn-danger btn-xoa-ntc" style="padding: 4px 8px; font-size: 12px;">Xóa</button>
+                        <td style="text-align: center;">
+                            <div class="grid-row-actions">
+                                <button type="button" class="grid-action-btn edit btn-sua-ntc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
+                                <button type="button" class="grid-action-btn delete btn-xoa-ntc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
+                            </div>
                         </td>
                         <td>${r.ten}</td>
                         <td>${r.diaChi}</td>

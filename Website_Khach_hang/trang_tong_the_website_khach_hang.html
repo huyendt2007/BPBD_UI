@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -2012,7 +2012,7 @@
 
         /* CSS for UC131 Payment Gate & Simulator */
         .disposal-payment-container {
-            max-width: 800px;
+            max-width: 880px;
             margin: 0 auto;
         }
 
@@ -2020,8 +2020,8 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
+            padding: 22px;
+            margin-bottom: 20px;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
@@ -2035,14 +2035,20 @@
 
         .disposal-payment-methods-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin-bottom: 24px;
         }
 
         @media (max-width: 600px) {
             .disposal-payment-methods-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .disposal-payment-methods-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -2231,6 +2237,53 @@
         #screen-asset-disposal h3.section-title {
             justify-content: flex-start;
             gap: 8px;
+        }
+
+        #screen-asset-disposal {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        #screen-asset-disposal .card-section {
+            padding: 20px;
+            margin-right: auto;
+            margin-left: auto;
+            margin-bottom: 18px;
+        }
+
+        #screen-asset-disposal .table {
+            min-width: 760px;
+        }
+
+        #screen-asset-disposal #disposalPhaseEdit,
+        #screen-asset-disposal #disposalPhaseReview {
+            max-width: 1080px;
+        }
+
+        #screen-asset-disposal #disposalPhasePayment,
+        #screen-asset-disposal #disposalPhaseSuccess {
+            max-width: 880px;
+        }
+
+        @media (max-width: 1180px) {
+            #screen-asset-disposal {
+                max-width: calc(100% - 32px);
+            }
+        }
+
+        @media (max-width: 960px) {
+            #screen-asset-disposal {
+                max-width: calc(100% - 24px);
+            }
+
+            #screen-asset-disposal .card-section {
+                padding: var(--spacing-md);
+            }
+
+            #screen-asset-disposal .grid-2-cols,
+            #screen-asset-disposal .grid-3-cols {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* CSS for Asset Tooltip in UCPS007 */
@@ -3709,6 +3762,12 @@
                 </div>
             </div>
 
+            <!-- SCREEN: Thanh toán hồ sơ từ danh sách yêu cầu đã đăng ký -->
+            <div class="app-screen" id="screen-registered-request-payment" style="padding: 0;">
+                <iframe id="iframeRegisteredRequestPayment" class="module-iframe" src=""
+                    title="Thanh toán hồ sơ chờ thanh toán"></iframe>
+            </div>
+
             <!-- SCREEN: Xem chi tiết tài khoản Khách hàng (UC002.MH02) -->
             <div class="app-screen" id="screen-account-details">
                 <div class="card-section" style="max-width: 850px; margin: 0 auto;">
@@ -3983,7 +4042,7 @@
                     </div>
                     <div
                         style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border-color); padding-top:15px;">
-                        <button class="btn btn-outline-primary" onclick="showScreen('home')">Hủy</button>
+                        <button class="btn btn-outline-primary" onclick="returnFromCustomerModule()">Hủy</button>
                         <button class="btn btn-primary" onclick="searchOriginalForDisposal()">Tiếp tục <i
                                 class="fa fa-arrow-right"></i></button>
                     </div>
@@ -4563,12 +4622,12 @@
                             <table class="table" style="font-size: 12.5px;">
                                 <thead style="background-color: var(--table-header-bg);">
                                     <tr>
-                                        <th style="width: 5%; text-align: center;">STT</th>
-                                        <th style="width: 20%;">Loại tài sản</th>
-                                        <th style="width: 20%;">Tên phương tiện / Tên tài sản</th>
-                                        <th style="width: 20%;">Nhãn hiệu, màu sơn / Mô tả chi tiết</th>
-                                        <th style="width: 18%;">Số khung / Số định danh</th>
-                                        <th style="width: 17%;">Số máy / Biển số</th>
+                                        <th style="width: 6%; text-align: center;">STT</th>
+                                        <th style="width: 23%;">Loại tài sản</th>
+                                        <th style="width: 19%;">Tên phương tiện / Tên tài sản</th>
+                                        <th style="width: 22%;">Nhãn hiệu, màu sơn / Mô tả chi tiết</th>
+                                        <th style="width: 15%;">Số khung / Số định danh</th>
+                                        <th style="width: 15%;">Số máy / Biển số</th>
                                     </tr>
                                 </thead>
                                 <tbody id="reviewAssetsTableBody">
@@ -5772,6 +5831,7 @@
         let loggedInUser = 'taikhoantestfpt@gmail.com';
         let loggedInDisplayName = 'Ngân hàng TMCP FPT';
         let currentActiveScreen = 'home';
+        let currentScreenUrlCache = {};
 
         // Organization profile and credentials state
         let orgDetails = {
@@ -6450,6 +6510,65 @@
             }, 3000);
         }
 
+        function getCurrentScreenReturnContext() {
+            let customUrl = currentScreenUrlCache[currentActiveScreen] || '';
+            if (currentActiveScreen === 'view-detail-history') {
+                const iframe = document.querySelector('#screen-view-detail-history iframe');
+                customUrl = iframe ? (iframe.getAttribute('src') || customUrl) : customUrl;
+            }
+            return {
+                screenId: currentActiveScreen || 'home',
+                customUrl
+            };
+        }
+
+        function rememberDirectModuleReturn(screenId, customUrl) {
+            const moduleScreens = ['change-registration', 'delete-registration', 'asset-disposal', 'request-copies', 'request-copies-notif'];
+            if (!moduleScreens.includes(screenId) || customUrl) return;
+            if (sessionStorage.getItem('registeredActionReturnContext')) return;
+            if (!currentActiveScreen || currentActiveScreen === screenId) return;
+            sessionStorage.setItem('customerModuleReturnContext', JSON.stringify(getCurrentScreenReturnContext()));
+        }
+
+        function rememberRegisteredActionReturn() {
+            const origin = currentActiveScreen === 'view-detail-history'
+                ? getCurrentScreenReturnContext()
+                : { screenId: 'registered-requests', customUrl: '' };
+            sessionStorage.setItem('registeredActionReturnContext', JSON.stringify(origin));
+        }
+
+        function consumeStoredReturnContext(key) {
+            try {
+                const raw = sessionStorage.getItem(key);
+                if (!raw) return null;
+                sessionStorage.removeItem(key);
+                const parsed = JSON.parse(raw);
+                return parsed && parsed.screenId ? parsed : null;
+            } catch (error) {
+                sessionStorage.removeItem(key);
+                return null;
+            }
+        }
+
+        function returnFromCustomerModule() {
+            const registeredTarget = consumeStoredReturnContext('registeredActionReturnContext');
+            if (registeredTarget) {
+                sessionStorage.removeItem('customerModuleReturnContext');
+            }
+            const target = registeredTarget || consumeStoredReturnContext('customerModuleReturnContext');
+
+            sessionStorage.removeItem('registeredRequestShortcutContext');
+            sessionStorage.removeItem('registeredRequestCopyContext');
+
+            if (target && target.screenId) {
+                showScreen(target.screenId, target.customUrl || undefined);
+                return true;
+            }
+
+            showScreen('home');
+            return true;
+        }
+
         // Screen switching manager
         function showScreen(screenId, customUrl) {
             if (screenId === 'register') {
@@ -6469,7 +6588,7 @@
             // Check auth for locked pages
             const lockedPages = [
                 'new-registration', 'change-registration', 'delete-registration',
-                'billing-payment', 'account-details', 'update-account-details', 'staff-management',
+                'billing-payment', 'registered-request-payment', 'account-details', 'update-account-details', 'staff-management',
                 'asset-disposal', 'request-copies', 'request-copies-notif', 'change-history',
                 'support-tracker', 'change-password', 'support-result',
                 'registered-requests', 'view-detail-history'
@@ -6480,6 +6599,8 @@
                 return;
             }
 
+            rememberDirectModuleReturn(screenId, customUrl);
+
             // Hide all screens
             const screens = document.querySelectorAll('.app-screen');
             screens.forEach(s => s.classList.remove('active'));
@@ -6489,6 +6610,7 @@
             if (activeScreen) {
                 activeScreen.classList.add('active');
                 currentActiveScreen = screenId;
+                currentScreenUrlCache[screenId] = customUrl || '';
             }
             if (!['new-registration', 'change-registration', 'delete-registration'].includes(screenId)) {
                 editingDraftRegisteredRequest = null;
@@ -6561,22 +6683,25 @@
                 const sideChange = document.getElementById('sideMenuChange');
                 if (sideChange) sideChange.classList.add('active');
 
-                // Reset all old entered data for change registration module
-                localStorage.removeItem('regNum');
-                localStorage.removeItem('pinNum');
-                localStorage.removeItem('baselineVersion');
-                localStorage.removeItem('baselineData');
-                localStorage.removeItem('baselineOriginalData');
-                localStorage.removeItem('dossierDraft');
-                localStorage.removeItem('deltaChanges');
-                localStorage.removeItem('passedReview');
+                const hasPrefilledRegisteredData = customUrl && customUrl.includes('dang_ky_thay_doi_main.html');
+                if (!hasPrefilledRegisteredData) {
+                    // Reset all old entered data for change registration module
+                    localStorage.removeItem('regNum');
+                    localStorage.removeItem('pinNum');
+                    localStorage.removeItem('baselineVersion');
+                    localStorage.removeItem('baselineData');
+                    localStorage.removeItem('baselineOriginalData');
+                    localStorage.removeItem('dossierDraft');
+                    localStorage.removeItem('deltaChanges');
+                    localStorage.removeItem('passedReview');
 
-                // Clear any stored uploaded file paths or URLs
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key && key.startsWith('fileUrl_')) {
-                        localStorage.removeItem(key);
-                        i--; // Adjust index since we removed an item
+                    // Clear any stored uploaded file paths or URLs
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && key.startsWith('fileUrl_')) {
+                            localStorage.removeItem(key);
+                            i--; // Adjust index since we removed an item
+                        }
                     }
                 }
 
@@ -6594,7 +6719,7 @@
                 document.getElementById('sideMenuRequestCopies').classList.add('active');
                 const iframe = document.querySelector('#screen-request-copies iframe');
                 if (iframe) {
-                    iframe.src = "UC149/lap_yeu_cau_sao_luc_main.html";
+                    iframe.src = customUrl || "UC149/lap_yeu_cau_sao_luc_main.html";
                 }
             }
             if (screenId === 'request-copies-notif') {
@@ -6602,7 +6727,7 @@
                 if (sideCopyNotif) sideCopyNotif.classList.add('active');
                 const iframe = document.querySelector('#screen-request-copies-notif iframe');
                 if (iframe) {
-                    iframe.src = "UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html";
+                    iframe.src = customUrl || "UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html";
                 }
             }
 
@@ -6618,6 +6743,15 @@
             if (screenId === 'registered-requests') {
                 document.getElementById('sideMenuRegisteredRequests').classList.add('active');
                 renderRegisteredRequestsTable();
+            }
+
+            if (screenId === 'registered-request-payment') {
+                const sideMenuReg = document.getElementById('sideMenuRegisteredRequests');
+                if (sideMenuReg) sideMenuReg.classList.add('active');
+                const iframe = document.getElementById('iframeRegisteredRequestPayment');
+                if (iframe && customUrl) {
+                    iframe.src = customUrl;
+                }
             }
 
             if (screenId === 'billing-payment') {
@@ -9193,8 +9327,12 @@
 
         // Helper to retrieve structured assets for a registration number
         function getAssetsForRegistration(regNum) {
-            const record = simulatedDatabase[regNum];
+            const record = simulatedDatabase[regNum] || ensureRegisteredDisposalRecord(regNum);
             if (!record) return [];
+
+            if (Array.isArray(record.assetDetails) && record.assetDetails.length) {
+                return record.assetDetails;
+            }
 
             if (regNum === '1505156438') {
                 return [
@@ -9370,7 +9508,7 @@
 
             if (mode === 'first') {
                 const regNum = regNumOrNoticeNum;
-                const record = simulatedDatabase[regNum];
+                const record = simulatedDatabase[regNum] || ensureRegisteredDisposalRecord(regNum);
                 if (!record) {
                     showToast('Không tìm thấy hồ sơ gốc!', 'error');
                     return;
@@ -9734,6 +9872,10 @@
         }
 
         function backToDisposalSearch() {
+            if (sessionStorage.getItem('registeredActionReturnContext')) {
+                returnFromCustomerModule();
+                return;
+            }
             document.getElementById('disposalPhaseEdit').classList.add('hidden');
             document.getElementById('disposalPhaseSearch').classList.remove('hidden');
         }
@@ -10449,7 +10591,7 @@
             document.getElementById('disposalSearchRegNum').value = '';
             document.getElementById('disposalSearchPin').value = '';
             document.getElementById('disposalPaymentSimulator').style.display = 'none'; // Hide simulator panel!
-            showScreen('home');
+            returnFromCustomerModule();
         }
 
 
@@ -11815,6 +11957,7 @@
                 type: context.item.type,
                 status: context.item.status,
                 rootRegNum: context.root.regNum,
+                rootPin: context.root.pin,
                 rootType: context.root.type,
                 rootStatus: context.root.status,
                 depth: context.depth,
@@ -11827,6 +11970,175 @@
         function findRegisteredRequest(regNum) {
             const context = findRegisteredRequestContext(regNum);
             return context ? context.item : null;
+        }
+
+        function getRegisteredRequestActionContext(regNum) {
+            const context = findRegisteredRequestContext(regNum);
+            if (!context) return null;
+
+            return {
+                context,
+                item: context.item,
+                root: context.root,
+                selectedRegNum: context.item.regNum,
+                selectedPin: context.item.pin || context.root.pin || '5635',
+                firstRegNum: context.root.regNum,
+                firstPin: context.root.pin || context.item.pin || '5635'
+            };
+        }
+
+        function buildRegisteredAssetRows(item) {
+            const sourceAssets = Array.isArray(item?.secAssets) && item.secAssets.length
+                ? item.secAssets
+                : ['Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)'];
+            const fallbackAssets = [
+                'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa',
+                'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+                'Cây hằng năm, công trình tạm',
+                'Hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh',
+                'Chứng khoán đã đăng ký tập trung',
+                'Các động sản khác'
+            ];
+            const fullList = [...sourceAssets, ...fallbackAssets].slice(0, 7);
+
+            return fullList.map((typeName, index) => ({
+                id: index + 1,
+                type: index === 0 ? 'sokhung' : 'dong_san_khac',
+                typeName,
+                name: index === 0 ? 'Xe ô tô con Toyota Vios' : `Tài sản bảo đảm ${index + 1}`,
+                brandColor: index === 0 ? 'Toyota Vios, Màu đen' : typeName,
+                frameNo: index === 0 ? 'TYT-VIOS-88992' : '---',
+                engineNo: index === 0 ? 'ENG-4A-FE-990' : '---',
+                plateNo: index === 0 ? '30H-123.45' : '',
+                hasNotice: index === 0,
+                noticeAgency: index === 0 ? 'Cục Cảnh sát Giao thông đường bộ - Hà Nội' : '',
+                status: 'Không thay đổi'
+            }));
+        }
+
+        function buildRegisteredDossierBaseline(item) {
+            const isOrg = String(item?.guarantor || '').toLowerCase().includes('công ty');
+            return {
+                requester: 'Bên nhận thế chấp',
+                orgName: item?.securedParty || 'NGÂN HÀNG TMCP FPT',
+                exemption: false,
+                isFemaleOwner: false,
+                scale: 'Bên bảo đảm là công ty có ít hơn 10 nhân viên',
+                loanValue: item?.loanValue || '2,500,000,000',
+                contractNo: `HĐTC-${item?.pin || '2026'}-FPT`,
+                contractDate: '04/01/2026',
+                transactionType: item?.transType || 'Biện pháp bảo đảm',
+                measureType: item?.measureContractType || 'Thế chấp',
+                assetDescription: 'Thông tin tài sản bảo đảm được nạp từ hồ sơ đã đăng ký.',
+                securingParties: [
+                    {
+                        type: isOrg ? 'tc_vn' : 'cd_vn',
+                        name: item?.guarantor || 'Nguyễn Văn A',
+                        paperType: isOrg ? 'Mã số doanh nghiệp' : 'CCCD',
+                        paperNo: isOrg ? '0102030405' : '001088012345',
+                        address: isOrg ? 'Số 17 Duy Tân, Cầu Giấy, Hà Nội' : 'Số 15 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội',
+                        status: 'Không thay đổi'
+                    }
+                ],
+                securedParties: [
+                    {
+                        name: item?.securedParty || 'NGÂN HÀNG TMCP FPT',
+                        country: 'Việt Nam',
+                        province: 'Thành phố Hà Nội',
+                        address: 'Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội',
+                        status: 'Không thay đổi'
+                    }
+                ],
+                assets: buildRegisteredAssetRows(item)
+            };
+        }
+
+        function seedRegisteredChangeForm(regNum) {
+            const actionContext = getRegisteredRequestActionContext(regNum);
+            if (!actionContext) return null;
+
+            const baseline = buildRegisteredDossierBaseline(actionContext.root);
+            localStorage.setItem('regNum', actionContext.firstRegNum);
+            localStorage.setItem('pinNum', actionContext.firstPin);
+            localStorage.setItem('baselineVersion', '3');
+            localStorage.setItem('baselineData', JSON.stringify(baseline));
+            localStorage.setItem('baselineOriginalData', JSON.stringify(baseline));
+            localStorage.removeItem('dossierDraft');
+            localStorage.removeItem('deltaChanges');
+            localStorage.removeItem('passedReview');
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('fileUrl_')) {
+                    localStorage.removeItem(key);
+                    i--;
+                }
+            }
+            sessionStorage.setItem('registeredRequestShortcutContext', JSON.stringify({
+                action: 'change-registration',
+                selectedRegNum: actionContext.selectedRegNum,
+                firstRegNum: actionContext.firstRegNum
+            }));
+            return actionContext;
+        }
+
+        function seedRegisteredDeleteForm(regNum) {
+            const actionContext = getRegisteredRequestActionContext(regNum);
+            if (!actionContext) return null;
+
+            const baseline = buildRegisteredDossierBaseline(actionContext.root);
+            localStorage.setItem('xoaRegNum', actionContext.firstRegNum);
+            localStorage.setItem('xoaPinNum', actionContext.firstPin);
+            localStorage.setItem('xoaBaselineData', JSON.stringify(baseline));
+            localStorage.removeItem('xoaDraftData');
+            sessionStorage.setItem('registeredRequestShortcutContext', JSON.stringify({
+                action: 'delete-registration',
+                selectedRegNum: actionContext.selectedRegNum,
+                firstRegNum: actionContext.firstRegNum
+            }));
+            return actionContext;
+        }
+
+        function getRegisteredCopyUrl(regNum, withNotice = false) {
+            const actionContext = getRegisteredRequestActionContext(regNum);
+            const targetRegNum = actionContext ? actionContext.firstRegNum : regNum;
+            const payload = {
+                action: withNotice ? 'request-copy-notice' : 'request-copy',
+                selectedRegNum: actionContext ? actionContext.selectedRegNum : regNum,
+                firstRegNum: targetRegNum
+            };
+            sessionStorage.setItem('registeredRequestCopyContext', JSON.stringify(payload));
+            const modulePath = withNotice
+                ? 'UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html'
+                : 'UC149/lap_yeu_cau_sao_luc_main.html';
+            const focusParam = withNotice ? 'continue' : 'copyQty';
+            return `${modulePath}?from=registered&regNum=${encodeURIComponent(targetRegNum)}&focus=${focusParam}`;
+        }
+
+        function ensureRegisteredDisposalRecord(regNum) {
+            if (!regNum || simulatedDatabase[regNum]) return simulatedDatabase[regNum] || null;
+
+            const actionContext = getRegisteredRequestActionContext(regNum);
+            const sourceItem = actionContext ? actionContext.root : findRegisteredRequest(regNum);
+            if (!sourceItem) return null;
+
+            const assets = buildRegisteredAssetRows(sourceItem);
+            simulatedDatabase[regNum] = {
+                pin: sourceItem.pin || '5635',
+                name: sourceItem.guarantor || 'Người bảo đảm',
+                securedName: sourceItem.securedParty || 'Ngân hàng TMCP FPT',
+                securedAddress: 'Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội',
+                effectTime: sourceItem.date || '05/06/2026 09:00',
+                assets: assets.map(asset => asset.typeName).join('; '),
+                assetDetails: assets.map(asset => ({
+                    id: String(asset.id),
+                    type: asset.typeName,
+                    name: asset.name,
+                    desc: asset.brandColor,
+                    chassis: asset.frameNo,
+                    plate: asset.plateNo || asset.engineNo || 'N/A'
+                }))
+            };
+            return simulatedDatabase[regNum];
         }
 
         function onTransTypeFilterChange() {
@@ -12424,11 +12736,29 @@
         }
 
         function payRegisteredRequest(regNum) {
-            showToast(`Đang kết nối cổng thanh toán của hồ sơ ${regNum}...`, 'info');
-            setTimeout(() => {
-                showScreen('billing-payment');
-                showToast(`Chào mừng bạn đến màn hình Thanh toán. Hồ sơ ${regNum} cần nộp 80,000 VNĐ.`, 'success');
-            }, 800);
+            const item = findRegisteredRequest(regNum);
+            if (!item || !isRegReqStatus(item, 'Chờ thanh toán')) {
+                showToast('Chỉ thanh toán được hồ sơ ở trạng thái Chờ thanh toán.', 'error');
+                return;
+            }
+
+            rememberRegisteredActionReturn();
+            const amount = Number(item.paymentAmount || item.feeAmount || 80000);
+            sessionStorage.setItem('registeredPaymentData', JSON.stringify({
+                source: 'registered-requests',
+                regNum: item.regNum,
+                pin: item.pin,
+                type: item.type,
+                guarantor: item.guarantor,
+                securedParty: item.securedParty,
+                transType: item.transType || 'Biện pháp bảo đảm',
+                measureContractType: item.measureContractType || 'Thế chấp',
+                amount,
+                amountText: `${amount.toLocaleString('vi-VN')} VNĐ`
+            }));
+
+            showToast(`Đang mở màn hình thanh toán cho hồ sơ ${regNum}...`, 'info');
+            showScreen('registered-request-payment', `UC024/dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(regNum)}&t=${Date.now()}`);
         }
 
         function updateRegisteredRequest(regNum, type) {
@@ -12478,15 +12808,17 @@
 
         // Shortcut functions
         function shortcutChangeRegistration(regNum) {
+            rememberRegisteredActionReturn();
             showToast(`Đang tải dữ liệu hồ sơ gốc ${regNum} để Đăng ký thay đổi...`, 'info');
             setTimeout(() => {
-                const item = findRegisteredRequest(regNum);
-                const pin = item ? item.pin : '5635';
-                showScreen('change-registration', `UC0025/tra_cuu_goc.html?regNum=${regNum}&pin=${pin}&bypass=true`);
+                const actionContext = seedRegisteredChangeForm(regNum);
+                const targetRegNum = actionContext ? actionContext.firstRegNum : regNum;
+                showScreen('change-registration', `UC0025/dang_ky_thay_doi_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`);
             }, 400);
         }
 
         function shortcutAssetDisposal(regNum) {
+            rememberRegisteredActionReturn();
             showToast(`Đang tải dữ liệu hồ sơ gốc ${regNum} để làm Thông báo xử lý tài sản...`, 'info');
             setTimeout(() => {
                 openAssetDisposalInMode(regNum, 'first');
@@ -12494,15 +12826,17 @@
         }
 
         function shortcutDeleteRegistration(regNum) {
+            rememberRegisteredActionReturn();
             showToast(`Đang tải dữ liệu hồ sơ gốc ${regNum} để làm Xóa đăng ký...`, 'info');
             setTimeout(() => {
-                const item = findRegisteredRequest(regNum);
-                const pin = item ? item.pin : '5635';
-                showScreen('delete-registration', `UC026/tra_cuu_goc.html?regNum=${regNum}&pin=${pin}&bypass=true`);
+                const actionContext = seedRegisteredDeleteForm(regNum);
+                const targetRegNum = actionContext ? actionContext.firstRegNum : regNum;
+                showScreen('delete-registration', `UC026/xoa_dang_ky_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`);
             }, 400);
         }
 
         function shortcutRequestInformation(regNum) {
+            rememberRegisteredActionReturn();
             localStorage.setItem('regNum', regNum);
             showToast(`Đang mở luồng Yêu cầu cung cấp thông tin cho hồ sơ ${regNum}...`, 'info');
             setTimeout(() => {
@@ -12511,18 +12845,20 @@
         }
 
         function shortcutRequestCopy(regNum) {
-            localStorage.setItem('regNum', regNum);
+            rememberRegisteredActionReturn();
+            const url = getRegisteredCopyUrl(regNum, false);
             showToast(`Đang mở luồng Yêu cầu cung cấp bản sao cho hồ sơ ${regNum}...`, 'info');
             setTimeout(() => {
-                showScreen('request-copies');
+                showScreen('request-copies', url);
             }, 400);
         }
 
         function shortcutRequestCopyNotice(regNum) {
-            localStorage.setItem('regNum', regNum);
+            rememberRegisteredActionReturn();
+            const url = getRegisteredCopyUrl(regNum, true);
             showToast(`Đang mở luồng Yêu cầu cung cấp bản sao kèm thông báo cho hồ sơ ${regNum}...`, 'info');
             setTimeout(() => {
-                showScreen('request-copies-notif');
+                showScreen('request-copies-notif', url);
             }, 400);
         }
 
@@ -12534,6 +12870,7 @@
         }
 
         function shortcutChangeAssetDisposal(regNum) {
+            rememberRegisteredActionReturn();
             showToast(`Đang tải biểu mẫu Thay đổi thông báo xử lý tài sản cho hồ sơ ${regNum}...`, 'info');
             setTimeout(() => {
                 openAssetDisposalInMode(regNum, 'change');
@@ -12542,6 +12879,7 @@
         }
 
         function shortcutDeleteAssetDisposal(regNum) {
+            rememberRegisteredActionReturn();
             showToast(`Đang tải biểu mẫu Xóa thông báo xử lý tài sản cho hồ sơ ${regNum}...`, 'info');
             setTimeout(() => {
                 openAssetDisposalInMode(regNum, 'delete');

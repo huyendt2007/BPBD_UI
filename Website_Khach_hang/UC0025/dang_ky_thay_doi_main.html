@@ -118,9 +118,20 @@
 
         /* Container */
         .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
+            max-width: 1180px;
+            margin: 28px auto 36px;
+            padding: 0 24px;
+        }
+
+        .change-registration-shell {
+            max-width: 1180px;
+        }
+
+        body.in-iframe .container.change-registration-shell {
+            width: calc(100% - 56px) !important;
+            max-width: 1180px !important;
+            margin: 18px auto 28px !important;
+            padding: 0 !important;
         }
 
         /* Breadcrumb */
@@ -226,9 +237,9 @@
             background-color: var(--bg-surface);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--box-shadow);
-            padding: 30px;
+            padding: 24px;
             border: 1px solid var(--border-color);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             position: relative;
             transition: all 0.3s ease;
         }
@@ -511,6 +522,85 @@
             color: white;
         }
 
+        .grid-row-actions {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 104px;
+        }
+
+        .grid-action-btn {
+            min-width: 48px;
+            height: 30px;
+            padding: 0 9px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            background: #fff;
+            font-family: var(--font-family);
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .grid-action-btn.edit {
+            color: var(--primary-color);
+            border-color: #BFDBFE;
+            background: #EFF6FF;
+        }
+
+        .grid-action-btn.edit:hover,
+        .grid-action-btn.edit:focus-visible {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .grid-action-btn.delete {
+            color: #B91C1C;
+            border-color: #FECACA;
+            background: #FEF2F2;
+        }
+
+        .grid-action-btn.delete:hover,
+        .grid-action-btn.delete:focus-visible {
+            border-color: var(--danger-color);
+            background: var(--danger-color);
+            color: #fff;
+        }
+
+        .grid-action-btn.undo {
+            color: #475569;
+            border-color: #CBD5E1;
+            background: #F8FAFC;
+            min-width: 86px;
+        }
+
+        .grid-action-btn.undo:hover,
+        .grid-action-btn.undo:focus-visible {
+            color: var(--primary-color);
+            border-color: #93C5FD;
+            background: #EFF6FF;
+        }
+
+        .grid-action-locked {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #F1F5F9;
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
         /* List components (Entities/Assets) */
         .entity-list {
             margin-top: 15px;
@@ -755,6 +845,28 @@
                 width: auto;
                 position: static;
                 margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 1180px) {
+            body.in-iframe .container.change-registration-shell {
+                width: calc(100% - 32px) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body.in-iframe .container.change-registration-shell {
+                width: calc(100% - 24px) !important;
+                margin: 12px auto 24px !important;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .card-section,
+            .timeline-sidebar {
+                padding: 16px;
             }
         }
 
@@ -1391,12 +1503,14 @@
 
         /* Table styles from UC024 */
         .table-responsive {
-            overflow: visible;
+            overflow-x: auto;
+            overflow-y: visible;
             margin-bottom: 16px;
         }
 
         .table {
             width: 100%;
+            min-width: 760px;
             border-collapse: collapse;
         }
 
@@ -1535,7 +1649,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container change-registration-shell">
         <!-- Breadcrumb -->
         <div class="breadcrumb">
             <a href="#" onclick="goHome(); return false;"><i class="fa-solid fa-house"></i> Trang chủ</a>
@@ -1981,7 +2095,7 @@
                         <table class="table" style="width: 100%; border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th style="width: 160px;">THAO TÁC</th>
+                                    <th style="width: 128px; text-align: center;">THAO TÁC</th>
                                     <th style="width: 160px;">LOẠI CHỦ THỂ</th>
                                     <th style="width: 200px;">SỐ GIẤY TỜ CHỨNG MINH TƯ CÁCH PHÁP LÝ</th>
                                     <th>TÊN</th>
@@ -2083,7 +2197,7 @@
                         <table class="table" style="width: 100%; border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th style="width: 160px;">THAO TÁC</th>
+                                    <th style="width: 128px; text-align: center;">THAO TÁC</th>
                                     <th>TÊN</th>
                                     <th>ĐỊA CHỈ</th>
                                     <th>TỈNH/THÀNH PHỐ</th>

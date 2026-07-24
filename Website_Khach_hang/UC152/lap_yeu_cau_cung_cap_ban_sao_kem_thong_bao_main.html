@@ -880,14 +880,38 @@
 
         // Restore values from session storage if present (on reload/back)
         document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let shortcutRegNum = urlParams.get('regNum') || '';
+            if (!shortcutRegNum) {
+                try {
+                    const copyContext = JSON.parse(sessionStorage.getItem('registeredRequestCopyContext') || 'null');
+                    shortcutRegNum = copyContext?.firstRegNum || copyContext?.selectedRegNum || '';
+                } catch (error) {
+                    shortcutRegNum = '';
+                }
+            }
+
             const savedData = sessionStorage.getItem('saoLucThongBaoData');
             if (savedData) {
                 const data = JSON.parse(savedData);
                 document.getElementById('regNum').value = data.regNum || '';
             }
+
+            if (shortcutRegNum) {
+                const regNumInput = document.getElementById('regNum');
+                const continueButton = document.getElementById('btnContinueMH01');
+                regNumInput.value = shortcutRegNum;
+                setTimeout(() => {
+                    if (continueButton) continueButton.focus();
+                }, 50);
+            }
         });
 
         function goHome() {
+            if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+                window.top.returnFromCustomerModule();
+                return;
+            }
             if (window.top !== window.self && typeof window.top.showScreen === 'function') {
                 window.top.showScreen('home');
             } else {

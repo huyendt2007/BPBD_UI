@@ -330,6 +330,10 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function goHome() {
+    if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+        window.top.returnFromCustomerModule();
+        return;
+    }
     if (window.top !== window.self && typeof window.top.showScreen === 'function') {
         window.top.showScreen('home');
     } else {

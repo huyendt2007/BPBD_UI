@@ -930,6 +930,7 @@ function renderTable(resetPage = false) {
         }
     } else {
         const searchTerm = document.getElementById('filter-search-term')?.value.toLowerCase().trim() || '';
+        const filterCustomerId = document.getElementById('filter-customer-id')?.value.toLowerCase().trim() || document.getElementById('filter-makh')?.value.toLowerCase().trim() || '';
         const filterLoaidangky = document.getElementById('filter-loaidangky')?.value || '';
         const filterLoaihinh = document.getElementById('cb-loaihinh')?.value || '';
         const filterSubtype = document.getElementById('cb-loaibienphap')?.value || '';
@@ -947,6 +948,7 @@ function renderTable(resetPage = false) {
             }
 
             if (searchTerm && !p.id.toLowerCase().includes(searchTerm) && !p.pin.toLowerCase().includes(searchTerm) && !p.customer.toLowerCase().includes(searchTerm) && !p.mortgagee.toLowerCase().includes(searchTerm)) return false;
+            if (filterCustomerId && !p.customerId?.toLowerCase().includes(filterCustomerId)) return false;
             if (filterLoaidangky && p.type !== filterLoaidangky) return false;
             if (filterLoaihinh && p.transactionType !== filterLoaihinh) return false;
             if (filterSubtype && p.subtype !== filterSubtype) return false;
@@ -1376,6 +1378,10 @@ function renderFilterPanel() {
                 <div class="form-group">
                     <label class="form-label">Tìm kiếm</label>
                     <input type="text" class="form-control" id="filter-search-term" placeholder="Mã số đăng ký, PIN, Tên bên bảo đảm..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mã khách hàng</label>
+                    <input type="text" class="form-control" id="filter-customer-id" placeholder="Nhập mã khách hàng..." autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Loại đăng ký</label>

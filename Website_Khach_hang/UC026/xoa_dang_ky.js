@@ -429,6 +429,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // 12. Button Actions
     btnBack.addEventListener('click', function () {
         if (confirm("Bạn có chắc chắn muốn quay lại bước trước? Thông tin chưa nộp sẽ bị mất.")) {
+            if (sessionStorage.getItem('registeredActionReturnContext')
+                && window.top !== window.self
+                && typeof window.top.returnFromCustomerModule === 'function') {
+                window.top.returnFromCustomerModule();
+                return;
+            }
             window.location.href = 'tra_cuu_goc.html';
         }
     });
@@ -650,6 +656,10 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function goHome() {
+    if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+        window.top.returnFromCustomerModule();
+        return;
+    }
     if (window.top !== window.self && typeof window.top.showScreen === 'function') {
         window.top.showScreen('home');
     } else {

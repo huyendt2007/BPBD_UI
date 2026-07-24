@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -55,6 +55,25 @@
 
         .review-block {
             margin-bottom: 16px;
+        }
+
+        .viewport-aware-modal {
+            position: fixed !important;
+            top: var(--modal-visible-top, 0px) !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: var(--modal-visible-height, 100vh) !important;
+            min-height: 320px;
+            padding: 16px;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .viewport-aware-modal .modal-content {
+            max-height: calc(var(--modal-visible-height, 100vh) - 32px);
+            overflow-y: auto;
         }
 
         body {
@@ -139,9 +158,20 @@
 
         /* Container */
         .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
+            max-width: 1080px;
+            margin: 24px auto 36px;
+            padding: 0 24px;
+        }
+
+        .review-form-shell {
+            max-width: 1080px;
+        }
+
+        body.in-iframe .container.review-form-shell {
+            width: calc(100% - 56px) !important;
+            max-width: 1080px !important;
+            margin: 18px auto 28px !important;
+            padding: 0 !important;
         }
 
         /* Breadcrumb */
@@ -299,9 +329,9 @@
             background-color: var(--bg-surface);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--box-shadow);
-            padding: 30px;
+            padding: 20px;
             border: 1px solid var(--border-color);
-            margin-bottom: 25px;
+            margin-bottom: 18px;
         }
 
         .section-title {
@@ -568,6 +598,49 @@
 
         .attachment-link-container a:hover {
             text-decoration: underline;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        #fullAssetsTable {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        #fullAssetsTable th {
+            text-align: center;
+            white-space: normal;
+            vertical-align: middle;
+            line-height: 1.45;
+        }
+
+        #fullAssetsTable td {
+            line-height: 1.45;
+            overflow-wrap: break-word;
+        }
+
+        @media (max-width: 1180px) {
+            body.in-iframe .container.review-form-shell {
+                width: calc(100% - 32px) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body.in-iframe .container.review-form-shell {
+                width: calc(100% - 24px) !important;
+                margin: 12px auto 24px !important;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .card-section {
+                padding: 16px;
+            }
         }
 
         /* Bottom page navigation */
@@ -1091,7 +1164,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container review-form-shell">
         <!-- Breadcrumb -->
         <div class="breadcrumb">
             <a href="#" onclick="goHome(); return false;"><i class="fa-solid fa-house"></i> Trang chủ</a>
@@ -1345,9 +1418,17 @@
                         / Tài sản bảo đảm</h3>
                     <div class="table-responsive">
                         <table class="table" id="fullAssetsTable" style="width: 100%; border-collapse: collapse;">
+                            <colgroup>
+                                <col style="width: 6%;">
+                                <col style="width: 25%;">
+                                <col style="width: 18%;">
+                                <col style="width: 23%;">
+                                <col style="width: 14%;">
+                                <col style="width: 14%;">
+                            </colgroup>
                             <thead>
                                 <tr>
-                                    <th style="width: 60px; text-align: center;">STT</th>
+                                    <th style="width: 56px; text-align: center;">STT</th>
                                     <th>Loại tài sản</th>
                                     <th>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
                                     <th>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>
@@ -1993,9 +2074,46 @@
             window.location.href = 'dang_ky_thay_doi_main.html';
         }
 
+        function getVisibleModalMetrics() {
+            let top = 0;
+            let height = window.innerHeight;
+
+            try {
+                if (window.self !== window.top && window.frameElement && window.parent) {
+                    const parentWindow = window.parent;
+                    const iframeRect = window.frameElement.getBoundingClientRect();
+                    const stickyHeader = parentWindow.document.querySelector('.sticky-header-container');
+                    const headerBottom = stickyHeader
+                        ? Math.max(0, stickyHeader.getBoundingClientRect().bottom)
+                        : 0;
+                    const visibleTop = Math.max(iframeRect.top, headerBottom, 0);
+                    const visibleBottom = Math.min(iframeRect.bottom, parentWindow.innerHeight);
+
+                    if (visibleBottom > visibleTop) {
+                        top = Math.max(0, visibleTop - iframeRect.top);
+                        height = Math.max(320, visibleBottom - visibleTop);
+                    }
+                }
+            } catch (error) {
+                top = 0;
+                height = window.innerHeight;
+            }
+
+            return { top, height };
+        }
+
+        function showViewportModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+
+            const metrics = getVisibleModalMetrics();
+            modal.style.setProperty('--modal-visible-top', `${metrics.top}px`);
+            modal.style.setProperty('--modal-visible-height', `${metrics.height}px`);
+            modal.style.display = 'flex';
+        }
+
         function proceedToPayment() {
-            const modal = document.getElementById('saveSimulatorModal');
-            if (modal) modal.style.display = 'flex';
+            showViewportModal('saveSimulatorModal');
         }
 
         function closeSaveSimulatorModal() {
@@ -2023,8 +2141,7 @@
                 document.getElementById('modalRegNum').textContent = regNum + '-CD03';
                 document.getElementById('modalPinNum').textContent = pinNum;
                 
-                const modal = document.getElementById('resultSuccessModal');
-                if (modal) modal.style.display = 'flex';
+                showViewportModal('resultSuccessModal');
             }
         }
 
@@ -2035,6 +2152,10 @@
         }
 
         function goHome() {
+            if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+                window.top.returnFromCustomerModule();
+                return;
+            }
             if (window.top !== window.self && typeof window.top.showScreen === 'function') {
                 window.top.showScreen('home');
             } else {
@@ -2044,7 +2165,7 @@
     </script>
 
     <!-- Modal Mô phỏng Lưu đăng ký (Chỉ hiển thị sau khi bấm Lưu đăng ký ở màn review) -->
-    <div class="modal-overlay" id="saveSimulatorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="modal-overlay viewport-aware-modal" id="saveSimulatorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center;">
         <div class="modal-content" style="background: white; padding: 24px; border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow-hover); max-width: 400px; width: 90%; text-align: center; border: 1px solid var(--border-color); box-sizing: border-box;">
             <h3 style="font-size: 16px; font-weight: 700; color: var(--primary-color); margin-top: 0; margin-bottom: 12px; text-transform: uppercase;">Mô phỏng Lưu đăng ký</h3>
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Vui lòng chọn kịch bản kết quả để kiểm thử:</p>
@@ -2067,7 +2188,7 @@
     </div>
 
     <!-- Success Result Modal (TH Hợp lệ 2 - Được miễn phí) -->
-    <div class="modal-overlay" id="resultSuccessModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 1001; align-items: center; justify-content: center;">
+    <div class="modal-overlay viewport-aware-modal" id="resultSuccessModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 1001; align-items: center; justify-content: center;">
         <div class="modal-content" style="background: white; padding: 30px; border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow-hover); max-width: 500px; width: 90%; text-align: center; border: 1px solid var(--border-color); box-sizing: border-box;">
             <div style="width: 60px; height: 60px; border-radius: 50%; background-color: var(--success-light); color: var(--success-dark); display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px auto;">
                 <i class="fa-solid fa-circle-check" style="color: var(--success-color);"></i>

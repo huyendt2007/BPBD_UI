@@ -678,7 +678,9 @@
         }
 
         function goHome() {
-            if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+            if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+                window.top.returnFromCustomerModule();
+            } else if (window.top !== window.self && typeof window.top.showScreen === 'function') {
                 window.top.showScreen('home');
             } else {
                 window.location.href = '../trang_tong_the_website_khach_hang.html';

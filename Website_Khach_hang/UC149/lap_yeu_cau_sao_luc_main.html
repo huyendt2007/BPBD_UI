@@ -898,15 +898,41 @@
 
         // Restore values from session storage if present (on reload/back)
         document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let shortcutRegNum = urlParams.get('regNum') || '';
+            if (!shortcutRegNum) {
+                try {
+                    const copyContext = JSON.parse(sessionStorage.getItem('registeredRequestCopyContext') || 'null');
+                    shortcutRegNum = copyContext?.firstRegNum || copyContext?.selectedRegNum || '';
+                } catch (error) {
+                    shortcutRegNum = '';
+                }
+            }
+
             const savedData = sessionStorage.getItem('saoLucData');
             if (savedData) {
                 const data = JSON.parse(savedData);
                 document.getElementById('regNum').value = data.regNum || '';
                 document.getElementById('copyQty').value = data.copyQty || '';
             }
+
+            if (shortcutRegNum) {
+                const regNumInput = document.getElementById('regNum');
+                const copyQtyInput = document.getElementById('copyQty');
+                regNumInput.value = shortcutRegNum;
+                copyQtyInput.value = '';
+                setTimeout(() => {
+                    copyQtyInput.focus();
+                    copyQtyInput.select();
+                }, 50);
+            }
         });
 
         function goHome() {
+            if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+                window.top.returnFromCustomerModule();
+                return;
+            }
             if (window.top !== window.self && typeof window.top.showScreen === 'function') {
                 window.top.showScreen('home');
             } else {

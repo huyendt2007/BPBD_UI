@@ -538,6 +538,7 @@ function onCbTransTypeChange() {
 function resetCanBoSearch() {
     document.getElementById('cb-regNum').value = '';
     document.getElementById('cb-guarantor').value = '';
+    if (document.getElementById('cb-customerId')) document.getElementById('cb-customerId').value = '';
     document.getElementById('cb-status').value = 'Tất cả';
     document.getElementById('cb-fromDate').value = '';
     document.getElementById('cb-toDate').value = '';
@@ -601,6 +602,7 @@ function parseDateString(dateStr) {
 function searchCanBo() {
     const regNum = document.getElementById('cb-regNum').value.trim().toLowerCase();
     const guarantor = document.getElementById('cb-guarantor').value.trim().toLowerCase();
+    const customerId = document.getElementById('cb-customerId')?.value.trim().toLowerCase() || '';
     const status = document.getElementById('cb-status').value;
     const fromDateVal = document.getElementById('cb-fromDate').value.trim();
     const toDateVal = document.getElementById('cb-toDate').value.trim();
@@ -622,6 +624,7 @@ function searchCanBo() {
         const matchChild = (child) => {
             const matchesRegNum = !regNum || child.regNum.toLowerCase().includes(regNum) || child.id.toLowerCase().includes(regNum);
             const matchesGuarantor = !guarantor || child.guarantor.toLowerCase().includes(guarantor);
+            const matchesCustomerId = !customerId || (child.customerId && child.customerId.toLowerCase().includes(customerId));
             const matchesStatus = status === 'Tất cả' || child.status === status;
             const matchesRegType = regType === 'Tất cả' || child.type === regType;
             const matchesTransType = transType === 'Tất cả' || child.transType === transType;
@@ -640,7 +643,7 @@ function searchCanBo() {
                 }
             }
 
-            return matchesRegNum && matchesGuarantor && matchesStatus && matchesRegType && matchesTransType && matchesMeasureType && matchesAssetType && matchesDate && matchesHandlingOfficer;
+            return matchesRegNum && matchesGuarantor && matchesCustomerId && matchesStatus && matchesRegType && matchesTransType && matchesMeasureType && matchesAssetType && matchesDate && matchesHandlingOfficer;
         };
 
         const parentMatches = matchChild(parent);

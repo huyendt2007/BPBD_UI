@@ -114,9 +114,20 @@
 
         /* Container & Navigation */
         .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            max-width: 1080px;
+            margin: 24px auto 36px;
+            padding: 0 24px;
+        }
+
+        .delete-registration-shell {
+            max-width: 1080px;
+        }
+
+        body.in-iframe .container.delete-registration-shell {
+            width: calc(100% - 56px) !important;
+            max-width: 1080px !important;
+            margin: 18px auto 28px !important;
+            padding: 0 !important;
         }
 
         .breadcrumb {
@@ -228,8 +239,8 @@
             background-color: var(--bg-surface);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--box-shadow);
-            padding: 24px;
-            margin-bottom: 25px;
+            padding: 20px;
+            margin-bottom: 18px;
             border: 1px solid rgba(0,0,0,0.05);
         }
 
@@ -270,6 +281,27 @@
             .form-row, .form-row-3 {
                 grid-template-columns: 1fr;
                 gap: 15px;
+            }
+        }
+
+        @media (max-width: 1180px) {
+            body.in-iframe .container.delete-registration-shell {
+                width: calc(100% - 32px) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body.in-iframe .container.delete-registration-shell {
+                width: calc(100% - 24px) !important;
+                margin: 12px auto 24px !important;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .card-section {
+                padding: 16px;
             }
         }
 
@@ -439,8 +471,29 @@
 
         .table {
             width: 100%;
+            min-width: 760px;
             border-collapse: collapse;
             font-size: 13px;
+        }
+
+        #assetsTable {
+            min-width: 1080px;
+            table-layout: fixed;
+        }
+
+        #assetsTable th,
+        #assetsTable td {
+            line-height: 1.45;
+        }
+
+        #assetsTable th {
+            text-align: center;
+            white-space: normal;
+            vertical-align: middle;
+        }
+
+        #assetsTable td {
+            overflow-wrap: break-word;
         }
 
         .table th {
@@ -650,7 +703,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container delete-registration-shell">
         <!-- Breadcrumb -->
         <div class="breadcrumb">
             <a href="#" onclick="goHome(); return false;"><i class="fa-solid fa-house"></i> Trang chủ</a>
@@ -928,9 +981,17 @@
                         <label class="form-label">Danh sách phương tiện / Tài sản bảo đảm</label>
                         <div class="table-responsive">
                             <table class="table" id="assetsTable">
+                                <colgroup>
+                                    <col style="width: 56px;">
+                                    <col style="width: 250px;">
+                                    <col style="width: 205px;">
+                                    <col style="width: 240px;">
+                                    <col style="width: 164px;">
+                                    <col style="width: 165px;">
+                                </colgroup>
                                 <thead>
                                     <tr>
-                                        <th style="width: 60px; text-align: center;">STT</th>
+                                        <th style="width: 56px; text-align: center;">STT</th>
                                         <th>Loại tài sản</th>
                                         <th>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
                                         <th>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>

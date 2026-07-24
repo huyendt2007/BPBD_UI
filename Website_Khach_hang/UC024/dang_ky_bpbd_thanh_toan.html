@@ -16,11 +16,11 @@
         }
 
         .payment-info {
-            background-color: #bg-surface;
+            background-color: var(--bg-surface);
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
+            padding: 22px;
+            margin-bottom: 20px;
             text-align: center;
             box-shadow: var(--box-shadow);
         }
@@ -34,14 +34,20 @@
 
         .payment-methods-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin-bottom: 24px;
         }
 
         @media (max-width: 600px) {
             .payment-methods-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .payment-methods-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -222,7 +228,7 @@
         </div>
     </div>
 
-    <div class="container payment-container">
+    <div class="container payment-container payment-form-shell">
         <header class="page-header text-center"
             style="flex-direction: column; align-items: center; text-align: center;">
             <h1 class="page-title" style="margin-bottom: 8px;">Thanh toán lệ phí</h1>
@@ -286,7 +292,7 @@
             </div>
 
             <div class="footer-actions mt-24" style="justify-content: space-between; display: flex; margin-top: 32px;">
-                <button type="button" class="btn btn-outline-primary"
+                <button type="button" class="btn btn-outline-primary" id="btnCancelPayment"
                     onclick="window.location.href='dang_ky_bpbd_review.html'">HỦY VÀ QUAY LẠI</button>
                 <button type="button" id="btnContinue" class="btn btn-primary"
                     style="opacity: 0.5; pointer-events: none;" onclick="showQR()">THANH TOÁN</button>
@@ -394,8 +400,41 @@
         let activeScenario = 'TH1';
         let isSimulating = false;
         let pmAmount = 80000; // Default registration fee
+        let registeredPaymentContext = null;
 
         document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const registeredRaw = params.get('from') === 'registered'
+                ? sessionStorage.getItem('registeredPaymentData')
+                : null;
+            if (registeredRaw) {
+                try {
+                    registeredPaymentContext = JSON.parse(registeredRaw);
+                    const amount = Number(registeredPaymentContext.amount || 80000);
+                    pmAmount = amount;
+
+                    document.getElementById('pm_sohoSo').innerHTML = `Mã hồ sơ: <strong>${registeredPaymentContext.regNum || '---'}</strong>`;
+                    document.getElementById('pm_amountText').innerText = registeredPaymentContext.amountText || `${amount.toLocaleString('vi-VN')} VNĐ`;
+                    document.getElementById('pm_loaiHinhText').innerText = `Loại hình giao dịch: ${registeredPaymentContext.transType || 'Biện pháp bảo đảm'}`;
+
+                    const subType = registeredPaymentContext.measureContractType || '';
+                    if (subType) {
+                        document.getElementById('pm_loaiBienPhapText').innerText = `Loại biện pháp: ${subType}`;
+                        document.getElementById('pm_loaiBienPhapText').style.display = 'block';
+                    } else {
+                        document.getElementById('pm_loaiBienPhapText').style.display = 'none';
+                    }
+
+                    const cancelBtn = document.getElementById('btnCancelPayment');
+                    if (cancelBtn) {
+                        cancelBtn.onclick = returnToRegisteredOrigin;
+                    }
+                    return;
+                } catch (error) {
+                    registeredPaymentContext = null;
+                }
+            }
+
             // Read Session Storage for details
             const raw = sessionStorage.getItem('reviewData');
             if (raw) {
@@ -480,10 +519,33 @@
         }
 
         function goHome() {
+            if (registeredPaymentContext) {
+                returnToRegisteredOrigin();
+                return;
+            }
+
+            if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+                window.top.returnFromCustomerModule();
+                return;
+            }
+
             if (window.top !== window.self && typeof window.top.showScreen === 'function') {
                 window.top.showScreen('home');
             } else {
                 window.location.href = '../trang_tong_the_website_khach_hang.html';
+            }
+        }
+
+        function returnToRegisteredOrigin() {
+            sessionStorage.removeItem('registeredPaymentData');
+            if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+                window.top.returnFromCustomerModule();
+                return;
+            }
+            if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                window.top.showScreen('registered-requests');
+            } else {
+                window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
             }
         }
 
@@ -565,6 +627,9 @@
             switch (scen) {
                 case 'TH1':
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng.';
+                    if (registeredPaymentContext && registeredPaymentContext.regNum) {
+                        document.getElementById('resultRegNo').innerText = registeredPaymentContext.regNum;
+                    }
                     document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;

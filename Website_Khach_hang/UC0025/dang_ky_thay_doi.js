@@ -1015,19 +1015,21 @@ function renderSecuringList() {
         let actionsHtml = '';
         if (isEditable) {
             if (party.status === 'Rút bớt') {
-                actionsHtml = `<button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;" onclick="undoRemoveSecuring(${index})"><i class="fa-solid fa-undo"></i> Hoàn tác</button>`;
+                actionsHtml = `<div class="grid-row-actions"><button class="grid-action-btn undo" title="Hoàn tác rút bớt" onclick="undoRemoveSecuring(${index})"><i class="fa-solid fa-rotate-left"></i><span>Hoàn tác</span></button></div>`;
             } else {
                 actionsHtml = `
-                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size:12px; margin-right: 4px;" onclick="editSecuring(${index})"><i class="fa-solid fa-pen"></i> Sửa</button>
-                    <button class="btn btn-danger" style="padding: 4px 8px; font-size:12px;" onclick="removeSecuring(${index})"><i class="fa-solid fa-trash"></i> Xóa</button>
+                    <div class="grid-row-actions">
+                        <button class="grid-action-btn edit" title="Sửa thông tin" onclick="editSecuring(${index})"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
+                        <button class="grid-action-btn delete" title="Xóa dòng" onclick="removeSecuring(${index})"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
+                    </div>
                 `;
             }
         } else {
-            actionsHtml = `<span style="font-size: 11px; color: var(--text-muted);">Khóa</span>`;
+            actionsHtml = `<span class="grid-action-locked"><i class="fa-solid fa-lock"></i> Khóa</span>`;
         }
 
         tr.innerHTML = `
-            <td style="white-space: nowrap;">${actionsHtml}</td>
+            <td style="text-align: center;">${actionsHtml}</td>
             <td ${typeTdAttr}>${party.typeLabel || party.paperType || ''} ${typeHistory}</td>
             <td ${paperTdAttr}>${party.paperNo || ''} ${paperHistory}</td>
             <td ${nameTdAttr}>${party.name || ''} ${nameHistory}</td>
@@ -1411,19 +1413,21 @@ function renderSecuredList() {
         let actionsHtml = '';
         if (isEditable) {
             if (party.status === 'Rút bớt') {
-                actionsHtml = `<button class="btn btn-outline" style="padding: 4px 8px; font-size:12px;" onclick="undoRemoveSecured(${index})"><i class="fa-solid fa-undo"></i> Hoàn tác</button>`;
+                actionsHtml = `<div class="grid-row-actions"><button class="grid-action-btn undo" title="Hoàn tác rút bớt" onclick="undoRemoveSecured(${index})"><i class="fa-solid fa-rotate-left"></i><span>Hoàn tác</span></button></div>`;
             } else {
                 actionsHtml = `
-                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size:12px; margin-right: 4px;" onclick="editSecured(${index})"><i class="fa-solid fa-pen"></i> Sửa</button>
-                    <button class="btn btn-danger" style="padding: 4px 8px; font-size:12px;" onclick="removeSecured(${index})"><i class="fa-solid fa-trash"></i> Xóa</button>
+                    <div class="grid-row-actions">
+                        <button class="grid-action-btn edit" title="Sửa thông tin" onclick="editSecured(${index})"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
+                        <button class="grid-action-btn delete" title="Xóa dòng" onclick="removeSecured(${index})"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
+                    </div>
                 `;
             }
         } else {
-            actionsHtml = `<span style="font-size: 11px; color: var(--text-muted);">Khóa</span>`;
+            actionsHtml = `<span class="grid-action-locked"><i class="fa-solid fa-lock"></i> Khóa</span>`;
         }
 
         tr.innerHTML = `
-            <td style="white-space: nowrap;">${actionsHtml}</td>
+            <td style="text-align: center;">${actionsHtml}</td>
             <td ${nameTdAttr}>${party.name || ''} ${nameHistory}</td>
             <td ${addressTdAttr}>${party.address || ''} ${addressHistory}</td>
             <td ${provinceTdAttr}>${party.province || ''} ${provinceHistory}</td>
@@ -2280,6 +2284,12 @@ function hideSubForm(formId) {
 
 function goBackToSearch() {
     if (confirm("Các thông tin vừa soạn thảo sẽ không được lưu. Bạn có muốn quay lại bước 1?")) {
+        if (sessionStorage.getItem('registeredActionReturnContext')
+            && window.top !== window.self
+            && typeof window.top.returnFromCustomerModule === 'function') {
+            window.top.returnFromCustomerModule();
+            return;
+        }
         window.location.href = 'tra_cuu_goc.html';
     }
 }
@@ -3410,6 +3420,10 @@ function closeHistoryModal() {
 }
 
 function goHome() {
+    if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+        window.top.returnFromCustomerModule();
+        return;
+    }
     if (window.top !== window.self && typeof window.top.showScreen === 'function') {
         window.top.showScreen('home');
     } else {

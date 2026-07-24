@@ -114,9 +114,20 @@
 
         /* Container & Navigation */
         .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            max-width: 1080px;
+            margin: 24px auto 36px;
+            padding: 0 24px;
+        }
+
+        .review-form-shell {
+            max-width: 1080px;
+        }
+
+        body.in-iframe .container.review-form-shell {
+            width: calc(100% - 56px) !important;
+            max-width: 1080px !important;
+            margin: 18px auto 28px !important;
+            padding: 0 !important;
         }
 
         .breadcrumb {
@@ -221,8 +232,8 @@
             background-color: var(--bg-surface);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--box-shadow);
-            padding: 24px;
-            margin-bottom: 25px;
+            padding: 20px;
+            margin-bottom: 18px;
             border: 1px solid rgba(0,0,0,0.05);
         }
 
@@ -316,8 +327,47 @@
 
         .table {
             width: 100%;
+            min-width: 760px;
             border-collapse: collapse;
             font-size: 13px;
+        }
+
+        #assetsReviewTable {
+            min-width: 1080px;
+            table-layout: fixed;
+        }
+
+        #assetsReviewTable th {
+            text-align: center;
+            white-space: normal;
+            vertical-align: middle;
+            line-height: 1.45;
+        }
+
+        #assetsReviewTable td {
+            line-height: 1.45;
+            overflow-wrap: break-word;
+        }
+
+        @media (max-width: 1180px) {
+            body.in-iframe .container.review-form-shell {
+                width: calc(100% - 32px) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body.in-iframe .container.review-form-shell {
+                width: calc(100% - 24px) !important;
+                margin: 12px auto 24px !important;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .card-section {
+                padding: 16px;
+            }
         }
 
         .table th {
@@ -524,7 +574,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container review-form-shell">
         <!-- Breadcrumb -->
         <div class="breadcrumb">
             <a href="#" onclick="goHome(); return false;"><i class="fa-solid fa-house"></i> Trang chủ</a>
@@ -727,9 +777,17 @@
                     <div class="readonly-label" style="font-weight: 600; color: var(--text-muted); font-size: 12.5px; margin-bottom: 4px;">Danh sách phương tiện / Tài sản bảo đảm</div>
                     <div class="table-responsive">
                         <table class="table" id="assetsReviewTable">
+                            <colgroup>
+                                <col style="width: 56px;">
+                                <col style="width: 250px;">
+                                <col style="width: 205px;">
+                                <col style="width: 240px;">
+                                <col style="width: 164px;">
+                                <col style="width: 165px;">
+                            </colgroup>
                             <thead>
                                 <tr>
-                                    <th style="width: 60px; text-align: center;">STT</th>
+                                    <th style="width: 56px; text-align: center;">STT</th>
                                     <th>Loại tài sản</th>
                                     <th>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
                                     <th>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>
@@ -1021,7 +1079,9 @@
             document.getElementById('btnBackToHome').addEventListener('click', function () {
                 // Clear state
                 localStorage.removeItem('xoaDossierDraft');
-                if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+                    window.top.returnFromCustomerModule();
+                } else if (window.top !== window.self && typeof window.top.showScreen === 'function') {
                     window.top.showScreen('home');
                 } else {
                     window.location.href = '../trang_tong_the_website_khach_hang.html';
@@ -1029,7 +1089,9 @@
             });
 
             window.goHome = function() {
-                if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {
+                    window.top.returnFromCustomerModule();
+                } else if (window.top !== window.self && typeof window.top.showScreen === 'function') {
                     window.top.showScreen('home');
                 } else {
                     window.location.href = '../trang_tong_the_website_khach_hang.html';
