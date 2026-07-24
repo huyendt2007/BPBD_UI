@@ -2305,12 +2305,13 @@
             border-color: transparent #1E293B transparent transparent;
         }
 
-        /* AI Chatbot Floating Widget Styles */
-        .ai-chatbot-trigger {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 9999;
+        /* REQ-UI-AI-WIDGET-01: Styling chuẩn cho nút Trợ lý AI Floating Widget */
+        .ai-chatbot-trigger,
+        .ai-assistant-widget-btn {
+            position: fixed !important;
+            bottom: 24px !important;
+            right: 24px !important;
+            z-index: 999 !important;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -2318,26 +2319,27 @@
             color: #FFFFFF;
             padding: 10px 18px 10px 12px;
             border-radius: 50px;
-            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.35);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
             border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        .ai-chatbot-trigger:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 12px 30px rgba(30, 58, 138, 0.45);
+        .ai-chatbot-trigger:hover,
+        .ai-assistant-widget-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
 
         .ai-chatbot-trigger-icon {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 17px;
             position: relative;
         }
 
@@ -2346,8 +2348,8 @@
             position: absolute;
             top: 2px;
             right: 2px;
-            width: 9px;
-            height: 9px;
+            width: 8px;
+            height: 8px;
             background-color: #10B981;
             border: 2px solid #1E3A8A;
             border-radius: 50%;
@@ -2355,14 +2357,14 @@
 
         .ai-chatbot-trigger-text {
             font-weight: 700;
-            font-size: 13.5px;
+            font-size: 13px;
             letter-spacing: 0.2px;
         }
 
         .ai-chatbot-window {
             position: fixed;
-            bottom: 95px;
-            right: 25px;
+            bottom: 85px;
+            right: 24px;
             width: 400px;
             max-width: calc(100vw - 30px);
             height: 570px;
@@ -2370,7 +2372,7 @@
             background-color: #FFFFFF;
             border-radius: 16px;
             box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25), 0 5px 15px rgba(0, 0, 0, 0.08);
-            z-index: 10000;
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -2578,12 +2580,25 @@
             animation: bounceDot 1.4s infinite ease-in-out both;
         }
 
-        .ai-typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .ai-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .ai-typing-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .ai-typing-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
 
         @keyframes bounceDot {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
         }
 
         /* AI Chatbot History Panel & Header Toggle Styles */
@@ -2663,7 +2678,7 @@
         .ai-history-tab-btn.active {
             background-color: #FFFFFF;
             color: var(--primary-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .ai-history-controls-row {
@@ -2723,7 +2738,7 @@
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -2795,7 +2810,7 @@
         <header class="global-header">
             <div class="header-top">
                 <div class="header-top-left">
-                    <span><i class="fa fa-phone"></i> Đường dây nóng: 1900.xxxx</span>
+                    <span><i class="fa fa-phone"></i> Đường dây nóng: 024.62739677</span>
                     <span><i class="fa fa-envelope"></i> Email: trogiup.bpbd@moj.gov.vn</span>
                 </div>
                 <div class="header-top-right">
@@ -2831,10 +2846,18 @@
                         khách
                         hàng</a></li>
                 <li class="nav-dropdown" id="navLinksDropdown">
-                    <a href="javascript:void(0)" onclick="toggleNavDropdown(event)"><i class="fa-solid fa-link"></i> Liên kết <i class="fa-solid fa-chevron-down" style="font-size: 11px; margin-left: 4px;"></i></a>
+                    <a href="javascript:void(0)" onclick="toggleNavDropdown(event)"><i class="fa-solid fa-link"></i>
+                        Liên kết <i class="fa-solid fa-chevron-down" style="font-size: 11px; margin-left: 4px;"></i></a>
                     <ul class="dropdown-menu">
-                        <li><a href="https://moj.gov.vn/portal/trang-chu.html" target="_blank" rel="noopener noreferrer" onclick="handleLinkClick(this, event)"><i class="fa-solid fa-globe" style="color: var(--primary-color); margin-right: 6px;"></i> Cổng thông tin điện tử Bộ Tư pháp</a></li>
-                        <li><a href="https://dkgd.moj.gov.vn/portal/trang-chu.html" target="_blank" rel="noopener noreferrer" onclick="handleLinkClick(this, event)"><i class="fa-solid fa-building-columns" style="color: var(--primary-color); margin-right: 6px;"></i> Trang thông tin Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</a></li>
+                        <li><a href="https://moj.gov.vn/portal/trang-chu.html" target="_blank" rel="noopener noreferrer"
+                                onclick="handleLinkClick(this, event)"><i class="fa-solid fa-globe"
+                                    style="color: var(--primary-color); margin-right: 6px;"></i> Cổng thông tin điện tử
+                                Bộ Tư pháp</a></li>
+                        <li><a href="https://dkgd.moj.gov.vn/portal/trang-chu.html" target="_blank"
+                                rel="noopener noreferrer" onclick="handleLinkClick(this, event)"><i
+                                    class="fa-solid fa-building-columns"
+                                    style="color: var(--primary-color); margin-right: 6px;"></i> Trang thông tin Cục
+                                Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</a></li>
                     </ul>
                 </li>
             </ul>
@@ -2878,44 +2901,139 @@
         <!-- Main Content Pane -->
         <main class="content-panel">
 
-
-
-            <!-- SCREEN: Home (Tin bài CMS) -->
-            <div class="app-screen active" id="screen-home">
-                <div class="news-container">
-                    <div class="card-section">
-                        <img id="newsImage" src="../nrast_portal_banner.png" alt="Portal Banner" class="news-hero-img"
-                            onerror="this.src='https://placehold.co/800x300/1e3a8a/ffffff?text=NRAST+Portal+Banner'">
-                        <h1 class="section-title" id="newsTitle"
-                            style="font-size:24px; border:none; margin-bottom:5px;">Hướng dẫn đăng ký trực tuyến biện
-                            pháp bảo đảm bằng động sản theo Nghị định số 99/2022/NĐ-CP</h1>
-                        <div class="news-meta">
-                            <span><i class="fa fa-calendar"></i> Ngày đăng: 05/06/2026</span>
-                            <span><i class="fa fa-user"></i> Người đăng: Ban Biên tập Portal - Cục Đăng ký</span>
-                            <span><i class="fa fa-eye"></i> Lượt xem: 1,425</span>
+            <!-- SCREEN: Home (Trang chủ 100% không cuộn chuột trên mọi màn hình) -->
+            <div class="app-screen active" id="screen-home" style="padding: 0; margin: 0;">
+                <div class="home-container" style="max-width: 1050px; margin: 0 auto;">
+                    <!-- Interactive Image Banner Slider Carousel (100% Full Width & Zero Side Bars) -->
+                    <div class="banner-slider-container"
+                        style="position: relative; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); background: transparent; border: 1px solid var(--border-color);">
+                        <div class="banner-slides" id="bannerSlidesWrapper"
+                            style="display: flex; transition: transform 0.5s ease-in-out; width: 100%;">
+                            <!-- Slide 1: Khung giờ làm việc -->
+                            <div class="banner-slide"
+                                style="min-width: 100%; box-sizing: border-box; position: relative;">
+                                <img src="https://dktructuyen.moj.gov.vn/media/wysiwyg/slider/Khung_gio_lam_viec.jpg"
+                                    alt="Khung giờ làm việc" style="width: 100%; height: auto; display: block;"
+                                    onerror="handleBannerImgError(this, 1)">
+                            </div>
+                            <!-- Slide 2: Cục 1 -->
+                            <div class="banner-slide"
+                                style="min-width: 100%; box-sizing: border-box; position: relative;">
+                                <img src="https://dktructuyen.moj.gov.vn/media/wysiwyg/slider/Cuc1.jpg"
+                                    alt="Thông tin Cục Đăng ký" style="width: 100%; height: auto; display: block;"
+                                    onerror="handleBannerImgError(this, 2)">
+                            </div>
+                            <!-- Slide 3: Thông báo kết nối -->
+                            <div class="banner-slide"
+                                style="min-width: 100%; box-sizing: border-box; position: relative;">
+                                <img src="https://dktructuyen.moj.gov.vn/media/wysiwyg/slider/Thong_bao_ket_noi.jpg"
+                                    alt="Thông báo kết nối chia sẻ dữ liệu"
+                                    style="width: 100%; height: auto; display: block;"
+                                    onerror="handleBannerImgError(this, 3)">
+                            </div>
+                            <!-- Slide 4: Giải thưởng VDA -->
+                            <div class="banner-slide"
+                                style="min-width: 100%; box-sizing: border-box; position: relative;">
+                                <img src="https://dktructuyen.moj.gov.vn/media/wysiwyg/slider/GiaithuongVDA.jpg"
+                                    alt="Giải thưởng VDA 2024" style="width: 100%; height: auto; display: block;"
+                                    onerror="handleBannerImgError(this, 4)">
+                            </div>
                         </div>
-                        <div class="news-content" id="newsContent">
-                            <p><strong>Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</strong> ban hành hướng dẫn
-                                chi tiết về
-                                quy trình khai báo, nộp hồ sơ đăng ký trực tuyến đối với các giao dịch bảo đảm bằng động
-                                sản (ngoại trừ tàu bay, tàu biển) nhằm cải cách thủ tục hành chính, tạo điều kiện thuận
-                                lợi nhất cho cá nhân, doanh nghiệp và tổ chức tín dụng.</p>
-                            <p>Theo Nghị định số 99/2022/NĐ-CP của Chính phủ về đăng ký biện pháp bảo đảm, người dân có
-                                thể hoàn tất toàn bộ quy trình chỉ trong 4 bước đơn giản trực tuyến:</p>
-                            <ol>
-                                <li><strong>Đăng nhập và Định danh:</strong> Đăng nhập hệ thống thông qua tài khoản
-                                    VNeID Mức 2 (khuyên dùng cho Cá nhân) hoặc tài khoản được cấp riêng bởi Cục NRAST
-                                    (đối với Tổ chức tín dụng, Doanh nghiệp).</li>
-                                <li><strong>Khai báo Hồ sơ:</strong> Điền đầy đủ thông tin về các bên liên quan (Bên thế
-                                    chấp, Bên nhận thế chấp), Hợp đồng thế chấp và mô tả chi tiết Tài sản bảo đảm (đặc
-                                    biệt số khung đối với phương tiện giao thông).</li>
-                                <li><strong>Thanh toán lệ phí trực tuyến:</strong> Nộp lệ phí dịch vụ công trực tuyến an
-                                    toàn, bảo mật và nhanh chóng qua cổng thanh toán Napas hoặc ví điện tử.</li>
-                                <li><strong>Nhận kết quả đăng ký:</strong> Nhận ngay file kết quả đăng ký có chữ ký số
-                                    điện tử của Cục Đăng ký có giá trị pháp lý tương đương văn bản giấy.</li>
-                            </ol>
-                            <p>Quy trình trực tuyến giúp tiết kiệm đáng kể thời gian và chi phí đi lại cho các cá nhân,
-                                doanh nghiệp và tổ chức tín dụng.</p>
+
+                        <!-- Slider Arrow Controls -->
+                        <button class="banner-slider-btn prev-btn" onclick="moveHomeBannerSlide(-1)"
+                            aria-label="Banner trước"
+                            style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; background: rgba(0,0,0,0.55); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.4); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.2s; z-index: 10;">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button class="banner-slider-btn next-btn" onclick="moveHomeBannerSlide(1)"
+                            aria-label="Banner sau"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; background: rgba(0,0,0,0.55); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.4); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.2s; z-index: 10;">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+
+                        <!-- Slider Dots Indicators -->
+                        <div class="banner-slider-dots" id="bannerSliderDots"
+                            style="position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 10;">
+                            <span class="dot active" onclick="goToHomeBannerSlide(0)"
+                                style="width: 20px; height: 5px; background: #FFFFFF; border-radius: 3px; cursor: pointer; transition: all 0.3s; opacity: 1;"></span>
+                            <span class="dot" onclick="goToHomeBannerSlide(1)"
+                                style="width: 7px; height: 5px; background: rgba(255,255,255,0.6); border-radius: 3px; cursor: pointer; transition: all 0.3s; opacity: 0.7;"></span>
+                            <span class="dot" onclick="goToHomeBannerSlide(2)"
+                                style="width: 7px; height: 5px; background: rgba(255,255,255,0.6); border-radius: 3px; cursor: pointer; transition: all 0.3s; opacity: 0.7;"></span>
+                            <span class="dot" onclick="goToHomeBannerSlide(3)"
+                                style="width: 7px; height: 5px; background: rgba(255,255,255,0.6); border-radius: 3px; cursor: pointer; transition: all 0.3s; opacity: 0.7;"></span>
+                        </div>
+                    </div>
+
+                    <!-- Home Content Body (Optimized for 1-screen zero scroll & 100% font parity) -->
+                    <div class="home-portal-content"
+                        style="padding: 12px 20px; font-size: 13px; color: var(--text-main, #1E293B); line-height: 1.5; background: #FFFFFF; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color, #E2E8F0); font-family: var(--font-family);">
+                        <!-- Greeting Paragraph -->
+                        <p
+                            style="margin-bottom: 8px; font-size: 13px; text-align: justify; font-weight: 500; color: #0F172A; font-family: var(--font-family);">
+                            Chào mừng bạn đã truy cập vào Hệ thống cung cấp dịch vụ công trực tuyến về biện pháp bảo đảm
+                            bằng động sản của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, Bộ Tư pháp.
+                        </p>
+
+                        <!-- Tra cứu Section -->
+                        <div style="margin-bottom: 6px;">
+                            <h3 style="font-size: 14px; font-weight: 700; color: var(--primary-color, #1E3A8A); margin-bottom: 2px; font-family: var(--font-family);">Tra cứu
+                            </h3>
+                            <p style="margin: 0; font-size: 13px; font-family: var(--font-family);">
+                                Bạn cần tra cứu thông tin về biện pháp bảo đảm đã được đăng ký, hãy nhấp vào:
+                                <a href="javascript:void(0)" onclick="showScreen('search', 'reg')"
+                                    style="color: #0066cc; font-weight: 600; text-decoration: underline; cursor: pointer;">Tra
+                                    cứu</a>
+                            </p>
+                        </div>
+
+                        <!-- Đăng ký Section -->
+                        <div style="margin-bottom: 6px;">
+                            <h3 style="font-size: 14px; font-weight: 700; color: var(--primary-color, #1E3A8A); margin-bottom: 2px; font-family: var(--font-family);">Đăng ký
+                            </h3>
+                            <p style="margin-bottom: 3px; font-size: 13px; font-family: var(--font-family);">
+                                Bạn là người dùng đã được cấp Tài khoản đăng ký trực tuyến, hãy nhấp vào:
+                                <a href="javascript:void(0)" onclick="showScreen('login')"
+                                    style="color: #0066cc; font-weight: 600; text-decoration: underline; cursor: pointer;">Đăng
+                                    nhập</a>
+                            </p>
+                            <p style="margin-bottom: 3px; font-size: 13px; text-align: justify; font-family: var(--font-family);">
+                                Bạn là người dùng chưa có Tài khoản đăng ký trực tuyến có thể lựa chọn, nhấp vào:
+                                <a href="javascript:void(0)" onclick="showScreen('register')"
+                                    style="color: #0066cc; font-weight: 600; text-decoration: underline; cursor: pointer;">Đăng
+                                    ký</a>
+                                để thực hiện việc yêu cầu cấp Tài khoản đăng ký trực tuyến hoặc gửi
+                                <a href="javascript:void(0)" onclick="openVanBanMauModal()"
+                                    style="color: #0066cc; font-weight: 600; text-decoration: underline; cursor: pointer;">văn
+                                    bản</a>
+                                đến Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước để chúng tôi đăng ký Tài khoản
+                                thay cho bạn.
+                            </p>
+                            <p style="margin-bottom: 0; font-size: 13px; text-align: justify; font-family: var(--font-family);">
+                                Trường hợp lựa chọn đăng ký, cung cấp thông tin không thông qua Tài khoản đăng ký trực
+                                tuyến, bạn có thể gửi Phiếu yêu cầu đăng ký, cung cấp thông tin đến một trong ba Trung
+                                tâm đăng ký giao dịch, tài sản của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước,
+                                Trung tâm đăng ký sẽ thực hiện đăng ký, cung cấp thông tin cho bạn.
+                            </p>
+                        </div>
+
+                        <!-- Hỗ trợ Section -->
+                        <div style="margin-bottom: 6px;">
+                            <h3 style="font-size: 14px; font-weight: 700; color: var(--primary-color, #1E3A8A); margin-bottom: 2px; font-family: var(--font-family);">Hỗ trợ
+                            </h3>
+                            <p style="margin: 0; font-size: 13px; font-family: var(--font-family);">
+                                Bạn cần sự hỗ trợ khi tham gia hệ thống này, vui lòng liên hệ
+                                <a href="javascript:void(0)" onclick="showScreen('help')"
+                                    style="color: #0066cc; font-weight: 600; text-decoration: underline; cursor: pointer;">Nhóm
+                                    hỗ trợ của chúng tôi</a>
+                            </p>
+                        </div>
+
+                        <!-- Red Hotline Notice (Centered matching screenshot) -->
+                        <div
+                            style="text-align: center; color: #DC2626; font-weight: 700; font-size: 13.5px; margin-top: 8px; margin-bottom: 0; font-family: var(--font-family);">
+                            Đường dây nóng tiếp nhận phản ánh, kiến nghị: 024.62739690
                         </div>
                     </div>
                 </div>
@@ -3524,9 +3642,12 @@
 
             <!-- SCREEN: Đăng ký biện pháp bảo đảm (UC024 - New Registration) -->
             <div class="app-screen" id="screen-new-registration">
-                <div class="registered-draft-update-bar" style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
-                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong class="registered-draft-code"></strong></span>
-                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;" onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <div class="registered-draft-update-bar"
+                    style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
+                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong
+                            class="registered-draft-code"></strong></span>
+                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;"
+                        onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
                 </div>
                 <iframe src="UC024/dang_ky_bpbd_main.html" class="module-iframe"
                     title="ÄÄƒng kÃ½ biá»‡n phÃ¡p báº£o Ä‘áº£m"></iframe>
@@ -3534,9 +3655,12 @@
 
             <!-- SCREEN: ÄÄƒng kÃ½ thay Ä‘á»•i (UC025 - Change Registration) -->
             <div class="app-screen" id="screen-change-registration">
-                <div class="registered-draft-update-bar" style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
-                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong class="registered-draft-code"></strong></span>
-                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;" onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <div class="registered-draft-update-bar"
+                    style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
+                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong
+                            class="registered-draft-code"></strong></span>
+                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;"
+                        onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
                 </div>
                 <iframe src="UC0025/dang_ky_thay_doi_main.html" class="module-iframe"
                     title="ÄÄƒng kÃ½ thay Ä‘á»•i"></iframe>
@@ -3544,9 +3668,12 @@
 
             <!-- SCREEN: XÃ³a Ä‘Äƒng kÃ½ (UC026 - Cancellation) -->
             <div class="app-screen" id="screen-delete-registration">
-                <div class="registered-draft-update-bar" style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
-                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong class="registered-draft-code"></strong></span>
-                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;" onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <div class="registered-draft-update-bar"
+                    style="display:none; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding:10px 14px; border:1px solid #BFDBFE; border-radius:var(--border-radius-md); background:#EFF6FF; color:#1E40AF; font-size:13px;">
+                    <span><i class="fa-solid fa-pen-to-square"></i> Đang cập nhật hồ sơ nháp <strong
+                            class="registered-draft-code"></strong></span>
+                    <button type="button" class="btn btn-outline-primary" style="padding:6px 12px; font-size:12px;"
+                        onclick="cancelRegisteredDraftUpdate()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
                 </div>
                 <iframe src="UC026/xoa_dang_ky_main.html" class="module-iframe" title="XÃ³a Ä‘Äƒng kÃ½"></iframe>
             </div>
@@ -3608,7 +3735,8 @@
                             <span
                                 style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Mã
                                 khách hàng:</span>
-                            <span id="lblCustomerCode" style="font-weight: 700; color: var(--primary-color); font-size: 14px;">-</span>
+                            <span id="lblCustomerCode"
+                                style="font-weight: 700; color: var(--primary-color); font-size: 14px;">-</span>
                         </div>
                         <div>
                             <span
@@ -4931,10 +5059,12 @@
                     title="Quản lý yêu cầu hỗ trợ"></iframe>
             </div>
 
-            <!-- SCREEN: Trợ giúp & Văn bản QPPL, FAQs (UC280 & UC513 & UC536) -->
-            <div class="app-screen" id="screen-help">
+            <!-- SCREEN: Trợ giúp & Văn bản QPPL, FAQs (Hiển thị 100% trọn vẹn 1 trang không có thanh cuộn) -->
+            <div class="app-screen" id="screen-help"
+                style="padding: 0; margin: 0; height: calc(100vh - 180px); overflow: hidden;">
                 <iframe src="UC280_UC513_UC536/ho_tro_khach_hang_main.html" class="module-iframe"
-                    style="width: 100%; height: 950px; border: none;" title="Hỗ trợ khách hàng"></iframe>
+                    style="width: 100%; height: 100%; border: none; display: block; overflow: hidden;"
+                    title="Hỗ trợ khách hàng"></iframe>
             </div>
 
             <!-- SCREEN: Đổi mật khẩu tài khoản (UCPS006) -->
@@ -4962,7 +5092,8 @@
                         </div>
                         <!-- Password strength meter or rules checklist -->
                         <div id="pwdStrengthWrapper" style="margin-top: 8px; font-size:11px;">
-                            <div style="font-weight: 600; color:var(--text-main); margin-bottom: 5px;">Mật khẩu mới phải
+                            <div style="font-weight: 600; color:var(--text-main); margin-bottom: 5px;">Mật khẩu
+                                mới phải
                                 đáp ứng các điều kiện sau:</div>
                             <ul
                                 style="list-style: none; padding-left:5px; display:flex; flex-direction:column; gap:3px;">
@@ -4973,7 +5104,8 @@
                                 <li id="ruleNumber" style="color:var(--danger-color);"><i
                                         class="fa fa-circle-xmark"></i> Có ít nhất 1 chữ số</li>
                                 <li id="ruleSpecial" style="color:var(--danger-color);"><i
-                                        class="fa fa-circle-xmark"></i> Có ít nhất 1 ký tự đặc biệt (@, #, $, !,...)
+                                        class="fa fa-circle-xmark"></i> Có ít nhất 1 ký tự đặc biệt (@, #, $,
+                                    !,...)
                                 </li>
                             </ul>
                         </div>
@@ -5020,11 +5152,11 @@
                     </div>
                 </div>
                 <p><i class="fa fa-map-marker-alt"></i> Địa chỉ: Ngõ 25 Nguyễn Cơ Thạch, Phường Từ Liêm, Hà Nội</p>
-                <p><i class="fa fa-phone"></i> Điện thoại: 024.6273.9xxxx | Fax: 024.6273.xxxx</p>
+                <p><i class="fa fa-phone"></i> Điện thoại: 024.62739677 | Fax: 024.6273.xxxx</p>
                 <p><i class="fa fa-envelope"></i> Email: trogiup.bpbd@moj.gov.vn</p>
             </div>
             <div class="footer-section">
-                <h4>Liên kết hữu ích</h4>
+                <h4>LIÊN KẾT HỮU ÍCH</h4>
                 <ul class="footer-links">
                     <li><a href="https://moj.gov.vn" target="_blank"><i class="fa-solid fa-chevron-right"></i> Cổng
                             thông tin điện tử Bộ Tư pháp</a></li>
@@ -5035,7 +5167,7 @@
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Thông tin pháp lý</h4>
+                <h4>THÔNG TIN PHÁP LÝ</h4>
                 <p style="margin-bottom: 8px;"><i class="fa-solid fa-circle-info"></i> Hệ thống vận hành theo Nghị định
                     số 99/2022/NĐ-CP của Chính phủ về đăng ký biện pháp bảo đảm.</p>
                 <p style="font-size: 11.5px; color: #64748B;"><i class="fa-solid fa-shield-halved"></i> Bảo mật kết nối
@@ -5140,22 +5272,28 @@
     <div id="modalDeleteRegisteredRequest" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#FEF2F2;">
-                <h3 style="color:var(--danger-color);"><i class="fa-solid fa-triangle-exclamation"></i> Xác nhận xóa hồ sơ</h3>
+                <h3 style="color:var(--danger-color);"><i class="fa-solid fa-triangle-exclamation"></i> Xác nhận xóa hồ
+                    sơ</h3>
                 <button class="btn-close" onclick="closeDeleteRegisteredRequestModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div style="display:flex; gap:12px; align-items:flex-start; padding:12px; border:1px solid #FECACA; border-radius:var(--border-radius-md); background:#FFF7F7;">
-                    <i class="fa-solid fa-trash-can" style="color:var(--danger-color); font-size:22px; margin-top:2px;"></i>
+                <div
+                    style="display:flex; gap:12px; align-items:flex-start; padding:12px; border:1px solid #FECACA; border-radius:var(--border-radius-md); background:#FFF7F7;">
+                    <i class="fa-solid fa-trash-can"
+                        style="color:var(--danger-color); font-size:22px; margin-top:2px;"></i>
                     <div style="font-size:13px; color:var(--text-main); line-height:1.6;">
                         <div style="font-weight:700; margin-bottom:4px;">Bạn có chắc chắn muốn xóa hồ sơ nháp này?</div>
                         <div>Hồ sơ: <strong id="deleteRegisteredRequestCode">-</strong></div>
-                        <div style="color:var(--text-muted); margin-top:4px;">Thao tác này chỉ áp dụng với hồ sơ ở trạng thái Lưu nháp.</div>
+                        <div style="color:var(--text-muted); margin-top:4px;">Thao tác này chỉ áp dụng với hồ sơ ở trạng
+                            thái Lưu nháp.</div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary" onclick="closeDeleteRegisteredRequestModal()">Hủy</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleteRegisteredRequest()"><i class="fa-solid fa-trash-can"></i> Xác nhận xóa</button>
+                <button type="button" class="btn btn-outline-primary"
+                    onclick="closeDeleteRegisteredRequestModal()">Hủy</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteRegisteredRequest()"><i
+                        class="fa-solid fa-trash-can"></i> Xác nhận xóa</button>
             </div>
         </div>
     </div>
@@ -5355,6 +5493,96 @@
         </div>
     </div>
 
+    <!-- MODAL: Xem và Tải về Văn bản mẫu cấp tài khoản -->
+    <div id="modalVanBanMau" class="modal-overlay">
+        <div class="modal-content" style="max-width: 750px; width: 90%;">
+            <div class="modal-header"
+                style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: var(--primary-color);">
+                    <i class="fa-solid fa-file-word" style="color: #2563EB; margin-right: 8px;"></i>
+                    Mẫu văn bản yêu cầu cấp Tài khoản đăng ký trực tuyến
+                </h3>
+                <button class="btn-close" onclick="closeVanBanMauModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px; max-height: 75vh; overflow-y: auto;">
+                <div class="alert-box info" style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-circle-info alert-icon"></i>
+                    <div>Tổ chức, cá nhân tải mẫu văn bản dưới đây, hoàn thiện thông tin, đóng dấu/ký tên và gửi trực
+                        tiếp hoặc qua bưu chính tới Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.</div>
+                </div>
+
+                <div
+                    style="border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; background: #F8FAFC; margin-bottom: 20px;">
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div
+                                style="width: 48px; height: 48px; background: #DBEAFE; color: #1D4ED8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                <i class="fa-solid fa-file-word"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #1E293B;">
+                                    Mau_Van_Ban_Yeu_Cau_Cap_Tai_Khoan_NRAST.docx
+                                </h4>
+                                <div style="font-size: 12px; color: #64748B;">
+                                    Dung lượng: 45 KB | Định dạng: Microsoft Word (.docx) | Cập nhật: 2026
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-outline-primary"
+                                onclick="showToast('Đang mở bản xem trước của văn bản...', 'info')"
+                                style="font-size: 13px; padding: 6px 12px;">
+                                <i class="fa-solid fa-eye"></i> Xem file
+                            </button>
+                            <button class="btn btn-primary" onclick="downloadVanBanMau()"
+                                style="font-size: 13px; padding: 6px 12px;">
+                                <i class="fa-solid fa-download"></i> Tải về
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="font-size: 13px; color: #334155; line-height: 1.6; border: 1px dashed #CBD5E1; padding: 20px; border-radius: 6px; background: #FFFFFF;">
+                    <h4
+                        style="text-align: center; margin-top: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; color: #0F172A; line-height: 1.5;">
+                        CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br>
+                        <span style="border-bottom: 1px solid #0F172A; padding-bottom: 2px; display: inline-block;">Độc
+                            lập - Tự do - Hạnh phúc</span>
+                    </h4>
+                    <div style="text-align: right; font-style: italic; margin-bottom: 15px;">..., ngày ... tháng ... năm
+                        20...</div>
+                    <h3
+                        style="text-align: center; font-size: 14px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #1E3A8A;">
+                        VĂN BẢN ĐỀ NGHỊ CẤP TÀI KHOẢN ĐĂNG KÝ TRỰC TUYẾN
+                    </h3>
+                    <p style="text-align: center; font-weight: 600; margin-bottom: 15px;">
+                        Kính gửi: Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp
+                    </p>
+                    <p style="margin-bottom: 8px;">Tên tổ chức/cá nhân đề nghị:
+                        ............................................................................................</p>
+                    <p style="margin-bottom: 8px;">Mã số thuế / Số CCCD / Số Hộ chiếu:
+                        .................................................................................</p>
+                    <p style="margin-bottom: 8px;">Địa chỉ trụ sở / Nơi cư trú:
+                        ................................................................................................
+                    </p>
+                    <p style="margin-bottom: 8px;">Số điện thoại liên hệ: .......................... Email:
+                        ....................................................................</p>
+                    <p style="margin-top: 12px; text-align: justify;">Đề nghị Cục Đăng ký giao dịch bảo đảm và Bồi
+                        thường nhà nước cấp Tài khoản đăng ký trực tuyến trên Hệ thống đăng ký trực tuyến biện pháp bảo
+                        đảm bằng động sản.</p>
+                </div>
+            </div>
+            <div class="modal-footer"
+                style="padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn btn-outline-primary" onclick="closeVanBanMauModal()">Đóng</button>
+                <button class="btn btn-primary" onclick="downloadVanBanMau()"><i class="fa-solid fa-download"></i> Tải
+                    về biểu mẫu</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Component -->
     <div id="toast" class="toast">
         <i class="fa fa-info-circle"></i>
@@ -5363,6 +5591,109 @@
 
     <!-- JAVASCRIPT GLOBAL MANAGEMENT -->
     <script>
+        /* Banner Slider Management */
+        let currentBannerIndex = 0;
+        const totalBannerSlides = 4;
+        let bannerAutoSlideTimer = null;
+
+        function moveHomeBannerSlide(direction) {
+            currentBannerIndex = (currentBannerIndex + direction + totalBannerSlides) % totalBannerSlides;
+            updateBannerSliderUI();
+            resetBannerAutoSlide();
+        }
+
+        function goToHomeBannerSlide(index) {
+            currentBannerIndex = index;
+            updateBannerSliderUI();
+            resetBannerAutoSlide();
+        }
+
+        function updateBannerSliderUI() {
+            const wrapper = document.getElementById('bannerSlidesWrapper');
+            if (wrapper) {
+                wrapper.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
+            }
+            const dots = document.querySelectorAll('#bannerSliderDots .dot');
+            dots.forEach((dot, idx) => {
+                if (idx === currentBannerIndex) {
+                    dot.style.width = '26px';
+                    dot.style.background = '#FFFFFF';
+                    dot.style.opacity = '1';
+                } else {
+                    dot.style.width = '10px';
+                    dot.style.background = 'rgba(255,255,255,0.6)';
+                    dot.style.opacity = '0.7';
+                }
+            });
+        }
+
+        function startBannerAutoSlide() {
+            clearInterval(bannerAutoSlideTimer);
+            bannerAutoSlideTimer = setInterval(() => {
+                currentBannerIndex = (currentBannerIndex + 1) % totalBannerSlides;
+                updateBannerSliderUI();
+            }, 5000);
+        }
+
+        function resetBannerAutoSlide() {
+            startBannerAutoSlide();
+        }
+
+        function handleBannerImgError(img, slideNum) {
+            const parent = img.parentNode;
+            if (!parent) return;
+            if (slideNum === 1) {
+                parent.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%); padding: 35px; color: #FFFFFF; min-height: 260px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <i class="fa-solid fa-clock" style="font-size: 45px; color: #F59E0B; margin-bottom: 12px;"></i>
+                        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 10px; text-transform: uppercase;">KHUNG GIỜ LÀM VIỆC VÀ TÍNH PHÍ DỊCH VỤ CÔNG TRỰC TUYẾN</h2>
+                        <p style="font-size: 15px; max-width: 800px; color: #E2E8F0; margin: 0 auto; line-height: 1.6;">Hệ thống tiếp nhận hồ sơ đăng ký biện pháp bảo đảm 24/7. Hồ sơ nộp ngoài giờ làm việc hoặc ngày lễ sẽ được xử lý vào ngày làm việc kế tiếp theo quy định.</p>
+                    </div>
+                `;
+            } else if (slideNum === 2) {
+                parent.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #065F46 0%, #064E3B 100%); padding: 35px; color: #FFFFFF; min-height: 260px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <i class="fa-solid fa-building-columns" style="font-size: 45px; color: #34D399; margin-bottom: 12px;"></i>
+                        <h2 style="font-size: 22px; font-weight: 800; color: #FFFFFF; margin-bottom: 10px; text-transform: uppercase;">CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC</h2>
+                        <p style="font-size: 15px; max-width: 800px; color: #E2E8F0; margin: 0 auto; line-height: 1.6;">Đẩy mạnh cải cách thủ tục hành chính, chuyển đổi số toàn diện trong đăng ký biện pháp bảo đảm và giải quyết bồi thường nhà nước.</p>
+                    </div>
+                `;
+            } else if (slideNum === 3) {
+                parent.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #7F1D1D 0%, #991B1B 100%); padding: 35px; color: #FFFFFF; min-height: 260px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <div style="border: 2px solid #FCA5A5; background: rgba(0,0,0,0.3); padding: 20px 30px; border-radius: 8px; max-width: 850px;">
+                            <h2 style="font-size: 24px; font-weight: 800; color: #FEF08A; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">THÔNG BÁO KẾT NỐI CHIA SẺ DỮ LIỆU SỐ</h2>
+                            <p style="font-size: 15px; color: #FFFFFF; margin: 0; line-height: 1.6;">Chính thức kết nối, chia sẻ dữ liệu số về đăng ký biện pháp bảo đảm bằng phương tiện giao thông cơ giới đường bộ với Hệ thống đăng ký, quản lý phương tiện giao thông cơ giới đường bộ.</p>
+                        </div>
+                    </div>
+                `;
+            } else if (slideNum === 4) {
+                parent.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #041E42 0%, #0B3C73 100%); padding: 35px; color: #FFFFFF; min-height: 260px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <i class="fa-solid fa-trophy" style="font-size: 45px; color: #F59E0B; margin-bottom: 12px;"></i>
+                        <h2 style="font-size: 22px; font-weight: 800; color: #F59E0B; margin-bottom: 8px; text-transform: uppercase;">VIETNAM DIGITAL AWARDS 2024 (VDA)</h2>
+                        <h3 style="font-size: 18px; font-weight: 700; color: #FFFFFF; margin: 0;">Cơ quan nhà nước chuyển đổi số xuất sắc năm 2024</h3>
+                    </div>
+                `;
+            }
+        }
+
+        function openVanBanMauModal() {
+            const modal = document.getElementById('modalVanBanMau');
+            if (modal) modal.classList.add('visible');
+        }
+
+        function closeVanBanMauModal() {
+            const modal = document.getElementById('modalVanBanMau');
+            if (modal) modal.classList.remove('visible');
+        }
+
+        function downloadVanBanMau() {
+            showToast('Đang tải xuống tệp tin Mau_Van_Ban_Yeu_Cau_Cap_Tai_Khoan_NRAST.docx...', 'info');
+            setTimeout(() => {
+                showToast('Tải tệp tin văn bản mẫu thành công!', 'success');
+            }, 800);
+        }
         // Fixed Tooltip for Asset type inside scroll container
         function showGlobalTooltip(el, event) {
             let tooltip = document.getElementById('global-asset-tooltip');
@@ -6072,6 +6403,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('appSidebar').classList.add('visible');
             updateUserNavPanel();
+            startBannerAutoSlide();
 
             if (document.getElementById('newRegTransType')) {
                 addNewRegVehicleRow(); // Add default vehicle row
@@ -12261,7 +12593,7 @@
             }, 100);
         }
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             const dropdown = document.getElementById('navLinksDropdown');
             if (dropdown && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('show');
@@ -12270,7 +12602,7 @@
             }
         });
 
-        window.addEventListener('focus', function() {
+        window.addEventListener('focus', function () {
             const dropdown = document.getElementById('navLinksDropdown');
             if (dropdown) {
                 dropdown.classList.remove('show');
@@ -12467,7 +12799,7 @@
                 id: 'QA-' + Math.floor(1000 + Math.random() * 9000),
                 topic: topic,
                 status: status,
-                timestamp: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}),
+                timestamp: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
                 question: question,
                 answer: cleanAnswer,
                 legalBasis: legalBasis || 'N/A'
@@ -12497,7 +12829,7 @@
                 historyPanel.classList.add('hidden');
                 livePanel.classList.remove('hidden');
                 btnBtn.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> <span>Lịch sử</span>';
-                titleText.innerText = 'Trợ lý AI Trực tuyến';
+                titleText.innerText = 'Chat hỗ trợ';
             }
         }
 
@@ -12628,7 +12960,7 @@
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.setAttribute('href', url);
-            link.setAttribute('download', `Lich_su_hoi_dap_Chatbot_AI_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute('download', `Lich_su_hoi_dap_Chatbot_AI_${new Date().toISOString().slice(0, 10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -12642,7 +12974,7 @@
         <div class="ai-chatbot-trigger-icon">
             <i class="fa-solid fa-robot"></i>
         </div>
-        <div class="ai-chatbot-trigger-text">Trợ lý AI Trực tuyến</div>
+        <div class="ai-chatbot-trigger-text">Trợ lý AI</div>
     </div>
 
     <!-- AI Chatbot Window -->
@@ -12654,8 +12986,9 @@
                     <i class="fa-solid fa-robot"></i>
                 </div>
                 <div class="ai-chatbot-header-text">
-                    <h4 id="aiChatTitleText">Trợ lý AI Trực tuyến</h4>
-                    <span><i class="fa-solid fa-circle" style="color: #10B981; font-size: 8px;"></i> Cục Đăng ký GDBĐ & BTNN</span>
+                    <h4 id="aiChatTitleText">Trợ lý AI</h4>
+                    <span><i class="fa-solid fa-circle" style="color: #10B981; font-size: 8px;"></i> Cục Đăng ký GDBĐ &
+                        BTNN</span>
                 </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
@@ -12669,25 +13002,36 @@
         <!-- 1. LIVE CHAT PANEL -->
         <div class="ai-live-chat-panel" id="aiLiveChatPanel">
             <div class="ai-chatbot-body" id="aiChatBody">
-                <div class="ai-msg-bubble bot">Xin chào! Tôi là Trợ lý AI chính thức của <strong>Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp</strong>.
+                <div class="ai-msg-bubble bot">Xin chào! Tôi là Trợ lý AI chính thức của <strong>Cục Đăng ký giao dịch
+                        bảo đảm và Bồi thường nhà nước - Bộ Tư pháp</strong>.
 
-Tôi <strong>chỉ hỗ trợ tư vấn trong 02 lĩnh vực</strong>:
-1. 🔹 <strong>Đăng ký Biện pháp bảo đảm</strong>
-2. 🔹 <strong>Bồi thường nhà nước</strong>
+                    Tôi <strong>chỉ hỗ trợ tư vấn trong 02 lĩnh vực</strong>:
+                    1. 🔹 <strong>Đăng ký Biện pháp bảo đảm</strong>
+                    2. 🔹 <strong>Bồi thường nhà nước</strong>
 
-Bạn cần thông tin hỗ trợ gì về 2 lĩnh vực này?</div>
+                    Bạn cần thông tin hỗ trợ gì về 2 lĩnh vực này?</div>
 
                 <div class="ai-chips-wrapper" id="aiQuickChips">
-                    <button class="ai-chip-btn" onclick="sendQuickAiQuery('Tôi muốn tra cứu mã hồ sơ đăng ký thế chấp xe ô tô thì làm thế nào?')">🔍 Tra cứu mã hồ sơ ô tô</button>
-                    <button class="ai-chip-btn" onclick="sendQuickAiQuery('Thủ tục xóa đăng ký biện pháp bảo đảm thực hiện ra sao?')">📝 Thủ tục xóa thế chấp</button>
-                    <button class="ai-chip-btn" onclick="sendQuickAiQuery('Ai có quyền nộp hồ sơ yêu cầu bồi thường nhà nước?')">⚖️ Quyền yêu cầu BTNN</button>
-                    <button class="ai-chip-btn out-of-scope" onclick="sendQuickAiQuery('Cho hỏi thủ tục sang tên sổ đỏ đất đai cần những giấy tờ gì?')">❌ Hỏi sang tên sổ đỏ (Test từ chối)</button>
+                    <button class="ai-chip-btn"
+                        onclick="sendQuickAiQuery('Tôi muốn tra cứu mã hồ sơ đăng ký thế chấp xe ô tô thì làm thế nào?')">🔍
+                        Tra cứu mã hồ sơ ô tô</button>
+                    <button class="ai-chip-btn"
+                        onclick="sendQuickAiQuery('Thủ tục xóa đăng ký biện pháp bảo đảm thực hiện ra sao?')">📝 Thủ tục
+                        xóa thế chấp</button>
+                    <button class="ai-chip-btn"
+                        onclick="sendQuickAiQuery('Ai có quyền nộp hồ sơ yêu cầu bồi thường nhà nước?')">⚖️ Quyền yêu
+                        cầu BTNN</button>
+                    <button class="ai-chip-btn out-of-scope"
+                        onclick="sendQuickAiQuery('Cho hỏi thủ tục sang tên sổ đỏ đất đai cần những giấy tờ gì?')">❌ Hỏi
+                        sang tên sổ đỏ (Test từ chối)</button>
                 </div>
             </div>
 
             <div class="ai-chatbot-footer">
-                <input type="text" class="ai-chatbot-input" id="aiChatInput" placeholder="Nhập câu hỏi hỗ trợ tư vấn..." onkeydown="handleAiChatKeyPress(event)">
-                <button class="ai-chatbot-send-btn" onclick="sendUserAiMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                <input type="text" class="ai-chatbot-input" id="aiChatInput" placeholder="Nhập câu hỏi hỗ trợ tư vấn..."
+                    onkeydown="handleAiChatKeyPress(event)">
+                <button class="ai-chatbot-send-btn" onclick="sendUserAiMessage()"><i
+                        class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
@@ -12696,34 +13040,44 @@ Bạn cần thông tin hỗ trợ gì về 2 lĩnh vực này?</div>
             <div class="ai-history-top-bar">
                 <!-- Topic Filter Tabs -->
                 <div class="ai-history-tabs">
-                    <button class="ai-history-tab-btn active" id="aiTabBpbd" onclick="switchAiHistoryTopic('bpbd')">Biện pháp bảo đảm</button>
-                    <button class="ai-history-tab-btn" id="aiTabBtnn" onclick="switchAiHistoryTopic('btnn')">Bồi thường nhà nước</button>
-                    <button class="ai-history-tab-btn" id="aiTabAll" onclick="switchAiHistoryTopic('all')">Tất cả</button>
+                    <button class="ai-history-tab-btn active" id="aiTabBpbd" onclick="switchAiHistoryTopic('bpbd')">Biện
+                        pháp bảo đảm</button>
+                    <button class="ai-history-tab-btn" id="aiTabBtnn" onclick="switchAiHistoryTopic('btnn')">Bồi thường
+                        nhà nước</button>
+                    <button class="ai-history-tab-btn" id="aiTabAll" onclick="switchAiHistoryTopic('all')">Tất
+                        cả</button>
                 </div>
 
                 <!-- Search & Sort Controls Row -->
                 <div class="ai-history-controls-row">
-                    <input type="text" class="ai-history-search-input" id="aiHistorySearchInput" placeholder="Tìm theo câu hỏi, từ khóa, căn cứ..." oninput="filterAiHistory()">
+                    <input type="text" class="ai-history-search-input" id="aiHistorySearchInput"
+                        placeholder="Tìm theo câu hỏi, từ khóa, căn cứ..." oninput="filterAiHistory()">
                     <select class="ai-history-select" id="aiHistorySortSelect" onchange="filterAiHistory()">
                         <option value="newest" selected>Mới nhất</option>
                         <option value="oldest">Cũ nhất</option>
                     </select>
-                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="toggleAiAdvFilterDrawer()" title="Lọc nâng cao"><i class="fa-solid fa-filter"></i></button>
+                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;"
+                        onclick="toggleAiAdvFilterDrawer()" title="Lọc nâng cao"><i
+                            class="fa-solid fa-filter"></i></button>
                 </div>
 
                 <!-- Advanced Filter Drawer -->
                 <div class="ai-history-adv-filter-box hidden" id="aiHistoryAdvFilterDrawer">
                     <div style="display: flex; gap: 6px; align-items: center;">
-                        <input type="text" class="ai-history-search-input" id="aiFilterDateFrom" placeholder="Từ ngày (dd/mm/yyyy)">
-                        <input type="text" class="ai-history-search-input" id="aiFilterDateTo" placeholder="Đến ngày (dd/mm/yyyy)">
+                        <input type="text" class="ai-history-search-input" id="aiFilterDateFrom"
+                            placeholder="Từ ngày (dd/mm/yyyy)">
+                        <input type="text" class="ai-history-search-input" id="aiFilterDateTo"
+                            placeholder="Đến ngày (dd/mm/yyyy)">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-                        <select class="ai-history-select" id="aiFilterStatusSelect" style="width: 60%;" onchange="filterAiHistory()">
+                        <select class="ai-history-select" id="aiFilterStatusSelect" style="width: 60%;"
+                            onchange="filterAiHistory()">
                             <option value="all" selected>Tất cả trạng thái</option>
                             <option value="Đã trả lời">Đã trả lời</option>
                             <option value="Từ chối tư vấn">Từ chối tư vấn</option>
                         </select>
-                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="resetAiHistoryFilters()">Xóa bộ lọc</button>
+                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;"
+                            onclick="resetAiHistoryFilters()">Xóa bộ lọc</button>
                     </div>
                 </div>
             </div>
@@ -12736,7 +13090,8 @@ Bạn cần thông tin hỗ trợ gì về 2 lĩnh vực này?</div>
             <!-- Footer Export & Count -->
             <div class="ai-history-footer">
                 <div style="color: var(--text-muted);" id="aiHistoryCountDisplay">Hiển thị 0 câu hỏi</div>
-                <button class="btn btn-primary" style="padding: 5px 12px; font-size: 11.5px;" onclick="exportAiHistoryExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                <button class="btn btn-primary" style="padding: 5px 12px; font-size: 11.5px;"
+                    onclick="exportAiHistoryExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
         </div>
     </div>

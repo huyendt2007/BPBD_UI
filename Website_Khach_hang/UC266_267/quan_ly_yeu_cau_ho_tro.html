@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -740,11 +740,6 @@
             <h2 class="section-title">Tạo yêu cầu hỗ trợ nghiệp vụ</h2>
 
             <form id="create-request-form" onsubmit="event.preventDefault(); submitCreateRequest();">
-                <div class="form-group">
-                    <label class="form-label" for="create-type">Loại yêu cầu hỗ trợ</label>
-                    <input type="text" class="form-control" id="create-type" disabled>
-                </div>
-
                 <div class="grid-2-cols" style="margin-bottom: var(--spacing-md);">
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label" for="create-user-name">Người yêu cầu <span class="required-mark">*</span></label>
@@ -986,11 +981,6 @@
             </div>
 
             <form id="edit-request-form" onsubmit="event.preventDefault(); submitUpdateRequest();">
-                <div class="form-group">
-                    <label class="form-label" for="edit-type">Loại yêu cầu hỗ trợ</label>
-                    <input type="text" class="form-control" id="edit-type" disabled>
-                </div>
-
                 <div class="form-group">
                     <label class="form-label" for="edit-priority">Mức độ ưu tiên <span
                             class="required-mark">*</span></label>
@@ -2025,7 +2015,8 @@
         function goToCreateScreen() {
             try {
                 const categoryName = activeTab === 'bpbd' ? 'Biện pháp bảo đảm' : 'Bồi thường nhà nước';
-                document.getElementById('create-type').value = categoryName;
+                const elType = document.getElementById('create-type');
+                if (elType) elType.value = categoryName;
                 document.getElementById('create-priority').value = 'Thấp';
                 document.getElementById('create-receiving-agency').value = '';
                 document.getElementById('create-title').value = '';
