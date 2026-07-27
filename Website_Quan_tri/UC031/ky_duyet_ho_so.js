@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Xử lý logic SPA cho UC028 - Màn hình Xem chi tiết hồ sơ (Three-Pane Layout)
  * Áp dụng tổng quát cho cả 9 loại hồ sơ theo quy chuẩn Design System.
  */
@@ -287,7 +287,7 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ nhập liệu',
+        status: 'Chờ giải quyết',
         statusClass: 'badge-warning',
         pin: '109283',
         customerId: '',
@@ -300,7 +300,7 @@ let mockProfiles = [
         paymentMethod: 'tien_mat',
         resultMethod: 'truc_tiep',
         timeline: [
-            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:00', status: 'Chờ nhập liệu', active: true }
+            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:00', status: 'Chờ giải quyết', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 18:00', user: 'Quầy Một Cửa', action: 'Tiếp nhận', comment: 'Đã nộp đơn giấy & In biên lai đóng phí.' }
@@ -314,7 +314,7 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ nhập liệu',
+        status: 'Chờ giải quyết',
         statusClass: 'badge-warning',
         pin: '189283',
         customerId: 'KH-ANPHAT-10',
@@ -327,7 +327,7 @@ let mockProfiles = [
         paymentMethod: 'chuyen_khoan',
         resultMethod: 'buu_chinh',
         timeline: [
-            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:15', status: 'Chờ nhập liệu', active: true }
+            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:15', status: 'Chờ giải quyết', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 18:15', user: 'Quầy Một Cửa', action: 'Tiếp nhận', comment: 'Đã nộp đơn giấy & In biên lai đóng phí.' }
@@ -395,7 +395,7 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ nhập liệu',
+        status: 'Chờ giải quyết',
         statusClass: 'badge-warning',
         pin: '293847',
         customerId: '',
@@ -408,7 +408,7 @@ let mockProfiles = [
         paymentMethod: 'tien_mat',
         resultMethod: 'truc_tiep',
         timeline: [
-            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:30', status: 'Chờ nhập liệu', active: true }
+            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:30', status: 'Chờ giải quyết', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 18:30', user: 'Quầy Một Cửa', action: 'Tiếp nhận', comment: 'Đã nộp đơn giấy & In biên lai đóng phí.' }
@@ -826,7 +826,7 @@ function renderTable(resetPage = false) {
 
     // 2. Determine target status based on current active tab
     let targetStatuses = ['Chờ duyệt'];
-    if (currentListTab === 'chonhaplieu') targetStatuses = ['Chờ nhập liệu'];
+    if (currentListTab === 'chonhaplieu') targetStatuses = ['Chờ giải quyết'];
     else if (currentListTab === 'duyet-choky') targetStatuses = ['Chờ ký'];
     else if (currentListTab === 'bitralai') targetStatuses = ['Bị trả lại'];
     else if (currentListTab === 'dang_xu_ly') targetStatuses = ['Chờ ký'];
@@ -907,7 +907,7 @@ function renderTable(resetPage = false) {
             if (filterHandlingOfficer && p.handlingOfficer !== filterHandlingOfficer) return false;
             if (!targetStatuses.includes(p.status)) return false;
 
-            if (searchTerm && !p.id.toLowerCase().includes(searchTerm) && !p.pin.toLowerCase().includes(searchTerm) && !p.customer.toLowerCase().includes(searchTerm) && !p.mortgagee.toLowerCase().includes(searchTerm)) return false;
+            if (searchTerm && !p.id.toLowerCase().includes(searchTerm) && !(p.pin || '').toLowerCase().includes(searchTerm) && !p.customer.toLowerCase().includes(searchTerm) && !p.mortgagee.toLowerCase().includes(searchTerm)) return false;
             if (filterCustomerId && !p.customerId?.toLowerCase().includes(filterCustomerId)) return false;
             if (filterLoaidangky && p.type !== filterLoaidangky) return false;
             if (filterLoaihinh && p.transactionType !== filterLoaihinh) return false;
@@ -976,7 +976,7 @@ function executeRender() {
                 <th style="width: 120px;">Số biên lai</th>
                 <th style="width: 120px;">Trạng thái</th>
                 <th style="width: 140px;">Cán bộ xử lý</th>
-                <th style="text-align: center; width: 100px; min-width: 100px;">Thao tác</th>
+                <th style="text-align: center; width: 130px; min-width: 130px;">Thao tác</th>
             </tr>
         `;
     } else {
@@ -1033,24 +1033,24 @@ function executeRender() {
             const resultMethodText = row.resultMethod === 'truc_tiep' ? 'Trực tiếp tại cơ quan' : (row.resultMethod === 'buu_chinh' ? 'Qua dịch vụ bưu chính' : 'Cách thức điện tử');
             
             tbody.innerHTML += `
-                <tr style="cursor: pointer;" onclick="startDigitize('${row.id}')">
+                <tr style="cursor: pointer;" onclick="openPaperReadonly('${row.id}')">
                     <td>${startIndex + index + 1}</td>
                     <td>${row.date}</td>
                     <td>${row.channel || 'Trực tiếp tại quầy'}</td>
                     <td>${customerTypeText}</td>
                     <td>${row.customerId || '-'}</td>
-                    <td><b>${row.customer}</b></td>
+                    <td><span class="action-link" onclick="event.stopPropagation(); openPaperReadonly('${row.id}')"><b>${row.customer}</b></span></td>
                     <td>${row.phone || '-'}</td>
                     <td>${row.email || '-'}</td>
                     <td>${payMethodText}</td>
                     <td>${resultMethodText}</td>
                     <td><code>${row.receipt || '-'}</code></td>
-                    <td><span class="badge badge-warning">Chờ nhập liệu</span></td>
+                    <td><span class="badge badge-warning">Chờ giải quyết</span></td>
                     <td>${row.handlingOfficer || '-'}</td>
-                    <td style="text-align: center;" onclick="event.stopPropagation()">
-                        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px; background-color: var(--secondary-color);" onclick="startDigitize('${row.id}')">
-                            <i class="fa-solid fa-keyboard"></i> Nhập liệu
-                        </button>
+                    <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
+                        <button class="icon-btn view" title="Xem hồ sơ giấy" onclick="openPaperReadonly('${row.id}')"><i class="fa fa-eye"></i></button>
+                        <button class="icon-btn edit" title="Tạo hồ sơ" onclick="startDigitize('${row.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>
+                        <button class="icon-btn reject" title="Từ chối" onclick="openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>
                     </td>
                 </tr>
             `;
@@ -1092,7 +1092,7 @@ function executeRender() {
                     <td>${startIndex + index + 1}</td>
                     <td>${row.date}</td>
                     <td><span class="action-link" onclick="event.stopPropagation(); openDetail('${row.id}')">${row.id}</span></td>
-                    <td><code>${row.pin}</code></td>
+                    <td><code>${row.pin || '-'}</code></td>
                     <td><b>${row.customer}</b></td>
                     <td>${row.mortgagee}</td>
                     <td>${row.type}</td>
@@ -1466,7 +1466,7 @@ function updateTabBadges() {
         bitralai: 0
     };
     mockProfiles.forEach(p => {
-        if (p.status === 'Chờ nhập liệu') counts.chonhaplieu++;
+        if (p.status === 'Chờ giải quyết') counts.chonhaplieu++;
         else if (p.status === 'Chờ duyệt') counts.choduyet++;
         else if (p.status === 'Chờ ký') counts['duyet-choky']++;
         else if (p.status === 'Bị trả lại') counts.bitralai++;
@@ -1500,7 +1500,12 @@ function openRejectSingle(id) {
 
 function startDigitize(id) {
     localStorage.setItem('selected_dossier_id', id);
-    window.location.href = '../UC024/dang_ky_bpbd_can_bo.html';
+    window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id);
+}
+
+function openPaperReadonly(id) {
+    localStorage.setItem('selected_dossier_id', id);
+    window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id);
 }
 
 function searchList() {

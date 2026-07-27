@@ -2301,6 +2301,50 @@
             color: var(--text-main);
         }
 
+        .asset-specific-filter-panel {
+            display: none;
+            margin-top: 12px;
+            padding: 14px;
+            border: 1px dashed #CBD5E1;
+            border-radius: var(--border-radius-md);
+            background: #FFFFFF;
+        }
+
+        .asset-specific-filter-panel.visible {
+            display: block;
+        }
+
+        .asset-specific-filter-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .registered-requests-table {
+            min-width: 1380px;
+        }
+
+        .registered-requests-table.asset-expanded {
+            min-width: 1720px;
+        }
+
+        .reg-asset-extra-cell {
+            min-width: 120px;
+            max-width: 220px;
+        }
+
+        .reg-asset-extra-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.35;
+        }
+
         .asset-tooltip-popup-fixed {
             position: fixed;
             z-index: 9999;
@@ -4969,7 +5013,8 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Loại tài sản</label>
-                                <select class="form-select" id="regReqSearchAssetType">
+                                <select class="form-select" id="regReqSearchAssetType"
+                                    onchange="onRegReqAssetTypeChange()">
                                     <option value="Tất cả" selected>Tất cả</option>
                                     <option
                                         value="Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)">
@@ -4999,6 +5044,14 @@
                             </div>
                         </div>
 
+                        <div id="regReqAssetSpecificFilters" class="asset-specific-filter-panel">
+                            <div class="asset-specific-filter-title">
+                                <i class="fa-solid fa-sliders"></i>
+                                <span>Bộ lọc bổ sung theo Loại tài sản</span>
+                            </div>
+                            <div id="regReqAssetSpecificFilterGrid" class="grid-3-cols"></div>
+                        </div>
+
                         <div
                             style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                             <button class="btn btn-outline-primary" onclick="resetRegReqFilters()">Xóa bộ lọc</button>
@@ -5009,9 +5062,9 @@
 
                     <!-- TreeView Grid Area -->
                     <div class="table-responsive">
-                        <table class="table" style="font-size: 13px;">
+                        <table class="table registered-requests-table" id="registeredRequestsTable" style="font-size: 13px;">
                             <thead style="background-color: var(--table-header-bg);">
-                                <tr>
+                                <tr id="registeredRequestsHeaderRow">
                                     <th style="width: 3%; text-align: center;">STT</th>
                                     <th style="width: 9%; cursor: pointer;" onclick="toggleRegReqSort('regNum')"
                                         id="reg-header-regNum">Số đăng ký <i class="fa-solid fa-sort"
@@ -12190,7 +12243,265 @@
             `;
         }
 
-        function matchItem(item, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType) {
+        const REG_REQ_ASSET_TYPE_ROAD_VEHICLE = 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)';
+        const REG_REQ_ASSET_TYPE_SPECIAL_VEHICLE = 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt';
+        const REG_REQ_ASSET_TYPE_PROPERTY_RIGHT = 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản';
+        const REG_REQ_ASSET_TYPE_ANNUAL_CROP = 'Cây hằng năm, công trình tạm';
+        const REG_REQ_ASSET_TYPE_ROTATING_GOODS = 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ';
+        const REG_REQ_ASSET_TYPE_SECURITIES = 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung';
+        const REG_REQ_ASSET_TYPE_OTHER = 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)';
+
+        const REG_REQ_COMMON_ASSET_FIELD = {
+            key: 'assetDescription',
+            label: 'Mô tả chung về tài sản bảo đảm',
+            placeholder: 'Nhập mô tả chung về tài sản bảo đảm...'
+        };
+
+        const REG_REQ_ASSET_FILTER_CONFIG = {
+            [REG_REQ_ASSET_TYPE_ROAD_VEHICLE]: [
+                { key: 'vehicleName', label: 'Tên phương tiện', placeholder: 'Nhập tên phương tiện...' },
+                { key: 'frameNo', label: 'Số khung', placeholder: 'Nhập chính xác số khung...' },
+                { key: 'engineNo', label: 'Số máy', placeholder: 'Nhập chính xác số máy...' },
+                { key: 'plateNo', label: 'Biển số', placeholder: 'Nhập chính xác biển số...' }
+            ],
+            [REG_REQ_ASSET_TYPE_SPECIAL_VEHICLE]: [
+                { key: 'vehicleBrand', label: 'Tên phương tiện/Nhãn hiệu', placeholder: 'Nhập tên phương tiện hoặc nhãn hiệu...' },
+                { key: 'ownerName', label: 'Tên/Họ tên chủ phương tiện/Chủ sở hữu', placeholder: 'Nhập chủ phương tiện/chủ sở hữu...' },
+                { key: 'vehicleRegNo', label: 'Số đăng ký', placeholder: 'Nhập số đăng ký phương tiện...' },
+                { key: 'vehicleLevel', label: 'Cấp phương tiện', placeholder: 'Nhập cấp phương tiện...' }
+            ],
+            [REG_REQ_ASSET_TYPE_PROPERTY_RIGHT]: [
+                { key: 'rightName', label: 'Tên quyền', placeholder: 'Nhập tên quyền...' },
+                { key: 'rightBasis', label: 'Căn cứ phát sinh quyền', placeholder: 'Nhập căn cứ phát sinh quyền...' }
+            ],
+            [REG_REQ_ASSET_TYPE_ANNUAL_CROP]: [],
+            [REG_REQ_ASSET_TYPE_ROTATING_GOODS]: [
+                { key: 'goodsValueName', label: 'Giá trị hàng hóa/Tên, loại hàng hóa', placeholder: 'Nhập giá trị, tên hoặc loại hàng hóa...' },
+                { key: 'warehouseSign', label: 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', placeholder: 'Nhập số hiệu hoặc dấu hiệu vị trí kho...' }
+            ],
+            [REG_REQ_ASSET_TYPE_SECURITIES]: [
+                { key: 'vsdcTime', label: 'Thời điểm đăng ký tại VSDC', placeholder: 'HH:mm dd/MM/yyyy' }
+            ],
+            [REG_REQ_ASSET_TYPE_OTHER]: []
+        };
+
+        const REG_REQ_ASSET_COLUMN_CONFIG = {
+            [REG_REQ_ASSET_TYPE_ROAD_VEHICLE]: [
+                { key: 'vehicleName', label: 'Tên phương tiện', width: '150px' },
+                { key: 'frameNo', label: 'Số khung', width: '120px' },
+                { key: 'engineNo', label: 'Số máy', width: '120px' },
+                { key: 'plateNo', label: 'Biển số', width: '110px' }
+            ],
+            [REG_REQ_ASSET_TYPE_SPECIAL_VEHICLE]: [
+                { key: 'vehicleBrand', label: 'Tên phương tiện/Nhãn hiệu', width: '165px' },
+                { key: 'ownerName', label: 'Tên/Họ tên chủ phương tiện/Chủ sở hữu', width: '185px' },
+                { key: 'vehicleRegNo', label: 'Số đăng ký', width: '115px' },
+                { key: 'vehicleLevel', label: 'Cấp phương tiện', width: '115px' }
+            ],
+            [REG_REQ_ASSET_TYPE_PROPERTY_RIGHT]: [
+                { key: 'rightName', label: 'Tên quyền', width: '170px' },
+                { key: 'rightBasis', label: 'Căn cứ phát sinh quyền', width: '210px' }
+            ],
+            [REG_REQ_ASSET_TYPE_ANNUAL_CROP]: [],
+            [REG_REQ_ASSET_TYPE_ROTATING_GOODS]: [
+                { key: 'goodsValueName', label: 'Giá trị hàng hóa/Tên, loại hàng hóa', width: '210px' },
+                { key: 'warehouseSign', label: 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', width: '220px' }
+            ],
+            [REG_REQ_ASSET_TYPE_SECURITIES]: [
+                { key: 'vsdcTime', label: 'Thời điểm đăng ký tại VSDC', width: '145px' }
+            ],
+            [REG_REQ_ASSET_TYPE_OTHER]: []
+        };
+
+        const REG_REQ_ASSET_EXACT_FILTER_KEYS = ['frameNo', 'engineNo', 'plateNo', 'vehicleRegNo'];
+
+        function getSelectedRegReqAssetType() {
+            return document.getElementById('regReqSearchAssetType')?.value || 'Tất cả';
+        }
+
+        function isSpecificRegReqAssetType(assetType) {
+            return assetType !== 'Tất cả' && Object.prototype.hasOwnProperty.call(REG_REQ_ASSET_FILTER_CONFIG, assetType);
+        }
+
+        function getRegReqActiveAssetFields(assetType = getSelectedRegReqAssetType()) {
+            if (!isSpecificRegReqAssetType(assetType)) return [];
+            return [...(REG_REQ_ASSET_FILTER_CONFIG[assetType] || []), REG_REQ_COMMON_ASSET_FIELD];
+        }
+
+        function getRegReqActiveAssetColumns(assetType = getSelectedRegReqAssetType()) {
+            if (!isSpecificRegReqAssetType(assetType)) return [];
+            return [...(REG_REQ_ASSET_COLUMN_CONFIG[assetType] || []), { ...REG_REQ_COMMON_ASSET_FIELD, width: '220px' }];
+        }
+
+        function renderRegReqAssetSpecificFilters() {
+            const panel = document.getElementById('regReqAssetSpecificFilters');
+            const grid = document.getElementById('regReqAssetSpecificFilterGrid');
+            if (!panel || !grid) return;
+
+            const assetType = getSelectedRegReqAssetType();
+            const fields = getRegReqActiveAssetFields(assetType);
+            if (!fields.length) {
+                panel.classList.remove('visible');
+                grid.innerHTML = '';
+                return;
+            }
+
+            grid.innerHTML = fields.map(field => {
+                const inputId = `regReqAssetFilter_${field.key}`;
+                const fullWidth = field.key === REG_REQ_COMMON_ASSET_FIELD.key ? ' style="grid-column: 1 / -1;"' : '';
+                if (field.key === REG_REQ_COMMON_ASSET_FIELD.key) {
+                    return `
+                        <div class="form-group"${fullWidth}>
+                            <label class="form-label">${field.label}</label>
+                            <textarea class="form-control" id="${inputId}" rows="2" placeholder="${field.placeholder}"></textarea>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="form-group"${fullWidth}>
+                        <label class="form-label">${field.label}</label>
+                        <input type="text" class="form-control" id="${inputId}" placeholder="${field.placeholder}">
+                    </div>
+                `;
+            }).join('');
+            panel.classList.add('visible');
+        }
+
+        function onRegReqAssetTypeChange() {
+            renderRegReqAssetSpecificFilters();
+            regReqCurrentPage = 1;
+            executeRegReqSearch(false);
+        }
+
+        function getRegReqAssetFilterValues(assetType = getSelectedRegReqAssetType()) {
+            return getRegReqActiveAssetFields(assetType).reduce((values, field) => {
+                const value = document.getElementById(`regReqAssetFilter_${field.key}`)?.value.trim() || '';
+                if (value) values[field.key] = value;
+                return values;
+            }, {});
+        }
+
+        function hasRegReqAssetSpecificFilterValues() {
+            return Object.keys(getRegReqAssetFilterValues()).length > 0;
+        }
+
+        function getRegisteredRequestAssetDetails(item, assetType) {
+            const baseNum = formatRegNumForDisplay(item.regNum || '');
+            const defaultDescription = [
+                item.secAssets && item.secAssets.find(asset => asset === assetType),
+                item.measureContractType,
+                item.guarantor
+            ].filter(Boolean).join(' - ');
+
+            const detailsByType = {
+                [REG_REQ_ASSET_TYPE_ROAD_VEHICLE]: {
+                    vehicleName: item.assetVehicleName || (item.guarantor && item.guarantor.includes('Hải Nam') ? 'Xe tải Hyundai Mighty' : 'Xe ô tô con Toyota Vios'),
+                    frameNo: item.frameNo || `SK${baseNum.slice(-4)}VN`,
+                    engineNo: item.engineNo || `SM${baseNum.slice(-4)}VN`,
+                    plateNo: item.plateNo || (item.guarantor && item.guarantor.includes('Hải Nam') ? '29C-688.88' : '30H-123.45'),
+                    assetDescription: item.assetDescription || `${defaultDescription}. Phương tiện có đầy đủ số khung, số máy và biển số.`
+                },
+                [REG_REQ_ASSET_TYPE_SPECIAL_VEHICLE]: {
+                    vehicleBrand: item.vehicleBrand || (item.guarantor && item.guarantor.includes('Hải Nam') ? 'Tàu cá vỏ gỗ Hải Nam' : 'Tàu cá vỏ thép Đông Hải'),
+                    ownerName: item.ownerName || item.guarantor,
+                    vehicleRegNo: item.vehicleRegNo || `ĐK-${baseNum.slice(-5)}-HP`,
+                    vehicleLevel: item.vehicleLevel || 'Cấp IV',
+                    assetDescription: item.assetDescription || `${defaultDescription}. Phương tiện chuyên dùng/đường thủy có số đăng ký và cấp phương tiện.`
+                },
+                [REG_REQ_ASSET_TYPE_PROPERTY_RIGHT]: {
+                    rightName: item.rightName || 'Quyền đòi nợ phát sinh từ hợp đồng thương mại',
+                    rightBasis: item.rightBasis || `Hợp đồng số HĐ-${baseNum.slice(-4)}/2026 và phụ lục liên quan`,
+                    assetDescription: item.assetDescription || `${defaultDescription}. Quyền tài sản được xác lập theo căn cứ phát sinh quyền đã kê khai.`
+                },
+                [REG_REQ_ASSET_TYPE_ANNUAL_CROP]: {
+                    assetDescription: item.assetDescription || `${defaultDescription}. Cây hằng năm/công trình tạm được mô tả theo vị trí và hiện trạng tài sản.`
+                },
+                [REG_REQ_ASSET_TYPE_ROTATING_GOODS]: {
+                    goodsValueName: item.goodsValueName || 'Lô hàng thủy sản đông lạnh và hàng hóa luân chuyển',
+                    warehouseSign: item.warehouseSign || `Kho MP-${baseNum.slice(-3)}, khu lưu trữ trung tâm`,
+                    assetDescription: item.assetDescription || `${defaultDescription}. Hàng hóa luân chuyển trong kho, xác định theo số hiệu kho và dấu hiệu vị trí.`
+                },
+                [REG_REQ_ASSET_TYPE_SECURITIES]: {
+                    vsdcTime: item.vsdcTime || '09:30 15/04/2026',
+                    assetDescription: item.assetDescription || `${defaultDescription}. Chứng khoán đã đăng ký tập trung chuyển sang không đăng ký tập trung tại VSDC.`
+                },
+                [REG_REQ_ASSET_TYPE_OTHER]: {
+                    assetDescription: item.assetDescription || `${defaultDescription}. Động sản khác gồm máy móc thiết bị, nguyên vật liệu hoặc giấy tờ có giá theo hồ sơ.`
+                }
+            };
+
+            return detailsByType[assetType] || {};
+        }
+
+        function doesRegReqAssetDetailMatch(value, filterValue, key) {
+            if (!filterValue) return true;
+            const normalizedValue = normalizeRegReqText(value);
+            const normalizedFilter = normalizeRegReqText(filterValue);
+            if (REG_REQ_ASSET_EXACT_FILTER_KEYS.includes(key)) {
+                const compactValue = normalizedValue.replace(/[^a-z0-9]/g, '');
+                const compactFilter = normalizedFilter.replace(/[^a-z0-9]/g, '');
+                return compactValue === compactFilter;
+            }
+            return normalizedValue.includes(normalizedFilter);
+        }
+
+        function matchRegReqAssetSpecificFilters(item, assetType, assetFilters) {
+            if (!isSpecificRegReqAssetType(assetType)) return true;
+            const details = getRegisteredRequestAssetDetails(item, assetType);
+            return Object.entries(assetFilters || {}).every(([key, filterValue]) => {
+                return doesRegReqAssetDetailMatch(details[key] || '', filterValue, key);
+            });
+        }
+
+        function renderRegisteredRequestsHeader() {
+            const headerRow = document.getElementById('registeredRequestsHeaderRow');
+            const table = document.getElementById('registeredRequestsTable');
+            if (!headerRow) return;
+
+            const assetColumns = getRegReqActiveAssetColumns();
+            if (table) table.classList.toggle('asset-expanded', assetColumns.length > 0);
+            const extraHeaders = assetColumns.map(column =>
+                `<th class="reg-asset-extra-cell" style="width: ${column.width};">${column.label}</th>`
+            ).join('');
+
+            headerRow.innerHTML = `
+                <th style="width: 3%; text-align: center;">STT</th>
+                <th style="width: 9%; cursor: pointer;" onclick="toggleRegReqSort('regNum')" id="reg-header-regNum">Số đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                <th style="width: 5%;">Số PIN</th>
+                <th style="width: 10%;">Loại đăng ký</th>
+                <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('guarantor')" id="reg-header-guarantor">Bên bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('mortgagee')" id="reg-header-mortgagee">Bên nhận BĐ <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                <th style="width: 10%;">Loại hình GD</th>
+                <th style="width: 10%;">Loại BP/HĐ</th>
+                <th style="width: 13%;">Loại tài sản</th>
+                ${extraHeaders}
+                <th style="width: 7%;">Trạng thái</th>
+                <th style="width: 7%; cursor: pointer;" onclick="toggleRegReqSort('date')" id="reg-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                <th style="width: 6%; text-align: center;">Thao tác</th>
+            `;
+            updateRegReqSortIcons();
+        }
+
+        function renderRegReqAssetExtraCells(item) {
+            const assetType = getSelectedRegReqAssetType();
+            const columns = getRegReqActiveAssetColumns(assetType);
+            if (!columns.length) return '';
+
+            if (!item.secAssets || !item.secAssets.includes(assetType)) {
+                return columns.map(() =>
+                    '<td class="reg-asset-extra-cell"><div class="reg-asset-extra-text">---</div></td>'
+                ).join('');
+            }
+
+            const details = getRegisteredRequestAssetDetails(item, assetType);
+            return columns.map(column => {
+                const value = details[column.key] || '';
+                const safeValue = escapeHtml(String(value));
+                return `<td class="reg-asset-extra-cell" title="${safeValue}"><div class="reg-asset-extra-text">${safeValue || '---'}</div></td>`;
+            }).join('');
+        }
+
+        function matchItem(item, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters = {}) {
             let matchNum = true;
             if (num) {
                 matchNum = item.regNum.toLowerCase().includes(num);
@@ -12241,10 +12552,12 @@
                 matchAssetType = item.secAssets && item.secAssets.includes(assetType);
             }
 
-            return matchNum && matchGuarantor && matchStatus && matchType && matchDate && matchTransType && matchMeasureType && matchAssetType;
+            const matchAssetSpecific = matchRegReqAssetSpecificFilters(item, assetType, assetFilters);
+
+            return matchNum && matchGuarantor && matchStatus && matchType && matchDate && matchTransType && matchMeasureType && matchAssetType && matchAssetSpecific;
         }
 
-        function executeRegReqSearch() {
+        function executeRegReqSearch(showSuccessToast = true) {
             const num = document.getElementById('regReqSearchNum').value.trim().toLowerCase();
             const guarantor = document.getElementById('regReqSearchGuarantor').value.trim().toLowerCase();
             const status = document.getElementById('regReqSearchStatus').value;
@@ -12255,6 +12568,7 @@
             const transType = document.getElementById('regReqSearchTransType').value;
             const measureType = document.getElementById('regReqSearchMeasureContractType').value;
             const assetType = document.getElementById('regReqSearchAssetType').value;
+            const assetFilters = getRegReqAssetFilterValues(assetType);
 
             // Validate date range
             if (fromDateStr && toDateStr) {
@@ -12294,12 +12608,12 @@
             }
 
             regReqFilteredData = registeredRequestsData.filter(item => {
-                const parentMatches = matchItem(item, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType);
+                const parentMatches = matchItem(item, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
 
                 const childrenMatch = item.children && item.children.some(c => {
-                    const cMatches = matchItem(c, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType);
+                    const cMatches = matchItem(c, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
                     const gcMatch = c.children && c.children.some(gc => {
-                        return matchItem(gc, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType);
+                        return matchItem(gc, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
                     });
                     return cMatches || gcMatch;
                 });
@@ -12309,7 +12623,7 @@
 
             regReqCurrentPage = 1;
             renderRegisteredRequestsTable();
-            showToast('Tìm kiếm hoàn tất.', 'success');
+            if (showSuccessToast) showToast('Tìm kiếm hoàn tất.', 'success');
         }
 
         function parseDateString(dateStr) {
@@ -12329,6 +12643,7 @@
             document.getElementById('regReqSearchTransType').value = 'Tất cả';
             onTransTypeFilterChange();
             document.getElementById('regReqSearchAssetType').value = 'Tất cả';
+            renderRegReqAssetSpecificFilters();
             regReqFilteredData = [];
             regReqCurrentPage = 1;
             renderRegisteredRequestsTable();
@@ -12460,6 +12775,7 @@
         function renderRegisteredRequestsTable() {
             const tbody = document.getElementById('registeredRequestsTableBody');
             if (!tbody) return;
+            renderRegisteredRequestsHeader();
 
             const isFiltered = document.getElementById('regReqSearchNum').value ||
                 document.getElementById('regReqSearchGuarantor').value ||
@@ -12469,9 +12785,11 @@
                 document.getElementById('regReqSearchToDate').value ||
                 document.getElementById('regReqSearchTransType').value !== 'Tất cả' ||
                 document.getElementById('regReqSearchMeasureContractType').value !== 'Tất cả' ||
-                document.getElementById('regReqSearchAssetType').value !== 'Tất cả';
+                document.getElementById('regReqSearchAssetType').value !== 'Tất cả' ||
+                hasRegReqAssetSpecificFilterValues();
 
             let dataList = isFiltered ? regReqFilteredData : registeredRequestsData;
+            const emptyColspan = 12 + getRegReqActiveAssetColumns().length;
 
             // Sắp xếp dữ liệu nếu có cột được chọn
             if (regReqSortField) {
@@ -12516,7 +12834,7 @@
             }
 
             if (dataList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="${emptyColspan}" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
                 document.getElementById('regReqCountDisplay').innerText = `Hiển thị 0-0 của 0 hồ sơ gốc`;
                 document.getElementById('regReqPagination').innerHTML = '';
                 return;
@@ -12573,6 +12891,7 @@
                         <td>${item.transType || ''}</td>
                         <td>${item.measureContractType || ''}</td>
                         <td>${renderAssetCellHtml(item.secAssets)}</td>
+                        ${renderRegReqAssetExtraCells(item)}
                         <td><span class="status-badge ${getStatusClass(item.status)}">${item.status}</span></td>
                         <td>${item.date}</td>
                         <td>
@@ -12604,6 +12923,7 @@
                                 <td>${child.transType || ''}</td>
                                 <td>${child.measureContractType || ''}</td>
                                 <td>${renderAssetCellHtml(child.secAssets)}</td>
+                                ${renderRegReqAssetExtraCells(child)}
                                 <td><span class="status-badge ${getStatusClass(child.status)}">${child.status}</span></td>
                                 <td>${child.date}</td>
                                 <td>
@@ -12630,6 +12950,7 @@
                                         <td>${gc.transType || ''}</td>
                                         <td>${gc.measureContractType || ''}</td>
                                         <td>${renderAssetCellHtml(gc.secAssets)}</td>
+                                        ${renderRegReqAssetExtraCells(gc)}
                                         <td><span class="status-badge ${getStatusClass(gc.status)}">${gc.status}</span></td>
                                         <td>${gc.date}</td>
                                         <td>
@@ -12649,15 +12970,7 @@
             tbody.innerHTML = html;
         }
 
-        function toggleRegReqSort(field) {
-            if (regReqSortField === field) {
-                regReqSortOrder = (regReqSortOrder === 'asc') ? 'desc' : 'asc';
-            } else {
-                regReqSortField = field;
-                regReqSortOrder = 'asc';
-            }
-
-            // Cập nhật icon sắp xếp trong DOM
+        function updateRegReqSortIcons() {
             const fields = ['regNum', 'guarantor', 'mortgagee', 'date'];
             fields.forEach(f => {
                 const header = document.getElementById(`reg-header-${f}`);
@@ -12673,6 +12986,15 @@
                     icon.style.color = '#94A3B8';
                 }
             });
+        }
+
+        function toggleRegReqSort(field) {
+            if (regReqSortField === field) {
+                regReqSortOrder = (regReqSortOrder === 'asc') ? 'desc' : 'asc';
+            } else {
+                regReqSortField = field;
+                regReqSortOrder = 'asc';
+            }
 
             regReqCurrentPage = 1;
             renderRegisteredRequestsTable();

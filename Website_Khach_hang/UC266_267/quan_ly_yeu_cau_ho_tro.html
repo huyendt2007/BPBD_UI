@@ -1500,7 +1500,7 @@
         ];
 
         // Versioning and synchronization initialization
-        const SUPPORT_DB_VERSION = "v9";
+        const SUPPORT_DB_VERSION = "v10";
         try {
             if (localStorage.getItem('support_tickets_version') !== SUPPORT_DB_VERSION) {
                 localStorage.removeItem('support_tickets');
@@ -1592,7 +1592,6 @@
 
                 currentEditTicketId = ticketId;
 
-                document.getElementById('edit-type').value = ticket.category;
                 document.getElementById('edit-priority').value = ticket.priority;
                 document.getElementById('edit-title').value = ticket.title;
                 document.getElementById('edit-content').value = ticket.content;
@@ -2201,7 +2200,7 @@
                 const titleInput = document.getElementById('create-title');
                 const contentInput = document.getElementById('create-content');
                 const priority = document.getElementById('create-priority').value;
-                const category = document.getElementById('create-type').value;
+                const category = activeTab === 'bpbd' ? 'Biện pháp bảo đảm' : 'Bồi thường nhà nước';
                 const nameInput = document.getElementById('create-user-name');
                 const emailInput = document.getElementById('create-user-email');
                 const receivingAgencyInput = document.getElementById('create-receiving-agency');

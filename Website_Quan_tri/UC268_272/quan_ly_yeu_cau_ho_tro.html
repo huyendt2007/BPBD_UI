@@ -680,6 +680,15 @@
                     <option value="lanh_dao" selected>Lãnh đạo (admin)</option>
                 </select>
             </div>
+            <div>
+                <label for="active-unit" style="font-size: 12px; margin-right: 5px; opacity: 0.9;">Đơn vị công tác (Cơ quan tiếp nhận):</label>
+                <select id="active-unit" class="form-select" style="width: auto; display: inline-block; padding: 2px 24px 2px 8px; font-size: 12px; height: 26px;" onchange="switchUnit(this.value)">
+                    <option value="Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước" selected>Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</option>
+                    <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội">Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội</option>
+                    <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Hồ Chí Minh">Trung tâm đăng ký giao dịch, tài sản tại TP Hồ Chí Minh</option>
+                    <option value="Trung tâm đăng ký giao dịch, tài sản tại TP Đà Nẵng">Trung tâm đăng ký giao dịch, tài sản tại TP Đà Nẵng</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -797,6 +806,8 @@
                             Mức độ ưu tiên <span id="sort-icon-priority" class="sort-icon"><i class="fa-solid fa-sort"></i></span>
                         </th>
                         <th style="width: 130px;">Người yêu cầu</th>
+                        <th style="width: 150px;">Email</th>
+                        <th style="width: 190px;">Cơ quan tiếp nhận</th>
                         <th style="width: 130px;">Cán bộ xử lý</th>
                         <th style="width: 155px; text-align: center;">Ngày tiếp nhận/Phản hồi</th>
                         <th style="width: 110px; text-align: center;">Trạng thái</th>
@@ -831,6 +842,10 @@
             <div class="detail-row">
                 <div class="detail-label">Ngày tạo</div>
                 <div class="detail-value" id="dt-created-at"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Cơ quan tiếp nhận</div>
+                <div class="detail-value" id="dt-agency" style="font-weight: 600;"></div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">Mức độ ưu tiên</div>
@@ -1148,6 +1163,7 @@
     const defaultSupportTickets = [
         {
             id: "HT-20260701-000001",
+            receiving_agency: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
             category: "Biện pháp bảo đảm",
             created_at: "01/07/2026 09:15",
             assigned_at: "",
@@ -1170,6 +1186,7 @@
         },
         {
             id: "HT-20260701-000002",
+            receiving_agency: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
             category: "Biện pháp bảo đảm",
             created_at: "01/07/2026 10:20",
             assigned_at: "",
@@ -1192,6 +1209,7 @@
         },
         {
             id: "HT-20260701-000003",
+            receiving_agency: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
             category: "Biện pháp bảo đảm",
             created_at: "01/07/2026 10:40",
             assigned_at: "01/07/2026 10:45",
@@ -1220,6 +1238,7 @@
         },
         {
             id: "HT-20260701-000004",
+            receiving_agency: "Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội",
             category: "Bồi thường nhà nước",
             created_at: "01/07/2026 11:20",
             assigned_at: "01/07/2026 11:25",
@@ -1248,6 +1267,7 @@
         },
         {
             id: "HT-20260628-000099",
+            receiving_agency: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
             category: "Biện pháp bảo đảm",
             created_at: "28/06/2026 14:00",
             assigned_at: "28/06/2026 14:10",
@@ -1281,6 +1301,7 @@
         },
         {
             id: "HT-20260627-000077",
+            receiving_agency: "Trung tâm đăng ký giao dịch, tài sản tại TP Hồ Chí Minh",
             category: "Biện pháp bảo đảm",
             created_at: "27/06/2026 09:30",
             assigned_at: "27/06/2026 10:00",
@@ -1314,6 +1335,7 @@
         },
         {
             id: "HT-20260620-000088",
+            receiving_agency: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
             category: "Biện pháp bảo đảm",
             created_at: "20/06/2026 08:30",
             assigned_at: "20/06/2026 09:00",
@@ -1347,6 +1369,7 @@
         },
         {
             id: "HT-20260618-000055",
+            receiving_agency: "Trung tâm đăng ký giao dịch, tài sản tại TP Đà Nẵng",
             category: "Bồi thường nhà nước",
             created_at: "18/06/2026 15:45",
             assigned_at: "18/06/2026 16:00",
@@ -1380,6 +1403,7 @@
         },
         {
             id: "HT-20260614-000125",
+            receiving_agency: "Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội",
             category: "Bồi thường nhà nước",
             created_at: "14/06/2026 14:00",
             assigned_at: "14/06/2026 14:05",
@@ -1408,6 +1432,7 @@
         },
         {
             id: "HT-20260616-000142",
+            receiving_agency: "Trung tâm đăng ký giao dịch, tài sản tại TP Hồ Chí Minh",
             category: "Bồi thường nhà nước",
             created_at: "16/06/2026 13:50",
             assigned_at: "16/06/2026 14:00",
@@ -1441,6 +1466,7 @@
         },
         {
             id: "HT-20260701-000010",
+            receiving_agency: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
             category: "Biện pháp bảo đảm",
             created_at: "01/07/2026 08:30",
             assigned_at: "01/07/2026 09:00",
@@ -1474,6 +1500,7 @@
         },
         {
             id: "HT-20260701-000011",
+            receiving_agency: "Trung tâm đăng ký giao dịch, tài sản tại TP Đà Nẵng",
             category: "Biện pháp bảo đảm",
             created_at: "01/07/2026 09:45",
             assigned_at: "01/07/2026 10:00",
@@ -1507,6 +1534,7 @@
         },
         {
             id: "HT-20260701-000012",
+            receiving_agency: "Trung tâm đăng ký giao dịch, tài sản tại TP Hà Nội",
             category: "Biện pháp bảo đảm",
             created_at: "01/07/2026 10:15",
             assigned_at: "01/07/2026 10:30",
@@ -1540,6 +1568,7 @@
         },
         {
             id: "HT-20260701-000013",
+            receiving_agency: "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước",
             category: "Biện pháp bảo đảm",
             created_at: "01/07/2026 11:30",
             assigned_at: "01/07/2026 11:45",
@@ -1574,7 +1603,29 @@
     ];
 
     // Versioning and synchronization initialization
-    const SUPPORT_DB_VERSION = "v8";
+    const SUPPORT_DB_VERSION = "v11-bpbd-mock-seed";
+    const BPBD_CATEGORY = defaultSupportTickets[0]?.category || "Biện pháp bảo đảm";
+
+    function normalizeSupportTickets(savedTickets) {
+        const seededTickets = new Map();
+
+        defaultSupportTickets.forEach(ticket => {
+            if (ticket && ticket.id && ticket.category === BPBD_CATEGORY) {
+                seededTickets.set(ticket.id, { ...ticket });
+            }
+        });
+
+        if (Array.isArray(savedTickets)) {
+            savedTickets.forEach(ticket => {
+                if (ticket && ticket.id && ticket.category === BPBD_CATEGORY) {
+                    seededTickets.set(ticket.id, { ...ticket, category: BPBD_CATEGORY });
+                }
+            });
+        }
+
+        return Array.from(seededTickets.values());
+    }
+
     try {
         if (localStorage.getItem('support_tickets_version') !== SUPPORT_DB_VERSION) {
             localStorage.removeItem('support_tickets');
@@ -1585,22 +1636,24 @@
     }
 
     let supportTickets = [];
+    let savedSupportTickets = [];
     try {
         const savedTickets = localStorage.getItem('support_tickets');
         if (savedTickets) {
-            supportTickets = JSON.parse(savedTickets);
+            savedSupportTickets = JSON.parse(savedTickets);
         }
     } catch (e) {
         console.error("Lỗi đọc dữ liệu support_tickets từ localStorage:", e);
     }
 
+    supportTickets = normalizeSupportTickets(savedSupportTickets);
     if (!supportTickets || supportTickets.length === 0) {
-        supportTickets = [...defaultSupportTickets];
-        try {
-            localStorage.setItem('support_tickets', JSON.stringify(supportTickets));
-        } catch (err) {
-            console.error("Lỗi lưu support_tickets mặc định:", err);
-        }
+        supportTickets = normalizeSupportTickets(defaultSupportTickets);
+    }
+    try {
+        localStorage.setItem('support_tickets', JSON.stringify(supportTickets));
+    } catch (err) {
+        console.error("Lỗi lưu support_tickets mặc định:", err);
     }
 
     function saveSupportTicketsToStorage() {
@@ -1617,12 +1670,29 @@
 
     // Global Roles configuration
     let currentRole = "lanh_dao"; // Default role
+    let activeUnit = "Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước"; // Cơ quan tiếp nhận - Nguyên tắc phân quyền dữ liệu (Data Isolation)
     let currentSpecialistUsername = "namnh"; // Used when role is chuyên viên
 
     // Pagination status
     let currentPage = 1;
     let pageSize = 5;
     let filteredTicketsList = [];
+
+    function formatDateForFilter(date) {
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    }
+
+    function getDefaultFilterDates() {
+        const today = new Date();
+        const fromDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        return {
+            defaultFrom: formatDateForFilter(fromDate),
+            defaultTo: formatDateForFilter(today)
+        };
+    }
 
     function renderPagination(totalCount) {
         const pagBar = document.getElementById('paginationBar');
@@ -1690,17 +1760,9 @@
     // Active selected ticket ID for modal transactions
     let activeTicketId = "";
 
-    // Load initial date values (first day of current month to current date)
+    // Load initial date values (first day of previous month to current date)
     window.addEventListener('DOMContentLoaded', () => {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        let mm = today.getMonth() + 1;
-        let dd = today.getDate();
-        if (dd < 10) dd = '0' + dd;
-        if (mm < 10) mm = '0' + mm;
-
-        const defaultFrom = `01/${mm}/${yyyy}`;
-        const defaultTo = `${dd}/${mm}/${yyyy}`;
+        const { defaultFrom, defaultTo } = getDefaultFilterDates();
 
         document.getElementById('filter-from-date').value = defaultFrom;
         document.getElementById('filter-to-date').value = defaultTo;
@@ -1711,6 +1773,7 @@
         }
         
         populateAssignOptions();
+        activeUnit = document.getElementById('active-unit').value;
         switchRole(document.getElementById('active-role').value);
     });
 
@@ -1729,17 +1792,15 @@
         filterTable();
     }
 
+    // Handle Đơn vị công tác (Cơ quan tiếp nhận) switching - simulates Data Isolation
+    function switchUnit(unitVal) {
+        activeUnit = unitVal;
+        filterTable();
+    }
+
     // Reset all filters to default values
     function resetFilters() {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        let mm = today.getMonth() + 1;
-        let dd = today.getDate();
-        if (dd < 10) dd = '0' + dd;
-        if (mm < 10) mm = '0' + mm;
-
-        const defaultFrom = `01/${mm}/${yyyy}`;
-        const defaultTo = `${dd}/${mm}/${yyyy}`;
+        const { defaultFrom, defaultTo } = getDefaultFilterDates();
 
         document.getElementById('filter-from-date').value = defaultFrom;
         document.getElementById('filter-to-date').value = defaultTo;
@@ -1777,7 +1838,9 @@
         const priority = document.getElementById('filter-priority').value;
         const officer = document.getElementById('filter-officer').value;
 
-        let filtered = [...supportTickets];
+        // Nguyên tắc phân quyền dữ liệu (Data Isolation): chỉ hiển thị yêu cầu hỗ trợ có Cơ quan tiếp nhận
+        // đúng bằng đơn vị công tác của Cán bộ đang đăng nhập, áp dụng trước mọi bộ lọc khác.
+        let filtered = supportTickets.filter(t => t.receiving_agency === activeUnit && t.category === BPBD_CATEGORY);
 
         // Filter by Date
         if (fromDateVal) {
@@ -1914,7 +1977,7 @@
 
         const totalCount = list.length;
         if (totalCount === 0) {
-            tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy yêu cầu hỗ trợ nào phù hợp</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: var(--text-muted); padding: 30px;">Không tìm thấy yêu cầu hỗ trợ nào phù hợp</td></tr>`;
             const pagBar = document.getElementById('paginationBar');
             if (pagBar) pagBar.innerHTML = '';
             return;
@@ -1982,6 +2045,8 @@
                 <td class="truncate-cell" data-fulltext="${t.content.replace(/"/g, '&quot;')}" onmouseover="showTooltip(event, this.getAttribute('data-fulltext'))" onmousemove="moveTooltip(event)" onmouseout="hideTooltip()">${truncatedContent}</td>
                 <td style="text-align: center;">${priorityBadge}</td>
                 <td style="font-weight: 500;">${t.user_name}</td>
+                <td>${t.user_email}</td>
+                <td>${t.receiving_agency || '<span style="color: var(--text-muted); font-style: italic;">—</span>'}</td>
                 <td>${handlerNameText}</td>
                 <td>${dateUpdateText}</td>
                 <td style="text-align: center;">${statusBadge}</td>
@@ -2072,10 +2137,13 @@
 
     // Update statistics dashboard counts
     function updateStatistics() {
-        const total = supportTickets.length;
-        const pending = supportTickets.filter(t => t.status === "Chờ tiếp nhận").length;
-        const processing = supportTickets.filter(t => t.status === "Đang xử lý" || t.status === "Yêu cầu làm rõ").length;
-        const completed = supportTickets.filter(t => t.status === "Hoàn thành").length;
+        // Nguyên tắc phân quyền dữ liệu (Data Isolation): thống kê chỉ tính trên các yêu cầu
+        // thuộc đúng Cơ quan tiếp nhận (đơn vị công tác) của Cán bộ đang đăng nhập.
+        const scopedTickets = supportTickets.filter(t => t.receiving_agency === activeUnit && t.category === BPBD_CATEGORY);
+        const total = scopedTickets.length;
+        const pending = scopedTickets.filter(t => t.status === "Chờ tiếp nhận").length;
+        const processing = scopedTickets.filter(t => t.status === "Đang xử lý" || t.status === "Yêu cầu làm rõ").length;
+        const completed = scopedTickets.filter(t => t.status === "Hoàn thành").length;
 
         document.getElementById('stat-total').innerText = total;
         document.getElementById('stat-pending').innerText = pending;
@@ -2511,6 +2579,7 @@
         activeTicketId = id;
         document.getElementById('dt-id').innerText = ticket.id;
         document.getElementById('dt-created-at').innerText = ticket.created_at;
+        document.getElementById('dt-agency').innerText = ticket.receiving_agency || "—";
         
         let priorityHtml = "";
         if (ticket.priority === "Cao") priorityHtml = `<span class="badge badge-high">Cao</span>`;

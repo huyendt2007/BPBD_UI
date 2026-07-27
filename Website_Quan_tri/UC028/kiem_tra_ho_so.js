@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Xử lý logic SPA cho UC028 - Màn hình Xem chi tiết hồ sơ (Three-Pane Layout)
  * Áp dụng tổng quát cho cả 9 loại hồ sơ theo quy chuẩn Design System.
  */
@@ -299,7 +299,7 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ nhập liệu',
+        status: 'Chờ giải quyết',
         statusClass: 'badge-warning',
         pin: '109283',
         customerId: '',
@@ -312,7 +312,7 @@ let mockProfiles = [
         paymentMethod: 'tien_mat',
         resultMethod: 'truc_tiep',
         timeline: [
-            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:00', status: 'Chờ nhập liệu', active: true }
+            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:00', status: 'Chờ giải quyết', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 18:00', user: 'Quầy Một Cửa', action: 'Tiếp nhận', comment: 'Đã nộp đơn giấy & In biên lai đóng phí.' }
@@ -326,7 +326,7 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ nhập liệu',
+        status: 'Chờ giải quyết',
         statusClass: 'badge-warning',
         pin: '189283',
         customerId: 'KH-ANPHAT-10',
@@ -339,7 +339,7 @@ let mockProfiles = [
         paymentMethod: 'chuyen_khoan',
         resultMethod: 'buu_chinh',
         timeline: [
-            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:15', status: 'Chờ nhập liệu', active: true }
+            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:15', status: 'Chờ giải quyết', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 18:15', user: 'Quầy Một Cửa', action: 'Tiếp nhận', comment: 'Đã nộp đơn giấy & In biên lai đóng phí.' }
@@ -407,7 +407,7 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ nhập liệu',
+        status: 'Chờ giải quyết',
         statusClass: 'badge-warning',
         pin: '293847',
         customerId: '',
@@ -420,7 +420,7 @@ let mockProfiles = [
         paymentMethod: 'tien_mat',
         resultMethod: 'truc_tiep',
         timeline: [
-            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:30', status: 'Chờ nhập liệu', active: true }
+            { id: 'node-1', title: 'Tiếp nhận quầy', date: '30/06/2026 18:30', status: 'Chờ giải quyết', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 18:30', user: 'Quầy Một Cửa', action: 'Tiếp nhận', comment: 'Đã nộp đơn giấy & In biên lai đóng phí.' }
@@ -818,6 +818,310 @@ let pageSize = 10;
 let currentPage = 1;
 let filteredProfiles = []; // Store currently filtered records for pagination paging
 
+function loadPaperDigitizeProfiles() {
+    try {
+        const raw = localStorage.getItem('ucps014_paper_profiles');
+        const list = raw ? JSON.parse(raw) : [];
+        if (Array.isArray(list) && list.length) {
+            return list.map(p => ({...p, status: 'Chờ giải quyết'}));
+        }
+
+        const seed = [
+            {
+                id: 'HS-2026-000128',
+                paper: 'PG-0128',
+                date: '24/07/2026 09:20',
+                customer: 'Công ty TNHH Hải Nam',
+                submitter: 'Nguyễn Văn Bình',
+                type: 'Đăng ký lần đầu',
+                transactionType: 'Biện pháp bảo đảm',
+                subtype: 'Thế chấp',
+                channel: 'Trực tiếp tại quầy',
+                resultMethod: 'truc_tiep',
+                paymentMethod: 'tien_mat',
+                paymentStatus: 'Đã thu',
+                amount: 80000,
+                receipt: 'BL-2026-000128',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: 'KH-HG-0128',
+                phone: '0900000128',
+                email: 'hainam@example.com',
+                assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '24/07/2026 09:20', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '24/07/2026 09:20', user: 'Cán bộ tiếp nhận', action: 'Tiếp nhận hồ sơ giấy', comment: 'Đã thu phí và chuyển cán bộ nghiệp vụ nhập liệu.' }]
+            },
+            {
+                id: 'HS-2026-000129',
+                paper: 'PG-0129',
+                date: '24/07/2026 10:05',
+                customer: 'Nguyễn Thị Hoa',
+                submitter: 'Nguyễn Thị Hoa',
+                type: 'Yêu cầu cung cấp bản sao',
+                transactionType: 'Biện pháp bảo đảm',
+                subtype: 'Thế chấp',
+                channel: 'Trực tiếp tại quầy',
+                resultMethod: 'truc_tiep',
+                paymentMethod: 'chuyen_khoan',
+                paymentStatus: 'Đã thu',
+                copyQuantity: 2,
+                amount: 30000,
+                receipt: 'CT-FT25205129',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: '-',
+                phone: '0912000129',
+                email: 'hoa@example.com',
+                assetType: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '24/07/2026 10:05', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '24/07/2026 10:05', user: 'Kế toán thanh toán', action: 'Xác nhận thu phí', comment: 'Đã xác nhận khoản ghi Có tài khoản đơn vị.' }]
+            },
+            {
+                id: 'HS-2026-000130',
+                paper: 'PG-0130',
+                date: '23/07/2026 15:15',
+                customer: 'Ngân hàng TMCP FPT',
+                submitter: 'Trần Minh Quân',
+                type: 'Xóa đăng ký',
+                transactionType: 'Biện pháp bảo đảm',
+                subtype: 'Cầm cố',
+                channel: 'Qua bưu chính',
+                resultMethod: 'buu_chinh',
+                paymentMethod: 'mien_phi',
+                paymentStatus: 'Miễn phí',
+                amount: 0,
+                receipt: '-',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: 'KH-FPT-0130',
+                phone: '02473000130',
+                email: 'fptbank@example.com',
+                assetType: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '23/07/2026 15:15', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '23/07/2026 15:15', user: 'Cán bộ tiếp nhận', action: 'Tiếp nhận hồ sơ giấy', comment: 'Hồ sơ thuộc diện miễn phí.' }]
+            },
+            {
+                id: 'HS-2026-000131',
+                paper: 'PG-0131',
+                date: '23/07/2026 16:20',
+                customer: 'Công ty Cổ phần Minh Khang',
+                submitter: 'Lê Bảo Nam',
+                type: 'Đăng ký thay đổi',
+                transactionType: 'Hợp đồng',
+                subtype: 'Hợp đồng cho thuê tài chính',
+                channel: 'Qua bưu chính',
+                resultMethod: 'dien_tu',
+                paymentMethod: 'tien_mat',
+                paymentStatus: 'Đã thu',
+                amount: 60000,
+                receipt: 'BL-2026-000131',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: 'KH-MK-0131',
+                phone: '0900000131',
+                email: 'minhkhang@example.com',
+                assetType: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '23/07/2026 16:20', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '23/07/2026 16:20', user: 'Cán bộ tiếp nhận', action: 'Tiếp nhận hồ sơ giấy', comment: 'Chờ nhập liệu đăng ký thay đổi.' }]
+            },
+            {
+                id: 'HS-2026-000132',
+                paper: 'PG-0132',
+                date: '22/07/2026 08:40',
+                customer: 'Ngân hàng TMCP Công thương Việt Nam',
+                submitter: 'Phạm Thu Trang',
+                type: 'Thông báo xử lý tài sản bảo đảm lần đầu',
+                transactionType: 'Biện pháp bảo đảm',
+                subtype: 'Thế chấp',
+                channel: 'Trực tiếp tại quầy',
+                resultMethod: 'dien_tu',
+                paymentMethod: 'chuyen_khoan',
+                paymentStatus: 'Đã thu',
+                amount: 70000,
+                receipt: 'CT-20260722001',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: 'KH-VTB-0132',
+                phone: '02473000132',
+                email: 'vietinbank@example.com',
+                assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '22/07/2026 08:40', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '22/07/2026 08:40', user: 'Cán bộ tiếp nhận', action: 'Tiếp nhận hồ sơ giấy', comment: 'Chờ nhập liệu thông báo xử lý lần đầu.' }]
+            },
+            {
+                id: 'HS-2026-000133',
+                paper: 'PG-0133',
+                date: '22/07/2026 09:30',
+                customer: 'Ngân hàng TMCP Kỹ thương Việt Nam',
+                submitter: 'Đỗ Hoàng Anh',
+                type: 'Thay đổi thông báo xử lý tài sản bảo đảm',
+                transactionType: 'Biện pháp bảo đảm',
+                subtype: 'Thế chấp',
+                channel: 'Trực tiếp tại quầy',
+                resultMethod: 'truc_tiep',
+                paymentMethod: 'tien_mat',
+                paymentStatus: 'Đã thu',
+                amount: 50000,
+                receipt: 'BL-2026-000133',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: 'KH-TCB-0133',
+                phone: '02473000133',
+                email: 'techcombank@example.com',
+                assetType: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '22/07/2026 09:30', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '22/07/2026 09:30', user: 'Cán bộ tiếp nhận', action: 'Tiếp nhận hồ sơ giấy', comment: 'Chờ nhập liệu thay đổi thông báo xử lý.' }]
+            },
+            {
+                id: 'HS-2026-000134',
+                paper: 'PG-0134',
+                date: '22/07/2026 10:45',
+                customer: 'Ngân hàng TMCP Quân đội',
+                submitter: 'Bùi Đức Long',
+                type: 'Xóa đăng ký thông báo xử lý tài sản bảo đảm',
+                transactionType: 'Biện pháp bảo đảm',
+                subtype: 'Thế chấp',
+                channel: 'Qua bưu chính',
+                resultMethod: 'buu_chinh',
+                paymentMethod: 'mien_phi',
+                paymentStatus: 'Miễn phí',
+                amount: 0,
+                receipt: '-',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: 'KH-MB-0134',
+                phone: '02473000134',
+                email: 'mb@example.com',
+                assetType: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '22/07/2026 10:45', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '22/07/2026 10:45', user: 'Cán bộ tiếp nhận', action: 'Tiếp nhận hồ sơ giấy', comment: 'Chờ nhập liệu xóa thông báo xử lý.' }]
+            },
+            {
+                id: 'HS-2026-000135',
+                paper: 'PG-0135',
+                date: '21/07/2026 14:10',
+                customer: 'Công ty Luật An Việt',
+                submitter: 'Vũ Minh Châu',
+                type: 'Yêu cầu cung cấp bản sao kèm thông báo',
+                transactionType: 'Biện pháp bảo đảm',
+                subtype: 'Thế chấp',
+                channel: 'Trực tiếp tại quầy',
+                resultMethod: 'truc_tiep',
+                paymentMethod: 'chuyen_khoan',
+                paymentStatus: 'Đã thu',
+                amount: 50000,
+                receipt: 'CT-20260721003',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: 'KH-AV-0135',
+                phone: '0900000135',
+                email: 'anviet@example.com',
+                assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '21/07/2026 14:10', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '21/07/2026 14:10', user: 'Kế toán thanh toán', action: 'Xác nhận thu phí', comment: 'Chờ nhập liệu bản sao kèm thông báo.' }]
+            },
+            {
+                id: 'HS-2026-000136',
+                paper: 'PG-0136',
+                date: '21/07/2026 15:50',
+                customer: 'Ông Phạm Minh Đức',
+                submitter: 'Phạm Minh Đức',
+                type: 'Yêu cầu cung cấp thông tin',
+                transactionType: 'Biện pháp bảo đảm',
+                subtype: 'Thế chấp',
+                channel: 'Trực tiếp tại quầy',
+                resultMethod: 'dien_tu',
+                paymentMethod: 'tien_mat',
+                paymentStatus: 'Đã thu',
+                amount: 30000,
+                receipt: 'BL-2026-000136',
+                officer: 'Nguyễn Thị Tiếp Nhận',
+                handlingOfficer: 'Nguyễn Văn Cán Bộ',
+                status: 'Chờ giải quyết',
+                statusClass: 'badge-warning',
+                customerId: '-',
+                phone: '0900000136',
+                email: 'duc@example.com',
+                assetType: 'Cây hằng năm, công trình tạm',
+                timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '21/07/2026 15:50', status: 'Chờ giải quyết', active: true }],
+                internalLogs: [{ time: '21/07/2026 15:50', user: 'Cán bộ tiếp nhận', action: 'Tiếp nhận hồ sơ giấy', comment: 'Chờ nhập liệu yêu cầu cung cấp thông tin.' }]
+            }
+        ];
+        localStorage.setItem('ucps014_paper_profiles', JSON.stringify(seed));
+        return seed;
+    } catch (err) {
+        console.warn('Không đọc được dữ liệu hồ sơ giấy chờ giải quyết:', err);
+        return [];
+    }
+}
+
+function ensurePaperDigitizeSamples() {
+    try {
+        const current = JSON.parse(localStorage.getItem('ucps014_paper_profiles') || '[]');
+        const requiredSamples = [
+            ['HS-2026-000131','PG-0131','Đăng ký thay đổi','Công ty Cổ phần Minh Khang','Lê Bảo Nam',60000,'Đã thu','Hợp đồng','Hợp đồng cho thuê tài chính'],
+            ['HS-2026-000132','PG-0132','Thông báo xử lý tài sản bảo đảm lần đầu','Ngân hàng TMCP Công thương Việt Nam','Phạm Thu Trang',70000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000133','PG-0133','Thay đổi thông báo xử lý tài sản bảo đảm','Ngân hàng TMCP Kỹ thương Việt Nam','Đỗ Hoàng Anh',50000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000134','PG-0134','Xóa đăng ký thông báo xử lý tài sản bảo đảm','Ngân hàng TMCP Quân đội','Bùi Đức Long',0,'Miễn phí','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000135','PG-0135','Yêu cầu cung cấp bản sao kèm thông báo','Công ty Luật An Việt','Vũ Minh Châu',50000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000136','PG-0136','Yêu cầu cung cấp thông tin','Ông Phạm Minh Đức','Phạm Minh Đức',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp']
+        ].map((r, idx) => ({
+            id: r[0],
+            paper: r[1],
+            date: `${String(21 + idx).padStart(2, '0')}/07/2026 ${String(8 + idx).padStart(2, '0')}:30`,
+            type: r[2],
+            customer: r[3],
+            submitter: r[4],
+            amount: r[5],
+            paymentStatus: r[6],
+            transactionType: r[7],
+            subtype: r[8],
+            channel: idx % 2 ? 'Qua bưu chính' : 'Trực tiếp tại quầy',
+            resultMethod: idx % 3 === 0 ? 'truc_tiep' : idx % 3 === 1 ? 'buu_chinh' : 'dien_tu',
+            paymentMethod: r[5] === 0 ? 'mien_phi' : idx % 2 ? 'tien_mat' : 'chuyen_khoan',
+            receipt: r[5] === 0 ? '-' : `BL-2026-00013${idx + 1}`,
+            officer: 'Nguyễn Thị Tiếp Nhận',
+            handlingOfficer: 'Nguyễn Văn Cán Bộ',
+            status: 'Chờ giải quyết',
+            statusClass: 'badge-warning',
+            customerId: `KH-MAU-13${idx + 1}`,
+            phone: `090000013${idx + 1}`,
+            email: `mau${idx + 1}@example.com`,
+            copyQuantity: r[2] === 'Yêu cầu cung cấp bản sao' ? 2 : undefined,
+            assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+            timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '24/07/2026 09:20', status: 'Chờ giải quyết', active: true }],
+            internalLogs: [{ time: '24/07/2026 09:20', user: 'Cán bộ tiếp nhận', action: 'Tiếp nhận hồ sơ giấy', comment: 'Bổ sung mẫu kiểm tra UI UCPS014.' }]
+        }));
+        const byId = new Map(current.map(x => [x.id, x]));
+        let changed = false;
+        requiredSamples.forEach(sample => {
+            if (!byId.has(sample.id)) {
+                current.push(sample);
+                changed = true;
+            }
+        });
+        if (changed) localStorage.setItem('ucps014_paper_profiles', JSON.stringify(current));
+    } catch (err) {
+        console.warn('Không thể bổ sung dữ liệu mẫu UCPS014:', err);
+    }
+}
+
 function formatAssetTypeCell(assetType) {
     if (!assetType) return '<td>-</td>';
     const list = assetType.split(/[\|\n]|\s+\/\s+/).map(x => x.trim()).filter(Boolean);
@@ -838,21 +1142,21 @@ function renderTable(resetPage = false) {
 
     // 2. Determine target status based on current active tab
     let targetStatuses = ['Chờ duyệt'];
-    if (currentListTab === 'chonhaplieu') targetStatuses = ['Chờ nhập liệu'];
+    if (currentListTab === 'chonhaplieu') targetStatuses = ['Chờ giải quyết'];
     else if (currentListTab === 'duyet-choky') targetStatuses = ['Duyệt chờ ký'];
     else if (currentListTab === 'bitralai') targetStatuses = ['Bị trả lại'];
     else if (currentListTab === 'dang_xu_ly') targetStatuses = ['Chờ ký'];
     else if (currentListTab === 'da_xu_ly') targetStatuses = ['Hoàn thành', 'Bị từ chối'];
 
     // 3. Filter the complete mock profiles array plus custom localStorage data
-    const currentVersion = 'v4';
+    const currentVersion = 'v5';
     const savedVersion = localStorage.getItem('mock_profiles_version');
     if (savedVersion !== currentVersion) {
         localStorage.removeItem('custom_mock_profiles');
         localStorage.setItem('mock_profiles_version', currentVersion);
     }
 
-    let allProfiles = [...mockProfiles];
+    let allProfiles = [...loadPaperDigitizeProfiles(), ...mockProfiles];
     const cached = localStorage.getItem('custom_mock_profiles');
     if (cached) {
         let customList = JSON.parse(cached);
@@ -880,11 +1184,13 @@ function renderTable(resetPage = false) {
     }
 
     if (currentListTab === 'chonhaplieu') {
-        const searchTerm = document.getElementById('filter-search-term')?.value.toLowerCase().trim() || '';
-        const filterKenh = document.getElementById('filter-kenh-tiep-nhan')?.value || '';
-        const filterChuThe = document.getElementById('filter-loai-chu-the')?.value || '';
-        const filterPhuongThuc = document.getElementById('filter-phuong-thuc')?.value || '';
-        const filterHinhThuc = document.getElementById('filter-hinh-thuc-tra')?.value || '';
+        const filterMaHoSo = document.getElementById('filter-ma-ho-so')?.value.toLowerCase().trim() || '';
+        const filterSoDon = document.getElementById('filter-so-don-giay')?.value.toLowerCase().trim() || '';
+        const filterNguoiYeuCau = document.getElementById('filter-nguoi-yeu-cau')?.value.toLowerCase().trim() || '';
+        const filterNguoiNop = document.getElementById('filter-nguoi-nop')?.value.toLowerCase().trim() || '';
+        const filterLoaiYeuCau = document.getElementById('filter-loai-yeu-cau')?.value || '';
+        const filterTrangThaiPhi = document.getElementById('filter-trang-thai-phi')?.value || '';
+        const filterCanBoTiepNhan = document.getElementById('filter-can-bo-tiep-nhan')?.value.toLowerCase().trim() || '';
         const filterTungay = document.getElementById('filter-tungay')?.value || '';
         const filterDenngay = document.getElementById('filter-denngay')?.value || '';
 
@@ -892,11 +1198,13 @@ function renderTable(resetPage = false) {
             if (p.handlingOfficer && p.handlingOfficer !== "Nguyễn Văn Cán Bộ") return false;
             if (!targetStatuses.includes(p.status)) return false;
 
-            if (searchTerm && !p.customer.toLowerCase().includes(searchTerm) && !p.phone?.toLowerCase().includes(searchTerm)) return false;
-            if (filterKenh && p.channel !== filterKenh) return false;
-            if (filterChuThe && p.customerType !== filterChuThe) return false;
-            if (filterPhuongThuc && p.paymentMethod !== filterPhuongThuc) return false;
-            if (filterHinhThuc && p.resultMethod !== filterHinhThuc) return false;
+            if (filterMaHoSo && !p.id.toLowerCase().includes(filterMaHoSo)) return false;
+            if (filterSoDon && !(p.paper || '').toLowerCase().includes(filterSoDon)) return false;
+            if (filterNguoiYeuCau && !p.customer.toLowerCase().includes(filterNguoiYeuCau)) return false;
+            if (filterNguoiNop && !(p.submitter || p.customer).toLowerCase().includes(filterNguoiNop)) return false;
+            if (filterLoaiYeuCau && p.type !== filterLoaiYeuCau) return false;
+            if (filterTrangThaiPhi && (p.paymentStatus || (p.paymentMethod === 'mien_phi' ? 'Miễn phí' : 'Đã thu')) !== filterTrangThaiPhi) return false;
+            if (filterCanBoTiepNhan && !(p.officer || '').toLowerCase().includes(filterCanBoTiepNhan)) return false;
 
             if (filterTungay) {
                 const rowDate = parseDateString(p.date);
@@ -947,7 +1255,7 @@ function renderTable(resetPage = false) {
                 if (filterStatusVal && p.status !== filterStatusVal) return false;
             }
 
-            if (searchTerm && !p.id.toLowerCase().includes(searchTerm) && !p.pin.toLowerCase().includes(searchTerm) && !p.customer.toLowerCase().includes(searchTerm) && !p.mortgagee.toLowerCase().includes(searchTerm)) return false;
+            if (searchTerm && !p.id.toLowerCase().includes(searchTerm) && !(p.pin || '').toLowerCase().includes(searchTerm) && !p.customer.toLowerCase().includes(searchTerm) && !p.mortgagee.toLowerCase().includes(searchTerm)) return false;
             if (filterCustomerId && !p.customerId?.toLowerCase().includes(filterCustomerId)) return false;
             if (filterLoaidangky && p.type !== filterLoaidangky) return false;
             if (filterLoaihinh && p.transactionType !== filterLoaihinh) return false;
@@ -1004,19 +1312,17 @@ function executeRender() {
         thead.innerHTML = `
             <tr>
                 <th style="width: 50px; text-align: center;">STT</th>
-                <th style="cursor: pointer; width: 140px;" onclick="toggleSort('date')">Thời điểm tiếp nhận ${getSortIcon('date')}</th>
-                <th style="width: 120px;">Kênh tiếp nhận</th>
-                <th style="width: 130px;">Loại chủ thể</th>
-                <th style="width: 150px;">Mã tài khoản trực tuyến</th>
-                <th style="cursor: pointer; width: 220px;" onclick="toggleSort('name')">Họ và tên / Tên tổ chức ${getSortIcon('name')}</th>
-                <th style="width: 110px;">Số điện thoại</th>
-                <th style="width: 160px;">Email</th>
-                <th style="width: 150px;">Phương thức thanh toán</th>
-                <th style="width: 150px;">Hình thức trả kết quả</th>
-                <th style="width: 120px;">Số biên lai</th>
-                <th style="width: 120px;">Trạng thái</th>
-                <th style="width: 140px;">Cán bộ xử lý</th>
-                <th style="text-align: center; width: 100px; min-width: 100px;">Thao tác</th>
+                <th style="width: 140px;">Mã hồ sơ</th>
+                <th style="width: 110px;">Số đơn giấy</th>
+                <th style="cursor: pointer; width: 210px;" onclick="toggleSort('name')">Người yêu cầu ${getSortIcon('name')}</th>
+                <th style="width: 180px;">Người nộp</th>
+                <th style="width: 190px;">Loại yêu cầu</th>
+                <th style="cursor: pointer; width: 140px;" onclick="toggleSort('date')">Ngày tiếp nhận ${getSortIcon('date')}</th>
+                <th style="width: 130px;">Đã thu/Miễn phí</th>
+                <th style="width: 120px;">Trạng thái lệ phí</th>
+                <th style="width: 130px;">Trạng thái hồ sơ</th>
+                <th style="width: 150px;">Cán bộ tiếp nhận</th>
+                <th style="text-align: center; width: 130px; min-width: 130px;">Thao tác</th>
             </tr>
         `;
     } else {
@@ -1054,7 +1360,7 @@ function executeRender() {
     }
 
     const totalCount = filteredProfiles.length;
-    const colSpanCount = currentListTab === 'chonhaplieu' ? 14 : 18;
+    const colSpanCount = currentListTab === 'chonhaplieu' ? 12 : 18;
 
     if (totalCount === 0) {
         tbody.innerHTML = `<tr><td colspan="${colSpanCount}" style="text-align: center; padding: 30px; color: var(--text-muted);"><i>Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm.</i></td></tr>`;
@@ -1073,29 +1379,27 @@ function executeRender() {
 
     pageData.forEach((row, index) => {
         if (currentListTab === 'chonhaplieu') {
-            const customerTypeText = row.customerType === 'vang_lai' ? 'Khách hàng vãng lai' : 'Khách hàng có tài khoản trực tuyến';
-            const payMethodText = row.paymentMethod === 'tien_mat' ? 'Nộp tiền mặt' : (row.paymentMethod === 'chuyen_khoan' ? 'Chuyển khoản ngân hàng' : 'Miễn phí');
-            const resultMethodText = row.resultMethod === 'truc_tiep' ? 'Trực tiếp tại cơ quan' : (row.resultMethod === 'buu_chinh' ? 'Qua dịch vụ bưu chính' : 'Cách thức điện tử');
+            const feeText = row.paymentMethod === 'mien_phi' || Number(row.amount || 0) === 0 ? 'Miễn phí' : Number(row.amount || 0).toLocaleString('vi-VN') + ' VND';
+            const feeStatus = row.paymentStatus || (row.paymentMethod === 'mien_phi' ? 'Miễn phí' : 'Đã thu');
+            const feeBadge = feeStatus === 'Miễn phí' ? 'badge-info' : 'badge-success';
 
             tbody.innerHTML += `
-                <tr style="cursor: pointer;" onclick="startDigitize('${row.id}')">
+                <tr style="cursor: pointer;" onclick="openPaperReadonly('${row.id}')">
                     <td>${startIndex + index + 1}</td>
+                    <td><span class="action-link" onclick="event.stopPropagation(); openPaperReadonly('${row.id}')"><b>${row.id}</b></span></td>
+                    <td><code>${row.paper || '-'}</code></td>
+                    <td>${row.customer}</td>
+                    <td>${row.submitter || row.customer}</td>
+                    <td>${row.type}</td>
                     <td>${row.date}</td>
-                    <td>${row.channel || 'Trực tiếp tại quầy'}</td>
-                    <td>${customerTypeText}</td>
-                    <td>${row.customerId || '-'}</td>
-                    <td><b>${row.customer}</b></td>
-                    <td>${row.phone || '-'}</td>
-                    <td>${row.email || '-'}</td>
-                    <td>${payMethodText}</td>
-                    <td>${resultMethodText}</td>
-                    <td><code>${row.receipt || '-'}</code></td>
-                    <td><span class="badge badge-warning">Chờ nhập liệu</span></td>
-                    <td>${row.handlingOfficer || '-'}</td>
-                    <td style="text-align: center;" onclick="event.stopPropagation()">
-                        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px; background-color: var(--secondary-color);" onclick="startDigitize('${row.id}')">
-                            <i class="fa-solid fa-keyboard"></i> Nhập liệu
-                        </button>
+                    <td>${feeText}</td>
+                    <td><span class="badge ${feeBadge}">${feeStatus}</span></td>
+                    <td><span class="badge badge-warning">Chờ giải quyết</span></td>
+                    <td>${row.officer || '-'}</td>
+                    <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
+                        <button class="icon-btn view" title="Xem hồ sơ giấy" onclick="openPaperReadonly('${row.id}')"><i class="fa fa-eye"></i></button>
+                        <button class="icon-btn edit" title="Tạo hồ sơ" onclick="startDigitize('${row.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>
+                        <button class="icon-btn reject" title="Từ chối" onclick="openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>
                     </td>
                 </tr>
             `;
@@ -1137,7 +1441,7 @@ function executeRender() {
                     <td>${startIndex + index + 1}</td>
                     <td>${row.date}</td>
                     <td><span class="action-link" onclick="event.stopPropagation(); openDetail('${row.id}')">${row.id}</span></td>
-                    <td><code>${row.pin}</code></td>
+                    <td><code>${row.pin || '-'}</code></td>
                     <td><b>${row.customer}</b></td>
                     <td>${row.mortgagee}</td>
                     <td>${row.type}</td>
@@ -1166,7 +1470,8 @@ function executeRender() {
     // Render pagination buttons
     renderPagination(totalCount);
 
-    document.getElementById('checkAll').checked = false;
+    const checkAll = document.getElementById('checkAll');
+    if (checkAll) checkAll.checked = false;
 }
 
 // Render các nút phân trang
@@ -1277,6 +1582,10 @@ function switchListTab(tab, element) {
     document.getElementById('toolbar-choduyet').style.display = 'none';
     document.getElementById('toolbar-duyet-choky').style.display = 'none';
     document.getElementById('toolbar-choky').style.display = 'none';
+    const tableTitle = document.getElementById('list-table-title');
+    if (tableTitle) {
+        tableTitle.innerText = tab === 'chonhaplieu' ? 'Danh sách hồ sơ chờ nhập liệu' : 'Bảng danh sách kết quả đối soát';
+    }
 
     if (tab === 'choduyet') {
         document.getElementById('toolbar-choduyet').style.display = 'flex';
@@ -1306,43 +1615,47 @@ function renderFilterPanel() {
         container.innerHTML = `
             <div class="grid-4-cols">
                 <div class="form-group">
-                    <label class="form-label">Tìm kiếm</label>
-                    <input type="text" class="form-control" id="filter-search-term" placeholder="Tên hoặc Số điện thoại..." autocomplete="off">
+                    <label class="form-label">Mã hồ sơ</label>
+                    <input type="text" class="form-control" id="filter-ma-ho-so" placeholder="VD: HS-2026-000128" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Kênh tiếp nhận</label>
-                    <select class="form-select" id="filter-kenh-tiep-nhan">
+                    <label class="form-label">Số đơn giấy</label>
+                    <input type="text" class="form-control" id="filter-so-don-giay" placeholder="VD: PG-0128" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Người yêu cầu</label>
+                    <input type="text" class="form-control" id="filter-nguoi-yeu-cau" placeholder="Tên cá nhân/tổ chức" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Người nộp hồ sơ</label>
+                    <input type="text" class="form-control" id="filter-nguoi-nop" placeholder="Tên người nộp" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Loại yêu cầu</label>
+                    <select class="form-select" id="filter-loai-yeu-cau">
                         <option value="">Tất cả</option>
-                        <option value="Trực tiếp tại quầy">Trực tiếp tại quầy</option>
-                        <option value="Qua bưu chính">Qua bưu chính</option>
-                        <option value="Cách thức điện tử">Cách thức điện tử</option>
+                        <option value="Đăng ký lần đầu">Đăng ký lần đầu</option>
+                        <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
+                        <option value="Xóa đăng ký">Xóa đăng ký</option>
+                        <option value="Thông báo xử lý tài sản bảo đảm lần đầu">Thông báo xử lý tài sản bảo đảm lần đầu</option>
+                        <option value="Thay đổi thông báo xử lý tài sản bảo đảm">Thay đổi thông báo xử lý tài sản bảo đảm</option>
+                        <option value="Xóa đăng ký thông báo xử lý tài sản bảo đảm">Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
+                        <option value="Yêu cầu cung cấp bản sao">Yêu cầu cung cấp bản sao</option>
+                        <option value="Yêu cầu cung cấp bản sao kèm thông báo">Yêu cầu cung cấp bản sao kèm thông báo</option>
+                        <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Loại chủ thể</label>
-                    <select class="form-select" id="filter-loai-chu-the">
+                    <label class="form-label">Trạng thái lệ phí</label>
+                    <select class="form-select" id="filter-trang-thai-phi">
                         <option value="">Tất cả</option>
-                        <option value="vang_lai">Khách hàng vãng lai</option>
-                        <option value="dinh_danh">Khách hàng có tài khoản trực tuyến</option>
+                        <option value="Đã thu">Đã thu</option>
+                        <option value="Miễn phí">Miễn phí</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Phương thức thanh toán</label>
-                    <select class="form-select" id="filter-phuong-thuc">
-                        <option value="">Tất cả</option>
-                        <option value="tien_mat">Nộp tiền mặt</option>
-                        <option value="chuyen_khoan">Chuyển khoản ngân hàng</option>
-                        <option value="mien_phi">Miễn phí</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Hình thức trả kết quả</label>
-                    <select class="form-select" id="filter-hinh-thuc-tra">
-                        <option value="">Tất cả</option>
-                        <option value="truc_tiep">Trực tiếp tại cơ quan đăng ký</option>
-                        <option value="buu_chinh">Qua dịch vụ bưu chính</option>
-                        <option value="dien_tu">Cách thức điện tử</option>
-                    </select>
+                    <label class="form-label">Cán bộ tiếp nhận</label>
+                    <input type="text" class="form-control" id="filter-can-bo-tiep-nhan" placeholder="Tên cán bộ tiếp nhận" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
@@ -1499,7 +1812,28 @@ function cancelApprovalSingle(id) {
 }
 
 function saveProfiles() {
-    localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
+    const cached = localStorage.getItem('custom_mock_profiles');
+    const currentCustom = cached ? JSON.parse(cached) : [];
+    const mockIds = mockProfiles.map(p => p.id);
+    const preservedExternal = currentCustom.filter(p => !mockIds.includes(p.id));
+    localStorage.setItem('custom_mock_profiles', JSON.stringify([...preservedExternal, ...mockProfiles]));
+}
+
+function findProfileForAction(id) {
+    const cached = localStorage.getItem('custom_mock_profiles');
+    const customList = cached ? JSON.parse(cached) : [];
+    return mockProfiles.find(p => p.id === id)
+        || customList.find(p => p.id === id)
+        || loadPaperDigitizeProfiles().find(p => p.id === id);
+}
+
+function persistProfileForAction(profile) {
+    const cached = localStorage.getItem('custom_mock_profiles');
+    const customList = cached ? JSON.parse(cached) : [];
+    const idx = customList.findIndex(p => p.id === profile.id);
+    if (idx >= 0) customList[idx] = profile;
+    else customList.unshift(profile);
+    localStorage.setItem('custom_mock_profiles', JSON.stringify(customList));
 }
 
 function updateTabBadges() {
@@ -1510,7 +1844,7 @@ function updateTabBadges() {
         bitralai: 0
     };
     
-    let allProfiles = [...mockProfiles];
+    let allProfiles = [...loadPaperDigitizeProfiles(), ...mockProfiles];
     const cached = localStorage.getItem('custom_mock_profiles');
     if (cached) {
         let customList = JSON.parse(cached);
@@ -1532,7 +1866,7 @@ function updateTabBadges() {
     }
 
     allProfiles.forEach(p => {
-        if (p.status === 'Chờ nhập liệu') counts.chonhaplieu++;
+        if (p.status === 'Chờ giải quyết') counts.chonhaplieu++;
         else if (p.status === 'Chờ duyệt') counts.choduyet++;
         else if (p.status === 'Duyệt chờ ký') counts['duyet-choky']++;
         else if (p.status === 'Bị trả lại') counts.bitralai++;
@@ -1566,7 +1900,12 @@ function openRejectSingle(id) {
 
 function startDigitize(id) {
     localStorage.setItem('selected_dossier_id', id);
-    window.location.href = '../UC024/dang_ky_bpbd_can_bo.html';
+    window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id);
+}
+
+function openPaperReadonly(id) {
+    localStorage.setItem('selected_dossier_id', id);
+    window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id);
 }
 
 function searchList() {
@@ -1602,7 +1941,9 @@ function resetFilters() {
         'filter-loaidangky', 'cb-loaihinh',
         'filter-loaitaisan', 'filter-search-term', 'filter-kenh-tiep-nhan',
         'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra',
-        'filter-status-xu-ly'
+        'filter-status-xu-ly', 'filter-ma-ho-so', 'filter-so-don-giay',
+        'filter-nguoi-yeu-cau', 'filter-nguoi-nop', 'filter-loai-yeu-cau',
+        'filter-trang-thai-phi', 'filter-can-bo-tiep-nhan'
     ];
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -2380,12 +2721,12 @@ function submitReject() {
     closeModal('modalReject');
 
     if (singleRejectId) {
-        currentProfile = mockProfiles.find(p => p.id === singleRejectId);
+        currentProfile = findProfileForAction(singleRejectId);
         openModalPreview('tuchoi', reason);
     } else {
         const selected = getSelectedRows();
         if (selected.length > 0) {
-            currentProfile = mockProfiles.find(p => p.id === selected[0]);
+            currentProfile = findProfileForAction(selected[0]);
             openModalPreview('tuchoi', reason);
         }
     }
@@ -2457,43 +2798,49 @@ function confirmPreviewAction() {
     const statusClassVal = currentPreviewType === 'trinhky' ? 'badge-info' : 'badge-danger';
 
     if (singleRejectId) {
-        const p = mockProfiles.find(prof => prof.id === singleRejectId);
+        const p = findProfileForAction(singleRejectId);
         if (p) {
             p.status = statusVal;
             p.statusClass = statusClassVal;
+            p.internalLogs = p.internalLogs || [];
             p.internalLogs.unshift({
                 time: 'Vừa xong',
                 user: 'Cán bộ nghiệp vụ TTĐK',
                 action: currentPreviewType === 'trinhky' ? 'Trình ký' : 'Từ chối',
                 comment: currentPreviewType === 'trinhky' ? 'Đã lập dự thảo Giấy chứng nhận gửi Lãnh đạo.' : `Đã lập dự thảo Văn bản từ chối: ${reason}`
             });
+            persistProfileForAction(p);
         }
         singleRejectId = null;
     } else {
         const selected = getSelectedRows();
         if (selected.length > 0) {
             selected.forEach(id => {
-                const p = mockProfiles.find(prof => prof.id === id);
+                const p = findProfileForAction(id);
                 if (p) {
                     p.status = statusVal;
                     p.statusClass = statusClassVal;
+                    p.internalLogs = p.internalLogs || [];
                     p.internalLogs.unshift({
                         time: 'Vừa xong',
                         user: 'Cán bộ nghiệp vụ TTĐK',
                         action: currentPreviewType === 'trinhky' ? 'Trình ký' : 'Từ chối',
                         comment: currentPreviewType === 'trinhky' ? 'Đã lập dự thảo Giấy chứng nhận gửi Lãnh đạo.' : `Đã lập dự thảo Văn bản từ chối: ${reason}`
                     });
+                    persistProfileForAction(p);
                 }
             });
         } else if (currentProfile) {
             currentProfile.status = statusVal;
             currentProfile.statusClass = statusClassVal;
+            currentProfile.internalLogs = currentProfile.internalLogs || [];
             currentProfile.internalLogs.unshift({
                 time: 'Vừa xong',
                 user: 'Cán bộ nghiệp vụ TTĐK',
                 action: currentPreviewType === 'trinhky' ? 'Trình ký' : 'Từ chối',
                 comment: currentPreviewType === 'trinhky' ? 'Đã lập dự thảo Giấy chứng nhận gửi Lãnh đạo.' : `Đã lập dự thảo Văn bản từ chối: ${reason}`
             });
+            persistProfileForAction(currentProfile);
         }
     }
 
@@ -2580,6 +2927,8 @@ function initViewMode() {
         localStorage.setItem('custom_mock_profiles', JSON.stringify(mockProfiles));
     }
 
+    ensurePaperDigitizeSamples();
+
     // Gán cán bộ xử lý cho mock data để mô phỏng
     mockProfiles.forEach((p, idx) => {
         p.handlingOfficer = "Nguyễn Văn Cán Bộ";
@@ -2623,10 +2972,12 @@ function initViewMode() {
 
     const navTabs = document.querySelector('.nav-tabs');
     const headerTitle = document.querySelector('h1');
+    const tableTitle = document.getElementById('list-table-title');
 
     if (viewMode === 'dang_xu_ly') {
         if (navTabs) navTabs.style.display = 'none';
         if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ ĐANG XỬ LÝ (CHỜ KÝ)';
+        if (tableTitle) tableTitle.innerText = 'Danh sách hồ sơ đang xử lý';
         currentListTab = 'dang_xu_ly';
         document.getElementById('toolbar-choduyet').style.display = 'none';
         document.getElementById('toolbar-duyet-choky').style.display = 'none';
@@ -2634,16 +2985,30 @@ function initViewMode() {
     } else if (viewMode === 'da_xu_ly') {
         if (navTabs) navTabs.style.display = 'none';
         if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ ĐÃ XỬ LÝ';
+        if (tableTitle) tableTitle.innerText = 'Danh sách hồ sơ đã xử lý';
         currentListTab = 'da_xu_ly';
         document.getElementById('toolbar-choduyet').style.display = 'none';
         document.getElementById('toolbar-duyet-choky').style.display = 'none';
         document.getElementById('toolbar-choky').style.display = 'none';
+    } else if (viewMode === 'chonhaplieu') {
+        if (navTabs) navTabs.style.display = 'flex';
+        if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ CHỜ NHẬP LIỆU';
+        if (tableTitle) tableTitle.innerText = 'Danh sách hồ sơ chờ nhập liệu';
+        currentListTab = 'chonhaplieu';
+        document.getElementById('toolbar-choduyet').style.display = 'none';
+        document.getElementById('toolbar-duyet-choky').style.display = 'none';
+        document.getElementById('toolbar-choky').style.display = 'none';
+        if (navTabs) {
+            navTabs.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.toggle('active', (t.getAttribute('onclick') || '').includes('chonhaplieu'));
+            });
+        }
     } else {
         if (navTabs) navTabs.style.display = 'flex';
         if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ CHỜ XỬ LÝ';
         
         const savedTab = sessionStorage.getItem('activeListTab');
-        if (savedTab && ['choduyet', 'duyet-choky', 'bitralai'].includes(savedTab)) {
+        if (savedTab && ['chonhaplieu', 'choduyet', 'duyet-choky', 'bitralai'].includes(savedTab)) {
             currentListTab = savedTab;
             if (navTabs) {
                 navTabs.querySelectorAll('.nav-tab').forEach(t => {
@@ -2656,6 +3021,9 @@ function initViewMode() {
             }
         } else {
             currentListTab = 'choduyet';
+        }
+        if (tableTitle) {
+            tableTitle.innerText = currentListTab === 'chonhaplieu' ? 'Danh sách hồ sơ chờ nhập liệu' : 'Bảng danh sách kết quả đối soát';
         }
         
         document.getElementById('toolbar-choduyet').style.display = 'none';

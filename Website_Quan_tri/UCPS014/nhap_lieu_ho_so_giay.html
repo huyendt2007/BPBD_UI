@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCPS014 - Nhập liệu hồ sơ giấy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--primary:#1e3a8a;--blue:#2563eb;--green:#059669;--orange:#d97706;--red:#dc2626;--bg:#f3f4f6;--card:#fff;--line:#dbe3ef;--text:#172033;--muted:#64748b}
+        *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Arial,Helvetica,sans-serif}.page{padding:20px 24px 32px}.view{display:none}.view.active{display:block}
+        .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}.title h1{font-size:22px;margin:0;color:var(--primary)}.title p{margin:6px 0 0;color:var(--muted)}
+        .btn{border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 12px;font-weight:700;cursor:pointer;color:var(--primary);display:inline-flex;align-items:center;gap:7px}.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.btn.success{background:var(--green);color:#fff;border-color:var(--green)}.btn.danger{background:#fff1f2;color:var(--red);border-color:#fecdd3}.btn.small{padding:6px 9px;font-size:12px}.btn:disabled{opacity:.55;cursor:not-allowed}
+        .toolbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.card{background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 2px 8px #0f172a12;margin-bottom:16px}.card-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}.card-h h2{font-size:16px;color:var(--primary);margin:0}.card-b{padding:16px}
+        .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}.field label{display:block;font-weight:700;margin-bottom:6px;font-size:13px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:5px;padding:9px 10px;font:inherit;background:#fff}.field textarea{min-height:84px}.readonly{background:#f8fafc!important;color:#475569}.required{color:var(--red)}
+        details{border:1px solid var(--line);border-radius:8px;background:#fff;margin-bottom:12px}details summary{cursor:pointer;font-weight:800;color:var(--primary);list-style:none;padding:12px 14px;background:#f8fafc;border-radius:8px}details[open] summary{border-bottom:1px solid var(--line);border-radius:8px 8px 0 0}details summary::-webkit-details-marker{display:none}.detail-body{padding:14px}.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.kv{background:#f8fafc;border:1px solid var(--line);border-radius:6px;padding:10px}.kv span{display:block;font-size:12px;color:var(--muted)}.kv b{display:block;margin-top:3px}
+        .stepper{display:flex;gap:8px;margin-bottom:16px}.step{flex:1;border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff;color:var(--muted);font-weight:800}.step.active{background:#eff6ff;color:var(--primary);border-color:#bfdbfe}.section-title{font-size:15px;margin:18px 0 10px;color:var(--primary);border-bottom:1px solid var(--line);padding-bottom:8px}.section-title:first-child{margin-top:0}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px}.table{width:100%;border-collapse:collapse;min-width:760px}.table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}.table th{background:#eef4fb;color:#0f3a85}.table tr:last-child td{border-bottom:0}.preview-box{border:1px solid var(--line);border-radius:8px;padding:14px;background:#fff}.badge{display:inline-flex;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:700}.b-paid{background:#ecfdf5;color:#047857}.b-wait{background:#fff7ed;color:#9a3412}.b-info{background:#eff6ff;color:#1d4ed8}.b-red{background:#fff1f2;color:#b91c1c}
+        .hint{margin-top:7px;color:var(--muted);font-size:12px}.lookup{background:#f8fafc;border:1px dashed #b6c6dd;border-radius:8px;padding:14px;margin-bottom:14px}.conditional.hidden{display:none}.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.check-item{border:1px solid var(--line);border-radius:6px;padding:9px 10px;background:#fff;display:flex;gap:8px;align-items:flex-start}.check-item input{margin-top:2px}.upload-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--line);border-radius:6px;padding:7px;background:#fff}.upload-line input[type=file]{display:none}.file-name{color:var(--muted);font-size:13px}.file-actions{display:none;gap:6px}.state-tag{display:inline-flex;border-radius:999px;padding:3px 8px;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700}.readonly-note{border-left:3px solid #93c5fd;background:#eff6ff;padding:10px 12px;color:#1e3a8a;border-radius:6px;margin-bottom:12px}
+        .modal{position:fixed;inset:0;background:#0f172a80;display:none;align-items:center;justify-content:center;z-index:50;padding:24px}.modal.show{display:flex}.modal-box{background:#fff;border-radius:8px;width:min(680px,96vw);box-shadow:0 24px 60px #0004}.modal-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}.modal-body{padding:18px}.icon{width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--primary);cursor:pointer}
+        @media(max-width:1000px){.grid,.grid.four,.summary-grid{grid-template-columns:repeat(2,1fr)}.check-grid{grid-template-columns:1fr}}@media(max-width:640px){.grid,.grid.two,.grid.four,.summary-grid{grid-template-columns:1fr}.top{flex-direction:column}.page{padding:14px}.toolbar{justify-content:flex-start}}
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="top">
+        <div class="title">
+            <h1>Hồ sơ chờ giải quyết</h1>
+            <p>UCPS014 - Nhập liệu hồ sơ giấy theo đúng biểu mẫu nghiệp vụ Website khách hàng.</p>
+        </div>
+        <button class="btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> Quay về danh sách</button>
+    </div>
+
+    <div class="stepper" id="stepper">
+        <div class="step active" id="s1">1. Nhập liệu nghiệp vụ</div>
+        <div class="step" id="s2">2. Xem trước hồ sơ</div>
+        <div class="step" id="s3">3. Hoàn tất hồ sơ</div>
+    </div>
+
+    <section id="readonlyView" class="view">
+        <div class="card">
+            <div class="card-h">
+                <h2>Xem hồ sơ giấy</h2>
+                <span class="badge b-info">Chờ giải quyết</span>
+            </div>
+            <div class="card-b">
+                <div class="section-title">Thông tin tiếp nhận và thu phí</div>
+                <div class="summary-grid" id="readonlyInfoView"></div>
+                <div class="section-title">Tài liệu tiếp nhận</div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead><tr><th>Tên tài liệu</th><th>Tên tệp</th><th>Dung lượng</th><th>Người tải</th><th>Thời điểm tải</th><th>Thao tác</th></tr></thead>
+                        <tbody id="attachmentReadonly"></tbody>
+                    </table>
+                </div>
+                <div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px" class="toolbar">
+                    <button class="btn" onclick="goBack()">Quay lại</button>
+                    <button class="btn danger" onclick="openRejectModal()"><i class="fa-solid fa-xmark"></i> Từ chối</button>
+                    <button class="btn primary" onclick="startCreate()"><i class="fa-solid fa-file-circle-plus"></i> Tạo hồ sơ</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="editView" class="view">
+        <div class="card">
+            <div class="card-h"><h2>Thông tin tiếp nhận và thu phí</h2><span class="badge b-info">Chỉ đọc</span></div>
+            <div class="card-b">
+                <details open>
+                    <summary><i class="fa-solid fa-chevron-right"></i> Thông tin kế thừa từ UCPS012/UCPS013</summary>
+                    <div class="detail-body"><div class="summary-grid" id="readonlyInfoEdit"></div></div>
+                </details>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-h"><h2 id="businessTitle">Nhập liệu nghiệp vụ</h2><span id="formRef" class="badge b-wait">Tham chiếu UC024</span></div>
+            <div class="card-b" id="businessForm"></div>
+        </div>
+    </section>
+
+    <section id="previewView" class="view">
+        <div class="card">
+            <div class="card-h"><h2>Thông tin tiếp nhận và thu phí</h2><span class="badge b-paid">Chỉ đọc</span></div>
+            <div class="card-b"><div class="summary-grid" id="previewReadonly"></div></div>
+        </div>
+        <div class="card">
+            <div class="card-h"><h2>Xem trước hồ sơ</h2><span class="badge b-wait" id="reviewRef">Review nghiệp vụ</span></div>
+            <div class="card-b">
+                <div class="preview-box" id="businessPreview"></div>
+                <div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px" class="toolbar">
+                    <button class="btn" onclick="backToEdit()">Quay lại chỉnh sửa</button>
+                    <button class="btn primary" onclick="submitFlow('Trình ký')"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
+                    <button class="btn success" onclick="submitFlow('Duyệt chờ ký')"><i class="fa-solid fa-check-double"></i> Duyệt chờ ký</button>
+                    <button class="btn danger" onclick="cancelEdit()">Hủy bỏ</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <div class="modal-head"><h3 id="modalTitle" style="margin:0;color:var(--primary)">Xác nhận</h3><button class="icon" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="modal-body" id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+const qs = new URLSearchParams(location.search);
+const id = localStorage.getItem('selected_dossier_id') || qs.get('id') || 'HS-2026-000128';
+let mode = qs.get('mode') === 'view' ? 'view' : 'edit';
+
+function normalizeType(type) {
+    if (!type || type === 'Đăng ký mới') return 'Đăng ký lần đầu';
+    if (type === 'Thông báo xử lý tài sản') return 'Thông báo xử lý tài sản bảo đảm lần đầu';
+    if (type === 'Thay đổi thông báo xử lý tài sản') return 'Thay đổi thông báo xử lý tài sản bảo đảm';
+    if (type === 'Xóa thông báo xử lý tài sản') return 'Xóa đăng ký thông báo xử lý tài sản bảo đảm';
+    return type;
+}
+function getProfile() {
+    const paper = JSON.parse(localStorage.getItem('ucps014_paper_profiles') || '[]');
+    const all = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+    const found = paper.find(x => x.id === id) || all.find(x => x.id === id);
+    return found || {
+        id,
+        paper: 'PG-0128',
+        date: '24/07/2026 09:20',
+        customer: 'Công ty TNHH Hải Nam',
+        submitter: 'Nguyễn Văn Bình',
+        type: 'Đăng ký lần đầu',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Thế chấp',
+        receipt: 'BL-2026-000128',
+        customerId: 'KH-HG-0128',
+        paymentMethod: 'tien_mat',
+        paymentStatus: 'Đã thu',
+        resultMethod: 'truc_tiep',
+        channel: 'Trực tiếp tại quầy',
+        status: 'Chờ giải quyết',
+        amount: 80000,
+        copyQuantity: 2,
+        officer: 'Nguyễn Thị Tiếp Nhận'
+    };
+}
+const p = getProfile();
+p.type = normalizeType(p.type);
+p.status = 'Chờ giải quyết';
+
+function lowerType() { return (p.type || '').toLowerCase(); }
+function isChange() { return lowerType().includes('thay đổi') && !lowerType().includes('thông báo'); }
+function isDelete() { return lowerType().includes('xóa đăng ký') && !lowerType().includes('thông báo'); }
+function isNoticeFirst() { return lowerType().includes('thông báo xử lý') && lowerType().includes('lần đầu'); }
+function isNoticeChange() { return lowerType().includes('thay đổi thông báo'); }
+function isNoticeDelete() { return lowerType().includes('xóa đăng ký thông báo'); }
+function isCopy() { return lowerType() === 'yêu cầu cung cấp bản sao'; }
+function isCopyNotice() { return lowerType().includes('bản sao kèm thông báo'); }
+function isInfoRequest() { return lowerType().includes('cung cấp thông tin'); }
+function needsOriginalNumber() { return isChange() || isDelete() || isNoticeFirst() || isNoticeChange() || isNoticeDelete() || isCopy() || isCopyNotice() || isInfoRequest(); }
+function refByType() {
+    if (isChange()) return 'Tham chiếu UC025.MH02';
+    if (isDelete()) return 'Tham chiếu UC026.MH02';
+    if (isNoticeFirst()) return 'Tham chiếu UC131.1.MH02';
+    if (isNoticeChange()) return 'Tham chiếu UC131.2.MH02';
+    if (isNoticeDelete()) return 'Tham chiếu UC131.3.MH02';
+    if (isCopy()) return 'Tham chiếu UC149.MH02';
+    if (isCopyNotice()) return 'Tham chiếu UC152.MH02';
+    if (isInfoRequest()) return 'Tham chiếu UC027.MH03';
+    return 'Tham chiếu UC024.MH01';
+}
+function money(value) {
+    if (p.paymentMethod === 'mien_phi' || Number(value || 0) === 0) return 'Miễn phí';
+    return Number(value || 80000).toLocaleString('vi-VN') + ' VND';
+}
+function resultText() {
+    return p.resultMethod === 'buu_chinh' ? 'Qua dịch vụ bưu chính' : p.resultMethod === 'dien_tu' ? 'Cách thức điện tử' : 'Trực tiếp tại cơ quan đăng ký';
+}
+function paymentText() {
+    return p.paymentMethod === 'chuyen_khoan' ? 'Chuyển khoản' : p.paymentMethod === 'mien_phi' ? 'Miễn phí' : 'Tiền mặt';
+}
+function e(value) {
+    return String(value ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function kv(label, value) {
+    return `<div class="kv"><span>${label}</span><b>${e(value || '-')}</b></div>`;
+}
+function field(label, value = '', attrs = '') {
+    return `<div class="field"><label>${label}</label><input ${attrs} value="${e(value)}"></div>`;
+}
+function readField(label, value = '') {
+    return field(label, value, 'class="readonly" readonly');
+}
+function selectField(label, options, selected = '', attrs = '') {
+    return `<div class="field"><label>${label}</label><select ${attrs}>${options.map(o => `<option${o === selected ? ' selected' : ''}>${e(o)}</option>`).join('')}</select></div>`;
+}
+function areaField(label, value = '', attrs = '') {
+    return `<div class="field"><label>${label}</label><textarea ${attrs}>${e(value)}</textarea></div>`;
+}
+function uploadField(label, required = false) {
+    const id = 'file_' + Math.random().toString(36).slice(2);
+    return `<div class="field upload-field"><label>${label}${required ? ' <span class="required">*</span>' : ''}</label><div class="upload-line"><label class="btn small" for="${id}"><i class="fa-solid fa-upload"></i> Chọn tệp</label><input id="${id}" type="file" accept=".pdf,.xls,.xlsx" onchange="handleUpload(this)"><span class="file-name">Chưa chọn tệp</span><span class="file-actions"><button type="button" class="btn small" onclick="viewUploadedFile(this)"><i class="fa-regular fa-eye"></i> Xem file</button><button type="button" class="btn small danger" onclick="clearUploadedFile(this)"><i class="fa-solid fa-trash-can"></i> Xóa</button></span></div><div class="hint">Chấp nhận PDF hoặc Excel theo biểu mẫu, tối đa 20MB/tệp.</div></div>`;
+}
+function table(headers, rows) {
+    return `<div class="table-wrap"><table class="table"><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function attachments() {
+    return p.attachments || [
+        { name: 'Đơn yêu cầu/phiếu tiếp nhận hồ sơ giấy', fileName: 'Don_yeu_cau_' + p.id + '.pdf', fileSize: 1258291, required: true },
+        { name: 'Tài liệu chứng minh/Hợp đồng kèm theo', fileName: 'Tai_lieu_kem_theo_' + p.id + '.pdf', fileSize: 2293760, required: true }
+    ];
+}
+function renderReadonly() {
+    const html = [
+        kv('Mã hồ sơ', p.id),
+        kv('Số đơn giấy', p.paper || 'PG-' + p.id.slice(-3)),
+        kv('Mã QR/mã vạch', 'QR-' + p.id),
+        kv('Trạng thái hồ sơ', 'Chờ giải quyết'),
+        kv('Nguồn hồ sơ', 'Hồ sơ giấy'),
+        kv('Kênh tiếp nhận', p.channel || 'Trực tiếp tại quầy'),
+        kv('Thời điểm tiếp nhận', p.date),
+        kv('Đơn vị tiếp nhận', p.agency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội'),
+        kv('Người yêu cầu', p.customer),
+        kv('Người nộp hồ sơ', p.submitter || p.customer),
+        kv('Loại yêu cầu', p.type),
+        kv('Phương thức nhận kết quả', resultText()),
+        kv('Mã khoản phải thu', 'KPT-' + p.id.slice(-6)),
+        kv('Số lượng bản sao', isCopy() ? (p.copyQuantity || 1) + ' bản' : '-'),
+        kv('Số tiền đã thu/Miễn phí', money(p.amount)),
+        kv('Trạng thái lệ phí', p.paymentStatus || (p.paymentMethod === 'mien_phi' ? 'Miễn phí' : 'Đã thu')),
+        kv('Phương thức thanh toán', paymentText()),
+        kv('Số biên lai/chứng từ', p.receipt || '-'),
+        kv('Cán bộ tiếp nhận/thu phí', p.officer || 'Nguyễn Thị Tiếp Nhận')
+    ].join('');
+    readonlyInfoView.innerHTML = html;
+    readonlyInfoEdit.innerHTML = html;
+    previewReadonly.innerHTML = html;
+}
+function renderAttachments() {
+    const rows = attachments().map(a => {
+        const size = a.fileSize ? (a.fileSize / 1048576).toFixed(1) + ' MB' : '-';
+        const actions = `<button class="btn small" onclick="viewFile('${e(a.fileName)}')"><i class="fa-regular fa-eye"></i> Xem file</button> <button class="btn small" onclick="downloadFile('${e(a.fileName)}')"><i class="fa-solid fa-download"></i> Tải xuống</button>`;
+        return `<tr><td>${e(a.name)}</td><td>${e(a.fileName)}</td><td>${size}</td><td>${e(p.officer || 'Nguyễn Thị Tiếp Nhận')}</td><td>${e(p.date)}</td><td>${actions}</td></tr>`;
+    }).join('');
+    attachmentReadonly.innerHTML = rows;
+}
+function referenceLookupHtml(label = 'Số đăng ký') {
+    if (!needsOriginalNumber()) return '';
+    const help = isCopy() || isCopyNotice() || isInfoRequest()
+        ? 'Nếu số đăng ký đã được cán bộ tiếp nhận nhập ở bước tiếp nhận thì hệ thống tự điền. Cán bộ không nhập lại số lượng bản sao tại đây.'
+        : 'Luồng cán bộ nhập hồ sơ giấy: Không yêu cầu Số PIN. Chỉ nhập Số đăng ký/Số thông báo để hệ thống kế thừa dữ liệu.';
+    return `<div class="lookup"><div class="grid two">${field(label + ' <span class="required">*</span>', p.originalRegistrationNo || '1505156438', 'id="registrationNo"')}${readField('Hồ sơ tham chiếu', 'Tự động nạp thông tin sau khi tra cứu')}</div><div class="hint">${help}</div><div style="margin-top:10px"><button class="btn small primary" onclick="lookupOriginal()"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu hồ sơ</button></div></div>`;
+}
+function requesterBlock(extraOptions = []) {
+    const base = ['Bên bảo đảm','Bên nhận bảo đảm','Quản tài viên/Doanh nghiệp quản lý, thanh lý tài sản','Chi nhánh của pháp nhân, người đại diện'];
+    const options = [...new Set([...base, ...extraOptions])];
+    return `<div class="section-title">I. Thông tin người yêu cầu đăng ký</div><div class="grid two">${selectField('Người yêu cầu đăng ký <span class="required">*</span>', options, options[0], 'id="requesterRole" onchange="updateConditionalVisibility()"')}<div class="conditional requester-proof hidden">${uploadField('Tải lên tài liệu chứng minh tư cách pháp lý (PDF)', true)}</div></div>`;
+}
+function commonInfoBlock(readonly = false, changeMode = false) {
+    const ro = readonly ? 'class="readonly" readonly' : '';
+    return `<div class="section-title">${changeMode ? 'III' : 'II'}. Thông tin chung và nghĩa vụ được bảo đảm</div>
+        ${changeMode ? '<div class="readonly-note">Các trường được kế thừa từ hồ sơ gốc/thay đổi gần nhất. Cán bộ mở khóa từng khối để nhập thay đổi theo đơn giấy.</div>' : ''}
+        <div class="grid">
+            ${readField('Trường hợp đăng ký', p.type)}
+            ${readField('Cơ quan tiếp nhận', p.agency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội')}
+            ${selectField('Loại hình giao dịch <span class="required">*</span>', ['Biện pháp bảo đảm','Hợp đồng'], p.transactionType || 'Biện pháp bảo đảm', `id="transactionType" onchange="updateConditionalVisibility()" ${readonly ? 'disabled' : ''}`)}
+            <div class="field conditional bpbd-only"><label>Loại biện pháp <span class="required">*</span></label><select id="securityType" onchange="updateConditionalVisibility()" ${readonly ? 'disabled' : ''}><option>Thế chấp</option><option>Cầm cố</option><option>Bảo lưu quyền sở hữu</option><option>Đặt cọc</option><option>Ký cược</option><option>Ký quỹ</option></select></div>
+            <div class="field conditional contract-only"><label>Loại hợp đồng <span class="required">*</span></label><select id="contractType" ${readonly ? 'disabled' : ''}><option>Hợp đồng cho thuê tài chính</option><option>Hợp đồng thuê tài sản có thời hạn 1 năm trở lên</option><option>Hợp đồng chuyển giao đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác</option><option>Hợp đồng ký gửi</option></select></div>
+            ${field('Số hợp đồng <span class="required">*</span>', 'HDTC/' + p.id, ro)}
+            ${field('Ngày có hiệu lực của hợp đồng <span class="required">*</span>', '24/07/2026', ro)}
+            ${field('Giá trị khoản vay hoặc nghĩa vụ (VND)', '1.500.000.000', ro)}
+            ${selectField('Quy mô', ['Bên bảo đảm là công ty có ít hơn 10 nhân viên','Doanh nghiệp nhỏ và vừa','Khác'], 'Doanh nghiệp nhỏ và vừa', readonly ? 'disabled' : '')}
+            <div class="field"><label>Chủ doanh nghiệp là nữ giới?</label><label class="check-item"><input type="checkbox" ${readonly ? 'disabled' : ''}> Có</label></div>
+            ${changeMode ? `<div class="field"><label>Trường hợp được miễn nghĩa vụ nộp phí</label><label class="check-item"><input type="checkbox" onchange="updateConditionalVisibility()" id="feeExemptCheck" ${readonly ? 'disabled' : ''}> Thuộc diện miễn phí</label></div><div class="conditional fee-proof">${uploadField('Tải tài liệu chứng minh miễn lệ phí (PDF)', true)}</div>` : ''}
+        </div>`;
+}
+function subjectEditor(title, withState = false, readonly = false) {
+    const isSecuredReceiver = title === 'Bên nhận bảo đảm';
+    if (isSecuredReceiver) {
+        const rows = withState
+            ? [['Đang bảo đảm','Ngân hàng TMCP Ngoại thương Việt Nam','198 Trần Quang Khải - Hà Nội - Việt Nam'],['Sửa thông tin','Ngân hàng TMCP Công thương Việt Nam','108 Trần Hưng Đạo - Hà Nội - Việt Nam']]
+            : [['','Ngân hàng TMCP Ngoại thương Việt Nam','198 Trần Quang Khải - Hà Nội - Việt Nam']];
+        const headers = withState ? ['Biến động','Tên','Địa chỉ'] : ['Tên','Địa chỉ'];
+        const body = rows.map(r => withState ? [`<span class="state-tag">${r[0]}</span>`, r[1], r[2]] : [r[1], r[2]]);
+        const editor = readonly ? '' : `<details><summary><i class="fa-solid fa-building-columns"></i> Form thêm/cập nhật ${title}</summary><div class="detail-body"><div class="grid">
+            ${field('Tên <span class="required">*</span>', 'Ngân hàng TMCP Ngoại thương Việt Nam')}
+            ${selectField('Quốc gia <span class="required">*</span>', ['Việt Nam','Nhật Bản','Hàn Quốc','Singapore'], 'Việt Nam')}
+            ${selectField('Tỉnh/Thành phố <span class="required">*</span>', ['Hà Nội','TP Hồ Chí Minh','Đà Nẵng','Hải Phòng'], 'Hà Nội')}
+            ${field('Địa chỉ chi tiết <span class="required">*</span>', '198 Trần Quang Khải')}
+        </div><div class="toolbar" style="margin-top:12px"><button class="btn small">Thêm Người đăng ký làm Bên nhận bảo đảm</button><button class="btn small primary">Lưu</button><button class="btn small">Cập nhật</button><button class="btn small">Hủy</button></div></div></details>`;
+        return `<div class="section-title">${title}</div>${table(headers, body)}${readonly ? '' : `<div style="margin:10px 0 12px"><button class="btn small"><i class="fa-solid fa-plus"></i> Thêm ${title.toLowerCase()}</button></div>${editor}`}`;
+    }
+    const rows = withState
+        ? [['Đang bảo đảm','Công dân Việt Nam','001092012345',p.customer,'Số 12 Trần Hưng Đạo - Hà Nội - Việt Nam'],['Bổ sung mới','Tổ chức có đăng ký kinh doanh trong nước','0109988776','Công ty TNHH Minh An','Quận 1 - TP Hồ Chí Minh - Việt Nam']]
+        : [['','Công dân Việt Nam','001092012345',p.customer,'Số 12 Trần Hưng Đạo - Hà Nội - Việt Nam']];
+    const headers = withState ? ['Biến động','Loại chủ thể','Số giấy tờ','Tên','Địa chỉ'] : ['Loại chủ thể','Số giấy tờ','Tên','Địa chỉ'];
+    const body = rows.map(r => withState ? [`<span class="state-tag">${r[0]}</span>`, r[1], r[2], r[3], r[4]] : [r[1], r[2], r[3], r[4]]);
+    const editor = readonly ? '' : `<details><summary><i class="fa-solid fa-user-pen"></i> Form thêm/cập nhật ${title}</summary><div class="detail-body"><div class="grid">
+        ${selectField('Loại chủ thể <span class="required">*</span>', ['Công dân Việt Nam','Người nước ngoài','Người không quốc tịch cư trú tại Việt Nam','Tổ chức có đăng ký kinh doanh trong nước','Nhà đầu tư nước ngoài','Tổ chức khác'], 'Công dân Việt Nam', 'class="subject-type" onchange="updateConditionalVisibility()"')}
+        <div class="field subject-person"><label>Họ và tên <span class="required">*</span></label><input value="${e(p.customer)}"></div>
+        <div class="field subject-citizen"><label>Số CMND/CCCD/Chứng minh quân đội <span class="required">*</span></label><input value="001092012345"></div>
+        <div class="field subject-org hidden conditional"><label>Tên tổ chức <span class="required">*</span></label><input value="Công ty TNHH Hải Nam"></div>
+        <div class="field subject-org hidden conditional"><label>Mã số thuế <span class="required">*</span></label><input value="0101234567"></div>
+        <div class="field subject-passport hidden conditional"><label>Số hộ chiếu <span class="required">*</span></label><input value="P12345678"></div>
+        <div class="field subject-passport hidden conditional"><label>Quốc gia cấp hộ chiếu</label><select><option>Việt Nam</option><option>Nhật Bản</option><option>Hàn Quốc</option></select></div>
+        <div class="field subject-residence hidden conditional"><label>Thẻ cư trú <span class="required">*</span></label><input value="TRU-2026-001"></div>
+        ${selectField('Quốc gia <span class="required">*</span>', ['Việt Nam','Nhật Bản','Hàn Quốc','Singapore'], 'Việt Nam')}
+        ${selectField('Tỉnh/Thành phố <span class="required">*</span>', ['Hà Nội','TP Hồ Chí Minh','Đà Nẵng','Hải Phòng'], 'Hà Nội')}
+        ${field('Địa chỉ chi tiết <span class="required">*</span>', 'Số 12 Trần Hưng Đạo')}
+    </div><div class="toolbar" style="margin-top:12px"><button class="btn small">Tìm kiếm chủ thể</button><button class="btn small primary">Lưu</button><button class="btn small">Cập nhật</button><button class="btn small">Hủy</button></div></div></details>`;
+    return `<div class="section-title">${title}</div>${table(headers, body)}${readonly ? '' : `<div style="margin:10px 0 12px"><button class="btn small"><i class="fa-solid fa-plus"></i> Thêm ${title.toLowerCase()}</button></div>${editor}`}`;
+}
+function partyBlocks(withState = false, readonly = false) {
+    return subjectEditor('Bên bảo đảm', withState, readonly) + subjectEditor('Bên nhận bảo đảm', withState, readonly);
+}
+function assetBlock(readonly = false, selectable = false, withState = false) {
+    const actionText = readonly ? 'Chỉ đọc theo hồ sơ gốc/phiên bản gần nhất.' : 'Chọn loại tài sản để ẩn/hiện đúng các bảng nhập liệu tương ứng theo UC024.';
+    const selector = readonly ? '' : `<div class="field"><label>Loại tài sản <span class="required">*</span></label><div class="check-grid" id="assetChecks">
+        <label class="check-item"><input type="checkbox" value="road" checked onchange="updateConditionalVisibility()"> Phương tiện giao thông cơ giới đường bộ CÓ số khung</label>
+        <label class="check-item"><input type="checkbox" value="vehicle" onchange="updateConditionalVisibility()"> Tàu cá, phương tiện thủy, đường sắt, phương tiện chuyên dùng</label>
+        <label class="check-item"><input type="checkbox" value="right" onchange="updateConditionalVisibility()"> Quyền tài sản hoặc một phần quyền tài sản</label>
+        <label class="check-item"><input type="checkbox" value="goods" onchange="updateConditionalVisibility()"> Hàng hóa luân chuyển/kho hàng</label>
+        <label class="check-item"><input type="checkbox" value="securities" onchange="updateConditionalVisibility()"> Chứng khoán đã đăng ký tập trung trở thành không tập trung</label>
+        <label class="check-item"><input type="checkbox" value="other" onchange="updateConditionalVisibility()"> Các động sản khác</label>
+    </div></div>`;
+    const roadHeaders = selectable ? ['Tích chọn','STT','Tên phương tiện','Nhãn hiệu, màu sơn','Số khung','Số máy','Biển số','Yêu cầu thông báo','Cơ quan nhận thông báo'] : ['STT','Tên phương tiện','Nhãn hiệu, màu sơn','Số khung','Số máy','Biển số','Yêu cầu thông báo','Cơ quan nhận thông báo'];
+    const roadRow = selectable ? ['<input type="checkbox" checked>','1','Ô tô','Toyota Vios trắng','TYT-VIOS-88992','ENG-4A-FE-990','30H-123.45','<input type="checkbox" checked>','Sở GTVT Hà Nội'] : ['1','Ô tô','Toyota Vios trắng','TYT-VIOS-88992','ENG-4A-FE-990','30H-123.45','Có','Sở GTVT Hà Nội'];
+    const stateCol = withState ? ['Biến động'] : [];
+    return `<div class="section-title">Tài sản bảo đảm</div><div class="readonly-note">${actionText}</div><div class="grid">${selector}${areaField('Mô tả chung về tài sản bảo đảm', 'Tài sản theo hồ sơ giấy và phụ lục kèm theo.', readonly ? 'class="readonly" readonly' : '')}</div>
+        <div class="conditional asset-road">${table([...stateCol, ...roadHeaders], [[...(withState ? ['<span class="state-tag">Đang bảo đảm</span>'] : []), ...roadRow]])}${readonly ? '' : '<div class="toolbar" style="margin-top:10px"><button class="btn small">Thêm số khung</button><button class="btn small danger">Xóa số khung</button><button class="btn small">Yêu cầu tất cả</button><button class="btn small">File mẫu</button><button class="btn small">Gửi tệp Excel</button></div>'}</div>
+        <div class="conditional asset-vehicle hidden">${table([...stateCol,'STT','Tên phương tiện/nhãn hiệu','Chủ phương tiện/chủ sở hữu','Số đăng ký, cơ quan cấp','Cấp phương tiện','Yêu cầu thông báo','Cơ quan nhận thông báo'], [[...(withState ? ['<span class="state-tag">Bổ sung mới</span>'] : []),'1','Tàu cá HP-889','Công ty Hải Nam','DK-889/Cảng vụ Hải Phòng','Cấp VR-SB','Có','Cục Đăng kiểm Việt Nam']])}</div>
+        <div class="conditional asset-right hidden"><div class="grid two">${areaField('Tên quyền <span class="required">*</span>', 'Quyền đòi nợ phát sinh từ hợp đồng tín dụng số 28/2026/HDTD.', readonly ? 'class="readonly" readonly' : '')}${areaField('Căn cứ phát sinh quyền <span class="required">*</span>', 'Hợp đồng phát sinh quyền tài sản, ngày ký kết, thông tin các bên giao kết hợp đồng.', readonly ? 'class="readonly" readonly' : '')}</div></div>
+        <div class="conditional asset-goods hidden"><div class="grid two">${selectField('Hàng hóa luân chuyển/Kho hàng <span class="required">*</span>', ['Hàng hóa luân chuyển','Kho hàng'], 'Kho hàng', readonly ? 'disabled' : '')}${areaField('Giá trị hàng hóa/Tên, loại hàng hóa <span class="required">*</span>', 'Nguyên vật liệu sản xuất và hàng tồn kho theo phụ lục.', readonly ? 'class="readonly" readonly' : '')}${areaField('Địa chỉ kho hàng <span class="required">*</span>', 'Lô A2 KCN Thăng Long - Đông Anh - Hà Nội - Việt Nam', readonly ? 'class="readonly" readonly' : '')}${areaField('Số hiệu kho hàng/Dấu hiệu khác', 'Kho số K-02, cửa cuốn màu xanh.', readonly ? 'class="readonly" readonly' : '')}</div></div>
+        <div class="conditional asset-securities hidden">${table(['Giờ','Phút','Ngày','Tháng','Năm'], [['09','30','24','07','2026']])}${uploadField('Đính kèm file PDF chứng khoán', true)}</div>
+        <div class="conditional asset-other hidden">${areaField('Mô tả chi tiết động sản khác', 'Tiền, giấy tờ có giá, hàng tiêu dùng, kim khí quý, đá quý, nguyên nhiên vật liệu, máy móc thiết bị...', readonly ? 'class="readonly" readonly' : '')}</div>`;
+}
+function referenceInfoBlock(title = 'Thông tin tham chiếu hồ sơ gốc') {
+    return `<div class="section-title">${title}</div><div class="grid four">${readField('Trường hợp đăng ký', p.type)}${readField('Số đăng ký lần đầu/Số thông báo gốc', '1505156438')}${readField('Thời điểm đăng ký lần đầu', '15/05/2026 09:20:30')}${readField('Xem hồ sơ gốc', 'Mở văn bản chứng nhận PDF')}</div>`;
+}
+function deleteBasisBlock() {
+    return `<div class="section-title">Căn cứ xóa đăng ký</div><div class="grid two">${selectField('Căn cứ xóa đăng ký <span class="required">*</span>', ['Nghĩa vụ được bảo đảm chấm dứt','Các bên thỏa thuận xóa đăng ký','Theo quyết định của cơ quan có thẩm quyền','Căn cứ khác'], 'Nghĩa vụ được bảo đảm chấm dứt')}${areaField('Diễn giải căn cứ', 'Theo văn bản thỏa thuận giải chấp kèm theo hồ sơ giấy.')}</div><div class="section-title">Diện miễn nộp phí</div><div class="grid two"><div class="field"><label>Đối tượng miễn nộp phí</label><label class="check-item"><input type="checkbox" id="feeExemptCheck" onchange="updateConditionalVisibility()"> Thuộc diện miễn nộp phí</label></div><div class="conditional fee-proof hidden">${uploadField('Tài liệu chứng minh miễn nộp phí (PDF)', true)}</div></div>`;
+}
+function noticeProcessingBlock(change = false) {
+    return `<div class="section-title">Thông tin xử lý tài sản</div><div class="grid">${areaField('Lý do xử lý <span class="required">*</span>', change ? 'Thay đổi nội dung xử lý theo văn bản bổ sung.' : 'Bên bảo đảm vi phạm nghĩa vụ thanh toán theo hợp đồng tín dụng.')}${field('Thời gian xử lý <span class="required">*</span>', '31/07/2026')}${field('Địa điểm xử lý <span class="required">*</span>', 'Kho tài sản bảo đảm tại Hà Nội')}</div>`;
+}
+function noticeDeleteBlock() {
+    return `<div class="section-title">Lý do xóa thông báo</div><div class="grid two">${selectField('Lý do xóa thông báo <span class="required">*</span>', ['Các bên thỏa thuận không xử lý tài sản bảo đảm','Nghĩa vụ được bảo đảm đã hoàn thành','Bên bảo đảm đã thực hiện xong nghĩa vụ để nhận lại tài sản','Lý do khác'], 'Nghĩa vụ được bảo đảm đã hoàn thành')}${uploadField('Văn bản chứng minh đính kèm (PDF)', true)}</div>`;
+}
+function serviceReadonlyBlock(withCopies = false) {
+    return `<div class="section-title">Thông tin yêu cầu kế thừa từ tiếp nhận</div><div class="grid four">${readField('Số đăng ký hồ sơ cần cung cấp', '1505156438')}${withCopies ? readField('Số lượng bản sao', (p.copyQuantity || 1) + ' bản') : ''}${readField('Số tiền đã thu/Miễn phí', money(p.amount))}${readField('Trạng thái lệ phí', p.paymentStatus || 'Đã thu')}</div>
+        <div class="readonly-note">Cán bộ không nhập lại số lượng bản sao tại màn nhập liệu. Số lượng, phí và trạng thái thu phí được kế thừa từ bước tiếp nhận/UCPS013.</div>
+        <div class="section-title">Chi tiết hồ sơ được yêu cầu cung cấp</div><div class="grid four">${readField('Tiêu đề khối động', p.type)}${readField('Loại hình giao dịch', p.transactionType || 'Biện pháp bảo đảm')}${readField('Loại biện pháp/Loại hợp đồng', p.subtype || 'Thế chấp')}${readField('Số hợp đồng', 'HDTC/2026/128')}${readField('Ngày có hiệu lực', '24/07/2026')}${readField('Giá trị nghĩa vụ', '1.500.000.000 VND')}${readField('Số đăng ký', '1505156438')}${readField('Thời điểm đăng ký', '15/05/2026 09:20')}</div>${partyBlocks(false, true)}${assetBlock(true)}`;
+}
+function infoRequestBlock() {
+    return `<div class="section-title">Tiêu chí cung cấp thông tin</div><div class="grid">${field('Số đăng ký BĐ hoặc tiêu chí tra cứu <span class="required">*</span>', '1505156438')}${selectField('Phạm vi cung cấp thông tin', ['Thông tin đăng ký theo số đăng ký','Thông tin theo bên bảo đảm','Thông tin theo tài sản bảo đảm'], 'Thông tin đăng ký theo số đăng ký')}${areaField('Nội dung yêu cầu cung cấp thông tin', 'Cung cấp thông tin về tình trạng đăng ký biện pháp bảo đảm theo hồ sơ giấy.')}</div><div class="readonly-note">UCPS014 hiện tham chiếu UC027. Phần kết quả/chi tiết hồ sơ hiển thị chỉ đọc như UC027.MH03.</div>${serviceReadonlyBlock(false)}`;
+}
+function renderBusinessForm() {
+    formRef.textContent = refByType();
+    reviewRef.textContent = refByType();
+    businessTitle.textContent = 'Nhập liệu nghiệp vụ - ' + p.type;
+    let html = referenceLookupHtml(isNoticeChange() || isNoticeDelete() ? 'Số thông báo xử lý gốc' : 'Số đăng ký');
+    if (isChange()) {
+        html += requesterBlock(['Bên bảo đảm mới','Bên nhận bảo đảm mới','Bên kế thừa bên bảo đảm, bên nhận bảo đảm']) + referenceInfoBlock() + commonInfoBlock(false, true) + partyBlocks(true, false) + assetBlock(false, false, true);
+    } else if (isDelete()) {
+        html += requesterBlock(['Bên bảo đảm mới','Bên nhận bảo đảm mới','Bên kế thừa bên bảo đảm, bên nhận bảo đảm','Cơ quan thi hành án dân sự, Chấp hành viên','Cơ quan khác có thẩm quyền, người khác có thẩm quyền']) + referenceInfoBlock() + commonInfoBlock(true, false) + deleteBasisBlock() + partyBlocks(false, true) + assetBlock(true);
+    } else if (isNoticeFirst()) {
+        html += requesterBlock([]) + referenceInfoBlock() + commonInfoBlock(true, false) + noticeProcessingBlock(false) + assetBlock(false, true);
+    } else if (isNoticeChange()) {
+        html += requesterBlock([]) + referenceInfoBlock('Thông tin tham chiếu thông báo xử lý gốc') + commonInfoBlock(true, false) + noticeProcessingBlock(true) + assetBlock(false, true) + `<div class="section-title">Lịch sử thay đổi thông báo xử lý tài sản</div>${table(['STT','Số đăng ký thay đổi','Thời điểm đăng ký','Người thực hiện','Nội dung thay đổi'], [['1','TBXL-2026-000045','20/06/2026 10:15','Ngân hàng TMCP Kỹ thương Việt Nam','Thay đổi địa điểm xử lý tài sản']])}`;
+    } else if (isNoticeDelete()) {
+        html += requesterBlock([]) + referenceInfoBlock('Thông tin tham chiếu thông báo xử lý gốc') + noticeDeleteBlock() + `<div class="section-title">Danh sách tài sản đang xử lý</div>${assetBlock(true)}`;
+    } else if (isCopy()) {
+        html += serviceReadonlyBlock(true);
+    } else if (isCopyNotice()) {
+        html += serviceReadonlyBlock(false);
+    } else if (isInfoRequest()) {
+        html += infoRequestBlock();
+    } else {
+        html += requesterBlock() + commonInfoBlock(false, false) + partyBlocks(false, false) + assetBlock(false);
+    }
+    html += `<div class="section-title">Tài liệu nghiệp vụ đính kèm</div><div class="grid two">${uploadField('Tài liệu chứng minh tư cách/nghiệp vụ (PDF)', false)}${uploadField('Phụ lục hoặc bảng kê kèm theo', false)}</div><div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px" class="toolbar"><button class="btn" onclick="cancelEdit()">Hủy bỏ</button><button class="btn primary" onclick="openPreview()"><i class="fa-regular fa-eye"></i> Xem trước</button></div>`;
+    businessForm.innerHTML = html;
+    updateConditionalVisibility();
+}
+function selectedAssets() {
+    return Array.from(document.querySelectorAll('#assetChecks input:checked')).map(x => x.value);
+}
+function updateConditionalVisibility() {
+    const transactionType = document.getElementById('transactionType')?.value || p.transactionType || 'Biện pháp bảo đảm';
+    document.querySelectorAll('.bpbd-only').forEach(x => x.classList.toggle('hidden', transactionType !== 'Biện pháp bảo đảm'));
+    document.querySelectorAll('.contract-only').forEach(x => x.classList.toggle('hidden', transactionType !== 'Hợp đồng'));
+    const assets = selectedAssets();
+    document.querySelectorAll('.asset-road').forEach(x => x.classList.toggle('hidden', assets.length && !assets.includes('road')));
+    document.querySelectorAll('.asset-vehicle').forEach(x => x.classList.toggle('hidden', !assets.includes('vehicle')));
+    document.querySelectorAll('.asset-right').forEach(x => x.classList.toggle('hidden', !assets.includes('right')));
+    document.querySelectorAll('.asset-goods').forEach(x => x.classList.toggle('hidden', !assets.includes('goods')));
+    document.querySelectorAll('.asset-securities').forEach(x => x.classList.toggle('hidden', !assets.includes('securities')));
+    document.querySelectorAll('.asset-other').forEach(x => x.classList.toggle('hidden', !assets.includes('other')));
+    document.querySelectorAll('.fee-proof').forEach(x => x.classList.toggle('hidden', !document.getElementById('feeExemptCheck')?.checked));
+    const requesterRole = document.getElementById('requesterRole')?.value || '';
+    const securityType = document.getElementById('securityType')?.value || p.subtype || '';
+    const requesterNeedsProof = ['Quản tài viên/Doanh nghiệp quản lý, thanh lý tài sản','Chi nhánh của pháp nhân, người đại diện','Bên bảo đảm mới','Bên nhận bảo đảm mới','Bên kế thừa bên bảo đảm, bên nhận bảo đảm','Cơ quan thi hành án dân sự, Chấp hành viên','Cơ quan khác có thẩm quyền, người khác có thẩm quyền'].includes(requesterRole)
+        || (requesterRole === 'Bên bảo đảm' && ['Cầm cố','Đặt cọc','Ký cược','Ký quỹ'].includes(securityType));
+    document.querySelectorAll('.requester-proof').forEach(x => x.classList.toggle('hidden', !requesterNeedsProof));
+    document.querySelectorAll('.subject-type').forEach(select => {
+        const scope = select.closest('.detail-body') || document;
+        const v = select.value;
+        scope.querySelectorAll('.subject-person').forEach(x => x.classList.toggle('hidden', !['Công dân Việt Nam','Người nước ngoài','Người không quốc tịch cư trú tại Việt Nam'].includes(v)));
+        scope.querySelectorAll('.subject-citizen').forEach(x => x.classList.toggle('hidden', v !== 'Công dân Việt Nam'));
+        scope.querySelectorAll('.subject-org').forEach(x => x.classList.toggle('hidden', !['Tổ chức có đăng ký kinh doanh trong nước','Nhà đầu tư nước ngoài','Tổ chức khác'].includes(v)));
+        scope.querySelectorAll('.subject-passport').forEach(x => x.classList.toggle('hidden', v !== 'Người nước ngoài'));
+        scope.querySelectorAll('.subject-residence').forEach(x => x.classList.toggle('hidden', v !== 'Người không quốc tịch cư trú tại Việt Nam'));
+    });
+}
+function handleUpload(input) {
+    const wrap = input.closest('.upload-line');
+    const file = input.files && input.files[0];
+    wrap.querySelector('.file-name').textContent = file ? file.name : 'Chưa chọn tệp';
+    wrap.querySelector('.file-actions').style.display = file ? 'inline-flex' : 'none';
+}
+function viewUploadedFile(btn) {
+    const name = btn.closest('.upload-line').querySelector('.file-name').textContent;
+    alert('Mở xem file: ' + name);
+}
+function clearUploadedFile(btn) {
+    const wrap = btn.closest('.upload-line');
+    const input = wrap.querySelector('input[type=file]');
+    input.value = '';
+    wrap.querySelector('.file-name').textContent = 'Chưa chọn tệp';
+    wrap.querySelector('.file-actions').style.display = 'none';
+}
+function switchView(nextMode) {
+    mode = nextMode;
+    readonlyView.classList.toggle('active', mode === 'view');
+    editView.classList.toggle('active', mode === 'edit');
+    previewView.classList.toggle('active', mode === 'preview');
+    stepper.style.display = mode === 'view' ? 'none' : 'flex';
+    s1.classList.toggle('active', mode === 'edit');
+    s2.classList.toggle('active', mode === 'preview');
+}
+function startCreate() {
+    history.replaceState(null, '', '?id=' + encodeURIComponent(id));
+    switchView('edit');
+}
+function lookupOriginal() {
+    alert('Đã tìm thấy hồ sơ tham chiếu. Hệ thống kế thừa dữ liệu sang các khối nghiệp vụ. Không yêu cầu Số PIN trong luồng cán bộ.');
+}
+function openPreview() {
+    if (needsOriginalNumber() && !document.getElementById('registrationNo')?.value.trim()) {
+        alert('Vui lòng nhập Số đăng ký/Số thông báo tham chiếu.');
+        return;
+    }
+    const copied = isCopy() ? `<p><b>Số lượng bản sao:</b> ${e(p.copyQuantity || 1)} bản (kế thừa từ tiếp nhận, không nhập lại)</p>` : '';
+    businessPreview.innerHTML = `
+        <h3 style="margin-top:0;color:var(--primary)">${e(p.type)}</h3>
+        ${needsOriginalNumber() ? `<p><b>Số đăng ký/Số thông báo tham chiếu:</b> ${e(document.getElementById('registrationNo')?.value || '1505156438')}</p>` : ''}
+        ${copied}
+        <div class="grid two">
+            <div><b>Người yêu cầu</b><p>${e(p.customer)}</p></div>
+            <div><b>Người nộp hồ sơ</b><p>${e(p.submitter || p.customer)}</p></div>
+            <div><b>Cơ quan tiếp nhận</b><p>${e(p.agency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội')}</p></div>
+            <div><b>Loại hình giao dịch</b><p>${e(document.getElementById('transactionType')?.value || p.transactionType || 'Biện pháp bảo đảm')}</p></div>
+            <div><b>Trạng thái hồ sơ</b><p>Chờ giải quyết</p></div>
+            <div><b>Trạng thái lệ phí</b><p>${e(p.paymentStatus || 'Đã thu')}</p></div>
+        </div>
+        <h4>Khối dữ liệu nghiệp vụ</h4>
+        <p>Hồ sơ đã được nhập theo bộ trường ${e(refByType())}; các trường điều kiện đã ẩn/hiện theo loại yêu cầu, loại chủ thể, loại giao dịch và loại tài sản.</p>
+        ${table(['Khối thông tin','Trạng thái'], [['Thông tin người yêu cầu','Đã nhập'],['Thông tin chung/nghĩa vụ','Đã nhập/hoặc kế thừa chỉ đọc'],['Bên bảo đảm/Bên nhận bảo đảm','Đã đối chiếu'],['Tài sản bảo đảm','Đã đối chiếu'],['Tài liệu đính kèm','Đã kiểm tra']])}`;
+    switchView('preview');
+}
+function backToEdit() { switchView('edit'); }
+function submitFlow(action) {
+    s3.classList.add('active');
+    modalTitle.textContent = action;
+    modalBody.innerHTML = `<p>Hồ sơ <b>${e(p.id)}</b> đã được nhập liệu theo ${e(refByType())}.</p><p>Hệ thống chuyển tiếp sang luồng UC028/UC029 với thao tác <b>${e(action)}</b>.</p><div style="text-align:right"><button class="btn primary" onclick="finish('${e(action)}')">Xác nhận</button></div>`;
+    modal.classList.add('show');
+}
+function finish(action) {
+    const list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+    const idx = list.findIndex(x => x.id === p.id);
+    const next = {...p, status: action === 'Trình ký' ? 'Chờ ký' : 'Duyệt chờ ký', statusClass: 'badge-info', handlingOfficer: 'Nguyễn Văn Cán Bộ'};
+    if (idx >= 0) list[idx] = next; else list.unshift(next);
+    localStorage.setItem('custom_mock_profiles', JSON.stringify(list));
+    alert('Đã ' + action.toLowerCase() + ' hồ sơ thành công.');
+    goBack();
+}
+function openRejectModal() {
+    modalTitle.textContent = 'Từ chối xử lý hồ sơ';
+    modalBody.innerHTML = `<div class="field"><label>Lý do từ chối <span class="required">*</span></label><textarea id="rejectReason" placeholder="Nhập lý do từ chối xử lý hồ sơ"></textarea></div><div style="text-align:right;margin-top:14px"><button class="btn" onclick="closeModal()">Hủy</button> <button class="btn danger" onclick="rejectProfile()">Xác nhận từ chối</button></div>`;
+    modal.classList.add('show');
+}
+function rejectProfile() {
+    const reason = document.getElementById('rejectReason')?.value.trim();
+    if (!reason) {
+        alert('Vui lòng nhập lý do từ chối.');
+        return;
+    }
+    const list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+    const idx = list.findIndex(x => x.id === p.id);
+    const next = {...p, status: 'Bị từ chối', statusClass: 'badge-danger', rejectReason: reason};
+    if (idx >= 0) list[idx] = next; else list.unshift(next);
+    localStorage.setItem('custom_mock_profiles', JSON.stringify(list));
+    alert('Đã từ chối xử lý hồ sơ.');
+    goBack();
+}
+function viewFile(name) { alert('Mở xem file: ' + name); }
+function downloadFile(name) { alert('Tải xuống file: ' + name); }
+function cancelEdit() {
+    if (confirm('Hủy thao tác và quay về danh sách hồ sơ chờ nhập liệu?')) goBack();
+}
+function goBack() { location.href = '../UC028/kiem_tra_ho_so.html?view=chonhaplieu'; }
+function closeModal() { modal.classList.remove('show'); }
+
+renderReadonly();
+renderAttachments();
+renderBusinessForm();
+switchView(mode);
+</script>
+</body>
+</html>

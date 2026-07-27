@@ -1,0 +1,468 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCPS013 - Quản lý thu phí</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--primary:#1e3a8a;--blue:#2563eb;--green:#059669;--orange:#d97706;--red:#dc2626;--bg:#f3f4f6;--card:#fff;--line:#dbe3ef;--text:#172033;--muted:#64748b}
+        *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Arial,Helvetica,sans-serif}.page{padding:20px 24px 32px}
+        .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}.title h1{font-size:22px;margin:0;color:var(--primary)}.title p{margin:6px 0 0;color:var(--muted)}
+        .btn{border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 12px;font-weight:700;cursor:pointer;color:var(--primary);display:inline-flex;align-items:center;gap:7px}.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.btn.success{background:var(--green);color:#fff;border-color:var(--green)}.btn.warn{background:#fff7ed;color:var(--orange);border-color:#fed7aa}.btn.danger{background:#fff1f2;color:var(--red);border-color:#fecdd3}.btn:disabled{opacity:.45;cursor:not-allowed}
+        .card{background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 2px 8px #0f172a12;margin-bottom:16px}.card-h{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}.card-h h2{font-size:16px;color:var(--primary);margin:0}.card-b{padding:16px}
+        .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.field label{display:block;font-weight:700;margin-bottom:6px;font-size:13px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:5px;padding:9px 10px;font:inherit;background:#fff}.field textarea{min-height:84px}.readonly{background:#f8fafc!important;color:#475569}.required{color:var(--red)}
+        .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:1250px}.table th,.table td{border:1px solid var(--line);padding:10px;vertical-align:middle}.table th{background:#eef4fb;color:#0f3a85;text-align:left;font-size:12px;text-transform:uppercase}.table tr:hover td{background:#f8fafc}.table th:last-child,.table td:last-child{position:sticky;right:0;z-index:2;min-width:126px;background:#fff;box-shadow:-5px 0 10px #0f172a12}.table th:last-child{z-index:3;background:#eef4fb}.table tr:hover td:last-child{background:#f8fafc}
+        .badge{display:inline-flex;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:700}.b-wait{background:#fff7ed;color:#9a3412}.b-paid{background:#ecfdf5;color:#047857}.b-free{background:#eff6ff;color:#1d4ed8}.b-open{background:#eef2ff;color:#3730a3}.b-red{background:#fef2f2;color:#b91c1c}
+        .actions{display:flex;gap:6px;justify-content:center;min-width:104px}.icon{width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--primary);cursor:pointer}.icon:hover{background:#eff6ff}.icon:disabled{background:#f8fafc;color:#94a3b8;cursor:not-allowed;opacity:.55}.icon:disabled:hover{background:#f8fafc;box-shadow:none}
+        .modal{position:fixed;inset:0;background:#0f172a80;display:none;align-items:center;justify-content:center;z-index:50;padding:24px}.modal.show{display:flex}.modal-box{background:#fff;border-radius:8px;width:min(960px,96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px #0004}.modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line)}.modal-body{padding:24px;overflow-y:auto;flex:1}.modal-foot{padding:16px 24px 24px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}.section-title{font-size:15px;margin:18px 0 10px;color:var(--primary);border-bottom:1px solid var(--line);padding-bottom:8px;font-weight:700}.amount{font-size:26px;color:var(--primary);font-weight:800;margin:0}
+        .receipt{border:1px solid var(--line);border-radius:8px;padding:26px 32px;background:#fff;color:#111;font:15px/1.45 "Times New Roman",Times,serif;max-width:840px;margin:0 auto}.receipt-head{display:grid;grid-template-columns:1fr 1fr;gap:28px;text-align:center;font-weight:700;text-transform:uppercase}.receipt-head p{margin:0}.receipt-rule{display:inline-block;margin-top:4px;letter-spacing:2px}.receipt-meta{text-align:left;margin-top:18px;padding-left:52%}.receipt-title{text-align:center;margin:24px 0 18px}.receipt-title h2{margin:0;font-size:20px;text-transform:uppercase;letter-spacing:.2px}.receipt-title p{margin:4px 0 0;font-weight:700}.receipt-lines{display:grid;gap:5px;margin:0 0 14px}.receipt-line{display:grid;grid-template-columns:180px 1fr;gap:8px}.receipt-dots{border-bottom:1px dotted #333;min-height:21px}.receipt-table{width:100%;border-collapse:collapse;margin:14px 0 10px}.receipt-table th,.receipt-table td{border:1px solid #222;padding:8px 10px}.receipt-table th{text-align:center;font-weight:700;background:#fff}.receipt-table td:nth-child(1){text-align:center;width:52px}.receipt-table td:nth-child(3),.receipt-table td:nth-child(4){text-align:right;white-space:nowrap}.receipt-total{font-weight:700;margin-top:12px}.receipt-words{margin-top:7px}.receipt-sign{display:flex;justify-content:flex-end;margin-top:28px;text-align:center}.receipt-sign-inner{min-width:310px}.receipt-sign p{margin:0 0 6px}.receipt-sign b{display:block;margin-top:6px;text-transform:uppercase}
+        .pay-summary{border:1px solid #bfdbfe;background:#f8fbff;border-radius:8px;padding:14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.pay-summary span{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}.pay-summary b{color:var(--text)}.pay-summary .total{font-size:20px;color:var(--primary);font-weight:800}.payment-methods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 14px}.pay-option{position:relative;border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px 12px 12px 42px;cursor:pointer;font-weight:800;color:var(--primary)}.pay-option input{position:absolute;left:13px;top:14px}.pay-option:has(input:checked){border-color:var(--primary);background:#eff6ff;box-shadow:0 0 0 2px #1e3a8a18}.pay-panel{border:1px solid var(--line);border-radius:8px;background:#fff;padding:14px}.pay-change{font-size:18px;color:var(--green);font-weight:800}.file-note{font-size:12px;color:var(--muted);margin-top:6px}.is-hidden{display:none!important}.upload-input{display:none}.upload-control{min-height:40px;border:1px solid var(--line);border-radius:5px;background:#fff;padding:5px 8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.upload-btn{padding:6px 10px}.upload-name{color:var(--muted);font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.upload-actions{display:inline-flex;gap:10px;align-items:center}.upload-link{border:0;background:transparent;padding:0;color:var(--primary);font:inherit;font-weight:800;cursor:pointer;text-decoration:none}.upload-link.danger{color:var(--red)}
+        .page-btn{border:1px solid var(--line);background:#fff;color:var(--primary);padding:4px 10px;border-radius:5px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px}.page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}.page-btn:disabled{opacity:.4;cursor:not-allowed}.page-btn:hover:not(.active):not(:disabled){background:#eff6ff}
+        @media(max-width:1000px){.grid,.pay-summary{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.grid,.grid.two,.pay-summary,.payment-methods{grid-template-columns:1fr}.top{flex-direction:column}.page{padding:14px}.table{min-width:980px}}
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="top">
+        <div class="title">
+            <h1>Quản lý thu phí</h1>
+            <p>UCPS013 - Danh sách khoản phải thu, xác nhận thu tiền mặt/chuyển khoản/miễn phí và in biên lai.</p>
+        </div>
+        <button class="btn primary" onclick="scanQr()"><i class="fa-solid fa-qrcode"></i> Quét mã</button>
+    </div>
+    <div class="card">
+        <div class="card-h"><h2>Bộ lọc tìm kiếm</h2><button class="btn" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button></div>
+        <div class="card-b">
+            <div class="grid">
+                <div class="field"><label>Mã hồ sơ/Mã QR</label><input id="fCode" placeholder="HS-2026-000128" oninput="applySearch()"></div>
+                <div class="field"><label>Số đơn giấy</label><input id="fPaper" placeholder="PG-0128" oninput="applySearch()"></div>
+                <div class="field"><label>Người yêu cầu</label><input id="fRequester" placeholder="Tên cá nhân/tổ chức" oninput="applySearch()"></div>
+                <div class="field"><label>Loại yêu cầu</label><select id="fType" onchange="applySearch()"><option value="">Tất cả</option><option>Đăng ký lần đầu</option><option>Đăng ký thay đổi</option><option>Xóa đăng ký</option><option>Yêu cầu cung cấp bản sao</option><option>Thông báo xử lý tài sản bảo đảm</option></select></div>
+                <div class="field"><label>Hình thức thanh toán</label><select id="fMethod" onchange="applySearch()"><option value="">Tất cả</option><option>Tiền mặt</option><option>Chuyển khoản</option><option>Miễn phí</option></select></div>
+                <div class="field"><label>Trạng thái thu phí</label><select id="fFee" onchange="applySearch()"><option value="Chờ thu phí" selected>Chờ thu phí</option><option value="">Tất cả</option><option value="Đã thu">Đã thu</option><option value="Miễn phí">Miễn phí</option></select></div>
+                <div class="field"><label>Từ ngày tiếp nhận</label><input id="fFrom" type="date" onchange="applySearch()"></div>
+                <div class="field"><label>Đến ngày tiếp nhận</label><input id="fTo" type="date" onchange="applySearch()"></div>
+            </div>
+            <div style="margin-top:12px;text-align:right"><button class="btn primary" onclick="applySearch()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-h"><h2>Danh sách khoản phải thu</h2><span id="countText" class="badge b-open">0 khoản</span></div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>STT</th><th>Mã hồ sơ</th><th>Số đơn giấy</th><th>Người yêu cầu</th><th>Người nộp</th><th>Loại yêu cầu</th><th>Hình thức TT</th><th>Phải thu</th><th>Đã thu</th><th>Trạng thái</th><th>Số biên lai</th><th>Ngày tiếp nhận</th><th>Cán bộ tiếp nhận</th><th>Thao tác</th></tr></thead>
+                <tbody id="rows"></tbody>
+            </table>
+        </div>
+        <div class="card-foot" style="padding:12px 16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <div style="font-size:13px;color:var(--muted)">
+                Đang hiển thị <b id="pageStart" style="color:var(--text)">0</b>–<b id="pageEnd" style="color:var(--text)">0</b> trong tổng số <b id="totalRecords" style="color:var(--primary)">0</b> hồ sơ
+            </div>
+            <div style="display:flex;align-items:center;gap:16px">
+                <div style="display:flex;align-items:center;gap:6px;font-size:13px">
+                    <span>Số bản ghi/trang:</span>
+                    <select id="pageSizeSelect" onchange="changePageSize(this.value)" style="border:1px solid var(--line);border-radius:5px;padding:4px 8px;font:inherit;background:#fff;cursor:pointer">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div id="paginationNav" style="display:flex;gap:4px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <div class="modal-head"><h3 id="modalTitle" style="margin:0;color:var(--primary)">Chi tiết khoản phải thu</h3><button class="icon" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-foot" id="modalFoot"></div>
+    </div>
+</div>
+
+<script>
+const seed = [
+ {code:'HS-2026-000128',paper:'PG-0128',requester:'Công ty TNHH Hải Nam',submitter:'Nguyễn Văn Bình',type:'Đăng ký lần đầu',date:'24/07/2026 09:20',amount:80000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000129',paper:'PG-0129',requester:'Nguyễn Thị Hoa',submitter:'Nguyễn Thị Hoa',type:'Yêu cầu cung cấp bản sao',date:'24/07/2026 10:05',amount:30000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000131',paper:'PG-0131',requester:'Ngân hàng TMCP Quốc Dân (NCB)',submitter:'Trần Đức Anh',type:'Đăng ký lần đầu',date:'24/07/2026 11:30',amount:80000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000132',paper:'PG-0132',requester:'Công ty CP Tập đoàn Đất Xanh',submitter:'Lê Hoàng Nam',type:'Đăng ký thay đổi',date:'24/07/2026 13:45',amount:60000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000133',paper:'PG-0133',requester:'Ngân hàng TMCP Kỹ Thương (Techcombank)',submitter:'Phạm Thanh Tùng',type:'Đăng ký lần đầu',date:'24/07/2026 14:10',amount:80000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000134',paper:'PG-0134',requester:'Nguyễn Văn Hoàng',submitter:'Nguyễn Văn Hoàng',type:'Yêu cầu cung cấp bản sao',date:'24/07/2026 15:20',amount:50000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000135',paper:'PG-0135',requester:'Ngân hàng TMCP Quân Đội (MBBank)',submitter:'Đỗ Minh Tuấn',type:'Thông báo xử lý tài sản bảo đảm',date:'24/07/2026 16:00',amount:70000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000136',paper:'PG-0136',requester:'Công ty TNHH Đầu tư An Khánh',submitter:'Vũ Thị Lan',type:'Đăng ký lần đầu',date:'25/07/2026 08:15',amount:80000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000137',paper:'PG-0137',requester:'Ngân hàng TMCP VPBank',submitter:'Bùi Văn Cường',type:'Đăng ký thay đổi',date:'25/07/2026 09:30',amount:60000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000138',paper:'PG-0138',requester:'Trần Quang Huy',submitter:'Trần Quang Huy',type:'Yêu cầu cung cấp bản sao',date:'25/07/2026 10:45',amount:20000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000139',paper:'PG-0139',requester:'Ngân hàng TMCP Sacombank',submitter:'Đinh Văn Thắng',type:'Đăng ký lần đầu',date:'25/07/2026 11:15',amount:80000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
+ {code:'HS-2026-000130',paper:'PG-0130',requester:'Ngân hàng TMCP FPT',submitter:'Trần Minh Quân',type:'Xóa đăng ký',date:'23/07/2026 15:15',amount:0,paid:0,method:'Miễn phí',fee:'Miễn phí',status:'Chờ giải quyết',officer:'Nguyễn Thị Tiếp Nhận',receipt:'MP-2026-000130'}
+];
+
+let currentPage = 1;
+let pageSize = 10;
+
+function el(id){return document.getElementById(id)}
+function esc(v){return String(v==null?'':v).split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;').split('"').join('&quot;').split("'").join('&#39;')}
+function jsArg(v){return String(v==null?'':v).split('\\').join('\\\\').split("'").join("\\'")}
+
+function parseCurrency(str) {
+    return parseInt(String(str||'').replace(/\D/g, ''), 10) || 0;
+}
+
+const paymentProofFiles={}
+function uploadControl(id){return `<div class="upload-control"><input id="${id}" class="upload-input" type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handlePaymentProofSelected(event,'${id}')"><button type="button" class="btn upload-btn" onclick="el('${id}').click()"><i class="fa-solid fa-paperclip"></i> Chọn tệp</button><span id="${id}Name" class="upload-name">Chưa chọn tệp</span><span id="${id}Actions" class="upload-actions is-hidden"><button type="button" class="upload-link" onclick="viewPaymentProof('${id}')">Xem file</button><button type="button" class="upload-link danger" onclick="removePaymentProof('${id}')">Xóa</button></span></div>`}
+function updatePaymentProofUi(id){const file=paymentProofFiles[id],nameEl=el(id+'Name'),actionsEl=el(id+'Actions'); if(nameEl)nameEl.textContent=file?file.name:'Chưa chọn tệp'; if(actionsEl)actionsEl.classList.toggle('is-hidden',!file)}
+function handlePaymentProofSelected(event,id){const file=event.target.files&&event.target.files[0]; if(!file){updatePaymentProofUi(id);return} if(paymentProofFiles[id]&&paymentProofFiles[id].objectUrl)URL.revokeObjectURL(paymentProofFiles[id].objectUrl); paymentProofFiles[id]={name:file.name,size:file.size,objectUrl:URL.createObjectURL(file)}; updatePaymentProofUi(id)}
+function viewPaymentProof(id){const file=paymentProofFiles[id]; if(!file){alert('Chưa có tệp đính kèm.');return} window.open(file.objectUrl,'_blank')}
+function removePaymentProof(id){const file=paymentProofFiles[id]; if(file&&file.objectUrl)URL.revokeObjectURL(file.objectUrl); delete paymentProofFiles[id]; const input=el(id); if(input)input.value=''; updatePaymentProofUi(id)}
+
+function normalize(list){
+    if(!Array.isArray(list)) return [];
+    return list.map(x=>{
+        let f = x.fee;
+        if(f !== 'Đã thu' && f !== 'Miễn phí'){
+            f = 'Chờ thu phí';
+        }
+        return {
+            ...x,
+            fee: f,
+            status: f === 'Chờ thu phí' ? 'Chờ thu phí' : x.status,
+            method: f === 'Chờ thu phí' ? '' : (x.method || ''),
+            paid: x.paid ?? (f === 'Đã thu' ? x.amount : 0)
+        };
+    });
+}
+
+function load(){
+    const saved = localStorage.getItem('ucps013_receivables');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                const merged = normalize(parsed);
+                const ids = merged.map(x => x.code);
+                seed.forEach(s => {
+                    if (!ids.includes(s.code)) merged.push(s);
+                });
+                return normalize(merged);
+            }
+        } catch(e){}
+    }
+    const reception = localStorage.getItem('ucps012_dossiers');
+    let base = seed;
+    if (reception) {
+        try {
+            const parsedRec = JSON.parse(reception);
+            if (Array.isArray(parsedRec) && parsedRec.length > 0) {
+                base = parsedRec;
+                const ids = base.map(x => x.code);
+                seed.forEach(s => {
+                    if (!ids.includes(s.code)) base.push(s);
+                });
+            }
+        } catch(e){}
+    }
+    const data = normalize(base);
+    localStorage.setItem('ucps013_receivables', JSON.stringify(data));
+    return data;
+}
+
+function save(data){localStorage.setItem('ucps013_receivables',JSON.stringify(data)); localStorage.setItem('ucps012_dossiers',JSON.stringify(data)); syncProfiles(data)}
+function syncProfiles(data){const profiles=data.filter(x=>x.status==='Chờ giải quyết').map(x=>({id:x.code,date:x.date,paper:x.paper,customer:x.requester,submitter:x.submitter,officer:x.officer,amount:x.amount,mortgagee:'Theo hồ sơ giấy',type:x.type,transactionType:'Biện pháp bảo đảm',subtype:'Thế chấp',status:'Chờ giải quyết',statusClass:'badge-warning',customerId:'HSG-'+x.code.slice(-3),receipt:x.receipt||'',assetType:'Theo tài liệu tiếp nhận hồ sơ giấy',channel:'Trực tiếp tại quầy',customerType:'vang_lai',phone:'0900000000',email:'',paymentMethod:x.method==='Tiền mặt'?'tien_mat':x.method==='Chuyển khoản'?'chuyen_khoan':'mien_phi',resultMethod:'truc_tiep',handlingOfficer:'Nguyễn Văn Cán Bộ',timeline:[{id:'node-1',title:'Tiếp nhận hồ sơ giấy',date:x.date,status:'Chờ giải quyết',active:true}],internalLogs:[{time:x.date,user:'Cán bộ kế toán',action:'Thu phí/xác nhận miễn phí',comment:'Hồ sơ đã đủ điều kiện chuyển Cán bộ giải quyết tạo hồ sơ.'}]})); if(profiles.length){localStorage.setItem('ucps014_paper_profiles',JSON.stringify(profiles))}}
+function badgeFee(v){return v==='Đã thu'?'<span class="badge b-paid">Đã thu</span>':v==='Miễn phí'?'<span class="badge b-free">Miễn phí</span>':'<span class="badge b-wait">Chờ thu phí</span>'}
+function filterValue(id){const node=el(id); return node?node.value:''}
+
+function changePageSize(val){
+    pageSize=Number(val)||10;
+    currentPage=1;
+    renderList();
+}
+
+function goToPage(p){
+    currentPage=p;
+    renderList();
+}
+
+function applySearch(){
+    currentPage=1;
+    renderList();
+}
+
+function renderList(){
+    const rowsEl=el('rows'),countEl=el('countText');
+    if(!rowsEl)return;
+    const fullData=load().filter(x=>
+        (!filterValue('fCode')||String(x.code||'').includes(filterValue('fCode')))&&
+        (!filterValue('fPaper')||String(x.paper||'').includes(filterValue('fPaper')))&&
+        (!filterValue('fRequester')||String(x.requester||'').toLowerCase().includes(filterValue('fRequester').toLowerCase()))&&
+        (!filterValue('fType')||x.type===filterValue('fType'))&&
+        (!filterValue('fMethod')||x.method===filterValue('fMethod'))&&
+        (!filterValue('fFee')||x.fee===filterValue('fFee'))
+    );
+
+    const total=fullData.length;
+    if(countEl)countEl.textContent=total+' khoản';
+
+    const totalPages=Math.ceil(total/pageSize)||1;
+    if(currentPage>totalPages)currentPage=totalPages;
+    if(currentPage<1)currentPage=1;
+
+    const startIdx=total===0?0:(currentPage-1)*pageSize+1;
+    const endIdx=Math.min(currentPage*pageSize,total);
+
+    const pagedData=fullData.slice((currentPage-1)*pageSize,currentPage*pageSize);
+
+    rowsEl.innerHTML=pagedData.map((x,i)=>{
+        const rowNum=(currentPage-1)*pageSize+i+1;
+        const code=jsArg(x.code);
+        const canCollect=x.fee==='Chờ thu phí';
+        const canPrint=x.fee!=='Chờ thu phí';
+        return `<tr>
+            <td>${rowNum}</td>
+            <td><a href="javascript:void(0)" onclick="openDetail('${code}')">${esc(x.code)}</a></td>
+            <td>${esc(x.paper)}</td>
+            <td><b>${esc(x.requester)}</b></td>
+            <td>${esc(x.submitter)}</td>
+            <td>${esc(x.type)}</td>
+            <td>${esc(x.method||'-')}</td>
+            <td>${Number(x.amount||0).toLocaleString('vi-VN')} VNĐ</td>
+            <td>${Number(x.paid||0).toLocaleString('vi-VN')} VNĐ</td>
+            <td>${badgeFee(x.fee)}</td>
+            <td><code>${esc(x.receipt||'-')}</code></td>
+            <td>${esc(x.date)}</td>
+            <td>${esc(x.officer)}</td>
+            <td>
+                <div class="actions">
+                    <button type="button" class="icon" title="Xem chi tiết" onclick="openDetail('${code}')"><i class="fa-regular fa-eye"></i></button>
+                    <button type="button" class="icon" title="Xác nhận thu phí" ${canCollect?'':'disabled'} onclick="openPaymentChoice('${code}')"><i class="fa-solid fa-receipt"></i></button>
+                    <button type="button" class="icon" title="In biên lai" ${canPrint?'':'disabled'} onclick="openReceipt('${code}')"><i class="fa-solid fa-print"></i></button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+
+    if(el('pageStart'))el('pageStart').textContent=startIdx;
+    if(el('pageEnd'))el('pageEnd').textContent=endIdx;
+    if(el('totalRecords'))el('totalRecords').textContent=total;
+
+    renderPaginationNav(totalPages);
+}
+
+function renderPaginationNav(totalPages){
+    const nav=el('paginationNav');
+    if(!nav)return;
+    let html='';
+
+    html+=`<button type="button" class="page-btn" ${currentPage===1?'disabled':''} onclick="goToPage(1)">Trang đầu</button>`;
+    html+=`<button type="button" class="page-btn" ${currentPage===1?'disabled':''} onclick="goToPage(${currentPage-1})"><i class="fa-solid fa-caret-left"></i></button>`;
+
+    for(let p=1;p<=totalPages;p++){
+        html+=`<button type="button" class="page-btn ${p===currentPage?'active':''}" onclick="goToPage(${p})">${p}</button>`;
+    }
+
+    html+=`<button type="button" class="page-btn" ${currentPage===totalPages||totalPages===0?'disabled':''} onclick="goToPage(${currentPage+1})"><i class="fa-solid fa-caret-right"></i></button>`;
+    html+=`<button type="button" class="page-btn" ${currentPage===totalPages||totalPages===0?'disabled':''} onclick="goToPage(${totalPages})">Trang cuối</button>`;
+
+    nav.innerHTML=html;
+}
+
+function resetFilters(){
+    ['fCode','fPaper','fRequester','fType','fMethod','fFrom','fTo'].forEach(id=>{const node=el(id); if(node)node.value=''});
+    const feeEl=el('fFee'); if(feeEl)feeEl.value='Chờ thu phí';
+    currentPage=1;
+    renderList();
+}
+
+function scanQr(){const first=load()[0]; if(!first)return; const codeFilter=el('fCode'); if(codeFilter)codeFilter.value=first.code; applySearch(); openDetail(first.code)}
+
+function openDetail(code){
+    const x=load().find(i=>i.code===code); if(!x){alert('Không tìm thấy khoản phải thu.');return}
+    const title=el('modalTitle'),body=el('modalBody'),foot=el('modalFoot'),modalEl=el('modal');
+    if(title)title.textContent='Chi tiết khoản phải thu';
+    if(body)body.innerHTML=`
+        <div class="grid two">
+            <div><b>Mã hồ sơ</b><p>${esc(x.code)}</p></div>
+            <div><b>Số đơn giấy</b><p>${esc(x.paper)}</p></div>
+            <div><b>Người yêu cầu</b><p>${esc(x.requester)}</p></div>
+            <div><b>Loại yêu cầu</b><p>${esc(x.type)}</p></div>
+            <div><b>Tổng tiền phải thu</b><p class="amount">${Number(x.amount||0).toLocaleString('vi-VN')} VNĐ</p></div>
+            <div><b>Hình thức thanh toán</b><p>${esc(x.method||'Chưa xác nhận')}</p></div>
+            <div><b>Trạng thái thu phí</b><p>${badgeFee(x.fee)}</p></div>
+            <div><b>Cán bộ tiếp nhận</b><p>${esc(x.officer)}</p></div>
+        </div>
+    `;
+    if(foot)foot.innerHTML=`
+        <button type="button" class="btn" onclick="closeModal()">Đóng</button>
+        <button type="button" class="btn primary" ${x.fee!=='Chờ thu phí'?'disabled':''} onclick="openPaymentChoice('${jsArg(x.code)}')"><i class="fa-solid fa-receipt"></i> Xác nhận thu phí</button>
+        <button type="button" class="btn success" ${x.fee==='Chờ thu phí'?'disabled':''} onclick="openReceipt('${jsArg(x.code)}')"><i class="fa-solid fa-print"></i> In biên lai</button>
+    `;
+    if(modalEl)modalEl.classList.add('show');
+}
+
+function localDate(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function receiptDateParts(value){const match=String(value||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); if(match)return {day:match[1].padStart(2,'0'),month:match[2].padStart(2,'0'),year:match[3]}; const d=new Date(); return {day:String(d.getDate()).padStart(2,'0'),month:String(d.getMonth()+1).padStart(2,'0'),year:String(d.getFullYear())}}
+function receiptFeeName(type){const text=String(type||''); if(text.includes('cung cấp'))return 'Phí cung cấp thông tin BPBĐ'; if(text.includes('Xóa'))return 'Lệ phí xóa đăng ký biện pháp bảo đảm'; if(text.includes('thay đổi'))return 'Phí đăng ký thay đổi biện pháp bảo đảm'; if(text.includes('Thông báo'))return 'Phí đăng ký thông báo xử lý tài sản bảo đảm'; return 'Phí đăng ký biện pháp bảo đảm'}
+function receiptRows(x){
+    const amount=Number(x.amount||0),paid=x.fee==='Miễn phí'?0:Number(x.paid||amount||0);
+    return [{name:receiptFeeName(x.type),denomination:amount,total:paid}];
+}
+function readThreeDigits(num,full){const digits=['không','một','hai','ba','bốn','năm','sáu','bảy','tám','chín']; const hundred=Math.floor(num/100),ten=Math.floor((num%100)/10),unit=num%10; const words=[]; if(hundred>0||full){words.push(digits[hundred]+' trăm'); if(ten===0&&unit>0)words.push('linh')} if(ten>1){words.push(digits[ten]+' mươi'); if(unit===1)words.push('mốt'); else if(unit===5)words.push('lăm'); else if(unit>0)words.push(digits[unit])} else if(ten===1){words.push('mười'); if(unit===5)words.push('lăm'); else if(unit>0)words.push(digits[unit])} else if(unit>0&&(hundred>0||!full)){words.push(digits[unit])} return words.join(' ')}
+function amountInWords(value){let num=Math.round(Number(value||0)); if(num<=0)return 'Không đồng chẵn./.'; const units=['','nghìn','triệu','tỷ']; const parts=[]; let index=0; while(num>0&&index<units.length){const chunk=num%1000; if(chunk>0)parts.unshift((readThreeDigits(chunk,parts.length>0)+' '+units[index]).trim()); num=Math.floor(num/1000); index++} const text=parts.join(' ').replace(/\s+/g,' ').trim(); return text.charAt(0).toUpperCase()+text.slice(1)+' đồng chẵn./.'}
+function getPayMethod(){const checked=document.querySelector('input[name="payMethod"]:checked'); return checked?checked.value:'cash'}
+
+function openPaymentChoice(code){
+    const x=load().find(i=>i.code===code); if(!x)return;
+    const selected=Number(x.amount||0)===0?'free':'cash';
+    const title=el('modalTitle'),body=el('modalBody'),foot=el('modalFoot'),modalEl=el('modal');
+    if(title)title.textContent='Xác nhận thu phí & Phát hành biên lai';
+    if(body)body.innerHTML=`
+        <div class="pay-summary">
+            <div><span>Mã hồ sơ</span><b>${esc(x.code)}</b></div>
+            <div><span>Người yêu cầu / Khách hàng</span><b>${esc(x.requester)}</b></div>
+            <div><span>Loại yêu cầu</span><b>${esc(x.type)}</b></div>
+            <div><span>Tổng số tiền phải thu</span><div class="total">${Number(x.amount||0).toLocaleString('vi-VN')} VNĐ</div></div>
+        </div>
+        <div class="section-title">Chọn phương thức & Thông tin thanh toán</div>
+        <div class="payment-methods">
+            <label class="pay-option"><input type="radio" name="payMethod" value="cash" ${selected==='cash'?'checked':''} onchange="renderPaymentFields('${jsArg(x.code)}')"><i class="fa-solid fa-money-bill"></i> Tiền mặt</label>
+            <label class="pay-option"><input type="radio" name="payMethod" value="bank" onchange="renderPaymentFields('${jsArg(x.code)}')"><i class="fa-solid fa-building-columns"></i> Chuyển khoản</label>
+            <label class="pay-option"><input type="radio" name="payMethod" value="free" ${selected==='free'?'checked':''} onchange="renderPaymentFields('${jsArg(x.code)}')"><i class="fa-solid fa-circle-check"></i> Miễn phí</label>
+        </div>
+        <div id="paymentFields" class="pay-panel"></div>
+    `;
+    if(foot)foot.innerHTML=`
+        <button type="button" class="btn" onclick="closeModal()">Hủy bỏ</button>
+        <button type="button" class="btn success" onclick="confirmCollect('${jsArg(x.code)}',false)"><i class="fa-solid fa-check"></i> Chỉ xác nhận thu</button>
+        <button type="button" class="btn primary" onclick="confirmCollect('${jsArg(x.code)}',true)"><i class="fa-solid fa-print"></i> Xác nhận & In biên lai</button>
+    `;
+    if(modalEl)modalEl.classList.add('show');
+    renderPaymentFields(code);
+}
+
+function renderPaymentFields(code){
+    const x=load().find(i=>i.code===code); const holder=el('paymentFields'); if(!x||!holder)return;
+    const amount=Number(x.amount||0);
+    const method=getPayMethod();
+    if(method==='bank'){
+        holder.innerHTML=`<div class="grid two">
+            <div class="field"><label>Nguồn xác nhận <span class="required">*</span></label><select id="bankConfirmSource"><option>Sao kê tài khoản/KBNN</option><option>Thông báo ghi Có ngân hàng</option><option>Chứng từ khách hàng cung cấp</option></select></div>
+            <div class="field"><label>Tài khoản thụ hưởng <span class="required">*</span></label><select id="beneficiaryAccount"><option value="7111.0.1054837|Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước|Kho bạc Nhà nước">7111.0.1054837 - Kho bạc Nhà nước</option><option value="102010000123456|Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước|VietinBank">102010000123456 - VietinBank</option></select></div>
+            <div class="field"><label>Mã tham chiếu/Số bút toán <span class="required">*</span></label><input id="txn" value="FT25205${esc(String(x.code||'').slice(-3))}" placeholder="Theo sao kê hoặc thông báo ghi Có"></div>
+            <div class="field"><label>Ngày ghi Có <span class="required">*</span></label><input id="transferDate" type="date" value="${localDate()}"></div>
+            <div class="field"><label>Số tiền ghi Có (VNĐ) <span class="required">*</span></label><input id="transferAmount" type="text" value="${amount ? amount.toLocaleString('vi-VN') : ''}" oninput="onAmountInput(this)" placeholder="Nhập số tiền ghi Có"></div>
+            <div class="field"><label>Nội dung chuyển khoản <span class="required">*</span></label><input id="transferContent" value="${esc(x.code)} ${esc(x.requester||'')}" placeholder="Nội dung trên sao kê"></div>
+            <div class="field"><label>Tên người chuyển theo sao kê</label><input id="payerAccountName" value="${esc(x.requester||x.submitter||'')}" placeholder="Nếu sao kê hiển thị"></div>
+            <div class="field"><label>Số tài khoản chuyển</label><input id="payerAccountNo" placeholder="Nếu sao kê hiển thị"></div>
+            <div class="field"><label>Ngân hàng chuyển tiền</label><input id="payerBank" placeholder="Nếu sao kê hiển thị"></div>
+            <div class="field"><label>Đính kèm sao kê/chứng từ</label>${uploadControl('bankProof')}</div>
+        </div><p class="file-note">Cán bộ kế toán xác nhận theo khoản ghi Có của tài khoản đơn vị. Thông tin người chuyển chỉ ghi khi sao kê/chứng từ có hiển thị, không bắt buộc.</p>`;
+        updatePaymentProofUi('bankProof');
+        return;
+    }
+    if(method==='free'){
+        holder.innerHTML=`<div class="grid two">
+            <div class="field"><label>Lý do miễn phí <span class="required">*</span></label><select id="freeReason"><option>Đối tượng ưu tiên</option><option>Theo quy định pháp luật</option><option>Khác</option></select></div>
+            <div class="field"><label>Văn bản / Căn cứ miễn phí</label><input id="freeBasis" value="Hồ sơ thuộc trường hợp miễn lệ phí theo quy định."></div>
+            <div class="field"><label>Tài liệu đính kèm căn cứ</label>${uploadControl('freeProof')}</div>
+        </div><p class="file-note">Thông tin miễn phí sẽ được lưu cùng chứng từ/biên lai miễn phí.</p>`;
+        updatePaymentProofUi('freeProof');
+        return;
+    }
+    holder.innerHTML=`<div class="grid two">
+        <div class="field"><label>Số tiền khách nộp (VNĐ) <span class="required">*</span></label><input id="cashTendered" type="text" value="${amount ? amount.toLocaleString('vi-VN') : ''}" oninput="onCashInput(this, ${amount})" placeholder="Nhập số tiền khách nộp"></div>
+        <div class="field"><label>Số tiền trả lại</label><div class="pay-change" id="cashChange">0 VNĐ</div></div>
+        <div class="field"><label>Ghi chú / Số biên lai giấy nếu có</label><input id="cashNote" placeholder="Nhập ghi chú hoặc số biên lai giấy"></div>
+    </div>`;
+    updateCashChangeFormatted(amount);
+}
+
+function onCashInput(input, amount){
+    const rawVal = parseCurrency(input.value);
+    input.value = rawVal ? rawVal.toLocaleString('vi-VN') : '';
+    const back = Math.max(0, rawVal - amount);
+    const changeEl = el('cashChange');
+    if(changeEl) changeEl.textContent = back.toLocaleString('vi-VN') + ' VNĐ';
+}
+
+function onAmountInput(input){
+    const rawVal = parseCurrency(input.value);
+    input.value = rawVal ? rawVal.toLocaleString('vi-VN') : '';
+}
+
+function updateCashChangeFormatted(amount){
+    const input = el('cashTendered');
+    const change = el('cashChange');
+    if(!input || !change) return;
+    const rawVal = parseCurrency(input.value);
+    const back = Math.max(0, rawVal - amount);
+    change.textContent = back.toLocaleString('vi-VN') + ' VNĐ';
+}
+
+function confirmCollect(code,printReceipt){
+    const data=load();
+    const x=data.find(i=>i.code===code);
+    if(!x)return;
+    const type=getPayMethod();
+    const extra={};
+    if(type==='cash'){
+        const rawTendered = parseCurrency(el('cashTendered')?.value);
+        if(rawTendered < Number(x.amount||0)){
+            alert('Số tiền khách nộp phải lớn hơn hoặc bằng số tiền phải thu.');
+            return;
+        }
+        extra.cashTendered=rawTendered;
+        extra.cashChange=rawTendered - Number(x.amount||0);
+        extra.cashNote=el('cashNote')?.value||'';
+    }
+    if(type==='bank'){
+        const txn=el('txn')?.value.trim();
+        const transferAmount=parseCurrency(el('transferAmount')?.value);
+        const transferContent=el('transferContent')?.value.trim();
+        const beneficiary=(el('beneficiaryAccount')?.value||'').split('|');
+        if(!txn){alert('Vui lòng nhập Mã tham chiếu/Số bút toán.');return}
+        if(!transferContent){alert('Vui lòng nhập Nội dung chuyển khoản theo sao kê.');return}
+        if(transferAmount < Number(x.amount||0)){alert('Số tiền ghi Có phải lớn hơn hoặc bằng số tiền phải thu.');return}
+        extra.confirmSource=el('bankConfirmSource')?.value||'';
+        extra.transactionCode=txn;
+        extra.transferAmount=transferAmount;
+        extra.transferContent=transferContent;
+        extra.transferDate=el('transferDate')?.value||localDate();
+        extra.beneficiaryAccountNo=beneficiary[0]||'';
+        extra.beneficiaryName=beneficiary[1]||'';
+        extra.beneficiaryBank=beneficiary[2]||'';
+        extra.payerAccountName=el('payerAccountName')?.value.trim()||'';
+        extra.payerAccountNo=el('payerAccountNo')?.value.trim()||'';
+        extra.payerBank=el('payerBank')?.value.trim()||'';
+        extra.proofFile=paymentProofFiles.bankProof?.name||'';
+    }
+    if(type==='free'){
+        const reason=el('freeReason')?.value||'';
+        if(!reason){alert('Vui lòng chọn Lý do miễn phí.');return}
+        extra.freeReason=reason;
+        extra.freeBasis=el('freeBasis')?.value||'';
+        extra.proofFile=paymentProofFiles.freeProof?.name||'';
+    }
+    x.method=type==='cash'?'Tiền mặt':type==='bank'?'Chuyển khoản':'Miễn phí';
+    x.fee=type==='free'?'Miễn phí':'Đã thu';
+    x.paid=type==='free'?0:Number(x.amount||0);
+    x.paymentInfo=extra;
+    x.status='Chờ giải quyết';
+    x.receipt=(type==='free'?'MP':'BL')+'-2026-'+String(code).slice(-6);
+    save(data);
+    renderList();
+    if(printReceipt){openReceipt(code)}else{alert('Đã xác nhận thu phí/miễn phí và chuyển hồ sơ sang Chờ giải quyết.');closeModal()}
+}
+
+function openReceipt(code){const x=load().find(i=>i.code===code); if(!x){alert('Không tìm thấy biên lai.');return} const title=el('modalTitle'),body=el('modalBody'),foot=el('modalFoot'),modalEl=el('modal'); const date=receiptDateParts(x.date); const symbol=x.fee==='Miễn phí'?'MPĐT/2026':'BLĐT/2026'; const receiptNo=x.receipt||'......................'; const total=x.fee==='Miễn phí'?0:Number(x.paid||x.amount||0); const payerId=x.taxCode||x.submitterId||x.accountCode||'............................................................'; const address=x.address||x.resultAddress||'............................................................'; const rowsHtml=receiptRows(x).map((item,index)=>`<tr><td>${String(index+1).padStart(2,'0')}</td><td>${esc(item.name)}</td><td>${Number(item.denomination||0).toLocaleString('vi-VN')}</td><td>${Number(item.total||0).toLocaleString('vi-VN')}</td></tr>`).join(''); if(title)title.textContent='Biên lai thu phí, lệ phí'; if(body)body.innerHTML=`<div class="receipt"><div class="receipt-head"><div><p>BỘ TƯ PHÁP</p><p>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM</p><p>VÀ BỒI THƯỜNG NHÀ NƯỚC</p><span class="receipt-rule">---------</span></div><div><p>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p><p>Độc lập - Tự do - Hạnh phúc</p><span class="receipt-rule">---------</span></div></div><div class="receipt-meta"><p>Ký hiệu: ${esc(symbol)}</p><p>Số: ${esc(receiptNo)}</p></div><div class="receipt-title"><h2>BIÊN LAI THU PHÍ, LỆ PHÍ</h2><p>(Bản điện tử / Mã QR)</p></div><div class="receipt-lines"><div class="receipt-line"><b>Cơ quan thu phí:</b><span>Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</span></div><div class="receipt-line"><b>Mã số thuế cơ quan:</b><span class="receipt-dots"></span></div><div class="receipt-line"><b>Người nộp phí:</b><span>${esc(x.requester||x.submitter||'')}</span></div><div class="receipt-line"><b>Mã số thuế/CCCD:</b><span>${esc(payerId)}</span></div><div class="receipt-line"><b>Địa chỉ:</b><span>${esc(address)}</span></div></div><table class="receipt-table"><thead><tr><th>STT</th><th>Nội dung khoản thu</th><th>Mệnh giá (VNĐ)</th><th>Số tiền (VNĐ)</th></tr></thead><tbody>${rowsHtml}</tbody></table><p class="receipt-total">Tổng cộng tiền phí, lệ phí thanh toán: ${total.toLocaleString('vi-VN')} VNĐ</p><p class="receipt-words">Số tiền bằng chữ: ${amountInWords(total)}</p><div class="receipt-sign"><div class="receipt-sign-inner"><p>Ngày ${date.day} tháng ${date.month} năm ${date.year}</p><b>TỔ CHỨC THU PHÍ</b><p>(Chữ ký số)</p></div></div></div>`; if(foot)foot.innerHTML=`<button type="button" class="btn" onclick="closeModal()">Đóng</button><button type="button" class="btn primary" onclick="window.print()"><i class="fa-solid fa-print"></i> In biên lai</button>`; if(modalEl)modalEl.classList.add('show')}
+function closeModal(){const modalEl=el('modal'); if(modalEl)modalEl.classList.remove('show')}
+
+localStorage.removeItem('ucps013_receivables');
+const initialData = load();
+save(initialData);
+if (el('fFee')) el('fFee').value = 'Chờ thu phí';
+currentPage = 1;
+renderList();
+</script>
+</body>
+</html>

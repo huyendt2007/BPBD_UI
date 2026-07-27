@@ -802,6 +802,7 @@
         <!-- ========================================== -->
         <div id="view-list" class="view-section active">
             <div class="nav-tabs">
+                <div class="nav-tab" onclick="switchListTab('chonhaplieu', this)">Hồ sơ chờ nhập liệu <span class="tab-badge warning" id="badge-chonhaplieu">0</span></div>
                 <div class="nav-tab active" onclick="switchListTab('choduyet', this)">Hồ sơ chờ duyệt <span class="tab-badge info" id="badge-choduyet">0</span></div>
                 <div class="nav-tab" onclick="switchListTab('duyet-choky', this)">Hồ sơ duyệt chờ ký <span class="tab-badge info" id="badge-duyet-choky">0</span></div>
                 <div class="nav-tab" onclick="switchListTab('bitralai', this)">Hồ sơ Bị trả lại <span class="tab-badge danger" id="badge-bitralai">0</span></div>
@@ -815,7 +816,7 @@
             <!-- Bảng kết quả -->
             <div class="card-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0; color: var(--primary-color); font-size: 16px;">Bảng danh sách kết quả đối soát</h3>
+                    <h3 id="list-table-title" style="margin: 0; color: var(--primary-color); font-size: 16px;">Bảng danh sách kết quả đối soát</h3>
                     
                     <!-- Toolbar Chờ Duyệt -->
                     <div id="toolbar-choduyet" style="display: flex; gap: 8px;">
