@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yêu cầu cung cấp thông tin về biện pháp bảo đảm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../Common/style_iframe.css">
+    <script src="../../Common/iframe_helper.js"></script>
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #CBD5E1;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Portal Header (ẩn tự động khi chạy trong iframe của trang tổng thể) */
+        .portal-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-logo { display: flex; align-items: center; gap: 12px; }
+        .header-logo i { font-size: 28px; color: #3B82F6; }
+        .logo-text h1 { font-size: 16px; margin: 0; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+        .logo-text span { font-size: 11px; color: #94A3B8; display: block; }
+        .header-user { display: flex; align-items: center; gap: 15px; font-size: 13px; }
+        .user-info { text-align: right; }
+        .user-name { font-weight: 600; display: block; }
+        .user-role { font-size: 11px; color: #94A3B8; }
+        .avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background-color: #3B82F6; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; border: 2px solid #60A5FA;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin: 20px 0 10px;
+        }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .breadcrumb a:hover { color: var(--primary-color); }
+        .breadcrumb i { font-size: 10px; }
+        .breadcrumb span { color: var(--primary-color); font-weight: 600; }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i { color: var(--secondary-color); font-size: 19px; }
+
+        .section-desc {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin: -12px 0 20px;
+        }
+
+        /* Radio segment cho Tiêu chí yêu cầu - dạng pill tab gọn nhẹ */
+        .segment-group {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 4px;
+            background-color: #F1F5F9;
+            border-radius: 10px;
+            margin-bottom: 22px;
+        }
+        .segment-option {
+            position: relative;
+            border: none;
+            border-radius: 8px;
+            padding: 7px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s ease;
+            background-color: transparent;
+        }
+        .segment-option:hover { background-color: rgba(255, 255, 255, 0.7); }
+        /* Ẩn radio gốc, dùng toàn bộ thẻ làm vùng chọn */
+        .segment-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            margin: 0;
+        }
+        .segment-option .seg-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            background-color: transparent;
+            color: var(--text-muted);
+            transition: all 0.15s ease;
+        }
+        .segment-option .seg-label { font-weight: 600; font-size: 12.5px; color: var(--text-muted); }
+        .segment-option.checked {
+            background-color: var(--bg-surface);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        .segment-option.checked .seg-icon {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+        .segment-option.checked .seg-label { color: var(--primary-color); }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-label { font-weight: 600; color: #334155; font-size: 13px; }
+        .required-mark { color: var(--danger-color); margin-left: 3px; font-weight: bold; }
+
+        .form-control {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 9px 12px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-control:focus { border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); outline: none; }
+        .form-control.is-invalid { border-color: var(--danger-color); background-color: #FEF2F2; }
+        .form-hint { font-size: 11.5px; color: var(--text-muted); }
+        .field-error {
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 2px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+        .field-error.show { display: flex; }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+            padding-right: 32px;
+        }
+
+        .criteria-panel { display: none; }
+        .criteria-panel.active { display: block; }
+        .subject-fields-panel { display: none; }
+        .subject-fields-panel.active { display: block; }
+
+        .panel-hint {
+            background-color: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            color: #0369A1;
+            border-radius: var(--border-radius-md);
+            padding: 12px 15px;
+            font-size: 12.5px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .panel-hint i { margin-top: 2px; }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 10px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .btn {
+            font-weight: 600;
+            border-radius: var(--border-radius-sm);
+            padding: 10px 22px;
+            font-size: 13.5px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: #FFFFFF; color: #475569; border: 1px solid #CBD5E1; }
+        .btn-secondary:hover { background-color: #F8FAFC; }
+
+        /* Success screen */
+        .hidden { display: none !important; }
+        .success-icon {
+            width: 72px; height: 72px; border-radius: 50%;
+            background-color: #ECFDF5; color: var(--success-color);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 34px; margin: 0 auto 20px;
+        }
+        .success-title { text-align: center; font-size: 19px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .success-sub { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            background-color: #F8FAFC;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 700px) { .result-grid { grid-template-columns: 1fr; } }
+        .result-item { display: flex; flex-direction: column; gap: 4px; }
+        .result-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .result-val { font-size: 14px; font-weight: 600; color: var(--text-main); }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            width: fit-content;
+        }
+        .status-badge.pending { background-color: #FFFBEB; color: #B45309; }
+
+        .guide-box {
+            background-color: #FFFBEB;
+            border: 1px dashed #F59E0B;
+            border-radius: var(--border-radius-md);
+            padding: 14px 16px;
+            font-size: 12.5px;
+            color: #92400E;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .guide-box i { margin-top: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- Portal Header -->
+    <header class="portal-header">
+        <div class="header-logo">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div class="logo-text">
+                <h1>Hệ thống Đăng ký Biện pháp Bảo đảm</h1>
+                <span>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC &bull; BỘ TƯ PHÁP</span>
+            </div>
+        </div>
+        <div class="header-user">
+            <div class="user-info">
+                <span class="user-name">Nguyễn Văn Khách</span>
+                <span class="user-role">Doanh nghiệp / Cá nhân</span>
+            </div>
+            <div class="avatar">NK</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="#"><i class="fa-solid fa-house"></i> Trang chủ</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <a href="#">Dịch vụ trực tuyến</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span>Yêu cầu cung cấp thông tin</span>
+        </div>
+
+        <!-- ==================== SCREEN 1: UC141.MH01 - LẬP YÊU CẦU ==================== -->
+        <div id="screen-mh01">
+            <div class="card-section">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-file-circle-question"></i>
+                    Yêu cầu cung cấp thông tin về biện pháp bảo đảm
+                </h2>
+                <p class="section-desc">Kê khai theo Mẫu số 09d để yêu cầu cung cấp thông tin về biện pháp bảo đảm bằng động sản, cây hằng năm, công trình tạm đã đăng ký.</p>
+
+                <form id="cctForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label">Tiêu chí yêu cầu cung cấp thông tin <span class="required-mark">*</span></label>
+                        <div class="segment-group" id="criteriaSegmentGroup">
+                            <label class="segment-option checked" data-value="so_dang_ky">
+                                <input type="radio" name="criteria" value="so_dang_ky" checked>
+                                <span class="seg-icon"><i class="fa-solid fa-hashtag"></i></span>
+                                <span class="seg-label">Số đăng ký</span>
+                            </label>
+                            <label class="segment-option" data-value="ben_bao_dam">
+                                <input type="radio" name="criteria" value="ben_bao_dam">
+                                <span class="seg-icon"><i class="fa-solid fa-user-shield"></i></span>
+                                <span class="seg-label">Bên bảo đảm</span>
+                            </label>
+                            <label class="segment-option" data-value="so_khung">
+                                <input type="radio" name="criteria" value="so_khung">
+                                <span class="seg-icon"><i class="fa-solid fa-car"></i></span>
+                                <span class="seg-label">Số khung</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Panel: Số đăng ký -->
+                    <div class="criteria-panel active" id="panel-so_dang_ky">
+                        <div class="form-group">
+                            <label class="form-label" for="regNumber">Số đăng ký <span class="required-mark">*</span></label>
+                            <input type="text" id="regNumber" name="regNumber" class="form-control" placeholder="Nhập số đăng ký của biện pháp bảo đảm đã đăng ký">
+                            <div class="field-error" data-error-for="regNumber"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+
+                    <!-- Panel: Bên bảo đảm -->
+                    <div class="criteria-panel" id="panel-ben_bao_dam">
+                        <div class="form-group">
+                            <label class="form-label" for="subjectType">Loại chủ thể <span class="required-mark">*</span></label>
+                            <select id="subjectType" name="subjectType" class="form-control">
+                                <option value="cd_vn" selected>Công dân Việt Nam</option>
+                                <option value="to_chuc_dkkd">Tổ chức có đăng ký kinh doanh trong nước</option>
+                                <option value="nguoi_nn">Người nước ngoài</option>
+                                <option value="nha_dau_tu_nn">Nhà đầu tư nước ngoài</option>
+                                <option value="to_chuc_khac">Tổ chức khác</option>
+                                <option value="khong_quoc_tich">Người không quốc tịch cư trú tại Việt Nam</option>
+                            </select>
+                        </div>
+
+                        <!-- Sub-panel: Công dân Việt Nam -->
+                        <div class="subject-fields-panel active" id="subject-cd_vn">
+                            <div class="form-group">
+                                <label class="form-label" for="cccdNumber">Số CMND/Căn cước công dân/Chứng minh quân đội <span class="required-mark">*</span></label>
+                                <input type="text" id="cccdNumber" name="cccdNumber" class="form-control" maxlength="12" placeholder="Nhập đúng 12 chữ số">
+                                <div class="field-error" data-error-for="cccdNumber"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-panel: Tổ chức có ĐKKD trong nước -->
+                        <div class="subject-fields-panel" id="subject-to_chuc_dkkd">
+                            <div class="form-group">
+                                <label class="form-label" for="taxCodeOrg">Mã số thuế/Số đăng ký kinh doanh <span class="required-mark">*</span></label>
+                                <input type="text" id="taxCodeOrg" name="taxCodeOrg" class="form-control" maxlength="14" placeholder="Nhập mã số thuế/số đăng ký kinh doanh (10 hoặc 14 chữ số)">
+                                <div class="field-error" data-error-for="taxCodeOrg"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-panel: Người nước ngoài -->
+                        <div class="subject-fields-panel" id="subject-nguoi_nn">
+                            <div class="form-group">
+                                <label class="form-label" for="fullNameForeigner">Họ và tên <span class="required-mark">*</span></label>
+                                <input type="text" id="fullNameForeigner" name="fullNameForeigner" class="form-control" placeholder="Nhập họ và tên">
+                                <div class="field-error" data-error-for="fullNameForeigner"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="passportNumber">Số Hộ chiếu <span class="required-mark">*</span></label>
+                                <input type="text" id="passportNumber" name="passportNumber" class="form-control" placeholder="Nhập số hộ chiếu">
+                                <div class="field-error" data-error-for="passportNumber"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-panel: Nhà đầu tư nước ngoài -->
+                        <div class="subject-fields-panel" id="subject-nha_dau_tu_nn">
+                            <div class="form-group">
+                                <label class="form-label" for="taxCodeInvestor">Mã số thuế/Số giấy phép đầu tư <span class="required-mark">*</span></label>
+                                <input type="text" id="taxCodeInvestor" name="taxCodeInvestor" class="form-control" placeholder="Nhập mã số thuế/số giấy phép đầu tư">
+                                <div class="field-error" data-error-for="taxCodeInvestor"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-panel: Tổ chức khác -->
+                        <div class="subject-fields-panel" id="subject-to_chuc_khac">
+                            <div class="form-group">
+                                <label class="form-label" for="orgNameOther">Tên tổ chức <span class="required-mark">*</span></label>
+                                <input type="text" id="orgNameOther" name="orgNameOther" class="form-control" placeholder="Nhập tên tổ chức">
+                                <div class="field-error" data-error-for="orgNameOther"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-panel: Người không quốc tịch -->
+                        <div class="subject-fields-panel" id="subject-khong_quoc_tich">
+                            <div class="form-group">
+                                <label class="form-label" for="fullNameStateless">Họ và tên <span class="required-mark">*</span></label>
+                                <input type="text" id="fullNameStateless" name="fullNameStateless" class="form-control" placeholder="Nhập họ và tên">
+                                <div class="field-error" data-error-for="fullNameStateless"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="residenceCard">Số thẻ cư trú <span class="required-mark">*</span></label>
+                                <input type="text" id="residenceCard" name="residenceCard" class="form-control" placeholder="Nhập số thẻ cư trú">
+                                <div class="field-error" data-error-for="residenceCard"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel: Số khung -->
+                    <div class="criteria-panel" id="panel-so_khung">
+                        <div class="form-group">
+                            <label class="form-label" for="chassisNumber">Số khung <span class="required-mark">*</span></label>
+                            <input type="text" id="chassisNumber" name="chassisNumber" class="form-control" placeholder="Nhập số khung phương tiện giao thông cơ giới đường bộ">
+                            <div class="field-error" data-error-for="chassisNumber"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="btnResetForm" onclick="clearInputValues()">
+                            <i class="fa-solid fa-rotate-left"></i> Nhập lại
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="submitRequest()">
+                            <i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== SCREEN 2: UC141.MH03 - THÔNG BÁO GỬI HỒ SƠ THÀNH CÔNG ==================== -->
+        <div id="screen-mh03" class="hidden">
+            <div class="card-section" style="max-width: 560px; margin: 20px auto;">
+                <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="success-title">Gửi yêu cầu thành công!</div>
+                <div class="success-sub">Hồ sơ Yêu cầu cung cấp thông tin của bạn đã được ghi nhận vào hệ thống.</div>
+
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-label">Mã hồ sơ</span>
+                        <span class="result-val" id="resultDossierCode">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Thời điểm đăng ký</span>
+                        <span class="result-val" id="resultRegisteredAt">—</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Trạng thái hồ sơ</span>
+                        <span class="status-badge pending"><i class="fa-solid fa-clock"></i> Chờ duyệt</span>
+                    </div>
+                </div>
+
+                <div class="guide-box">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Quý khách vui lòng theo dõi trạng thái xử lý hồ sơ tại mục "Quản lý yêu cầu đã đăng ký". Khi hồ sơ chuyển sang trạng thái "Chờ thanh toán", quý khách thực hiện thanh toán lệ phí để nhận kết quả cung cấp thông tin.</span>
+                </div>
+
+                <div class="form-actions" style="justify-content: center; border-top: none; padding-top: 0;">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        <i class="fa-solid fa-plus"></i> Tạo yêu cầu mới
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= Đổi Tiêu chí yêu cầu (Radio/Segment) =================
+        const criteriaGroup = document.getElementById('criteriaSegmentGroup');
+        criteriaGroup.querySelectorAll('input[name="criteria"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                criteriaGroup.querySelectorAll('.segment-option').forEach(opt => opt.classList.remove('checked'));
+                this.closest('.segment-option').classList.add('checked');
+
+                document.querySelectorAll('.criteria-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById('panel-' + this.value).classList.add('active');
+            });
+        });
+
+        // ================= Đổi Loại chủ thể (Dropdown) =================
+        const subjectTypeSelect = document.getElementById('subjectType');
+        function renderSubjectFields() {
+            document.querySelectorAll('.subject-fields-panel').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById('subject-' + subjectTypeSelect.value);
+            if (target) target.classList.add('active');
+        }
+        subjectTypeSelect.addEventListener('change', renderSubjectFields);
+        // Trigger ngay khi tải trang để hiển thị đúng trường của "Công dân Việt Nam" mặc định
+        renderSubjectFields();
+
+        // ================= Validate + Gửi yêu cầu (Happy path) =================
+        function clearFieldError(input) {
+            input.classList.remove('is-invalid');
+            const err = document.querySelector(`.field-error[data-error-for="${input.id}"]`);
+            if (err) err.classList.remove('show');
+        }
+
+        document.querySelectorAll('#cctForm .form-control').forEach(input => {
+            input.addEventListener('input', () => clearFieldError(input));
+            if (input.tagName === 'SELECT') input.addEventListener('change', () => clearFieldError(input));
+        });
+
+        function getVisibleRequiredFields() {
+            const activeCriteriaPanel = document.querySelector('.criteria-panel.active');
+            const fields = [];
+
+            const criteriaValue = document.querySelector('input[name="criteria"]:checked').value;
+
+            if (criteriaValue === 'so_dang_ky') {
+                fields.push(document.getElementById('regNumber'));
+            } else if (criteriaValue === 'so_khung') {
+                fields.push(document.getElementById('chassisNumber'));
+            } else if (criteriaValue === 'ben_bao_dam') {
+                const activeSubjectPanel = activeCriteriaPanel.querySelector('.subject-fields-panel.active');
+                if (activeSubjectPanel) {
+                    activeSubjectPanel.querySelectorAll('.form-control').forEach(el => fields.push(el));
+                }
+            }
+            return fields;
+        }
+
+        function submitRequest() {
+            const requiredFields = getVisibleRequiredFields();
+            let firstInvalid = null;
+
+            requiredFields.forEach(input => {
+                clearFieldError(input);
+                if (!input.value.trim()) {
+                    input.classList.add('is-invalid');
+                    const err = document.querySelector(`.field-error[data-error-for="${input.id}"]`);
+                    if (err) err.classList.add('show');
+                    if (!firstInvalid) firstInvalid = input;
+                }
+            });
+
+            if (firstInvalid) {
+                firstInvalid.focus();
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // TH Hợp lệ: sinh mã hồ sơ, ghi nhận thời điểm đăng ký, chuyển sang màn hình thông báo thành công
+            const now = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            const dateCode = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+            const seq = String(Math.floor(100000 + Math.random() * 900000)).slice(0, 6);
+            const dossierCode = `CCTT-${dateCode}-${seq}`;
+            const displayDatetime = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+            document.getElementById('resultDossierCode').textContent = dossierCode;
+            document.getElementById('resultRegisteredAt').textContent = displayDatetime;
+
+            document.getElementById('screen-mh01').classList.add('hidden');
+            document.getElementById('screen-mh03').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Nút "Nhập lại": chỉ xóa dữ liệu đã nhập (textbox), giữ nguyên Tiêu chí và Loại chủ thể đang chọn
+        function clearInputValues() {
+            document.querySelectorAll('#cctForm input[type="text"]').forEach(input => {
+                input.value = '';
+                clearFieldError(input);
+            });
+        }
+
+        // Nút "Tạo yêu cầu mới" (sau khi gửi thành công): đưa form về trạng thái mặc định ban đầu
+        function resetForm() {
+            document.getElementById('cctForm').reset();
+            document.querySelectorAll('.form-control.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.querySelectorAll('.field-error.show').forEach(el => el.classList.remove('show'));
+
+            criteriaGroup.querySelectorAll('.segment-option').forEach(opt => opt.classList.remove('checked'));
+            document.querySelector('.segment-option[data-value="so_dang_ky"]').classList.add('checked');
+            document.querySelectorAll('.criteria-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-so_dang_ky').classList.add('active');
+
+            renderSubjectFields();
+
+            document.getElementById('screen-mh03').classList.add('hidden');
+            document.getElementById('screen-mh01').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

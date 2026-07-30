@@ -24,6 +24,62 @@ let uploadedFiles = {
     assetsPdfFile: null
 };
 
+function initFloatingTooltips() {
+    let tooltipEl = null;
+
+    const removeTooltip = () => {
+        if (tooltipEl) {
+            tooltipEl.remove();
+            tooltipEl = null;
+        }
+    };
+
+    const positionTooltip = (target) => {
+        if (!tooltipEl) return;
+        const rect = target.getBoundingClientRect();
+        const margin = 12;
+        const leftLimit = window.innerWidth - tooltipEl.offsetWidth - margin;
+        const centeredLeft = rect.left + (rect.width / 2) - (tooltipEl.offsetWidth / 2);
+        const left = Math.max(margin, Math.min(centeredLeft, leftLimit));
+        let top = rect.top - tooltipEl.offsetHeight - 10;
+
+        if (top < margin) {
+            top = rect.bottom + 10;
+        }
+
+        tooltipEl.style.left = `${left}px`;
+        tooltipEl.style.top = `${top}px`;
+    };
+
+    const showTooltip = (target) => {
+        const text = target.getAttribute('data-tooltip');
+        if (!text) return;
+
+        removeTooltip();
+        tooltipEl = document.createElement('div');
+        tooltipEl.className = 'floating-tooltip';
+        tooltipEl.textContent = text;
+        document.body.appendChild(tooltipEl);
+        positionTooltip(target);
+    };
+
+    document.querySelectorAll('.tooltip-icon[data-tooltip]').forEach((el) => {
+        if (el.dataset.floatingTooltipBound === '1') return;
+        el.dataset.floatingTooltipBound = '1';
+        el.setAttribute('tabindex', el.getAttribute('tabindex') || '0');
+        el.addEventListener('mouseenter', () => showTooltip(el));
+        el.addEventListener('focus', () => showTooltip(el));
+        el.addEventListener('mouseleave', removeTooltip);
+        el.addEventListener('blur', removeTooltip);
+        el.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') removeTooltip();
+        });
+    });
+
+    window.addEventListener('scroll', removeTooltip, true);
+    window.addEventListener('resize', removeTooltip);
+}
+
 // Mock Data representing the dossier versions for sidebar comparison
 const mockTimelineData = [
     {
@@ -52,6 +108,7 @@ const mockTimelineData = [
                     name: "Nguyễn Văn Nam",
                     paperType: "CCCD",
                     paperNo: "001088012345",
+                    birthDate: "12/08/1988",
                     address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
                     status: "Không thay đổi"
                 },
@@ -60,6 +117,7 @@ const mockTimelineData = [
                     name: "Trần Thị Bé",
                     paperType: "CCCD",
                     paperNo: "002095067890",
+                    birthDate: "21/05/1995",
                     address: "Số 88 Giải Phóng, Phường Phương Mai, Quận Đống Đa, Hà Nội",
                     status: "Bổ sung mới" // Added in version 3
                 }
@@ -146,6 +204,7 @@ const mockTimelineData = [
                     name: "Nguyễn Văn Nam",
                     paperType: "CCCD",
                     paperNo: "001088012345",
+                    birthDate: "12/08/1988",
                     address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
                     status: "Không thay đổi"
                 }
@@ -283,6 +342,8 @@ const VN_PROVINCES = [
 function initPage() {
     try {
         console.log("DEBUG: initPage starting in dang_ky_thay_doi.js");
+        initFloatingTooltips();
+
         // 1. Load baseline from localStorage
         let savedBaseline = localStorage.getItem('baselineData');
         let savedOriginal = localStorage.getItem('baselineOriginalData');
@@ -310,6 +371,7 @@ function initPage() {
                         name: "Nguyễn Văn Nam",
                         paperType: "CCCD",
                         paperNo: "001088012345",
+                        birthDate: "12/08/1988",
                         address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
                         status: "Không thay đổi"
                     },
@@ -318,6 +380,7 @@ function initPage() {
                         name: "Trần Thị Bé",
                         paperType: "CCCD",
                         paperNo: "002095067890",
+                        birthDate: "21/05/1995",
                         address: "Số 88 Giải Phóng, Phường Phương Mai, Quận Đống Đa, Hà Nội",
                         status: "Không thay đổi"
                     }
@@ -916,6 +979,7 @@ function handleSecuringSubjectTypeChange() {
 
     // Hide all conditional groups
     document.getElementById('secGroupFullName').style.display = 'none';
+    document.getElementById('secGroupBirthDate').style.display = 'none';
     document.getElementById('secGroupOrgName').style.display = 'none';
     document.getElementById('secGroupNameOther').style.display = 'none';
     document.getElementById('secGroupPaperNoCCCD').style.display = 'none';
@@ -926,6 +990,7 @@ function handleSecuringSubjectTypeChange() {
 
     if (type === 'cd_vn') {
         document.getElementById('secGroupFullName').style.display = 'block';
+        document.getElementById('secGroupBirthDate').style.display = 'block';
         document.getElementById('secGroupPaperNoCCCD').style.display = 'block';
     } else if (type === 'nn_ngoai') {
         document.getElementById('secGroupFullName').style.display = 'block';
@@ -997,17 +1062,20 @@ function renderSecuringList() {
 
         const origTypeLabel = orig ? (orig.typeLabel || orig.paperType || '') : '';
         const origPaperNo = orig ? (orig.paperNo || '') : '';
+        const origBirthDate = orig ? (orig.birthDate || '') : '';
         const origName = orig ? (orig.name || '') : '';
         const origAddress = orig ? (orig.address || '') : '';
 
         // Cell delta checks
         const typeTdAttr = orig ? getCellHtml(party.typeLabel || party.paperType || '', origTypeLabel) : '';
         const paperTdAttr = orig ? getCellHtml(party.paperNo || '', origPaperNo) : '';
+        const birthDateTdAttr = orig ? getCellHtml(party.birthDate || '', origBirthDate) : '';
         const nameTdAttr = orig ? getCellHtml(party.name || '', origName) : '';
         const addressTdAttr = orig ? getCellHtml(party.address || '', origAddress) : '';
 
         const typeHistory = orig ? getHistoryIcon(party.typeLabel || party.paperType || '', origTypeLabel) : '';
         const paperHistory = orig ? getHistoryIcon(party.paperNo || '', origPaperNo) : '';
+        const birthDateHistory = orig ? getHistoryIcon(party.birthDate || '', origBirthDate) : '';
         const nameHistory = orig ? getHistoryIcon(party.name || '', origName) : '';
         const addressHistory = orig ? getHistoryIcon(party.address || '', origAddress) : '';
 
@@ -1032,6 +1100,7 @@ function renderSecuringList() {
             <td style="text-align: center;">${actionsHtml}</td>
             <td ${typeTdAttr}>${party.typeLabel || party.paperType || ''} ${typeHistory}</td>
             <td ${paperTdAttr}>${party.paperNo || ''} ${paperHistory}</td>
+            <td ${birthDateTdAttr}>${party.type === 'cd_vn' ? (party.birthDate || '-') : '-'} ${party.type === 'cd_vn' ? birthDateHistory : ''}</td>
             <td ${nameTdAttr}>${party.name || ''} ${nameHistory}</td>
             <td ${addressTdAttr}>${party.address || ''} ${addressHistory}</td>
             <td>${statusTag}</td>
@@ -1049,6 +1118,7 @@ function showAddSecuringForm() {
     handleSecuringSubjectTypeChange();
 
     document.getElementById('secFullName').value = "";
+    document.getElementById('secBirthDate').value = "";
     document.getElementById('secOrgName').value = "";
     document.getElementById('secNameOther').value = "";
     document.getElementById('secPaperNoCCCD').value = "";
@@ -1091,6 +1161,7 @@ function editSecuring(index) {
     handleSecuringSubjectTypeChange();
 
     document.getElementById('secFullName').value = "";
+    document.getElementById('secBirthDate').value = "";
     document.getElementById('secOrgName').value = "";
     document.getElementById('secNameOther').value = "";
     document.getElementById('secPaperNoCCCD').value = "";
@@ -1103,6 +1174,7 @@ function editSecuring(index) {
     const type = party.type || 'cd_vn';
     if (type === 'cd_vn') {
         document.getElementById('secFullName').value = party.name || "";
+        document.getElementById('secBirthDate').value = party.birthDate || "";
         document.getElementById('secPaperNoCCCD').value = party.paperNo || "";
     } else if (type === 'nn_ngoai') {
         document.getElementById('secFullName').value = party.name || "";
@@ -1169,6 +1241,7 @@ function saveSecuringParty(isUpdate) {
     let paperNo = '';
     let paperType = '';
     let passportCountry = '';
+    let birthDate = '';
 
     let nameInput = null;
     let paperInput = null;
@@ -1177,6 +1250,25 @@ function saveSecuringParty(isUpdate) {
         nameInput = document.getElementById('secFullName');
         paperInput = document.getElementById('secPaperNoCCCD');
         paperType = 'CCCD';
+        const birthDateInput = document.getElementById('secBirthDate');
+        birthDate = birthDateInput ? birthDateInput.value.trim() : '';
+        const birthDateMatch = birthDate.match(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/);
+        if (!birthDate) {
+            highlightError(birthDateInput, "Đây là trường bắt buộc");
+            return;
+        }
+        if (!birthDateMatch) {
+            highlightError(birthDateInput, "Ngày tháng năm sinh không hợp lệ");
+            return;
+        }
+        const [d, m, y] = birthDate.split('/').map(Number);
+        const parsedDate = new Date(y, m - 1, d);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (parsedDate.getFullYear() !== y || parsedDate.getMonth() !== m - 1 || parsedDate.getDate() !== d || parsedDate > today) {
+            highlightError(birthDateInput, "Ngày tháng năm sinh không hợp lệ");
+            return;
+        }
     } else if (type === 'nn_ngoai') {
         nameInput = document.getElementById('secFullName');
         paperInput = document.getElementById('secPassportNo');
@@ -1296,6 +1388,7 @@ function saveSecuringParty(isUpdate) {
             type: type,
             typeLabel: typeLabel,
             name: name,
+            birthDate: birthDate,
             paperType: paperType,
             paperNo: paperNo,
             passportCountry: passportCountry,
@@ -1311,6 +1404,7 @@ function saveSecuringParty(isUpdate) {
         const isModified = (
             name !== originalSubject.name ||
             paperNo !== originalSubject.paperNo ||
+            birthDate !== (originalSubject.birthDate || '') ||
             type !== originalSubject.type ||
             fullAddress !== originalSubject.address
         );
@@ -1318,6 +1412,7 @@ function saveSecuringParty(isUpdate) {
         item.type = type;
         item.typeLabel = typeLabel;
         item.name = name;
+        item.birthDate = birthDate;
         item.paperType = paperType;
         item.paperNo = paperNo;
         item.passportCountry = passportCountry;
@@ -1654,7 +1749,60 @@ function undoRemoveSecured(index) {
 let soKhungList = [];
 let tauCaList = [];
 
+const ASSET_TYPE_LABELS = {
+    soKhung: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+    tauCa: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt',
+    dongSanKhac: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)'
+};
+
+const assetDescriptionFields = [
+    { chk: 'chkCayHangNam', wrapper: 'descCayHangNamWrapper', input: 'descCayHangNam', key: 'cayHangNam' },
+    { chk: 'chkDongSanKhac', wrapper: 'descDongSanKhacWrapper', input: 'descDongSanKhac', key: 'dongSanKhac' }
+];
+
+function placeAssetBlocksByCheckbox() {
+    [
+        ['chkSoKhung', 'gridSoKhung'],
+        ['chkTauCa', 'gridTauCa'],
+        ['chkQuyenTaiSan', 'gridQuyenTaiSan'],
+        ['chkHangHoa', 'gridHangHoa'],
+        ['chkChungKhoan', 'gridChungKhoan']
+    ].forEach(([chkId, blockId]) => {
+        const checkbox = document.getElementById(chkId);
+        const block = document.getElementById(blockId);
+        const checkItem = checkbox?.closest('.check-item');
+        if (checkItem && block) {
+            checkItem.insertAdjacentElement('afterend', block);
+        }
+    });
+}
+
+function getAssetDescriptionsFromForm() {
+    return assetDescriptionFields.reduce((result, field) => {
+        const checkbox = document.getElementById(field.chk);
+        const input = document.getElementById(field.input);
+        result[field.key] = checkbox?.checked ? (input?.value.trim() || '') : '';
+        return result;
+    }, {});
+}
+
+function toggleAssetDescription(field) {
+    const checkbox = document.getElementById(field.chk);
+    const wrapper = document.getElementById(field.wrapper);
+    const input = document.getElementById(field.input);
+    if (!checkbox || !wrapper || !input) return;
+
+    if (checkbox.checked) {
+        wrapper.classList.remove('hidden');
+    } else {
+        wrapper.classList.add('hidden');
+        input.value = '';
+        input.classList.remove('is-invalid');
+    }
+}
+
 function loadAssetsData() {
+    placeAssetBlocksByCheckbox();
     soKhungList = [];
     tauCaList = [];
 
@@ -1671,15 +1819,26 @@ function loadAssetsData() {
     const chkSoKhung = document.getElementById('chkSoKhung');
     const chkTauCa = document.getElementById('chkTauCa');
     const chkQuyenTaiSan = document.getElementById('chkQuyenTaiSan');
+    const chkCayHangNam = document.getElementById('chkCayHangNam');
     const chkHangHoa = document.getElementById('chkHangHoa');
     const chkChungKhoan = document.getElementById('chkChungKhoan');
+    const chkDongSanKhac = document.getElementById('chkDongSanKhac');
 
     chkSoKhung.checked = soKhungList.length > 0;
     chkTauCa.checked = tauCaList.length > 0;
 
     chkQuyenTaiSan.checked = !!(baselineData.quyenTaiSan && baselineData.quyenTaiSan.tenQuyen);
+    chkCayHangNam.checked = !!baselineData.cayHangNam;
     chkHangHoa.checked = !!(baselineData.hangHoa && baselineData.hangHoa.tenHangHoa);
     chkChungKhoan.checked = !!(baselineData.chungKhoan && baselineData.chungKhoan.ck_nam);
+    chkDongSanKhac.checked = !!baselineData.dongSanKhac;
+
+    if (baselineData.assetDescriptions) {
+        assetDescriptionFields.forEach(field => {
+            const input = document.getElementById(field.input);
+            if (input) input.value = baselineData.assetDescriptions[field.key] || '';
+        });
+    }
 
     if (chkQuyenTaiSan.checked) {
         document.getElementById('qts_tenQuyen').value = baselineData.quyenTaiSan.tenQuyen || '';
@@ -1707,7 +1866,7 @@ function loadAssetsData() {
     }
 
     // Set checkboxes change listeners to toggle subforms
-    const checkboxes = [chkSoKhung, chkTauCa, chkQuyenTaiSan, chkHangHoa, chkChungKhoan];
+    const checkboxes = [chkSoKhung, chkTauCa, chkQuyenTaiSan, chkCayHangNam, chkHangHoa, chkChungKhoan, chkDongSanKhac];
     checkboxes.forEach(chk => {
         chk.addEventListener('change', toggleAssetSections);
     });
@@ -1721,31 +1880,23 @@ function toggleAssetSections() {
     const chkSoKhung = document.getElementById('chkSoKhung').checked;
     const chkTauCa = document.getElementById('chkTauCa').checked;
     const chkQuyenTaiSan = document.getElementById('chkQuyenTaiSan').checked;
+    const chkCayHangNam = document.getElementById('chkCayHangNam').checked;
     const chkHangHoa = document.getElementById('chkHangHoa').checked;
     const chkChungKhoan = document.getElementById('chkChungKhoan').checked;
+    const chkDongSanKhac = document.getElementById('chkDongSanKhac').checked;
 
     document.getElementById('gridSoKhung').classList.toggle('hidden', !chkSoKhung);
     document.getElementById('gridTauCa').classList.toggle('hidden', !chkTauCa);
     document.getElementById('gridQuyenTaiSan').classList.toggle('hidden', !chkQuyenTaiSan);
     document.getElementById('gridHangHoa').classList.toggle('hidden', !chkHangHoa);
     document.getElementById('gridChungKhoan').classList.toggle('hidden', !chkChungKhoan);
+    assetDescriptionFields.forEach(toggleAssetDescription);
 
     // Khi tích chọn Loại tài sản tàu cá, thì ở bảng phải mặc định hiển thị sẵn 1 dòng để nhập liệu
     if (chkTauCa && tauCaList.length === 0) {
         addInlineTauCaRow();
     }
 
-    // Hide or show the notice columns depending on Transaction Type
-    const txType = document.getElementById('transactionType').value;
-    const colNoticeSks = document.querySelectorAll('.col-notice-sk');
-    const colNoticeTcs = document.querySelectorAll('.col-notice-tc');
-    const btnYeuCauTatCaSK = document.getElementById('btnYeuCauTatCaSK');
-    const btnYeuCauTatCaTC = document.getElementById('btnYeuCauTatCaTC');
-
-    colNoticeSks.forEach(el => el.style.display = (txType === 'Hợp đồng') ? 'none' : '');
-    colNoticeTcs.forEach(el => el.style.display = (txType === 'Hợp đồng') ? 'none' : '');
-    if (btnYeuCauTatCaSK) btnYeuCauTatCaSK.style.display = (txType === 'Hợp đồng') ? 'none' : '';
-    if (btnYeuCauTatCaTC) btnYeuCauTatCaTC.style.display = (txType === 'Hợp đồng') ? 'none' : '';
 }
 
 function getOriginalAsset(assetId) {
@@ -1774,7 +1925,6 @@ function renderSoKhungGrid() {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    const txType = document.getElementById('transactionType').value;
     const isEditable = document.getElementById('cardAssets').classList.contains('editable');
 
     soKhungList.forEach((a, index) => {
@@ -1800,29 +1950,17 @@ function renderSoKhungGrid() {
         const origFrameNo = orig ? (orig.frameNo || '') : '';
         const origEngineNo = orig ? (orig.engineNo || '') : '';
         const origPlateNo = orig ? (orig.plateNo || '') : '';
-        const origHasNotice = orig ? !!orig.hasNotice : false;
-        const origNoticeAgency = orig ? (orig.noticeAgency || '') : '';
-
         const typeTdAttr = orig ? getCellHtml(a.type, origType) : '';
         const brandColorTdAttr = orig ? getCellHtml(a.brandColor, origBrandColor) : '';
         const frameNoTdAttr = orig ? getCellHtml(a.frameNo, origFrameNo) : '';
         const engineNoTdAttr = orig ? getCellHtml(a.engineNo || '', origEngineNo) : '';
         const plateNoTdAttr = orig ? getCellHtml(a.plateNo || '', origPlateNo) : '';
 
-        let noticeTdAttr = '';
-        let noticeAgencyTdAttr = '';
-        if (orig) {
-            noticeTdAttr = getCellHtml(!!a.hasNotice ? 'Có' : 'Không', origHasNotice ? 'Có' : 'Không');
-            noticeAgencyTdAttr = getCellHtml(a.noticeAgency || '', origNoticeAgency);
-        }
-
         const typeHistory = orig ? getHistoryIcon(a.type, origType) : '';
         const brandColorHistory = orig ? getHistoryIcon(a.brandColor, origBrandColor) : '';
         const frameNoHistory = orig ? getHistoryIcon(a.frameNo, origFrameNo) : '';
         const engineNoHistory = orig ? getHistoryIcon(a.engineNo || '', origEngineNo) : '';
         const plateNoHistory = orig ? getHistoryIcon(a.plateNo || '', origPlateNo) : '';
-        const noticeHistory = orig ? getHistoryIcon(!!a.hasNotice ? 'Có' : 'Không', origHasNotice ? 'Có' : 'Không') : '';
-        const noticeAgencyHistory = orig ? getHistoryIcon(a.noticeAgency || '', origNoticeAgency) : '';
 
         const disabledAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'disabled';
         const readonlyAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'readonly';
@@ -1832,10 +1970,6 @@ function renderSoKhungGrid() {
                 <option value="oto" ${a.type === 'oto' ? 'selected' : ''}>Ô tô</option>
                 <option value="moto" ${a.type === 'moto' ? 'selected' : ''}>Mô tô</option>
             </select>
-        `;
-
-        const noticeCheckboxHtml = `
-            <input type="checkbox" ${disabledAttr} ${a.hasNotice ? 'checked' : ''} onchange="updateInlineAsset(${index}, 'sokhung', 'hasNotice', this.checked)">
         `;
 
         const actionBtn = (isEditable) ?
@@ -1864,13 +1998,6 @@ function renderSoKhungGrid() {
                 <input type="text" class="form-control inline-input" value="${a.plateNo || ''}" ${readonlyAttr} onchange="updateInlineAsset(${index}, 'sokhung', 'plateNo', this.value)">
                 ${plateNoHistory}
             </td>
-            <td class="col-notice-sk" style="text-align: center; ${txType === 'Hợp đồng' ? 'display:none;' : ''}" ${noticeTdAttr}>
-                ${noticeCheckboxHtml} ${noticeHistory}
-            </td>
-            <td class="col-notice-sk" style="${txType === 'Hợp đồng' ? 'display:none;' : ''}" ${noticeAgencyTdAttr}>
-                <input type="text" class="form-control inline-input" value="${a.noticeAgency || ''}" ${readonlyAttr} ${a.hasNotice ? '' : 'disabled'} onchange="updateInlineAsset(${index}, 'sokhung', 'noticeAgency', this.value)">
-                ${noticeAgencyHistory}
-            </td>
             <td style="text-align: center;">${actionBtn}</td>
         `;
 
@@ -1883,7 +2010,6 @@ function renderTauCaGrid() {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    const txType = document.getElementById('transactionType').value;
     const isEditable = document.getElementById('cardAssets').classList.contains('editable');
 
     tauCaList.forEach((a, index) => {
@@ -1908,34 +2034,18 @@ function renderTauCaGrid() {
         const origOwnerName = orig ? (orig.ownerName || '') : '';
         const origRegNo = orig ? (orig.regNo || '') : '';
         const origLevel = orig ? (orig.level || '') : '';
-        const origHasNotice = orig ? !!orig.hasNotice : false;
-        const origNoticeAgency = orig ? (orig.noticeAgency || '') : '';
-
         const nameTdAttr = orig ? getCellHtml(a.name || '', origName) : '';
         const ownerTdAttr = orig ? getCellHtml(a.ownerName || '', origOwnerName) : '';
         const regNoTdAttr = orig ? getCellHtml(a.regNo || '', origRegNo) : '';
         const levelTdAttr = orig ? getCellHtml(a.level || '', origLevel) : '';
 
-        let noticeTdAttr = '';
-        let noticeAgencyTdAttr = '';
-        if (orig) {
-            noticeTdAttr = getCellHtml(!!a.hasNotice ? 'Có' : 'Không', origHasNotice ? 'Có' : 'Không');
-            noticeAgencyTdAttr = getCellHtml(a.noticeAgency || '', origNoticeAgency);
-        }
-
         const nameHistory = orig ? getHistoryIcon(a.name || '', origName) : '';
         const ownerHistory = orig ? getHistoryIcon(a.ownerName || '', origOwnerName) : '';
         const regNoHistory = orig ? getHistoryIcon(a.regNo || '', origRegNo) : '';
         const levelHistory = orig ? getHistoryIcon(a.level || '', origLevel) : '';
-        const noticeHistory = orig ? getHistoryIcon(!!a.hasNotice ? 'Có' : 'Không', origHasNotice ? 'Có' : 'Không') : '';
-        const noticeAgencyHistory = orig ? getHistoryIcon(a.noticeAgency || '', origNoticeAgency) : '';
 
         const disabledAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'disabled';
         const readonlyAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'readonly';
-
-        const noticeCheckboxHtml = `
-            <input type="checkbox" ${disabledAttr} ${a.hasNotice ? 'checked' : ''} onchange="updateInlineAsset(${index}, 'tauca', 'hasNotice', this.checked)">
-        `;
 
         const actionBtn = (isEditable) ?
             (a.status === 'Rút bớt' ?
@@ -1961,13 +2071,6 @@ function renderTauCaGrid() {
             <td ${levelTdAttr}>
                 <input type="text" class="form-control inline-input" value="${a.level || ''}" ${readonlyAttr} onchange="updateInlineAsset(${index}, 'tauca', 'level', this.value)">
                 ${levelHistory}
-            </td>
-            <td class="col-notice-tc" style="text-align: center; ${txType === 'Hợp đồng' ? 'display:none;' : ''}" ${noticeTdAttr}>
-                ${noticeCheckboxHtml} ${noticeHistory}
-            </td>
-            <td class="col-notice-tc" style="${txType === 'Hợp đồng' ? 'display:none;' : ''}" ${noticeAgencyTdAttr}>
-                <input type="text" class="form-control inline-input" value="${a.noticeAgency || ''}" ${readonlyAttr} ${a.hasNotice ? '' : 'disabled'} onchange="updateInlineAsset(${index}, 'tauca', 'noticeAgency', this.value)">
-                ${noticeAgencyHistory}
             </td>
             <td style="text-align: center;">${actionBtn}</td>
         `;
@@ -2263,8 +2366,10 @@ function setupAssetCheckboxes() {
     document.getElementById('chkSoKhung').addEventListener('change', toggleAssetSections);
     document.getElementById('chkTauCa').addEventListener('change', toggleAssetSections);
     document.getElementById('chkQuyenTaiSan').addEventListener('change', toggleAssetSections);
+    document.getElementById('chkCayHangNam').addEventListener('change', toggleAssetSections);
     document.getElementById('chkHangHoa').addEventListener('change', toggleAssetSections);
     document.getElementById('chkChungKhoan').addEventListener('change', toggleAssetSections);
+    document.getElementById('chkDongSanKhac').addEventListener('change', toggleAssetSections);
 }
 
 // ----------------------------------------------------
@@ -2535,6 +2640,7 @@ function proceedToReview() {
     baselineData.dongSanKhac = document.getElementById('chkDongSanKhac').checked;
     baselineData.soKhungChecked = document.getElementById('chkSoKhung').checked;
     baselineData.tauCaChecked = document.getElementById('chkTauCa').checked;
+    baselineData.assetDescriptions = getAssetDescriptionsFromForm();
 
     // Merge assets list from grids
     const compiledAssets = [];
@@ -2678,12 +2784,14 @@ function proceedToReview() {
         alert("Vui lòng chọn ít nhất một loại tài sản bảo đảm.");
     }
 
-    // Common Description check
-    const astDescCommon = document.getElementById('astDescCommon').value.trim();
-    if (!astDescCommon) {
-        hasErrors = true;
-        showError('astDescCommon', 'Mô tả chung về tài sản bảo đảm là bắt buộc.');
-    }
+    assetDescriptionFields.forEach(field => {
+        const checkbox = document.getElementById(field.chk);
+        const input = document.getElementById(field.input);
+        if (checkbox?.checked && input && !input.value.trim()) {
+            hasErrors = true;
+            showError(field.input, 'Đây là trường bắt buộc.');
+        }
+    });
 
     // Sub-forms and grid validations
     let firstGridErr = null;
@@ -2702,8 +2810,6 @@ function proceedToReview() {
 
                 const brandInput = rowEl.querySelector('input[onchange*="brandColor"]');
                 const frameInput = rowEl.querySelector('input[onchange*="frameNo"]');
-                const noticeAgencyInput = rowEl.querySelector('input[onchange*="noticeAgency"]');
-
                 if (brandInput && !a.brandColor.trim()) {
                     hasErrors = true;
                     brandInput.classList.add('is-invalid');
@@ -2727,11 +2833,6 @@ function proceedToReview() {
                         frameNosSeen.add(fNo.toLowerCase());
                     }
                 }
-                if (a.hasNotice && noticeAgencyInput && !a.noticeAgency.trim()) {
-                    hasErrors = true;
-                    noticeAgencyInput.classList.add('is-invalid');
-                    if (!firstGridErr) firstGridErr = { input: noticeAgencyInput, msg: `Vui lòng điền Tên và địa chỉ cơ quan tiếp nhận thông báo cho dòng số ${idx + 1} trong bảng Số khung.` };
-                }
             });
         }
     }
@@ -2751,8 +2852,6 @@ function proceedToReview() {
                 const ownerInput = rowEl.querySelector('input[onchange*="ownerName"]');
                 const regNoInput = rowEl.querySelector('input[onchange*="regNo"]');
                 const levelInput = rowEl.querySelector('input[onchange*="level"]');
-                const noticeAgencyInput = rowEl.querySelector('input[onchange*="noticeAgency"]');
-
                 if (nameInput && !a.name.trim()) {
                     hasErrors = true;
                     nameInput.classList.add('is-invalid');
@@ -2772,11 +2871,6 @@ function proceedToReview() {
                     hasErrors = true;
                     levelInput.classList.add('is-invalid');
                     if (!firstGridErr) firstGridErr = { input: levelInput, msg: `Cấp phương tiện của dòng số ${idx + 1} không được để trống.` };
-                }
-                if (a.hasNotice && noticeAgencyInput && !a.noticeAgency.trim()) {
-                    hasErrors = true;
-                    noticeAgencyInput.classList.add('is-invalid');
-                    if (!firstGridErr) firstGridErr = { input: noticeAgencyInput, msg: `Vui lòng điền Tên và địa chỉ cơ quan tiếp nhận thông báo cho dòng số ${idx + 1} trong bảng Phương tiện.` };
                 }
             });
         }
@@ -2929,7 +3023,7 @@ function proceedToReview() {
     baselineData.isFemaleOwner = document.getElementById('isFemaleOwner').checked;
     baselineData.exemption = document.getElementById('isExempted').checked;
     baselineData.summary = changeSummary;
-    baselineData.astDescCommon = astDescCommon;
+    baselineData.assetDescriptions = getAssetDescriptionsFromForm();
 
     // Save uploaded files mock refs
     baselineData.files = { ...uploadedFiles };
@@ -3025,6 +3119,7 @@ function saveDraft() {
     baselineData.dongSanKhac = document.getElementById('chkDongSanKhac').checked;
     baselineData.soKhungChecked = document.getElementById('chkSoKhung').checked;
     baselineData.tauCaChecked = document.getElementById('chkTauCa').checked;
+    baselineData.assetDescriptions = getAssetDescriptionsFromForm();
 
     // Merge assets list from grids
     const compiledAssets = [];
@@ -3100,7 +3195,7 @@ function saveDraft() {
     baselineData.isFemaleOwner = document.getElementById('isFemaleOwner').checked;
     baselineData.exemption = document.getElementById('isExempted').checked;
     baselineData.summary = changeSummary;
-    baselineData.astDescCommon = document.getElementById('astDescCommon').value.trim();
+    baselineData.assetDescriptions = getAssetDescriptionsFromForm();
 
     // Save uploaded files mock refs
     baselineData.files = { ...uploadedFiles };
@@ -3441,6 +3536,7 @@ const mockSubjectDB = [
         type: 'cd_vn',
         name: 'Nguyễn Văn Hải',
         paperNo: '001088012345',
+        birthDate: '12/08/1988',
         country: 'Việt Nam',
         province: 'Hà Nội',
         address: '12 Cầu Giấy, Phường Quan Hoa, Quận Cầu Giấy'
@@ -3449,6 +3545,7 @@ const mockSubjectDB = [
         type: 'cd_vn',
         name: 'Trần Thị Mai',
         paperNo: '002089054321',
+        birthDate: '21/05/1989',
         country: 'Việt Nam',
         province: 'Hải Phòng',
         address: '45 Lạch Tray, Quận Ngô Quyền'
@@ -3603,6 +3700,16 @@ function onSearchSubjectTypeChange() {
     // Hide grid when changing search type
     const gridWrapper = document.getElementById('searchResultGridWrapper');
     if (gridWrapper) gridWrapper.style.display = 'none';
+
+    const thBirthDate = document.getElementById('searchColBirthDate');
+    if (thBirthDate) {
+        thBirthDate.style.display = type === 'cd_vn' ? 'table-cell' : 'none';
+    }
+
+    const thPassportCountry = document.getElementById('searchColPassportCountry');
+    if (thPassportCountry) {
+        thPassportCountry.style.display = type === 'nn_ngoai' ? 'table-cell' : 'none';
+    }
 }
 
 function executeSubjectSearch() {
@@ -3672,6 +3779,11 @@ function executeSubjectSearch() {
     if (results.length > 0) {
         body.innerHTML = '';
         const showPassportCountry = (type === 'nn_ngoai');
+        const showBirthDate = (type === 'cd_vn');
+        const thBirthDate = document.getElementById('searchColBirthDate');
+        if (thBirthDate) {
+            thBirthDate.style.display = showBirthDate ? 'table-cell' : 'none';
+        }
         const thPassport = document.getElementById('searchColPassportCountry');
         if (thPassport) {
             thPassport.style.display = showPassportCountry ? 'table-cell' : 'none';
@@ -3686,6 +3798,7 @@ function executeSubjectSearch() {
                 <td style="text-align: center; padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${idx + 1}</td>
                 <td style="font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${item.name}</td>
                 <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${item.paperNo || '-'}</td>
+                <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color); display: ${showBirthDate ? 'table-cell' : 'none'};">${item.type === 'cd_vn' ? (item.birthDate || '-') : '-'}</td>
                 <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color); display: ${showPassportCountry ? 'table-cell' : 'none'};">${item.type === 'nn_ngoai' ? (item.passportCountry || '-') : '-'}</td>
                 <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${item.country || '-'}</td>
                 <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${item.province || '-'}</td>
@@ -3735,6 +3848,8 @@ function selectSubjectFromSearch(idx) {
         if (item.type === 'cd_vn') {
             const el = document.getElementById('secPaperNoCCCD');
             if (el) el.value = item.paperNo;
+            const birthDateEl = document.getElementById('secBirthDate');
+            if (birthDateEl) birthDateEl.value = item.birthDate || '';
         } else if (item.type === 'nn_ngoai') {
             const el = document.getElementById('secPassportNo');
             if (el) el.value = item.paperNo;

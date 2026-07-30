@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   /* Brand Colors */
   --primary-color: #1E3A8A; 
   --primary-hover: #1E40AF;
@@ -327,6 +327,15 @@ body.in-iframe .container.payment-form-shell {
   cursor: pointer;
 }
 
+.asset-inline-description {
+  margin: -2px 0 4px 24px;
+}
+
+.asset-description-input {
+  min-height: 84px;
+  resize: vertical;
+}
+
 .hidden {
   display: none !important;
 }
@@ -406,6 +415,30 @@ body.in-iframe .container.payment-form-shell {
   border-style: solid;
   border-color: #1e293b transparent transparent transparent;
   z-index: 1000;
+}
+
+.tooltip-icon[data-floating-tooltip-bound="1"]:hover::after,
+.tooltip-icon[data-floating-tooltip-bound="1"]:hover::before,
+.tooltip-icon[data-floating-tooltip-bound="1"]:focus::after,
+.tooltip-icon[data-floating-tooltip-bound="1"]:focus::before {
+  display: none;
+}
+
+.floating-tooltip {
+  position: fixed;
+  z-index: 100000;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 10px 12px;
+  border-radius: 6px;
+  background-color: #1e293b;
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  pointer-events: none;
 }
 
 .help-link {
@@ -512,6 +545,45 @@ body.in-iframe .container.payment-form-shell {
 
 .modal-content.large {
   max-width: 800px;
+}
+
+.subject-search-modal {
+  width: min(920px, calc(100vw - 48px));
+  max-width: 920px !important;
+}
+
+.subject-search-results {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.subject-search-table {
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+.subject-search-table th,
+.subject-search-table td {
+  padding: 10px 8px;
+  white-space: normal;
+  word-break: break-word;
+  vertical-align: middle;
+}
+
+.subject-search-table th:nth-child(1),
+.subject-search-table td:nth-child(1) {
+  width: 48px;
+  min-width: 48px;
+  text-align: center;
+}
+
+.subject-search-table th:last-child,
+.subject-search-table td:last-child {
+  width: 80px;
+  min-width: 80px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .upload-dropzone {

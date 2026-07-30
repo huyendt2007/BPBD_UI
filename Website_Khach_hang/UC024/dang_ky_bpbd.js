@@ -1,4 +1,62 @@
-﻿const initApp = () => {
+const initFloatingTooltips = () => {
+    let tooltipEl = null;
+
+    const removeTooltip = () => {
+        if (tooltipEl) {
+            tooltipEl.remove();
+            tooltipEl = null;
+        }
+    };
+
+    const positionTooltip = (target) => {
+        if (!tooltipEl) return;
+        const rect = target.getBoundingClientRect();
+        const margin = 12;
+        const leftLimit = window.innerWidth - tooltipEl.offsetWidth - margin;
+        const centeredLeft = rect.left + (rect.width / 2) - (tooltipEl.offsetWidth / 2);
+        const left = Math.max(margin, Math.min(centeredLeft, leftLimit));
+        let top = rect.top - tooltipEl.offsetHeight - 10;
+
+        if (top < margin) {
+            top = rect.bottom + 10;
+        }
+
+        tooltipEl.style.left = `${left}px`;
+        tooltipEl.style.top = `${top}px`;
+    };
+
+    const showTooltip = (target) => {
+        const text = target.getAttribute('data-tooltip');
+        if (!text) return;
+
+        removeTooltip();
+        tooltipEl = document.createElement('div');
+        tooltipEl.className = 'floating-tooltip';
+        tooltipEl.textContent = text;
+        document.body.appendChild(tooltipEl);
+        positionTooltip(target);
+    };
+
+    document.querySelectorAll('.tooltip-icon[data-tooltip]').forEach((el) => {
+        if (el.dataset.floatingTooltipBound === '1') return;
+        el.dataset.floatingTooltipBound = '1';
+        el.setAttribute('tabindex', el.getAttribute('tabindex') || '0');
+        el.addEventListener('mouseenter', () => showTooltip(el));
+        el.addEventListener('focus', () => showTooltip(el));
+        el.addEventListener('mouseleave', removeTooltip);
+        el.addEventListener('blur', removeTooltip);
+        el.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') removeTooltip();
+        });
+    });
+
+    window.addEventListener('scroll', removeTooltip, true);
+    window.addEventListener('resize', removeTooltip);
+};
+
+const initApp = () => {
+    initFloatingTooltips();
+
     // Early variables initialization to avoid TDZ reference errors
     let editingRowTC = null;
     let editingRowNTC = null;
@@ -171,75 +229,11 @@
                 loaiHopDongWrapper.classList.add('hidden');
             }
             updateTitles();
-            toggleNoticeColumns();
         });
     }
 
     if (loaiBienPhap) loaiBienPhap.addEventListener('change', updateTitles);
     if (loaiHopDong) loaiHopDong.addEventListener('change', updateTitles);
-
-    // Toggle notice columns in grid based on transaction type (only for Biện pháp bảo đảm)
-    const toggleNoticeColumns = () => {
-        const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
-        const skNoticeHeader = document.querySelector('#tableSoKhung th:nth-child(8)');
-        const skNoticeAddrHeader = document.querySelector('#tableSoKhung th:nth-child(9)');
-        const ptNoticeHeader = document.querySelector('#tableTauCa th:nth-child(7)');
-        const ptNoticeAddrHeader = document.querySelector('#tableTable th:nth-child(8)'); // Wait, let's locate elements safely
-        
-        // Hide/Show Notice columns in tables
-        document.querySelectorAll('.chk-yeucau-sk, .chk-yeucau-tc').forEach(cb => {
-            const td = cb.closest('td');
-            if (td) {
-                if (isBPBD) td.classList.remove('hidden');
-                else td.classList.add('hidden');
-            }
-        });
-
-        document.querySelectorAll('.chk-yeucau-sk').forEach(cb => {
-            const td = cb.closest('td');
-            if (td) {
-                const sibling = td.nextElementSibling;
-                if (sibling) {
-                    if (isBPBD) sibling.classList.remove('hidden');
-                    else sibling.classList.add('hidden');
-                }
-            }
-        });
-
-        document.querySelectorAll('.chk-yeucau-tc').forEach(cb => {
-            const td = cb.closest('td');
-            if (td) {
-                const sibling = td.nextElementSibling;
-                if (sibling) {
-                    if (isBPBD) sibling.classList.remove('hidden');
-                    else sibling.classList.add('hidden');
-                }
-            }
-        });
-
-        // Table headers (Index matching)
-        const skTable = document.getElementById('tableSoKhung');
-        if (skTable) {
-            const th8 = skTable.querySelector('thead tr th:nth-child(8)');
-            const th9 = skTable.querySelector('thead tr th:nth-child(9)');
-            if (th8) isBPBD ? th8.classList.remove('hidden') : th8.classList.add('hidden');
-            if (th9) isBPBD ? th9.classList.remove('hidden') : th9.classList.add('hidden');
-        }
-
-        const tcTable = document.getElementById('tableTauCa');
-        if (tcTable) {
-            const th7 = tcTable.querySelector('thead tr th:nth-child(7)');
-            const th8 = tcTable.querySelector('thead tr th:nth-child(8)');
-            if (th7) isBPBD ? th7.classList.remove('hidden') : th7.classList.add('hidden');
-            if (th8) isBPBD ? th8.classList.remove('hidden') : th8.classList.add('hidden');
-        }
-
-        // Hide/Show button "Yêu cầu tất cả"
-        const btnYeuCauSK = document.getElementById('btnYeuCauTatCaSK');
-        const btnYeuCauTC = document.getElementById('btnYeuCauTatCaTC');
-        if (btnYeuCauSK) isBPBD ? btnYeuCauSK.classList.remove('hidden') : btnYeuCauSK.classList.add('hidden');
-        if (btnYeuCauTC) isBPBD ? btnYeuCauTC.classList.remove('hidden') : btnYeuCauTC.classList.add('hidden');
-    };
 
     // Conditional File upload wrapper logic
     const toggleUploadTaiLieu = () => {
@@ -424,6 +418,10 @@
                     <input type="text" class="form-control" id="tt_ten" required>
                 </div>
                 <div class="form-group">
+                    <label class="form-label">Ngày tháng năm sinh <span class="required-mark">*</span></label>
+                    <input type="text" class="form-control" id="tt_ngaysinh" placeholder="dd/mm/yyyy" required>
+                </div>
+                <div class="form-group">
                     <label class="form-label" style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 5px;">
                         <span>Số CMND/Căn cước công dân/Chứng minh quân đội <span class="required-mark">*</span></span>
                         <span class="help-link" style="font-size:11.5px; font-weight:500;" data-tooltip="Nhập số CMND/Căn cước công dân/Chứng minh quân đội hợp lệ (12 chữ số). Không chấp nhận chữ cái hay ký tự đặc biệt.">(Hướng dẫn)</span>
@@ -538,12 +536,30 @@
 
         // Validate basic fields
         const elTen = document.getElementById('tt_ten');
+        const elNgaySinh = document.getElementById('tt_ngaysinh');
         const elGiayTo = document.getElementById('tt_sogiayto');
         const elQuocGia = document.getElementById('tc_quocgia');
         const elTinhThanh = document.getElementById('tc_tinhthanh_select') || document.getElementById('tc_tinhthanh_input');
         const elDiaChi = document.getElementById('tc_diachi');
 
         if (elTen && !elTen.value.trim()) addError(elTen, 'Đây là trường bắt buộc');
+        if (loaiChuTheTC.value === 'cd_vn') {
+            const rawBirthDate = elNgaySinh ? elNgaySinh.value.trim() : '';
+            const dateMatch = rawBirthDate.match(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/);
+            if (!rawBirthDate) {
+                addError(elNgaySinh, 'Đây là trường bắt buộc');
+            } else if (!dateMatch) {
+                addError(elNgaySinh, 'Ngày tháng năm sinh không hợp lệ');
+            } else {
+                const [d, m, y] = rawBirthDate.split('/').map(Number);
+                const parsedDate = new Date(y, m - 1, d);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (parsedDate.getFullYear() !== y || parsedDate.getMonth() !== m - 1 || parsedDate.getDate() !== d || parsedDate > today) {
+                    addError(elNgaySinh, 'Ngày tháng năm sinh không hợp lệ');
+                }
+            }
+        }
         if (elGiayTo && !elGiayTo.value.trim()) {
             addError(elGiayTo, 'Đây là trường bắt buộc');
         } else if (elGiayTo && loaiChuTheTC.value === 'cd_vn') {
@@ -560,6 +576,7 @@
         if (!localValid) return;
 
         const valTen = elTen.value.trim();
+        const valNgaySinh = loaiChuTheTC.value === 'cd_vn' ? (elNgaySinh?.value.trim() || '') : '';
         const valGiayTo = elGiayTo.value.trim();
         const valQuocGia = elQuocGia.value;
         const valTinhThanh = elTinhThanh.value.trim();
@@ -578,6 +595,7 @@
             // Update
             editingRowTC.dataset.loai = loaiChuTheTC.value;
             editingRowTC.dataset.ten = valTen;
+            editingRowTC.dataset.ngaySinh = valNgaySinh;
             editingRowTC.dataset.giayTo = valGiayTo;
             editingRowTC.dataset.diachi = valDiaChi;
             editingRowTC.dataset.tinhthanh = valTinhThanh;
@@ -585,8 +603,9 @@
 
             editingRowTC.children[1].innerText = loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text;
             editingRowTC.children[2].innerText = valGiayTo;
-            editingRowTC.children[3].innerText = valTen;
-            editingRowTC.children[4].innerText = fullAddr;
+            editingRowTC.children[3].innerText = valNgaySinh || '-';
+            editingRowTC.children[4].innerText = valTen;
+            editingRowTC.children[5].innerText = fullAddr;
             
             btnLuuTC.innerText = 'LƯU';
             editingRowTC = null;
@@ -599,6 +618,7 @@
             const tr = document.createElement('tr');
             tr.dataset.loai = loaiChuTheTC.value;
             tr.dataset.ten = valTen;
+            tr.dataset.ngaySinh = valNgaySinh;
             tr.dataset.giayTo = valGiayTo;
             tr.dataset.diachi = valDiaChi;
             tr.dataset.tinhthanh = valTinhThanh;
@@ -613,6 +633,7 @@
                 </td>
                 <td>${loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text}</td>
                 <td>${valGiayTo}</td>
+                <td>${valNgaySinh || '-'}</td>
                 <td>${valTen}</td>
                 <td>${fullAddr}</td>
             `;
@@ -620,7 +641,7 @@
             tr.querySelector('.btn-xoa-tc').addEventListener('click', () => {
                 tr.remove();
                 if (tbodyTC.children.length === 0) {
-                    tbodyTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                    tbodyTC.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
                 }
             });
 
@@ -632,10 +653,12 @@
                 // Use timeout to let fields render
                 setTimeout(() => {
                     const tenInput = document.getElementById('tt_ten');
+                    const ngaySinhInput = document.getElementById('tt_ngaysinh');
                     const giaytoInput = document.getElementById('tt_sogiayto');
                     const qgSelect = document.getElementById('tc_quocgia');
                     
                     if (tenInput) tenInput.value = tr.dataset.ten;
+                    if (ngaySinhInput) ngaySinhInput.value = tr.dataset.ngaySinh || '';
                     if (giaytoInput) giaytoInput.value = tr.dataset.giayTo;
                     if (qgSelect) {
                         qgSelect.value = tr.dataset.quocgia;
@@ -845,6 +868,18 @@
         { chk: 'chkChungKhoan', grid: 'gridChungKhoan' }
     ];
 
+    const placeAssetBlocksByCheckbox = () => {
+        toggles.forEach(({ chk, grid }) => {
+            const checkbox = document.getElementById(chk);
+            const block = document.getElementById(grid);
+            const checkItem = checkbox?.closest('.check-item');
+            if (checkItem && block) {
+                checkItem.insertAdjacentElement('afterend', block);
+            }
+        });
+    };
+    placeAssetBlocksByCheckbox();
+
     toggles.forEach(t => {
         const chk = document.getElementById(t.chk);
         const grid = document.getElementById(t.grid);
@@ -862,6 +897,32 @@
                 }
             });
         }
+    });
+
+    const assetDescriptionFields = [
+        { chk: 'chkCayHangNam', wrapper: 'descCayHangNamWrapper', input: 'descCayHangNam', key: 'cayHangNam' },
+        { chk: 'chkDongSanKhac', wrapper: 'descDongSanKhacWrapper', input: 'descDongSanKhac', key: 'dongSanKhac' }
+    ];
+
+    const toggleAssetDescription = ({ chk, wrapper, input }) => {
+        const checkbox = document.getElementById(chk);
+        const wrapperEl = document.getElementById(wrapper);
+        const inputEl = document.getElementById(input);
+        if (!checkbox || !wrapperEl || !inputEl) return;
+
+        if (checkbox.checked) {
+            wrapperEl.classList.remove('hidden');
+        } else {
+            wrapperEl.classList.add('hidden');
+            inputEl.value = '';
+            inputEl.classList.remove('is-invalid');
+        }
+    };
+
+    assetDescriptionFields.forEach(field => {
+        const checkbox = document.getElementById(field.chk);
+        checkbox?.addEventListener('change', () => toggleAssetDescription(field));
+        toggleAssetDescription(field);
     });
 
     // Goods vs Warehouse Radio Logic
@@ -887,23 +948,21 @@
     document.getElementById('btnThemSoKhung')?.addEventListener('click', () => {
         const tr = document.createElement('tr');
         const count = tbodySoKhung.querySelectorAll('tr').length + 1;
-        const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
 
         tr.innerHTML = `
             <td style="text-align: center;"><input type="checkbox" class="chk-row-sk"></td>
             <td class="stt-sk">${count}</td>
             <td>
                 <select class="form-control" required>
-                    <option value="Ô tô">Ô tô</option>
                     <option value="Mô tô">Mô tô</option>
+                    <option value="Ô tô">Ô tô</option>
+                    <option value="Xe máy chuyên dùng">Xe máy chuyên dùng</option>
                 </select>
             </td>
             <td><input type="text" class="form-control" required></td>
             <td><input type="text" class="form-control" required></td>
             <td><input type="text" class="form-control"></td>
             <td><input type="text" class="form-control"></td>
-            <td style="text-align: center;" class="${isBPBD ? '' : 'hidden'}"><input type="checkbox" class="chk-yeucau-sk" style="width:18px; height:18px;"></td>
-            <td class="${isBPBD ? '' : 'hidden'}"><input type="text" class="form-control"></td>
             <td><button type="button" class="btn btn-danger btn-xoa-row-sk" style="padding: 4px 8px; font-size:12px;">X</button></td>
         `;
         tbodySoKhung.appendChild(tr);
@@ -932,12 +991,6 @@
         }
     });
 
-    document.getElementById('btnYeuCauTatCaSK')?.addEventListener('click', () => {
-        const cbs = tbodySoKhung.querySelectorAll('.chk-yeucau-sk');
-        const anyUnchecked = Array.from(cbs).some(cb => !cb.checked);
-        cbs.forEach(cb => cb.checked = anyUnchecked);
-    });
-
     const resetSKIndices = () => {
         tbodySoKhung.querySelectorAll('.stt-sk').forEach((td, i) => td.innerText = i + 1);
         if (chkAllSK) chkAllSK.checked = false;
@@ -949,7 +1002,6 @@
     document.getElementById('btnThemTauCa')?.addEventListener('click', () => {
         const tr = document.createElement('tr');
         const count = tbodyTauCa.querySelectorAll('tr').length + 1;
-        const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
 
         tr.innerHTML = `
             <td style="text-align: center;"><input type="checkbox" class="chk-row-tc"></td>
@@ -958,8 +1010,6 @@
             <td><input type="text" class="form-control" required></td>
             <td><input type="text" class="form-control"></td>
             <td><input type="text" class="form-control"></td>
-            <td style="text-align: center;" class="${isBPBD ? '' : 'hidden'}"><input type="checkbox" class="chk-yeucau-tc" style="width:18px; height:18px;"></td>
-            <td class="${isBPBD ? '' : 'hidden'}"><input type="text" class="form-control"></td>
             <td><button type="button" class="btn btn-danger btn-xoa-row-tc" style="padding: 4px 8px; font-size:12px;">X</button></td>
         `;
         tbodyTauCa.appendChild(tr);
@@ -981,12 +1031,6 @@
             e.target.closest('tr').remove();
             resetTCIndices();
         }
-    });
-
-    document.getElementById('btnYeuCauTatCaTC')?.addEventListener('click', () => {
-        const cbs = tbodyTauCa.querySelectorAll('.chk-yeucau-tc');
-        const anyUnchecked = Array.from(cbs).some(cb => !cb.checked);
-        cbs.forEach(cb => cb.checked = anyUnchecked);
     });
 
     const resetTCIndices = () => {
@@ -1040,13 +1084,9 @@
 
     // File download simulation from forms or modal
     const downloadTemplateFile = () => {
-        const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
-        let filename = '';
-        if (currentImportType === 'sk') {
-            filename = isBPBD ? 'Mau_Import_SoKhung_BPBD.xlsx' : 'Mau_Import_SoKhung_HopDong.xlsx';
-        } else {
-            filename = isBPBD ? 'Mau_Import_PhuongTien_BPBD.xlsx' : 'Mau_Import_PhuongTien_HopDong.xlsx';
-        }
+        const filename = currentImportType === 'sk'
+            ? 'Mau_Import_SoKhung.xlsx'
+            : 'Mau_Import_PhuongTien.xlsx';
         
         // Simulate download
         alert('Đang tải xuống biểu mẫu: ' + filename);
@@ -1121,24 +1161,21 @@
         importResultWrapper.classList.remove('hidden');
         tbodyImportErrors.innerHTML = '';
         
-        const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
-
         if (currentImportType === 'sk') {
             // Simulated Số khung import
             importedValidRecords = [
-                { loai: 'Ô tô', hieu: 'Toyota Camry', khung: 'TOYOTA839210', may: '2AZ-FE', bien: '30K-123.45', yeucau: true, coquan: 'Cục Cảnh sát giao thông' },
-                { loai: 'Mô tô', hieu: 'Honda SH', khung: 'HONDA928371', may: 'JF56E', bien: '29H1-999.99', yeucau: false, coquan: '' },
-                { loai: 'Ô tô', hieu: 'Ford Ranger', khung: 'FORD773910', may: 'EcoBlue', bien: '29C-555.22', yeucau: true, coquan: 'Phòng CSGT Hà Nội' },
-                { loai: 'Ô tô', hieu: 'Mazda CX5', khung: 'MAZDA110292', may: 'SkyActiv', bien: '30E-882.11', yeucau: false, coquan: '' },
-                { loai: 'Mô tô', hieu: 'Yamaha Exciter', khung: 'YAMAHA291039', may: 'G3D4E', bien: '29G1-234.56', yeucau: false, coquan: '' },
-                { loai: 'Ô tô', hieu: 'Kia Morning', khung: 'KIA938102', may: 'Kappa', bien: '30A-992.83', yeucau: true, coquan: 'Cục Cảnh sát giao thông' },
-                { loai: 'Ô tô', hieu: 'Hyundai Accent', khung: 'HYUNDAI88201', may: 'Kappa', bien: '30G-739.10', yeucau: false, coquan: '' }
+                { loai: 'Ô tô', hieu: 'Toyota Camry', khung: 'TOYOTA839210', may: '2AZ-FE', bien: '30K-123.45' },
+                { loai: 'Mô tô', hieu: 'Honda SH', khung: 'HONDA928371', may: 'JF56E', bien: '29H1-999.99' },
+                { loai: 'Ô tô', hieu: 'Ford Ranger', khung: 'FORD773910', may: 'EcoBlue', bien: '29C-555.22' },
+                { loai: 'Xe máy chuyên dùng', hieu: 'Máy xúc Komatsu PC200', khung: 'KOMATSU110292', may: 'SAA6D107E', bien: '' },
+                { loai: 'Mô tô', hieu: 'Yamaha Exciter', khung: 'YAMAHA291039', may: 'G3D4E', bien: '29G1-234.56' },
+                { loai: 'Ô tô', hieu: 'Kia Morning', khung: 'KIA938102', may: 'Kappa', bien: '30A-992.83' },
+                { loai: 'Ô tô', hieu: 'Hyundai Accent', khung: 'HYUNDAI88201', may: 'Kappa', bien: '30G-739.10' }
             ];
 
             const errors = [
                 { line: 3, msg: 'Số khung chứa ký tự không hợp lệ.' },
-                { line: 5, msg: 'Nhãn hiệu, màu sơn không được để trống.' },
-                { line: 8, msg: 'Cơ quan tiếp nhận thông báo không được để trống do có yêu cầu thông báo thế chấp.' }
+                { line: 5, msg: 'Nhãn hiệu, màu sơn không được để trống.' }
             ];
 
             importSuccessSummary.innerText = `Thành công: ${importedValidRecords.length} dòng.`;
@@ -1158,13 +1195,13 @@
         } else {
             // Simulated Phương tiện import
             importedValidRecords = [
-                { hieu: 'Tàu cá HP-9028', chu: 'Bùi Văn Hán', soGCN: 'HP9028-GCN', cap: 'Cấp I', yeucau: true, coquan: 'Chi cục Thủy sản Hải Phòng' },
-                { hieu: 'Sà lan SG-3829', chu: 'Công ty Vận tải Sông Biển', soGCN: 'SG3829-GCN', cap: 'Cấp II', yeucau: false, coquan: '' },
-                { hieu: 'Đầu kéo lửa D19E', chu: 'Tổng công ty Đường sắt VN', soGCN: 'DSVN-190', cap: 'Cấp I', yeucau: false, coquan: '' },
-                { hieu: 'Tàu cá QB-99281', chu: 'Trần Văn Nam', soGCN: 'QB99281-GCN', cap: 'Cấp III', yeucau: true, coquan: 'Chi cục Thủy sản Quảng Bình' },
-                { hieu: 'Tàu vỏ gỗ ĐNa-9302', chu: 'Lê Văn Tám', soGCN: 'DNA9302-GCN', cap: 'Cấp II', yeucau: false, coquan: '' },
-                { hieu: 'Máy kéo Belarus', chu: 'Hợp tác xã nông nghiệp 1', soGCN: 'BLR-9382', cap: 'Cấp I', yeucau: false, coquan: '' },
-                { hieu: 'Tàu kéo biển Đà Nẵng', chu: 'Công ty Cảng Đà Nẵng', soGCN: 'DN-TUG-01', cap: 'Cấp II', yeucau: true, coquan: 'Cảng vụ Hàng hải Đà Nẵng' }
+                { hieu: 'Tàu cá HP-9028', chu: 'Bùi Văn Hán', soGCN: 'HP9028-GCN', cap: 'Cấp I' },
+                { hieu: 'Sà lan SG-3829', chu: 'Công ty Vận tải Sông Biển', soGCN: 'SG3829-GCN', cap: 'Cấp II' },
+                { hieu: 'Đầu kéo lửa D19E', chu: 'Tổng công ty Đường sắt VN', soGCN: 'DSVN-190', cap: 'Cấp I' },
+                { hieu: 'Tàu cá QB-99281', chu: 'Trần Văn Nam', soGCN: 'QB99281-GCN', cap: 'Cấp III' },
+                { hieu: 'Tàu vỏ gỗ ĐNa-9302', chu: 'Lê Văn Tám', soGCN: 'DNA9302-GCN', cap: 'Cấp II' },
+                { hieu: 'Máy kéo Belarus', chu: 'Hợp tác xã nông nghiệp 1', soGCN: 'BLR-9382', cap: 'Cấp I' },
+                { hieu: 'Tàu kéo biển Đà Nẵng', chu: 'Công ty Cảng Đà Nẵng', soGCN: 'DN-TUG-01', cap: 'Cấp II' }
             ];
 
             const errors = [
@@ -1208,8 +1245,6 @@
                     tr.remove();
                 }
             });
-            const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
-
             importedValidRecords.forEach(r => {
                 const count = tbodySoKhung.querySelectorAll('tr').length + 1;
                 const tr = document.createElement('tr');
@@ -1218,16 +1253,15 @@
                     <td class="stt-sk">${count}</td>
                     <td>
                         <select class="form-control" required>
-                            <option value="Ô tô" ${r.loai === 'Ô tô' ? 'selected' : ''}>Ô tô</option>
                             <option value="Mô tô" ${r.loai === 'Mô tô' ? 'selected' : ''}>Mô tô</option>
+                            <option value="Ô tô" ${r.loai === 'Ô tô' ? 'selected' : ''}>Ô tô</option>
+                            <option value="Xe máy chuyên dùng" ${r.loai === 'Xe máy chuyên dùng' ? 'selected' : ''}>Xe máy chuyên dùng</option>
                         </select>
                     </td>
                     <td><input type="text" class="form-control" value="${r.hieu}" required></td>
                     <td><input type="text" class="form-control" value="${r.khung}" required></td>
                     <td><input type="text" class="form-control" value="${r.may}"></td>
                     <td><input type="text" class="form-control" value="${r.bien}"></td>
-                    <td style="text-align: center;" class="${isBPBD ? '' : 'hidden'}"><input type="checkbox" class="chk-yeucau-sk" style="width:18px; height:18px;" ${r.yeucau ? 'checked' : ''}></td>
-                    <td class="${isBPBD ? '' : 'hidden'}"><input type="text" class="form-control" value="${r.coquan}"></td>
                     <td><button type="button" class="btn btn-danger btn-xoa-row-sk" style="padding: 4px 8px; font-size:12px;">X</button></td>
                 `;
                 tbodySoKhung.appendChild(tr);
@@ -1240,8 +1274,6 @@
                     tr.remove();
                 }
             });
-            const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
-
             importedValidRecords.forEach(r => {
                 const count = tbodyTauCa.querySelectorAll('tr').length + 1;
                 const tr = document.createElement('tr');
@@ -1252,8 +1284,6 @@
                     <td><input type="text" class="form-control" value="${r.chu}" required></td>
                     <td><input type="text" class="form-control" value="${r.soGCN}"></td>
                     <td><input type="text" class="form-control" value="${r.cap}"></td>
-                    <td style="text-align: center;" class="${isBPBD ? '' : 'hidden'}"><input type="checkbox" class="chk-yeucau-tc" style="width:18px; height:18px;" ${r.yeucau ? 'checked' : ''}></td>
-                    <td class="${isBPBD ? '' : 'hidden'}"><input type="text" class="form-control" value="${r.coquan}"></td>
                     <td><button type="button" class="btn btn-danger btn-xoa-row-tc" style="padding: 4px 8px; font-size:12px;">X</button></td>
                 `;
                 tbodyTauCa.appendChild(tr);
@@ -1490,14 +1520,6 @@
                         }
                     }
 
-                    // Validate Notice Address if checkbox is checked
-                    const cbNotice = tr.querySelector('.chk-yeucau-sk');
-                    const addrInput = tr.querySelector('td:nth-child(9) input');
-                    if (cbNotice && cbNotice.checked && addrInput && !addrInput.value.trim()) {
-                        addrInput.classList.add('is-invalid');
-                        alert('Cơ quan tiếp nhận thông báo không được để trống do có yêu cầu thông báo thế chấp.');
-                        formValid = false;
-                    }
                 });
             }
         }
@@ -1517,14 +1539,6 @@
                         }
                     });
 
-                    // Notice checks
-                    const cbNotice = tr.querySelector('.chk-yeucau-tc');
-                    const addrInput = tr.querySelector('td:nth-child(8) input');
-                    if (cbNotice && cbNotice.checked && addrInput && !addrInput.value.trim()) {
-                        addrInput.classList.add('is-invalid');
-                        alert('Cơ quan tiếp nhận thông báo không được để trống do có yêu cầu thông báo thế chấp.');
-                        formValid = false;
-                    }
                 });
             }
         }
@@ -1557,11 +1571,13 @@
             });
         }
 
-        // Mô tả chung check
-        const elMoTaChung = document.querySelector('textarea:not([rows="2"]):not([rows="1"])');
-        if (elMoTaChung && !elMoTaChung.value.trim()) {
-            addFormError(elMoTaChung, 'Đây là trường bắt buộc');
-        }
+        assetDescriptionFields.forEach(field => {
+            const checkbox = document.getElementById(field.chk);
+            const input = document.getElementById(field.input);
+            if (checkbox?.checked && input && !input.value.trim()) {
+                addFormError(input, 'Đây là trường bắt buộc');
+            }
+        });
 
         // PDF file upload check
         if (document.getElementById('chkChungKhoan').checked) {
@@ -1648,8 +1664,9 @@
             .map(tr => ({
                 loai: tr.children[1].innerText,
                 giayTo: tr.dataset.giayTo,
+                ngaySinh: tr.dataset.ngaySinh || '',
                 ten: tr.dataset.ten,
-                diaChi: tr.children[4].innerText,
+                diaChi: tr.children[5].innerText,
                 loaiVal: tr.dataset.loai,
                 tinhThanh: tr.dataset.tinhthanh,
                 quocGia: tr.dataset.quocgia
@@ -1665,6 +1682,10 @@
             }));
 
         const checkedAssetTypes = Array.from(document.querySelectorAll('.check-group input[type="checkbox"]:checked')).map(cb => cb.parentElement.querySelector('.check-label').innerText);
+        const assetDescriptions = assetDescriptionFields.reduce((result, field) => {
+            result[field.key] = document.getElementById(field.input)?.value.trim() || '';
+            return result;
+        }, {});
 
         // Số khung list
         const skList = [];
@@ -1675,8 +1696,6 @@
                 const khung = tr.querySelector('td:nth-child(5) input')?.value;
                 const may = tr.querySelector('td:nth-child(6) input')?.value;
                 const bien = tr.querySelector('td:nth-child(7) input')?.value;
-                const yeucau = tr.querySelector('.chk-yeucau-sk')?.checked;
-                const coquan = tr.querySelector('td:nth-child(9) input')?.value;
                 
                 if (khung) {
                     skList.push({
@@ -1684,9 +1703,7 @@
                         hieu: hieu || '',
                         khung: khung || '',
                         may: may || '',
-                        bien: bien || '',
-                        yeucau: yeucau ? 'Có' : 'Không',
-                        coquan: coquan || ''
+                        bien: bien || ''
                     });
                 }
             });
@@ -1700,17 +1717,13 @@
                 const chuSoHuu = tr.querySelector('td:nth-child(4) input')?.value;
                 const soDangKy = tr.querySelector('td:nth-child(5) input')?.value;
                 const capPhuongTien = tr.querySelector('td:nth-child(6) input')?.value;
-                const yeucau = tr.querySelector('.chk-yeucau-tc')?.checked;
-                const coquan = tr.querySelector('td:nth-child(8) input')?.value;
                 
                 if (ten) {
                     ptList.push({
                         ten: ten || '',
                         chuSoHuu: chuSoHuu || '',
                         soDangKy: soDangKy || '',
-                        capPhuongTien: capPhuongTien || '',
-                        yeucau: yeucau ? 'Có' : 'Không',
-                        coquan: coquan || ''
+                        capPhuongTien: capPhuongTien || ''
                     });
                 }
             });
@@ -1760,7 +1773,7 @@
             rowsTC: rowsTC,
             rowsNTC: rowsNTC,
             checkedAssetTypes: checkedAssetTypes,
-            moTaChung: document.querySelector('textarea:not([rows="2"]):not([rows="1"])')?.value || '',
+            assetDescriptions: assetDescriptions,
             skList: skList,
             ptList: ptList,
             qtsInfo: qtsInfo,
@@ -1833,6 +1846,7 @@
                     const tr = document.createElement('tr');
                     tr.dataset.loai = r.loaiVal;
                     tr.dataset.ten = r.ten;
+                    tr.dataset.ngaySinh = r.ngaySinh || '';
                     tr.dataset.giayTo = r.giayTo;
                     tr.dataset.diachi = r.diaChi.split(' - ')[0] || '';
                     tr.dataset.tinhthanh = r.tinhThanh;
@@ -1847,6 +1861,7 @@
                         </td>
                         <td>${r.loai}</td>
                         <td>${r.giayTo}</td>
+                        <td>${r.ngaySinh || '-'}</td>
                         <td>${r.ten}</td>
                         <td>${r.diaChi}</td>
                     `;
@@ -1854,7 +1869,7 @@
                     // wire buttons
                     tr.querySelector('.btn-xoa-tc').addEventListener('click', () => {
                         tr.remove();
-                        if (tbodyTC.children.length === 0) tbodyTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                        if (tbodyTC.children.length === 0) tbodyTC.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
                     });
                     tr.querySelector('.btn-sua-tc').addEventListener('click', () => {
                         editingRowTC = tr;
@@ -1862,9 +1877,11 @@
                         loaiChuTheTC.dispatchEvent(new Event('change'));
                         setTimeout(() => {
                             const tenInput = document.getElementById('tt_ten');
+                            const ngaySinhInput = document.getElementById('tt_ngaysinh');
                             const giaytoInput = document.getElementById('tt_sogiayto');
                             const qgSelect = document.getElementById('tc_quocgia');
                             if (tenInput) tenInput.value = tr.dataset.ten;
+                            if (ngaySinhInput) ngaySinhInput.value = tr.dataset.ngaySinh || '';
                             if (giaytoInput) giaytoInput.value = tr.dataset.giayTo;
                             if (qgSelect) {
                                 qgSelect.value = tr.dataset.quocgia;
@@ -1952,10 +1969,17 @@
                 });
             }
 
+            if (data.assetDescriptions) {
+                assetDescriptionFields.forEach(field => {
+                    const input = document.getElementById(field.input);
+                    if (input) input.value = data.assetDescriptions[field.key] || '';
+                    toggleAssetDescription(field);
+                });
+            }
+
             // Restore Số khung grid
             if (data.skList && data.skList.length > 0) {
                 tbodySoKhung.innerHTML = '';
-                const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
                 data.skList.forEach(r => {
                     const count = tbodySoKhung.querySelectorAll('tr').length + 1;
                     const tr = document.createElement('tr');
@@ -1964,16 +1988,15 @@
                         <td class="stt-sk">${count}</td>
                         <td>
                             <select class="form-control" required>
-                                <option value="Ô tô" ${r.loai === 'Ô tô' ? 'selected' : ''}>Ô tô</option>
                                 <option value="Mô tô" ${r.loai === 'Mô tô' ? 'selected' : ''}>Mô tô</option>
+                                <option value="Ô tô" ${r.loai === 'Ô tô' ? 'selected' : ''}>Ô tô</option>
+                                <option value="Xe máy chuyên dùng" ${r.loai === 'Xe máy chuyên dùng' ? 'selected' : ''}>Xe máy chuyên dùng</option>
                             </select>
                         </td>
                         <td><input type="text" class="form-control" value="${r.hieu}" required></td>
                         <td><input type="text" class="form-control" value="${r.khung}" required></td>
                         <td><input type="text" class="form-control" value="${r.may}"></td>
                         <td><input type="text" class="form-control" value="${r.bien}"></td>
-                        <td style="text-align: center;" class="${isBPBD ? '' : 'hidden'}"><input type="checkbox" class="chk-yeucau-sk" style="width:18px; height:18px;" ${r.yeucau === 'Có' ? 'checked' : ''}></td>
-                        <td class="${isBPBD ? '' : 'hidden'}"><input type="text" class="form-control" value="${r.coquan}"></td>
                         <td><button type="button" class="btn btn-danger btn-xoa-row-sk" style="padding: 4px 8px; font-size:12px;">X</button></td>
                     `;
                     tbodySoKhung.appendChild(tr);
@@ -1984,7 +2007,6 @@
             // Restore Tàu cá grid
             if (data.ptList && data.ptList.length > 0) {
                 tbodyTauCa.innerHTML = '';
-                const isBPBD = loaiHinhGiaoDich.value === 'bpbd';
                 data.ptList.forEach(r => {
                     const count = tbodyTauCa.querySelectorAll('tr').length + 1;
                     const tr = document.createElement('tr');
@@ -1995,8 +2017,6 @@
                         <td><input type="text" class="form-control" value="${r.chuSoHuu}" required></td>
                         <td><input type="text" class="form-control" value="${r.soDangKy}"></td>
                         <td><input type="text" class="form-control" value="${r.capPhuongTien}"></td>
-                        <td style="text-align: center;" class="${isBPBD ? '' : 'hidden'}"><input type="checkbox" class="chk-yeucau-tc" style="width:18px; height:18px;" ${r.yeucau === 'Có' ? 'checked' : ''}></td>
-                        <td class="${isBPBD ? '' : 'hidden'}"><input type="text" class="form-control" value="${r.coquan}"></td>
                         <td><button type="button" class="btn btn-danger btn-xoa-row-tc" style="padding: 4px 8px; font-size:12px;">X</button></td>
                     `;
                     tbodyTauCa.appendChild(tr);
@@ -2010,11 +2030,6 @@
                 const canCuInput = document.getElementById('qts_canCu');
                 if (tenQuyenInput) tenQuyenInput.value = data.qtsInfo.tenQuyen;
                 if (canCuInput) canCuInput.value = data.qtsInfo.canCu;
-            }
-
-            const elMoTaChung = document.querySelector('textarea:not([rows="2"]):not([rows="1"])');
-            if (data.moTaChung && elMoTaChung) {
-                elMoTaChung.value = data.moTaChung;
             }
 
             if (data.hhInfo) {
@@ -2063,6 +2078,7 @@
             typeName: 'Công dân Việt Nam',
             doc: '001092012345',
             name: 'Nguyễn Văn Định',
+            birthDate: '12/09/1992',
             country: 'Việt Nam',
             province: 'Hà Nội',
             address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội'
@@ -2072,6 +2088,7 @@
             typeName: 'Công dân Việt Nam',
             doc: '001092005678',
             name: 'Trần Văn Quyết',
+            birthDate: '05/08/1990',
             country: 'Việt Nam',
             province: 'Hà Nội',
             address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội'
@@ -2081,6 +2098,7 @@
             typeName: 'Công dân Việt Nam',
             doc: '012345678901',
             name: 'Nguyễn Văn A',
+            birthDate: '01/01/1988',
             country: 'Việt Nam',
             province: 'Hà Nội',
             address: '123 Đường Láng, Láng Thượng, Đống Đa, Hà Nội'
@@ -2205,6 +2223,12 @@
             const wrapper = document.getElementById('searchResultGridWrapper');
             if (wrapper) wrapper.classList.add('hidden');
 
+            const thBirthDate = document.getElementById('searchColBirthDate');
+            if (thBirthDate) thBirthDate.style.display = val === 'cd_vn' ? 'table-cell' : 'none';
+
+            const thPassportCountry = document.getElementById('searchColPassportCountry');
+            if (thPassportCountry) thPassportCountry.style.display = val === 'nn' ? 'table-cell' : 'none';
+
             const visibleGroupIds = searchFieldsMap[val] || [];
             visibleGroupIds.forEach(grpId => {
                 const grp = document.getElementById(grpId);
@@ -2219,11 +2243,13 @@
 
         setTimeout(() => {
             const elTen = document.getElementById('tt_ten');
+            const elNgaySinh = document.getElementById('tt_ngaysinh');
             const elGiayTo = document.getElementById('tt_sogiayto');
             const elQuocGia = document.getElementById('tc_quocgia');
             const elDiaChi = document.getElementById('tc_diachi');
 
             if (elTen) elTen.value = subject.name;
+            if (elNgaySinh) elNgaySinh.value = subject.type === 'cd_vn' ? (subject.birthDate || '') : '';
             if (elGiayTo) elGiayTo.value = subject.doc || '-';
 
             // Fill passport issuing country if foreign subject
@@ -2247,7 +2273,6 @@
         }, 50);
 
         closeSearchModal();
-        alert('Đã tải thông tin chủ thể thành công!');
     };
 
     if (btnDoSearch) {
@@ -2335,6 +2360,11 @@
                 if (tbody) {
                     tbody.innerHTML = '';
                     const showPassportCountry = (type === 'nn');
+                    const showBirthDate = (type === 'cd_vn');
+                    const thBirthDate = document.getElementById('searchColBirthDate');
+                    if (thBirthDate) {
+                        thBirthDate.style.display = showBirthDate ? 'table-cell' : 'none';
+                    }
                     const thPassport = document.getElementById('searchColPassportCountry');
                     if (thPassport) {
                         thPassport.style.display = showPassportCountry ? 'table-cell' : 'none';
@@ -2345,6 +2375,7 @@
                             <td style="text-align: center; padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${idx + 1}</td>
                             <td style="font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.name}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.doc || '-'}</td>
+                            <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color); display: ${showBirthDate ? 'table-cell' : 'none'};">${subject.type === 'cd_vn' ? (subject.birthDate || '-') : '-'}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color); display: ${showPassportCountry ? 'table-cell' : 'none'};">${subject.type === 'nn' ? (subject.country || '-') : '-'}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.country || '-'}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.province || '-'}</td>

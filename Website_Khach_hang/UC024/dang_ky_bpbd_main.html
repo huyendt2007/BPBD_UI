@@ -265,13 +265,14 @@
                                 <th style="width: 128px; text-align: center;">Thao tác</th>
                                 <th>Loại chủ thể</th>
                                 <th>Số giấy tờ chứng minh tư cách pháp lý</th>
+                                <th>Ngày tháng năm sinh</th>
                                 <th>Tên</th>
                                 <th>Địa chỉ</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyTC">
                             <tr>
-                                <td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.
+                                <td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.
                                 </td>
                             </tr>
                         </tbody>
@@ -374,14 +375,13 @@
                     <div class="check-group">
                         <label class="check-item">
                             <input type="checkbox" id="chkSoKhung">
-                            <span class="check-label">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô,
-                                xe gắn máy...)</span>
+                            <span class="check-label">Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số
+                                khung (ô tô, mô tô, xe gắn máy...)</span>
                         </label>
                         <label class="check-item">
                             <input type="checkbox" id="chkTauCa">
                             <span class="check-label">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội
-                                địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường
-                                thủy, đường sắt</span>
+                                địa; phương tiện giao thông đường sắt, đường thủy, đường sắt</span>
                         </label>
                         <label class="check-item">
                             <input type="checkbox" id="chkQuyenTaiSan">
@@ -392,6 +392,9 @@
                             <input type="checkbox" id="chkCayHangNam">
                             <span class="check-label">Cây hằng năm, công trình tạm</span>
                         </label>
+                        <div class="asset-inline-description hidden" id="descCayHangNamWrapper">
+                            <textarea class="form-control asset-description-input" id="descCayHangNam" rows="3"></textarea>
+                        </div>
                         <label class="check-item">
                             <input type="checkbox" id="chkHangHoa">
                             <span class="check-label">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất,
@@ -405,8 +408,12 @@
                         <label class="check-item">
                             <input type="checkbox" id="chkDongSanKhac">
                             <span class="check-label">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí
-                                quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</span>
+                                quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG
+                                KÝ TẬP TRUNG...)</span>
                         </label>
+                        <div class="asset-inline-description hidden" id="descDongSanKhacWrapper">
+                            <textarea class="form-control asset-description-input" id="descDongSanKhac" rows="3"></textarea>
+                        </div>
                     </div>
                 </div>
 
@@ -417,8 +424,6 @@
                         <button type="button" class="btn btn-outline-primary" id="btnThemSoKhung">+ Thêm số
                             khung</button>
                         <button type="button" class="btn btn-danger" id="btnXoaSoKhung">Xóa số khung</button>
-                        <button type="button" class="btn btn-outline-primary" id="btnYeuCauTatCaSK">Yêu cầu tất
-                            cả</button>
                     </div>
                     <div class="table-responsive">
                         <table class="table" id="tableSoKhung">
@@ -438,8 +443,6 @@
                                                 data-tooltip="Để có đủ thông tin đáp ứng yêu cầu kết nối, chia sẻ dữ liệu với Cục CSGT, đề nghị người yêu cầu đăng ký kê khai biển số của phương tiện theo Giấy chứng nhận nhưng không nhập thông tin '(T)' hoặc '(V)', nếu có trên Giấy chứng nhận">i</span>
                                         </div>
                                     </th>
-                                    <th>YÊU CẦU THÔNG BÁO THẾ CHẤP</th>
-                                    <th>TÊN VÀ ĐỊA CHỈ CƠ QUAN TIẾP NHẬN THÔNG BÁO</th>
                                     <th>Xóa</th>
                                 </tr>
                             </thead>
@@ -448,14 +451,13 @@
                                     <td style="text-align: center;"><input type="checkbox" class="chk-row-sk"></td>
                                     <td class="stt-sk">1</td>
                                     <td><select class="form-control">
+                                            <option>Mô tô</option>
                                             <option>Ô tô</option>
+                                            <option>Xe máy chuyên dùng</option>
                                         </select></td>
                                     <td><input type="text" class="form-control"></td>
                                     <td><input type="text" class="form-control"></td>
                                     <td><input type="text" class="form-control"></td>
-                                    <td><input type="text" class="form-control"></td>
-                                    <td style="text-align: center;"><input type="checkbox" class="chk-yeucau-sk"
-                                            style="width:18px; height:18px;"></td>
                                     <td><input type="text" class="form-control"></td>
                                     <td><button type="button" class="btn btn-danger btn-xoa-row-sk"
                                             style="padding: 4px 8px; font-size:12px;">X</button></td>
@@ -479,8 +481,6 @@
                         <button type="button" class="btn btn-outline-primary" id="btnThemTauCa">+ Thêm phương
                             tiện</button>
                         <button type="button" class="btn btn-danger" id="btnXoaTauCa">Xóa phương tiện</button>
-                        <button type="button" class="btn btn-outline-primary" id="btnYeuCauTatCaTC">Yêu cầu tất
-                            cả</button>
                     </div>
                     <div class="table-responsive">
                         <table class="table" id="tableTauCa">
@@ -493,8 +493,6 @@
                                     <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
                                     <th>SỐ ĐĂNG KÝ, CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
                                     <th>CẤP PHƯƠNG TIỆN</th>
-                                    <th>YÊU CẦU THÔNG BÁO THẾ CHẤP</th>
-                                    <th>TÊN VÀ ĐỊA CHỈ CƠ QUAN TIẾP NHẬN THÔNG BÁO</th>
                                     <th>Xóa</th>
                                 </tr>
                             </thead>
@@ -505,9 +503,6 @@
                                     <td><input type="text" class="form-control"></td>
                                     <td><input type="text" class="form-control"></td>
                                     <td><input type="text" class="form-control"></td>
-                                    <td><input type="text" class="form-control"></td>
-                                    <td style="text-align: center;"><input type="checkbox" class="chk-yeucau-tc"
-                                            style="width:18px; height:18px;"></td>
                                     <td><input type="text" class="form-control"></td>
                                     <td><button type="button" class="btn btn-danger btn-xoa-row-tc"
                                             style="padding: 4px 8px; font-size:12px;">X</button></td>
@@ -618,12 +613,6 @@
                             dung lượng &lt; 20MB.</span>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">Mô tả chung về tài sản bảo đảm <span
-                            class="required-mark">*</span></label>
-                    <textarea class="form-control" rows="3"></textarea>
-                </div>
             </section>
 
             <!-- FOOTER ACTIONS -->
@@ -636,7 +625,7 @@
 
     <!-- Modal Tìm Kiếm -->
     <div id="searchModal" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-content subject-search-modal">
             <div class="modal-header">
                 <h3>Tra cứu thông tin chủ thể</h3>
                 <button class="btn-close" id="btnCloseSearchModal">&times;</button>
@@ -689,13 +678,14 @@
                     style="margin-top: 16px; border-top: 1px dashed var(--border-color); padding-top: 16px;">
                     <label class="form-label" style="font-weight: 600; color: var(--primary-color);">Kết quả tìm kiếm
                         phù hợp (Chọn một dòng):</label>
-                    <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
-                        <table class="table" style="font-size: 13px; width: 100%;">
+                    <div class="table-responsive subject-search-results" style="max-height: 260px;">
+                        <table class="table subject-search-table" style="font-size: 13px; width: 100%;">
                             <thead>
                                 <tr>
                                     <th style="width: 50px; text-align: center;">STT</th>
                                     <th>Tên chủ thể</th>
                                     <th>Số giấy tờ</th>
+                                    <th id="searchColBirthDate">Ngày tháng năm sinh</th>
                                     <th id="searchColPassportCountry">Quốc gia cấp hộ chiếu</th>
                                     <th>Quốc gia</th>
                                     <th>Tỉnh/Thành phố</th>

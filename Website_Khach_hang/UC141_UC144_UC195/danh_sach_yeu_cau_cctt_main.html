@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách yêu cầu cung cấp thông tin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../Common/style_iframe.css">
+    <script src="../../Common/iframe_helper.js"></script>
+    <style>
+        :root {
+            --primary-color: #1E3A8A;
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #CBD5E1;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .portal-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .header-logo { display: flex; align-items: center; gap: 12px; }
+        .header-logo i { font-size: 28px; color: #3B82F6; }
+        .logo-text h1 { font-size: 16px; margin: 0; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+        .logo-text span { font-size: 11px; color: #94A3B8; display: block; }
+        .header-user { display: flex; align-items: center; gap: 15px; font-size: 13px; }
+        .user-info { text-align: right; }
+        .user-name { font-weight: 600; display: block; }
+        .user-role { font-size: 11px; color: #94A3B8; }
+        .avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background-color: #3B82F6; color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; border: 2px solid #60A5FA;
+        }
+
+        .container { max-width: 1200px; margin: 20px auto 40px; padding: 0 20px; }
+
+        .card-section {
+            background-color: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .section-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title i { color: var(--secondary-color); font-size: 18px; }
+
+        .grid-3-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .grid-2-cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        @media (max-width: 900px) { .grid-3-cols, .grid-2-cols { grid-template-columns: 1fr; } }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-label { font-weight: 600; color: #334155; font-size: 13px; }
+        .form-control {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 8px 12px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            width: 100%;
+        }
+        .form-control:focus { border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); outline: none; }
+        .date-input-wrap { position: relative; }
+        .date-input-wrap i {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 13px; pointer-events: none;
+        }
+
+        .btn {
+            font-weight: 600;
+            border-radius: var(--border-radius-sm);
+            padding: 9px 18px;
+            font-size: 13.5px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-outline-primary { background-color: #FFFFFF; color: var(--primary-color); border: 1px solid var(--primary-color); }
+        .btn-outline-primary:hover { background-color: #EFF6FF; }
+        .btn-secondary { background-color: #FFFFFF; color: #475569; border: 1px solid #CBD5E1; }
+        .btn-secondary:hover { background-color: #F8FAFC; }
+
+        .toolbar-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* Table */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .custom-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+        .custom-table th {
+            background-color: var(--table-header-bg);
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 14px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .custom-table th.sortable { cursor: pointer; user-select: none; }
+        .custom-table th.sortable i { margin-left: 4px; font-size: 11px; color: var(--text-muted); }
+        .custom-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+        .custom-table tbody tr { cursor: pointer; transition: background-color 0.15s; }
+        .custom-table tbody tr:hover { background-color: #F0F9FF; }
+        .custom-table td.center, .custom-table th.center { text-align: center; }
+        .custom-table td.right, .custom-table th.right { text-align: right; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .status-badge.cho-duyet { background-color: #FFFBEB; color: #B45309; }
+        .status-badge.cho-ky { background-color: #EFF6FF; color: #1D4ED8; }
+        .status-badge.cho-thanh-toan { background-color: #FFF7ED; color: #C2410C; }
+        .status-badge.hoan-thanh { background-color: #ECFDF5; color: #047857; }
+        .status-badge.bi-tu-choi { background-color: #FEF2F2; color: #B91C1C; }
+
+        .action-cell { text-align: center; white-space: nowrap; }
+        .action-cell .icon-btn {
+            background: none;
+            border: none;
+            padding: 4px 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+        .action-cell .icon-btn:hover { text-decoration: underline; }
+        .action-cell .icon-btn.pay { color: var(--accent-color); }
+        .action-cell .no-action { color: var(--text-muted); font-size: 12px; }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .pagination-buttons { display: flex; align-items: center; gap: 5px; }
+        .page-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-btn:hover:not(:disabled) { background-color: #F1F5F9; border-color: var(--text-muted); }
+        .page-btn.active { background-color: var(--primary-color); border-color: var(--primary-color); color: #FFFFFF; }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-size-select { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 5px 8px; font-size: 12.5px; }
+
+        .empty-row td { text-align: center; color: var(--text-muted); padding: 30px; }
+
+        /* Detail screen */
+        .hidden { display: none !important; }
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .detail-title { font-size: 18px; font-weight: 700; color: var(--primary-color); }
+        .detail-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+
+        .review-item { display: flex; flex-direction: column; gap: 4px; }
+        .review-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .review-val { font-size: 13.5px; color: var(--text-main); font-weight: 500; }
+
+        .file-link { color: var(--secondary-color); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+        .file-link:hover { text-decoration: underline; }
+
+        .related-dossier-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            background-color: #F8FAFC;
+        }
+        .related-dossier-card:last-child { margin-bottom: 0; }
+        .related-dossier-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 13.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        .detail-actions-right { display: flex; gap: 10px; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--danger-color); }
+        .toast.info { background-color: var(--secondary-color); }
+    </style>
+</head>
+<body>
+
+    <header class="portal-header">
+        <div class="header-logo">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div class="logo-text">
+                <h1>Hệ thống Đăng ký Biện pháp Bảo đảm</h1>
+                <span>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC &bull; BỘ TƯ PHÁP</span>
+            </div>
+        </div>
+        <div class="header-user">
+            <div class="user-info">
+                <span class="user-name">Nguyễn Văn Khách</span>
+                <span class="user-role">Doanh nghiệp / Cá nhân</span>
+            </div>
+            <div class="avatar">NK</div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ==================== SCREEN A: UC195.MH01 - DANH SÁCH YÊU CẦU ==================== -->
+        <div id="screen-list">
+            <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+                <h2 class="section-title" style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
+                </h2>
+                <div class="grid-3-cols">
+                    <div class="form-group">
+                        <label class="form-label">Mã hồ sơ</label>
+                        <input type="text" id="fltDossierCode" class="form-control" placeholder="Nhập mã hồ sơ...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tiêu chí yêu cầu</label>
+                        <select id="fltCriteria" class="form-control">
+                            <option value="Tất cả" selected>Tất cả</option>
+                            <option value="Số đăng ký">Số đăng ký</option>
+                            <option value="Bên bảo đảm">Bên bảo đảm</option>
+                            <option value="Số khung">Số khung</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái hồ sơ</label>
+                        <select id="fltStatus" class="form-control">
+                            <option value="Tất cả" selected>Tất cả</option>
+                            <option value="Chờ duyệt">Chờ duyệt</option>
+                            <option value="Chờ ký">Chờ ký</option>
+                            <option value="Chờ thanh toán">Chờ thanh toán</option>
+                            <option value="Hoàn thành">Hoàn thành</option>
+                            <option value="Bị từ chối">Bị từ chối</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-3-cols" style="margin-top: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Từ ngày</label>
+                        <div class="date-input-wrap">
+                            <input type="text" id="fltFromDate" class="form-control" placeholder="dd/mm/yyyy">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đến ngày</label>
+                        <div class="date-input-wrap">
+                            <input type="text" id="fltToDate" class="form-control" placeholder="dd/mm/yyyy">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <button class="btn btn-outline-primary" onclick="clearFilters()">Xóa bộ lọc</button>
+                    <button class="btn btn-primary" onclick="applyFilters()"><i class="fa fa-search"></i> Tìm kiếm</button>
+                </div>
+            </div>
+
+            <div class="toolbar-actions">
+                <button class="btn btn-primary" onclick="goToCreateRequest()">
+                    <i class="fa-solid fa-plus"></i> Tạo mới
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th class="center" style="width: 50px;">STT</th>
+                            <th>Mã hồ sơ</th>
+                            <th class="sortable" onclick="toggleSort()">Thời điểm đăng ký <i class="fa-solid fa-sort" id="sortIcon"></i></th>
+                            <th>Tiêu chí yêu cầu</th>
+                            <th>Dữ liệu đã nhập</th>
+                            <th class="center">Trạng thái</th>
+                            <th class="right">Số tiền phải thanh toán</th>
+                            <th class="center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblBody"></tbody>
+                </table>
+            </div>
+            <div class="pagination-container" id="paginationContainer">
+                <div id="paginationInfo"></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span>Số dòng/trang:</span>
+                        <select class="page-size-select" id="pageSizeSelect" onchange="onPageSizeChange()">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                    <div class="pagination-buttons" id="paginationButtons"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SCREEN B: UC195.MH02 - CHI TIẾT YÊU CẦU ==================== -->
+        <div id="screen-detail" class="hidden">
+            <div class="card-section">
+                <div class="detail-header">
+                    <div>
+                        <div class="detail-title" id="detailDossierCode">—</div>
+                        <div class="detail-sub">Chi tiết yêu cầu cung cấp thông tin về biện pháp bảo đảm</div>
+                    </div>
+                    <span class="status-badge" id="detailStatusBadge">—</span>
+                </div>
+
+                <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-folder-open"></i> Thông tin hồ sơ</h3>
+                <div class="grid-3-cols" style="margin-bottom: 20px;">
+                    <div class="review-item">
+                        <span class="review-label">Mã hồ sơ</span>
+                        <span class="review-val" id="detMaHoSo">—</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Thời điểm đăng ký</span>
+                        <span class="review-val" id="detThoiDiemDangKy">—</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Nguồn tiếp nhận</span>
+                        <span class="review-val" id="detNguonTiepNhan">Website khách hàng</span>
+                    </div>
+                </div>
+
+                <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-magnifying-glass"></i> Thông tin yêu cầu cung cấp thông tin</h3>
+                <div class="grid-2-cols" style="margin-bottom: 20px;">
+                    <div class="review-item">
+                        <span class="review-label">Tiêu chí yêu cầu</span>
+                        <span class="review-val" id="detTieuChi">—</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Dữ liệu đã nhập</span>
+                        <span class="review-val" id="detDuLieuDaNhap">—</span>
+                    </div>
+                </div>
+
+                <div id="blockXuLy">
+                    <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-gavel"></i> Thông tin xử lý</h3>
+                    <div class="grid-3-cols" style="margin-bottom: 20px;">
+                        <div class="review-item hidden" id="itemLyDoTuChoi">
+                            <span class="review-label">Lý do từ chối</span>
+                            <span class="review-val" id="detLyDoTuChoi">—</span>
+                        </div>
+                        <div class="review-item hidden" id="itemThoiDiemTrinhKy">
+                            <span class="review-label">Thời điểm trình ký</span>
+                            <span class="review-val" id="detThoiDiemTrinhKy">—</span>
+                        </div>
+                        <div class="review-item hidden" id="itemThoiDiemKy">
+                            <span class="review-label">Thời điểm ký</span>
+                            <span class="review-val" id="detThoiDiemKy">—</span>
+                        </div>
+                        <div class="review-item hidden" id="itemNguoiKy">
+                            <span class="review-label">Người ký/Đơn vị ký</span>
+                            <span class="review-val" id="detNguoiKy">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="blockThanhToan" class="hidden">
+                    <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-credit-card"></i> Thông tin thanh toán</h3>
+                    <div class="grid-3-cols" style="margin-bottom: 20px;">
+                        <div class="review-item">
+                            <span class="review-label">Số tiền phải thanh toán</span>
+                            <span class="review-val" id="detSoTien">—</span>
+                        </div>
+                        <div class="review-item hidden" id="itemMaGiaoDich">
+                            <span class="review-label">Mã giao dịch thanh toán</span>
+                            <span class="review-val" id="detMaGiaoDich">—</span>
+                        </div>
+                        <div class="review-item hidden" id="itemSoBienLai">
+                            <span class="review-label">Số biên lai</span>
+                            <span class="review-val" id="detSoBienLai">—</span>
+                        </div>
+                        <div class="review-item hidden" id="itemThoiDiemTT">
+                            <span class="review-label">Thời điểm thanh toán</span>
+                            <span class="review-val" id="detThoiDiemTT">—</span>
+                        </div>
+                        <div class="review-item hidden" id="itemTrangThaiTT">
+                            <span class="review-label">Trạng thái thanh toán</span>
+                            <span class="review-val" id="detTrangThaiTT">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="blockKetQua" class="hidden">
+                    <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-pdf"></i> Tệp kết quả</h3>
+                    <div class="grid-2-cols" style="margin-bottom: 20px;">
+                        <div class="review-item">
+                            <span class="review-label">File PDF đã ký (Mẫu số 10d)</span>
+                            <a href="#" class="file-link" onclick="event.preventDefault(); viewFile()"><i class="fa-solid fa-eye"></i> Xem file</a>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-shield"></i> Chi tiết đăng ký giao dịch bảo đảm, hợp đồng liên quan</h3>
+                    <div id="relatedDossierContainer" style="margin-bottom: 10px;"></div>
+                </div>
+
+                <div class="detail-actions">
+                    <button class="btn btn-secondary" onclick="backToList()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+                    <div class="detail-actions-right">
+                        <button class="btn btn-outline-primary hidden" id="btnDetailDownload" onclick="downloadFile()"><i class="fa-solid fa-download"></i> Tải file</button>
+                        <button class="btn btn-primary hidden" id="btnDetailPay" onclick="payFromDetail()"><i class="fa-solid fa-credit-card"></i> Thanh toán</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast-notif">
+        <i class="fa-solid fa-circle-info"></i> <span id="toast-message">Thông báo</span>
+    </div>
+
+    <script>
+        // ================= Mock data (25 bản ghi, đủ 3 tiêu chí và 5 trạng thái) =================
+        const STATUS_MAP = {
+            'Chờ duyệt': { cls: 'cho-duyet', icon: 'fa-clock' },
+            'Chờ ký': { cls: 'cho-ky', icon: 'fa-signature' },
+            'Chờ thanh toán': { cls: 'cho-thanh-toan', icon: 'fa-money-bill-wave' },
+            'Hoàn thành': { cls: 'hoan-thanh', icon: 'fa-circle-check' },
+            'Bị từ chối': { cls: 'bi-tu-choi', icon: 'fa-circle-xmark' }
+        };
+
+        const CRITERIA_CYCLE = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'];
+        const STATUS_CYCLE = ['Chờ duyệt', 'Chờ ký', 'Chờ thanh toán', 'Hoàn thành', 'Bị từ chối'];
+
+        function buildMockInputData(criteria, idx) {
+            if (criteria === 'Số đăng ký') return `DK-2026-${String(1000 + idx)}`;
+            if (criteria === 'Số khung') return `RLZ${1000 + idx}KHUNG${idx}VN`;
+            return `Công dân Việt Nam - CCCD 09${String(1000000000 + idx).slice(0, 10)}`;
+        }
+
+        const requests = [];
+        for (let i = 1; i <= 25; i++) {
+            const criteria = CRITERIA_CYCLE[i % CRITERIA_CYCLE.length];
+            const status = STATUS_CYCLE[i % STATUS_CYCLE.length];
+            const day = String((i % 27) + 1).padStart(2, '0');
+            const month = String(((i + 3) % 12) + 1).padStart(2, '0');
+            const registeredAt = `${day}/${month}/2026 ${String((i * 3) % 24).padStart(2, '0')}:${String((i * 7) % 60).padStart(2, '0')}:00`;
+            const registeredAtSort = new Date(2026, parseInt(month) - 1, parseInt(day), (i * 3) % 24, (i * 7) % 60).getTime();
+            const amount = (status === 'Chờ thanh toán' || status === 'Hoàn thành') ? 15000 : null;
+
+            requests.push({
+                id: i,
+                dossierCode: `CCTT-20260${1 + (i % 6)}${day}-${String(100000 + i)}`,
+                registeredAt,
+                registeredAtSort,
+                criteria,
+                inputData: buildMockInputData(criteria, i),
+                status,
+                amount,
+                rejectReason: status === 'Bị từ chối' ? 'Hồ sơ chưa được đăng ký hoặc Hiệu lực của đăng ký đối với thông tin không còn.' : '',
+                signedBy: (status === 'Hoàn thành' || status === 'Chờ thanh toán') ? 'Lãnh đạo Trung tâm Đăng ký GDBĐ TP. Hà Nội' : ''
+            });
+        }
+
+        let filteredRequests = [...requests];
+        let currentPage = 1;
+        let pageSize = 20;
+        let sortDesc = true;
+
+        // ================= Toast =================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast-notif');
+            document.getElementById('toast-message').innerText = message;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        // ================= Render bảng danh sách =================
+        function statusBadgeHtml(status) {
+            const meta = STATUS_MAP[status] || { cls: '', icon: 'fa-circle' };
+            return `<span class="status-badge ${meta.cls}"><i class="fa-solid ${meta.icon}"></i> ${status}</span>`;
+        }
+
+        function actionCellHtml(item) {
+            if (item.status === 'Chờ thanh toán') {
+                return `<button class="icon-btn pay" onclick="event.stopPropagation(); payFromList('${item.dossierCode}')"><i class="fa-solid fa-money-bill-wave"></i> Thanh toán</button>`;
+            }
+            if (item.status === 'Hoàn thành') {
+                return `
+                    <button class="icon-btn" onclick="event.stopPropagation(); viewFile('${item.dossierCode}')"><i class="fa-solid fa-eye"></i> Xem file</button>
+                    <button class="icon-btn" onclick="event.stopPropagation(); downloadFile('${item.dossierCode}')"><i class="fa-solid fa-download"></i> Tải file</button>
+                `;
+            }
+            return `<span class="no-action">—</span>`;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tblBody');
+            const start = (currentPage - 1) * pageSize;
+            const pageItems = filteredRequests.slice(start, start + pageSize);
+
+            if (pageItems.length === 0) {
+                tbody.innerHTML = `<tr class="empty-row"><td colspan="8">Không có dữ liệu phù hợp.</td></tr>`;
+            } else {
+                tbody.innerHTML = pageItems.map((item, idx) => `
+                    <tr onclick="openDetail('${item.dossierCode}')">
+                        <td class="center">${start + idx + 1}</td>
+                        <td><strong>${item.dossierCode}</strong></td>
+                        <td>${item.registeredAt}</td>
+                        <td>${item.criteria}</td>
+                        <td>${item.inputData}</td>
+                        <td class="center">${statusBadgeHtml(item.status)}</td>
+                        <td class="right">${item.amount ? item.amount.toLocaleString('vi-VN') + ' VNĐ' : '—'}</td>
+                        <td class="action-cell">${actionCellHtml(item)}</td>
+                    </tr>
+                `).join('');
+            }
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const total = filteredRequests.length;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const start = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, total);
+            document.getElementById('paginationInfo').innerText = `Hiển thị từ ${start} đến ${end} trong tổng số ${total} bản ghi`;
+
+            const container = document.getElementById('paginationContainer');
+            container.style.display = total === 0 ? 'none' : 'flex';
+
+            let btns = '';
+            const disabledFirst = currentPage === 1 ? 'disabled' : '';
+            btns += `<button class="page-btn" ${disabledFirst} onclick="goToPage(1)"><i class="fa-solid fa-angles-left"></i></button>`;
+            btns += `<button class="page-btn" ${disabledFirst} onclick="goToPage(${currentPage - 1})"><i class="fa-solid fa-angle-left"></i></button>`;
+            for (let p = 1; p <= totalPages; p++) {
+                btns += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
+            }
+            const disabledLast = currentPage === totalPages ? 'disabled' : '';
+            btns += `<button class="page-btn" ${disabledLast} onclick="goToPage(${currentPage + 1})"><i class="fa-solid fa-angle-right"></i></button>`;
+            btns += `<button class="page-btn" ${disabledLast} onclick="goToPage(${totalPages})"><i class="fa-solid fa-angles-right"></i></button>`;
+            document.getElementById('paginationButtons').innerHTML = btns;
+        }
+
+        function goToPage(p) {
+            const totalPages = Math.max(1, Math.ceil(filteredRequests.length / pageSize));
+            if (p < 1 || p > totalPages) return;
+            currentPage = p;
+            renderTable();
+        }
+
+        function onPageSizeChange() {
+            pageSize = parseInt(document.getElementById('pageSizeSelect').value, 10);
+            currentPage = 1;
+            renderTable();
+        }
+
+        function toggleSort() {
+            sortDesc = !sortDesc;
+            document.getElementById('sortIcon').className = sortDesc ? 'fa-solid fa-sort-down' : 'fa-solid fa-sort-up';
+            filteredRequests.sort((a, b) => sortDesc ? b.registeredAtSort - a.registeredAtSort : a.registeredAtSort - b.registeredAtSort);
+            currentPage = 1;
+            renderTable();
+        }
+
+        // ================= Bộ lọc =================
+        function applyFilters() {
+            const code = document.getElementById('fltDossierCode').value.trim().toLowerCase();
+            const criteria = document.getElementById('fltCriteria').value;
+            const status = document.getElementById('fltStatus').value;
+
+            filteredRequests = requests.filter(item => {
+                if (code && !item.dossierCode.toLowerCase().includes(code)) return false;
+                if (criteria !== 'Tất cả' && item.criteria !== criteria) return false;
+                if (status !== 'Tất cả' && item.status !== status) return false;
+                return true;
+            });
+
+            filteredRequests.sort((a, b) => sortDesc ? b.registeredAtSort - a.registeredAtSort : a.registeredAtSort - b.registeredAtSort);
+            currentPage = 1;
+
+            if (filteredRequests.length === 0) {
+                showToast('Không có dữ liệu phù hợp với điều kiện tìm kiếm.', 'info');
+            }
+            renderTable();
+        }
+
+        function clearFilters() {
+            document.getElementById('fltDossierCode').value = '';
+            document.getElementById('fltCriteria').value = 'Tất cả';
+            document.getElementById('fltStatus').value = 'Tất cả';
+            document.getElementById('fltFromDate').value = '';
+            document.getElementById('fltToDate').value = '';
+            filteredRequests = [...requests].sort((a, b) => b.registeredAtSort - a.registeredAtSort);
+            sortDesc = true;
+            document.getElementById('sortIcon').className = 'fa-solid fa-sort';
+            currentPage = 1;
+            renderTable();
+        }
+
+        // ================= Điều hướng =================
+        function goToCreateRequest() {
+            if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                window.top.showScreen('request-information');
+            }
+        }
+
+        // ================= Chi tiết yêu cầu (UC195.MH02) =================
+        function findByCode(code) {
+            return requests.find(r => r.dossierCode === code);
+        }
+
+        function openDetail(code) {
+            const item = findByCode(code);
+            if (!item) return;
+
+            document.getElementById('detailDossierCode').innerText = item.dossierCode;
+            const statusMeta = STATUS_MAP[item.status] || { cls: '', icon: 'fa-circle' };
+            const statusBadgeEl = document.getElementById('detailStatusBadge');
+            statusBadgeEl.className = `status-badge ${statusMeta.cls}`;
+            statusBadgeEl.innerHTML = `<i class="fa-solid ${statusMeta.icon}"></i> ${item.status}`;
+
+            document.getElementById('detMaHoSo').innerText = item.dossierCode;
+            document.getElementById('detThoiDiemDangKy').innerText = item.registeredAt;
+            document.getElementById('detTieuChi').innerText = item.criteria;
+            document.getElementById('detDuLieuDaNhap').innerText = item.inputData;
+
+            // Khối Thông tin xử lý (điều kiện theo trạng thái)
+            toggleDetailItem('itemLyDoTuChoi', 'detLyDoTuChoi', item.status === 'Bị từ chối', item.rejectReason);
+            const hasSigned = ['Chờ thanh toán', 'Hoàn thành'].includes(item.status);
+            toggleDetailItem('itemThoiDiemTrinhKy', 'detThoiDiemTrinhKy', hasSigned, item.registeredAt);
+            toggleDetailItem('itemThoiDiemKy', 'detThoiDiemKy', hasSigned, item.registeredAt);
+            toggleDetailItem('itemNguoiKy', 'detNguoiKy', hasSigned, item.signedBy);
+
+            // Khối Thông tin thanh toán (chỉ hiện khi Chờ thanh toán/Hoàn thành)
+            const showPayment = item.status === 'Chờ thanh toán' || item.status === 'Hoàn thành';
+            document.getElementById('blockThanhToan').classList.toggle('hidden', !showPayment);
+            if (showPayment) {
+                document.getElementById('detSoTien').innerText = `${item.amount.toLocaleString('vi-VN')} VNĐ`;
+                const isPaid = item.status === 'Hoàn thành';
+                toggleDetailItem('itemMaGiaoDich', 'detMaGiaoDich', isPaid, `GD${item.dossierCode.slice(-8)}`);
+                toggleDetailItem('itemSoBienLai', 'detSoBienLai', isPaid, `BL${item.dossierCode.slice(-6)}`);
+                toggleDetailItem('itemThoiDiemTT', 'detThoiDiemTT', isPaid, item.registeredAt);
+                toggleDetailItem('itemTrangThaiTT', 'detTrangThaiTT', isPaid, 'Thanh toán thành công');
+            }
+
+            // Khối Tệp kết quả + Chi tiết đăng ký liên quan (chỉ hiện khi Hoàn thành)
+            const isCompleted = item.status === 'Hoàn thành';
+            document.getElementById('blockKetQua').classList.toggle('hidden', !isCompleted);
+            if (isCompleted) {
+                renderRelatedDossier(item);
+            }
+
+            // Nút Thanh toán / Tải file
+            const btnPay = document.getElementById('btnDetailPay');
+            btnPay.classList.toggle('hidden', item.status !== 'Chờ thanh toán');
+            btnPay.dataset.code = item.dossierCode;
+
+            const btnDownload = document.getElementById('btnDetailDownload');
+            btnDownload.classList.toggle('hidden', !isCompleted);
+            btnDownload.dataset.code = item.dossierCode;
+
+            document.getElementById('screen-list').classList.add('hidden');
+            document.getElementById('screen-detail').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleDetailItem(wrapperId, valueId, show, value) {
+            document.getElementById(wrapperId).classList.toggle('hidden', !show);
+            if (show) document.getElementById(valueId).innerText = value || '—';
+        }
+
+        function renderRelatedDossier(item) {
+            const container = document.getElementById('relatedDossierContainer');
+            container.innerHTML = `
+                <div class="related-dossier-card">
+                    <div class="related-dossier-title"><i class="fa-solid fa-file-shield"></i> Hồ sơ đăng ký DK-2026-${item.dossierCode.slice(-4)}</div>
+                    <div class="grid-3-cols">
+                        <div class="review-item">
+                            <span class="review-label">Loại hình đăng ký</span>
+                            <span class="review-val">Đăng ký lần đầu</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Bên bảo đảm</span>
+                            <span class="review-val">Nguyễn Văn Khách</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Bên nhận bảo đảm</span>
+                            <span class="review-val">Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Thời điểm đăng ký</span>
+                            <span class="review-val">${item.registeredAt}</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Trạng thái hồ sơ</span>
+                            <span class="review-val">Hoàn thành</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function backToList() {
+            document.getElementById('screen-detail').classList.add('hidden');
+            document.getElementById('screen-list').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ================= Xem file / Tải file (chỉ khi Hoàn thành) =================
+        function viewFile(code) {
+            const dossierCode = code || document.getElementById('btnDetailDownload').dataset.code;
+            showToast(`Đang mở file PDF Mẫu số 10d của hồ sơ ${dossierCode} tại một tab riêng...`, 'success');
+        }
+
+        function downloadFile(code) {
+            const dossierCode = code || document.getElementById('btnDetailDownload').dataset.code;
+            showToast(`Đang tải xuống tệp tin PDF Mẫu số 10d của hồ sơ ${dossierCode}...`, 'success');
+        }
+
+        // ================= Thanh toán: chuyển sang Cổng thanh toán chung của hệ thống =================
+        function buildPaymentPayload(item) {
+            return {
+                source: 'cctt-requests',
+                regNum: item.dossierCode,
+                pin: '',
+                type: 'Yêu cầu cung cấp thông tin',
+                guarantor: '',
+                securedParty: '',
+                transType: 'Yêu cầu cung cấp thông tin',
+                measureContractType: '',
+                amount: item.amount || 15000,
+                amountText: `${(item.amount || 15000).toLocaleString('vi-VN')} VNĐ`
+            };
+        }
+
+        function goToPaymentGateway(item) {
+            if (window.top === window.self || typeof window.top.showScreen !== 'function') {
+                showToast('Không thể mở Cổng thanh toán trong chế độ xem độc lập.', 'error');
+                return;
+            }
+            sessionStorage.setItem('registeredPaymentData', JSON.stringify(buildPaymentPayload(item)));
+            sessionStorage.setItem('registeredReturnTab', 'cctt');
+            showToast(`Đang mở màn hình thanh toán cho hồ sơ ${item.dossierCode}...`, 'info');
+            window.top.showScreen('registered-request-payment', `UC024/dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(item.dossierCode)}&t=${Date.now()}`);
+        }
+
+        function payFromList(code) {
+            const item = findByCode(code);
+            if (!item) return;
+            goToPaymentGateway(item);
+        }
+
+        function payFromDetail() {
+            const code = document.getElementById('btnDetailPay').dataset.code;
+            const item = findByCode(code);
+            if (!item) return;
+            goToPaymentGateway(item);
+        }
+
+        // ================= Khởi tạo =================
+        clearFilters();
+    </script>
+</body>
+</html>

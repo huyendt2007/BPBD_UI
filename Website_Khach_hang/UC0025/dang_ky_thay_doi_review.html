@@ -1356,6 +1356,7 @@
                                 <th style="width: 60px; text-align: center;">STT</th>
                                 <th>LOẠI CHỦ THỂ</th>
                                 <th>SỐ GIẤY TỜ CHỨNG MINH TƯ CÁCH PHÁP LÝ</th>
+                                <th>NGÀY THÁNG NĂM SINH</th>
                                 <th>TÊN</th>
                                 <th>ĐỊA CHỈ</th>
                             </tr>
@@ -1393,60 +1394,8 @@
             <section class="card-section">
                 <h2 class="section-title" id="rev_titleTaiSan">Tài sản bảo đảm</h2>
 
-                <div class="review-block">
-                    <div class="readonly-label">Danh sách Loại tài sản bảo đảm đã chọn:</div>
-                    <div class="readonly-value"
-                        style="background-color: transparent; border: none; padding-left: 0; padding-top: 4px;">
-                        <ul style="margin: 0; padding-left: 20px; color: var(--primary-color); font-weight: 500;"
-                            id="rev_assetTypesList">
-                            <!-- Injected by JS -->
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="review-block">
-                    <div class="readonly-label">Mô tả chung về tài sản bảo đảm</div>
-                    <div class="readonly-value" style="min-height: 60px;" id="rev_moTaChung">
-                        -
-                    </div>
-                </div>
-
-                <!-- Lưới Tài sản bảo đảm tổng hợp -->
-                <div class="review-block" id="rev_gridConsolidatedWrapper"
-                    style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 16px;">
-                    <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Danh sách phương tiện
-                        / Tài sản bảo đảm</h3>
-                    <div class="table-responsive">
-                        <table class="table" id="fullAssetsTable" style="width: 100%; border-collapse: collapse;">
-                            <colgroup>
-                                <col style="width: 6%;">
-                                <col style="width: 25%;">
-                                <col style="width: 18%;">
-                                <col style="width: 23%;">
-                                <col style="width: 14%;">
-                                <col style="width: 14%;">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th style="width: 56px; text-align: center;">STT</th>
-                                    <th>Loại tài sản</th>
-                                    <th>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
-                                    <th>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>
-                                    <th>SỐ KHUNG / SỐ ĐỊNH DANH</th>
-                                    <th>SỐ MÁY / BIỂN SỐ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="fullAssetsTbody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="fullAssetsPdfContainer" style="display:none; margin-top:20px;" class="attachment-link-container">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <strong>Tệp tin đính kèm chứng khoán:</strong>
-                    <a href="#" target="_blank" id="lnkXemFileAssetsPdf">Xem file (<span id="fullAssetsPdfName">mota_taisan.pdf</span>)</a>
+                <div id="rev_assetTypeSections">
+                    <!-- Injected by JS: each selected asset type is rendered with its own details immediately below -->
                 </div>
             </section>
 
@@ -1539,6 +1488,9 @@
             }
             if (orig.paperNo !== p.paperNo) {
                 diffs.push(`Số giấy tờ cũ: <span class="diff-before">${orig.paperNo}</span>`);
+            }
+            if ((orig.birthDate || '') !== (p.birthDate || '')) {
+                diffs.push(`Ngày tháng năm sinh cũ: <span class="diff-before">${orig.birthDate || '-'}</span>`);
             }
             if (orig.address !== p.address) {
                 diffs.push(`Địa chỉ cũ: <span class="diff-before">${orig.address}</span>`);
@@ -1655,7 +1607,7 @@
             if (summaryTextEl) {
                 summaryTextEl.textContent = draftData.summary || 'Không có mô tả tóm tắt.';
             }
-            document.getElementById('rev_moTaChung').textContent = draftData.astDescCommon || 'Không có mô tả tóm tắt.';
+            const assetDescriptions = draftData.assetDescriptions || {};
 
             // Toggle optional fields visibility
             const groupReqFile = document.getElementById('group_reqFile');
@@ -1750,27 +1702,6 @@
                 if (noExemptFileText) noExemptFileText.style.display = 'inline';
             }
 
-            const assetsFileCont = document.getElementById('fullAssetsPdfContainer');
-            if (assetsFileCont) {
-                if (draftData.files && draftData.files.assetsPdfFile) {
-                    assetsFileCont.style.display = 'flex';
-                    assetsFileCont.setAttribute('data-has-file', 'true');
-                    document.getElementById('fullAssetsPdfName').textContent = draftData.files.assetsPdfFile;
-                    
-                    const lnk = document.getElementById('lnkXemFileAssetsPdf');
-                    if (lnk) {
-                        const savedUrl = localStorage.getItem('fileUrl_assetsPdfFile');
-                        lnk.href = savedUrl || '#';
-                        lnk.onclick = savedUrl ? null : (e) => { e.preventDefault(); alert('Đang xem chi tiết tệp đính kèm chứng khoán...'); };
-                    }
-                    
-                    const isChanged = draftData.files.assetsPdfFile !== (originalData.files && originalData.files.assetsPdfFile);
-                } else {
-                    assetsFileCont.style.display = 'none';
-                    assetsFileCont.setAttribute('data-has-file', 'false');
-                }
-            }
-
             // Dynamic headings setup
             const isBPBD = draftData.transactionType !== 'Hợp đồng';
             let selectedSubtype = isBPBD ? draftData.measureType : draftData.measureType;
@@ -1839,6 +1770,7 @@
                         <td style="text-align: center;">${visibleCount}</td>
                         <td>${p.paperType || 'Công dân Việt Nam'}</td>
                         <td>${p.paperNo || ''}</td>
+                        <td>${p.type === 'cd_vn' ? (p.birthDate || '-') : '-'}</td>
                         <td>${p.name || ''}</td>
                         <td>
                             <div>${p.address || ''}</div>
@@ -1891,166 +1823,179 @@
                 }
             }
 
-            // Render Checked Asset Types List
-            const list = document.getElementById('rev_assetTypesList');
-            if (list) {
-                list.innerHTML = '';
-                const types = [];
-                if (draftData.soKhungChecked) types.push("Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)");
-                if (draftData.tauCaChecked) types.push("Tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt");
-                if (draftData.quyenTaiSan && draftData.quyenTaiSan.tenQuyen) types.push("Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản");
-                if (draftData.cayHangNam) types.push("Cây hằng năm, công trình tạm");
-                if (draftData.hangHoa && draftData.hangHoa.tenHangHoa) types.push("Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ");
-                if (draftData.chungKhoan && draftData.chungKhoan.ck_ngay) types.push("Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung");
-                if (draftData.dongSanKhac) types.push("Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)");
-                
-                if (types.length > 0) {
-                    types.forEach(t => {
-                        list.innerHTML += `<li>${t}</li>`;
-                    });
-                } else {
-                    list.innerHTML = `<li>Chưa chọn loại tài sản nào</li>`;
-                }
-            }
+            const renderAssetTypeSections = () => {
+                const container = document.getElementById('rev_assetTypeSections');
+                if (!container) return;
 
-            // Render Assets List
-            const assetsTbody = document.getElementById('fullAssetsTbody');
-            if (assetsTbody) {
-                assetsTbody.innerHTML = '';
-                let visibleCount = 0;
+                const tauTypes = ['tauca', 'duongthuy', 'duongsat'];
+                const assets = draftData.assets || [];
+                const soKhungAssets = assets.filter(a => !tauTypes.includes(a.type) && a.typeName !== 'Phương tiện');
+                const phuongTienAssets = assets.filter(a => tauTypes.includes(a.type) || a.typeName === 'Phương tiện');
+                const sections = [];
 
-                // 1. Render lists (Số khung & Tàu cá) from draftData.assets
-                if (draftData.assets && draftData.assets.length > 0) {
-                    draftData.assets.forEach((a) => {
-                        const tr = document.createElement('tr');
-                        let rowClass = 'row-unchanged';
+                const section = (title, content) => `
+                    <div class="review-block" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                        <div style="font-size: 16px; font-weight: 700; color: var(--primary-color); margin-bottom: 12px;">${title}</div>
+                        ${content}
+                    </div>
+                `;
+                const readonlyGrid = (items) => `
+                    <div class="form-grid-2">
+                        ${items.map(item => `
+                            <div class="review-field">
+                                <div class="readonly-label">${item.label}</div>
+                                <div class="readonly-value">${item.value || '---'}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
 
-                        if (a.status === 'Bổ sung mới') {
-                            rowClass = 'row-added';
-                        } else if (a.status === 'Sửa thông tin') {
-                            rowClass = 'row-modified';
-                        } else if (a.status === 'Rút bớt') {
-                            rowClass = 'row-removed';
-                        }
-                        tr.className = rowClass;
-                        if (a.status === 'Rút bớt') {
-                            tr.style.textDecoration = 'line-through';
-                            tr.style.opacity = '0.6';
-                        }
-
-                        visibleCount++;
+                if (draftData.soKhungChecked || soKhungAssets.length > 0) {
+                    const rows = soKhungAssets.map((a, index) => {
                         const diffHtml = getAssetDiffHtml(a);
-                        const enginePlate = [a.engineNo ? 'Số máy: ' + a.engineNo : '', a.plateNo ? 'Biển kiểm soát: ' + a.plateNo : ''].filter(Boolean).join(' / ') || '---';
-
-                        let categoryName = 'Phương tiện';
-                        if (a.typeName === 'Phương tiện') {
-                            categoryName = 'Tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt';
-                        } else if (a.typeName === 'Ô tô' || a.typeName === 'Mô tô') {
-                            categoryName = 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)';
-                        } else {
-                            categoryName = a.typeName || 'Phương tiện';
-                        }
-
-                        tr.innerHTML = `
-                            <td style="text-align: center;">${visibleCount}</td>
-                            <td>${categoryName}</td>
-                            <td>${a.name || '---'}</td>
-                            <td>${a.brandColor || '---'}</td>
-                            <td>${a.frameNo || '---'}</td>
-                            <td>
-                                <div>${enginePlate}</div>
-                                ${diffHtml}
-                            </td>
+                        return `
+                            <tr>
+                                <td style="text-align: center;">${index + 1}</td>
+                                <td>${a.typeName || a.name || '---'}</td>
+                                <td>${a.brandColor || '---'}</td>
+                                <td>${a.frameNo || '---'}</td>
+                                <td>${a.engineNo || '---'}</td>
+                                <td>
+                                    <div>${a.plateNo || '---'}</div>
+                                    ${diffHtml}
+                                </td>
+                            </tr>
                         `;
-                        assetsTbody.appendChild(tr);
-                    });
+                    }).join('');
+                    sections.push(section(
+                        'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                        `<h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Số khung *</h3>
+                        <div class="table-responsive">
+                            <table class="table" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 56px; text-align: center;">STT</th>
+                                        <th>TÊN PHƯƠNG TIỆN</th>
+                                        <th>NHÃN HIỆU, MÀU SƠN</th>
+                                        <th>SỐ KHUNG</th>
+                                        <th>SỐ MÁY</th>
+                                        <th>BIỂN SỐ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows || '<tr><td colspan="6" style="text-align:center;">Không có dữ liệu</td></tr>'}</tbody>
+                            </table>
+                        </div>`
+                    ));
                 }
 
-                // 2. Quyền tài sản
+                if (draftData.tauCaChecked || phuongTienAssets.length > 0) {
+                    const rows = phuongTienAssets.map((a, index) => `
+                        <tr>
+                            <td style="text-align: center;">${index + 1}</td>
+                            <td>${a.name || a.typeName || '---'}</td>
+                            <td>${a.ownerName || '---'}</td>
+                            <td>${a.regNo || '---'}</td>
+                            <td>${a.level || '---'}</td>
+                        </tr>
+                    `).join('');
+                    sections.push(section(
+                        'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt',
+                        `<h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Phương tiện</h3>
+                        <div class="table-responsive">
+                            <table class="table" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 56px; text-align: center;">STT</th>
+                                        <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                                        <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                        <th>SỐ ĐĂNG KÝ, CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                        <th>CẤP PHƯƠNG TIỆN</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows || '<tr><td colspan="5" style="text-align:center;">Không có dữ liệu</td></tr>'}</tbody>
+                            </table>
+                        </div>`
+                    ));
+                }
+
                 if (draftData.quyenTaiSan && draftData.quyenTaiSan.tenQuyen) {
-                    visibleCount++;
-                    const tr = document.createElement('tr');
-                    tr.className = 'row-unchanged';
-                    tr.innerHTML = `
-                        <td style="text-align: center;">${visibleCount}</td>
-                        <td>Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</td>
-                        <td>${draftData.quyenTaiSan.tenQuyen || '---'}</td>
-                        <td>${draftData.quyenTaiSan.canCu || '---'}</td>
-                        <td>---</td>
-                        <td>---</td>
-                    `;
-                    assetsTbody.appendChild(tr);
+                    sections.push(section(
+                        'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+                        readonlyGrid([
+                            { label: 'Tên quyền', value: draftData.quyenTaiSan.tenQuyen },
+                            { label: 'Căn cứ phát sinh quyền', value: draftData.quyenTaiSan.canCu }
+                        ])
+                    ));
                 }
 
-                // 3. Cây hằng năm, công trình tạm
                 if (draftData.cayHangNam) {
-                    visibleCount++;
-                    const tr = document.createElement('tr');
-                    tr.className = 'row-unchanged';
-                    tr.innerHTML = `
-                        <td style="text-align: center;">${visibleCount}</td>
-                        <td>Cây hằng năm, công trình tạm</td>
-                        <td>${draftData.astDescCommon || '---'}</td>
-                        <td>---</td>
-                        <td>---</td>
-                        <td>---</td>
-                    `;
-                    assetsTbody.appendChild(tr);
+                    sections.push(section(
+                        'Cây hằng năm, công trình tạm',
+                        `<div class="readonly-value">${assetDescriptions.cayHangNam || '---'}</div>`
+                    ));
                 }
 
-                // 4. Hàng hóa
                 if (draftData.hangHoa && draftData.hangHoa.tenHangHoa) {
-                    visibleCount++;
-                    const tr = document.createElement('tr');
-                    tr.className = 'row-unchanged';
-                    tr.innerHTML = `
-                        <td style="text-align: center;">${visibleCount}</td>
-                        <td>Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</td>
-                        <td>${draftData.hangHoa.tenHangHoa || '---'}</td>
-                        <td>${draftData.hangHoa.diaChiKho || '---'}</td>
-                        <td>${draftData.hangHoa.soHieuKho || '---'}</td>
-                        <td>---</td>
-                    `;
-                    assetsTbody.appendChild(tr);
+                    sections.push(section(
+                        'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ',
+                        readonlyGrid([
+                            { label: 'Hàng hóa luân chuyển / Kho hàng', value: draftData.hangHoa.loai === 'khohang' ? 'Kho hàng' : 'Hàng hóa luân chuyển' },
+                            { label: 'Giá trị hàng hóa/Tên, loại hàng hóa', value: draftData.hangHoa.tenHangHoa },
+                            { label: 'Địa chỉ kho hàng', value: draftData.hangHoa.diaChiKho },
+                            { label: 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', value: draftData.hangHoa.soHieuKho }
+                        ])
+                    ));
                 }
 
-                // 5. Chứng khoán
                 if (draftData.chungKhoan && draftData.chungKhoan.ck_ngay) {
-                    visibleCount++;
-                    const tr = document.createElement('tr');
-                    tr.className = 'row-unchanged';
-                    const timeStr = `${draftData.chungKhoan.ck_gio} giờ ${draftData.chungKhoan.ck_phut} phút ngày ${draftData.chungKhoan.ck_ngay}/${draftData.chungKhoan.ck_thang}/${draftData.chungKhoan.ck_nam}`;
-                    tr.innerHTML = `
-                        <td style="text-align: center;">${visibleCount}</td>
-                        <td>Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</td>
-                        <td>${draftData.astDescCommon || '---'}</td>
-                        <td>${timeStr}</td>
-                        <td>---</td>
-                        <td>---</td>
-                    `;
-                    assetsTbody.appendChild(tr);
+                    const fileHtml = draftData.files && draftData.files.assetsPdfFile
+                        ? `<div class="attachment-link-container" style="margin-top: 16px;">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <strong>Tệp tin đính kèm chứng khoán:</strong>
+                            <a href="${localStorage.getItem('fileUrl_assetsPdfFile') || '#'}" target="_blank">Xem file (${draftData.files.assetsPdfFile})</a>
+                        </div>`
+                        : '';
+                    sections.push(section(
+                        'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
+                        `<h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam</h3>
+                        <div class="table-responsive">
+                            <table class="table" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th>GIỜ</th>
+                                        <th>PHÚT</th>
+                                        <th>NGÀY</th>
+                                        <th>THÁNG</th>
+                                        <th>NĂM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${draftData.chungKhoan.ck_gio || '---'}</td>
+                                        <td>${draftData.chungKhoan.ck_phut || '---'}</td>
+                                        <td>${draftData.chungKhoan.ck_ngay || '---'}</td>
+                                        <td>${draftData.chungKhoan.ck_thang || '---'}</td>
+                                        <td>${draftData.chungKhoan.ck_nam || '---'}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        ${fileHtml}`
+                    ));
                 }
 
-                // 6. Động sản khác
                 if (draftData.dongSanKhac) {
-                    visibleCount++;
-                    const tr = document.createElement('tr');
-                    tr.className = 'row-unchanged';
-                    tr.innerHTML = `
-                        <td style="text-align: center;">${visibleCount}</td>
-                        <td>Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</td>
-                        <td>${draftData.astDescCommon || '---'}</td>
-                        <td>---</td>
-                        <td>---</td>
-                        <td>---</td>
-                    `;
-                    assetsTbody.appendChild(tr);
+                    sections.push(section(
+                        'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)',
+                        `<div class="readonly-value">${assetDescriptions.dongSanKhac || '---'}</div>`
+                    ));
                 }
 
-                if (visibleCount === 0) {
-                    assetsTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 15px;"><i>Không có thông tin tài sản bảo đảm.</i></td></tr>`;
-                }
-            }
+                container.innerHTML = sections.length
+                    ? sections.join('')
+                    : '<div class="readonly-value">Chưa chọn loại tài sản nào</div>';
+            };
+            renderAssetTypeSections();
         }
 
         // Helper function to fill values and highlight if modified
