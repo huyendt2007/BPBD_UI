@@ -72,11 +72,10 @@
             line-height: 1.5;
         }
 
-        /* Sticky Header Container */
+        /* Header Container */
         .sticky-header-container {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            position: relative;
+            z-index: 10;
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
         }
 
@@ -422,7 +421,7 @@
         /* App Layout Container */
         .app-container {
             display: flex;
-            min-height: calc(100vh - 170px);
+            min-height: 100vh;
         }
 
         /* Left Sidebar - Glassmorphism & Shadows */
@@ -438,10 +437,9 @@
             box-shadow: 4px 0 16px rgba(0, 0, 0, 0.01);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
-            /* Sticky position below header navigation */
             position: sticky;
-            top: 165px;
-            height: calc(100vh - 165px);
+            top: 0;
+            height: 100vh;
             overflow-y: auto;
         }
 
@@ -1626,7 +1624,7 @@
 
         .module-iframe {
             width: 100%;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 24px);
             border: none;
             border-radius: 8px;
             background-color: var(--card-bg);
@@ -6135,8 +6133,8 @@
 
             let top = rect.top + (rect.height - tooltipHeight) / 2;
 
-            // Prevent going under the sticky header (which is ~165px high)
-            const minTop = 175;
+            // Header scrolls with the page, so tooltips can use the full viewport.
+            const minTop = 10;
             if (top < minTop) {
                 top = minTop;
             }
@@ -6174,6 +6172,61 @@
         let loggedInDisplayName = 'Ngân hàng TMCP FPT';
         let currentActiveScreen = 'home';
         let currentScreenUrlCache = {};
+        let detailHistoryResizeTimer = null;
+
+        function resizeDetailHistoryIframe() {
+            const iframe = document.getElementById('iframeViewDetailHistory');
+            if (!iframe || currentActiveScreen !== 'view-detail-history') return;
+
+            try {
+                const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                if (!doc) return;
+
+                const body = doc.body;
+                const html = doc.documentElement;
+                if (body) body.style.overflow = 'hidden';
+                if (html) html.style.overflow = 'hidden';
+
+                const contentHeight = Math.max(
+                    body ? body.scrollHeight : 0,
+                    html ? html.scrollHeight : 0,
+                    window.innerHeight - 24
+                );
+                iframe.style.height = `${contentHeight + 24}px`;
+                iframe.setAttribute('scrolling', 'no');
+            } catch (error) {
+                iframe.style.height = 'calc(100vh - 24px)';
+                iframe.removeAttribute('scrolling');
+            }
+        }
+
+        function startDetailHistoryAutoResize(iframe) {
+            if (detailHistoryResizeTimer) {
+                clearInterval(detailHistoryResizeTimer);
+                detailHistoryResizeTimer = null;
+            }
+            if (!iframe) return;
+
+            iframe.onload = function () {
+                resizeDetailHistoryIframe();
+                setTimeout(resizeDetailHistoryIframe, 250);
+                setTimeout(resizeDetailHistoryIframe, 800);
+            };
+            detailHistoryResizeTimer = setInterval(resizeDetailHistoryIframe, 700);
+        }
+
+        function stopDetailHistoryAutoResize() {
+            if (detailHistoryResizeTimer) {
+                clearInterval(detailHistoryResizeTimer);
+                detailHistoryResizeTimer = null;
+            }
+            const iframe = document.getElementById('iframeViewDetailHistory');
+            if (iframe) {
+                iframe.onload = null;
+                iframe.style.height = '';
+                iframe.removeAttribute('scrolling');
+            }
+        }
 
         // Organization profile and credentials state
         let orgDetails = {
@@ -6965,6 +7018,9 @@
                 currentActiveScreen = screenId;
                 currentScreenUrlCache[screenId] = customUrl || '';
             }
+            if (screenId !== 'view-detail-history') {
+                stopDetailHistoryAutoResize();
+            }
             if (!['new-registration', 'change-registration', 'delete-registration'].includes(screenId)) {
                 editingDraftRegisteredRequest = null;
                 currentUpdatingRegNum = '';
@@ -7097,6 +7153,7 @@
                 if (sideMenuReg) sideMenuReg.classList.add('active');
                 const iframe = document.querySelector('#screen-view-detail-history iframe');
                 if (iframe) {
+                    startDetailHistoryAutoResize(iframe);
                     iframe.src = customUrl;
                 }
             }
@@ -14005,7 +14062,6 @@
             const renderIconButton = ({ enabled, className, title, disabledTitle, icon, onClick }) => enabled
                 ? `<button class="${className}" style="${iconBtnStyle}" title="${title}" aria-label="${title}" onclick="event.stopPropagation(); ${onClick}"><i class="${icon}"></i></button>`
                 : `<button class="${className}" style="${disabledStyle}" title="${disabledTitle || title}" aria-label="${disabledTitle || title}" disabled><i class="${icon}"></i></button>`;
-            const viewBtn = `<button class="btn btn-outline-primary" style="${iconBtnStyle}" title="Xem chi tiết" aria-label="Xem chi tiết" onclick="event.stopPropagation(); viewRegisteredRequest('${item.regNum}', '${item.type}', ${versionCount})"><i class="fa-solid fa-eye"></i></button>`;
             const payBtn = renderIconButton({
                 enabled: isRegReqStatus(item, 'Chờ thanh toán'),
                 className: 'btn btn-warning',
@@ -14031,7 +14087,7 @@
                 onClick: `deleteDraftRegisteredRequest('${item.regNum}')`
             });
 
-            return `${viewBtn}${payBtn}${updateBtn}${deleteBtn}`;
+            return `${payBtn}${updateBtn}${deleteBtn}`;
         }
 
         function renderRegisteredRequestMoreActions(item) {
@@ -14219,7 +14275,7 @@
                 const moreActionsHtml = renderRegisteredRequestMoreActions(item);
 
                 html += `
-                    <tr class="tree-row depth-0">
+                    <tr class="tree-row depth-0" style="cursor: pointer;" title="Bấm vào dòng để xem chi tiết phiếu đăng ký" onclick="viewRegisteredRequest('${item.regNum}', '${item.type}', ${hasChildren ? item.children.length : 0})">
                         <td style="text-align: center;"><strong>${stt++}</strong></td>
                         <td>${toggleHtml} <strong>${formatRegNumForDisplay(item.regNum)}</strong></td>
                         <td><span style="font-family: monospace;">${item.pin}</span></td>
@@ -14232,7 +14288,7 @@
                         ${renderRegReqAssetExtraCells(item)}
                         <td><span class="status-badge ${getStatusClass(item.status)}">${item.status}</span></td>
                         <td>${item.date}</td>
-                        <td>
+                        <td onclick="event.stopPropagation();">
                             <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                                 ${renderRegisteredRequestRowActions(item, hasChildren ? item.children.length : 0)}
                                 ${moreActionsHtml}
@@ -14251,7 +14307,7 @@
                         const childMoreActionsHtml = renderRegisteredRequestMoreActions(child);
 
                         html += `
-                            <tr class="tree-row depth-1">
+                            <tr class="tree-row depth-1" style="cursor: pointer;" title="Bấm vào dòng để xem chi tiết phiếu đăng ký" onclick="viewRegisteredRequest('${child.regNum}', '${child.type}', ${hasGrandchildren ? child.children.length : 0})">
                                 <td style="text-align: center;"></td>
                                 <td><span class="tree-indent-line">├──</span> ${childToggleHtml} <span>${formatRegNumForDisplay(child.regNum)}</span></td>
                                 <td><span style="font-family: monospace;">${child.pin}</span></td>
@@ -14264,7 +14320,7 @@
                                 ${renderRegReqAssetExtraCells(child)}
                                 <td><span class="status-badge ${getStatusClass(child.status)}">${child.status}</span></td>
                                 <td>${child.date}</td>
-                                <td>
+                                <td onclick="event.stopPropagation();">
                                     <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                                         ${renderRegisteredRequestRowActions(child, hasGrandchildren ? child.children.length : 0)}
                                         ${childMoreActionsHtml}
@@ -14278,7 +14334,7 @@
                                 const gcMoreActionsHtml = renderRegisteredRequestMoreActions(gc);
 
                                 html += `
-                                    <tr class="tree-row depth-2" style="background-color: #F8FAFC;">
+                                    <tr class="tree-row depth-2" style="background-color: #F8FAFC; cursor: pointer;" title="Bấm vào dòng để xem chi tiết phiếu đăng ký" onclick="viewRegisteredRequest('${gc.regNum}', '${gc.type}', 0)">
                                         <td style="text-align: center;"></td>
                                         <td><span class="tree-indent-line">└──</span> <span>${formatRegNumForDisplay(gc.regNum)}</span></td>
                                         <td><span style="font-family: monospace;">${gc.pin}</span></td>
@@ -14291,7 +14347,7 @@
                                         ${renderRegReqAssetExtraCells(gc)}
                                         <td><span class="status-badge ${getStatusClass(gc.status)}">${gc.status}</span></td>
                                         <td>${gc.date}</td>
-                                        <td>
+                                        <td onclick="event.stopPropagation();">
                                             <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                                                 ${renderRegisteredRequestRowActions(gc, 0)}
                                                 ${gcMoreActionsHtml}
