@@ -940,6 +940,50 @@
             border-color: var(--danger-color);
             background-color: #FFF5F5;
         }
+
+        .ucps-review-asset-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .ucps-review-asset-block {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .ucps-review-asset-title {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 13px 16px;
+            background: #F8FAFC;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.45;
+        }
+
+        .ucps-review-asset-body {
+            padding: 14px 16px 16px;
+        }
+
+        .ucps-readonly-text {
+            border: 1px solid #D7E0EA;
+            border-radius: var(--border-radius-md);
+            background: #F8FAFC;
+            padding: 12px 14px;
+            color: var(--text-main);
+            line-height: 1.55;
+            white-space: pre-line;
+        }
+
+        .ucps-asset-type-hidden {
+            display: none;
+        }
     </style>
 </head>
 
@@ -952,17 +996,17 @@
         <div class="breadcrumb">
             <a href="#" onclick="goHome(); return false;"><i class="fa-solid fa-house"></i> Trang chủ</a>
             <i class="fa-solid fa-chevron-right"></i>
-            <a href="tra_cuu_thong_tin.html" onclick="window.location.href='tra_cuu_thong_tin.html'; return false;">Tra
-                cứu hồ sơ</a>
+            <a href="tra_cuu_thong_tin.html" id="breadcrumbModuleLink"
+                onclick="window.location.href='tra_cuu_thong_tin.html'; return false;">Tra cứu hồ sơ</a>
             <i class="fa-solid fa-chevron-right"></i>
-            <span>Xem chi tiết lịch sử Hồ sơ</span>
+            <span id="breadcrumbCurrentText">Xem chi tiết lịch sử Hồ sơ</span>
         </div>
 
         <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">
                 <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i>
-                Xem chi tiết lịch sử Hồ sơ
+                <span id="pageTitleText">Xem chi tiết lịch sử Hồ sơ</span>
             </h1>
             <button class="btn-back" id="btnBackToSearch">
                 <i class="fa-solid fa-xmark"></i> Đóng
@@ -1045,7 +1089,7 @@
                             </label>
                         </div>
                         <div class="diff-toggle-container" style="margin-bottom: 0;">
-                            <span class="diff-toggle-label"><label>Hiển thị biến động Tài sản đảm bảo</label></span>
+                            <span class="diff-toggle-label"><label>Hiển thị biến động Tài sản bảo đảm</label></span>
                             <label class="switch">
                                 <input type="checkbox" id="assetAuditToggle">
                                 <span class="slider"></span>
@@ -1054,19 +1098,23 @@
                     </div>
                 </header>
 
-                <!-- SECTION: THÔNG TIN BỊ TỪ CHỐI (Chỉ hiển thị khi phiên bản chọn bị từ chối) -->
+                <!-- SECTION: THÔNG TIN BỔ SUNG ĐỐI VỚI PHIÊN BẢN BỊ TỪ CHỐI (Chỉ hiển thị khi phiên bản chọn bị từ chối) -->
                 <section class="detail-section" id="sectionRejectionInfo"
                     style="display: none; background-color: #FFF5F5; border: 1px solid #FEB2B2; padding: 20px; border-radius: var(--border-radius-lg); margin-bottom: 25px; border-left: 5px solid var(--danger-color);">
                     <h3 class="detail-section-title"
                         style="color: var(--danger-dark); border-bottom-color: #FEB2B2; margin-bottom: 12px;">
-                        <i class="fa-solid fa-circle-xmark"></i> Thông tin Từ chối hồ sơ
+                        <i class="fa-solid fa-circle-xmark"></i> IV. Thông tin bổ sung đối với phiên bản bị từ chối
                     </h3>
                     <div class="info-grid-3">
+                        <div class="info-field">
+                            <span class="field-label"><label>Người từ chối</label></span>
+                            <span class="field-value" id="rejectByVal">--</span>
+                        </div>
                         <div class="info-field">
                             <span class="field-label"><label>Ngày từ chối</label></span>
                             <span class="field-value" id="rejectDateVal">--</span>
                         </div>
-                        <div class="info-field" style="grid-column: span 2;">
+                        <div class="info-field">
                             <span class="field-label"><label>Lý do từ chối</label></span>
                             <span class="field-value" id="rejectReasonVal">--</span>
                         </div>
@@ -1236,12 +1284,11 @@
                         <table class="grid-view-table" id="securingPartiesTable">
                             <thead>
                                 <tr>
-                                    <th>STT</th>
                                     <th><label>Loại chủ thể</label></th>
-                                    <th><label>Số giấy tờ chứng minh</label></th>
+                                    <th><label>Số giấy tờ chứng minh tư cách pháp lý</label></th>
+                                    <th><label>Ngày tháng năm sinh</label></th>
                                     <th><label>Tên</label></th>
                                     <th><label>Địa chỉ</label></th>
-                                    <th><label>Trạng thái biến động</label></th>
                                 </tr>
                             </thead>
                             <tbody id="securingPartiesTableBody">
@@ -1264,10 +1311,8 @@
                         <table class="grid-view-table" id="securedPartiesTable">
                             <thead>
                                 <tr>
-                                    <th>STT</th>
                                     <th><label>Tên</label></th>
                                     <th><label>Địa chỉ</label></th>
-                                    <th><label>Trạng thái biến động</label></th>
                                 </tr>
                             </thead>
                             <tbody id="securedPartiesTableBody">
@@ -1280,31 +1325,16 @@
                     </div>
                 </section>
 
-                <!-- SECTION 6: DANH SÁCH TÀI SẢN -->
+                <!-- SECTION 6: TÀI SẢN BẢO ĐẢM -->
                 <section class="detail-section" id="sectionAssets">
                     <h3 class="detail-section-title">
-                        <i class="fa-solid fa-car-rear"></i> <label>Danh sách tài sản</label>
+                        <i class="fa-solid fa-car-rear"></i> <label>Tài sản bảo đảm</label>
                     </h3>
-                    <div style="overflow-x: auto;">
-                        <table class="grid-view-table" id="assetsTable">
-                            <thead>
-                                <tr>
-                                    <th><label>STT</label></th>
-                                    <th><label>Loại tài sản</label></th>
-                                    <th><label>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</label></th>
-                                    <th><label>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</label></th>
-                                    <th><label>SỐ KHUNG / SỐ ĐỊNH DANH</label></th>
-                                    <th><label>SỐ MÁY / BIỂN SỐ</label></th>
-                                    <th><label>TRẠNG THÁI BIẾN ĐỘNG</label></th>
-                                </tr>
-                            </thead>
-                            <tbody id="assetsTableBody">
-                                <!-- Dynamic rows injected here -->
-                            </tbody>
-                        </table>
+                    <div class="ucps-review-asset-list" id="assetTypeSections">
+                        <!-- Dynamic asset type blocks injected here, same display structure as UC024.MH02 Review -->
                     </div>
                     <div class="section-empty-placeholder" id="assetsEmpty">
-                        Không có biến động nào về danh mục tài sản bảo đảm.
+                        Không có thông tin tài sản bảo đảm.
                     </div>
                 </section>
 

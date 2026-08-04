@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Khách hàng - Hệ thống Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
+    <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -2298,6 +2299,73 @@
             min-width: 760px;
         }
 
+        #screen-asset-disposal .disposal-asset-type-group {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #FFFFFF;
+            margin-bottom: 14px;
+            overflow: hidden;
+        }
+
+        #screen-asset-disposal .disposal-asset-type-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            background: #F8FAFC;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #screen-asset-disposal .disposal-asset-type-header input {
+            margin-top: 3px;
+            width: 16px;
+            height: 16px;
+            flex: 0 0 auto;
+        }
+
+        #screen-asset-disposal .disposal-asset-type-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.45;
+        }
+
+        #screen-asset-disposal .disposal-asset-type-body {
+            padding: 14px 16px 16px;
+        }
+
+        #screen-asset-disposal .disposal-asset-table-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0 0 10px;
+        }
+
+        #screen-asset-disposal .disposal-asset-note {
+            margin: 0;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        #screen-asset-disposal .disposal-readonly-line {
+            display: grid;
+            grid-template-columns: minmax(160px, 220px) 1fr;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        #screen-asset-disposal .disposal-readonly-line:last-child {
+            border-bottom: none;
+        }
+
+        #screen-asset-disposal .disposal-readonly-label {
+            color: var(--text-muted);
+        }
+
+        #screen-asset-disposal .disposal-readonly-value {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
         #screen-asset-disposal #disposalPhaseEdit,
         #screen-asset-disposal #disposalPhaseReview {
             max-width: 1080px;
@@ -2326,6 +2394,11 @@
             #screen-asset-disposal .grid-2-cols,
             #screen-asset-disposal .grid-3-cols {
                 grid-template-columns: 1fr;
+            }
+
+            #screen-asset-disposal .disposal-readonly-line {
+                grid-template-columns: 1fr;
+                gap: 2px;
             }
         }
 
@@ -4296,8 +4369,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Cơ quan tiếp nhận</label>
-                                <select class="form-select" id="disposalOrg" disabled
-                                    style="background-color: #F1F5F9;">
+                                <select class="form-select" id="disposalOrg">
                                     <option value="Trung tâm Đăng ký giao dịch, tài sản tại TP. Hà Nội" selected>Trung
                                         tâm Đăng ký Hà Nội</option>
                                     <option value="Trung tâm Đăng ký giao dịch, tài sản tại TP. Đà Nẵng">Trung tâm Đăng
@@ -4412,7 +4484,7 @@
                     </div>
 
                     <!-- Khối: Thông tin xử lý tài sản (Ẩn khi xóa thông báo) -->
-                    <div style="margin-bottom: 25px;" id="disposalStandardFields">
+                    <div style="margin-bottom: 25px;" id="disposalStandardFields" class="hidden">
                         <h3 class="section-title"><i class="fa-solid fa-circle-question"
                                 style="color: var(--secondary-color);"></i> Thông tin xử lý tài sản</h3>
                         <div class="form-group">
@@ -4444,26 +4516,8 @@
                     <div class="form-group" id="disposalAssetsGridGroup" style="margin-bottom: 25px;">
                         <h3 id="disposalAssetsLabel" class="section-title"><i class="fa-solid fa-boxes-stacked"
                                 style="color: var(--secondary-color);"></i> Danh sách tài sản xử lý</h3>
-                        <div class="table-responsive">
-                            <table class="table" style="font-size: 12.5px;">
-                                <thead style="background-color: var(--table-header-bg);">
-                                    <tr>
-                                        <th style="width: 5%; text-align: center;" id="disposalAssetSelectCol"><input
-                                                type="checkbox" id="disposalSelectAllAssets"
-                                                onchange="toggleDisposalSelectAll(this)"
-                                                title="Chọn tất cả / Bỏ chọn tất cả"
-                                                style="cursor: pointer; width: 16px; height: 16px;"></th>
-                                        <th style="width: 20%;">Loại tài sản</th>
-                                        <th style="width: 20%;">Tên phương tiện / Tên tài sản</th>
-                                        <th style="width: 20%;">Nhãn hiệu, màu sơn / Mô tả chi tiết</th>
-                                        <th style="width: 18%;">Số khung / Số định danh</th>
-                                        <th style="width: 17%;">Số máy / Biển số</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="disposalAssetsTableBody">
-                                    <!-- Populated dynamically by JS -->
-                                </tbody>
-                            </table>
+                        <div id="disposalAssetsTableBody">
+                            <!-- Populated dynamically by JS -->
                         </div>
                         <span class="form-text" id="disposalAssetsHelp">Tích chọn các tài sản sẽ được đưa vào danh sách
                             thông báo xử lý tài sản bảo đảm.</span>
@@ -4681,48 +4735,32 @@
                         </div>
                     </div>
 
-                    <!-- Khối: Thông tin xử lý tài sản (Ẩn khi xóa thông báo) -->
-                    <div class="review-block"
-                        style="margin-bottom: 20px; background-color: #F8FAFC; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color);"
-                        id="reviewStandardFields">
-                        <h3 class="section-title"><i class="fa-solid fa-circle-question"
-                                style="color: var(--secondary-color);"></i> Thông tin xử lý tài sản</h3>
-                        <div style="margin-bottom: 10px;">
-                            <span style="color: var(--text-muted);">Lý do xử lý:</span>
-                            <strong id="lblReviewReason">N/A</strong>
-                        </div>
-                        <div class="grid-2-cols">
-                            <div>
-                                <span style="color: var(--text-muted);">Thời gian xử lý:</span>
-                                <strong id="lblReviewDate">N/A</strong>
-                            </div>
-                            <div>
-                                <span style="color: var(--text-muted);">Địa điểm xử lý:</span>
-                                <strong id="lblReviewLocation">N/A</strong>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Khối: Danh sách tài sản xử lý -->
                     <div class="review-block" style="margin-bottom: 20px;">
                         <h3 id="disposalReviewAssetsLabel" class="section-title"><i class="fa-solid fa-boxes-stacked"
                                 style="color: var(--secondary-color);"></i> Danh sách tài sản xử lý</h3>
-                        <div class="table-responsive">
-                            <table class="table" style="font-size: 12.5px;">
-                                <thead style="background-color: var(--table-header-bg);">
-                                    <tr>
-                                        <th style="width: 6%; text-align: center;">STT</th>
-                                        <th style="width: 23%;">Loại tài sản</th>
-                                        <th style="width: 19%;">Tên phương tiện / Tên tài sản</th>
-                                        <th style="width: 22%;">Nhãn hiệu, màu sơn / Mô tả chi tiết</th>
-                                        <th style="width: 15%;">Số khung / Số định danh</th>
-                                        <th style="width: 15%;">Số máy / Biển số</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="reviewAssetsTableBody">
-                                    <!-- Populated dynamically by JS -->
-                                </tbody>
-                            </table>
+                        <div id="reviewAssetsTableBody">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Khối: Thông tin xử lý tài sản (Ẩn khi xóa thông báo) -->
+                    <div class="review-block"
+                        style="margin-bottom: 20px; background-color: #F8FAFC; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color);"
+                        id="reviewStandardFields" class="hidden">
+                        <h3 class="section-title"><i class="fa-solid fa-circle-question"
+                                style="color: var(--secondary-color);"></i> Thông tin xử lý tài sản</h3>
+                        <div class="disposal-readonly-line">
+                            <span class="disposal-readonly-label">Lý do xử lý:</span>
+                            <span class="disposal-readonly-value" id="lblReviewReason">N/A</span>
+                        </div>
+                        <div class="disposal-readonly-line">
+                            <span class="disposal-readonly-label">Thời gian xử lý:</span>
+                            <span class="disposal-readonly-value" id="lblReviewDate">N/A</span>
+                        </div>
+                        <div class="disposal-readonly-line">
+                            <span class="disposal-readonly-label">Địa điểm xử lý:</span>
+                            <span class="disposal-readonly-value" id="lblReviewLocation">N/A</span>
                         </div>
                     </div>
 
@@ -5192,11 +5230,177 @@
                         title="Yêu cầu cung cấp thông tin"></iframe>
                 </div>
 
-                <!-- ============ TAB 3: YÊU CẦU CUNG CẤP BẢN SAO (chưa phát triển) ============ -->
+                <!-- ============ TAB 3: YÊU CẦU CUNG CẤP BẢN SAO ============ -->
                 <div class="tab-content" id="tabRegReq-ban-sao">
-                    <div class="card-section" style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
-                        <i class="fa-solid fa-hourglass-half" style="font-size: 36px; margin-bottom: 12px; display: block;"></i>
-                        Giao diện Yêu cầu cung cấp bản sao đang được phát triển, sẽ cập nhật trong phiên bản tiếp theo.
+                    <div class="card-section">
+                        <div id="copyReqListView">
+                        <div
+                            style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
+                            <div class="grid-3-cols">
+                                <div class="form-group">
+                                    <label class="form-label">Mã hồ sơ</label>
+                                    <input type="text" class="form-control" id="copyReqSearchCode"
+                                        placeholder="Nhập mã hồ sơ bản sao...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Số đăng ký</label>
+                                    <input type="text" class="form-control" id="copyReqSearchRegNum"
+                                        placeholder="Nhập số đăng ký hồ sơ gốc...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Loại cung cấp bản sao</label>
+                                    <select class="form-select" id="copyReqSearchType">
+                                        <option value="Tất cả" selected>Tất cả</option>
+                                        <option value="Bản sao điện tử">Bản sao điện tử</option>
+                                        <option value="Bản sao giấy">Bản sao giấy</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid-3-cols" style="margin-top: 10px;">
+                                <div class="form-group">
+                                    <label class="form-label">Trạng thái</label>
+                                    <select class="form-select" id="copyReqSearchStatus">
+                                        <option value="Tất cả" selected>Tất cả</option>
+                                        <option value="Chờ duyệt">Chờ duyệt</option>
+                                        <option value="Duyệt chờ ký">Duyệt chờ ký</option>
+                                        <option value="Chờ thanh toán">Chờ thanh toán</option>
+                                        <option value="Hoàn thành">Hoàn thành</option>
+                                        <option value="Bị từ chối">Bị từ chối</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Từ ngày</label>
+                                    <input type="text" class="form-control" id="copyReqSearchFromDate"
+                                        placeholder="dd/mm/yyyy">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Đến ngày</label>
+                                    <input type="text" class="form-control" id="copyReqSearchToDate"
+                                        placeholder="dd/mm/yyyy">
+                                </div>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                                <button class="btn btn-outline-primary" onclick="resetCopyReqFilters()">Xóa bộ lọc</button>
+                                <button class="btn btn-primary" onclick="executeCopyReqSearch()"><i class="fa fa-search"></i>
+                                    Tìm kiếm</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table" style="font-size: 13px;">
+                                <thead style="background-color: var(--table-header-bg);">
+                                    <tr>
+                                        <th style="width: 4%; text-align: center;">STT</th>
+                                        <th style="width: 13%;">Mã hồ sơ</th>
+                                        <th style="width: 12%;">Số đăng ký</th>
+                                        <th style="width: 14%;">Loại cung cấp bản sao</th>
+                                        <th style="width: 10%;">Số lượng bản sao</th>
+                                        <th style="width: 11%;">Trạng thái</th>
+                                        <th style="width: 13%;">Thời điểm đăng ký</th>
+                                        <th style="width: 15%;">Người tạo</th>
+                                        <th style="width: 8%; text-align: center;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="copyRequestsTableBody">
+                                    <!-- Populated dynamically by javascript -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; background: #F8FAFC; padding: 10px 15px; border-radius: var(--border-radius-md); border: 1px solid var(--border-color);">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                                <span>Hiển thị</span>
+                                <select class="form-select" id="copyReqPageSize"
+                                    style="width: auto; padding: 4px 8px; font-size: 12px;"
+                                    onchange="changeCopyReqPageSize()">
+                                    <option value="10">10</option>
+                                    <option value="20" selected>20</option>
+                                    <option value="50">50</option>
+                                </select>
+                                <span>bản ghi/trang</span>
+                                <span style="color: var(--text-muted); margin-left: 15px;" id="copyReqCountDisplay">Hiển thị
+                                    0-0 của 0 yêu cầu</span>
+                            </div>
+                            <div style="display: flex; gap: 5px;" id="copyReqPagination">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                        </div>
+
+                        <div id="copyReqDetailView" class="hidden">
+                            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;">
+                                <h3 class="section-title" style="margin:0;">
+                                    <i class="fa-solid fa-copy"></i> Chi tiết yêu cầu cung cấp bản sao
+                                </h3>
+                                <div style="display:flex; gap:8px;">
+                                    <button class="btn btn-outline-primary" onclick="backToCopyReqList()">
+                                        <i class="fa-solid fa-arrow-left"></i> Quay lại
+                                    </button>
+                                    <button class="btn btn-warning hidden" id="copyReqDetailPayBtn">
+                                        <i class="fa-solid fa-credit-card"></i> Thanh toán
+                                    </button>
+                                    <button class="btn btn-outline-primary hidden" id="copyReqDetailViewFileBtn">
+                                        <i class="fa-solid fa-eye"></i> Xem file
+                                    </button>
+                                    <button class="btn btn-success hidden" id="copyReqDetailDownloadBtn">
+                                        <i class="fa-solid fa-download"></i> Tải bản sao chứng nhận
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div
+                                style="background-color:#F8FAFC; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:18px; margin-bottom:18px;">
+                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">I. Thông tin hồ sơ</h4>
+                                <div class="grid-3-cols">
+                                    <div class="form-group">
+                                        <label class="form-label">Mã hồ sơ</label>
+                                        <div class="form-control" id="copyDetailCode" style="background:white;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Trạng thái</label>
+                                        <div id="copyDetailStatus"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Thời điểm đăng ký</label>
+                                        <div class="form-control" id="copyDetailDate" style="background:white;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Số đăng ký</label>
+                                        <div class="form-control" id="copyDetailRegNum" style="background:white;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Cơ quan tiếp nhận</label>
+                                        <div class="form-control" id="copyDetailAgency" style="background:white;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Loại cung cấp bản sao</label>
+                                        <div class="form-control" id="copyDetailType" style="background:white;"></div>
+                                    </div>
+                                    <div class="form-group" id="copyDetailQuantityGroup">
+                                        <label class="form-label">Số lượng bản sao</label>
+                                        <div class="form-control" id="copyDetailQuantity" style="background:white;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Người tạo</label>
+                                        <div class="form-control" id="copyDetailCreator" style="background:white;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                style="background-color:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:18px;">
+                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">II. Thông tin chi tiết hồ sơ gốc</h4>
+                                <div id="copyDetailOriginalInfo" style="line-height:1.7; color:var(--text-main);"></div>
+                            </div>
+
+                            <div id="copyDetailProcessingBlock"
+                                style="background-color:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:18px; margin-top:18px;">
+                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">III. Thông tin xử lý</h4>
+                                <div id="copyDetailProcessingInfo" style="line-height:1.7; color:var(--text-main);"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -6715,6 +6919,7 @@
             const content = document.getElementById(`tabRegReq-${tabName}`);
             if (btn) btn.classList.add('active');
             if (content) content.classList.add('active');
+            if (tabName === 'ban-sao') renderCopyRequestsTable();
         }
 
         // Screen switching manager
@@ -6905,6 +7110,9 @@
                 if (returnTab === 'cctt') {
                     sessionStorage.removeItem('registeredReturnTab');
                     switchRegisteredReqTab('cctt');
+                } else if (returnTab === 'ban-sao') {
+                    sessionStorage.removeItem('registeredReturnTab');
+                    switchRegisteredReqTab('ban-sao');
                 } else {
                     switchRegisteredReqTab('phieu-dang-ky');
                 }
@@ -9462,6 +9670,29 @@
         let disposalMode = 'first'; // 'first', 'change', 'delete'
         let activeNoticeRecordInDisposal = null; // notice record (for change/delete notice mode)
 
+        function getSelectedDisposalAgency() {
+            const select = document.getElementById('disposalOrg');
+            if (!select) return 'Trung tâm Đăng ký giao dịch, tài sản tại TP. Hà Nội';
+            return select.value || (select.options[select.selectedIndex] ? select.options[select.selectedIndex].text : '');
+        }
+
+        function setDisposalAgency(defaultAgency) {
+            const select = document.getElementById('disposalOrg');
+            if (!select) return;
+            const fallback = defaultAgency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP. Hà Nội';
+            const normalized = fallback.toLowerCase();
+            const matched = Array.from(select.options).find(option => {
+                const optionValue = (option.value || '').toLowerCase();
+                const optionText = (option.text || '').toLowerCase();
+                return option.value === fallback
+                    || option.text === fallback
+                    || (normalized.includes('hà nội') && (optionValue.includes('hà nội') || optionText.includes('hà nội')))
+                    || (normalized.includes('hồ chí minh') && (optionValue.includes('hồ chí minh') || optionText.includes('hcm')))
+                    || (normalized.includes('đà nẵng') && (optionValue.includes('đà nẵng') || optionText.includes('đà nẵng')));
+            });
+            if (matched) select.value = matched.value;
+        }
+
         // Simulated notices database for mock notices
         let simulatedNoticesDatabase = {
             '1505156435-TBXL': {
@@ -9702,7 +9933,7 @@
                 // Show/hide other sections
                 securedSection.classList.remove('hidden');
                 deleteSection.classList.add('hidden');
-                standardFields.classList.remove('hidden');
+                standardFields.classList.add('hidden');
                 historySection.classList.add('hidden');
                 btnDraft.classList.remove('hidden');
 
@@ -9714,6 +9945,7 @@
                 document.getElementById('disposalLoanValue').value = record.loanValue ? record.loanValue.toLocaleString() : '1,000,000,000';
                 document.getElementById('disposalBusinessScale').value = record.businessScale || 'Doanh nghiệp nhỏ';
                 document.getElementById('disposalFemaleLeader').checked = record.femaleLeader || false;
+                setDisposalAgency(record.receivingAgency || record.debtorAddress);
 
                 renderDisposalAssetsGrid(regNum, true);
             }
@@ -9763,7 +9995,7 @@
                 // Show/hide other sections
                 securedSection.classList.remove('hidden');
                 deleteSection.classList.add('hidden');
-                standardFields.classList.remove('hidden');
+                standardFields.classList.add('hidden');
                 historySection.classList.remove('hidden');
                 btnDraft.classList.remove('hidden');
 
@@ -9775,6 +10007,7 @@
                 document.getElementById('disposalLoanValue').value = record.loanValue ? record.loanValue.toLocaleString() : '1,000,000,000';
                 document.getElementById('disposalBusinessScale').value = record.businessScale || 'Doanh nghiệp nhỏ';
                 document.getElementById('disposalFemaleLeader').checked = record.femaleLeader || false;
+                setDisposalAgency(notice.receivingAgency || record.receivingAgency || record.debtorAddress);
 
                 // Prefill Section IV fields
                 document.getElementById('disposalReason').value = notice.reason;
@@ -9833,56 +10066,295 @@
                 historySection.classList.add('hidden'); // Hide history section
                 btnDraft.classList.add('hidden'); // Hide Lưu nháp in delete mode
 
+                document.getElementById('disposalReason').value = notice.reason;
+                document.getElementById('disposalDate').value = notice.date;
+                document.getElementById('disposalLocation').value = notice.location;
+
                 renderDisposalAssetsGrid(regNum, false, notice.assets);
             }
 
             renderDisposalParties(activeRecordInDisposal);
         }
 
-        function renderDisposalAssetsGrid(regNum, selectable, selectedIds) {
-            const tbody = document.getElementById('disposalAssetsTableBody');
-            if (!tbody) return;
+        function escapeDisposalHtml(value) {
+            return String(value ?? 'N/A')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
-            const assets = getAssetsForRegistration(regNum);
-            if (assets.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic;">Không tìm thấy tài sản trong hồ sơ gốc.</td></tr>`;
+        function getDisposalAssetKind(asset) {
+            const type = (asset.type || '').toLowerCase();
+            if (type.includes('phương tiện giao thông cơ giới') || type.includes('có số khung')) return 'chassis';
+            if (type.includes('tàu cá') || type.includes('đường thủy') || type.includes('đường sắt')) return 'vehicle';
+            if (type.includes('quyền tài sản')) return 'right';
+            if (type.includes('hằng năm') || type.includes('công trình tạm')) return 'annual';
+            if (type.includes('hàng hóa luân chuyển') || type.includes('kho hàng')) return 'inventory';
+            if (type.includes('chứng khoán')) return 'securities';
+            return 'other';
+        }
+
+        function getDisposalAssetTypeLabel(kind, fallback) {
+            const labels = {
+                chassis: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                vehicle: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt',
+                right: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+                annual: 'Cây hằng năm, công trình tạm',
+                inventory: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ',
+                securities: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
+                other: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)'
+            };
+            return labels[kind] || fallback || 'Khác';
+        }
+
+        function getDisposalAssetCheckbox(asset, selectable, checked) {
+            if (!selectable) return '';
+            return `<input type="checkbox" name="disposalSelectAsset" value="${escapeDisposalHtml(asset.id)}" ${checked ? 'checked' : ''} onchange="updateDisposalMasterCheckbox(); updateDisposalProcessingBlocks();">`;
+        }
+
+        function getDisposalProcessingValues() {
+            return {
+                reason: document.getElementById('disposalReason')?.value || '',
+                date: document.getElementById('disposalDate')?.value || '',
+                location: document.getElementById('disposalLocation')?.value || ''
+            };
+        }
+
+        function renderDisposalProcessingBlock(kind, readonly) {
+            const values = getDisposalProcessingValues();
+            const deleteReason = disposalMode === 'delete' ? (document.getElementById('disposalDeleteReason')?.value || '') : '';
+            if (readonly) {
+                return `
+                    <div class="disposal-processing-block" data-processing-kind="${escapeDisposalHtml(kind)}">
+                        <h4 class="disposal-asset-table-title" style="margin-top: 14px;">Thông tin xử lý tài sản</h4>
+                        <div class="disposal-readonly-line">
+                            <span class="disposal-readonly-label">Lý do xử lý:</span>
+                            <span class="disposal-readonly-value">${escapeDisposalHtml(values.reason || 'N/A')}</span>
+                        </div>
+                        <div class="disposal-readonly-line">
+                            <span class="disposal-readonly-label">Thời gian xử lý:</span>
+                            <span class="disposal-readonly-value">${escapeDisposalHtml(values.date || 'N/A')}</span>
+                        </div>
+                        <div class="disposal-readonly-line">
+                            <span class="disposal-readonly-label">Địa điểm xử lý:</span>
+                            <span class="disposal-readonly-value">${escapeDisposalHtml(values.location || 'N/A')}</span>
+                        </div>
+                        ${deleteReason ? `
+                            <div class="disposal-readonly-line">
+                                <span class="disposal-readonly-label">Lý do xóa thông báo:</span>
+                                <span class="disposal-readonly-value">${escapeDisposalHtml(deleteReason)}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="disposal-processing-block hidden" data-processing-kind="${escapeDisposalHtml(kind)}">
+                    <h4 class="disposal-asset-table-title" style="margin-top: 14px;">Thông tin xử lý tài sản</h4>
+                    <div class="form-group">
+                        <label class="form-label">Lý do xử lý <span class="required-mark">*</span></label>
+                        <textarea class="form-control disposal-processing-input" data-processing-field="reason" rows="3"
+                            placeholder="Nhập trực tiếp lý do xử lý tài sản bảo đảm..."
+                            oninput="syncDisposalProcessingFields(this)">${escapeDisposalHtml(values.reason)}</textarea>
+                    </div>
+                    <div class="grid-2-cols">
+                        <div class="form-group">
+                            <label class="form-label">Thời gian xử lý <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control disposal-processing-input" data-processing-field="date"
+                                value="${escapeDisposalHtml(values.date)}" placeholder="dd/mm/yyyy"
+                                oninput="formatDatePickerInput(this); syncDisposalProcessingFields(this)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Địa điểm xử lý <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control disposal-processing-input" data-processing-field="location"
+                                value="${escapeDisposalHtml(values.location)}" placeholder="Địa điểm dự kiến tiến hành xử lý tài sản..."
+                                oninput="syncDisposalProcessingFields(this)">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function syncDisposalProcessingFields(source) {
+            const field = source?.dataset?.processingField;
+            if (!field) return;
+
+            const targetMap = {
+                reason: 'disposalReason',
+                date: 'disposalDate',
+                location: 'disposalLocation'
+            };
+            const target = document.getElementById(targetMap[field]);
+            if (target) {
+                target.value = source.value;
+                clearError(target.id);
+            }
+
+            document.querySelectorAll(`.disposal-processing-input[data-processing-field="${field}"]`).forEach(input => {
+                if (input !== source) input.value = source.value;
+            });
+        }
+
+        function updateDisposalProcessingBlocks() {
+            document.querySelectorAll('#disposalAssetsTableBody .disposal-asset-type-group').forEach(group => {
+                const hasCheckedAsset = Boolean(group.querySelector('input[name="disposalSelectAsset"]:checked'));
+                group.querySelectorAll('.disposal-processing-block').forEach(block => {
+                    block.classList.toggle('hidden', !hasCheckedAsset);
+                });
+            });
+        }
+
+        function renderDisposalAssetTable(kind, items, options) {
+            const { selectable, selectedIds, readonly } = options;
+            const checkboxHeader = selectable ? '<th style="width: 42px; text-align:center;"></th>' : '';
+            const checkboxCell = asset => selectable
+                ? `<td style="text-align:center;">${getDisposalAssetCheckbox(asset, selectable, selectedIds.includes(asset.id))}</td>`
+                : '';
+
+            if (kind === 'chassis') {
+                return `
+                    <div class="disposal-asset-table-title">Số khung *</div>
+                    <div class="table-responsive">
+                        <table class="table" style="font-size: 12.5px;">
+                            <thead style="background-color: var(--table-header-bg);">
+                                <tr>
+                                    ${checkboxHeader}
+                                    <th style="width: 60px; text-align:center;">STT</th>
+                                    <th>TÊN PHƯƠNG TIỆN</th>
+                                    <th>NHÃN HIỆU, MÀU SƠN</th>
+                                    <th>SỐ KHUNG</th>
+                                    <th>SỐ MÁY</th>
+                                    <th>BIỂN SỐ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${items.map((asset, idx) => `
+                                    <tr>
+                                        ${checkboxCell(asset)}
+                                        <td style="text-align:center;">${idx + 1}</td>
+                                        <td><strong>${escapeDisposalHtml(asset.vehicleName || asset.name)}</strong></td>
+                                        <td>${escapeDisposalHtml(asset.brandColor || asset.desc)}</td>
+                                        <td><span style="font-family: monospace;">${escapeDisposalHtml(asset.chassis)}</span></td>
+                                        <td>${escapeDisposalHtml(asset.engineNo || asset.machineNo || asset.desc?.match(/số máy\s*([^,]+)/i)?.[1] || 'N/A')}</td>
+                                        <td>${escapeDisposalHtml(asset.plate)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            if (kind === 'vehicle') {
+                return `
+                    <div class="disposal-asset-table-title">Phương tiện</div>
+                    <div class="table-responsive">
+                        <table class="table" style="font-size: 12.5px;">
+                            <thead style="background-color: var(--table-header-bg);">
+                                <tr>
+                                    ${checkboxHeader}
+                                    <th style="width: 60px; text-align:center;">STT</th>
+                                    <th>TÊN PHƯƠNG TIỆN</th>
+                                    <th>NHÃN HIỆU</th>
+                                    <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                    <th>SỐ ĐĂNG KÝ</th>
+                                    <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                    <th>CẤP PHƯƠNG TIỆN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${items.map((asset, idx) => `
+                                    <tr>
+                                        ${checkboxCell(asset)}
+                                        <td style="text-align:center;">${idx + 1}</td>
+                                        <td><strong>${escapeDisposalHtml(asset.vehicleName || asset.name)}</strong></td>
+                                        <td>${escapeDisposalHtml(asset.brand || asset.desc)}</td>
+                                        <td>${escapeDisposalHtml(asset.ownerName || activeRecordInDisposal?.debtorName || 'N/A')}</td>
+                                        <td>${escapeDisposalHtml(asset.registrationNo || asset.chassis)}</td>
+                                        <td>${escapeDisposalHtml(asset.issuer || 'Cơ quan đăng ký phương tiện')}</td>
+                                        <td>${escapeDisposalHtml(asset.vehicleLevel || 'Cấp mới')}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            const content = items.map(asset => {
+                const checkbox = selectable
+                    ? `<span style="display:inline-flex; margin-right:8px;">${getDisposalAssetCheckbox(asset, selectable, selectedIds.includes(asset.id))}</span>`
+                    : '';
+                const title = asset.name ? `<strong>${escapeDisposalHtml(asset.name)}:</strong> ` : '';
+                return `<p class="disposal-asset-note">${checkbox}${title}${escapeDisposalHtml(asset.desc || asset.name)}</p>`;
+            }).join('');
+
+            return readonly ? content : `<div>${content}</div>`;
+        }
+
+        function renderDisposalAssetsByType(containerId, assets, options = {}) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const selectable = Boolean(options.selectable);
+            const readonly = Boolean(options.readonly);
+            const selectedIds = Array.isArray(options.selectedIds) ? options.selectedIds : [];
+            const displayAssets = readonly && selectedIds.length ? assets.filter(asset => selectedIds.includes(asset.id)) : assets;
+
+            if (!displayAssets.length) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-style: italic; padding: 16px;">Không tìm thấy tài sản trong hồ sơ gốc.</div>`;
                 return;
             }
 
-            tbody.innerHTML = assets.map((asset, index) => {
-                const isChecked = (selectedIds && selectedIds.includes(asset.id)) ? 'checked' : '';
-                const inputHtml = selectable
-                    ? `<input type="checkbox" name="disposalSelectAsset" value="${asset.id}" ${isChecked} onchange="updateDisposalMasterCheckbox()">`
-                    : `<input type="checkbox" name="disposalSelectAsset" value="${asset.id}" checked disabled>`;
+            const groups = [];
+            displayAssets.forEach(asset => {
+                const kind = getDisposalAssetKind(asset);
+                let group = groups.find(item => item.kind === kind);
+                if (!group) {
+                    group = {
+                        kind,
+                        label: getDisposalAssetTypeLabel(kind, asset.type),
+                        items: []
+                    };
+                    groups.push(group);
+                }
+                group.items.push(asset);
+            });
 
-                const selectCell = selectable
-                    ? `<td style="text-align: center;">${inputHtml}</td>`
-                    : `<td style="text-align: center; display: none;">${inputHtml}</td>`;
+            container.innerHTML = groups.map(group => `
+                <div class="disposal-asset-type-group">
+                    <div class="disposal-asset-type-header">
+                        <div class="disposal-asset-type-title">${escapeDisposalHtml(group.label)}</div>
+                    </div>
+                    <div class="disposal-asset-type-body">
+                        ${renderDisposalAssetTable(group.kind, group.items, { selectable, selectedIds, readonly })}
+                        ${options.showProcessingBlock ? renderDisposalProcessingBlock(group.kind, readonly) : ''}
+                    </div>
+                </div>
+            `).join('');
 
-                return `
-                    <tr>
-                        ${selectCell}
-                        <td><span style="color: var(--text-muted);">${asset.type || 'Khác'}</span></td>
-                        <td><strong>${asset.name}</strong></td>
-                        <td>${asset.desc}</td>
-                        <td><span style="font-family: monospace;">${asset.chassis}</span></td>
-                        <td>${asset.plate}</td>
-                    </tr>
-                `;
-            }).join('');
-
-            const selectCol = document.getElementById('disposalAssetSelectCol');
-            if (selectCol) {
-                selectCol.style.display = selectable ? '' : 'none';
+            if (options.showProcessingBlock && !readonly) {
+                updateDisposalProcessingBlocks();
             }
-            const masterCheckbox = document.getElementById('disposalSelectAllAssets');
-            if (masterCheckbox) masterCheckbox.checked = false;
+        }
+
+        function renderDisposalAssetsGrid(regNum, selectable, selectedIds) {
+            const assets = getAssetsForRegistration(regNum);
+            renderDisposalAssetsByType('disposalAssetsTableBody', assets, {
+                selectable,
+                selectedIds: Array.isArray(selectedIds) ? selectedIds : [],
+                readonly: !selectable,
+                showProcessingBlock: true
+            });
 
             const label = document.getElementById('disposalAssetsLabel');
             const help = document.getElementById('disposalAssetsHelp');
             if (selectable) {
                 label.innerHTML = `Danh sách tài sản xử lý <span class="required-mark">*</span>`;
-                help.innerText = "Tích chọn các tài sản sẽ được đưa vào danh sách thông báo xử lý tài sản bảo đảm.";
+                help.innerText = "Tích chọn tài sản ngay tại từng nhóm loại tài sản để đưa vào danh sách thông báo xử lý tài sản bảo đảm.";
             } else {
                 label.innerHTML = `Danh sách tài sản đang xử lý`;
                 help.innerText = "Xóa thông báo xử lý sẽ áp dụng giải chấp và mở khóa cho toàn bộ danh sách tài sản đang xử lý trên.";
@@ -10239,7 +10711,7 @@
                 }
             } else {
                 reviewSecured.classList.remove('hidden');
-                reviewStandard.classList.remove('hidden');
+                reviewStandard.classList.add('hidden');
                 reviewDelete.classList.add('hidden');
 
                 document.getElementById('lblReviewReason').innerText = document.getElementById('disposalReason').value.trim();
@@ -10247,35 +10719,22 @@
                 document.getElementById('lblReviewLocation').innerText = document.getElementById('disposalLocation').value.trim();
             }
 
-            const tbody = document.getElementById('reviewAssetsTableBody');
             const assets = getAssetsForRegistration(regNum);
 
             if (disposalMode === 'delete') {
-                tbody.innerHTML = assets.map((asset, idx) => `
-                    <tr>
-                        <td style="text-align: center;">${idx + 1}</td>
-                        <td><span style="color: var(--text-muted);">${asset.type || 'Khác'}</span></td>
-                        <td><strong>${asset.name}</strong></td>
-                        <td>${asset.desc}</td>
-                        <td><span style="font-family: monospace;">${asset.chassis}</span></td>
-                        <td>${asset.plate}</td>
-                    </tr>
-                `).join('');
+                renderDisposalAssetsByType('reviewAssetsTableBody', assets, {
+                    readonly: true,
+                    selectedIds: activeNoticeRecordInDisposal?.assets || [],
+                    showProcessingBlock: true
+                });
             } else {
                 const checkBoxes = document.querySelectorAll('input[name="disposalSelectAsset"]:checked');
                 const checkedIds = Array.from(checkBoxes).map(cb => cb.value);
-                const filteredAssets = assets.filter(a => checkedIds.includes(a.id));
-
-                tbody.innerHTML = filteredAssets.map((asset, idx) => `
-                    <tr>
-                        <td style="text-align: center;">${idx + 1}</td>
-                        <td><span style="color: var(--text-muted);">${asset.type || 'Khác'}</span></td>
-                        <td><strong>${asset.name}</strong></td>
-                        <td>${asset.desc}</td>
-                        <td><span style="font-family: monospace;">${asset.chassis}</span></td>
-                        <td>${asset.plate}</td>
-                    </tr>
-                `).join('');
+                renderDisposalAssetsByType('reviewAssetsTableBody', assets, {
+                    readonly: true,
+                    selectedIds: checkedIds,
+                    showProcessingBlock: true
+                });
             }
 
             document.getElementById('disposalPhaseEdit').classList.add('hidden');
@@ -10474,6 +10933,7 @@
                         date: timeStr.split(' ')[0],
                         location: document.getElementById('disposalLocation').value.trim(),
                         reason: document.getElementById('disposalReason').value.trim(),
+                        receivingAgency: getSelectedDisposalAgency(),
                         file: document.getElementById('disposalRequestorFile').files[0] ? document.getElementById('disposalRequestorFile').files[0].name : 'thong_bao_xu_ly_tai_san.pdf',
                         assets: checkedAssets,
                         history: [
@@ -10527,6 +10987,7 @@
                         notice.date = timeStr.split(' ')[0];
                         notice.location = document.getElementById('disposalLocation').value.trim();
                         notice.reason = document.getElementById('disposalReason').value.trim();
+                        notice.receivingAgency = getSelectedDisposalAgency();
                         notice.assets = checkedAssets;
                         notice.history.push({
                             seq: notice.history.length + 1,
@@ -11675,6 +12136,9 @@
         let regReqSortField = '';
         let regReqSortOrder = 'asc';
         let pendingDeleteRegisteredRequestRegNum = '';
+        let copyReqCurrentPage = 1;
+        let copyReqPageSize = 20;
+        let copyReqFilteredData = [];
 
         let registeredRequestsData = [
             {
@@ -11992,6 +12456,75 @@
             }
         ];
 
+        const copyRequestsData = [
+            {
+                code: 'BS-20260722-000149',
+                regNum: '1505156435',
+                copyType: 'Bản sao điện tử',
+                quantity: null,
+                status: 'Hoàn thành',
+                date: '22/07/2026 09:15',
+                creator: 'Nguyễn Văn A',
+                amount: 30000,
+                fileName: 'Ban_sao_chung_nhan_BS-20260722-000149.pdf'
+            },
+            {
+                code: 'BS-20260721-000148',
+                regNum: '1505156438',
+                copyType: 'Bản sao giấy',
+                quantity: 2,
+                status: 'Hoàn thành',
+                date: '21/07/2026 15:40',
+                creator: 'Công ty TNHH Hải Nam',
+                amount: 60000,
+                fileName: ''
+            },
+            {
+                code: 'BS-20260720-000147',
+                regNum: '1505156439',
+                copyType: 'Bản sao điện tử',
+                quantity: null,
+                status: 'Chờ thanh toán',
+                date: '20/07/2026 10:05',
+                creator: 'Công ty CP Thủy sản miền Nam',
+                amount: 30000,
+                fileName: ''
+            },
+            {
+                code: 'BS-20260718-000146',
+                regNum: '1505156443',
+                copyType: 'Bản sao giấy',
+                quantity: 1,
+                status: 'Chờ duyệt',
+                date: '18/07/2026 11:25',
+                creator: 'Trần Văn F',
+                amount: 30000,
+                fileName: ''
+            },
+            {
+                code: 'BS-20260716-000145',
+                regNum: '1505156445',
+                copyType: 'Bản sao điện tử',
+                quantity: null,
+                status: 'Duyệt chờ ký',
+                date: '16/07/2026 14:10',
+                creator: 'Trần Văn H',
+                amount: 30000,
+                fileName: ''
+            },
+            {
+                code: 'BS-20260715-000144',
+                regNum: '1505156447',
+                copyType: 'Bản sao điện tử',
+                quantity: null,
+                status: 'Bị từ chối',
+                date: '15/07/2026 08:45',
+                creator: 'Công ty TNHH An Phú',
+                amount: 30000,
+                fileName: ''
+            }
+        ];
+
         function formatRegNumForDisplay(regNum) {
             if (!regNum) return '';
             return regNum.replace(/-[A-ZĐa-zđ]+[0-9]*/g, '');
@@ -12003,6 +12536,7 @@
                 case 'Chờ thanh toán': return 'pending-payment';
                 case 'Chờ duyệt': return 'pending-approval';
                 case 'Chờ ký': return 'approved-pending-signature';
+                case 'Duyệt chờ ký': return 'approved-pending-signature';
                 case 'Hoàn thành': return 'completed';
                 case 'Bị từ chối': return 'rejected';
                 case 'Sai lệch thanh toán': return 'payment-discrepancy';
@@ -12772,6 +13306,697 @@
         function goToRegReqPage(page) {
             regReqCurrentPage = page;
             renderRegisteredRequestsTable();
+        }
+
+        function matchCopyRequest(item, code, regNum, copyType, status, fromDateStr, toDateStr) {
+            let matches = true;
+
+            if (code) {
+                matches = normalizeRegReqText(item.code).includes(normalizeRegReqText(code));
+            }
+            if (matches && regNum) {
+                matches = normalizeRegReqText(item.regNum).includes(normalizeRegReqText(regNum));
+            }
+            if (matches && copyType !== 'Tất cả') {
+                matches = item.copyType === copyType;
+            }
+            if (matches && status !== 'Tất cả') {
+                matches = item.status === status;
+            }
+            if (matches && (fromDateStr || toDateStr)) {
+                const itemDate = parseDateString(item.date);
+                if (fromDateStr) {
+                    const fromParts = fromDateStr.split('/');
+                    const fromDate = new Date(fromParts[2], fromParts[1] - 1, fromParts[0], 0, 0, 0);
+                    if (itemDate < fromDate) matches = false;
+                }
+                if (matches && toDateStr) {
+                    const toParts = toDateStr.split('/');
+                    const toDate = new Date(toParts[2], toParts[1] - 1, toParts[0], 23, 59, 59);
+                    if (itemDate > toDate) matches = false;
+                }
+            }
+
+            return matches;
+        }
+
+        function validateCopyReqDateRange(fromDateStr, toDateStr) {
+            if (!fromDateStr && !toDateStr) return true;
+            const isValidFormat = value => !value || /^\d{2}\/\d{2}\/\d{4}$/.test(value);
+            if (!isValidFormat(fromDateStr) || !isValidFormat(toDateStr)) {
+                showToast('Ngày tìm kiếm phải nhập theo định dạng dd/mm/yyyy.', 'error');
+                return false;
+            }
+            if (fromDateStr && toDateStr) {
+                const fromParts = fromDateStr.split('/');
+                const toParts = toDateStr.split('/');
+                const fromDate = new Date(fromParts[2], fromParts[1] - 1, fromParts[0]);
+                const toDate = new Date(toParts[2], toParts[1] - 1, toParts[0]);
+                if (fromDate > toDate) {
+                    showToast('Từ ngày không được lớn hơn Đến ngày.', 'error');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function executeCopyReqSearch(showSuccessToast = true) {
+            const code = document.getElementById('copyReqSearchCode')?.value.trim() || '';
+            const regNum = document.getElementById('copyReqSearchRegNum')?.value.trim() || '';
+            const copyType = document.getElementById('copyReqSearchType')?.value || 'Tất cả';
+            const status = document.getElementById('copyReqSearchStatus')?.value || 'Tất cả';
+            const fromDateStr = document.getElementById('copyReqSearchFromDate')?.value.trim() || '';
+            const toDateStr = document.getElementById('copyReqSearchToDate')?.value.trim() || '';
+
+            if (!validateCopyReqDateRange(fromDateStr, toDateStr)) return;
+
+            copyReqFilteredData = copyRequestsData.filter(item =>
+                matchCopyRequest(item, code, regNum, copyType, status, fromDateStr, toDateStr)
+            );
+            copyReqCurrentPage = 1;
+            renderCopyRequestsTable();
+            if (showSuccessToast) showToast('Tìm kiếm yêu cầu cung cấp bản sao hoàn tất.', 'success');
+        }
+
+        function resetCopyReqFilters() {
+            document.getElementById('copyReqSearchCode').value = '';
+            document.getElementById('copyReqSearchRegNum').value = '';
+            document.getElementById('copyReqSearchType').value = 'Tất cả';
+            document.getElementById('copyReqSearchStatus').value = 'Tất cả';
+            document.getElementById('copyReqSearchFromDate').value = '';
+            document.getElementById('copyReqSearchToDate').value = '';
+            copyReqFilteredData = [];
+            copyReqCurrentPage = 1;
+            renderCopyRequestsTable();
+            showToast('Đã xóa bộ lọc yêu cầu cung cấp bản sao.', 'info');
+        }
+
+        function changeCopyReqPageSize() {
+            copyReqPageSize = parseInt(document.getElementById('copyReqPageSize').value, 10) || 10;
+            copyReqCurrentPage = 1;
+            renderCopyRequestsTable();
+        }
+
+        function goToCopyReqPage(page) {
+            copyReqCurrentPage = page;
+            renderCopyRequestsTable();
+        }
+
+        function isCopyReqFiltered() {
+            return Boolean(
+                document.getElementById('copyReqSearchCode')?.value ||
+                document.getElementById('copyReqSearchRegNum')?.value ||
+                document.getElementById('copyReqSearchType')?.value !== 'Tất cả' ||
+                document.getElementById('copyReqSearchStatus')?.value !== 'Tất cả' ||
+                document.getElementById('copyReqSearchFromDate')?.value ||
+                document.getElementById('copyReqSearchToDate')?.value
+            );
+        }
+
+        function findCopyRequest(code) {
+            return copyRequestsData.find(item => item.code === code);
+        }
+
+        function renderCopyRequestActions(item) {
+            const iconBtnStyle = 'width:30px; height:30px; padding:0; font-size:12px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;';
+            const actions = [];
+
+            if (item.status === 'Chờ thanh toán') {
+                actions.push(`<button class="btn btn-warning" style="${iconBtnStyle}" title="Thanh toán" aria-label="Thanh toán" onclick="event.stopPropagation(); payCopyRequest('${item.code}')"><i class="fa-solid fa-credit-card"></i></button>`);
+            }
+
+            if (item.status === 'Hoàn thành' && item.copyType === 'Bản sao điện tử') {
+                actions.push(`<button class="btn btn-success" style="${iconBtnStyle}" title="Tải bản sao chứng nhận" aria-label="Tải bản sao chứng nhận" onclick="event.stopPropagation(); downloadCopyCertificate('${item.code}')"><i class="fa-solid fa-download"></i></button>`);
+            }
+
+            if (!actions.length) {
+                return `<span style="color: var(--text-muted); font-size: 12px;">-</span>`;
+            }
+
+            return `<div style="display:flex; gap:5px; justify-content:center; align-items:center;">${actions.join('')}</div>`;
+        }
+
+        function renderCopyRequestsTable() {
+            const tbody = document.getElementById('copyRequestsTableBody');
+            if (!tbody) return;
+
+            let dataList = isCopyReqFiltered() ? copyReqFilteredData : copyRequestsData;
+            dataList = [...dataList].sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
+
+            if (!dataList.length) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy yêu cầu cung cấp bản sao phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                document.getElementById('copyReqCountDisplay').innerText = 'Hiển thị 0-0 của 0 yêu cầu';
+                document.getElementById('copyReqPagination').innerHTML = '';
+                return;
+            }
+
+            const totalItems = dataList.length;
+            const totalPages = Math.ceil(totalItems / copyReqPageSize);
+            if (copyReqCurrentPage > totalPages) copyReqCurrentPage = totalPages || 1;
+
+            const startIndex = (copyReqCurrentPage - 1) * copyReqPageSize;
+            const endIndex = Math.min(startIndex + copyReqPageSize, totalItems);
+            const pageItems = dataList.slice(startIndex, endIndex);
+            document.getElementById('copyReqCountDisplay').innerText = `Hiển thị ${startIndex + 1}-${endIndex} của ${totalItems} yêu cầu`;
+
+            let paginationHtml = '';
+            if (copyReqCurrentPage > 1) {
+                paginationHtml += `<button class="btn btn-outline-primary" style="padding: 4px 10px; font-size: 12px; margin-right: 3px;" onclick="goToCopyReqPage(1)"><i class="fa fa-angle-double-left"></i> Đầu</button>`;
+                paginationHtml += `<button class="btn btn-outline-primary" style="padding: 4px 10px; font-size: 12px; margin-right: 3px;" onclick="goToCopyReqPage(${copyReqCurrentPage - 1})"><i class="fa fa-angle-left"></i> Trước</button>`;
+            }
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += i === copyReqCurrentPage
+                    ? `<button class="btn btn-primary" style="padding: 4px 10px; font-size: 12px; margin-right: 3px;" disabled>${i}</button>`
+                    : `<button class="btn btn-outline-primary" style="padding: 4px 10px; font-size: 12px; margin-right: 3px;" onclick="goToCopyReqPage(${i})">${i}</button>`;
+            }
+            if (copyReqCurrentPage < totalPages) {
+                paginationHtml += `<button class="btn btn-outline-primary" style="padding: 4px 10px; font-size: 12px; margin-right: 3px;" onclick="goToCopyReqPage(${copyReqCurrentPage + 1})">Sau <i class="fa fa-angle-right"></i></button>`;
+                paginationHtml += `<button class="btn btn-outline-primary" style="padding: 4px 10px; font-size: 12px;" onclick="goToCopyReqPage(${totalPages})">Cuối <i class="fa fa-angle-double-right"></i></button>`;
+            }
+            document.getElementById('copyReqPagination').innerHTML = paginationHtml;
+
+            tbody.innerHTML = pageItems.map((item, index) => {
+                const quantityText = item.copyType === 'Bản sao giấy' ? item.quantity : '-';
+                return `
+                    <tr onclick="viewCopyRequestDetail('${item.code}')" style="cursor:pointer;">
+                        <td style="text-align:center;">${startIndex + index + 1}</td>
+                        <td><strong>${escapeHtml(item.code)}</strong></td>
+                        <td>${escapeHtml(item.regNum)}</td>
+                        <td>${escapeHtml(item.copyType)}</td>
+                        <td>${quantityText}</td>
+                        <td><span class="status-badge ${getStatusClass(item.status)}">${escapeHtml(item.status)}</span></td>
+                        <td>${escapeHtml(item.date)}</td>
+                        <td>${escapeHtml(item.creator)}</td>
+                        <td style="text-align:center;">${renderCopyRequestActions(item)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getCopyRequestAgency(item) {
+            return item.agency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP. Hà Nội';
+        }
+
+        function formatCopyReqAmount(amount) {
+            return `${Number(amount || 0).toLocaleString('vi-VN')} VNĐ`;
+        }
+
+        function renderCopyDetailLine(label, value) {
+            return `<div><strong>${escapeHtml(label)}:</strong> ${value}</div>`;
+        }
+
+        function getCopyOriginalType(original) {
+            if (!original || isRegisteredInfoRequestType(original.type)) return 'Đăng ký lần đầu';
+            return original.type || 'Đăng ký lần đầu';
+        }
+
+        function getCopyOriginalTitle(original) {
+            return getCopyOriginalType(original).toUpperCase();
+        }
+
+        function getCopyOriginalMeasureLabel(original) {
+            if ((original.transType || '').includes('Hợp đồng')) return 'Loại hợp đồng';
+            return 'Loại biện pháp';
+        }
+
+        function getCopyAssetKind(typeName) {
+            const normalized = normalizeRegReqText(typeName);
+            if (normalized.includes('co so khung')) return 'chassis';
+            if (normalized.includes('tau ca') || normalized.includes('duong thuy') || normalized.includes('duong sat')) return 'vehicle';
+            if (normalized.includes('quyen tai san')) return 'propertyRight';
+            if (normalized.includes('cay hang nam')) return 'annualCrop';
+            if (normalized.includes('hang hoa luan chuyen')) return 'rotatingGoods';
+            if (normalized.includes('chung khoan da dang ky tap trung')) return 'securities';
+            return 'other';
+        }
+
+        function getCopyAssetDetail(original, typeName, index) {
+            const baseNum = formatRegNumForDisplay(original.regNum || '');
+            const suffix = baseNum.slice(-4) || `00${index + 1}`;
+            return {
+                vehicleName: original.assetVehicleName || (index % 2 === 0 ? 'Ô tô' : 'Xe máy chuyên dùng'),
+                brandColor: original.brandColor || (index % 2 === 0 ? 'Toyota Vios, màu đen' : 'Komatsu, màu vàng'),
+                frameNo: original.frameNo || `SK${suffix}VN`,
+                engineNo: original.engineNo || `SM${suffix}VN`,
+                plateNo: original.plateNo || (index % 2 === 0 ? '30H-123.45' : '29C-688.88'),
+                vehicleBrand: original.vehicleBrand || 'Tàu cá vỏ thép Đông Hải',
+                ownerName: original.ownerName || original.guarantor || 'Người bảo đảm',
+                vehicleRegNo: original.vehicleRegNo || `ĐK-${suffix}-HP`,
+                vehicleIssuer: original.vehicleIssuer || 'Cơ quan đăng ký phương tiện',
+                vehicleLevel: original.vehicleLevel || 'Cấp IV',
+                rightName: original.rightName || 'Quyền đòi nợ phát sinh từ hợp đồng thương mại',
+                rightBasis: original.rightBasis || `Hợp đồng số HĐ-${suffix}/2026 và phụ lục liên quan`,
+                cropDescription: original.cropDescription || 'Cây hằng năm, công trình tạm theo mô tả tại hồ sơ gốc.',
+                goodsKind: original.goodsKind || 'Kho hàng',
+                goodsValueName: original.goodsValueName || 'Lô hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh',
+                warehouseAddress: original.warehouseAddress || 'Khu công nghiệp Quang Minh, Hà Nội',
+                warehouseSign: original.warehouseSign || `Kho KH-${suffix}`,
+                vsdcTime: original.vsdcTime || '09:30 15/04/2026',
+                otherDescription: original.assetDescription || `${typeName} theo mô tả tại hồ sơ gốc.`
+            };
+        }
+
+        function renderCopyReadonlyGrid(items) {
+            return `
+                <div style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; margin-top:12px;">
+                    ${items.map(item => `
+                        <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px;">
+                            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">${escapeHtml(item.label)}</div>
+                            <div style="font-weight:600; color:var(--text-main);">${escapeHtml(item.value || '---')}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderCopyAssetBlock(original, typeName, index) {
+            const kind = getCopyAssetKind(typeName);
+            const detail = getCopyAssetDetail(original, typeName, index);
+            const titleHtml = `<h5 style="margin:18px 0 10px; color:var(--primary-color); font-size:14px; font-weight:700;">${escapeHtml(typeName)}</h5>`;
+
+            if (kind === 'chassis') {
+                return `
+                    ${titleHtml}
+                    <div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;">Số khung</div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:42px; text-align:center;"><input type="checkbox" disabled></th>
+                                    <th style="width:60px; text-align:center;">STT</th>
+                                    <th>TÊN PHƯƠNG TIỆN</th>
+                                    <th>NHÃN HIỆU, MÀU SƠN</th>
+                                    <th>SỐ KHUNG</th>
+                                    <th>SỐ MÁY</th>
+                                    <th>BIỂN SỐ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;"><input type="checkbox" checked disabled></td>
+                                    <td style="text-align:center;">1</td>
+                                    <td><strong>${escapeHtml(detail.vehicleName)}</strong></td>
+                                    <td>${escapeHtml(detail.brandColor)}</td>
+                                    <td>${escapeHtml(detail.frameNo)}</td>
+                                    <td>${escapeHtml(detail.engineNo)}</td>
+                                    <td>${escapeHtml(detail.plateNo)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            if (kind === 'vehicle') {
+                return `
+                    ${titleHtml}
+                    <div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;">Phương tiện</div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:42px; text-align:center;"><input type="checkbox" disabled></th>
+                                    <th style="width:60px; text-align:center;">STT</th>
+                                    <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                                    <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                    <th>SỐ ĐĂNG KÝ</th>
+                                    <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                    <th>CẤP PHƯƠNG TIỆN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;"><input type="checkbox" checked disabled></td>
+                                    <td style="text-align:center;">1</td>
+                                    <td><strong>${escapeHtml(detail.vehicleBrand)}</strong></td>
+                                    <td>${escapeHtml(detail.ownerName)}</td>
+                                    <td>${escapeHtml(detail.vehicleRegNo)}</td>
+                                    <td>${escapeHtml(detail.vehicleIssuer)}</td>
+                                    <td>${escapeHtml(detail.vehicleLevel)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            if (kind === 'propertyRight') {
+                return `${titleHtml}${renderCopyReadonlyGrid([
+                    { label: 'Tên quyền', value: detail.rightName },
+                    { label: 'Căn cứ phát sinh quyền', value: detail.rightBasis }
+                ])}`;
+            }
+
+            if (kind === 'rotatingGoods') {
+                return `${titleHtml}${renderCopyReadonlyGrid([
+                    { label: 'Hàng hóa luân chuyển/Kho hàng', value: detail.goodsKind },
+                    { label: 'Giá trị hàng hóa/Tên, loại hàng hóa', value: detail.goodsValueName },
+                    { label: 'Địa chỉ kho hàng', value: detail.warehouseAddress },
+                    { label: 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', value: detail.warehouseSign }
+                ])}`;
+            }
+
+            if (kind === 'securities') {
+                return `
+                    ${titleHtml}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>GIỜ</th>
+                                    <th>PHÚT</th>
+                                    <th>NGÀY</th>
+                                    <th>THÁNG</th>
+                                    <th>NĂM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>09</td>
+                                    <td>30</td>
+                                    <td>15</td>
+                                    <td>04</td>
+                                    <td>2026</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            return `
+                ${titleHtml}
+                <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:12px; white-space:pre-wrap;">
+                    ${escapeHtml(kind === 'annualCrop' ? detail.cropDescription : detail.otherDescription)}
+                </div>
+            `;
+        }
+
+        function renderCopyAssetsByType(original) {
+            const assets = Array.isArray(original.secAssets) && original.secAssets.length
+                ? original.secAssets
+                : ['Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)'];
+            const commonDesc = original.assetDescription || 'Thông tin tài sản bảo đảm được lấy từ hồ sơ gốc tại thời điểm yêu cầu cung cấp bản sao.';
+
+            return `
+                <h4 style="margin:22px 0 12px; color:var(--primary-color); font-size:15px;">IV. Tài sản bảo đảm</h4>
+                <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:12px; margin-bottom:12px;">
+                    <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Mô tả tài sản bảo đảm</div>
+                    <div style="font-weight:600;">${escapeHtml(commonDesc)}</div>
+                </div>
+                ${assets.map((asset, index) => renderCopyAssetBlock(original, asset, index)).join('')}
+            `;
+        }
+
+        function renderCopyRequestOriginalInfo(item) {
+            const original = findRegisteredRequest(item.regNum) || {};
+            const originalType = getCopyOriginalType(original);
+            const shouldShowFirstReg = originalType !== 'Đăng ký lần đầu';
+            const transType = original.transType || 'Biện pháp bảo đảm';
+            const measureContractType = original.measureContractType || 'Thế chấp';
+            const isOrg = String(original.guarantor || item.creator || '').toLowerCase().includes('công ty');
+            const firstRegHtml = shouldShowFirstReg ? `
+                ${renderCopyReadonlyGrid([
+                    { label: 'Số đăng ký lần đầu', value: formatRegNumForDisplay(item.regNum) },
+                    { label: 'Thời điểm đăng ký lần đầu', value: original.rootDate || '14/05/2026 07:58' }
+                ])}
+            ` : '';
+
+            return `
+                <div style="background:#E2E8F0; color:#111827; font-weight:800; padding:10px 12px; border-radius:4px; margin-bottom:14px;">
+                    ${escapeHtml(getCopyOriginalTitle(original))}
+                </div>
+                ${renderCopyReadonlyGrid([
+                    { label: 'Loại hình giao dịch', value: transType },
+                    { label: getCopyOriginalMeasureLabel(original), value: measureContractType },
+                    { label: 'Số hợp đồng', value: original.contractNo || `HĐ-${formatRegNumForDisplay(item.regNum).slice(-4)}/2026` },
+                    { label: 'Ngày có hiệu lực của hợp đồng', value: original.contractDate || '25/11/2025' },
+                    { label: 'Giá trị khoản vay hoặc nghĩa vụ (VND)', value: original.loanValue || '1.800.000.000' },
+                    { label: 'Quy mô bên bảo đảm', value: original.scale || 'Bên bảo đảm là công ty có ít hơn 10 nhân viên' },
+                    { label: 'Số đăng ký của hồ sơ', value: item.regNum },
+                    { label: 'Thời điểm đăng ký', value: original.date || '14/05/2026 07:58' },
+                    { label: 'Hồ sơ đính kèm', value: 'Văn bản chứng nhận đăng ký biện pháp bảo đảm gốc.pdf' }
+                ])}
+                ${firstRegHtml}
+
+                <div style="margin-top:22px;">
+                    <h4 style="font-size:13.5px; font-weight:700; color:#334155; margin-bottom:8px;"><i class="fa-solid fa-users"></i> Danh sách Bên bảo đảm</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>LOẠI CHỦ THỂ</th>
+                                    <th>SỐ GIẤY TỜ CHỨNG MINH TƯ CÁCH PHÁP LÝ</th>
+                                    <th>TÊN</th>
+                                    <th>ĐỊA CHỈ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>${isOrg ? 'Tổ chức có đăng ký kinh doanh trong nước' : 'Công dân Việt Nam'}</td>
+                                    <td>${isOrg ? 'Mã số thuế: 0102030405' : 'CCCD: 001088012345'}</td>
+                                    <td><strong>${escapeHtml(original.guarantor || item.creator)}</strong></td>
+                                    <td>${escapeHtml(original.guarantorAddress || 'Số 15 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội, Việt Nam')}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div style="margin-top:22px;">
+                    <h4 style="font-size:13.5px; font-weight:700; color:#334155; margin-bottom:8px;"><i class="fa-solid fa-building-columns"></i> Danh sách Bên nhận bảo đảm</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>TÊN</th>
+                                    <th>ĐỊA CHỈ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>${escapeHtml(original.securedParty || 'Ngân hàng TMCP FPT')}</strong></td>
+                                    <td>${escapeHtml(original.securedAddress || 'Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội, Việt Nam')}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                ${renderCopyAssetsByType(original)}
+            `;
+        }
+
+        function renderCopyRequestProcessingInfo(item) {
+            const amountText = formatCopyReqAmount(item.amount);
+            const signerName = item.signerName || 'Nguyễn Văn Cán Bộ';
+            const signedTime = item.signedTime || '22/07/2026 08:30';
+
+            if (item.status === 'Chờ duyệt') {
+                return '<div>Yêu cầu đang chờ Cán bộ nghiệp vụ kiểm tra và duyệt.</div>';
+            }
+
+            if (item.status === 'Duyệt chờ ký') {
+                return `
+                    ${renderCopyDetailLine('Thời điểm duyệt', escapeHtml(item.approvedTime || '16/07/2026 15:20'))}
+                    ${renderCopyDetailLine('Cán bộ trình ký', escapeHtml(item.submitOfficer || 'Trần Thị Cán Bộ'))}
+                `;
+            }
+
+            if (item.status === 'Chờ thanh toán') {
+                return `
+                    ${renderCopyDetailLine('Thời điểm ký duyệt', escapeHtml(item.signedTime || '20/07/2026 11:00'))}
+                    ${renderCopyDetailLine('Người ký duyệt', escapeHtml(item.signerName || 'Nguyễn Văn Lãnh Đạo'))}
+                    ${renderCopyDetailLine('Số tiền phải thanh toán', escapeHtml(amountText))}
+                `;
+            }
+
+            if (item.status === 'Hoàn thành') {
+                const receiptLine = item.receiptNo
+                    ? renderCopyDetailLine('Số biên lai', escapeHtml(item.receiptNo))
+                    : '';
+                const resultLine = item.copyType === 'Bản sao điện tử'
+                    ? renderCopyDetailLine('File bản sao điện tử', `<a href="#" onclick="event.preventDefault(); viewCopyRequestFile('${item.code}')">Xem file</a> | <a href="#" onclick="event.preventDefault(); downloadCopyCertificate('${item.code}')">Tải file</a>`)
+                    : renderCopyDetailLine('Thông tin nhận bản sao giấy', escapeHtml(item.paperDeliveryInfo || 'Bản sao giấy đã được xử lý theo hình thức nhận đã đăng ký.'));
+
+                return `
+                    ${renderCopyDetailLine('Thời điểm ký duyệt', escapeHtml(signedTime))}
+                    ${renderCopyDetailLine('Người ký duyệt', escapeHtml(signerName))}
+                    ${renderCopyDetailLine('Số tiền đã thanh toán', escapeHtml(amountText))}
+                    ${renderCopyDetailLine('Mã giao dịch thanh toán', escapeHtml(item.paymentTxn || `PAY-${item.code.replace(/[^0-9]/g, '').slice(-8)}`))}
+                    ${receiptLine}
+                    ${renderCopyDetailLine('Thời điểm thanh toán', escapeHtml(item.paymentTime || item.date))}
+                    ${resultLine}
+                `;
+            }
+
+            if (item.status === 'Bị từ chối') {
+                return `
+                    ${renderCopyDetailLine('Lý do từ chối', escapeHtml(item.rejectReason || 'Thông tin yêu cầu không đủ điều kiện cấp bản sao.'))}
+                    ${renderCopyDetailLine('Thời điểm từ chối', escapeHtml(item.rejectedTime || '15/07/2026 10:15'))}
+                    ${renderCopyDetailLine('Người từ chối', escapeHtml(item.rejectOfficer || 'Trần Thị Cán Bộ'))}
+                `;
+            }
+
+            return '<div>Không có thông tin xử lý bổ sung.</div>';
+        }
+
+        function viewCopyRequestDetail(code) {
+            const item = findCopyRequest(code);
+            if (!item) {
+                showToast('Không tìm thấy yêu cầu cung cấp bản sao.', 'error');
+                return;
+            }
+
+            document.getElementById('copyDetailCode').textContent = item.code;
+            document.getElementById('copyDetailStatus').innerHTML = `<span class="status-badge ${getStatusClass(item.status)}">${escapeHtml(item.status)}</span>`;
+            document.getElementById('copyDetailRegNum').textContent = item.regNum;
+            document.getElementById('copyDetailAgency').textContent = getCopyRequestAgency(item);
+            document.getElementById('copyDetailType').textContent = item.copyType;
+            document.getElementById('copyDetailDate').textContent = item.date;
+            document.getElementById('copyDetailCreator').textContent = item.creator;
+
+            const quantityGroup = document.getElementById('copyDetailQuantityGroup');
+            if (quantityGroup) {
+                const isPaperCopy = item.copyType === 'Bản sao giấy';
+                quantityGroup.classList.toggle('hidden', !isPaperCopy);
+                if (isPaperCopy) document.getElementById('copyDetailQuantity').textContent = `${item.quantity} bản`;
+            }
+
+            const payBtn = document.getElementById('copyReqDetailPayBtn');
+            if (payBtn) {
+                payBtn.classList.toggle('hidden', item.status !== 'Chờ thanh toán');
+                payBtn.onclick = () => payCopyRequest(item.code);
+            }
+
+            const canUseFile = item.status === 'Hoàn thành' && item.copyType === 'Bản sao điện tử';
+            const viewFileBtn = document.getElementById('copyReqDetailViewFileBtn');
+            if (viewFileBtn) {
+                viewFileBtn.classList.toggle('hidden', !canUseFile);
+                viewFileBtn.onclick = () => viewCopyRequestFile(item.code);
+            }
+            const detailDownloadBtn = document.getElementById('copyReqDetailDownloadBtn');
+            if (detailDownloadBtn) {
+                detailDownloadBtn.classList.toggle('hidden', !canUseFile);
+                detailDownloadBtn.onclick = () => downloadCopyCertificate(item.code);
+            }
+
+            document.getElementById('copyDetailOriginalInfo').innerHTML = renderCopyRequestOriginalInfo(item);
+            const processingBlock = document.getElementById('copyDetailProcessingBlock');
+            if (processingBlock) processingBlock.classList.toggle('hidden', item.status === 'Chờ duyệt');
+            document.getElementById('copyDetailProcessingInfo').innerHTML = renderCopyRequestProcessingInfo(item);
+
+            document.getElementById('copyReqListView')?.classList.add('hidden');
+            document.getElementById('copyReqDetailView')?.classList.remove('hidden');
+            document.getElementById('tabRegReq-ban-sao')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function backToCopyReqList() {
+            document.getElementById('copyReqDetailView')?.classList.add('hidden');
+            document.getElementById('copyReqListView')?.classList.remove('hidden');
+        }
+
+        function payCopyRequest(code) {
+            const item = findCopyRequest(code);
+            if (!item || item.status !== 'Chờ thanh toán') {
+                showToast('Chỉ thanh toán được yêu cầu ở trạng thái Chờ thanh toán.', 'error');
+                return;
+            }
+
+            sessionStorage.setItem('registeredReturnTab', 'ban-sao');
+            sessionStorage.setItem('registeredPaymentData', JSON.stringify({
+                source: 'copy-requests',
+                regNum: item.code,
+                type: 'Yêu cầu cung cấp bản sao',
+                guarantor: item.creator,
+                transType: item.copyType,
+                measureContractType: item.regNum,
+                amount: item.amount,
+                amountText: `${Number(item.amount || 0).toLocaleString('vi-VN')} VNĐ`
+            }));
+            showToast(`Đang mở màn hình thanh toán cho yêu cầu ${code}...`, 'info');
+            showScreen('registered-request-payment', `UC024/dang_ky_bpbd_thanh_toan.html?from=copy-requests&regNum=${encodeURIComponent(code)}&t=${Date.now()}`);
+        }
+
+        function viewCopyRequestFile(code) {
+            const item = findCopyRequest(code);
+            if (!item || item.status !== 'Hoàn thành' || item.copyType !== 'Bản sao điện tử') {
+                showToast('Chỉ xem file với yêu cầu Hoàn thành và Loại cung cấp bản sao là Bản sao điện tử.', 'error');
+                return;
+            }
+            if (!item.fileName) {
+                showToast('Chưa có file bản sao chứng nhận để xem.', 'error');
+                return;
+            }
+
+            const previewHtml = `
+                <!DOCTYPE html>
+                <html lang="vi">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${escapeHtml(item.fileName)}</title>
+                    <style>
+                        body { margin:0; background:#E5E7EB; font-family: Arial, sans-serif; color:#111827; }
+                        .page { width:720px; min-height:960px; margin:32px auto; background:white; padding:56px; box-shadow:0 10px 30px rgba(15,23,42,.18); }
+                        h1 { font-size:20px; text-align:center; margin:0 0 28px; color:#111827; }
+                        .line { margin:10px 0; font-size:15px; }
+                        .seal { margin-top:34px; padding:12px; border:2px solid #1D4ED8; color:#1D4ED8; display:inline-block; font-weight:700; }
+                    </style>
+                </head>
+                <body>
+                    <div class="page">
+                        <h1>BẢN SAO CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM</h1>
+                        <div class="line"><strong>Mã hồ sơ yêu cầu:</strong> ${escapeHtml(item.code)}</div>
+                        <div class="line"><strong>Số đăng ký hồ sơ gốc:</strong> ${escapeHtml(item.regNum)}</div>
+                        <div class="line"><strong>Loại cung cấp bản sao:</strong> ${escapeHtml(item.copyType)}</div>
+                        <div class="line"><strong>Thời điểm đăng ký:</strong> ${escapeHtml(item.date)}</div>
+                        <div class="line"><strong>Người tạo yêu cầu:</strong> ${escapeHtml(item.creator)}</div>
+                        <div class="seal">BẢN SAO ĐIỆN TỬ - ĐÃ CẤP</div>
+                    </div>
+                ${'<' + '/body>'}
+                ${'<' + '/html>'}
+            `;
+            const previewWindow = window.open('', '_blank');
+            if (!previewWindow) {
+                showToast('Trình duyệt đang chặn popup xem file.', 'error');
+                return;
+            }
+            previewWindow.document.open();
+            previewWindow.document.write(previewHtml);
+            previewWindow.document.close();
+        }
+
+        function downloadCopyCertificate(code) {
+            const item = findCopyRequest(code);
+            if (!item || item.status !== 'Hoàn thành' || item.copyType !== 'Bản sao điện tử') {
+                showToast('Chỉ tải file với yêu cầu Hoàn thành và Loại cung cấp bản sao là Bản sao điện tử.', 'error');
+                return;
+            }
+            if (!item.fileName) {
+                showToast('Chưa có file bản sao chứng nhận để tải xuống.', 'error');
+                return;
+            }
+
+            const pdfMockContent = [
+                'BẢN SAO CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM',
+                `Mã hồ sơ yêu cầu: ${item.code}`,
+                `Số đăng ký hồ sơ gốc: ${item.regNum}`,
+                `Loại cung cấp bản sao: ${item.copyType}`,
+                `Thời điểm đăng ký: ${item.date}`,
+                `Người tạo yêu cầu: ${item.creator}`,
+                '',
+                'Nội dung file này là dữ liệu mô phỏng phục vụ UI mockup.'
+            ].join('\n');
+            const blob = new Blob([pdfMockContent], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = item.fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast(`Đã tải bản sao chứng nhận của yêu cầu ${code}.`, 'success');
         }
 
         function renderRegisteredRequestRowActions(item, versionCount) {

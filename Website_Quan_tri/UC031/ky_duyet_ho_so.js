@@ -2549,3 +2549,721 @@ function getSortIcon(column) {
         : '<i class="fa-solid fa-sort-down" style="font-size: 11px; margin-left: 4px; color: var(--secondary-color);"></i>';
 }
 
+// =============================================================
+// Bổ sung UI ký duyệt Yêu cầu cung cấp thông tin cho Lãnh đạo
+// =============================================================
+const UC031_BASE = {
+    initViewMode,
+    renderFilterPanel,
+    renderTable,
+    switchListTab,
+    closeDetail
+};
+
+let leaderWorkType = sessionStorage.getItem('uc031LeaderWorkType') || 'registration';
+let selectedLeaderCcttId = null;
+
+const leaderCcttRequests = [
+    {
+        id: 'CCTT-20260801-000201',
+        registeredAt: '01/08/2026 09:15',
+        submittedAt: '01/08/2026 10:30',
+        customerId: 'KH-HUNG-02',
+        requester: 'Ông Nguyễn Văn Hùng',
+        address: 'Số 12 phố Duy Tân, phường Dịch Vọng Hậu, Hà Nội',
+        source: 'Website khách hàng',
+        criteria: 'Số đăng ký',
+        inputData: '1505170802',
+        officer: 'Nguyễn Văn Cán Bộ',
+        signer: 'Nguyễn Văn Cán Bộ',
+        status: 'Chờ duyệt',
+        resultType: 'hasData',
+        fee: 15000,
+        pdfVersion: 'PDF dự thảo v1'
+    },
+    {
+        id: 'CCTT-20260801-000202',
+        registeredAt: '01/08/2026 10:40',
+        submittedAt: '01/08/2026 11:20',
+        customerId: 'KH-MINHTAM-01',
+        requester: 'Công ty Cổ phần Đầu tư Minh Tâm',
+        address: 'Tầng 6, tòa nhà FPT, Cầu Giấy, Hà Nội',
+        source: 'Cán bộ nhập liệu',
+        criteria: 'Bên bảo đảm',
+        inputData: 'Công dân Việt Nam - CCCD 091000000004',
+        officer: 'Nguyễn Văn Cán Bộ',
+        signer: 'Nguyễn Văn Cán Bộ',
+        status: 'Chờ duyệt',
+        resultType: 'noData',
+        fee: 0,
+        pdfVersion: 'PDF dự thảo v1'
+    },
+    {
+        id: 'CCTT-20260731-000177',
+        registeredAt: '31/07/2026 15:05',
+        submittedAt: '31/07/2026 16:00',
+        customerId: 'KH-FPT-07',
+        requester: 'Ngân hàng TMCP FPT',
+        address: 'Tòa nhà FPT, Cầu Giấy, Hà Nội',
+        source: 'Website khách hàng',
+        criteria: 'Số khung',
+        inputData: 'RLZ2026KHUNG0007VN',
+        officer: 'Nguyễn Văn Cán Bộ',
+        signer: 'Nguyễn Văn Cán Bộ',
+        status: 'Chờ ký',
+        resultType: 'hasData',
+        fee: 15000,
+        paidAt: '31/07/2026 17:12',
+        toSignReason: 'Thanh toán thành công',
+        pdfVersion: 'PDF trình ký v2'
+    },
+    {
+        id: 'CCTT-20260729-000165',
+        registeredAt: '29/07/2026 08:40',
+        submittedAt: '29/07/2026 09:50',
+        customerId: 'KH-LANANH-03',
+        requester: 'Bà Trần Lan Anh',
+        address: 'Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội',
+        source: 'Cán bộ nhập liệu',
+        criteria: 'Số đăng ký',
+        inputData: '1505170855',
+        officer: 'Nguyễn Văn Cán Bộ',
+        signer: 'Nguyễn Văn Cán Bộ',
+        status: 'Chờ ký',
+        resultType: 'noData',
+        fee: 0,
+        toSignReason: 'Không có kết quả - không thu phí',
+        pdfVersion: 'PDF trình ký v1'
+    },
+    {
+        id: 'CCTT-20260730-000171',
+        registeredAt: '30/07/2026 11:25',
+        submittedAt: '30/07/2026 14:10',
+        customerId: 'KH-ANPHU-05',
+        requester: 'Công ty TNHH An Phú',
+        address: 'Số 88 Lê Văn Lương, Thanh Xuân, Hà Nội',
+        source: 'Cán bộ nhập liệu',
+        criteria: 'Số đăng ký',
+        inputData: '1505170868',
+        officer: 'Nguyễn Văn Cán Bộ',
+        signer: 'Nguyễn Văn Cán Bộ',
+        status: 'Bị trả lại',
+        resultType: 'hasData',
+        fee: 15000,
+        toSignReason: 'Lãnh đạo trả lại để cán bộ sửa thông tin theo hồ sơ giấy',
+        pdfVersion: 'PDF dự thảo v1'
+    },
+    {
+        id: 'CCTT-20260728-000158',
+        registeredAt: '28/07/2026 16:20',
+        submittedAt: '28/07/2026 17:05',
+        customerId: 'KH-HTC-04',
+        requester: 'Công ty Cổ phần Xây dựng và Phát triển HTC',
+        address: 'Đường số 5, cụm công nghiệp Tứ Hạ mở rộng, thành phố Huế',
+        source: 'Website khách hàng',
+        criteria: 'Số đăng ký',
+        inputData: '1505170802',
+        officer: 'Nguyễn Văn Cán Bộ',
+        signer: 'Nguyễn Văn Cán Bộ',
+        status: 'Hoàn thành',
+        resultType: 'hasData',
+        fee: 15000,
+        paidAt: '28/07/2026 17:40',
+        toSignReason: 'Đã ký số PDF và trả kết quả',
+        pdfVersion: 'PDF đã ký v1'
+    },
+    {
+        id: 'CCTT-20260727-000149',
+        registeredAt: '27/07/2026 09:10',
+        submittedAt: '27/07/2026 10:15',
+        customerId: 'KH-MINHHUNG-09',
+        requester: 'Ông Lê Minh Hùng',
+        address: 'Số 9 Nguyễn Trãi, Hà Đông, Hà Nội',
+        source: 'Website khách hàng',
+        criteria: 'Bên bảo đảm',
+        inputData: 'CCCD 091000000099',
+        officer: 'Nguyễn Văn Cán Bộ',
+        signer: 'Nguyễn Văn Cán Bộ',
+        status: 'Bị từ chối',
+        resultType: 'noData',
+        fee: 0,
+        toSignReason: 'Lãnh đạo từ chối hồ sơ',
+        pdfVersion: 'PDF dự thảo v1'
+    }
+];
+
+function getLeaderCcttTargetStatuses() {
+    if (currentListTab === 'duyet-choky' || currentListTab === 'dang_xu_ly') return ['Chờ ký'];
+    if (currentListTab === 'bitralai') return ['Bị trả lại'];
+    if (currentListTab === 'da_xu_ly') return ['Hoàn thành', 'Bị từ chối'];
+    return ['Chờ duyệt'];
+}
+
+function getLeaderCcttListTitle() {
+    if (currentListTab === 'duyet-choky' || currentListTab === 'dang_xu_ly') return 'Danh sách yêu cầu cung cấp thông tin chờ ký';
+    if (currentListTab === 'bitralai') return 'Danh sách yêu cầu cung cấp thông tin bị trả lại';
+    if (currentListTab === 'da_xu_ly') return 'Danh sách yêu cầu cung cấp thông tin đã xử lý';
+    return 'Danh sách yêu cầu cung cấp thông tin chờ duyệt';
+}
+
+function syncLeaderWorkTabs() {
+    const tabs = document.getElementById('leader-work-type-tabs');
+    if (!tabs) return;
+    tabs.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.workType === leaderWorkType);
+    });
+    const badge = document.getElementById('badge-cctt-leader');
+    if (badge) badge.innerText = leaderCcttRequests.length;
+}
+
+function switchLeaderWorkType(type, element) {
+    leaderWorkType = type;
+    sessionStorage.setItem('uc031LeaderWorkType', leaderWorkType);
+    document.querySelectorAll('#leader-work-type-tabs .nav-tab').forEach(t => t.classList.remove('active'));
+    if (element) element.classList.add('active');
+    renderFilterPanel();
+    renderTable(true);
+}
+
+function syncLeaderRegistrationToolbar() {
+    const batchToolbar = document.getElementById('toolbar-choky-batch');
+    if (!batchToolbar) return;
+    if (leaderWorkType !== 'registration') return;
+    const isSignStage = currentListTab === 'duyet-choky' || currentListTab === 'dang_xu_ly';
+    batchToolbar.style.display = isSignStage ? 'flex' : 'none';
+    batchToolbar.innerHTML = '<button class="btn btn-primary" onclick="signBatch()"><i class="fa-solid fa-file-signature"></i> Ký số lô (Hàng loạt)</button>';
+}
+
+function getLeaderRegistrationTitle() {
+    if (currentListTab === 'duyet-choky' || currentListTab === 'dang_xu_ly') return 'Danh sách phiếu đăng ký chờ ký';
+    if (currentListTab === 'da_xu_ly') return 'Danh sách phiếu đăng ký đã xử lý';
+    if (currentListTab === 'bitralai') return 'Danh sách phiếu đăng ký bị trả lại';
+    return 'Danh sách phiếu đăng ký chờ duyệt';
+}
+
+initViewMode = function () {
+    UC031_BASE.initViewMode();
+    const navTabs = document.querySelector('.nav-tabs');
+    const headerTitle = document.querySelector('h1');
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewMode = urlParams.get('view');
+    if (navTabs) navTabs.style.display = 'flex';
+    if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - LÃNH ĐẠO KÝ DUYỆT HỒ SƠ';
+    currentListTab = ['dang_xu_ly', 'da_xu_ly', 'bitralai', 'duyet-choky'].includes(viewMode) ? viewMode : 'choduyet';
+    document.querySelectorAll('#leader-stage-tabs .nav-tab').forEach(t => {
+        t.classList.toggle('active', (t.getAttribute('onclick') || '').includes(currentListTab));
+    });
+    syncLeaderWorkTabs();
+    renderFilterPanel();
+    renderTable(true);
+};
+
+switchListTab = function (tab, element) {
+    document.querySelectorAll('#leader-stage-tabs .nav-tab').forEach(t => t.classList.remove('active'));
+    if (element) element.classList.add('active');
+    currentListTab = tab;
+    renderFilterPanel();
+    renderTable(true);
+    syncLeaderWorkTabs();
+};
+
+renderFilterPanel = function () {
+    syncLeaderWorkTabs();
+    if (leaderWorkType === 'cctt') {
+        const container = document.getElementById('filter-card-container');
+        if (!container) return;
+        const isSignStage = currentListTab === 'duyet-choky' || currentListTab === 'dang_xu_ly';
+        container.innerHTML = `
+            <div class="grid-4-cols">
+                <div class="form-group">
+                    <label class="form-label">Tìm kiếm</label>
+                    <input type="text" class="form-control" id="leader-cctt-search" placeholder="Mã hồ sơ, người yêu cầu, dữ liệu tra cứu...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mã khách hàng</label>
+                    <input type="text" class="form-control" id="leader-cctt-customer" placeholder="Nhập mã khách hàng...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cán bộ trình duyệt</label>
+                    <input type="text" class="form-control" id="leader-cctt-officer" placeholder="Nhập tên cán bộ trình...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">${isSignStage ? 'Lãnh đạo ký' : 'Lãnh đạo duyệt'}</label>
+                    <input type="text" class="form-control" id="leader-cctt-leader" placeholder="Nhập tên Lãnh đạo được phân công...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label>
+                    <select class="form-select" id="leader-cctt-criteria">
+                        <option value="">Tất cả</option>
+                        <option value="Số đăng ký">Số đăng ký</option>
+                        <option value="Bên bảo đảm">Bên bảo đảm</option>
+                        <option value="Số khung">Số khung</option>
+                    </select>
+                </div>
+                ${isSignStage ? `
+                <div class="form-group">
+                    <label class="form-label">Nguồn tiếp nhận</label>
+                    <select class="form-select" id="leader-cctt-source">
+                        <option value="">Tất cả</option>
+                        <option value="Website khách hàng">Website Khách hàng</option>
+                        <option value="Mobile khách hàng">Mobile Khách hàng</option>
+                        <option value="Cán bộ nhập liệu">Cán bộ nhập liệu</option>
+                    </select>
+                </div>` : ''}
+                <div class="form-group">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="date" class="form-control" id="leader-cctt-fromdate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="date" class="form-control" id="leader-cctt-todate">
+                </div>
+            </div>
+            <div style="text-align:right;margin-top:15px">
+                <button class="btn btn-outline-secondary" onclick="renderTable(true)" style="margin-right:8px">Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="renderTable(true)">Tìm kiếm</button>
+            </div>
+        `;
+        return;
+    }
+    if (leaderWorkType === 'copy') {
+        const container = document.getElementById('filter-card-container');
+        if (container) container.innerHTML = '<div style="padding:18px;color:var(--text-muted);font-weight:700">Khối Yêu cầu cung cấp bản sao: Đang phát triển.</div>';
+        return;
+    }
+    UC031_BASE.renderFilterPanel();
+    syncLeaderWorkTabs();
+};
+
+renderTable = function (resetPage = false) {
+    syncLeaderWorkTabs();
+    if (leaderWorkType === 'cctt') {
+        renderLeaderCcttTable();
+        return;
+    }
+    if (leaderWorkType === 'copy') {
+        renderLeaderDevelopingTable();
+        return;
+    }
+    syncLeaderRegistrationToolbar();
+    UC031_BASE.renderTable(resetPage);
+    const title = document.querySelector('.card-section h3');
+    if (title) title.innerText = getLeaderRegistrationTitle();
+};
+
+function renderLeaderCcttTable() {
+    const isSignStage = currentListTab === 'duyet-choky' || currentListTab === 'dang_xu_ly';
+    const isProcessedStage = currentListTab === 'da_xu_ly';
+    const isReturnedStage = currentListTab === 'bitralai';
+    const targetStatuses = getLeaderCcttTargetStatuses();
+    const title = document.querySelector('.card-section h3');
+    if (title) title.innerText = getLeaderCcttListTitle();
+    const batchToolbar = document.getElementById('toolbar-choky-batch');
+    if (batchToolbar) {
+        batchToolbar.style.display = isReturnedStage || isProcessedStage ? 'none' : 'flex';
+        batchToolbar.innerHTML = isSignStage
+            ? '<button class="btn btn-primary" onclick="signBatch()"><i class="fa-solid fa-file-signature"></i> Ký số lô (Hàng loạt)</button>'
+            : `<button class="btn btn-danger" onclick="ccttRejectBatch()">✖ Từ chối</button>
+               <button class="btn btn-success" onclick="ccttApproveBatch()">✔ Duyệt</button>`;
+    }
+    const thead = document.getElementById('table-headers-container');
+    const tbody = document.getElementById('table-data');
+    thead.innerHTML = isSignStage ? `
+        <tr>
+            <th style="width:40px;text-align:center"><input type="checkbox" id="checkAll" onclick="toggleCheckAll(this)"></th>
+            <th style="width:50px;text-align:center">STT</th>
+            <th style="width:170px">Mã hồ sơ</th>
+            <th style="width:220px">Người yêu cầu</th>
+            <th style="width:150px">Tiêu chí</th>
+            <th style="width:230px">Giá trị tiêu chí</th>
+            <th style="width:150px">Nguồn tiếp nhận</th>
+            <th style="width:180px">Nguồn chuyển sang Chờ ký</th>
+            <th style="width:110px">Trạng thái</th>
+            <th style="width:170px;text-align:center">Thao tác</th>
+        </tr>
+    ` : `
+        <tr>
+            <th style="width:40px;text-align:center"><input type="checkbox" id="checkAll" onclick="toggleCheckAll(this)"></th>
+            <th style="width:50px;text-align:center">STT</th>
+            <th style="width:170px">Mã hồ sơ</th>
+            <th style="width:150px">Thời điểm đăng ký</th>
+            <th style="width:220px">Người yêu cầu<br><span style="font-weight:500;color:var(--text-muted)">Địa chỉ</span></th>
+            <th style="width:150px">Tiêu chí</th>
+            <th style="width:230px">Giá trị tiêu chí</th>
+            <th style="width:150px">Cán bộ trình duyệt</th>
+            <th style="width:150px">Thời điểm trình duyệt</th>
+            <th style="width:110px">Trạng thái</th>
+            <th style="width:150px;text-align:center">Thao tác</th>
+        </tr>
+    `;
+    const search = document.getElementById('leader-cctt-search')?.value.toLowerCase().trim() || '';
+    const customer = document.getElementById('leader-cctt-customer')?.value.toLowerCase().trim() || '';
+    const criteria = document.getElementById('leader-cctt-criteria')?.value || '';
+    const officer = document.getElementById('leader-cctt-officer')?.value.toLowerCase().trim() || '';
+    const source = document.getElementById('leader-cctt-source')?.value || '';
+    const rows = leaderCcttRequests.filter(x => {
+        if (!targetStatuses.includes(x.status)) return false;
+        if (search && !`${x.id} ${x.requester} ${x.inputData}`.toLowerCase().includes(search)) return false;
+        if (customer && !x.customerId.toLowerCase().includes(customer)) return false;
+        if (criteria && x.criteria !== criteria) return false;
+        if (officer && !x.officer.toLowerCase().includes(officer)) return false;
+        if (isSignStage && source && x.source !== source) return false;
+        return true;
+    });
+    const colSpan = isSignStage ? 10 : 11;
+    if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center;padding:30px;color:var(--text-muted)">Không có yêu cầu cung cấp thông tin ở trạng thái ${targetStatuses.join(', ')}.</td></tr>`;
+    } else {
+        tbody.innerHTML = rows.map((row, idx) => {
+            const isPaperRow = row.source === 'Cán bộ nhập liệu';
+            const actions = isProcessedStage
+                ? `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openLeaderCcttDetail('${row.id}')"><i class="fa fa-eye"></i></button>`
+                : isReturnedStage
+                ? `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openLeaderCcttDetail('${row.id}')"><i class="fa fa-eye"></i></button>`
+                : isSignStage
+                ? `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openLeaderCcttDetail('${row.id}')"><i class="fa fa-eye"></i></button>
+                   <button class="icon-btn sign" title="Ký số" onclick="event.stopPropagation(); openSignSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>
+                   ${isPaperRow ? `<button class="icon-btn return" title="Trả lại" onclick="event.stopPropagation(); openReasonSingle('${row.id}', 'tralai')"><i class="fa-solid fa-reply"></i></button>
+                   <button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); openReasonSingle('${row.id}', 'tuchoi')"><i class="fa-solid fa-ban"></i></button>` : ''}`
+                : `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openLeaderCcttDetail('${row.id}')"><i class="fa fa-eye"></i></button>
+                   <button class="icon-btn approve" title="Duyệt" onclick="event.stopPropagation(); alert('Đã duyệt ${row.id}. Hồ sơ có kết quả chuyển Chờ thanh toán; hồ sơ không có dữ liệu chuyển Chờ ký.')"><i class="fa fa-check"></i></button>
+                   <button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); openReasonSingle('${row.id}', 'tuchoi')"><i class="fa-solid fa-ban"></i></button>`;
+            return isSignStage ? `
+                <tr style="cursor:pointer" onclick="openLeaderCcttDetail('${row.id}')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox" class="row-checkbox" value="${row.id}"></td>
+                    <td style="text-align:center">${idx + 1}</td>
+                    <td><span class="action-link"><b>${row.id}</b></span></td>
+                    <td>${row.requester}</td>
+                    <td>${row.criteria}</td>
+                    <td>${row.inputData}</td>
+                    <td>${row.source}</td>
+                    <td>${row.toSignReason || '—'}</td>
+                    <td><span class="badge ${row.status === 'Hoàn thành' ? 'badge-success' : row.status === 'Bị từ chối' || row.status === 'Bị trả lại' ? 'badge-danger' : 'badge-info'}">${row.status}</span></td>
+                    <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${actions}</td>
+                </tr>
+            ` : `
+                <tr style="cursor:pointer" onclick="openLeaderCcttDetail('${row.id}')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox" class="row-checkbox" value="${row.id}"></td>
+                    <td style="text-align:center">${idx + 1}</td>
+                    <td><span class="action-link"><b>${row.id}</b></span></td>
+                    <td>${row.registeredAt}</td>
+                    <td><b>${row.requester}</b><br><span style="color:var(--text-muted);font-size:12px">${row.address}</span></td>
+                    <td>${row.criteria}</td>
+                    <td>${row.inputData}</td>
+                    <td>${row.officer}</td>
+                    <td>${row.submittedAt}</td>
+                    <td><span class="badge ${row.status === 'Hoàn thành' ? 'badge-success' : row.status === 'Bị từ chối' || row.status === 'Bị trả lại' ? 'badge-danger' : 'badge-warning'}">${row.status}</span></td>
+                    <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${actions}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+    document.getElementById('page-start-index').innerText = rows.length ? '1' : '0';
+    document.getElementById('page-end-index').innerText = rows.length;
+    document.getElementById('total-records').innerText = rows.length;
+    document.getElementById('pagination-buttons').innerHTML = '<button class="btn btn-outline-secondary" disabled style="padding:4px 10px;font-size:12px">1</button>';
+}
+
+function renderLeaderDevelopingTable() {
+    const batchToolbar = document.getElementById('toolbar-choky-batch');
+    if (batchToolbar) batchToolbar.style.display = 'none';
+    const title = document.querySelector('.card-section h3');
+    if (title) title.innerText = 'Danh sách yêu cầu cung cấp bản sao';
+    document.getElementById('table-headers-container').innerHTML = '<tr><th>Trạng thái phát triển</th></tr>';
+    document.getElementById('table-data').innerHTML = '<tr><td style="padding:30px;text-align:center;color:var(--text-muted);font-weight:700">Khối Yêu cầu cung cấp bản sao đang phát triển.</td></tr>';
+    document.getElementById('page-start-index').innerText = '0';
+    document.getElementById('page-end-index').innerText = '0';
+    document.getElementById('total-records').innerText = '0';
+    document.getElementById('pagination-buttons').innerHTML = '';
+}
+
+function openLeaderCcttDetail(id) {
+    const item = leaderCcttRequests.find(x => x.id === id);
+    if (!item) return;
+    selectedLeaderCcttId = id;
+    document.getElementById('view-list').classList.remove('active');
+    document.getElementById('view-detail').classList.add('active');
+    document.getElementById('detail-id-display').innerText = item.id;
+    const badge = document.getElementById('detail-status');
+    badge.className = `badge ${item.status === 'Hoàn thành' ? 'badge-success' : (item.status === 'Bị từ chối' || item.status === 'Bị trả lại') ? 'badge-danger' : item.status === 'Chờ duyệt' ? 'badge-warning' : 'badge-info'}`;
+    badge.innerText = item.status;
+    document.getElementById('toggle-diff-container').style.display = 'none';
+    document.getElementById('lifecycle-timeline').innerHTML = `
+        <li class="timeline-item active"><div class="timeline-title">Cán bộ trình</div><div class="timeline-date">${item.submittedAt}</div></li>
+        <li class="timeline-item"><div class="timeline-title">${item.status === 'Chờ ký' ? 'Ký số PDF' : 'Lãnh đạo duyệt'}</div><div class="timeline-date">Đang chờ</div></li>
+    `;
+    document.getElementById('internal-log-content').innerHTML = `<div><b>${item.submittedAt}</b> - ${item.officer} trình hồ sơ lên Lãnh đạo.</div>`;
+    document.getElementById('tab-controls-container').style.display = 'none';
+    document.getElementById('tab-contents-container').innerHTML = renderLeaderCcttDetailContent(item);
+    document.getElementById('group-officer-opinion').style.display = 'none';
+    const isPaperItem = item.source === 'Cán bộ nhập liệu';
+    let toolbarHtml = '<button class="btn btn-outline-secondary" onclick="closeDetail()">Đóng</button>';
+    if (item.status === 'Chờ ký') {
+        if (isPaperItem) {
+            toolbarHtml += `<button class="btn btn-outline-secondary" onclick="openReasonFromDetail('tralai')"><i class="fa-solid fa-reply"></i> Trả lại</button>
+                            <button class="btn btn-danger" onclick="openReasonFromDetail('tuchoi')">✖ Từ chối</button>`;
+        }
+        toolbarHtml += `<button class="btn btn-success" onclick="openSignFromDetail()"><i class="fa-solid fa-file-signature"></i> Ký số PDF</button>`;
+    } else if (item.status === 'Chờ duyệt') {
+        toolbarHtml += `<button class="btn btn-success" onclick="alert('Đã duyệt hồ sơ ${item.id}.')">✔ Duyệt</button>
+                         <button class="btn btn-danger" onclick="openReasonFromDetail('tuchoi')">✖ Từ chối</button>`;
+    }
+    document.getElementById('detail-toolbar-buttons').innerHTML = toolbarHtml;
+}
+
+function renderLeaderCcttDetailContent(item) {
+    const noData = item.resultType === 'noData';
+    return `
+        <div class="card-section" style="box-shadow:none;border:none;padding:0">
+            <h3 class="section-title">File PDF dự thảo trình duyệt</h3>
+            <div class="info-grid">
+                <div class="info-group"><div class="info-label">File PDF</div><div class="info-value"><a class="action-link" href="#" onclick="alert('Mở xem trước PDF ${item.pdfVersion}')">Mẫu số 10d - ${item.pdfVersion}</a></div></div>
+                <div class="info-group"><div class="info-label">Người tạo file</div><div class="info-value">${item.officer}</div></div>
+                <div class="info-group"><div class="info-label">Thời điểm tạo file</div><div class="info-value">${item.submittedAt}</div></div>
+                <div class="info-group"><div class="info-label">Phiên bản file</div><div class="info-value">${item.pdfVersion}</div></div>
+                <div class="info-group"><div class="info-label">QR trên file</div><div class="info-value">Quét QR mở trang tra cứu xác thực file đã ký theo mã hồ sơ ${item.id}</div></div>
+            </div>
+            <h3 class="section-title">Thông tin hồ sơ</h3>
+            <div class="info-grid">
+                <div class="info-group"><div class="info-label">Mã hồ sơ</div><div class="info-value"><b>${item.id}</b></div></div>
+                <div class="info-group"><div class="info-label">Mã khách hàng</div><div class="info-value"><code>${item.customerId}</code></div></div>
+                <div class="info-group"><div class="info-label">Người yêu cầu</div><div class="info-value">${item.requester}</div></div>
+                <div class="info-group"><div class="info-label">Địa chỉ</div><div class="info-value">${item.address}</div></div>
+                <div class="info-group"><div class="info-label">Thời điểm đăng ký</div><div class="info-value">${item.registeredAt}</div></div>
+                <div class="info-group"><div class="info-label">Nguồn tiếp nhận</div><div class="info-value">${item.source}</div></div>
+                <div class="info-group"><div class="info-label">Tiêu chí yêu cầu</div><div class="info-value">${item.criteria}</div></div>
+                <div class="info-group"><div class="info-label">Dữ liệu Khách hàng đã nhập</div><div class="info-value">${item.inputData}</div></div>
+                <div class="info-group"><div class="info-label">Cán bộ xử lý</div><div class="info-value">${item.officer}</div></div>
+                <div class="info-group"><div class="info-label">Thời điểm tra cứu</div><div class="info-value">${item.registeredAt}</div></div>
+                <div class="info-group"><div class="info-label">Cán bộ trình duyệt</div><div class="info-value">${item.officer}</div></div>
+                <div class="info-group"><div class="info-label">Thời điểm trình duyệt</div><div class="info-value">${item.submittedAt}</div></div>
+            </div>
+            <h3 class="section-title">Kết quả tra cứu</h3>
+            ${noData ? '<div style="padding:14px;border:1px solid #FCD34D;background:#FFFBEB;border-radius:6px;font-weight:700">Kết quả thông tin bạn tra cứu: Chưa được đăng ký hoặc hiệu lực của đăng ký đối với thông tin không còn.</div>' : `
+                <div style="font-weight:700;color:var(--primary-color);margin-bottom:10px">VI. Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký</div>
+                <table class="table" style="min-width:980px">
+                    <thead><tr><th>STT</th><th>Số hồ sơ</th><th>Số đăng ký</th><th>Thời điểm đăng ký</th><th>Loại hình đăng ký</th><th>Bên bảo đảm</th><th>Bên nhận bảo đảm</th><th>Hiệu lực tại thời điểm tra cứu</th></tr></thead>
+                    <tbody><tr><td>1</td><td>HS-2026-000813</td><td>1505170802</td><td>02/07/2026 10:27</td><td>Đăng ký lần đầu</td><td>Công ty Cổ phần Xây dựng và Phát triển HTC</td><td>Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</td><td>Có</td></tr></tbody>
+                </table>`}
+            <div class="info-group" style="margin-top:10px"><div class="info-label">Kết quả có phát sinh nghĩa vụ phí</div><div class="info-value">${(!noData && item.fee > 0) ? `Có (${item.fee.toLocaleString('vi-VN')} VNĐ)` : 'Không'}</div></div>
+        </div>
+    `;
+}
+
+closeDetail = function () {
+    selectedLeaderCcttId = null;
+    UC031_BASE.closeDetail();
+    syncLeaderWorkTabs();
+};
+
+const UC031_SIGN_BASE = {
+    signBatch,
+    submitSign,
+    openSignSingle,
+    openSignFromDetail
+};
+
+function openCcttSignModal(ids) {
+    currentActionIds = ids;
+    document.getElementById('cctt-sign-count').innerText = ids.length;
+    document.getElementById('cctt-sign-list').innerHTML = ids.map(id => {
+        const item = leaderCcttRequests.find(x => x.id === id);
+        if (!item) return '';
+        return `<tr id="cctt-sign-row-${item.id}">
+            <td><b>${item.id}</b></td>
+            <td>${item.requester}</td>
+            <td><a class="action-link" href="#" onclick="alert('Mở xem trước PDF ${item.pdfVersion}'); return false;">Mẫu số 10d - ${item.pdfVersion}</a></td>
+            <td><span class="badge" id="cctt-sign-status-${item.id}">Chưa ký</span></td>
+        </tr>`;
+    }).join('');
+    document.getElementById('cctt-usb-status').innerText = 'Chưa kiểm tra';
+    document.getElementById('cctt-usb-detail').style.display = 'none';
+    document.getElementById('cctt-pin-group').style.display = 'none';
+    document.getElementById('ccttPinCode').value = '';
+    document.getElementById('ccttPinCode').classList.remove('is-invalid');
+    document.getElementById('ccttPinError').classList.remove('active');
+    document.getElementById('btnCcttSignConfirm').disabled = true;
+    openModal('modalCcttSign');
+}
+
+function checkCcttUsbToken() {
+    document.getElementById('cctt-usb-status').innerText = 'Chứng thư số hợp lệ';
+    document.getElementById('cctt-usb-detail').style.display = 'block';
+    document.getElementById('cctt-usb-cert').innerText = '[VNPT-CA] Lãnh đạo TTĐK';
+    document.getElementById('cctt-usb-signer').innerText = 'Nguyễn Văn Lãnh Đạo';
+    document.getElementById('cctt-usb-validity').innerText = '12/12/2025 - 12/12/2028';
+    document.getElementById('cctt-pin-group').style.display = 'block';
+    document.getElementById('btnCcttSignConfirm').disabled = false;
+}
+
+signBatch = function () {
+    if (leaderWorkType === 'cctt' && (currentListTab === 'duyet-choky' || currentListTab === 'dang_xu_ly')) {
+        const selected = getSelectedRows();
+        if (!selected.length) {
+            alert('Vui lòng chọn ít nhất một yêu cầu cung cấp thông tin để ký số.');
+            return;
+        }
+        openCcttSignModal(selected);
+        return;
+    }
+    UC031_SIGN_BASE.signBatch();
+};
+
+openSignSingle = function (id) {
+    if (String(id).startsWith('CCTT-')) {
+        openCcttSignModal([id]);
+        return;
+    }
+    UC031_SIGN_BASE.openSignSingle(id);
+};
+
+openSignFromDetail = function () {
+    if (selectedLeaderCcttId) {
+        openSignSingle(selectedLeaderCcttId);
+        return;
+    }
+    UC031_SIGN_BASE.openSignFromDetail();
+};
+
+const UC031_REASON_BASE = { submitReason, openReasonSingle, openReasonFromDetail };
+
+openReasonFromDetail = function (type) {
+    if (selectedLeaderCcttId) {
+        openReasonSingle(selectedLeaderCcttId, type);
+        return;
+    }
+    UC031_REASON_BASE.openReasonFromDetail(type);
+};
+
+openReasonSingle = function (id, type) {
+    if (!String(id).startsWith('CCTT-')) {
+        const ctx = document.getElementById('reasonContextInfo');
+        if (ctx) ctx.style.display = 'none';
+        UC031_REASON_BASE.openReasonSingle(id, type);
+        return;
+    }
+    UC031_REASON_BASE.openReasonSingle(id, type);
+    renderCcttReasonContext([id], type);
+};
+
+function renderCcttReasonContext(ids, type) {
+    const container = document.getElementById('reasonContextInfo');
+    if (!container) return;
+    if (ids.length > 1) {
+        container.style.display = 'block';
+        container.innerHTML = `<div style="background:#F8FAFC;border:1px solid var(--border-color);border-radius:6px;padding:10px 12px;font-size:13px">
+            <b>Loại xử lý:</b> ${type === 'tralai' ? 'Trả lại' : 'Từ chối'}<br>
+            <b>Số lượng hồ sơ đã chọn:</b> ${ids.length}
+        </div>`;
+        return;
+    }
+    const item = leaderCcttRequests.find(x => x.id === ids[0]);
+    if (!item) { container.style.display = 'none'; return; }
+    const isPaper = item.source === 'Cán bộ nhập liệu';
+    container.style.display = 'block';
+    container.innerHTML = `<div style="background:#F8FAFC;border:1px solid var(--border-color);border-radius:6px;padding:10px 12px;font-size:13px">
+        <b>Mã hồ sơ:</b> ${item.id}${isPaper ? `<br><b>Số đơn giấy:</b> ${item.id.replace('CCTT-', 'DG-')}<br><b>Nguồn tiếp nhận:</b> ${item.source}` : ''}<br>
+        <b>Người yêu cầu:</b> ${item.requester}<br>
+        <b>Tiêu chí yêu cầu cung cấp thông tin:</b> ${item.criteria}<br>
+        <b>Giá trị tiêu chí:</b> ${item.inputData}<br>
+        <b>File PDF ${item.status === 'Chờ ký' ? 'chờ ký' : 'dự thảo'}:</b> <a class="action-link" href="#" onclick="alert('Mở xem trước PDF ${item.pdfVersion}'); return false;">Mẫu số 10d - ${item.pdfVersion}</a><br>
+        <b>Loại xử lý:</b> ${type === 'tralai' ? 'Trả lại' : 'Từ chối'}
+    </div>`;
+}
+
+submitReason = function () {
+    const isCcttReason = currentActionIds.some(id => String(id).startsWith('CCTT-'));
+    if (!isCcttReason) {
+        UC031_REASON_BASE.submitReason();
+        return;
+    }
+    const reason = document.getElementById('reasonText').value.trim();
+    if (!reason) {
+        document.getElementById('reasonText').classList.add('is-invalid');
+        document.getElementById('reasonError').classList.add('active');
+        document.getElementById('reasonText').focus();
+        return;
+    }
+    closeModal('modalReason');
+    const newStatus = currentActionType === 'tralai' ? 'Bị trả lại' : 'Bị từ chối';
+    currentActionIds.forEach(id => {
+        const item = leaderCcttRequests.find(x => x.id === id);
+        if (item) item.status = newStatus;
+    });
+    alert('Đã hoàn tất thao tác ' + (currentActionType === 'tralai' ? 'Trả lại' : 'Từ chối') + ' cho ' + currentActionIds.length + ' yêu cầu cung cấp thông tin.');
+    if (selectedLeaderCcttId && currentActionIds.includes(selectedLeaderCcttId)) {
+        closeDetail();
+    } else {
+        renderTable(true);
+    }
+};
+
+function ccttApproveBatch() {
+    const selected = getSelectedRows();
+    if (!selected.length) {
+        alert('Vui lòng chọn ít nhất một yêu cầu cung cấp thông tin để duyệt.');
+        return;
+    }
+    if (!confirm('Xác nhận duyệt ' + selected.length + ' yêu cầu cung cấp thông tin đã chọn?')) return;
+    selected.forEach(id => {
+        const item = leaderCcttRequests.find(x => x.id === id);
+        if (!item) return;
+        if (item.resultType === 'hasData' && item.fee > 0) {
+            item.status = 'Chờ thanh toán';
+        } else {
+            item.status = 'Chờ ký';
+            item.toSignReason = item.resultType === 'noData' ? 'Không có kết quả - không thu phí' : 'Miễn phí';
+        }
+    });
+    alert('Đã duyệt ' + selected.length + ' yêu cầu cung cấp thông tin.');
+    renderTable(true);
+}
+
+function ccttRejectBatch() {
+    const selected = getSelectedRows();
+    if (!selected.length) {
+        alert('Vui lòng chọn ít nhất một yêu cầu cung cấp thông tin để từ chối.');
+        return;
+    }
+    UC031_REASON_BASE.openReasonSingle(selected[0], 'tuchoi');
+    currentActionIds = selected;
+    renderCcttReasonContext(selected, 'tuchoi');
+}
+
+function submitCcttSign() {
+    const pin = document.getElementById('ccttPinCode').value.trim();
+    if (pin !== '1234') {
+        document.getElementById('ccttPinCode').classList.add('is-invalid');
+        document.getElementById('ccttPinError').classList.add('active');
+        document.getElementById('ccttPinCode').focus();
+        return;
+    }
+    document.getElementById('ccttPinCode').classList.remove('is-invalid');
+    document.getElementById('ccttPinError').classList.remove('active');
+    let successCount = 0;
+    currentActionIds.forEach(id => {
+        const item = leaderCcttRequests.find(x => x.id === id);
+        const statusCell = document.getElementById('cctt-sign-status-' + id);
+        if (item) {
+            item.status = 'Hoàn thành';
+            item.signedAt = 'Vừa xong';
+            item.pdfVersion = 'PDF đã ký số';
+            successCount++;
+        }
+        if (statusCell) {
+            statusCell.className = 'badge badge-success';
+            statusCell.innerText = 'Ký thành công';
+        }
+    });
+    document.getElementById('btnCcttSignConfirm').disabled = true;
+    alert('Đã ký số PDF Mẫu số 10d thành công cho ' + successCount + ' yêu cầu cung cấp thông tin.');
+    setTimeout(() => {
+        closeModal('modalCcttSign');
+        if (selectedLeaderCcttId && currentActionIds.includes(selectedLeaderCcttId)) {
+            closeDetail();
+        } else {
+            renderTable(true);
+        }
+    }, 400);
+}
+

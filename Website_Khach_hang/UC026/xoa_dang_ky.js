@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractDate: "04/01/2026",
             transactionType: "Biện pháp bảo đảm",
             measureType: "Thế chấp",
+            receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản của Bộ Tư pháp tại TP. Hà Nội",
             assetDescription: "Các phương tiện giao thông cơ giới đường bộ và các tài sản khác thuộc quyền sở hữu của bên bảo đảm để bảo đảm cho toàn bộ nghĩa vụ nợ của bên bảo đảm đối với bên nhận bảo đảm.",
             securingParties: [
                 {
@@ -176,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const refScaleInput = document.getElementById('refScale');
     const refFemaleOwnerCheckbox = document.getElementById('refFemaleOwner');
     const refContractTypeSelect = document.getElementById('refContractType');
+    const refReceiverSelect = document.getElementById('refReceiver');
 
     const requesterRoleSelect = document.getElementById('requesterRole');
     const representativeProofBlock = document.getElementById('representativeProofBlock');
@@ -220,6 +222,9 @@ document.addEventListener('DOMContentLoaded', function () {
     refLoanValueInput.value = baselineData.loanValue ? baselineData.loanValue + " VNĐ" : '2,500,000,000 VNĐ';
     refScaleInput.value = baselineData.scale || 'Doanh nghiệp lớn';
     refFemaleOwnerCheckbox.checked = !!baselineData.isFemaleOwner;
+    if (refReceiverSelect) {
+        refReceiverSelect.value = baselineData.receivingAgency || refReceiverSelect.value;
+    }
     if (refContractTypeSelect) {
         refContractTypeSelect.value = baselineData.contractType || 'Hợp đồng cho thuê tài chính';
     }
@@ -591,6 +596,7 @@ document.addEventListener('DOMContentLoaded', function () {
             deletionType: "toan_phan",
             feeAmount: feeAmount,
             uploadedFiles: uploadedFiles,
+            receivingAgency: refReceiverSelect ? refReceiverSelect.value : (baselineData.receivingAgency || "Trung tâm Đăng ký giao dịch, tài sản của Bộ Tư pháp tại TP. Hà Nội"),
             securingParties: baselineData.securingParties || [],
             securedParties: baselineData.securedParties || [],
             assets: totalAssets,
@@ -626,6 +632,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 if (savedDraft.deletionBasis) {
                     deletionBasisSelect.value = savedDraft.deletionBasis;
+                }
+                if (savedDraft.receivingAgency && refReceiverSelect) {
+                    refReceiverSelect.value = savedDraft.receivingAgency;
                 }
                 if (savedDraft.exemptionType) {
                     exemptionTypeSelect.checked = (savedDraft.exemptionType === 'miễn');

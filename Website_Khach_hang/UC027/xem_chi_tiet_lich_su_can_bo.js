@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const securingPartiesEmpty = document.getElementById('securingPartiesEmpty');
     const securedPartiesTableBody = document.getElementById('securedPartiesTableBody');
     const securedPartiesEmpty = document.getElementById('securedPartiesEmpty');
-    const assetsTableBody = document.getElementById('assetsTableBody');
+    const assetTypeSections = document.getElementById('assetTypeSections');
     const assetsEmpty = document.getElementById('assetsEmpty');
     const securingPartiesTitleLabel = document.getElementById('securingPartiesTitleLabel');
     const securedPartiesTitleLabel = document.getElementById('securedPartiesTitleLabel');
@@ -85,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnDownloadEditPdf = document.getElementById('btnDownloadEditPdf');
 
     const sectionRejectionInfo = document.getElementById('sectionRejectionInfo');
+    const rejectByVal = document.getElementById('rejectByVal');
     const rejectDateVal = document.getElementById('rejectDateVal');
     const rejectReasonVal = document.getElementById('rejectReasonVal');
     const rejectDocVal = document.getElementById('rejectDocVal');
@@ -255,6 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Công dân Việt Nam",
                     name: "Trần Văn An",
                     paperNo: "001085006789",
+                    birthDate: "15/08/1985",
                     address: "Số 45 Hàng Bài, Phường Hàng Bài, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
                     status: "Bổ sung mới"
                 }
@@ -349,6 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Công dân Việt Nam",
                     name: "Trần Văn An",
                     paperNo: "001085006789",
+                    birthDate: "15/08/1985",
                     address: "Số 45 Hàng Bài, Phường Hàng Bài, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
@@ -446,6 +449,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Công dân Việt Nam",
                     name: "Trần Văn An",
                     paperNo: "001085006789",
+                    birthDate: "15/08/1985",
                     address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam", // Sửa thông tin
                     prevAddress: "Số 45 Hàng Bài, Phường Hàng Bài, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
                     status: "Sửa thông tin"
@@ -542,6 +546,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Công dân Việt Nam",
                     name: "Trần Văn An",
                     paperNo: "001085006789",
+                    birthDate: "15/08/1985",
                     address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
@@ -641,6 +646,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Công dân Việt Nam",
                     name: "Trần Văn An",
                     paperNo: "001085006789",
+                    birthDate: "15/08/1985",
                     address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
@@ -738,6 +744,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Công dân Việt Nam",
                     name: "Trần Văn An",
                     paperNo: "001085006789",
+                    birthDate: "15/08/1985",
                     address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
@@ -833,6 +840,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Công dân Việt Nam",
                     name: "Trần Văn An",
                     paperNo: "001085006789",
+                    birthDate: "15/08/1985",
                     address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
@@ -915,6 +923,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Công dân Việt Nam",
                     name: "Nguyễn Văn Nam",
                     paperNo: "001092008421",
+                    birthDate: "20/09/1992",
                     address: "Số 15 Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
@@ -1294,6 +1303,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     let regNumParam = urlParams.get('regNum') || urlParams.get('id') || localStorage.getItem('canBoRegNum') || '';
     const isSingleMode = urlParams.get('mode') === 'single';
+    if (urlParams.get('from') === 'registered') {
+        const breadcrumbModuleLink = document.getElementById('breadcrumbModuleLink');
+        const breadcrumbCurrentText = document.getElementById('breadcrumbCurrentText');
+        const pageTitleText = document.getElementById('pageTitleText');
+        if (breadcrumbModuleLink) {
+            breadcrumbModuleLink.textContent = 'Quản lý yêu cầu đã đăng ký';
+            breadcrumbModuleLink.onclick = function () {
+                if (window.parent && window.parent !== window && typeof window.parent.showScreen === 'function') {
+                    window.parent.showScreen('registered-requests');
+                } else {
+                    window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                }
+                return false;
+            };
+        }
+        if (breadcrumbCurrentText) breadcrumbCurrentText.textContent = 'Xem chi tiết Phiếu đăng ký';
+        if (pageTitleText) pageTitleText.textContent = 'Xem chi tiết Phiếu đăng ký';
+    }
     const mockTimelineData = [];
     let registeredDetailContext = null;
     try {
@@ -2115,13 +2142,13 @@ document.addEventListener('DOMContentLoaded', function () {
         sectionEditInfo.style.display = 'none';
         sectionRejectionInfo.style.display = 'none';
 
-        // 11. Rejection block (only if version is Bị từ chối)
-        const isPendingOrCompleted = ["Chờ duyệt", "Chờ ký", "Duyệt chờ ký", "Chờ thanh toán", "Chờ nhập liệu", "Đang xử lý", "Hoàn thành"].includes(versionNode.statusText);
-        if (!isPendingOrCompleted && (versionNode.statusText === 'Bị từ chối' || versionNode.data.hasRejection)) {
+        // 11. Rejection block (only if selected timeline version is Bị từ chối)
+        if (versionNode.statusText === 'Bị từ chối' || versionNode.data.hasRejection) {
             sectionRejectionInfo.style.display = 'block';
+            if (rejectByVal) rejectByVal.textContent = versionNode.data.rejectBy || versionNode.data.rejectOfficer || "Nguyễn Văn Cán Bộ";
             rejectDateVal.textContent = versionNode.data.rejectDate || versionNode.date;
             rejectReasonVal.textContent = versionNode.data.rejectReason || "Không có lý do chi tiết.";
-            rejectDocVal.innerHTML = `<a href="#" class="btn-download-pdf" data-code="${versionNode.regCode}"><i class="fa-solid fa-file-pdf"></i> Tải Quyết định từ chối (.pdf)</a>`;
+            rejectDocVal.innerHTML = `<a href="#" class="btn-download-pdf" data-code="${versionNode.data.rejectNoticePdf || versionNode.regCode}"><i class="fa-solid fa-file-pdf"></i> Xem văn bản từ chối (.pdf)</a>`;
         }
 
         // Show specialized event blocks based on node data
@@ -2445,18 +2472,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             tr.innerHTML = `
-                <td>${idx + 1}</td>
                 <td>${party.typeName}</td>
                 <td>${party.paperNo}</td>
+                <td>${party.birthDate || '-'}</td>
                 ${nameCell}
                 ${addrCell}
-                <td>${statusTag}</td>
             `;
             securingPartiesTableBody.appendChild(tr);
         });
 
         // 5. Bên nhận bảo đảm (Tiêu đề động) GridView
-        // Columns: STT, Tên, Địa chỉ, Trạng thái biến động
         securedPartiesTableBody.innerHTML = '';
         currData.securedParties.forEach((party, idx) => {
             const tr = document.createElement('tr');
@@ -2518,254 +2543,198 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             tr.innerHTML = `
-                <td>${idx + 1}</td>
                 ${nameCell}
                 ${addrCell}
-                <td>${statusTag}</td>
             `;
             securedPartiesTableBody.appendChild(tr);
         });
 
-        // 6. Danh sách tài sản GridView
-        const isAuditMode = document.getElementById('assetAuditToggle') && document.getElementById('assetAuditToggle').checked;
-        assetsTableBody.innerHTML = '';
-        
-        if (isAuditMode) {
-            // Render Audit Trail of assets
-            const assetsTable = document.getElementById('assetsTable');
-            if (assetsTable) {
-                const thead = assetsTable.querySelector('thead');
-                if (thead) {
-                    thead.innerHTML = `
-                        <tr>
-                            <th style="width: 50px; text-align: center;">STT</th>
-                            <th>Loại tài sản</th>
-                            <th>Tên phương tiện / Tài sản</th>
-                            <th>Nhãn hiệu, màu sơn / Mô tả chi tiết</th>
-                            <th>Số khung / Số định danh</th>
-                            <th>Số máy / Biển số</th>
-                            <th>Trạng thái</th>
-                            <th>Phiên bản thay đổi</th>
-                            <th>Thời điểm thay đổi</th>
-                            <th>Nội dung thay đổi</th>
-                        </tr>
-                    `;
-                }
+        // 6. Tài sản bảo đảm - hiển thị theo từng Loại tài sản, giống UC024.MH02 Review
+        const showAssetChanges = current.label.includes("Thay đổi") ||
+                                current.label.includes("Xóa") ||
+                                current.label.includes("Hủy") ||
+                                current.label.includes("Khôi phục") ||
+                                current.label.includes("Chỉnh lý");
+
+        const htmlEscape = (value) => String(value ?? '-')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+        const assetStatusBadge = (asset) => {
+            if (!showAssetChanges) return '';
+            if (asset.status === 'Bổ sung mới') return '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
+            if (asset.status === 'Đã giải chấp') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Đã giải chấp</span>';
+            if (asset.status === 'Đã hủy') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-ban"></i> Đã hủy</span>';
+            if (asset.status === 'Sửa thông tin') return '<span class="table-status-tag tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>';
+            if (asset.status === 'Đang xử lý') return '<span class="table-status-tag tag-processing">Đang xử lý</span>';
+            return '';
+        };
+
+        const getAssetBucket = (asset) => {
+            const type = (asset.typeName || '').toLowerCase();
+            if (type.includes('có số khung') || type.includes('giao thông cơ giới đường bộ')) return 'road';
+            if (type.includes('tàu cá') || type.includes('đường thủy') || type.includes('đường sắt')) return 'vehicle';
+            if (type.includes('quyền tài sản')) return 'rights';
+            if (type.includes('cây hằng năm') || type.includes('công trình tạm')) return 'annual';
+            if (type.includes('hàng hóa luân chuyển') || type.includes('kho hàng')) return 'inventory';
+            if (type.includes('chứng khoán đã đăng ký tập trung')) return 'securities';
+            return 'other';
+        };
+
+        const assetGroups = {
+            road: {
+                title: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                items: []
+            },
+            vehicle: {
+                title: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt',
+                items: []
+            },
+            rights: {
+                title: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+                items: []
+            },
+            annual: {
+                title: 'Cây hằng năm, công trình tạm',
+                items: []
+            },
+            inventory: {
+                title: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ',
+                items: []
+            },
+            securities: {
+                title: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
+                items: []
+            },
+            other: {
+                title: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)',
+                items: []
             }
+        };
 
-            // Build merged asset list across all versions chronologically up to the current version
-            const historyVersions = mockTimelineData
-                .filter(v => v.version <= current.version)
-                .sort((a, b) => a.version - b.version);
+        (currData.assets || []).forEach(asset => {
+            assetGroups[getAssetBucket(asset)].items.push(asset);
 
-            const trackedAssets = [];
-
-            historyVersions.forEach(ver => {
-                if (ver.data && ver.data.assets) {
-                    ver.data.assets.forEach(asset => {
-                        const existing = trackedAssets.find(ta => {
-                            if (asset.frameNo && asset.frameNo !== '-' && ta.frameNo === asset.frameNo) {
-                                return true;
-                            }
-                            return ta.name === asset.name && ta.brandColor === asset.brandColor;
-                        });
-
-                        if (existing) {
-                            existing.lastVersion = ver.label;
-                            existing.lastDate = ver.date;
-                            if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy' || ver.data.hasDeRegistration || ver.data.hasCancelReg) {
-                                existing.status = 'Đã giải chấp / Hủy';
-                                existing.changeType = 'Giải chấp';
-                            } else if (asset.status === 'Sửa thông tin') {
-                                existing.brandColor = asset.brandColor;
-                                existing.status = 'Đang bảo đảm';
-                                existing.changeType = 'Sửa thông tin';
-                            } else {
-                                existing.status = 'Đang bảo đảm';
-                                existing.changeType = 'Không thay đổi';
-                            }
-                        } else {
-                            let initStatus = 'Đang bảo đảm';
-                            let changeType = 'Đăng ký gốc';
-                            if (ver.version > 1) {
-                                changeType = 'Bổ sung mới';
-                            }
-                            if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
-                                initStatus = 'Đã giải chấp / Hủy';
-                                changeType = 'Giải chấp';
-                            }
-
-                            trackedAssets.push({
-                                typeName: asset.typeName,
-                                name: asset.name,
-                                brandColor: asset.brandColor,
-                                frameNo: asset.frameNo,
-                                engineNo: asset.engineNo,
-                                plateNo: asset.plateNo,
-                                status: initStatus,
-                                lastVersion: ver.label,
-                                lastDate: ver.date,
-                                changeType: changeType
-                            });
-                        }
-                    });
-                }
-            });
-
-            trackedAssets.forEach((asset, idx) => {
-                const tr = document.createElement('tr');
-                
-                let statusHtml = '';
-                let rowStyle = '';
-                let textStyle = '';
-
-                if (asset.status === 'Đã giải chấp / Hủy') {
-                    rowStyle = 'background-color: #FEF2F2; text-decoration: line-through; color: var(--danger-dark);';
-                    textStyle = 'color: var(--danger-dark);';
-                    statusHtml = `<span class="table-status-tag tag-removed" style="background-color: var(--danger-light); color: var(--danger-dark); border: 1px solid #FCA5A5; font-size:11px; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-ban"></i> Đã giải chấp / Hủy</span>`;
-                } else if (asset.changeType === 'Bổ sung mới') {
-                    rowStyle = 'background-color: #F0FDF4;';
-                    textStyle = 'color: var(--success-dark);';
-                    statusHtml = `<span class="table-status-tag tag-added" style="background-color: var(--success-light); color: var(--success-dark); border: 1px solid #A7F3D0; font-size:11px; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-plus"></i> Đăng ký bổ sung</span>`;
-                } else if (asset.changeType === 'Sửa thông tin') {
-                    rowStyle = 'background-color: #FFFDF5;';
-                    textStyle = 'color: var(--text-main); font-weight: 600;';
-                    statusHtml = `<span class="table-status-tag tag-modified" style="background-color: var(--accent-light); color: var(--accent-dark); border: 1px solid #FDE68A; font-size:11px; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-pen"></i> Đang bảo đảm (Sửa)</span>`;
-                } else {
-                    textStyle = 'color: #0F172A;';
-                    statusHtml = `<span class="table-status-tag tag-normal" style="background-color: #F1F5F9; color: #334155; border: 1px solid #CBD5E1; font-size:11px; padding:2px 6px; border-radius:4px;">Đang bảo đảm</span>`;
-                }
-
-                tr.style.cssText = rowStyle;
-                tr.innerHTML = `
-                    <td style="text-align: center; ${textStyle}">${idx + 1}</td>
-                    <td style="${textStyle}">${asset.typeName || ''}</td>
-                    <td style="${textStyle}">${asset.name}</td>
-                    <td style="${textStyle}">${asset.brandColor}</td>
-                    <td style="${textStyle}"><code>${asset.frameNo || '-'}</code></td>
-                    <td style="${textStyle}"><code>${asset.plateNo || '-'}</code></td>
-                    <td style="text-align: center;">${statusHtml}</td>
-                    <td style="${textStyle}"><b>${asset.lastVersion}</b></td>
-                    <td style="${textStyle}">${asset.lastDate}</td>
-                    <td style="${textStyle} font-style: italic;">${asset.changeType}</td>
-                `;
-                assetsTableBody.appendChild(tr);
-            });
-
-        } else {
-            // Restore standard headers
-            const assetsTable = document.getElementById('assetsTable');
-            if (assetsTable) {
-                const thead = assetsTable.querySelector('thead');
-                if (thead) {
-                    thead.innerHTML = `
-                        <tr>
-                            <th style="width: 50px; text-align: center;">STT</th>
-                            <th>Loại tài sản</th>
-                            <th>Tên phương tiện / Tài sản</th>
-                            <th>Nhãn hiệu, màu sơn / Mô tả chi tiết</th>
-                            <th>Số khung / Số định danh</th>
-                            <th>Số máy / Biển số</th>
-                            <th>Trạng thái biến động</th>
-                        </tr>
-                    `;
-                }
-            }
-
-            // Show asset changes if selected version has changes or is Xóa/Hủy/Khôi phục/Chỉnh lý
-            const showAssetChanges = current.label.includes("Thay đổi") || 
-                                    current.label.includes("Xóa") || 
-                                    current.label.includes("Hủy") || 
-                                    current.label.includes("Khôi phục") || 
-                                    current.label.includes("Chỉnh lý");
-
-            currData.assets.forEach((asset, idx) => {
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-status', asset.status);
-                
-                let statusTag = '';
-                let rowClass = '';
-                
-                if (showAssetChanges) {
-                    if (asset.status === 'Bổ sung mới') {
-                        rowClass = 'asset-added';
-                        statusTag = '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
-                        addListSummaryRow('Tài sản bảo đảm', asset.name, 'Thêm mới', '-', `${asset.name} (${asset.brandColor})`);
-                    } else if (asset.status === 'Đã giải chấp') {
-                        rowClass = 'asset-removed';
-                        statusTag = '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Đã giải chấp</span>';
-                        addListSummaryRow('Tài sản bảo đảm', asset.name, 'Rút bớt', `${asset.name} (${asset.brandColor})`, '-');
-                    } else if (asset.status === 'Đã hủy') {
-                        rowClass = 'asset-removed';
-                        statusTag = '<span class="table-status-tag tag-removed"><i class="fa-solid fa-ban"></i> Đã hủy</span>';
-                        addListSummaryRow('Tài sản bảo đảm', asset.name, 'Rút bớt', `${asset.name} (${asset.brandColor})`, '-');
-                    } else if (asset.status === 'Sửa thông tin') {
-                        rowClass = 'asset-modified';
-                        statusTag = '<span class="table-status-tag tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>';
-                    } else if (asset.status === 'Đang xử lý') {
-                        statusTag = '<span class="table-status-tag tag-processing">Đang xử lý</span>';
-                    } else {
-                        statusTag = '<span class="table-status-tag tag-normal">Đang bảo đảm</span>';
-                    }
-                } else {
-                    statusTag = '<span class="table-status-tag tag-normal">Đang bảo đảm</span>';
-                }
-                
-                if (rowClass) tr.className = rowClass;
-
-                let nameCell = `<td>${asset.name}</td>`;
-                let brandCell = `<td>${asset.brandColor}</td>`;
-                let frameCell = `<td>${asset.frameNo}</td>`;
-                let enginePlateCell = `<td>Khung/Máy: ${asset.engineNo} / Biển: ${asset.plateNo || 'Chưa đăng ký'}</td>`;
-                
-                if (showAssetChanges && asset.status === 'Sửa thông tin') {
+            if (showAssetChanges) {
+                if (asset.status === 'Bổ sung mới') {
+                    addListSummaryRow('Tài sản bảo đảm', asset.name, 'Thêm mới', '-', `${asset.name} (${asset.brandColor})`);
+                } else if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
+                    addListSummaryRow('Tài sản bảo đảm', asset.name, 'Rút bớt', `${asset.name} (${asset.brandColor})`, '-');
+                } else if (asset.status === 'Sửa thông tin') {
                     if (asset.prevName && asset.prevName !== asset.name) {
-                        nameCell = `
-                            <td class="cell-modified">
-                                <del style="color: var(--text-muted); font-size:11.5px;">${asset.prevName}</del><br>
-                                <strong>${asset.name}</strong>
-                            </td>
-                        `;
                         addListSummaryRow('Tài sản bảo đảm', 'Tên tài sản', 'Chỉnh sửa', asset.prevName, asset.name);
                     }
                     if (asset.prevBrandColor && asset.prevBrandColor !== asset.brandColor) {
-                        brandCell = `
-                            <td class="cell-modified">
-                                <del style="color: var(--text-muted); font-size:11.5px;">${asset.prevBrandColor}</del><br>
-                                <strong>${asset.brandColor}</strong>
-                            </td>
-                        `;
                         addListSummaryRow('Tài sản bảo đảm', 'Nhãn hiệu, màu sơn', 'Chỉnh sửa', asset.prevBrandColor, asset.brandColor);
                     }
                     if (asset.prevFrameNo && asset.prevFrameNo !== asset.frameNo) {
-                        frameCell = `
-                            <td class="cell-modified">
-                                <del style="color: var(--text-muted); font-size:11.5px;">${asset.prevFrameNo}</del><br>
-                                <strong>${asset.frameNo}</strong>
-                            </td>
-                        `;
                         addListSummaryRow('Tài sản bảo đảm', 'Số khung', 'Chỉnh sửa', asset.prevFrameNo, asset.frameNo);
                     }
                 }
+            }
+        });
 
-                let typeNameCell = '';
-                if (asset.typeName && asset.typeName.length > 40) {
-                    typeNameCell = `<td title="${asset.typeName}">${asset.typeName.substring(0, 37)}...</td>`;
-                } else {
-                    typeNameCell = `<td>${asset.typeName || ''}</td>`;
-                }
+        const blockHtml = (groupKey, bodyHtml) => {
+            const group = assetGroups[groupKey];
+            const hasChange = group.items.some(asset => ['Bổ sung mới', 'Đã giải chấp', 'Đã hủy', 'Sửa thông tin'].includes(asset.status));
+            const hiddenClass = diffToggle.checked && !hasChange ? ' ucps-asset-type-hidden' : '';
+            return `
+                <div class="ucps-review-asset-block${hiddenClass}" data-asset-group="${groupKey}" data-has-change="${hasChange}">
+                    <div class="ucps-review-asset-title">
+                        <span>${htmlEscape(group.title)}</span>
+                    </div>
+                    <div class="ucps-review-asset-body">
+                        ${bodyHtml}
+                    </div>
+                </div>
+            `;
+        };
 
-                tr.innerHTML = `
-                    <td style="text-align: center;">${idx + 1}</td>
-                    ${typeNameCell}
-                    ${nameCell}
-                    ${brandCell}
-                    ${frameCell}
-                    ${enginePlateCell}
-                    <td style="text-align: center;">${statusTag}</td>
-                `;
-                assetsTableBody.appendChild(tr);
-            });
+        const renderRoadTable = (items) => `
+            <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 10px;">Số khung</div>
+            <div style="overflow-x: auto;">
+                <table class="grid-view-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 56px; text-align: center;">STT</th>
+                            <th>TÊN PHƯƠNG TIỆN</th>
+                            <th>NHÃN HIỆU, MÀU SƠN</th>
+                            <th>SỐ KHUNG</th>
+                            <th>SỐ MÁY</th>
+                            <th>BIỂN SỐ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${items.map((asset, idx) => `
+                            <tr data-status="${htmlEscape(asset.status)}">
+                                <td style="text-align:center;">${idx + 1}</td>
+                                <td>${htmlEscape(asset.name)} ${assetStatusBadge(asset)}</td>
+                                <td>${htmlEscape(asset.brandColor)}</td>
+                                <td><code>${htmlEscape(asset.frameNo)}</code></td>
+                                <td><code>${htmlEscape(asset.engineNo)}</code></td>
+                                <td><code>${htmlEscape(asset.plateNo || '-')}</code></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        const renderVehicleTable = (items) => `
+            <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 10px;">Phương tiện</div>
+            <div style="overflow-x: auto;">
+                <table class="grid-view-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 56px; text-align: center;">STT</th>
+                            <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                            <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                            <th>SỐ ĐĂNG KÝ</th>
+                            <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                            <th>CẤP PHƯƠNG TIỆN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${items.map((asset, idx) => `
+                            <tr data-status="${htmlEscape(asset.status)}">
+                                <td style="text-align:center;">${idx + 1}</td>
+                                <td>${htmlEscape(asset.name)}<br><span style="color: var(--text-muted);">${htmlEscape(asset.brandColor)}</span> ${assetStatusBadge(asset)}</td>
+                                <td>${htmlEscape(asset.ownerName || currData.securingParties?.[0]?.name || '-')}</td>
+                                <td>${htmlEscape(asset.registrationNo || asset.plateNo || '-')}</td>
+                                <td>${htmlEscape(asset.certificateAgency || 'Cục Đăng kiểm Việt Nam')}</td>
+                                <td>${htmlEscape(asset.vehicleLevel || '-')}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        const renderTextAssets = (items) => items.map(asset => `
+            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
+                <strong>${htmlEscape(asset.name)}</strong> ${assetStatusBadge(asset)}
+                <br>${htmlEscape(asset.brandColor)}
+                ${asset.frameNo && asset.frameNo !== '-' ? `<br>Số định danh: ${htmlEscape(asset.frameNo)}` : ''}
+            </div>
+        `).join('<div style="height: 10px;"></div>');
+
+        const assetHtml = [];
+        if (assetGroups.road.items.length) assetHtml.push(blockHtml('road', renderRoadTable(assetGroups.road.items)));
+        if (assetGroups.vehicle.items.length) assetHtml.push(blockHtml('vehicle', renderVehicleTable(assetGroups.vehicle.items)));
+        if (assetGroups.rights.items.length) assetHtml.push(blockHtml('rights', renderTextAssets(assetGroups.rights.items)));
+        if (assetGroups.annual.items.length) assetHtml.push(blockHtml('annual', renderTextAssets(assetGroups.annual.items)));
+        if (assetGroups.inventory.items.length) assetHtml.push(blockHtml('inventory', renderTextAssets(assetGroups.inventory.items)));
+        if (assetGroups.securities.items.length) assetHtml.push(blockHtml('securities', renderTextAssets(assetGroups.securities.items)));
+        if (assetGroups.other.items.length) assetHtml.push(blockHtml('other', renderTextAssets(assetGroups.other.items)));
+
+        if (assetTypeSections) {
+            assetTypeSections.innerHTML = assetHtml.join('');
+        }
+        if (assetsEmpty) {
+            assetsEmpty.style.display = assetHtml.length ? 'none' : 'block';
         }
 
         // Hide change summary if version is Đăng ký lần đầu (Gốc)
@@ -2920,7 +2889,8 @@ document.addEventListener('DOMContentLoaded', function () {
         sectionSecuredParties.style.display = (isDiffOnly && !hasSecuredDiff) ? 'none' : 'block';
 
         // 6. Assets
-        const assetRows = assetsTableBody.querySelectorAll('tr');
+        const assetRows = assetTypeSections ? assetTypeSections.querySelectorAll('[data-status]') : [];
+        const assetBlocks = assetTypeSections ? assetTypeSections.querySelectorAll('[data-asset-group]') : [];
         let hasAssetDiff = false;
         assetRows.forEach(row => {
             const status = row.getAttribute('data-status');
@@ -2936,6 +2906,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 row.style.display = '';
                 hasAssetDiff = true;
             }
+        });
+        assetBlocks.forEach(block => {
+            const visibleRows = block.querySelectorAll('[data-status]:not([style*="display: none"])');
+            block.classList.toggle('ucps-asset-type-hidden', isDiffOnly && visibleRows.length === 0);
         });
         sectionAssets.style.display = (isDiffOnly && !hasAssetDiff) ? 'none' : 'block';
     }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách yêu cầu cung cấp thông tin</title>
+    <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../Common/style_iframe.css">
@@ -173,18 +174,26 @@
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11.5px;
-            font-weight: 700;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0;
             white-space: nowrap;
         }
-        .status-badge.cho-duyet { background-color: #FFFBEB; color: #B45309; }
-        .status-badge.cho-ky { background-color: #EFF6FF; color: #1D4ED8; }
-        .status-badge.cho-thanh-toan { background-color: #FFF7ED; color: #C2410C; }
-        .status-badge.hoan-thanh { background-color: #ECFDF5; color: #047857; }
-        .status-badge.bi-tu-choi { background-color: #FEF2F2; color: #B91C1C; }
+        .status-badge.draft { background-color: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }
+        .status-badge.pending-payment { background-color: #FFF7ED; color: #C2410C; border: 1px solid #FFEDD5; }
+        .status-badge.pending-approval { background-color: #FEF9C3; color: #A16207; border: 1px solid #FEF08A; }
+        .status-badge.approved-pending-signature { background-color: #EFF6FF; color: #1D4ED8; border: 1px solid #DBEAFE; }
+        .status-badge.completed { background-color: #ECFDF5; color: #047857; border: 1px solid #D1FAE5; }
+        .status-badge.rejected { background-color: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; }
+        .status-badge.cho-thanh-toan { background-color: #FFF7ED; color: #C2410C; border: 1px solid #FFEDD5; }
+        .status-badge.cho-duyet { background-color: #FEF9C3; color: #A16207; border: 1px solid #FEF08A; }
+        .status-badge.cho-ky { background-color: #EFF6FF; color: #1D4ED8; border: 1px solid #DBEAFE; }
+        .status-badge.hoan-thanh { background-color: #ECFDF5; color: #047857; border: 1px solid #D1FAE5; }
+        .status-badge.bi-tu-choi { background-color: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; }
 
         .action-cell { text-align: center; white-space: nowrap; }
         .action-cell .icon-btn {
@@ -240,34 +249,166 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 15px;
+            gap: 18px;
+            margin-bottom: 20px;
+            padding: 2px 0 16px;
+            border-bottom: 1px solid var(--border-color);
         }
-        .detail-title { font-size: 18px; font-weight: 700; color: var(--primary-color); }
+        .detail-title-wrap { min-width: 0; }
+        .detail-title { font-size: 20px; font-weight: 700; color: var(--primary-color); }
         .detail-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+        .detail-status-card {
+            min-width: 220px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background: #F8FAFC;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 7px;
+        }
+        .detail-status-label {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .detail-status-card .status-badge {
+            border-radius: 999px;
+            font-size: 12px;
+            padding: 7px 12px;
+        }
 
         .review-item { display: flex; flex-direction: column; gap: 4px; }
         .review-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
         .review-val { font-size: 13.5px; color: var(--text-main); font-weight: 500; }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .detail-grid.two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .detail-field {
+            min-height: 70px;
+            padding: 12px 14px;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--border-radius-md);
+            background: #F8FAFC;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+        }
+        .detail-field.full-row { grid-column: 1 / -1; }
+        .detail-field .review-label,
+        .detail-field .detail-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .detail-field .review-val,
+        .detail-field .detail-value {
+            font-size: 13.5px;
+            color: #0F172A;
+            font-weight: 600;
+            word-break: break-word;
+        }
 
         .file-link { color: var(--secondary-color); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
         .file-link:hover { text-decoration: underline; }
 
-        .related-dossier-card {
-            border: 1px solid var(--border-color);
+        .related-result-summary {
+            border: 1px solid #BFDBFE;
             border-radius: var(--border-radius-md);
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            background-color: #F8FAFC;
+            background: #EFF6FF;
+            color: #1E3A8A;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .related-result-summary-title {
+            font-weight: 800;
+            margin-bottom: 3px;
+        }
+        .related-result-summary-desc {
+            color: #475569;
+            font-size: 12.5px;
+            line-height: 1.45;
+        }
+        .related-result-count {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border-radius: 999px;
+            background: var(--primary-color);
+            color: #FFFFFF;
+            padding: 8px 13px;
+            font-size: 13px;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.18);
+        }
+        .related-dossier-card {
+            border: 1px solid #BFDBFE;
+            border-left: 5px solid var(--primary-color);
+            border-radius: var(--border-radius-lg);
+            padding: 0 16px 16px;
+            margin-bottom: 18px;
+            background-color: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(30, 58, 138, 0.08);
+            overflow: hidden;
         }
         .related-dossier-card:last-child { margin-bottom: 0; }
         .related-dossier-title {
             font-weight: 700;
             color: var(--primary-color);
             font-size: 13.5px;
-            margin-bottom: 10px;
+            margin: 0 -16px 14px;
+            padding: 12px 16px;
+            background: #F8FAFC;
+            border-bottom: 1px solid #DBEAFE;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .related-title-left {
+            display: inline-flex;
+            align-items: center;
             gap: 8px;
+            min-width: 0;
+        }
+        .related-index-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            background: var(--primary-color);
+            color: #FFFFFF;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            flex: 0 0 auto;
+        }
+        .result-status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            border-radius: 999px;
+            border: 1px solid #86EFAC;
+            background: #DCFCE7;
+            color: #047857;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0;
+            white-space: nowrap;
         }
 
         .detail-actions {
@@ -279,6 +420,150 @@
             border-top: 1px solid var(--border-color);
         }
         .detail-actions-right { display: flex; gap: 10px; }
+
+        .pdf-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.72);
+            z-index: 3000;
+            display: none;
+            align-items: stretch;
+            justify-content: center;
+            padding: 18px;
+        }
+        .pdf-modal.show { display: flex; }
+        .pdf-shell {
+            width: min(1120px, 100%);
+            background: #E5E7EB;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.28);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .pdf-toolbar {
+            background: #0F172A;
+            color: #FFFFFF;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .pdf-toolbar-title { font-weight: 700; font-size: 14px; }
+        .pdf-toolbar-actions { display: flex; gap: 8px; align-items: center; }
+        .pdf-toolbar .btn { padding: 7px 12px; font-size: 12.5px; }
+        .pdf-viewer {
+            overflow: auto;
+            padding: 24px;
+            max-height: calc(100vh - 110px);
+        }
+        .pdf-page {
+            width: 794px;
+            min-height: 1123px;
+            background: #FFFFFF;
+            color: #000000;
+            margin: 0 auto 22px;
+            padding: 54px 64px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 15px;
+            line-height: 1.35;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+        }
+        .pdf-page h2, .pdf-page h3, .pdf-page p { margin-top: 0; }
+        .pdf-topline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+            text-align: center;
+            font-weight: 700;
+        }
+        .pdf-form-code { text-align: right; font-weight: 700; margin-bottom: 12px; }
+        .pdf-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 18px;
+            margin: 34px 0 22px;
+            text-transform: uppercase;
+        }
+        .pdf-checkline { margin: 3px 0; }
+        .pdf-checkbox {
+            display: inline-flex;
+            width: 13px;
+            height: 13px;
+            border: 1px solid #111827;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            line-height: 1;
+            margin-right: 3px;
+        }
+        .pdf-divider { border-top: 1px solid #111827; margin: 18px 0 14px; }
+        .pdf-sign-area {
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            gap: 30px;
+            align-items: start;
+            margin-top: 26px;
+        }
+        .pdf-qr {
+            width: 82px;
+            height: 82px;
+            background:
+                linear-gradient(90deg, #000 10px, transparent 10px) 0 0/18px 18px,
+                linear-gradient(#000 10px, transparent 10px) 0 0/18px 18px,
+                #fff;
+            border: 6px solid #fff;
+            box-shadow: inset 0 0 0 2px #000;
+        }
+        .pdf-seal-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
+            margin-top: 18px;
+        }
+        .pdf-seal {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            border: 3px solid #DC2626;
+            color: #DC2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        .pdf-sign-text { font-size: 12px; color: #111827; line-height: 1.2; }
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0 14px;
+            font-size: 13.5px;
+        }
+        .pdf-table th, .pdf-table td {
+            border: 1px solid #111827;
+            padding: 6px 8px;
+            vertical-align: top;
+        }
+        .pdf-table th { font-weight: 700; text-align: center; }
+        .pdf-section-title {
+            font-weight: 700;
+            font-size: 17px;
+            margin: 14px 0 8px;
+        }
+        @media (max-width: 900px) {
+            .pdf-viewer { padding: 12px; }
+            .pdf-page {
+                width: 100%;
+                min-height: auto;
+                padding: 34px 24px;
+            }
+            .pdf-topline, .pdf-sign-area { grid-template-columns: 1fr; }
+        }
 
         /* Toast */
         .toast {
@@ -298,6 +583,12 @@
         .toast.success { background-color: var(--success-color); }
         .toast.error { background-color: var(--danger-color); }
         .toast.info { background-color: var(--secondary-color); }
+        @media (max-width: 900px) {
+            .detail-header { flex-direction: column; }
+            .detail-status-card { width: 100%; align-items: flex-start; }
+            .detail-grid,
+            .detail-grid.two-cols { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -323,10 +614,7 @@
 
         <!-- ==================== SCREEN A: UC195.MH01 - DANH SÁCH YÊU CẦU ==================== -->
         <div id="screen-list">
-            <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
-                <h2 class="section-title" style="margin-bottom: 15px;">
-                    <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
-                </h2>
+            <div style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
                 <div class="grid-3-cols">
                     <div class="form-group">
                         <label class="form-label">Mã hồ sơ</label>
@@ -345,6 +633,7 @@
                         <label class="form-label">Trạng thái hồ sơ</label>
                         <select id="fltStatus" class="form-control">
                             <option value="Tất cả" selected>Tất cả</option>
+                            <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                             <option value="Chờ duyệt">Chờ duyệt</option>
                             <option value="Chờ ký">Chờ ký</option>
                             <option value="Chờ thanh toán">Chờ thanh toán</option>
@@ -368,22 +657,17 @@
                             <i class="fa-solid fa-calendar-days"></i>
                         </div>
                     </div>
+                    <div class="form-group"></div>
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-                    <button class="btn btn-outline-primary" onclick="clearFilters()">Xóa bộ lọc</button>
-                    <button class="btn btn-primary" onclick="applyFilters()"><i class="fa fa-search"></i> Tìm kiếm</button>
+                    <button class="btn btn-outline-primary" onclick="clearFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button class="btn btn-primary" onclick="applyFilters()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
-            </div>
-
-            <div class="toolbar-actions">
-                <button class="btn btn-primary" onclick="goToCreateRequest()">
-                    <i class="fa-solid fa-plus"></i> Tạo mới
-                </button>
             </div>
 
             <div class="table-container">
                 <table class="custom-table">
-                    <thead>
+                    <thead style="background-color: var(--table-header-bg);">
                         <tr>
                             <th class="center" style="width: 50px;">STT</th>
                             <th>Mã hồ sơ</th>
@@ -418,94 +702,97 @@
         <div id="screen-detail" class="hidden">
             <div class="card-section">
                 <div class="detail-header">
-                    <div>
+                    <div class="detail-title-wrap">
                         <div class="detail-title" id="detailDossierCode">—</div>
                         <div class="detail-sub">Chi tiết yêu cầu cung cấp thông tin về biện pháp bảo đảm</div>
                     </div>
-                    <span class="status-badge" id="detailStatusBadge">—</span>
+                    <div class="detail-status-card">
+                        <span class="detail-status-label">Trạng thái hiện tại</span>
+                        <span class="status-badge" id="detailStatusBadge">—</span>
+                    </div>
                 </div>
 
                 <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-folder-open"></i> Thông tin hồ sơ</h3>
-                <div class="grid-3-cols" style="margin-bottom: 20px;">
-                    <div class="review-item">
-                        <span class="review-label">Mã hồ sơ</span>
-                        <span class="review-val" id="detMaHoSo">—</span>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <span class="detail-label">Mã hồ sơ</span>
+                        <span class="detail-value" id="detMaHoSo">—</span>
                     </div>
-                    <div class="review-item">
-                        <span class="review-label">Thời điểm đăng ký</span>
-                        <span class="review-val" id="detThoiDiemDangKy">—</span>
+                    <div class="detail-field">
+                        <span class="detail-label">Thời điểm đăng ký</span>
+                        <span class="detail-value" id="detThoiDiemDangKy">—</span>
                     </div>
-                    <div class="review-item">
-                        <span class="review-label">Nguồn tiếp nhận</span>
-                        <span class="review-val" id="detNguonTiepNhan">Website khách hàng</span>
+                    <div class="detail-field">
+                        <span class="detail-label">Nguồn tiếp nhận</span>
+                        <span class="detail-value" id="detNguonTiepNhan">Website khách hàng</span>
                     </div>
                 </div>
 
                 <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-magnifying-glass"></i> Thông tin yêu cầu cung cấp thông tin</h3>
-                <div class="grid-2-cols" style="margin-bottom: 20px;">
-                    <div class="review-item">
-                        <span class="review-label">Tiêu chí yêu cầu</span>
-                        <span class="review-val" id="detTieuChi">—</span>
+                <div class="detail-grid two-cols">
+                    <div class="detail-field">
+                        <span class="detail-label">Tiêu chí yêu cầu</span>
+                        <span class="detail-value" id="detTieuChi">—</span>
                     </div>
-                    <div class="review-item">
-                        <span class="review-label">Dữ liệu đã nhập</span>
-                        <span class="review-val" id="detDuLieuDaNhap">—</span>
+                    <div class="detail-field">
+                        <span class="detail-label">Dữ liệu đã nhập</span>
+                        <span class="detail-value" id="detDuLieuDaNhap">—</span>
                     </div>
                 </div>
 
                 <div id="blockXuLy">
                     <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-gavel"></i> Thông tin xử lý</h3>
-                    <div class="grid-3-cols" style="margin-bottom: 20px;">
-                        <div class="review-item hidden" id="itemLyDoTuChoi">
-                            <span class="review-label">Lý do từ chối</span>
-                            <span class="review-val" id="detLyDoTuChoi">—</span>
+                    <div class="detail-grid">
+                        <div class="detail-field full-row hidden" id="itemLyDoTuChoi">
+                            <span class="detail-label">Lý do từ chối</span>
+                            <span class="detail-value" id="detLyDoTuChoi">—</span>
                         </div>
-                        <div class="review-item hidden" id="itemThoiDiemTrinhKy">
-                            <span class="review-label">Thời điểm trình ký</span>
-                            <span class="review-val" id="detThoiDiemTrinhKy">—</span>
+                        <div class="detail-field hidden" id="itemThoiDiemTrinhKy">
+                            <span class="detail-label">Thời điểm trình ký</span>
+                            <span class="detail-value" id="detThoiDiemTrinhKy">—</span>
                         </div>
-                        <div class="review-item hidden" id="itemThoiDiemKy">
-                            <span class="review-label">Thời điểm ký</span>
-                            <span class="review-val" id="detThoiDiemKy">—</span>
+                        <div class="detail-field hidden" id="itemThoiDiemKy">
+                            <span class="detail-label">Thời điểm ký</span>
+                            <span class="detail-value" id="detThoiDiemKy">—</span>
                         </div>
-                        <div class="review-item hidden" id="itemNguoiKy">
-                            <span class="review-label">Người ký/Đơn vị ký</span>
-                            <span class="review-val" id="detNguoiKy">—</span>
+                        <div class="detail-field hidden" id="itemNguoiKy">
+                            <span class="detail-label">Người ký/Đơn vị ký</span>
+                            <span class="detail-value" id="detNguoiKy">—</span>
                         </div>
                     </div>
                 </div>
 
                 <div id="blockThanhToan" class="hidden">
                     <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-credit-card"></i> Thông tin thanh toán</h3>
-                    <div class="grid-3-cols" style="margin-bottom: 20px;">
-                        <div class="review-item">
-                            <span class="review-label">Số tiền phải thanh toán</span>
-                            <span class="review-val" id="detSoTien">—</span>
+                    <div class="detail-grid">
+                        <div class="detail-field">
+                            <span class="detail-label">Số tiền phải thanh toán</span>
+                            <span class="detail-value" id="detSoTien">—</span>
                         </div>
-                        <div class="review-item hidden" id="itemMaGiaoDich">
-                            <span class="review-label">Mã giao dịch thanh toán</span>
-                            <span class="review-val" id="detMaGiaoDich">—</span>
+                        <div class="detail-field hidden" id="itemMaGiaoDich">
+                            <span class="detail-label">Mã giao dịch thanh toán</span>
+                            <span class="detail-value" id="detMaGiaoDich">—</span>
                         </div>
-                        <div class="review-item hidden" id="itemSoBienLai">
-                            <span class="review-label">Số biên lai</span>
-                            <span class="review-val" id="detSoBienLai">—</span>
+                        <div class="detail-field hidden" id="itemSoBienLai">
+                            <span class="detail-label">Số biên lai</span>
+                            <span class="detail-value" id="detSoBienLai">—</span>
                         </div>
-                        <div class="review-item hidden" id="itemThoiDiemTT">
-                            <span class="review-label">Thời điểm thanh toán</span>
-                            <span class="review-val" id="detThoiDiemTT">—</span>
+                        <div class="detail-field hidden" id="itemThoiDiemTT">
+                            <span class="detail-label">Thời điểm thanh toán</span>
+                            <span class="detail-value" id="detThoiDiemTT">—</span>
                         </div>
-                        <div class="review-item hidden" id="itemTrangThaiTT">
-                            <span class="review-label">Trạng thái thanh toán</span>
-                            <span class="review-val" id="detTrangThaiTT">—</span>
+                        <div class="detail-field hidden" id="itemTrangThaiTT">
+                            <span class="detail-label">Trạng thái thanh toán</span>
+                            <span class="detail-value" id="detTrangThaiTT">—</span>
                         </div>
                     </div>
                 </div>
 
                 <div id="blockKetQua" class="hidden">
                     <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-pdf"></i> Tệp kết quả</h3>
-                    <div class="grid-2-cols" style="margin-bottom: 20px;">
-                        <div class="review-item">
-                            <span class="review-label">File PDF đã ký (Mẫu số 10d)</span>
+                    <div class="detail-grid two-cols">
+                        <div class="detail-field">
+                            <span class="detail-label">File PDF đã ký (Mẫu số 10d)</span>
                             <a href="#" class="file-link" onclick="event.preventDefault(); viewFile()"><i class="fa-solid fa-eye"></i> Xem file</a>
                         </div>
                     </div>
@@ -529,9 +816,24 @@
         <i class="fa-solid fa-circle-info"></i> <span id="toast-message">Thông báo</span>
     </div>
 
+    <div class="pdf-modal" id="signedPdfModal">
+        <div class="pdf-shell">
+            <div class="pdf-toolbar">
+                <div class="pdf-toolbar-title" id="signedPdfTitle">File PDF đã ký - Mẫu số 10d</div>
+                <div class="pdf-toolbar-actions">
+                    <button class="btn btn-secondary" onclick="printSignedPdf()"><i class="fa-solid fa-print"></i> In</button>
+                    <button class="btn btn-secondary" onclick="downloadFile()"><i class="fa-solid fa-download"></i> Tải file</button>
+                    <button class="btn btn-primary" onclick="closeSignedPdfModal()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+                </div>
+            </div>
+            <div class="pdf-viewer" id="signedPdfViewer"></div>
+        </div>
+    </div>
+
     <script>
         // ================= Mock data (25 bản ghi, đủ 3 tiêu chí và 5 trạng thái) =================
         const STATUS_MAP = {
+            'Chờ tiếp nhận': { cls: 'cho-duyet', icon: 'fa-hourglass-start' },
             'Chờ duyệt': { cls: 'cho-duyet', icon: 'fa-clock' },
             'Chờ ký': { cls: 'cho-ky', icon: 'fa-signature' },
             'Chờ thanh toán': { cls: 'cho-thanh-toan', icon: 'fa-money-bill-wave' },
@@ -540,7 +842,7 @@
         };
 
         const CRITERIA_CYCLE = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'];
-        const STATUS_CYCLE = ['Chờ duyệt', 'Chờ ký', 'Chờ thanh toán', 'Hoàn thành', 'Bị từ chối'];
+        const STATUS_CYCLE = ['Chờ tiếp nhận', 'Chờ duyệt', 'Chờ thanh toán', 'Chờ ký', 'Hoàn thành', 'Bị từ chối'];
 
         function buildMockInputData(criteria, idx) {
             if (criteria === 'Số đăng ký') return `DK-2026-${String(1000 + idx)}`;
@@ -568,7 +870,7 @@
                 status,
                 amount,
                 rejectReason: status === 'Bị từ chối' ? 'Hồ sơ chưa được đăng ký hoặc Hiệu lực của đăng ký đối với thông tin không còn.' : '',
-                signedBy: (status === 'Hoàn thành' || status === 'Chờ thanh toán') ? 'Lãnh đạo Trung tâm Đăng ký GDBĐ TP. Hà Nội' : ''
+                signedBy: status === 'Hoàn thành' ? 'Lãnh đạo Trung tâm Đăng ký GDBĐ TP. Hà Nội' : ''
             });
         }
 
@@ -588,21 +890,36 @@
 
         // ================= Render bảng danh sách =================
         function statusBadgeHtml(status) {
-            const meta = STATUS_MAP[status] || { cls: '', icon: 'fa-circle' };
-            return `<span class="status-badge ${meta.cls}"><i class="fa-solid ${meta.icon}"></i> ${status}</span>`;
+            const statusClassMap = {
+                'Lưu nháp': 'draft',
+                'Chờ tiếp nhận': 'pending-approval',
+                'Chờ thanh toán': 'pending-payment',
+                'Chờ duyệt': 'pending-approval',
+                'Chờ ký': 'approved-pending-signature',
+                'Hoàn thành': 'completed',
+                'Bị từ chối': 'rejected'
+            };
+            const cls = statusClassMap[status] || '';
+            return `<span class="status-badge ${cls}">${status}</span>`;
         }
 
         function actionCellHtml(item) {
+            const iconBtnStyle = 'width:30px; height:30px; padding:0; font-size:12px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; border-radius:6px;';
+            const actions = [];
+
             if (item.status === 'Chờ thanh toán') {
-                return `<button class="icon-btn pay" onclick="event.stopPropagation(); payFromList('${item.dossierCode}')"><i class="fa-solid fa-money-bill-wave"></i> Thanh toán</button>`;
+                actions.push(`<button class="btn btn-warning" style="${iconBtnStyle}" title="Thanh toán" aria-label="Thanh toán" onclick="event.stopPropagation(); payFromList('${item.dossierCode}')"><i class="fa-solid fa-credit-card"></i></button>`);
             }
+
             if (item.status === 'Hoàn thành') {
-                return `
-                    <button class="icon-btn" onclick="event.stopPropagation(); viewFile('${item.dossierCode}')"><i class="fa-solid fa-eye"></i> Xem file</button>
-                    <button class="icon-btn" onclick="event.stopPropagation(); downloadFile('${item.dossierCode}')"><i class="fa-solid fa-download"></i> Tải file</button>
-                `;
+                actions.push(`<button class="btn btn-success" style="${iconBtnStyle}" title="Tải file" aria-label="Tải file" onclick="event.stopPropagation(); downloadFile('${item.dossierCode}')"><i class="fa-solid fa-download"></i></button>`);
             }
-            return `<span class="no-action">—</span>`;
+
+            if (!actions.length) {
+                return `<span style="color: var(--text-muted); font-size: 12px;">-</span>`;
+            }
+
+            return `<div style="display:flex; gap:5px; justify-content:center; align-items:center;">${actions.join('')}</div>`;
         }
 
         function renderTable() {
@@ -740,7 +1057,7 @@
 
             // Khối Thông tin xử lý (điều kiện theo trạng thái)
             toggleDetailItem('itemLyDoTuChoi', 'detLyDoTuChoi', item.status === 'Bị từ chối', item.rejectReason);
-            const hasSigned = ['Chờ thanh toán', 'Hoàn thành'].includes(item.status);
+            const hasSigned = item.status === 'Hoàn thành';
             toggleDetailItem('itemThoiDiemTrinhKy', 'detThoiDiemTrinhKy', hasSigned, item.registeredAt);
             toggleDetailItem('itemThoiDiemKy', 'detThoiDiemKy', hasSigned, item.registeredAt);
             toggleDetailItem('itemNguoiKy', 'detNguoiKy', hasSigned, item.signedBy);
@@ -786,28 +1103,164 @@
         function renderRelatedDossier(item) {
             const container = document.getElementById('relatedDossierContainer');
             container.innerHTML = `
+                <div class="related-result-summary">
+                    <div>
+                        <div class="related-result-summary-title">Kết quả tra cứu hồ sơ liên quan</div>
+                        <div class="related-result-summary-desc">Hiển thị theo thứ tự số hồ sơ tăng dần, mỗi hồ sơ được phân tách thành một khối riêng.</div>
+                    </div>
+                    <span class="related-result-count"><i class="fa-solid fa-list-check"></i> Tổng số hồ sơ tra cứu được: 03 hồ sơ</span>
+                </div>
+
                 <div class="related-dossier-card">
-                    <div class="related-dossier-title"><i class="fa-solid fa-file-shield"></i> Hồ sơ đăng ký DK-2026-${item.dossierCode.slice(-4)}</div>
-                    <div class="grid-3-cols">
-                        <div class="review-item">
-                            <span class="review-label">Loại hình đăng ký</span>
-                            <span class="review-val">Đăng ký lần đầu</span>
+                    <div class="related-dossier-title">
+                        <span class="related-title-left"><span class="related-index-badge">01</span><i class="fa-solid fa-file-shield"></i> Đăng ký giao dịch bảo đảm / Hợp đồng - 1505170802</span>
+                        <span class="result-status-badge">Hoàn thành</span>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-field">
+                            <span class="detail-label">Số hồ sơ</span>
+                            <span class="detail-value">HS-2026-000813</span>
                         </div>
-                        <div class="review-item">
-                            <span class="review-label">Bên bảo đảm</span>
-                            <span class="review-val">Nguyễn Văn Khách</span>
+                        <div class="detail-field">
+                            <span class="detail-label">Số đăng ký</span>
+                            <span class="detail-value">1505170802</span>
                         </div>
-                        <div class="review-item">
-                            <span class="review-label">Bên nhận bảo đảm</span>
-                            <span class="review-val">Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</span>
+                        <div class="detail-field">
+                            <span class="detail-label">Loại hình đăng ký</span>
+                            <span class="detail-value"><b>Đăng ký lần đầu</b></span>
                         </div>
-                        <div class="review-item">
-                            <span class="review-label">Thời điểm đăng ký</span>
-                            <span class="review-val">${item.registeredAt}</span>
+                        <div class="detail-field">
+                            <span class="detail-label">Loại hình giao dịch</span>
+                            <span class="detail-value">Biện pháp bảo đảm - Thế chấp</span>
                         </div>
-                        <div class="review-item">
-                            <span class="review-label">Trạng thái hồ sơ</span>
-                            <span class="review-val">Hoàn thành</span>
+                        <div class="detail-field">
+                            <span class="detail-label">Thời điểm đăng ký</span>
+                            <span class="detail-value">02/07/2026 10:27</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Trạng thái</span>
+                            <span class="result-status-badge">Hoàn thành</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px">
+                        <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Bên thế chấp</div>
+                        <table class="custom-table" style="margin-bottom:12px">
+                            <thead><tr><th>Loại chủ thể</th><th>Số giấy tờ chứng minh tư cách pháp lý</th><th>Tên</th><th>Địa chỉ</th></tr></thead>
+                            <tbody><tr><td>Tổ chức có đăng ký kinh doanh trong nước</td><td>Mã số thuế: 3301647244</td><td><b>CÔNG TY CỔ PHẦN XÂY DỰNG VÀ PHÁT TRIỂN HTC</b></td><td>Đường số 5, cụm công nghiệp Tứ Hạ mở rộng, phường Hương Trà, thành phố Huế, Việt Nam</td></tr></tbody>
+                        </table>
+                        <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Bên nhận thế chấp</div>
+                        <table class="custom-table" style="margin-bottom:12px">
+                            <thead><tr><th>Tên</th><th>Địa chỉ</th></tr></thead>
+                            <tbody><tr><td><b>NGÂN HÀNG TMCP ĐẦU TƯ VÀ PHÁT TRIỂN VIỆT NAM - CHI NHÁNH PHÚ XUÂN</b></td><td>26 Bà Triệu, phường Thuận Hóa, thành phố Huế, Việt Nam</td></tr></tbody>
+                        </table>
+                        <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Tài sản bảo đảm</div>
+                        <div style="margin-bottom:8px"><b>Các động sản khác</b></div>
+                        <div style="line-height:1.55">Toàn bộ số tiền thu được của Công ty Cổ phần Xây dựng và Phát triển HTC phát sinh từ các Hợp đồng kinh tế có nguồn gốc vốn vay của Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân với giá trị tối thiểu bằng số dư tín dụng, gồm dư nợ vay, số dư L/C, các khoản lãi, phí và nghĩa vụ liên quan khác.</div>
+                    </div>
+                </div>
+
+                <div class="related-dossier-card">
+                    <div class="related-dossier-title">
+                        <span class="related-title-left"><span class="related-index-badge">02</span><i class="fa-solid fa-pen-to-square"></i> Đăng ký thay đổi biện pháp bảo đảm - 1505170802-01</span>
+                        <span class="result-status-badge">Hoàn thành</span>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-field">
+                            <span class="detail-label">Số hồ sơ</span>
+                            <span class="detail-value">HS-2026-000845</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Số đăng ký liên quan</span>
+                            <span class="detail-value">1505170802</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Loại hình đăng ký</span>
+                            <span class="detail-value"><b>Đăng ký thay đổi</b></span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Thời điểm đăng ký</span>
+                            <span class="detail-value">08/07/2026 14:35</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Nội dung thay đổi</span>
+                            <span class="detail-value">Bổ sung tài sản bảo đảm và cập nhật bên nhận bảo đảm</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Trạng thái</span>
+                            <span class="result-status-badge">Hoàn thành</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px">
+                        <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Thông tin thay đổi bên nhận bảo đảm</div>
+                        <table class="custom-table" style="margin-bottom:12px">
+                            <thead><tr><th>Nội dung</th><th>Trước thay đổi</th><th>Sau thay đổi</th></tr></thead>
+                            <tbody>
+                                <tr><td>Tên bên nhận bảo đảm</td><td>Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</td><td><b>Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân</b></td></tr>
+                                <tr><td>Địa chỉ</td><td>35 Hàng Vôi, Hoàn Kiếm, Hà Nội</td><td>26 Bà Triệu, phường Thuận Hóa, thành phố Huế, Việt Nam</td></tr>
+                            </tbody>
+                        </table>
+                        <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Tài sản bảo đảm bổ sung</div>
+                        <div style="margin-bottom:8px"><b>Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung</b></div>
+                        <table class="custom-table">
+                            <thead><tr><th>STT</th><th>TÊN PHƯƠNG TIỆN</th><th>NHÃN HIỆU, MÀU SƠN</th><th>SỐ KHUNG</th><th>SỐ MÁY</th><th>BIỂN SỐ</th></tr></thead>
+                            <tbody>
+                                <tr><td>1</td><td>Ô tô</td><td>TOYOTA, màu trắng</td><td>RL4A2026HTC00001</td><td>2GD-884512</td><td>75A-226.88</td></tr>
+                                <tr><td>2</td><td>Xe máy chuyên dùng</td><td>KOMATSU, màu vàng</td><td>KMTS2026HTC00002</td><td>KMT-990021</td><td>75XA-0189</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="related-dossier-card">
+                    <div class="related-dossier-title">
+                        <span class="related-title-left"><span class="related-index-badge">03</span><i class="fa-solid fa-triangle-exclamation"></i> Thông báo xử lý tài sản bảo đảm - TBXL-2026-000045</span>
+                        <span class="result-status-badge">Hoàn thành</span>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-field">
+                            <span class="detail-label">Số hồ sơ</span>
+                            <span class="detail-value">HS-2026-000901</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Số đăng ký liên quan</span>
+                            <span class="detail-value">1505170802</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Loại hình đăng ký</span>
+                            <span class="detail-value"><b>Thông báo xử lý tài sản bảo đảm</b></span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Thời điểm đăng ký</span>
+                            <span class="detail-value">15/07/2026 09:05</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Trạng thái</span>
+                            <span class="result-status-badge">Hoàn thành</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px">
+                        <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Danh sách tài sản xử lý</div>
+                        <div style="margin-bottom:8px"><b>Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung</b></div>
+                        <table class="custom-table" style="margin-bottom:12px">
+                            <thead><tr><th>STT</th><th>TÊN PHƯƠNG TIỆN</th><th>NHÃN HIỆU, MÀU SƠN</th><th>SỐ KHUNG</th><th>SỐ MÁY</th><th>BIỂN SỐ</th></tr></thead>
+                            <tbody><tr><td>1</td><td>Ô tô</td><td>TOYOTA, màu trắng</td><td>RL4A2026HTC00001</td><td>2GD-884512</td><td>75A-226.88</td></tr></tbody>
+                        </table>
+                        <div style="margin-bottom:8px"><b>Các động sản khác</b></div>
+                        <div style="line-height:1.55;margin-bottom:12px">Quyền đòi nợ, khoản phải thu phát sinh từ các hợp đồng kinh tế đã mô tả tại hồ sơ đăng ký lần đầu.</div>
+                        <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Thông tin xử lý tài sản</div>
+                        <div class="detail-grid">
+                            <div class="detail-field">
+                                <span class="detail-label">Lý do xử lý</span>
+                                <span class="detail-value">Bên bảo đảm vi phạm nghĩa vụ thanh toán theo hợp đồng tín dụng.</span>
+                            </div>
+                            <div class="detail-field">
+                                <span class="detail-label">Thời gian xử lý</span>
+                                <span class="detail-value">31/07/2026</span>
+                            </div>
+                            <div class="detail-field full-row">
+                                <span class="detail-label">Địa điểm xử lý</span>
+                                <span class="detail-value">Kho tài sản bảo đảm tại Khu công nghiệp Phú Bài, thành phố Huế.</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -821,9 +1274,26 @@
         }
 
         // ================= Xem file / Tải file (chỉ khi Hoàn thành) =================
+        function pdfEscape(value) {
+            return String(value ?? '').replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+        }
+
         function viewFile(code) {
             const dossierCode = code || document.getElementById('btnDetailDownload').dataset.code;
-            showToast(`Đang mở file PDF Mẫu số 10d của hồ sơ ${dossierCode} tại một tab riêng...`, 'success');
+            const pdfUrl = `cctt_pdf_mau_10d_signed.html?dossier=${encodeURIComponent(dossierCode)}`;
+            const pdfTab = window.open(pdfUrl, '_blank');
+            if (!pdfTab) {
+                showToast('Trình duyệt đang chặn cửa sổ mới. Vui lòng cho phép popup để xem file PDF.', 'error');
+                return;
+            }
+        }
+
+        function closeSignedPdfModal() {
+            document.getElementById('signedPdfModal').classList.remove('show');
+        }
+
+        function printSignedPdf() {
+            showToast('Đang gửi file PDF đã ký tới chức năng in...', 'success');
         }
 
         function downloadFile(code) {

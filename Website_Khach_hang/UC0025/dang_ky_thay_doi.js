@@ -365,6 +365,7 @@ function initPage() {
                 contractDate: "04/01/2026",
                 transactionType: "Biện pháp bảo đảm",
                 measureType: "Thế chấp",
+                receivingAgency: "Trung tâm Đăng ký Giao dịch, Tài sản tại TP. Hà Nội",
                 securingParties: [
                     {
                         type: "cd_vn",
@@ -464,6 +465,10 @@ function initPage() {
         // Populate transactionTypeSelect
         const txSelect = document.getElementById('transactionTypeSelect');
         if (txSelect) txSelect.value = baselineData.transactionType || 'Biện pháp bảo đảm';
+        const receivingAgencySelect = document.getElementById('receivingAgency');
+        if (receivingAgencySelect) {
+            receivingAgencySelect.value = baselineData.receivingAgency || receivingAgencySelect.value;
+        }
 
         // Populate measureType or contractTypeSelect
         const hdSelect = document.getElementById('contractTypeSelect');
@@ -3014,6 +3019,7 @@ function proceedToReview() {
     // Save current values to baselineData
     baselineData.requester = reqRole;
     baselineData.orgName = reqOrgName;
+    baselineData.receivingAgency = document.getElementById('receivingAgency')?.value || baselineData.receivingAgency;
     const isContract = document.getElementById('transactionType').value === 'Hợp đồng';
     baselineData.measureType = isContract ? document.getElementById('contractTypeSelect').value : document.getElementById('measureType').value;
     baselineData.contractNo = contractNo;
@@ -3027,6 +3033,7 @@ function proceedToReview() {
 
     // Save uploaded files mock refs
     baselineData.files = { ...uploadedFiles };
+    baselineData.receivingAgency = document.getElementById('receivingAgency')?.value || baselineData.receivingAgency;
     if (c08Bypass) {
         baselineData.c08ProofFile = document.getElementById('lblFileNameC08') ? document.getElementById('lblFileNameC08').textContent : 'c08_proof.pdf';
     }
@@ -3038,6 +3045,7 @@ function proceedToReview() {
     const fieldsToCheck = [
         // { key: 'requester', label: 'Người yêu cầu' },
         { key: 'orgName', label: 'Tên cơ quan yêu cầu' },
+        { key: 'receivingAgency', label: 'Cơ quan tiếp nhận' },
         { key: 'measureType', label: 'Loại biện pháp' },
         { key: 'contractNo', label: 'Số hợp đồng' },
         { key: 'contractDate', label: 'Ngày hiệu lực HĐ' },
@@ -3186,6 +3194,7 @@ function saveDraft() {
     // Save current values to baselineData
     baselineData.requester = reqRole;
     baselineData.orgName = document.getElementById('reqOrgName') ? document.getElementById('reqOrgName').value.trim() : (baselineData.orgName || '');
+    baselineData.receivingAgency = document.getElementById('receivingAgency')?.value || baselineData.receivingAgency;
     const isContract = document.getElementById('transactionType').value === 'Hợp đồng';
     baselineData.measureType = isContract ? document.getElementById('contractTypeSelect').value : document.getElementById('measureType').value;
     baselineData.contractNo = document.getElementById('contractNo').value.trim();
@@ -3205,6 +3214,7 @@ function saveDraft() {
     const fieldsToCheck = [
         { key: 'requester', label: 'Người yêu cầu' },
         { key: 'orgName', label: 'Tên cơ quan yêu cầu' },
+        { key: 'receivingAgency', label: 'Cơ quan tiếp nhận' },
         { key: 'measureType', label: 'Loại biện pháp' },
         { key: 'contractNo', label: 'Số hợp đồng' },
         { key: 'contractDate', label: 'Ngày hiệu lực HĐ' },

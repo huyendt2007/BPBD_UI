@@ -800,10 +800,15 @@
         <!-- MH01: MÀN HÌNH DANH SÁCH -->
         <!-- ========================================== -->
         <div id="view-list" class="view-section active">
-            <div class="nav-tabs" style="display: none;">
+            <div class="nav-tabs" id="leader-stage-tabs" style="display: flex;">
                 <div class="nav-tab active" onclick="switchListTab('choduyet', this)">Hồ sơ chờ duyệt <span class="tab-badge info" id="badge-choduyet">0</span></div>
                 <div class="nav-tab" onclick="switchListTab('duyet-choky', this)">Hồ sơ chờ ký <span class="tab-badge info" id="badge-duyet-choky">0</span></div>
-                <div class="nav-tab" onclick="switchListTab('bitralai', this)">Hồ sơ Bị trả lại <span class="tab-badge danger" id="badge-bitralai">0</span></div>
+                <div class="nav-tab" onclick="switchListTab('bitralai', this)" style="display:none">Hồ sơ Bị trả lại <span class="tab-badge danger" id="badge-bitralai">0</span></div>
+            </div>
+            <div class="nav-tabs" id="leader-work-type-tabs" style="display:flex; margin-top: 10px;">
+                <div class="nav-tab active" data-work-type="registration" onclick="switchLeaderWorkType('registration', this)">Phiếu đăng ký</div>
+                <div class="nav-tab" data-work-type="cctt" onclick="switchLeaderWorkType('cctt', this)">Yêu cầu cung cấp thông tin <span class="tab-badge info" id="badge-cctt-leader">0</span></div>
+                <div class="nav-tab" data-work-type="copy" onclick="switchLeaderWorkType('copy', this)">Yêu cầu cung cấp bản sao</div>
             </div>
 
             <!-- Bộ lọc tìm kiếm -->
@@ -988,6 +993,7 @@
                 <span style="cursor: pointer; font-size: 20px;" onclick="closeModal('modalReason')">&times;</span>
             </div>
             <div class="modal-body" style="padding: var(--spacing-lg);">
+                <div id="reasonContextInfo" style="display:none;margin-bottom:var(--spacing-md)"></div>
                 <div class="form-group">
                     <label class="form-label" id="reasonLabel">Nội dung lý do cụ thể <span class="required-mark">*</span></label>
                     <textarea class="form-control" id="reasonText" rows="4" placeholder="Nhập lý do..."></textarea>
@@ -997,6 +1003,48 @@
             <div class="modal-footer">
                 <button class="btn btn-outline-secondary" onclick="closeModal('modalReason')">Hủy bỏ</button>
                 <button class="btn btn-danger" id="btnConfirmReason" onclick="submitReason()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ký số Yêu cầu cung cấp thông tin (UC-CCTT-LD.MH05) -->
+    <div class="modal-overlay" id="modalCcttSign">
+        <div class="modal-content" style="max-width:720px">
+            <div class="modal-header">
+                <span>Ký số yêu cầu cung cấp thông tin</span>
+                <span style="cursor: pointer; font-size: 20px;" onclick="closeModal('modalCcttSign')">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: var(--spacing-lg);">
+                <h4 class="section-title" style="margin-top:0">I. Thông tin ký số</h4>
+                <div class="info-grid" style="margin-bottom:10px">
+                    <div class="info-group"><div class="info-label">Số lượng hồ sơ</div><div class="info-value" id="cctt-sign-count">0</div></div>
+                    <div class="info-group"><div class="info-label">Hình thức ký số</div><div class="info-value">USB Token Ban Cơ yếu Chính phủ</div></div>
+                </div>
+                <table class="table" style="width:100%">
+                    <thead><tr><th>Mã hồ sơ</th><th>Người yêu cầu</th><th>File PDF chờ ký</th><th style="width:130px">Trạng thái ký số</th></tr></thead>
+                    <tbody id="cctt-sign-list"></tbody>
+                </table>
+
+                <h4 class="section-title">II. Thông tin thiết bị ký số</h4>
+                <div id="cctt-usb-status-panel" style="background-color:#F8FAFC;border:1px solid var(--border-color);color:var(--text-main);padding:var(--spacing-md);border-radius:var(--border-radius-md);margin-bottom:var(--spacing-md)">
+                    <div style="font-weight:600">Trạng thái USB Token: <span id="cctt-usb-status">Chưa kiểm tra</span></div>
+                    <div id="cctt-usb-detail" style="font-size:12px;margin-top:4px;display:none">
+                        <div>Chứng thư số: <b id="cctt-usb-cert">—</b></div>
+                        <div>Người ký: <b id="cctt-usb-signer">—</b></div>
+                        <div>Thời hạn chứng thư số: <b id="cctt-usb-validity">—</b></div>
+                    </div>
+                    <button class="btn btn-outline-secondary" style="margin-top:8px;padding:4px 10px;font-size:12px" onclick="checkCcttUsbToken()">Kiểm tra USB Token</button>
+                </div>
+
+                <div class="form-group" id="cctt-pin-group" style="display:none">
+                    <label class="form-label">Nhập mã PIN xác thực chữ ký số <span class="required-mark">*</span></label>
+                    <input type="password" class="form-control" id="ccttPinCode" placeholder="Nhập mã PIN token...">
+                    <div class="error-message" id="ccttPinError">Mã PIN xác thực không chính xác hoặc ký số thất bại. Vui lòng kiểm tra lại.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" onclick="closeModal('modalCcttSign')">Hủy</button>
+                <button class="btn btn-primary" id="btnCcttSignConfirm" onclick="submitCcttSign()" disabled>Ký số</button>
             </div>
         </div>
     </div>

@@ -657,7 +657,7 @@
                 <div class="review-grid">
                     <div class="review-item">
                         <span class="review-label">Cơ quan tiếp nhận:</span>
-                        <span class="review-val">Trung tâm Đăng ký giao dịch, tài sản của Bộ Tư pháp tại TP. Hà Nội</span>
+                        <span class="review-val" id="lblReceivingAgency">Trung tâm Đăng ký giao dịch, tài sản của Bộ Tư pháp tại TP. Hà Nội</span>
                     </div>
                     <div class="review-item">
                         <span class="review-label">Loại hình giao dịch:</span>
@@ -889,6 +889,7 @@
             }
             
             document.getElementById('lblContractNo').textContent = draft.contractNo || "";
+            document.getElementById('lblReceivingAgency').textContent = draft.receivingAgency || "Trung tâm Đăng ký giao dịch, tài sản của Bộ Tư pháp tại TP. Hà Nội";
             document.getElementById('lblContractDate').textContent = draft.contractDate || "";
             document.getElementById('lblLoanValue').textContent = draft.loanValue || "";
             document.getElementById('lblScale').textContent = draft.scale || "Doanh nghiệp lớn";
