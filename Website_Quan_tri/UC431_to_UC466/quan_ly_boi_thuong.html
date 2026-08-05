@@ -9292,7 +9292,7 @@
             const hasMoney = !!(claim.totalNum && claim.totalNum > 0);
             const accItem = document.getElementById('accItem_thucthi');
 
-            if (!hasMoney && !isCanBoNhap) {
+            if (isRejected || (!hasMoney && !isCanBoNhap)) {
                 if (accItem) accItem.style.display = 'none';
             } else {
                 if (accItem) accItem.style.display = 'block';
@@ -9414,6 +9414,10 @@
             forceCloseAccordion('quyetdinh');
             forceCloseAccordion('thucthi');
             forceCloseAccordion('kinhphi');
+
+            if (isRejected) {
+                forceOpenAccordion('thuly');
+            }
 
             // Force open the one related to current edit/view state
             if (claim.status === 'Chờ tiếp nhận' || claim.status === 'Chờ thụ lý') {
