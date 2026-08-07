@@ -1654,7 +1654,7 @@
                     <span class="form-label">Văn bản làm căn cứ yêu cầu bồi thường<span class="required">*</span></span>
                     <input type="text" class="form-control" id="claimDocBase"
                         placeholder="Bản án oan sai, quyết định trái luật...">
-
+                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
 
                 <!-- THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG -->
@@ -1680,7 +1680,7 @@
                                     style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
                                     chiếu theo bản án đính kèm)</span></span>
                             <input type="text" class="form-control" id="claimNYCName" placeholder="Nhập họ và tên...">
-
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
@@ -1714,7 +1714,7 @@
                                         style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
                                         chiếu theo bản án đính kèm)</span></span>
                                 <input type="text" class="form-control" id="claimNYCBirth" placeholder="dd/mm/yyyy">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
@@ -1744,7 +1744,7 @@
                                 <span class="form-label">Số điện thoại liên hệ<span class="required">*</span></span>
                                 <input type="text" class="form-control" id="claimNYCPhone"
                                     placeholder="Nhập số điện thoại...">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Thư điện tử (Email)</span>
@@ -1778,7 +1778,7 @@
                                 <span class="form-label">Số giấy tờ thân nhân<span class="required">*</span></span>
                                 <input type="text" class="form-control" id="claimNYCCardNo"
                                     placeholder="Nhập số giấy tờ...">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
@@ -1786,13 +1786,13 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Ngày cấp<span class="required">*</span></span>
                                 <input type="text" class="form-control" id="claimNYCCardDate" placeholder="dd/mm/yyyy">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Nơi cấp<span class="required">*</span></span>
                                 <input type="text" class="form-control" id="claimNYCCardPlace"
                                     placeholder="Nhập nơi cấp...">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
@@ -1821,7 +1821,7 @@
                                     <input type="text" class="form-control" id="claimNYCCityText"
                                         placeholder="Nhập tỉnh/thành ngoại quốc...">
                                 </div>
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
@@ -1832,7 +1832,7 @@
                                     chiếu theo bản án đính kèm)</span></span>
                             <input type="text" class="form-control" id="claimNYCAddress"
                                 placeholder="Nhập địa chỉ nhà, tên đường, phường/xã...">
-
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
                 </div>
@@ -1843,14 +1843,14 @@
                             class="required">*</span></span>
                     <textarea class="form-control" id="claimHanhVi" rows="2"
                         placeholder="Ghi chi tiết hành vi sai phạm gây ra thiệt hại..."></textarea>
-
+                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
                 <div class="form-group" style="margin-bottom: 16px;">
                     <span class="form-label">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt
                         hại<span class="required">*</span></span>
                     <textarea class="form-control" id="claimNhanQua" rows="2"
                         placeholder="Giải trình mối quan hệ nhân quả trực tiếp giữa hành vi và tổn thất..."></textarea>
-
+                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
 
                 <!-- ADDED: THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI -->
@@ -2107,19 +2107,19 @@
                                 <span class="form-label">Họ và tên người nhận *</span>
                                 <input type="text" class="form-control" id="claimRecName"
                                     placeholder="Nhập họ tên người nhận...">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Giấy tờ thân nhân *</span>
                                 <input type="text" class="form-control" id="claimRecCard"
                                     placeholder="Nhập số CCCD/Hộ chiếu...">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Địa chỉ chi tiết *</span>
                                 <input type="text" class="form-control" id="claimRecAddress"
                                     placeholder="Nhập địa chỉ nhận tiền...">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
@@ -2143,25 +2143,25 @@
                                 <span class="form-label">Chủ tài khoản *</span>
                                 <input type="text" class="form-control" id="claimRecBankUser"
                                     placeholder="Ví dụ: NGUYEN VAN A">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Số tài khoản *</span>
                                 <input type="text" class="form-control" id="claimRecBankAccount"
                                     placeholder="Nhập số tài khoản...">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Tên ngân hàng *</span>
                                 <input type="text" class="form-control" id="claimRecBankName"
                                     placeholder="Ví dụ: Vietcombank">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Chi nhánh *</span>
                                 <input type="text" class="form-control" id="claimRecBankBranch"
                                     placeholder="Nhập tên chi nhánh...">
-
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
                     </div>
@@ -2414,7 +2414,7 @@
                                     <textarea class="form-control" id="editThulyExplanation" rows="3"
                                         oninput="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';"
                                         placeholder="Nhập nội dung giải trình, chỉnh sửa hoặc bổ sung hồ sơ để trình lại cho Lãnh đạo xem xét..."></textarea>
-
+                                    <div class="error-message">Đây là trường bắt buộc</div>
                                 </div>
                                 <div class="form-group">
                                     <span class="form-label">Tài liệu đính kèm kèm theo (nếu có)</span>

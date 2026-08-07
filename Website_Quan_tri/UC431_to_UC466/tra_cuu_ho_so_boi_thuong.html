@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu vụ việc bồi thường nhà nước</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+    <style>
+        body {
+            background: var(--bg-body);
+            padding: 20px;
+        }
+
+        .lookup-shell {
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 16px;
+        }
+
+        .page-title h2 {
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .lookup-tabs {
+            align-items: center;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            gap: 4px;
+            margin-bottom: 14px;
+            padding: 0 14px;
+        }
+
+        .lookup-tab {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 13px;
+            font-weight: 600;
+            gap: 8px;
+            min-height: 46px;
+            padding: 0 14px;
+            white-space: nowrap;
+        }
+
+        .lookup-tab.active,
+        .lookup-tab:hover {
+            border-bottom-color: var(--primary-light);
+            color: var(--primary-light);
+        }
+
+        .lookup-panel {
+            display: none;
+        }
+
+        .lookup-panel.active {
+            display: block;
+        }
+
+        .section-heading {
+            margin: 0 0 12px;
+        }
+
+        .section-title {
+            align-items: center;
+            color: var(--primary-light);
+            display: flex;
+            font-size: 15px;
+            font-weight: 700;
+            gap: 8px;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .filter-panel {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 16px;
+            padding: 16px;
+        }
+
+        .filter-grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .form-block {
+            min-width: 0;
+        }
+
+        .form-label {
+            color: var(--text-main);
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-main);
+            font-size: 13px;
+            height: 36px;
+            outline: none;
+            padding: 7px 10px;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .filter-actions {
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 14px;
+            padding-top: 12px;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .table-header {
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+
+        .table-title {
+            align-items: center;
+            color: var(--primary-light);
+            display: flex;
+            font-size: 14px;
+            font-weight: 700;
+            gap: 8px;
+        }
+
+        .result-count {
+            color: var(--text-muted);
+            font-size: 12.5px;
+        }
+
+        .table-responsive {
+            overflow: auto;
+        }
+
+        .custom-table {
+            min-width: 1320px;
+        }
+
+        .custom-table th,
+        .custom-table td {
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr {
+            cursor: pointer;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .code-cell {
+            color: var(--primary-light);
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .muted {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        .readonly-action {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-style: italic;
+            white-space: nowrap;
+        }
+
+        .pagination-bar {
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px;
+        }
+
+        .pagination-left,
+        .pagination-pages {
+            align-items: center;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 13px;
+            gap: 8px;
+        }
+
+        .page-size-select {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            height: 32px;
+            padding: 4px 8px;
+        }
+
+        .page-item {
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-main);
+            cursor: pointer;
+            display: inline-flex;
+            height: 30px;
+            justify-content: center;
+            min-width: 30px;
+            padding: 0 8px;
+        }
+
+        .page-item.active {
+            background: var(--primary-light);
+            border-color: var(--primary-light);
+            color: #fff;
+        }
+
+        .page-item.disabled {
+            color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .toast-notif {
+            align-items: center;
+            background: #0f172a;
+            border-left: 4px solid var(--success-color);
+            border-radius: var(--border-radius-md);
+            bottom: 20px;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+            color: #fff;
+            display: none;
+            gap: 10px;
+            padding: 12px 16px;
+            position: fixed;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        @media (max-width: 1200px) {
+            .filter-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 12px;
+            }
+
+            .lookup-tabs,
+            .filter-actions,
+            .pagination-bar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .lookup-tab {
+                justify-content: center;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lookup-shell">
+        <div class="page-header">
+            <div class="page-title">
+                <h2><i class="fa-solid fa-magnifying-glass-chart"></i>Tra cứu vụ việc bồi thường nhà nước</h2>
+                <p>Tra cứu tập trung vụ việc phục hồi danh dự và yêu cầu bồi thường. Màn hình chỉ phục vụ tra cứu, xem chi tiết và kết xuất danh sách.</p>
+            </div>
+        </div>
+
+        <div class="lookup-tabs" role="tablist" aria-label="Tra cứu vụ việc">
+            <button class="lookup-tab active" id="tabPhddBtn" type="button" onclick="switchLookupTab('phdd')">
+                <i class="fa-solid fa-ribbon"></i> Phục hồi danh dự
+            </button>
+            <button class="lookup-tab" id="tabYcbtBtn" type="button" onclick="switchLookupTab('ycbt')">
+                <i class="fa-solid fa-file-lines"></i> Yêu cầu bồi thường
+            </button>
+        </div>
+
+        <section class="lookup-panel active" id="panelPhdd">
+            <div class="section-heading">
+                <div class="section-title"><i class="fa-solid fa-ribbon"></i>Tra cứu vụ việc có phục hồi danh dự</div>
+                <div class="section-desc">Hiển thị vụ việc có yêu cầu hoặc đã phát sinh thông tin phục hồi danh dự.</div>
+            </div>
+
+            <div class="filter-panel">
+                <div class="filter-grid">
+                    <div class="form-block">
+                        <label class="form-label" for="phddCode">Mã vụ việc</label>
+                        <input type="text" class="form-control" id="phddCode" placeholder="Nhập mã vụ việc...">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="phddTitle">Tên vụ việc</label>
+                        <input type="text" class="form-control" id="phddTitle" placeholder="Nhập tên vụ việc...">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="phddNyc">Người yêu cầu/người bị thiệt hại</label>
+                        <input type="text" class="form-control" id="phddNyc" placeholder="Nhập họ và tên...">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="phddAgency">Cơ quan giải quyết</label>
+                        <input type="text" class="form-control" id="phddAgency" placeholder="Nhập cơ quan giải quyết...">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="phddStatus">Trạng thái giải quyết</label>
+                        <select class="form-control" id="phddStatus"></select>
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="phddStatusGroup">Nhóm trạng thái</label>
+                        <select class="form-control" id="phddStatusGroup" onchange="syncStatusGroup('phdd')"></select>
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="phddType">Hình thức phục hồi danh dự</label>
+                        <select class="form-control" id="phddType">
+                            <option value="">Tất cả</option>
+                            <option value="Trực tiếp xin lỗi">Trực tiếp xin lỗi</option>
+                            <option value="Đăng báo">Đăng báo</option>
+                            <option value="Cả hai hình thức">Cả hai hình thức</option>
+                        </select>
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="phddFromDate">Cập nhật từ ngày</label>
+                        <input type="text" class="form-control" id="phddFromDate" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="phddToDate">Cập nhật đến ngày</label>
+                        <input type="text" class="form-control" id="phddToDate" placeholder="dd/mm/yyyy">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-secondary" type="button" onclick="resetPhddFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button class="btn btn-primary" type="button" onclick="searchPhdd()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                    <button class="btn btn-secondary" type="button" onclick="exportLookup('phdd')"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i> Kết xuất Excel</button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title"><i class="fa-solid fa-table-list"></i>Bảng kết quả tìm kiếm</div>
+                    <div class="result-count" id="phddCountText">0 bản ghi</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th style="width:52px; text-align:center;">STT</th>
+                                <th style="width:132px; text-align:center;">Mã vụ việc</th>
+                                <th style="min-width:180px;">Tên vụ việc</th>
+                                <th style="min-width:145px;">Người yêu cầu</th>
+                                <th style="width:110px;">Tỉnh/TP</th>
+                                <th style="min-width:220px;">Địa chỉ chi tiết</th>
+                                <th style="min-width:190px;">Cơ quan giải quyết</th>
+                                <th style="min-width:150px;">Cán bộ xử lý</th>
+                                <th style="width:145px;">Hình thức phục hồi</th>
+                                <th style="width:145px; text-align:center;">Trạng thái</th>
+                                <th style="width:125px; text-align:center;">Thời hạn</th>
+                                <th style="width:128px; text-align:center; cursor:pointer;" onclick="togglePhddSort()">Ngày cập nhật <i class="fa-solid fa-sort" id="phddSortIcon"></i></th>
+                                <th style="width:118px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="phddBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination-bar">
+                    <div class="pagination-left">
+                        <span>Số dòng hiển thị:</span>
+                        <select class="page-size-select" onchange="changePhddPageSize(this.value)">
+                            <option value="10">10</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>Hiển thị <strong id="phddRange">0-0</strong> trong tổng số <strong id="phddTotal">0</strong> bản ghi</span>
+                    </div>
+                    <div class="pagination-pages" id="phddPages"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lookup-panel" id="panelYcbt">
+            <div class="section-heading">
+                <div class="section-title"><i class="fa-solid fa-file-lines"></i>Tra cứu vụ việc yêu cầu bồi thường</div>
+                <div class="section-desc">Hiển thị vụ việc yêu cầu bồi thường không có yêu cầu phục hồi danh dự.</div>
+            </div>
+
+            <div class="filter-panel">
+                <div class="filter-grid">
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtCode">Mã vụ việc</label>
+                        <input type="text" class="form-control" id="ycbtCode" placeholder="Nhập mã vụ việc...">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtTitle">Tên vụ việc</label>
+                        <input type="text" class="form-control" id="ycbtTitle" placeholder="Nhập tên vụ việc...">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtNyc">Tên người yêu cầu</label>
+                        <input type="text" class="form-control" id="ycbtNyc" placeholder="Nhập họ và tên...">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtAgency">Cơ quan giải quyết</label>
+                        <input type="text" class="form-control" id="ycbtAgency" placeholder="Nhập cơ quan giải quyết...">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtFieldGroup">Lĩnh vực phát sinh thiệt hại</label>
+                        <select class="form-control" id="ycbtFieldGroup">
+                            <option value="">Tất cả</option>
+                            <option value="hành chính">Trong hoạt động quản lý hành chính</option>
+                            <option value="hình sự">Trong hoạt động tố tụng hình sự</option>
+                            <option value="dân sự">Trong hoạt động tố tụng dân sự</option>
+                            <option value="tố tụng hành chính">Trong hoạt động tố tụng hành chính</option>
+                            <option value="thi hành án hình sự">Trong hoạt động thi hành án hình sự</option>
+                            <option value="thi hành án dân sự">Trong hoạt động thi hành án dân sự</option>
+                        </select>
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtNopKenh">Hình thức tiếp nhận</label>
+                        <select class="form-control" id="ycbtNopKenh">
+                            <option value="">Tất cả</option>
+                            <option value="Tiếp nhận trực tiếp">Tiếp nhận trực tiếp</option>
+                            <option value="Nhận qua bưu điện/Bưu chính">Nhận qua bưu điện/Bưu chính</option>
+                            <option value="Dịch vụ công">Dịch vụ công</option>
+                            <option value="Cán bộ chủ động nhập theo tố tụng/thi hành án">Cán bộ chủ động nhập theo tố tụng/thi hành án</option>
+                        </select>
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtStatus">Trạng thái giải quyết</label>
+                        <select class="form-control" id="ycbtStatus"></select>
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtStatusGroup">Nhóm trạng thái</label>
+                        <select class="form-control" id="ycbtStatusGroup" onchange="syncStatusGroup('ycbt')"></select>
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtFromDate">Tiếp nhận từ ngày</label>
+                        <input type="text" class="form-control" id="ycbtFromDate" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtToDate">Tiếp nhận đến ngày</label>
+                        <input type="text" class="form-control" id="ycbtToDate" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtDeadlineFrom">Hạn xử lý từ ngày</label>
+                        <input type="text" class="form-control" id="ycbtDeadlineFrom" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-block">
+                        <label class="form-label" for="ycbtDeadlineTo">Hạn xử lý đến ngày</label>
+                        <input type="text" class="form-control" id="ycbtDeadlineTo" placeholder="dd/mm/yyyy">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-secondary" type="button" onclick="resetYcbtFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button class="btn btn-primary" type="button" onclick="searchYcbt()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                    <button class="btn btn-secondary" type="button" onclick="exportLookup('ycbt')"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i> Kết xuất Excel</button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title"><i class="fa-solid fa-table-list"></i>Bảng kết quả tìm kiếm</div>
+                    <div class="result-count" id="ycbtCountText">0 bản ghi</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th style="width:52px; text-align:center;">STT</th>
+                                <th style="width:132px; text-align:center;">Mã vụ việc</th>
+                                <th style="min-width:180px;">Tên vụ việc</th>
+                                <th style="min-width:140px;">Tên người yêu cầu</th>
+                                <th style="width:110px;">Tỉnh/TP</th>
+                                <th style="min-width:220px;">Địa chỉ chi tiết</th>
+                                <th style="min-width:150px;">Lĩnh vực</th>
+                                <th style="min-width:185px;">Cơ quan giải quyết</th>
+                                <th style="min-width:145px;">Cán bộ xử lý</th>
+                                <th style="width:120px; text-align:center; cursor:pointer;" onclick="toggleYcbtSort()">Ngày tiếp nhận <i class="fa-solid fa-sort" id="ycbtSortIcon"></i></th>
+                                <th style="width:116px; text-align:center;">Hạn xử lý</th>
+                                <th style="width:135px; text-align:center;">Hình thức tiếp nhận</th>
+                                <th style="width:145px; text-align:center;">Trạng thái</th>
+                                <th style="width:128px; text-align:center;">Ngày cập nhật</th>
+                                <th style="width:118px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ycbtBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination-bar">
+                    <div class="pagination-left">
+                        <span>Số dòng hiển thị:</span>
+                        <select class="page-size-select" onchange="changeYcbtPageSize(this.value)">
+                            <option value="10">10</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>Hiển thị <strong id="ycbtRange">0-0</strong> trong tổng số <strong id="ycbtTotal">0</strong> bản ghi</span>
+                    </div>
+                    <div class="pagination-pages" id="ycbtPages"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="toast-notif" id="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMessage">Thông báo</span>
+    </div>
+
+    <script>
+        const allStatuses = [
+            'Chờ nhập liệu',
+            'Chờ kiểm tra',
+            'Yêu cầu bổ sung',
+            'Bị từ chối',
+            'Chờ thụ lý',
+            'Từ chối thụ lý',
+            'Đang xác minh thiệt hại',
+            'Đang thương lượng',
+            'Thương lượng không thành công',
+            'Chờ ban hành QĐ',
+            'Hoãn giải quyết',
+            'Tạm đình chỉ giải quyết',
+            'Đình chỉ giải quyết',
+            'Chờ thực thi',
+            'Đang thực thi theo bản án',
+            'Hoàn thành'
+        ];
+
+        const statusGroups = {
+            '': allStatuses,
+            'Đang xử lý': ['Chờ nhập liệu', 'Yêu cầu bổ sung', 'Chờ kiểm tra', 'Chờ thụ lý', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Đang thực thi theo bản án'],
+            'Tạm dừng': ['Hoãn giải quyết', 'Tạm đình chỉ giải quyết'],
+            'Kết thúc': ['Bị từ chối', 'Từ chối thụ lý', 'Đình chỉ giải quyết', 'Hoàn thành']
+        };
+
+        const fallbackClaims = [
+            { id: 'HS_WAIT_INPUT', code: 'BT-2026-020', title: 'Tiếp nhận yêu cầu bồi thường do thu hồi giấy phép kinh doanh', date: '01/08/2026', updatedDate: '05/08/2026', nyc: 'Công ty An Phú', nycTinhThanh: 'Hà Nội', address: 'Số 12 Nguyễn Chí Thanh, Ba Đình, Hà Nội', hanhVi: 'Thu hồi giấy phép kinh doanh không đúng căn cứ pháp luật.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Hà Nội', assignedOfficer: '', status: 'Chờ nhập liệu', deadline: '30/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: false },
+            { id: 'HS_SUPPLEMENT', code: 'BT-2026-021', title: 'Bổ sung hồ sơ yêu cầu bồi thường do cưỡng chế sai', date: '02/08/2026', updatedDate: '06/08/2026', nyc: 'Nguyễn Văn D', nycTinhThanh: 'Đà Nẵng', address: 'Tổ 8 phường Hải Châu, Đà Nẵng', hanhVi: 'Cưỡng chế hành chính sai đối tượng.', fieldGroup: 'hành chính', agency: 'UBND Quận Hải Châu', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Yêu cầu bổ sung', deadline: '25/08/2026', nopKenh: 'Dịch vụ công', totalNum: 65000000, restoreHonor: false },
+            { id: 'HS_CHECK', code: 'BT-2026-022', title: 'Kiểm tra hồ sơ bồi thường thiệt hại tài sản', date: '03/08/2026', updatedDate: '06/08/2026', nyc: 'Công ty Hòa Bình', nycTinhThanh: 'Hải Phòng', address: 'Số 7 Lạch Tray, Ngô Quyền, Hải Phòng', hanhVi: 'Kê biên tài sản của bên thứ ba không có nghĩa vụ.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự TP. Hải Phòng', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ kiểm tra', deadline: '28/08/2026', nopKenh: 'Nhận qua bưu điện/Bưu chính', totalNum: 185000000, restoreHonor: false },
+            { id: 'HS_REJECT', code: 'BT-2026-023', title: 'Từ chối vụ việc không đủ căn cứ yêu cầu bồi thường', date: '25/07/2026', updatedDate: '02/08/2026', nyc: 'Vũ Văn L', nycTinhThanh: 'Bắc Ninh', address: 'Phường Võ Cường, Bắc Ninh', hanhVi: 'Yêu cầu chưa có văn bản làm căn cứ yêu cầu bồi thường.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Bắc Ninh', assignedOfficer: 'Phạm Minh Chuyên Viên', status: 'Bị từ chối', deadline: '15/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: false },
+            { id: 'HS_THULY', code: 'BT-2026-024', title: 'Chờ thụ lý vụ việc bồi thường trong tố tụng hình sự', date: '22/07/2026', updatedDate: '03/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 41 Trần Phú, Hà Đông, Hà Nội', hanhVi: 'Tạm giữ người không đúng trình tự tố tụng.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: '', status: 'Chờ thụ lý', deadline: '18/08/2026', nopKenh: 'Cán bộ chủ động nhập theo tố tụng/thi hành án', totalNum: 210000000, restoreHonor: false },
+            { id: 'HS_VERIFY', code: 'BT-2026-025', title: 'Xác minh thiệt hại do tạm giữ phương tiện trái pháp luật', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Phước Hải, Nha Trang, Khánh Hòa', hanhVi: 'Tạm giữ phương tiện kinh doanh trái quy định.', fieldGroup: 'hành chính', agency: 'Tòa án nhân dân TP. Nha Trang', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Đang xác minh thiệt hại', deadline: '26/09/2026', nopKenh: 'Dịch vụ công', totalNum: 90000000, restoreHonor: false },
+            { id: 'HS_PAUSE', code: 'BT-2026-026', title: 'Hoãn giải quyết do chờ kết quả giám định bổ sung', date: '12/07/2026', updatedDate: '05/08/2026', nyc: 'Hoàng Thị H', nycTinhThanh: 'Hồ Chí Minh', address: 'Số 18 Nguyễn Du, Quận 1, TP. Hồ Chí Minh', hanhVi: 'Áp dụng biện pháp xử phạt và cưỡng chế trái pháp luật.', fieldGroup: 'hành chính', agency: 'Công an Quận 1, TP. HCM', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Hoãn giải quyết', deadline: '18/09/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 185000000, restoreHonor: false },
+            { id: 'HS_STOP', code: 'BT-2026-027', title: 'Đình chỉ vụ việc do người yêu cầu rút yêu cầu', date: '08/07/2026', updatedDate: '04/08/2026', nyc: 'Công ty Minh An', nycTinhThanh: 'Hà Nội', address: 'Tầng 5, tòa nhà Vân Hồ, Hai Bà Trưng, Hà Nội', hanhVi: 'Thi hành án dân sự sai đối tượng tài sản.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Đình chỉ giải quyết', deadline: '25/09/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 620000000, restoreHonor: false },
+            { id: 'HS_DONE', code: 'BT-2026-028', title: 'Hoàn thành chi trả bồi thường theo quyết định đã ban hành', date: '02/06/2026', updatedDate: '05/08/2026', nyc: 'Nguyễn Văn F', nycTinhThanh: 'Hà Nội', address: 'Số 5 Nguyễn Trãi, Thanh Xuân, Hà Nội', hanhVi: 'Không thống nhất được mức tiền bồi thường sau xác minh.', fieldGroup: 'hình sự', agency: 'Công an Quận Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '15/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 120000000, restoreHonor: false },
+            { id: 'HS_PHDD_1', code: 'BT-2026-010-TDC', title: 'Tạm đình chỉ vụ việc có phục hồi danh dự do chờ bản án liên quan', date: '07/07/2026', updatedDate: '06/08/2026', nyc: 'Đặng Văn T', nycTinhThanh: 'Hà Nội', address: 'Số 33 Kim Mã, Ba Đình, Hà Nội', hanhVi: 'Đình chỉ điều tra không đúng thời điểm làm ảnh hưởng danh dự.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Tạm đình chỉ giải quyết', deadline: '22/09/2026', nopKenh: 'Dịch vụ công', totalNum: 260000000, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '22/09/2026' },
+            { id: 'HS_PHDD_2', code: 'BT-2026-012', title: 'Phục hồi danh dự do bản án oan sai trong tố tụng hình sự', date: '14/06/2026', updatedDate: '05/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 9 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội', hanhVi: 'Bản án oan sai trong hoạt động tố tụng hình sự.', fieldGroup: 'hình sự', agency: 'Tòa án nhân dân TP. Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ thực thi', deadline: '30/08/2026', nopKenh: 'Cán bộ chủ động nhập theo tố tụng/thi hành án', totalNum: 350000000, restoreHonor: true, phddForm: 'Đăng báo', phddDateExp: '25/08/2026' },
+            { id: 'HS_PHDD_3', code: 'BT-2026-013', title: 'Hoàn thành phục hồi danh dự công khai tại địa phương', date: '10/05/2026', updatedDate: '03/08/2026', nyc: 'Công ty Hải Phát', nycTinhThanh: 'Hà Nội', address: 'Khu đô thị mới Cầu Giấy, Hà Nội', hanhVi: 'Công bố thông tin xử lý vi phạm không đúng sự thật.', fieldGroup: 'hành chính', agency: 'UBND Quận Cầu Giấy', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '10/07/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '10/07/2026', phddStep4DateAct: '02/08/2026' }
+        ];
+
+        let allClaims = [];
+        let phddList = [];
+        let phddFiltered = [];
+        let phddPage = 1;
+        let phddPageSize = 10;
+        let phddSortAsc = false;
+        let ycbtList = [];
+        let ycbtFiltered = [];
+        let ycbtPage = 1;
+        let ycbtPageSize = 10;
+        let ycbtSortAsc = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateStatusSelects();
+            allClaims = normalizeClaims(loadClaims());
+            phddList = allClaims.filter(item => item.restoreHonor).map(buildPhddRow);
+            ycbtList = allClaims.filter(item => !item.restoreHonor);
+            setDefaultDates();
+            searchPhdd();
+            searchYcbt();
+        });
+
+        function populateStatusSelects() {
+            ['phddStatus', 'ycbtStatus'].forEach(id => {
+                const select = document.getElementById(id);
+                select.innerHTML = '<option value="">Tất cả</option>' + allStatuses.map(status => `<option value="${status}">${status}</option>`).join('');
+            });
+            ['phddStatusGroup', 'ycbtStatusGroup'].forEach(id => {
+                const select = document.getElementById(id);
+                select.innerHTML = `
+                    <option value="">Tất cả</option>
+                    <option value="Đang xử lý">Đang xử lý</option>
+                    <option value="Tạm dừng">Tạm dừng</option>
+                    <option value="Kết thúc">Kết thúc</option>
+                `;
+            });
+        }
+
+        function loadClaims() {
+            try {
+                const stored = localStorage.getItem('claimsList');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length) {
+                        return parsed.concat(fallbackClaims);
+                    }
+                }
+            } catch (err) {
+                console.warn('Không đọc được dữ liệu vụ việc từ localStorage', err);
+            }
+            return fallbackClaims;
+        }
+
+        function normalizeClaims(claims) {
+            const seen = new Set();
+            return claims.map(item => {
+                const status = normalizeStatus(item.status);
+                return {
+                    ...item,
+                    code: item.code || item.ycbtCode || item.maVuViec || '',
+                    title: item.title || item.caseTitle || item.tenVuViec || buildCaseTitle(item),
+                    nycTinhThanh: item.nycTinhThanh || item.province || item.city || item.tinhThanh || inferProvince(item.address),
+                    address: item.address || item.addressDetail || item.nycAddressDetail || 'Chưa có thông tin',
+                    assignedOfficer: item.assignedOfficer || item.officerName || item.processor || '',
+                    updatedDate: item.updatedDate || getLastTimelineDate(item) || item.date || '',
+                    nopKenh: item.nopKenh || item.receiveMethod || 'Tiếp nhận trực tiếp',
+                    status
+                };
+            }).filter(item => {
+                if (!item.code || seen.has(item.code)) return false;
+                seen.add(item.code);
+                return true;
+            });
+        }
+
+        function buildCaseTitle(item) {
+            if (item.hanhVi) return shortText(item.hanhVi, 80);
+            if (item.nyc) return `Vụ việc yêu cầu bồi thường của ${item.nyc}`;
+            return 'Vụ việc yêu cầu bồi thường';
+        }
+
+        function normalizeStatus(status) {
+            const legacyWait = 'Chờ ' + 'tiếp nhận';
+            const legacyReject = 'Từ chối ' + 'tiếp nhận';
+            if (status === 'Lưu nháp' || status === legacyWait) return 'Chờ nhập liệu';
+            if (status === legacyReject) return 'Bị từ chối';
+            return status || 'Chờ nhập liệu';
+        }
+
+        function buildPhddRow(item) {
+            return {
+                ...item,
+                type: getPhddType(item),
+                deadlineText: getDeadlineText(item),
+                updatedDate: item.updatedDate || getLastTimelineDate(item) || item.date || ''
+            };
+        }
+
+        function getPhddType(item) {
+            if (item.phddForm === 'Đăng báo xin lỗi') return 'Đăng báo';
+            if (item.phddForm) return item.phddForm;
+            if (item.phddFormApology && item.phddFormNews) return 'Cả hai hình thức';
+            if (item.phddFormNews) return 'Đăng báo';
+            return 'Trực tiếp xin lỗi';
+        }
+
+        function getDeadlineText(item) {
+            if (item.status === 'Hoàn thành') return 'Đã hoàn thành';
+            if (item.status === 'Hoãn giải quyết' || item.status === 'Tạm đình chỉ giải quyết') return 'Đang tạm dừng';
+            return item.phddDateExp || item.deadline || '--';
+        }
+
+        function getLastTimelineDate(item) {
+            if (!Array.isArray(item.timeline) || !item.timeline.length) return '';
+            return item.timeline[item.timeline.length - 1].date || '';
+        }
+
+        function inferProvince(address) {
+            if (!address) return 'Chưa có';
+            const parts = address.split(',').map(part => part.trim()).filter(Boolean);
+            return parts.length ? parts[parts.length - 1] : 'Chưa có';
+        }
+
+        function setDefaultDates() {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('phddFromDate').value = formatDateVi(firstDay);
+            document.getElementById('phddToDate').value = formatDateVi(today);
+        }
+
+        function switchLookupTab(tab) {
+            document.getElementById('tabPhddBtn').classList.toggle('active', tab === 'phdd');
+            document.getElementById('tabYcbtBtn').classList.toggle('active', tab === 'ycbt');
+            document.getElementById('panelPhdd').classList.toggle('active', tab === 'phdd');
+            document.getElementById('panelYcbt').classList.toggle('active', tab === 'ycbt');
+        }
+
+        function syncStatusGroup(tab) {
+            const groupId = tab === 'phdd' ? 'phddStatusGroup' : 'ycbtStatusGroup';
+            const statusId = tab === 'phdd' ? 'phddStatus' : 'ycbtStatus';
+            const group = document.getElementById(groupId).value;
+            if (group) document.getElementById(statusId).value = '';
+        }
+
+        function normalizeText(value) {
+            return (value || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim();
+        }
+
+        function formatDateVi(date) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        function parseDateVi(value) {
+            if (!value) return null;
+            const parts = value.split('/');
+            if (parts.length !== 3) return null;
+            const date = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+            return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        function matchesStatus(item, status, group) {
+            if (status && item.status !== status) return false;
+            if (group && !statusGroups[group].includes(item.status)) return false;
+            return true;
+        }
+
+        function searchPhdd() {
+            const code = normalizeText(document.getElementById('phddCode').value);
+            const title = normalizeText(document.getElementById('phddTitle').value);
+            const nyc = normalizeText(document.getElementById('phddNyc').value);
+            const agency = normalizeText(document.getElementById('phddAgency').value);
+            const status = document.getElementById('phddStatus').value;
+            const group = document.getElementById('phddStatusGroup').value;
+            const type = document.getElementById('phddType').value;
+            const fromDate = parseDateVi(document.getElementById('phddFromDate').value);
+            const toDate = parseDateVi(document.getElementById('phddToDate').value);
+
+            phddFiltered = phddList.filter(item => {
+                if (code && !normalizeText(item.code).includes(code)) return false;
+                if (title && !normalizeText(item.title).includes(title)) return false;
+                if (nyc && !normalizeText(item.nyc).includes(nyc)) return false;
+                if (agency && !normalizeText(item.agency).includes(agency)) return false;
+                if (!matchesStatus(item, status, group)) return false;
+                if (type && item.type !== type) return false;
+                const itemDate = parseDateVi(item.updatedDate);
+                if (fromDate && itemDate && itemDate < fromDate) return false;
+                if (toDate && itemDate && itemDate > toDate) return false;
+                return true;
+            });
+            sortPhdd();
+            phddPage = 1;
+            renderPhdd();
+        }
+
+        function resetPhddFilters() {
+            ['phddCode', 'phddTitle', 'phddNyc', 'phddAgency', 'phddStatus', 'phddStatusGroup', 'phddType'].forEach(id => document.getElementById(id).value = '');
+            setDefaultDates();
+            searchPhdd();
+            showToast('Đã xóa bộ lọc phục hồi danh dự');
+        }
+
+        function togglePhddSort() {
+            phddSortAsc = !phddSortAsc;
+            document.getElementById('phddSortIcon').className = phddSortAsc ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+            sortPhdd();
+            renderPhdd();
+        }
+
+        function sortPhdd() {
+            phddFiltered.sort((a, b) => {
+                const da = parseDateVi(a.updatedDate) || new Date(0);
+                const db = parseDateVi(b.updatedDate) || new Date(0);
+                return phddSortAsc ? da - db : db - da;
+            });
+        }
+
+        function renderPhdd() {
+            const tbody = document.getElementById('phddBody');
+            tbody.innerHTML = '';
+            const total = phddFiltered.length;
+            document.getElementById('phddTotal').innerText = total;
+            document.getElementById('phddCountText').innerText = `${total} bản ghi`;
+            const totalPages = Math.ceil(total / phddPageSize) || 1;
+            if (phddPage > totalPages) phddPage = totalPages;
+            const start = (phddPage - 1) * phddPageSize;
+            const end = Math.min(start + phddPageSize, total);
+            document.getElementById('phddRange').innerText = total ? `${start + 1}-${end}` : '0-0';
+            if (!total) {
+                tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
+                renderPages('phddPages', phddPage, totalPages, page => { phddPage = page; renderPhdd(); });
+                return;
+            }
+            phddFiltered.slice(start, end).forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.onclick = () => goToPhddDetail(item.code);
+                tr.innerHTML = `
+                    <td style="text-align:center;">${start + idx + 1}</td>
+                    <td class="code-cell">${escapeHtml(item.code)}</td>
+                    <td><strong>${escapeHtml(item.title || '--')}</strong></td>
+                    <td>${escapeHtml(item.nyc || '--')}</td>
+                    <td>${escapeHtml(item.nycTinhThanh || '--')}</td>
+                    <td title="${escapeHtml(item.address || '')}">${escapeHtml(shortText(item.address || '--', 62))}</td>
+                    <td>${escapeHtml(item.agency || 'Chưa xác định')}</td>
+                    <td>${escapeHtml(item.assignedOfficer || 'Chưa phân công')}</td>
+                    <td>${escapeHtml(item.type || '--')}</td>
+                    <td style="text-align:center;">${statusBadge(item.status || '--')}</td>
+                    <td style="text-align:center;">${escapeHtml(item.deadlineText || '--')}</td>
+                    <td style="text-align:center;">${escapeHtml(item.updatedDate || '--')}</td>
+                    <td style="text-align:center;"><span class="readonly-action">Chọn dòng để xem</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            renderPages('phddPages', phddPage, totalPages, page => { phddPage = page; renderPhdd(); });
+        }
+
+        function changePhddPageSize(value) {
+            phddPageSize = Number(value);
+            phddPage = 1;
+            renderPhdd();
+        }
+
+        function searchYcbt() {
+            const code = normalizeText(document.getElementById('ycbtCode').value);
+            const title = normalizeText(document.getElementById('ycbtTitle').value);
+            const nyc = normalizeText(document.getElementById('ycbtNyc').value);
+            const agency = normalizeText(document.getElementById('ycbtAgency').value);
+            const fieldGroup = document.getElementById('ycbtFieldGroup').value;
+            const status = document.getElementById('ycbtStatus').value;
+            const group = document.getElementById('ycbtStatusGroup').value;
+            const nopKenh = document.getElementById('ycbtNopKenh').value;
+            const fromDate = parseDateVi(document.getElementById('ycbtFromDate').value);
+            const toDate = parseDateVi(document.getElementById('ycbtToDate').value);
+            const deadlineFrom = parseDateVi(document.getElementById('ycbtDeadlineFrom').value);
+            const deadlineTo = parseDateVi(document.getElementById('ycbtDeadlineTo').value);
+
+            ycbtFiltered = ycbtList.filter(item => {
+                if (code && !normalizeText(item.code).includes(code)) return false;
+                if (title && !normalizeText(item.title).includes(title)) return false;
+                if (nyc && !normalizeText(item.nyc).includes(nyc)) return false;
+                if (agency && !normalizeText(item.agency).includes(agency)) return false;
+                if (fieldGroup && item.fieldGroup !== fieldGroup) return false;
+                if (!matchesStatus(item, status, group)) return false;
+                if (nopKenh && (item.nopKenh || 'Tiếp nhận trực tiếp') !== nopKenh) return false;
+                const itemDate = parseDateVi(item.date);
+                if (fromDate && itemDate && itemDate < fromDate) return false;
+                if (toDate && itemDate && itemDate > toDate) return false;
+                const deadline = parseDateVi(item.deadline);
+                if (deadlineFrom && deadline && deadline < deadlineFrom) return false;
+                if (deadlineTo && deadline && deadline > deadlineTo) return false;
+                return true;
+            });
+            sortYcbt();
+            ycbtPage = 1;
+            renderYcbt();
+        }
+
+        function resetYcbtFilters() {
+            ['ycbtCode', 'ycbtTitle', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtStatus', 'ycbtStatusGroup', 'ycbtFromDate', 'ycbtToDate', 'ycbtDeadlineFrom', 'ycbtDeadlineTo', 'ycbtNopKenh'].forEach(id => document.getElementById(id).value = '');
+            searchYcbt();
+            showToast('Đã xóa bộ lọc yêu cầu bồi thường');
+        }
+
+        function toggleYcbtSort() {
+            ycbtSortAsc = !ycbtSortAsc;
+            document.getElementById('ycbtSortIcon').className = ycbtSortAsc ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+            sortYcbt();
+            renderYcbt();
+        }
+
+        function sortYcbt() {
+            ycbtFiltered.sort((a, b) => {
+                const da = parseDateVi(a.date) || new Date(0);
+                const db = parseDateVi(b.date) || new Date(0);
+                return ycbtSortAsc ? da - db : db - da;
+            });
+        }
+
+        function renderYcbt() {
+            const tbody = document.getElementById('ycbtBody');
+            tbody.innerHTML = '';
+            const total = ycbtFiltered.length;
+            document.getElementById('ycbtTotal').innerText = total;
+            document.getElementById('ycbtCountText').innerText = `${total} bản ghi`;
+            const totalPages = Math.ceil(total / ycbtPageSize) || 1;
+            if (ycbtPage > totalPages) ycbtPage = totalPages;
+            const start = (ycbtPage - 1) * ycbtPageSize;
+            const end = Math.min(start + ycbtPageSize, total);
+            document.getElementById('ycbtRange').innerText = total ? `${start + 1}-${end}` : '0-0';
+            if (!total) {
+                tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc yêu cầu bồi thường phù hợp</td></tr>';
+                renderPages('ycbtPages', ycbtPage, totalPages, page => { ycbtPage = page; renderYcbt(); });
+                return;
+            }
+            ycbtFiltered.slice(start, end).forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.onclick = () => goToClaimDetail(item.code);
+                tr.innerHTML = `
+                    <td style="text-align:center;">${start + idx + 1}</td>
+                    <td class="code-cell">${escapeHtml(item.code)}</td>
+                    <td><strong>${escapeHtml(item.title || '--')}</strong></td>
+                    <td>${escapeHtml(item.nyc || '--')}</td>
+                    <td>${escapeHtml(item.nycTinhThanh || '--')}</td>
+                    <td title="${escapeHtml(item.address || '')}">${escapeHtml(shortText(item.address || '--', 60))}</td>
+                    <td><span class="muted">${escapeHtml(getFieldGroupName(item.fieldGroup))}</span></td>
+                    <td>${escapeHtml(item.agency || 'Chưa xác định')}</td>
+                    <td>${escapeHtml(item.assignedOfficer || 'Chưa phân công')}</td>
+                    <td style="text-align:center;">${escapeHtml(item.date || '--')}</td>
+                    <td style="text-align:center; color:#b45309; font-weight:600;">${escapeHtml(item.deadline || '--')}</td>
+                    <td style="text-align:center;"><span class="badge badge-info">${escapeHtml(item.nopKenh || 'Tiếp nhận trực tiếp')}</span></td>
+                    <td style="text-align:center;">${statusBadge(item.status || '--')}</td>
+                    <td style="text-align:center;">${escapeHtml(item.updatedDate || '--')}</td>
+                    <td style="text-align:center;"><span class="readonly-action">Chọn dòng để xem</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            renderPages('ycbtPages', ycbtPage, totalPages, page => { ycbtPage = page; renderYcbt(); });
+        }
+
+        function changeYcbtPageSize(value) {
+            ycbtPageSize = Number(value);
+            ycbtPage = 1;
+            renderYcbt();
+        }
+
+        function renderPages(containerId, current, totalPages, onPageChange) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            [
+                { text: '|<<', page: 1, disabled: current === 1 },
+                { text: '<', page: Math.max(1, current - 1), disabled: current === 1 }
+            ].forEach(btn => addPageButton(container, btn.text, btn.page, btn.disabled, false, onPageChange));
+            for (let i = 1; i <= totalPages; i++) {
+                addPageButton(container, i, i, false, current === i, onPageChange);
+            }
+            [
+                { text: '>', page: Math.min(totalPages, current + 1), disabled: current === totalPages },
+                { text: '>>|', page: totalPages, disabled: current === totalPages }
+            ].forEach(btn => addPageButton(container, btn.text, btn.page, btn.disabled, false, onPageChange));
+        }
+
+        function addPageButton(container, text, page, disabled, active, onPageChange) {
+            const el = document.createElement('span');
+            el.className = `page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}`;
+            el.textContent = text;
+            el.onclick = () => {
+                if (!disabled) onPageChange(page);
+            };
+            container.appendChild(el);
+        }
+
+        function shortText(value, max) {
+            return value && value.length > max ? `${value.slice(0, max)}...` : value;
+        }
+
+        function getFieldGroupName(value) {
+            const map = {
+                'hành chính': 'Quản lý hành chính',
+                'hình sự': 'Tố tụng hình sự',
+                'dân sự': 'Tố tụng dân sự',
+                'tố tụng hành chính': 'Tố tụng hành chính',
+                'thi hành án hình sự': 'Thi hành án hình sự',
+                'thi hành án dân sự': 'Thi hành án dân sự'
+            };
+            return map[value] || value || '--';
+        }
+
+        function statusBadge(status) {
+            let cls = 'badge-info';
+            if (status === 'Hoàn thành') cls = 'badge-success';
+            else if (status === 'Chờ nhập liệu') cls = 'badge-draft';
+            else if (['Chờ kiểm tra', 'Chờ thụ lý'].includes(status)) cls = 'badge-pending';
+            else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoãn giải quyết', 'Tạm đình chỉ giải quyết', 'Đang thực thi theo bản án'].includes(status)) cls = 'badge-warning';
+            else if (['Bị từ chối', 'Từ chối thụ lý', 'Thương lượng không thành công', 'Đình chỉ giải quyết'].includes(status)) cls = 'badge-danger';
+            return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
+        }
+
+        function goToPhddDetail(code) {
+            window.location.href = `quan_ly_boi_thuong.html?viewCode=${encodeURIComponent(code)}&subTab=phdd&mode=view`;
+        }
+
+        function goToClaimDetail(code) {
+            window.location.href = `quan_ly_boi_thuong.html?viewCode=${encodeURIComponent(code)}&mode=view`;
+        }
+
+        function exportLookup(type) {
+            showToast(type === 'phdd' ? 'Đang kết xuất danh sách phục hồi danh dự...' : 'Đang kết xuất danh sách yêu cầu bồi thường...');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.style.display = 'flex';
+            setTimeout(() => toast.style.display = 'none', 2200);
+        }
+
+        function escapeHtml(value) {
+            return (value || '').toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+
+</html>

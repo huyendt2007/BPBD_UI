@@ -870,17 +870,17 @@
                 title: "Bồi thường nhà nước",
                 icon: "fa-solid fa-hand-holding-dollar",
                 children: [
+                    { title: "Xác định giải quyết cơ quan bồi thường", url: "UC431_to_UC466/xac_dinh_co_quan_boi_thuong.html?v=1" },
                     {
-                        title: "Giải quyết yêu cầu bồi thường",
+                        title: "Giải quyết bồi thường",
                         children: [
-                            { title: "Xác định cơ quan giải quyết bồi thường", url: "UC431_to_UC466/xac_dinh_co_quan_boi_thuong.html?v=1" },
                             { title: "Giải quyết yêu cầu bồi thường", url: "UC431_to_UC466/quan_ly_boi_thuong.html?v=1" },
                             { title: "Quyết định giải quyết bồi thường", url: "UC431_to_UC466/quyet_dinh_giai_quyet_boi_thuong.html?v=1" },
-                            { title: "Quản lý kinh phí bồi thường", url: "UC431_to_UC466/quan_ly_kinh_phi_boi_thuong.html?v=1" },
-                            { title: "Quản lý xem xét trách nhiệm hoàn trả", url: "UC431_to_UC466/xem_xet_trach_nhiem_hoan_tra.html" },
-                            { title: "Tra cứu Phục hồi danh dự", url: "UC434_to_UC437/phuc_hoi_danh_du.html" }
+                            { title: "Cấp kinh phí tạm ứng/Bồi thường", url: "UC431_to_UC466/quan_ly_kinh_phi_boi_thuong.html?v=1" }
                         ]
                     },
+                    { title: "Xem xét trách nhiệm hoàn trả", url: "UC431_to_UC466/xem_xet_trach_nhiem_hoan_tra.html" },
+                    { title: "Tra cứu vụ việc", url: "UC431_to_UC466/tra_cuu_ho_so_boi_thuong.html?v=1" },
                     { title: "Quản lý chấm điểm công tác BTNN", url: "UC467_to_UC476/quan_ly_cham_diem_btnn.html" },
                     {
                         title: "Hỗ trợ & thông tin tư liệu BTNN",
@@ -1044,10 +1044,15 @@
             const urlParams = new URLSearchParams(window.location.search);
             const menuParam = urlParams.get('menu');
             if (menuParam === 'search') {
-                toggleRootItem(0);
-                // Tra cứu hồ sơ is a direct leaf at index 5
-                const leaf = menuData[0].children[5]; // Tra cứu hồ sơ
-                selectLeaf(leaf, [menuData[0].title, leaf.title], 'leaf-0-5');
+                const rootIdx = menuData.findIndex(item => item.title === 'Bồi thường nhà nước');
+                const root = menuData[rootIdx];
+                const leafIdx = root ? root.children.findIndex(item => item.title === 'Tra cứu vụ việc') : -1;
+                if (rootIdx >= 0 && leafIdx >= 0) {
+                    toggleRootItem(rootIdx);
+                    selectLeaf(root.children[leafIdx], [root.title, root.children[leafIdx].title], `leaf-${rootIdx}-${leafIdx}`);
+                } else {
+                    selectDefaultLeaf();
+                }
             } else {
                 selectDefaultLeaf();
             }
