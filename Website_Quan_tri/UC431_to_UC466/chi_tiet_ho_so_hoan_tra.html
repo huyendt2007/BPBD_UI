@@ -1067,6 +1067,25 @@
                     </div>
 
                     <div class="grid-2-cols" style="gap: 20px; margin-bottom: 16px;">
+                        <div class="form-group">
+                            <span class="form-label">Đơn vị ban hành <span style="color:red;">*</span></span>
+                            <select class="form-control" id="s1IssuingUnit" style="height:38px;">
+                                <option>Sở Tư pháp Hà Nội</option>
+                                <option>Cục Bồi thường nhà nước</option>
+                                <option>UBND Quận Cầu Giấy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Sổ văn bản áp dụng <span style="color:red;">*</span></span>
+                            <select class="form-control" id="s1DocumentBook" style="height:38px;">
+                                <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
+                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
+                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols" style="gap: 20px; margin-bottom: 16px;">
                         <!-- Digital Sign Options -->
                         <div class="form-group" id="s1SignerContainer">
                             <span class="form-label">Lãnh đạo ký duyệt <span style="color:red;">*</span></span>
@@ -1938,12 +1957,50 @@
                 <form id="issueDecisionForm">
                     <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
                         <div class="form-group">
+                            <span class="form-label">Đơn vị ban hành <span class="required" style="color:red;">*</span></span>
+                            <select class="form-control" id="issueQdIssuingUnit">
+                                <option>Sở Tư pháp Hà Nội</option>
+                                <option>Cục Bồi thường nhà nước</option>
+                                <option>UBND Quận Cầu Giấy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Sổ văn bản áp dụng <span class="required" style="color:red;">*</span></span>
+                            <select class="form-control" id="issueQdDocumentBook">
+                                <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
+                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
+                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group">
+                            <span class="form-label">Hình thức ban hành <span class="required" style="color:red;">*</span></span>
+                            <select class="form-control" id="issueQdSignMode">
+                                <option>Ký số trên hệ thống</option>
+                                <option>Ký bên ngoài</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Người ký / Lãnh đạo ký ban hành <span class="required" style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="issueQdSigner" value="Lê Minh Châu - Giám đốc Sở">
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group">
                             <span class="form-label">Số quyết định <span class="required" style="color:red;">*</span></span>
                             <input type="text" class="form-control" id="issueQdNo" placeholder="Ví dụ: 89/QĐ-STP" required>
                         </div>
                         <div class="form-group">
                             <span class="form-label">Ngày quyết định <span class="required" style="color:red;">*</span></span>
-                            <input type="text" class="form-control" id="issueQdDate" placeholder="dd/mm/yyyy" required>
+                            <input type="text" class="form-control" id="issueQdDate" placeholder="dd/mm/yyyy" oninput="syncIssueQdEffectiveDate2()" required>
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group">
+                            <span class="form-label">Ngày quyết định hoàn trả có hiệu lực <span class="required" style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="issueQdEffectiveDate" placeholder="dd/mm/yyyy" oninput="this.dataset.manuallyEdited='1'" required>
+                            <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">Mặc định lấy theo Ngày quyết định; cho phép sửa nếu văn bản quy định thời điểm có hiệu lực khác.</div>
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom:16px;">
@@ -4377,9 +4434,13 @@
                 container.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
 
                 if (isDigital) {
+                    if (!validateFieldRequired('s1IssuingUnit')) validated = false;
+                    if (!validateFieldRequired('s1DocumentBook')) validated = false;
                     if (!validateFieldRequired('s1HdSignDate')) validated = false;
                     if (!validateFieldRequired('s1HdDate')) validated = false;
                 } else {
+                    if (!validateFieldRequired('s1IssuingUnit')) validated = false;
+                    if (!validateFieldRequired('s1DocumentBook')) validated = false;
                     if (!validateFieldRequired('s1HdNo')) validated = false;
                     if (!validateFieldRequired('s1HdSignDate')) validated = false;
                     if (!validateFieldRequired('s1HdDate')) validated = false;
@@ -4439,6 +4500,8 @@
                 activeDossier.hdDate = effDate;
                 activeDossier.hdSignDate = signDate;
                 activeDossier.hdPublishType = isDigital ? 'digital' : 'offline';
+                activeDossier.hdIssuingUnit = document.getElementById('s1IssuingUnit').value;
+                activeDossier.hdDocumentBook = document.getElementById('s1DocumentBook').value;
 
                 if (isDigital) {
                     const signerName = document.getElementById('s1SignerSelect').value;
@@ -5034,8 +5097,18 @@
                 }
                 document.getElementById('issueQdNo').value = activeDossier.qdNo || '';
                 document.getElementById('issueQdDate').value = activeDossier.qdDate || new Date().toLocaleDateString('vi-VN');
+                const effEl = document.getElementById('issueQdEffectiveDate');
+                effEl.value = activeDossier.qdEffectiveDate || document.getElementById('issueQdDate').value;
+                delete effEl.dataset.manuallyEdited;
                 document.getElementById('issueQdSummary').value = activeDossier.qdSummary || document.getElementById('s3DraftSummary').value.trim();
                 document.getElementById('issueDecisionModal').classList.add('visible');
+            }
+
+            function syncIssueQdEffectiveDate2() {
+                const effEl = document.getElementById('issueQdEffectiveDate');
+                if (effEl && !effEl.dataset.manuallyEdited) {
+                    effEl.value = document.getElementById('issueQdDate').value;
+                }
             }
 
             function closeIssueDecisionModal() {
@@ -5059,12 +5132,17 @@
             function submitIssueDecision() {
                 const qdNo = document.getElementById('issueQdNo').value.trim();
                 const qdDate = document.getElementById('issueQdDate').value.trim();
+                const qdEffectiveDate = document.getElementById('issueQdEffectiveDate').value.trim();
                 const qdSummary = document.getElementById('issueQdSummary').value.trim();
+                const qdIssuingUnit = document.getElementById('issueQdIssuingUnit').value;
+                const qdDocumentBook = document.getElementById('issueQdDocumentBook').value;
+                const qdSignMode = document.getElementById('issueQdSignMode').value;
+                const qdSigner = document.getElementById('issueQdSigner').value.trim();
                 const fileInput = document.getElementById('issueQdFile');
                 const file = issuedDecisionFile || (fileInput.files && fileInput.files[0]);
                 let valid = true;
 
-                ['issueQdNo', 'issueQdDate'].forEach(id => {
+                ['issueQdIssuingUnit', 'issueQdDocumentBook', 'issueQdSignMode', 'issueQdSigner', 'issueQdNo', 'issueQdDate', 'issueQdEffectiveDate'].forEach(id => {
                     const el = document.getElementById(id);
                     if (!el.value.trim()) { el.classList.add('is-invalid'); valid = false; }
                     else { el.classList.remove('is-invalid'); }
@@ -5079,19 +5157,23 @@
 
                 activeDossier.qdNo = qdNo;
                 activeDossier.qdDate = qdDate;
+                activeDossier.qdEffectiveDate = qdEffectiveDate;
                 activeDossier.qdSummary = qdSummary;
+                activeDossier.qdIssuingUnit = qdIssuingUnit;
+                activeDossier.qdDocumentBook = qdDocumentBook;
+                activeDossier.qdSignMode = qdSignMode;
                 activeDossier.qdFileName = file ? file.name : activeDossier.qdFileName;
-                activeDossier.qdSigner = activeDossier.qdSigner || document.getElementById('s3SignerSelect').value;
+                activeDossier.qdSigner = qdSigner || activeDossier.qdSigner || document.getElementById('s3SignerSelect').value;
                 activeDossier.qdStatus = 'Đã ban hành';
                 activeDossier.status = 'Đang thi hành';
-                addStep3Audit('issue', 'Cán bộ Nguyễn Văn A', `Ban hành Quyết định hoàn trả chính thức số ${qdNo}. Đã đính kèm file văn bản đã ký/đóng dấu.`, activeDossier.qdFileName || '');
+                addStep3Audit('issue', 'Cán bộ Nguyễn Văn A', `Ban hành Quyết định hoàn trả chính thức số ${qdNo} theo ${qdDocumentBook}. Đã đính kèm file văn bản đã ký/đóng dấu.`, activeDossier.qdFileName || '');
                 activeDossier.timeline.unshift({
                     time: nowViShort(),
-                    text: `Ban hành Quyết định hoàn trả chính thức số ${qdNo}. Đã đính kèm file văn bản đã ký/đóng dấu.`
+                    text: `Ban hành Quyết định hoàn trả chính thức số ${qdNo} theo ${qdDocumentBook}.`
                 });
 
                 closeIssueDecisionModal();
-                showToast(`Ban hành Quyết định hoàn trả số ${qdNo} thành công. Bước 4 đã được mở khóa.`, 'success');
+                showToast(`Ban hành Quyết định hoàn trả số ${qdNo} theo ${qdDocumentBook} thành công. Bước 4 đã được mở khóa.`, 'success');
                 switchSimulatorState(4);
             }
 

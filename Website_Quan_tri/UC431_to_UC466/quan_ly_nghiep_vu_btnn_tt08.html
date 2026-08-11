@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nghiệp vụ bồi thường nhà nước</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --primary-hover: #172554;
+            --primary-light: #eff6ff;
+            --secondary-color: #0284c7;
+            --success-color: #16a34a;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-main: #f8fafc;
+            --border-color: #e2e8f0;
+            --radius: 6px;
+            --shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        .page-header,
+        .section {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header {
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .page-title h1 {
+            font-size: 20px;
+            line-height: 1.3;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .page-title p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .section {
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .grid-4,
+        .grid-3,
+        .grid-2 {
+            display: grid;
+            gap: 14px;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .required {
+            color: var(--danger-color);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 38px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius);
+            padding: 8px 10px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            background: #fff;
+            outline: none;
+        }
+
+        textarea.form-control {
+            height: 90px;
+            resize: vertical;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+        }
+
+        .btn {
+            height: 38px;
+            border-radius: var(--radius);
+            border: 1px solid transparent;
+            padding: 8px 14px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            border-color: var(--border-color);
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: #fff;
+        }
+
+        .icon-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: #fff;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-color: #bfdbfe;
+        }
+
+        .icon-btn.disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .tabs {
+            display: none;
+            gap: 6px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 10px 14px;
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .table-wrap {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 980px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            text-align: left;
+            font-weight: 800;
+            padding: 11px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 22px;
+            border-radius: 999px;
+            padding: 3px 9px;
+            font-size: 11.5px;
+            font-weight: 800;
+            border: 1px solid transparent;
+        }
+
+        .badge.draft {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .badge.pending {
+            background: #fef3c7;
+            color: #a16207;
+            border-color: #fde68a;
+        }
+
+        .badge.active {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        .badge.done {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        .badge.returned {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .detail-panel {
+            display: none;
+            border-top: 3px solid var(--primary-color);
+        }
+
+        .detail-panel.visible {
+            display: block;
+        }
+
+        .info-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .info-value {
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 800;
+            margin-top: 3px;
+        }
+
+        .doc-table {
+            min-width: 760px;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            background: #0f172a;
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.24);
+            z-index: 9999;
+        }
+
+        @media (max-width: 1100px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .info-strip {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 14px;
+            }
+
+            .page-header,
+            .section-head,
+            .footer-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .grid-4,
+            .grid-3,
+            .grid-2,
+            .info-strip {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-header">
+        <div class="page-title">
+            <h1 id="pageTitle">Nghiệp vụ bồi thường nhà nước</h1>
+            <p id="pageSubtitle">Quản lý nghiệp vụ theo Thông tư 08/2019/TT-BTP.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-filter"></i> Lọc, tìm kiếm thông tin</div>
+        </div>
+        <div class="tabs" id="moduleTabs"></div>
+        <div class="grid-4" id="filterGrid"></div>
+        <div class="footer-actions" style="margin-top:12px;">
+            <button class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <button class="btn btn-primary" onclick="renderTable()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+                <button class="btn btn-secondary" onclick="showToast('Hệ thống đang kết xuất Excel theo kết quả tìm kiếm hiện hành.')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:12px; color:var(--text-muted); font-size:12.5px;">
+            <span id="resultCount">Hiển thị 0 bản ghi</span>
+            <span>20 bản ghi/trang</span>
+        </div>
+    </div>
+
+    <div class="section detail-panel" id="detailPanel">
+        <div class="section-head">
+            <div class="section-title" id="formTitle"><i class="fa-solid fa-pen-to-square"></i> Thêm mới/Cập nhật</div>
+            <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+        </div>
+        <div class="info-strip">
+            <div>
+                <div class="info-label" id="codeLabel">Mã hồ sơ</div>
+                <div class="info-value" id="formCode">Hệ thống tự sinh</div>
+            </div>
+            <div>
+                <div class="info-label">Trạng thái</div>
+                <div class="info-value" id="formStatus">Lưu nháp</div>
+            </div>
+            <div>
+                <div class="info-label">Cán bộ xử lý</div>
+                <div class="info-value" id="formOfficer">Nguyễn Văn Cán Bộ</div>
+            </div>
+            <div>
+                <div class="info-label">Ngày tạo/cập nhật</div>
+                <div class="info-value" id="formDate">10/08/2026</div>
+            </div>
+        </div>
+        <form id="businessForm">
+            <div class="grid-3" id="formFields"></div>
+            <div class="form-group">
+                <span class="form-label" id="mainContentLabel">Nội dung xử lý<span class="required">*</span></span>
+                <textarea class="form-control" id="mainContent" placeholder="Nhập nội dung..."></textarea>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <span class="form-label" id="resultLabel">Nội dung kết quả</span>
+                    <textarea class="form-control" id="resultContent" placeholder="Nhập nội dung kết quả..."></textarea>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Lịch sử xử lý</span>
+                    <textarea class="form-control" id="historyContent" disabled>10/08/2026 09:15 - Nguyễn Văn Cán Bộ khởi tạo hồ sơ.</textarea>
+                </div>
+            </div>
+        </form>
+
+        <div class="section-title" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu liên quan</div>
+        <div class="table-wrap">
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px; text-align:center;">STT</th>
+                        <th>Tên tài liệu</th>
+                        <th>File đính kèm</th>
+                        <th style="width:120px; text-align:center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="documentRows"></tbody>
+            </table>
+        </div>
+        <div style="margin-top:10px;">
+            <button class="btn btn-secondary" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng tài liệu</button>
+        </div>
+
+        <div class="footer-actions" id="formActions"></div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
+
+    <script>
+        const commonStatusOptions = ['Tất cả', 'Lưu nháp', 'Đang xử lý', 'Hoàn thành'];
+        const workContentOptions = [
+            'Giải quyết yêu cầu bồi thường',
+            'Cấp kinh phí bồi thường và chi trả tiền bồi thường',
+            'Xác định và thực hiện trách nhiệm hoàn trả',
+            'Xử lý kỷ luật',
+            'Quản lý nhà nước về công tác BTNN',
+            'Phục hồi danh dự'
+        ];
+
+        const moduleConfigs = {
+            huong_dan: {
+                title: 'Hướng dẫn nghiệp vụ, giải đáp vướng mắc BTNN',
+                subtitle: 'Tiếp nhận, cập nhật và theo dõi hồ sơ hướng dẫn nghiệp vụ, giải đáp vướng mắc trong công tác bồi thường nhà nước.',
+                icon: 'fa-comments',
+                codeLabel: 'Mã hồ sơ',
+                codePrefix: 'HD-BTNN',
+                tabs: [],
+                filters: [
+                    ['keyword', 'Mã hồ sơ', 'Nhập mã hồ sơ...'],
+                    ['agency', 'Cơ quan/cá nhân đề nghị', 'Nhập cơ quan/cá nhân...'],
+                    ['type', 'Loại nội dung', ['Tất cả', 'Hướng dẫn nghiệp vụ', 'Giải đáp vướng mắc']],
+                    ['method', 'Hình thức thực hiện', ['Tất cả', 'Văn bản', 'Trực tiếp', 'Cổng thông tin điện tử', 'Hòm thư điện tử', 'Họp liên ngành']],
+                    ['status', 'Trạng thái', commonStatusOptions],
+                    ['fromDate', 'Từ ngày', 'date'],
+                    ['toDate', 'Đến ngày', 'date']
+                ],
+                columns: ['Mã hồ sơ', 'Cơ quan/cá nhân đề nghị', 'Loại nội dung', 'Hình thức thực hiện', 'Ngày tiếp nhận', 'Cán bộ xử lý', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['type', 'Loại nội dung', ['Hướng dẫn nghiệp vụ', 'Giải đáp vướng mắc'], true],
+                    ['agency', 'Cơ quan/cá nhân đề nghị', 'text', true],
+                    ['agencyLevel', 'Cấp/nhóm cơ quan đề nghị', ['Bộ, ngành Trung ương', 'UBND cấp tỉnh', 'Sở Tư pháp', 'Cơ quan giải quyết bồi thường', 'Tòa án', 'Viện kiểm sát', 'Cơ quan khác', 'Cá nhân'], true],
+                    ['field', 'Lĩnh vực nội dung', workContentOptions, true],
+                    ['method', 'Hình thức thực hiện', ['Văn bản', 'Trực tiếp', 'Cổng thông tin điện tử', 'Hòm thư điện tử', 'Họp liên ngành'], true],
+                    ['receivedDate', 'Ngày tiếp nhận', 'date', true],
+                    ['legalBasis', 'Căn cứ pháp luật', 'text', false],
+                    ['coordinationAgency', 'Cơ quan phối hợp', 'text', false]
+                ],
+                mainContentLabel: 'Nội dung đề nghị',
+                resultLabel: 'Nội dung hướng dẫn/giải đáp',
+                rows: [
+                    ['HD-BTNN-2026-001', 'Sở Tư pháp Hà Nội', 'Hướng dẫn nghiệp vụ', 'Văn bản', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
+                    ['HD-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Giải đáp vướng mắc', 'Hòm thư điện tử', '31/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
+                    ['HD-BTNN-2026-003', 'Cục Thi hành án dân sự Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Họp liên ngành', '25/07/2026', 'Nguyễn Văn Cán Bộ', 'Lưu nháp']
+                ]
+            },
+            theo_doi_don_doc: {
+                title: 'Theo dõi, đôn đốc công tác BTNN',
+                subtitle: 'Lập danh mục, theo dõi tình hình thực hiện và quản lý văn bản đôn đốc công tác bồi thường nhà nước.',
+                icon: 'fa-list-check',
+                codeLabel: 'Mã hồ sơ',
+                codePrefix: 'TDDD-BTNN',
+                tabs: ['Theo dõi công tác BTNN', 'Đôn đốc công tác BTNN'],
+                filters: [
+                    ['keyword', 'Mã hồ sơ', 'Nhập mã hồ sơ...'],
+                    ['agency', 'Cơ quan liên quan', 'Nhập cơ quan liên quan...'],
+                    ['content', 'Nội dung công tác', ['Tất cả', ...workContentOptions]],
+                    ['basis', 'Hình thức/căn cứ', ['Tất cả', 'Báo cáo', 'Bản án, quyết định của Tòa án', 'Quyết định giải quyết bồi thường', 'Đề nghị hướng dẫn/giải đáp', 'Kết quả kiểm tra/thanh tra', 'Thông tin báo chí', 'Khiếu nại, tố cáo, phản ánh, kiến nghị', 'Căn cứ khác']],
+                    ['status', 'Trạng thái', ['Tất cả', 'Lưu nháp', 'Đã gửi', 'Đang theo dõi phản hồi', 'Hoàn thành']],
+                    ['fromDate', 'Từ ngày', 'date'],
+                    ['toDate', 'Đến ngày', 'date']
+                ],
+                columns: ['Mã hồ sơ', 'Cơ quan liên quan', 'Nội dung công tác', 'Hạn phản hồi', 'Cán bộ xử lý', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['group', 'Nhóm nghiệp vụ', ['Theo dõi công tác BTNN', 'Đôn đốc công tác BTNN'], true],
+                    ['agency', 'Cơ quan liên quan', 'text', true],
+                    ['content', 'Nội dung công tác', workContentOptions, true],
+                    ['basis', 'Căn cứ thực hiện', ['Báo cáo', 'Bản án, quyết định của Tòa án', 'Quyết định giải quyết bồi thường', 'Đề nghị hướng dẫn/giải đáp', 'Kết quả kiểm tra/thanh tra', 'Thông tin báo chí', 'Khiếu nại, tố cáo, phản ánh, kiến nghị', 'Căn cứ khác'], true],
+                    ['caseCode', 'Mã vụ việc liên quan', 'text', false],
+                    ['deadline', 'Hạn phản hồi', 'date', false],
+                    ['recommendation', 'Kiến nghị cụ thể', 'text', false],
+                    ['coordinationAgency', 'Cơ quan phối hợp', 'text', false]
+                ],
+                mainContentLabel: 'Nội dung cần theo dõi/đôn đốc',
+                resultLabel: 'Nội dung phản hồi/kết quả thực hiện',
+                rows: [
+                    ['TDDD-BTNN-2026-001', 'Sở Tư pháp Hà Nội', 'Giải quyết yêu cầu bồi thường', '15/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Xác định và thực hiện trách nhiệm hoàn trả', '20/08/2026', 'Trần Thị Minh', 'Đã gửi'],
+                    ['TDDD-BTNN-2026-003', 'Sở Tư pháp Hải Phòng', 'Quản lý nhà nước về công tác BTNN', '—', 'Nguyễn Văn Cán Bộ', 'Lưu nháp']
+                ]
+            },
+            kiem_tra: {
+                title: 'Kiểm tra công tác BTNN',
+                subtitle: 'Quản lý kế hoạch kiểm tra, đoàn kiểm tra, biên bản, kết luận và theo dõi xử lý sau kiểm tra.',
+                icon: 'fa-clipboard-check',
+                codeLabel: 'Mã cuộc kiểm tra',
+                codePrefix: 'KT-BTNN',
+                tabs: [],
+                filters: [
+                    ['keyword', 'Mã cuộc kiểm tra', 'Nhập mã cuộc kiểm tra...'],
+                    ['agency', 'Cơ quan được kiểm tra', 'Nhập cơ quan được kiểm tra...'],
+                    ['type', 'Hình thức kiểm tra', ['Tất cả', 'Kiểm tra định kỳ', 'Kiểm tra đột xuất']],
+                    ['content', 'Nội dung kiểm tra', ['Tất cả', 'Giải quyết yêu cầu bồi thường', 'Xác định và thực hiện trách nhiệm hoàn trả', 'Quản lý nhà nước về công tác BTNN', 'Tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước']],
+                    ['status', 'Trạng thái', ['Tất cả', 'Lưu nháp', 'Đang thực hiện kiểm tra', 'Theo dõi xử lý sau kiểm tra', 'Hoàn thành']],
+                    ['fromDate', 'Từ ngày', 'date'],
+                    ['toDate', 'Đến ngày', 'date']
+                ],
+                columns: ['Mã cuộc kiểm tra', 'Cơ quan được kiểm tra', 'Hình thức kiểm tra', 'Thời gian kiểm tra', 'Trưởng đoàn kiểm tra', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['type', 'Hình thức kiểm tra', ['Kiểm tra định kỳ', 'Kiểm tra đột xuất'], true],
+                    ['basis', 'Căn cứ kiểm tra', ['Kiến nghị, phản ánh, khiếu nại, tố cáo', 'Kết quả hướng dẫn nghiệp vụ', 'Kết quả theo dõi, đôn đốc', 'Kết quả hỗ trợ, hướng dẫn người bị thiệt hại', 'Kết quả thống kê hằng năm', 'Hướng dẫn của cơ quan quản lý nhà nước ở trung ương'], true],
+                    ['agency', 'Cơ quan được kiểm tra', 'text', true],
+                    ['content', 'Nội dung kiểm tra', ['Giải quyết yêu cầu bồi thường', 'Xác định và thực hiện trách nhiệm hoàn trả', 'Quản lý nhà nước về công tác BTNN', 'Tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước'], true],
+                    ['fromDate', 'Thời gian kiểm tra từ ngày', 'date', true],
+                    ['toDate', 'Thời gian kiểm tra đến ngày', 'date', true],
+                    ['location', 'Địa điểm kiểm tra', 'text', true],
+                    ['leader', 'Trưởng đoàn kiểm tra', 'text', true],
+                    ['members', 'Thành viên đoàn kiểm tra', 'text', true],
+                    ['requestDocs', 'Yêu cầu cung cấp tài liệu', 'text', false]
+                ],
+                mainContentLabel: 'Phạm vi kiểm tra',
+                resultLabel: 'Biên bản/Kết luận/Kết quả xử lý sau kiểm tra',
+                rows: [
+                    ['KT-BTNN-2026-001', 'Sở Tư pháp Hà Nội', 'Kiểm tra định kỳ', '12/08/2026 - 14/08/2026', 'Lê Minh Châu', 'Lưu nháp'],
+                    ['KT-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Kiểm tra đột xuất', '20/08/2026 - 21/08/2026', 'Nguyễn Văn Bình', 'Đang thực hiện kiểm tra'],
+                    ['KT-BTNN-2026-003', 'Sở Tư pháp Hải Phòng', 'Kiểm tra định kỳ', '05/09/2026 - 06/09/2026', 'Phạm Thị Hoa', 'Theo dõi xử lý sau kiểm tra']
+                ]
+            },
+            khieu_nai: {
+                title: 'Giải quyết khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN',
+                subtitle: 'Quản lý thông tin khiếu nại, tố cáo, phản ánh, kiến nghị và kết quả xử lý vi phạm liên quan công tác bồi thường nhà nước.',
+                icon: 'fa-scale-balanced',
+                codeLabel: 'Mã hồ sơ',
+                codePrefix: 'KNTC-BTNN',
+                tabs: [],
+                filters: [
+                    ['keyword', 'Mã hồ sơ', 'Nhập mã hồ sơ...'],
+                    ['agency', 'Người/cơ quan gửi', 'Nhập người/cơ quan gửi...'],
+                    ['type', 'Loại nội dung', ['Tất cả', 'Khiếu nại', 'Tố cáo', 'Phản ánh', 'Kiến nghị', 'Xử lý vi phạm']],
+                    ['content', 'Nhóm nghiệp vụ liên quan', ['Tất cả', ...workContentOptions, 'Kiểm tra công tác BTNN', 'Đôn đốc công tác BTNN']],
+                    ['status', 'Trạng thái', ['Tất cả', 'Lưu nháp', 'Đang xử lý', 'Hoàn thành']],
+                    ['fromDate', 'Từ ngày', 'date'],
+                    ['toDate', 'Đến ngày', 'date']
+                ],
+                columns: ['Mã hồ sơ', 'Người/cơ quan gửi', 'Loại nội dung', 'Nhóm nghiệp vụ liên quan', 'Mã vụ việc liên quan', 'Ngày tiếp nhận', 'Cán bộ xử lý', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['type', 'Loại nội dung', ['Khiếu nại', 'Tố cáo', 'Phản ánh', 'Kiến nghị', 'Xử lý vi phạm'], true],
+                    ['receivedDate', 'Ngày tiếp nhận', 'date', true],
+                    ['agency', 'Người/cơ quan gửi', 'text', true],
+                    ['contact', 'Thông tin liên hệ', 'text', false],
+                    ['content', 'Nhóm nghiệp vụ liên quan', [...workContentOptions, 'Kiểm tra công tác BTNN', 'Đôn đốc công tác BTNN'], true],
+                    ['caseCode', 'Mã vụ việc liên quan', 'text', false],
+                    ['reportedObject', 'Cơ quan/cá nhân bị phản ánh', 'text', false],
+                    ['priority', 'Mức độ ưu tiên', ['Bình thường', 'Khẩn', 'Rất khẩn'], true],
+                    ['handler', 'Đơn vị/cán bộ xử lý', 'text', false],
+                    ['deadline', 'Hạn xử lý', 'date', false]
+                ],
+                mainContentLabel: 'Nội dung tiếp nhận',
+                resultLabel: 'Kết quả xác minh/xử lý và biện pháp xử lý/khắc phục',
+                rows: [
+                    ['KNTC-BTNN-2026-001', 'Ông Nguyễn Văn D', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-012', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-002', 'Sở Tư pháp Hà Nội', 'Kiến nghị', 'Kiểm tra công tác BTNN', '—', '01/08/2026', 'Trần Thị Minh', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-003', 'Công dân phản ánh qua Cổng TTĐT', 'Phản ánh', 'Đôn đốc công tác BTNN', 'BT-2026-021', '28/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành']
+                ]
+            }
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        let moduleKey = params.get('module') || 'huong_dan';
+        let currentConfig = moduleConfigs[moduleKey] || moduleConfigs.huong_dan;
+        let currentTab = currentConfig.tabs[0] || '';
+        let workingRows = [];
+        let documentRows = [
+            { name: 'Văn bản đề nghị', file: 'van_ban_de_nghi.pdf' },
+            { name: 'Tài liệu liên quan', file: 'tai_lieu_lien_quan.docx' }
+        ];
+
+        function fieldControl(field) {
+            const [id, label, type, required] = field;
+            const req = required ? '<span class="required">*</span>' : '';
+            if (Array.isArray(type)) {
+                return `<div class="form-group"><span class="form-label">${label}${req}</span><select class="form-control" id="f_${id}">${type.map(option => `<option value="${option}">${option}</option>`).join('')}</select></div>`;
+            }
+            if (type === 'date') {
+                return `<div class="form-group"><span class="form-label">${label}${req}</span><input type="text" class="form-control" id="f_${id}" placeholder="dd/mm/yyyy"></div>`;
+            }
+            return `<div class="form-group"><span class="form-label">${label}${req}</span><input type="text" class="form-control" id="f_${id}" placeholder="Nhập ${label.toLowerCase()}..."></div>`;
+        }
+
+        function renderFilterControl(field) {
+            const [id, label, type] = field;
+            if (Array.isArray(type)) {
+                return `<div class="form-group"><span class="form-label">${label}</span><select class="form-control" id="filter_${id}">${type.map(option => `<option value="${option === 'Tất cả' ? '' : option}">${option}</option>`).join('')}</select></div>`;
+            }
+            if (type === 'date') {
+                return `<div class="form-group"><span class="form-label">${label}</span><input type="text" class="form-control" id="filter_${id}" placeholder="dd/mm/yyyy"></div>`;
+            }
+            return `<div class="form-group"><span class="form-label">${label}</span><input type="text" class="form-control" id="filter_${id}" placeholder="${type}"></div>`;
+        }
+
+        function statusClass(status) {
+            if (status.includes('Hoàn thành')) return 'done';
+            if (status.includes('Chờ')) return 'pending';
+            if (status.includes('Đang') || status.includes('Đã gửi') || status.includes('Theo dõi')) return 'active';
+            return 'draft';
+        }
+
+        function actionButtons(row) {
+            const status = row[row.length - 1];
+            const canEdit = status === 'Lưu nháp';
+            const canUpdate = status.includes('Đang') || status === 'Đã gửi' || status === 'Đang theo dõi phản hồi' || status === 'Theo dõi xử lý sau kiểm tra';
+            const canFinish = status.includes('Đang') || status === 'Đã gửi' || status === 'Theo dõi xử lý sau kiểm tra';
+            return `
+                <div style="display:flex; gap:6px; justify-content:center;">
+                    <button class="icon-btn ${canEdit ? '' : 'disabled'}" title="Sửa" onclick="event.stopPropagation(); openForm('edit', '${row[0]}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="icon-btn ${canUpdate ? '' : 'disabled'}" title="${moduleKey === 'khieu_nai' ? 'Cập nhật kết quả' : moduleKey === 'theo_doi_don_doc' ? 'Cập nhật phản hồi' : 'Cập nhật kết quả'}" onclick="event.stopPropagation(); openForm('update', '${row[0]}')"><i class="fa-solid fa-clipboard-check"></i></button>
+                    <button class="icon-btn ${canFinish ? '' : 'disabled'}" title="Hoàn thành" onclick="event.stopPropagation(); finishRow('${row[0]}')"><i class="fa-solid fa-circle-check"></i></button>
+                </div>
+            `;
+        }
+
+        function renderTable() {
+            const head = document.getElementById('tableHead');
+            const body = document.getElementById('tableBody');
+            const actionIndex = currentConfig.columns.length - 1;
+            head.innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${currentConfig.columns.map((col, index) => `<th style="${index === actionIndex ? 'width:140px; text-align:center;' : ''}">${col}</th>`).join('')}</tr>`;
+
+            const keyword = (document.getElementById('filter_keyword')?.value || '').trim().toLowerCase();
+            const agency = (document.getElementById('filter_agency')?.value || '').trim().toLowerCase();
+            const status = document.getElementById('filter_status')?.value || '';
+            let rows = workingRows.filter(row => {
+                const joined = row.join(' ').toLowerCase();
+                if (keyword && !joined.includes(keyword)) return false;
+                if (agency && !joined.includes(agency)) return false;
+                if (status && row[row.length - 1] !== status) return false;
+                return true;
+            });
+
+            body.innerHTML = rows.map((row, index) => `
+                <tr onclick="openForm('view', '${row[0]}')">
+                    <td style="text-align:center;">${index + 1}</td>
+                    ${row.map((cell, cellIndex) => {
+                        const isStatus = cellIndex === row.length - 1;
+                        const isCode = cellIndex === 0;
+                        return `<td style="${isCode ? 'font-weight:800; color:var(--primary-color);' : ''}">${isStatus ? `<span class="badge ${statusClass(cell)}">${cell}</span>` : cell}</td>`;
+                    }).join('')}
+                    <td style="text-align:center;">${actionButtons(row)}</td>
+                </tr>
+            `).join('');
+
+            if (rows.length === 0) {
+                body.innerHTML = `<tr><td colspan="${currentConfig.columns.length + 1}" style="text-align:center; color:var(--text-muted); padding:26px;">Không có bản ghi phù hợp.</td></tr>`;
+            }
+            document.getElementById('resultCount').innerText = `Hiển thị ${rows.length} bản ghi`;
+        }
+
+        function renderDocuments() {
+            const body = document.getElementById('documentRows');
+            body.innerHTML = documentRows.map((doc, index) => `
+                <tr>
+                    <td style="text-align:center;">${index + 1}</td>
+                    <td><input class="form-control" value="${doc.name}" onchange="documentRows[${index}].name = this.value"></td>
+                    <td>
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <span style="font-weight:700; color:#475569;"><i class="fa-solid fa-paperclip"></i> ${doc.file || 'Chưa chọn file'}</span>
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('docFile_${index}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>
+                            <input type="file" id="docFile_${index}" style="display:none;" onchange="setDocumentFile(${index}, this.files)">
+                        </div>
+                    </td>
+                    <td style="text-align:center;">
+                        <button class="icon-btn" title="Xem file" onclick="showToast('Đang mở file ${doc.file || ''}.')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="icon-btn" title="Xóa" onclick="removeDocumentRow(${index})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addDocumentRow() {
+            documentRows.push({ name: '', file: '' });
+            renderDocuments();
+        }
+
+        function removeDocumentRow(index) {
+            documentRows.splice(index, 1);
+            renderDocuments();
+            showToast('Đã xóa dòng tài liệu.');
+        }
+
+        function setDocumentFile(index, files) {
+            if (files && files[0]) {
+                documentRows[index].file = files[0].name;
+                renderDocuments();
+                showToast('Đã đính kèm file tài liệu.');
+            }
+        }
+
+        function openForm(mode, code = '') {
+            const row = workingRows.find(item => item[0] === code);
+            const isNew = mode === 'new';
+            document.getElementById('detailPanel').classList.add('visible');
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isNew ? 'Thêm mới' : 'Thêm mới/Cập nhật'} ${currentConfig.title.toLowerCase()}`;
+            document.getElementById('codeLabel').innerText = currentConfig.codeLabel;
+            document.getElementById('formCode').innerText = isNew ? 'Hệ thống tự sinh' : code;
+            document.getElementById('formStatus').innerText = row ? row[row.length - 1] : 'Lưu nháp';
+            document.getElementById('formOfficer').innerText = row ? row[row.length - 2] : 'Nguyễn Văn Cán Bộ';
+            document.getElementById('formFields').innerHTML = currentConfig.fields.map(fieldControl).join('');
+            document.getElementById('mainContentLabel').innerHTML = `${currentConfig.mainContentLabel}<span class="required">*</span>`;
+            document.getElementById('resultLabel').innerText = currentConfig.resultLabel;
+            documentRows = [
+                { name: 'Văn bản/tài liệu đầu vào', file: 'tai_lieu_dau_vao.pdf' },
+                { name: 'Tài liệu xử lý', file: '' }
+            ];
+            renderDocuments();
+            renderFormActions(row ? row[row.length - 1] : 'Lưu nháp');
+            document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function closeForm() {
+            document.getElementById('detailPanel').classList.remove('visible');
+        }
+
+        function renderFormActions(status) {
+            const actions = document.getElementById('formActions');
+            let primaryLabel = 'Lưu thông tin xử lý';
+            if (moduleKey === 'theo_doi_don_doc') {
+                primaryLabel = 'Gửi đôn đốc / Lưu theo dõi';
+            } else if (moduleKey === 'kiem_tra') {
+                primaryLabel = status === 'Đang thực hiện kiểm tra' ? 'Lưu kết luận kiểm tra' : 'Lưu kế hoạch kiểm tra';
+            } else if (moduleKey === 'khieu_nai') {
+                primaryLabel = status === 'Đang xử lý' ? 'Hoàn thành' : 'Lưu và xử lý';
+            }
+            const showFinishButton = primaryLabel !== 'Hoàn thành' && status !== 'Hoàn thành';
+            const primaryIcon = primaryLabel === 'Hoàn thành' ? 'fa-circle-check' : 'fa-floppy-disk';
+            const primaryClass = primaryLabel === 'Hoàn thành' ? 'btn-success' : 'btn-primary';
+            if (status === 'Hoàn thành') {
+                primaryLabel = 'Lưu thông tin';
+            }
+            actions.innerHTML = `
+                <button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <button type="button" class="btn btn-secondary" onclick="showToast('Đã lưu nháp thông tin.')"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
+                <button type="button" class="btn ${primaryClass}" onclick="showToast('Đã thực hiện thao tác ${primaryLabel}.')"><i class="fa-solid ${primaryIcon}"></i> ${primaryLabel}</button>
+                ${showFinishButton ? `<button type="button" class="btn btn-success" onclick="showToast('Đã hoàn thành hồ sơ.')"><i class="fa-solid fa-circle-check"></i> Hoàn thành</button>` : ''}
+            `;
+        }
+
+        function finishRow(code) {
+            const row = workingRows.find(item => item[0] === code);
+            if (row) {
+                row[row.length - 1] = 'Hoàn thành';
+                renderTable();
+                showToast(`Đã hoàn thành hồ sơ ${code}.`);
+            }
+        }
+
+        function resetFilters() {
+            currentConfig.filters.forEach(([id]) => {
+                const el = document.getElementById(`filter_${id}`);
+                if (el) el.value = '';
+            });
+            renderTable();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+            renderTable();
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').innerText = text;
+            toast.style.display = 'flex';
+            clearTimeout(window.__toastTimer);
+            window.__toastTimer = setTimeout(() => toast.style.display = 'none', 2200);
+        }
+
+        function init() {
+            document.title = currentConfig.title;
+            document.getElementById('pageTitle').innerHTML = `<i class="fa-solid ${currentConfig.icon}"></i> ${currentConfig.title}`;
+            document.getElementById('pageSubtitle').innerText = currentConfig.subtitle;
+            document.getElementById('filterGrid').innerHTML = currentConfig.filters.map(renderFilterControl).join('');
+            workingRows = currentConfig.rows.map(row => [...row]);
+
+            const tabs = document.getElementById('moduleTabs');
+            if (currentConfig.tabs.length > 0) {
+                tabs.style.display = 'flex';
+                tabs.innerHTML = currentConfig.tabs.map(tab => `<button class="tab-btn ${tab === currentTab ? 'active' : ''}" data-tab="${tab}" onclick="switchTab('${tab}')">${tab}</button>`).join('');
+            }
+
+            renderTable();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

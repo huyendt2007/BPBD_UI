@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nghiệp vụ bồi thường nhà nước</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --primary-hover: #172554;
+            --primary-light: #eff6ff;
+            --secondary-color: #2563eb;
+            --success-color: #16a34a;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --radius: 6px;
+            --shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, system-ui, sans-serif;
+            color: var(--text-main);
+            background: var(--bg-main);
+            padding: 22px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .page-header,
+        .section {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header {
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .page-title h1 {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .section {
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .grid-4,
+        .grid-3,
+        .grid-2 {
+            display: grid;
+            gap: 14px;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            color: #475569;
+            font-size: 12.5px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .required {
+            color: var(--danger-color);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            min-height: 38px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius);
+            padding: 8px 10px;
+            background: #fff;
+            color: var(--text-main);
+            font-size: 13.5px;
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 94px;
+            resize: vertical;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13);
+        }
+
+        .btn {
+            min-height: 38px;
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            padding: 8px 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            border-color: var(--border-color);
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: #fff;
+        }
+
+        .icon-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: #fff;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-color: #bfdbfe;
+        }
+
+        .icon-btn.disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .table-wrap {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .search-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0 12px;
+        }
+
+        .related-claim-control {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .related-claim-control .form-control {
+            flex: 1 1 260px;
+        }
+
+        .related-claim-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 8px;
+            color: var(--primary-color);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .related-claim-link:hover {
+            text-decoration: underline;
+        }
+
+        .lookup-table {
+            min-width: 900px;
+        }
+
+        .lookup-table .nowrap {
+            white-space: nowrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 980px;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 800;
+            text-align: left;
+            padding: 11px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 22px;
+            border-radius: 999px;
+            padding: 3px 9px;
+            border: 1px solid transparent;
+            font-size: 11.5px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .badge.draft {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .badge.waiting {
+            background: #fef3c7;
+            color: #a16207;
+            border-color: #fde68a;
+        }
+
+        .badge.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+
+        .badge.done {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        .badge.closed {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .detail-panel {
+            display: none;
+            border-top: 3px solid var(--primary-color);
+        }
+
+        .detail-panel.visible {
+            display: block;
+        }
+
+        .info-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .info-value {
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 800;
+            margin-top: 3px;
+        }
+
+        .doc-table {
+            min-width: 760px;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.45);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-backdrop.visible {
+            display: flex;
+        }
+
+        .modal {
+            width: min(680px, 100%);
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.24);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .modal.search-modal {
+            width: min(1080px, 100%);
+        }
+
+        .modal-head,
+        .modal-foot {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .modal-head {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-body {
+            padding: 18px;
+            overflow: auto;
+            min-height: 0;
+        }
+
+        .modal-foot {
+            justify-content: flex-end;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .modal-head {
+            flex-shrink: 0;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: #0f172a;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 14px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.24);
+            z-index: 1200;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1100px) {
+            .grid-4,
+            .info-strip {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 14px;
+            }
+
+            .page-header,
+            .section-head,
+            .footer-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .grid-4,
+            .grid-3,
+            .grid-2,
+            .info-strip {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-header">
+        <div class="page-title">
+            <h1 id="pageTitle">Nghiệp vụ bồi thường nhà nước</h1>
+            <p id="pageSubtitle">Quản lý nghiệp vụ theo SRS phần công tác bồi thường nhà nước.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-filter"></i> Lọc, tìm kiếm thông tin</div>
+        </div>
+        <div class="grid-4" id="filterGrid"></div>
+        <div class="footer-actions">
+            <button class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <button class="btn btn-primary" onclick="renderTable()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
+            <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:12px; color:var(--text-muted); font-size:12.5px;">
+            <span id="resultCount">Hiển thị 0 bản ghi</span>
+            <span>20 bản ghi/trang</span>
+        </div>
+    </div>
+
+    <div class="section detail-panel" id="detailPanel">
+        <div class="section-head">
+            <div class="section-title" id="formTitle"><i class="fa-solid fa-pen-to-square"></i> Thêm mới/Chỉnh sửa</div>
+            <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+        </div>
+        <div class="info-strip">
+            <div>
+                <div class="info-label" id="statusLabel">Trạng thái</div>
+                <div class="info-value" id="formStatus">Lưu nháp</div>
+            </div>
+            <div>
+                <div class="info-label">Người tạo/Cán bộ phụ trách</div>
+                <div class="info-value" id="formOfficer">Nguyễn Văn Cán Bộ</div>
+            </div>
+            <div>
+                <div class="info-label">Ngày tạo/cập nhật</div>
+                <div class="info-value" id="formDate">10/08/2026</div>
+            </div>
+            <div>
+                <div class="info-label">Chế độ</div>
+                <div class="info-value" id="formMode">Thêm mới</div>
+            </div>
+        </div>
+
+        <form id="businessForm">
+            <div class="grid-3" id="formFields"></div>
+            <div class="grid-2" id="textareaFields"></div>
+        </form>
+
+        <div class="section-title" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
+        <div class="table-wrap">
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px; text-align:center;">STT</th>
+                        <th>Tên tài liệu</th>
+                        <th>File đính kèm</th>
+                        <th style="width:120px; text-align:center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="documentRows"></tbody>
+            </table>
+        </div>
+        <div style="margin-top:10px;">
+            <button class="btn btn-secondary" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng tài liệu</button>
+        </div>
+
+        <div class="footer-actions" id="formActions"></div>
+    </div>
+
+    <div class="modal-backdrop" id="confirmModal">
+        <div class="modal">
+            <div class="modal-head">
+                <strong><i class="fa-solid fa-circle-question"></i> Xác nhận</strong>
+                <button class="icon-btn" onclick="closeConfirm(false)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="confirmText">Bạn có chắc chắn muốn thực hiện thao tác này?</div>
+            <div class="modal-foot">
+                <button class="btn btn-secondary" onclick="closeConfirm(false)">Hủy bỏ</button>
+                <button class="btn btn-danger" onclick="closeConfirm(true)">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="responseModal">
+        <div class="modal">
+            <div class="modal-head">
+                <strong id="responseTitle"><i class="fa-solid fa-reply"></i> Cập nhật kết quả phản hồi</strong>
+                <button class="icon-btn" onclick="closeResponseModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <span class="form-label">Ngày phản hồi<span class="required">*</span></span>
+                        <input class="form-control" id="responseDate" placeholder="dd/mm/yyyy" value="10/08/2026">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Kết quả phản hồi<span class="required">*</span></span>
+                        <select class="form-control" id="responseStatus">
+                            <option>Đã có phản hồi</option>
+                            <option>Đã thực hiện</option>
+                            <option>Không thực hiện</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Nội dung phản hồi<span class="required">*</span></span>
+                    <textarea class="form-control" id="responseContent" placeholder="Nhập nội dung phản hồi/kết quả xử lý..."></textarea>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Tài liệu phản hồi đính kèm</span>
+                    <button class="btn btn-secondary" onclick="document.getElementById('responseFile').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>
+                    <input type="file" id="responseFile" style="display:none;" onchange="showToast('Đã chọn tài liệu phản hồi.')">
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-secondary" onclick="closeResponseModal()">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="saveResponse()">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="relatedClaimSearchModal">
+        <div class="modal search-modal">
+            <div class="modal-head">
+                <strong><i class="fa-solid fa-folder-tree"></i> <span id="relatedLookupTitle">Tìm kiếm vụ việc liên quan</span></strong>
+                <button class="icon-btn" onclick="closeRelatedClaimSearchModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="grid-4">
+                    <div class="form-group">
+                        <span class="form-label">Mã vụ việc</span>
+                        <input class="form-control" id="claimSearchCode" placeholder="Nhập mã vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Tên vụ việc</span>
+                        <input class="form-control" id="claimSearchName" placeholder="Nhập tên vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Người yêu cầu/Cán bộ liên quan</span>
+                        <input class="form-control" id="claimSearchRequester" placeholder="Nhập họ tên...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Trạng thái</span>
+                        <select class="form-control" id="claimSearchStatus">
+                            <option value="">Tất cả</option>
+                            <option>Chờ thụ lý</option>
+                            <option>Đang xác minh thiệt hại</option>
+                            <option>Đang thương lượng</option>
+                            <option>Hoàn thành</option>
+                            <option>Đã ban hành</option>
+                            <option>Chờ ban hành quyết định</option>
+                            <option>Đang thu hồi</option>
+                            <option>Đã giảm mức hoàn trả</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-actions">
+                    <button class="btn btn-secondary" onclick="clearRelatedClaimSearch()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button class="btn btn-primary" onclick="renderRelatedClaimSearchResults()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="lookup-table">
+                        <thead>
+                            <tr>
+                                <th class="nowrap">Mã vụ việc</th>
+                                <th>Tên vụ việc</th>
+                                <th>Người yêu cầu/Cán bộ liên quan</th>
+                                <th class="nowrap">Số giấy tờ/Số QĐ</th>
+                                <th class="nowrap">Số văn bản/QĐ gốc</th>
+                                <th class="nowrap">Trạng thái</th>
+                                <th class="nowrap">Ngày phát sinh</th>
+                                <th style="width:92px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="relatedClaimSearchBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-secondary" onclick="closeRelatedClaimSearchModal()">Hủy bỏ</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
+
+    <script>
+        const statusOptions = ['Tất cả', 'Lưu nháp', 'Đã gửi - Chờ phản hồi', 'Đã có phản hồi', 'Đã thực hiện', 'Không thực hiện'];
+        const agencies = ['Sở Tư pháp Hà Nội', 'Sở Tư pháp Lâm Đồng', 'UBND Quận Cầu Giấy', 'Tòa án nhân dân cấp cao tại Hà Nội', 'Viện kiểm sát nhân dân tối cao', 'Tòa án nhân dân tối cao', 'Cục Bồi thường nhà nước'];
+        const qpplTypes = ['Luật', 'Nghị định', 'Thông tư', 'Quyết định', 'Văn bản khác'];
+        const countries = ['Nhật Bản', 'Hàn Quốc', 'Pháp', 'Đức', 'Úc', 'Hoa Kỳ'];
+        const provinces = ['Thành phố Hà Nội', 'Thành phố Hồ Chí Minh', 'Thành phố Đà Nẵng', 'Tỉnh Lâm Đồng', 'Thành phố Hải Phòng'];
+
+        const configs = {
+            ho_tro_nguoi_bi_thiet_hai: {
+                title: 'Hỗ trợ người bị thiệt hại thực hiện thủ tục YCBT',
+                subtitle: 'Ghi nhận, theo dõi và thống kê các trường hợp hỗ trợ người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường nhà nước.',
+                icon: 'fa-handshake-angle',
+                simple: true,
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập họ tên hoặc số điện thoại...'],
+                    ['method', 'Hình thức hỗ trợ', ['Tất cả', 'Trực tiếp tại trụ sở', 'Qua điện thoại', 'Qua văn bản/email', 'Khác']],
+                    ['status', 'Kết quả hỗ trợ', ['Tất cả', 'Đang hỗ trợ', 'Đã hướng dẫn xong', 'Người dân đã nộp YCBT', 'Không liên hệ được']],
+                    ['fromDate', 'Từ ngày hỗ trợ', 'date'],
+                    ['toDate', 'Đến ngày hỗ trợ', 'date']
+                ],
+                columns: ['Họ và tên người được hỗ trợ', 'Số điện thoại', 'Hình thức hỗ trợ', 'Vụ việc liên quan', 'Ngày hỗ trợ', 'Cán bộ hỗ trợ', 'Kết quả hỗ trợ', 'Thao tác'],
+                fields: [
+                    ['name', 'Họ và tên người được hỗ trợ', 'text', true],
+                    ['phone', 'Số điện thoại liên hệ', 'text', true],
+                    ['address', 'Địa chỉ liên hệ', 'text', false],
+                    ['idNo', 'Số giấy tờ thân nhân', 'text', false],
+                    ['method', 'Hình thức hỗ trợ', ['Trực tiếp tại trụ sở', 'Qua điện thoại', 'Qua văn bản/email', 'Khác'], true],
+                    ['supportDate', 'Ngày hỗ trợ', 'date', true],
+                    ['officer', 'Cán bộ hỗ trợ', 'readonly', false],
+                    ['caseCode', 'Vụ việc yêu cầu bồi thường liên quan', 'text', false],
+                    ['result', 'Kết quả hỗ trợ', ['Đang hỗ trợ', 'Đã hướng dẫn xong', 'Người dân đã nộp YCBT', 'Không liên hệ được'], true]
+                ],
+                textareas: [
+                    ['requestContent', 'Nội dung yêu cầu hỗ trợ', true],
+                    ['supportContent', 'Nội dung đã hướng dẫn/hỗ trợ', true]
+                ],
+                rows: [
+                    ['Nguyễn Văn D', '0901234567', 'Trực tiếp tại trụ sở', 'BT-2026-021', '05/08/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
+                    ['Lê Thị H', '0912345678', 'Qua điện thoại', '-', '03/08/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
+                    ['Công ty ABC', '02433334444', 'Qua văn bản/email', 'BT-2026-003', '01/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang hỗ trợ']
+                ]
+            },
+            kien_nghi_xu_ly_vi_pham: {
+                title: 'Kiến nghị cơ quan có thẩm quyền xử lý vi phạm',
+                subtitle: 'Lập, gửi và theo dõi kiến nghị xử lý vi phạm trong việc GQBT, thực hiện trách nhiệm hoàn trả.',
+                icon: 'fa-triangle-exclamation',
+                sendLabel: 'Gửi kiến nghị',
+                responseTitle: 'Cập nhật kết quả phản hồi kiến nghị',
+                filters: commonWorkflowFilters('Từ khóa', 'Nhập số văn bản kiến nghị hoặc cơ quan nhận kiến nghị...'),
+                columns: ['Số văn bản kiến nghị', 'Cơ quan nhận kiến nghị', 'Vụ việc/QĐ liên quan', 'Ngày gửi', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['related', 'Vụ việc/Quyết định liên quan', 'relatedSearch', false],
+                    ['receiver', 'Cơ quan nhận kiến nghị', agencies, true],
+                    ['docNo', 'Số văn bản kiến nghị', 'text', false],
+                    ['docDate', 'Ngày lập văn bản', 'date', false],
+                    ['signer', 'Người ký', 'text', false],
+                    ['position', 'Chức vụ', 'text', false]
+                ],
+                textareas: [
+                    ['legalBasis', 'Căn cứ pháp lý kiến nghị', true, 'Điểm l khoản 1 Điều 73 Luật Trách nhiệm bồi thường của Nhà nước 2017'],
+                    ['violationContent', 'Nội dung vi phạm phát hiện', true],
+                    ['recommendationContent', 'Nội dung kiến nghị', true]
+                ],
+                rows: [
+                    ['12/KN-STP', 'UBND Quận Cầu Giấy', 'BT-2026-003', '02/08/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['-', 'Sở Tài nguyên và Môi trường Hà Nội', 'QĐ 22/QĐ-GQBT', '-', 'Lưu nháp'],
+                    ['08/KN-STP', 'Cục Thi hành án dân sự Hà Nội', 'HT-2026-001', '20/07/2026', 'Đã thực hiện']
+                ]
+            },
+            kien_nghi_khang_nghi_ban_an: {
+                title: 'Kiến nghị người có thẩm quyền kháng nghị bản án',
+                subtitle: 'Lập, gửi và theo dõi kiến nghị kháng nghị bản án, quyết định của Tòa án có nội dung GQBT.',
+                icon: 'fa-scale-balanced',
+                sendLabel: 'Gửi kiến nghị',
+                responseTitle: 'Cập nhật kết quả phản hồi kiến nghị kháng nghị',
+                filters: commonWorkflowFilters('Từ khóa', 'Nhập số văn bản kiến nghị hoặc số Bản án/Quyết định...'),
+                columns: ['Số văn bản kiến nghị', 'Số Bản án/Quyết định bị kiến nghị', 'Người/cơ quan có thẩm quyền kháng nghị', 'Ngày gửi', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['judgmentNo', 'Số Bản án/Quyết định', 'text', true],
+                    ['court', 'Tòa án ban hành', agencies, true],
+                    ['effectiveDate', 'Ngày Bản án/Quyết định có hiệu lực', 'date', true],
+                    ['caseCode', 'Vụ việc yêu cầu bồi thường liên quan', 'claimSearch', false],
+                    ['receiver', 'Người/cơ quan có thẩm quyền kháng nghị', agencies, true],
+                    ['docNo', 'Số văn bản kiến nghị', 'text', false],
+                    ['docDate', 'Ngày lập văn bản', 'date', false],
+                    ['signer', 'Người ký', 'text', false],
+                    ['position', 'Chức vụ', 'text', false]
+                ],
+                textareas: [
+                    ['disputedContent', 'Nội dung GQBT bị kiến nghị kháng nghị', true],
+                    ['legalBasis', 'Căn cứ pháp lý kiến nghị', true, 'Điều 28 Thông tư 08/2019/TT-BTP'],
+                    ['recommendationContent', 'Nội dung kiến nghị', true]
+                ],
+                rows: [
+                    ['15/KN-STP', '12/2026/HC-ST', 'Tòa án nhân dân cấp cao tại Hà Nội', '04/08/2026', 'Đã có phản hồi'],
+                    ['-', '09/2026/DS-PT', 'Viện kiểm sát nhân dân tối cao', '-', 'Lưu nháp'],
+                    ['10/KN-STP', '03/2026/HS-ST', 'Chánh án Tòa án nhân dân tối cao', '21/07/2026', 'Không thực hiện']
+                ]
+            },
+            yeu_cau_huy_qd_gqbt: {
+                title: 'Yêu cầu Thủ trưởng cơ quan hủy quyết định GQBT',
+                subtitle: 'Lập, gửi và theo dõi yêu cầu hủy quyết định giải quyết bồi thường khi có căn cứ trái quy định pháp luật.',
+                icon: 'fa-file-circle-xmark',
+                sendLabel: 'Gửi yêu cầu',
+                responseTitle: 'Cập nhật kết quả phản hồi yêu cầu hủy quyết định GQBT',
+                filters: commonWorkflowFilters('Từ khóa', 'Nhập số văn bản yêu cầu hoặc số Quyết định GQBT...'),
+                columns: ['Số văn bản yêu cầu', 'Số Quyết định GQBT bị yêu cầu hủy', 'Cơ quan nhận yêu cầu', 'Ngày gửi', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['decisionNo', 'Số Quyết định GQBT', 'text', true],
+                    ['decisionAgency', 'Cơ quan ban hành Quyết định', agencies, true],
+                    ['decisionDate', 'Ngày ban hành Quyết định', 'date', true],
+                    ['caseCode', 'Vụ việc yêu cầu bồi thường liên quan', 'claimSearch', false],
+                    ['receiver', 'Thủ trưởng cơ quan quản lý người thi hành công vụ (nhận yêu cầu)', agencies, true],
+                    ['docNo', 'Số văn bản yêu cầu', 'text', false],
+                    ['docDate', 'Ngày lập văn bản', 'date', false],
+                    ['signer', 'Người ký', 'text', false],
+                    ['position', 'Chức vụ', 'text', false]
+                ],
+                textareas: [
+                    ['illegalBasis', 'Căn cứ cho rằng Quyết định trái pháp luật', true],
+                    ['legalBasis', 'Căn cứ pháp lý yêu cầu', true, 'Điều 29 Thông tư 08/2019/TT-BTP'],
+                    ['requestContent', 'Nội dung yêu cầu', true]
+                ],
+                rows: [
+                    ['18/YC-STP', '22/QĐ-GQBT', 'Sở Tư pháp Hà Nội', '05/08/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['-', '15/QĐ-GQBT', 'UBND Quận Cầu Giấy', '-', 'Lưu nháp'],
+                    ['11/YC-STP', '08/QĐ-GQBT', 'Cục Thi hành án dân sự Hà Nội', '18/07/2026', 'Đã thực hiện']
+                ]
+            },
+            kien_nghi_xem_xet_qd_hoan_tra: {
+                title: 'Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả',
+                subtitle: 'Theo dõi kiến nghị xem xét lại quyết định hoàn trả, quyết định giảm mức hoàn trả.',
+                icon: 'fa-rotate-left',
+                sendLabel: 'Gửi kiến nghị',
+                responseTitle: 'Cập nhật kết quả phản hồi kiến nghị xem xét quyết định hoàn trả',
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập số văn bản kiến nghị hoặc số Quyết định...'],
+                    ['decisionType', 'Loại quyết định bị kiến nghị', ['Tất cả', 'Quyết định hoàn trả', 'Quyết định giảm mức hoàn trả']],
+                    ['status', 'Trạng thái', statusOptions],
+                    ['fromDate', 'Từ ngày gửi', 'date'],
+                    ['toDate', 'Đến ngày gửi', 'date']
+                ],
+                columns: ['Số văn bản kiến nghị', 'Loại quyết định bị kiến nghị', 'Số Quyết định bị kiến nghị', 'Cơ quan nhận kiến nghị', 'Ngày gửi', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['decisionType', 'Loại quyết định bị kiến nghị', ['Quyết định hoàn trả', 'Quyết định giảm mức hoàn trả'], true],
+                    ['decisionNo', 'Số Quyết định', 'text', true],
+                    ['decisionAgency', 'Cơ quan ban hành Quyết định', agencies, true],
+                    ['decisionDate', 'Ngày ban hành Quyết định', 'date', true],
+                    ['refundCaseCode', 'Vụ việc hoàn trả liên quan', 'refundSearch', false],
+                    ['receiver', 'Thủ trưởng cơ quan quản lý người thi hành công vụ (nhận kiến nghị)', agencies, true],
+                    ['docNo', 'Số văn bản kiến nghị', 'text', false],
+                    ['docDate', 'Ngày lập văn bản', 'date', false],
+                    ['signer', 'Người ký', 'text', false],
+                    ['position', 'Chức vụ', 'text', false]
+                ],
+                textareas: [
+                    ['unsuitableBasis', 'Căn cứ cho rằng Quyết định chưa phù hợp', true],
+                    ['legalBasis', 'Căn cứ pháp lý kiến nghị', true, 'Điều 67 Luật Trách nhiệm bồi thường của Nhà nước 2017; Điều 30 Thông tư 08/2019/TT-BTP'],
+                    ['recommendationContent', 'Nội dung kiến nghị', true]
+                ],
+                rows: [
+                    ['21/KN-STP', 'Quyết định hoàn trả', '89/QĐ-HT', 'Sở Tư pháp Hà Nội', '06/08/2026', 'Đã gửi - Chờ phản hồi'],
+                    ['-', 'Quyết định giảm mức hoàn trả', '12/QĐ-GMHT', 'UBND Quận Cầu Giấy', '-', 'Lưu nháp'],
+                    ['16/KN-STP', 'Quyết định hoàn trả', '45/QĐ-HT', 'Cục Thi hành án dân sự Hà Nội', '22/07/2026', 'Đã có phản hồi']
+                ]
+            },
+            chien_luoc_chinh_sach: {
+                title: 'Xây dựng chiến lược, chính sách về công tác BTNN',
+                subtitle: 'Ghi nhận, quản lý và tra cứu thông tin chiến lược, chính sách, kế hoạch, đề án về công tác BTNN.',
+                icon: 'fa-compass-drafting',
+                simple: true,
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập tên chiến lược/chính sách hoặc số văn bản...'],
+                    ['docType', 'Loại văn bản', ['Tất cả', 'Chiến lược', 'Chính sách', 'Kế hoạch', 'Đề án', 'Chương trình']],
+                    ['deployStatus', 'Trạng thái triển khai', ['Tất cả', 'Đang xây dựng', 'Đã ban hành', 'Đang triển khai', 'Đã hoàn thành']],
+                    ['fromDate', 'Từ ngày ban hành', 'date'],
+                    ['toDate', 'Đến ngày ban hành', 'date']
+                ],
+                columns: ['Tên chiến lược/chính sách', 'Loại văn bản', 'Giai đoạn áp dụng', 'Cơ quan chủ trì', 'Ngày ban hành', 'Trạng thái triển khai', 'Thao tác'],
+                fields: [
+                    ['title', 'Tên chiến lược/chính sách', 'text', true],
+                    ['docType', 'Loại văn bản', ['Chiến lược', 'Chính sách', 'Kế hoạch', 'Đề án', 'Chương trình'], true],
+                    ['docNo', 'Số văn bản', 'text', false],
+                    ['period', 'Giai đoạn/thời kỳ áp dụng', 'text', true],
+                    ['leadAgency', 'Cơ quan chủ trì xây dựng', agencies, true],
+                    ['issuedDate', 'Ngày ban hành', 'date', false],
+                    ['deployStatus', 'Trạng thái triển khai', ['Đang xây dựng', 'Đã ban hành', 'Đang triển khai', 'Đã hoàn thành'], true]
+                ],
+                textareas: [['summary', 'Nội dung tóm tắt', true]],
+                rows: [
+                    ['Đề án nâng cao hiệu quả công tác BTNN giai đoạn 2026-2030', 'Đề án', '2026-2030', 'Cục Bồi thường nhà nước', '01/08/2026', 'Đang triển khai'],
+                    ['Kế hoạch rà soát pháp luật về trách nhiệm bồi thường', 'Kế hoạch', '2026', 'Bộ Tư pháp', '20/07/2026', 'Đã ban hành'],
+                    ['Chương trình tuyên truyền chính sách BTNN', 'Chương trình', '2026-2027', 'Cục Bồi thường nhà nước', '-', 'Đang xây dựng']
+                ]
+            },
+            van_ban_bieu_mau_so_sach: {
+                title: 'Văn bản, biểu mẫu, sổ sách theo thẩm quyền',
+                subtitle: 'Quản lý văn bản, biểu mẫu, sổ sách về công tác BTNN do Bộ Tư pháp ban hành theo thẩm quyền.',
+                icon: 'fa-book',
+                simple: true,
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập tên văn bản/biểu mẫu/sổ sách hoặc số hiệu...'],
+                    ['contentType', 'Loại nội dung', ['Tất cả', 'Văn bản', 'Biểu mẫu', 'Sổ sách']],
+                    ['legalType', 'Loại văn bản QPPL', ['Tất cả', ...qpplTypes]],
+                    ['fromDate', 'Từ ngày ban hành', 'date'],
+                    ['toDate', 'Đến ngày ban hành', 'date']
+                ],
+                columns: ['Tên văn bản/biểu mẫu/sổ sách', 'Loại nội dung', 'Số hiệu', 'Cơ quan ban hành', 'Ngày ban hành', 'Thao tác'],
+                fields: [
+                    ['title', 'Tên văn bản/biểu mẫu/sổ sách', 'text', true],
+                    ['contentType', 'Loại nội dung', ['Văn bản', 'Biểu mẫu', 'Sổ sách'], true],
+                    ['legalType', 'Loại văn bản QPPL', qpplTypes, false],
+                    ['docNo', 'Số hiệu', 'text', false],
+                    ['issuer', 'Cơ quan ban hành', agencies, true],
+                    ['issuedDate', 'Ngày ban hành', 'date', true]
+                ],
+                textareas: [
+                    ['scope', 'Phạm vi áp dụng', true],
+                    ['summary', 'Nội dung tóm tắt', true]
+                ],
+                rows: [
+                    ['Sổ theo dõi vụ việc yêu cầu bồi thường', 'Sổ sách', 'SS-01/BTNN', 'Bộ Tư pháp', '02/08/2026'],
+                    ['Biểu mẫu thống kê kết quả giải quyết YCBT', 'Biểu mẫu', 'BM-03/BTNN', 'Cục Bồi thường nhà nước', '25/07/2026'],
+                    ['Hướng dẫn lập hồ sơ quản lý BTNN', 'Văn bản', '45/HD-BTP', 'Bộ Tư pháp', '12/07/2026']
+                ]
+            },
+            hop_tac_quoc_te: {
+                title: 'Hợp tác quốc tế',
+                subtitle: 'Ghi nhận, quản lý và tra cứu thông tin hoạt động hợp tác quốc tế trong công tác BTNN.',
+                icon: 'fa-earth-asia',
+                simple: true,
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập tên hoạt động hoặc đối tác/tổ chức quốc tế...'],
+                    ['country', 'Quốc gia đối tác', ['Tất cả', ...countries]],
+                    ['cooperationType', 'Hình thức hợp tác', ['Tất cả', 'Hội thảo/Tọa đàm', 'Trao đổi đoàn công tác', 'Ký kết văn bản hợp tác', 'Hỗ trợ kỹ thuật', 'Khác']],
+                    ['fromDate', 'Từ ngày thực hiện', 'date'],
+                    ['toDate', 'Đến ngày thực hiện', 'date']
+                ],
+                columns: ['Tên hoạt động hợp tác quốc tế', 'Đối tác/Tổ chức quốc tế', 'Quốc gia đối tác', 'Hình thức hợp tác', 'Thời gian thực hiện', 'Thao tác'],
+                fields: [
+                    ['title', 'Tên hoạt động hợp tác quốc tế', 'text', true],
+                    ['partner', 'Đối tác/Tổ chức quốc tế', 'text', true],
+                    ['country', 'Quốc gia đối tác', countries, true],
+                    ['cooperationType', 'Hình thức hợp tác', ['Hội thảo/Tọa đàm', 'Trao đổi đoàn công tác', 'Ký kết văn bản hợp tác', 'Hỗ trợ kỹ thuật', 'Khác'], true],
+                    ['leadAgency', 'Đơn vị chủ trì', agencies, true],
+                    ['fromDate', 'Từ ngày thực hiện', 'date', true],
+                    ['toDate', 'Đến ngày thực hiện', 'date', true]
+                ],
+                textareas: [['result', 'Nội dung/Kết quả hợp tác', true]],
+                rows: [
+                    ['Tọa đàm kinh nghiệm quản lý BTNN', 'JICA', 'Nhật Bản', 'Hội thảo/Tọa đàm', '01/08/2026 - 02/08/2026'],
+                    ['Chương trình hỗ trợ kỹ thuật về thống kê BTNN', 'KOICA', 'Hàn Quốc', 'Hỗ trợ kỹ thuật', '15/07/2026 - 30/09/2026'],
+                    ['Trao đổi đoàn công tác về cơ chế bồi thường', 'Bộ Tư pháp Pháp', 'Pháp', 'Trao đổi đoàn công tác', '10/07/2026 - 14/07/2026']
+                ]
+            },
+            phoi_hop_tand_vksnd: {
+                title: 'Phối hợp với TAND tối cao, VKSND tối cao',
+                subtitle: 'Ghi nhận hoạt động phối hợp quản lý công tác BTNN trong lĩnh vực tố tụng.',
+                icon: 'fa-building-columns',
+                simple: true,
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập tên hoạt động phối hợp...'],
+                    ['agency', 'Cơ quan phối hợp', ['Tất cả', 'TAND tối cao', 'VKSND tối cao']],
+                    ['method', 'Hình thức phối hợp', ['Tất cả', 'Văn bản trao đổi', 'Họp liên ngành', 'Hội nghị/hội thảo', 'Khác']],
+                    ['fromDate', 'Từ ngày thực hiện', 'date'],
+                    ['toDate', 'Đến ngày thực hiện', 'date']
+                ],
+                columns: ['Tên hoạt động phối hợp', 'Cơ quan phối hợp', 'Hình thức phối hợp', 'Ngày thực hiện', 'Thao tác'],
+                fields: [
+                    ['title', 'Tên hoạt động phối hợp', 'text', true],
+                    ['agency', 'Cơ quan phối hợp', ['TAND tối cao', 'VKSND tối cao'], true],
+                    ['method', 'Hình thức phối hợp', ['Văn bản trao đổi', 'Họp liên ngành', 'Hội nghị/hội thảo', 'Khác'], true],
+                    ['date', 'Ngày thực hiện', 'date', true]
+                ],
+                textareas: [
+                    ['content', 'Nội dung phối hợp', true],
+                    ['result', 'Kết quả phối hợp', false]
+                ],
+                rows: [
+                    ['Họp liên ngành về trách nhiệm bồi thường trong tố tụng hình sự', 'VKSND tối cao', 'Họp liên ngành', '05/08/2026'],
+                    ['Trao đổi văn bản về số liệu vụ việc GQBT', 'TAND tối cao', 'Văn bản trao đổi', '22/07/2026'],
+                    ['Hội nghị nghiệp vụ công tác BTNN trong tố tụng', 'TAND tối cao', 'Hội nghị/hội thảo', '18/07/2026']
+                ]
+            },
+            giai_dap_vuong_mac: {
+                title: 'Giải đáp vướng mắc trong việc áp dụng pháp luật',
+                subtitle: 'Ghi nhận đề nghị giải đáp vướng mắc trong việc áp dụng pháp luật về trách nhiệm bồi thường của Nhà nước.',
+                icon: 'fa-comments',
+                simple: true,
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập nội dung vướng mắc hoặc tên/đơn vị đề nghị...'],
+                    ['requesterType', 'Đối tượng đề nghị', ['Tất cả', 'Cơ quan giải quyết bồi thường', 'Tổ chức/cá nhân khác']],
+                    ['fromDate', 'Từ ngày nhận đề nghị', 'date'],
+                    ['toDate', 'Đến ngày nhận đề nghị', 'date']
+                ],
+                columns: ['Nội dung vướng mắc', 'Đối tượng đề nghị', 'Tên/Đơn vị đề nghị', 'Ngày nhận đề nghị', 'Ngày giải đáp', 'Thao tác'],
+                fields: [
+                    ['requesterType', 'Đối tượng đề nghị', ['Cơ quan giải quyết bồi thường', 'Tổ chức/cá nhân khác'], true],
+                    ['requesterName', 'Tên/Đơn vị đề nghị', 'text', true],
+                    ['receivedDate', 'Ngày nhận đề nghị', 'date', true],
+                    ['receiveMethod', 'Hình thức nhận đề nghị', ['Văn bản', 'Trực tiếp', 'Cổng thông tin điện tử', 'Email'], true],
+                    ['answerMethod', 'Hình thức giải đáp', ['Văn bản', 'Trực tiếp', 'Cổng thông tin điện tử', 'Email'], true],
+                    ['answerDocNo', 'Số văn bản giải đáp', 'text', false],
+                    ['answerDate', 'Ngày giải đáp', 'date', true]
+                ],
+                textareas: [
+                    ['question', 'Nội dung vướng mắc', true],
+                    ['answer', 'Nội dung giải đáp', true],
+                    ['legalBasis', 'Căn cứ pháp lý giải đáp', true]
+                ],
+                rows: [
+                    ['Vướng mắc về xác định thiệt hại do thu nhập thực tế bị mất', 'Cơ quan giải quyết bồi thường', 'Sở Tư pháp Hà Nội', '01/08/2026', '06/08/2026'],
+                    ['Hỏi về trình tự phục hồi danh dự công khai', 'Tổ chức/cá nhân khác', 'Ông Nguyễn Văn A', '28/07/2026', '-'],
+                    ['Vướng mắc về thời hạn thương lượng bồi thường', 'Cơ quan giải quyết bồi thường', 'UBND tỉnh Lâm Đồng', '20/07/2026', '25/07/2026']
+                ]
+            },
+            dau_moi_btnn: {
+                title: 'Quản lý thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương',
+                subtitle: 'Ghi nhận, quản lý và tra cứu danh sách đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại các Sở Tư pháp địa phương.',
+                icon: 'fa-address-card',
+                simple: true,
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập họ tên hoặc số điện thoại...'],
+                    ['province', 'Tỉnh/Thành phố', ['Tất cả', ...provinces]],
+                    ['role', 'Vai trò phụ trách', ['Tất cả', 'Lãnh đạo phụ trách công tác BTNN', 'Công chức đầu mối']],
+                    ['status', 'Trạng thái', ['Tất cả', 'Đang phụ trách', 'Đã ngừng phụ trách']]
+                ],
+                columns: ['Tỉnh/Thành phố', 'Đơn vị', 'Họ và tên', 'Chức vụ', 'Vai trò phụ trách', 'Số điện thoại', 'Email', 'Trạng thái', 'Thao tác'],
+                fields: [
+                    ['province', 'Tỉnh/Thành phố', provinces, true],
+                    ['unit', 'Đơn vị', agencies, true],
+                    ['fullName', 'Họ và tên', 'text', true],
+                    ['position', 'Chức vụ', 'text', true],
+                    ['role', 'Vai trò phụ trách', ['Lãnh đạo phụ trách công tác BTNN', 'Công chức đầu mối'], true],
+                    ['phone', 'Số điện thoại liên hệ', 'text', true],
+                    ['email', 'Email', 'text', false],
+                    ['startDate', 'Ngày bắt đầu phụ trách', 'date', true],
+                    ['status', 'Trạng thái', ['Đang phụ trách', 'Đã ngừng phụ trách'], true]
+                ],
+                textareas: [['note', 'Ghi chú', false]],
+                rows: [
+                    ['Thành phố Hà Nội', 'Sở Tư pháp Hà Nội', 'Nguyễn Văn An', 'Phó Giám đốc Sở', 'Lãnh đạo phụ trách công tác BTNN', '0912345678', 'an.nv@sotuphaphn.gov.vn', 'Đang phụ trách'],
+                    ['Thành phố Hà Nội', 'Sở Tư pháp Hà Nội', 'Trần Thị Bình', 'Trưởng phòng Bổ trợ tư pháp', 'Công chức đầu mối', '0987654321', 'binh.tt@sotuphaphn.gov.vn', 'Đang phụ trách'],
+                    ['Tỉnh Lâm Đồng', 'Sở Tư pháp Lâm Đồng', 'Lê Văn Cường', 'Chuyên viên', 'Công chức đầu mối', '0909112233', '-', 'Đã ngừng phụ trách']
+                ]
+            },
+            csdl_lien_quan_btnn: {
+                title: 'Quản lý thông tin từ các CSDL có liên quan đến công tác BTNN',
+                subtitle: 'Ghi nhận, quản lý và tra cứu thông tin trích xuất/tiếp nhận từ CSDL về bản án, quyết định của Tòa án; CSDL quốc gia về TTHC; CSDL quốc gia về khiếu nại, tố cáo.',
+                icon: 'fa-database',
+                simple: true,
+                filters: [
+                    ['keyword', 'Từ khóa', 'Nhập tên/mã bản ghi tham chiếu...'],
+                    ['sourceType', 'Loại CSDL nguồn', ['Tất cả', 'CSDL về bản án, quyết định của Tòa án', 'CSDL quốc gia về thủ tục hành chính (TTHC)', 'CSDL quốc gia về khiếu nại, tố cáo', 'Khác']],
+                    ['fromDate', 'Từ ngày trích xuất', 'date'],
+                    ['toDate', 'Đến ngày trích xuất', 'date']
+                ],
+                columns: ['Tên/Mã bản ghi tham chiếu', 'Loại CSDL nguồn', 'Cơ quan quản lý CSDL nguồn', 'Ngày trích xuất/nhận thông tin', 'Vụ việc BTNN liên quan', 'Thao tác'],
+                fields: [
+                    ['sourceType', 'Loại CSDL nguồn', ['CSDL về bản án, quyết định của Tòa án', 'CSDL quốc gia về thủ tục hành chính (TTHC)', 'CSDL quốc gia về khiếu nại, tố cáo', 'Khác'], true],
+                    ['refCode', 'Tên/Mã bản ghi tham chiếu', 'text', true],
+                    ['manager', 'Cơ quan quản lý CSDL nguồn', agencies, true],
+                    ['extractDate', 'Ngày trích xuất/nhận thông tin', 'date', true],
+                    ['caseCode', 'Vụ việc BTNN liên quan', 'text', false]
+                ],
+                textareas: [['content', 'Nội dung thông tin liên quan đến BTNN', true]],
+                rows: [
+                    ['Bản án số 12/2026/HSST', 'CSDL về bản án, quyết định của Tòa án', 'Tòa án nhân dân tối cao', '10/06/2026', 'BT-2026-045'],
+                    ['TTHC-2026-00871', 'CSDL quốc gia về thủ tục hành chính (TTHC)', 'Cục Bồi thường nhà nước', '02/07/2026', '-'],
+                    ['KNTC-2026-00234', 'CSDL quốc gia về khiếu nại, tố cáo', 'Sở Tư pháp Hà Nội', '18/05/2026', 'BT-2026-030']
+                ]
+            }
+        };
+
+        function commonWorkflowFilters(label, placeholder) {
+            return [
+                ['keyword', label, placeholder],
+                ['status', 'Trạng thái', statusOptions],
+                ['fromDate', 'Từ ngày gửi', 'date'],
+                ['toDate', 'Đến ngày gửi', 'date']
+            ];
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const moduleKey = params.get('module') || 'ho_tro_nguoi_bi_thiet_hai';
+        const config = configs[moduleKey] || configs.ho_tro_nguoi_bi_thiet_hai;
+        let rows = config.rows.map(row => [...row]);
+        let selectedRowIndex = null;
+        let confirmCallback = null;
+        let responseRowIndex = null;
+        let selectedRelatedClaim = null;
+        let documents = [
+            { name: 'Tài liệu đầu vào', file: 'tai_lieu_dau_vao.pdf' },
+            { name: 'Tài liệu xử lý', file: '' }
+        ];
+        const relatedClaimMockRows = [
+            {
+                code: 'BT-2026-012',
+                name: 'Yêu cầu bồi thường của Lê Văn H',
+                requester: 'Lê Văn H',
+                idNo: '001086012345',
+                originDocNo: '22/QĐ-GQBT',
+                status: 'Hoàn thành',
+                submittedDate: '05/08/2026',
+                detailType: 'claim'
+            },
+            {
+                code: 'BT-2026-021',
+                name: 'Yêu cầu bồi thường trong hoạt động tố tụng của Hoàng Văn R',
+                requester: 'Hoàng Văn R',
+                idNo: '079078045612',
+                originDocNo: '15/QĐ-GQBT',
+                status: 'Đang xác minh thiệt hại',
+                submittedDate: '01/08/2026',
+                detailType: 'claim'
+            },
+            {
+                code: 'BT-2026-003-A',
+                name: 'Yêu cầu bồi thường của Công ty ABC',
+                requester: 'Công ty ABC',
+                idNo: '0101187788',
+                originDocNo: '08/QĐ-GQBT',
+                status: 'Đang thương lượng',
+                submittedDate: '28/07/2026',
+                detailType: 'claim'
+            },
+            {
+                code: 'BT-2026-010-TDC',
+                name: 'Yêu cầu bồi thường của Đặng Văn T',
+                requester: 'Đặng Văn T',
+                idNo: '030083991245',
+                originDocNo: '03/QĐ-GQBT',
+                status: 'Chờ thụ lý',
+                submittedDate: '20/07/2026',
+                detailType: 'claim'
+            }
+        ];
+        const relatedRefundMockRows = [
+            {
+                code: 'HT-2026-001',
+                name: 'Hoàn trả liên quan vụ việc BT-2026-012',
+                requester: 'Nguyễn Văn M',
+                idNo: '89/QĐ-HT',
+                originDocNo: 'BT-2026-012',
+                status: 'Đang thu hồi',
+                submittedDate: '06/08/2026',
+                detailType: 'refund'
+            },
+            {
+                code: 'HT-2026-004',
+                name: 'Hoàn trả liên quan vụ việc BT-2026-003-A',
+                requester: 'Trần Thị P',
+                idNo: '12/QĐ-GMHT',
+                originDocNo: 'BT-2026-003-A',
+                status: 'Đã giảm mức hoàn trả',
+                submittedDate: '02/08/2026',
+                detailType: 'refund'
+            },
+            {
+                code: 'HT-2026-007',
+                name: 'Hoàn trả liên quan vụ việc BT-2026-021',
+                requester: 'Lê Hoàng K',
+                idNo: '45/QĐ-HT',
+                originDocNo: 'BT-2026-021',
+                status: 'Chờ ban hành quyết định',
+                submittedDate: '25/07/2026',
+                detailType: 'refund'
+            }
+        ];
+        const relatedMixedMockRows = [
+            ...relatedClaimMockRows,
+            ...relatedRefundMockRows,
+            {
+                code: 'QĐ 22/QĐ-GQBT',
+                name: 'Quyết định GQBT liên quan vụ việc BT-2026-012',
+                requester: 'Sở Tư pháp Hà Nội',
+                idNo: '22/QĐ-GQBT',
+                originDocNo: 'BT-2026-012',
+                status: 'Đã ban hành',
+                submittedDate: '05/08/2026',
+                detailType: 'claim'
+            }
+        ];
+        const lookupDefinitions = {
+            claimSearch: {
+                title: 'Tìm kiếm vụ việc yêu cầu bồi thường liên quan',
+                data: relatedClaimMockRows,
+                linkPrefix: 'Liên kết hồ sơ gốc',
+                inputPlaceholder: 'Nhập mã vụ việc YCBT...'
+            },
+            relatedSearch: {
+                title: 'Tìm kiếm vụ việc/Quyết định liên quan',
+                data: relatedMixedMockRows,
+                linkPrefix: 'Liên kết vụ việc/QĐ gốc',
+                inputPlaceholder: 'Nhập mã vụ việc hoặc số quyết định...'
+            },
+            refundSearch: {
+                title: 'Tìm kiếm vụ việc hoàn trả liên quan',
+                data: relatedRefundMockRows,
+                linkPrefix: 'Liên kết hồ sơ hoàn trả',
+                inputPlaceholder: 'Nhập mã vụ việc hoàn trả...'
+            }
+        };
+        let activeRelatedLookup = { fieldId: 'caseCode', type: 'claimSearch' };
+
+        function renderFilterControl(field) {
+            const [id, label, type] = field;
+            if (Array.isArray(type)) {
+                return `<div class="form-group"><span class="form-label">${label}</span><select class="form-control" id="filter_${id}">${type.map(option => `<option value="${option === 'Tất cả' ? '' : option}">${option}</option>`).join('')}</select></div>`;
+            }
+            if (type === 'date') {
+                return `<div class="form-group"><span class="form-label">${label}</span><input class="form-control" id="filter_${id}" placeholder="dd/mm/yyyy"></div>`;
+            }
+            return `<div class="form-group"><span class="form-label">${label}</span><input class="form-control" id="filter_${id}" placeholder="${type}"></div>`;
+        }
+
+        function renderField(field) {
+            const [id, label, type, required] = field;
+            const req = required ? '<span class="required">*</span>' : '';
+            if (Array.isArray(type)) {
+                return `<div class="form-group"><span class="form-label">${label}${req}</span><select class="form-control" id="field_${id}">${type.map(option => `<option>${option}</option>`).join('')}</select></div>`;
+            }
+            if (type === 'date') {
+                return `<div class="form-group"><span class="form-label">${label}${req}</span><input class="form-control" id="field_${id}" placeholder="dd/mm/yyyy"></div>`;
+            }
+            if (type === 'readonly') {
+                return `<div class="form-group"><span class="form-label">${label}${req}</span><input class="form-control" id="field_${id}" value="Nguyễn Văn Cán Bộ" readonly></div>`;
+            }
+            if (lookupDefinitions[type]) {
+                const lookup = lookupDefinitions[type];
+                return `
+                    <div class="form-group" style="grid-column: span 2;">
+                        <span class="form-label">${label}${req}</span>
+                        <div class="related-claim-control">
+                            <input class="form-control" id="field_${id}" placeholder="${lookup.inputPlaceholder}">
+                            <button type="button" class="btn btn-primary" onclick="openRelatedLookupFromQuick('${id}', '${type}')"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                            <button type="button" class="btn btn-secondary" onclick="openRelatedLookupModal('${id}', '${type}')"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
+                        </div>
+                        <div id="relatedLink_${id}" style="display:none;"></div>
+                    </div>
+                `;
+            }
+            return `<div class="form-group"><span class="form-label">${label}${req}</span><input class="form-control" id="field_${id}" placeholder="Nhập ${label.toLowerCase()}..."></div>`;
+        }
+
+        function renderTextareaField(field) {
+            const [id, label, required, defaultValue] = field;
+            const req = required ? '<span class="required">*</span>' : '';
+            return `<div class="form-group"><span class="form-label">${label}${req}</span><textarea class="form-control" id="field_${id}" placeholder="Nhập ${label.toLowerCase()}...">${defaultValue || ''}</textarea></div>`;
+        }
+
+        function normalizeSearchText(value) {
+            return (value || '')
+                .toString()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'D')
+                .toLowerCase()
+                .trim();
+        }
+
+        function openRelatedLookupFromQuick(fieldId, type) {
+            const code = document.getElementById(`field_${fieldId}`)?.value || '';
+            openRelatedLookupModal(fieldId, type, code);
+        }
+
+        function openRelatedLookupModal(fieldId, type, prefillCode = null) {
+            const codeInput = document.getElementById('claimSearchCode');
+            const nameInput = document.getElementById('claimSearchName');
+            const requesterInput = document.getElementById('claimSearchRequester');
+            const statusInput = document.getElementById('claimSearchStatus');
+            if (!codeInput || !nameInput || !requesterInput || !statusInput) return;
+            activeRelatedLookup = { fieldId, type };
+            document.getElementById('relatedLookupTitle').innerText = lookupDefinitions[type]?.title || 'Tìm kiếm vụ việc liên quan';
+            if (prefillCode !== null) {
+                codeInput.value = prefillCode;
+            } else {
+                codeInput.value = '';
+            }
+            nameInput.value = '';
+            requesterInput.value = '';
+            statusInput.value = '';
+            renderRelatedClaimSearchResults();
+            document.getElementById('relatedClaimSearchModal').classList.add('visible');
+        }
+
+        function closeRelatedClaimSearchModal() {
+            document.getElementById('relatedClaimSearchModal').classList.remove('visible');
+        }
+
+        function clearRelatedClaimSearch() {
+            ['claimSearchCode', 'claimSearchName', 'claimSearchRequester', 'claimSearchStatus'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            renderRelatedClaimSearchResults();
+        }
+
+        function renderRelatedClaimSearchResults() {
+            const code = normalizeSearchText(document.getElementById('claimSearchCode')?.value);
+            const name = normalizeSearchText(document.getElementById('claimSearchName')?.value);
+            const requester = normalizeSearchText(document.getElementById('claimSearchRequester')?.value);
+            const status = document.getElementById('claimSearchStatus')?.value || '';
+            const body = document.getElementById('relatedClaimSearchBody');
+            const lookup = lookupDefinitions[activeRelatedLookup.type] || lookupDefinitions.claimSearch;
+            const filtered = lookup.data.filter(item => {
+                if (code && !normalizeSearchText(item.code).includes(code)) return false;
+                if (name && !normalizeSearchText(item.name).includes(name)) return false;
+                if (requester && !normalizeSearchText(item.requester).includes(requester)) return false;
+                if (status && item.status !== status) return false;
+                return true;
+            });
+            body.innerHTML = filtered.map(item => `
+                <tr>
+                    <td class="nowrap">
+                        <a href="javascript:void(0)" onclick="event.stopPropagation(); openRelatedLookupDetail('${item.code}', '${item.detailType}')">${item.code}</a>
+                    </td>
+                    <td>${item.name}</td>
+                    <td>${item.requester}</td>
+                    <td class="nowrap">${item.idNo}</td>
+                    <td class="nowrap">${item.originDocNo}</td>
+                    <td class="nowrap"><span class="badge ${getStatusClass(item.status)}">${item.status}</span></td>
+                    <td class="nowrap">${item.submittedDate}</td>
+                    <td style="text-align:center;">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); selectRelatedLookup('${item.code}')"><i class="fa-solid fa-check"></i> Chọn</button>
+                    </td>
+                </tr>
+            `).join('');
+            if (filtered.length === 0) {
+                body.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:26px;">Không tìm thấy vụ việc gốc hợp lệ để liên kết</td></tr>`;
+            }
+        }
+
+        function selectRelatedLookup(code) {
+            const lookup = lookupDefinitions[activeRelatedLookup.type] || lookupDefinitions.claimSearch;
+            const item = lookup.data.find(row => row.code === code);
+            const input = document.getElementById(`field_${activeRelatedLookup.fieldId}`);
+            if (!item || !input) return;
+            selectedRelatedClaim = item;
+            input.value = item.code;
+            renderRelatedLookupLink(item, activeRelatedLookup.fieldId, activeRelatedLookup.type);
+            closeRelatedClaimSearchModal();
+            showToast('Đã chọn vụ việc liên quan.');
+        }
+
+        function renderRelatedLookupLink(item, fieldId, type) {
+            const wrapper = document.getElementById(`relatedLink_${fieldId}`);
+            const lookup = lookupDefinitions[type] || lookupDefinitions.claimSearch;
+            if (!wrapper || !item) return;
+            wrapper.style.display = 'block';
+            wrapper.innerHTML = `
+                <a class="related-claim-link" href="javascript:void(0)" onclick="openRelatedLookupDetail('${item.code}', '${item.detailType}')">
+                    <i class="fa-solid fa-link"></i> ${lookup.linkPrefix}: ${item.code} - ${item.name}
+                </a>
+            `;
+        }
+
+        function prepareRelatedLookupLinks(rowIndex, mode) {
+            selectedRelatedClaim = null;
+            config.fields.forEach(([fieldId, , type]) => {
+                const lookup = lookupDefinitions[type];
+                if (!lookup) return;
+                const input = document.getElementById(`field_${fieldId}`);
+                const wrapper = document.getElementById(`relatedLink_${fieldId}`);
+                if (!input || !wrapper) return;
+                wrapper.style.display = 'none';
+                wrapper.innerHTML = '';
+                if (mode !== 'new' && rowIndex !== null) {
+                    const item = lookup.data[rowIndex % lookup.data.length];
+                    selectedRelatedClaim = item;
+                    input.value = item.code;
+                    renderRelatedLookupLink(item, fieldId, type);
+                }
+            });
+        }
+
+        function openRelatedLookupDetail(code, detailType = 'claim') {
+            const returnUrl = `UC431_to_UC466/quan_ly_nghiep_vu_btnn_muc6.html?module=${moduleKey}`;
+            const activeUrl = 'UC431_to_UC466/quan_ly_nghiep_vu_btnn_muc6.html';
+            const detailPage = detailType === 'refund' ? 'UC431_to_UC466/xem_xet_trach_nhiem_hoan_tra.html' : 'UC431_to_UC466/quan_ly_boi_thuong.html';
+            const targetUrl = `${detailPage}?id=${encodeURIComponent(code)}&returnUrl=${encodeURIComponent(returnUrl)}&returnActiveUrl=${encodeURIComponent(activeUrl)}`;
+            if (window.parent && typeof window.parent.openAdminModule === 'function') {
+                window.parent.openAdminModule(targetUrl, activeUrl);
+                return;
+            }
+            const localDetailPage = detailType === 'refund' ? 'xem_xet_trach_nhiem_hoan_tra.html' : 'quan_ly_boi_thuong.html';
+            window.location.href = `${localDetailPage}?id=${encodeURIComponent(code)}&returnUrl=${encodeURIComponent(`quan_ly_nghiep_vu_btnn_muc6.html?module=${moduleKey}`)}&returnActiveUrl=${encodeURIComponent('quan_ly_nghiep_vu_btnn_muc6.html')}`;
+        }
+
+        function getStatusClass(status) {
+            if (!status) return 'draft';
+            if (status.includes('Lưu nháp') || status.includes('Đang xây dựng')) return 'draft';
+            if (status.includes('Chờ') || status.includes('Đang hỗ trợ')) return 'waiting';
+            if (status.includes('Đã gửi') || status.includes('Đang triển khai') || status.includes('Đã có phản hồi')) return 'active';
+            if (status.includes('Đã thực hiện') || status.includes('Đã hoàn thành') || status.includes('Đã hướng dẫn xong') || status.includes('Đã ban hành') || status.includes('Hoàn thành') || status.includes('Người dân đã nộp')) return 'done';
+            if (status.includes('Không')) return 'closed';
+            return 'draft';
+        }
+
+        function isStatusColumn(col) {
+            return col.includes('Trạng thái') || col.includes('Kết quả hỗ trợ');
+        }
+
+        function actionButtons(row, index) {
+            if (config.simple) {
+                return `
+                    <div style="display:flex; gap:6px; justify-content:center;">
+                        <button class="icon-btn" title="Chỉnh sửa" onclick="event.stopPropagation(); openForm('edit', ${index})"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="icon-btn" title="Xóa" onclick="event.stopPropagation(); confirmDelete(${index})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            }
+            const status = row[row.length - 1];
+            const canEdit = status === 'Lưu nháp';
+            const canRespond = status === 'Đã gửi - Chờ phản hồi' || status === 'Đã có phản hồi';
+            const editDisabled = canEdit ? '' : 'disabled';
+            const responseDisabled = canRespond ? '' : 'disabled';
+            return `
+                <div style="display:flex; gap:6px; justify-content:center;">
+                    <button class="icon-btn ${editDisabled}" ${editDisabled} title="Chỉnh sửa" onclick="event.stopPropagation(); openForm('edit', ${index})"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="icon-btn ${editDisabled}" ${editDisabled} title="Xóa" onclick="event.stopPropagation(); confirmDelete(${index})"><i class="fa-solid fa-trash"></i></button>
+                    <button class="icon-btn ${editDisabled}" ${editDisabled} title="${config.sendLabel || 'Gửi kiến nghị'}" onclick="event.stopPropagation(); sendWorkflow(${index})"><i class="fa-solid fa-paper-plane"></i></button>
+                    <button class="icon-btn ${responseDisabled}" ${responseDisabled} title="Cập nhật phản hồi" onclick="event.stopPropagation(); openResponseModal(${index})"><i class="fa-solid fa-reply"></i></button>
+                </div>
+            `;
+        }
+
+        function renderTable() {
+            const head = document.getElementById('tableHead');
+            const body = document.getElementById('tableBody');
+            head.innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${config.columns.map((col, index) => `<th style="${index === config.columns.length - 1 ? 'width:148px; text-align:center;' : ''}">${col}</th>`).join('')}</tr>`;
+            const keyword = (document.getElementById('filter_keyword')?.value || '').toLowerCase().trim();
+            const statusFilter = document.getElementById('filter_status')?.value || '';
+            const filtered = rows.filter(row => {
+                const joined = row.join(' ').toLowerCase();
+                if (keyword && !joined.includes(keyword)) return false;
+                if (statusFilter && row[row.length - 1] !== statusFilter) return false;
+                return true;
+            });
+            body.innerHTML = filtered.map((row, index) => {
+                const realIndex = rows.indexOf(row);
+                return `
+                    <tr onclick="openForm('view', ${realIndex})">
+                        <td style="text-align:center;">${index + 1}</td>
+                        ${row.map((cell, cellIndex) => {
+                            const colName = config.columns[cellIndex] || '';
+                            const value = isStatusColumn(colName) ? `<span class="badge ${getStatusClass(cell)}">${cell}</span>` : cell;
+                            return `<td title="${String(cell).replace(/"/g, '&quot;')}">${value}</td>`;
+                        }).join('')}
+                        <td style="text-align:center;">${actionButtons(row, realIndex)}</td>
+                    </tr>
+                `;
+            }).join('');
+            if (filtered.length === 0) {
+                body.innerHTML = `<tr><td colspan="${config.columns.length + 1}" style="text-align:center; color:var(--text-muted); padding:26px;">Không có bản ghi phù hợp.</td></tr>`;
+            }
+            document.getElementById('resultCount').innerText = `Hiển thị ${filtered.length} bản ghi`;
+        }
+
+        function renderDocuments() {
+            const body = document.getElementById('documentRows');
+            body.innerHTML = documents.map((doc, index) => `
+                <tr>
+                    <td style="text-align:center;">${index + 1}</td>
+                    <td><input class="form-control" value="${doc.name}" onchange="documents[${index}].name = this.value"></td>
+                    <td>
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <span style="font-weight:700; color:#475569;"><i class="fa-solid fa-paperclip"></i> ${doc.file || 'Chưa chọn file'}</span>
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('docFile_${index}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>
+                            <input type="file" id="docFile_${index}" style="display:none;" onchange="setDocumentFile(${index}, this.files)">
+                        </div>
+                    </td>
+                    <td style="text-align:center;">
+                        <button class="icon-btn" title="Xem file" onclick="showToast('Đang mở file ${doc.file || ''}.')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="icon-btn" title="Xóa" onclick="removeDocumentRow(${index})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addDocumentRow() {
+            documents.push({ name: '', file: '' });
+            renderDocuments();
+        }
+
+        function removeDocumentRow(index) {
+            documents.splice(index, 1);
+            renderDocuments();
+            showToast('Đã xóa dòng tài liệu.');
+        }
+
+        function setDocumentFile(index, files) {
+            if (files && files[0]) {
+                documents[index].file = files[0].name;
+                renderDocuments();
+                showToast('Đã tải lên file đính kèm.');
+            }
+        }
+
+        function openForm(mode, rowIndex = null) {
+            selectedRowIndex = rowIndex;
+            const row = rowIndex !== null ? rows[rowIndex] : null;
+            document.getElementById('detailPanel').classList.add('visible');
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${mode === 'new' ? 'Thêm mới' : mode === 'edit' ? 'Chỉnh sửa' : 'Xem chi tiết'} ${config.title.toLowerCase()}`;
+            document.getElementById('formMode').innerText = mode === 'new' ? 'Thêm mới' : mode === 'edit' ? 'Chỉnh sửa' : 'Chỉ xem';
+            document.getElementById('formStatus').innerText = row ? row[row.length - 1] : (config.simple ? 'Đang nhập' : 'Lưu nháp');
+            document.getElementById('formFields').innerHTML = config.fields.map(renderField).join('');
+            document.getElementById('textareaFields').innerHTML = (config.textareas || []).map(renderTextareaField).join('');
+            documents = [
+                { name: 'Tài liệu đầu vào', file: 'tai_lieu_dau_vao.pdf' },
+                { name: 'Tài liệu xử lý', file: '' }
+            ];
+            renderDocuments();
+            renderFormActions(row ? row[row.length - 1] : (config.simple ? 'Đang nhập' : 'Lưu nháp'), mode);
+            prepareRelatedLookupLinks(rowIndex, mode);
+            document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function closeForm() {
+            document.getElementById('detailPanel').classList.remove('visible');
+            selectedRowIndex = null;
+        }
+
+        function renderFormActions(status, mode) {
+            const actions = document.getElementById('formActions');
+            if (mode === 'view') {
+                actions.innerHTML = `<button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
+                return;
+            }
+            if (config.simple) {
+                actions.innerHTML = `
+                    <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                    <button class="btn btn-primary" onclick="saveSimpleRecord()"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>
+                `;
+                return;
+            }
+            actions.innerHTML = `
+                <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <button class="btn btn-secondary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
+                <button class="btn btn-primary" onclick="sendFromForm()"><i class="fa-solid fa-paper-plane"></i> ${config.sendLabel || 'Gửi kiến nghị'}</button>
+            `;
+        }
+
+        function saveSimpleRecord() {
+            showToast('Đã lưu thông tin.');
+            closeForm();
+            renderTable();
+        }
+
+        function saveDraft() {
+            showToast('Đã lưu nháp.');
+            closeForm();
+            renderTable();
+        }
+
+        function sendFromForm() {
+            if (selectedRowIndex !== null && rows[selectedRowIndex]) {
+                rows[selectedRowIndex][rows[selectedRowIndex].length - 1] = 'Đã gửi - Chờ phản hồi';
+            }
+            showToast(`Đã ${config.sendLabel ? config.sendLabel.toLowerCase() : 'gửi kiến nghị'}.`);
+            closeForm();
+            renderTable();
+        }
+
+        function sendWorkflow(index) {
+            confirmCallback = () => {
+                rows[index][rows[index].length - 1] = 'Đã gửi - Chờ phản hồi';
+                renderTable();
+                showToast(`Đã ${config.sendLabel ? config.sendLabel.toLowerCase() : 'gửi kiến nghị'}.`);
+            };
+            document.getElementById('confirmText').innerText = `Bạn có chắc chắn muốn ${config.sendLabel ? config.sendLabel.toLowerCase() : 'gửi kiến nghị'} này không?`;
+            document.getElementById('confirmModal').classList.add('visible');
+        }
+
+        function confirmDelete(index) {
+            confirmCallback = () => {
+                rows.splice(index, 1);
+                renderTable();
+                showToast('Đã xóa bản ghi.');
+            };
+            document.getElementById('confirmText').innerText = 'Bạn có chắc chắn muốn xóa vĩnh viễn bản ghi này không?';
+            document.getElementById('confirmModal').classList.add('visible');
+        }
+
+        function closeConfirm(accepted) {
+            document.getElementById('confirmModal').classList.remove('visible');
+            if (accepted && confirmCallback) confirmCallback();
+            confirmCallback = null;
+        }
+
+        function openResponseModal(index) {
+            responseRowIndex = index;
+            document.getElementById('responseTitle').innerHTML = `<i class="fa-solid fa-reply"></i> ${config.responseTitle || 'Cập nhật kết quả phản hồi'}`;
+            document.getElementById('responseContent').value = '';
+            document.getElementById('responseModal').classList.add('visible');
+        }
+
+        function closeResponseModal() {
+            document.getElementById('responseModal').classList.remove('visible');
+            responseRowIndex = null;
+        }
+
+        function saveResponse() {
+            if (responseRowIndex !== null && rows[responseRowIndex]) {
+                rows[responseRowIndex][rows[responseRowIndex].length - 1] = document.getElementById('responseStatus').value;
+            }
+            closeResponseModal();
+            renderTable();
+            showToast('Đã lưu kết quả phản hồi.');
+        }
+
+        function resetFilters() {
+            config.filters.forEach(([id]) => {
+                const el = document.getElementById(`filter_${id}`);
+                if (el) el.value = '';
+            });
+            renderTable();
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').innerText = text;
+            toast.style.display = 'flex';
+            clearTimeout(window.__toastTimer);
+            window.__toastTimer = setTimeout(() => toast.style.display = 'none', 2200);
+        }
+
+        function init() {
+            document.title = config.title;
+            document.getElementById('pageTitle').innerHTML = `<i class="fa-solid ${config.icon}"></i> ${config.title}`;
+            document.getElementById('pageSubtitle').innerText = config.subtitle;
+            document.getElementById('filterGrid').innerHTML = config.filters.map(renderFilterControl).join('');
+            renderTable();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

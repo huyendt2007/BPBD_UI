@@ -312,6 +312,57 @@
             border-color: #fca5a5;
         }
 
+        .more-actions-wrapper {
+            position: relative;
+            display: inline-flex;
+        }
+
+        .more-actions-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 34px;
+            min-width: 190px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
+            padding: 6px;
+            z-index: 1000;
+            text-align: left;
+        }
+
+        .more-actions-menu.visible {
+            display: block;
+        }
+
+        .more-actions-item {
+            width: 100%;
+            min-height: 34px;
+            border: none;
+            background: #ffffff;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: var(--border-radius-sm);
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .more-actions-item:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .more-actions-item.disabled {
+            opacity: 0.45;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
         .action-flex {
             display: flex;
             gap: 6px;
@@ -834,7 +885,7 @@
                         <th style="text-align:right; width: 140px;">Tiền phải hoàn trả (đ)</th>
                         <th style="width: 200px;">Tiến độ thu hồi</th>
                         <th style="width: 150px; text-align:center;">Trạng thái</th>
-                        <th style="width: 160px; text-align:center; min-width: 160px;">Thao tác</th>
+                        <th style="width: 190px; text-align:center; min-width: 190px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="refundTableBody">
@@ -929,6 +980,41 @@
                     <div class="info-group-title">III. Văn bản quyết định thành lập Hội đồng (Điều 64)</div>
                     <div class="grid-3-cols" style="margin-bottom: 16px;">
                         <div class="form-group">
+                            <span class="form-label">Đơn vị nhập liệu</span>
+                            <input type="text" class="form-control" id="formCouncilDataEntryUnit" value="Sở Tư pháp Hà Nội" disabled>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Đơn vị ban hành<span class="required">*</span></span>
+                            <select class="form-control" id="formCouncilIssuingUnit" required>
+                                <option>Sở Tư pháp Hà Nội</option>
+                                <option>Cục Bồi thường nhà nước</option>
+                                <option>UBND Quận Cầu Giấy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Sổ văn bản áp dụng<span class="required">*</span></span>
+                            <select class="form-control" id="formCouncilDocumentBook" required>
+                                <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
+                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
+                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="margin-bottom: 16px;">
+                        <div class="form-group">
+                            <span class="form-label">Hình thức ban hành<span class="required">*</span></span>
+                            <select class="form-control" id="formCouncilSignMode" required>
+                                <option>Ký số trên hệ thống</option>
+                                <option>Ký bên ngoài</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Người ký / Lãnh đạo ký ban hành<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="formCouncilSigner" value="Nguyễn Hoàng Nam - Phó Giám đốc Sở" required>
+                        </div>
+                    </div>
+                    <div class="grid-3-cols" style="margin-bottom: 16px;">
+                        <div class="form-group">
                             <span class="form-label">Số quyết định thành lập<span class="required">*</span></span>
                             <input type="text" class="form-control" id="formCouncilHdNo" placeholder="Ví dụ: 12/QĐ-TLHD" required>
                         </div>
@@ -978,38 +1064,50 @@
                         Số Quyết định thành lập HĐ: <strong id="formKienNghiHdNo">12/QĐ-TLHD</strong> (ngày <span id="formKienNghiHdDate">21/07/2026</span>)
                     </div>
 
-                    <div class="info-group-title">I. Xác minh lỗi và tiền đề xuất hoàn trả</div>
-                    <div class="grid-2-cols" style="margin-bottom: 16px;">
-                        <div class="form-group">
-                            <span class="form-label">Họ tên cán bộ gây sai phạm<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="formKienNghiOfficerName" placeholder="Nhập họ và tên..." required>
+                    <div class="info-group-title">I. Kết luận của Hội đồng</div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <span class="form-label">Kết luận của Hội đồng<span class="required">*</span></span>
+                        <select class="form-control" id="formKienNghiConclusion" onchange="toggleKienNghiConclusion()" required>
+                            <option value="co_loi" selected>Có lỗi - Kiến nghị hoàn trả</option>
+                            <option value="khong_co_loi">Không xem xét - Người thi hành công vụ không có lỗi</option>
+                            <option value="da_chet">Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả</option>
+                        </select>
+                    </div>
+
+                    <div id="kienNghiCoLoiBlock">
+                        <div class="info-group-title">II. Xác minh lỗi và tiền đề xuất hoàn trả</div>
+                        <div class="grid-2-cols" style="margin-bottom: 16px;">
+                            <div class="form-group">
+                                <span class="form-label">Họ tên cán bộ gây sai phạm<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="formKienNghiOfficerName" placeholder="Nhập họ và tên..." required>
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Chức vụ / Chức danh công tác<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="formKienNghiOfficerRole" placeholder="Ví dụ: Chuyên viên, Chấp hành viên..." required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Chức vụ / Chức danh công tác<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="formKienNghiOfficerRole" placeholder="Ví dụ: Chuyên viên, Chấp hành viên..." required>
+
+                        <div class="grid-3-cols" style="margin-bottom: 16px;">
+                            <div class="form-group">
+                                <span class="form-label">Đánh giá yếu tố lỗi<span class="required">*</span></span>
+                                <select class="form-control" id="formKienNghiHdLoi" onchange="autoCalculateRefundProposed()" required>
+                                    <option value="Vô ý nhẹ">Lỗi vô ý gây hậu quả không nghiêm trọng (Tối đa 3 tháng lương)</option>
+                                    <option value="Vô ý nặng">Lỗi vô ý gây hậu quả nghiêm trọng (Tối đa 36 tháng lương)</option>
+                                    <option value="Cố ý">Lỗi cố ý gây hậu quả (Bồi thường 100%)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Mức lương làm căn cứ (đ)<span class="required">*</span></span>
+                                <input type="number" class="form-control" id="formKienNghiOfficerSalary" placeholder="Mức lương tháng..." oninput="autoCalculateRefundProposed()" required>
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Mức đề xuất hoàn trả (đ)<span class="required">*</span></span>
+                                <input type="number" class="form-control" id="formKienNghiRefundTotal" placeholder="Tự động tính hoặc nhập tay..." required>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="grid-3-cols" style="margin-bottom: 16px;">
-                        <div class="form-group">
-                            <span class="form-label">Đánh giá yếu tố lỗi<span class="required">*</span></span>
-                            <select class="form-control" id="formKienNghiHdLoi" onchange="autoCalculateRefundProposed()" required>
-                                <option value="Vô ý nhẹ">Lỗi vô ý gây hậu quả không nghiêm trọng (Tối đa 3 tháng lương)</option>
-                                <option value="Vô ý nặng">Lỗi vô ý gây hậu quả nghiêm trọng (Tối đa 36 tháng lương)</option>
-                                <option value="Cố ý">Lỗi cố ý gây hậu quả (Bồi thường 100%)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Mức lương làm căn cứ (đ)<span class="required">*</span></span>
-                            <input type="number" class="form-control" id="formKienNghiOfficerSalary" placeholder="Mức lương tháng..." oninput="autoCalculateRefundProposed()" required>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Mức đề xuất hoàn trả (đ)<span class="required">*</span></span>
-                            <input type="number" class="form-control" id="formKienNghiRefundTotal" placeholder="Tự động tính hoặc nhập tay..." required>
-                        </div>
-                    </div>
-
-                    <div class="info-group-title">II. Biên bản kiến nghị của Hội đồng</div>
+                    <div class="info-group-title">III. Biên bản kiến nghị / kết luận của Hội đồng</div>
                     <div class="grid-2-cols" style="margin-bottom: 16px;">
                         <div class="form-group">
                             <span class="form-label">Ngày họp / Lập biên bản kiến nghị<span class="required">*</span></span>
@@ -1060,13 +1158,48 @@
                     <div class="info-group-title">I. Ban hành quyết định hoàn trả (Điều 67)</div>
                     <div class="grid-3-cols" style="margin-bottom: 16px;">
                         <div class="form-group">
+                            <span class="form-label">Đơn vị nhập liệu</span>
+                            <input type="text" class="form-control" id="formIssueDataEntryUnit" value="Sở Tư pháp Hà Nội" disabled>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Đơn vị ban hành<span class="required">*</span></span>
+                            <select class="form-control" id="formIssueIssuingUnit" required>
+                                <option>Sở Tư pháp Hà Nội</option>
+                                <option>Cục Bồi thường nhà nước</option>
+                                <option>UBND Quận Cầu Giấy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Sổ văn bản áp dụng<span class="required">*</span></span>
+                            <select class="form-control" id="formIssueDocumentBook" required>
+                                <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
+                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
+                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="margin-bottom: 16px;">
+                        <div class="form-group">
+                            <span class="form-label">Hình thức ban hành<span class="required">*</span></span>
+                            <select class="form-control" id="formIssueSignMode" required>
+                                <option>Ký số trên hệ thống</option>
+                                <option>Ký bên ngoài</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Người ký / Lãnh đạo ký ban hành<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="formIssueSigner" value="Nguyễn Hoàng Nam - Phó Giám đốc Sở" required>
+                        </div>
+                    </div>
+                    <div class="grid-3-cols" style="margin-bottom: 16px;">
+                        <div class="form-group">
                             <span class="form-label">Số quyết định hoàn trả<span class="required">*</span></span>
                             <input type="text" class="form-control" id="formIssueQdNo" placeholder="Ví dụ: 25/QĐ-GQHT" required>
                         </div>
                         <div class="form-group">
                             <span class="form-label">Ngày ký quyết định hoàn trả<span class="required">*</span></span>
                             <div class="date-input-wrapper">
-                                <input type="text" class="form-control" id="formIssueQdDate" placeholder="dd/mm/yyyy" required>
+                                <input type="text" class="form-control" id="formIssueQdDate" placeholder="dd/mm/yyyy" required onchange="syncIssueQdEffectiveDate()">
                                 <i class="fa-regular fa-calendar-days"></i>
                             </div>
                         </div>
@@ -1082,6 +1215,16 @@
                                     <a class="action-link delete-link" style="margin-left: 8px;" onclick="removeAttachedFileRefund('formIssueQdFile', 'formIssueQdFileInfo')">Xóa</a>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="margin-bottom: 16px;">
+                        <div class="form-group">
+                            <span class="form-label">Ngày quyết định hoàn trả có hiệu lực<span class="required">*</span></span>
+                            <div class="date-input-wrapper">
+                                <input type="text" class="form-control" id="formIssueQdEffectiveDate" placeholder="dd/mm/yyyy" required>
+                                <i class="fa-regular fa-calendar-days"></i>
+                            </div>
+                            <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">Mặc định lấy theo Ngày ký quyết định hoàn trả; cho phép sửa nếu văn bản quy định thời điểm có hiệu lực khác.</div>
                         </div>
                     </div>
 
@@ -1198,6 +1341,130 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeRefundModal('progressModalRefund')">Hủy bỏ</button>
                 <button type="button" class="btn btn-primary" onclick="saveProgressPayments()"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GIẢM/HOÃN/MIỄN HOÀN TRẢ -->
+    <div class="modal" id="refundObligationModal">
+        <div class="modal-content" style="max-width: 860px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="refundObligationModalTitle"><i class="fa-solid fa-file-circle-check"></i> Điều chỉnh nghĩa vụ hoàn trả</h3>
+                <button type="button" class="close-modal" onclick="closeRefundModal('refundObligationModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="background:#f8fafc; border:1px solid var(--border-color); padding:12px 14px; border-radius:6px; margin-bottom:16px; font-size:13px; display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;">
+                    <div>
+                        <span style="display:block; color:var(--text-muted); font-size:12px; font-weight:600;">Mã hồ sơ HT</span>
+                        <strong id="refundObligationCode">--</strong>
+                    </div>
+                    <div>
+                        <span style="display:block; color:var(--text-muted); font-size:12px; font-weight:600;">Hồ sơ YCBT liên quan</span>
+                        <strong id="refundObligationClaim">--</strong>
+                    </div>
+                    <div>
+                        <span style="display:block; color:var(--text-muted); font-size:12px; font-weight:600;">Số tiền còn phải hoàn trả</span>
+                        <strong id="refundObligationRemain" style="color:var(--danger-color);">--</strong>
+                    </div>
+                </div>
+                <form id="refundObligationForm">
+                    <input type="hidden" id="refundObligationMode">
+                    <div class="info-group-title" id="refundObligationInfoTitle">Thông tin quyết định</div>
+                    <div class="grid-3-cols" style="margin-bottom:12px;">
+                        <div class="form-group">
+                            <span class="form-label">Đơn vị ban hành<span class="required">*</span></span>
+                            <select class="form-control" id="refundObligationIssuingUnit">
+                                <option>Sở Tư pháp Hà Nội</option>
+                                <option>Cục Bồi thường nhà nước</option>
+                                <option>UBND Quận Cầu Giấy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Sổ văn bản áp dụng<span class="required">*</span></span>
+                            <select class="form-control" id="refundObligationDocumentBook">
+                                <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
+                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
+                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Hình thức ban hành<span class="required">*</span></span>
+                            <select class="form-control" id="refundObligationSignMode">
+                                <option>Ký số trên hệ thống</option>
+                                <option>Ký bên ngoài</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-3-cols" style="margin-bottom:12px;">
+                        <div class="form-group">
+                            <span class="form-label" id="refundObligationNoLabel">Số quyết định<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="refundObligationNo" placeholder="Nhập số quyết định...">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Ngày quyết định<span class="required">*</span></span>
+                            <div class="date-input-wrapper">
+                                <input type="text" class="form-control" id="refundObligationDate" placeholder="dd/mm/yyyy">
+                                <i class="fa-regular fa-calendar-days"></i>
+                            </div>
+                        </div>
+                        <div class="form-group" id="refundObligationAmountGroup">
+                            <span class="form-label" id="refundObligationAmountLabel">Số tiền điều chỉnh (đ)<span class="required">*</span></span>
+                            <input type="number" class="form-control" id="refundObligationAmount" placeholder="Nhập số tiền...">
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols" id="refundPostponePeriodGroup" style="margin-bottom:12px; display:none;">
+                        <div class="form-group">
+                            <span class="form-label">Thời gian hoãn từ ngày<span class="required">*</span></span>
+                            <div class="date-input-wrapper">
+                                <input type="text" class="form-control" id="refundPostponeFrom" placeholder="dd/mm/yyyy">
+                                <i class="fa-regular fa-calendar-days"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Thời gian hoãn đến ngày<span class="required">*</span></span>
+                            <div class="date-input-wrapper">
+                                <input type="text" class="form-control" id="refundPostponeTo" placeholder="dd/mm/yyyy">
+                                <i class="fa-regular fa-calendar-days"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols" id="refundExemptScopeGroup" style="margin-bottom:12px; display:none;">
+                        <div class="form-group">
+                            <span class="form-label">Phạm vi miễn<span class="required">*</span></span>
+                            <select class="form-control" id="refundExemptScope">
+                                <option value="Miễn toàn bộ">Miễn toàn bộ</option>
+                                <option value="Miễn một phần">Miễn một phần</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Số tiền còn phải hoàn trả sau miễn (đ)</span>
+                            <input type="text" class="form-control" id="refundExemptRemain" disabled value="--">
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols" style="margin-bottom:12px;">
+                        <div class="form-group">
+                            <span class="form-label" id="refundObligationReasonLabel">Căn cứ/Lý do<span class="required">*</span></span>
+                            <textarea class="form-control" id="refundObligationReason" style="height:92px; resize:vertical;" placeholder="Nhập căn cứ, lý do thực hiện..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Tài liệu liên quan</span>
+                            <div class="file-upload-container">
+                                <label class="btn-brown" style="cursor: pointer; margin:0;">
+                                    Chọn tệp đính kèm...
+                                    <input type="file" id="refundObligationFiles" multiple style="display:none;" onchange="handleRefundObligationFiles(this.files)">
+                                </label>
+                                <div id="refundObligationFileList" style="margin-top:8px; display:grid; gap:6px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeRefundModal('refundObligationModal')"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <button type="button" class="btn btn-primary" id="refundObligationSubmitBtn" onclick="submitRefundObligation()"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>
             </div>
         </div>
     </div>
@@ -1522,6 +1789,7 @@
 
         let selectedDossierId = null;
         let tempPayments = [];
+        let refundObligationFiles = [];
         let currentPageRefund = 1;
         let pageSizeRefund = 10;
 
@@ -1609,6 +1877,25 @@
             return dossier.payments.reduce((sum, p) => sum + p.amt, 0);
         }
 
+        function getOutstandingRefund(dossier) {
+            return Math.max(0, (dossier.refundTotal || 0) - getDossierPaid(dossier));
+        }
+
+        function closeAllRefundMoreActions() {
+            document.querySelectorAll('.more-actions-menu.visible').forEach(menu => menu.classList.remove('visible'));
+        }
+
+        function toggleRefundMoreActions(event, id) {
+            event.stopPropagation();
+            const menu = document.getElementById(`refundMoreActions-${id}`);
+            if (!menu) return;
+            const isVisible = menu.classList.contains('visible');
+            closeAllRefundMoreActions();
+            if (!isVisible) {
+                menu.classList.add('visible');
+            }
+        }
+
         // Render main table with filters & pagination
         function renderRefundTable() {
             const tbody = document.getElementById('refundTableBody');
@@ -1685,7 +1972,7 @@
                 const tr = document.createElement('tr');
                 tr.style.cursor = 'pointer';
                 tr.onclick = (e) => {
-                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn')) {
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && !e.target.closest('.more-actions-wrapper')) {
                         openDetailRefundModal(d.id);
                     }
                 };
@@ -1728,6 +2015,22 @@
                     btnDelete = `<button class="icon-btn delete" title="Xóa" onclick="deleteRefundDossier('${d.id}')" style="color:var(--danger-color); border-color:var(--danger-color);"><i class="fa-solid fa-trash"></i></button>`;
                 }
 
+                const canAdjustRefund = d.status === 'Đang thi hành' || d.status === 'Hoàn thành';
+                const moreActionClass = canAdjustRefund ? '' : ' disabled';
+                const moreActionTitle = canAdjustRefund ? 'Thao tác điều chỉnh nghĩa vụ hoàn trả' : 'Chỉ thực hiện khi đã ban hành Quyết định hoàn trả';
+                const btnMoreActions = `
+                    <span class="more-actions-wrapper">
+                        <button class="icon-btn" title="${moreActionTitle}" onclick="toggleRefundMoreActions(event, '${d.id}')" ${canAdjustRefund ? '' : 'style="opacity:0.35; pointer-events:none; cursor:not-allowed;"'}>
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                        <span class="more-actions-menu" id="refundMoreActions-${d.id}">
+                            <button type="button" class="more-actions-item${moreActionClass}" onclick="openRefundObligationModal('${d.id}', 'reduce')"><i class="fa-solid fa-arrow-trend-down"></i> Giảm mức hoàn trả</button>
+                            <button type="button" class="more-actions-item${moreActionClass}" onclick="openRefundObligationModal('${d.id}', 'postpone')"><i class="fa-solid fa-hourglass-half"></i> Hoãn hoàn trả</button>
+                            <button type="button" class="more-actions-item${moreActionClass}" onclick="openRefundObligationModal('${d.id}', 'exempt')"><i class="fa-solid fa-circle-check"></i> Miễn hoàn trả</button>
+                        </span>
+                    </span>
+                `;
+
                 const uniqueAgencies = [...new Set((d.refundOfficers || []).map(o => o.agency).filter(Boolean))];
                 let agencyDisplay = d.agency || 'Sở Tư pháp Hà Nội';
                 if (uniqueAgencies.length > 2) {
@@ -1764,6 +2067,7 @@
                         <div style="display:inline-flex; align-items:center; gap:6px; justify-content:center;">
                             ${btnUpdate}
                             ${btnView}
+                            ${btnMoreActions}
                             ${btnDelete}
                         </div>
                     </td>
@@ -1996,6 +2300,10 @@
             checkRequired('formCouncilFinance');
             checkRequired('formCouncilManager');
             checkRequired('formCouncilSecretary');
+            checkRequired('formCouncilIssuingUnit');
+            checkRequired('formCouncilDocumentBook');
+            checkRequired('formCouncilSignMode');
+            checkRequired('formCouncilSigner');
             checkRequired('formCouncilHdNo');
             checkRequired('formCouncilHdDate');
 
@@ -2020,6 +2328,11 @@
                 claimDate: document.getElementById('formCouncilClaimDate').value,
                 officerName: "",
                 officerRole: "",
+                hdDataEntryUnit: document.getElementById('formCouncilDataEntryUnit').value,
+                hdIssuingUnit: document.getElementById('formCouncilIssuingUnit').value,
+                hdDocumentBook: document.getElementById('formCouncilDocumentBook').value,
+                hdSignMode: document.getElementById('formCouncilSignMode').value,
+                hdSigner: document.getElementById('formCouncilSigner').value,
                 hdDecision: hdNo,
                 hdDate: hdDate,
                 hdLoi: "",
@@ -2038,7 +2351,7 @@
             closeRefundModal('createModalCouncilRefund');
             currentPageRefund = 1;
             renderRefundTable();
-            showToast(`Ban hành Quyết định lập Hội đồng ${code} thành công!`, "success");
+            showToast(`Ban hành Quyết định lập Hội đồng ${code} theo ${document.getElementById('formCouncilDocumentBook').value} thành công!`, "success");
         }
 
         function openUpdateKienNghiModal(id) {
@@ -2068,6 +2381,12 @@
             
             autoCalculateRefundProposed();
             document.getElementById('updateKienNghiModalRefund').classList.add('visible');
+        }
+
+        function toggleKienNghiConclusion() {
+            const conclusion = document.getElementById('formKienNghiConclusion').value;
+            const block = document.getElementById('kienNghiCoLoiBlock');
+            block.style.display = conclusion === 'co_loi' ? 'block' : 'none';
         }
 
         function autoCalculateRefundProposed() {
@@ -2113,11 +2432,14 @@
                 }
             };
 
-            checkRequired('formKienNghiOfficerName');
-            checkRequired('formKienNghiOfficerRole');
-            checkRequired('formKienNghiHdLoi');
-            checkRequired('formKienNghiOfficerSalary');
-            checkRequired('formKienNghiRefundTotal');
+            const conclusion = document.getElementById('formKienNghiConclusion').value;
+            if (conclusion === 'co_loi') {
+                checkRequired('formKienNghiOfficerName');
+                checkRequired('formKienNghiOfficerRole');
+                checkRequired('formKienNghiHdLoi');
+                checkRequired('formKienNghiOfficerSalary');
+                checkRequired('formKienNghiRefundTotal');
+            }
             checkRequired('formKienNghiDate');
 
             if (firstInvalid) {
@@ -2127,21 +2449,40 @@
 
             const id = document.getElementById('formKienNghiDossierId').value;
             const d = dossiersList.find(item => item.id === id);
-            if (d) {
-                d.officerName = document.getElementById('formKienNghiOfficerName').value.trim();
-                d.officerRole = document.getElementById('formKienNghiOfficerRole').value.trim();
-                d.hdLoi = document.getElementById('formKienNghiHdLoi').value;
-                d.officerSalary = parseFloat(document.getElementById('formKienNghiOfficerSalary').value) || 0;
-                d.refundTotal = parseFloat(document.getElementById('formKienNghiRefundTotal').value) || 0;
-                d.status = "Chờ ban hành QĐ";
-                
-                d.refundOfficers = [
-                    { name: d.officerName, loi: d.hdLoi, total: d.refundTotal, paid: 0, nextDate: "—", status: "Chờ ban hành QĐ", progressClass: "secondary" }
-                ];
-                
+            if (!d) return;
+
+            d.conclusion = conclusion;
+
+            if (conclusion !== 'co_loi') {
+                // Không xem xét trách nhiệm hoàn trả - kết thúc tiến trình tại bước này (HT-BR-019)
+                d.status = "Không xem xét trách nhiệm hoàn trả";
+                d.refundOfficers = [];
                 closeRefundModal('updateKienNghiModalRefund');
                 renderRefundTable();
-                showToast(`Đã cập nhật biên bản kiến nghị Hội đồng cho hồ sơ ${d.code}!`, "success");
+                showToast(`Đã ghi nhận kết luận của Hội đồng: Không xem xét trách nhiệm hoàn trả cho hồ sơ ${d.code}.`, "success");
+                return;
+            }
+
+            d.officerName = document.getElementById('formKienNghiOfficerName').value.trim();
+            d.officerRole = document.getElementById('formKienNghiOfficerRole').value.trim();
+            d.hdLoi = document.getElementById('formKienNghiHdLoi').value;
+            d.officerSalary = parseFloat(document.getElementById('formKienNghiOfficerSalary').value) || 0;
+            d.refundTotal = parseFloat(document.getElementById('formKienNghiRefundTotal').value) || 0;
+            d.status = "Chờ ban hành QĐ";
+
+            d.refundOfficers = [
+                { name: d.officerName, loi: d.hdLoi, total: d.refundTotal, paid: 0, nextDate: "—", status: "Chờ ban hành QĐ", progressClass: "secondary" }
+            ];
+
+            closeRefundModal('updateKienNghiModalRefund');
+            renderRefundTable();
+            showToast(`Đã cập nhật biên bản kiến nghị Hội đồng cho hồ sơ ${d.code}!`, "success");
+        }
+
+        function syncIssueQdEffectiveDate() {
+            const effEl = document.getElementById('formIssueQdEffectiveDate');
+            if (effEl && !effEl.dataset.manuallyEdited) {
+                effEl.value = document.getElementById('formIssueQdDate').value;
             }
         }
 
@@ -2163,6 +2504,10 @@
 
             document.getElementById('formIssueQdNo').value = d.hdDecision.replace('TLHD', 'QDHT');
             document.getElementById('formIssueQdDate').value = new Date().toLocaleDateString('vi-VN');
+            const effEl = document.getElementById('formIssueQdEffectiveDate');
+            effEl.value = d.qdEffectiveDate || document.getElementById('formIssueQdDate').value;
+            delete effEl.dataset.manuallyEdited;
+            effEl.oninput = () => { effEl.dataset.manuallyEdited = '1'; };
             document.getElementById('formIssueRefundTotal').value = d.refundTotal;
             document.getElementById('formIssueRefundMethod').value = "Khấu trừ lương";
             document.getElementById('formIssueRefundMonthly').value = Math.round(d.officerSalary * 0.2);
@@ -2204,6 +2549,11 @@
 
             checkRequired('formIssueQdNo');
             checkRequired('formIssueQdDate');
+            checkRequired('formIssueQdEffectiveDate');
+            checkRequired('formIssueIssuingUnit');
+            checkRequired('formIssueDocumentBook');
+            checkRequired('formIssueSignMode');
+            checkRequired('formIssueSigner');
             checkRequired('formIssueRefundTotal');
             checkRequired('formIssueRefundMethod');
 
@@ -2222,6 +2572,12 @@
             if (d) {
                 d.qdNo = document.getElementById('formIssueQdNo').value.trim();
                 d.qdDate = document.getElementById('formIssueQdDate').value;
+                d.qdEffectiveDate = document.getElementById('formIssueQdEffectiveDate').value;
+                d.qdDataEntryUnit = document.getElementById('formIssueDataEntryUnit').value;
+                d.qdIssuingUnit = document.getElementById('formIssueIssuingUnit').value;
+                d.qdDocumentBook = document.getElementById('formIssueDocumentBook').value;
+                d.qdSignMode = document.getElementById('formIssueSignMode').value;
+                d.qdSigner = document.getElementById('formIssueSigner').value;
                 d.refundTotal = parseFloat(document.getElementById('formIssueRefundTotal').value) || 0;
                 d.refundMethod = method;
                 d.refundMonthly = parseFloat(document.getElementById('formIssueRefundMonthly').value) || 0;
@@ -2233,7 +2589,7 @@
                 
                 closeRefundModal('issueDecisionModalRefund');
                 renderRefundTable();
-                showToast(`Ký duyệt và ban hành Quyết định hoàn trả số ${d.qdNo} thành công!`, "success");
+                showToast(`Ban hành Quyết định hoàn trả số ${d.qdNo} theo ${d.qdDocumentBook} thành công!`, "success");
             }
         }
 
@@ -2342,6 +2698,161 @@
             }
         }
 
+        function renderRefundObligationFiles() {
+            const list = document.getElementById('refundObligationFileList');
+            if (!list) return;
+            if (refundObligationFiles.length === 0) {
+                list.innerHTML = '<span style="font-size:12px; color:var(--text-muted); font-style:italic;">Chưa có tài liệu đính kèm.</span>';
+                return;
+            }
+            list.innerHTML = refundObligationFiles.map((name, index) => `
+                <div class="attached-file-info" style="display:flex; align-items:center; justify-content:space-between;">
+                    <span class="file-name"><i class="fa-solid fa-paperclip"></i> ${name}</span>
+                    <a class="action-link delete-link" onclick="removeRefundObligationFile(${index})">Xóa</a>
+                </div>
+            `).join('');
+        }
+
+        function handleRefundObligationFiles(files) {
+            refundObligationFiles = [...refundObligationFiles, ...Array.from(files || []).map(file => file.name)];
+            document.getElementById('refundObligationFiles').value = '';
+            renderRefundObligationFiles();
+            if (refundObligationFiles.length > 0) {
+                showToast("Đã thêm tài liệu liên quan.", "success");
+            }
+        }
+
+        function removeRefundObligationFile(index) {
+            refundObligationFiles.splice(index, 1);
+            renderRefundObligationFiles();
+            showToast("Đã gỡ tài liệu liên quan.", "info");
+        }
+
+        function openRefundObligationModal(id, mode) {
+            closeAllRefundMoreActions();
+            selectedDossierId = id;
+            const dossier = dossiersList.find(d => d.id === id);
+            if (!dossier) return;
+
+            const outstanding = getOutstandingRefund(dossier);
+            refundObligationFiles = [];
+            document.getElementById('refundObligationForm').reset();
+            document.getElementById('refundObligationMode').value = mode;
+            document.getElementById('refundObligationCode').innerText = dossier.code;
+            document.getElementById('refundObligationClaim').innerText = dossier.claimCode;
+            document.getElementById('refundObligationRemain').innerText = outstanding.toLocaleString('vi-VN') + ' đ';
+            document.getElementById('refundObligationDate').value = new Date().toLocaleDateString('vi-VN');
+            document.getElementById('refundObligationAmount').value = '';
+            document.getElementById('refundExemptRemain').value = outstanding.toLocaleString('vi-VN') + ' đ';
+            document.getElementById('refundPostponePeriodGroup').style.display = 'none';
+            document.getElementById('refundExemptScopeGroup').style.display = 'none';
+            document.getElementById('refundObligationAmountGroup').style.display = 'block';
+
+            const titleMap = {
+                reduce: ['Giảm mức hoàn trả', 'Số quyết định giảm mức hoàn trả', 'Số tiền được giảm (đ)', 'Căn cứ/Lý do giảm', 'Lưu thông tin giảm mức hoàn trả'],
+                postpone: ['Hoãn hoàn trả', 'Số quyết định hoãn hoàn trả', 'Số tiền được hoãn theo quyết định (đ)', 'Lý do hoãn hoàn trả', 'Lưu thông tin hoãn hoàn trả'],
+                exempt: ['Miễn hoàn trả', 'Số quyết định miễn hoàn trả', 'Số tiền được miễn (đ)', 'Căn cứ/Lý do miễn', 'Lưu thông tin miễn hoàn trả']
+            };
+            const config = titleMap[mode] || titleMap.reduce;
+            document.getElementById('refundObligationModalTitle').innerHTML = `<i class="fa-solid fa-file-circle-check"></i> ${config[0]}`;
+            document.getElementById('refundObligationInfoTitle').innerText = `Thông tin ${config[0].toLowerCase()}`;
+            document.getElementById('refundObligationNoLabel').innerHTML = `${config[1]}<span class="required">*</span>`;
+            document.getElementById('refundObligationAmountLabel').innerHTML = `${config[2]}<span class="required">*</span>`;
+            document.getElementById('refundObligationReasonLabel').innerHTML = `${config[3]}<span class="required">*</span>`;
+            document.getElementById('refundObligationSubmitBtn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${config[4]}`;
+
+            if (mode === 'postpone') {
+                document.getElementById('refundPostponePeriodGroup').style.display = 'grid';
+                document.getElementById('refundObligationAmountGroup').style.display = 'none';
+            }
+            if (mode === 'exempt') {
+                document.getElementById('refundExemptScopeGroup').style.display = 'grid';
+            }
+
+            renderRefundObligationFiles();
+            document.getElementById('refundObligationModal').classList.add('visible');
+        }
+
+        function submitRefundObligation() {
+            const dossier = dossiersList.find(d => d.id === selectedDossierId);
+            if (!dossier) return;
+
+            const mode = document.getElementById('refundObligationMode').value;
+            const decisionNo = document.getElementById('refundObligationNo').value.trim();
+            const decisionDate = document.getElementById('refundObligationDate').value.trim();
+            const issuingUnit = document.getElementById('refundObligationIssuingUnit').value;
+            const documentBook = document.getElementById('refundObligationDocumentBook').value;
+            const signMode = document.getElementById('refundObligationSignMode').value;
+            const amount = Number(document.getElementById('refundObligationAmount').value || 0);
+            const reason = document.getElementById('refundObligationReason').value.trim();
+            const outstanding = getOutstandingRefund(dossier);
+
+            if (!decisionNo || !decisionDate || !reason || (mode !== 'postpone' && amount <= 0)) {
+                showToast("Vui lòng nhập đầy đủ thông tin bắt buộc.", "info");
+                return;
+            }
+
+            if (mode === 'postpone') {
+                const fromDate = document.getElementById('refundPostponeFrom').value.trim();
+                const toDate = document.getElementById('refundPostponeTo').value.trim();
+                if (!fromDate || !toDate) {
+                    showToast("Vui lòng nhập thời gian hoãn hoàn trả.", "info");
+                    return;
+                }
+                dossier.refundAdjustment = {
+                    type: 'Hoãn hoàn trả',
+                    decisionNo,
+                    decisionDate,
+                    issuingUnit,
+                    documentBook,
+                    signMode,
+                    amount,
+                    fromDate,
+                    toDate,
+                    reason,
+                    files: [...refundObligationFiles]
+                };
+                (dossier.refundOfficers || []).forEach(o => {
+                    if (o.status !== 'Hoàn tất') {
+                        o.status = 'Hoãn thu';
+                        o.nextDate = toDate;
+                        o.progressClass = 'warning';
+                    }
+                });
+                showToast(`Đã lưu thông tin Hoãn hoàn trả cho hồ sơ ${dossier.code}.`, "success");
+            } else {
+                const scope = document.getElementById('refundExemptScope').value;
+                const adjustmentType = mode === 'reduce' ? 'Giảm mức hoàn trả' : 'Miễn hoàn trả';
+                const appliedAmount = mode === 'exempt' && scope === 'Miễn toàn bộ' ? outstanding : Math.min(amount, outstanding);
+                dossier.refundAdjustment = {
+                    type: adjustmentType,
+                    decisionNo,
+                    decisionDate,
+                    issuingUnit,
+                    documentBook,
+                    signMode,
+                    amount: appliedAmount,
+                    scope: mode === 'exempt' ? scope : '',
+                    reason,
+                    files: [...refundObligationFiles]
+                };
+                dossier.refundTotal = Math.max(getDossierPaid(dossier), (dossier.refundTotal || 0) - appliedAmount);
+                if (getDossierPaid(dossier) >= dossier.refundTotal) {
+                    dossier.status = 'Hoàn thành';
+                    (dossier.refundOfficers || []).forEach(o => {
+                        o.status = 'Hoàn tất';
+                        o.paid = o.total;
+                        o.nextDate = '—';
+                        o.progressClass = 'success';
+                    });
+                }
+                showToast(`Đã lưu thông tin ${adjustmentType} cho hồ sơ ${dossier.code}.`, "success");
+            }
+
+            closeRefundModal('refundObligationModal');
+            renderRefundTable();
+        }
+
         function openDetailRefundModal(id) {
             window.location.href = `chi_tiet_ho_so_hoan_tra.html?id=${id}`;
         }
@@ -2402,6 +2913,12 @@
         document.getElementById('confirmModalYesBtn').addEventListener('click', () => {
             if (confirmCallback) confirmCallback();
             closeConfirmModal();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.more-actions-wrapper')) {
+                closeAllRefundMoreActions();
+            }
         });
 
         document.addEventListener('DOMContentLoaded', () => {

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiếp nhận YCBT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+    <style>
+        body {
+            background: var(--bg-body);
+            padding: 20px;
+        }
+
+        .page-heading {
+            align-items: flex-start;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .page-heading h2 {
+            align-items: center;
+            color: var(--primary-light);
+            display: flex;
+            font-size: 20px;
+            font-weight: 700;
+            gap: 10px;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .page-heading p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .filter-card,
+        .list-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 16px;
+        }
+
+        .filter-card {
+            padding: 16px;
+        }
+
+        .filter-actions {
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 14px;
+            padding-top: 12px;
+        }
+
+        .list-header {
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+
+        .list-title {
+            align-items: center;
+            color: var(--primary-light);
+            display: flex;
+            font-size: 14px;
+            font-weight: 700;
+            gap: 8px;
+        }
+
+        .result-count {
+            color: var(--text-muted);
+            font-size: 12.5px;
+        }
+
+        #receptionTable {
+            min-width: 1320px;
+            table-layout: fixed;
+        }
+
+        #receptionTable th {
+            white-space: normal;
+            line-height: 1.25;
+        }
+
+        #receptionTable tbody tr {
+            cursor: pointer;
+        }
+
+        .code-cell {
+            color: var(--primary-light);
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .muted {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .disabled-action {
+            cursor: not-allowed;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .meta-grid {
+            background: #f8fafc;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--border-radius-sm);
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin-bottom: 16px;
+            padding: 12px;
+        }
+
+        .meta-item label {
+            color: var(--text-muted);
+            display: block;
+            font-size: 11.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .meta-item strong {
+            color: var(--text-main);
+            font-size: 13px;
+        }
+
+        .doc-actions {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 1100px) {
+            .grid-4-cols {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .grid-3-cols {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .page-heading {
+                flex-direction: column;
+            }
+
+            .grid-4-cols,
+            .grid-2,
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions,
+            .inline-form-footer>div {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section id="listView">
+            <div class="page-heading">
+                <div>
+                    <h2><i class="fa-solid fa-inbox"></i> DANH SÁCH QUẢN LÝ YÊU CẦU BỒI THƯỜNG</h2>
+                    <p>Quản lý thông tin tiếp nhận ban đầu trước khi chuyển vụ việc sang bước nhập liệu hồ sơ chi tiết.</p>
+                </div>
+            </div>
+
+            <div class="filter-card">
+                <div class="grid-4-cols">
+                    <div class="form-group">
+                        <span class="form-label">Mã vụ việc</span>
+                        <input id="filterCode" class="form-control" placeholder="Nhập mã vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Tên vụ việc</span>
+                        <input id="filterCaseName" class="form-control" placeholder="Nhập tên vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Họ và tên người yêu cầu</span>
+                        <input id="filterRequester" class="form-control" placeholder="Nhập họ và tên...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Hình thức tiếp nhận hồ sơ</span>
+                        <select id="filterReceiveMethod" class="form-control">
+                            <option value="">Tất cả</option>
+                            <option value="Tiếp nhận trực tiếp">Tiếp nhận trực tiếp</option>
+                            <option value="Nhận qua bưu điện/Bưu chính">Nhận qua bưu điện/Bưu chính</option>
+                            <option value="Dịch vụ công">Dịch vụ công</option>
+                            <option value="Cán bộ chủ động nhập theo tố tụng/thi hành án">Cán bộ chủ động nhập theo tố tụng/thi hành án</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
+                        <select id="filterFieldGroup" class="form-control">
+                            <option value="">Tất cả</option>
+                            <option value="hành chính">TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH</option>
+                            <option value="hình sự">TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ</option>
+                            <option value="dân sự">TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ</option>
+                            <option value="tố tụng hành chính">TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH</option>
+                            <option value="thi hành án hình sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ</option>
+                            <option value="thi hành án dân sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Trạng thái</span>
+                        <select id="filterStatus" class="form-control">
+                            <option value="">Tất cả</option>
+                            <option value="Chờ nhập liệu">Chờ nhập liệu</option>
+                            <option value="Chờ kiểm tra">Chờ kiểm tra</option>
+                            <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
+                            <option value="Bị từ chối">Bị từ chối</option>
+                            <option value="Chờ thụ lý">Chờ thụ lý</option>
+                            <option value="Đang xác minh thiệt hại">Đang xác minh thiệt hại</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Từ ngày</span>
+                        <input id="filterFromDate" class="form-control" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Đến ngày</span>
+                        <input id="filterToDate" class="form-control" placeholder="dd/mm/yyyy">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                    </button>
+                    <button class="btn btn-primary" onclick="currentPage = 1; renderReceptionTable()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                    </button>
+                </div>
+            </div>
+
+            <div class="list-card">
+                <div class="list-header">
+                    <div>
+                        <div class="list-title"><i class="fa-solid fa-table-list"></i> Bảng danh sách vụ việc</div>
+                        <div class="result-count" id="resultCount">Hiển thị 0 bản ghi</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="openReceptionForm()">
+                        <i class="fa-solid fa-plus"></i> Tiếp nhận mới
+                    </button>
+                </div>
+                <div class="table-container" style="border:0; border-radius:0;">
+                    <table class="custom-table" id="receptionTable">
+                        <thead>
+                            <tr>
+                                <th style="width:54px; text-align:center;">STT</th>
+                                <th style="width:130px; text-align:center;">Mã vụ việc</th>
+                                <th style="width:190px;">Tên vụ việc</th>
+                                <th style="width:150px;">Họ và tên người yêu cầu</th>
+                                <th style="width:150px;">Hình thức tiếp nhận hồ sơ</th>
+                                <th style="width:150px;">Lĩnh vực phát sinh thiệt hại</th>
+                                <th style="width:150px; text-align:center;">Thời điểm tiếp nhận</th>
+                                <th style="width:150px;">Cán bộ tiếp nhận</th>
+                                <th style="width:120px; text-align:center;">Trạng thái</th>
+                                <th style="width:96px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receptionTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination-bar">
+                    <div class="pagination-left">
+                        <span>Số dòng hiển thị:</span>
+                        <select class="page-size-select" id="pageSize" onchange="changePageSize(this.value)">
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span id="pageInfo">Hiển thị 0-0 trong tổng số 0 bản ghi</span>
+                    </div>
+                    <div class="pagination-pages" id="paginationPages"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="formView" class="inline-form-panel">
+            <div class="inline-form-header">
+                <div class="inline-form-title" id="formTitle">
+                    <i class="fa-solid fa-file-circle-plus"></i> TIẾP NHẬN YÊU CẦU BỒI THƯỜNG
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="closeReceptionForm()">
+                    <i class="fa-solid fa-xmark"></i> Hủy bỏ
+                </button>
+            </div>
+            <div class="inline-form-body">
+                <div class="meta-grid" id="formMetaGrid" style="display:none;">
+                    <div class="meta-item">
+                        <label>Mã vụ việc</label>
+                        <strong id="formCodeText">Tự sinh sau khi lưu</strong>
+                    </div>
+                    <div class="meta-item">
+                        <label>Thời điểm tiếp nhận</label>
+                        <strong id="formReceivedAtText">Tự sinh sau khi lưu</strong>
+                    </div>
+                </div>
+
+                <div class="info-group-title">I. Thông tin tổng quan vụ việc</div>
+                <div class="form-group">
+                    <span class="form-label">Tên vụ việc<span class="required">*</span></span>
+                    <input id="formCaseName" class="form-control" placeholder="Nhập tên/tóm tắt vụ việc...">
+                    <div class="error-message">Đây là trường bắt buộc</div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <span class="form-label">Hình thức tiếp nhận hồ sơ<span class="required">*</span></span>
+                        <select id="formReceiveMethod" class="form-control">
+                            <option value="Tiếp nhận trực tiếp">Tiếp nhận trực tiếp</option>
+                            <option value="Nhận qua bưu điện/Bưu chính">Nhận qua bưu điện/Bưu chính</option>
+                            <option value="Dịch vụ công">Dịch vụ công</option>
+                            <option value="Cán bộ chủ động nhập theo tố tụng/thi hành án">Cán bộ chủ động nhập theo tố tụng/thi hành án</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Lĩnh vực phát sinh thiệt hại<span class="required">*</span></span>
+                        <select id="formFieldGroup" class="form-control">
+                            <option value="">Chọn lĩnh vực...</option>
+                            <option value="hành chính">TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH</option>
+                            <option value="hình sự">TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ</option>
+                            <option value="dân sự">TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ</option>
+                            <option value="tố tụng hành chính">TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH</option>
+                            <option value="thi hành án hình sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ</option>
+                            <option value="thi hành án dân sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ</option>
+                        </select>
+                        <div class="error-message">Đây là trường bắt buộc</div>
+                    </div>
+                </div>
+
+                <div class="info-group-title">II. Thông tin người yêu cầu</div>
+                <div class="grid-3-cols">
+                    <div class="form-group">
+                        <span class="form-label">Họ và tên người yêu cầu<span class="required">*</span></span>
+                        <input id="formRequester" class="form-control" placeholder="Nhập họ và tên...">
+                        <div class="error-message">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Tỉnh/TP<span class="required">*</span></span>
+                        <select id="formCity" class="form-control">
+                            <option value="">Chọn Tỉnh/TP...</option>
+                            <option value="Hà Nội">Hà Nội</option>
+                            <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+                            <option value="Đà Nẵng">Đà Nẵng</option>
+                            <option value="Hải Phòng">Hải Phòng</option>
+                            <option value="Bắc Ninh">Bắc Ninh</option>
+                            <option value="Khánh Hòa">Khánh Hòa</option>
+                        </select>
+                        <div class="error-message">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Địa chỉ chi tiết<span class="required">*</span></span>
+                        <input id="formAddress" class="form-control" placeholder="Nhập địa chỉ chi tiết...">
+                        <div class="error-message">Đây là trường bắt buộc</div>
+                    </div>
+                </div>
+
+                <div class="info-group-title">III. Bảng tài liệu đính kèm</div>
+                <div class="table-container">
+                    <table class="custom-table" style="min-width:760px;">
+                        <thead>
+                            <tr>
+                                <th style="width:60px; text-align:center;">STT</th>
+                                <th>Tên tài liệu</th>
+                                <th style="width:260px;">File đính kèm</th>
+                                <th style="width:160px; text-align:center;">Thao tác tài liệu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="docsTableBody"></tbody>
+                    </table>
+                </div>
+                <div style="margin-top:10px;">
+                    <button class="btn btn-secondary btn-sm" onclick="addDocRow()">
+                        <i class="fa-solid fa-plus"></i> Thêm dòng
+                    </button>
+                </div>
+            </div>
+            <div class="inline-form-footer">
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button class="btn btn-secondary" onclick="closeReceptionForm()">
+                        <i class="fa-solid fa-xmark"></i> Hủy bỏ
+                    </button>
+                    <button class="btn btn-primary" onclick="saveReceptionInfo()">
+                        <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast-notif"></div>
+
+    <div id="confirmOverlay" class="confirm-modal-overlay">
+        <div class="confirm-modal-container">
+            <div class="confirm-modal-header">
+                <i class="fa-solid fa-circle-exclamation"></i> Xác nhận xóa
+            </div>
+            <div class="confirm-modal-body" id="confirmMessage"></div>
+            <div class="confirm-modal-footer">
+                <button class="btn btn-secondary btn-sm" onclick="closeConfirm(false)">Hủy bỏ</button>
+                <button class="btn btn-danger btn-sm" onclick="closeConfirm(true)">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CURRENT_OFFICER = "Nguyễn Văn Cán Bộ";
+        const STORAGE_KEY = "claimsList";
+        let claimsList = [];
+        let currentPage = 1;
+        let pageSize = 20;
+        let editingId = null;
+        let docRows = [];
+        let pendingConfirmCallback = null;
+
+        const seedClaims = [
+            {
+                id: "TN1",
+                code: "VVBT-2026-001",
+                caseName: "Yêu cầu bồi thường do thu hồi giấy phép kinh doanh",
+                nyc: "Công ty An Phú",
+                nopKenh: "Tiếp nhận trực tiếp",
+                fieldGroup: "hành chính",
+                date: "01/08/2026",
+                receivedAt: "01/08/2026 08:30",
+                receivedBy: CURRENT_OFFICER,
+                nycTinhThanh: "Hà Nội",
+                nycAddressDetail: "Số 12 Nguyễn Chí Thanh, Ba Đình, Hà Nội",
+                address: "Số 12 Nguyễn Chí Thanh, Ba Đình, Hà Nội",
+                status: "Chờ nhập liệu",
+                agency: "Sở Tư pháp Hà Nội",
+                files: [{ name: "Don_yeu_cau_boi_thuong_An_Phu.pdf", url: "#" }],
+                receptionDocs: [{ name: "Đơn yêu cầu bồi thường", file: "Don_yeu_cau_boi_thuong_An_Phu.pdf" }],
+                timeline: [{ title: "Tiếp nhận yêu cầu bồi thường", date: "01/08/2026", desc: "Đã tiếp nhận thông tin ban đầu. Trạng thái: Chờ nhập liệu.", status: "completed" }]
+            },
+            {
+                id: "TN2",
+                code: "VVBT-2026-002",
+                caseName: "Yêu cầu bồi thường do bắt giữ người trái pháp luật",
+                nyc: "Nguyễn Văn Bình",
+                nopKenh: "Dịch vụ công",
+                fieldGroup: "hình sự",
+                date: "03/08/2026",
+                receivedAt: "03/08/2026 10:15",
+                receivedBy: CURRENT_OFFICER,
+                nycTinhThanh: "Hải Phòng",
+                nycAddressDetail: "Số 45 Lê Lợi, Ngô Quyền, Hải Phòng",
+                address: "Số 45 Lê Lợi, Ngô Quyền, Hải Phòng",
+                status: "Chờ nhập liệu",
+                agency: "Tòa án nhân dân TP. Hải Phòng",
+                files: [{ name: "Don_YCBT_Nguyen_Van_Binh.pdf", url: "#" }],
+                receptionDocs: [{ name: "Đơn yêu cầu bồi thường", file: "Don_YCBT_Nguyen_Van_Binh.pdf" }],
+                timeline: [{ title: "Tiếp nhận yêu cầu bồi thường", date: "03/08/2026", desc: "Đã tiếp nhận thông tin ban đầu. Trạng thái: Chờ nhập liệu.", status: "completed" }]
+            },
+            {
+                id: "TN3",
+                code: "VVBT-2026-003",
+                caseName: "Yêu cầu bồi thường do kê biên tài sản không đúng",
+                nyc: "Trần Minh T",
+                nopKenh: "Nhận qua bưu điện/Bưu chính",
+                fieldGroup: "thi hành án dân sự",
+                date: "04/08/2026",
+                receivedAt: "04/08/2026 15:20",
+                receivedBy: "Lê Thị Cán Bộ",
+                nycTinhThanh: "Hà Nội",
+                nycAddressDetail: "Số 9 Hàng Trống, Hoàn Kiếm, Hà Nội",
+                address: "Số 9 Hàng Trống, Hoàn Kiếm, Hà Nội",
+                status: "Chờ kiểm tra",
+                agency: "Tòa án nhân dân quận Hoàn Kiếm",
+                files: [{ name: "Ho_so_ke_bien_tai_san.pdf", url: "#" }],
+                receptionDocs: [{ name: "Hồ sơ kê biên tài sản", file: "Ho_so_ke_bien_tai_san.pdf" }],
+                timeline: [
+                    { title: "Tiếp nhận yêu cầu bồi thường", date: "04/08/2026", desc: "Đã tiếp nhận thông tin ban đầu.", status: "completed" },
+                    { title: "Nhập hồ sơ vụ việc", date: "05/08/2026", desc: "Đã nhập liệu hồ sơ vụ việc. Trạng thái: Chờ kiểm tra.", status: "active" }
+                ]
+            }
+        ];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            localStorage.setItem("claimsList_v24_srs_tabs", "true");
+            initDates();
+            loadClaims();
+            renderReceptionTable();
+        });
+
+        function initDates() {
+            const now = new Date();
+            setValue("filterFromDate", formatDate(new Date(now.getFullYear(), now.getMonth(), 1)));
+            setValue("filterToDate", formatDate(now));
+        }
+
+        function loadClaims() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    claimsList = JSON.parse(stored);
+                } catch (e) {
+                    claimsList = [];
+                }
+            }
+
+            if (!claimsList || claimsList.length === 0) {
+                claimsList = seedClaims;
+                saveClaims();
+                return;
+            }
+
+            const existingCodes = new Set(claimsList.map(item => item.code));
+            seedClaims.forEach(item => {
+                if (!existingCodes.has(item.code)) claimsList.push(item);
+            });
+            saveClaims();
+        }
+
+        function saveClaims() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(claimsList));
+        }
+
+        function getReceptionRows() {
+            return claimsList
+                .filter(item => !item.deleted)
+                .filter(item => item.code || item.caseName || item.nyc)
+                .sort((a, b) => getDateSort(b.receivedAt || b.date) - getDateSort(a.receivedAt || a.date));
+        }
+
+        function getFilteredRows() {
+            const code = normalize(getValue("filterCode"));
+            const caseName = normalize(getValue("filterCaseName"));
+            const requester = normalize(getValue("filterRequester"));
+            const receiveMethod = getValue("filterReceiveMethod");
+            const fieldGroup = getValue("filterFieldGroup");
+            const status = getValue("filterStatus");
+            const fromDate = parseDate(getValue("filterFromDate"));
+            const toDate = parseDate(getValue("filterToDate"));
+
+            return getReceptionRows().filter(item => {
+                const itemDate = parseDate(item.receivedAt || item.date);
+                if (code && !normalize(item.code).includes(code)) return false;
+                if (caseName && !normalize(getCaseName(item)).includes(caseName)) return false;
+                if (requester && !normalize(item.nyc).includes(requester)) return false;
+                if (receiveMethod && (item.nopKenh || "Tiếp nhận trực tiếp") !== receiveMethod) return false;
+                if (fieldGroup && (item.fieldGroup || "") !== fieldGroup) return false;
+                if (status && (item.status || "") !== status) return false;
+                if (fromDate && itemDate && itemDate < fromDate) return false;
+                if (toDate && itemDate && itemDate > toDate) return false;
+                return true;
+            });
+        }
+
+        function renderReceptionTable() {
+            const rows = getFilteredRows();
+            const total = rows.length;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * pageSize;
+            const pageRows = rows.slice(start, start + pageSize);
+            const tbody = document.getElementById("receptionTableBody");
+
+            if (pageRows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:28px;">Không có dữ liệu phù hợp</td></tr>`;
+            } else {
+                tbody.innerHTML = pageRows.map((item, idx) => {
+                    const editable = canEditReception(item);
+                    const actionClass = editable ? "" : " disabled-action";
+                    return `
+                        <tr onclick="handleRowClick('${escapeAttr(item.id)}')">
+                            <td style="text-align:center;">${start + idx + 1}</td>
+                            <td class="code-cell">${escapeHtml(item.code || "--")}</td>
+                            <td><strong>${escapeHtml(getCaseName(item))}</strong></td>
+                            <td>${escapeHtml(item.nyc || "--")}</td>
+                            <td><span class="badge ${getReceiveMethodBadge(item.nopKenh)}">${escapeHtml(item.nopKenh || "Tiếp nhận trực tiếp")}</span></td>
+                            <td><span class="muted">${escapeHtml(getFieldGroupName(item.fieldGroup))}</span></td>
+                            <td style="text-align:center;">${escapeHtml(item.receivedAt || item.date || "--")}</td>
+                            <td>${escapeHtml(item.receivedBy || CURRENT_OFFICER)}</td>
+                            <td style="text-align:center;">${renderStatusBadge(item.status || "Chờ nhập liệu")}</td>
+                            <td>
+                                <div class="action-flex">
+                                    <button class="icon-btn edit${actionClass}" title="Sửa" onclick="event.stopPropagation(); openReceptionForm('${escapeAttr(item.id)}')">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="icon-btn delete${actionClass}" title="Xóa" onclick="event.stopPropagation(); confirmDeleteReception('${escapeAttr(item.id)}')">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join("");
+            }
+
+            document.getElementById("resultCount").textContent = `Hiển thị ${total} bản ghi`;
+            const end = total === 0 ? 0 : Math.min(start + pageSize, total);
+            document.getElementById("pageInfo").textContent = `Hiển thị ${total === 0 ? 0 : start + 1}-${end} trong tổng số ${total} bản ghi`;
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const wrapper = document.getElementById("paginationPages");
+            wrapper.innerHTML = `
+                <button class="btn btn-secondary btn-sm" ${currentPage === 1 ? "disabled" : ""} onclick="goToPage(1)">|&lt;&lt;</button>
+                <button class="btn btn-secondary btn-sm" ${currentPage === 1 ? "disabled" : ""} onclick="goToPage(${currentPage - 1})">&lt;</button>
+                <button class="btn btn-primary btn-sm">${currentPage}</button>
+                <button class="btn btn-secondary btn-sm" ${currentPage === totalPages ? "disabled" : ""} onclick="goToPage(${currentPage + 1})">&gt;</button>
+                <button class="btn btn-secondary btn-sm" ${currentPage === totalPages ? "disabled" : ""} onclick="goToPage(${totalPages})">&gt;&gt;|</button>
+            `;
+        }
+
+        function goToPage(page) {
+            currentPage = Math.max(1, page);
+            renderReceptionTable();
+        }
+
+        function changePageSize(value) {
+            pageSize = Number(value) || 20;
+            currentPage = 1;
+            renderReceptionTable();
+        }
+
+        function resetFilters() {
+            ["filterCode", "filterCaseName", "filterRequester"].forEach(id => setValue(id, ""));
+            ["filterReceiveMethod", "filterFieldGroup", "filterStatus"].forEach(id => setValue(id, ""));
+            initDates();
+            currentPage = 1;
+            renderReceptionTable();
+        }
+
+        function handleRowClick(id) {
+            const claim = claimsList.find(item => item.id === id);
+            if (!claim) return;
+            if (canEditReception(claim)) {
+                openReceptionForm(id);
+                return;
+            }
+            openClaimDetail(claim.code || claim.id);
+        }
+
+        function openReceptionForm(id = null) {
+            editingId = id;
+            clearFormValidation();
+            const claim = id ? claimsList.find(item => item.id === id) : null;
+
+            document.getElementById("listView").style.display = "none";
+            document.getElementById("formView").style.display = "flex";
+            document.getElementById("formTitle").innerHTML = claim
+                ? `<i class="fa-solid fa-pen-to-square"></i> CHỈNH SỬA THÔNG TIN TIẾP NHẬN`
+                : `<i class="fa-solid fa-file-circle-plus"></i> TIẾP NHẬN YÊU CẦU BỒI THƯỜNG`;
+
+            document.getElementById("formMetaGrid").style.display = claim ? "grid" : "none";
+            setText("formCodeText", claim ? claim.code : "Tự sinh sau khi lưu");
+            setText("formReceivedAtText", claim ? (claim.receivedAt || claim.date || "--") : "Tự sinh sau khi lưu");
+            setValue("formCaseName", claim ? getCaseName(claim) : "");
+            setValue("formReceiveMethod", claim ? (claim.nopKenh || "Tiếp nhận trực tiếp") : "Tiếp nhận trực tiếp");
+            setValue("formFieldGroup", claim ? (claim.fieldGroup || "") : "");
+            setValue("formRequester", claim ? (claim.nyc || "") : "");
+            setValue("formCity", claim ? (claim.nycTinhThanh || claim.city || "") : "");
+            setValue("formAddress", claim ? (claim.nycAddressDetail || claim.address || "") : "");
+
+            docRows = claim && claim.receptionDocs
+                ? claim.receptionDocs.map(doc => ({ name: doc.name || "", file: doc.file || "" }))
+                : [{ name: "", file: "" }];
+            renderDocRows();
+        }
+
+        function closeReceptionForm() {
+            editingId = null;
+            document.getElementById("formView").style.display = "none";
+            document.getElementById("listView").style.display = "block";
+            renderReceptionTable();
+        }
+
+        function saveReceptionInfo() {
+            clearFormValidation();
+            const requiredIds = ["formCaseName", "formFieldGroup", "formRequester", "formCity", "formAddress"];
+            let firstInvalid = null;
+            requiredIds.forEach(id => {
+                if (!getValue(id)) {
+                    const el = document.getElementById(id);
+                    el.classList.add("is-invalid");
+                    const error = el.closest(".form-group").querySelector(".error-message");
+                    if (error) error.style.display = "block";
+                    if (!firstInvalid) firstInvalid = el;
+                }
+            });
+
+            const hasInvalidDoc = docRows.some((doc, idx) => {
+                const nameEl = document.getElementById(`docName_${idx}`);
+                const hasAnyValue = (doc.name || "").trim() || (doc.file || "").trim();
+                if (hasAnyValue && !(doc.name || "").trim()) {
+                    nameEl.classList.add("is-invalid");
+                    if (!firstInvalid) firstInvalid = nameEl;
+                    return true;
+                }
+                return false;
+            });
+
+            if (firstInvalid || hasInvalidDoc) {
+                showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
+                firstInvalid.focus();
+                return;
+            }
+
+            const now = new Date();
+            const cleanDocs = docRows
+                .filter(doc => (doc.name || "").trim() || (doc.file || "").trim())
+                .map(doc => ({ name: doc.name.trim(), file: doc.file || "" }));
+
+            if (editingId) {
+                const claim = claimsList.find(item => item.id === editingId);
+                if (!claim) return;
+                claim.caseName = getValue("formCaseName");
+                claim.nopKenh = getValue("formReceiveMethod");
+                claim.fieldGroup = getValue("formFieldGroup");
+                claim.nyc = getValue("formRequester");
+                claim.nycTinhThanh = getValue("formCity");
+                claim.nycAddressDetail = getValue("formAddress");
+                claim.address = getValue("formAddress");
+                claim.receptionDocs = cleanDocs;
+                claim.files = cleanDocs.filter(doc => doc.file).map(doc => ({ name: doc.file, url: "#" }));
+                if (!claim.timeline) claim.timeline = [];
+                claim.timeline.push({
+                    title: "Cập nhật thông tin tiếp nhận",
+                    date: formatDate(now),
+                    desc: "Đã cập nhật thông tin tổng quan và tài liệu đính kèm của vụ việc.",
+                    status: "completed"
+                });
+                saveClaims();
+                showToast("Đã cập nhật thông tin tiếp nhận!", "success");
+                closeReceptionForm();
+                return;
+            }
+
+            const newCode = generateCaseCode();
+            const receivedAt = formatDateTime(now);
+            const newClaim = {
+                id: `TN${Date.now()}`,
+                code: newCode,
+                caseName: getValue("formCaseName"),
+                nyc: getValue("formRequester"),
+                nopKenh: getValue("formReceiveMethod"),
+                fieldGroup: getValue("formFieldGroup"),
+                date: formatDate(now),
+                receivedAt,
+                receivedBy: CURRENT_OFFICER,
+                nycTinhThanh: getValue("formCity"),
+                nycAddressDetail: getValue("formAddress"),
+                address: getValue("formAddress"),
+                status: "Chờ nhập liệu",
+                agency: "Chưa xác định",
+                totalNum: 0,
+                advanceNum: 0,
+                restoreHonor: false,
+                receptionDocs: cleanDocs,
+                files: cleanDocs.filter(doc => doc.file).map(doc => ({ name: doc.file, url: "#" })),
+                timeline: [{
+                    title: "Tiếp nhận yêu cầu bồi thường",
+                    date: formatDate(now),
+                    desc: "Đã tiếp nhận thông tin ban đầu. Trạng thái: Chờ nhập liệu.",
+                    status: "completed"
+                }]
+            };
+            claimsList.unshift(newClaim);
+            saveClaims();
+            showToast(`Đã lưu thông tin. Vụ việc ${newCode} chuyển sang [Chờ nhập liệu]!`, "success");
+            closeReceptionForm();
+        }
+
+        function addDocRow() {
+            docRows.push({ name: "", file: "" });
+            renderDocRows();
+        }
+
+        function renderDocRows() {
+            const tbody = document.getElementById("docsTableBody");
+            tbody.innerHTML = docRows.map((doc, idx) => `
+                <tr>
+                    <td style="text-align:center;">${idx + 1}</td>
+                    <td>
+                        <input id="docName_${idx}" class="form-control" value="${escapeAttr(doc.name)}" placeholder="Nhập tên tài liệu..." oninput="updateDocName(${idx}, this.value)">
+                    </td>
+                    <td>
+                        ${doc.file
+                    ? `<span class="file-name" title="${escapeAttr(doc.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escapeHtml(doc.file)}</span>`
+                    : `<button class="btn-upload-rust" onclick="document.getElementById('docFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`}
+                        <input id="docFile_${idx}" type="file" style="display:none;" onchange="uploadDocFile(${idx}, this)">
+                    </td>
+                    <td>
+                        <div class="doc-actions">
+                            <a href="javascript:void(0)" class="action-link view-link ${doc.file ? "" : "disabled-action"}" onclick="viewDocFile(${idx})">
+                                <i class="fa-regular fa-eye"></i> Xem file
+                            </a>
+                            <a href="javascript:void(0)" class="action-link delete-link" onclick="deleteDocRow(${idx})">
+                                <i class="fa-solid fa-trash-can"></i> Xóa
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function updateDocName(idx, value) {
+            if (docRows[idx]) docRows[idx].name = value;
+        }
+
+        function uploadDocFile(idx, input) {
+            if (!docRows[idx] || !input.files || input.files.length === 0) return;
+            docRows[idx].file = input.files[0].name;
+            if (!docRows[idx].name) docRows[idx].name = input.files[0].name.replace(/\.[^.]+$/, "");
+            renderDocRows();
+        }
+
+        function viewDocFile(idx) {
+            const doc = docRows[idx];
+            if (!doc || !doc.file) return;
+            showToast(`Giả lập mở file: ${doc.file}`, "info");
+        }
+
+        function deleteDocRow(idx) {
+            if (docRows.length === 1) {
+                docRows = [{ name: "", file: "" }];
+            } else {
+                docRows.splice(idx, 1);
+            }
+            renderDocRows();
+        }
+
+        function confirmDeleteReception(id) {
+            const claim = claimsList.find(item => item.id === id);
+            if (!claim || !canEditReception(claim)) return;
+            showConfirm(`Bạn có chắc chắn muốn xóa bản ghi ${getCaseName(claim)} không?`, () => {
+                claim.deleted = true;
+                claim.deletedAt = formatDateTime(new Date());
+                saveClaims();
+                renderReceptionTable();
+                showToast("Đã xóa bản ghi khỏi danh sách quản lý!", "success");
+            });
+        }
+
+        function showConfirm(message, callback) {
+            pendingConfirmCallback = callback;
+            document.getElementById("confirmMessage").textContent = message;
+            const overlay = document.getElementById("confirmOverlay");
+            overlay.style.display = "flex";
+            setTimeout(() => overlay.classList.add("visible"), 10);
+        }
+
+        function closeConfirm(confirmed) {
+            const overlay = document.getElementById("confirmOverlay");
+            overlay.classList.remove("visible");
+            setTimeout(() => overlay.style.display = "none", 180);
+            if (confirmed && pendingConfirmCallback) pendingConfirmCallback();
+            pendingConfirmCallback = null;
+        }
+
+        function canEditReception(item) {
+            return (item.status || "Chờ nhập liệu") === "Chờ nhập liệu" && (item.receivedBy || CURRENT_OFFICER) === CURRENT_OFFICER;
+        }
+
+        function openClaimDetail(code) {
+            const url = `UC431_to_UC466/quan_ly_boi_thuong.html?viewCode=${encodeURIComponent(code)}&mode=view`;
+            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === "function") {
+                window.parent.openAdminModule(url, "UC431_to_UC466/quan_ly_boi_thuong.html?v=1");
+                return;
+            }
+            window.location.href = `quan_ly_boi_thuong.html?viewCode=${encodeURIComponent(code)}&mode=view`;
+        }
+
+        function clearFormValidation() {
+            document.querySelectorAll("#formView .is-invalid").forEach(el => el.classList.remove("is-invalid"));
+            document.querySelectorAll("#formView .error-message").forEach(el => el.style.display = "none");
+        }
+
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("toast");
+            const icon = type === "error" ? "fa-circle-xmark" : type === "info" ? "fa-circle-info" : "fa-circle-check";
+            toast.className = `toast-notif ${type}`;
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${escapeHtml(message)}`;
+            setTimeout(() => toast.classList.add("visible"), 20);
+            setTimeout(() => toast.classList.remove("visible"), 2600);
+        }
+
+        function generateCaseCode() {
+            const year = new Date().getFullYear();
+            let max = 0;
+            claimsList.forEach(item => {
+                const match = String(item.code || "").match(/(?:VVBT|BT)-\d{4}-(\d+)/);
+                if (match) max = Math.max(max, Number(match[1]));
+            });
+            return `VVBT-${year}-${String(max + 1).padStart(3, "0")}`;
+        }
+
+        function getCaseName(item) {
+            return item.caseName || item.tenVuViec || item.title || "(Chưa nhập)";
+        }
+
+        function getFieldGroupName(value) {
+            const map = {
+                "hành chính": "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH",
+                "hình sự": "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
+                "dân sự": "TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ",
+                "tố tụng hành chính": "TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH",
+                "thi hành án hình sự": "TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ",
+                "thi hành án dân sự": "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ"
+            };
+            return map[value] || value || "--";
+        }
+
+        function getReceiveMethodBadge(value) {
+            if (value === "Dịch vụ công") return "badge-success";
+            if (value === "Nhận qua bưu điện/Bưu chính") return "badge-warning";
+            if (value === "Cán bộ chủ động nhập theo tố tụng/thi hành án") return "badge-info";
+            return "badge-draft";
+        }
+
+        function renderStatusBadge(status) {
+            let cls = "badge-draft";
+            if (status === "Chờ kiểm tra" || status === "Chờ thụ lý") cls = "badge-pending";
+            if (status === "Yêu cầu bổ sung") cls = "badge-warning";
+            if (status === "Bị từ chối") cls = "badge-danger";
+            if (status === "Đang xác minh thiệt hại") cls = "badge-info";
+            return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
+        }
+
+        function getValue(id) {
+            const el = document.getElementById(id);
+            return el ? el.value.trim() : "";
+        }
+
+        function setValue(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.value = value || "";
+        }
+
+        function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value || "";
+        }
+
+        function normalize(value) {
+            return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/đ/g, "d").trim();
+        }
+
+        function parseDate(value) {
+            const text = String(value || "").split(" ")[0];
+            const parts = text.split("/");
+            if (parts.length !== 3) return null;
+            const date = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+            return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        function getDateSort(value) {
+            const date = parseDate(value);
+            return date ? date.getTime() : 0;
+        }
+
+        function formatDate(date) {
+            const d = String(date.getDate()).padStart(2, "0");
+            const m = String(date.getMonth() + 1).padStart(2, "0");
+            return `${d}/${m}/${date.getFullYear()}`;
+        }
+
+        function formatDateTime(date) {
+            const h = String(date.getHours()).padStart(2, "0");
+            const min = String(date.getMinutes()).padStart(2, "0");
+            return `${formatDate(date)} ${h}:${min}`;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function escapeAttr(value) {
+            return escapeHtml(value);
+        }
+    </script>
+</body>
+
+</html>

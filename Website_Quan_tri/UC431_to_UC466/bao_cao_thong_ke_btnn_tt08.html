@@ -1,0 +1,959 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo cáo quản lý BTNN - Thông tư 08/2019/TT-BTP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --primary-color: #1E3A8A;
+        --primary-hover: #1E40AF;
+        --secondary-color: #3B82F6;
+        --success-color: #10B981;
+        --danger-color: #EF4444;
+        --warning-color: #F59E0B;
+        --bg-body: #F3F4F6;
+        --bg-surface: #FFFFFF;
+        --text-main: #1E293B;
+        --text-muted: #64748B;
+        --border-color: #E2E8F0;
+        --table-header-bg: #F1F5F9;
+        --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        --base-size: 14px;
+        --border-radius-sm: 4px;
+        --border-radius-md: 6px;
+        --border-radius-lg: 8px;
+        --box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); line-height: 1.5; padding: 20px; }
+    .container { max-width: 100%; margin: 0 auto; }
+    .page-header { margin-bottom: 20px; background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); padding: 20px; border-radius: var(--border-radius-lg); color: white; box-shadow: var(--box-shadow); }
+    .page-header h1 { font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .page-header p { opacity: 0.9; font-size: 13px; margin-top: 4px; }
+    .card-section { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); padding: 20px; margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.05); }
+    .section-title { color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .filter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-label { font-size: 12.5px; font-weight: 600; color: #334155; }
+    .form-control { padding: 8px 10px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); font-size: 13px; font-family: inherit; width: 100%; }
+    .form-control:focus { outline: none; border-color: var(--secondary-color); box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
+    textarea.form-control { resize: vertical; min-height: 60px; }
+    .btn { border: none; border-radius: var(--border-radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-sm { padding: 6px 12px; font-size: 12.5px; }
+    .btn-primary { background-color: var(--primary-color); color: #fff; }
+    .btn-primary:hover { background-color: var(--primary-hover); }
+    .btn-secondary { background-color: #fff; color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background-color: #F8FAFC; }
+    .btn-success { background-color: var(--success-color); color: #fff; }
+    .toolbar-row { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .export-menu-wrap { position: relative; display: inline-flex; }
+    .export-menu { display: none; position: absolute; right: 0; top: calc(100% + 6px); min-width: 150px; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); box-shadow: var(--box-shadow); padding: 6px; z-index: 50; }
+    .export-menu.visible { display: block; }
+    .export-menu button { width: 100%; border: none; background: transparent; color: var(--text-main); display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--border-radius-sm); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; text-align: left; }
+    .export-menu button:hover { background: #F1F5F9; color: var(--primary-color); }
+    .table-container { overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); }
+    .custom-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .custom-table th { background-color: var(--table-header-bg); color: #334155; font-weight: 600; padding: 8px 10px; text-align: center; white-space: nowrap; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); position: sticky; top: 0; }
+    .custom-table td { padding: 7px 10px; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); color: #475569; vertical-align: middle; text-align: center; white-space: nowrap; }
+    .custom-table td.text-left { text-align: left; white-space: normal; min-width: 160px; }
+    .mau03-table { min-width: 2100px; font-size: 11.5px; }
+    .mau03-table th { white-space: normal; vertical-align: middle; line-height: 1.25; min-width: 72px; padding: 7px 6px; }
+    .mau03-table th.stt-col { min-width: 42px; }
+    .mau03-table th.field-col { min-width: 190px; }
+    .mau03-table th.money-col { min-width: 118px; }
+    .mau03-table td { white-space: nowrap; padding: 7px 6px; }
+    .mau03-table td.field-cell { text-align: left; white-space: normal; min-width: 190px; font-weight: 600; color: var(--text-main); }
+    .mau04-table { min-width: 1450px; font-size: 11.5px; }
+    .mau04-table th { white-space: normal; vertical-align: middle; line-height: 1.25; min-width: 80px; padding: 7px 6px; }
+    .mau04-table th.stt-col { min-width: 42px; }
+    .mau04-table th.money-col { min-width: 110px; }
+    .mau04-table td { white-space: nowrap; padding: 7px 6px; }
+    .mau04-table .field-row td { background: #F8FAFC; color: var(--text-main); font-weight: 700; text-align: left; }
+    .custom-table tr.group-header td { background: #EFF6FF; font-weight: 700; color: var(--primary-color); text-align: left; }
+    .custom-table tr.total-row td { background: #FEF3C7; font-weight: 700; }
+    .cell-formula-ok { color: var(--success-color); }
+    .cell-formula-bad { background: #FEE2E2 !important; color: var(--danger-color); font-weight: 700; position: relative; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .badge-success { background: #D1FAE5; color: #047857; }
+    .badge-warning { background: #FEF3C7; color: #B45309; }
+    .badge-muted { background: #E2E8F0; color: #475569; }
+    .icon-btn { width: 26px; height: 26px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); background: #fff; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+    .icon-btn:hover { background: #F1F5F9; color: var(--primary-color); }
+    .alert-box { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: var(--border-radius-md); font-size: 13px; margin-bottom: 14px; }
+    .alert-warning { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
+    .alert-success { background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46; }
+    .trend-panel { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .trend-item { border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: #fff; padding: 10px; }
+    .trend-label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+    .trend-value { font-size: 20px; color: var(--primary-color); font-weight: 700; }
+    .trend-bar { height: 6px; border-radius: 999px; background: #DBEAFE; overflow: hidden; margin-top: 8px; }
+    .trend-bar span { display: block; height: 100%; background: var(--secondary-color); border-radius: 999px; }
+    .core-table th { white-space: normal; min-width: 92px; }
+    .core-table th.group-col { min-width: 210px; }
+    .core-table td.group-cell { text-align: left; white-space: normal; font-weight: 600; color: var(--text-main); }
+    .local03-table { min-width: 2150px; font-size: 11.5px; }
+    .local03-table th { white-space: normal; vertical-align: middle; line-height: 1.25; min-width: 78px; padding: 7px 6px; }
+    .local03-table th.local-col { min-width: 150px; }
+    .local03-table th.money-col { min-width: 118px; }
+    .local03-table td { white-space: nowrap; padding: 7px 6px; }
+    .local03-table td.local-cell { text-align: left; white-space: normal; font-weight: 600; color: var(--text-main); }
+    .confirm-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.2s ease; }
+    .confirm-modal-overlay.visible { opacity: 1; }
+    .sticky-modal-container { background: #fff; border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); max-height: 90vh; display: flex; flex-direction: column; }
+    .confirm-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: #F8FAFC; border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; }
+    .sticky-modal-body { padding: 20px; overflow-y: auto; }
+    .confirm-modal-footer { padding: 16px 20px; display: flex; justify-content: flex-end; gap: 10px; background: #F8FAFC; border-top: 1px solid var(--border-color); border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg); }
+    #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+    .toast { background: #fff; border-left: 4px solid var(--success-color); box-shadow: var(--box-shadow); padding: 12px 16px; border-radius: var(--border-radius-sm); font-size: 13px; min-width: 260px; display: flex; align-items: center; gap: 8px; animation: slideIn 0.2s ease; }
+    .toast.error { border-left-color: var(--danger-color); }
+    @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header">
+        <h1><i class="fa-solid fa-file-invoice"></i> <span id="pageTitle">Báo cáo quản lý BTNN</span></h1>
+        <p id="pageSubtitle">Tổng hợp, kiểm tra và kết xuất biểu mẫu báo cáo công tác bồi thường nhà nước theo Thông tư 08/2019/TT-BTP.</p>
+    </div>
+
+    <div class="card-section">
+        <div class="section-title"><span><i class="fa-solid fa-calendar-days"></i> Khối chọn kỳ báo cáo</span></div>
+        <div class="filter-grid">
+            <div class="form-group">
+                <span class="form-label">Năm báo cáo</span>
+                <select class="form-control" id="fYear">
+                    <option value="2026" selected>2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Loại kỳ báo cáo</span>
+                <select class="form-control" id="fPeriodType">
+                    <option value="thuc_te" selected>Báo cáo năm số liệu thực tế (01/01 - 31/10)</option>
+                    <option value="chinh_thuc">Số liệu thống kê năm chính thức (01/01 - 31/12)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Đơn vị báo cáo</span>
+                <select class="form-control" id="fUnit">
+                    <option value="stp_hn" selected>Sở Tư pháp Thành phố Hà Nội</option>
+                    <option value="stp_hcm">Sở Tư pháp Thành phố Hồ Chí Minh</option>
+                    <option value="cuc_btnn">Cục Bồi thường nhà nước - Bộ Tư pháp</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Loại cơ quan báo cáo</span>
+                <select class="form-control" id="fAgencyType">
+                    <option value="ubnd" selected>UBND cấp tỉnh</option>
+                    <option value="tandtc">Tòa án nhân dân tối cao</option>
+                    <option value="vksndtc">Viện kiểm sát nhân dân tối cao</option>
+                    <option value="bo">Bộ/cơ quan ngang Bộ</option>
+                </select>
+            </div>
+        </div>
+        <div class="filter-grid" id="supplementFilters" style="display:none;">
+            <div class="form-group" id="fFieldGroupWrap">
+                <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
+                <select class="form-control" id="fFieldGroup">
+                    <option value="all" selected>Tất cả</option>
+                    <option value="hanh_chinh">Trong hoạt động quản lý hành chính</option>
+                    <option value="to_tung_hinh_su">Trong hoạt động tố tụng hình sự</option>
+                    <option value="to_tung_dan_su">Trong hoạt động tố tụng dân sự</option>
+                    <option value="to_tung_hanh_chinh">Trong hoạt động tố tụng hành chính</option>
+                    <option value="thi_hanh_an_hinh_su">Trong hoạt động thi hành án hình sự</option>
+                    <option value="thi_hanh_an_dan_su">Trong hoạt động thi hành án dân sự</option>
+                </select>
+            </div>
+            <div class="form-group" id="fProvinceWrap">
+                <span class="form-label">Tỉnh/TP</span>
+                <select class="form-control" id="fProvince">
+                    <option value="all" selected>Tất cả</option>
+                    <option value="ha_noi">Hà Nội</option>
+                    <option value="hai_phong">Hải Phòng</option>
+                    <option value="lam_dong">Lâm Đồng</option>
+                    <option value="khanh_hoa">Khánh Hòa</option>
+                    <option value="tp_hcm">Thành phố Hồ Chí Minh</option>
+                </select>
+            </div>
+            <div class="form-group" id="fReportScopeWrap">
+                <span class="form-label">Phạm vi dữ liệu</span>
+                <select class="form-control" id="fReportScope">
+                    <option value="all" selected>Toàn bộ dữ liệu trong phạm vi phân quyền</option>
+                    <option value="direct">Cơ quan trực tiếp quản lý người thi hành công vụ</option>
+                    <option value="court">Tại Tòa án</option>
+                </select>
+            </div>
+        </div>
+        <div class="toolbar-row">
+            <span id="reportStatusBadge" class="badge badge-muted" style="align-self:center;">Nháp</span>
+            <button class="btn btn-primary" id="btnGenerate" onclick="generateReport()"><i class="fa-solid fa-rotate"></i> Tổng hợp số liệu</button>
+        </div>
+    </div>
+
+    <div class="card-section">
+        <div class="section-title">
+            <span id="listTitle"><i class="fa-solid fa-table"></i> Bảng tổng hợp</span>
+            <div style="display:flex; gap:8px;">
+                <div class="export-menu-wrap">
+                    <button class="btn btn-success btn-sm" onclick="toggleExportMenu(event)"><i class="fa-solid fa-download"></i> Kết xuất</button>
+                    <div class="export-menu" id="exportMenu">
+                        <button onclick="exportReport('excel')"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                        <button onclick="exportReport('doc')"><i class="fa-solid fa-file-word"></i> DOC</button>
+                        <button onclick="exportReport('pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="alertArea"></div>
+        <div class="table-container" id="reportTableWrap"></div>
+    </div>
+</div>
+
+<!-- Modal ghi chú / thuyết minh -->
+<div id="noteOverlay" class="confirm-modal-overlay">
+    <div class="sticky-modal-container" style="width: 520px; max-width: 95%;">
+        <div class="confirm-modal-header">
+            <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--primary-color);">
+                <i class="fa-solid fa-note-sticky"></i> <span id="noteTitle">Chỉnh sửa ghi chú</span>
+            </div>
+            <span onclick="closeNoteModal()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
+        </div>
+        <div class="sticky-modal-body">
+            <div class="form-group" style="margin-bottom:10px;">
+                <span class="form-label">Mã vụ việc</span>
+                <input type="text" class="form-control" id="noteCaseCode" disabled>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;" id="noteVuongMacWrap">
+                <span class="form-label">Khó khăn, vướng mắc (chỉ đọc, lấy từ hồ sơ vụ việc)</span>
+                <textarea class="form-control" id="noteVuongMac" disabled></textarea>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Ghi chú</span>
+                <textarea class="form-control" id="noteContent"></textarea>
+            </div>
+        </div>
+        <div class="confirm-modal-footer">
+            <button class="btn btn-secondary" onclick="closeNoteModal()">Hủy bỏ</button>
+            <button class="btn btn-primary" onclick="saveNote()"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<script>
+    const FIELDS = ['I. Trong hoạt động quản lý hành chính', 'II. Trong hoạt động tố tụng hình sự', 'III. Trong hoạt động tố tụng dân sự', 'IV. Trong hoạt động tố tụng hành chính', 'V. Trong hoạt động thi hành án hình sự', 'VI. Trong hoạt động thi hành án dân sự'];
+
+    // ===================== BM03 - Mẫu số 03/BTNN =====================
+    const BM03_INDICATORS = [
+        { no: 1, name: 'Tổng số vụ việc thụ lý', unit: 'Vụ việc', formula: [2,3,4,5,6,7,8,9] },
+        { no: 2, name: 'Thụ lý mới - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+        { no: 3, name: 'Thụ lý mới - tại Tòa án (điểm a khoản 1 Điều 52)', unit: 'Vụ việc' },
+        { no: 4, name: 'Thụ lý mới - tại Tòa án (điểm b khoản 1, khoản 2 Điều 52)', unit: 'Vụ việc' },
+        { no: 5, name: 'Thụ lý mới - trong tố tụng hình sự/hành chính (Điều 55)', unit: 'Vụ việc' },
+        { no: 6, name: 'Kỳ trước chuyển sang - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+        { no: 7, name: 'Kỳ trước chuyển sang - tại Tòa án (điểm a)', unit: 'Vụ việc' },
+        { no: 8, name: 'Kỳ trước chuyển sang - tại Tòa án (điểm b)', unit: 'Vụ việc' },
+        { no: 9, name: 'Kỳ trước chuyển sang - tố tụng hình sự/hành chính', unit: 'Vụ việc' },
+        { no: 10, name: 'Tổng số vụ việc đã có văn bản GQBT có hiệu lực', unit: 'Vụ việc', formula: [11,12,13,14] },
+        { no: 11, name: 'Đã giải quyết - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+        { no: 12, name: 'Đã giải quyết - tại Tòa án (điểm a)', unit: 'Vụ việc' },
+        { no: 13, name: 'Đã giải quyết - tại Tòa án (điểm b)', unit: 'Vụ việc' },
+        { no: 14, name: 'Đã giải quyết - tố tụng hình sự/hành chính', unit: 'Vụ việc' },
+        { no: 15, name: 'Số tiền bồi thường theo văn bản có hiệu lực', unit: 'Nghìn đồng', isMoney: true },
+        { no: 16, name: 'Tổng số vụ việc đang giải quyết', unit: 'Vụ việc', formula: [17,18,19,20] },
+        { no: 17, name: 'Đang giải quyết - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+        { no: 18, name: 'Đang giải quyết - tại Tòa án (điểm a)', unit: 'Vụ việc' },
+        { no: 19, name: 'Đang giải quyết - tại Tòa án (điểm b)', unit: 'Vụ việc' },
+        { no: 20, name: 'Đang giải quyết - tố tụng hình sự/hành chính', unit: 'Vụ việc' },
+        { no: 21, name: 'Đình chỉ tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+        { no: 22, name: 'Đình chỉ theo thủ tục tố tụng tại Tòa án', unit: 'Vụ việc' },
+        { no: 23, name: 'Số vụ việc đã chi trả', unit: 'Vụ việc' },
+        { no: 24, name: 'Số tiền đã chi trả theo QĐ cơ quan trực tiếp quản lý', unit: 'Nghìn đồng', isMoney: true },
+        { no: 25, name: 'Số tiền đã chi trả theo bản án/QĐ Tòa án', unit: 'Nghìn đồng', isMoney: true },
+        { no: 26, name: 'Ghi chú nội bộ hệ thống', unit: 'Text', isNote: true }
+    ];
+
+    // Mock: mỗi lĩnh vực 1 mảng giá trị tương ứng các cột số liệu trên Mẫu số 03/BTNN
+    const BM03_DATA = {
+        'I. Trong hoạt động quản lý hành chính':    [null,5,2,1,0, 3,1,0,0, null,4,1,1,0, 850000, null,1,1,0,1, 1,0, 5,720000,130000, ''],
+        'II. Trong hoạt động tố tụng hình sự':      [null,3,1,0,1, 2,0,1,0, null,2,1,0,1, 640000, null,1,0,0,1, 0,1, 3,420000,220000, ''],
+        'III. Trong hoạt động tố tụng dân sự':      [null,2,0,1,0, 1,0,0,0, null,1,0,1,0, 210000, null,1,0,0,0, 0,0, 2,210000,0, ''],
+        'IV. Trong hoạt động tố tụng hành chính':   [null,1,0,0,0, 0,0,0,0, null,1,0,0,0, 90000,  null,0,0,0,0, 0,0, 1,90000,0, ''],
+        'V. Trong hoạt động thi hành án hình sự':   [null,0,0,0,0, 1,0,0,0, null,0,0,0,0, 0,      null,1,0,0,0, 0,0, 0,0,0, ''],
+        'VI. Trong hoạt động thi hành án dân sự':   [null,1,0,0,0, 0,0,0,0, null,1,0,0,0, 60000,  null,0,0,0,0, 0,0, 1,60000,0, '']
+    };
+
+    // ===================== BM04 - Mẫu số 04/BTNN =====================
+    const BM04_INDICATORS = [
+        { no: 1, name: 'STT/Nhóm lĩnh vực', unit: 'Text', isNote: false, isLabel: true },
+        { no: 2, name: 'Số tiền đã chi trả xong cho người yêu cầu bồi thường', unit: 'Nghìn đồng', isMoney: true },
+        { no: 3, name: 'Tổng số vụ việc xem xét trách nhiệm hoàn trả', unit: 'Vụ việc', formula: [4,6] },
+        { no: 4, name: 'Có QĐ hoàn trả có hiệu lực và đã thực hiện hoàn trả', unit: 'Vụ việc' },
+        { no: 5, name: 'Số tiền phải hoàn trả', unit: 'Nghìn đồng', isMoney: true },
+        { no: 6, name: 'Đang xem xét trách nhiệm hoàn trả', unit: 'Vụ việc' },
+        { no: 7, name: 'Không xem xét - người thi hành công vụ không có lỗi', unit: 'Vụ việc' },
+        { no: 8, name: 'Không xem xét - người thi hành công vụ đã chết trước khi ra QĐ', unit: 'Vụ việc' },
+        { no: 9, name: 'Số vụ việc được giảm mức hoàn trả', unit: 'Vụ việc' },
+        { no: 10, name: 'Số tiền hoàn trả được giảm', unit: 'Nghìn đồng', isMoney: true },
+        { no: 11, name: 'Số vụ việc được hoãn hoàn trả', unit: 'Vụ việc' },
+        { no: 12, name: 'Tổng số tiền đã hoàn trả', unit: 'Nghìn đồng', isMoney: true, formula: [13,14] },
+        { no: 13, name: 'Số tiền đã hoàn trả trong kỳ báo cáo', unit: 'Nghìn đồng', isMoney: true },
+        { no: 14, name: 'Số tiền đã hoàn trả kỳ trước chuyển sang', unit: 'Nghìn đồng', isMoney: true },
+        { no: 15, name: 'Số tiền còn phải hoàn trả', unit: 'Nghìn đồng', isMoney: true }
+    ];
+
+    const BM04_DATA = {
+        'I. Trong hoạt động quản lý hành chính':    [null,720000, null,2,180000,1, 0,0, 1,20000, 0, null,90000,40000, 30000],
+        'II. Trong hoạt động tố tụng hình sự':      [null,420000, null,1,90000, 0, 1,0, 0,0,     1, null,60000,0,     30000],
+        'III. Trong hoạt động tố tụng dân sự':      [null,210000, null,1,50000, 0, 0,0, 0,0,     0, null,50000,0,     0],
+        'IV. Trong hoạt động tố tụng hành chính':   [null,90000,  null,0,0,     0, 0,1, 0,0,     0, null,0,0,        0],
+        'V. Trong hoạt động thi hành án hình sự':   [null,0,      null,0,0,     0, 0,0, 0,0,     0, null,0,0,        0],
+        'VI. Trong hoạt động thi hành án dân sự':   [null,60000,  null,0,0,     0, 0,0, 0,0,     0, null,0,0,        0]
+    };
+
+    // ===================== BM01 - Danh mục vụ việc =====================
+    const BM01_CASES = {
+        'I. Trong hoạt động quản lý hành chính': [
+            { code: 'BT-2026-012', name: 'Yêu cầu bồi thường của Lê Văn H', requester: 'Lê Văn H', address: 'Số 12 Ngõ 5, P. Cầu Giấy, Thành phố Hà Nội', agency: 'Sở Tư pháp Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý 05/07/2026; hoàn thành xác minh 20/07/2026; đã ban hành QĐ 02/08/2026.', payment: 'Đã chi trả 850.000.000đ ngày 06/08/2026.', vuongMac: 'Giai đoạn phát sinh: Xác minh thiệt hại - Loại vướng mắc: Khó xác minh thiệt hại - Người bị thiệt hại chậm cung cấp hồ sơ chứng minh thu nhập thực tế.', note: '' },
+            { code: 'BT-2026-021', name: 'Yêu cầu bồi thường của Công ty ABC', requester: 'Công ty ABC', address: 'Tòa nhà ABC, Q. Cầu Giấy, Thành phố Hà Nội', agency: 'Sở Tư pháp Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đang thương lượng bồi thường từ 28/07/2026.', payment: 'Chưa chi trả.', vuongMac: '', note: '' }
+        ],
+        'II. Trong hoạt động tố tụng hình sự': [
+            { code: 'BT-2026-030', name: 'Yêu cầu bồi thường của Hoàng Văn R', requester: 'Hoàng Văn R', address: 'Xã Tân Lập, Tỉnh Lâm Đồng', agency: 'Tòa án nhân dân tỉnh Lâm Đồng', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đang xác minh thiệt hại từ 01/08/2026.', payment: 'Chưa chi trả.', vuongMac: 'Giai đoạn phát sinh: Xác minh thiệt hại - Loại vướng mắc: Cơ quan liên quan chậm phối hợp - Chờ Công an cung cấp hồ sơ vụ án gốc.', note: 'Theo dõi tiến độ hàng tuần.' }
+        ],
+        'III. Trong hoạt động tố tụng dân sự': [],
+        'IV. Trong hoạt động tố tụng hành chính': [],
+        'V. Trong hoạt động thi hành án hình sự': [],
+        'VI. Trong hoạt động thi hành án dân sự': []
+    };
+
+    // ===================== Báo cáo quản lý BTNN - chỉ tiêu cốt lõi =====================
+    const CORE_COLUMNS = [
+        { key: 'newCases', label: 'Số vụ thụ lý mới' },
+        { key: 'carryOver', label: 'Số vụ kỳ trước chuyển sang' },
+        { key: 'processing', label: 'Số vụ đang giải quyết' },
+        { key: 'completed', label: 'Số vụ đã giải quyết xong' },
+        { key: 'suspended', label: 'Số vụ đình chỉ/tạm đình chỉ' },
+        { key: 'paidCases', label: 'Số vụ đã chi trả' },
+        { key: 'paidAmount', label: 'Tổng tiền đã chi trả', money: true },
+        { key: 'remainAmount', label: 'Tổng tiền còn phải chi trả', money: true },
+        { key: 'rate', label: 'Tỷ lệ giải quyết', percent: true }
+    ];
+
+    const CORE_REPORT_DATA = {
+        time: [
+            { group: 'Tháng 01/2026', newCases: 2, carryOver: 4, processing: 4, completed: 1, suspended: 1, paidCases: 1, paidAmount: 120000, remainAmount: 210000 },
+            { group: 'Tháng 02/2026', newCases: 3, carryOver: 3, processing: 3, completed: 2, suspended: 1, paidCases: 2, paidAmount: 180000, remainAmount: 240000 },
+            { group: 'Tháng 03/2026', newCases: 4, carryOver: 2, processing: 3, completed: 3, suspended: 0, paidCases: 2, paidAmount: 260000, remainAmount: 180000 },
+            { group: 'Tháng 04/2026', newCases: 2, carryOver: 2, processing: 2, completed: 2, suspended: 0, paidCases: 1, paidAmount: 90000, remainAmount: 120000 },
+            { group: 'Tháng 05/2026', newCases: 5, carryOver: 1, processing: 3, completed: 3, suspended: 0, paidCases: 3, paidAmount: 310000, remainAmount: 150000 },
+            { group: 'Tháng 06/2026', newCases: 3, carryOver: 2, processing: 2, completed: 3, suspended: 0, paidCases: 2, paidAmount: 210000, remainAmount: 110000 },
+            { group: 'Tháng 07/2026', newCases: 4, carryOver: 2, processing: 4, completed: 2, suspended: 0, paidCases: 2, paidAmount: 270000, remainAmount: 260000 },
+            { group: 'Tháng 08/2026', newCases: 3, carryOver: 3, processing: 3, completed: 2, suspended: 1, paidCases: 2, paidAmount: 220000, remainAmount: 190000 },
+            { group: 'Tháng 09/2026', newCases: 2, carryOver: 3, processing: 2, completed: 2, suspended: 1, paidCases: 1, paidAmount: 140000, remainAmount: 175000 },
+            { group: 'Tháng 10/2026', newCases: 1, carryOver: 2, processing: 2, completed: 1, suspended: 0, paidCases: 1, paidAmount: 90000, remainAmount: 90000 }
+        ],
+        level: [
+            { group: 'UBND cấp tỉnh', newCases: 12, carryOver: 6, processing: 7, completed: 9, suspended: 2, paidCases: 8, paidAmount: 980000, remainAmount: 420000 },
+            { group: 'Tòa án nhân dân tối cao', newCases: 5, carryOver: 4, processing: 4, completed: 4, suspended: 1, paidCases: 3, paidAmount: 420000, remainAmount: 260000 },
+            { group: 'Viện kiểm sát nhân dân tối cao', newCases: 4, carryOver: 2, processing: 2, completed: 3, suspended: 1, paidCases: 3, paidAmount: 310000, remainAmount: 160000 },
+            { group: 'Bộ/cơ quan ngang Bộ', newCases: 8, carryOver: 10, processing: 12, completed: 5, suspended: 1, paidCases: 3, paidAmount: 170000, remainAmount: 885000 }
+        ],
+        scope: [
+            { group: 'Trong hoạt động quản lý hành chính', newCases: 9, carryOver: 5, processing: 6, completed: 7, suspended: 1, paidCases: 6, paidAmount: 720000, remainAmount: 320000 },
+            { group: 'Trong hoạt động tố tụng hình sự', newCases: 7, carryOver: 4, processing: 4, completed: 5, suspended: 2, paidCases: 4, paidAmount: 640000, remainAmount: 300000 },
+            { group: 'Trong hoạt động tố tụng dân sự', newCases: 3, carryOver: 1, processing: 2, completed: 2, suspended: 0, paidCases: 2, paidAmount: 210000, remainAmount: 90000 },
+            { group: 'Trong hoạt động tố tụng hành chính', newCases: 2, carryOver: 2, processing: 2, completed: 1, suspended: 1, paidCases: 1, paidAmount: 90000, remainAmount: 110000 },
+            { group: 'Trong hoạt động thi hành án hình sự', newCases: 2, carryOver: 3, processing: 3, completed: 1, suspended: 1, paidCases: 1, paidAmount: 60000, remainAmount: 140000 },
+            { group: 'Trong hoạt động thi hành án dân sự', newCases: 6, carryOver: 7, processing: 8, completed: 5, suspended: 0, paidCases: 3, paidAmount: 160000, remainAmount: 765000 }
+        ],
+        agency: [
+            { group: 'Sở Tư pháp Thành phố Hà Nội', agencyType: 'UBND cấp tỉnh', province: 'Hà Nội', newCases: 8, carryOver: 4, processing: 5, completed: 6, suspended: 1, paidCases: 5, paidAmount: 720000, remainAmount: 280000 },
+            { group: 'Sở Tư pháp Thành phố Hồ Chí Minh', agencyType: 'UBND cấp tỉnh', province: 'TP. Hồ Chí Minh', newCases: 6, carryOver: 3, processing: 4, completed: 4, suspended: 1, paidCases: 3, paidAmount: 420000, remainAmount: 260000 },
+            { group: 'Tòa án nhân dân tỉnh Lâm Đồng', agencyType: 'Tòa án', province: 'Lâm Đồng', newCases: 5, carryOver: 4, processing: 4, completed: 4, suspended: 1, paidCases: 3, paidAmount: 390000, remainAmount: 230000 },
+            { group: 'Cục Thi hành án dân sự Hải Phòng', agencyType: 'Bộ/cơ quan ngang Bộ', province: 'Hải Phòng', newCases: 4, carryOver: 3, processing: 4, completed: 3, suspended: 0, paidCases: 2, paidAmount: 210000, remainAmount: 320000 },
+            { group: 'UBND Quận Cầu Giấy', agencyType: 'UBND cấp tỉnh', province: 'Hà Nội', newCases: 6, carryOver: 8, processing: 8, completed: 4, suspended: 2, paidCases: 4, paidAmount: 350000, remainAmount: 635000 }
+        ]
+    };
+
+    const LOCAL_MAU03_DATA = [
+        { local: 'Hà Nội', values: [null,9,4,1,0, 4,1,0,0, null,7,1,1,0, 920000, null,3,1,0,1, 1,0, 7,780000,140000] },
+        { local: 'Hải Phòng', values: [null,4,1,0,1, 3,0,0,0, null,3,1,0,0, 320000, null,2,0,0,1, 0,1, 3,210000,110000] },
+        { local: 'Lâm Đồng', values: [null,5,0,1,1, 2,1,0,0, null,4,0,1,1, 410000, null,2,0,1,0, 0,1, 4,190000,220000] },
+        { local: 'Khánh Hòa', values: [null,3,1,0,0, 1,0,1,0, null,2,1,0,0, 180000, null,1,1,0,0, 0,0, 2,180000,0] },
+        { local: 'Thành phố Hồ Chí Minh', values: [null,8,3,1,0, 3,1,0,0, null,6,1,1,0, 760000, null,3,1,0,1, 1,0, 6,620000,140000] }
+    ];
+
+    const MODULE_META = {
+        thong_ke_thoi_gian: { title: 'Thống kê số lượng vụ việc YCBT theo thời gian', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo tháng/quý/năm trong kỳ báo cáo.', listLabel: 'Bảng thống kê vụ việc YCBT theo thời gian', type: 'core', dataKey: 'time', groupLabel: 'Tháng/Quý/Năm', showTrend: true },
+        thong_ke_cap: { title: 'Thống kê chi tiết vụ việc YCBT theo các cấp', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo loại cơ quan báo cáo [DM_43].', listLabel: 'Bảng thống kê vụ việc YCBT theo các cấp', type: 'core', dataKey: 'level', groupLabel: 'Loại cơ quan báo cáo' },
+        thong_ke_pham_vi: { title: 'Thống kê chi tiết vụ việc YCBT theo phạm vi', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo 06 lĩnh vực phát sinh thiệt hại [DM_22].', listLabel: 'Bảng thống kê vụ việc YCBT theo phạm vi', type: 'core', dataKey: 'scope', groupLabel: 'Lĩnh vực phát sinh thiệt hại' },
+        thong_ke_co_quan: { title: 'Thống kê chi tiết vụ việc YCBT theo cơ quan', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo từng đơn vị/cơ quan cụ thể.', listLabel: 'Bảng thống kê vụ việc YCBT theo cơ quan', type: 'core', dataKey: 'agency', groupLabel: 'Đơn vị/Cơ quan', showAgencyInfo: true },
+        thong_ke_dia_phuong: { title: 'Thống kê kết quả giải quyết YCBT tại địa phương', subtitle: 'Tái sử dụng chỉ tiêu Mẫu số 03/BTNN, nhóm theo từng tỉnh/thành.', listLabel: 'Bảng kết quả giải quyết YCBT tại địa phương theo chỉ tiêu Mẫu 03/BTNN', type: 'local03' },
+        mau01: { title: 'Mẫu 01 - Danh mục vụ việc giải quyết yêu cầu bồi thường', subtitle: 'Danh mục chi tiết vụ việc giải quyết yêu cầu bồi thường theo Điều 10 Thông tư 08/2019/TT-BTP.', listLabel: 'Danh mục vụ việc theo 06 lĩnh vực phát sinh thiệt hại' },
+        mau03: { title: 'Mẫu 03 - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường', subtitle: 'Báo cáo tổng hợp theo Mẫu số 03/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.', listLabel: 'Mẫu số 03/BTNN - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường' },
+        mau04: { title: 'Mẫu 04 - Tình hình thực hiện trách nhiệm hoàn trả', subtitle: 'Báo cáo tình hình thực hiện trách nhiệm hoàn trả theo Mẫu số 04/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.', listLabel: 'Mẫu số 04/BTNN - Tình hình thực hiện trách nhiệm hoàn trả' }
+    };
+
+    let currentModuleKey = new URLSearchParams(window.location.search).get('module') || 'mau01';
+    if (!MODULE_META[currentModuleKey]) currentModuleKey = 'mau01';
+    let reportGenerated = false;
+    let editingNote = null;
+
+    function fmtMoney(v) { return (v || 0).toLocaleString('vi-VN'); }
+
+    function init() {
+        const meta = MODULE_META[currentModuleKey];
+        document.getElementById('pageTitle').textContent = meta.title;
+        document.getElementById('pageSubtitle').textContent = meta.subtitle;
+        document.getElementById('listTitle').innerHTML = `<i class="fa-solid fa-table"></i> ${meta.listLabel}`;
+        document.getElementById('reportTableWrap').innerHTML = '';
+        document.getElementById('alertArea').innerHTML = '';
+        updateSupplementFilters(meta);
+        reportGenerated = false;
+    }
+
+    function generateReport() {
+        reportGenerated = true;
+        document.getElementById('reportStatusBadge').textContent = 'Nháp';
+        document.getElementById('reportStatusBadge').className = 'badge badge-muted';
+        const meta = MODULE_META[currentModuleKey];
+        if (meta.type === 'core') renderCoreReport(meta);
+        else if (meta.type === 'local03') renderLocal03Report();
+        else if (currentModuleKey === 'mau01') renderMau01();
+        else if (currentModuleKey === 'mau03') renderMau03Template();
+        else renderMau04Template();
+        showToast('Đã tổng hợp số liệu kỳ báo cáo.', 'success');
+    }
+
+    function updateSupplementFilters(meta) {
+        const wrap = document.getElementById('supplementFilters');
+        const fieldWrap = document.getElementById('fFieldGroupWrap');
+        const provinceWrap = document.getElementById('fProvinceWrap');
+        const scopeWrap = document.getElementById('fReportScopeWrap');
+        if (!wrap || !fieldWrap || !provinceWrap || !scopeWrap) return;
+        const isManagementReport = meta.type === 'core' || meta.type === 'local03';
+        wrap.style.display = isManagementReport ? 'grid' : 'none';
+        fieldWrap.style.display = isManagementReport ? 'flex' : 'none';
+        provinceWrap.style.display = (meta.dataKey === 'agency' || meta.type === 'local03') ? 'flex' : 'none';
+        scopeWrap.style.display = (meta.dataKey === 'time' || meta.dataKey === 'agency') ? 'flex' : 'none';
+    }
+
+    function computeTotals(indicators, data) {
+        const totals = new Array(indicators.length).fill(0);
+        FIELDS.forEach(f => {
+            (data[f] || []).forEach((v, i) => {
+                if (typeof v === 'number') totals[i] = (totals[i] || 0) + v;
+            });
+        });
+        return totals;
+    }
+
+    function applyFormulas(indicators, row) {
+        // row is 0-indexed array aligned with the indicator array position.
+        indicators.forEach((ind, idx) => {
+            if (ind.formula) {
+                const sum = ind.formula.reduce((acc, no) => {
+                    const refIdx = indicators.findIndex(x => x.no === no);
+                    return acc + (typeof row[refIdx] === 'number' ? row[refIdx] : 0);
+                }, 0);
+                row[idx] = sum;
+            }
+        });
+        return row;
+    }
+
+    function enrichCoreRows(rows) {
+        return rows.map(row => {
+            const denominator = (row.newCases || 0) + (row.carryOver || 0);
+            return {
+                ...row,
+                rate: denominator > 0 ? Math.round(((row.completed || 0) / denominator) * 1000) / 10 : 0
+            };
+        });
+    }
+
+    function computeCoreTotals(rows) {
+        const total = rows.reduce((acc, row) => {
+            CORE_COLUMNS.forEach(col => {
+                if (!col.percent) acc[col.key] = (acc[col.key] || 0) + (Number(row[col.key]) || 0);
+            });
+            return acc;
+        }, { group: 'Tổng cộng' });
+        const denominator = (total.newCases || 0) + (total.carryOver || 0);
+        total.rate = denominator > 0 ? Math.round(((total.completed || 0) / denominator) * 1000) / 10 : 0;
+        return total;
+    }
+
+    function formatCoreValue(row, col) {
+        const value = row[col.key] || 0;
+        if (col.money) return fmtMoney(value);
+        if (col.percent) return `${value}%`;
+        return value;
+    }
+
+    function renderTrendPanel(rows) {
+        const totals = computeCoreTotals(rows);
+        const maxNew = Math.max(...rows.map(r => r.newCases || 0), 1);
+        const latest = rows[rows.length - 1] || {};
+        return `<div class="trend-panel">
+            <div class="trend-item">
+                <div class="trend-label">Tổng thụ lý trong kỳ</div>
+                <div class="trend-value">${totals.newCases + totals.carryOver}</div>
+                <div class="trend-bar"><span style="width:100%;"></span></div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-label">Đã giải quyết xong</div>
+                <div class="trend-value">${totals.completed}</div>
+                <div class="trend-bar"><span style="width:${Math.min(totals.rate, 100)}%;"></span></div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-label">Đang giải quyết</div>
+                <div class="trend-value">${totals.processing}</div>
+                <div class="trend-bar"><span style="width:${Math.min((totals.processing / Math.max(totals.newCases + totals.carryOver, 1)) * 100, 100)}%;"></span></div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-label">Tỷ lệ giải quyết</div>
+                <div class="trend-value">${totals.rate}%</div>
+                <div class="trend-bar"><span style="width:${Math.min(totals.rate, 100)}%;"></span></div>
+            </div>
+            <div class="trend-item">
+                <div class="trend-label">Kỳ gần nhất</div>
+                <div class="trend-value">${latest.newCases || 0}</div>
+                <div class="trend-bar"><span style="width:${Math.min(((latest.newCases || 0) / maxNew) * 100, 100)}%;"></span></div>
+            </div>
+        </div>`;
+    }
+
+    function renderCoreReport(meta) {
+        const rows = enrichCoreRows(CORE_REPORT_DATA[meta.dataKey] || []);
+        const totals = computeCoreTotals(rows);
+        let html = '';
+        if (meta.showTrend) html += renderTrendPanel(rows);
+        html += `<table class="custom-table core-table"><thead><tr>
+            <th class="group-col">${meta.groupLabel}</th>`;
+        if (meta.showAgencyInfo) {
+            html += '<th>Loại cơ quan</th><th>Tỉnh/TP</th>';
+        }
+        CORE_COLUMNS.forEach(col => {
+            html += `<th>${col.label}${col.money ? '<br><span style="font-weight:400;">(nghìn đồng)</span>' : ''}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+
+        rows.forEach(row => {
+            html += `<tr><td class="group-cell">${row.group}</td>`;
+            if (meta.showAgencyInfo) {
+                html += `<td>${row.agencyType || '--'}</td><td>${row.province || '--'}</td>`;
+            }
+            CORE_COLUMNS.forEach(col => {
+                html += `<td>${formatCoreValue(row, col)}</td>`;
+            });
+            html += '</tr>';
+        });
+
+        html += '<tr class="total-row"><td class="group-cell">Tổng cộng</td>';
+        if (meta.showAgencyInfo) html += '<td></td><td></td>';
+        CORE_COLUMNS.forEach(col => {
+            html += `<td>${formatCoreValue(totals, col)}</td>`;
+        });
+        html += '</tr></tbody></table>';
+
+        document.getElementById('reportTableWrap').innerHTML = html;
+        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo bộ chỉ tiêu cốt lõi và chiều nhóm "${meta.groupLabel}".</div>`;
+    }
+
+    function renderLocal03Report() {
+        const rows = LOCAL_MAU03_DATA.map(item => ({
+            local: item.local,
+            values: applyFormulas(BM03_INDICATORS, item.values.slice())
+        }));
+
+        const totals = new Array(25).fill(0);
+        rows.forEach(row => {
+            row.values.forEach((value, idx) => {
+                if (typeof value === 'number') totals[idx] += value;
+            });
+        });
+        applyFormulas(BM03_INDICATORS, totals);
+
+        let html = `<table class="custom-table local03-table">
+            <thead>
+                <tr>
+                    <th rowspan="4" class="local-col">Tỉnh/TP</th>
+                    <th colspan="9">Thụ lý vụ việc (vụ việc)</th>
+                    <th colspan="13">Tình hình giải quyết vụ việc</th>
+                    <th colspan="3">Chi trả tiền bồi thường</th>
+                </tr>
+                <tr>
+                    <th rowspan="3">Tổng số vụ việc thụ lý</th>
+                    <th colspan="4">Số vụ việc thụ lý mới</th>
+                    <th colspan="4">Số vụ việc kỳ trước chuyển sang</th>
+                    <th colspan="6">Đã có văn bản giải quyết bồi thường có hiệu lực pháp luật</th>
+                    <th colspan="5">Đang giải quyết (vụ việc)</th>
+                    <th colspan="2">Đình chỉ (vụ việc)</th>
+                    <th rowspan="3">Số vụ việc đã chi trả (vụ việc)</th>
+                    <th rowspan="3" class="money-col">Số tiền đã chi trả theo quyết định có hiệu lực của cơ quan trực tiếp quản lý người thi hành công vụ (nghìn đồng)</th>
+                    <th rowspan="3" class="money-col">Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án (nghìn đồng)</th>
+                </tr>
+                <tr>
+                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th colspan="2">Tại Tòa án - Khởi kiện vụ án dân sự</th>
+                    <th rowspan="2">Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th colspan="2">Tại Tòa án - Khởi kiện vụ án dân sự</th>
+                    <th rowspan="2">Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th rowspan="2">Tổng số vụ việc</th>
+                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th colspan="2">Tại Tòa án - Khởi kiện vụ án dân sự</th>
+                    <th rowspan="2">Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th rowspan="2" class="money-col">Số tiền bồi thường (nghìn đồng)</th>
+                    <th rowspan="2">Tổng số vụ việc</th>
+                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th colspan="2">Tại Tòa án - Khởi kiện vụ án dân sự</th>
+                    <th rowspan="2">Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th rowspan="2">Tại Tòa án theo thủ tục tố tụng</th>
+                </tr>
+                <tr>
+                    <th>Theo điểm a khoản 1 Điều 52</th>
+                    <th>Theo điểm b khoản 1 và khoản 2 Điều 52</th>
+                    <th>Theo điểm a khoản 1 Điều 52</th>
+                    <th>Theo điểm b khoản 1 và khoản 2 Điều 52</th>
+                    <th>Theo điểm a khoản 1 Điều 52</th>
+                    <th>Theo điểm b khoản 1 và khoản 2 Điều 52</th>
+                    <th>Theo điểm a khoản 1 Điều 52</th>
+                    <th>Theo điểm b khoản 1 và khoản 2 Điều 52</th>
+                </tr>
+            </thead><tbody>`;
+
+        rows.forEach(row => {
+            html += `<tr><td class="local-cell">${row.local}</td>`;
+            for (let no = 1; no <= 25; no++) {
+                html += `<td>${fmtMau03Value(row.values, no)}</td>`;
+            }
+            html += '</tr>';
+        });
+
+        html += '<tr class="total-row"><td class="local-cell">Tổng cộng</td>';
+        for (let no = 1; no <= 25; no++) {
+            html += `<td>${fmtMau03Value(totals, no)}</td>`;
+        }
+        html += '</tr></tbody></table>';
+
+        document.getElementById('reportTableWrap').innerHTML = html;
+        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo từng địa phương, tái sử dụng cấu trúc chỉ tiêu Mẫu số 03/BTNN.</div>`;
+    }
+
+    function getMau03Value(row, no) {
+        const idx = BM03_INDICATORS.findIndex(ind => ind.no === no);
+        return idx >= 0 ? row[idx] : 0;
+    }
+
+    function fmtMau03Value(row, no) {
+        const ind = BM03_INDICATORS.find(item => item.no === no);
+        const value = getMau03Value(row, no);
+        if (typeof value !== 'number') return value || '-';
+        return ind && ind.isMoney ? fmtMoney(value) : value;
+    }
+
+    function renderMau03Template() {
+        const rows = FIELDS.map(f => applyFormulas(BM03_INDICATORS, (BM03_DATA[f] || BM03_INDICATORS.map(() => 0)).slice()));
+        const totalsRow = applyFormulas(BM03_INDICATORS, computeTotals(BM03_INDICATORS, BM03_DATA));
+
+        let html = `<table class="custom-table mau03-table">
+            <thead>
+                <tr>
+                    <th rowspan="3" class="stt-col">STT</th>
+                    <th rowspan="3" class="field-col">Lĩnh vực phát sinh thiệt hại</th>
+                    <th colspan="9">Thụ lý vụ việc (vụ việc)</th>
+                    <th colspan="13">Tình hình giải quyết vụ việc</th>
+                    <th colspan="3">Chi trả tiền bồi thường</th>
+                </tr>
+                <tr>
+                    <th rowspan="2">Tổng số vụ việc thụ lý</th>
+                    <th colspan="4">Số vụ việc thụ lý mới</th>
+                    <th colspan="4">Số vụ việc kỳ trước chuyển sang</th>
+                    <th colspan="6">Đã có văn bản giải quyết bồi thường có hiệu lực pháp luật</th>
+                    <th colspan="5">Đang giải quyết (vụ việc)</th>
+                    <th colspan="2">Đình chỉ (vụ việc)</th>
+                    <th rowspan="2">Số vụ việc đã chi trả (vụ việc)</th>
+                    <th rowspan="2" class="money-col">Số tiền đã chi trả theo quyết định có hiệu lực của cơ quan trực tiếp quản lý người thi hành công vụ (nghìn đồng)</th>
+                    <th rowspan="2" class="money-col">Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án (nghìn đồng)</th>
+                </tr>
+                <tr>
+                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th>Tại Tòa án - Khởi kiện vụ án dân sự</th>
+                    <th>Tại Tòa án - Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th>Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th>Tại Tòa án - Khởi kiện vụ án dân sự</th>
+                    <th>Tại Tòa án - Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th>Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th>Tổng số vụ việc</th>
+                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th>Tại Tòa án - Khởi kiện vụ án dân sự</th>
+                    <th>Tại Tòa án - Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th>Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th class="money-col">Số tiền bồi thường (nghìn đồng)</th>
+                    <th>Tổng số vụ việc</th>
+                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th>Tại Tòa án - Khởi kiện vụ án dân sự</th>
+                    <th>Tại Tòa án - Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th>Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
+                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th>Tại Tòa án theo thủ tục tố tụng</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        FIELDS.forEach((field, fieldIndex) => {
+            html += `<tr><td>${fieldIndex + 1}</td><td class="field-cell">${field}</td>`;
+            for (let no = 1; no <= 25; no++) {
+                html += `<td>${fmtMau03Value(rows[fieldIndex], no)}</td>`;
+            }
+            html += '</tr>';
+        });
+
+        html += `<tr class="total-row"><td></td><td class="field-cell">Tổng cộng</td>`;
+        for (let no = 1; no <= 25; no++) {
+            html += `<td>${fmtMau03Value(totalsRow, no)}</td>`;
+        }
+        html += '</tr></tbody></table>';
+
+        document.getElementById('reportTableWrap').innerHTML = html;
+        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo đúng bố cục Mẫu số 03/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.</div>`;
+    }
+
+    function getMau04Value(row, no) {
+        const idx = BM04_INDICATORS.findIndex(ind => ind.no === no);
+        return idx >= 0 ? row[idx] : 0;
+    }
+
+    function fmtMau04Value(row, no) {
+        const ind = BM04_INDICATORS.find(item => item.no === no);
+        const value = getMau04Value(row, no);
+        if (typeof value !== 'number') return value || '-';
+        return ind && ind.isMoney ? fmtMoney(value) : value;
+    }
+
+    function renderMau04Template() {
+        const rows = FIELDS.map(f => applyFormulas(BM04_INDICATORS, (BM04_DATA[f] || BM04_INDICATORS.map(() => 0)).slice()));
+        const totalsRow = applyFormulas(BM04_INDICATORS, computeTotals(BM04_INDICATORS, BM04_DATA));
+
+        let html = `<table class="custom-table mau04-table">
+            <thead>
+                <tr>
+                    <th rowspan="3" class="stt-col">STT</th>
+                    <th rowspan="3" class="money-col">Số tiền đã chi trả xong cho người yêu cầu bồi thường (nghìn đồng)</th>
+                    <th colspan="6">Xem xét trách nhiệm hoàn trả</th>
+                    <th colspan="2">Giảm mức hoàn trả</th>
+                    <th rowspan="3">Số vụ việc hoãn hoàn trả (vụ việc)</th>
+                    <th colspan="3">Số tiền đã hoàn trả</th>
+                    <th rowspan="3" class="money-col">Số tiền còn phải hoàn trả (nghìn đồng)</th>
+                </tr>
+                <tr>
+                    <th rowspan="2">Tổng số vụ việc xem xét</th>
+                    <th colspan="2">Số vụ việc đã xem xét</th>
+                    <th rowspan="2">Số vụ việc đang xem xét (vụ việc)</th>
+                    <th colspan="2">Số vụ việc không xem xét (vụ việc)</th>
+                    <th rowspan="2">Số vụ việc (vụ việc)</th>
+                    <th rowspan="2" class="money-col">Số tiền (nghìn đồng)</th>
+                    <th rowspan="2" class="money-col">Tổng số (nghìn đồng)</th>
+                    <th rowspan="2" class="money-col">Số tiền đã hoàn trả trong kỳ báo cáo (nghìn đồng)</th>
+                    <th rowspan="2" class="money-col">Số tiền đã hoàn trả kỳ trước chuyển sang (nghìn đồng)</th>
+                </tr>
+                <tr>
+                    <th>Số vụ việc có Quyết định có hiệu lực pháp luật và đã thực hiện hoàn trả (vụ việc)</th>
+                    <th class="money-col">Số tiền phải hoàn trả (nghìn đồng)</th>
+                    <th>Người thi hành công vụ không có lỗi</th>
+                    <th>Người thi hành công vụ chết trước khi ra quyết định hoàn trả</th>
+                </tr>
+                <tr>
+                    <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                    <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                    <th>11</th><th>12</th><th>13</th><th>14</th><th>15</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        FIELDS.forEach((field, fieldIndex) => {
+            const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'][fieldIndex];
+            html += `<tr class="field-row"><td>${roman}</td><td colspan="14">${field.replace(/^[IVX]+\\.\\s*/, '').toUpperCase()}</td></tr>`;
+            html += '<tr><td></td>';
+            for (let no = 2; no <= 15; no++) {
+                html += `<td>${fmtMau04Value(rows[fieldIndex], no)}</td>`;
+            }
+            html += '</tr>';
+        });
+
+        html += '<tr class="total-row"><td>Tổng</td>';
+        for (let no = 2; no <= 15; no++) {
+            html += `<td>${fmtMau04Value(totalsRow, no)}</td>`;
+        }
+        html += '</tr></tbody></table>';
+
+        document.getElementById('reportTableWrap').innerHTML = html;
+        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo đúng bố cục Mẫu số 04/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.</div>`;
+    }
+
+    function renderMatrixReport(indicators, dataSource, isBM04) {
+        // Build per-field rows with formula columns recomputed
+        const rows = FIELDS.map(f => applyFormulas(indicators, (dataSource[f] || indicators.map(() => 0)).slice()));
+        const totalsRaw = computeTotals(indicators, dataSource);
+        const totalsRow = applyFormulas(indicators, totalsRaw);
+
+        let mismatchCount = 0;
+        function checkMismatch(ind, idx, row) {
+            if (!ind.formula) return false;
+            const expected = ind.formula.reduce((acc, no) => {
+                const refIdx = indicators.findIndex(x => x.no === no);
+                return acc + (typeof row[refIdx] === 'number' ? row[refIdx] : 0);
+            }, 0);
+            return row[idx] !== expected;
+        }
+
+        let html = '<table class="custom-table"><thead><tr><th style="min-width:160px;">Lĩnh vực</th>';
+        indicators.forEach(ind => { html += `<th style="min-width:${ind.isNote ? 200 : 90}px;">Cột ${ind.no}${ind.isLabel ? '' : `<br><span style="font-weight:400;">${ind.unit}</span>`}</th>`; });
+        html += '</tr></thead><tbody>';
+
+        FIELDS.forEach((f, fi) => {
+            const row = rows[fi];
+            html += `<tr><td class="text-left" style="font-weight:600;">${f}</td>`;
+            indicators.forEach((ind, idx) => {
+                if (ind.isLabel) { html += `<td>${['I','II','III','IV','V','VI'][fi]}</td>`; return; }
+                if (ind.isNote) { html += `<td class="text-left"><input type="text" class="form-control" style="font-size:12px; padding:4px 6px;" value="${row[idx] || ''}" onchange="updateNote('${f}', ${idx}, this.value)"></td>`; return; }
+                const val = typeof row[idx] === 'number' ? (ind.isMoney ? fmtMoney(row[idx]) : row[idx]) : '-';
+                const mismatch = checkMismatch(ind, idx, row);
+                if (mismatch) mismatchCount++;
+                html += `<td class="${mismatch ? 'cell-formula-bad' : ''}" title="${mismatch ? 'Lệch công thức, kiểm tra lại số liệu thành phần' : ''}">${val}</td>`;
+            });
+            html += '</tr>';
+        });
+
+        html += `<tr class="total-row"><td class="text-left">TC. Tổng cộng</td>`;
+        indicators.forEach((ind, idx) => {
+            if (ind.isLabel) { html += `<td>TC</td>`; return; }
+            if (ind.isNote) { html += `<td></td>`; return; }
+            const val = typeof totalsRow[idx] === 'number' ? (ind.isMoney ? fmtMoney(totalsRow[idx]) : totalsRow[idx]) : '-';
+            html += `<td>${val}</td>`;
+        });
+        html += '</tr></tbody></table>';
+
+        document.getElementById('reportTableWrap').innerHTML = html;
+
+        const alertArea = document.getElementById('alertArea');
+        if (mismatchCount > 0) {
+            alertArea.innerHTML = `<div class="alert-box alert-warning"><i class="fa-solid fa-triangle-exclamation"></i> Phát hiện ${mismatchCount} ô lệch công thức tổng ngang/tổng dọc. Vẫn có thể xem nhưng nên kiểm tra lại số liệu thành phần trước khi kết xuất chính thức.</div>`;
+        } else {
+            alertArea.innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Toàn bộ công thức tổng ngang, tổng dọc đã khớp. Có thể kết xuất biểu mẫu.</div>`;
+        }
+    }
+
+    function updateNote(field, idx, value) {
+        BM03_DATA[field] && (BM03_DATA[field][idx] = value);
+        BM04_DATA[field] && (BM04_DATA[field][idx] = value);
+    }
+
+    function renderMau01() {
+        let html = '<table class="custom-table"><thead><tr>' +
+            '<th style="width:40px;">STT</th><th style="min-width:110px;">Mã vụ việc</th><th style="min-width:180px;">Tên vụ việc</th>' +
+            '<th style="min-width:140px;">Người yêu cầu</th><th style="min-width:180px;">Địa chỉ</th><th style="min-width:160px;">Cơ quan giải quyết</th>' +
+            '<th style="min-width:180px;">Pháp luật áp dụng</th><th style="min-width:220px;">Tình hình giải quyết</th>' +
+            '<th style="min-width:180px;">Chi trả tiền bồi thường</th><th style="min-width:220px;">Khó khăn, vướng mắc</th>' +
+            '<th style="min-width:160px;">Ghi chú</th><th style="width:60px;">Thao tác</th></tr></thead><tbody>';
+
+        FIELDS.forEach(f => {
+            const cases = BM01_CASES[f] || [];
+            html += `<tr class="group-header"><td colspan="12">${f} (${cases.length} vụ việc)</td></tr>`;
+            if (cases.length === 0) {
+                html += `<tr><td colspan="12" style="color:var(--text-muted); text-align:center;">Không có vụ việc trong kỳ báo cáo</td></tr>`;
+            }
+            cases.forEach((c, i) => {
+                html += `<tr>
+                    <td>${i + 1}</td>
+                    <td class="text-left"><strong>${c.code}</strong></td>
+                    <td class="text-left">${c.name}</td>
+                    <td class="text-left">${c.requester}</td>
+                    <td class="text-left">${c.address}</td>
+                    <td class="text-left">${c.agency}</td>
+                    <td class="text-left">${c.law}</td>
+                    <td class="text-left">${c.situation}</td>
+                    <td class="text-left">${c.payment}</td>
+                    <td class="text-left">${c.vuongMac || '<span style="color:var(--text-muted);">(Không có)</span>'}</td>
+                    <td class="text-left">${c.note || ''}</td>
+                    <td><button class="icon-btn" title="Chỉnh sửa ghi chú" onclick="openNoteModal('${f}', '${c.code}')"><i class="fa-solid fa-pen"></i></button></td>
+                </tr>`;
+            });
+        });
+        html += '</tbody></table>';
+        document.getElementById('reportTableWrap').innerHTML = html;
+        document.getElementById('alertArea').innerHTML = '';
+    }
+
+    function openNoteModal(field, code) {
+        const c = (BM01_CASES[field] || []).find(x => x.code === code);
+        if (!c) return;
+        editingNote = { field, code };
+        document.getElementById('noteCaseCode').value = `${c.code} - ${c.name}`;
+        document.getElementById('noteVuongMac').value = c.vuongMac || '(Vụ việc chưa ghi nhận khó khăn, vướng mắc nào)';
+        document.getElementById('noteContent').value = c.note || '';
+        const overlay = document.getElementById('noteOverlay');
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.classList.add('visible'), 10);
+    }
+
+    function closeNoteModal() {
+        const overlay = document.getElementById('noteOverlay');
+        overlay.classList.remove('visible');
+        setTimeout(() => overlay.style.display = 'none', 200);
+        editingNote = null;
+    }
+
+    function saveNote() {
+        if (!editingNote) return;
+        const c = (BM01_CASES[editingNote.field] || []).find(x => x.code === editingNote.code);
+        if (c) c.note = document.getElementById('noteContent').value;
+        closeNoteModal();
+        renderMau01();
+        showToast('Lưu ghi chú thành công.', 'success');
+    }
+
+    function toggleExportMenu(event) {
+        event.stopPropagation();
+        document.getElementById('exportMenu').classList.toggle('visible');
+    }
+
+    function exportReport(format) {
+        document.getElementById('exportMenu').classList.remove('visible');
+        if (!reportGenerated) { showToast('Vui lòng bấm "Tổng hợp số liệu" trước khi kết xuất.', 'error'); return; }
+        const formatLabel = { excel: 'Excel', doc: 'DOC', pdf: 'PDF' }[format] || 'Excel';
+        document.getElementById('reportStatusBadge').textContent = 'Đã kết xuất';
+        document.getElementById('reportStatusBadge').className = 'badge badge-success';
+        showToast('Đã kết xuất báo cáo ra file ' + formatLabel + '.', 'success');
+    }
+    document.addEventListener('click', () => {
+        const menu = document.getElementById('exportMenu');
+        if (menu) menu.classList.remove('visible');
+    });
+
+    function showToast(message, type) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+        toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    init();
+</script>
+</body>
+</html>
+

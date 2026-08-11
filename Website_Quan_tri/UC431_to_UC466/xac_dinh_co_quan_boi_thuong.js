@@ -398,6 +398,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial render
     applyFilters();
+
+    const detailCode = new URLSearchParams(window.location.search).get('detail');
+    if (detailCode) {
+        const matchedRequest = requestList.find(item => item.code === detailCode);
+        if (matchedRequest) {
+            showDetailScreen(matchedRequest.id);
+        }
+    }
 });
 
 // Toggle Country input for Form (Viet Nam -> dropdown, Other -> Text input)
@@ -431,6 +439,20 @@ function showListScreen() {
     document.getElementById('screenDetail').style.display = 'none';
     document.getElementById('screenCreateClaim').style.display = 'none';
     renderTable();
+}
+
+function closeDetailOrReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const returnUrl = params.get('returnUrl');
+    if (returnUrl) {
+        if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+            window.parent.openAdminModule(returnUrl, returnUrl);
+            return;
+        }
+        window.location.href = returnUrl.replace(/^UC431_to_UC466\//, '');
+        return;
+    }
+    showListScreen();
 }
 
 function showFormScreen(id = null) {
@@ -660,7 +682,7 @@ function showDetailScreen(id) {
 
     // Populate Footer Workflow buttons
     const footer = document.getElementById('detailWorkflowActions');
-    footer.innerHTML = `<button class="btn btn-secondary" onclick="showListScreen()">Đóng</button>`;
+    footer.innerHTML = `<button class="btn btn-secondary" onclick="closeDetailOrReturn()">Đóng</button>`;
 
     if (item.status === 'Chờ tiếp nhận') {
         footer.innerHTML += `<button class="btn btn-danger" onclick="openRejectAcceptanceModal('${item.id}')"><i class="fa-solid fa-circle-xmark"></i> Từ chối tiếp nhận</button>`;

@@ -583,7 +583,7 @@
                 status: "Từ chối thụ lý",
                 thulyVenue: "cơ quan quản lý",
                 rejectType: "Từ chối thụ lý",
-                rejectReason: "Hồ sơ bị từ chối thụ lý do hết thời hiệu yêu cầu bồi thường theo quy định tại Điều 6 Luật Trách nhiệm bồi thường của Nhà nước (đã quá 03 năm kể từ ngày người bị thiệt hại nhận được văn bản làm căn cứ yêu cầu bồi thường).",
+                rejectReason: "Hồ sơ bị từ chối thụ lý do hết thời hiệu yêu cầu bồi thường theo quy định tại Điều 6 Luật Trách nhiệm bồi thường của Nhà nước.",
                 rejectDate: "14/05/2026 10:30",
                 rejectOfficer: "Nguyễn Văn Thủ Trưởng (Thủ trưởng cơ quan)",
                 rejectionLog: [
@@ -615,7 +615,7 @@
                         date: "14/05/2026 10:30",
                         officer: "Nguyễn Văn Thủ Trưởng (Thủ trưởng cơ quan)",
                         action: "Từ chối thụ lý",
-                        reason: "Hồ sơ bị từ chối thụ lý do hết thời hiệu yêu cầu bồi thường theo quy định tại Điều 6 Luật Trách nhiệm bồi thường của Nhà nước (đã quá 03 năm kể từ ngày người bị thiệt hại nhận được văn bản làm căn cứ yêu cầu bồi thường)."
+                        reason: "Hồ sơ bị từ chối thụ lý do hết thời hiệu yêu cầu bồi thường theo quy định tại Điều 6 Luật Trách nhiệm bồi thường của Nhà nước."
                     }
                 ],
                 totalNum: 60000000,
@@ -916,7 +916,7 @@
                     { title: "Tiếp nhận hồ sơ", date: "10/06/2026", desc: "Từ chối tiếp nhận do thiếu giấy tờ chứng minh thiệt hại thực tế.", status: "completed" }
                 ],
                 rejectType: "Từ chối tiếp nhận",
-                rejectReason: "Hồ sơ thiếu các văn bản làm căn cứ yêu cầu bồi thường theo đúng quy định tại Điều 52 Luật Trách nhiệm bồi thường của Nhà nước.",
+                rejectReason: "Hồ sơ thiếu tài liệu căn cứ theo đúng quy định tại Điều 52 Luật Trách nhiệm bồi thường của Nhà nước.",
                 rejectDate: "10/06/2026 16:30",
                 rejectOfficer: "Lê Văn Chuyên Viên",
                 rejectionLog: [
@@ -924,7 +924,7 @@
                         date: "10/06/2026 16:30",
                         officer: "Lê Văn Chuyên Viên",
                         action: "Từ chối tiếp nhận",
-                        reason: "Hồ sơ thiếu các văn bản làm căn cứ yêu cầu bồi thường theo đúng quy định tại Điều 52 Luật Trách nhiệm bồi thường của Nhà nước."
+                        reason: "Hồ sơ thiếu tài liệu căn cứ theo đúng quy định tại Điều 52 Luật Trách nhiệm bồi thường của Nhà nước."
                     }
                 ]
             },
@@ -1918,15 +1918,7 @@
             const address = document.getElementById('claimNYCAddress').value.trim();
             const hanhVi = document.getElementById('claimHanhVi').value.trim();
             const nhanQua = document.getElementById('claimNhanQua').value.trim();
-            const docBase = document.getElementById('claimDocBase').value.trim();
-
             let firstInvalid = null;
-            if (!docBase) {
-                const el = document.getElementById('claimDocBase');
-                el.classList.add('is-invalid');
-                el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-                if (!firstInvalid) firstInvalid = el;
-            }
             if (!name) {
                 const el = document.getElementById('claimNYCName');
                 el.classList.add('is-invalid');
@@ -2004,7 +1996,6 @@
             claim.address = address;
             claim.phone = phone;
             claim.role = role;
-            claim.docBase = docBase;
             claim.hanhVi = hanhVi;
             claim.nhanQua = nhanQua;
             claim.agency = cqNhan || "Chưa phân công";
@@ -2064,8 +2055,6 @@
                 const address = document.getElementById('claimNYCAddress').value.trim();
                 const hanhVi = document.getElementById('claimHanhVi').value.trim();
                 const nhanQua = document.getElementById('claimNhanQua').value.trim();
-                const docBase = document.getElementById('claimDocBase').value.trim();
-
                 let total = 0;
                 if (requestType !== 'honor') {
                     for (let i = 1; i <= 6; i++) {
@@ -2255,7 +2244,6 @@
                 document.getElementById('claimNYCAddress').value = claim.address || '';
                 document.getElementById('claimHanhVi').value = claim.hanhVi || '';
                 document.getElementById('claimNhanQua').value = claim.nhanQua || '';
-                document.getElementById('claimDocBase').value = claim.docBase || '';
                 document.getElementById('claimCqNhan').value = claim.agency || '';
 
                 const needAdv = claim.advanceNum > 0;
@@ -2294,8 +2282,6 @@
 
                 sumClaimThietHai();
                 toggleRecInfoSection();
-
-                document.getElementById('claimDocHelp').value = '';
 
                 const reqRadios = document.getElementsByName('claimRequestType');
                 reqRadios.forEach(r => {
@@ -2350,7 +2336,6 @@
                 document.getElementById('claimNYCAddress').value = '';
                 document.getElementById('claimHanhVi').value = '';
                 document.getElementById('claimNhanQua').value = '';
-                document.getElementById('claimDocBase').value = '';
                 document.getElementById('claimCqNhan').value = '';
 
                 document.getElementById('claimNeedAdvance').checked = false;
@@ -2383,8 +2368,6 @@
 
                 document.getElementById('claimTotalNumText').innerText = "0 đồng";
                 document.getElementById('claimTotalWordText').innerText = "Viết bằng chữ: Không đồng";
-                document.getElementById('claimDocHelp').value = '';
-
                 const reqRadios = document.getElementsByName('claimRequestType');
                 reqRadios.forEach(r => {
                     r.checked = (r.value === 'both');
@@ -2467,8 +2450,6 @@
             }
             document.getElementById('claimNYCAddress').value = found.nycAddressDetail;
             document.getElementById('claimHanhVi').value = found.hanhVi;
-
-            document.getElementById('claimDocBase').value = `Văn bản xác định thẩm quyền số 02/QĐ-XĐCQ ban hành ngày 01/07/2026`;
 
             initDocsList();
             toggleDocsByRole(found.nycRole);
@@ -2620,15 +2601,7 @@
                 isCustom: false
             });
 
-            // 3. Văn bản làm căn cứ yêu cầu bồi thường, trừ trường hợp người bị thiệt hại không được gửi hoặc không thể có văn bản làm căn cứ yêu cầu bồi thường
-            currentDocsList.push({
-                name: "Văn bản làm căn cứ yêu cầu bồi thường, trừ trường hợp người bị thiệt hại không được gửi hoặc không thể có văn bản làm căn cứ yêu cầu bồi thường",
-                required: true,
-                file: "Van_ban_lam_can_cu_yeu_cau_boi_thuong.pdf",
-                isCustom: false
-            });
-
-            // 4. Văn bản yêu cầu bồi thường (Hệ thống tự động gen ra theo Mẫu 01/BTNN)
+            // 3. Văn bản yêu cầu bồi thường (Hệ thống tự động gen ra theo Mẫu 01/BTNN)
             currentDocsList.push({
                 name: "Văn bản yêu cầu bồi thường (Hệ thống tự động gen ra theo Mẫu 01/BTNN)",
                 required: true,
@@ -2636,7 +2609,7 @@
                 isCustom: false
             });
 
-            // 5. Giấy tờ chứng minh nhân thân của người thừa kế, người đại diện của người bị thiệt hại
+            // 4. Giấy tờ chứng minh nhân thân của người thừa kế, người đại diện của người bị thiệt hại
             if (role === "Người thừa kế của người bị thiệt hại" ||
                 role === "Người đại diện theo pháp luật của người bị thiệt hại" ||
                 role === "Cá nhân, pháp nhân được ủy quyền hợp pháp") {
@@ -2648,7 +2621,7 @@
                 });
             }
 
-            // 6. Trường hợp người bị thiệt hại chết mà có di chúc thì người yêu cầu bồi thường phải cung cấp di chúc, trường hợp không có di chúc thì phải có văn bản hợp pháp về quyền thừa kế
+            // 5. Trường hợp người bị thiệt hại chết mà có di chúc thì người yêu cầu bồi thường phải cung cấp di chúc, trường hợp không có di chúc thì phải có văn bản hợp pháp về quyền thừa kế
             if (role === "Người thừa kế của người bị thiệt hại") {
                 currentDocsList.push({
                     name: "Trường hợp người bị thiệt hại chết mà có di chúc thì người yêu cầu bồi thường phải cung cấp di chúc, trường hợp không có di chúc thì phải có văn bản hợp pháp về quyền thừa kế",
@@ -2658,7 +2631,7 @@
                 });
             }
 
-            // 7. Văn bản ủy quyền hợp pháp trong trường hợp đại diện theo ủy quyền
+            // 6. Văn bản ủy quyền hợp pháp trong trường hợp đại diện theo ủy quyền
             if (role === "Cá nhân, pháp nhân được ủy quyền hợp pháp") {
                 currentDocsList.push({
                     name: "Văn bản ủy quyền hợp pháp trong trường hợp đại diện theo ủy quyền",
@@ -2784,8 +2757,6 @@
                 const address = document.getElementById('claimNYCAddress').value || "Hà Nội";
                 const hanhVi = document.getElementById('claimHanhVi').value || "Chưa có mô tả hành vi gây thiệt hại";
                 const nhanQua = document.getElementById('claimNhanQua').value || "Chưa có mô tả mối quan hệ nhân quả";
-                const docBase = document.getElementById('claimDocBase').value || "Chưa nhập văn bản làm căn cứ";
-
                 let total = 0;
                 let thietHaiRowsHtml = "";
                 for (let i = 1; i <= 6; i++) {
@@ -2880,7 +2851,6 @@
                             <div style="margin-top: 8px;"><span class="field-label">2. Mối quan hệ nhân quả giữa thiệt hại và hành vi trái pháp luật:</span></div>
                             <div style="margin-left: 15px; font-style: italic; background-color:#f8fafc; padding: 8px; border-radius:4px; border:1px solid #e2e8f0;">${nhanQua}</div>
 
-                            <div style="margin-top: 8px;"><span class="field-label">3. Văn bản làm căn cứ yêu cầu bồi thường:</span> ${docBase}</div>
                         </div>
 
                         <div class="section-title">III. Các mục thiệt hại yêu cầu bồi thường</div>
@@ -3098,17 +3068,8 @@
             const address = document.getElementById('claimNYCAddress').value.trim();
             const hanhVi = document.getElementById('claimHanhVi').value.trim();
             const nhanQua = document.getElementById('claimNhanQua').value.trim();
-            const docBase = document.getElementById('claimDocBase').value.trim();
-
             if (!isDraft) {
                 let firstInvalid = null;
-
-                if (!docBase) {
-                    const el = document.getElementById('claimDocBase');
-                    el.classList.add('is-invalid');
-                    el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-                    if (!firstInvalid) firstInvalid = el;
-                }
                 if (!name) {
                     const el = document.getElementById('claimNYCName');
                     el.classList.add('is-invalid');
@@ -3297,7 +3258,6 @@
                     claim.address = address;
                     claim.phone = phone;
                     claim.role = role;
-                    claim.docBase = docBase || "Chưa có căn cứ chính thức";
                     claim.hanhVi = hanhVi || "Hành vi gây thiệt hại chưa tóm tắt";
                     claim.nhanQua = nhanQua || "Mối quan hệ nhân quả chưa mô tả";
                     if (claim.status === 'Yêu cầu bổ sung') {
@@ -3392,7 +3352,6 @@
                 address: address,
                 phone: phone,
                 role: role,
-                docBase: docBase || "Chưa có căn cứ chính thức",
                 hanhVi: hanhVi || "Hành vi gây thiệt hại chưa tóm tắt",
                 nhanQua: nhanQua || "Mối quan hệ nhân quả chưa mô tả",
                 status: isDraft ? "Lưu nháp" : "Chờ tiếp nhận",
@@ -3855,12 +3814,24 @@
                                 <input type="text" class="form-control" id="claimCqNhan_edit" value="${claim.agency || ''}">
                             </div>
                         </div>
-                        <div class="form-group" style="margin-top: 12px; margin-bottom: 16px;">
-                            <span class="form-label">Văn bản làm căn cứ yêu cầu bồi thường *</span>
-                            <input type="text" class="form-control" id="claimDocBase_edit" value="${claim.docBase || ''}">
-                            <div class="error-message">Đây là trường bắt buộc</div>
+                        <div class="grid-2" style="margin-bottom:12px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày văn bản yêu cầu bồi thường *</span>
+                                <div class="date-input-wrapper">
+                                    <input type="text" class="form-control" id="claimRequestDocDate_edit" value="${claim.requestDocDate || ''}" placeholder="mm/dd/yyyy">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Pháp luật áp dụng để giải quyết bồi thường *</span>
+                                <select class="form-control" id="claimApplicableLaw_edit">
+                                    <option value="Luật Trách nhiệm bồi thường của Nhà nước năm 2017" ${claim.applicableLaw === 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017' || !claim.applicableLaw ? 'selected' : ''}>Luật Trách nhiệm bồi thường của Nhà nước năm 2017</option>
+                                    <option value="Luật Trách nhiệm bồi thường của Nhà nước năm 2009" ${claim.applicableLaw === 'Luật Trách nhiệm bồi thường của Nhà nước năm 2009' ? 'selected' : ''}>Luật Trách nhiệm bồi thường của Nhà nước năm 2009</option>
+                                    <option value="Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003" ${claim.applicableLaw === 'Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003' ? 'selected' : ''}>Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003</option>
+                                    <option value="Nghị định số 47-CP ngày 03/05/1997" ${claim.applicableLaw === 'Nghị định số 47-CP ngày 03/05/1997' ? 'selected' : ''}>Nghị định số 47-CP ngày 03/05/1997</option>
+                                </select>
+                            </div>
                         </div>
-
                         <!-- II. THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG -->
                         <div style="font-weight:700; color:var(--primary-color); font-size:13px; margin-bottom:10px; margin-top:15px;">II. THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG:</div>
                         <div class="grid-3-cols" style="margin-bottom:12px;">
@@ -4295,9 +4266,6 @@
                         <div><strong style="color:var(--text-muted);">Hình thức tiếp nhận hồ sơ:</strong> <br>${nopKenhText}</div>
                         <div><strong style="color:var(--text-muted);">Lĩnh vực phát sinh thiệt hại:</strong> <br><span style="text-transform:uppercase; font-weight:600; font-size:11px; color:var(--primary-color);">TRONG HOẠT ĐỘNG ${claim.fieldGroup.toUpperCase()}</span></div>
                         <div><strong style="color:var(--text-muted);">Cơ quan giải quyết bồi thường:</strong> <br>${claim.agency || '--'}</div>
-                        <div style="grid-column: span 3; background:#FAFBFD; border-left:3px solid var(--secondary-color); padding:10px; border-radius:4px; margin-top:4px;">
-                            <strong style="color:var(--text-muted);">Văn bản làm căn cứ yêu cầu bồi thường:</strong> <br><span style="font-weight:600; color:var(--text-main);">${claim.docBase || 'Chưa cập nhật văn bản căn cứ'}</span>
-                        </div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Hành vi gây thiệt hại của người thi hành công vụ:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.hanhVi}</span></div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.nhanQua}</span></div>
                     </div>
@@ -4437,7 +4405,8 @@
                 }
                 
                 let isValid = true;
-                if (!validateRequired('claimDocBase_edit')) isValid = false;
+                if (!validateRequired('claimRequestDocDate_edit')) isValid = false;
+                if (!validateRequired('claimApplicableLaw_edit')) isValid = false;
                 if (!validateRequired('claimNYCName_edit')) isValid = false;
                 if (!validateRequired('claimNYCBirth_edit')) isValid = false;
                 if (!validateRequired('claimNYCPhone_edit')) isValid = false;
@@ -4475,8 +4444,8 @@
             claim.claimNopKenh = document.getElementById('claimNopKenh_edit').value;
             claim.fieldGroup = document.getElementById('claimFieldGroup_edit').value;
             claim.agency = document.getElementById('claimCqNhan_edit').value;
-            claim.docBase = document.getElementById('claimDocBase_edit').value;
-            
+            claim.requestDocDate = document.getElementById('claimRequestDocDate_edit').value;
+            claim.applicableLaw = document.getElementById('claimApplicableLaw_edit').value;
             claim.nyc = document.getElementById('claimNYCName_edit').value;
             claim.nycRole = document.getElementById('claimNYCRole_edit').value;
             claim.role = claim.nycRole; // Sync role
@@ -6463,14 +6432,12 @@
 // ======== NEW LOGIC FOR VERDICT (BẢN ÁN) ========
 function toggleVerdictFields(isChecked) {
     const verdictBlock = document.getElementById('verdictFieldsBlock');
-    const docBaseBlock = document.getElementById('docBaseBlock');
     const advanceSection = document.getElementById('advancePaymentSection');
     const labels1 = document.querySelectorAll('.verdict-group-label');
     const labels2 = document.querySelectorAll('.verdict-sub-label');
     
     if (isChecked) {
         if(verdictBlock) verdictBlock.style.display = 'block';
-        if(docBaseBlock) docBaseBlock.style.display = 'none';
         if(advanceSection) advanceSection.style.display = 'none';
         
         labels1.forEach(l => l.style.display = 'inline');
@@ -6479,7 +6446,6 @@ function toggleVerdictFields(isChecked) {
         addVerdictDocumentRow();
     } else {
         if(verdictBlock) verdictBlock.style.display = 'none';
-        if(docBaseBlock) docBaseBlock.style.display = 'block';
         if(advanceSection) advanceSection.style.display = 'block';
         
         labels1.forEach(l => l.style.display = 'none');
