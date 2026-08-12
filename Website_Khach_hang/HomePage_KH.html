@@ -5259,11 +5259,13 @@
                                     <label class="form-label">Trạng thái</label>
                                     <select class="form-select" id="copyReqSearchStatus">
                                         <option value="Tất cả" selected>Tất cả</option>
-                                        <option value="Chờ duyệt">Chờ duyệt</option>
-                                        <option value="Duyệt chờ ký">Duyệt chờ ký</option>
                                         <option value="Chờ thanh toán">Chờ thanh toán</option>
+                                        <option value="Chờ duyệt">Chờ duyệt</option>
+                                        <option value="Chờ ký">Chờ ký</option>
+                                        <option value="Đã duyệt - chờ trả kết quả">Đã duyệt - chờ trả kết quả</option>
                                         <option value="Hoàn thành">Hoàn thành</option>
                                         <option value="Bị từ chối">Bị từ chối</option>
+                                        <option value="Bị trả lại">Bị trả lại</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -5294,9 +5296,10 @@
                                         <th style="width: 12%;">Số đăng ký</th>
                                         <th style="width: 14%;">Loại cung cấp bản sao</th>
                                         <th style="width: 10%;">Số lượng bản sao</th>
-                                        <th style="width: 11%;">Trạng thái</th>
-                                        <th style="width: 13%;">Thời điểm đăng ký</th>
-                                        <th style="width: 15%;">Người tạo</th>
+                                        <th style="width: 10%;">Trạng thái</th>
+                                        <th style="width: 12%;">Thời điểm đăng ký</th>
+                                        <th style="width: 11%;">Số tiền phải thanh toán</th>
+                                        <th style="width: 13%;">Người tạo</th>
                                         <th style="width: 8%; text-align: center;">Thao tác</th>
                                     </tr>
                                 </thead>
@@ -5387,7 +5390,7 @@
                                 </div>
                             </div>
 
-                            <div
+                            <div id="copyDetailOriginalBlock"
                                 style="background-color:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:18px;">
                                 <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">II. Thông tin chi tiết hồ sơ gốc</h4>
                                 <div id="copyDetailOriginalInfo" style="line-height:1.7; color:var(--text-main);"></div>
@@ -12523,6 +12526,9 @@
                 date: '22/07/2026 09:15',
                 creator: 'Nguyễn Văn A',
                 amount: 30000,
+                paymentTime: '22/07/2026 09:20',
+                signedTime: '22/07/2026 10:05',
+                signerName: 'Nguyễn Văn Lãnh Đạo',
                 fileName: 'Ban_sao_chung_nhan_BS-20260722-000149.pdf'
             },
             {
@@ -12534,6 +12540,10 @@
                 date: '21/07/2026 15:40',
                 creator: 'Công ty TNHH Hải Nam',
                 amount: 60000,
+                paymentTime: '21/07/2026 15:46',
+                signedTime: '22/07/2026 08:15',
+                signerName: 'Nguyễn Văn Lãnh Đạo',
+                paperDeliveryInfo: 'Đã trả 02 bản sao giấy tại quầy tiếp nhận ngày 22/07/2026.',
                 fileName: ''
             },
             {
@@ -12563,10 +12573,28 @@
                 regNum: '1505156445',
                 copyType: 'Bản sao điện tử',
                 quantity: null,
-                status: 'Duyệt chờ ký',
+                status: 'Chờ ký',
                 date: '16/07/2026 14:10',
                 creator: 'Trần Văn H',
                 amount: 30000,
+                paymentTime: '16/07/2026 14:13',
+                approvedTime: '16/07/2026 15:20',
+                submitOfficer: 'Trần Thị Cán Bộ',
+                fileName: ''
+            },
+            {
+                code: 'BS-20260716-000143',
+                regNum: '1505156441',
+                copyType: 'Bản sao giấy',
+                quantity: 3,
+                status: 'Đã duyệt - chờ trả kết quả',
+                date: '16/07/2026 09:35',
+                creator: 'Công ty TNHH Minh Anh',
+                amount: 90000,
+                paymentTime: '16/07/2026 09:40',
+                approvedTime: '16/07/2026 11:20',
+                signedTime: '17/07/2026 08:30',
+                signerName: 'Nguyễn Văn Lãnh Đạo',
                 fileName: ''
             },
             {
@@ -12578,6 +12606,20 @@
                 date: '15/07/2026 08:45',
                 creator: 'Công ty TNHH An Phú',
                 amount: 30000,
+                fileName: ''
+            },
+            {
+                code: 'BS-20260714-000142',
+                regNum: '1505156448',
+                copyType: 'Bản sao giấy',
+                quantity: 1,
+                status: 'Bị trả lại',
+                date: '14/07/2026 16:05',
+                creator: 'Bà Nguyễn Thị Mai',
+                amount: 30000,
+                returnReason: 'Cán bộ yêu cầu bổ sung thông tin nhận bản sao giấy.',
+                returnedTime: '15/07/2026 09:00',
+                returnOfficer: 'Trần Thị Cán Bộ',
                 fileName: ''
             }
         ];
@@ -12593,9 +12635,10 @@
                 case 'Chờ thanh toán': return 'pending-payment';
                 case 'Chờ duyệt': return 'pending-approval';
                 case 'Chờ ký': return 'approved-pending-signature';
-                case 'Duyệt chờ ký': return 'approved-pending-signature';
+                case 'Đã duyệt - chờ trả kết quả': return 'approved-pending-signature';
                 case 'Hoàn thành': return 'completed';
                 case 'Bị từ chối': return 'rejected';
+                case 'Bị trả lại': return 'rejected';
                 case 'Sai lệch thanh toán': return 'payment-discrepancy';
                 default: return '';
             }
@@ -13474,6 +13517,37 @@
             return copyRequestsData.find(item => item.code === code);
         }
 
+        function mergeLatestCopyRequestFromSession() {
+            try {
+                const raw = sessionStorage.getItem('saoLucData');
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (!data || !data.reqCode) return;
+                const existing = findCopyRequest(data.reqCode);
+                if (existing) {
+                    existing.status = data.status || existing.status;
+                    existing.paymentTime = data.paymentTime || existing.paymentTime;
+                    existing.amount = Number(data.amount || existing.amount || 0);
+                    return;
+                }
+                copyRequestsData.unshift({
+                    code: data.reqCode,
+                    regNum: data.regNum || '',
+                    copyType: data.copyType || 'Bản sao giấy',
+                    quantity: data.copyType === 'Bản sao giấy' ? Number(data.copyQty || 1) : null,
+                    status: data.status || 'Chờ thanh toán',
+                    date: data.createdAt || new Date().toLocaleString('vi-VN'),
+                    creator: 'Người dùng hiện tại',
+                    amount: Number(data.amount || 0),
+                    agency: data.agency || '',
+                    paymentTime: data.paymentTime || '',
+                    fileName: ''
+                });
+            } catch (error) {
+                sessionStorage.removeItem('saoLucData');
+            }
+        }
+
         function renderCopyRequestActions(item) {
             const iconBtnStyle = 'width:30px; height:30px; padding:0; font-size:12px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;';
             const actions = [];
@@ -13496,12 +13570,13 @@
         function renderCopyRequestsTable() {
             const tbody = document.getElementById('copyRequestsTableBody');
             if (!tbody) return;
+            mergeLatestCopyRequestFromSession();
 
             let dataList = isCopyReqFiltered() ? copyReqFilteredData : copyRequestsData;
             dataList = [...dataList].sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
 
             if (!dataList.length) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy yêu cầu cung cấp bản sao phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy yêu cầu cung cấp bản sao phù hợp với điều kiện tìm kiếm.</td></tr>`;
                 document.getElementById('copyReqCountDisplay').innerText = 'Hiển thị 0-0 của 0 yêu cầu';
                 document.getElementById('copyReqPagination').innerHTML = '';
                 return;
@@ -13533,7 +13608,7 @@
             document.getElementById('copyReqPagination').innerHTML = paginationHtml;
 
             tbody.innerHTML = pageItems.map((item, index) => {
-                const quantityText = item.copyType === 'Bản sao giấy' ? item.quantity : '-';
+                const quantityText = item.copyType === 'Bản sao giấy' ? item.quantity : '—';
                 return `
                     <tr onclick="viewCopyRequestDetail('${item.code}')" style="cursor:pointer;">
                         <td style="text-align:center;">${startIndex + index + 1}</td>
@@ -13543,6 +13618,7 @@
                         <td>${quantityText}</td>
                         <td><span class="status-badge ${getStatusClass(item.status)}">${escapeHtml(item.status)}</span></td>
                         <td>${escapeHtml(item.date)}</td>
+                        <td>${formatCopyReqAmount(item.amount)}</td>
                         <td>${escapeHtml(item.creator)}</td>
                         <td style="text-align:center;">${renderCopyRequestActions(item)}</td>
                     </tr>
@@ -13853,18 +13929,28 @@
                 return '<div>Yêu cầu đang chờ Cán bộ nghiệp vụ kiểm tra và duyệt.</div>';
             }
 
-            if (item.status === 'Duyệt chờ ký') {
+            if (item.status === 'Chờ ký') {
                 return `
                     ${renderCopyDetailLine('Thời điểm duyệt', escapeHtml(item.approvedTime || '16/07/2026 15:20'))}
                     ${renderCopyDetailLine('Cán bộ trình ký', escapeHtml(item.submitOfficer || 'Trần Thị Cán Bộ'))}
+                    ${item.paymentTime ? renderCopyDetailLine('Thời điểm thanh toán', escapeHtml(item.paymentTime)) : ''}
+                    ${renderCopyDetailLine('Số tiền đã thanh toán', escapeHtml(amountText))}
                 `;
             }
 
             if (item.status === 'Chờ thanh toán') {
                 return `
-                    ${renderCopyDetailLine('Thời điểm ký duyệt', escapeHtml(item.signedTime || '20/07/2026 11:00'))}
-                    ${renderCopyDetailLine('Người ký duyệt', escapeHtml(item.signerName || 'Nguyễn Văn Lãnh Đạo'))}
                     ${renderCopyDetailLine('Số tiền phải thanh toán', escapeHtml(amountText))}
+                    ${renderCopyDetailLine('Hướng xử lý', escapeHtml('Khách hàng thực hiện thanh toán để chuyển yêu cầu sang trạng thái Chờ duyệt.'))}
+                `;
+            }
+
+            if (item.status === 'Đã duyệt - chờ trả kết quả') {
+                return `
+                    ${renderCopyDetailLine('Thời điểm ký duyệt', escapeHtml(item.signedTime || '17/07/2026 08:30'))}
+                    ${renderCopyDetailLine('Người ký duyệt', escapeHtml(item.signerName || 'Nguyễn Văn Lãnh Đạo'))}
+                    ${renderCopyDetailLine('Số tiền đã thanh toán', escapeHtml(amountText))}
+                    ${renderCopyDetailLine('Hướng xử lý', escapeHtml('Yêu cầu bản sao giấy đã được duyệt, đang chờ Cán bộ xác nhận trả kết quả.'))}
                 `;
             }
 
@@ -13892,6 +13978,14 @@
                     ${renderCopyDetailLine('Lý do từ chối', escapeHtml(item.rejectReason || 'Thông tin yêu cầu không đủ điều kiện cấp bản sao.'))}
                     ${renderCopyDetailLine('Thời điểm từ chối', escapeHtml(item.rejectedTime || '15/07/2026 10:15'))}
                     ${renderCopyDetailLine('Người từ chối', escapeHtml(item.rejectOfficer || 'Trần Thị Cán Bộ'))}
+                `;
+            }
+
+            if (item.status === 'Bị trả lại') {
+                return `
+                    ${renderCopyDetailLine('Lý do trả lại', escapeHtml(item.returnReason || 'Yêu cầu cần được rà soát hoặc bổ sung thông tin.'))}
+                    ${renderCopyDetailLine('Thời điểm trả lại', escapeHtml(item.returnedTime || '15/07/2026 09:00'))}
+                    ${renderCopyDetailLine('Người trả lại', escapeHtml(item.returnOfficer || 'Trần Thị Cán Bộ'))}
                 `;
             }
 
@@ -13938,9 +14032,11 @@
                 detailDownloadBtn.onclick = () => downloadCopyCertificate(item.code);
             }
 
-            document.getElementById('copyDetailOriginalInfo').innerHTML = renderCopyRequestOriginalInfo(item);
+            const originalBlock = document.getElementById('copyDetailOriginalBlock');
+            if (originalBlock) originalBlock.classList.toggle('hidden', item.status !== 'Hoàn thành');
+            document.getElementById('copyDetailOriginalInfo').innerHTML = item.status === 'Hoàn thành' ? renderCopyRequestOriginalInfo(item) : '';
             const processingBlock = document.getElementById('copyDetailProcessingBlock');
-            if (processingBlock) processingBlock.classList.toggle('hidden', item.status === 'Chờ duyệt');
+            if (processingBlock) processingBlock.classList.remove('hidden');
             document.getElementById('copyDetailProcessingInfo').innerHTML = renderCopyRequestProcessingInfo(item);
 
             document.getElementById('copyReqListView')?.classList.add('hidden');

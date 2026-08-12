@@ -66,12 +66,15 @@
     .mau03-table th.money-col { min-width: 118px; }
     .mau03-table td { white-space: nowrap; padding: 7px 6px; }
     .mau03-table td.field-cell { text-align: left; white-space: normal; min-width: 190px; font-weight: 600; color: var(--text-main); }
+    .mau03-table .field-row td { background: #F8FAFC; color: var(--text-main); font-weight: 700; text-align: left; }
     .mau04-table { min-width: 1450px; font-size: 11.5px; }
     .mau04-table th { white-space: normal; vertical-align: middle; line-height: 1.25; min-width: 80px; padding: 7px 6px; }
     .mau04-table th.stt-col { min-width: 42px; }
     .mau04-table th.money-col { min-width: 110px; }
     .mau04-table td { white-space: nowrap; padding: 7px 6px; }
     .mau04-table .field-row td { background: #F8FAFC; color: var(--text-main); font-weight: 700; text-align: left; }
+    .unit-text { font-style: italic; font-weight: 400; }
+    .column-number-row th { background: #FFFFFF; color: #111827; font-weight: 500; }
     .custom-table tr.group-header td { background: #EFF6FF; font-weight: 700; color: var(--primary-color); text-align: left; }
     .custom-table tr.total-row td { background: #FEF3C7; font-weight: 700; }
     .cell-formula-ok { color: var(--success-color); }
@@ -100,6 +103,31 @@
     .local03-table th.money-col { min-width: 118px; }
     .local03-table td { white-space: nowrap; padding: 7px 6px; }
     .local03-table td.local-cell { text-align: left; white-space: normal; font-weight: 600; color: var(--text-main); }
+    .classification-summary { display: grid; grid-template-columns: repeat(5, minmax(140px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .classification-card { border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: #fff; padding: 12px; }
+    .classification-card .label { font-size: 12px; color: var(--text-muted); font-weight: 600; min-height: 34px; }
+    .classification-card .value { color: var(--primary-color); font-size: 22px; line-height: 1.2; font-weight: 700; margin-top: 6px; }
+    .classification-table { min-width: 1750px; }
+    .classification-table th { white-space: normal; min-width: 86px; }
+    .classification-table th.unit-col { min-width: 220px; }
+    .classification-table th.status-col { min-width: 130px; }
+    .classification-table tr.data-row { cursor: pointer; }
+    .classification-table td.unit-cell { text-align: left; white-space: normal; color: var(--primary-color); font-weight: 700; }
+    .classification-table tr.data-row:hover td { background: #EFF6FF; }
+    .sub-report-grid { display: grid; grid-template-columns: minmax(320px, 0.8fr) minmax(520px, 1.2fr); gap: 14px; margin-top: 14px; }
+    .mini-table-title { color: var(--primary-color); font-size: 14px; font-weight: 700; margin: 2px 0 8px; display: flex; align-items: center; gap: 7px; }
+    .pagination-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; color: var(--text-muted); font-size: 12.5px; flex-wrap: wrap; }
+    .pager-buttons { display: flex; align-items: center; gap: 6px; }
+    .pager-buttons button { min-width: 30px; height: 30px; border: 1px solid var(--border-color); background: #fff; border-radius: var(--border-radius-sm); cursor: pointer; font-weight: 600; color: var(--text-main); }
+    .pager-buttons button.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+    @media (max-width: 1200px) {
+        .classification-summary { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+        .sub-report-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+        .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .classification-summary { grid-template-columns: 1fr; }
+    }
     .confirm-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.2s ease; }
     .confirm-modal-overlay.visible { opacity: 1; }
     .sticky-modal-container { background: #fff; border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); max-height: 90vh; display: flex; flex-direction: column; }
@@ -123,8 +151,8 @@
     <div class="card-section">
         <div class="section-title"><span><i class="fa-solid fa-calendar-days"></i> Khối chọn kỳ báo cáo</span></div>
         <div class="filter-grid">
-            <div class="form-group">
-                <span class="form-label">Năm báo cáo</span>
+            <div class="form-group" id="fYearWrap">
+                <span class="form-label" id="fYearLabel">Năm báo cáo</span>
                 <select class="form-control" id="fYear">
                     <option value="2026" selected>2026</option>
                     <option value="2025">2025</option>
@@ -133,28 +161,104 @@
                     <option value="2022">2022</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="fPeriodTypeWrap">
                 <span class="form-label">Loại kỳ báo cáo</span>
                 <select class="form-control" id="fPeriodType">
                     <option value="thuc_te" selected>Báo cáo năm số liệu thực tế (01/01 - 31/10)</option>
                     <option value="chinh_thuc">Số liệu thống kê năm chính thức (01/01 - 31/12)</option>
                 </select>
             </div>
-            <div class="form-group">
-                <span class="form-label">Đơn vị báo cáo</span>
+            <div class="form-group" id="fUnitWrap">
+                <span class="form-label" id="fUnitLabel">Đơn vị báo cáo</span>
                 <select class="form-control" id="fUnit">
+                    <option value="all">Tất cả</option>
                     <option value="stp_hn" selected>Sở Tư pháp Thành phố Hà Nội</option>
                     <option value="stp_hcm">Sở Tư pháp Thành phố Hồ Chí Minh</option>
+                    <option value="stp_hp">Sở Tư pháp Hải Phòng</option>
+                    <option value="stp_ld">Sở Tư pháp Lâm Đồng</option>
+                    <option value="stp_kh">Sở Tư pháp Khánh Hòa</option>
+                    <option value="stp_dn">Sở Tư pháp Đà Nẵng</option>
+                    <option value="stp_ct">Sở Tư pháp Cần Thơ</option>
+                    <option value="stp_bn">Sở Tư pháp Bắc Ninh</option>
+                    <option value="stp_na">Sở Tư pháp Nghệ An</option>
+                    <option value="stp_qn">Sở Tư pháp Quảng Ninh</option>
+                    <option value="stp_bd">Sở Tư pháp Bình Dương</option>
+                    <option value="stp_bt">Sở Tư pháp Bình Thuận</option>
                     <option value="cuc_btnn">Cục Bồi thường nhà nước - Bộ Tư pháp</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="fAgencyTypeWrap">
                 <span class="form-label">Loại cơ quan báo cáo</span>
                 <select class="form-control" id="fAgencyType">
                     <option value="ubnd" selected>UBND cấp tỉnh</option>
                     <option value="tandtc">Tòa án nhân dân tối cao</option>
                     <option value="vksndtc">Viện kiểm sát nhân dân tối cao</option>
                     <option value="bo">Bộ/cơ quan ngang Bộ</option>
+                </select>
+            </div>
+        </div>
+        <div class="filter-grid" id="classificationFilters" style="display:none;">
+            <div class="form-group">
+                <span class="form-label">Tỉnh/Thành phố</span>
+                <select class="form-control" id="fClassificationProvince">
+                    <option value="all" selected>Tất cả</option>
+                    <option value="Hà Nội">Hà Nội</option>
+                    <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
+                    <option value="Hải Phòng">Hải Phòng</option>
+                    <option value="Lâm Đồng">Lâm Đồng</option>
+                    <option value="Khánh Hòa">Khánh Hòa</option>
+                    <option value="Đà Nẵng">Đà Nẵng</option>
+                    <option value="Cần Thơ">Cần Thơ</option>
+                    <option value="Bắc Ninh">Bắc Ninh</option>
+                    <option value="Nghệ An">Nghệ An</option>
+                    <option value="Quảng Ninh">Quảng Ninh</option>
+                    <option value="Bình Dương">Bình Dương</option>
+                    <option value="Bình Thuận">Bình Thuận</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Trạng thái kỳ chấm điểm</span>
+                <select class="form-control" id="fScoringStatus">
+                    <option value="Hoàn thành" selected>Hoàn thành</option>
+                    <option value="all">Tất cả</option>
+                    <option value="Chưa bắt đầu">Chưa bắt đầu</option>
+                    <option value="Đang tự chấm">Đang tự chấm</option>
+                    <option value="Đã gửi BTP">Đã gửi BTP</option>
+                    <option value="BTP đang đánh giá">BTP đang đánh giá</option>
+                    <option value="Không đánh giá">Không đánh giá</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Xếp loại</span>
+                <select class="form-control" id="fRank">
+                    <option value="all" selected>Tất cả</option>
+                    <option value="Tốt">Tốt</option>
+                    <option value="Khá">Khá</option>
+                    <option value="Trung bình">Trung bình</option>
+                    <option value="Yếu">Yếu</option>
+                    <option value="Chưa xếp loại">Chưa xếp loại</option>
+                    <option value="Không đánh giá">Không đánh giá</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <span class="form-label">Nhóm tiêu chí</span>
+                <select class="form-control" id="fCriteria">
+                    <option value="all" selected>Tất cả</option>
+                    <option value="g1">Nhóm I</option>
+                    <option value="g2">Nhóm II</option>
+                    <option value="g3">Nhóm III</option>
+                    <option value="g4">Nhóm IV</option>
+                    <option value="g5">Nhóm V</option>
+                </select>
+            </div>
+        </div>
+        <div class="filter-grid" id="classificationPageFilters" style="display:none;">
+            <div class="form-group">
+                <span class="form-label">Số bản ghi/trang</span>
+                <select class="form-control" id="fPageSize">
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
                 </select>
             </div>
         </div>
@@ -193,6 +297,7 @@
         </div>
         <div class="toolbar-row">
             <span id="reportStatusBadge" class="badge badge-muted" style="align-self:center;">Nháp</span>
+            <button class="btn btn-secondary" id="btnResetFilters" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
             <button class="btn btn-primary" id="btnGenerate" onclick="generateReport()"><i class="fa-solid fa-rotate"></i> Tổng hợp số liệu</button>
         </div>
     </div>
@@ -253,7 +358,7 @@
 
     // ===================== BM03 - Mẫu số 03/BTNN =====================
     const BM03_INDICATORS = [
-        { no: 1, name: 'Tổng số vụ việc thụ lý', unit: 'Vụ việc', formula: [2,3,4,5,6,7,8,9] },
+        { no: 1, name: 'Tổng số vụ việc (vụ việc)', unit: 'Vụ việc', formula: [2,3,4,5,6,7,8,9] },
         { no: 2, name: 'Thụ lý mới - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
         { no: 3, name: 'Thụ lý mới - tại Tòa án (điểm a khoản 1 Điều 52)', unit: 'Vụ việc' },
         { no: 4, name: 'Thụ lý mới - tại Tòa án (điểm b khoản 1, khoản 2 Điều 52)', unit: 'Vụ việc' },
@@ -296,7 +401,7 @@
         { no: 1, name: 'STT/Nhóm lĩnh vực', unit: 'Text', isNote: false, isLabel: true },
         { no: 2, name: 'Số tiền đã chi trả xong cho người yêu cầu bồi thường', unit: 'Nghìn đồng', isMoney: true },
         { no: 3, name: 'Tổng số vụ việc xem xét trách nhiệm hoàn trả', unit: 'Vụ việc', formula: [4,6] },
-        { no: 4, name: 'Có QĐ hoàn trả có hiệu lực và đã thực hiện hoàn trả', unit: 'Vụ việc' },
+        { no: 4, name: 'Số vụ việc có Quyết định có hiệu lực pháp luật và đã thực hiện hoàn trả', unit: 'Vụ việc' },
         { no: 5, name: 'Số tiền phải hoàn trả', unit: 'Nghìn đồng', isMoney: true },
         { no: 6, name: 'Đang xem xét trách nhiệm hoàn trả', unit: 'Vụ việc' },
         { no: 7, name: 'Không xem xét - người thi hành công vụ không có lỗi', unit: 'Vụ việc' },
@@ -391,12 +496,37 @@
         { local: 'Thành phố Hồ Chí Minh', values: [null,8,3,1,0, 3,1,0,0, null,6,1,1,0, 760000, null,3,1,0,1, 1,0, 6,620000,140000] }
     ];
 
+    const CLASSIFICATION_CRITERIA = [
+        { key: 'g1', label: 'Nhóm I', max: 50, threshold: 35 },
+        { key: 'g2', label: 'Nhóm II', max: 20, threshold: 14 },
+        { key: 'g3', label: 'Nhóm III', max: 10, threshold: 7 },
+        { key: 'g4', label: 'Nhóm IV', max: 10, threshold: 7 },
+        { key: 'g5', label: 'Nhóm V', max: 10, threshold: 7 }
+    ];
+
+    const CLASSIFICATION_ROWS = [
+        { unit: 'Sở Tư pháp Thành phố Hà Nội', province: 'Hà Nội', year: '2026', status: 'Hoàn thành', selfScore: 92.5, btpScore: 90.5, rank: 'Tốt', g1: 45, g2: 18, g3: 9, g4: 8.5, g5: 7, bonus: 5, penalty: 2, sentDate: '12/11/2026', completedDate: '24/11/2026' },
+        { unit: 'Sở Tư pháp Thành phố Hồ Chí Minh', province: 'Thành phố Hồ Chí Minh', year: '2026', status: 'Hoàn thành', selfScore: 88, btpScore: 84, rank: 'Khá', g1: 41, g2: 17, g3: 8, g4: 8, g5: 7, bonus: 4, penalty: 1, sentDate: '13/11/2026', completedDate: '25/11/2026' },
+        { unit: 'Sở Tư pháp Hải Phòng', province: 'Hải Phòng', year: '2026', status: 'Hoàn thành', selfScore: 81, btpScore: 78, rank: 'Khá', g1: 38, g2: 15, g3: 8, g4: 7, g5: 6, bonus: 5, penalty: 1, sentDate: '14/11/2026', completedDate: '26/11/2026' },
+        { unit: 'Sở Tư pháp Lâm Đồng', province: 'Lâm Đồng', year: '2026', status: 'Hoàn thành', selfScore: 70, btpScore: 66.5, rank: 'Trung bình', g1: 32, g2: 13, g3: 7, g4: 6.5, g5: 6, bonus: 3, penalty: 1, sentDate: '15/11/2026', completedDate: '28/11/2026' },
+        { unit: 'Sở Tư pháp Khánh Hòa', province: 'Khánh Hòa', year: '2026', status: 'Hoàn thành', selfScore: 59, btpScore: 54, rank: 'Yếu', g1: 27, g2: 10, g3: 6, g4: 5, g5: 5, bonus: 2, penalty: 1, sentDate: '16/11/2026', completedDate: '29/11/2026' },
+        { unit: 'Sở Tư pháp Đà Nẵng', province: 'Đà Nẵng', year: '2026', status: 'Hoàn thành', selfScore: 94, btpScore: 91, rank: 'Tốt', g1: 46, g2: 18.5, g3: 9, g4: 8.5, g5: 7, bonus: 4, penalty: 2, sentDate: '11/11/2026', completedDate: '23/11/2026' },
+        { unit: 'Sở Tư pháp Cần Thơ', province: 'Cần Thơ', year: '2026', status: 'Hoàn thành', selfScore: 76, btpScore: 72, rank: 'Khá', g1: 36, g2: 14, g3: 7, g4: 7, g5: 6, bonus: 4, penalty: 2, sentDate: '17/11/2026', completedDate: '30/11/2026' },
+        { unit: 'Sở Tư pháp Bắc Ninh', province: 'Bắc Ninh', year: '2026', status: 'BTP đang đánh giá', selfScore: 83, btpScore: null, rank: 'Chưa xếp loại', g1: 40, g2: 16, g3: 8, g4: 7, g5: 7, bonus: 5, penalty: 0, sentDate: '18/11/2026', completedDate: '' },
+        { unit: 'Sở Tư pháp Nghệ An', province: 'Nghệ An', year: '2026', status: 'Đã gửi BTP', selfScore: 79, btpScore: null, rank: 'Chưa xếp loại', g1: 38, g2: 15, g3: 8, g4: 7, g5: 6, bonus: 5, penalty: 0, sentDate: '19/11/2026', completedDate: '' },
+        { unit: 'Sở Tư pháp Quảng Ninh', province: 'Quảng Ninh', year: '2026', status: 'Đang tự chấm', selfScore: 64, btpScore: null, rank: 'Chưa xếp loại', g1: 31, g2: 12, g3: 6, g4: 6, g5: 5, bonus: 4, penalty: 0, sentDate: '', completedDate: '' },
+        { unit: 'Sở Tư pháp Bình Dương', province: 'Bình Dương', year: '2026', status: 'Chưa bắt đầu', selfScore: null, btpScore: null, rank: 'Chưa xếp loại', g1: null, g2: null, g3: null, g4: null, g5: null, bonus: 0, penalty: 0, sentDate: '', completedDate: '' },
+        { unit: 'Sở Tư pháp Bình Thuận', province: 'Bình Thuận', year: '2026', status: 'Không đánh giá', selfScore: null, btpScore: null, rank: 'Không đánh giá', g1: null, g2: null, g3: null, g4: null, g5: null, bonus: 0, penalty: 0, sentDate: '', completedDate: '' },
+        { unit: 'Sở Tư pháp Thành phố Hà Nội', province: 'Hà Nội', year: '2025', status: 'Hoàn thành', selfScore: 89, btpScore: 87, rank: 'Khá', g1: 43, g2: 17, g3: 8, g4: 8, g5: 7, bonus: 5, penalty: 1, sentDate: '10/11/2025', completedDate: '22/11/2025' }
+    ];
+
     const MODULE_META = {
         thong_ke_thoi_gian: { title: 'Thống kê số lượng vụ việc YCBT theo thời gian', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo tháng/quý/năm trong kỳ báo cáo.', listLabel: 'Bảng thống kê vụ việc YCBT theo thời gian', type: 'core', dataKey: 'time', groupLabel: 'Tháng/Quý/Năm', showTrend: true },
         thong_ke_cap: { title: 'Thống kê chi tiết vụ việc YCBT theo các cấp', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo loại cơ quan báo cáo [DM_43].', listLabel: 'Bảng thống kê vụ việc YCBT theo các cấp', type: 'core', dataKey: 'level', groupLabel: 'Loại cơ quan báo cáo' },
         thong_ke_pham_vi: { title: 'Thống kê chi tiết vụ việc YCBT theo phạm vi', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo 06 lĩnh vực phát sinh thiệt hại [DM_22].', listLabel: 'Bảng thống kê vụ việc YCBT theo phạm vi', type: 'core', dataKey: 'scope', groupLabel: 'Lĩnh vực phát sinh thiệt hại' },
         thong_ke_co_quan: { title: 'Thống kê chi tiết vụ việc YCBT theo cơ quan', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo từng đơn vị/cơ quan cụ thể.', listLabel: 'Bảng thống kê vụ việc YCBT theo cơ quan', type: 'core', dataKey: 'agency', groupLabel: 'Đơn vị/Cơ quan', showAgencyInfo: true },
         thong_ke_dia_phuong: { title: 'Thống kê kết quả giải quyết YCBT tại địa phương', subtitle: 'Tái sử dụng chỉ tiêu Mẫu số 03/BTNN, nhóm theo từng tỉnh/thành.', listLabel: 'Bảng kết quả giải quyết YCBT tại địa phương theo chỉ tiêu Mẫu 03/BTNN', type: 'local03' },
+        xep_loai: { title: 'Báo cáo tổng hợp kết quả đánh giá và xếp loại kết quả công tác bồi thường nhà nước', subtitle: 'Tổng hợp kết quả chấm điểm theo đơn vị, địa phương, trạng thái kỳ chấm điểm và nhóm tiêu chí.', listLabel: 'Bảng kết quả tổng hợp theo đơn vị', type: 'classification' },
         mau01: { title: 'Mẫu 01 - Danh mục vụ việc giải quyết yêu cầu bồi thường', subtitle: 'Danh mục chi tiết vụ việc giải quyết yêu cầu bồi thường theo Điều 10 Thông tư 08/2019/TT-BTP.', listLabel: 'Danh mục vụ việc theo 06 lĩnh vực phát sinh thiệt hại' },
         mau03: { title: 'Mẫu 03 - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường', subtitle: 'Báo cáo tổng hợp theo Mẫu số 03/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.', listLabel: 'Mẫu số 03/BTNN - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường' },
         mau04: { title: 'Mẫu 04 - Tình hình thực hiện trách nhiệm hoàn trả', subtitle: 'Báo cáo tình hình thực hiện trách nhiệm hoàn trả theo Mẫu số 04/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.', listLabel: 'Mẫu số 04/BTNN - Tình hình thực hiện trách nhiệm hoàn trả' }
@@ -406,6 +536,8 @@
     if (!MODULE_META[currentModuleKey]) currentModuleKey = 'mau01';
     let reportGenerated = false;
     let editingNote = null;
+    let classificationPage = 1;
+    let classificationSort = { key: 'unit', direction: 'asc' };
 
     function fmtMoney(v) { return (v || 0).toLocaleString('vi-VN'); }
 
@@ -416,7 +548,12 @@
         document.getElementById('listTitle').innerHTML = `<i class="fa-solid fa-table"></i> ${meta.listLabel}`;
         document.getElementById('reportTableWrap').innerHTML = '';
         document.getElementById('alertArea').innerHTML = '';
+        if (currentModuleKey === 'xep_loai') {
+            document.getElementById('fUnit').value = 'all';
+            document.getElementById('fScoringStatus').value = 'Hoàn thành';
+        }
         updateSupplementFilters(meta);
+        updatePrimaryFilters(meta);
         reportGenerated = false;
     }
 
@@ -427,10 +564,27 @@
         const meta = MODULE_META[currentModuleKey];
         if (meta.type === 'core') renderCoreReport(meta);
         else if (meta.type === 'local03') renderLocal03Report();
+        else if (meta.type === 'classification') renderClassificationReport();
         else if (currentModuleKey === 'mau01') renderMau01();
         else if (currentModuleKey === 'mau03') renderMau03Template();
         else renderMau04Template();
-        showToast('Đã tổng hợp số liệu kỳ báo cáo.', 'success');
+        if (reportGenerated) showToast('Đã tổng hợp số liệu kỳ báo cáo.', 'success');
+    }
+
+    function updatePrimaryFilters(meta) {
+        const periodWrap = document.getElementById('fPeriodTypeWrap');
+        const agencyTypeWrap = document.getElementById('fAgencyTypeWrap');
+        const yearLabel = document.getElementById('fYearLabel');
+        const unitLabel = document.getElementById('fUnitLabel');
+        const classificationFilters = document.getElementById('classificationFilters');
+        const classificationPageFilters = document.getElementById('classificationPageFilters');
+        const isClassification = meta.type === 'classification';
+        yearLabel.textContent = isClassification ? 'Năm đánh giá' : 'Năm báo cáo';
+        unitLabel.textContent = isClassification ? 'Đơn vị Sở Tư pháp' : 'Đơn vị báo cáo';
+        periodWrap.style.display = isClassification ? 'none' : 'flex';
+        agencyTypeWrap.style.display = isClassification ? 'none' : 'flex';
+        classificationFilters.style.display = isClassification ? 'grid' : 'none';
+        classificationPageFilters.style.display = isClassification ? 'grid' : 'none';
     }
 
     function updateSupplementFilters(meta) {
@@ -439,11 +593,37 @@
         const provinceWrap = document.getElementById('fProvinceWrap');
         const scopeWrap = document.getElementById('fReportScopeWrap');
         if (!wrap || !fieldWrap || !provinceWrap || !scopeWrap) return;
+        if (meta.type === 'classification') {
+            wrap.style.display = 'none';
+            return;
+        }
         const isManagementReport = meta.type === 'core' || meta.type === 'local03';
         wrap.style.display = isManagementReport ? 'grid' : 'none';
         fieldWrap.style.display = isManagementReport ? 'flex' : 'none';
         provinceWrap.style.display = (meta.dataKey === 'agency' || meta.type === 'local03') ? 'flex' : 'none';
         scopeWrap.style.display = (meta.dataKey === 'time' || meta.dataKey === 'agency') ? 'flex' : 'none';
+    }
+
+    function resetFilters() {
+        document.getElementById('fYear').value = '2026';
+        document.getElementById('fPeriodType').value = 'thuc_te';
+        document.getElementById('fUnit').value = currentModuleKey === 'xep_loai' ? 'all' : 'stp_hn';
+        document.getElementById('fAgencyType').value = 'ubnd';
+        document.getElementById('fFieldGroup').value = 'all';
+        document.getElementById('fProvince').value = 'all';
+        document.getElementById('fReportScope').value = 'all';
+        document.getElementById('fClassificationProvince').value = 'all';
+        document.getElementById('fScoringStatus').value = currentModuleKey === 'xep_loai' ? 'Hoàn thành' : 'all';
+        document.getElementById('fRank').value = 'all';
+        document.getElementById('fCriteria').value = 'all';
+        document.getElementById('fPageSize').value = '20';
+        classificationPage = 1;
+        reportGenerated = false;
+        document.getElementById('reportStatusBadge').textContent = 'Nháp';
+        document.getElementById('reportStatusBadge').className = 'badge badge-muted';
+        document.getElementById('reportTableWrap').innerHTML = '';
+        document.getElementById('alertArea').innerHTML = '';
+        showToast('Đã xóa bộ lọc.', 'success');
     }
 
     function computeTotals(indicators, data) {
@@ -574,6 +754,18 @@
             local: item.local,
             values: applyFormulas(BM03_INDICATORS, item.values.slice())
         }));
+        const intakeColumnLevel3 = `
+                    <th rowspan="3">Thụ lý tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th colspan="3">Thụ lý tại Tòa án</th>`;
+        const handlingColumnLevel3 = `
+                    <th rowspan="3">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th colspan="3">Tại Tòa án</th>`;
+        const fourColumnLevel4 = `
+                    <th colspan="2">Khởi kiện vụ án dân sự</th>
+                    <th rowspan="2">Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>`;
+        const fourColumnLevel5 = `
+                    <th>Theo điểm a khoản 1 Điều 52</th>
+                    <th>Theo điểm b khoản 1, khoản 2 Điều 52</th>`;
 
         const totals = new Array(25).fill(0);
         rows.forEach(row => {
@@ -586,51 +778,46 @@
         let html = `<table class="custom-table local03-table">
             <thead>
                 <tr>
-                    <th rowspan="4" class="local-col">Tỉnh/TP</th>
+                    <th rowspan="5" class="local-col">Tỉnh/TP</th>
                     <th colspan="9">Thụ lý vụ việc (vụ việc)</th>
                     <th colspan="13">Tình hình giải quyết vụ việc</th>
                     <th colspan="3">Chi trả tiền bồi thường</th>
                 </tr>
                 <tr>
-                    <th rowspan="3">Tổng số vụ việc thụ lý</th>
+                    <th rowspan="4">Tổng số vụ việc (vụ việc)</th>
                     <th colspan="4">Số vụ việc thụ lý mới</th>
                     <th colspan="4">Số vụ việc kỳ trước chuyển sang</th>
                     <th colspan="6">Đã có văn bản giải quyết bồi thường có hiệu lực pháp luật</th>
                     <th colspan="5">Đang giải quyết (vụ việc)</th>
                     <th colspan="2">Đình chỉ (vụ việc)</th>
-                    <th rowspan="3">Số vụ việc đã chi trả (vụ việc)</th>
-                    <th rowspan="3" class="money-col">Số tiền đã chi trả theo quyết định có hiệu lực của cơ quan trực tiếp quản lý người thi hành công vụ (nghìn đồng)</th>
-                    <th rowspan="3" class="money-col">Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án (nghìn đồng)</th>
+                    <th rowspan="4">Số vụ việc đã chi trả (vụ việc)</th>
+                    <th rowspan="4" class="money-col">Số tiền đã chi trả theo quyết định có hiệu lực của cơ quan trực tiếp quản lý người thi hành công vụ <span class="unit-text">(nghìn đồng)</span></th>
+                    <th rowspan="4" class="money-col">Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án <span class="unit-text">(nghìn đồng)</span></th>
                 </tr>
                 <tr>
-                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th colspan="2">Tại Tòa án - Khởi kiện vụ án dân sự</th>
-                    <th rowspan="2">Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th colspan="2">Tại Tòa án - Khởi kiện vụ án dân sự</th>
-                    <th rowspan="2">Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th rowspan="2">Tổng số vụ việc</th>
-                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th colspan="2">Tại Tòa án - Khởi kiện vụ án dân sự</th>
-                    <th rowspan="2">Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th rowspan="2" class="money-col">Số tiền bồi thường (nghìn đồng)</th>
-                    <th rowspan="2">Tổng số vụ việc</th>
-                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th colspan="2">Tại Tòa án - Khởi kiện vụ án dân sự</th>
-                    <th rowspan="2">Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th rowspan="2">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th rowspan="2">Tại Tòa án theo thủ tục tố tụng</th>
+                    ${intakeColumnLevel3}
+                    ${intakeColumnLevel3}
+                    <th rowspan="3">Tổng số vụ việc <span class="unit-text">(vụ việc)</span></th>
+                    ${handlingColumnLevel3}
+                    <th rowspan="3" class="money-col">Số tiền bồi thường <span class="unit-text">(nghìn đồng)</span></th>
+                    <th rowspan="3">Tổng số vụ việc</th>
+                    ${handlingColumnLevel3}
+                    <th rowspan="3">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th rowspan="3">Tại Tòa án theo thủ tục tố tụng</th>
                 </tr>
                 <tr>
-                    <th>Theo điểm a khoản 1 Điều 52</th>
-                    <th>Theo điểm b khoản 1 và khoản 2 Điều 52</th>
-                    <th>Theo điểm a khoản 1 Điều 52</th>
-                    <th>Theo điểm b khoản 1 và khoản 2 Điều 52</th>
-                    <th>Theo điểm a khoản 1 Điều 52</th>
-                    <th>Theo điểm b khoản 1 và khoản 2 Điều 52</th>
-                    <th>Theo điểm a khoản 1 Điều 52</th>
-                    <th>Theo điểm b khoản 1 và khoản 2 Điều 52</th>
+                    ${fourColumnLevel4}
+                    ${fourColumnLevel4}
+                    ${fourColumnLevel4}
+                    ${fourColumnLevel4}
                 </tr>
+                <tr>
+                    ${fourColumnLevel5}
+                    ${fourColumnLevel5}
+                    ${fourColumnLevel5}
+                    ${fourColumnLevel5}
+                </tr>
+                <tr class="column-number-row"><th>Địa phương</th>${Array.from({ length: 25 }, (_, i) => `<th>(${i + 1})</th>`).join('')}</tr>
             </thead><tbody>`;
 
         rows.forEach(row => {
@@ -651,6 +838,210 @@
         document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo từng địa phương, tái sử dụng cấu trúc chỉ tiêu Mẫu số 03/BTNN.</div>`;
     }
 
+    function getUnitFilterText() {
+        const unitSelect = document.getElementById('fUnit');
+        return unitSelect.value === 'all' ? 'all' : unitSelect.options[unitSelect.selectedIndex].textContent;
+    }
+
+    function getClassificationRows() {
+        const year = document.getElementById('fYear').value;
+        const unit = getUnitFilterText();
+        const province = document.getElementById('fClassificationProvince').value;
+        const status = document.getElementById('fScoringStatus').value;
+        const rank = document.getElementById('fRank').value;
+        return CLASSIFICATION_ROWS.filter(row => {
+            if (row.year !== year) return false;
+            if (unit !== 'all' && row.unit !== unit) return false;
+            if (province !== 'all' && row.province !== province) return false;
+            if (status !== 'all' && row.status !== status) return false;
+            if (rank !== 'all' && row.rank !== rank) return false;
+            return true;
+        }).sort((a, b) => {
+            const key = classificationSort.key;
+            const aVal = a[key] ?? '';
+            const bVal = b[key] ?? '';
+            const result = typeof aVal === 'number' && typeof bVal === 'number'
+                ? aVal - bVal
+                : String(aVal).localeCompare(String(bVal), 'vi');
+            return classificationSort.direction === 'asc' ? result : -result;
+        });
+    }
+
+    function fmtScore(value) {
+        return value === null || value === undefined ? '-' : value.toLocaleString('vi-VN', { maximumFractionDigits: 1 });
+    }
+
+    function getRankBadge(rank) {
+        if (rank === 'Tốt') return 'badge-success';
+        if (rank === 'Khá' || rank === 'Trung bình') return 'badge-warning';
+        return 'badge-muted';
+    }
+
+    function getStatusBadge(status) {
+        if (status === 'Hoàn thành') return 'badge-success';
+        if (status === 'Đã gửi BTP' || status === 'BTP đang đánh giá' || status === 'Đang tự chấm') return 'badge-warning';
+        return 'badge-muted';
+    }
+
+    function renderClassificationSummary(rows) {
+        const evaluated = rows.filter(row => row.status === 'Hoàn thành');
+        const completed = evaluated.length;
+        const total = rows.length;
+        const avgBtp = completed ? evaluated.reduce((sum, row) => sum + (row.btpScore || 0), 0) / completed : 0;
+        const completionRate = total ? Math.round((completed / total) * 1000) / 10 : 0;
+        return `<div class="classification-summary">
+            <div class="classification-card"><div class="label">Tổng số đơn vị được đánh giá</div><div class="value">${total}</div></div>
+            <div class="classification-card"><div class="label">Đã hoàn thành đánh giá</div><div class="value">${completed}</div></div>
+            <div class="classification-card"><div class="label">Chưa hoàn thành đánh giá</div><div class="value">${Math.max(total - completed, 0)}</div></div>
+            <div class="classification-card"><div class="label">Điểm Bộ Tư pháp trung bình</div><div class="value">${fmtScore(avgBtp)}</div></div>
+            <div class="classification-card"><div class="label">Tỷ lệ hoàn thành đánh giá</div><div class="value">${completionRate}%</div></div>
+        </div>`;
+    }
+
+    function sortClassification(key) {
+        if (classificationSort.key === key) {
+            classificationSort.direction = classificationSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            classificationSort = { key, direction: 'asc' };
+        }
+        classificationPage = 1;
+        renderClassificationReport();
+    }
+
+    function goClassificationPage(page) {
+        classificationPage = page;
+        renderClassificationReport();
+    }
+
+    function sortIcon(key) {
+        if (classificationSort.key !== key) return '<i class="fa-solid fa-sort"></i>';
+        return classificationSort.direction === 'asc' ? '<i class="fa-solid fa-sort-up"></i>' : '<i class="fa-solid fa-sort-down"></i>';
+    }
+
+    function renderClassificationMainTable(rows) {
+        const pageSize = Number(document.getElementById('fPageSize').value) || 20;
+        const totalPages = Math.max(Math.ceil(rows.length / pageSize), 1);
+        if (classificationPage > totalPages) classificationPage = totalPages;
+        const start = (classificationPage - 1) * pageSize;
+        const pageRows = rows.slice(start, start + pageSize);
+
+        let html = `<table class="custom-table classification-table">
+            <thead><tr>
+                <th>STT</th>
+                <th class="unit-col" onclick="sortClassification('unit')" style="cursor:pointer;">Đơn vị Sở Tư pháp ${sortIcon('unit')}</th>
+                <th onclick="sortClassification('province')" style="cursor:pointer;">Tỉnh/Thành phố ${sortIcon('province')}</th>
+                <th>Năm đánh giá</th>
+                <th class="status-col" onclick="sortClassification('status')" style="cursor:pointer;">Trạng thái kỳ chấm điểm ${sortIcon('status')}</th>
+                <th>Điểm tự chấm</th>
+                <th onclick="sortClassification('btpScore')" style="cursor:pointer;">Điểm Bộ Tư pháp đánh giá ${sortIcon('btpScore')}</th>
+                <th>Chênh lệch điểm</th>
+                <th onclick="sortClassification('rank')" style="cursor:pointer;">Xếp loại ${sortIcon('rank')}</th>
+                <th>Nhóm I</th>
+                <th>Nhóm II</th>
+                <th>Nhóm III</th>
+                <th>Nhóm IV</th>
+                <th>Nhóm V</th>
+                <th>Điểm thưởng</th>
+                <th>Điểm trừ</th>
+                <th>Ngày Sở Tư pháp gửi</th>
+                <th>Ngày Bộ Tư pháp hoàn thành đánh giá</th>
+            </tr></thead><tbody>`;
+
+        pageRows.forEach((row, index) => {
+            const diff = row.btpScore === null || row.selfScore === null ? '-' : fmtScore(row.btpScore - row.selfScore);
+            html += `<tr class="data-row" onclick="openClassificationDetail('${encodeURIComponent(row.unit)}')">
+                <td>${start + index + 1}</td>
+                <td class="unit-cell">${row.unit}</td>
+                <td>${row.province}</td>
+                <td>${row.year}</td>
+                <td><span class="badge ${getStatusBadge(row.status)}">${row.status}</span></td>
+                <td>${fmtScore(row.selfScore)}</td>
+                <td>${fmtScore(row.btpScore)}</td>
+                <td>${diff}</td>
+                <td><span class="badge ${getRankBadge(row.rank)}">${row.rank}</span></td>
+                <td>${fmtScore(row.g1)}</td>
+                <td>${fmtScore(row.g2)}</td>
+                <td>${fmtScore(row.g3)}</td>
+                <td>${fmtScore(row.g4)}</td>
+                <td>${fmtScore(row.g5)}</td>
+                <td>${fmtScore(row.bonus)}</td>
+                <td>${fmtScore(row.penalty)}</td>
+                <td>${row.sentDate || '-'}</td>
+                <td>${row.completedDate || '-'}</td>
+            </tr>`;
+        });
+        html += '</tbody></table>';
+        html += `<div class="pagination-row">
+            <span>Hiển thị ${rows.length ? start + 1 : 0}-${Math.min(start + pageSize, rows.length)} / ${rows.length} bản ghi</span>
+            <div class="pager-buttons">
+                <button onclick="goClassificationPage(${Math.max(classificationPage - 1, 1)})" ${classificationPage === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>
+                ${Array.from({ length: totalPages }, (_, i) => `<button class="${classificationPage === i + 1 ? 'active' : ''}" onclick="goClassificationPage(${i + 1})">${i + 1}</button>`).join('')}
+                <button onclick="goClassificationPage(${Math.min(classificationPage + 1, totalPages)})" ${classificationPage === totalPages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>`;
+        return html;
+    }
+
+    function renderRankDistribution(rows) {
+        const completedRows = rows.filter(row => row.status === 'Hoàn thành');
+        const ranks = ['Tốt', 'Khá', 'Trung bình', 'Yếu', 'Chưa xếp loại', 'Không đánh giá'];
+        let html = `<div><div class="mini-table-title"><i class="fa-solid fa-chart-pie"></i> Bảng phân bố xếp loại</div>
+            <div class="table-container"><table class="custom-table"><thead><tr>
+                <th>Xếp loại</th><th>Số đơn vị</th><th>Tỷ lệ</th><th>Điểm Bộ Tư pháp trung bình theo xếp loại</th>
+            </tr></thead><tbody>`;
+        ranks.forEach(rank => {
+            const rankRows = rows.filter(row => row.rank === rank);
+            const avgRows = rankRows.filter(row => typeof row.btpScore === 'number');
+            const avg = avgRows.length ? avgRows.reduce((sum, row) => sum + row.btpScore, 0) / avgRows.length : null;
+            const rate = rows.length ? Math.round((rankRows.length / rows.length) * 1000) / 10 : 0;
+            html += `<tr><td><span class="badge ${getRankBadge(rank)}">${rank}</span></td><td>${rankRows.length}</td><td>${rate}%</td><td>${fmtScore(avg)}</td></tr>`;
+        });
+        html += `<tr class="total-row"><td>Tổng cộng</td><td>${rows.length}</td><td>${rows.length ? '100%' : '0%'}</td><td>${fmtScore(completedRows.length ? completedRows.reduce((sum, row) => sum + (row.btpScore || 0), 0) / completedRows.length : null)}</td></tr>`;
+        html += '</tbody></table></div></div>';
+        return html;
+    }
+
+    function renderCriteriaSummary(rows) {
+        const selectedCriteria = document.getElementById('fCriteria').value;
+        const criteriaRows = selectedCriteria === 'all'
+            ? CLASSIFICATION_CRITERIA
+            : CLASSIFICATION_CRITERIA.filter(item => item.key === selectedCriteria);
+        let html = `<div><div class="mini-table-title"><i class="fa-solid fa-list-check"></i> Bảng tổng hợp theo nhóm tiêu chí</div>
+            <div class="table-container"><table class="custom-table"><thead><tr>
+                <th>Nhóm tiêu chí</th><th>Điểm tối đa</th><th>Điểm tự chấm trung bình</th><th>Điểm Bộ Tư pháp trung bình</th><th>Chênh lệch trung bình</th><th>Số đơn vị dưới ngưỡng</th>
+            </tr></thead><tbody>`;
+        criteriaRows.forEach(criteria => {
+            const scoredRows = rows.filter(row => typeof row[criteria.key] === 'number');
+            const selfAvg = scoredRows.length ? scoredRows.reduce((sum, row) => sum + row[criteria.key], 0) / scoredRows.length : null;
+            const completedRows = scoredRows.filter(row => row.status === 'Hoàn thành');
+            const btpAvg = completedRows.length ? completedRows.reduce((sum, row) => sum + row[criteria.key], 0) / completedRows.length : null;
+            const diffAvg = btpAvg === null || selfAvg === null ? null : btpAvg - selfAvg;
+            const belowThreshold = scoredRows.filter(row => row[criteria.key] < criteria.threshold).length;
+            html += `<tr><td class="text-left"><strong>${criteria.label}</strong></td><td>${criteria.max}</td><td>${fmtScore(selfAvg)}</td><td>${fmtScore(btpAvg)}</td><td>${fmtScore(diffAvg)}</td><td>${belowThreshold}</td></tr>`;
+        });
+        html += '</tbody></table></div></div>';
+        return html;
+    }
+
+    function renderClassificationReport() {
+        const rows = getClassificationRows();
+        if (rows.length === 0) {
+            reportGenerated = false;
+            document.getElementById('reportTableWrap').innerHTML = '<div style="padding:24px; text-align:center; color:var(--text-muted);">Không có dữ liệu phù hợp với điều kiện lọc.</div>';
+            document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-warning"><i class="fa-solid fa-triangle-exclamation"></i> Không có dữ liệu báo cáo xếp loại theo điều kiện lọc đã chọn.</div>`;
+            return;
+        }
+        let html = renderClassificationSummary(rows);
+        html += renderClassificationMainTable(rows);
+        html += `<div class="sub-report-grid">${renderRankDistribution(rows)}${renderCriteriaSummary(rows)}</div>`;
+        document.getElementById('reportTableWrap').innerHTML = html;
+        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo kết quả chấm điểm, đánh giá và xếp loại công tác BTNN.</div>`;
+    }
+
+    function openClassificationDetail(unit) {
+        window.location.href = `../UC467_to_UC476/quan_ly_cham_diem_btnn.html?mode=view&unit=${unit}`;
+    }
+
     function getMau03Value(row, no) {
         const idx = BM03_INDICATORS.findIndex(ind => ind.no === no);
         return idx >= 0 ? row[idx] : 0;
@@ -666,62 +1057,75 @@
     function renderMau03Template() {
         const rows = FIELDS.map(f => applyFormulas(BM03_INDICATORS, (BM03_DATA[f] || BM03_INDICATORS.map(() => 0)).slice()));
         const totalsRow = applyFormulas(BM03_INDICATORS, computeTotals(BM03_INDICATORS, BM03_DATA));
+        const intakeColumnLevel3 = `
+                    <th rowspan="3">Thụ lý tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th colspan="3">Thụ lý tại Tòa án</th>`;
+        const handlingColumnLevel3 = `
+                    <th rowspan="3">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th colspan="3">Tại Tòa án</th>`;
+        const fourColumnLevel4 = `
+                    <th colspan="2">Khởi kiện vụ án dân sự</th>
+                    <th rowspan="2">Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>`;
+        const fourColumnLevel5 = `
+                    <th>Theo điểm a khoản 1 Điều 52</th>
+                    <th>Theo điểm b khoản 1, khoản 2 Điều 52</th>`;
 
         let html = `<table class="custom-table mau03-table">
             <thead>
                 <tr>
-                    <th rowspan="3" class="stt-col">STT</th>
-                    <th rowspan="3" class="field-col">Lĩnh vực phát sinh thiệt hại</th>
+                    <th rowspan="5" class="stt-col">STT</th>
                     <th colspan="9">Thụ lý vụ việc (vụ việc)</th>
                     <th colspan="13">Tình hình giải quyết vụ việc</th>
                     <th colspan="3">Chi trả tiền bồi thường</th>
                 </tr>
                 <tr>
-                    <th rowspan="2">Tổng số vụ việc thụ lý</th>
+                    <th rowspan="4">Tổng số vụ việc (vụ việc)</th>
                     <th colspan="4">Số vụ việc thụ lý mới</th>
                     <th colspan="4">Số vụ việc kỳ trước chuyển sang</th>
                     <th colspan="6">Đã có văn bản giải quyết bồi thường có hiệu lực pháp luật</th>
                     <th colspan="5">Đang giải quyết (vụ việc)</th>
                     <th colspan="2">Đình chỉ (vụ việc)</th>
-                    <th rowspan="2">Số vụ việc đã chi trả (vụ việc)</th>
-                    <th rowspan="2" class="money-col">Số tiền đã chi trả theo quyết định có hiệu lực của cơ quan trực tiếp quản lý người thi hành công vụ (nghìn đồng)</th>
-                    <th rowspan="2" class="money-col">Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án (nghìn đồng)</th>
+                    <th rowspan="4">Số vụ việc đã chi trả (vụ việc)</th>
+                    <th rowspan="4" class="money-col">Số tiền đã chi trả theo quyết định có hiệu lực của cơ quan trực tiếp quản lý người thi hành công vụ <span class="unit-text">(nghìn đồng)</span></th>
+                    <th rowspan="4" class="money-col">Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án <span class="unit-text">(nghìn đồng)</span></th>
                 </tr>
                 <tr>
-                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th>Tại Tòa án - Khởi kiện vụ án dân sự</th>
-                    <th>Tại Tòa án - Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th>Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th>Tại Tòa án - Khởi kiện vụ án dân sự</th>
-                    <th>Tại Tòa án - Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th>Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th>Tổng số vụ việc</th>
-                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th>Tại Tòa án - Khởi kiện vụ án dân sự</th>
-                    <th>Tại Tòa án - Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th>Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th class="money-col">Số tiền bồi thường (nghìn đồng)</th>
-                    <th>Tổng số vụ việc</th>
-                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th>Tại Tòa án - Khởi kiện vụ án dân sự</th>
-                    <th>Tại Tòa án - Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th>Trong quá trình tố tụng hình sự, tố tụng hành chính</th>
-                    <th>Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
-                    <th>Tại Tòa án theo thủ tục tố tụng</th>
+                    ${intakeColumnLevel3}
+                    ${intakeColumnLevel3}
+                    <th rowspan="3">Tổng số vụ việc <span class="unit-text">(vụ việc)</span></th>
+                    ${handlingColumnLevel3}
+                    <th rowspan="3" class="money-col">Số tiền bồi thường <span class="unit-text">(nghìn đồng)</span></th>
+                    <th rowspan="3">Tổng số vụ việc</th>
+                    ${handlingColumnLevel3}
+                    <th rowspan="3">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                    <th rowspan="3">Tại Tòa án theo thủ tục tố tụng</th>
                 </tr>
+                <tr>
+                    ${fourColumnLevel4}
+                    ${fourColumnLevel4}
+                    ${fourColumnLevel4}
+                    ${fourColumnLevel4}
+                </tr>
+                <tr>
+                    ${fourColumnLevel5}
+                    ${fourColumnLevel5}
+                    ${fourColumnLevel5}
+                    ${fourColumnLevel5}
+                </tr>
+                <tr class="column-number-row"><th>(1)</th>${Array.from({ length: 25 }, (_, i) => `<th>(${i + 2})</th>`).join('')}</tr>
             </thead>
             <tbody>`;
 
         FIELDS.forEach((field, fieldIndex) => {
-            html += `<tr><td>${fieldIndex + 1}</td><td class="field-cell">${field}</td>`;
+            html += `<tr class="field-row"><td>${['I','II','III','IV','V','VI'][fieldIndex]}</td><td colspan="25">${field.replace(/^[IVX]+\.\s*/, '').toUpperCase()}</td></tr>`;
+            html += '<tr><td></td>';
             for (let no = 1; no <= 25; no++) {
                 html += `<td>${fmtMau03Value(rows[fieldIndex], no)}</td>`;
             }
             html += '</tr>';
         });
 
-        html += `<tr class="total-row"><td></td><td class="field-cell">Tổng cộng</td>`;
+        html += `<tr class="total-row"><td>Tổng cộng</td>`;
         for (let no = 1; no <= 25; no++) {
             html += `<td>${fmtMau03Value(totalsRow, no)}</td>`;
         }
@@ -751,12 +1155,12 @@
             <thead>
                 <tr>
                     <th rowspan="3" class="stt-col">STT</th>
-                    <th rowspan="3" class="money-col">Số tiền đã chi trả xong cho người yêu cầu bồi thường (nghìn đồng)</th>
+                    <th rowspan="3" class="money-col">Số tiền đã chi trả xong cho người yêu cầu bồi thường <span class="unit-text">(nghìn đồng)</span></th>
                     <th colspan="6">Xem xét trách nhiệm hoàn trả</th>
                     <th colspan="2">Giảm mức hoàn trả</th>
                     <th rowspan="3">Số vụ việc hoãn hoàn trả (vụ việc)</th>
                     <th colspan="3">Số tiền đã hoàn trả</th>
-                    <th rowspan="3" class="money-col">Số tiền còn phải hoàn trả (nghìn đồng)</th>
+                    <th rowspan="3" class="money-col">Số tiền còn phải hoàn trả <span class="unit-text">(nghìn đồng)</span></th>
                 </tr>
                 <tr>
                     <th rowspan="2">Tổng số vụ việc xem xét</th>
@@ -764,28 +1168,28 @@
                     <th rowspan="2">Số vụ việc đang xem xét (vụ việc)</th>
                     <th colspan="2">Số vụ việc không xem xét (vụ việc)</th>
                     <th rowspan="2">Số vụ việc (vụ việc)</th>
-                    <th rowspan="2" class="money-col">Số tiền (nghìn đồng)</th>
-                    <th rowspan="2" class="money-col">Tổng số (nghìn đồng)</th>
-                    <th rowspan="2" class="money-col">Số tiền đã hoàn trả trong kỳ báo cáo (nghìn đồng)</th>
-                    <th rowspan="2" class="money-col">Số tiền đã hoàn trả kỳ trước chuyển sang (nghìn đồng)</th>
+                    <th rowspan="2" class="money-col">Số tiền <span class="unit-text">(nghìn đồng)</span></th>
+                    <th rowspan="2" class="money-col">Tổng số <span class="unit-text">(nghìn đồng)</span></th>
+                    <th rowspan="2" class="money-col">Số tiền đã hoàn trả trong kỳ báo cáo <span class="unit-text">(nghìn đồng)</span></th>
+                    <th rowspan="2" class="money-col">Số tiền đã hoàn trả kỳ trước chuyển sang <span class="unit-text">(nghìn đồng)</span></th>
                 </tr>
                 <tr>
                     <th>Số vụ việc có Quyết định có hiệu lực pháp luật và đã thực hiện hoàn trả (vụ việc)</th>
-                    <th class="money-col">Số tiền phải hoàn trả (nghìn đồng)</th>
+                    <th class="money-col">Số tiền phải hoàn trả <span class="unit-text">(nghìn đồng)</span></th>
                     <th>Người thi hành công vụ không có lỗi</th>
                     <th>Người thi hành công vụ chết trước khi ra quyết định hoàn trả</th>
                 </tr>
-                <tr>
-                    <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
-                    <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
-                    <th>11</th><th>12</th><th>13</th><th>14</th><th>15</th>
+                <tr class="column-number-row">
+                    <th>(1)</th><th>(2)</th><th>(3)</th><th>(4)</th><th>(5)</th>
+                    <th>(6)</th><th>(7)</th><th>(8)</th><th>(9)</th><th>(10)</th>
+                    <th>(11)</th><th>(12)</th><th>(13)</th><th>(14)</th><th>(15)</th>
                 </tr>
             </thead>
             <tbody>`;
 
         FIELDS.forEach((field, fieldIndex) => {
             const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'][fieldIndex];
-            html += `<tr class="field-row"><td>${roman}</td><td colspan="14">${field.replace(/^[IVX]+\\.\\s*/, '').toUpperCase()}</td></tr>`;
+            html += `<tr class="field-row"><td>${roman}</td><td colspan="14">${field.replace(/^[IVX]+\.\s*/, '').toUpperCase()}</td></tr>`;
             html += '<tr><td></td>';
             for (let no = 2; no <= 15; no++) {
                 html += `<td>${fmtMau04Value(rows[fieldIndex], no)}</td>`;
@@ -863,23 +1267,25 @@
 
     function renderMau01() {
         let html = '<table class="custom-table"><thead><tr>' +
-            '<th style="width:40px;">STT</th><th style="min-width:110px;">Mã vụ việc</th><th style="min-width:180px;">Tên vụ việc</th>' +
-            '<th style="min-width:140px;">Người yêu cầu</th><th style="min-width:180px;">Địa chỉ</th><th style="min-width:160px;">Cơ quan giải quyết</th>' +
-            '<th style="min-width:180px;">Pháp luật áp dụng</th><th style="min-width:220px;">Tình hình giải quyết</th>' +
+            '<th style="width:40px;">STT</th>' +
+            '<th style="min-width:140px;">Họ và tên người yêu cầu bồi thường</th><th style="min-width:180px;">Địa chỉ người yêu cầu bồi thường</th><th style="min-width:160px;">Cơ quan giải quyết bồi thường</th>' +
+            '<th style="min-width:180px;">Pháp luật áp dụng để giải quyết bồi thường</th><th style="min-width:220px;">Tình hình giải quyết bồi thường</th>' +
             '<th style="min-width:180px;">Chi trả tiền bồi thường</th><th style="min-width:220px;">Khó khăn, vướng mắc</th>' +
-            '<th style="min-width:160px;">Ghi chú</th><th style="width:60px;">Thao tác</th></tr></thead><tbody>';
+            '<th style="min-width:180px;">Ghi chú</th></tr>' +
+            '<tr class="column-number-row"><th></th>' + Array.from({ length: 8 }, (_, i) => `<th>(${i + 1})</th>`).join('') + '</tr></thead><tbody>';
 
-        FIELDS.forEach(f => {
+        let totalCases = 0;
+        FIELDS.forEach((f, fIdx) => {
             const cases = BM01_CASES[f] || [];
-            html += `<tr class="group-header"><td colspan="12">${f} (${cases.length} vụ việc)</td></tr>`;
+            totalCases += cases.length;
+            const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'][fIdx];
+            html += `<tr class="group-header"><td>${roman}</td><td colspan="8">${f.replace(/^[IVX]+\.\s*/, '')} (${cases.length} vụ việc)</td></tr>`;
             if (cases.length === 0) {
-                html += `<tr><td colspan="12" style="color:var(--text-muted); text-align:center;">Không có vụ việc trong kỳ báo cáo</td></tr>`;
+                html += `<tr><td colspan="9" style="color:var(--text-muted); text-align:center;">Không có vụ việc trong kỳ báo cáo</td></tr>`;
             }
             cases.forEach((c, i) => {
                 html += `<tr>
                     <td>${i + 1}</td>
-                    <td class="text-left"><strong>${c.code}</strong></td>
-                    <td class="text-left">${c.name}</td>
                     <td class="text-left">${c.requester}</td>
                     <td class="text-left">${c.address}</td>
                     <td class="text-left">${c.agency}</td>
@@ -887,11 +1293,11 @@
                     <td class="text-left">${c.situation}</td>
                     <td class="text-left">${c.payment}</td>
                     <td class="text-left">${c.vuongMac || '<span style="color:var(--text-muted);">(Không có)</span>'}</td>
-                    <td class="text-left">${c.note || ''}</td>
-                    <td><button class="icon-btn" title="Chỉnh sửa ghi chú" onclick="openNoteModal('${f}', '${c.code}')"><i class="fa-solid fa-pen"></i></button></td>
+                    <td class="text-left">${c.note || ''} <button class="icon-btn" title="Chỉnh sửa ghi chú" onclick="openNoteModal('${f}', '${c.code}')"><i class="fa-solid fa-pen"></i></button></td>
                 </tr>`;
             });
         });
+        html += `<tr class="total-row"><td>Tổng cộng</td><td colspan="8" class="text-left">${totalCases} vụ việc</td></tr>`;
         html += '</tbody></table>';
         document.getElementById('reportTableWrap').innerHTML = html;
         document.getElementById('alertArea').innerHTML = '';
@@ -956,4 +1362,3 @@
 </script>
 </body>
 </html>
-

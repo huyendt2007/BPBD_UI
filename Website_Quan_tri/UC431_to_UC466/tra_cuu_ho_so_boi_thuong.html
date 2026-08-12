@@ -196,11 +196,11 @@
             vertical-align: middle;
         }
 
-        .custom-table tbody tr {
+        .custom-table tbody tr.lookup-row {
             cursor: pointer;
         }
 
-        .custom-table tbody tr:hover {
+        .custom-table tbody tr.lookup-row:hover {
             background: #f8fafc;
         }
 
@@ -216,13 +216,6 @@
         }
 
         .nowrap {
-            white-space: nowrap;
-        }
-
-        .readonly-action {
-            color: var(--text-muted);
-            font-size: 12px;
-            font-style: italic;
             white-space: nowrap;
         }
 
@@ -422,7 +415,6 @@
                                 <th style="width:145px; text-align:center;">Trạng thái</th>
                                 <th style="width:125px; text-align:center;">Thời hạn</th>
                                 <th style="width:128px; text-align:center; cursor:pointer;" onclick="togglePhddSort()">Ngày cập nhật <i class="fa-solid fa-sort" id="phddSortIcon"></i></th>
-                                <th style="width:118px; text-align:center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="phddBody"></tbody>
@@ -544,7 +536,6 @@
                                 <th style="width:135px; text-align:center;">Hình thức tiếp nhận</th>
                                 <th style="width:145px; text-align:center;">Trạng thái</th>
                                 <th style="width:128px; text-align:center;">Ngày cập nhật</th>
-                                <th style="width:118px; text-align:center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="ycbtBody"></tbody>
@@ -633,6 +624,8 @@
             setDefaultDates();
             searchPhdd();
             searchYcbt();
+            const initialTab = new URLSearchParams(window.location.search).get('tab') === 'ycbt' ? 'ycbt' : 'phdd';
+            switchLookupTab(initialTab);
         });
 
         function populateStatusSelects() {
@@ -844,12 +837,13 @@
             const end = Math.min(start + phddPageSize, total);
             document.getElementById('phddRange').innerText = total ? `${start + 1}-${end}` : '0-0';
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
                 renderPages('phddPages', phddPage, totalPages, page => { phddPage = page; renderPhdd(); });
                 return;
             }
             phddFiltered.slice(start, end).forEach((item, idx) => {
                 const tr = document.createElement('tr');
+                tr.className = 'lookup-row';
                 tr.onclick = () => goToPhddDetail(item.code);
                 tr.innerHTML = `
                     <td style="text-align:center;">${start + idx + 1}</td>
@@ -864,7 +858,6 @@
                     <td style="text-align:center;">${statusBadge(item.status || '--')}</td>
                     <td style="text-align:center;">${escapeHtml(item.deadlineText || '--')}</td>
                     <td style="text-align:center;">${escapeHtml(item.updatedDate || '--')}</td>
-                    <td style="text-align:center;"><span class="readonly-action">Chọn dòng để xem</span></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -945,12 +938,13 @@
             const end = Math.min(start + ycbtPageSize, total);
             document.getElementById('ycbtRange').innerText = total ? `${start + 1}-${end}` : '0-0';
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc yêu cầu bồi thường phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc yêu cầu bồi thường phù hợp</td></tr>';
                 renderPages('ycbtPages', ycbtPage, totalPages, page => { ycbtPage = page; renderYcbt(); });
                 return;
             }
             ycbtFiltered.slice(start, end).forEach((item, idx) => {
                 const tr = document.createElement('tr');
+                tr.className = 'lookup-row';
                 tr.onclick = () => goToClaimDetail(item.code);
                 tr.innerHTML = `
                     <td style="text-align:center;">${start + idx + 1}</td>
@@ -967,7 +961,6 @@
                     <td style="text-align:center;"><span class="badge badge-info">${escapeHtml(item.nopKenh || 'Tiếp nhận trực tiếp')}</span></td>
                     <td style="text-align:center;">${statusBadge(item.status || '--')}</td>
                     <td style="text-align:center;">${escapeHtml(item.updatedDate || '--')}</td>
-                    <td style="text-align:center;"><span class="readonly-action">Chọn dòng để xem</span></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1033,11 +1026,22 @@
         }
 
         function goToPhddDetail(code) {
-            window.location.href = `quan_ly_boi_thuong.html?viewCode=${encodeURIComponent(code)}&subTab=phdd&mode=view`;
+            window.location.href = buildClaimDetailUrl(code, 'phdd');
         }
 
         function goToClaimDetail(code) {
-            window.location.href = `quan_ly_boi_thuong.html?viewCode=${encodeURIComponent(code)}&mode=view`;
+            window.location.href = buildClaimDetailUrl(code, 'ycbt');
+        }
+
+        function buildClaimDetailUrl(code, tab) {
+            const returnUrl = `tra_cuu_ho_so_boi_thuong.html?tab=${tab}`;
+            const params = new URLSearchParams({
+                id: code,
+                returnUrl,
+                returnActiveUrl: 'tra_cuu_ho_so_boi_thuong.html'
+            });
+            if (tab === 'phdd') params.set('focusTab', 'phdd');
+            return `quan_ly_boi_thuong.html?${params.toString()}`;
         }
 
         function exportLookup(type) {

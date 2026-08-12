@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UCPS013 - Quản lý thu phí</title>
+    <title>UCPS013 - Quản lý thu phí/hoàn phí</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root{--primary:#1e3a8a;--blue:#2563eb;--green:#059669;--orange:#d97706;--red:#dc2626;--bg:#f3f4f6;--card:#fff;--line:#dbe3ef;--text:#172033;--muted:#64748b}
@@ -26,8 +26,8 @@
 <div class="page">
     <div class="top">
         <div class="title">
-            <h1>Quản lý thu phí</h1>
-            <p>UCPS013 - Danh sách khoản phải thu, xác nhận thu tiền mặt/chuyển khoản/miễn phí và in biên lai.</p>
+            <h1>Quản lý thu phí/hoàn phí</h1>
+            <p>UCPS013 - Danh sách khoản phải thu, khoản phải hoàn phí, xác nhận thu/hoàn và in chứng từ.</p>
         </div>
         <button class="btn primary" onclick="scanQr()"><i class="fa-solid fa-qrcode"></i> Quét mã</button>
     </div>
@@ -73,6 +73,15 @@
             </div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-h"><h2>Danh sách khoản phải hoàn phí</h2><span id="refundCountText" class="badge b-red">0 khoản</span></div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>STT</th><th>Mã hồ sơ</th><th>Số đơn giấy</th><th>Người yêu cầu</th><th>Lý do hoàn phí</th><th>Phải hoàn</th><th>Đã hoàn</th><th>Hình thức hoàn</th><th>Trạng thái</th><th>Ngày phát sinh</th><th>Cán bộ xử lý</th><th>Thao tác</th></tr></thead>
+                <tbody id="refundRows"></tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <div class="modal" id="modal">
@@ -97,6 +106,12 @@ const seed = [
  {code:'HS-2026-000138',paper:'PG-0138',requester:'Trần Quang Huy',submitter:'Trần Quang Huy',type:'Yêu cầu cung cấp bản sao',date:'25/07/2026 10:45',amount:20000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
  {code:'HS-2026-000139',paper:'PG-0139',requester:'Ngân hàng TMCP Sacombank',submitter:'Đinh Văn Thắng',type:'Đăng ký lần đầu',date:'25/07/2026 11:15',amount:80000,paid:0,method:'',fee:'Chờ thu phí',status:'Chờ thu phí',officer:'Nguyễn Thị Tiếp Nhận'},
  {code:'HS-2026-000130',paper:'PG-0130',requester:'Ngân hàng TMCP FPT',submitter:'Trần Minh Quân',type:'Xóa đăng ký',date:'23/07/2026 15:15',amount:0,paid:0,method:'Miễn phí',fee:'Miễn phí',status:'Chờ giải quyết',officer:'Nguyễn Thị Tiếp Nhận',receipt:'MP-2026-000130'}
+];
+
+const refundSeed = [
+ {code:'HS-2026-000141',paper:'PG-0141',requester:'Công ty TNHH Đông Á',reason:'Từ chối hồ sơ sau khi đã thu phí',amount:80000,refunded:0,method:'Chuyển khoản',status:'Chờ hoàn phí',date:'26/07/2026 09:20',officer:'Nguyễn Thị Kế Toán'},
+ {code:'HS-2026-000142',paper:'PG-0142',requester:'Nguyễn Văn An',reason:'Khách hàng nộp thừa phí',amount:30000,refunded:0,method:'Tiền mặt',status:'Chờ hoàn phí',date:'26/07/2026 10:15',officer:'Nguyễn Thị Kế Toán'},
+ {code:'HS-2026-000143',paper:'PG-0143',requester:'Ngân hàng TMCP FPT',reason:'Hủy yêu cầu trước khi giải quyết',amount:60000,refunded:60000,method:'Chuyển khoản',status:'Đã hoàn',date:'25/07/2026 15:40',officer:'Nguyễn Thị Kế Toán',refundNo:'HP-2026-000143'}
 ];
 
 let currentPage = 1;
@@ -171,7 +186,73 @@ function load(){
 function save(data){localStorage.setItem('ucps013_receivables',JSON.stringify(data)); localStorage.setItem('ucps012_dossiers',JSON.stringify(data)); syncProfiles(data)}
 function syncProfiles(data){const profiles=data.filter(x=>x.status==='Chờ giải quyết').map(x=>({id:x.code,date:x.date,paper:x.paper,customer:x.requester,submitter:x.submitter,officer:x.officer,amount:x.amount,mortgagee:'Theo hồ sơ giấy',type:x.type,transactionType:'Biện pháp bảo đảm',subtype:'Thế chấp',status:'Chờ giải quyết',statusClass:'badge-warning',customerId:'HSG-'+x.code.slice(-3),receipt:x.receipt||'',assetType:'Theo tài liệu tiếp nhận hồ sơ giấy',channel:'Trực tiếp tại quầy',customerType:'vang_lai',phone:'0900000000',email:'',paymentMethod:x.method==='Tiền mặt'?'tien_mat':x.method==='Chuyển khoản'?'chuyen_khoan':'mien_phi',resultMethod:'truc_tiep',handlingOfficer:'Nguyễn Văn Cán Bộ',timeline:[{id:'node-1',title:'Tiếp nhận hồ sơ giấy',date:x.date,status:'Chờ giải quyết',active:true}],internalLogs:[{time:x.date,user:'Cán bộ kế toán',action:'Thu phí/xác nhận miễn phí',comment:'Hồ sơ đã đủ điều kiện chuyển Cán bộ giải quyết tạo hồ sơ.'}]})); if(profiles.length){localStorage.setItem('ucps014_paper_profiles',JSON.stringify(profiles))}}
 function badgeFee(v){return v==='Đã thu'?'<span class="badge b-paid">Đã thu</span>':v==='Miễn phí'?'<span class="badge b-free">Miễn phí</span>':'<span class="badge b-wait">Chờ thu phí</span>'}
+function badgeRefund(v){return v==='Đã hoàn'?'<span class="badge b-paid">Đã hoàn</span>':'<span class="badge b-red">Chờ hoàn phí</span>'}
 function filterValue(id){const node=el(id); return node?node.value:''}
+
+function loadRefunds(){
+    const saved = localStorage.getItem('ucps013_refunds');
+    if(saved){
+        try{
+            const parsed = JSON.parse(saved);
+            if(Array.isArray(parsed) && parsed.length) return parsed;
+        }catch(e){}
+    }
+    localStorage.setItem('ucps013_refunds', JSON.stringify(refundSeed));
+    return refundSeed;
+}
+function saveRefunds(data){localStorage.setItem('ucps013_refunds', JSON.stringify(data))}
+function renderRefunds(){
+    const body=el('refundRows'),count=el('refundCountText');
+    if(!body)return;
+    const data=loadRefunds();
+    if(count)count.textContent=data.length+' khoản';
+    body.innerHTML=data.map((x,i)=>{
+        const code=jsArg(x.code);
+        const canRefund=x.status==='Chờ hoàn phí';
+        return `<tr>
+            <td>${i+1}</td>
+            <td><a href="javascript:void(0)" onclick="openRefundDetail('${code}')">${esc(x.code)}</a></td>
+            <td>${esc(x.paper)}</td>
+            <td><b>${esc(x.requester)}</b></td>
+            <td>${esc(x.reason)}</td>
+            <td>${Number(x.amount||0).toLocaleString('vi-VN')} VNĐ</td>
+            <td>${Number(x.refunded||0).toLocaleString('vi-VN')} VNĐ</td>
+            <td>${esc(x.method)}</td>
+            <td>${badgeRefund(x.status)}</td>
+            <td>${esc(x.date)}</td>
+            <td>${esc(x.officer)}</td>
+            <td><div class="actions">
+                <button type="button" class="icon" title="Xem chi tiết" onclick="openRefundDetail('${code}')"><i class="fa-regular fa-eye"></i></button>
+                <button type="button" class="icon" title="Xác nhận hoàn phí" ${canRefund?'':'disabled'} onclick="confirmRefund('${code}')"><i class="fa-solid fa-money-bill-transfer"></i></button>
+                <button type="button" class="icon" title="In chứng từ hoàn phí" ${canRefund?'disabled':''} onclick="printRefundVoucher('${code}')"><i class="fa-solid fa-print"></i></button>
+            </div></td>
+        </tr>`;
+    }).join('');
+}
+function openRefundDetail(code){
+    const x=loadRefunds().find(i=>i.code===code);
+    if(!x)return;
+    el('modalTitle').textContent='Chi tiết khoản phải hoàn phí';
+    el('modalBody').innerHTML=`<div class="pay-summary"><div><span>Mã hồ sơ</span><b>${esc(x.code)}</b></div><div><span>Người yêu cầu</span><b>${esc(x.requester)}</b></div><div><span>Số tiền phải hoàn</span><b class="total">${Number(x.amount||0).toLocaleString('vi-VN')} VNĐ</b></div><div><span>Trạng thái</span><b>${esc(x.status)}</b></div></div><div class="section-title">Thông tin hoàn phí</div><div class="grid two"><div class="field"><label>Lý do hoàn phí</label><textarea class="readonly" readonly>${esc(x.reason)}</textarea></div><div class="field"><label>Hình thức hoàn</label><input class="readonly" readonly value="${esc(x.method)}"></div></div>`;
+    el('modalFoot').innerHTML=`<button class="btn" onclick="closeModal()">Đóng</button>${x.status==='Chờ hoàn phí'?`<button class="btn success" onclick="confirmRefund('${jsArg(x.code)}')"><i class="fa-solid fa-money-bill-transfer"></i> Xác nhận hoàn phí</button>`:`<button class="btn primary" onclick="printRefundVoucher('${jsArg(x.code)}')"><i class="fa-solid fa-print"></i> In chứng từ</button>`}`;
+    el('modal').classList.add('show');
+}
+function confirmRefund(code){
+    const data=loadRefunds();
+    const x=data.find(i=>i.code===code);
+    if(!x)return;
+    x.status='Đã hoàn';
+    x.refunded=Number(x.amount||0);
+    x.refundNo='HP-2026-'+String(code).slice(-6);
+    saveRefunds(data);
+    renderRefunds();
+    closeModal();
+    alert('Đã xác nhận hoàn phí và cập nhật chứng từ hoàn phí.');
+}
+function printRefundVoucher(code){
+    const x=loadRefunds().find(i=>i.code===code);
+    alert('Mở/In chứng từ hoàn phí '+(x?.refundNo||code));
+}
 
 function changePageSize(val){
     pageSize=Number(val)||10;
@@ -463,6 +544,7 @@ save(initialData);
 if (el('fFee')) el('fFee').value = 'Chờ thu phí';
 currentPage = 1;
 renderList();
+renderRefunds();
 </script>
 </body>
 </html>

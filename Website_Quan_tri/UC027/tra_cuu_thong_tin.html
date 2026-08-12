@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tra cứu thông tin đăng ký</title>
+    <title>Tra cứu hồ sơ</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -331,7 +331,7 @@
 <div class="container">
     <!-- Header -->
     <div id="portalHeader" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="color: var(--primary-color); font-size: 20px;">Hệ thống Đăng ký trực tuyến BPBĐ</h1>
+        <h1 style="color: var(--primary-color); font-size: 20px;">Tra cứu hồ sơ</h1>
         <div>
             <span style="margin-right: 15px;">Xin chào, <b>Nguyễn Văn A</b></span>
         </div>
@@ -343,6 +343,11 @@
     <!-- MH02: TRA CỨU DÀNH CHO CÁN BỘ TTĐK -->
     <!-- ========================================== -->
     <div id="view-canbo" class="view-section active">
+        <div class="nav-tabs" id="lookup-type-tabs" style="margin-bottom: 16px;">
+            <div class="nav-tab active" data-lookup-group="registration" onclick="switchLookupGroup('registration', this)">Phiếu đăng ký</div>
+            <div class="nav-tab" data-lookup-group="cctt" onclick="switchLookupGroup('cctt', this)">Yêu cầu cung cấp thông tin</div>
+            <div class="nav-tab" data-lookup-group="copy" onclick="switchLookupGroup('copy', this)">Yêu cầu cung cấp bản sao</div>
+        </div>
         <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
             <div class="grid-3-cols">
                 <div class="form-group">

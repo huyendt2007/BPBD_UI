@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCPS008 - Quản lý đối soát thanh toán</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--primary:#1e3a8a;--green:#059669;--red:#dc2626;--orange:#d97706;--bg:#f3f4f6;--card:#fff;--line:#dbe3ef;--text:#172033;--muted:#64748b}
+        *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Arial,Helvetica,sans-serif}.page{padding:20px 24px 32px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}.title h1{font-size:22px;margin:0;color:var(--primary)}.title p{margin:6px 0 0;color:var(--muted)}
+        .btn{border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 12px;font-weight:700;cursor:pointer;color:var(--primary);display:inline-flex;align-items:center;gap:7px}.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.btn.success{background:var(--green);color:#fff;border-color:var(--green)}.btn.danger{background:#fff1f2;color:var(--red);border-color:#fecdd3}
+        .tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-weight:800;color:var(--primary);cursor:pointer}.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .card{background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 2px 8px #0f172a12;margin-bottom:16px}.card-h{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}.card-h h2{font-size:16px;color:var(--primary);margin:0}.card-b{padding:16px}
+        .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.field label{display:block;font-weight:700;margin-bottom:6px;font-size:13px}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:5px;padding:9px 10px;font:inherit;background:#fff}
+        .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:1180px}.table th,.table td{border:1px solid var(--line);padding:10px;vertical-align:middle}.table th{background:#eef4fb;color:#0f3a85;text-align:left;font-size:12px;text-transform:uppercase}.table tr:hover td{background:#f8fafc}.badge{display:inline-flex;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800}.b-ok{background:#ecfdf5;color:#047857}.b-wait{background:#fff7ed;color:#9a3412}.b-err{background:#fef2f2;color:#b91c1c}.b-info{background:#eff6ff;color:#1d4ed8}.actions{display:flex;gap:6px}.icon{width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--primary);cursor:pointer}.icon:hover{background:#eff6ff}@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.grid{grid-template-columns:1fr}.page{padding:14px}}
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="top">
+        <div class="title">
+            <h1>Quản lý đối soát thanh toán</h1>
+            <p>UCPS008 - Đối soát giao dịch thanh toán trực tuyến, xử lý sai lệch, giao dịch chưa xác định và hoàn tiền.</p>
+        </div>
+        <button class="btn primary" onclick="alert('Giả lập đồng bộ sao kê từ cổng thanh toán')"><i class="fa-solid fa-rotate"></i> Đồng bộ giao dịch</button>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="diff" onclick="switchTab('diff',this)"><i class="fa-solid fa-triangle-exclamation"></i> Sai lệch thanh toán</button>
+        <button class="tab" data-tab="unknown" onclick="switchTab('unknown',this)"><i class="fa-solid fa-circle-question"></i> Giao dịch chưa xác định</button>
+        <button class="tab" data-tab="refund" onclick="switchTab('refund',this)"><i class="fa-solid fa-money-bill-transfer"></i> Hoàn tiền</button>
+    </div>
+
+    <div class="card">
+        <div class="card-h"><h2>Bộ lọc tìm kiếm</h2><button class="btn" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button></div>
+        <div class="card-b">
+            <div class="grid">
+                <div class="field"><label>Mã hồ sơ/Mã giao dịch</label><input id="fCode" placeholder="HS-2026-000201 / GD-..."></div>
+                <div class="field"><label>Người yêu cầu</label><input id="fRequester" placeholder="Tên cá nhân/tổ chức"></div>
+                <div class="field"><label>Trạng thái xử lý</label><select id="fStatus"><option value="">Tất cả</option><option>Chờ xử lý</option><option>Đã xử lý</option><option>Chờ hoàn tiền</option><option>Đã hoàn tiền</option></select></div>
+                <div class="field"><label>Ngày giao dịch</label><input id="fDate" type="date"></div>
+            </div>
+            <div style="margin-top:12px;text-align:right"><button class="btn primary" onclick="renderRows()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-h"><h2 id="listTitle">Danh sách sai lệch thanh toán</h2><span id="countText" class="badge b-info">0 giao dịch</span></div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>STT</th><th>Mã giao dịch</th><th>Mã hồ sơ</th><th>Người yêu cầu</th><th>Số tiền hệ thống</th><th>Số tiền sao kê</th><th>Loại sai lệch/Yêu cầu</th><th>Trạng thái</th><th>Ngày giao dịch</th><th>Cán bộ xử lý</th><th>Thao tác</th></tr></thead>
+                <tbody id="rows"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+const data={
+ diff:[
+  {txn:'GD-20260801-0001',code:'HS-2026-000201',requester:'Công ty Minh Tâm',sys:80000,bank:60000,type:'Thiếu tiền so với khoản phải thu',status:'Chờ xử lý',date:'01/08/2026 09:25',officer:'Nguyễn Thị Kế Toán'},
+  {txn:'GD-20260801-0002',code:'HS-2026-000202',requester:'Nguyễn Văn Hùng',sys:30000,bank:50000,type:'Nộp thừa tiền',status:'Chờ xử lý',date:'01/08/2026 10:12',officer:'Nguyễn Thị Kế Toán'}
+ ],
+ unknown:[
+  {txn:'GD-20260801-0099',code:'-',requester:'Chưa xác định',sys:0,bank:80000,type:'Không khớp mã hồ sơ trong nội dung chuyển khoản',status:'Chờ xử lý',date:'01/08/2026 14:30',officer:'Nguyễn Thị Kế Toán'}
+ ],
+ refund:[
+  {txn:'GD-20260731-0011',code:'HS-2026-000177',requester:'Ngân hàng TMCP FPT',sys:15000,bank:15000,type:'Từ chối hồ sơ sau khi đã thanh toán online',status:'Chờ hoàn tiền',date:'31/07/2026 17:12',officer:'Nguyễn Thị Kế Toán'},
+  {txn:'GD-20260730-0007',code:'HS-2026-000171',requester:'Công ty TNHH An Phú',sys:15000,bank:15000,type:'Khách hàng hủy yêu cầu hợp lệ',status:'Đã hoàn tiền',date:'30/07/2026 13:05',officer:'Nguyễn Thị Kế Toán'}
+ ]
+};
+let current='diff';
+function el(id){return document.getElementById(id)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function badge(v){const cls=v.includes('Đã')?'b-ok':v.includes('hoàn')?'b-wait':v.includes('Chờ')?'b-wait':'b-info';return `<span class="badge ${cls}">${esc(v)}</span>`}
+function switchTab(tab,node){current=tab;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));node.classList.add('active');renderRows()}
+function resetFilters(){['fCode','fRequester','fStatus','fDate'].forEach(id=>{const n=el(id);if(n)n.value=''});renderRows()}
+function renderRows(){
+ const title={diff:'Danh sách sai lệch thanh toán',unknown:'Danh sách giao dịch chưa xác định',refund:'Danh sách yêu cầu hoàn tiền'}[current];
+ el('listTitle').textContent=title;
+ const code=(el('fCode').value||'').toLowerCase(), requester=(el('fRequester').value||'').toLowerCase(), status=el('fStatus').value;
+ const rows=data[current].filter(x=>(!code||`${x.txn} ${x.code}`.toLowerCase().includes(code))&&(!requester||x.requester.toLowerCase().includes(requester))&&(!status||x.status===status));
+ el('countText').textContent=rows.length+' giao dịch';
+ el('rows').innerHTML=rows.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.txn)}</b></td><td>${esc(x.code)}</td><td>${esc(x.requester)}</td><td>${Number(x.sys).toLocaleString('vi-VN')} VNĐ</td><td>${Number(x.bank).toLocaleString('vi-VN')} VNĐ</td><td>${esc(x.type)}</td><td>${badge(x.status)}</td><td>${esc(x.date)}</td><td>${esc(x.officer)}</td><td><div class="actions"><button class="icon" title="Xem chi tiết" onclick="alert('Mở chi tiết ${esc(x.txn)}')"><i class="fa-regular fa-eye"></i></button><button class="icon" title="Xác nhận xử lý" onclick="alert('Giả lập xác nhận xử lý ${esc(x.txn)}')"><i class="fa-solid fa-check"></i></button></div></td></tr>`).join('');
+}
+renderRows();
+</script>
+</body>
+</html>

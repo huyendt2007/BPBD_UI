@@ -619,14 +619,14 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '102938',
         customerId: 'KH-ALPHA',
         receipt: 'BL-991827-01',
         assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
         timeline: [
-            { id: 'node-1', title: 'Đăng ký lần đầu', date: '29/06/2026 10:00', status: 'Chờ ký', active: true }
+            { id: 'node-1', title: 'Đăng ký lần đầu', date: '29/06/2026 10:00', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '29/06/2026 10:02', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Đã hoàn tất kiểm tra hồ sơ, trình Lãnh đạo ký duyệt.' }
@@ -640,7 +640,7 @@ let mockProfiles = [
         type: 'Đăng ký thay đổi',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Cầm cố',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '291039',
         customerId: 'KH-LENVANNAM',
@@ -648,7 +648,7 @@ let mockProfiles = [
         assetType: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/05/2026 09:00', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Đăng ký thay đổi', date: '29/06/2026 11:30', status: 'Chờ ký', active: true }
+            { id: 'node-2', title: 'Đăng ký thay đổi', date: '29/06/2026 11:30', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '29/06/2026 11:35', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký thay đổi Bên bảo đảm.' }
@@ -705,7 +705,7 @@ let mockProfiles = [
         type: 'Đăng ký thay đổi',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         statusClass: 'badge-info',
         pin: '592010',
         customerId: 'KH-NGUYENVANHAI',
@@ -713,7 +713,7 @@ let mockProfiles = [
         assetType: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '01/02/2026 09:00', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 11:00', status: 'Chờ ký', active: true }
+            { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 11:00', status: 'Duyệt chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 11:05', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký thay đổi thông tin chứng khoán.' }
@@ -1171,7 +1171,7 @@ function renderTable(resetPage = false) {
     else if (currentListTab === 'da_xu_ly') targetStatuses = ['Hoàn thành', 'Bị từ chối'];
 
     // 3. Filter the complete mock profiles array plus custom localStorage data
-    const currentVersion = 'v5';
+    const currentVersion = 'v6';
     const savedVersion = localStorage.getItem('mock_profiles_version');
     if (savedVersion !== currentVersion) {
         localStorage.removeItem('custom_mock_profiles');
@@ -1186,13 +1186,13 @@ function renderTable(resetPage = false) {
         const pendingForSigIds = ['GDBD-2026-000801', 'GDBD-2026-000802', 'GDBD-2026-000805'];
         customList.forEach(p => {
             if (pendingForSigIds.includes(p.id)) {
-                if (p.status === 'Duyệt chờ ký') {
+                if (p.status === 'Chờ ký') {
                     p.status = 'Chờ ký';
                     upgraded = true;
                 }
             } else {
                 if (p.status === 'Chờ ký') {
-                    p.status = 'Duyệt chờ ký';
+                    p.status = 'Chờ ký';
                     upgraded = true;
                 }
             }
@@ -1809,7 +1809,7 @@ function approveDossierSingle(id) {
     });
 
     saveProfiles();
-    alert(`Đã duyệt hồ sơ ${id} thành công! (Hồ sơ được chuyển sang danh mục Chờ ký)`);
+    alert(`Đã duyệt hồ sơ ${id} thành công! (Hồ sơ được chuyển sang danh mục Duyệt chờ ký)`);
     updateTabBadges();
     renderTable();
 }
@@ -1876,12 +1876,12 @@ function updateTabBadges() {
         const pendingForSigIds = ['GDBD-2026-000801', 'GDBD-2026-000802', 'GDBD-2026-000805'];
         customList.forEach(p => {
             if (pendingForSigIds.includes(p.id)) {
-                if (p.status === 'Duyệt chờ ký') {
+                if (p.status === 'Chờ ký') {
                     p.status = 'Chờ ký';
                 }
             } else {
                 if (p.status === 'Chờ ký') {
-                    p.status = 'Duyệt chờ ký';
+                    p.status = 'Chờ ký';
                 }
             }
         });
@@ -2177,7 +2177,7 @@ function renderDetailActionButtons() {
             <button class="btn btn-primary" onclick="handleDetailAction('trinhky')">📝 Trình ký</button>
         `;
     } else {
-        // Hồ sơ Chờ ký, Bị trả lại hoặc khác
+        // Hồ sơ Duyệt chờ ký, Bị trả lại hoặc khác
         opinionGroup.style.display = 'none';
         buttonsContainer.innerHTML = `
             <button class="btn btn-primary" onclick="closeDetail()">Đóng</button>
@@ -2681,7 +2681,7 @@ function handleDetailAction(action) {
     const opinionError = document.getElementById('opinionError');
 
     if (action === 'duyet') {
-        alert(`Hồ sơ ${currentProfile.id} phê duyệt thành công! Chuyển sang danh mục Chờ ký.`);
+        alert(`Hồ sơ ${currentProfile.id} phê duyệt thành công! Chuyển sang danh mục Duyệt chờ ký.`);
         currentProfile.status = 'Duyệt chờ ký';
         currentProfile.statusClass = 'badge-info';
 
@@ -2906,7 +2906,7 @@ function approveRows() {
     });
 
     saveProfiles();
-    alert(`Hoàn thành thành công ${selected.length} hồ sơ! (Các hồ sơ được chuyển sang danh mục Chờ ký)`);
+    alert(`Hoàn thành thành công ${selected.length} hồ sơ! (Các hồ sơ được chuyển sang danh mục Duyệt chờ ký)`);
     renderTable();
 }
 
@@ -3106,6 +3106,7 @@ const UC028_BASE = {
 
 let officerWorkType = sessionStorage.getItem('uc028OfficerWorkType') || 'registration';
 let selectedCcttOfficerId = null;
+let selectedOfficerCopyId = null;
 
 const ccttOfficerRequests = [
     {
@@ -3117,7 +3118,7 @@ const ccttOfficerRequests = [
         source: 'Website khách hàng',
         criteria: 'Số đăng ký',
         inputData: '1505170802',
-        status: 'Chờ tiếp nhận',
+        status: 'Chờ duyệt',
         officer: 'Nguyễn Văn Cán Bộ',
         resultType: 'hasData',
         signedDraft: false
@@ -3131,7 +3132,7 @@ const ccttOfficerRequests = [
         source: 'Website khách hàng',
         criteria: 'Bên bảo đảm',
         inputData: 'Công dân Việt Nam - CCCD 091000000004',
-        status: 'Chờ tiếp nhận',
+        status: 'Chờ duyệt',
         officer: 'Nguyễn Văn Cán Bộ',
         resultType: 'noData',
         signedDraft: false
@@ -3174,7 +3175,7 @@ const ccttOfficerRequests = [
         source: 'Cán bộ nhập liệu',
         criteria: 'Số đăng ký',
         inputData: '1505170855',
-        status: 'Chờ ký',
+        status: 'Duyệt chờ ký',
         officer: 'Nguyễn Văn Cán Bộ',
         resultType: 'noData',
         signedDraft: true
@@ -3209,22 +3210,143 @@ const ccttOfficerRequests = [
     }
 ];
 
+const officerCopyRequests = [
+    {
+        id: 'BS-20260802-000321',
+        paperNo: '',
+        registeredAt: '02/08/2026 08:40',
+        customerId: 'KH-VCB-04',
+        requester: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Cầu Giấy',
+        address: 'Số 198 Trần Duy Hưng, phường Yên Hòa, Hà Nội',
+        source: 'Website khách hàng',
+        registrationNo: '1505170802',
+        copyType: 'Bản sao điện tử',
+        copyQty: '—',
+        quantity: null,
+        status: 'Chờ duyệt',
+        officer: 'Nguyễn Văn Cán Bộ',
+        fee: 30000,
+        paidAt: '02/08/2026 08:55',
+        draftFile: '',
+        originalCase: 'Đăng ký lần đầu',
+        originalStatus: 'Hoàn thành',
+        securedParty: 'Công ty Cổ phần Xây dựng và Phát triển HTC',
+        mortgagee: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam',
+        asset: 'Xe ô tô Toyota Camry, BKS 30H-123.45'
+    },
+    {
+        id: 'BS-20260802-000322',
+        paperNo: '',
+        registeredAt: '02/08/2026 09:05',
+        customerId: 'KH-THUY-01',
+        requester: 'Bà Phạm Minh Thủy',
+        address: 'Số 21 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội',
+        source: 'Website khách hàng',
+        registrationNo: '1505170855',
+        copyType: 'Bản sao giấy',
+        copyQty: '02 bản',
+        quantity: 2,
+        status: 'Chờ duyệt',
+        officer: 'Nguyễn Văn Cán Bộ',
+        fee: 60000,
+        paidAt: '02/08/2026 09:12',
+        draftFile: '',
+        originalCase: 'Đăng ký thay đổi',
+        originalStatus: 'Hoàn thành',
+        securedParty: 'Bà Phạm Minh Thủy',
+        mortgagee: 'Ngân hàng TMCP Quân đội',
+        asset: 'Quyền tài sản phát sinh từ hợp đồng mua bán căn hộ'
+    },
+    {
+        id: 'HS-2026-000190',
+        paperNo: 'PG-0190',
+        registeredAt: '01/08/2026 14:20',
+        customerId: 'KH-GIAY-01',
+        requester: 'Công ty TNHH Minh Anh',
+        address: 'Số 9 Phạm Hùng, Nam Từ Liêm, Hà Nội',
+        source: 'Cán bộ nhập liệu',
+        registrationNo: '',
+        copyType: 'Bản sao giấy',
+        copyQty: '',
+        quantity: 1,
+        status: 'Chờ giải quyết',
+        officer: 'Nguyễn Văn Cán Bộ',
+        fee: 30000,
+        paidAt: 'Thu trực tiếp tại quầy',
+        draftFile: '',
+        originalCase: '',
+        originalStatus: '',
+        securedParty: '',
+        mortgagee: '',
+        asset: ''
+    },
+    {
+        id: 'BS-20260731-000299',
+        paperNo: 'PG-0188',
+        registeredAt: '31/07/2026 14:00',
+        customerId: 'KH-HOANG-07',
+        requester: 'Ông Lê Đức Hoàng',
+        address: 'Số 8 Nguyễn Trãi, Hà Đông, Hà Nội',
+        source: 'Cán bộ nhập liệu',
+        registrationNo: '1505170868',
+        copyType: 'Bản sao điện tử',
+        copyQty: '—',
+        quantity: null,
+        status: 'Bị trả lại',
+        officer: 'Nguyễn Văn Cán Bộ',
+        fee: 30000,
+        paidAt: '31/07/2026 14:42',
+        draftFile: 'Bản sao điện tử dự thảo v1',
+        returnReason: 'Lãnh đạo yêu cầu rà soát lại số đăng ký hồ sơ gốc.',
+        originalCase: 'Xóa đăng ký',
+        originalStatus: 'Hoàn thành',
+        securedParty: 'Ông Lê Đức Hoàng',
+        mortgagee: 'Ngân hàng TMCP Công thương Việt Nam',
+        asset: 'Máy xúc Komatsu PC200-8'
+    },
+    {
+        id: 'BS-20260730-000288',
+        paperNo: '',
+        registeredAt: '30/07/2026 10:15',
+        customerId: 'KH-ANPHU-05',
+        requester: 'Công ty TNHH An Phú',
+        address: 'Số 88 Lê Văn Lương, Thanh Xuân, Hà Nội',
+        source: 'Website khách hàng',
+        registrationNo: '1505170901',
+        copyType: 'Bản sao giấy',
+        copyQty: '03 bản',
+        quantity: 3,
+        status: 'Đã duyệt - chờ trả kết quả',
+        officer: 'Nguyễn Văn Cán Bộ',
+        fee: 90000,
+        paidAt: '30/07/2026 10:50',
+        draftFile: '',
+        signedAt: '30/07/2026 15:20',
+        signer: 'Nguyễn Văn Lãnh Đạo',
+        originalCase: 'Đăng ký lần đầu',
+        originalStatus: 'Hoàn thành',
+        securedParty: 'Công ty TNHH An Phú',
+        mortgagee: 'Ngân hàng TMCP Kỹ thương Việt Nam',
+        asset: 'Dây chuyền máy móc sản xuất bao bì'
+    }
+];
+
 function shouldShowOfficerWorkTabs() {
-    return ['choduyet', 'duyet-choky', 'bitralai', 'dang_xu_ly', 'da_xu_ly'].includes(currentListTab);
+    return ['chonhaplieu', 'choduyet', 'duyet-choky', 'bitralai', 'dang_xu_ly', 'da_xu_ly'].includes(currentListTab);
 }
 
 function getOfficerCcttTargetStatuses() {
     if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết', 'Bị trả lại'];
-    if (currentListTab === 'duyet-choky') return ['Chờ duyệt'];
+    if (currentListTab === 'duyet-choky') return ['Duyệt chờ ký'];
     if (currentListTab === 'bitralai') return ['Bị trả lại'];
     if (currentListTab === 'dang_xu_ly') return ['Chờ ký'];
     if (currentListTab === 'da_xu_ly') return ['Hoàn thành', 'Bị từ chối'];
-    return ['Chờ tiếp nhận'];
+    return ['Chờ duyệt'];
 }
 
 function getOfficerCcttListTitle() {
     if (currentListTab === 'chonhaplieu') return 'Danh sách hồ sơ giấy Yêu cầu cung cấp thông tin chờ giải quyết/bị trả lại';
-    if (currentListTab === 'duyet-choky') return 'Danh sách yêu cầu cung cấp thông tin đã trình Lãnh đạo duyệt';
+    if (currentListTab === 'duyet-choky') return 'Danh sách yêu cầu cung cấp thông tin duyệt chờ ký';
     if (currentListTab === 'bitralai') return 'Danh sách yêu cầu cung cấp thông tin bị trả lại';
     if (currentListTab === 'dang_xu_ly') return 'Danh sách yêu cầu cung cấp thông tin đang chờ ký';
     if (currentListTab === 'da_xu_ly') return 'Danh sách yêu cầu cung cấp thông tin đã xử lý';
@@ -3245,6 +3367,8 @@ function syncOfficerWorkTabs() {
     });
     const badge = document.getElementById('badge-cctt-officer');
     if (badge) badge.innerText = ccttOfficerRequests.length;
+    const copyBadge = document.getElementById('badge-copy-officer');
+    if (copyBadge) copyBadge.innerText = officerCopyRequests.length;
 }
 
 function switchOfficerWorkType(type, element) {
@@ -3320,7 +3444,37 @@ renderFilterPanel = function () {
     if (shouldShowOfficerWorkTabs() && officerWorkType === 'copy') {
         const container = document.getElementById('filter-card-container');
         if (container) {
-            container.innerHTML = `<div style="padding:18px;color:var(--text-muted);font-weight:600">Khối Yêu cầu cung cấp bản sao: Đang phát triển.</div>`;
+            container.innerHTML = `
+                <div class="grid-4-cols">
+                    <div class="form-group">
+                        <label class="form-label">Tìm kiếm</label>
+                        <input type="text" class="form-control" id="copy-filter-search" placeholder="Mã hồ sơ, người yêu cầu, số đăng ký...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mã khách hàng</label>
+                        <input type="text" class="form-control" id="copy-filter-customer" placeholder="Nhập mã khách hàng...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loại cung cấp bản sao</label>
+                        <select class="form-select" id="copy-filter-type">
+                            <option value="">Tất cả</option>
+                            <option value="Bản sao điện tử">Bản sao điện tử</option>
+                            <option value="Bản sao giấy">Bản sao giấy</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái hồ sơ</label>
+                        <select class="form-select" id="copy-filter-status">
+                            <option value="">Tất cả</option>
+                            ${getOfficerCopyTargetStatuses().map(status => `<option value="${status}">${status}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+                <div style="text-align:right;margin-top:15px">
+                    <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px">Xóa bộ lọc</button>
+                    <button class="btn btn-primary" onclick="renderTable(true)">Tìm kiếm</button>
+                </div>
+            `;
         }
         return;
     }
@@ -3335,7 +3489,7 @@ renderTable = function (resetPage = false) {
         return;
     }
     if (shouldShowOfficerWorkTabs() && officerWorkType === 'copy') {
-        renderDevelopingTable('Khối Yêu cầu cung cấp bản sao đang phát triển.');
+        renderCopyOfficerTable();
         return;
     }
     syncOfficerRegistrationToolbar();
@@ -3385,7 +3539,7 @@ function renderCcttOfficerTable() {
     } else {
         tbody.innerHTML = rows.map((row, idx) => {
             let actions = `<button class="icon-btn view" title="Xem chi tiết" onclick="openCcttOfficerDetail('${row.id}')"><i class="fa fa-eye"></i></button>`;
-            if (row.status === 'Chờ tiếp nhận') {
+            if (row.status === 'Chờ duyệt') {
                 actions += `<button class="icon-btn reject" title="Từ chối" onclick="alert('Mở popup nhập lý do từ chối cho ${row.id}')"><i class="fa fa-times"></i></button>`;
             } else if (row.status === 'Bị trả lại') {
                 actions += `<button class="icon-btn edit" title="Cập nhật và trình lại" onclick="alert('Mở màn hình cập nhật tiêu chí tra cứu cho hồ sơ giấy ${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
@@ -3507,6 +3661,314 @@ function resetPaperCcttFilters() {
     renderTable(true);
 }
 
+function getOfficerCopyTargetStatuses() {
+    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết', 'Bị trả lại'];
+    if (currentListTab === 'bitralai') return ['Bị trả lại'];
+    if (currentListTab === 'dang_xu_ly') return ['Đã duyệt - chờ trả kết quả'];
+    if (currentListTab === 'da_xu_ly') return ['Hoàn thành', 'Bị từ chối'];
+    if (currentListTab === 'duyet-choky') return ['Chờ ký'];
+    return ['Chờ duyệt', 'Chờ giải quyết'];
+}
+
+function getOfficerCopyListTitle() {
+    if (currentListTab === 'chonhaplieu') return 'Danh sách hồ sơ giấy Yêu cầu cung cấp bản sao chờ giải quyết/bị trả lại';
+    if (currentListTab === 'bitralai') return 'Danh sách yêu cầu cung cấp bản sao bị trả lại';
+    if (currentListTab === 'dang_xu_ly') return 'Danh sách bản sao giấy đã duyệt chờ trả kết quả';
+    if (currentListTab === 'da_xu_ly') return 'Danh sách yêu cầu cung cấp bản sao đã xử lý';
+    if (currentListTab === 'duyet-choky') return 'Danh sách yêu cầu cung cấp bản sao chờ ký';
+    return 'Danh sách yêu cầu cung cấp bản sao chờ xử lý';
+}
+
+function getCopyBadgeClass(status) {
+    if (status === 'Hoàn thành' || status === 'Đã duyệt - chờ trả kết quả') return 'badge-success';
+    if (status === 'Bị từ chối' || status === 'Bị trả lại') return 'badge-danger';
+    if (status === 'Chờ ký') return 'badge-info';
+    return 'badge-warning';
+}
+
+function renderCopyActionButton(label, onclick, enabled, styleClass = 'btn-primary') {
+    const disabled = enabled ? '' : 'disabled style="opacity:.45;cursor:not-allowed"';
+    const click = enabled ? `onclick="event.stopPropagation(); ${onclick}"` : '';
+    return `<button class="btn ${styleClass}" ${click} ${disabled} style="padding:6px 10px;font-size:12px;margin:2px">${label}</button>`;
+}
+
+function renderCopyOfficerTable() {
+    document.getElementById('toolbar-choduyet').style.display = 'none';
+    document.getElementById('toolbar-duyet-choky').style.display = 'none';
+    document.getElementById('toolbar-choky').style.display = 'none';
+    const tableTitle = document.getElementById('list-table-title');
+    if (tableTitle) tableTitle.innerText = getOfficerCopyListTitle();
+    const thead = document.getElementById('table-headers-container');
+    const tbody = document.getElementById('table-data');
+    thead.innerHTML = `
+        <tr>
+            <th style="width:50px;text-align:center">STT</th>
+            <th style="width:170px">Mã hồ sơ</th>
+            <th style="width:150px">Thời điểm đăng ký</th>
+            <th style="width:130px">Mã khách hàng</th>
+            <th style="width:220px">Người yêu cầu<br><span style="font-weight:500;color:var(--text-muted)">Địa chỉ</span></th>
+            <th style="width:130px">Số đăng ký</th>
+            <th style="width:150px">Loại cung cấp bản sao</th>
+            <th style="width:90px">Số lượng</th>
+            <th style="width:130px">Nguồn tiếp nhận</th>
+            <th style="width:130px">Trạng thái</th>
+            <th style="width:150px">Cán bộ xử lý</th>
+            <th style="width:210px;text-align:center">Thao tác</th>
+        </tr>
+    `;
+    const search = document.getElementById('copy-filter-search')?.value.toLowerCase().trim() || '';
+    const customer = document.getElementById('copy-filter-customer')?.value.toLowerCase().trim() || '';
+    const copyType = document.getElementById('copy-filter-type')?.value || '';
+    const status = document.getElementById('copy-filter-status')?.value || '';
+    const targetStatuses = getOfficerCopyTargetStatuses();
+    const rows = officerCopyRequests.filter(x => {
+        if (!targetStatuses.includes(x.status)) return false;
+        if (search && !`${x.id} ${x.requester} ${x.registrationNo} ${x.paperNo || ''}`.toLowerCase().includes(search)) return false;
+        if (customer && !x.customerId.toLowerCase().includes(customer)) return false;
+        if (copyType && x.copyType !== copyType) return false;
+        if (status && x.status !== status) return false;
+        return true;
+    });
+    if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:30px;color:var(--text-muted)">Không có yêu cầu cung cấp bản sao phù hợp.</td></tr>';
+    } else {
+        tbody.innerHTML = rows.map((row, idx) => {
+            const canProcess = ['Chờ duyệt', 'Chờ giải quyết', 'Bị trả lại'].includes(row.status);
+            const canConfirmReturn = row.status === 'Đã duyệt - chờ trả kết quả' && row.copyType === 'Bản sao giấy';
+            const actionLabel = row.source === 'Cán bộ nhập liệu' && row.status !== 'Chờ duyệt'
+                ? (row.status === 'Bị trả lại' ? 'Sửa và trình lại' : 'Nhập liệu')
+                : 'Xử lý hồ sơ';
+            const actions = `${renderCopyActionButton(actionLabel, `openCopyOfficerDetail('${row.id}')`, canProcess)}
+                ${renderCopyActionButton('Xác nhận trả kết quả', `confirmCopyPaperReturn('${row.id}')`, canConfirmReturn, 'btn-success')}`;
+            return `
+                <tr style="cursor:pointer" onclick="openCopyOfficerDetail('${row.id}')">
+                    <td style="text-align:center">${idx + 1}</td>
+                    <td><span class="action-link"><b>${row.id}</b></span>${row.paperNo ? `<br><code>${row.paperNo}</code>` : ''}</td>
+                    <td>${row.registeredAt}</td>
+                    <td><code>${row.customerId}</code></td>
+                    <td><b>${row.requester}</b><br><span style="color:var(--text-muted);font-size:12px">${row.address}</span></td>
+                    <td><code>${row.registrationNo || 'Chưa nhập'}</code></td>
+                    <td>${row.copyType || 'Chưa nhập'}</td>
+                    <td>${row.copyType === 'Bản sao giấy' ? (row.quantity || row.copyQty || 'Chưa nhập') : '—'}</td>
+                    <td>${row.source}</td>
+                    <td><span class="badge ${getCopyBadgeClass(row.status)}">${row.status}</span></td>
+                    <td>${row.officer}</td>
+                    <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${actions}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+    document.getElementById('page-start-index').innerText = rows.length ? '1' : '0';
+    document.getElementById('page-end-index').innerText = rows.length;
+    document.getElementById('total-records').innerText = rows.length;
+    document.getElementById('pagination-buttons').innerHTML = '<button class="btn btn-outline-secondary" disabled style="padding:4px 10px;font-size:12px">1</button>';
+}
+
+function openCopyOfficerDetail(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item) return;
+    selectedOfficerCopyId = id;
+    selectedCcttOfficerId = null;
+    document.getElementById('view-list').classList.remove('active');
+    document.getElementById('view-detail').classList.add('active');
+    document.getElementById('detail-id-display').innerText = item.id;
+    const status = document.getElementById('detail-status');
+    status.className = `badge ${getCopyBadgeClass(item.status)}`;
+    status.innerText = item.status;
+    document.getElementById('toggle-diff-container').style.display = 'none';
+    document.getElementById('lifecycle-timeline').innerHTML = `
+        <li class="timeline-item active"><div class="timeline-title">Tiếp nhận yêu cầu</div><div class="timeline-date">${item.registeredAt}</div></li>
+        <li class="timeline-item"><div class="timeline-title">${item.source === 'Cán bộ nhập liệu' ? 'Nhập liệu hồ sơ giấy' : 'Cán bộ xử lý'}</div><div class="timeline-date">${['Chờ duyệt', 'Chờ giải quyết', 'Bị trả lại'].includes(item.status) ? 'Đang xử lý' : 'Đã xử lý'}</div></li>
+        <li class="timeline-item"><div class="timeline-title">Trình ký</div><div class="timeline-date">${item.status === 'Chờ ký' ? 'Đang chờ' : 'Chưa/đã qua bước'}</div></li>
+    `;
+    document.getElementById('internal-log-content').innerHTML = `<div><b>${item.registeredAt}</b> - Hệ thống ghi nhận yêu cầu cung cấp bản sao từ ${item.source}.</div>`;
+    document.getElementById('tab-controls-container').style.display = 'none';
+    document.getElementById('tab-contents-container').innerHTML = renderCopyOfficerDetailContent(item);
+    const opinion = document.getElementById('group-officer-opinion');
+    if (opinion) opinion.style.display = 'none';
+
+    const canProcess = ['Chờ duyệt', 'Chờ giải quyết', 'Bị trả lại'].includes(item.status);
+    const hasDraft = !!item.draftFile;
+    const canExport = canProcess && item.copyType === 'Bản sao điện tử';
+    const canSubmit = canProcess && (item.copyType === 'Bản sao giấy' || hasDraft);
+    const canReject = canProcess;
+    const canConfirmReturn = item.status === 'Đã duyệt - chờ trả kết quả' && item.copyType === 'Bản sao giấy';
+    document.getElementById('detail-toolbar-buttons').innerHTML = `
+        <button class="btn btn-outline-secondary" onclick="closeDetail()">Đóng</button>
+        <button class="btn btn-outline-primary" onclick="viewCopyOriginalDossier('${item.id}')"><i class="fa-solid fa-up-right-from-square"></i> Xem hồ sơ gốc</button>
+        <button class="btn btn-primary" onclick="exportCopyDraft('${item.id}')" ${canExport ? '' : 'disabled'}><i class="fa-solid fa-file-pdf"></i> Kết xuất bản sao điện tử</button>
+        <button class="btn btn-success" onclick="submitCopyForSigning('${item.id}')" ${canSubmit ? '' : 'disabled'}><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
+        <button class="btn btn-danger" onclick="rejectCopyOfficer('${item.id}')" ${canReject ? '' : 'disabled'}><i class="fa-solid fa-xmark"></i> Từ chối</button>
+        <button class="btn btn-success" onclick="confirmCopyPaperReturn('${item.id}')" ${canConfirmReturn ? '' : 'disabled'}><i class="fa-solid fa-check"></i> Xác nhận trả kết quả</button>
+    `;
+}
+
+function renderCopyOfficerDetailContent(item) {
+    const canEditPaper = item.source === 'Cán bộ nhập liệu' && ['Chờ giải quyết', 'Bị trả lại'].includes(item.status);
+    const showQuantity = item.copyType === 'Bản sao giấy';
+    const readonly = canEditPaper ? '' : 'readonly';
+    const disabled = canEditPaper ? '' : 'disabled';
+    return `
+        <div class="card-section" style="box-shadow:none;border:none;padding:0">
+            <h3 class="section-title">Thông tin tiếp nhận</h3>
+            <div class="info-grid">
+                <div class="info-group"><div class="info-label">Mã hồ sơ</div><div class="info-value"><b>${item.id}</b></div></div>
+                <div class="info-group"><div class="info-label">Số đơn giấy</div><div class="info-value">${item.paperNo || '—'}</div></div>
+                <div class="info-group"><div class="info-label">Nguồn tiếp nhận</div><div class="info-value">${item.source}</div></div>
+                <div class="info-group"><div class="info-label">Thời điểm đăng ký</div><div class="info-value">${item.registeredAt}</div></div>
+                <div class="info-group"><div class="info-label">Mã khách hàng</div><div class="info-value"><code>${item.customerId}</code></div></div>
+                <div class="info-group"><div class="info-label">Người yêu cầu</div><div class="info-value">${item.requester}</div></div>
+                <div class="info-group" style="grid-column:span 2"><div class="info-label">Địa chỉ</div><div class="info-value">${item.address}</div></div>
+                <div class="info-group"><div class="info-label">Trạng thái lệ phí</div><div class="info-value">${item.paidAt}</div></div>
+                <div class="info-group"><div class="info-label">Số tiền đã thu/thanh toán</div><div class="info-value">${item.fee.toLocaleString('vi-VN')} VNĐ</div></div>
+            </div>
+
+            ${item.returnReason ? `<div style="margin-top:12px;padding:12px;border:1px solid #FCA5A5;background:#FEF2F2;border-radius:6px"><b>Lý do trả lại:</b> ${item.returnReason}</div>` : ''}
+
+            <h3 class="section-title">Thông tin yêu cầu cung cấp bản sao</h3>
+            <div class="info-grid">
+                <div class="info-group">
+                    <div class="info-label">Số đăng ký</div>
+                    <div class="info-value" style="display:flex;gap:8px;align-items:center">
+                        <input class="form-control" id="copy-detail-regno" value="${item.registrationNo || ''}" placeholder="Nhập số đăng ký hồ sơ gốc..." ${readonly}>
+                        <button class="btn btn-outline-primary" onclick="viewCopyOriginalDossier('${item.id}')" type="button">Xem hồ sơ gốc</button>
+                    </div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Loại cung cấp bản sao</div>
+                    <select class="form-select" id="copy-detail-type" onchange="toggleCopyOfficerQty()" ${disabled}>
+                        <option value="Bản sao điện tử" ${item.copyType === 'Bản sao điện tử' ? 'selected' : ''}>Bản sao điện tử</option>
+                        <option value="Bản sao giấy" ${item.copyType === 'Bản sao giấy' ? 'selected' : ''}>Bản sao giấy</option>
+                    </select>
+                </div>
+                <div class="info-group" id="copy-detail-qty-group" style="${showQuantity ? '' : 'display:none'}">
+                    <div class="info-label">Số lượng bản sao</div>
+                    <input class="form-control" id="copy-detail-qty" type="number" min="1" max="100" value="${item.quantity || ''}" ${readonly}>
+                </div>
+                <div class="info-group"><div class="info-label">Cán bộ xử lý</div><div class="info-value">${item.officer}</div></div>
+            </div>
+
+            <h3 class="section-title">Tệp bản sao điện tử dự thảo</h3>
+            ${item.copyType === 'Bản sao điện tử' ? `
+                <div style="padding:14px;border:1px solid var(--border-color);border-radius:6px;background:#F8FAFC">
+                    ${item.draftFile ? `<b>File dự thảo:</b> <a class="action-link" href="#" onclick="alert('Mở xem trước ${item.draftFile}'); return false;">${item.draftFile}</a>` : 'Chưa kết xuất bản sao điện tử dự thảo.'}
+                </div>
+            ` : `
+                <div style="padding:14px;border:1px solid var(--border-color);border-radius:6px;background:#F8FAFC">
+                    Bản sao giấy không phát sinh file ký số tại bước Cán bộ. Sau khi Lãnh đạo ký duyệt, hồ sơ chuyển sang bước xác nhận trả kết quả giấy.
+                </div>
+            `}
+
+            <h3 class="section-title">Hồ sơ đăng ký gốc tham chiếu</h3>
+            <table class="table" style="min-width:900px">
+                <thead><tr><th>Số đăng ký</th><th>Nghiệp vụ gốc</th><th>Bên bảo đảm</th><th>Bên nhận bảo đảm</th><th>Tài sản bảo đảm</th><th>Trạng thái hồ sơ gốc</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>${item.registrationNo || 'Chưa tra cứu'}</code></td>
+                        <td>${item.originalCase || '—'}</td>
+                        <td>${item.securedParty || '—'}</td>
+                        <td>${item.mortgagee || '—'}</td>
+                        <td>${item.asset || '—'}</td>
+                        <td>${item.originalStatus ? `<span class="badge badge-success">${item.originalStatus}</span>` : '—'}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+function toggleCopyOfficerQty() {
+    const type = document.getElementById('copy-detail-type')?.value;
+    const group = document.getElementById('copy-detail-qty-group');
+    if (group) group.style.display = type === 'Bản sao giấy' ? '' : 'none';
+}
+
+function syncCopyDetailInputs(item) {
+    const canEditPaper = item.source === 'Cán bộ nhập liệu' && ['Chờ giải quyết', 'Bị trả lại'].includes(item.status);
+    if (!canEditPaper) return true;
+    const regNo = document.getElementById('copy-detail-regno')?.value.trim() || '';
+    const type = document.getElementById('copy-detail-type')?.value || 'Bản sao giấy';
+    const qty = parseInt(document.getElementById('copy-detail-qty')?.value, 10);
+    if (!regNo) {
+        alert('Vui lòng nhập Số đăng ký hồ sơ gốc.');
+        return false;
+    }
+    if (type === 'Bản sao giấy' && (!qty || qty < 1 || qty > 100)) {
+        alert('Số lượng bản sao giấy phải là số nguyên dương, tối đa 100.');
+        return false;
+    }
+    item.registrationNo = regNo;
+    item.copyType = type;
+    item.quantity = type === 'Bản sao giấy' ? qty : null;
+    item.copyQty = type === 'Bản sao giấy' ? `${qty} bản` : '—';
+    item.originalCase = item.originalCase || 'Đăng ký lần đầu';
+    item.originalStatus = 'Hoàn thành';
+    item.securedParty = item.securedParty || item.requester;
+    item.mortgagee = item.mortgagee || 'Ngân hàng TMCP FPT';
+    item.asset = item.asset || 'Tài sản bảo đảm theo hồ sơ gốc';
+    return true;
+}
+
+function viewCopyOriginalDossier(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item) return;
+    if (!syncCopyDetailInputs(item)) return;
+    if (!item.registrationNo) {
+        alert('Chưa có Số đăng ký để xem hồ sơ gốc.');
+        return;
+    }
+    alert(`Mở popup xem hồ sơ gốc theo Số đăng ký ${item.registrationNo}. Dữ liệu được truy vấn trực tiếp tại thời điểm xem.`);
+}
+
+function exportCopyDraft(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item || item.copyType !== 'Bản sao điện tử') return;
+    if (!syncCopyDetailInputs(item)) return;
+    item.draftFile = `Ban_sao_dien_tu_du_thao_${item.id}.pdf`;
+    alert(`Đã kết xuất bản sao điện tử dự thảo cho hồ sơ ${item.id}.`);
+    openCopyOfficerDetail(id);
+}
+
+function submitCopyForSigning(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item || !['Chờ duyệt', 'Chờ giải quyết', 'Bị trả lại'].includes(item.status)) return;
+    if (!syncCopyDetailInputs(item)) return;
+    if (item.copyType === 'Bản sao điện tử' && !item.draftFile) {
+        alert('Vui lòng kết xuất bản sao điện tử dự thảo trước khi trình ký.');
+        return;
+    }
+    const leader = prompt('Nhập/Chọn Lãnh đạo ký duyệt', 'Nguyễn Văn Lãnh Đạo');
+    if (!leader) return;
+    item.status = 'Chờ ký';
+    item.submittedLeader = leader;
+    alert(`Đã trình ký yêu cầu cung cấp bản sao ${item.id}. Hồ sơ chuyển sang trạng thái Chờ ký.`);
+    closeDetail();
+    renderTable(true);
+}
+
+function rejectCopyOfficer(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item || !['Chờ duyệt', 'Chờ giải quyết', 'Bị trả lại'].includes(item.status)) return;
+    const reason = prompt('Nhập lý do từ chối', 'Hồ sơ không đủ điều kiện cung cấp bản sao.');
+    if (!reason) return;
+    item.status = 'Bị từ chối';
+    item.rejectReason = reason;
+    alert(`Đã từ chối yêu cầu cung cấp bản sao ${item.id}.`);
+    closeDetail();
+    renderTable(true);
+}
+
+function confirmCopyPaperReturn(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item || item.status !== 'Đã duyệt - chờ trả kết quả' || item.copyType !== 'Bản sao giấy') return;
+    if (!confirm(`Xác nhận đã trả kết quả bản sao giấy cho hồ sơ ${item.id}?`)) return;
+    item.status = 'Hoàn thành';
+    item.returnedAt = new Date().toLocaleString('vi-VN');
+    alert(`Đã xác nhận trả kết quả bản sao giấy cho hồ sơ ${item.id}. Hồ sơ chuyển sang Hoàn thành.`);
+    if (selectedOfficerCopyId === id) closeDetail();
+    renderTable(true);
+}
+
 function renderDevelopingTable(message) {
     document.getElementById('toolbar-choduyet').style.display = 'none';
     document.getElementById('toolbar-duyet-choky').style.display = 'none';
@@ -3535,7 +3997,7 @@ function openCcttOfficerDetail(id) {
     document.getElementById('lifecycle-timeline').innerHTML = `
         <li class="timeline-item active"><div class="timeline-title">Tiếp nhận yêu cầu</div><div class="timeline-date">${item.registeredAt}</div></li>
         <li class="timeline-item"><div class="timeline-title">Cán bộ tra cứu</div><div class="timeline-date">Chưa thực hiện</div></li>
-        <li class="timeline-item"><div class="timeline-title">Trình Lãnh đạo duyệt</div><div class="timeline-date">Chưa thực hiện</div></li>
+        <li class="timeline-item"><div class="timeline-title">Trình ký</div><div class="timeline-date">Chưa thực hiện</div></li>
     `;
     document.getElementById('internal-log-content').innerHTML = `
         <div><b>${item.registeredAt}</b> - Hệ thống ghi nhận hồ sơ từ ${item.source}.</div>
@@ -3547,7 +4009,7 @@ function openCcttOfficerDetail(id) {
     document.getElementById('detail-toolbar-buttons').innerHTML = `
         <button class="btn btn-outline-secondary" onclick="closeDetail()">Đóng</button>
         <button class="btn btn-primary" onclick="renderCcttOfficerLookup(true)"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu</button>
-        <button class="btn btn-success" onclick="alert('Đã trình Lãnh đạo duyệt hồ sơ ${item.id}.')"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo duyệt</button>
+        <button class="btn btn-success" onclick="alert('Đã trình ký hồ sơ ${item.id}.')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
         <button class="btn btn-danger" onclick="alert('Mở popup nhập lý do từ chối hồ sơ ${item.id}.')"><i class="fa-solid fa-xmark"></i> Từ chối</button>
     `;
 }
@@ -3617,7 +4079,7 @@ switchListTab = function (tab, element) {
 
 closeDetail = function () {
     selectedCcttOfficerId = null;
+    selectedOfficerCopyId = null;
     UC028_BASE.closeDetail();
     syncOfficerWorkTabs();
 };
-

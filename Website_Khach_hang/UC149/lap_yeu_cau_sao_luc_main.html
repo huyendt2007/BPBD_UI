@@ -282,6 +282,24 @@
             outline: none;
         }
 
+        .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 8px 12px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            box-sizing: border-box;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            outline: none;
+        }
+
         .form-control[readonly], .form-control[disabled] {
             background-color: #F8FAFC;
             color: #475569;
@@ -539,16 +557,16 @@
             </div>
             <div class="step-item" id="step2">
                 <div class="step-icon">2</div>
-                <div class="step-label">Xem trước yêu cầu</div>
+                <div class="step-label">Gửi yêu cầu</div>
             </div>
             <div class="step-item" id="step3">
                 <div class="step-icon">3</div>
-                <div class="step-label">Thanh toán lệ phí & Nhận bản sao</div>
+                <div class="step-label">Thanh toán / Theo dõi kết quả</div>
             </div>
         </div>
 
         <!-- ==================== SCREEN 1: TRA CỨU & KHỞI TẠO (MH01) ==================== -->
-        <div id="screen-mh01" class="card-section" style="max-width: 500px; margin: 30px auto;">
+        <div id="screen-mh01" class="card-section" style="max-width: 720px; margin: 30px auto;">
             <h2 class="section-title">
                 <i class="fa-solid fa-file-invoice"></i>
                 Yêu cầu cấp bản sao văn bản chứng nhận
@@ -582,18 +600,69 @@
             </div>
 
             <div class="form-group">
+                <label class="form-label" for="copyType">Loại cung cấp bản sao <span class="required-mark">*</span></label>
+                <select id="copyType" class="form-select" onchange="toggleCopyQuantity()">
+                    <option value="Bản sao điện tử">Bản sao điện tử</option>
+                    <option value="Bản sao giấy" selected>Bản sao giấy</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="copyQtyGroup">
                 <label class="form-label" for="copyQty">Số lượng bản sao cần cấp <span class="required-mark">*</span></label>
-                <input type="number" id="copyQty" class="form-control" value="1" min="1" max="150" placeholder="Ví dụ: 1, 2, 3..." style="background-color: white;">
+                <input type="number" id="copyQty" class="form-control" value="1" min="1" max="100" placeholder="Ví dụ: 1, 2, 3..." style="background-color: white;">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="agency">Cơ quan tiếp nhận <span class="required-mark">*</span></label>
+                <select id="agency" class="form-select">
+                    <option value="Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội" selected>Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội</option>
+                    <option value="Trung tâm Đăng ký giao dịch, tài sản tại Đà Nẵng">Trung tâm Đăng ký giao dịch, tài sản tại Đà Nẵng</option>
+                    <option value="Trung tâm Đăng ký giao dịch, tài sản tại Thành phố Hồ Chí Minh">Trung tâm Đăng ký giao dịch, tài sản tại Thành phố Hồ Chí Minh</option>
+                </select>
             </div>
 
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border-color); padding-top:15px;">
                 <button class="btn btn-secondary" onclick="goHome()">Hủy</button>
-                <button id="btnContinueMH01" class="btn btn-primary" onclick="proceedToReview()">
-                    Tiếp tục <i class="fa-solid fa-arrow-right"></i>
+                <button id="btnContinueMH01" class="btn btn-primary" onclick="submitCopyRequestDirect()">
+                    Gửi yêu cầu <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
         </div>
 
+        <!-- ==================== SCREEN 2: GỬI YÊU CẦU THÀNH CÔNG ==================== -->
+        <div id="screen-success" class="card-section hidden" style="max-width: 760px; margin: 30px auto;">
+            <h2 class="section-title">
+                <i class="fa-solid fa-circle-check"></i>
+                Gửi yêu cầu cung cấp bản sao thành công
+            </h2>
+            <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:16px;margin-bottom:18px;color:#166534;font-weight:600;">
+                Hồ sơ yêu cầu cung cấp bản sao đã được ghi nhận. Quý khách có thể theo dõi tại danh sách yêu cầu đã đăng ký.
+            </div>
+            <div class="review-grid-2">
+                <div class="review-item">
+                    <span class="review-label">Mã hồ sơ</span>
+                    <span class="review-val" id="successReqCode" style="font-weight:700;color:var(--primary-color);"></span>
+                </div>
+                <div class="review-item">
+                    <span class="review-label">Trạng thái hồ sơ</span>
+                    <span class="review-val" id="successStatus"></span>
+                </div>
+                <div class="review-item">
+                    <span class="review-label">Thời điểm đăng ký</span>
+                    <span class="review-val" id="successTime"></span>
+                </div>
+                <div class="review-item">
+                    <span class="review-label">Số tiền phải thanh toán</span>
+                    <span class="review-val" id="successAmount"></span>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;border-top:1px solid var(--border-color);padding-top:15px;">
+                <button class="btn btn-secondary" onclick="goCopyRequestList()">Về danh sách yêu cầu</button>
+                <button class="btn btn-primary" id="successPayBtn" onclick="goToCopyPayment()">
+                    <i class="fa-solid fa-credit-card"></i> Thanh toán
+                </button>
+            </div>
+        </div>
 
         <!-- ==================== SCREEN 2: XEM TRƯỚC (MH02) ==================== -->
         <div id="screen-mh02" class="hidden">
@@ -912,18 +981,19 @@
                 const data = JSON.parse(savedData);
                 document.getElementById('regNum').value = data.regNum || '';
                 document.getElementById('copyQty').value = data.copyQty || '';
+                if (data.copyType) document.getElementById('copyType').value = data.copyType;
+                if (data.agency) document.getElementById('agency').value = data.agency;
             }
 
             if (shortcutRegNum) {
                 const regNumInput = document.getElementById('regNum');
                 const copyQtyInput = document.getElementById('copyQty');
                 regNumInput.value = shortcutRegNum;
-                copyQtyInput.value = '';
                 setTimeout(() => {
-                    copyQtyInput.focus();
-                    copyQtyInput.select();
+                    document.getElementById('copyType').focus();
                 }, 50);
             }
+            toggleCopyQuantity();
         });
 
         function goHome() {
@@ -938,10 +1008,50 @@
             }
         }
 
-        // MH01 validation and navigation to MH02
-        function proceedToReview() {
-            const regNumInput = document.getElementById('regNum');
+        function goCopyRequestList() {
+            if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                window.top.sessionStorage.setItem('registeredReturnTab', 'ban-sao');
+                window.top.showScreen('registered-requests');
+                return;
+            }
+            goHome();
+        }
+
+        function toggleCopyQuantity() {
+            const copyType = document.getElementById('copyType').value;
+            const copyQtyGroup = document.getElementById('copyQtyGroup');
             const copyQtyInput = document.getElementById('copyQty');
+            if (copyType === 'Bản sao điện tử') {
+                copyQtyGroup.style.display = 'none';
+                copyQtyInput.value = '';
+            } else {
+                copyQtyGroup.style.display = 'flex';
+                if (!copyQtyInput.value) copyQtyInput.value = '1';
+            }
+        }
+
+        function buildCopyRequestCode() {
+            const now = new Date();
+            const yyyymmdd = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+            const randNum = String(Math.floor(100000 + Math.random() * 900000));
+            return `BS-${yyyymmdd}-${randNum}`;
+        }
+
+        function formatDateTimeNow() {
+            const now = new Date();
+            return `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+
+        function calculateCopyFee(copyType, copyQty) {
+            return copyType === 'Bản sao điện tử' ? 30000 : 30000 * copyQty;
+        }
+
+        // MH01 validation and direct submission
+        function submitCopyRequestDirect() {
+            const regNumInput = document.getElementById('regNum');
+            const copyTypeInput = document.getElementById('copyType');
+            const copyQtyInput = document.getElementById('copyQty');
+            const agencyInput = document.getElementById('agency');
             const errorMsg = document.getElementById('errorMsg');
             const errorText = document.getElementById('errorText');
 
@@ -950,7 +1060,10 @@
             clearInputErrors();
 
             const regNum = regNumInput.value.trim();
+            const copyType = copyTypeInput.value;
+            const agency = agencyInput.value;
             const copyQtyRaw = copyQtyInput.value.trim();
+            const requiresQuantity = copyType === 'Bản sao giấy';
 
             // TH1: Check empty fields
             let hasEmpty = false;
@@ -958,20 +1071,28 @@
                 showInputError(regNumInput, "Trường này bắt buộc nhập");
                 hasEmpty = true;
             }
-            if (!copyQtyRaw) {
+            if (!copyType) {
+                showInputError(copyTypeInput, "Trường này bắt buộc chọn");
+                hasEmpty = true;
+            }
+            if (requiresQuantity && !copyQtyRaw) {
                 showInputError(copyQtyInput, "Trường này bắt buộc nhập");
+                hasEmpty = true;
+            }
+            if (!agency) {
+                showInputError(agencyInput, "Trường này bắt buộc chọn");
                 hasEmpty = true;
             }
 
             if (hasEmpty) return;
 
             // TH2: Quantity validation
-            const copyQty = parseInt(copyQtyRaw);
-            if (isNaN(copyQty) || copyQty <= 0 || copyQtyRaw.includes('.') || copyQtyRaw.includes(',')) {
+            const copyQty = requiresQuantity ? parseInt(copyQtyRaw) : 1;
+            if (requiresQuantity && (isNaN(copyQty) || copyQty <= 0 || copyQtyRaw.includes('.') || copyQtyRaw.includes(','))) {
                 showInputError(copyQtyInput, "Số lượng bản sao phải là số nguyên dương lớn hơn 0");
                 return;
             }
-            if (copyQty > 100) {
+            if (requiresQuantity && copyQty > 100) {
                 showInputError(copyQtyInput, "Số lượng bản sao yêu cầu tối đa 100 bản trong một giao dịch");
                 return;
             }
@@ -995,17 +1116,42 @@
                 return;
             }
 
-            // Valid: Save state to session storage
+            // Valid: save request and show success according to new SRS flow
             loadedDossier = record;
+            const reqCode = buildCopyRequestCode();
+            const amount = calculateCopyFee(copyType, copyQty);
+            const createdAt = formatDateTimeNow();
+            const status = amount > 0 ? 'Chờ thanh toán' : 'Chờ duyệt';
             const dataToSave = {
                 regNum: regNum,
+                copyType: copyType,
                 copyQty: copyQty,
-                dossier: record
+                agency: agency,
+                dossier: record,
+                reqCode: reqCode,
+                amount: amount,
+                createdAt: createdAt,
+                status: status
             };
             sessionStorage.setItem('saoLucData', JSON.stringify(dataToSave));
 
-            // Switch to screen MH02
-            renderMH02(dataToSave);
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step2').classList.add('completed');
+            document.getElementById('step3').classList.add('active');
+            document.getElementById('screen-mh01').classList.add('hidden');
+            document.getElementById('screen-mh02').classList.add('hidden');
+            document.getElementById('screen-success').classList.remove('hidden');
+            document.getElementById('successReqCode').innerText = reqCode;
+            document.getElementById('successStatus').innerText = status;
+            document.getElementById('successTime').innerText = createdAt;
+            document.getElementById('successAmount').innerText = amount > 0 ? `${amount.toLocaleString('vi-VN')} VNĐ` : 'Miễn phí';
+            document.getElementById('successPayBtn').style.display = status === 'Chờ thanh toán' ? 'inline-flex' : 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function proceedToReview() {
+            submitCopyRequestDirect();
         }
 
         // Render review details (MH02)
@@ -1098,23 +1244,13 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        function goToCopyPayment() {
+            window.location.href = 'lap_yeu_cau_sao_luc_thanh_toan.html';
+        }
+
         // Direct redirect to payment gateway screen
         function submitRequest() {
-            // Generate request code BS-[YYYYMMDD]-[TỰ_TĂNG_6_SỐ]
-            const now = new Date();
-            const yyyymmdd = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
-            const randNum = String(Math.floor(100000 + Math.random() * 900000));
-            const reqCode = `BS-${yyyymmdd}-${randNum}`;
-
-            const saved = sessionStorage.getItem('saoLucData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                data.reqCode = reqCode;
-                sessionStorage.setItem('saoLucData', JSON.stringify(data));
-            }
-
-            // Switch screen to payment html
-            window.location.href = 'lap_yeu_cau_sao_luc_thanh_toan.html';
+            goToCopyPayment();
         }
 
         // Helpers
@@ -1133,7 +1269,7 @@
         }
 
         function clearInputErrors() {
-            document.querySelectorAll('.form-control').forEach(el => {
+            document.querySelectorAll('.form-control, .form-select').forEach(el => {
                 el.style.borderColor = '';
                 el.style.borderWidth = '';
             });

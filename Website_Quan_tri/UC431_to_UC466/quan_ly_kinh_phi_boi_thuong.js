@@ -1551,7 +1551,7 @@ function triggerSearchProposals() {
 // DYNAMIC TYPE & CLAIMS LOAD IN FORM
 function handleTypeChange(selectedType) {
     const claimSelector = document.getElementById('formClaimSelector');
-    claimSelector.innerHTML = `<option value="">-- Chọn hồ sơ bồi thường liên kết --</option>`;
+    claimSelector.innerHTML = `<option value="">-- Chọn vụ việc bồi thường liên kết --</option>`;
 
     // Filter relevant claims based on type
     const targetStatus = selectedType === 'Cấp tạm ứng' ? 'Đang xác minh thiệt hại' : 'Chờ thực thi';
@@ -1657,35 +1657,129 @@ function clearClaimDetails() {
     renderProposalAttachedDocs();
 }
 
-// Quick search by claim code
-function searchClaimByCode() {
-    const searchInputVal = document.getElementById('formClaimSearchInput').value.trim();
-    if (!searchInputVal) {
-        showToast("Vui lòng nhập mã hồ sơ cần tìm kiếm!", "warning");
-        return;
-    }
+function normalizeFundingLookupText(value) {
+    return String(value || '').trim().toLowerCase();
+}
 
+function getFundingClaimTargetStatus() {
     const selectedType = document.getElementById('formProposalType').value;
-    const targetStatus = selectedType === 'Cấp tạm ứng' ? 'Đang xác minh thiệt hại' : 'Chờ thực thi';
+    return selectedType === 'Cấp tạm ứng' ? 'Đang xác minh thiệt hại' : 'Chờ thực thi';
+}
 
-    const claim = mockClaims.find(c => c.code.toLowerCase() === searchInputVal.toLowerCase());
+function getFundingClaimLookupRows() {
+    const targetStatus = getFundingClaimTargetStatus();
+    const selectedType = document.getElementById('formProposalType').value;
+    return mockClaims
+        .filter(claim => claim.status === targetStatus)
+        .map(claim => {
+            const amount = selectedType === 'Cấp tạm ứng' ? claim.suggestedAdvance : claim.amount;
+            return {
+                code: claim.code,
+                caseName: claim.caseName || `Vụ việc yêu cầu bồi thường của ${claim.nyc || ''}`,
+                requester: claim.nyc || '',
+                agency: claim.agency || '',
+                amount: amount || 0,
+                status: claim.status
+            };
+        });
+}
 
-    if (!claim) {
-        showToast("Không tìm thấy hồ sơ bồi thường nào có mã " + searchInputVal + "!", "error");
+function openFundingClaimLookupModal(prefillCode = '') {
+    const overlay = document.getElementById('fundingClaimLookupOverlay');
+    if (!overlay) return;
+
+    const codeInput = document.getElementById('fundingClaimSearchCode');
+    const nameInput = document.getElementById('fundingClaimSearchName');
+    const requesterInput = document.getElementById('fundingClaimSearchRequester');
+
+    if (codeInput) codeInput.value = prefillCode || '';
+    if (nameInput) nameInput.value = '';
+    if (requesterInput) requesterInput.value = '';
+
+    renderFundingClaimLookupResults();
+    overlay.style.display = 'flex';
+    overlay.classList.add('visible');
+    setTimeout(() => (prefillCode && codeInput ? codeInput : nameInput)?.focus(), 60);
+}
+
+function closeFundingClaimLookupModal() {
+    const overlay = document.getElementById('fundingClaimLookupOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('visible');
+    overlay.style.display = 'none';
+}
+
+function clearFundingClaimLookupFilters() {
+    document.getElementById('fundingClaimSearchCode').value = '';
+    document.getElementById('fundingClaimSearchName').value = '';
+    document.getElementById('fundingClaimSearchRequester').value = '';
+    renderFundingClaimLookupResults();
+}
+
+function renderFundingClaimLookupResults() {
+    const tbody = document.getElementById('fundingClaimLookupResults');
+    if (!tbody) return;
+
+    const code = normalizeFundingLookupText(document.getElementById('fundingClaimSearchCode')?.value);
+    const name = normalizeFundingLookupText(document.getElementById('fundingClaimSearchName')?.value);
+    const requester = normalizeFundingLookupText(document.getElementById('fundingClaimSearchRequester')?.value);
+
+    const rows = getFundingClaimLookupRows().filter(row =>
+        (!code || normalizeFundingLookupText(row.code).includes(code)) &&
+        (!name || normalizeFundingLookupText(row.caseName).includes(name)) &&
+        (!requester || normalizeFundingLookupText(row.requester).includes(requester))
+    );
+
+    if (!rows.length) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center; color: var(--text-muted); padding: 20px;">
+                    Không tìm thấy vụ việc phù hợp
+                </td>
+            </tr>
+        `;
         return;
     }
 
-    if (claim.status !== targetStatus) {
-        showToast(`Hồ sơ ${claim.code} đang ở trạng thái "${claim.status}", không phù hợp với loại đề nghị "${selectedType}" (yêu cầu trạng thái "${targetStatus}").`, "error");
-        return;
-    }
+    tbody.innerHTML = rows.map(row => `
+        <tr>
+            <td style="font-weight:700; color: var(--primary-light); white-space:nowrap;">${row.code}</td>
+            <td>${row.caseName}</td>
+            <td>${row.requester}</td>
+            <td>${row.agency}</td>
+            <td style="text-align:right; font-weight:700; white-space:nowrap;">${row.amount.toLocaleString('vi-VN')} VNĐ</td>
+            <td><span class="badge badge-pending">${row.status}</span></td>
+            <td style="text-align:center;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="selectFundingClaimFromLookup('${row.code}')">
+                    <i class="fa-solid fa-check"></i> Chọn
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function selectFundingClaimFromLookup(code) {
+    const claim = mockClaims.find(c => c.code === code);
+    if (!claim) return;
 
     const claimSelector = document.getElementById('formClaimSelector');
     claimSelector.innerHTML = `<option value="${claim.code}">${claim.code} - ${claim.nyc}</option>`;
     claimSelector.value = claim.code;
 
+    document.getElementById('formClaimSearchInput').value = claim.code;
     handleClaimSelected(claim.code);
-    showToast(`Tìm thấy hồ sơ và liên kết thành công mã ${claim.code}!`, "success");
+    closeFundingClaimLookupModal();
+    showToast(`Đã chọn vụ việc ${claim.code} và tự động điền dữ liệu liên quan!`, "success");
+}
+
+// Quick search by claim code
+function searchClaimByCode() {
+    const searchInputVal = document.getElementById('formClaimSearchInput').value.trim();
+    if (!searchInputVal) {
+        showToast("Vui lòng nhập Mã vụ việc hợp lệ!", "warning");
+        return;
+    }
+    openFundingClaimLookupModal(searchInputVal);
 }
 
 // AUTO-FILL ALL DETAILS RELATING TO THE SELECT CLAIM
@@ -1803,7 +1897,7 @@ function handleClaimSelected(code) {
             }
         }
 
-        document.getElementById('formProposalNotes').value = `Tờ trình đề xuất duyệt cấp phát kinh phí chi trả bồi thường cho vụ việc của người yêu cầu ${claim.nyc}. Số hồ sơ thụ lý liên kết ${claim.code}.`;
+        document.getElementById('formProposalNotes').value = `Tờ trình đề xuất duyệt cấp phát kinh phí chi trả bồi thường cho vụ việc của người yêu cầu ${claim.nyc}. Mã vụ việc liên kết ${claim.code}.`;
 
         // Initialize proposalAttachedDocs with a default row
         proposalAttachedDocs = [
@@ -1811,7 +1905,7 @@ function handleClaimSelected(code) {
         ];
         renderProposalAttachedDocs();
 
-        // showToast("Đã tự động điền đầy đủ thông tin liên quan từ Hồ sơ bồi thường!", "success");
+        // showToast("Đã tự động điền đầy đủ thông tin liên quan từ vụ việc bồi thường!", "success");
     }
 }
 
@@ -2294,7 +2388,7 @@ function saveProposal(statusStr) {
     const user = "Lê Văn Nam"; // Cán bộ xử lý tự động lấy cán bộ đăng nhập
 
     if (!ycbtCode) {
-        showToast("Vui lòng chọn hồ sơ bồi thường liên kết trước!", "error");
+        showToast("Vui lòng chọn vụ việc bồi thường liên kết trước!", "error");
         return;
     }
 

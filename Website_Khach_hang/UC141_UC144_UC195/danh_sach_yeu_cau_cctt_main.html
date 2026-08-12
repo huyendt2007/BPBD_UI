@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -633,7 +633,6 @@
                         <label class="form-label">Trạng thái hồ sơ</label>
                         <select id="fltStatus" class="form-control">
                             <option value="Tất cả" selected>Tất cả</option>
-                            <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                             <option value="Chờ duyệt">Chờ duyệt</option>
                             <option value="Chờ ký">Chờ ký</option>
                             <option value="Chờ thanh toán">Chờ thanh toán</option>
@@ -833,7 +832,6 @@
     <script>
         // ================= Mock data (25 bản ghi, đủ 3 tiêu chí và 5 trạng thái) =================
         const STATUS_MAP = {
-            'Chờ tiếp nhận': { cls: 'cho-duyet', icon: 'fa-hourglass-start' },
             'Chờ duyệt': { cls: 'cho-duyet', icon: 'fa-clock' },
             'Chờ ký': { cls: 'cho-ky', icon: 'fa-signature' },
             'Chờ thanh toán': { cls: 'cho-thanh-toan', icon: 'fa-money-bill-wave' },
@@ -842,7 +840,7 @@
         };
 
         const CRITERIA_CYCLE = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'];
-        const STATUS_CYCLE = ['Chờ tiếp nhận', 'Chờ duyệt', 'Chờ thanh toán', 'Chờ ký', 'Hoàn thành', 'Bị từ chối'];
+        const STATUS_CYCLE = ['Chờ duyệt', 'Chờ thanh toán', 'Chờ ký', 'Hoàn thành', 'Bị từ chối'];
 
         function buildMockInputData(criteria, idx) {
             if (criteria === 'Số đăng ký') return `DK-2026-${String(1000 + idx)}`;
@@ -892,7 +890,6 @@
         function statusBadgeHtml(status) {
             const statusClassMap = {
                 'Lưu nháp': 'draft',
-                'Chờ tiếp nhận': 'pending-approval',
                 'Chờ thanh toán': 'pending-payment',
                 'Chờ duyệt': 'pending-approval',
                 'Chờ ký': 'approved-pending-signature',
@@ -1346,3 +1343,4 @@
     </script>
 </body>
 </html>
+

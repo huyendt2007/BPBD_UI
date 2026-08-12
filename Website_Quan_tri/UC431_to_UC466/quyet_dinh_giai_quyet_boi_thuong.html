@@ -1356,14 +1356,15 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                 <!-- AUTO-FILL SEARCH BLOCK (Select claims in 'Chờ ban hành QĐ') -->
                 <div id="autofillClaimBlock" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 18px; border-radius: var(--border-radius-sm); margin-bottom: 20px;">
                     <span class="form-label" style="font-weight: 700; color: var(--primary-light); margin-bottom: 8px;">
-                        <i class="fa-solid fa-magnifying-glass"></i> TÌM KIẾM HỒ SƠ YÊU CẦU BỒI THƯỜNG (TRẠNG THÁI: CHỜ BAN HÀNH QĐ)
+                        <i class="fa-solid fa-magnifying-glass"></i> TÌM KIẾM VỤ VIỆC YÊU CẦU BỒI THƯỜNG (TRẠNG THÁI: CHỜ BAN HÀNH QĐ)
                     </span>
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 8px; align-items:center;">
                         <input type="text" list="claimListOptions" id="autofillClaimSelector" class="form-control" style="flex: 1.2;" placeholder="Nhập mã vụ việc (Ví dụ: BT-2026-001)...">
                         <datalist id="claimListOptions">
                             <!-- Populated by JS -->
                         </datalist>
                         <button class="btn btn-primary" onclick="triggerClaimAutoFill()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                        <button class="btn btn-secondary" onclick="openDecisionClaimSearchModal('')" style="white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
                     </div>
                 </div>
 
@@ -2966,6 +2967,80 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             renderDecTable();
         }
 
+        function normalizeLookupText(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function getDecisionClaimLookupRows() {
+            return pendingClaimsList.map(c => ({
+                code: c.code || '',
+                caseName: c.caseName || `Vụ việc yêu cầu bồi thường của ${c.nyc || ''}`,
+                requester: c.nyc || '',
+                status: c.status || 'Chờ ban hành QĐ',
+                agency: c.agency || 'Sở Tư pháp Hà Nội',
+                amount: c.amount || 0,
+                date: c.date || c.receivedAt || '01/08/2026'
+            }));
+        }
+
+        function openDecisionClaimSearchModal(prefillCode = '') {
+            const overlay = document.getElementById('decisionClaimSearchOverlay');
+            if (!overlay) return;
+            document.getElementById('decisionClaimSearchCode').value = prefillCode || '';
+            document.getElementById('decisionClaimSearchName').value = '';
+            document.getElementById('decisionClaimSearchRequester').value = '';
+            renderDecisionClaimSearchResults();
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('visible'), 10);
+        }
+
+        function closeDecisionClaimSearchModal() {
+            const overlay = document.getElementById('decisionClaimSearchOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('visible');
+            setTimeout(() => overlay.style.display = 'none', 160);
+        }
+
+        function renderDecisionClaimSearchResults() {
+            const tbody = document.getElementById('decisionClaimSearchResults');
+            if (!tbody) return;
+            const code = normalizeLookupText(document.getElementById('decisionClaimSearchCode')?.value);
+            const name = normalizeLookupText(document.getElementById('decisionClaimSearchName')?.value);
+            const requester = normalizeLookupText(document.getElementById('decisionClaimSearchRequester')?.value);
+            const rows = getDecisionClaimLookupRows().filter(item => {
+                return (!code || normalizeLookupText(item.code).includes(code))
+                    && (!name || normalizeLookupText(item.caseName).includes(name))
+                    && (!requester || normalizeLookupText(item.requester).includes(requester));
+            });
+
+            if (!rows.length) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; font-style:italic; padding:18px;">Không tìm thấy vụ việc phù hợp</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = rows.map(item => `
+                <tr onclick="selectDecisionClaimFromLookup('${item.code}')" style="cursor:pointer;">
+                    <td style="font-weight:700; color:#1d4ed8; text-align:center;">${item.code}</td>
+                    <td>${item.caseName}</td>
+                    <td>${item.requester}</td>
+                    <td>${item.agency}</td>
+                    <td style="text-align:right; font-weight:600;">${Number(item.amount || 0).toLocaleString('vi-VN')} đ</td>
+                    <td style="text-align:center;"><span class="badge badge-pending">${item.status}</span></td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="event.stopPropagation(); selectDecisionClaimFromLookup('${item.code}')"><i class="fa-solid fa-check"></i> Chọn</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function selectDecisionClaimFromLookup(code) {
+            const found = pendingClaimsList.find(c => c.code === code);
+            if (!found) return;
+            document.getElementById('autofillClaimSelector').value = found.code;
+            applyDecisionClaimToForm(found);
+            closeDecisionClaimSearchModal();
+        }
+
         // Enable or disable form inputs for readonly mode
         function enableFormInputs(editable) {
             // Already handled dynamically in viewDecisionDetail / openCreateDecForm
@@ -2973,13 +3048,15 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
 
         // Auto-fill logic from Claims
         function triggerClaimAutoFill() {
-            const code = document.getElementById('autofillClaimSelector').value;
+            const code = document.getElementById('autofillClaimSelector').value.trim();
             if (!code) {
                 showToast("Vui lòng nhập Mã vụ việc hợp lệ!", "error");
                 return;
             }
-            const found = pendingClaimsList.find(c => c.code === code || c.code.includes(code));
-            if (found) {
+            openDecisionClaimSearchModal(code);
+        }
+
+        function applyDecisionClaimToForm(found) {
                 document.getElementById('decFormYcbtCode').value = found.code;
                 document.getElementById('decFormYcbtNyc').value = found.nyc;
                 
@@ -3021,11 +3098,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                     }
                 }
 
-                showToast("Đã tìm kiếm và tự động điền dữ liệu từ Hồ sơ Yêu cầu bồi thường!", "success");
+                showToast("Đã chọn vụ việc và tự động điền dữ liệu liên quan!", "success");
                 calculateCompensation();
-            } else {
-                showToast("Không tìm thấy vụ việc phù hợp!", "error");
-            }
         }
 
         // Save / Trình ký action
@@ -3740,82 +3814,43 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                 showToast('Trình duyệt đang chặn mở tab mới. Vui lòng cho phép popup để xem trước Quyết định.', 'error');
                 return;
             }
+            const safeTitle = String(title || 'Xem trước Quyết định').replace(/[<>&"]/g, (ch) => ({
+                '<': '&lt;',
+                '>': '&gt;',
+                '&': '&amp;',
+                '"': '&quot;'
+            }[ch]));
+            const previewHtml = [
+                '<!DOCTYPE html>',
+                '<html lang="vi">',
+                '<head>',
+                '<meta charset="UTF-8">',
+                `<title>${safeTitle}</title>`,
+                '<style>',
+                '* { box-sizing: border-box; }',
+                'body { margin: 0; background: #e5e7eb; color: #000; font-family: "Times New Roman", Times, serif; }',
+                '.toolbar { position: sticky; top: 0; z-index: 10; height: 48px; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; font-family: Arial, sans-serif; font-size: 13px; }',
+                '.toolbar button { height: 30px; border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; background: #1d4ed8; color: #fff; cursor: pointer; padding: 0 12px; font-weight: 600; }',
+                '.paper-stage { min-height: calc(100vh - 48px); display: flex; justify-content: center; padding: 28px; }',
+                '.decision-paper { width: 210mm; min-height: 297mm; background: #fff; padding: 25mm 22mm 20mm 25mm; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.22); position: relative; overflow: hidden; font-size: 14pt; line-height: 1.45; }',
+                '.paper-basis { margin-bottom: 6px; text-align: justify; font-style: italic; }',
+                '.paper-signer-name { font-weight: bold; margin-top: 8px; }',
+                '@media print { .toolbar { display: none; } .paper-stage { padding: 0; background: #fff; } .decision-paper { box-shadow: none; width: 210mm; min-height: 297mm; } }',
+                '</style>',
+                '</head>',
+                '<body>',
+                '<div class="toolbar">',
+                `<strong>${safeTitle}</strong>`,
+                '<button onclick="window.print()">In/Tải PDF</button>',
+                '</div>',
+                '<div class="paper-stage">',
+                `<div class="decision-paper">${paperHtml || ''}</div>`,
+                '</div>',
+                '</bo' + 'dy>',
+                '</ht' + 'ml>'
+            ].join('');
             previewWindow.document.open();
-            previewWindow.document.write(`
-                <!DOCTYPE html>
-                <html lang="vi">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>${title}</title>
-                    <style>
-                        * { box-sizing: border-box; }
-                        body {
-                            margin: 0;
-                            background: #e5e7eb;
-                            color: #000;
-                            font-family: "Times New Roman", Times, serif;
-                        }
-                        .toolbar {
-                            position: sticky;
-                            top: 0;
-                            z-index: 10;
-                            height: 48px;
-                            background: #0f172a;
-                            color: #fff;
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            padding: 0 18px;
-                            font-family: Arial, sans-serif;
-                            font-size: 13px;
-                        }
-                        .toolbar button {
-                            height: 30px;
-                            border: 1px solid rgba(255,255,255,0.25);
-                            border-radius: 4px;
-                            background: #1d4ed8;
-                            color: #fff;
-                            cursor: pointer;
-                            padding: 0 12px;
-                            font-weight: 600;
-                        }
-                        .paper-stage {
-                            min-height: calc(100vh - 48px);
-                            display: flex;
-                            justify-content: center;
-                            padding: 28px;
-                        }
-                        .decision-paper {
-                            width: 210mm;
-                            min-height: 297mm;
-                            background: #fff;
-                            padding: 25mm 22mm 20mm 25mm;
-                            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.22);
-                            position: relative;
-                            overflow: hidden;
-                            font-size: 14pt;
-                            line-height: 1.45;
-                        }
-                        .paper-basis { margin-bottom: 6px; text-align: justify; font-style: italic; }
-                        .paper-signer-name { font-weight: bold; margin-top: 8px; }
-                        @media print {
-                            .toolbar { display: none; }
-                            .paper-stage { padding: 0; background: #fff; }
-                            .decision-paper { box-shadow: none; width: 210mm; min-height: 297mm; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="toolbar">
-                        <strong>${title}</strong>
-                        <button onclick="window.print()">In/Tải PDF</button>
-                    </div>
-                    <div class="paper-stage">
-                        <div class="decision-paper">${paperHtml}</div>
-                    </div>
-                </body>
-                </html>
-            `);
+            previewWindow.document.write(previewHtml);
             previewWindow.document.close();
         }
 
@@ -4095,14 +4130,14 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             };
 
             const modal = document.getElementById('claimDetailModal');
-            document.getElementById('claimModalTitle').innerText = `Hồ sơ Yêu cầu bồi thường liên kết: ${found.code}`;
+            document.getElementById('claimModalTitle').innerText = `Vụ việc yêu cầu bồi thường liên kết: ${found.code}`;
             
             const body = document.getElementById('claimModalBody');
             body.innerHTML = `
                 <div style="font-size:13.5px; line-height: 1.6;">
                     <div class="info-block-title" style="margin-top:0;">I. Thông tin chung</div>
                     <div class="grid-2-cols" style="margin-bottom: 12px;">
-                        <div><strong>Mã hồ sơ:</strong> ${found.code}</div>
+                        <div><strong>Mã vụ việc:</strong> ${found.code}</div>
                         <div><strong>Lĩnh vực phát sinh:</strong> Trong hoạt động quản lý ${found.fieldGroup}</div>
                     </div>
                     <div class="grid-2-cols" style="margin-bottom: 12px;">
@@ -4216,6 +4251,58 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             confirmCallback = null;
         }
     </script>
+
+    <div id="decisionClaimSearchOverlay" class="confirm-modal-overlay">
+        <div class="modal-content" style="width: 980px; max-width: 96vw; max-height: 86vh; overflow:hidden; display:flex; flex-direction:column;">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm vụ việc yêu cầu bồi thường đủ điều kiện lập quyết định</span>
+                <button type="button" class="close-modal" onclick="closeDecisionClaimSearchModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow:auto;">
+                <div class="grid-3-cols" style="margin-bottom:16px;">
+                    <div class="form-group">
+                        <span class="form-label">Mã vụ việc</span>
+                        <input class="form-control" id="decisionClaimSearchCode" placeholder="Nhập mã vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Tên vụ việc</span>
+                        <input class="form-control" id="decisionClaimSearchName" placeholder="Nhập tên vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Người yêu cầu</span>
+                        <input class="form-control" id="decisionClaimSearchRequester" placeholder="Nhập họ tên...">
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('decisionClaimSearchCode').value='';document.getElementById('decisionClaimSearchName').value='';document.getElementById('decisionClaimSearchRequester').value='';renderDecisionClaimSearchResults();">
+                        <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="renderDecisionClaimSearchResults()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                    </button>
+                </div>
+                <div class="table-container" style="max-height:380px; overflow:auto;">
+                    <table class="custom-table" style="min-width:900px;">
+                        <thead>
+                            <tr>
+                                <th style="width:120px; text-align:center;">Mã vụ việc</th>
+                                <th style="width:220px;">Tên vụ việc</th>
+                                <th style="width:160px;">Người yêu cầu</th>
+                                <th style="width:190px;">Cơ quan giải quyết</th>
+                                <th style="width:130px; text-align:right;">Số tiền</th>
+                                <th style="width:130px; text-align:center;">Trạng thái</th>
+                                <th style="width:100px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="decisionClaimSearchResults"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeDecisionClaimSearchModal()">Hủy bỏ</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Custom Confirmation Modal HTML -->
     <div id="customConfirmOverlay" class="confirm-modal-overlay">

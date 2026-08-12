@@ -467,11 +467,11 @@
             </div>
             <div class="step-item completed">
                 <div class="step-icon"><i class="fa-solid fa-check"></i></div>
-                <div class="step-label">Xem trước yêu cầu</div>
+                <div class="step-label">Gửi yêu cầu</div>
             </div>
             <div class="step-item active" id="step3Node">
                 <div class="step-icon" id="step3Icon">3</div>
-                <div class="step-label">Thanh toán lệ phí & Nhận bản sao</div>
+                <div class="step-label">Thanh toán / Theo dõi kết quả</div>
             </div>
         </div>
 
@@ -622,6 +622,7 @@
         let activeScenario = 'TH1';
         let isSimulating = false;
         let copyQty = 1;
+        let copyType = 'Bản sao giấy';
         let totalAmount = 30000;
         let regNum = '1505156435';
         let reqCode = 'BS-20260618-100412';
@@ -632,12 +633,15 @@
             if (saved) {
                 const data = JSON.parse(saved);
                 copyQty = data.copyQty || 1;
-                totalAmount = 30000 * copyQty;
+                copyType = data.copyType || copyType;
+                totalAmount = Number(data.amount || (copyType === 'Bản sao giấy' ? 30000 * copyQty : 30000));
                 regNum = data.regNum || '1505156435';
                 reqCode = data.reqCode || 'BS-20260618-100412';
 
                 document.getElementById('pm_sohoSo').innerHTML = `Mã hồ sơ yêu cầu: <strong>${reqCode}</strong>`;
-                document.getElementById('pm_soLuongText').innerText = `Số lượng bản sao: ${copyQty} bản`;
+                document.getElementById('pm_soLuongText').innerText = copyType === 'Bản sao giấy'
+                    ? `Số lượng bản sao: ${copyQty} bản`
+                    : 'Số lượng bản sao: 01 file PDF';
                 document.getElementById('pm_amountText').innerText = totalAmount.toLocaleString('vi-VN') + ' VNĐ';
             }
         });
@@ -692,6 +696,15 @@
             } else {
                 window.location.href = '../trang_tong_the_website_khach_hang.html';
             }
+        }
+
+        function goCopyRequestList() {
+            if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                window.top.sessionStorage.setItem('registeredReturnTab', 'ban-sao');
+                window.top.showScreen('registered-requests');
+                return;
+            }
+            goHome();
         }
 
         function startTimer(duration) {
@@ -772,13 +785,24 @@
             document.getElementById('resultRegTime').innerText = timeStr;
 
             const btnBackToHome = `<button type="button" class="btn btn-outline-primary" onclick="goHome()"><i class="fa-solid fa-house"></i> TRỞ VỀ TRANG CHỦ</button>`;
-            const btnDownloadCopy = `<button type="button" class="btn btn-primary" onclick="alert('Đang tải bản sao có chữ ký số điện tử của văn bản chứng nhận đăng ký biện pháp bảo đảm...')"><i class="fa-solid fa-file-pdf"></i> TẢI BẢN SAO CHỨNG NHẬN</button>`;
+            const btnBackToList = `<button type="button" class="btn btn-primary" onclick="goCopyRequestList()"><i class="fa-solid fa-list-check"></i> THEO DÕI YÊU CẦU</button>`;
+
+            function markPaymentSuccess() {
+                const saved = sessionStorage.getItem('saoLucData');
+                if (!saved) return;
+                const data = JSON.parse(saved);
+                data.status = 'Chờ duyệt';
+                data.paymentTime = timeStr;
+                data.paymentAmount = totalAmount;
+                sessionStorage.setItem('saoLucData', JSON.stringify(data));
+            }
 
             switch (scen) {
                 case 'TH1':
-                    message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán lệ phí cấp bản sao thành công. Bạn có thể nhấn nút [Tải bản sao chứng nhận] để lưu trữ văn bản bản sao có dấu và chữ ký số điện tử của Cục Đăng ký.';
+                    markPaymentSuccess();
+                    message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán lệ phí cấp bản sao thành công. Yêu cầu đã chuyển sang trạng thái Chờ duyệt để Cán bộ nghiệp vụ kiểm tra và xử lý.';
                     document.getElementById('resultPin').innerText = '8392-4710';
-                    buttonsContainer.innerHTML = btnDownloadCopy + btnBackToHome;
+                    buttonsContainer.innerHTML = btnBackToList + btnBackToHome;
                     break;
                 case 'TH2': // Nộp thiếu
                     icon.style.backgroundColor = '#fef3c7';
@@ -786,16 +810,17 @@
                     card.style.borderTopColor = 'var(--warning-color)';
                     statusText.style.color = '#b45309';
                     statusText.innerText = 'SAI LỆCH THANH TOÁN (NỘP THIẾU)';
-                    message.innerText = `Phát hiện giao dịch thanh toán bị thiếu tiền (Đã đóng nộp ít hơn ${totalAmount.toLocaleString('vi-VN')} VNĐ). Vui lòng nhấn nút [Thanh toán bổ sung] để đóng nốt số tiền còn thiếu trước khi tải tệp bản sao.`;
+                    message.innerText = `Phát hiện giao dịch thanh toán bị thiếu tiền (Đã đóng nộp ít hơn ${totalAmount.toLocaleString('vi-VN')} VNĐ). Vui lòng nhấn nút [Thanh toán bổ sung] để đóng đủ số tiền trước khi yêu cầu chuyển sang trạng thái Chờ duyệt.`;
                     pinContainer.style.display = 'none';
 
                     const btnPaySupplement = `<button type="button" class="btn btn-primary" onclick="alert('Đang kết nối để nộp bổ sung phần lệ phí thiếu...')"><i class="fa-solid fa-credit-card"></i> THANH TOÁN BỔ SUNG</button>`;
                     buttonsContainer.innerHTML = `<button type="button" class="btn btn-secondary" onclick="cancelQR()">HỦY VÀ THỬ LẠI</button> ` + btnPaySupplement;
                     break;
                 case 'TH3': // Nộp thừa
-                    message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán thành công. Phát hiện số tiền đóng nộp bị thừa. Số tiền nộp thừa này sẽ được hoàn trả tự động vào tài khoản gốc của Quý khách trong vòng 3-5 ngày làm việc. Bạn có thể tải bản sao chứng nhận ngay lập tức.';
+                    markPaymentSuccess();
+                    message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán thành công. Phát hiện số tiền đóng nộp bị thừa; phần nộp thừa sẽ được hoàn trả theo quy trình đối soát. Yêu cầu đã chuyển sang trạng thái Chờ duyệt.';
                     document.getElementById('resultPin').innerText = '8392-4710';
-                    buttonsContainer.innerHTML = btnDownloadCopy + btnBackToHome;
+                    buttonsContainer.innerHTML = btnBackToList + btnBackToHome;
                     break;
                 case 'TH4': // Hủy / Lỗi
                     icon.style.backgroundColor = '#fee2e2';
@@ -827,9 +852,10 @@
                     buttonsContainer.innerHTML = `<button type="button" class="btn btn-primary" onclick="alert('Đang truy vấn lại trạng thái giao dịch từ Cổng thanh toán...')"><i class="fa-solid fa-sync"></i> KIỂM TRA GIAO DỊCH</button> ` + btnBackToHome;
                     break;
                 case 'TH7': // Nộp trùng
-                    message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán thành công. Phát hiện giao dịch bị nộp trùng lặp. Số tiền giao dịch trùng lặp thứ hai sẽ được tự động hoàn tiền 100% trong vòng 3-5 ngày làm việc. Bạn có thể tải bản sao chứng nhận.';
+                    markPaymentSuccess();
+                    message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán thành công. Phát hiện giao dịch bị nộp trùng lặp; giao dịch trùng sẽ được hoàn tiền theo quy trình đối soát. Yêu cầu đã chuyển sang trạng thái Chờ duyệt.';
                     document.getElementById('resultPin').innerText = '8392-4710';
-                    buttonsContainer.innerHTML = btnDownloadCopy + btnBackToHome;
+                    buttonsContainer.innerHTML = btnBackToList + btnBackToHome;
                     break;
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });

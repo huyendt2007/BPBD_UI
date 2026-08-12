@@ -364,6 +364,74 @@ let canBoDossiersData = [
         receiptNo: "BL-921092",
         expanded: false,
         children: []
+    },
+    {
+        id: "11",
+        regNum: "CCTT-2026-000201",
+        pin: "C201",
+        date: "01/08/2026 09:15",
+        type: "Yêu cầu cung cấp thông tin",
+        guarantor: "Ông Nguyễn Văn Hùng",
+        securedParty: "Theo tiêu chí tra cứu: Số đăng ký 1505170802",
+        status: "Chờ duyệt",
+        transType: "Yêu cầu cung cấp thông tin",
+        measureContractType: "Số đăng ký",
+        secAssets: "Tra cứu thông tin đăng ký biện pháp bảo đảm theo số đăng ký",
+        handlingOfficer: "Nguyễn Văn Cán Bộ",
+        receiptNo: "GD-20260801-0001",
+        expanded: false,
+        children: []
+    },
+    {
+        id: "12",
+        regNum: "CCTT-2026-000177",
+        pin: "C177",
+        date: "31/07/2026 15:05",
+        type: "Yêu cầu cung cấp thông tin",
+        guarantor: "Ngân hàng TMCP FPT",
+        securedParty: "Theo tiêu chí tra cứu: Số khung RLZ2026KHUNG0007VN",
+        status: "Chờ ký",
+        transType: "Yêu cầu cung cấp thông tin",
+        measureContractType: "Số khung",
+        secAssets: "Tra cứu thông tin đăng ký biện pháp bảo đảm theo số khung",
+        handlingOfficer: "Nguyễn Văn Cán Bộ",
+        receiptNo: "BL-20260731-0011",
+        expanded: false,
+        children: []
+    },
+    {
+        id: "13",
+        regNum: "BS-2026-000129",
+        pin: "B129",
+        date: "24/07/2026 10:05",
+        type: "Yêu cầu cung cấp bản sao",
+        guarantor: "Nguyễn Thị Hoa",
+        securedParty: "Theo hồ sơ yêu cầu cấp bản sao",
+        status: "Hoàn thành",
+        transType: "Yêu cầu cung cấp bản sao",
+        measureContractType: "Bản sao văn bản chứng nhận",
+        secAssets: "Cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm",
+        handlingOfficer: "Nguyễn Văn Cán Bộ",
+        receiptNo: "BL-20260724-0129",
+        expanded: false,
+        children: []
+    },
+    {
+        id: "14",
+        regNum: "BS-2026-000134",
+        pin: "B134",
+        date: "24/07/2026 15:20",
+        type: "Yêu cầu cung cấp bản sao kèm thông báo",
+        guarantor: "Nguyễn Văn Hoàng",
+        securedParty: "Theo hồ sơ yêu cầu cấp bản sao kèm thông báo",
+        status: "Chờ ký",
+        transType: "Yêu cầu cung cấp bản sao",
+        measureContractType: "Bản sao kèm thông báo",
+        secAssets: "Cấp bản sao văn bản chứng nhận và thông báo liên quan",
+        handlingOfficer: "Nguyễn Văn Cán Bộ",
+        receiptNo: "BL-20260724-0134",
+        expanded: false,
+        children: []
     }
 ];
 
@@ -372,6 +440,7 @@ let cbCurrentPage = 1;
 let cbPageSize = 10;
 let cbSortField = '';
 let cbSortOrder = 'asc';
+let activeLookupGroup = 'registration';
 
 // NSD Mockup data (Simple list)
 const mockNSD = [
@@ -483,6 +552,23 @@ function switchRole(role, element) {
 
     document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + role).classList.add('active');
+}
+
+function switchLookupGroup(group, element) {
+    activeLookupGroup = group;
+    document.querySelectorAll('#lookup-type-tabs .nav-tab').forEach(t => t.classList.remove('active'));
+    if (element) element.classList.add('active');
+    const regType = document.getElementById('cb-regType');
+    if (regType) regType.value = 'Tất cả';
+    cbCurrentPage = 1;
+    searchCanBo();
+}
+
+function matchesLookupGroup(item) {
+    const copyTypes = ['Yêu cầu cung cấp bản sao', 'Yêu cầu cung cấp bản sao kèm thông báo'];
+    if (activeLookupGroup === 'cctt') return item.type === 'Yêu cầu cung cấp thông tin';
+    if (activeLookupGroup === 'copy') return copyTypes.includes(item.type);
+    return item.type !== 'Yêu cầu cung cấp thông tin' && !copyTypes.includes(item.type);
 }
 
 // ----------------------------------------------------
@@ -622,6 +708,7 @@ function searchCanBo() {
 
     canBoFilteredData = canBoDossiersData.filter(parent => {
         const matchChild = (child) => {
+            const matchesGroup = matchesLookupGroup(child);
             const matchesRegNum = !regNum || child.regNum.toLowerCase().includes(regNum) || child.id.toLowerCase().includes(regNum);
             const matchesGuarantor = !guarantor || child.guarantor.toLowerCase().includes(guarantor);
             const matchesCustomerId = !customerId || (child.customerId && child.customerId.toLowerCase().includes(customerId));
@@ -643,7 +730,7 @@ function searchCanBo() {
                 }
             }
 
-            return matchesRegNum && matchesGuarantor && matchesCustomerId && matchesStatus && matchesRegType && matchesTransType && matchesMeasureType && matchesAssetType && matchesDate && matchesHandlingOfficer;
+            return matchesGroup && matchesRegNum && matchesGuarantor && matchesCustomerId && matchesStatus && matchesRegType && matchesTransType && matchesMeasureType && matchesAssetType && matchesDate && matchesHandlingOfficer;
         };
 
         const parentMatches = matchChild(parent);

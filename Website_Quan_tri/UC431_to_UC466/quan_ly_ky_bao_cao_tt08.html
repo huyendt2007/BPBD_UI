@@ -1,0 +1,1873 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý kỳ báo cáo, nhập liệu biểu mẫu Thông tư 08/2019/TT-BTP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --primary-color: #1E3A8A;
+        --primary-hover: #1E40AF;
+        --secondary-color: #3B82F6;
+        --success-color: #10B981;
+        --danger-color: #EF4444;
+        --warning-color: #F59E0B;
+        --bg-body: #F3F4F6;
+        --bg-surface: #FFFFFF;
+        --text-main: #1E293B;
+        --text-muted: #64748B;
+        --border-color: #E2E8F0;
+        --table-header-bg: #F1F5F9;
+        --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        --base-size: 14px;
+        --border-radius-sm: 4px;
+        --border-radius-md: 6px;
+        --border-radius-lg: 8px;
+        --box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background-color: var(--bg-body); color: var(--text-main); font-size: var(--base-size); line-height: 1.5; padding: 20px; }
+    .container { max-width: 100%; margin: 0 auto; }
+    .page-header { margin-bottom: 20px; background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); padding: 20px; border-radius: var(--border-radius-lg); color: white; box-shadow: var(--box-shadow); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+    .page-header h1 { font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .page-header p { opacity: 0.9; font-size: 13px; margin-top: 4px; }
+    .role-switch { background: rgba(255,255,255,0.15); border-radius: var(--border-radius-md); padding: 10px 14px; min-width: 260px; }
+    .role-switch label { font-size: 11.5px; font-weight: 700; opacity: 0.9; display: block; margin-bottom: 4px; }
+    .role-switch select { width: 100%; padding: 6px 8px; border-radius: var(--border-radius-sm); border: none; font-size: 13px; font-family: inherit; font-weight: 600; }
+    .card-section { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); padding: 20px; margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.05); }
+    .section-title { color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .section-title.compact { margin-bottom: 0; }
+    .section-toggle { border: 1px solid var(--border-color); background: #fff; color: var(--primary-color); border-radius: var(--border-radius-sm); padding: 6px 10px; cursor: pointer; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .section-toggle:hover { background: #F8FAFC; }
+    .collapsible-content { margin-top: 14px; }
+    .filter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-label { font-size: 12.5px; font-weight: 600; color: #334155; }
+    .form-control { padding: 8px 10px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); font-size: 13px; font-family: inherit; width: 100%; }
+    .form-control:focus { outline: none; border-color: var(--secondary-color); box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
+    .form-control:disabled { background: #F1F5F9; color: #64748B; }
+    textarea.form-control { resize: vertical; min-height: 60px; }
+    .btn { border: none; border-radius: var(--border-radius-sm); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-sm { padding: 6px 12px; font-size: 12.5px; }
+    .btn-primary { background-color: var(--primary-color); color: #fff; }
+    .btn-primary:hover { background-color: var(--primary-hover); }
+    .btn-secondary { background-color: #fff; color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background-color: #F8FAFC; }
+    .btn-success { background-color: var(--success-color); color: #fff; }
+    .btn-danger { background-color: var(--danger-color); color: #fff; }
+    .btn-warning { background-color: var(--warning-color); color: #fff; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .toolbar-row { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .table-container { overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); }
+    .custom-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .custom-table th { background-color: var(--table-header-bg); color: #334155; font-weight: 600; padding: 8px 10px; text-align: center; white-space: nowrap; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+    .custom-table td { padding: 7px 10px; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); color: #475569; vertical-align: middle; text-align: center; white-space: nowrap; }
+    .custom-table td.text-left { text-align: left; white-space: normal; min-width: 160px; }
+    .custom-table tr.group-header td { background: #EFF6FF; font-weight: 700; color: var(--primary-color); text-align: left; }
+    .custom-table tr.total-row td { background: #FEF3C7; font-weight: 700; }
+    .cell-formula-bad { background: #FEE2E2 !important; color: var(--danger-color); font-weight: 700; }
+    .cell-input { width: 100%; min-width: 60px; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: 3px; font-size: 12px; font-family: inherit; text-align: center; }
+    .cell-input.text-left { text-align: left; }
+    .cell-textarea { width: 100%; min-width: 140px; min-height: 34px; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: 3px; font-size: 12px; font-family: inherit; text-align: left; resize: vertical; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+    .mau03-table { min-width: 2050px; font-size: 11.5px; }
+    .mau03-table th { white-space: normal; vertical-align: middle; line-height: 1.25; min-width: 70px; padding: 6px 5px; }
+    .mau03-table th.stt-col { min-width: 40px; }
+    .mau03-table th.field-col { min-width: 190px; }
+    .mau03-table th.money-col { min-width: 115px; }
+    .mau03-table td { white-space: nowrap; padding: 5px; }
+    .mau03-table td.field-cell { text-align: left; white-space: normal; min-width: 190px; font-weight: 600; color: var(--text-main); }
+    .mau03-table .field-row td { background: #F8FAFC; color: var(--text-main); font-weight: 700; text-align: left; }
+    .mau04-table { min-width: 1420px; font-size: 11.5px; }
+    .mau04-table th { white-space: normal; vertical-align: middle; line-height: 1.25; min-width: 78px; padding: 6px 5px; }
+    .mau04-table th.stt-col { min-width: 40px; }
+    .mau04-table th.money-col { min-width: 108px; }
+    .mau04-table td { white-space: nowrap; padding: 5px; }
+    .mau04-table .field-row td { background: #F8FAFC; color: var(--text-main); font-weight: 700; text-align: left; }
+    .unit-text { font-style: italic; font-weight: 400; }
+    .column-number-row th { background: #FFFFFF; color: #111827; font-weight: 500; }
+    .create-period-layout { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+    .create-period-layout .full-row { grid-column: 1 / -1; }
+    .date-range-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .date-picker-wrap { display: flex; align-items: center; gap: 6px; }
+    .date-picker-wrap .form-control { flex: 1; }
+    .date-native-input { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+    .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .unit-tree-picker { border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: #fff; overflow: hidden; }
+    .unit-selected-box { min-height: 38px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-bottom: 1px solid var(--border-color); background: #F8FAFC; }
+    .unit-selected-box strong { font-size: 13px; color: var(--primary-color); }
+    .unit-tree-search { padding: 10px; border-bottom: 1px solid var(--border-color); }
+    .unit-tree-list { max-height: 180px; overflow-y: auto; padding: 6px 0; }
+    .unit-tree-row { display: grid; grid-template-columns: 22px 86px 1fr; align-items: center; gap: 6px; width: 100%; border: 0; background: #fff; text-align: left; padding: 7px 10px; font: inherit; cursor: pointer; color: var(--text-main); }
+    .unit-tree-row:hover, .unit-tree-row.selected { background: #EFF6FF; color: var(--primary-color); }
+    .unit-tree-toggle { width: 18px; height: 18px; border: 1px solid var(--border-color); border-radius: 3px; background: #fff; color: #475569; font-size: 12px; line-height: 16px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+    .unit-tree-toggle.empty { border-color: transparent; cursor: default; }
+    .unit-tree-node { display: contents; }
+    .unit-tree-node:hover, .unit-tree-node.selected { background: #EFF6FF; color: var(--primary-color); }
+    .unit-tree-node.disabled, .unit-tree-row.disabled { color: #94A3B8; cursor: default; background: #fff; }
+    .unit-tree-row .unit-code { font-weight: 700; font-size: 12px; color: #475569; }
+    .unit-tree-row .unit-name { font-weight: 600; line-height: 1.25; }
+    .unit-tree-indent-1 { padding-left: 28px; }
+    .unit-tree-indent-2 { padding-left: 46px; }
+    .unit-tree-indent-3 { padding-left: 64px; }
+    .mau01-table th, .mau05-table th { white-space: normal; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .badge-muted { background: #E2E8F0; color: #475569; }
+    .badge-info { background: #DBEAFE; color: #1D4ED8; }
+    .badge-warning { background: #FEF3C7; color: #B45309; }
+    .badge-success { background: #D1FAE5; color: #047857; }
+    .badge-danger { background: #FEE2E2; color: #B91C1C; }
+    .icon-btn { width: 26px; height: 26px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); background: #fff; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+    .icon-btn:hover { background: #F1F5F9; color: var(--primary-color); }
+    .icon-btn.danger:hover { background: #FEF2F2; color: var(--danger-color); }
+    .alert-box { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: var(--border-radius-md); font-size: 13px; margin-bottom: 14px; }
+    .alert-warning { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
+    .alert-danger { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+    .alert-info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E3A8A; }
+    .quick-open-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+    .quick-open-tile { border: 1px solid var(--border-color); background: #fff; border-radius: var(--border-radius-md); padding: 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .quick-open-tile strong { display:block; color:var(--primary-color); font-size:13px; margin-bottom:3px; }
+    .quick-open-tile span { color:var(--text-muted); font-size:12px; }
+    .list-row { cursor: pointer; }
+    .list-row:hover td { background: #F8FAFC; }
+    .pending-group td { background: #FFFBEB; }
+    /* Detail view */
+    #detailView { display: none; }
+    .detail-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .detail-meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .meta-item label { display: block; font-size: 11.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 3px; }
+    .meta-item strong { font-size: 13.5px; color: var(--text-main); }
+    .source-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 10px; }
+    .tab-bar { display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); margin-bottom: 16px; flex-wrap: wrap; }
+    .tab-item { padding: 10px 16px; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+    .tab-item.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .source-toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .report-control-panel { display: grid; grid-template-columns: minmax(260px, 360px) minmax(260px, 1fr); gap: 16px; align-items: end; padding: 14px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: #F8FAFC; margin-bottom: 16px; }
+    .source-readonly-box { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background: #fff; padding: 8px 10px; min-height: 36px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .source-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: #DBEAFE; color: #1E3A8A; font-size: 12px; font-weight: 700; }
+    .readonly-source-row { display: none; }
+    .readonly-source-row .form-label { margin-right: 2px; }
+    .formula-hint { font-size:12.5px; color:var(--text-muted); }
+    .timeline { list-style: none; margin: 0; padding: 0; }
+    .timeline li { padding: 10px 0; border-bottom: 1px dashed var(--border-color); font-size: 12.5px; }
+    .timeline li:last-child { border-bottom: none; }
+    .timeline .time { color: var(--text-muted); font-weight: 600; margin-right: 8px; }
+    .timeline .reason { color: var(--danger-color); font-style: italic; }
+    @media (max-width: 1200px) { .filter-grid, .detail-meta-grid, .source-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 700px) { .filter-grid, .detail-meta-grid, .source-grid { grid-template-columns: 1fr; } }
+    .confirm-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); align-items: center; justify-content: center; z-index: 1000; }
+    .confirm-modal-overlay.visible { display: flex; }
+    .sticky-modal-container { background: #fff; border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); max-height: 90vh; display: flex; flex-direction: column; }
+    .confirm-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: #F8FAFC; border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; }
+    .sticky-modal-body { padding: 20px; overflow-y: auto; }
+    .confirm-modal-footer { padding: 16px 20px; display: flex; justify-content: flex-end; gap: 10px; background: #F8FAFC; border-top: 1px solid var(--border-color); border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg); }
+    #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+    .toast { background: #fff; border-left: 4px solid var(--success-color); box-shadow: var(--box-shadow); padding: 12px 16px; border-radius: var(--border-radius-sm); font-size: 13px; min-width: 260px; display: flex; align-items: center; gap: 8px; animation: slideIn 0.2s ease; }
+    .toast.error { border-left-color: var(--danger-color); }
+    .toast.warning { border-left-color: var(--warning-color); }
+    @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header">
+        <div>
+            <h1><i class="fa-solid fa-file-pen"></i> Quản lý kỳ báo cáo, nhập liệu biểu mẫu Thông tư 08/2019/TT-BTP</h1>
+            <p>Cho phép đơn vị báo cáo hoặc đơn vị nhập thay nhập liệu trực tiếp Mẫu 01/03/04/05 và tổng hợp qua đầu mối về Bộ Tư pháp.</p>
+        </div>
+        <div class="role-switch">
+            <label>Xem theo vai trò (mô phỏng đăng nhập)</label>
+            <select id="roleSwitch" onchange="onRoleChange()">
+                <option value="cap1">Đơn vị nhập thay - Sở Tư pháp Thành phố Hà Nội</option>
+                <option value="cap2">Đầu mối tổng hợp - UBND Thành phố Hà Nội</option>
+                <option value="cap3">Bộ Tư pháp/Cục BTNN</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- ============ LIST VIEW ============ -->
+    <section id="listView">
+        <div class="card-section">
+            <div class="section-title"><span><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</span></div>
+            <div class="filter-grid">
+                <div class="form-group">
+                    <span class="form-label">Năm báo cáo</span>
+                    <select class="form-control" id="fYear">
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Loại kỳ báo cáo</span>
+                    <select class="form-control" id="fPeriodType">
+                        <option value="all" selected>Tất cả</option>
+                        <option value="thuc_te">Báo cáo năm số liệu thực tế (01/01 - 31/10)</option>
+                        <option value="chinh_thuc">Số liệu thống kê năm chính thức (01/01 - 31/12)</option>
+                        <option value="tam_tinh">Báo cáo tạm tính</option>
+                    </select>
+                </div>
+                <div class="form-group" id="fUnitWrap">
+                    <span class="form-label" id="fUnitLabel">Đơn vị/Đầu mối</span>
+                    <select class="form-control" id="fUnit">
+                        <option value="all" selected>Tất cả</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Trạng thái</span>
+                    <select class="form-control" id="fStatus">
+                        <option value="all" selected>Tất cả</option>
+                        <option value="dang_nhap_lieu">Đang nhập liệu</option>
+                        <option value="da_gui">Đã gửi chờ duyệt</option>
+                        <option value="da_duyet">Đã duyệt chờ tổng hợp</option>
+                        <option value="da_tong_hop">Đã tổng hợp</option>
+                        <option value="hoan_thanh">Hoàn thành</option>
+                    </select>
+                </div>
+            </div>
+            <div class="toolbar-row">
+                <button class="btn btn-secondary" onclick="renderListView()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="applyListFilter()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                <button class="btn btn-success" id="btnCreatePeriod" onclick="openCreatePeriod()"><i class="fa-solid fa-plus"></i> Tạo kỳ báo cáo</button>
+            </div>
+        </div>
+
+        <div class="card-section" id="pendingGroupCard" style="display:none;">
+            <div class="section-title"><span><i class="fa-solid fa-triangle-exclamation" style="color:var(--warning-color);"></i> Đơn vị cấp dưới chưa tổng hợp được</span></div>
+            <div id="pendingGroupBody"></div>
+        </div>
+
+        <div class="card-section" id="quickAggregateCard" style="display:none;">
+            <div class="section-title"><span><i class="fa-solid fa-layer-group"></i> Mở nhanh kỳ tổng hợp</span></div>
+            <div class="quick-open-grid" id="quickAggregateBody"></div>
+        </div>
+
+        <div class="card-section">
+            <div class="section-title"><span id="listTitle"><i class="fa-solid fa-table-list"></i> Danh sách kỳ báo cáo</span></div>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Năm báo cáo</th>
+                            <th>Loại kỳ báo cáo</th>
+                            <th>Loại báo cáo</th>
+                            <th>Đơn vị báo cáo</th>
+                            <th>Số vụ việc đã nhập</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày gửi gần nhất</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ DETAIL VIEW ============ -->
+    <section id="detailView">
+        <div class="card-section">
+            <div class="detail-header">
+                <div>
+                    <button class="btn btn-secondary btn-sm" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
+                    <h2 style="margin-top:10px; font-size:16px; color:var(--primary-color);"><i class="fa-solid fa-folder-open"></i> <span id="detailTitle">Kỳ báo cáo</span></h2>
+                </div>
+                <span class="badge badge-muted" id="detailStatusBadge" style="font-size:13px; padding:6px 14px;">Đang nhập liệu</span>
+            </div>
+            <div class="detail-meta-grid">
+                <div class="meta-item"><label>Năm báo cáo</label><strong id="mYear">2026</strong></div>
+                <div class="meta-item"><label>Loại kỳ báo cáo</label><strong id="mPeriodType">Báo cáo năm số liệu thực tế (01/01 - 31/10)</strong></div>
+                <div class="meta-item"><label>Đơn vị báo cáo</label><strong id="mUnit">-</strong></div>
+                <div class="meta-item"><label>Phạm vi số liệu</label><strong id="mReportScope">-</strong></div>
+            </div>
+        </div>
+
+        <div class="card-section" id="pendingUnitsCard" style="display:none;">
+            <div class="alert-box alert-info" style="margin-bottom:0;">
+                <i class="fa-solid fa-circle-info" style="margin-top:2px;"></i>
+                <div id="pendingUnitsText"></div>
+            </div>
+        </div>
+
+        <div class="card-section" id="aggregateMembersCard" style="display:none;">
+            <div class="section-title compact">
+                <span id="aggregateMembersTitle"><i class="fa-solid fa-sitemap"></i> Danh sách đơn vị thành viên</span>
+                <button class="section-toggle" type="button" onclick="toggleAggregateMembers()">
+                    <i class="fa-solid fa-chevron-down" id="aggregateMembersToggleIcon"></i>
+                    <span id="aggregateMembersToggleText">Mở rộng</span>
+                </button>
+            </div>
+            <div class="collapsible-content" id="aggregateMembersContent" style="display:none;">
+                <div class="table-container">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Đơn vị</th>
+                                <th>Số vụ việc đã nhập</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày gửi gần nhất</th>
+                                <th>Kết quả tổng hợp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="aggregateMembersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-section">
+            <div class="report-control-panel">
+                <div class="form-group">
+                    <span class="form-label">Chọn báo cáo</span>
+                    <select class="form-control" id="reportSelect" onchange="switchTab(this.value)">
+                        <option value="mau01">Mẫu 01 - Danh mục vụ việc</option>
+                        <option value="mau03">Mẫu 03 - Tổng hợp tình hình</option>
+                        <option value="mau04">Mẫu 04 - Tình hình hoàn trả</option>
+                        <option value="mau05">Mẫu 05 - Sổ thụ lý</option>
+                        <option value="history">Lịch sử xử lý</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Nguồn dữ liệu kỳ báo cáo</span>
+                    <div class="source-readonly-box">
+                        <span class="source-pill" id="detailSourceBadge"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
+                        <span class="formula-hint" id="detailSourceHint">Nguồn dữ liệu được xác định khi tạo kỳ báo cáo.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="alertArea"></div>
+
+            <div class="tab-panel active" id="panel-mau01">
+                <div class="source-toggle-row readonly-source-row">
+                    <span class="form-label">Nguồn số liệu - Mẫu 01</span>
+                    <span class="source-pill" data-source-label="mau01"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
+                    <span class="formula-hint">Danh mục vụ việc được nhập/tổng hợp theo nguồn dữ liệu đã chọn khi tạo kỳ báo cáo.</span>
+                </div>
+                <div class="table-container" id="mau01TableWrap"></div>
+            </div>
+            <div class="tab-panel" id="panel-mau03">
+                <div class="source-toggle-row readonly-source-row">
+                    <span class="form-label">Nguồn số liệu - Mẫu 03</span>
+                    <span class="source-pill" data-source-label="mau03"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
+                    <span class="formula-hint">26 chỉ tiêu theo Mẫu số 03/BTNN; các ô công thức tự tính theo số liệu thành phần.</span>
+                </div>
+                <div class="table-container" id="mau03TableWrap"></div>
+                <div class="form-group" style="margin-top:14px;">
+                    <span class="form-label">Ghi chú nội bộ hệ thống (chỉ tiêu 26 - không thuộc bảng chính thức, dùng giải trình chênh lệch nếu có)</span>
+                    <textarea class="form-control" id="mau03NoteBox" onchange="updateMau03Note(this.value)"></textarea>
+                </div>
+            </div>
+            <div class="tab-panel" id="panel-mau04">
+                <div class="source-toggle-row readonly-source-row">
+                    <span class="form-label">Nguồn số liệu - Mẫu 04</span>
+                    <span class="source-pill" data-source-label="mau04"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
+                    <span class="formula-hint">15 chỉ tiêu theo Mẫu số 04/BTNN; các ô công thức tự tính theo số liệu thành phần.</span>
+                </div>
+                <div class="table-container" id="mau04TableWrap"></div>
+            </div>
+            <div class="tab-panel" id="panel-mau05">
+                <div class="source-toggle-row readonly-source-row">
+                    <span class="form-label">Nguồn số liệu - Mẫu 05</span>
+                    <span class="source-pill" data-source-label="mau05"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
+                    <span class="formula-hint">Sổ thụ lý hồ sơ theo vụ việc, sử dụng nguồn dữ liệu đã chọn khi tạo kỳ báo cáo.</span>
+                </div>
+                <div class="table-container" id="mau05TableWrap"></div>
+            </div>
+            <div class="tab-panel" id="panel-history">
+                <ul class="timeline" id="historyList"></ul>
+            </div>
+        </div>
+
+        <div class="card-section">
+            <div class="toolbar-row" id="detailActionBar" style="justify-content:flex-start;"></div>
+        </div>
+    </section>
+</div>
+
+<!-- Modal Yêu cầu chỉnh lý -->
+<!-- Modal Tao ky bao cao -->
+<div id="createPeriodOverlay" class="confirm-modal-overlay">
+    <div class="sticky-modal-container" style="width: 760px; max-width: 95%;">
+        <div class="confirm-modal-header">
+            <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--primary-color);"><i class="fa-solid fa-calendar-plus"></i> Tạo kỳ báo cáo</div>
+            <span onclick="closeCreatePeriod()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
+        </div>
+        <div class="sticky-modal-body">
+            <div class="create-period-layout">
+                <div class="form-group full-row">
+                    <span class="form-label">Đơn vị báo cáo<span style="color:red;">*</span></span>
+                    <input type="hidden" id="createUnit" value="">
+                    <input type="hidden" id="createUnitCode" value="">
+                    <input type="hidden" id="createUnitHasChildren" value="false">
+                    <div class="unit-tree-picker">
+                        <div class="unit-selected-box">
+                            <div>
+                                <span class="form-hint" style="display:block; margin:0 0 2px;">Đơn vị đã chọn</span>
+                                <strong id="createUnitDisplay">Chưa chọn đơn vị báo cáo</strong>
+                            </div>
+                            <span class="badge badge-info" id="createUnitCodeDisplay">-</span>
+                        </div>
+                        <div class="unit-tree-search">
+                            <input class="form-control" type="text" id="createUnitSearch" placeholder="Tìm nhanh theo mã hoặc tên đơn vị..." oninput="renderCreateUnitTree(this.value)">
+                        </div>
+                        <div class="unit-tree-list" id="createUnitTree"></div>
+                    </div>
+                    <div class="form-hint">Danh sách hiển thị dạng cây theo phân cấp, chỉ gồm đơn vị thuộc phạm vi được phép tạo/nhập thay.</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Phạm vi số liệu<span style="color:red;">*</span></span>
+                    <select class="form-control" id="createReportScope">
+                        <option value="don_vi">Riêng đơn vị được chọn</option>
+                        <option value="tong_hop">Tổng hợp đơn vị trực thuộc</option>
+                    </select>
+                    <div class="form-hint">Chọn `Tổng hợp đơn vị trực thuộc` khi đơn vị nhập liệu tổng hợp chung số liệu của các đơn vị cấp dưới thuộc phạm vi quản lý.</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Đơn vị nhập liệu</span>
+                    <input class="form-control" type="text" value="Sở Tư pháp Thành phố Hà Nội" disabled>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Loại báo cáo<span style="color:red;">*</span></span>
+                    <select class="form-control" id="createReportType">
+                        <option value="tt08_all">Bộ biểu mẫu TT08 (Mẫu 01/03/04/05)</option>
+                        <option value="mau01">Mẫu 01 - Danh mục vụ việc giải quyết yêu cầu bồi thường</option>
+                        <option value="mau03">Mẫu 03 - Tổng hợp tình hình yêu cầu bồi thường, giải quyết và chi trả</option>
+                        <option value="mau04">Mẫu 04 - Tình hình thực hiện trách nhiệm hoàn trả</option>
+                        <option value="mau05">Mẫu 05 - Sổ thụ lý</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Loại kỳ báo cáo<span style="color:red;">*</span></span>
+                    <select class="form-control" id="createPeriodType" onchange="syncCreatePeriodDates()">
+                        <option value="thuc_te">Báo cáo năm số liệu thực tế (01/01 - 31/10)</option>
+                        <option value="chinh_thuc">Số liệu thống kê năm chính thức (01/01 - 31/12)</option>
+                        <option value="tam_tinh">Báo cáo tạm tính</option>
+                    </select>
+                    <div class="form-hint">Kỳ chính thức tự lấy mốc thời gian theo cấu hình, chỉ báo cáo tạm tính được chọn lại khoảng ngày.</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Nguồn dữ liệu<span style="color:red;">*</span></span>
+                    <select class="form-control" id="createDataSource">
+                        <option value="tu_dong">Tự động tổng hợp từ hệ thống</option>
+                        <option value="thu_cong">Nhập liệu thủ công</option>
+                    </select>
+                    <div class="form-hint">Nguồn dữ liệu được áp dụng mặc định cho các biểu mẫu trong kỳ báo cáo.</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Năm báo cáo<span style="color:red;">*</span></span>
+                    <select class="form-control" id="createYear" onchange="syncCreatePeriodDates()">
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+                <div class="form-group full-row">
+                    <span class="form-label">Thời gian báo cáo<span style="color:red;">*</span></span>
+                    <div class="date-range-grid">
+                        <div class="date-picker-wrap">
+                            <input class="form-control" type="text" id="createFromDate" placeholder="dd/mm/yyyy">
+                            <button type="button" class="icon-btn" title="Chọn từ ngày" onclick="openNativeDatePicker('createFromDatePicker')"><i class="fa-solid fa-calendar-days"></i></button>
+                            <input class="date-native-input" type="date" id="createFromDatePicker" onchange="syncVisibleDateFromPicker('createFromDatePicker','createFromDate')">
+                        </div>
+                        <div class="date-picker-wrap">
+                            <input class="form-control" type="text" id="createToDate" placeholder="dd/mm/yyyy">
+                            <button type="button" class="icon-btn" title="Chọn đến ngày" onclick="openNativeDatePicker('createToDatePicker')"><i class="fa-solid fa-calendar-days"></i></button>
+                            <input class="date-native-input" type="date" id="createToDatePicker" onchange="syncVisibleDateFromPicker('createToDatePicker','createToDate')">
+                        </div>
+                    </div>
+                    <div class="form-hint" id="createDateHint">Kỳ báo cáo chính thức sử dụng mốc thời gian theo cấu hình, không chỉnh trực tiếp trên form.</div>
+                </div>
+            </div>
+        </div>
+        <div class="confirm-modal-footer">
+            <button class="btn btn-secondary" onclick="closeCreatePeriod()">Hủy bỏ</button>
+            <button class="btn btn-success" onclick="submitCreatePeriod()"><i class="fa-solid fa-plus"></i> Tạo kỳ báo cáo</button>
+        </div>
+    </div>
+</div>
+
+<div id="reviseOverlay" class="confirm-modal-overlay">
+    <div class="sticky-modal-container" style="width: 480px; max-width: 95%;">
+        <div class="confirm-modal-header">
+            <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--primary-color);"><i class="fa-solid fa-rotate-left"></i> Yêu cầu chỉnh lý</div>
+            <span onclick="closeReviseModal()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
+        </div>
+        <div class="sticky-modal-body">
+            <div class="form-group">
+                <span class="form-label">Lý do chỉnh lý<span style="color:red;">*</span></span>
+                <textarea class="form-control" id="reviseReason" placeholder="Nhập lý do yêu cầu đơn vị chỉnh lý số liệu..."></textarea>
+                <div class="error-message" id="reviseReasonError" style="display:none; color:var(--danger-color); font-size:12px; margin-top:4px;">Vui lòng nhập lý do chỉnh lý.</div>
+            </div>
+        </div>
+        <div class="confirm-modal-footer">
+            <button class="btn btn-secondary" onclick="closeReviseModal()">Hủy bỏ</button>
+            <button class="btn btn-warning" onclick="submitRevise()"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu chỉnh lý</button>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<script>
+// ===================== Danh mục dùng chung =====================
+const FIELDS = ['I. Trong hoạt động quản lý hành chính', 'II. Trong hoạt động tố tụng hình sự', 'III. Trong hoạt động tố tụng dân sự', 'IV. Trong hoạt động tố tụng hành chính', 'V. Trong hoạt động thi hành án hình sự', 'VI. Trong hoạt động thi hành án dân sự'];
+
+const STATUS_META = {
+    dang_nhap_lieu: { label: 'Đang nhập liệu', cls: 'badge-muted' },
+    da_gui: { label: 'Đã gửi chờ duyệt', cls: 'badge-info' },
+    da_duyet: { label: 'Đã duyệt chờ tổng hợp', cls: 'badge-warning' },
+    da_tong_hop: { label: 'Đã tổng hợp', cls: 'badge-warning' },
+    hoan_thanh: { label: 'Hoàn thành', cls: 'badge-success' }
+};
+
+const REPORT_SCOPE_META = { don_vi: 'Riêng đơn vị được chọn', tong_hop: 'Tổng hợp đơn vị trực thuộc' };
+const REPORT_KIND_META = { unit: 'Báo cáo đơn vị', aggregate: 'Báo cáo tổng hợp đầu mối', national: 'Báo cáo tổng hợp toàn quốc', temp: 'Báo cáo tạm tính' };
+const PERIOD_META = {
+    thuc_te: 'Báo cáo năm số liệu thực tế (01/01 - 31/10)',
+    chinh_thuc: 'Số liệu thống kê năm chính thức (01/01 - 31/12)',
+    tam_tinh: 'Báo cáo tạm tính'
+};
+
+// ===================== Chỉ tiêu Mẫu 03 / Mẫu 04 =====================
+const BM03_INDICATORS = [
+    { no: 1, name: 'Tổng số vụ việc (vụ việc)', unit: 'Vụ việc', formula: [2,3,4,5,6,7,8,9] },
+    { no: 2, name: 'Thụ lý mới - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+    { no: 3, name: 'Thụ lý mới - tại Tòa án (điểm a khoản 1 Điều 52)', unit: 'Vụ việc' },
+    { no: 4, name: 'Thụ lý mới - tại Tòa án (điểm b khoản 1, khoản 2 Điều 52)', unit: 'Vụ việc' },
+    { no: 5, name: 'Thụ lý mới - trong tố tụng hình sự/hành chính (Điều 55)', unit: 'Vụ việc' },
+    { no: 6, name: 'Kỳ trước chuyển sang - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+    { no: 7, name: 'Kỳ trước chuyển sang - tại Tòa án (điểm a)', unit: 'Vụ việc' },
+    { no: 8, name: 'Kỳ trước chuyển sang - tại Tòa án (điểm b)', unit: 'Vụ việc' },
+    { no: 9, name: 'Kỳ trước chuyển sang - tố tụng hình sự/hành chính', unit: 'Vụ việc' },
+    { no: 10, name: 'Tổng số vụ việc đã có văn bản GQBT có hiệu lực', unit: 'Vụ việc', formula: [11,12,13,14] },
+    { no: 11, name: 'Đã giải quyết - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+    { no: 12, name: 'Đã giải quyết - tại Tòa án (điểm a)', unit: 'Vụ việc' },
+    { no: 13, name: 'Đã giải quyết - tại Tòa án (điểm b)', unit: 'Vụ việc' },
+    { no: 14, name: 'Đã giải quyết - tố tụng hình sự/hành chính', unit: 'Vụ việc' },
+    { no: 15, name: 'Số tiền bồi thường theo văn bản có hiệu lực', unit: 'Nghìn đồng', isMoney: true },
+    { no: 16, name: 'Tổng số vụ việc đang giải quyết', unit: 'Vụ việc', formula: [17,18,19,20] },
+    { no: 17, name: 'Đang giải quyết - tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+    { no: 18, name: 'Đang giải quyết - tại Tòa án (điểm a)', unit: 'Vụ việc' },
+    { no: 19, name: 'Đang giải quyết - tại Tòa án (điểm b)', unit: 'Vụ việc' },
+    { no: 20, name: 'Đang giải quyết - tố tụng hình sự/hành chính', unit: 'Vụ việc' },
+    { no: 21, name: 'Đình chỉ tại cơ quan trực tiếp quản lý', unit: 'Vụ việc' },
+    { no: 22, name: 'Đình chỉ theo thủ tục tố tụng tại Tòa án', unit: 'Vụ việc' },
+    { no: 23, name: 'Số vụ việc đã chi trả', unit: 'Vụ việc' },
+    { no: 24, name: 'Số tiền đã chi trả theo QĐ cơ quan trực tiếp quản lý', unit: 'Nghìn đồng', isMoney: true },
+    { no: 25, name: 'Số tiền đã chi trả theo bản án/QĐ Tòa án', unit: 'Nghìn đồng', isMoney: true },
+    { no: 26, name: 'Ghi chú nội bộ hệ thống', unit: 'Text', isNote: true }
+];
+
+const BM04_INDICATORS = [
+    { no: 2, name: 'Số tiền đã chi trả xong cho người yêu cầu bồi thường', unit: 'Nghìn đồng', isMoney: true },
+    { no: 3, name: 'Tổng số vụ việc xem xét trách nhiệm hoàn trả', unit: 'Vụ việc', formula: [4,6] },
+    { no: 4, name: 'Số vụ việc có Quyết định có hiệu lực pháp luật và đã thực hiện hoàn trả', unit: 'Vụ việc' },
+    { no: 5, name: 'Số tiền phải hoàn trả', unit: 'Nghìn đồng', isMoney: true },
+    { no: 6, name: 'Đang xem xét trách nhiệm hoàn trả', unit: 'Vụ việc' },
+    { no: 7, name: 'Không xem xét - không có lỗi', unit: 'Vụ việc' },
+    { no: 8, name: 'Không xem xét - đã chết trước khi ra QĐ', unit: 'Vụ việc' },
+    { no: 9, name: 'Số vụ việc được giảm mức hoàn trả', unit: 'Vụ việc' },
+    { no: 10, name: 'Số tiền hoàn trả được giảm', unit: 'Nghìn đồng', isMoney: true },
+    { no: 11, name: 'Số vụ việc được hoãn hoàn trả', unit: 'Vụ việc' },
+    { no: 12, name: 'Tổng số tiền đã hoàn trả', unit: 'Nghìn đồng', isMoney: true, formula: [13,14] },
+    { no: 13, name: 'Số tiền đã hoàn trả trong kỳ báo cáo', unit: 'Nghìn đồng', isMoney: true },
+    { no: 14, name: 'Số tiền đã hoàn trả kỳ trước chuyển sang', unit: 'Nghìn đồng', isMoney: true },
+    { no: 15, name: 'Số tiền còn phải hoàn trả', unit: 'Nghìn đồng', isMoney: true }
+];
+
+const MAU05_COLUMNS = ['Mã vụ việc', 'Tên vụ việc', 'Ngày thụ lý', 'Họ tên, địa chỉ', 'Văn bản làm căn cứ', 'Cử người giải quyết', 'Tạm ứng kinh phí', 'Xác minh thiệt hại', 'Thương lượng', 'Quyết định giải quyết', 'Cấp kinh phí', 'Chi trả', 'Hoãn/Tạm đình chỉ/Đình chỉ', 'Khởi kiện Tòa án', 'Phục hồi danh dự'];
+
+// ===================== Dữ liệu mẫu kỳ báo cáo (mock) =====================
+let nextId = 100;
+const KY_BAO_CAO = [
+    {
+        id: 1, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Sở Tư pháp Thành phố Hà Nội', unitCode: 'HN-STP', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
+        status: 'da_gui', submittedDate: '20/07/2026', submittedBy: 'Nguyễn Văn A',
+        sources: { mau01: 'thu_cong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'thu_cong' },
+        mau01Rows: {
+            'I. Trong hoạt động quản lý hành chính': [
+                { code: 'BT-2026-012', name: 'Yêu cầu bồi thường của Lê Văn H', requester: 'Lê Văn H', agency: 'Sở Tư pháp Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành QĐ 02/08/2026.', payment: 'Đã chi trả 850.000.000đ.', vuongMac: 'Khó xác minh thiệt hại.', note: '' }
+            ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
+        },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,5,2,1,0, 3,1,0,0, null,4,1,1,0, 850000, null,1,1,0,1, 1,0, 5,720000,130000, ''] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [720000, null,2,180000,1, 0,0, 1,20000, 0, null,90000,40000, 30000] },
+        mau05Rows: {
+            'I. Trong hoạt động quản lý hành chính': [
+                { code: 'BT-2026-012', name: 'Yêu cầu bồi thường của Lê Văn H', dateThuLy: '05/07/2026', requesterInfo: 'Lê Văn H - Số 12 Ngõ 5, Hà Nội', vanBanCanCu: 'Đơn ngày 01/07/2026', cuNguoi: 'QĐ 10/QĐ-STP ngày 06/07/2026', tamUng: '', xacMinh: 'Báo cáo xác minh 20/07/2026', thuongLuong: '', quyetDinh: 'QĐ 25/QĐ-STP ngày 02/08/2026', capKinhPhi: '', chiTra: '06/08/2026', hoan: '', khoiKien: '', phucHoi: '' }
+            ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
+        },
+        history: [ { time: '20/07/2026 09:10', text: 'Nguyễn Văn A gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' } ]
+    },
+    {
+        id: 2, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND phường Cầu Giấy', unitCode: 'HN-P.CG', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
+        status: 'dang_nhap_lieu', submittedDate: '18/07/2026', submittedBy: 'Trần Thị B',
+        sources: { mau01: 'thu_cong', mau03: 'thu_cong', mau04: 'tu_dong', mau05: 'thu_cong' },
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-045', name: 'Yêu cầu bồi thường của Phạm Văn K', requester: 'Phạm Văn K', agency: 'UBND phường Cầu Giấy', law: 'Luật TNBTCNN 2017', situation: 'Đang thương lượng.', payment: '', vuongMac: '', note: '' } ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,2,0,0,0, 1,0,0,0, null,0,0,0,0, 0, null,3,0,0,0, 0,0, 0,0,0, ''] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-045', name: 'Yêu cầu bồi thường của Phạm Văn K', dateThuLy: '10/07/2026', requesterInfo: 'Phạm Văn K', vanBanCanCu: '', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '15/07/2026', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' } ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [
+            { time: '18/07/2026 14:00', text: 'Trần Thị B gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' },
+            { time: '19/07/2026 08:30', text: 'UBND Thành phố Hà Nội yêu cầu chỉnh lý.', reason: 'Lý do: Chỉ tiêu 2 (Thụ lý mới) của Mẫu 03 chưa khớp với số dòng vụ việc đã nhập ở Mẫu 01, đề nghị rà soát lại.' }
+        ]
+    },
+    {
+        id: 3, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Tòa án nhân dân Thành phố Hà Nội', unitCode: 'HN-TAND', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
+        status: 'da_duyet', submittedDate: '15/07/2026', submittedBy: 'Lê Thị C',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        mau01Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-030', name: 'Yêu cầu bồi thường của Hoàng Văn R', requester: 'Hoàng Văn R', agency: 'Tòa án nhân dân Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đã có bản án có hiệu lực.', payment: 'Đã chi trả.', vuongMac: '', note: '' } ],
+            'I. Trong hoạt động quản lý hành chính': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: { 'II. Trong hoạt động tố tụng hình sự': [null,0,3,1,0, 0,1,0,0, null,0,3,1,0, 640000, null,0,0,0,0, 0,0, 3,0,420000, ''] },
+        mau04Values: { 'II. Trong hoạt động tố tụng hình sự': [420000, null,1,90000,0, 1,0, 0,0, 1, null,60000,0, 30000] },
+        mau05Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-030', name: 'Yêu cầu bồi thường của Hoàng Văn R', dateThuLy: '01/06/2026', requesterInfo: 'Hoàng Văn R - Lâm Đồng', vanBanCanCu: 'Đơn khởi kiện', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '', quyetDinh: 'Bản án 12/2026/DS-ST', capKinhPhi: '', chiTra: '10/07/2026', hoan: '', khoiKien: '01/06/2026', phucHoi: '' } ],
+            'I. Trong hoạt động quản lý hành chính': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [
+            { time: '15/07/2026 10:00', text: 'Lê Thị C gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' },
+            { time: '16/07/2026 09:00', text: 'UBND Thành phố Hà Nội đã duyệt kỳ báo cáo.' }
+        ]
+    },
+    {
+        id: 4, level: 2, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND Thành phố Hà Nội', unitCode: 'HN', reportScope: 'tong_hop', parentUnit: 'Cục Bồi thường nhà nước - Bộ Tư pháp',
+        status: 'dang_nhap_lieu', submittedDate: '', submittedBy: '',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        childUnits: [1, 2, 3, 6, 7],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: {}, mau04Values: {},
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: []
+    },
+    {
+        id: 5, level: 3, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Cục Bồi thường nhà nước - Bộ Tư pháp', unitCode: 'BTP-CBTNN', reportScope: 'tong_hop', parentUnit: null,
+        status: 'dang_nhap_lieu', submittedDate: '', submittedBy: '',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        childUnits: [4, 8, 12, 15],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: {}, mau04Values: {},
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: []
+    },
+    {
+        id: 11, level: 2, year: 2026, periodType: 'chinh_thuc', reportType: 'tt08_all', unit: 'UBND Thành phố Hà Nội', unitCode: 'HN', reportScope: 'tong_hop', parentUnit: 'Cục Bồi thường nhà nước - Bộ Tư pháp',
+        status: 'da_tong_hop', submittedDate: '', submittedBy: '',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        childUnits: [1, 3, 6, 7],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: {}, mau04Values: {},
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [{ time: '22/07/2026 09:00', text: 'UBND Thành phố Hà Nội đã tổng hợp số liệu năm chính thức, chưa gửi Bộ Tư pháp.' }]
+    },
+    {
+        id: 12, level: 2, year: 2026, periodType: 'chinh_thuc', reportType: 'tt08_all', unit: 'UBND Thành phố Hải Phòng', unitCode: 'HP', reportScope: 'tong_hop', parentUnit: 'Cục Bồi thường nhà nước - Bộ Tư pháp',
+        status: 'da_gui', submittedDate: '22/07/2026', submittedBy: 'UBND Thành phố Hải Phòng',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        childUnits: [9,10],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: {}, mau04Values: {},
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [{ time: '22/07/2026 10:00', text: 'UBND Thành phố Hải Phòng gửi báo cáo đầu mối lên Cục Bồi thường nhà nước.' }]
+    },
+    {
+        id: 13, level: 3, year: 2026, periodType: 'chinh_thuc', reportType: 'tt08_all', unit: 'Cục Bồi thường nhà nước - Bộ Tư pháp', unitCode: 'BTP-CBTNN', reportScope: 'tong_hop', parentUnit: null,
+        status: 'hoan_thanh', submittedDate: '25/07/2026', submittedBy: 'Cục Bồi thường nhà nước - Bộ Tư pháp',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        childUnits: [8,12],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: {}, mau04Values: {},
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [{ time: '25/07/2026 16:00', text: 'Cục Bồi thường nhà nước chốt báo cáo toàn quốc năm chính thức.' }]
+    },
+    {
+        id: 15, level: 2, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Bộ Công an', unitCode: 'BCA', reportScope: 'tong_hop', parentUnit: 'Cục Bồi thường nhà nước - Bộ Tư pháp',
+        status: 'da_duyet', submittedDate: '23/07/2026', submittedBy: 'Bộ Công an',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        childUnits: [],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-BCA-01', name: 'Yêu cầu bồi thường thuộc Bộ Công an', requester: 'Nguyễn Văn C', agency: 'Bộ Công an', law: 'Luật TNBTCNN 2017', situation: 'Đã giải quyết xong.', payment: 'Đã chi trả 120.000.000đ.', vuongMac: '', note: '' } ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,1,0,0,0, 0,0,0,0, null,1,0,0,0, 120000, null,0,0,0,0, 0,0, 1,120000,0, ''] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [120000, null,1,30000,0, 0,0, 0,0, 0, null,20000,10000, 0] },
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [{ time: '23/07/2026 15:00', text: 'Bộ Công an gửi báo cáo tới Bộ Tư pháp.' }, { time: '24/07/2026 09:30', text: 'Cục Bồi thường nhà nước đã duyệt kỳ báo cáo của Bộ Công an.' }]
+    },
+    {
+        id: 14, level: 2, year: 2026, periodType: 'tam_tinh', reportType: 'tt08_all', unit: 'UBND Thành phố Hà Nội', unitCode: 'HN', reportScope: 'tong_hop', parentUnit: 'Cục Bồi thường nhà nước - Bộ Tư pháp',
+        status: 'dang_nhap_lieu', submittedDate: '', submittedBy: '',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        childUnits: [1,2,3,6,7],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: {}, mau04Values: {},
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [{ time: '23/07/2026 08:30', text: 'Tạo báo cáo tạm tính phục vụ lãnh đạo xem nhanh.' }]
+    },
+    {
+        id: 6, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Cục Thi hành án dân sự Thành phố Hà Nội', unitCode: 'HN-THADS', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
+        status: 'da_duyet', submittedDate: '17/07/2026', submittedBy: 'Phạm Thị D',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        mau01Rows: { 'VI. Trong hoạt động thi hành án dân sự': [ { code: 'BT-2026-066', name: 'Yêu cầu bồi thường trong thi hành án dân sự', requester: 'Công ty Minh Phát', agency: 'Cục Thi hành án dân sự Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đang xác minh thiệt hại.', payment: '', vuongMac: '', note: '' } ],
+            'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [] },
+        mau03Values: { 'VI. Trong hoạt động thi hành án dân sự': [null,1,0,0,0, 0,0,0,0, null,0,0,0,0, 0, null,1,0,0,0, 0,0, 0,0,0, ''] },
+        mau04Values: { 'VI. Trong hoạt động thi hành án dân sự': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
+        mau05Rows: { 'VI. Trong hoạt động thi hành án dân sự': [ { code: 'BT-2026-066', name: 'Yêu cầu bồi thường trong thi hành án dân sự', dateThuLy: '12/07/2026', requesterInfo: 'Công ty Minh Phát - Hà Nội', vanBanCanCu: 'Đơn ngày 10/07/2026', cuNguoi: '', tamUng: '', xacMinh: 'Đang xác minh', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' } ],
+            'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [] },
+        history: [{ time: '17/07/2026 15:00', text: 'Phạm Thị D gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' }, { time: '18/07/2026 09:00', text: 'UBND Thành phố Hà Nội đã duyệt kỳ báo cáo.' }]
+    },
+    {
+        id: 7, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND phường Ba Đình', unitCode: 'HN-P.BD', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
+        status: 'da_duyet', submittedDate: '19/07/2026', submittedBy: 'Ngô Văn E',
+        sources: { mau01: 'thu_cong', mau03: 'thu_cong', mau04: 'thu_cong', mau05: 'thu_cong' },
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-077', name: 'Yêu cầu bồi thường của Nguyễn Thị N', requester: 'Nguyễn Thị N', agency: 'UBND phường Ba Đình', law: 'Luật TNBTCNN 2017', situation: 'Đã đình chỉ giải quyết.', payment: '', vuongMac: '', note: '' } ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,1,0,0,0, 0,0,0,0, null,0,0,0,0, 0, null,0,0,0,0, 1,0, 0,0,0, ''] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-077', name: 'Yêu cầu bồi thường của Nguyễn Thị N', dateThuLy: '13/07/2026', requesterInfo: 'Nguyễn Thị N - Hà Nội', vanBanCanCu: 'Đơn ngày 11/07/2026', cuNguoi: 'QĐ cử người giải quyết', tamUng: '', xacMinh: 'Đã xác minh', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: 'Đình chỉ 19/07/2026', khoiKien: '', phucHoi: '' } ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [{ time: '19/07/2026 10:00', text: 'Ngô Văn E gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' }, { time: '19/07/2026 16:00', text: 'UBND Thành phố Hà Nội đã duyệt kỳ báo cáo.' }]
+    },
+    {
+        id: 8, level: 2, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND Thành phố Hải Phòng', unitCode: 'HP', reportScope: 'tong_hop', parentUnit: 'Cục Bồi thường nhà nước - Bộ Tư pháp',
+        status: 'da_duyet', submittedDate: '21/07/2026', submittedBy: 'UBND Thành phố Hải Phòng',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        childUnits: [9,10],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-091', name: 'Yêu cầu bồi thường của Lê Hoàng P', requester: 'Lê Hoàng P', agency: 'Sở Tư pháp Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành quyết định giải quyết.', payment: 'Đã chi trả 240.000.000đ.', vuongMac: '', note: '' } ],
+            'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-092', name: 'Yêu cầu bồi thường của Trần Văn Q', requester: 'Trần Văn Q', agency: 'Tòa án nhân dân Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đang giải quyết.', payment: '', vuongMac: '', note: '' } ],
+            'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,2,0,0,0, 1,0,0,0, null,2,0,0,0, 240000, null,1,0,0,0, 0,0, 2,240000,0, ''],
+            'II. Trong hoạt động tố tụng hình sự': [null,0,1,0,0, 0,0,0,0, null,0,0,0,0, 0, null,0,1,0,0, 0,0, 0,0,0, ''] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [240000, null,1,60000,0, 0,0, 0,0, 0, null,30000,30000, 0] },
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: [{ time: '20/07/2026 11:00', text: 'UBND Thành phố Hải Phòng tổng hợp số liệu từ 2 đơn vị.' }, { time: '21/07/2026 09:00', text: 'Cục Bồi thường nhà nước đã duyệt kỳ báo cáo.' }]
+    },
+    {
+        id: 9, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Sở Tư pháp Thành phố Hải Phòng', unitCode: 'HP-STP', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hải Phòng',
+        status: 'da_duyet', submittedDate: '18/07/2026', submittedBy: 'Sở Tư pháp Thành phố Hải Phòng',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-091', name: 'Yêu cầu bồi thường của Lê Hoàng P', requester: 'Lê Hoàng P', agency: 'Sở Tư pháp Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành quyết định giải quyết.', payment: 'Đã chi trả 240.000.000đ.', vuongMac: '', note: '' } ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,2,0,0,0, 1,0,0,0, null,2,0,0,0, 240000, null,1,0,0,0, 0,0, 2,240000,0, ''] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [240000, null,1,60000,0, 0,0, 0,0, 0, null,30000,30000, 0] },
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: []
+    },
+    {
+        id: 10, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Tòa án nhân dân Thành phố Hải Phòng', unitCode: 'HP-TAND', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hải Phòng',
+        status: 'da_duyet', submittedDate: '18/07/2026', submittedBy: 'Tòa án nhân dân Thành phố Hải Phòng',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        mau01Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-092', name: 'Yêu cầu bồi thường của Trần Văn Q', requester: 'Trần Văn Q', agency: 'Tòa án nhân dân Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đang giải quyết.', payment: '', vuongMac: '', note: '' } ],
+            'I. Trong hoạt động quản lý hành chính': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        mau03Values: { 'II. Trong hoạt động tố tụng hình sự': [null,0,1,0,0, 0,0,0,0, null,0,0,0,0, 0, null,0,1,0,0, 0,0, 0,0,0, ''] },
+        mau04Values: { 'II. Trong hoạt động tố tụng hình sự': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
+        history: []
+    }
+];
+
+const UNIT_OPTIONS = {
+    cap1: [{ value: 'all', label: 'Tất cả' }],
+    cap2: [
+        { value: 'all', label: 'Tất cả' },
+        { value: 1, label: 'Sở Tư pháp Thành phố Hà Nội' },
+        { value: 2, label: 'UBND phường Cầu Giấy' },
+        { value: 3, label: 'Tòa án nhân dân Thành phố Hà Nội' },
+        { value: 6, label: 'Cục Thi hành án dân sự Thành phố Hà Nội' },
+        { value: 7, label: 'UBND phường Ba Đình' },
+        { value: 4, label: 'UBND Thành phố Hà Nội - kỳ tổng hợp' },
+        { value: 11, label: 'UBND Thành phố Hà Nội - đã tổng hợp' },
+        { value: 14, label: 'UBND Thành phố Hà Nội - tạm tính' }
+    ],
+    cap3: [
+        { value: 'all', label: 'Tất cả' },
+        { value: 5, label: 'Cục Bồi thường nhà nước - tổng hợp toàn quốc' },
+        { value: 8, label: 'UBND Thành phố Hải Phòng' },
+        { value: 12, label: 'UBND Thành phố Hải Phòng - chờ duyệt' },
+        { value: 13, label: 'Cục Bồi thường nhà nước - đã chốt' },
+        { value: 15, label: 'Bộ Công an' }
+    ]
+};
+
+const REPORT_UNIT_TREE = [
+    {
+        code: 'BTP', name: 'Bộ Tư pháp', selectable: false, children: [
+            { code: 'BTP-CBTNN', name: 'Cục Bồi thường nhà nước', selectable: true }
+        ]
+    },
+    {
+        code: 'HN', name: 'UBND Thành phố Hà Nội', selectable: true, children: [
+            { code: 'HN-STP', name: 'Sở Tư pháp Thành phố Hà Nội', selectable: true, children: [
+                { code: 'HN-STP-PBTNN', name: 'Phòng Bồi thường nhà nước', selectable: true },
+                { code: 'HN-STP-TGPL', name: 'Trung tâm Trợ giúp pháp lý nhà nước', selectable: true }
+            ] },
+            { code: 'HN-P.CG', name: 'UBND phường Cầu Giấy', selectable: true },
+            { code: 'HN-P.BD', name: 'UBND phường Ba Đình', selectable: true },
+            { code: 'HN-TAND', name: 'Tòa án nhân dân Thành phố Hà Nội', selectable: true },
+            { code: 'HN-THADS', name: 'Cục Thi hành án dân sự Thành phố Hà Nội', selectable: true }
+        ]
+    },
+    {
+        code: 'HP', name: 'UBND Thành phố Hải Phòng', selectable: true, children: [
+            { code: 'HP-STP', name: 'Sở Tư pháp Thành phố Hải Phòng', selectable: true },
+            { code: 'HP-P.NQ', name: 'UBND phường Ngô Quyền', selectable: true },
+            { code: 'HP-TAND', name: 'Tòa án nhân dân Thành phố Hải Phòng', selectable: true }
+        ]
+    },
+    {
+        code: 'TANDTC', name: 'Tòa án nhân dân tối cao', selectable: true, children: [
+            { code: 'TANDTC-C1HN', name: 'Tòa án nhân dân cấp cao tại Hà Nội', selectable: true }
+        ]
+    },
+    {
+        code: 'VKSNDTC', name: 'Viện kiểm sát nhân dân tối cao', selectable: true, children: [
+            { code: 'VKSNDTC-CC1', name: 'Viện kiểm sát nhân dân cấp cao tại Hà Nội', selectable: true }
+        ]
+    }
+];
+
+let currentRole = 'cap1';
+let currentDetailId = null;
+let currentTab = 'mau01';
+let aggregateMembersExpanded = false;
+let collapsedCreateUnitCodes = new Set(['BTP', 'HP', 'TANDTC', 'VKSNDTC']);
+
+// ===================== Toast / helpers =====================
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type === 'success' ? '' : type}`;
+    const icon = type === 'success' ? 'fa-circle-check' : (type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-xmark');
+    toast.innerHTML = `<i class="fa-solid ${icon}" style="color:${type === 'success' ? 'var(--success-color)' : (type === 'warning' ? 'var(--warning-color)' : 'var(--danger-color)')}"></i> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+}
+function currentActorName() {
+    if (currentRole === 'cap1') return 'Sở Tư pháp Thành phố Hà Nội';
+    if (currentRole === 'cap2') return 'UBND Thành phố Hà Nội';
+    return 'Cục Bồi thường nhà nước - Bộ Tư pháp';
+}
+function nowLog() { return '29/07/2026 10:00'; }
+function fmtMoney(v) { return (v || 0).toLocaleString('vi-VN'); }
+function statusBadge(status) { const m = STATUS_META[status]; return `<span class="badge ${m.cls}">${m.label}</span>`; }
+function findKy(id) { return KY_BAO_CAO.find(k => k.id === id); }
+const AGGREGATABLE_STATUSES = ['da_duyet', 'da_tong_hop', 'hoan_thanh'];
+const BTP_VISIBLE_STATUSES = ['da_gui', 'da_duyet', 'hoan_thanh'];
+function isVisibleToBtp(ky) {
+    return ky.level === 3 || (ky.level === 2 && ky.parentUnit === 'Cục Bồi thường nhà nước - Bộ Tư pháp' && BTP_VISIBLE_STATUSES.includes(ky.status));
+}
+function getAggregateChildrenForView(ky) {
+    const children = (ky.childUnits || []).map(cid => findKy(cid)).filter(Boolean);
+    return ky.level === 3 ? children.filter(isVisibleToBtp) : children;
+}
+function countCases(ky) {
+    let n = 0;
+    FIELDS.forEach(f => { n += (ky.mau01Rows[f] || []).length; n += (ky.mau05Rows[f] || []).length; });
+    return n;
+}
+function reportKind(ky) {
+    if (ky.periodType === 'tam_tinh') return 'temp';
+    if (ky.level === 3) return 'national';
+    if (ky.level === 2) return 'aggregate';
+    return 'unit';
+}
+function reportKindBadge(ky) {
+    const kind = reportKind(ky);
+    const cls = kind === 'unit' ? 'badge-muted' : (kind === 'temp' ? 'badge-info' : 'badge-success');
+    return `<span class="badge ${cls}">${REPORT_KIND_META[kind]}</span>`;
+}
+
+function normalizeSearch(value) {
+    return (value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+}
+
+function unitNodeMatches(node, query) {
+    if (!query) return true;
+    const selfMatch = normalizeSearch(`${node.code} ${node.name}`).includes(query);
+    const childMatch = (node.children || []).some(child => unitNodeMatches(child, query));
+    return selfMatch || childMatch;
+}
+
+function renderCreateUnitTree(keyword = '') {
+    const container = document.getElementById('createUnitTree');
+    const selectedCode = document.getElementById('createUnitCode')?.value || '';
+    const query = normalizeSearch(keyword);
+    const html = renderCreateUnitNodes(REPORT_UNIT_TREE, 0, query, selectedCode);
+    if (!html) {
+        container.innerHTML = `<div style="padding:14px; color:var(--text-muted); text-align:center;">Không tìm thấy đơn vị phù hợp.</div>`;
+        return;
+    }
+    container.innerHTML = html;
+}
+
+function renderCreateUnitNodes(nodes, level, query, selectedCode) {
+    return nodes.map(node => {
+        if (query && !unitNodeMatches(node, query)) return '';
+        const hasChildren = !!node.children?.length;
+        const isCollapsed = !query && collapsedCreateUnitCodes.has(node.code);
+        const disabledClass = node.selectable ? '' : ' disabled';
+        const selectedClass = node.code === selectedCode ? ' selected' : '';
+        const toggle = hasChildren
+            ? `<button type="button" class="unit-tree-toggle" onclick="toggleCreateUnitNode('${node.code}', event)">${isCollapsed ? '+' : '-'}</button>`
+            : `<span class="unit-tree-toggle empty"></span>`;
+        const action = node.selectable ? `onclick="selectCreateUnit('${node.code}', '${escapeJs(node.name)}', ${hasChildren})"` : '';
+        const children = hasChildren && !isCollapsed ? renderCreateUnitNodes(node.children, level + 1, query, selectedCode) : '';
+        return `
+            <div class="unit-tree-row unit-tree-indent-${Math.min(level, 3)}${disabledClass}${selectedClass}" ${action}>
+                ${toggle}
+                <span class="unit-code">${node.code}</span>
+                <span class="unit-name">${node.name}</span>
+            </div>
+            ${children}`;
+    }).join('');
+}
+
+function toggleCreateUnitNode(code, event) {
+    event.stopPropagation();
+    if (collapsedCreateUnitCodes.has(code)) collapsedCreateUnitCodes.delete(code);
+    else collapsedCreateUnitCodes.add(code);
+    renderCreateUnitTree(document.getElementById('createUnitSearch').value);
+}
+
+function escapeJs(value) {
+    return String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function selectCreateUnit(code, name, hasChildren) {
+    document.getElementById('createUnit').value = name;
+    document.getElementById('createUnitCode').value = code;
+    document.getElementById('createUnitHasChildren').value = hasChildren ? 'true' : 'false';
+    document.getElementById('createUnitDisplay').textContent = name;
+    document.getElementById('createUnitCodeDisplay').textContent = code;
+    const scope = document.getElementById('createReportScope');
+    scope.disabled = !hasChildren;
+    if (!hasChildren) scope.value = 'don_vi';
+    renderCreateUnitTree(document.getElementById('createUnitSearch').value);
+}
+
+// ===================== Role switching & list view =====================
+function onRoleChange() {
+    currentRole = document.getElementById('roleSwitch').value;
+    renderListView();
+}
+
+function renderListView() {
+    document.getElementById('detailView').style.display = 'none';
+    document.getElementById('listView').style.display = 'block';
+    const unitSelect = document.getElementById('fUnit');
+    unitSelect.innerHTML = UNIT_OPTIONS[currentRole].map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+    document.getElementById('fUnitLabel').textContent = currentRole === 'cap1' ? 'Đơn vị báo cáo' : (currentRole === 'cap2' ? 'Đơn vị báo cáo thuộc phạm vi' : 'Đầu mối tổng hợp');
+    document.getElementById('btnCreatePeriod').style.display = currentRole === 'cap1' ? 'inline-flex' : 'none';
+    document.getElementById('listTitle').innerHTML = currentRole === 'cap1'
+        ? '<i class="fa-solid fa-table-list"></i> Danh sách kỳ báo cáo của đơn vị'
+        : '<i class="fa-solid fa-table-list"></i> Danh sách kỳ báo cáo cần duyệt/tổng hợp';
+    renderQuickAggregateCard();
+    applyListFilter();
+}
+
+function renderQuickAggregateCard() {
+    const card = document.getElementById('quickAggregateCard');
+    const body = document.getElementById('quickAggregateBody');
+    if (currentRole === 'cap1') {
+        card.style.display = 'none';
+        return;
+    }
+    const quickItems = currentRole === 'cap2'
+        ? [
+            { id: 4, title: 'Kỳ tổng hợp đầu mối - số liệu thực tế', desc: 'UBND Thành phố Hà Nội' },
+            { id: 11, title: 'Kỳ tổng hợp đầu mối - năm chính thức', desc: 'Đã tổng hợp, chưa gửi Bộ Tư pháp' },
+            { id: 14, title: 'Báo cáo tạm tính của đầu mối', desc: 'Xem nhanh phạm vi Hà Nội' }
+        ]
+        : [
+            { id: 5, title: 'Kỳ tổng hợp toàn quốc - số liệu thực tế', desc: '01/01/2026 - 31/10/2026' },
+            { id: 13, title: 'Kỳ tổng hợp toàn quốc - năm chính thức', desc: '01/01/2026 - 31/12/2026' }
+        ];
+    card.style.display = 'block';
+    body.innerHTML = quickItems.map(item => {
+        const ky = findKy(item.id);
+        if (!ky) return '';
+        return `<div class="quick-open-tile">
+            <div><strong>${item.title}</strong><span>${item.desc}<br>${statusBadge(ky.status)}</span></div>
+            <button class="btn btn-primary btn-sm" onclick="openDetail(${item.id})"><i class="fa-solid fa-arrow-up-right-from-square"></i> Mở</button>
+        </div>`;
+    }).join('');
+}
+
+function getScopedList() {
+    if (currentRole === 'cap1') return KY_BAO_CAO.filter(k => k.level === 1 && k.parentUnit === 'UBND Thành phố Hà Nội');
+    if (currentRole === 'cap2') {
+        return KY_BAO_CAO.filter(k =>
+            (k.level === 1 && k.parentUnit === 'UBND Thành phố Hà Nội') ||
+            (k.level === 2 && k.unitCode === 'HN')
+        );
+    }
+    return KY_BAO_CAO.filter(isVisibleToBtp);
+}
+
+function applyListFilter() {
+    const year = document.getElementById('fYear').value;
+    const periodType = document.getElementById('fPeriodType').value;
+    const unit = document.getElementById('fUnit').value;
+    const status = document.getElementById('fStatus').value;
+    let rows = getScopedList().filter(k => String(k.year) === year);
+    if (periodType !== 'all') rows = rows.filter(k => k.periodType === periodType);
+    if (unit !== 'all') rows = rows.filter(k => String(k.id) === String(unit));
+    if (status !== 'all') rows = rows.filter(k => k.status === status);
+
+    const tbody = document.getElementById('listTableBody');
+    if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:20px;">Không có dữ liệu phù hợp.</td></tr>`;
+    } else {
+        tbody.innerHTML = rows.map((k, i) => `
+            <tr class="list-row" onclick="openDetail(${k.id})">
+                <td>${i + 1}</td>
+                <td>${k.year}</td>
+                <td>${PERIOD_META[k.periodType]}</td>
+                <td>${reportKindBadge(k)}</td>
+                <td class="text-left">${k.unit}</td>
+                <td>${countCases(k)}</td>
+                <td>${statusBadge(k.status)}</td>
+                <td>${k.submittedDate || '-'}</td>
+                <td onclick="event.stopPropagation();">
+                    <button class="icon-btn" title="${currentRole === 'cap1' ? 'Mở' : 'Xem/Duyệt'}" onclick="openDetail(${k.id})"><i class="fa-solid fa-folder-open"></i></button>
+                    ${(currentRole === 'cap1' && k.status === 'dang_nhap_lieu') ? `<button class="icon-btn danger" title="Xóa" onclick="deletePeriod(${k.id})"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                </td>
+            </tr>`).join('');
+    }
+
+    // Pending group (chưa tổng hợp) - only for cấp 2/3 viewing their own aggregate record
+    const pendingCard = document.getElementById('pendingGroupCard');
+    if (currentRole !== 'cap1') {
+        const parentId = currentRole === 'cap2' ? 4 : 5;
+        const parent = findKy(parentId);
+        const pendingSource = currentRole === 'cap3' ? getAggregateChildrenForView(parent) : (parent.childUnits || []).map(cid => findKy(cid)).filter(Boolean);
+        const pending = pendingSource.filter(c => !AGGREGATABLE_STATUSES.includes(c.status));
+        if (pending.length) {
+            pendingCard.style.display = 'block';
+            document.getElementById('pendingGroupBody').innerHTML = `
+                <div class="alert-box alert-warning">
+                    <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i>
+                    <div>Còn <strong>${pending.length}</strong> đơn vị chưa được duyệt/tổng hợp vào kỳ báo cáo của bạn: ${pending.map(p => `<strong>${p.unit}</strong> (${STATUS_META[p.status].label})`).join(', ')}.</div>
+                </div>`;
+        } else {
+            pendingCard.style.display = 'none';
+        }
+    } else {
+        pendingCard.style.display = 'none';
+    }
+}
+
+function deletePeriod(id) {
+    if (!confirm('Bạn có chắc chắn muốn xóa kỳ báo cáo này không?')) return;
+    const idx = KY_BAO_CAO.findIndex(k => k.id === id);
+    if (idx > -1) KY_BAO_CAO.splice(idx, 1);
+    showToast('Đã xóa kỳ báo cáo.', 'success');
+    renderListView();
+}
+
+function openCreatePeriod() {
+    const year = document.getElementById('fYear').value || '2026';
+    document.getElementById('createYear').value = year;
+    document.getElementById('createPeriodType').value = 'thuc_te';
+    document.getElementById('createDataSource').value = 'tu_dong';
+    document.getElementById('createReportType').value = 'tt08_all';
+    document.getElementById('createUnit').value = '';
+    document.getElementById('createUnitCode').value = '';
+    document.getElementById('createUnitHasChildren').value = 'false';
+    document.getElementById('createUnitDisplay').textContent = 'Chưa chọn đơn vị báo cáo';
+    document.getElementById('createUnitCodeDisplay').textContent = '-';
+    document.getElementById('createUnitSearch').value = '';
+    document.getElementById('createReportScope').value = 'don_vi';
+    document.getElementById('createReportScope').disabled = true;
+    syncCreatePeriodDates();
+    renderCreateUnitTree();
+    document.getElementById('createPeriodOverlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('createPeriodOverlay').classList.add('visible'), 10);
+}
+
+function syncCreatePeriodDates() {
+    const year = document.getElementById('createYear').value || '2026';
+    const periodType = document.getElementById('createPeriodType')?.value || 'thuc_te';
+    const isTemp = periodType === 'tam_tinh';
+    const toMonthDay = periodType === 'chinh_thuc' ? ['12', '31'] : ['10', '31'];
+    document.getElementById('createFromDate').value = `01/01/${year}`;
+    document.getElementById('createToDate').value = `${toMonthDay[1]}/${toMonthDay[0]}/${year}`;
+    document.getElementById('createFromDatePicker').value = `${year}-01-01`;
+    document.getElementById('createToDatePicker').value = `${year}-${toMonthDay[0]}-${toMonthDay[1]}`;
+    ['createFromDate','createToDate'].forEach(id => document.getElementById(id).readOnly = !isTemp);
+    ['createFromDatePicker','createToDatePicker'].forEach(id => document.getElementById(id).disabled = !isTemp);
+    document.querySelectorAll('.date-picker-wrap .icon-btn').forEach(btn => btn.disabled = !isTemp);
+    document.getElementById('createDateHint').textContent = isTemp
+        ? 'Báo cáo tạm tính cho phép chọn khoảng ngày để lãnh đạo xem nhanh, không đi luồng gửi/duyệt/chốt.'
+        : 'Kỳ báo cáo chính thức sử dụng mốc thời gian theo cấu hình, không chỉnh trực tiếp trên form.';
+}
+
+function findUnitNode(code, nodes = REPORT_UNIT_TREE) {
+    for (const node of nodes) {
+        if (node.code === code) return node;
+        const found = findUnitNode(code, node.children || []);
+        if (found) return found;
+    }
+    return null;
+}
+
+function collectDescendantCodes(node) {
+    if (!node) return [];
+    return (node.children || []).flatMap(child => [child.code, ...collectDescendantCodes(child)]);
+}
+
+function openNativeDatePicker(inputId) {
+    const picker = document.getElementById(inputId);
+    if (!picker) return;
+    if (typeof picker.showPicker === 'function') picker.showPicker();
+    else picker.click();
+}
+
+function syncVisibleDateFromPicker(pickerId, targetId) {
+    const picker = document.getElementById(pickerId);
+    const target = document.getElementById(targetId);
+    if (!picker || !target || !picker.value) return;
+    const [year, month, day] = picker.value.split('-');
+    target.value = `${day}/${month}/${year}`;
+}
+
+function closeCreatePeriod() {
+    const overlay = document.getElementById('createPeriodOverlay');
+    overlay.classList.remove('visible');
+    setTimeout(() => overlay.style.display = 'none', 160);
+}
+
+function submitCreatePeriod() {
+    const dataSource = document.getElementById('createDataSource').value;
+    const unit = document.getElementById('createUnit').value;
+    const unitCode = document.getElementById('createUnitCode').value;
+    const reportScope = document.getElementById('createReportScope').value;
+    const reportType = document.getElementById('createReportType').value;
+    const periodType = document.getElementById('createPeriodType').value;
+    const year = Number(document.getElementById('createYear').value);
+    const fromDate = document.getElementById('createFromDate').value;
+    const toDate = document.getElementById('createToDate').value;
+    const parsedFromDate = parseViDate(fromDate);
+    const parsedToDate = parseViDate(toDate);
+    if (!unit || !unitCode) {
+        showToast('Vui lòng chọn Đơn vị báo cáo.', 'error');
+        return;
+    }
+    if (!parsedFromDate || !parsedToDate || parsedFromDate > parsedToDate) {
+        showToast('Thời gian báo cáo không hợp lệ.', 'error');
+        return;
+    }
+    const duplicate = findDuplicateOfficialPeriod({ unitCode, reportScope, reportType, periodType, year });
+    if (duplicate) {
+        showToast('Kỳ báo cáo đã tồn tại, hệ thống không tạo trùng kỳ chính thức.', 'warning');
+        if (confirm('Kỳ báo cáo đã tồn tại. Bạn có muốn mở kỳ báo cáo hiện có không?')) {
+            closeCreatePeriod();
+            openDetail(duplicate.id, duplicate.reportType);
+        }
+        return;
+    }
+    const selectedNode = findUnitNode(unitCode);
+    const childCodes = reportScope === 'tong_hop' ? collectDescendantCodes(selectedNode) : [];
+    const childUnits = KY_BAO_CAO.filter(k => k.level === 1 && childCodes.includes(k.unitCode)).map(k => k.id);
+    const newLevel = reportScope === 'tong_hop' ? 2 : 1;
+    const newKy = {
+        id: ++nextId, level: newLevel, year, periodType,
+        unit, unitCode, reportScope, inputUnit: 'Sở Tư pháp Thành phố Hà Nội', parentUnit: 'UBND Thành phố Hà Nội',
+        reportType, reportFromDate: fromDate, reportToDate: toDate,
+        status: 'dang_nhap_lieu', submittedDate: '', submittedBy: '',
+        sources: { mau01: dataSource, mau03: dataSource, mau04: dataSource, mau05: dataSource },
+        childUnits,
+        mau01Rows: Object.fromEntries(FIELDS.map(f => [f, []])),
+        mau03Values: {}, mau04Values: {},
+        mau05Rows: Object.fromEntries(FIELDS.map(f => [f, []])),
+        history: []
+    };
+    KY_BAO_CAO.push(newKy);
+    const parentAggregate = findKy(4);
+    if (parentAggregate && newKy.level === 1 && newKy.periodType !== 'tam_tinh' && !parentAggregate.childUnits.includes(newKy.id)) parentAggregate.childUnits.push(newKy.id);
+    closeCreatePeriod();
+    showToast(periodType === 'tam_tinh' ? 'Đã tạo báo cáo tạm tính.' : 'Đã tạo kỳ báo cáo mới ở trạng thái Đang nhập liệu.', 'success');
+    openDetail(newKy.id, reportType);
+}
+
+function findDuplicateOfficialPeriod({ unitCode, reportScope, reportType, periodType, year }) {
+    if (periodType === 'tam_tinh') return null;
+    return KY_BAO_CAO.find(k =>
+        k.periodType !== 'tam_tinh' &&
+        k.year === year &&
+        k.unitCode === unitCode &&
+        (k.reportScope || 'don_vi') === reportScope &&
+        (k.reportType || 'tt08_all') === reportType &&
+        k.periodType === periodType
+    );
+}
+
+function parseViDate(value) {
+    const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec((value || '').trim());
+    if (!match) return null;
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    const date = new Date(year, month - 1, day);
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+    return date;
+}
+
+function getSourceLabel(value) {
+    return value === 'thu_cong' ? 'Nhập liệu thủ công' : 'Tự động tổng hợp từ hệ thống';
+}
+
+// ===================== Detail view =====================
+function getLatestRevisionRequest(ky) {
+    return ky.history.slice().reverse().find(h => h.reason);
+}
+
+function currentViewMode(ky) {
+    // 'own' = cấp 1 xem kỳ báo cáo của chính mình (hoặc cấp 2/3 xem bản tổng hợp của chính mình)
+    // 'approve' = cấp trên xem kỳ báo cáo của đơn vị cấp dưới để duyệt/yêu cầu chỉnh lý
+    if (currentRole === 'cap1') return 'own';
+    if (currentRole === 'cap2') return ky.level === 2 ? 'own' : 'approve';
+    return ky.level === 3 ? 'own' : 'approve';
+}
+
+function getInitialReportTab(reportType) {
+    return ['mau01', 'mau03', 'mau04', 'mau05'].includes(reportType) ? reportType : 'mau01';
+}
+
+function openDetail(id, initialTab) {
+    currentDetailId = id;
+    aggregateMembersExpanded = false;
+    const ky = findKy(id);
+    currentTab = getInitialReportTab(initialTab || ky.reportType);
+    document.getElementById('listView').style.display = 'none';
+    document.getElementById('detailView').style.display = 'block';
+    document.getElementById('detailTitle').textContent = `Kỳ báo cáo ${ky.year} - ${ky.unit}`;
+    const latestRevision = getLatestRevisionRequest(ky);
+    document.getElementById('alertArea').innerHTML = latestRevision && ky.status === 'dang_nhap_lieu'
+        ? `<div class="alert-box alert-warning"><i class="fa-solid fa-rotate-left" style="margin-top:2px;"></i><div><strong>Nội dung yêu cầu chỉnh lý:</strong><br>${latestRevision.reason}<br><span style="color:var(--text-muted);">Thời điểm yêu cầu: ${latestRevision.time}</span></div></div>`
+        : '';
+    document.getElementById('mYear').textContent = ky.year;
+    document.getElementById('mPeriodType').textContent = ky.reportFromDate && ky.reportToDate
+        ? `Báo cáo năm số liệu thực tế (${ky.reportFromDate} - ${ky.reportToDate})`
+        : PERIOD_META[ky.periodType];
+    document.getElementById('mUnit').textContent = ky.unit;
+    document.getElementById('mReportScope').textContent = REPORT_SCOPE_META[ky.reportScope || 'don_vi'] || '-';
+    document.getElementById('detailStatusBadge').outerHTML = statusBadge(ky.status).replace('badge', 'badge').replace('<span', '<span id="detailStatusBadge" style="font-size:13px; padding:6px 14px;"');
+
+    const mode = currentViewMode(ky);
+    const readOnlyWhole = mode === 'approve' || ky.periodType === 'tam_tinh' || ['da_gui','da_duyet','da_tong_hop','hoan_thanh'].includes(ky.status);
+
+    updateReadonlySourceLabels(ky);
+
+    // Pending units info block (for level 2/3 own aggregate view)
+    const pendingCard = document.getElementById('pendingUnitsCard');
+    if (mode === 'own' && ky.level > 1) {
+        const visibleChildren = getAggregateChildrenForView(ky);
+        const pending = visibleChildren.filter(c => !AGGREGATABLE_STATUSES.includes(c.status));
+        const approved = visibleChildren.filter(c => AGGREGATABLE_STATUSES.includes(c.status));
+        pendingCard.style.display = 'block';
+        document.getElementById('pendingUnitsText').innerHTML = `Đã tổng hợp từ <strong>${approved.length}/${visibleChildren.length}</strong> đơn vị đã duyệt/gửi hợp lệ: ${approved.map(a=>a.unit).join(', ') || 'chưa có'}.` +
+            (pending.length ? `<br>Còn chờ: ${pending.map(p => `${p.unit} (${STATUS_META[p.status].label})`).join(', ')}.` : '');
+    } else {
+        pendingCard.style.display = 'none';
+    }
+    renderAggregateMembers(ky, mode);
+
+    switchTab(currentTab);
+    renderDetailActionBar(ky, mode, readOnlyWhole);
+}
+
+function updateReadonlySourceLabels(ky) {
+    const activeSourceForm = currentTab && currentTab !== 'history' ? currentTab : 'mau01';
+    const sourceLabel = getSourceLabel(ky.sources?.[activeSourceForm] || 'tu_dong');
+    const detailBadge = document.getElementById('detailSourceBadge');
+    const detailHint = document.getElementById('detailSourceHint');
+    const sourceHints = {
+        mau01: 'Danh mục vụ việc được nhập/tổng hợp theo nguồn dữ liệu đã chọn khi tạo kỳ báo cáo.',
+        mau03: '26 chỉ tiêu theo Mẫu số 03/BTNN; các ô công thức tự tính theo số liệu thành phần.',
+        mau04: '15 chỉ tiêu theo Mẫu số 04/BTNN; các ô công thức tự tính theo số liệu thành phần.',
+        mau05: 'Sổ thụ lý hồ sơ theo vụ việc, sử dụng nguồn dữ liệu đã chọn khi tạo kỳ báo cáo.',
+        history: 'Lịch sử xử lý kỳ báo cáo.'
+    };
+    if (detailBadge) detailBadge.innerHTML = `<i class="fa-solid fa-database"></i> ${sourceLabel}`;
+    if (detailHint) detailHint.textContent = sourceHints[currentTab] || 'Nguồn dữ liệu được xác định khi tạo kỳ báo cáo.';
+    document.querySelectorAll('[data-source-label]').forEach(el => {
+        const form = el.dataset.sourceLabel;
+        el.innerHTML = `<i class="fa-solid fa-database"></i> ${getSourceLabel(ky.sources?.[form] || 'tu_dong')}`;
+    });
+}
+
+function renderAggregateMembers(ky, mode) {
+    const card = document.getElementById('aggregateMembersCard');
+    const body = document.getElementById('aggregateMembersBody');
+    const title = document.getElementById('aggregateMembersTitle');
+    const content = document.getElementById('aggregateMembersContent');
+    const toggleText = document.getElementById('aggregateMembersToggleText');
+    const toggleIcon = document.getElementById('aggregateMembersToggleIcon');
+    if (!(mode === 'own' && ky.level > 1)) {
+        card.style.display = 'none';
+        return;
+    }
+    const children = getAggregateChildrenForView(ky);
+    card.style.display = 'block';
+    title.innerHTML = `<i class="fa-solid fa-sitemap"></i> Danh sách đơn vị thành viên (${children.length})`;
+    content.style.display = aggregateMembersExpanded ? 'block' : 'none';
+    toggleText.textContent = aggregateMembersExpanded ? 'Thu gọn' : 'Mở rộng';
+    toggleIcon.className = `fa-solid ${aggregateMembersExpanded ? 'fa-chevron-up' : 'fa-chevron-down'}`;
+    if (!children.length) {
+        body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:16px;">Chưa có đơn vị thành viên thuộc phạm vi tổng hợp.</td></tr>`;
+        return;
+    }
+    body.innerHTML = children.map((child, index) => {
+        const included = ky.periodType === 'tam_tinh' || AGGREGATABLE_STATUSES.includes(child.status);
+        return `<tr class="list-row" onclick="openDetail(${child.id})">
+            <td>${index + 1}</td>
+            <td class="text-left">${child.unit}</td>
+            <td>${countCases(child)}</td>
+            <td>${statusBadge(child.status)}</td>
+            <td>${child.submittedDate || '-'}</td>
+            <td>${included ? '<span class="badge badge-success">Được tổng hợp</span>' : '<span class="badge badge-muted">Chưa tổng hợp</span>'}</td>
+        </tr>`;
+    }).join('');
+}
+
+function toggleAggregateMembers() {
+    aggregateMembersExpanded = !aggregateMembersExpanded;
+    const ky = findKy(currentDetailId);
+    if (!ky) return;
+    renderAggregateMembers(ky, currentViewMode(ky));
+}
+
+function closeDetail() { renderListView(); }
+
+function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('reportSelect').value = tab;
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
+    const ky = findKy(currentDetailId);
+    updateReadonlySourceLabels(ky);
+    const mode = currentViewMode(ky);
+    const readOnly = mode === 'approve' || ky.periodType === 'tam_tinh' || ['da_gui','da_duyet','da_tong_hop','hoan_thanh'].includes(ky.status);
+    if (tab === 'mau01') renderMau01(ky, readOnly);
+    else if (tab === 'mau03') renderMau03Matrix(ky, readOnly);
+    else if (tab === 'mau04') renderMau04Matrix(ky, readOnly);
+    else if (tab === 'mau05') renderMau05(ky, readOnly);
+    else if (tab === 'history') renderHistory(ky);
+}
+
+function onSourceChange(form, value) {
+    const ky = findKy(currentDetailId);
+    if (value === 'tu_dong') {
+        if (!confirm(`Dữ liệu nhập tay của ${form.toUpperCase()} sẽ bị thay thế bằng dữ liệu tổng hợp từ hệ thống, bạn có chắc chắn muốn tiếp tục?`)) {
+            updateReadonlySourceLabels(ky);
+            return;
+        }
+        showToast(`Đã tổng hợp lại ${form.toUpperCase()} từ dữ liệu hệ thống.`, 'success');
+    }
+    ky.sources[form] = value;
+    updateReadonlySourceLabels(ky);
+    if (currentTab === form) switchTab(form);
+}
+
+// ===================== Render Mẫu 01 =====================
+const APPLICABLE_LAW_OPTIONS = [
+    'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
+    'Luật Trách nhiệm bồi thường của Nhà nước năm 2009',
+    'Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003',
+    'Nghị định số 47-CP ngày 03/05/1997'
+];
+
+function renderMau01(ky, readOnly) {
+    const editable = ky.sources.mau01 === 'thu_cong' && !readOnly;
+    const colCount = 9;
+    let html = `<table class="custom-table"><thead><tr>
+        <th style="width:40px;">STT</th><th style="min-width:150px;">Họ và tên người yêu cầu bồi thường</th>
+        <th style="min-width:170px;">Địa chỉ người yêu cầu bồi thường</th><th style="min-width:170px;">Cơ quan giải quyết bồi thường</th><th style="min-width:180px;">Pháp luật áp dụng để giải quyết bồi thường</th>
+        <th style="min-width:200px;">Tình hình giải quyết bồi thường</th><th style="min-width:150px;">Chi trả tiền bồi thường</th>
+        <th style="min-width:170px;">Khó khăn, vướng mắc</th><th style="min-width:150px;">Ghi chú</th>
+    </tr><tr class="column-number-row"><th></th>${Array.from({ length: 8 }, (_, i) => `<th>(${i + 1})</th>`).join('')}</tr></thead><tbody>`;
+    let total = 0;
+    FIELDS.forEach((field, fieldIndex) => {
+        const rows = ky.mau01Rows[field] || [];
+        total += rows.length;
+        const roman = ['I','II','III','IV','V','VI'][fieldIndex];
+        html += `<tr class="group-header"><td>${roman}</td><td colspan="${colCount - 1}">${field.replace(/^[IVX]+\.\s*/, '')} (${rows.length} vụ việc)</td></tr>`;
+        rows.forEach((row, idx) => {
+            if (editable) {
+                html += `<tr>
+                    <td>${idx + 1}<br><button class="icon-btn danger" title="Xóa dòng" onclick="deleteMau01Row('${field}',${idx})"><i class="fa-solid fa-trash-can"></i></button></td>
+                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'requester',this.value)">${row.requester}</textarea></td>
+                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'address',this.value)">${row.address || ''}</textarea></td>
+                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'agency',this.value)">${row.agency}</textarea></td>
+                    <td class="text-left"><select class="cell-input text-left" onchange="updateMau01Field('${field}',${idx},'law',this.value)">
+                        ${APPLICABLE_LAW_OPTIONS.map(opt => `<option value="${opt}" ${row.law === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                    </select></td>
+                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'situation',this.value)">${row.situation}</textarea></td>
+                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'payment',this.value)">${row.payment}</textarea></td>
+                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'vuongMac',this.value)">${row.vuongMac}</textarea></td>
+                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'note',this.value)">${row.note}</textarea></td>
+                </tr>`;
+            } else {
+                html += `<tr>
+                    <td>${idx + 1}</td><td class="text-left">${row.requester}</td>
+                    <td class="text-left">${row.address || ''}</td><td class="text-left">${row.agency}</td><td class="text-left">${row.law}</td><td class="text-left">${row.situation}</td>
+                    <td class="text-left">${row.payment}</td><td class="text-left">${row.vuongMac}</td><td class="text-left">${row.note}</td>
+                </tr>`;
+            }
+        });
+        if (editable) {
+            html += `<tr><td colspan="${colCount}" style="text-align:left; background:#F8FAFC;"><button class="btn btn-secondary btn-sm" onclick="addMau01Row('${field}')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></td></tr>`;
+        }
+    });
+    html += `<tr class="total-row"><td>Tổng cộng</td><td colspan="${colCount - 1}" class="text-left">${total} vụ việc</td></tr>`;
+    html += '</tbody></table>';
+    document.getElementById('mau01TableWrap').innerHTML = html;
+}
+
+function addMau01Row(field) {
+    const ky = findKy(currentDetailId);
+    ky.mau01Rows[field].push({ code: `BT-${ky.year}-${String(Math.floor(Math.random()*900)+100)}`, requester: '', address: '', agency: '', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: '', payment: '', vuongMac: '', note: '' });
+    renderMau01(ky, false);
+    showToast('Đã thêm 01 dòng vụ việc.', 'success');
+}
+function updateMau01Field(field, idx, key, value) {
+    const ky = findKy(currentDetailId);
+    ky.mau01Rows[field][idx][key] = value;
+}
+function deleteMau01Row(field, idx) {
+    if (!confirm('Bạn có chắc chắn muốn xóa vụ việc này khỏi danh mục không?')) return;
+    const ky = findKy(currentDetailId);
+    ky.mau01Rows[field].splice(idx, 1);
+    renderMau01(ky, false);
+    showToast('Đã xóa vụ việc.', 'success');
+}
+
+// ===================== Render Mẫu 03 - đúng bố cục biểu mẫu gốc (lĩnh vực = dòng, chỉ tiêu = cột lồng nhóm) =====================
+function getFieldRow(ky, dataKey, indicators, field) {
+    const raw = (ky[dataKey][field] || []).slice();
+    indicators.forEach((ind, idx) => {
+        if (ind.formula) {
+            raw[idx] = ind.formula.reduce((acc, no) => {
+                const refIdx = indicators.findIndex(x => x.no === no);
+                return acc + (typeof raw[refIdx] === 'number' ? raw[refIdx] : 0);
+            }, 0);
+        }
+    });
+    return raw;
+}
+
+function getTotalsRow(ky, dataKey, indicators) {
+    const totals = new Array(indicators.length).fill(0);
+    FIELDS.forEach(f => {
+        const row = getFieldRow(ky, dataKey, indicators, f);
+        indicators.forEach((ind, idx) => {
+            if (typeof row[idx] === 'number' && !ind.isNote) totals[idx] += row[idx];
+        });
+    });
+    return totals;
+}
+
+function fmtIndicatorValue(ind, val) {
+    if (typeof val !== 'number') return val || '-';
+    return ind.isMoney ? fmtMoney(val) : val;
+}
+
+function renderMau03Matrix(ky, readOnly) {
+    const editable = ky.sources.mau03 === 'thu_cong' && !readOnly;
+    const indicators = BM03_INDICATORS.filter(i => i.no <= 25);
+    const totalsRow = getTotalsRow(ky, 'mau03Values', indicators);
+    const intakeColumnLevel3 = `
+        <th rowspan="3">Thụ lý tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+        <th colspan="3">Thụ lý tại Tòa án</th>`;
+    const handlingColumnLevel3 = `
+        <th rowspan="3">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+        <th colspan="3">Tại Tòa án</th>`;
+    const fourColumnLevel4 = `
+        <th colspan="2">Khởi kiện vụ án dân sự</th>
+        <th rowspan="2">Yêu cầu bồi thường trong quá trình tố tụng hình sự, tố tụng hành chính</th>`;
+    const fourColumnLevel5 = `
+        <th>Theo điểm a khoản 1 Điều 52</th>
+        <th>Theo điểm b khoản 1, khoản 2 Điều 52</th>`;
+
+    let html = `<table class="custom-table mau03-table">
+        <thead>
+            <tr>
+                <th rowspan="5" class="stt-col">STT</th>
+                <th colspan="9">Thụ lý vụ việc (vụ việc)</th>
+                <th colspan="13">Tình hình giải quyết vụ việc</th>
+                <th colspan="3">Chi trả tiền bồi thường</th>
+            </tr>
+            <tr>
+                <th rowspan="4">Tổng số vụ việc (vụ việc)</th>
+                <th colspan="4">Số vụ việc thụ lý mới</th>
+                <th colspan="4">Số vụ việc kỳ trước chuyển sang</th>
+                <th colspan="6">Đã có văn bản giải quyết bồi thường có hiệu lực pháp luật</th>
+                <th colspan="5">Đang giải quyết (vụ việc)</th>
+                <th colspan="2">Đình chỉ (vụ việc)</th>
+                <th rowspan="4">Số vụ việc đã chi trả (vụ việc)</th>
+                <th rowspan="4" class="money-col">Số tiền đã chi trả theo quyết định có hiệu lực của cơ quan trực tiếp quản lý người thi hành công vụ <span class="unit-text">(nghìn đồng)</span></th>
+                <th rowspan="4" class="money-col">Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án <span class="unit-text">(nghìn đồng)</span></th>
+            </tr>
+            <tr>
+                ${intakeColumnLevel3}
+                ${intakeColumnLevel3}
+                <th rowspan="3">Tổng số vụ việc <span class="unit-text">(vụ việc)</span></th>
+                ${handlingColumnLevel3}
+                <th rowspan="3" class="money-col">Số tiền bồi thường <span class="unit-text">(nghìn đồng)</span></th>
+                <th rowspan="3">Tổng số vụ việc</th>
+                ${handlingColumnLevel3}
+                <th rowspan="3">Tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th>
+                <th rowspan="3">Tại Tòa án theo thủ tục tố tụng</th>
+            </tr>
+            <tr>
+                ${fourColumnLevel4}
+                ${fourColumnLevel4}
+                ${fourColumnLevel4}
+                ${fourColumnLevel4}
+            </tr>
+            <tr>
+                ${fourColumnLevel5}
+                ${fourColumnLevel5}
+                ${fourColumnLevel5}
+                ${fourColumnLevel5}
+            </tr>
+            <tr class="column-number-row"><th>(1)</th>${indicators.map(ind => `<th>(${ind.no + 1})</th>`).join('')}</tr>
+        </thead>
+        <tbody>`;
+
+    FIELDS.forEach((field, fieldIndex) => {
+        const row = getFieldRow(ky, 'mau03Values', indicators, field);
+        html += `<tr class="field-row"><td>${['I','II','III','IV','V','VI'][fieldIndex]}</td><td colspan="${indicators.length}">${field.replace(/^[IVX]+\.\s*/, '').toUpperCase()}</td></tr>`;
+        html += `<tr><td></td>`;
+        indicators.forEach((ind, idx) => {
+            const val = row[idx];
+            if (editable && !ind.formula) {
+                html += `<td><input class="cell-input" type="number" min="0" value="${val || 0}" onchange="updateMau03Value('${field}',${idx},this.value)"></td>`;
+            } else {
+                html += `<td>${fmtIndicatorValue(ind, val)}</td>`;
+            }
+        });
+        html += '</tr>';
+    });
+
+    html += `<tr class="total-row"><td>Tổng cộng</td>`;
+    indicators.forEach((ind, idx) => { html += `<td>${fmtIndicatorValue(ind, totalsRow[idx])}</td>`; });
+    html += '</tr></tbody></table>';
+    document.getElementById('mau03TableWrap').innerHTML = html;
+    document.getElementById('mau03NoteBox').value = ky.mau03Note || '';
+    document.getElementById('mau03NoteBox').disabled = readOnly;
+}
+
+function updateMau03Value(field, idx, value) {
+    const ky = findKy(currentDetailId);
+    if (!ky.mau03Values[field]) ky.mau03Values[field] = [];
+    ky.mau03Values[field][idx] = Number(value) || 0;
+    renderMau03Matrix(ky, false);
+}
+function updateMau03Note(value) { findKy(currentDetailId).mau03Note = value; }
+
+// ===================== Render Mẫu 04 - đúng bố cục biểu mẫu gốc =====================
+function renderMau04Matrix(ky, readOnly) {
+    const editable = ky.sources.mau04 === 'thu_cong' && !readOnly;
+    const totalsRow = getTotalsRow(ky, 'mau04Values', BM04_INDICATORS);
+
+    let html = `<table class="custom-table mau04-table">
+        <thead>
+            <tr>
+                <th rowspan="3" class="stt-col">STT</th>
+                <th rowspan="3" class="money-col">Số tiền đã chi trả xong cho người yêu cầu bồi thường <span class="unit-text">(nghìn đồng)</span></th>
+                <th colspan="6">Xem xét trách nhiệm hoàn trả</th>
+                <th colspan="2">Giảm mức hoàn trả</th>
+                <th rowspan="3">Số vụ việc hoãn hoàn trả (vụ việc)</th>
+                <th colspan="3">Số tiền đã hoàn trả</th>
+                <th rowspan="3" class="money-col">Số tiền còn phải hoàn trả <span class="unit-text">(nghìn đồng)</span></th>
+            </tr>
+            <tr>
+                <th rowspan="2">Tổng số vụ việc xem xét</th>
+                <th colspan="2">Số vụ việc đã xem xét</th>
+                <th rowspan="2">Đang xem xét (vụ việc)</th>
+                <th colspan="2">Số vụ việc không xem xét (vụ việc)</th>
+                <th rowspan="2">Số vụ việc (vụ việc)</th>
+                <th rowspan="2" class="money-col">Số tiền <span class="unit-text">(nghìn đồng)</span></th>
+                <th rowspan="2" class="money-col">Tổng số <span class="unit-text">(nghìn đồng)</span></th>
+                <th rowspan="2" class="money-col">Số tiền đã hoàn trả trong kỳ báo cáo <span class="unit-text">(nghìn đồng)</span></th>
+                <th rowspan="2" class="money-col">Số tiền đã hoàn trả kỳ trước chuyển sang <span class="unit-text">(nghìn đồng)</span></th>
+            </tr>
+            <tr>
+                <th>Số vụ việc có Quyết định có hiệu lực pháp luật và đã thực hiện hoàn trả (vụ việc)</th>
+                <th class="money-col">Số tiền phải hoàn trả <span class="unit-text">(nghìn đồng)</span></th>
+                <th>Người thi hành công vụ không có lỗi</th>
+                <th>Người thi hành công vụ chết trước khi ra quyết định hoàn trả</th>
+            </tr>
+            <tr class="column-number-row"><th>(1)</th>${BM04_INDICATORS.map(ind => `<th>(${ind.no})</th>`).join('')}</tr>
+        </thead>
+        <tbody>`;
+
+    FIELDS.forEach((field, fieldIndex) => {
+        const roman = ['I','II','III','IV','V','VI'][fieldIndex];
+        const row = getFieldRow(ky, 'mau04Values', BM04_INDICATORS, field);
+        html += `<tr class="field-row"><td>${roman}</td><td colspan="14">${field.replace(/^[IVX]+\.\s*/, '').toUpperCase()}</td></tr>`;
+        html += '<tr><td></td>';
+        BM04_INDICATORS.forEach((ind, idx) => {
+            const val = row[idx];
+            if (editable && !ind.formula) {
+                html += `<td><input class="cell-input" type="number" min="0" value="${val || 0}" onchange="updateMau04Value('${field}',${idx},this.value)"></td>`;
+            } else {
+                html += `<td>${fmtIndicatorValue(ind, val)}</td>`;
+            }
+        });
+        html += '</tr>';
+    });
+
+    html += `<tr class="total-row"><td>Tổng cộng</td>`;
+    BM04_INDICATORS.forEach((ind, idx) => { html += `<td>${fmtIndicatorValue(ind, totalsRow[idx])}</td>`; });
+    html += '</tr></tbody></table>';
+    document.getElementById('mau04TableWrap').innerHTML = html;
+}
+
+function updateMau04Value(field, idx, value) {
+    const ky = findKy(currentDetailId);
+    if (!ky.mau04Values[field]) ky.mau04Values[field] = [];
+    ky.mau04Values[field][idx] = Number(value) || 0;
+    renderMau04Matrix(ky, false);
+}
+
+function checkFormulas(form) {
+    showToast('Đã kiểm tra: toàn bộ chỉ tiêu công thức khớp với chỉ tiêu gốc.', 'success');
+}
+
+// ===================== Render Mẫu 05 =====================
+function renderMau05(ky, readOnly) {
+    const editable = ky.sources.mau05 === 'thu_cong' && !readOnly;
+    let html = `<table class="custom-table"><thead><tr>`;
+    MAU05_COLUMNS.forEach(c => html += `<th style="min-width:130px;">${c}</th>`);
+    if (editable) html += '<th style="width:50px;"></th>';
+    html += '</tr></thead><tbody>';
+    let total = 0;
+    const keys = ['code','name','dateThuLy','requesterInfo','vanBanCanCu','cuNguoi','tamUng','xacMinh','thuongLuong','quyetDinh','capKinhPhi','chiTra','hoan','khoiKien','phucHoi'];
+    FIELDS.forEach(field => {
+        const rows = ky.mau05Rows[field] || [];
+        total += rows.length;
+        html += `<tr class="group-header"><td colspan="${editable ? 16 : 15}">${field} (${rows.length} vụ việc)</td></tr>`;
+        rows.forEach((row, idx) => {
+            html += '<tr>';
+            keys.forEach(k => {
+                if (editable) {
+                    html += `<td><input class="cell-input text-left" value="${row[k] || ''}" onchange="updateMau05Field('${field}',${idx},'${k}',this.value)"></td>`;
+                } else {
+                    html += `<td class="text-left">${row[k] || ''}</td>`;
+                }
+            });
+            if (editable) html += `<td><button class="icon-btn danger" title="Xóa" onclick="deleteMau05Row('${field}',${idx})"><i class="fa-solid fa-trash-can"></i></button></td>`;
+            html += '</tr>';
+        });
+        if (editable) {
+            html += `<tr><td colspan="16" style="text-align:left; background:#F8FAFC;"><button class="btn btn-secondary btn-sm" onclick="addMau05Row('${field}')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></td></tr>`;
+        }
+    });
+    html += `<tr class="total-row"><td colspan="${editable ? 16 : 15}" class="text-left">Tổng cộng: ${total} vụ việc</td></tr>`;
+    html += '</tbody></table>';
+    document.getElementById('mau05TableWrap').innerHTML = html;
+}
+
+function addMau05Row(field) {
+    const ky = findKy(currentDetailId);
+    ky.mau05Rows[field].push({ code: '', name: '', dateThuLy: '', requesterInfo: '', vanBanCanCu: '', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' });
+    renderMau05(ky, false);
+    showToast('Đã thêm 01 dòng vào sổ thụ lý.', 'success');
+}
+function updateMau05Field(field, idx, key, value) {
+    const ky = findKy(currentDetailId);
+    ky.mau05Rows[field][idx][key] = value;
+}
+function deleteMau05Row(field, idx) {
+    if (!confirm('Bạn có chắc chắn muốn xóa vụ việc này khỏi sổ thụ lý không?')) return;
+    const ky = findKy(currentDetailId);
+    ky.mau05Rows[field].splice(idx, 1);
+    renderMau05(ky, false);
+    showToast('Đã xóa vụ việc khỏi sổ.', 'success');
+}
+
+// ===================== Lịch sử xử lý =====================
+function renderHistory(ky) {
+    const list = document.getElementById('historyList');
+    if (!ky.history.length) {
+        list.innerHTML = '<li style="color:var(--text-muted);">Chưa có lịch sử xử lý.</li>';
+        return;
+    }
+    list.innerHTML = ky.history.slice().reverse().map(h => `<li><span class="time">${h.time}</span>${h.text}${h.reason ? `<br><span class="reason">${h.reason}</span>` : ''}</li>`).join('');
+}
+
+// ===================== Action bar theo vai trò/trạng thái =====================
+function renderDetailActionBar(ky, mode, readOnlyWhole) {
+    const bar = document.getElementById('detailActionBar');
+    let html = '';
+    if (ky.periodType === 'tam_tinh') {
+        if ((ky.childUnits || []).length) html += `<button class="btn btn-secondary" onclick="reAggregate()"><i class="fa-solid fa-rotate"></i> Tổng hợp số liệu tạm tính</button>`;
+        html += `<button class="btn btn-success" onclick="exportPeriod()"><i class="fa-solid fa-download"></i> Kết xuất</button>`;
+        html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-circle-info" style="margin-top:2px;"></i> Báo cáo tạm tính chỉ phục vụ xem nhanh/kết xuất, không đi luồng gửi, duyệt, chốt số liệu.</div>`;
+        bar.innerHTML = html;
+        return;
+    }
+    if (mode === 'own' && ky.level === 1) {
+        if (!readOnlyWhole) {
+            html += `<button class="btn btn-secondary" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>`;
+            html += `<button class="btn btn-secondary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>`;
+            html += `<button class="btn btn-primary" onclick="submitToParent()"><i class="fa-solid fa-paper-plane"></i> ${getLatestRevisionRequest(ky) ? 'Gửi lại báo cáo' : 'Gửi báo cáo'}</button>`;
+        } else if (ky.status === 'da_gui') {
+            html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-clock" style="margin-top:2px;"></i> Kỳ báo cáo đã gửi, đang chờ ${ky.parentUnit} duyệt.</div>`;
+        } else if (ky.status === 'da_duyet') {
+            html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-circle-check" style="margin-top:2px;"></i> Đã được ${ky.parentUnit} duyệt, đang chờ tổng hợp.</div>`;
+        } else {
+            html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-circle-info" style="margin-top:2px;"></i> Kỳ báo cáo đang ở trạng thái ${STATUS_META[ky.status].label.toLowerCase()}.</div>`;
+        }
+    } else if (mode === 'own' && ky.level > 1) {
+        const canWork = ['dang_nhap_lieu','da_tong_hop'].includes(ky.status);
+        if (canWork) {
+            html += `<button class="btn btn-secondary" onclick="reAggregate()"><i class="fa-solid fa-rotate"></i> Tổng hợp số liệu</button>`;
+            if (ky.level === 2) html += `<button class="btn btn-primary" onclick="submitToParent()"><i class="fa-solid fa-paper-plane"></i> Gửi báo cáo</button>`;
+            if (ky.level === 3) html += `<button class="btn btn-success" onclick="finishNational()"><i class="fa-solid fa-flag-checkered"></i> Hoàn thành (chốt toàn quốc)</button>`;
+            html += `<button class="btn btn-success" onclick="exportPeriod()"><i class="fa-solid fa-download"></i> Kết xuất</button>`;
+        } else if (ky.status === 'da_gui') {
+            html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-clock" style="margin-top:2px;"></i> Báo cáo đầu mối đã gửi, đang chờ ${ky.parentUnit} duyệt.</div>`;
+        } else if (ky.status === 'da_duyet') {
+            html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-circle-check" style="margin-top:2px;"></i> Báo cáo đầu mối đã được duyệt, đang chờ tổng hợp toàn quốc.</div>`;
+        } else if (ky.status === 'hoan_thanh') {
+            html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-lock" style="margin-top:2px;"></i> Kỳ báo cáo toàn quốc đã hoàn thành. Các điều chỉnh sau đó phải tạo phiên bản mới.</div>`;
+            html += `<button class="btn btn-success" onclick="exportPeriod()"><i class="fa-solid fa-download"></i> Kết xuất</button>`;
+        }
+    } else if (mode === 'approve') {
+        if (ky.status === 'da_gui') {
+            html += `<button class="btn btn-warning" onclick="openReviseModal()"><i class="fa-solid fa-rotate-left"></i> Yêu cầu chỉnh lý</button>`;
+            html += `<button class="btn btn-success" onclick="approveUnit()"><i class="fa-solid fa-check"></i> Duyệt</button>`;
+        } else {
+            html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-circle-info" style="margin-top:2px;"></i> Kỳ báo cáo đang ở trạng thái ${STATUS_META[ky.status].label.toLowerCase()}, không có hành động duyệt.</div>`;
+        }
+    }
+    bar.innerHTML = html;
+}
+
+function saveDraft() {
+    const ky = findKy(currentDetailId);
+    ky.status = 'dang_nhap_lieu';
+    ky.history.push({ time: nowLog(), text: `${currentActorName()} lưu nháp kỳ báo cáo.` });
+    showToast('Đã lưu nháp kỳ báo cáo.', 'success');
+    openDetail(ky.id);
+}
+
+function submitToParent() {
+    const ky = findKy(currentDetailId);
+    // [BR-BTNN-BC-002] kiểm tra dữ liệu bắt buộc trước khi gửi
+    const alertArea = document.getElementById('alertArea');
+    const totalCases = countCases(ky);
+    if (ky.level === 1 && totalCases === 0) {
+        alertArea.innerHTML = `<div class="alert-box alert-danger"><i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i> Chưa có dữ liệu vụ việc nào tại Mẫu 01/Mẫu 05. Vui lòng nhập liệu trước khi gửi báo cáo.</div>`;
+        showToast('Không thể gửi: thiếu dữ liệu bắt buộc.', 'error');
+        return;
+    }
+    if (ky.level > 1 && ky.status !== 'da_tong_hop') {
+        alertArea.innerHTML = `<div class="alert-box alert-danger"><i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i> Vui lòng thực hiện Tổng hợp số liệu trước khi gửi báo cáo lên cấp trên.</div>`;
+        showToast('Chưa tổng hợp số liệu.', 'error');
+        return;
+    }
+    if (!confirm(`Bạn có chắc chắn muốn gửi kỳ báo cáo này lên ${ky.parentUnit || 'cấp trên'} không? Sau khi gửi, dữ liệu sẽ chuyển sang chế độ chỉ đọc.`)) return;
+    ky.status = 'da_gui';
+    ky.submittedDate = '29/07/2026';
+    ky.submittedBy = currentActorName();
+    ky.sendVersion = (ky.sendVersion || 0) + 1;
+    ky.history.push({ time: nowLog(), text: `${ky.submittedBy} gửi kỳ báo cáo lần ${ky.sendVersion} lên ${ky.parentUnit || 'cấp trên'}.` });
+    showToast('Đã gửi kỳ báo cáo lên cấp trên.', 'success');
+    openDetail(ky.id);
+}
+
+function reAggregate() {
+    const ky = findKy(currentDetailId);
+    const sourceChildren = ky.level === 3
+        ? getAggregateChildrenForView(ky)
+        : (ky.childUnits || []).map(cid => findKy(cid)).filter(Boolean);
+    const aggregateChildren = ky.periodType === 'tam_tinh'
+        ? sourceChildren
+        : sourceChildren.filter(c => AGGREGATABLE_STATUSES.includes(c.status));
+    if (!aggregateChildren.length) {
+        showToast('Chưa có đơn vị cấp dưới nào có dữ liệu để tổng hợp.', 'warning');
+        return;
+    }
+    FIELDS.forEach(f => {
+        ky.mau01Rows[f] = aggregateChildren.flatMap(c => c.mau01Rows[f] || []);
+        ky.mau05Rows[f] = aggregateChildren.flatMap(c => c.mau05Rows[f] || []);
+        ky.mau03Values[f] = sumMatrixRows(aggregateChildren, 'mau03Values', f, BM03_INDICATORS.length);
+        ky.mau04Values[f] = sumMatrixRows(aggregateChildren, 'mau04Values', f, BM04_INDICATORS.length);
+    });
+    ky.status = ky.periodType === 'tam_tinh' ? 'dang_nhap_lieu' : 'da_tong_hop';
+    ky.history.push({ time: nowLog(), text: `${currentActorName()} tổng hợp ${ky.periodType === 'tam_tinh' ? 'số liệu tạm tính' : 'số liệu'} từ ${aggregateChildren.length} đơn vị/đầu mối.` });
+    showToast(`Đã tổng hợp lại số liệu từ ${aggregateChildren.length} đơn vị.`, 'success');
+    openDetail(ky.id, currentTab);
+}
+
+function sumMatrixRows(children, dataKey, field, length) {
+    const totals = new Array(length).fill(0);
+    children.forEach(child => {
+        const row = child[dataKey]?.[field] || [];
+        for (let i = 0; i < length; i++) {
+            if (typeof row[i] === 'number') totals[i] += row[i];
+        }
+    });
+    return totals;
+}
+
+function submitTitleCheck() {}
+
+function exportPeriod() {
+    const menu = ['Excel', 'Word', 'PDF'];
+    showToast('Đã kết xuất báo cáo (Excel/Word/PDF) theo số liệu hiện tại.', 'success');
+}
+
+function finishNational() {
+    const ky = findKy(currentDetailId);
+    if (ky.status !== 'da_tong_hop') {
+        showToast('Vui lòng tổng hợp số liệu toàn quốc trước khi chốt hoàn thành.', 'error');
+        return;
+    }
+    if (!confirm('Xác nhận chốt số liệu toàn quốc? Sau khi Hoàn thành, mọi điều chỉnh sau đó phải tạo phiên bản mới, không sửa trực tiếp vào bản đã chốt.')) return;
+    ky.status = 'hoan_thanh';
+    ky.history.push({ time: nowLog(), text: `${currentActorName()} chốt số liệu toàn quốc (Hoàn thành).` });
+    showToast('Đã chốt kỳ báo cáo toàn quốc.', 'success');
+    openDetail(ky.id);
+}
+
+function openReviseModal() {
+    document.getElementById('reviseReason').value = '';
+    document.getElementById('reviseReasonError').style.display = 'none';
+    document.getElementById('reviseOverlay').classList.add('visible');
+}
+function closeReviseModal() { document.getElementById('reviseOverlay').classList.remove('visible'); }
+function submitRevise() {
+    const reason = document.getElementById('reviseReason').value.trim();
+    if (!reason) { document.getElementById('reviseReasonError').style.display = 'block'; return; }
+    const ky = findKy(currentDetailId);
+    ky.status = 'dang_nhap_lieu';
+    ky.history.push({ time: nowLog(), text: `${currentActorName()} yêu cầu chỉnh lý báo cáo.`, reason: `Lý do: ${reason}` });
+    closeReviseModal();
+    showToast(`Đã yêu cầu ${ky.unit} chỉnh lý số liệu.`, 'warning');
+    openDetail(ky.id);
+}
+
+function approveUnit() {
+    const ky = findKy(currentDetailId);
+    if (!confirm(`Xác nhận duyệt số liệu của ${ky.unit}? Số liệu sẽ được tính vào bảng tổng hợp của bạn.`)) return;
+    ky.status = 'da_duyet';
+    ky.history.push({ time: nowLog(), text: `${currentActorName()} đã duyệt kỳ báo cáo.` });
+    showToast(`Đã duyệt kỳ báo cáo của ${ky.unit}.`, 'success');
+    openDetail(ky.id);
+}
+
+// ===================== Init =====================
+renderListView();
+</script>
+</body>
+</html>

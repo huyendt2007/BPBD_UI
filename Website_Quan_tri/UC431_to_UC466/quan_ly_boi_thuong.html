@@ -2715,14 +2715,10 @@
                                     <input type="text" class="form-control" id="detThulyOfficerUnit" disabled>
                                 </div>
                             </div>
-                            <div class="grid-3-cols">
+                            <div class="grid-2-cols">
                                 <div class="form-group">
                                     <span class="form-label">Đơn vị ban hành QĐ</span>
                                     <input type="text" class="form-control" id="detThulyDecisionIssuingUnit" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <span class="form-label">Sổ văn bản áp dụng</span>
-                                    <input type="text" class="form-control" id="detThulyDecisionDocumentBook" disabled>
                                 </div>
                                 <div class="form-group">
                                     <span class="form-label">Người ký/Chức vụ QĐ</span>
@@ -6907,7 +6903,6 @@
                     claim.assignedOfficerPosition = assignment.position;
                     claim.assignedOfficerUnit = assignment.unit;
                     claim.appointDecisionIssuingUnit = assignment.decisionIssuingUnit;
-                    claim.appointDecisionDocumentBook = assignment.decisionDocumentBook;
                     claim.appointDecisionSigner = assignment.decisionSigner;
                     claim.appointDecisionNo = assignment.decisionNo;
                     claim.appointDecisionDate = assignment.decisionDate;
@@ -10417,7 +10412,6 @@
             document.getElementById('detThulyOfficerPosition').value = claim.assignedOfficerPosition || "--";
             document.getElementById('detThulyOfficerUnit').value = claim.assignedOfficerUnit || "--";
             document.getElementById('detThulyDecisionIssuingUnit').value = claim.appointDecisionIssuingUnit || "--";
-            document.getElementById('detThulyDecisionDocumentBook').value = claim.appointDecisionDocumentBook || "--";
             document.getElementById('detThulyDecisionSigner').value = claim.appointDecisionSigner || "--";
             document.getElementById('detThulyDecisionNo').value = claim.appointDecisionNo || "--";
             document.getElementById('detThulyDecisionDate').value = claim.appointDecisionDate || "--";
@@ -14281,13 +14275,11 @@
                 }
             });
             document.getElementById('appointDecisionIssuingUnit').value = 'Sở Tư pháp Hà Nội';
-            document.getElementById('appointDecisionDocumentBook').value = 'Sổ QĐ GQBT - Sở Tư pháp Hà Nội - 2026';
             document.getElementById('appointDecisionSigner').value = 'Ngô Anh Tuấn - Giám đốc Sở Tư pháp Hà Nội';
             appointedDecisionFile = '';
             const fileInput = document.getElementById('appointDecisionFile');
             if (fileInput) fileInput.value = '';
-            const fileName = document.getElementById('appointDecisionFileName');
-            if (fileName) fileName.innerText = 'Chưa chọn tài liệu';
+            renderAppointDecisionFileState();
             const fileBox = document.getElementById('appointDecisionFileBox');
             if (fileBox) fileBox.style.borderColor = '#cbd5e1';
             const today = new Date().toLocaleDateString('vi-VN');
@@ -14306,10 +14298,36 @@
 
         function handleAppointDecisionFile(input) {
             appointedDecisionFile = input.files && input.files[0] ? input.files[0].name : '';
-            const fileName = document.getElementById('appointDecisionFileName');
-            if (fileName) fileName.innerText = appointedDecisionFile || 'Chưa chọn tài liệu';
+            renderAppointDecisionFileState();
             const fileBox = document.getElementById('appointDecisionFileBox');
             if (fileBox) fileBox.style.borderColor = appointedDecisionFile ? '#cbd5e1' : '#ef4444';
+        }
+
+        function renderAppointDecisionFileState() {
+            const fileName = document.getElementById('appointDecisionFileName');
+            const fileActions = document.getElementById('appointDecisionFileActions');
+            if (fileName) {
+                fileName.innerText = appointedDecisionFile || 'Chưa chọn tài liệu';
+                fileName.style.color = appointedDecisionFile ? '#1e3a8a' : '#64748b';
+                fileName.style.fontWeight = appointedDecisionFile ? '600' : '400';
+            }
+            if (fileActions) {
+                fileActions.style.display = appointedDecisionFile ? 'inline-flex' : 'none';
+            }
+        }
+
+        function viewAppointDecisionFile() {
+            if (!appointedDecisionFile) return;
+            showToast(`Đang mở file ${appointedDecisionFile}...`, 'success');
+        }
+
+        function removeAppointDecisionFile() {
+            appointedDecisionFile = '';
+            const fileInput = document.getElementById('appointDecisionFile');
+            if (fileInput) fileInput.value = '';
+            renderAppointDecisionFileState();
+            const fileBox = document.getElementById('appointDecisionFileBox');
+            if (fileBox) fileBox.style.borderColor = '#ef4444';
         }
 
         function markAppointmentInvalid(id, invalid) {
@@ -14326,7 +14344,6 @@
                     position: (document.getElementById('appointedOfficerPosition')?.value || '').trim(),
                     unit: (document.getElementById('appointedOfficerUnit')?.value || '').trim(),
                     decisionIssuingUnit: (document.getElementById('appointDecisionIssuingUnit')?.value || '').trim(),
-                    decisionDocumentBook: (document.getElementById('appointDecisionDocumentBook')?.value || '').trim(),
                     decisionSigner: (document.getElementById('appointDecisionSigner')?.value || '').trim(),
                     decisionNo: (document.getElementById('appointDecisionNo')?.value || '').trim(),
                     decisionDate: (document.getElementById('appointDecisionDate')?.value || '').trim(),
@@ -14337,7 +14354,6 @@
                     ['appointedOfficerPosition', assignment.position],
                     ['appointedOfficerUnit', assignment.unit],
                     ['appointDecisionIssuingUnit', assignment.decisionIssuingUnit],
-                    ['appointDecisionDocumentBook', assignment.decisionDocumentBook],
                     ['appointDecisionSigner', assignment.decisionSigner],
                     ['appointDecisionNo', assignment.decisionNo],
                     ['appointDecisionDate', assignment.decisionDate]
@@ -14663,7 +14679,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="grid-3-cols" style="gap:12px;">
+                <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
                     <div class="form-group">
                         <span class="form-label">Đơn vị ban hành QĐ<span class="required">*</span></span>
                         <select id="appointDecisionIssuingUnit" class="form-control">
@@ -14673,19 +14689,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <span class="form-label">Sổ văn bản áp dụng<span class="required">*</span></span>
-                        <select id="appointDecisionDocumentBook" class="form-control">
-                            <option value="Sổ QĐ GQBT - Sở Tư pháp Hà Nội - 2026">Sổ QĐ GQBT - Sở Tư pháp Hà Nội - 2026</option>
-                            <option value="Sổ QĐ BTNN - Cục Bồi thường nhà nước - 2026">Sổ QĐ BTNN - Cục Bồi thường nhà nước - 2026</option>
-                            <option value="Sổ QĐ GQBT - UBND Quận Cầu Giấy - 2026">Sổ QĐ GQBT - UBND Quận Cầu Giấy - 2026</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <span class="form-label">Người ký/Chức vụ QĐ<span class="required">*</span></span>
                         <input type="text" id="appointDecisionSigner" class="form-control" value="Ngô Anh Tuấn - Giám đốc Sở Tư pháp Hà Nội">
                     </div>
                 </div>
-                <div class="grid-3-cols" style="gap:12px;">
+                <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
                     <div class="form-group">
                         <span class="form-label">Số QĐ<span class="required">*</span></span>
                         <input type="text" id="appointDecisionNo" class="form-control" placeholder="Nhập số quyết định...">
@@ -14694,16 +14702,20 @@
                         <span class="form-label">Ngày QĐ<span class="required">*</span></span>
                         <input type="text" id="appointDecisionDate" class="form-control" placeholder="dd/mm/yyyy">
                     </div>
-                    <div class="form-group">
-                        <span class="form-label">Tài liệu đính kèm<span class="required">*</span></span>
-                        <div id="appointDecisionFileBox"
-                            style="height:38px; display:flex; align-items:center; gap:8px; border:1px solid #cbd5e1; border-radius:4px; padding:0 10px; background:#fff;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('appointDecisionFile').click()">
-                                <i class="fa-solid fa-paperclip"></i> Chọn file
-                            </button>
-                            <span id="appointDecisionFileName" style="font-size:12px; color:#64748b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Chưa chọn tài liệu</span>
-                            <input type="file" id="appointDecisionFile" style="display:none;" onchange="handleAppointDecisionFile(this)">
-                        </div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Tài liệu đính kèm<span class="required">*</span></span>
+                    <div id="appointDecisionFileBox"
+                        style="min-height:44px; display:flex; align-items:center; gap:10px; border:1px solid #cbd5e1; border-radius:4px; padding:8px 10px; background:#fff; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('appointDecisionFile').click()">
+                            <i class="fa-solid fa-paperclip"></i> Chọn file
+                        </button>
+                        <span id="appointDecisionFileName" style="font-size:12px; color:#64748b; min-width:180px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Chưa chọn tài liệu</span>
+                        <span id="appointDecisionFileActions" style="display:none; align-items:center; gap:10px; font-size:12px;">
+                            <a href="javascript:void(0)" onclick="viewAppointDecisionFile()" style="color:#1e40af; font-weight:600; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="removeAppointDecisionFile()" style="color:#dc2626; font-weight:600; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                        </span>
+                        <input type="file" id="appointDecisionFile" style="display:none;" onchange="handleAppointDecisionFile(this)">
                     </div>
                 </div>
             </div>

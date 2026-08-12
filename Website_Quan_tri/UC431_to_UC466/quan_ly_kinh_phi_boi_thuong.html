@@ -770,8 +770,8 @@
                     </select>
                 </div>
                 <div>
-                    <span class="form-label">Mã YCBT liên kết</span>
-                    <input type="text" class="form-control" id="searchYcbtCode" placeholder="Nhập mã hồ sơ...">
+                    <span class="form-label">Mã vụ việc liên kết</span>
+                    <input type="text" class="form-control" id="searchYcbtCode" placeholder="Nhập mã vụ việc...">
                 </div>
                 <div>
                     <span class="form-label">Trạng thái đề nghị</span>
@@ -839,7 +839,7 @@
                         <th style="width: 50px; text-align: center;">STT</th>
                         <th style="width: 120px; text-align: left;">Mã đề nghị</th>
                         <th style="min-width: 150px; text-align: left;">Loại đề nghị</th>
-                        <th style="width: 120px; text-align: left;">Mã YCBT</th>
+                        <th style="width: 120px; text-align: left;">Mã vụ việc</th>
                         <th style="min-width: 160px; text-align: left;">Tên người yêu cầu</th>
                         <th style="min-width: 150px; text-align: left;">Tư cách người yêu cầu</th>
                         <th style="width: 160px; text-align: left;">Số tiền đề nghị (VNĐ)</th>
@@ -896,18 +896,21 @@
                         </select>
                     </div>
                     <div class="form-group" id="formClaimSearchWrapper" style="margin-bottom: 0;">
-                        <span class="form-label">Nhập mã hoặc chọn Hồ sơ Yêu cầu bồi thường liên kết <span
+                        <span class="form-label">Nhập mã vụ việc yêu cầu bồi thường liên kết <span
                                 class="required">*</span></span>
-                        <div style="display: flex; gap: 8px;">
+                        <div style="display: flex; gap: 8px; align-items:center;">
                             <input type="text" class="form-control" id="formClaimSearchInput"
-                                placeholder="Nhập mã hồ sơ (Ví dụ: BT-2026-002)..." style="flex: 0.4;">
+                                placeholder="Nhập mã vụ việc (Ví dụ: BT-2026-002)..." style="flex: 1;">
                             <select class="form-control" id="formClaimSelector"
-                                onchange="handleClaimSelected(this.value)" style="flex: 0.6;">
-                                <option value="">-- Chọn hồ sơ bồi thường liên kết --</option>
+                                onchange="handleClaimSelected(this.value)" style="display:none;">
+                                <option value="">-- Chọn vụ việc bồi thường liên kết --</option>
                             </select>
                             <button type="button" class="btn btn-primary" onclick="searchClaimByCode()"
                                 style="height: 38px; padding: 0 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;"><i
-                                    class="fa-solid fa-magnifying-glass"></i> Tra cứu</button>
+                                    class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                            <button type="button" class="btn btn-secondary" onclick="openFundingClaimLookupModal('')"
+                                style="height: 38px; padding: 0 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;"><i
+                                    class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
                         </div>
                     </div>
                 </div>
@@ -915,10 +918,10 @@
 
             <!-- I. THÔNG TIN CHUNG HỒ SƠ YCBT -->
             <div>
-                <div class="info-block-title">I. Thông tin chung về hồ sơ liên kết</div>
+                <div class="info-block-title">I. Thông tin chung về vụ việc liên kết</div>
                 <div class="grid-4-cols">
                     <div class="form-group">
-                        <span class="form-label">Mã yêu cầu bồi thường</span>
+                        <span class="form-label">Mã vụ việc</span>
                         <input type="text" class="form-control" id="formClaimCode" disabled
                             style="background-color: #F8FAFC;">
                     </div>
@@ -933,7 +936,7 @@
                             style="background-color: #F8FAFC;">
                     </div>
                     <div class="form-group">
-                        <span class="form-label">Số tiền gốc theo hồ sơ (VNĐ)</span>
+                        <span class="form-label">Số tiền gốc theo vụ việc (VNĐ)</span>
                         <input type="text" class="form-control" id="formClaimAmount" disabled
                             style="font-weight: 700; color: var(--danger-color); text-align: right; background-color: #F8FAFC;">
                     </div>
@@ -1612,6 +1615,54 @@
     <div class="toast-notif success" id="toast">
         <i class="fa-solid fa-circle-check"></i>
         <span id="toastMessage">Thông báo thành công!</span>
+    </div>
+
+    <div id="fundingClaimLookupOverlay" class="confirm-modal-overlay">
+        <div class="confirm-modal-container" style="width: 980px; max-width: 96vw; max-height: 86vh; display:flex; flex-direction:column;">
+            <div class="confirm-modal-header" style="justify-content:space-between;">
+                <span><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm vụ việc yêu cầu bồi thường liên kết</span>
+                <span onclick="closeFundingClaimLookupModal()" style="cursor:pointer; font-size:20px;">&times;</span>
+            </div>
+            <div class="confirm-modal-body" style="overflow:auto;">
+                <div class="grid-3-cols" style="margin-bottom:16px;">
+                    <div class="form-group">
+                        <span class="form-label">Mã vụ việc</span>
+                        <input class="form-control" id="fundingClaimSearchCode" placeholder="Nhập mã vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Tên vụ việc</span>
+                        <input class="form-control" id="fundingClaimSearchName" placeholder="Nhập tên vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Người yêu cầu</span>
+                        <input class="form-control" id="fundingClaimSearchRequester" placeholder="Nhập họ tên...">
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="clearFundingClaimLookupFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="renderFundingClaimLookupResults()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                </div>
+                <div style="max-height:360px; overflow:auto; border:1px solid var(--border-color); border-radius:var(--border-radius-sm);">
+                    <table class="custom-table" style="min-width:900px;">
+                        <thead>
+                            <tr>
+                                <th style="width:120px; text-align:center;">Mã vụ việc</th>
+                                <th style="width:230px;">Tên vụ việc</th>
+                                <th style="width:160px;">Người yêu cầu</th>
+                                <th style="width:180px;">Cơ quan giải quyết</th>
+                                <th style="width:130px; text-align:right;">Số tiền</th>
+                                <th style="width:130px; text-align:center;">Trạng thái</th>
+                                <th style="width:100px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fundingClaimLookupResults"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="confirm-modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeFundingClaimLookupModal()">Hủy bỏ</button>
+            </div>
+        </div>
     </div>
 
     <!-- SCRIPTS -->

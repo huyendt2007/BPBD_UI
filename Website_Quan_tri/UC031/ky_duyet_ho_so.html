@@ -800,15 +800,10 @@
         <!-- MH01: MÀN HÌNH DANH SÁCH -->
         <!-- ========================================== -->
         <div id="view-list" class="view-section active">
-            <div class="nav-tabs" id="leader-stage-tabs" style="display: flex;">
-                <div class="nav-tab active" onclick="switchListTab('choduyet', this)">Hồ sơ chờ duyệt <span class="tab-badge info" id="badge-choduyet">0</span></div>
-                <div class="nav-tab" onclick="switchListTab('duyet-choky', this)">Hồ sơ chờ ký <span class="tab-badge info" id="badge-duyet-choky">0</span></div>
-                <div class="nav-tab" onclick="switchListTab('bitralai', this)" style="display:none">Hồ sơ Bị trả lại <span class="tab-badge danger" id="badge-bitralai">0</span></div>
-            </div>
-            <div class="nav-tabs" id="leader-work-type-tabs" style="display:flex; margin-top: 10px;">
+            <div class="nav-tabs" id="leader-work-type-tabs" style="display:flex;">
                 <div class="nav-tab active" data-work-type="registration" onclick="switchLeaderWorkType('registration', this)">Phiếu đăng ký</div>
                 <div class="nav-tab" data-work-type="cctt" onclick="switchLeaderWorkType('cctt', this)">Yêu cầu cung cấp thông tin <span class="tab-badge info" id="badge-cctt-leader">0</span></div>
-                <div class="nav-tab" data-work-type="copy" onclick="switchLeaderWorkType('copy', this)">Yêu cầu cung cấp bản sao</div>
+                <div class="nav-tab" data-work-type="copy" onclick="switchLeaderWorkType('copy', this)">Yêu cầu cung cấp bản sao <span class="tab-badge info" id="badge-copy-leader">0</span></div>
             </div>
 
             <!-- Bộ lọc tìm kiếm -->
