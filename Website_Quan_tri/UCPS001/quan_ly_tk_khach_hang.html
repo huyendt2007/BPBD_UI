@@ -4083,7 +4083,7 @@
 
          let uc009Customers = [
              { id: 1, code: 'KH-2026-0001', name: 'Nguyễn Văn Nam', email: 'nam.nguyen@example.com', phone: '0901234567', center: 'Hà Nội', customerType: 'Cá nhân', accountType: 'Tài khoản chính', identitySource: 'VNeID', authMethods: ['VNeID', 'Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-12T09:15:00', status: 'Đang hoạt động', techId: 'TECH-8D12-0001', docNo: '001086012345', dob: '12/05/1988', gender: 'Nam', province: 'Hà Nội', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm', groups: ['Nhóm Đăng ký'], group: 'Nhóm Đăng ký', roles: ['Đăng ký viên'], attachments: [{ name: 'Giấy tờ định danh', fileName: 'cccd_nguyen_van_nam.pdf' }] },
-             { id: 2, code: 'KH-2026-0002', name: 'Công ty ABC', email: 'contact@abc.vn', phone: '02438889999', center: 'Hà Nội', customerType: 'Tổ chức', accountType: 'Tài khoản chính', identitySource: 'VNeID', authMethods: ['VNeID', 'Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-11T16:20:00', status: 'Đang hoạt động', techId: 'TECH-ORG-0002', taxCode: '0101187788', representative: 'Trần Văn C', province: 'Hà Nội', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy', groups: ['Nhóm Đăng ký', 'Nhóm Tra cứu'], group: 'Nhóm Đăng ký, Nhóm Tra cứu', roles: ['Administrators', 'Giám đốc Trung tâm đăng ký'], attachments: [{ name: 'Giấy đăng ký doanh nghiệp', fileName: 'gdkdn_cong_ty_abc.pdf' }, { name: 'Văn bản ủy quyền', fileName: 'uy_quyen_abc.pdf' }] },
+             { id: 2, code: 'KH-2026-0002', name: 'Công ty ABC', email: 'contact@abc.vn', phone: '02438889999', center: 'Hà Nội', customerType: 'Tổ chức', accountType: 'Tài khoản chính', identitySource: 'VNeID', authMethods: ['VNeID', 'Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-11T16:20:00', status: 'Đang hoạt động', techId: 'TECH-ORG-0002', taxCode: '0101187788', representative: 'Trần Văn C', province: 'Hà Nội', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy', groups: ['Nhóm Đăng ký', 'Nhóm Tra cứu'], group: 'Nhóm Đăng ký, Nhóm Tra cứu', roles: ['Administrators', 'Giám đốc Trung tâm đăng ký'], attachments: [{ name: 'Giấy đăng ký doanh nghiệp', fileName: 'gdkdn_cong_ty_abc.pdf' }, { name: 'Văn bản ủy quyền', fileName: 'uy_quyen_abc.pdf' }], linkedActors: [{ name: 'Trần Văn C', docNo: '001086078888', techId: 'TECH-CN-78A2-8888', role: 'Người đại diện theo pháp luật', source: 'VNeID', status: 'Đang hoạt động', lastAuth: '2026-08-12T09:30:00' }, { name: 'Nguyễn Thị Lan', docNo: '001090099999', techId: 'TECH-CN-90B1-9999', role: 'Người được ủy quyền', source: 'VNeID', status: 'Đang hoạt động', lastAuth: '2026-08-11T14:10:00' }] },
              { id: 3, parentId: 2, code: '', name: 'Lê Thị Hạnh', email: 'hanh.le@abc.vn', username: 'hanh.le@abc.vn', phone: '0912233445', center: 'Hà Nội', customerType: 'Tổ chức', accountType: 'Tài khoản phụ', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', province: 'Hà Nội', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy', unit: 'Phòng Hành chính', createdAt: '2026-08-11T17:05:00', status: 'Đang hoạt động', docType: 'Căn cước công dân', docNo: '001091234567', groups: ['Nhóm Tra cứu'], group: 'Nhóm Tra cứu', roles: ['Nhân viên hành chính tổng hợp'] },
              { id: 4, code: 'KH-2026-0003', name: 'Global Finance Pte. Ltd.', email: 'legal@global-finance.sg', phone: '+6566889900', center: 'TP Hồ Chí Minh', customerType: 'Tổ chức', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Nước ngoài', nationality: 'Singapore', createdAt: '2026-08-10T10:00:00', status: 'Bị khóa', taxCode: 'SG-2026-8899', representative: 'David Tan', province: 'Singapore', addressDetail: '120 Nguyễn Huệ, Quận 1', groups: ['Nhóm Đăng ký'], group: 'Nhóm Đăng ký', roles: ['Phó Giám đốc Trung tâm đăng ký'] },
              { id: 5, code: 'KH-2026-0004', name: 'Hoàng Thị Mai', email: 'mai.hoang@example.com', phone: '0987654321', center: 'Đà Nẵng', customerType: 'Cá nhân', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-09T08:30:00', status: 'Đóng', docNo: '048188812345', dob: '20/03/1990', gender: 'Nữ', province: 'Đà Nẵng', addressDetail: 'Số 88 Lê Lợi, Hải Châu', groups: ['Nhóm Tra cứu'], group: 'Nhóm Tra cứu', roles: ['Theo dõi kiểm tra'] },
@@ -4188,6 +4188,46 @@
                  + authMethodChip('Nội bộ (Email/Mật khẩu)', methods.includes('Nội bộ'))
                  + '</div>'
                  + '</div>';
+         }
+         function uc009MaskTechId(value) {
+             if (!value) return '-';
+             const text = String(value);
+             return text.length > 8 ? text.slice(0, 8) + '...' + text.slice(-4) : text;
+         }
+         function linkedActorsTable(item) {
+             const actors = Array.isArray(item?.linkedActors) ? item.linkedActors : [];
+             return `
+                 <div id="uc009DetailActorsTab" class="uc009-detail-tab-pane">
+                     <table class="custom-table">
+                         <thead>
+                             <tr>
+                                 <th>STT</th>
+                                 <th>Họ tên</th>
+                                 <th>Số giấy tờ</th>
+                                 <th>TechID</th>
+                                 <th>Vai trò đại diện/ủy quyền</th>
+                                 <th>Nguồn xác thực</th>
+                                 <th>Trạng thái liên kết</th>
+                                 <th>Lần xác thực gần nhất</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             ${actors.length ? actors.map((actor, idx) => `
+                                 <tr>
+                                     <td>${idx + 1}</td>
+                                     <td>${actor.name || '-'}</td>
+                                     <td>${actor.docNo || '-'}</td>
+                                     <td>${uc009MaskTechId(actor.techId)}</td>
+                                     <td>${actor.role || '-'}</td>
+                                     <td>${sourceBadge(actor.source || 'VNeID')}</td>
+                                     <td>${statusBadge(actor.status || 'Đang hoạt động')}</td>
+                                     <td>${actor.lastAuth ? formatDateTime(actor.lastAuth) : '-'}</td>
+                                 </tr>
+                             `).join('') : '<tr><td colspan="8" style="text-align:center;color:#64748B;font-style:italic;">Chưa có chủ thể xác thực liên kết qua VNeID.</td></tr>'}
+                         </tbody>
+                     </table>
+                 </div>
+             `;
          }
          function nextAuthMethods(source, existingItem) {
              if (source === 'VNeID') {
@@ -5103,9 +5143,11 @@
                  <div class="uc009-detail-tabs">
                      <button class="active" id="uc009DetailInfoTabBtn" onclick="uc009SwitchDetailTab('info')">Thông tin chung</button>
                      <button id="uc009DetailSubTabBtn" onclick="uc009SwitchDetailTab('sub')">Tài khoản phụ trực thuộc</button>
+                     <button id="uc009DetailActorsTabBtn" onclick="uc009SwitchDetailTab('actors')">Chủ thể xác thực liên kết</button>
                  </div>
                  <div id="uc009DetailInfoTab" class="uc009-detail-tab-pane active">${commonHtml}</div>
                  ${childTabHtml}
+                 ${linkedActorsTable(item)}
              ` : commonHtml;
              document.getElementById('uc009DetailModal').classList.add('active');
          };
@@ -5117,8 +5159,10 @@
          window.uc009SwitchDetailTab = function (tab) {
              document.getElementById('uc009DetailInfoTab')?.classList.toggle('active', tab === 'info');
              document.getElementById('uc009DetailSubTab')?.classList.toggle('active', tab === 'sub');
+             document.getElementById('uc009DetailActorsTab')?.classList.toggle('active', tab === 'actors');
              document.getElementById('uc009DetailInfoTabBtn')?.classList.toggle('active', tab === 'info');
              document.getElementById('uc009DetailSubTabBtn')?.classList.toggle('active', tab === 'sub');
+             document.getElementById('uc009DetailActorsTabBtn')?.classList.toggle('active', tab === 'actors');
          };
          window.uc009OpenSubAccountForm = function (parentId, childId) {
              const parent = uc009Customers.find(x => x.id === parentId);

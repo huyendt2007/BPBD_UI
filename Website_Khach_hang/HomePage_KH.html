@@ -3398,7 +3398,9 @@
                                             <option value="auth-failed">Không thành công - VNeID/DVCQG từ chối xác thực</option>
                                             <option value="ial-low">Không thành công - Tài khoản VNeID chưa đạt IAL2</option>
                                             <option value="locked">Không thành công - Tài khoản khách hàng bị khóa/đóng</option>
-                                            <option value="not-org-rep">Không thành công - Chưa có tài khoản phụ/không phải đại diện</option>
+                                            <option value="missing-represented-org">Không thành công - Thiếu thông tin tổ chức đại diện</option>
+                                            <option value="actor-link-conflict">Không thành công - Chủ thể xác thực không khớp tổ chức</option>
+                                            <option value="not-org-rep">Không thành công - Không xác định được tài khoản nghiệp vụ</option>
                                             <option value="authority-not-configured">Không thành công - Cơ quan có thẩm quyền chưa được khai báo</option>
                                         </select>
                                     </div>
@@ -4328,6 +4330,29 @@
                                 style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Số
                                 giấy tờ:</span>
                             <span id="lblRepDocNum" style="font-weight: 700; font-size: 14px;">-</span>
+                        </div>
+                    </div>
+
+                    <div id="orgLinkedActorsSection">
+                        <h3
+                            style="font-size: 15px; font-weight: 700; color: var(--primary-color); margin: 24px 0 15px; border-left: 4px solid var(--primary-color); padding-left: 8px;">
+                            Chủ thể xác thực đại diện qua VNeID</h3>
+                        <div
+                            style="border:1px solid var(--border-color); border-radius:var(--border-radius-md); background:#FFFFFF; overflow:hidden;">
+                            <table class="custom-table" style="margin:0;">
+                                <thead>
+                                    <tr>
+                                        <th style="width:52px;">STT</th>
+                                        <th>Họ tên</th>
+                                        <th>Số giấy tờ</th>
+                                        <th>TechID</th>
+                                        <th>Vai trò đại diện/ủy quyền</th>
+                                        <th>Trạng thái liên kết</th>
+                                        <th>Lần xác thực gần nhất</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orgLinkedActorsBody"></tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -6617,7 +6642,11 @@
                     usageNeeds: ['Tài khoản đăng ký', 'Tài khoản tra cứu'],
                     repName: 'Trần Văn Quyết',
                     repDocType: 'CCCD',
-                    repDocNum: '001092005678'
+                    repDocNum: '001092005678',
+                    representativeActors: [
+                        { name: 'Trần Văn Quyết', docNo: '001092005678', techId: 'TECH-CN-5A92-5678', role: 'Người đại diện theo pháp luật', status: 'Đang hoạt động', lastAuth: '12/08/2026 09:30' },
+                        { name: 'Nguyễn Thị Minh Anh', docNo: '001094009999', techId: 'TECH-CN-9C44-9999', role: 'Người được ủy quyền', status: 'Đang hoạt động', lastAuth: '11/08/2026 15:42' }
+                    ]
                 }
             },
             'org-vneid': {
@@ -6639,7 +6668,10 @@
                     usageNeeds: ['Tài khoản đăng ký'],
                     repName: 'Nguyễn Văn Nam',
                     repDocType: 'CCCD',
-                    repDocNum: '001092001234'
+                    repDocNum: '001092001234',
+                    representativeActors: [
+                        { name: 'Nguyễn Văn Nam', docNo: '001092001234', techId: 'TECH-CN-7B21-1234', role: 'Người đại diện theo pháp luật', status: 'Đang hoạt động', lastAuth: '10/08/2026 10:05' }
+                    ]
                 }
             },
             'org-internal': {
@@ -6661,7 +6693,8 @@
                     usageNeeds: ['Tài khoản tra cứu'],
                     repName: 'David Tan',
                     repDocType: 'Hộ chiếu',
-                    repDocNum: 'SG889900'
+                    repDocNum: 'SG889900',
+                    representativeActors: []
                 }
             },
             'personal-both': {
@@ -7908,8 +7941,14 @@
                     case 'locked':
                         showToast('Tài khoản khách hàng đang ở trạng thái Bị khóa/Đóng nên không được phép đăng nhập.', 'error');
                         break;
+                    case 'missing-represented-org':
+                        showToast('Không xác định được thông tin tổ chức được đại diện từ VNeID/DVCQG.', 'error');
+                        break;
+                    case 'actor-link-conflict':
+                        showToast('Thông tin chủ thể xác thực không phù hợp với tài khoản tổ chức cần liên kết.', 'error');
+                        break;
                     case 'not-org-rep':
-                        showToast('Tài khoản chưa tồn tại hoặc người dùng chưa được khai báo là tài khoản phụ trực thuộc tổ chức.', 'error');
+                        showToast('Không xác định được tài khoản nghiệp vụ phù hợp với ngữ cảnh VNeID/DVCQG trả về.', 'error');
                         break;
                     case 'authority-not-configured':
                         showToast('Tài khoản Cơ quan có thẩm quyền chưa được khai báo trong hệ thống. Vui lòng liên hệ quản trị.', 'error');
@@ -12397,6 +12436,7 @@
             document.getElementById('orgAccountInfo')?.classList.toggle('hidden', isPersonal);
             document.getElementById('orgRepresentativeTitle')?.classList.toggle('hidden', isPersonal);
             document.getElementById('orgRepresentativeInfo')?.classList.toggle('hidden', isPersonal);
+            document.getElementById('orgLinkedActorsSection')?.classList.toggle('hidden', isPersonal);
 
             if (isPersonal) {
                 document.getElementById('lblPersonalAccountType').innerText = orgDetails.accountType || 'Cá nhân';
@@ -12437,6 +12477,7 @@
             document.getElementById('lblRepName').innerText = orgDetails.repName || '-';
             document.getElementById('lblRepDocType').innerText = orgDetails.repDocType || '-';
             document.getElementById('lblRepDocNum').innerText = orgDetails.repDocNum || '-';
+            renderOrgLinkedActors();
 
             // Editable organization form fields
             document.getElementById('editCustomerCode').value = orgDetails.customerCode || 'KH-TC-000101';
@@ -12464,6 +12505,38 @@
 
             toggleEditProvinceField();
             renderAccountLoginMethods();
+        }
+
+        function maskTechId(value) {
+            if (!value) return '-';
+            const text = String(value);
+            if (text.length <= 8) return text;
+            return text.slice(0, 8) + '...' + text.slice(-4);
+        }
+
+        function renderOrgLinkedActors() {
+            const section = document.getElementById('orgLinkedActorsSection');
+            const tbody = document.getElementById('orgLinkedActorsBody');
+            if (!section || !tbody) return;
+            const actors = Array.isArray(orgDetails.representativeActors) ? orgDetails.representativeActors : [];
+            section.classList.toggle('hidden', orgDetails.entityType === 'personal');
+            tbody.innerHTML = actors.length ? actors.map((actor, index) => `
+                <tr>
+                    <td style="text-align:center;">${index + 1}</td>
+                    <td><strong>${actor.name || '-'}</strong></td>
+                    <td>${actor.docNo || '-'}</td>
+                    <td>${maskTechId(actor.techId)}</td>
+                    <td>${actor.role || '-'}</td>
+                    <td><span class="status-badge status-approved">${actor.status || 'Đang hoạt động'}</span></td>
+                    <td>${actor.lastAuth || '-'}</td>
+                </tr>
+            `).join('') : `
+                <tr>
+                    <td colspan="7" style="text-align:center; color:var(--text-muted); font-style:italic; padding:16px;">
+                        Chưa có chủ thể xác thực đại diện qua VNeID được liên kết.
+                    </td>
+                </tr>
+            `;
         }
 
         function getOrgIdentityLabel(orgType) {
