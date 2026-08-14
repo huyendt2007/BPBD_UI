@@ -907,6 +907,7 @@
                  <div class="tabs" id="detailModalTabs" style="display:none">
                      <button class="tab-btn active" id="detailTabBtnInfo" onclick="switchDetailModalTab('info',this)">Thông tin chung</button>
                      <button class="tab-btn" id="detailTabBtnSub" onclick="switchDetailModalTab('sub',this)">Tài khoản phụ trực thuộc</button>
+                     <button class="tab-btn" id="detailTabBtnActors" onclick="switchDetailModalTab('actors',this)">Chủ thể xác thực liên kết</button>
                  </div>
  
                  <!-- Tab 1: Thông tin chung -->
@@ -1028,6 +1029,30 @@
                               <!-- Rendered by JS -->
                           </tbody>
                       </table>
+                 </div>
+
+                 <!-- Tab 3: Chủ thể xác thực liên kết -->
+                 <div id="detail-mtab-actors" class="tab-content">
+                     <div style="background:#F8FAFC;padding:10px;border:1px solid var(--border-color);border-radius:6px;margin-bottom:15px;font-size:12px">
+                         <i class="fas fa-info-circle"></i> Danh sách cá nhân đã xác thực qua VNeID trong ngữ cảnh đại diện/ủy quyền của tổ chức. Đây không phải là tài khoản phụ trực thuộc.
+                     </div>
+                     <table class="custom-table" id="detailActorsTable">
+                         <thead>
+                             <tr>
+                                 <th>STT</th>
+                                 <th>Họ tên</th>
+                                 <th>Số giấy tờ</th>
+                                 <th>TechID</th>
+                                 <th>Vai trò đại diện/ủy quyền</th>
+                                 <th>Nguồn xác thực</th>
+                                 <th>Trạng thái liên kết</th>
+                                 <th>Lần xác thực gần nhất</th>
+                             </tr>
+                         </thead>
+                         <tbody id="detailActorsTableBody">
+                             <!-- Rendered by JS -->
+                         </tbody>
+                     </table>
                  </div>
              </div>
              <div class="modal-footer">
@@ -1686,12 +1711,16 @@
           // Mock data for Organizations
           let orgAccounts = [
               { id: 101, name: "Ngân hàng TMCP Ngoại thương VN (Hội sở)", code: "0100112437", email: "contact@vietcombank.com", phone: "1900545413", center: "Hà Nội", identitySource: "VNeID", authMethods: ["VNeID", "Nội bộ"], status: "Đang hoạt động", repName: "Lê Đình Long", repDocType: "Căn cước công dân", repCode: "030089123456", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "198 Trần Quang Khải, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM5", "PERM6", "PERM7", "PERM8"], createdDate: "15/06/2026", accountType: "Thường xuyên",
+                linkedActors: [
+                    { name: "Lê Đình Long", docNo: "030089123456", techId: "TECH-CN-30A1-3456", role: "Người đại diện theo pháp luật", source: "VNeID", status: "Đang hoạt động", lastAuth: "12/08/2026 09:30" },
+                    { name: "Trần Thị Bích", docNo: "001088998877", techId: "TECH-CN-88B2-8877", role: "Người được ủy quyền", source: "VNeID", status: "Đang hoạt động", lastAuth: "11/08/2026 15:20" }
+                ],
                 subs: [
                     { name: "Trần Thị Bích", code: "001088998877", email: "bich.tt@vietcombank.com", phone: "0912345678", unit: "Vietcombank Hội sở", status: "Đang hoạt động", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên khai báo" },
                     { name: "Nguyễn Hoàng Nam", code: "001095112233", email: "nam.nh@vietcombank.com", phone: "0977554433", unit: "Vietcombank Hội sở", status: "Đang hoạt động", perms: ["PERM1", "PERM2", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên tra cứu" }
                 ]
               },
-              { id: 102, name: "Vietcombank - Chi nhánh Ba Đình", code: "0100112437-001", email: "badinh@vietcombank.com", phone: "0243123456", center: "Hà Nội", identitySource: "VNeID", status: "Đang hoạt động", repName: "Nguyễn Văn Hải", repDocType: "Căn cước công dân", repCode: "001090001234", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "521 Kim Mã, Ba Đình", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "14/06/2026", accountType: "Thường xuyên", subs: [] },
+              { id: 102, name: "Vietcombank - Chi nhánh Ba Đình", code: "0100112437-001", email: "badinh@vietcombank.com", phone: "0243123456", center: "Hà Nội", identitySource: "VNeID", status: "Đang hoạt động", repName: "Nguyễn Văn Hải", repDocType: "Căn cước công dân", repCode: "001090001234", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "521 Kim Mã, Ba Đình", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "14/06/2026", accountType: "Thường xuyên", linkedActors: [{ name: "Nguyễn Văn Hải", docNo: "001090001234", techId: "TECH-CN-90C1-1234", role: "Người đại diện theo pháp luật", source: "VNeID", status: "Đang hoạt động", lastAuth: "10/08/2026 10:05" }], subs: [] },
               { id: 103, name: "Vietcombank - Chi nhánh Sài Gòn", code: "0100112437-002", email: "saigon@vietcombank.com", phone: "0283123456", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Đang hoạt động", repName: "Trần Minh Hòa", repDocType: "Căn cước công dân", repCode: "079085002233", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "29 Bến Chương Dương, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "13/06/2026", accountType: "Thường xuyên", subs: [] },
               { id: 104, name: "Ngân hàng TMCP Đầu tư và Phát triển VN", code: "0100150619", email: "info@bidv.com.vn", phone: "19009247", center: "Hà Nội", identitySource: "VNeID", status: "Đang hoạt động", repName: "Phan Đức Tú", repDocType: "Căn cước công dân", repCode: "001065000555", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "35 Hàng Vôi, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM6", "PERM8"], createdDate: "12/06/2026", accountType: "Thường xuyên",
                 subs: [
@@ -1791,6 +1820,42 @@
               if (item.customerCode) return item.customerCode;
               const prefix = type === 'PERSON' ? 'KH-CN' : 'KH-TC';
               return `${prefix}-${String(item.id).padStart(6, '0')}`;
+          }
+
+          function maskLinkedActorTechId(value) {
+              if (!value) return '-';
+              const text = String(value);
+              return text.length > 8 ? text.slice(0, 8) + '...' + text.slice(-4) : text;
+          }
+
+          function actorSourceBadge(source) {
+              return source === 'VNeID'
+                  ? '<span class="badge" style="background:#DBEAFE;color:#1E40AF;">VNeID</span>'
+                  : '<span class="badge bg-secondary">Nội bộ</span>';
+          }
+
+          function actorStatusBadge(status) {
+              if (status === 'Bị khóa') return '<span class="badge bg-danger">Bị khóa</span>';
+              if (status === 'Đóng') return '<span class="badge bg-secondary">Đóng</span>';
+              return '<span class="badge bg-success">Đang hoạt động</span>';
+          }
+
+          function renderLinkedActorsForDetail(item) {
+              const tbody = document.getElementById('detailActorsTableBody');
+              if (!tbody) return;
+              const actors = Array.isArray(item?.linkedActors) ? item.linkedActors : [];
+              tbody.innerHTML = actors.length ? actors.map((actor, index) => `
+                  <tr>
+                      <td style="text-align:center;">${index + 1}</td>
+                      <td style="font-weight:600;color:var(--primary-color);">${actor.name || '-'}</td>
+                      <td>${actor.docNo || '-'}</td>
+                      <td>${maskLinkedActorTechId(actor.techId)}</td>
+                      <td>${actor.role || '-'}</td>
+                      <td>${actorSourceBadge(actor.source || 'VNeID')}</td>
+                      <td>${actorStatusBadge(actor.status || 'Đang hoạt động')}</td>
+                      <td>${actor.lastAuth || '-'}</td>
+                  </tr>
+              `).join('') : '<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:20px;">Chưa có chủ thể xác thực liên kết qua VNeID.</td></tr>';
           }
 
           function renderPagination(tab, totalItems, fromItem, toItem, curPage, totalPages) {
@@ -2163,6 +2228,7 @@
                  
                  document.getElementById('detailOrgRepGroup').style.display = 'none';
                  document.getElementById('detail-mtab-sub').classList.remove('active');
+                 document.getElementById('detail-mtab-actors').classList.remove('active');
                  document.getElementById('detail-mtab-info').classList.add('active');
              } else {
                  document.getElementById('detailModalTitle').innerText = "Chi tiết - " + item.name;
@@ -2178,6 +2244,8 @@
                  document.getElementById('detailTabBtnInfo').classList.add('active');
                  document.getElementById('detail-mtab-info').classList.add('active');
                  document.getElementById('detail-mtab-sub').classList.remove('active');
+                 document.getElementById('detail-mtab-actors').classList.remove('active');
+                 renderLinkedActorsForDetail(item);
  
                  // Render detail sub-accounts
                  const subTableBody = document.getElementById('detailSubTableBody');
@@ -2261,6 +2329,7 @@
              btn.classList.add('active');
              document.getElementById('detail-mtab-info').classList.remove('active');
              document.getElementById('detail-mtab-sub').classList.remove('active');
+             document.getElementById('detail-mtab-actors').classList.remove('active');
              document.getElementById('detail-mtab-' + id).classList.add('active');
          }
  
