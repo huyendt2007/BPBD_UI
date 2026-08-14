@@ -813,10 +813,9 @@
                      <label class="form-label">Trạng thái</label>
                      <select id="filterStatus" class="form-select">
                          <option value="">-- Tất cả --</option>
-                         <option value="Hoạt động">Đang hoạt động</option>
+                         <option value="Đang hoạt động">Đang hoạt động</option>
                          <option value="Bị khóa">Bị khóa</option>
-                         <option value="Tạm thời">Tạm thời (Chỉ áp dụng Một lần)</option>
-                         <option value="Hết hạn">Hết hạn (Chỉ áp dụng Một lần)</option>
+                         <option value="Đóng">Đóng</option>
                      </select>
                  </div>
              </div>
@@ -1551,8 +1550,7 @@
              </div>
              <div class="modal-footer">
                  <button class="btn btn-secondary" onclick="closeModal('addAccountModal')">Hủy</button>
-                 <button class="btn btn-outline-primary" onclick="saveNewAccount('Lưu nháp')" style="color: var(--secondary-color); border-color: var(--secondary-color); margin-right: 8px;"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
-                 <button class="btn btn-primary" onclick="saveNewAccount('Hoạt động')"><i class="fas fa-check"></i> Lưu & Cấp tài khoản</button>
+                 <button class="btn btn-primary" onclick="saveNewAccount('Đang hoạt động')"><i class="fas fa-check"></i> Lưu & Cấp tài khoản</button>
              </div>
          </div>
      </div>
@@ -1667,44 +1665,44 @@
      <script>
                              // Mock data for Persons
           let personAccounts = [
-              { id: 1, name: "Nguyễn Văn An", code: "001090123456", email: "nvan@gmail.com", phone: "0987654321", center: "Hà Nội", identitySource: "VNeID", authMethods: ["VNeID", "Nội bộ"], status: "Hoạt động", gender: "Nam", dob: "12/05/1988", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 15 Láng Hạ, Đống Đa", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "15/06/2026", accountType: "Thường xuyên" },
-              { id: 2, name: "John Doe", code: "P12345678", email: "john@example.com", phone: "0901112222", center: "Hà Nội", identitySource: "Nội bộ", status: "Hoạt động", gender: "Nam", dob: "01/01/1990", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "New York", addressDetail: "23 Cát Linh, Đống Đa, Hà Nội", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "14/06/2026", accountType: "Thường xuyên" },
-              { id: 3, name: "Lê Thị Bích", code: "030192000111", email: "bich.le@gmail.com", phone: "0912345678", center: "Đà Nẵng", identitySource: "VNeID", status: "Hoạt động", gender: "Nữ", dob: "14/03/1992", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "Số 88 Lê Lợi, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM6"], createdDate: "13/06/2026", accountType: "Thường xuyên" },
-              { id: 4, name: "Phạm Văn Đồng", code: "040088000222", email: "dong.pv@yahoo.com", phone: "0933445566", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "25/08/1985", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "141 Pasteur, Quận 3", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM5", "PERM6", "PERM7"], createdDate: "12/06/2026", accountType: "Thường xuyên" },
+              { id: 1, name: "Nguyễn Văn An", code: "001090123456", email: "nvan@gmail.com", phone: "0987654321", center: "Hà Nội", identitySource: "VNeID", authMethods: ["VNeID", "Nội bộ"], status: "Đang hoạt động", gender: "Nam", dob: "12/05/1988", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 15 Láng Hạ, Đống Đa", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "15/06/2026", accountType: "Thường xuyên" },
+              { id: 2, name: "John Doe", code: "P12345678", email: "john@example.com", phone: "0901112222", center: "Hà Nội", identitySource: "Nội bộ", status: "Đang hoạt động", gender: "Nam", dob: "01/01/1990", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "New York", addressDetail: "23 Cát Linh, Đống Đa, Hà Nội", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "14/06/2026", accountType: "Thường xuyên" },
+              { id: 3, name: "Lê Thị Bích", code: "030192000111", email: "bich.le@gmail.com", phone: "0912345678", center: "Đà Nẵng", identitySource: "VNeID", status: "Đang hoạt động", gender: "Nữ", dob: "14/03/1992", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "Số 88 Lê Lợi, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM6"], createdDate: "13/06/2026", accountType: "Thường xuyên" },
+              { id: 4, name: "Phạm Văn Đồng", code: "040088000222", email: "dong.pv@yahoo.com", phone: "0933445566", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Đang hoạt động", gender: "Nam", dob: "25/08/1985", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "141 Pasteur, Quận 3", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM5", "PERM6", "PERM7"], createdDate: "12/06/2026", accountType: "Thường xuyên" },
               { id: 5, name: "Hoàng Minh Quân", code: "001099000333", email: "quan.hm@gmail.com", phone: "0944556677", center: "Hà Nội", identitySource: "VNeID", status: "Bị khóa", gender: "Nam", dob: "05/10/1989", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 10 Nguyễn Cảnh Chân, Ba Đình", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "10/06/2026", accountType: "Thường xuyên" },
-              { id: 6, name: "Michael Smith", code: "P98765432", email: "michael.s@gmail.com", phone: "0966778899", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Hoạt động", gender: "Nam", dob: "18/06/1976", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "London", addressDetail: "8 Võ Văn Kiệt, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM7"], createdDate: "09/06/2026", accountType: "Thường xuyên" },
-              { id: 7, name: "Vũ Đức Đam", code: "001085000444", email: "dam.vd@chinhphu.vn", phone: "0977889900", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "15/12/1970", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "1 Hoàng Hoa Thám, Ba Đình", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM5", "PERM6", "PERM7"], createdDate: "08/06/2026", accountType: "Thường xuyên" },
-              { id: 8, name: "Đinh Thu Hà", code: "001095000555", email: "ha.dt@outlook.com", phone: "0988990011", center: "Đà Nẵng", identitySource: "VNeID", status: "Hoạt động", gender: "Nữ", dob: "20/11/1995", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "234 Trần Phú, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "05/06/2026", accountType: "Thường xuyên" },
-              { id: 9, name: "Sarah Connor", code: "P33344455", email: "sarah.c@cyberdyne.com", phone: "0999001122", center: "Hà Nội", identitySource: "Nội bộ", status: "Hoạt động", gender: "Nữ", dob: "04/04/1982", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "California", addressDetail: "Khu công nghệ cao Láng Hòa Lạc, Thạch Thất", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "04/06/2026", accountType: "Thường xuyên" },
-              { id: 10, name: "Ngô Kiến Huy", code: "079088000666", email: "huy.nk@showbiz.vn", phone: "0900112233", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "29/06/1990", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "65 Lê Lợi, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "01/06/2026", accountType: "Thường xuyên" },
+              { id: 6, name: "Michael Smith", code: "P98765432", email: "michael.s@gmail.com", phone: "0966778899", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Đang hoạt động", gender: "Nam", dob: "18/06/1976", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "London", addressDetail: "8 Võ Văn Kiệt, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM7"], createdDate: "09/06/2026", accountType: "Thường xuyên" },
+              { id: 7, name: "Vũ Đức Đam", code: "001085000444", email: "dam.vd@chinhphu.vn", phone: "0977889900", center: "Hà Nội", identitySource: "VNeID", status: "Đang hoạt động", gender: "Nam", dob: "15/12/1970", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "1 Hoàng Hoa Thám, Ba Đình", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM5", "PERM6", "PERM7"], createdDate: "08/06/2026", accountType: "Thường xuyên" },
+              { id: 8, name: "Đinh Thu Hà", code: "001095000555", email: "ha.dt@outlook.com", phone: "0988990011", center: "Đà Nẵng", identitySource: "VNeID", status: "Đang hoạt động", gender: "Nữ", dob: "20/11/1995", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "234 Trần Phú, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "05/06/2026", accountType: "Thường xuyên" },
+              { id: 9, name: "Sarah Connor", code: "P33344455", email: "sarah.c@cyberdyne.com", phone: "0999001122", center: "Hà Nội", identitySource: "Nội bộ", status: "Đang hoạt động", gender: "Nữ", dob: "04/04/1982", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "California", addressDetail: "Khu công nghệ cao Láng Hòa Lạc, Thạch Thất", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "04/06/2026", accountType: "Thường xuyên" },
+              { id: 10, name: "Ngô Kiến Huy", code: "079088000666", email: "huy.nk@showbiz.vn", phone: "0900112233", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Đang hoạt động", gender: "Nam", dob: "29/06/1990", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "65 Lê Lợi, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "01/06/2026", accountType: "Thường xuyên" },
               
               // Mock Một lần accounts (Cá nhân)
-              { id: 11, name: "Phùng Gia Bảo", code: "001099123456", email: "bao.pg@gmail.com", phone: "0981112222", center: "Hà Nội", identitySource: "VNeID", status: "Tạm thời", gender: "Nam", dob: "18/09/1993", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "32 Hùng Vương, Ba Đình", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "20/06/2026", accountType: "Một lần" },
-              { id: 12, name: "Trần Thu Trang", code: "001095654321", email: "trang.tt@yahoo.com", phone: "0972223333", center: "Đà Nẵng", identitySource: "VNeID", status: "Hết hạn", gender: "Nữ", dob: "05/05/1995", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "45 Lê Lợi, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "10/05/2026", accountType: "Một lần" },
-              { id: 13, name: "David Kim", code: "P55566677", email: "david.kim@gmail.com", phone: "0963334444", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Tạm thời", gender: "Nam", dob: "12/12/1982", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "Seoul", addressDetail: "120 Nguyễn Huệ, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "22/06/2026", accountType: "Một lần" },
-              { id: 14, name: "Nguyễn Thị Mai", code: "001092777888", email: "mai.nt@outlook.com", phone: "0954445555", center: "Hà Nội", identitySource: "VNeID", status: "Hết hạn", gender: "Nữ", dob: "22/02/1992", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "88 Cầu Giấy", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "01/04/2026", accountType: "Một lần" }
+              { id: 11, name: "Phùng Gia Bảo", code: "001099123456", email: "bao.pg@gmail.com", phone: "0981112222", center: "Hà Nội", identitySource: "VNeID", status: "Đang hoạt động", gender: "Nam", dob: "18/09/1993", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "32 Hùng Vương, Ba Đình", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "20/06/2026", accountType: "Một lần" },
+              { id: 12, name: "Trần Thu Trang", code: "001095654321", email: "trang.tt@yahoo.com", phone: "0972223333", center: "Đà Nẵng", identitySource: "VNeID", status: "Đóng", gender: "Nữ", dob: "05/05/1995", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "45 Lê Lợi, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "10/05/2026", accountType: "Một lần" },
+              { id: 13, name: "David Kim", code: "P55566677", email: "david.kim@gmail.com", phone: "0963334444", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Đang hoạt động", gender: "Nam", dob: "12/12/1982", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "Seoul", addressDetail: "120 Nguyễn Huệ, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "22/06/2026", accountType: "Một lần" },
+              { id: 14, name: "Nguyễn Thị Mai", code: "001092777888", email: "mai.nt@outlook.com", phone: "0954445555", center: "Hà Nội", identitySource: "VNeID", status: "Đóng", gender: "Nữ", dob: "22/02/1992", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "88 Cầu Giấy", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "01/04/2026", accountType: "Một lần" }
           ];
 
           // Mock data for Organizations
           let orgAccounts = [
-              { id: 101, name: "Ngân hàng TMCP Ngoại thương VN (Hội sở)", code: "0100112437", email: "contact@vietcombank.com", phone: "1900545413", center: "Hà Nội", identitySource: "VNeID", authMethods: ["VNeID", "Nội bộ"], status: "Hoạt động", repName: "Lê Đình Long", repDocType: "Căn cước công dân", repCode: "030089123456", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "198 Trần Quang Khải, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM5", "PERM6", "PERM7", "PERM8"], createdDate: "15/06/2026", accountType: "Thường xuyên",
+              { id: 101, name: "Ngân hàng TMCP Ngoại thương VN (Hội sở)", code: "0100112437", email: "contact@vietcombank.com", phone: "1900545413", center: "Hà Nội", identitySource: "VNeID", authMethods: ["VNeID", "Nội bộ"], status: "Đang hoạt động", repName: "Lê Đình Long", repDocType: "Căn cước công dân", repCode: "030089123456", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "198 Trần Quang Khải, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM5", "PERM6", "PERM7", "PERM8"], createdDate: "15/06/2026", accountType: "Thường xuyên",
                 subs: [
-                    { name: "Trần Thị Bích", code: "001088998877", email: "bich.tt@vietcombank.com", phone: "0912345678", unit: "Vietcombank Hội sở", status: "Đã đồng bộ", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên khai báo" },
-                    { name: "Nguyễn Hoàng Nam", code: "001095112233", email: "nam.nh@vietcombank.com", phone: "0977554433", unit: "Vietcombank Hội sở", status: "Đã đồng bộ", perms: ["PERM1", "PERM2", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên tra cứu" }
+                    { name: "Trần Thị Bích", code: "001088998877", email: "bich.tt@vietcombank.com", phone: "0912345678", unit: "Vietcombank Hội sở", status: "Đang hoạt động", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên khai báo" },
+                    { name: "Nguyễn Hoàng Nam", code: "001095112233", email: "nam.nh@vietcombank.com", phone: "0977554433", unit: "Vietcombank Hội sở", status: "Đang hoạt động", perms: ["PERM1", "PERM2", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên tra cứu" }
                 ]
               },
-              { id: 102, name: "Vietcombank - Chi nhánh Ba Đình", code: "0100112437-001", email: "badinh@vietcombank.com", phone: "0243123456", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", repName: "Nguyễn Văn Hải", repDocType: "Căn cước công dân", repCode: "001090001234", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "521 Kim Mã, Ba Đình", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "14/06/2026", accountType: "Thường xuyên", subs: [] },
-              { id: 103, name: "Vietcombank - Chi nhánh Sài Gòn", code: "0100112437-002", email: "saigon@vietcombank.com", phone: "0283123456", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", repName: "Trần Minh Hòa", repDocType: "Căn cước công dân", repCode: "079085002233", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "29 Bến Chương Dương, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "13/06/2026", accountType: "Thường xuyên", subs: [] },
-              { id: 104, name: "Ngân hàng TMCP Đầu tư và Phát triển VN", code: "0100150619", email: "info@bidv.com.vn", phone: "19009247", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", repName: "Phan Đức Tú", repDocType: "Căn cước công dân", repCode: "001065000555", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "35 Hàng Vôi, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM6", "PERM8"], createdDate: "12/06/2026", accountType: "Thường xuyên",
+              { id: 102, name: "Vietcombank - Chi nhánh Ba Đình", code: "0100112437-001", email: "badinh@vietcombank.com", phone: "0243123456", center: "Hà Nội", identitySource: "VNeID", status: "Đang hoạt động", repName: "Nguyễn Văn Hải", repDocType: "Căn cước công dân", repCode: "001090001234", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "521 Kim Mã, Ba Đình", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "14/06/2026", accountType: "Thường xuyên", subs: [] },
+              { id: 103, name: "Vietcombank - Chi nhánh Sài Gòn", code: "0100112437-002", email: "saigon@vietcombank.com", phone: "0283123456", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Đang hoạt động", repName: "Trần Minh Hòa", repDocType: "Căn cước công dân", repCode: "079085002233", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "29 Bến Chương Dương, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "13/06/2026", accountType: "Thường xuyên", subs: [] },
+              { id: 104, name: "Ngân hàng TMCP Đầu tư và Phát triển VN", code: "0100150619", email: "info@bidv.com.vn", phone: "19009247", center: "Hà Nội", identitySource: "VNeID", status: "Đang hoạt động", repName: "Phan Đức Tú", repDocType: "Căn cước công dân", repCode: "001065000555", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "35 Hàng Vôi, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM6", "PERM8"], createdDate: "12/06/2026", accountType: "Thường xuyên",
                 subs: [
-                    { name: "BIDV - Chi nhánh Hải Châu", code: "0100150619-005", email: "haichau@bidv.com.vn", phone: "02363822111", unit: "BIDV Hải Châu", status: "Đã đồng bộ", perms: ["PERM1", "PERM2", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên khai báo" }
+                    { name: "BIDV - Chi nhánh Hải Châu", code: "0100150619-005", email: "haichau@bidv.com.vn", phone: "02363822111", unit: "BIDV Hải Châu", status: "Đang hoạt động", perms: ["PERM1", "PERM2", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên khai báo" }
                 ] },
-              { id: 105, name: "BIDV - Chi nhánh Hải Châu", code: "0100150619-005", email: "haichau@bidv.com.vn", phone: "02363822111", center: "Đà Nẵng", identitySource: "VNeID", status: "Hoạt động", repName: "Nguyễn Văn Bình", repDocType: "Căn cước công dân", repCode: "048080000333", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "244 Nguyễn Văn Linh, Hải Châu", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "10/06/2026", accountType: "Thường xuyên", subs: [] },
-              { id: 106, name: "Công ty Cổ phần Vingroup", code: "0101245486", email: "info@vingroup.net", phone: "02439749999", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", repName: "Phạm Nhật Vượng", repDocType: "Căn cước công dân", repCode: "001068001122", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 7 Đường Bằng Lăng 1, Vinhomes Riverside, Long Biên", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM7", "PERM8"], createdDate: "15/06/2026", accountType: "Thường xuyên", subs: [] },
+              { id: 105, name: "BIDV - Chi nhánh Hải Châu", code: "0100150619-005", email: "haichau@bidv.com.vn", phone: "02363822111", center: "Đà Nẵng", identitySource: "VNeID", status: "Đang hoạt động", repName: "Nguyễn Văn Bình", repDocType: "Căn cước công dân", repCode: "048080000333", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "244 Nguyễn Văn Linh, Hải Châu", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "10/06/2026", accountType: "Thường xuyên", subs: [] },
+              { id: 106, name: "Công ty Cổ phần Vingroup", code: "0101245486", email: "info@vingroup.net", phone: "02439749999", center: "Hà Nội", identitySource: "VNeID", status: "Đang hoạt động", repName: "Phạm Nhật Vượng", repDocType: "Căn cước công dân", repCode: "001068001122", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 7 Đường Bằng Lăng 1, Vinhomes Riverside, Long Biên", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM7", "PERM8"], createdDate: "15/06/2026", accountType: "Thường xuyên", subs: [] },
               
               // Mock Một lần accounts (Tổ chức)
-              { id: 107, name: "Công ty TNHH Thương mại Một lần Thành Công", code: "0109998887", email: "contact@onetime.vn", phone: "0243888888", center: "Hà Nội", identitySource: "Nội bộ", status: "Tạm thời", repName: "Phạm Thành Công", repDocType: "Căn cước công dân", repCode: "001090888999", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "15 Cầu Giấy, Quan Hoa", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM6"], createdDate: "21/06/2026", accountType: "Một lần", subs: [] },
-              { id: 108, name: "VPĐD Onetime Global tại TP.HCM", code: "0109998887-001", email: "hcm@onetime.vn", phone: "0283999999", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Hết hạn", repName: "Nguyễn Văn Hùng", repDocType: "Căn cước công dân", repCode: "079080111222", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "77 Nguyễn Huệ, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM6"], createdDate: "10/05/2026", accountType: "Một lần", subs: [] }
+              { id: 107, name: "Công ty TNHH Thương mại Một lần Thành Công", code: "0109998887", email: "contact@onetime.vn", phone: "0243888888", center: "Hà Nội", identitySource: "Nội bộ", status: "Đang hoạt động", repName: "Phạm Thành Công", repDocType: "Căn cước công dân", repCode: "001090888999", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "15 Cầu Giấy, Quan Hoa", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM6"], createdDate: "21/06/2026", accountType: "Một lần", subs: [] },
+              { id: 108, name: "VPĐD Onetime Global tại TP.HCM", code: "0109998887-001", email: "hcm@onetime.vn", phone: "0283999999", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Đóng", repName: "Nguyễn Văn Hùng", repDocType: "Căn cước công dân", repCode: "079080111222", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "77 Nguyễn Huệ, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM6"], createdDate: "10/05/2026", accountType: "Một lần", subs: [] }
           ];
 
           let currentEditingId = null;
@@ -1956,10 +1954,7 @@
                       const stt = startIdx + index + 1;
                       let statusClass = 'bg-success';
                       if (item.status === 'Bị khóa') statusClass = 'bg-danger';
-                      if (item.status === 'Chờ kích hoạt') statusClass = 'bg-warning';
-                      if (item.status === 'Tạm thời') statusClass = 'bg-warning';
-                      if (item.status === 'Hết hạn') statusClass = 'bg-danger';
-                      if (item.status === 'Lưu nháp') statusClass = 'bg-secondary';
+                      if (item.status === 'Đóng') statusClass = 'bg-secondary';
                       const statusBadge = `<span class="badge ${statusClass}">${item.status}</span>`;
                       const sourceBadgeHtml = sourceBadges(item);
                       
@@ -1967,7 +1962,7 @@
                       const editBtn = `<button type="button" class="icon-btn edit" title="Sửa" onclick="event.preventDefault(); event.stopPropagation(); openEditModal('PERSON', ${item.id})"><i class="fas fa-edit"></i></button>`;
                       const lockIcon = item.status === 'Bị khóa' ? 'fa-unlock' : 'fa-lock';
                       const lockTitle = item.status === 'Bị khóa' ? 'Mở khóa' : 'Khóa';
-                      const lockBtn = `<button type="button" class="icon-btn lock" title="${lockTitle}" onclick="event.preventDefault(); event.stopPropagation(); toggleLock('PERSON', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
+                      const lockBtn = `<button type="button" class="icon-btn lock" ${item.status === 'Đóng' ? 'disabled' : ''} title="${item.status === 'Đóng' ? 'Tài khoản đã đóng' : lockTitle}" onclick="event.preventDefault(); event.stopPropagation(); toggleLock('PERSON', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
                       
                       // Key button is rendered as a placeholder for VNeID
                       const resetPwdBtn = (item.authMethods || [item.identitySource]).includes('Nội bộ')
@@ -2058,10 +2053,7 @@
                       const stt = startIdx + index + 1;
                       let statusClass = 'bg-success';
                       if (item.status === 'Bị khóa') statusClass = 'bg-danger';
-                      if (item.status === 'Chờ kích hoạt') statusClass = 'bg-warning';
-                      if (item.status === 'Tạm thời') statusClass = 'bg-warning';
-                      if (item.status === 'Hết hạn') statusClass = 'bg-danger';
-                      if (item.status === 'Lưu nháp') statusClass = 'bg-secondary';
+                      if (item.status === 'Đóng') statusClass = 'bg-secondary';
                       const statusBadge = `<span class="badge ${statusClass}">${item.status}</span>`;
                       const sourceBadgeHtml = sourceBadges(item);
                       
@@ -2075,7 +2067,7 @@
                       const editBtn = `<button type="button" class="icon-btn edit" title="Sửa" onclick="event.preventDefault(); event.stopPropagation(); openEditModal('ORG', ${item.id})"><i class="fas fa-edit"></i></button>`;
                       const lockIcon = item.status === 'Bị khóa' ? 'fa-unlock' : 'fa-lock';
                       const lockTitle = item.status === 'Bị khóa' ? 'Mở khóa' : 'Khóa';
-                      const lockBtn = `<button type="button" class="icon-btn lock" title="${lockTitle}" onclick="event.preventDefault(); event.stopPropagation(); toggleLock('ORG', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
+                      const lockBtn = `<button type="button" class="icon-btn lock" ${item.status === 'Đóng' ? 'disabled' : ''} title="${item.status === 'Đóng' ? 'Tài khoản đã đóng' : lockTitle}" onclick="event.preventDefault(); event.stopPropagation(); toggleLock('ORG', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
                       
                       // Key button is rendered as a placeholder for VNeID
                       const resetPwdBtn = (item.authMethods || [item.identitySource]).includes('Nội bộ')
@@ -2482,6 +2474,10 @@
              const list = type === 'PERSON' ? personAccounts : orgAccounts;
              const item = list.find(x => x.id === id);
              if (!item) return;
+             if (item.status === 'Đóng') {
+                 showToast('Tài khoản đã đóng, không cho phép khóa/mở khóa.', 'error');
+                 return;
+             }
              
              currentLockId = id;
              currentLockType = type;
@@ -2500,7 +2496,7 @@
              const item = list.find(x => x.id === currentLockId);
              if (item) {
                  const isLocked = item.status === 'Bị khóa';
-                 item.status = isLocked ? 'Hoạt động' : 'Bị khóa';
+                 item.status = isLocked ? 'Đang hoạt động' : 'Bị khóa';
                  showToast(`Đã ${isLocked ? 'mở khóa' : 'khóa'} tài khoản thành công!`);
                  renderTables();
              }
@@ -2774,13 +2770,13 @@
              if (existingIdx !== -1) {
                  org.subs[existingIdx] = {
                      name, code, email, phone, unit, role, perms,
-                     status: subType === 'vneid' ? 'Đã đồng bộ' : 'Hoạt động'
+                     status: 'Đang hoạt động'
                  };
                  showToast('Cập nhật tài khoản trực thuộc thành công!');
              } else {
                  org.subs.push({
                      name, code, email, phone, unit, role, perms,
-                     status: subType === 'vneid' ? 'Đã đồng bộ' : 'Hoạt động'
+                     status: 'Đang hoạt động'
                  });
                  showToast('Thêm mới tài khoản trực thuộc thành công!');
              }
@@ -3032,7 +3028,7 @@
              }
          }
          
-         function saveNewAccount(statusArg = 'Hoạt động') {
+         function saveNewAccount(statusArg = 'Đang hoạt động') {
              const type = document.getElementById('addAccType').value;
              if (type === 'PERSON') {
                  const code = document.getElementById('addPersonCode').value.trim();
@@ -3086,7 +3082,7 @@
                      createdDate: '24/06/2026'
                  });
  
-                 showToast(statusArg === 'Lưu nháp' ? 'Lưu nháp tài khoản Cá nhân thành công!' : 'Thêm mới tài khoản Cá nhân thành công!');
+                 showToast('Thêm mới tài khoản Cá nhân thành công!');
              } else {
                  const code = document.getElementById('addOrgCode').value.trim();
                  const name = document.getElementById('addOrgName').value.trim();
@@ -3144,7 +3140,7 @@
                      createdDate: '24/06/2026'
                  });
  
-                 showToast(statusArg === 'Lưu nháp' ? 'Lưu nháp tài khoản Tổ chức thành công!' : 'Thêm mới tài khoản Tổ chức thành công!');
+                 showToast('Thêm mới tài khoản Tổ chức thành công!');
              }
  
              closeModal('addAccountModal');
