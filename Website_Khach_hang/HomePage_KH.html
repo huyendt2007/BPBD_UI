@@ -3392,9 +3392,9 @@
                                         style="border:1px solid var(--border-color); background:#F8FAFC; border-radius:var(--border-radius-md); padding:12px; display:flex; flex-direction:column; gap:8px;">
                                         <label class="form-label" style="margin:0;">Kịch bản mô phỏng VNeID</label>
                                         <select class="form-select" id="vneidScenario" style="font-size:12px;">
-                                            <option value="success-linked">Thành công - TechID đã liên kết tài khoản</option>
-                                            <option value="register-personal">Thành công - TechID chưa liên kết, khách hàng cá nhân</option>
-                                            <option value="register-org">Thành công - TechID chưa liên kết, đại diện tổ chức</option>
+                                            <option value="success-linked">Thành công - Định danh VNeID đã liên kết tài khoản</option>
+                                            <option value="register-personal">Thành công - Chưa có tài khoản, khách hàng cá nhân</option>
+                                            <option value="register-org">Thành công - Chưa có tài khoản, đại diện tổ chức</option>
                                             <option value="auth-failed">Không thành công - VNeID/DVCQG từ chối xác thực</option>
                                             <option value="ial-low">Không thành công - Tài khoản VNeID chưa đạt IAL2</option>
                                             <option value="locked">Không thành công - Tài khoản khách hàng bị khóa/đóng</option>
@@ -3574,8 +3574,8 @@
                         <div>
                             <h2 class="section-title" style="border-bottom:none; margin-bottom:6px;">Xác nhận và Đăng ký
                                 thông tin tài khoản qua VNeID</h2>
-                            <div style="font-size:12px; color:var(--text-muted);">TechID đã được xác thực qua
-                                DVCQG/VNeID. Người dùng hoàn tất thông tin trên cùng một form để sử dụng hệ thống.</div>
+                            <div style="font-size:12px; color:var(--text-muted);">Thông tin định danh đã được xác thực
+                                qua DVCQG/VNeID. Người dùng hoàn tất thông tin trên cùng một form để sử dụng hệ thống.</div>
                         </div>
                         <span id="vneidSubjectBadge"
                             style="white-space:nowrap; background:#FEE2E2; color:#991B1B; border:1px solid #FECACA; border-radius:999px; padding:6px 12px; font-size:12px; font-weight:700;">Khách
@@ -3584,8 +3584,8 @@
 
                     <div class="alert-box info" style="margin-bottom: 15px;">
                         <i class="fa fa-info-circle alert-icon"></i>
-                        <div id="vneidRegisterNotice">Hệ thống đã nhận diện dữ liệu định danh từ VNeID. TechID sẽ được
-                            lưu để phục vụ các lần xác thực sau.</div>
+                        <div id="vneidRegisterNotice">Hệ thống đã nhận diện dữ liệu định danh từ VNeID để phục vụ các
+                            lần xác thực sau.</div>
                     </div>
 
                     <div
@@ -3600,8 +3600,7 @@
                                 <div class="check-label">
                                     <strong>Tài khoản đăng ký</strong>
                                     <div style="font-size:11px; color:var(--text-muted);">Sử dụng nhóm chức năng đăng
-                                        ký biện pháp bảo đảm và liên kết TechID để đăng nhập qua VNeID ở các lần
-                                        sau.</div>
+                                        ký biện pháp bảo đảm và đăng nhập qua VNeID ở các lần sau.</div>
                                 </div>
                             </label>
                             <label class="check-item">
@@ -4333,29 +4332,6 @@
                         </div>
                     </div>
 
-                    <div id="orgLinkedActorsSection">
-                        <h3
-                            style="font-size: 15px; font-weight: 700; color: var(--primary-color); margin: 24px 0 15px; border-left: 4px solid var(--primary-color); padding-left: 8px;">
-                            Chủ thể xác thực đại diện qua VNeID</h3>
-                        <div
-                            style="border:1px solid var(--border-color); border-radius:var(--border-radius-md); background:#FFFFFF; overflow:hidden;">
-                            <table class="custom-table" style="margin:0;">
-                                <thead>
-                                    <tr>
-                                        <th style="width:52px;">STT</th>
-                                        <th>Họ tên</th>
-                                        <th>Số giấy tờ</th>
-                                        <th>TechID</th>
-                                        <th>Vai trò đại diện/ủy quyền</th>
-                                        <th>Trạng thái liên kết</th>
-                                        <th>Lần xác thực gần nhất</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="orgLinkedActorsBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
                     <h3
                         style="font-size: 15px; font-weight: 700; color: var(--primary-color); margin: 24px 0 15px; border-left: 4px solid var(--primary-color); padding-left: 8px;">
                         Phương thức đăng nhập</h3>
@@ -4365,112 +4341,17 @@
                 </div>
             </div>
 
-            <!-- SCREEN: Cập nhật tài khoản Tổ chức (UC003.MH02) -->
+            <!-- SCREEN: Cập nhật thông tin tài khoản Khách hàng (UC003) -->
             <div class="app-screen" id="screen-update-account-details">
                 <div class="card-section" style="max-width: 850px; margin: 0 auto;">
-                    <h2 class="section-title">Cập nhật thông tin tài khoản Khách hàng</h2>
-
-                    <h3
-                        style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase;">
-                        Thông tin chung & liên lạc của Tổ chức</h3>
-                    <div class="grid-2-cols">
-                        <div class="form-group">
-                            <label class="form-label">Mã khách hàng</label>
-                            <input type="text" class="form-control" id="editCustomerCode" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" id="editOrgMSTLabel">Mã định danh tổ chức</label>
-                            <input type="text" class="form-control" id="editOrgMST" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Tên tổ chức <span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="editOrgName" placeholder="Nhập tên tổ chức...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Loại tổ chức <span class="required-mark">*</span></label>
-                            <select class="form-select" id="editOrgType" onchange="updateOrgIdentityLabel()">
-                                <option value="Tổ chức có đăng ký kinh doanh trong nước">Tổ chức có đăng ký kinh doanh trong nước</option>
-                                <option value="Tổ chức nước ngoài">Tổ chức nước ngoài</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Quốc gia đăng ký <span class="required-mark">*</span></label>
-                            <select class="form-select" id="editOrgNationality" onchange="toggleEditProvinceField()">
-                                <option value="Việt Nam">Việt Nam</option>
-                                <option value="Singapore">Singapore</option>
-                                <option value="Nhật Bản">Nhật Bản</option>
-                                <option value="Hoa Kỳ">Hoa Kỳ</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="editOrgProvinceWrapper">
-                            <label class="form-label">Tỉnh/Thành phố <span class="required-mark">*</span></label>
-                            <select class="form-select" id="editOrgProvince">
-                                <option value="" disabled selected>-- Chọn Tỉnh/Thành phố --</option>
-                                <option value="Hà Nội">Hà Nội</option>
-                                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
-                                <option value="Đà Nẵng">Đà Nẵng</option>
-                                <option value="Hải Phòng">Hải Phòng</option>
-                                <option value="Cần Thơ">Cần Thơ</option>
-                            </select>
-                        </div>
-                        <div class="form-group hidden" id="editOrgProvinceTextWrapper">
-                            <label class="form-label">Tỉnh/Thành phố (Tự nhập) <span
-                                    class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="editOrgProvinceText"
-                                placeholder="Nhập tỉnh/thành phố...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Trung tâm Đăng ký mặc định <span
-                                    class="required-mark">*</span></label>
-                            <select class="form-select" id="editOrgDefaultCenter">
-                                <option value="Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội">Trung tâm Đăng ký giao
-                                    dịch, tài sản tại Hà Nội</option>
-                                <option value="Trung tâm Đăng ký giao dịch, tài sản tại TP. Hồ Chí Minh">Trung tâm Đăng
-                                    ký giao dịch, tài sản tại TP. Hồ Chí Minh</option>
-                                <option value="Trung tâm Đăng ký giao dịch, tài sản tại Đà Nẵng">Trung tâm Đăng ký giao
-                                    dịch, tài sản tại Đà Nẵng</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Số điện thoại của Tổ chức <span
-                                    class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="editOrgPhone"
-                                placeholder="Nhập số điện thoại...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Email tổ chức (Tên đăng nhập) <span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="editOrgEmail"
-                                placeholder="Nhập địa chỉ email...">
+                    <h2 class="section-title" id="accountUpdateTitle">Cập nhật thông tin tài khoản Khách hàng</h2>
+                    <div class="alert-box info" style="margin-bottom: 18px;">
+                        <i class="fa fa-info-circle alert-icon"></i>
+                        <div id="accountUpdateAuthNote">
+                            Các trường được phép chỉnh sửa phụ thuộc vào Nguồn xác thực của hồ sơ tài khoản.
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Địa chỉ chi tiết <span class="required-mark">*</span></label>
-                        <textarea class="form-control" rows="2" id="editOrgAddress"
-                            placeholder="Nhập địa chỉ chi tiết..."></textarea>
-                    </div>
-
-                    <h3
-                        style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-top: 25px; margin-bottom: 15px; text-transform: uppercase;">
-                        Thông tin Người đại diện pháp luật</h3>
-                    <div class="grid-2-cols">
-                        <div class="form-group">
-                            <label class="form-label">Họ và tên <span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="editRepName"
-                                placeholder="Nhập họ và tên đại diện...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Loại giấy tờ pháp lý <span class="required-mark">*</span></label>
-                            <select class="form-select" id="editRepDocType">
-                                <option value="CCCD">Căn cước công dân (CCCD)</option>
-                                <option value="CMND">Chứng minh nhân dân (CMND)</option>
-                                <option value="Hộ chiếu">Hộ chiếu</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label">Số giấy tờ <span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="editRepDocNum" placeholder="Nhập số giấy tờ...">
-                        </div>
-                    </div>
+                    <div id="accountUpdateFormFields"></div>
 
                     <div
                         style="display:flex; justify-content:flex-end; gap:10px; margin-top:30px; border-top:1px solid var(--border-color); padding-top:15px;">
@@ -7919,12 +7800,12 @@
                 switch (scenario) {
                     case 'success-linked':
                         completeLoginSession('taikhoantestfpt@gmail.com', 'Ngân hàng TMCP FPT', { vneid: true, internal: true });
-                        showToast('Đăng nhập qua VNeID thành công. TechID đã liên kết với tài khoản khách hàng.', 'success');
+                        showToast('Đăng nhập qua VNeID thành công. Định danh VNeID đã liên kết với tài khoản khách hàng.', 'success');
                         showScreen('home');
                         break;
                     case 'register-personal':
                         prepareVNeIDRegistrationForm('personal');
-                        showToast('Xác thực VNeID thành công. TechID chưa có trên hệ thống, vui lòng hoàn tất thông tin.', 'info');
+                        showToast('Xác thực VNeID thành công. Chưa có tài khoản trên hệ thống, vui lòng hoàn tất thông tin.', 'info');
                         showScreen('vneid-register-form');
                         break;
                     case 'register-org':
@@ -7987,8 +7868,8 @@
             document.getElementById('vneidOrgFields').classList.toggle('hidden', !isOrg);
             document.getElementById('vneidSubjectBadge').innerText = isOrg ? 'Khách hàng tổ chức' : 'Khách hàng cá nhân';
             document.getElementById('vneidRegisterNotice').innerText = isOrg
-                ? 'Hệ thống đã xác thực TechID của người đại diện qua VNeID và ghi nhận vai trò đại diện tổ chức. TechID được lưu cùng hồ sơ tổ chức để phục vụ xác thực sau này.'
-                : 'Hệ thống đã xác thực TechID cá nhân qua VNeID. TechID được lưu cùng hồ sơ khách hàng để phục vụ xác thực sau này.';
+                ? 'Hệ thống đã xác thực người đại diện qua VNeID và ghi nhận vai trò đại diện tổ chức để phục vụ các lần xác thực sau.'
+                : 'Hệ thống đã xác thực khách hàng cá nhân qua VNeID để phục vụ các lần xác thực sau.';
 
             if (isOrg) {
                 document.getElementById('vneidOrgEmail').value = 'contact-vneid@abc.vn';
@@ -12425,9 +12306,7 @@
             const isPersonal = orgDetails.entityType === 'personal';
             const updateButton = document.getElementById('btnAccountDetailUpdate');
             if (updateButton) {
-                updateButton.setAttribute('onclick', isPersonal
-                    ? "showToast('Màn cập nhật tài khoản cá nhân được mô tả tại UC003.MH01.', 'info')"
-                    : "showScreen('update-account-details')");
+                updateButton.setAttribute('onclick', "showScreen('update-account-details')");
             }
 
             document.getElementById('personalAccountTitle')?.classList.toggle('hidden', !isPersonal);
@@ -12436,7 +12315,6 @@
             document.getElementById('orgAccountInfo')?.classList.toggle('hidden', isPersonal);
             document.getElementById('orgRepresentativeTitle')?.classList.toggle('hidden', isPersonal);
             document.getElementById('orgRepresentativeInfo')?.classList.toggle('hidden', isPersonal);
-            document.getElementById('orgLinkedActorsSection')?.classList.toggle('hidden', isPersonal);
 
             if (isPersonal) {
                 document.getElementById('lblPersonalAccountType').innerText = orgDetails.accountType || 'Cá nhân';
@@ -12454,6 +12332,7 @@
                 document.getElementById('lblPersonalUsageNeeds').innerHTML = renderUsageNeedChips(orgDetails.usageNeeds);
                 document.getElementById('lblPersonalAddress').innerText = orgDetails.address || '-';
                 renderAccountLoginMethods();
+                renderAccountUpdateForm();
                 return;
             }
 
@@ -12477,66 +12356,9 @@
             document.getElementById('lblRepName').innerText = orgDetails.repName || '-';
             document.getElementById('lblRepDocType').innerText = orgDetails.repDocType || '-';
             document.getElementById('lblRepDocNum').innerText = orgDetails.repDocNum || '-';
-            renderOrgLinkedActors();
 
-            // Editable organization form fields
-            document.getElementById('editCustomerCode').value = orgDetails.customerCode || 'KH-TC-000101';
-            document.getElementById('editOrgMST').value = orgDetails.mst || '';
-            document.getElementById('editOrgName').value = orgDetails.name || '';
-            document.getElementById('editOrgType').value = orgDetails.type || 'Tổ chức có đăng ký kinh doanh trong nước';
-            document.getElementById('editOrgNationality').value = orgDetails.nationality || 'Việt Nam';
-
-            if (isVN) {
-                document.getElementById('editOrgProvince').value = orgDetails.province || '';
-                document.getElementById('editOrgProvinceText').value = '';
-            } else {
-                document.getElementById('editOrgProvince').value = '';
-                document.getElementById('editOrgProvinceText').value = orgDetails.province || '';
-            }
-
-            document.getElementById('editOrgAddress').value = orgDetails.address || '';
-            document.getElementById('editOrgEmail').value = orgDetails.email || '';
-            document.getElementById('editOrgPhone').value = orgDetails.phone || '';
-            document.getElementById('editOrgDefaultCenter').value = orgDetails.defaultCenter || '';
-
-            document.getElementById('editRepName').value = orgDetails.repName || '';
-            document.getElementById('editRepDocType').value = orgDetails.repDocType || 'CCCD';
-            document.getElementById('editRepDocNum').value = orgDetails.repDocNum || '';
-
-            toggleEditProvinceField();
             renderAccountLoginMethods();
-        }
-
-        function maskTechId(value) {
-            if (!value) return '-';
-            const text = String(value);
-            if (text.length <= 8) return text;
-            return text.slice(0, 8) + '...' + text.slice(-4);
-        }
-
-        function renderOrgLinkedActors() {
-            const section = document.getElementById('orgLinkedActorsSection');
-            const tbody = document.getElementById('orgLinkedActorsBody');
-            if (!section || !tbody) return;
-            const actors = Array.isArray(orgDetails.representativeActors) ? orgDetails.representativeActors : [];
-            section.classList.toggle('hidden', orgDetails.entityType === 'personal');
-            tbody.innerHTML = actors.length ? actors.map((actor, index) => `
-                <tr>
-                    <td style="text-align:center;">${index + 1}</td>
-                    <td><strong>${actor.name || '-'}</strong></td>
-                    <td>${actor.docNo || '-'}</td>
-                    <td>${maskTechId(actor.techId)}</td>
-                    <td>${actor.role || '-'}</td>
-                    <td><span class="status-badge status-approved">${actor.status || 'Đang hoạt động'}</span></td>
-                    <td>${actor.lastAuth || '-'}</td>
-                </tr>
-            `).join('') : `
-                <tr>
-                    <td colspan="7" style="text-align:center; color:var(--text-muted); font-style:italic; padding:16px;">
-                        Chưa có chủ thể xác thực đại diện qua VNeID được liên kết.
-                    </td>
-                </tr>
-            `;
+            renderAccountUpdateForm();
         }
 
         function getOrgIdentityLabel(orgType) {
@@ -12546,12 +12368,10 @@
         }
 
         function updateOrgIdentityLabel(orgType) {
-            const resolvedType = orgType || document.getElementById('editOrgType')?.value || orgDetails.type;
+            const resolvedType = orgType || orgDetails.type;
             const label = getOrgIdentityLabel(resolvedType);
             const viewLabel = document.getElementById('lblOrgMSTLabel');
-            const editLabel = document.getElementById('editOrgMSTLabel');
             if (viewLabel) viewLabel.innerText = `${label}:`;
-            if (editLabel) editLabel.innerText = label;
         }
 
         function renderAccountLoginMethods() {
@@ -12580,8 +12400,7 @@
                             </span>
                             <div>
                                 <div style="font-weight:800; color:var(--text-main);">VNeID</div>
-                                <div style="font-size:11px; color:var(--text-muted);">Đăng nhập bằng TechID đã xác thực qua DVCQG/VNeID</div>
-                                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">TechID không hiển thị công khai trên màn hình khách hàng</div>
+                                <div style="font-size:11px; color:var(--text-muted);">Đăng nhập bằng thông tin định danh đã xác thực qua DVCQG/VNeID</div>
                             </div>
                         </div>
                         ${vneidStatus}
@@ -12650,120 +12469,243 @@
             showToast('Thiết lập đăng nhập Email/Mật khẩu thành công.', 'success');
         }
 
-        function toggleEditProvinceField() {
-            const nat = document.getElementById('editOrgNationality').value;
-            const selectWrapper = document.getElementById('editOrgProvinceWrapper');
-            const textWrapper = document.getElementById('editOrgProvinceTextWrapper');
+        function getCurrentAuthSource() {
+            if (accountLoginMethods.vneid && accountLoginMethods.internal) return 'VNeID, Nội bộ';
+            if (accountLoginMethods.vneid) return 'VNeID';
+            return 'Nội bộ';
+        }
 
-            if (nat === 'Việt Nam') {
-                selectWrapper.classList.remove('hidden');
-                textWrapper.classList.add('hidden');
+        function accountUpdateInput(field) {
+            const requiredMark = field.required ? ' <span class="required-mark">*</span>' : '';
+            const disabledAttr = field.readonly ? 'disabled' : '';
+            const spanStyle = field.span2 ? ' style="grid-column: span 2;"' : '';
+            const help = field.help ? `<div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${field.help}</div>` : '';
+            const options = field.options || [];
+            let control = '';
+
+            if (field.type === 'select') {
+                control = `<select class="form-select" id="${field.id}" data-update-field="${field.key}" ${field.required ? 'data-required="1"' : ''} ${disabledAttr} ${field.onchange ? `onchange="${field.onchange}"` : ''}>
+                    ${options.map(opt => `<option value="${opt}" ${opt === field.value ? 'selected' : ''}>${opt}</option>`).join('')}
+                </select>`;
+            } else if (field.type === 'textarea') {
+                control = `<textarea class="form-control" rows="2" id="${field.id}" data-update-field="${field.key}" ${field.required ? 'data-required="1"' : ''} ${disabledAttr} placeholder="${field.placeholder || ''}">${field.value || ''}</textarea>`;
             } else {
-                selectWrapper.classList.add('hidden');
-                textWrapper.classList.remove('hidden');
+                control = `<input type="${field.type || 'text'}" class="form-control" id="${field.id}" data-update-field="${field.key}" value="${field.value || ''}" ${field.required ? 'data-required="1"' : ''} ${disabledAttr} placeholder="${field.placeholder || ''}">`;
             }
+
+            return `<div class="form-group"${spanStyle}>
+                <label class="form-label">${field.label}${requiredMark}</label>
+                ${control}
+                ${help}
+            </div>`;
+        }
+
+        function renderAccountUpdateSection(title, fields) {
+            return `
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin: 22px 0 15px; text-transform: uppercase;">${title}</h3>
+                <div class="grid-2-cols">
+                    ${fields.map(accountUpdateInput).join('')}
+                </div>
+            `;
+        }
+
+        function renderProvinceFields(prefix, country, province, required) {
+            const vnField = {
+                id: `${prefix}Province`,
+                key: 'province',
+                label: 'Tỉnh/TP',
+                type: 'select',
+                required,
+                value: country === 'Việt Nam' ? province : '',
+                options: ['', 'Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ'],
+                help: 'Nếu Quốc gia là Việt Nam, chọn từ Danh mục dùng chung - Tỉnh/Thành phố [DM_13].'
+            };
+            const foreignField = {
+                id: `${prefix}ProvinceText`,
+                key: 'provinceText',
+                label: 'Tỉnh/TP',
+                required,
+                value: country === 'Việt Nam' ? '' : province,
+                placeholder: 'Nhập tỉnh/thành phố...',
+                help: 'Nếu Quốc gia khác Việt Nam, nhập dạng văn bản.'
+            };
+            const isVN = country === 'Việt Nam';
+            return `
+                <div id="${prefix}ProvinceSelectWrapper" class="${isVN ? '' : 'hidden'}">
+                    ${accountUpdateInput(vnField)}
+                </div>
+                <div id="${prefix}ProvinceTextWrapper" class="${isVN ? 'hidden' : ''}">
+                    ${accountUpdateInput(foreignField)}
+                </div>
+            `;
+        }
+
+        function toggleAccountUpdateProvince(prefix) {
+            const country = document.getElementById(`${prefix}Country`)?.value;
+            const selectWrapper = document.getElementById(`${prefix}ProvinceSelectWrapper`);
+            const textWrapper = document.getElementById(`${prefix}ProvinceTextWrapper`);
+            if (!selectWrapper || !textWrapper) return;
+            selectWrapper.classList.toggle('hidden', country !== 'Việt Nam');
+            textWrapper.classList.toggle('hidden', country === 'Việt Nam');
+        }
+
+        function renderAccountUpdateForm() {
+            const container = document.getElementById('accountUpdateFormFields');
+            if (!container) return;
+
+            const isPersonal = orgDetails.entityType === 'personal';
+            const authSource = getCurrentAuthSource();
+            const hasVNeID = accountLoginMethods.vneid;
+            const canEditIdentity = !hasVNeID;
+            const canEditEmail = accountLoginMethods.vneid && !accountLoginMethods.internal;
+            const title = document.getElementById('accountUpdateTitle');
+            const note = document.getElementById('accountUpdateAuthNote');
+            if (title) title.innerText = isPersonal ? 'Cập nhật thông tin tài khoản Cá nhân' : 'Cập nhật thông tin tài khoản Tổ chức';
+            if (note) {
+                note.innerText = canEditIdentity
+                    ? 'Nguồn xác thực Nội bộ: được phép cập nhật thông tin hồ sơ, trừ Email đang dùng làm Tên đăng nhập.'
+                    : 'Nguồn xác thực có VNeID: các thông tin định danh hiển thị ở chế độ Read-only; thông tin liên hệ và địa chỉ vẫn được phép cập nhật.';
+            }
+
+            const commonCountryOptions = ['Việt Nam', 'Singapore', 'Nhật Bản', 'Hoa Kỳ'];
+            const centerOptions = [
+                'Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội',
+                'Trung tâm Đăng ký giao dịch, tài sản tại TP. Hồ Chí Minh',
+                'Trung tâm Đăng ký giao dịch, tài sản tại Đà Nẵng'
+            ];
+
+            if (isPersonal) {
+                container.innerHTML = renderAccountUpdateSection('Thông tin định danh và liên hệ Cá nhân', [
+                    { id: 'updCustomerType', key: 'customerType', label: 'Loại khách hàng', value: 'Cá nhân', readonly: true },
+                    { id: 'updAccountType', key: 'accountType', label: 'Loại tài khoản', value: 'Tài khoản chính', readonly: true },
+                    { id: 'updAuthSource', key: 'authSource', label: 'Nguồn xác thực', value: authSource, readonly: true },
+                    { id: 'updDocType', key: 'docType', label: 'Loại giấy tờ', type: 'select', required: true, value: orgDetails.docType || 'Căn cước công dân', options: ['Căn cước công dân', 'Chứng minh nhân dân', 'Hộ chiếu'], readonly: !canEditIdentity },
+                    { id: 'updDocNo', key: 'docNo', label: 'Số giấy tờ', required: true, value: orgDetails.docNo || '', readonly: !canEditIdentity },
+                    { id: 'updName', key: 'name', label: 'Tên khách hàng', required: true, value: orgDetails.name || '', readonly: !canEditIdentity },
+                    { id: 'updDob', key: 'dob', label: 'Ngày sinh', value: orgDetails.dob || '', readonly: !canEditIdentity },
+                    { id: 'updGender', key: 'gender', label: 'Giới tính', type: 'select', value: orgDetails.gender || 'Nam', options: ['Nam', 'Nữ', 'Khác'], readonly: !canEditIdentity },
+                    { id: 'updCountry', key: 'nationality', label: 'Quốc tịch', type: 'select', required: true, value: orgDetails.nationality || 'Việt Nam', options: commonCountryOptions, readonly: !canEditIdentity, onchange: "toggleAccountUpdateProvince('upd')" },
+                    { id: 'updClassification', key: 'classification', label: 'Phân loại khách hàng', value: orgDetails.classification || (orgDetails.nationality === 'Việt Nam' ? 'Trong nước' : 'Nước ngoài'), readonly: true },
+                    { id: 'updEmail', key: 'email', label: 'Email (Tên đăng nhập)', required: !!accountLoginMethods.internal, value: orgDetails.email || '', readonly: !canEditEmail },
+                    { id: 'updPhone', key: 'phone', label: 'Số điện thoại', required: true, value: orgDetails.phone || '' },
+                    { id: 'updDefaultCenter', key: 'defaultCenter', label: 'Trung tâm Đăng ký mặc định', type: 'select', value: orgDetails.defaultCenter || centerOptions[0], options: centerOptions }
+                ]) + `<div class="grid-2-cols">${renderProvinceFields('upd', orgDetails.nationality || 'Việt Nam', orgDetails.province || '', false)}</div>` +
+                renderAccountUpdateSection('Địa chỉ', [
+                    { id: 'updAddress', key: 'address', label: 'Địa chỉ chi tiết', type: 'textarea', span2: true, value: orgDetails.address || '', placeholder: 'Nhập địa chỉ chi tiết...' }
+                ]);
+                return;
+            }
+
+            const identityLabel = getOrgIdentityLabel(orgDetails.type);
+            container.innerHTML = renderAccountUpdateSection('Thông tin chung & liên lạc của Tổ chức', [
+                { id: 'updCustomerType', key: 'customerType', label: 'Loại khách hàng', value: 'Tổ chức', readonly: true },
+                { id: 'updAccountType', key: 'accountType', label: 'Loại tài khoản', value: 'Tài khoản chính', readonly: true },
+                { id: 'updAuthSource', key: 'authSource', label: 'Nguồn xác thực', value: authSource, readonly: true },
+                { id: 'updOrgType', key: 'type', label: 'Loại tổ chức', type: 'select', required: true, value: orgDetails.type || 'Tổ chức có đăng ký kinh doanh trong nước', options: ['Tổ chức có đăng ký kinh doanh trong nước', 'Tổ chức nước ngoài'], readonly: !canEditIdentity },
+                { id: 'updOrgIdentity', key: 'mst', label: identityLabel, required: true, value: orgDetails.mst || '', readonly: !canEditIdentity },
+                { id: 'updOrgName', key: 'name', label: 'Tên tổ chức', required: true, value: orgDetails.name || '', readonly: !canEditIdentity },
+                { id: 'updOrgEmail', key: 'email', label: 'Email tổ chức (Tên đăng nhập)', required: !!accountLoginMethods.internal, value: orgDetails.email || '', readonly: !canEditEmail },
+                { id: 'updOrgPhone', key: 'phone', label: 'Số điện thoại tổ chức', value: orgDetails.phone || '' },
+                { id: 'updOrgCountry', key: 'nationality', label: 'Quốc gia', type: 'select', required: true, value: orgDetails.nationality || 'Việt Nam', options: commonCountryOptions, readonly: !canEditIdentity, onchange: "toggleAccountUpdateProvince('updOrg')" },
+                { id: 'updOrgClassification', key: 'classification', label: 'Phân loại khách hàng', value: orgDetails.classification || (orgDetails.nationality === 'Việt Nam' ? 'Trong nước' : 'Nước ngoài'), readonly: true },
+                { id: 'updOrgDefaultCenter', key: 'defaultCenter', label: 'Trung tâm Đăng ký mặc định', type: 'select', value: orgDetails.defaultCenter || centerOptions[0], options: centerOptions }
+            ]) + `<div class="grid-2-cols">${renderProvinceFields('updOrg', orgDetails.nationality || 'Việt Nam', orgDetails.province || '', false)}</div>` +
+            renderAccountUpdateSection('Địa chỉ', [
+                { id: 'updOrgAddress', key: 'address', label: 'Địa chỉ chi tiết', type: 'textarea', span2: true, value: orgDetails.address || '', placeholder: 'Nhập địa chỉ chi tiết...' }
+            ]) +
+            renderAccountUpdateSection('Thông tin Người đại diện', [
+                { id: 'updRepName', key: 'repName', label: 'Họ và tên người đại diện', value: orgDetails.repName || '', readonly: !canEditIdentity },
+                { id: 'updRepDocType', key: 'repDocType', label: 'Loại giấy tờ người đại diện', type: 'select', value: orgDetails.repDocType || 'CCCD', options: ['CCCD', 'CMND', 'Hộ chiếu'], readonly: !canEditIdentity },
+                { id: 'updRepDocNum', key: 'repDocNum', label: 'Số giấy tờ người đại diện', span2: true, value: orgDetails.repDocNum || '', readonly: !canEditIdentity }
+            ]);
+        }
+
+        function getAccountUpdateValue(id) {
+            const field = document.getElementById(id);
+            return field ? field.value.trim() : '';
         }
 
         function saveAccountDetailsUpdate() {
             clearAllErrors('screen-update-account-details');
 
-            const name = document.getElementById('editOrgName').value.trim();
-            const nationality = document.getElementById('editOrgNationality').value;
-            const type = document.getElementById('editOrgType').value;
-            const address = document.getElementById('editOrgAddress').value.trim();
-            const email = document.getElementById('editOrgEmail').value.trim();
-            const phone = document.getElementById('editOrgPhone').value.trim();
-            const defaultCenter = document.getElementById('editOrgDefaultCenter').value;
-            const repName = document.getElementById('editRepName').value.trim();
-            const repDocType = document.getElementById('editRepDocType').value;
-            const repDocNum = document.getElementById('editRepDocNum').value.trim();
+            const isPersonal = orgDetails.entityType === 'personal';
+            const prefix = isPersonal ? 'upd' : 'updOrg';
+            const countryId = isPersonal ? 'updCountry' : 'updOrgCountry';
+            const emailId = isPersonal ? 'updEmail' : 'updOrgEmail';
+            const phoneId = isPersonal ? 'updPhone' : 'updOrgPhone';
+            const nameId = isPersonal ? 'updName' : 'updOrgName';
+            const addressId = isPersonal ? 'updAddress' : 'updOrgAddress';
+            const country = getAccountUpdateValue(countryId);
+            const provinceId = country === 'Việt Nam' ? `${prefix}Province` : `${prefix}ProvinceText`;
+            const province = getAccountUpdateValue(provinceId);
+            const email = getAccountUpdateValue(emailId);
+            const phone = getAccountUpdateValue(phoneId);
+            let firstErrorId = '';
 
-            let province = '';
-            let provinceFieldId = '';
+            document.querySelectorAll('#accountUpdateFormFields [data-required="1"]').forEach(field => {
+                if (!field.disabled && !field.value.trim()) {
+                    highlightError(field.id, 'Đây là trường bắt buộc');
+                    firstErrorId ||= field.id;
+                }
+            });
 
-            if (nationality === 'Việt Nam') {
-                province = document.getElementById('editOrgProvince').value;
-                provinceFieldId = 'editOrgProvince';
-            } else {
-                province = document.getElementById('editOrgProvinceText').value.trim();
-                provinceFieldId = 'editOrgProvinceText';
-            }
-
-            let hasEmpty = false;
-            let firstEmptyId = null;
-
-            if (!name) {
-                highlightError('editOrgName', 'Đây là trường bắt buộc');
-                hasEmpty = true; if (!firstEmptyId) firstEmptyId = 'editOrgName';
-            }
-            if (!province) {
-                highlightError(provinceFieldId, 'Đây là trường bắt buộc');
-                hasEmpty = true; if (!firstEmptyId) firstEmptyId = provinceFieldId;
-            }
-            if (!email) {
-                highlightError('editOrgEmail', 'Đây là trường bắt buộc');
-                hasEmpty = true; if (!firstEmptyId) firstEmptyId = 'editOrgEmail';
-            }
-            if (!phone) {
-                highlightError('editOrgPhone', 'Đây là trường bắt buộc');
-                hasEmpty = true; if (!firstEmptyId) firstEmptyId = 'editOrgPhone';
-            }
-            if (!address) {
-                highlightError('editOrgAddress', 'Đây là trường bắt buộc');
-                hasEmpty = true; if (!firstEmptyId) firstEmptyId = 'editOrgAddress';
-            }
-            if (!repName) {
-                highlightError('editRepName', 'Đây là trường bắt buộc');
-                hasEmpty = true; if (!firstEmptyId) firstEmptyId = 'editRepName';
-            }
-            if (!repDocNum) {
-                highlightError('editRepDocNum', 'Đây là trường bắt buộc');
-                hasEmpty = true; if (!firstEmptyId) firstEmptyId = 'editRepDocNum';
+            if (!province && document.getElementById(provinceId) && !document.getElementById(provinceId).disabled) {
+                highlightError(provinceId, 'Đây là trường bắt buộc');
+                firstErrorId ||= provinceId;
             }
 
-            if (hasEmpty) {
-                if (firstEmptyId) document.getElementById(firstEmptyId).focus();
-                return;
-            }
-
-            // Format check (simple regex check for email and phone)
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                highlightError('editOrgEmail', 'Email không hợp lệ');
-                document.getElementById('editOrgEmail').focus();
-                return;
+            if (email && !isValidEmail(email)) {
+                highlightError(emailId, 'Email không hợp lệ');
+                firstErrorId ||= emailId;
             }
 
             const phoneRegex = /^[0-9\s\-\+\(\)]{8,20}$/;
-            if (!phoneRegex.test(phone)) {
-                highlightError('editOrgPhone', 'Số điện thoại không hợp lệ');
-                document.getElementById('editOrgPhone').focus();
+            if (phone && !phoneRegex.test(phone)) {
+                highlightError(phoneId, 'Số điện thoại không hợp lệ');
+                firstErrorId ||= phoneId;
+            }
+
+            if (!document.getElementById(emailId)?.disabled && email === 'duplicate@gmail.com') {
+                highlightError(emailId, 'Email đã tồn tại trên hệ thống');
+                firstErrorId ||= emailId;
+            }
+            if (phone === '0999999999') {
+                highlightError(phoneId, 'Số điện thoại đã được đăng ký bởi tài khoản khác');
+                firstErrorId ||= phoneId;
+            }
+
+            if (firstErrorId) {
+                document.getElementById(firstErrorId)?.focus();
+                showToast('Vui lòng kiểm tra lại thông tin cập nhật.', 'error');
                 return;
             }
 
-            // Simulated duplicate check (Email or phone registered by other account)
-            if (email === 'duplicate@gmail.com' || phone === '0999999999') {
-                highlightError('editOrgEmail', 'Email hoặc Số điện thoại đã được đăng ký bởi tài khoản khác.');
-                highlightError('editOrgPhone', 'Email hoặc Số điện thoại đã được đăng ký bởi tài khoản khác.');
-                return;
+            if (isPersonal) {
+                orgDetails.docType = getAccountUpdateValue('updDocType') || orgDetails.docType;
+                orgDetails.docNo = getAccountUpdateValue('updDocNo') || orgDetails.docNo;
+                orgDetails.name = getAccountUpdateValue(nameId) || orgDetails.name;
+                orgDetails.dob = getAccountUpdateValue('updDob');
+                orgDetails.gender = getAccountUpdateValue('updGender') || orgDetails.gender;
+                orgDetails.nationality = country || orgDetails.nationality;
+            } else {
+                orgDetails.type = getAccountUpdateValue('updOrgType') || orgDetails.type;
+                orgDetails.mst = getAccountUpdateValue('updOrgIdentity') || orgDetails.mst;
+                orgDetails.name = getAccountUpdateValue(nameId) || orgDetails.name;
+                orgDetails.nationality = country || orgDetails.nationality;
+                orgDetails.repName = getAccountUpdateValue('updRepName') || orgDetails.repName;
+                orgDetails.repDocType = getAccountUpdateValue('updRepDocType') || orgDetails.repDocType;
+                orgDetails.repDocNum = getAccountUpdateValue('updRepDocNum') || orgDetails.repDocNum;
             }
 
-            // Save state
-            orgDetails.name = name;
-            orgDetails.nationality = nationality;
-            orgDetails.type = type;
-            orgDetails.address = address;
-            orgDetails.email = email;
+            orgDetails.email = email || orgDetails.email;
             orgDetails.phone = phone;
             orgDetails.province = province;
-            orgDetails.defaultCenter = defaultCenter;
-            orgDetails.repName = repName;
-            orgDetails.repDocType = repDocType;
-            orgDetails.repDocNum = repDocNum;
+            orgDetails.address = getAccountUpdateValue(addressId);
+            orgDetails.defaultCenter = getAccountUpdateValue(isPersonal ? 'updDefaultCenter' : 'updOrgDefaultCenter') || orgDetails.defaultCenter;
+            orgDetails.classification = (country === 'Việt Nam') ? 'Trong nước' : 'Nước ngoài';
 
-            // Sync user header displays
-            loggedInDisplayName = name;
-            loggedInUser = email;
+            loggedInDisplayName = orgDetails.name;
+            loggedInUser = orgDetails.email;
             updateUserNavPanel();
 
             showToast('Cập nhật thông tin tài khoản thành công!', 'success');
