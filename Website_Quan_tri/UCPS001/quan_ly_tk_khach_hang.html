@@ -1667,7 +1667,7 @@
      <script>
                              // Mock data for Persons
           let personAccounts = [
-              { id: 1, name: "Nguyễn Văn An", code: "001090123456", email: "nvan@gmail.com", phone: "0987654321", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "12/05/1988", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 15 Láng Hạ, Đống Đa", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "15/06/2026", accountType: "Thường xuyên" },
+              { id: 1, name: "Nguyễn Văn An", code: "001090123456", email: "nvan@gmail.com", phone: "0987654321", center: "Hà Nội", identitySource: "VNeID", authMethods: ["VNeID", "Nội bộ"], status: "Hoạt động", gender: "Nam", dob: "12/05/1988", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 15 Láng Hạ, Đống Đa", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "15/06/2026", accountType: "Thường xuyên" },
               { id: 2, name: "John Doe", code: "P12345678", email: "john@example.com", phone: "0901112222", center: "Hà Nội", identitySource: "Nội bộ", status: "Hoạt động", gender: "Nam", dob: "01/01/1990", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "New York", addressDetail: "23 Cát Linh, Đống Đa, Hà Nội", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "14/06/2026", accountType: "Thường xuyên" },
               { id: 3, name: "Lê Thị Bích", code: "030192000111", email: "bich.le@gmail.com", phone: "0912345678", center: "Đà Nẵng", identitySource: "VNeID", status: "Hoạt động", gender: "Nữ", dob: "14/03/1992", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "Số 88 Lê Lợi, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM6"], createdDate: "13/06/2026", accountType: "Thường xuyên" },
               { id: 4, name: "Phạm Văn Đồng", code: "040088000222", email: "dong.pv@yahoo.com", phone: "0933445566", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "25/08/1985", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "141 Pasteur, Quận 3", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM5", "PERM6", "PERM7"], createdDate: "12/06/2026", accountType: "Thường xuyên" },
@@ -1687,7 +1687,7 @@
 
           // Mock data for Organizations
           let orgAccounts = [
-              { id: 101, name: "Ngân hàng TMCP Ngoại thương VN (Hội sở)", code: "0100112437", email: "contact@vietcombank.com", phone: "1900545413", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", repName: "Lê Đình Long", repDocType: "Căn cước công dân", repCode: "030089123456", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "198 Trần Quang Khải, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM5", "PERM6", "PERM7", "PERM8"], createdDate: "15/06/2026", accountType: "Thường xuyên",
+              { id: 101, name: "Ngân hàng TMCP Ngoại thương VN (Hội sở)", code: "0100112437", email: "contact@vietcombank.com", phone: "1900545413", center: "Hà Nội", identitySource: "VNeID", authMethods: ["VNeID", "Nội bộ"], status: "Hoạt động", repName: "Lê Đình Long", repDocType: "Căn cước công dân", repCode: "030089123456", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "198 Trần Quang Khải, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM5", "PERM6", "PERM7", "PERM8"], createdDate: "15/06/2026", accountType: "Thường xuyên",
                 subs: [
                     { name: "Trần Thị Bích", code: "001088998877", email: "bich.tt@vietcombank.com", phone: "0912345678", unit: "Vietcombank Hội sở", status: "Đã đồng bộ", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên khai báo" },
                     { name: "Nguyễn Hoàng Nam", code: "001095112233", email: "nam.nh@vietcombank.com", phone: "0977554433", unit: "Vietcombank Hội sở", status: "Đã đồng bộ", perms: ["PERM1", "PERM2", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên tra cứu" }
@@ -1906,7 +1906,7 @@
                                            item.code.toLowerCase().includes(keyword) || 
                                            item.email.toLowerCase().includes(keyword) || 
                                            item.phone.includes(keyword);
-                      const matchSource = !source || item.identitySource === source;
+                      const matchSource = !source || getAuthMethods(item).includes(source);
                       const matchAccType = !accType || item.accountType === accType;
                       const matchStatus = !status || item.status === status;
                       return matchKeyword && matchSource && matchAccType && matchStatus;
@@ -1961,9 +1961,7 @@
                       if (item.status === 'Hết hạn') statusClass = 'bg-danger';
                       if (item.status === 'Lưu nháp') statusClass = 'bg-secondary';
                       const statusBadge = `<span class="badge ${statusClass}">${item.status}</span>`;
-                      const sourceBadge = item.identitySource === 'VNeID'
-                          ? `<span class="badge" style="background-color: #DBEAFE; color: #1E40AF;">VNeID</span>`
-                          : `<span class="badge bg-secondary">Nội bộ</span>`;
+                      const sourceBadgeHtml = sourceBadges(item);
                       
                       // Action buttons
                       const editBtn = `<button type="button" class="icon-btn edit" title="Sửa" onclick="event.preventDefault(); event.stopPropagation(); openEditModal('PERSON', ${item.id})"><i class="fas fa-edit"></i></button>`;
@@ -1984,7 +1982,7 @@
                           <td>${item.email}</td>
                           <td>${item.phone}</td>
                           <td>${item.center}</td>
-                          <td>${sourceBadge}</td>
+                          <td>${sourceBadgeHtml}</td>
                           <td><span class="badge" style="background-color:#E0F2FE; color:#0369A1;">${item.accountType || 'Thường xuyên'}</span></td>
                           <td>${item.createdDate || '15/06/2026'}</td>
                           <td>${statusBadge}</td>
@@ -2010,7 +2008,7 @@
                                            item.email.toLowerCase().includes(keyword) || 
                                            item.phone.includes(keyword) ||
                                            (item.subs && item.subs.some(sub => sub.code.toLowerCase().includes(keyword)));
-                      const matchSource = !source || item.identitySource === source;
+                      const matchSource = !source || getAuthMethods(item).includes(source);
                       const matchAccType = !accType || item.accountType === accType;
                       const matchStatus = !status || item.status === status;
                       return matchKeyword && matchSource && matchAccType && matchStatus;
@@ -2065,9 +2063,7 @@
                       if (item.status === 'Hết hạn') statusClass = 'bg-danger';
                       if (item.status === 'Lưu nháp') statusClass = 'bg-secondary';
                       const statusBadge = `<span class="badge ${statusClass}">${item.status}</span>`;
-                      const sourceBadge = item.identitySource === 'VNeID'
-                          ? `<span class="badge" style="background-color: #DBEAFE; color: #1E40AF;">VNeID</span>`
-                          : `<span class="badge bg-secondary">Nội bộ</span>`;
+                      const sourceBadgeHtml = sourceBadges(item);
                       
                       const isBranch = item.code.includes('-');
                       const paddingLeftStyle = isBranch ? 'padding-left: 28px;' : '';
@@ -2098,7 +2094,7 @@
                           <td>${item.email}</td>
                           <td>${item.phone}</td>
                           <td>${item.center}</td>
-                          <td>${sourceBadge}</td>
+                          <td>${sourceBadgeHtml}</td>
                           <td><span class="badge" style="background-color:#E0F2FE; color:#0369A1;">${item.accountType || 'Thường xuyên'}</span></td>
                           <td>${item.createdDate || '15/06/2026'}</td>
                           <td>${statusBadge}</td>
@@ -2397,9 +2393,7 @@
                       const tr = document.createElement('tr');
                       tr.id = rowId;
                       
-                      const sourceBadge = orgItem.identitySource === 'VNeID' 
-                          ? `<span class="badge" style="background-color: #DBEAFE; color: #1E40AF;">VNeID</span>`
-                          : `<span class="badge bg-secondary">Nội bộ</span>`;
+                      const sourceBadgeHtml = sourceBadges(s.authMethods ? s : { ...s, identitySource: orgItem.identitySource, authMethods: orgItem.authMethods });
                           
                       tr.innerHTML = `
                           <td><strong>${s.name}</strong></td>
@@ -2407,7 +2401,7 @@
                           <td>${s.code}</td>
                           <td>${s.email}</td>
                           <td>${s.phone}</td>
-                          <td>${sourceBadge}</td>
+                          <td>${sourceBadgeHtml}</td>
                           <td><span class="badge bg-success">${s.status}</span></td>
                           <td class="action-cell">
                               <button class="icon-btn edit" title="Sửa" onclick="editSubAccount('${rowId}')"><i class="fas fa-edit"></i></button>
@@ -3169,7 +3163,7 @@
              if (isPersonTab) {
                  count = personAccounts.filter(item => {
                      const matchKeyword = !keyword || item.name.toLowerCase().includes(keyword) || item.code.toLowerCase().includes(keyword) || item.email.toLowerCase().includes(keyword) || item.phone.includes(keyword);
-                     const matchSource = !source || item.identitySource === source;
+                     const matchSource = !source || getAuthMethods(item).includes(source);
                      const matchAccType = !accType || item.accountType === accType;
                      const matchStatus = !status || item.status === status;
                      return matchKeyword && matchSource && matchAccType && matchStatus;
@@ -3177,7 +3171,7 @@
              } else {
                  count = orgAccounts.filter(item => {
                      const matchKeyword = !keyword || item.name.toLowerCase().includes(keyword) || item.code.toLowerCase().includes(keyword) || item.email.toLowerCase().includes(keyword) || item.phone.includes(keyword) || (item.subs && item.subs.some(sub => sub.code.toLowerCase().includes(keyword)));
-                     const matchSource = !source || item.identitySource === source;
+                     const matchSource = !source || getAuthMethods(item).includes(source);
                      const matchAccType = !accType || item.accountType === accType;
                      const matchStatus = !status || item.status === status;
                      return matchKeyword && matchSource && matchAccType && matchStatus;
@@ -4093,7 +4087,7 @@
 
          let uc009Customers = [
              { id: 1, code: 'KH-2026-0001', name: 'Nguyễn Văn Nam', email: 'nam.nguyen@example.com', phone: '0901234567', center: 'Hà Nội', customerType: 'Cá nhân', accountType: 'Tài khoản chính', identitySource: 'VNeID', authMethods: ['VNeID', 'Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-12T09:15:00', status: 'Đang hoạt động', techId: 'TECH-8D12-0001', docNo: '001086012345', dob: '12/05/1988', gender: 'Nam', province: 'Hà Nội', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm', groups: ['Nhóm Đăng ký'], group: 'Nhóm Đăng ký', roles: ['Đăng ký viên'], attachments: [{ name: 'Giấy tờ định danh', fileName: 'cccd_nguyen_van_nam.pdf' }] },
-             { id: 2, code: 'KH-2026-0002', name: 'Công ty ABC', email: 'contact@abc.vn', phone: '02438889999', center: 'Hà Nội', customerType: 'Tổ chức', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-11T16:20:00', status: 'Đang hoạt động', taxCode: '0101187788', representative: 'Trần Văn C', province: 'Hà Nội', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy', groups: ['Nhóm Đăng ký', 'Nhóm Tra cứu'], group: 'Nhóm Đăng ký, Nhóm Tra cứu', roles: ['Administrators', 'Giám đốc Trung tâm đăng ký'], attachments: [{ name: 'Giấy đăng ký doanh nghiệp', fileName: 'gdkdn_cong_ty_abc.pdf' }, { name: 'Văn bản ủy quyền', fileName: 'uy_quyen_abc.pdf' }] },
+             { id: 2, code: 'KH-2026-0002', name: 'Công ty ABC', email: 'contact@abc.vn', phone: '02438889999', center: 'Hà Nội', customerType: 'Tổ chức', accountType: 'Tài khoản chính', identitySource: 'VNeID', authMethods: ['VNeID', 'Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-11T16:20:00', status: 'Đang hoạt động', techId: 'TECH-ORG-0002', taxCode: '0101187788', representative: 'Trần Văn C', province: 'Hà Nội', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy', groups: ['Nhóm Đăng ký', 'Nhóm Tra cứu'], group: 'Nhóm Đăng ký, Nhóm Tra cứu', roles: ['Administrators', 'Giám đốc Trung tâm đăng ký'], attachments: [{ name: 'Giấy đăng ký doanh nghiệp', fileName: 'gdkdn_cong_ty_abc.pdf' }, { name: 'Văn bản ủy quyền', fileName: 'uy_quyen_abc.pdf' }] },
              { id: 3, parentId: 2, code: '', name: 'Lê Thị Hạnh', email: 'hanh.le@abc.vn', username: 'hanh.le@abc.vn', phone: '0912233445', center: 'Hà Nội', customerType: 'Tổ chức', accountType: 'Tài khoản phụ', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', province: 'Hà Nội', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy', unit: 'Phòng Hành chính', createdAt: '2026-08-11T17:05:00', status: 'Đang hoạt động', docType: 'Căn cước công dân', docNo: '001091234567', groups: ['Nhóm Tra cứu'], group: 'Nhóm Tra cứu', roles: ['Nhân viên hành chính tổng hợp'] },
              { id: 4, code: 'KH-2026-0003', name: 'Global Finance Pte. Ltd.', email: 'legal@global-finance.sg', phone: '+6566889900', center: 'TP Hồ Chí Minh', customerType: 'Tổ chức', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Nước ngoài', nationality: 'Singapore', createdAt: '2026-08-10T10:00:00', status: 'Bị khóa', taxCode: 'SG-2026-8899', representative: 'David Tan', province: 'Singapore', addressDetail: '120 Nguyễn Huệ, Quận 1', groups: ['Nhóm Đăng ký'], group: 'Nhóm Đăng ký', roles: ['Phó Giám đốc Trung tâm đăng ký'] },
              { id: 5, code: 'KH-2026-0004', name: 'Hoàng Thị Mai', email: 'mai.hoang@example.com', phone: '0987654321', center: 'Đà Nẵng', customerType: 'Cá nhân', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-09T08:30:00', status: 'Đóng', docNo: '048188812345', dob: '20/03/1990', gender: 'Nữ', province: 'Đà Nẵng', addressDetail: 'Số 88 Lê Lợi, Hải Châu', groups: ['Nhóm Tra cứu'], group: 'Nhóm Tra cứu', roles: ['Theo dõi kiểm tra'] },
@@ -4173,6 +4167,12 @@
          function getAuthMethods(item) {
              if (Array.isArray(item?.authMethods) && item.authMethods.length) return item.authMethods;
              return item?.identitySource === 'VNeID' ? ['VNeID'] : ['Nội bộ'];
+         }
+         function sourceBadges(item) {
+             return getAuthMethods(item).map(source => sourceBadge(source)).join(' ');
+         }
+         function sourceDisplayText(item) {
+             return getAuthMethods(item).join(', ');
          }
          function hasInternalAuth(item) {
              return getAuthMethods(item).includes('Nội bộ');
@@ -4325,7 +4325,7 @@
                          <td>${item.center}</td>
                          <td>${item.customerType}</td>
                          <td>${accountTypeLabel(item.accountType)}</td>
-                         <td>${sourceBadge(item.identitySource)}</td>
+                         <td>${sourceBadges(item)}</td>
                          <td>${classificationBadge(item.classification)}</td>
                          <td>${formatDateTime(item.createdAt)}</td>
                          <td>${statusBadge(item.status)}</td>
@@ -4388,7 +4388,7 @@
                      && (!phone || item.phone.includes(phone))
                      && (!center || item.center === center)
                      && (!customerType || item.customerType === customerType)
-                     && (!source || item.identitySource === source)
+                     && (!source || getAuthMethods(item).includes(source))
                      && (!classification || item.classification === classification)
                      && (!status || item.status === status)
                      && (!fromDate || itemDate >= fromDate)
@@ -5022,14 +5022,14 @@
              const isOrgMain = item.customerType === 'Tổ chức' && accountTypeLabel(item.accountType) === 'Tài khoản chính';
              const isSubAccount = accountTypeLabel(item.accountType) === 'Tài khoản phụ';
              document.getElementById('uc009DetailUpdateBtn').style.display = '';
-             const detailTitle = 'Chi tiết Khách hàng ' + item.customerType + ' (' + item.identitySource + ')';
+             const detailTitle = 'Chi tiết Khách hàng ' + item.customerType + ' (' + sourceDisplayText(item) + ')';
              document.getElementById('uc009DetailTitle').innerHTML = '<i class="fa-solid fa-circle-info"></i> ' + detailTitle;
              const idDocLabel = item.customerType === 'Cá nhân' ? 'Số giấy tờ' : (item.orgType === 'Tổ chức nước ngoài' ? 'Mã số thuế/Số giấy phép đầu tư' : 'Mã định danh tổ chức');
              const idDocValue = item.customerType === 'Cá nhân' ? item.docNo : item.taxCode;
              const groupText = getItemGroups(item).join(', ');
              const roleText = (item.roles || []).join(', ');
              const identityBlock = isSubAccount
-                  ? detailField('Tên khách hàng', item.name) + detailField('Email (Tên đăng nhập)', item.email) + detailField('Đơn vị', item.unit) + detailField('Số điện thoại', item.phone) + detailField('Trạng thái', item.status) + detailField('Loại giấy tờ', item.docType) + detailField('Số giấy tờ', item.docNo) + detailField('Loại khách hàng', item.customerType) + detailField('Loại tài khoản', accountTypeLabel(item.accountType)) + detailField('Nguồn xác thực', item.identitySource) + detailField('Phân loại khách hàng', item.classification) + detailField('Ngày tạo', formatDateTime(item.createdAt)) + detailField('Nhóm người dùng', groupText) + detailField('Vai trò', roleText)
+                  ? detailField('Tên khách hàng', item.name) + detailField('Email (Tên đăng nhập)', item.email) + detailField('Đơn vị', item.unit) + detailField('Số điện thoại', item.phone) + detailField('Trạng thái', item.status) + detailField('Loại giấy tờ', item.docType) + detailField('Số giấy tờ', item.docNo) + detailField('Loại khách hàng', item.customerType) + detailField('Loại tài khoản', accountTypeLabel(item.accountType)) + detailField('Nguồn xác thực', sourceDisplayText(item)) + detailField('Phân loại khách hàng', item.classification) + detailField('Ngày tạo', formatDateTime(item.createdAt)) + detailField('Nhóm người dùng', groupText) + detailField('Vai trò', roleText)
                  : item.customerType === 'Cá nhân'
                  ? detailField('Họ tên / Tên tổ chức', item.name) + detailField(idDocLabel, idDocValue) + detailField('Giới tính', item.gender) + detailField('Ngày sinh', item.dob) + detailField('Nhóm người dùng', groupText) + detailField('Vai trò', roleText)
                  : detailField('Loại tổ chức', item.orgType || (item.classification === 'Nước ngoài' ? 'Tổ chức nước ngoài' : 'Tổ chức có đăng ký kinh doanh trong nước')) + detailField('Tên tổ chức', item.name) + detailField(idDocLabel, idDocValue) + detailField('Email tổ chức (Tên đăng nhập)', item.email) + detailField('Họ và tên người đại diện', item.representative) + detailField('Loại giấy tờ người đại diện', item.repDocType) + detailField('Số giấy tờ người đại diện', item.repDocNo) + detailField('Quốc gia', item.nationality) + detailField('Nhóm người dùng', groupText) + detailField('Vai trò', roleText);
@@ -5076,7 +5076,7 @@
                          ${customerCodeDisplay(item) ? detailField('Mã khách hàng', customerCodeDisplay(item), 'full').replace('<span>', '<span class="uc009-detail-code">') : ''}
                          ${detailField('Loại khách hàng', item.customerType)}
                          ${detailField('Loại tài khoản', accountTypeLabel(item.accountType))}
-                          ${detailField('Nguồn xác thực', item.identitySource)}
+                          ${detailField('Nguồn xác thực', sourceDisplayText(item))}
                          ${detailField('TechID', item.techId || ' ')}
                          ${detailField('Phân loại khách hàng', item.classification)}
                          ${detailField('Trạng thái', item.status)}
