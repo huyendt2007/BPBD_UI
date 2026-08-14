@@ -666,11 +666,13 @@
          .section-divider {
              display: flex;
              align-items: center;
+             gap: 6px;
              margin: 20px 0 15px;
              color: var(--primary-color);
              font-weight: 600;
              font-size: 14px;
          }
+         .section-divider i { flex: 0 0 auto; }
          .section-divider::after {
              content: "";
              flex: 1;
@@ -790,7 +792,7 @@
                  </div>
  
                  <div class="form-group">
-                     <label class="form-label">Nguồn định danh</label>
+                     <label class="form-label">Nguồn xác thực</label>
                      <select id="filterIdentitySource" class="form-select">
                          <option value="">-- Tất cả --</option>
                          <option value="VNeID">VNeID</option>
@@ -849,7 +851,7 @@
                              <th width="12%">Email</th>
                              <th width="9%">Số điện thoại</th>
                              <th width="11%">Trung tâm Đăng ký</th>
-                             <th width="8%">Nguồn định danh</th>
+                             <th width="8%">Nguồn xác thực</th>
                              <th width="9%">Loại tài khoản</th>
                              <th width="9%" class="sortable" onclick="handleSort('person', 'createdDate')">Ngày tạo <span id="person-sort-createdDate"><i class="fas fa-sort"></i></span></th>
                              <th width="8%">Trạng thái</th>
@@ -873,12 +875,12 @@
                               <th width="4%" style="text-align:center">STT</th>
                               <th width="9%">Mã tổ chức</th>
                               <th width="13%" class="sortable" onclick="handleSort('org', 'name')">Tên tổ chức <span id="org-sort-name"><i class="fas fa-sort"></i></span></th>
-                              <th width="10%">Mã số thuế / Mã số doanh nghiệp</th>
+                              <th width="10%">Mã định danh/Mã số thuế</th>
                               <th width="10%">Người đại diện</th>
                               <th width="11%">Email</th>
                               <th width="8%">Số điện thoại</th>
                               <th width="10%">Trung tâm Đăng ký</th>
-                              <th width="8%">Nguồn định danh</th>
+                              <th width="8%">Nguồn xác thực</th>
                               <th width="8%">Loại tài khoản</th>
                               <th width="8%" class="sortable" onclick="handleSort('org', 'createdDate')">Ngày tạo <span id="org-sort-createdDate"><i class="fas fa-sort"></i></span></th>
                               <th width="8%">Trạng thái</th>
@@ -905,7 +907,7 @@
                  <!-- Modal Tabs (ORG only) -->
                  <div class="tabs" id="detailModalTabs" style="display:none">
                      <button class="tab-btn active" id="detailTabBtnInfo" onclick="switchDetailModalTab('info',this)">Thông tin chung</button>
-                     <button class="tab-btn" id="detailTabBtnSub" onclick="switchDetailModalTab('sub',this)">Quản lý tài khoản trực thuộc</button>
+                     <button class="tab-btn" id="detailTabBtnSub" onclick="switchDetailModalTab('sub',this)">Tài khoản phụ trực thuộc</button>
                  </div>
  
                  <!-- Tab 1: Thông tin chung -->
@@ -1007,10 +1009,10 @@
                      </div>
                  </div>
  
-                 <!-- Tab 2: Danh sách tài khoản con trực thuộc -->
+                 <!-- Tab 2: Danh sách tài khoản phụ trực thuộc -->
                  <div id="detail-mtab-sub" class="tab-content">
                      <div id="detailSubBanner" style="background:#EFF6FF;padding:10px;border:1px solid #BFDBFE;border-radius:6px;margin-bottom:15px;font-size:12px">
-                         <i class="fas fa-info-circle"></i> Danh sách các tài khoản con trực thuộc tổ chức được ủy quyền thực hiện các giao dịch.
+                         <i class="fas fa-info-circle"></i> Danh sách các tài khoản phụ trực thuộc tổ chức được ủy quyền thực hiện các giao dịch.
                      </div>
                      <table class="custom-table" id="detailSubTable">
                          <thead>
@@ -1049,7 +1051,7 @@
                  <!-- Modal Tabs (ORG only) -->
                  <div class="tabs" id="modalTabs" style="display:none">
                      <button class="tab-btn active" id="editTabBtnInfo" onclick="switchModalTab('info',this)">Thông tin chung</button>
-                     <button class="tab-btn" id="editTabBtnSub" onclick="switchModalTab('sub',this)">Quản lý tài khoản trực thuộc</button>
+                     <button class="tab-btn" id="editTabBtnSub" onclick="switchModalTab('sub',this)">Tài khoản phụ trực thuộc</button>
                  </div>
  
                  <!-- TAB 1: Thông tin chung -->
@@ -1090,7 +1092,7 @@
  
                      <div id="orgNonVNeIDGroup" style="display:none;">
                          <div class="grid-2-cols">
-                             <div class="form-group"><label class="form-label">Loại hình tổ chức</label><select class="form-select" id="inpOrgType"><option value="Tổ chức trong nước">Tổ chức trong nước</option><option value="Tổ chức nước ngoài">Tổ chức nước ngoài</option><option value="Tổ chức khác">Tổ chức khác</option></select></div>
+                             <div class="form-group"><label class="form-label">Phân loại khách hàng</label><select class="form-select" id="inpOrgType"><option value="Trong nước">Trong nước</option><option value="Nước ngoài">Nước ngoài</option></select></div>
                              <div class="form-group"><label class="form-label">Quốc gia đăng ký</label><select class="form-select" id="inpOrgCountry"><option value="Việt Nam">Việt Nam</option><option value="Khác">Khác</option></select></div>
                          </div>
                      </div>
@@ -1135,9 +1137,9 @@
                          <label class="form-label">Trung tâm Đăng ký thường giao dịch (Mặc định)</label>
                          <select class="form-select" id="inpCenter">
                              <option value="">-- Không bắt buộc (Chọn để tự động điền khi lập hồ sơ) --</option>
-                             <option value="Hà Nội">Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội</option>
-                             <option value="Hồ Chí Minh">Trung tâm đăng ký, giao dịch tài sản tại TP HCM</option>
-                             <option value="Đà Nẵng">Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng</option>
+                             <option value="Hà Nội">Hà Nội</option>
+                             <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
+                             <option value="Đà Nẵng">Đà Nẵng</option>
                          </select>
                      </div>
                      
@@ -1180,21 +1182,21 @@
                      </div>
                  </div>
  
-                 <!-- TAB 2: Quản lý tài khoản trực thuộc (ORG only) -->
+                 <!-- TAB 2: Tài khoản phụ trực thuộc (ORG only) -->
                  <div id="mtab-sub" class="tab-content">
                      <div id="subBannerVNeID" style="background:#EFF6FF;padding:10px;border:1px solid #BFDBFE;border-radius:6px;margin-bottom:15px;font-size:12px"><i class="fas fa-info-circle"></i> <strong>Cơ chế SSO VNeID:</strong> Ủy quyền cho nhân viên thông qua CCCD. Nhân viên đăng nhập Cổng DVC bằng VNeID cá nhân và chọn vai trò "Đại diện tổ chức".</div>
                      <div id="subBannerInternal" style="display:none;background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E"><i class="fas fa-info-circle"></i> <strong>Cơ chế Nội bộ:</strong> Tổ chức cấp quyền thông qua Tài khoản nội bộ. Mật khẩu sinh tự động và gửi qua Email nhân viên.</div>
                      <div style="display:flex;justify-content:space-between;margin-bottom:12px;align-items:center;">
-                         <strong>Danh sách tài khoản trực thuộc</strong>
+                         <strong>Danh sách tài khoản phụ trực thuộc</strong>
                          <div style="display:flex;gap:10px;">
                              <input type="text" id="searchSubInput" oninput="filterSubAccounts()" class="form-control" placeholder="Tìm tên, CCCD..." style="width:200px;height:32px;font-size:12px;">
-                             <button class="btn btn-outline-primary" id="btnAddSub" style="padding:4px 10px;font-size:12px;height:32px" onclick="toggleAddForm(true)">+ Thêm tài khoản con</button>
+                             <button class="btn btn-outline-primary" id="btnAddSub" style="padding:4px 10px;font-size:12px;height:32px" onclick="toggleAddForm(true)">+ Thêm tài khoản phụ</button>
                          </div>
                      </div>
  
                      <!-- Table -->
                      <table class="custom-table" style="font-size:12px" id="subTable">
-                         <thead><tr><th>Họ và tên</th><th>Đơn vị</th><th id="subTableIdentifierHeader">Số CCCD</th><th>Email</th><th>SĐT</th><th>Nguồn định danh</th><th>Trạng thái</th><th style="text-align:center">Thao tác</th></tr></thead>
+                     <thead><tr><th>STT</th><th>Tên khách hàng</th><th>Số giấy tờ</th><th>Địa chỉ</th><th>Trạng thái</th><th style="text-align:center">Thao tác</th></tr></thead>
                          <tbody id="editSubTableBody">
                              <!-- Populated dynamically -->
                          </tbody>
@@ -1202,7 +1204,7 @@
  
                      <!-- Add Form VNeID (hidden) -->
                      <div id="divCreateSubVNeID" style="display:none;background:#F8FAFC;padding:15px;border:1px solid var(--border-color);border-radius:6px;margin-top:15px">
-                         <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px" id="subFormTitleVNeID">Thêm mới Tài khoản con (VNeID SSO)</div>
+                         <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px" id="subFormTitleVNeID">Thêm mới Tài khoản phụ (VNeID SSO)</div>
                          <div class="grid-2-cols">
                              <div class="form-group"><label class="form-label">Số CCCD *</label><div style="display:flex;gap:8px"><input type="text" class="form-control" id="subCCCD_vneid"><button class="btn btn-secondary" onclick="showToast('Đang tra cứu dữ liệu từ hệ thống VNeID...')"><i class="fas fa-search"></i></button></div></div>
                              <div class="form-group"><label class="form-label">Họ và tên *</label><input type="text" class="form-control" id="subName_vneid"></div>
@@ -1245,14 +1247,14 @@
  
                      <!-- Add Form Internal (hidden) -->
                      <div id="divCreateSubInternal" style="display:none;background:#F8FAFC;padding:15px;border:1px solid var(--border-color);border-radius:6px;margin-top:15px">
-                         <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px" id="subFormTitleInternal">Thêm mới Tài khoản con (Tài khoản nội bộ)</div>
-                         <div style="background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E"><i class="fas fa-exclamation-triangle"></i> <strong>Lưu ý:</strong> Tài khoản con sẽ được tạo dưới dạng Tài khoản nội bộ. Mật khẩu sẽ được sinh ngẫu nhiên và gửi về Email của nhân viên.</div>
+                         <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px" id="subFormTitleInternal">Thêm mới Tài khoản phụ (Tài khoản nội bộ)</div>
+                         <div style="background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E"><i class="fas fa-exclamation-triangle"></i> <strong>Lưu ý:</strong> Tài khoản phụ sẽ được tạo dưới dạng Tài khoản nội bộ. Mật khẩu sẽ được sinh ngẫu nhiên và gửi về Email của nhân viên.</div>
                          <div class="grid-2-cols">
-                             <div class="form-group"><label class="form-label">Tên đăng nhập *</label><input type="text" class="form-control" id="subUsername_int"></div>
+                             <div class="form-group"><label class="form-label">Tên đăng nhập</label><input type="text" class="form-control" id="subUsername_int" readonly placeholder="Tự động lấy theo Email"></div>
                              <div class="form-group"><label class="form-label">Họ và tên *</label><input type="text" class="form-control" id="subName_int"></div>
                          </div>
                          <div class="grid-2-cols">
-                             <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" id="subEmail_int"></div>
+                             <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" id="subEmail_int" oninput="document.getElementById('subUsername_int').value=this.value.trim()"></div>
                              <div class="form-group"><label class="form-label">Số điện thoại *</label><input type="text" class="form-control" id="subPhone_int"></div>
                          </div>
                          <div class="grid-3-cols">
@@ -1311,7 +1313,7 @@
                      <i class="fas fa-exclamation-triangle"></i> <strong>Lưu ý:</strong> Tính năng này chỉ dùng để cấp tài khoản cho người nước ngoài, tổ chức nước ngoài hoặc các trường hợp đặc biệt không thể định danh qua Cổng DVCQG/VNeID. Mật khẩu sẽ được hệ thống sinh ngẫu nhiên và gửi về Email.
                  </div>
                  <div class="form-group">
-                     <label class="form-label">Loại khách hàng *</label>
+                     <label class="form-label">Loại tài khoản *</label>
                      <select class="form-select" id="addAccType" onchange="handleAddAccTypeChange()">
                          <option value="PERSON">Cá nhân</option>
                          <option value="ORG">Tổ chức</option>
@@ -1354,9 +1356,9 @@
                           <label class="form-label">Trung tâm Đăng ký mặc định</label>
                           <select class="form-select" id="addPersonCenter">
                               <option value="">-- Không bắt buộc (Chọn để tự động điền khi lập hồ sơ) --</option>
-                              <option value="Hà Nội">Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội</option>
-                              <option value="Hồ Chí Minh">Trung tâm đăng ký, giao dịch tài sản tại TP HCM</option>
-                              <option value="Đà Nẵng">Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng</option>
+                              <option value="Hà Nội">Hà Nội</option>
+                              <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
+                              <option value="Đà Nẵng">Đà Nẵng</option>
                           </select>
                       </div>
                       <div class="grid-2-cols">
@@ -1399,16 +1401,17 @@
                  <div id="addAccOrgForm" style="display:none">
                      <div class="tabs" id="addOrgTabs">
                          <button class="tab-btn active" id="addOrgTabBtnInfo" onclick="switchAddOrgTab('info',this)">Thông tin chung</button>
-                         <button class="tab-btn" id="addOrgTabBtnSub" onclick="switchAddOrgTab('sub',this)">Quản lý tài khoản trực thuộc</button>
+                         <button class="tab-btn" id="addOrgTabBtnSub" onclick="switchAddOrgTab('sub',this)">Tài khoản phụ trực thuộc</button>
                      </div>
                      
                      <div id="addOrgTab-info" class="tab-content active">
                          <div class="grid-2-cols">
-                             <div class="form-group"><label class="form-label">Mã số tổ chức (Tên đăng nhập) *</label><input type="text" class="form-control" id="addOrgCode"></div>
+                             <div class="form-group"><label class="form-label">Mã định danh tổ chức / Mã số thuế/Số giấy phép đầu tư *</label><input type="text" class="form-control" id="addOrgCode"></div>
                              <div class="form-group"><label class="form-label">Tên tổ chức *</label><input type="text" class="form-control" id="addOrgName"></div>
                              <div class="form-group"><label class="form-label">Quốc gia đăng ký *</label><select class="form-select" id="addOrgCountry"><option value="Việt Nam">Việt Nam</option><option value="Khác">Khác</option></select></div>
-                             <div class="form-group"><label class="form-label">Loại hình *</label><select class="form-select" id="addOrgType"><option value="Tổ chức trong nước">Tổ chức trong nước</option><option value="Tổ chức nước ngoài">Tổ chức nước ngoài</option></select></div>
-                             <div class="form-group"><label class="form-label">Email tổ chức *</label><input type="email" class="form-control" id="addOrgEmail"></div>
+                             <div class="form-group"><label class="form-label">Phân loại khách hàng *</label><select class="form-select" id="addOrgType"><option value="Trong nước">Trong nước</option><option value="Nước ngoài">Nước ngoài</option></select></div>
+                             <div class="form-group"><label class="form-label">Email tổ chức *</label><input type="email" class="form-control" id="addOrgEmail" oninput="document.getElementById('addOrgUsername').value=this.value.trim()"></div>
+                             <div class="form-group"><label class="form-label">Tên đăng nhập</label><input type="text" class="form-control" id="addOrgUsername" readonly placeholder="Tự động lấy theo Email"></div>
                              <div class="form-group"><label class="form-label">Số điện thoại *</label><input type="text" class="form-control" id="addOrgPhone"></div>
                          </div>
                          <div class="grid-2-cols">
@@ -1432,9 +1435,9 @@
                           <label class="form-label">Trung tâm Đăng ký mặc định</label>
                           <select class="form-select" id="addOrgCenter">
                               <option value="">-- Không bắt buộc (Chọn để tự động điền khi lập hồ sơ) --</option>
-                              <option value="Hà Nội">Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội</option>
-                              <option value="Hồ Chí Minh">Trung tâm đăng ký, giao dịch tài sản tại TP HCM</option>
-                              <option value="Đà Nẵng">Trung tâm đăng ký, giao dịch tài sản tại TP Đà Nẵng</option>
+                              <option value="Hà Nội">Hà Nội</option>
+                              <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
+                              <option value="Đà Nẵng">Đà Nẵng</option>
                           </select>
                       </div>
                       <div class="grid-2-cols">
@@ -1490,26 +1493,26 @@
                      </div>
                      
                      <div id="addOrgTab-sub" class="tab-content">
-                         <div style="background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E"><i class="fas fa-info-circle"></i> <strong>Tài khoản nội bộ:</strong> Các tài khoản con sẽ được sinh mật khẩu ngẫu nhiên và gửi qua Email khi bạn bấm [Lưu & Cấp tài khoản].</div>
+                         <div style="background:#FFFBEB;padding:10px;border:1px solid #FDE68A;border-radius:6px;margin-bottom:15px;font-size:12px;color:#92400E"><i class="fas fa-info-circle"></i> <strong>Tài khoản nội bộ:</strong> Các tài khoản phụ sẽ được sinh mật khẩu ngẫu nhiên và gửi qua Email khi bạn bấm [Lưu & Cấp tài khoản].</div>
                          <div style="display:flex;justify-content:space-between;margin-bottom:12px;align-items:center;">
-                             <strong>Danh sách tài khoản trực thuộc</strong>
-                             <div style="display:flex;gap:10px;"><input type="text" id="searchNewSubInput" oninput="filterNewSubAccounts()" class="form-control" placeholder="Tìm tên, CCCD..." style="width:200px;height:32px;font-size:12px;"><button class="btn btn-outline-primary" id="btnAddNewSub" style="padding:4px 10px;font-size:12px;height:32px" onclick="toggleAddNewSubForm(true)">+ Thêm tài khoản con</button></div>
+                             <strong>Danh sách tài khoản phụ trực thuộc</strong>
+                             <div style="display:flex;gap:10px;"><input type="text" id="searchNewSubInput" oninput="filterNewSubAccounts()" class="form-control" placeholder="Tìm tên, CCCD..." style="width:200px;height:32px;font-size:12px;"><button class="btn btn-outline-primary" id="btnAddNewSub" style="padding:4px 10px;font-size:12px;height:32px" onclick="toggleAddNewSubForm(true)">+ Thêm tài khoản phụ</button></div>
                          </div>
                          <table class="custom-table" style="font-size:12px" id="newSubTable">
-                             <thead><tr><th>Họ và tên</th><th>Đơn vị</th><th>Tên đăng nhập</th><th>Email</th><th>SĐT</th><th>Trạng thái</th><th style="text-align:center">Thao tác</th></tr></thead>
+                             <thead><tr><th>STT</th><th>Tên khách hàng</th><th>Số giấy tờ</th><th>Địa chỉ</th><th>Trạng thái</th><th style="text-align:center">Thao tác</th></tr></thead>
                              <tbody>
-                                 <tr id="noSubMsg"><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Chưa có tài khoản con nào được thêm tạm.</td></tr>
+                                 <tr id="noSubMsg"><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Chưa có tài khoản phụ nào được thêm tạm.</td></tr>
                              </tbody>
                          </table>
                          
                          <div id="divCreateNewSubInternal" style="display:none;background:#F8FAFC;padding:15px;border:1px solid var(--border-color);border-radius:6px;margin-top:15px">
-                             <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px">Thêm mới Tài khoản con</div>
+                             <div style="color:var(--primary-color);font-weight:600;margin-bottom:12px">Thêm mới Tài khoản phụ</div>
                              <div class="grid-2-cols">
-                                 <div class="form-group"><label class="form-label">Tên đăng nhập *</label><input type="text" class="form-control" id="newSubUsername"></div>
+                                 <div class="form-group"><label class="form-label">Tên đăng nhập</label><input type="text" class="form-control" id="newSubUsername" readonly placeholder="Tự động lấy theo Email"></div>
                                  <div class="form-group"><label class="form-label">Họ và tên *</label><input type="text" class="form-control" id="newSubName"></div>
                              </div>
                              <div class="grid-2-cols">
-                                 <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" id="newSubEmail"></div>
+                                 <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-control" id="newSubEmail" oninput="document.getElementById('newSubUsername').value=this.value.trim()"></div>
                                  <div class="form-group"><label class="form-label">Số điện thoại *</label><input type="text" class="form-control" id="newSubPhone"></div>
                              </div>
                              <div class="grid-3-cols">
@@ -1650,7 +1653,7 @@
                  </div>
                  <div class="section-divider"><i class="fas fa-cogs"></i> Quyền hạn được cấp (Read-only)</div>
                  <div class="perm-tree" id="detSubPermTree">
-                     <!-- Quyền hạn tài khoản con -->
+                     <!-- Quyền hạn tài khoản phụ -->
                  </div>
              </div>
              <div class="modal-footer">
@@ -1667,18 +1670,18 @@
               { id: 1, name: "Nguyễn Văn An", code: "001090123456", email: "nvan@gmail.com", phone: "0987654321", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "12/05/1988", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 15 Láng Hạ, Đống Đa", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "15/06/2026", accountType: "Thường xuyên" },
               { id: 2, name: "John Doe", code: "P12345678", email: "john@example.com", phone: "0901112222", center: "Hà Nội", identitySource: "Nội bộ", status: "Hoạt động", gender: "Nam", dob: "01/01/1990", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "New York", addressDetail: "23 Cát Linh, Đống Đa, Hà Nội", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "14/06/2026", accountType: "Thường xuyên" },
               { id: 3, name: "Lê Thị Bích", code: "030192000111", email: "bich.le@gmail.com", phone: "0912345678", center: "Đà Nẵng", identitySource: "VNeID", status: "Hoạt động", gender: "Nữ", dob: "14/03/1992", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "Số 88 Lê Lợi, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM6"], createdDate: "13/06/2026", accountType: "Thường xuyên" },
-              { id: 4, name: "Phạm Văn Đồng", code: "040088000222", email: "dong.pv@yahoo.com", phone: "0933445566", center: "TP. Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "25/08/1985", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "141 Pasteur, Quận 3", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM5", "PERM6", "PERM7"], createdDate: "12/06/2026", accountType: "Thường xuyên" },
+              { id: 4, name: "Phạm Văn Đồng", code: "040088000222", email: "dong.pv@yahoo.com", phone: "0933445566", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "25/08/1985", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "141 Pasteur, Quận 3", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM5", "PERM6", "PERM7"], createdDate: "12/06/2026", accountType: "Thường xuyên" },
               { id: 5, name: "Hoàng Minh Quân", code: "001099000333", email: "quan.hm@gmail.com", phone: "0944556677", center: "Hà Nội", identitySource: "VNeID", status: "Bị khóa", gender: "Nam", dob: "05/10/1989", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "Số 10 Nguyễn Cảnh Chân, Ba Đình", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "10/06/2026", accountType: "Thường xuyên" },
-              { id: 6, name: "Michael Smith", code: "P98765432", email: "michael.s@gmail.com", phone: "0966778899", center: "TP. Hồ Chí Minh", identitySource: "Nội bộ", status: "Hoạt động", gender: "Nam", dob: "18/06/1976", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "London", addressDetail: "8 Võ Văn Kiệt, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM7"], createdDate: "09/06/2026", accountType: "Thường xuyên" },
+              { id: 6, name: "Michael Smith", code: "P98765432", email: "michael.s@gmail.com", phone: "0966778899", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Hoạt động", gender: "Nam", dob: "18/06/1976", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "London", addressDetail: "8 Võ Văn Kiệt, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM7"], createdDate: "09/06/2026", accountType: "Thường xuyên" },
               { id: 7, name: "Vũ Đức Đam", code: "001085000444", email: "dam.vd@chinhphu.vn", phone: "0977889900", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "15/12/1970", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "1 Hoàng Hoa Thám, Ba Đình", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM5", "PERM6", "PERM7"], createdDate: "08/06/2026", accountType: "Thường xuyên" },
               { id: 8, name: "Đinh Thu Hà", code: "001095000555", email: "ha.dt@outlook.com", phone: "0988990011", center: "Đà Nẵng", identitySource: "VNeID", status: "Hoạt động", gender: "Nữ", dob: "20/11/1995", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "234 Trần Phú, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "05/06/2026", accountType: "Thường xuyên" },
               { id: 9, name: "Sarah Connor", code: "P33344455", email: "sarah.c@cyberdyne.com", phone: "0999001122", center: "Hà Nội", identitySource: "Nội bộ", status: "Hoạt động", gender: "Nữ", dob: "04/04/1982", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "California", addressDetail: "Khu công nghệ cao Láng Hòa Lạc, Thạch Thất", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM3", "PERM6"], createdDate: "04/06/2026", accountType: "Thường xuyên" },
-              { id: 10, name: "Ngô Kiến Huy", code: "079088000666", email: "huy.nk@showbiz.vn", phone: "0900112233", center: "TP. Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "29/06/1990", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "65 Lê Lợi, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "01/06/2026", accountType: "Thường xuyên" },
+              { id: 10, name: "Ngô Kiến Huy", code: "079088000666", email: "huy.nk@showbiz.vn", phone: "0900112233", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", gender: "Nam", dob: "29/06/1990", docType: "CCCD", nationality: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "65 Lê Lợi, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM1", "PERM2", "PERM6"], createdDate: "01/06/2026", accountType: "Thường xuyên" },
               
               // Mock Một lần accounts (Cá nhân)
               { id: 11, name: "Phùng Gia Bảo", code: "001099123456", email: "bao.pg@gmail.com", phone: "0981112222", center: "Hà Nội", identitySource: "VNeID", status: "Tạm thời", gender: "Nam", dob: "18/09/1993", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "32 Hùng Vương, Ba Đình", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "20/06/2026", accountType: "Một lần" },
               { id: 12, name: "Trần Thu Trang", code: "001095654321", email: "trang.tt@yahoo.com", phone: "0972223333", center: "Đà Nẵng", identitySource: "VNeID", status: "Hết hạn", gender: "Nữ", dob: "05/05/1995", docType: "CCCD", nationality: "Việt Nam", province: "TP Đà Nẵng", addressDetail: "45 Lê Lợi, Hải Châu", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "10/05/2026", accountType: "Một lần" },
-              { id: 13, name: "David Kim", code: "P55566677", email: "david.kim@gmail.com", phone: "0963334444", center: "TP. Hồ Chí Minh", identitySource: "Nội bộ", status: "Tạm thời", gender: "Nam", dob: "12/12/1982", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "Seoul", addressDetail: "120 Nguyễn Huệ, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "22/06/2026", accountType: "Một lần" },
+              { id: 13, name: "David Kim", code: "P55566677", email: "david.kim@gmail.com", phone: "0963334444", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Tạm thời", gender: "Nam", dob: "12/12/1982", docType: "Hộ chiếu", nationality: "Nước ngoài", province: "Seoul", addressDetail: "120 Nguyễn Huệ, Quận 1", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "22/06/2026", accountType: "Một lần" },
               { id: 14, name: "Nguyễn Thị Mai", code: "001092777888", email: "mai.nt@outlook.com", phone: "0954445555", center: "Hà Nội", identitySource: "VNeID", status: "Hết hạn", gender: "Nữ", dob: "22/02/1992", docType: "CCCD", nationality: "Việt Nam", province: "TP Hà Nội", addressDetail: "88 Cầu Giấy", role: "Khách hàng Cá nhân Thường", perms: ["PERM6"], createdDate: "01/04/2026", accountType: "Một lần" }
           ];
 
@@ -1691,7 +1694,7 @@
                 ]
               },
               { id: 102, name: "Vietcombank - Chi nhánh Ba Đình", code: "0100112437-001", email: "badinh@vietcombank.com", phone: "0243123456", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", repName: "Nguyễn Văn Hải", repDocType: "Căn cước công dân", repCode: "001090001234", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "521 Kim Mã, Ba Đình", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "14/06/2026", accountType: "Thường xuyên", subs: [] },
-              { id: 103, name: "Vietcombank - Chi nhánh Sài Gòn", code: "0100112437-002", email: "saigon@vietcombank.com", phone: "0283123456", center: "TP. Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", repName: "Trần Minh Hòa", repDocType: "Căn cước công dân", repCode: "079085002233", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "29 Bến Chương Dương, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "13/06/2026", accountType: "Thường xuyên", subs: [] },
+              { id: 103, name: "Vietcombank - Chi nhánh Sài Gòn", code: "0100112437-002", email: "saigon@vietcombank.com", phone: "0283123456", center: "TP Hồ Chí Minh", identitySource: "VNeID", status: "Hoạt động", repName: "Trần Minh Hòa", repDocType: "Căn cước công dân", repCode: "079085002233", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "29 Bến Chương Dương, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM6", "PERM8"], createdDate: "13/06/2026", accountType: "Thường xuyên", subs: [] },
               { id: 104, name: "Ngân hàng TMCP Đầu tư và Phát triển VN", code: "0100150619", email: "info@bidv.com.vn", phone: "19009247", center: "Hà Nội", identitySource: "VNeID", status: "Hoạt động", repName: "Phan Đức Tú", repDocType: "Căn cước công dân", repCode: "001065000555", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "35 Hàng Vôi, Hoàn Kiếm", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM2", "PERM3", "PERM4", "PERM6", "PERM8"], createdDate: "12/06/2026", accountType: "Thường xuyên",
                 subs: [
                     { name: "BIDV - Chi nhánh Hải Châu", code: "0100150619-005", email: "haichau@bidv.com.vn", phone: "02363822111", unit: "BIDV Hải Châu", status: "Đã đồng bộ", perms: ["PERM1", "PERM2", "PERM6"], group: "Khách hàng Tổ chức", role: "Nhân viên khai báo" }
@@ -1701,7 +1704,7 @@
               
               // Mock Một lần accounts (Tổ chức)
               { id: 107, name: "Công ty TNHH Thương mại Một lần Thành Công", code: "0109998887", email: "contact@onetime.vn", phone: "0243888888", center: "Hà Nội", identitySource: "Nội bộ", status: "Tạm thời", repName: "Phạm Thành Công", repDocType: "Căn cước công dân", repCode: "001090888999", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hà Nội", addressDetail: "15 Cầu Giấy, Quan Hoa", role: "Quản trị tài khoản tổ chức", perms: ["PERM1", "PERM6"], createdDate: "21/06/2026", accountType: "Một lần", subs: [] },
-              { id: 108, name: "VPĐD Onetime Global tại TP.HCM", code: "0109998887-001", email: "hcm@onetime.vn", phone: "0283999999", center: "TP. Hồ Chí Minh", identitySource: "Nội bộ", status: "Hết hạn", repName: "Nguyễn Văn Hùng", repDocType: "Căn cước công dân", repCode: "079080111222", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "77 Nguyễn Huệ, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM6"], createdDate: "10/05/2026", accountType: "Một lần", subs: [] }
+              { id: 108, name: "VPĐD Onetime Global tại TP.HCM", code: "0109998887-001", email: "hcm@onetime.vn", phone: "0283999999", center: "TP Hồ Chí Minh", identitySource: "Nội bộ", status: "Hết hạn", repName: "Nguyễn Văn Hùng", repDocType: "Căn cước công dân", repCode: "079080111222", orgType: "Tổ chức trong nước", orgCountry: "Việt Nam", province: "TP Hồ Chí Minh", addressDetail: "77 Nguyễn Huệ, Quận 1", role: "Quản trị tài khoản tổ chức", perms: ["PERM6"], createdDate: "10/05/2026", accountType: "Một lần", subs: [] }
           ];
 
           let currentEditingId = null;
@@ -1963,14 +1966,13 @@
                           : `<span class="badge bg-secondary">Nội bộ</span>`;
                       
                       // Action buttons
-                      const viewBtn = `<button type="button" class="icon-btn view" title="Xem" onclick="event.preventDefault(); event.stopPropagation(); openDetailModal('PERSON', ${item.id})"><i class="fas fa-eye"></i></button>`;
                       const editBtn = `<button type="button" class="icon-btn edit" title="Sửa" onclick="event.preventDefault(); event.stopPropagation(); openEditModal('PERSON', ${item.id})"><i class="fas fa-edit"></i></button>`;
                       const lockIcon = item.status === 'Bị khóa' ? 'fa-unlock' : 'fa-lock';
                       const lockTitle = item.status === 'Bị khóa' ? 'Mở khóa' : 'Khóa';
                       const lockBtn = `<button type="button" class="icon-btn lock" title="${lockTitle}" onclick="event.preventDefault(); event.stopPropagation(); toggleLock('PERSON', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
                       
                       // Key button is rendered as a placeholder for VNeID
-                      const resetPwdBtn = item.identitySource === 'Nội bộ'
+                      const resetPwdBtn = (item.authMethods || [item.identitySource]).includes('Nội bộ')
                           ? `<button type="button" class="icon-btn success" title="Đặt lại mật khẩu" onclick="event.preventDefault(); event.stopPropagation(); resetPassword(${item.id}, 'PERSON')"><i class="fas fa-key"></i></button>`
                           : `<button type="button" class="icon-btn success" title="Tài khoản liên kết định danh VNeID không sử dụng mật khẩu nội bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fas fa-key"></i></button>`;
                       
@@ -1987,7 +1989,6 @@
                           <td>${item.createdDate || '15/06/2026'}</td>
                           <td>${statusBadge}</td>
                           <td class="action-cell">
-                              ${viewBtn}
                               ${editBtn}
                               ${lockBtn}
                               ${resetPwdBtn}
@@ -2075,19 +2076,18 @@
                           : `<i class="fas fa-chevron-down" style="color:var(--text-muted);font-size:10px;margin-right:6px"></i>`;
                       
                       // Action buttons
-                      const viewBtn = `<button type="button" class="icon-btn view" title="Xem" onclick="event.preventDefault(); event.stopPropagation(); openDetailModal('ORG', ${item.id})"><i class="fas fa-eye"></i></button>`;
                       const editBtn = `<button type="button" class="icon-btn edit" title="Sửa" onclick="event.preventDefault(); event.stopPropagation(); openEditModal('ORG', ${item.id})"><i class="fas fa-edit"></i></button>`;
                       const lockIcon = item.status === 'Bị khóa' ? 'fa-unlock' : 'fa-lock';
                       const lockTitle = item.status === 'Bị khóa' ? 'Mở khóa' : 'Khóa';
                       const lockBtn = `<button type="button" class="icon-btn lock" title="${lockTitle}" onclick="event.preventDefault(); event.stopPropagation(); toggleLock('ORG', ${item.id})"><i class="fas ${lockIcon}"></i></button>`;
                       
                       // Key button is rendered as a placeholder for VNeID
-                      const resetPwdBtn = item.identitySource === 'Nội bộ'
+                      const resetPwdBtn = (item.authMethods || [item.identitySource]).includes('Nội bộ')
                           ? `<button type="button" class="icon-btn success" title="Đặt lại mật khẩu" onclick="event.preventDefault(); event.stopPropagation(); resetPassword(${item.id}, 'ORG')"><i class="fas fa-key"></i></button>`
                           : `<button type="button" class="icon-btn success" title="Tài khoản liên kết định danh VNeID không sử dụng mật khẩu nội bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fas fa-key"></i></button>`;
                       
                       const hasSubMatch = keyword && item.subs && item.subs.some(sub => sub.code.toLowerCase().includes(keyword));
-                      const subMatchBadge = hasSubMatch ? `<span class="badge bg-warning" style="margin-left:8px;">(Tìm thấy tài khoản con trùng Số giấy tờ)</span>` : '';
+                      const subMatchBadge = hasSubMatch ? `<span class="badge bg-warning" style="margin-left:8px;">(Tìm thấy tài khoản phụ trùng Số giấy tờ)</span>` : '';
                       
                       tr.innerHTML = `
                           <td style="text-align:center">${stt}</td>
@@ -2103,7 +2103,6 @@
                           <td>${item.createdDate || '15/06/2026'}</td>
                           <td>${statusBadge}</td>
                           <td class="action-cell">
-                              ${viewBtn}
                               ${editBtn}
                               ${lockBtn}
                               ${resetPwdBtn}
@@ -2211,7 +2210,7 @@
                          subTableBody.appendChild(tr);
                      });
                  } else {
-                     subTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">Tổ chức này chưa ủy quyền tài khoản con nào.</td></tr>';
+                     subTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">Tổ chức này chưa ủy quyền tài khoản phụ nào.</td></tr>';
                  }
              }
  
@@ -2411,16 +2410,15 @@
                           <td>${sourceBadge}</td>
                           <td><span class="badge bg-success">${s.status}</span></td>
                           <td class="action-cell">
-                              <button class="icon-btn view" title="Xem" onclick="openSubDetailModal('${s.code}', ${orgItem.id})"><i class="fas fa-eye"></i></button>
                               <button class="icon-btn edit" title="Sửa" onclick="editSubAccount('${rowId}')"><i class="fas fa-edit"></i></button>
-                              <button class="icon-btn lock" title="Đóng tài khoản" onclick="showToast('Tài khoản con đã được đóng tạm thời.')"><i class="fas fa-lock"></i></button>
+                             <button class="icon-btn lock" title="Đóng tài khoản" onclick="showToast('Tài khoản phụ đã được đóng tạm thời.')"><i class="fas fa-lock"></i></button>
                               <button class="icon-btn delete" title="Xóa" onclick="deleteSubAccount('${rowId}', '${s.name}')"><i class="fas fa-trash"></i></button>
                           </td>
                       `;
                       subTableBody.appendChild(tr);
                   });
               } else {
-                  subTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:20px;">Tổ chức này chưa ủy quyền tài khoản con nào phù hợp.</td></tr>';
+                  subTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:20px;">Tổ chức này chưa ủy quyền tài khoản phụ nào phù hợp.</td></tr>';
               }
           }
  
@@ -2459,7 +2457,7 @@
               item.role = selectedRoles.length > 0 ? selectedRoles.join(', ') : 'Khách hàng Cá nhân Thường';
  
              if (type === 'PERSON') {
-                 if (item.identitySource === 'Nội bộ') {
+                if ((item.authMethods || [item.identitySource]).includes('Nội bộ')) {
                      item.gender = document.getElementById('inpGender').value;
                      item.dob = document.getElementById('inpDob').value;
                  }
@@ -2467,7 +2465,7 @@
                  item.repName = document.getElementById('inpRepName').value.trim();
                  item.repDocType = document.getElementById('inpRepDocType').value;
                  item.repCode = document.getElementById('inpRepCode').value.trim();
-                 if (item.identitySource === 'Nội bộ') {
+                if ((item.authMethods || [item.identitySource]).includes('Nội bộ')) {
                      item.orgType = document.getElementById('inpOrgType').value;
                      item.orgCountry = document.getElementById('inpOrgCountry').value;
                  }
@@ -2556,7 +2554,7 @@
              resetPwdTargetType = null;
          }
  
-         // Xem chi tiết tài khoản con
+         // Xem chi tiết tài khoản phụ
          function openSubDetailModal(subCode, orgId) {
              const org = orgAccounts.find(x => x.id === orgId);
              if (!org || !org.subs) return;
@@ -2589,7 +2587,7 @@
              }
              
              if (!hasPerm) {
-                 container.innerHTML = '<div style="color:var(--text-muted); font-style:italic;">Tài khoản con chưa có quyền hạn nào.</div>';
+                 container.innerHTML = '<div style="color:var(--text-muted); font-style:italic;">Tài khoản phụ chưa có quyền hạn nào.</div>';
              }
              
              document.getElementById('detailSubAccountModal').classList.add('active');
@@ -2694,12 +2692,12 @@
              
              if (show) { 
                  if (currentOrgIsVNeID) {
-                     document.getElementById('subFormTitleVNeID').innerText = 'Thêm mới Tài khoản con (VNeID SSO)';
+                     document.getElementById('subFormTitleVNeID').innerText = 'Thêm mới Tài khoản phụ (VNeID SSO)';
                      ['subCCCD_vneid','subName_vneid','subEmail_vneid','subPhone_vneid','subUnit_vneid'].forEach(id => document.getElementById(id).value = '');
                      document.getElementById('subRole_vneid').value = 'Nhân viên khai báo';
                      updateSubPermTreePreview('vneid');
                  } else {
-                     document.getElementById('subFormTitleInternal').innerText = 'Thêm mới Tài khoản con (Tài khoản nội bộ)';
+                     document.getElementById('subFormTitleInternal').innerText = 'Thêm mới Tài khoản phụ (Tài khoản nội bộ)';
                      ['subUsername_int','subName_int','subEmail_int','subPhone_int','subUnit_int'].forEach(id => document.getElementById(id).value = '');
                      document.getElementById('subRole_int').value = 'Nhân viên khai báo';
                      updateSubPermTreePreview('int');
@@ -2765,7 +2763,7 @@
              }
  
              if (!name || !code || !email || !phone || !unit) {
-                 showToast('Vui lòng nhập đầy đủ thông tin tài khoản con!', 'error');
+                 showToast('Vui lòng nhập đầy đủ thông tin tài khoản phụ!', 'error');
                  return;
              }
  
@@ -2840,6 +2838,7 @@
              populateGroupAndRoleSelects('PERSON', 'addPerson');
              
              document.getElementById('addOrgCode').value = '';
+             document.getElementById('addOrgUsername').value = '';
              document.getElementById('addOrgName').value = '';
              document.getElementById('addOrgEmail').value = '';
              document.getElementById('addOrgPhone').value = '';
@@ -2889,7 +2888,7 @@
              document.getElementById('btnAddNewSub').style.display = show ? 'none' : 'inline-flex';
              if (show) {
                  currentEditingNewSubIndex = null;
-                 document.getElementById('newSubUsername').readOnly = false;
+                 document.getElementById('newSubUsername').readOnly = true;
                  ['newSubUsername','newSubName','newSubEmail','newSubPhone','newSubUnit'].forEach(id => document.getElementById(id).value = '');
                  document.getElementById('newSubRole').value = 'Nhân viên khai báo';
                  updateSubPermTreePreview('new');
@@ -2963,10 +2962,10 @@
              
              if (currentEditingNewSubIndex === null) {
                  tempNewOrgSubs.push(subItem);
-                 showToast('Đã thêm tài khoản con vào lưới tạm thành công!');
+                 showToast('Đã thêm tài khoản phụ vào lưới tạm thành công!');
              } else {
                  tempNewOrgSubs[currentEditingNewSubIndex] = subItem;
-                 showToast('Cập nhật tài khoản con thành công!');
+                 showToast('Cập nhật tài khoản phụ thành công!');
              }
              
              renderNewSubTable();
@@ -2988,7 +2987,7 @@
               });
               
               if (filteredSubs.length === 0) {
-                  tbody.innerHTML = '<tr id="noSubMsg"><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Không tìm thấy tài khoản con phù hợp.</td></tr>';
+                  tbody.innerHTML = '<tr id="noSubMsg"><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Không tìm thấy tài khoản phụ phù hợp.</td></tr>';
                   return;
               }
               
@@ -3003,7 +3002,6 @@
                       <td>${s.phone}</td>
                       <td><span class="badge bg-warning">${s.status}</span></td>
                       <td class="action-cell">
-                          <button class="icon-btn view" title="Xem" onclick="editNewSubAccount(${origIdx})"><i class="fas fa-eye"></i></button>
                           <button class="icon-btn edit" title="Sửa" onclick="editNewSubAccount(${origIdx})"><i class="fas fa-edit"></i></button>
                           <button class="icon-btn delete" title="Xóa" onclick="deleteNewSubAccount(${origIdx})"><i class="fas fa-trash"></i></button>
                       </td>
@@ -3033,10 +3031,10 @@
          }
  
          function deleteNewSubAccount(index) {
-             if (confirm('Bạn có chắc chắn muốn xóa tài khoản con này khỏi lưới tạm?')) {
+             if (confirm('Bạn có chắc chắn muốn xóa tài khoản phụ này khỏi lưới tạm?')) {
                  tempNewOrgSubs.splice(index, 1);
                  renderNewSubTable();
-                 showToast('Đã xóa tài khoản con khỏi lưới tạm.');
+                 showToast('Đã xóa tài khoản phụ khỏi lưới tạm.');
              }
          }
          
@@ -3663,6 +3661,1539 @@
               renderTables();
           });
      </script>
+ <script>
+ (function () {
+     document.addEventListener('DOMContentLoaded', function () {
+         const style = document.createElement('style');
+         style.textContent = `
+             body { padding: 0; background: #F3F4F6; }
+             .uc009-page { padding: 20px; }
+             .uc009-title { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+             .uc009-title h1 { color:#1E3A8A; font-size:18px; margin:0; display:flex; align-items:center; gap:8px; }
+             .uc009-toolbar { display:flex; justify-content:flex-end; gap:10px; margin-bottom:12px; }
+             .uc009-table-wrap { overflow:auto; border:1px solid #E2E8F0; border-radius:8px; background:#fff; }
+             .uc009-table { min-width:1600px; }
+             .uc009-table th, .uc009-table td { white-space:nowrap; vertical-align:middle; }
+             .uc009-table tbody tr { cursor:pointer; }
+             .uc009-table .child-row td:first-child { border-left:4px solid #93C5FD; }
+             .child-name { display:flex; flex-direction:column; gap:2px; }
+             .child-name small { color:#64748B; font-weight:500; }
+             .badge-closed { background:#E5E7EB; color:#374151; }
+             .badge-domestic { background:#DCFCE7; color:#166534; }
+             .badge-foreign { background:#FEF3C7; color:#92400E; }
+            .record-total { color:#64748B; font-size:13px; }
+            .record-total strong { display:inline-flex; align-items:center; gap:8px; background:#EFF6FF; color:#1E3A8A; border:1px solid #BFDBFE; border-radius:8px; padding:8px 12px; font-size:14px; font-weight:800; box-shadow:0 1px 2px rgba(30,58,138,.08); }
+            .record-total span { display:block; margin-top:4px; color:#64748B; font-size:12px; }
+             .icon-btn.close-account { color:#64748B; background:#F8FAFC; border:1px solid #CBD5E1; }
+             .icon-btn.close-account:hover { color:#111827; background:#E5E7EB; }
+             .icon-btn:disabled { opacity:.4; cursor:not-allowed; pointer-events:none; }
+             .attachment-table { width:100%; border-collapse:collapse; font-size:13px; border:1px solid #E2E8F0; border-radius:6px; overflow:hidden; }
+             .attachment-table th { background:#F1F5F9; color:#475569; text-align:left; padding:9px 10px; border-bottom:1px solid #E2E8F0; }
+             .attachment-table td { padding:8px 10px; border-bottom:1px solid #E2E8F0; vertical-align:middle; }
+             .file-name { color:#1E3A8A; font-weight:600; }
+             .uc009-pagination { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 0 0; color:#64748B; font-size:13px; flex-wrap:wrap; }
+             .uc009-page-actions { display:flex; align-items:center; gap:6px; }
+             .uc009-page-actions button.active { background:#1E3A8A; color:#fff; }
+             .uc009-modal { position:fixed; inset:0; background:rgba(15,23,42,.45); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px; }
+             #uc009ConfirmActionModal { z-index:10001; }
+             .uc009-modal.active { display:flex; }
+             .uc009-modal-content { background:#fff; border-radius:8px; box-shadow:0 20px 40px rgba(15,23,42,.25); width:min(980px, 96vw); max-height:92vh; display:flex; flex-direction:column; }
+             .uc009-modal-sm { width:min(560px, 96vw); }
+             .uc009-modal-header, .uc009-modal-footer { padding:14px 18px; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+             .uc009-modal-footer { border-top:1px solid #E2E8F0; border-bottom:0; justify-content:flex-end; }
+             .uc009-modal-header h3 { color:#1E3A8A; margin:0; font-size:16px; display:flex; align-items:center; gap:8px; }
+             .uc009-modal-body { padding:18px; overflow:auto; }
+             .field-hint { color:#64748B; font-size:12px; margin-top:4px; }
+             .password-input-wrap { position:relative; }
+             .password-input-wrap .form-control { padding-right:40px; }
+             .password-toggle-btn { position:absolute; right:10px; top:50%; transform:translateY(-50%); border:0; background:transparent; color:#64748B; cursor:pointer; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:4px; }
+             .password-toggle-btn:hover { color:#1E3A8A; background:#EFF6FF; }
+             .uc009-confirm-summary { border:1px solid #D9E2EF; border-radius:6px; background:#F8FAFC; padding:12px; display:grid; gap:8px; margin:12px 0; }
+             .uc009-confirm-row { display:grid; grid-template-columns:140px 1fr; gap:10px; font-size:13px; }
+             .uc009-confirm-row label { color:#64748B; font-weight:600; }
+             .uc009-confirm-row span { color:#1E293B; font-weight:600; }
+             .uc009-confirm-warning { border:1px solid #FBBF24; background:#FFFBEB; color:#92400E; border-radius:6px; padding:10px 12px; display:flex; gap:8px; align-items:flex-start; font-size:13px; line-height:1.45; }
+             .role-box { border:1px solid #E2E8F0; border-radius:6px; padding:10px; background:#F8FAFC; max-height:220px; overflow:auto; }
+             .role-row { display:flex; gap:8px; align-items:flex-start; padding:6px 0; }
+             .role-search { margin-bottom:8px; }
+             .permission-tree-card { border:1px solid #D9E2EF; border-radius:6px; background:#fff; padding:12px; }
+             .permission-tree-toolbar { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+             .permission-tree-title { display:flex; align-items:center; gap:6px; margin:0; color:#1E3A8A; font-weight:700; }
+             .permission-tree-toolbar .tree-actions { display:flex; align-items:center; gap:8px; }
+             .permission-tree-box { border:1px solid #E2E8F0; border-radius:6px; background:#F8FAFC; padding:10px 12px; max-height:250px; overflow:auto; }
+             .permission-tree-box .tree-node { display:flex; align-items:center; gap:6px; min-height:28px; color:#1E293B; font-size:13px; border-bottom:1px solid #E2E8F0; }
+             .permission-tree-box .tree-node:last-child { border-bottom:0; }
+             .permission-tree-box .tree-node.root { color:#1E3A8A; font-weight:700; }
+             .permission-tree-box .tree-node.module { color:#0F172A; font-weight:600; }
+             .permission-tree-box .tree-node.permission { color:#334155; }
+             .permission-tree-box input[type="checkbox"] { pointer-events:none; accent-color:#1E3A8A; }
+             .permission-tree-box .empty { color:#64748B; font-style:italic; padding:8px 0; }
+             .uc009-detail-tabs { display:flex; gap:18px; border-bottom:1px solid #D9E2EF; margin-bottom:16px; }
+             .uc009-detail-tabs button { border:0; background:transparent; color:#64748B; font-weight:700; padding:10px 0; cursor:pointer; border-bottom:2px solid transparent; }
+             .uc009-detail-tabs button.active { color:#1E3A8A; border-bottom-color:#1E3A8A; }
+             .uc009-detail-tab-pane { display:none; }
+             .uc009-detail-tab-pane.active { display:block; }
+             .uc009-sub-toolbar { display:flex; justify-content:flex-end; gap:8px; margin-bottom:10px; }
+             .uc009-sub-actions { display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
+             .uc009-sub-form { display:none; margin-top:14px; padding:14px; border:1px solid #D9E2EF; border-radius:8px; background:#F8FAFC; }
+             .uc009-sub-form.active { display:block; }
+             .uc009-sub-form-title { color:#1E3A8A; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+             .uc009-sub-form-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+            .uc009-form-tabs { display:flex; gap:22px; border-bottom:1px solid #D9E2EF; margin:16px 0 14px; }
+            .uc009-form-tabs button { border:0; background:transparent; color:#64748B; font-weight:700; padding:10px 0; cursor:pointer; border-bottom:2px solid transparent; }
+            .uc009-form-tabs button.active { color:#1E3A8A; border-bottom-color:#1E3A8A; }
+            .uc009-form-tab-pane { display:none; }
+            .uc009-form-tab-pane.active { display:block; }
+            .uc009-account-type-block { margin-bottom:12px; }
+            .uc009-account-type-block .form-group { margin-bottom:0; }
+            .uc009-account-type-block select { width:100%; }
+            .uc009-account-type-block + .uc009-form-tabs { margin-top:8px; }
+             .uc009-detail-banner { padding:10px 12px; border-radius:6px; font-size:13px; margin-bottom:18px; }
+             .uc009-detail-banner.vneid { background:#F0FDF4; color:#166534; }
+             .uc009-detail-banner.internal { background:#FFFBEB; color:#92400E; }
+             .uc009-detail-section { margin-top:18px; }
+             .uc009-detail-section:first-child { margin-top:0; }
+             .uc009-detail-title { display:flex; align-items:center; gap:6px; color:#1E3A8A; font-size:15px; font-weight:700; margin-bottom:14px; }
+             .uc009-detail-title:after { content:""; flex:1; height:1px; background:#D9E2EF; margin-left:8px; }
+             .uc009-detail-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px 42px; }
+             .uc009-detail-item label { display:block; color:#64748B; font-size:13px; font-weight:600; margin-bottom:8px; }
+             .uc009-detail-item span { display:block; color:#1E293B; font-size:14px; font-weight:600; min-height:20px; overflow-wrap:anywhere; }
+             .uc009-detail-item.full { grid-column:1 / -1; }
+             .uc009-detail-code { color:#1E3A8A !important; font-weight:800 !important; }
+             @media (max-width: 900px) {
+                 .grid-4, .grid-3, .grid-2 { grid-template-columns:1fr; }
+                 .uc009-detail-grid { grid-template-columns:1fr; }
+             }
+         `;
+         document.head.appendChild(style);
+
+         document.body.innerHTML = `
+             <div class="uc009-page">
+                 <div class="uc009-title">
+                     <h1><i class="fa-solid fa-users"></i> Quản lý tài khoản khách hàng</h1>
+                 </div>
+
+                 <div class="card-section" style="background:#FAFAFA;border:1px solid #E2E8F0;padding:16px;margin-bottom:16px;border-radius:8px;box-shadow:none;">
+                     <h3 style="font-size:14px;color:#1E3A8A;font-weight:600;margin-bottom:12px;"><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</h3>
+                     <form id="uc009FilterForm" onsubmit="event.preventDefault(); uc009Search();">
+                         <div class="grid-4">
+                             <div class="form-group"><label class="form-label">Mã khách hàng</label><input id="uc009FilterCode" class="form-control" placeholder="Nhập mã khách hàng..."></div>
+                             <div class="form-group"><label class="form-label">Tên khách hàng</label><input id="uc009FilterName" class="form-control" placeholder="Nhập tên khách hàng..."></div>
+                             <div class="form-group"><label class="form-label">Số điện thoại</label><input id="uc009FilterPhone" class="form-control" placeholder="Nhập số điện thoại..."></div>
+                             <div class="form-group"><label class="form-label">Trung tâm đăng ký</label><select id="uc009FilterCenter" class="form-select"><option value="">Tất cả</option><option>Hà Nội</option><option>TP Hồ Chí Minh</option><option>Đà Nẵng</option></select></div>
+                             <div class="form-group"><label class="form-label">Loại khách hàng</label><select id="uc009FilterCustomerType" class="form-select"><option value="">Tất cả</option><option>Cá nhân</option><option>Tổ chức</option></select></div>
+                              <div class="form-group"><label class="form-label">Nguồn xác thực</label><select id="uc009FilterSource" class="form-select"><option value="">Tất cả</option><option>VNeID</option><option>Nội bộ</option></select></div>
+                             <div class="form-group"><label class="form-label">Phân loại khách hàng</label><select id="uc009FilterClassification" class="form-select"><option value="">Tất cả</option><option>Trong nước</option><option>Nước ngoài</option></select></div>
+                             <div class="form-group"><label class="form-label">Trạng thái</label><select id="uc009FilterStatus" class="form-select"><option value="">Tất cả</option><option>Đang hoạt động</option><option>Bị khóa</option><option>Đóng</option></select></div>
+                             <div class="form-group"><label class="form-label">Từ ngày tạo</label><input type="date" id="uc009FilterFromDate" class="form-control"></div>
+                             <div class="form-group"><label class="form-label">Đến ngày tạo</label><input type="date" id="uc009FilterToDate" class="form-control"></div>
+                         </div>
+                         <div class="search-actions">
+                             <button type="button" class="btn btn-secondary" onclick="uc009ResetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                         </div>
+                     </form>
+                 </div>
+
+                 <div class="card-section">
+                     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">
+                         <h3 style="font-size:15px;color:#1E3A8A;font-weight:700;margin:0;"><i class="fa-solid fa-list-check"></i> Danh sách tài khoản khách hàng</h3>
+                     </div>
+                     <div class="uc009-toolbar">
+                         <button class="btn btn-outline-primary" onclick="uc009ExportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                         <button class="btn btn-primary" onclick="uc009OpenForm()"><i class="fa-solid fa-plus"></i> Thêm mới tài khoản</button>
+                     </div>
+                     <div class="uc009-table-wrap">
+                         <table class="custom-table uc009-table">
+                             <thead>
+                                 <tr>
+                                     <th style="text-align:center;width:60px;">STT</th>
+                                     <th>Mã KH</th>
+                                     <th>Tên khách hàng</th>
+                                     <th>Email</th>
+                                     <th>Số điện thoại</th>
+                                     <th>Trung tâm đăng ký</th>
+                                     <th>Loại khách hàng</th>
+                                     <th>Loại tài khoản</th>
+                                      <th>Nguồn xác thực</th>
+                                     <th>Phân loại khách hàng</th>
+                                     <th>Ngày tạo</th>
+                                     <th>Trạng thái</th>
+                                     <th style="text-align:center;">Thao tác</th>
+                                 </tr>
+                             </thead>
+                             <tbody id="uc009TableBody"></tbody>
+                         </table>
+                     </div>
+                     <div class="uc009-pagination">
+                        <div id="uc009Summary" class="record-total"></div>
+                         <div style="display:flex;align-items:center;gap:8px;">
+                             <span>Số dòng hiển thị:</span>
+                             <select id="uc009PageSize" class="form-select" style="width:90px;" onchange="uc009ChangePageSize()">
+                                 <option value="50">50</option>
+                                 <option value="100">100</option>
+                                 <option value="200">200</option>
+                             </select>
+                         </div>
+                         <div class="uc009-page-actions" id="uc009Pagination"></div>
+                     </div>
+                 </div>
+             </div>
+
+             <div class="uc009-modal" id="uc009FormModal">
+                 <div class="uc009-modal-content">
+                     <div class="uc009-modal-header">
+                         <h3 id="uc009FormTitle"><i class="fa-solid fa-user-pen"></i> Thêm mới tài khoản khách hàng</h3>
+                         <button class="close-modal" onclick="uc009CloseModal('uc009FormModal')"><i class="fa-solid fa-times"></i></button>
+                     </div>
+                     <div class="uc009-modal-body">
+                         <input type="hidden" id="uc009EditingId">
+                         <div class="uc009-account-type-block">
+                             <div class="form-group"><label class="form-label">Loại tài khoản <span class="required-mark">*</span></label><select id="uc009CustomerType" class="form-select" onchange="uc009ToggleCustomerType()"><option>Cá nhân</option><option>Tổ chức</option></select></div>
+                         </div>
+
+                         <div class="uc009-form-tabs" id="uc009OrgFormTabs" style="display:none;">
+                             <button type="button" class="active" id="uc009FormInfoTabBtn" onclick="uc009SwitchFormTab('info')">Thông tin chung</button>
+                             <button type="button" id="uc009FormSubTabBtn" onclick="uc009SwitchFormTab('sub')">Tài khoản phụ trực thuộc</button>
+                         </div>
+                         <div id="uc009FormInfoPane" class="uc009-form-tab-pane active">
+                         <div class="section-divider"><i class="fa-solid fa-fingerprint"></i> Thông tin tài khoản</div>
+                         <div class="grid-3">
+                            <div class="form-group"><label class="form-label">Nguồn xác thực <span class="required-mark">*</span></label><select id="uc009IdentitySource" class="form-select" onchange="uc009ToggleSource()"><option>Nội bộ</option><option>VNeID</option></select></div>
+                            <div class="form-group"><label class="form-label" id="uc009EmailLabel">Email (Tên đăng nhập) <span class="required-mark">*</span></label><input type="email" id="uc009Email" class="form-control" placeholder="Nhập email..."></div>
+                            <div class="form-group"><label class="form-label" id="uc009PhoneLabel">Số điện thoại</label><input id="uc009Phone" class="form-control" placeholder="Nhập số điện thoại..."></div>
+                            <div class="form-group"><label class="form-label">Trung tâm đăng ký <span class="required-mark">*</span></label><select id="uc009Center" class="form-select"><option>Hà Nội</option><option>TP Hồ Chí Minh</option><option>Đà Nẵng</option></select></div>
+                            <div class="form-group"><label class="form-label" id="uc009CountryLabel">Quốc tịch <span class="required-mark">*</span></label><select id="uc009Nationality" class="form-select" onchange="uc009SyncClassification(); uc009ToggleProvinceField('main')"><option>Việt Nam</option><option>Hoa Kỳ</option><option>Nhật Bản</option><option>Hàn Quốc</option><option>Singapore</option></select></div>
+                            <div class="form-group"><label class="form-label">Phân loại khách hàng <span class="required-mark">*</span></label><select id="uc009Classification" class="form-select"><option>Trong nước</option><option>Nước ngoài</option></select></div>
+                            <div class="form-group" id="uc009ProvinceSelectWrapper"><label class="form-label">Tỉnh/TP</label><select id="uc009ProvinceSelect" class="form-select"><option value="">-- Chọn Tỉnh/TP --</option><option>Hà Nội</option><option>TP Hồ Chí Minh</option><option>Đà Nẵng</option><option>Hải Phòng</option><option>Cần Thơ</option></select></div>
+                            <div class="form-group hidden" id="uc009ProvinceTextWrapper"><label class="form-label">Tỉnh/TP</label><input id="uc009ProvinceText" class="form-control" placeholder="Nhập Tỉnh/Thành phố..."></div>
+                            <div class="form-group"><label class="form-label">Địa chỉ chi tiết</label><input id="uc009AddressDetail" class="form-control" placeholder="Nhập địa chỉ chi tiết..."></div>
+                            <div class="form-group" id="uc009TechIdGroup"><label class="form-label">TechID</label><input id="uc009TechId" class="form-control" readonly placeholder="Tự động lưu khi đăng nhập qua VNeID lần đầu"></div>
+                         </div>
+                         <div class="section-divider"><i class="fa-solid fa-address-card"></i> Thông tin định danh</div>
+                         <div class="grid-3" id="uc009PersonFields">
+                             <div class="form-group"><label class="form-label">Họ và tên <span class="required-mark">*</span></label><input id="uc009PersonName" class="form-control" placeholder="Nhập họ và tên..."></div>
+                             <div class="form-group"><label class="form-label">Số giấy tờ</label><input id="uc009PersonalDoc" class="form-control" placeholder="Nhập số CCCD/Hộ chiếu..."></div>
+                             <div class="form-group"><label class="form-label">Ngày sinh</label><input type="date" id="uc009Dob" class="form-control"></div>
+                             <div class="form-group"><label class="form-label">Giới tính</label><select id="uc009Gender" class="form-select"><option></option><option>Nam</option><option>Nữ</option><option>Khác</option></select></div>
+                        </div>
+                        <div class="grid-3" id="uc009OrgFields" style="display:none;">
+                            <div class="form-group"><label class="form-label">Loại tổ chức <span class="required-mark">*</span></label><select id="uc009OrgType" class="form-select" onchange="uc009ToggleOrgType()"><option>Tổ chức có đăng ký kinh doanh trong nước</option><option>Tổ chức nước ngoài</option></select></div>
+                            <div class="form-group"><label class="form-label" id="uc009OrgCodeLabel">Mã định danh tổ chức <span class="required-mark">*</span></label><input id="uc009TaxCode" class="form-control" placeholder="Nhập mã định danh tổ chức..."></div>
+                            <div class="form-group"><label class="form-label">Tên tổ chức <span class="required-mark">*</span></label><input id="uc009OrgName" class="form-control" placeholder="Nhập tên tổ chức..."></div>
+                            <div class="form-group"><label class="form-label">Họ và tên người đại diện</label><input id="uc009Representative" class="form-control" placeholder="Nhập người đại diện..."></div>
+                            <div class="form-group"><label class="form-label">Loại giấy tờ người đại diện</label><select id="uc009RepDocType" class="form-select"><option>Căn cước công dân</option><option>Hộ chiếu</option><option>Chứng minh nhân dân</option></select></div>
+                            <div class="form-group"><label class="form-label">Số giấy tờ người đại diện</label><input id="uc009RepDocNo" class="form-control" placeholder="Nhập số giấy tờ..."></div>
+                        </div>
+
+                         <div class="section-divider"><i class="fa-solid fa-user-shield"></i> Nhóm người dùng và vai trò</div>
+                         <div class="grid-2">
+                             <div class="form-group">
+                                 <label class="form-label">Nhóm người dùng <span class="required-mark">*</span></label>
+                                 <input id="uc009GroupSearch" class="form-control role-search" placeholder="Tìm theo tên nhóm người dùng..." oninput="uc009RenderGroupChoices()">
+                                 <div class="role-box" id="uc009Groups"></div>
+                                 <div class="field-hint">Cho phép tích chọn một hoặc nhiều nhóm người dùng.</div>
+                             </div>
+                             <div class="form-group">
+                                 <label class="form-label">Vai trò</label>
+                                 <input id="uc009RoleSearch" class="form-control role-search" placeholder="Tìm theo tên vai trò..." oninput="uc009RenderRoleChoices()">
+                                 <div class="role-box" id="uc009Roles"></div>
+                                 <div class="field-hint">Cho phép tích chọn một hoặc nhiều vai trò.</div>
+                             </div>
+                         </div>
+                         <div class="form-group">
+                             <div class="permission-tree-card">
+                                 <div class="permission-tree-toolbar">
+                                     <label class="form-label permission-tree-title"><i class="fa-solid fa-sitemap"></i> Cây phân quyền chi tiết (Cộng dồn từ Nhóm & Vai trò)</label>
+                                     <div class="tree-actions">
+                                         <input id="uc009PermissionSearch" class="form-control" style="width:260px;" placeholder="Tìm quyền..." oninput="uc009RenderPermissionPreview()">
+                                         <button type="button" class="btn btn-outline-primary" onclick="uc009ResetPermissionSearch()"><i class="fa-solid fa-arrows-rotate"></i> Làm mới</button>
+                                     </div>
+                                 </div>
+                                 <div class="permission-tree-box" id="uc009PermissionPreview"></div>
+                             </div>
+                             <div class="field-hint">Cây phân quyền hiển thị quyền cộng dồn từ toàn bộ Nhóm người dùng và Vai trò đã chọn.</div>
+                         </div>
+
+                         <div class="section-divider"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
+                         <table class="attachment-table">
+                             <thead>
+                                 <tr>
+                                     <th style="width:60px;text-align:center;">STT</th>
+                                     <th>Tên tài liệu</th>
+                                     <th>File đính kèm</th>
+                                     <th style="width:160px;text-align:center;">Thao tác</th>
+                                 </tr>
+                             </thead>
+                             <tbody id="uc009AttachmentBody"></tbody>
+                         </table>
+                         <button type="button" class="btn btn-outline-primary" style="margin-top:10px;" onclick="uc009AddAttachmentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng tài liệu</button>
+                         </div>
+
+                        <div id="uc009FormSubPane" class="uc009-form-tab-pane">
+                            <div class="uc009-sub-toolbar">
+                                <input id="uc009SubSearch" class="form-control" style="width:320px;" placeholder="Tìm tên khách hàng, email, số giấy tờ..." oninput="uc009RenderFormSubAccounts()">
+                                <button type="button" class="btn btn-primary" onclick="uc009AddFormSubAccount()"><i class="fa-solid fa-plus"></i> Thêm tài khoản phụ</button>
+                            </div>
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên</th>
+                                        <th>Số giấy tờ</th>
+                                        <th>Email</th>
+                                        <th>Địa chỉ chi tiết</th>
+                                        <th>Trạng thái</th>
+                                        <th style="text-align:center;">Thao tác</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody id="uc009FormSubBody"></tbody>
+                             </table>
+                             <div id="uc009SubAccountForm" class="uc009-sub-form">
+                                <div class="uc009-sub-form-title"><i class="fa-solid fa-user-plus"></i> <span id="uc009SubFormTitle">Thêm mới tài khoản phụ</span></div>
+                                <div class="grid-3">
+                                    <div class="form-group"><label class="form-label">Tên khách hàng <span class="required-mark">*</span></label><input id="uc009SubName" class="form-control" placeholder="Nhập họ và tên..."></div>
+                                    <div class="form-group"><label class="form-label">Email (Tên đăng nhập) <span class="required-mark">*</span></label><input id="uc009SubEmail" type="email" class="form-control" placeholder="Nhập email..."></div>
+                                    <div class="form-group"><label class="form-label">Số điện thoại</label><input id="uc009SubPhone" class="form-control" placeholder="Nhập số điện thoại..."></div>
+                                    <div class="form-group"><label class="form-label">Đơn vị</label><input id="uc009SubUnit" class="form-control" placeholder="Nhập đơn vị/phòng ban/chi nhánh..."></div>
+                                    <div class="form-group"><label class="form-label">Loại giấy tờ <span class="required-mark">*</span></label><select id="uc009SubDocType" class="form-select"><option>Căn cước công dân</option><option>Hộ chiếu</option><option>Chứng minh nhân dân</option><option>Giấy tờ hợp lệ khác</option></select></div>
+                                    <div class="form-group"><label class="form-label">Số giấy tờ <span class="required-mark">*</span></label><input id="uc009SubDocNo" class="form-control" placeholder="Nhập số giấy tờ..."></div>
+                                    <div class="form-group"><label class="form-label">Quốc gia <span class="required-mark">*</span></label><select id="uc009SubNationality" class="form-select" onchange="uc009ToggleProvinceField('sub')"><option>Việt Nam</option><option>Hoa Kỳ</option><option>Nhật Bản</option><option>Hàn Quốc</option><option>Singapore</option></select></div>
+                                    <div class="form-group" id="uc009SubProvinceSelectWrapper"><label class="form-label">Tỉnh/TP <span class="required-mark">*</span></label><select id="uc009SubProvinceSelect" class="form-select"><option value="">-- Chọn Tỉnh/TP --</option><option>Hà Nội</option><option>TP Hồ Chí Minh</option><option>Đà Nẵng</option><option>Hải Phòng</option><option>Cần Thơ</option></select></div>
+                                    <div class="form-group hidden" id="uc009SubProvinceTextWrapper"><label class="form-label">Tỉnh/TP <span class="required-mark">*</span></label><input id="uc009SubProvinceText" class="form-control" placeholder="Nhập Tỉnh/Thành phố..."></div>
+                                    <div class="form-group"><label class="form-label">Địa chỉ chi tiết <span class="required-mark">*</span></label><input id="uc009SubAddressDetail" class="form-control" placeholder="Nhập địa chỉ chi tiết..."></div>
+                                    <div class="form-group"><label class="form-label">Loại tài khoản</label><input id="uc009SubAccountType" class="form-control" value="Tài khoản phụ" readonly></div>
+                                    <div class="form-group"><label class="form-label">Nguồn xác thực</label><select id="uc009SubIdentitySource" class="form-select"><option>Nội bộ</option><option>VNeID</option></select></div>
+                                </div>
+                                <div class="section-divider"><i class="fa-solid fa-user-shield"></i> Nhóm người dùng và vai trò</div>
+                                <div class="grid-2">
+                                    <div class="form-group">
+                                        <label class="form-label">Nhóm người dùng <span class="required-mark">*</span></label>
+                                        <input id="uc009SubGroupSearch" class="form-control role-search" placeholder="Tìm theo tên nhóm người dùng..." oninput="uc009RenderSubGroupChoices()">
+                                        <div class="role-box" id="uc009SubGroups"></div>
+                                        <div class="field-hint">Cho phép tích chọn một hoặc nhiều nhóm người dùng.</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Vai trò</label>
+                                        <input id="uc009SubRoleSearch" class="form-control role-search" placeholder="Tìm theo tên vai trò..." oninput="uc009RenderSubRoleChoices()">
+                                        <div class="role-box" id="uc009SubRoles"></div>
+                                        <div class="field-hint">Cho phép tích chọn một hoặc nhiều vai trò.</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="permission-tree-card">
+                                        <div class="permission-tree-toolbar">
+                                            <label class="form-label permission-tree-title"><i class="fa-solid fa-sitemap"></i> Cây phân quyền cộng dồn</label>
+                                            <div class="tree-actions">
+                                                <input id="uc009SubPermissionSearch" class="form-control" style="width:260px;" placeholder="Tìm quyền..." oninput="uc009RenderSubPermissionPreview()">
+                                                <button type="button" class="btn btn-outline-primary" onclick="uc009ResetSubPermissionSearch()"><i class="fa-solid fa-arrows-rotate"></i> Làm mới</button>
+                                            </div>
+                                        </div>
+                                        <div class="permission-tree-box" id="uc009SubPermissionPreview"></div>
+                                    </div>
+                                    <div class="field-hint">Cây phân quyền hiển thị quyền cộng dồn từ toàn bộ Nhóm người dùng và Vai trò đã chọn của tài khoản phụ.</div>
+                                </div>
+                                 <div class="uc009-sub-form-actions">
+                                     <button type="button" class="btn btn-secondary" onclick="uc009CancelFormSubAccount()">Hủy</button>
+                                     <button type="button" class="btn btn-primary" onclick="uc009SaveFormSubAccount()"><i class="fa-solid fa-save"></i> <span id="uc009SubSaveBtnText">Lưu</span></button>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="uc009-modal-footer">
+                         <button class="btn btn-secondary" onclick="uc009CloseModal('uc009FormModal')">Hủy</button>
+                         <button class="btn btn-primary" onclick="uc009SaveCustomer()"><i class="fa-solid fa-save"></i> <span id="uc009SaveCustomerText">Lưu & Cấp tài khoản</span></button>
+                     </div>
+                 </div>
+             </div>
+
+             <div class="uc009-modal" id="uc009ResetModal">
+                 <div class="uc009-modal-content uc009-modal-sm">
+                     <div class="uc009-modal-header">
+                         <h3><i class="fa-solid fa-key"></i> Đặt lại mật khẩu</h3>
+                         <button class="close-modal" onclick="uc009CloseModal('uc009ResetModal')"><i class="fa-solid fa-times"></i></button>
+                     </div>
+                     <div class="uc009-modal-body">
+                          <input type="hidden" id="uc009ResetId">
+                          <p style="margin-bottom:12px;">Quản trị viên nhập mật khẩu mới cho tài khoản nội bộ: <strong id="uc009ResetName"></strong></p>
+                          <div class="form-group">
+                              <label class="form-label" for="uc009NewPassword">Mật khẩu mới <span class="required-mark">*</span></label>
+                              <div class="password-input-wrap">
+                                  <input type="password" id="uc009NewPassword" class="form-control" autocomplete="new-password">
+                                  <button type="button" class="password-toggle-btn" title="Ẩn/hiện mật khẩu" aria-label="Ẩn/hiện mật khẩu" onclick="uc009TogglePassword('uc009NewPassword', this)">
+                                      <i class="fa-solid fa-eye-slash"></i>
+                                  </button>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="form-label" for="uc009ConfirmPassword">Nhập lại mật khẩu mới <span class="required-mark">*</span></label>
+                              <div class="password-input-wrap">
+                                  <input type="password" id="uc009ConfirmPassword" class="form-control" autocomplete="new-password">
+                                  <button type="button" class="password-toggle-btn" title="Ẩn/hiện mật khẩu" aria-label="Ẩn/hiện mật khẩu" onclick="uc009TogglePassword('uc009ConfirmPassword', this)">
+                                      <i class="fa-solid fa-eye-slash"></i>
+                                  </button>
+                              </div>
+                          </div>
+                          <label class="role-row"><input type="checkbox" id="uc009ForceChange" checked> Yêu cầu khách hàng đổi mật khẩu ở lần đăng nhập tiếp theo</label>
+                      </div>
+                     <div class="uc009-modal-footer">
+                         <button class="btn btn-secondary" onclick="uc009CloseModal('uc009ResetModal')">Hủy</button>
+                         <button class="btn btn-primary" onclick="uc009ExecuteResetPassword()"><i class="fa-solid fa-save"></i> Lưu mật khẩu mới</button>
+                     </div>
+                 </div>
+             </div>
+
+             <div class="uc009-modal" id="uc009ConfirmActionModal">
+                 <div class="uc009-modal-content uc009-modal-sm">
+                     <div class="uc009-modal-header">
+                         <h3 id="uc009ConfirmActionTitle"><i class="fa-solid fa-triangle-exclamation"></i> Xác nhận thao tác</h3>
+                         <button class="close-modal" onclick="uc009CancelPendingAction()"><i class="fa-solid fa-times"></i></button>
+                     </div>
+                     <div class="uc009-modal-body">
+                         <div class="uc009-confirm-summary">
+                             <div class="uc009-confirm-row">
+                                 <label>Loại thao tác</label>
+                                 <span id="uc009ConfirmActionType">-</span>
+                             </div>
+                             <div class="uc009-confirm-row">
+                                 <label>Thông tin tài khoản</label>
+                                 <span id="uc009ConfirmAccountInfo">-</span>
+                             </div>
+                             <div class="uc009-confirm-row" id="uc009ConfirmParentRow" style="display:none;">
+                                 <label>Tổ chức chủ quản</label>
+                                 <span id="uc009ConfirmParentInfo">-</span>
+                             </div>
+                         </div>
+                         <div class="uc009-confirm-warning">
+                             <i class="fa-solid fa-circle-exclamation"></i>
+                             <span id="uc009ConfirmActionMessage">-</span>
+                         </div>
+                     </div>
+                     <div class="uc009-modal-footer">
+                         <button class="btn btn-secondary" onclick="uc009CancelPendingAction()">Hủy</button>
+                         <button class="btn btn-primary" id="uc009ConfirmActionBtn" onclick="uc009ExecutePendingAction()"><i class="fa-solid fa-check"></i> Đồng ý</button>
+                     </div>
+                 </div>
+             </div>
+
+             <div class="uc009-modal" id="uc009DetailModal">
+                 <div class="uc009-modal-content">
+                     <div class="uc009-modal-header">
+                         <h3 id="uc009DetailTitle"><i class="fa-solid fa-circle-info"></i> Chi tiết tài khoản khách hàng</h3>
+                         <button class="close-modal" onclick="uc009CloseModal('uc009DetailModal')"><i class="fa-solid fa-times"></i></button>
+                     </div>
+                     <div class="uc009-modal-body" id="uc009DetailBody"></div>
+                     <div class="uc009-modal-footer">
+                         <button class="btn btn-secondary" onclick="uc009CloseModal('uc009DetailModal')">Đóng</button>
+                         <button class="btn btn-primary" id="uc009DetailUpdateBtn" onclick="uc009EditCurrentDetail()"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
+                     </div>
+                 </div>
+             </div>
+         `;
+
+         let uc009Customers = [
+             { id: 1, code: 'KH-2026-0001', name: 'Nguyễn Văn Nam', email: 'nam.nguyen@example.com', phone: '0901234567', center: 'Hà Nội', customerType: 'Cá nhân', accountType: 'Tài khoản chính', identitySource: 'VNeID', authMethods: ['VNeID', 'Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-12T09:15:00', status: 'Đang hoạt động', techId: 'TECH-8D12-0001', docNo: '001086012345', dob: '12/05/1988', gender: 'Nam', province: 'Hà Nội', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm', groups: ['Nhóm Đăng ký'], group: 'Nhóm Đăng ký', roles: ['Đăng ký viên'], attachments: [{ name: 'Giấy tờ định danh', fileName: 'cccd_nguyen_van_nam.pdf' }] },
+             { id: 2, code: 'KH-2026-0002', name: 'Công ty ABC', email: 'contact@abc.vn', phone: '02438889999', center: 'Hà Nội', customerType: 'Tổ chức', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-11T16:20:00', status: 'Đang hoạt động', taxCode: '0101187788', representative: 'Trần Văn C', province: 'Hà Nội', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy', groups: ['Nhóm Đăng ký', 'Nhóm Tra cứu'], group: 'Nhóm Đăng ký, Nhóm Tra cứu', roles: ['Administrators', 'Giám đốc Trung tâm đăng ký'], attachments: [{ name: 'Giấy đăng ký doanh nghiệp', fileName: 'gdkdn_cong_ty_abc.pdf' }, { name: 'Văn bản ủy quyền', fileName: 'uy_quyen_abc.pdf' }] },
+             { id: 3, parentId: 2, code: '', name: 'Lê Thị Hạnh', email: 'hanh.le@abc.vn', username: 'hanh.le@abc.vn', phone: '0912233445', center: 'Hà Nội', customerType: 'Tổ chức', accountType: 'Tài khoản phụ', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', province: 'Hà Nội', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy', unit: 'Phòng Hành chính', createdAt: '2026-08-11T17:05:00', status: 'Đang hoạt động', docType: 'Căn cước công dân', docNo: '001091234567', groups: ['Nhóm Tra cứu'], group: 'Nhóm Tra cứu', roles: ['Nhân viên hành chính tổng hợp'] },
+             { id: 4, code: 'KH-2026-0003', name: 'Global Finance Pte. Ltd.', email: 'legal@global-finance.sg', phone: '+6566889900', center: 'TP Hồ Chí Minh', customerType: 'Tổ chức', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Nước ngoài', nationality: 'Singapore', createdAt: '2026-08-10T10:00:00', status: 'Bị khóa', taxCode: 'SG-2026-8899', representative: 'David Tan', province: 'Singapore', addressDetail: '120 Nguyễn Huệ, Quận 1', groups: ['Nhóm Đăng ký'], group: 'Nhóm Đăng ký', roles: ['Phó Giám đốc Trung tâm đăng ký'] },
+             { id: 5, code: 'KH-2026-0004', name: 'Hoàng Thị Mai', email: 'mai.hoang@example.com', phone: '0987654321', center: 'Đà Nẵng', customerType: 'Cá nhân', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Trong nước', nationality: 'Việt Nam', createdAt: '2026-08-09T08:30:00', status: 'Đóng', docNo: '048188812345', dob: '20/03/1990', gender: 'Nữ', province: 'Đà Nẵng', addressDetail: 'Số 88 Lê Lợi, Hải Châu', groups: ['Nhóm Tra cứu'], group: 'Nhóm Tra cứu', roles: ['Theo dõi kiểm tra'] },
+             { id: 6, code: 'KH-2026-0005', name: 'Yamada Kenji', email: 'kenji.yamada@example.jp', phone: '+81312345678', center: 'Đà Nẵng', customerType: 'Cá nhân', accountType: 'Tài khoản chính', identitySource: 'Nội bộ', authMethods: ['Nội bộ'], classification: 'Nước ngoài', nationality: 'Nhật Bản', createdAt: '2026-08-08T14:45:00', status: 'Đang hoạt động', docNo: 'JP9088123', dob: '11/02/1984', gender: 'Nam', province: 'Tokyo', addressDetail: '23 Bạch Đằng, Hải Châu', groups: ['Nhóm Đăng ký'], group: 'Nhóm Đăng ký', roles: ['Nhân viên kế toán', 'Kế toán Cục'] }
+         ];
+         let uc009Filtered = [];
+         let uc009Page = 1;
+         let uc009PageSize = 50;
+         let uc009FormAttachments = [];
+         let uc009FormSubAccounts = [];
+         let uc009EditingFormSubIndex = null;
+         let uc009CurrentDetailId = null;
+         let uc009PendingAction = null;
+         let uc009SelectedGroups = [];
+         let uc009SelectedRoles = [];
+         let uc009SubSelectedGroups = [];
+         let uc009SubSelectedRoles = [];
+
+         const permissionMeta = {
+             P_KH_REGISTER_CREATE: { name: 'Tạo hồ sơ đăng ký', system: 'Website Khách hàng (SYS_KH)', module: 'Đăng ký biện pháp bảo đảm (MOD_DANG_KY)' },
+             P_KH_REGISTER_UPDATE: { name: 'Cập nhật hồ sơ đăng ký', system: 'Website Khách hàng (SYS_KH)', module: 'Đăng ký biện pháp bảo đảm (MOD_DANG_KY)' },
+             P_KH_REGISTER_SUBMIT: { name: 'Nộp hồ sơ đăng ký', system: 'Website Khách hàng (SYS_KH)', module: 'Đăng ký biện pháp bảo đảm (MOD_DANG_KY)' },
+             P_KH_REGISTER_TRACK: { name: 'Theo dõi hồ sơ đã gửi', system: 'Website Khách hàng (SYS_KH)', module: 'Tra cứu & Cung cấp thông tin (MOD_TRA_CUU)' },
+             P_KH_SEARCH: { name: 'Tra cứu hồ sơ', system: 'Website Khách hàng (SYS_KH)', module: 'Tra cứu & Cung cấp thông tin (MOD_TRA_CUU)' },
+             P_KH_PROFILE_VIEW: { name: 'Xem thông tin tài khoản', system: 'Website Khách hàng (SYS_KH)', module: 'Quản lý tài khoản (MOD_TAI_KHOAN)' },
+             P_KH_DOC_DOWNLOAD: { name: 'Tải tài liệu đã cấp', system: 'Website Khách hàng (SYS_KH)', module: 'Tra cứu & Cung cấp thông tin (MOD_TRA_CUU)' },
+             P_SYS_ADMIN_ALL: { name: 'Quản trị toàn bộ chức năng', system: 'Website quản trị (SYS_QT)', module: 'Quản trị hệ thống (MOD_HE_THONG)' },
+             P_SYS_USER_MANAGE: { name: 'Quản lý người dùng', system: 'Website quản trị (SYS_QT)', module: 'Quản trị hệ thống (MOD_HE_THONG)' },
+             P_SYS_CONFIG: { name: 'Cấu hình hệ thống', system: 'Website quản trị (SYS_QT)', module: 'Quản trị hệ thống (MOD_HE_THONG)' },
+             P_ACC_FEE_TRACK: { name: 'Theo dõi phí, lệ phí', system: 'Website quản trị (SYS_QT)', module: 'Kế toán thanh toán (MOD_KE_TOAN)' },
+             P_ACC_VOUCHER: { name: 'Lập chứng từ thanh toán', system: 'Website quản trị (SYS_QT)', module: 'Kế toán thanh toán (MOD_KE_TOAN)' },
+             P_ACC_RECONCILE: { name: 'Đối soát phí, lệ phí', system: 'Website quản trị (SYS_QT)', module: 'Kế toán thanh toán (MOD_KE_TOAN)' },
+             P_ACC_SUMMARY: { name: 'Tổng hợp số liệu kế toán', system: 'Website quản trị (SYS_QT)', module: 'Kế toán thanh toán (MOD_KE_TOAN)' },
+             P_SYS_CATALOG: { name: 'Quản lý danh mục dùng chung', system: 'Website quản trị (SYS_QT)', module: 'Quản trị hệ thống (MOD_HE_THONG)' },
+             P_SYS_PERMISSION: { name: 'Quản lý phân quyền', system: 'Website quản trị (SYS_QT)', module: 'Quản trị hệ thống (MOD_HE_THONG)' },
+             P_SYS_LOG: { name: 'Theo dõi nhật ký hệ thống', system: 'Website quản trị (SYS_QT)', module: 'Quản trị hệ thống (MOD_HE_THONG)' },
+             P_CENTER_ALL: { name: 'Theo dõi toàn bộ hồ sơ tại trung tâm', system: 'Website quản trị (SYS_QT)', module: 'Quản lý hồ sơ trung tâm (MOD_HO_SO_TT)' },
+             P_CENTER_ASSIGN: { name: 'Phân công xử lý', system: 'Website quản trị (SYS_QT)', module: 'Quản lý hồ sơ trung tâm (MOD_HO_SO_TT)' },
+             P_CENTER_APPROVE: { name: 'Phê duyệt nội bộ', system: 'Website quản trị (SYS_QT)', module: 'Quản lý hồ sơ trung tâm (MOD_HO_SO_TT)' },
+             P_CENTER_COORDINATE: { name: 'Điều phối xử lý hồ sơ', system: 'Website quản trị (SYS_QT)', module: 'Quản lý hồ sơ trung tâm (MOD_HO_SO_TT)' },
+             P_CHECK_EXPORT: { name: 'Kết xuất dữ liệu kiểm tra', system: 'Website quản trị (SYS_QT)', module: 'Theo dõi kiểm tra (MOD_KIEM_TRA)' },
+             P_ADMIN_SUPPORT: { name: 'Tiếp nhận thông tin hỗ trợ', system: 'Website quản trị (SYS_QT)', module: 'Hành chính tổng hợp (MOD_HANH_CHINH)' },
+             P_ADMIN_SUMMARY: { name: 'Tổng hợp danh sách hồ sơ', system: 'Website quản trị (SYS_QT)', module: 'Hành chính tổng hợp (MOD_HANH_CHINH)' },
+             P_ADMIN_NOTIFY: { name: 'Theo dõi thông báo', system: 'Ứng dụng Mobile (SYS_MB)', module: 'Thông báo người dùng (MOD_MB_NOTIFY)' }
+         };
+         const groupCatalog = [
+             { name: 'Nhóm Đăng ký', permissions: ['P_KH_REGISTER_CREATE', 'P_KH_REGISTER_UPDATE', 'P_KH_REGISTER_SUBMIT', 'P_KH_REGISTER_TRACK'] },
+             { name: 'Nhóm Tra cứu', permissions: ['P_KH_SEARCH', 'P_KH_PROFILE_VIEW', 'P_KH_DOC_DOWNLOAD'] }
+         ];
+         const roleCatalog = [
+             { name: 'Administrators', permissions: ['P_SYS_ADMIN_ALL', 'P_SYS_USER_MANAGE', 'P_SYS_CONFIG'] },
+             { name: 'Đăng ký viên', permissions: ['P_KH_REGISTER_CREATE', 'P_KH_REGISTER_UPDATE', 'P_KH_REGISTER_SUBMIT'] },
+             { name: 'Nhân viên kế toán', permissions: ['P_ACC_FEE_TRACK', 'P_ACC_VOUCHER'] },
+             { name: 'Kế toán Cục', permissions: ['P_ACC_RECONCILE', 'P_ACC_SUMMARY'] },
+             { name: 'Quản trị 1', permissions: ['P_SYS_CONFIG', 'P_SYS_CATALOG'] },
+             { name: 'Quản trị 2', permissions: ['P_SYS_PERMISSION', 'P_SYS_LOG'] },
+             { name: 'Giám đốc Trung tâm đăng ký', permissions: ['P_CENTER_ALL', 'P_CENTER_ASSIGN', 'P_CENTER_APPROVE'] },
+             { name: 'Phó Giám đốc Trung tâm đăng ký', permissions: ['P_CENTER_ALL', 'P_CENTER_COORDINATE'] },
+             { name: 'Theo dõi kiểm tra', permissions: ['P_KH_SEARCH', 'P_CENTER_ALL', 'P_CHECK_EXPORT'] },
+             { name: 'Nhân viên hành chính tổng hợp', permissions: ['P_ADMIN_SUPPORT', 'P_ADMIN_SUMMARY', 'P_ADMIN_NOTIFY'] }
+         ];
+
+         function pad(n) { return String(n).padStart(2, '0'); }
+         function formatDateTime(value) {
+             const d = new Date(value);
+             if (Number.isNaN(d.getTime())) return '';
+             return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+         }
+         function statusBadge(status) {
+             if (status === 'Đang hoạt động') return '<span class="badge bg-success">Đang hoạt động</span>';
+             if (status === 'Bị khóa') return '<span class="badge bg-danger">Bị khóa</span>';
+             return '<span class="badge badge-closed">Đóng</span>';
+         }
+         function sourceBadge(source) {
+             return source === 'VNeID' ? '<span class="badge" style="background:#DBEAFE;color:#1E40AF;">VNeID</span>' : '<span class="badge bg-secondary">Nội bộ</span>';
+         }
+         function getAuthMethods(item) {
+             if (Array.isArray(item?.authMethods) && item.authMethods.length) return item.authMethods;
+             return item?.identitySource === 'VNeID' ? ['VNeID'] : ['Nội bộ'];
+         }
+         function hasInternalAuth(item) {
+             return getAuthMethods(item).includes('Nội bộ');
+         }
+         function authMethodChip(label, linked) {
+             return '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid ' + (linked ? '#BBF7D0' : '#E2E8F0') + ';background:' + (linked ? '#F0FDF4' : '#F8FAFC') + ';border-radius:6px;">'
+                 + '<span style="display:flex;align-items:center;gap:8px;font-weight:700;color:#1E293B;"><i class="fa-solid ' + (linked ? 'fa-circle-check' : 'fa-circle') + '" style="color:' + (linked ? '#047857' : '#94A3B8') + ';"></i>' + label + '</span>'
+                 + '<span style="font-size:12px;font-weight:700;color:' + (linked ? '#047857' : '#64748B') + ';">' + (linked ? 'Đã liên kết' : 'Chưa thiết lập') + '</span>'
+                 + '</div>';
+         }
+         function authMethodsCard(item) {
+             const methods = getAuthMethods(item);
+             return '<div class="uc009-detail-section">'
+                 + '<div class="uc009-detail-title"><i class="fa-solid fa-shield-halved"></i> Phương thức đăng nhập</div>'
+                 + '<div style="display:grid;gap:10px;">'
+                 + authMethodChip('VNeID', methods.includes('VNeID'))
+                 + authMethodChip('Nội bộ (Email/Mật khẩu)', methods.includes('Nội bộ'))
+                 + '</div>'
+                 + '</div>';
+         }
+         function nextAuthMethods(source, existingItem) {
+             if (source === 'VNeID') {
+                 const existing = getAuthMethods(existingItem);
+                 return existing.includes('Nội bộ') ? ['VNeID', 'Nội bộ'] : ['VNeID'];
+             }
+             return ['Nội bộ'];
+         }
+         function classificationBadge(value) {
+             return value === 'Trong nước' ? '<span class="badge badge-domestic">Trong nước</span>' : '<span class="badge badge-foreign">Nước ngoài</span>';
+         }
+        function accountTypeLabel(value) {
+            if (value === 'Chính') return 'Tài khoản chính';
+            if (value === 'Phụ') return 'Tài khoản phụ';
+            return value || '-';
+        }
+        function uc009FullAddress(item) {
+            return [item?.addressDetail, item?.province, item?.nationality].filter(Boolean).join(', ');
+        }
+        function customerCodeDisplay(item) {
+            return accountTypeLabel(item.accountType) === 'Tài khoản phụ' ? '' : (item.code || '');
+        }
+         function detailField(label, value, extraClass = '') {
+             return '<div class="uc009-detail-item ' + extraClass + '"><label>' + label + '</label><span>' + (value || '-') + '</span></div>';
+         }
+         function getParentOrg(item) {
+             return item?.parentId ? uc009Customers.find(x => x.id === item.parentId) : null;
+         }
+         function nextCustomerId() {
+             return Math.max(0, ...uc009Customers.map(x => x.id || 0)) + 1;
+         }
+         function childAccountActions(child) {
+             const closed = child.status === 'Đóng';
+             return `
+                 <button class="icon-btn edit" title="Sửa" onclick="uc009OpenSubAccountForm(${child.parentId}, ${child.id})"><i class="fa-solid fa-pen"></i></button>
+                 <button class="icon-btn close-account" ${closed ? 'disabled' : ''} title="Đóng tài khoản" onclick="uc009CloseSubAccount(${child.id})"><i class="fa-solid fa-user-slash"></i></button>
+                 <button class="icon-btn delete" title="Xóa" onclick="uc009DeleteSubAccount(${child.id})"><i class="fa-solid fa-trash"></i></button>
+             `;
+         }
+         function getItemGroups(item) {
+             if (item?.groups && Array.isArray(item.groups)) return item.groups;
+             if (item?.group) return [item.group];
+             return ['Nhóm Tra cứu'];
+         }
+         function selectedGroupsFromForm() { return uc009SelectedGroups; }
+         function selectedRolesFromForm() { return uc009SelectedRoles; }
+         function selectedSubGroupsFromForm() { return uc009SubSelectedGroups; }
+         function selectedSubRolesFromForm() { return uc009SubSelectedRoles; }
+         function renderCheckboxList(containerId, items, selected, emptyText, kind) {
+             const container = document.getElementById(containerId);
+             if (!container) return;
+             container.innerHTML = items.length ? items.map(item => `
+                 <label class="role-row">
+                     <input type="checkbox" value="${item.name}" ${selected.includes(item.name) ? 'checked' : ''} onchange="uc009ToggleChoice('${kind}', this.value, this.checked)">
+                     <span>${item.name}</span>
+                 </label>`).join('') : '<div class="empty">' + emptyText + '</div>';
+         }
+         function collectPermissionPreview(groups, roles) {
+             const permissions = new Set();
+             groupCatalog.filter(g => groups.includes(g.name)).forEach(g => g.permissions.forEach(p => permissions.add(p)));
+             roleCatalog.filter(r => roles.includes(r.name)).forEach(r => r.permissions.forEach(p => permissions.add(p)));
+             return Array.from(permissions);
+         }
+         function buildPermissionTreeHtml(permissionKeys, keyword) {
+             const normalizedKeyword = (keyword || '').trim().toLowerCase();
+             const visible = permissionKeys
+                 .map(key => ({ key, meta: permissionMeta[key] }))
+                 .filter(item => item.meta)
+                 .filter(item => !normalizedKeyword || item.key.toLowerCase().includes(normalizedKeyword) || item.meta.name.toLowerCase().includes(normalizedKeyword) || item.meta.module.toLowerCase().includes(normalizedKeyword) || item.meta.system.toLowerCase().includes(normalizedKeyword));
+             if (!visible.length) return '<div class="empty">Không có quyền phù hợp để hiển thị.</div>';
+             const bySystem = {};
+             visible.forEach(item => {
+                 bySystem[item.meta.system] ||= {};
+                 bySystem[item.meta.system][item.meta.module] ||= [];
+                 bySystem[item.meta.system][item.meta.module].push(item);
+             });
+             return Object.entries(bySystem).map(([system, modules]) => `
+                 <div class="tree-node root" style="padding-left:0;">
+                     <i class="fa-solid fa-caret-down"></i><input type="checkbox" checked disabled><i class="fa-solid fa-laptop-code"></i><span>${system}</span>
+                 </div>
+                 ${Object.entries(modules).map(([module, perms]) => `
+                     <div class="tree-node module" style="padding-left:26px;">
+                         <i class="fa-solid fa-caret-down"></i><input type="checkbox" checked disabled><i class="fa-solid fa-folder-open" style="color:#F59E0B;"></i><span>${module}</span>
+                     </div>
+                     ${perms.map(item => `
+                         <div class="tree-node permission" style="padding-left:58px;">
+                             <input type="checkbox" checked disabled><i class="fa-solid fa-key" style="color:#64748B;"></i><span>${item.meta.name} (${item.key})</span>
+                         </div>
+                     `).join('')}
+                 `).join('')}
+             `).join('');
+         }
+         function flattenForDisplay(list) {
+             const result = [];
+             const parents = list.filter(x => !x.parentId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+             parents.forEach(parent => {
+                 result.push(parent);
+                 list
+                     .filter(x => x.parentId === parent.id)
+                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                     .forEach(child => result.push(child));
+             });
+             list
+                 .filter(x => x.parentId && !list.some(p => p.id === x.parentId))
+                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                 .forEach(orphan => result.push(orphan));
+             return result;
+         }
+
+         window.uc009Render = function () {
+             const tbody = document.getElementById('uc009TableBody');
+             const total = uc009Filtered.length;
+             const totalPages = Math.max(1, Math.ceil(total / uc009PageSize));
+             uc009Page = Math.min(uc009Page, totalPages);
+             const start = total === 0 ? 0 : (uc009Page - 1) * uc009PageSize + 1;
+             const rows = uc009Filtered.slice((uc009Page - 1) * uc009PageSize, uc009Page * uc009PageSize);
+             tbody.innerHTML = rows.length ? rows.map((item, idx) => {
+                 const absoluteIndex = (uc009Page - 1) * uc009PageSize + idx + 1;
+                 const isChild = accountTypeLabel(item.accountType) === 'Tài khoản phụ';
+                 const locked = item.status === 'Bị khóa';
+                 const closed = item.status === 'Đóng';
+                 const resetDisabled = !hasInternalAuth(item) || closed;
+                 const lockDisabled = closed;
+                 return `
+                     <tr class="${isChild ? 'child-row' : ''}" onclick="uc009OpenDetail(${item.id})">
+                         <td style="text-align:center;">${absoluteIndex}</td>
+                         <td><strong style="color:#1E3A8A;">${customerCodeDisplay(item)}</strong></td>
+                         <td><div class="child-name"><strong>${isChild ? '&nbsp;&nbsp;↳ ' : ''}${item.name}</strong>${isChild ? '<small>Tài khoản phụ trực thuộc tổ chức</small>' : ''}</div></td>
+                         <td>${item.email}</td>
+                         <td>${item.phone}</td>
+                         <td>${item.center}</td>
+                         <td>${item.customerType}</td>
+                         <td>${accountTypeLabel(item.accountType)}</td>
+                         <td>${sourceBadge(item.identitySource)}</td>
+                         <td>${classificationBadge(item.classification)}</td>
+                         <td>${formatDateTime(item.createdAt)}</td>
+                         <td>${statusBadge(item.status)}</td>
+                         <td onclick="event.stopPropagation();" style="text-align:center;">
+                             <button class="icon-btn edit" title="Chỉnh sửa" onclick="uc009OpenForm(${item.id})"><i class="fa-solid fa-pen"></i></button>
+                             <button class="icon-btn ${locked ? 'unlock' : 'lock'}" ${lockDisabled ? 'disabled' : ''} title="${locked ? 'Mở khóa' : 'Khóa'}" onclick="uc009ToggleLock(${item.id})"><i class="fa-solid ${locked ? 'fa-lock-open' : 'fa-lock'}"></i></button>
+                             <button class="icon-btn reset" ${resetDisabled ? 'disabled' : ''} title="Đặt lại mật khẩu" onclick="uc009OpenReset(${item.id})"><i class="fa-solid fa-key"></i></button>
+                             <button class="icon-btn close-account" ${closed ? 'disabled' : ''} title="Đóng tài khoản" onclick="uc009CloseAccount(${item.id})"><i class="fa-solid fa-user-slash"></i></button>
+                             <button class="icon-btn delete" title="Xóa" onclick="uc009Delete(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                         </td>
+                     </tr>`;
+             }).join('') : '<tr><td colspan="13" style="text-align:center;color:#64748B;padding:24px;">Không tìm thấy tài khoản khách hàng phù hợp.</td></tr>';
+             const end = total === 0 ? 0 : Math.min(uc009Page * uc009PageSize, total);
+             document.getElementById('uc009Summary').innerHTML = '<strong><i class="fa-solid fa-database"></i> Tổng số ' + total + ' bản ghi</strong><span>Hiển thị ' + start + '-' + end + ' trên trang hiện tại</span>';
+             const pager = document.getElementById('uc009Pagination');
+             pager.innerHTML = '';
+             ['<<', '<'].forEach((label, i) => {
+                 const btn = document.createElement('button');
+                 btn.className = 'btn btn-secondary';
+                 btn.textContent = label;
+                 btn.disabled = uc009Page === 1;
+                 btn.onclick = () => { uc009Page = i === 0 ? 1 : Math.max(1, uc009Page - 1); uc009Render(); };
+                 pager.appendChild(btn);
+             });
+             const from = Math.max(1, uc009Page - 2);
+             const to = Math.min(totalPages, uc009Page + 2);
+             for (let p = from; p <= to; p++) {
+                 const btn = document.createElement('button');
+                 btn.className = 'btn btn-secondary' + (p === uc009Page ? ' active' : '');
+                 btn.textContent = p;
+                 btn.onclick = () => { uc009Page = p; uc009Render(); };
+                 pager.appendChild(btn);
+             }
+             ['>', '>>'].forEach((label, i) => {
+                 const btn = document.createElement('button');
+                 btn.className = 'btn btn-secondary';
+                 btn.textContent = label;
+                 btn.disabled = uc009Page === totalPages;
+                 btn.onclick = () => { uc009Page = i === 0 ? Math.min(totalPages, uc009Page + 1) : totalPages; uc009Render(); };
+                 pager.appendChild(btn);
+             });
+         };
+
+         window.uc009Search = function () {
+             const code = document.getElementById('uc009FilterCode').value.trim().toLowerCase();
+             const name = document.getElementById('uc009FilterName').value.trim().toLowerCase();
+             const phone = document.getElementById('uc009FilterPhone').value.trim();
+             const center = document.getElementById('uc009FilterCenter').value;
+             const customerType = document.getElementById('uc009FilterCustomerType').value;
+             const source = document.getElementById('uc009FilterSource').value;
+             const classification = document.getElementById('uc009FilterClassification').value;
+             const status = document.getElementById('uc009FilterStatus').value;
+             const fromDate = document.getElementById('uc009FilterFromDate').value;
+             const toDate = document.getElementById('uc009FilterToDate').value;
+             uc009Filtered = flattenForDisplay(uc009Customers).filter(item => {
+                 const itemDate = item.createdAt.slice(0, 10);
+                 const searchableCode = accountTypeLabel(item.accountType) === 'Tài khoản phụ' ? '' : (item.code || '').toLowerCase();
+                 return (!code || searchableCode.includes(code))
+                     && (!name || item.name.toLowerCase().includes(name))
+                     && (!phone || item.phone.includes(phone))
+                     && (!center || item.center === center)
+                     && (!customerType || item.customerType === customerType)
+                     && (!source || item.identitySource === source)
+                     && (!classification || item.classification === classification)
+                     && (!status || item.status === status)
+                     && (!fromDate || itemDate >= fromDate)
+                     && (!toDate || itemDate <= toDate);
+             });
+             uc009Page = 1;
+             uc009Render();
+         };
+         window.uc009ResetFilters = function () {
+             document.getElementById('uc009FilterForm').reset();
+             uc009Search();
+         };
+         window.uc009ChangePageSize = function () {
+             uc009PageSize = parseInt(document.getElementById('uc009PageSize').value, 10);
+             uc009Page = 1;
+             uc009Render();
+         };
+         window.uc009OpenForm = function (id) {
+             const item = uc009Customers.find(x => x.id === id);
+             document.getElementById('uc009EditingId').value = item ? item.id : '';
+            document.getElementById('uc009FormTitle').innerHTML = '<i class="fa-solid fa-user-pen"></i> ' + (item ? 'Chỉnh sửa tài khoản khách hàng' : 'Thêm mới tài khoản khách hàng');
+            document.getElementById('uc009SaveCustomerText').innerText = item ? 'Lưu cập nhật' : 'Lưu & Cấp tài khoản';
+             document.getElementById('uc009CustomerType').value = item?.customerType || 'Cá nhân';
+             document.getElementById('uc009IdentitySource').value = item?.identitySource || 'Nội bộ';
+             document.getElementById('uc009Email').value = item?.email || '';
+             document.getElementById('uc009Email').disabled = !!item;
+            document.getElementById('uc009Phone').value = item?.phone || '';
+            document.getElementById('uc009Center').value = item?.center || 'Hà Nội';
+            document.getElementById('uc009Nationality').value = item?.nationality || 'Việt Nam';
+            document.getElementById('uc009Classification').value = item?.classification || 'Trong nước';
+            uc009SetProvinceValue('main', item?.nationality || 'Việt Nam', item?.province || '');
+            document.getElementById('uc009AddressDetail').value = item?.addressDetail || '';
+            document.getElementById('uc009TechId').value = item?.techId || '';
+            const isEditingSubAccount = item && accountTypeLabel(item.accountType) === 'Tài khoản phụ';
+            document.getElementById('uc009PersonName').value = (item?.customerType === 'Cá nhân' || isEditingSubAccount) ? item.name : '';
+             document.getElementById('uc009PersonalDoc').value = item?.docNo || '';
+             document.getElementById('uc009Dob').value = item?.dob || '';
+            document.getElementById('uc009Gender').value = item?.gender || '';
+            document.getElementById('uc009OrgName').value = item?.customerType === 'Tổ chức' && !isEditingSubAccount ? item.name : '';
+            document.getElementById('uc009OrgType').value = item?.orgType || (item?.classification === 'Nước ngoài' ? 'Tổ chức nước ngoài' : 'Tổ chức có đăng ký kinh doanh trong nước');
+            document.getElementById('uc009TaxCode').value = item?.taxCode || '';
+            document.getElementById('uc009Representative').value = item?.representative || '';
+            document.getElementById('uc009RepDocType').value = item?.repDocType || 'Căn cước công dân';
+            document.getElementById('uc009RepDocNo').value = item?.repDocNo || '';
+             document.getElementById('uc009GroupSearch').value = '';
+             document.getElementById('uc009RoleSearch').value = '';
+             uc009ToggleCustomerType();
+            if ((item?.customerType || 'Cá nhân') === 'Tổ chức') uc009ToggleOrgType();
+             uc009ToggleSource();
+             uc009RenderGroupChoices(getItemGroups(item));
+             uc009RenderRoleChoices(item?.roles || []);
+             uc009RenderPermissionPreview();
+             uc009FormAttachments = (item?.attachments && item.attachments.length ? item.attachments : [{ name: '', fileName: '' }]).map(x => ({ name: x.name || '', fileName: x.fileName || '' }));
+             uc009RenderAttachments();
+             uc009FormSubAccounts = item && item.customerType === 'Tổ chức' && accountTypeLabel(item.accountType) === 'Tài khoản chính'
+                 ? uc009Customers.filter(x => x.parentId === item.id).map(x => ({ ...x }))
+                 : [];
+             uc009RenderFormSubAccounts();
+             uc009CancelFormSubAccount();
+             uc009SwitchFormTab('info');
+             document.getElementById('uc009FormModal').classList.add('active');
+          };
+          window.uc009CloseModal = function (id) { document.getElementById(id).classList.remove('active'); };
+         function uc009AccountInfoText(item) {
+             if (!item) return '-';
+             return [item.name || 'Chưa có tên', item.email || 'Chưa có Email', accountTypeLabel(item.accountType || 'Tài khoản phụ')].join(' | ');
+         }
+         function uc009CurrentFormOrgInfo() {
+             const orgName = (document.getElementById('uc009Name')?.value || '').trim();
+             const orgEmail = (document.getElementById('uc009Email')?.value || '').trim();
+             return [orgName, orgEmail].filter(Boolean).join(' | ');
+         }
+         function uc009OpenConfirmAction(actionType, item, onConfirm, parentInfo = '') {
+             if (!item || typeof onConfirm !== 'function') return;
+             uc009PendingAction = { actionType, item, onConfirm, parentInfo };
+             const isDelete = actionType === 'Xóa';
+             const messageByAction = {
+                 'Đóng': 'Bạn có chắc chắn muốn đóng tài khoản ' + (item.email || item.name || '') + '?',
+                 'Xóa': 'Bạn có chắc chắn muốn xóa tài khoản ' + (item.email || item.name || '') + '?',
+                 'Khóa': 'Bạn có chắc chắn muốn khóa tài khoản ' + (item.email || item.name || '') + '?',
+                 'Mở khóa': 'Bạn có chắc chắn muốn mở khóa tài khoản ' + (item.email || item.name || '') + '?'
+             };
+             document.getElementById('uc009ConfirmActionTitle').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Xác nhận ' + actionType.toLowerCase() + ' tài khoản';
+             document.getElementById('uc009ConfirmActionType').innerText = actionType;
+             document.getElementById('uc009ConfirmAccountInfo').innerText = uc009AccountInfoText(item);
+             document.getElementById('uc009ConfirmActionMessage').innerText = messageByAction[actionType] || 'Bạn có chắc chắn muốn thực hiện thao tác này?';
+             const parentRow = document.getElementById('uc009ConfirmParentRow');
+             if (parentInfo) {
+                 document.getElementById('uc009ConfirmParentInfo').innerText = parentInfo;
+                 parentRow.style.display = 'grid';
+             } else {
+                 document.getElementById('uc009ConfirmParentInfo').innerText = '-';
+                 parentRow.style.display = 'none';
+             }
+             const confirmBtn = document.getElementById('uc009ConfirmActionBtn');
+             confirmBtn.className = isDelete ? 'btn btn-danger' : 'btn btn-primary';
+             confirmBtn.innerHTML = '<i class="fa-solid fa-check"></i> Đồng ý';
+             document.getElementById('uc009ConfirmActionModal').classList.add('active');
+         }
+         window.uc009CancelPendingAction = function () {
+             uc009PendingAction = null;
+             uc009CloseModal('uc009ConfirmActionModal');
+         };
+         window.uc009ExecutePendingAction = function () {
+             if (!uc009PendingAction) return;
+             const action = uc009PendingAction;
+             uc009PendingAction = null;
+             uc009CloseModal('uc009ConfirmActionModal');
+             action.onConfirm();
+             const successByAction = {
+                 'Đóng': 'Đóng tài khoản thành công.',
+                 'Xóa': 'Xóa tài khoản thành công.',
+                 'Khóa': 'Khóa tài khoản thành công.',
+                 'Mở khóa': 'Mở khóa tài khoản thành công.'
+             };
+             showToast(successByAction[action.actionType] || 'Thực hiện thao tác thành công.');
+         };
+         function uc009ProvinceConfig(scope) {
+             const isSub = scope === 'sub';
+             return {
+                 country: isSub ? 'uc009SubNationality' : 'uc009Nationality',
+                 selectWrapper: isSub ? 'uc009SubProvinceSelectWrapper' : 'uc009ProvinceSelectWrapper',
+                 textWrapper: isSub ? 'uc009SubProvinceTextWrapper' : 'uc009ProvinceTextWrapper',
+                 select: isSub ? 'uc009SubProvinceSelect' : 'uc009ProvinceSelect',
+                 text: isSub ? 'uc009SubProvinceText' : 'uc009ProvinceText'
+             };
+         }
+         window.uc009ToggleProvinceField = function (scope) {
+             const cfg = uc009ProvinceConfig(scope);
+             const country = document.getElementById(cfg.country)?.value;
+             const isVietnam = country === 'Việt Nam';
+             document.getElementById(cfg.selectWrapper)?.classList.toggle('hidden', !isVietnam);
+             document.getElementById(cfg.textWrapper)?.classList.toggle('hidden', isVietnam);
+             if (isVietnam) {
+                 const textInput = document.getElementById(cfg.text);
+                 if (textInput) textInput.value = '';
+             } else {
+                 const selectInput = document.getElementById(cfg.select);
+                 if (selectInput) selectInput.value = '';
+             }
+         };
+         function uc009SetProvinceValue(scope, country, value) {
+             const cfg = uc009ProvinceConfig(scope);
+             const countryInput = document.getElementById(cfg.country);
+             if (countryInput) countryInput.value = country || 'Việt Nam';
+             const isVietnam = (country || 'Việt Nam') === 'Việt Nam';
+             const selectInput = document.getElementById(cfg.select);
+             const textInput = document.getElementById(cfg.text);
+             if (selectInput) selectInput.value = isVietnam ? (value || '') : '';
+             if (textInput) textInput.value = isVietnam ? '' : (value || '');
+             uc009ToggleProvinceField(scope);
+         }
+         function uc009GetProvinceValue(scope) {
+             const cfg = uc009ProvinceConfig(scope);
+             const country = document.getElementById(cfg.country)?.value;
+             const id = country === 'Việt Nam' ? cfg.select : cfg.text;
+             return (document.getElementById(id)?.value || '').trim();
+         }
+         window.uc009ToggleCustomerType = function () {
+             const type = document.getElementById('uc009CustomerType').value;
+             const editingId = parseInt(document.getElementById('uc009EditingId').value || '0', 10);
+             const editingItem = uc009Customers.find(x => x.id === editingId);
+            const isSubAccount = editingItem && accountTypeLabel(editingItem.accountType) === 'Tài khoản phụ';
+            const canManageSub = type === 'Tổ chức' && !isSubAccount;
+            document.getElementById('uc009EmailLabel').innerHTML = type === 'Tổ chức' && !isSubAccount ? 'Email tổ chức (Tên đăng nhập) <span class="required-mark">*</span>' : 'Email (Tên đăng nhập) <span class="required-mark">*</span>';
+            document.getElementById('uc009PhoneLabel').innerHTML = 'Số điện thoại';
+            document.getElementById('uc009CountryLabel').innerHTML = type === 'Tổ chức' ? 'Quốc gia <span class="required-mark">*</span>' : 'Quốc tịch <span class="required-mark">*</span>';
+            document.getElementById('uc009PersonFields').style.display = (type === 'Cá nhân' || isSubAccount) ? 'grid' : 'none';
+            document.getElementById('uc009OrgFields').style.display = (type === 'Tổ chức' && !isSubAccount) ? 'grid' : 'none';
+            document.getElementById('uc009OrgFormTabs').style.display = canManageSub ? 'flex' : 'none';
+            document.getElementById('uc009FormSubPane').style.display = canManageSub ? '' : 'none';
+            if (type === 'Tổ chức' && !isSubAccount) uc009ToggleOrgType();
+            uc009ToggleProvinceField('main');
+            if (!canManageSub) uc009SwitchFormTab('info');
+        };
+        window.uc009ToggleOrgType = function () {
+            const orgTypeEl = document.getElementById('uc009OrgType');
+            if (!orgTypeEl) return;
+            const foreign = orgTypeEl.value === 'Tổ chức nước ngoài';
+            document.getElementById('uc009OrgCodeLabel').innerHTML = foreign ? 'Mã số thuế/Số giấy phép đầu tư <span class="required-mark">*</span>' : 'Mã định danh tổ chức <span class="required-mark">*</span>';
+            document.getElementById('uc009TaxCode').placeholder = foreign ? 'Nhập mã số thuế/số giấy phép đầu tư...' : 'Nhập mã định danh tổ chức...';
+            document.getElementById('uc009Classification').value = foreign ? 'Nước ngoài' : 'Trong nước';
+        };
+         window.uc009SwitchFormTab = function (tab) {
+             document.getElementById('uc009FormInfoPane')?.classList.toggle('active', tab === 'info');
+             document.getElementById('uc009FormSubPane')?.classList.toggle('active', tab === 'sub');
+             document.getElementById('uc009FormInfoTabBtn')?.classList.toggle('active', tab === 'info');
+             document.getElementById('uc009FormSubTabBtn')?.classList.toggle('active', tab === 'sub');
+         };
+         window.uc009ToggleSource = function () {
+             const source = document.getElementById('uc009IdentitySource').value;
+             document.getElementById('uc009TechIdGroup').style.display = 'block';
+             if (source !== 'VNeID') document.getElementById('uc009TechId').value = '';
+         };
+         window.uc009SyncUsername = function () {};
+        window.uc009SyncClassification = function () {
+            const type = document.getElementById('uc009CustomerType').value;
+            if (type === 'Tổ chức') {
+                uc009ToggleOrgType();
+            } else {
+                document.getElementById('uc009Classification').value = document.getElementById('uc009Nationality').value === 'Việt Nam' ? 'Trong nước' : 'Nước ngoài';
+            }
+            uc009ToggleProvinceField('main');
+        };
+         window.uc009SyncSubUsername = function () {};
+         window.uc009RenderGroupChoices = function (selected) {
+             if (selected) uc009SelectedGroups = selected;
+             const current = selectedGroupsFromForm();
+             const keyword = (document.getElementById('uc009GroupSearch')?.value || '').trim().toLowerCase();
+             const groups = groupCatalog.filter(group => !keyword || group.name.toLowerCase().includes(keyword));
+             renderCheckboxList('uc009Groups', groups, current, 'Không tìm thấy nhóm người dùng phù hợp.', 'group');
+             uc009RenderPermissionPreview();
+         };
+         window.uc009RenderRoleChoices = function (selected) {
+             if (selected) uc009SelectedRoles = selected;
+             const current = selectedRolesFromForm();
+             const keyword = (document.getElementById('uc009RoleSearch')?.value || '').trim().toLowerCase();
+             const roles = roleCatalog.filter(role => !keyword || role.name.toLowerCase().includes(keyword));
+             renderCheckboxList('uc009Roles', roles, current, 'Không tìm thấy vai trò phù hợp.', 'role');
+             uc009RenderPermissionPreview();
+         };
+         window.uc009ToggleChoice = function (kind, value, checked) {
+             const list = kind === 'group' ? uc009SelectedGroups
+                 : kind === 'role' ? uc009SelectedRoles
+                 : kind === 'subGroup' ? uc009SubSelectedGroups
+                 : uc009SubSelectedRoles;
+             const next = checked ? Array.from(new Set([...list, value])) : list.filter(x => x !== value);
+             if (kind === 'group') uc009SelectedGroups = next;
+             else if (kind === 'role') uc009SelectedRoles = next;
+             else if (kind === 'subGroup') uc009SubSelectedGroups = next;
+             else uc009SubSelectedRoles = next;
+             if (kind === 'subGroup' || kind === 'subRole') uc009RenderSubPermissionPreview();
+             else uc009RenderPermissionPreview();
+         };
+         window.uc009RenderPermissionPreview = function () {
+             const preview = document.getElementById('uc009PermissionPreview');
+             if (!preview) return;
+             const permissions = collectPermissionPreview(selectedGroupsFromForm(), selectedRolesFromForm());
+             const keyword = document.getElementById('uc009PermissionSearch')?.value || '';
+             preview.innerHTML = permissions.length
+                 ? buildPermissionTreeHtml(permissions, keyword)
+                 : '<div class="empty">Chưa chọn Nhóm người dùng hoặc Vai trò.</div>';
+         };
+         window.uc009ResetPermissionSearch = function () {
+             const input = document.getElementById('uc009PermissionSearch');
+             if (input) input.value = '';
+             uc009RenderPermissionPreview();
+         };
+         window.uc009RenderSubGroupChoices = function (selected) {
+             if (selected) uc009SubSelectedGroups = selected;
+             const keyword = (document.getElementById('uc009SubGroupSearch')?.value || '').trim().toLowerCase();
+             const groups = groupCatalog.filter(group => !keyword || group.name.toLowerCase().includes(keyword));
+             renderCheckboxList('uc009SubGroups', groups, selectedSubGroupsFromForm(), 'Không tìm thấy nhóm người dùng phù hợp.', 'subGroup');
+             uc009RenderSubPermissionPreview();
+         };
+         window.uc009RenderSubRoleChoices = function (selected) {
+             if (selected) uc009SubSelectedRoles = selected;
+             const keyword = (document.getElementById('uc009SubRoleSearch')?.value || '').trim().toLowerCase();
+             const roles = roleCatalog.filter(role => !keyword || role.name.toLowerCase().includes(keyword));
+             renderCheckboxList('uc009SubRoles', roles, selectedSubRolesFromForm(), 'Không tìm thấy vai trò phù hợp.', 'subRole');
+             uc009RenderSubPermissionPreview();
+         };
+         window.uc009RenderSubPermissionPreview = function () {
+             const preview = document.getElementById('uc009SubPermissionPreview');
+             if (!preview) return;
+             const permissions = collectPermissionPreview(selectedSubGroupsFromForm(), selectedSubRolesFromForm());
+             const keyword = document.getElementById('uc009SubPermissionSearch')?.value || '';
+             preview.innerHTML = permissions.length
+                 ? buildPermissionTreeHtml(permissions, keyword)
+                 : '<div class="empty">Chưa chọn Nhóm người dùng hoặc Vai trò.</div>';
+         };
+         window.uc009ResetSubPermissionSearch = function () {
+             const input = document.getElementById('uc009SubPermissionSearch');
+             if (input) input.value = '';
+             uc009RenderSubPermissionPreview();
+         };
+         window.uc009RenderAttachments = function () {
+             const tbody = document.getElementById('uc009AttachmentBody');
+             if (!tbody) return;
+             if (!uc009FormAttachments.length) uc009FormAttachments.push({ name: '', fileName: '' });
+             tbody.innerHTML = uc009FormAttachments.map((doc, idx) => `
+                 <tr>
+                     <td style="text-align:center;">${idx + 1}</td>
+                     <td><input class="form-control" value="${doc.name || ''}" placeholder="Nhập tên tài liệu..." oninput="uc009UpdateAttachmentName(${idx}, this.value)"></td>
+                     <td>
+                         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                             <span class="${doc.fileName ? 'file-name' : ''}">${doc.fileName || 'Chưa chọn file'}</span>
+                             <label class="btn btn-secondary" style="padding:6px 10px;margin:0;">
+                                 <i class="fa-solid fa-upload"></i> Tải lên
+                                 <input type="file" style="display:none;" onchange="uc009AttachFile(${idx}, this)">
+                             </label>
+                         </div>
+                     </td>
+                     <td style="text-align:center;">
+                         <button type="button" class="btn btn-outline-primary" style="padding:6px 10px;" ${doc.fileName ? '' : 'disabled'} onclick="uc009ViewAttachment(${idx})">Xem file</button>
+                         <button type="button" class="icon-btn delete" title="Xóa" onclick="uc009RemoveAttachmentRow(${idx})"><i class="fa-solid fa-trash"></i></button>
+                     </td>
+                 </tr>
+             `).join('');
+         };
+         window.uc009AddAttachmentRow = function () {
+             uc009FormAttachments.push({ name: '', fileName: '' });
+             uc009RenderAttachments();
+         };
+         window.uc009UpdateAttachmentName = function (idx, value) {
+             if (uc009FormAttachments[idx]) uc009FormAttachments[idx].name = value;
+         };
+         window.uc009AttachFile = function (idx, input) {
+             if (!uc009FormAttachments[idx]) return;
+             const file = input.files && input.files[0];
+             uc009FormAttachments[idx].fileName = file ? file.name : '';
+             uc009RenderAttachments();
+         };
+         window.uc009ViewAttachment = function (idx) {
+             const doc = uc009FormAttachments[idx];
+             if (!doc || !doc.fileName) return;
+             alert('Giả lập mở file: ' + doc.fileName);
+         };
+         window.uc009ViewSavedAttachment = function (fileName) {
+             if (!fileName) return;
+             alert('Giả lập mở file: ' + fileName);
+         };
+         window.uc009RemoveAttachmentRow = function (idx) {
+             uc009FormAttachments.splice(idx, 1);
+             if (!uc009FormAttachments.length) uc009FormAttachments.push({ name: '', fileName: '' });
+             uc009RenderAttachments();
+         };
+         function formSubActions(idx, account) {
+             const closed = account.status === 'Đóng';
+             return `
+                 <span class="uc009-sub-actions">
+                 <button class="icon-btn edit" title="Sửa" onclick="uc009EditFormSubAccount(${idx})"><i class="fa-solid fa-pen"></i></button>
+                 <button class="icon-btn close-account" ${closed ? 'disabled' : ''} title="Đóng tài khoản" onclick="uc009CloseFormSubAccount(${idx})"><i class="fa-solid fa-user-slash"></i></button>
+                 <button class="icon-btn delete" title="Xóa" onclick="uc009DeleteFormSubAccount(${idx})"><i class="fa-solid fa-trash"></i></button>
+                 </span>
+             `;
+         }
+         window.uc009RenderFormSubAccounts = function () {
+             const tbody = document.getElementById('uc009FormSubBody');
+             if (!tbody) return;
+             const keyword = (document.getElementById('uc009SubSearch')?.value || '').trim().toLowerCase();
+             const rows = uc009FormSubAccounts
+                 .map((account, idx) => ({ account, idx }))
+                 .filter(({ account }) => !keyword
+                     || (account.name || '').toLowerCase().includes(keyword)
+                     || (account.email || '').toLowerCase().includes(keyword)
+                     || (account.docNo || '').toLowerCase().includes(keyword));
+             tbody.innerHTML = rows.length ? rows.map(({ account, idx }, displayIdx) => `
+                 <tr>
+                     <td>${displayIdx + 1}</td>
+                     <td>${account.name || ''}</td>
+                     <td>${account.docNo || ''}</td>
+                     <td>${account.email || ''}</td>
+                     <td>${account.addressDetail || ''}</td>
+                     <td>${account.status || 'Đang hoạt động'}</td>
+                     <td style="text-align:center;white-space:nowrap;">${formSubActions(idx, account)}</td>
+                 </tr>
+             `).join('') : '<tr><td colspan="7" style="text-align:center;color:#64748B;font-style:italic;">Chưa có tài khoản phụ trực thuộc.</td></tr>';
+         };
+         function resetFormSubInputs() {
+             document.getElementById('uc009SubDocType').value = 'Căn cước công dân';
+             document.getElementById('uc009SubDocNo').value = '';
+             document.getElementById('uc009SubName').value = '';
+             document.getElementById('uc009SubEmail').value = '';
+             document.getElementById('uc009SubEmail').disabled = false;
+             document.getElementById('uc009SubPhone').value = '';
+             document.getElementById('uc009SubUnit').value = '';
+             uc009SetProvinceValue('sub', document.getElementById('uc009Nationality').value || 'Việt Nam', '');
+             document.getElementById('uc009SubAddressDetail').value = '';
+             document.getElementById('uc009SubIdentitySource').value = 'Nội bộ';
+             document.getElementById('uc009SubGroupSearch').value = '';
+             document.getElementById('uc009SubRoleSearch').value = '';
+             document.getElementById('uc009SubPermissionSearch').value = '';
+             uc009RenderSubGroupChoices([]);
+             uc009RenderSubRoleChoices([]);
+         }
+         function showFormSubAccount(idx = null) {
+             uc009EditingFormSubIndex = idx;
+             const form = document.getElementById('uc009SubAccountForm');
+             if (!form) return;
+             document.getElementById('uc009SubFormTitle').innerText = idx === null ? 'Thêm mới tài khoản phụ' : 'Cập nhật tài khoản phụ';
+             document.getElementById('uc009SubSaveBtnText').innerText = idx === null ? 'Lưu' : 'Cập nhật';
+             form.classList.add('active');
+         }
+         window.uc009AddFormSubAccount = function () {
+             resetFormSubInputs();
+             showFormSubAccount(null);
+         };
+         window.uc009EditFormSubAccount = function (idx) {
+             const account = uc009FormSubAccounts[idx];
+             if (!account) return;
+             document.getElementById('uc009SubDocType').value = account.docType || 'Căn cước công dân';
+             document.getElementById('uc009SubDocNo').value = account.docNo || '';
+             document.getElementById('uc009SubName').value = account.name || '';
+             document.getElementById('uc009SubEmail').value = account.email || '';
+             document.getElementById('uc009SubEmail').disabled = true;
+             document.getElementById('uc009SubPhone').value = account.phone || '';
+             document.getElementById('uc009SubUnit').value = account.unit || '';
+             uc009SetProvinceValue('sub', account.nationality || document.getElementById('uc009Nationality').value || 'Việt Nam', account.province || '');
+             document.getElementById('uc009SubAddressDetail').value = account.addressDetail || '';
+             document.getElementById('uc009SubIdentitySource').value = account.identitySource || 'Nội bộ';
+             document.getElementById('uc009SubGroupSearch').value = '';
+             document.getElementById('uc009SubRoleSearch').value = '';
+             document.getElementById('uc009SubPermissionSearch').value = '';
+             uc009RenderSubGroupChoices(getItemGroups(account));
+             uc009RenderSubRoleChoices(account.roles || []);
+             showFormSubAccount(idx);
+         };
+         window.uc009SaveFormSubAccount = function () {
+             const docType = document.getElementById('uc009SubDocType').value;
+             const docNo = document.getElementById('uc009SubDocNo').value.trim();
+             const name = document.getElementById('uc009SubName').value.trim();
+             const email = document.getElementById('uc009SubEmail').value.trim();
+             const phone = document.getElementById('uc009SubPhone').value.trim();
+             const unit = document.getElementById('uc009SubUnit').value.trim();
+             const nationality = document.getElementById('uc009SubNationality').value;
+             const province = uc009GetProvinceValue('sub');
+             const addressDetail = document.getElementById('uc009SubAddressDetail').value.trim();
+             if (!docType || !docNo || !name || !email || !nationality || !province || !addressDetail) {
+                 alert('Vui lòng nhập đầy đủ Tên khách hàng, Email, Loại giấy tờ, Số giấy tờ, Quốc gia, Tỉnh/TP và Địa chỉ chi tiết của tài khoản phụ.');
+                 return;
+             }
+             const duplicate = uc009FormSubAccounts.some((x, idx) => idx !== uc009EditingFormSubIndex && x.email.toLowerCase() === email.toLowerCase());
+             if (duplicate) {
+                 alert('Email tài khoản phụ đã tồn tại trong danh sách.');
+                 return;
+             }
+             const duplicateDoc = uc009FormSubAccounts.some((x, idx) => idx !== uc009EditingFormSubIndex && (x.docNo || '').toLowerCase() === docNo.toLowerCase());
+             if (duplicateDoc) {
+                 alert('Số giấy tờ tài khoản phụ đã tồn tại trong danh sách.');
+                 return;
+             }
+             const subGroups = selectedSubGroupsFromForm();
+             const subRoles = selectedSubRolesFromForm();
+             if (!subGroups.length && !subRoles.length) {
+                 alert('Vui lòng chọn ít nhất một Nhóm người dùng hoặc Vai trò.');
+                 return;
+             }
+              const data = {
+                 id: uc009EditingFormSubIndex === null ? 0 : (uc009FormSubAccounts[uc009EditingFormSubIndex]?.id || 0),
+                 code: '',
+                 docType,
+                 docNo,
+                 name,
+                 email,
+                 username: email,
+                 unit,
+                 phone,
+                 center: document.getElementById('uc009Center').value,
+                 customerType: 'Tổ chức',
+                 accountType: 'Tài khoản phụ',
+                  identitySource: document.getElementById('uc009SubIdentitySource').value,
+                  authMethods: nextAuthMethods(document.getElementById('uc009SubIdentitySource').value, uc009EditingFormSubIndex === null ? null : uc009FormSubAccounts[uc009EditingFormSubIndex]),
+                 classification: document.getElementById('uc009Classification').value,
+                 nationality,
+                 province,
+                 addressDetail,
+                 createdAt: uc009EditingFormSubIndex === null ? new Date().toISOString() : (uc009FormSubAccounts[uc009EditingFormSubIndex]?.createdAt || new Date().toISOString()),
+                 status: uc009EditingFormSubIndex === null ? 'Đang hoạt động' : (uc009FormSubAccounts[uc009EditingFormSubIndex]?.status || 'Đang hoạt động'),
+                 groups: subGroups,
+                 group: subGroups.join(', '),
+                 roles: subRoles
+             };
+             if (uc009EditingFormSubIndex === null) uc009FormSubAccounts.push(data);
+             else uc009FormSubAccounts[uc009EditingFormSubIndex] = data;
+             uc009CancelFormSubAccount();
+             uc009RenderFormSubAccounts();
+         };
+         window.uc009CancelFormSubAccount = function () {
+             uc009EditingFormSubIndex = null;
+             resetFormSubInputs();
+             document.getElementById('uc009SubAccountForm')?.classList.remove('active');
+         };
+          window.uc009CloseFormSubAccount = function (idx) {
+              if (!uc009FormSubAccounts[idx]) return;
+              uc009OpenConfirmAction('Đóng', uc009FormSubAccounts[idx], function () {
+                  uc009FormSubAccounts[idx].status = 'Đóng';
+                  uc009RenderFormSubAccounts();
+              }, uc009CurrentFormOrgInfo());
+          };
+          window.uc009DeleteFormSubAccount = function (idx) {
+              if (!uc009FormSubAccounts[idx]) return;
+              uc009OpenConfirmAction('Xóa', uc009FormSubAccounts[idx], function () {
+                  uc009FormSubAccounts.splice(idx, 1);
+                  uc009RenderFormSubAccounts();
+              }, uc009CurrentFormOrgInfo());
+          };
+         window.uc009SaveCustomer = function () {
+             const id = parseInt(document.getElementById('uc009EditingId').value || '0', 10);
+             const existingItem = uc009Customers.find(x => x.id === id);
+             const type = document.getElementById('uc009CustomerType').value;
+             const isEditingSubAccount = existingItem && accountTypeLabel(existingItem.accountType) === 'Tài khoản phụ';
+             const email = document.getElementById('uc009Email').value.trim();
+             const phone = document.getElementById('uc009Phone').value.trim();
+             const name = (type === 'Cá nhân' || isEditingSubAccount) ? document.getElementById('uc009PersonName').value.trim() : document.getElementById('uc009OrgName').value.trim();
+             const orgCode = document.getElementById('uc009TaxCode').value.trim();
+             if (!name || !email || (type === 'Tổ chức' && !isEditingSubAccount && !orgCode)) {
+                 alert(type === 'Tổ chức' && !isEditingSubAccount ? 'Vui lòng nhập đầy đủ Tên tổ chức, Email tổ chức và mã định danh/mã số thuế của tổ chức.' : 'Vui lòng nhập đầy đủ Tên khách hàng và Email.');
+                 return;
+             }
+             const duplicate = uc009Customers.some(x => x.id !== id && x.email.toLowerCase() === email.toLowerCase());
+             if (duplicate) { alert('Email đã tồn tại trên hệ thống.'); return; }
+             const groups = selectedGroupsFromForm();
+             const roles = selectedRolesFromForm();
+             if (!groups.length && !roles.length) { alert('Vui lòng chọn ít nhất một Nhóm người dùng hoặc Vai trò.'); return; }
+             const data = {
+                 name,
+                 email,
+                 phone,
+                 center: document.getElementById('uc009Center').value,
+                 customerType: type,
+                 accountType: existingItem ? accountTypeLabel(existingItem.accountType) : 'Tài khoản chính',
+                 parentId: existingItem?.parentId,
+                 username: email,
+                  identitySource: document.getElementById('uc009IdentitySource').value,
+                 authMethods: nextAuthMethods(document.getElementById('uc009IdentitySource').value, existingItem),
+                 classification: document.getElementById('uc009Classification').value,
+                 nationality: document.getElementById('uc009Nationality').value,
+                 province: uc009GetProvinceValue('main'),
+                 addressDetail: document.getElementById('uc009AddressDetail').value.trim(),
+                 docType: existingItem?.docType,
+                 docNo: document.getElementById('uc009PersonalDoc').value.trim(),
+                 dob: document.getElementById('uc009Dob').value,
+                 gender: document.getElementById('uc009Gender').value,
+                 orgType: document.getElementById('uc009OrgType').value,
+                 taxCode: orgCode,
+                 representative: document.getElementById('uc009Representative').value.trim(),
+                 repDocType: document.getElementById('uc009RepDocType').value,
+                 repDocNo: document.getElementById('uc009RepDocNo').value.trim(),
+                 groups,
+                 group: groups.join(', '),
+                 roles,
+                 attachments: uc009FormAttachments.filter(x => (x.name || '').trim() || (x.fileName || '').trim()).map(x => ({ name: (x.name || '').trim(), fileName: x.fileName || '' })),
+                 techId: document.getElementById('uc009IdentitySource').value === 'VNeID' ? (document.getElementById('uc009TechId').value || '') : ''
+             };
+             if (id) {
+                 const item = uc009Customers.find(x => x.id === id);
+                 Object.assign(item, data);
+             } else {
+                 data.id = nextCustomerId();
+                 data.code = 'KH-2026-' + String(data.id).padStart(4, '0');
+                 data.createdAt = new Date().toISOString();
+                 data.status = 'Đang hoạt động';
+                 uc009Customers.push(data);
+             }
+             const savedId = id || data.id;
+             const savedItem = uc009Customers.find(x => x.id === savedId);
+             if (savedItem && savedItem.customerType === 'Tổ chức' && accountTypeLabel(savedItem.accountType) === 'Tài khoản chính') {
+                 uc009Customers = uc009Customers.filter(x => x.parentId !== savedId);
+                 uc009FormSubAccounts.forEach(account => {
+                     uc009Customers.push({
+                         ...account,
+                         id: account.id && !uc009Customers.some(x => x.id === account.id) ? account.id : nextCustomerId(),
+                         parentId: savedId,
+                         code: '',
+                         center: savedItem.center,
+                         customerType: 'Tổ chức',
+                          accountType: 'Tài khoản phụ',
+                          classification: savedItem.classification,
+                          authMethods: nextAuthMethods(account.identitySource || 'Nội bộ', account),
+                          createdAt: account.createdAt || new Date().toISOString(),
+                          status: account.status || 'Đang hoạt động'
+                     });
+                 });
+             }
+             uc009CloseModal('uc009FormModal');
+             uc009Search();
+         };
+         window.uc009OpenReset = function (id) {
+             const item = uc009Customers.find(x => x.id === id);
+             if (!item || !hasInternalAuth(item)) return;
+             document.getElementById('uc009ResetId').value = id;
+             document.getElementById('uc009ResetName').innerText = item.name + ' (' + item.email + ')';
+             document.getElementById('uc009NewPassword').value = '';
+             document.getElementById('uc009ConfirmPassword').value = '';
+             ['uc009NewPassword', 'uc009ConfirmPassword'].forEach(inputId => {
+                 document.getElementById(inputId).type = 'password';
+             });
+             document.querySelectorAll('#uc009ResetModal .password-toggle-btn i').forEach(icon => {
+                 icon.className = 'fa-solid fa-eye-slash';
+             });
+             document.getElementById('uc009ResetModal').classList.add('active');
+         };
+         window.uc009TogglePassword = function (inputId, button) {
+             const input = document.getElementById(inputId);
+             const icon = button ? button.querySelector('i') : null;
+             if (!input) return;
+             const isHidden = input.type === 'password';
+             input.type = isHidden ? 'text' : 'password';
+             if (icon) icon.className = isHidden ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+         };
+         window.uc009ExecuteResetPassword = function () {
+             const pwd = document.getElementById('uc009NewPassword').value;
+             const confirmPwd = document.getElementById('uc009ConfirmPassword').value;
+             if (pwd.length < 8) { alert('Mật khẩu mới phải có tối thiểu 8 ký tự.'); return; }
+             if (pwd !== confirmPwd) { alert('Mật khẩu nhập lại không khớp.'); return; }
+             alert('Đặt lại mật khẩu thành công.');
+             uc009CloseModal('uc009ResetModal');
+         };
+         window.uc009ToggleLock = function (id) {
+             const item = uc009Customers.find(x => x.id === id);
+             if (!item || item.status === 'Đóng') return;
+             const isLocked = item.status === 'Bị khóa';
+             uc009OpenConfirmAction(isLocked ? 'Mở khóa' : 'Khóa', item, function () {
+                 item.status = isLocked ? 'Đang hoạt động' : 'Bị khóa';
+                 uc009Search();
+             });
+         };
+          window.uc009CloseAccount = function (id) {
+              const item = uc009Customers.find(x => x.id === id);
+              if (!item || item.status === 'Đóng') return;
+              uc009OpenConfirmAction('Đóng', item, function () {
+                  item.status = 'Đóng';
+                  uc009Search();
+              });
+          };
+          window.uc009Delete = function (id) {
+              const item = uc009Customers.find(x => x.id === id);
+              if (!item) return;
+              uc009OpenConfirmAction('Xóa', item, function () {
+                  uc009Customers = uc009Customers.filter(x => x.id !== id && x.parentId !== id);
+                  uc009Search();
+              });
+          };
+         window.uc009OpenDetail = function (id) {
+             const item = uc009Customers.find(x => x.id === id);
+             if (!item) return;
+             uc009CurrentDetailId = id;
+             const children = uc009Customers.filter(x => x.parentId === item.id);
+             const parentOrg = getParentOrg(item);
+             const isOrgMain = item.customerType === 'Tổ chức' && accountTypeLabel(item.accountType) === 'Tài khoản chính';
+             const isSubAccount = accountTypeLabel(item.accountType) === 'Tài khoản phụ';
+             document.getElementById('uc009DetailUpdateBtn').style.display = '';
+             const detailTitle = 'Chi tiết Khách hàng ' + item.customerType + ' (' + item.identitySource + ')';
+             document.getElementById('uc009DetailTitle').innerHTML = '<i class="fa-solid fa-circle-info"></i> ' + detailTitle;
+             const idDocLabel = item.customerType === 'Cá nhân' ? 'Số giấy tờ' : (item.orgType === 'Tổ chức nước ngoài' ? 'Mã số thuế/Số giấy phép đầu tư' : 'Mã định danh tổ chức');
+             const idDocValue = item.customerType === 'Cá nhân' ? item.docNo : item.taxCode;
+             const groupText = getItemGroups(item).join(', ');
+             const roleText = (item.roles || []).join(', ');
+             const identityBlock = isSubAccount
+                  ? detailField('Tên khách hàng', item.name) + detailField('Email (Tên đăng nhập)', item.email) + detailField('Đơn vị', item.unit) + detailField('Số điện thoại', item.phone) + detailField('Trạng thái', item.status) + detailField('Loại giấy tờ', item.docType) + detailField('Số giấy tờ', item.docNo) + detailField('Loại khách hàng', item.customerType) + detailField('Loại tài khoản', accountTypeLabel(item.accountType)) + detailField('Nguồn xác thực', item.identitySource) + detailField('Phân loại khách hàng', item.classification) + detailField('Ngày tạo', formatDateTime(item.createdAt)) + detailField('Nhóm người dùng', groupText) + detailField('Vai trò', roleText)
+                 : item.customerType === 'Cá nhân'
+                 ? detailField('Họ tên / Tên tổ chức', item.name) + detailField(idDocLabel, idDocValue) + detailField('Giới tính', item.gender) + detailField('Ngày sinh', item.dob) + detailField('Nhóm người dùng', groupText) + detailField('Vai trò', roleText)
+                 : detailField('Loại tổ chức', item.orgType || (item.classification === 'Nước ngoài' ? 'Tổ chức nước ngoài' : 'Tổ chức có đăng ký kinh doanh trong nước')) + detailField('Tên tổ chức', item.name) + detailField(idDocLabel, idDocValue) + detailField('Email tổ chức (Tên đăng nhập)', item.email) + detailField('Họ và tên người đại diện', item.representative) + detailField('Loại giấy tờ người đại diện', item.repDocType) + detailField('Số giấy tờ người đại diện', item.repDocNo) + detailField('Quốc gia', item.nationality) + detailField('Nhóm người dùng', groupText) + detailField('Vai trò', roleText);
+             const attachmentHtml = (item.attachments && item.attachments.length)
+                 ? '<div class="uc009-detail-section"><div class="uc009-detail-title"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div><table class="custom-table"><thead><tr><th>STT</th><th>Tên tài liệu</th><th>File đính kèm</th><th>Thao tác</th></tr></thead><tbody>' + item.attachments.map((doc, idx) => '<tr><td>' + (idx + 1) + '</td><td>' + (doc.name || '-') + '</td><td><span class="file-name">' + (doc.fileName || 'Chưa chọn file') + '</span></td><td><button class="btn btn-outline-primary" style="padding:6px 10px;" data-file="' + (doc.fileName || '').replace(/"/g, '&quot;') + '" onclick="uc009ViewSavedAttachment(this.dataset.file)">Xem file</button></td></tr>').join('') + '</tbody></table></div>'
+                 : '';
+             const parentOrgHtml = isSubAccount && parentOrg ? `
+                 <div class="uc009-detail-section">
+                     <div class="uc009-detail-title"><i class="fa-solid fa-building"></i> Thông tin tổ chức chủ quản</div>
+                     <div class="uc009-detail-grid">
+                         ${detailField('Tên tổ chức', parentOrg.name)}
+                         ${detailField('Mã khách hàng tổ chức', parentOrg.code)}
+                         ${detailField('Email tổ chức (Tên đăng nhập)', parentOrg.email)}
+                         ${detailField('Số điện thoại tổ chức', parentOrg.phone)}
+                     </div>
+                 </div>
+             ` : '';
+             const permissionKeys = collectPermissionPreview(getItemGroups(item), item.roles || []);
+             const permissionHtml = permissionKeys.length ? `
+                 <div class="uc009-detail-section">
+                     <div class="uc009-detail-title"><i class="fa-solid fa-sitemap"></i> Cây phân quyền cộng dồn</div>
+                     <div class="permission-tree-box">${buildPermissionTreeHtml(permissionKeys, '')}</div>
+                 </div>
+             ` : '';
+             const childTabHtml = isOrgMain ? `
+                 <div id="uc009DetailSubTab" class="uc009-detail-tab-pane">
+                     <table class="custom-table">
+                         <thead><tr><th>STT</th><th>Tên</th><th>Số giấy tờ</th><th>Email</th><th>Địa chỉ chi tiết</th><th>Trạng thái</th></tr></thead>
+                         <tbody>
+                             ${children.length ? children.map((c, idx) => '<tr onclick="uc009OpenDetail(' + c.id + ')" title="Click để xem chi tiết tài khoản phụ"><td>' + (idx + 1) + '</td><td>' + c.name + '</td><td>' + (c.docNo || '') + '</td><td>' + (c.email || '') + '</td><td>' + (c.addressDetail || '') + '</td><td>' + c.status + '</td></tr>').join('') : '<tr><td colspan="6" style="text-align:center;color:#64748B;font-style:italic;">Chưa có tài khoản phụ trực thuộc.</td></tr>'}
+                         </tbody>
+                     </table>
+                 </div>
+             ` : '';
+             const commonHtml = `
+                 <div class="uc009-detail-banner ${item.identitySource === 'VNeID' ? 'vneid' : 'internal'}">
+                     <i class="fa-solid ${item.identitySource === 'VNeID' ? 'fa-shield-halved' : 'fa-triangle-exclamation'}"></i>
+                     ${item.identitySource === 'VNeID' ? 'Dữ liệu định danh đồng bộ từ VNeID/DVCQG.' : 'Tài khoản được khởi tạo nội bộ trên hệ thống.'}
+                 </div>
+                 ${isSubAccount ? '' : `
+                 <div class="uc009-detail-section">
+                     <div class="uc009-detail-title"><i class="fa-solid fa-fingerprint"></i> Thông tin định danh hệ thống</div>
+                     <div class="uc009-detail-grid">
+                         ${customerCodeDisplay(item) ? detailField('Mã khách hàng', customerCodeDisplay(item), 'full').replace('<span>', '<span class="uc009-detail-code">') : ''}
+                         ${detailField('Loại khách hàng', item.customerType)}
+                         ${detailField('Loại tài khoản', accountTypeLabel(item.accountType))}
+                          ${detailField('Nguồn xác thực', item.identitySource)}
+                         ${detailField('TechID', item.techId || ' ')}
+                         ${detailField('Phân loại khách hàng', item.classification)}
+                         ${detailField('Trạng thái', item.status)}
+                     </div>
+                 </div>
+                 `}
+                  ${parentOrgHtml}
+                  ${authMethodsCard(item)}
+                  <div class="uc009-detail-section">
+                     <div class="uc009-detail-title"><i class="fa-solid fa-id-card"></i> ${isSubAccount ? 'Thông tin tài khoản' : 'Thông tin định danh'}</div>
+                     <div class="uc009-detail-grid">${identityBlock}</div>
+                 </div>
+                 <div class="uc009-detail-section">
+                     <div class="uc009-detail-title"><i class="fa-solid fa-address-book"></i> Thông tin liên hệ</div>
+                     <div class="uc009-detail-grid">
+                         ${detailField('Số điện thoại', item.phone)}
+                         ${detailField('Email (Tên đăng nhập)', item.email)}
+                         ${detailField('Trung tâm đăng ký', item.center)}
+                         ${detailField('Ngày tạo', formatDateTime(item.createdAt))}
+                         ${detailField('Tỉnh/TP', item.province)}
+                         ${detailField('Địa chỉ chi tiết', item.addressDetail)}
+                     </div>
+                 </div>
+                 ${attachmentHtml}
+                 ${permissionHtml}
+             `;
+             document.getElementById('uc009DetailBody').innerHTML = isOrgMain ? `
+                 <div class="uc009-detail-tabs">
+                     <button class="active" id="uc009DetailInfoTabBtn" onclick="uc009SwitchDetailTab('info')">Thông tin chung</button>
+                     <button id="uc009DetailSubTabBtn" onclick="uc009SwitchDetailTab('sub')">Tài khoản phụ trực thuộc</button>
+                 </div>
+                 <div id="uc009DetailInfoTab" class="uc009-detail-tab-pane active">${commonHtml}</div>
+                 ${childTabHtml}
+             ` : commonHtml;
+             document.getElementById('uc009DetailModal').classList.add('active');
+         };
+         window.uc009EditCurrentDetail = function () {
+             if (!uc009CurrentDetailId) return;
+             uc009CloseModal('uc009DetailModal');
+             uc009OpenForm(uc009CurrentDetailId);
+         };
+         window.uc009SwitchDetailTab = function (tab) {
+             document.getElementById('uc009DetailInfoTab')?.classList.toggle('active', tab === 'info');
+             document.getElementById('uc009DetailSubTab')?.classList.toggle('active', tab === 'sub');
+             document.getElementById('uc009DetailInfoTabBtn')?.classList.toggle('active', tab === 'info');
+             document.getElementById('uc009DetailSubTabBtn')?.classList.toggle('active', tab === 'sub');
+         };
+         window.uc009OpenSubAccountForm = function (parentId, childId) {
+             const parent = uc009Customers.find(x => x.id === parentId);
+             const child = uc009Customers.find(x => x.id === childId);
+             if (!parent) return;
+             if (child) {
+                 alert('Giả lập mở form Sửa tài khoản phụ: ' + child.name + ' thuộc ' + parent.name);
+             } else {
+                 const newId = Math.max(...uc009Customers.map(x => x.id)) + 1;
+                 uc009Customers.push({
+                     id: newId,
+                     parentId,
+                     code: '',
+                     name: 'Tài khoản phụ mới',
+                     email: 'taikhoanphu' + newId + '@example.com',
+                     phone: '0900000' + String(newId).slice(-3),
+                     center: parent.center,
+                     customerType: 'Tổ chức',
+                      accountType: 'Tài khoản phụ',
+                      identitySource: 'Nội bộ',
+                      authMethods: ['Nội bộ'],
+                      classification: parent.classification,
+                     nationality: parent.nationality,
+                     createdAt: new Date().toISOString(),
+                     status: 'Đang hoạt động',
+                     groups: ['Nhóm Tra cứu'],
+                     group: 'Nhóm Tra cứu',
+                     roles: ['Nhân viên hành chính tổng hợp']
+                 });
+                 uc009Search();
+                 uc009OpenDetail(parentId);
+                 uc009SwitchDetailTab('sub');
+             }
+         };
+          window.uc009CloseSubAccount = function (childId) {
+              const child = uc009Customers.find(x => x.id === childId);
+              if (!child || child.status === 'Đóng') return;
+              const parentId = child.parentId;
+              const parent = uc009Customers.find(x => x.id === parentId);
+              uc009OpenConfirmAction('Đóng', child, function () {
+                  child.status = 'Đóng';
+                  uc009Search();
+                  uc009OpenDetail(parentId);
+                  uc009SwitchDetailTab('sub');
+              }, parent ? parent.name + ' | ' + parent.email : '');
+          };
+          window.uc009DeleteSubAccount = function (childId) {
+              const child = uc009Customers.find(x => x.id === childId);
+              if (!child) return;
+              const parentId = child.parentId;
+              const parent = uc009Customers.find(x => x.id === parentId);
+              uc009OpenConfirmAction('Xóa', child, function () {
+                  uc009Customers = uc009Customers.filter(x => x.id !== childId);
+                  uc009Search();
+                  uc009OpenDetail(parentId);
+                  uc009SwitchDetailTab('sub');
+              }, parent ? parent.name + ' | ' + parent.email : '');
+          };
+         window.uc009ExportExcel = function () {
+             alert('Kết xuất Excel theo danh sách đang lọc: ' + uc009Filtered.length + ' bản ghi.');
+         };
+
+         uc009SyncClassification();
+         uc009RenderGroupChoices(['Nhóm Tra cứu']);
+         uc009RenderRoleChoices([]);
+         uc009RenderPermissionPreview();
+         uc009Filtered = flattenForDisplay(uc009Customers);
+         uc009Render();
+     });
+ })();
+ </script>
  </body>
  </html>
  

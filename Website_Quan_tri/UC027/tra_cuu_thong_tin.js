@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Xử lý logic SPA cho UC027 - Tra cứu thông tin đăng ký (Website Cán bộ)
  * Tích hợp bảng dạng cây (Tree-view), phân trang đầy đủ, bộ lọc nâng cao và dropdown Thao tác khác
  */
@@ -1054,7 +1054,7 @@ function renderCanBoTable() {
                 <td>${parent.handlingOfficer || '-'}</td>
                 <td style="text-align: center;">
                     <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
-                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${parent.regNum}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${parent.regNum}')">Xem</button>
                         ${getMoreActionsDropdownHtml(parent)}
                     </div>
                 </td>
@@ -1087,7 +1087,7 @@ function renderCanBoTable() {
                         <td>${child.handlingOfficer || '-'}</td>
                         <td style="text-align: center;">
                             <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
-                                <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${child.regNum}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                                <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${child.regNum}')">Xem</button>
                                 ${getMoreActionsDropdownHtml(child, parent)}
                             </div>
                         </td>
@@ -1115,7 +1115,7 @@ function renderCanBoTable() {
                                 <td>${gc.handlingOfficer || '-'}</td>
                                 <td style="text-align: center;">
                                     <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
-                                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${gc.regNum}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${gc.regNum}')">Xem</button>
                                         ${getMoreActionsDropdownHtml(gc, child, parent)}
                                     </div>
                                 </td>

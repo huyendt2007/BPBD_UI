@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -714,9 +714,7 @@
                 let actions = '';
                 if (item.status === 'Chờ ký') {
                     actions = `
-                        <button class="icon-btn view" title="Xem chi tiết" onclick="openApprovalModal(${item.id})">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
+                        <button class="icon-btn view" title="Xem chi tiết" onclick="openApprovalModal(${item.id})">Xem</button>
                     `;
                 } else if (item.status === 'Hoàn thành') {
                     actions = `
@@ -732,9 +730,7 @@
                     `;
                 } else if (item.status === 'Đã xử lý') {
                     actions = `
-                        <button class="icon-btn view" title="Xem chi tiết" style="margin-right: 8px;" onclick="openApprovalModal(${item.id})">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
+                        <button class="icon-btn view" title="Xem chi tiết" style="margin-right: 8px;" onclick="openApprovalModal(${item.id})">Xem</button>
                         <button class="icon-btn view" style="color: #ef4444 !important;" title="Tải văn bản kết quả" onclick="downloadNotice(${item.id})">
                             <i class="fa-solid fa-file-pdf"></i>
                         </button>

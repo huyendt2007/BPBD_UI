@@ -1285,7 +1285,7 @@
                                 <option value="to_chuc_trong_nuoc">Tổ chức có đăng ký kinh doanh trong nước</option>
                                 <option value="nguoi_nuoc_ngoai">Người nước ngoài</option>
                                 <option value="nguoi_khong_quoc_tich">Người không quốc tịch cư trú tại Việt Nam</option>
-                                <option value="nha_dau_tu_nn">Nhà đầu tư nước ngoài</option>
+                                <option value="nha_dau_tu_nn">Tổ chức nước ngoài</option>
                                 <option value="to_chuc_khac">Tổ chức khác</option>
                             </select>
                         </div>
@@ -1344,7 +1344,7 @@
                         <br>- <strong>Tổ chức có đăng ký kinh doanh trong nước</strong>: Nhập MST/Số ĐKKD <span class="demo-badge">0102030405</span>
                         <br>- <strong>Người nước ngoài</strong>: Nhập Họ tên <span class="demo-badge">John Smith</span> và Số Hộ chiếu <span class="demo-badge">A1234567</span>
                         <br>- <strong>Người không quốc tịch cư trú tại Việt Nam</strong>: Nhập Họ tên <span class="demo-badge">Ivan Petrov</span> và Số thẻ cư trú <span class="demo-badge">TR-998877</span>
-                        <br>- <strong>Nhà đầu tư nước ngoài</strong>: Nhập MST/Số GPĐT <span class="demo-badge">INVEST-8899</span>
+                        <br>- <strong>Tổ chức nước ngoài</strong>: Nhập MST/Số GPĐT <span class="demo-badge">INVEST-8899</span>
                         <br>- <strong>Tổ chức khác</strong>: Nhập Tên <span class="demo-badge">Hợp tác xã Nông nghiệp Quyết Thắng</span>
                         <br>- Giả lập <strong>Mã CSDL thường xuyên</strong> (hiển thị kết quả phía dưới, giữ nguyên form tìm kiếm): Nhập mã bắt đầu bằng <strong>TX</strong> hoặc <strong>CQ</strong> (Ví dụ: <span class="demo-badge">TX-839210</span>)
                         <br>- Giả lập <strong>Mã CSDL 1 lần</strong> (ẩn form tìm kiếm, chỉ hiển thị kết quả): Nhập mã bắt đầu bằng <strong>1L</strong> hoặc <strong>OL</strong> (Ví dụ: <span class="demo-badge">1L-002931</span>)
@@ -2114,7 +2114,7 @@
             <td><span class="status-tag status-completed">${record.status}</span></td>
             <td style="text-align: center;">
                 <a href="#" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;" onclick="viewHistory('${record.id}'); return false;">
-                    <i class="fa-solid fa-eye"></i> Xem
+                    Xem
                 </a>
             </td>
         </tr>`;
@@ -2139,7 +2139,7 @@
                     <td><span class="status-tag status-completed">${child.status}</span></td>
                     <td style="text-align: center;">
                         <a href="#" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;" onclick="viewHistory('${child.id}'); return false;">
-                            <i class="fa-solid fa-eye"></i> Xem
+                            Xem
                         </a>
                     </td>
                 </tr>`;

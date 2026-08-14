@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -3273,7 +3273,7 @@
                                 <!-- Card 1: Dịch vụ Công Quốc gia -->
                                 <div class="login-method-card dvcqg-card"
                                     style="border: 1px solid #E2E8F0; border-radius: var(--border-radius-lg); padding: 35px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: all 0.25s;"
-                                    onclick="window.location.href='https://xacthuc.dichvucong.gov.vn/authenticationendpoint/login.do?acr_values=LoA1&client_id=U13hchYNhcdCqR446l2uchMqcLca&commonAuthCallerPath=%2Foauth2%2Fauthorize&forceAuth=false&passiveAuth=false&redirect_uri=https%3A%2F%2Fdktructuyen.moj.gov.vn%2Fsso%2Fdvcqg%2Fredirect&response_type=code&scope=openid&tenantDomain=carbon.super&sessionDataKey=0faa2e4e-d87f-4bda-a925-b9d1467a189f&relyingParty=U13hchYNhcdCqR446l2uchMqcLca&type=oidc&sp=bo+tu+phap+new&isSaaSApp=false&authenticators=OpenIDConnectAuthenticator%3AVnconnect+DVC%3AIDP+BCA%3AVNeID_TC_DN%3BVnptAuthenticator%3ALOCAL'">
+                                    onclick="switchLoginMethod('vneid')">
                                     <div class="login-card-logo" style="margin-bottom: 5px;">
                                         <svg width="60" height="60" viewBox="0 0 100 100" style="display: block;">
                                             <circle cx="50" cy="50" r="48" fill="#DA251D" />
@@ -3365,7 +3365,9 @@
                                     <div
                                         style="font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:10px;">
                                         Quét mã QR bằng VNeID</div>
-                                    <div class="qr-box" id="vneidQrBox">
+                                    <div class="qr-box" id="vneidQrBox" onclick="simulateVNeIDSSO()"
+                                        title="Click để mô phỏng quét QR theo kịch bản đang chọn"
+                                        style="cursor:pointer;">
                                         <i class="fa-solid fa-qrcode" style="font-size: 80px; color: #334155;"></i>
                                     </div>
                                     <div class="qr-timer" id="vneidQrTimerText">
@@ -3386,6 +3388,20 @@
                                     <div
                                         style="font-size:12px; font-weight:700; color:var(--text-main); margin-bottom: 5px;">
                                         Hoặc đăng nhập nhanh qua trình duyệt:</div>
+                                    <div
+                                        style="border:1px solid var(--border-color); background:#F8FAFC; border-radius:var(--border-radius-md); padding:12px; display:flex; flex-direction:column; gap:8px;">
+                                        <label class="form-label" style="margin:0;">Kịch bản mô phỏng VNeID</label>
+                                        <select class="form-select" id="vneidScenario" style="font-size:12px;">
+                                            <option value="success-linked">Thành công - TechID đã liên kết tài khoản</option>
+                                            <option value="register-personal">Thành công - TechID chưa liên kết, khách hàng cá nhân</option>
+                                            <option value="register-org">Thành công - TechID chưa liên kết, đại diện tổ chức</option>
+                                            <option value="auth-failed">Không thành công - VNeID/DVCQG từ chối xác thực</option>
+                                            <option value="ial-low">Không thành công - Tài khoản VNeID chưa đạt IAL2</option>
+                                            <option value="locked">Không thành công - Tài khoản khách hàng bị khóa/đóng</option>
+                                            <option value="not-org-rep">Không thành công - Chưa có tài khoản phụ/không phải đại diện</option>
+                                            <option value="authority-not-configured">Không thành công - Cơ quan có thẩm quyền chưa được khai báo</option>
+                                        </select>
+                                    </div>
                                     <button class="btn-gov-sso vneid" onclick="simulateVNeIDSSO()">
                                         <i class="fa-solid fa-id-card-clip" style="font-size:18px;"></i>
                                         <span>Kết nối VNeID SSO</span>
@@ -3548,94 +3564,286 @@
                 </div>
             </div>
 
-            <!-- SCREEN: Popup định dạng sử dụng VNeID mới -->
-            <div class="app-screen" id="screen-vneid-choice">
-                <div class="card-section" style="max-width: 500px; margin: 40px auto;">
-                    <div style="text-align: center; margin-bottom: 15px;">
-                        <i class="fa-solid fa-address-card" style="font-size: 48px; color: #DC2626;"></i>
+            <!-- SCREEN: Xác nhận và Đăng ký thông tin tài khoản qua VNeID -->
+            <div class="app-screen" id="screen-vneid-register-form">
+                <div class="card-section" style="max-width: 980px; margin: 30px auto;">
+                    <div
+                        style="display:flex; justify-content:space-between; gap:16px; align-items:flex-start; border-bottom:2px solid var(--border-color); padding-bottom:12px; margin-bottom:18px;">
+                        <div>
+                            <h2 class="section-title" style="border-bottom:none; margin-bottom:6px;">Xác nhận và Đăng ký
+                                thông tin tài khoản qua VNeID</h2>
+                            <div style="font-size:12px; color:var(--text-muted);">TechID đã được xác thực qua
+                                DVCQG/VNeID. Người dùng hoàn tất thông tin trên cùng một form để sử dụng hệ thống.</div>
+                        </div>
+                        <span id="vneidSubjectBadge"
+                            style="white-space:nowrap; background:#FEE2E2; color:#991B1B; border:1px solid #FECACA; border-radius:999px; padding:6px 12px; font-size:12px; font-weight:700;">Khách
+                            hàng cá nhân</span>
                     </div>
-                    <h2 class="section-title" style="justify-content: center; border: none; margin-bottom: 15px;">Xác
-                        nhận Hình thức sử dụng</h2>
+
                     <div class="alert-box info" style="margin-bottom: 15px;">
                         <i class="fa fa-info-circle alert-icon"></i>
-                        <div>Số định danh cá nhân / CCCD từ tài khoản VNeID của bạn chưa tồn tại trong hệ thống. Vui
-                            lòng lựa chọn hình thức nộp hồ sơ.</div>
+                        <div id="vneidRegisterNotice">Hệ thống đã nhận diện dữ liệu định danh từ VNeID. TechID sẽ được
+                            lưu để phục vụ các lần xác thực sau.</div>
                     </div>
-                    <div class="form-group">
+
+                    <div
+                        style="border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:16px; margin-bottom:18px; background:#F8FAFC;">
+                        <div
+                            style="font-size:14px; font-weight:800; color:var(--primary-color); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-list-check"></i> Nhu cầu sử dụng tài khoản</div>
                         <div class="check-group">
                             <label class="check-item">
-                                <input type="radio" name="vneidUseType" value="mot_lan" id="vneidTypeOneTime">
+                                <input type="checkbox" id="vneidNeedCreateAccount" checked
+                                    onchange="syncVNeIDRegistrationOptions()">
                                 <div class="check-label">
-                                    <strong>Sử dụng một lần (Không lưu tài khoản thường trú)</strong>
-                                    <div style="font-size:11px; color: var(--text-muted);">Chỉ dùng nộp nhanh 1 hồ sơ
-                                        trong phiên hiện tại. Dữ liệu tài khoản sẽ tự động xóa sau khi đăng xuất hoặc
-                                        hết hạn phiên 24h.</div>
+                                    <strong>Tài khoản đăng ký</strong>
+                                    <div style="font-size:11px; color:var(--text-muted);">Sử dụng nhóm chức năng đăng
+                                        ký biện pháp bảo đảm và liên kết TechID để đăng nhập qua VNeID ở các lần
+                                        sau.</div>
                                 </div>
                             </label>
-                            <label class="check-item" style="margin-top: 10px;">
-                                <input type="radio" name="vneidUseType" value="thuong_xuyen" id="vneidTypeRegular"
-                                    checked>
+                            <label class="check-item">
+                                <input type="checkbox" id="vneidNeedPayLookup"
+                                    onchange="syncVNeIDRegistrationOptions()">
                                 <div class="check-label">
-                                    <strong>Đăng ký tài khoản thường xuyên (Khuyên dùng)</strong>
-                                    <div style="font-size:11px; color: var(--text-muted);">Khởi tạo tài khoản lâu dài,
-                                        lưu giữ toàn bộ lịch sử giao dịch và tích hợp tính năng tra cứu, nhận thông báo
-                                        qua email.</div>
+                                    <strong>Tài khoản tra cứu</strong>
+                                    <div style="font-size:11px; color:var(--text-muted);">Sử dụng nhóm chức năng tra
+                                        cứu/cấp mã số sử dụng CSDL loại Thường xuyên theo biểu phí đang có hiệu
+                                        lực.</div>
+                                </div>
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" id="vneidSetupInternalLogin"
+                                    onchange="toggleVNeIDInternalLoginFields()">
+                                <div class="check-label">
+                                    <strong>Thiết lập đăng nhập bằng Email/Mật khẩu</strong>
+                                    <div style="font-size:11px; color:var(--text-muted);">Gắn thêm phương thức Nội bộ
+                                        vào cùng tài khoản, không tạo bản ghi khách hàng riêng.</div>
                                 </div>
                             </label>
                         </div>
                     </div>
-                    <div
-                        style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-                        <button class="btn btn-outline-primary" onclick="showScreen('login')">Hủy</button>
-                        <button class="btn btn-primary" onclick="confirmVNeIDChoice()">Đồng ý</button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- SCREEN: Form Hoàn tất đăng ký VNeID (Chọn Thường Xuyên) -->
-            <div class="app-screen" id="screen-vneid-register-form">
-                <div class="card-section" style="max-width: 600px; margin: 30px auto;">
-                    <h2 class="section-title">Hoàn tất Đăng ký thông tin tài khoản qua VNeID</h2>
-
-                    <div class="alert-box info" style="margin-bottom: 15px;">
-                        <i class="fa fa-info-circle alert-icon"></i>
-                        <div>Hệ thống đã nhận diện dữ liệu định danh từ VNeID. Vui lòng bổ sung Email và Số điện thoại
-                            liên hệ để kích hoạt tài khoản.</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Loại tài khoản khách hàng</label>
-                        <input type="text" class="form-control" value="Cá nhân (Kế thừa từ VNeID Mức 2)" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Họ và tên</label>
-                        <input type="text" class="form-control" id="vneidRegName" value="NGUYỄN VĂN A" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Số CCCD / Định danh cá nhân</label>
-                        <input type="text" class="form-control" id="vneidRegCCCD" value="001092001234" disabled>
-                    </div>
-
-                    <div class="grid-2-cols">
-                        <div class="form-group">
-                            <label class="form-label">Số điện thoại liên hệ <span class="required-mark">*</span></label>
-                            <input type="text" class="form-control" id="vneidRegPhone" placeholder="0xxxxxxxxx">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Địa chỉ Email <span class="required-mark">*</span></label>
-                            <input type="email" class="form-control" id="vneidRegEmail" placeholder="email@domain.com">
+                    <div id="vneidInternalLoginFields" class="hidden"
+                        style="border:1px solid #BFDBFE; background:#EFF6FF; border-radius:var(--border-radius-md); padding:16px; margin-bottom:18px;">
+                        <div
+                            style="font-size:14px; font-weight:800; color:#1D4ED8; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-lock"></i> Thông tin đăng nhập Email/Mật khẩu</div>
+                        <div class="grid-2-cols">
+                            <div class="form-group">
+                                <label class="form-label">Email (Tên đăng nhập) <span
+                                        class="required-mark">*</span></label>
+                                <input type="email" class="form-control" id="vneidInternalEmail"
+                                    placeholder="email@domain.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mật khẩu mới <span class="required-mark">*</span></label>
+                                <div class="password-wrapper" style="position: relative;">
+                                    <input type="password" class="form-control" id="vneidInternalPassword"
+                                        style="padding-right:40px;" placeholder="Nhập mật khẩu mới">
+                                    <i class="fa fa-eye-slash"
+                                        onclick="togglePasswordVisibility('vneidInternalPassword', this)"
+                                        style="position:absolute; right:12px; top:12px; cursor:pointer; color:var(--text-muted);"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nhập lại mật khẩu <span
+                                        class="required-mark">*</span></label>
+                                <div class="password-wrapper" style="position: relative;">
+                                    <input type="password" class="form-control" id="vneidInternalPasswordConfirm"
+                                        style="padding-right:40px;" placeholder="Nhập lại mật khẩu">
+                                    <i class="fa fa-eye-slash"
+                                        onclick="togglePasswordVisibility('vneidInternalPasswordConfirm', this)"
+                                        style="position:absolute; right:12px; top:12px; cursor:pointer; color:var(--text-muted);"></i>
+                                </div>
+                            </div>
+                            <div style="font-size:11px; color:var(--text-muted); align-self:center;">
+                                Mật khẩu phải đáp ứng quy tắc mật khẩu chung của hệ thống.</div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Địa chỉ thường trú (Lấy từ VNeID)</label>
-                        <textarea class="form-control" rows="2"
-                            disabled>123 Đường Láng, Láng Thượng, Đống Đa, Hà Nội</textarea>
+                    <div id="vneidPersonalFields">
+                        <h3
+                            style="font-size:15px; font-weight:700; color:var(--primary-color); margin-bottom:15px; border-left:4px solid var(--primary-color); padding-left:8px;">
+                            Thông tin khách hàng cá nhân</h3>
+                        <div class="grid-2-cols">
+                            <div class="form-group">
+                                <label class="form-label">Loại tài khoản</label>
+                                <input type="text" class="form-control" value="Cá nhân" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tên khách hàng</label>
+                                <input type="text" class="form-control" id="vneidPersonalName" value="Nguyễn Văn Nam"
+                                    disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Loại giấy tờ</label>
+                                <input type="text" class="form-control" value="CCCD" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Số giấy tờ</label>
+                                <input type="text" class="form-control" id="vneidPersonalDoc" value="001092001234"
+                                    disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nguồn xác thực</label>
+                                <input type="text" class="form-control" value="VNeID - IAL2" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Số điện thoại <span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" id="vneidRegPhone" placeholder="0xxxxxxxxx">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Quốc gia <span class="required-mark">*</span></label>
+                                <select class="form-select" id="vneidRegCountry"
+                                    onchange="toggleVNeIDProvinceField('personal')">
+                                    <option>Việt Nam</option>
+                                    <option>Nhật Bản</option>
+                                    <option>Singapore</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="vneidRegProvinceSelectWrapper">
+                                <label class="form-label">Tỉnh/TP <span class="required-mark">*</span></label>
+                                <select class="form-select" id="vneidRegProvince">
+                                    <option value="">-- Chọn Tỉnh/TP --</option>
+                                    <option>TP Hà Nội</option>
+                                    <option>TP Hồ Chí Minh</option>
+                                    <option>Đà Nẵng</option>
+                                </select>
+                            </div>
+                            <div class="form-group hidden" id="vneidRegProvinceTextWrapper">
+                                <label class="form-label">Tỉnh/TP <span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" id="vneidRegProvinceText"
+                                    placeholder="Nhập Tỉnh/Thành phố...">
+                            </div>
+                            <div class="form-group" style="grid-column:span 2;">
+                                <label class="form-label">Địa chỉ chi tiết <span class="required-mark">*</span></label>
+                                <textarea class="form-control" rows="2" id="vneidRegAddress"
+                                    placeholder="Số nhà, đường phố...">123 Đường Láng, Láng Thượng, Đống Đa, Hà Nội</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Trung tâm đăng ký mặc định <span
+                                        class="required-mark">*</span></label>
+                                <select class="form-select" id="vneidRegCenter">
+                                    <option>Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội</option>
+                                    <option>Trung tâm Đăng ký giao dịch, tài sản tại TP Hồ Chí Minh</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cây phân quyền <span class="required-mark">*</span></label>
+                                <div
+                                    style="border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:10px; background:#FFFFFF;">
+                                    <label class="check-item"><input type="checkbox" checked> <span
+                                            class="check-label">Đăng ký biện pháp bảo đảm</span></label>
+                                    <label class="check-item"><input type="checkbox" checked> <span
+                                            class="check-label">Tra cứu thông tin</span></label>
+                                    <label class="check-item"><input type="checkbox"> <span class="check-label">Yêu cầu
+                                            cấp bản sao</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="vneidOrgFields" class="hidden">
+                        <h3
+                            style="font-size:15px; font-weight:700; color:var(--primary-color); margin-bottom:15px; border-left:4px solid var(--primary-color); padding-left:8px;">
+                            Thông tin khách hàng tổ chức</h3>
+                        <div class="grid-2-cols">
+                            <div class="form-group">
+                                <label class="form-label">Loại tài khoản</label>
+                                <input type="text" class="form-control" value="Tổ chức" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Loại tổ chức</label>
+                                <input type="text" class="form-control" value="Tổ chức có đăng ký kinh doanh trong nước"
+                                    disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mã định danh tổ chức</label>
+                                <input type="text" class="form-control" id="vneidOrgCode" value="ORG-VNEID-00045"
+                                    disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email tổ chức (Tên đăng nhập) <span
+                                        class="required-mark">*</span></label>
+                                <input type="email" class="form-control" id="vneidOrgEmail"
+                                    placeholder="contact@domain.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tên tổ chức <span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" id="vneidOrgName"
+                                    value="Công ty Cổ phần ABC">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Số điện thoại tổ chức <span
+                                        class="required-mark">*</span></label>
+                                <input type="text" class="form-control" id="vneidOrgPhone" placeholder="0xxxxxxxxx">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Quốc gia <span class="required-mark">*</span></label>
+                                <select class="form-select" id="vneidOrgCountry"
+                                    onchange="toggleVNeIDProvinceField('org')">
+                                    <option>Việt Nam</option>
+                                    <option>Singapore</option>
+                                    <option>Nhật Bản</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="vneidOrgProvinceSelectWrapper">
+                                <label class="form-label">Tỉnh/TP <span class="required-mark">*</span></label>
+                                <select class="form-select" id="vneidOrgProvince">
+                                    <option value="">-- Chọn Tỉnh/TP --</option>
+                                    <option>TP Hà Nội</option>
+                                    <option>TP Hồ Chí Minh</option>
+                                    <option>Đà Nẵng</option>
+                                </select>
+                            </div>
+                            <div class="form-group hidden" id="vneidOrgProvinceTextWrapper">
+                                <label class="form-label">Tỉnh/TP <span class="required-mark">*</span></label>
+                                <input type="text" class="form-control" id="vneidOrgProvinceText"
+                                    placeholder="Nhập Tỉnh/Thành phố...">
+                            </div>
+                            <div class="form-group" style="grid-column:span 2;">
+                                <label class="form-label">Địa chỉ chi tiết <span class="required-mark">*</span></label>
+                                <textarea class="form-control" rows="2" id="vneidOrgAddress"
+                                    placeholder="Số nhà, đường phố...">Tòa nhà ABC, Cầu Giấy, Hà Nội</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Người đại diện</label>
+                                <input type="text" class="form-control" id="vneidOrgRepName" value="Nguyễn Văn Nam"
+                                    disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Số giấy tờ người đại diện</label>
+                                <input type="text" class="form-control" id="vneidOrgRepDoc" value="001092001234"
+                                    disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Trung tâm đăng ký mặc định <span
+                                        class="required-mark">*</span></label>
+                                <select class="form-select" id="vneidOrgCenter">
+                                    <option>Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội</option>
+                                    <option>Trung tâm Đăng ký giao dịch, tài sản tại TP Hồ Chí Minh</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cây phân quyền cộng dồn <span
+                                        class="required-mark">*</span></label>
+                                <div
+                                    style="border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:10px; background:#FFFFFF;">
+                                    <label class="check-item"><input type="checkbox" checked> <span
+                                            class="check-label">Tài khoản chính tổ chức</span></label>
+                                    <label class="check-item"><input type="checkbox" checked> <span
+                                            class="check-label">Quản lý tài khoản phụ trực thuộc</span></label>
+                                    <label class="check-item"><input type="checkbox" checked> <span
+                                            class="check-label">Đăng ký/Tra cứu/Thanh toán hồ sơ</span></label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div
                         style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-                        <button class="btn btn-outline-primary" onclick="showScreen('vneid-choice')">Quay lại</button>
+                        <button class="btn btn-outline-primary" onclick="showScreen('login')">Quay lại đăng nhập</button>
                         <button class="btn btn-primary" onclick="submitVNeIDRegister()"><i
                                 class="fa fa-circle-check"></i> Hoàn tất đăng ký</button>
                     </div>
@@ -3936,32 +4144,111 @@
                         <h2 class="section-title" style="border-bottom: none; margin-bottom: 0;">Thông tin tài khoản
                             Khách hàng</h2>
                         <div style="display: flex; gap: 8px;">
-                            <button class="btn btn-primary" onclick="showScreen('update-account-details')"><i
+                            <button class="btn btn-primary" id="btnAccountDetailUpdate" onclick="showScreen('update-account-details')"><i
                                     class="fa fa-edit"></i> Cập nhật</button>
-                            <button class="btn btn-outline-primary" onclick="showScreen('change-password')"><i
-                                    class="fa fa-key"></i> Đổi mật khẩu</button>
                             <button class="btn btn-outline-primary" onclick="showScreen('home')"><i
                                     class="fa fa-times"></i> Đóng</button>
                         </div>
                     </div>
 
-                    <h3
+                    <div
+                        style="border:1px solid #BFDBFE; background:#EFF6FF; border-radius:var(--border-radius-md); padding:12px 14px; margin-bottom:18px;">
+                        <label class="form-label" for="accountDetailScenario" style="margin-bottom:6px;">Kịch bản giả lập hồ sơ tài khoản</label>
+                        <select class="form-select" id="accountDetailScenario" onchange="applyAccountDetailScenario(this.value)">
+                            <option value="org-both">Tổ chức - Đã liên kết VNeID và Nội bộ</option>
+                            <option value="org-vneid">Tổ chức - Chỉ liên kết VNeID, chưa thiết lập Nội bộ</option>
+                            <option value="org-internal">Tổ chức - Chỉ có Nội bộ, chưa liên kết VNeID</option>
+                            <option value="personal-both">Cá nhân - Đã liên kết VNeID và Nội bộ</option>
+                            <option value="personal-vneid">Cá nhân - Chỉ liên kết VNeID, chưa thiết lập Nội bộ</option>
+                            <option value="personal-internal">Cá nhân - Chỉ có Nội bộ, chưa liên kết VNeID</option>
+                        </select>
+                    </div>
+
+                    <h3 id="personalAccountTitle" class="hidden"
+                        style="font-size: 15px; font-weight: 700; color: var(--primary-color); margin-bottom: 15px; border-left: 4px solid var(--primary-color); padding-left: 8px;">
+                        Thông tin định danh và tài khoản Cá nhân</h3>
+                    <div id="personalAccountInfo" class="grid-2-cols hidden"
+                        style="gap: 15px var(--spacing-lg); margin-bottom: 30px; background-color: #F8FAFC; padding: 20px; border-radius: var(--border-radius-md); border: 1px solid var(--border-color);">
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Loại tài khoản:</span>
+                            <span id="lblPersonalAccountType" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Loại giấy tờ:</span>
+                            <span id="lblPersonalDocType" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Số giấy tờ:</span>
+                            <span id="lblPersonalDocNo" style="font-weight: 700; color: var(--primary-color); font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Tên khách hàng:</span>
+                            <span id="lblPersonalName" style="font-weight: 700; font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Ngày sinh:</span>
+                            <span id="lblPersonalDob" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Giới tính:</span>
+                            <span id="lblPersonalGender" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Quốc tịch:</span>
+                            <span id="lblPersonalNationality" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Phân loại khách hàng:</span>
+                            <span id="lblPersonalClassification" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Tỉnh/Thành phố:</span>
+                            <span id="lblPersonalProvince" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Email (Tên đăng nhập):</span>
+                            <span id="lblPersonalEmail" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Số điện thoại:</span>
+                            <span id="lblPersonalPhone" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Trung tâm Đăng ký mặc định:</span>
+                            <span id="lblPersonalDefaultCenter" style="font-size: 14px;">-</span>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Nhu cầu sử dụng tài khoản:</span>
+                            <span id="lblPersonalUsageNeeds" style="font-size: 14px;">-</span>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Địa chỉ chi tiết:</span>
+                            <span id="lblPersonalAddress" style="font-size: 14px;">-</span>
+                        </div>
+                    </div>
+
+                    <h3 id="orgAccountTitle"
                         style="font-size: 15px; font-weight: 700; color: var(--primary-color); margin-bottom: 15px; border-left: 4px solid var(--primary-color); padding-left: 8px;">
                         Thông tin chung & liên lạc của Tổ chức</h3>
-                    <div class="grid-2-cols"
+                    <div id="orgAccountInfo" class="grid-2-cols"
                         style="gap: 15px var(--spacing-lg); margin-bottom: 30px; background-color: #F8FAFC; padding: 20px; border-radius: var(--border-radius-md); border: 1px solid var(--border-color);">
                         <div>
                             <span
-                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Mã
-                                khách hàng:</span>
-                            <span id="lblCustomerCode"
-                                style="font-weight: 700; color: var(--primary-color); font-size: 14px;">-</span>
+                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Loại
+                                tài khoản:</span>
+                            <span id="lblAccountType" style="font-size: 14px;">-</span>
                         </div>
                         <div>
                             <span
+                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Loại
+                                tổ chức:</span>
+                            <span id="lblOrgType" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span id="lblOrgMSTLabel"
                                 style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Mã
-                                số tổ chức (Tên đăng nhập):</span>
-                            <span id="lblOrgMST" style="font-weight: 700; font-size: 14px;">-</span>
+                                định danh tổ chức:</span>
+                            <span id="lblOrgMST" style="font-weight: 700; color: var(--primary-color); font-size: 14px;">-</span>
                         </div>
                         <div>
                             <span
@@ -3971,15 +4258,27 @@
                         </div>
                         <div>
                             <span
-                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Loại
-                                hình tổ chức:</span>
-                            <span id="lblOrgType" style="font-size: 14px;">-</span>
+                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Email
+                                tổ chức (Tên đăng nhập):</span>
+                            <span id="lblOrgEmail" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span
+                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Số
+                                điện thoại tổ chức:</span>
+                            <span id="lblOrgPhone" style="font-size: 14px;">-</span>
                         </div>
                         <div>
                             <span
                                 style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Quốc
-                                tịch:</span>
+                                gia đăng ký:</span>
                             <span id="lblOrgNationality" style="font-size: 14px;">-</span>
+                        </div>
+                        <div>
+                            <span
+                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Phân
+                                loại khách hàng:</span>
+                            <span id="lblOrgClassification" style="font-size: 14px;">-</span>
                         </div>
                         <div>
                             <span
@@ -3993,17 +4292,11 @@
                                 tâm Đăng ký mặc định:</span>
                             <span id="lblOrgDefaultCenter" style="font-size: 14px;">-</span>
                         </div>
-                        <div>
+                        <div style="grid-column: span 2;">
                             <span
-                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Số
-                                điện thoại của Tổ chức:</span>
-                            <span id="lblOrgPhone" style="font-size: 14px;">-</span>
-                        </div>
-                        <div>
-                            <span
-                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Email
-                                của Tổ chức:</span>
-                            <span id="lblOrgEmail" style="font-size: 14px;">-</span>
+                                style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Nhu
+                                cầu sử dụng tài khoản:</span>
+                            <span id="lblUsageNeeds" style="font-size: 14px;">-</span>
                         </div>
                         <div style="grid-column: span 2;">
                             <span
@@ -4013,10 +4306,10 @@
                         </div>
                     </div>
 
-                    <h3
+                    <h3 id="orgRepresentativeTitle"
                         style="font-size: 15px; font-weight: 700; color: var(--primary-color); margin-bottom: 15px; border-left: 4px solid var(--primary-color); padding-left: 8px;">
                         Thông tin Người đại diện pháp luật</h3>
-                    <div class="grid-2-cols"
+                    <div id="orgRepresentativeInfo" class="grid-2-cols"
                         style="gap: 15px var(--spacing-lg); background-color: #F8FAFC; padding: 20px; border-radius: var(--border-radius-md); border: 1px solid var(--border-color);">
                         <div>
                             <span
@@ -4037,6 +4330,13 @@
                             <span id="lblRepDocNum" style="font-weight: 700; font-size: 14px;">-</span>
                         </div>
                     </div>
+
+                    <h3
+                        style="font-size: 15px; font-weight: 700; color: var(--primary-color); margin: 24px 0 15px; border-left: 4px solid var(--primary-color); padding-left: 8px;">
+                        Phương thức đăng nhập</h3>
+                    <div id="accountAuthMethodCard"
+                        style="border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:16px; background:#FFFFFF; box-shadow:var(--box-shadow);">
+                    </div>
                 </div>
             </div>
 
@@ -4054,7 +4354,7 @@
                             <input type="text" class="form-control" id="editCustomerCode" disabled>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Mã số tổ chức (Tên đăng nhập)</label>
+                            <label class="form-label" id="editOrgMSTLabel">Mã định danh tổ chức</label>
                             <input type="text" class="form-control" id="editOrgMST" disabled>
                         </div>
                         <div class="form-group">
@@ -4062,20 +4362,19 @@
                             <input type="text" class="form-control" id="editOrgName" placeholder="Nhập tên tổ chức...">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Loại hình tổ chức <span class="required-mark">*</span></label>
-                            <select class="form-select" id="editOrgType">
-                                <option value="Doanh nghiệp trong nước">Doanh nghiệp trong nước</option>
-                                <option value="Tổ chức tín dụng">Tổ chức tín dụng</option>
-                                <option value="Doanh nghiệp có vốn đầu tư nước ngoài">Doanh nghiệp có vốn đầu tư nước
-                                    ngoài</option>
-                                <option value="Tổ chức khác">Tổ chức khác</option>
+                            <label class="form-label">Loại tổ chức <span class="required-mark">*</span></label>
+                            <select class="form-select" id="editOrgType" onchange="updateOrgIdentityLabel()">
+                                <option value="Tổ chức có đăng ký kinh doanh trong nước">Tổ chức có đăng ký kinh doanh trong nước</option>
+                                <option value="Tổ chức nước ngoài">Tổ chức nước ngoài</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Quốc tịch <span class="required-mark">*</span></label>
+                            <label class="form-label">Quốc gia đăng ký <span class="required-mark">*</span></label>
                             <select class="form-select" id="editOrgNationality" onchange="toggleEditProvinceField()">
                                 <option value="Việt Nam">Việt Nam</option>
-                                <option value="Nước ngoài">Nước ngoài</option>
+                                <option value="Singapore">Singapore</option>
+                                <option value="Nhật Bản">Nhật Bản</option>
+                                <option value="Hoa Kỳ">Hoa Kỳ</option>
                             </select>
                         </div>
                         <div class="form-group" id="editOrgProvinceWrapper">
@@ -4114,7 +4413,7 @@
                                 placeholder="Nhập số điện thoại...">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Email của Tổ chức <span class="required-mark">*</span></label>
+                            <label class="form-label">Email tổ chức (Tên đăng nhập) <span class="required-mark">*</span></label>
                             <input type="text" class="form-control" id="editOrgEmail"
                                 placeholder="Nhập địa chỉ email...">
                         </div>
@@ -5343,7 +5642,7 @@
                                         <i class="fa-solid fa-credit-card"></i> Thanh toán
                                     </button>
                                     <button class="btn btn-outline-primary hidden" id="copyReqDetailViewFileBtn">
-                                        <i class="fa-solid fa-eye"></i> Xem file
+                                        Xem file
                                     </button>
                                     <button class="btn btn-success hidden" id="copyReqDetailDownloadBtn">
                                         <i class="fa-solid fa-download"></i> Tải bản sao chứng nhận
@@ -5594,6 +5893,51 @@
 
 
 
+    <!-- MODAL: Thiết lập đăng nhập Email/Mật khẩu từ Thông tin tài khoản -->
+    <div id="modalSetupInternalLogin" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thiết lập đăng nhập bằng Email/Mật khẩu</h3>
+                <button class="btn-close" onclick="closeSetupInternalLoginModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-box info" style="margin-bottom:15px;">
+                    <i class="fa fa-info-circle alert-icon"></i>
+                    <div>Hệ thống gắn thêm phương thức Nội bộ vào cùng tài khoản đang đăng nhập, không tạo bản ghi khách
+                        hàng mới.</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email (Tên đăng nhập) <span class="required-mark">*</span></label>
+                    <input type="email" class="form-control" id="setupInternalEmail" placeholder="email@domain.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu mới <span class="required-mark">*</span></label>
+                    <div class="password-wrapper" style="position: relative;">
+                        <input type="password" class="form-control" id="setupInternalPassword"
+                            style="padding-right:40px;" placeholder="Nhập mật khẩu mới">
+                        <i class="fa fa-eye-slash" onclick="togglePasswordVisibility('setupInternalPassword', this)"
+                            style="position:absolute; right:12px; top:12px; cursor:pointer; color:var(--text-muted);"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nhập lại mật khẩu <span class="required-mark">*</span></label>
+                    <div class="password-wrapper" style="position: relative;">
+                        <input type="password" class="form-control" id="setupInternalPasswordConfirm"
+                            style="padding-right:40px;" placeholder="Nhập lại mật khẩu">
+                        <i class="fa fa-eye-slash"
+                            onclick="togglePasswordVisibility('setupInternalPasswordConfirm', this)"
+                            style="position:absolute; right:12px; top:12px; cursor:pointer; color:var(--text-muted);"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-primary" onclick="closeSetupInternalLoginModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="submitSetupInternalLogin()"><i class="fa fa-save"></i> Lưu
+                    thiết lập</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: Import Excel Số khung phương tiện -->
     <div id="modalImportExcel" class="modal-overlay">
         <div class="modal-content large">
@@ -5764,7 +6108,7 @@
                         <option value="cd_vn" selected>Công dân Việt Nam</option>
                         <option value="tc_vn">Tổ chức có đăng ký kinh doanh trong nước</option>
                         <option value="nn">Người nước ngoài</option>
-                        <option value="investor_nn">Nhà đầu tư nước ngoài</option>
+                        <option value="investor_nn">Tổ chức nước ngoài</option>
                         <option value="tc_khac">Tổ chức khác</option>
                         <option value="no_nation_vn">Người không quốc tịch cư trú tại Việt Nam</option>
                     </select>
@@ -5799,7 +6143,7 @@
                     </div>
                 </div>
 
-                <!-- 4. Nhà đầu tư nước ngoài (investor_nn) -->
+                <!-- 4. Tổ chức nước ngoài (investor_nn) -->
                 <div id="searchFields_investor_nn" class="search-fields-group hidden" style="margin-bottom: 15px;">
                     <div class="form-group">
                         <label class="form-label">Mã số thuế <span class="required-mark">*</span></label>
@@ -5935,7 +6279,7 @@
                             <button class="btn btn-outline-primary"
                                 onclick="showToast('Đang mở bản xem trước của văn bản...', 'info')"
                                 style="font-size: 13px; padding: 6px 12px;">
-                                <i class="fa-solid fa-eye"></i> Xem file
+                                Xem file
                             </button>
                             <button class="btn btn-primary" onclick="downloadVanBanMau()"
                                 style="font-size: 13px; padding: 6px 12px;">
@@ -6234,20 +6578,163 @@
         // Organization profile and credentials state
         let orgDetails = {
             customerCode: 'KH-TC-000101',
+            entityType: 'organization',
+            accountType: 'Tổ chức',
             mst: '0109201234',
             name: 'Ngân hàng Thương mại Cổ phần FPT (FPT Bank)',
-            type: 'Tổ chức tín dụng',
+            type: 'Tổ chức có đăng ký kinh doanh trong nước',
             nationality: 'Việt Nam',
+            classification: 'Trong nước',
             province: 'Hà Nội',
             address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội',
             email: 'taikhoantestfpt@gmail.com',
             phone: '02437341234',
             defaultCenter: 'Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội',
+            usageNeeds: ['Tài khoản đăng ký', 'Tài khoản tra cứu'],
             repName: 'Trần Văn Quyết',
             repDocType: 'CCCD',
             repDocNum: '001092005678'
         };
         let currentAccountPassword = '12345678';
+        let accountLoginMethods = { vneid: true, internal: true };
+        const accountDetailScenarios = {
+            'org-both': {
+                methods: { vneid: true, internal: true },
+                profile: {
+                    customerCode: 'KH-TC-000101',
+                    entityType: 'organization',
+                    accountType: 'Tổ chức',
+                    mst: '0109201234',
+                    name: 'Ngân hàng Thương mại Cổ phần FPT (FPT Bank)',
+                    type: 'Tổ chức có đăng ký kinh doanh trong nước',
+                    nationality: 'Việt Nam',
+                    classification: 'Trong nước',
+                    province: 'Hà Nội',
+                    address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội',
+                    email: 'taikhoantestfpt@gmail.com',
+                    phone: '02437341234',
+                    defaultCenter: 'Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội',
+                    usageNeeds: ['Tài khoản đăng ký', 'Tài khoản tra cứu'],
+                    repName: 'Trần Văn Quyết',
+                    repDocType: 'CCCD',
+                    repDocNum: '001092005678'
+                }
+            },
+            'org-vneid': {
+                methods: { vneid: true, internal: false },
+                profile: {
+                    customerCode: 'KH-TC-000202',
+                    entityType: 'organization',
+                    accountType: 'Tổ chức',
+                    mst: 'ORG-VNEID-00045',
+                    name: 'Công ty Cổ phần ABC',
+                    type: 'Tổ chức có đăng ký kinh doanh trong nước',
+                    nationality: 'Việt Nam',
+                    classification: 'Trong nước',
+                    province: 'TP. Hồ Chí Minh',
+                    address: 'Tầng 5, tòa nhà ABC, Quận 1, TP Hồ Chí Minh',
+                    email: 'contact-vneid@abc.vn',
+                    phone: '02438889999',
+                    defaultCenter: 'Trung tâm Đăng ký giao dịch, tài sản tại TP. Hồ Chí Minh',
+                    usageNeeds: ['Tài khoản đăng ký'],
+                    repName: 'Nguyễn Văn Nam',
+                    repDocType: 'CCCD',
+                    repDocNum: '001092001234'
+                }
+            },
+            'org-internal': {
+                methods: { vneid: false, internal: true },
+                profile: {
+                    customerCode: 'KH-TC-000303',
+                    entityType: 'organization',
+                    accountType: 'Tổ chức',
+                    mst: 'SG-2026-8899',
+                    name: 'Global Finance Pte. Ltd.',
+                    type: 'Tổ chức nước ngoài',
+                    nationality: 'Singapore',
+                    classification: 'Nước ngoài',
+                    province: 'Singapore',
+                    address: '120 Nguyễn Huệ, Quận 1, TP Hồ Chí Minh',
+                    email: 'legal@global-finance.sg',
+                    phone: '+6566889900',
+                    defaultCenter: 'Trung tâm Đăng ký giao dịch, tài sản tại TP. Hồ Chí Minh',
+                    usageNeeds: ['Tài khoản tra cứu'],
+                    repName: 'David Tan',
+                    repDocType: 'Hộ chiếu',
+                    repDocNum: 'SG889900'
+                }
+            },
+            'personal-both': {
+                methods: { vneid: true, internal: true },
+                profile: {
+                    customerCode: 'KH-CN-000401',
+                    entityType: 'personal',
+                    accountType: 'Cá nhân',
+                    docType: 'Căn cước công dân',
+                    docNo: '001086012345',
+                    name: 'Nguyễn Văn Nam',
+                    dob: '12/05/1988',
+                    gender: 'Nam',
+                    nationality: 'Việt Nam',
+                    classification: 'Trong nước',
+                    province: 'Hà Nội',
+                    address: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm, Hà Nội',
+                    email: 'nam.nguyen@example.com',
+                    phone: '0901234567',
+                    defaultCenter: 'Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội',
+                    usageNeeds: ['Tài khoản đăng ký', 'Tài khoản tra cứu']
+                }
+            },
+            'personal-vneid': {
+                methods: { vneid: true, internal: false },
+                profile: {
+                    customerCode: 'KH-CN-000402',
+                    entityType: 'personal',
+                    accountType: 'Cá nhân',
+                    docType: 'Căn cước công dân',
+                    docNo: '001092001234',
+                    name: 'Lê Thị Hạnh',
+                    dob: '08/08/1991',
+                    gender: 'Nữ',
+                    nationality: 'Việt Nam',
+                    classification: 'Trong nước',
+                    province: 'Đà Nẵng',
+                    address: '88 Lê Lợi, Hải Châu, Đà Nẵng',
+                    email: 'hanh.vneid@example.com',
+                    phone: '0912233445',
+                    defaultCenter: 'Trung tâm Đăng ký giao dịch, tài sản tại Đà Nẵng',
+                    usageNeeds: ['Tài khoản đăng ký']
+                }
+            },
+            'personal-internal': {
+                methods: { vneid: false, internal: true },
+                profile: {
+                    customerCode: 'KH-CN-000403',
+                    entityType: 'personal',
+                    accountType: 'Cá nhân',
+                    docType: 'Hộ chiếu',
+                    docNo: 'JP9088123',
+                    name: 'Yamada Kenji',
+                    dob: '11/02/1984',
+                    gender: 'Nam',
+                    nationality: 'Nhật Bản',
+                    classification: 'Nước ngoài',
+                    province: 'Tokyo',
+                    address: '23 Bạch Đằng, Hải Châu, Đà Nẵng',
+                    email: 'kenji.yamada@example.jp',
+                    phone: '+81312345678',
+                    defaultCenter: 'Trung tâm Đăng ký giao dịch, tài sản tại Đà Nẵng',
+                    usageNeeds: ['Tài khoản tra cứu']
+                }
+            }
+        };
+        let currentVNeIDSubjectType = 'personal';
+        const existingInternalEmails = [
+            'taikhoantestfpt@gmail.com',
+            'duplicate@gmail.com',
+            'nam.nguyen@example.com',
+            'contact@abc.vn'
+        ];
         let lastTicketSeq = 49;
 
         // Subject Search Popup logic
@@ -6308,7 +6795,7 @@
             },
             {
                 type: 'investor_nn',
-                typeName: 'Nhà đầu tư nước ngoài',
+                typeName: 'Tổ chức nước ngoài',
                 doc: '0102030405',
                 name: 'Global Investment Fund',
                 country: 'Singapore',
@@ -7289,6 +7776,7 @@
             isUserLoggedIn = true;
             loggedInUser = document.getElementById('loginUsername').value.trim();
             loggedInDisplayName = loggedInUser === 'taikhoantestfpt@gmail.com' ? 'Ngân hàng TMCP FPT' : loggedInUser.split('@')[0];
+            accountLoginMethods = { vneid: false, internal: true };
 
             showToast('Xác thực OTP thành công! Đang đăng nhập hệ thống...', 'success');
 
@@ -7389,49 +7877,240 @@
             }
         }
 
-        // Simulate VNeID SSO Redirect
+        // Simulate VNeID SSO Redirect and all business branches for demo
         function simulateVNeIDSSO() {
-            showToast('Đang gọi Cổng DVCQG và liên kết tài khoản VNeID...', 'info');
+            const scenario = document.getElementById('vneidScenario')?.value || 'success-linked';
+            showToast('Đang gọi Cổng DVCQG và xác thực tài khoản VNeID...', 'info');
+
             setTimeout(() => {
-                // Show Popup choice as specified in UC001
-                showScreen('vneid-choice');
-            }, 1000);
+                switch (scenario) {
+                    case 'success-linked':
+                        completeLoginSession('taikhoantestfpt@gmail.com', 'Ngân hàng TMCP FPT', { vneid: true, internal: true });
+                        showToast('Đăng nhập qua VNeID thành công. TechID đã liên kết với tài khoản khách hàng.', 'success');
+                        showScreen('home');
+                        break;
+                    case 'register-personal':
+                        prepareVNeIDRegistrationForm('personal');
+                        showToast('Xác thực VNeID thành công. TechID chưa có trên hệ thống, vui lòng hoàn tất thông tin.', 'info');
+                        showScreen('vneid-register-form');
+                        break;
+                    case 'register-org':
+                        prepareVNeIDRegistrationForm('org');
+                        showToast('Xác thực VNeID thành công. Người dùng là đại diện tổ chức, vui lòng hoàn tất thông tin tổ chức.', 'info');
+                        showScreen('vneid-register-form');
+                        break;
+                    case 'auth-failed':
+                        showToast('Xác thực qua VNeID/DVCQG không thành công. Vui lòng thực hiện lại hoặc chọn phương thức đăng nhập khác.', 'error');
+                        break;
+                    case 'ial-low':
+                        showToast('Tài khoản VNeID chưa đạt mức IAL2. Vui lòng nâng cấp định danh trước khi đăng nhập hệ thống.', 'error');
+                        break;
+                    case 'locked':
+                        showToast('Tài khoản khách hàng đang ở trạng thái Khóa/Đóng nên không được phép đăng nhập.', 'error');
+                        break;
+                    case 'not-org-rep':
+                        showToast('Tài khoản chưa tồn tại hoặc người dùng chưa được khai báo là tài khoản phụ trực thuộc tổ chức.', 'error');
+                        break;
+                    case 'authority-not-configured':
+                        showToast('Tài khoản Cơ quan có thẩm quyền chưa được khai báo trong hệ thống. Vui lòng liên hệ quản trị.', 'error');
+                        break;
+                    default:
+                        showToast('Không xác định được kịch bản mô phỏng VNeID.', 'error');
+                        break;
+                }
+            }, 900);
+        }
+
+        function completeLoginSession(email, displayName, methods) {
+            isUserLoggedIn = true;
+            loggedInUser = email;
+            loggedInDisplayName = displayName;
+            accountLoginMethods = {
+                vneid: !!methods?.vneid,
+                internal: !!methods?.internal
+            };
+            document.getElementById('appSidebar').classList.add('visible');
+            updateUserNavPanel();
+            renderAccountLoginMethods();
+        }
+
+        function prepareVNeIDRegistrationForm(subjectType) {
+            currentVNeIDSubjectType = subjectType;
+            clearAllErrors('screen-vneid-register-form');
+
+            document.getElementById('vneidNeedCreateAccount').checked = true;
+            document.getElementById('vneidNeedPayLookup').checked = false;
+            document.getElementById('vneidSetupInternalLogin').checked = false;
+            toggleVNeIDInternalLoginFields();
+
+            const isOrg = subjectType === 'org';
+            document.getElementById('vneidPersonalFields').classList.toggle('hidden', isOrg);
+            document.getElementById('vneidOrgFields').classList.toggle('hidden', !isOrg);
+            document.getElementById('vneidSubjectBadge').innerText = isOrg ? 'Khách hàng tổ chức' : 'Khách hàng cá nhân';
+            document.getElementById('vneidRegisterNotice').innerText = isOrg
+                ? 'Hệ thống đã xác thực TechID của người đại diện qua VNeID và ghi nhận vai trò đại diện tổ chức. TechID được lưu cùng hồ sơ tổ chức để phục vụ xác thực sau này.'
+                : 'Hệ thống đã xác thực TechID cá nhân qua VNeID. TechID được lưu cùng hồ sơ khách hàng để phục vụ xác thực sau này.';
+
+            if (isOrg) {
+                document.getElementById('vneidOrgEmail').value = 'contact-vneid@abc.vn';
+                document.getElementById('vneidOrgPhone').value = '02438889999';
+                document.getElementById('vneidInternalEmail').value = 'contact-vneid@abc.vn';
+                document.getElementById('vneidOrgCountry').value = 'Việt Nam';
+                document.getElementById('vneidOrgProvince').value = 'TP Hà Nội';
+                document.getElementById('vneidOrgProvinceText').value = '';
+            } else {
+                document.getElementById('vneidRegPhone').value = '0901234567';
+                document.getElementById('vneidInternalEmail').value = 'nam.vneid@example.com';
+                document.getElementById('vneidRegCountry').value = 'Việt Nam';
+                document.getElementById('vneidRegProvince').value = 'TP Hà Nội';
+                document.getElementById('vneidRegProvinceText').value = '';
+            }
+            toggleVNeIDProvinceField('personal');
+            toggleVNeIDProvinceField('org');
+        }
+
+        function toggleVNeIDProvinceField(subjectType) {
+            const prefix = subjectType === 'org' ? 'vneidOrg' : 'vneidReg';
+            const country = document.getElementById(`${prefix}Country`)?.value;
+            const isVietnam = country === 'Việt Nam';
+            document.getElementById(`${prefix}ProvinceSelectWrapper`)?.classList.toggle('hidden', !isVietnam);
+            document.getElementById(`${prefix}ProvinceTextWrapper`)?.classList.toggle('hidden', isVietnam);
+            if (isVietnam) {
+                const textInput = document.getElementById(`${prefix}ProvinceText`);
+                if (textInput) textInput.value = '';
+            } else {
+                const selectInput = document.getElementById(`${prefix}Province`);
+                if (selectInput) selectInput.value = '';
+            }
+        }
+
+        function getVNeIDProvinceValue(subjectType) {
+            const prefix = subjectType === 'org' ? 'vneidOrg' : 'vneidReg';
+            const country = document.getElementById(`${prefix}Country`)?.value;
+            const inputId = country === 'Việt Nam' ? `${prefix}Province` : `${prefix}ProvinceText`;
+            return {
+                id: inputId,
+                value: (document.getElementById(inputId)?.value || '').trim()
+            };
+        }
+
+        function toggleVNeIDInternalLoginFields() {
+            const wrapper = document.getElementById('vneidInternalLoginFields');
+            const checked = document.getElementById('vneidSetupInternalLogin')?.checked;
+            if (wrapper) wrapper.classList.toggle('hidden', !checked);
+        }
+
+        function syncVNeIDRegistrationOptions() {
+            const createAccount = document.getElementById('vneidNeedCreateAccount').checked;
+            const setupInternal = document.getElementById('vneidSetupInternalLogin');
+            if (!createAccount && setupInternal.checked) {
+                setupInternal.checked = false;
+                toggleVNeIDInternalLoginFields();
+                showToast('Chỉ được thiết lập Email/Mật khẩu khi chọn Tài khoản đăng ký.', 'error');
+            }
         }
 
         function confirmVNeIDChoice() {
-            const regRegular = document.getElementById('vneidTypeRegular').checked;
-            if (regRegular) {
-                // Select regular: show form
-                showScreen('vneid-register-form');
-            } else {
-                // Select one-time: directly log in with temporary basic rights
-                isUserLoggedIn = true;
-                loggedInUser = "KH_VNeID_MộtLần";
-                loggedInDisplayName = "Khách hàng VNeID (1 Lần)";
-                showToast('Tài khoản Một lần được khởi tạo thành công (Thời hạn 24 giờ). Đang đăng nhập...', 'success');
-                document.getElementById('appSidebar').classList.add('visible');
-                updateUserNavPanel();
-                showScreen('home');
-            }
+            prepareVNeIDRegistrationForm('personal');
+            showScreen('vneid-register-form');
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function isStrongPassword(password) {
+            return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
+        }
+
+        function isDuplicateLoginEmail(email) {
+            const normalized = email.toLowerCase();
+            const currentEmail = (orgDetails.email || '').toLowerCase();
+            return existingInternalEmails.map(e => e.toLowerCase()).includes(normalized) && normalized !== currentEmail;
         }
 
         function submitVNeIDRegister() {
-            const email = document.getElementById('vneidRegEmail').value.trim();
-            const phone = document.getElementById('vneidRegPhone').value.trim();
+            clearAllErrors('screen-vneid-register-form');
+            const createAccount = document.getElementById('vneidNeedCreateAccount').checked;
+            const payLookup = document.getElementById('vneidNeedPayLookup').checked;
+            const setupInternal = document.getElementById('vneidSetupInternalLogin').checked;
 
-            if (!email || !phone) {
-                showToast('Email và Số điện thoại bắt buộc không được bỏ trống!', 'error');
+            if (!createAccount && !payLookup) {
+                showToast('Vui lòng chọn ít nhất một nhu cầu sử dụng tài khoản.', 'error');
                 return;
             }
 
-            // Simulating successful registration
-            isUserLoggedIn = true;
-            loggedInUser = email;
-            loggedInDisplayName = "Khách hàng VNeID";
-            showToast('Chúc mừng! Tài khoản định danh VNeID thường xuyên đã được đăng ký thành công.', 'success');
-            document.getElementById('appSidebar').classList.add('visible');
-            updateUserNavPanel();
-            showScreen('home');
+            let firstErrorId = '';
+            let loginEmail = '';
+            let displayName = 'Khách hàng VNeID';
+
+            if (createAccount && currentVNeIDSubjectType === 'personal') {
+                const phone = document.getElementById('vneidRegPhone').value.trim();
+                const province = getVNeIDProvinceValue('personal');
+                const address = document.getElementById('vneidRegAddress').value.trim();
+                displayName = document.getElementById('vneidPersonalName').value.trim() || 'Khách hàng VNeID';
+                loginEmail = document.getElementById('vneidInternalEmail').value.trim() || 'KH_VNEID_PERSONAL';
+                if (!phone) { highlightError('vneidRegPhone', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidRegPhone'; }
+                if (!province.value) { highlightError(province.id, 'Đây là trường bắt buộc'); firstErrorId ||= province.id; }
+                if (!address) { highlightError('vneidRegAddress', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidRegAddress'; }
+            }
+
+            if (createAccount && currentVNeIDSubjectType === 'org') {
+                const orgEmail = document.getElementById('vneidOrgEmail').value.trim();
+                const orgName = document.getElementById('vneidOrgName').value.trim();
+                const orgPhone = document.getElementById('vneidOrgPhone').value.trim();
+                const orgProvince = getVNeIDProvinceValue('org');
+                const orgAddress = document.getElementById('vneidOrgAddress').value.trim();
+                loginEmail = orgEmail;
+                displayName = orgName || 'Khách hàng tổ chức VNeID';
+                if (!orgEmail) { highlightError('vneidOrgEmail', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidOrgEmail'; }
+                if (orgEmail && !isValidEmail(orgEmail)) { highlightError('vneidOrgEmail', 'Email không hợp lệ'); firstErrorId ||= 'vneidOrgEmail'; }
+                if (orgEmail && isDuplicateLoginEmail(orgEmail)) { highlightError('vneidOrgEmail', 'Email đã tồn tại trên hệ thống'); firstErrorId ||= 'vneidOrgEmail'; }
+                if (!orgName) { highlightError('vneidOrgName', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidOrgName'; }
+                if (!orgPhone) { highlightError('vneidOrgPhone', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidOrgPhone'; }
+                if (!orgProvince.value) { highlightError(orgProvince.id, 'Đây là trường bắt buộc'); firstErrorId ||= orgProvince.id; }
+                if (!orgAddress) { highlightError('vneidOrgAddress', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidOrgAddress'; }
+            }
+
+            if (setupInternal) {
+                const email = document.getElementById('vneidInternalEmail').value.trim();
+                const password = document.getElementById('vneidInternalPassword').value;
+                const confirmPassword = document.getElementById('vneidInternalPasswordConfirm').value;
+                loginEmail = email;
+                if (!email) { highlightError('vneidInternalEmail', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidInternalEmail'; }
+                if (email && !isValidEmail(email)) { highlightError('vneidInternalEmail', 'Email không hợp lệ'); firstErrorId ||= 'vneidInternalEmail'; }
+                if (email && isDuplicateLoginEmail(email)) { highlightError('vneidInternalEmail', 'Email đã tồn tại trên hệ thống'); firstErrorId ||= 'vneidInternalEmail'; }
+                if (!password) { highlightError('vneidInternalPassword', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidInternalPassword'; }
+                if (password && !isStrongPassword(password)) { highlightError('vneidInternalPassword', 'Mật khẩu chưa đáp ứng quy tắc bảo mật'); firstErrorId ||= 'vneidInternalPassword'; }
+                if (!confirmPassword) { highlightError('vneidInternalPasswordConfirm', 'Đây là trường bắt buộc'); firstErrorId ||= 'vneidInternalPasswordConfirm'; }
+                if (password && confirmPassword && password !== confirmPassword) {
+                    highlightError('vneidInternalPasswordConfirm', 'Mật khẩu xác nhận không khớp');
+                    firstErrorId ||= 'vneidInternalPasswordConfirm';
+                }
+            }
+
+            if (firstErrorId) {
+                document.getElementById(firstErrorId)?.focus();
+                showToast('Vui lòng kiểm tra lại thông tin trên form.', 'error');
+                return;
+            }
+
+            if (createAccount && currentVNeIDSubjectType === 'org') {
+                orgDetails.name = displayName;
+                orgDetails.email = document.getElementById('vneidOrgEmail').value.trim();
+                orgDetails.phone = document.getElementById('vneidOrgPhone').value.trim();
+                orgDetails.address = document.getElementById('vneidOrgAddress').value.trim();
+                orgDetails.province = getVNeIDProvinceValue('org').value;
+                orgDetails.repName = document.getElementById('vneidOrgRepName').value.trim();
+                orgDetails.repDocNum = document.getElementById('vneidOrgRepDoc').value.trim();
+            }
+
+            completeLoginSession(loginEmail || 'KH_VNEID_SESSION', displayName, { vneid: true, internal: setupInternal });
+            showToast(setupInternal
+                ? 'Hoàn tất đăng ký tài khoản và thiết lập đăng nhập Email/Mật khẩu thành công.'
+                : 'Hoàn tất đăng ký tài khoản qua VNeID thành công.',
+                'success');
+            showScreen(payLookup && !createAccount ? 'registered-requests' : 'home');
         }
 
         // Non-VNeID Manual Registration Switch Tab
@@ -9601,7 +10280,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-outline-primary" style="padding: 3px 6px; font-size: 11px;" onclick="viewSearchDetail(0)"><i class="fa fa-eye"></i> Xem</button>
+                                    <button class="btn btn-outline-primary" style="padding: 3px 6px; font-size: 11px;" onclick="viewSearchDetail(0)">Xem</button>
                                 </td>
                             </tr>
                         `;
@@ -9639,7 +10318,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-outline-primary" style="padding: 3px 6px; font-size: 11px;" onclick="viewSearchDetail(${i})"><i class="fa fa-eye"></i> Xem</button>
+                                        <button class="btn btn-outline-primary" style="padding: 3px 6px; font-size: 11px;" onclick="viewSearchDetail(${i})">Xem</button>
                                     </td>
                                 </tr>
                             `;
@@ -11521,7 +12200,7 @@
                         </span>
                     </td>
                     <td>
-                        <button class="btn btn-outline-primary" style="padding:4px 8px; font-size:11px;" onclick="viewSupportTicketDetails('${t.id}')"><i class="fa fa-eye"></i> Xem phản hồi</button>
+                        <button class="btn btn-outline-primary" style="padding:4px 8px; font-size:11px;" onclick="viewSupportTicketDetails('${t.id}')">Xem phản hồi</button>
                     </td>
                 </tr>
                 <tr id="ticketDetail-${t.id}" class="hidden" style="background-color: #FAFAFA;">
@@ -11687,31 +12366,84 @@
         }
 
         // Account Details Rendering and Updating (UC002 & UC003)
+        function renderUsageNeedChips(needs) {
+            return (needs || ['Tài khoản đăng ký'])
+                .map(item => `<span style="display:inline-flex; align-items:center; gap:5px; padding:4px 8px; border-radius:999px; background:#E0F2FE; color:#075985; font-weight:700; margin:0 6px 6px 0;"><i class="fa-solid fa-circle-check"></i> ${item}</span>`)
+                .join('');
+        }
+
+        function applyAccountDetailScenario(scenarioKey) {
+            const scenario = accountDetailScenarios[scenarioKey] || accountDetailScenarios['org-both'];
+            orgDetails = { ...scenario.profile };
+            accountLoginMethods = { ...scenario.methods };
+            loggedInDisplayName = orgDetails.name;
+            loggedInUser = orgDetails.email;
+            updateUserNavPanel();
+            renderAccountDetails();
+        }
+
         function renderAccountDetails() {
-            // Read-only view
-            document.getElementById('lblCustomerCode').innerText = orgDetails.customerCode || 'KH-TC-000101';
-            document.getElementById('lblOrgMST').innerText = orgDetails.mst;
-            document.getElementById('lblOrgName').innerText = orgDetails.name;
-            document.getElementById('lblOrgType').innerText = orgDetails.type;
-            document.getElementById('lblOrgNationality').innerText = orgDetails.nationality;
+            const isPersonal = orgDetails.entityType === 'personal';
+            const updateButton = document.getElementById('btnAccountDetailUpdate');
+            if (updateButton) {
+                updateButton.setAttribute('onclick', isPersonal
+                    ? "showToast('Màn cập nhật tài khoản cá nhân được mô tả tại UC003.MH01.', 'info')"
+                    : "showScreen('update-account-details')");
+            }
+
+            document.getElementById('personalAccountTitle')?.classList.toggle('hidden', !isPersonal);
+            document.getElementById('personalAccountInfo')?.classList.toggle('hidden', !isPersonal);
+            document.getElementById('orgAccountTitle')?.classList.toggle('hidden', isPersonal);
+            document.getElementById('orgAccountInfo')?.classList.toggle('hidden', isPersonal);
+            document.getElementById('orgRepresentativeTitle')?.classList.toggle('hidden', isPersonal);
+            document.getElementById('orgRepresentativeInfo')?.classList.toggle('hidden', isPersonal);
+
+            if (isPersonal) {
+                document.getElementById('lblPersonalAccountType').innerText = orgDetails.accountType || 'Cá nhân';
+                document.getElementById('lblPersonalDocType').innerText = orgDetails.docType || '-';
+                document.getElementById('lblPersonalDocNo').innerText = orgDetails.docNo || '-';
+                document.getElementById('lblPersonalName').innerText = orgDetails.name || '-';
+                document.getElementById('lblPersonalDob').innerText = orgDetails.dob || '-';
+                document.getElementById('lblPersonalGender').innerText = orgDetails.gender || '-';
+                document.getElementById('lblPersonalNationality').innerText = orgDetails.nationality || '-';
+                document.getElementById('lblPersonalClassification').innerText = orgDetails.classification || (orgDetails.nationality === 'Việt Nam' ? 'Trong nước' : 'Nước ngoài');
+                document.getElementById('lblPersonalProvince').innerText = orgDetails.province || '-';
+                document.getElementById('lblPersonalEmail').innerText = orgDetails.email || '-';
+                document.getElementById('lblPersonalPhone').innerText = orgDetails.phone || '-';
+                document.getElementById('lblPersonalDefaultCenter').innerText = orgDetails.defaultCenter || '-';
+                document.getElementById('lblPersonalUsageNeeds').innerHTML = renderUsageNeedChips(orgDetails.usageNeeds);
+                document.getElementById('lblPersonalAddress').innerText = orgDetails.address || '-';
+                renderAccountLoginMethods();
+                return;
+            }
+
+            // Read-only view for organization account
+            document.getElementById('lblAccountType').innerText = orgDetails.accountType || 'Tổ chức';
+            document.getElementById('lblOrgMST').innerText = orgDetails.mst || '-';
+            document.getElementById('lblOrgName').innerText = orgDetails.name || '-';
+            document.getElementById('lblOrgType').innerText = orgDetails.type || '-';
+            document.getElementById('lblOrgNationality').innerText = orgDetails.nationality || '-';
+            document.getElementById('lblOrgClassification').innerText = orgDetails.classification || (orgDetails.nationality === 'Việt Nam' ? 'Trong nước' : 'Nước ngoài');
 
             const isVN = orgDetails.nationality === 'Việt Nam';
-            document.getElementById('lblOrgProvince').innerText = isVN ? orgDetails.province : (orgDetails.province || '-');
-            document.getElementById('lblOrgAddress').innerText = orgDetails.address;
-            document.getElementById('lblOrgEmail').innerText = orgDetails.email;
-            document.getElementById('lblOrgPhone').innerText = orgDetails.phone;
+            updateOrgIdentityLabel(orgDetails.type);
+            document.getElementById('lblOrgProvince').innerText = isVN ? (orgDetails.province || '-') : (orgDetails.province || '-');
+            document.getElementById('lblOrgAddress').innerText = orgDetails.address || '-';
+            document.getElementById('lblOrgEmail').innerText = orgDetails.email || '-';
+            document.getElementById('lblOrgPhone').innerText = orgDetails.phone || '-';
             document.getElementById('lblOrgDefaultCenter').innerText = orgDetails.defaultCenter || '-';
+            document.getElementById('lblUsageNeeds').innerHTML = renderUsageNeedChips(orgDetails.usageNeeds);
 
-            document.getElementById('lblRepName').innerText = orgDetails.repName;
-            document.getElementById('lblRepDocType').innerText = orgDetails.repDocType;
-            document.getElementById('lblRepDocNum').innerText = orgDetails.repDocNum;
+            document.getElementById('lblRepName').innerText = orgDetails.repName || '-';
+            document.getElementById('lblRepDocType').innerText = orgDetails.repDocType || '-';
+            document.getElementById('lblRepDocNum').innerText = orgDetails.repDocNum || '-';
 
-            // Editable form fields
+            // Editable organization form fields
             document.getElementById('editCustomerCode').value = orgDetails.customerCode || 'KH-TC-000101';
-            document.getElementById('editOrgMST').value = orgDetails.mst;
-            document.getElementById('editOrgName').value = orgDetails.name;
-            document.getElementById('editOrgType').value = orgDetails.type;
-            document.getElementById('editOrgNationality').value = orgDetails.nationality;
+            document.getElementById('editOrgMST').value = orgDetails.mst || '';
+            document.getElementById('editOrgName').value = orgDetails.name || '';
+            document.getElementById('editOrgType').value = orgDetails.type || 'Tổ chức có đăng ký kinh doanh trong nước';
+            document.getElementById('editOrgNationality').value = orgDetails.nationality || 'Việt Nam';
 
             if (isVN) {
                 document.getElementById('editOrgProvince').value = orgDetails.province || '';
@@ -11721,16 +12453,128 @@
                 document.getElementById('editOrgProvinceText').value = orgDetails.province || '';
             }
 
-            document.getElementById('editOrgAddress').value = orgDetails.address;
-            document.getElementById('editOrgEmail').value = orgDetails.email;
-            document.getElementById('editOrgPhone').value = orgDetails.phone;
+            document.getElementById('editOrgAddress').value = orgDetails.address || '';
+            document.getElementById('editOrgEmail').value = orgDetails.email || '';
+            document.getElementById('editOrgPhone').value = orgDetails.phone || '';
             document.getElementById('editOrgDefaultCenter').value = orgDetails.defaultCenter || '';
 
-            document.getElementById('editRepName').value = orgDetails.repName;
-            document.getElementById('editRepDocType').value = orgDetails.repDocType;
-            document.getElementById('editRepDocNum').value = orgDetails.repDocNum;
+            document.getElementById('editRepName').value = orgDetails.repName || '';
+            document.getElementById('editRepDocType').value = orgDetails.repDocType || 'CCCD';
+            document.getElementById('editRepDocNum').value = orgDetails.repDocNum || '';
 
             toggleEditProvinceField();
+            renderAccountLoginMethods();
+        }
+
+        function getOrgIdentityLabel(orgType) {
+            return orgType === 'Tổ chức nước ngoài'
+                ? 'Mã số thuế/Số giấy phép đầu tư'
+                : 'Mã định danh tổ chức';
+        }
+
+        function updateOrgIdentityLabel(orgType) {
+            const resolvedType = orgType || document.getElementById('editOrgType')?.value || orgDetails.type;
+            const label = getOrgIdentityLabel(resolvedType);
+            const viewLabel = document.getElementById('lblOrgMSTLabel');
+            const editLabel = document.getElementById('editOrgMSTLabel');
+            if (viewLabel) viewLabel.innerText = `${label}:`;
+            if (editLabel) editLabel.innerText = label;
+        }
+
+        function renderAccountLoginMethods() {
+            const card = document.getElementById('accountAuthMethodCard');
+            if (!card) return;
+
+            const vneidStatus = accountLoginMethods.vneid
+                ? '<span style="color:#047857; font-weight:800;">Đã liên kết</span>'
+                : '<span style="color:#64748B; font-weight:800;">Chưa liên kết</span>';
+            const internalStatus = accountLoginMethods.internal
+                ? '<span style="color:#047857; font-weight:800;">Đã liên kết</span>'
+                : '<span style="color:#64748B; font-weight:800;">Chưa thiết lập</span>';
+            const internalAction = accountLoginMethods.internal
+                ? "<button class=\"btn btn-outline-primary\" style=\"padding:5px 10px; font-size:12px;\" onclick=\"showScreen('change-password')\"><i class=\"fa fa-key\"></i> Đổi mật khẩu</button>"
+                : '<button class="btn btn-primary" style="padding:5px 10px; font-size:12px;" onclick="openSetupInternalLoginModal()"><i class="fa fa-plus"></i> Thiết lập ngay</button>';
+            const internalEmailInfo = accountLoginMethods.internal
+                ? `<div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Email (Tên đăng nhập): <strong>${orgDetails.email || '-'}</strong></div>`
+                : '<div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Chưa thiết lập Email/Mật khẩu để đăng nhập Nội bộ</div>';
+
+            card.innerHTML = `
+                <div style="display:grid; gap:12px;">
+                    <div style="display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:center; padding:12px; border:1px solid ${accountLoginMethods.vneid ? '#BBF7D0' : 'var(--border-color)'}; border-radius:var(--border-radius-md); background:${accountLoginMethods.vneid ? '#F0FDF4' : '#F8FAFC'};">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:${accountLoginMethods.vneid ? '#DCFCE7' : '#E2E8F0'}; color:${accountLoginMethods.vneid ? '#047857' : '#64748B'};">
+                                <i class="fa-solid ${accountLoginMethods.vneid ? 'fa-circle-check' : 'fa-circle'}"></i>
+                            </span>
+                            <div>
+                                <div style="font-weight:800; color:var(--text-main);">VNeID</div>
+                                <div style="font-size:11px; color:var(--text-muted);">Đăng nhập bằng TechID đã xác thực qua DVCQG/VNeID</div>
+                                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">TechID không hiển thị công khai trên màn hình khách hàng</div>
+                            </div>
+                        </div>
+                        ${vneidStatus}
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr auto auto; gap:12px; align-items:center; padding:12px; border:1px solid ${accountLoginMethods.internal ? '#BBF7D0' : 'var(--border-color)'}; border-radius:var(--border-radius-md); background:${accountLoginMethods.internal ? '#F0FDF4' : '#F8FAFC'}; opacity:${accountLoginMethods.internal ? '1' : '0.86'};">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:${accountLoginMethods.internal ? '#DCFCE7' : '#E2E8F0'}; color:${accountLoginMethods.internal ? '#047857' : '#64748B'};">
+                                <i class="fa-solid ${accountLoginMethods.internal ? 'fa-circle-check' : 'fa-circle'}"></i>
+                            </span>
+                            <div>
+                                <div style="font-weight:800; color:var(--text-main);">Nội bộ (Email/Mật khẩu)</div>
+                                <div style="font-size:11px; color:var(--text-muted);">Sử dụng Email làm tên đăng nhập trên hệ thống BPBĐ</div>
+                                ${internalEmailInfo}
+                            </div>
+                        </div>
+                        ${internalStatus}
+                        ${internalAction}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openSetupInternalLoginModal() {
+            clearAllErrors('modalSetupInternalLogin');
+            document.getElementById('setupInternalEmail').value = orgDetails.email || '';
+            document.getElementById('setupInternalPassword').value = '';
+            document.getElementById('setupInternalPasswordConfirm').value = '';
+            document.getElementById('modalSetupInternalLogin').classList.add('visible');
+        }
+
+        function closeSetupInternalLoginModal() {
+            document.getElementById('modalSetupInternalLogin').classList.remove('visible');
+        }
+
+        function submitSetupInternalLogin() {
+            clearAllErrors('modalSetupInternalLogin');
+            const email = document.getElementById('setupInternalEmail').value.trim();
+            const password = document.getElementById('setupInternalPassword').value;
+            const confirmPassword = document.getElementById('setupInternalPasswordConfirm').value;
+            let firstErrorId = '';
+
+            if (!email) { highlightError('setupInternalEmail', 'Đây là trường bắt buộc'); firstErrorId ||= 'setupInternalEmail'; }
+            if (email && !isValidEmail(email)) { highlightError('setupInternalEmail', 'Email không hợp lệ'); firstErrorId ||= 'setupInternalEmail'; }
+            if (email && isDuplicateLoginEmail(email)) { highlightError('setupInternalEmail', 'Email đã tồn tại trên hệ thống'); firstErrorId ||= 'setupInternalEmail'; }
+            if (!password) { highlightError('setupInternalPassword', 'Đây là trường bắt buộc'); firstErrorId ||= 'setupInternalPassword'; }
+            if (password && !isStrongPassword(password)) { highlightError('setupInternalPassword', 'Mật khẩu chưa đáp ứng quy tắc bảo mật'); firstErrorId ||= 'setupInternalPassword'; }
+            if (!confirmPassword) { highlightError('setupInternalPasswordConfirm', 'Đây là trường bắt buộc'); firstErrorId ||= 'setupInternalPasswordConfirm'; }
+            if (password && confirmPassword && password !== confirmPassword) {
+                highlightError('setupInternalPasswordConfirm', 'Mật khẩu xác nhận không khớp');
+                firstErrorId ||= 'setupInternalPasswordConfirm';
+            }
+
+            if (firstErrorId) {
+                document.getElementById(firstErrorId)?.focus();
+                showToast('Vui lòng kiểm tra lại thông tin đăng nhập.', 'error');
+                return;
+            }
+
+            orgDetails.email = email;
+            loggedInUser = email;
+            currentAccountPassword = password;
+            accountLoginMethods.internal = true;
+            updateUserNavPanel();
+            renderAccountLoginMethods();
+            closeSetupInternalLoginModal();
+            showToast('Thiết lập đăng nhập Email/Mật khẩu thành công.', 'success');
         }
 
         function toggleEditProvinceField() {

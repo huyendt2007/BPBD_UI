@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -1869,7 +1869,7 @@
                         <div class="quick-result-meta">${item.category === 'BTNN' ? 'Bồi thường nhà nước' : 'Biện pháp bảo đảm'}</div>
                         <div class="quick-result-text">${item.excerpt}</div>
                         <div style="margin-top:10px;">
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openFaqDetail(${item.id})"><i class="fa fa-eye"></i> Xem câu trả lời</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openFaqDetail(${item.id})">Xem câu trả lời</button>
                         </div>
                     </div>
                 `).join('') : '<div style="color:var(--text-muted); font-size:13px; padding:12px;">Chưa tìm thấy câu hỏi thường gặp phù hợp.</div>';
@@ -1886,7 +1886,7 @@
                     <div class="quick-result-meta">${item.publisher} - Hiệu lực: ${item.effectDate || item.date}</div>
                     <div class="quick-result-text">${item.excerpt}</div>
                     <div style="margin-top:10px;">
-                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openDocDetail(${item.id})"><i class="fa fa-eye"></i> Xem văn bản</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openDocDetail(${item.id})">Xem văn bản</button>
                     </div>
                 </div>
             `).join('') : '<div style="color:var(--text-muted); font-size:13px; padding:12px;">Chưa tìm thấy văn bản phù hợp.</div>';
@@ -1941,7 +1941,7 @@
                         <span style="color:var(--text-muted);">(${formatGuestFileSize(item.file.size)})</span>
                     </div>
                     <div class="guest-file-actions">
-                        <button type="button" class="file-action-link" onclick="viewGuestSupportFile(${index})"><i class="fa-regular fa-eye"></i> Xem file</button>
+                        <button type="button" class="file-action-link" onclick="viewGuestSupportFile(${index})">Xem file</button>
                         <button type="button" class="file-action-link danger" onclick="removeGuestSupportFile(${index})"><i class="fa-regular fa-trash-can"></i> Xóa</button>
                     </div>
                 </div>
@@ -2122,7 +2122,7 @@
                     <td style="font-weight: 500;">${doc.excerpt}</td>
                     <td style="text-align: center;">
                         <button class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); openDocDetail(${doc.id});">
-                            <i class="fa fa-eye"></i> Xem
+                            Xem
                         </button>
                     </td>
                 </tr>

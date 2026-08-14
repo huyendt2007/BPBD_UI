@@ -1385,7 +1385,7 @@ function saveSecuringParty(isUpdate) {
     if (type === 'nn_ngoai') typeLabel = 'Người nước ngoài';
     else if (type === 'cd_kq') typeLabel = 'Người không quốc tịch cư trú tại Việt Nam';
     else if (type === 'tc_dn') typeLabel = 'Tổ chức có đăng ký kinh doanh trong nước';
-    else if (type === 'nd_nn') typeLabel = 'Nhà đầu tư nước ngoài';
+    else if (type === 'nd_nn') typeLabel = 'Tổ chức nước ngoài';
     else if (type === 'tc_khac') typeLabel = 'Tổ chức khác';
 
     if (editSecuringIndex === -1) {
@@ -3625,7 +3625,7 @@ const subjectTypeLabels = {
     'nn_ngoai': 'Người nước ngoài',
     'cd_kq': 'Người không quốc tịch cư trú tại Việt Nam',
     'tc_dn': 'Tổ chức có đăng ký kinh doanh trong nước',
-    'nd_nn': 'Nhà đầu tư nước ngoài',
+    'nd_nn': 'Tổ chức nước ngoài',
     'tc_khac': 'Tổ chức khác'
 };
 

@@ -1422,7 +1422,7 @@ function executeRender() {
                     <td><span class="badge badge-warning">Chờ giải quyết</span></td>
                     <td>${row.officer || '-'}</td>
                     <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
-                        <button class="icon-btn view" title="Xem hồ sơ giấy" onclick="openPaperReadonly('${row.id}')"><i class="fa fa-eye"></i></button>
+                        <button class="icon-btn view" title="Xem hồ sơ giấy" onclick="openPaperReadonly('${row.id}')">Xem</button>
                         <button class="icon-btn edit" title="Tạo hồ sơ" onclick="startDigitize('${row.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>
                         <button class="icon-btn reject" title="Từ chối" onclick="openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>
                     </td>
@@ -1430,7 +1430,7 @@ function executeRender() {
             `;
         } else {
             let actionsHtml = '';
-            const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openDetail('${row.id}')"><i class="fa fa-eye"></i></button>`;
+            const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openDetail('${row.id}')">Xem</button>`;
 
             if (currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly') {
                 actionsHtml = btnView;
@@ -3538,7 +3538,7 @@ function renderCcttOfficerTable() {
         tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text-muted)">Không có yêu cầu cung cấp thông tin phù hợp.</td></tr>';
     } else {
         tbody.innerHTML = rows.map((row, idx) => {
-            let actions = `<button class="icon-btn view" title="Xem chi tiết" onclick="openCcttOfficerDetail('${row.id}')"><i class="fa fa-eye"></i></button>`;
+            let actions = `<button class="icon-btn view" title="Xem chi tiết" onclick="openCcttOfficerDetail('${row.id}')">Xem</button>`;
             if (row.status === 'Chờ duyệt') {
                 actions += `<button class="icon-btn reject" title="Từ chối" onclick="alert('Mở popup nhập lý do từ chối cho ${row.id}')"><i class="fa fa-times"></i></button>`;
             } else if (row.status === 'Bị trả lại') {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -228,7 +228,7 @@ function areaField(label, value = '', attrs = '') {
 }
 function uploadField(label, required = false) {
     const id = 'file_' + Math.random().toString(36).slice(2);
-    return `<div class="field upload-field"><label>${label}${required ? ' <span class="required">*</span>' : ''}</label><div class="upload-line"><label class="btn small" for="${id}"><i class="fa-solid fa-upload"></i> Chọn tệp</label><input id="${id}" type="file" accept=".pdf,.xls,.xlsx" onchange="handleUpload(this)"><span class="file-name">Chưa chọn tệp</span><span class="file-actions"><button type="button" class="btn small" onclick="viewUploadedFile(this)"><i class="fa-regular fa-eye"></i> Xem file</button><button type="button" class="btn small danger" onclick="clearUploadedFile(this)"><i class="fa-solid fa-trash-can"></i> Xóa</button></span></div><div class="hint">Chấp nhận PDF hoặc Excel theo biểu mẫu, tối đa 20MB/tệp.</div></div>`;
+    return `<div class="field upload-field"><label>${label}${required ? ' <span class="required">*</span>' : ''}</label><div class="upload-line"><label class="btn small" for="${id}"><i class="fa-solid fa-upload"></i> Chọn tệp</label><input id="${id}" type="file" accept=".pdf,.xls,.xlsx" onchange="handleUpload(this)"><span class="file-name">Chưa chọn tệp</span><span class="file-actions"><button type="button" class="btn small" onclick="viewUploadedFile(this)">Xem file</button><button type="button" class="btn small danger" onclick="clearUploadedFile(this)"><i class="fa-solid fa-trash-can"></i> Xóa</button></span></div><div class="hint">Chấp nhận PDF hoặc Excel theo biểu mẫu, tối đa 20MB/tệp.</div></div>`;
 }
 function table(headers, rows) {
     return `<div class="table-wrap"><table class="table"><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
@@ -271,7 +271,7 @@ function renderReadonly() {
 function renderAttachments() {
     const rows = attachments().map(a => {
         const size = a.fileSize ? (a.fileSize / 1048576).toFixed(1) + ' MB' : '-';
-        const actions = `<button class="btn small" onclick="viewFile('${e(a.fileName)}')"><i class="fa-regular fa-eye"></i> Xem file</button> <button class="btn small" onclick="downloadFile('${e(a.fileName)}')"><i class="fa-solid fa-download"></i> Tải xuống</button>`;
+        const actions = `<button class="btn small" onclick="viewFile('${e(a.fileName)}')">Xem file</button> <button class="btn small" onclick="downloadFile('${e(a.fileName)}')"><i class="fa-solid fa-download"></i> Tải xuống</button>`;
         return `<tr><td>${e(a.name)}</td><td>${e(a.fileName)}</td><td>${size}</td><td>${e(p.officer || 'Nguyễn Thị Tiếp Nhận')}</td><td>${e(p.date)}</td><td>${actions}</td></tr>`;
     }).join('');
     attachmentReadonly.innerHTML = rows;
@@ -329,7 +329,7 @@ function subjectEditor(title, withState = false, readonly = false) {
     const headers = withState ? ['Biến động','Loại chủ thể','Số giấy tờ','Tên','Địa chỉ'] : ['Loại chủ thể','Số giấy tờ','Tên','Địa chỉ'];
     const body = rows.map(r => withState ? [`<span class="state-tag">${r[0]}</span>`, r[1], r[2], r[3], r[4]] : [r[1], r[2], r[3], r[4]]);
     const editor = readonly ? '' : `<details><summary><i class="fa-solid fa-user-pen"></i> Form thêm/cập nhật ${title}</summary><div class="detail-body"><div class="grid">
-        ${selectField('Loại chủ thể <span class="required">*</span>', ['Công dân Việt Nam','Người nước ngoài','Người không quốc tịch cư trú tại Việt Nam','Tổ chức có đăng ký kinh doanh trong nước','Nhà đầu tư nước ngoài','Tổ chức khác'], 'Công dân Việt Nam', 'class="subject-type" onchange="updateConditionalVisibility()"')}
+        ${selectField('Loại chủ thể <span class="required">*</span>', ['Công dân Việt Nam','Người nước ngoài','Người không quốc tịch cư trú tại Việt Nam','Tổ chức có đăng ký kinh doanh trong nước','Tổ chức nước ngoài','Tổ chức khác'], 'Công dân Việt Nam', 'class="subject-type" onchange="updateConditionalVisibility()"')}
         <div class="field subject-person"><label>Họ và tên <span class="required">*</span></label><input value="${e(p.customer)}"></div>
         <div class="field subject-citizen"><label>Số CMND/CCCD/Chứng minh quân đội <span class="required">*</span></label><input value="001092012345"></div>
         <div class="field subject-org hidden conditional"><label>Tên tổ chức <span class="required">*</span></label><input value="Công ty TNHH Hải Nam"></div>
@@ -418,7 +418,7 @@ function paperInfoFileBlock(exported = false) {
         </div>
         <div class="hint">File gồm lá mặt/trang ký Mẫu số 10d và phần kết quả cung cấp thông tin/phụ lục phía sau trong cùng một tài liệu.</div>
         <div class="pdf-actions">
-            <button class="btn small primary" type="button" onclick="openPdfPreview()"><i class="fa-regular fa-eye"></i> Xem file</button>
+            <button class="btn small primary" type="button" onclick="openPdfPreview()">Xem file</button>
             <button class="btn small" type="button" onclick="downloadFile('CCTT_${e(p.id)}_Mau_10d_v1.pdf')"><i class="fa-solid fa-download"></i> Tải file</button>
             <button class="btn small success" type="button" onclick="mockPaperInfoExport()"><i class="fa-solid fa-rotate"></i> Kết xuất lại</button>
         </div>
@@ -460,7 +460,7 @@ function getPaperInfoSearchValue() {
     if (subjectType === 'Công dân Việt Nam') return document.getElementById('paperInfoCitizenId')?.value?.trim() || '';
     if (subjectType === 'Tổ chức có đăng ký kinh doanh trong nước') return document.getElementById('paperInfoTaxCode')?.value?.trim() || '';
     if (subjectType === 'Người nước ngoài') return `${document.getElementById('paperInfoFullName')?.value?.trim() || ''} - ${document.getElementById('paperInfoPassport')?.value?.trim() || ''}`;
-    if (subjectType === 'Nhà đầu tư nước ngoài') return document.getElementById('paperInfoInvestorCode')?.value?.trim() || '';
+    if (subjectType === 'Tổ chức nước ngoài') return document.getElementById('paperInfoInvestorCode')?.value?.trim() || '';
     if (subjectType === 'Người không quốc tịch cư trú tại Việt Nam') return `${document.getElementById('paperInfoFullName')?.value?.trim() || ''} - ${document.getElementById('paperInfoResidenceCard')?.value?.trim() || ''}`;
     return document.getElementById('paperInfoOrgName')?.value?.trim() || '';
 }
@@ -487,7 +487,7 @@ function infoRequestBlock() {
             ${selectField('Tiêu chí yêu cầu cung cấp thông tin <span class="required">*</span>', ['Số đăng ký','Bên bảo đảm','Số khung'], 'Số đăng ký', 'id="paperInfoCriteria" onchange="updatePaperInfoCriteria()"')}
             <div class="conditional cctt-criteria cctt-reg">${field('Số đăng ký <span class="required">*</span>', '1505170802', 'id="paperInfoRegNo"')}</div>
             <div class="conditional cctt-criteria cctt-frame hidden">${field('Số khung <span class="required">*</span>', 'RL4A2026HTC00001', 'id="paperInfoFrameNo"')}</div>
-            <div class="conditional cctt-criteria cctt-subject hidden">${selectField('Loại chủ thể <span class="required">*</span>', ['Công dân Việt Nam','Tổ chức có đăng ký kinh doanh trong nước','Người nước ngoài','Người không quốc tịch cư trú tại Việt Nam','Nhà đầu tư nước ngoài','Tổ chức khác'], 'Công dân Việt Nam', 'id="paperInfoSubjectType" onchange="updatePaperInfoCriteria()"')}</div>
+            <div class="conditional cctt-criteria cctt-subject hidden">${selectField('Loại chủ thể <span class="required">*</span>', ['Công dân Việt Nam','Tổ chức có đăng ký kinh doanh trong nước','Người nước ngoài','Người không quốc tịch cư trú tại Việt Nam','Tổ chức nước ngoài','Tổ chức khác'], 'Công dân Việt Nam', 'id="paperInfoSubjectType" onchange="updatePaperInfoCriteria()"')}</div>
             <div class="conditional cctt-criteria cctt-subject subject-citizen hidden">${field('Số CMND/Căn cước công dân/Chứng minh quân đội <span class="required">*</span>', '091000000004', 'id="paperInfoCitizenId" maxlength="12"')}</div>
             <div class="conditional cctt-criteria cctt-subject subject-domestic-org hidden">${field('Mã số thuế/Số đăng ký kinh doanh <span class="required">*</span>', '3301647244', 'id="paperInfoTaxCode" maxlength="14"')}</div>
             <div class="conditional cctt-criteria cctt-subject subject-name hidden">${field('Họ và tên <span class="required">*</span>', 'PHAM MINH DUC', 'id="paperInfoFullName"')}</div>
@@ -538,7 +538,7 @@ function renderBusinessForm() {
             <button class="btn primary" onclick="openPaperInfoSignModal()"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
         </div>`;
     } else {
-        html += `<div class="section-title">Tài liệu nghiệp vụ đính kèm</div><div class="grid two">${uploadField('Tài liệu chứng minh tư cách/nghiệp vụ (PDF)', false)}${uploadField('Phụ lục hoặc bảng kê kèm theo', false)}</div><div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px" class="toolbar"><button class="btn" onclick="cancelEdit()">Hủy bỏ</button><button class="btn primary" onclick="openPreview()"><i class="fa-regular fa-eye"></i> Xem trước</button></div>`;
+        html += `<div class="section-title">Tài liệu nghiệp vụ đính kèm</div><div class="grid two">${uploadField('Tài liệu chứng minh tư cách/nghiệp vụ (PDF)', false)}${uploadField('Phụ lục hoặc bảng kê kèm theo', false)}</div><div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px" class="toolbar"><button class="btn" onclick="cancelEdit()">Hủy bỏ</button><button class="btn primary" onclick="openPreview()">Xem trước</button></div>`;
     }
     businessForm.innerHTML = html;
     updateConditionalVisibility();
@@ -569,7 +569,7 @@ function updateConditionalVisibility() {
         const v = select.value;
         scope.querySelectorAll('.subject-person').forEach(x => x.classList.toggle('hidden', !['Công dân Việt Nam','Người nước ngoài','Người không quốc tịch cư trú tại Việt Nam'].includes(v)));
         scope.querySelectorAll('.subject-citizen').forEach(x => x.classList.toggle('hidden', v !== 'Công dân Việt Nam'));
-        scope.querySelectorAll('.subject-org').forEach(x => x.classList.toggle('hidden', !['Tổ chức có đăng ký kinh doanh trong nước','Nhà đầu tư nước ngoài','Tổ chức khác'].includes(v)));
+        scope.querySelectorAll('.subject-org').forEach(x => x.classList.toggle('hidden', !['Tổ chức có đăng ký kinh doanh trong nước','Tổ chức nước ngoài','Tổ chức khác'].includes(v)));
         scope.querySelectorAll('.subject-passport').forEach(x => x.classList.toggle('hidden', v !== 'Người nước ngoài'));
         scope.querySelectorAll('.subject-residence').forEach(x => x.classList.toggle('hidden', v !== 'Người không quốc tịch cư trú tại Việt Nam'));
     });
@@ -585,7 +585,7 @@ function updatePaperInfoCriteria() {
         document.querySelectorAll('.subject-domestic-org').forEach(x => x.classList.toggle('hidden', subjectType !== 'Tổ chức có đăng ký kinh doanh trong nước'));
         document.querySelectorAll('.subject-name').forEach(x => x.classList.toggle('hidden', !['Người nước ngoài','Người không quốc tịch cư trú tại Việt Nam'].includes(subjectType)));
         document.querySelectorAll('.subject-passport').forEach(x => x.classList.toggle('hidden', subjectType !== 'Người nước ngoài'));
-        document.querySelectorAll('.subject-investor').forEach(x => x.classList.toggle('hidden', subjectType !== 'Nhà đầu tư nước ngoài'));
+        document.querySelectorAll('.subject-investor').forEach(x => x.classList.toggle('hidden', subjectType !== 'Tổ chức nước ngoài'));
         document.querySelectorAll('.subject-org-name').forEach(x => x.classList.toggle('hidden', subjectType !== 'Tổ chức khác'));
         document.querySelectorAll('.subject-residence').forEach(x => x.classList.toggle('hidden', subjectType !== 'Người không quốc tịch cư trú tại Việt Nam'));
     }
@@ -632,7 +632,7 @@ function validatePaperInfoInput() {
         if (subjectType === 'Công dân Việt Nam') required.push(['paperInfoCitizenId', 'Vui lòng nhập Số CMND/Căn cước công dân/Chứng minh quân đội.']);
         if (subjectType === 'Tổ chức có đăng ký kinh doanh trong nước') required.push(['paperInfoTaxCode', 'Vui lòng nhập Mã số thuế/Số đăng ký kinh doanh.']);
         if (subjectType === 'Người nước ngoài') required.push(['paperInfoFullName', 'Vui lòng nhập Họ và tên.'], ['paperInfoPassport', 'Vui lòng nhập Số Hộ chiếu.']);
-        if (subjectType === 'Nhà đầu tư nước ngoài') required.push(['paperInfoInvestorCode', 'Vui lòng nhập Mã số thuế/Số giấy phép đầu tư.']);
+        if (subjectType === 'Tổ chức nước ngoài') required.push(['paperInfoInvestorCode', 'Vui lòng nhập Mã số thuế/Số giấy phép đầu tư.']);
         if (subjectType === 'Tổ chức khác') required.push(['paperInfoOrgName', 'Vui lòng nhập Tên tổ chức.']);
         if (subjectType === 'Người không quốc tịch cư trú tại Việt Nam') required.push(['paperInfoFullName', 'Vui lòng nhập Họ và tên.'], ['paperInfoResidenceCard', 'Vui lòng nhập Số thẻ cư trú.']);
     }

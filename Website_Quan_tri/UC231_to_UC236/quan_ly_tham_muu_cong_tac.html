@@ -2472,7 +2472,7 @@
                     <td>${item.ngayDukien}</td>
                     <td>${item.ngayThucte || '-'}</td>
                     <td class="text-center">
-                        <button class="action-icon" title="Xem chi tiết" onclick="event.stopPropagation(); viewDetailTab1(${item.id})"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Xem chi tiết" onclick="event.stopPropagation(); viewDetailTab1(${item.id})">Xem</button>
                         <button class="action-icon ${canEdit ? '' : 'disabled'}" style="${canEdit ? '' : 'opacity: 0.4; cursor: not-allowed;'}" title="Cập nhật" onclick="event.stopPropagation(); ${canEdit ? `openEditModalTab1(${item.id})` : `showToast('Bạn không có quyền chỉnh sửa hồ sơ này (chỉ Lãnh đạo hoặc cán bộ phụ trách mới có quyền chỉnh sửa)', 'error')`}"><i class="fa-solid fa-edit"></i></button>
                         <button class="action-icon delete ${canEdit ? '' : 'disabled'}" style="${canEdit ? '' : 'opacity: 0.4; cursor: not-allowed;'}" title="Xóa" onclick="event.stopPropagation(); ${canEdit ? `openDeleteConfirmModal('vbqppl', ${item.id})` : `showToast('Bạn không có quyền xóa hồ sơ này (chỉ Lãnh đạo hoặc cán bộ phụ trách mới có quyền xóa)', 'error')`}"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -2722,7 +2722,7 @@
                         <span class="file-name" title="${name}">${name}</span>
                     </div>
                     <div class="file-actions">
-                        <button type="button" class="file-btn file-btn-view" onclick="previewFile('${name}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                        <button type="button" class="file-btn file-btn-view" onclick="previewFile('${name}')">Xem</button>
                         ${isReadOnly ? '' : `<button type="button" class="file-btn file-btn-delete" onclick="deleteFileTab1(${idx})"><i class="fa-solid fa-trash"></i> Xóa</button>`}
                     </div>
                 `;
@@ -2935,7 +2935,7 @@
             openAddModalTab1(); // build
             
             // Set all fields to read only view (UC231.MH03)
-            document.getElementById('t1-form-title').innerHTML = `<i class="fa-solid fa-eye"></i> Xem chi tiết hồ sơ tham mưu: <strong>${item.maHoso}</strong>`;
+            document.getElementById('t1-form-title').innerHTML = `Xem chi tiết hồ sơ tham mưu: <strong>${item.maHoso}</strong>`;
             
             document.getElementById('t1-form-ten').value = item.tenDuthao;
             document.getElementById('t1-form-loai').value = item.loaiVanban;
@@ -3196,7 +3196,7 @@
                     </td>
                     <td><span class="badge ${badgeColor}">${item.trangThai}</span></td>
                     <td class="text-center">
-                        <button class="action-icon" title="Xem chi tiết" onclick="event.stopPropagation(); viewDetailTab2(${item.id})"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Xem chi tiết" onclick="event.stopPropagation(); viewDetailTab2(${item.id})">Xem</button>
                         <button class="action-icon ${canEdit ? '' : 'disabled'}" style="${canEdit ? '' : 'opacity: 0.4; cursor: not-allowed;'}" title="Cập nhật" onclick="event.stopPropagation(); ${canEdit ? `openEditModalTab2(${item.id})` : `showToast('Bạn không có quyền chỉnh sửa kế hoạch này (chỉ Lãnh đạo hoặc cán bộ phụ trách mới có quyền chỉnh sửa)', 'error')`}"><i class="fa-solid fa-edit"></i></button>
                         <button class="action-icon delete ${canEdit ? '' : 'disabled'}" style="${canEdit ? '' : 'opacity: 0.4; cursor: not-allowed;'}" title="Xóa" onclick="event.stopPropagation(); ${canEdit ? `openDeleteConfirmModal('kehoach', ${item.id})` : `showToast('Bạn không có quyền xóa kế hoạch này (chỉ Lãnh đạo hoặc cán bộ phụ trách mới có quyền xóa)', 'error')`}"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -3325,7 +3325,7 @@
                         <span class="file-name">${name}</span>
                     </div>
                     <div class="file-actions">
-                        <button type="button" class="file-btn file-btn-view" onclick="previewFile('${name}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                        <button type="button" class="file-btn file-btn-view" onclick="previewFile('${name}')">Xem</button>
                         ${isReadOnly ? '' : `<button type="button" class="file-btn file-btn-delete" onclick="deleteFileTab2(${idx})"><i class="fa-solid fa-trash"></i> Xóa</button>`}
                     </div>
                 `;
@@ -3510,7 +3510,7 @@
             
             openAddModalTab2(); // build
             
-            document.getElementById('t2-form-title').innerHTML = `<i class="fa-solid fa-eye"></i> Xem chi tiết chương trình, kế hoạch: <strong>${item.maKehoach}</strong>`;
+            document.getElementById('t2-form-title').innerHTML = `Xem chi tiết chương trình, kế hoạch: <strong>${item.maKehoach}</strong>`;
             
             document.getElementById('t2-form-ten').value = item.tenKehoach;
             document.getElementById('t2-form-noidung').value = item.noidung;
@@ -3752,7 +3752,7 @@
                     <td><span class="badge ${badgeResult}">${item.kqRasoat}</span></td>
                     <td><span class="badge ${badgeStatus}">${item.tiendoTrangthai}</span></td>
                     <td class="text-center">
-                        <button class="action-icon" title="Xem chi tiết" onclick="event.stopPropagation(); viewDetailTab3(${item.id})"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Xem chi tiết" onclick="event.stopPropagation(); viewDetailTab3(${item.id})">Xem</button>
                         <button class="action-icon ${canEdit ? '' : 'disabled'}" style="${canEdit ? '' : 'opacity: 0.4; cursor: not-allowed;'}" title="Cập nhật" onclick="event.stopPropagation(); ${canEdit ? `openAddStepperModal(${item.id})` : `showToast('Bạn không có quyền chỉnh sửa hồ sơ này (chỉ Lãnh đạo hoặc cán bộ phụ trách mới có quyền chỉnh sửa)', 'error')`}"><i class="fa-solid fa-edit"></i></button>
                         <button class="action-icon" title="Tải file kết quả" onclick="event.stopPropagation(); downloadResultFileTab3(${item.id})"><i class="fa-solid fa-download"></i></button>
                     </td>
@@ -4335,7 +4335,7 @@
                         <span class="file-name">${name}</span>
                     </div>
                     <div class="file-actions">
-                        <button type="button" class="file-btn file-btn-view" onclick="previewFile('${name}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                        <button type="button" class="file-btn file-btn-view" onclick="previewFile('${name}')">Xem</button>
                         <button type="button" class="file-btn file-btn-delete" onclick="deleteFileTab3(${idx})"><i class="fa-solid fa-trash"></i> Xóa</button>
                     </div>
                 `;
@@ -4635,7 +4635,7 @@
                                 <i class="fa-solid fa-file-pdf" style="color:#EF4444; font-size:15px;"></i>
                                 <span class="file-name" style="max-width:130px;">${file}</span>
                             </div>
-                            <button type="button" class="file-btn file-btn-view" onclick="previewFile('${file}')"><i class="fa fa-eye"></i> Xem</button>
+                            <button type="button" class="file-btn file-btn-view" onclick="previewFile('${file}')">Xem</button>
                         </div>
                     `;
                 });

@@ -3807,8 +3807,7 @@
                                         class="fa-solid fa-paper-plane"></i> Ban hành thông báo</button>
                                 <button type="button" id="btnPreviewM17" class="btn btn-secondary btn-sm"
                                     onclick="previewM17()"
-                                    style="background: white; color: black; border: 1px solid #cbd5e1; padding: 6px 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;"><i
-                                        class="fa-solid fa-eye"></i> Xem thông báo</button>
+                                    style="background: white; color: black; border: 1px solid #cbd5e1; padding: 6px 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;">Xem thông báo</button>
                                 <button id="btnUpdatePhddStep1" class="btn btn-warning btn-sm"
                                     onclick="updatePhddStep1NoLock()"
                                     style="background: #f59e0b; color: white; border: none; padding: 6px 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;"><i
@@ -8053,7 +8052,7 @@
                     `;
                     actionsHtml = `
                         <div style="display: flex; gap: 8px; justify-content: center; align-items: center; white-space: nowrap;">
-                            <a href="javascript:void(0)" onclick="viewDocFile(${idx})" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-regular fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="viewDocFile(${idx})" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;" class="action-link">Xem file</a>
                             <span style="color: #cbd5e1;">|</span>
                             <a href="javascript:void(0)" onclick="${doc.isCustom ? `deleteDocRow(${idx})` : `clearDocFile(${idx})`}" style="color: var(--danger-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-solid fa-trash-can"></i> Xóa</a>
                         </div>
@@ -8068,7 +8067,7 @@
                     if (doc.isCustom) {
                         actionsHtml = `
                             <div style="display: flex; gap: 8px; justify-content: center; align-items: center; white-space: nowrap;">
-                                <span style="font-weight: 600; opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-eye"></i> Xem file</span>
+                                <span style="font-weight: 600; opacity: 0.35; pointer-events: none; cursor: not-allowed;">Xem file</span>
                                 <span style="color: #cbd5e1;">|</span>
                                 <a href="javascript:void(0)" onclick="deleteDocRow(${idx})" style="color: var(--danger-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-solid fa-trash-can"></i> Xóa</a>
                             </div>
@@ -8076,7 +8075,7 @@
                     } else {
                         actionsHtml = `
                             <div style="display: flex; gap: 8px; justify-content: center; align-items: center; opacity: 0.35; pointer-events: none; cursor: not-allowed; white-space: nowrap;">
-                                <span style="font-weight: 600;"><i class="fa-regular fa-eye"></i> Xem file</span>
+                                <span style="font-weight: 600;">Xem file</span>
                                 <span style="color: #cbd5e1;">|</span>
                                 <span style="font-weight: 600;"><i class="fa-solid fa-trash-can"></i> Xóa</span>
                             </div>
@@ -11328,7 +11327,7 @@
                                 <span style="font-size: 11px; color: #475569; background: #e2e8f0; padding: 2px 6px; border-radius: 10px;">${file.size || '250 KB'}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 12px;">
-                                <a href="javascript:void(0)" onclick="viewPhddMockFile('${file.name}')" style="color: #2563eb; font-weight: 600; font-size: 12.5px; text-decoration: none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                                <a href="javascript:void(0)" onclick="viewPhddMockFile('${file.name}')" style="color: #2563eb; font-weight: 600; font-size: 12.5px; text-decoration: none;">Xem file</a>
                                 ${(!isLocked && isDetailEditMode) ? `
                                     <span style="color: #cbd5e1;">|</span>
                                     <a href="javascript:void(0)" onclick="removePhddStepFiles(${step}, ${idx})" style="color: #ef4444; font-weight: 600; font-size: 12.5px; text-decoration: none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
@@ -11545,7 +11544,7 @@
                             <span style="font-size: 11px; color: #475569; background: #e2e8f0; padding: 2px 6px; border-radius: 10px;">${file.size}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <a href="javascript:void(0)" onclick="viewPhddMockFile('${file.name}')" style="color: #2563eb; font-weight: 600; font-size: 13px; text-decoration: none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="viewPhddMockFile('${file.name}')" style="color: #2563eb; font-weight: 600; font-size: 13px; text-decoration: none;">Xem file</a>
                             ${(!isCompleted && isDetailEditMode) ? `
                             <span style="color: #cbd5e1;">|</span>
                             <a href="javascript:void(0)" onclick="removePhddUploadedFile(${idx})" style="color: #ef4444; font-weight: 600; font-size: 13px; text-decoration: none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
@@ -14712,7 +14711,7 @@
                         </button>
                         <span id="appointDecisionFileName" style="font-size:12px; color:#64748b; min-width:180px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Chưa chọn tài liệu</span>
                         <span id="appointDecisionFileActions" style="display:none; align-items:center; gap:10px; font-size:12px;">
-                            <a href="javascript:void(0)" onclick="viewAppointDecisionFile()" style="color:#1e40af; font-weight:600; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="viewAppointDecisionFile()" style="color:#1e40af; font-weight:600; text-decoration:none;">Xem file</a>
                             <a href="javascript:void(0)" onclick="removeAppointDecisionFile()" style="color:#dc2626; font-weight:600; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
                         </span>
                         <input type="file" id="appointDecisionFile" style="display:none;" onchange="handleAppointDecisionFile(this)">

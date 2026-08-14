@@ -1813,7 +1813,7 @@
             <!-- Màn hình 3C: Xem chi tiết kết quả (Chỉ đọc) -->
             <div id="view-ketqua-chitiet" class="card-section" style="display: none;">
                 <div class="section-title">
-                    <span><i class="fa-solid fa-eye"></i> Chi tiết kết quả kiểm tra / theo dõi</span>
+                    <span>Chi tiết kết quả kiểm tra / theo dõi</span>
                     <div>
                         <button class="btn btn-outline-primary btn-sm" onclick="printPdfReport()"><i
                                 class="fa-solid fa-print"></i> In kết luận</button>
@@ -2607,7 +2607,7 @@
                 <td>${p.lanhDao ? p.lanhDao.split(" - ")[0] : "-"}</td>
                 <td>${p.batDauDukien} — ${p.ketThucDukien}</td>
                 <td class="action-icons">
-                    <button class="action-icon view" title="Xem chi tiết" onclick="toggleDetailInline('${p.id}')"><i class="fa-solid fa-eye"></i></button>
+                    <button class="action-icon view" title="Xem chi tiết" onclick="toggleDetailInline('${p.id}')">Xem</button>
                     <button class="action-icon edit" title="Sửa kế hoạch" onclick="openEditPlan('${p.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button class="action-icon delete" title="Xóa kế hoạch" onclick="deletePlan('${p.id}')"><i class="fa-solid fa-trash"></i></button>
                     <button class="action-icon expand" title="Xem danh sách đơn vị con" onclick="toggleExpandRow('${p.id}')" id="expand-btn-${p.id}"><i class="fa-solid fa-chevron-right"></i></button>
@@ -2771,7 +2771,7 @@
                         <td>${vbLink}</td>
                         <td style="text-align: center;">
                             <div class="action-icons">
-                                <a href="#" onclick="openDirectKetquaTab('${plan.id}', '${dot.id}')" style="color: var(--success-color); font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-eye"></i> Xem KQ</a>
+                                <a href="#" onclick="openDirectKetquaTab('${plan.id}', '${dot.id}')" style="color: var(--success-color); font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;">Xem KQ</a>
                             </div>
                         </td>
                     `;
@@ -3889,7 +3889,7 @@
                 <td><span class="badge ${xlClass}">${res.trangThaiXuly}</span></td>
                 <td><a href="#" onclick="showToast('Đang tải văn bản ${res.soVbKq}')" style="color: var(--primary-color); font-weight: 600;"><i class="fa-solid fa-file-pdf"></i> ${res.soVbKq || 'Chưa ban hành'}</a></td>
                 <td class="action-icons">
-                    <button class="action-icon view" title="Xem chi tiết kết quả" onclick="openKetQuaDetail('${res.id}')"><i class="fa-solid fa-eye"></i></button>
+                    <button class="action-icon view" title="Xem chi tiết kết quả" onclick="openKetQuaDetail('${res.id}')">Xem</button>
                     <button class="action-icon edit" title="Sửa kết quả" onclick="openEditKetQuaForm('${res.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button class="action-icon delete" title="Xóa kết quả" onclick="deleteKetQua('${res.id}')"><i class="fa-solid fa-trash"></i></button>
                 </td>

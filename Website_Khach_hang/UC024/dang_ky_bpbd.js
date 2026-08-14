@@ -1,4 +1,4 @@
-const initFloatingTooltips = () => {
+﻿const initFloatingTooltips = () => {
     let tooltipEl = null;
 
     const removeTooltip = () => {
@@ -2132,7 +2132,7 @@ const initApp = () => {
         },
         {
             type: 'investor_nn',
-            typeName: 'Nhà đầu tư nước ngoài',
+            typeName: 'Tổ chức nước ngoài',
             doc: '0102030405',
             name: 'Global Investment Fund',
             country: 'Singapore',

@@ -1,4 +1,4 @@
-let mockClaims = [
+﻿let mockClaims = [
     {
         code: "BT-2026-002",
         nyc: "Trần Thị B",
@@ -1009,7 +1009,7 @@ function renderNoticeTrackingFile(readOnly = false) {
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:${index === 0 ? 0 : 4}px;">
                 <span style="font-weight:600; color:var(--text-color);">${file}</span>
                 <span style="font-weight:600; font-size:12px; white-space:nowrap;">
-                    <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;"><i class="fa-regular fa-eye"></i> Xem file</a>
+                    <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a>
                     ${readOnly ? '' : `<span style="color:#CBD5E1; margin:0 5px;">|</span><a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removeNoticeTrackingFile(${index})"><i class="fa-regular fa-trash-can"></i> Xóa</a>`}
                 </span>
             </div>
@@ -1151,7 +1151,7 @@ function renderTreasuryFile(readOnly = false) {
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:${index === 0 ? 0 : 4}px;">
                 <span style="font-weight:600; color:var(--text-color);">${file}</span>
                 <span style="font-weight:600; font-size:12px; white-space:nowrap;">
-                    <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;"><i class="fa-regular fa-eye"></i> Xem file</a>
+                    <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a>
                     ${readOnly ? '' : `<span style="color:#CBD5E1; margin:0 5px;">|</span><a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removeTreasuryFile(${index})"><i class="fa-regular fa-trash-can"></i> Xóa</a>`}
                 </span>
             </div>
@@ -1830,7 +1830,7 @@ function handleClaimSelected(code) {
             if (claim.advanceTinhThanFile) {
                 document.getElementById('advClaimTinhThanFileLink').innerHTML = `
                     <div style="display:flex; justify-content:center; gap:8px; font-weight:600; font-size:12px; white-space:nowrap;">
-                        <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;"><i class="fa-regular fa-eye"></i> Xem</a>
+                        <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem</a>
                         <span style="color:#CBD5E1;">|</span>
                         <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('TinhThan')"><i class="fa-regular fa-trash-can"></i> Xóa</a>
                     </div>
@@ -1843,7 +1843,7 @@ function handleClaimSelected(code) {
             if (claim.advanceKhacFile) {
                 document.getElementById('advClaimKhacFileLink').innerHTML = `
                     <div style="display:flex; justify-content:center; gap:8px; font-weight:600; font-size:12px; white-space:nowrap;">
-                        <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;"><i class="fa-regular fa-eye"></i> Xem</a>
+                        <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem</a>
                         <span style="color:#CBD5E1;">|</span>
                         <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('Khac')"><i class="fa-regular fa-trash-can"></i> Xóa</a>
                     </div>
@@ -2104,7 +2104,7 @@ function renderProposalAttachedDocs() {
         let actionsCell = '';
         if (doc.file) {
             actionsCell = `
-                <a href="javascript:void(0)" onclick="viewProposalAttachedDoc(${idx})" style="color:#2563EB; text-decoration:none; font-weight:500; font-size:12.5px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-regular fa-eye"></i> Xem file</a>
+                <a href="javascript:void(0)" onclick="viewProposalAttachedDoc(${idx})" style="color:#2563EB; text-decoration:none; font-weight:500; font-size:12.5px; display:inline-flex; align-items:center; gap:4px;">Xem file</a>
             `;
             if (!isReadOnly) {
                 actionsCell += `
@@ -2115,11 +2115,11 @@ function renderProposalAttachedDocs() {
         } else {
             if (isReadOnly) {
                 actionsCell = `
-                    <span style="color:#94A3B8; font-weight:500; font-size:12.5px; opacity:0.5; cursor:not-allowed; display:inline-flex; align-items:center; gap:4px;"><i class="fa-regular fa-eye"></i> Xem file</span>
+                    <span style="color:#94A3B8; font-weight:500; font-size:12.5px; opacity:0.5; cursor:not-allowed; display:inline-flex; align-items:center; gap:4px;">Xem file</span>
                 `;
             } else {
                 actionsCell = `
-                    <span style="color:#94A3B8; font-weight:500; font-size:12.5px; opacity:0.5; cursor:not-allowed; display:inline-flex; align-items:center; gap:4px;"><i class="fa-regular fa-eye"></i> Xem file</span>
+                    <span style="color:#94A3B8; font-weight:500; font-size:12.5px; opacity:0.5; cursor:not-allowed; display:inline-flex; align-items:center; gap:4px;">Xem file</span>
                     <span style="color:#CBD5E1; margin: 0 6px;">|</span>
                     <a href="javascript:void(0)" onclick="deleteProposalDocRow(${idx})" style="color:#EF4444; text-decoration:none; font-weight:500; font-size:12.5px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-regular fa-trash-can"></i> Xóa</a>
                 `;
@@ -2930,7 +2930,7 @@ function viewProposalDetail(id) {
             ${item.payoutFile
                 ? `<span style="font-weight:600; color:var(--text-color);">${item.payoutFile}</span>
                    <span style="margin-left: 10px; font-weight:600; font-size:12px;">
-                       <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;"><i class="fa-regular fa-eye"></i> Xem file</a>
+                       <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a>
                    </span>`
                 : `<span style="color:var(--text-muted); font-style:italic;">Chưa phát sinh chứng từ chi trả</span>`}
         `;
@@ -3272,7 +3272,7 @@ function handlePayoutFileChange(input) {
         document.getElementById('payoutFileLink').innerHTML = `
             <span style="font-weight:600; color:var(--text-color);">${file.name}</span>
             <span style="margin-left: 10px; font-weight:600; font-size:12px;">
-                <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;"><i class="fa-regular fa-eye"></i> Xem file</a>
+                <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a>
                 <span style="color:#CBD5E1; margin:0 5px;">|</span>
                 <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removePayoutFile()"><i class="fa-regular fa-trash-can"></i> Xóa</a>
             </span>
@@ -3304,7 +3304,7 @@ function renderNoticeProofFile(readOnly = false) {
         link.innerHTML = `
             <span style="font-weight:600; color:var(--text-color);">${noticeProofAttachedFile}</span>
             ${readOnly
-                ? `<span style="margin-left:8px;"><a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;"><i class="fa-regular fa-eye"></i> Xem file</a></span>`
+                ? `<span style="margin-left:8px;"><a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a></span>`
                 : `<span style="margin-left:8px;"><a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removeNoticeProofFile()"><i class="fa-regular fa-trash-can"></i> Xóa</a></span>`}
         `;
         link.style.color = 'var(--text-color)';

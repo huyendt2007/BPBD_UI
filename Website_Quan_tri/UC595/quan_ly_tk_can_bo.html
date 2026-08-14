@@ -314,6 +314,16 @@
             background-color: #FEE2E2; 
         }
 
+        .icon-btn.close-account {
+            color: #64748B;
+            background-color: #F8FAFC;
+            border: 1px solid #CBD5E1;
+        }
+        .icon-btn.close-account:hover {
+            color: #111827;
+            background-color: #E5E7EB;
+        }
+
         /* Badge Styling */
         .badge {
             display: inline-flex;
@@ -597,10 +607,18 @@
         </h3>
         
         <form id="filterForm">
-            <div class="grid-3">
+            <div class="grid-4">
                 <div class="form-group">
-                    <label class="form-label">Từ khóa tìm kiếm</label>
-                    <input type="text" id="filterKeyword" class="form-control" placeholder="Họ tên, Tên đăng nhập, Email...">
+                    <label class="form-label">Họ và tên</label>
+                    <input type="text" id="filterFullName" class="form-control" placeholder="Nhập họ và tên...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="text" id="filterEmail" class="form-control" placeholder="Nhập email...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" id="filterPhone" class="form-control" placeholder="Nhập số điện thoại...">
                 </div>
                 
                 <div class="form-group">
@@ -640,6 +658,33 @@
                         <option value="CV03">Chuyên viên / Đăng ký viên</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Vai trò</label>
+                    <select id="filterRole" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="R1">Cán bộ phê duyệt</option>
+                        <option value="R2">Quản trị đơn vị</option>
+                        <option value="R3">Kế toán/đối soát</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nhóm người dùng</label>
+                    <select id="filterGroup" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="G1">Quản trị hệ thống</option>
+                        <option value="G2">Cán bộ nghiệp vụ</option>
+                        <option value="G3">Lãnh đạo phê duyệt</option>
+                        <option value="G4">Kế toán/thu phí</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="text" id="filterFromDate" class="form-control" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="text" id="filterToDate" class="form-control" placeholder="dd/mm/yyyy">
+                </div>
                 
                 <div class="form-group">
                     <label class="form-label">Trạng thái</label>
@@ -647,6 +692,7 @@
                         <option value="">-- Tất cả --</option>
                         <option value="1">Đang hoạt động</option>
                         <option value="0">Bị khóa</option>
+                        <option value="2">Đóng</option>
                     </select>
                 </div>
             </div>
@@ -662,6 +708,7 @@
     <div class="card-section">
         <div class="section-title">
             <span><i class="fa-solid fa-list-check"></i> Danh sách tài khoản cán bộ</span>
+            <span id="tableTotalBadge" class="badge bg-info">Tổng số 0 bản ghi</span>
         </div>
         <div class="grid-action-toolbar">
             <button class="btn btn-primary" onclick="openModal('add')"><i class="fa fa-plus"></i> Thêm mới tài khoản</button>
@@ -689,6 +736,18 @@
                 </tbody>
             </table>
         </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:12px;">
+            <div style="display:flex; align-items:center; gap:8px; color:var(--text-muted);">
+                <span id="tableSummary">Tổng số 0 bản ghi</span>
+                <span>Số bản ghi/trang</span>
+                <select id="pageSizeSelect" class="form-select" style="width:90px;" onchange="changePageSize(this.value)">
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                </select>
+            </div>
+            <div id="paginationControls" style="display:flex; align-items:center; gap:6px;"></div>
+        </div>
     </div>
 
 </div>
@@ -710,17 +769,17 @@
                         <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Nhập họ và tên</span>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Tên đăng nhập <span class="required-mark">*</span></label>
-                        <input type="text" id="formUsername" class="form-control" required>
-                        <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Nhập tên đăng nhập</span>
+                        <label class="form-label">Email <span class="required-mark">*</span></label>
+                        <input type="email" id="formEmail" class="form-control" required oninput="syncUsernameFromEmail()">
+                        <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Email dùng làm tên đăng nhập</span>
                     </div>
                 </div>
 
                 <div class="grid-2-cols">
                     <div class="form-group">
-                        <label class="form-label">Email <span class="required-mark">*</span></label>
-                        <input type="email" id="formEmail" class="form-control" required>
-                        <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Ví dụ: email@moj.gov.vn</span>
+                        <label class="form-label">Tên đăng nhập <span class="required-mark">*</span></label>
+                        <input type="text" id="formUsername" class="form-control" readonly required>
+                        <span class="form-text" style="color: var(--text-muted); font-size: 12px;">Tự động lấy theo Email, không cho phép sửa</span>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Số điện thoại <span class="required-mark">*</span></label>
@@ -836,7 +895,7 @@
                 <strong><i class="fas fa-info-circle text-info"></i> Lưu ý các điều kiện bắt buộc (Ngoại lệ):</strong>
                 <ul style="margin-top: var(--spacing-sm); padding-left: 20px; color: var(--text-muted); line-height: 1.5;">
                     <li>Không bỏ trống các cột đánh dấu (*).</li>
-                    <li>Tên đăng nhập, Email, SĐT phải duy nhất, không trùng lặp trên hệ thống và trong file tải lên.</li>
+                    <li>Email dùng làm Tên đăng nhập; Email và SĐT phải duy nhất, không trùng lặp trên hệ thống và trong file tải lên.</li>
                     <li>Định dạng Email (có @) và SĐT (chỉ chứa số) phải hợp lệ.</li>
                     <li>Mã Đơn vị, Phòng ban, Chức vụ, Nhóm, Vai trò phải khớp với hệ thống.</li>
                 </ul>
@@ -871,6 +930,24 @@
     </div>
 </div>
 
+<!-- Modal Xác nhận Đóng -->
+<div class="modal-overlay" id="confirmCloseAccountModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3>Xác nhận đóng tài khoản</h3>
+            <button class="close-modal" onclick="closeModal('confirmCloseAccountModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn đóng tài khoản <strong id="closeTargetName"></strong>?</p>
+            <p style="color: var(--warning-color); margin-top: 10px; font-size: 13px;">Tài khoản sau khi đóng sẽ không được phép đăng nhập.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('confirmCloseAccountModal')">Hủy</button>
+            <button type="button" class="btn btn-primary" onclick="executeCloseAccount()"><i class="fas fa-user-slash"></i> Xác nhận đóng</button>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Xác nhận Khóa -->
 <div class="modal-overlay" id="confirmLockModal">
     <div class="modal-content modal-sm">
@@ -897,13 +974,24 @@
             <button class="close-modal" onclick="closeModal('confirmResetPwdModal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
-            <p>Hệ thống sẽ tạo mật khẩu mới ngẫu nhiên và gửi về Email của cán bộ <strong id="pwdTargetName"></strong>.</p>
-            <p style="margin-top: 10px;">Bạn có chắc chắn?</p>
+            <p style="margin-bottom: 12px;">Nhập mật khẩu mới cho tài khoản <strong id="pwdTargetName"></strong>.</p>
             <input type="hidden" id="pwdTargetId">
+            <div class="form-group">
+                <label class="form-label">Mật khẩu mới <span class="required-mark">*</span></label>
+                <input type="password" id="resetNewPassword" class="form-control" placeholder="Nhập mật khẩu mới">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nhập lại mật khẩu mới <span class="required-mark">*</span></label>
+                <input type="password" id="resetConfirmPassword" class="form-control" placeholder="Nhập lại mật khẩu mới">
+            </div>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px;">
+                <input type="checkbox" id="resetForceChange" checked>
+                Yêu cầu đổi mật khẩu khi đăng nhập lần tiếp theo
+            </label>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" onclick="closeModal('confirmResetPwdModal')">Hủy</button>
-            <button type="button" class="btn btn-primary" onclick="executeResetPwd()"><i class="fas fa-paper-plane"></i> Đồng ý gửi</button>
+            <button type="button" class="btn btn-primary" onclick="executeResetPwd()"><i class="fas fa-save"></i> Lưu mật khẩu mới</button>
         </div>
     </div>
 </div>
@@ -1116,23 +1204,36 @@
 
     // Khởi tạo 10+ bản ghi giả lập đa dạng
     let accounts = [
-        { id: 1, name: "Nguyễn Văn A", username: "nva_cuc", email: "nva@moj.gov.vn", phone: "0901234561", unitId: "DV01", deptId: "PB01", titleId: "CV01", status: 1, groups: ["G1"], roles: ["R1", "R2"], hasData: true, orgType: "Nội bộ", createdDate: "15/01/2026" },
-        { id: 2, name: "Trần Thị B", username: "ttb_hcth", email: "ttb@moj.gov.vn", phone: "0901234562", unitId: "DV01", deptId: "PB02", titleId: "CV02", status: 1, groups: ["G2"], roles: [], hasData: true, orgType: "Nội bộ", createdDate: "22/01/2026" },
-        { id: 3, name: "Lê Minh C", username: "lmc_ttdk", email: "lmc@moj.gov.vn", phone: "0901234563", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2", "G3"], roles: [], hasData: false, orgType: "Nội bộ", createdDate: "05/02/2026" },
-        { id: 4, name: "Phạm Hoàng D", username: "phd_ttdk", email: "phd@moj.gov.vn", phone: "0901234564", unitId: "DV02", deptId: "PB04", titleId: "CV03", status: 1, groups: ["G4"], roles: ["R1"], hasData: true, orgType: "Nội bộ", createdDate: "10/02/2026" },
-        { id: 5, name: "Vũ Tuấn E", username: "vte_stp", email: "vte@moj.gov.vn", phone: "0901234565", unitId: "DV03", deptId: "PB05", titleId: "CV02", status: 0, groups: [], roles: ["R2"], hasData: false, orgType: "Nội bộ", createdDate: "18/02/2026" },
-        { id: 6, name: "Hoàng Ngọc F", username: "hnf_cuc", email: "hnf@moj.gov.vn", phone: "0901234566", unitId: "DV01", deptId: "PB01", titleId: "CV03", status: 1, groups: ["G3"], roles: [], hasData: true, orgType: "Nội bộ", createdDate: "25/02/2026" },
-        { id: 7, name: "Đinh Công G", username: "dcg_hcth", email: "dcg@moj.gov.vn", phone: "0901234567", unitId: "DV04", deptId: "PB06", titleId: "CV03", status: 1, groups: [], roles: ["R3"], hasData: false, orgType: "Cơ quan ngoài ngành", createdDate: "02/03/2026" },
-        { id: 8, name: "Bùi Thị H", username: "bth_ttdk", email: "bth@moj.gov.vn", phone: "0901234568", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2"], roles: ["R2"], hasData: true, orgType: "Nội bộ", createdDate: "12/03/2026" },
-        { id: 9, name: "Lý Văn I", username: "lvi_stp", email: "lvi@moj.gov.vn", phone: "0901234569", unitId: "DV04", deptId: "PB06", titleId: "CV03", status: 0, groups: ["G2"], roles: [], hasData: true, orgType: "Cơ quan ngoài ngành", createdDate: "20/03/2026" },
-        { id: 10, name: "Trịnh Đức K", username: "tdk_ttdk", email: "tdk@moj.gov.vn", phone: "0901234570", unitId: "DV02", deptId: "PB04", titleId: "CV02", status: 1, groups: ["G4"], roles: ["R1", "R3"], hasData: false, orgType: "Nội bộ", createdDate: "01/04/2026" }
+        { id: 1, name: "Nguyễn Văn A", username: "nva@moj.gov.vn", email: "nva@moj.gov.vn", phone: "0901234561", unitId: "DV01", deptId: "PB01", titleId: "CV01", status: 1, groups: ["G1"], roles: ["R1", "R2"], hasData: true, orgType: "Nội bộ", createdDate: "15/01/2026" },
+        { id: 2, name: "Trần Thị B", username: "ttb@moj.gov.vn", email: "ttb@moj.gov.vn", phone: "0901234562", unitId: "DV01", deptId: "PB02", titleId: "CV02", status: 1, groups: ["G2"], roles: [], hasData: true, orgType: "Nội bộ", createdDate: "22/01/2026" },
+        { id: 3, name: "Lê Minh C", username: "lmc@moj.gov.vn", email: "lmc@moj.gov.vn", phone: "0901234563", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2", "G3"], roles: [], hasData: false, orgType: "Nội bộ", createdDate: "05/02/2026" },
+        { id: 4, name: "Phạm Hoàng D", username: "phd@moj.gov.vn", email: "phd@moj.gov.vn", phone: "0901234564", unitId: "DV02", deptId: "PB04", titleId: "CV03", status: 1, groups: ["G4"], roles: ["R1"], hasData: true, orgType: "Nội bộ", createdDate: "10/02/2026" },
+        { id: 5, name: "Vũ Tuấn E", username: "vte@moj.gov.vn", email: "vte@moj.gov.vn", phone: "0901234565", unitId: "DV03", deptId: "PB05", titleId: "CV02", status: 0, groups: [], roles: ["R2"], hasData: false, orgType: "Nội bộ", createdDate: "18/02/2026" },
+        { id: 6, name: "Hoàng Ngọc F", username: "hnf@moj.gov.vn", email: "hnf@moj.gov.vn", phone: "0901234566", unitId: "DV01", deptId: "PB01", titleId: "CV03", status: 1, groups: ["G3"], roles: [], hasData: true, orgType: "Nội bộ", createdDate: "25/02/2026" },
+        { id: 7, name: "Đinh Công G", username: "dcg@sbv.gov.vn", email: "dcg@sbv.gov.vn", phone: "0901234567", unitId: "DV04", deptId: "PB06", titleId: "CV03", status: 1, groups: [], roles: ["R3"], hasData: false, orgType: "Cơ quan ngoài ngành", createdDate: "02/03/2026" },
+        { id: 8, name: "Bùi Thị H", username: "bth@moj.gov.vn", email: "bth@moj.gov.vn", phone: "0901234568", unitId: "DV02", deptId: "PB03", titleId: "CV03", status: 1, groups: ["G2"], roles: ["R2"], hasData: true, orgType: "Nội bộ", createdDate: "12/03/2026" },
+        { id: 9, name: "Lý Văn I", username: "lvi@sbv.gov.vn", email: "lvi@sbv.gov.vn", phone: "0901234569", unitId: "DV04", deptId: "PB06", titleId: "CV03", status: 0, groups: ["G2"], roles: [], hasData: true, orgType: "Cơ quan ngoài ngành", createdDate: "20/03/2026" },
+        { id: 10, name: "Trịnh Đức K", username: "tdk@moj.gov.vn", email: "tdk@moj.gov.vn", phone: "0901234570", unitId: "DV02", deptId: "PB04", titleId: "CV02", status: 1, groups: ["G4"], roles: ["R1", "R3"], hasData: false, orgType: "Nội bộ", createdDate: "01/04/2026" },
+        { id: 11, name: "Ngô Thị L", username: "ntl@moj.gov.vn", email: "ntl@moj.gov.vn", phone: "0901234571", unitId: "DV01", deptId: "PB02", titleId: "CV03", status: 2, groups: ["G2"], roles: ["R3"], hasData: true, orgType: "Nội bộ", createdDate: "10/04/2026" }
     ];
+
+    let currentFilteredAccounts = [...accounts];
+    let currentPage = 1;
+    let pageSize = 50;
 
     // --- Init & Render ---
     window.onload = function() {
         initFilterDepartments();
-        renderTable(accounts);
+        currentFilteredAccounts = [...accounts];
+        renderTable(currentFilteredAccounts);
     };
+
+    function parseDateVN(value) {
+        if (!value) return null;
+        const parts = value.split('/');
+        if (parts.length !== 3) return null;
+        return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+    }
 
     // Filter Department logic
     document.getElementById('filterUnit').addEventListener('change', function() {
@@ -1162,8 +1263,23 @@
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
+        currentFilteredAccounts = data;
+        const total = data.length;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const startIndex = (currentPage - 1) * pageSize;
+        const pageData = data.slice(startIndex, startIndex + pageSize);
 
-        if (data.length === 0) {
+        document.getElementById('tableSummary').innerText = `Tổng số ${total} bản ghi`;
+        const totalBadge = document.getElementById('tableTotalBadge');
+        if (totalBadge) totalBadge.innerText = `Tổng số ${total} bản ghi`;
+        document.getElementById('paginationControls').innerHTML = `
+            <button type="button" class="btn btn-secondary" style="padding:6px 10px;" onclick="goToPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>Trước</button>
+            <span style="color:var(--text-muted);">Trang ${currentPage}/${totalPages}</span>
+            <button type="button" class="btn btn-secondary" style="padding:6px 10px;" onclick="goToPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>Sau</button>
+        `;
+
+        if (total === 0) {
             tbody.innerHTML = `
                 <tr>
                     <td colspan="10">
@@ -1176,7 +1292,7 @@
             return;
         }
 
-        data.forEach((item, index) => {
+        pageData.forEach((item, index) => {
             const unitName = MOCK_UNITS[item.unitId];
             const deptObj = MOCK_DEPARTMENTS[item.unitId]?.find(d => d.id === item.deptId);
             const deptName = deptObj ? deptObj.name : '';
@@ -1192,18 +1308,17 @@
             });
 
             // Status Badge
-            const statusHtml = item.status === 1 
-                ? `<span class="badge bg-success">Đang hoạt động</span>`
-                : `<span class="badge bg-danger">Bị khóa</span>`;
+            const statusHtml = getStatusBadge(item.status);
 
             // Row Action Icons
             const lockIcon = item.status === 1 ? 'fa-lock' : 'fa-unlock';
             const lockColor = item.status === 1 ? 'lock' : 'success';
-            const lockTitle = item.status === 1 ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
+            const lockTitle = item.status === 1 ? 'Khóa tài khoản' : (item.status === 2 ? 'Tài khoản đã đóng' : 'Mở khóa tài khoản');
+            const lockDisabled = item.status === 2 ? 'disabled style="opacity:.45; cursor:not-allowed;"' : '';
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${index + 1}</td>
+                <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${startIndex + index + 1}</td>
                 <td onclick="openDetailModal(${item.id})" style="cursor:pointer; font-weight: 500;">${item.name}</td>
                 <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${item.username}</td>
                 <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">
@@ -1216,10 +1331,10 @@
                 <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${item.createdDate}</td>
                 <td onclick="openDetailModal(${item.id})" style="cursor:pointer;">${statusHtml}</td>
                 <td class="action-cell" style="text-align: center;">
-                    <button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${item.id})"><i class="fas fa-eye"></i></button>
                     <button class="icon-btn reset-pwd" title="Đặt lại mật khẩu" onclick="confirmResetPwd(${item.id})"><i class="fas fa-key"></i></button>
                     <button class="icon-btn edit" title="Sửa thông tin" onclick="openModal('edit', ${item.id})"><i class="fas fa-edit"></i></button>
-                    <button class="icon-btn ${lockColor}" title="${lockTitle}" onclick="confirmLock(${item.id})"><i class="fas ${lockIcon}"></i></button>
+                    <button class="icon-btn ${lockColor}" title="${lockTitle}" onclick="confirmLock(${item.id})" ${lockDisabled}><i class="fas ${lockIcon}"></i></button>
+                    <button class="icon-btn close-account" title="Đóng tài khoản" onclick="confirmCloseAccount(${item.id})"><i class="fas fa-user-slash"></i></button>
                     <button class="icon-btn delete" title="Xóa tài khoản" onclick="confirmDelete(${item.id})"><i class="fas fa-trash"></i></button>
                 </td>
             `;
@@ -1227,29 +1342,57 @@
         });
     }
 
+    function getStatusBadge(status) {
+        if (status === 1) return `<span class="badge bg-success">Đang hoạt động</span>`;
+        if (status === 2) return `<span class="badge bg-secondary">Đóng</span>`;
+        return `<span class="badge bg-danger">Bị khóa</span>`;
+    }
+
+    function goToPage(page) {
+        const totalPages = Math.max(1, Math.ceil(currentFilteredAccounts.length / pageSize));
+        currentPage = Math.min(Math.max(1, page), totalPages);
+        renderTable(currentFilteredAccounts);
+    }
+
+    function changePageSize(value) {
+        pageSize = Number(value) || 50;
+        currentPage = 1;
+        renderTable(currentFilteredAccounts);
+    }
+
     function searchData() {
-        const keyword = document.getElementById('filterKeyword').value.toLowerCase();
+        const fullName = document.getElementById('filterFullName').value.toLowerCase().trim();
+        const email = document.getElementById('filterEmail').value.toLowerCase().trim();
+        const phone = document.getElementById('filterPhone').value.trim();
         const unit = document.getElementById('filterUnit').value;
         const orgType = document.getElementById('filterOrgType').value;
         const dept = document.getElementById('filterDept').value;
         const title = document.getElementById('filterTitle').value;
+        const role = document.getElementById('filterRole').value;
+        const group = document.getElementById('filterGroup').value;
+        const fromDate = parseDateVN(document.getElementById('filterFromDate').value.trim());
+        const toDate = parseDateVN(document.getElementById('filterToDate').value.trim());
         const status = document.getElementById('filterStatus').value;
 
         const filtered = accounts.filter(item => {
-            const matchKeyword = !keyword || 
-                                 item.name.toLowerCase().includes(keyword) || 
-                                 item.username.toLowerCase().includes(keyword) || 
-                                 item.email.toLowerCase().includes(keyword) ||
-                                 item.phone.includes(keyword);
+            const created = parseDateVN(item.createdDate);
+            const matchName = !fullName || item.name.toLowerCase().includes(fullName);
+            const matchEmail = !email || item.email.toLowerCase().includes(email);
+            const matchPhone = !phone || item.phone.includes(phone);
             const matchUnit = !unit || item.unitId === unit;
             const matchOrgType = !orgType || item.orgType === orgType;
             const matchDept = !dept || item.deptId === dept;
             const matchTitle = !title || item.titleId === title;
+            const matchRole = !role || item.roles.includes(role);
+            const matchGroup = !group || item.groups.includes(group);
+            const matchFrom = !fromDate || (created && created >= fromDate);
+            const matchTo = !toDate || (created && created <= toDate);
             const matchStatus = status === "" || item.status.toString() === status;
 
-            return matchKeyword && matchUnit && matchOrgType && matchDept && matchTitle && matchStatus;
+            return matchName && matchEmail && matchPhone && matchUnit && matchOrgType && matchDept && matchTitle && matchRole && matchGroup && matchFrom && matchTo && matchStatus;
         });
 
+        currentPage = 1;
         renderTable(filtered);
     }
 
@@ -1268,7 +1411,7 @@
         if (mode === 'add') {
             document.getElementById('modalTitle').innerText = 'Thêm mới tài khoản cán bộ';
             document.getElementById('formId').value = '';
-            document.getElementById('formUsername').readOnly = false;
+            document.getElementById('formUsername').readOnly = true;
             document.getElementById('btnResetPwdForm').style.display = 'none';
             document.getElementById('formDept').innerHTML = '<option value="">-- Chọn phòng ban --</option>';
             
@@ -1285,9 +1428,9 @@
             if (item) {
                 document.getElementById('formId').value = item.id;
                 document.getElementById('formFullName').value = item.name;
-                document.getElementById('formUsername').value = item.username;
                 document.getElementById('formUsername').readOnly = true; // Không cho sửa Username
                 document.getElementById('formEmail').value = item.email;
+                syncUsernameFromEmail();
                 document.getElementById('formPhone').value = item.phone;
                 document.getElementById('formUnit').value = item.unitId;
                 
@@ -1316,6 +1459,10 @@
         }
         
         modal.classList.add('active');
+    }
+
+    function syncUsernameFromEmail() {
+        document.getElementById('formUsername').value = document.getElementById('formEmail').value.trim();
     }
 
     function closeModal(modalId) {
@@ -1356,10 +1503,7 @@
         }
 
         // Trạng thái hoạt động
-        const statusHtml = item.status === 1 
-            ? `<span class="badge bg-success">Đang hoạt động</span>`
-            : `<span class="badge bg-danger">Bị khóa</span>`;
-        document.getElementById('detailStatus').innerHTML = statusHtml;
+        document.getElementById('detailStatus').innerHTML = getStatusBadge(item.status);
 
         // Nhóm người sử dụng & logic ẩn
         const groupsGroup = document.getElementById('detailGroupsGroup');
@@ -1425,23 +1569,24 @@
     function saveAccount() {
         const id = document.getElementById('formId').value;
         const name = document.getElementById('formFullName').value.trim();
-        const username = document.getElementById('formUsername').value.trim();
         const email = document.getElementById('formEmail').value.trim();
+        const username = email;
         const phone = document.getElementById('formPhone').value.trim();
         const unitId = document.getElementById('formUnit').value;
         const deptId = document.getElementById('formDept').value;
         const titleId = document.getElementById('formTitle').value;
 
         // Validation cơ bản
-        if (!name || !username || !email || !phone || !unitId || !deptId || !titleId) {
+        if (!name || !email || !phone || !unitId || !deptId || !titleId) {
             showToast('Vui lòng nhập đầy đủ thông tin bắt buộc!', 'error');
             return;
         }
+        document.getElementById('formUsername').value = username;
 
         // Duplicate check logic (mock)
-        const isDuplicateUsername = accounts.some(a => a.username === username && a.id != id);
-        if (isDuplicateUsername) {
-            showToast('Tên đăng nhập đã tồn tại trên hệ thống!', 'error');
+        const isDuplicateEmail = accounts.some(a => a.email.toLowerCase() === email.toLowerCase() && a.id != id);
+        if (isDuplicateEmail) {
+            showToast('Email/Tên đăng nhập đã tồn tại trên hệ thống!', 'error');
             return;
         }
 
@@ -1453,6 +1598,7 @@
             const item = accounts.find(a => a.id == id);
             item.name = name;
             item.email = email;
+            item.username = email;
             item.phone = phone;
             item.unitId = unitId;
             item.deptId = deptId;
@@ -1473,14 +1619,14 @@
 
             accounts.push({
                 id: newId,
-                name, username, email, phone, unitId, deptId, titleId,
+                name, username: email, email, phone, unitId, deptId, titleId,
                 status: 1, // Mặc định Hoạt động
                 groups, roles,
                 hasData: false, // Mới tạo chưa có data
                 orgType: UNIT_ORG_TYPES[unitId] || "Nội bộ",
                 createdDate: createdDateStr
             });
-            showToast('Thêm mới tài khoản thành công! Mật khẩu đã được gửi qua email.');
+            showToast('Thêm mới tài khoản thành công!');
         }
 
         closeModal('accountModal');
@@ -1499,15 +1645,30 @@
     }
 
     function executeDelete() {
-        const item = accounts.find(a => a.id === currentDeleteId);
-        if (item.hasData) {
-            showToast('Không thể xóa do tài khoản đã phát sinh dữ liệu nghiệp vụ. Vui lòng sử dụng tính năng Khóa tài khoản.', 'error');
-        } else {
-            accounts = accounts.filter(a => a.id !== currentDeleteId);
-            showToast('Xóa tài khoản thành công!');
+        accounts = accounts.filter(a => a.id !== currentDeleteId);
+        showToast('Xóa tài khoản thành công!');
+        searchData();
+        closeModal('confirmDeleteModal');
+    }
+
+    // --- Đóng tài khoản logic ---
+    let currentCloseId = null;
+    function confirmCloseAccount(id) {
+        const item = accounts.find(a => a.id === id);
+        if (!item) return;
+        currentCloseId = id;
+        document.getElementById('closeTargetName').innerText = `${item.name} (${item.username})`;
+        document.getElementById('confirmCloseAccountModal').classList.add('active');
+    }
+
+    function executeCloseAccount() {
+        const item = accounts.find(a => a.id === currentCloseId);
+        if (item) {
+            item.status = 2;
+            showToast('Đóng tài khoản thành công!');
             searchData();
         }
-        closeModal('confirmDeleteModal');
+        closeModal('confirmCloseAccountModal');
     }
 
     // --- Khóa/Mở khóa logic ---
@@ -1524,6 +1685,11 @@
 
     function executeLock() {
         const item = accounts.find(a => a.id === currentLockId);
+        if (item.status === 2) {
+            showToast('Tài khoản đã đóng, không thực hiện khóa/mở khóa.', 'error');
+            closeModal('confirmLockModal');
+            return;
+        }
         item.status = item.status === 1 ? 0 : 1;
         showToast('Cập nhật trạng thái thành công!');
         searchData();
@@ -1538,6 +1704,9 @@
         
         currentResetId = id;
         document.getElementById('pwdTargetName').innerText = `${item.name} (${item.username})`;
+        document.getElementById('resetNewPassword').value = '';
+        document.getElementById('resetConfirmPassword').value = '';
+        document.getElementById('resetForceChange').checked = true;
         document.getElementById('confirmResetPwdModal').classList.add('active');
     }
     
@@ -1547,11 +1716,22 @@
     }
 
     function executeResetPwd() {
-        // Mock gửi email
-        setTimeout(() => {
-            showToast('Đã đặt lại mật khẩu và gửi Email thành công!');
-            closeModal('confirmResetPwdModal');
-        }, 500);
+        const newPwd = document.getElementById('resetNewPassword').value;
+        const confirmPwd = document.getElementById('resetConfirmPassword').value;
+        if (!newPwd || !confirmPwd) {
+            showToast('Vui lòng nhập đầy đủ mật khẩu mới.', 'error');
+            return;
+        }
+        if (newPwd !== confirmPwd) {
+            showToast('Mật khẩu nhập lại không khớp.', 'error');
+            return;
+        }
+        if (newPwd.length < 8) {
+            showToast('Mật khẩu mới chưa đáp ứng quy tắc tối thiểu.', 'error');
+            return;
+        }
+        showToast('Đặt lại mật khẩu thành công!');
+        closeModal('confirmResetPwdModal');
     }
 
     // --- Utils ---
@@ -1806,7 +1986,7 @@
             closeModal('importModal');
             searchData();
         } else if (random < 0.6) {
-            showToast('Đã Import thành công 14/15 tài khoản. Dòng 5 bị lỗi: Thiếu Tên đăng nhập!', 'warning');
+            showToast('Đã Import thành công 14/15 tài khoản. Dòng 5 bị lỗi: Thiếu Email/Tên đăng nhập!', 'warning');
             closeModal('importModal');
             searchData();
         } else {

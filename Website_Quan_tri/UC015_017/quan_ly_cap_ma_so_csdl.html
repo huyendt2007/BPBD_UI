@@ -728,7 +728,7 @@
 <div class="modal-overlay" id="viewModal">
     <div class="modal-content" style="max-width: 900px;">
         <div class="modal-header">
-            <h3><i class="fa-solid fa-eye"></i> Chi tiết yêu cầu cấp mã số sử dụng CSDL</h3>
+            <h3>Chi tiết yêu cầu cấp mã số sử dụng CSDL</h3>
             <button class="close-modal" onclick="closeModal('viewModal')">&times;</button>
         </div>
         <div class="modal-body" id="viewModalBody">
@@ -1097,7 +1097,7 @@
         const idx = item.stt - 1; // index in mockData
         
         // Icon 1: Xem (Always Enabled)
-        const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="openViewModal(${idx})"><i class="fa-solid fa-eye"></i></button>`;
+        const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="openViewModal(${idx})">Xem</button>`;
         
         // Icon 2: Sửa (Only for Chờ kích hoạt)
         let btnEdit;

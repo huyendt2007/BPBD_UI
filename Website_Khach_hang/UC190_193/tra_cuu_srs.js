@@ -736,7 +736,7 @@ class PaginatedGrid {
         const tdActions = document.createElement('td');
         const viewLink = document.createElement('span');
         viewLink.className = 'action-link';
-        viewLink.innerHTML = `<i class="fa-solid fa-eye"></i> Xem`;
+        viewLink.innerHTML = `Xem`;
         viewLink.onclick = () => {
             // Trigger UCPS003 Modal with the item id
             openPS003Modal(item.id);

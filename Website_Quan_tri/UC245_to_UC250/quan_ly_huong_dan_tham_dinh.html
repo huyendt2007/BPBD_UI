@@ -1565,7 +1565,7 @@
                 <td><span class="badge ${badgeClass}">${hd.trangThai}</span></td>
                 <td style="text-align: center;">
                     <div class="action-icons">
-                        <button class="action-icon" title="Xem chi tiết" onclick="openEditHdForm('${hd.id}')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Xem chi tiết" onclick="openEditHdForm('${hd.id}')">Xem</button>
                         <button class="action-icon" title="Chỉnh sửa" onclick="openEditHdForm('${hd.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button class="action-icon delete" title="Xóa hồ sơ" onclick="deleteHd('${hd.id}')" ${hd.trangThai === "Đã ban hành văn bản trả lời" ? "disabled style='opacity:0.3; cursor:not-allowed;'" : ""}><i class="fa-solid fa-trash"></i></button>
                     </div>
@@ -2111,7 +2111,7 @@
                 <td><span class="badge ${badgeClass}">${td.trangThai}</span></td>
                 <td style="text-align: center;">
                     <div class="action-icons">
-                        <button class="action-icon" title="Xem chi tiết" onclick="openEditTdForm('${td.id}')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="action-icon" title="Xem chi tiết" onclick="openEditTdForm('${td.id}')">Xem</button>
                         <button class="action-icon" title="Chỉnh sửa" onclick="openEditTdForm('${td.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button class="action-icon delete" title="Xóa" onclick="deleteTd('${td.id}')" ${td.trangThai.includes("Hoàn thành") ? "disabled style='opacity:0.3; cursor:not-allowed;'" : ""}><i class="fa-solid fa-trash"></i></button>
                     </div>

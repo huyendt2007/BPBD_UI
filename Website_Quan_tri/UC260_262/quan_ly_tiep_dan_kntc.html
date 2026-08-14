@@ -2444,7 +2444,7 @@
                 `;
             } else {
                 actionsHtml = `
-                    <button class="action-icon" title="Xem chi tiết" onclick="openViewForm(${item.id})"><i class="fa-solid fa-eye"></i></button>
+                    <button class="action-icon" title="Xem chi tiết" onclick="openViewForm(${item.id})">Xem</button>
                     <button class="action-icon" title="Chỉnh sửa" onclick="openEditForm(${item.id})"><i class="fa-solid fa-edit"></i></button>
                     <button class="action-icon delete" title="Xóa mềm" onclick="openSoftDeleteModal(${item.id})"><i class="fa-solid fa-trash"></i></button>
                 `;
@@ -2640,7 +2640,7 @@
     function openViewForm(id) {
         openEditForm(id);
         setFormFieldsReadOnly(true);
-        document.getElementById('form-title').innerHTML = `<i class="fa-solid fa-eye"></i> Chi tiết hồ sơ tiếp công dân: <strong style="color:var(--primary-color);">${document.getElementById('a-ma-hoso').value}</strong>`;
+        document.getElementById('form-title').innerHTML = `Chi tiết hồ sơ tiếp công dân: <strong style="color:var(--primary-color);">${document.getElementById('a-ma-hoso').value}</strong>`;
     }
 
     // Open detail form for editing
@@ -3033,10 +3033,10 @@
             
             let actionHtml = '';
             if (isReadOnly) {
-                actionHtml = `<button type="button" class="file-btn file-btn-view" onclick="previewMockFile('${filename}')"><i class="fa-solid fa-eye"></i> Xem</button>`;
+                actionHtml = `<button type="button" class="file-btn file-btn-view" onclick="previewMockFile('${filename}')">Xem</button>`;
             } else {
                 actionHtml = `
-                    <button type="button" class="file-btn file-btn-view" onclick="previewMockFile('${filename}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                    <button type="button" class="file-btn file-btn-view" onclick="previewMockFile('${filename}')">Xem</button>
                     <button type="button" class="file-btn file-btn-delete" onclick="removeFormFile(${idx})"><i class="fa-solid fa-trash"></i> Xóa</button>
                 `;
             }

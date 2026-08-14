@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -1402,7 +1402,7 @@
                 }
 
                 tdActions.innerHTML = `
-                    <button class="icon-btn view" onclick="viewRecord('${rec.id}')" title="Xem chi tiết"><i class="fa fa-eye"></i></button>
+                    <button class="icon-btn view" onclick="viewRecord('${rec.id}')" title="Xem chi tiết">Xem</button>
                     <button class="icon-btn edit" onclick="editRecord('${rec.id}')" title="Chỉnh sửa"><i class="fa fa-edit"></i></button>
                     ${testBtnHtml}
                     <button class="icon-btn delete" onclick="deleteRecord('${rec.id}')" title="Xóa bản ghi"><i class="fa fa-trash"></i></button>
@@ -1638,7 +1638,7 @@
                     inputHtml = `
                         <div class="password-container">
                             <input type="password" class="form-control" id="field_${field.id}" value="${value}" ${disabledAttr} ${field.required ? 'required' : ''}>
-                            ${!isViewOnly ? '<i class="fa fa-eye password-toggle" onclick="togglePasswordVisibility(this)"></i>' : ''}
+                            ${!isViewOnly ? '' : ''}
                         </div>
                     `;
                 } else if (field.type === 'textarea') {

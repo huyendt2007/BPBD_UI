@@ -95,6 +95,36 @@
             background-color: white;
         }
 
+        .password-input-wrap {
+            position: relative;
+        }
+
+        .password-input-wrap .form-control {
+            padding-right: 40px;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border: 0;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle-btn:hover {
+            color: var(--brand-blue);
+            background: #EFF6FF;
+        }
+
         .is-invalid {
             border-color: var(--danger-color) !important;
             box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
@@ -228,21 +258,36 @@
             <!-- Mật khẩu hiện tại -->
             <div class="form-group">
                 <label class="form-label" for="oldPassword">Mật khẩu hiện tại <span style="color:var(--danger-color);">*</span></label>
-                <input type="password" class="form-control" id="oldPassword" placeholder="Nhập mật khẩu hiện tại...">
+                <div class="password-input-wrap">
+                    <input type="password" class="form-control" id="oldPassword" placeholder="Nhập mật khẩu hiện tại..." autocomplete="current-password">
+                    <button type="button" class="password-toggle-btn" title="Ẩn/hiện mật khẩu" aria-label="Ẩn/hiện mật khẩu" onclick="togglePasswordVisibility('oldPassword', this)">
+                        <i class="fa-solid fa-eye-slash"></i>
+                    </button>
+                </div>
                 <span class="error-text" id="err_oldPassword">Đây là trường bắt buộc</span>
             </div>
 
             <!-- Mật khẩu mới -->
             <div class="form-group">
                 <label class="form-label" for="newPassword">Mật khẩu mới <span style="color:var(--danger-color);">*</span></label>
-                <input type="password" class="form-control" id="newPassword" placeholder="Nhập mật khẩu mới...">
+                <div class="password-input-wrap">
+                    <input type="password" class="form-control" id="newPassword" placeholder="Nhập mật khẩu mới..." autocomplete="new-password">
+                    <button type="button" class="password-toggle-btn" title="Ẩn/hiện mật khẩu" aria-label="Ẩn/hiện mật khẩu" onclick="togglePasswordVisibility('newPassword', this)">
+                        <i class="fa-solid fa-eye-slash"></i>
+                    </button>
+                </div>
                 <span class="error-text" id="err_newPassword">Đây là trường bắt buộc</span>
             </div>
 
             <!-- Xác nhận mật khẩu mới -->
             <div class="form-group">
                 <label class="form-label" for="confirmPassword">Xác nhận mật khẩu mới <span style="color:var(--danger-color);">*</span></label>
-                <input type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận lại mật khẩu mới...">
+                <div class="password-input-wrap">
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận lại mật khẩu mới..." autocomplete="new-password">
+                    <button type="button" class="password-toggle-btn" title="Ẩn/hiện mật khẩu" aria-label="Ẩn/hiện mật khẩu" onclick="togglePasswordVisibility('confirmPassword', this)">
+                        <i class="fa-solid fa-eye-slash"></i>
+                    </button>
+                </div>
                 <span class="error-text" id="err_confirmPassword">Đây là trường bắt buộc</span>
             </div>
 
@@ -303,6 +348,16 @@
                 window.location.href = 'dang_nhap_can_bo.html';
             }
         };
+
+        const togglePasswordVisibility = (inputId, button) => {
+            const input = document.getElementById(inputId);
+            const icon = button ? button.querySelector('i') : null;
+            if (!input) return;
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            if (icon) icon.className = isHidden ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+        };
+        window.togglePasswordVisibility = togglePasswordVisibility;
 
         const handleChangePass = (e) => {
             e.preventDefault();

@@ -1547,7 +1547,7 @@
                 const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
                 const isAssignedToOther = (currentRole === 'chuyen-vien') && item.assignedOfficer && (item.assignedOfficer !== currentOfficer);
 
-                const viewBtn = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); showCaseDetail('${item.id}', false)"><i class="fa-solid fa-eye"></i></button>`;
+                const viewBtn = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); showCaseDetail('${item.id}', false)">Xem</button>`;
 
                 let updateBtn = `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Không được cập nhật ở trạng thái này"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 if (hasUpdateRights) {
@@ -2676,7 +2676,7 @@
                     `;
                     actionsHtml = `
                         <div style="display: flex; gap: 8px; justify-content: center; align-items: center; white-space: nowrap;">
-                            <a href="javascript:void(0)" onclick="viewDocFile(${idx})" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-regular fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="viewDocFile(${idx})" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;" class="action-link">Xem file</a>
                             <span style="color: #cbd5e1;">|</span>
                             <a href="javascript:void(0)" onclick="${doc.isCustom ? `deleteDocRow(${idx})` : `clearDocFile(${idx})`}" style="color: var(--danger-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-solid fa-trash-can"></i> Xóa</a>
                         </div>
@@ -2691,7 +2691,7 @@
                     if (doc.isCustom) {
                         actionsHtml = `
                             <div style="display: flex; gap: 8px; justify-content: center; align-items: center; white-space: nowrap;">
-                                <span style="font-weight: 600; opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-eye"></i> Xem file</span>
+                                <span style="font-weight: 600; opacity: 0.35; pointer-events: none; cursor: not-allowed;">Xem file</span>
                                 <span style="color: #cbd5e1;">|</span>
                                 <a href="javascript:void(0)" onclick="deleteDocRow(${idx})" style="color: var(--danger-color); font-weight: 600; text-decoration: none;" class="action-link"><i class="fa-solid fa-trash-can"></i> Xóa</a>
                             </div>
@@ -2699,7 +2699,7 @@
                     } else {
                         actionsHtml = `
                             <div style="display: flex; gap: 8px; justify-content: center; align-items: center; opacity: 0.35; pointer-events: none; cursor: not-allowed; white-space: nowrap;">
-                                <span style="font-weight: 600;"><i class="fa-regular fa-eye"></i> Xem file</span>
+                                <span style="font-weight: 600;">Xem file</span>
                                 <span style="color: #cbd5e1;">|</span>
                                 <span style="font-weight: 600;"><i class="fa-solid fa-trash-can"></i> Xóa</span>
                             </div>

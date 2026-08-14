@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -1697,7 +1697,7 @@
                             <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${file}">${file}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
-                            <a href="#" onclick="event.preventDefault(); downloadMockFile('${file}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="#" onclick="event.preventDefault(); downloadMockFile('${file}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500;">Xem file</a>
                             <a href="#" onclick="event.preventDefault(); removeEditFile(${index});" style="color: var(--danger-color); text-decoration: none; font-weight: 500;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
                         </div>
                     </div>
@@ -1815,7 +1815,7 @@
                     }
 
                     // Action buttons (Fixed-Slot, horizontal layout with only icons)
-                    const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); showDetail('${ticket.id}')"><i class="fa-regular fa-eye"></i></button>`;
+                    const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); showDetail('${ticket.id}')">Xem</button>`;
 
                     let btnEvaluate = '';
                     if (ticket.status === 'Hoàn thành' && !ticket.rating) {
@@ -2177,7 +2177,7 @@
                             <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${file.name}">${file.name}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
-                            <a href="#" onclick="event.preventDefault(); downloadMockFile('${file.name}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="#" onclick="event.preventDefault(); downloadMockFile('${file.name}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500;">Xem file</a>
                             <a href="#" onclick="event.preventDefault(); removeSelectedFile(${index});" style="color: var(--danger-color); text-decoration: none; font-weight: 500;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
                         </div>
                     `;

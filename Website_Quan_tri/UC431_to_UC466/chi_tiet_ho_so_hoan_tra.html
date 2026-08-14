@@ -909,7 +909,7 @@
             </h2>
             <p>Vụ việc bồi thường gốc: <a id="pageHeaderClaimLink" href="#"
                     style="color:var(--secondary-color); font-weight:700; text-decoration:underline; display:inline-flex; align-items:center; gap:4px;">BT-2026-001
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[👁️ Xem hồ sơ
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[Xem hồ sơ
                         gốc]</span></a> - <span id="pageHeaderClaimTitle">Cưỡng chế tháo dỡ nhà ở tại Cầu Giấy</span>
             </p>
         </div>
@@ -1154,7 +1154,7 @@
                     </div>
 
                     <div style="display:flex; justify-content:flex-end; gap:12px; border-top:1px solid var(--border-color); padding-top:16px;">
-                        <button type="button" class="btn btn-secondary" id="btnS1Preview" onclick="previewS1Decision()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" id="btnS1Preview" onclick="previewS1Decision()">Xem trước Quyết định</button>
                         <button type="button" class="btn btn-primary" id="btnS1Submit" onclick="submitS1Form()"><i class="fa-solid fa-paper-plane"></i> Trình ký Quyết định</button>
                     </div>
                 </form>
@@ -1776,7 +1776,7 @@
     <div class="modal" id="viewHistoryModal">
         <div class="modal-content" style="max-width: 850px;">
             <div class="modal-header">
-                <h3 class="modal-title"><i class="fa-solid fa-eye"></i> Chi tiết tiến trình nộp tiền cán bộ</h3>
+                <h3 class="modal-title">Chi tiết tiến trình nộp tiền cán bộ</h3>
                 <button type="button" class="close-modal" onclick="closeViewHistoryModal()">&times;</button>
             </div>
             <div class="modal-body" style="padding: 24px;">
@@ -2102,7 +2102,7 @@
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                             <span class="file-name" id="vOfficerPostponeFileName" style="font-size:13px; font-weight:600; color:#334155;"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>quyet_dinh_hoan.pdf</span>
                             <div style="display:flex; gap:8px;">
-                                <a class="action-link" href="#" id="vOfficerPostponeViewLink" onclick="alert('Mở xem file quyết định hoãn bồi thường'); return false;" style="font-weight:600; color:#0284c7;">[👁️ Xem]</a>
+                                <a class="action-link" href="#" id="vOfficerPostponeViewLink" onclick="alert('Mở xem file quyết định hoãn bồi thường'); return false;" style="font-weight:600; color:#0284c7;">[Xem]</a>
                                 <a class="action-link" href="#" id="vOfficerPostponeDownloadLink" onclick="showToast('Đang tải quyết định hoãn...', 'success'); return false;" style="font-weight:600; color:var(--success-color);">[📥 Tải về]</a>
                             </div>
                         </div>
@@ -2701,7 +2701,7 @@
                         event.preventDefault();
                         openLinkedClaimDetail(activeDossier.claimCode);
                     };
-                    headerLink.innerHTML = `${activeDossier.claimCode} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[👁️ Xem hồ sơ gốc]</span>`;
+                    headerLink.innerHTML = `${activeDossier.claimCode} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[Xem hồ sơ gốc]</span>`;
                 }
                 document.getElementById('pageHeaderClaimTitle').innerText = activeDossier.claimTitle;
 
@@ -3037,7 +3037,7 @@
                             row.innerHTML = `
                                 <span style="font-weight:600; color:#334155; font-size:13px;"><i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:16px; margin-right:8px;"></i>${fn}</span>
                                 <div style="display:flex; gap:8px;">
-                                    <button class="btn btn-secondary btn-sm" onclick="alert('Mở file scan ${fn} xem trực tiếp trên tab mới của trình duyệt.')" style="font-size:11.5px; padding:4px 10px; height:28px;"><i class="fa-solid fa-eye"></i> Xem</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="alert('Mở file scan ${fn} xem trực tiếp trên tab mới của trình duyệt.')" style="font-size:11.5px; padding:4px 10px; height:28px;">Xem</button>
                                     <button class="btn btn-secondary btn-sm" onclick="showToast('Đang tải file ${fn} về máy tính cá nhân...', 'success')" style="font-size:11.5px; padding:4px 10px; height:28px;"><i class="fa-solid fa-download"></i> Tải về</button>
                                 </div>
                             `;
@@ -3049,12 +3049,12 @@
                             // Chờ duyệt: Dự thảo PDF
                             viewerContainer.innerHTML = `
                                 <span style="font-weight:600; color:#334155; font-size:13px;"><i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:16px; margin-right:8px;"></i>Dự thảo quyết định thành lập hội đồng.pdf <span class="badge" style="background:#f1f5f9; color:#64748b; margin-left:6px;">Dự thảo</span></span>
-                                <button class="btn btn-secondary btn-sm" onclick="previewS1Decision()" style="font-size:11.5px; padding:4px 10px; height:28px;"><i class="fa-solid fa-eye"></i> Xem dự thảo</button>
+                                <button class="btn btn-secondary btn-sm" onclick="previewS1Decision()" style="font-size:11.5px; padding:4px 10px; height:28px;">Xem dự thảo</button>
                             `;
                         } else if (currentStepState === 1.3) {
                             viewerContainer.innerHTML = `
                                 <span style="font-weight:600; color:#334155; font-size:13px;"><i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:16px; margin-right:8px;"></i>Dự thảo quyết định thành lập hội đồng.pdf <span class="badge" style="background:#fee2e2; color:#b91c1c; margin-left:6px;">Bị từ chối</span></span>
-                                <button class="btn btn-secondary btn-sm" onclick="previewS1Decision()" style="font-size:11.5px; padding:4px 10px; height:28px;"><i class="fa-solid fa-eye"></i> Xem dự thảo</button>
+                                <button class="btn btn-secondary btn-sm" onclick="previewS1Decision()" style="font-size:11.5px; padding:4px 10px; height:28px;">Xem dự thảo</button>
                             `;
                         } else {
                             // Đã ký duyệt thành công: File ký số / Dấu đỏ điện tử
@@ -3064,7 +3064,7 @@
                                     <span style="font-size:11.5px; color:var(--success-color); font-weight:700; margin-left:24px;"><i class="fa-solid fa-circle-check"></i> Đã ký số bởi Giám đốc Trần Văn Lãnh Đạo (Dấu đỏ điện tử)</span>
                                 </div>
                                 <div style="display:flex; gap:8px;">
-                                    <button class="btn btn-secondary btn-sm" onclick="previewS1Decision()" style="font-size:11.5px; padding:4px 10px; height:28px;"><i class="fa-solid fa-eye"></i> Xem Quyết định đã ký số</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="previewS1Decision()" style="font-size:11.5px; padding:4px 10px; height:28px;">Xem Quyết định đã ký số</button>
                                     <button class="btn btn-success btn-sm" onclick="showToast('Đang tải tệp tin Quyết định đã ký số điện tử...', 'success')" style="font-size:11.5px; padding:4px 10px; height:28px; background:var(--success-color); border-color:var(--success-color);"><i class="fa-solid fa-download"></i> Tải file ký số</button>
                                 </div>
                             `;
@@ -3210,7 +3210,7 @@
                             <td style="text-align: center;">${statusBadge}</td>
                             <td style="text-align: center;">
                                 <div style="display:flex; justify-content:center; gap:8px;">
-                                    <button class="icon-btn view" title="Xem chi tiết kết luận" onclick="viewOfficerInStep2(${index})" style="color:#0284c7; background:#e0f2fe; border:1px solid #bae6fd;"><i class="fa-solid fa-eye"></i></button>
+                                    <button class="icon-btn view" title="Xem chi tiết kết luận" onclick="viewOfficerInStep2(${index})" style="color:#0284c7; background:#e0f2fe; border:1px solid #bae6fd;">Xem</button>
                                     ${isStepReadonly ? '' : `
                                         <button class="icon-btn edit" title="Chỉnh sửa chi tiết cán bộ" onclick="editOfficerInStep2(${index})"><i class="fa-solid fa-pen-to-square"></i></button>
                                         <button class="icon-btn delete" title="Xóa cán bộ chịu trách nhiệm" onclick="deleteOfficerInStep2(${index})" style="color:var(--danger-color);"><i class="fa-solid fa-trash-can"></i></button>
@@ -3300,42 +3300,42 @@
                 if (isPastReadonly || state === 'Đã ban hành') {
                     badge.innerHTML = '<span class="badge badge-success" style="font-weight:800;">ĐÃ BAN HÀNH</span>';
                     actionArea.innerHTML = `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem Quyết định</button>
                     `;
                 } else if (state === 'Dự thảo') {
                     badge.innerHTML = '<span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">DỰ THẢO</span>';
                     actionArea.innerHTML = isStaffPerspective ? `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
                         <button type="button" class="btn btn-primary" onclick="submitStep3ForApproval()"><i class="fa-solid fa-paper-plane"></i> Trình lãnh đạo phê duyệt</button>
                     ` : `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
                     `;
                 } else if (state === 'Chờ ký') {
                     badge.innerHTML = '<span class="badge badge-warning" style="font-weight:800;">CHỜ KÝ</span>';
                     actionArea.innerHTML = isLeaderPerspective ? `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
                         <button type="button" class="btn btn-success" onclick="simulatedStep3Approve()"><i class="fa-solid fa-check"></i> Phê duyệt</button>
                         <button type="button" class="btn btn-danger" onclick="simulatedStep3Reject()"><i class="fa-solid fa-xmark"></i> Từ chối</button>
                     ` : `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
                         <span class="badge badge-warning" style="display:inline-flex; align-items:center; padding:8px 12px; font-weight:800;">Đang chờ lãnh đạo phê duyệt</span>
                     `;
                 } else if (state === 'Bị từ chối') {
                     badge.innerHTML = '<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:800;">BỊ TỪ CHỐI</span>';
                     actionArea.innerHTML = isStaffPerspective ? `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
                         <button type="button" class="btn btn-secondary" onclick="focusStep2ForOfficerUpdate()"><i class="fa-solid fa-pen-to-square"></i> Cập nhật danh sách cán bộ</button>
                         <button type="button" class="btn btn-primary" onclick="resubmitStep3Decision()"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>
                     ` : `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
                     `;
                 } else if (state === 'Chờ ban hành') {
                     badge.innerHTML = '<span class="badge" style="background:#fef9c3; color:#a16207; font-weight:800;">CHỜ BAN HÀNH</span>';
                     actionArea.innerHTML = isStaffPerspective ? `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
                         <button type="button" class="btn btn-primary" onclick="openIssueDecisionModal()"><i class="fa-solid fa-file-circle-check"></i> Ban hành Quyết định</button>
                     ` : `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()"><i class="fa-solid fa-eye"></i> Xem trước Quyết định</button>
+                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
                     `;
                 }
                 renderStep3AuditTrail();
@@ -3628,7 +3628,7 @@
 
                     // Thao tác button slots (Rule 3: Fixed action column slots)
                     // Slot 1: Xem chi tiết (luôn hiển thị)
-                    const btnXem = `<button class="btn-action-square btn-info" title="Xem chi tiết tiến trình" onclick="openViewHistoryModal(${index}); return false;"><i class="fa-solid fa-eye"></i></button>`;
+                    const btnXem = `<button class="btn-action-square btn-info" title="Xem chi tiết tiến trình" onclick="openViewHistoryModal(${index}); return false;">Xem</button>`;
                     
                     // Slot 2: Ghi nhận nộp tiền (thay đổi theo trạng thái)
                     let btnGhiNhan = `<button class="btn-action-square btn-primary" title="Ghi nhận nộp tiền" onclick="openPaymentModal(${index}); return false;"><i class="fa-solid fa-pen-to-square"></i></button>`;
@@ -3803,7 +3803,7 @@
                                 <i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:4px;"></i>${fileName}
                             </span>
                             <div style="display:flex; justify-content:center; gap:8px;">
-                                <a href="#" class="action-link" style="font-size:11.5px;" onclick="viewPaymentReceiptFile('${fileName}'); return false;"><i class="fa-solid fa-eye"></i> Xem</a>
+                                <a href="#" class="action-link" style="font-size:11.5px;" onclick="viewPaymentReceiptFile('${fileName}'); return false;">Xem</a>
                                 <a href="#" class="action-link" style="font-size:11.5px; color:var(--secondary-color);" onclick="downloadPaymentReceiptFile('${fileName}'); return false;"><i class="fa-solid fa-download"></i> Tải về</a>
                             </div>
                         </td>
@@ -4076,7 +4076,7 @@
                             <td style="text-align:center;">
                                 <span style="font-size:13px; color:var(--text-main); font-weight:500; word-break:break-all;">${fileName}</span>
                                 <span style="white-space: nowrap; margin-left: 8px;">
-                                    <a href="#" class="action-link" style="font-size:12px; display:inline-flex; align-items:center; gap:2px;" onclick="viewPaymentReceiptFile('${fileName}'); return false;"><i class="fa-solid fa-eye"></i> Xem</a>
+                                    <a href="#" class="action-link" style="font-size:12px; display:inline-flex; align-items:center; gap:2px;" onclick="viewPaymentReceiptFile('${fileName}'); return false;">Xem</a>
                                     <a href="#" class="action-link" style="font-size:12px; margin-left:8px; color:var(--secondary-color); display:inline-flex; align-items:center; gap:2px;" onclick="downloadPaymentReceiptFile('${fileName}'); return false;"><i class="fa-solid fa-download"></i> Tải</a>
                                 </span>
                             </td>

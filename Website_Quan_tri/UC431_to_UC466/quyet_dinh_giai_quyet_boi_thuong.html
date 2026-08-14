@@ -1165,7 +1165,7 @@
                             <td><strong id="detailBasisDoc"></strong></td>
                             <td style="text-align: center;">-</td>
                             <td style="text-align: center;">
-                                <a href="#" class="action-link view-link" onclick="showToast('Xem file căn cứ gốc', 'info')"><i class="fa-regular fa-eye"></i> Xem file</a> | 
+                                <a href="#" class="action-link view-link" onclick="showToast('Xem file căn cứ gốc', 'info')">Xem file</a> | 
                                 <a href="#" class="action-link text-primary" onclick="showToast('Đang tải file xuống...', 'success')"><i class="fa-solid fa-download"></i> Tải file</a>
                             </td>
                         </tr>
@@ -1174,7 +1174,7 @@
                             <td>Biên bản kết quả thương lượng bồi thường</td>
                             <td style="text-align: center;"><strong id="detailNegotiationDate"></strong></td>
                             <td style="text-align: center;">
-                                <a href="#" class="action-link view-link" onclick="showToast('Xem biên bản', 'info')"><i class="fa-regular fa-eye"></i> Xem file</a> | 
+                                <a href="#" class="action-link view-link" onclick="showToast('Xem biên bản', 'info')">Xem file</a> | 
                                 <a href="#" class="action-link text-primary" onclick="showToast('Đang tải biên bản xuống...', 'success')"><i class="fa-solid fa-download"></i> Tải file</a>
                             </td>
                         </tr>
@@ -1183,7 +1183,7 @@
                             <td><strong id="detailAdditionalBasisDoc"></strong></td>
                             <td style="text-align: center;">-</td>
                             <td style="text-align: center;">
-                                <a href="#" class="action-link view-link" onclick="showToast('Xem căn cứ bổ sung', 'info')"><i class="fa-regular fa-eye"></i> Xem file</a> | 
+                                <a href="#" class="action-link view-link" onclick="showToast('Xem căn cứ bổ sung', 'info')">Xem file</a> | 
                                 <a href="#" class="action-link text-primary" onclick="showToast('Tải căn cứ bổ sung', 'success')"><i class="fa-solid fa-download"></i> Tải file</a>
                             </td>
                         </tr>
@@ -1320,7 +1320,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <div class="document-row" style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
                             <input class="form-control" placeholder="Tên tài liệu..." value="Tài liệu căn cứ xử lý quyết định">
                             <button class="btn btn-secondary btn-sm" onclick="showToast('Đã chọn file tài liệu căn cứ', 'success')"><i class="fa-solid fa-upload"></i> Tải lên</button>
-                            <button class="btn btn-secondary btn-sm" onclick="showToast('Xem file tài liệu căn cứ', 'info')"><i class="fa-regular fa-eye"></i> Xem file</button>
+                            <button class="btn btn-secondary btn-sm" onclick="showToast('Xem file tài liệu căn cứ', 'info')">Xem file</button>
                         </div>
                     </div>
                     <button class="btn btn-secondary btn-sm" onclick="showToast('Đã thêm dòng tài liệu', 'success')"><i class="fa-solid fa-plus"></i> Thêm dòng tài liệu</button>
@@ -1333,7 +1333,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             </div>
         </div>
         <div class="inline-form-footer" style="display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--border-color);padding:16px 20px;">
-            <button class="btn btn-secondary" onclick="previewAdjustmentDecisionDocument()"><i class="fa-regular fa-eye"></i> Xem trước Quyết định</button>
+            <button class="btn btn-secondary" onclick="previewAdjustmentDecisionDocument()">Xem trước Quyết định</button>
             <button class="btn btn-secondary" onclick="downloadAdjustmentDoc('Word')"><i class="fa-solid fa-file-word"></i> Tải Word</button>
             <button class="btn btn-secondary" onclick="downloadAdjustmentDoc('PDF')"><i class="fa-solid fa-file-pdf"></i> Tải PDF</button>
             <button class="btn btn-secondary" onclick="saveAdjustmentDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
@@ -2836,11 +2836,11 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             tr.id = `docRow_${Date.now()}_${index}`;
             
             let fileHtml = `<span style="color: #64748b; font-style: italic; font-size: 13px;">Chưa có tệp đính kèm</span>`;
-            let viewBtnHtml = `<button class="icon-btn view" title="Chưa có tệp đính kèm" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-eye"></i></button>`;
+            let viewBtnHtml = `<button class="icon-btn view" title="Chưa có tệp đính kèm" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;">Xem</button>`;
             
             if (fileName) {
                 fileHtml = `<span title="${fileName}" style="display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; font-size: 13px; color: var(--primary-color);">${fileName}</span>`;
-                viewBtnHtml = `<button class="icon-btn view" title="Xem file" onclick="window.open('${fileUrl || '#'}', '_blank')"><i class="fa-solid fa-eye"></i></button>`;
+                viewBtnHtml = `<button class="icon-btn view" title="Xem file" onclick="window.open('${fileUrl || '#'}', '_blank')">Xem</button>`;
             }
 
             tr.innerHTML = `
@@ -2876,7 +2876,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                 const tr = document.getElementById(rowId);
                 if (tr) {
                     tr.querySelector('.doc-file-name').innerHTML = `<span title="${file.name}" style="display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; font-size: 13px; color: var(--primary-color);">${file.name}</span>`;
-                    tr.querySelector('.view-btn-container').innerHTML = `<button class="icon-btn view" title="Xem file" onclick="showToast('Đang mở file ${file.name}', 'info')"><i class="fa-solid fa-eye"></i></button>`;
+                    tr.querySelector('.view-btn-container').innerHTML = `<button class="icon-btn view" title="Xem file" onclick="showToast('Đang mở file ${file.name}', 'info')">Xem</button>`;
                 }
             }
         }

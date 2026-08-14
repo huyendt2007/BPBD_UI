@@ -2968,7 +2968,7 @@
                 const isPending = item.status === 'Ch? ti?p nh?n';
                 const hasUpdateRights = ['Luu nh�p', 'Y�u c?u b? sung', 'Dang x�c minh thi?t h?i', 'Dang thuong lu?ng', 'Ch? ban h�nh QD', 'Ch? th?c thi'].includes(item.status);
 
-                const viewBtn = `<button class="icon-btn view" title="Xem chi ti?t" onclick="event.stopPropagation(); showCaseDetail('${item.id}', false)"><i class="fa-solid fa-eye"></i></button>`;
+                const viewBtn = `<button class="icon-btn view" title="Xem chi ti?t" onclick="event.stopPropagation(); showCaseDetail('${item.id}', false)">Xem</button>`;
 
                 let updateBtn = `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Kh�ng du?c c?p nh?t ? tr?ng th�i n�y"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 if (hasUpdateRights) {
@@ -3426,7 +3426,7 @@
                 let btnXoa = '';
 
                 if (doc.file) {
-                    btnXem = '<button class="icon-btn view" title="Xem chi ti?t" onclick="viewDocFile(' + idx + ')"><i class="fa-regular fa-eye"></i></button>';
+                    btnXem = '<button class="icon-btn view" title="Xem chi ti?t" onclick="viewDocFile(' + idx + ')">Xem</button>';
                     btnTaiXuong = '<button class="icon-btn" title="T?i xu?ng" style="color: #3b82f6;" onclick="downloadDocFile(' + idx + ')"><i class="fa-solid fa-file-arrow-down"></i></button>';
 
                     if (doc.isCustom) {
@@ -3435,7 +3435,7 @@
                         btnXoa = '<button class="icon-btn delete" title="X�a t?p d�nh k�m" onclick="clearDocFile(' + idx + ')"><i class="fa-solid fa-trash-can"></i></button>';
                     }
                 } else {
-                    btnXem = '<button class="icon-btn view" title="Chua c� t?p d�nh k�m d? xem" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-eye"></i></button>';
+                    btnXem = '<button class="icon-btn view" title="Chua c� t?p d�nh k�m d? xem" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;">Xem</button>';
                     btnTaiXuong = '<button class="icon-btn" title="Chua c� t?p d�nh k�m d? t?i xu?ng" style="opacity: 0.35; pointer-events: none; cursor: not-allowed; color: #3b82f6;"><i class="fa-solid fa-file-arrow-down"></i></button>';
 
                     if (doc.isCustom) {

@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (party.type === 'nuoc_ngoai' || party.type === 'nn') typeText = "Người nước ngoài";
                 else if (party.type === 'khong_qt') typeText = "Người không quốc tịch cư trú tại Việt Nam";
                 else if (party.type === 'to_chuc_kd') typeText = "Tổ chức có đăng ký kinh doanh trong nước";
-                else if (party.type === 'nha_dau_tu') typeText = "Nhà đầu tư nước ngoài";
+                else if (party.type === 'nha_dau_tu') typeText = "Tổ chức nước ngoài";
                 else if (party.type === 'to_chuc_khac') typeText = "Tổ chức khác";
 
                 tr.innerHTML = `

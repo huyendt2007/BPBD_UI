@@ -1160,12 +1160,12 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-GIG/2026/04",
             contractDate: "16/06/2026",
             loanValue: "3.000.000.000 VNĐ",
-            scale: "Nhà đầu tư nước ngoài",
+            scale: "Tổ chức nước ngoài",
             femaleOwner: "Không",
             securingParties: [
                 {
                     type: "ndt_nn",
-                    typeName: "Nhà đầu tư nước ngoài",
+                    typeName: "Tổ chức nước ngoài",
                     name: "Global Investment Group",
                     paperNo: "INVEST-8899",
                     address: "Tòa nhà Keangnam, Mễ Trì, Quận Nam Từ Liêm, TP. Hà Nội, Việt Nam",

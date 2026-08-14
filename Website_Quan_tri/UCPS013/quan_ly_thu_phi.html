@@ -222,7 +222,7 @@ function renderRefunds(){
             <td>${esc(x.date)}</td>
             <td>${esc(x.officer)}</td>
             <td><div class="actions">
-                <button type="button" class="icon" title="Xem chi tiết" onclick="openRefundDetail('${code}')"><i class="fa-regular fa-eye"></i></button>
+                <button type="button" class="icon" title="Xem chi tiết" onclick="openRefundDetail('${code}')">Xem</button>
                 <button type="button" class="icon" title="Xác nhận hoàn phí" ${canRefund?'':'disabled'} onclick="confirmRefund('${code}')"><i class="fa-solid fa-money-bill-transfer"></i></button>
                 <button type="button" class="icon" title="In chứng từ hoàn phí" ${canRefund?'disabled':''} onclick="printRefundVoucher('${code}')"><i class="fa-solid fa-print"></i></button>
             </div></td>
@@ -315,7 +315,7 @@ function renderList(){
             <td>${esc(x.officer)}</td>
             <td>
                 <div class="actions">
-                    <button type="button" class="icon" title="Xem chi tiết" onclick="openDetail('${code}')"><i class="fa-regular fa-eye"></i></button>
+                    <button type="button" class="icon" title="Xem chi tiết" onclick="openDetail('${code}')">Xem</button>
                     <button type="button" class="icon" title="Xác nhận thu phí" ${canCollect?'':'disabled'} onclick="openPaymentChoice('${code}')"><i class="fa-solid fa-receipt"></i></button>
                     <button type="button" class="icon" title="In biên lai" ${canPrint?'':'disabled'} onclick="openReceipt('${code}')"><i class="fa-solid fa-print"></i></button>
                 </div>

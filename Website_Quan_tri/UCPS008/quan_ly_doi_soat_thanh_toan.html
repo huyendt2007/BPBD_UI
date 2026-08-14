@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -80,7 +80,7 @@ function renderRows(){
  const code=(el('fCode').value||'').toLowerCase(), requester=(el('fRequester').value||'').toLowerCase(), status=el('fStatus').value;
  const rows=data[current].filter(x=>(!code||`${x.txn} ${x.code}`.toLowerCase().includes(code))&&(!requester||x.requester.toLowerCase().includes(requester))&&(!status||x.status===status));
  el('countText').textContent=rows.length+' giao dịch';
- el('rows').innerHTML=rows.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.txn)}</b></td><td>${esc(x.code)}</td><td>${esc(x.requester)}</td><td>${Number(x.sys).toLocaleString('vi-VN')} VNĐ</td><td>${Number(x.bank).toLocaleString('vi-VN')} VNĐ</td><td>${esc(x.type)}</td><td>${badge(x.status)}</td><td>${esc(x.date)}</td><td>${esc(x.officer)}</td><td><div class="actions"><button class="icon" title="Xem chi tiết" onclick="alert('Mở chi tiết ${esc(x.txn)}')"><i class="fa-regular fa-eye"></i></button><button class="icon" title="Xác nhận xử lý" onclick="alert('Giả lập xác nhận xử lý ${esc(x.txn)}')"><i class="fa-solid fa-check"></i></button></div></td></tr>`).join('');
+ el('rows').innerHTML=rows.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.txn)}</b></td><td>${esc(x.code)}</td><td>${esc(x.requester)}</td><td>${Number(x.sys).toLocaleString('vi-VN')} VNĐ</td><td>${Number(x.bank).toLocaleString('vi-VN')} VNĐ</td><td>${esc(x.type)}</td><td>${badge(x.status)}</td><td>${esc(x.date)}</td><td>${esc(x.officer)}</td><td><div class="actions"><button class="icon" title="Xem chi tiết" onclick="alert('Mở chi tiết ${esc(x.txn)}')">Xem</button><button class="icon" title="Xác nhận xử lý" onclick="alert('Giả lập xác nhận xử lý ${esc(x.txn)}')"><i class="fa-solid fa-check"></i></button></div></td></tr>`).join('');
 }
 renderRows();
 </script>
