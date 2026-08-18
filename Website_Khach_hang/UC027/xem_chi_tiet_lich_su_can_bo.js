@@ -3500,16 +3500,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const menuRect = menu.getBoundingClientRect();
             const margin = 12;
             let left = buttonRect.left;
-            let top = buttonRect.top - menuRect.height - 8;
+            let top = buttonRect.bottom + 8;
 
             if (left + menuRect.width > window.innerWidth - margin) {
                 left = window.innerWidth - menuRect.width - margin;
             }
             if (left < margin) {
                 left = margin;
-            }
-            if (top < margin) {
-                top = buttonRect.bottom + 8;
             }
 
             menu.style.left = `${left}px`;
