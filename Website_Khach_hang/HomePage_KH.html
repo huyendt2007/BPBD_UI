@@ -591,6 +591,67 @@
             cursor: not-allowed;
         }
 
+        .registered-filter-panel {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 12px 14px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 14px;
+        }
+
+        .registered-filter-panel .grid-3-cols {
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+            gap: 10px 12px;
+            margin-top: 0 !important;
+        }
+
+        .registered-filter-panel .grid-3-cols + .grid-3-cols {
+            margin-top: 10px !important;
+        }
+
+        .registered-filter-panel .form-group {
+            margin-bottom: 0;
+        }
+
+        .registered-filter-panel .form-label {
+            margin-bottom: 5px;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .registered-filter-panel .form-control,
+        .registered-filter-panel .form-select {
+            padding: 7px 10px;
+            min-height: 36px;
+            font-size: 13px;
+        }
+
+        .registered-filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 10px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+
+        .registered-filter-actions .btn {
+            padding: 8px 14px;
+            min-height: 36px;
+        }
+
+        @media (max-width: 1280px) {
+            .registered-filter-panel .grid-3-cols {
+                grid-template-columns: repeat(3, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .registered-filter-panel .grid-3-cols {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .form-text {
             display: block;
             margin-top: 5px;
@@ -2293,8 +2354,55 @@
             margin-bottom: 18px;
         }
 
+        #screen-asset-disposal .section-title {
+            font-size: 18px;
+            line-height: 1.35;
+            letter-spacing: 0;
+        }
+
+        #screen-asset-disposal h3.section-title {
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        #screen-asset-disposal .form-label {
+            font-size: 13px;
+            line-height: 1.35;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        #screen-asset-disposal .form-control,
+        #screen-asset-disposal .form-select {
+            min-height: 38px;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        #screen-asset-disposal textarea.form-control {
+            min-height: 86px;
+        }
+
+        #screen-asset-disposal .form-text,
+        #screen-asset-disposal .error-message {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
         #screen-asset-disposal .table {
             min-width: 760px;
+            font-size: 13px;
+        }
+
+        #screen-asset-disposal .table th {
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        #screen-asset-disposal .table td {
+            font-size: 13px;
+            line-height: 1.45;
         }
 
         #screen-asset-disposal .disposal-asset-type-group {
@@ -2335,6 +2443,44 @@
             font-weight: 700;
             color: var(--primary-color);
             margin: 0 0 10px;
+        }
+
+        #screen-asset-disposal .disposal-asset-quick-filter {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(150px, 1fr)) auto auto;
+            gap: 10px;
+            align-items: end;
+            margin: 10px 0 12px;
+            padding: 12px;
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        #screen-asset-disposal .disposal-asset-quick-filter .form-group {
+            margin-bottom: 0;
+        }
+
+        #screen-asset-disposal .disposal-asset-quick-filter .form-label {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        #screen-asset-disposal .disposal-asset-quick-filter .btn {
+            height: 38px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 1100px) {
+            #screen-asset-disposal .disposal-asset-quick-filter {
+                grid-template-columns: repeat(2, minmax(160px, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            #screen-asset-disposal .disposal-asset-quick-filter {
+                grid-template-columns: 1fr;
+            }
         }
 
         #screen-asset-disposal .disposal-asset-note {
@@ -4485,7 +4631,7 @@
                                     style="background-color: #F1F5F9;">
                             </div>
                             <div class="form-group hidden" id="disposalRefNoticeRow">
-                                <label class="form-label">Số thông báo xử lý gốc</label>
+                                <label class="form-label">Số thông báo xử lý lần đầu</label>
                                 <input type="text" class="form-control" id="disposalRefNoticeNum" disabled
                                     style="background-color: #F1F5F9;">
                             </div>
@@ -4498,6 +4644,11 @@
                                 <label class="form-label" id="disposalRefNoticeTimeLabel">Thời điểm đăng ký lần
                                     đầu</label>
                                 <input type="text" class="form-control" id="disposalRefNoticeTime" disabled
+                                    style="background-color: #F1F5F9;">
+                            </div>
+                            <div class="form-group" id="disposalRefEffectiveTimeRow">
+                                <label class="form-label">Thời điểm có hiệu lực</label>
+                                <input type="text" class="form-control" id="disposalRefEffectiveTime" disabled
                                     style="background-color: #F1F5F9;">
                             </div>
                         </div>
@@ -4776,6 +4927,10 @@
                                 <span style="color: var(--text-muted);">Người yêu cầu đăng ký:</span>
                                 <strong id="lblReviewRequestor">N/A</strong>
                             </div>
+                            <div>
+                                <span style="color: var(--text-muted);">Họ và tên/Tên tổ chức:</span>
+                                <strong id="lblReviewRegistrantName">N/A</strong>
+                            </div>
                             <div id="reviewRequestorFileRow" class="hidden">
                                 <span style="color: var(--text-muted);">Tài liệu chứng minh (pdf):</span>
                                 <span id="lblReviewRequestorFileName"
@@ -4799,7 +4954,7 @@
                                 <strong id="lblReviewCaseType">N/A</strong>
                             </div>
                             <div id="reviewRefNoticeRow" class="hidden">
-                                <span style="color: var(--text-muted);">Số thông báo xử lý gốc:</span>
+                                <span style="color: var(--text-muted);">Số thông báo xử lý lần đầu:</span>
                                 <strong id="lblReviewRefNoticeNum">N/A</strong>
                             </div>
                             <div>
@@ -4810,6 +4965,10 @@
                                 <span style="color: var(--text-muted);" id="lblReviewRefNoticeTimeLabel">Thời điểm đăng
                                     ký lần đầu:</span>
                                 <strong id="lblReviewRefNoticeTime">N/A</strong>
+                            </div>
+                            <div id="reviewRefEffectiveTimeRow">
+                                <span style="color: var(--text-muted);">Thời điểm có hiệu lực:</span>
+                                <strong id="lblReviewRefEffectiveTime">N/A</strong>
                             </div>
                         </div>
                         <div style="margin-top: 10px;" id="disposalReviewOriginalLinkContainer">
@@ -5205,18 +5364,18 @@
 
             <!-- SCREEN: Quản lý yêu cầu đã đăng ký (UCPS007) -->
             <div class="app-screen" id="screen-registered-requests">
-                <h2 class="section-title" style="margin: 0 4px 15px;">Quản lý Yêu cầu đã đăng ký</h2>
+                <h2 class="section-title" style="margin: 0 4px 15px;">Quản lý yêu cầu đã đăng ký</h2>
 
                 <div class="tabs-header" id="regReqTabsHeader">
                     <button class="tab-btn active" id="regReqTabBtn-phieu-dang-ky"
                         onclick="switchRegisteredReqTab('phieu-dang-ky')">
                         <i class="fa-solid fa-file-lines"></i> Phiếu đăng ký
                     </button>
-                    <button class="tab-btn" id="regReqTabBtn-cctt" onclick="switchRegisteredReqTab('cctt')">
-                        <i class="fa-solid fa-file-circle-question"></i> Yêu cầu cung cấp thông tin
-                    </button>
                     <button class="tab-btn" id="regReqTabBtn-ban-sao" onclick="switchRegisteredReqTab('ban-sao')">
                         <i class="fa-solid fa-copy"></i> Yêu cầu cung cấp bản sao
+                    </button>
+                    <button class="tab-btn" id="regReqTabBtn-cctt" onclick="switchRegisteredReqTab('cctt')">
+                        <i class="fa-solid fa-file-circle-question"></i> Yêu cầu cung cấp thông tin
                     </button>
                 </div>
 
@@ -5225,8 +5384,7 @@
                 <div class="card-section">
 
                     <!-- Filter / Search area -->
-                    <div
-                        style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
+                    <div class="registered-filter-panel">
                         <div class="grid-3-cols">
                             <div class="form-group">
                                 <label class="form-label">Số đăng ký</label>
@@ -5239,7 +5397,12 @@
                                     placeholder="Nhập tên bên bảo đảm...">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Trạng thái hồ sơ</label>
+                                <label class="form-label">Người tạo</label>
+                                <input type="text" class="form-control" id="regReqSearchCreator"
+                                    placeholder="Nhập tên người tạo...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Trạng thái</label>
                                 <select class="form-select" id="regReqSearchStatus">
                                     <option value="Tất cả" selected>Tất cả</option>
                                     <option value="Lưu nháp">Lưu nháp</option>
@@ -5270,19 +5433,12 @@
                                     <option value="Đăng ký lần đầu">Đăng ký lần đầu</option>
                                     <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
                                     <option value="Xóa đăng ký">Xóa đăng ký</option>
-                                    <option value="Thông báo xử lý tài sản đảm bảo lần đầu">Thông báo xử lý tài sản đảm
-                                        bảo lần đầu</option>
+                                    <option value="Thông báo xử lý tài sản bảo đảm lần đầu">Thông báo xử lý tài sản bảo
+                                        đảm lần đầu</option>
                                     <option value="Thay đổi thông báo xử lý tài sản bảo đảm">Thay đổi thông báo xử lý
                                         tài sản bảo đảm</option>
                                     <option value="Xóa đăng ký thông báo xử lý tài sản bảo đảm">Xóa đăng ký thông báo xử
                                         lý tài sản bảo đảm</option>
-                                    <option value="Yêu cầu cung cấp bản sao">Yêu cầu cung cấp bản sao</option>
-                                    <option value="Yêu cầu cung cấp bản sao kèm thông báo">Yêu cầu cung cấp bản sao kèm
-                                        thông báo</option>
-                                    <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
-                                    <option value="Chỉnh lý thông tin">Chỉnh lý thông tin</option>
-                                    <option value="Hủy đăng ký">Hủy đăng ký</option>
-                                    <option value="Khôi phục hủy đăng ký">Khôi phục hủy đăng ký</option>
                                 </select>
                             </div>
                         </div>
@@ -5361,8 +5517,7 @@
                             <div id="regReqAssetSpecificFilterGrid" class="grid-3-cols"></div>
                         </div>
 
-                        <div
-                            style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <div class="registered-filter-actions">
                             <button class="btn btn-outline-primary" onclick="resetRegReqFilters()">Xóa bộ lọc</button>
                             <button class="btn btn-primary" onclick="executeRegReqSearch()"><i class="fa fa-search"></i>
                                 Tìm kiếm</button>
@@ -5381,18 +5536,21 @@
                                     <th style="width: 5%;">Số PIN</th>
                                     <th style="width: 10%;">Loại đăng ký</th>
                                     <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('guarantor')"
-                                        id="reg-header-guarantor">Bên bảo đảm <i class="fa-solid fa-sort"
+                                        id="reg-header-guarantor">Tên bên bảo đảm <i class="fa-solid fa-sort"
                                             style="margin-left: 4px; color: #94A3B8;"></i></th>
                                     <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('mortgagee')"
-                                        id="reg-header-mortgagee">Bên nhận BĐ <i class="fa-solid fa-sort"
+                                        id="reg-header-mortgagee">Tên bên nhận bảo đảm <i class="fa-solid fa-sort"
                                             style="margin-left: 4px; color: #94A3B8;"></i></th>
                                     <th style="width: 10%;">Loại hình GD</th>
                                     <th style="width: 10%;">Loại BP/HĐ</th>
-                                    <th style="width: 13%;">Loại tài sản</th>
-                                    <th style="width: 7%;">Trạng thái</th>
+                                    <th style="width: 11%;">Loại tài sản</th>
                                     <th style="width: 7%; cursor: pointer;" onclick="toggleRegReqSort('date')"
                                         id="reg-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort"
                                             style="margin-left: 4px; color: #94A3B8;"></i></th>
+                                    <th style="width: 7%;">Thời điểm có hiệu lực</th>
+                                    <th style="width: 8%; text-align: right;">Số tiền đã thanh toán (VNĐ)</th>
+                                    <th style="width: 7%;">Trạng thái</th>
+                                    <th style="width: 8%;">Người tạo</th>
                                     <th style="width: 6%; text-align: center;">Thao tác</th>
                                 </tr>
                             </thead>
@@ -5437,8 +5595,7 @@
                 <div class="tab-content" id="tabRegReq-ban-sao">
                     <div class="card-section">
                         <div id="copyReqListView">
-                        <div
-                            style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
+                        <div class="registered-filter-panel">
                             <div class="grid-3-cols">
                                 <div class="form-group">
                                     <label class="form-label">Mã hồ sơ</label>
@@ -5461,7 +5618,12 @@
                             </div>
                             <div class="grid-3-cols" style="margin-top: 10px;">
                                 <div class="form-group">
-                                    <label class="form-label">Trạng thái</label>
+                                    <label class="form-label">Người tạo</label>
+                                    <input type="text" class="form-control" id="copyReqSearchCreator"
+                                        placeholder="Nhập tên người tạo...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Trạng thái hồ sơ</label>
                                     <select class="form-select" id="copyReqSearchStatus">
                                         <option value="Tất cả" selected>Tất cả</option>
                                         <option value="Chờ thanh toán">Chờ thanh toán</option>
@@ -5484,8 +5646,7 @@
                                         placeholder="dd/mm/yyyy">
                                 </div>
                             </div>
-                            <div
-                                style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                            <div class="registered-filter-actions">
                                 <button class="btn btn-outline-primary" onclick="resetCopyReqFilters()">Xóa bộ lọc</button>
                                 <button class="btn btn-primary" onclick="executeCopyReqSearch()"><i class="fa fa-search"></i>
                                     Tìm kiếm</button>
@@ -5500,11 +5661,11 @@
                                         <th style="width: 13%;">Mã hồ sơ</th>
                                         <th style="width: 12%;">Số đăng ký</th>
                                         <th style="width: 14%;">Loại cung cấp bản sao</th>
-                                        <th style="width: 10%;">Số lượng bản sao</th>
+                                        <th style="width: 9%;">Số lượng bản sao</th>
+                                        <th style="width: 11%;">Thời điểm đăng ký</th>
+                                        <th style="width: 11%; text-align: right;">Số tiền đã thanh toán (VNĐ)</th>
                                         <th style="width: 10%;">Trạng thái</th>
-                                        <th style="width: 12%;">Thời điểm đăng ký</th>
-                                        <th style="width: 11%;">Số tiền phải thanh toán</th>
-                                        <th style="width: 13%;">Người tạo</th>
+                                        <th style="width: 11%;">Người tạo</th>
                                         <th style="width: 8%; text-align: center;">Thao tác</th>
                                     </tr>
                                 </thead>
@@ -5551,7 +5712,7 @@
                                         Xem file
                                     </button>
                                     <button class="btn btn-success hidden" id="copyReqDetailDownloadBtn">
-                                        <i class="fa-solid fa-download"></i> Tải bản sao chứng nhận
+                                        <i class="fa-solid fa-download"></i> Tải file
                                     </button>
                                 </div>
                             </div>
@@ -6243,6 +6404,17 @@
 
     <!-- JAVASCRIPT GLOBAL MANAGEMENT -->
     <script>
+        window.addEventListener('unhandledrejection', function (event) {
+            const reason = event.reason;
+            const message = typeof reason === 'string'
+                ? reason
+                : (reason && (reason.message || String(reason))) || '';
+            if (message.includes('A listener indicated an asynchronous response by returning true') &&
+                message.includes('message channel closed before a response was received')) {
+                event.preventDefault();
+            }
+        });
+
         /* Banner Slider Management */
         let currentBannerIndex = 0;
         const totalBannerSlides = 4;
@@ -7124,6 +7296,7 @@
             '1505156435': {
                 regNum: '1505156435',
                 pin: '5635',
+                registrationTime: '05/06/2026 09:00:00',
                 effectTime: '05/06/2026 15:30:24',
                 loanValue: 1000000000,
                 debtorName: 'NGUYỄN VĂN A',
@@ -7163,6 +7336,7 @@
             '1505156438': {
                 regNum: '1505156438',
                 pin: '5638',
+                registrationTime: '15/05/2026 11:20:00',
                 effectTime: '15/05/2026 16:45:12',
                 loanValue: 1200000000,
                 debtorName: 'CÔNG TY TNHH SẢN XUẤT THƯƠNG MẠI HOÀNG PHÁT',
@@ -7367,7 +7541,7 @@
             return true;
         }
 
-        // Chuyển tab trong màn "Quản lý yêu cầu đã đăng ký" (Phiếu đăng ký / Yêu cầu cung cấp thông tin / Yêu cầu cung cấp bản sao)
+        // Chuyển tab trong màn "Quản lý yêu cầu đã đăng ký" (Phiếu đăng ký / Yêu cầu cung cấp bản sao / Yêu cầu cung cấp thông tin)
         function switchRegisteredReqTab(tabName) {
             document.querySelectorAll('#regReqTabsHeader .tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('#screen-registered-requests .tab-content').forEach(tc => tc.classList.remove('active'));
@@ -10358,6 +10532,7 @@
                 noticeNum: '1505156435-TBXL',
                 regNum: '1505156435',
                 date: '26/06/2026',
+                effectiveTime: '05/06/2026 18:00:15',
                 location: 'Khu công nghiệp Sóng Thần, Dĩ An, Bình Dương',
                 reason: 'Bên bảo đảm vi phạm nghĩa vụ thanh toán nợ gốc và lãi quá hạn theo Hợp đồng tín dụng số Tech-2026-991.',
                 file: 'thong_bao_xu_ly_tai_san_hoang_phat.pdf',
@@ -10370,6 +10545,7 @@
                 noticeNum: '1505156438-TBXL',
                 regNum: '1505156438',
                 date: '26/06/2026',
+                effectiveTime: '26/05/2026 14:20:00',
                 location: 'Khu công nghiệp Sóng Thần, Dĩ An, Bình Dương',
                 reason: 'Bên bảo đảm vi phạm nghĩa vụ thanh toán nợ gốc và lãi quá hạn theo Hợp đồng tín dụng số Tech-2026-991.',
                 file: 'thong_bao_xu_ly_tai_san_hoang_phat.pdf',
@@ -10533,6 +10709,7 @@
 
             const refNoticeRow = document.getElementById('disposalRefNoticeRow');
             const refNoticeTimeRow = document.getElementById('disposalRefNoticeTimeRow');
+            const refEffectiveTimeRow = document.getElementById('disposalRefEffectiveTimeRow');
             const viewLinkContainer = document.getElementById('disposalViewOriginalLinkContainer');
             const reviewOriginalLinkContainer = document.getElementById('disposalReviewOriginalLinkContainer');
 
@@ -10550,6 +10727,7 @@
             document.getElementById('disposalReason').value = '';
             document.getElementById('disposalDate').value = '';
             document.getElementById('disposalLocation').value = '';
+            document.getElementById('disposalRefEffectiveTime').value = '';
 
             document.getElementById('disposalDeleteReason').value = '';
             deleteDisposalUploadedFile('disposalDeleteFile', 'disposalDeleteFileNameDisplay', 'disposalDeleteFileActions');
@@ -10578,14 +10756,16 @@
                 alertBox.className = "alert-box warning";
 
                 // Section II Reference fields
-                document.getElementById('disposalCaseType').value = "Thông báo xử lý tài sản đảm bảo lần đầu";
+                document.getElementById('disposalCaseType').value = "Thông báo xử lý tài sản bảo đảm lần đầu";
                 document.getElementById('disposalRefRegNum').value = regNum;
                 document.getElementById('disposalRefNoticeTimeLabel').innerText = "Thời điểm đăng ký lần đầu";
-                document.getElementById('disposalRefNoticeTime').value = record.effectTime;
+                document.getElementById('disposalRefNoticeTime').value = record.registrationTime || record.effectTime || '';
+                document.getElementById('disposalRefEffectiveTime').value = record.effectTime || '';
 
                 // Show/hide fields
                 refNoticeRow.classList.add('hidden');
                 refNoticeTimeRow.classList.remove('hidden');
+                refEffectiveTimeRow.classList.remove('hidden');
                 viewLinkContainer.style.display = '';
                 if (reviewOriginalLinkContainer) reviewOriginalLinkContainer.style.display = '';
 
@@ -10616,6 +10796,7 @@
                         noticeNum: noticeNum,
                         regNum: noticeNum.split('-')[0],
                         date: '26/06/2026',
+                        effectiveTime: '26/06/2026 16:45:00',
                         location: 'Khu công nghiệp Sóng Thần, Dĩ An, Bình Dương',
                         reason: 'Bên bảo đảm vi phạm nghĩa vụ thanh toán nợ gốc và lãi quá hạn theo Hợp đồng tín dụng số Tech-2026-991.',
                         file: 'thong_bao_xu_ly_tai_san_hoang_phat.pdf',
@@ -10643,11 +10824,13 @@
                 document.getElementById('disposalRefNoticeNum').value = noticeNum;
                 document.getElementById('disposalRefRegNum').value = regNum;
                 document.getElementById('disposalRefNoticeTimeLabel').innerText = "Thời điểm đăng ký lần đầu";
-                document.getElementById('disposalRefNoticeTime').value = record.effectTime || '05/06/2026 15:30:24';
+                document.getElementById('disposalRefNoticeTime').value = record.registrationTime || record.effectTime || '05/06/2026 09:00:00';
+                document.getElementById('disposalRefEffectiveTime').value = record.effectTime || notice.effectiveTime || '';
 
                 // Show/hide fields
                 refNoticeRow.classList.remove('hidden');
                 refNoticeTimeRow.classList.remove('hidden'); // Show original notice time row in change mode (per user request)
+                refEffectiveTimeRow.classList.remove('hidden');
                 viewLinkContainer.style.display = '';
                 if (reviewOriginalLinkContainer) reviewOriginalLinkContainer.style.display = '';
 
@@ -10684,6 +10867,7 @@
                         noticeNum: noticeNum,
                         regNum: noticeNum.split('-')[0],
                         date: '26/06/2026',
+                        effectiveTime: '26/06/2026 16:45:00',
                         location: 'Khu công nghiệp Sóng Thần, Dĩ An, Bình Dương',
                         reason: 'Bên bảo đảm vi phạm nghĩa vụ thanh toán nợ gốc và lãi quá hạn theo Hợp đồng tín dụng số Tech-2026-991.',
                         file: 'thong_bao_xu_ly_tai_san_hoang_phat.pdf',
@@ -10706,15 +10890,18 @@
                 alertText.innerHTML = `Xóa đăng ký thông báo xử lý tài sản số: <strong>${noticeNum}</strong> (Hồ sơ gốc: <strong>${regNum}</strong>)`;
                 alertBox.className = "alert-box danger";
 
-                // Section II Reference fields: Hide "Số đăng ký lần đầu" and "Xem hồ sơ gốc" link in delete mode (per SRS)
+                // Section II Reference fields: Hide first registration reference and result document link in delete mode (per SRS)
                 document.getElementById('disposalCaseType').value = "Xóa đăng ký thông báo xử lý tài sản bảo đảm";
                 document.getElementById('disposalRefNoticeNum').value = noticeNum;
+                document.getElementById('disposalRefRegNum').value = regNum;
                 document.getElementById('disposalRefNoticeTimeLabel').innerText = "Thời điểm đăng ký lần đầu";
                 document.getElementById('disposalRefNoticeTime').value = notice.history[0] ? notice.history[0].date.split(' ')[0] : notice.date;
+                document.getElementById('disposalRefEffectiveTime').value = notice.effectiveTime || record.effectTime || '';
 
                 // Show/hide fields
                 refNoticeRow.classList.remove('hidden');
                 refNoticeTimeRow.classList.remove('hidden');
+                refEffectiveTimeRow.classList.remove('hidden');
                 viewLinkContainer.style.display = 'none'; // Hide in Section II
                 if (reviewOriginalLinkContainer) reviewOriginalLinkContainer.style.display = 'none'; // Hide on review screen II
 
@@ -10866,8 +11053,137 @@
             });
         }
 
+        function normalizeDisposalQuickFilterValue(value) {
+            return String(value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+        }
+
+        function disposalQuickFilterContains(source, keyword) {
+            const normalizedKeyword = normalizeDisposalQuickFilterValue(keyword);
+            if (!normalizedKeyword) return true;
+            return normalizeDisposalQuickFilterValue(source).includes(normalizedKeyword);
+        }
+
+        function renderDisposalAssetQuickFilter(kind, searchable) {
+            if (!searchable || !['chassis', 'vehicle'].includes(kind)) return '';
+
+            if (kind === 'chassis') {
+                return `
+                    <div class="disposal-asset-quick-filter" data-disposal-filter-kind="chassis">
+                        <div class="form-group">
+                            <label class="form-label" for="disposalFilterChassisName">Tên phương tiện</label>
+                            <input type="text" class="form-control" id="disposalFilterChassisName" placeholder="Nhập tên phương tiện...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="disposalFilterChassisNo">Số khung</label>
+                            <input type="text" class="form-control" id="disposalFilterChassisNo" placeholder="Nhập số khung...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="disposalFilterEngineNo">Số máy</label>
+                            <input type="text" class="form-control" id="disposalFilterEngineNo" placeholder="Nhập số máy...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="disposalFilterPlateNo">Biển số</label>
+                            <input type="text" class="form-control" id="disposalFilterPlateNo" placeholder="Nhập biển số...">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="applyDisposalAssetQuickFilter('chassis')">
+                            <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="clearDisposalAssetQuickFilter('chassis')">
+                            <i class="fa-solid fa-filter-circle-xmark"></i> Xóa lọc
+                        </button>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="disposal-asset-quick-filter" data-disposal-filter-kind="vehicle">
+                    <div class="form-group">
+                        <label class="form-label" for="disposalFilterVehicleName">Tên phương tiện/Nhãn hiệu</label>
+                        <input type="text" class="form-control" id="disposalFilterVehicleName" placeholder="Nhập tên/nhãn hiệu...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="disposalFilterVehicleOwner">Tên/Họ tên chủ phương tiện</label>
+                        <input type="text" class="form-control" id="disposalFilterVehicleOwner" placeholder="Nhập tên chủ phương tiện...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="disposalFilterVehicleRegNo">Số đăng ký</label>
+                        <input type="text" class="form-control" id="disposalFilterVehicleRegNo" placeholder="Nhập số đăng ký...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="disposalFilterVehicleIssuer">Cơ quan cấp giấy chứng nhận</label>
+                        <input type="text" class="form-control" id="disposalFilterVehicleIssuer" placeholder="Nhập cơ quan cấp...">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="applyDisposalAssetQuickFilter('vehicle')">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearDisposalAssetQuickFilter('vehicle')">
+                        <i class="fa-solid fa-filter-circle-xmark"></i> Xóa lọc
+                    </button>
+                </div>
+            `;
+        }
+
+        function getDisposalQuickFilterValues(kind) {
+            if (kind === 'chassis') {
+                return {
+                    name: document.getElementById('disposalFilterChassisName')?.value || '',
+                    chassis: document.getElementById('disposalFilterChassisNo')?.value || '',
+                    engine: document.getElementById('disposalFilterEngineNo')?.value || '',
+                    plate: document.getElementById('disposalFilterPlateNo')?.value || ''
+                };
+            }
+
+            return {
+                name: document.getElementById('disposalFilterVehicleName')?.value || '',
+                owner: document.getElementById('disposalFilterVehicleOwner')?.value || '',
+                regNo: document.getElementById('disposalFilterVehicleRegNo')?.value || '',
+                issuer: document.getElementById('disposalFilterVehicleIssuer')?.value || ''
+            };
+        }
+
+        function applyDisposalAssetQuickFilter(kind) {
+            const tbody = document.querySelector(`#disposalAssetsTableBody tbody[data-disposal-table-kind="${kind}"]`);
+            if (!tbody) return;
+
+            const filters = getDisposalQuickFilterValues(kind);
+            Array.from(tbody.children).forEach(row => {
+                let matches = true;
+                if (kind === 'chassis') {
+                    matches = disposalQuickFilterContains(row.dataset.filterName, filters.name)
+                        && disposalQuickFilterContains(row.dataset.filterChassis, filters.chassis)
+                        && disposalQuickFilterContains(row.dataset.filterEngine, filters.engine)
+                        && disposalQuickFilterContains(row.dataset.filterPlate, filters.plate);
+                } else {
+                    matches = disposalQuickFilterContains(row.dataset.filterName, filters.name)
+                        && disposalQuickFilterContains(row.dataset.filterOwner, filters.owner)
+                        && disposalQuickFilterContains(row.dataset.filterRegNo, filters.regNo)
+                        && disposalQuickFilterContains(row.dataset.filterIssuer, filters.issuer);
+                }
+                row.style.display = matches ? '' : 'none';
+            });
+        }
+
+        function clearDisposalAssetQuickFilter(kind) {
+            const ids = kind === 'chassis'
+                ? ['disposalFilterChassisName', 'disposalFilterChassisNo', 'disposalFilterEngineNo', 'disposalFilterPlateNo']
+                : ['disposalFilterVehicleName', 'disposalFilterVehicleOwner', 'disposalFilterVehicleRegNo', 'disposalFilterVehicleIssuer'];
+
+            ids.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) input.value = '';
+            });
+
+            document.querySelectorAll(`#disposalAssetsTableBody tbody[data-disposal-table-kind="${kind}"] tr`).forEach(row => {
+                row.style.display = '';
+            });
+        }
+
         function renderDisposalAssetTable(kind, items, options) {
-            const { selectable, selectedIds, readonly } = options;
+            const { selectable, selectedIds, readonly, searchable } = options;
             const checkboxHeader = selectable ? '<th style="width: 42px; text-align:center;"></th>' : '';
             const checkboxCell = asset => selectable
                 ? `<td style="text-align:center;">${getDisposalAssetCheckbox(asset, selectable, selectedIds.includes(asset.id))}</td>`
@@ -10876,6 +11192,7 @@
             if (kind === 'chassis') {
                 return `
                     <div class="disposal-asset-table-title">Số khung *</div>
+                    ${renderDisposalAssetQuickFilter(kind, searchable)}
                     <div class="table-responsive">
                         <table class="table" style="font-size: 12.5px;">
                             <thead style="background-color: var(--table-header-bg);">
@@ -10889,18 +11206,24 @@
                                     <th>BIỂN SỐ</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                ${items.map((asset, idx) => `
-                                    <tr>
+                            <tbody data-disposal-table-kind="chassis">
+                                ${items.map((asset, idx) => {
+                                    const vehicleName = asset.vehicleName || asset.name || '';
+                                    const engineNo = asset.engineNo || asset.machineNo || asset.desc?.match(/số máy\s*([^,]+)/i)?.[1] || 'N/A';
+                                    return `
+                                    <tr data-filter-name="${escapeDisposalHtml(vehicleName)}"
+                                        data-filter-chassis="${escapeDisposalHtml(asset.chassis || '')}"
+                                        data-filter-engine="${escapeDisposalHtml(engineNo)}"
+                                        data-filter-plate="${escapeDisposalHtml(asset.plate || '')}">
                                         ${checkboxCell(asset)}
                                         <td style="text-align:center;">${idx + 1}</td>
-                                        <td><strong>${escapeDisposalHtml(asset.vehicleName || asset.name)}</strong></td>
+                                        <td><strong>${escapeDisposalHtml(vehicleName)}</strong></td>
                                         <td>${escapeDisposalHtml(asset.brandColor || asset.desc)}</td>
                                         <td><span style="font-family: monospace;">${escapeDisposalHtml(asset.chassis)}</span></td>
-                                        <td>${escapeDisposalHtml(asset.engineNo || asset.machineNo || asset.desc?.match(/số máy\s*([^,]+)/i)?.[1] || 'N/A')}</td>
+                                        <td>${escapeDisposalHtml(engineNo)}</td>
                                         <td>${escapeDisposalHtml(asset.plate)}</td>
                                     </tr>
-                                `).join('')}
+                                `}).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -10910,6 +11233,7 @@
             if (kind === 'vehicle') {
                 return `
                     <div class="disposal-asset-table-title">Phương tiện</div>
+                    ${renderDisposalAssetQuickFilter(kind, searchable)}
                     <div class="table-responsive">
                         <table class="table" style="font-size: 12.5px;">
                             <thead style="background-color: var(--table-header-bg);">
@@ -10924,19 +11248,28 @@
                                     <th>CẤP PHƯƠNG TIỆN</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                ${items.map((asset, idx) => `
-                                    <tr>
+                            <tbody data-disposal-table-kind="vehicle">
+                                ${items.map((asset, idx) => {
+                                    const vehicleName = asset.vehicleName || asset.name || '';
+                                    const brand = asset.brand || asset.desc || '';
+                                    const ownerName = asset.ownerName || activeRecordInDisposal?.debtorName || 'N/A';
+                                    const registrationNo = asset.registrationNo || asset.chassis || '';
+                                    const issuer = asset.issuer || 'Cơ quan đăng ký phương tiện';
+                                    return `
+                                    <tr data-filter-name="${escapeDisposalHtml((vehicleName + ' ' + brand).trim())}"
+                                        data-filter-owner="${escapeDisposalHtml(ownerName)}"
+                                        data-filter-reg-no="${escapeDisposalHtml(registrationNo)}"
+                                        data-filter-issuer="${escapeDisposalHtml(issuer)}">
                                         ${checkboxCell(asset)}
                                         <td style="text-align:center;">${idx + 1}</td>
-                                        <td><strong>${escapeDisposalHtml(asset.vehicleName || asset.name)}</strong></td>
-                                        <td>${escapeDisposalHtml(asset.brand || asset.desc)}</td>
-                                        <td>${escapeDisposalHtml(asset.ownerName || activeRecordInDisposal?.debtorName || 'N/A')}</td>
-                                        <td>${escapeDisposalHtml(asset.registrationNo || asset.chassis)}</td>
-                                        <td>${escapeDisposalHtml(asset.issuer || 'Cơ quan đăng ký phương tiện')}</td>
+                                        <td><strong>${escapeDisposalHtml(vehicleName)}</strong></td>
+                                        <td>${escapeDisposalHtml(brand)}</td>
+                                        <td>${escapeDisposalHtml(ownerName)}</td>
+                                        <td>${escapeDisposalHtml(registrationNo)}</td>
+                                        <td>${escapeDisposalHtml(issuer)}</td>
                                         <td>${escapeDisposalHtml(asset.vehicleLevel || 'Cấp mới')}</td>
                                     </tr>
-                                `).join('')}
+                                `}).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -10989,7 +11322,7 @@
                         <div class="disposal-asset-type-title">${escapeDisposalHtml(group.label)}</div>
                     </div>
                     <div class="disposal-asset-type-body">
-                        ${renderDisposalAssetTable(group.kind, group.items, { selectable, selectedIds, readonly })}
+                        ${renderDisposalAssetTable(group.kind, group.items, { selectable, selectedIds, readonly, searchable: Boolean(options.searchable) })}
                         ${options.showProcessingBlock ? renderDisposalProcessingBlock(group.kind, readonly) : ''}
                     </div>
                 </div>
@@ -11006,6 +11339,7 @@
                 selectable,
                 selectedIds: Array.isArray(selectedIds) ? selectedIds : [],
                 readonly: !selectable,
+                searchable: true,
                 showProcessingBlock: true
             });
 
@@ -11275,6 +11609,10 @@
 
             // Fill Review Data
             document.getElementById('lblReviewRequestor').innerText = requestor;
+            const registrantName = orgDetails?.entityType === 'organization'
+                ? (orgDetails.name || loggedInDisplayName || 'Tổ chức')
+                : (loggedInDisplayName || 'Người yêu cầu đăng ký');
+            document.getElementById('lblReviewRegistrantName').innerText = registrantName;
             const reviewReqFileRow = document.getElementById('reviewRequestorFileRow');
             const reqFileInput = document.getElementById('disposalRequestorFile');
             const reqFile = reqFileInput ? reqFileInput.files[0] : null;
@@ -11299,29 +11637,37 @@
             const reviewRefNoticeRow = document.getElementById('reviewRefNoticeRow');
             const reviewRefRegNum = document.getElementById('lblReviewRefRegNum').parentNode;
             const reviewRefNoticeTimeRow = document.getElementById('reviewRefNoticeTimeRow');
+            const reviewRefEffectiveTimeRow = document.getElementById('reviewRefEffectiveTimeRow');
 
             if (disposalMode === 'first') {
                 reviewRefNoticeRow.classList.add('hidden');
                 reviewRefRegNum.classList.remove('hidden');
                 reviewRefNoticeTimeRow.classList.remove('hidden');
+                reviewRefEffectiveTimeRow.classList.remove('hidden');
 
                 document.getElementById('lblReviewRefRegNum').innerText = regNum;
                 document.getElementById('lblReviewRefNoticeTime').innerText = document.getElementById('disposalRefNoticeTime').value;
+                document.getElementById('lblReviewRefEffectiveTime').innerText = document.getElementById('disposalRefEffectiveTime').value || 'N/A';
             } else if (disposalMode === 'change') {
                 reviewRefNoticeRow.classList.remove('hidden');
                 reviewRefRegNum.classList.remove('hidden');
                 reviewRefNoticeTimeRow.classList.remove('hidden'); // Show original notice time row in change mode (per user request)
+                reviewRefEffectiveTimeRow.classList.remove('hidden');
 
                 document.getElementById('lblReviewRefNoticeNum').innerText = activeNoticeRecordInDisposal.noticeNum;
                 document.getElementById('lblReviewRefRegNum').innerText = regNum;
                 document.getElementById('lblReviewRefNoticeTime').innerText = document.getElementById('disposalRefNoticeTime').value;
+                document.getElementById('lblReviewRefEffectiveTime').innerText = document.getElementById('disposalRefEffectiveTime').value || 'N/A';
             } else if (disposalMode === 'delete') {
                 reviewRefNoticeRow.classList.remove('hidden');
                 reviewRefRegNum.classList.remove('hidden');
                 reviewRefNoticeTimeRow.classList.remove('hidden');
+                reviewRefEffectiveTimeRow.classList.remove('hidden');
 
                 document.getElementById('lblReviewRefNoticeNum').innerText = activeNoticeRecordInDisposal.noticeNum;
+                document.getElementById('lblReviewRefRegNum').innerText = regNum;
                 document.getElementById('lblReviewRefNoticeTime').innerText = document.getElementById('disposalRefNoticeTime').value;
+                document.getElementById('lblReviewRefEffectiveTime').innerText = document.getElementById('disposalRefEffectiveTime').value || 'N/A';
             }
 
             const reviewSecured = document.getElementById('reviewSecuredSection');
@@ -13113,7 +13459,7 @@
                         regNum: "1505156435-TBXL",
                         pin: "5635-B1",
                         date: "05/06/2026 15:30",
-                        type: "Thông báo xử lý tài sản đảm bảo lần đầu",
+                        type: "Thông báo xử lý tài sản bảo đảm lần đầu",
                         guarantor: "Nguyễn Văn A",
                         securedParty: "Ngân hàng TMCP FPT",
                         status: "Hoàn thành",
@@ -13169,10 +13515,10 @@
                 children: [
                     {
                         id: "4-1",
-                        regNum: "1505156438-XÓA",
-                        pin: "5638-X1",
+                        regNum: "1505156438-TĐ1",
+                        pin: "5638-T1",
                         date: "25/05/2026 15:30",
-                        type: "Xóa đăng ký",
+                        type: "Đăng ký thay đổi",
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
                         status: "Hoàn thành",
@@ -13185,7 +13531,7 @@
                         regNum: "1505156438-TBXL",
                         pin: "5638-B1",
                         date: "26/05/2026 10:00",
-                        type: "Thông báo xử lý tài sản đảm bảo lần đầu",
+                        type: "Thông báo xử lý tài sản bảo đảm lần đầu",
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
                         status: "Hoàn thành",
@@ -13299,66 +13645,6 @@
                 children: []
             },
             {
-                id: "9",
-                regNum: "1505156443",
-                pin: "5643",
-                date: "20/04/2026 10:10",
-                type: "Yêu cầu cung cấp bản sao",
-                guarantor: "Trần Văn F",
-                securedParty: "Ngân hàng TMCP FPT",
-                status: "Hoàn thành",
-                transType: "Hợp đồng",
-                measureContractType: "Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác",
-                secAssets: ["Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản"],
-                expanded: false,
-                children: []
-            },
-            {
-                id: "10",
-                regNum: "1505156444",
-                pin: "5644",
-                date: "15/04/2026 09:40",
-                type: "Yêu cầu cung cấp thông tin",
-                guarantor: "Nguyễn Văn G",
-                securedParty: "Ngân hàng TMCP FPT",
-                status: "Hoàn thành",
-                transType: "Hợp đồng",
-                measureContractType: "Hợp đồng ký gửi",
-                secAssets: ["Cây hằng năm, công trình tạm"],
-                expanded: false,
-                children: []
-            },
-            {
-                id: "11",
-                regNum: "1505156445",
-                pin: "5645",
-                date: "10/04/2026 11:30",
-                type: "Yêu cầu cung cấp bản sao kèm thông báo",
-                guarantor: "Trần Văn H",
-                securedParty: "Ngân hàng TMCP FPT",
-                status: "Hoàn thành",
-                transType: "Biện pháp bảo đảm",
-                measureContractType: "Thế chấp",
-                secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"],
-                expanded: false,
-                children: []
-            },
-            {
-                id: "12",
-                regNum: "1505156446",
-                pin: "5646",
-                date: "05/04/2026 14:15",
-                type: "Chỉnh lý thông tin",
-                guarantor: "Lê Thị I",
-                securedParty: "Ngân hàng TMCP FPT",
-                status: "Hoàn thành",
-                transType: "Biện pháp bảo đảm",
-                measureContractType: "Thế chấp",
-                secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"],
-                expanded: false,
-                children: []
-            },
-            {
                 id: "13",
                 regNum: "1505156447",
                 pin: "5647",
@@ -13397,7 +13683,7 @@
                 quantity: 2,
                 status: 'Hoàn thành',
                 date: '21/07/2026 15:40',
-                creator: 'Công ty TNHH Hải Nam',
+                creator: 'Trần Minh Hải',
                 amount: 60000,
                 paymentTime: '21/07/2026 15:46',
                 signedTime: '22/07/2026 08:15',
@@ -13412,7 +13698,7 @@
                 quantity: null,
                 status: 'Chờ thanh toán',
                 date: '20/07/2026 10:05',
-                creator: 'Công ty CP Thủy sản miền Nam',
+                creator: 'Lê Thu Hương',
                 amount: 30000,
                 fileName: ''
             },
@@ -13425,6 +13711,7 @@
                 date: '18/07/2026 11:25',
                 creator: 'Trần Văn F',
                 amount: 30000,
+                paymentTime: '18/07/2026 11:30',
                 fileName: ''
             },
             {
@@ -13448,7 +13735,7 @@
                 quantity: 3,
                 status: 'Đã duyệt - chờ trả kết quả',
                 date: '16/07/2026 09:35',
-                creator: 'Công ty TNHH Minh Anh',
+                creator: 'Nguyễn Minh Anh',
                 amount: 90000,
                 paymentTime: '16/07/2026 09:40',
                 approvedTime: '16/07/2026 11:20',
@@ -13463,8 +13750,9 @@
                 quantity: null,
                 status: 'Bị từ chối',
                 date: '15/07/2026 08:45',
-                creator: 'Công ty TNHH An Phú',
+                creator: 'Phạm Quốc An',
                 amount: 30000,
+                paymentTime: '15/07/2026 08:50',
                 fileName: ''
             },
             {
@@ -13474,8 +13762,9 @@
                 quantity: 1,
                 status: 'Bị trả lại',
                 date: '14/07/2026 16:05',
-                creator: 'Bà Nguyễn Thị Mai',
+                creator: 'Nguyễn Thị Mai',
                 amount: 30000,
+                paymentTime: '14/07/2026 16:10',
                 returnReason: 'Cán bộ yêu cầu bổ sung thông tin nhận bản sao giấy.',
                 returnedTime: '15/07/2026 09:00',
                 returnOfficer: 'Trần Thị Cán Bộ',
@@ -13544,6 +13833,28 @@
             };
             if (item) walk(item);
             return result;
+        }
+
+        function parseRegReqDateValue(dateStr) {
+            if (!dateStr) return 0;
+            const parts = String(dateStr).trim().split(' ');
+            const dateParts = parts[0].split('/');
+            if (dateParts.length !== 3) return 0;
+            const day = parseInt(dateParts[0], 10);
+            const month = parseInt(dateParts[1], 10) - 1;
+            const year = parseInt(dateParts[2], 10);
+            let h = 0;
+            let m = 0;
+            if (parts.length > 1) {
+                const timeParts = parts[1].split(':');
+                h = parseInt(timeParts[0], 10) || 0;
+                m = parseInt(timeParts[1], 10) || 0;
+            }
+            return new Date(year, month, day, h, m).getTime();
+        }
+
+        function getSortedRegReqChildren(item) {
+            return [...(item.children || [])].sort((a, b) => parseRegReqDateValue(a.date) - parseRegReqDateValue(b.date));
         }
 
         function findRegisteredRequestContext(regNum) {
@@ -13619,6 +13930,9 @@
                 rootPin: context.root.pin,
                 rootType: context.root.type,
                 rootStatus: context.root.status,
+                creatorName: getRequestCreatorText(context.item),
+                registrantName: getRegistrantNameForDetail(context.item),
+                rootRegistrantName: getRegistrantNameForDetail(context.root),
                 depth: context.depth,
                 isRoot: context.depth === 0,
                 rootDescendants: flattenRegReqChildren(context.root).map(({ regNum, type, status }) => ({ regNum, type, status })),
@@ -13679,7 +13993,7 @@
             const isOrg = String(item?.guarantor || '').toLowerCase().includes('công ty');
             return {
                 requester: 'Bên nhận thế chấp',
-                orgName: item?.securedParty || 'NGÂN HÀNG TMCP FPT',
+                orgName: getRegistrantNameForDetail(item),
                 exemption: false,
                 isFemaleOwner: false,
                 scale: 'Bên bảo đảm là công ty có ít hơn 10 nhân viên',
@@ -13859,8 +14173,8 @@
 
         const REG_REQ_COMMON_ASSET_FIELD = {
             key: 'assetDescription',
-            label: 'Mô tả chung về tài sản bảo đảm',
-            placeholder: 'Nhập mô tả chung về tài sản bảo đảm...'
+            label: 'Mô tả',
+            placeholder: 'Nhập mô tả...'
         };
 
         const REG_REQ_ASSET_FILTER_CONFIG = {
@@ -13873,22 +14187,29 @@
             [REG_REQ_ASSET_TYPE_SPECIAL_VEHICLE]: [
                 { key: 'vehicleBrand', label: 'Tên phương tiện/Nhãn hiệu', placeholder: 'Nhập tên phương tiện hoặc nhãn hiệu...' },
                 { key: 'ownerName', label: 'Tên/Họ tên chủ phương tiện/Chủ sở hữu', placeholder: 'Nhập chủ phương tiện/chủ sở hữu...' },
-                { key: 'vehicleRegNo', label: 'Số đăng ký', placeholder: 'Nhập số đăng ký phương tiện...' },
+                { key: 'vehicleRegNo', label: 'Số đăng ký phương tiện', placeholder: 'Nhập số đăng ký phương tiện...' },
+                { key: 'vehicleIssuer', label: 'Cơ quan cấp giấy chứng nhận', placeholder: 'Nhập cơ quan cấp giấy chứng nhận...' },
                 { key: 'vehicleLevel', label: 'Cấp phương tiện', placeholder: 'Nhập cấp phương tiện...' }
             ],
             [REG_REQ_ASSET_TYPE_PROPERTY_RIGHT]: [
                 { key: 'rightName', label: 'Tên quyền', placeholder: 'Nhập tên quyền...' },
                 { key: 'rightBasis', label: 'Căn cứ phát sinh quyền', placeholder: 'Nhập căn cứ phát sinh quyền...' }
             ],
-            [REG_REQ_ASSET_TYPE_ANNUAL_CROP]: [],
+            [REG_REQ_ASSET_TYPE_ANNUAL_CROP]: [
+                REG_REQ_COMMON_ASSET_FIELD
+            ],
             [REG_REQ_ASSET_TYPE_ROTATING_GOODS]: [
+                { key: 'goodsKind', label: 'Hàng hóa luân chuyển / Kho hàng', type: 'select', options: ['Tất cả', 'Hàng hóa luân chuyển', 'Kho hàng'] },
                 { key: 'goodsValueName', label: 'Giá trị hàng hóa/Tên, loại hàng hóa', placeholder: 'Nhập giá trị, tên hoặc loại hàng hóa...' },
-                { key: 'warehouseSign', label: 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', placeholder: 'Nhập số hiệu hoặc dấu hiệu vị trí kho...' }
+                { key: 'warehouseAddress', label: 'Địa chỉ kho hàng', placeholder: 'Nhập địa chỉ kho hàng...', dependsOn: 'goodsKind', dependsValue: 'Kho hàng' },
+                { key: 'warehouseSign', label: 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', placeholder: 'Nhập số hiệu hoặc dấu hiệu vị trí kho...', dependsOn: 'goodsKind', dependsValue: 'Kho hàng' }
             ],
             [REG_REQ_ASSET_TYPE_SECURITIES]: [
                 { key: 'vsdcTime', label: 'Thời điểm đăng ký tại VSDC', placeholder: 'HH:mm dd/MM/yyyy' }
             ],
-            [REG_REQ_ASSET_TYPE_OTHER]: []
+            [REG_REQ_ASSET_TYPE_OTHER]: [
+                REG_REQ_COMMON_ASSET_FIELD
+            ]
         };
 
         const REG_REQ_ASSET_COLUMN_CONFIG = {
@@ -13901,22 +14222,29 @@
             [REG_REQ_ASSET_TYPE_SPECIAL_VEHICLE]: [
                 { key: 'vehicleBrand', label: 'Tên phương tiện/Nhãn hiệu', width: '165px' },
                 { key: 'ownerName', label: 'Tên/Họ tên chủ phương tiện/Chủ sở hữu', width: '185px' },
-                { key: 'vehicleRegNo', label: 'Số đăng ký', width: '115px' },
+                { key: 'vehicleRegNo', label: 'Số đăng ký phương tiện', width: '125px' },
+                { key: 'vehicleIssuer', label: 'Cơ quan cấp giấy chứng nhận', width: '180px' },
                 { key: 'vehicleLevel', label: 'Cấp phương tiện', width: '115px' }
             ],
             [REG_REQ_ASSET_TYPE_PROPERTY_RIGHT]: [
                 { key: 'rightName', label: 'Tên quyền', width: '170px' },
                 { key: 'rightBasis', label: 'Căn cứ phát sinh quyền', width: '210px' }
             ],
-            [REG_REQ_ASSET_TYPE_ANNUAL_CROP]: [],
+            [REG_REQ_ASSET_TYPE_ANNUAL_CROP]: [
+                { ...REG_REQ_COMMON_ASSET_FIELD, width: '220px' }
+            ],
             [REG_REQ_ASSET_TYPE_ROTATING_GOODS]: [
+                { key: 'goodsKind', label: 'Hàng hóa luân chuyển / Kho hàng', width: '170px' },
                 { key: 'goodsValueName', label: 'Giá trị hàng hóa/Tên, loại hàng hóa', width: '210px' },
+                { key: 'warehouseAddress', label: 'Địa chỉ kho hàng', width: '190px' },
                 { key: 'warehouseSign', label: 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', width: '220px' }
             ],
             [REG_REQ_ASSET_TYPE_SECURITIES]: [
-                { key: 'vsdcTime', label: 'Thời điểm đăng ký tại VSDC', width: '145px' }
+                { key: 'vsdcTime', label: 'Thời điểm đăng ký tại VSDC', width: '170px' }
             ],
-            [REG_REQ_ASSET_TYPE_OTHER]: []
+            [REG_REQ_ASSET_TYPE_OTHER]: [
+                { ...REG_REQ_COMMON_ASSET_FIELD, width: '220px' }
+            ]
         };
 
         const REG_REQ_ASSET_EXACT_FILTER_KEYS = ['frameNo', 'engineNo', 'plateNo', 'vehicleRegNo'];
@@ -13931,12 +14259,12 @@
 
         function getRegReqActiveAssetFields(assetType = getSelectedRegReqAssetType()) {
             if (!isSpecificRegReqAssetType(assetType)) return [];
-            return [...(REG_REQ_ASSET_FILTER_CONFIG[assetType] || []), REG_REQ_COMMON_ASSET_FIELD];
+            return [...(REG_REQ_ASSET_FILTER_CONFIG[assetType] || [])];
         }
 
         function getRegReqActiveAssetColumns(assetType = getSelectedRegReqAssetType()) {
             if (!isSpecificRegReqAssetType(assetType)) return [];
-            return [...(REG_REQ_ASSET_COLUMN_CONFIG[assetType] || []), { ...REG_REQ_COMMON_ASSET_FIELD, width: '220px' }];
+            return [...(REG_REQ_ASSET_COLUMN_CONFIG[assetType] || [])];
         }
 
         function renderRegReqAssetSpecificFilters() {
@@ -13955,22 +14283,51 @@
             grid.innerHTML = fields.map(field => {
                 const inputId = `regReqAssetFilter_${field.key}`;
                 const fullWidth = field.key === REG_REQ_COMMON_ASSET_FIELD.key ? ' style="grid-column: 1 / -1;"' : '';
+                const dependencyAttrs = field.dependsOn ? ` data-depends-on="${field.dependsOn}" data-depends-value="${field.dependsValue}"` : '';
                 if (field.key === REG_REQ_COMMON_ASSET_FIELD.key) {
                     return `
-                        <div class="form-group"${fullWidth}>
+                        <div class="form-group"${fullWidth}${dependencyAttrs}>
                             <label class="form-label">${field.label}</label>
                             <textarea class="form-control" id="${inputId}" rows="2" placeholder="${field.placeholder}"></textarea>
                         </div>
                     `;
                 }
+                if (field.type === 'select') {
+                    const options = (field.options || []).map(option =>
+                        `<option value="${option}">${option}</option>`
+                    ).join('');
+                    return `
+                        <div class="form-group"${fullWidth}${dependencyAttrs}>
+                            <label class="form-label">${field.label}</label>
+                            <select class="form-select" id="${inputId}" onchange="updateRegReqDependentAssetFilters()">${options}</select>
+                        </div>
+                    `;
+                }
                 return `
-                    <div class="form-group"${fullWidth}>
+                    <div class="form-group"${fullWidth}${dependencyAttrs}>
                         <label class="form-label">${field.label}</label>
                         <input type="text" class="form-control" id="${inputId}" placeholder="${field.placeholder}">
                     </div>
                 `;
             }).join('');
             panel.classList.add('visible');
+            updateRegReqDependentAssetFilters();
+        }
+
+        function updateRegReqDependentAssetFilters() {
+            const grid = document.getElementById('regReqAssetSpecificFilterGrid');
+            if (!grid) return;
+            grid.querySelectorAll('[data-depends-on]').forEach(group => {
+                const dependsOn = group.getAttribute('data-depends-on');
+                const dependsValue = group.getAttribute('data-depends-value');
+                const controller = document.getElementById(`regReqAssetFilter_${dependsOn}`);
+                const visible = controller && controller.value === dependsValue;
+                group.style.display = visible ? '' : 'none';
+                if (!visible) {
+                    const input = group.querySelector('input, textarea, select');
+                    if (input) input.value = '';
+                }
+            });
         }
 
         function onRegReqAssetTypeChange() {
@@ -13981,7 +14338,11 @@
 
         function getRegReqAssetFilterValues(assetType = getSelectedRegReqAssetType()) {
             return getRegReqActiveAssetFields(assetType).reduce((values, field) => {
-                const value = document.getElementById(`regReqAssetFilter_${field.key}`)?.value.trim() || '';
+                const input = document.getElementById(`regReqAssetFilter_${field.key}`);
+                const group = input?.closest('.form-group');
+                if (group && group.style.display === 'none') return values;
+                const value = input?.value.trim() || '';
+                if (field.type === 'select' && value === 'Tất cả') return values;
                 if (value) values[field.key] = value;
                 return values;
             }, {});
@@ -14011,6 +14372,7 @@
                     vehicleBrand: item.vehicleBrand || (item.guarantor && item.guarantor.includes('Hải Nam') ? 'Tàu cá vỏ gỗ Hải Nam' : 'Tàu cá vỏ thép Đông Hải'),
                     ownerName: item.ownerName || item.guarantor,
                     vehicleRegNo: item.vehicleRegNo || `ĐK-${baseNum.slice(-5)}-HP`,
+                    vehicleIssuer: item.vehicleIssuer || 'Cục Đăng kiểm Việt Nam',
                     vehicleLevel: item.vehicleLevel || 'Cấp IV',
                     assetDescription: item.assetDescription || `${defaultDescription}. Phương tiện chuyên dùng/đường thủy có số đăng ký và cấp phương tiện.`
                 },
@@ -14023,7 +14385,9 @@
                     assetDescription: item.assetDescription || `${defaultDescription}. Cây hằng năm/công trình tạm được mô tả theo vị trí và hiện trạng tài sản.`
                 },
                 [REG_REQ_ASSET_TYPE_ROTATING_GOODS]: {
+                    goodsKind: item.goodsKind || 'Kho hàng',
                     goodsValueName: item.goodsValueName || 'Lô hàng thủy sản đông lạnh và hàng hóa luân chuyển',
+                    warehouseAddress: item.warehouseAddress || 'Kho MP, Khu công nghiệp Nam Thăng Long, TP Hà Nội',
                     warehouseSign: item.warehouseSign || `Kho MP-${baseNum.slice(-3)}, khu lưu trữ trung tâm`,
                     assetDescription: item.assetDescription || `${defaultDescription}. Hàng hóa luân chuyển trong kho, xác định theo số hiệu kho và dấu hiệu vị trí.`
                 },
@@ -14075,17 +14439,57 @@
                 <th style="width: 9%; cursor: pointer;" onclick="toggleRegReqSort('regNum')" id="reg-header-regNum">Số đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
                 <th style="width: 5%;">Số PIN</th>
                 <th style="width: 10%;">Loại đăng ký</th>
-                <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('guarantor')" id="reg-header-guarantor">Bên bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
-                <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('mortgagee')" id="reg-header-mortgagee">Bên nhận BĐ <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('guarantor')" id="reg-header-guarantor">Tên bên bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                <th style="width: 10%; cursor: pointer;" onclick="toggleRegReqSort('mortgagee')" id="reg-header-mortgagee">Tên bên nhận bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
                 <th style="width: 10%;">Loại hình GD</th>
                 <th style="width: 10%;">Loại BP/HĐ</th>
-                <th style="width: 13%;">Loại tài sản</th>
+                <th style="width: 11%;">Loại tài sản</th>
                 ${extraHeaders}
-                <th style="width: 7%;">Trạng thái</th>
                 <th style="width: 7%; cursor: pointer;" onclick="toggleRegReqSort('date')" id="reg-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                <th style="width: 7%;">Thời điểm có hiệu lực</th>
+                <th style="width: 8%; text-align: right;">Số tiền đã thanh toán (VNĐ)</th>
+                <th style="width: 7%;">Trạng thái</th>
+                <th style="width: 8%;">Người tạo</th>
                 <th style="width: 6%; text-align: center;">Thao tác</th>
             `;
             updateRegReqSortIcons();
+        }
+
+        function getRegisteredRequestEffectiveTime(item) {
+            if (!item || item.effectiveTime) return item && item.effectiveTime ? item.effectiveTime : '—';
+            return item.status === 'Hoàn thành' ? item.date : '—';
+        }
+
+        function getRegisteredRequestPaidAmountText(item) {
+            if (!item) return '—';
+            const hasPaid = item.paymentTime || ['Chờ duyệt', 'Chờ ký', 'Hoàn thành'].includes(item.status);
+            if (!hasPaid) return '—';
+            const amount = Number(item.paymentAmount || item.feeAmount || 80000);
+            return amount.toLocaleString('vi-VN');
+        }
+
+        function getMockCreatorName(item) {
+            const source = item?.guarantor || item?.creator || '';
+            if (source.includes('Hải Nam')) return 'Trần Minh Hải';
+            if (source.includes('Thủy sản miền Nam')) return 'Lê Thu Hương';
+            if (source.includes('Minh Phát')) return 'Phạm Minh Phát';
+            if (source.includes('An Phú')) return 'Phạm Quốc An';
+            if (source.includes('Ngân hàng')) return 'Nguyễn Thị Ngân';
+            return source || 'Nguyễn Văn A';
+        }
+
+        function getRequestCreatorText(item) {
+            return item?.creatorName || item?.creator || item?.createdByName || getMockCreatorName(item);
+        }
+
+        function getRegistrantNameForDetail(item) {
+            if (item?.registrantName) return item.registrantName;
+            const accountIsOrganization = orgDetails?.entityType === 'organization';
+            const subject = String(item?.guarantor || '');
+            const isOrganizationSubject = ['công ty', 'doanh nghiệp', 'hợp tác xã', 'ngân hàng']
+                .some(keyword => subject.toLowerCase().includes(keyword));
+            if (accountIsOrganization) return orgDetails?.name || loggedInDisplayName || subject || 'Tổ chức';
+            return isOrganizationSubject ? (item?.guarantor || 'Tổ chức') : getRequestCreatorText(item);
         }
 
         function renderRegReqAssetExtraCells(item) {
@@ -14107,7 +14511,7 @@
             }).join('');
         }
 
-        function matchItem(item, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters = {}) {
+        function matchItem(item, num, guarantor, creator, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters = {}) {
             let matchNum = true;
             if (num) {
                 matchNum = item.regNum.toLowerCase().includes(num);
@@ -14116,6 +14520,11 @@
             let matchGuarantor = true;
             if (guarantor) {
                 matchGuarantor = item.guarantor.toLowerCase().includes(guarantor);
+            }
+
+            let matchCreator = true;
+            if (creator) {
+                matchCreator = normalizeRegReqText(getRequestCreatorText(item)).includes(normalizeRegReqText(creator));
             }
 
             let matchStatus = true;
@@ -14160,12 +14569,13 @@
 
             const matchAssetSpecific = matchRegReqAssetSpecificFilters(item, assetType, assetFilters);
 
-            return matchNum && matchGuarantor && matchStatus && matchType && matchDate && matchTransType && matchMeasureType && matchAssetType && matchAssetSpecific;
+            return matchNum && matchGuarantor && matchCreator && matchStatus && matchType && matchDate && matchTransType && matchMeasureType && matchAssetType && matchAssetSpecific;
         }
 
         function executeRegReqSearch(showSuccessToast = true) {
             const num = document.getElementById('regReqSearchNum').value.trim().toLowerCase();
             const guarantor = document.getElementById('regReqSearchGuarantor').value.trim().toLowerCase();
+            const creator = document.getElementById('regReqSearchCreator').value.trim();
             const status = document.getElementById('regReqSearchStatus').value;
             const type = document.getElementById('regReqSearchType').value;
             const fromDateStr = document.getElementById('regReqSearchFromDate').value.trim();
@@ -14214,12 +14624,12 @@
             }
 
             regReqFilteredData = registeredRequestsData.filter(item => {
-                const parentMatches = matchItem(item, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
+                const parentMatches = matchItem(item, num, guarantor, creator, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
 
                 const childrenMatch = item.children && item.children.some(c => {
-                    const cMatches = matchItem(c, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
+                    const cMatches = matchItem(c, num, guarantor, creator, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
                     const gcMatch = c.children && c.children.some(gc => {
-                        return matchItem(gc, num, guarantor, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
+                        return matchItem(gc, num, guarantor, creator, status, type, fromDateStr, toDateStr, transType, measureType, assetType, assetFilters);
                     });
                     return cMatches || gcMatch;
                 });
@@ -14242,6 +14652,7 @@
         function resetRegReqFilters() {
             document.getElementById('regReqSearchNum').value = '';
             document.getElementById('regReqSearchGuarantor').value = '';
+            document.getElementById('regReqSearchCreator').value = '';
             document.getElementById('regReqSearchStatus').value = 'Tất cả';
             document.getElementById('regReqSearchType').value = 'Tất cả';
             document.getElementById('regReqSearchFromDate').value = '';
@@ -14267,7 +14678,7 @@
             renderRegisteredRequestsTable();
         }
 
-        function matchCopyRequest(item, code, regNum, copyType, status, fromDateStr, toDateStr) {
+        function matchCopyRequest(item, code, regNum, creator, copyType, status, fromDateStr, toDateStr) {
             let matches = true;
 
             if (code) {
@@ -14275,6 +14686,9 @@
             }
             if (matches && regNum) {
                 matches = normalizeRegReqText(item.regNum).includes(normalizeRegReqText(regNum));
+            }
+            if (matches && creator) {
+                matches = normalizeRegReqText(getRequestCreatorText(item)).includes(normalizeRegReqText(creator));
             }
             if (matches && copyType !== 'Tất cả') {
                 matches = item.copyType === copyType;
@@ -14322,6 +14736,7 @@
         function executeCopyReqSearch(showSuccessToast = true) {
             const code = document.getElementById('copyReqSearchCode')?.value.trim() || '';
             const regNum = document.getElementById('copyReqSearchRegNum')?.value.trim() || '';
+            const creator = document.getElementById('copyReqSearchCreator')?.value.trim() || '';
             const copyType = document.getElementById('copyReqSearchType')?.value || 'Tất cả';
             const status = document.getElementById('copyReqSearchStatus')?.value || 'Tất cả';
             const fromDateStr = document.getElementById('copyReqSearchFromDate')?.value.trim() || '';
@@ -14330,7 +14745,7 @@
             if (!validateCopyReqDateRange(fromDateStr, toDateStr)) return;
 
             copyReqFilteredData = copyRequestsData.filter(item =>
-                matchCopyRequest(item, code, regNum, copyType, status, fromDateStr, toDateStr)
+                matchCopyRequest(item, code, regNum, creator, copyType, status, fromDateStr, toDateStr)
             );
             copyReqCurrentPage = 1;
             renderCopyRequestsTable();
@@ -14340,6 +14755,7 @@
         function resetCopyReqFilters() {
             document.getElementById('copyReqSearchCode').value = '';
             document.getElementById('copyReqSearchRegNum').value = '';
+            document.getElementById('copyReqSearchCreator').value = '';
             document.getElementById('copyReqSearchType').value = 'Tất cả';
             document.getElementById('copyReqSearchStatus').value = 'Tất cả';
             document.getElementById('copyReqSearchFromDate').value = '';
@@ -14365,6 +14781,7 @@
             return Boolean(
                 document.getElementById('copyReqSearchCode')?.value ||
                 document.getElementById('copyReqSearchRegNum')?.value ||
+                document.getElementById('copyReqSearchCreator')?.value ||
                 document.getElementById('copyReqSearchType')?.value !== 'Tất cả' ||
                 document.getElementById('copyReqSearchStatus')?.value !== 'Tất cả' ||
                 document.getElementById('copyReqSearchFromDate')?.value ||
@@ -14396,7 +14813,7 @@
                     quantity: data.copyType === 'Bản sao giấy' ? Number(data.copyQty || 1) : null,
                     status: data.status || 'Chờ thanh toán',
                     date: data.createdAt || new Date().toLocaleString('vi-VN'),
-                    creator: 'Người dùng hiện tại',
+                    creator: 'Nguyễn Văn A',
                     amount: Number(data.amount || 0),
                     agency: data.agency || '',
                     paymentTime: data.paymentTime || '',
@@ -14416,7 +14833,7 @@
             }
 
             if (item.status === 'Hoàn thành' && item.copyType === 'Bản sao điện tử') {
-                actions.push(`<button class="btn btn-success" style="${iconBtnStyle}" title="Tải bản sao chứng nhận" aria-label="Tải bản sao chứng nhận" onclick="event.stopPropagation(); downloadCopyCertificate('${item.code}')"><i class="fa-solid fa-download"></i></button>`);
+                actions.push(`<button class="btn btn-success" style="${iconBtnStyle}" title="Tải file" aria-label="Tải file" onclick="event.stopPropagation(); downloadCopyCertificate('${item.code}')"><i class="fa-solid fa-download"></i></button>`);
             }
 
             if (!actions.length) {
@@ -14435,7 +14852,7 @@
             dataList = [...dataList].sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
 
             if (!dataList.length) {
-                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy yêu cầu cung cấp bản sao phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy yêu cầu cung cấp bản sao phù hợp với điều kiện tìm kiếm.</td></tr>`;
                 document.getElementById('copyReqCountDisplay').innerText = 'Hiển thị 0-0 của 0 yêu cầu';
                 document.getElementById('copyReqPagination').innerHTML = '';
                 return;
@@ -14475,10 +14892,10 @@
                         <td>${escapeHtml(item.regNum)}</td>
                         <td>${escapeHtml(item.copyType)}</td>
                         <td>${quantityText}</td>
-                        <td><span class="status-badge ${getStatusClass(item.status)}">${escapeHtml(item.status)}</span></td>
                         <td>${escapeHtml(item.date)}</td>
-                        <td>${formatCopyReqAmount(item.amount)}</td>
-                        <td>${escapeHtml(item.creator)}</td>
+                        <td style="text-align:right;">${getCopyRequestPaidAmountText(item)}</td>
+                        <td><span class="status-badge ${getStatusClass(item.status)}">${escapeHtml(item.status)}</span></td>
+                        <td>${escapeHtml(getRequestCreatorText(item))}</td>
                         <td style="text-align:center;">${renderCopyRequestActions(item)}</td>
                     </tr>
                 `;
@@ -14491,6 +14908,11 @@
 
         function formatCopyReqAmount(amount) {
             return `${Number(amount || 0).toLocaleString('vi-VN')} VNĐ`;
+        }
+
+        function getCopyRequestPaidAmountText(item) {
+            if (!item || !item.paymentTime) return '—';
+            return Number(item.amount || 0).toLocaleString('vi-VN');
         }
 
         function renderCopyDetailLine(label, value) {
@@ -14781,6 +15203,7 @@
 
         function renderCopyRequestProcessingInfo(item) {
             const amountText = formatCopyReqAmount(item.amount);
+            const paidAmountText = Number(item.amount || 0).toLocaleString('vi-VN');
             const signerName = item.signerName || 'Nguyễn Văn Cán Bộ';
             const signedTime = item.signedTime || '22/07/2026 08:30';
 
@@ -14791,16 +15214,16 @@
             if (item.status === 'Chờ ký') {
                 return `
                     ${renderCopyDetailLine('Thời điểm duyệt', escapeHtml(item.approvedTime || '16/07/2026 15:20'))}
-                    ${renderCopyDetailLine('Cán bộ trình ký', escapeHtml(item.submitOfficer || 'Trần Thị Cán Bộ'))}
+                    ${renderCopyDetailLine('Người duyệt', escapeHtml(item.approveOfficer || 'Trần Thị Cán Bộ'))}
+                    ${renderCopyDetailLine('Thời điểm trình ký', escapeHtml(item.submittedTime || item.approvedTime || '16/07/2026 15:20'))}
                     ${item.paymentTime ? renderCopyDetailLine('Thời điểm thanh toán', escapeHtml(item.paymentTime)) : ''}
-                    ${renderCopyDetailLine('Số tiền đã thanh toán', escapeHtml(amountText))}
+                    ${renderCopyDetailLine('Số tiền đã thanh toán (VNĐ)', escapeHtml(paidAmountText))}
                 `;
             }
 
             if (item.status === 'Chờ thanh toán') {
                 return `
                     ${renderCopyDetailLine('Số tiền phải thanh toán', escapeHtml(amountText))}
-                    ${renderCopyDetailLine('Hướng xử lý', escapeHtml('Khách hàng thực hiện thanh toán để chuyển yêu cầu sang trạng thái Chờ duyệt.'))}
                 `;
             }
 
@@ -14808,8 +15231,8 @@
                 return `
                     ${renderCopyDetailLine('Thời điểm ký duyệt', escapeHtml(item.signedTime || '17/07/2026 08:30'))}
                     ${renderCopyDetailLine('Người ký duyệt', escapeHtml(item.signerName || 'Nguyễn Văn Lãnh Đạo'))}
-                    ${renderCopyDetailLine('Số tiền đã thanh toán', escapeHtml(amountText))}
-                    ${renderCopyDetailLine('Hướng xử lý', escapeHtml('Yêu cầu bản sao giấy đã được duyệt, đang chờ Cán bộ xác nhận trả kết quả.'))}
+                    ${renderCopyDetailLine('Số tiền đã thanh toán (VNĐ)', escapeHtml(paidAmountText))}
+                    ${renderCopyDetailLine('Nội dung hướng dẫn nhận bản sao giấy', escapeHtml(`Bản sao giấy của bạn đã được phê duyệt và đang được chuẩn bị. Vui lòng đến ${getCopyRequestAgency(item)} hoặc theo hình thức nhận đã đăng ký để nhận kết quả.`))}
                 `;
             }
 
@@ -14819,12 +15242,12 @@
                     : '';
                 const resultLine = item.copyType === 'Bản sao điện tử'
                     ? renderCopyDetailLine('File bản sao điện tử', `<a href="#" onclick="event.preventDefault(); viewCopyRequestFile('${item.code}')">Xem file</a> | <a href="#" onclick="event.preventDefault(); downloadCopyCertificate('${item.code}')">Tải file</a>`)
-                    : renderCopyDetailLine('Thông tin nhận bản sao giấy', escapeHtml(item.paperDeliveryInfo || 'Bản sao giấy đã được xử lý theo hình thức nhận đã đăng ký.'));
+                    : renderCopyDetailLine('Thông tin trả bản sao giấy', escapeHtml(item.paperDeliveryInfo || 'Bản sao giấy đã được trả cho Khách hàng.'));
 
                 return `
-                    ${renderCopyDetailLine('Thời điểm ký duyệt', escapeHtml(signedTime))}
-                    ${renderCopyDetailLine('Người ký duyệt', escapeHtml(signerName))}
-                    ${renderCopyDetailLine('Số tiền đã thanh toán', escapeHtml(amountText))}
+                    ${renderCopyDetailLine('Thời điểm ký/Thời điểm trả kết quả', escapeHtml(signedTime))}
+                    ${renderCopyDetailLine('Người ký/Người trả kết quả', escapeHtml(signerName))}
+                    ${renderCopyDetailLine('Số tiền đã thanh toán (VNĐ)', escapeHtml(paidAmountText))}
                     ${renderCopyDetailLine('Mã giao dịch thanh toán', escapeHtml(item.paymentTxn || `PAY-${item.code.replace(/[^0-9]/g, '').slice(-8)}`))}
                     ${receiptLine}
                     ${renderCopyDetailLine('Thời điểm thanh toán', escapeHtml(item.paymentTime || item.date))}
@@ -15012,6 +15435,10 @@
         }
 
         function renderRegisteredRequestRowActions(item, versionCount) {
+            const canUpdateItem = ['Lưu nháp', 'Bị từ chối', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký']
+                .some(status => isRegReqStatus(item, status));
+            const canDeleteItem = ['Lưu nháp', 'Bị từ chối']
+                .some(status => isRegReqStatus(item, status));
             const iconBtnStyle = 'width:30px; height:30px; padding:0; font-size:12px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;';
             const disabledStyle = `${iconBtnStyle} opacity:.35; filter:grayscale(1); cursor:not-allowed;`;
             const renderIconButton = ({ enabled, className, title, disabledTitle, icon, onClick }) => enabled
@@ -15026,18 +15453,18 @@
                 onClick: `payRegisteredRequest('${item.regNum}')`
             });
             const updateBtn = renderIconButton({
-                enabled: isRegReqStatus(item, 'Lưu nháp'),
+                enabled: canUpdateItem,
                 className: 'btn btn-success',
-                title: 'Cập nhật hồ sơ nháp',
-                disabledTitle: 'Chỉ cập nhật được hồ sơ ở trạng thái Lưu nháp',
+                title: 'Cập nhật hồ sơ',
+                disabledTitle: 'Chỉ cập nhật được hồ sơ ở trạng thái cho phép cập nhật',
                 icon: 'fa-solid fa-pen-to-square',
                 onClick: `updateRegisteredRequest('${item.regNum}', '${item.type}')`
             });
             const deleteBtn = renderIconButton({
-                enabled: isRegReqStatus(item, 'Lưu nháp'),
+                enabled: canDeleteItem,
                 className: 'btn btn-danger',
-                title: 'Xóa hồ sơ nháp',
-                disabledTitle: 'Chỉ xóa được hồ sơ ở trạng thái Lưu nháp',
+                title: 'Xóa hồ sơ',
+                disabledTitle: 'Chỉ xóa được hồ sơ ở trạng thái Lưu nháp hoặc Bị từ chối',
                 icon: 'fa-solid fa-trash-can',
                 onClick: `deleteDraftRegisteredRequest('${item.regNum}')`
             });
@@ -15058,9 +15485,13 @@
             const typeNorm = normalizeRegReqText(item.type);
             const rootDescendants = flattenRegReqChildren(context.root);
             const itemDescendants = flattenRegReqChildren(item);
-            const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Chờ ký', 'Sai lệch thanh toán'].map(normalizeRegReqText);
+            const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký', 'Sai lệch thanh toán'].map(normalizeRegReqText);
             const hasType = (candidate, keyword) => normalizeRegReqText(candidate.type).includes(normalizeRegReqText(keyword));
             const isActiveStatus = (candidate) => activeStatuses.includes(normalizeRegReqText(candidate.status));
+            const isBlockingDeleteRegistration = (candidate) =>
+                hasType(candidate, 'Xóa đăng ký') &&
+                !hasType(candidate, 'Thông báo') &&
+                (isRegReqStatus(candidate, 'Hoàn thành') || isActiveStatus(candidate));
             const isCompleted = isRegReqStatus(item, 'Hoàn thành');
             const canRequestFollowUp = isCompleted && !isRegisteredInfoRequestType(item.type);
             const isRootFirstRegistration = isCompleted && context.depth === 0 && typeNorm.includes(normalizeRegReqText('Đăng ký lần đầu'));
@@ -15074,6 +15505,7 @@
             const hasActiveChangeRegistration = rootDescendants.some(candidate => hasType(candidate, 'Đăng ký thay đổi') && isActiveStatus(candidate));
             const hasAnyAssetNotice = rootDescendants.some(candidate => hasType(candidate, 'Thông báo xử lý'));
             const hasAnyDeleteRegistration = rootDescendants.some(candidate => hasType(candidate, 'Xóa đăng ký') && !hasType(candidate, 'Thông báo'));
+            const hasBlockingDeleteRegistration = rootDescendants.some(isBlockingDeleteRegistration);
             const hasActiveChangeNotice = itemDescendants.some(candidate => hasType(candidate, 'Thay đổi thông báo') && isActiveStatus(candidate));
             const hasAnyDeleteNotice = itemDescendants.some(candidate => hasType(candidate, 'Xóa') && hasType(candidate, 'Thông báo'));
             const actions = [];
@@ -15083,7 +15515,7 @@
 
             if (isRootFirstRegistration) {
                 if (!hasActiveChangeRegistration) addAction('Đăng ký thay đổi', `shortcutChangeRegistration('${item.regNum}')`, 'fa-solid fa-file-pen');
-                if (!hasAnyAssetNotice) addAction('Thông báo xử lý tài sản', `shortcutAssetDisposal('${item.regNum}')`, 'fa-solid fa-bullhorn');
+                if (!hasAnyAssetNotice && !hasBlockingDeleteRegistration) addAction('Thông báo xử lý tài sản', `shortcutAssetDisposal('${item.regNum}')`, 'fa-solid fa-bullhorn');
                 if (!hasAnyDeleteRegistration) addAction('Xóa đăng ký', `shortcutDeleteRegistration('${item.regNum}')`, 'fa-solid fa-file-circle-minus');
             }
 
@@ -15096,10 +15528,6 @@
                 addAction('Yêu cầu cung cấp thông tin', `shortcutRequestInformation('${item.regNum}')`, 'fa-solid fa-magnifying-glass');
                 addAction('Yêu cầu cung cấp bản sao', `shortcutRequestCopy('${item.regNum}')`, 'fa-solid fa-copy');
                 addAction('Yêu cầu cung cấp bản sao kèm thông báo', `shortcutRequestCopyNotice('${item.regNum}')`, 'fa-solid fa-file-circle-check');
-            }
-
-            if (isCompleted && typeNorm.includes(normalizeRegReqText('Hủy đăng ký'))) {
-                addAction('Khôi phục hủy đăng ký', `shortcutRestoreRegistration('${item.regNum}')`, 'fa-solid fa-trash-arrow-up');
             }
 
             if (!actions.length) {
@@ -15128,6 +15556,7 @@
 
             const isFiltered = document.getElementById('regReqSearchNum').value ||
                 document.getElementById('regReqSearchGuarantor').value ||
+                document.getElementById('regReqSearchCreator').value ||
                 document.getElementById('regReqSearchStatus').value !== 'Tất cả' ||
                 document.getElementById('regReqSearchType').value !== 'Tất cả' ||
                 document.getElementById('regReqSearchFromDate').value ||
@@ -15138,7 +15567,7 @@
                 hasRegReqAssetSpecificFilterValues();
 
             let dataList = isFiltered ? regReqFilteredData : registeredRequestsData;
-            const emptyColspan = 12 + getRegReqActiveAssetColumns().length;
+            const emptyColspan = 15 + getRegReqActiveAssetColumns().length;
 
             // Sắp xếp dữ liệu nếu có cột được chọn
             if (regReqSortField) {
@@ -15147,24 +15576,8 @@
                     let valB = '';
 
                     if (regReqSortField === 'date') {
-                        const parseDate = (dStr) => {
-                            if (!dStr) return 0;
-                            const parts = dStr.trim().split(' ');
-                            const dateParts = parts[0].split('/');
-                            if (dateParts.length !== 3) return 0;
-                            const day = parseInt(dateParts[0], 10);
-                            const month = parseInt(dateParts[1], 10) - 1;
-                            const year = parseInt(dateParts[2], 10);
-                            let h = 0, m = 0;
-                            if (parts.length > 1) {
-                                const timeParts = parts[1].split(':');
-                                h = parseInt(timeParts[0], 10) || 0;
-                                m = parseInt(timeParts[1], 10) || 0;
-                            }
-                            return new Date(year, month, day, h, m).getTime();
-                        };
-                        valA = parseDate(a.date);
-                        valB = parseDate(b.date);
+                        valA = parseRegReqDateValue(a.date);
+                        valB = parseRegReqDateValue(b.date);
                     } else if (regReqSortField === 'regNum') {
                         valA = (a.regNum || '').toLowerCase();
                         valB = (b.regNum || '').toLowerCase();
@@ -15222,7 +15635,8 @@
             let stt = startIndex + 1;
 
             pageRoots.forEach(item => {
-                const hasChildren = item.children && item.children.length > 0;
+                const children = getSortedRegReqChildren(item);
+                const hasChildren = children.length > 0;
                 const toggleHtml = hasChildren
                     ? `<span class="tree-toggle ${item.expanded ? '' : 'collapsed'}" onclick="toggleRegReqTree('${item.id}', event)"><i class="fa-solid fa-chevron-down"></i></span>`
                     : `<span style="margin-left: 28px;"></span>`;
@@ -15241,8 +15655,11 @@
                         <td>${item.measureContractType || ''}</td>
                         <td>${renderAssetCellHtml(item.secAssets)}</td>
                         ${renderRegReqAssetExtraCells(item)}
-                        <td><span class="status-badge ${getStatusClass(item.status)}">${item.status}</span></td>
                         <td>${item.date}</td>
+                        <td>${getRegisteredRequestEffectiveTime(item)}</td>
+                        <td style="text-align:right;">${getRegisteredRequestPaidAmountText(item)}</td>
+                        <td><span class="status-badge ${getStatusClass(item.status)}">${item.status}</span></td>
+                        <td>${escapeHtml(getRequestCreatorText(item))}</td>
                         <td onclick="event.stopPropagation();">
                             <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                                 ${renderRegisteredRequestRowActions(item, hasChildren ? item.children.length : 0)}
@@ -15253,8 +15670,9 @@
                 `;
 
                 if (hasChildren && item.expanded) {
-                    item.children.forEach(child => {
-                        const hasGrandchildren = child.children && child.children.length > 0;
+                    children.forEach(child => {
+                        const grandchildren = getSortedRegReqChildren(child);
+                        const hasGrandchildren = grandchildren.length > 0;
                         const childToggleHtml = hasGrandchildren
                             ? `<span class="tree-toggle ${child.expanded ? '' : 'collapsed'}" onclick="toggleRegReqTree('${child.id}', event)"><i class="fa-solid fa-chevron-down"></i></span>`
                             : `<span style="margin-left: 28px;"></span>`;
@@ -15273,8 +15691,11 @@
                                 <td>${child.measureContractType || ''}</td>
                                 <td>${renderAssetCellHtml(child.secAssets)}</td>
                                 ${renderRegReqAssetExtraCells(child)}
-                                <td><span class="status-badge ${getStatusClass(child.status)}">${child.status}</span></td>
                                 <td>${child.date}</td>
+                                <td>${getRegisteredRequestEffectiveTime(child)}</td>
+                                <td style="text-align:right;">${getRegisteredRequestPaidAmountText(child)}</td>
+                                <td><span class="status-badge ${getStatusClass(child.status)}">${child.status}</span></td>
+                                <td>${escapeHtml(getRequestCreatorText(child))}</td>
                                 <td onclick="event.stopPropagation();">
                                     <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                                         ${renderRegisteredRequestRowActions(child, hasGrandchildren ? child.children.length : 0)}
@@ -15285,7 +15706,7 @@
                         `;
 
                         if (hasGrandchildren && child.expanded) {
-                            child.children.forEach(gc => {
+                            grandchildren.forEach(gc => {
                                 const gcMoreActionsHtml = renderRegisteredRequestMoreActions(gc);
 
                                 html += `
@@ -15300,8 +15721,11 @@
                                         <td>${gc.measureContractType || ''}</td>
                                         <td>${renderAssetCellHtml(gc.secAssets)}</td>
                                         ${renderRegReqAssetExtraCells(gc)}
-                                        <td><span class="status-badge ${getStatusClass(gc.status)}">${gc.status}</span></td>
                                         <td>${gc.date}</td>
+                                        <td>${getRegisteredRequestEffectiveTime(gc)}</td>
+                                        <td style="text-align:right;">${getRegisteredRequestPaidAmountText(gc)}</td>
+                                        <td><span class="status-badge ${getStatusClass(gc.status)}">${gc.status}</span></td>
+                                        <td>${escapeHtml(getRequestCreatorText(gc))}</td>
                                         <td onclick="event.stopPropagation();">
                                             <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                                                 ${renderRegisteredRequestRowActions(gc, 0)}
@@ -15350,27 +15774,23 @@
         }
 
         function viewRegisteredRequest(regNum, type, versionCount) {
-            localStorage.setItem('regNum', regNum);
             const detailContext = buildRegisteredRequestDetailContext(regNum);
+            const rootRegNum = detailContext ? detailContext.rootRegNum : regNum;
+            localStorage.setItem('regNum', rootRegNum);
             if (detailContext) {
                 sessionStorage.setItem('registeredRequestDetailContext', JSON.stringify(detailContext));
             }
             showToast('Đang mở xem chi tiết lịch sử hồ sơ...', 'info');
             setTimeout(() => {
-                let url = '';
-                if (versionCount <= 1) {
-                    url = `UC027/xem_chi_tiet_lich_su_can_bo.html?mode=single&regNum=${regNum}&focusId=${regNum}&from=registered`;
-                } else {
-                    url = `UC027/xem_chi_tiet_lich_su_can_bo.html?regNum=${regNum}&focusId=${regNum}&from=registered`;
-                }
+                const url = `UC027/WebKH_Phieu_Dang_ky_Xem_Chi_Tiet.html?regNum=${rootRegNum}&focusId=${regNum}&from=registered`;
                 showScreen('view-detail-history', url);
             }, 400);
         }
 
         function deleteDraftRegisteredRequest(regNum) {
             const item = findRegisteredRequest(regNum);
-            if (!item || !isRegReqStatus(item, 'Lưu nháp')) {
-                showToast('Chỉ được xóa hồ sơ ở trạng thái Lưu nháp.', 'error');
+            if (!item || !(isRegReqStatus(item, 'Lưu nháp') || isRegReqStatus(item, 'Bị từ chối'))) {
+                showToast('Chỉ được xóa hồ sơ ở trạng thái Lưu nháp hoặc Bị từ chối.', 'error');
                 return;
             }
 
@@ -15393,14 +15813,14 @@
             }
 
             const item = findRegisteredRequest(regNum);
-            if (!item || !isRegReqStatus(item, 'Lưu nháp')) {
+            if (!item || !(isRegReqStatus(item, 'Lưu nháp') || isRegReqStatus(item, 'Bị từ chối'))) {
                 closeDeleteRegisteredRequestModal();
-                showToast('Chỉ được xóa hồ sơ ở trạng thái Lưu nháp.', 'error');
+                showToast('Chỉ được xóa hồ sơ ở trạng thái Lưu nháp hoặc Bị từ chối.', 'error');
                 return;
             }
 
             if (removeRegisteredRequestByRegNum(regNum)) {
-                showToast(`Đã xóa hồ sơ nháp ${regNum}.`, 'success');
+                showToast(`Đã xóa hồ sơ ${regNum}.`, 'success');
                 renderRegisteredRequestsTable();
             }
             closeDeleteRegisteredRequestModal();
@@ -15434,8 +15854,10 @@
 
         function updateRegisteredRequest(regNum, type) {
             const item = findRegisteredRequest(regNum);
-            if (!item || !isRegReqStatus(item, 'Lưu nháp')) {
-                showToast('Chỉ được cập nhật hồ sơ ở trạng thái Lưu nháp.', 'error');
+            const canUpdateItem = item && ['Lưu nháp', 'Bị từ chối', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký']
+                .some(status => isRegReqStatus(item, status));
+            if (!canUpdateItem) {
+                showToast('Chỉ được cập nhật hồ sơ ở trạng thái cho phép cập nhật.', 'error');
                 return;
             }
 
@@ -15489,6 +15911,22 @@
         }
 
         function shortcutAssetDisposal(regNum) {
+            const actionContext = findRegisteredRequestContext(regNum);
+            if (actionContext) {
+                const rootDescendants = flattenRegReqChildren(actionContext.root);
+                const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký', 'Sai lệch thanh toán'].map(normalizeRegReqText);
+                const hasType = (candidate, keyword) => normalizeRegReqText(candidate.type).includes(normalizeRegReqText(keyword));
+                const isActiveStatus = (candidate) => activeStatuses.includes(normalizeRegReqText(candidate.status));
+                const hasBlockingDeleteRegistration = rootDescendants.some(candidate =>
+                    hasType(candidate, 'Xóa đăng ký') &&
+                    !hasType(candidate, 'Thông báo') &&
+                    (isRegReqStatus(candidate, 'Hoàn thành') || isActiveStatus(candidate))
+                );
+                if (hasBlockingDeleteRegistration) {
+                    showToast('Hồ sơ đã có yêu cầu xóa đăng ký đang xử lý hoặc đã hoàn thành. Không thể tạo Thông báo xử lý tài sản.', 'error');
+                    return;
+                }
+            }
             rememberRegisteredActionReturn();
             showToast(`Đang tải dữ liệu hồ sơ gốc ${regNum} để làm Thông báo xử lý tài sản...`, 'info');
             setTimeout(() => {
@@ -15508,10 +15946,13 @@
 
         function shortcutRequestInformation(regNum) {
             rememberRegisteredActionReturn();
-            localStorage.setItem('regNum', regNum);
+            sessionStorage.setItem('registeredRequestInformationContext', JSON.stringify({
+                action: 'request-information',
+                selectedRegNum: regNum
+            }));
             showToast(`Đang mở luồng Yêu cầu cung cấp thông tin cho hồ sơ ${regNum}...`, 'info');
             setTimeout(() => {
-                showScreen('search', 'reg');
+                showScreen('request-information', `UC141_UC144_UC195/tao_yeu_cau_cctt_main.html?from=registered&regNum=${encodeURIComponent(regNum)}&t=${Date.now()}`);
             }, 400);
         }
 
@@ -15531,13 +15972,6 @@
             setTimeout(() => {
                 showScreen('request-copies-notif', url);
             }, 400);
-        }
-
-        function shortcutRestoreRegistration(regNum) {
-            showToast(`Đang thực hiện khôi phục hủy đăng ký cho hồ sơ ${regNum}...`, 'info');
-            setTimeout(() => {
-                showToast(`Đã khôi phục thành công hồ sơ ${regNum}.`, 'success');
-            }, 800);
         }
 
         function shortcutChangeAssetDisposal(regNum) {

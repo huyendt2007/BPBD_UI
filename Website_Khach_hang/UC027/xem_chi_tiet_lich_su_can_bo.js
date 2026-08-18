@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // DOM Elements - Sidebar
     const timelineContainer = document.getElementById('timelineContainer');
     const timelineSearchInput = document.getElementById('timelineSearchInput');
+    const filterRegistrationCase = document.getElementById('filterRegistrationCase');
     const filterFromDate = document.getElementById('filterFromDate');
     const filterToDate = document.getElementById('filterToDate');
 
@@ -42,9 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const securedPartiesTitleLabel = document.getElementById('securedPartiesTitleLabel');
 
     // Section wrappers
-    const sectionSummaryOfChanges = document.getElementById('sectionSummaryOfChanges');
-    const summaryTableBody = document.getElementById('summaryTableBody');
-    
     const sectionRegistrantInfo = document.getElementById('sectionRegistrantInfo');
     const sectionOriginalReference = document.getElementById('sectionOriginalReference');
     const sectionGeneralInfo = document.getElementById('sectionGeneralInfo');
@@ -58,6 +56,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const deRegRequesterVal = document.getElementById('deRegRequesterVal');
     const deRegBasisVal = document.getElementById('deRegBasisVal');
     const btnDownloadDeRegPdf = document.getElementById('btnDownloadDeRegPdf');
+
+    const sectionDeleteNoticeInfo = document.getElementById('sectionDeleteNoticeInfo');
+    const deleteNoticeOriginalNoVal = document.getElementById('deleteNoticeOriginalNoVal');
+    const deleteNoticeOriginalDateVal = document.getElementById('deleteNoticeOriginalDateVal');
+    const deleteNoticeReasonVal = document.getElementById('deleteNoticeReasonVal');
+    const deleteNoticeEvidenceVal = document.getElementById('deleteNoticeEvidenceVal');
 
     const sectionCancelRegistration = document.getElementById('sectionCancelRegistration');
     const cancelDateVal = document.getElementById('cancelDateVal');
@@ -958,8 +962,8 @@ document.addEventListener('DOMContentLoaded', function () {
         badgeClass: "badge-change",
         title: "Thay đổi nội dung đăng ký lần 1",
         statusText: "Hoàn thành",
-        date: "01/06/2026 15:30:45",
-        regCode: "1505156436",
+        date: "05/06/2026 14:30:00",
+        regCode: "1505156435-TĐ1",
         description: "Thay đổi thông tin hợp đồng thế chấp tăng hạn mức khoản vay lên 800.000.000 VNĐ",
         data: JSON.parse(JSON.stringify(h35_v1.data))
     };
@@ -992,7 +996,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label: "Đăng ký gốc",
         badgeClass: "badge-initial",
         title: "Đăng ký lần đầu (Gốc)",
-        date: "10/06/2026 11:20:00",
+        date: "15/05/2026 11:20:00",
         regCode: "1505156438",
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô tải Hyundai Porter",
         data: {
@@ -1001,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', function () {
             registrantDoc: "Giay_dang_ky_1505156438.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156438",
-            firstRegDate: "10/06/2026 11:20:00",
+            firstRegDate: "15/05/2026 11:20:00",
             viewOriginalDoc: "GCN_Goc_1505156438.pdf",
             receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
             transactionType: "Biện pháp bảo đảm",
@@ -1322,12 +1326,96 @@ document.addEventListener('DOMContentLoaded', function () {
         if (pageTitleText) pageTitleText.textContent = 'Xem chi tiết Phiếu đăng ký';
     }
     const mockTimelineData = [];
+    function isUcps003RegistrationNode(node) {
+        const text = `${node?.title || ''} ${node?.label || ''} ${node?.data?.regCase || ''}`
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
+            .toLowerCase();
+        const allowed = [
+            'dang ky lan dau',
+            'dang ky goc',
+            'dang ky thay doi',
+            'xoa dang ky',
+            'thong bao xu ly tai san bao dam',
+            'thay doi thong bao xu ly tai san bao dam',
+            'xoa dang ky thong bao xu ly tai san bao dam'
+        ];
+        const excluded = [
+            'yeu cau cung cap ban sao',
+            'yeu cau cung cap thong tin',
+            'chinh ly thong tin',
+            'huy dang ky',
+            'khoi phuc huy dang ky'
+        ];
+        return allowed.some(keyword => text.includes(keyword)) && !excluded.some(keyword => text.includes(keyword));
+    }
+    function getCleanRegistrationCase(node) {
+        const rawText = `${node?.title || ''} ${node?.label || ''} ${node?.data?.regCase || ''}`;
+        const normalized = rawText
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
+            .toLowerCase();
+
+        if (normalized.includes('xoa dang ky thong bao xu ly tai san bao dam') || (normalized.includes('xoa') && normalized.includes('thong bao xu ly'))) {
+            return 'Xóa đăng ký thông báo xử lý tài sản bảo đảm';
+        }
+        if (normalized.includes('thay doi thong bao xu ly tai san bao dam') || (normalized.includes('thay doi') && normalized.includes('thong bao xu ly'))) {
+            return 'Thay đổi thông báo xử lý tài sản bảo đảm';
+        }
+        if (normalized.includes('thong bao xu ly tai san bao dam') || normalized.includes('thong bao xu ly')) {
+            return 'Thông báo xử lý tài sản bảo đảm lần đầu';
+        }
+        if (normalized.includes('xoa dang ky')) {
+            return 'Xóa đăng ký';
+        }
+        if (normalized.includes('dang ky thay doi') || normalized.includes('thay doi noi dung dang ky') || normalized.includes('thay doi thong tin') || normalized.includes('thay doi 1') || normalized.includes('thay doi 2')) {
+            return 'Đăng ký thay đổi';
+        }
+        if (normalized.includes('dang ky lan dau') || normalized.includes('dang ky goc')) {
+            return 'Đăng ký lần đầu';
+        }
+
+        return String(node?.title || node?.data?.regCase || '')
+            .replace(/\s*\((Hoàn thành|Chờ thanh toán|Chờ duyệt|Chờ ký|Bị từ chối|Sai lệch thanh toán)\)\s*/g, '')
+            .replace(/\s*\(Gốc\)\s*/g, '')
+            .trim();
+    }
+    function canShowDiffToggle(node) {
+        const normalized = getCleanRegistrationCase(node)
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
+            .toLowerCase();
+        return normalized.includes('dang ky thay doi') || normalized.includes('thay doi thong bao xu ly tai san bao dam');
+    }
+    function normalizeText(value) {
+        return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
+            .toLowerCase();
+    }
+    function isAssetNoticeNode(node) {
+        return normalizeText(getCleanRegistrationCase(node)).includes('thong bao xu ly tai san bao dam');
+    }
+    function isChangeAssetNoticeNode(node) {
+        return normalizeText(getCleanRegistrationCase(node)).includes('thay doi thong bao xu ly tai san bao dam');
+    }
+    function isDeleteAssetNoticeNode(node) {
+        return normalizeText(getCleanRegistrationCase(node)).includes('xoa dang ky thong bao xu ly tai san bao dam');
+    }
     let registeredDetailContext = null;
     try {
         const rawDetailContext = sessionStorage.getItem('registeredRequestDetailContext');
         if (rawDetailContext) {
             const parsed = JSON.parse(rawDetailContext);
-            if (parsed && parsed.regNum === regNumParam) {
+            if (parsed && (parsed.regNum === regNumParam || parsed.rootRegNum === regNumParam)) {
                 registeredDetailContext = parsed;
             }
         }
@@ -1533,6 +1621,18 @@ document.addEventListener('DOMContentLoaded', function () {
             h35_v3.title = "Thông báo xử lý tài sản bảo đảm (Hoàn thành)";
             h35_v3.date = "05/06/2026 15:30:00";
             h35_v3.regCode = "1505156435-TBXL";
+            h35_v3.description = "Đăng ký thông báo xử lý tài sản bảo đảm lần đầu";
+            h35_v3.data.regCase = "Thông báo xử lý tài sản bảo đảm lần đầu";
+            delete h35_v3.data.hasEditInfo;
+            delete h35_v3.data.editDate;
+            delete h35_v3.data.editRequester;
+            delete h35_v3.data.editOfficer;
+            delete h35_v3.data.editLeader;
+            delete h35_v3.data.hasDeRegistration;
+            delete h35_v3.data.deRegDate;
+            delete h35_v3.data.deRegRequester;
+            delete h35_v3.data.deRegBasis;
+            h35_v3.data.assets.forEach(a => a.status = "Đang xử lý tài sản");
             
             mockTimelineData.push(h35_v4);
             mockTimelineData.push(h35_v3);
@@ -1578,13 +1678,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 version: 3,
                 label: "Thông báo xử lý",
                 badgeClass: "badge-change",
-                title: "Thông báo xử lý tài sản đảm bảo lần đầu (Hoàn thành)",
+                title: "Thông báo xử lý tài sản bảo đảm lần đầu (Hoàn thành)",
                 statusText: "Hoàn thành",
-                date: "15/06/2026 10:00:00",
+                date: "26/05/2026 10:00:00",
                 regCode: "1505156438-TBXL",
                 description: "Đăng ký thông báo xử lý tài sản bảo đảm",
                 data: JSON.parse(JSON.stringify(h38_v1.data))
             };
+            h38_v3.data.regCase = "Thông báo xử lý tài sản bảo đảm lần đầu";
+            delete h38_v3.data.hasEditInfo;
+            delete h38_v3.data.editDate;
+            delete h38_v3.data.editRequester;
+            delete h38_v3.data.editOfficer;
+            delete h38_v3.data.editLeader;
             h38_v3.data.assets.forEach(a => a.status = "Đang xử lý tài sản");
 
             const h38_v4 = {
@@ -1593,7 +1699,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 badgeClass: "badge-change",
                 title: "Thay đổi thông báo xử lý tài sản bảo đảm (Hoàn thành)",
                 statusText: "Hoàn thành",
-                date: "16/06/2026 09:30:00",
+                date: "28/05/2026 09:30:00",
                 regCode: "1505156438-TBXL-TĐ1",
                 description: "Thay đổi thông tin địa điểm xử lý tài sản bảo đảm",
                 data: JSON.parse(JSON.stringify(h38_v3.data))
@@ -1605,21 +1711,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 badgeClass: "badge-initial",
                 title: "Xóa đăng ký thông báo xử lý tài sản bảo đảm (Chờ duyệt)",
                 statusText: "Chờ duyệt",
-                date: "18/06/2026 14:00:00",
+                date: "30/05/2026 14:00:00",
                 regCode: "1505156438-TBXL-X1",
                 description: "Yêu cầu xóa đăng ký thông báo xử lý tài sản bảo đảm",
                 data: JSON.parse(JSON.stringify(h38_v4.data))
             };
             h38_v5.data.assets.forEach(a => a.status = "Đang bảo đảm");
 
-            // Cập nhật lại h38_v2 thành Xóa đăng ký (Hoàn thành) của 1505156438-XÓA
-            h38_v2.label = "Xóa đăng ký";
-            h38_v2.title = "Xóa đăng ký (Hoàn thành)";
-            h38_v2.date = "12/06/2026 15:30:00";
-            h38_v2.regCode = "1505156438-XÓA";
-            h38_v2.data.hasDeRegistration = true;
-            h38_v2.data.deRegDate = "12/06/2026 15:30:00";
-            h38_v2.data.assets.forEach(a => a.status = "Đã giải chấp");
+            // Đồng bộ với cây ngoài danh sách: đây là nhánh đăng ký thay đổi trước khi phát sinh thông báo xử lý tài sản.
+            h38_v2.label = "Thay đổi 1";
+            h38_v2.title = "Đăng ký thay đổi (Hoàn thành)";
+            h38_v2.date = "25/05/2026 15:30:00";
+            h38_v2.regCode = "1505156438-TĐ1";
+            h38_v2.description = "Thay đổi thông tin hợp đồng và bổ sung thông tin tài sản bảo đảm";
+            h38_v2.data.regCase = "Đăng ký thay đổi";
+            h38_v2.data.loanValue = "1.500.000.000 VNĐ";
+            h38_v2.data.editDate = "25/05/2026 15:30:00";
+            h38_v2.data.assets.forEach(a => a.status = "Sửa thông tin");
 
             mockTimelineData.push(h38_v5);
             mockTimelineData.push(h38_v4);
@@ -1627,19 +1735,51 @@ document.addEventListener('DOMContentLoaded', function () {
             mockTimelineData.push(h38_v2);
             mockTimelineData.push(h38_v1);
         } else if (regNumParam.includes('1505156439')) {
-            // 1505156439: Chỉ có 1 nhánh duy nhất (Hoàn thành)
+            // 1505156439: Có đăng ký lần đầu và nhánh xóa đăng ký, đồng bộ với cây ngoài danh sách
             const h39_v1 = {
                 version: 1,
                 label: "Đăng ký gốc",
                 badgeClass: "badge-initial",
                 title: "Đăng ký lần đầu (Gốc) (Hoàn thành)",
                 statusText: "Hoàn thành",
-                date: "20/06/2026 10:00:00",
+                date: "10/05/2026 10:00:00",
                 regCode: "1505156439",
                 description: "Đăng ký biện pháp bảo đảm lần đầu hàng hóa luân chuyển",
-                data: JSON.parse(JSON.stringify(h35_v1.data))
+                data: JSON.parse(JSON.stringify(h38_v1.data))
             };
             h39_v1.data.registrantName = "Công ty CP Thủy sản miền Nam";
+            h39_v1.data.firstRegNo = "1505156439";
+            h39_v1.data.firstRegDate = "10/05/2026 10:00:00";
+            h39_v1.data.contractType = "Hợp đồng thuê tài sản có thời hạn 1 năm trở lên";
+            h39_v1.data.assets = [
+                {
+                    id: 1,
+                    typeName: "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ",
+                    name: "Kho hàng thủy sản đông lạnh",
+                    brandColor: "Khối lượng 80 tấn tại Kho lạnh Cát Lái",
+                    frameNo: "HHLC-TS-2026-39",
+                    engineNo: "-",
+                    plateNo: "-",
+                    status: "Đang bảo đảm"
+                }
+            ];
+            const h39_v2 = {
+                version: 2,
+                label: "Xóa đăng ký",
+                badgeClass: "badge-removed",
+                title: "Xóa đăng ký (Chờ duyệt)",
+                statusText: "Chờ duyệt",
+                date: "02/06/2026 14:00:00",
+                regCode: "1505156439-XÓA",
+                description: "Yêu cầu xóa đăng ký toàn bộ tài sản bảo đảm",
+                data: JSON.parse(JSON.stringify(h39_v1.data))
+            };
+            h39_v2.data.hasDeRegistration = true;
+            h39_v2.data.deRegDate = "02/06/2026 14:00:00";
+            h39_v2.data.deRegRequester = "NGÂN HÀNG TMCP FPT (FPT BANK)";
+            h39_v2.data.deRegBasis = "Các bên thỏa thuận xóa đăng ký biện pháp bảo đảm do nghĩa vụ được bảo đảm đã chấm dứt";
+            h39_v2.data.assets.forEach(a => a.status = "Đã giải chấp");
+            mockTimelineData.push(h39_v2);
             mockTimelineData.push(h39_v1);
         } else if (regNumParam.includes('1505156440')) {
             // 1505156440: Nhiều nhánh nhưng đều hoàn thành rồi (2 phiên bản)
@@ -1798,6 +1938,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 mockTimelineData.push(v1);
             }
         }
+        for (let i = mockTimelineData.length - 1; i >= 0; i--) {
+            if (!isUcps003RegistrationNode(mockTimelineData[i])) {
+                mockTimelineData.splice(i, 1);
+            }
+        }
+
+        if (registeredDetailContext?.registrantName || registeredDetailContext?.rootRegistrantName) {
+            const registrantName = registeredDetailContext.registrantName || registeredDetailContext.rootRegistrantName;
+            mockTimelineData.forEach(node => {
+                if (node.data) node.data.registrantName = registrantName;
+            });
+        }
+
         // Sắp xếp giảm dần theo phiên bản
         mockTimelineData.sort((a, b) => b.version - a.version);
     }
@@ -1887,13 +2040,56 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             ];
 
+            const isAssetNotice = isAssetNoticeNode(node);
+            const isChangeAssetNotice = isChangeAssetNoticeNode(node);
+            const isDeleteAssetNotice = isDeleteAssetNoticeNode(node);
+
             // Determine if the node is Xóa/Hủy/Giải chấp
             const isRemoved = node.title.toLowerCase().includes("xóa") || 
                               node.title.toLowerCase().includes("hủy") || 
                               node.statusText === "Đã giải chấp" ||
                               (node.data && (node.data.hasDeRegistration || node.data.hasCancelReg));
 
-            if (isRemoved) {
+            if (isAssetNotice) {
+                node.data.transactionType = "Thông báo xử lý tài sản bảo đảm";
+                node.data.processingInfo = (isChangeAssetNotice || isDeleteAssetNotice) ? {
+                    reason: "Bên bảo đảm vi phạm nghĩa vụ thanh toán theo hợp đồng tín dụng đã ký kết.",
+                    time: "20/06/2026",
+                    location: "Bãi giữ xe số 12, đường Nguyễn Văn Linh, Quận 7, TP Hồ Chí Minh"
+                } : {
+                    reason: "Bên bảo đảm vi phạm nghĩa vụ thanh toán theo hợp đồng tín dụng đã ký kết.",
+                    time: "18/06/2026",
+                    location: "Kho tài sản bảo đảm của FPT Bank, số 17 Duy Tân, Cầu Giấy, Hà Nội"
+                };
+
+                if (isDeleteAssetNotice) {
+                    node.data.deleteNoticeInfo = {
+                        originalNoticeNo: node.data.originalNoticeNo || node.data.noticeOriginalNo || `${node.data.firstRegNo || '1505156438'}-TBXL`,
+                        originalNoticeDate: node.data.originalNoticeDate || "26/05/2026 10:00:00",
+                        reason: "Các bên thỏa thuận không xử lý tài sản bảo đảm.",
+                        evidenceDoc: `Van_ban_chung_minh_xoa_thong_bao_${node.regCode}.pdf`
+                    };
+                }
+
+                const selectedIds = (isChangeAssetNotice || isDeleteAssetNotice) ? [1, 4] : [1, 2];
+                const removedIds = isChangeAssetNotice ? [2] : [];
+                baseAssets.forEach(asset => {
+                    asset.selectedForProcessing = selectedIds.includes(asset.id);
+                    asset.status = asset.selectedForProcessing ? "Được chọn xử lý" : "Không chọn xử lý";
+                    if (isChangeAssetNotice && asset.id === 1) {
+                        asset.prevSelectedForProcessing = true;
+                    }
+                    if (isChangeAssetNotice && asset.id === 4) {
+                        asset.prevSelectedForProcessing = false;
+                        asset.status = "Bổ sung xử lý";
+                    }
+                    if (removedIds.includes(asset.id)) {
+                        asset.prevSelectedForProcessing = true;
+                        asset.selectedForProcessing = false;
+                        asset.status = "Rút khỏi thông báo";
+                    }
+                });
+            } else if (isRemoved) {
                 baseAssets.forEach(a => a.status = "Đã giải chấp");
             } else if (node.title.toLowerCase().includes("thay đổi") || node.label.toLowerCase().includes("thay đổi") || node.version > 1) {
                 baseAssets[3].status = "Sửa thông tin";
@@ -1907,7 +2103,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     let currentSelectedVersion = null;
-    let summaryIdx = 1;
     let visibleCount = 10;
     let filteredData = [...mockTimelineData];
 
@@ -1967,6 +2162,19 @@ document.addEventListener('DOMContentLoaded', function () {
         return new Date(year, month, day, hours, minutes, seconds);
     }
 
+    function formatDateTime(dateObj) {
+        if (!(dateObj instanceof Date) || Number.isNaN(dateObj.getTime())) return '-';
+        const pad = (num) => String(num).padStart(2, '0');
+        return `${pad(dateObj.getDate())}/${pad(dateObj.getMonth() + 1)}/${dateObj.getFullYear()} ${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}`;
+    }
+
+    function deriveEffectTime(dateStr) {
+        const dateObj = parseDate(dateStr);
+        if (!dateObj) return '-';
+        dateObj.setMinutes(dateObj.getMinutes() + 37);
+        return formatDateTime(dateObj);
+    }
+
     // Render timeline
     function renderTimeline(resetPagination = true) {
         if (resetPagination) {
@@ -1977,6 +2185,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Filter based on search input and date filters
         const query = (timelineSearchInput.value || '').trim().toLowerCase();
+        const selectedCase = filterRegistrationCase ? filterRegistrationCase.value : 'Tất cả';
         const fromDateVal = (filterFromDate.value || '').trim();
         const toDateVal = (filterToDate.value || '').trim();
 
@@ -1984,10 +2193,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const toDateObj = parseDate(toDateVal);
 
         filteredData = mockTimelineData.filter(node => {
+            const cleanCase = getCleanRegistrationCase(node);
+            if (selectedCase !== 'Tất cả' && cleanCase !== selectedCase) return false;
+
             // Search filter
-            const matchesQuery = !query || 
-                node.title.toLowerCase().includes(query) || 
-                node.regCode.toLowerCase().includes(query) || 
+            const matchesQuery = !query ||
+                cleanCase.toLowerCase().includes(query) ||
+                node.title.toLowerCase().includes(query) ||
+                node.regCode.toLowerCase().includes(query) ||
                 node.description.toLowerCase().includes(query);
 
             if (!matchesQuery) return false;
@@ -2048,6 +2261,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const isCompleted = node.statusText === 'Hoàn thành';
+            const cleanCase = getCleanRegistrationCase(node);
             nodeEl.innerHTML = `
                 <div class="node-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span class="node-badge ${node.badgeClass}">${node.label}</span>
@@ -2055,12 +2269,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         ${statusTextHtml}
                     </span>
                 </div>
-                <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; margin-bottom: 4px;">${node.title}</div>
+                <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; margin-bottom: 4px;">${cleanCase}</div>
                 <div class="node-reg-code" style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 4px;">
-                    <strong>Số HS:</strong> ${node.regCode}
+                    <strong>Số đăng ký:</strong> ${node.regCode}
                 </div>
                 <div class="node-date" style="font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                    <i class="fa-regular fa-calendar"></i> <strong>Thời điểm:</strong> ${node.date}
+                    <i class="fa-regular fa-calendar"></i> <strong>Thời điểm đăng ký:</strong> ${node.date}
+                </div>
+                <div class="node-status-text" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+                    <strong>Trạng thái:</strong> ${node.statusText || '-'}
                 </div>
                 <p class="node-desc" style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; border-top: 1px dashed #E2E8F0; padding-top: 6px;">
                     ${node.description}
@@ -2130,13 +2347,24 @@ document.addEventListener('DOMContentLoaded', function () {
         currentSelectedVersion = versionNode;
         
         // Update title/status headers
-        const detailStatusText = registeredDetailContext ? registeredDetailContext.status : versionNode.statusText;
-        const detailRegCode = registeredDetailContext ? registeredDetailContext.regNum : versionNode.regCode;
-        currentVersionTitle.textContent = `${versionNode.title} - Trạng thái: ${detailStatusText}`;
-        currentVersionSubtitle.textContent = `Số đăng ký: ${detailRegCode} | Thời điểm thực hiện: ${versionNode.date}`;
+        const detailStatusText = versionNode.statusText || 'Hoàn thành';
+        const detailRegCode = versionNode.regCode;
+        const detailCase = getCleanRegistrationCase(versionNode);
+        currentVersionTitle.textContent = `${detailCase} - Trạng thái: ${detailStatusText}`;
+        currentVersionSubtitle.textContent = `Số đăng ký: ${detailRegCode} | Thời điểm đăng ký: ${versionNode.date}`;
+        renderActionButtons();
+
+        const allowDiff = canShowDiffToggle(versionNode);
+        document.querySelectorAll('.diff-toggle-container').forEach(container => {
+            container.style.display = allowDiff ? 'flex' : 'none';
+        });
+        if (!allowDiff) {
+            if (diffToggle) diffToggle.checked = false;
+        }
 
         // Reset display of special blocks
         sectionDeRegistration.style.display = 'none';
+        if (sectionDeleteNoticeInfo) sectionDeleteNoticeInfo.style.display = 'none';
         sectionCancelRegistration.style.display = 'none';
         sectionRestoreRegistration.style.display = 'none';
         sectionEditInfo.style.display = 'none';
@@ -2147,7 +2375,9 @@ document.addEventListener('DOMContentLoaded', function () {
             sectionRejectionInfo.style.display = 'block';
             if (rejectByVal) rejectByVal.textContent = versionNode.data.rejectBy || versionNode.data.rejectOfficer || "Nguyễn Văn Cán Bộ";
             rejectDateVal.textContent = versionNode.data.rejectDate || versionNode.date;
-            rejectReasonVal.textContent = versionNode.data.rejectReason || "Không có lý do chi tiết.";
+            rejectReasonVal.textContent = versionNode.data.rejectReason ||
+                versionNode.data.rejectionReason ||
+                "Hồ sơ chưa đáp ứng điều kiện phê duyệt. Vui lòng rà soát lại thông tin kê khai và tài liệu đính kèm theo thông báo của Cơ quan đăng ký.";
             rejectDocVal.innerHTML = `<a href="#" class="btn-download-pdf" data-code="${versionNode.data.rejectNoticePdf || versionNode.regCode}"><i class="fa-solid fa-file-pdf"></i> Xem văn bản từ chối (.pdf)</a>`;
         }
 
@@ -2158,6 +2388,17 @@ document.addEventListener('DOMContentLoaded', function () {
             deRegRequesterVal.textContent = versionNode.data.deRegRequester;
             deRegBasisVal.textContent = versionNode.data.deRegBasis;
             btnDownloadDeRegPdf.setAttribute('data-code', versionNode.regCode);
+        }
+
+        if (isDeleteAssetNoticeNode(versionNode) && sectionDeleteNoticeInfo) {
+            const deleteInfo = versionNode.data.deleteNoticeInfo || {};
+            sectionDeleteNoticeInfo.style.display = 'block';
+            deleteNoticeOriginalNoVal.textContent = deleteInfo.originalNoticeNo || `${versionNode.data.firstRegNo || versionNode.regCode}-TBXL`;
+            deleteNoticeOriginalDateVal.textContent = deleteInfo.originalNoticeDate || versionNode.data.firstRegDate || '-';
+            deleteNoticeReasonVal.textContent = deleteInfo.reason || 'Các bên thỏa thuận không xử lý tài sản bảo đảm.';
+            deleteNoticeEvidenceVal.innerHTML = deleteInfo.evidenceDoc
+                ? `<a href="#" class="btn-download-pdf" data-code="${deleteInfo.evidenceDoc}"><i class="fa-solid fa-file-pdf"></i> ${deleteInfo.evidenceDoc}</a>`
+                : '-';
         }
 
         if (versionNode.data.hasCancelReg) {
@@ -2213,9 +2454,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Compare fields and render details view
     function calculateAndRenderDetails(current, previous) {
-        summaryTableBody.innerHTML = '';
-        summaryIdx = 1;
-
         const currData = current.data;
         const prevData = previous ? previous.data : null;
 
@@ -2243,20 +2481,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let isModified = false;
             
             // Highlight modifications for Thay đổi (change) or Chỉnh lý (correction)
-            if (prevData && prevVal !== undefined && prevVal !== null && prevVal !== currVal && (current.label.includes("Thay đổi") || current.label.includes("Chỉnh lý"))) {
+            if (field.compare !== false && prevData && prevVal !== undefined && prevVal !== null && prevVal !== currVal && (current.label.includes("Thay đổi") || current.label.includes("Chỉnh lý"))) {
                 isModified = true;
-                
-                // Add modification row to the summary table
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">${summaryIdx++}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 500; color: var(--primary-color);">${field.block}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">${field.label}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid var(--border-color);"><span class="table-status-tag tag-modified">Chỉnh sửa</span></td>
-                    <td style="padding: 10px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); text-decoration: line-through;">${prevVal || '(trống)'}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 600;">${currVal || '(trống)'}</td>
-                `;
-                summaryTableBody.appendChild(row);
             }
 
             fieldEl.setAttribute('data-modified', isModified ? 'true' : 'false');
@@ -2293,16 +2519,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Helper to append a summary row
         function addListSummaryRow(block, fieldLabel, changeType, beforeVal, afterVal) {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">${summaryIdx++}</td>
-                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 500; color: var(--primary-color);">${block}</td>
-                <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">${fieldLabel}</td>
-                <td style="padding: 10px; border-bottom: 1px solid var(--border-color);"><span class="table-status-tag ${changeType === 'Thêm mới' ? 'tag-added' : (changeType === 'Rút bớt' ? 'tag-removed' : 'tag-modified')}">${changeType}</span></td>
-                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); ${changeType === 'Chỉnh sửa' || changeType === 'Rút bớt' ? 'text-decoration: line-through;' : ''}">${beforeVal}</td>
-                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 600;">${afterVal}</td>
-            `;
-            summaryTableBody.appendChild(row);
         }
 
         // 1. Registrant Info
@@ -2315,46 +2531,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 2. Reference Info
         const referenceFields = [
-            { key: 'regCase', label: 'Trường hợp đăng ký', block: 'Thông tin hồ sơ', elementId: 'regCaseVal', fieldId: 'regCaseField' },
+            { label: 'Trường hợp đăng ký', block: 'Thông tin hồ sơ', elementId: 'regCaseVal', fieldId: 'regCaseField', compare: false, valueGetter: (node) => getCleanRegistrationCase(node) },
             { 
-                label: 'Ngày đăng ký', 
+                label: 'Thời điểm đăng ký',
                 block: 'Thông tin hồ sơ', 
                 elementId: 'regDateVal', 
                 fieldId: 'regDateField',
+                compare: false,
                 valueGetter: (node) => node ? node.date : null
             },
             { 
-                label: 'Số hồ sơ đăng ký', 
+                label: 'Số đăng ký',
                 block: 'Thông tin hồ sơ', 
                 elementId: 'regNoVal', 
                 fieldId: 'regNoField', 
-                visibleCondition: (node) => node.version !== 1,
+                compare: false,
                 valueGetter: (node) => node ? node.regCode : null
             },
             { 
-                key: 'copyRegNo', 
-                label: 'Số đăng ký cần cấp bản sao', 
+                label: 'Thời điểm có hiệu lực',
                 block: 'Thông tin hồ sơ', 
-                elementId: 'copyRegNoVal', 
-                fieldId: 'copyRegNoField', 
-                visibleCondition: (node, val) => {
-                    const isCopy = node.title.includes("bản sao") || node.title.includes("Bản sao") || node.title.includes("cấp bản sao");
-                    const firstNo = node.data.firstRegNo || '';
-                    const copyNo = node.data.copyRegNo || '';
-                    return isCopy && copyNo !== '' && copyNo !== firstNo;
-                }
+                elementId: 'effectTimeVal',
+                fieldId: 'effectTimeField',
+                compare: false,
+                visibleCondition: (node) => node.statusText === 'Hoàn thành',
+                valueGetter: (node) => node.data.effectTime || node.data.signTime || deriveEffectTime(node.date)
             },
             { 
-                key: 'copyCount', 
-                label: 'Số lượng bản sao yêu cầu', 
+                label: 'Trạng thái hồ sơ',
                 block: 'Thông tin hồ sơ', 
-                elementId: 'copyCountVal', 
-                fieldId: 'copyCountField', 
-                visibleCondition: (node, val) => (node.title.includes("bản sao") || node.title.includes("Bản sao") || node.title.includes("cấp bản sao")) && !!val
+                elementId: 'profileStatusVal',
+                fieldId: 'profileStatusField',
+                compare: false,
+                valueGetter: (node) => node.statusText || '-'
             },
-            { key: 'firstRegNo', label: 'Số đăng ký lần đầu', block: 'Thông tin hồ sơ', elementId: 'firstRegNoVal', fieldId: 'firstRegNoField' },
-            { key: 'firstRegDate', label: 'Thời điểm đăng ký lần đầu', block: 'Thông tin hồ sơ', elementId: 'firstRegDateVal', fieldId: 'firstRegDateField' },
-            { key: 'viewOriginalDoc', label: 'Xem hồ sơ gốc', block: 'Thông tin hồ sơ', elementId: 'viewOriginalDocVal', fieldId: 'viewOriginalDocField', isLink: true }
+            { key: 'firstRegNo', label: 'Số đăng ký lần đầu', block: 'Thông tin hồ sơ', elementId: 'firstRegNoVal', fieldId: 'firstRegNoField', compare: false, visibleCondition: (node) => getCleanRegistrationCase(node) !== 'Đăng ký lần đầu' },
+            { key: 'firstRegDate', label: 'Thời điểm đăng ký lần đầu', block: 'Thông tin hồ sơ', elementId: 'firstRegDateVal', fieldId: 'firstRegDateField', compare: false, visibleCondition: (node) => getCleanRegistrationCase(node) !== 'Đăng ký lần đầu' },
+            { key: 'viewOriginalDoc', label: 'Văn bản kết quả', block: 'Thông tin hồ sơ', elementId: 'viewOriginalDocVal', fieldId: 'viewOriginalDocField', compare: false, isLink: true, visibleCondition: (node, val) => node.statusText === 'Hoàn thành' && !!val }
         ];
         referenceFields.forEach(field => renderFieldDiff(field, currData, prevData));
 
@@ -2555,6 +2768,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                 current.label.includes("Hủy") ||
                                 current.label.includes("Khôi phục") ||
                                 current.label.includes("Chỉnh lý");
+        const isNoticeView = isAssetNoticeNode(current);
+        const isChangeNoticeView = isChangeAssetNoticeNode(current);
+        const isDeleteNoticeView = isDeleteAssetNoticeNode(current);
+        const currentProcessingInfo = currData.processingInfo || {};
+        const previousProcessingInfo = prevData?.processingInfo || {};
 
         const htmlEscape = (value) => String(value ?? '-')
             .replace(/&/g, '&amp;')
@@ -2563,10 +2781,18 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
 
+        const isDeleteRegistrationView = current.label === 'Xóa đăng ký';
         const assetStatusBadge = (asset) => {
-            if (!showAssetChanges) return '';
+            if (!showAssetChanges && !isNoticeView) return '';
+            if (asset.status === 'Được chọn xử lý') return '';
+            if (asset.status === 'Bổ sung xử lý') return '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung xử lý</span>';
+            if (asset.status === 'Rút khỏi thông báo') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Rút khỏi thông báo</span>';
             if (asset.status === 'Bổ sung mới') return '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
-            if (asset.status === 'Đã giải chấp') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Đã giải chấp</span>';
+            if (asset.status === 'Đã giải chấp') {
+                // Xem chi tiết Xóa đăng ký: mọi tài sản đều là "Đã giải chấp" nên không cần lặp lại nhãn này.
+                if (isDeleteRegistrationView) return '';
+                return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Đã giải chấp</span>';
+            }
             if (asset.status === 'Đã hủy') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-ban"></i> Đã hủy</span>';
             if (asset.status === 'Sửa thông tin') return '<span class="table-status-tag tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>';
             if (asset.status === 'Đang xử lý') return '<span class="table-status-tag tag-processing">Đang xử lý</span>';
@@ -2615,10 +2841,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
 
-        (currData.assets || []).forEach(asset => {
+        const assetsForDisplay = isNoticeView
+            ? (currData.assets || []).filter(asset => asset.selectedForProcessing || asset.status === 'Rút khỏi thông báo')
+            : (currData.assets || []);
+
+        assetsForDisplay.forEach(asset => {
             assetGroups[getAssetBucket(asset)].items.push(asset);
 
-            if (showAssetChanges) {
+            if (!isNoticeView && showAssetChanges) {
                 if (asset.status === 'Bổ sung mới') {
                     addListSummaryRow('Tài sản bảo đảm', asset.name, 'Thêm mới', '-', `${asset.name} (${asset.brandColor})`);
                 } else if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
@@ -2639,7 +2869,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const blockHtml = (groupKey, bodyHtml) => {
             const group = assetGroups[groupKey];
-            const hasChange = group.items.some(asset => ['Bổ sung mới', 'Đã giải chấp', 'Đã hủy', 'Sửa thông tin'].includes(asset.status));
+            const hasProcessingChange = isChangeNoticeView && (
+                currentProcessingInfo.reason !== previousProcessingInfo.reason ||
+                currentProcessingInfo.time !== previousProcessingInfo.time ||
+                currentProcessingInfo.location !== previousProcessingInfo.location
+            );
+            const hasChange = group.items.some(asset => ['Bổ sung mới', 'Đã giải chấp', 'Đã hủy', 'Sửa thông tin', 'Bổ sung xử lý', 'Rút khỏi thông báo'].includes(asset.status)) || hasProcessingChange;
             const hiddenClass = diffToggle.checked && !hasChange ? ' ucps-asset-type-hidden' : '';
             return `
                 <div class="ucps-review-asset-block${hiddenClass}" data-asset-group="${groupKey}" data-has-change="${hasChange}">
@@ -2648,6 +2883,47 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     <div class="ucps-review-asset-body">
                         ${bodyHtml}
+                    </div>
+                </div>
+            `;
+        };
+
+        const processingInfoHtml = (items = []) => {
+            if (!isNoticeView) return '';
+            const isAddedOrRemovedOnlyGroup = isChangeNoticeView &&
+                items.length > 0 &&
+                items.every(asset => ['Bổ sung xử lý', 'Rút khỏi thông báo'].includes(asset.status));
+            const renderNoticeChangedText = (fieldKey, currentValue) => {
+                const previousValue = previousProcessingInfo[fieldKey];
+                return isChangeNoticeView && !isAddedOrRemovedOnlyGroup
+                    ? renderChangedText(currentValue, previousValue)
+                    : htmlEscape(currentValue || '-');
+            };
+
+            return `
+                <div class="ucps-processing-info" data-status="${isChangeNoticeView ? 'Sửa thông tin' : 'Thông tin xử lý'}" style="margin-top: 14px; border: 1px solid #BFDBFE; border-left: 4px solid var(--primary-color); border-radius: var(--border-radius-md); background: #EFF6FF; padding: 12px 14px;">
+                    <div style="font-weight: 800; color: var(--primary-color); margin-bottom: 10px;">
+                        <i class="fa-solid fa-gavel"></i> Thông tin xử lý tài sản
+                    </div>
+                    <div class="info-grid-3">
+                        <div class="info-field" style="padding: 0;">
+                            <span class="field-label">Lý do xử lý</span>
+                            <span class="field-value">${renderNoticeChangedText('reason', currentProcessingInfo.reason)}</span>
+                        </div>
+                        <div class="info-field" style="padding: 0;">
+                            <span class="field-label">Thời gian xử lý</span>
+                            <span class="field-value">${renderNoticeChangedText('time', currentProcessingInfo.time)}</span>
+                        </div>
+                        <div class="info-field" style="padding: 0;">
+                            <span class="field-label">Địa điểm xử lý</span>
+                            <span class="field-value">${renderNoticeChangedText('location', currentProcessingInfo.location)}</span>
+                        </div>
+                        ${isDeleteNoticeView ? `
+                            <div class="info-field" style="padding: 0; grid-column: 1 / -1;">
+                                <span class="field-label">Lý do xóa thông báo</span>
+                                <span class="field-value">${htmlEscape(currData.deleteNoticeInfo?.reason || 'Các bên thỏa thuận không xử lý tài sản bảo đảm.')}</span>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -2681,6 +2957,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </tbody>
                 </table>
             </div>
+            ${processingInfoHtml(items)}
         `;
 
         const renderVehicleTable = (items) => `
@@ -2711,15 +2988,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     </tbody>
                 </table>
             </div>
+            ${processingInfoHtml(items)}
         `;
+
+        const renderChangedText = (currentValue, previousValue) => {
+            const hasChanged = showAssetChanges && previousValue && previousValue !== currentValue;
+            const escapedCurrent = htmlEscape(currentValue);
+            if (!hasChanged) return escapedCurrent;
+
+            return `
+                <span class="cell-modified">
+                    ${escapedCurrent}
+                    <div class="popover-container" style="display:inline-block; margin-left: 5px;">
+                        <span class="history-trigger-icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                        <div class="history-popover">Giá trị cũ: ${htmlEscape(previousValue)}</div>
+                    </div>
+                </span>
+            `;
+        };
 
         const renderTextAssets = (items) => items.map(asset => `
             <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
-                <strong>${htmlEscape(asset.name)}</strong> ${assetStatusBadge(asset)}
-                <br>${htmlEscape(asset.brandColor)}
-                ${asset.frameNo && asset.frameNo !== '-' ? `<br>Số định danh: ${htmlEscape(asset.frameNo)}` : ''}
+                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
+                <br>${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}
+                ${asset.frameNo && asset.frameNo !== '-' ? `<br>Số định danh: ${renderChangedText(asset.frameNo, asset.status === 'Bổ sung xử lý' ? null : asset.prevFrameNo)}` : ''}
             </div>
-        `).join('<div style="height: 10px;"></div>');
+        `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
 
         const assetHtml = [];
         if (assetGroups.road.items.length) assetHtml.push(blockHtml('road', renderRoadTable(assetGroups.road.items)));
@@ -2735,24 +3029,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (assetsEmpty) {
             assetsEmpty.style.display = assetHtml.length ? 'none' : 'block';
-        }
-
-        // Hide change summary if version is Đăng ký lần đầu (Gốc)
-        if (current.version === 1) {
-            sectionSummaryOfChanges.style.display = 'none';
-        } else {
-            sectionSummaryOfChanges.style.display = 'block';
-        }
-
-        // If no changes found in change summary
-        if (summaryIdx === 1) {
-            summaryTableBody.innerHTML = `
-                <tr>
-                    <td colspan="6" style="padding: 15px; text-align: center; color: var(--text-muted); font-style: italic;">
-                        Không phát hiện biến động dữ liệu so với phiên bản trước đó.
-                    </td>
-                </tr>
-            `;
         }
 
         // Re-apply diff filters if checked
@@ -2807,9 +3083,13 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 // Restore visibility based on rules
                 const fId = field.id;
-                if (fId === 'regNoField' && currentSelectedVersion.version === 1) {
+                const isFirstRegistration = getCleanRegistrationCase(currentSelectedVersion) === 'Đăng ký lần đầu';
+                const isCompleted = currentSelectedVersion.statusText === 'Hoàn thành';
+                if (fId === 'effectTimeField' && !isCompleted) {
                     field.style.display = 'none';
-                } else if ((fId === 'copyRegNoField' || fId === 'copyCountField') && !currentSelectedVersion.title.includes("bản sao")) {
+                } else if ((fId === 'firstRegNoField' || fId === 'firstRegDateField') && isFirstRegistration) {
+                    field.style.display = 'none';
+                } else if (fId === 'viewOriginalDocField' && (!isCompleted || !currentSelectedVersion.data.viewOriginalDoc)) {
                     field.style.display = 'none';
                 } else {
                     field.style.display = 'flex';
@@ -2894,7 +3174,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let hasAssetDiff = false;
         assetRows.forEach(row => {
             const status = row.getAttribute('data-status');
-            const isChange = status === 'Bổ sung mới' || status === 'Đã giải chấp' || status === 'Đã hủy' || status === 'Sửa thông tin';
+            const isChange = status === 'Bổ sung mới' ||
+                status === 'Đã giải chấp' ||
+                status === 'Đã hủy' ||
+                status === 'Sửa thông tin' ||
+                status === 'Bổ sung xử lý' ||
+                status === 'Rút khỏi thông báo';
             if (isDiffOnly) {
                 if (isChange) {
                     row.style.display = '';
@@ -2973,6 +3258,11 @@ document.addEventListener('DOMContentLoaded', function () {
         timelineSearchInput.addEventListener('input', function() {
             renderTimeline(true);
         });
+        if (filterRegistrationCase) {
+            filterRegistrationCase.addEventListener('change', function() {
+                renderTimeline(true);
+            });
+        }
 
         // Date filter change events
         filterFromDate.addEventListener('input', function() {
@@ -3003,17 +3293,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
-
-        // Setup listener for asset audit trail toggle
-        const assetAuditToggle = document.getElementById('assetAuditToggle');
-        if (assetAuditToggle) {
-            assetAuditToggle.addEventListener('change', function () {
-                if (currentSelectedVersion) {
-                    selectVersion(currentSelectedVersion);
-                }
-            });
-        }
-
         // Render dynamic customer actions
         function renderActionButtons() {
             const container = document.getElementById('action-buttons-container');
@@ -3030,13 +3309,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 .replace(/đ/g, 'd')
                 .replace(/Đ/g, 'D')
                 .toLowerCase();
-            const typeText = context ? context.type : `${node.title || ''} ${node.label || ''} ${node.data?.regCase || ''}`;
+            const typeText = getCleanRegistrationCase(node) || `${node.title || ''} ${node.label || ''} ${node.data?.regCase || ''}`;
             const title = normalize(typeText);
-            const status = context ? context.status : (node.statusText || 'Hoàn thành');
+            const status = node.statusText || registeredDetailContext?.status || 'Hoàn thành';
             const statusNorm = normalize(status);
             const isCompleted = statusNorm === normalize('Hoàn thành');
             const isDraft = statusNorm === normalize('Lưu nháp');
             const isPendingPayment = statusNorm === normalize('Chờ thanh toán');
+            const canUpdate = isDraft ||
+                statusNorm === normalize('Bị từ chối') ||
+                statusNorm === normalize('Chờ duyệt') ||
+                statusNorm === normalize('Duyệt chờ ký') ||
+                statusNorm === normalize('Chờ ký');
             const isInfoRequestType = [
                 'Yêu cầu cung cấp bản sao',
                 'Yêu cầu cung cấp bản sao kèm thông báo',
@@ -3044,15 +3328,19 @@ document.addEventListener('DOMContentLoaded', function () {
             ].some(label => title.includes(normalize(label)));
             const rootDescendants = context ? (context.rootDescendants || []) : [];
             const itemDescendants = context ? (context.itemDescendants || []) : [];
-            const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Chờ ký', 'Sai lệch thanh toán'].map(normalize);
+            const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký', 'Sai lệch thanh toán'].map(normalize);
             const isActiveStatus = (item) => activeStatuses.includes(normalize(item.status));
             const hasType = (item, keyword) => normalize(item.type).includes(normalize(keyword));
-            const isRootFirstRegistration = isCompleted && (context
-                ? context.isRoot && title.includes(normalize('Đăng ký lần đầu'))
-                : (node.version === 1 || title.includes(normalize('Đăng ký lần đầu')) || title.includes(normalize('Đăng ký gốc'))));
-            const isFirstAssetNotice = isCompleted && (context
-                ? !context.isRoot && title.includes(normalize('Thông báo xử lý')) && title.includes(normalize('lần đầu'))
-                : title.includes(normalize('Thông báo xử lý')))
+            const isBlockingDeleteRegistration = (item) =>
+                hasType(item, 'Xóa đăng ký') &&
+                !hasType(item, 'Thông báo') &&
+                (normalize(item.status) === normalize('Hoàn thành') || isActiveStatus(item));
+            const isRootFirstRegistration = isCompleted &&
+                title.includes(normalize('Đăng ký lần đầu')) &&
+                !String(node.regCode || '').includes('-');
+            const isFirstAssetNotice = isCompleted &&
+                title.includes(normalize('Thông báo xử lý')) &&
+                title.includes(normalize('lần đầu'))
                 && !title.includes(normalize('Thay đổi thông báo'))
                 && !title.includes(normalize('Xóa thông báo'))
                 && !title.includes(normalize('Xóa đăng ký thông báo'));
@@ -3060,6 +3348,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const hasActiveChangeRegistration = rootDescendants.some(item => hasType(item, 'Đăng ký thay đổi') && isActiveStatus(item));
             const hasAnyAssetNotice = rootDescendants.some(item => hasType(item, 'Thông báo xử lý'));
             const hasAnyDeleteRegistration = rootDescendants.some(item => hasType(item, 'Xóa đăng ký') && !hasType(item, 'Thông báo'));
+            const hasBlockingDeleteRegistration = rootDescendants.some(isBlockingDeleteRegistration);
             const hasActiveChangeNotice = itemDescendants.some(item => hasType(item, 'Thay đổi thông báo') && isActiveStatus(item));
             const hasAnyDeleteNotice = itemDescendants.some(item => hasType(item, 'Xóa') && hasType(item, 'Thông báo'));
 
@@ -3087,7 +3376,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (isPendingPayment) {
                 addPrimaryButton('Thanh toán', 'payment', 'fa-solid fa-credit-card', 'warning');
             }
-            if (isDraft) {
+            if (canUpdate) {
                 addPrimaryButton('Cập nhật', 'update', 'fa-solid fa-pen-to-square', 'primary');
             }
 
@@ -3095,7 +3384,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!hasActiveChangeRegistration) {
                     addOtherAction('Đăng ký thay đổi', 'change-registration', 'fa-solid fa-file-pen');
                 }
-                if (!hasAnyAssetNotice) {
+                if (!hasAnyAssetNotice && !hasBlockingDeleteRegistration) {
                     addOtherAction('Thông báo xử lý tài sản', 'asset-disposal', 'fa-solid fa-bullhorn');
                 }
                 if (!hasAnyDeleteRegistration) {
@@ -3123,7 +3412,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button type="button" class="btn-back" onclick="toggleDetailOtherActions(event)" style="background:#fff; border:1px solid var(--border-color); color:var(--primary-color); padding:8px 14px; border-radius:var(--border-radius-md); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13px;">
                         <i class="fa-solid fa-ellipsis-vertical"></i> Thao tác khác
                     </button>
-                    <div id="detailOtherActionsMenu" style="display:none; position:absolute; right:0; bottom:42px; width:280px; background:white; border:1px solid var(--border-color); border-radius:var(--border-radius-md); box-shadow:0 12px 28px rgba(15,23,42,.18); overflow:hidden; z-index:50;">
+                    <div id="detailOtherActionsMenu" style="display:none; position:fixed; width:320px; max-width:calc(100vw - 24px); background:white; border:1px solid var(--border-color); border-radius:var(--border-radius-md); box-shadow:0 12px 28px rgba(15,23,42,.18); overflow:hidden; z-index:10000;">
                         ${otherActions.join('')}
                     </div>
                 </div>
@@ -3132,16 +3421,13 @@ document.addEventListener('DOMContentLoaded', function () {
             container.innerHTML = `
                 ${primaryButtons.join('')}
                 ${moreActionsHtml}
-                <button class="btn-back" style="margin-left:auto; font-size:13px;" onclick="goBack()">
-                    <i class="fa fa-times"></i> Đóng
-                </button>
             `;
         }
 
         // Global functions exposed to window object for click handlers
         function getActiveRegNum() {
             const node = currentSelectedVersion;
-            return registeredDetailContext?.regNum || (node && (node.data?.firstRegNo || node.regCode)) || regNumParam || localStorage.getItem('regNum') || '1505156435';
+            return (node && node.regCode) || registeredDetailContext?.regNum || regNumParam || localStorage.getItem('regNum') || '1505156435';
         }
 
         function navigateCustomerModule(screenId, customUrl) {
@@ -3157,6 +3443,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const fallbackUrls = {
                 'billing-payment': '../trang_tong_the_website_khach_hang.html?screen=billing-payment',
                 'asset-disposal': '../trang_tong_the_website_khach_hang.html?screen=asset-disposal',
+                'request-information': '../UC141_UC144_UC195/tao_yeu_cau_cctt_main.html',
                 'request-copies': '../UC149/lap_yeu_cau_sao_luc_main.html',
                 'request-copies-notif': '../UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html'
             };
@@ -3193,11 +3480,42 @@ document.addEventListener('DOMContentLoaded', function () {
             return `${modulePath}?from=registered&regNum=${encodeURIComponent(targetRegNum)}&focus=${focusParam}`;
         }
 
+        function buildInformationRequestUrl(regNum) {
+            const targetRegNum = registeredDetailContext?.rootRegNum || regNum;
+            sessionStorage.setItem('registeredRequestInformationContext', JSON.stringify({
+                action: 'request-information',
+                selectedRegNum: regNum,
+                firstRegNum: targetRegNum
+            }));
+            return `UC141_UC144_UC195/tao_yeu_cau_cctt_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`;
+        }
+
         window.toggleDetailOtherActions = function(event) {
             if (event) event.stopPropagation();
             const menu = document.getElementById('detailOtherActionsMenu');
             if (!menu) return;
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            const shouldShow = menu.style.display !== 'block';
+            menu.style.display = shouldShow ? 'block' : 'none';
+            if (!shouldShow || !event) return;
+
+            const buttonRect = event.currentTarget.getBoundingClientRect();
+            const menuRect = menu.getBoundingClientRect();
+            const margin = 12;
+            let left = buttonRect.left;
+            let top = buttonRect.top - menuRect.height - 8;
+
+            if (left + menuRect.width > window.innerWidth - margin) {
+                left = window.innerWidth - menuRect.width - margin;
+            }
+            if (left < margin) {
+                left = margin;
+            }
+            if (top < margin) {
+                top = buttonRect.bottom + 8;
+            }
+
+            menu.style.left = `${left}px`;
+            menu.style.top = `${top}px`;
         };
 
         document.addEventListener('click', function(event) {
@@ -3223,7 +3541,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
                 case 'update':
                     if (window.parent && window.parent !== window && typeof window.parent.updateRegisteredRequest === 'function') {
-                        window.parent.updateRegisteredRequest(regNum, registeredDetailContext?.type || '');
+                        window.parent.updateRegisteredRequest(regNum, getCleanRegistrationCase(currentSelectedVersion) || registeredDetailContext?.type || '');
                     } else {
                         navigateCustomerModule('change-registration', `UC0025/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
                     }
@@ -3234,6 +3552,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     break;
                 case 'asset-disposal':
+                    if (registeredDetailContext?.rootDescendants) {
+                        const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký', 'Sai lệch thanh toán'].map(normalize);
+                        const hasBlockingDeleteRegistration = registeredDetailContext.rootDescendants.some(item => {
+                            const typeNorm = normalize(item.type);
+                            const statusNorm = normalize(item.status);
+                            return typeNorm.includes(normalize('Xóa đăng ký')) &&
+                                !typeNorm.includes(normalize('Thông báo')) &&
+                                (statusNorm === normalize('Hoàn thành') || activeStatuses.includes(statusNorm));
+                        });
+                        if (hasBlockingDeleteRegistration) {
+                            showToast('Hồ sơ đã có yêu cầu xóa đăng ký đang xử lý hoặc đã hoàn thành. Không thể tạo Thông báo xử lý tài sản.', 'error');
+                            break;
+                        }
+                    }
                     if (!runParentCustomerShortcut('shortcutAssetDisposal', regNum)) {
                         navigateCustomerModule('asset-disposal');
                     }
@@ -3254,7 +3586,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     break;
                 case 'request-info':
-                    navigateCustomerModule('search', 'reg');
+                    if (!runParentCustomerShortcut('shortcutRequestInformation', regNum)) {
+                        navigateCustomerModule('request-information', buildInformationRequestUrl(regNum));
+                    }
                     break;
                 case 'request-copy':
                     if (!runParentCustomerShortcut('shortcutRequestCopy', regNum)) {

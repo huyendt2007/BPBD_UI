@@ -419,7 +419,10 @@
 
                     const subType = registeredPaymentContext.measureContractType || '';
                     if (subType) {
-                        document.getElementById('pm_loaiBienPhapText').innerText = `Loại biện pháp: ${subType}`;
+                        const subTypeLabel = registeredPaymentContext.source === 'cctt-requests'
+                            ? 'Tiêu chí yêu cầu: '
+                            : 'Loại biện pháp: ';
+                        document.getElementById('pm_loaiBienPhapText').innerText = `${subTypeLabel}${subType}`;
                         document.getElementById('pm_loaiBienPhapText').style.display = 'block';
                     } else {
                         document.getElementById('pm_loaiBienPhapText').style.display = 'none';

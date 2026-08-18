@@ -500,7 +500,7 @@
 
                 <div class="guide-box">
                     <i class="fa-solid fa-circle-info"></i>
-                    <span>Quý khách vui lòng theo dõi trạng thái xử lý hồ sơ tại mục "Quản lý yêu cầu đã đăng ký". Hồ sơ có kết quả tra cứu sẽ được yêu cầu thanh toán sau khi Lãnh đạo duyệt; trả kết quả sau khi file PDF được ký số.</span>
+                    <span>Quý khách vui lòng theo dõi trạng thái xử lý hồ sơ tại mục "Quản lý yêu cầu đã đăng ký". Hồ sơ miễn phí được chuyển sang bước cán bộ xử lý; hồ sơ có phí sẽ được chuyển sang thanh toán ngay sau khi gửi yêu cầu.</span>
                 </div>
 
                 <div class="form-actions" style="justify-content: center; border-top: none; padding-top: 0;">
@@ -543,10 +543,42 @@
             if (err) err.classList.remove('show');
         }
 
+        function activateRegistrationNumberCriteria() {
+            const regRadio = document.querySelector('input[name="criteria"][value="so_dang_ky"]');
+            if (regRadio) regRadio.checked = true;
+            criteriaGroup.querySelectorAll('.segment-option').forEach(opt => {
+                opt.classList.toggle('checked', opt.getAttribute('data-value') === 'so_dang_ky');
+            });
+            document.querySelectorAll('.criteria-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-so_dang_ky').classList.add('active');
+        }
+
+        function applyRegisteredRequestPrefill() {
+            const params = new URLSearchParams(window.location.search);
+            let regNum = params.get('regNum') || '';
+            if (!regNum) {
+                try {
+                    const context = JSON.parse(sessionStorage.getItem('registeredRequestInformationContext') || 'null');
+                    regNum = context?.firstRegNum || context?.selectedRegNum || '';
+                } catch (e) {
+                    regNum = '';
+                }
+            }
+            if (!regNum) return;
+
+            activateRegistrationNumberCriteria();
+            const regNumberInput = document.getElementById('regNumber');
+            regNumberInput.value = regNum;
+            clearFieldError(regNumberInput);
+            setTimeout(() => regNumberInput.focus(), 0);
+        }
+
         document.querySelectorAll('#cctForm .form-control').forEach(input => {
             input.addEventListener('input', () => clearFieldError(input));
             if (input.tagName === 'SELECT') input.addEventListener('change', () => clearFieldError(input));
         });
+
+        applyRegisteredRequestPrefill();
 
         function getVisibleRequiredFields() {
             const activeCriteriaPanel = document.querySelector('.criteria-panel.active');
@@ -565,6 +597,72 @@
                 }
             }
             return fields;
+        }
+
+        function getSelectedCriterionLabel() {
+            const checked = document.querySelector('input[name="criteria"]:checked');
+            const label = checked?.closest('.segment-option')?.querySelector('span');
+            return label ? label.textContent.trim() : '';
+        }
+
+        function getRequestSummary() {
+            const criteriaValue = document.querySelector('input[name="criteria"]:checked').value;
+
+            if (criteriaValue === 'so_dang_ky') {
+                return `Số đăng ký: ${document.getElementById('regNumber').value.trim()}`;
+            }
+
+            if (criteriaValue === 'so_khung') {
+                return `Số khung: ${document.getElementById('chassisNumber').value.trim()}`;
+            }
+
+            const subjectLabel = subjectTypeSelect.options[subjectTypeSelect.selectedIndex]?.text || 'Bên bảo đảm';
+            const activeSubjectPanel = document.querySelector('#panel-ben_bao_dam .subject-fields-panel.active');
+            const values = Array.from(activeSubjectPanel?.querySelectorAll('.form-group') || [])
+                .map(group => {
+                    const label = group.querySelector('.form-label')?.textContent.replace('*', '').trim();
+                    const input = group.querySelector('.form-control');
+                    return label && input?.value.trim() ? `${label}: ${input.value.trim()}` : '';
+                })
+                .filter(Boolean);
+
+            return [subjectLabel, ...values].join(' - ');
+        }
+
+        function buildPaymentPayload(dossierCode, displayDatetime) {
+            const amount = 15000;
+            return {
+                source: 'cctt-requests',
+                regNum: dossierCode,
+                pin: '',
+                type: 'Yêu cầu cung cấp thông tin',
+                guarantor: '',
+                securedParty: '',
+                transType: 'Yêu cầu cung cấp thông tin',
+                measureContractType: getSelectedCriterionLabel(),
+                amount,
+                amountText: `${amount.toLocaleString('vi-VN')} VNĐ`,
+                registeredAt: displayDatetime,
+                requestSummary: getRequestSummary()
+            };
+        }
+
+        function goToPaymentGateway(dossierCode, displayDatetime) {
+            sessionStorage.setItem('registeredPaymentData', JSON.stringify(buildPaymentPayload(dossierCode, displayDatetime)));
+            sessionStorage.setItem('registeredReturnTab', 'cctt');
+
+            const paymentUrl = `UC024/dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(dossierCode)}&t=${Date.now()}`;
+            const standalonePaymentUrl = `../${paymentUrl}`;
+
+            if (window.top !== window.self && typeof window.top.showScreen === 'function') {
+                if (typeof window.top.showToast === 'function') {
+                    window.top.showToast(`Hồ sơ ${dossierCode} đã được ghi nhận. Đang chuyển sang màn hình thanh toán...`, 'info');
+                }
+                window.top.showScreen('registered-request-payment', paymentUrl);
+                return;
+            }
+
+            window.location.href = standalonePaymentUrl;
         }
 
         function submitRequest() {
@@ -587,7 +685,7 @@
                 return;
             }
 
-            // TH Hợp lệ: sinh mã hồ sơ, ghi nhận thời điểm đăng ký, chuyển sang màn hình thông báo thành công
+            // TH Hợp lệ: sinh mã hồ sơ, ghi nhận thời điểm đăng ký và chuyển sang thanh toán như luồng đăng ký mới.
             const now = new Date();
             const pad = n => String(n).padStart(2, '0');
             const dateCode = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
@@ -598,9 +696,7 @@
             document.getElementById('resultDossierCode').textContent = dossierCode;
             document.getElementById('resultRegisteredAt').textContent = displayDatetime;
 
-            document.getElementById('screen-mh01').classList.add('hidden');
-            document.getElementById('screen-mh03').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            goToPaymentGateway(dossierCode, displayDatetime);
         }
 
         // Nút "Nhập lại": chỉ xóa dữ liệu đã nhập (textbox), giữ nguyên Tiêu chí và Loại chủ thể đang chọn
@@ -611,7 +707,7 @@
             });
         }
 
-        // Nút "Tạo yêu cầu mới" (sau khi gửi thành công): đưa form về trạng thái mặc định ban đầu
+        // Nút "Tạo yêu cầu mới" trên màn thông báo miễn phí: đưa form về trạng thái mặc định ban đầu
         function resetForm() {
             document.getElementById('cctForm').reset();
             document.querySelectorAll('.form-control.is-invalid').forEach(el => el.classList.remove('is-invalid'));

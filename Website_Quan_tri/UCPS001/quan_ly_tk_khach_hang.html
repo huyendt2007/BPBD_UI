@@ -3838,10 +3838,12 @@
                          <div class="grid-4">
                              <div class="form-group"><label class="form-label">Mã khách hàng</label><input id="uc009FilterCode" class="form-control" placeholder="Nhập mã khách hàng..."></div>
                              <div class="form-group"><label class="form-label">Tên khách hàng</label><input id="uc009FilterName" class="form-control" placeholder="Nhập tên khách hàng..."></div>
+                            <div class="form-group"><label class="form-label">Email</label><input id="uc009FilterEmail" class="form-control" placeholder="Nhập email..."></div>
                              <div class="form-group"><label class="form-label">Số điện thoại</label><input id="uc009FilterPhone" class="form-control" placeholder="Nhập số điện thoại..."></div>
                              <div class="form-group"><label class="form-label">Trung tâm đăng ký</label><select id="uc009FilterCenter" class="form-select"><option value="">Tất cả</option><option>Hà Nội</option><option>TP Hồ Chí Minh</option><option>Đà Nẵng</option></select></div>
                              <div class="form-group"><label class="form-label">Loại khách hàng</label><select id="uc009FilterCustomerType" class="form-select"><option value="">Tất cả</option><option>Cá nhân</option><option>Tổ chức</option></select></div>
-                              <div class="form-group"><label class="form-label">Nguồn xác thực</label><select id="uc009FilterSource" class="form-select"><option value="">Tất cả</option><option>VNeID</option><option>Nội bộ</option></select></div>
+                            <div class="form-group"><label class="form-label">Loại tài khoản</label><select id="uc009FilterAccountType" class="form-select"><option value="">Tất cả</option><option>Tài khoản chính</option><option>Tài khoản phụ</option></select></div>
+                              <div class="form-group"><label class="form-label">Nguồn xác thực</label><select id="uc009FilterSource" class="form-select"><option value="">Tất cả</option><option>VNeID</option><option>Nội bộ</option><option value="VNeID, Nội bộ">VNeID, Nội bộ</option></select></div>
                              <div class="form-group"><label class="form-label">Phân loại khách hàng</label><select id="uc009FilterClassification" class="form-select"><option value="">Tất cả</option><option>Trong nước</option><option>Nước ngoài</option></select></div>
                              <div class="form-group"><label class="form-label">Trạng thái</label><select id="uc009FilterStatus" class="form-select"><option value="">Tất cả</option><option>Đang hoạt động</option><option>Bị khóa</option><option>Đóng</option></select></div>
                              <div class="form-group"><label class="form-label">Từ ngày tạo</label><input type="date" id="uc009FilterFromDate" class="form-control"></div>
@@ -4477,9 +4479,11 @@
          window.uc009Search = function () {
              const code = document.getElementById('uc009FilterCode').value.trim().toLowerCase();
              const name = document.getElementById('uc009FilterName').value.trim().toLowerCase();
+             const email = document.getElementById('uc009FilterEmail').value.trim().toLowerCase();
              const phone = document.getElementById('uc009FilterPhone').value.trim();
              const center = document.getElementById('uc009FilterCenter').value;
              const customerType = document.getElementById('uc009FilterCustomerType').value;
+             const accountType = document.getElementById('uc009FilterAccountType').value;
              const source = document.getElementById('uc009FilterSource').value;
              const classification = document.getElementById('uc009FilterClassification').value;
              const status = document.getElementById('uc009FilterStatus').value;
@@ -4488,12 +4492,16 @@
              uc009Filtered = flattenForDisplay(uc009Customers).filter(item => {
                  const itemDate = item.createdAt.slice(0, 10);
                  const searchableCode = accountTypeLabel(item.accountType) === 'Tài khoản phụ' ? '' : (item.code || '').toLowerCase();
+                 const methods = getAuthMethods(item);
+                 const matchesSource = !source || (source === 'VNeID, Nội bộ' ? (methods.includes('VNeID') && methods.includes('Nội bộ')) : methods.includes(source));
                  return (!code || searchableCode.includes(code))
                      && (!name || item.name.toLowerCase().includes(name))
+                     && (!email || (item.email || '').toLowerCase().includes(email))
                      && (!phone || item.phone.includes(phone))
                      && (!center || item.center === center)
                      && (!customerType || item.customerType === customerType)
-                     && (!source || getAuthMethods(item).includes(source))
+                     && (!accountType || accountTypeLabel(item.accountType) === accountType)
+                     && matchesSource
                      && (!classification || item.classification === classification)
                      && (!status || item.status === status)
                      && (!fromDate || itemDate >= fromDate)

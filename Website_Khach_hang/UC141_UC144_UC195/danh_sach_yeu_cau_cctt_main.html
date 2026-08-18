@@ -134,6 +134,38 @@
         .btn-secondary { background-color: #FFFFFF; color: #475569; border: 1px solid #CBD5E1; }
         .btn-secondary:hover { background-color: #F8FAFC; }
 
+        .compact-filter-panel {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 12px 14px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 14px;
+        }
+        .compact-filter-panel .grid-3-cols {
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+            gap: 10px 12px;
+            margin-top: 0 !important;
+        }
+        .compact-filter-panel .grid-3-cols + .grid-3-cols { margin-top: 10px !important; }
+        .compact-filter-panel .form-group { gap: 5px; }
+        .compact-filter-panel .form-label { font-size: 12px; line-height: 1.2; }
+        .compact-filter-panel .form-control { padding: 7px 10px; min-height: 36px; font-size: 13px; }
+        .compact-filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 10px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+        .compact-filter-actions .btn { padding: 8px 14px; min-height: 36px; }
+        @media (max-width: 1280px) {
+            .compact-filter-panel .grid-3-cols { grid-template-columns: repeat(3, minmax(180px, 1fr)); }
+        }
+        @media (max-width: 900px) {
+            .compact-filter-panel .grid-3-cols { grid-template-columns: 1fr; }
+        }
+
         .toolbar-actions {
             display: flex;
             justify-content: flex-end;
@@ -194,6 +226,7 @@
         .status-badge.cho-ky { background-color: #EFF6FF; color: #1D4ED8; border: 1px solid #DBEAFE; }
         .status-badge.hoan-thanh { background-color: #ECFDF5; color: #047857; border: 1px solid #D1FAE5; }
         .status-badge.bi-tu-choi { background-color: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; }
+        .status-badge.bi-tra-lai { background-color: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; }
 
         .action-cell { text-align: center; white-space: nowrap; }
         .action-cell .icon-btn {
@@ -614,7 +647,7 @@
 
         <!-- ==================== SCREEN A: UC195.MH01 - DANH SÁCH YÊU CẦU ==================== -->
         <div id="screen-list">
-            <div style="background-color: #F8FAFC; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
+            <div class="compact-filter-panel">
                 <div class="grid-3-cols">
                     <div class="form-group">
                         <label class="form-label">Mã hồ sơ</label>
@@ -638,7 +671,12 @@
                             <option value="Chờ thanh toán">Chờ thanh toán</option>
                             <option value="Hoàn thành">Hoàn thành</option>
                             <option value="Bị từ chối">Bị từ chối</option>
+                            <option value="Bị trả lại">Bị trả lại</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Người tạo</label>
+                        <input type="text" id="fltCreator" class="form-control" placeholder="Nhập tên người tạo...">
                     </div>
                 </div>
                 <div class="grid-3-cols" style="margin-top: 15px;">
@@ -656,9 +694,8 @@
                             <i class="fa-solid fa-calendar-days"></i>
                         </div>
                     </div>
-                    <div class="form-group"></div>
                 </div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <div class="compact-filter-actions">
                     <button class="btn btn-outline-primary" onclick="clearFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                     <button class="btn btn-primary" onclick="applyFilters()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
@@ -670,11 +707,12 @@
                         <tr>
                             <th class="center" style="width: 50px;">STT</th>
                             <th>Mã hồ sơ</th>
-                            <th class="sortable" onclick="toggleSort()">Thời điểm đăng ký <i class="fa-solid fa-sort" id="sortIcon"></i></th>
                             <th>Tiêu chí yêu cầu</th>
                             <th>Dữ liệu đã nhập</th>
+                            <th class="sortable" onclick="toggleSort()">Thời điểm đăng ký <i class="fa-solid fa-sort" id="sortIcon"></i></th>
+                            <th class="right">Số tiền đã thanh toán (VNĐ)</th>
                             <th class="center">Trạng thái</th>
-                            <th class="right">Số tiền phải thanh toán</th>
+                            <th>Người tạo</th>
                             <th class="center">Thao tác</th>
                         </tr>
                     </thead>
@@ -706,7 +744,7 @@
                         <div class="detail-sub">Chi tiết yêu cầu cung cấp thông tin về biện pháp bảo đảm</div>
                     </div>
                     <div class="detail-status-card">
-                        <span class="detail-status-label">Trạng thái hiện tại</span>
+                        <span class="detail-status-label">Trạng thái hồ sơ</span>
                         <span class="status-badge" id="detailStatusBadge">—</span>
                     </div>
                 </div>
@@ -736,6 +774,10 @@
                     <div class="detail-field">
                         <span class="detail-label">Dữ liệu đã nhập</span>
                         <span class="detail-value" id="detDuLieuDaNhap">—</span>
+                    </div>
+                    <div class="detail-field hidden" id="itemThoiDiemTraCuu">
+                        <span class="detail-label">Thời điểm tra cứu</span>
+                        <span class="detail-value" id="detThoiDiemTraCuu">—</span>
                     </div>
                 </div>
 
@@ -788,15 +830,19 @@
                 </div>
 
                 <div id="blockKetQua" class="hidden">
-                    <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-pdf"></i> Tệp kết quả</h3>
+                    <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-pdf"></i> Kết quả cung cấp thông tin</h3>
                     <div class="detail-grid two-cols">
                         <div class="detail-field">
-                            <span class="detail-label">File PDF đã ký (Mẫu số 10d)</span>
+                            <span class="detail-label">File PDF kết quả đã ký</span>
                             <a href="#" class="file-link" onclick="event.preventDefault(); viewFile()">Xem file</a>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Nội dung kết quả cung cấp thông tin</span>
+                            <span class="detail-value" id="detNoiDungKetQua">—</span>
                         </div>
                     </div>
 
-                    <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-shield"></i> Chi tiết đăng ký giao dịch bảo đảm, hợp đồng liên quan</h3>
+                    <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-shield"></i> Nội dung kết quả cung cấp thông tin</h3>
                     <div id="relatedDossierContainer" style="margin-bottom: 10px;"></div>
                 </div>
 
@@ -804,6 +850,7 @@
                     <button class="btn btn-secondary" onclick="backToList()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
                     <div class="detail-actions-right">
                         <button class="btn btn-outline-primary hidden" id="btnDetailDownload" onclick="downloadFile()"><i class="fa-solid fa-download"></i> Tải file</button>
+                        <button class="btn btn-outline-primary hidden" id="btnDetailReceipt" onclick="printReceipt()"><i class="fa-solid fa-receipt"></i> Xem/In biên lai</button>
                         <button class="btn btn-primary hidden" id="btnDetailPay" onclick="payFromDetail()"><i class="fa-solid fa-credit-card"></i> Thanh toán</button>
                     </div>
                 </div>
@@ -818,7 +865,7 @@
     <div class="pdf-modal" id="signedPdfModal">
         <div class="pdf-shell">
             <div class="pdf-toolbar">
-                <div class="pdf-toolbar-title" id="signedPdfTitle">File PDF đã ký - Mẫu số 10d</div>
+                <div class="pdf-toolbar-title" id="signedPdfTitle">File PDF kết quả đã ký</div>
                 <div class="pdf-toolbar-actions">
                     <button class="btn btn-secondary" onclick="printSignedPdf()"><i class="fa-solid fa-print"></i> In</button>
                     <button class="btn btn-secondary" onclick="downloadFile()"><i class="fa-solid fa-download"></i> Tải file</button>
@@ -836,11 +883,13 @@
             'Chờ ký': { cls: 'cho-ky', icon: 'fa-signature' },
             'Chờ thanh toán': { cls: 'cho-thanh-toan', icon: 'fa-money-bill-wave' },
             'Hoàn thành': { cls: 'hoan-thanh', icon: 'fa-circle-check' },
-            'Bị từ chối': { cls: 'bi-tu-choi', icon: 'fa-circle-xmark' }
+            'Bị từ chối': { cls: 'bi-tu-choi', icon: 'fa-circle-xmark' },
+            'Bị trả lại': { cls: 'bi-tra-lai', icon: 'fa-rotate-left' }
         };
 
         const CRITERIA_CYCLE = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'];
-        const STATUS_CYCLE = ['Chờ duyệt', 'Chờ thanh toán', 'Chờ ký', 'Hoàn thành', 'Bị từ chối'];
+        const STATUS_CYCLE = ['Chờ duyệt', 'Chờ thanh toán', 'Chờ ký', 'Hoàn thành', 'Bị từ chối', 'Bị trả lại'];
+        const CREATOR_NAME_CYCLE = ['Nguyễn Văn A', 'Trần Minh Hải', 'Lê Thu Hương', 'Phạm Quốc An', 'Nguyễn Minh Anh', 'Trần Văn H'];
 
         function buildMockInputData(criteria, idx) {
             if (criteria === 'Số đăng ký') return `DK-2026-${String(1000 + idx)}`;
@@ -856,7 +905,9 @@
             const month = String(((i + 3) % 12) + 1).padStart(2, '0');
             const registeredAt = `${day}/${month}/2026 ${String((i * 3) % 24).padStart(2, '0')}:${String((i * 7) % 60).padStart(2, '0')}:00`;
             const registeredAtSort = new Date(2026, parseInt(month) - 1, parseInt(day), (i * 3) % 24, (i * 7) % 60).getTime();
-            const amount = (status === 'Chờ thanh toán' || status === 'Hoàn thành') ? 15000 : null;
+            const amount = 15000;
+            // Mọi trạng thái sau "Chờ thanh toán" (Chờ duyệt, Chờ ký, Hoàn thành, Bị từ chối, Bị trả lại) đồng nghĩa đã thanh toán xong.
+            const paidAmount = status !== 'Chờ thanh toán' ? amount : null;
 
             requests.push({
                 id: i,
@@ -867,6 +918,16 @@
                 inputData: buildMockInputData(criteria, i),
                 status,
                 amount,
+                paidAmount,
+                creatorName: CREATOR_NAME_CYCLE[i % CREATOR_NAME_CYCLE.length],
+                lookupTime: ['Chờ ký', 'Hoàn thành', 'Bị từ chối', 'Bị trả lại'].includes(status) ? registeredAt : '',
+                submittedTime: ['Chờ ký', 'Hoàn thành', 'Bị trả lại'].includes(status) ? registeredAt : '',
+                signedTime: status === 'Hoàn thành' ? registeredAt : '',
+                paymentTxn: status === 'Hoàn thành' ? `GD${String(202600000 + i)}` : '',
+                receiptNo: status === 'Hoàn thành' ? `BL${String(260000 + i)}` : '',
+                resultContent: status === 'Hoàn thành'
+                    ? 'File PDF kết quả đã ký ghi nhận thông tin tra cứu theo tiêu chí yêu cầu tại thời điểm xử lý hồ sơ.'
+                    : '',
                 rejectReason: status === 'Bị từ chối' ? 'Hồ sơ chưa được đăng ký hoặc Hiệu lực của đăng ký đối với thông tin không còn.' : '',
                 signedBy: status === 'Hoàn thành' ? 'Lãnh đạo Trung tâm Đăng ký GDBĐ TP. Hà Nội' : ''
             });
@@ -894,7 +955,8 @@
                 'Chờ duyệt': 'pending-approval',
                 'Chờ ký': 'approved-pending-signature',
                 'Hoàn thành': 'completed',
-                'Bị từ chối': 'rejected'
+                'Bị từ chối': 'rejected',
+                'Bị trả lại': 'rejected'
             };
             const cls = statusClassMap[status] || '';
             return `<span class="status-badge ${cls}">${status}</span>`;
@@ -909,7 +971,9 @@
             }
 
             if (item.status === 'Hoàn thành') {
+                actions.push(`<button class="btn btn-outline-primary" style="${iconBtnStyle}" title="Xem file" aria-label="Xem file" onclick="event.stopPropagation(); viewFile('${item.dossierCode}')"><i class="fa-solid fa-eye"></i></button>`);
                 actions.push(`<button class="btn btn-success" style="${iconBtnStyle}" title="Tải file" aria-label="Tải file" onclick="event.stopPropagation(); downloadFile('${item.dossierCode}')"><i class="fa-solid fa-download"></i></button>`);
+                actions.push(`<button class="btn btn-outline-primary" style="${iconBtnStyle}" title="In biên lai" aria-label="In biên lai" onclick="event.stopPropagation(); printReceipt('${item.dossierCode}')"><i class="fa-solid fa-receipt"></i></button>`);
             }
 
             if (!actions.length) {
@@ -925,17 +989,18 @@
             const pageItems = filteredRequests.slice(start, start + pageSize);
 
             if (pageItems.length === 0) {
-                tbody.innerHTML = `<tr class="empty-row"><td colspan="8">Không có dữ liệu phù hợp.</td></tr>`;
+                tbody.innerHTML = `<tr class="empty-row"><td colspan="9">Không có dữ liệu phù hợp.</td></tr>`;
             } else {
                 tbody.innerHTML = pageItems.map((item, idx) => `
                     <tr onclick="openDetail('${item.dossierCode}')">
                         <td class="center">${start + idx + 1}</td>
                         <td><strong>${item.dossierCode}</strong></td>
-                        <td>${item.registeredAt}</td>
                         <td>${item.criteria}</td>
                         <td>${item.inputData}</td>
+                        <td>${item.registeredAt}</td>
+                        <td class="right">${item.paidAmount ? item.paidAmount.toLocaleString('vi-VN') : '—'}</td>
                         <td class="center">${statusBadgeHtml(item.status)}</td>
-                        <td class="right">${item.amount ? item.amount.toLocaleString('vi-VN') + ' VNĐ' : '—'}</td>
+                        <td>${item.creatorName || item.creator || 'Nguyễn Văn A'}</td>
                         <td class="action-cell">${actionCellHtml(item)}</td>
                     </tr>
                 `).join('');
@@ -991,15 +1056,39 @@
         }
 
         // ================= Bộ lọc =================
+        function parseFilterDate(value, endOfDay = false) {
+            if (!value) return null;
+            if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) return 'invalid';
+            const [day, month, year] = value.split('/').map(Number);
+            return new Date(year, month - 1, day, endOfDay ? 23 : 0, endOfDay ? 59 : 0, endOfDay ? 59 : 0).getTime();
+        }
+
         function applyFilters() {
             const code = document.getElementById('fltDossierCode').value.trim().toLowerCase();
             const criteria = document.getElementById('fltCriteria').value;
             const status = document.getElementById('fltStatus').value;
+            const creator = document.getElementById('fltCreator').value.trim().toLowerCase();
+            const fromDateText = document.getElementById('fltFromDate').value.trim();
+            const toDateText = document.getElementById('fltToDate').value.trim();
+            const fromDate = parseFilterDate(fromDateText);
+            const toDate = parseFilterDate(toDateText, true);
+
+            if (fromDate === 'invalid' || toDate === 'invalid') {
+                showToast('Ngày tìm kiếm phải nhập theo định dạng dd/mm/yyyy.', 'error');
+                return;
+            }
+            if (fromDate && toDate && fromDate > toDate) {
+                showToast('Từ ngày không được lớn hơn Đến ngày.', 'error');
+                return;
+            }
 
             filteredRequests = requests.filter(item => {
                 if (code && !item.dossierCode.toLowerCase().includes(code)) return false;
                 if (criteria !== 'Tất cả' && item.criteria !== criteria) return false;
                 if (status !== 'Tất cả' && item.status !== status) return false;
+                if (creator && !(item.creatorName || item.creator || '').toLowerCase().includes(creator)) return false;
+                if (fromDate && item.registeredAtSort < fromDate) return false;
+                if (toDate && item.registeredAtSort > toDate) return false;
                 return true;
             });
 
@@ -1016,6 +1105,7 @@
             document.getElementById('fltDossierCode').value = '';
             document.getElementById('fltCriteria').value = 'Tất cả';
             document.getElementById('fltStatus').value = 'Tất cả';
+            document.getElementById('fltCreator').value = '';
             document.getElementById('fltFromDate').value = '';
             document.getElementById('fltToDate').value = '';
             filteredRequests = [...requests].sort((a, b) => b.registeredAtSort - a.registeredAtSort);
@@ -1051,30 +1141,33 @@
             document.getElementById('detThoiDiemDangKy').innerText = item.registeredAt;
             document.getElementById('detTieuChi').innerText = item.criteria;
             document.getElementById('detDuLieuDaNhap').innerText = item.inputData;
+            toggleDetailItem('itemThoiDiemTraCuu', 'detThoiDiemTraCuu', Boolean(item.lookupTime), item.lookupTime);
 
             // Khối Thông tin xử lý (điều kiện theo trạng thái)
             toggleDetailItem('itemLyDoTuChoi', 'detLyDoTuChoi', item.status === 'Bị từ chối', item.rejectReason);
             const hasSigned = item.status === 'Hoàn thành';
-            toggleDetailItem('itemThoiDiemTrinhKy', 'detThoiDiemTrinhKy', hasSigned, item.registeredAt);
-            toggleDetailItem('itemThoiDiemKy', 'detThoiDiemKy', hasSigned, item.registeredAt);
+            const hasSubmitted = ['Chờ ký', 'Hoàn thành', 'Bị trả lại'].includes(item.status);
+            toggleDetailItem('itemThoiDiemTrinhKy', 'detThoiDiemTrinhKy', hasSubmitted, item.submittedTime || item.registeredAt);
+            toggleDetailItem('itemThoiDiemKy', 'detThoiDiemKy', hasSigned, item.signedTime || item.registeredAt);
             toggleDetailItem('itemNguoiKy', 'detNguoiKy', hasSigned, item.signedBy);
 
-            // Khối Thông tin thanh toán (chỉ hiện khi Chờ thanh toán/Hoàn thành)
-            const showPayment = item.status === 'Chờ thanh toán' || item.status === 'Hoàn thành';
+            // Khối Thông tin thanh toán (hiển thị khi hồ sơ có nghĩa vụ phí hoặc đã phát sinh giao dịch thanh toán)
+            const showPayment = Boolean(item.amount);
             document.getElementById('blockThanhToan').classList.toggle('hidden', !showPayment);
             if (showPayment) {
                 document.getElementById('detSoTien').innerText = `${item.amount.toLocaleString('vi-VN')} VNĐ`;
                 const isPaid = item.status === 'Hoàn thành';
-                toggleDetailItem('itemMaGiaoDich', 'detMaGiaoDich', isPaid, `GD${item.dossierCode.slice(-8)}`);
-                toggleDetailItem('itemSoBienLai', 'detSoBienLai', isPaid, `BL${item.dossierCode.slice(-6)}`);
+                toggleDetailItem('itemMaGiaoDich', 'detMaGiaoDich', isPaid, item.paymentTxn || `GD${item.dossierCode.slice(-8)}`);
+                toggleDetailItem('itemSoBienLai', 'detSoBienLai', isPaid, item.receiptNo || `BL${item.dossierCode.slice(-6)}`);
                 toggleDetailItem('itemThoiDiemTT', 'detThoiDiemTT', isPaid, item.registeredAt);
                 toggleDetailItem('itemTrangThaiTT', 'detTrangThaiTT', isPaid, 'Thanh toán thành công');
             }
 
-            // Khối Tệp kết quả + Chi tiết đăng ký liên quan (chỉ hiện khi Hoàn thành)
+            // Khối Kết quả cung cấp thông tin + Chi tiết đăng ký liên quan (chỉ hiện khi Hoàn thành)
             const isCompleted = item.status === 'Hoàn thành';
             document.getElementById('blockKetQua').classList.toggle('hidden', !isCompleted);
             if (isCompleted) {
+                document.getElementById('detNoiDungKetQua').innerText = item.resultContent || 'Nội dung kết quả cung cấp thông tin được phê duyệt và lưu trong file PDF kết quả đã ký.';
                 renderRelatedDossier(item);
             }
 
@@ -1086,6 +1179,10 @@
             const btnDownload = document.getElementById('btnDetailDownload');
             btnDownload.classList.toggle('hidden', !isCompleted);
             btnDownload.dataset.code = item.dossierCode;
+
+            const btnReceipt = document.getElementById('btnDetailReceipt');
+            btnReceipt.classList.toggle('hidden', !(isCompleted && item.receiptNo));
+            btnReceipt.dataset.code = item.dossierCode;
 
             document.getElementById('screen-list').classList.add('hidden');
             document.getElementById('screen-detail').classList.remove('hidden');
@@ -1298,6 +1395,11 @@
             showToast(`Đang tải xuống tệp tin PDF Mẫu số 10d của hồ sơ ${dossierCode}...`, 'success');
         }
 
+        function printReceipt(code) {
+            const dossierCode = code || document.getElementById('btnDetailReceipt').dataset.code;
+            showToast(`Đang mở biên lai điện tử của hồ sơ ${dossierCode}...`, 'success');
+        }
+
         // ================= Thanh toán: chuyển sang Cổng thanh toán chung của hệ thống =================
         function buildPaymentPayload(item) {
             return {
@@ -1343,4 +1445,3 @@
     </script>
 </body>
 </html>
-

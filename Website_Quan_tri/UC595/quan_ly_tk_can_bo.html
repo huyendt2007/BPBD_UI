@@ -708,7 +708,6 @@
     <div class="card-section">
         <div class="section-title">
             <span><i class="fa-solid fa-list-check"></i> Danh sách tài khoản cán bộ</span>
-            <span id="tableTotalBadge" class="badge bg-info">Tổng số 0 bản ghi</span>
         </div>
         <div class="grid-action-toolbar">
             <button class="btn btn-primary" onclick="openModal('add')"><i class="fa fa-plus"></i> Thêm mới tài khoản</button>
@@ -1271,8 +1270,6 @@
         const pageData = data.slice(startIndex, startIndex + pageSize);
 
         document.getElementById('tableSummary').innerText = `Tổng số ${total} bản ghi`;
-        const totalBadge = document.getElementById('tableTotalBadge');
-        if (totalBadge) totalBadge.innerText = `Tổng số ${total} bản ghi`;
         document.getElementById('paginationControls').innerHTML = `
             <button type="button" class="btn btn-secondary" style="padding:6px 10px;" onclick="goToPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>Trước</button>
             <span style="color:var(--text-muted);">Trang ${currentPage}/${totalPages}</span>

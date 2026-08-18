@@ -103,6 +103,40 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
         }
 
+        .compact-filter-panel {
+            background-color: #FAFAFA;
+            border: 1px solid var(--border-color);
+            padding: 12px 14px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 14px;
+            box-shadow: none;
+        }
+        .compact-filter-panel .grid-3-cols {
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+            gap: 10px 12px;
+            margin-top: 0 !important;
+        }
+        .compact-filter-panel .grid-3-cols + .grid-3-cols { margin-top: 10px !important; }
+        .compact-filter-panel .form-group { margin-bottom: 0; }
+        .compact-filter-panel .form-label { margin-bottom: 5px; font-size: 12px; line-height: 1.2; }
+        .compact-filter-panel .form-control,
+        .compact-filter-panel .form-select { padding: 7px 10px; min-height: 36px; font-size: 13px; }
+        .compact-filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 10px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+        .compact-filter-actions .btn { padding: 8px 14px; min-height: 36px; }
+        @media (max-width: 1280px) {
+            .compact-filter-panel .grid-3-cols { grid-template-columns: repeat(3, minmax(180px, 1fr)); }
+        }
+        @media (max-width: 900px) {
+            .compact-filter-panel .grid-3-cols { grid-template-columns: 1fr; }
+        }
+
         /* Buttons */
         .btn {
             font-weight: 500;
@@ -343,7 +377,7 @@
     <!-- MH02: TRA CỨU DÀNH CHO CÁN BỘ TTĐK -->
     <!-- ========================================== -->
     <div id="view-canbo" class="view-section active">
-        <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
+        <div class="card-section compact-filter-panel">
             <div class="grid-3-cols">
                 <div class="form-group">
                     <label class="form-label">Số đăng ký BĐ / Từ khóa</label>
@@ -352,6 +386,10 @@
                 <div class="form-group">
                     <label class="form-label">Tên bên bảo đảm</label>
                     <input type="text" class="form-control" id="cb-guarantor" placeholder="Nhập tên bên bảo đảm...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Người tạo</label>
+                    <input type="text" class="form-control" id="cb-creator" placeholder="Nhập tên người tạo...">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Trạng thái hồ sơ</label>
@@ -449,7 +487,7 @@
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+            <div class="compact-filter-actions">
                 <button class="btn btn-outline-primary" onclick="resetCanBoSearch()">Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="searchCanBo()"><i class="fa fa-search"></i> Tìm kiếm</button>
             </div>
@@ -465,18 +503,21 @@
                     <thead style="background-color: var(--table-header-bg);">
                         <tr>
                             <th style="width: 3%; text-align: center;">STT</th>
-                            <th style="width: 10%; cursor: pointer;" onclick="toggleCbSort('date')" id="cb-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                            <th style="width: 9%; cursor: pointer;" onclick="toggleCbSort('date')" id="cb-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                            <th style="width: 9%;">Thời điểm có hiệu lực</th>
                             <th style="width: 8%;">Số đăng ký</th>
                             <th style="width: 5%;">Mã PIN</th>
-                            <th style="width: 12%; cursor: pointer;" onclick="toggleCbSort('guarantor')" id="cb-header-guarantor">Tên bên bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
-                            <th style="width: 12%; cursor: pointer;" onclick="toggleCbSort('mortgagee')" id="cb-header-mortgagee">Tên bên nhận bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
-                            <th style="width: 10%;">Loại đăng ký</th>
+                            <th style="width: 11%; cursor: pointer;" onclick="toggleCbSort('guarantor')" id="cb-header-guarantor">Tên bên bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                            <th style="width: 11%; cursor: pointer;" onclick="toggleCbSort('mortgagee')" id="cb-header-mortgagee">Tên bên nhận bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
+                            <th style="width: 9%;">Loại đăng ký</th>
                             <th style="width: 8%;">Loại hình GD</th>
                             <th style="width: 8%;">Loại BP/HĐ</th>
-                            <th style="width: 10%;">Loại tài sản</th>
+                            <th style="width: 9%;">Loại tài sản</th>
+                            <th style="width: 9%; text-align: right;">Số tiền đã thanh toán</th>
                             <th style="width: 8%; text-align: center;">Trạng thái</th>
                             <th style="width: 8%;">Số biên lai</th>
                             <th style="width: 8%;">Cán bộ xử lý</th>
+                            <th style="width: 8%;">Người tạo</th>
                             <th style="text-align: center; min-width: 180px;">Thao tác</th>
                         </tr>
                     </thead>

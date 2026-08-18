@@ -486,6 +486,7 @@ function onCbTransTypeChange() {
 function resetCanBoSearch() {
     document.getElementById('cb-regNum').value = '';
     document.getElementById('cb-guarantor').value = '';
+    document.getElementById('cb-creator').value = '';
     document.getElementById('cb-status').value = 'Tất cả';
     document.getElementById('cb-fromDate').value = '';
     document.getElementById('cb-toDate').value = '';
@@ -498,6 +499,20 @@ function resetCanBoSearch() {
     canBoFilteredData = [];
     cbCurrentPage = 1;
     renderCanBoTable();
+}
+
+function getMockCreatorName(item) {
+    const source = item?.guarantor || item?.creator || '';
+    if (source.includes('Hải Nam')) return 'Trần Minh Hải';
+    if (source.includes('Thủy sản miền Nam')) return 'Lê Thu Hương';
+    if (source.includes('Minh Phát')) return 'Phạm Minh Phát';
+    if (source.includes('An Phú')) return 'Phạm Quốc An';
+    if (source.includes('Ngân hàng')) return 'Nguyễn Thị Ngân';
+    return source || 'Nguyễn Văn A';
+}
+
+function getCreatorText(item) {
+    return item?.creatorName || item?.creator || item?.createdByName || getMockCreatorName(item);
 }
 
 function changeCbPageSize() {
@@ -549,6 +564,7 @@ function parseDateString(dateStr) {
 function searchCanBo() {
     const regNum = document.getElementById('cb-regNum').value.trim().toLowerCase();
     const guarantor = document.getElementById('cb-guarantor').value.trim().toLowerCase();
+    const creator = document.getElementById('cb-creator').value.trim().toLowerCase();
     const status = document.getElementById('cb-status').value;
     const fromDateVal = document.getElementById('cb-fromDate').value.trim();
     const toDateVal = document.getElementById('cb-toDate').value.trim();
@@ -570,6 +586,7 @@ function searchCanBo() {
         const matchChild = (child) => {
             const matchesRegNum = !regNum || child.regNum.toLowerCase().includes(regNum) || child.id.toLowerCase().includes(regNum);
             const matchesGuarantor = !guarantor || child.guarantor.toLowerCase().includes(guarantor);
+            const matchesCreator = !creator || getCreatorText(child).toLowerCase().includes(creator);
             const matchesStatus = status === 'Tất cả' || child.status === status;
             const matchesRegType = regType === 'Tất cả' || child.type === regType;
             const matchesTransType = transType === 'Tất cả' || child.transType === transType;
@@ -588,7 +605,7 @@ function searchCanBo() {
                 }
             }
 
-            return matchesRegNum && matchesGuarantor && matchesStatus && matchesRegType && matchesTransType && matchesMeasureType && matchesAssetType && matchesDate && matchesHandlingOfficer;
+            return matchesRegNum && matchesGuarantor && matchesCreator && matchesStatus && matchesRegType && matchesTransType && matchesMeasureType && matchesAssetType && matchesDate && matchesHandlingOfficer;
         };
 
         const parentMatches = matchChild(parent);
@@ -670,7 +687,7 @@ function renderCanBoTable() {
     }
 
     if (dataList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="17" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
         document.getElementById('cb-count-display').innerText = `Hiển thị 0-0 của 0 hồ sơ gốc`;
         document.getElementById('cb-pagination').innerHTML = '';
         return;
@@ -887,6 +904,19 @@ function renderCanBoTable() {
         return `<td class="asset-type-cell" title="${tooltipText}" style="cursor: help; vertical-align: middle;">${displayLines}</td>`;
     };
 
+    const getEffectiveTimeText = (item) => {
+        if (!item) return '—';
+        return item.effectiveTime || (item.status === 'Hoàn thành' ? item.date : '—');
+    };
+
+    const getPaidAmountText = (item) => {
+        if (!item) return '—';
+        const hasPaid = item.paymentTime || ['Chờ duyệt', 'Chờ ký', 'Hoàn thành'].includes(item.status);
+        if (!hasPaid) return '—';
+        const amount = Number(item.paymentAmount || item.feeAmount || 80000);
+        return `${amount.toLocaleString('vi-VN')} VNĐ`;
+    };
+
     pageRoots.forEach(parent => {
         const hasChildren = parent.children && parent.children.length > 0;
         const toggleHtml = hasChildren
@@ -897,6 +927,7 @@ function renderCanBoTable() {
             <tr class="tree-row depth-0">
                 <td style="text-align: center;">${toggleHtml} <strong>${stt++}</strong></td>
                 <td>${parent.date}</td>
+                <td>${getEffectiveTimeText(parent)}</td>
                 <td><strong>${formatRegNumForDisplay(parent.regNum)}</strong></td>
                 <td><span style="font-family: monospace;">${parent.pin}</span></td>
                 <td>${parent.guarantor}</td>
@@ -905,9 +936,11 @@ function renderCanBoTable() {
                 <td>${parent.transType || ''}</td>
                 <td>${parent.measureContractType || ''}</td>
                 ${renderAssetTypeCell(parent.secAssets)}
+                <td style="text-align: right;">${getPaidAmountText(parent)}</td>
                 <td style="text-align: center;"><span class="status-badge ${parent.status === 'Hoàn thành' ? 'completed' : (parent.status === 'Chờ duyệt' ? 'pending-approval' : (parent.status === 'Chờ thanh toán' ? 'pending-payment' : (parent.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${parent.status}</span></td>
                 <td><strong>${parent.receiptNo || '-'}</strong></td>
                 <td>${parent.handlingOfficer || '-'}</td>
+                <td>${getCreatorText(parent)}</td>
                 <td style="text-align: center;">
                     <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                         <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${parent.regNum}')">Xem</button>
@@ -928,6 +961,7 @@ function renderCanBoTable() {
                     <tr class="tree-row depth-1">
                         <td><span class="tree-indent-line" style="margin-left:12px;">├──</span> ${childToggleHtml}</td>
                         <td>${child.date}</td>
+                        <td>${getEffectiveTimeText(child)}</td>
                         <td><span>${formatRegNumForDisplay(child.regNum)}</span></td>
                         <td><span style="font-family: monospace;">${child.pin}</span></td>
                         <td>${child.guarantor}</td>
@@ -936,9 +970,11 @@ function renderCanBoTable() {
                         <td>${child.transType || ''}</td>
                         <td>${child.measureContractType || ''}</td>
                         ${renderAssetTypeCell(child.secAssets)}
+                        <td style="text-align: right;">${getPaidAmountText(child)}</td>
                         <td style="text-align: center;"><span class="status-badge ${child.status === 'Hoàn thành' ? 'completed' : (child.status === 'Chờ duyệt' ? 'pending-approval' : (child.status === 'Chờ thanh toán' ? 'pending-payment' : (child.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${child.status}</span></td>
                         <td><strong>${child.receiptNo || '-'}</strong></td>
                         <td>${child.handlingOfficer || '-'}</td>
+                        <td>${getCreatorText(child)}</td>
                         <td style="text-align: center;">
                             <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                                 <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${child.regNum}')">Xem</button>
@@ -954,6 +990,7 @@ function renderCanBoTable() {
                             <tr class="tree-row depth-2">
                                 <td><span class="tree-indent-line" style="margin-left:36px;">└──</span> <span style="margin-left:24px;"></span></td>
                                 <td>${gc.date}</td>
+                                <td>${getEffectiveTimeText(gc)}</td>
                                 <td><span>${formatRegNumForDisplay(gc.regNum)}</span></td>
                                 <td><span style="font-family: monospace;">${gc.pin}</span></td>
                                 <td>${gc.guarantor}</td>
@@ -962,9 +999,11 @@ function renderCanBoTable() {
                                 <td>${gc.transType || ''}</td>
                                 <td>${gc.measureContractType || ''}</td>
                                 ${renderAssetTypeCell(gc.secAssets)}
+                                <td style="text-align: right;">${getPaidAmountText(gc)}</td>
                                 <td style="text-align: center;"><span class="status-badge ${gc.status === 'Hoàn thành' ? 'completed' : (gc.status === 'Chờ duyệt' ? 'pending-approval' : (gc.status === 'Chờ thanh toán' ? 'pending-payment' : (gc.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${gc.status}</span></td>
                                 <td><strong>${gc.receiptNo || '-'}</strong></td>
                                 <td>${gc.handlingOfficer || '-'}</td>
+                                <td>${getCreatorText(gc)}</td>
                                 <td style="text-align: center;">
                                     <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
                                         <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${gc.regNum}')">Xem</button>
@@ -1004,7 +1043,7 @@ function actionClick(regNum, actionName) {
 // Điều hướng xem chi tiết
 function openDetail(id) {
     sessionStorage.setItem('prevCanBoPage', window.location.href);
-    window.location.href = 'xem_chi_tiet_lich_su_can_bo.html?id=' + id + '&focusId=' + id + '&from=tra_cuu';
+    window.location.href = 'WebKH_Phieu_Dang_ky_Xem_Chi_Tiet.html?id=' + id + '&focusId=' + id + '&from=tra_cuu';
 }
 
 // Tác vụ Xuất Excel

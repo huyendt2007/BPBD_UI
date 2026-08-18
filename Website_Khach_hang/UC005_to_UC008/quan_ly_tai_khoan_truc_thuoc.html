@@ -374,14 +374,16 @@
 
         /* REQ-UI-SUBACCOUNT-MODAL-01: Modal sizing & layout optimization */
         #staff-modal {
-            align-items: flex-start;
+            align-items: center;
             overflow: hidden;
-            padding: 12px 16px;
+            padding: 24px;
         }
 
         #staff-modal .modal-content {
-            max-width: 800px;
-            max-height: min(680px, calc(100vh - 24px));
+            width: min(1040px, calc(100vw - 48px));
+            max-width: none;
+            height: min(760px, calc(100vh - 48px));
+            max-height: calc(100vh - 48px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -395,12 +397,13 @@
         }
 
         #staff-modal .modal-body {
-            padding: 12px 20px;
+            padding: 16px 24px;
             overflow-y: auto;
             flex: 1;
             min-height: 0;
             max-height: none;
             overscroll-behavior: contain;
+            scroll-behavior: smooth;
         }
 
         #staff-modal .form-group {
@@ -415,40 +418,73 @@
         }
 
         #staff-modal .modal-footer {
-            padding: 10px 20px;
+            padding: 12px 24px;
             flex-shrink: 0;
             background-color: #F8FAFC;
             border-top: 1px solid var(--border-color);
+            box-shadow: 0 -6px 16px rgba(15, 23, 42, 0.06);
         }
 
-        /* Tree Checkbox styling - 3 columns inline grid */
+        /* Tree Checkbox styling */
         #staff-modal #rights-sub-list {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px 12px;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 10px 16px;
         }
 
         #staff-modal .tree-container {
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
-            padding: 8px 12px;
+            padding: 12px 14px;
             background-color: #F8FAFC;
-            max-height: 96px;
-            overflow-y: auto;
+            max-height: none;
+            overflow: visible;
         }
 
         #staff-modal .tree-node {
             margin-left: 0;
             margin-bottom: 0;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 6px;
             font-size: 12.5px;
+            min-height: 28px;
+            line-height: 1.35;
+        }
+
+        #staff-modal .tree-node label {
+            cursor: pointer;
+            overflow-wrap: anywhere;
         }
 
         #staff-modal .tree-toolbar {
             margin-bottom: 8px;
             padding-bottom: 6px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            #staff-modal {
+                padding: 12px;
+            }
+
+            #staff-modal .modal-content {
+                width: calc(100vw - 24px);
+                height: calc(100vh - 24px);
+                max-height: calc(100vh - 24px);
+            }
+
+            #staff-modal .grid-2-cols,
+            #staff-modal .grid-3-cols {
+                grid-template-columns: 1fr;
+            }
+
+            #staff-modal #rights-sub-list {
+                grid-template-columns: 1fr;
+            }
         }
 
         .tree-node-parent {

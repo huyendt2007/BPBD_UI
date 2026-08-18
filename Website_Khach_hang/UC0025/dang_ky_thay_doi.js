@@ -341,7 +341,6 @@ const VN_PROVINCES = [
 
 function initPage() {
     try {
-        console.log("DEBUG: initPage starting in dang_ky_thay_doi.js");
         initFloatingTooltips();
 
         // 1. Load baseline from localStorage
@@ -655,7 +654,7 @@ function initPage() {
 
         // Country dropdowns populated dynamically at the beginning of initPage
     } catch (err) {
-        console.error("DEBUG: initPage CRASHED with error: ", err);
+        console.error("Không thể khởi tạo màn Đăng ký thay đổi:", err);
     }
 }
 
@@ -1753,6 +1752,8 @@ function undoRemoveSecured(index) {
 // ----------------------------------------------------
 let soKhungList = [];
 let tauCaList = [];
+let soKhungQuickFilterActive = false;
+let tauCaQuickFilterActive = false;
 
 const ASSET_TYPE_LABELS = {
     soKhung: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
@@ -1925,6 +1926,106 @@ function getHistoryIcon(currentVal, originalVal) {
     return '';
 }
 
+function normalizeQuickFilterValue(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+function quickFilterContains(source, keyword) {
+    const normalizedKeyword = normalizeQuickFilterValue(keyword);
+    if (!normalizedKeyword) return true;
+    return normalizeQuickFilterValue(source).includes(normalizedKeyword);
+}
+
+function getSoKhungQuickFilterValues() {
+    return {
+        type: document.getElementById('filterSKType')?.value || '',
+        frameNo: document.getElementById('filterSKFrameNo')?.value || '',
+        engineNo: document.getElementById('filterSKEngineNo')?.value || '',
+        plateNo: document.getElementById('filterSKPlateNo')?.value || ''
+    };
+}
+
+function getTauCaQuickFilterValues() {
+    return {
+        name: document.getElementById('filterTCName')?.value || '',
+        ownerName: document.getElementById('filterTCOwner')?.value || '',
+        regNo: document.getElementById('filterTCRegNo')?.value || '',
+        certAgency: document.getElementById('filterTCCertAgency')?.value || ''
+    };
+}
+
+function applySoKhungQuickFilter() {
+    soKhungQuickFilterActive = true;
+    const tbody = document.getElementById('tbodySoKhung');
+    if (!tbody) return;
+
+    const filters = getSoKhungQuickFilterValues();
+    Array.from(tbody.children).forEach(row => {
+        const index = Number(row.dataset.index);
+        const item = soKhungList[index];
+        if (!item) return;
+
+        const matchesType = !filters.type || item.type === filters.type;
+        const matchesFrameNo = quickFilterContains(item.frameNo, filters.frameNo);
+        const matchesEngineNo = quickFilterContains(item.engineNo, filters.engineNo);
+        const matchesPlateNo = quickFilterContains(item.plateNo, filters.plateNo);
+
+        row.style.display = matchesType && matchesFrameNo && matchesEngineNo && matchesPlateNo ? '' : 'none';
+    });
+
+    const chkAll = document.getElementById('chkAllSK');
+    if (chkAll) chkAll.checked = false;
+}
+
+function clearSoKhungQuickFilter() {
+    soKhungQuickFilterActive = false;
+    ['filterSKType', 'filterSKFrameNo', 'filterSKEngineNo', 'filterSKPlateNo'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = '';
+    });
+    document.querySelectorAll('#tbodySoKhung tr').forEach(row => row.style.display = '');
+    const chkAll = document.getElementById('chkAllSK');
+    if (chkAll) chkAll.checked = false;
+}
+
+function applyTauCaQuickFilter() {
+    tauCaQuickFilterActive = true;
+    const tbody = document.getElementById('tbodyTauCa');
+    if (!tbody) return;
+
+    const filters = getTauCaQuickFilterValues();
+    Array.from(tbody.children).forEach(row => {
+        const index = Number(row.dataset.index);
+        const item = tauCaList[index];
+        if (!item) return;
+
+        const matchesName = quickFilterContains(item.name, filters.name);
+        const matchesOwner = quickFilterContains(item.ownerName, filters.ownerName);
+        const matchesRegNo = quickFilterContains(item.regNo, filters.regNo);
+        const matchesCertAgency = quickFilterContains(item.certAgency, filters.certAgency);
+
+        row.style.display = matchesName && matchesOwner && matchesRegNo && matchesCertAgency ? '' : 'none';
+    });
+
+    const chkAll = document.getElementById('chkAllTC');
+    if (chkAll) chkAll.checked = false;
+}
+
+function clearTauCaQuickFilter() {
+    tauCaQuickFilterActive = false;
+    ['filterTCName', 'filterTCOwner', 'filterTCRegNo', 'filterTCCertAgency'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = '';
+    });
+    document.querySelectorAll('#tbodyTauCa tr').forEach(row => row.style.display = '');
+    const chkAll = document.getElementById('chkAllTC');
+    if (chkAll) chkAll.checked = false;
+}
+
 function renderSoKhungGrid() {
     const tbody = document.getElementById('tbodySoKhung');
     if (!tbody) return;
@@ -1934,6 +2035,7 @@ function renderSoKhungGrid() {
 
     soKhungList.forEach((a, index) => {
         const tr = document.createElement('tr');
+        tr.dataset.index = index;
 
         let rowClass = 'row-unchanged';
         if (a.status === 'Bổ sung mới') {
@@ -1974,6 +2076,7 @@ function renderSoKhungGrid() {
             <select class="form-select inline-input" ${disabledAttr} onchange="updateInlineAsset(${index}, 'sokhung', 'type', this.value)">
                 <option value="oto" ${a.type === 'oto' ? 'selected' : ''}>Ô tô</option>
                 <option value="moto" ${a.type === 'moto' ? 'selected' : ''}>Mô tô</option>
+                <option value="xemaychuyendung" ${a.type === 'xemaychuyendung' ? 'selected' : ''}>Xe máy chuyên dùng</option>
             </select>
         `;
 
@@ -2008,6 +2111,10 @@ function renderSoKhungGrid() {
 
         tbody.appendChild(tr);
     });
+
+    if (soKhungQuickFilterActive) {
+        applySoKhungQuickFilter();
+    }
 }
 
 function renderTauCaGrid() {
@@ -2019,6 +2126,7 @@ function renderTauCaGrid() {
 
     tauCaList.forEach((a, index) => {
         const tr = document.createElement('tr');
+        tr.dataset.index = index;
 
         let rowClass = 'row-unchanged';
         if (a.status === 'Bổ sung mới') {
@@ -2038,15 +2146,18 @@ function renderTauCaGrid() {
         const origName = orig ? (orig.name || '') : '';
         const origOwnerName = orig ? (orig.ownerName || '') : '';
         const origRegNo = orig ? (orig.regNo || '') : '';
+        const origCertAgency = orig ? (orig.certAgency || '') : '';
         const origLevel = orig ? (orig.level || '') : '';
         const nameTdAttr = orig ? getCellHtml(a.name || '', origName) : '';
         const ownerTdAttr = orig ? getCellHtml(a.ownerName || '', origOwnerName) : '';
         const regNoTdAttr = orig ? getCellHtml(a.regNo || '', origRegNo) : '';
+        const certAgencyTdAttr = orig ? getCellHtml(a.certAgency || '', origCertAgency) : '';
         const levelTdAttr = orig ? getCellHtml(a.level || '', origLevel) : '';
 
         const nameHistory = orig ? getHistoryIcon(a.name || '', origName) : '';
         const ownerHistory = orig ? getHistoryIcon(a.ownerName || '', origOwnerName) : '';
         const regNoHistory = orig ? getHistoryIcon(a.regNo || '', origRegNo) : '';
+        const certAgencyHistory = orig ? getHistoryIcon(a.certAgency || '', origCertAgency) : '';
         const levelHistory = orig ? getHistoryIcon(a.level || '', origLevel) : '';
 
         const disabledAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'disabled';
@@ -2073,6 +2184,10 @@ function renderTauCaGrid() {
                 <input type="text" class="form-control inline-input" value="${a.regNo || ''}" ${readonlyAttr} onchange="updateInlineAsset(${index}, 'tauca', 'regNo', this.value)">
                 ${regNoHistory}
             </td>
+            <td ${certAgencyTdAttr}>
+                <input type="text" class="form-control inline-input" value="${a.certAgency || ''}" ${readonlyAttr} onchange="updateInlineAsset(${index}, 'tauca', 'certAgency', this.value)">
+                ${certAgencyHistory}
+            </td>
             <td ${levelTdAttr}>
                 <input type="text" class="form-control inline-input" value="${a.level || ''}" ${readonlyAttr} onchange="updateInlineAsset(${index}, 'tauca', 'level', this.value)">
                 ${levelHistory}
@@ -2082,6 +2197,10 @@ function renderTauCaGrid() {
 
         tbody.appendChild(tr);
     });
+
+    if (tauCaQuickFilterActive) {
+        applyTauCaQuickFilter();
+    }
 }
 
 function addInlineSoKhungRow() {
@@ -2139,7 +2258,8 @@ function noticeAllSoKhungRows() {
 function toggleSelectAllSoKhung(master) {
     const checkboxes = document.querySelectorAll('.chk-row-sk');
     checkboxes.forEach(chk => {
-        if (!chk.disabled) {
+        const row = chk.closest('tr');
+        if (!chk.disabled && row?.style.display !== 'none') {
             chk.checked = master.checked;
         }
     });
@@ -2152,6 +2272,7 @@ function addInlineTauCaRow() {
         name: "",
         ownerName: "",
         regNo: "",
+        certAgency: "",
         level: "",
         hasNotice: false,
         noticeAgency: "",
@@ -2200,7 +2321,8 @@ function noticeAllTauCaRows() {
 function toggleSelectAllTauCa(master) {
     const checkboxes = document.querySelectorAll('.chk-row-tc');
     checkboxes.forEach(chk => {
-        if (!chk.disabled) {
+        const row = chk.closest('tr');
+        if (!chk.disabled && row?.style.display !== 'none') {
             chk.checked = master.checked;
         }
     });
@@ -2259,6 +2381,7 @@ function updateInlineAsset(index, typeGrid, field, value) {
                     item.name !== orig.name ||
                     item.ownerName !== orig.ownerName ||
                     item.regNo !== orig.regNo ||
+                    (item.certAgency || '') !== (orig.certAgency || '') ||
                     item.level !== orig.level ||
                     !!item.hasNotice !== !!orig.hasNotice ||
                     (item.hasNotice ? item.noticeAgency !== orig.noticeAgency : false)
@@ -2339,6 +2462,7 @@ function importExcelData(type) {
                     name: "Tàu cá Trường Sa 01",
                     ownerName: "Trần Văn Ngư",
                     regNo: "TS-9988-G1",
+                    certAgency: "Chi cục Thủy sản Khánh Hòa",
                     level: "Cấp I",
                     hasNotice: false,
                     noticeAgency: "",
@@ -3512,7 +3636,7 @@ function openHistoryModal() {
         regNum = 'BD-2026-001';
     }
 
-    let url = `../UC027/xem_chi_tiet_lich_su_can_bo.html?regNum=${regNum}&focusId=${regNum}&from=change`;
+    let url = `../UC027/WebKH_Phieu_Dang_ky_Xem_Chi_Tiet.html?regNum=${regNum}&focusId=${regNum}&from=change`;
 
     sessionStorage.setItem('prevCanBoPage', window.location.href);
     window.location.href = url;

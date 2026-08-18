@@ -578,30 +578,32 @@
 
         .history-popover {
             position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: calc(100% + 8px);
+            left: 0;
+            transform: none;
             background-color: #1F2937;
             color: white;
             font-size: 12px;
             font-weight: normal;
             padding: 8px 12px;
             border-radius: 6px;
-            white-space: nowrap;
+            white-space: normal;
+            width: max-content;
+            max-width: min(360px, 70vw);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            z-index: 200;
+            z-index: 999;
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s ease-in-out;
             pointer-events: none;
+            line-height: 1.45;
         }
 
         .history-popover::after {
             content: '';
             position: absolute;
             top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 12px;
             border: 6px solid transparent;
             border-top-color: #1F2937;
         }
@@ -951,7 +953,7 @@
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-lg);
             background: #fff;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .ucps-review-asset-title {
@@ -978,7 +980,29 @@
             padding: 12px 14px;
             color: var(--text-main);
             line-height: 1.55;
-            white-space: pre-line;
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .ucps-readonly-text .cell-modified {
+            display: inline;
+        }
+
+        .ucps-processing-info .history-popover {
+            left: auto;
+            right: 0;
+            max-width: min(340px, calc(100vw - 24px));
+        }
+
+        .ucps-processing-info .history-popover::after {
+            left: auto;
+            right: 12px;
+        }
+
+        .ucps-processing-info .field-value {
+            align-items: flex-start;
+            flex-wrap: wrap;
+            overflow: visible;
         }
 
         .ucps-asset-type-hidden {
@@ -1036,6 +1060,21 @@
                         style="position: absolute; left: 10px; top: 10px; color: var(--text-muted); font-size: 12px;"></i>
                 </div>
 
+                <div style="margin-bottom: 12px;">
+                    <label class="field-label"
+                        style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 4px;">Trường hợp đăng ký</label>
+                    <select id="filterRegistrationCase"
+                        style="width: 100%; padding: 7px 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 12px; box-sizing: border-box; background: #fff;">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Đăng ký lần đầu">Đăng ký lần đầu</option>
+                        <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
+                        <option value="Xóa đăng ký">Xóa đăng ký</option>
+                        <option value="Thông báo xử lý tài sản bảo đảm lần đầu">Thông báo xử lý tài sản bảo đảm lần đầu</option>
+                        <option value="Thay đổi thông báo xử lý tài sản bảo đảm">Thay đổi thông báo xử lý tài sản bảo đảm</option>
+                        <option value="Xóa đăng ký thông báo xử lý tài sản bảo đảm">Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
+                    </select>
+                </div>
+
                 <!-- Date Range Filters -->
                 <div class="timeline-date-filters"
                     style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
@@ -1079,7 +1118,7 @@
                         <p id="currentVersionSubtitle">Số đăng ký: --</p>
                     </div>
 
-                    <!-- Diff & Asset Audit Filter Toggle Switches -->
+                    <!-- Diff Filter Toggle Switch -->
                     <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
                         <div class="diff-toggle-container" style="margin-bottom: 0;">
                             <span class="diff-toggle-label"><label>Chỉ hiển thị vùng dữ liệu có biến động</label></span>
@@ -1088,22 +1127,23 @@
                                 <span class="slider"></span>
                             </label>
                         </div>
-                        <div class="diff-toggle-container" style="margin-bottom: 0;">
-                            <span class="diff-toggle-label"><label>Hiển thị biến động Tài sản bảo đảm</label></span>
-                            <label class="switch">
-                                <input type="checkbox" id="assetAuditToggle">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
                     </div>
                 </header>
+
+                <div class="panel-actions-card"
+                    style="margin: 0 0 18px; padding: 12px 16px; display: flex; justify-content: flex-end; gap: 12px; background-color: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); box-shadow: 0 1px 2px rgba(15,23,42,.04);">
+                    <div id="action-buttons-container"
+                        style="display: flex; justify-content: flex-end; gap: 12px; align-items: center; width: 100%; flex-wrap: wrap;">
+                        <!-- Dynamic buttons go here -->
+                    </div>
+                </div>
 
                 <!-- SECTION: THÔNG TIN BỔ SUNG ĐỐI VỚI PHIÊN BẢN BỊ TỪ CHỐI (Chỉ hiển thị khi phiên bản chọn bị từ chối) -->
                 <section class="detail-section" id="sectionRejectionInfo"
                     style="display: none; background-color: #FFF5F5; border: 1px solid #FEB2B2; padding: 20px; border-radius: var(--border-radius-lg); margin-bottom: 25px; border-left: 5px solid var(--danger-color);">
                     <h3 class="detail-section-title"
                         style="color: var(--danger-dark); border-bottom-color: #FEB2B2; margin-bottom: 12px;">
-                        <i class="fa-solid fa-circle-xmark"></i> IV. Thông tin bổ sung đối với phiên bản bị từ chối
+                        <i class="fa-solid fa-circle-xmark"></i> Lý do bị từ chối
                     </h3>
                     <div class="info-grid-3">
                         <div class="info-field">
@@ -1111,7 +1151,7 @@
                             <span class="field-value" id="rejectByVal">--</span>
                         </div>
                         <div class="info-field">
-                            <span class="field-label"><label>Ngày từ chối</label></span>
+                            <span class="field-label"><label>Thời điểm từ chối</label></span>
                             <span class="field-value" id="rejectDateVal">--</span>
                         </div>
                         <div class="info-field">
@@ -1119,42 +1159,10 @@
                             <span class="field-value" id="rejectReasonVal">--</span>
                         </div>
                         <div class="info-field" style="grid-column: span 3; margin-top: 8px;">
-                            <span class="field-label"><label>Xem văn bản từ chối</label></span>
+                            <span class="field-label"><label>Văn bản từ chối</label></span>
                             <span class="field-value" id="rejectDocVal"><a href="#" class="btn-download-pdf"><i
                                         class="fa-solid fa-file-pdf"></i> Tải Quyết định từ chối (.pdf)</a></span>
                         </div>
-                    </div>
-                </section>
-
-                <!-- SECTION 0: BẢNG TÓM TẮT BIẾN ĐỘNG -->
-                <section class="detail-section" id="sectionSummaryOfChanges">
-                    <h3 class="detail-section-title">
-                        <i class="fa-solid fa-list-check"></i> Bảng tóm tắt thay đổi (Hệ thống tự sinh)
-                    </h3>
-                    <div style="overflow-x: auto;">
-                        <table
-                            style="width: 100%; border-collapse: collapse; margin-bottom: 15px; text-align: left; font-size: 13px;"
-                            id="summaryTable">
-                            <thead>
-                                <tr
-                                    style="background-color: var(--table-header-bg); border-bottom: 2px solid var(--border-color);">
-                                    <th style="padding: 10px; font-weight: 600; color: var(--primary-color);">STT</th>
-                                    <th style="padding: 10px; font-weight: 600; color: var(--primary-color);">Khối thông
-                                        tin</th>
-                                    <th style="padding: 10px; font-weight: 600; color: var(--primary-color);">Trường /
-                                        Đối tượng thay đổi</th>
-                                    <th style="padding: 10px; font-weight: 600; color: var(--primary-color);">Loại biến
-                                        động</th>
-                                    <th style="padding: 10px; font-weight: 600; color: var(--primary-color);">Giá trị cũ
-                                        (Before)</th>
-                                    <th style="padding: 10px; font-weight: 600; color: var(--primary-color);">Giá trị
-                                        mới (After)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="summaryTableBody">
-                                <!-- Dynamic rows injected here -->
-                            </tbody>
-                        </table>
                     </div>
                 </section>
 
@@ -1193,20 +1201,20 @@
                             <span class="field-value" id="regCaseVal">--</span>
                         </div>
                         <div class="info-field" id="regDateField">
-                            <span class="field-label"><label>Ngày đăng ký</label></span>
+                            <span class="field-label"><label>Thời điểm đăng ký</label></span>
                             <span class="field-value" id="regDateVal">--</span>
                         </div>
                         <div class="info-field" id="regNoField">
-                            <span class="field-label"><label>Số hồ sơ đăng ký</label></span>
+                            <span class="field-label"><label>Số đăng ký</label></span>
                             <span class="field-value" id="regNoVal">--</span>
                         </div>
-                        <div class="info-field" id="copyRegNoField">
-                            <span class="field-label"><label>Số đăng ký cần cấp bản sao</label></span>
-                            <span class="field-value" id="copyRegNoVal">--</span>
+                        <div class="info-field" id="effectTimeField">
+                            <span class="field-label"><label>Thời điểm có hiệu lực</label></span>
+                            <span class="field-value" id="effectTimeVal">--</span>
                         </div>
-                        <div class="info-field" id="copyCountField">
-                            <span class="field-label"><label>Số lượng bản sao yêu cầu</label></span>
-                            <span class="field-value" id="copyCountVal">--</span>
+                        <div class="info-field" id="profileStatusField">
+                            <span class="field-label"><label>Trạng thái hồ sơ</label></span>
+                            <span class="field-value" id="profileStatusVal">--</span>
                         </div>
                         <div class="info-field" id="firstRegNoField">
                             <span class="field-label"><label>Số đăng ký lần đầu</label></span>
@@ -1217,7 +1225,7 @@
                             <span class="field-value" id="firstRegDateVal">--</span>
                         </div>
                         <div class="info-field" id="viewOriginalDocField">
-                            <span class="field-label"><label>Xem hồ sơ gốc</label></span>
+                            <span class="field-label"><label>Văn bản kết quả</label></span>
                             <span class="field-value" id="viewOriginalDocVal">--</span>
                         </div>
                     </div>
@@ -1372,6 +1380,33 @@
                     </div>
                 </section>
 
+                <!-- SECTION 7B: THÔNG TIN XÓA THÔNG BÁO XỬ LÝ TÀI SẢN -->
+                <section class="detail-section" id="sectionDeleteNoticeInfo" style="display: none;">
+                    <h3 class="detail-section-title"
+                        style="border-bottom-color: var(--danger-color); color: var(--danger-dark);">
+                        <i class="fa-solid fa-file-circle-minus"></i> <label>Thông tin Xóa thông báo xử lý tài sản</label>
+                    </h3>
+                    <div class="info-grid-2"
+                        style="background-color: #FDF2F2; border: 1px solid #FDE8E8; padding: 20px; border-radius: var(--border-radius-lg); border-left: 5px solid var(--danger-color);">
+                        <div class="info-field">
+                            <span class="field-label" style="color: #9B1C1C;"><label>Số thông báo xử lý lần đầu</label></span>
+                            <span class="field-value" id="deleteNoticeOriginalNoVal">--</span>
+                        </div>
+                        <div class="info-field">
+                            <span class="field-label" style="color: #9B1C1C;"><label>Thời điểm đăng ký thông báo lần đầu</label></span>
+                            <span class="field-value" id="deleteNoticeOriginalDateVal">--</span>
+                        </div>
+                        <div class="info-field" style="grid-column: span 2;">
+                            <span class="field-label" style="color: #9B1C1C;"><label>Lý do xóa thông báo</label></span>
+                            <span class="field-value" id="deleteNoticeReasonVal">--</span>
+                        </div>
+                        <div class="info-field" style="grid-column: span 2;">
+                            <span class="field-label" style="color: #9B1C1C;"><label>Văn bản chứng minh đính kèm (pdf)</label></span>
+                            <span class="field-value" id="deleteNoticeEvidenceVal">--</span>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- SECTION 8: THÔNG TIN HỦY ĐĂNG KÝ -->
                 <section class="detail-section" id="sectionCancelRegistration" style="display: none;">
                     <h3 class="detail-section-title"
@@ -1510,15 +1545,6 @@
                         </div>
                     </div>
                 </section>
-                <!-- panel-actions card for dynamic buttons based on status -->
-                <div class="panel-actions-card"
-                    style="margin-top: 25px; padding: 15px 20px; display: flex; justify-content: flex-end; gap: 12px; background-color: #F8FAFC; border-top: 1px solid var(--border-color); border-radius: var(--border-radius-lg); box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);">
-                    <div id="action-buttons-container"
-                        style="display: flex; justify-content: flex-end; gap: 12px; align-items: center; width: 100%;">
-                        <!-- Dynamic buttons go here -->
-                    </div>
-                </div>
-
             </main>
         </div>
     </div>
