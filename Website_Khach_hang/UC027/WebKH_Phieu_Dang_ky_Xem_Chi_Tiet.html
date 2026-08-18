@@ -183,6 +183,111 @@
             border-color: #CBD5E1;
         }
 
+        .detail-close-btn {
+            min-height: 34px;
+            padding: 7px 12px;
+            background: #475569;
+            border-color: #334155;
+            color: #FFFFFF;
+            font-family: var(--font-family);
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.2;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.14);
+        }
+
+        .detail-close-btn:hover,
+        .detail-close-btn:focus {
+            background: #334155;
+            border-color: #1E293B;
+            color: #FFFFFF;
+            outline: none;
+        }
+
+        .detail-action-btn {
+            min-height: 34px;
+            padding: 7px 12px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid transparent;
+            font-family: var(--font-family);
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.2;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .detail-action-btn i {
+            font-size: 13px;
+        }
+
+        .detail-action-payment {
+            background: #F59E0B;
+            border-color: #D97706;
+            color: #FFFFFF;
+            box-shadow: 0 1px 2px rgba(146, 64, 14, 0.16);
+        }
+
+        .detail-action-payment:hover,
+        .detail-action-payment:focus {
+            background: #D97706;
+            border-color: #B45309;
+            color: #FFFFFF;
+            outline: none;
+        }
+
+        .detail-action-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #FFFFFF;
+        }
+
+        .detail-action-primary:hover,
+        .detail-action-primary:focus {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: #FFFFFF;
+            outline: none;
+        }
+
+        .detail-more-actions-btn {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #FFFFFF;
+            box-shadow: 0 1px 2px rgba(30, 58, 138, 0.16);
+        }
+
+        .detail-more-actions-btn:hover,
+        .detail-more-actions-btn:focus {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: #FFFFFF;
+            outline: none;
+        }
+
+        .detail-action-btn .detail-more-actions-caret {
+            font-size: 10px;
+            margin-left: 2px;
+        }
+
+        .detail-other-actions-menu {
+            display: none;
+            position: fixed;
+            width: 320px;
+            max-width: calc(100vw - 24px);
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+            overflow: hidden;
+            z-index: 10000;
+        }
+
         /* Main Workspace Grid */
         .workspace-grid {
             display: grid;
@@ -1032,7 +1137,7 @@
                 <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i>
                 <span id="pageTitleText">Xem chi tiết lịch sử Hồ sơ</span>
             </h1>
-            <button class="btn-back" id="btnBackToSearch">
+            <button class="btn-back detail-close-btn" id="btnBackToSearch">
                 <i class="fa-solid fa-xmark"></i> Đóng
             </button>
         </div>
@@ -1054,7 +1159,8 @@
 
                 <!-- Quick Search Input -->
                 <div class="timeline-search-box" style="margin-bottom: 12px; position: relative;">
-                    <input type="text" id="timelineSearchInput" placeholder="Tìm kiếm nhanh phiên bản..."
+                    <input type="text" id="timelineSearchInput" placeholder="Tìm kiếm theo Số đăng ký..."
+                        aria-label="Tìm kiếm theo Số đăng ký"
                         style="width: 100%; padding: 8px 12px 8px 30px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); box-sizing: border-box; font-size: 13px;">
                     <i class="fa-solid fa-magnifying-glass"
                         style="position: absolute; left: 10px; top: 10px; color: var(--text-muted); font-size: 12px;"></i>

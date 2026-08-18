@@ -2196,12 +2196,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const cleanCase = getCleanRegistrationCase(node);
             if (selectedCase !== 'Tất cả' && cleanCase !== selectedCase) return false;
 
-            // Search filter
-            const matchesQuery = !query ||
-                cleanCase.toLowerCase().includes(query) ||
-                node.title.toLowerCase().includes(query) ||
-                node.regCode.toLowerCase().includes(query) ||
-                node.description.toLowerCase().includes(query);
+            // Search by registration number.
+            const matchesQuery = !query || node.regCode.toLowerCase().includes(query);
 
             if (!matchesQuery) return false;
 
@@ -2223,7 +2219,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filteredData.length === 0) {
             timelineContainer.innerHTML = `
                 <div style="text-align: center; padding: 20px; color: var(--text-muted); font-style: italic;">
-                    Không tìm thấy phiên bản phù hợp.
+                    Không tìm thấy số đăng ký phù hợp.
                 </div>
             `;
             timelineMoreBtnContainer.style.display = 'none';
@@ -3355,12 +3351,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const primaryButtons = [];
             const otherActions = [];
             const addPrimaryButton = (label, action, icon, variant = 'warning') => {
-                const bg = {
-                    warning: 'var(--warning-color)',
-                    primary: 'var(--primary-color)'
-                }[variant] || 'var(--primary-color)';
+                const variantClass = {
+                    warning: 'detail-action-payment',
+                    primary: 'detail-action-primary'
+                }[variant] || 'detail-action-primary';
                 primaryButtons.push(`
-                    <button class="btn-back" style="background-color:${bg}; color:white; border:none; padding:8px 14px; border-radius:var(--border-radius-md); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13px;" onclick="customerAction('${action}')">
+                    <button type="button" class="detail-action-btn ${variantClass}" onclick="customerAction('${action}')">
                         <i class="${icon}"></i> ${label}
                     </button>
                 `);
@@ -3409,10 +3405,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const moreActionsHtml = otherActions.length ? `
                 <div style="position:relative;">
-                    <button type="button" class="btn-back" onclick="toggleDetailOtherActions(event)" style="background:#fff; border:1px solid var(--border-color); color:var(--primary-color); padding:8px 14px; border-radius:var(--border-radius-md); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13px;">
-                        <i class="fa-solid fa-ellipsis-vertical"></i> Thao tác khác
+                    <button type="button" class="detail-action-btn detail-more-actions-btn" onclick="toggleDetailOtherActions(event)" title="Mở các thao tác khác">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                        <span>Thao tác khác</span>
+                        <i class="fa-solid fa-chevron-down detail-more-actions-caret"></i>
                     </button>
-                    <div id="detailOtherActionsMenu" style="display:none; position:fixed; width:320px; max-width:calc(100vw - 24px); background:white; border:1px solid var(--border-color); border-radius:var(--border-radius-md); box-shadow:0 12px 28px rgba(15,23,42,.18); overflow:hidden; z-index:10000;">
+                    <div id="detailOtherActionsMenu" class="detail-other-actions-menu">
                         ${otherActions.join('')}
                     </div>
                 </div>
