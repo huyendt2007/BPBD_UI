@@ -581,12 +581,7 @@
                     </div>
                 </div>
 
-                <div id="resultPinContainer">
-                    <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;">MÃ PIN BẢO MẬT TRA CỨU YÊU CẦU</div>
-                    <div class="pin-box" style="margin: 8px auto; display: inline-block;" id="resultPin">
-                        8392-4710
-                    </div>
-                </div>
+                <div id="resultPinContainer" style="display:none;"></div>
 
                 <div style="margin-top: 32px; display: flex; justify-content: center; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 24px;" id="resultButtonsContainer">
                     <!-- Buttons loaded here -->
@@ -757,7 +752,7 @@
             card.style.borderTopColor = 'var(--success-color)';
             statusText.style.color = 'var(--success-color)';
             statusText.innerText = 'THANH TOÁN THÀNH CÔNG';
-            pinContainer.style.display = '';
+            pinContainer.style.display = 'none'; // Yêu cầu cấp bản sao kèm thông báo không cấp Mã PIN mới (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
             detailsContainer.style.display = '';
 
             const d = new Date();
@@ -770,7 +765,6 @@
             switch (scen) {
                 case 'TH1':
                     message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán lệ phí cung cấp bản sao kèm thông báo thế chấp thành công. Bạn có thể nhấn nút [Tải bản sao & Thông báo] để tải về bản sao chứng nhận kèm thông báo thế chấp tương ứng.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnDownloadCopy + btnBackToHome;
                     break;
                 case 'TH2': // Nộp thiếu
@@ -787,7 +781,6 @@
                     break;
                 case 'TH3': // Nộp thừa
                     message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán thành công. Phát hiện số tiền đóng nộp bị thừa. Số tiền nộp thừa này sẽ được hoàn trả tự động vào tài khoản gốc của Quý khách trong vòng 3-5 ngày làm việc. Bạn có thể tải bản sao chứng nhận kèm thông báo ngay lập tức.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnDownloadCopy + btnBackToHome;
                     break;
                 case 'TH4': // Hủy / Lỗi
@@ -817,12 +810,10 @@
                     statusText.style.color = '#b45309';
                     statusText.innerText = 'GIAO DỊCH CHƯA ĐỐI SOÁT XÁC NHẬN';
                     message.innerText = 'Hệ thống chưa nhận được tín hiệu phản hồi xác nhận từ Ngân hàng / Cổng thanh toán (mất kết nối kết nối tạm thời). Vui lòng không thanh toán lại. Yêu cầu của bạn đang ở trạng thái [Chờ thanh toán] và sẽ được đối soát tự động bởi hệ thống.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnBackToHome;
                     break;
                 case 'TH7': // Nộp trùng lặp
                     message.innerText = 'Cơ chế an toàn hệ thống ghi nhận: Phát hiện giao dịch thanh toán bị nộp tiền trùng lặp cho cùng một yêu cầu cấp bản sao kèm thông báo. Khoản nộp thừa trùng lặp này đã được đưa vào hàng đợi hoàn trả tự động của phòng kế toán. Yêu cầu chính thức của bạn vẫn được kích hoạt hoàn thành.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnDownloadCopy + btnBackToHome;
                     break;
             }

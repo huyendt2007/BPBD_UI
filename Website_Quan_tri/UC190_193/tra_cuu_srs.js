@@ -691,9 +691,11 @@ class PaginatedGrid {
         }
         tr.appendChild(tdRegNum);
 
-        // PIN
+        // PIN - Mã PIN chỉ được cấp một lần duy nhất tại thời điểm Đăng ký lần đầu (UC024).
+        // Các loại hồ sơ khác (Đăng ký thay đổi, Chỉnh lý thông tin, Xóa đăng ký, Hủy đăng ký, Khôi phục hủy đăng ký,...) không phát sinh PIN mới nên hiển thị trống.
         const tdPin = document.createElement('td');
-        tdPin.innerHTML = `<code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px;">${item.pin}</code>`;
+        const pinDisplay = (item.type === 'Đăng ký lần đầu') ? (item.pin || '—') : '—';
+        tdPin.innerHTML = `<code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px;">${pinDisplay}</code>`;
         tr.appendChild(tdPin);
 
         // Time

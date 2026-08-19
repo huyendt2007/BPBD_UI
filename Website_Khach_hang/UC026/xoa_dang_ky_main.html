@@ -481,6 +481,70 @@
             table-layout: fixed;
         }
 
+        .asset-type-panel {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background: #FFFFFF;
+            margin-top: 14px;
+            overflow: hidden;
+        }
+
+        .asset-type-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            background: #F8FAFC;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .asset-type-body {
+            padding: 14px;
+        }
+
+        .asset-readonly-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        @media(max-width: 768px) {
+            .asset-readonly-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .asset-readonly-item {
+            border: 1px solid #E2E8F0;
+            border-radius: var(--border-radius-sm);
+            background: #F8FAFC;
+            padding: 10px 12px;
+        }
+
+        .asset-readonly-label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .asset-readonly-value {
+            color: var(--text-main);
+            font-size: 13.5px;
+            font-weight: 500;
+            line-height: 1.45;
+        }
+
+        .asset-scope-table {
+            min-width: 980px;
+            table-layout: fixed;
+        }
+
         #assetsTable th,
         #assetsTable td {
             line-height: 1.45;
@@ -494,6 +558,23 @@
 
         #assetsTable td {
             overflow-wrap: break-word;
+        }
+
+        .asset-select-cell {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .asset-select-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--danger-color);
+        }
+
+        .asset-select-checkbox:disabled {
+            cursor: not-allowed;
+            opacity: 0.75;
         }
 
         .table th {
@@ -980,31 +1061,9 @@
                     </div>
 
                     <div style="margin-top: 20px;">
-                        <label class="form-label">Danh sách phương tiện / Tài sản bảo đảm</label>
-                        <div class="table-responsive">
-                            <table class="table" id="assetsTable">
-                                <colgroup>
-                                    <col style="width: 56px;">
-                                    <col style="width: 250px;">
-                                    <col style="width: 205px;">
-                                    <col style="width: 240px;">
-                                    <col style="width: 164px;">
-                                    <col style="width: 165px;">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th style="width: 56px; text-align: center;">STT</th>
-                                        <th>Loại tài sản</th>
-                                        <th>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
-                                        <th>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>
-                                        <th>SỐ KHUNG / SỐ ĐỊNH DANH</th>
-                                        <th>SỐ MÁY / BIỂN SỐ</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="assetsTableBody">
-                                    <!-- Loaded dynamically -->
-                                </tbody>
-                            </table>
+                        <label class="form-label">Danh sách phương tiện / Tài sản bảo đảm thuộc phạm vi xóa đăng ký</label>
+                        <div id="assetsDisplayContainer">
+                            <!-- Loaded dynamically -->
                         </div>
                     </div>
                 </div>

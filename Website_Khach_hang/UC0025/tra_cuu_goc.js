@@ -271,7 +271,6 @@ function generateTimeline(regNum, info) {
 }
 
 function initPage() {
-    console.log("DEBUG: initPage starting in tra_cuu_goc.js");
     // DOM Elements
     const regNumInput = document.getElementById('regNum');
     const pinNumInput = document.getElementById('pinNum');
@@ -302,23 +301,17 @@ function initPage() {
     const isBypass = urlParams.get('bypass') === 'true';
 
     if (isBypass && bypassRegNum && bypassPin) {
-        console.log("DEBUG: Bypass params detected. regNum=" + bypassRegNum + ", pin=" + bypassPin);
         const dossierInfo = getDossierData(bypassRegNum);
-        console.log("DEBUG: dossierInfo = ", dossierInfo);
         if (dossierInfo) {
             const timelineData = generateTimeline(bypassRegNum, dossierInfo);
             const latestBaseline = timelineData[0];
-            console.log("DEBUG: setting localStorage keys...");
             localStorage.setItem('regNum', bypassRegNum);
             localStorage.setItem('pinNum', bypassPin);
             localStorage.setItem('baselineVersion', latestBaseline.version);
             localStorage.setItem('baselineData', JSON.stringify(latestBaseline.data));
             localStorage.setItem('baselineOriginalData', JSON.stringify(latestBaseline.data));
-            console.log("DEBUG: window.location.href redirecting to dang_ky_thay_doi_main.html now...");
             window.location.href = 'dang_ky_thay_doi_main.html';
             return;
-        } else {
-            console.log("DEBUG: dossierInfo not found for regNum=" + bypassRegNum);
         }
     }
 

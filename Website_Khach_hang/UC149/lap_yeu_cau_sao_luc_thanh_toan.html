@@ -584,12 +584,7 @@
                     </div>
                 </div>
 
-                <div id="resultPinContainer">
-                    <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;">MÃ PIN BẢO MẬT TRA CỨU YÊU CẦU</div>
-                    <div class="pin-box" style="margin: 8px auto; display: inline-block;" id="resultPin">
-                        8392-4710
-                    </div>
-                </div>
+                <div id="resultPinContainer" style="display:none;"></div>
 
                 <div style="margin-top: 32px; display: flex; justify-content: center; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 24px;" id="resultButtonsContainer">
                     <!-- Buttons loaded here -->
@@ -777,7 +772,7 @@
             card.style.borderTopColor = 'var(--success-color)';
             statusText.style.color = 'var(--success-color)';
             statusText.innerText = 'THANH TOÁN THÀNH CÔNG';
-            pinContainer.style.display = '';
+            pinContainer.style.display = 'none'; // Yêu cầu cấp bản sao không cấp Mã PIN mới (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
             detailsContainer.style.display = '';
 
             const d = new Date();
@@ -801,7 +796,6 @@
                 case 'TH1':
                     markPaymentSuccess();
                     message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán lệ phí cấp bản sao thành công. Yêu cầu đã chuyển sang trạng thái Chờ duyệt để Cán bộ nghiệp vụ kiểm tra và xử lý.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnBackToList + btnBackToHome;
                     break;
                 case 'TH2': // Nộp thiếu
@@ -819,7 +813,6 @@
                 case 'TH3': // Nộp thừa
                     markPaymentSuccess();
                     message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán thành công. Phát hiện số tiền đóng nộp bị thừa; phần nộp thừa sẽ được hoàn trả theo quy trình đối soát. Yêu cầu đã chuyển sang trạng thái Chờ duyệt.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnBackToList + btnBackToHome;
                     break;
                 case 'TH4': // Hủy / Lỗi
@@ -854,7 +847,6 @@
                 case 'TH7': // Nộp trùng
                     markPaymentSuccess();
                     message.innerText = 'Cảm ơn Quý khách. Giao dịch thanh toán thành công. Phát hiện giao dịch bị nộp trùng lặp; giao dịch trùng sẽ được hoàn tiền theo quy trình đối soát. Yêu cầu đã chuyển sang trạng thái Chờ duyệt.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnBackToList + btnBackToHome;
                     break;
             }

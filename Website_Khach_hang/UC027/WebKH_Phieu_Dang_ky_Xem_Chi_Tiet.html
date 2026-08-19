@@ -1205,7 +1205,7 @@
 
                 <!-- Date Range Filters -->
                 <div class="timeline-date-filters"
-                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
                     <div>
                         <label class="field-label"
                             style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 4px;">Từ
@@ -1221,6 +1221,19 @@
                             style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 12px; box-sizing: border-box;">
                     </div>
                 </div>
+                <div class="timeline-filter-actions"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+                    <button id="btnSearchTimeline" type="button"
+                        style="background-color: var(--primary-color); border: 1px solid var(--primary-color); color: white; padding: 8px 10px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; min-height: 34px;">
+                        <i class="fa-solid fa-magnifying-glass" style="font-size: 11px; margin-right: 4px;"></i>
+                        Tìm kiếm
+                    </button>
+                    <button id="btnClearTimelineFilters" type="button"
+                        style="background-color: white; border: 1px solid var(--border-color); color: var(--primary-color); padding: 8px 10px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; min-height: 34px;">
+                        <i class="fa-solid fa-rotate-left" style="font-size: 11px; margin-right: 4px;"></i>
+                        Xóa lọc
+                    </button>
+                </div>
 
                 <!-- Vertical timeline list -->
                 <div class="vertical-timeline" id="timelineContainer">
@@ -1229,10 +1242,15 @@
 
                 <!-- Load More Button -->
                 <div class="timeline-more-btn-container" id="timelineMoreBtnContainer"
-                    style="text-align: center; margin-top: 15px; display: none;">
-                    <button id="btnLoadMoreTimeline"
-                        style="background-color: white; border: 1px solid var(--border-color); color: var(--primary-color); padding: 8px 12px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%;">
-                        <label>Xem thêm</label> <i class="fa-solid fa-chevron-down"
+                    style="text-align: center; margin-top: 15px; display: none; gap: 8px; align-items: center;">
+                    <button id="btnLoadMoreTimeline" type="button"
+                        style="background-color: white; border: 1px solid var(--border-color); color: var(--primary-color); padding: 8px 12px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s; flex: 1; min-height: 34px;">
+                        <span>Xem thêm</span> <i class="fa-solid fa-chevron-down"
+                            style="font-size: 10px; margin-left: 4px;"></i>
+                    </button>
+                    <button id="btnCollapseTimeline" type="button"
+                        style="background-color: #F1F5F9; border: 1px solid #CBD5E1; color: #334155; padding: 8px 12px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s; flex: 1; min-height: 34px; display: none;">
+                        <span>Thu gọn</span> <i class="fa-solid fa-chevron-up"
                             style="font-size: 10px; margin-left: 4px;"></i>
                     </button>
                 </div>

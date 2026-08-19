@@ -694,13 +694,7 @@
                     </div>
                 </div>
 
-                <div id="resultPinContainer" class="success-pin-box" style="background-color: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--border-radius-md); padding: 15px 25px; margin: 15px auto; max-width: 450px; text-align: center;">
-                    <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">MÃ SỐ PIN XÁC THỰC BẢO MẬT MỚI</div>
-                    <div class="pin-box" style="margin: 8px auto; display: inline-block;" id="resultPin">
-                        8392-4710
-                    </div>
-                    <div style="font-size: 11.5px; color:#64748B; margin-top:5px;">Vui lòng lưu giữ lại mã PIN này để thực hiện tra cứu kết quả hoặc thay đổi lần tiếp theo.</div>
-                </div>
+                <div id="resultPinContainer" class="success-pin-box" style="display:none;"></div>
 
                 <div style="margin-top: 32px; display: flex; justify-content: center; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 24px;" id="resultButtonsContainer">
                     <!-- Dynamic buttons will be loaded here -->
@@ -894,7 +888,7 @@
             card.style.borderTopColor = 'var(--success-color)';
             statusText.style.color = 'var(--success-color)';
             statusText.innerText = 'THANH TOÁN THÀNH CÔNG';
-            pinContainer.style.display = 'block';
+            pinContainer.style.display = 'none'; // Không cấp Mã số PIN mới cho hồ sơ đăng ký thay đổi (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
             if (detailsContainer) detailsContainer.style.display = 'block';
 
             // Set current time for registration
@@ -914,7 +908,6 @@
             switch (scen) {
                 case 'TH1':
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
                 case 'TH2': // Nộp thiếu
@@ -932,7 +925,6 @@
                     break;
                 case 'TH3': // Nộp thừa
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng. Hệ thống ghi nhận Quý khách nộp thừa số tiền phí. Số tiền nộp thừa này sẽ được hoàn trả tự động vào tài khoản của Quý khách trong vòng 3-5 ngày làm việc.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
                 case 'TH4': // Hủy / Lỗi
@@ -967,7 +959,6 @@
                     break;
                 case 'TH7': // Nộp trùng
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng. Hệ thống ghi nhận Quý khách nộp trùng giao dịch thanh toán. Số tiền nộp trùng này sẽ được hoàn trả tự động vào tài khoản gốc của Quý khách trong vòng 3-5 ngày làm việc.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
             }

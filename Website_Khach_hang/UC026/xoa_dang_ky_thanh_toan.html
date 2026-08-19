@@ -411,12 +411,7 @@
                     </div>
                 </div>
 
-                <div id="resultPinContainer">
-                    <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;">MÃ PIN BẢO MẬT TRA CỨU HỒ SƠ</div>
-                    <div class="pin-box" style="margin: 8px auto; display: inline-block;" id="resultPin">
-                        9823-1402
-                    </div>
-                </div>
+                <div id="resultPinContainer" style="display:none;"></div>
 
                 <div style="margin-top: 32px; display: flex; justify-content: center; gap: 12px; border-top: 1px solid #e2e8f0; padding-top: 24px;" id="resultButtonsContainer">
                     <!-- Dynamic buttons -->
@@ -598,7 +593,7 @@
             card.style.borderTopColor = 'var(--success-color)';
             statusText.style.color = 'var(--success-color)';
             statusText.innerText = 'THANH TOÁN THÀNH CÔNG';
-            pinContainer.style.display = 'block';
+            pinContainer.style.display = 'none'; // Không cấp Mã số PIN mới cho hồ sơ xóa đăng ký (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
             if (detailsContainer) detailsContainer.style.display = 'block';
 
             const d = new Date();
@@ -621,7 +616,7 @@
             switch (scen) {
                 case 'TH1':
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng.';
-                    document.getElementById('resultPin').innerText = Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000);
+                    // Không cấp Mã số PIN mới cho hồ sơ xóa đăng ký (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
                 case 'TH2': // Nộp thiếu
@@ -639,7 +634,7 @@
                     break;
                 case 'TH3': // Nộp thừa
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng. Hệ thống ghi nhận Quý khách nộp thừa số tiền phí. Số tiền nộp thừa này sẽ được hoàn trả tự động vào tài khoản của Quý khách trong vòng 3-5 ngày làm việc.';
-                    document.getElementById('resultPin').innerText = Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000);
+                    // Không cấp Mã số PIN mới cho hồ sơ xóa đăng ký (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
                 case 'TH4': // Hủy / Lỗi
@@ -683,7 +678,7 @@
                     icon.innerHTML = svgs.check;
                     statusText.innerText = 'THANH TOÁN NỘP TRÙNG LẶP';
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng. Hệ thống ghi nhận Quý khách nộp trùng giao dịch thanh toán. Số tiền nộp trùng này sẽ được hoàn trả tự động vào tài khoản gốc của Quý khách trong vòng 3-5 ngày làm việc.';
-                    document.getElementById('resultPin').innerText = Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000);
+                    // Không cấp Mã số PIN mới cho hồ sơ xóa đăng ký (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
             }

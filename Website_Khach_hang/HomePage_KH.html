@@ -5,6 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Khách hàng - Hệ thống Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
+    <script>
+        window.addEventListener('unhandledrejection', function (event) {
+            const reason = event.reason;
+            const message = typeof reason === 'string'
+                ? reason
+                : (reason && (reason.message || String(reason))) || '';
+            if (message.includes('A listener indicated an asynchronous response by returning true') &&
+                message.includes('message channel closed before a response was received')) {
+                event.preventDefault();
+            }
+        });
+    </script>
     <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -5316,14 +5328,10 @@
                             </div>
                         </div>
 
-                        <div id="disposalResultPinContainer" style="margin-top: 15px;">
-                            <div
-                                style="font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;">
-                                MÃ SỐ PIN BẢO MẬT MỚI</div>
-                            <div class="pin-box"
-                                style="background: #f1f5f9; border: 2px dashed #94a3b8; padding: 10px 20px; border-radius: 8px; margin: 8px auto; display: inline-block; font-size: 24px; font-weight: 700; letter-spacing: 2px; color: var(--primary-color);"
-                                id="successDisposalPin">
-                                N/A
+                        <!-- Thông báo xử lý tài sản (lần đầu/thay đổi/xóa) không cấp Mã PIN mới - PIN chỉ cấp một lần khi Đăng ký mới (UC024). Khối này luôn ẩn (giữ id để tương thích JS). -->
+                        <div id="disposalResultPinContainer" style="display: none;">
+                            <div id="successDisposalPinRow" style="display:none;">
+                                <span id="successDisposalPin"></span>
                             </div>
                         </div>
 
@@ -6404,17 +6412,6 @@
 
     <!-- JAVASCRIPT GLOBAL MANAGEMENT -->
     <script>
-        window.addEventListener('unhandledrejection', function (event) {
-            const reason = event.reason;
-            const message = typeof reason === 'string'
-                ? reason
-                : (reason && (reason.message || String(reason))) || '';
-            if (message.includes('A listener indicated an asynchronous response by returning true') &&
-                message.includes('message channel closed before a response was received')) {
-                event.preventDefault();
-            }
-        });
-
         /* Banner Slider Management */
         let currentBannerIndex = 0;
         const totalBannerSlides = 4;
@@ -11927,7 +11924,8 @@
             if (isSuccessScen) {
                 if (disposalMode === 'first') {
                     regNum = activeRecordInDisposal.regNum + '-TBXL';
-                    newPin = Math.floor(1000 + Math.random() * 9000).toString();
+                    // Lưu ý: Thông báo xử lý tài sản (kể cả "lần đầu") KHÔNG phải Đăng ký mới BPBĐ (UC024) nên KHÔNG cấp Mã PIN mới.
+                    newPin = '';
 
                     const checkBoxes = document.querySelectorAll('input[name="disposalSelectAsset"]:checked');
                     const checkedAssets = Array.from(checkBoxes).map(cb => cb.value);
@@ -12092,13 +12090,9 @@
                     document.getElementById('successDisposalRegNum').innerText = regNum || (activeNoticeRecordInDisposal ? activeNoticeRecordInDisposal.noticeNum : 'N/A');
                     document.getElementById('successDisposalOriginalRegNum').innerText = activeRecordInDisposal.regNum;
 
-                    if (disposalMode === 'first') {
-                        pinContainer.style.display = '';
-                        document.getElementById('successDisposalPinRow').style.display = '';
-                        document.getElementById('successDisposalPin').innerText = newPin;
-                    } else {
-                        document.getElementById('successDisposalPinRow').style.display = 'none';
-                    }
+                    // Thông báo xử lý tài sản (lần đầu/thay đổi/xóa) không cấp Mã PIN mới - PIN chỉ cấp một lần khi Đăng ký mới (UC024).
+                    pinContainer.style.display = 'none';
+                    document.getElementById('successDisposalPinRow').style.display = 'none';
 
                     buttonsContainer.innerHTML = btnDownloadPdf + btnBackToHome;
                     break;
@@ -12129,13 +12123,9 @@
                     document.getElementById('successDisposalRegNum').innerText = regNum || (activeNoticeRecordInDisposal ? activeNoticeRecordInDisposal.noticeNum : 'N/A');
                     document.getElementById('successDisposalOriginalRegNum').innerText = activeRecordInDisposal.regNum;
 
-                    if (disposalMode === 'first') {
-                        pinContainer.style.display = '';
-                        document.getElementById('successDisposalPinRow').style.display = '';
-                        document.getElementById('successDisposalPin').innerText = newPin || '8392';
-                    } else {
-                        document.getElementById('successDisposalPinRow').style.display = 'none';
-                    }
+                    // Thông báo xử lý tài sản (lần đầu/thay đổi/xóa) không cấp Mã PIN mới - PIN chỉ cấp một lần khi Đăng ký mới (UC024).
+                    pinContainer.style.display = 'none';
+                    document.getElementById('successDisposalPinRow').style.display = 'none';
 
                     buttonsContainer.innerHTML = btnDownloadPdf + btnBackToHome;
                     break;
@@ -12198,13 +12188,9 @@
                     document.getElementById('successDisposalRegNum').innerText = regNum || (activeNoticeRecordInDisposal ? activeNoticeRecordInDisposal.noticeNum : 'N/A');
                     document.getElementById('successDisposalOriginalRegNum').innerText = activeRecordInDisposal.regNum;
 
-                    if (disposalMode === 'first') {
-                        pinContainer.style.display = '';
-                        document.getElementById('successDisposalPinRow').style.display = '';
-                        document.getElementById('successDisposalPin').innerText = newPin || '8392';
-                    } else {
-                        document.getElementById('successDisposalPinRow').style.display = 'none';
-                    }
+                    // Thông báo xử lý tài sản (lần đầu/thay đổi/xóa) không cấp Mã PIN mới - PIN chỉ cấp một lần khi Đăng ký mới (UC024).
+                    pinContainer.style.display = 'none';
+                    document.getElementById('successDisposalPinRow').style.display = 'none';
 
                     buttonsContainer.innerHTML = btnDownloadPdf + btnBackToHome;
                     break;
@@ -14468,6 +14454,13 @@
             return amount.toLocaleString('vi-VN');
         }
 
+        function getRegisteredRequestPinDisplayText(item) {
+            // Mã PIN chỉ được hệ thống cấp một lần duy nhất tại thời điểm Đăng ký mới (UC024).
+            // Mọi loại hồ sơ khác (Đăng ký thay đổi, Xóa đăng ký, Thông báo xử lý tài sản, Yêu cầu cung cấp bản sao/thông tin,...) không phát sinh PIN mới nên hiển thị trống.
+            if (!item || item.type !== 'Đăng ký lần đầu') return '—';
+            return item.pin || '—';
+        }
+
         function getMockCreatorName(item) {
             const source = item?.guarantor || item?.creator || '';
             if (source.includes('Hải Nam')) return 'Trần Minh Hải';
@@ -15647,7 +15640,7 @@
                     <tr class="tree-row depth-0" style="cursor: pointer;" title="Bấm vào dòng để xem chi tiết phiếu đăng ký" onclick="viewRegisteredRequest('${item.regNum}', '${item.type}', ${hasChildren ? item.children.length : 0})">
                         <td style="text-align: center;"><strong>${stt++}</strong></td>
                         <td>${toggleHtml} <strong>${formatRegNumForDisplay(item.regNum)}</strong></td>
-                        <td><span style="font-family: monospace;">${item.pin}</span></td>
+                        <td><span style="font-family: monospace;">${getRegisteredRequestPinDisplayText(item)}</span></td>
                         <td>${item.type}</td>
                         <td>${item.guarantor}</td>
                         <td>${item.securedParty}</td>
@@ -15683,7 +15676,7 @@
                             <tr class="tree-row depth-1" style="cursor: pointer;" title="Bấm vào dòng để xem chi tiết phiếu đăng ký" onclick="viewRegisteredRequest('${child.regNum}', '${child.type}', ${hasGrandchildren ? child.children.length : 0})">
                                 <td style="text-align: center;"></td>
                                 <td><span class="tree-indent-line">├──</span> ${childToggleHtml} <span>${formatRegNumForDisplay(child.regNum)}</span></td>
-                                <td><span style="font-family: monospace;">${child.pin}</span></td>
+                                <td><span style="font-family: monospace;">${getRegisteredRequestPinDisplayText(child)}</span></td>
                                 <td>${child.type}</td>
                                 <td>${child.guarantor}</td>
                                 <td>${child.securedParty}</td>
@@ -15713,7 +15706,7 @@
                                     <tr class="tree-row depth-2" style="background-color: #F8FAFC; cursor: pointer;" title="Bấm vào dòng để xem chi tiết phiếu đăng ký" onclick="viewRegisteredRequest('${gc.regNum}', '${gc.type}', 0)">
                                         <td style="text-align: center;"></td>
                                         <td><span class="tree-indent-line">└──</span> <span>${formatRegNumForDisplay(gc.regNum)}</span></td>
-                                        <td><span style="font-family: monospace;">${gc.pin}</span></td>
+                                        <td><span style="font-family: monospace;">${getRegisteredRequestPinDisplayText(gc)}</span></td>
                                         <td>${gc.type}</td>
                                         <td>${gc.guarantor}</td>
                                         <td>${gc.securedParty}</td>

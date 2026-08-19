@@ -1092,7 +1092,7 @@ function executeRender() {
                     <td>${startIndex + index + 1}</td>
                     <td>${row.date}</td>
                     <td><span class="action-link" onclick="event.stopPropagation(); openDetail('${row.id}')">${row.id}</span></td>
-                    <td><code>${row.pin || '-'}</code></td>
+                    <td><code>${row.type === 'Đăng ký mới' ? (row.pin || '-') : '-'}</code></td>
                     <td><b>${row.customer}</b></td>
                     <td>${row.mortgagee}</td>
                     <td>${row.type}</td>

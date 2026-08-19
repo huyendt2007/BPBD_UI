@@ -2083,10 +2083,9 @@
                 window.location.href = 'dang_ky_thay_doi_thanh_toan.html';
             } else if (choice === 3) {
                 const regNum = localStorage.getItem('regNum') || '12345678';
-                const pinNum = String(Math.floor(1000 + Math.random() * 9000));
                 document.getElementById('modalRegNum').textContent = regNum + '-CD03';
-                document.getElementById('modalPinNum').textContent = pinNum;
-                
+                // Lưu ý: Không cấp Mã số PIN mới cho hồ sơ đăng ký thay đổi (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
+
                 showViewportModal('resultSuccessModal');
             }
         }
@@ -2149,12 +2148,8 @@
                     <span style="font-weight: 600; color: var(--text-muted); font-size: 13px;">Số đăng ký thay đổi:</span>
                     <span style="font-weight: 700; color: var(--primary-color); font-size: 13px;" id="modalRegNum">12345678-CD03</span>
                 </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="font-weight: 600; color: var(--text-muted); font-size: 13px;">Mã số PIN tra cứu:</span>
-                    <span style="font-weight: 700; color: var(--accent-dark); font-family: monospace; font-size: 14px;" id="modalPinNum">9999</span>
-                </div>
             </div>
-            
+
             <button type="button" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="closeSuccessModalAndRedirect()">ĐỒNG Ý</button>
         </div>
     </div>

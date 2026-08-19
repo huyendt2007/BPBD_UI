@@ -546,6 +546,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Chuyển đổi qua lại giữa vai trò (Mockup)
+function getPinDisplayText(item) {
+    // Mã PIN chỉ được hệ thống cấp một lần duy nhất tại thời điểm Đăng ký mới (UC024).
+    // Các loại hồ sơ khác (Đăng ký thay đổi, Xóa đăng ký, Thông báo xử lý tài sản,...) không phát sinh PIN mới nên hiển thị trống.
+    if (!item || item.type !== 'Đăng ký lần đầu') return '—';
+    return item.pin || '—';
+}
+
 function switchRole(role, element) {
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     element.classList.add('active');
@@ -1040,7 +1047,7 @@ function renderCanBoTable() {
                 <td style="text-align: center;">${toggleHtml} <strong>${stt++}</strong></td>
                 <td>${parent.date}</td>
                 <td><strong>${formatRegNumForDisplay(parent.regNum)}</strong></td>
-                <td><span style="font-family: monospace;">${parent.pin}</span></td>
+                <td><span style="font-family: monospace;">${getPinDisplayText(parent)}</span></td>
                 <td>${parent.guarantor}</td>
                 <td>${parent.securedParty}</td>
                 <td>${parent.type}</td>
@@ -1073,7 +1080,7 @@ function renderCanBoTable() {
                         <td><span class="tree-indent-line" style="margin-left:12px;">├──</span> ${childToggleHtml}</td>
                         <td>${child.date}</td>
                         <td><span>${formatRegNumForDisplay(child.regNum)}</span></td>
-                        <td><span style="font-family: monospace;">${child.pin}</span></td>
+                        <td><span style="font-family: monospace;">${getPinDisplayText(child)}</span></td>
                         <td>${child.guarantor}</td>
                         <td>${child.securedParty}</td>
                         <td>${child.type}</td>
@@ -1101,7 +1108,7 @@ function renderCanBoTable() {
                                 <td><span class="tree-indent-line" style="margin-left:36px;">└──</span> <span style="margin-left:24px;"></span></td>
                                 <td>${gc.date}</td>
                                 <td><span>${formatRegNumForDisplay(gc.regNum)}</span></td>
-                                <td><span style="font-family: monospace;">${gc.pin}</span></td>
+                                <td><span style="font-family: monospace;">${getPinDisplayText(gc)}</span></td>
                                 <td>${gc.guarantor}</td>
                                 <td>${gc.securedParty}</td>
                                 <td>${gc.type}</td>

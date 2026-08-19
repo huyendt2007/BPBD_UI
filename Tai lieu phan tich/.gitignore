@@ -1,0 +1,19 @@
+.obsidian/
+desktop.ini
+Thumbs.db
+~$*.docx
+~$*.doc
+
+# Chi push tai lieu phan tich: Website khach hang, Website quan tri,
+# Mobile App khach hang, Tai lieu tong hop. Bo qua cac phan con lai.
+/00_Tong_quan_va_Quy_tac_chung.md
+/04_Danh_muc_va_Phu_luc.md
+/BPBD_Danh_sach_ma_UC.md
+/BPBD_Tai lieu SRS.md
+/images/
+/merge_srs.ps1
+/quoc_gia.json
+/start_watch_background.ps1
+/Tai lieu SRS/
+/watch_srs.ps1
+/XemChiTietLichSu.docx

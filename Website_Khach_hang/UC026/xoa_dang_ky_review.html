@@ -421,6 +421,83 @@
             border: 1px solid #FCA5A5;
         }
 
+        .asset-type-panel {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background: #FFFFFF;
+            margin-top: 14px;
+            overflow: hidden;
+        }
+
+        .asset-type-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            background: #F8FAFC;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .asset-type-body {
+            padding: 14px;
+        }
+
+        .asset-readonly-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        @media(max-width: 768px) {
+            .asset-readonly-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .asset-readonly-item {
+            border: 1px solid #E2E8F0;
+            border-radius: var(--border-radius-sm);
+            background: #F8FAFC;
+            padding: 10px 12px;
+        }
+
+        .asset-readonly-label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .asset-readonly-value {
+            color: var(--text-main);
+            font-size: 13.5px;
+            font-weight: 500;
+            line-height: 1.45;
+        }
+
+        .asset-select-cell {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .asset-select-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: not-allowed;
+            accent-color: var(--danger-color);
+            opacity: 0.75;
+        }
+
+        .asset-scope-table {
+            min-width: 980px;
+            table-layout: fixed;
+        }
+
         /* Footer buttons */
         .action-footer {
             display: flex;
@@ -774,31 +851,9 @@
                 </div>
 
                 <div style="margin-top: 20px;">
-                    <div class="readonly-label" style="font-weight: 600; color: var(--text-muted); font-size: 12.5px; margin-bottom: 4px;">Danh sách phương tiện / Tài sản bảo đảm</div>
-                    <div class="table-responsive">
-                        <table class="table" id="assetsReviewTable">
-                            <colgroup>
-                                <col style="width: 56px;">
-                                <col style="width: 250px;">
-                                <col style="width: 205px;">
-                                <col style="width: 240px;">
-                                <col style="width: 164px;">
-                                <col style="width: 165px;">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th style="width: 56px; text-align: center;">STT</th>
-                                    <th>Loại tài sản</th>
-                                    <th>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
-                                    <th>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>
-                                    <th>SỐ KHUNG / SỐ ĐỊNH DANH</th>
-                                    <th>SỐ MÁY / BIỂN SỐ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="assetsReviewBody">
-                                <!-- Loaded dynamically -->
-                            </tbody>
-                        </table>
+                    <div class="readonly-label" style="font-weight: 600; color: var(--text-muted); font-size: 12.5px; margin-bottom: 4px;">Danh sách phương tiện / Tài sản bảo đảm thuộc phạm vi xóa đăng ký</div>
+                    <div id="assetsReviewContainer">
+                        <!-- Loaded dynamically -->
                     </div>
                 </div>
             </div>
@@ -838,10 +893,7 @@
                     </div>
                 </div>
 
-                <div class="pin-box" style="background-color: #EFF6FF; border: 1px solid #BFDBFE; color: var(--primary-color); border-radius: var(--border-radius-md); padding: 15px 25px; margin: 15px auto; max-width: 450px; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <span>Mã số PIN tra cứu:</span>
-                    <span id="lblPinResult" style="font-size: 24px; color: #1D4ED8; letter-spacing: 2px; font-family: monospace;">9823</span>
-                </div>
+                <div class="pin-box" id="lblPinResultContainer" style="display:none;"></div>
                 <p style="text-align: left; font-size: 13.5px; color: var(--text-muted); margin-top: 15px;">
                     Cảm ơn Quý khách đã gửi yêu cầu. Hồ sơ của Quý khách đã được tiếp nhận thành công và đang được xử lý. Thông báo kết quả đã được gửi về email đăng ký.
                 </p>
@@ -1011,22 +1063,171 @@
                 securedPartiesBody.appendChild(tr);
             });
 
-            // Render Assets review
-            const assetsReviewBody = document.getElementById('assetsReviewBody');
-            assetsReviewBody.innerHTML = '';
-            (draft.assets || []).forEach((asset, idx) => {
-                const tr = document.createElement('tr');
-
-                tr.innerHTML = `
-                    <td style="text-align: center; font-weight: 500;">${idx + 1}</td>
-                    <td class="asset-text-cell">${asset.typeName}</td>
-                    <td class="asset-text-cell" style="font-weight: 600;">${asset.name}</td>
-                    <td class="asset-text-cell">${asset.brandColor || ''}</td>
-                    <td class="asset-text-cell" style="font-family: monospace;">${asset.frameNo || ''}</td>
-                    <td class="asset-text-cell">${asset.engineNo || ''} ${asset.plateNo ? ' / ' + asset.plateNo : ''}</td>
+            function createReadonlyItem(label, value) {
+                return `
+                    <div class="asset-readonly-item">
+                        <span class="asset-readonly-label">${label}</span>
+                        <span class="asset-readonly-value">${value || '---'}</span>
+                    </div>
                 `;
-                assetsReviewBody.appendChild(tr);
-            });
+            }
+
+            function createAssetTypePanel(title, bodyHtml) {
+                return `
+                    <div class="asset-type-panel">
+                        <div class="asset-type-header">
+                            <span>${title}</span>
+                            <span class="asset-state-badge state-deleted">Thuộc phạm vi xóa</span>
+                        </div>
+                        <div class="asset-type-body">${bodyHtml}</div>
+                    </div>
+                `;
+            }
+
+            function renderVehicleFrameAssets(assets) {
+                const rows = assets.map((asset, index) => `
+                    <tr class="row-deleted">
+                        <td class="asset-select-cell"><input type="checkbox" class="asset-select-checkbox" checked disabled aria-label="Tài sản thuộc phạm vi xóa"></td>
+                        <td style="text-align: center; font-weight: 500;">${index + 1}</td>
+                        <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}</td>
+                        <td class="asset-text-cell">${asset.brandColor || '---'}</td>
+                        <td class="asset-text-cell" style="font-family: monospace;">${asset.frameNo || '---'}</td>
+                        <td class="asset-text-cell">${asset.engineNo || '---'}</td>
+                        <td class="asset-text-cell">${asset.plateNo || '---'}</td>
+                    </tr>
+                `).join('');
+
+                return createAssetTypePanel('Số khung *', `
+                    <div class="table-responsive">
+                        <table class="table asset-scope-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 58px; text-align: center;">Checkbox</th>
+                                    <th style="width: 56px; text-align: center;">STT</th>
+                                    <th>TÊN PHƯƠNG TIỆN</th>
+                                    <th>NHÃN HIỆU, MÀU SƠN</th>
+                                    <th>SỐ KHUNG</th>
+                                    <th>SỐ MÁY</th>
+                                    <th>BIỂN SỐ</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                `);
+            }
+
+            function renderSpecialVehicleAssets(assets) {
+                const rows = assets.map((asset, index) => `
+                    <tr class="row-deleted">
+                        <td class="asset-select-cell"><input type="checkbox" class="asset-select-checkbox" checked disabled aria-label="Tài sản thuộc phạm vi xóa"></td>
+                        <td style="text-align: center; font-weight: 500;">${index + 1}</td>
+                        <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}</td>
+                        <td class="asset-text-cell">${asset.brandColor || '---'}</td>
+                        <td class="asset-text-cell">${asset.frameNo || '---'}</td>
+                        <td class="asset-text-cell">${asset.noticeAgency || '---'}</td>
+                        <td class="asset-text-cell">${asset.engineNo || '---'}</td>
+                    </tr>
+                `).join('');
+
+                return createAssetTypePanel('Phương tiện', `
+                    <div class="table-responsive">
+                        <table class="table asset-scope-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 58px; text-align: center;">Checkbox</th>
+                                    <th style="width: 56px; text-align: center;">STT</th>
+                                    <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                                    <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                    <th>SỐ ĐĂNG KÝ</th>
+                                    <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                    <th>CẤP PHƯƠNG TIỆN</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                `);
+            }
+
+            function renderSecurityTimeAsset(asset) {
+                const timeMatch = (asset.brandColor || '').match(/(\d{1,2}).*?(\d{1,2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+                const row = timeMatch ? `
+                    <tr class="row-deleted">
+                        <td style="text-align: center;">${timeMatch[1]}</td>
+                        <td style="text-align: center;">${timeMatch[2]}</td>
+                        <td style="text-align: center;">${timeMatch[3]}</td>
+                        <td style="text-align: center;">${timeMatch[4]}</td>
+                        <td style="text-align: center;">${timeMatch[5]}</td>
+                    </tr>
+                ` : `
+                    <tr class="row-deleted"><td colspan="5">${asset.brandColor || asset.name || '---'}</td></tr>
+                `;
+
+                return createAssetTypePanel(asset.typeName || 'Chứng khoán', `
+                    <div class="table-responsive">
+                        <table class="table asset-scope-table">
+                            <thead>
+                                <tr>
+                                    <th>GIỜ</th>
+                                    <th>PHÚT</th>
+                                    <th>NGÀY</th>
+                                    <th>THÁNG</th>
+                                    <th>NĂM</th>
+                                </tr>
+                            </thead>
+                            <tbody>${row}</tbody>
+                        </table>
+                    </div>
+                `);
+            }
+
+            function renderAssetsReview() {
+                const assetsReviewContainer = document.getElementById('assetsReviewContainer');
+                const assets = draft.assets || [];
+                if (!assets.length) {
+                    assetsReviewContainer.innerHTML = `<div class="asset-type-panel"><div class="asset-type-body" style="text-align: center; color: var(--text-muted);">Không có dữ liệu tài sản bảo đảm.</div></div>`;
+                    return;
+                }
+
+                const html = [];
+                const frameAssets = assets.filter(asset => asset.type === 'sokhung');
+                const specialVehicles = assets.filter(asset => asset.type === 'tauca');
+
+                if (frameAssets.length) html.push(renderVehicleFrameAssets(frameAssets));
+                if (specialVehicles.length) html.push(renderSpecialVehicleAssets(specialVehicles));
+
+                assets.filter(asset => !['sokhung', 'tauca', 'chung_khoan'].includes(asset.type)).forEach(asset => {
+                    let bodyHtml = '';
+                    if (asset.type === 'quyen_ts') {
+                        bodyHtml = `<div class="asset-readonly-grid">
+                            ${createReadonlyItem('Tên quyền', asset.name)}
+                            ${createReadonlyItem('Căn cứ phát sinh quyền', asset.brandColor)}
+                        </div>`;
+                    } else if (asset.type === 'hang_hoa') {
+                        bodyHtml = `<div class="asset-readonly-grid">
+                            ${createReadonlyItem('Hàng hóa luân chuyển / Kho hàng', 'Kho hàng')}
+                            ${createReadonlyItem('Giá trị hàng hóa/Tên, loại hàng hóa', asset.name)}
+                            ${createReadonlyItem('Địa chỉ kho hàng', asset.brandColor)}
+                            ${createReadonlyItem('Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', asset.frameNo)}
+                        </div>`;
+                    } else {
+                        bodyHtml = `<div class="asset-readonly-grid">
+                            ${createReadonlyItem('Loại tài sản', asset.typeName)}
+                            ${createReadonlyItem('Mô tả', `${asset.name || ''}${asset.brandColor ? ' - ' + asset.brandColor : ''}`)}
+                        </div>`;
+                    }
+                    html.push(createAssetTypePanel(asset.typeName || 'Tài sản bảo đảm', bodyHtml));
+                });
+
+                assets.filter(asset => asset.type === 'chung_khoan').forEach(asset => {
+                    html.push(renderSecurityTimeAsset(asset));
+                });
+
+                assetsReviewContainer.innerHTML = html.join('');
+            }
+
+            renderAssetsReview();
 
             // Navigation Actions
             document.getElementById('btnBack').addEventListener('click', function () {
@@ -1037,9 +1238,8 @@
             document.getElementById('btnSubmit').addEventListener('click', function () {
                 if (draft.feeAmount === 0) {
                     // Trực tiếp hiện kết quả inline
-                    const generatedPin = Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000);
-                    document.getElementById('lblPinResult').textContent = generatedPin;
-                    
+                    // Không cấp Mã số PIN mới cho hồ sơ xóa đăng ký (PIN chỉ cấp một lần khi Đăng ký mới - UC024).
+
                     // Populate details
                     const now = new Date();
                     const nowStr = now.toLocaleDateString('vi-VN', {

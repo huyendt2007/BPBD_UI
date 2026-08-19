@@ -10,10 +10,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterRegistrationCase = document.getElementById('filterRegistrationCase');
     const filterFromDate = document.getElementById('filterFromDate');
     const filterToDate = document.getElementById('filterToDate');
+    const btnSearchTimeline = document.getElementById('btnSearchTimeline');
+    const btnClearTimelineFilters = document.getElementById('btnClearTimelineFilters');
 
     if (filterFromDate) filterFromDate.value = '';
     if (filterToDate) filterToDate.value = '';
     const btnLoadMoreTimeline = document.getElementById('btnLoadMoreTimeline');
+    const btnCollapseTimeline = document.getElementById('btnCollapseTimeline');
     const timelineMoreBtnContainer = document.getElementById('timelineMoreBtnContainer');
 
     // DOM Elements - Main detail panel headers
@@ -1955,13 +1958,15 @@ document.addEventListener('DOMContentLoaded', function () {
         mockTimelineData.sort((a, b) => b.version - a.version);
     }
 
-    // Cập nhật giả lập các trường thông tin chung theo yêu cầu
+    // Cập nhật giả lập các trường thông tin chung theo yêu cầu.
+    // Loại hình giao dịch là thông tin gốc, không giả lập thay đổi qua các phiên bản đăng ký.
+    const immutableRegistrationTransactionType = "Hợp đồng";
     mockTimelineData.forEach(node => {
         if (!node.statusText) {
             node.statusText = "Hoàn thành";
         }
         if (node.data) {
-            node.data.transactionType = "Hợp đồng";
+            node.data.transactionType = immutableRegistrationTransactionType;
             node.data.contractType = "Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác";
             node.data.scale = "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân";
             node.data.receivingAgency = "Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội";
@@ -2102,9 +2107,156 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    function ensureLoadMoreTimelineMockData() {
+        const minRecordsForLoadMore = 20;
+        if (isSingleMode || mockTimelineData.length < 2 || mockTimelineData.length >= minRecordsForLoadMore) return;
+
+        const sortedByVersionAsc = [...mockTimelineData].sort((a, b) => a.version - b.version);
+        const initialNode = sortedByVersionAsc.find(node => getCleanRegistrationCase(node) === 'Đăng ký lần đầu') || sortedByVersionAsc[0];
+        const nextAfterInitialNode = sortedByVersionAsc.find(node => node !== initialNode && Number(node.version) > Number(initialNode.version));
+        const initialDate = parseDate(initialNode?.date) || new Date(2026, 0, 1, 8, 0, 0);
+        const nextDate = parseDate(nextAfterInitialNode?.date);
+        const initialVersion = Number.isFinite(initialNode?.version) ? Number(initialNode.version) : 1;
+        const nextVersion = Number.isFinite(nextAfterInitialNode?.version) ? Number(nextAfterInitialNode.version) : initialVersion + 1;
+        const rootRegCode = initialNode?.data?.firstRegNo || initialNode?.regCode || regNumParam || '1505156435';
+        const recordsToAdd = minRecordsForLoadMore - mockTimelineData.length;
+        let previousGeneratedData = JSON.parse(JSON.stringify(initialNode.data || {}));
+
+        const mutationPlans = [
+            (data, step) => {
+                data.contractNo = `HD-2026-LS-${String(step).padStart(2, '0')}`;
+            },
+            (data, step) => {
+                data.contractDate = `${String(1 + (step % 27)).padStart(2, '0')}/02/2026`;
+            },
+            (data, step) => {
+                data.loanValue = `${(1200 + step * 150).toLocaleString('vi-VN')}.000.000 VNĐ`;
+            },
+            (data, step, prevData) => {
+                const party = data.securingParties?.[0];
+                if (!party) return;
+                party.prevAddress = prevData.securingParties?.[0]?.address || party.address;
+                party.address = `Số ${20 + step} Nguyễn Trãi, Quận Thanh Xuân, Hà Nội, Việt Nam`;
+                party.status = 'Sửa thông tin';
+            },
+            (data, step, prevData) => {
+                const party = data.securedParties?.[0];
+                if (!party) return;
+                party.prevName = prevData.securedParties?.[0]?.name || party.name;
+                party.name = `Ngân hàng TMCP FPT - Chi nhánh lịch sử ${step}`;
+                party.status = 'Sửa thông tin';
+            },
+            (data, step, prevData) => {
+                const asset = data.assets?.[0];
+                if (!asset) return;
+                asset.prevBrandColor = prevData.assets?.[0]?.brandColor || asset.brandColor;
+                asset.brandColor = `Toyota Camry 2.5Q, màu xanh đen, cập nhật lần ${step}`;
+                asset.status = 'Sửa thông tin';
+            },
+            (data, step) => {
+                data.assets = Array.isArray(data.assets) ? data.assets : [];
+                data.assets.push({
+                    id: 100 + step,
+                    typeName: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)',
+                    name: `Máy móc thiết bị bổ sung lần ${step}`,
+                    brandColor: `Model LS-${String(step).padStart(2, '0')}, tình trạng mới`,
+                    frameNo: `MMTB-LS-${String(step).padStart(2, '0')}`,
+                    engineNo: '-',
+                    plateNo: '-',
+                    status: 'Bổ sung mới'
+                });
+            },
+            (data, step, prevData) => {
+                const party = data.securingParties?.[0];
+                if (!party) return;
+                party.prevName = prevData.securingParties?.[0]?.name || party.name;
+                party.name = `${party.name} - cập nhật ${step}`;
+                party.status = 'Sửa thông tin';
+            },
+            (data, step) => {
+                data.scale = `Bên bảo đảm sử dụng khoản vay cho hoạt động sản xuất kinh doanh lần ${step}`;
+            },
+            (data, step, prevData) => {
+                const asset = data.assets?.find(item => item.typeName?.includes('quyền tài sản')) || data.assets?.[2];
+                if (!asset) return;
+                asset.prevName = prevData.assets?.find(item => item.id === asset.id)?.name || asset.name;
+                asset.name = `Quyền đòi nợ trị giá ${(2 + step / 10).toFixed(1).replace('.', ',')} tỷ VNĐ`;
+                asset.status = 'Sửa thông tin';
+            }
+        ];
+
+        for (let i = 1; i <= recordsToAdd; i++) {
+            let nodeDate;
+            if (nextDate && nextDate > initialDate) {
+                const ratio = i / (recordsToAdd + 1);
+                nodeDate = new Date(initialDate.getTime() + ((nextDate.getTime() - initialDate.getTime()) * ratio));
+            } else {
+                nodeDate = new Date(initialDate);
+                nodeDate.setDate(initialDate.getDate() + (i * 7));
+            }
+
+            const generatedNode = JSON.parse(JSON.stringify(initialNode));
+            generatedNode.version = initialVersion + ((nextVersion - initialVersion) * (i / (recordsToAdd + 1)));
+            generatedNode.label = `Thay đổi lịch sử ${i}`;
+            generatedNode.badgeClass = 'badge-change';
+            generatedNode.title = `Đăng ký thay đổi lịch sử lần ${i} (Hoàn thành)`;
+            generatedNode.statusText = 'Hoàn thành';
+            generatedNode.date = formatDateTime(nodeDate);
+            generatedNode.regCode = `${rootRegCode}-LS${String(i).padStart(2, '0')}`;
+            generatedNode.description = `Đăng ký thay đổi dữ liệu hồ sơ lịch sử lần ${i}`;
+            generatedNode.active = false;
+            generatedNode.isPending = false;
+            generatedNode.nodeId = `mock-history-${i}`;
+
+            if (generatedNode.data) {
+                generatedNode.data = JSON.parse(JSON.stringify(previousGeneratedData));
+                generatedNode.data.regCase = 'Đăng ký thay đổi';
+                generatedNode.data.firstRegNo = rootRegCode;
+                generatedNode.data.firstRegDate = initialNode?.data?.firstRegDate || initialNode?.date || generatedNode.date;
+                generatedNode.data.hasDeRegistration = false;
+                generatedNode.data.hasCancelReg = false;
+                generatedNode.data.hasRestoreReg = false;
+                generatedNode.data.hasRejection = false;
+
+                generatedNode.data.securingParties?.forEach(party => {
+                    party.status = 'Không thay đổi';
+                    delete party.prevName;
+                    delete party.prevAddress;
+                });
+                generatedNode.data.securedParties?.forEach(party => {
+                    party.status = 'Không thay đổi';
+                    delete party.prevName;
+                    delete party.prevAddress;
+                });
+                generatedNode.data.assets?.forEach(asset => {
+                    asset.status = 'Đang bảo đảm';
+                    delete asset.prevName;
+                    delete asset.prevBrandColor;
+                    delete asset.prevSelectedForProcessing;
+                });
+
+                const plan = mutationPlans[(i - 1) % mutationPlans.length];
+                plan(generatedNode.data, i, previousGeneratedData);
+                previousGeneratedData = JSON.parse(JSON.stringify(generatedNode.data));
+            }
+
+            mockTimelineData.push(generatedNode);
+        }
+
+        mockTimelineData.sort((a, b) => b.version - a.version);
+    }
+
+    ensureLoadMoreTimelineMockData();
+
     let currentSelectedVersion = null;
     let visibleCount = 10;
     let filteredData = [...mockTimelineData];
+    let activeTimelineFilters = {
+        query: '',
+        registrationCase: 'Tất cả',
+        fromDate: '',
+        toDate: ''
+    };
 
     // Read stored registration number if any to show banner
     const savedRegNum = localStorage.getItem('canBoRegNum');
@@ -2176,7 +2328,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Render timeline
-    function renderTimeline(resetPagination = true) {
+    function renderTimeline(resetPagination = true, options = {}) {
         if (resetPagination) {
             visibleCount = 10;
         }
@@ -2184,10 +2336,10 @@ document.addEventListener('DOMContentLoaded', function () {
         timelineContainer.innerHTML = '';
         
         // Filter based on search input and date filters
-        const query = (timelineSearchInput.value || '').trim().toLowerCase();
-        const selectedCase = filterRegistrationCase ? filterRegistrationCase.value : 'Tất cả';
-        const fromDateVal = (filterFromDate.value || '').trim();
-        const toDateVal = (filterToDate.value || '').trim();
+        const query = activeTimelineFilters.query.toLowerCase();
+        const selectedCase = activeTimelineFilters.registrationCase || 'Tất cả';
+        const fromDateVal = activeTimelineFilters.fromDate;
+        const toDateVal = activeTimelineFilters.toDate;
 
         const fromDateObj = parseDate(fromDateVal);
         const toDateObj = parseDate(toDateVal);
@@ -2215,11 +2367,17 @@ document.addEventListener('DOMContentLoaded', function () {
             return true;
         });
 
+        filteredData.sort((a, b) => {
+            const dateA = parseDate(a.date);
+            const dateB = parseDate(b.date);
+            return (dateB ? dateB.getTime() : 0) - (dateA ? dateA.getTime() : 0);
+        });
+
         // If no records match, display a small notification
         if (filteredData.length === 0) {
             timelineContainer.innerHTML = `
                 <div style="text-align: center; padding: 20px; color: var(--text-muted); font-style: italic;">
-                    Không tìm thấy số đăng ký phù hợp.
+                    Không tìm thấy phiên bản phù hợp.
                 </div>
             `;
             timelineMoreBtnContainer.style.display = 'none';
@@ -2301,19 +2459,33 @@ document.addEventListener('DOMContentLoaded', function () {
             timelineContainer.appendChild(nodeEl);
         });
 
-        // Show or hide "Load More" button
-        if (filteredData.length > visibleCount) {
-            timelineMoreBtnContainer.style.display = 'block';
+        // Show or hide timeline pagination actions
+        const hasMoreRecords = filteredData.length > visibleCount;
+        const canCollapseTimeline = visibleCount > 10 && filteredData.length > 10;
+
+        if (hasMoreRecords) {
+            const remainingCount = filteredData.length - visibleCount;
+            const loadMoreLabel = btnLoadMoreTimeline ? btnLoadMoreTimeline.querySelector('span') : null;
+            if (loadMoreLabel) {
+                loadMoreLabel.textContent = `Xem thêm ${Math.min(10, remainingCount)} bản ghi`;
+            }
+            btnLoadMoreTimeline.style.display = '';
         } else {
-            timelineMoreBtnContainer.style.display = 'none';
+            btnLoadMoreTimeline.style.display = 'none';
         }
 
-        // Auto select the first item on load/search
-        if (resetPagination && slice.length > 0) {
+        if (btnCollapseTimeline) {
+            btnCollapseTimeline.style.display = canCollapseTimeline ? '' : 'none';
+        }
+
+        timelineMoreBtnContainer.style.display = (hasMoreRecords || canCollapseTimeline) ? 'flex' : 'none';
+
+        // Auto select the first item on load/search, or after collapsing if the current selection is no longer visible.
+        if ((resetPagination || options.ensureSelectionVisible) && slice.length > 0) {
             const focusId = urlParams.get('focusId');
             let clicked = false;
             
-            if (focusId) {
+            if (resetPagination && focusId) {
                 let fid = focusId.toLowerCase().trim();
                 const matchedEl = Array.from(timelineContainer.querySelectorAll('.timeline-node')).find(el => {
                     const code = el.getAttribute('data-reg-code').toLowerCase().trim();
@@ -2569,7 +2741,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 3. General Info
         const generalFields = [
-            { key: 'transactionType', label: 'Loại hình giao dịch', block: 'Thông tin chung', elementId: 'transactionTypeVal', fieldId: 'transactionTypeField' },
+            { key: 'transactionType', label: 'Loại hình giao dịch', block: 'Thông tin chung', elementId: 'transactionTypeVal', fieldId: 'transactionTypeField', compare: false },
             { key: 'measureType', label: 'Loại biện pháp', block: 'Thông tin chung', elementId: 'measureTypeVal', fieldId: 'measureTypeField', visibleCondition: (node) => node.data.transactionType === 'Biện pháp bảo đảm' },
             { key: 'contractType', label: 'Loại hợp đồng', block: 'Thông tin chung', elementId: 'contractTypeVal', fieldId: 'contractTypeField', visibleCondition: (node) => node.data.transactionType === 'Hợp đồng' },
             { key: 'contractNo', label: 'Số hợp đồng', block: 'Thông tin chung', elementId: 'contractNoVal', fieldId: 'contractNoField' },
@@ -3198,8 +3370,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set up event listeners
     function setupEventListeners() {
         if (typeof flatpickr !== 'undefined') {
-            flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: () => renderTimeline(false) });
-            flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: () => renderTimeline(false) });
+            flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true });
+            flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true });
         }
         // Toggle Switch
         diffToggle.addEventListener('change', applyDiffFilter);
@@ -3250,23 +3422,51 @@ document.addEventListener('DOMContentLoaded', function () {
             renderTimeline(false);
         });
 
-        // Search Timeline versions
-        timelineSearchInput.addEventListener('input', function() {
-            renderTimeline(true);
-        });
-        if (filterRegistrationCase) {
-            filterRegistrationCase.addEventListener('change', function() {
-                renderTimeline(true);
+        if (btnCollapseTimeline) {
+            btnCollapseTimeline.addEventListener('click', function() {
+                visibleCount = 10;
+                renderTimeline(false, { ensureSelectionVisible: true });
             });
         }
 
-        // Date filter change events
-        filterFromDate.addEventListener('input', function() {
+        const applyTimelineFilters = () => {
+            activeTimelineFilters = {
+                query: (timelineSearchInput?.value || '').trim(),
+                registrationCase: filterRegistrationCase ? filterRegistrationCase.value : 'Tất cả',
+                fromDate: (filterFromDate?.value || '').trim(),
+                toDate: (filterToDate?.value || '').trim()
+            };
             renderTimeline(true);
-        });
-        filterToDate.addEventListener('input', function() {
+        };
+
+        const clearTimelineFilters = () => {
+            if (timelineSearchInput) timelineSearchInput.value = '';
+            if (filterRegistrationCase) filterRegistrationCase.value = 'Tất cả';
+            if (filterFromDate) filterFromDate.value = '';
+            if (filterToDate) filterToDate.value = '';
+            activeTimelineFilters = {
+                query: '',
+                registrationCase: 'Tất cả',
+                fromDate: '',
+                toDate: ''
+            };
             renderTimeline(true);
-        });
+        };
+
+        if (btnSearchTimeline) {
+            btnSearchTimeline.addEventListener('click', applyTimelineFilters);
+        }
+        if (btnClearTimelineFilters) {
+            btnClearTimelineFilters.addEventListener('click', clearTimelineFilters);
+        }
+        if (timelineSearchInput) {
+            timelineSearchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    applyTimelineFilters();
+                }
+            });
+        }
 
         // View mode switcher is optional on the customer detail screen.
         const btnSwitchHistory = document.getElementById('btnSwitchHistory');
