@@ -374,13 +374,13 @@
             background-color: var(--table-header-bg);
             color: var(--primary-color);
             font-weight: 600;
-            padding: 12px;
+            padding: 8px 10px;
             border-bottom: 2px solid var(--border-color);
             text-align: left;
         }
 
         .table td {
-            padding: 12px;
+            padding: 8px 10px;
             border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
             color: var(--text-main);
@@ -401,14 +401,6 @@
             color: #991B1B;
         }
 
-        .asset-state-badge {
-            font-weight: 700;
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-
         .state-active {
             background-color: #ECFDF5;
             color: #065F46;
@@ -423,27 +415,27 @@
 
         .asset-type-panel {
             border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-md);
+            border-radius: 6px;
             background: #FFFFFF;
-            margin-top: 14px;
+            margin-top: 8px;
             overflow: hidden;
         }
 
         .asset-type-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 8px 10px;
             background: #F8FAFC;
             border-bottom: 1px solid var(--border-color);
             color: var(--primary-color);
             font-weight: 700;
-            font-size: 13.5px;
+            font-size: 13px;
         }
 
         .asset-type-body {
-            padding: 14px;
+            padding: 8px 10px 10px;
         }
 
         .asset-readonly-grid {
@@ -480,22 +472,10 @@
             line-height: 1.45;
         }
 
-        .asset-select-cell {
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .asset-select-checkbox {
-            width: 18px;
-            height: 18px;
-            cursor: not-allowed;
-            accent-color: var(--danger-color);
-            opacity: 0.75;
-        }
-
         .asset-scope-table {
-            min-width: 980px;
+            min-width: 820px;
             table-layout: fixed;
+            font-size: 12px;
         }
 
         /* Footer buttons */
@@ -842,16 +822,9 @@
             <!-- Danh mục tài sản bảo đảm -->
             <div class="card-section">
                 <h3 class="section-title"><i class="fa-solid fa-car-rear"></i> Danh mục tài sản bảo đảm</h3>
-                
-                <div class="review-block" style="margin-bottom: 15px;">
-                    <div class="readonly-label" style="font-weight: 600; color: var(--text-muted); font-size: 12.5px; margin-bottom: 4px;">Mô tả chung về tài sản bảo đảm</div>
-                    <div class="readonly-value" id="lblAssetDescription" style="font-size: 13.5px; color: var(--text-main); font-weight: 500; background-color: #F8FAFC; padding: 8px 12px; border-radius: 4px; border: 1px solid #e2e8f0; min-height: 40px;">
-                        -
-                    </div>
-                </div>
 
                 <div style="margin-top: 20px;">
-                    <div class="readonly-label" style="font-weight: 600; color: var(--text-muted); font-size: 12.5px; margin-bottom: 4px;">Danh sách phương tiện / Tài sản bảo đảm thuộc phạm vi xóa đăng ký</div>
+                    <div class="readonly-label" style="font-weight: 600; color: var(--text-muted); font-size: 12.5px; margin-bottom: 4px;">Danh sách phương tiện / Tài sản bảo đảm</div>
                     <div id="assetsReviewContainer">
                         <!-- Loaded dynamically -->
                     </div>
@@ -946,8 +919,7 @@
             document.getElementById('lblLoanValue').textContent = draft.loanValue || "";
             document.getElementById('lblScale').textContent = draft.scale || "Doanh nghiệp lớn";
             document.getElementById('lblFemaleOwner').textContent = draft.isFemaleOwner ? "Có" : "Không";
-            document.getElementById('lblAssetDescription').textContent = draft.assetDescription || "Các phương tiện giao thông cơ giới đường bộ thuộc sở hữu của Bên bảo đảm.";
-            
+
             document.getElementById('lblDeletionBasis').textContent = draft.deletionBasisText;
             const lblExemptionTypeEl = document.getElementById('lblExemptionType');
             if (lblExemptionTypeEl) {
@@ -1077,7 +1049,6 @@
                     <div class="asset-type-panel">
                         <div class="asset-type-header">
                             <span>${title}</span>
-                            <span class="asset-state-badge state-deleted">Thuộc phạm vi xóa</span>
                         </div>
                         <div class="asset-type-body">${bodyHtml}</div>
                     </div>
@@ -1086,8 +1057,7 @@
 
             function renderVehicleFrameAssets(assets) {
                 const rows = assets.map((asset, index) => `
-                    <tr class="row-deleted">
-                        <td class="asset-select-cell"><input type="checkbox" class="asset-select-checkbox" checked disabled aria-label="Tài sản thuộc phạm vi xóa"></td>
+                    <tr>
                         <td style="text-align: center; font-weight: 500;">${index + 1}</td>
                         <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}</td>
                         <td class="asset-text-cell">${asset.brandColor || '---'}</td>
@@ -1102,13 +1072,12 @@
                         <table class="table asset-scope-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 58px; text-align: center;">Checkbox</th>
                                     <th style="width: 56px; text-align: center;">STT</th>
-                                    <th>TÊN PHƯƠNG TIỆN</th>
-                                    <th>NHÃN HIỆU, MÀU SƠN</th>
-                                    <th>SỐ KHUNG</th>
-                                    <th>SỐ MÁY</th>
-                                    <th>BIỂN SỐ</th>
+                                    <th style="width: 150px;">TÊN PHƯƠNG TIỆN</th>
+                                    <th style="width: 170px;">NHÃN HIỆU, MÀU SƠN</th>
+                                    <th style="width: 170px;">SỐ KHUNG</th>
+                                    <th style="width: 140px;">SỐ MÁY</th>
+                                    <th style="width: 134px;">BIỂN SỐ</th>
                                 </tr>
                             </thead>
                             <tbody>${rows}</tbody>
@@ -1119,8 +1088,7 @@
 
             function renderSpecialVehicleAssets(assets) {
                 const rows = assets.map((asset, index) => `
-                    <tr class="row-deleted">
-                        <td class="asset-select-cell"><input type="checkbox" class="asset-select-checkbox" checked disabled aria-label="Tài sản thuộc phạm vi xóa"></td>
+                    <tr>
                         <td style="text-align: center; font-weight: 500;">${index + 1}</td>
                         <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}</td>
                         <td class="asset-text-cell">${asset.brandColor || '---'}</td>
@@ -1135,13 +1103,12 @@
                         <table class="table asset-scope-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 58px; text-align: center;">Checkbox</th>
                                     <th style="width: 56px; text-align: center;">STT</th>
-                                    <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
-                                    <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
-                                    <th>SỐ ĐĂNG KÝ</th>
-                                    <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
-                                    <th>CẤP PHƯƠNG TIỆN</th>
+                                    <th style="width: 170px;">TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                                    <th style="width: 200px;">TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                    <th style="width: 130px;">SỐ ĐĂNG KÝ</th>
+                                    <th style="width: 170px;">CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                    <th style="width: 94px;">CẤP PHƯƠNG TIỆN</th>
                                 </tr>
                             </thead>
                             <tbody>${rows}</tbody>
@@ -1153,7 +1120,7 @@
             function renderSecurityTimeAsset(asset) {
                 const timeMatch = (asset.brandColor || '').match(/(\d{1,2}).*?(\d{1,2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
                 const row = timeMatch ? `
-                    <tr class="row-deleted">
+                    <tr>
                         <td style="text-align: center;">${timeMatch[1]}</td>
                         <td style="text-align: center;">${timeMatch[2]}</td>
                         <td style="text-align: center;">${timeMatch[3]}</td>
@@ -1161,7 +1128,7 @@
                         <td style="text-align: center;">${timeMatch[5]}</td>
                     </tr>
                 ` : `
-                    <tr class="row-deleted"><td colspan="5">${asset.brandColor || asset.name || '---'}</td></tr>
+                    <tr><td colspan="5">${asset.brandColor || asset.name || '---'}</td></tr>
                 `;
 
                 return createAssetTypePanel(asset.typeName || 'Chứng khoán', `
@@ -1212,9 +1179,11 @@
                             ${createReadonlyItem('Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', asset.frameNo)}
                         </div>`;
                     } else {
+                        const description = `${asset.name || ''}${asset.brandColor ? ' - ' + asset.brandColor : ''}`.trim();
                         bodyHtml = `<div class="asset-readonly-grid">
-                            ${createReadonlyItem('Loại tài sản', asset.typeName)}
-                            ${createReadonlyItem('Mô tả', `${asset.name || ''}${asset.brandColor ? ' - ' + asset.brandColor : ''}`)}
+                            <div class="asset-readonly-item" style="grid-column: 1 / -1;">
+                                <span class="asset-readonly-value">${description || '---'}</span>
+                            </div>
                         </div>`;
                     }
                     html.push(createAssetTypePanel(asset.typeName || 'Tài sản bảo đảm', bodyHtml));

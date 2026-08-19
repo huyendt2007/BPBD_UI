@@ -483,27 +483,27 @@
 
         .asset-type-panel {
             border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-md);
+            border-radius: 6px;
             background: #FFFFFF;
-            margin-top: 14px;
+            margin-top: 8px;
             overflow: hidden;
         }
 
         .asset-type-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 8px 10px;
             background: #F8FAFC;
             border-bottom: 1px solid var(--border-color);
             color: var(--primary-color);
             font-weight: 700;
-            font-size: 13.5px;
+            font-size: 13px;
         }
 
         .asset-type-body {
-            padding: 14px;
+            padding: 8px 10px 10px;
         }
 
         .asset-readonly-grid {
@@ -541,8 +541,9 @@
         }
 
         .asset-scope-table {
-            min-width: 980px;
+            min-width: 820px;
             table-layout: fixed;
+            font-size: 12px;
         }
 
         #assetsTable th,
@@ -560,35 +561,18 @@
             overflow-wrap: break-word;
         }
 
-        .asset-select-cell {
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .asset-select-checkbox {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--danger-color);
-        }
-
-        .asset-select-checkbox:disabled {
-            cursor: not-allowed;
-            opacity: 0.75;
-        }
-
         .table th {
             background-color: var(--table-header-bg);
             color: var(--primary-color);
             font-weight: 600;
-            padding: 12px;
+            padding: 8px 10px;
             border-bottom: 2px solid var(--border-color);
             text-align: left;
             white-space: nowrap;
         }
 
         .table td {
-            padding: 12px;
+            padding: 8px 10px;
             border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
             color: var(--text-main);
@@ -611,14 +595,6 @@
         .row-deleted .asset-text-cell {
             text-decoration: line-through;
             color: #991B1B;
-        }
-
-        .asset-state-badge {
-            font-weight: 700;
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
         }
 
         .state-active {
@@ -1054,14 +1030,9 @@
                 <!-- Tài sản bảo đảm -->
                 <div class="card-section" id="assetsCardSection">
                     <h3 class="section-title"><i class="fa-solid fa-car-rear"></i> Tài sản bảo đảm</h3>
-                    
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label class="form-label">Mô tả chung về tài sản bảo đảm</label>
-                        <textarea class="form-control" id="refAssetDescription" rows="3" readonly style="background-color: #F8FAFC; cursor: not-allowed;"></textarea>
-                    </div>
 
                     <div style="margin-top: 20px;">
-                        <label class="form-label">Danh sách phương tiện / Tài sản bảo đảm thuộc phạm vi xóa đăng ký</label>
+                        <label class="form-label">Danh sách phương tiện / Tài sản bảo đảm</label>
                         <div id="assetsDisplayContainer">
                             <!-- Loaded dynamically -->
                         </div>

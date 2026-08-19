@@ -37,7 +37,7 @@
         positionTooltip(target);
     };
 
-    document.querySelectorAll('.tooltip-icon[data-tooltip]').forEach((el) => {
+    document.querySelectorAll('.tooltip-icon[data-tooltip], .help-link[data-tooltip]').forEach((el) => {
         if (el.dataset.floatingTooltipBound === '1') return;
         el.dataset.floatingTooltipBound = '1';
         el.setAttribute('tabindex', el.getAttribute('tabindex') || '0');
@@ -56,6 +56,7 @@
 
 const initApp = () => {
     initFloatingTooltips();
+    const isDisposalStandaloneMode = new URLSearchParams(window.location.search).get('mode') === 'disposalStandalone';
 
     // Early variables initialization to avoid TDZ reference errors
     let editingRowTC = null;
@@ -70,6 +71,7 @@ const initApp = () => {
     const loaiHinhGiaoDich = document.getElementById('loaiHinhGiaoDich');
     const loaiBienPhap = document.getElementById('loaiBienPhap');
     const loaiHopDong = document.getElementById('loaiHopDong');
+    const loaiHinhGiaoDichWrapper = document.getElementById('loaiHinhGiaoDichWrapper');
     const loaiBienPhapWrapper = document.getElementById('loaiBienPhapWrapper');
     const loaiHopDongWrapper = document.getElementById('loaiHopDongWrapper');
     const soHopDong = document.getElementById('soHopDong');
@@ -111,10 +113,173 @@ const initApp = () => {
         hd_ky_gui: 'Hàng hóa ký gửi'
     };
 
+    const initDisposalStandaloneMode = () => {
+        if (!isDisposalStandaloneMode) return;
+
+        document.body.classList.add('uc131-disposal-standalone');
+        const pageTitle = document.querySelector('.page-title');
+        if (pageTitle) pageTitle.innerText = 'Đăng ký thông báo xử lý tài sản bảo đảm lần đầu';
+
+        if (nguoiYeuCau) {
+            nguoiYeuCau.innerHTML = `
+                <option value="">-- Vui lòng lựa chọn người yêu cầu đăng ký --</option>
+                <option value="ben_nhan_bao_dam">Bên nhận bảo đảm</option>
+                <option value="chi_nhanh">Chi nhánh của pháp nhân, người đại diện</option>
+            `;
+            nguoiYeuCau.value = '';
+        }
+
+        if (loaiHinhGiaoDich) {
+            loaiHinhGiaoDich.dispatchEvent(new Event('change'));
+        }
+        loaiHinhGiaoDichWrapper?.classList.add('hidden');
+        loaiBienPhapWrapper?.classList.add('hidden');
+        loaiHopDongWrapper?.classList.add('hidden');
+
+        const processingSection = document.getElementById('uc131DisposalProcessingSection');
+        if (processingSection) processingSection.classList.remove('hidden');
+        const caseSection = document.getElementById('uc131DisposalCaseSection');
+        if (caseSection) caseSection.classList.remove('hidden');
+
+        if (!document.referrer || !document.referrer.includes('dang_ky_bpbd_review.html')) {
+            sessionStorage.removeItem('reviewData');
+        }
+    };
+
+    const uc131DisposalAssetCheckboxIds = [
+        'chkSoKhung',
+        'chkTauCa',
+        'chkQuyenTaiSan',
+        'chkCayHangNam',
+        'chkHangHoa',
+        'chkChungKhoan',
+        'chkDongSanKhac'
+    ];
+
+    const getUc131SelectedDisposalAssetTypes = () => uc131DisposalAssetCheckboxIds
+        .map((id) => {
+            const checkbox = document.getElementById(id);
+            if (!checkbox?.checked) return null;
+            return {
+                id,
+                label: checkbox.closest('.check-item')?.querySelector('.check-label')?.innerText.trim() || id
+            };
+        })
+        .filter(Boolean);
+
+    const escapeHtml = (value) => String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    const updateUc131DisposalProcessingBlocks = () => {
+        if (!isDisposalStandaloneMode) return;
+        const mode = document.querySelector('input[name="uc131DisposalProcessingMode"]:checked')?.value || 'common';
+        const isByType = mode === 'byType';
+        const commonReason = document.getElementById('uc131DisposalCommonFields');
+        const commonDateLocation = document.getElementById('uc131DisposalCommonDateLocation');
+        const byTypeContainer = document.getElementById('uc131DisposalByTypeFields');
+        const targetMap = {
+            chkSoKhung: 'gridSoKhung',
+            chkTauCa: 'gridTauCa',
+            chkQuyenTaiSan: 'gridQuyenTaiSan',
+            chkCayHangNam: 'descCayHangNamWrapper',
+            chkHangHoa: 'gridHangHoa',
+            chkChungKhoan: 'gridChungKhoan',
+            chkDongSanKhac: 'descDongSanKhacWrapper'
+        };
+
+        commonReason?.classList.toggle('hidden', isByType);
+        commonDateLocation?.classList.toggle('hidden', isByType);
+
+        const currentValues = {};
+        document.querySelectorAll('.uc131-disposal-bytype-field').forEach(field => {
+            const assetId = field.dataset.assetId;
+            const fieldName = field.dataset.field;
+            if (!assetId || !fieldName) return;
+            currentValues[assetId] = currentValues[assetId] || {};
+            currentValues[assetId][fieldName] = field.value;
+        });
+
+        document.querySelectorAll('.uc131-disposal-bytype-block').forEach(block => block.remove());
+        byTypeContainer?.classList.toggle('hidden', !isByType);
+        if (!isByType) {
+            if (byTypeContainer) byTypeContainer.innerHTML = '';
+            return;
+        }
+
+        const selectedTypes = getUc131SelectedDisposalAssetTypes();
+        if (byTypeContainer) {
+            byTypeContainer.innerHTML = selectedTypes.length
+                ? ''
+                : '<div class="readonly-value" style="margin-top: 12px;">Vui lòng chọn ít nhất một loại tài sản để nhập thông tin xử lý riêng.</div>';
+        }
+
+        selectedTypes.forEach(({ id, label }) => {
+            const target = document.getElementById(targetMap[id]);
+            if (!target) return;
+            const block = document.createElement('div');
+            block.className = 'uc131-disposal-bytype-block';
+            block.innerHTML = `
+                <h4>Thông tin xử lý tài sản</h4>
+                <div class="form-group">
+                    <label class="form-label">Lý do xử lý <span class="required-mark">*</span></label>
+                    <textarea class="form-control uc131-disposal-bytype-field" data-field="reason" data-asset-id="${id}" rows="3"
+                        placeholder="Nhập lý do xử lý cho loại tài sản này...">${escapeHtml(currentValues[id]?.reason || '')}</textarea>
+                </div>
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Thời gian xử lý <span class="required-mark">*</span></label>
+                        <input type="date" class="form-control uc131-disposal-bytype-field" data-field="date" data-asset-id="${id}" value="${escapeHtml(currentValues[id]?.date || '')}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Địa điểm xử lý <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control uc131-disposal-bytype-field" data-field="location" data-asset-id="${id}"
+                            placeholder="Nhập địa điểm xử lý cho loại tài sản này..." value="${escapeHtml(currentValues[id]?.location || '')}">
+                    </div>
+                </div>
+            `;
+            target.appendChild(block);
+        });
+    };
+
+    const restoreUc131DisposalProcessingByType = (items = []) => {
+        if (!isDisposalStandaloneMode || !Array.isArray(items) || items.length === 0) return;
+        updateUc131DisposalProcessingBlocks();
+        items.forEach(item => {
+            const reason = document.querySelector(`.uc131-disposal-bytype-field[data-asset-id="${item.id}"][data-field="reason"]`);
+            const date = document.querySelector(`.uc131-disposal-bytype-field[data-asset-id="${item.id}"][data-field="date"]`);
+            const location = document.querySelector(`.uc131-disposal-bytype-field[data-asset-id="${item.id}"][data-field="location"]`);
+            if (reason) reason.value = item.reason || '';
+            if (date && item.date) {
+                const parts = item.date.split('/');
+                date.value = parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : item.date;
+            }
+            if (location) location.value = item.location || '';
+        });
+    };
+
     const updateTitles = () => {
+        if (isDisposalStandaloneMode) {
+            if (titleBenTheChap) titleBenTheChap.innerText = 'Bên bảo đảm';
+            if (titleBenNhanTheChap) titleBenNhanTheChap.innerText = 'Bên nhận bảo đảm';
+            if (titleTaiSan) titleTaiSan.innerText = 'Tài sản bảo đảm';
+            if (btnThemTC) btnThemTC.innerText = '+ Thêm Bên bảo đảm';
+            if (btnThemNTC) btnThemNTC.innerText = '+ Thêm Bên nhận bảo đảm';
+            if (btnLayNguoiDangKy) btnLayNguoiDangKy.innerText = 'THÊM NGƯỜI ĐĂNG KÝ LÀ BÊN NHẬN BẢO ĐẢM';
+            loaiHinhGiaoDichWrapper?.classList.add('hidden');
+            loaiBienPhapWrapper?.classList.add('hidden');
+            loaiHopDongWrapper?.classList.add('hidden');
+            return;
+        }
+
         const hinhThuc = loaiHinhGiaoDich.value;
         let selectedSubtype = '';
         if (hinhThuc === 'bpbd') {
+            selectedSubtype = loaiBienPhap.value;
+        } else if (hinhThuc === 'tb_xu_ly') {
             selectedSubtype = loaiBienPhap.value;
         } else if (hinhThuc === 'hop_dong') {
             selectedSubtype = loaiHopDong.value;
@@ -130,7 +295,7 @@ const initApp = () => {
 
         // Section V Title (no Roman numeral V.)
         if (titleTaiSan) {
-            if (hinhThuc === 'bpbd') {
+            if (hinhThuc === 'bpbd' || hinhThuc === 'tb_xu_ly') {
                 titleTaiSan.innerText = tieuDeTaiSanMap.bpbd;
             } else if (hinhThuc === 'hop_dong') {
                 titleTaiSan.innerText = tieuDeTaiSanMap[selectedSubtype] || tieuDeTaiSanMap.bpbd;
@@ -220,6 +385,13 @@ const initApp = () => {
 
     if (loaiHinhGiaoDich) {
         loaiHinhGiaoDich.addEventListener('change', (e) => {
+            if (isDisposalStandaloneMode) {
+                loaiHinhGiaoDichWrapper?.classList.add('hidden');
+                loaiBienPhapWrapper.classList.add('hidden');
+                loaiHopDongWrapper.classList.add('hidden');
+                updateTitles();
+                return;
+            }
             const val = e.target.value;
             if (val === 'hop_dong') {
                 loaiBienPhapWrapper.classList.add('hidden');
@@ -266,6 +438,16 @@ const initApp = () => {
     }
     if (loaiBienPhap) {
         loaiBienPhap.addEventListener('change', toggleUploadTaiLieu);
+    }
+    initDisposalStandaloneMode();
+    if (isDisposalStandaloneMode) {
+        document.querySelectorAll('input[name="uc131DisposalProcessingMode"]').forEach(radio => {
+            radio.addEventListener('change', updateUc131DisposalProcessingBlocks);
+        });
+        uc131DisposalAssetCheckboxIds.forEach(id => {
+            document.getElementById(id)?.addEventListener('change', updateUc131DisposalProcessingBlocks);
+        });
+        updateUc131DisposalProcessingBlocks();
     }
     toggleUploadTaiLieu();
 
@@ -512,6 +694,7 @@ const initApp = () => {
             formChuTheWrapper.classList.remove('hidden');
             formDiaChiChung.classList.remove('hidden');
             footerActionChuThe.classList.remove('hidden');
+            initFloatingTooltips();
         } else {
             formChuTheWrapper.classList.add('hidden');
             formDiaChiChung.classList.add('hidden');
@@ -1038,6 +1221,71 @@ const initApp = () => {
         if (chkAllTC) chkAllTC.checked = false;
     };
 
+    // 6b. Vùng tìm kiếm nhanh - Bảng thông tin Số khung
+    const quickFilterContains = (value, term) => !term || (value || '').toLowerCase().includes(term.toLowerCase());
+
+    document.getElementById('btnApplySKFilter')?.addEventListener('click', () => {
+        const type = document.getElementById('filterSKType').value;
+        const frameNo = document.getElementById('filterSKFrameNo').value.trim();
+        const engineNo = document.getElementById('filterSKEngineNo').value.trim();
+        const plateNo = document.getElementById('filterSKPlateNo').value.trim();
+
+        tbodySoKhung.querySelectorAll('tr').forEach(tr => {
+            const cells = tr.querySelectorAll('td');
+            const rowType = cells[2]?.querySelector('select')?.value || '';
+            const inputs = tr.querySelectorAll('td input[type="text"]');
+            const rowFrameNo = inputs[0]?.value || '';
+            const rowEngineNo = inputs[1]?.value || '';
+            const rowPlateNo = inputs[2]?.value || '';
+
+            const matches = (!type || rowType === type)
+                && quickFilterContains(rowFrameNo, frameNo)
+                && quickFilterContains(rowEngineNo, engineNo)
+                && quickFilterContains(rowPlateNo, plateNo);
+
+            tr.style.display = matches ? '' : 'none';
+        });
+        if (chkAllSK) chkAllSK.checked = false;
+    });
+
+    document.getElementById('btnClearSKFilter')?.addEventListener('click', () => {
+        ['filterSKType', 'filterSKFrameNo', 'filterSKEngineNo', 'filterSKPlateNo'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        tbodySoKhung.querySelectorAll('tr').forEach(tr => tr.style.display = '');
+        if (chkAllSK) chkAllSK.checked = false;
+    });
+
+    // 7b. Vùng tìm kiếm nhanh - Bảng thông tin Phương tiện
+    document.getElementById('btnApplyTCFilter')?.addEventListener('click', () => {
+        const name = document.getElementById('filterTCName').value.trim();
+        const owner = document.getElementById('filterTCOwner').value.trim();
+        const regNo = document.getElementById('filterTCRegNo').value.trim();
+
+        tbodyTauCa.querySelectorAll('tr').forEach(tr => {
+            const inputs = tr.querySelectorAll('td input[type="text"]');
+            const rowName = inputs[0]?.value || '';
+            const rowOwner = inputs[1]?.value || '';
+            const rowRegCert = inputs[2]?.value || '';
+
+            const matches = quickFilterContains(rowName, name)
+                && quickFilterContains(rowOwner, owner)
+                && quickFilterContains(rowRegCert, regNo);
+
+            tr.style.display = matches ? '' : 'none';
+        });
+        if (chkAllTC) chkAllTC.checked = false;
+    });
+
+    document.getElementById('btnClearTCFilter')?.addEventListener('click', () => {
+        ['filterTCName', 'filterTCOwner', 'filterTCRegNo'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        tbodyTauCa.querySelectorAll('tr').forEach(tr => tr.style.display = '');
+        if (chkAllTC) chkAllTC.checked = false;
+    });
 
     // 8. Excel Import Modal Simulation (Thành công một phần)
     const importModal = document.getElementById('importModal');
@@ -1476,6 +1724,7 @@ const initApp = () => {
         if (!hasBaoDamOwners) {
             alert('Vui lòng khai báo ít nhất một chủ thể Bên bảo đảm / Bên thế chấp.');
             formValid = false;
+            if (!firstErr) firstErr = document.getElementById('titleBenTheChap') || tbodyTC;
         }
 
         // Must have at least 1 Bên nhận thế chấp
@@ -1483,6 +1732,7 @@ const initApp = () => {
         if (!hasNhanBaoDamOwners) {
             alert('Vui lòng khai báo ít nhất một chủ thể Bên nhận bảo đảm / Bên nhận thế chấp.');
             formValid = false;
+            if (!firstErr) firstErr = document.getElementById('titleBenNhanTheChap') || tbodyNTC;
         }
 
         // Must have select at least 1 Loại tài sản
@@ -1490,6 +1740,7 @@ const initApp = () => {
         if (checkedAssets.length === 0) {
             alert('Vui lòng tích chọn ít nhất một Loại tài sản.');
             formValid = false;
+            if (!firstErr) firstErr = document.getElementById('titleTaiSan');
         }
 
         // Check required grids if asset types checked
@@ -1578,6 +1829,31 @@ const initApp = () => {
                 addFormError(input, 'Đây là trường bắt buộc');
             }
         });
+
+        if (isDisposalStandaloneMode) {
+            const processingMode = document.querySelector('input[name="uc131DisposalProcessingMode"]:checked')?.value || 'common';
+            if (processingMode === 'byType') {
+                document.querySelectorAll('.uc131-disposal-bytype-field').forEach(field => {
+                    if (!field.value.trim()) {
+                        addFormError(field, 'Đây là trường bắt buộc');
+                    }
+                });
+            } else {
+                const disposalReason = document.getElementById('uc131DisposalReason');
+                const disposalDate = document.getElementById('uc131DisposalDate');
+                const disposalLocation = document.getElementById('uc131DisposalLocation');
+
+                if (disposalReason && !disposalReason.value.trim()) {
+                    addFormError(disposalReason, 'Đây là trường bắt buộc');
+                }
+                if (disposalDate && !disposalDate.value) {
+                    addFormError(disposalDate, 'Đây là trường bắt buộc');
+                }
+                if (disposalLocation && !disposalLocation.value.trim()) {
+                    addFormError(disposalLocation, 'Đây là trường bắt buộc');
+                }
+            }
+        }
 
         // PDF file upload check
         if (document.getElementById('chkChungKhoan').checked) {
@@ -1754,7 +2030,26 @@ const initApp = () => {
             };
         }
 
+        const formatDateForDisplay = (isoDate) => {
+            if (!isoDate || !isoDate.includes('-')) return isoDate || '';
+            const [year, month, day] = isoDate.split('-');
+            return `${day}/${month}/${year}`;
+        };
+        const collectDisposalProcessingByType = () => getUc131SelectedDisposalAssetTypes().map(({ id, label }) => ({
+            id,
+            label,
+            reason: document.querySelector(`.uc131-disposal-bytype-field[data-asset-id="${id}"][data-field="reason"]`)?.value.trim() || '',
+            date: formatDateForDisplay(document.querySelector(`.uc131-disposal-bytype-field[data-asset-id="${id}"][data-field="date"]`)?.value || ''),
+            location: document.querySelector(`.uc131-disposal-bytype-field[data-asset-id="${id}"][data-field="location"]`)?.value.trim() || ''
+        }));
+
         const data = {
+            uc131DisposalStandalone: isDisposalStandaloneMode,
+            uc131DisposalProcessingMode: document.querySelector('input[name="uc131DisposalProcessingMode"]:checked')?.value || 'common',
+            uc131DisposalReason: document.getElementById('uc131DisposalReason')?.value.trim() || '',
+            uc131DisposalDate: formatDateForDisplay(document.getElementById('uc131DisposalDate')?.value || ''),
+            uc131DisposalLocation: document.getElementById('uc131DisposalLocation')?.value.trim() || '',
+            uc131DisposalProcessingByType: collectDisposalProcessingByType(),
             coQuanTiepNhan: coQuanTiepNhan.value,
             nguoiYeuCau: nguoiYeuCau.options[nguoiYeuCau.selectedIndex]?.text || '',
             nguoiYeuCauVal: nguoiYeuCau.value,
@@ -1796,7 +2091,9 @@ const initApp = () => {
         };
 
         sessionStorage.setItem('reviewData', JSON.stringify(data));
-        window.location.href = 'dang_ky_bpbd_review.html';
+        window.location.href = isDisposalStandaloneMode
+            ? 'dang_ky_bpbd_review.html?mode=disposalStandalone'
+            : 'dang_ky_bpbd_review.html';
     };
 
     // Connection checks for draft saving
@@ -1838,6 +2135,20 @@ const initApp = () => {
             if (data.ngayHieuLuc) ngayHieuLuc.value = data.ngayHieuLuc;
             if (data.giaTriKhoanVay) giaTriKhoanVay.value = data.giaTriKhoanVay;
             if (data.quyMoVal) quyMo.value = data.quyMoVal;
+            if (isDisposalStandaloneMode) {
+                const processingMode = data.uc131DisposalProcessingMode || 'common';
+                const modeRadio = document.querySelector(`input[name="uc131DisposalProcessingMode"][value="${processingMode}"]`);
+                if (modeRadio) modeRadio.checked = true;
+                const reason = document.getElementById('uc131DisposalReason');
+                const date = document.getElementById('uc131DisposalDate');
+                const location = document.getElementById('uc131DisposalLocation');
+                if (reason) reason.value = data.uc131DisposalReason || '';
+                if (date && data.uc131DisposalDate) {
+                    const parts = data.uc131DisposalDate.split('/');
+                    date.value = parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : data.uc131DisposalDate;
+                }
+                if (location) location.value = data.uc131DisposalLocation || '';
+            }
 
             if (data.rowsTC && data.rowsTC.length > 0) {
                 tbodyTC.innerHTML = '';
@@ -1967,6 +2278,9 @@ const initApp = () => {
                         cb.dispatchEvent(new Event('change'));
                     }
                 });
+            }
+            if (isDisposalStandaloneMode && data.uc131DisposalProcessingMode === 'byType') {
+                restoreUc131DisposalProcessingByType(data.uc131DisposalProcessingByType);
             }
 
             if (data.assetDescriptions) {

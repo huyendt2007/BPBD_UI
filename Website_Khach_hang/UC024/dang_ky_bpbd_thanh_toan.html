@@ -341,7 +341,7 @@
                 <div id="resultDetailsContainer" class="hidden"
                     style="margin: 16px auto; max-width: 450px; text-align: left; background: #f8fafc; padding: 16px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 14px; line-height: 1.6;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <span style="color: var(--text-muted);">Số đăng ký:</span>
+                        <span style="color: var(--text-muted);" id="resultRegNoLabel">Số đăng ký:</span>
                         <strong id="resultRegNo">2026/00000892</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
@@ -401,9 +401,11 @@
         let isSimulating = false;
         let pmAmount = 80000; // Default registration fee
         let registeredPaymentContext = null;
+        let isDisposalStandaloneMode = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
+            isDisposalStandaloneMode = params.get('mode') === 'disposalStandalone';
             const registeredRaw = params.get('from') === 'registered'
                 ? sessionStorage.getItem('registeredPaymentData')
                 : null;
@@ -442,10 +444,15 @@
             const raw = sessionStorage.getItem('reviewData');
             if (raw) {
                 const data = JSON.parse(raw);
+                if (data.uc131DisposalStandalone) {
+                    isDisposalStandaloneMode = true;
+                }
                 if (data.soHopDong) {
-                    document.getElementById('pm_sohoSo').innerHTML = `Mã hồ sơ: <strong>DK-2026-${data.soHopDong.replace(/\D/g, '') || '00892'}</strong>`;
+                    const dossierPrefix = isDisposalStandaloneMode ? 'TBXL-2026-' : 'DK-2026-';
+                    document.getElementById('pm_sohoSo').innerHTML = `Mã hồ sơ: <strong>${dossierPrefix}${data.soHopDong.replace(/\D/g, '') || '00892'}</strong>`;
                 }
 
+                const usesMeasure = data.loaiHinhGiaoDichVal === 'bpbd' || data.loaiHinhGiaoDichVal === 'tb_xu_ly';
                 const isBPBD = data.loaiHinhGiaoDichVal === 'bpbd';
 
                 // Free check
@@ -460,13 +467,21 @@
                     document.getElementById('pm_amountText').innerText = '80.000 VNĐ';
                     document.getElementById('pm_loaiHinhText').innerText = `Loại hình giao dịch: ${data.loaiHinhGiaoDich}`;
 
-                    const subType = isBPBD ? data.loaiBienPhap : data.loaiHopDong;
-                    const subTypeLabel = isBPBD ? 'Loại biện pháp: ' : 'Loại hợp đồng: ';
+                    const subType = usesMeasure ? data.loaiBienPhap : data.loaiHopDong;
+                    const subTypeLabel = usesMeasure ? 'Loại biện pháp: ' : 'Loại hợp đồng: ';
                     if (subType) {
                         document.getElementById('pm_loaiBienPhapText').innerText = subTypeLabel + subType;
                         document.getElementById('pm_loaiBienPhapText').style.display = 'block';
                     } else {
                         document.getElementById('pm_loaiBienPhapText').style.display = 'none';
+                    }
+                }
+
+                if (isDisposalStandaloneMode) {
+                    document.getElementById('pm_loaiHinhText').innerText = 'Loại hình giao dịch: Thông báo xử lý tài sản bảo đảm';
+                    const cancelBtn = document.getElementById('btnCancelPayment');
+                    if (cancelBtn) {
+                        cancelBtn.onclick = () => { window.location.href = 'dang_ky_bpbd_review.html?mode=disposalStandalone'; };
                     }
                 }
             }
@@ -623,6 +638,12 @@
             const timeStr = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
             const regTimeEl = document.getElementById('resultRegTime');
             if (regTimeEl) regTimeEl.innerText = timeStr;
+            const generatedPin = isDisposalStandaloneMode ? 'TBXL-8392' : '8392-4710';
+            if (isDisposalStandaloneMode) {
+                const regNoLabel = document.getElementById('resultRegNoLabel');
+                if (regNoLabel) regNoLabel.innerText = 'Số thông báo xử lý:';
+                document.getElementById('resultRegNo').innerText = 'TBXL-2026-000892';
+            }
 
             const btnBackToHome = `<button type="button" class="btn btn-outline-primary" onclick="goHome()">TRỞ VỀ TRANG CHỦ <i class="fa-solid fa-house"></i></button>`;
             const btnReceipt = `<button type="button" class="btn btn-primary" onclick="alert('Mở biên lai lệ phí ở Tab mới.')">XEM BIÊN LAI</button>`;
@@ -633,7 +654,7 @@
                     if (registeredPaymentContext && registeredPaymentContext.regNum) {
                         document.getElementById('resultRegNo').innerText = registeredPaymentContext.regNum;
                     }
-                    document.getElementById('resultPin').innerText = '8392-4710';
+                    document.getElementById('resultPin').innerText = generatedPin;
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
                 case 'TH2': // Nộp thiếu
@@ -651,7 +672,7 @@
                     break;
                 case 'TH3': // Nộp thừa
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng. Hệ thống ghi nhận Quý khách nộp thừa số tiền phí. Số tiền nộp thừa này sẽ được hoàn trả tự động vào tài khoản của Quý khách trong vòng 3-5 ngày làm việc.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
+                    document.getElementById('resultPin').innerText = generatedPin;
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
                 case 'TH4': // Hủy / Lỗi
@@ -686,7 +707,7 @@
                     break;
                 case 'TH7': // Nộp trùng
                     message.innerText = 'Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm sẽ kiểm duyệt và thông báo kết quả sớm nhất cho Quý khách hàng. Hệ thống ghi nhận Quý khách nộp trùng giao dịch thanh toán. Số tiền nộp trùng này sẽ được hoàn trả tự động vào tài khoản gốc của Quý khách trong vòng 3-5 ngày làm việc.';
-                    document.getElementById('resultPin').innerText = '8392-4710';
+                    document.getElementById('resultPin').innerText = generatedPin;
                     buttonsContainer.innerHTML = btnBackToHome + btnReceipt;
                     break;
             }

@@ -184,18 +184,46 @@
 
             </section>
 
+            <section class="card-section hidden" id="rev_uc131DisposalProcessingSection">
+                <h2 class="section-title">Thông tin xử lý tài sản</h2>
+                <div class="grid-3-cols" id="rev_uc131DisposalCommonGrid">
+                    <div class="review-block">
+                        <div class="readonly-label">Lý do xử lý</div>
+                        <div class="readonly-value" id="rev_uc131DisposalReason">-</div>
+                    </div>
+                    <div class="review-block">
+                        <div class="readonly-label">Thời gian xử lý</div>
+                        <div class="readonly-value" id="rev_uc131DisposalDate">-</div>
+                    </div>
+                    <div class="review-block">
+                        <div class="readonly-label">Địa điểm xử lý</div>
+                        <div class="readonly-value" id="rev_uc131DisposalLocation">-</div>
+                    </div>
+                </div>
+                <div id="rev_uc131DisposalByTypeList" class="hidden"></div>
+            </section>
+
             <!-- FOOTER ACTIONS -->
             <div class="footer-actions">
-                <button type="button" class="btn btn-outline-primary"
+                <button type="button" class="btn btn-outline-primary" id="btnReviewBack"
                     onclick="window.location.href='dang_ky_bpbd_main.html'">QUAY LẠI</button>
-                <button type="button" class="btn btn-primary"
+                <button type="button" class="btn btn-primary" id="btnReviewPayment"
                     onclick="window.location.href='dang_ky_bpbd_thanh_toan.html'">XÁC NHẬN VÀ THANH TOÁN</button>
             </div>
         </form>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const isDisposalStandaloneMode = new URLSearchParams(window.location.search).get('mode') === 'disposalStandalone';
             const rawData = sessionStorage.getItem('reviewData');
+            if (isDisposalStandaloneMode) {
+                const pageTitle = document.querySelector('.page-title');
+                if (pageTitle) pageTitle.innerText = 'XEM TRƯỚC THÔNG TIN ĐĂNG KÝ THÔNG BÁO XỬ LÝ TÀI SẢN';
+                const backBtn = document.getElementById('btnReviewBack');
+                const paymentBtn = document.getElementById('btnReviewPayment');
+                if (backBtn) backBtn.onclick = () => { window.location.href = 'dang_ky_bpbd_main.html?mode=disposalStandalone'; };
+                if (paymentBtn) paymentBtn.onclick = () => { window.location.href = 'dang_ky_bpbd_thanh_toan.html?mode=disposalStandalone'; };
+            }
 
             // Set dynamic current date/time on system record
             const now = new Date();
@@ -210,7 +238,7 @@
                 if (data.nguoiYeuCau) document.getElementById('rev_nguoiYeuCau').innerText = data.nguoiYeuCau;
                 if (data.loaiHinhGiaoDich) document.getElementById('rev_loaiHinhGiaoDich').innerText = data.loaiHinhGiaoDich;
 
-                const isBPBD = data.loaiHinhGiaoDichVal === 'bpbd';
+                const isBPBD = data.loaiHinhGiaoDichVal === 'bpbd' || data.loaiHinhGiaoDichVal === 'tb_xu_ly';
 
                 // Toggle Loại biện pháp vs Loại hợp đồng
                 if (isBPBD) {
@@ -246,6 +274,56 @@
                     document.getElementById('rev_nuChuWrapper').classList.add('hidden');
                 }
 
+                if (data.uc131DisposalStandalone || isDisposalStandaloneMode) {
+                    document.getElementById('rev_loaiHinhGiaoDich')?.closest('.review-block')?.classList.add('hidden');
+                    document.getElementById('rev_loaiBienPhapWrapper')?.classList.add('hidden');
+                    document.getElementById('rev_loaiHopDongWrapper')?.classList.add('hidden');
+                }
+
+                if (data.uc131DisposalStandalone || isDisposalStandaloneMode) {
+                    const processingSection = document.getElementById('rev_uc131DisposalProcessingSection');
+                    if (processingSection) processingSection.classList.remove('hidden');
+                    const commonGrid = document.getElementById('rev_uc131DisposalCommonGrid');
+                    const byTypeList = document.getElementById('rev_uc131DisposalByTypeList');
+                    if (data.uc131DisposalProcessingMode === 'byType' && Array.isArray(data.uc131DisposalProcessingByType)) {
+                        if (commonGrid) commonGrid.classList.add('hidden');
+                        if (byTypeList) {
+                            const escapeHtml = (value) => String(value ?? '')
+                                .replace(/&/g, '&amp;')
+                                .replace(/</g, '&lt;')
+                                .replace(/>/g, '&gt;')
+                                .replace(/"/g, '&quot;')
+                                .replace(/'/g, '&#039;');
+                            byTypeList.classList.remove('hidden');
+                            byTypeList.innerHTML = data.uc131DisposalProcessingByType.map(item => `
+                                <div class="review-block" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                                    <div style="font-size: 15px; font-weight: 700; color: var(--primary-color); margin-bottom: 10px;">${escapeHtml(item.label)}</div>
+                                    <div class="grid-3-cols">
+                                        <div>
+                                            <div class="readonly-label">Lý do xử lý</div>
+                                            <div class="readonly-value">${escapeHtml(item.reason || '-')}</div>
+                                        </div>
+                                        <div>
+                                            <div class="readonly-label">Thời gian xử lý</div>
+                                            <div class="readonly-value">${escapeHtml(item.date || '-')}</div>
+                                        </div>
+                                        <div>
+                                            <div class="readonly-label">Địa điểm xử lý</div>
+                                            <div class="readonly-value">${escapeHtml(item.location || '-')}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('');
+                        }
+                    } else {
+                        if (commonGrid) commonGrid.classList.remove('hidden');
+                        if (byTypeList) byTypeList.classList.add('hidden');
+                        document.getElementById('rev_uc131DisposalReason').innerText = data.uc131DisposalReason || '-';
+                        document.getElementById('rev_uc131DisposalDate').innerText = data.uc131DisposalDate || '-';
+                        document.getElementById('rev_uc131DisposalLocation').innerText = data.uc131DisposalLocation || '-';
+                    }
+                }
+
                 // Dynamic headings setup
                 const hinhThuc = data.loaiHinhGiaoDichVal;
                 let selectedSubtype = isBPBD ? data.loaiBienPhapVal : data.loaiHopDongVal;
@@ -267,6 +345,12 @@
                     document.getElementById('rev_titleBenTheChap').innerText = tieuDeMap[selectedSubtype].t3;
                     document.getElementById('rev_titleBenNhanTheChap').innerText = tieuDeMap[selectedSubtype].t4;
                     document.getElementById('rev_titleTaiSan').innerText = tieuDeMap[selectedSubtype].t5;
+                }
+
+                if (data.uc131DisposalStandalone || isDisposalStandaloneMode) {
+                    document.getElementById('rev_titleBenTheChap').innerText = 'Bên bảo đảm';
+                    document.getElementById('rev_titleBenNhanTheChap').innerText = 'Bên nhận bảo đảm';
+                    document.getElementById('rev_titleTaiSan').innerText = 'Tài sản bảo đảm';
                 }
 
                 // Bind tables

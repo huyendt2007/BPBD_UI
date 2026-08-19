@@ -228,11 +228,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (refContractTypeSelect) {
         refContractTypeSelect.value = baselineData.contractType || 'Hợp đồng cho thuê tài chính';
     }
-    const refAssetDescriptionInput = document.getElementById('refAssetDescription');
-    if (refAssetDescriptionInput) {
-        refAssetDescriptionInput.value = baselineData.assetDescription || 'Các phương tiện giao thông cơ giới đường bộ thuộc sở hữu của Bên bảo đảm.';
-    }
-
     // Dynamic show/hide of measure type or contract type fields based on transactionType
     const measureTypeBlock = document.getElementById('refMeasureTypeBlock');
     const contractTypeBlock = document.getElementById('refContractTypeBlock');
@@ -313,7 +308,6 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="asset-type-panel">
                 <div class="asset-type-header">
                     <span>${title}</span>
-                    <span class="asset-state-badge state-deleted">Thuộc phạm vi xóa</span>
                 </div>
                 <div class="asset-type-body">${bodyHtml}</div>
             </div>
@@ -322,8 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderVehicleFrameAssets(assets) {
         const rows = assets.map((asset, index) => `
-            <tr class="row-deleted">
-                <td class="asset-select-cell"><input type="checkbox" class="asset-select-checkbox" checked disabled aria-label="Tài sản thuộc phạm vi xóa"></td>
+            <tr>
                 <td style="text-align: center; font-weight: 500;">${index + 1}</td>
                 <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}</td>
                 <td class="asset-text-cell">${asset.brandColor || '---'}</td>
@@ -338,13 +331,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 <table class="table asset-scope-table">
                     <thead>
                         <tr>
-                            <th style="width: 58px; text-align: center;">Checkbox</th>
                             <th style="width: 56px; text-align: center;">STT</th>
-                            <th>TÊN PHƯƠNG TIỆN</th>
-                            <th>NHÃN HIỆU, MÀU SƠN</th>
-                            <th>SỐ KHUNG</th>
-                            <th>SỐ MÁY</th>
-                            <th>BIỂN SỐ</th>
+                            <th style="width: 150px;">TÊN PHƯƠNG TIỆN</th>
+                            <th style="width: 170px;">NHÃN HIỆU, MÀU SƠN</th>
+                            <th style="width: 170px;">SỐ KHUNG</th>
+                            <th style="width: 140px;">SỐ MÁY</th>
+                            <th style="width: 134px;">BIỂN SỐ</th>
                         </tr>
                     </thead>
                     <tbody>${rows}</tbody>
@@ -355,8 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderSpecialVehicleAssets(assets) {
         const rows = assets.map((asset, index) => `
-            <tr class="row-deleted">
-                <td class="asset-select-cell"><input type="checkbox" class="asset-select-checkbox" checked disabled aria-label="Tài sản thuộc phạm vi xóa"></td>
+            <tr>
                 <td style="text-align: center; font-weight: 500;">${index + 1}</td>
                 <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}</td>
                 <td class="asset-text-cell">${asset.brandColor || '---'}</td>
@@ -371,13 +362,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 <table class="table asset-scope-table">
                     <thead>
                         <tr>
-                            <th style="width: 58px; text-align: center;">Checkbox</th>
                             <th style="width: 56px; text-align: center;">STT</th>
-                            <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
-                            <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
-                            <th>SỐ ĐĂNG KÝ</th>
-                            <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
-                            <th>CẤP PHƯƠNG TIỆN</th>
+                            <th style="width: 170px;">TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                            <th style="width: 200px;">TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                            <th style="width: 130px;">SỐ ĐĂNG KÝ</th>
+                            <th style="width: 170px;">CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                            <th style="width: 94px;">CẤP PHƯƠNG TIỆN</th>
                         </tr>
                     </thead>
                     <tbody>${rows}</tbody>
@@ -389,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderSecurityTimeAsset(asset) {
         const timeMatch = (asset.brandColor || '').match(/(\d{1,2}).*?(\d{1,2}).*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
         const row = timeMatch ? `
-            <tr class="row-deleted">
+            <tr>
                 <td style="text-align: center;">${timeMatch[1]}</td>
                 <td style="text-align: center;">${timeMatch[2]}</td>
                 <td style="text-align: center;">${timeMatch[3]}</td>
@@ -397,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td style="text-align: center;">${timeMatch[5]}</td>
             </tr>
         ` : `
-            <tr class="row-deleted"><td colspan="5">${asset.brandColor || asset.name || '---'}</td></tr>
+            <tr><td colspan="5">${asset.brandColor || asset.name || '---'}</td></tr>
         `;
 
         return createAssetTypePanel(asset.typeName || 'Chứng khoán', `
@@ -449,9 +439,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     ${createReadonlyItem('Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', asset.frameNo)}
                 </div>`;
             } else {
+                const description = `${asset.name || ''}${asset.brandColor ? ' - ' + asset.brandColor : ''}`.trim();
                 bodyHtml = `<div class="asset-readonly-grid">
-                    ${createReadonlyItem('Loại tài sản', asset.typeName)}
-                    ${createReadonlyItem('Mô tả', `${asset.name || ''}${asset.brandColor ? ' - ' + asset.brandColor : ''}`)}
+                    <div class="asset-readonly-item" style="grid-column: 1 / -1;">
+                        <span class="asset-readonly-value">${description || '---'}</span>
+                    </div>
                 </div>`;
             }
             html.push(createAssetTypePanel(asset.typeName || 'Tài sản bảo đảm', bodyHtml));
@@ -724,8 +716,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const isExempt = exemptionTypeSelect.checked;
         const feeAmount = isExempt ? 0 : 20000;
 
-        const refAssetDescriptionInput = document.getElementById('refAssetDescription');
-
         const dossierDraft = {
             dossierCode: dossierCode,
             status: status,
@@ -746,7 +736,6 @@ document.addEventListener('DOMContentLoaded', function () {
             loanValue: refLoanValueInput.value,
             scale: refScaleInput.value,
             isFemaleOwner: refFemaleOwnerCheckbox.checked,
-            assetDescription: refAssetDescriptionInput ? refAssetDescriptionInput.value : 'Các phương tiện giao thông cơ giới đường bộ thuộc sở hữu của Bên bảo đảm.',
             createdAt: new Date().toLocaleString('vi-VN')
         };
 

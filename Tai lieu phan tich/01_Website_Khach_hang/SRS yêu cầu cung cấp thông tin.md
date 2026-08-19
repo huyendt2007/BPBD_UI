@@ -85,103 +85,6 @@
 
 ---
 
-#### 4.1.1.4. UC195.MH01 - Màn hình Danh sách yêu cầu cung cấp thông tin
-
-##### 4.1.1.4.1. Màn hình
-
-![Màn hình Danh sách yêu cầu cung cấp thông tin](images/UC195_MH01_Danh_sach_yeu_cau_cung_cap_thong_tin.png)
-
-##### 4.1.1.4.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :---: | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
-| Mã hồ sơ | String(50) | Không | Trống | Tìm kiếm chính xác hoặc gần đúng theo Mã hồ sơ; tự động trim space. |
-| Tiêu chí yêu cầu | Enum(String(50)) | Không | Tất cả | Lọc theo tiêu chí yêu cầu cung cấp thông tin gồm:<br>- Tất cả<br>- Số đăng ký<br>- Bên bảo đảm<br>- Số khung |
-| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Lọc theo trạng thái hồ sơ, gồm:<br>- Tất cả<br>- Chờ thanh toán<br>- Chờ duyệt<br>- Chờ ký<br>- Hoàn thành<br>- Bị từ chối<br>- Bị trả lại |
-| Từ ngày | Date | Không | Trống | Lọc theo Thời điểm đăng ký. Nếu nhập cùng Đến ngày, phải tuân thủ [BR-VAL-007]. |
-| Đến ngày | Date | Không | Trống | Lọc theo Thời điểm đăng ký. Nếu nhập cùng Từ ngày, phải tuân thủ [BR-VAL-007]. |
-| **II. Bảng danh sách hồ sơ yêu cầu cung cấp thông tin** | | | | |
-| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Hiển thị danh sách hồ sơ thuộc phạm vi tài khoản Khách hàng đăng nhập. Sắp xếp mặc định theo Thời điểm đăng ký giảm dần. Phân trang 20 bản ghi/trang. Click trực tiếp vào dòng dữ liệu để mở chi tiết, ngoại trừ khi click nút thao tác. |
-| STT | Integer(10) | Không | Tự tăng | Số thứ tự bản ghi trên trang hiện tại. |
-| Mã hồ sơ | String(50) | Có | Theo hệ thống | Mã hồ sơ Yêu cầu cung cấp thông tin. |
-| Thời điểm đăng ký | Datetime | Có | Theo hệ thống | Ngày giờ Khách hàng gửi hồ sơ. |
-| Tiêu chí yêu cầu | Enum(String(50)) | Có | Theo hồ sơ | Hiển thị một trong các giá trị: "Số đăng ký", "Bên bảo đảm", "Số khung". |
-| Dữ liệu đã nhập | Text(1000) | Có | Theo hồ sơ | Hiển thị tóm tắt dữ liệu tra cứu đã gửi theo tiêu chí. |
-| Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Hiển thị trạng thái hiện tại của hồ sơ. |
-| Số tiền phải thanh toán | Decimal(18,0) | Không | Theo hồ sơ | Chỉ hiển thị giá trị khi hồ sơ thuộc diện phải thu phí và ở trạng thái "Chờ thanh toán", "Chờ duyệt", "Chờ ký" hoặc "Hoàn thành". Mức phí lấy từ cấu hình biểu phí cung cấp thông tin còn hiệu lực. Không hiển thị đối với hồ sơ thuộc diện miễn phí. |
-| Thao tác | String(255) | Không | Theo trạng thái | Hiển thị thao tác theo trạng thái:<br>- "Chờ thanh toán": Thanh toán<br>- "Hoàn thành": Xem file, Tải file, In biên lai (chỉ hiển thị nếu hồ sơ đã thanh toán trực tuyến qua UC158 và có Số biên lai điện tử)<br>- Các trạng thái khác: không hiển thị thao tác thanh toán, xem/tải file hoặc in biên lai |
-
-##### 4.1.1.4.3. Chức năng trên màn hình
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
-|  |  |  | TH Hợp lệ: Hệ thống tìm kiếm theo các tiêu chí đã nhập trong phạm vi hồ sơ thuộc tài khoản Khách hàng đăng nhập. Nếu không có dữ liệu phù hợp, hiển thị trạng thái rỗng theo [MSG-WRN-SYS-001] hoặc thông báo không có dữ liệu theo chuẩn danh sách. |
-| 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Trạng thái hồ sơ và Tiêu chí yêu cầu về "Tất cả", tải lại danh sách mặc định theo Thời điểm đăng ký giảm dần. |
-| 3 | Tạo mới | Nút | Mở **4.1.1.2. UC141.MH01 - Màn hình Lập yêu cầu cung cấp thông tin**. |
-| 4 | Row Click | Thao tác dòng | Mở **4.1.1.5. UC195.MH02 - Màn hình Chi tiết yêu cầu cung cấp thông tin** tương ứng với hồ sơ được chọn. |
-| 5 | Thanh toán | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ thanh toán", có kết quả tra cứu và thuộc diện phải thu phí. Khi click, hệ thống đóng gói thông tin thanh toán và chuyển hướng sang UC158. Chi tiết tại **4.1.1.6. Quy tắc thanh toán hồ sơ yêu cầu cung cấp thông tin**. |
-| 6 | Xem file | Link/Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Hoàn thành" và có file PDF kết quả cung cấp thông tin đã được Lãnh đạo ký số. Cho phép mở đúng file PDF đã ký tại một tab riêng. Hệ thống ghi nhật ký thao tác xem file vào III.6. |
-| 7 | Tải file | Link/Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Hoàn thành" và có file PDF kết quả cung cấp thông tin đã được Lãnh đạo ký số. Tải đúng file PDF đã ký xuống thiết bị của Khách hàng. Hệ thống ghi nhật ký thao tác tải file vào III.6. |
-| 8 | In biên lai | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Hoàn thành", đã thanh toán trực tuyến thành công qua UC158 và có Số biên lai điện tử. Không hiển thị đối với hồ sơ thuộc diện miễn phí (không phát sinh giao dịch thanh toán). Khi click, hệ thống hiển thị mẫu biên lai điện tử tương ứng và gửi lệnh in/xuất PDF biên lai. Hệ thống ghi nhật ký thao tác in biên lai vào III.6. |
-
----
-
-#### 4.1.1.5. UC195.MH02 - Màn hình Chi tiết yêu cầu cung cấp thông tin
-
-##### 4.1.1.5.1. Màn hình
-
-![Màn hình Chi tiết yêu cầu cung cấp thông tin](images/UC195_MH02_Chi_tiet_yeu_cau_cung_cap_thong_tin.png)
-
-##### 4.1.1.5.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :---: | :--- | :--- |
-| **I. Thông tin hồ sơ** | | | | |
-| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. Mã hồ sơ Yêu cầu cung cấp thông tin. |
-| Trạng thái hồ sơ | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị trạng thái hiện tại của hồ sơ. |
-| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm Khách hàng gửi hồ sơ. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | "Website khách hàng" | Chỉ đọc. Nguồn tạo hồ sơ. |
-| **II. Thông tin yêu cầu cung cấp thông tin** | | | | |
-| Tiêu chí yêu cầu | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị tiêu chí đã gửi. |
-| Dữ liệu đã nhập | Text(1000) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị dữ liệu tra cứu đã gửi theo tiêu chí. |
-| Thời điểm tra cứu | Datetime | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã được Cán bộ thực hiện tra cứu (áp dụng cho cả trạng thái "Hoàn thành" và "Bị từ chối"). Định dạng `dd-mm-yyyy HH:mm`. |
-| **III. Thông tin xử lý** | | | | |
-| Lý do từ chối | Text(2000) | Không | Theo hồ sơ | Chỉ hiển thị khi trạng thái hồ sơ là "Bị từ chối" do Cán bộ hoặc Lãnh đạo từ chối theo điều kiện nghiệp vụ. Không dùng trường này để hiển thị trường hợp tra cứu không có dữ liệu còn hiệu lực; trường hợp đó được thể hiện trong file PDF đã ký và Khối VI khi hồ sơ "Hoàn thành". |
-| Thời điểm trình ký | Datetime | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã được Cán bộ trình Lãnh đạo ký. |
-| Thời điểm ký | Datetime | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã được Lãnh đạo ký số. |
-| Thời điểm ký | Datetime | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã được Lãnh đạo ký thành công. |
-| Người ký/Đơn vị ký | String(255) | Không | Theo hồ sơ | Chỉ hiển thị trong phạm vi thông tin được công khai cho Khách hàng. |
-| **IV. Thông tin thanh toán** | | | | |
-| Số tiền phải thanh toán | Decimal(18,0) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ thuộc diện phải thu phí và ở trạng thái "Chờ thanh toán", "Chờ duyệt", "Chờ ký" hoặc "Hoàn thành". Không hiển thị đối với hồ sơ thuộc diện miễn phí. |
-| Mã giao dịch thanh toán | String(100) | Không | Theo kết quả UC158 | Chỉ hiển thị sau khi phát sinh giao dịch thanh toán. |
-| Số biên lai | String(100) | Không | Theo hệ thống tài chính | - Chỉ hiển thị nếu hệ thống có phát hành biên lai điện tử (áp dụng khi hồ sơ thanh toán trực tuyến qua UC158, không áp dụng cho hồ sơ thuộc diện miễn phí).<br>- Kèm liên kết "Xem/In biên lai" ngay cạnh Số biên lai. |
-| Thời điểm thanh toán | Datetime | Không | Theo kết quả UC158 | Chỉ hiển thị khi thanh toán thành công. |
-| Trạng thái thanh toán | Enum(String(50)) | Không | Theo kết quả UC158 | Chỉ hiển thị khi phát sinh giao dịch thanh toán. |
-| **V. Tệp kết quả** | | | | |
-| File PDF đã ký | File | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ ở trạng thái "Hoàn thành". Đây là đúng file PDF kết quả cung cấp thông tin đã được Lãnh đạo ký số theo mẫu `GCN_Mau Giay chung nhan CCTT.pdf`; link "Xem file" và "Tải file" phải trỏ tới file PDF đã ký này, không trỏ tới file dự thảo hoặc file kết quả tra cứu riêng. |
-| **VI. Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký** | | | | - Chỉ hiển thị khi hồ sơ ở trạng thái "Hoàn thành".<br>- Trình bày theo đúng nội dung file PDF đã được Lãnh đạo ký số, gồm lá mặt/trang ký Mẫu số 10d, phần tiêu đề kết quả, thông tin tiêu chí đã tra cứu, thời điểm tra cứu và kết quả tra cứu.<br>- Nếu kết quả có dữ liệu, hiển thị danh sách chi tiết từng hồ sơ đăng ký giao dịch bảo đảm, hợp đồng tìm thấy.<br>- Nếu kết quả không có dữ liệu, hiển thị dòng theo **[MSG-WRN-CCTT-001]** ngay trong khu vực kết quả cung cấp thông tin, dạng Inline, không hiển thị Toast. |
-| Tiêu đề văn bản | String(255) | Có | "KẾT QUẢ CUNG CẤP THÔNG TIN CÓ XÁC NHẬN CỦA CƠ QUAN ĐĂNG KÝ" | Chỉ đọc. Hiển thị cố định, in hoa, in đậm ở đầu khối. |
-| Đoạn xác nhận tra cứu | Text(500) | Có | Theo hệ thống | Chỉ đọc. Nội dung cố định theo mẫu GCN CCTT: "Thông tin đã được tìm thấy trong cơ sở dữ liệu của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước thỏa mãn các tiêu chí tra cứu thông tin như sau:". |
-| Số cung cấp thông tin | String(50) | Có | Theo hồ sơ | Chỉ đọc. Chính là Mã hồ sơ tại Khối I, hiển thị dạng "Số cung cấp thông tin: [Mã hồ sơ]". |
-| Tiêu chí đã tra cứu | Text(500) | Có | Theo hồ sơ | Chỉ đọc. Echo lại đúng theo nội dung file PDF đã ký:<br>- "Số đăng ký": hiển thị dòng "Số đăng ký: [Giá trị]".<br>- "Bên bảo đảm": hiển thị trực tiếp giá trị Loại chủ thể thành một dòng riêng, không ghi nhãn "Loại chủ thể" (Ví dụ: "Tổ chức có đăng ký kinh doanh trong nước"), sau đó hiển thị dòng số giấy tờ tương ứng theo đúng Loại chủ thể (Số CMND/Căn cước công dân/Chứng minh quân đội, Mã số thuế/Số đăng ký kinh doanh, Số Hộ chiếu, Mã số thuế/Số giấy phép đầu tư, Tên tổ chức, hoặc Thẻ cư trú). Nếu Loại chủ thể là "Công dân Việt Nam" và hồ sơ có Ngày tháng năm sinh thì hiển thị thêm dòng "Ngày tháng năm sinh: [dd/mm/yyyy]".<br>- "Số khung": hiển thị dòng "Số khung: [Giá trị]". |
-| Thời điểm tra cứu | Datetime | Có | Theo hồ sơ | Chỉ đọc. Lấy theo trường Thời điểm tra cứu tại Khối II, định dạng `dd-mm-yyyy HH:mm`. |
-| Dòng kết quả không có dữ liệu | Text(500) | Tùy điều kiện | Theo file PDF đã ký | Chỉ hiển thị khi phiên tra cứu đã ký có trạng thái "Không có kết quả". Nội dung lấy theo **[MSG-WRN-CCTT-001]** và hiển thị Inline ngay trong khu vực kết quả cung cấp thông tin, không hiển thị Toast. Không hiển thị danh sách hồ sơ đăng ký giao dịch bảo đảm, hợp đồng tìm thấy. |
-| Danh sách hồ sơ đăng ký giao dịch bảo đảm, hợp đồng tìm thấy | Text(10000) | Tùy điều kiện | Theo kết quả xử lý | - Chỉ hiển thị khi phiên tra cứu đã ký số có trạng thái "Có kết quả".<br>- Hiển thị theo kết quả tra cứu đã được Cán bộ khóa, trình ký và Lãnh đạo ký số trên Website Quản trị.<br>- Chỉ bao gồm hồ sơ đăng ký còn hiệu lực tại thời điểm Cán bộ tra cứu và không có hồ sơ xóa đăng ký/xóa thông báo xử lý tài sản đã hoàn thành làm chấm dứt hiệu lực.<br>- Hiển thị lần lượt thông tin từng hồ sơ theo thứ tự Số hồ sơ tăng dần, đảm bảo liên tục từ hồ sơ đăng ký ban đầu đến các hồ sơ phát sinh sau đó (đăng ký thay đổi, xóa đăng ký, thông báo xử lý tài sản và các nghiệp vụ liên quan nếu có).<br>- Từ dòng tiêu đề hồ sơ **"Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]"** trở xuống, hiển thị theo cấu trúc dùng chung tại [4.1.12.6.2.1. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng](UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md#cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong). |
-
-##### 4.1.1.5.3. Chức năng trên màn hình
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Quay lại | Nút | Quay lại **4.1.1.4. UC195.MH01 - Màn hình Danh sách yêu cầu cung cấp thông tin**, giữ nguyên bộ lọc trước đó. |
-| 2 | Thanh toán | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ thanh toán", có kết quả tra cứu và thuộc diện phải thu phí. Khi click, hệ thống đóng gói thông tin thanh toán và chuyển hướng sang UC158. Chi tiết tại **4.1.1.6. Quy tắc thanh toán hồ sơ yêu cầu cung cấp thông tin**. |
-| 3 | Xem file | Link/Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Hoàn thành" và có file PDF kết quả cung cấp thông tin đã được Lãnh đạo ký số. Cho phép mở đúng file PDF đã ký tại một tab riêng. Hệ thống ghi nhật ký thao tác xem file vào III.6. |
-| 4 | Tải file | Link/Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Hoàn thành" và có file PDF kết quả cung cấp thông tin đã được Lãnh đạo ký số. Tải đúng file PDF đã ký xuống thiết bị của Khách hàng. Hệ thống ghi nhật ký thao tác tải file vào III.6. |
-| 5 | Xem/In biên lai | Link/Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Hoàn thành", đã thanh toán trực tuyến thành công qua UC158 và có Số biên lai điện tử. Không hiển thị đối với hồ sơ thuộc diện miễn phí. Khi click, hệ thống hiển thị mẫu biên lai điện tử tại một tab riêng và cho phép gửi lệnh in/xuất PDF. Hệ thống ghi nhật ký thao tác in biên lai vào III.6. |
-
----
-
 #### 4.1.1.6. Quy tắc thanh toán hồ sơ yêu cầu cung cấp thông tin
 
 ##### 4.1.1.6.1. Nguyên tắc sử dụng UC158
@@ -214,35 +117,9 @@ Khi Khách hàng chọn "Thanh toán" trên danh sách/màn hình chi tiết đ�
 
 ---
 
-#### 4.1.1.7. Quy tắc bảo mật, phân quyền và toàn vẹn dữ liệu kết quả
+#### 4.1.1.7. Sơ đồ và mô tả quy trình nghiệp vụ tổng thể
 
-| STT | Quy tắc | Mô tả |
-| :--- | :--- | :--- |
-| 1 | Quyền xem hồ sơ | Chỉ chủ hồ sơ hoặc người được phân quyền hợp lệ mới được xem danh sách, chi tiết, file PDF đã ký và Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký của hồ sơ. |
-| 2 | Tính toàn vẹn kết quả | File PDF đã ký và khối Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký phải thuộc đúng hồ sơ, đúng phiên bản xử lý và đúng dữ liệu đã được Lãnh đạo phê duyệt. |
-| 3 | Không sinh lại kết quả khi Khách hàng nhận file | Khi hồ sơ "Hoàn thành", hệ thống không tự động tra cứu lại, sinh lại file PDF hoặc thay đổi khối Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký đã được phê duyệt. |
-| 4 | Không chỉnh sửa kết quả | Khách hàng không được sửa file PDF đã ký hoặc dữ liệu trong khối Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký. |
-| 5 | Nhật ký hệ thống | Mọi thao tác gửi yêu cầu, xem chi tiết, thanh toán, xem/tải file và in biên lai phải ghi nhật ký vào III.6. |
-| 6 | Toàn vẹn biên lai điện tử | Biên lai điện tử chỉ được phát hành khi Cổng thanh toán UC158 xác nhận giao dịch thanh toán trực tuyến thành công; không cho phép Khách hàng tự tạo, chỉnh sửa hoặc in biên lai đối với hồ sơ thuộc diện miễn phí hoặc chưa hoàn tất thanh toán. |
-
----
-
-#### 4.1.1.8. Checklist ràng buộc chéo
-
-| Câu hỏi kiểm tra | Đánh giá áp dụng |
-| :--- | :--- |
-| UC này có cần gọi dữ liệu từ tích hợp V.1 để tự động điền hoặc kiểm tra không? | Website Khách hàng không tự động tra cứu kết quả tại thời điểm gửi hồ sơ. Dữ liệu người yêu cầu lấy từ tài khoản đăng nhập/SSO nếu có. Kết nối CSDL BPBĐ và các tích hợp liên quan đến kết quả tra cứu do phần Cán bộ xử lý thực hiện. |
-| Các trường lựa chọn đã tham chiếu đúng danh mục chưa? | Loại chủ thể tham chiếu [DM_06], Loại hình đăng ký trong kết quả tham chiếu [DM_04]. Trạng thái hồ sơ dùng bộ trạng thái nghiệp vụ riêng của hồ sơ cung cấp thông tin trong tài liệu này do danh mục trạng thái hiện có chưa thống nhất mã dùng chung. |
-| Thao tác nào cần ghi log vào III.6? | Gửi yêu cầu, xem chi tiết, chuyển trạng thái, thanh toán, xem/tải PDF đã ký, xem/in biên lai. |
-| Nguy cơ phát sinh bồi thường là gì? | Nếu Cán bộ/Lãnh đạo cung cấp sai kết quả, ký sai file hoặc trả nhầm dữ liệu không thuộc hồ sơ có thể phát sinh khiếu kiện. Website Khách hàng phải bảo đảm hiển thị đúng file PDF đã được duyệt, đúng nội dung Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký đã được phê duyệt và không tự động thay thế bằng dữ liệu tra cứu mới. |
-| UC này có phiên bản Mobile tương ứng không? | Danh sách UC gốc có các chức năng cung cấp thông tin trên Mobile. Trạng thái hồ sơ phải đồng bộ qua CSDL dùng chung giữa Web và Mobile nếu Mobile triển khai cùng nghiệp vụ. |
-| Kết quả xử lý làm thay đổi Dashboard nào? | Số lượng hồ sơ Yêu cầu cung cấp thông tin theo các trạng thái "Chờ thanh toán", "Chờ duyệt", "Chờ ký", "Hoàn thành", "Bị từ chối", "Bị trả lại"; doanh thu phí cung cấp thông tin chỉ cập nhật đối với hồ sơ có phát sinh nghĩa vụ phí và thanh toán thành công. |
-
----
-
-#### 4.1.1.9. Sơ đồ và mô tả quy trình nghiệp vụ tổng thể
-
-##### 4.1.1.9.1. Sơ đồ quy trình
+##### 4.1.1.7.1. Sơ đồ quy trình
 
 ```mermaid
 flowchart TD
@@ -270,7 +147,7 @@ flowchart TD
     O --> P[Khách hàng xem/tải PDF đã ký và nội dung kết quả cung cấp thông tin]
 ```
 
-##### 4.1.1.9.2. Mô tả quy trình chi tiết
+##### 4.1.1.7.2. Mô tả quy trình chi tiết
 
 | Bước | Người thực hiện | Mô tả nghiệp vụ |
 | :--- | :--- | :--- |
@@ -287,7 +164,7 @@ flowchart TD
 | 11 | Lãnh đạo | Thực hiện ký số file PDF đối với hồ sơ ở trạng thái "Chờ ký". Nếu ký thành công, hồ sơ chuyển sang "Hoàn thành"; nếu từ chối, hồ sơ chuyển sang "Bị từ chối" và hệ thống phát sinh yêu cầu hoàn tiền đối với hồ sơ Online đã thanh toán; nếu trả lại, hồ sơ chuyển sang "Bị trả lại" để Cán bộ xử lý lại. |
 | 12 | Khách hàng | Khi hồ sơ "Hoàn thành", Khách hàng xem/tải đúng file PDF kết quả cung cấp thông tin đã được Lãnh đạo ký số và xem nội dung Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký. |
 
-##### 4.1.1.9.3. Luồng trạng thái hồ sơ
+##### 4.1.1.7.3. Luồng trạng thái hồ sơ
 
 | STT | Trạng thái | Điều kiện chuyển vào trạng thái | Thao tác Khách hàng được phép |
 | :--- | :--- | :--- | :--- |

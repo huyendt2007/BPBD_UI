@@ -6,16 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Khách hàng - Hệ thống Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
     <script>
-        window.addEventListener('unhandledrejection', function (event) {
-            const reason = event.reason;
-            const message = typeof reason === 'string'
-                ? reason
-                : (reason && (reason.message || String(reason))) || '';
-            if (message.includes('A listener indicated an asynchronous response by returning true') &&
-                message.includes('message channel closed before a response was received')) {
-                event.preventDefault();
+        (function suppressBenignMessageChannelErrors() {
+            function getErrorMessage(value) {
+                if (!value) return '';
+                if (typeof value === 'string') return value;
+                return value.message || value.reason || String(value);
             }
-        });
+
+            function isBenignMessageChannelError(message) {
+                const text = String(message || '');
+                return (
+                    text.includes('A listener indicated an asynchronous response by returning true') &&
+                    text.includes('message channel closed before a response was received')
+                ) || text.includes('The message port closed before a response was received');
+            }
+
+            function silenceEvent(event, message) {
+                if (!isBenignMessageChannelError(message)) return;
+                event.preventDefault();
+                if (typeof event.stopImmediatePropagation === 'function') {
+                    event.stopImmediatePropagation();
+                }
+            }
+
+            window.addEventListener('unhandledrejection', function (event) {
+                silenceEvent(event, getErrorMessage(event.reason));
+            }, true);
+
+            window.addEventListener('error', function (event) {
+                silenceEvent(event, getErrorMessage(event.error) || event.message);
+            }, true);
+        })();
     </script>
     <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2425,6 +2446,63 @@
             overflow: hidden;
         }
 
+        #screen-asset-disposal .disposal-processing-mode-panel {
+            border: 1px solid #D6E4F0;
+            border-radius: 8px;
+            background: #F8FBFF;
+            padding: 12px 14px;
+            margin: 0 0 14px;
+        }
+
+        #screen-asset-disposal .disposal-processing-mode-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        #screen-asset-disposal .disposal-processing-mode-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #FFFFFF;
+            padding: 10px 12px;
+            cursor: pointer;
+        }
+
+        #screen-asset-disposal .disposal-processing-mode-option input {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            flex: 0 0 auto;
+        }
+
+        #screen-asset-disposal .disposal-processing-mode-title {
+            display: block;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.35;
+        }
+
+        #screen-asset-disposal .disposal-processing-mode-desc {
+            display: block;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.45;
+            margin-top: 2px;
+        }
+
+        #screen-asset-disposal .disposal-processing-common-block,
+        #screen-asset-disposal .disposal-processing-block {
+            border: 1px dashed #CBD5E1;
+            border-radius: 8px;
+            background: #FFFFFF;
+            padding: 12px 14px;
+            margin: 12px 0 0;
+        }
+
         #screen-asset-disposal .disposal-asset-type-header {
             display: flex;
             align-items: flex-start;
@@ -2555,6 +2633,10 @@
             #screen-asset-disposal .disposal-readonly-line {
                 grid-template-columns: 1fr;
                 gap: 2px;
+            }
+
+            #screen-asset-disposal .disposal-processing-mode-options {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -4529,38 +4611,54 @@
             <!-- SCREEN: Đăng ký thông báo xử lý tài sản (UC131) -->
             <div class="app-screen" id="screen-asset-disposal">
                 <!-- Phase 1: Tra cứu hồ sơ gốc và chọn loại thông báo (UC131.MH01) -->
-                <div id="disposalPhaseSearch" class="card-section" style="max-width: 500px; margin: 30px auto;">
-                    <h2 class="section-title">Tra cứu Hồ sơ gốc và Chọn Loại thông báo</h2>
-                    <div class="alert-box info" style="margin-bottom:15px;">
-                        <i class="fa fa-info-circle alert-icon"></i>
-                        <div>Nhập Số đăng ký thế chấp lần đầu và mã số PIN bảo mật để thực hiện đăng ký thông báo xử lý
-                            tài sản. (Gợi ý test: <strong>1505156435</strong> / PIN <strong>5635</strong> hoặc
-                            <strong>1505156438</strong> / PIN <strong>5638</strong>).
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Số đăng ký lần đầu <span class="required-mark">*</span></label>
-                        <input type="text" class="form-control" id="disposalSearchRegNum" value="1505156435"
-                            placeholder="Nhập số đăng ký lần đầu...">
-                        <span class="error-message text-danger hidden" id="err-disposalSearchRegNum"
-                            style="font-size: 12px; margin-top: 4px; display: block;"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mã số PIN bảo mật <span class="required-mark">*</span></label>
-                        <input type="text" class="form-control" id="disposalSearchPin" value="5635"
-                            placeholder="Nhập mã PIN bảo mật...">
-                        <span class="error-message text-danger hidden" id="err-disposalSearchPin"
-                            style="font-size: 12px; margin-top: 4px; display: block;"></span>
-                    </div>
+                <div id="disposalPhaseSearch" class="card-section" style="max-width: 560px; margin: 30px auto;">
+                    <h2 class="section-title">Chọn loại thông báo và nguồn tài sản</h2>
+                  
                     <div class="form-group">
                         <label class="form-label">Loại thông báo <span class="required-mark">*</span></label>
-                        <select class="form-select" id="disposalSearchType">
+                        <select class="form-select" id="disposalSearchType" onchange="toggleDisposalSourceFields()">
                             <option value="" disabled>-- Lựa chọn loại thông báo --</option>
                             <option value="Thông báo lần đầu" selected>Thông báo lần đầu</option>
                             <option value="Thông báo thay đổi">Thông báo thay đổi</option>
                             <option value="Xóa Thông báo">Xóa Thông báo</option>
                         </select>
                         <span class="error-message text-danger hidden" id="err-disposalSearchType"
+                            style="font-size: 12px; margin-top: 4px; display: block;"></span>
+                    </div>
+                    <div class="form-group" id="disposalAssetSourceGroup">
+                        <label class="form-label">Nguồn tài sản thông báo xử lý <span
+                                class="required-mark">*</span></label>
+                        <div style="display:grid; grid-template-columns:1fr; gap:8px;">
+                            <label class="disposal-processing-mode-option" style="margin:0;">
+                                <input type="radio" name="disposalAssetSource" value="registered" checked
+                                    onchange="toggleDisposalSourceFields()">
+                                <span>
+                                    <span class="disposal-processing-mode-title">Từ hồ sơ BPBĐ đã đăng ký</span>
+                                    <span class="disposal-processing-mode-desc">Tra cứu hồ sơ gốc, chọn tài sản đã đăng ký
+                                        để đưa vào thông báo xử lý.</span>
+                                </span>
+                            </label>
+                            <label class="disposal-processing-mode-option" style="margin:0;">
+                                <input type="radio" name="disposalAssetSource" value="unregistered"
+                                    onchange="toggleDisposalSourceFields()">
+                                <span>
+                                    <span class="disposal-processing-mode-title">Tài sản chưa đăng ký BPBĐ</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="disposalSearchRegNumGroup">
+                        <label class="form-label">Số đăng ký lần đầu <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="disposalSearchRegNum" value="1505156435"
+                            placeholder="Nhập số đăng ký lần đầu...">
+                        <span class="error-message text-danger hidden" id="err-disposalSearchRegNum"
+                            style="font-size: 12px; margin-top: 4px; display: block;"></span>
+                    </div>
+                    <div class="form-group" id="disposalSearchPinGroup">
+                        <label class="form-label">Mã số PIN bảo mật <span class="required-mark">*</span></label>
+                        <input type="text" class="form-control" id="disposalSearchPin" value="5635"
+                            placeholder="Nhập mã PIN bảo mật...">
+                        <span class="error-message text-danger hidden" id="err-disposalSearchPin"
                             style="font-size: 12px; margin-top: 4px; display: block;"></span>
                     </div>
                     <div
@@ -4582,8 +4680,14 @@
                                 id="disposalActiveRegNumText">N/A</strong>.</div>
                     </div>
 
+                    <div id="disposalStandaloneUc024Wrapper" class="hidden" style="margin-top: 12px;">
+                        <iframe id="disposalStandaloneUc024Frame" class="module-iframe"
+                            title="Đăng ký thông báo xử lý tài sản bảo đảm lần đầu cho tài sản chưa đăng ký BPBĐ"
+                            style="width:100%; min-height: 1900px; border:0; background:#fff;"></iframe>
+                    </div>
+
                     <!-- Khối: Thông tin người yêu cầu đăng ký / xóa -->
-                    <div style="margin-bottom: 25px;">
+                    <div id="disposalRequestorSection" style="margin-bottom: 25px;">
                         <h3 class="section-title"><i class="fa-solid fa-user-pen"
                                 style="color: var(--secondary-color);"></i> Thông tin người yêu cầu đăng ký</h3>
                         <div class="grid-2-cols">
@@ -4633,10 +4737,15 @@
                     </div>
 
                     <!-- Khối: Thông tin tham chiếu hồ sơ gốc / thông báo gốc -->
-                    <div style="margin-bottom: 25px;">
+                    <div id="disposalReferenceSection" style="margin-bottom: 25px;">
                         <h3 class="section-title"><i class="fa-solid fa-link"
                                 style="color: var(--secondary-color);"></i> Thông tin tham chiếu hồ sơ gốc</h3>
                         <div class="grid-2-cols">
+                            <div class="form-group" id="disposalAssetSourceEditRow">
+                                <label class="form-label">Nguồn tài sản thông báo xử lý</label>
+                                <input type="text" class="form-control" id="disposalAssetSourceDisplay" disabled
+                                    style="background-color: #F1F5F9;">
+                            </div>
                             <div class="form-group">
                                 <label class="form-label">Trường hợp đăng ký</label>
                                 <input type="text" class="form-control" id="disposalCaseType" disabled
@@ -4647,7 +4756,7 @@
                                 <input type="text" class="form-control" id="disposalRefNoticeNum" disabled
                                     style="background-color: #F1F5F9;">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="disposalRefRegNumRow">
                                 <label class="form-label">Số đăng ký lần đầu</label>
                                 <input type="text" class="form-control" id="disposalRefRegNum" disabled
                                     style="background-color: #F1F5F9;">
@@ -4805,24 +4914,14 @@
                                 style="color: var(--secondary-color);"></i> Lý do xóa thông báo</h3>
                         <div class="grid-2-cols">
                             <div class="form-group">
-                                <label class="form-label">Lý do xóa thông báo <span
-                                        class="required-mark">*</span></label>
-                                <select class="form-select" id="disposalDeleteReason">
-                                    <option value="" disabled selected>-- Vui lòng chọn lý do --</option>
-                                    <option value="Các bên thỏa thuận không xử lý tài sản bảo đảm.">Các bên thỏa thuận
-                                        không xử lý tài sản bảo đảm.</option>
-                                    <option value="Nghĩa vụ được bảo đảm đã hoàn thành.">Nghĩa vụ được bảo đảm đã hoàn
-                                        thành.</option>
-                                    <option value="Bên bảo đảm đã thực hiện xong nghĩa vụ để nhận lại tài sản.">Bên bảo
-                                        đảm đã thực hiện xong nghĩa vụ để nhận lại tài sản.</option>
-                                    <option value="Lý do khác.">Lý do khác.</option>
-                                </select>
+                                <label class="form-label">Lý do xóa thông báo</label>
+                                <textarea class="form-control" id="disposalDeleteReason" rows="3"
+                                    placeholder="Nhập lý do xóa thông báo nếu có..."></textarea>
                                 <span class="error-message text-danger hidden" id="err-disposalDeleteReason"
                                     style="font-size: 12px; margin-top: 4px; display: block;"></span>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Văn bản chứng minh đính kèm (pdf) <span
-                                        class="required-mark">*</span></label>
+                                <label class="form-label">Văn bản chứng minh đính kèm (pdf)</label>
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <label for="disposalDeleteFile" class="btn btn-outline-primary"
                                         style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 6px 12px; font-size: 13px;">
@@ -4849,39 +4948,60 @@
                         </div>
                     </div>
 
-                    <!-- Khối: Thông tin xử lý tài sản (Ẩn khi xóa thông báo) -->
-                    <div style="margin-bottom: 25px;" id="disposalStandardFields" class="hidden">
-                        <h3 class="section-title"><i class="fa-solid fa-circle-question"
-                                style="color: var(--secondary-color);"></i> Thông tin xử lý tài sản</h3>
-                        <div class="form-group">
-                            <label class="form-label">Lý do xử lý <span class="required-mark">*</span></label>
-                            <textarea class="form-control" id="disposalReason" rows="3"
-                                placeholder="Nhập trực tiếp lý do xử lý tài sản bảo đảm..."></textarea>
-                            <span class="error-message text-danger hidden" id="err-disposalReason"
-                                style="font-size: 12px; margin-top: 4px; display: block;"></span>
-                        </div>
-                        <div class="grid-2-cols">
-                            <div class="form-group">
-                                <label class="form-label">Thời gian xử lý <span class="required-mark">*</span></label>
-                                <input type="text" class="form-control" id="disposalDate" placeholder="dd/mm/yyyy"
-                                    oninput="formatDatePickerInput(this)">
-                                <span class="error-message text-danger hidden" id="err-disposalDate"
-                                    style="font-size: 12px; margin-top: 4px; display: block;"></span>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Địa điểm xử lý <span class="required-mark">*</span></label>
-                                <input type="text" class="form-control" id="disposalLocation"
-                                    placeholder="Địa điểm dự kiến tiến hành xử lý tài sản...">
-                                <span class="error-message text-danger hidden" id="err-disposalLocation"
-                                    style="font-size: 12px; margin-top: 4px; display: block;"></span>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Khối: Danh sách tài sản xử lý (Sử dụng cho cả 3 chế độ) -->
                     <div class="form-group" id="disposalAssetsGridGroup" style="margin-bottom: 25px;">
                         <h3 id="disposalAssetsLabel" class="section-title"><i class="fa-solid fa-boxes-stacked"
                                 style="color: var(--secondary-color);"></i> Danh sách tài sản xử lý</h3>
+                        <div id="disposalProcessingModePanel" class="disposal-processing-mode-panel hidden">
+                            <label class="form-label" style="margin-bottom: 0;">Cách nhập thông tin xử lý tài sản <span
+                                    class="required-mark">*</span></label>
+                            <div class="disposal-processing-mode-options">
+                                <label class="disposal-processing-mode-option">
+                                    <input type="radio" name="disposalProcessingMode" value="common" checked
+                                        onchange="toggleDisposalProcessingMode()">
+                                    <span>
+                                        <span class="disposal-processing-mode-title">Áp dụng chung cho tất cả tài sản được chọn</span>
+                                        <span class="disposal-processing-mode-desc">Nhập một bộ thông tin xử lý dùng chung cho toàn bộ các loại tài sản đã tích chọn.</span>
+                                    </span>
+                                </label>
+                                <label class="disposal-processing-mode-option">
+                                    <input type="radio" name="disposalProcessingMode" value="byType"
+                                        onchange="toggleDisposalProcessingMode()">
+                                    <span>
+                                        <span class="disposal-processing-mode-title">Nhập riêng theo từng Loại tài sản xử lý</span>
+                                        <span class="disposal-processing-mode-desc">Mỗi loại tài sản được chọn hiển thị một khối Lý do, Thời gian, Địa điểm xử lý riêng.</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="disposalStandardFields" class="disposal-processing-common-block hidden">
+                            <h4 class="disposal-asset-table-title">Thông tin xử lý tài sản chung</h4>
+                            <div class="form-group">
+                                <label class="form-label">Lý do xử lý <span class="required-mark">*</span></label>
+                                <textarea class="form-control" id="disposalReason" rows="3"
+                                    placeholder="Nhập trực tiếp lý do xử lý tài sản bảo đảm..."
+                                    oninput="syncDisposalProcessingFields(this)"></textarea>
+                                <span class="error-message text-danger hidden" id="err-disposalReason"
+                                    style="font-size: 12px; margin-top: 4px; display: block;"></span>
+                            </div>
+                            <div class="grid-2-cols">
+                                <div class="form-group">
+                                    <label class="form-label">Thời gian xử lý <span class="required-mark">*</span></label>
+                                    <input type="text" class="form-control" id="disposalDate" placeholder="dd/mm/yyyy"
+                                        oninput="formatDatePickerInput(this); syncDisposalProcessingFields(this)">
+                                    <span class="error-message text-danger hidden" id="err-disposalDate"
+                                        style="font-size: 12px; margin-top: 4px; display: block;"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Địa điểm xử lý <span class="required-mark">*</span></label>
+                                    <input type="text" class="form-control" id="disposalLocation"
+                                        placeholder="Địa điểm dự kiến tiến hành xử lý tài sản..."
+                                        oninput="syncDisposalProcessingFields(this)">
+                                    <span class="error-message text-danger hidden" id="err-disposalLocation"
+                                        style="font-size: 12px; margin-top: 4px; display: block;"></span>
+                                </div>
+                            </div>
+                        </div>
                         <div id="disposalAssetsTableBody">
                             <!-- Populated dynamically by JS -->
                         </div>
@@ -4915,7 +5035,7 @@
                     </div>
 
                     <!-- Bảng điều khiển nút -->
-                    <div
+                    <div id="disposalFormActions"
                         style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border-color); padding-top:15px;">
                         <button class="btn btn-outline-primary" onclick="backToDisposalSearch()">Quay lại</button>
                         <button class="btn btn-warning" id="btnDisposalDraft" onclick="saveDisposalDraft()">Lưu
@@ -4961,6 +5081,10 @@
                         <h3 class="section-title"><i class="fa-solid fa-link"
                                 style="color: var(--secondary-color);"></i> Thông tin tham chiếu hồ sơ gốc</h3>
                         <div class="grid-2-cols">
+                            <div id="reviewAssetSourceRow">
+                                <span style="color: var(--text-muted);">Nguồn tài sản thông báo xử lý:</span>
+                                <strong id="lblReviewAssetSource">N/A</strong>
+                            </div>
                             <div>
                                 <span style="color: var(--text-muted);">Trường hợp đăng ký:</span>
                                 <strong id="lblReviewCaseType">N/A</strong>
@@ -4969,7 +5093,7 @@
                                 <span style="color: var(--text-muted);">Số thông báo xử lý lần đầu:</span>
                                 <strong id="lblReviewRefNoticeNum">N/A</strong>
                             </div>
-                            <div>
+                            <div id="reviewRefRegNumRow">
                                 <span style="color: var(--text-muted);">Số đăng ký lần đầu:</span>
                                 <strong id="lblReviewRefRegNum">N/A</strong>
                             </div>
@@ -5118,10 +5242,10 @@
                         </div>
                     </div>
 
-                    <!-- Khối: Thông tin xử lý tài sản (Ẩn khi xóa thông báo) -->
-                    <div class="review-block"
+                    <!-- Khối legacy: giữ để tương thích JS cũ, nội dung review hiện hiển thị trong từng nhóm tài sản -->
+                    <div class="review-block hidden"
                         style="margin-bottom: 20px; background-color: #F8FAFC; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color);"
-                        id="reviewStandardFields" class="hidden">
+                        id="reviewStandardFields">
                         <h3 class="section-title"><i class="fa-solid fa-circle-question"
                                 style="color: var(--secondary-color);"></i> Thông tin xử lý tài sản</h3>
                         <div class="disposal-readonly-line">
@@ -5328,11 +5452,14 @@
                             </div>
                         </div>
 
-                        <!-- Thông báo xử lý tài sản (lần đầu/thay đổi/xóa) không cấp Mã PIN mới - PIN chỉ cấp một lần khi Đăng ký mới (UC024). Khối này luôn ẩn (giữ id để tương thích JS). -->
-                        <div id="disposalResultPinContainer" style="display: none;">
-                            <div id="successDisposalPinRow" style="display:none;">
-                                <span id="successDisposalPin"></span>
+                        <div id="disposalResultPinContainer"
+                            style="display: none; margin: 16px auto; max-width: 450px; text-align: left; background: #fff7ed; padding: 14px 16px; border-radius: 6px; border: 1px solid #fed7aa; font-size: 14px; line-height: 1.6;">
+                            <div id="successDisposalPinRow" style="display:flex; justify-content:space-between; gap:16px;">
+                                <span style="color: var(--text-muted);">Mã PIN tra cứu thông báo:</span>
+                                <strong id="successDisposalPin" style="color:#c2410c;"></strong>
                             </div>
+                            <div style="font-size:12.5px; color:#9a3412; margin-top:6px;">Mã PIN chỉ phát sinh khi thông
+                                báo xử lý tài sản lần đầu được lập cho tài sản chưa đăng ký BPBĐ.</div>
                         </div>
 
                         <div style="margin-top: 32px; display: flex; justify-content: center; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 24px;"
@@ -5827,6 +5954,35 @@
             <div class="app-screen" id="screen-view-detail-history" style="padding: 0;">
                 <iframe id="iframeViewDetailHistory" class="module-iframe" src=""
                     title="Xem chi tiết lịch sử thay đổi"></iframe>
+            </div>
+
+            <!-- SCREEN: Xem chi tiết thông báo xử lý tài sản độc lập -->
+            <div class="app-screen" id="screen-standalone-disposal-detail">
+                <div class="breadcrumb">
+                    <a href="#" onclick="showScreen('home')">Trang chủ</a>
+                    <span>/</span>
+                    <a href="#" onclick="showScreen('registered-requests')">Quản lý yêu cầu đã đăng ký</a>
+                    <span>/</span>
+                    <span>Chi tiết thông báo xử lý tài sản</span>
+                </div>
+
+                <div class="card-section" style="max-width: 1180px; margin: 0 auto;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:18px;">
+                        <div>
+                            <h2 class="section-title" style="margin-bottom:6px;">
+                                <i class="fa-solid fa-bullhorn"></i> Chi tiết thông báo xử lý tài sản
+                            </h2>
+                            <div style="color:var(--text-muted); font-size:13px;">
+                                Thông báo xử lý tài sản lần đầu độc lập, không gắn với hồ sơ BPBĐ đã đăng ký.
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-primary" onclick="showScreen('registered-requests')">
+                            <i class="fa-solid fa-arrow-left"></i> Quay lại
+                        </button>
+                    </div>
+
+                    <div id="standaloneDisposalDetailContent"></div>
+                </div>
             </div>
 
             <!-- SCREEN: Theo dõi & Tạo yêu cầu hỗ trợ (UC266 & UC267) -->
@@ -7241,6 +7397,7 @@
 
         // Active Original Record in Disposal screen
         let activeRecordInDisposal = null;
+        let disposalAssetSource = 'registered'; // 'registered' | 'unregistered'
         let selectedCopyRecords = [];
 
         // Date input formatting helper
@@ -7731,6 +7888,11 @@
                     startDetailHistoryAutoResize(iframe);
                     iframe.src = customUrl;
                 }
+            }
+
+            if (screenId === 'standalone-disposal-detail') {
+                const sideMenuReg = document.getElementById('sideMenuRegisteredRequests');
+                if (sideMenuReg) sideMenuReg.classList.add('active');
             }
 
             if (screenId === 'registered-requests') {
@@ -10500,6 +10662,112 @@
         let disposalMode = 'first'; // 'first', 'change', 'delete'
         let activeNoticeRecordInDisposal = null; // notice record (for change/delete notice mode)
 
+        function getSelectedDisposalAssetSource() {
+            const selected = document.querySelector('input[name="disposalAssetSource"]:checked');
+            return selected?.value === 'unregistered' ? 'unregistered' : 'registered';
+        }
+
+        function isUnregisteredDisposalFirst() {
+            return disposalMode === 'first' && disposalAssetSource === 'unregistered';
+        }
+
+        function generateDisposalPin() {
+            return String(Math.floor(100000 + Math.random() * 900000));
+        }
+
+        function toggleDisposalSourceFields() {
+            const type = document.getElementById('disposalSearchType')?.value || 'Thông báo lần đầu';
+            const sourceGroup = document.getElementById('disposalAssetSourceGroup');
+            const regGroup = document.getElementById('disposalSearchRegNumGroup');
+            const pinGroup = document.getElementById('disposalSearchPinGroup');
+            const hint = document.getElementById('disposalSearchHint');
+            const firstNotice = type === 'Thông báo lần đầu';
+            const source = firstNotice ? getSelectedDisposalAssetSource() : 'registered';
+
+            if (sourceGroup) sourceGroup.classList.toggle('hidden', !firstNotice);
+            if (regGroup) regGroup.classList.toggle('hidden', firstNotice && source === 'unregistered');
+            if (pinGroup) pinGroup.classList.toggle('hidden', firstNotice && source === 'unregistered');
+            if (hint) {
+                hint.innerHTML = firstNotice && source === 'unregistered'
+                    ? 'Nhập thông báo xử lý tài sản bảo đảm lần đầu cho tài sản chưa đăng ký BPBĐ. Khối Người yêu cầu đăng ký chỉ gồm <strong>Bên nhận bảo đảm</strong> hoặc <strong>Chi nhánh của pháp nhân, người đại diện</strong>.'
+                    : 'Nhập Số đăng ký lần đầu và mã PIN để tra cứu hồ sơ/thông báo đang có hiệu lực. Gợi ý test: <strong>1505156435</strong> / PIN <strong>5635</strong> hoặc <strong>1505156438</strong> / PIN <strong>5638</strong>.';
+            }
+
+            clearError('disposalSearchRegNum');
+            clearError('disposalSearchPin');
+            clearError('disposalSearchType');
+        }
+
+        function setDisposalControlEditMode(enabled) {
+            const editableIds = [
+                'disposalMeasureType',
+                'disposalContractType',
+                'disposalContractNum',
+                'disposalContractDate',
+                'disposalLoanValue',
+                'disposalBusinessScale',
+                'disposalFemaleLeader'
+            ];
+            editableIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.disabled = !enabled;
+                if (el.type !== 'checkbox') el.style.backgroundColor = enabled ? '#FFFFFF' : '#F1F5F9';
+            });
+        }
+
+        function createStandaloneDisposalRecord() {
+            return {
+                regNum: 'TBXL-TMP',
+                registrationTime: '',
+                effectTime: '',
+                contractNum: '',
+                contractDate: '',
+                loanValue: '',
+                businessScale: '',
+                femaleLeader: false,
+                debtorType: 'Tổ chức trong nước',
+                debtorDoc: '0109998888',
+                debtorName: 'Công ty TNHH Minh An',
+                debtorAddress: 'Số 18 phố Duy Tân, phường Dịch Vọng Hậu, Hà Nội',
+                securedName: orgDetails?.name || 'Ngân hàng TMCP FPT',
+                securedAddress: orgDetails?.address || 'Tòa nhà FPT, quận Cầu Giấy, Hà Nội',
+                assetDetails: [{
+                    id: 'new-1',
+                    type: 'Các động sản khác',
+                    name: 'Dây chuyền máy móc thiết bị sản xuất',
+                    desc: 'Dây chuyền máy móc thiết bị phục vụ sản xuất theo hóa đơn, chứng từ kèm theo.',
+                    chassis: 'N/A',
+                    plate: 'N/A'
+                }]
+            };
+        }
+
+        function collectStandaloneDisposalFormData() {
+            if (!isUnregisteredDisposalFirst() || !activeRecordInDisposal) return;
+
+            const val = id => document.getElementById(id)?.value?.trim() || '';
+            activeRecordInDisposal.debtorType = val('disposalNewSecuringType') || 'Tổ chức trong nước';
+            activeRecordInDisposal.debtorDoc = val('disposalNewSecuringDoc');
+            activeRecordInDisposal.debtorName = val('disposalNewSecuringName');
+            activeRecordInDisposal.debtorAddress = val('disposalNewSecuringAddress');
+            activeRecordInDisposal.securedName = val('disposalNewSecuredName');
+            activeRecordInDisposal.securedAddress = val('disposalNewSecuredAddress');
+            activeRecordInDisposal.contractNum = val('disposalContractNum');
+            activeRecordInDisposal.contractDate = val('disposalContractDate');
+            activeRecordInDisposal.loanValue = val('disposalLoanValue');
+            activeRecordInDisposal.businessScale = val('disposalBusinessScale');
+            activeRecordInDisposal.femaleLeader = Boolean(document.getElementById('disposalFemaleLeader')?.checked);
+            activeRecordInDisposal.assetDetails = [{
+                id: 'new-1',
+                type: val('disposalNewAssetType') || 'Các động sản khác',
+                name: val('disposalNewAssetName') || 'Tài sản nhập mới',
+                desc: val('disposalNewAssetDesc') || 'Chi tiết tài sản nhập mới theo UC024.',
+                chassis: val('disposalNewAssetChassis') || 'N/A',
+                plate: val('disposalNewAssetPlate') || 'N/A'
+            }];
+        }
+
         function getSelectedDisposalAgency() {
             const select = document.getElementById('disposalOrg');
             if (!select) return 'Trung tâm Đăng ký giao dịch, tài sản tại TP. Hà Nội';
@@ -10550,11 +10818,30 @@
                 history: [
                     { seq: 1, changeNum: '1505156438-TBXL', date: '26/05/2026 10:00', actor: 'taikhoantestfpt@gmail.com', desc: 'Đăng ký thông báo xử lý lần đầu' }
                 ]
+            },
+            'TBXL-2026-000901': {
+                noticeNum: 'TBXL-2026-000901',
+                regNum: null,
+                isStandalone: true,
+                pin: '',
+                date: '24/04/2026',
+                effectiveTime: '24/04/2026 10:05:12',
+                location: 'Kho thiết bị KCN Quang Minh, huyện Mê Linh, Hà Nội',
+                reason: 'Bên bảo đảm vi phạm nghĩa vụ thanh toán theo thỏa thuận bảo đảm ngoài hệ thống đăng ký BPBĐ.',
+                file: 'thong_bao_xu_ly_tai_san_doc_lap_000901.pdf',
+                assets: ['new-1'],
+                history: [
+                    { seq: 1, changeNum: 'TBXL-2026-000901', date: '24/04/2026 09:40', actor: 'le.thu.huong@fptbank.com', desc: 'Đăng ký thông báo xử lý lần đầu cho tài sản chưa đăng ký BPBĐ' }
+                ]
             }
         };
 
         // Helper to retrieve structured assets for a registration number
         function getAssetsForRegistration(regNum) {
+            if (activeRecordInDisposal?.regNum === regNum && activeRecordInDisposal?.assetDetails?.length) {
+                return activeRecordInDisposal.assetDetails;
+            }
+
             const record = simulatedDatabase[regNum] || ensureRegisteredDisposalRecord(regNum);
             if (!record) return [];
 
@@ -10667,10 +10954,31 @@
 
             if (!securingTbody || !securedTbody) return;
 
-            let typeText = "Cá nhân trong nước";
-            if (record.debtorDoc && record.debtorDoc.length <= 10) {
-                typeText = "Tổ chức trong nước";
+            if (isUnregisteredDisposalFirst()) {
+                securingTbody.innerHTML = `
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td>
+                            <select class="form-select" id="disposalNewSecuringType" style="font-size:12.5px;">
+                                <option value="Tổ chức trong nước" ${record.debtorType === 'Tổ chức trong nước' ? 'selected' : ''}>Tổ chức trong nước</option>
+                                <option value="Cá nhân trong nước" ${record.debtorType === 'Cá nhân trong nước' ? 'selected' : ''}>Cá nhân trong nước</option>
+                            </select>
+                        </td>
+                        <td><input class="form-control" id="disposalNewSecuringDoc" value="${escapeDisposalHtml(record.debtorDoc || '')}" placeholder="Số giấy tờ/MST" style="font-size:12.5px;"></td>
+                        <td><input class="form-control" id="disposalNewSecuringName" value="${escapeDisposalHtml(record.debtorName || '')}" placeholder="Tên bên bảo đảm" style="font-size:12.5px;"></td>
+                        <td><input class="form-control" id="disposalNewSecuringAddress" value="${escapeDisposalHtml(record.debtorAddress || '')}" placeholder="Địa chỉ" style="font-size:12.5px;"></td>
+                    </tr>
+                `;
+                securedTbody.innerHTML = `
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td><input class="form-control" id="disposalNewSecuredName" value="${escapeDisposalHtml(record.securedName || '')}" placeholder="Tên bên nhận bảo đảm" style="font-size:12.5px;"></td>
+                        <td><input class="form-control" id="disposalNewSecuredAddress" value="${escapeDisposalHtml(record.securedAddress || '')}" placeholder="Địa chỉ" style="font-size:12.5px;"></td>
+                    </tr>
+                `;
             }
+
+            const typeText = record.debtorType || ((record.debtorDoc && record.debtorDoc.length <= 10) ? "Tổ chức trong nước" : "Cá nhân trong nước");
             const securingHtml = `
                 <tr>
                     <td style="text-align: center;">1</td>
@@ -10689,14 +10997,51 @@
                 </tr>
             `;
 
-            securingTbody.innerHTML = securingHtml;
-            securedTbody.innerHTML = securedHtml;
+            if (!isUnregisteredDisposalFirst()) {
+                securingTbody.innerHTML = securingHtml;
+                securedTbody.innerHTML = securedHtml;
+            }
             if (revSecuringTbody) revSecuringTbody.innerHTML = securingHtml;
             if (revSecuredTbody) revSecuredTbody.innerHTML = securedHtml;
         }
 
+        function setDisposalStandaloneUc024Mode(enabled) {
+            const wrapper = document.getElementById('disposalStandaloneUc024Wrapper');
+            const frame = document.getElementById('disposalStandaloneUc024Frame');
+            const legacySectionIds = [
+                'disposalRequestorSection',
+                'disposalReferenceSection',
+                'disposalSecuringPartiesSection',
+                'disposalSecuredPartiesSection',
+                'disposalSecuredDetailsSection',
+                'disposalDeleteSection',
+                'disposalAssetsGridGroup',
+                'disposalHistorySection',
+                'disposalFormActions'
+            ];
+
+            if (wrapper) wrapper.classList.toggle('hidden', !enabled);
+            legacySectionIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.toggle('hidden', enabled);
+            });
+
+            if (!frame) return;
+            if (enabled) {
+                const src = 'UC024/dang_ky_bpbd_main.html?mode=disposalStandalone';
+                if (!frame.src || !frame.src.includes(src)) {
+                    frame.src = `${src}&t=${Date.now()}`;
+                }
+            } else {
+                frame.removeAttribute('src');
+            }
+        }
+
         function openAssetDisposalInMode(regNumOrNoticeNum, mode) {
             disposalMode = mode;
+            if (mode !== 'first' || regNumOrNoticeNum) {
+                disposalAssetSource = 'registered';
+            }
             showScreen('asset-disposal');
             clearAllErrors('screen-asset-disposal');
 
@@ -10705,6 +11050,7 @@
             const alertBox = document.getElementById('disposalAlertBox');
 
             const refNoticeRow = document.getElementById('disposalRefNoticeRow');
+            const refRegNumRow = document.getElementById('disposalRefRegNumRow');
             const refNoticeTimeRow = document.getElementById('disposalRefNoticeTimeRow');
             const refEffectiveTimeRow = document.getElementById('disposalRefEffectiveTimeRow');
             const viewLinkContainer = document.getElementById('disposalViewOriginalLinkContainer');
@@ -10725,6 +11071,7 @@
             document.getElementById('disposalDate').value = '';
             document.getElementById('disposalLocation').value = '';
             document.getElementById('disposalRefEffectiveTime').value = '';
+            setDisposalProcessingMode('common');
 
             document.getElementById('disposalDeleteReason').value = '';
             deleteDisposalUploadedFile('disposalDeleteFile', 'disposalDeleteFileNameDisplay', 'disposalDeleteFileActions');
@@ -10735,8 +11082,21 @@
             document.getElementById('disposalPhaseReview').classList.add('hidden');
             document.getElementById('disposalPhasePayment').classList.add('hidden');
             document.getElementById('disposalPhaseSuccess').classList.add('hidden');
+            setDisposalStandaloneUc024Mode(false);
 
             if (mode === 'first') {
+                if (isUnregisteredDisposalFirst()) {
+                    activeRecordInDisposal = null;
+                    activeNoticeRecordInDisposal = null;
+                    formTitle.innerText = "Đăng ký thông báo xử lý tài sản bảo đảm lần đầu";
+                    const activeRegNumEl = document.getElementById('disposalActiveRegNumText');
+                    if (activeRegNumEl) activeRegNumEl.innerText = 'Tài sản chưa đăng ký BPBĐ';
+                    alertText.innerHTML = `Nhập mới thông tin thông báo xử lý tài sản bảo đảm lần đầu cho <strong>tài sản chưa đăng ký BPBĐ</strong>. Màn nhập liệu sử dụng đúng cấu trúc Đăng ký mới BPBĐ, dữ liệu trống, giữ nguyên các thao tác nhập liệu và bổ sung khối Thông tin xử lý tài sản.`;
+                    alertBox.className = "alert-box info";
+                    setDisposalStandaloneUc024Mode(true);
+                    return;
+                }
+
                 const regNum = regNumOrNoticeNum;
                 const record = simulatedDatabase[regNum] || ensureRegisteredDisposalRecord(regNum);
                 if (!record) {
@@ -10754,13 +11114,15 @@
 
                 // Section II Reference fields
                 document.getElementById('disposalCaseType').value = "Thông báo xử lý tài sản bảo đảm lần đầu";
-                document.getElementById('disposalRefRegNum').value = regNum;
+                document.getElementById('disposalAssetSourceDisplay').value = 'Từ hồ sơ BPBĐ đã đăng ký';
+                document.getElementById('disposalRefRegNum').value = regNum || '';
                 document.getElementById('disposalRefNoticeTimeLabel').innerText = "Thời điểm đăng ký lần đầu";
                 document.getElementById('disposalRefNoticeTime').value = record.registrationTime || record.effectTime || '';
                 document.getElementById('disposalRefEffectiveTime').value = record.effectTime || '';
 
                 // Show/hide fields
                 refNoticeRow.classList.add('hidden');
+                if (refRegNumRow) refRegNumRow.classList.remove('hidden');
                 refNoticeTimeRow.classList.remove('hidden');
                 refEffectiveTimeRow.classList.remove('hidden');
                 viewLinkContainer.style.display = '';
@@ -10782,8 +11144,9 @@
                 document.getElementById('disposalBusinessScale').value = record.businessScale || 'Doanh nghiệp nhỏ';
                 document.getElementById('disposalFemaleLeader').checked = record.femaleLeader || false;
                 setDisposalAgency(record.receivingAgency || record.debtorAddress);
+                setDisposalControlEditMode(isUnregisteredDisposalFirst());
 
-                renderDisposalAssetsGrid(regNum, true);
+                renderDisposalAssetsGrid(regNum, true, [], { processingMode: 'common' });
             }
             else if (mode === 'change') {
                 const noticeNum = regNumOrNoticeNum;
@@ -10808,6 +11171,7 @@
 
                 const regNum = notice.regNum;
                 const record = simulatedDatabase[regNum] || { regNum: regNum, assets: 'Tài sản theo thông báo' };
+                if (notice.assetDetails?.length) record.assetDetails = notice.assetDetails;
                 activeRecordInDisposal = record;
 
                 formTitle.innerText = "Khai báo Thay đổi thông báo xử lý tài sản bảo đảm";
@@ -10826,6 +11190,7 @@
 
                 // Show/hide fields
                 refNoticeRow.classList.remove('hidden');
+                if (refRegNumRow) refRegNumRow.classList.remove('hidden');
                 refNoticeTimeRow.classList.remove('hidden'); // Show original notice time row in change mode (per user request)
                 refEffectiveTimeRow.classList.remove('hidden');
                 viewLinkContainer.style.display = '';
@@ -10847,13 +11212,18 @@
                 document.getElementById('disposalBusinessScale').value = record.businessScale || 'Doanh nghiệp nhỏ';
                 document.getElementById('disposalFemaleLeader').checked = record.femaleLeader || false;
                 setDisposalAgency(notice.receivingAgency || record.receivingAgency || record.debtorAddress);
+                document.getElementById('disposalAssetSourceDisplay').value = 'Từ thông báo xử lý tài sản đã đăng ký';
+                setDisposalControlEditMode(false);
 
                 // Prefill Section IV fields
                 document.getElementById('disposalReason').value = notice.reason;
                 document.getElementById('disposalDate').value = notice.date;
                 document.getElementById('disposalLocation').value = notice.location;
 
-                renderDisposalAssetsGrid(regNum, true, notice.assets);
+                renderDisposalAssetsGrid(regNum, true, notice.assets, {
+                    processingMode: notice.processingMode || 'common',
+                    processingValuesByKind: notice.processingByType || {}
+                });
                 renderDisposalNoticeHistory(noticeNum);
             }
             else if (mode === 'delete') {
@@ -10879,6 +11249,7 @@
 
                 const regNum = notice.regNum;
                 const record = simulatedDatabase[regNum] || { regNum: regNum, assets: 'Tài sản theo thông báo' };
+                if (notice.assetDetails?.length) record.assetDetails = notice.assetDetails;
                 activeRecordInDisposal = record;
 
                 formTitle.innerText = "Xóa đăng ký thông báo xử lý tài sản bảo đảm";
@@ -10897,6 +11268,7 @@
 
                 // Show/hide fields
                 refNoticeRow.classList.remove('hidden');
+                if (refRegNumRow) refRegNumRow.classList.remove('hidden');
                 refNoticeTimeRow.classList.remove('hidden');
                 refEffectiveTimeRow.classList.remove('hidden');
                 viewLinkContainer.style.display = 'none'; // Hide in Section II
@@ -10912,8 +11284,18 @@
                 document.getElementById('disposalReason').value = notice.reason;
                 document.getElementById('disposalDate').value = notice.date;
                 document.getElementById('disposalLocation').value = notice.location;
+                document.getElementById('disposalAssetSourceDisplay').value = 'Từ thông báo xử lý tài sản đã đăng ký';
+                setDisposalControlEditMode(false);
 
-                renderDisposalAssetsGrid(regNum, false, notice.assets);
+                renderDisposalAssetsGrid(regNum, false, notice.assets, {
+                    processingMode: notice.processingMode || 'common',
+                    processingValues: {
+                        reason: notice.reason,
+                        date: notice.date,
+                        location: notice.location
+                    },
+                    processingValuesByKind: notice.processingByType || {}
+                });
             }
 
             renderDisposalParties(activeRecordInDisposal);
@@ -10957,7 +11339,18 @@
             return `<input type="checkbox" name="disposalSelectAsset" value="${escapeDisposalHtml(asset.id)}" ${checked ? 'checked' : ''} onchange="updateDisposalMasterCheckbox(); updateDisposalProcessingBlocks();">`;
         }
 
-        function getDisposalProcessingValues() {
+        function getDisposalProcessingMode() {
+            const selected = document.querySelector('input[name="disposalProcessingMode"]:checked');
+            return selected?.value === 'byType' ? 'byType' : 'common';
+        }
+
+        function setDisposalProcessingMode(mode) {
+            const normalizedMode = mode === 'byType' ? 'byType' : 'common';
+            const radio = document.querySelector(`input[name="disposalProcessingMode"][value="${normalizedMode}"]`);
+            if (radio) radio.checked = true;
+        }
+
+        function getCommonDisposalProcessingValues() {
             return {
                 reason: document.getElementById('disposalReason')?.value || '',
                 date: document.getElementById('disposalDate')?.value || '',
@@ -10965,13 +11358,79 @@
             };
         }
 
-        function renderDisposalProcessingBlock(kind, readonly) {
-            const values = getDisposalProcessingValues();
+        function findDisposalProcessingBlock(kind) {
+            return Array.from(document.querySelectorAll('#disposalAssetsTableBody .disposal-processing-block'))
+                .find(block => block.dataset.processingKind === kind);
+        }
+
+        function getDisposalProcessingValues(kind, options = {}) {
+            if (kind && options.processingValuesByKind && options.processingValuesByKind[kind]) {
+                return options.processingValuesByKind[kind];
+            }
+            if (options.processingValues) return options.processingValues;
+
+            const mode = options.processingMode || getDisposalProcessingMode();
+            if (mode === 'byType' && kind) {
+                const block = findDisposalProcessingBlock(kind);
+                if (block) {
+                    return {
+                        reason: block.querySelector('[data-processing-field="reason"]')?.value || '',
+                        date: block.querySelector('[data-processing-field="date"]')?.value || '',
+                        location: block.querySelector('[data-processing-field="location"]')?.value || ''
+                    };
+                }
+            }
+
+            return getCommonDisposalProcessingValues();
+        }
+
+        function collectDisposalProcessingValuesByKind() {
+            const result = {};
+            document.querySelectorAll('#disposalAssetsTableBody .disposal-processing-block').forEach(block => {
+                const kind = block.dataset.processingKind;
+                if (!kind) return;
+                result[kind] = {
+                    reason: block.querySelector('[data-processing-field="reason"]')?.value || '',
+                    date: block.querySelector('[data-processing-field="date"]')?.value || '',
+                    location: block.querySelector('[data-processing-field="location"]')?.value || ''
+                };
+            });
+            return result;
+        }
+
+        function copyCommonProcessingValuesToEmptyTypeBlocks() {
+            const commonValues = getCommonDisposalProcessingValues();
+            document.querySelectorAll('#disposalAssetsTableBody .disposal-processing-block').forEach(block => {
+                block.querySelectorAll('.disposal-processing-input').forEach(input => {
+                    const field = input.dataset.processingField;
+                    if (field && !input.value) input.value = commonValues[field] || '';
+                });
+            });
+        }
+
+        function syncCommonProcessingValuesFromKind(kind) {
+            const values = getDisposalProcessingValues(kind, { processingMode: 'byType' });
+            const targetMap = {
+                reason: 'disposalReason',
+                date: 'disposalDate',
+                location: 'disposalLocation'
+            };
+            Object.keys(targetMap).forEach(field => {
+                const target = document.getElementById(targetMap[field]);
+                if (target) target.value = values[field] || '';
+            });
+        }
+
+        function renderDisposalProcessingBlock(kind, readonly, label, options = {}) {
+            const values = getDisposalProcessingValues(kind, options);
             const deleteReason = disposalMode === 'delete' ? (document.getElementById('disposalDeleteReason')?.value || '') : '';
+            const title = kind === 'common'
+                ? 'Thông tin xử lý tài sản chung'
+                : `Thông tin xử lý tài sản của ${label || getDisposalAssetTypeLabel(kind)}`;
             if (readonly) {
                 return `
                     <div class="disposal-processing-block" data-processing-kind="${escapeDisposalHtml(kind)}">
-                        <h4 class="disposal-asset-table-title" style="margin-top: 14px;">Thông tin xử lý tài sản</h4>
+                        <h4 class="disposal-asset-table-title">${escapeDisposalHtml(title)}</h4>
                         <div class="disposal-readonly-line">
                             <span class="disposal-readonly-label">Lý do xử lý:</span>
                             <span class="disposal-readonly-value">${escapeDisposalHtml(values.reason || 'N/A')}</span>
@@ -10996,7 +11455,7 @@
 
             return `
                 <div class="disposal-processing-block hidden" data-processing-kind="${escapeDisposalHtml(kind)}">
-                    <h4 class="disposal-asset-table-title" style="margin-top: 14px;">Thông tin xử lý tài sản</h4>
+                    <h4 class="disposal-asset-table-title">${escapeDisposalHtml(title)}</h4>
                     <div class="form-group">
                         <label class="form-label">Lý do xử lý <span class="required-mark">*</span></label>
                         <textarea class="form-control disposal-processing-input" data-processing-field="reason" rows="3"
@@ -11023,7 +11482,16 @@
 
         function syncDisposalProcessingFields(source) {
             const field = source?.dataset?.processingField;
-            if (!field) return;
+            if (!field) {
+                const commonIdMap = {
+                    disposalReason: 'reason',
+                    disposalDate: 'date',
+                    disposalLocation: 'location'
+                };
+                const commonField = commonIdMap[source?.id];
+                if (commonField) clearError(source.id);
+                return;
+            }
 
             const targetMap = {
                 reason: 'disposalReason',
@@ -11031,21 +11499,33 @@
                 location: 'disposalLocation'
             };
             const target = document.getElementById(targetMap[field]);
-            if (target) {
-                target.value = source.value;
-                clearError(target.id);
-            }
+            if (target) clearError(target.id);
+        }
 
-            document.querySelectorAll(`.disposal-processing-input[data-processing-field="${field}"]`).forEach(input => {
-                if (input !== source) input.value = source.value;
-            });
+        function toggleDisposalProcessingMode() {
+            clearError('disposalReason');
+            clearError('disposalDate');
+            clearError('disposalLocation');
+            setDisposalAssetsError('');
+            if (getDisposalProcessingMode() === 'byType') {
+                copyCommonProcessingValuesToEmptyTypeBlocks();
+            }
+            updateDisposalProcessingBlocks();
         }
 
         function updateDisposalProcessingBlocks() {
+            const mode = getDisposalProcessingMode();
+            const standardFields = document.getElementById('disposalStandardFields');
+            const hasSelectedAsset = Boolean(document.querySelector('input[name="disposalSelectAsset"]:checked'));
+
+            if (standardFields) {
+                standardFields.classList.toggle('hidden', disposalMode === 'delete' || mode !== 'common' || !hasSelectedAsset);
+            }
+
             document.querySelectorAll('#disposalAssetsTableBody .disposal-asset-type-group').forEach(group => {
                 const hasCheckedAsset = Boolean(group.querySelector('input[name="disposalSelectAsset"]:checked'));
                 group.querySelectorAll('.disposal-processing-block').forEach(block => {
-                    block.classList.toggle('hidden', !hasCheckedAsset);
+                    block.classList.toggle('hidden', disposalMode === 'delete' || mode !== 'byType' || !hasCheckedAsset);
                 });
             });
         }
@@ -11291,6 +11771,7 @@
             const selectable = Boolean(options.selectable);
             const readonly = Boolean(options.readonly);
             const selectedIds = Array.isArray(options.selectedIds) ? options.selectedIds : [];
+            const processingMode = options.processingMode || getDisposalProcessingMode();
             const displayAssets = readonly && selectedIds.length ? assets.filter(asset => selectedIds.includes(asset.id)) : assets;
 
             if (!displayAssets.length) {
@@ -11313,14 +11794,27 @@
                 group.items.push(asset);
             });
 
-            container.innerHTML = groups.map(group => `
-                <div class="disposal-asset-type-group">
+            const commonProcessingBlock = options.showProcessingBlock && readonly && processingMode === 'common'
+                ? renderDisposalProcessingBlock('common', true, 'chung', {
+                    processingValues: options.processingValues,
+                    processingMode
+                })
+                : '';
+
+            container.innerHTML = commonProcessingBlock + groups.map(group => `
+                <div class="disposal-asset-type-group" data-disposal-kind="${escapeDisposalHtml(group.kind)}">
                     <div class="disposal-asset-type-header">
                         <div class="disposal-asset-type-title">${escapeDisposalHtml(group.label)}</div>
                     </div>
                     <div class="disposal-asset-type-body">
                         ${renderDisposalAssetTable(group.kind, group.items, { selectable, selectedIds, readonly, searchable: Boolean(options.searchable) })}
-                        ${options.showProcessingBlock ? renderDisposalProcessingBlock(group.kind, readonly) : ''}
+                        ${options.showProcessingBlock && (processingMode === 'byType' || !readonly)
+                    ? renderDisposalProcessingBlock(group.kind, readonly, group.label, {
+                        processingMode,
+                        processingValuesByKind: options.processingValuesByKind,
+                        processingValues: options.processingValues
+                    })
+                    : ''}
                     </div>
                 </div>
             `).join('');
@@ -11330,18 +11824,97 @@
             }
         }
 
-        function renderDisposalAssetsGrid(regNum, selectable, selectedIds) {
+        function renderStandaloneDisposalAssetsInput(options = {}) {
+            const container = document.getElementById('disposalAssetsTableBody');
+            if (!container) return;
+
+            const record = activeRecordInDisposal || createStandaloneDisposalRecord();
+            const asset = (record.assetDetails && record.assetDetails[0]) || createStandaloneDisposalRecord().assetDetails[0];
+            const processingMode = options.processingMode || getDisposalProcessingMode();
+            setDisposalProcessingMode(processingMode);
+
+            container.innerHTML = `
+                <div class="disposal-asset-type-group" data-disposal-kind="other">
+                    <div class="disposal-asset-type-header">
+                        <div class="disposal-asset-type-title">Tài sản bảo đảm nhập mới theo cấu trúc UC024</div>
+                        <button type="button" class="btn btn-outline-primary" style="padding:5px 10px; font-size:12.5px;"
+                            onclick="showToast('Mockup đang mô phỏng thêm tài sản theo cấu trúc UC024.', 'info')">
+                            <i class="fa-solid fa-plus"></i> Thêm tài sản
+                        </button>
+                    </div>
+                    <div class="disposal-asset-type-body">
+                        <input type="checkbox" name="disposalSelectAsset" value="new-1" checked class="hidden">
+                        <div class="grid-2-cols">
+                            <div class="form-group">
+                                <label class="form-label">Loại tài sản</label>
+                                <select class="form-select" id="disposalNewAssetType">
+                                    <option value="Các động sản khác" ${asset.type === 'Các động sản khác' ? 'selected' : ''}>Các động sản khác</option>
+                                    <option value="Phương tiện giao thông cơ giới đường bộ có số khung" ${asset.type === 'Phương tiện giao thông cơ giới đường bộ có số khung' ? 'selected' : ''}>Phương tiện giao thông cơ giới đường bộ có số khung</option>
+                                    <option value="Quyền tài sản" ${asset.type === 'Quyền tài sản' ? 'selected' : ''}>Quyền tài sản</option>
+                                    <option value="Hàng hóa luân chuyển, kho hàng" ${asset.type === 'Hàng hóa luân chuyển, kho hàng' ? 'selected' : ''}>Hàng hóa luân chuyển / Kho hàng</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tên tài sản</label>
+                                <input class="form-control" id="disposalNewAssetName" value="${escapeDisposalHtml(asset.name || '')}" placeholder="Nhập tên tài sản...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mô tả tài sản</label>
+                            <textarea class="form-control" id="disposalNewAssetDesc" rows="3" placeholder="Mô tả chi tiết tài sản theo UC024...">${escapeDisposalHtml(asset.desc || '')}</textarea>
+                        </div>
+                        <div class="grid-2-cols">
+                            <div class="form-group">
+                                <label class="form-label">Số khung/Số đăng ký/Mã nhận diện</label>
+                                <input class="form-control" id="disposalNewAssetChassis" value="${escapeDisposalHtml(asset.chassis || '')}" placeholder="Nếu có...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Biển số/Thông tin bổ sung</label>
+                                <input class="form-control" id="disposalNewAssetPlate" value="${escapeDisposalHtml(asset.plate || '')}" placeholder="Nếu có...">
+                            </div>
+                        </div>
+                        ${renderDisposalProcessingBlock('other', false, 'Tài sản bảo đảm nhập mới', {
+                processingMode,
+                processingValuesByKind: options.processingValuesByKind,
+                processingValues: options.processingValues
+            })}
+                    </div>
+                </div>
+            `;
+
+            const label = document.getElementById('disposalAssetsLabel');
+            const help = document.getElementById('disposalAssetsHelp');
+            const modePanel = document.getElementById('disposalProcessingModePanel');
+            if (label) label.innerHTML = `Tài sản bảo đảm (nhập mới) <span class="required-mark">*</span>`;
+            if (help) help.innerText = 'Toàn bộ tài sản nhập mới mặc định thuộc phạm vi thông báo xử lý; không hiển thị cột tích chọn.';
+            if (modePanel) modePanel.classList.remove('hidden');
+            updateDisposalProcessingBlocks();
+        }
+
+        function renderDisposalAssetsGrid(regNum, selectable, selectedIds, options = {}) {
+            if (isUnregisteredDisposalFirst()) {
+                renderStandaloneDisposalAssetsInput(options);
+                return;
+            }
+
             const assets = getAssetsForRegistration(regNum);
+            const processingMode = options.processingMode || getDisposalProcessingMode();
+            setDisposalProcessingMode(processingMode);
             renderDisposalAssetsByType('disposalAssetsTableBody', assets, {
                 selectable,
                 selectedIds: Array.isArray(selectedIds) ? selectedIds : [],
                 readonly: !selectable,
                 searchable: true,
-                showProcessingBlock: true
+                showProcessingBlock: true,
+                processingMode,
+                processingValuesByKind: options.processingValuesByKind,
+                processingValues: options.processingValues
             });
 
             const label = document.getElementById('disposalAssetsLabel');
             const help = document.getElementById('disposalAssetsHelp');
+            const modePanel = document.getElementById('disposalProcessingModePanel');
+            if (modePanel) modePanel.classList.toggle('hidden', !selectable);
             if (selectable) {
                 label.innerHTML = `Danh sách tài sản xử lý <span class="required-mark">*</span>`;
                 help.innerText = "Tích chọn tài sản ngay tại từng nhóm loại tài sản để đưa vào danh sách thông báo xử lý tài sản bảo đảm.";
@@ -11349,6 +11922,7 @@
                 label.innerHTML = `Danh sách tài sản đang xử lý`;
                 help.innerText = "Xóa thông báo xử lý sẽ áp dụng giải chấp và mở khóa cho toàn bộ danh sách tài sản đang xử lý trên.";
             }
+            updateDisposalProcessingBlocks();
         }
 
         function toggleDisposalSelectAll(master) {
@@ -11358,6 +11932,7 @@
                     cb.checked = master.checked;
                 }
             });
+            updateDisposalProcessingBlocks();
         }
 
         function updateDisposalMasterCheckbox() {
@@ -11402,6 +11977,8 @@
                 checkBoxes.forEach((cb, idx) => {
                     cb.checked = (idx === 0);
                 });
+                setDisposalProcessingMode('common');
+                updateDisposalProcessingBlocks();
                 showToast(`Đã tải lại thông tin phiên bản thay đổi ${versionNum}!`, 'info');
             } else {
                 document.getElementById('disposalReason').value = notice.reason;
@@ -11412,6 +11989,8 @@
                 checkBoxes.forEach(cb => {
                     cb.checked = notice.assets.includes(cb.value);
                 });
+                setDisposalProcessingMode(notice.processingMode || 'common');
+                updateDisposalProcessingBlocks();
                 showToast(`Đã tải lại thông tin thông báo gốc!`, 'info');
             }
         }
@@ -11426,14 +12005,16 @@
             const reg = regInput.value.trim();
             const pin = pinInput.value.trim();
             const type = typeInput.value;
+            const source = type === 'Thông báo lần đầu' ? getSelectedDisposalAssetSource() : 'registered';
+            const requiresLookup = !(type === 'Thông báo lần đầu' && source === 'unregistered');
 
             let hasError = false;
 
-            if (!reg) {
+            if (requiresLookup && !reg) {
                 highlightError('disposalSearchRegNum', 'Trường này bắt buộc nhập');
                 hasError = true;
             }
-            if (!pin) {
+            if (requiresLookup && !pin) {
                 highlightError('disposalSearchPin', 'Trường này bắt buộc nhập');
                 hasError = true;
             }
@@ -11447,9 +12028,21 @@
                 return;
             }
 
+            disposalAssetSource = source;
+
+            if (!requiresLookup) {
+                openAssetDisposalInMode('', 'first');
+                return;
+            }
+
             // TH2: Check if record exists and PIN matches
             const record = simulatedDatabase[reg];
-            if (!record || record.pin !== pin) {
+            const directNotice = simulatedNoticesDatabase[reg];
+            const linkedNotice = simulatedNoticesDatabase[reg + '-TBXL'];
+            const noticeByInput = directNotice || linkedNotice;
+            const pinMatchesRecord = record && record.pin === pin;
+            const pinMatchesNotice = noticeByInput && (!noticeByInput.pin || noticeByInput.pin === pin);
+            if (!pinMatchesRecord && !pinMatchesNotice) {
                 showToast('Số đăng ký lần đầu hoặc Số PIN không chính xác. Vui lòng kiểm tra lại.', 'error');
                 return;
             }
@@ -11473,7 +12066,8 @@
             }
 
             // TH6: Quy tắc theo loại thông báo chọn
-            const hasNotice = simulatedNoticesDatabase[reg + '-TBXL'] && simulatedNoticesDatabase[reg + '-TBXL'].status !== 'Đã xóa';
+            const activeNoticeNum = directNotice ? reg : (reg + '-TBXL');
+            const hasNotice = simulatedNoticesDatabase[activeNoticeNum] && simulatedNoticesDatabase[activeNoticeNum].status !== 'Đã xóa';
 
             if (type === 'Thông báo lần đầu') {
                 if (hasNotice) {
@@ -11486,14 +12080,14 @@
                     showToast('Hồ sơ gốc chưa được đăng ký thông báo xử lý tài sản bảo đảm lần đầu. Không thể thực hiện đăng ký thay đổi.', 'error');
                     return;
                 }
-                openAssetDisposalInMode(reg + '-TBXL', 'change');
+                openAssetDisposalInMode(activeNoticeNum, 'change');
                 document.getElementById('disposalCaseType').value = "Thay đổi thông báo xử lý tài sản bảo đảm";
             } else if (type === 'Xóa Thông báo') {
                 if (!hasNotice) {
                     showToast('Hồ sơ gốc chưa được đăng ký thông báo xử lý tài sản bảo đảm lần đầu. Không thể thực hiện xóa thông báo.', 'error');
                     return;
                 }
-                openAssetDisposalInMode(reg + '-TBXL', 'delete');
+                openAssetDisposalInMode(activeNoticeNum, 'delete');
                 document.getElementById('disposalCaseType').value = "Xóa đăng ký thông báo xử lý tài sản bảo đảm";
             }
         }
@@ -11518,8 +12112,68 @@
             showToast('Lưu nháp hồ sơ thành công!', 'success');
         }
 
+        function getDisposalDateValidationMessage(date) {
+            if (!date) return 'Trường này bắt buộc nhập';
+            const parts = date.split('/');
+            if (parts.length !== 3) return 'Định dạng ngày không hợp lệ (dd/mm/yyyy)';
+
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const year = parseInt(parts[2], 10);
+            const inputDate = new Date(year, month, day);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (isNaN(inputDate.getTime()) || inputDate < today) {
+                return 'Thời gian xử lý phải lớn hơn hoặc bằng ngày hiện tại';
+            }
+            return '';
+        }
+
+        function getSelectedDisposalProcessingKinds() {
+            const kinds = [];
+            document.querySelectorAll('#disposalAssetsTableBody .disposal-asset-type-group').forEach(group => {
+                const hasCheckedAsset = Boolean(group.querySelector('input[name="disposalSelectAsset"]:checked'));
+                const kind = group.dataset.disposalKind;
+                if (hasCheckedAsset && kind && !kinds.includes(kind)) kinds.push(kind);
+            });
+            return kinds;
+        }
+
+        function setDisposalAssetsError(message) {
+            const errorEl = document.getElementById('err-disposalAssets');
+            if (errorEl) {
+                errorEl.innerText = message;
+                errorEl.classList.toggle('hidden', !message);
+            }
+        }
+
+        function validateDisposalProcessingByType() {
+            const selectedKinds = getSelectedDisposalProcessingKinds();
+            const invalidLabels = [];
+
+            selectedKinds.forEach(kind => {
+                const group = document.querySelector(`#disposalAssetsTableBody .disposal-asset-type-group[data-disposal-kind="${kind}"]`);
+                const label = group?.querySelector('.disposal-asset-type-title')?.innerText || getDisposalAssetTypeLabel(kind);
+                const values = getDisposalProcessingValues(kind, { processingMode: 'byType' });
+                const dateMessage = getDisposalDateValidationMessage(values.date.trim());
+                if (!values.reason.trim() || dateMessage || !values.location.trim()) {
+                    invalidLabels.push(label);
+                }
+            });
+
+            if (invalidLabels.length) {
+                setDisposalAssetsError(`Vui lòng nhập đầy đủ Lý do xử lý, Thời gian xử lý, Địa điểm xử lý cho: ${invalidLabels.join('; ')}`);
+                return false;
+            }
+
+            setDisposalAssetsError('');
+            return true;
+        }
+
         function goToDisposalReview() {
             clearAllErrors('screen-asset-disposal');
+            setDisposalAssetsError('');
 
             const requestor = document.getElementById('disposalRequestor').value;
             const reqFileVal = document.getElementById('disposalRequestorFile').value;
@@ -11538,64 +12192,56 @@
                 hasError = true;
             }
 
+            if (isUnregisteredDisposalFirst()) {
+                collectStandaloneDisposalFormData();
+                renderDisposalParties(activeRecordInDisposal);
+                const recordDraft = activeRecordInDisposal || {};
+                const assetDraft = recordDraft.assetDetails?.[0] || {};
+                if (!recordDraft.debtorName || !recordDraft.securedName || !assetDraft.name) {
+                    showToast('Vui lòng nhập đầy đủ Bên bảo đảm, Bên nhận bảo đảm và thông tin tài sản.', 'error');
+                    hasError = true;
+                }
+            }
+
+            const checkedAssets = [];
+            const checkBoxes = document.querySelectorAll('input[name="disposalSelectAsset"]:checked');
+            checkBoxes.forEach(cb => {
+                checkedAssets.push(cb.value);
+            });
+
             // 3. Validation based on mode
             if (disposalMode === 'delete') {
-                const deleteReason = document.getElementById('disposalDeleteReason').value;
-                const deleteFile = document.getElementById('disposalDeleteFile').value;
-
-                if (!deleteReason) {
-                    highlightError('disposalDeleteReason', 'Trường này bắt buộc nhập');
-                    hasError = true;
-                }
-                if (!deleteFile) {
-                    highlightError('disposalDeleteFile', 'Vui lòng đính kèm văn bản chứng minh.');
-                    hasError = true;
-                }
+                clearError('disposalDeleteReason');
+                clearError('disposalDeleteFile');
             } else {
-                const reason = document.getElementById('disposalReason').value.trim();
-                const date = document.getElementById('disposalDate').value.trim();
-                const location = document.getElementById('disposalLocation').value.trim();
-
-                if (!reason) {
-                    highlightError('disposalReason', 'Trường này bắt buộc nhập');
-                    hasError = true;
-                }
-                if (!date) {
-                    highlightError('disposalDate', 'Trường này bắt buộc nhập');
-                    hasError = true;
-                } else {
-                    const parts = date.split('/');
-                    if (parts.length === 3) {
-                        const day = parseInt(parts[0], 10);
-                        const month = parseInt(parts[1], 10) - 1;
-                        const year = parseInt(parts[2], 10);
-                        const inputDate = new Date(year, month, day);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        if (isNaN(inputDate.getTime()) || inputDate < today) {
-                            highlightError('disposalDate', 'Thời gian xử lý phải lớn hơn hoặc bằng ngày hiện tại');
-                            hasError = true;
-                        }
-                    } else {
-                        highlightError('disposalDate', 'Định dạng ngày không hợp lệ (dd/mm/yyyy)');
-                        hasError = true;
-                    }
-                }
-                if (!location) {
-                    highlightError('disposalLocation', 'Trường này bắt buộc nhập');
-                    hasError = true;
-                }
-
-                const checkedAssets = [];
-                const checkBoxes = document.querySelectorAll('input[name="disposalSelectAsset"]:checked');
-                checkBoxes.forEach(cb => {
-                    checkedAssets.push(cb.value);
-                });
+                const processingMode = getDisposalProcessingMode();
 
                 if (checkedAssets.length === 0) {
                     showToast('Vui lòng tích chọn ít nhất một tài sản để thực hiện thông báo xử lý.', 'error');
-                    highlightError('disposalAssetsTableBody', 'Vui lòng tích chọn ít nhất một tài sản');
+                    setDisposalAssetsError('Vui lòng tích chọn ít nhất một tài sản');
                     hasError = true;
+                } else if (processingMode === 'common') {
+                    const reason = document.getElementById('disposalReason').value.trim();
+                    const date = document.getElementById('disposalDate').value.trim();
+                    const location = document.getElementById('disposalLocation').value.trim();
+                    const dateMessage = getDisposalDateValidationMessage(date);
+
+                    if (!reason) {
+                        highlightError('disposalReason', 'Trường này bắt buộc nhập');
+                        hasError = true;
+                    }
+                    if (dateMessage) {
+                        highlightError('disposalDate', dateMessage);
+                        hasError = true;
+                    }
+                    if (!location) {
+                        highlightError('disposalLocation', 'Trường này bắt buộc nhập');
+                        hasError = true;
+                    }
+                } else if (!validateDisposalProcessingByType()) {
+                    hasError = true;
+                } else {
+                    syncCommonProcessingValuesFromKind(getSelectedDisposalProcessingKinds()[0]);
                 }
             }
 
@@ -11630,17 +12276,18 @@
 
             const regNum = activeRecordInDisposal.regNum;
             document.getElementById('lblReviewCaseType').innerText = document.getElementById('disposalCaseType').value;
+            document.getElementById('lblReviewAssetSource').innerText = document.getElementById('disposalAssetSourceDisplay').value || 'Từ hồ sơ BPBĐ đã đăng ký';
 
             const reviewRefNoticeRow = document.getElementById('reviewRefNoticeRow');
-            const reviewRefRegNum = document.getElementById('lblReviewRefRegNum').parentNode;
+            const reviewRefRegNum = document.getElementById('reviewRefRegNumRow');
             const reviewRefNoticeTimeRow = document.getElementById('reviewRefNoticeTimeRow');
             const reviewRefEffectiveTimeRow = document.getElementById('reviewRefEffectiveTimeRow');
 
             if (disposalMode === 'first') {
                 reviewRefNoticeRow.classList.add('hidden');
-                reviewRefRegNum.classList.remove('hidden');
-                reviewRefNoticeTimeRow.classList.remove('hidden');
-                reviewRefEffectiveTimeRow.classList.remove('hidden');
+                reviewRefRegNum.classList.toggle('hidden', isUnregisteredDisposalFirst());
+                reviewRefNoticeTimeRow.classList.toggle('hidden', isUnregisteredDisposalFirst());
+                reviewRefEffectiveTimeRow.classList.toggle('hidden', isUnregisteredDisposalFirst());
 
                 document.getElementById('lblReviewRefRegNum').innerText = regNum;
                 document.getElementById('lblReviewRefNoticeTime').innerText = document.getElementById('disposalRefNoticeTime').value;
@@ -11722,20 +12369,38 @@
             }
 
             const assets = getAssetsForRegistration(regNum);
+            const processingModeForReview = disposalMode === 'delete'
+                ? (activeNoticeRecordInDisposal?.processingMode || 'common')
+                : getDisposalProcessingMode();
+            const processingValuesForReview = disposalMode === 'delete'
+                ? {
+                    reason: activeNoticeRecordInDisposal?.reason || '',
+                    date: activeNoticeRecordInDisposal?.date || '',
+                    location: activeNoticeRecordInDisposal?.location || ''
+                }
+                : getCommonDisposalProcessingValues();
+            const processingValuesByKindForReview = disposalMode === 'delete'
+                ? (activeNoticeRecordInDisposal?.processingByType || {})
+                : collectDisposalProcessingValuesByKind();
 
             if (disposalMode === 'delete') {
                 renderDisposalAssetsByType('reviewAssetsTableBody', assets, {
                     readonly: true,
                     selectedIds: activeNoticeRecordInDisposal?.assets || [],
-                    showProcessingBlock: true
+                    showProcessingBlock: true,
+                    processingMode: processingModeForReview,
+                    processingValues: processingValuesForReview,
+                    processingValuesByKind: processingValuesByKindForReview
                 });
             } else {
-                const checkBoxes = document.querySelectorAll('input[name="disposalSelectAsset"]:checked');
-                const checkedIds = Array.from(checkBoxes).map(cb => cb.value);
+                const checkedIds = checkedAssets;
                 renderDisposalAssetsByType('reviewAssetsTableBody', assets, {
                     readonly: true,
                     selectedIds: checkedIds,
-                    showProcessingBlock: true
+                    showProcessingBlock: true,
+                    processingMode: processingModeForReview,
+                    processingValues: processingValuesForReview,
+                    processingValuesByKind: processingValuesByKindForReview
                 });
             }
 
@@ -11755,49 +12420,41 @@
         }
 
         function submitDisposalRegistration() {
-            const isExempt = loggedInUser && (loggedInUser.endsWith('.gov.vn') || loggedInUser.includes('dvc'));
+            showToast('Hồ sơ ghi nhận ở trạng thái Chờ thanh toán. Đang chuyển sang màn hình Thanh toán lệ phí...', 'info');
 
-            if (isExempt) {
-                showToast('Hệ thống xác thực tài khoản thuộc diện miễn nộp phí. Đang chuyển tiếp nộp hồ sơ...', 'success');
-                setTimeout(() => {
-                    executeDisposalSuccess('TH1');
-                }, 1000);
-            } else {
-                showToast('Hồ sơ ghi nhận ở trạng thái Chờ thanh toán. Đang chuyển sang màn hình Thanh toán lệ phí...', 'info');
+            setTimeout(() => {
+                const regNum = activeRecordInDisposal.regNum;
+                const noticeNum = (disposalMode === 'first')
+                    ? (isUnregisteredDisposalFirst() ? 'TBXL-TEMP' : (regNum + '-TBXL'))
+                    : activeNoticeRecordInDisposal.noticeNum;
+                const amount = (disposalMode === 'delete') ? 20000 : 80000;
 
-                setTimeout(() => {
-                    const regNum = activeRecordInDisposal.regNum;
-                    const noticeNum = (disposalMode === 'first') ? (regNum + '-TBXL') : activeNoticeRecordInDisposal.noticeNum;
-                    const amount = (disposalMode === 'delete') ? 20000 : 80000;
+                document.getElementById('pm_disposalSoHoSo').innerText = 'TEMP-' + noticeNum;
+                document.getElementById('pm_disposalLoaiHinh').innerText = 'Loại hình giao dịch: ' + (disposalMode === 'first' ? 'Thông báo xử lý tài sản bảo đảm lần đầu' : (disposalMode === 'change' ? 'Thay đổi thông báo xử lý tài sản bảo đảm' : 'Xóa đăng ký thông báo xử lý tài sản bảo đảm'));
+                document.getElementById('pm_disposalAmount').innerText = amount.toLocaleString() + ' VNĐ';
 
-                    document.getElementById('pm_disposalSoHoSo').innerText = 'TEMP-' + noticeNum;
-                    document.getElementById('pm_disposalLoaiHinh').innerText = 'Loại hình giao dịch: ' + (disposalMode === 'first' ? 'Thông báo xử lý tài sản bảo đảm lần đầu' : (disposalMode === 'change' ? 'Thay đổi thông báo xử lý tài sản bảo đảm' : 'Xóa đăng ký thông báo xử lý tài sản bảo đảm'));
-                    document.getElementById('pm_disposalAmount').innerText = amount.toLocaleString() + ' VNĐ';
+                selectedDisposalBank = null;
+                const cards = document.querySelectorAll('.disposal-method-card');
+                cards.forEach(c => c.classList.remove('active'));
+                const payBtn = document.getElementById('btnDisposalPaySubmit');
+                if (payBtn) {
+                    payBtn.style.opacity = '0.5';
+                    payBtn.style.pointerEvents = 'none';
+                }
 
-                    selectedDisposalBank = null;
-                    const cards = document.querySelectorAll('.disposal-method-card');
-                    cards.forEach(c => c.classList.remove('active'));
-                    const payBtn = document.getElementById('btnDisposalPaySubmit');
-                    if (payBtn) {
-                        payBtn.style.opacity = '0.5';
-                        payBtn.style.pointerEvents = 'none';
-                    }
+                document.getElementById('disposalPhaseReview').classList.add('hidden');
+                document.getElementById('disposalPhasePayment').classList.remove('hidden');
+                document.getElementById('disposalPaymentSelection').classList.remove('hidden');
+                document.getElementById('disposalPaymentQR').classList.add('hidden');
+                document.getElementById('disposalPaymentSimulator').style.display = 'block';
 
-                    // Direct transition to payment selection page, matching Đăng ký mới
-                    document.getElementById('disposalPhaseReview').classList.add('hidden');
-                    document.getElementById('disposalPhasePayment').classList.remove('hidden');
-                    document.getElementById('disposalPaymentSelection').classList.remove('hidden');
-                    document.getElementById('disposalPaymentQR').classList.add('hidden');
-                    document.getElementById('disposalPaymentSimulator').style.display = 'block'; // Show simulator panel!
+                const redirectOverlay = document.getElementById('disposalRedirectingScreen');
+                if (redirectOverlay) {
+                    redirectOverlay.classList.add('hidden');
+                }
 
-                    const redirectOverlay = document.getElementById('disposalRedirectingScreen');
-                    if (redirectOverlay) {
-                        redirectOverlay.classList.add('hidden'); // Ensure it's hidden
-                    }
-
-                    triggerDisposalPaymentScenario('TH1');
-                }, 1000);
-            }
+                triggerDisposalPaymentScenario('TH1');
+            }, 1000);
         }
 
         let selectedDisposalBank = null;
@@ -11919,63 +12576,85 @@
             let regNum = '';
             let newPin = '';
 
-            const isSuccessScen = (scenario === 'TH1' || scenario === 'TH3' || scenario === 'TH7' || scenario === 'TH6');
+            const isSuccessScen = (scenario === 'TH1' || scenario === 'TH3' || scenario === 'TH7');
 
             if (isSuccessScen) {
                 if (disposalMode === 'first') {
-                    regNum = activeRecordInDisposal.regNum + '-TBXL';
-                    // Lưu ý: Thông báo xử lý tài sản (kể cả "lần đầu") KHÔNG phải Đăng ký mới BPBĐ (UC024) nên KHÔNG cấp Mã PIN mới.
-                    newPin = '';
+                    collectStandaloneDisposalFormData();
+                    regNum = isUnregisteredDisposalFirst()
+                        ? `TBXL-${now.getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`
+                        : activeRecordInDisposal.regNum + '-TBXL';
+                    newPin = isUnregisteredDisposalFirst() ? generateDisposalPin() : '';
 
                     const checkBoxes = document.querySelectorAll('input[name="disposalSelectAsset"]:checked');
                     const checkedAssets = Array.from(checkBoxes).map(cb => cb.value);
 
                     simulatedNoticesDatabase[regNum] = {
                         noticeNum: regNum,
-                        regNum: activeRecordInDisposal.regNum,
+                        regNum: isUnregisteredDisposalFirst() ? regNum : activeRecordInDisposal.regNum,
+                        pin: newPin,
+                        assetSource: disposalAssetSource,
                         date: timeStr.split(' ')[0],
                         location: document.getElementById('disposalLocation').value.trim(),
                         reason: document.getElementById('disposalReason').value.trim(),
+                        processingMode: getDisposalProcessingMode(),
+                        processingByType: collectDisposalProcessingValuesByKind(),
                         receivingAgency: getSelectedDisposalAgency(),
                         file: document.getElementById('disposalRequestorFile').files[0] ? document.getElementById('disposalRequestorFile').files[0].name : 'thong_bao_xu_ly_tai_san.pdf',
-                        assets: checkedAssets,
+                        assets: isUnregisteredDisposalFirst() ? ['new-1'] : checkedAssets,
+                        assetDetails: activeRecordInDisposal.assetDetails || [],
                         history: [
                             { seq: 1, changeNum: regNum, date: timeStr, actor: loggedInUser || 'taikhoantestfpt@gmail.com', desc: 'Đăng ký thông báo xử lý lần đầu' }
                         ]
                     };
 
-                    if (simulatedDatabase[activeRecordInDisposal.regNum]) {
+                    if (!isUnregisteredDisposalFirst() && simulatedDatabase[activeRecordInDisposal.regNum]) {
                         simulatedDatabase[activeRecordInDisposal.regNum].status = 'Có thông báo xử lý tài sản';
                     }
 
-                    registeredRequestsData.forEach(item => {
-                        if (item.regNum === activeRecordInDisposal.regNum) {
-                            item.status = 'Hoàn thành';
-                            if (!item.children) item.children = [];
-                            const childExists = item.children.some(c => c.regNum === regNum);
-                            if (!childExists) {
-                                item.children.push({
-                                    id: item.id + "-" + (item.children.length + 1),
-                                    regNum: regNum,
-                                    pin: newPin,
-                                    date: timeStr,
-                                    type: "Thông báo xử lý tài sản",
-                                    guarantor: item.guarantor,
-                                    securedParty: item.securedParty,
-                                    status: "Hoàn thành"
-                                });
+                    if (isUnregisteredDisposalFirst()) {
+                        registeredRequestsData.unshift({
+                            id: 'TBXL-' + Date.now(),
+                            regNum: regNum,
+                            pin: newPin,
+                            date: timeStr,
+                            type: "Thông báo xử lý tài sản bảo đảm lần đầu",
+                            guarantor: activeRecordInDisposal.debtorName,
+                            securedParty: activeRecordInDisposal.securedName,
+                            status: "Chờ duyệt",
+                            assets: activeRecordInDisposal.assetDetails?.[0]?.desc || activeRecordInDisposal.assetDetails?.[0]?.name || 'Tài sản chưa đăng ký BPBĐ',
+                            children: []
+                        });
+                    } else {
+                        registeredRequestsData.forEach(item => {
+                            if (item.regNum === activeRecordInDisposal.regNum) {
+                                item.status = 'Hoàn thành';
+                                if (!item.children) item.children = [];
+                                const childExists = item.children.some(c => c.regNum === regNum);
+                                if (!childExists) {
+                                    item.children.push({
+                                        id: item.id + "-" + (item.children.length + 1),
+                                        regNum: regNum,
+                                        pin: newPin,
+                                        date: timeStr,
+                                        type: "Thông báo xử lý tài sản",
+                                        guarantor: item.guarantor,
+                                        securedParty: item.securedParty,
+                                        status: "Chờ duyệt"
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
 
                     changeHistory.unshift({
                         id: changeHistory.length + 1,
-                        regNum: activeRecordInDisposal.regNum,
+                        regNum: isUnregisteredDisposalFirst() ? regNum : activeRecordInDisposal.regNum,
                         type: 'Thông báo xử lý tài sản',
                         date: timeStr,
                         actor: loggedInUser || 'taikhoantestfpt@gmail.com',
                         desc: `Đăng ký thông báo xử lý lần đầu cho tài sản thế chấp. Lý do: ${document.getElementById('disposalReason').value.trim()}`,
-                        status: 'Hoàn thành'
+                        status: 'Chờ duyệt'
                     });
 
                 } else if (disposalMode === 'change') {
@@ -11990,6 +12669,8 @@
                         notice.date = timeStr.split(' ')[0];
                         notice.location = document.getElementById('disposalLocation').value.trim();
                         notice.reason = document.getElementById('disposalReason').value.trim();
+                        notice.processingMode = getDisposalProcessingMode();
+                        notice.processingByType = collectDisposalProcessingValuesByKind();
                         notice.receivingAgency = getSelectedDisposalAgency();
                         notice.assets = checkedAssets;
                         notice.history.push({
@@ -12008,7 +12689,7 @@
                         date: timeStr,
                         actor: loggedInUser || 'taikhoantestfpt@gmail.com',
                         desc: `Thay đổi đăng ký thông báo xử lý tài sản bảo đảm số ${regNum}.`,
-                        status: 'Hoàn thành'
+                        status: 'Chờ duyệt'
                     });
 
                     regNum = changeNum;
@@ -12017,14 +12698,14 @@
                     regNum = activeNoticeRecordInDisposal.noticeNum;
 
                     if (simulatedNoticesDatabase[regNum]) {
-                        simulatedNoticesDatabase[regNum].status = 'Đã xóa';
+                        simulatedNoticesDatabase[regNum].status = 'Chờ duyệt xóa';
                     }
 
                     registeredRequestsData.forEach(item => {
                         if (item.children) {
                             item.children.forEach(c => {
                                 if (c.regNum === regNum) {
-                                    c.status = 'Đã xóa';
+                                    c.status = 'Chờ duyệt';
                                 }
                             });
                         }
@@ -12044,7 +12725,7 @@
                         date: timeStr,
                         actor: loggedInUser || 'taikhoantestfpt@gmail.com',
                         desc: `Xóa đăng ký thông báo xử lý tài sản số ${regNum}. Lý do: ${document.getElementById('disposalDeleteReason').value}`,
-                        status: 'Hoàn thành'
+                        status: 'Chờ duyệt'
                     });
                 }
             }
@@ -12079,20 +12760,34 @@
 
             const btnBackToHome = `<button type="button" class="btn btn-outline-primary" onclick="resetDisposalScreen()">Quay về Trang chủ <i class="fa-solid fa-house"></i></button>`;
             const btnDownloadPdf = `<button type="button" class="btn btn-primary" onclick="showToast('Đang tải văn bản xác nhận PDF...', 'success')"><i class="fa fa-file-pdf"></i> Tải văn bản xác nhận (PDF)</button>`;
+            const renderDisposalSuccessIdentifiers = () => {
+                document.getElementById('successDisposalRegNumRow').style.display = '';
+                document.getElementById('successDisposalRegNum').innerText = regNum || (activeNoticeRecordInDisposal ? activeNoticeRecordInDisposal.noticeNum : 'N/A');
+
+                const originalRow = document.getElementById('successDisposalOriginalRegNumRow');
+                const firstRegTimeRow = document.getElementById('successDisposalFirstRegTimeRow');
+                if (isUnregisteredDisposalFirst()) {
+                    if (originalRow) originalRow.style.display = 'none';
+                    if (firstRegTimeRow) firstRegTimeRow.style.display = 'none';
+                    pinContainer.style.display = newPin ? '' : 'none';
+                    document.getElementById('successDisposalPinRow').style.display = newPin ? 'flex' : 'none';
+                    document.getElementById('successDisposalPin').innerText = newPin || '';
+                } else {
+                    if (originalRow) originalRow.style.display = '';
+                    if (firstRegTimeRow) firstRegTimeRow.style.display = '';
+                    document.getElementById('successDisposalOriginalRegNum').innerText = activeRecordInDisposal.regNum;
+                    pinContainer.style.display = 'none';
+                    document.getElementById('successDisposalPinRow').style.display = 'none';
+                    document.getElementById('successDisposalPin').innerText = '';
+                }
+            };
 
             switch (scenario) {
                 case 'TH1':
                     statusText.innerText = (disposalMode === 'first' ? 'ĐĂNG KÝ' : (disposalMode === 'change' ? 'THAY ĐỔI' : 'XÓA')) + ' THÔNG BÁO XỬ LÝ TÀI SẢN THÀNH CÔNG';
                     message.innerText = `Cảm ơn Quý khách đã sử dụng dịch vụ của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước. Trung tâm đăng ký thuộc Cục Đăng ký giao dịch bảo đảm đã tiếp nhận thành công yêu cầu: ${modeLabel}.`;
 
-                    document.getElementById('successDisposalRegNumRow').style.display = '';
-                    document.getElementById('successDisposalOriginalRegNumRow').style.display = '';
-                    document.getElementById('successDisposalRegNum').innerText = regNum || (activeNoticeRecordInDisposal ? activeNoticeRecordInDisposal.noticeNum : 'N/A');
-                    document.getElementById('successDisposalOriginalRegNum').innerText = activeRecordInDisposal.regNum;
-
-                    // Thông báo xử lý tài sản (lần đầu/thay đổi/xóa) không cấp Mã PIN mới - PIN chỉ cấp một lần khi Đăng ký mới (UC024).
-                    pinContainer.style.display = 'none';
-                    document.getElementById('successDisposalPinRow').style.display = 'none';
+                    renderDisposalSuccessIdentifiers();
 
                     buttonsContainer.innerHTML = btnDownloadPdf + btnBackToHome;
                     break;
@@ -12118,14 +12813,7 @@
                     statusText.innerText = (disposalMode === 'first' ? 'ĐĂNG KÝ' : (disposalMode === 'change' ? 'THAY ĐỔI' : 'XÓA')) + ' THÔNG BÁO XỬ LÝ THÀNH CÔNG (NỘP THỪA)';
                     message.innerText = `Cảm ơn Quý khách đã sử dụng dịch vụ. Hệ thống ghi nhận và tiếp nhận thành công yêu cầu của bạn. Phát hiện số tiền thanh toán bị thừa. Khoản tiền nộp thừa này sẽ được hoàn trả tự động vào tài khoản gốc trong vòng 3-5 ngày làm việc.`;
 
-                    document.getElementById('successDisposalRegNumRow').style.display = '';
-                    document.getElementById('successDisposalOriginalRegNumRow').style.display = '';
-                    document.getElementById('successDisposalRegNum').innerText = regNum || (activeNoticeRecordInDisposal ? activeNoticeRecordInDisposal.noticeNum : 'N/A');
-                    document.getElementById('successDisposalOriginalRegNum').innerText = activeRecordInDisposal.regNum;
-
-                    // Thông báo xử lý tài sản (lần đầu/thay đổi/xóa) không cấp Mã PIN mới - PIN chỉ cấp một lần khi Đăng ký mới (UC024).
-                    pinContainer.style.display = 'none';
-                    document.getElementById('successDisposalPinRow').style.display = 'none';
+                    renderDisposalSuccessIdentifiers();
 
                     buttonsContainer.innerHTML = btnDownloadPdf + btnBackToHome;
                     break;
@@ -12183,14 +12871,7 @@
                     statusText.innerText = (disposalMode === 'first' ? 'ĐĂNG KÝ' : (disposalMode === 'change' ? 'THAY ĐỔI' : 'XÓA')) + ' THÔNG BÁO XỬ LÝ THÀNH CÔNG (NỘP TRÙNG)';
                     message.innerText = `Cảm ơn Quý khách đã sử dụng dịch vụ. Hệ thống ghi nhận tiếp nhận thành công hồ sơ của bạn. Phát hiện thanh toán trùng lặp cho mã hồ sơ này. Giao dịch trùng lặp thứ hai sẽ được tự động hoàn tiền 100% trong vòng 3-5 ngày làm việc.`;
 
-                    document.getElementById('successDisposalRegNumRow').style.display = '';
-                    document.getElementById('successDisposalOriginalRegNumRow').style.display = '';
-                    document.getElementById('successDisposalRegNum').innerText = regNum || (activeNoticeRecordInDisposal ? activeNoticeRecordInDisposal.noticeNum : 'N/A');
-                    document.getElementById('successDisposalOriginalRegNum').innerText = activeRecordInDisposal.regNum;
-
-                    // Thông báo xử lý tài sản (lần đầu/thay đổi/xóa) không cấp Mã PIN mới - PIN chỉ cấp một lần khi Đăng ký mới (UC024).
-                    pinContainer.style.display = 'none';
-                    document.getElementById('successDisposalPinRow').style.display = 'none';
+                    renderDisposalSuccessIdentifiers();
 
                     buttonsContainer.innerHTML = btnDownloadPdf + btnBackToHome;
                     break;
@@ -12208,6 +12889,10 @@
             document.getElementById('disposalSearchRegNum').value = '1505156435';
             document.getElementById('disposalSearchPin').value = '5635';
             document.getElementById('disposalSearchType').value = 'Thông báo lần đầu';
+            const defaultSource = document.querySelector('input[name="disposalAssetSource"][value="registered"]');
+            if (defaultSource) defaultSource.checked = true;
+            disposalAssetSource = 'registered';
+            toggleDisposalSourceFields();
             document.getElementById('disposalPaymentSimulator').style.display = 'none'; // Hide simulator panel!
             returnFromCustomerModule();
         }
@@ -13293,6 +13978,101 @@
             const detectBtn = document.getElementById('btnDetectUSB');
             const selectGroup = document.getElementById('usbCertSelectionGroup');
 
+            if (detectBtn) {
+                detectBtn.disabled = true;
+                detectBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tìm kiếm thiết bị...';
+            }
+            if (spinner) {
+                spinner.className = 'usb-icon-spinner scanning';
+                spinner.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+                spinner.style.color = 'var(--primary-color)';
+            }
+            if (title) title.innerText = 'Đang quét chứng thư số trong USB Token...';
+
+            setTimeout(() => {
+                if (spinner) {
+                    spinner.className = 'usb-icon-spinner success';
+                    spinner.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                    spinner.style.color = 'var(--success-color)';
+                }
+                if (title) title.innerText = 'Đã tìm thấy Chứng thư số hợp lệ!';
+                if (desc) desc.innerText = 'Vui lòng chọn chứng thư số và nhập mã PIN để tiếp tục đăng nhập.';
+                if (detectBtn) detectBtn.classList.add('hidden');
+                if (selectGroup) selectGroup.classList.remove('hidden');
+            }, 1200);
+        }
+
+        function submitUSBTokenLogin() {
+            const pin = document.getElementById('usbTokenPin').value;
+            if (!pin) {
+                highlightError('usbTokenPin', 'Đây là trường bắt buộc');
+                document.getElementById('usbTokenPin').focus();
+                return;
+            }
+
+            if (pin !== '12345678') {
+                highlightError('usbTokenPin', 'Mã PIN không chính xác (Thử: 12345678)');
+                document.getElementById('usbTokenPin').focus();
+                return;
+            }
+
+            clearAllErrors('screen-login');
+            showToast('Xác thực chữ ký số thành công! Đang đăng nhập...', 'success');
+
+            setTimeout(() => {
+                isLoggedIn = true;
+                loggedInUser = 'token_user@fpt.com.vn';
+                loggedInDisplayName = 'CÔNG TY TNHH HẢI NAM (Token)';
+                updateUserNavPanel();
+                showScreen('dossier-list');
+            }, 1000);
+        }
+
+        function submitInternalLogin() {
+            clearAllErrors('screen-login');
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            let hasEmpty = false;
+            let firstEmptyId = null;
+
+            if (!username) {
+                highlightError('loginUsername', 'Đây là trường bắt buộc');
+                hasEmpty = true;
+                if (!firstEmptyId) firstEmptyId = 'loginUsername';
+            }
+            if (!password) {
+                highlightError('loginPassword', 'Đây là trường bắt buộc');
+                hasEmpty = true;
+                if (!firstEmptyId) firstEmptyId = 'loginPassword';
+            }
+
+            if (hasEmpty) {
+                if (firstEmptyId) {
+                    document.getElementById(firstEmptyId).focus();
+                }
+                return;
+            }
+
+            if (username !== loggedInUser || password !== currentAccountPassword) {
+                highlightError('loginPassword', 'Tên đăng nhập hoặc mật khẩu không chính xác.');
+                document.getElementById('loginPassword').focus();
+                return;
+            }
+
+            showToast('Đăng nhập thành công!', 'success');
+            isLoggedIn = true;
+            updateUserNavPanel();
+            showScreen('dossier-list');
+        }
+
+        function startDetectUSBToken() {
+            const spinner = document.getElementById('usbTokenSpinner');
+            const title = document.getElementById('usbTokenStatusTitle');
+            const desc = document.getElementById('usbTokenStatusDesc');
+            const detectBtn = document.getElementById('btnDetectUSB');
+            const selectGroup = document.getElementById('usbCertSelectionGroup');
+
             if (spinner) {
                 spinner.classList.add('searching');
                 spinner.style.color = 'var(--secondary-color)';
@@ -13631,6 +14411,27 @@
                 children: []
             },
             {
+                id: "9",
+                regNum: "TBXL-2026-000901",
+                pin: "",
+                date: "24/04/2026 09:40",
+                type: "Thông báo xử lý tài sản bảo đảm lần đầu",
+                guarantor: "Công ty TNHH Minh An",
+                securedParty: "Ngân hàng TMCP FPT",
+                status: "Hoàn thành",
+                transType: "Thông báo xử lý tài sản bảo đảm",
+                measureContractType: "",
+                secAssets: ["Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)"],
+                effectiveTime: "24/04/2026 10:05:12",
+                paymentAmount: 70000,
+                creatorName: "Lê Thu Hương",
+                isStandaloneDisposalNotice: true,
+                linkedOriginalRegNum: null,
+                relationNote: "Thông báo xử lý tài sản lần đầu cho tài sản chưa đăng ký BPBĐ, không gắn với hồ sơ Đăng ký lần đầu.",
+                expanded: false,
+                children: []
+            },
+            {
                 id: "13",
                 regNum: "1505156447",
                 pin: "5647",
@@ -13760,6 +14561,7 @@
 
         function formatRegNumForDisplay(regNum) {
             if (!regNum) return '';
+            if (/^TBXL-/i.test(regNum)) return regNum;
             return regNum.replace(/-[A-ZĐa-zđ]+[0-9]*/g, '');
         }
 
@@ -14912,18 +15714,64 @@
             return `<div><strong>${escapeHtml(label)}:</strong> ${value}</div>`;
         }
 
+        function getDynamicGuarantorTitle(transType, measureContractType) {
+            if ((transType || '').includes('Hợp đồng')) {
+                switch (measureContractType) {
+                    case 'Hợp đồng cho thuê tài chính': return 'Bên thuê tài chính';
+                    case 'Hợp đồng thuê tài sản có thời hạn 1 năm trở lên': return 'Bên thuê tài sản';
+                    case 'Hợp đồng chuyển giao đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác': return 'Bên chuyển giao quyền';
+                    case 'Hợp đồng ký gửi': return 'Bên nhận ký gửi';
+                    default: return 'Bên bảo đảm';
+                }
+            }
+            switch (measureContractType) {
+                case 'Thế chấp': return 'Bên thế chấp';
+                case 'Bảo lưu quyền sở hữu': return 'Bên mua';
+                case 'Cầm cố': return 'Bên cầm cố';
+                case 'Đặt cọc': return 'Bên đặt cọc';
+                case 'Ký cược': return 'Bên ký cược';
+                case 'Ký quỹ': return 'Bên ký quỹ';
+                default: return 'Bên bảo đảm';
+            }
+        }
+
+        function getDynamicSecuredPartyTitle(transType, measureContractType) {
+            if ((transType || '').includes('Hợp đồng')) {
+                switch (measureContractType) {
+                    case 'Hợp đồng cho thuê tài chính': return 'Bên cho thuê tài chính';
+                    case 'Hợp đồng thuê tài sản có thời hạn 1 năm trở lên': return 'Bên cho thuê tài sản';
+                    case 'Hợp đồng chuyển giao đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác': return 'Bên nhận chuyển giao quyền';
+                    case 'Hợp đồng ký gửi': return 'Bên ký gửi';
+                    default: return 'Bên nhận bảo đảm';
+                }
+            }
+            switch (measureContractType) {
+                case 'Thế chấp': return 'Bên nhận thế chấp';
+                case 'Bảo lưu quyền sở hữu': return 'Bên bán';
+                case 'Cầm cố': return 'Bên nhận cầm cố';
+                case 'Đặt cọc': return 'Bên nhận đặt cọc';
+                case 'Ký cược': return 'Bên nhận ký cược';
+                case 'Ký quỹ': return 'Bên có quyền trong ký quỹ';
+                default: return 'Bên nhận bảo đảm';
+            }
+        }
+
+        function getDynamicAssetBlockTitle(transType, measureContractType) {
+            if ((transType || '').includes('Hợp đồng')) {
+                switch (measureContractType) {
+                    case 'Hợp đồng cho thuê tài chính': return 'Tài sản cho thuê tài chính';
+                    case 'Hợp đồng thuê tài sản có thời hạn 1 năm trở lên': return 'Tài sản thuê';
+                    case 'Hợp đồng chuyển giao đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác': return 'Quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác được chuyển giao';
+                    case 'Hợp đồng ký gửi': return 'Hàng hóa ký gửi';
+                    default: return 'Tài sản bảo đảm';
+                }
+            }
+            return 'Tài sản bảo đảm';
+        }
+
         function getCopyOriginalType(original) {
             if (!original || isRegisteredInfoRequestType(original.type)) return 'Đăng ký lần đầu';
             return original.type || 'Đăng ký lần đầu';
-        }
-
-        function getCopyOriginalTitle(original) {
-            return getCopyOriginalType(original).toUpperCase();
-        }
-
-        function getCopyOriginalMeasureLabel(original) {
-            if ((original.transType || '').includes('Hợp đồng')) return 'Loại hợp đồng';
-            return 'Loại biện pháp';
         }
 
         function getCopyAssetKind(typeName) {
@@ -14941,35 +15789,39 @@
             const baseNum = formatRegNumForDisplay(original.regNum || '');
             const suffix = baseNum.slice(-4) || `00${index + 1}`;
             return {
-                vehicleName: original.assetVehicleName || (index % 2 === 0 ? 'Ô tô' : 'Xe máy chuyên dùng'),
-                brandColor: original.brandColor || (index % 2 === 0 ? 'Toyota Vios, màu đen' : 'Komatsu, màu vàng'),
-                frameNo: original.frameNo || `SK${suffix}VN`,
-                engineNo: original.engineNo || `SM${suffix}VN`,
-                plateNo: original.plateNo || (index % 2 === 0 ? '30H-123.45' : '29C-688.88'),
-                vehicleBrand: original.vehicleBrand || 'Tàu cá vỏ thép Đông Hải',
-                ownerName: original.ownerName || original.guarantor || 'Người bảo đảm',
+                vehicleName: original.assetVehicleName || (index % 2 === 0 ? 'Xe ô tô con 5 chỗ' : 'Xe máy chuyên dùng'),
+                brandColor: original.brandColor || (index % 2 === 0 ? 'Toyota Camry 2.5Q, màu đen' : 'Komatsu, màu vàng'),
+                frameNo: original.frameNo || `RLHXX${suffix}VN`,
+                engineNo: original.engineNo || `2AR-FE-${suffix}`,
+                plateNo: original.plateNo || (index % 2 === 0 ? '30H-888.99' : '29C-688.88'),
+                vehicleBrand: original.vehicleBrand || 'Tàu cá vỏ thép đánh bắt xa bờ',
+                ownerName: original.ownerName || original.guarantor || 'Nguyễn Văn A',
                 vehicleRegNo: original.vehicleRegNo || `ĐK-${suffix}-HP`,
-                vehicleIssuer: original.vehicleIssuer || 'Cơ quan đăng ký phương tiện',
-                vehicleLevel: original.vehicleLevel || 'Cấp IV',
-                rightName: original.rightName || 'Quyền đòi nợ phát sinh từ hợp đồng thương mại',
-                rightBasis: original.rightBasis || `Hợp đồng số HĐ-${suffix}/2026 và phụ lục liên quan`,
+                vehicleIssuer: original.vehicleIssuer || 'Chi cục Thủy sản TP. Hải Phòng',
+                vehicleLevel: original.vehicleLevel || 'Cấp I',
+                rightName: original.rightName || 'Quyền đòi nợ phát sinh từ Hợp đồng cung cấp dịch vụ số 88/2026/HĐDV',
+                rightBasis: original.rightBasis || `Hợp đồng kinh tế số 88/2026/HĐDV ngày 15/05/2026 ký giữa ${original.guarantor || 'Nguyễn Văn A'} và bên liên quan`,
                 cropDescription: original.cropDescription || 'Cây hằng năm, công trình tạm theo mô tả tại hồ sơ gốc.',
                 goodsKind: original.goodsKind || 'Kho hàng',
-                goodsValueName: original.goodsValueName || 'Lô hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh',
-                warehouseAddress: original.warehouseAddress || 'Khu công nghiệp Quang Minh, Hà Nội',
-                warehouseSign: original.warehouseSign || `Kho KH-${suffix}`,
-                vsdcTime: original.vsdcTime || '09:30 15/04/2026',
-                otherDescription: original.assetDescription || `${typeName} theo mô tả tại hồ sơ gốc.`
+                goodsValueName: original.goodsValueName || 'Lô linh kiện điện tử và thiết bị viễn thông công nghệ cao',
+                warehouseAddress: original.warehouseAddress || 'Kho K1, Lô 12 Khu công nghiệp Quang Minh, Thị trấn Quang Minh, Huyện Mê Linh, TP. Hà Nội, Việt Nam',
+                warehouseSign: original.warehouseSign || `Kho linh kiện FPT-K1`,
+                vsdcHour: original.vsdcHour !== undefined ? String(original.vsdcHour).padStart(2, '0') : '09',
+                vsdcMinute: original.vsdcMinute !== undefined ? String(original.vsdcMinute).padStart(2, '0') : '30',
+                vsdcDay: original.vsdcDay !== undefined ? String(original.vsdcDay).padStart(2, '0') : '15',
+                vsdcMonth: original.vsdcMonth !== undefined ? String(original.vsdcMonth).padStart(2, '0') : '04',
+                vsdcYear: original.vsdcYear || '2026',
+                otherDescription: original.otherDescription || original.assetDescription || `${typeName} theo mô tả chi tiết tại hồ sơ gốc.`
             };
         }
 
         function renderCopyReadonlyGrid(items) {
             return `
-                <div style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; margin-top:12px;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:10px;">
                     ${items.map(item => `
-                        <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px;">
-                            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">${escapeHtml(item.label)}</div>
-                            <div style="font-weight:600; color:var(--text-main);">${escapeHtml(item.value || '---')}</div>
+                        <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:10px 14px;">
+                            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px; font-weight:500;">${escapeHtml(item.label)}</div>
+                            <div style="font-weight:600; color:var(--text-main); font-size:13.5px;">${escapeHtml(item.value || '---')}</div>
                         </div>
                     `).join('')}
                 </div>
@@ -14979,34 +15831,33 @@
         function renderCopyAssetBlock(original, typeName, index) {
             const kind = getCopyAssetKind(typeName);
             const detail = getCopyAssetDetail(original, typeName, index);
-            const titleHtml = `<h5 style="margin:18px 0 10px; color:var(--primary-color); font-size:14px; font-weight:700;">${escapeHtml(typeName)}</h5>`;
+            const titleHtml = `<h5 style="margin:16px 0 10px; color:#1E3A8A; font-size:13.5px; font-weight:700;"><i class="fa-solid fa-layer-group" style="color:#3B82F6; margin-right:6px;"></i>${escapeHtml(typeName)}</h5>`;
 
             if (kind === 'chassis') {
                 return `
                     ${titleHtml}
-                    <div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;">Số khung</div>
-                    <div class="table-responsive">
-                        <table class="table">
+                    ${detail.otherDescription && detail.otherDescription !== `${typeName} theo mô tả chi tiết tại hồ sơ gốc.` ? `<div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:13px;"><strong>Mô tả:</strong> ${escapeHtml(detail.otherDescription)}</div>` : ''}
+                    <div style="font-weight:700; color:#334155; margin-bottom:6px; font-size:13px;">Số khung</div>
+                    <div class="table-responsive" style="margin-bottom:12px;">
+                        <table class="table" style="min-width:820px;">
                             <thead>
                                 <tr>
-                                    <th style="width:42px; text-align:center;"><input type="checkbox" disabled></th>
-                                    <th style="width:60px; text-align:center;">STT</th>
-                                    <th>TÊN PHƯƠNG TIỆN</th>
-                                    <th>NHÃN HIỆU, MÀU SƠN</th>
-                                    <th>SỐ KHUNG</th>
-                                    <th>SỐ MÁY</th>
-                                    <th>BIỂN SỐ</th>
+                                    <th style="width:60px; text-align:center; background:#F1F5F9; color:#334155; font-size:12px;">STT</th>
+                                    <th style="width:150px; background:#F1F5F9; color:#334155; font-size:12px;">TÊN PHƯƠNG TIỆN</th>
+                                    <th style="width:170px; background:#F1F5F9; color:#334155; font-size:12px;">NHÃN HIỆU, MÀU SƠN</th>
+                                    <th style="width:170px; background:#F1F5F9; color:#334155; font-size:12px;">SỐ KHUNG</th>
+                                    <th style="width:130px; background:#F1F5F9; color:#334155; font-size:12px;">SỐ MÁY</th>
+                                    <th style="width:140px; background:#F1F5F9; color:#334155; font-size:12px;">BIỂN SỐ</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td style="text-align:center;"><input type="checkbox" checked disabled></td>
                                     <td style="text-align:center;">1</td>
                                     <td><strong>${escapeHtml(detail.vehicleName)}</strong></td>
                                     <td>${escapeHtml(detail.brandColor)}</td>
-                                    <td>${escapeHtml(detail.frameNo)}</td>
-                                    <td>${escapeHtml(detail.engineNo)}</td>
-                                    <td>${escapeHtml(detail.plateNo)}</td>
+                                    <td><span style="font-family:monospace; font-weight:600;">${escapeHtml(detail.frameNo)}</span></td>
+                                    <td><span style="font-family:monospace;">${escapeHtml(detail.engineNo)}</span></td>
+                                    <td><strong>${escapeHtml(detail.plateNo)}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -15017,27 +15868,26 @@
             if (kind === 'vehicle') {
                 return `
                     ${titleHtml}
-                    <div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;">Phương tiện</div>
-                    <div class="table-responsive">
-                        <table class="table">
+                    ${detail.otherDescription && detail.otherDescription !== `${typeName} theo mô tả chi tiết tại hồ sơ gốc.` ? `<div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:13px;"><strong>Mô tả:</strong> ${escapeHtml(detail.otherDescription)}</div>` : ''}
+                    <div style="font-weight:700; color:#334155; margin-bottom:6px; font-size:13px;">Phương tiện</div>
+                    <div class="table-responsive" style="margin-bottom:12px;">
+                        <table class="table" style="min-width:940px;">
                             <thead>
                                 <tr>
-                                    <th style="width:42px; text-align:center;"><input type="checkbox" disabled></th>
-                                    <th style="width:60px; text-align:center;">STT</th>
-                                    <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
-                                    <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
-                                    <th>SỐ ĐĂNG KÝ</th>
-                                    <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
-                                    <th>CẤP PHƯƠNG TIỆN</th>
+                                    <th style="width:60px; text-align:center; background:#F1F5F9; color:#334155; font-size:12px;">STT</th>
+                                    <th style="width:180px; background:#F1F5F9; color:#334155; font-size:12px;">TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                                    <th style="width:220px; background:#F1F5F9; color:#334155; font-size:12px;">TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                    <th style="width:140px; background:#F1F5F9; color:#334155; font-size:12px;">SỐ ĐĂNG KÝ</th>
+                                    <th style="width:200px; background:#F1F5F9; color:#334155; font-size:12px;">CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                    <th style="width:140px; background:#F1F5F9; color:#334155; font-size:12px;">CẤP PHƯƠNG TIỆN</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td style="text-align:center;"><input type="checkbox" checked disabled></td>
                                     <td style="text-align:center;">1</td>
                                     <td><strong>${escapeHtml(detail.vehicleBrand)}</strong></td>
                                     <td>${escapeHtml(detail.ownerName)}</td>
-                                    <td>${escapeHtml(detail.vehicleRegNo)}</td>
+                                    <td><span style="font-family:monospace; font-weight:600;">${escapeHtml(detail.vehicleRegNo)}</span></td>
                                     <td>${escapeHtml(detail.vehicleIssuer)}</td>
                                     <td>${escapeHtml(detail.vehicleLevel)}</td>
                                 </tr>
@@ -15048,42 +15898,49 @@
             }
 
             if (kind === 'propertyRight') {
-                return `${titleHtml}${renderCopyReadonlyGrid([
-                    { label: 'Tên quyền', value: detail.rightName },
-                    { label: 'Căn cứ phát sinh quyền', value: detail.rightBasis }
-                ])}`;
+                return `
+                    ${titleHtml}
+                    ${renderCopyReadonlyGrid([
+                        { label: 'Tên quyền', value: detail.rightName },
+                        { label: 'Căn cứ phát sinh quyền', value: detail.rightBasis }
+                    ])}
+                `;
             }
 
             if (kind === 'rotatingGoods') {
-                return `${titleHtml}${renderCopyReadonlyGrid([
-                    { label: 'Hàng hóa luân chuyển/Kho hàng', value: detail.goodsKind },
-                    { label: 'Giá trị hàng hóa/Tên, loại hàng hóa', value: detail.goodsValueName },
-                    { label: 'Địa chỉ kho hàng', value: detail.warehouseAddress },
-                    { label: 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', value: detail.warehouseSign }
-                ])}`;
+                return `
+                    ${titleHtml}
+                    ${renderCopyReadonlyGrid([
+                        { label: 'Hàng hóa luân chuyển / Kho hàng', value: detail.goodsKind },
+                        { label: 'Giá trị hàng hóa / Tên, loại hàng hóa', value: detail.goodsValueName },
+                        { label: 'Địa chỉ kho hàng', value: detail.warehouseAddress },
+                        { label: 'Số hiệu kho hàng / Dấu hiệu khác của vị trí kho hàng', value: detail.warehouseSign }
+                    ])}
+                `;
             }
 
             if (kind === 'securities') {
                 return `
                     ${titleHtml}
-                    <div class="table-responsive">
+                    <div style="font-weight:700; color:#334155; margin-bottom:6px; font-size:13px;">Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam</div>
+                    <div class="table-responsive" style="margin-bottom:12px;">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>GIỜ</th>
-                                    <th>PHÚT</th>
-                                    <th>NGÀY</th>
-                                    <th>THÁNG</th>
-                                    <th>NĂM</th>
+                                    <th style="background:#F1F5F9; color:#334155; font-size:12px; text-align:center;">GIỜ</th>
+                                    <th style="background:#F1F5F9; color:#334155; font-size:12px; text-align:center;">PHÚT</th>
+                                    <th style="background:#F1F5F9; color:#334155; font-size:12px; text-align:center;">NGÀY</th>
+                                    <th style="background:#F1F5F9; color:#334155; font-size:12px; text-align:center;">THÁNG</th>
+                                    <th style="background:#F1F5F9; color:#334155; font-size:12px; text-align:center;">NĂM</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>09</td>
-                                    <td>30</td>
-                                    <td>15</td>
-                                    <td>04</td>
-                                    <td>2026</td>
+                                    <td style="text-align:center; font-weight:600;">${escapeHtml(detail.vsdcHour)}</td>
+                                    <td style="text-align:center; font-weight:600;">${escapeHtml(detail.vsdcMinute)}</td>
+                                    <td style="text-align:center; font-weight:600;">${escapeHtml(detail.vsdcDay)}</td>
+                                    <td style="text-align:center; font-weight:600;">${escapeHtml(detail.vsdcMonth)}</td>
+                                    <td style="text-align:center; font-weight:600;">${escapeHtml(detail.vsdcYear)}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -15093,7 +15950,7 @@
 
             return `
                 ${titleHtml}
-                <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:12px; white-space:pre-wrap;">
+                <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:12px 14px; white-space:pre-wrap; font-size:13.5px; line-height:1.6;">
                     ${escapeHtml(kind === 'annualCrop' ? detail.cropDescription : detail.otherDescription)}
                 </div>
             `;
@@ -15103,94 +15960,139 @@
             const assets = Array.isArray(original.secAssets) && original.secAssets.length
                 ? original.secAssets
                 : ['Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)'];
-            const commonDesc = original.assetDescription || 'Thông tin tài sản bảo đảm được lấy từ hồ sơ gốc tại thời điểm yêu cầu cung cấp bản sao.';
 
             return `
-                <h4 style="margin:22px 0 12px; color:var(--primary-color); font-size:15px;">IV. Tài sản bảo đảm</h4>
-                <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:12px; margin-bottom:12px;">
-                    <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Mô tả tài sản bảo đảm</div>
-                    <div style="font-weight:600;">${escapeHtml(commonDesc)}</div>
-                </div>
                 ${assets.map((asset, index) => renderCopyAssetBlock(original, asset, index)).join('')}
             `;
         }
 
         function renderCopyRequestOriginalInfo(item) {
             const original = findRegisteredRequest(item.regNum) || {};
-            const originalType = getCopyOriginalType(original);
-            const shouldShowFirstReg = originalType !== 'Đăng ký lần đầu';
             const transType = original.transType || 'Biện pháp bảo đảm';
             const measureContractType = original.measureContractType || 'Thế chấp';
+            const isBpbd = transType === 'Biện pháp bảo đảm';
             const isOrg = String(original.guarantor || item.creator || '').toLowerCase().includes('công ty');
-            const firstRegHtml = shouldShowFirstReg ? `
-                ${renderCopyReadonlyGrid([
-                    { label: 'Số đăng ký lần đầu', value: formatRegNumForDisplay(item.regNum) },
-                    { label: 'Thời điểm đăng ký lần đầu', value: original.rootDate || '14/05/2026 07:58' }
-                ])}
-            ` : '';
+
+            const headerTitle = `Đăng ký giao dịch bảo đảm / Hợp đồng - ${item.regNum}`;
+
+            const generalGridItems = [
+                { label: 'Loại hình giao dịch', value: transType },
+                isBpbd
+                    ? { label: 'Loại biện pháp', value: measureContractType }
+                    : { label: 'Loại hợp đồng', value: measureContractType },
+                { label: 'Trường hợp đăng ký', value: original.type || 'Đăng ký lần đầu' },
+                { label: 'Trạng thái', value: original.status || 'Hoàn thành' }
+            ];
+            if (original.contractNo) {
+                generalGridItems.push({ label: 'Số hợp đồng', value: original.contractNo });
+            }
+            if (original.contractDate) {
+                generalGridItems.push({ label: 'Ngày có hiệu lực của hợp đồng', value: original.contractDate });
+            }
+
+            const registrantGridItems = [
+                { label: 'Họ và tên', value: original.registrantName || original.securedParty || 'Ngân hàng TMCP FPT' },
+                { label: 'Địa chỉ', value: original.registrantAddress || original.securedAddress || 'Số 17 Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, TP. Hà Nội, Việt Nam' }
+            ];
+
+            const registrationGridItems = [
+                { label: 'Số đăng ký', value: item.regNum },
+                { label: 'Thời điểm đăng ký', value: original.date || '05/06/2026 09:00' },
+                { label: 'Thời điểm có hiệu lực', value: original.effectiveDate || original.date || '05/06/2026 09:05' }
+            ];
+
+            const guarantorTitle = getDynamicGuarantorTitle(transType, measureContractType);
+            const guarantorSubjectType = original.guarantorSubjectType || (isOrg ? 'Tổ chức có đăng ký kinh doanh trong nước' : 'Công dân Việt Nam');
+            const guarantorDoc = original.guarantorDoc || (isOrg ? 'Mã số thuế: 0108992233' : 'Số CMND/Căn cước công dân: 001090019888');
+            const guarantorName = original.guarantor || item.creator || 'Nguyễn Văn A';
+            const guarantorAddress = original.guarantorAddress || 'Số 88 Trần Duy Hưng, Phường Trung Hòa, Quận Cầu Giấy, TP. Hà Nội, Việt Nam';
+
+            const securedPartyTitle = getDynamicSecuredPartyTitle(transType, measureContractType);
+            const securedName = original.securedParty || 'Ngân hàng TMCP FPT';
+            const securedAddress = original.securedAddress || 'Số 17 Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, TP. Hà Nội, Việt Nam';
+
+            const assetBlockTitle = getDynamicAssetBlockTitle(transType, measureContractType);
 
             return `
-                <div style="background:#E2E8F0; color:#111827; font-weight:800; padding:10px 12px; border-radius:4px; margin-bottom:14px;">
-                    ${escapeHtml(getCopyOriginalTitle(original))}
+                <div style="background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%); color: #FFFFFF; font-weight: 700; font-size: 15px; padding: 12px 16px; border-radius: 6px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-file-shield"></i> ${escapeHtml(headerTitle)}
                 </div>
-                ${renderCopyReadonlyGrid([
-                    { label: 'Loại hình giao dịch', value: transType },
-                    { label: getCopyOriginalMeasureLabel(original), value: measureContractType },
-                    { label: 'Số hợp đồng', value: original.contractNo || `HĐ-${formatRegNumForDisplay(item.regNum).slice(-4)}/2026` },
-                    { label: 'Ngày có hiệu lực của hợp đồng', value: original.contractDate || '25/11/2025' },
-                    { label: 'Giá trị khoản vay hoặc nghĩa vụ (VND)', value: original.loanValue || '1.800.000.000' },
-                    { label: 'Quy mô bên bảo đảm', value: original.scale || 'Bên bảo đảm là công ty có ít hơn 10 nhân viên' },
-                    { label: 'Số đăng ký của hồ sơ', value: item.regNum },
-                    { label: 'Thời điểm đăng ký', value: original.date || '14/05/2026 07:58' },
-                    { label: 'Hồ sơ đính kèm', value: 'Văn bản chứng nhận đăng ký biện pháp bảo đảm gốc.pdf' }
-                ])}
-                ${firstRegHtml}
 
-                <div style="margin-top:22px;">
-                    <h4 style="font-size:13.5px; font-weight:700; color:#334155; margin-bottom:8px;"><i class="fa-solid fa-users"></i> Danh sách Bên bảo đảm</h4>
+                <div style="margin-bottom: 22px;">
+                    <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-circle-info" style="color: #3B82F6;"></i> I. Thông tin chung hồ sơ
+                    </h4>
+                    ${renderCopyReadonlyGrid(generalGridItems)}
+                </div>
+
+                <div style="margin-bottom: 22px;">
+                    <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-user-pen" style="color: #3B82F6;"></i> II. Thông tin người đăng ký
+                    </h4>
+                    ${renderCopyReadonlyGrid(registrantGridItems)}
+                </div>
+
+                <div style="margin-bottom: 22px;">
+                    <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-clock" style="color: #3B82F6;"></i> III. Thông tin đăng ký
+                    </h4>
+                    ${renderCopyReadonlyGrid(registrationGridItems)}
+                </div>
+
+                <div style="margin-bottom: 22px;">
+                    <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-users" style="color: #3B82F6;"></i> IV. ${escapeHtml(guarantorTitle)}
+                    </h4>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>LOẠI CHỦ THỂ</th>
-                                    <th>SỐ GIẤY TỜ CHỨNG MINH TƯ CÁCH PHÁP LÝ</th>
-                                    <th>TÊN</th>
-                                    <th>ĐỊA CHỈ</th>
+                                    <th style="background: #F1F5F9; color: #334155; font-size: 12px;">LOẠI CHỦ THỂ</th>
+                                    <th style="background: #F1F5F9; color: #334155; font-size: 12px;">SỐ GIẤY TỜ CHỨNG MINH TƯ CÁCH PHÁP LÝ</th>
+                                    <th style="background: #F1F5F9; color: #334155; font-size: 12px;">TÊN</th>
+                                    <th style="background: #F1F5F9; color: #334155; font-size: 12px;">ĐỊA CHỈ</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>${isOrg ? 'Tổ chức có đăng ký kinh doanh trong nước' : 'Công dân Việt Nam'}</td>
-                                    <td>${isOrg ? 'Mã số thuế: 0102030405' : 'CCCD: 001088012345'}</td>
-                                    <td><strong>${escapeHtml(original.guarantor || item.creator)}</strong></td>
-                                    <td>${escapeHtml(original.guarantorAddress || 'Số 15 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội, Việt Nam')}</td>
+                                    <td>${escapeHtml(guarantorSubjectType)}</td>
+                                    <td><span style="font-family: monospace; font-weight: 600;">${escapeHtml(guarantorDoc)}</span></td>
+                                    <td><strong>${escapeHtml(guarantorName)}</strong></td>
+                                    <td>${escapeHtml(guarantorAddress)}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div style="margin-top:22px;">
-                    <h4 style="font-size:13.5px; font-weight:700; color:#334155; margin-bottom:8px;"><i class="fa-solid fa-building-columns"></i> Danh sách Bên nhận bảo đảm</h4>
+                <div style="margin-bottom: 22px;">
+                    <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-building-columns" style="color: #3B82F6;"></i> V. ${escapeHtml(securedPartyTitle)}
+                    </h4>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>TÊN</th>
-                                    <th>ĐỊA CHỈ</th>
+                                    <th style="background: #F1F5F9; color: #334155; font-size: 12px; width: 35%;">TÊN</th>
+                                    <th style="background: #F1F5F9; color: #334155; font-size: 12px;">ĐỊA CHỈ</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>${escapeHtml(original.securedParty || 'Ngân hàng TMCP FPT')}</strong></td>
-                                    <td>${escapeHtml(original.securedAddress || 'Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội, Việt Nam')}</td>
+                                    <td><strong>${escapeHtml(securedName)}</strong></td>
+                                    <td>${escapeHtml(securedAddress)}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                ${renderCopyAssetsByType(original)}
+                <div style="margin-bottom: 22px;">
+                    <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-boxes-stacked" style="color: #3B82F6;"></i> VI. ${escapeHtml(assetBlockTitle)}
+                    </h4>
+                    ${renderCopyAssetsByType(original)}
+                </div>
             `;
         }
 
@@ -15307,9 +16209,10 @@
                 detailDownloadBtn.onclick = () => downloadCopyCertificate(item.code);
             }
 
+            const showOriginalInfo = item.status === 'Hoàn thành' || item.status === 'Đã duyệt - chờ trả kết quả';
             const originalBlock = document.getElementById('copyDetailOriginalBlock');
-            if (originalBlock) originalBlock.classList.toggle('hidden', item.status !== 'Hoàn thành');
-            document.getElementById('copyDetailOriginalInfo').innerHTML = item.status === 'Hoàn thành' ? renderCopyRequestOriginalInfo(item) : '';
+            if (originalBlock) originalBlock.classList.toggle('hidden', !showOriginalInfo);
+            document.getElementById('copyDetailOriginalInfo').innerHTML = showOriginalInfo ? renderCopyRequestOriginalInfo(item) : '';
             const processingBlock = document.getElementById('copyDetailProcessingBlock');
             if (processingBlock) processingBlock.classList.remove('hidden');
             document.getElementById('copyDetailProcessingInfo').innerHTML = renderCopyRequestProcessingInfo(item);
@@ -15766,8 +16669,97 @@
             renderRegisteredRequestsTable();
         }
 
+        function renderStandaloneDisposalReadonlyGrid(items) {
+            return `
+                <div class="grid-2-cols" style="margin-bottom: 18px;">
+                    ${items.map(item => `
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <label class="form-label">${escapeHtml(item.label)}</label>
+                            <div class="form-control" style="min-height: 38px; background:#F8FAFC; display:flex; align-items:center; white-space:normal; line-height:1.45;">
+                                ${escapeHtml(item.value || '—')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderStandaloneDisposalDetail(regNum) {
+            const item = findRegisteredRequest(regNum);
+            const notice = simulatedNoticesDatabase[regNum] || {};
+            const content = document.getElementById('standaloneDisposalDetailContent');
+            if (!item || !content) return;
+
+            const assets = Array.isArray(item.secAssets) && item.secAssets.length ? item.secAssets : ['Tài sản chưa đăng ký BPBĐ'];
+            const statusClass = getStatusClass(item.status);
+            const paymentAmount = getRegisteredRequestPaidAmountText(item);
+
+            content.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 16px; background:#F8FAFC; border:1px solid var(--border-color); border-radius:var(--border-radius-md); margin-bottom:18px;">
+                    <div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Số thông báo</div>
+                        <div style="font-size:20px; font-weight:800; color:var(--primary-color);">${escapeHtml(item.regNum)}</div>
+                    </div>
+                    <span class="status-badge ${statusClass}">${escapeHtml(item.status)}</span>
+                </div>
+
+                <h3 class="section-title"><i class="fa-solid fa-circle-info"></i> Thông tin chung</h3>
+                ${renderStandaloneDisposalReadonlyGrid([
+                    { label: 'Loại đăng ký', value: item.type },
+                    { label: 'Loại hình giao dịch', value: item.transType },
+                    { label: 'Số đăng ký BPBĐ gốc', value: item.linkedOriginalRegNum || 'Không gắn với hồ sơ BPBĐ đã đăng ký' },
+                    { label: 'Thời điểm đăng ký', value: item.date },
+                    { label: 'Thời điểm có hiệu lực', value: getRegisteredRequestEffectiveTime(item) },
+                    { label: 'Số tiền đã thanh toán (VNĐ)', value: paymentAmount },
+                    { label: 'Người tạo', value: getRequestCreatorText(item) },
+                    { label: 'Tệp đính kèm', value: notice.file || '—' }
+                ])}
+
+                <h3 class="section-title"><i class="fa-solid fa-users"></i> Chủ thể liên quan</h3>
+                ${renderStandaloneDisposalReadonlyGrid([
+                    { label: 'Bên bảo đảm', value: item.guarantor },
+                    { label: 'Bên nhận bảo đảm', value: item.securedParty }
+                ])}
+
+                <h3 class="section-title"><i class="fa-solid fa-boxes-stacked"></i> Tài sản xử lý</h3>
+                <div class="table-responsive" style="margin-bottom:18px;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width:60px;">STT</th>
+                                <th>Loại tài sản</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${assets.map((asset, index) => `
+                                <tr>
+                                    <td style="text-align:center;">${index + 1}</td>
+                                    <td>${escapeHtml(asset)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="section-title"><i class="fa-solid fa-file-lines"></i> Nội dung xử lý tài sản</h3>
+                ${renderStandaloneDisposalReadonlyGrid([
+                    { label: 'Lý do xử lý', value: notice.reason },
+                    { label: 'Ngày xử lý dự kiến', value: notice.date },
+                    { label: 'Địa điểm xử lý', value: notice.location },
+                    { label: 'Ghi chú liên kết', value: item.relationNote }
+                ])}
+            `;
+        }
+
         function viewRegisteredRequest(regNum, type, versionCount) {
             const detailContext = buildRegisteredRequestDetailContext(regNum);
+            if (detailContext && detailContext.item && detailContext.item.isStandaloneDisposalNotice) {
+                renderStandaloneDisposalDetail(regNum);
+                showToast('Đang mở chi tiết thông báo xử lý tài sản...', 'info');
+                showScreen('standalone-disposal-detail');
+                return;
+            }
+
             const rootRegNum = detailContext ? detailContext.rootRegNum : regNum;
             localStorage.setItem('regNum', rootRegNum);
             if (detailContext) {

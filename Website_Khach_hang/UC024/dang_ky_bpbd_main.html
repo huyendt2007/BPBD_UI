@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng ký biện pháp bảo đảm, Hợp đồng</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../../Common/style_iframe.css">
     <script src="../../Common/iframe_helper.js"></script>
@@ -62,6 +63,17 @@
         </header>
 
         <form id="uc024Form">
+            <section class="card-section hidden" id="uc131DisposalCaseSection">
+                <h2 class="section-title">Thông báo xử lý tài sản</h2>
+                <div class="grid-2-cols">
+                    <div class="form-group">
+                        <label class="form-label">Trường hợp đăng ký</label>
+                        <input type="text" class="form-control" value="Thông báo xử lý tài sản bảo đảm lần đầu" disabled
+                            style="background-color: #F1F5F9;">
+                    </div>
+                </div>
+            </section>
+
             <!-- THÔNG TIN NGƯỜI ĐĂNG KÝ -->
             <section class="card-section">
                 <h2 class="section-title">Thông tin người đăng ký</h2>
@@ -117,7 +129,7 @@
                                 tài sản tại TP HCM</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="loaiHinhGiaoDichWrapper">
                         <label class="form-label">Loại hình giao dịch <span class="required-mark">*</span></label>
                         <select class="form-select" id="loaiHinhGiaoDich">
                             <option value="bpbd" selected>Biện pháp bảo đảm</option>
@@ -199,25 +211,21 @@
                         Thêm Bên thế chấp</button>
                 </div>
 
-                <div id="subFormBenTheChap" class="sub-form">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
-                        <div></div>
-                        <button type="button" class="btn btn-outline-primary" id="btnOpenSearch"
-                            style="padding: 4px 12px;">TÌM KIẾM</button>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Loại chủ thể <span class="required-mark">*</span></label>
-                        <select class="form-select" id="loaiChuTheTC">
-                            <option value="">-- Chọn loại chủ thể --</option>
-                            <option value="cd_vn" selected>Công dân Việt Nam</option>
-                            <option value="tc_vn">Tổ chức có đăng ký kinh doanh trong nước</option>
-                            <option value="nn">Người nước ngoài</option>
-                            <option value="ndt_nn">Tổ chức nước ngoài</option>
-                            <option value="tc_khac">Tổ chức khác</option>
-                            <option value="k_qt">Người không quốc tịch cư trú tại Việt Nam</option>
-                        </select>
+                <div id="subFormBenTheChap" class="sub-form subject-compact-form">
+                    <div class="subject-compact-toolbar">
+                        <div class="form-group subject-type-field">
+                            <label class="form-label">Loại chủ thể <span class="required-mark">*</span></label>
+                            <select class="form-select" id="loaiChuTheTC">
+                                <option value="">-- Chọn loại chủ thể --</option>
+                                <option value="cd_vn" selected>Công dân Việt Nam</option>
+                                <option value="tc_vn">Tổ chức có đăng ký kinh doanh trong nước</option>
+                                <option value="nn">Người nước ngoài</option>
+                                <option value="ndt_nn">Tổ chức nước ngoài</option>
+                                <option value="tc_khac">Tổ chức khác</option>
+                                <option value="k_qt">Người không quốc tịch cư trú tại Việt Nam</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary subject-search-btn" id="btnOpenSearch">TÌM KIẾM</button>
                     </div>
 
                     <!-- Dynamic Sub-forms for each Loại chủ thể -->
@@ -294,8 +302,8 @@
                     </div>
                 </div>
 
-                <div id="subFormBenNhanTheChap" class="sub-form">
-                    <div class="grid-2-cols">
+                <div id="subFormBenNhanTheChap" class="sub-form subject-compact-form">
+                    <div class="grid-2-cols subject-compact-grid">
                         <div class="form-group" style="grid-column: span 2;">
                             <label class="form-label">Tên <span class="required-mark">*</span></label>
                             <input type="text" class="form-control" id="ntc_ten">
@@ -360,6 +368,41 @@
                     đánh dấu nhiều loại tài sản.
                 </div>
 
+                <!-- THÔNG TIN XỬ LÝ TÀI SẢN (Chỉ hiển thị khi UC024 được dùng cho UC131 - tài sản chưa đăng ký BPBĐ) -->
+                <div class="sub-form hidden" id="uc131DisposalProcessingSection" style="margin-bottom: 16px;">
+                    <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-color);">Thông tin xử lý tài sản</h3>
+                    <div class="form-group">
+                        <label class="form-label">Cách nhập thông tin xử lý tài sản <span
+                                class="required-mark">*</span></label>
+                        <div class="check-group" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+                            <label class="check-item">
+                                <input type="radio" name="uc131DisposalProcessingMode" value="common" checked>
+                                <span class="check-label">Áp dụng chung cho tất cả tài sản</span>
+                            </label>
+                            <label class="check-item">
+                                <input type="radio" name="uc131DisposalProcessingMode" value="byType">
+                                <span class="check-label">Nhập riêng theo từng loại tài sản xử lý</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="uc131DisposalCommonFields">
+                        <label class="form-label">Lý do xử lý <span class="required-mark">*</span></label>
+                        <textarea class="form-control" id="uc131DisposalReason" rows="3"
+                            placeholder="Nhập lý do xử lý tài sản..."></textarea>
+                    </div>
+                    <div class="grid-2-cols" id="uc131DisposalCommonDateLocation">
+                        <div class="form-group">
+                            <label class="form-label">Thời gian xử lý <span class="required-mark">*</span></label>
+                            <input type="date" class="form-control" id="uc131DisposalDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Địa điểm xử lý <span class="required-mark">*</span></label>
+                            <input type="text" class="form-control" id="uc131DisposalLocation"
+                                placeholder="Nhập địa điểm xử lý tài sản...">
+                        </div>
+                    </div>
+                    <div id="uc131DisposalByTypeFields" class="hidden"></div>
+                </div>
 
                 <div class="form-group">
                     <label class="form-label" style="display:flex; align-items:center;">
@@ -425,6 +468,37 @@
                             khung</button>
                         <button type="button" class="btn btn-danger" id="btnXoaSoKhung">Xóa số khung</button>
                     </div>
+                    <div class="asset-quick-filter" aria-label="Tìm kiếm nhanh Bảng thông tin Số khung">
+                        <div class="form-group">
+                            <label class="form-label" for="filterSKType">Tên phương tiện</label>
+                            <select class="form-select" id="filterSKType">
+                                <option value="">Tất cả</option>
+                                <option value="Mô tô">Mô tô</option>
+                                <option value="Ô tô">Ô tô</option>
+                                <option value="Xe máy chuyên dùng">Xe máy chuyên dùng</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="filterSKFrameNo">Số khung</label>
+                            <input type="text" class="form-control" id="filterSKFrameNo" placeholder="Nhập số khung...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="filterSKEngineNo">Số máy</label>
+                            <input type="text" class="form-control" id="filterSKEngineNo" placeholder="Nhập số máy...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="filterSKPlateNo">Biển số</label>
+                            <input type="text" class="form-control" id="filterSKPlateNo" placeholder="Nhập biển số...">
+                        </div>
+                        <div class="asset-quick-filter-actions">
+                            <button type="button" class="btn btn-primary" id="btnApplySKFilter">
+                                <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btnClearSKFilter">
+                                <i class="fa-solid fa-filter-circle-xmark"></i> Xóa lọc
+                            </button>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table" id="tableSoKhung">
                             <thead>
@@ -481,6 +555,28 @@
                         <button type="button" class="btn btn-outline-primary" id="btnThemTauCa">+ Thêm phương
                             tiện</button>
                         <button type="button" class="btn btn-danger" id="btnXoaTauCa">Xóa phương tiện</button>
+                    </div>
+                    <div class="asset-quick-filter asset-quick-filter--3col" aria-label="Tìm kiếm nhanh Bảng thông tin Phương tiện">
+                        <div class="form-group">
+                            <label class="form-label" for="filterTCName">Tên phương tiện</label>
+                            <input type="text" class="form-control" id="filterTCName" placeholder="Nhập tên phương tiện...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="filterTCOwner">Tên chủ phương tiện</label>
+                            <input type="text" class="form-control" id="filterTCOwner" placeholder="Nhập tên chủ phương tiện...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="filterTCRegNo">Số đăng ký</label>
+                            <input type="text" class="form-control" id="filterTCRegNo" placeholder="Nhập số đăng ký...">
+                        </div>
+                        <div class="asset-quick-filter-actions">
+                            <button type="button" class="btn btn-primary" id="btnApplyTCFilter">
+                                <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btnClearTCFilter">
+                                <i class="fa-solid fa-filter-circle-xmark"></i> Xóa lọc
+                            </button>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table" id="tableTauCa">

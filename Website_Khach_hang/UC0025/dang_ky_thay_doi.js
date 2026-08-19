@@ -1953,8 +1953,7 @@ function getTauCaQuickFilterValues() {
     return {
         name: document.getElementById('filterTCName')?.value || '',
         ownerName: document.getElementById('filterTCOwner')?.value || '',
-        regNo: document.getElementById('filterTCRegNo')?.value || '',
-        certAgency: document.getElementById('filterTCCertAgency')?.value || ''
+        regNo: document.getElementById('filterTCRegNo')?.value || ''
     };
 }
 
@@ -2006,9 +2005,8 @@ function applyTauCaQuickFilter() {
         const matchesName = quickFilterContains(item.name, filters.name);
         const matchesOwner = quickFilterContains(item.ownerName, filters.ownerName);
         const matchesRegNo = quickFilterContains(item.regNo, filters.regNo);
-        const matchesCertAgency = quickFilterContains(item.certAgency, filters.certAgency);
 
-        row.style.display = matchesName && matchesOwner && matchesRegNo && matchesCertAgency ? '' : 'none';
+        row.style.display = matchesName && matchesOwner && matchesRegNo ? '' : 'none';
     });
 
     const chkAll = document.getElementById('chkAllTC');
@@ -2017,7 +2015,7 @@ function applyTauCaQuickFilter() {
 
 function clearTauCaQuickFilter() {
     tauCaQuickFilterActive = false;
-    ['filterTCName', 'filterTCOwner', 'filterTCRegNo', 'filterTCCertAgency'].forEach(id => {
+    ['filterTCName', 'filterTCOwner', 'filterTCRegNo'].forEach(id => {
         const input = document.getElementById(id);
         if (input) input.value = '';
     });
