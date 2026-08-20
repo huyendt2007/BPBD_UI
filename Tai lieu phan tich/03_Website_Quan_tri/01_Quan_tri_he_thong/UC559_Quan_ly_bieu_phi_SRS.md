@@ -50,7 +50,7 @@ Mô tả các luồng hành động xử lý cấp trang:
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | \- Hệ thống thực hiện lọc danh sách lưới kết quả theo tiêu chí lọc được chọn.<br>\- Trả về danh sách rỗng nếu không tìm thấy bản ghi phù hợp. |
+| 1 | Tìm kiếm | Nút | \- Hệ thống thực hiện lọc danh sách lưới kết quả theo tiêu chí lọc được chọn.<br>\- Trả về danh sách rỗng nếu không tìm thấy bản ghi phù hợp.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Xóa bộ lọc | Nút | \- Đặt lại tất cả các bộ lọc tìm kiếm về giá trị mặc định.<br>\- Gọi API nạp lại lưới dữ liệu đầy đủ.<br>\- Hiển thị thông báo: "Đã xóa bộ lọc tìm kiếm và tải lại danh sách!" |
 | 3 | Thêm mới | Nút | \- Mở Popup Thêm mới biểu phí (UC559.MH02) với các trường trống. |
 | 4 | Kết xuất Excel | Nút | \- TH1: Lưới dữ liệu rỗng.<br>  \+ Hệ thống chặn thao tác.<br>  \+ Hiển thị cảnh báo vi phạm quy tắc **[BR-EXP-040]** với thông báo **[MSG-WRN-SYS-001]** ("Không có dữ liệu để xuất Excel.").<br>\- TH Hợp lệ:<br>  \+ Thực hiện xuất dữ liệu lưới hiện hành ra file Excel dạng `.xlsx`.<br>  \+ Hiển thị thông báo: "Kết xuất Excel thành công!" |
@@ -112,7 +112,7 @@ Mô tả hoạt động của các nút tại Footer của màn hình Xem chi ti
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Đóng | Nút | \- TH Hợp lệ: Đóng popup Xem chi tiết. |
-| 2 | Chỉnh sửa | Nút | \- TH1: Biểu phí đang ở trạng thái Hết hiệu lực.<br>  \+ Nút Chỉnh sửa bị vô hiệu hóa (làm mờ ẩn `opacity: 0.35; pointer-events: none; cursor: not-allowed;`).<br>  \+ Rê chuột hiển thị tooltip: "Biểu phí đã hết hiệu lực, không được phép chỉnh sửa".<br>\- TH Hợp lệ (Trạng thái Hoạt động / Lưu nháp):<br>  \+ Đóng popup Xem chi tiết đồng thời mở nhanh popup Cập nhật biểu phí (UC559.MH02). |
+| 2 | Chỉnh sửa | Nút | \- TH1: Biểu phí đang ở trạng thái Hết hiệu lực.<br>  \+ Nút Chỉnh sửa ở trạng thái khóa mờ (Disabled).<br>  \+ Rê chuột hiển thị tooltip: "Biểu phí đã hết hiệu lực, không được phép chỉnh sửa".<br>\- TH Hợp lệ (Trạng thái Hoạt động / Lưu nháp):<br>  \+ Đóng popup Xem chi tiết đồng thời mở nhanh popup Cập nhật biểu phí (UC559.MH02). |
 
 ---
 

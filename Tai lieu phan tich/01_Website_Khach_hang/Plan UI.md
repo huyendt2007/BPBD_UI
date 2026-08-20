@@ -1,4 +1,4 @@
-﻿Bạn là Chuyên viên Phân tích Nghiệp vụ (BA) kiêm Technical Lead của dự án. Hãy rà soát toàn bộ các file tài liệu SRS (`.md`) trong thư mục `Tai lieu phan tich/` để chuẩn hóa và bổ sung kịch bản "Tìm kiếm/Lọc nhưng không có kết quả (Empty State)".
+﻿﻿Bạn là Chuyên viên Phân tích Nghiệp vụ (BA) kiêm Technical Lead của dự án. Hãy rà soát toàn bộ các file tài liệu SRS (`.md`) trong thư mục `Tai lieu phan tich/` để chuẩn hóa và bổ sung kịch bản "Tìm kiếm/Lọc nhưng không có kết quả (Empty State)".
 
 YÊU CẦU THỰC HIỆN TỰ ĐỘNG VÀ CHUẨN XÁC:
 
@@ -19,7 +19,7 @@ B. Tại Bảng "Chức năng trên màn hình" (ở dòng hành động Nút "T
   <br>- **TH Không có dữ liệu trả về**:
     + Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.
     + Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`|<<`, `<`, các số trang, `>`, `>>|`) ở trạng thái ẩn hoặc khóa mờ (Disabled).
-    + Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính `style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"` kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.
+    + Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.
 
 3. QUY TRÌNH THỰC HIỆN VÀ BÁO CÁO:
 - Bước 1: Quét và liệt kê danh sách các file `.md` có chứa màn hình danh sách/tìm kiếm cần cập nhật.

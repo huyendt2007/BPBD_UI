@@ -95,7 +95,7 @@ Nguồn UI: `UI_Mockups/Website_Quan_tri/UC467_to_UC476/quan_ly_cham_diem_btnn.h
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Nếu `Hạn nộp từ ngày` lớn hơn `Hạn nộp đến ngày`, vi phạm quy tắc [BR-VAL-007]. Hệ thống hiển thị cảnh báo [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Nếu `Hạn nộp từ ngày` lớn hơn `Hạn nộp đến ngày`, vi phạm quy tắc [BR-VAL-007]. Hệ thống hiển thị cảnh báo [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Không có dữ liệu phù hợp): Hệ thống hiển thị thông tin [MSG-INF-BTNN-CD-023] tại vùng lưới dữ liệu và ẩn phân trang. |
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách kỳ chấm điểm theo `Năm đánh giá`, `Đơn vị Sở Tư pháp`, `Trạng thái`, `Xếp loại`, khoảng `Hạn nộp`, cập nhật lưới kết quả và đưa trang hiện tại về trang 1. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí lọc, đặt lại danh sách kỳ chấm điểm theo quyền và đơn vị của tài khoản đăng nhập, đưa trang hiện tại về trang 1 và hiển thị [MSG-SUC-BTNN-CD-001]. |

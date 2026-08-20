@@ -1,4 +1,4 @@
-﻿## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
+﻿﻿## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
 
 ### 4.3.2.4. WebAdmin-024 - Ký duyệt Phiếu đăng ký
 
@@ -129,7 +129,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH2 (Không có dữ liệu phù hợp): Hệ thống hiển thị trạng thái rỗng ngay trong vùng bảng danh sách với nội dung "Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm."; không hiển thị dòng dữ liệu giả, không reset bộ lọc đã nhập. |
 |  |  |  | TH Hợp lệ: Hệ thống tìm kiếm theo bộ lọc hiện hành trong phạm vi Phiếu đăng ký thuộc quyền ký của Lãnh đạo và tải lại bảng danh sách theo kết quả tìm kiếm. |
 | 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Loại đăng ký/Loại hình giao dịch/Loại biện pháp hoặc Hợp đồng/Loại tài sản/Nguồn tiếp nhận về "Tất cả", Từ ngày/Đến ngày về mặc định và tải lại danh sách hồ sơ "Chờ duyệt". |
@@ -270,7 +270,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH2 (Không có dữ liệu phù hợp): Hệ thống hiển thị trạng thái rỗng ngay trong vùng bảng danh sách với nội dung "Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm."; không hiển thị dòng dữ liệu giả, không reset bộ lọc đã nhập. |
 |  |  |  | TH Hợp lệ: Hệ thống tìm kiếm theo bộ lọc hiện hành trong phạm vi Phiếu đăng ký thuộc quyền ký của Lãnh đạo và tải lại bảng danh sách theo kết quả tìm kiếm. |
 | 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Loại đăng ký/Loại hình giao dịch/Loại biện pháp hoặc Hợp đồng/Loại tài sản/Nguồn tiếp nhận về "Tất cả", Từ ngày/Đến ngày về mặc định và tải lại danh sách hồ sơ "Chờ ký". |

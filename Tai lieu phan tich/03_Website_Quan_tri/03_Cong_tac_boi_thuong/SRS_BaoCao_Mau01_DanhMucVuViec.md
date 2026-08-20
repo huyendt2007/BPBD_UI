@@ -1,4 +1,4 @@
-﻿#### 4.3.3.21. UCPS019 - Danh mục vụ việc giải quyết yêu cầu bồi thường (Mẫu số 01-TT08)
+﻿﻿#### 4.3.3.21. UCPS019 - Danh mục vụ việc giải quyết yêu cầu bồi thường (Mẫu số 01-TT08)
 
 ##### 4.3.3.21.1. Mục đích
 
@@ -77,7 +77,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | 1 | Tổng hợp danh mục | Button | TH1 (Không có vụ việc phù hợp): Hệ thống hiển thị bảng danh mục trống kèm thông báo không có dữ liệu. |
 |  |  |  | TH2 (Có dữ liệu): Hệ thống tổng hợp toàn bộ vụ việc có `Thời điểm tiếp nhận` hoặc trạng thái xử lý phát sinh trong khoảng thời gian của `Loại kỳ báo cáo` đã chọn, nhóm theo 06 lĩnh vực phát sinh thiệt hại, tính dòng `Tổng cộng` và hiển thị lên bảng danh mục ở trạng thái kỳ tổng hợp `Nháp`. |
-| 2 | Tìm kiếm | Button | Hệ thống lọc bảng danh mục đang hiển thị theo `Lĩnh vực phát sinh thiệt hại`, `Từ khóa` đã nhập, không thực hiện tổng hợp lại từ đầu. |
+| 2 | Tìm kiếm | Button | Hệ thống lọc bảng danh mục đang hiển thị theo `Lĩnh vực phát sinh thiệt hại`, `Từ khóa` đã nhập, không thực hiện tổng hợp lại từ đầu.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Chỉnh sửa ghi chú | Icon button | Chỉ hiển thị với cán bộ nghiệp vụ BTNN. Hệ thống mở **4.3.3.21.4. Popup Chỉnh sửa ghi chú** cho dòng vụ việc được chọn. |
 | 4 | Click dòng dữ liệu | Row click | Hệ thống mở màn hình chi tiết vụ việc tương ứng (SRS Giải quyết yêu cầu bồi thường) ở chế độ chỉ xem, tại một tab riêng; không thực hiện khi click vào icon `Chỉnh sửa ghi chú`. |
 | 5 | Kết xuất Excel | Button | Hệ thống kết xuất toàn bộ bảng danh mục hiện hành (đã nhóm theo lĩnh vực, có dòng Tổng cộng) ra file Excel theo đúng cấu trúc Mẫu số 01-TT08 và hiển thị [MSG-SUC-SYS-002]. |

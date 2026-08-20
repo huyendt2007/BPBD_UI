@@ -1,4 +1,4 @@
-﻿#### 4.3.1.10. UCPS007 - Quản lý Hàng đợi Email (Email Queue Manager)
+﻿﻿#### 4.3.1.10. UCPS007 - Quản lý Hàng đợi Email (Email Queue Manager)
 
 ##### 4.3.1.10.1. Mục đích
 
@@ -47,7 +47,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | \- Thao tác: QTHT click nút Tìm kiếm.<br>\- Xử lý: Hệ thống thực hiện tìm kiếm và lọc dữ liệu trên lưới theo các tiêu chí đã nhập ở Bộ lọc tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | \- Thao tác: QTHT click nút Tìm kiếm.<br>\- Xử lý: Hệ thống thực hiện tìm kiếm và lọc dữ liệu trên lưới theo các tiêu chí đã nhập ở Bộ lọc tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | \- Thao tác: QTHT click nút Xóa bộ lọc.<br>\- Xử lý: Hệ thống làm sạch toàn bộ dữ liệu đang chọn tại Bộ lọc tìm kiếm và nạp lại danh sách hàng đợi email mặc định. |
 | 3 | Gửi lại hàng loạt | Nút | \- Thao tác: QTHT click chọn các checkbox ở đầu dòng bản ghi lỗi và nhấn nút Gửi lại hàng loạt. |
 | | | | \- Kiểm tra: Bắt buộc người dùng phải tích chọn ít nhất 1 dòng email lỗi. Nếu chưa tích chọn, hệ thống hiển thị thông báo lỗi: "Vui lòng chọn ít nhất một email lỗi để thực hiện gửi lại." |

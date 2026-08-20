@@ -1,4 +1,4 @@
-﻿### 4.1.10. Quản lý tài khoản trực thuộc (Tài khoản con / Nhân viên)
+﻿﻿### 4.1.10. Quản lý tài khoản trực thuộc (Tài khoản con / Nhân viên)
 
 #### 4.1.10.1. Mục đích
 
@@ -44,7 +44,7 @@
 ##### 4.1.10.2.3. Chức năng trên màn hình
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click nút Tìm kiếm.<br>- Xử lý: Tự động cắt bỏ khoảng trắng thừa ở hai đầu từ khóa (Trim space). Lọc danh sách tài khoản con theo Từ khóa tìm kiếm và Trạng thái:<br>- Tìm kiếm gần đúng (chứa từ khóa) đối với các trường: Tên khách hàng, Email, Số điện thoại.<br>- Tìm kiếm chính xác đối với trường: Số giấy tờ (Số CCCD/CMND/Hộ chiếu).<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click nút Tìm kiếm.<br>- Xử lý: Tự động cắt bỏ khoảng trắng thừa ở hai đầu từ khóa (Trim space). Lọc danh sách tài khoản con theo Từ khóa tìm kiếm và Trạng thái:<br>- Tìm kiếm gần đúng (chứa từ khóa) đối với các trường: Tên khách hàng, Email, Số điện thoại.<br>- Tìm kiếm chính xác đối với trường: Số giấy tờ (Số CCCD/CMND/Hộ chiếu).<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | \- TH1 (Có kết quả): Hiển thị danh sách kết quả lên GridView, phân trang 20 bản ghi/trang. |
 | | | | \- TH2 (Không có kết quả): Hiển thị thông báo "Không có dữ liệu" trên lưới. |
 | 2 | Thêm tài khoản | Nút | \- Thao tác: NSD click nút "Thêm tài khoản".<br>- Xử lý: Hệ thống hiển thị popup Form Thêm mới tài khoản con (UC005.MH01). |

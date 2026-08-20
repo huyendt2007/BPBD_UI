@@ -1,4 +1,4 @@
-﻿### 4.3.3.26. UCPS023 - Quản lý kỳ báo cáo, nhập liệu biểu mẫu Thông tư 08/2019/TT-BTP
+﻿﻿### 4.3.3.26. UCPS023 - Quản lý kỳ báo cáo, nhập liệu biểu mẫu Thông tư 08/2019/TT-BTP
 
 #### 4.3.3.26.1. Mục đích
 
@@ -99,7 +99,7 @@ flowchart TD
 | Tìm kiếm | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Tạo kỳ báo cáo | - | Không | Hiển thị theo quyền | Hiển thị với cán bộ báo cáo/nhập liệu có quyền tạo kỳ cho ít nhất một đơn vị báo cáo. Đơn vị đăng nhập có thể là đơn vị nhập thay; đơn vị báo cáo thực tế được chọn tại popup tạo kỳ theo cây đơn vị trong phạm vi được phân quyền. |
 | Khối mở nhanh kỳ tổng hợp | Text(1000) | Không | Theo vai trò | Hiển thị với đầu mối tổng hợp và Bộ Tư pháp/Cục BTNN. Với đầu mối tổng hợp, hiển thị nút mở kỳ tổng hợp của đầu mối. Với Bộ Tư pháp/Cục BTNN, chỉ hiển thị nút mở kỳ tổng hợp toàn quốc theo kỳ báo cáo. |
-| **II. Bảng danh sách kỳ báo cáo** | | | | |
+| **II. Bảng danh sách kỳ báo cáo** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | Không | Tự tăng | |
 | Năm báo cáo | Integer(4) | Có | Theo dữ liệu | Chỉ đọc. |
 | Loại kỳ báo cáo | Enum(String(100)) | Có | Theo dữ liệu | Chỉ đọc. Tham chiếu [DM_44]. |
@@ -114,7 +114,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Lọc danh sách theo các tiêu chí đang chọn (kết hợp AND), hiển thị kết quả và đưa về trang 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính `style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"` kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
+| 1 | Tìm kiếm | Button | Lọc danh sách theo các tiêu chí đang chọn (kết hợp AND), hiển thị kết quả và đưa về trang 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Tạo kỳ báo cáo | Button | Mở popup tạo kỳ báo cáo để chọn `Đơn vị báo cáo`, `Loại báo cáo`, `Nguồn dữ liệu`, `Thời gian báo cáo`. Sau khi tạo thành công mở **4.3.3.26.5. MH02** tại đúng biểu mẫu đã chọn. |
 | 3 | Click dòng dữ liệu/Mở | Row click/Icon button | Mở **4.3.3.26.5. MH02** với dữ liệu kỳ báo cáo tương ứng. Nếu người dùng là cán bộ đầu mối tổng hợp hoặc cán bộ Bộ Tư pháp/Cục BTNN và kỳ báo cáo thuộc đơn vị cấp dưới ở trạng thái `Đã gửi chờ duyệt`, mở **4.3.3.26.9. MH08** (màn duyệt) thay vì MH02. |
 | 4 | Xóa | Icon button | Hiển thị khi kỳ báo cáo ở trạng thái `Đang nhập liệu` và do người dùng hiện tại tạo. Xác nhận [MSG-CFM-SYS-001] trước khi xóa. |

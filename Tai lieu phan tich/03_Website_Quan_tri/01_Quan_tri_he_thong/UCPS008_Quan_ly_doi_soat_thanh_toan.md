@@ -1,4 +1,4 @@
-﻿# UCPS008 - Quản lý đối soát thanh toán
+﻿﻿# UCPS008 - Quản lý đối soát thanh toán
 
 ## 1. Tổng quan
 
@@ -62,7 +62,7 @@ Phạm vi kết thúc khi bản ghi đối soát/hoàn tiền được xử lý 
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Tìm kiếm bản ghi theo bộ lọc. Nếu không có dữ liệu, hiển thị trạng thái rỗng theo chuẩn danh sách.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | Tìm kiếm bản ghi theo bộ lọc. Nếu không có dữ liệu, hiển thị trạng thái rỗng theo chuẩn danh sách.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc và tải lại danh sách mặc định. |
 | 3 | Xem chi tiết | Link/Nút | Mở UCPS008.MH02 để xem thông tin giao dịch, hồ sơ liên quan và lịch sử xử lý. |
 | 4 | Xử lý | Nút | Cho phép Cán bộ kế toán/Admin cập nhật hướng xử lý với bản ghi sai lệch hoặc giao dịch chưa xác định. |

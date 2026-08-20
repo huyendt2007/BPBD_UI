@@ -1,4 +1,4 @@
-﻿#### 4.3.3.13. UC487-488 - Kiến nghị Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại xem xét lại quyết định hoàn trả, quyết định giảm mức hoàn trả
+﻿﻿#### 4.3.3.13. UC487-488 - Kiến nghị Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại xem xét lại quyết định hoàn trả, quyết định giảm mức hoàn trả
 
 ##### 4.3.3.13.1. Mục đích
 
@@ -60,7 +60,7 @@ flowchart TD
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Tham chiếu [DM_42]. Giá trị lọc gồm `Tất cả` và các giá trị thuộc [DM_42]. |
 | Từ ngày gửi | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |
 | Đến ngày gửi | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
-| **II. Bảng danh sách kết quả** | | | | |
+| **II. Bảng danh sách kết quả** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Căn giữa, tăng theo phân trang. |
 | Cột: Số văn bản kiến nghị | String(50) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị `-` khi chưa gửi. |
 | Cột: Loại quyết định bị kiến nghị | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
@@ -75,7 +75,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Hợp lệ): Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
 | 3 | Thêm mới | Button | Hệ thống mở **4.3.3.13.4. MH02 - Màn hình Thêm mới/Chỉnh sửa kiến nghị xem xét quyết định hoàn trả** ở chế độ thêm mới, trạng thái khởi tạo "Lưu nháp". |
@@ -131,8 +131,8 @@ flowchart TD
 | 3 | Gửi kiến nghị | Button | TH1 (Bỏ trống trường bắt buộc, bao gồm cả `Số văn bản kiến nghị`, `Ngày lập văn bản`, `Người ký`, `Chức vụ`): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép gửi. |
 |  |  |  | TH2 (`Ngày lập văn bản` lớn hơn ngày hiện tại): Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Không cho phép gửi. |
 |  |  |  | TH3 (Hợp lệ): Hệ thống lưu bản ghi, chuyển trạng thái sang "Đã gửi - Chờ phản hồi", ghi nhận ngày gửi là ngày hiện tại, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |
-| 4 | Tìm kiếm (Vụ việc hoàn trả liên quan) | Button | Hệ thống mở popup chuẩn tại **4.3.3.1.8. Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan** trong SRS Module Giải quyết yêu cầu bồi thường, tự điền tiêu chí bằng giá trị đang nhập tại trường `Vụ việc hoàn trả liên quan` và tự thực hiện tìm kiếm. Trường hợp không có kết quả, hiển thị [MSG-INF-BTNN-GQBT-002] tại vùng bảng kết quả. |
-| 5 | Tìm kiếm nâng cao | Button | Hệ thống mở popup chuẩn tại **4.3.3.1.8. Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan** trong SRS Module Giải quyết yêu cầu bồi thường để tìm theo nhiều tiêu chí khi không nhớ chính xác mã vụ việc hoàn trả hoặc số quyết định. |
+| 4 | Tìm kiếm (Vụ việc hoàn trả liên quan) | Button | Hệ thống mở popup chuẩn tại **4.3.3.1.8. Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan** trong SRS Module Giải quyết yêu cầu bồi thường, tự điền tiêu chí bằng giá trị đang nhập tại trường `Vụ việc hoàn trả liên quan` và tự thực hiện tìm kiếm. Trường hợp không có kết quả, hiển thị [MSG-INF-BTNN-GQBT-002] tại vùng bảng kết quả.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
+| 5 | Tìm kiếm nâng cao | Button | Hệ thống mở popup chuẩn tại **4.3.3.1.8. Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan** trong SRS Module Giải quyết yêu cầu bồi thường để tìm theo nhiều tiêu chí khi không nhớ chính xác mã vụ việc hoàn trả hoặc số quyết định.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 6 | Liên kết hồ sơ hoàn trả | Link | Chỉ hiển thị sau khi cán bộ chọn vụ việc hoàn trả từ popup hoặc khi mở bản ghi đã có liên kết. Khi bấm link, hệ thống mở màn hình xem chi tiết hồ sơ xem xét trách nhiệm hoàn trả ở cùng tab, chế độ chỉ xem. |
 | 7 | Tải lên | Button | Hệ thống mở trình chọn file cho `Tài liệu kiến nghị đính kèm`. |
 | 8 | Xem file | Link | Cho phép xem file tại một tab riêng. |

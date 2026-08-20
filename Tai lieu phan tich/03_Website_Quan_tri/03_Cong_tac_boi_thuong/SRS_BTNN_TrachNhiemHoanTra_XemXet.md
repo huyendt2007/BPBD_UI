@@ -1,4 +1,4 @@
-﻿# SRS Module Xem Xét Trách Nhiệm Hoàn Trả
+﻿﻿# SRS Module Xem Xét Trách Nhiệm Hoàn Trả
 
 ## 1. Thông Tin Chung
 
@@ -62,7 +62,7 @@ Người dùng thuộc nhóm có quyền quản lý công tác bồi thường t
 
 | STT | Tên trường | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 |---:|---|---|---|---|---|
-| 1 | Tìm kiếm nhanh | String(255) | Không | Trống | Nhập mã vụ việc bồi thường, mã vụ việc hoàn trả hoặc tên cán bộ. |
+| 1 | Tìm kiếm nhanh | String(255) | Không | Trống | Nhập mã vụ việc bồi thường, mã vụ việc hoàn trả hoặc tên cán bộ.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Trạng thái tiến trình | Enum(String(50)) | Không | Tất cả tiến trình | Giá trị: "Chờ thành lập hội đồng", "Đang họp hội đồng", "Chờ ban hành QĐ", "Đang thi hành", "Hoàn thành", "Không xem xét trách nhiệm hoàn trả". |
 | 3 | Số tiền cần thu hồi | Enum(String(50)) | Không | Tất cả số tiền | Giá trị: "Dưới 50 triệu", "Từ 50 triệu - 200 triệu", "Trên 200 triệu". |
 
@@ -88,7 +88,7 @@ Người dùng thuộc nhóm có quyền quản lý công tác bồi thường t
 
 | STT | Chức năng | Điều kiện | Xử lý |
 |---:|---|---|---|
-| 1 | Tìm kiếm | Có ít nhất một tiêu chí hoặc để trống toàn bộ tiêu chí | TH1 (Dữ liệu ngày/từ khóa không hợp lệ): Vi phạm quy tắc tương ứng trong mục 2, hệ thống hiển thị cảnh báo theo MessageList chung và không thực hiện tìm kiếm.<br>TH Hợp lệ: Hệ thống lọc danh sách theo tiêu chí nhập/chọn và cập nhật phân trang. |
+| 1 | Tìm kiếm | Có ít nhất một tiêu chí hoặc để trống toàn bộ tiêu chí | TH1 (Dữ liệu ngày/từ khóa không hợp lệ): Vi phạm quy tắc tương ứng trong mục 2, hệ thống hiển thị cảnh báo theo MessageList chung và không thực hiện tìm kiếm.<br>TH Hợp lệ: Hệ thống lọc danh sách theo tiêu chí nhập/chọn và cập nhật phân trang.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Xóa bộ lọc | Người dùng chọn nút Xóa bộ lọc | Hệ thống đưa các tiêu chí về giá trị mặc định và tải lại danh sách. |
 | 3 | Lập hồ sơ hoàn trả mới | Người dùng chọn nút Lập hồ sơ hoàn trả mới | Hệ thống mở MH02 - Popup Lập hồ sơ hoàn trả: Chọn vụ việc bồi thường. |
 | 4 | Kết xuất Excel | Danh sách đang có dữ liệu | Hệ thống kết xuất danh sách theo bộ lọc hiện tại, áp dụng [BR-EXP-040]. |

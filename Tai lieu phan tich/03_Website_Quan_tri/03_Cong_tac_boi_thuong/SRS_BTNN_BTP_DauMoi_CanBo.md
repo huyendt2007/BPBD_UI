@@ -1,4 +1,4 @@
-﻿#### 4.3.3.19. UC501-502 - Quản lý thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương
+﻿﻿#### 4.3.3.19. UC501-502 - Quản lý thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương
 
 ##### 4.3.3.19.1. Mục đích
 
@@ -50,7 +50,7 @@ flowchart TD
 | Tỉnh/Thành phố | Enum(String(100)) | Không | Tất cả | Tham chiếu [DM_13]. Giá trị lọc gồm `Tất cả` và các giá trị thuộc [DM_13]. |
 | Vai trò phụ trách | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Lãnh đạo phụ trách công tác BTNN<br>+ Công chức đầu mối |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Đang phụ trách<br>+ Đã ngừng phụ trách |
-| **II. Bảng danh sách kết quả** | | | | |
+| **II. Bảng danh sách kết quả** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Căn giữa, tăng theo phân trang. |
 | Cột: Tỉnh/Thành phố | Enum(String(100)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Tham chiếu [DM_13]. |
 | Cột: Đơn vị | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
@@ -67,7 +67,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1. |
+| 1 | Tìm kiếm | Button | Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
 | 3 | Thêm mới | Button | Hệ thống mở **4.3.3.19.4. MH02 - Màn hình Thêm mới/Chỉnh sửa đầu mối Lãnh đạo, công chức BTNN** ở chế độ thêm mới. |
 | 4 | Chỉnh sửa | Icon button | Hệ thống mở **4.3.3.19.4. MH02** ở chế độ chỉnh sửa. |

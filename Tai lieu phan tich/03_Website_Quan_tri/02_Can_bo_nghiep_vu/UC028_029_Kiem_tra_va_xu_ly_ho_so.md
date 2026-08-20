@@ -1,4 +1,4 @@
-﻿### 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK):
+﻿﻿### 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK):
 
 #### 4.3.2.1. UC028 & UC029 - Kiểm tra và Xử lý hồ sơ Đăng ký Biện pháp bảo đảm, Hợp đồng
 
@@ -79,7 +79,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Hệ thống truy vấn dữ liệu theo các điều kiện lọc đã nhập và hiển thị kết quả ra lưới danh sách.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | Hệ thống truy vấn dữ liệu theo các điều kiện lọc đã nhập và hiển thị kết quả ra lưới danh sách.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Đặt lại toàn bộ tiêu chí Bộ lọc về giá trị mặc định và tải lại danh sách kết quả. |
 | 3 | Từ chối | Nút | Từ chối hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH Hợp lệ: Mở **4.3.2.1.4. UC028_029.MH03 - Popup Từ chối hồ sơ** cho toàn bộ các hồ sơ đã chọn. |
 | 4 | Duyệt | Nút | Duyệt hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH2 (Phát hiện hồ sơ trùng lặp): Vi phạm **[BR-DK-029]**, hiển thị **[MSG-CFM-DK-010]**, cho phép chọn Tiếp tục hoặc Hủy.<br>TH Hợp lệ: Cập nhật trạng thái các hồ sơ đã chọn sang "Duyệt chờ ký" (tự động chuyển sang Tab 2), hiển thị **[MSG-SUC-DK-KT-001]** và loại bỏ các hồ sơ vừa thao tác khỏi danh sách Tab 1 hiện hành. |
@@ -97,7 +97,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Tương tự Tab 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | Tương tự Tab 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Tương tự Tab 1. |
 | 3 | Từ chối | Nút | Từ chối hàng loạt các hồ sơ đã tích chọn. Xử lý tương tự chức năng Từ chối tại Tab 1. |
 | 4 | Trình ký | Nút | Trình ký hàng loạt các hồ sơ đã tích chọn. Xử lý tương tự chức năng Trình ký tại Tab 1. |
@@ -113,7 +113,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Tương tự Tab 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | Tương tự Tab 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Tương tự Tab 1. |
 | 3 | Xem | Row Click | Luôn khả dụng. Mở **4.3.2.1.3. UC028_029.MH02**. |
 | 4 | Cập nhật (Icon dòng) | Icon | Luôn khả dụng (không áp dụng hạn chế theo Nguồn tiếp nhận, khác với icon Cập nhật ở Tab 1). Mở màn hình nhập liệu tương ứng loại hồ sơ (tham chiếu **[UC024]**) để Cán bộ chỉnh sửa lại thông tin theo đúng ý kiến/lý do trả lại của Lãnh đạo, sau đó gửi lại vào luồng xử lý. |

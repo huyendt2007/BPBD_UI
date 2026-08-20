@@ -1,4 +1,4 @@
-﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.8. UC508-510 - Quản lý câu hỏi và trả lời thường gặp
 
@@ -72,7 +72,7 @@ Nguồn UI: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_cau_hoi_faq.html`.
 | Tổng số câu hỏi | Integer(10) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị tổng số bản ghi đang không bị xóa mềm. |
 | Số câu hỏi chờ duyệt | Integer(10) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị số bản ghi ở trạng thái "Chờ duyệt". |
 | Số câu hỏi từ chối | Integer(10) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị số bản ghi ở trạng thái "Từ chối". |
-| **III. Bảng danh sách kết quả** | | | | |
+| **III. Bảng danh sách kết quả** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | - Chỉ đọc.<br>- Hiển thị số thứ tự dòng dữ liệu theo phân trang. |
 | Cột: Câu hỏi | Text(1000) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị nội dung câu hỏi dưới dạng liên kết mở **4.3.3.8.4. MH02 - Màn hình Chi tiết câu hỏi thường gặp**. |
 | Cột: Nhóm chủ đề | Enum(String(100)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Tham chiếu [DM_36]. |
@@ -88,11 +88,11 @@ Nguồn UI: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_cau_hoi_faq.html`.
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Nếu `Từ ngày tạo` lớn hơn `Đến ngày tạo`, vi phạm [BR-VAL-007]. Hệ thống hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Nếu `Từ ngày tạo` lớn hơn `Đến ngày tạo`, vi phạm [BR-VAL-007]. Hệ thống hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Không có dữ liệu phù hợp): Hệ thống hiển thị [MSG-INF-BTNN-FAQ-001] tại vùng lưới dữ liệu. |
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách câu hỏi theo `Từ khóa`, `Nhóm chủ đề`, `Trạng thái`, khoảng `Ngày tạo`, cập nhật lưới kết quả và hiển thị [MSG-SUC-BTNN-FAQ-001]. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm, đặt các bộ lọc về giá trị mặc định, đưa trang hiện tại về trang 1 và hiển thị [MSG-SUC-BTNN-FAQ-002]. |
-| 3 | Lọc theo KPI | Button | Hệ thống lọc nhanh danh sách theo nhóm thống kê được chọn: `Tất cả`, `Chờ duyệt`, `Từ chối`; đồng thời cập nhật trạng thái chọn của khối KPI. |
+| 3 | Lọc theo KPI | Button | Hệ thống lọc nhanh danh sách theo nhóm thống kê được chọn: `Tất cả`, `Chờ duyệt`, `Từ chối`; đồng thời cập nhật trạng thái chọn của khối KPI.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 4 | Thêm mới | Button | Hệ thống mở **4.3.3.8.5. MH03 - Màn hình Thêm mới/Chỉnh sửa câu hỏi thường gặp** ở chế độ thêm mới. |
 | 5 | Kết xuất Excel | Button | TH1 (Danh sách rỗng): Vi phạm [BR-EXP-040]. Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải file. |
 |  |  |  | TH Hợp lệ: Hệ thống kết xuất danh sách câu hỏi FAQ hiện hành ra file Excel theo tiêu chí lọc/sắp xếp hiện tại, áp dụng [BR-EXP-040] và hiển thị [MSG-SUC-BTNN-FAQ-003]. |

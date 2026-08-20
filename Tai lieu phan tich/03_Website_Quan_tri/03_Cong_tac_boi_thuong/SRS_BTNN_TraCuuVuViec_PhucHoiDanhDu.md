@@ -1,4 +1,4 @@
-﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.5. UC434-437 - Tra cứu phục hồi danh dự
 
@@ -84,7 +84,7 @@ Nguồn UI: `UI_Mockups/Website_Quan_tri/UC434_to_UC437/phuc_hoi_danh_du.html`
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Nếu "Cập nhật từ ngày" lớn hơn "Cập nhật đến ngày", vi phạm quy tắc [BR-VAL-007]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Nếu "Cập nhật từ ngày" lớn hơn "Cập nhật đến ngày", vi phạm quy tắc [BR-VAL-007]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Không có dữ liệu phù hợp): Hệ thống hiển thị thông tin [MSG-INF-BTNN-PHDD-001] trong vùng lưới kết quả, đưa tổng số bản ghi về 0 và không hiển thị nút phân trang. |
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách hồ sơ phục hồi danh dự theo các tiêu chí đang nhập/chọn, cập nhật lưới kết quả, đưa trang hiện tại về trang 1 và hiển thị [MSG-SUC-BTNN-PHDD-001]. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí `Mã vụ việc`, `Người bị thiệt hại`, `Cơ quan giải quyết bồi thường`, `Trạng thái giải quyết`, `Hình thức phục hồi danh dự`; đặt lại `Cập nhật từ ngày` là ngày đầu tháng hiện tại, `Cập nhật đến ngày` là ngày hiện tại; tải lại danh sách theo bộ lọc mặc định và hiển thị [MSG-SUC-BTNN-PHDD-002]. |

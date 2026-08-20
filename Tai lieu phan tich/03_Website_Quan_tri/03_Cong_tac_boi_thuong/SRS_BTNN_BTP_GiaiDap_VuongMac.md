@@ -1,4 +1,4 @@
-﻿#### 4.3.3.18. UC469-470 - Giải đáp vướng mắc trong việc áp dụng pháp luật về trách nhiệm bồi thường của Nhà nước
+﻿﻿#### 4.3.3.18. UC469-470 - Giải đáp vướng mắc trong việc áp dụng pháp luật về trách nhiệm bồi thường của Nhà nước
 
 ##### 4.3.3.18.1. Mục đích
 
@@ -48,7 +48,7 @@ flowchart TD
 | Đối tượng đề nghị | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Cơ quan giải quyết bồi thường<br>+ Tổ chức/cá nhân khác |
 | Từ ngày nhận đề nghị | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |
 | Đến ngày nhận đề nghị | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
-| **II. Bảng danh sách kết quả** | | | | |
+| **II. Bảng danh sách kết quả** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Căn giữa, tăng theo phân trang. |
 | Cột: Nội dung vướng mắc | Text(1000) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Rút gọn tối đa 100 ký tự kèm `...` nếu vượt quá; nội dung đầy đủ đặt tại thuộc tính `title`. |
 | Cột: Đối tượng đề nghị | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
@@ -62,7 +62,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Hợp lệ): Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
 | 3 | Thêm mới | Button | Hệ thống mở **4.3.3.18.4. MH02 - Màn hình Thêm mới/Chỉnh sửa giải đáp vướng mắc** ở chế độ thêm mới. |

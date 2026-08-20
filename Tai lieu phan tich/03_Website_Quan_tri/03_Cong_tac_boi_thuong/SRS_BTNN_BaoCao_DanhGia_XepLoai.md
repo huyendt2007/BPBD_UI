@@ -71,7 +71,7 @@ flowchart TD
 | Chưa hoàn thành đánh giá | Integer(10) | Không | Hệ thống tính | Chỉ đọc. Đếm số kỳ chấm điểm có trạng thái khác "Hoàn thành" trong điều kiện lọc hiện hành. |
 | Điểm Bộ Tư pháp trung bình | Decimal(5,1) | Không | Hệ thống tính | Chỉ đọc. Trung bình cộng `Điểm Bộ Tư pháp đánh giá` của các kỳ chấm điểm có dữ liệu điểm đánh giá. |
 | Tỷ lệ hoàn thành đánh giá | Decimal(5,2) | Không | Hệ thống tính | Chỉ đọc. Công thức: `Đã hoàn thành đánh giá / Tổng số đơn vị được đánh giá * 100`. Nếu mẫu số bằng 0 thì hiển thị `0%`. |
-| **III. Bảng kết quả tổng hợp theo đơn vị** | | | | |
+| **III. Bảng kết quả tổng hợp theo đơn vị** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Hiển thị số thứ tự bản ghi theo phân trang. |
 | Đơn vị Sở Tư pháp | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị tên đơn vị được đánh giá. |
 | Tỉnh/Thành phố | Enum(String(100)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Tham chiếu [DM_13]. |

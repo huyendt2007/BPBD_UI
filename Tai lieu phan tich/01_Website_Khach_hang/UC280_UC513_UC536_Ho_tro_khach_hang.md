@@ -1,4 +1,4 @@
-﻿### 4.1.20. UC536 - Tra cứu Văn bản Quy phạm Pháp luật
+﻿﻿### 4.1.20. UC536 - Tra cứu Văn bản Quy phạm Pháp luật
 
 #### 4.1.20.1. Mục đích
 \- Cho phép khách hàng tra cứu, tìm kiếm, xem chi tiết và tải xuống các văn bản quy phạm pháp luật (QPPL) liên quan đến hai lĩnh vực nghiệp vụ chính: Đăng ký biện pháp bảo đảm (BPBĐ) và Bồi thường nhà nước (BTNN).  
@@ -50,7 +50,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click chọn nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click chọn nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | \- TH1 (Không tìm thấy kết quả): Bộ lọc không khớp với bất kỳ văn bản nào trong CSDL. Lưới kết quả hiển thị thông báo: "Không có dữ liệu phù hợp." |
 | | | | \- TH Hợp lệ: Hệ thống thực hiện lọc gần đúng không phân biệt hoa thường theo các tiêu chí (Số văn bản, Ngày văn bản, Trích yếu, Cơ quan ban hành) của Tab nghiệp vụ hiện tại, cập nhật lại danh sách trên lưới. |
 | 2 | Xóa bộ lọc | Nút | \- Thao tác: NSD click chọn nút Xóa bộ lọc. |
@@ -159,7 +159,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click chọn nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click chọn nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | \- TH1 (Không tìm thấy kết quả): Bộ lọc không khớp với bất kỳ câu hỏi nào trong CSDL. Lưới danh sách hiển thị thông báo: "Không tìm thấy câu hỏi phù hợp." |
 | | | | \- TH Hợp lệ: Hệ thống thực hiện tìm kiếm gần đúng không phân biệt hoa thường theo từ khóa Tiêu đề câu hỏi của Tab nghiệp vụ hiện tại, cập nhật lại danh sách trên lưới. |
 | 2 | Xóa bộ lọc | Nút | \- Thao tác: NSD click chọn nút Xóa bộ lọc. |
@@ -289,7 +289,7 @@
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển Tab "Câu hỏi thường gặp"/"Văn bản QPPL" | Nút | Đổi Tab con đang chọn và tải lại Khu vực kết quả nhanh theo từ khóa hiện có trong ô tìm kiếm. |
-| 2 | Tìm kiếm nhanh (nhập ký tự) | Ô nhập | Mỗi lần NSD gõ ký tự, hệ thống tự động lọc lại và hiển thị tối đa 6 kết quả phù hợp nhất của Tab con đang chọn; không giới hạn số lượng kết quả tồn tại phía sau (chỉ hiển thị 6 kết quả đầu, không có cách xem thêm).<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 2 | Tìm kiếm nhanh (nhập ký tự) | Ô nhập | Mỗi lần NSD gõ ký tự, hệ thống tự động lọc lại và hiển thị tối đa 6 kết quả phù hợp nhất của Tab con đang chọn; không giới hạn số lượng kết quả tồn tại phía sau (chỉ hiển thị 6 kết quả đầu, không có cách xem thêm).<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 3 | Tạo yêu cầu hỗ trợ | Nút | Mở **4.1.22.5. UC_HTKH.MH03 - Popup Tạo yêu cầu hỗ trợ (Khách vãng lai)**. |
 
 ---

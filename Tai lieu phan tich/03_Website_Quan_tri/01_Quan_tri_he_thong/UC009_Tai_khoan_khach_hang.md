@@ -1,4 +1,4 @@
-﻿#### 4.3.1.4. Quản lý tài khoản Khách hàng
+﻿﻿#### 4.3.1.4. Quản lý tài khoản Khách hàng
 
 ##### 4.3.1.4.1. UC009.01 - Tra cứu danh sách tài khoản khách hàng
 
@@ -60,7 +60,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Thực hiện tìm kiếm và tải lại danh sách khách hàng theo các tiêu chí bộ lọc. Tìm kiếm gần đúng theo Mã khách hàng, Tên, Email, Số điện thoại; tìm kiếm chính xác theo Trung tâm đăng ký, Loại khách hàng, Loại tài khoản, Nguồn xác thực, Phân loại khách hàng, Trạng thái; lọc theo khoảng Ngày tạo từ ngày đến ngày.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Button | Thực hiện tìm kiếm và tải lại danh sách khách hàng theo các tiêu chí bộ lọc. Tìm kiếm gần đúng theo Mã khách hàng, Tên, Email, Số điện thoại; tìm kiếm chính xác theo Trung tâm đăng ký, Loại khách hàng, Loại tài khoản, Nguồn xác thực, Phân loại khách hàng, Trạng thái; lọc theo khoảng Ngày tạo từ ngày đến ngày.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Link | Reset toàn bộ các ô nhập liệu và dropdown về trạng thái mặc định ban đầu và tải lại danh sách đầy đủ. |
 | 3 | Thêm mới | Button | Mở màn hình Thêm mới tài khoản khách hàng (UC009.02). |
 | 4 | Chỉnh sửa | Icon | Chỉ hiển thị ở cột Thao tác. Khi click, mở màn hình Sửa tài khoản khách hàng (UC009.03) tương ứng. |

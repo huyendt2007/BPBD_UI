@@ -1,4 +1,4 @@
-﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.5. UC - Tra cứu vụ việc
 
@@ -165,7 +165,7 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển tab | Tab | Hệ thống tải danh sách vụ việc theo tab được chọn, đặt lại trang hiện tại về trang 1. Dữ liệu tab `Phục hồi danh dự` và tab `Yêu cầu bồi thường` là 02 tập dữ liệu loại trừ nhau theo phạm vi dữ liệu đã mô tả. |
-| 2 | Tìm kiếm | Button | Hệ thống lọc danh sách vụ việc trong tab hiện hành theo các tiêu chí đang nhập/chọn. Nếu khoảng ngày không hợp lệ, áp dụng [BR-VAL-007] và không thực hiện tìm kiếm. Nếu không có dữ liệu phù hợp, hiển thị trạng thái không có kết quả trong vùng bảng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính `style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"` kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
+| 2 | Tìm kiếm | Button | Hệ thống lọc danh sách vụ việc trong tab hiện hành theo các tiêu chí đang nhập/chọn. Nếu khoảng ngày không hợp lệ, áp dụng [BR-VAL-007] và không thực hiện tìm kiếm. Nếu không có dữ liệu phù hợp, hiển thị trạng thái không có kết quả trong vùng bảng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí đã nhập, đưa các combobox về `Tất cả`, đưa danh sách về trang 1 và tải lại dữ liệu mặc định của tab hiện hành. |
 | 4 | Kết xuất Excel | Button | Hệ thống kết xuất danh sách kết quả hiện hành của tab đang chọn theo đúng tiêu chí lọc và sắp xếp hiện tại. Nếu danh sách rỗng, áp dụng [BR-EXP-040] và không tải file. |
 | 5 | Sắp xếp cột | Header cột | Người dùng click tiêu đề cột có hỗ trợ sắp xếp để đảo chiều tăng/giảm hoặc chọn cột sắp xếp mới. |

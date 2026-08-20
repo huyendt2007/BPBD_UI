@@ -1,4 +1,4 @@
-﻿### 4.3.2.Y. UC-BS-LD - Ký số/ký duyệt yêu cầu cung cấp bản sao văn bản chứng nhận
+﻿﻿### 4.3.2.Y. UC-BS-LD - Ký số/ký duyệt yêu cầu cung cấp bản sao văn bản chứng nhận
 
 #### 4.3.2.Y.1. Mục đích
 
@@ -84,7 +84,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH Hợp lệ: Tìm kiếm trong phạm vi hồ sơ thuộc quyền ký của Lãnh đạo. |
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về mặc định và tải lại danh sách hồ sơ "Chờ duyệt". |
 | 3 | Duyệt | Nút | TH1 (Chưa chọn hồ sơ hợp lệ): Vi phạm [BR-BS-003], hiển thị [MSG-ERR-BS-005], không thực hiện duyệt. |
@@ -197,7 +197,7 @@ Hiển thị chung mọi hồ sơ ở trạng thái "Chờ ký", gồm: hồ sơ
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH Hợp lệ: Tìm kiếm trong phạm vi hồ sơ thuộc quyền ký của Lãnh đạo. |
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về mặc định và tải lại danh sách hồ sơ "Chờ ký". |
 | 3 | Ký số | Nút | Chỉ hiển thị (ẩn hẳn, không phải dạng mờ) đối với hồ sơ Loại "Bản sao điện tử"; đối với hồ sơ Loại "Bản sao giấy", hệ thống hiển thị nút "Ký duyệt" thay thế tại đúng vị trí đó, không hiển thị đồng thời cả 2 nút trên một dòng. |

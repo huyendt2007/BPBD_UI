@@ -1,4 +1,4 @@
-﻿#### 4.3.2.15. Quản lý yêu cầu và cấp mã số sử dụng CSDL
+﻿﻿#### 4.3.2.15. Quản lý yêu cầu và cấp mã số sử dụng CSDL
 
 ##### 4.3.2.15.1. Tổng quan & Mục đích
 
@@ -65,7 +65,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Hệ thống lọc lại Bảng danh sách kết quả theo đúng các tiêu chí đang thiết lập ở Bộ lọc tìm kiếm. Từ khóa rỗng hiển thị lại toàn bộ danh sách mặc định.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | Hệ thống lọc lại Bảng danh sách kết quả theo đúng các tiêu chí đang thiết lập ở Bộ lọc tìm kiếm. Từ khóa rỗng hiển thị lại toàn bộ danh sách mặc định.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Đặt lại toàn bộ tiêu chí Bộ lọc tìm kiếm về giá trị mặc định (riêng Từ ngày/Đến ngày trở về khoảng 2 tháng gần nhất tính đến ngày hiện tại) và làm mới Bảng danh sách kết quả. |
 | 3 | Tạo mới yêu cầu | Nút | Mở **4.3.2.15.3. UC015_017.MH02 - Popup Tạo mới/Chỉnh sửa yêu cầu cấp mã số sử dụng CSDL** ở chế độ Tạo mới. |
 | 4 | Kết xuất Excel | Nút | Rule Export Excel - **[BR-EXP-040]**.<br>Xuất tệp Excel theo đúng kết quả tìm kiếm/lọc hiện hành trên Bảng danh sách kết quả.<br>Nếu danh sách rỗng, hiển thị **[MSG-WRN-SYS-001]** và không thực hiện xuất tệp. |

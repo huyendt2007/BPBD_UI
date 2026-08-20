@@ -1,4 +1,4 @@
-﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.0. UC - Tiếp nhận yêu cầu bồi thường
 
@@ -77,7 +77,7 @@ Hình ảnh giao diện sẽ được cập nhật sau khi có mockup màn Danh 
 | Tìm kiếm | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Xóa bộ lọc | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Tiếp nhận mới | - | Không | Hiển thị | Nằm phía trên bên phải bảng danh sách. Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
-| **II. Bảng danh sách vụ việc** | | | | |
+| **II. Bảng danh sách vụ việc** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Bảng danh sách vụ việc | Text(1000) | Không | 20 bản ghi/trang | Chỉ hiển thị vụ việc thuộc phạm vi xử lý của người dùng đăng nhập. Sắp xếp mặc định theo `Thời điểm tiếp nhận` giảm dần.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã vụ việc | String(50) | Có | Theo dữ liệu | Chỉ đọc. Hiển thị đậm, ví dụ `VVBT-2026-xxx`. |
@@ -96,7 +96,7 @@ Hình ảnh giao diện sẽ được cập nhật sau khi có mockup màn Danh 
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính `style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"` kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
+| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách theo `Mã vụ việc`, `Tên vụ việc`, `Họ và tên người yêu cầu`, `Hình thức tiếp nhận hồ sơ`, `Lĩnh vực phát sinh thiệt hại`, `Trạng thái`, `Từ ngày`, `Đến ngày` đang nhập/chọn (các tiêu chí kết hợp theo AND), hiển thị kết quả lên bảng và đưa về trang 1. Nếu không có dữ liệu phù hợp, hiển thị trạng thái rỗng theo chuẩn danh sách. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa `Mã vụ việc`, `Tên vụ việc`, `Họ và tên người yêu cầu`, đưa `Hình thức tiếp nhận hồ sơ`/`Lĩnh vực phát sinh thiệt hại`/`Trạng thái` về `Tất cả`, đặt lại `Từ ngày` = ngày 01 của tháng hiện tại và `Đến ngày` = ngày hiện tại, tải lại danh sách theo trang 1. |
 | 3 | Tiếp nhận mới | Button | Hệ thống mở **4.3.3.0.4. MH02 - Màn hình Tiếp nhận YCBT** ở trạng thái rỗng để nhập mới. |

@@ -1,4 +1,4 @@
-﻿## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
+﻿﻿## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
 
 ### 4.3.2.2. UC-CCTT-CB - Xử lý yêu cầu cung cấp thông tin
 
@@ -76,7 +76,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH Hợp lệ: Hệ thống tìm kiếm theo bộ lọc trong phạm vi hồ sơ thuộc quyền xử lý của Cán bộ. Nếu không có dữ liệu phù hợp, hiển thị thông báo theo [MSG-WRN-SYS-001] hoặc trạng thái rỗng theo chuẩn danh sách. |
 | 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Trạng thái hồ sơ về "Chờ duyệt/Chờ giải quyết", Tiêu chí yêu cầu cung cấp thông tin về "Tất cả", Từ ngày/Đến ngày về mặc định và tải lại danh sách mặc định. |
 | 3 | Xử lý hồ sơ | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-002], không mở màn hình xử lý. |
@@ -121,7 +121,7 @@
 | File PDF dự thảo | File | Không | Theo kết xuất | \- Hiển thị ở đầu khu vực kết quả tra cứu sau khi Cán bộ bấm "Kết xuất kết quả", để Cán bộ không phải cuộn qua danh sách kết quả dài mới xem/tải/trình file.<br>\- File được sinh theo đúng mẫu `docs/Bieu mau/GCN_Mau Giay chung nhan CCTT.pdf`.<br>\- File gồm lá mặt/trang ký Mẫu số 10d theo mục 4.3.2.2.7.2 và phần kết quả cung cấp thông tin/phụ lục phía sau theo mục 4.3.2.2.7.3.<br>\- Nếu tra cứu có dữ liệu, chi tiết hồ sơ kết quả tra cứu được hiển thị theo cùng cấu trúc tham chiếu tại mục 4.3.2.2.7.4.<br>\- Nếu tra cứu không có dữ liệu, file PDF hiển thị [MSG-WRN-CCTT-001] theo mục 4.3.2.2.7.3, không đính kèm chi tiết hồ sơ.<br>\- Đây là file dự thảo, chưa phải file ký số. |
 | Thời điểm kết xuất | Datetime | Không | Theo kết xuất | Chỉ đọc. Thời điểm hệ thống sinh file PDF dự thảo. |
 | Phiên bản PDF trình ký | String(50) | Không | Theo hồ sơ | Chỉ hiển thị sau khi Cán bộ trình ký thành công. Phiên bản này bị khóa theo [BR-CCTT-004]. |
-| **IV. Kết quả tra cứu** | | | | |
+| **IV. Kết quả tra cứu** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Trạng thái tra cứu | Enum(String(50)) | Không | Chưa tra cứu | \- Chỉ đọc.<br>\- Các giá trị gồm:<br>\- Chưa tra cứu<br>\- Đang tra cứu<br>\- Có kết quả<br>\- Không có kết quả<br>\- Lỗi dịch vụ |
 | Thời điểm tra cứu | Datetime | Không | Theo lần tra cứu | Chỉ đọc. Hiển thị sau khi Cán bộ bấm "Tra cứu". |
 | Tiêu chí tra cứu thực tế | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc. Ghi nhận đúng tiêu chí đã sử dụng khi gọi dịch vụ tra cứu. |
@@ -135,7 +135,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tra cứu | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-002], không gọi dịch vụ tra cứu.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tra cứu | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-002], không gọi dịch vụ tra cứu.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH2 (Cán bộ không có quyền xử lý): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-003], không gọi dịch vụ tra cứu. |
 |  |  |  | TH3 (Dữ liệu tra cứu không khớp dữ liệu đã khóa trong hồ sơ): Vi phạm [BR-CCTT-001], hiển thị [MSG-ERR-CCTT-001], không gọi dịch vụ tra cứu. |
 |  |  |  | TH4 (Dịch vụ tra cứu lỗi hoặc không khả dụng): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-004], ghi nhận trạng thái lỗi vào hồ sơ và không cho phép kết xuất PDF/trình ký. |

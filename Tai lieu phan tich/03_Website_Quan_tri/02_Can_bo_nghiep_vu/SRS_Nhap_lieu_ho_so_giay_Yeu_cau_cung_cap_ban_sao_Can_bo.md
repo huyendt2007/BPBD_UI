@@ -1,4 +1,4 @@
-﻿# UC-BS-GIAY - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao văn bản chứng nhận
+﻿﻿# UC-BS-GIAY - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao văn bản chứng nhận
 
 ## 1. Tổng quan
 
@@ -138,7 +138,7 @@ Khi mở màn hình (cả chế độ nhập mới và chế độ sửa sau tr�
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tra cứu hồ sơ gốc | Nút | Điều kiện hiển thị: Hồ sơ ở trạng thái "Chờ giải quyết" hoặc "Bị trả lại". |
+| 1 | Tra cứu hồ sơ gốc | Nút | Điều kiện hiển thị: Hồ sơ ở trạng thái "Chờ giải quyết" hoặc "Bị trả lại".<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH1 (Bỏ trống Số đăng ký): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001]. |
 |  |  |  | TH2 (Số đăng ký không tồn tại): Vi phạm [BR-BS-012], hiển thị [MSG-ERR-BS-010], không lưu khóa tham chiếu. |
 |  |  |  | TH3 (Hồ sơ gốc chưa có hiệu lực pháp lý): Vi phạm [BR-BS-012], hiển thị [MSG-ERR-BS-011], không lưu khóa tham chiếu. |

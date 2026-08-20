@@ -1,4 +1,4 @@
-﻿#### 4.3.3.20. UC503/UCPS018 - Quản lý thông tin từ các CSDL có liên quan đến công tác BTNN
+﻿﻿#### 4.3.3.20. UC503/UCPS018 - Quản lý thông tin từ các CSDL có liên quan đến công tác BTNN
 
 ##### 4.3.3.20.1. Mục đích
 
@@ -52,7 +52,7 @@ flowchart TD
 | Loại CSDL nguồn | Enum(String(100)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ CSDL về bản án, quyết định của Tòa án<br>+ CSDL quốc gia về thủ tục hành chính (TTHC)<br>+ CSDL quốc gia về khiếu nại, tố cáo<br>+ Khác |
 | Từ ngày trích xuất | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |
 | Đến ngày trích xuất | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
-| **II. Bảng danh sách kết quả** | | | | |
+| **II. Bảng danh sách kết quả** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Căn giữa, tăng theo phân trang. |
 | Cột: Tên/Mã bản ghi tham chiếu | String(100) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
 | Cột: Loại CSDL nguồn | Enum(String(100)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
@@ -66,7 +66,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Hợp lệ): Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
 | 3 | Thêm mới | Button | Hệ thống mở **4.3.3.20.4. MH02 - Màn hình Thêm mới/Chỉnh sửa thông tin CSDL liên quan BTNN** ở chế độ thêm mới. |

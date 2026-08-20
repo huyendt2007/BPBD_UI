@@ -1,4 +1,4 @@
-﻿### 4.3.2.11. UC260_to_UC262 - Phân hệ Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo
+﻿﻿### 4.3.2.11. UC260_to_UC262 - Phân hệ Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo
 
 #### 4.3.2.11.1. Tổng quan & Mục đích
 Phân hệ **Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo** số hóa toàn bộ quy trình tiếp nhận, theo dõi, phân công, xử lý và cập nhật kết quả giải quyết các đơn thư khiếu nại, tố cáo, kiến nghị, phản ánh, yêu cầu cung cấp thông tin liên quan đến đăng ký biện pháp bảo đảm (BPBĐ) bằng động sản trực thuộc thẩm quyền của Cục Đăng ký quốc gia giao dịch bảo đảm (NRAST) - Bộ Tư pháp.
@@ -189,7 +189,7 @@ Màn hình cung cấp giao diện lọc tìm kiếm collapsible phía trên và 
 ###### Chức năng trên màn hình:
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | - Xử lý: Hệ thống lấy dữ liệu lọc tìm kiếm từ các trường nhập liệu và thực hiện truy vấn: |
 |  |  |  | - TH1 (Không tìm thấy dữ liệu): Không có bản ghi nào khớp các tiêu chí lọc. Hệ thống hiển thị thông báo: "Không tìm thấy hồ sơ phù hợp." ở giữa bảng danh sách. |
 |  |  |  | - TH Hợp lệ: Hệ thống trả về danh sách hồ sơ khớp điều kiện lọc (chỉ lọc các hồ sơ chưa xóa `isDeleted = 0`), hiển thị lên Grid kết quả, phân trang 20 dòng/trang, sắp xếp mặc định theo Ngày tiếp nhận giảm dần, đồng thời hiển thị thông báo Toast thành công: "Đã lọc danh sách kết quả". |
