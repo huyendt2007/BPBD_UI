@@ -55,7 +55,7 @@
 | Loại tài sản bảo đảm | Enum(String(50)) | Không | Tất cả | Tham chiếu **[DM_07]**. |
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Rule logic khoảng ngày - **[BR-VAL-007]**. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Rule logic khoảng ngày - **[BR-VAL-007]**. |
-| **II. Bảng danh sách kết quả** | - | \- | 10 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>**Lưu ý phân quyền dữ liệu:** Chỉ hiển thị hồ sơ được định tuyến/tiếp nhận bởi Trung tâm đăng ký giao dịch, tài sản mà Cán bộ đang đăng nhập trực thuộc.<br>\- Cho phép chọn phân trang **10, 20, 50, 100** bản ghi/trang.<br>\- Mặc định sắp xếp theo Thời điểm đăng ký giảm dần; cho phép click tiêu đề cột Thời điểm đăng ký, Tên bên bảo đảm, Tên bên nhận bảo đảm để đổi chiều sắp xếp. |
+| **II. Bảng danh sách kết quả** | - | \- | 10 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>**Lưu ý phân quyền dữ liệu:** Chỉ hiển thị hồ sơ được định tuyến/tiếp nhận bởi Trung tâm đăng ký giao dịch, tài sản mà Cán bộ đang đăng nhập trực thuộc.<br>\- Cho phép chọn phân trang **10, 20, 50, 100** bản ghi/trang.<br>\- Mặc định sắp xếp theo Thời điểm đăng ký giảm dần; cho phép click tiêu đề cột Thời điểm đăng ký, Tên bên bảo đảm, Tên bên nhận bảo đảm để đổi chiều sắp xếp.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: Checkbox | Boolean | \- | \- | Hiển thị ở cả 3 Tab, nhưng chỉ thực sự phát huy tác dụng thao tác hàng loạt (Duyệt/Từ chối/Trình ký) ở Tab 1 (Chờ duyệt) và Tab 2 (Duyệt chờ ký); ở Tab 3 (Bị trả lại) không có thanh công cụ thao tác hàng loạt tương ứng. |
 | Cột: STT | Integer(10) | \- | \- | Số thứ tự tăng dần theo trang hiện hành. |
 | Cột: Thời điểm đăng ký | Datetime | \- | \- | Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
@@ -79,7 +79,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Hệ thống truy vấn dữ liệu theo các điều kiện lọc đã nhập và hiển thị kết quả ra lưới danh sách. |
+| 1 | Tìm kiếm | Nút | Hệ thống truy vấn dữ liệu theo các điều kiện lọc đã nhập và hiển thị kết quả ra lưới danh sách.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Đặt lại toàn bộ tiêu chí Bộ lọc về giá trị mặc định và tải lại danh sách kết quả. |
 | 3 | Từ chối | Nút | Từ chối hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH Hợp lệ: Mở **4.3.2.1.4. UC028_029.MH03 - Popup Từ chối hồ sơ** cho toàn bộ các hồ sơ đã chọn. |
 | 4 | Duyệt | Nút | Duyệt hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH2 (Phát hiện hồ sơ trùng lặp): Vi phạm **[BR-DK-029]**, hiển thị **[MSG-CFM-DK-010]**, cho phép chọn Tiếp tục hoặc Hủy.<br>TH Hợp lệ: Cập nhật trạng thái các hồ sơ đã chọn sang "Duyệt chờ ký" (tự động chuyển sang Tab 2), hiển thị **[MSG-SUC-DK-KT-001]** và loại bỏ các hồ sơ vừa thao tác khỏi danh sách Tab 1 hiện hành. |
@@ -97,7 +97,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Tương tự Tab 1. |
+| 1 | Tìm kiếm | Nút | Tương tự Tab 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Tương tự Tab 1. |
 | 3 | Từ chối | Nút | Từ chối hàng loạt các hồ sơ đã tích chọn. Xử lý tương tự chức năng Từ chối tại Tab 1. |
 | 4 | Trình ký | Nút | Trình ký hàng loạt các hồ sơ đã tích chọn. Xử lý tương tự chức năng Trình ký tại Tab 1. |
@@ -113,7 +113,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Tương tự Tab 1. |
+| 1 | Tìm kiếm | Nút | Tương tự Tab 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Tương tự Tab 1. |
 | 3 | Xem | Row Click | Luôn khả dụng. Mở **4.3.2.1.3. UC028_029.MH02**. |
 | 4 | Cập nhật (Icon dòng) | Icon | Luôn khả dụng (không áp dụng hạn chế theo Nguồn tiếp nhận, khác với icon Cập nhật ở Tab 1). Mở màn hình nhập liệu tương ứng loại hồ sơ (tham chiếu **[UC024]**) để Cán bộ chỉnh sửa lại thông tin theo đúng ý kiến/lý do trả lại của Lãnh đạo, sau đó gửi lại vào luồng xử lý. |

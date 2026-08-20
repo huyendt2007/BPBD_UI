@@ -173,7 +173,7 @@ Màn hình cung cấp giao diện lọc tìm kiếm collapsible phía trên và 
 | Ngày tiếp nhận: Từ ngày | Date | Không | Trống | - Lọc khoảng thời gian tiếp nhận. Định dạng: dd/mm/yyyy. Ràng buộc: Nhỏ hơn hoặc bằng Đến ngày. |
 | Ngày tiếp nhận: Đến ngày | Date | Không | Trống | - Lọc khoảng thời gian tiếp nhận. Định dạng: dd/mm/yyyy. Ràng buộc: Lớn hơn hoặc bằng Từ ngày. |
 | Quá hạn xử lý | Boolean | Không | Uncheck | Control UI: Checkbox.<br>- Gồm:<br>- Check: Chỉ hiển thị các hồ sơ quá hạn xử lý và chưa hoàn thành giải quyết.<br>- Uncheck: Hiển thị cả hồ sơ đúng hạn và quá hạn. |
-| **II. Bảng danh sách kết quả** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh sách kết quả tìm kiếm dưới dạng bảng biểu.<br>- Phân trang mặc định **20 bản ghi/trang**.<br>- Sắp xếp mặc định: Ngày tiếp nhận giảm dần. |
+| **II. Bảng danh sách kết quả** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh sách kết quả tìm kiếm dưới dạng bảng biểu.<br>- Phân trang mặc định **20 bản ghi/trang**.<br>- Sắp xếp mặc định: Ngày tiếp nhận giảm dần.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | Integer(10) | - | - | - Căn giữa.<br>- Số thứ tự dòng trên lưới. |
 | Cột: Mã hồ sơ | String(50) | - | - | - Mã hồ sơ tiếp công dân. Hiển thị dạng đường liên kết (Link). Khi click vào sẽ mở màn hình Chỉnh sửa (UC260.MH01) hoặc màn hình Xem chi tiết (UC260.MH02) tùy theo trạng thái hồ sơ đã khóa hay chưa. |
 | Cột: Ngày tiếp nhận | Date | - | - | - Ngày tiếp nhận hồ sơ. Định dạng dd/mm/yyyy. |
@@ -189,7 +189,7 @@ Màn hình cung cấp giao diện lọc tìm kiếm collapsible phía trên và 
 ###### Chức năng trên màn hình:
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm. |
+| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | - Xử lý: Hệ thống lấy dữ liệu lọc tìm kiếm từ các trường nhập liệu và thực hiện truy vấn: |
 |  |  |  | - TH1 (Không tìm thấy dữ liệu): Không có bản ghi nào khớp các tiêu chí lọc. Hệ thống hiển thị thông báo: "Không tìm thấy hồ sơ phù hợp." ở giữa bảng danh sách. |
 |  |  |  | - TH Hợp lệ: Hệ thống trả về danh sách hồ sơ khớp điều kiện lọc (chỉ lọc các hồ sơ chưa xóa `isDeleted = 0`), hiển thị lên Grid kết quả, phân trang 20 dòng/trang, sắp xếp mặc định theo Ngày tiếp nhận giảm dần, đồng thời hiển thị thông báo Toast thành công: "Đã lọc danh sách kết quả". |

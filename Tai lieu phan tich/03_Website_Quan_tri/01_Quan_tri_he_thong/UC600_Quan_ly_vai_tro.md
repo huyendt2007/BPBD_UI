@@ -1,4 +1,4 @@
-## 4.3 Webite Quản trị
+﻿## 4.3 Webite Quản trị
 
 ### 4.3.1 Dành cho Quản trị hệ thống:
 
@@ -31,7 +31,7 @@
 | **Bộ lọc**         |                 |            |             |                                                                                         |
 | Tìm kiếm nhanh           | String(255) | Không     | Trống      | Control UI: Textbox.<br>Hệ thống lọc danh sách vai trò tức thời (live-search) theo từ khóa nhập vào. |
 | Trạng thái               | Enum(String(50)) | Không     | Tất cả      | Control UI: Hộp chọn.<br>Lọc danh sách vai trò theo trạng thái, gồm:<br>- Tất cả<br>- Hoạt động<br>- Ngừng hoạt động |
-| **Lưới dữ liệu** |                 |            |             |                                                                                         |
+| **Lưới dữ liệu** |                 |            |             |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Tên vai trò              | Enum(String(50)) | \- | \- | Hiển thị tên vai trò.                                                               |
 | Mô tả                    | Text(2000) | \- | \- | Hiển thị mô tả của vai trò.                                                             |
 | Trạng thái               | Enum(String(50)) | \- | \- | Hiển thị trạng thái vai trò (Hoạt động/Ngừng hoạt động).                                |
@@ -43,7 +43,7 @@
 | Tab Danh sách người dùng được gán | - | \- | \- | Hiển thị danh sách tài khoản (Khách hàng/Cán bộ/Cơ quan có thẩm quyền theo đúng `Loại tài khoản áp dụng` của vai trò đang xem) đang được gán vai trò này. |
 | Tìm kiếm người dùng      | String(255) | Không     | Trống      | Control UI: Textbox.<br>Lọc nhanh (live-search) danh sách theo Họ và tên/Tên đăng nhập/Email/Số điện thoại. |
 | Nút: Thêm người dùng     | - | \- | \- | Control UI: Nút bấm.<br>Mở popup Thêm người dùng vào vai trò (UC600.06) để chọn thêm tài khoản gán vào vai trò đang xem. |
-| Bảng danh sách người dùng được gán | - | \- | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị. |
+| Bảng danh sách người dùng được gán | - | \- | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: Họ và tên/Tên tổ chức | String(255) | \- | Theo bản ghi | Chỉ đọc.<br>Họ và tên (nếu là tài khoản Cá nhân/Cán bộ) hoặc Tên tổ chức (nếu là tài khoản Tổ chức). |
 | Cột: Tên đăng nhập        | String(255) | \- | Theo bản ghi | Chỉ đọc.<br>Tên đăng nhập của tài khoản. |
 | Cột: Loại tài khoản       | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc.<br>Hiển thị Cá nhân/Tổ chức nếu vai trò áp dụng cho Khách hàng, hoặc Cán bộ/Cơ quan có thẩm quyền tương ứng. |
@@ -56,14 +56,14 @@
 
 | STT | Tên chức năng | Định dạng  | Mô tả                                        |
 | :-- | :--------------- | :------------ | :--------------------------------------------- |
-| 1   | Tìm kiếm       | Nút          | Lọc kết quả trên lưới.                   |
+| 1   | Tìm kiếm       | Nút          | Lọc kết quả trên lưới.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2   | Thêm mới       | Nút          | Mở màn hình Thêm mới vai trò (UC600.02). |
 | 3   | Sửa             | Icon (Lưới) | Mở màn hình Sửa vai trò (UC600.03).       |
 | 4   | Xóa             | Icon (Lưới) | Gọi chức năng xóa (UC600.04).              |
 | 5   | Phân quyền      | Icon (Lưới) | Mở màn hình Phân quyền theo vai trò (UC600.05). |
-| 6   | Tìm kiếm quyền  | Textbox      | \- Thao tác: QTHT nhập từ khóa tại textbox Tìm kiếm quyền ở Tab Phân quyền.<br>\- Xử lý: Hệ thống thực hiện lọc (live-filter) danh sách chức năng trên cây quyền hạn chỉ đọc. |
+| 6   | Tìm kiếm quyền  | Textbox      | \- Thao tác: QTHT nhập từ khóa tại textbox Tìm kiếm quyền ở Tab Phân quyền.<br>\- Xử lý: Hệ thống thực hiện lọc (live-filter) danh sách chức năng trên cây quyền hạn chỉ đọc.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 7   | Chuyển Tab Danh sách người dùng được gán | Tab | Hiển thị bảng danh sách tài khoản đang được gán vai trò đang xem, theo đúng mô tả tại mục Panel phải. |
-| 8   | Tìm kiếm người dùng | Textbox | \- Thao tác: QTHT nhập từ khóa tại textbox Tìm kiếm người dùng.<br>\- Xử lý: Hệ thống lọc (live-search) bảng danh sách người dùng được gán theo từ khóa. |
+| 8   | Tìm kiếm người dùng | Textbox | \- Thao tác: QTHT nhập từ khóa tại textbox Tìm kiếm người dùng.<br>\- Xử lý: Hệ thống lọc (live-search) bảng danh sách người dùng được gán theo từ khóa.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 9   | Thêm người dùng | Nút | Mở popup Thêm người dùng vào vai trò (UC600.06). |
 | 10  | Gỡ khỏi vai trò | Icon (Lưới) | Gỡ 1 tài khoản khỏi vai trò đang xem, chi tiết xem tại Cột: Thao tác. |
 
@@ -216,7 +216,7 @@
 
 | STT | Tên chức năng  | Định dạng | Mô tả |
 | :-- | :---------------- | :----------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Tìm kiếm | Textbox | \- Thao tác: QTHT nhập từ khóa tìm kiếm.<br>\- Xử lý: Hệ thống thực hiện lọc (live-filter) danh sách chức năng hiển thị trên cây. Các node không khớp sẽ bị ẩn đi, các node khớp sẽ được highlight và hiển thị kèm các node cha trực thuộc. |
+| 1   | Tìm kiếm | Textbox | \- Thao tác: QTHT nhập từ khóa tìm kiếm.<br>\- Xử lý: Hệ thống thực hiện lọc (live-filter) danh sách chức năng hiển thị trên cây. Các node không khớp sẽ bị ẩn đi, các node khớp sẽ được highlight và hiển thị kèm các node cha trực thuộc.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2   | Danh sách chức năng | Checkbox | \- Thao tác: QTHT bấm chọn hoặc bỏ chọn checkbox tại các node chức năng trên cây.<br>\- Xử lý: Hệ thống thay đổi trạng thái chọn của node và cập nhật lại số lượng đếm tại badge `Đã chọn: X/Y` tức thời. Thực hiện cascade select tự động lên các node con hoặc node cha liên quan. |
 | 3   | Cập nhật | Nút | \- Thao tác: QTHT click nút **Cập nhật**.<br>\- Xử lý:<br>  + Hệ thống lưu thông tin các chức năng được tích chọn tương ứng với mã vai trò đang cấu hình vào CSDL.<br>  + Hiển thị Toast thông báo thành công: *"Cập nhật thông tin phân quyền thành công!"*.<br>  + Đóng popup modal và tải lại dữ liệu của màn hình chính. |
 | 4   | Hủy | Nút / Icon X | \- Thao tác: QTHT click nút **Hủy** hoặc Icon **X** đóng popup.<br>\- Xử lý: Đóng popup modal phân quyền chức năng, hủy bỏ toàn bộ trạng thái tích chọn đang thực hiện, không lưu bất kỳ thay đổi nào vào hệ thống. |
@@ -256,7 +256,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm tài khoản | Textbox | \- Thao tác: QTHT nhập từ khóa.<br>\- Xử lý: Hệ thống lọc (live-search) danh sách tài khoản khả dụng theo từ khóa, vẫn giữ nguyên phạm vi lọc theo `Loại tài khoản áp dụng` của vai trò. |
+| 1 | Tìm kiếm tài khoản | Textbox | \- Thao tác: QTHT nhập từ khóa.<br>\- Xử lý: Hệ thống lọc (live-search) danh sách tài khoản khả dụng theo từ khóa, vẫn giữ nguyên phạm vi lọc theo `Loại tài khoản áp dụng` của vai trò.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Chọn tài khoản | Checkbox | \- Thao tác: QTHT tích chọn/bỏ chọn 1 hoặc nhiều dòng tài khoản.<br>\- Xử lý: Hệ thống cập nhật số lượng đã chọn và bật/tắt nút **Thêm vào vai trò** tương ứng. |
 | 3 | Thêm vào vai trò | Nút | \- Thao tác: QTHT click nút **Thêm vào vai trò**.<br>\- Xử lý: Hệ thống gán vai trò đang xem vào danh sách Vai trò của toàn bộ tài khoản đã chọn, ghi nhận Audit Log (Người thực hiện, Ngày thực hiện, Vai trò, danh sách tài khoản được gán), hiển thị Toast "Đã thêm [X] tài khoản vào vai trò thành công", đóng popup và tải lại Tab Danh sách người dùng được gán. |
 | 4 | Hủy | Nút | \- Thao tác: QTHT click nút **Hủy**.<br>\- Xử lý: Đóng popup, không lưu thay đổi. |

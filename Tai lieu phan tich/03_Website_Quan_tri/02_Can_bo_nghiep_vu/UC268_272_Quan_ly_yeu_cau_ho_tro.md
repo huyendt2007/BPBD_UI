@@ -34,7 +34,7 @@
 | Từ ngày | String(10) | Không | Ngày đầu tiên của tháng hiện tại | - Nhập tay theo định dạng `dd/mm/yyyy` (tự động thêm dấu `/` khi gõ).<br>- Có biểu tượng lịch hiển thị minh họa. |
 | Đến ngày | String(10) | Không | Ngày hiện tại | - Nhập tay theo định dạng `dd/mm/yyyy` (tự động thêm dấu `/` khi gõ).<br>- Có biểu tượng lịch hiển thị minh họa. |
 | Cán bộ xử lý | Enum(String(50)) | Không | "Tất cả" (Lãnh đạo)<br>Hoặc tên Chuyên viên đăng nhập | Control UI: Hộp chọn.<br>- Chọn cán bộ xử lý để lọc danh sách.<br>- Với vai trò Chuyên viên, mặc định lọc theo chính tài khoản của chuyên viên đó. |
-| **II. Bảng danh sách kết quả** | | | | |
+| **II. Bảng danh sách kết quả** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Lưới kết quả | - | Không | Lấy từ hệ thống | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh sách yêu cầu hỗ trợ thỏa mãn bộ lọc.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | Cột: STT | Integer(10) | Có | Số thứ tự tăng dần | - Số thứ tự dòng dữ liệu (tính liên tục theo phân trang). |
 | Cột: Ngày yêu cầu | Date | Có | Lấy từ hệ thống | - Ngày giờ người dùng gửi yêu cầu hỗ trợ (định dạng `dd/mm/yyyy hh:mm`). |
@@ -54,7 +54,7 @@
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Xóa bộ lọc | Nút | - Thao tác: Người dùng bấm nút **[Xóa bộ lọc]**.<br>- Xử lý: Thiết lập lại toàn bộ các bộ lọc tìm kiếm về giá trị mặc định (Từ khóa rỗng, ngày từ đầu tháng đến ngày hiện tại, trạng thái/ưu tiên/cán bộ về "Tất cả"). Tự động kích hoạt lại tìm kiếm để cập nhật lại lưới dữ liệu. |
-| 2 | Tìm kiếm | Nút | - Thao tác: Người dùng bấm nút **[Tìm kiếm]**. |
+| 2 | Tìm kiếm | Nút | - Thao tác: Người dùng bấm nút **[Tìm kiếm]**.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | - TH1 (Từ ngày > Đến ngày): Hệ thống hiển thị thông báo lỗi: *"Từ ngày không được lớn hơn Đến ngày"* và chặn tìm kiếm. |
 | | | | - TH Hợp lệ: Hệ thống lọc danh sách yêu cầu theo các tiêu chí đã nhập/chọn trên form bộ lọc, trả kết quả và phân trang lại lưới dữ liệu (20 bản ghi/trang). |
 | 3 | Kết xuất Excel | Nút | - Thao tác: Người dùng bấm nút **[Kết xuất Excel]**. |

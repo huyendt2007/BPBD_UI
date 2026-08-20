@@ -1,4 +1,4 @@
-## 4.1. Yêu cầu cung cấp bản sao văn bản chứng nhận - Website Khách hàng
+﻿## 4.1. Yêu cầu cung cấp bản sao văn bản chứng nhận - Website Khách hàng
 
 ### 4.1.X. UC149/UC195-BS - Quản lý yêu cầu đã đăng ký Yêu cầu cung cấp bản sao văn bản chứng nhận
 
@@ -66,7 +66,7 @@ Ghi chú: bộ trạng thái này thay thế hoàn toàn bộ trạng thái cũ 
 | Người tạo | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên người đang đăng nhập đã tạo Yêu cầu cung cấp bản sao. |
 | Từ ngày | Date | Không | Trống | Lọc theo Thời điểm đăng ký. Nếu nhập cùng Đến ngày, tuân thủ [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Lọc theo Thời điểm đăng ký. Nếu nhập cùng Từ ngày, tuân thủ [BR-VAL-007]. |
-| **II. Vùng kết quả hiển thị (Grid)** | - | - | 20 bản ghi/trang | Hiển thị dạng lưới phẳng, thuộc phạm vi tài khoản Khách hàng đăng nhập. Sắp xếp mặc định theo Thời điểm đăng ký giảm dần. Click trực tiếp vào dòng dữ liệu để mở màn hình chi tiết, ngoại trừ khi click nút tại cột Thao tác. |
+| **II. Vùng kết quả hiển thị (Grid)** | - | - | 20 bản ghi/trang | Hiển thị dạng lưới phẳng, thuộc phạm vi tài khoản Khách hàng đăng nhập. Sắp xếp mặc định theo Thời điểm đăng ký giảm dần. Click trực tiếp vào dòng dữ liệu để mở màn hình chi tiết, ngoại trừ khi click nút tại cột Thao tác.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | STT | Integer(10) | - | - | Số thứ tự bản ghi trên trang hiện tại. |
 | Mã hồ sơ | String(50) | - | - | Mã hồ sơ yêu cầu cung cấp bản sao. |
 | Số đăng ký | String(50) | - | - | Số đăng ký của hồ sơ gốc gắn với yêu cầu. |
@@ -82,7 +82,7 @@ Ghi chú: bộ trạng thái này thay thế hoàn toàn bộ trạng thái cũ 
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH Hợp lệ: Hệ thống tìm kiếm trong phạm vi hồ sơ thuộc tài khoản Khách hàng đăng nhập. Nếu không có dữ liệu phù hợp, hiển thị theo [MSG-WRN-SYS-001] hoặc trạng thái rỗng theo chuẩn danh sách. |
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về mặc định (trống hoặc "Tất cả") và tải lại lưới kết quả theo Thời điểm đăng ký giảm dần. |
 | 3 | Tạo mới | Nút | Mở [UC149.MH01](SRS_YC_cung_cap_ban_sao_van_ban_chung_nhan.md#41162-uc149mh01---man-hinh-yeu-cau-cap-ban-sao-van-ban-chung-nhan-dang-ky-bien-phap-bao-dam). |

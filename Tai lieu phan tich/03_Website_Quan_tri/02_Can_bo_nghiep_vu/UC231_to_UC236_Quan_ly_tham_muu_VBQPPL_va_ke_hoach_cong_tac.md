@@ -209,7 +209,7 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo thực hiện tìm kiếm, th
 | Người phụ trách | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo Cán bộ tham mưu phụ trách. |
 | Khoảng thời gian bắt đầu | Date | Không | Trống | - Lọc hồ sơ có Ngày bắt đầu thực hiện trong khoảng "Từ ngày" đến "Đến ngày". |
 | **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 3 khối thống kê nhanh:<br>- 1. Tổng số dự thảo<br>- 2. Số dự thảo đang soạn thảo<br>- 3. Số dự thảo đã ban hành. |
-| **III. Bảng danh sách kết quả**| - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Phân trang mặc định **10 bản ghi/trang** (cho phép chọn 10, 20, 50, 100). Hỗ trợ sắp xếp động theo tiêu đề cột.<br>- Click tên văn bản để mở Form xem/chỉnh sửa chi tiết. |
+| **III. Bảng danh sách kết quả**| - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Phân trang mặc định **10 bản ghi/trang** (cho phép chọn 10, 20, 50, 100). Hỗ trợ sắp xếp động theo tiêu đề cột.<br>- Click tên văn bản để mở Form xem/chỉnh sửa chi tiết.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | Integer(10) | - | - | - Số thứ tự dòng. |
 | Cột: Mã hồ sơ | String(30) | - | - | - Mã hồ sơ tham mưu (Ví dụ: `TM-VB-2026-0001`). |
 | Cột: Tên văn bản/dự thảo | String(500) | - | - | - Tên dự thảo văn bản. Hiển thị dạng đường liên kết (Link). Khi click vào sẽ xem chi tiết hoặc chuyển form cập nhật. |
@@ -226,7 +226,7 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo thực hiện tìm kiếm, th
 ###### Chức năng trên màn hình:
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm. |
+| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | - Xử lý: Lấy danh sách hồ sơ khớp bộ lọc từ CSDL. |
 |  |  |  | - TH1 (Không tìm thấy): Không có bản ghi nào khớp điều kiện lọc. Hệ thống hiển thị thông điệp cảnh báo "Không tìm thấy kết quả phù hợp" trên lưới kết quả. |
 |  |  |  | - TH Hợp lệ: Tải danh sách kết quả tìm kiếm lên lưới, phân trang 20 dòng/trang. |
@@ -431,7 +431,7 @@ Cho phép cán bộ nghiệp vụ theo dõi tiến độ hoàn thành các mốc
 | Đơn vị chủ trì | Enum(String(100)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo Phòng ban chủ trì thực hiện. |
 | Năm thực hiện | Enum(String(50)) | Có | Năm hiện tại | Control UI: Hộp chọn.<br>- Lọc các kế hoạch thuộc năm cụ thể. |
 | **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 3 khối thống kê nhanh:<br>- 1. Tổng số kế hoạch<br>- 2. Số kế hoạch đang triển khai<br>- 3. Số kế hoạch đã hoàn thành. |
-| **III. Bảng danh sách kết quả**| - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh mục kế hoạch kèm thanh tiến độ trực quan (Progress Bar). Phân trang mặc định **10 bản ghi/trang** (cho phép chọn 10, 20, 50, 100). Hỗ trợ sắp xếp động theo tiêu đề cột. |
+| **III. Bảng danh sách kết quả**| - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh mục kế hoạch kèm thanh tiến độ trực quan (Progress Bar). Phân trang mặc định **10 bản ghi/trang** (cho phép chọn 10, 20, 50, 100). Hỗ trợ sắp xếp động theo tiêu đề cột.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | Integer(10) | - | - | - Số thứ tự dòng. |
 | Cột: Mã chương trình/KH | String(30) | - | - | - Mã định danh kế hoạch (Ví dụ: `KH-CT-2026-0001`). |
 | Cột: Tên Chương trình/kế hoạch | String(500) | - | - | - Tên chương trình/kế hoạch dạng liên kết (Link). Khi click vào sẽ xem chi tiết hoặc mở form cập nhật. |
@@ -448,7 +448,7 @@ Cho phép cán bộ nghiệp vụ theo dõi tiến độ hoàn thành các mốc
 ###### Chức năng trên màn hình:
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm. |
+| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | - Xử lý: Lấy danh sách kế hoạch khớp bộ lọc từ CSDL. |
 |  |  |  | - TH1 (Không tìm thấy): Không có bản ghi nào khớp bộ lọc. Hệ thống hiển thị thông điệp "Không tìm thấy kết quả phù hợp" trên lưới. |
 |  |  |  | - TH Hợp lệ: Tải danh sách kết quả lên lưới, phân trang 20 dòng/trang. |
@@ -801,7 +801,7 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo Cục thực hiện tìm ki�
 | Từ ngày ban hành | Date | Không | Trống | - Lọc văn bản ban hành từ ngày. |
 | Đến ngày ban hành | Date | Không | Trống | - Lọc văn bản ban hành đến ngày. Validate Từ ngày phải nhỏ hơn hoặc bằng Đến ngày. |
 | **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 4 khối thống kê nhanh:<br>- 1. Tổng số hồ sơ tìm được<br>- 2. Số hồ sơ hoàn thành<br>- 3. Số hồ sơ cần sửa đổi<br>- 4. Số hồ sơ cần bãi bỏ. |
-| **III. Bảng danh sách kết quả (Grid)** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Phân trang mặc định **20 bản ghi/trang**.<br>- Sắp xếp mặc định: Ngày lập hồ sơ giảm dần. Cho phép sắp xếp theo: Tên VB A-Z, Năm thực hiện, Trạng thái.<br>- Cơ chế Row Click: Click vào dòng dữ liệu (ngoại trừ khi click các icon ở cột Thao tác nhanh) sẽ mở Panel xem chi tiết (UC235.MH03) ngay dưới bảng. |
+| **III. Bảng danh sách kết quả (Grid)** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Phân trang mặc định **20 bản ghi/trang**.<br>- Sắp xếp mặc định: Ngày lập hồ sơ giảm dần. Cho phép sắp xếp theo: Tên VB A-Z, Năm thực hiện, Trạng thái.<br>- Cơ chế Row Click: Click vào dòng dữ liệu (ngoại trừ khi click các icon ở cột Thao tác nhanh) sẽ mở Panel xem chi tiết (UC235.MH03) ngay dưới bảng.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: Checkbox chọn nhiều | Boolean | - | Unchecked | Control UI: Checkbox.<br>- Cho phép tích chọn một hoặc nhiều hồ sơ để thực hiện xuất file theo lô. |
 | Cột: Số hồ sơ | String(30) | - | - | - Hiển thị số hiệu hồ sơ. |
 | Cột: Tên văn bản QPPL | String(500) | - | - | - Hiển thị tên văn bản dạng liên kết. Click vào liên kết để mở Panel xem chi tiết (UC235.MH03) phía dưới. |
@@ -821,7 +821,7 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo Cục thực hiện tìm ki�
 **4.3.2.10.7.2.3. Chức năng trên màn hình**
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- Xử lý: Lấy danh sách hồ sơ khớp bộ lọc lọc từ Cơ sở dữ liệu:<br>- TH1 (Không tìm thấy): Không có hồ sơ nào thỏa mãn điều kiện. Hệ thống hiển thị thông điệp "Không tìm thấy kết quả phù hợp" trên lưới. |
+| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- Xử lý: Lấy danh sách hồ sơ khớp bộ lọc lọc từ Cơ sở dữ liệu:<br>- TH1 (Không tìm thấy): Không có hồ sơ nào thỏa mãn điều kiện. Hệ thống hiển thị thông điệp "Không tìm thấy kết quả phù hợp" trên lưới.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | - TH Hợp lệ: Tải danh sách kết quả lên lưới, phân trang 20 dòng/trang, cập nhật các chip tag lọc đang áp dụng và số liệu KPI thống kê đầu trang. |
 | 2 | Xóa bộ lọc | Nút | - Thao tác: NSD click nút Xóa bộ lọc.<br>- Xử lý: Reset toàn bộ các tham số lọc về giá trị mặc định, tự động load lại danh sách đầy đủ ban đầu. |
 | 3 | Thêm mới hồ sơ | Nút | - Thao tác: NSD click nút Thêm mới hồ sơ.<br>- Xử lý: Hệ thống chuyển hướng người dùng sang màn hình Thêm mới hồ sơ tham mưu (UC235.MH01). |

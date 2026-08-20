@@ -1,4 +1,4 @@
-#### 4.3.1.2. Quản lý Nhóm người dùng
+﻿#### 4.3.1.2. Quản lý Nhóm người dùng
 
 ##### 4.3.1.2.1. UC603.01 - Tra cứu và hiển thị nhóm người dùng
 
@@ -36,7 +36,7 @@
 | Tab Danh sách người dùng được gán      | - | \- | \- | Hiển thị danh sách tài khoản (Khách hàng/Cán bộ/Cơ quan có thẩm quyền theo đúng `Loại tài khoản áp dụng` của nhóm đang xem) đang được gán vào nhóm này. |
 | Tìm kiếm người dùng                     | String(255) | Không | Trống | Control UI: Textbox.<br>Lọc nhanh (live-search) danh sách theo Họ và tên/Tên đăng nhập/Email/Số điện thoại. |
 | Nút: Thêm người dùng                    | - | \- | \- | Control UI: Nút bấm.<br>Mở popup Thêm người dùng vào nhóm (UC603.05) để chọn thêm tài khoản gán vào nhóm đang xem. |
-| Bảng danh sách người dùng được gán    | - | \- | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị. |
+| Bảng danh sách người dùng được gán    | - | \- | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: Họ và tên/Tên tổ chức (Tab Danh sách người dùng được gán) | String(255) | \- | Theo bản ghi | Chỉ đọc.<br>Họ và tên (nếu là tài khoản Cá nhân/Cán bộ) hoặc Tên tổ chức (nếu là tài khoản Tổ chức). |
 | Cột: Tên đăng nhập (Tab Danh sách người dùng được gán) | String(255) | \- | Theo bản ghi | Chỉ đọc.<br>Tên đăng nhập của tài khoản. |
 | Cột: Loại tài khoản (Tab Danh sách người dùng được gán) | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc.<br>Hiển thị Cá nhân/Tổ chức nếu nhóm áp dụng cho Khách hàng, hoặc Cán bộ/Cơ quan có thẩm quyền tương ứng. |
@@ -57,9 +57,9 @@
 | 2   | Thêm mới       | Nút         | Mở màn hình Thêm mới nhóm (UC603.02).                         |
 | 3   | Sửa             | Icon         | Mở màn hình Sửa nhóm (UC603.03) ứng với bản ghi.            |
 | 4   | Xóa             | Icon         | Gọi chức năng xóa (UC603.04).                                   |
-| 5   | Tìm kiếm quyền  | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền trên tab Cây quyền hạn.<br>\- Xử lý: Hệ thống thực hiện lọc (live-filter) danh sách chức năng hiển thị trên cây. Các node không khớp sẽ bị ẩn đi, các node khớp sẽ được hiển thị kèm các node cha trực thuộc. |
+| 5   | Tìm kiếm quyền  | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền trên tab Cây quyền hạn.<br>\- Xử lý: Hệ thống thực hiện lọc (live-filter) danh sách chức năng hiển thị trên cây. Các node không khớp sẽ bị ẩn đi, các node khớp sẽ được hiển thị kèm các node cha trực thuộc.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 6   | Chuyển Tab Danh sách người dùng được gán | Tab | Hiển thị bảng danh sách tài khoản đang được gán vào nhóm đang xem, theo đúng mô tả tại mục Panel Phải. |
-| 7   | Tìm kiếm người dùng | Textbox | \- Thao tác: QTHT nhập từ khóa tại textbox Tìm kiếm người dùng.<br>\- Xử lý: Hệ thống lọc (live-search) bảng danh sách người dùng được gán theo từ khóa. |
+| 7   | Tìm kiếm người dùng | Textbox | \- Thao tác: QTHT nhập từ khóa tại textbox Tìm kiếm người dùng.<br>\- Xử lý: Hệ thống lọc (live-search) bảng danh sách người dùng được gán theo từ khóa.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 8   | Thêm người dùng | Nút | Mở popup Thêm người dùng vào nhóm (UC603.05). |
 | 9   | Gỡ khỏi nhóm | Icon (Lưới) | Gỡ 1 tài khoản khỏi nhóm đang xem, chi tiết xem tại Cột: Thao tác (Tab Danh sách người dùng được gán). |
 
@@ -103,7 +103,7 @@
 |     |                  |              | \- TH3 (Trùng lặp): Nếu Tên nhóm trùng lặp, báo lỗi: "Tên nhóm đã tồn tại".                                                                            |
 |     |                  |              | \- TH Hợp lệ: Báo: "Thêm mới nhóm thành công" và đóng form.                                                                                                |
 | 2   | Hủy             | Nút         | Đóng Form Modal, không lưu dữ liệu.                                                                                                                             |
-| 3   | Tìm kiếm quyền (Preview) | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền (Preview).<br>\- Xử lý: Hệ thống lọc danh sách chức năng hiển thị trên cây xem trước tương ứng. |
+| 3   | Tìm kiếm quyền (Preview) | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền (Preview).<br>\- Xử lý: Hệ thống lọc danh sách chức năng hiển thị trên cây xem trước tương ứng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 
 ##### 4.3.1.2.3. UC603.03 - Sửa nhóm người dùng
 
@@ -145,7 +145,7 @@
 |     |                  |              | \- TH3 (Trùng lặp): Nếu Tên nhóm sửa bị trùng, báo lỗi: "Tên nhóm đã tồn tại".                                                                        |
 |     |                  |              | \- TH Hợp lệ: Đóng popup, báo: "Cập nhật thành công".                                                                                                        |
 | 2   | Hủy             | Nút         | Đóng Form Modal, không lưu dữ liệu.                                                                                                                             |
-| 3   | Tìm kiếm quyền (Preview) | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền (Preview).<br>\- Xử lý: Hệ thống lọc danh sách chức năng hiển thị trên cây xem trước tương ứng. |
+| 3   | Tìm kiếm quyền (Preview) | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền (Preview).<br>\- Xử lý: Hệ thống lọc danh sách chức năng hiển thị trên cây xem trước tương ứng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 
 ##### 4.3.1.2.4. UC603.04 - Xóa nhóm người dùng
 
@@ -214,7 +214,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm tài khoản | Textbox | \- Thao tác: QTHT nhập từ khóa.<br>\- Xử lý: Hệ thống lọc (live-search) danh sách tài khoản khả dụng theo từ khóa, vẫn giữ nguyên phạm vi lọc theo `Loại tài khoản áp dụng` của nhóm. |
+| 1 | Tìm kiếm tài khoản | Textbox | \- Thao tác: QTHT nhập từ khóa.<br>\- Xử lý: Hệ thống lọc (live-search) danh sách tài khoản khả dụng theo từ khóa, vẫn giữ nguyên phạm vi lọc theo `Loại tài khoản áp dụng` của nhóm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Chọn tài khoản | Checkbox | \- Thao tác: QTHT tích chọn/bỏ chọn 1 hoặc nhiều dòng tài khoản.<br>\- Xử lý: Hệ thống cập nhật số lượng đã chọn và bật/tắt nút **Thêm vào nhóm** tương ứng. |
 | 3 | Thêm vào nhóm | Nút | \- Thao tác: QTHT click nút **Thêm vào nhóm**.<br>\- Xử lý: Hệ thống gán nhóm đang xem vào danh sách Nhóm người dùng của toàn bộ tài khoản đã chọn, ghi nhận Audit Log (Người thực hiện, Ngày thực hiện, Nhóm, danh sách tài khoản được gán), hiển thị Toast "Đã thêm [X] tài khoản vào nhóm thành công", đóng popup và tải lại Tab Danh sách người dùng được gán. |
 | 4 | Hủy | Nút | \- Thao tác: QTHT click nút **Hủy**.<br>\- Xử lý: Đóng popup, không lưu thay đổi. |

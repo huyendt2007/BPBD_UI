@@ -31,7 +31,7 @@
 | Đến ngày ban hành | String(10) | Không | Ngày hiện tại | - Nhập tay hoặc chọn từ lịch theo định dạng `dd/mm/yyyy` (tự động thêm dấu `/` khi gõ). |
 | **II. Thống kê nhanh KPI** | | | | |
 | Chỉ số KPI | - | Không | Lấy từ hệ thống | Control UI: Nút bấm.<br>- Hiển thị 3 khối đếm trạng thái động:<br>  + **Tất cả** (Tổng số lượng bản ghi)<br>  + **Chờ duyệt** (Số lượng bản ghi ở trạng thái Chờ duyệt)<br>  + **Từ chối** (Số lượng bản ghi ở trạng thái Từ chối) |
-| **III. Bảng danh sách kết quả** | | | | |
+| **III. Bảng danh sách kết quả** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Lưới kết quả | - | Không | Lấy từ hệ thống | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh sách các văn bản quy phạm pháp luật thỏa mãn bộ lọc.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | Cột: STT | Integer(10) | Có | Số thứ tự tăng dần | - Số thứ tự dòng dữ liệu (tính liên tục theo phân trang). |
 | Cột: Tên văn bản | String(255) | Có | Lấy từ hệ thống | - Tên đầy đủ của văn bản quy phạm pháp luật. Dạng liên kết link, click mở xem chi tiết. |
@@ -47,14 +47,14 @@
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Xóa bộ lọc | Nút | - Thao tác: Người dùng bấm nút **[Xóa bộ lọc]**.<br>- Xử lý: Thiết lập lại toàn bộ các bộ lọc tìm kiếm về giá trị mặc định (Từ khóa rỗng, Loại văn bản và Trạng thái về "Tất cả", Cơ quan ban hành rỗng, ngày ban hành từ đầu tháng đến ngày hiện tại). Tự động kích hoạt lại tìm kiếm để cập nhật lại lưới dữ liệu. |
-| 2 | Tìm kiếm | Nút | - Thao tác: Người dùng bấm nút **[Tìm kiếm]**. |
+| 2 | Tìm kiếm | Nút | - Thao tác: Người dùng bấm nút **[Tìm kiếm]**.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | - TH1 (Từ ngày > Đến ngày): Hệ thống hiển thị thông báo lỗi: *"Từ ngày ban hành không được lớn hơn Đến ngày ban hành"* và chặn tìm kiếm. |
 | | | | - TH Hợp lệ: Hệ thống lọc danh sách văn bản theo các tiêu chí đã nhập/chọn trên form bộ lọc, trả kết quả và phân trang lại lưới dữ liệu (20 bản ghi/trang). |
 | 3 | Thêm mới | Nút | - Thao tác: Người dùng bấm nút **[Thêm mới]**.<br>- Xử lý: Mở Modal Thêm mới/Chỉnh sửa tư liệu VBQPPL (`UC274_276.MH03`). |
 | 4 | Kết xuất Excel | Nút | - Thao tác: Người dùng bấm nút **[Kết xuất Excel]**. |
 | | | | - TH1 (Danh sách kết quả rỗng): Hệ thống hiển thị thông báo lỗi: *"Không có dữ liệu để export"* và chặn thực hiện. |
 | | | | - TH Hợp lệ: Hệ thống xuất toàn bộ danh sách đang hiển thị ra tệp Excel (.xlsx) với các thông tin tương ứng, đặt tên mặc định: `Danh_sach_Tu_lieu_VBQPPL_[YYYYMMDD].xlsx`. |
-| 5 | Lọc theo KPI | Click khối số liệu | - Thao tác: Người dùng click vào một trong ba khối KPI (Tất cả, Chờ duyệt, Từ chối).<br>- Xử lý: Hệ thống tự động lọc nhanh lưới dữ liệu theo trạng thái tương ứng của KPI được chọn và cập nhật lại số lượng bản ghi hiển thị. |
+| 5 | Lọc theo KPI | Click khối số liệu | - Thao tác: Người dùng click vào một trong ba khối KPI (Tất cả, Chờ duyệt, Từ chối).<br>- Xử lý: Hệ thống tự động lọc nhanh lưới dữ liệu theo trạng thái tương ứng của KPI được chọn và cập nhật lại số lượng bản ghi hiển thị.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 6 | Xem | Nút trên dòng | - Thao tác: Người dùng nhấp đúp vào dòng dữ liệu hoặc click row click trên cột Thao tác.<br>- Xử lý: Hệ thống hiển thị Modal xem chi tiết tư liệu VBQPPL (`UC274_276.MH02`). |
 | 7 | Sửa | Nút trên dòng | - Thao tác: Người dùng click icon sửa trên cột Thao tác.<br>- Xử lý: Chỉ khả dụng khi bản ghi ở trạng thái "Lưu nháp" hoặc "Từ chối". Mở Modal Thêm mới/Chỉnh sửa tư liệu VBQPPL (`UC274_276.MH03`). Đối với trạng thái khác, nút sẽ bị làm mờ (opacity 0.35, pointer-events none). |
 | 8 | Xóa | Nút trên dòng | - Thao tác: Người dùng click icon xóa trên cột Thao tác. |

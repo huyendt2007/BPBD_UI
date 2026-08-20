@@ -1,4 +1,4 @@
-### 4.1.20. UC536 - Tra cứu Văn bản Quy phạm Pháp luật
+﻿### 4.1.20. UC536 - Tra cứu Văn bản Quy phạm Pháp luật
 
 #### 4.1.20.1. Mục đích
 \- Cho phép khách hàng tra cứu, tìm kiếm, xem chi tiết và tải xuống các văn bản quy phạm pháp luật (QPPL) liên quan đến hai lĩnh vực nghiệp vụ chính: Đăng ký biện pháp bảo đảm (BPBĐ) và Bồi thường nhà nước (BTNN).  
@@ -37,7 +37,7 @@
 | Cơ quan ban hành | Enum(String(100)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>\- Chọn cơ quan ban hành văn bản để lọc kết quả.<br>\- Gồm các giá trị:<br>- **Tất cả**<br>- Các Cơ quan ban hành hiện có trên các văn bản QPPL |
 | Tìm kiếm | - | \- | \- | Control UI: Nút bấm.<br>\- Nút kích hoạt tìm kiếm.<br>\- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | Xóa bộ lọc | - | \- | \- | Control UI: Nút bấm.<br>\- Nút thiết lập lại bộ lọc về mặc định.<br>\- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
-| **III. Bảng danh sách kết quả** | - | \- | 30 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>\- Lưới hiển thị danh sách các văn bản thỏa mãn bộ lọc tìm kiếm.<br>\- Sắp xếp mặc định: Thời gian ban hành giảm dần.<br>\- Phân trang: Mặc định hiển thị 30 dòng/trang. Cho phép người dùng tùy chọn hiển thị: 5, 10, 20, 30 dòng/trang. Có tích hợp nút chuyển trang Trước, Sau, trang Đầu, trang Cuối.<br>\- Thao tác: NSD nhấp đúp hoặc nhấp chuột trực tiếp vào dòng bản ghi, hoặc click chọn nút [Xem] tại cột Thao tác để xem chi tiết văn bản (mở màn hình UC536.MH02 tại Tab mới). |
+| **III. Bảng danh sách kết quả** | - | \- | 30 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>\- Lưới hiển thị danh sách các văn bản thỏa mãn bộ lọc tìm kiếm.<br>\- Sắp xếp mặc định: Thời gian ban hành giảm dần.<br>\- Phân trang: Mặc định hiển thị 30 dòng/trang. Cho phép người dùng tùy chọn hiển thị: 5, 10, 20, 30 dòng/trang. Có tích hợp nút chuyển trang Trước, Sau, trang Đầu, trang Cuối.<br>\- Thao tác: NSD nhấp đúp hoặc nhấp chuột trực tiếp vào dòng bản ghi, hoặc click chọn nút [Xem] tại cột Thao tác để xem chi tiết văn bản (mở màn hình UC536.MH02 tại Tab mới).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | Integer(10) | \- | \- | \- Số thứ tự dòng trên trang hiện tại, tự động tăng. |
 | Cột: Số văn bản | String(50) | \- | \- | \- Số hiệu của văn bản luật. |
 | Cột: Ngày văn bản | Date | \- | \- | \- Ngày ban hành văn bản (dd/mm/yyyy). |
@@ -50,7 +50,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click chọn nút Tìm kiếm. |
+| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click chọn nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | \- TH1 (Không tìm thấy kết quả): Bộ lọc không khớp với bất kỳ văn bản nào trong CSDL. Lưới kết quả hiển thị thông báo: "Không có dữ liệu phù hợp." |
 | | | | \- TH Hợp lệ: Hệ thống thực hiện lọc gần đúng không phân biệt hoa thường theo các tiêu chí (Số văn bản, Ngày văn bản, Trích yếu, Cơ quan ban hành) của Tab nghiệp vụ hiện tại, cập nhật lại danh sách trên lưới. |
 | 2 | Xóa bộ lọc | Nút | \- Thao tác: NSD click chọn nút Xóa bộ lọc. |
@@ -150,7 +150,7 @@
 | Tiêu đề câu hỏi | String(250) | Không | Trống | \- Nhập từ khóa cần tìm kiếm trong tiêu đề câu hỏi gần đúng.<br>\- Tự động cắt khoảng trắng thừa (Trim space). |
 | Tìm kiếm | - | \- | \- | Control UI: Nút bấm.<br>\- Nút kích hoạt tìm kiếm.<br>\- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | Xóa bộ lọc | - | \- | \- | Control UI: Nút bấm.<br>\- Nút thiết lập lại bộ lọc về mặc định.<br>\- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
-| **III. Bảng danh sách câu hỏi** | - | \- | 30 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>\- Lưới hiển thị danh sách các câu hỏi thường gặp thỏa mãn bộ lọc tìm kiếm.<br>\- Sắp xếp mặc định: Thời gian tạo giảm dần.<br>\- Phân trang: Mặc định hiển thị 30 dòng/trang. Cho phép người dùng tùy chọn hiển thị: 5, 10, 20, 30 dòng/trang. Có tích hợp nút chuyển trang Trước, Sau, trang Đầu, trang Cuối.<br>\- Thao tác: NSD nhấp chuột trực tiếp vào dòng bản ghi để xem chi tiết câu hỏi và câu trả lời ở Tab mới (mở màn hình UC280_UC513.MH02). |
+| **III. Bảng danh sách câu hỏi** | - | \- | 30 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>\- Lưới hiển thị danh sách các câu hỏi thường gặp thỏa mãn bộ lọc tìm kiếm.<br>\- Sắp xếp mặc định: Thời gian tạo giảm dần.<br>\- Phân trang: Mặc định hiển thị 30 dòng/trang. Cho phép người dùng tùy chọn hiển thị: 5, 10, 20, 30 dòng/trang. Có tích hợp nút chuyển trang Trước, Sau, trang Đầu, trang Cuối.<br>\- Thao tác: NSD nhấp chuột trực tiếp vào dòng bản ghi để xem chi tiết câu hỏi và câu trả lời ở Tab mới (mở màn hình UC280_UC513.MH02).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | Integer(10) | \- | \- | \- Số thứ tự dòng trên trang hiện tại, tự động tăng. |
 | Cột: Tiêu đề câu hỏi | String(255) | \- | \- | \- Tiêu đề đầy đủ của câu hỏi thường gặp. |
 | Cột: Nội dung tóm tắt | Text(2000) | \- | \- | \- Nội dung tóm tắt của câu hỏi thường gặp. Hiển thị tối đa **200 ký tự đầu tiên** của nội dung câu hỏi, nếu dài hơn thì hiển thị kèm dấu ba chấm "..." ở cuối. |
@@ -159,7 +159,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click chọn nút Tìm kiếm. |
+| 1 | Tìm kiếm | Nút | \- Thao tác: NSD click chọn nút Tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | \- TH1 (Không tìm thấy kết quả): Bộ lọc không khớp với bất kỳ câu hỏi nào trong CSDL. Lưới danh sách hiển thị thông báo: "Không tìm thấy câu hỏi phù hợp." |
 | | | | \- TH Hợp lệ: Hệ thống thực hiện tìm kiếm gần đúng không phân biệt hoa thường theo từ khóa Tiêu đề câu hỏi của Tab nghiệp vụ hiện tại, cập nhật lại danh sách trên lưới. |
 | 2 | Xóa bộ lọc | Nút | \- Thao tác: NSD click chọn nút Xóa bộ lọc. |
@@ -281,7 +281,7 @@
 | Tab "Câu hỏi thường gặp" | String(255) | \- | Active | Control UI: Nút chọn. |
 | Tab "Văn bản QPPL" | String(255) | \- | \- | Control UI: Nút chọn. |
 | Ô tìm kiếm nhanh | String(255) | Không | Trống | Placeholder: "Nhập từ khóa tra cứu (số văn bản, tiêu đề câu hỏi...)". Tìm kiếm gần đúng, không phân biệt hoa/thường và không phân biệt dấu tiếng Việt, theo thời gian thực (mỗi lần gõ ký tự).<br>\- Nếu đang ở Tab "Câu hỏi thường gặp": tìm theo Tiêu đề câu hỏi, Nội dung tóm tắt, Nội dung câu hỏi.<br>\- Nếu đang ở Tab "Văn bản QPPL": tìm theo Số văn bản, Trích yếu, Cơ quan ban hành. |
-| Khu vực kết quả nhanh | - | \- | \- | Control UI: Danh sách hiển thị, giới hạn tối đa 6 bản ghi khớp điều kiện đầu tiên.<br>\- Mỗi kết quả có nút "Xem câu trả lời" (Tab FAQ, mở **[UC280_UC513.MH02]** tại tab trình duyệt mới) hoặc "Xem văn bản" (Tab Văn bản, mở **[UC536.MH02]** tại tab trình duyệt mới). |
+| Khu vực kết quả nhanh | - | \- | \- | Control UI: Danh sách hiển thị, giới hạn tối đa 6 bản ghi khớp điều kiện đầu tiên.<br>\- Mỗi kết quả có nút "Xem câu trả lời" (Tab FAQ, mở **[UC280_UC513.MH02]** tại tab trình duyệt mới) hoặc "Xem văn bản" (Tab Văn bản, mở **[UC536.MH02]** tại tab trình duyệt mới).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Card "Tạo yêu cầu hỗ trợ" | String(255) | \- | \- | Control UI: Nút bấm nổi bật (hiệu ứng nhấp nháy liên tục).<br>\- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ##### 4.1.22.4.3. Chức năng trên màn hình
@@ -289,7 +289,7 @@
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển Tab "Câu hỏi thường gặp"/"Văn bản QPPL" | Nút | Đổi Tab con đang chọn và tải lại Khu vực kết quả nhanh theo từ khóa hiện có trong ô tìm kiếm. |
-| 2 | Tìm kiếm nhanh (nhập ký tự) | Ô nhập | Mỗi lần NSD gõ ký tự, hệ thống tự động lọc lại và hiển thị tối đa 6 kết quả phù hợp nhất của Tab con đang chọn; không giới hạn số lượng kết quả tồn tại phía sau (chỉ hiển thị 6 kết quả đầu, không có cách xem thêm). |
+| 2 | Tìm kiếm nhanh (nhập ký tự) | Ô nhập | Mỗi lần NSD gõ ký tự, hệ thống tự động lọc lại và hiển thị tối đa 6 kết quả phù hợp nhất của Tab con đang chọn; không giới hạn số lượng kết quả tồn tại phía sau (chỉ hiển thị 6 kết quả đầu, không có cách xem thêm).<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 3 | Tạo yêu cầu hỗ trợ | Nút | Mở **4.1.22.5. UC_HTKH.MH03 - Popup Tạo yêu cầu hỗ trợ (Khách vãng lai)**. |
 
 ---

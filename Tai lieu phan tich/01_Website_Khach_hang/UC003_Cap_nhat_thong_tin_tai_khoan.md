@@ -1,172 +1,158 @@
-### 4.1.8. UC003 - Cap nhat thong tin tai khoan danh cho Khach hang
+﻿### 4.1.8. UC003 - Cập nhật thông tin tài khoản dành cho Khách hàng
 
-#### 4.1.8.1. Muc dich
+#### 4.1.8.1. Mục đích
 
-- Cho phep khach hang cap nhat thong tin ho so tai khoan cua minh sau khi da dang nhap thanh cong.
-- Dam bao ten truong thong tin ho so tai khoan tren Website Khach hang dong nhat voi phan Quan ly tai khoan khach hang tren Website quan tri.
-- Kiem soat quyen sua thong tin theo **Nguon xac thuc** cua ho so tai khoan:
+- Cho phép Khách hàng cập nhật thông tin hồ sơ tài khoản sau khi đăng nhập thành công.
+- Đảm bảo thông tin trên màn hình cập nhật đồng nhất với màn hình xem chi tiết tài khoản UC002 và UI mockup `Hồ sơ cá nhân`.
+- Áp dụng cho tài khoản **Cá nhân** và tài khoản **Tổ chức**.
+- Kiểm soát trường được sửa theo nguồn xác thực của hồ sơ:
   - `VNeID`
-  - `Noi bo`
-  - `VNeID, Noi bo`
-- Chuc nang nay chi xu ly thong tin ho so tai khoan. Block **Phuong thuc dang nhap** tren Website Khach hang thuc hien theo UC002, khong gop vao bang thong tin ho so cua UC003.
-- Website Khach hang khong hien thi thong tin dinh danh ky thuat tren man hinh cap nhat thong tin tai khoan.
+  - `Nội bộ`
+  - `VNeID, Nội bộ`
 
-*a. Phan quyen*
+**Phân quyền**
 
-- Khach hang da co tai khoan va dang nhap thanh cong, gom:
-  - Khach hang ca nhan.
-  - Tai khoan chinh cua To chuc.
-  - Tai khoan phu truc thuoc To chuc.
+- Khách hàng đã đăng nhập thành công vào Website Khách hàng.
+- Áp dụng cho tài khoản Cá nhân và tài khoản Tổ chức.
 
-*b. Dieu kien thuc hien*
+**Điều kiện thực hiện**
 
-- Khach hang da dang nhap thanh cong vao Website Khach hang.
-- Ho so tai khoan khach hang dang o trang thai cho phep cap nhat thong tin.
-- He thong hoat dong binh thuong.
+- Người dùng truy cập từ UC002 bằng nút `Cập nhật`.
+- Hồ sơ tài khoản đang ở trạng thái cho phép cập nhật.
+- Hệ thống hoạt động bình thường.
 
-#### 4.1.8.2. Quy dinh chung ve cap nhat thong tin ho so
+#### 4.1.8.2. Quy định chung về cập nhật
 
-- Cac truong `Nguon xac thuc`, `Loai khach hang`, `Loai tai khoan`, `Phan loai khach hang` luon hien thi/Read-only.
-- Neu ho so co Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`, cac truong dinh danh ca nhan/to chuc khong cho phep sua (Read-only).
-- Neu ho so co Nguon xac thuc la `Noi bo`, cac truong dinh danh duoc phep sua theo quy dinh tai tung man hinh.
-- Truong `Email (Ten dang nhap)`:
-  - Chi cho phep sua neu Nguon xac thuc la `VNeID`.
-  - Khong cho phep sua neu Nguon xac thuc la `Noi bo` hoac `VNeID, Noi bo` vi Email dang la Ten dang nhap cua nguon xac thuc Noi bo.
-- Cac truong dia chi/lien lac sau cho phep sua bat ke Nguon xac thuc, tru khi tung man hinh co quy dinh rieng:
-  - `Tinh/TP`
-  - `Dia chi chi tiet`
-  - `So dien thoai`
-- Quy tac `Tinh/TP`:
-  - Neu `Quoc tich`/`Quoc gia` la `Viet Nam`: hien thi hop chon va cho phep chon tai Danh muc dung chung - Tinh/Thanh pho [DM_13].
-  - Neu `Quoc tich`/`Quoc gia` khac `Viet Nam`: hien thi o nhap lieu dang van ban de nguoi dung tu nhap.
-- Block **Phuong thuc dang nhap** tren Website Khach hang thuc hien theo [UC002 - Xem thong tin tai khoan](UC002_Xem_thong_tin_tai_khoan.md), gom cac chip/tag `VNeID`, `Noi bo (Email/Mat khau)`, nut `Thiet lap ngay` hoac `Doi mat khau` theo trang thai lien ket. UC003 khong xu ly thiet lap hoac doi phuong thuc dang nhap.
+- Màn hình có tiêu đề động:
+  - Cá nhân: `Cập nhật thông tin tài khoản Cá nhân`.
+  - Tổ chức: `Cập nhật thông tin tài khoản Tổ chức`.
+- Dưới tiêu đề có alert thông tin giải thích quy tắc chỉnh sửa theo nguồn xác thực.
+- Cuối màn hình hiển thị 2 nút:
+  - `Hủy`: quay về UC002, không lưu thay đổi.
+  - `Lưu cập nhật`: validate và lưu dữ liệu hợp lệ.
+- Các trường `Loại khách hàng`, `Loại tài khoản`, `Nguồn xác thực`, `Phân loại khách hàng` luôn hiển thị chỉ đọc.
+- Trường định danh cá nhân/tổ chức:
+  - Nếu hồ sơ có nguồn xác thực `VNeID` hoặc `VNeID, Nội bộ`: khóa chỉ đọc.
+  - Nếu hồ sơ chỉ có nguồn xác thực `Nội bộ`: cho phép chỉnh sửa và kiểm tra trùng lặp theo quy định nghiệp vụ.
+- Trường Email (Tên đăng nhập):
+  - Cho phép sửa khi hồ sơ chỉ có `VNeID` và chưa thiết lập Nội bộ, vì email lúc này chỉ là thông tin liên hệ.
+  - Không cho phép sửa khi hồ sơ có `Nội bộ` hoặc `VNeID, Nội bộ`, vì email đang là tên đăng nhập hệ thống.
+- Các trường liên hệ/địa chỉ sau được phép sửa ở mọi nguồn xác thực, trừ khi trường đang bị hệ thống khóa theo trạng thái hồ sơ:
+  - `Số điện thoại`
+  - `Tỉnh/Thành phố`
+  - `Địa chỉ chi tiết`
+  - `Trung tâm Đăng ký mặc định`
+- Quy tắc `Tỉnh/Thành phố`:
+  - Nếu `Quốc tịch`/`Quốc gia đăng ký` là `Việt Nam`: hiển thị combobox lấy từ Danh mục Tỉnh/Thành phố [DM_13].
+  - Nếu `Quốc tịch`/`Quốc gia đăng ký` khác `Việt Nam`: hiển thị ô nhập văn bản.
+- UC003 không xử lý thiết lập/đổi phương thức đăng nhập. Các thao tác này thuộc UC002 và UCPS006.
 
-#### 4.1.8.3. UC003.MH01 - Man hinh Cap nhat tai khoan Ca nhan
+#### 4.1.8.3. UC003.MH01 - Cập nhật thông tin tài khoản Cá nhân
 
-##### 4.1.8.3.1. Man hinh
+##### 4.1.8.3.1. Màn hình
 
-- Giao dien hien thi Form cap nhat thong tin ho so tai khoan ca nhan.
-- Cac truong thong tin duoc tu dong dien san theo du lieu hien tai cua ho so tai khoan.
-- Link anh man hinh: [UC003.MH01 - Cap nhat tai khoan Ca nhan](../images/UC003/UC003_MH01_Cap_nhat_tai_khoan_ca_nhan.png).
+- Màn hình hiển thị form cập nhật thông tin tài khoản Cá nhân.
+- Form gồm các khối:
+  - Khối I: `Thông tin chung tài khoản`.
+  - Khối II.A: `Thông tin định danh Cá nhân`.
+  - Khối III: `Thông tin địa chỉ & Thiết lập sử dụng`.
+- Dữ liệu được tự động điền theo hồ sơ hiện tại.
 
-##### 4.1.8.3.2. Mo ta thong tin tren man hinh
+##### 4.1.8.3.2. Mô tả thông tin trên màn hình
 
-| Truong thong tin | Kieu du lieu | Bat buoc | Mac dinh | Mo ta |
-| :-- | :-- | :-- | :-- | :-- |
-| Loai khach hang | Enum(String(50)) | - | Ca nhan | Control UI: Hien thi/Read-only. |
-| Loai tai khoan | Enum(String(50)) | - | Tai khoan chinh | Control UI: Hien thi/Read-only. Khach hang ca nhan luon la `Tai khoan chinh`. |
-| Nguon xac thuc | String(100) | - | Theo ho so | Control UI: Hien thi/Read-only.<br>Gom:<br>- VNeID<br>- Noi bo<br>- VNeID, Noi bo |
-| Loai giay to | Enum(String(50)) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Hien thi hop chon va cho phep sua. Tham chieu Danh muc dung chung - Loai giay to phap ly [DM_10]. |
-| So giay to | String(50) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua. Kiem tra trung tren toan he thong doi voi cac tai khoan dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua). |
-| Ten khach hang | String(255) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua. |
-| Ngay sinh | Date | Khong | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua. Phai nho hon ngay hien tai. |
-| Gioi tinh | Enum(String(50)) | Khong | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Hien thi hop chon va cho phep sua. |
-| Quoc tich | String(255) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua theo danh muc/quy tac nhap lieu hien hanh. |
-| Phan loai khach hang | Enum(String(50)) | - | Theo Quoc tich | Control UI: Hien thi/Read-only.<br>Gom:<br>- Trong nuoc<br>- Nuoc ngoai |
-| Tinh/TP | Enum(String(50)) hoac String(255) | Khong | Theo ho so | Cho phep sua. Control UI dong theo Quoc tich:<br>- Neu Quoc tich la `Viet Nam`: Hien thi hop chon va cho phep chon tai Danh muc dung chung - Tinh/Thanh pho [DM_13].<br>- Neu Quoc tich khac `Viet Nam`: Hien thi o nhap lieu dang van ban de nguoi dung tu nhap. |
-| Dia chi chi tiet | String(500) | Khong | Theo ho so | Cho phep sua. Ghi thong tin dia chi chi tiet nhu so nha, duong pho, thon xom... |
-| Email (Ten dang nhap) | String(255) | Co neu ho so co nguon xac thuc Noi bo | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID`: Cho phep sua Email vi Email chi la thong tin lien he, chua dung lam Ten dang nhap Noi bo.<br>- Neu Nguon xac thuc la `Noi bo` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only) vi Email la Ten dang nhap cua nguon xac thuc Noi bo. |
-| So dien thoai | String(20) | Co | Theo ho so | Cho phep sua. Kiem tra dinh dang theo Quoc tich.<br>- Kiem tra trung tren toan he thong doi voi cac tai khoan dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua). |
-| Trung tam Dang ky mac dinh | Enum(String(100)) | Khong | Theo ho so | Control UI: Hop chon. Cho phep sua. Hien thi theo Ten viet tat cua Danh muc dung chung - [DM_08 - Trung tam giao dich bao dam](../00_Tong_quan_va_Quy_tac_chung.md#dm_08). |
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **I. Thông tin chung tài khoản** | - | - | - | Khối luôn hiển thị. Toàn bộ trường trong khối chỉ đọc, không cho phép chỉnh sửa. |
+| Loại khách hàng | Enum(String(50)) | Không | `Cá nhân` | Read-only. Hiển thị loại chủ thể của hồ sơ tài khoản đang cập nhật. |
+| Loại tài khoản | Enum(String(50)) | Không | Theo người dùng đang đăng nhập | Read-only. Hiển thị `Tài khoản chính` hoặc `Tài khoản phụ` theo thông tin người dùng đang đăng nhập. |
+| Nguồn xác thực | Enum(String(100)) | Không | Theo hồ sơ tài khoản | Read-only. Giá trị gồm: `VNeID`, `Nội bộ`, `VNeID, Nội bộ`. Hệ thống căn cứ giá trị này để khóa/mở các trường định danh và email. |
+| **II.A. Thông tin định danh Cá nhân** | - | - | - | Khối chỉ hiển thị khi `Loại khách hàng = Cá nhân`; ẩn khi `Loại khách hàng = Tổ chức`. Các trường định danh trong khối bị khóa nếu hồ sơ có `VNeID` hoặc `VNeID, Nội bộ`; cho phép chỉnh sửa nếu hồ sơ chỉ có `Nội bộ`. |
+| Loại giấy tờ | Enum(String(50)) | Có | Theo hồ sơ tài khoản | Combobox tham chiếu [DM_10]. Giá trị gồm: `CCCD`, `CMND`, `Hộ chiếu`. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi được sửa, hệ thống kiểm tra trùng lặp theo bộ thông tin định danh cá nhân. |
+| Số giấy tờ | String(50) | Có | Theo hồ sơ tài khoản | Input. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi được sửa, hệ thống kiểm tra trùng số giấy tờ trên toàn hệ thống, ngoại trừ hồ sơ hiện tại. |
+| Tên khách hàng | String(255) | Có | Theo hồ sơ tài khoản | Input. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi được sửa, hệ thống kiểm tra trùng lặp theo bộ thông tin định danh cá nhân. |
+| Ngày sinh | Date | Không | Theo hồ sơ tài khoản | Date/Input theo định dạng `DD/MM/YYYY`. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi được sửa, hệ thống kiểm tra trùng lặp theo bộ thông tin định danh cá nhân. |
+| Giới tính | Enum(String(20)) | Không | Theo hồ sơ tài khoản | Combobox. Giá trị gồm: `Nam`, `Nữ`, `Khác`. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. |
+| Quốc tịch | Enum(String(255)) | Có | Theo hồ sơ tài khoản | Combobox tham chiếu [DM_09]. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi thay đổi, hệ thống tự động tính lại `Phân loại khách hàng` và cập nhật cách nhập `Tỉnh/Thành phố`. |
+| Email cá nhân (Tên đăng nhập) | String(255) | Có nếu hồ sơ có Nội bộ | Theo hồ sơ tài khoản | Input. Cho phép chỉnh sửa khi hồ sơ chỉ có `VNeID` và chưa thiết lập tài khoản Nội bộ; khi đó email đóng vai trò email liên hệ. Read-only khi hồ sơ có `Nội bộ` hoặc `VNeID, Nội bộ`, vì email đang là tên đăng nhập hệ thống. Khi được sửa, kiểm tra định dạng email [BR-VAL-002]. |
+| Số điện thoại cá nhân | String(20) | Có | Theo hồ sơ tài khoản | Input. Luôn cho phép chỉnh sửa ở mọi nguồn xác thực. Kiểm tra định dạng số điện thoại và kiểm tra trùng trên toàn hệ thống, ngoại trừ hồ sơ hiện tại. |
+| **III. Thông tin địa chỉ & Thiết lập sử dụng** | - | - | - | Khối dùng chung cho cả Cá nhân và Tổ chức. Các trường liên hệ/địa chỉ trong khối được phép chỉnh sửa ở mọi nguồn xác thực, trừ `Phân loại khách hàng` luôn read-only. |
+| Phân loại khách hàng | Enum(String(50)) | Không | Tự động theo Quốc tịch | Read-only. Tự động hiển thị `Trong nước` nếu `Quốc tịch = Việt Nam`; hiển thị `Nước ngoài` nếu khác `Việt Nam`. |
+| Trung tâm Đăng ký mặc định | Enum(String(255)) | Không | Theo hồ sơ tài khoản | Dropdown tham chiếu [DM_08]. Luôn cho phép chỉnh sửa ở mọi nguồn xác thực. |
+| Nhu cầu sử dụng tài khoản | List(String) | Không | Theo hồ sơ tài khoản | Dạng chip/chọn nhiều. Giá trị gồm: `Đăng ký`, `Tra cứu`. Cho phép chỉnh sửa theo nhu cầu sử dụng của khách hàng. |
+| Tỉnh/Thành phố | Enum/String(255) | Có | Theo hồ sơ tài khoản | Nếu `Quốc tịch = Việt Nam`, hiển thị Dropdown [DM_13]. Nếu `Quốc tịch` khác `Việt Nam`, hiển thị Textbox để nhập giá trị văn bản. Luôn cho phép chỉnh sửa ở mọi nguồn xác thực. |
+| Địa chỉ chi tiết | String(500) | Không | Theo hồ sơ tài khoản | Textarea. Luôn cho phép chỉnh sửa ở mọi nguồn xác thực. |
 
-##### 4.1.8.3.3. Chuc nang tren man hinh
+##### 4.1.8.3.3. Chức năng trên màn hình
 
-| STT | Ten chuc nang | Dinh dang | Mo ta |
-| :-- | :-- | :-- | :-- |
-| 1 | Cap nhat | Nut | Khi click, he thong validate du lieu tren form. |
-| | | | - TH1 (Bo trong truong bat buoc): Vi pham [BR-VAL-001], highlight truong dau tien bi bo trong va hien thi [MSG-ERR-VAL-001]. |
-| | | | - TH2 (Du lieu khong hop le): Kiem tra sai dinh dang, vuot qua do dai, ky tu khong hop le; hien thi thong bao loi tuong ung theo MessageList chung. |
-| | | | - TH3 (Ngay sinh khong hop le): Neu Ngay sinh lon hon hoac bang ngay hien tai, vi pham [BR-VAL-008], hien thi [MSG-ERR-VAL-008]. |
-| | | | - TH4 (Trung lap du lieu): Kiem tra trung Email (Ten dang nhap), So giay to, So dien thoai tren toan he thong doi voi cac tai khoan dang o trang thai `Dang hoat dong` va chi ap dung voi cac truong duoc phep cap nhat. Neu trung, hien thi [MSG-ERR-VAL-009]. |
-| | | | - TH Hop le:<br>- Cap nhat thong tin ho so tai khoan ca nhan vao CSDL.<br>- Ghi nhan Audit Log.<br>- Hien thi [MSG-SUC-SYS-002] va chuyen ve man hinh Xem thong tin tai khoan ca nhan (UC002.MH01). |
-| 2 | Huy | Nut | Quay lai man hinh Xem thong tin tai khoan ca nhan (UC002.MH01), khong luu thay doi. |
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Lưu cập nhật | Button | Validate dữ liệu đang được phép nhập/sửa. Nếu hợp lệ, hệ thống lưu thông tin tài khoản Cá nhân, tính lại `Phân loại khách hàng`, ghi Audit Log, cập nhật thông tin hiển thị trên header/dropdown người dùng và quay về UC002.MH01 - Xem chi tiết tài khoản. |
+| 2 | Hủy | Button | Hủy thao tác cập nhật, không lưu dữ liệu đã thay đổi và quay về UC002.MH01 - Xem chi tiết tài khoản. |
 
-#### 4.1.8.4. UC003.MH02 - Man hinh Cap nhat tai khoan To chuc (Tai khoan chinh)
+#### 4.1.8.4. UC003.MH02 - Cập nhật thông tin tài khoản Tổ chức
 
-##### 4.1.8.4.1. Man hinh
+##### 4.1.8.4.1. Màn hình
 
-- Giao dien cap nhat tai khoan chinh cua To chuc, gom:
-  - Khoi Thong tin chung & lien lac cua To chuc.
-  - Khoi Thong tin Nguoi dai dien.
-- Cac truong thong tin duoc tu dong dien san theo du lieu hien tai cua ho so tai khoan.
-- Link anh man hinh: [UC003.MH02 - Cap nhat tai khoan To chuc](../images/UC003/UC003_MH02_Cap_nhat_tai_khoan_to_chuc.png).
+- Màn hình hiển thị form cập nhật thông tin tài khoản Tổ chức.
+- Form gồm các khối:
+  - Khối I: `Thông tin chung tài khoản`.
+  - Khối II.B: `Thông tin định danh & Người đại diện Tổ chức`.
+  - Khối III: `Thông tin địa chỉ & Thiết lập sử dụng`.
+- Dữ liệu được tự động điền theo hồ sơ hiện tại.
+- Nhãn trường định danh tổ chức hiển thị động theo `Loại tổ chức`.
 
-##### 4.1.8.4.2. Mo ta thong tin tren man hinh
+##### 4.1.8.4.2. Mô tả thông tin trên màn hình
 
-| Truong thong tin | Kieu du lieu | Bat buoc | Mac dinh | Mo ta |
-| :-- | :-- | :-- | :-- | :-- |
-| **I. Thong tin chung & lien lac cua To chuc** | - | - | - | Khoi thong tin tai khoan chinh cua To chuc. |
-| Loai khach hang | Enum(String(50)) | - | To chuc | Control UI: Hien thi/Read-only. |
-| Loai tai khoan | Enum(String(50)) | - | Tai khoan chinh | Control UI: Hien thi/Read-only. |
-| Nguon xac thuc | String(100) | - | Theo ho so | Control UI: Hien thi/Read-only.<br>Gom:<br>- VNeID<br>- Noi bo<br>- VNeID, Noi bo |
-| Loai to chuc | Enum(String(100)) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Hien thi hop chon va cho phep sua.<br>Gom:<br>- To chuc co dang ky kinh doanh trong nuoc<br>- To chuc nuoc ngoai |
-| Ma dinh danh to chuc | String(255) | Co khi Loai to chuc la To chuc co dang ky kinh doanh trong nuoc | Theo ho so | Chi hien thi khi Loai to chuc = `To chuc co dang ky kinh doanh trong nuoc`.<br>Control UI dong theo Nguon xac thuc:<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua va kiem tra trung tren toan he thong doi voi cac tai khoan chinh to chuc dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua). |
-| Ma so thue/So giay phep dau tu | String(255) | Co khi Loai to chuc la To chuc nuoc ngoai | Theo ho so | Chi hien thi khi Loai to chuc = `To chuc nuoc ngoai`.<br>Control UI dong theo Nguon xac thuc:<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua va kiem tra trung tren toan he thong doi voi cac tai khoan chinh to chuc dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua). |
-| Phan loai khach hang | Enum(String(50)) | - | Theo Loai to chuc | Control UI: Hien thi/Read-only.<br>- Tu dong la `Trong nuoc` neu Loai to chuc = `To chuc co dang ky kinh doanh trong nuoc`.<br>- Tu dong la `Nuoc ngoai` neu Loai to chuc = `To chuc nuoc ngoai`. |
-| Ten to chuc | String(255) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua. |
-| Email to chuc (Ten dang nhap) | String(255) | Co neu ho so co nguon xac thuc Noi bo | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID`: Cho phep sua Email vi Email chi la thong tin lien he, chua dung lam Ten dang nhap Noi bo.<br>- Neu Nguon xac thuc la `Noi bo` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only) vi Email la Ten dang nhap cua nguon xac thuc Noi bo. |
-| So dien thoai to chuc | String(20) | Khong | Theo ho so | Cho phep sua. Kiem tra dinh dang theo Quoc gia neu co nhap.<br>- Kiem tra trung tren toan he thong doi voi cac tai khoan dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua). |
-| Quoc gia | String(255) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Hien thi hop chon va cho phep sua theo Danh muc Quoc gia [DM_09]. |
-| Tinh/TP | Enum(String(50)) hoac String(255) | Khong | Theo ho so | Cho phep sua. Control UI dong theo Quoc gia:<br>- Neu Quoc gia la `Viet Nam`: Hien thi hop chon va cho phep chon tai Danh muc dung chung - Tinh/Thanh pho [DM_13].<br>- Neu Quoc gia khac `Viet Nam`: Hien thi o nhap lieu dang van ban de nguoi dung tu nhap. |
-| Dia chi chi tiet | String(500) | Khong | Theo ho so | Cho phep sua. Dia chi chi tiet tru so chinh cua To chuc. |
-| Trung tam Dang ky mac dinh | Enum(String(100)) | Khong | Theo ho so | Control UI: Hop chon. Cho phep sua. Hien thi theo Ten viet tat cua Danh muc dung chung - [DM_08 - Trung tam giao dich bao dam](../00_Tong_quan_va_Quy_tac_chung.md#dm_08). |
-| **II. Thong tin Nguoi dai dien** | - | - | - | Khoi thong tin nguoi dai dien cua To chuc. |
-| Ho va ten nguoi dai dien | String(255) | Khong | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua. |
-| Loai giay to nguoi dai dien | Enum(String(50)) | Khong | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Hien thi hop chon va cho phep sua. Tham chieu Danh muc dung chung - Loai giay to phap ly [DM_10]. |
-| So giay to nguoi dai dien | String(50) | Khong | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua. |
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **I. Thông tin chung tài khoản** | - | - | - | Khối luôn hiển thị. Toàn bộ trường trong khối chỉ đọc, không cho phép chỉnh sửa. |
+| Loại khách hàng | Enum(String(50)) | Không | `Tổ chức` | Read-only. Hiển thị loại chủ thể của hồ sơ tài khoản đang cập nhật. |
+| Loại tài khoản | Enum(String(50)) | Không | Theo người dùng đang đăng nhập | Read-only. Hiển thị `Tài khoản chính` hoặc `Tài khoản phụ` theo thông tin người dùng đang đăng nhập. |
+| Nguồn xác thực | Enum(String(100)) | Không | Theo hồ sơ tài khoản | Read-only. Giá trị gồm: `VNeID`, `Nội bộ`, `VNeID, Nội bộ`. Hệ thống căn cứ giá trị này để khóa/mở các trường định danh và email. |
+| **II.B. Thông tin định danh & Người đại diện Tổ chức** | - | - | - | Khối chỉ hiển thị khi `Loại khách hàng = Tổ chức`; ẩn khi `Loại khách hàng = Cá nhân`. Các trường định danh trong khối bị khóa nếu hồ sơ có `VNeID` hoặc `VNeID, Nội bộ`; cho phép chỉnh sửa nếu hồ sơ chỉ có `Nội bộ`. |
+| Loại tổ chức | Enum(String(100)) | Có | Theo hồ sơ tài khoản | Combobox. Giá trị gồm: `Tổ chức có đăng ký kinh doanh trong nước`, `Tổ chức nước ngoài`. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi thay đổi, hệ thống cập nhật nhãn và quy tắc bắt buộc của trường định danh tổ chức. |
+| Mã định danh tổ chức | String(100) | Có theo loại tổ chức | Theo hồ sơ tài khoản | Input. Hiển thị khi `Loại tổ chức = Tổ chức có đăng ký kinh doanh trong nước`. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi được sửa, kiểm tra trùng mã định danh tổ chức trên toàn hệ thống, ngoại trừ hồ sơ hiện tại. |
+| Mã số thuế/Số giấy phép đầu tư | String(100) | Có theo loại tổ chức | Theo hồ sơ tài khoản | Input. Hiển thị khi `Loại tổ chức = Tổ chức nước ngoài`. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi được sửa, kiểm tra trùng mã số thuế/số giấy phép đầu tư trên toàn hệ thống, ngoại trừ hồ sơ hiện tại. |
+| Tên tổ chức | String(255) | Có | Theo hồ sơ tài khoản | Input. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi được sửa, hệ thống kiểm tra trùng lặp theo bộ thông tin định danh tổ chức. |
+| Quốc gia đăng ký | Enum(String(255)) | Có | Theo hồ sơ tài khoản | Combobox tham chiếu [DM_09]. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi thay đổi, hệ thống tự động tính lại `Phân loại khách hàng` và cập nhật cách nhập `Tỉnh/Thành phố`. |
+| Email tổ chức (Tên đăng nhập) | String(255) | Có nếu hồ sơ có Nội bộ | Theo hồ sơ tài khoản | Input. Cho phép chỉnh sửa khi hồ sơ chỉ có `VNeID` và chưa thiết lập tài khoản Nội bộ; khi đó email đóng vai trò email liên hệ. Read-only khi hồ sơ có `Nội bộ` hoặc `VNeID, Nội bộ`, vì email đang là tên đăng nhập hệ thống. Khi được sửa, kiểm tra định dạng email [BR-VAL-002]. |
+| Số điện thoại tổ chức | String(20) | Không | Theo hồ sơ tài khoản | Input. Luôn cho phép chỉnh sửa ở mọi nguồn xác thực. Kiểm tra định dạng số điện thoại và kiểm tra trùng trên toàn hệ thống nếu có nhập, ngoại trừ hồ sơ hiện tại. |
+| Họ và tên người đại diện | String(255) | Không | Theo hồ sơ tài khoản | Input. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. |
+| Loại giấy tờ người đại diện | Enum(String(50)) | Không | Theo hồ sơ tài khoản | Combobox tham chiếu [DM_10]. Giá trị gồm: `CCCD`, `CMND`, `Hộ chiếu`. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. |
+| Số giấy tờ người đại diện | String(50) | Không | Theo hồ sơ tài khoản | Input. Cho phép chỉnh sửa khi `Nguồn xác thực = Nội bộ`; read-only khi `Nguồn xác thực = VNeID` hoặc `VNeID, Nội bộ`. Khi được sửa, kiểm tra trùng số giấy tờ người đại diện theo quy định nghiệp vụ, ngoại trừ hồ sơ hiện tại. |
+| **III. Thông tin địa chỉ & Thiết lập sử dụng** | - | - | - | Khối dùng chung cho cả Cá nhân và Tổ chức. Các trường liên hệ/địa chỉ trong khối được phép chỉnh sửa ở mọi nguồn xác thực, trừ `Phân loại khách hàng` luôn read-only. |
+| Phân loại khách hàng | Enum(String(50)) | Không | Tự động theo Quốc gia đăng ký | Read-only. Tự động hiển thị `Trong nước` nếu `Quốc gia đăng ký = Việt Nam`; hiển thị `Nước ngoài` nếu khác `Việt Nam`. |
+| Trung tâm Đăng ký mặc định | Enum(String(255)) | Không | Theo hồ sơ tài khoản | Dropdown tham chiếu [DM_08]. Luôn cho phép chỉnh sửa ở mọi nguồn xác thực. |
+| Nhu cầu sử dụng tài khoản | List(String) | Không | Theo hồ sơ tài khoản | Dạng chip/chọn nhiều. Giá trị gồm: `Đăng ký`, `Tra cứu`. Cho phép chỉnh sửa theo nhu cầu sử dụng của khách hàng. |
+| Tỉnh/Thành phố | Enum/String(255) | Có | Theo hồ sơ tài khoản | Nếu `Quốc gia đăng ký = Việt Nam`, hiển thị Dropdown [DM_13]. Nếu `Quốc gia đăng ký` khác `Việt Nam`, hiển thị Textbox để nhập giá trị văn bản. Luôn cho phép chỉnh sửa ở mọi nguồn xác thực. |
+| Địa chỉ chi tiết | String(500) | Không | Theo hồ sơ tài khoản | Textarea. Luôn cho phép chỉnh sửa ở mọi nguồn xác thực. |
 
-##### 4.1.8.4.3. Chuc nang tren man hinh
+##### 4.1.8.4.3. Chức năng trên màn hình
 
-| STT | Ten chuc nang | Dinh dang | Mo ta |
-| :-- | :-- | :-- | :-- |
-| 1 | Cap nhat | Nut | Khi click, he thong validate du lieu tren form. |
-| | | | - TH1 (Bo trong truong bat buoc): Vi pham [BR-VAL-001], highlight truong dau tien bi bo trong va hien thi [MSG-ERR-VAL-001]. |
-| | | | - TH2 (Du lieu khong hop le): Kiem tra sai dinh dang, vuot qua do dai, ky tu khong hop le; hien thi thong bao loi tuong ung theo MessageList chung. |
-| | | | - TH3 (Trung lap tai khoan chinh to chuc): Neu Nguon xac thuc la `Noi bo` va co cap nhat Ma dinh danh to chuc hoac Ma so thue/So giay phep dau tu, he thong kiem tra trung tren toan he thong doi voi cac tai khoan chinh to chuc dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua). Neu trung, hien thi [MSG-ERR-VAL-009]. |
-| | | | - TH4 (Trung lap thong tin lien he): Kiem tra trung Email to chuc (Ten dang nhap), So dien thoai to chuc tren toan he thong doi voi cac tai khoan dang o trang thai `Dang hoat dong` va chi ap dung voi cac truong duoc phep cap nhat. Neu trung, hien thi [MSG-ERR-VAL-009]. |
-| | | | - TH Hop le:<br>- Cap nhat thong tin ho so tai khoan chinh cua To chuc vao CSDL.<br>- Ghi nhan Audit Log.<br>- Hien thi [MSG-SUC-SYS-002] va chuyen ve man hinh Xem thong tin tai khoan To chuc (UC002.MH02). |
-| 2 | Huy | Nut | Quay lai man hinh Xem thong tin tai khoan To chuc (UC002.MH02), khong luu thay doi. |
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Lưu cập nhật | Button | Validate dữ liệu đang được phép nhập/sửa. Nếu hợp lệ, hệ thống lưu thông tin tài khoản Tổ chức, tính lại `Phân loại khách hàng`, ghi Audit Log, cập nhật thông tin hiển thị trên header/dropdown người dùng và quay về UC002.MH01 - Xem chi tiết tài khoản. |
+| 2 | Hủy | Button | Hủy thao tác cập nhật, không lưu dữ liệu đã thay đổi và quay về UC002.MH01 - Xem chi tiết tài khoản. |
 
-#### 4.1.8.5. UC003.MH03 - Man hinh Cap nhat tai khoan phu truc thuoc To chuc
+#### 4.1.8.5. Xử lý validate chung
 
-##### 4.1.8.5.1. Man hinh
+| Trường hợp | Điều kiện | Xử lý |
+| :--- | :--- | :--- |
+| TH1 - Bỏ trống trường bắt buộc | Một hoặc nhiều trường bắt buộc, đang cho phép nhập, bị bỏ trống | Áp dụng [BR-VAL-001]. Hệ thống highlight trường lỗi, hiển thị [MSG-ERR-VAL-001] và focus trường lỗi đầu tiên. |
+| TH2 - Email sai định dạng | Trường Email được phép sửa và giá trị không đúng định dạng email | Áp dụng [BR-VAL-002], hiển thị [MSG-ERR-VAL-002]. |
+| TH3 - Email trùng | Email được phép sửa nhưng đã tồn tại ở hồ sơ khác theo quy tắc kiểm tra trùng của hệ thống | Áp dụng [BR-VAL-009], hiển thị [MSG-ERR-VAL-009]. |
+| TH4 - Số điện thoại sai định dạng | Số điện thoại không đúng định dạng cho phép | Hiển thị lỗi dưới trường `Số điện thoại`. |
+| TH5 - Số điện thoại trùng | Số điện thoại đã được dùng bởi tài khoản khác đang hoạt động | Áp dụng [BR-VAL-009], hiển thị lỗi dưới trường `Số điện thoại`. |
+| TH6 - Số giấy tờ/Mã định danh trùng | Trường định danh được phép sửa nhưng trùng hồ sơ khác | Áp dụng [BR-VAL-009], hiển thị lỗi dưới trường tương ứng. |
+| TH7 - Quốc gia/Tỉnh TP không hợp lệ | Quốc tịch/Quốc gia đăng ký là `Việt Nam` nhưng chưa chọn tỉnh/thành phố, hoặc khác `Việt Nam` nhưng chưa nhập tỉnh/thành phố khi trường đang bắt buộc | Áp dụng [BR-VAL-001]. |
+| TH8 - Hợp lệ | Tất cả kiểm tra hợp lệ | Lưu dữ liệu, ghi Audit Log, hiển thị Toast `Cập nhật thông tin tài khoản thành công!`, quay về màn hình UC002. |
 
-- Giao dien hien thi Form cap nhat thong tin cua tai khoan phu truc thuoc To chuc khi nguoi dung tu sua ho so cua minh.
-- Cac thong tin to chuc chu quan hien thi o che do chi doc.
-- Website Khach hang khong hien thi thong tin Nhom nguoi dung, Vai tro, Cay phan quyen tren man hinh nay.
-- Link anh man hinh: [UC003.MH03 - Cap nhat tai khoan phu truc thuoc To chuc](../images/UC003/UC003_MH03_Cap_nhat_tai_khoan_phu_truc_thuoc.png).
+#### 4.1.8.6. Dữ liệu sau cập nhật
 
-##### 4.1.8.5.2. Mo ta thong tin tren man hinh
-
-| Truong thong tin | Kieu du lieu | Bat buoc | Mac dinh | Mo ta |
-| :-- | :-- | :-- | :-- | :-- |
-| **I. Thong tin To chuc chu quan** | - | - | - | Khoi thong tin To chuc so huu tai khoan phu. Hien thi/Read-only. |
-| Ma khach hang (To chuc chu quan) | String(50) | - | Theo To chuc chu quan | Control UI: Hien thi/Read-only. |
-| Ten to chuc | String(255) | - | Theo To chuc chu quan | Control UI: Hien thi/Read-only. |
-| Email to chuc (Ten dang nhap) | String(255) | - | Theo To chuc chu quan | Control UI: Hien thi/Read-only. |
-| So dien thoai to chuc | String(20) | - | Theo To chuc chu quan | Control UI: Hien thi/Read-only. |
-| **II. Thong tin tai khoan phu** | - | - | - | Khoi thong tin cua tai khoan phu truc thuoc. |
-| Loai khach hang | Enum(String(50)) | - | To chuc | Control UI: Hien thi/Read-only. |
-| Loai tai khoan | Enum(String(50)) | - | Tai khoan phu | Control UI: Hien thi/Read-only. |
-| Nguon xac thuc | String(100) | - | Theo ho so | Control UI: Hien thi/Read-only.<br>Gom:<br>- VNeID<br>- Noi bo<br>- VNeID, Noi bo |
-| Ten khach hang | String(255) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua. |
-| Email (Ten dang nhap) | String(255) | Co neu ho so co nguon xac thuc Noi bo | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID`: Cho phep sua Email vi Email chi la thong tin lien he, chua dung lam Ten dang nhap Noi bo.<br>- Neu Nguon xac thuc la `Noi bo` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only) vi Email la Ten dang nhap cua nguon xac thuc Noi bo. |
-| So dien thoai | String(20) | Khong | Theo ho so | Cho phep sua. Neu co nhap, kiem tra dinh dang theo Quoc gia va kiem tra trung tren toan he thong doi voi cac tai khoan dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua). |
-| Don vi | String(255) | Khong | Theo ho so | Cho phep sua. Don vi/phong ban/chi nhanh cua tai khoan phu trong To chuc. |
-| Loai giay to | Enum(String(50)) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Hien thi hop chon va cho phep sua. Tham chieu Danh muc dung chung - Loai giay to phap ly [DM_10]. |
-| So giay to | String(255) | Co | Theo ho so | Control UI dong theo Nguon xac thuc.<br>- Neu Nguon xac thuc la `VNeID` hoac `VNeID, Noi bo`: Khong cho phep sua (Read-only).<br>- Neu Nguon xac thuc la `Noi bo`: Cho phep sua. Kiem tra trung voi tat ca tai khoan phu khac tren toan he thong dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua). |
-| Quoc gia | Enum(String(50)) | Co | Theo ho so | Control UI: Hop chon. Cho phep sua theo Danh muc Quoc gia [DM_09]. |
-| Tinh/TP | Enum(String(50)) hoac String(255) | Co | Theo ho so | Cho phep sua. Control UI dong theo Quoc gia:<br>- Neu Quoc gia la `Viet Nam`: Hien thi hop chon va cho phep chon tai Danh muc dung chung - Tinh/Thanh pho [DM_13].<br>- Neu Quoc gia khac `Viet Nam`: Hien thi o nhap lieu dang van ban de nguoi dung tu nhap. |
-| Dia chi chi tiet | String(500) | Co | Theo ho so | Cho phep sua. |
-
-##### 4.1.8.5.3. Chuc nang tren man hinh
-
-| STT | Ten chuc nang | Dinh dang | Mo ta |
-| :-- | :-- | :-- | :-- |
-| 1 | Cap nhat | Nut | Khi click, he thong validate du lieu tren form. |
-| | | | - TH1 (Bo trong truong bat buoc): Vi pham [BR-VAL-001], highlight truong dau tien bi bo trong va hien thi [MSG-ERR-VAL-001]. |
-| | | | - TH2 (Du lieu khong hop le): Kiem tra sai dinh dang, vuot qua do dai, ky tu khong hop le; hien thi thong bao loi tuong ung theo MessageList chung. |
-| | | | - TH3 (Trung lap tai khoan phu): Kiem tra Email (Ten dang nhap) va So giay to tren toan he thong doi voi cac tai khoan phu dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua) va chi ap dung voi cac truong duoc phep cap nhat. Neu trung, hien thi [MSG-ERR-VAL-009]. |
-| | | | - TH4 (Trung lap so dien thoai): Neu So dien thoai trung voi tai khoan khac dang o trang thai `Dang hoat dong` (ngoai tru ban ghi dang sua), hien thi [MSG-ERR-VAL-009]. |
-| | | | - TH Hop le:<br>- Cap nhat thong tin ho so tai khoan phu vao CSDL.<br>- Ghi nhan Audit Log.<br>- Hien thi [MSG-SUC-SYS-002] va chuyen ve man hinh Xem thong tin tai khoan phu (UC002.MH03). |
-| 2 | Huy | Nut | Quay lai man hinh Xem thong tin tai khoan phu (UC002.MH03), khong luu thay doi. |
+- Sau khi lưu thành công, hệ thống cập nhật các trường hồ sơ tương ứng trong CSDL.
+- Nếu `Tên khách hàng` hoặc `Tên tổ chức` thay đổi, hệ thống cập nhật tên hiển thị trên header/dropdown người dùng.
+- Nếu `Email` được phép sửa và đã thay đổi, hệ thống cập nhật email hiển thị trên header/dropdown người dùng. Nếu hồ sơ đã có nguồn Nội bộ, email không được sửa trong UC003.
+- `Phân loại khách hàng` được tính lại theo Quốc tịch/Quốc gia đăng ký:
+  - `Việt Nam`: `Trong nước`.
+  - Khác `Việt Nam`: `Nước ngoài`.
+- `Trung tâm Đăng ký mặc định` sau cập nhật được dùng làm giá trị mặc định ở các nghiệp vụ có trường Cơ quan tiếp nhận/Trung tâm đăng ký.

@@ -104,7 +104,7 @@ flowchart TD
 | Xóa bộ lọc | Button | Không | Hiển thị | Xóa toàn bộ tiêu chí lọc trong tab `Phục hồi danh dự` và tải lại danh sách mặc định. |
 | Tìm kiếm | Button | Không | Hiển thị | Thực hiện tìm kiếm theo các tiêu chí đang nhập/chọn trong tab `Phục hồi danh dự`. |
 | Kết xuất Excel | Button | Không | Hiển thị | Kết xuất danh sách kết quả của tab `Phục hồi danh dự` theo tiêu chí lọc và sắp xếp hiện tại. |
-| **II. Bảng kết quả tìm kiếm** | | | | Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Phục hồi danh dự`. |
+| **II. Bảng kết quả tìm kiếm** | | | | Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Phục hồi danh dự`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | - | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Chỉ đọc. Hiển thị mã vụ việc. Người dùng click dòng dữ liệu để mở chi tiết. |
 | Tên vụ việc | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tên vụ việc. |
@@ -144,7 +144,7 @@ flowchart TD
 | Xóa bộ lọc | Button | Không | Hiển thị | Xóa toàn bộ tiêu chí lọc trong tab `Yêu cầu bồi thường` và tải lại danh sách mặc định. |
 | Tìm kiếm | Button | Không | Hiển thị | Thực hiện tìm kiếm theo các tiêu chí đang nhập/chọn trong tab `Yêu cầu bồi thường`. |
 | Kết xuất Excel | Button | Không | Hiển thị | Kết xuất danh sách kết quả của tab `Yêu cầu bồi thường` theo tiêu chí lọc và sắp xếp hiện tại. |
-| **II. Bảng kết quả tìm kiếm** | | | | Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Yêu cầu bồi thường`. |
+| **II. Bảng kết quả tìm kiếm** | | | | Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Yêu cầu bồi thường`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | - | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Chỉ đọc. Hiển thị mã vụ việc. Người dùng click dòng dữ liệu để mở chi tiết. |
 | Tên vụ việc | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tên vụ việc đã ghi nhận ở bước tiếp nhận/nhập hồ sơ. |
@@ -165,7 +165,7 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển tab | Tab | Hệ thống tải danh sách vụ việc theo tab được chọn, đặt lại trang hiện tại về trang 1. Dữ liệu tab `Phục hồi danh dự` và tab `Yêu cầu bồi thường` là 02 tập dữ liệu loại trừ nhau theo phạm vi dữ liệu đã mô tả. |
-| 2 | Tìm kiếm | Button | Hệ thống lọc danh sách vụ việc trong tab hiện hành theo các tiêu chí đang nhập/chọn. Nếu khoảng ngày không hợp lệ, áp dụng [BR-VAL-007] và không thực hiện tìm kiếm. Nếu không có dữ liệu phù hợp, hiển thị trạng thái không có kết quả trong vùng bảng. |
+| 2 | Tìm kiếm | Button | Hệ thống lọc danh sách vụ việc trong tab hiện hành theo các tiêu chí đang nhập/chọn. Nếu khoảng ngày không hợp lệ, áp dụng [BR-VAL-007] và không thực hiện tìm kiếm. Nếu không có dữ liệu phù hợp, hiển thị trạng thái không có kết quả trong vùng bảng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính `style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"` kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí đã nhập, đưa các combobox về `Tất cả`, đưa danh sách về trang 1 và tải lại dữ liệu mặc định của tab hiện hành. |
 | 4 | Kết xuất Excel | Button | Hệ thống kết xuất danh sách kết quả hiện hành của tab đang chọn theo đúng tiêu chí lọc và sắp xếp hiện tại. Nếu danh sách rỗng, áp dụng [BR-EXP-040] và không tải file. |
 | 5 | Sắp xếp cột | Header cột | Người dùng click tiêu đề cột có hỗ trợ sắp xếp để đảo chiều tăng/giảm hoặc chọn cột sắp xếp mới. |

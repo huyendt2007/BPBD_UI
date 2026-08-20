@@ -1,4 +1,4 @@
-##### 4.3.1.5.2. UCPS010 - Quản lý loại danh mục
+﻿##### 4.3.1.5.2. UCPS010 - Quản lý loại danh mục
 
 ###### 4.3.1.5.2.1. Mục đích
 
@@ -26,7 +26,7 @@
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo Mã loại danh mục, Tên loại danh mục hoặc Mô tả. |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- Đang hoạt động<br>- Ngừng hoạt động |
 | TÌM KIẾM | - | Không | \- | Control UI: Nút bấm.<br>Click để tìm kiếm dữ liệu. Chi tiết xem ở bảng Chức năng trên màn hình. |
-| **II. Bảng kết quả (Grid)** | | | | |
+| **II. Bảng kết quả (Grid)** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | STT | Integer(10) | Không | \- | Số thứ tự tự tăng. |
 | Cột: Mã loại danh mục | String(50) | Không | \- | Hiển thị mã duy nhất của loại danh mục. |
 | Cột: Tên loại danh mục | String(255) | Không | \- | Hiển thị tên loại danh mục. |
@@ -39,7 +39,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--------------- | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | Tìm kiếm | Nút | Hệ thống lọc dữ liệu lưới hiển thị theo Từ khóa, Trạng thái. Hỗ trợ phân trang (Pagination) mặc định 50 bản ghi/trang. |
+| 1 | Tìm kiếm | Nút | Hệ thống lọc dữ liệu lưới hiển thị theo Từ khóa, Trạng thái. Hỗ trợ phân trang (Pagination) mặc định 50 bản ghi/trang.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Thêm mới | Nút | Bật Form Modal (UCPS010.MH02) ở trạng thái rỗng để nhập mới. |
 | 3 | Sửa | Icon | Bật Form Modal (UCPS010.MH02) và tự động load toàn bộ dữ liệu hiện tại của bản ghi đó lên Form. |
 | 4 | Xóa | Icon | Bật Popup xác nhận xóa (UCPS010.MH04). |

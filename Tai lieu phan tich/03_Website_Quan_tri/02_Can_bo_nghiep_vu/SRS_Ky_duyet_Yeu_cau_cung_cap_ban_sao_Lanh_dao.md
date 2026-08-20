@@ -67,8 +67,8 @@
 | Loại cung cấp bản sao | Enum(String(50)) | Không | Tất cả | - Tất cả<br>- Bản sao điện tử<br>- Bản sao giấy |
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm trình. Tuân thủ [BR-VAL-007]. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm trình. Tuân thủ [BR-VAL-007]. |
-| **II. Bảng danh sách hồ sơ** | | | | |
-| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Chỉ hiển thị hồ sơ Online ở trạng thái "Chờ duyệt" thuộc phạm vi xử lý của Lãnh đạo đăng nhập (hồ sơ giấy do Cán bộ nhập liệu trình không đi qua trạng thái này). Sắp xếp mặc định theo Thời điểm trình tăng dần. |
+| **II. Bảng danh sách hồ sơ** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
+| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Chỉ hiển thị hồ sơ Online ở trạng thái "Chờ duyệt" thuộc phạm vi xử lý của Lãnh đạo đăng nhập (hồ sơ giấy do Cán bộ nhập liệu trình không đi qua trạng thái này). Sắp xếp mặc định theo Thời điểm trình tăng dần.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Checkbox chọn | Boolean | Không | Không chọn | Cho phép chọn một hoặc nhiều hồ sơ để duyệt theo lô. Chỉ cho phép chọn hồ sơ đủ điều kiện theo [BR-BS-003]. |
 | STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Mã hồ sơ Yêu cầu cung cấp bản sao. |
@@ -84,7 +84,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH Hợp lệ: Tìm kiếm trong phạm vi hồ sơ thuộc quyền ký của Lãnh đạo. |
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về mặc định và tải lại danh sách hồ sơ "Chờ duyệt". |
 | 3 | Duyệt | Nút | TH1 (Chưa chọn hồ sơ hợp lệ): Vi phạm [BR-BS-003], hiển thị [MSG-ERR-BS-005], không thực hiện duyệt. |
@@ -181,8 +181,8 @@ Hiển thị chung mọi hồ sơ ở trạng thái "Chờ ký", gồm: hồ sơ
 | Loại cung cấp bản sao | Enum(String(50)) | Không | Tất cả | - Tất cả<br>- Bản sao điện tử<br>- Bản sao giấy |
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm chuyển sang "Chờ ký". Tuân thủ [BR-VAL-007]. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm chuyển sang "Chờ ký". Tuân thủ [BR-VAL-007]. |
-| **II. Bảng danh sách hồ sơ** | | | | |
-| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Chỉ hiển thị hồ sơ ở trạng thái "Chờ ký" thuộc phạm vi ký/duyệt của Lãnh đạo đăng nhập. |
+| **II. Bảng danh sách hồ sơ** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
+| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Chỉ hiển thị hồ sơ ở trạng thái "Chờ ký" thuộc phạm vi ký/duyệt của Lãnh đạo đăng nhập.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Checkbox chọn tất cả/Checkbox chọn | Boolean | Không | Không chọn | Cho phép chọn một hoặc nhiều hồ sơ đủ điều kiện để ký số theo lô. Chỉ áp dụng cho hồ sơ Loại "Bản sao điện tử"; hồ sơ Loại "Bản sao giấy" disable checkbox kèm tooltip lý do (xử lý qua nút "Ký duyệt" riêng, không ký số theo lô). |
 | STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Mã hồ sơ Yêu cầu cung cấp bản sao. |
@@ -197,7 +197,7 @@ Hiển thị chung mọi hồ sơ ở trạng thái "Chờ ký", gồm: hồ sơ
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | TH Hợp lệ: Tìm kiếm trong phạm vi hồ sơ thuộc quyền ký của Lãnh đạo. |
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về mặc định và tải lại danh sách hồ sơ "Chờ ký". |
 | 3 | Ký số | Nút | Chỉ hiển thị (ẩn hẳn, không phải dạng mờ) đối với hồ sơ Loại "Bản sao điện tử"; đối với hồ sơ Loại "Bản sao giấy", hệ thống hiển thị nút "Ký duyệt" thay thế tại đúng vị trí đó, không hiển thị đồng thời cả 2 nút trên một dòng. |

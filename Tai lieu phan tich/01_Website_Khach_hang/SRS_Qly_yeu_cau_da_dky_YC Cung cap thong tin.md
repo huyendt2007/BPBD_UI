@@ -1,4 +1,4 @@
-## 4.1. Quản lý yêu cầu đã đăng ký - Yêu cầu cung cấp thông tin - Website Khách hàng
+﻿## 4.1. Quản lý yêu cầu đã đăng ký - Yêu cầu cung cấp thông tin - Website Khách hàng
 
 ### 4.1.X. UC195-CCTT - Quản lý yêu cầu cung cấp thông tin đã đăng ký
 
@@ -65,7 +65,7 @@ Ghi chú:
 | Đến ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. Nếu nhập cùng `Từ ngày`, áp dụng [BR-VAL-007]. |
 | Nút Tìm kiếm | Button | - | - | Thực hiện tìm kiếm theo bộ lọc đã nhập. |
 | Nút Xóa bộ lọc | Button | - | - | Xóa toàn bộ tiêu chí lọc, đưa `Trạng thái hồ sơ` và `Tiêu chí yêu cầu` về `Tất cả`, các ô nhập liệu về trống. |
-| **II. Bảng danh sách hồ sơ** | - | - | 20 bản ghi/trang | Control UI: Grid phẳng.<br>- Click trực tiếp vào dòng dữ liệu để mở màn hình chi tiết, ngoại trừ khi click nút tại cột Thao tác. |
+| **II. Bảng danh sách hồ sơ** | - | - | 20 bản ghi/trang | Control UI: Grid phẳng.<br>- Click trực tiếp vào dòng dữ liệu để mở màn hình chi tiết, ngoại trừ khi click nút tại cột Thao tác.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | STT | Integer | - | Tự tăng | Số thứ tự bản ghi trên trang hiện tại. |
 | Mã hồ sơ | String(50) | - | Theo hồ sơ | Mã hồ sơ Yêu cầu cung cấp thông tin. |
 | Tiêu chí yêu cầu | Enum(String(50)) | - | Theo hồ sơ | Một trong các giá trị: `Số đăng ký`, `Bên bảo đảm`, `Số khung`. |
@@ -80,7 +80,7 @@ Ghi chú:
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :-- | :-- | :-- |
-| 1 | Tìm kiếm | Button | TH1 (Điều kiện ngày không hợp lệ): Nếu `Từ ngày` lớn hơn `Đến ngày`, hiển thị [MSG-ERR-VAL-007] và không tìm kiếm.<br>TH2 (Không có dữ liệu): Nếu không có bản ghi phù hợp, hiển thị trạng thái rỗng theo chuẩn danh sách.<br>TH Hợp lệ: Hệ thống tải danh sách hồ sơ thỏa mãn điều kiện. |
+| 1 | Tìm kiếm | Button | TH1 (Điều kiện ngày không hợp lệ): Nếu `Từ ngày` lớn hơn `Đến ngày`, hiển thị [MSG-ERR-VAL-007] và không tìm kiếm.<br>TH2 (Không có dữ liệu): Nếu không có bản ghi phù hợp, hiển thị trạng thái rỗng theo chuẩn danh sách.<br>TH Hợp lệ: Hệ thống tải danh sách hồ sơ thỏa mãn điều kiện.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Button | Xóa toàn bộ tiêu chí lọc và tải lại danh sách mặc định theo `Thời điểm đăng ký` giảm dần. |
 | 3 | Row Click | Row | Mở màn hình chi tiết hồ sơ Yêu cầu cung cấp thông tin tương ứng. |
 | 4 | Thanh toán | Button | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`. Khi click, hệ thống chuyển sang luồng thanh toán theo mục 4.1.X.5. |

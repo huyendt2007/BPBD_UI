@@ -125,7 +125,7 @@ flowchart LR
 | Trạng thái lệ phí | Enum(String(50)) | Không | Tất cả | Lọc theo trạng thái lệ phí: Chưa thu, Đã thu, Miễn phí. |
 | Cán bộ tiếp nhận | String(100) | Không | Tài khoản đang đăng nhập | Chỉ tìm trong phạm vi quyền dữ liệu. |
 | Đơn vị tiếp nhận | String(255) | Không | Đơn vị đang đăng nhập | Chỉ tìm trong phạm vi quyền dữ liệu. |
-| **Khối Lưới danh sách hồ sơ tiếp nhận** | — | — | — | Kết quả tìm kiếm hồ sơ tiếp nhận theo điều kiện lọc. |
+| **Khối Lưới danh sách hồ sơ tiếp nhận** | — | — | — | Kết quả tìm kiếm hồ sơ tiếp nhận theo điều kiện lọc.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | STT | Integer(10) | Có | Theo trang | Số thứ tự dòng theo trang kết quả. |
 | Mã hồ sơ | String(50) | Có | Theo dữ liệu hệ thống | Link mở **8. UCPS012.MH03 - Màn hình Xem chi tiết hồ sơ tiếp nhận**. |
 | Số đơn giấy | String(50) | Có | Theo hồ sơ | Hiển thị số trên đơn giấy khách hàng nộp. |
@@ -144,7 +144,7 @@ flowchart LR
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Hệ thống tìm kiếm hồ sơ tiếp nhận theo điều kiện đã nhập tại nhóm Bộ lọc tìm kiếm. Nếu khoảng ngày không hợp lệ, áp dụng **[BR-VAL-007]** và hiển thị **[MSG-ERR-VAL-007]**. |
+| 1 | Tìm kiếm | Nút | Hệ thống tìm kiếm hồ sơ tiếp nhận theo điều kiện đã nhập tại nhóm Bộ lọc tìm kiếm. Nếu khoảng ngày không hợp lệ, áp dụng **[BR-VAL-007]** và hiển thị **[MSG-ERR-VAL-007]**.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Hệ thống xóa toàn bộ điều kiện tìm kiếm về giá trị mặc định và tải lại danh sách trong phạm vi quyền dữ liệu. |
 | 3 | Thêm mới | Nút | Mở **7. UCPS012.MH02 - Màn hình Tiếp nhận hồ sơ giấy** để Cán bộ tiếp nhận nhập hồ sơ giấy mới. |
 | 4 | Xem chi tiết | Row Click | Mở **8. UCPS012.MH03 - Màn hình Xem chi tiết hồ sơ tiếp nhận** tại dòng hồ sơ được chọn. |
@@ -205,7 +205,7 @@ flowchart LR
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tra cứu tài khoản | Nút/Icon | Khi Loại khách hàng là Có tài khoản trực tuyến, hệ thống tra cứu tài khoản theo mã tài khoản/mã khách hàng/số điện thoại/email. Nếu không tìm thấy, hiển thị **[MSG-ERR-UCPS-002]**. |
+| 1 | Tra cứu tài khoản | Nút/Icon | Khi Loại khách hàng là Có tài khoản trực tuyến, hệ thống tra cứu tài khoản theo mã tài khoản/mã khách hàng/số điện thoại/email. Nếu không tìm thấy, hiển thị **[MSG-ERR-UCPS-002]**.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Chọn file | Nút | Bấm nút **`📁 Chọn file`** tại dòng tài liệu để tải tệp đính kèm lên. Kiểm tra tệp theo quy tắc **[BR-FILE-010]** (tối đa 10 tệp/hồ sơ, dung lượng tối đa 20MB/tệp, định dạng hợp lệ). Nếu vi phạm, hiển thị thông báo lỗi tương ứng **[MSG-ERR-FILE-001]**, **[MSG-ERR-FILE-002]** hoặc cảnh báo vượt quá 10 tệp. |
 | 3 | Xem file | Liên kết | Click **`Xem file`** tại dòng đã có tệp đính kèm để mở xem nội dung tệp tin trực tiếp trong một tab riêng của trình duyệt. |
 | 4 | Xóa file | Icon/Liên kết | Click **`🗑 Xóa`** tại dòng đã có tệp đính kèm để gỡ bỏ tệp tin khỏi hồ sơ trước khi hoàn tất tiếp nhận (hiển thị Popup xác nhận gỡ tệp tùy chỉnh). Sau khi hoàn tất tiếp nhận, không cho phép xóa tệp tại màn hình này. |

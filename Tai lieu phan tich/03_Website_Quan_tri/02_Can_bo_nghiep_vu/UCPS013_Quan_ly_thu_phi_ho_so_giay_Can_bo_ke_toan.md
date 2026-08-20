@@ -141,7 +141,7 @@ flowchart LR
 | Trạng thái thu phí/hoàn phí | Enum(String(50)) | Không | "Chờ thu phí" | Lọc theo trạng thái khoản thu/khoản hoàn.<br>- Tất cả<br>- Chờ thu phí<br>- Đã thu<br>- Miễn phí<br>- Chờ hoàn phí<br>- Cần bổ sung chứng từ<br>- Đã hoàn |
 | Từ ngày tiếp nhận | Date | Không | Trống | Lọc theo ngày tiếp nhận từ ngày. UI hiển thị input ngày của trình duyệt. Không được lớn hơn "Đến ngày tiếp nhận". |
 | Đến ngày tiếp nhận | Date | Không | Trống | Lọc theo ngày tiếp nhận đến ngày. UI hiển thị input ngày của trình duyệt. Không được nhỏ hơn "Từ ngày tiếp nhận". |
-| **Khối Danh sách thu phí/hoàn phí** |  |  |  | Hiển thị danh sách khoản phải thu/khoản phải hoàn trong phạm vi quyền dữ liệu của Cán bộ kế toán. Cột "Thao tác" cố định bên phải khi bảng cuộn ngang. |
+| **Khối Danh sách thu phí/hoàn phí** |  |  |  | Hiển thị danh sách khoản phải thu/khoản phải hoàn trong phạm vi quyền dữ liệu của Cán bộ kế toán. Cột "Thao tác" cố định bên phải khi bảng cuộn ngang.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | Có | Theo thứ tự hiển thị | Chỉ đọc. Hiển thị số thứ tự dòng trên lưới. |
 | Mã hồ sơ | String(50) | Có | Theo khoản phải thu | Chỉ đọc. Link mở **7. UCPS013.MH02 - Màn hình Chi tiết khoản phải thu**. |
 | Loại khoản | Enum(String(50)) | Có | Theo dữ liệu | Chỉ đọc. Hiển thị "Khoản phải thu" hoặc "Khoản phải hoàn". |
@@ -165,7 +165,7 @@ flowchart LR
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Cán bộ kế toán nhập/chọn điều kiện lọc và bấm "Tìm kiếm". Hệ thống lọc danh sách khoản phải thu/khoản phải hoàn theo điều kiện hiện hành. Nếu khoảng ngày không hợp lệ, hiển thị thông báo lỗi và không thực hiện tìm kiếm. |
+| 1 | Tìm kiếm | Nút | Cán bộ kế toán nhập/chọn điều kiện lọc và bấm "Tìm kiếm". Hệ thống lọc danh sách khoản phải thu/khoản phải hoàn theo điều kiện hiện hành. Nếu khoảng ngày không hợp lệ, hiển thị thông báo lỗi và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) với thuộc tính `style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"` kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Xóa bộ lọc | Nút | Hệ thống xóa các điều kiện tìm kiếm, đưa "Loại khoản" về "Khoản phải thu", "Trạng thái thu phí/hoàn phí" về "Chờ thu phí" và tải lại danh sách mặc định. |
 | 3 | Quét mã | Nút | Cho phép mở nhanh khoản phải thu theo Mã hồ sơ/Mã QR. Nếu tìm thấy, hệ thống lọc danh sách và mở chi tiết khoản thu tương ứng. Nếu không tìm thấy, hiển thị thông báo lỗi. |
 | 4 | Xem chi tiết | Row Click | Mở **7. UCPS013.MH02 - Màn hình Chi tiết khoản phải thu**. |
