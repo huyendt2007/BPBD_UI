@@ -1,4 +1,4 @@
-﻿## 4.2 Ứng dụng Mobile dành cho khách hàng
+## 4.2 Ứng dụng Mobile dành cho khách hàng
 
 - Đăng ký biện pháp bảo đảm, hợp đồng, thông báo xử lý tài sản bảo đảm
 - Đăng ký thay đổi
@@ -14,4 +14,3 @@
 - Quản lý yêu cầu hỗ trợ (Gửi yêu cầu hỗ trợ, Xem danh sách yêu cầu, Đánh giá yêu cầu hỗ trợ)
 - Báo cáo quản lý trên Mobile
 - Quản lý người dùng trong Tài khoản chính
-

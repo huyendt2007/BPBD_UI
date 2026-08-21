@@ -1,4 +1,4 @@
-﻿### 4.1.7. UC002 - Xem thông tin tài khoản dành cho Khách hàng
+### 4.1.7. UC002 - Xem thông tin tài khoản dành cho Khách hàng
 
 #### 4.1.7.1. Mục đích
 

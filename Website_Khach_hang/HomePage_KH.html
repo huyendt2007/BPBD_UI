@@ -13126,7 +13126,10 @@
             if (!tbody) return;
 
             tbody.innerHTML = supportTickets.map(t => `
-                <tr id="ticketRow-${t.id}">
+                <tr id="ticketRow-${t.id}" onclick="viewSupportTicketDetails('${t.id}')"
+                    style="cursor: pointer; transition: background-color 0.2s;"
+                    onmouseover="this.style.backgroundColor='rgba(14, 116, 144, 0.04)'"
+                    onmouseout="this.style.backgroundColor=''">
                     <td><strong>${t.id}</strong></td>
                     <td>${t.category}</td>
                     <td>${t.date}</td>
@@ -13136,9 +13139,7 @@
                             ${t.status}
                         </span>
                     </td>
-                    <td>
-                        <button class="btn btn-outline-primary" style="padding:4px 8px; font-size:11px;" onclick="viewSupportTicketDetails('${t.id}')">Xem phản hồi</button>
-                    </td>
+                    <td style="text-align:center; color: var(--text-muted); opacity: 0.6;">-</td>
                 </tr>
                 <tr id="ticketDetail-${t.id}" class="hidden" style="background-color: #FAFAFA;">
                     <td colspan="6" style="padding: 15px; border: 1px solid var(--border-color);">

@@ -36,6 +36,14 @@
                     <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã yêu cầu...">
                 </div>
                 <div>
+                    <span class="form-label">Mã YCBT</span>
+                    <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã YCBT...">
+                </div>
+                <div>
+                    <span class="form-label">Tên vụ việc</span>
+                    <input type="text" class="form-control" id="filterCaseName" placeholder="Nhập tên vụ việc...">
+                </div>
+                <div>
                     <span class="form-label">Tên người yêu cầu</span>
                     <input type="text" class="form-control" id="filterName" placeholder="Nhập tên người yêu cầu...">
                 </div>
@@ -101,6 +109,7 @@
                         <tr>
                             <th style="width: 50px; text-align: center;">STT</th>
                             <th style="width: 110px; text-align: center;">Mã yêu cầu</th>
+                            <th style="min-width: 190px;">Tên vụ việc</th>
                             <th style="min-width: 150px;">Tên người yêu cầu</th>
                             <th style="width: 110px; text-align: center;">Số điện thoại</th>
                             <th style="min-width: 200px;">Lĩnh vực thiệt hại</th>
@@ -165,6 +174,11 @@
                         <option value="TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ">TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ</option>
                         <option value="TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ">TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Tên vụ việc<span class="required">*</span></span>
+                    <input type="text" class="form-control" id="formCaseName" placeholder="Nhập tên/tóm tắt vụ việc...">
+                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
             </div>
 
@@ -360,6 +374,7 @@
                 <div class="grid-2" style="font-size: 13px; line-height: 1.6;">
                     <div>
                         <p><strong>Mã yêu cầu:</strong> <span id="lblProcCode"></span></p>
+                        <p><strong>Tên vụ việc:</strong> <span id="lblProcCaseName"></span></p>
                         <p><strong>Họ tên người yêu cầu:</strong> <span id="lblProcName"></span></p>
                         <p><strong>Lĩnh vực phát sinh thiệt hại:</strong> <span id="lblProcLinhVuc"></span></p>
                     </div>
@@ -477,6 +492,10 @@
                 <div class="detail-row">
                     <div class="detail-label">Mã yêu cầu</div>
                     <div class="detail-value" style="font-weight: 700; color: var(--primary-color);" id="dtCode"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Tên vụ việc</div>
+                    <div class="detail-value" id="dtCaseName"></div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Trạng thái xử lý</div>
@@ -822,6 +841,7 @@
 
     <!-- External javascript logic -->
     <script src="xac_dinh_co_quan_boi_thuong.js"></script>
+    <script src="../admin-ui-standardizer.js"></script>
 </body>
 
 </html>

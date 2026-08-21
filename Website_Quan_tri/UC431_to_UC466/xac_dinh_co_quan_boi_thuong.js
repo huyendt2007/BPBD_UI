@@ -365,6 +365,10 @@ let currentPage = 1;
 let pageSize = 10;
 let filteredList = [];
 
+function getCaseName(item) {
+    return (item && item.caseName) ? item.caseName : `Vụ việc yêu cầu bồi thường của ${(item && item.nycName) || 'người yêu cầu'}`;
+}
+
 // Temporary file upload cache
 let fileCache = {
     formFile: null,
@@ -471,6 +475,7 @@ function showFormScreen(id = null) {
     formRequestId.value = id || '';
     document.getElementById('formHinhThucTiepNhan').value = 'Trực tiếp';
     document.getElementById('formLinhVuc').value = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
+    document.getElementById('formCaseName').value = '';
     document.getElementById('formNYCName').value = '';
     document.getElementById('formNYCRole').value = 'Người bị thiệt hại';
     document.getElementById('formNYCGender').value = 'Nam';
@@ -499,6 +504,7 @@ function showFormScreen(id = null) {
         if (item) {
             document.getElementById('formHinhThucTiepNhan').value = item.hinhThucTiepNhan;
             document.getElementById('formLinhVuc').value = item.linhVuc;
+            document.getElementById('formCaseName').value = getCaseName(item);
             document.getElementById('formNYCName').value = item.nycName;
             document.getElementById('formNYCRole').value = item.nycRole;
             document.getElementById('formNYCGender').value = item.nycGender;
@@ -548,6 +554,7 @@ function showProcessScreen(id) {
 
     document.getElementById('processRequestId').value = id;
     document.getElementById('lblProcCode').innerText = item.code;
+    document.getElementById('lblProcCaseName').innerText = getCaseName(item);
     document.getElementById('lblProcName').innerText = item.nycName;
     document.getElementById('lblProcLinhVuc').innerText = item.linhVuc;
     document.getElementById('lblProcPhone').innerText = item.nycPhone;
@@ -586,6 +593,7 @@ function showDetailScreen(id) {
 
     document.getElementById('detailRequestId').value = id;
     document.getElementById('dtCode').innerText = item.code;
+    document.getElementById('dtCaseName').innerText = getCaseName(item);
 
     // Display rejection details if status is Bị từ chối
     const rejectionBlock = document.getElementById('dtRejectionBlock');
@@ -828,6 +836,7 @@ function saveForm(isDraft) {
     clearValidation();
 
     const formRequestId = document.getElementById('formRequestId').value;
+    const caseName = document.getElementById('formCaseName').value.trim();
     const name = document.getElementById('formNYCName').value.trim();
     const dob = document.getElementById('formNYCDob').value.trim();
     const docNo = document.getElementById('formNYCDocNo').value.trim();
@@ -841,6 +850,12 @@ function saveForm(isDraft) {
     if (!isDraft) {
         let firstInvalid = null;
 
+        if (!caseName) {
+            const el = document.getElementById('formCaseName');
+            el.classList.add('is-invalid');
+            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
+            if (!firstInvalid) firstInvalid = el;
+        }
         if (!name) {
             const el = document.getElementById('formNYCName');
             el.classList.add('is-invalid');
@@ -905,6 +920,7 @@ function saveForm(isDraft) {
         if (item) {
             item.hinhThucTiepNhan = document.getElementById('formHinhThucTiepNhan').value;
             item.linhVuc = document.getElementById('formLinhVuc').value;
+            item.caseName = caseName;
             item.nycName = name;
             item.nycRole = document.getElementById('formNYCRole').value;
             item.nycGender = document.getElementById('formNYCGender').value;
@@ -938,6 +954,7 @@ function saveForm(isDraft) {
             date: String(today.getDate()).padStart(2, '0') + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + today.getFullYear(),
             hinhThucTiepNhan: document.getElementById('formHinhThucTiepNhan').value,
             linhVuc: document.getElementById('formLinhVuc').value,
+            caseName: caseName,
             nycName: name,
             nycRole: document.getElementById('formNYCRole').value,
             nycGender: document.getElementById('formNYCGender').value,
@@ -1043,6 +1060,8 @@ function applyFilters() {
 
 function resetFilters() {
     document.getElementById('filterCode').value = '';
+    document.getElementById('filterClaimCode').value = '';
+    document.getElementById('filterCaseName').value = '';
     document.getElementById('filterName').value = '';
     document.getElementById('filterLinhVuc').value = '';
     document.getElementById('filterStatus').value = '';
@@ -1067,6 +1086,8 @@ function resetFilters() {
 
 function filterData() {
     const code = document.getElementById('filterCode').value.trim().toLowerCase();
+    const claimCode = document.getElementById('filterClaimCode').value.trim().toLowerCase();
+    const caseName = document.getElementById('filterCaseName').value.trim().toLowerCase();
     const name = document.getElementById('filterName').value.trim().toLowerCase();
     const lv = document.getElementById('filterLinhVuc').value;
     const status = document.getElementById('filterStatus').value;
@@ -1089,6 +1110,8 @@ function filterData() {
 
     filteredList = requestList.filter(item => {
         if (code && !item.code.toLowerCase().includes(code)) return false;
+        if (claimCode && !(item.claimCode || '').toLowerCase().includes(claimCode)) return false;
+        if (caseName && !getCaseName(item).toLowerCase().includes(caseName)) return false;
         if (name && !(item.nycName || '').toLowerCase().includes(name)) return false;
         if (lv && item.linhVuc !== lv) return false;
         if (status && item.status !== status) return false;
@@ -1118,7 +1141,7 @@ function renderTable() {
     const totalPages = Math.ceil(total / pageSize);
 
     if (total === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy hồ sơ yêu cầu nào phù hợp</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
         document.getElementById('rangeText').innerText = "Hiển thị 0-0 trong số 0 bản ghi";
         renderPagination(0);
         return;
@@ -1180,6 +1203,7 @@ function renderTable() {
         tr.innerHTML = `
             <td style="text-align:center;">${startIdx + index + 1}</td>
             <td style="text-align:center;"><strong>${item.code}</strong></td>
+            <td><strong>${getCaseName(item)}</strong></td>
             <td><strong>${item.nycName || '(Chưa nhập)'}</strong></td>
             <td style="text-align:center;">${item.nycPhone || '(Chưa nhập)'}</td>
             <td style="font-size:12px; color:var(--text-muted);">${item.linhVuc.replace("TRONG HOẠT ĐỘNG ", "")}</td>

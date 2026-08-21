@@ -1,4 +1,4 @@
-﻿﻿#### 4.3.1.4. Quản lý tài khoản Khách hàng
+#### 4.3.1.4. Quản lý tài khoản Khách hàng
 
 ##### 4.3.1.4.1. UC009.01 - Tra cứu danh sách tài khoản khách hàng
 
@@ -33,14 +33,14 @@
 | Tên | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên cá nhân hoặc tên tổ chức. |
 | Email | String(255) | Không | Trống | Tìm kiếm gần đúng theo địa chỉ Email (Tên đăng nhập) đã đăng ký. |
 | Số điện thoại | String(20) | Không | Trống | Tìm kiếm gần đúng theo số điện thoại. |
-| Trung tâm đăng ký | Enum(String(100)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- Danh sách Trung tâm đăng ký lấy theo **Tên viết tắt** của Danh mục dùng chung - [DM_08 - Trung tâm giao dịch bảo đảm](../../00_Tong_quan_va_Quy_tac_chung.md#dm_08). |
-| Loại khách hàng | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- Cá nhân<br>- Tổ chức |
-| Loại tài khoản | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- Tài khoản chính<br>- Tài khoản phụ |
-| Nguồn xác thực | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- VNeID<br>- Nội bộ<br>- VNeID, Nội bộ<br>Lọc chính xác theo (các) nguồn xác thực đang liên kết với hồ sơ tài khoản. Giá trị `VNeID, Nội bộ` lọc riêng các hồ sơ đồng thời liên kết cả hai nguồn xác thực. |
-| Phân loại khách hàng | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- Trong nước<br>- Nước ngoài |
+| Trung tâm đăng ký | Enum(String(100)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08]. |
+| Loại khách hàng | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Cá nhân<br>+ Tổ chức |
+| Loại tài khoản | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Tài khoản chính<br>+ Tài khoản phụ |
+| Nguồn xác thực | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ VNeID<br>+ Nội bộ<br>+ VNeID, Nội bộ<br>Lọc chính xác theo (các) nguồn xác thực đang liên kết với hồ sơ tài khoản. Giá trị `VNeID, Nội bộ` lọc riêng các hồ sơ đồng thời liên kết cả hai nguồn xác thực. |
+| Phân loại khách hàng | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Trong nước<br>+ Nước ngoài |
 | Từ ngày | Date | Không | Trống | Lọc theo ngày tạo từ ngày. Định dạng `dd/mm/yyyy`. |
 | Đến ngày | Date | Không | Trống | Lọc theo ngày tạo đến ngày. Định dạng `dd/mm/yyyy`. |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- Đang hoạt động<br>- Bị khóa<br>- Đóng |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Đang hoạt động<br>+ Bị khóa<br>+ Đóng |
 | Bảng danh sách tài khoản khách hàng | - | \- | 50 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh sách tài khoản khách hàng chung.<br>- Sắp xếp theo Ngày tạo giảm dần.<br>- Hiển thị tổng số bản ghi phù hợp bộ lọc.<br>- Có phân trang và cho phép thiết lập số bản ghi/trang: `50`, `100`, `200`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | - | \- | \- | Số thứ tự tăng dần theo danh sách hiển thị. |
 | Cột: Mã khách hàng | String(50) | \- | \- | Hiển thị Mã khách hàng của tài khoản chính. Đối với tài khoản phụ thuộc tổ chức, để trống vì tài khoản phụ không có Mã khách hàng. |
@@ -48,13 +48,13 @@
 | Cột: Email | String(255) | \- | \- | Địa chỉ email đăng ký. |
 | Cột: Số điện thoại | String(20) | \- | \- | Số điện thoại liên hệ. |
 | Cột: Trung tâm đăng ký | String(100) | \- | \- | Hiển thị **Tên viết tắt** của Trung tâm đăng ký mặc định theo Danh mục dùng chung - [DM_08 - Trung tâm giao dịch bảo đảm](../../00_Tong_quan_va_Quy_tac_chung.md#dm_08). |
-| Cột: Loại khách hàng | Enum(String(50)) | \- | \- | Gồm:<br>- Cá nhân<br>- Tổ chức<br>Tài khoản phụ thuộc tổ chức hiển thị là Tổ chức. |
-| Cột: Loại tài khoản | Enum(String(50)) | \- | \- | Gồm:<br>- Tài khoản chính<br>- Tài khoản phụ<br>Khách hàng cá nhân luôn là Tài khoản chính. |
-| Cột: Nguồn xác thực | String(100) | \- | \- | Hiển thị dạng nhãn/tag các nguồn xác thực đã liên kết với hồ sơ tài khoản khách hàng.<br>Gồm:<br>- VNeID<br>- Nội bộ<br>- VNeID, Nội bộ |
-| Cột: Phân loại khách hàng | Enum(String(50)) | \- | \- | Gồm:<br>- Trong nước<br>- Nước ngoài |
+| Cột: Loại khách hàng | Enum(String(50)) | \- | \- | Gồm:<br>+ Cá nhân<br>+ Tổ chức<br>Tài khoản phụ thuộc tổ chức hiển thị là Tổ chức. |
+| Cột: Loại tài khoản | Enum(String(50)) | \- | \- | Gồm:<br>+ Tài khoản chính<br>+ Tài khoản phụ<br>Khách hàng cá nhân luôn là Tài khoản chính. |
+| Cột: Nguồn xác thực | String(100) | \- | \- | Hiển thị dạng nhãn/tag các nguồn xác thực đã liên kết với hồ sơ tài khoản khách hàng.<br>Gồm:<br>+ VNeID<br>+ Nội bộ<br>+ VNeID, Nội bộ |
+| Cột: Phân loại khách hàng | Enum(String(50)) | \- | \- | Gồm:<br>+ Trong nước<br>+ Nước ngoài |
 | Cột: Ngày tạo | DateTime | \- | \- | Hiển thị ngày tạo theo định dạng `dd/mm/yyyy HH:mm`. |
-| Cột: Trạng thái | Enum(String(50)) | \- | \- | Gồm:<br>- Đang hoạt động<br>- Bị khóa<br>- Đóng |
-| Cột: Thao tác | - | \- | \- | - Các thao tác:<br>+ Chỉnh sửa<br>+ Khóa/Mở khóa<br>+ Đặt lại mật khẩu<br>+ Đóng<br>+ Xóa<br>- Quy tắc thao tác:<br>+ Đặt lại mật khẩu chỉ cho phép với hồ sơ tài khoản có nguồn xác thực Nội bộ.<br>+ Khóa/Mở khóa, Đóng, Xóa tác động ở cấp hồ sơ tài khoản khách hàng và áp dụng cho toàn bộ nguồn xác thực đang liên kết.<br>+ Xem chi tiết bằng cách click trực tiếp vào dòng dữ liệu. |
+| Cột: Trạng thái | Enum(String(50)) | \- | \- | Gồm:<br>+ Đang hoạt động<br>+ Bị khóa<br>+ Đóng |
+| Cột: Thao tác | - | \- | \- | - Các thao tác:<br>+ Chỉnh sửa<br>+ Khóa/Mở khóa<br>+ Đặt lại mật khẩu<br>+ Đóng<br>+ Xóa<br>+ Quy tắc thao tác:<br>+ Đặt lại mật khẩu chỉ cho phép với hồ sơ tài khoản có nguồn xác thực Nội bộ.<br>+ Khóa/Mở khóa, Đóng, Xóa tác động ở cấp hồ sơ tài khoản khách hàng và áp dụng cho toàn bộ nguồn xác thực đang liên kết.<br>+ Xem chi tiết bằng cách click trực tiếp vào dòng dữ liệu. |
 
 **Chức năng trên màn hình**:
 
@@ -102,17 +102,17 @@
 
 | Trường thông tin               | Kiểu dữ liệu | Bắt buộc | Mặc định            | Mô tả                                                                                                                                                                                                                                                                                                                                                                         |
 | :-------------------------------- | :-------------- | :--------- | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Loại tài khoản | Enum(String(50)) | Có | Cá nhân | Control UI: Hộp chọn ở đầu form.<br>Gồm:<br>- Cá nhân<br>- Tổ chức<br>Khi chọn Cá nhân, hệ thống hiển thị khối thông tin Khách hàng Cá nhân như hiện tại. |
+| Loại tài khoản | Enum(String(50)) | Có | Cá nhân | Control UI: Hộp chọn ở đầu form.<br>Gồm:<br>+ Cá nhân<br>+ Tổ chức<br>Khi chọn Cá nhân, hệ thống hiển thị khối thông tin Khách hàng Cá nhân như hiện tại. |
 | Loại khách hàng                | Enum(String(50)) | Có        | Cá nhân              | Control UI: Hiển thị/Read-only.<br>Hiển thị giá trị `Cá nhân` theo Loại tài khoản đã chọn ở đầu form. Kiểu Label, không cho phép sửa trong khối thông tin này. |
 | Email (Tên đăng nhập) | String(255) | Có | Trống | Địa chỉ email đăng ký, đồng thời là Tên đăng nhập của tài khoản. Không hiển thị trường Tên đăng nhập riêng trên form. Ràng buộc định dạng chuẩn theo Regex: `^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$`. Ràng buộc tính duy nhất trên toàn hệ thống. |
 | Nguồn xác thực | Enum(String(50)) | Có | Nội bộ | Control UI: Hiển thị/Read-only.<br>Hồ sơ được tạo từ Admin luôn khởi tạo nguồn xác thực Nội bộ để đăng nhập bằng Email/Mật khẩu. |
-| Loại giấy tờ                   | Enum(String(50)) | Có        | Căn cước công dân | Control UI: Hộp chọn.<br>Tham chiếu tại Danh mục dùng chung - Loại giấy tờ pháp lý [DM_10]. |
+| Loại giấy tờ                   | Enum(String(50)) | Có        | Căn cước công dân | Control UI: Hộp chọn.<br>Tham chiếu Danh mục Loại giấy tờ pháp lý/thân nhân [DM_10]. |
 | Số giấy tờ | String(255) | Có        | Trống                 | Số giấy tờ pháp lý của cá nhân. Ràng buộc tính duy nhất theo Loại giấy tờ trên toàn hệ thống. |
 | Họ và tên                      | String(255) | Có        | Trống                 | Họ và tên đầy đủ của khách hàng cá nhân. Tự động chuyển thành chữ in hoa và loại bỏ khoảng trắng thừa.                                                                                                                                                                                                                                                  |
 | Ngày sinh                        | Date            | Không     | Trống                 | Định dạng DD/MM/YYYY. Phải nhỏ hơn ngày hiện tại.                                                                                                                                                                                                                                                                                                                      |
 | Giới tính                       | Enum(String(50)) | Không     | Trống                 | Control UI: Hộp chọn.<br>Tham chiếu Danh mục dùng chung - Giới tính (Nam, Nữ, Khác). |
-| Quốc tịch                       | Enum(String(50)) | Có        | Việt Nam              | Control UI: Hộp chọn.<br>Tham chiếu tại Danh mục dùng chung - Quốc tịch / Quốc gia [DM_09]. Khi chọn Việt Nam, trường Phân loại khách hàng mặc định là `Trong nước`; khi chọn quốc tịch khác Việt Nam, trường Phân loại khách hàng mặc định là `Nước ngoài`. |
-| Phân loại khách hàng | Enum(String(50)) | Có | Trong nước | Control UI: Hộp chọn.<br>Gồm:<br>- Trong nước<br>- Nước ngoài<br>- Tự động gợi ý theo Quốc tịch nhưng cho phép quản trị kiểm tra/chỉnh lại trước khi lưu nếu nghiệp vụ yêu cầu. |
+| Quốc tịch                       | Enum(String(50)) | Có        | Việt Nam              | Control UI: Hộp chọn.<br>Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. Khi chọn Việt Nam, trường Phân loại khách hàng mặc định là `Trong nước`; khi chọn quốc tịch khác Việt Nam, trường Phân loại khách hàng mặc định là `Nước ngoài`. |
+| Phân loại khách hàng | Enum(String(50)) | Có | Trong nước | Control UI: Hộp chọn.<br>Gồm:<br>+ Trong nước<br>+ Nước ngoài<br>+ Tự động gợi ý theo Quốc tịch nhưng cho phép quản trị kiểm tra/chỉnh lại trước khi lưu nếu nghiệp vụ yêu cầu. |
 | Tỉnh/TP | Enum(String(50)) hoặc String(255) | Không | Trống | Control UI động theo Quốc tịch.<br>- Nếu Quốc tịch là "Việt Nam": Hiển thị hộp chọn và cho phép chọn tại Danh mục dùng chung - Tỉnh/Thành phố [DM_13].<br>- Nếu Quốc tịch khác "Việt Nam": Hiển thị ô nhập liệu dạng văn bản để người dùng tự nhập. |
 | Địa chỉ chi tiết | String(500) | Không | Trống | Ghi thông tin địa chỉ chi tiết như Số nhà, đường phố, thôn xóm... |
 | Số điện thoại                 | String(20) | Không        | Trống                 | Số điện thoại liên hệ.<br>- Ràng buộc định dạng (chỉ kiểm tra khi có nhập):<br>  + Nếu Quốc tịch là Việt Nam: Độ dài đúng 10 chữ số, bắt đầu bằng số 0, Regex: `/^0[35789]\d{8}$/`.<br>  + Nếu Quốc tịch là Nước ngoài: Độ dài từ 8 đến 15 ký tự, Regex: `/^\+?[1-9]\d{7,14}$/`.<br>  + Ràng buộc tính duy nhất trên toàn hệ thống. |
@@ -132,23 +132,23 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 
 | Trường thông tin                                           | Kiểu dữ liệu | Bắt buộc | Mặc định            | Mô tả                                                                                                                                                                                                                                                                                                                                                                                |
 | :------------------------------------------------------------ | :-------------- | :--------- | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Loại tài khoản | Enum(String(50)) | Có | Tổ chức | Control UI: Hộp chọn ở đầu form.<br>Gồm:<br>- Cá nhân<br>- Tổ chức<br>Khi chọn Tổ chức, hệ thống hiển thị form tổ chức gồm 2 Tab: **Thông tin chung** và **Tài khoản phụ trực thuộc**. |
+| Loại tài khoản | Enum(String(50)) | Có | Tổ chức | Control UI: Hộp chọn ở đầu form.<br>Gồm:<br>+ Cá nhân<br>+ Tổ chức<br>Khi chọn Tổ chức, hệ thống hiển thị form tổ chức gồm 2 Tab: **Thông tin chung** và **Tài khoản phụ trực thuộc**. |
 | Loại khách hàng                                            | Enum(String(50)) | Có        | Tổ chức              | Control UI: Hiển thị/Read-only.<br>Hiển thị giá trị `Tổ chức` theo Loại tài khoản đã chọn ở đầu form. Kiểu Label, không cho phép sửa trong khối thông tin này. |
-| Loại tổ chức | Enum(String(100)) | Có | Tổ chức có đăng ký kinh doanh trong nước | Control UI: Hộp chọn.<br>Gồm:<br>- Tổ chức có đăng ký kinh doanh trong nước<br>- Tổ chức nước ngoài |
+| Loại tổ chức | Enum(String(100)) | Có | Tổ chức có đăng ký kinh doanh trong nước | Control UI: Hộp chọn.<br>Gồm:<br>+ Tổ chức có đăng ký kinh doanh trong nước<br>+ Tổ chức nước ngoài |
 | Mã định danh tổ chức | String(255) | Có khi Loại tổ chức là Tổ chức có đăng ký kinh doanh trong nước | Trống | Chỉ hiển thị khi **Loại tổ chức** = `Tổ chức có đăng ký kinh doanh trong nước`. Ràng buộc tính duy nhất trên toàn hệ thống. |
 | Mã số thuế/Số giấy phép đầu tư | String(255) | Có khi Loại tổ chức là Tổ chức nước ngoài | Trống | Chỉ hiển thị khi **Loại tổ chức** = `Tổ chức nước ngoài`. Ràng buộc tính duy nhất trên toàn hệ thống. |
 | Phân loại khách hàng | Enum(String(50)) | Có | Theo Loại tổ chức | Control UI: Hiển thị/Read-only.<br>- Tự động là `Trong nước` nếu Loại tổ chức = `Tổ chức có đăng ký kinh doanh trong nước`.<br>- Tự động là `Nước ngoài` nếu Loại tổ chức = `Tổ chức nước ngoài`. |
 | Tên tổ chức                                                | String(255) | Có        | Trống                 | Tên đầy đủ của Tổ chức.                                                                                                                                                                                                                                                                                                                                                        |
 | Email tổ chức (Tên đăng nhập) | String(255) | Có | Trống | Địa chỉ email của tổ chức, đồng thời là Tên đăng nhập của Tài khoản chính. Không hiển thị trường Tên đăng nhập riêng trên form. Bắt buộc đúng định dạng Regex: `^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$`. Ràng buộc tính duy nhất trên toàn hệ thống. |
-| Số điện thoại                                             | String(20) | Không        | Trống                 | Số điện thoại liên hệ của tổ chức. Validate động theo Quốc gia:<br>- Việt Nam: Đúng 10 chữ số, bắt đầu bằng 0 và đi kèm các đầu số mạng hợp lệ. Regex: `/^0[35789]\d{8}$/`.<br>- Quốc gia khác Việt Nam: Độ dài 8-15 ký tự, cho phép bắt đầu bằng dấu `+` ở đầu. Regex: `/^\+?[1-9]\d{7,14}$/`. |
+| Số điện thoại                                             | String(20) | Không        | Trống                 | Số điện thoại liên hệ của tổ chức. Validate động theo Quốc gia:<br>+ Việt Nam: Đúng 10 chữ số, bắt đầu bằng 0 và đi kèm các đầu số mạng hợp lệ. Regex: `/^0[35789]\d{8}$/`.<br>+ Quốc gia khác Việt Nam: Độ dài 8-15 ký tự, cho phép bắt đầu bằng dấu `+` ở đầu. Regex: `/^\+?[1-9]\d{7,14}$/`. |
 | Nguồn xác thực | Enum(String(50)) | Có | Nội bộ | Control UI: Hiển thị/Read-only.<br>Hồ sơ được tạo từ Admin luôn khởi tạo nguồn xác thực Nội bộ để đăng nhập bằng Email/Mật khẩu. |
-| Quốc gia | Enum(String(50)) | Có | Việt Nam | Control UI: Hộp chọn.<br>Tham chiếu tại Danh mục dùng chung - Quốc tịch / Quốc gia [DM_09]. |
+| Quốc gia | Enum(String(50)) | Có | Việt Nam | Control UI: Hộp chọn.<br>Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
 | Tỉnh/TP | Enum(String(50)) hoặc String(255) | Không | Trống | Control UI động theo Quốc gia.<br>- Nếu Quốc gia là "Việt Nam": Hiển thị hộp chọn và cho phép chọn tại Danh mục dùng chung - Tỉnh/Thành phố [DM_13].<br>- Nếu Quốc gia khác "Việt Nam": Hiển thị ô nhập liệu dạng văn bản để người dùng tự nhập. |
 | Địa chỉ chi tiết | String(500) | Không | Trống | Ghi thông tin địa chỉ chi tiết như Số nhà, đường phố, thôn xóm... |
 | Trung tâm Đăng ký mặc định                             | Enum(String(100)) | Có     | Theo đơn vị quản trị đăng nhập hoặc trung tâm mặc định của hệ thống | Control UI: Hộp chọn.<br>Hiển thị theo **Tên viết tắt** của Danh mục dùng chung - [DM_08 - Trung tâm giao dịch bảo đảm](../../00_Tong_quan_va_Quy_tac_chung.md#dm_08). |
 | **Khối thông tin Người đại diện**                | String(100) | \- | \- | Thông tin người đại diện pháp luật của tổ chức.                                                                                                                                                                                                                                                                                                                             |
 | > Họ và tên người đại diện | String(255) | Không | Trống | Họ và tên người đại diện theo pháp luật/người đại diện của tổ chức. |
-| > Loại giấy tờ                                             | Enum(String(50)) | Không        | Căn cước công dân | Control UI: Hộp chọn.<br>Tham chiếu tại Danh mục dùng chung - Loại giấy tờ pháp lý [DM_10]. |
+| > Loại giấy tờ                                             | Enum(String(50)) | Không        | Căn cước công dân | Control UI: Hộp chọn.<br>Tham chiếu Danh mục Loại giấy tờ pháp lý/thân nhân [DM_10]. |
 | > Số giấy tờ                                               | String(50) | Không        | Trống                 | Số giấy tờ pháp lý của người đại diện.                                                                                                                                                                                                                                                                                                                                      |
 | **Thông tin liên lạc & phân quyền của Tổ chức** | String(255) | \- | \- | Các trường liên lạc và cấu hình quyền cho tài khoản tổ chức.                                                                                                                                                                                                                                                                                                              |
 | Nhóm người dùng                                           | List(Enum(String(50))) | Không*    | Trống                 | Control UI: Ô tìm kiếm + danh sách checkbox.<br>Cho phép tìm kiếm theo **Tên nhóm người dùng**.<br>Cho phép tích chọn một hoặc nhiều Nhóm người dùng tương ứng với Loại tài khoản áp dụng cho Khách hàng. Khi chọn hoặc thay đổi giá trị, Cây phân quyền phía dưới được cập nhật để hiển thị trước các quyền tương ứng. |
@@ -168,16 +168,16 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | > Cột: Số giấy tờ                              | - | \- | \- | Control UI: Bảng/Lưới hiển thị.<br>Số giấy tờ của tài khoản trực thuộc. |
 | > Cột: Email | String(255) | \- | \- | Control UI: Bảng/Lưới hiển thị.<br>Email đồng thời là Tên đăng nhập của tài khoản phụ. |
 | > Cột: Địa chỉ chi tiết | String(500) | \- | \- | Control UI: Bảng/Lưới hiển thị.<br>Hiển thị đúng giá trị trường Địa chỉ chi tiết của tài khoản phụ. |
-| > Cột: Trạng thái | - | \- | Đang hoạt động | Control UI: Bảng/Lưới hiển thị.<br>Gồm:<br>- Đang hoạt động<br>- Bị khóa<br>- Đóng |
+| > Cột: Trạng thái | - | \- | Đang hoạt động | Control UI: Bảng/Lưới hiển thị.<br>Gồm:<br>+ Đang hoạt động<br>+ Bị khóa<br>+ Đóng |
 | > Cột: Thao tác                                  | - | \- | \- | Control UI: Bảng/Lưới hiển thị.<br>- Các thao tác:<br>+ Sửa<br>+ Đóng<br>+ Xóa |
 | **Form Thêm/Sửa tài khoản phụ trực thuộc** | String(255) | \- | \- | Chỉ hiển thị khi bấm nút **Thêm tài khoản phụ** hoặc chọn **Sửa** tài khoản phụ trên lưới tạm.                                                                                                                                                                                                                                                                 |
 | >> Tên khách hàng | String(255) | Có | Trống | Họ tên tài khoản phụ trực thuộc tổ chức. |
 | >> Email (Tên đăng nhập) | String(255) | Có | Trống | Email tài khoản phụ, đồng thời là Tên đăng nhập. Không hiển thị trường Tên đăng nhập riêng trên form. Ràng buộc tính duy nhất trên toàn hệ thống và trong lưới tạm. Bắt buộc đúng định dạng Regex:`^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$`. |
-| >> Số điện thoại | String(20) | Không | Trống | Số điện thoại liên hệ của tài khoản phụ. Nếu có nhập, validate động theo Quốc gia:<br>- Việt Nam: Đúng 10 chữ số, bắt đầu bằng 0 và đi kèm các đầu số mạng hợp lệ. Regex: `/^0[35789]\d{8}$/`.<br>- Quốc gia khác Việt Nam: Độ dài 8-15 ký tự, cho phép bắt đầu bằng dấu `+` ở đầu. Regex: `/^\+?[1-9]\d{7,14}$/`. |
+| >> Số điện thoại | String(20) | Không | Trống | Số điện thoại liên hệ của tài khoản phụ. Nếu có nhập, validate động theo Quốc gia:<br>+ Việt Nam: Đúng 10 chữ số, bắt đầu bằng 0 và đi kèm các đầu số mạng hợp lệ. Regex: `/^0[35789]\d{8}$/`.<br>+ Quốc gia khác Việt Nam: Độ dài 8-15 ký tự, cho phép bắt đầu bằng dấu `+` ở đầu. Regex: `/^\+?[1-9]\d{7,14}$/`. |
 | >> Đơn vị | String(255) | Không | Trống | Cho phép nhập text thông tin đơn vị/phòng ban/chi nhánh của tài khoản phụ trong Tổ chức. |
-| >> Loại giấy tờ                                 | Enum(String(50)) | Có        | Căn cước công dân | Control UI: Hộp chọn.<br>Tham chiếu tại Danh mục dùng chung - Loại giấy tờ pháp lý [DM_10]. |
+| >> Loại giấy tờ                                 | Enum(String(50)) | Có        | Căn cước công dân | Control UI: Hộp chọn.<br>Tham chiếu Danh mục Loại giấy tờ pháp lý/thân nhân [DM_10]. |
 | >> Số giấy tờ               | String(255) | Có        | Trống                 | Số giấy tờ cá nhân. Kiểm tra trùng lặp đồng thời trên lưới tạm và tất cả tài khoản phụ khác trên toàn hệ thống đang ở trạng thái `Đang hoạt động`. Khóa (Read-only) khi Sửa. |
-| >> Quốc gia | Enum(String(50)) | Có | Theo Quốc gia của Tổ chức | Control UI: Hộp chọn.<br>Tham chiếu tại Danh mục dùng chung - Quốc tịch / Quốc gia [DM_09]. |
+| >> Quốc gia | Enum(String(50)) | Có | Theo Quốc gia của Tổ chức | Control UI: Hộp chọn.<br>Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
 | >> Tỉnh/TP | Enum(String(50)) hoặc String(255) | Có | Trống | Control UI động theo Quốc gia.<br>- Nếu Quốc gia là "Việt Nam": Hiển thị hộp chọn và cho phép chọn tại Danh mục dùng chung - Tỉnh/Thành phố [DM_13].<br>- Nếu Quốc gia khác "Việt Nam": Hiển thị ô nhập liệu dạng văn bản để người dùng tự nhập. |
 | >> Địa chỉ chi tiết | String(500) | Có | Trống | Ghi thông tin địa chỉ chi tiết của tài khoản phụ. |
 | >> Loại tài khoản | Enum(String(50)) | Có | Tài khoản phụ | Control UI: Hiển thị/Read-only.<br>Mặc định là `Tài khoản phụ`, không được phép chỉnh sửa. |
@@ -256,23 +256,23 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | Trường thông tin               | Kiểu dữ liệu | Bắt buộc | Mặc định   | Mô tả                                                                                                                                                                                                                                                                                                                                                                 |
 | :-------------------------------- | :-------------- | :--------- | :------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Loại khách hàng                | Enum(String(50)) | \- | Cá nhân     | Control UI: Hiển thị/Read-only.<br>Trực quan hóa loại tài khoản khách hàng dạng chỉ đọc (Read-only), không cho phép sửa. |
-| Loại tài khoản                 | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Gồm:<br>- Tài khoản chính<br>- Tài khoản phụ<br>Chế độ Chỉ đọc, không cho phép sửa. |
+| Loại tài khoản                 | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Gồm:<br>+ Tài khoản chính<br>+ Tài khoản phụ<br>Chế độ Chỉ đọc, không cho phép sửa. |
 | Loại giấy tờ                   | Enum(String(50)) | Có        | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Hiển thị hộp chọn và cho phép sửa. Tham chiếu Danh mục dùng chung - Loại giấy tờ pháp lý [DM_10]. |
 | Số giấy tờ | String(50) | Có        | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa. Ràng buộc tính duy nhất theo Loại giấy tờ trên toàn hệ thống đối với các tài khoản đang ở trạng thái `Đang hoạt động` (ngoại trừ bản ghi đang sửa). |
 | Họ và tên                      | String(255) | Có        | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa. |
 | Ngày sinh                        | Date            | Không     | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa. Phải nhỏ hơn ngày hiện tại. |
 | Giới tính                       | Enum(String(50)) | Không     | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Hiển thị hộp chọn và cho phép sửa. |
 | Quốc tịch                       | String(255) | Có        | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa theo danh mục/quy tắc nhập liệu hiện hành. |
-| Tỉnh/TP | Enum(String(50)) hoặc String(255) | Không | Theo bản ghi | Cho phép sửa. Control UI động theo Quốc tịch:<br>- Nếu Quốc tịch là "Việt Nam": Hiển thị hộp chọn và cho phép chọn tại Danh mục dùng chung - Tỉnh/Thành phố [DM_13].<br>- Nếu Quốc tịch khác "Việt Nam": Hiển thị ô nhập liệu dạng văn bản để người dùng tự nhập. |
+| Tỉnh/TP | Enum(String(50)) hoặc String(255) | Không | Theo bản ghi | Cho phép sửa. Control UI động theo Quốc tịch:<br>+ Nếu Quốc tịch là "Việt Nam": Hiển thị hộp chọn và cho phép chọn tại Danh mục dùng chung - Tỉnh/Thành phố [DM_13].<br>+ Nếu Quốc tịch khác "Việt Nam": Hiển thị ô nhập liệu dạng văn bản để người dùng tự nhập. |
 | Địa chỉ chi tiết | String(500) | Không | Theo bản ghi | Cho phép sửa. |
 | Email (Tên đăng nhập) | String(255) | Có nếu hồ sơ có nguồn xác thực Nội bộ | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID`: Cho phép sửa Email vì Email chỉ là thông tin liên hệ, chưa dùng làm Tên đăng nhập Nội bộ.<br>- Nếu Nguồn xác thực là `Nội bộ` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only) vì Email là Tên đăng nhập của nguồn xác thực Nội bộ. |
-| Nguồn xác thực | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ:<br>- VNeID<br>- Nội bộ<br>- VNeID, Nội bộ |
+| Nguồn xác thực | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ:<br>+ VNeID<br>+ Nội bộ<br>+ VNeID, Nội bộ |
 | Số điện thoại                 | String(20) | Có        | Theo bản ghi | Cho phép sửa. Ràng buộc định dạng chuẩn theo quốc tịch.<br>- Ràng buộc tính duy nhất trên toàn hệ thống đối với các tài khoản đang ở trạng thái `Đang hoạt động` (ngoại trừ bản ghi đang sửa). |
 | Trung tâm Đăng ký mặc định | Enum(String(100)) | Không     | Theo bản ghi | Control UI: Hộp chọn.<br>Cho phép sửa đổi. Hiển thị theo **Tên viết tắt** của Danh mục dùng chung - [DM_08 - Trung tâm giao dịch bảo đảm](../../00_Tong_quan_va_Quy_tac_chung.md#dm_08). |
 | TechID | String(100) | \- | Theo nguồn xác thực VNeID | Control UI: Hiển thị/Read-only.<br>Chỉ hiển thị khi hồ sơ có Nguồn xác thực chứa `VNeID`. Hiển thị dạng che/mask theo chính sách bảo mật. Không cho phép Admin nhập, sửa hoặc xóa TechID trên form cập nhật. |
 | Nhóm người dùng               | List(Enum(String(50))) | Không*    | Theo bản ghi | Control UI: Ô tìm kiếm + danh sách checkbox.<br>Cho phép tìm kiếm theo **Tên nhóm người dùng**.<br>Cho phép tích chọn một hoặc nhiều Nhóm người dùng. Khi chọn hoặc thay đổi giá trị, Cây phân quyền phía dưới được cập nhật để hiển thị trước các quyền tương ứng. |
 | Vai trò                          | List(Enum(String(50))) | Không*    | Theo bản ghi | Control UI: Ô tìm kiếm + danh sách checkbox.<br>Cho phép tìm kiếm theo **Tên vai trò**.<br>Cho phép tích chọn một hoặc nhiều Vai trò. Khi chọn hoặc thay đổi giá trị, Cây phân quyền phía dưới được cập nhật để hiển thị trước các quyền tương ứng. |
-| Cây phân quyền                 | Boolean | \- | Theo Nhóm người dùng/Vai trò đã chọn | Control UI: Cây phân quyền chỉ đọc (Read-only).<br>Hiển thị cây danh mục quyền phân cấp (Cha - Con) để xem trước các quyền mà tài khoản khách hàng cá nhân sẽ sở hữu:<br>- **Logic hiển thị (Chỉ hiển thị quyền được chọn)**: Cây chỉ hiển thị những quyền/chức năng được gán thông qua các Nhóm người dùng hoặc Vai trò được tích chọn. Các quyền khác không được chọn sẽ bị ẩn đi khỏi cây.<br>- **Nhánh gốc cao nhất (Root nodes)**: Chỉ hiển thị các phân hệ chính mà các Nhóm người dùng hoặc Vai trò được chọn có quyền truy cập (tối đa 3 phân hệ: **Website Khách hàng**, **Ứng dụng Mobile**, **Website quản trị**). Phân hệ nào hoàn toàn không được chọn quyền sẽ không hiển thị làm node gốc trên cây.<br>- **Logic hiển thị quyền**: Khi người dùng chọn hoặc bỏ chọn Nhóm người dùng/Vai trò, hệ thống tính lại danh sách quyền theo cơ chế cộng dồn từ toàn bộ mục đã chọn và cập nhật Cây phân quyền để người dùng xem trước trước khi lưu. Các quyền không được chọn sẽ không hiển thị trên cây. |
+| Cây phân quyền                 | Boolean | \- | Theo Nhóm người dùng/Vai trò đã chọn | Control UI: Cây phân quyền chỉ đọc (Read-only).<br>Hiển thị cây danh mục quyền phân cấp (Cha - Con) để xem trước các quyền mà tài khoản khách hàng cá nhân sẽ sở hữu:<br>+ **Logic hiển thị (Chỉ hiển thị quyền được chọn)**: Cây chỉ hiển thị những quyền/chức năng được gán thông qua các Nhóm người dùng hoặc Vai trò được tích chọn. Các quyền khác không được chọn sẽ bị ẩn đi khỏi cây.<br>+ **Nhánh gốc cao nhất (Root nodes)**: Chỉ hiển thị các phân hệ chính mà các Nhóm người dùng hoặc Vai trò được chọn có quyền truy cập (tối đa 3 phân hệ: **Website Khách hàng**, **Ứng dụng Mobile**, **Website quản trị**). Phân hệ nào hoàn toàn không được chọn quyền sẽ không hiển thị làm node gốc trên cây.<br>+ **Logic hiển thị quyền**: Khi người dùng chọn hoặc bỏ chọn Nhóm người dùng/Vai trò, hệ thống tính lại danh sách quyền theo cơ chế cộng dồn từ toàn bộ mục đã chọn và cập nhật Cây phân quyền để người dùng xem trước trước khi lưu. Các quyền không được chọn sẽ không hiển thị trên cây. |
 
 **Ghi chú**:
 (*): Bắt buộc phải chọn ít nhất một trong hai trường: **Nhóm người dùng** hoặc **Vai trò** (không được bỏ trống cả hai).
@@ -323,23 +323,23 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | :-- | :-- | :-- | :-- | :-- |
 | **Tab 1: Thông tin chung** | - | - | - | Hiển thị thông tin tài khoản tổ chức chính hoặc tài khoản phụ trực thuộc. |
 | Loại khách hàng | Enum(String(50)) | - | Tổ chức | Control UI: Hiển thị/Read-only. |
-| Loại tài khoản | Enum(String(50)) | - | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Gồm:<br>- Tài khoản chính<br>- Tài khoản phụ |
-| Nguồn xác thực | String(100) | - | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ:<br>- VNeID<br>- Nội bộ<br>- VNeID, Nội bộ |
+| Loại tài khoản | Enum(String(50)) | - | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Gồm:<br>+ Tài khoản chính<br>+ Tài khoản phụ |
+| Nguồn xác thực | String(100) | - | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ:<br>+ VNeID<br>+ Nội bộ<br>+ VNeID, Nội bộ |
 | Tổ chức chủ quản | String(255) | - | Theo bản ghi | Chỉ hiển thị khi sửa/xem tài khoản phụ. Gồm Tên tổ chức, Mã khách hàng tổ chức, Email tổ chức, Số điện thoại tổ chức. |
-| Loại tổ chức | Enum(String(100)) | Có | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Hiển thị hộp chọn và cho phép sửa.<br>Gồm:<br>- Tổ chức có đăng ký kinh doanh trong nước<br>- Tổ chức nước ngoài |
-| Mã định danh tổ chức | String(255) | Có khi Loại tổ chức là Tổ chức có đăng ký kinh doanh trong nước | Theo bản ghi | Chỉ hiển thị đối với tài khoản chính khi **Loại tổ chức** = `Tổ chức có đăng ký kinh doanh trong nước`.<br>Control UI động theo Nguồn xác thực:<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa và kiểm tra trùng trên toàn hệ thống đối với các tài khoản đang ở trạng thái `Đang hoạt động` (ngoại trừ bản ghi đang sửa). |
-| Mã số thuế/Số giấy phép đầu tư | String(255) | Có khi Loại tổ chức là Tổ chức nước ngoài | Theo bản ghi | Chỉ hiển thị đối với tài khoản chính khi **Loại tổ chức** = `Tổ chức nước ngoài`.<br>Control UI động theo Nguồn xác thực:<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa và kiểm tra trùng trên toàn hệ thống đối với các tài khoản đang ở trạng thái `Đang hoạt động` (ngoại trừ bản ghi đang sửa). |
+| Loại tổ chức | Enum(String(100)) | Có | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Hiển thị hộp chọn và cho phép sửa.<br>Gồm:<br>+ Tổ chức có đăng ký kinh doanh trong nước<br>+ Tổ chức nước ngoài |
+| Mã định danh tổ chức | String(255) | Có khi Loại tổ chức là Tổ chức có đăng ký kinh doanh trong nước | Theo bản ghi | Chỉ hiển thị đối với tài khoản chính khi **Loại tổ chức** = `Tổ chức có đăng ký kinh doanh trong nước`.<br>Control UI động theo Nguồn xác thực:<br>+ Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>+ Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa và kiểm tra trùng trên toàn hệ thống đối với các tài khoản đang ở trạng thái `Đang hoạt động` (ngoại trừ bản ghi đang sửa). |
+| Mã số thuế/Số giấy phép đầu tư | String(255) | Có khi Loại tổ chức là Tổ chức nước ngoài | Theo bản ghi | Chỉ hiển thị đối với tài khoản chính khi **Loại tổ chức** = `Tổ chức nước ngoài`.<br>Control UI động theo Nguồn xác thực:<br>+ Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>+ Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa và kiểm tra trùng trên toàn hệ thống đối với các tài khoản đang ở trạng thái `Đang hoạt động` (ngoại trừ bản ghi đang sửa). |
 | Phân loại khách hàng | Enum(String(50)) | Có | Theo Loại tổ chức | Control UI: Hiển thị/Read-only.<br>Chỉ hiển thị khi cập nhật Tài khoản chính của Tổ chức.<br>- Tự động là `Trong nước` nếu Loại tổ chức = `Tổ chức có đăng ký kinh doanh trong nước`.<br>- Tự động là `Nước ngoài` nếu Loại tổ chức = `Tổ chức nước ngoài`.<br>Không hiển thị trên form Thêm/Cập nhật tài khoản phụ vì đây là thông tin kế thừa từ Tổ chức mẹ. |
-| Tên tổ chức / Tên khách hàng tài khoản phụ | String(255) | Có | Theo bản ghi | Đối với tài khoản chính của Tổ chức, Control UI động theo Nguồn xác thực:<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa.<br>Đối với tài khoản phụ: Cho phép sửa theo quy tắc cập nhật tài khoản phụ. |
-| Email tổ chức (Tên đăng nhập) / Email tài khoản phụ (Tên đăng nhập) | String(255) | Có nếu hồ sơ có nguồn xác thực Nội bộ | Theo bản ghi | Đối với tài khoản chính của Tổ chức, Control UI động theo Nguồn xác thực:<br>- Nếu Nguồn xác thực là `VNeID`: Cho phép sửa Email vì Email chỉ là thông tin liên hệ, chưa dùng làm Tên đăng nhập Nội bộ.<br>- Nếu Nguồn xác thực là `Nội bộ` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only) vì Email là Tên đăng nhập của nguồn xác thực Nội bộ.<br>Đối với tài khoản phụ: Không cho phép sửa khi cập nhật vì Email là định danh đăng nhập của tài khoản phụ. |
+| Tên tổ chức / Tên khách hàng tài khoản phụ | String(255) | Có | Theo bản ghi | Đối với tài khoản chính của Tổ chức, Control UI động theo Nguồn xác thực:<br>+ Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>+ Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa.<br>Đối với tài khoản phụ: Cho phép sửa theo quy tắc cập nhật tài khoản phụ. |
+| Email tổ chức (Tên đăng nhập) / Email tài khoản phụ (Tên đăng nhập) | String(255) | Có nếu hồ sơ có nguồn xác thực Nội bộ | Theo bản ghi | Đối với tài khoản chính của Tổ chức, Control UI động theo Nguồn xác thực:<br>+ Nếu Nguồn xác thực là `VNeID`: Cho phép sửa Email vì Email chỉ là thông tin liên hệ, chưa dùng làm Tên đăng nhập Nội bộ.<br>+ Nếu Nguồn xác thực là `Nội bộ` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only) vì Email là Tên đăng nhập của nguồn xác thực Nội bộ.<br>Đối với tài khoản phụ: Không cho phép sửa khi cập nhật vì Email là định danh đăng nhập của tài khoản phụ. |
 | Số điện thoại tổ chức | String(20) | Không | Theo bản ghi | Chỉ áp dụng với tài khoản chính của Tổ chức. Cho phép sửa. Kiểm tra định dạng theo Quốc gia nếu có nhập. |
 | Quốc gia | String(255) | Có | Theo bản ghi | Control UI động theo Nguồn xác thực.<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Hiển thị hộp chọn và cho phép sửa theo danh mục Quốc gia [DM_09]. |
-| Tỉnh/TP | Enum(String(50)) hoặc String(255) | Không | Theo bản ghi | Cho phép sửa. Control UI động theo Quốc gia:<br>- Nếu Quốc gia là "Việt Nam": Hiển thị hộp chọn và cho phép chọn tại Danh mục dùng chung - Tỉnh/Thành phố [DM_13].<br>- Nếu Quốc gia khác "Việt Nam": Hiển thị ô nhập liệu dạng văn bản để người dùng tự nhập. |
+| Tỉnh/TP | Enum(String(50)) hoặc String(255) | Không | Theo bản ghi | Cho phép sửa. Control UI động theo Quốc gia:<br>+ Nếu Quốc gia là "Việt Nam": Hiển thị hộp chọn và cho phép chọn tại Danh mục dùng chung - Tỉnh/Thành phố [DM_13].<br>+ Nếu Quốc gia khác "Việt Nam": Hiển thị ô nhập liệu dạng văn bản để người dùng tự nhập. |
 | Địa chỉ chi tiết | String(500) | Không | Theo bản ghi | Cho phép sửa. |
 | Trung tâm Đăng ký mặc định | Enum(String(100)) | Có đối với tài khoản chính | Theo bản ghi | Control UI: Hộp chọn. Chỉ áp dụng với tài khoản chính của Tổ chức. Hiển thị theo **Tên viết tắt** của Danh mục dùng chung - [DM_08 - Trung tâm giao dịch bảo đảm](../../00_Tong_quan_va_Quy_tac_chung.md#dm_08). |
-| Người đại diện | String(255) | Không | Theo bản ghi | Chỉ áp dụng với tài khoản chính của Tổ chức.<br>Control UI động theo Nguồn xác thực:<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa. |
-| Loại giấy tờ người đại diện | Enum(String(50)) | Không | Theo bản ghi | Chỉ áp dụng với tài khoản chính của Tổ chức.<br>Control UI động theo Nguồn xác thực:<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Hiển thị hộp chọn và cho phép sửa. Tham chiếu Danh mục dùng chung - Loại giấy tờ pháp lý [DM_10]. |
-| Số giấy tờ người đại diện | String(50) | Không | Theo bản ghi | Chỉ áp dụng với tài khoản chính của Tổ chức.<br>Control UI động theo Nguồn xác thực:<br>- Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>- Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa. |
+| Người đại diện | String(255) | Không | Theo bản ghi | Chỉ áp dụng với tài khoản chính của Tổ chức.<br>Control UI động theo Nguồn xác thực:<br>+ Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>+ Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa. |
+| Loại giấy tờ người đại diện | Enum(String(50)) | Không | Theo bản ghi | Chỉ áp dụng với tài khoản chính của Tổ chức.<br>Control UI động theo Nguồn xác thực:<br>+ Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>+ Nếu Nguồn xác thực là `Nội bộ`: Hiển thị hộp chọn và cho phép sửa. Tham chiếu Danh mục dùng chung - Loại giấy tờ pháp lý [DM_10]. |
+| Số giấy tờ người đại diện | String(50) | Không | Theo bản ghi | Chỉ áp dụng với tài khoản chính của Tổ chức.<br>Control UI động theo Nguồn xác thực:<br>+ Nếu Nguồn xác thực là `VNeID` hoặc `VNeID, Nội bộ`: Không cho phép sửa (Read-only).<br>+ Nếu Nguồn xác thực là `Nội bộ`: Cho phép sửa. |
 | TechID | String(100) | - | Theo nguồn xác thực VNeID | Chỉ hiển thị khi hồ sơ có Nguồn xác thực chứa `VNeID`. Nếu chưa liên kết VNeID thì để trống. Admin không được nhập/sửa TechID. |
 | Nhóm người dùng | List(Enum(String(50))) | Không* | Theo bản ghi | Control UI: Ô tìm kiếm + danh sách checkbox. Cho phép tìm kiếm theo **Tên nhóm người dùng** và tích chọn một hoặc nhiều Nhóm người dùng. |
 | Vai trò | List(Enum(String(50))) | Không* | Theo bản ghi | Control UI: Ô tìm kiếm + danh sách checkbox. Cho phép tìm kiếm theo **Tên vai trò** và tích chọn một hoặc nhiều Vai trò. |
@@ -354,8 +354,8 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | Cột: Số giấy tờ | String(255) | - | Theo bản ghi | Số giấy tờ pháp lý của tài khoản phụ. |
 | Cột: Email | String(255) | - | Theo bản ghi | Email đồng thời là Tên đăng nhập của tài khoản phụ. |
 | Cột: Địa chỉ chi tiết | String(500) | - | Theo bản ghi | Hiển thị đúng giá trị trường Địa chỉ chi tiết của tài khoản phụ. |
-| Cột: Trạng thái | Enum(String(50)) | - | Theo bản ghi | Gồm:<br>- Đang hoạt động<br>- Bị khóa<br>- Đóng |
-| Cột: Thao tác | - | - | Theo trạng thái | Gồm:<br>- Sửa<br>- Đóng<br>- Xóa |
+| Cột: Trạng thái | Enum(String(50)) | - | Theo bản ghi | Gồm:<br>+ Đang hoạt động<br>+ Bị khóa<br>+ Đóng |
+| Cột: Thao tác | - | - | Theo trạng thái | Gồm:<br>+ Sửa<br>+ Đóng<br>+ Xóa |
 | **Form Thêm/Sửa tài khoản phụ** | - | - | - | Hiển thị khi người dùng chọn Thêm tài khoản phụ hoặc Sửa tài khoản phụ. |
 | Tên khách hàng | String(255) | Có | Theo bản ghi | Họ tên tài khoản phụ. |
 | Email (Tên đăng nhập) | String(255) | Có | Theo bản ghi | Control UI: Hiển thị/Read-only khi cập nhật tài khoản phụ.<br>Email/Tên đăng nhập của tài khoản phụ. Không hiển thị trường Tên đăng nhập riêng trên form. Không cho phép sửa khi cập nhật vì Email là định danh đăng nhập của tài khoản. |
@@ -440,8 +440,8 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 
 | Trường thông tin    | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                                           |
 | :--------------------- | :-------------- | :--------- | :---------- | :-------------------------------------------------------------------------------- |
-| Loại thao tác | Enum(String(50)) | \- | Theo thao tác đã chọn | Control UI: Hiển thị/Read-only.<br>Gồm:<br>- Đóng<br>- Xóa |
-| Thông tin tài khoản | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các thông tin nhận diện chính:<br>- Tên khách hàng/Tên tổ chức<br>- Email (Tên đăng nhập)<br>- Loại tài khoản |
+| Loại thao tác | Enum(String(50)) | \- | Theo thao tác đã chọn | Control UI: Hiển thị/Read-only.<br>Gồm:<br>+ Đóng<br>+ Xóa |
+| Thông tin tài khoản | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các thông tin nhận diện chính:<br>+ Tên khách hàng/Tên tổ chức<br>+ Email (Tên đăng nhập)<br>+ Loại tài khoản |
 | Thông báo cảnh báo | String(500) | \- | Theo Loại thao tác | Control UI: Hiển thị/Read-only.<br>- Nếu Loại thao tác = `Đóng`: Hiển thị [MSG-CFM-UC009-001].<br>- Nếu Loại thao tác = `Xóa`: Hiển thị [MSG-CFM-UC009-002].<br>- Nếu là tài khoản phụ, bổ sung thông tin Tổ chức chủ quản để người dùng kiểm tra trước khi xác nhận. |
 
 ###### 4.3.1.4.4.3. Chức năng trên màn hình
@@ -481,7 +481,7 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | Trường thông tin    | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                                            |
 | :--------------------- | :-------------- | :--------- | :---------- | :--------------------------------------------------------------------------------- |
 | Loại thao tác | Enum(String(50)) | \- | Khóa | Control UI: Hiển thị/Read-only. |
-| Thông tin tài khoản | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các thông tin nhận diện chính:<br>- Tên khách hàng/Tên tổ chức<br>- Email (Tên đăng nhập)<br>- Loại tài khoản |
+| Thông tin tài khoản | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các thông tin nhận diện chính:<br>+ Tên khách hàng/Tên tổ chức<br>+ Email (Tên đăng nhập)<br>+ Loại tài khoản |
 | Thông báo cảnh báo | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị [MSG-CFM-UC009-003]. |
 
 ###### 4.3.1.4.5.3. Chức năng trên màn hình
@@ -519,7 +519,7 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | Trường thông tin    | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                                                |
 | :--------------------- | :-------------- | :--------- | :---------- | :------------------------------------------------------------------------------------- |
 | Loại thao tác | Enum(String(50)) | \- | Mở khóa | Control UI: Hiển thị/Read-only. |
-| Thông tin tài khoản | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các thông tin nhận diện chính:<br>- Tên khách hàng/Tên tổ chức<br>- Email (Tên đăng nhập)<br>- Loại tài khoản |
+| Thông tin tài khoản | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các thông tin nhận diện chính:<br>+ Tên khách hàng/Tên tổ chức<br>+ Email (Tên đăng nhập)<br>+ Loại tài khoản |
 | Thông báo cảnh báo | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị [MSG-CFM-UC009-004]. |
 
 ###### 4.3.1.4.6.3. Chức năng trên màn hình
@@ -583,9 +583,9 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | Trường thông tin               | Kiểu dữ liệu | Bắt buộc | Mặc định   | Mô tả                                            |
 | :-------------------------------- | :-------------- | :--------- | :------------ | :------------------------------------------------- |
 | Loại khách hàng                | Enum(String(50)) | \- | Cá nhân     | Control UI: Hiển thị/Read-only.<br>Read-only. |
-| Loại tài khoản                | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Gồm:<br>- Tài khoản chính<br>- Tài khoản phụ<br>Khách hàng cá nhân luôn là Tài khoản chính. |
-| Nguồn xác thực | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ:<br>- VNeID<br>- Nội bộ<br>- VNeID, Nội bộ |
-| Phân loại khách hàng | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Gồm:<br>- Trong nước<br>- Nước ngoài |
+| Loại tài khoản                | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Gồm:<br>+ Tài khoản chính<br>+ Tài khoản phụ<br>Khách hàng cá nhân luôn là Tài khoản chính. |
+| Nguồn xác thực | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ:<br>+ VNeID<br>+ Nội bộ<br>+ VNeID, Nội bộ |
+| Phân loại khách hàng | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Gồm:<br>+ Trong nước<br>+ Nước ngoài |
 | Loại giấy tờ                   | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Read-only. |
 | Số giấy tờ | String(50) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Read-only. |
 | Họ và tên                      | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Read-only. |
@@ -600,7 +600,7 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | TechID | String(100) | \- | Theo nguồn xác thực VNeID | Chỉ hiển thị khi hồ sơ có Nguồn xác thực chứa `VNeID`. Nếu chưa liên kết VNeID thì để trống, không hiển thị nội dung thay thế như `Không áp dụng`. |
 | Nhóm người dùng               | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Read-only. Chỉ hiển thị khi có dữ liệu gốc. |
 | Vai trò                          | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Read-only. Chỉ hiển thị khi có dữ liệu gốc. |
-| Cây phân quyền                 | Boolean | \- | Theo bản ghi | Control UI: Checkbox.<br>Hiển thị cây danh mục quyền phân cấp (Cha - Con) dưới dạng **chỉ đọc (Read-only)**, tổng hợp tất cả các quyền được cộng dồn từ Nhóm người dùng và Vai trò mà tài khoản sở hữu:<br>- **Logic hiển thị (Chỉ hiển thị quyền được chọn)**: Cây chỉ hiển thị những quyền/chức năng mà tài khoản khách hàng cá nhân này sở hữu (được cộng dồn từ danh sách Nhóm người dùng và Vai trò đang gán). Các quyền khác không được phân cho tài khoản sẽ bị ẩn đi khỏi cây.<br>- **Nhánh gốc cao nhất (Root nodes)**: Chỉ hiển thị các phân hệ chính mà tài khoản có quyền truy cập (tối đa 3 phân hệ: **Website Khách hàng**, **Ứng dụng Mobile**, **Website quản trị**). Phân hệ nào tài khoản không có quyền sẽ không hiển thị làm node gốc trên cây.<br>- **Định dạng hiển thị node**: Checkbox chỉ đọc (luôn ở trạng thái tích chọn) + Icon (Thư mục đối với MENU, Chìa khóa đối với API) + Tên chức năng (Mã chức năng).<br>- **Logic hiển thị quyền**: Hệ thống hiển thị danh sách quyền mà tài khoản đang có theo Nhóm người dùng và Vai trò đã được gán. |
+| Cây phân quyền                 | Boolean | \- | Theo bản ghi | Control UI: Checkbox.<br>Hiển thị cây danh mục quyền phân cấp (Cha - Con) dưới dạng **chỉ đọc (Read-only)**, tổng hợp tất cả các quyền được cộng dồn từ Nhóm người dùng và Vai trò mà tài khoản sở hữu:<br>+ **Logic hiển thị (Chỉ hiển thị quyền được chọn)**: Cây chỉ hiển thị những quyền/chức năng mà tài khoản khách hàng cá nhân này sở hữu (được cộng dồn từ danh sách Nhóm người dùng và Vai trò đang gán). Các quyền khác không được phân cho tài khoản sẽ bị ẩn đi khỏi cây.<br>+ **Nhánh gốc cao nhất (Root nodes)**: Chỉ hiển thị các phân hệ chính mà tài khoản có quyền truy cập (tối đa 3 phân hệ: **Website Khách hàng**, **Ứng dụng Mobile**, **Website quản trị**). Phân hệ nào tài khoản không có quyền sẽ không hiển thị làm node gốc trên cây.<br>+ **Định dạng hiển thị node**: Checkbox chỉ đọc (luôn ở trạng thái tích chọn) + Icon (Thư mục đối với MENU, Chìa khóa đối với API) + Tên chức năng (Mã chức năng).<br>+ **Logic hiển thị quyền**: Hệ thống hiển thị danh sách quyền mà tài khoản đang có theo Nhóm người dùng và Vai trò đã được gán. |
 
 ###### 4.3.1.4.8.1.3. Chức năng trên màn hình
 
@@ -641,13 +641,13 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | **Tab 1: Thông tin chung** | - | \- | - | Hiển thị thông tin chi tiết của tài khoản chính Tổ chức ở trạng thái chỉ đọc. |
 | Loại khách hàng | Enum(String(50)) | \- | Tổ chức | Control UI: Hiển thị/Read-only. |
 | Loại tài khoản | Enum(String(50)) | \- | Tài khoản chính | Control UI: Hiển thị/Read-only. |
-| Loại tổ chức | Enum(String(100)) | \- | Theo bản ghi | Gồm:<br>- Tổ chức có đăng ký kinh doanh trong nước<br>- Tổ chức nước ngoài |
+| Loại tổ chức | Enum(String(100)) | \- | Theo bản ghi | Gồm:<br>+ Tổ chức có đăng ký kinh doanh trong nước<br>+ Tổ chức nước ngoài |
 | Mã định danh tổ chức | String(255) | \- | Theo bản ghi | Chỉ hiển thị khi Loại tổ chức = `Tổ chức có đăng ký kinh doanh trong nước`. |
 | Mã số thuế/Số giấy phép đầu tư | String(255) | \- | Theo bản ghi | Chỉ hiển thị khi Loại tổ chức = `Tổ chức nước ngoài`. |
 | Phân loại khách hàng | Enum(String(50)) | \- | Theo Loại tổ chức | Control UI: Hiển thị/Read-only.<br>- Tự động là `Trong nước` nếu Loại tổ chức = `Tổ chức có đăng ký kinh doanh trong nước`.<br>- Tự động là `Nước ngoài` nếu Loại tổ chức = `Tổ chức nước ngoài`. |
 | Tên tổ chức | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only. |
 | Email tổ chức (Tên đăng nhập) | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only. Email đồng thời là Tên đăng nhập. |
-| Nguồn xác thực | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ:<br>- VNeID<br>- Nội bộ<br>- VNeID, Nội bộ |
+| Nguồn xác thực | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ:<br>+ VNeID<br>+ Nội bộ<br>+ VNeID, Nội bộ |
 | Số điện thoại tổ chức | String(20) | \- | Theo bản ghi | Chỉ hiển thị khi có dữ liệu gốc. |
 | Quốc gia | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only. |
 | Tỉnh/TP | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị giá trị Tỉnh/TP đã lưu theo quy tắc Quốc gia tại form thêm mới/cập nhật. Chỉ hiển thị khi có dữ liệu gốc. |
@@ -670,7 +670,7 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | > Cột: Số giấy tờ | String(255) | \- | Theo bản ghi | Số giấy tờ pháp lý của tài khoản phụ. |
 | > Cột: Email | String(255) | \- | Theo bản ghi | Email đồng thời là Tên đăng nhập của tài khoản phụ. |
 | > Cột: Địa chỉ chi tiết | String(500) | \- | Theo bản ghi | Hiển thị đúng giá trị trường Địa chỉ chi tiết của tài khoản phụ. |
-| > Cột: Trạng thái | Enum(String(50)) | \- | Theo bản ghi | Gồm:<br>- Đang hoạt động<br>- Bị khóa<br>- Đóng |
+| > Cột: Trạng thái | Enum(String(50)) | \- | Theo bản ghi | Gồm:<br>+ Đang hoạt động<br>+ Bị khóa<br>+ Đóng |
 | > Row click | Row Click | \- | \- | Khi click vào dòng dữ liệu tài khoản phụ trực thuộc ở Tab 2, hệ thống mở [Màn hình Xem chi tiết Tài khoản Tổ chức - Tài khoản phụ](#4314824-man-hinh-xem-chi-tiet-tai-khoan-to-chuc---tai-khoan-phu). |
 | **Tab 3: Chủ thể xác thực liên kết** | - | \- | - | Chỉ hiển thị khi xem tài khoản chính của tổ chức. |
 | Bảng danh sách chủ thể xác thực liên kết | - | \- | 50 bản ghi/trang | Control UI: Bảng/Lưới hiển thị ở dạng chỉ đọc.<br>- Ghi nhận các chủ thể đã xác thực qua VNeID/DVCQG trong ngữ cảnh đại diện/ủy quyền của tổ chức.<br>- Không phải tài khoản phụ trực thuộc và không hiển thị như tài khoản khách hàng độc lập nếu chưa được tạo theo nghiệp vụ tài khoản phụ.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
@@ -680,7 +680,7 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | > Cột: TechID | String(100) | \- | Theo bản ghi | Hiển thị dạng che/mask theo chính sách bảo mật, phục vụ đối chiếu nguồn xác thực. |
 | > Cột: Vai trò đại diện/ủy quyền | String(255) | \- | Theo bản ghi | Vai trò/ngữ cảnh đại diện do VNeID/DVCQG trả về, nếu có. |
 | > Cột: Nguồn xác thực | String(50) | \- | VNeID | Giá trị `VNeID`. |
-| > Cột: Trạng thái liên kết | Enum(String(50)) | \- | Theo bản ghi | Gồm:<br>- Đang hoạt động<br>- Bị khóa<br>- Đóng |
+| > Cột: Trạng thái liên kết | Enum(String(50)) | \- | Theo bản ghi | Gồm:<br>+ Đang hoạt động<br>+ Bị khóa<br>+ Đóng |
 | > Cột: Lần xác thực gần nhất | DateTime | \- | Theo bản ghi | Hiển thị theo định dạng `dd/mm/yyyy HH:mm`. |
 
 ###### 4.3.1.4.8.2.3. Chức năng trên màn hình - Tài khoản chính
@@ -713,13 +713,13 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | Email (Tên đăng nhập) | String(255) | \- | Theo bản ghi | Email đồng thời là Tên đăng nhập. |
 | Đơn vị | String(255) | \- | Theo bản ghi | Đơn vị/phòng ban/chi nhánh của tài khoản phụ trong Tổ chức. |
 | Số điện thoại | String(20) | \- | Theo bản ghi | Chỉ hiển thị khi có dữ liệu gốc. |
-| Trạng thái | Enum(String(50)) | \- | Theo bản ghi | Gồm:<br>- Đang hoạt động<br>- Bị khóa<br>- Đóng |
+| Trạng thái | Enum(String(50)) | \- | Theo bản ghi | Gồm:<br>+ Đang hoạt động<br>+ Bị khóa<br>+ Đóng |
 | Loại giấy tờ | Enum(String(50)) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only. |
 | Số giấy tờ | String(255) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only. |
 | Loại khách hàng | Enum(String(50)) | \- | Tổ chức | Control UI: Hiển thị/Read-only. |
 | Loại tài khoản | Enum(String(50)) | \- | Tài khoản phụ | Control UI: Hiển thị/Read-only. |
-| Nguồn xác thực | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ tài khoản phụ:<br>- VNeID<br>- Nội bộ<br>- VNeID, Nội bộ |
-| Phân loại khách hàng | Enum(String(50)) | \- | Theo tổ chức chủ quản | Gồm:<br>- Trong nước<br>- Nước ngoài |
+| Nguồn xác thực | String(100) | \- | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Hiển thị các nguồn xác thực đã liên kết với hồ sơ tài khoản phụ:<br>+ VNeID<br>+ Nội bộ<br>+ VNeID, Nội bộ |
+| Phân loại khách hàng | Enum(String(50)) | \- | Theo tổ chức chủ quản | Gồm:<br>+ Trong nước<br>+ Nước ngoài |
 | Ngày tạo | DateTime | \- | Theo bản ghi | Hiển thị theo định dạng `dd/mm/yyyy HH:mm`. |
 | Tài liệu đính kèm | Danh sách file | \- | Theo bản ghi | Chỉ cho phép **Xem/Tải về** tài liệu. |
 | TechID | String(100) | \- | Theo nguồn xác thực VNeID | Chỉ hiển thị khi hồ sơ tài khoản phụ có Nguồn xác thực chứa `VNeID`. Nếu chưa liên kết VNeID thì để trống, không hiển thị nội dung thay thế như `Không áp dụng`. |
@@ -777,7 +777,3 @@ Ghi chú: Trường **Loại tổ chức** quyết định trường mã định
 | | | | - TH3 (Nhập lại mật khẩu không khớp): Nếu Nhập lại mật khẩu mới không trùng khớp với Mật khẩu mới, hiển thị [MSG-ERR-UC009-006]. |
 | | | | - TH Hợp lệ:<br>+ Hệ thống mã hóa băm một chiều kết hợp Salt ngẫu nhiên và lưu mật khẩu mới.<br>+ Cập nhật cờ yêu cầu đổi mật khẩu theo lựa chọn trên popup.<br>+ Ghi nhận Audit Log thao tác đặt lại mật khẩu.<br>+ Hiển thị [MSG-SUC-UC009-006] và đóng popup.<br>+ Không gửi mật khẩu qua Email. |
 | 3   | Ẩn/hiện mật khẩu | Icon | Khi click icon con mắt tại từng trường mật khẩu, hệ thống chuyển trạng thái hiển thị giữa che ký tự và hiện ký tự đã nhập. Thao tác này không làm thay đổi giá trị mật khẩu và không kích hoạt validate/lưu dữ liệu. |
-
-
-
-

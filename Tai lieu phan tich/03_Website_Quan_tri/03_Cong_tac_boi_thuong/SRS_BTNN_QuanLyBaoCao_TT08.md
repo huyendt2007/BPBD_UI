@@ -1,11 +1,11 @@
-﻿﻿### 4.3.3.26. UCPS023 - Quản lý kỳ báo cáo, nhập liệu biểu mẫu Thông tư 08/2019/TT-BTP
+### 4.3.3.26. UCPS023 - Quản lý kỳ báo cáo, nhập liệu biểu mẫu Thông tư 08/2019/TT-BTP
 
 #### 4.3.3.26.1. Mục đích
 
 \- Cho phép các cơ quan, đơn vị tham gia công tác bồi thường nhà nước (cơ quan cấp tỉnh, cấp xã/phường/đặc khu theo mô hình chính quyền địa phương 2 cấp hiện hành, cơ quan khác có trụ sở tại địa phương, Tòa án nhân dân, Viện kiểm sát nhân dân, Bộ/cơ quan ngang Bộ và các cơ quan trực thuộc) trực tiếp nhập liệu hoặc được đơn vị đầu mối nhập thay vào các biểu mẫu Mẫu số 01, 03, 04, 05 Thông tư 08/2019/TT-BTP đối với những đơn vị chưa số hóa đầy đủ nghiệp vụ xử lý vụ việc trên hệ thống, thay cho cơ chế hệ thống tự tổng hợp từ module nghiệp vụ (Tiếp nhận YCBT, Giải quyết YCBT...) đã đặc tả tại `SRS_BaoCao_Mau01_DanhMucVuViec.md`, `SRS_BaoCao_Mau03_TongHopTinhHinh.md`, `SRS_BaoCao_Mau04_TinhHinhHoanTra.md`.
 
 \- Cho phép tổng hợp số liệu theo mô hình báo cáo:
-&nbsp;&nbsp;+ **Đơn vị báo cáo thực tế**: cơ quan cụ thể phát sinh số liệu, gồm đơn vị cấp tỉnh, cấp xã/phường/đặc khu theo mô hình chính quyền địa phương 2 cấp, cơ quan khác có trụ sở tại địa phương, hoặc đơn vị trực thuộc trung ương của Tòa án/Viện kiểm sát/Bộ. Đơn vị báo cáo thực tế được chọn từ cây đơn vị `[DM_DON_VI]` và có thể chưa có tài khoản đăng nhập riêng.
+&nbsp;&nbsp;+ **Đơn vị báo cáo thực tế**: cơ quan cụ thể phát sinh số liệu, có thể là đơn vị cấp tỉnh, cấp xã/phường/đặc khu theo mô hình chính quyền địa phương 2 cấp, cơ quan khác có trụ sở tại địa phương hoặc đơn vị trực thuộc trung ương của Tòa án/Viện kiểm sát/Bộ. Đơn vị báo cáo thực tế Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI] và có thể chưa có tài khoản đăng nhập riêng.
 &nbsp;&nbsp;+ **Đơn vị nhập liệu/được ủy quyền nhập thay**: giai đoạn hiện tại cho phép tạo tài khoản cho các Sở Tư pháp địa phương để nhập liệu thay cho các đơn vị báo cáo thực tế thuộc phạm vi địa phương; hệ thống phải ghi nhận riêng `Đơn vị báo cáo` và `Đơn vị nhập liệu`.
 &nbsp;&nbsp;+ **Đầu mối tổng hợp**: UBND cấp tỉnh, Tòa án nhân dân tối cao, Viện kiểm sát nhân dân tối cao, Bộ/cơ quan ngang Bộ ([DM_43]) tổng hợp số liệu từ các đơn vị báo cáo thực tế thuộc phạm vi quản lý, gửi Bộ Tư pháp.
 &nbsp;&nbsp;+ **Bộ Tư pháp (Cục Bồi thường nhà nước)**: tổng hợp công tác BTNN trên phạm vi cả nước phục vụ báo cáo Chính phủ theo khoản 5 Điều 26 Thông tư 08/2019/TT-BTP.
@@ -30,7 +30,7 @@
 
 \- Danh mục đơn vị `[DM_DON_VI]` đã khai báo dạng cây theo mô hình chính quyền địa phương 2 cấp hiện hành và các khối trung ương. Mỗi đơn vị báo cáo có đầy đủ `Mã đơn vị`, `Tên đơn vị`, `Đơn vị cha`, `Cấp đơn vị`, `Tỉnh/TP`, `Loại cơ quan báo cáo`, `Đầu mối tổng hợp trực tiếp`, `Trạng thái hiệu lực`, và cấu hình `Đơn vị được nhập thay` nếu chưa cấp tài khoản đăng nhập riêng.
 
-\- Loại cơ quan báo cáo tham chiếu [DM_43]. Loại kỳ báo cáo tham chiếu [DM_44]. Trạng thái kỳ báo cáo tham chiếu [DM_45]. Lĩnh vực phát sinh thiệt hại tham chiếu [DM_22]. Trạng thái vụ việc tham chiếu [DM_24].
+\- Loại cơ quan báo cáo Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. Loại kỳ báo cáo Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Trạng thái kỳ báo cáo Tham chiếu Danh mục DM_45 [DM_45]. Lĩnh vực phát sinh thiệt hại Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. Trạng thái vụ việc Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24].
 
 \- Cấu trúc cột/chỉ tiêu của từng biểu mẫu áp dụng đúng theo đặc tả tại `SRS_BaoCao_Mau01_DanhMucVuViec.md` (Mẫu 01), `SRS_BaoCao_Mau03_TongHopTinhHinh.md` (Mẫu 03), `SRS_BaoCao_Mau04_TinhHinhHoanTra.md` (Mẫu 04) và mục 10 `bieu-mau-btnn-tt08-2019.md` (Mẫu 05).
 
@@ -93,20 +93,20 @@ flowchart TD
 | Tiêu đề màn hình | String(255) | - | - | Chỉ đọc. `DANH SÁCH KỲ BÁO CÁO BTNN - THÔNG TƯ 08/2019/TT-BTP`. |
 | **I. Bộ lọc tìm kiếm** | | | | |
 | Năm báo cáo | Enum(String(10)) | Không | Năm hiện tại | Hiển thị 05 năm gần nhất. |
-| Loại kỳ báo cáo | Enum(String(100)) | Không | `Tất cả` | Tham chiếu [DM_44]. |
-| Đơn vị/Đầu mối | Enum(Tree) | Không | Theo phạm vi phân quyền | Control UI: Popup chọn cây đơn vị. Cho phép lọc theo `Đơn vị báo cáo`, `Đầu mối tổng hợp trực tiếp` hoặc `Bộ Tư pháp/Cục BTNN` theo phạm vi tài khoản. Cây đơn vị cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`, hiển thị đường dẫn cây của đơn vị được chọn. Tham chiếu [DM_DON_VI]. |
-| Trạng thái | Enum(String(100)) | Không | `Tất cả` | Tham chiếu [DM_45]. |
+| Loại kỳ báo cáo | Enum(String(100)) | Không | `Tất cả` | Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. |
+| Đơn vị/Đầu mối | Enum(Tree) | Không | Theo phạm vi phân quyền | Control UI: Popup chọn cây đơn vị. Cho phép lọc theo `Đơn vị báo cáo`, `Đầu mối tổng hợp trực tiếp` hoặc `Bộ Tư pháp/Cục BTNN` theo phạm vi tài khoản. Cây đơn vị cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`, hiển thị đường dẫn cây của đơn vị được chọn. Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. |
+| Trạng thái | Enum(String(100)) | Không | `Tất cả` | Tham chiếu Danh mục DM_45 [DM_45]. |
 | Tìm kiếm | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Tạo kỳ báo cáo | - | Không | Hiển thị theo quyền | Hiển thị với cán bộ báo cáo/nhập liệu có quyền tạo kỳ cho ít nhất một đơn vị báo cáo. Đơn vị đăng nhập có thể là đơn vị nhập thay; đơn vị báo cáo thực tế được chọn tại popup tạo kỳ theo cây đơn vị trong phạm vi được phân quyền. |
 | Khối mở nhanh kỳ tổng hợp | Text(1000) | Không | Theo vai trò | Hiển thị với đầu mối tổng hợp và Bộ Tư pháp/Cục BTNN. Với đầu mối tổng hợp, hiển thị nút mở kỳ tổng hợp của đầu mối. Với Bộ Tư pháp/Cục BTNN, chỉ hiển thị nút mở kỳ tổng hợp toàn quốc theo kỳ báo cáo. |
 | **II. Bảng danh sách kỳ báo cáo** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | Không | Tự tăng | |
 | Năm báo cáo | Integer(4) | Có | Theo dữ liệu | Chỉ đọc. |
-| Loại kỳ báo cáo | Enum(String(100)) | Có | Theo dữ liệu | Chỉ đọc. Tham chiếu [DM_44]. |
+| Loại kỳ báo cáo | Enum(String(100)) | Có | Theo dữ liệu | Chỉ đọc. Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. |
 | Loại báo cáo | Enum(String(100)) | Không | Theo dữ liệu | Chỉ đọc. Gồm `Báo cáo đơn vị`, `Báo cáo tổng hợp đầu mối`, `Báo cáo tổng hợp toàn quốc`, `Báo cáo tạm tính`. |
 | Đơn vị báo cáo | String(255) | Có | Theo dữ liệu | Chỉ đọc. Hiển thị tên đơn vị báo cáo thực tế đã chọn khi tạo kỳ; trường hợp nhập thay vẫn hiển thị đơn vị báo cáo thực tế, không hiển thị đơn vị nhập liệu thay thế. |
 | Số vụ việc đã nhập | Integer(10) | Không | Theo dữ liệu | Tổng số dòng đã nhập tại Mẫu 01/05 của kỳ báo cáo. |
-| Trạng thái | Enum(String(100)) | Có | Theo dữ liệu | Hiển thị badge theo [DM_45]. |
+| Trạng thái | Enum(String(100)) | Có | Theo dữ liệu | Hiển thị badge theo Danh mục DM_45 [DM_45]. |
 | Ngày gửi gần nhất | DateTime | Không | Theo dữ liệu | Chỉ đọc. |
 | Thao tác | String(255) | Không | Theo quyền/trạng thái | Gồm `Mở`, `Xóa` (chỉ khi kỳ báo cáo đang ở trạng thái `Đang nhập liệu` và do mình tạo). |
 
@@ -115,8 +115,8 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Tìm kiếm | Button | Lọc danh sách theo các tiêu chí đang chọn (kết hợp AND), hiển thị kết quả và đưa về trang 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
-| 2 | Tạo kỳ báo cáo | Button | Mở popup tạo kỳ báo cáo để chọn `Đơn vị báo cáo`, `Loại báo cáo`, `Nguồn dữ liệu`, `Thời gian báo cáo`. Sau khi tạo thành công mở **4.3.3.26.5. MH02** tại đúng biểu mẫu đã chọn. |
-| 3 | Click dòng dữ liệu/Mở | Row click/Icon button | Mở **4.3.3.26.5. MH02** với dữ liệu kỳ báo cáo tương ứng. Nếu người dùng là cán bộ đầu mối tổng hợp hoặc cán bộ Bộ Tư pháp/Cục BTNN và kỳ báo cáo thuộc đơn vị cấp dưới ở trạng thái `Đã gửi chờ duyệt`, mở **4.3.3.26.9. MH08** (màn duyệt) thay vì MH02. |
+| 2 | Tạo kỳ báo cáo | Button | Mở popup tạo kỳ báo cáo để chọn `Đơn vị báo cáo`, `Loại báo cáo`, `Nguồn dữ liệu`, `Thời gian báo cáo`. Sau khi tạo thành công mở **MH02 - Tạo/Cập nhật kỳ báo cáo** tại đúng biểu mẫu đã chọn. |
+| 3 | Click dòng dữ liệu/Mở | Row click/Icon button | Mở **MH02 - Tạo/Cập nhật kỳ báo cáo** với dữ liệu kỳ báo cáo tương ứng. Nếu người dùng là cán bộ đầu mối tổng hợp hoặc cán bộ Bộ Tư pháp/Cục BTNN và kỳ báo cáo thuộc đơn vị cấp dưới ở trạng thái `Đã gửi chờ duyệt`, mở **MH08 - Tổng hợp kỳ báo cáo cấp đầu mối/toàn quốc** (màn duyệt) thay vì MH02. |
 | 4 | Xóa | Icon button | Hiển thị khi kỳ báo cáo ở trạng thái `Đang nhập liệu` và do người dùng hiện tại tạo. Xác nhận [MSG-CFM-SYS-001] trước khi xóa. |
 
 ---
@@ -132,16 +132,16 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **Khối thông tin tạo kỳ** | | | | |
-| Đơn vị báo cáo | Enum(Tree) | Có | Trống | Control UI: Popup chọn cây đơn vị. Bắt buộc hiển thị theo cây phân cấp từ `[DM_DON_VI]`, không hiển thị dạng danh sách phẳng. Cây đơn vị hiển thị ngắn gọn theo `Mã đơn vị` và `Tên đơn vị`, cho phép mở rộng/thu gọn từng node. Cây đơn vị chỉ gồm các đơn vị thuộc phạm vi người dùng được phép tạo/nhập thay. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`, áp dụng tìm gần đúng, không phân biệt hoa/thường và dấu tiếng Việt. |
+| Đơn vị báo cáo | Enum(Tree) | Có | Trống | Control UI: Popup chọn cây đơn vị. Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Bắt buộc hiển thị theo cây phân cấp, không hiển thị dạng danh sách phẳng. Cây đơn vị hiển thị ngắn gọn theo `Mã đơn vị` và `Tên đơn vị`, cho phép mở rộng/thu gọn từng node. Cây đơn vị được giới hạn theo phạm vi người dùng được phép tạo/nhập thay. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`, áp dụng tìm gần đúng, không phân biệt hoa/thường và dấu tiếng Việt. |
 | Phạm vi số liệu | Enum(String(100)) | Có | `Riêng đơn vị được chọn` | Control UI: Hộp chọn. Gồm `Riêng đơn vị được chọn`, `Tổng hợp đơn vị trực thuộc`. Chỉ cho phép chọn `Tổng hợp đơn vị trực thuộc` khi `Đơn vị báo cáo` được chọn là node có đơn vị con trong phạm vi được phép tạo/nhập thay. Trường hợp Sở Tư pháp được cấu hình nhập thay/tổng hợp cho các đơn vị thuộc địa phương, cán bộ Sở Tư pháp chọn node đầu mối hoặc node Sở Tư pháp tương ứng và chọn `Tổng hợp đơn vị trực thuộc`; hệ thống ghi nhận riêng `Đơn vị báo cáo`, `Phạm vi số liệu` và `Đơn vị nhập liệu`. |
 | Loại báo cáo | Enum(String(100)) | Có | `Bộ biểu mẫu TT08 (Mẫu 01/03/04/05)` | Giá trị gồm `Bộ biểu mẫu TT08`, `Mẫu 01`, `Mẫu 03`, `Mẫu 04`, `Mẫu 05`. Sau khi tạo kỳ, nếu chọn một mẫu cụ thể thì mở đúng tab biểu mẫu đó; nếu chọn `Bộ biểu mẫu TT08` thì mở tab `Mẫu 01` mặc định. |
 | Nguồn dữ liệu | Enum(String(50)) | Có | `Tự động tổng hợp từ hệ thống` | Giá trị: `Tự động tổng hợp từ hệ thống` / `Nhập liệu thủ công`. Giá trị này áp dụng cho kỳ báo cáo/biểu mẫu được chọn và hiển thị chỉ đọc sau khi tạo kỳ. |
 | Năm báo cáo | Enum(String(10)) | Có | Năm hiện tại | Không sửa được sau khi đã lưu. |
 | Từ ngày | Date | Có | `01/01/[Năm báo cáo]` | Định dạng hiển thị `dd/mm/yyyy`. Có datepicker. Người dùng được điều chỉnh trước khi tạo kỳ. |
 | Đến ngày | Date | Có | `31/10/[Năm báo cáo]` | Định dạng hiển thị `dd/mm/yyyy`. Có datepicker. Bắt buộc lớn hơn hoặc bằng `Từ ngày`. |
-| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu [DM_44]. Không sửa được sau khi đã lưu; hệ thống lưu kèm khoảng `Từ ngày` - `Đến ngày` thực tế đã chọn. |
+| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Không sửa được sau khi đã lưu; hệ thống lưu kèm khoảng `Từ ngày` - `Đến ngày` thực tế đã chọn. |
 | Đơn vị nhập liệu | String(255) | - | Theo tài khoản đăng nhập | Chỉ đọc. Ghi nhận đơn vị/tài khoản thực hiện nhập liệu, có thể khác `Đơn vị báo cáo` khi Sở Tư pháp/Bộ Tư pháp nhập thay. |
-| Trạng thái | Enum(String(100)) | - | `Đang nhập liệu` | Chỉ đọc. Tham chiếu [DM_45]. Giá trị gồm `Đang nhập liệu`, `Đã gửi chờ duyệt`, `Đã duyệt chờ tổng hợp`, `Đã tổng hợp`, `Hoàn thành`. |
+| Trạng thái | Enum(String(100)) | - | `Đang nhập liệu` | Chỉ đọc. Tham chiếu Danh mục DM_45 [DM_45]. |
 | **Khối chọn biểu mẫu trong kỳ** | Select | - | Theo `Loại báo cáo` đã chọn khi tạo kỳ | Gồm `Mẫu 01 - Danh mục vụ việc`, `Mẫu 03 - Tổng hợp tình hình`, `Mẫu 04 - Tình hình hoàn trả`, `Mẫu 05 - Sổ thụ lý`, `Lịch sử xử lý`. Khi đổi mẫu, hệ thống chỉ chuyển phần nội dung hiển thị; không cho chỉnh lại `Nguồn dữ liệu` tại màn chi tiết. |
 
 ##### 4.3.3.26.5.3. Chức năng trên màn hình
@@ -248,7 +248,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xem/Duyệt | Row click/Icon button | Mở **4.3.3.26.10. MH07** với dữ liệu kỳ báo cáo của đơn vị được chọn. |
+| 1 | Xem/Duyệt | Row click/Icon button | Mở **MH07 - Xem chi tiết và Duyệt kỳ báo cáo đơn vị cấp dưới** với dữ liệu kỳ báo cáo của đơn vị được chọn. |
 | 2 | Nhắc gửi báo cáo | Icon button | Gửi thông báo nhắc đơn vị cấp dưới hoàn thiện và gửi kỳ báo cáo; không thay đổi trạng thái dữ liệu. |
 
 ---
@@ -273,7 +273,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | 1 | Duyệt | Button | Áp dụng [BR-BTNN-BC-004]. Xác nhận [MSG-CFM-SYS-001], sau xác nhận chuyển trạng thái đơn vị về `Đã duyệt chờ tổng hợp`, ghi nhận người duyệt, thời điểm duyệt, ghi vào lịch sử xử lý, gửi thông báo cho đơn vị. |
 | 2 | Yêu cầu chỉnh lý | Button | Áp dụng [BR-BTNN-BC-003]. Mở popup bắt buộc nhập `Lý do chỉnh lý` (Text(1000)); sau khi xác nhận, chuyển trạng thái đơn vị về `Đang nhập liệu`, ghi vào lịch sử xử lý, hiển thị nội dung yêu cầu chỉnh lý trên màn chi tiết và gửi thông báo kèm lý do cho đơn vị. |
-| 3 | Đóng | Button | Đóng màn hình, quay về **4.3.3.26.9. MH06**. |
+| 3 | Đóng | Button | Đóng màn hình, quay về **MH06 - Danh sách đơn vị cấp dưới cần duyệt**. |
 
 ---
 

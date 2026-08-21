@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -1996,7 +1996,7 @@
                     statusBadge = '<span class="badge" style="background:#dcfce7; color:#15803d; font-weight:600;">Hoàn thành 🟢</span>';
                 }
 
-                // Cột thao tác chuẩn: Sửa, Xem chi tiết, Xóa. Không thao tác thành lập hội đồng tại danh sách.
+                // Cột thao tác chuẩn (Fixed-slot Action Column): Sửa, Thao tác khác (Giảm/Hoãn/Miễn), Xóa. Xem chi tiết dùng Row-Click (click cả dòng), không thao tác thành lập hội đồng tại danh sách.
                 let btnUpdate = `<button class="icon-btn" title="Không có kết quả cần cập nhật ở bước này" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 if (d.status === 'Đang họp hội đồng') {
                     btnUpdate = `<button class="icon-btn" title="Cập nhật kết quả" onclick="openUpdateKienNghiModal('${d.id}')" style="color:#2563eb; border-color:#2563eb;"><i class="fa-solid fa-pen-to-square"></i></button>`;
@@ -2006,10 +2006,7 @@
                     btnUpdate = `<button class="icon-btn" title="Cập nhật kết quả" onclick="openProgressRefundModal('${d.id}')" style="color:#2563eb; border-color:#2563eb;"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 }
 
-                // Slot 3: (Xem chi tiết) - luôn cho phép mở để demo đúng màn theo trạng thái hồ sơ
-                let btnView = `<button class="icon-btn view" title="Xem chi tiết theo trạng thái hồ sơ" onclick="openDetailRefundModal('${d.id}')" style="color:var(--secondary-color); border-color:var(--secondary-color);">Xem</button>`;
-
-                // Slot 4: 🗑️ (Xóa)
+                // Slot 3: 🗑️ (Xóa) - Xem chi tiết đã dùng Row-Click (click cả dòng), không lặp nút Xem trong cột Thao tác.
                 let btnDelete = `<button class="icon-btn delete" title="Hồ sơ đã họp hội đồng/ban hành QĐ không thể xóa" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-trash"></i></button>`;
                 if (d.status === 'Chờ thành lập hội đồng') {
                     btnDelete = `<button class="icon-btn delete" title="Xóa" onclick="deleteRefundDossier('${d.id}')" style="color:var(--danger-color); border-color:var(--danger-color);"><i class="fa-solid fa-trash"></i></button>`;
@@ -2066,7 +2063,6 @@
                     <td style="text-align:center; vertical-align:middle;">
                         <div style="display:inline-flex; align-items:center; gap:6px; justify-content:center;">
                             ${btnUpdate}
-                            ${btnView}
                             ${btnMoreActions}
                             ${btnDelete}
                         </div>
@@ -2931,6 +2927,7 @@
             }
         });
     </script>
+    <script src="../admin-ui-standardizer.js"></script>
 </body>
 
 </html>

@@ -18,7 +18,7 @@
 
 \- Người dùng được phân quyền truy cập màn hình `Tình hình thực hiện trách nhiệm hoàn trả (Mẫu số 04-TT08)`.
 
-\- Loại cơ quan báo cáo tham chiếu danh mục [DM_43]. Loại kỳ báo cáo tham chiếu danh mục [DM_44]. Lĩnh vực phát sinh thiệt hại tham chiếu [DM_22], lấy theo `Lĩnh vực phát sinh thiệt hại` của vụ việc yêu cầu bồi thường gốc liên kết với hồ sơ hoàn trả.
+\- Loại cơ quan báo cáo Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. Loại kỳ báo cáo Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Lĩnh vực phát sinh thiệt hại Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22], lấy theo `Lĩnh vực phát sinh thiệt hại` của vụ việc yêu cầu bồi thường gốc liên kết với hồ sơ hoàn trả.
 
 \- Nguồn dữ liệu chính lấy từ module Xem xét trách nhiệm hoàn trả (`SRS_BTNN_TrachNhiemHoanTra_XemXet.md`): `Trạng thái tiến trình`, `Kết luận của Hội đồng`, `Số tiền phải hoàn trả chính thức`, `Ngày quyết định hoàn trả có hiệu lực`, dữ liệu `Giảm mức hoàn trả` (MH08), `Hoãn hoàn trả` (MH09), giao dịch thu hồi (MH06); và từ module Cấp kinh phí bồi thường (`SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md`): `Số tiền thực tế chi trả`.
 
@@ -54,9 +54,9 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Khối chọn kỳ báo cáo** | | | | |
 | Năm báo cáo | Enum(String(10)) | Có | Năm hiện tại | Giá trị gồm 05 năm gần nhất tính đến năm hiện tại. |
-| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu [DM_44]. |
-| Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Giá trị lấy từ Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
-| Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu [DM_43]. |
+| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. |
+| Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
+| Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
 | **II. Bảng tổng hợp** | | | | |
 | Nhóm dòng theo lĩnh vực | String(255) | - | Theo dữ liệu | Chỉ đọc. Số liệu trình bày theo 06 dòng lĩnh vực phát sinh thiệt hại [DM_22] (Quản lý hành chính, Tố tụng hình sự, Tố tụng dân sự, Tố tụng hành chính, Thi hành án hình sự, Thi hành án dân sự) và 01 dòng `Tổng cộng`. |
 | Chỉ tiêu 1 - STT/nhóm lĩnh vực | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị mã nhóm (I-VI) hoặc `TC` (Tổng cộng). |

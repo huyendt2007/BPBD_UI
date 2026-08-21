@@ -1,4 +1,4 @@
-﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.8. UC-BTNN-TDDD - Theo dõi, đôn đốc công tác BTNN
 
@@ -43,12 +43,12 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | String(255) | Không | Theo dõi, đôn đốc công tác BTNN | Hiển thị tên màn hình. |
-| Tab nghiệp vụ | Enum(String(100)) | Có | Theo dõi công tác BTNN | Gồm:<br>- Theo dõi công tác BTNN<br>- Đôn đốc công tác BTNN |
+| Tab nghiệp vụ | Enum(String(100)) | Có | Theo dõi công tác BTNN | Gồm:<br>+ Theo dõi công tác BTNN<br>+ Đôn đốc công tác BTNN |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm gần đúng theo mã hồ sơ. |
 | Cơ quan liên quan | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại/cơ quan được đôn đốc. |
-| Nội dung công tác | Enum(String(100)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Giải quyết yêu cầu bồi thường<br>- Tham gia tố tụng<br>- Cấp kinh phí bồi thường và chi trả tiền bồi thường<br>- Xác định và thực hiện trách nhiệm hoàn trả<br>- Xử lý kỷ luật<br>- Quản lý nhà nước về công tác BTNN<br>- Phục hồi danh dự |
-| Hình thức/căn cứ | Enum(String(100)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Báo cáo<br>- Bản án, quyết định của Tòa án<br>- Quyết định giải quyết bồi thường<br>- Đề nghị hướng dẫn/giải đáp<br>- Kết quả kiểm tra/thanh tra<br>- Thông tin báo chí<br>- Khiếu nại, tố cáo, phản ánh, kiến nghị<br>- Căn cứ khác |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Lưu nháp<br>- Đã gửi<br>- Đang theo dõi phản hồi<br>- Hoàn thành |
+| Nội dung công tác | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Giải quyết yêu cầu bồi thường<br>+ Tham gia tố tụng<br>+ Cấp kinh phí bồi thường và chi trả tiền bồi thường<br>+ Xác định và thực hiện trách nhiệm hoàn trả<br>- Xử lý kỷ luật<br>- Quản lý nhà nước về công tác BTNN<br>- Phục hồi danh dự |
+| Hình thức/căn cứ | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Báo cáo<br>+ Bản án, quyết định của Tòa án<br>+ Quyết định giải quyết bồi thường<br>+ Đề nghị hướng dẫn/giải đáp<br>+ Kết quả kiểm tra/thanh tra<br>+ Thông tin báo chí<br>+ Khiếu nại, tố cáo, phản ánh, kiến nghị<br>+ Căn cứ khác |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Đã gửi<br>+ Đang theo dõi phản hồi<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Trống | Ngày lập từ, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Ngày lập đến, áp dụng [BR-VAL-007]. |
 | Thêm mới | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -71,13 +71,13 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển tab | Tab | Hệ thống tải danh sách theo tab nghiệp vụ được chọn và đưa về trang 1. |
-| 2 | Thêm mới | Button | Mở **4.3.3.8.4. MH02 - Màn hình Thêm mới/Cập nhật theo dõi, đôn đốc công tác BTNN** ở chế độ thêm mới. |
+| 2 | Thêm mới | Button | Mở **MH02 - Thêm mới/Cập nhật theo dõi, đôn đốc công tác BTNN** ở chế độ thêm mới. |
 | 3 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hệ thống hiển thị lỗi inline và không tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách theo tiêu chí nhập/chọn và đưa về trang 1. |
 | 4 | Xóa bộ lọc | Button | Hệ thống xóa tiêu chí lọc, đưa về giá trị mặc định và tải lại danh sách. |
 | 5 | Kết xuất Excel | Button | Kết xuất danh sách theo kết quả tìm kiếm hiện hành, áp dụng [BR-EXP-040]. |
-| 6 | Click dòng dữ liệu | Row click | Mở **4.3.3.8.4. MH02** ở chế độ xem chi tiết. |
-| 7 | Cập nhật phản hồi | Button/Icon | Mở **4.3.3.8.4. MH02** tại khối kết quả phản hồi khi hồ sơ ở trạng thái "Đã gửi" hoặc "Đang theo dõi phản hồi". |
+| 6 | Click dòng dữ liệu | Row click | Mở **MH02 - Thêm mới/Cập nhật theo dõi, đôn đốc công tác BTNN** ở chế độ xem chi tiết. |
+| 7 | Cập nhật phản hồi | Button/Icon | Mở **MH02 - Thêm mới/Cập nhật theo dõi, đôn đốc công tác BTNN** tại khối kết quả phản hồi khi hồ sơ ở trạng thái "Đã gửi" hoặc "Đang theo dõi phản hồi". |
 
 ##### 4.3.3.8.4. MH02 - Màn hình Thêm mới/Cập nhật theo dõi, đôn đốc công tác BTNN
 
@@ -90,7 +90,7 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Mã hồ sơ | String(50) | Không | Hệ thống tự sinh | Chỉ đọc sau khi lưu lần đầu. |
-| Nhóm nghiệp vụ | Enum(String(100)) | Có | Theo dõi công tác BTNN | Gồm:<br>- Theo dõi công tác BTNN<br>- Đôn đốc công tác BTNN |
+| Nhóm nghiệp vụ | Enum(String(100)) | Có | Theo dõi công tác BTNN | Gồm:<br>+ Theo dõi công tác BTNN<br>+ Đôn đốc công tác BTNN |
 | Cơ quan liên quan | String(255) | Có | Trống | Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại/cơ quan được theo dõi hoặc đôn đốc. |
 | Nội dung công tác | Enum(String(100)) | Có | Trống | Gồm các giá trị tại trường `Nội dung công tác` của MH01. |
 | Căn cứ thực hiện | Enum(String(100)) | Có | Trống | Gồm các giá trị tại trường `Hình thức/căn cứ` của MH01. |

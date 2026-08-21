@@ -1,4 +1,4 @@
-﻿﻿#### 4.3.3.18. UC469-470 - Giải đáp vướng mắc trong việc áp dụng pháp luật về trách nhiệm bồi thường của Nhà nước
+#### 4.3.3.18. UC469-470 - Giải đáp vướng mắc trong việc áp dụng pháp luật về trách nhiệm bồi thường của Nhà nước
 
 ##### 4.3.3.18.1. Mục đích
 
@@ -65,10 +65,10 @@ flowchart TD
 | 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Hợp lệ): Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 3 | Thêm mới | Button | Hệ thống mở **4.3.3.18.4. MH02 - Màn hình Thêm mới/Chỉnh sửa giải đáp vướng mắc** ở chế độ thêm mới. |
-| 4 | Chỉnh sửa | Icon button | Hệ thống mở **4.3.3.18.4. MH02** ở chế độ chỉnh sửa. |
-| 5 | Xóa | Icon button | Hệ thống mở **4.3.3.18.5. Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
-| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **4.3.3.18.4. MH02** ở chế độ chỉ xem. |
+| 3 | Thêm mới | Button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa giải đáp vướng mắc** ở chế độ thêm mới. |
+| 4 | Chỉnh sửa | Icon button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa giải đáp vướng mắc** ở chế độ chỉnh sửa. |
+| 5 | Xóa | Icon button | Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
+| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa giải đáp vướng mắc** ở chế độ chỉ xem. |
 
 ---
 
@@ -103,7 +103,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **4.3.3.18.3. MH01**. |
+| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **MH01 - Danh sách giải đáp vướng mắc pháp luật về TNBTCNN**. |
 | 2 | Lưu thông tin | Button | TH1 (Bỏ trống trường bắt buộc, bao gồm `Số văn bản giải đáp` khi `Hình thức giải đáp` là `Văn bản`): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
 |  |  |  | TH2 (`Ngày giải đáp` nhỏ hơn `Ngày nhận đề nghị`): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không cho phép lưu. |
 |  |  |  | TH3 (Hợp lệ - thêm mới): Hệ thống lưu bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |

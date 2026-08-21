@@ -832,6 +832,13 @@ body.in-iframe .container.payment-form-shell {
   display: block;
 }
 
+.notice-text {
+  color: var(--success-color, #16a34a) !important;
+  font-size: 12px !important;
+  margin-top: 4px;
+  display: block;
+}
+
 .modal-content.large {
   max-width: 800px;
 }

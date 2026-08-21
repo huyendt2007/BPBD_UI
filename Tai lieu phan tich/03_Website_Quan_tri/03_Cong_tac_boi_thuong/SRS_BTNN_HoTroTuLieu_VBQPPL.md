@@ -1,4 +1,4 @@
-﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.7. UC505-507 - Quản lý thông tin tư liệu VBQPPL
 
@@ -24,9 +24,9 @@
 
 \- Nguồn giao diện: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_tu_lieu_vbqppl.html`.
 
-\- Loại văn bản tham chiếu danh mục [DM_21].
+\- Loại văn bản Tham chiếu Danh mục Loại văn bản quy phạm pháp luật [DM_21].
 
-\- Trạng thái phê duyệt tư liệu tham chiếu danh mục [DM_35].
+\- Trạng thái phê duyệt tư liệu Tham chiếu Danh mục Trạng thái nội dung [DM_35].
 
 ---
 
@@ -64,9 +64,9 @@ Nguồn UI: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_tu_lieu_vbqppl.html
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm theo tên văn bản hoặc số hiệu văn bản. |
-| Loại văn bản | Enum(String(50)) | Không | Tất cả | - Tham chiếu danh mục [DM_21].<br>- Giá trị UI gồm:<br>+ Tất cả<br>+ Luật<br>+ Nghị định<br>+ Thông tư<br>+ Nghị quyết<br>+ Quyết định<br>+ Thông tư liên tịch |
+| Loại văn bản | Enum(String(50)) | Không | Tất cả | - Tham chiếu Danh mục Loại văn bản quy phạm pháp luật [DM_21]. |
 | Cơ quan ban hành | String(255) | Không | Trống | Tìm kiếm theo tên cơ quan ban hành văn bản. |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | - Tham chiếu danh mục [DM_35].<br>- Giá trị UI gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Chờ duyệt<br>+ Đã duyệt<br>+ Từ chối |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | - Tham chiếu Danh mục Trạng thái nội dung [DM_35]. |
 | Từ ngày ban hành | Date | Không | Theo dữ liệu hệ thống | Nhập điều kiện lọc ngày ban hành bắt đầu, định dạng `dd/mm/yyyy`. |
 | Đến ngày ban hành | Date | Không | Theo dữ liệu hệ thống | Nhập điều kiện lọc ngày ban hành kết thúc, định dạng `dd/mm/yyyy`. |
 | **II. Thống kê nhanh** | | | | |
@@ -75,13 +75,13 @@ Nguồn UI: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_tu_lieu_vbqppl.html
 | Số tư liệu từ chối | Integer(10) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị số bản ghi ở trạng thái "Từ chối". |
 | **III. Bảng danh sách kết quả** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | - Chỉ đọc.<br>- Hiển thị số thứ tự dòng dữ liệu theo phân trang. |
-| Cột: Tên văn bản | String(500) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị tên văn bản dưới dạng liên kết mở **4.3.3.7.4. MH02 - Màn hình Chi tiết thông tin tư liệu VBQPPL**. |
+| Cột: Tên văn bản | String(500) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị tên văn bản dưới dạng liên kết mở **MH02 - Chi tiết thông tin tư liệu VBQPPL**. |
 | Cột: Số hiệu | String(100) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị số hiệu văn bản. |
-| Cột: Loại văn bản | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Tham chiếu [DM_21]. |
+| Cột: Loại văn bản | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Tham chiếu Danh mục Loại văn bản quy phạm pháp luật [DM_21]. |
 | Cột: Cơ quan ban hành | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị tên cơ quan ban hành văn bản. |
 | Cột: Ngày ban hành | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
 | Cột: Ngày có hiệu lực | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
-| Cột: Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị trạng thái phê duyệt theo [DM_35] dưới dạng badge màu. |
+| Cột: Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị trạng thái phê duyệt theo Danh mục Trạng thái nội dung [DM_35] dưới dạng badge màu. |
 | Cột: Thao tác | String(255) | Không | Theo quyền/trạng thái | - Chỉ đọc.<br>- Hiển thị các icon thao tác phù hợp với quyền tài khoản và trạng thái bản ghi.<br>- Các icon chưa đủ điều kiện hiển thị dạng mờ và không cho thao tác. |
 | Số dòng hiển thị | Enum(String(10)) | Không | 5 | - Giá trị UI gồm:<br>+ 5<br>+ 10<br>+ 20 |
 | Thông tin phân trang | String(255) | Không | Theo dữ liệu lọc | - Chỉ đọc.<br>- Hiển thị khoảng bản ghi đang xem và tổng số bản ghi. |
@@ -96,24 +96,24 @@ Nguồn UI: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_tu_lieu_vbqppl.html
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách tư liệu theo `Từ khóa`, `Loại văn bản`, `Cơ quan ban hành`, `Trạng thái`, khoảng `Ngày ban hành`, cập nhật lưới kết quả và hiển thị [MSG-SUC-BTNN-HTTL-001]. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm, đặt các bộ lọc về giá trị mặc định, đưa trang hiện tại về trang 1 và hiển thị [MSG-SUC-BTNN-HTTL-002]. |
 | 3 | Lọc theo KPI | Button | Hệ thống lọc nhanh danh sách theo nhóm thống kê được chọn: `Tất cả`, `Chờ duyệt`, `Từ chối`; đồng thời cập nhật trạng thái chọn của khối KPI.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
-| 4 | Thêm mới | Button | Hệ thống mở **4.3.3.7.5. MH03 - Màn hình Thêm mới/Chỉnh sửa thông tin tư liệu VBQPPL** ở chế độ thêm mới. |
+| 4 | Thêm mới | Button | Hệ thống mở **MH03 - Thêm mới/Chỉnh sửa thông tin tư liệu VBQPPL** ở chế độ thêm mới. |
 | 5 | Kết xuất Excel | Button | TH1 (Danh sách rỗng): Vi phạm [BR-EXP-040]. Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải file. |
 |  |  |  | TH Hợp lệ: Hệ thống kết xuất danh sách tư liệu hiện hành ra file Excel theo tiêu chí lọc/sắp xếp hiện tại, áp dụng [BR-EXP-040] và hiển thị [MSG-SUC-BTNN-HTTL-003]. |
 | 6 | Sắp xếp cột | Header cột | TH1 (Chọn lại cột đang sắp xếp): Hệ thống đảo chiều sắp xếp tăng/giảm và cập nhật icon sắp xếp trên tiêu đề cột. |
 |  |  |  | TH2 (Chọn cột khác): Hệ thống đặt cột được chọn làm cột sắp xếp hiện hành và cập nhật danh sách. Các cột hỗ trợ sắp xếp gồm `Tên văn bản`, `Số hiệu`, `Loại văn bản`, `Cơ quan ban hành`, `Ngày ban hành`, `Ngày có hiệu lực`. |
-| 7 | Xem | Row Click | Hệ thống mở **4.3.3.7.4. MH02 - Màn hình Chi tiết thông tin tư liệu VBQPPL** ở chế độ chỉ xem. |
+| 7 | Xem | Row Click | Hệ thống mở **MH02 - Chi tiết thông tin tư liệu VBQPPL** ở chế độ chỉ xem. |
 | 8 | Chỉnh sửa | Icon button | TH1 (Bản ghi không ở trạng thái được chỉnh sửa): Icon hiển thị dạng mờ và không cho thao tác nếu bản ghi không ở trạng thái "Lưu nháp" hoặc "Từ chối". |
-|  |  |  | TH Hợp lệ: Hệ thống mở **4.3.3.7.5. MH03 - Màn hình Thêm mới/Chỉnh sửa thông tin tư liệu VBQPPL** ở chế độ chỉnh sửa. |
+|  |  |  | TH Hợp lệ: Hệ thống mở **MH03 - Thêm mới/Chỉnh sửa thông tin tư liệu VBQPPL** ở chế độ chỉnh sửa. |
 | 9 | Xóa tài liệu | Icon button | TH1 (Bản ghi không ở trạng thái "Lưu nháp"): Icon hiển thị dạng mờ và không cho thao tác. |
 |  |  |  | TH Hợp lệ: Hệ thống hiển thị [MSG-CFM-SYS-001]. Nếu người dùng xác nhận, hệ thống xóa mềm bản ghi, ẩn khỏi danh sách và hiển thị [MSG-SUC-BTNN-HTTL-008]. |
 | 10 | Gửi phê duyệt | Icon button | TH1 (Bản ghi không ở trạng thái được gửi duyệt): Icon hiển thị dạng mờ và không cho thao tác nếu bản ghi không ở trạng thái "Lưu nháp" hoặc "Từ chối". |
 |  |  |  | TH Hợp lệ: Hệ thống chuyển bản ghi sang trạng thái "Chờ duyệt", cập nhật danh sách và hiển thị [MSG-SUC-BTNN-HTTL-005]. |
 | 11 | Phê duyệt | Icon button | TH1 (Bản ghi không ở trạng thái "Chờ duyệt"): Icon hiển thị dạng mờ và không cho thao tác. |
-|  |  |  | TH Hợp lệ: Hệ thống mở **4.3.3.7.4. MH02 - Màn hình Chi tiết thông tin tư liệu VBQPPL** và hiển thị khối phê duyệt. |
+|  |  |  | TH Hợp lệ: Hệ thống mở **MH02 - Chi tiết thông tin tư liệu VBQPPL** và hiển thị khối phê duyệt. |
 | 12 | Từ chối | Icon button | TH1 (Bản ghi không ở trạng thái "Chờ duyệt"): Icon hiển thị dạng mờ và không cho thao tác. |
-|  |  |  | TH Hợp lệ: Hệ thống mở **4.3.3.7.4. MH02 - Màn hình Chi tiết thông tin tư liệu VBQPPL** và hiển thị khối phê duyệt. |
-| 13 | Click tên văn bản | Link | Hệ thống mở **4.3.3.7.4. MH02 - Màn hình Chi tiết thông tin tư liệu VBQPPL** ở chế độ chỉ xem. |
-| 14 | Click dòng dữ liệu | Row click | Hệ thống mở **4.3.3.7.4. MH02 - Màn hình Chi tiết thông tin tư liệu VBQPPL** ở chế độ chỉ xem. |
+|  |  |  | TH Hợp lệ: Hệ thống mở **MH02 - Chi tiết thông tin tư liệu VBQPPL** và hiển thị khối phê duyệt. |
+| 13 | Click tên văn bản | Link | Hệ thống mở **MH02 - Chi tiết thông tin tư liệu VBQPPL** ở chế độ chỉ xem. |
+| 14 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Chi tiết thông tin tư liệu VBQPPL** ở chế độ chỉ xem. |
 | 15 | Số dòng hiển thị | Select | Hệ thống cập nhật số bản ghi hiển thị trên mỗi trang theo giá trị được chọn, đưa trang hiện tại về trang 1 và tải lại lưới dữ liệu. |
 | 16 | Chuyển trang | Pagination | Hệ thống chuyển đến trang đầu, trang trước, trang được chọn, trang sau hoặc trang cuối theo thao tác người dùng; dữ liệu hiển thị giữ nguyên tiêu chí lọc/sắp xếp hiện hành. |
 
@@ -132,7 +132,7 @@ Nguồn UI: modal `docModal` với tiêu đề `Chi tiết thông tin tư liệu
 | **I. Thông tin văn bản tư liệu** | | | | |
 | Tên văn bản | String(500) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị tên văn bản tư liệu. |
 | Số hiệu văn bản | String(100) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị số hiệu văn bản. |
-| Loại văn bản | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Tham chiếu [DM_21]. |
+| Loại văn bản | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Tham chiếu Danh mục Loại văn bản quy phạm pháp luật [DM_21]. |
 | Cơ quan ban hành | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị tên cơ quan ban hành. |
 | Ngày ban hành | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
 | Ngày có hiệu lực | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
@@ -156,8 +156,8 @@ Nguồn UI: modal `docModal` với tiêu đề `Chi tiết thông tin tư liệu
 | 2 | Từ chối | Button | TH1 (Bỏ trống lý do từ chối): Vi phạm [BR-VAL-001]. Hệ thống hiển thị [MSG-ERR-VAL-001] dưới trường `Lý do từ chối`, không cho phép từ chối. |
 |  |  |  | TH Hợp lệ: Chỉ hiển thị với tài khoản Cán bộ phê duyệt khi bản ghi ở trạng thái "Chờ duyệt". Hệ thống cập nhật trạng thái bản ghi sang "Từ chối", lưu lý do từ chối, ghi nhận người duyệt/ngày duyệt, đóng màn hình chi tiết, tải lại danh sách và hiển thị [MSG-SUC-BTNN-HTTL-007]. |
 | 3 | Xem file | Link | Cho phép xem file tại một tab riêng. |
-| 4 | Hủy | Button | Hệ thống đóng màn hình chi tiết và quay lại **4.3.3.7.3. MH01 - Màn hình Danh sách thông tin tư liệu VBQPPL**. |
-| 5 | Đóng | Icon button | Hệ thống đóng màn hình chi tiết và quay lại **4.3.3.7.3. MH01 - Màn hình Danh sách thông tin tư liệu VBQPPL**. |
+| 4 | Hủy | Button | Hệ thống đóng màn hình chi tiết và quay lại **MH01 - Danh sách thông tin tư liệu VBQPPL**. |
+| 5 | Đóng | Icon button | Hệ thống đóng màn hình chi tiết và quay lại **MH01 - Danh sách thông tin tư liệu VBQPPL**. |
 
 ---
 
@@ -174,7 +174,7 @@ Nguồn UI: modal `docModal` với tiêu đề `Thêm mới thông tin tư liệ
 | **I. Thông tin văn bản tư liệu** | | | | |
 | Tên văn bản | String(500) | Có | Trống | Nhập tên văn bản tư liệu. |
 | Số hiệu văn bản | String(100) | Có | Trống | Nhập số hiệu văn bản. |
-| Loại văn bản | Enum(String(50)) | Có | Trống | - Tham chiếu [DM_21].<br>- Giá trị UI gồm:<br>+ Luật<br>+ Nghị định<br>+ Thông tư<br>+ Nghị quyết<br>+ Quyết định<br>+ Thông tư liên tịch |
+| Loại văn bản | Enum(String(50)) | Có | Trống | - Tham chiếu Danh mục Loại văn bản quy phạm pháp luật [DM_21]. |
 | Cơ quan ban hành | String(255) | Có | Trống | Nhập tên cơ quan ban hành văn bản. |
 | Ngày ban hành | Date | Có | Trống | Ngày ban hành văn bản. |
 | Ngày có hiệu lực | Date | Không | Trống | Nếu nhập, ngày có hiệu lực phải lớn hơn hoặc bằng ngày ban hành. |
@@ -191,12 +191,12 @@ Nguồn UI: modal `docModal` với tiêu đề `Thêm mới thông tin tư liệ
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Lưu nháp | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001]. Hệ thống hiển thị [MSG-ERR-VAL-001] và không cho phép lưu. |
-|  |  |  | TH2 (Dữ liệu không hợp lệ): Kiểm tra và phát hiện lỗi:<br>- `Ngày ban hành` lớn hơn ngày hiện tại: Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008] và không cho phép lưu.<br>- `Ngày có hiệu lực` nhỏ hơn `Ngày ban hành`: Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không cho phép lưu.<br>- File dữ liệu văn bản vi phạm [BR-BTNN-HTTL-001], hiển thị [MSG-ERR-BTNN-HTTL-001], [MSG-ERR-BTNN-HTTL-002] hoặc [MSG-ERR-BTNN-HTTL-003] theo lỗi phát sinh, không cho phép lưu.<br>- File media đính kèm vi phạm [BR-BTNN-HTTL-002], hiển thị [MSG-ERR-BTNN-HTTL-004], [MSG-ERR-BTNN-HTTL-005] hoặc [MSG-ERR-BTNN-HTTL-006] theo lỗi phát sinh, không cho phép lưu. |
+|  |  |  | TH2 (Dữ liệu không hợp lệ): Kiểm tra và phát hiện lỗi:<br>+ `Ngày ban hành` lớn hơn ngày hiện tại: Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008] và không cho phép lưu.<br>+ `Ngày có hiệu lực` nhỏ hơn `Ngày ban hành`: Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không cho phép lưu.<br>+ File dữ liệu văn bản vi phạm [BR-BTNN-HTTL-001], hiển thị [MSG-ERR-BTNN-HTTL-001], [MSG-ERR-BTNN-HTTL-002] hoặc [MSG-ERR-BTNN-HTTL-003] theo lỗi phát sinh, không cho phép lưu.<br>+ File media đính kèm vi phạm [BR-BTNN-HTTL-002], hiển thị [MSG-ERR-BTNN-HTTL-004], [MSG-ERR-BTNN-HTTL-005] hoặc [MSG-ERR-BTNN-HTTL-006] theo lỗi phát sinh, không cho phép lưu. |
 |  |  |  | TH Hợp lệ: Hệ thống lưu thông tin tư liệu ở trạng thái "Lưu nháp", đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-BTNN-HTTL-004]. |
 | 2 | Gửi duyệt | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001]. Hệ thống hiển thị [MSG-ERR-VAL-001] và không cho phép gửi duyệt. |
 |  |  |  | TH2 (Dữ liệu không hợp lệ): Kiểm tra dữ liệu tương tự chức năng `Lưu nháp`. Nếu có lỗi, hệ thống hiển thị mã MSG tương ứng và không cho phép gửi duyệt. |
 |  |  |  | TH Hợp lệ: Hệ thống lưu thông tin tư liệu, chuyển trạng thái bản ghi sang "Chờ duyệt", đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-BTNN-HTTL-005]. |
 | 3 | Xem file | Link | Cho phép xem file tại một tab riêng. |
 | 4 | Xóa | Link | Hệ thống xóa file khỏi danh sách file đã chọn trên màn hình trước khi lưu. |
-| 5 | Hủy | Button | Hệ thống đóng màn hình thêm mới/chỉnh sửa và quay lại **4.3.3.7.3. MH01 - Màn hình Danh sách thông tin tư liệu VBQPPL**; các dữ liệu chưa lưu không được ghi nhận. |
-| 6 | Đóng | Icon button | Hệ thống đóng màn hình thêm mới/chỉnh sửa và quay lại **4.3.3.7.3. MH01 - Màn hình Danh sách thông tin tư liệu VBQPPL**; các dữ liệu chưa lưu không được ghi nhận. |
+| 5 | Hủy | Button | Hệ thống đóng màn hình thêm mới/chỉnh sửa và quay lại **MH01 - Danh sách thông tin tư liệu VBQPPL**; các dữ liệu chưa lưu không được ghi nhận. |
+| 6 | Đóng | Icon button | Hệ thống đóng màn hình thêm mới/chỉnh sửa và quay lại **MH01 - Danh sách thông tin tư liệu VBQPPL**; các dữ liệu chưa lưu không được ghi nhận. |

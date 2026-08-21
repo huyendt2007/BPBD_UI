@@ -1,4 +1,4 @@
-﻿#### 4.3.2.6. UCPS005 - Xem chi tiết lịch sử Đăng ký thay đổi dành cho Cán bộ
+#### 4.3.2.6. UCPS005 - Xem chi tiết lịch sử Đăng ký thay đổi dành cho Cán bộ
 
 ##### 4.3.2.6.1. Mục đích
 

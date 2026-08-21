@@ -1,4 +1,4 @@
-﻿﻿### 4.3.2.Y. UC-BS-LD - Ký số/ký duyệt yêu cầu cung cấp bản sao văn bản chứng nhận
+### 4.3.2.Y. UC-BS-LD - Ký số/ký duyệt yêu cầu cung cấp bản sao văn bản chứng nhận
 
 #### 4.3.2.Y.1. Mục đích
 
@@ -94,8 +94,8 @@
 |  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-BS-002]. Sau khi xác nhận, hệ thống kiểm tra lại hồ sơ gốc còn hiệu lực và duyệt từng hồ sơ hợp lệ theo quy tắc rẽ nhánh tại [4.3.2.Y.8](#432y8-quy-tac-duyet-ky-so-tu-choi-va-tra-lai). Hiển thị [MSG-SUC-BS-001]. |
 | 4 | Từ chối | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Vi phạm [BR-BS-007], hiển thị [MSG-ERR-BS-002], không mở popup từ chối. |
 |  |  |  | TH2 (Lãnh đạo không có quyền): Vi phạm [BR-BS-007], hiển thị [MSG-ERR-BS-004], không mở popup từ chối. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.Y.4. UC-BS-LD.MH03 - Popup Từ chối (Chờ duyệt)**. |
-| 5 | Xem chi tiết/Click dòng dữ liệu | Nút/Row Click | Mở **4.3.2.Y.3. UC-BS-LD.MH02 - Màn hình Chi tiết hồ sơ chờ duyệt**. |
+|  |  |  | TH Hợp lệ: Mở **UC-BS-LD.MH03 - Popup Từ chối (Chờ duyệt)**. |
+| 5 | Xem chi tiết/Click dòng dữ liệu | Nút/Row Click | Mở **UC-BS-LD.MH02 - Chi tiết hồ sơ chờ duyệt**. |
 
 #### 4.3.2.Y.3. UC-BS-LD.MH02 - Màn hình Chi tiết hồ sơ chờ duyệt
 
@@ -136,8 +136,8 @@
 |  |  |  | TH2 (Lãnh đạo không có quyền): Vi phạm [BR-BS-003], hiển thị [MSG-ERR-BS-004], không cho phép duyệt. |
 |  |  |  | TH3 (Hồ sơ gốc không còn ở trạng thái "Hoàn thành" khi kiểm tra lại theo Số đăng ký): Vi phạm [BR-BS-011], hiển thị [MSG-ERR-BS-009], không cho phép duyệt. |
 |  |  |  | TH Hợp lệ: Hệ thống kiểm tra lại hồ sơ gốc còn hiệu lực và duyệt hồ sơ theo quy tắc rẽ nhánh tại [4.3.2.Y.8](#432y8-quy-tac-duyet-ky-so-tu-choi-va-tra-lai). |
-| 3 | Từ chối | Nút | Mở **4.3.2.Y.4. UC-BS-LD.MH03**. |
-| 4 | Quay lại | Nút | Quay về **4.3.2.Y.2. UC-BS-LD.MH01**. |
+| 3 | Từ chối | Nút | Mở **UC-BS-LD.MH03**. |
+| 4 | Quay lại | Nút | Quay về **UC-BS-LD.MH01**. |
 
 #### 4.3.2.Y.4. UC-BS-LD.MH03 - Popup Từ chối (Chờ duyệt)
 
@@ -204,7 +204,7 @@ Hiển thị chung mọi hồ sơ ở trạng thái "Chờ ký", gồm: hồ sơ
 |  |  |  | TH1 (Chưa chọn hồ sơ hợp lệ): Vi phạm [BR-BS-006], hiển thị [MSG-ERR-BS-005], không mở popup ký số. |
 |  |  |  | TH2 (Có hồ sơ không còn ở trạng thái "Chờ ký"): Vi phạm [BR-BS-006], hiển thị [MSG-ERR-BS-002], không cho phép ký hồ sơ không hợp lệ. |
 |  |  |  | TH3 (Lãnh đạo không có quyền ký): Vi phạm [BR-BS-006], hiển thị [MSG-ERR-BS-004], không cho phép ký hồ sơ không hợp lệ. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.Y.6. UC-BS-LD.MH05 - Popup Ký số yêu cầu cung cấp bản sao** và truyền toàn bộ danh sách hồ sơ đã chọn sang popup. |
+|  |  |  | TH Hợp lệ: Mở **UC-BS-LD.MH05 - Popup Ký số yêu cầu cung cấp bản sao** và truyền toàn bộ danh sách hồ sơ đã chọn sang popup. |
 | 4 | Ký duyệt | Nút | Chỉ hiển thị (ẩn hẳn, không phải dạng mờ) đối với hồ sơ Loại "Bản sao giấy" (bất kể Nguồn tiếp nhận là Online hay "Cán bộ nhập liệu"); đối với hồ sơ Loại "Bản sao điện tử", hệ thống hiển thị nút "Ký số" thay thế tại đúng vị trí đó, không hiển thị đồng thời cả 2 nút trên một dòng. Đây vẫn là một hành động ký của Lãnh đạo, nhưng không ký số trên file PDF, không dùng USB Token/chứng thư số — chỉ xác nhận đồng ý cấp bản sao giấy. |
 |  |  |  | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký"): Vi phạm [BR-BS-013], hiển thị [MSG-ERR-BS-002], không cho phép ký duyệt. |
 |  |  |  | TH2 (Lãnh đạo không có quyền): Vi phạm [BR-BS-013], hiển thị [MSG-ERR-BS-004], không cho phép ký duyệt. |
@@ -213,11 +213,11 @@ Hiển thị chung mọi hồ sơ ở trạng thái "Chờ ký", gồm: hồ sơ
 | 5 | Từ chối | Nút | Chỉ khả dụng (không mờ) khi Nguồn tiếp nhận là "Cán bộ nhập liệu". |
 |  |  |  | TH1 (Hồ sơ Online): Vi phạm [BR-BS-007], nút hiển thị mờ. |
 |  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ ký"): Vi phạm [BR-BS-007], hiển thị [MSG-ERR-BS-002], không cho phép từ chối. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.Y.7. UC-BS-LD.MH06 - Popup Từ chối/Trả lại (Chờ ký)** với Loại xử lý mặc định là "Từ chối". |
+|  |  |  | TH Hợp lệ: Mở **UC-BS-LD.MH06 - Popup Từ chối/Trả lại (Chờ ký)** với Loại xử lý mặc định là "Từ chối". |
 | 6 | Trả lại | Nút | Chỉ khả dụng (không mờ) khi Nguồn tiếp nhận là "Cán bộ nhập liệu". |
 |  |  |  | TH1 (Hồ sơ Online): Vi phạm [BR-BS-009], nút hiển thị mờ. |
 |  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ ký"): Vi phạm [BR-BS-009], hiển thị [MSG-ERR-BS-002], không cho phép trả lại. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.Y.7. UC-BS-LD.MH06** với Loại xử lý mặc định là "Trả lại". |
+|  |  |  | TH Hợp lệ: Mở **UC-BS-LD.MH06** với Loại xử lý mặc định là "Trả lại". |
 
 #### 4.3.2.Y.6. UC-BS-LD.MH05 - Popup Ký số yêu cầu cung cấp bản sao
 
@@ -336,6 +336,3 @@ flowchart TD
 | 5 | "Hoàn thành" | Lãnh đạo ký số file bản sao điện tử thành công tại "Chờ ký"; hoặc Cán bộ xác nhận trả kết quả bản sao giấy. | Chỉ xem theo thẩm quyền. |
 | 6 | "Bị từ chối" | Lãnh đạo từ chối hồ sơ Online tại "Chờ duyệt", hoặc hồ sơ giấy tại "Chờ ký". | Chỉ xem chi tiết, lý do từ chối và lịch sử xử lý theo thẩm quyền. |
 | 7 | "Bị trả lại" | Lãnh đạo trả lại hồ sơ giấy tại "Chờ ký" do dữ liệu/hồ sơ gốc/file chưa khớp hồ sơ giấy. | Cán bộ giải quyết sửa dữ liệu và trình lại. |
-
-
-

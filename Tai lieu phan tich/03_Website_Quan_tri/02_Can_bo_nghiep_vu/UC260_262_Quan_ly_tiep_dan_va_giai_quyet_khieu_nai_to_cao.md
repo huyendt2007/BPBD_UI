@@ -1,4 +1,4 @@
-﻿﻿### 4.3.2.11. UC260_to_UC262 - Phân hệ Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo
+### 4.3.2.11. UC260_to_UC262 - Phân hệ Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo
 
 #### 4.3.2.11.1. Tổng quan & Mục đích
 Phân hệ **Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo** số hóa toàn bộ quy trình tiếp nhận, theo dõi, phân công, xử lý và cập nhật kết quả giải quyết các đơn thư khiếu nại, tố cáo, kiến nghị, phản ánh, yêu cầu cung cấp thông tin liên quan đến đăng ký biện pháp bảo đảm (BPBĐ) bằng động sản trực thuộc thẩm quyền của Cục Đăng ký quốc gia giao dịch bảo đảm (NRAST) - Bộ Tư pháp.
@@ -40,17 +40,17 @@ Màn hình cung cấp biểu mẫu nhập thông tin tiếp công dân chia làm
 | **Khối A - Thông tin tiếp nhận hồ sơ** | | | | |
 | Mã hồ sơ tiếp công dân | String(50) | Có | Tự động sinh | - Chỉ đọc.<br>- Định dạng: `TCD-[NĂM]-[THÁNG]-[STT]` (Ví dụ: `TCD-2026-06-0001`). |
 | Ngày tiếp nhận | Date | Có | Ngày hiện tại | - Định dạng: dd/mm/yyyy.<br>- Kiểm tra nhỏ hơn hoặc bằng ngày hiện tại. |
-| Hình thức tiếp nhận | Enum(String(50)) | Có | Trực tiếp tại trụ sở | Control UI: Hộp chọn.<br>- Chọn từ Danh mục hình thức tiếp nhận dùng chung.<br>- Gồm:<br>- Trực tiếp tại trụ sở<br>- Qua bưu điện<br>- Qua email<br>- Qua điện thoại<br>- Khác |
-| Loại vụ việc | Enum(String(50)) | Có | Khiếu nại | Control UI: Hộp chọn.<br>- Chọn từ Danh mục loại vụ việc dùng chung.<br>- Gồm:<br>- Khiếu nại<br>- Tố cáo<br>- Kiến nghị<br>- Phản ánh<br>- Yêu cầu cung cấp thông tin |
+| Hình thức tiếp nhận | Enum(String(50)) | Có | Trực tiếp tại trụ sở | Control UI: Hộp chọn.<br>- Chọn từ Danh mục hình thức tiếp nhận dùng chung.<br>- Gồm:<br>+ Trực tiếp tại trụ sở<br>+ Qua bưu điện<br>+ Qua email<br>+ Qua điện thoại<br>+ Khác |
+| Loại vụ việc | Enum(String(50)) | Có | Khiếu nại | Control UI: Hộp chọn.<br>- Chọn từ Danh mục loại vụ việc dùng chung.<br>- Gồm:<br>+ Khiếu nại<br>+ Tố cáo<br>+ Kiến nghị<br>+ Phản ánh<br>+ Yêu cầu cung cấp thông tin |
 | Cán bộ tiếp nhận | String(100) | Có | Tài khoản đang đăng nhập | - Chỉ đọc.<br>- Họ tên cán bộ tiếp nhận trực tiếp nhập hồ sơ. |
 | Đơn vị tiếp nhận | String(255) | Có | Đơn vị của cán bộ hiện hành | - Chỉ đọc.<br>- Tên cơ quan tiếp nhận hồ sơ. |
 | **Khối B - Thông tin người gửi phản ánh, khiếu nại, tố cáo** | | | | |
-| Loại đối tượng | Enum(String(50)) | Có | Cá nhân | Control UI: Hộp chọn.<br>- Gồm:<br>- Cá nhân<br>- Tổ chức |
+| Loại đối tượng | Enum(String(50)) | Có | Cá nhân | Control UI: Hộp chọn.<br>- Gồm:<br>+ Cá nhân<br>+ Tổ chức |
 | **Nếu chọn đối tượng là: [Cá nhân]** | | | | |
 | Họ và tên công dân | String(255) | Có | Trống | - Nhập đầy đủ họ tên cá nhân gửi đơn thư. |
 | Số CMND/CCCD/Hộ chiếu | String(50) | Có | Trống | - Nhập số giấy tờ định danh của cá nhân.<br>- Nếu là CCCD, kiểm tra đúng 12 chữ số. |
 | Ngày sinh | Date | Có | Trống | - Định dạng: dd/mm/yyyy. Validate nhỏ hơn ngày hiện tại. |
-| Giới tính | Enum(String(50)) | Có | Nam | Control UI: Hộp chọn.<br>- Gồm:<br>- Nam<br>- Nữ<br>- Khác |
+| Giới tính | Enum(String(50)) | Có | Nam | Control UI: Hộp chọn.<br>- Gồm:<br>+ Nam<br>+ Nữ<br>+ Khác |
 | Ngày cấp định danh | Date | Không | Trống | - Định dạng: dd/mm/yyyy. Validate nhỏ hơn ngày hiện tại và lớn hơn Ngày sinh. |
 | **Nếu chọn đối tượng là: [Tổ chức]** | | | | |
 | Tên tổ chức/doanh nghiệp | String(255) | Có | Trống | - Nhập đầy đủ tên pháp nhân gửi đơn thư. |
@@ -62,7 +62,7 @@ Màn hình cung cấp biểu mẫu nhập thông tin tiếp công dân chia làm
 | Email nhận phản hồi | String(100) | Có | Trống | - Nhập email liên hệ.<br>- Validate đúng định dạng email tiêu chuẩn.<br>- Bắt buộc phải nhập để hệ thống gửi thông báo kết quả. |
 | Tỉnh/Thành phố | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Chọn từ Danh mục Tỉnh/Thành phố hành chính `[DM_13]`. |
 | Địa chỉ liên hệ / Thường trú | String(500) | Có | Trống | - Nhập chi tiết địa chỉ liên hệ của chủ thể (số nhà, tên đường, phường/xã, quận/huyện). |
-| Có văn bản ủy quyền hợp pháp của bên liên quan | Boolean | Không | Uncheck | Control UI: Checkbox.<br>- Gồm:<br>- Check (Có ủy quyền)<br>- Uncheck (Không ủy quyền) |
+| Có văn bản ủy quyền hợp pháp của bên liên quan | Boolean | Không | Uncheck | Control UI: Checkbox.<br>- Gồm:<br>+ Check (Có ủy quyền)<br>+ Uncheck (Không ủy quyền) |
 | **Nếu chọn: [Có ủy quyền]** | | | | |
 | Họ tên người được ủy quyền | String(255) | Có | Trống | - Nhập họ tên cá nhân được ủy quyền hợp pháp. |
 | CMND/CCCD người được ủy quyền | String(50) | Có | Trống | - Nhập số giấy tờ định danh của người được ủy quyền. |
@@ -79,19 +79,19 @@ Màn hình cung cấp biểu mẫu nhập thông tin tiếp công dân chia làm
 | Căn cứ pháp lý do công dân nêu | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Ghi nhận các điều khoản luật công dân nêu ra trong đơn. |
 | Yêu cầu cụ thể của công dân | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Nêu rõ yêu cầu cụ thể đề nghị giải quyết. |
 | Tài liệu, tài sản chứng minh đính kèm | File | Không | Trống | Control UI: Upload file.<br>- Hỗ trợ kéo thả hoặc click tải lên nhiều file (Đơn thư gốc, giấy tờ tài sản...).<br>- Chi tiết xem ở bảng Chức năng trên màn hình. |
-| Danh sách tệp đã đính kèm | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh sách tệp đính kèm dưới dạng lưới thẻ card. Đối với từng tệp:<br>- **Xem**: Click nút Xem để mở popup Xem trước (UC260.MH03).<br>- **Xóa**: Click nút Xóa để gỡ bỏ tệp khỏi danh sách. |
+| Danh sách tệp đã đính kèm | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh sách tệp đính kèm dưới dạng lưới thẻ card. Đối với từng tệp:<br>+ **Xem**: Click nút Xem để mở popup Xem trước (UC260.MH03).<br>+ **Xóa**: Click nút Xóa để gỡ bỏ tệp khỏi danh sách. |
 | **Khối D - Phân công, theo dõi giải quyết và cập nhật kết quả** | | | | |
 | Cán bộ được phân công xử lý | Enum(String(50)) | Có | Cán bộ đang đăng nhập | Control UI: Hộp chọn.<br>- Chọn cán bộ phụ trách từ danh sách cán bộ nghiệp vụ NRAST. |
-| Trạng thái xử lý hồ sơ | Enum(String(50)) | Có | Mới tiếp nhận | Control UI: Hộp chọn.<br>- Gồm:<br>- Mới tiếp nhận<br>- Đang xử lý<br>- Chờ bổ sung hồ sơ<br>- Đã trả lời |
-| Thời hạn giải quyết theo luật định | Date | Có | Tự động tính | - Chỉ đọc. Tính dựa trên Loại vụ việc:<br>- Khiếu nại, Tố cáo = Ngày tiếp nhận + 30 ngày<br>- Kiến nghị, Phản ánh = Ngày tiếp nhận + 20 ngày<br>- Yêu cầu cung cấp thông tin = Ngày tiếp nhận + 10 ngày |
-| Phân loại nội dung xử lý | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm:<br>- Thuộc thẩm quyền giải quyết<br>- Chuyển cơ quan có thẩm quyền khác<br>- Không đủ điều kiện thụ lý (Trả hồ sơ) |
+| Trạng thái xử lý hồ sơ | Enum(String(50)) | Có | Mới tiếp nhận | Control UI: Hộp chọn.<br>- Gồm:<br>+ Mới tiếp nhận<br>+ Đang xử lý<br>+ Chờ bổ sung hồ sơ<br>+ Đã trả lời |
+| Thời hạn giải quyết theo luật định | Date | Có | Tự động tính | - Chỉ đọc. Tính dựa trên Loại vụ việc:<br>+ Khiếu nại, Tố cáo = Ngày tiếp nhận + 30 ngày<br>+ Kiến nghị, Phản ánh = Ngày tiếp nhận + 20 ngày<br>+ Yêu cầu cung cấp thông tin = Ngày tiếp nhận + 10 ngày |
+| Phân loại nội dung xử lý | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm:<br>+ Thuộc thẩm quyền giải quyết<br>+ Chuyển cơ quan có thẩm quyền khác<br>- Không đủ điều kiện thụ lý (Trả hồ sơ) |
 | **Nếu chọn phân loại là: [Thuộc thẩm quyền giải quyết] & Trạng thái: [Đã trả lời]** | | | | |
-| Kết luận giải quyết | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm:<br>- Chấp nhận toàn bộ<br>- Chấp nhận một phần<br>- Bác đơn phản ánh<br>- Đình chỉ giải quyết |
+| Kết luận giải quyết | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm:<br>+ Chấp nhận toàn bộ<br>+ Chấp nhận một phần<br>+ Bác đơn phản ánh<br>+ Đình chỉ giải quyết |
 | Số văn bản kết quả | String(50) | Có | Trống | - Nhập số hiệu văn bản quyết định giải quyết được ban hành. |
 | Ngày ban hành kết quả | Date | Có | Ngày hiện tại | - Ngày ký ban hành quyết định giải quyết chính thức. Validate nhỏ hơn hoặc bằng ngày hiện tại. |
 | Tóm tắt kết luận trả lời công dân | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Nhập tóm tắt nội dung xử lý để gửi phản hồi cho người dân. |
 | Tải lên Quyết định giải quyết chính thức | File | Có | Trống | Control UI: Upload file.<br>- Tải lên tệp quét quyết định giải quyết đã ký số (.pdf, tối đa 20MB). |
-| Hình thức gửi kết quả | Boolean | Có | Email | Control UI: Checkbox.<br>- Gồm:<br>- Email (Mặc định check)<br>- Bản giấy |
+| Hình thức gửi kết quả | Boolean | Có | Email | Control UI: Checkbox.<br>- Gồm:<br>+ Email (Mặc định check)<br>+ Bản giấy |
 | **Nếu chọn phân loại là: [Chuyển cơ quan có thẩm quyền khác]** | | | | |
 | Cơ quan được chuyển đến | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Chọn cơ quan từ danh sách đơn vị liên kết (Sở Tư pháp TP Hà Nội, Văn phòng Đăng ký Đất đai, Thanh tra Bộ Tư pháp). |
 | Số văn bản chuyển đơn | String(50) | Có | Trống | - Nhập số hiệu công văn chuyển đơn gửi cơ quan bạn. |
@@ -101,10 +101,10 @@ Màn hình cung cấp biểu mẫu nhập thông tin tiếp công dân chia làm
 | Đính kèm Văn bản từ chối thụ lý (.pdf) | File | Có | Trống | Control UI: Upload file.<br>- Tải lên tệp văn bản thông báo trả hồ sơ/từ chối thụ lý (tối đa 20MB). |
 | **Nếu chọn Trạng thái: [Chờ bổ sung hồ sơ]** | | | | |
 | Nội dung yêu cầu bổ sung chi tiết | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Liệt kê chi tiết danh mục hồ sơ còn thiếu hoặc không hợp lệ. |
-| Hình thức thông báo yêu cầu bổ sung | Boolean | Có | Gửi Email tự động cho người dân | Control UI: Checkbox.<br>- Gồm:<br>- Gửi Email tự động cho người dân (Mặc định check)<br>- In Phiếu yêu cầu bổ sung hồ sơ (Bản giấy) |
+| Hình thức thông báo yêu cầu bổ sung | Boolean | Có | Gửi Email tự động cho người dân | Control UI: Checkbox.<br>- Gồm:<br>+ Gửi Email tự động cho người dân (Mặc định check)<br>+ In Phiếu yêu cầu bổ sung hồ sơ (Bản giấy) |
 | **Thông tin nội bộ** | | | | |
 | Ghi chú nội bộ cơ quan | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Chỉ hiển thị cho cán bộ, ẩn hoàn toàn với người dân. |
-| Bảo mật thông tin danh tính người tố cáo | Boolean | Không | Uncheck | Control UI: Checkbox.<br>- Chỉ hiển thị khi Loại vụ việc = "Tố cáo".<br>- Gồm:<br>- Check (Bảo vệ thông tin người tố cáo)<br>- Uncheck (Không bảo vệ thông tin) |
+| Bảo mật thông tin danh tính người tố cáo | Boolean | Không | Uncheck | Control UI: Checkbox.<br>- Chỉ hiển thị khi Loại vụ việc = "Tố cáo".<br>- Gồm:<br>+ Check (Bảo vệ thông tin người tố cáo)<br>+ Uncheck (Không bảo vệ thông tin) |
 
 ###### Chức năng trên màn hình:
 | STT | Tên chức năng | Định dạng | Mô tả |
@@ -165,14 +165,14 @@ Màn hình cung cấp giao diện lọc tìm kiếm collapsible phía trên và 
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
 | Mã hồ sơ tiếp công dân | String(50) | Không | Trống | - Nhập mã hồ sơ tiếp công dân cần tìm (tìm gần đúng). |
-| Loại vụ việc | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Chọn lọc theo phân loại vụ việc.<br>- Gồm:<br>- Tất cả<br>- Khiếu nại<br>- Tố cáo<br>- Kiến nghị<br>- Phản ánh<br>- Yêu cầu cung cấp thông tin |
-| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Chọn lọc theo trạng thái hồ sơ.<br>- Gồm:<br>- Tất cả<br>- Mới tiếp nhận<br>- Đang xử lý<br>- Chờ bổ sung hồ sơ<br>- Đã trả lời<br>- Đã chuyển đơn<br>- Không thụ lý |
+| Loại vụ việc | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Chọn lọc theo phân loại vụ việc.<br>- Gồm:<br>+ Tất cả<br>+ Khiếu nại<br>+ Tố cáo<br>+ Kiến nghị<br>+ Phản ánh<br>+ Yêu cầu cung cấp thông tin |
+| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Chọn lọc theo trạng thái hồ sơ.<br>- Gồm:<br>+ Tất cả<br>+ Mới tiếp nhận<br>+ Đang xử lý<br>+ Chờ bổ sung hồ sơ<br>+ Đã trả lời<br>+ Đã chuyển đơn<br>- Không thụ lý |
 | Họ tên/Tên tổ chức gửi đơn | String(255) | Không | Trống | - Nhập tên cá nhân hoặc tên tổ chức gửi đơn cần tìm (tìm gần đúng). |
 | Số định danh (CCCD/MST/Hộ chiếu) | String(50) | Không | Trống | - Nhập số giấy tờ định danh (tìm gần đúng). |
 | Số đăng ký BPBĐ liên quan | String(50) | Không | Trống | - Nhập số đăng ký biện pháp bảo đảm liên quan cần tìm (tìm chính xác). |
 | Ngày tiếp nhận: Từ ngày | Date | Không | Trống | - Lọc khoảng thời gian tiếp nhận. Định dạng: dd/mm/yyyy. Ràng buộc: Nhỏ hơn hoặc bằng Đến ngày. |
 | Ngày tiếp nhận: Đến ngày | Date | Không | Trống | - Lọc khoảng thời gian tiếp nhận. Định dạng: dd/mm/yyyy. Ràng buộc: Lớn hơn hoặc bằng Từ ngày. |
-| Quá hạn xử lý | Boolean | Không | Uncheck | Control UI: Checkbox.<br>- Gồm:<br>- Check: Chỉ hiển thị các hồ sơ quá hạn xử lý và chưa hoàn thành giải quyết.<br>- Uncheck: Hiển thị cả hồ sơ đúng hạn và quá hạn. |
+| Quá hạn xử lý | Boolean | Không | Uncheck | Control UI: Checkbox.<br>- Gồm:<br>+ Check: Chỉ hiển thị các hồ sơ quá hạn xử lý và chưa hoàn thành giải quyết.<br>+ Uncheck: Hiển thị cả hồ sơ đúng hạn và quá hạn. |
 | **II. Bảng danh sách kết quả** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh sách kết quả tìm kiếm dưới dạng bảng biểu.<br>- Phân trang mặc định **20 bản ghi/trang**.<br>- Sắp xếp mặc định: Ngày tiếp nhận giảm dần.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | Integer(10) | - | - | - Căn giữa.<br>- Số thứ tự dòng trên lưới. |
 | Cột: Mã hồ sơ | String(50) | - | - | - Mã hồ sơ tiếp công dân. Hiển thị dạng đường liên kết (Link). Khi click vào sẽ mở màn hình Chỉnh sửa (UC260.MH01) hoặc màn hình Xem chi tiết (UC260.MH02) tùy theo trạng thái hồ sơ đã khóa hay chưa. |
@@ -184,7 +184,7 @@ Màn hình cung cấp giao diện lọc tìm kiếm collapsible phía trên và 
 | Cột: Trạng thái | String(50) | - | - | - Hiển thị badge trạng thái hồ sơ theo màu sắc dùng chung. |
 | Cột: Hạn xử lý | Date | - | - | - Hiển thị ngày hạn giải quyết. Ràng buộc:<br>\- Tô màu đỏ và in đậm kèm icon cảnh báo `⚠` nếu hồ sơ đã quá hạn giải quyết thực tế mà chưa hoàn thành giải quyết.<br>\- Tô màu cam kèm icon đồng hồ `🕒` nếu hồ sơ sắp đến hạn giải quyết (thời gian còn lại `<= 5 ngày`). |
 | Cột: Cán bộ xử lý | String(100) | - | - | - Họ tên cán bộ đang phụ trách xử lý hồ sơ. |
-| Cột: Thao tác | String(255) | - | - | - Căn giữa. Gồm các tác vụ con:<br>- **Xem chi tiết** (row click): Mở màn hình Xem chi tiết hồ sơ dạng chỉ đọc (UC260.MH02). Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>- **Chỉnh sửa** (icon Bút): Chỉ hiển thị khi hồ sơ chưa khóa (chưa giải quyết). Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>- **Xóa** (icon Rác): Chỉ hiển thị khi hồ sơ chưa khóa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
+| Cột: Thao tác | String(255) | - | - | - Căn giữa. Gồm các tác vụ con:<br>+ **Xem chi tiết** (row click): Mở màn hình Xem chi tiết hồ sơ dạng chỉ đọc (UC260.MH02). Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>+ **Chỉnh sửa** (icon Bút): Chỉ hiển thị khi hồ sơ chưa khóa (chưa giải quyết). Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>+ **Xóa** (icon Rác): Chỉ hiển thị khi hồ sơ chưa khóa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ###### Chức năng trên màn hình:
 | STT | Tên chức năng | Định dạng | Mô tả |

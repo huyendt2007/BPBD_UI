@@ -1,4 +1,4 @@
-﻿﻿# SRS - Hồ sơ chờ nhập liệu
+# SRS - Hồ sơ chờ nhập liệu
 
 ## 1. Tổng quan
 
@@ -105,7 +105,7 @@ flowchart TD
 | Người yêu cầu | String(255) | Không | Trống | Tìm kiếm gần đúng, không phân biệt hoa/thường. |
 | Người nộp hồ sơ | String(255) | Không | Trống | Tìm kiếm gần đúng, không phân biệt hoa/thường. |
 | Loại yêu cầu | Enum(String(100)) | Không | Tất cả | Lọc theo Loại yêu cầu hồ sơ giấy đã tiếp nhận. |
-| Trạng thái lệ phí | Enum(String(50)) | Không | Tất cả | Giá trị gồm:<br>- "Tất cả"<br>- "Đã thu"<br>- "Miễn phí" |
+| Trạng thái lệ phí | Enum(String(50)) | Không | Tất cả | Giá trị gồm:<br>+ "Tất cả"<br>+ "Đã thu"<br>+ "Miễn phí" |
 | Cán bộ tiếp nhận | String(255) | Không | Trống | Lọc theo Cán bộ tiếp nhận hồ sơ giấy. |
 | Từ ngày tiếp nhận | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm tiếp nhận. Tuân thủ [BR-VAL-007]. |
 | Đến ngày tiếp nhận | Date | Không | Ngày hiện tại | Lọc theo Thời điểm tiếp nhận. Tuân thủ [BR-VAL-007]. |
@@ -150,7 +150,7 @@ flowchart TD
 | Mã hồ sơ | String(50) | Có | Theo UCPS012 | Chỉ đọc. |
 | Số đơn giấy | String(50) | Có | Theo UCPS012 | Chỉ đọc. |
 | Nguồn tiếp nhận | Enum(String(50)) | Có | "Cán bộ nhập liệu" | Chỉ đọc. |
-| Kênh tiếp nhận | Enum(String(50)) | Có | Theo UCPS012 | Giá trị gồm:<br>- "Trực tiếp tại quầy"<br>- "Bưu điện"<br>- "Fax"<br>- "Email" |
+| Kênh tiếp nhận | Enum(String(50)) | Có | Theo UCPS012 | Giá trị gồm:<br>+ "Trực tiếp tại quầy"<br>+ "Bưu điện"<br>+ "Fax"<br>+ "Email" |
 | Thời điểm tiếp nhận | Datetime | Có | Theo UCPS012 | Chỉ đọc. |
 | Đơn vị tiếp nhận | String(255) | Có | Theo UCPS012 | Chỉ đọc. |
 | Cán bộ tiếp nhận | String(255) | Có | Theo UCPS012 | Chỉ đọc. |
@@ -165,7 +165,7 @@ flowchart TD
 | **II. Thông tin thu phí và tài liệu liên quan** | | | | |
 | Khối Thông tin thu phí | Text(1000) | Có | Mở rộng | Toàn bộ dữ liệu chỉ đọc, lấy từ UCPS013. |
 | Mã khoản phải thu | String(50) | Có | Theo UCPS013 | Chỉ đọc. |
-| Trạng thái lệ phí | Enum(String(50)) | Có | Theo UCPS013 | Chỉ đọc. Giá trị hợp lệ để tạo hồ sơ là:<br>- "Đã thu"<br>- "Miễn phí" |
+| Trạng thái lệ phí | Enum(String(50)) | Có | Theo UCPS013 | Chỉ đọc. Giá trị hợp lệ để tạo hồ sơ là:<br>+ "Đã thu"<br>+ "Miễn phí" |
 | Hình thức thu phí | Enum(String(50)) | Không | Theo UCPS013 | Chỉ đọc. |
 | Số tiền phải thu | Decimal(18,0) | Có | Theo UCPS013 | Chỉ đọc. |
 | Số tiền đã thu | Decimal(18,0) | Có | Theo UCPS013 | Chỉ đọc. |
@@ -213,4 +213,3 @@ Thông tin nhật ký tối thiểu gồm: Mã hồ sơ, Số đơn giấy, Lo�
 | AC-UCPS014-003 | Toàn bộ dữ liệu trên màn Xem chi tiết hồ sơ chờ nhập liệu ở trạng thái chỉ đọc. |
 | AC-UCPS014-004 | Khi chọn Tạo hồ sơ, hệ thống mở đúng SRS nhập liệu nghiệp vụ theo Loại yêu cầu. |
 | AC-UCPS014-005 | Tài liệu này không mô tả màn nhập liệu chi tiết của CCTT hoặc bản sao; hai nghiệp vụ đó được mô tả tại SRS riêng tương ứng. |
-

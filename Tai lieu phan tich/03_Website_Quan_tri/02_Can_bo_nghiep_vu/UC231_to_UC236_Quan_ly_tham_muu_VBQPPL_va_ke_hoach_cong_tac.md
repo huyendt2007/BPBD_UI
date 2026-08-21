@@ -1,4 +1,4 @@
-﻿﻿### 4.3.2.10. UC231_to_UC236 - Phân hệ Quản lý tham mưu VBQPPL và Chương trình, kế hoạch công tác
+### 4.3.2.10. UC231_to_UC236 - Phân hệ Quản lý tham mưu VBQPPL và Chương trình, kế hoạch công tác
 
 #### 4.3.2.10.1. Tổng quan & Mục đích
 Phân hệ **Quản lý tham mưu VBQPPL và Chương trình, kế hoạch công tác** được thiết kế dành riêng cho Cán bộ nghiệp vụ và Lãnh đạo thuộc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước - Bộ Tư pháp. Phân hệ này số hóa toàn bộ quy trình lập hồ sơ, theo dõi và báo cáo tình hình tham mưu xây dựng văn bản quy phạm pháp luật (VBQPPL), chương trình, kế hoạch công tác năm/quý/tháng, cũng như công tác rà soát, hệ thống hóa, hợp nhất văn bản quy phạm pháp luật và pháp điển hệ thống QPPL thuộc lĩnh vực Cục quản lý.
@@ -50,7 +50,7 @@ Màn hình cung cấp biểu mẫu nhập dữ liệu trực quan để khởi t
 | Mã hồ sơ tham mưu | String(30) | Có | Tự động sinh | - Trạng thái: Chỉ đọc.<br>- Định dạng: `TM-VB-[NĂM]-[STT]` (Ví dụ: `TM-VB-2026-0001`). |
 | Tên văn bản/dự thảo | String(500) | Có | Trống | - Nhập tên đầy đủ của dự thảo văn bản quy phạm pháp luật cần tham mưu. |
 | Loại văn bản | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Chọn từ Danh mục dùng chung - Loại văn bản quy phạm pháp luật `[DM_LOAI_VBQPPL]` (Luật, Nghị định, Thông tư, Quyết định, Nghị quyết...). |
-| Vai trò của Cục | Enum(String(50)) | Có | Chủ trì soạn thảo | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Chủ trì soạn thảo<br>- Phối hợp soạn thảo |
+| Vai trò của Cục | Enum(String(50)) | Có | Chủ trì soạn thảo | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Chủ trì soạn thảo<br>+ Phối hợp soạn thảo |
 | Đơn vị chủ trì soạn thảo | Enum(String(100)) | Có | Lựa chọn đơn vị soạn thảo | Control UI: Hộp chọn.<br>- Mặc định hiển thị giá trị "Lựa chọn đơn vị soạn thảo".<br>- Cho phép chọn từ Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`. |
 | Đơn vị phối hợp | Enum(String(100)) | Không | Trống | Control UI: Hộp chọn.<br>- Cho phép chọn một hoặc nhiều đơn vị phối hợp.<br>- Dạng Dropdown các đơn vị nội bộ trên hệ thống `[DM_DON_VI]`. |
 | **II. Quản lý tiến độ** | | | | |
@@ -58,7 +58,7 @@ Màn hình cung cấp biểu mẫu nhập dữ liệu trực quan để khởi t
 | Ngày bắt đầu thực hiện | Date | Có | Ngày hiện tại | - Ngày chính thức đưa dự thảo vào chương trình xây dựng văn bản. |
 | Ngày hoàn thành dự kiến | Date | Có | Trống | - Hạn định trình dự thảo lên cấp thẩm quyền. Phải lớn hơn hoặc bằng Ngày bắt đầu thực hiện. |
 | Ngày ban hành thực tế | Date | Không | Trống | - Chỉ cho phép nhập khi trạng thái hồ sơ chuyển sang "Đã ban hành". Phải lớn hơn hoặc bằng Ngày bắt đầu thực hiện. |
-| Trạng thái tiến độ | Enum(String(50)) | Có | Đang soạn thảo | Control UI: Hộp chọn.<br>- Gồm các trạng thái:<br>- Đang soạn thảo<br>- Đang lấy ý kiến<br>- Đang thẩm định<br>- Đang trình ký<br>- Đã ban hành<br>- Tạm dừng/Hủy bỏ. |
+| Trạng thái tiến độ | Enum(String(50)) | Có | Đang soạn thảo | Control UI: Hộp chọn.<br>- Gồm các trạng thái:<br>+ Đang soạn thảo<br>+ Đang lấy ý kiến<br>+ Đang thẩm định<br>+ Đang trình ký<br>+ Đã ban hành<br>+ Tạm dừng/Hủy bỏ. |
 | **III. Tệp tài liệu đính kèm**| | | | |
 | Danh sách tệp đính kèm | File | Không | Trống | Control UI: Upload file.<br>- Cho phép upload nhiều file liên quan (Tờ trình, Dự thảo văn bản, Bản tổng hợp ý kiến, Báo cáo thẩm định...). Dung lượng tối đa: 25MB/file.<br>- **Xem file**: Chỉ hiển thị cạnh tên file sau khi tệp tin đã được tải lên thành công. Cho phép mở xem tệp tin trong tab mới.<br>- **Xóa**: Chỉ hiển thị cạnh tên file sau khi tệp tin đã được tải lên thành công. Cho phép gỡ bỏ tệp tin khỏi danh sách đính kèm. |
 | Ghi chú hồ sơ | String(1000) | Không | Trống | - Các ghi chú đặc biệt về tiến độ hoặc khó khăn vướng mắc. |
@@ -93,7 +93,7 @@ Màn hình cho phép Cán bộ nghiệp vụ điều chỉnh thông tin hồ sơ
 | Mã hồ sơ tham mưu | String(30) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | - Trạng thái: Chỉ đọc. |
 | Tên văn bản/dự thảo | String(500) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Nhập tên đầy đủ của dự thảo văn bản quy phạm pháp luật cần tham mưu. |
 | Loại văn bản | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Chọn từ Danh mục dùng chung - Loại văn bản quy phạm pháp luật `[DM_LOAI_VBQPPL]`. |
-| Vai trò của Cục | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Gồm các giá trị:<br>- Chủ trì soạn thảo<br>- Phối hợp soạn thảo |
+| Vai trò của Cục | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Gồm các giá trị:<br>+ Chủ trì soạn thảo<br>+ Phối hợp soạn thảo |
 | Đơn vị chủ trì soạn thảo | Enum(String(100)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Cho phép chọn từ Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`. |
 | Đơn vị phối hợp | Enum(String(100)) | Không | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Dạng Dropdown các đơn vị nội bộ trên hệ thống `[DM_DON_VI]`. |
 | **II. Quản lý tiến độ** | | | | |
@@ -101,7 +101,7 @@ Màn hình cho phép Cán bộ nghiệp vụ điều chỉnh thông tin hồ sơ
 | Ngày bắt đầu thực hiện | Date | Có | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Ngày chính thức đưa dự thảo vào chương trình xây dựng văn bản. |
 | Ngày hoàn thành dự kiến | Date | Có | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Hạn định trình dự thảo lên cấp thẩm quyền. Phải lớn hơn hoặc bằng Ngày bắt đầu thực hiện. |
 | Ngày ban hành thực tế | Date | Không | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Chỉ cho phép nhập khi trạng thái hồ sơ chuyển sang "Đã ban hành". Phải lớn hơn hoặc bằng Ngày bắt đầu thực hiện. |
-| Trạng thái tiến độ | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Gồm các trạng thái:<br>- Đang soạn thảo<br>- Đang lấy ý kiến<br>- Đang thẩm định<br>- Đang trình ký<br>- Đã ban hành<br>- Tạm dừng/Hủy bỏ. |
+| Trạng thái tiến độ | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Gồm các trạng thái:<br>+ Đang soạn thảo<br>+ Đang lấy ý kiến<br>+ Đang thẩm định<br>+ Đang trình ký<br>+ Đã ban hành<br>+ Tạm dừng/Hủy bỏ. |
 | **III. Tệp tài liệu đính kèm**| | | | |
 | Danh sách tệp đính kèm | File | Không | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Upload file.<br>- Cho phép upload nhiều file liên quan (Tờ trình, Dự thảo văn bản, Bản tổng hợp ý kiến, Báo cáo thẩm định...). Dung lượng tối đa: 25MB/file.<br>- **Xem file**: Chỉ hiển thị cạnh tên file sau khi tệp tin đã được tải lên thành công. Cho phép mở xem tệp tin trong tab mới.<br>- **Xóa**: Chỉ hiển thị cạnh tên file sau khi tệp tin đã được tải lên thành công. Cho phép gỡ bỏ tệp tin khỏi danh sách đính kèm. |
 | Ghi chú hồ sơ | String(1000) | Không | Lấy theo dữ liệu hiện tại của hồ sơ | - Các ghi chú đặc biệt về tiến độ hoặc khó khăn vướng mắc. |
@@ -208,7 +208,7 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo thực hiện tìm kiếm, th
 | Bộ lọc Trạng thái tiến độ| Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo tình trạng tiến độ (Đang soạn thảo, Đang lấy ý kiến, Đang thẩm định, Đang trình ký, Đã ban hành, Tạm dừng/Hủy bỏ). |
 | Người phụ trách | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo Cán bộ tham mưu phụ trách. |
 | Khoảng thời gian bắt đầu | Date | Không | Trống | - Lọc hồ sơ có Ngày bắt đầu thực hiện trong khoảng "Từ ngày" đến "Đến ngày". |
-| **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 3 khối thống kê nhanh:<br>- 1. Tổng số dự thảo<br>- 2. Số dự thảo đang soạn thảo<br>- 3. Số dự thảo đã ban hành. |
+| **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 3 khối thống kê nhanh:<br>+ 1. Tổng số dự thảo<br>+ 2. Số dự thảo đang soạn thảo<br>+ 3. Số dự thảo đã ban hành. |
 | **III. Bảng danh sách kết quả**| - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Phân trang mặc định **10 bản ghi/trang** (cho phép chọn 10, 20, 50, 100). Hỗ trợ sắp xếp động theo tiêu đề cột.<br>- Click tên văn bản để mở Form xem/chỉnh sửa chi tiết.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | Integer(10) | - | - | - Số thứ tự dòng. |
 | Cột: Mã hồ sơ | String(30) | - | - | - Mã hồ sơ tham mưu (Ví dụ: `TM-VB-2026-0001`). |
@@ -221,7 +221,7 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo thực hiện tìm kiếm, th
 | Cột: Ngày bắt đầu thực hiện | Date | - | - | - Ngày bắt đầu thực hiện xây dựng văn bản. |
 | Cột: Ngày hoàn thành dự kiến | Date | - | - | - Ngày hoàn thành dự kiến trình. |
 | Cột: Ngày ban hành thực tế | Date | - | - | - Ngày ban hành thực tế (nếu có). |
-| Cột: Thao tác | String(255) | - | - | - Gồm các tác vụ con:<br>- **Xem**: Biểu tượng Xem chi tiết. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>- **Cập nhật**: Biểu tượng Sửa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>- **Xóa**: Biểu tượng Xóa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
+| Cột: Thao tác | String(255) | - | - | - Gồm các tác vụ con:<br>+ **Xem**: Biểu tượng Xem chi tiết. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>+ **Cập nhật**: Biểu tượng Sửa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>+ **Xóa**: Biểu tượng Xóa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ###### Chức năng trên màn hình:
 | STT | Tên chức năng | Định dạng | Mô tả |
@@ -280,7 +280,7 @@ Màn hình cung cấp biểu mẫu nhập dữ liệu để khởi tạo một k
 | Hạn hoàn thành | Date | Có | Trống | - Hạn định báo cáo kết quả hoàn thành chương trình/kế hoạch. Phải lớn hơn hoặc bằng Ngày bắt đầu triển khai. |
 | Tỉ lệ hoàn thành (%) | String(255) | Có | 0 | - Số nguyên từ 0 đến 100 biểu diễn tỷ lệ hoàn thành công việc. |
 | Ngày thực tế hoàn thành | Date | Không | Trống | - Chỉ cho phép nhập khi trạng thái là "Đã hoàn thành". Phải lớn hơn hoặc bằng Ngày bắt đầu triển khai. |
-| Trạng thái | Enum(String(50)) | Có | Chưa thực hiện | Control UI: Hộp chọn.<br>- Gồm các trạng thái:<br>- Chưa thực hiện<br>- Đang triển khai<br>- Đã hoàn thành<br>- Tạm dừng/Hủy bỏ. |
+| Trạng thái | Enum(String(50)) | Có | Chưa thực hiện | Control UI: Hộp chọn.<br>- Gồm các trạng thái:<br>+ Chưa thực hiện<br>+ Đang triển khai<br>+ Đã hoàn thành<br>+ Tạm dừng/Hủy bỏ. |
 | **III. Tài liệu đính kèm** | | | | |
 | Tài liệu đính kèm | File | Không | Trống | Control UI: Upload file.<br>- Cho phép upload nhiều file liên quan (Quyết định ban hành, Kế hoạch chi tiết, Đề án...). Dung lượng tối đa: 25MB/file.<br>- **Xem file**: Chỉ hiển thị cạnh tên file sau khi đã tải lên thành công. Cho phép xem file trong tab mới.<br>- **Xóa**: Chỉ hiển thị cạnh tên file sau khi đã tải lên thành công. Cho phép gỡ bỏ file. |
 
@@ -325,7 +325,7 @@ Màn hình cho phép Cán bộ nghiệp vụ điều chỉnh tiến độ, nội
 | Hạn hoàn thành | Date | Có | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Hạn định báo cáo kết quả hoàn thành chương trình/kế hoạch. Phải lớn hơn hoặc bằng Ngày bắt đầu triển khai. |
 | Tỉ lệ hoàn thành (%) | String(255) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Số nguyên từ 0 đến 100 biểu diễn tỷ lệ hoàn thành công việc. |
 | Ngày thực tế hoàn thành | Date | Không | Lấy theo dữ liệu hiện tại của hồ sơ | - Cho phép chỉnh sửa. Chỉ cho phép nhập khi trạng thái là "Đã hoàn thành". Phải lớn hơn hoặc bằng Ngày bắt đầu triển khai. |
-| Trạng thái | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Gồm các trạng thái:<br>- Chưa thực hiện<br>- Đang triển khai<br>- Đã hoàn thành<br>- Tạm dừng/Hủy bỏ. |
+| Trạng thái | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. Gồm các trạng thái:<br>+ Chưa thực hiện<br>+ Đang triển khai<br>+ Đã hoàn thành<br>+ Tạm dừng/Hủy bỏ. |
 | **III. Tài liệu đính kèm** | | | | |
 | Tài liệu đính kèm | File | Không | Lấy theo dữ liệu hiện tại của hồ sơ | Control UI: Upload file.<br>- Cho phép upload nhiều file liên quan (Quyết định ban hành, Kế hoạch chi tiết, Đề án...). Dung lượng tối đa: 25MB/file.<br>- **Xem file**: Chỉ hiển thị cạnh tên file sau khi đã tải lên thành công. Cho phép xem file trong tab mới.<br>- **Xóa**: Chỉ hiển thị cạnh tên file sau khi đã tải lên thành công. Cho phép gỡ bỏ file. |
 
@@ -430,7 +430,7 @@ Cho phép cán bộ nghiệp vụ theo dõi tiến độ hoàn thành các mốc
 | Trạng thái thực hiện | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo Đang triển khai, Hoàn thành, Trễ hạn... |
 | Đơn vị chủ trì | Enum(String(100)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo Phòng ban chủ trì thực hiện. |
 | Năm thực hiện | Enum(String(50)) | Có | Năm hiện tại | Control UI: Hộp chọn.<br>- Lọc các kế hoạch thuộc năm cụ thể. |
-| **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 3 khối thống kê nhanh:<br>- 1. Tổng số kế hoạch<br>- 2. Số kế hoạch đang triển khai<br>- 3. Số kế hoạch đã hoàn thành. |
+| **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 3 khối thống kê nhanh:<br>+ 1. Tổng số kế hoạch<br>+ 2. Số kế hoạch đang triển khai<br>+ 3. Số kế hoạch đã hoàn thành. |
 | **III. Bảng danh sách kết quả**| - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị danh mục kế hoạch kèm thanh tiến độ trực quan (Progress Bar). Phân trang mặc định **10 bản ghi/trang** (cho phép chọn 10, 20, 50, 100). Hỗ trợ sắp xếp động theo tiêu đề cột.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: STT | Integer(10) | - | - | - Số thứ tự dòng. |
 | Cột: Mã chương trình/KH | String(30) | - | - | - Mã định danh kế hoạch (Ví dụ: `KH-CT-2026-0001`). |
@@ -443,7 +443,7 @@ Cho phép cán bộ nghiệp vụ theo dõi tiến độ hoàn thành các mốc
 | Cột: Hạn hoàn thành | Date | - | - | - Hạn chót hoàn thành kế hoạch. |
 | Cột: Tỷ lệ (%) | String(255) | - | - | - Hiển thị biểu đồ thanh ngang phần trăm (%) hoàn thành (ví dụ: 80%). |
 | Cột: Trạng thái | String(50) | - | - | - Nhãn màu tương ứng (Hoàn thành, Đang triển khai, Chưa thực hiện). |
-| Cột: Thao tác | String(255) | - | - | - Gồm các tác vụ con:<br>- **Xem**: Biểu tượng Xem chi tiết. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>- **Cập nhật**: Biểu tượng Sửa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>- **Xóa**: Biểu tượng Xóa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
+| Cột: Thao tác | String(255) | - | - | - Gồm các tác vụ con:<br>+ **Xem**: Biểu tượng Xem chi tiết. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>+ **Cập nhật**: Biểu tượng Sửa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình.<br>+ **Xóa**: Biểu tượng Xóa. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ###### Chức năng trên màn hình:
 | STT | Tên chức năng | Định dạng | Mô tả |
@@ -494,8 +494,8 @@ Cho phép Cán bộ nghiệp vụ lập mới hồ sơ, cập nhật tiến đ�
 | **Bước 1: Định danh hồ sơ** | | | | |
 | Số hiệu hồ sơ | String(30) | Có | Tự động sinh | - Chỉ đọc.<br>- Định dạng: `HS-[NĂM]-[STT]` (Ví dụ: `HS-2026-0001`). |
 | Ngày lập hồ sơ | Date | Có | Ngày hiện tại | - Chỉ đọc.<br>- Lưu trữ thời gian khởi tạo hồ sơ. |
-| Loại tham mưu | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Rà soát<br>- Hệ thống hóa<br>- Hợp nhất<br>- Pháp điển. |
-| Lĩnh vực pháp luật | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Giao dịch bảo đảm<br>- Bồi thường nhà nước<br>- Hộ tịch<br>- Thi hành án dân sự<br>- Khác. |
+| Loại tham mưu | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Rà soát<br>+ Hệ thống hóa<br>+ Hợp nhất<br>+ Pháp điển. |
+| Lĩnh vực pháp luật | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Giao dịch bảo đảm<br>+ Bồi thường nhà nước<br>+ Hộ tịch<br>+ Thi hành án dân sự<br>+ Khác. |
 | Năm thực hiện | String(255) | Có | Năm hiện tại | - Nhập năm thực hiện công việc (Ví dụ: 2026). |
 | Số/Kế hoạch căn cứ thực hiện | String(100) | Không | Trống | - Nhập số hiệu hoặc tên kế hoạch làm căn cứ thực hiện. |
 | Đơn vị chủ trì | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Chọn từ Danh mục đơn vị trên hệ thống `[DM_DON_VI]`. |
@@ -509,29 +509,29 @@ Cho phép Cán bộ nghiệp vụ lập mới hồ sơ, cập nhật tiến đ�
 | Ngày ban hành | Date | Có | Trống | - Nhập ngày ban hành. Validate nhỏ hơn hoặc bằng ngày hiện tại. |
 | Ngày có hiệu lực | Date | Có | Trống | - Nhập ngày có hiệu lực. |
 | Ngày hết hiệu lực | Date | Không | Trống | - Nhập ngày hết hiệu lực (nếu có). Validate lớn hơn hoặc bằng Ngày có hiệu lực. |
-| Hiệu lực hiện tại | Enum(String(50)) | Có | Còn hiệu lực | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Còn hiệu lực<br>- Hết hiệu lực<br>- Hết hiệu lực một phần. |
+| Hiệu lực hiện tại | Enum(String(50)) | Có | Còn hiệu lực | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Còn hiệu lực<br>+ Hết hiệu lực<br>+ Hết hiệu lực một phần. |
 | Văn bản thay thế/sửa đổi liên quan | String(500) | Không | Trống | - Nhập số hiệu văn bản thay thế hoặc sửa đổi liên quan nếu có. |
 | Tóm tắt nội dung văn bản | String(2000) | Không | Trống | - Nhập tóm tắt nội dung chính của văn bản. |
 | **Bước 3: Kết quả rà soát & đánh giá** | | | | |
-| Kết quả rà soát | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Còn phù hợp<br>- Cần sửa đổi<br>- Cần thay thế<br>- Cần bãi bỏ<br>- Cần đình chỉ thi hành<br>- Cần ban hành mới. |
+| Kết quả rà soát | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Còn phù hợp<br>+ Cần sửa đổi<br>+ Cần thay thế<br>+ Cần bãi bỏ<br>+ Cần đình chỉ thi hành<br>+ Cần ban hành mới. |
 | Nội dung cụ thể cần sửa đổi/bổ sung | String(2000) | Có | Trống | - Hiển thị động và bắt buộc nhập khi Kết quả rà soát là "Cần sửa đổi". |
 | Mâu thuẫn/chồng chéo với văn bản khác | String(1000) | Không | Trống | - Nhập nội dung mâu thuẫn chồng chéo với các văn bản khác (nếu có). |
 | Bất cập, vướng mắc trong thực tiễn thi hành | String(1000) | Không | Trống | - Nhập các bất cập, vướng mắc thực tiễn (nếu có). |
-| Kiến nghị xử lý | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Giữ nguyên<br>- Sửa đổi, bổ sung<br>- Thay thế<br>- Bãi bỏ toàn bộ hoặc một phần<br>- Đình chỉ thi hành hoặc ngưng hiệu lực<br>- Hợp nhất<br>- Ban hành mới. |
+| Kiến nghị xử lý | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Giữ nguyên<br>+ Sửa đổi, bổ sung<br>+ Thay thế<br>+ Bãi bỏ toàn bộ hoặc một phần<br>+ Đình chỉ thi hành hoặc ngưng hiệu lực<br>+ Hợp nhất<br>+ Ban hành mới. |
 | Cơ quan có thẩm quyền xử lý | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>- Chọn từ Danh mục cơ quan giải quyết kiến nghị. |
-| Mức độ ưu tiên | Enum(String(50)) | Có | Theo kế hoạch | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Khẩn cấp<br>- Cần thiết<br>- Theo kế hoạch. |
+| Mức độ ưu tiên | Enum(String(50)) | Có | Theo kế hoạch | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Khẩn cấp<br>+ Cần thiết<br>+ Theo kế hoạch. |
 | Thời hạn xử lý kiến nghị | Date | Không | Trống | - Nhập thời hạn xử lý. Validate lớn hơn hoặc bằng Ngày lập hồ sơ. |
 | **Bước 4: Hệ thống hóa & Hợp nhất & Pháp điển (Hiển thị động theo Loại tham mưu)** | | | | |
 | **Nếu Loại tham mưu = Hệ thống hóa (Nhóm 4A)** | | | | |
 | Tên kỳ hệ thống hóa | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Chọn kỳ hệ thống hóa 5 năm/lần theo quy định (Ví dụ: Kỳ hệ thống hóa 2019-2023, Kỳ 2024-2028). |
 | Thời điểm hệ thống hóa | Date | Có | Tự động tính | - Chỉ đọc.<br>- Hệ thống tự động lấy ngày 31/12 của năm cuối kỳ được chọn. |
-| Kết quả xếp loại trong danh mục | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Còn hiệu lực toàn bộ<br>- Còn hiệu lực một phần<br>- Hết hiệu lực toàn bộ<br>- Hết hiệu lực một phần<br>- Ngưng hiệu lực toàn bộ<br>- Ngưng hiệu lực một phần. |
-| Loại danh mục đầu ra | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- 1. Danh mục văn bản còn hiệu lực (bao gồm cả văn bản hết hiệu lực/ngưng hiệu lực một phần)<br>- 2. Danh mục văn bản hết hiệu lực, ngưng hiệu lực toàn bộ hoặc một phần<br>- 3. Danh mục văn bản cần sửa đổi, bổ sung, thay thế, bãi bỏ hoặc ban hành mới. |
-| Cơ quan chủ trì hệ thống hóa | Enum(String(100)) | Có | Bộ Tư pháp | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Bộ Tư pháp<br>- Bộ chủ quản<br>- UBND tỉnh. |
+| Kết quả xếp loại trong danh mục | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Còn hiệu lực toàn bộ<br>+ Còn hiệu lực một phần<br>+ Hết hiệu lực toàn bộ<br>+ Hết hiệu lực một phần<br>+ Ngưng hiệu lực toàn bộ<br>+ Ngưng hiệu lực một phần. |
+| Loại danh mục đầu ra | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ 1. Danh mục văn bản còn hiệu lực (bao gồm cả văn bản hết hiệu lực/ngưng hiệu lực một phần)<br>+ 2. Danh mục văn bản hết hiệu lực, ngưng hiệu lực toàn bộ hoặc một phần<br>+ 3. Danh mục văn bản cần sửa đổi, bổ sung, thay thế, bãi bỏ hoặc ban hành mới. |
+| Cơ quan chủ trì hệ thống hóa | Enum(String(100)) | Có | Bộ Tư pháp | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Bộ Tư pháp<br>+ Bộ chủ quản<br>+ UBND tỉnh. |
 | Quyết định công bố kết quả hệ thống hóa của Bộ trưởng Bộ Tư pháp | String(100) | Có | Trống | - Nhập số quyết định công bố. Không kiểm tra trùng lặp. |
 | Ngày công bố kết quả | Date | Có | Trống | - Nhập ngày công bố. Validate nhỏ hơn hoặc bằng ngày hiện tại. |
 | **Nếu Loại tham mưu = Pháp điển (Nhóm 4B)** | | | | |
-| Hình thức thực hiện pháp điển | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Pháp điển đề mục mới<br>- Cập nhật đề mục đã công bố. |
+| Hình thức thực hiện pháp điển | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Pháp điển đề mục mới<br>+ Cập nhật đề mục đã công bố. |
 | Đề mục cần cập nhật | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Hiển thị động và bắt buộc khi chọn Hình thức thực hiện pháp điển là "Cập nhật đề mục đã công bố". Lấy từ Danh mục đề mục đã công bố. |
 | Chủ đề pháp điển | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Lấy từ danh mục 45 chủ đề pháp điển. |
 | Tên đề mục pháp điển | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Lấy từ danh mục 265 đề mục thuộc chủ đề được chọn. |
@@ -548,9 +548,9 @@ Cho phép Cán bộ nghiệp vụ lập mới hồ sơ, cập nhật tiến đ�
 | Thời hạn hoàn thành hợp nhất theo quy định | Date | Có | Tự động tính | - Chỉ đọc.<br>- Tự động tính: +5 ngày làm việc đối với VB thông thường; +10 ngày làm việc đối với VB phức tạp kể từ ngày VB sửa đổi được ban hành. |
 | Ghi chú nội dung hợp nhất | String(1000) | Không | Trống | - Nhập ghi chú về nội dung hợp nhất văn bản. |
 | **Bước 5: Tiến độ thực hiện** | | | | |
-| Trạng thái hồ sơ | Enum(String(50)) | Có | Mới tạo | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Mới tạo<br>- Đang thực hiện<br>- Hoàn thành. |
-| Căn cứ thực hiện | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Kế hoạch công tác<br>- Chỉ đạo lãnh đạo<br>- Yêu cầu Bộ<br>- Chương trình XDVB. |
-| Giai đoạn hiện tại | Enum(String(50)) | Có | Thu thập | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Thu thập<br>- Phân tích<br>- Dự thảo báo cáo<br>- Hoàn thành. |
+| Trạng thái hồ sơ | Enum(String(50)) | Có | Mới tạo | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Mới tạo<br>+ Đang thực hiện<br>+ Hoàn thành. |
+| Căn cứ thực hiện | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Kế hoạch công tác<br>+ Chỉ đạo lãnh đạo<br>+ Yêu cầu Bộ<br>+ Chương trình XDVB. |
+| Giai đoạn hiện tại | Enum(String(50)) | Có | Thu thập | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Thu thập<br>+ Phân tích<br>+ Dự thảo báo cáo<br>+ Hoàn thành. |
 | Ngày bắt đầu rà soát | Date | Có | Ngày hiện tại | - Lưu trữ thời gian bắt đầu triển khai rà soát. |
 | Ngày hoàn thành dự kiến | Date | Có | Trống | - Nhập hạn hoàn thành công việc. Validate lớn hơn hoặc bằng Ngày bắt đầu rà soát. |
 | Ngày hoàn thành thực tế | Date | Không | Trống | - Bắt buộc khi Trạng thái hồ sơ = Hoàn thành. Validate lớn hơn hoặc bằng Ngày bắt đầu rà soát và nhỏ hơn hoặc bằng ngày hiện tại. |
@@ -572,13 +572,13 @@ Cho phép Cán bộ nghiệp vụ lập mới hồ sơ, cập nhật tiến đ�
 **4.3.2.10.6.2.3. Chức năng trên màn hình**
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tiếp tục | Nút | - Thao tác: NSD click nút Tiếp tục.<br>- Xử lý: Hệ thống thực hiện các bước kiểm tra dữ liệu:<br>- TH1 (Bỏ trống trường bắt buộc): Một trong các trường bắt buộc của bước hiện tại bị bỏ trống hoặc chưa chọn. Hệ thống hiển thị thông báo lỗi: "Vui lòng nhập đầy đủ các trường thông tin bắt buộc." Focus và highlight viền đỏ trường trống đầu tiên. Không chuyển bước. |
+| 1 | Tiếp tục | Nút | - Thao tác: NSD click nút Tiếp tục.<br>- Xử lý: Hệ thống thực hiện các bước kiểm tra dữ liệu:<br>+ TH1 (Bỏ trống trường bắt buộc): Một trong các trường bắt buộc của bước hiện tại bị bỏ trống hoặc chưa chọn. Hệ thống hiển thị thông báo lỗi: "Vui lòng nhập đầy đủ các trường thông tin bắt buộc." Focus và highlight viền đỏ trường trống đầu tiên. Không chuyển bước. |
 |  |  |  | - TH2 (Sai định dạng/logic ngày ở bước hiện tại): Các trường hợp vi phạm quy tắc định dạng (Email, SĐT, Định dạng năm) hoặc logic ngày: Ngày có hiệu lực nhỏ hơn Ngày ban hành; Ngày ban hành lớn hơn ngày hiện tại; Ngày hết hiệu lực nhỏ hơn Ngày có hiệu lực. Hệ thống hiển thị thông báo lỗi tại trường tương ứng: "Dữ liệu nhập vào không hợp lệ. Vui lòng kiểm tra lại." Focus và highlight viền đỏ ô lỗi. |
 |  |  |  | - TH Hợp lệ: Hệ thống chuyển sang bước tiếp theo trong Stepper. |
 | 2 | Quay lại | Nút | - Thao tác: NSD click nút Quay lại.<br>- Xử lý: Hệ thống chuyển về bước trước đó trong Stepper, giữ nguyên dữ liệu đã nhập. |
-| 3 | Lưu nháp | Nút | - Thao tác: NSD click nút Lưu nháp.<br>- Xử lý: Hệ thống kiểm tra dữ liệu:<br>- TH1 (Bỏ trống các trường định danh cơ bản): Bỏ trống các trường Số hiệu hồ sơ, Ngày lập hồ sơ hoặc Loại tham mưu. Hệ thống hiển thị lỗi: "Thông tin định danh hồ sơ không được để trống." Focus và highlight viền đỏ. Không lưu nháp. |
+| 3 | Lưu nháp | Nút | - Thao tác: NSD click nút Lưu nháp.<br>- Xử lý: Hệ thống kiểm tra dữ liệu:<br>+ TH1 (Bỏ trống các trường định danh cơ bản): Bỏ trống các trường Số hiệu hồ sơ, Ngày lập hồ sơ hoặc Loại tham mưu. Hệ thống hiển thị lỗi: "Thông tin định danh hồ sơ không được để trống." Focus và highlight viền đỏ. Không lưu nháp. |
 |  |  |  | - TH Hợp lệ: Hệ thống lưu tạm các thông tin đã nhập vào CSDL dưới dạng bản nháp (Trạng thái hồ sơ giữ nguyên: Mới tạo, Giai đoạn: bước hiện tại), hiển thị thông báo thành công: "Lưu nháp hồ sơ thành công" và quay lại màn hình Tra cứu (UC236.MH01). |
-| 4 | Lưu | Nút | - Thao tác: NSD click nút Lưu ở bước 6.<br>- Xử lý: Hệ thống thực hiện kiểm tra dữ liệu trên cả 6 bước:<br>- TH1 (Bỏ trống trường bắt buộc): Một trong các trường bắt buộc ở bất kỳ bước nào bị bỏ trống. Hệ thống tự động chuyển Stepper về bước chứa trường lỗi đầu tiên, highlight viền đỏ và hiển thị cảnh báo: "Vui lòng hoàn thiện đầy đủ thông tin bắt buộc tại các bước trước khi Lưu." |
+| 4 | Lưu | Nút | - Thao tác: NSD click nút Lưu ở bước 6.<br>- Xử lý: Hệ thống thực hiện kiểm tra dữ liệu trên cả 6 bước:<br>+ TH1 (Bỏ trống trường bắt buộc): Một trong các trường bắt buộc ở bất kỳ bước nào bị bỏ trống. Hệ thống tự động chuyển Stepper về bước chứa trường lỗi đầu tiên, highlight viền đỏ và hiển thị cảnh báo: "Vui lòng hoàn thiện đầy đủ thông tin bắt buộc tại các bước trước khi Lưu." |
 |  |  |  | - TH2 (Sai logic ngày hoàn thành dự kiến): Ngày hoàn thành dự kiến nhỏ hơn Ngày bắt đầu rà soát. Hệ thống báo lỗi tại trường: "Ngày hoàn thành dự kiến phải lớn hơn hoặc bằng Ngày bắt đầu rà soát." Focus và highlight viền đỏ. |
 |  |  |  | - TH3 (Sai logic ngày hoàn thành thực tế): Trạng thái hồ sơ chọn là "Hoàn thành" nhưng Ngày hoàn thành thực tế bị trống hoặc nhỏ hơn Ngày bắt đầu rà soát hoặc lớn hơn ngày hiện tại. Hệ thống hiển thị thông báo lỗi: "Ngày hoàn thành thực tế bắt buộc nhập, phải lớn hơn hoặc bằng Ngày bắt đầu rà soát và nhỏ hơn hoặc bằng ngày hiện tại." Focus và highlight viền đỏ. |
 |  |  |  | - TH Hợp lệ: Hệ thống lưu mới hồ sơ vào CSDL, ghi nhật ký hệ thống (Audit Log), hiển thị thông báo thành công: "Thêm mới hồ sơ tham mưu thành công" và chuyển hướng về màn hình Tra cứu (UC236.MH01). |
@@ -597,7 +597,7 @@ Màn hình cập nhật tải toàn bộ thông tin hiện tại của hồ sơ 
 | **Bước 1: Định danh hồ sơ** | | | | |
 | Số hiệu hồ sơ | String(30) | Có | Lấy theo dữ liệu hiện tại | - Chỉ đọc.<br>- Mã hồ sơ không thay đổi. |
 | Ngày lập hồ sơ | Date | Có | Lấy theo dữ liệu hiện tại | - Chỉ đọc. |
-| Loại tham mưu | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>- Rà soát<br>- Hệ thống hóa<br>- Hợp nhất<br>- Pháp điển. |
+| Loại tham mưu | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại | Control UI: Hộp chọn.<br>- Gồm các giá trị:<br>+ Rà soát<br>+ Hệ thống hóa<br>+ Hợp nhất<br>+ Pháp điển. |
 | Lĩnh vực pháp luật | Enum(String(100)) | Có | Lấy theo dữ liệu hiện tại | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. |
 | Năm thực hiện | String(255) | Có | Lấy theo dữ liệu hiện tại | - Cho phép chỉnh sửa. |
 | Số/Kế hoạch căn cứ thực hiện | String(100) | Không | Lấy theo dữ liệu hiện tại | - Cho phép chỉnh sửa. |
@@ -651,7 +651,7 @@ Màn hình cập nhật tải toàn bộ thông tin hiện tại của hồ sơ 
 | Thời hạn hoàn thành hợp nhất theo quy định | Date | Có | Lấy theo dữ liệu hiện tại | - Chỉ đọc.<br>- Tự động cập nhật nếu thông tin liên quan thay đổi. |
 | Ghi chú nội dung hợp nhất | String(1000) | Không | Lấy theo dữ liệu hiện tại | - Cho phép chỉnh sửa. |
 | **Bước 5: Tiến độ thực hiện** | | | | |
-| Trạng thái hồ sơ | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại | Control UI: Hộp chọn.<br>- Gồm các trạng thái:<br>- Mới tạo<br>- Đang thực hiện<br>- Hoàn thành. |
+| Trạng thái hồ sơ | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại | Control UI: Hộp chọn.<br>- Gồm các trạng thái:<br>+ Mới tạo<br>+ Đang thực hiện<br>+ Hoàn thành. |
 | Căn cứ thực hiện | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. |
 | Giai đoạn hiện tại | Enum(String(50)) | Có | Lấy theo dữ liệu hiện tại | Control UI: Hộp chọn.<br>- Cho phép chỉnh sửa. |
 | Ngày bắt đầu rà soát | Date | Có | Lấy theo dữ liệu hiện tại | - Cho phép chỉnh sửa. |
@@ -674,7 +674,7 @@ Màn hình cập nhật tải toàn bộ thông tin hiện tại của hồ sơ 
 |  |  |  | - TH Hợp lệ: Hệ thống chuyển sang bước tiếp theo trong Stepper. |
 | 2 | Quay lại | Nút | - Thao tác: NSD click nút Quay lại.<br>- Xử lý: Hệ thống chuyển về bước trước đó trong Stepper, giữ nguyên dữ liệu đã nhập. |
 | 3 | Lưu nháp | Nút | - Thao tác: NSD click nút Lưu nháp.<br>- Xử lý: Hệ thống kiểm tra và thực hiện cập nhật các thông tin tạm thời của hồ sơ (không validate bắt buộc toàn bộ). Lưu nháp với trạng thái "Mới tạo". Hiển thị thông báo thành công: "Lưu nháp hồ sơ thành công" và quay lại màn hình Tra cứu (UC236.MH01). |
-| 4 | Lưu | Nút | - Thao tác: NSD click nút Lưu ở bước 6.<br>- Xử lý: Hệ thống thực hiện kiểm tra dữ liệu toàn bộ 6 bước:<br>- TH1 (Bỏ trống trường bắt buộc): Có trường bắt buộc bị bỏ trống. Hệ thống tự động chuyển Stepper về bước chứa trường lỗi đầu tiên, highlight viền đỏ và hiển thị cảnh báo: "Vui lòng hoàn thiện đầy đủ thông tin bắt buộc tại các bước trước khi Lưu." |
+| 4 | Lưu | Nút | - Thao tác: NSD click nút Lưu ở bước 6.<br>- Xử lý: Hệ thống thực hiện kiểm tra dữ liệu toàn bộ 6 bước:<br>+ TH1 (Bỏ trống trường bắt buộc): Có trường bắt buộc bị bỏ trống. Hệ thống tự động chuyển Stepper về bước chứa trường lỗi đầu tiên, highlight viền đỏ và hiển thị cảnh báo: "Vui lòng hoàn thiện đầy đủ thông tin bắt buộc tại các bước trước khi Lưu." |
 |  |  |  | - TH2 (Sai logic ngày hoàn thành dự kiến): Ngày hoàn thành dự kiến nhỏ hơn Ngày bắt đầu rà soát. Hệ thống báo lỗi tại trường: "Ngày hoàn thành dự kiến phải lớn hơn hoặc bằng Ngày bắt đầu rà soát." Focus và highlight viền đỏ. |
 |  |  |  | - TH3 (Sai logic ngày hoàn thành thực tế): Trạng thái hồ sơ chọn là "Hoàn thành" nhưng Ngày hoàn thành thực tế bị trống hoặc nhỏ hơn Ngày bắt đầu rà soát hoặc lớn hơn ngày hiện tại. Hệ thống hiển thị thông báo lỗi: "Ngày hoàn thành thực tế bắt buộc nhập, phải lớn hơn hoặc bằng Ngày bắt đầu rà soát và nhỏ hơn hoặc bằng ngày hiện tại." Focus và highlight viền đỏ. |
 |  |  |  | - TH Hợp lệ: Hệ thống lưu cập nhật thông tin hồ sơ vào CSDL, ghi nhật ký hệ thống (Audit Log), hiển thị thông báo thành công: "Cập nhật hồ sơ tham mưu thành công" và chuyển hướng về màn hình Tra cứu (UC236.MH01). |
@@ -764,7 +764,7 @@ Màn hình xem chi tiết hiển thị dưới dạng Panel chỉ đọc (inline
 **4.3.2.10.6.5.3. Chức năng trên màn hình**
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xác nhận xóa | Nút | - Thao tác: NSD click nút Xác nhận xóa.<br>- Xử lý: Hệ thống thực hiện kiểm tra dữ liệu:<br>- TH1 (Bỏ trống lý do xóa): Trường Lý do xóa bị bỏ trống. Hệ thống hiển thị thông báo lỗi: "Lý do xóa là trường bắt buộc." Focus và highlight viền đỏ ô nhập liệu. Không thực hiện xóa. |
+| 1 | Xác nhận xóa | Nút | - Thao tác: NSD click nút Xác nhận xóa.<br>- Xử lý: Hệ thống thực hiện kiểm tra dữ liệu:<br>+ TH1 (Bỏ trống lý do xóa): Trường Lý do xóa bị bỏ trống. Hệ thống hiển thị thông báo lỗi: "Lý do xóa là trường bắt buộc." Focus và highlight viền đỏ ô nhập liệu. Không thực hiện xóa. |
 |  |  |  | - TH Hợp lệ: Hệ thống cập nhật trạng thái xóa logic cho hồ sơ tham mưu trong Cơ sở dữ liệu (xóa mềm), ghi nhận lý do xóa, ghi nhận nhật ký hệ thống (Audit Log), hiển thị thông báo thành công: "Xóa hồ sơ tham mưu thành công", đóng popup và làm mới lưới kết quả tra cứu (UC236.MH01). |
 | 2 | Hủy | Nút | - Thao tác: NSD click nút Hủy.<br>- Xử lý: Đóng popup xác nhận xóa và quay lại Panel xem chi tiết hồ sơ (UC235.MH03) mà không thực hiện thay đổi nào. |
 
@@ -800,16 +800,16 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo Cục thực hiện tìm ki�
 | Năm thực hiện | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Chọn lọc theo năm thực hiện hồ sơ. |
 | Từ ngày ban hành | Date | Không | Trống | - Lọc văn bản ban hành từ ngày. |
 | Đến ngày ban hành | Date | Không | Trống | - Lọc văn bản ban hành đến ngày. Validate Từ ngày phải nhỏ hơn hoặc bằng Đến ngày. |
-| **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 4 khối thống kê nhanh:<br>- 1. Tổng số hồ sơ tìm được<br>- 2. Số hồ sơ hoàn thành<br>- 3. Số hồ sơ cần sửa đổi<br>- 4. Số hồ sơ cần bãi bỏ. |
+| **II. Thống kê KPI** | String(255) | - | - | - Hiển thị 4 khối thống kê nhanh:<br>+ 1. Tổng số hồ sơ tìm được<br>+ 2. Số hồ sơ hoàn thành<br>+ 3. Số hồ sơ cần sửa đổi<br>+ 4. Số hồ sơ cần bãi bỏ. |
 | **III. Bảng danh sách kết quả (Grid)** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Phân trang mặc định **20 bản ghi/trang**.<br>- Sắp xếp mặc định: Ngày lập hồ sơ giảm dần. Cho phép sắp xếp theo: Tên VB A-Z, Năm thực hiện, Trạng thái.<br>- Cơ chế Row Click: Click vào dòng dữ liệu (ngoại trừ khi click các icon ở cột Thao tác nhanh) sẽ mở Panel xem chi tiết (UC235.MH03) ngay dưới bảng.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: Checkbox chọn nhiều | Boolean | - | Unchecked | Control UI: Checkbox.<br>- Cho phép tích chọn một hoặc nhiều hồ sơ để thực hiện xuất file theo lô. |
 | Cột: Số hồ sơ | String(30) | - | - | - Hiển thị số hiệu hồ sơ. |
 | Cột: Tên văn bản QPPL | String(500) | - | - | - Hiển thị tên văn bản dạng liên kết. Click vào liên kết để mở Panel xem chi tiết (UC235.MH03) phía dưới. |
-| Cột: Loại tham mưu | String(50) | - | - | - Badge màu:<br>- Rà soát (Xanh dương)<br>- Hệ thống hóa/Hợp nhất/Pháp điển (Tím). |
+| Cột: Loại tham mưu | String(50) | - | - | - Badge màu:<br>+ Rà soát (Xanh dương)<br>+ Hệ thống hóa/Hợp nhất/Pháp điển (Tím). |
 | Cột: Năm thực hiện | String(255) | - | - | - Hiển thị năm thực hiện công việc. |
-| Cột: Kết quả rà soát | String(100) | - | - | - Badge màu:<br>- Còn phù hợp (Xanh lá)<br>- Cần sửa đổi (Vàng)<br>- Cần bãi bỏ (Đỏ)<br>- Các kết quả khác (Không màu). |
-| Cột: Trạng thái hồ sơ | String(50) | - | - | - Badge màu:<br>- Hoàn thành (Xanh lá)<br>- Đang thực hiện (Xanh dương)<br>- Mới tạo (Không màu). |
-| Cột: Thao tác nhanh | String(255) | - | - | - Gồm các tác vụ con:<br>- **Cập nhật**: Biểu tượng Sửa. Chi tiết nghiệp vụ xem ở bảng Chức năng.<br>- **Tải file**: Biểu tượng Tải file. Chi tiết nghiệp vụ xem ở bảng Chức năng. |
+| Cột: Kết quả rà soát | String(100) | - | - | - Badge màu:<br>+ Còn phù hợp (Xanh lá)<br>+ Cần sửa đổi (Vàng)<br>+ Cần bãi bỏ (Đỏ)<br>+ Các kết quả khác (Không màu). |
+| Cột: Trạng thái hồ sơ | String(50) | - | - | - Badge màu:<br>+ Hoàn thành (Xanh lá)<br>+ Đang thực hiện (Xanh dương)<br>+ Mới tạo (Không màu). |
+| Cột: Thao tác nhanh | String(255) | - | - | - Gồm các tác vụ con:<br>+ **Cập nhật**: Biểu tượng Sửa. Chi tiết nghiệp vụ xem ở bảng Chức năng.<br>+ **Tải file**: Biểu tượng Tải file. Chi tiết nghiệp vụ xem ở bảng Chức năng. |
 | **Nút chức năng** | | | | (Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình) |
 | Tìm kiếm | String(255) | - | - | - Hiển thị cạnh Bộ lọc tra cứu. |
 | Xóa bộ lọc | - | - | - | - Hiển thị cạnh Bộ lọc tra cứu. |
@@ -821,17 +821,17 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo Cục thực hiện tìm ki�
 **4.3.2.10.7.2.3. Chức năng trên màn hình**
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- Xử lý: Lấy danh sách hồ sơ khớp bộ lọc lọc từ Cơ sở dữ liệu:<br>- TH1 (Không tìm thấy): Không có hồ sơ nào thỏa mãn điều kiện. Hệ thống hiển thị thông điệp "Không tìm thấy kết quả phù hợp" trên lưới.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
+| 1 | Tìm kiếm | Nút | - Thao tác: NSD click nút Tìm kiếm.<br>- Xử lý: Lấy danh sách hồ sơ khớp bộ lọc lọc từ Cơ sở dữ liệu:<br>+ TH1 (Không tìm thấy): Không có hồ sơ nào thỏa mãn điều kiện. Hệ thống hiển thị thông điệp "Không tìm thấy kết quả phù hợp" trên lưới.<br>+ **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 |  |  |  | - TH Hợp lệ: Tải danh sách kết quả lên lưới, phân trang 20 dòng/trang, cập nhật các chip tag lọc đang áp dụng và số liệu KPI thống kê đầu trang. |
 | 2 | Xóa bộ lọc | Nút | - Thao tác: NSD click nút Xóa bộ lọc.<br>- Xử lý: Reset toàn bộ các tham số lọc về giá trị mặc định, tự động load lại danh sách đầy đủ ban đầu. |
 | 3 | Thêm mới hồ sơ | Nút | - Thao tác: NSD click nút Thêm mới hồ sơ.<br>- Xử lý: Hệ thống chuyển hướng người dùng sang màn hình Thêm mới hồ sơ tham mưu (UC235.MH01). |
-| 4 | Cập nhật | Biểu tượng | - Thao tác: NSD click biểu tượng Cập nhật trên dòng kết quả.<br>- Xử lý: Hệ thống kiểm tra quyền chỉnh sửa hồ sơ:<br>- TH1 (Không có quyền): Người dùng không thuộc đơn vị chủ trì hoặc không được phân công hồ sơ này. Hệ thống hiển thị cảnh báo lỗi: "Bạn không có quyền chỉnh sửa hồ sơ này." |
+| 4 | Cập nhật | Biểu tượng | - Thao tác: NSD click biểu tượng Cập nhật trên dòng kết quả.<br>- Xử lý: Hệ thống kiểm tra quyền chỉnh sửa hồ sơ:<br>+ TH1 (Không có quyền): Người dùng không thuộc đơn vị chủ trì hoặc không được phân công hồ sơ này. Hệ thống hiển thị cảnh báo lỗi: "Bạn không có quyền chỉnh sửa hồ sơ này." |
 |  |  |  | - TH Hợp lệ: Hệ thống điều hướng sang màn hình Cập nhật hồ sơ tham mưu (UC235.MH02). |
-| 5 | Tải file | Biểu tượng | - Thao tác: NSD click biểu tượng Tải file trên dòng kết quả.<br>- Xử lý: Hệ thống kiểm tra tệp đính kèm đầu ra của hồ sơ:<br>- TH1 (Không có tệp đầu ra): Hồ sơ chưa tải lên văn bản hợp nhất, kết quả pháp điển hoặc báo cáo rà soát đầu ra. Hệ thống hiển thị thông báo lỗi: "Hồ sơ chưa có tệp đính kèm kết quả đầu ra để tải xuống." |
+| 5 | Tải file | Biểu tượng | - Thao tác: NSD click biểu tượng Tải file trên dòng kết quả.<br>- Xử lý: Hệ thống kiểm tra tệp đính kèm đầu ra của hồ sơ:<br>+ TH1 (Không có tệp đầu ra): Hồ sơ chưa tải lên văn bản hợp nhất, kết quả pháp điển hoặc báo cáo rà soát đầu ra. Hệ thống hiển thị thông báo lỗi: "Hồ sơ chưa có tệp đính kèm kết quả đầu ra để tải xuống." |
 |  |  |  | - TH Hợp lệ: Kích hoạt tính năng tải xuống tệp kết quả đầu ra chính của hồ sơ (file văn bản hợp nhất hoặc file kết quả pháp điển hoặc báo cáo rà soát). |
-| 6 | Xuất Excel | Nút | - Thao tác: NSD click nút Xuất Excel.<br>- Xử lý: Hệ thống kiểm tra danh sách kết quả tìm kiếm:<br>- TH1 (Danh sách rỗng): Không có dữ liệu trên bảng kết quả. Hệ thống hiển thị thông báo lỗi: "Không có dữ liệu để xuất Excel." |
+| 6 | Xuất Excel | Nút | - Thao tác: NSD click nút Xuất Excel.<br>- Xử lý: Hệ thống kiểm tra danh sách kết quả tìm kiếm:<br>+ TH1 (Danh sách rỗng): Không có dữ liệu trên bảng kết quả. Hệ thống hiển thị thông báo lỗi: "Không có dữ liệu để xuất Excel." |
 |  |  |  | - TH Hợp lệ: Hệ thống kết xuất toàn bộ danh sách kết quả tìm kiếm hiện tại ra file Excel (.xlsx) theo cấu trúc báo cáo của Bộ Tư pháp và tải xuống máy. |
-| 7 | Xuất Word | Nút | - Thao tác: NSD click nút Xuất Word.<br>- Xử lý: Hệ thống kiểm tra các hồ sơ được chọn:<br>- TH1 (Chưa chọn hồ sơ): Chưa tích chọn bất kỳ checkbox nào trên lưới. Hệ thống hiển thị thông báo lỗi: "Vui lòng chọn ít nhất một hồ sơ để kết xuất Word." |
+| 7 | Xuất Word | Nút | - Thao tác: NSD click nút Xuất Word.<br>- Xử lý: Hệ thống kiểm tra các hồ sơ được chọn:<br>+ TH1 (Chưa chọn hồ sơ): Chưa tích chọn bất kỳ checkbox nào trên lưới. Hệ thống hiển thị thông báo lỗi: "Vui lòng chọn ít nhất một hồ sơ để kết xuất Word." |
 |  |  |  | - TH Hợp lệ: Hệ thống kết xuất báo cáo tổng hợp theo biểu mẫu của các hồ sơ được chọn ra file Word (.docx) và tự động tải xuống. |
-| 8 | Xuất PDF | Nút | - Thao tác: NSD click nút Xuất PDF.<br>- Xử lý: Hệ thống kiểm tra các hồ sơ được chọn:<br>- TH1 (Chưa chọn hồ sơ): Chưa tích chọn bất kỳ checkbox nào trên lưới. Hệ thống hiển thị thông báo lỗi: "Vui lòng chọn ít nhất một hồ sơ để kết xuất PDF." |
+| 8 | Xuất PDF | Nút | - Thao tác: NSD click nút Xuất PDF.<br>- Xử lý: Hệ thống kiểm tra các hồ sơ được chọn:<br>+ TH1 (Chưa chọn hồ sơ): Chưa tích chọn bất kỳ checkbox nào trên lưới. Hệ thống hiển thị thông báo lỗi: "Vui lòng chọn ít nhất một hồ sơ để kết xuất PDF." |
 |  |  |  | - TH Hợp lệ: Hệ thống kết xuất danh sách hoặc thông tin chi tiết các hồ sơ được chọn ra file PDF (tối đa 40 dòng/trang, lặp lại tiêu đề bảng ở mỗi trang) và tải xuống máy. |

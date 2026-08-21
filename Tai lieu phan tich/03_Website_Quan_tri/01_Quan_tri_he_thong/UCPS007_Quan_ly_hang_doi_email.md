@@ -1,4 +1,4 @@
-﻿﻿#### 4.3.1.10. UCPS007 - Quản lý Hàng đợi Email (Email Queue Manager)
+#### 4.3.1.10. UCPS007 - Quản lý Hàng đợi Email (Email Queue Manager)
 
 ##### 4.3.1.10.1. Mục đích
 

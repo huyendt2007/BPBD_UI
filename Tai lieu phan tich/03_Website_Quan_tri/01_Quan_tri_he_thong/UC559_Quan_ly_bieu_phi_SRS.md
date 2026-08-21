@@ -27,8 +27,8 @@ Bảng dưới đây mô tả toàn bộ các trường thông tin lọc và lư
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Từ khóa tìm kiếm | String(255) | Không | Trống | Nhập Mã biểu phí hoặc Tên biểu phí (tiếng Việt hoặc tiếng Anh) để tìm kiếm gần đúng. |
-| Loại dịch vụ | Enum(String(50)) | Không | `-- Tất cả dịch vụ --` | Control UI: Hộp chọn.<br>Nhóm danh mục dịch vụ công áp dụng. Gồm:<br>- Đăng ký giao dịch bảo đảm<br>- Thông báo xử lý tài sản<br>- Thay đổi thông tin<br>- Xóa đăng ký<br>- Cung cấp thông tin<br>- Cấp bản sao<br>- Cấp mã số CSDL Một lần<br>- Cấp mã số CSDL thường xuyên<br>- Khác |
-| Trạng thái | Enum(String(50)) | Không | `-- Tất cả trạng thái --` | Control UI: Hộp chọn.<br>Trạng thái hiệu lực của biểu phí. Gồm:<br>- Hoạt động (Active)<br>- Hết hiệu lực (Inactive)<br>- Lưu nháp (Draft) |
+| Loại dịch vụ | Enum(String(50)) | Không | `-- Tất cả dịch vụ --` | Control UI: Hộp chọn.<br>Nhóm danh mục dịch vụ công áp dụng. Gồm:<br>+ Đăng ký giao dịch bảo đảm<br>+ Thông báo xử lý tài sản<br>+ Thay đổi thông tin<br>+ Xóa đăng ký<br>+ Cung cấp thông tin<br>+ Cấp bản sao<br>+ Cấp mã số CSDL Một lần<br>+ Cấp mã số CSDL thường xuyên<br>+ Khác |
+| Trạng thái | Enum(String(50)) | Không | `-- Tất cả trạng thái --` | Control UI: Hộp chọn.<br>Trạng thái hiệu lực của biểu phí. Gồm:<br>+ Hoạt động (Active)<br>+ Hết hiệu lực (Inactive)<br>+ Lưu nháp (Draft) |
 | Hiệu lực từ ngày | Date | Không | Ngày đầu tháng hiện tại | Control UI: Datepicker.<br>Bộ chọn ngày Flatpickr (định dạng `dd/mm/yyyy`). |
 | Hiệu lực đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker.<br>Bộ chọn ngày Flatpickr (định dạng `dd/mm/yyyy`). |
 | Tìm kiếm | - | Có | - | Control UI: Nút bấm.<br>Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
@@ -43,7 +43,7 @@ Bảng dưới đây mô tả toàn bộ các trường thông tin lọc và lư
 | Mức phí (VNĐ) | Decimal(18,0) | - | - | Control UI: Hiển thị/Read-only.<br>Mức thu tiền của biểu phí, định dạng dấu chấm phân tách hàng nghìn theo chuẩn `vi-VN` (ví dụ: `300.000` VNĐ). |
 | Ngày áp dụng | Date | - | - | Control UI: Hiển thị/Read-only.<br>Ngày bắt đầu có hiệu lực (định dạng `dd/mm/yyyy`). |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Hiển thị/Read-only.<br>Trạng thái của biểu phí (Hoạt động, Hết hiệu lực, Lưu nháp). |
-| Thao tác | - | - | - | Control UI: Nút bấm.<br>Hiển thị cố định 3 nút bấm tác vụ:<br>- Xem chi tiết: Luôn hoạt động, bấm mở popup UC559.MH03.<br>- Chỉnh sửa: Chỉ hoạt động khi ở trạng thái Hoạt động hoặc Lưu nháp (mở popup UC559.MH02). Vơ hiệu hóa (mờ ẩn opacity: 0.35, pointer-events: none, cursor: not-allowed) kèm tooltip "Biểu phí đã hết hiệu lực, không được phép chỉnh sửa" khi ở trạng thái Hết hiệu lực.<br>- Xóa / Ngưng dùng: Khi ở trạng thái Lưu nháp, bấm mở popup xác nhận xóa vật lý. Khi ở trạng thái Hoạt động, bấm mở popup xác nhận ngưng áp dụng. Vơ hiệu hóa (mờ ẩn opacity: 0.35, pointer-events: none, cursor: not-allowed) kèm tooltip "Biểu phí đã hết hiệu lực ngưng hoạt động" khi ở trạng thái Hết hiệu lực. |
+| Thao tác | - | - | - | Control UI: Nút bấm.<br>Hiển thị cố định 3 nút bấm tác vụ:<br>+ Xem chi tiết: Luôn hoạt động, bấm mở popup UC559.MH03.<br>+ Chỉnh sửa: Chỉ hoạt động khi ở trạng thái Hoạt động hoặc Lưu nháp (mở popup UC559.MH02). Vơ hiệu hóa (mờ ẩn opacity: 0.35, pointer-events: none, cursor: not-allowed) kèm tooltip "Biểu phí đã hết hiệu lực, không được phép chỉnh sửa" khi ở trạng thái Hết hiệu lực.<br>+ Xóa / Ngưng dùng: Khi ở trạng thái Lưu nháp, bấm mở popup xác nhận xóa vật lý. Khi ở trạng thái Hoạt động, bấm mở popup xác nhận ngưng áp dụng. Vơ hiệu hóa (mờ ẩn opacity: 0.35, pointer-events: none, cursor: not-allowed) kèm tooltip "Biểu phí đã hết hiệu lực ngưng hoạt động" khi ở trạng thái Hết hiệu lực. |
 
 ##### 4.3.1.6.10.2.3. Chức năng trên màn hình
 Mô tả các luồng hành động xử lý cấp trang:
@@ -73,7 +73,7 @@ Popup được thiết kế theo quy tắc Sticky Modal (Header và Footer luôn
 | Tên biểu phí (EN) | String(255) | Có | Trống | Tên tiếng Anh tương ứng để dùng cho đa ngôn ngữ. |
 | Mức phí (VNĐ) | String(20) | Có | Trống | Số tiền phí quy định. Tự động định dạng dấu chấm phân tách hàng nghìn khi người dùng gõ. |
 | Ngày áp dụng | Date | Có | Trống | Control UI: Datepicker.<br>Tích hợp lịch Flatpickr. Định dạng hiển thị: `dd/mm/yyyy`. |
-| Trạng thái | - | Có | Hoạt động | Control UI: Nút bấm.<br>Gồm 2 lựa chọn:<br>- Hoạt động (Active)<br>- Lưu nháp (Draft) |
+| Trạng thái | - | Có | Hoạt động | Control UI: Nút bấm.<br>Gồm 2 lựa chọn:<br>+ Hoạt động (Active)<br>+ Lưu nháp (Draft) |
 | Mô tả / Ghi chú | String(500) | Không | Trống | Textarea nhập tự do về căn cứ pháp lý hoặc ghi chú bổ sung. |
 | Lưu | - | Có | - | Control UI: Nút bấm.<br>Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | Hủy | - | Có | - | Control UI: Nút bấm.<br>Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |

@@ -1,4 +1,4 @@
-﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.9. UC-BTNN-KT - Kiểm tra công tác BTNN
 
@@ -43,9 +43,9 @@ flowchart TD
 | Tiêu đề màn hình | String(255) | Không | Kiểm tra công tác BTNN | Hiển thị tên màn hình. |
 | Mã cuộc kiểm tra | String(50) | Không | Trống | Tìm gần đúng theo mã cuộc kiểm tra. |
 | Cơ quan được kiểm tra | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan thuộc đối tượng kiểm tra. |
-| Hình thức kiểm tra | Enum(String(50)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Kiểm tra định kỳ<br>- Kiểm tra đột xuất |
-| Nội dung kiểm tra | Enum(String(100)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Giải quyết yêu cầu bồi thường<br>- Xác định và thực hiện trách nhiệm hoàn trả<br>- Quản lý nhà nước về công tác BTNN<br>- Tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Lưu nháp<br>- Đang thực hiện kiểm tra<br>- Theo dõi xử lý sau kiểm tra<br>- Hoàn thành |
+| Hình thức kiểm tra | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>- Kiểm tra định kỳ<br>- Kiểm tra đột xuất |
+| Nội dung kiểm tra | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Giải quyết yêu cầu bồi thường<br>+ Xác định và thực hiện trách nhiệm hoàn trả<br>+ Quản lý nhà nước về công tác BTNN<br>+ Tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Đang thực hiện kiểm tra<br>+ Theo dõi xử lý sau kiểm tra<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Trống | Ngày lập kế hoạch từ, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Ngày lập kế hoạch đến, áp dụng [BR-VAL-007]. |
 | Thêm mới | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -67,12 +67,12 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Thêm mới | Button | Mở **4.3.3.9.4. MH02 - Màn hình Thêm mới/Cập nhật kiểm tra công tác BTNN** ở chế độ thêm mới. |
+| 1 | Thêm mới | Button | Mở **MH02 - Thêm mới/Cập nhật kiểm tra công tác BTNN** ở chế độ thêm mới. |
 | 2 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hệ thống hiển thị lỗi inline và không tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách theo tiêu chí nhập/chọn và đưa về trang 1. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa tiêu chí lọc, đưa về giá trị mặc định và tải lại danh sách. |
 | 4 | Kết xuất Excel | Button | Kết xuất danh sách theo kết quả tìm kiếm hiện hành, áp dụng [BR-EXP-040]. |
-| 5 | Click dòng dữ liệu | Row click | Mở **4.3.3.9.4. MH02** ở chế độ xem chi tiết. |
+| 5 | Click dòng dữ liệu | Row click | Mở **MH02 - Thêm mới/Cập nhật kiểm tra công tác BTNN** ở chế độ xem chi tiết. |
 
 ##### 4.3.3.9.4. MH02 - Màn hình Thêm mới/Cập nhật kiểm tra công tác BTNN
 
@@ -85,8 +85,8 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Mã cuộc kiểm tra | String(50) | Không | Hệ thống tự sinh | Chỉ đọc sau khi lưu lần đầu. |
-| Hình thức kiểm tra | Enum(String(50)) | Có | Kiểm tra định kỳ | Gồm:<br>- Kiểm tra định kỳ<br>- Kiểm tra đột xuất |
-| Căn cứ kiểm tra | Enum(String(100)) | Có | Trống | Gồm:<br>- Kiến nghị, phản ánh, khiếu nại, tố cáo<br>- Kết quả hướng dẫn nghiệp vụ<br>- Kết quả theo dõi, đôn đốc<br>- Kết quả hỗ trợ, hướng dẫn người bị thiệt hại<br>- Kết quả thống kê hằng năm<br>- Hướng dẫn của cơ quan quản lý nhà nước ở trung ương |
+| Hình thức kiểm tra | Enum(String(50)) | Có | Kiểm tra định kỳ | Gồm:<br>+ Kiểm tra định kỳ<br>- Kiểm tra đột xuất |
+| Căn cứ kiểm tra | Enum(String(100)) | Có | Trống | Gồm:<br>+ Kiến nghị, phản ánh, khiếu nại, tố cáo<br>+ Kết quả hướng dẫn nghiệp vụ<br>+ Kết quả theo dõi, đôn đốc<br>+ Kết quả hỗ trợ, hướng dẫn người bị thiệt hại<br>+ Kết quả thống kê hằng năm<br>+ Hướng dẫn của cơ quan quản lý nhà nước ở trung ương |
 | Cơ quan được kiểm tra | String(255) | Có | Trống | Cơ quan thuộc đối tượng kiểm tra. |
 | Nội dung kiểm tra | Enum(String(100)) | Có | Trống | Gồm các giá trị tại MH01. |
 | Phạm vi kiểm tra | Text(2000) | Có | Trống | Phạm vi nghiệp vụ, thời kỳ kiểm tra, đơn vị liên quan. |

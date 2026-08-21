@@ -1259,8 +1259,13 @@ function renderTable(resetPage = false) {
             filteredProfiles.sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
         }
     } else {
-        const searchTerm = document.getElementById('filter-search-term')?.value.toLowerCase().trim() || '';
+        const filterSoDangKy = document.getElementById('filter-so-dang-ky')?.value.toLowerCase().trim() || '';
+        const filterTenBbd = document.getElementById('filter-ten-bbd')?.value.toLowerCase().trim() || '';
+        const filterTenBnbd = document.getElementById('filter-ten-bnbd')?.value.toLowerCase().trim() || '';
         const filterCustomerId = document.getElementById('filter-customer-id')?.value.toLowerCase().trim() || document.getElementById('filter-makh')?.value.toLowerCase().trim() || '';
+        const filterBienLai = document.getElementById('filter-so-bien-lai')?.value.toLowerCase().trim() || '';
+        const filterNguonTiepNhan = document.getElementById('filter-nguon-tiep-nhan')?.value || '';
+        const filterCanBoXuLy = document.getElementById('filter-can-bo-xu-ly')?.value || '';
         const filterLoaidangky = document.getElementById('filter-loaidangky')?.value || '';
         const filterLoaihinh = document.getElementById('cb-loaihinh')?.value || '';
         const filterSubtype = document.getElementById('cb-loaibienphap')?.value || '';
@@ -1277,8 +1282,13 @@ function renderTable(resetPage = false) {
                 if (filterStatusVal && p.status !== filterStatusVal) return false;
             }
 
-            if (searchTerm && !p.id.toLowerCase().includes(searchTerm) && !(p.pin || '').toLowerCase().includes(searchTerm) && !p.customer.toLowerCase().includes(searchTerm) && !p.mortgagee.toLowerCase().includes(searchTerm)) return false;
+            if (filterSoDangKy && !p.id.toLowerCase().includes(filterSoDangKy)) return false;
+            if (filterTenBbd && !p.customer.toLowerCase().includes(filterTenBbd)) return false;
+            if (filterTenBnbd && !p.mortgagee.toLowerCase().includes(filterTenBnbd)) return false;
             if (filterCustomerId && !p.customerId?.toLowerCase().includes(filterCustomerId)) return false;
+            if (filterBienLai && !(p.receipt || '').toLowerCase().includes(filterBienLai)) return false;
+            if (filterNguonTiepNhan && !matchReceptionSource(p.channel, filterNguonTiepNhan)) return false;
+            if (filterCanBoXuLy && (p.handlingOfficer || '') !== filterCanBoXuLy) return false;
             if (filterLoaidangky && p.type !== filterLoaidangky) return false;
             if (filterLoaihinh && p.transactionType !== filterLoaihinh) return false;
             if (filterSubtype && p.subtype !== filterSubtype) return false;
@@ -1422,7 +1432,6 @@ function executeRender() {
                     <td><span class="badge badge-warning">Chờ giải quyết</span></td>
                     <td>${row.officer || '-'}</td>
                     <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
-                        <button class="icon-btn view" title="Xem hồ sơ giấy" onclick="openPaperReadonly('${row.id}')">Xem</button>
                         <button class="icon-btn edit" title="Tạo hồ sơ" onclick="startDigitize('${row.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>
                         <button class="icon-btn reject" title="Từ chối" onclick="openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>
                     </td>
@@ -1430,10 +1439,9 @@ function executeRender() {
             `;
         } else {
             let actionsHtml = '';
-            const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openDetail('${row.id}')">Xem</button>`;
 
             if (currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly') {
-                actionsHtml = btnView;
+                actionsHtml = '';
             } else if (currentListTab === 'choduyet') {
                 const btnApprove = `<button class="icon-btn approve" title="Duyệt hồ sơ" onclick="event.stopPropagation(); approveDossierSingle('${row.id}')"><i class="fa fa-check"></i></button>`;
                 const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); submitForSignatureSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
@@ -1446,18 +1454,18 @@ function executeRender() {
                 } else {
                     btnEdit = `<button class="icon-btn edit" title="Hồ sơ từ nguồn Khách hàng không được cập nhật" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 }
-                actionsHtml = `${btnView}${btnEdit}${btnApprove}${btnSign}${btnReject}`;
+                actionsHtml = `${btnEdit}${btnApprove}${btnSign}${btnReject}`;
             } else if (currentListTab === 'duyet-choky') {
                 const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); submitForSignatureSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 const btnCancelApprove = `<button class="icon-btn cancel-approve" title="Hủy duyệt" onclick="event.stopPropagation(); cancelApprovalSingle('${row.id}')"><i class="fa-solid fa-rotate-left"></i></button>`;
                 const btnReject = `<button class="icon-btn reject" title="Từ chối hồ sơ" onclick="event.stopPropagation(); openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>`;
-                actionsHtml = `${btnView}${btnSign}${btnCancelApprove}${btnReject}`;
+                actionsHtml = `${btnSign}${btnCancelApprove}${btnReject}`;
             } else if (currentListTab === 'bitralai') {
                 const btnEdit = `<button class="icon-btn edit" title="Cập nhật thông tin" onclick="event.stopPropagation(); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
                 const btnReject = `<button class="icon-btn reject" title="Từ chối hồ sơ" onclick="event.stopPropagation(); openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>`;
-                actionsHtml = `${btnView}${btnEdit}${btnReject}`;
+                actionsHtml = `${btnEdit}${btnReject}`;
             } else {
-                actionsHtml = btnView;
+                actionsHtml = '';
             }
 
             tbody.innerHTML += `
@@ -1477,7 +1485,7 @@ function executeRender() {
                     <td><code>${row.receipt || '-'}</code></td>
                     <td><span class="badge ${row.statusClass}">${row.status}</span></td>
                     <td>${row.requestor || row.customer}</td>
-                    <td>${(row.channel === 'Cách thức điện tử') ? 'Khách hàng' : 'Cán bộ nhập liệu'}</td>
+                    <td>${normalizeReceptionSource(row.channel)}</td>
                     <td>${row.handlingOfficer || '-'}</td>
                     <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
                         ${actionsHtml}
@@ -1684,16 +1692,22 @@ function renderFilterPanel() {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
-                    <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
+                    <div class="date-filter-wrap">
+                        <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
-                    <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
+                    <div class="date-filter-wrap">
+                        <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
                 </div>
             </div>
             <div style="text-align: right; margin-top: 15px;">
-                <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;">Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="searchList()">Tìm kiếm</button>
+                <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
     } else {
@@ -1714,12 +1728,43 @@ function renderFilterPanel() {
         container.innerHTML = `
             <div class="grid-4-cols">
                 <div class="form-group">
-                    <label class="form-label">Tìm kiếm</label>
-                    <input type="text" class="form-control" id="filter-search-term" placeholder="Mã số đăng ký, PIN, Tên bên bảo đảm..." autocomplete="off">
+                    <label class="form-label">Số đăng ký</label>
+                    <input type="text" class="form-control" id="filter-so-dang-ky" placeholder="Nhập số đăng ký..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên bên bảo đảm</label>
+                    <input type="text" class="form-control" id="filter-ten-bbd" placeholder="Nhập tên bên bảo đảm..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên bên nhận bảo đảm</label>
+                    <input type="text" class="form-control" id="filter-ten-bnbd" placeholder="Nhập tên bên nhận bảo đảm..." autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Mã khách hàng</label>
                     <input type="text" class="form-control" id="filter-customer-id" placeholder="Nhập mã khách hàng..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số biên lai</label>
+                    <input type="text" class="form-control" id="filter-so-bien-lai" placeholder="Nhập số biên lai..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nguồn tiếp nhận</label>
+                    <select class="form-select" id="filter-nguon-tiep-nhan">
+                        <option value="">Tất cả</option>
+                        <option value="Trực tuyến">Trực tuyến</option>
+                        <option value="Trực tiếp">Trực tiếp</option>
+                        <option value="Dịch vụ công Quốc gia">Dịch vụ công Quốc gia</option>
+                        <option value="Bưu chính">Bưu chính</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cán bộ xử lý</label>
+                    <select class="form-select" id="filter-can-bo-xu-ly">
+                        <option value="">Tất cả</option>
+                        <option value="Nguyễn Văn Cán Bộ">Nguyễn Văn Cán Bộ</option>
+                        <option value="Lê Anh Tuấn">Lê Anh Tuấn</option>
+                        <option value="Trần Quốc Khánh">Trần Quốc Khánh</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Loại đăng ký</label>
@@ -1766,16 +1811,22 @@ function renderFilterPanel() {
                 ${statusFilterHtml}
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
-                    <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
+                    <div class="date-filter-wrap">
+                        <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
-                    <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
+                    <div class="date-filter-wrap">
+                        <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
                 </div>
             </div>
             <div style="text-align: right; margin-top: 15px;">
-                <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;">Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="searchList()">Tìm kiếm</button>
+                <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
         updateSubTypes();
@@ -1786,11 +1837,6 @@ function renderFilterPanel() {
         flatpickr("#filter-denngay", { dateFormat: "d/m/Y", allowInput: true });
     }
     
-    // Clear browser autofill values after rendering
-    setTimeout(() => {
-        const searchEl = document.getElementById('filter-search-term');
-        if (searchEl) searchEl.value = '';
-    }, 50);
 }
 
 let singleRejectId = null;
@@ -1967,10 +2013,25 @@ function parseDateString(dateStr) {
     return new Date(year, month, day, h, m);
 }
 
+function normalizeReceptionSource(source) {
+    const value = (source || '').toLowerCase();
+    if (value.includes('dịch vụ công') || value.includes('dvcqg')) return 'Dịch vụ công Quốc gia';
+    if (value.includes('bưu') || value.includes('buu')) return 'Bưu chính';
+    if (value.includes('trực tiếp') || value.includes('truc tiep') || value.includes('cán bộ') || value.includes('can bo')) return 'Trực tiếp';
+    if (value.includes('điện tử') || value.includes('dien tu') || value.includes('website') || value.includes('mobile') || value.includes('khách hàng') || value.includes('khach hang') || value.includes('trực tuyến') || value.includes('truc tuyen')) return 'Trực tuyến';
+    return source || '';
+}
+
+function matchReceptionSource(source, filterValue) {
+    return !filterValue || normalizeReceptionSource(source) === filterValue;
+}
+
 // Xóa bộ lọc MH01
 function resetFilters() {
     const ids = [
         'filter-makh', 'filter-tenbbd', 'filter-tenbnbd', 'filter-bienlai',
+        'filter-so-dang-ky', 'filter-ten-bbd', 'filter-ten-bnbd', 'filter-customer-id',
+        'filter-so-bien-lai', 'filter-nguon-tiep-nhan', 'filter-can-bo-xu-ly',
         'filter-loaidangky', 'cb-loaihinh',
         'filter-loaitaisan', 'filter-search-term', 'filter-kenh-tiep-nhan',
         'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra',
@@ -3410,12 +3471,43 @@ renderFilterPanel = function () {
         container.innerHTML = `
             <div class="grid-4-cols">
                 <div class="form-group">
-                    <label class="form-label">Tìm kiếm</label>
-                    <input type="text" class="form-control" id="cctt-filter-search" placeholder="Mã hồ sơ, người yêu cầu, dữ liệu tra cứu...">
+                    <label class="form-label">Mã hồ sơ</label>
+                    <input type="text" class="form-control" id="cctt-filter-id" placeholder="Nhập mã hồ sơ CCTT...">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Mã khách hàng</label>
                     <input type="text" class="form-control" id="cctt-filter-customer" placeholder="Nhập mã khách hàng...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nguồn tiếp nhận</label>
+                    <select class="form-select" id="cctt-filter-source">
+                        <option value="">Tất cả</option>
+                        <option value="Trực tuyến">Trực tuyến</option>
+                        <option value="Trực tiếp">Trực tiếp</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Từ ngày</label>
+                    <div class="date-filter-wrap">
+                        <input type="text" class="form-control" id="cctt-filter-fromdate" placeholder="dd/mm/yyyy">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày</label>
+                    <div class="date-filter-wrap">
+                        <input type="text" class="form-control" id="cctt-filter-todate" placeholder="dd/mm/yyyy">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cán bộ xử lý</label>
+                    <select class="form-select" id="cctt-filter-officer">
+                        <option value="">Tất cả</option>
+                        <option value="Nguyễn Văn Cán Bộ">Nguyễn Văn Cán Bộ</option>
+                        <option value="Lê Anh Tuấn">Lê Anh Tuấn</option>
+                        <option value="Trần Quốc Khánh">Trần Quốc Khánh</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Tiêu chí yêu cầu</label>
@@ -3435,10 +3527,14 @@ renderFilterPanel = function () {
                 </div>
             </div>
             <div style="text-align:right;margin-top:15px">
-                <button class="btn btn-outline-secondary" onclick="renderTable(true)" style="margin-right:8px">Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="renderTable(true)">Tìm kiếm</button>
+                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="renderTable(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr("#cctt-filter-fromdate", { dateFormat: "d/m/Y", allowInput: true });
+            flatpickr("#cctt-filter-todate", { dateFormat: "d/m/Y", allowInput: true });
+        }
         return;
     }
     if (shouldShowOfficerWorkTabs() && officerWorkType === 'copy') {
@@ -3447,8 +3543,12 @@ renderFilterPanel = function () {
             container.innerHTML = `
                 <div class="grid-4-cols">
                     <div class="form-group">
-                        <label class="form-label">Tìm kiếm</label>
-                        <input type="text" class="form-control" id="copy-filter-search" placeholder="Mã hồ sơ, người yêu cầu, số đăng ký...">
+                        <label class="form-label">Mã hồ sơ</label>
+                        <input type="text" class="form-control" id="copy-filter-id" placeholder="Nhập mã hồ sơ...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Từ khóa</label>
+                        <input type="text" class="form-control" id="copy-filter-search" placeholder="Nhập người yêu cầu, số đăng ký...">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Mã khách hàng</label>
@@ -3471,8 +3571,8 @@ renderFilterPanel = function () {
                     </div>
                 </div>
                 <div style="text-align:right;margin-top:15px">
-                    <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px">Xóa bộ lọc</button>
-                    <button class="btn btn-primary" onclick="renderTable(true)">Tìm kiếm</button>
+                    <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button class="btn btn-primary" onclick="renderTable(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
             `;
         }
@@ -3521,24 +3621,43 @@ function renderCcttOfficerTable() {
             <th style="width:120px;text-align:center">Thao tác</th>
         </tr>
     `;
-    const search = document.getElementById('cctt-filter-search')?.value.toLowerCase().trim() || '';
+    const dossierId = document.getElementById('cctt-filter-id')?.value.toLowerCase().trim() || '';
     const customer = document.getElementById('cctt-filter-customer')?.value.toLowerCase().trim() || '';
+    const source = document.getElementById('cctt-filter-source')?.value || '';
+    const fromDateValue = document.getElementById('cctt-filter-fromdate')?.value || '';
+    const toDateValue = document.getElementById('cctt-filter-todate')?.value || '';
+    const officer = document.getElementById('cctt-filter-officer')?.value || '';
     const criteria = document.getElementById('cctt-filter-criteria')?.value || '';
     const status = document.getElementById('cctt-filter-status')?.value || '';
     const targetStatuses = getOfficerCcttTargetStatuses();
     const rows = ccttOfficerRequests.filter(x => {
         if (!targetStatuses.includes(x.status)) return false;
-        if (search && !`${x.id} ${x.requester} ${x.inputData}`.toLowerCase().includes(search)) return false;
+        if (dossierId && !x.id.toLowerCase().includes(dossierId)) return false;
         if (customer && !x.customerId.toLowerCase().includes(customer)) return false;
+        if (source && !matchReceptionSource(x.source, source)) return false;
+        if (officer && x.officer !== officer) return false;
         if (criteria && x.criteria !== criteria) return false;
         if (status && x.status !== status) return false;
+        if (fromDateValue) {
+            const rowDate = parseDateString(x.registeredAt);
+            const fromDate = parseDateString(fromDateValue);
+            if (rowDate && fromDate && rowDate < fromDate) return false;
+        }
+        if (toDateValue) {
+            const rowDate = parseDateString(x.registeredAt);
+            const toDate = parseDateString(toDateValue);
+            if (rowDate && toDate) {
+                toDate.setHours(23, 59, 59, 999);
+                if (rowDate > toDate) return false;
+            }
+        }
         return true;
     });
     if (!rows.length) {
         tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text-muted)">Không có yêu cầu cung cấp thông tin phù hợp.</td></tr>';
     } else {
         tbody.innerHTML = rows.map((row, idx) => {
-            let actions = `<button class="icon-btn view" title="Xem chi tiết" onclick="openCcttOfficerDetail('${row.id}')">Xem</button>`;
+            let actions = '';
             if (row.status === 'Chờ duyệt') {
                 actions += `<button class="icon-btn reject" title="Từ chối" onclick="alert('Mở popup nhập lý do từ chối cho ${row.id}')"><i class="fa fa-times"></i></button>`;
             } else if (row.status === 'Bị trả lại') {
@@ -3600,6 +3719,7 @@ function renderPaperCcttListTable(thead, tbody) {
             <th style="width:50px;text-align:center">STT</th>
             <th style="width:160px">Mã hồ sơ</th>
             <th style="width:110px">Số đơn giấy</th>
+            <th style="width:130px">Mã khách hàng</th>
             <th style="width:220px">Người yêu cầu</th>
             <th style="width:180px">Người nộp hồ sơ</th>
             <th style="width:150px">Thời điểm tiếp nhận</th>
@@ -3610,19 +3730,36 @@ function renderPaperCcttListTable(thead, tbody) {
             <th style="width:150px;text-align:center">Thao tác</th>
         </tr>
     `;
-    const search = document.getElementById('cctt-filter-search')?.value.toLowerCase().trim() || '';
-    const paper = document.getElementById('cctt-filter-paper')?.value.toLowerCase().trim() || '';
-    const requester = document.getElementById('cctt-filter-requester')?.value.toLowerCase().trim() || '';
+    const dossierId = document.getElementById('cctt-filter-id')?.value.toLowerCase().trim() || '';
+    const customer = document.getElementById('cctt-filter-customer')?.value.toLowerCase().trim() || '';
+    const source = document.getElementById('cctt-filter-source')?.value || '';
+    const fromDateValue = document.getElementById('cctt-filter-fromdate')?.value || '';
+    const toDateValue = document.getElementById('cctt-filter-todate')?.value || '';
+    const officer = document.getElementById('cctt-filter-officer')?.value || '';
     const status = document.getElementById('cctt-filter-status')?.value || 'Chờ giải quyết';
     const rows = getPaperCcttRows().filter(row => {
-        if (search && !`${row.id} ${row.paper || ''} ${row.customer || ''} ${row.submitter || ''}`.toLowerCase().includes(search)) return false;
-        if (paper && !(row.paper || '').toLowerCase().includes(paper)) return false;
-        if (requester && !(row.customer || '').toLowerCase().includes(requester)) return false;
+        if (dossierId && !row.id.toLowerCase().includes(dossierId)) return false;
+        if (customer && !'vãng lai'.includes(customer) && !'vang lai'.includes(customer)) return false;
+        if (source && !matchReceptionSource(row.source, source)) return false;
+        if (officer && (row.handlingOfficer || 'Nguyễn Văn Cán Bộ') !== officer) return false;
         if (status && row.status !== status) return false;
+        if (fromDateValue) {
+            const rowDate = parseDateString(row.date);
+            const fromDate = parseDateString(fromDateValue);
+            if (rowDate && fromDate && rowDate < fromDate) return false;
+        }
+        if (toDateValue) {
+            const rowDate = parseDateString(row.date);
+            const toDate = parseDateString(toDateValue);
+            if (rowDate && toDate) {
+                toDate.setHours(23, 59, 59, 999);
+                if (rowDate > toDate) return false;
+            }
+        }
         return true;
     });
     if (!rows.length) {
-        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text-muted)">Không có hồ sơ giấy Yêu cầu cung cấp thông tin phù hợp.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:30px;color:var(--text-muted)">Không có hồ sơ giấy Yêu cầu cung cấp thông tin phù hợp.</td></tr>';
     } else {
         tbody.innerHTML = rows.map((row, idx) => {
             const actionText = row.status === 'Bị trả lại' ? 'Sửa và trình ký lại' : 'Nhập liệu';
@@ -3632,6 +3769,7 @@ function renderPaperCcttListTable(thead, tbody) {
                     <td style="text-align:center">${idx + 1}</td>
                     <td><span class="action-link"><b>${row.id}</b></span></td>
                     <td><code>${row.paper || '-'}</code></td>
+                    <td><span class="badge badge-secondary badge-guest">Vãng lai</span></td>
                     <td><b>${row.customer}</b></td>
                     <td>${row.submitter || row.customer}</td>
                     <td>${row.date}</td>
@@ -3654,7 +3792,7 @@ function renderPaperCcttListTable(thead, tbody) {
 function resetPaperCcttFilters() {
     const status = document.getElementById('cctt-filter-status');
     if (status) status.value = 'Chờ giải quyết';
-    ['cctt-filter-search','cctt-filter-paper','cctt-filter-requester'].forEach(id => {
+    ['cctt-filter-id','cctt-filter-customer','cctt-filter-source','cctt-filter-fromdate','cctt-filter-todate','cctt-filter-officer','cctt-filter-criteria'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
@@ -3686,10 +3824,17 @@ function getCopyBadgeClass(status) {
     return 'badge-warning';
 }
 
-function renderCopyActionButton(label, onclick, enabled, styleClass = 'btn-primary') {
-    const disabled = enabled ? '' : 'disabled style="opacity:.45;cursor:not-allowed"';
+function renderCopyActionButton(label, onclick, enabled, styleClass = 'edit') {
+    const iconMap = {
+        'Nhập liệu': { icon: 'fa-solid fa-pen-to-square', className: 'edit', title: 'Nhập liệu hồ sơ' },
+        'Sửa và trình lại': { icon: 'fa-solid fa-pen-to-square', className: 'edit', title: 'Cập nhật và trình lại' },
+        'Xử lý hồ sơ': { icon: 'fa-solid fa-pen-to-square', className: 'edit', title: 'Xử lý hồ sơ' },
+        'Xác nhận trả kết quả': { icon: 'fa-solid fa-check', className: 'sign', title: 'Xác nhận trả kết quả' }
+    };
+    const config = iconMap[label] || { icon: 'fa-solid fa-ellipsis', className: styleClass, title: label };
+    const disabled = enabled ? '' : 'disabled style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"';
     const click = enabled ? `onclick="event.stopPropagation(); ${onclick}"` : '';
-    return `<button class="btn ${styleClass}" ${click} ${disabled} style="padding:6px 10px;font-size:12px;margin:2px">${label}</button>`;
+    return `<button class="icon-btn ${config.className}" title="${config.title}" ${click} ${disabled}><i class="${config.icon}"></i></button>`;
 }
 
 function renderCopyOfficerTable() {
@@ -3716,6 +3861,7 @@ function renderCopyOfficerTable() {
             <th style="width:210px;text-align:center">Thao tác</th>
         </tr>
     `;
+    const dossierId = document.getElementById('copy-filter-id')?.value.toLowerCase().trim() || '';
     const search = document.getElementById('copy-filter-search')?.value.toLowerCase().trim() || '';
     const customer = document.getElementById('copy-filter-customer')?.value.toLowerCase().trim() || '';
     const copyType = document.getElementById('copy-filter-type')?.value || '';
@@ -3723,7 +3869,8 @@ function renderCopyOfficerTable() {
     const targetStatuses = getOfficerCopyTargetStatuses();
     const rows = officerCopyRequests.filter(x => {
         if (!targetStatuses.includes(x.status)) return false;
-        if (search && !`${x.id} ${x.requester} ${x.registrationNo} ${x.paperNo || ''}`.toLowerCase().includes(search)) return false;
+        if (dossierId && !x.id.toLowerCase().includes(dossierId)) return false;
+        if (search && !`${x.requester} ${x.registrationNo} ${x.paperNo || ''}`.toLowerCase().includes(search)) return false;
         if (customer && !x.customerId.toLowerCase().includes(customer)) return false;
         if (copyType && x.copyType !== copyType) return false;
         if (status && x.status !== status) return false;

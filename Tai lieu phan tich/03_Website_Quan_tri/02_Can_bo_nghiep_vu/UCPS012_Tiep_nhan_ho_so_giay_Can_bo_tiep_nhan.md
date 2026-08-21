@@ -1,4 +1,4 @@
-﻿﻿# UCPS012 - Tiếp nhận hồ sơ giấy của Cán bộ tiếp nhận
+# UCPS012 - Tiếp nhận hồ sơ giấy của Cán bộ tiếp nhận
 
 ## 1. Tổng quan
 
@@ -118,7 +118,7 @@ flowchart LR
 | Người yêu cầu | String(255) | Không | Trống | Tìm kiếm không phân biệt hoa/thường. |
 | Người nộp hồ sơ | String(255) | Không | Trống | Tìm kiếm không phân biệt hoa/thường. |
 | Loại yêu cầu | Enum(String(50)) | Không | Tất cả | Chọn theo danh mục Loại yêu cầu. |
-| Kênh tiếp nhận | Enum(String(50)) | Không | Tất cả | Giá trị gồm:<br>- Trực tiếp tại quầy<br>- Qua bưu điện<br>- Fax<br>- Email |
+| Kênh tiếp nhận | Enum(String(50)) | Không | Tất cả | Giá trị gồm:<br>+ Trực tiếp tại quầy<br>+ Qua bưu điện<br>+ Fax<br>+ Email |
 | Từ ngày tiếp nhận | Date | Không | Trống | Không được lớn hơn Đến ngày tiếp nhận. |
 | Đến ngày tiếp nhận | Date | Không | Trống | Không được nhỏ hơn Từ ngày tiếp nhận. |
 | Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Lọc theo bộ trạng thái hồ sơ giấy: "Chờ thu phí", "Chờ giải quyết", "Duyệt chờ ký", "Chờ ký", "Bị trả lại", "Bị từ chối", "Hoàn thành". |
@@ -162,14 +162,14 @@ flowchart LR
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
 | **Khối Thông tin tiếp nhận** | — | — | — | Thông tin hành chính do Cán bộ tiếp nhận ghi nhận. |
-| Kênh tiếp nhận | Enum(String(50)) | Có | Trực tiếp tại quầy | Giá trị gồm:<br>- Trực tiếp tại quầy<br>- Bưu điện<br>- Fax<br>- Email |
+| Kênh tiếp nhận | Enum(String(50)) | Có | Trực tiếp tại quầy | Giá trị gồm:<br>+ Trực tiếp tại quầy<br>+ Bưu điện<br>+ Fax<br>+ Email |
 | Thời điểm tiếp nhận | Datetime | Có | Thời gian hệ thống | Cho phép sửa nếu người dùng có quyền; mặc định theo thời gian hệ thống. |
 | Số đơn giấy | String(50) | Có | Trống | Cán bộ nhập. Kiểm tra trùng theo đơn vị và năm tiếp nhận theo **[BR-UCPS-003]**. |
 | Đơn vị tiếp nhận | String(255) | Có | Đơn vị đăng nhập | Chỉ đọc. Lấy theo tài khoản đăng nhập, không cho chọn lại đơn vị. |
 | Cán bộ tiếp nhận | String(100) | Có | Người đăng nhập | Chỉ đọc. Tự động ghi nhận theo tài khoản đăng nhập. |
 | Ghi chú tiếp nhận | Text(1000) | Không | Trống | Cán bộ nhập ghi chú hành chính; không nhập dữ liệu nghiệp vụ chi tiết. |
 | **Khối Thông tin người yêu cầu** | — | — | — | Thông tin nhận diện cá nhân/tổ chức yêu cầu tiếp nhận. |
-| Loại khách hàng | Enum(String(50)) | Có | Trống | Giá trị gồm:<br>- Có tài khoản trực tuyến<br>- Khách hàng vãng lai |
+| Loại khách hàng | Enum(String(50)) | Có | Trống | Giá trị gồm:<br>+ Có tài khoản trực tuyến<br>- Khách hàng vãng lai |
 | Mã tài khoản trực tuyến | String(50) | Có điều kiện | Trống | Chỉ hiển thị khi Loại khách hàng = "Có tài khoản trực tuyến".<br>- Bắt buộc nhập/chọn khi hiển thị.<br>- Cho phép tra cứu theo mã tài khoản/mã khách hàng/số điện thoại/email. |
 | Mã khách hàng | String(50) | Không | Sau khi chọn tài khoản | Chỉ hiển thị khi Loại khách hàng = "Có tài khoản trực tuyến" và hệ thống tra cứu được tài khoản.<br>- Chỉ đọc. Lấy từ tài khoản khách hàng. |
 | Họ tên cá nhân/Tên tổ chức | String(255) | Có | Trống hoặc theo tài khoản | Luôn hiển thị.<br>- Với Loại khách hàng = "Có tài khoản trực tuyến": chỉ đọc, lấy theo tài khoản đã chọn.<br>- Với Loại khách hàng = "Khách hàng vãng lai": Cán bộ tiếp nhận nhập tay. |
@@ -181,7 +181,7 @@ flowchart LR
 | Số CCCD/Số định danh cá nhân | String(20) | Có | Trống | Kiểm tra độ dài/định dạng theo cấu hình. |
 | Số điện thoại | String(20) | Có | Trống | Kiểm tra định dạng số điện thoại theo **[BR-VAL-003]**. |
 | Email | String(255) | Không | Trống | Nếu nhập, kiểm tra định dạng email theo **[BR-VAL-002]**. |
-| Quan hệ với người yêu cầu | Enum(String(50)) | Không | Trống | Giá trị gồm:<br>- Người yêu cầu<br>- Người được ủy quyền<br>- Nhân viên tổ chức<br>- Khác |
+| Quan hệ với người yêu cầu | Enum(String(50)) | Không | Trống | Giá trị gồm:<br>+ Người yêu cầu<br>+ Người được ủy quyền<br>+ Nhân viên tổ chức<br>+ Khác |
 | **Khối Loại yêu cầu và tham số tính phí** | — | — | — | Xác định Loại yêu cầu và tham số tối thiểu phục vụ tính phí; không nhập tài sản, bên tham gia, hợp đồng, nghĩa vụ hoặc nội dung nghiệp vụ chi tiết. |
 | Loại yêu cầu và tham số tính phí | Text(4000) | Có | Trống | Chọn Loại yêu cầu và nhập tham số cần thiết để hệ thống xác định biểu phí. Không nhập tài sản, bên tham gia, hợp đồng, nghĩa vụ hoặc nội dung nghiệp vụ chi tiết tại bước tiếp nhận. |
 | Số lượng bản sao | Integer(10) | Có điều kiện | Trống | Chỉ hiển thị khi Loại yêu cầu thuộc nhóm "Yêu cầu cung cấp bản sao" hoặc "Yêu cầu cung cấp bản sao kèm thông báo".<br>- Bắt buộc nhập khi hiển thị.<br>- Giá trị là số nguyên >= 1 theo **[BR-UCPS-005]**. |
@@ -192,7 +192,7 @@ flowchart LR
 | Đối tượng miễn phí | Enum(String(50)) | Không | Trống | Chỉ hiển thị khi Loại yêu cầu hoặc đối tượng hồ sơ thuộc trường hợp có thể được miễn lệ phí theo cấu hình biểu phí.<br>- Cán bộ tiếp nhận chỉ ghi nhận/cung cấp căn cứ ban đầu để hệ thống tính số tiền phải thu.<br>- Việc xác nhận miễn phí cuối cùng do Cán bộ kế toán thực hiện tại [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
 | Trạng thái lệ phí | Enum(String(50)) | Có | Chưa tạo khoản thu | Chỉ đọc. Cập nhật sau Hoàn tất tiếp nhận. |
 | **Khối Phương thức nhận kết quả** | — | — | — | Phương thức và địa chỉ/email nhận kết quả giải quyết hồ sơ. |
-| Phương thức nhận kết quả | Enum(String(50)) | Có | Trống | Giá trị gồm:<br>- Trực tiếp tại quầy<br>- Qua dịch vụ bưu chính<br>- Cách thức điện tử |
+| Phương thức nhận kết quả | Enum(String(50)) | Có | Trống | Giá trị gồm:<br>+ Trực tiếp tại quầy<br>+ Qua dịch vụ bưu chính<br>+ Cách thức điện tử |
 | Địa chỉ nhận kết quả | Text(1000) | Có điều kiện | Trống | Chỉ hiển thị và bắt buộc khi Phương thức nhận kết quả = "Qua dịch vụ bưu chính". |
 | Email nhận kết quả | String(255) | Có điều kiện | Theo Email người yêu cầu nếu có | Chỉ hiển thị khi Phương thức nhận kết quả = "Cách thức điện tử".<br>- Bắt buộc khi hồ sơ chưa có email người yêu cầu hợp lệ.<br>- Kiểm tra theo **[BR-VAL-002]**. |
 | **Khối Tài liệu đính kèm (Danh mục tài liệu gửi kèm)** | — | — | — | Quản lý danh mục tài liệu giấy được số hóa/đính kèm phục vụ tiếp nhận dạng bảng 4 cột (`STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác`). Không yêu cầu chọn Loại tài liệu.<br>- Tổng số lượng tệp đính kèm: tối đa **10 tệp/hồ sơ**.<br>- Dung lượng tệp: không vượt quá **20MB/tệp** theo quy chuẩn **[BR-FILE-010]** (định dạng tệp hỗ trợ: `.pdf, .doc, .docx, .zip, .rar, .xls, .xlsx`). |
@@ -232,7 +232,7 @@ flowchart LR
 | **Khối Thông tin người yêu cầu** | — | — | — | Chỉ đọc. Hiển thị dữ liệu đã ghi nhận tại **7. UCPS012.MH02 - Màn hình Tiếp nhận hồ sơ giấy**. |
 | **Khối Thông tin người nộp hồ sơ** | — | — | — | Chỉ đọc. Hiển thị họ tên, giấy tờ định danh, số điện thoại, email, quan hệ với người yêu cầu. |
 | **Khối Thông tin loại yêu cầu và lệ phí** | — | — | — | Chỉ đọc. Hiển thị Loại yêu cầu, tham số tính phí, số tiền phải thu, trạng thái lệ phí. Không hiển thị Phương thức thanh toán tại UCPS012 vì thông tin này do Cán bộ kế toán chọn/xác nhận tại [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
-| **Khối Tài liệu đính kèm (Danh mục tài liệu gửi kèm)** | — | — | — | Chỉ đọc (Readonly). Hiển thị bảng Danh mục tài liệu gửi kèm dạng 4 cột (`STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác`).<br>- **Tên tài liệu**: Hiển thị tên thành phần tài liệu đã ghi nhận (kèm badge "Bắt buộc" màu đỏ nếu là tài liệu bắt buộc theo Loại yêu cầu).<br>- **File đính kèm**: Hiển thị icon định dạng tệp kèm Tên tệp tin đính kèm (nếu chưa có tệp hiển thị dấu `-`).<br>- **Thao tác**: Ngay tại từng dòng đã đính kèm tệp tin, hiển thị 2 liên kết thao tác:<br>  + **`Xem file`**: Mở xem nội dung tệp tin trực tiếp trong tab mới.<br>  + **`📥 Tải tệp`**: Tải tệp tin về máy tính người dùng.<br>- **Khác biệt với màn hình tiếp nhận**: Ẩn toàn bộ nút **`📁 Chọn file`**, nút **`🗑 Xóa`** và nút **`➕ Thêm thành phần hồ sơ mới`**. |
+| **Khối Tài liệu đính kèm (Danh mục tài liệu gửi kèm)** | — | — | — | Chỉ đọc (Readonly). Hiển thị bảng Danh mục tài liệu gửi kèm dạng 4 cột (`STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác`).<br>- **Tên tài liệu**: Hiển thị tên thành phần tài liệu đã ghi nhận (kèm badge "Bắt buộc" màu đỏ nếu là tài liệu bắt buộc theo Loại yêu cầu).<br>- **File đính kèm**: Hiển thị icon định dạng tệp kèm Tên tệp tin đính kèm (nếu chưa có tệp hiển thị dấu `-`).<br>- **Thao tác**: Ngay tại từng dòng đã đính kèm tệp tin, hiển thị 2 liên kết thao tác:<br>  + **`Xem file`**: Mở xem nội dung tệp tin trực tiếp trong tab mới.<br>  + **`📥 Tải tệp`**: Tải tệp tin về máy tính người dùng.<br>+ **Khác biệt với màn hình tiếp nhận**: Ẩn toàn bộ nút **`📁 Chọn file`**, nút **`🗑 Xóa`** và nút **`➕ Thêm thành phần hồ sơ mới`**. |
 | **Khối Lịch sử trạng thái** | — | — | — | Chỉ đọc. Hiển thị trạng thái hồ sơ, trạng thái lệ phí và lịch sử xử lý liên quan. |
 
 ### 8.3. Chức năng trên màn hình
@@ -411,4 +411,3 @@ Thông tin nhật ký gồm: người thực hiện, vai trò, đơn vị, thờ
 | AC-UCPS012-007 | Cán bộ tiếp nhận không thấy các trường nghiệp vụ chi tiết như bên bảo đảm, bên nhận bảo đảm, tài sản, hợp đồng, nghĩa vụ. |
 | AC-UCPS012-008 | Hồ sơ hoàn tất theo phương thức tiền mặt/chuyển khoản/miễn phí chuyển đúng trạng thái ban đầu để Cán bộ kế toán xử lý tại [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
 | AC-UCPS012-009 | Danh mục tài liệu gửi kèm hỗ trợ đính kèm tối đa 10 tệp, dung lượng tối đa 20MB/tệp theo [BR-FILE-010], không yêu cầu chọn Loại tài liệu. Ngay khi tệp được tải lên thành công hiển thị liên kết "Xem file" (mở tab mới) và "Xóa". |
-

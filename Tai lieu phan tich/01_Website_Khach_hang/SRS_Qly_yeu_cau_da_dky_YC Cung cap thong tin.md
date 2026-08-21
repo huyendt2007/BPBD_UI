@@ -1,4 +1,4 @@
-﻿﻿## 4.1. Quản lý yêu cầu đã đăng ký - Yêu cầu cung cấp thông tin - Website Khách hàng
+## 4.1. Quản lý yêu cầu đã đăng ký - Yêu cầu cung cấp thông tin - Website Khách hàng
 
 ### 4.1.X. UC195-CCTT - Quản lý yêu cầu cung cấp thông tin đã đăng ký
 
@@ -58,8 +58,8 @@ Ghi chú:
 | :-- | :-- | :-- | :-- | :-- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Vùng nhập điều kiện tìm kiếm danh sách hồ sơ. |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm kiếm chính xác hoặc gần đúng theo Mã hồ sơ Yêu cầu cung cấp thông tin. |
-| Tiêu chí yêu cầu | Enum(String(50)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Số đăng ký<br>- Bên bảo đảm<br>- Số khung |
-| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Chờ thanh toán<br>- Chờ duyệt<br>- Chờ ký<br>- Hoàn thành<br>- Bị từ chối<br>- Bị trả lại |
+| Tiêu chí yêu cầu | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Số đăng ký<br>+ Bên bảo đảm<br>+ Số khung |
+| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Chờ thanh toán<br>+ Chờ duyệt<br>+ Chờ ký<br>+ Hoàn thành<br>+ Bị từ chối<br>+ Bị trả lại |
 | Người tạo | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên người đang đăng nhập đã tạo Phiếu yêu cầu cung cấp thông tin. |
 | Từ ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. Nếu nhập cùng `Đến ngày`, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. Nếu nhập cùng `Từ ngày`, áp dụng [BR-VAL-007]. |
@@ -74,7 +74,7 @@ Ghi chú:
 | Số tiền đã thanh toán (VNĐ) | Decimal(18,0) | Không | Theo hồ sơ | Tiêu đề cột ghi rõ đơn vị tính `(VNĐ)`, dữ liệu từng dòng chỉ hiển thị số đã phân tách hàng nghìn, không lặp lại hậu tố `VNĐ`. Hiển thị tổng số tiền Khách hàng đã thanh toán thành công cho hồ sơ; hồ sơ đã chuyển sang trạng thái "Chờ duyệt" trở về sau (Chờ duyệt, Chờ ký, Hoàn thành) đồng nghĩa đã thanh toán xong (nếu thuộc diện phải thu phí) nên luôn có giá trị; chỉ hiển thị `"—"` khi hồ sơ đang ở trạng thái "Chờ thanh toán" hoặc thuộc diện miễn phí. |
 | Trạng thái | Enum(String(50)) | - | Theo hồ sơ | Hiển thị trạng thái hiện tại của hồ sơ. |
 | Người tạo | String(255) | - | Theo hồ sơ | Hiển thị tên người đang đăng nhập đã tạo Phiếu yêu cầu cung cấp thông tin; không hiển thị account/email đăng nhập. |
-| Thao tác | - | - | Theo trạng thái | Gồm:<br>- Thanh toán: chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`.<br>- Xem file/Tải file: chỉ hiển thị khi hồ sơ ở trạng thái `Hoàn thành` và có file PDF kết quả đã ký.<br>- In biên lai: chỉ hiển thị khi hồ sơ đã thanh toán trực tuyến thành công qua UC158 và có biên lai điện tử. |
+| Thao tác | - | - | Theo trạng thái | Gồm:<br>+ Thanh toán: chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`.<br>+ Xem file/Tải file: chỉ hiển thị khi hồ sơ ở trạng thái `Hoàn thành` và có file PDF kết quả đã ký.<br>+ In biên lai: chỉ hiển thị khi hồ sơ đã thanh toán trực tuyến thành công qua UC158 và có biên lai điện tử. |
 
 ##### 4.1.X.3.3. Chức năng trên màn hình
 
@@ -83,7 +83,7 @@ Ghi chú:
 | 1 | Tìm kiếm | Button | TH1 (Điều kiện ngày không hợp lệ): Nếu `Từ ngày` lớn hơn `Đến ngày`, hiển thị [MSG-ERR-VAL-007] và không tìm kiếm.<br>TH2 (Không có dữ liệu): Nếu không có bản ghi phù hợp, hiển thị trạng thái rỗng theo chuẩn danh sách.<br>TH Hợp lệ: Hệ thống tải danh sách hồ sơ thỏa mãn điều kiện.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Button | Xóa toàn bộ tiêu chí lọc và tải lại danh sách mặc định theo `Thời điểm đăng ký` giảm dần. |
 | 3 | Row Click | Row | Mở màn hình chi tiết hồ sơ Yêu cầu cung cấp thông tin tương ứng. |
-| 4 | Thanh toán | Button | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`. Khi click, hệ thống chuyển sang luồng thanh toán theo mục 4.1.X.5. |
+| 4 | Thanh toán | Button | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`. Khi click, hệ thống đóng gói tham số `Mã loại thanh toán = THANH_TOAN_CCTT`, `Mã hồ sơ`, `Số tiền phải thu`, `Mã đơn vị thụ hưởng`, `Return URL` và chuyển sang UC158 theo tài liệu [UC158_Thanh_toan_truc_tuyen.md](UC158_Thanh_toan_truc_tuyen.md). |
 | 5 | Xem file | Link/Button | Chỉ hiển thị khi hồ sơ `Hoàn thành` và có file PDF kết quả đã ký. Cho phép mở file tại tab/trình xem riêng. |
 | 6 | Tải file | Link/Button | Chỉ hiển thị khi hồ sơ `Hoàn thành` và có file PDF kết quả đã ký. |
 | 7 | In biên lai | Button | Chỉ hiển thị khi hồ sơ đã thanh toán trực tuyến thành công qua UC158 và có biên lai điện tử. |
@@ -132,40 +132,26 @@ Ghi chú:
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :-- | :-- | :-- |
 | 1 | Quay lại | Button | Quay lại tab `Yêu cầu cung cấp thông tin`, giữ nguyên bộ lọc và trang hiện tại. |
-| 2 | Thanh toán | Button | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`, có nghĩa vụ phí. |
+| 2 | Thanh toán | Button | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`, có nghĩa vụ phí. Khi click, hệ thống đóng gói tham số `Mã loại thanh toán = THANH_TOAN_CCTT`, `Mã hồ sơ`, `Số tiền phải thu`, `Mã đơn vị thụ hưởng`, `Return URL` và chuyển sang UC158 theo tài liệu [UC158_Thanh_toan_truc_tuyen.md](UC158_Thanh_toan_truc_tuyen.md). |
 | 3 | Xem file | Link/Button | Chỉ hiển thị khi hồ sơ `Hoàn thành` và có file PDF kết quả đã ký. |
 | 4 | Tải file | Link/Button | Chỉ hiển thị khi hồ sơ `Hoàn thành` và có file PDF kết quả đã ký. |
 | 5 | Xem/In biên lai | Link/Button | Chỉ hiển thị khi hồ sơ đã thanh toán trực tuyến thành công qua UC158 và có biên lai điện tử. |
 
 ---
 
-#### 4.1.X.5. Quy tắc thanh toán hồ sơ Yêu cầu cung cấp thông tin
+#### 4.1.X.5. Tham chiếu phân hệ thanh toán trực tuyến UC158
 
-##### 4.1.X.5.1. Nguyên tắc sử dụng UC158
+Tài liệu quản lý yêu cầu CCTT đã đăng ký không đặc tả chi tiết quy tắc thanh toán, màn hình thanh toán, callback, kết quả thanh toán hoặc phát hành biên lai.
 
-- Tài liệu này không thiết kế lại màn hình lựa chọn phương thức thanh toán, màn hình thanh toán của Cổng thanh toán, webhook callback, màn hình kết quả giao dịch và các quy tắc kỹ thuật dùng chung của UC158.
-- Khi Khách hàng gửi mới hồ sơ Yêu cầu cung cấp thông tin thuộc diện phải thu phí, hệ thống tạo hồ sơ ở trạng thái `Chờ thanh toán`, đóng gói thông tin thanh toán và chuyển ngay sang UC158 theo luồng thanh toán chung.
-- Khi Khách hàng chọn `Thanh toán` từ danh sách/màn hình chi tiết, hệ thống đóng gói lại thông tin thanh toán và chuyển hướng sang UC158 nếu hồ sơ đang ở trạng thái `Chờ thanh toán`.
+Khi Khách hàng bấm `Thanh toán` đối với hồ sơ CCTT ở trạng thái `Chờ thanh toán`, hệ thống chuyển hướng sang phân hệ thanh toán trực tuyến theo tài liệu [UC158_Thanh_toan_truc_tuyen.md](UC158_Thanh_toan_truc_tuyen.md), đồng thời truyền đủ bộ tham số đóng gói sau:
 
-##### 4.1.X.5.2. Dữ liệu thanh toán đóng gói sang UC158
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :-- | :-- | :-- | :-- | :-- |
-| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Mã hồ sơ Yêu cầu cung cấp thông tin. |
-| Số tiền phải thu | Decimal(18,0) | Có | Theo biểu phí | Lấy từ cấu hình biểu phí cung cấp thông tin đang có hiệu lực tại thời điểm phát sinh nghĩa vụ thanh toán. |
-| Nội dung thanh toán | Text(500) | Có | Theo hệ thống | Định dạng mặc định: `Thanh toán phí cung cấp thông tin hồ sơ [Mã hồ sơ]`. |
-| Mã đơn vị thụ hưởng | String(50) | Có | Theo hồ sơ | Trung tâm đăng ký giao dịch bảo đảm tiếp nhận/xử lý hồ sơ. |
-| Return URL | String(500) | Có | Theo hệ thống | Đường dẫn quay lại Website Khách hàng sau khi thanh toán. |
-
-##### 4.1.X.5.3. Xử lý kết quả thanh toán
-
-| Trường hợp | Mô tả xử lý |
-| :-- | :-- |
-| Thanh toán thành công | UC158 trả kết quả thành công. Hệ thống cập nhật giao dịch, biên lai nếu có, chuyển trạng thái hồ sơ từ `Chờ thanh toán` sang `Chờ duyệt`, ghi nhật ký giao dịch thanh toán. |
-| Thanh toán không thành công | Hồ sơ tiếp tục ở trạng thái `Chờ thanh toán`. Khách hàng được phép thực hiện lại thanh toán. |
-| Giao dịch đang xử lý | Hồ sơ tiếp tục ở trạng thái `Chờ thanh toán` cho đến khi UC158 trả kết quả cuối cùng. |
-| Giao dịch bị hủy | Hồ sơ tiếp tục ở trạng thái `Chờ thanh toán`. |
-| Giao dịch hết hạn | Hồ sơ tiếp tục ở trạng thái `Chờ thanh toán`. Khách hàng được phép tạo giao dịch thanh toán mới theo UC158. |
+| Tham số | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :-- | :-- | :--: | :-- | :-- |
+| Mã loại thanh toán | Enum(String(50)) | Có | `THANH_TOAN_CCTT` | Control UI: Hidden/System parameter.<br>- Xác định loại phí thanh toán là phí Yêu cầu cung cấp thông tin. |
+| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Control UI: Hidden/System parameter.<br>- Mã hồ sơ Yêu cầu cung cấp thông tin cần thanh toán. |
+| Số tiền phải thu | Decimal(18,0) | Có | Theo biểu phí | Control UI: Hidden/System parameter.<br>- Số tiền cần thu theo biểu phí cung cấp thông tin đang có hiệu lực. |
+| Mã đơn vị thụ hưởng | String(50) | Có | Theo hồ sơ | Control UI: Hidden/System parameter.<br>- Mã Trung tâm đăng ký/đơn vị thụ hưởng phí của hồ sơ. |
+| Return URL | String(500) | Có | Theo hệ thống | Control UI: Hidden/System parameter.<br>- Đường dẫn quay lại màn hình quản lý/chi tiết hồ sơ CCTT sau khi UC158 xử lý xong giao dịch. |
 
 ---
 
@@ -187,5 +173,4 @@ Ghi chú:
 | :-- | :-- |
 | [SRS_Qly_yeu_cau_da_dky_Phieu dang ky.md](SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md) | Màn hình tổng hợp/tab điều hướng quản lý yêu cầu đã đăng ký. |
 | [SRS yêu cầu cung cấp thông tin.md](SRS%20y%C3%AAu%20c%E1%BA%A7u%20cung%20c%E1%BA%A5p%20th%C3%B4ng%20tin.md) | Mô tả phần lập Yêu cầu cung cấp thông tin và quy trình nghiệp vụ gốc. |
-| UC158 - Quản lý thanh toán phí | Mô tả luồng thanh toán trực tuyến, callback và xử lý kết quả thanh toán. |
-
+| [UC158_Thanh_toan_truc_tuyen.md](UC158_Thanh_toan_truc_tuyen.md) | Mô tả luồng thanh toán trực tuyến, callback, kết quả thanh toán và phát hành biên lai điện tử. |

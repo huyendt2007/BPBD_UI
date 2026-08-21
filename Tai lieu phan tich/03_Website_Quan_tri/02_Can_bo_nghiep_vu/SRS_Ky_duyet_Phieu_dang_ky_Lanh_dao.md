@@ -1,4 +1,4 @@
-﻿﻿## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
+## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
 
 ### 4.3.2.4. WebAdmin-024 - Ký duyệt Phiếu đăng ký
 
@@ -40,21 +40,7 @@
 
 *c. Phạm vi Phiếu đăng ký*
 
-- Nhóm Phiếu đăng ký bao gồm các loại hồ sơ đăng ký thuộc danh mục [DM_04]:
-
-- "Đăng ký lần đầu".
-
-- "Đăng ký thay đổi".
-
-- "Xóa đăng ký".
-
-- "Thông báo xử lý tài sản bảo đảm lần đầu".
-
-- "Thay đổi thông báo xử lý tài sản bảo đảm".
-
-- "Xóa đăng ký thông báo xử lý tài sản bảo đảm".
-
-- Không bao gồm "Yêu cầu cung cấp thông tin", "Yêu cầu cung cấp bản sao" và "Yêu cầu cung cấp bản sao kèm thông báo".
+- Nhóm Phiếu đăng ký Tham chiếu Danh mục Loại hình đăng ký [DM_04] và được xác định theo cấu hình nhóm nghiệp vụ trên hệ thống.
 
 *d. Nguyên tắc dữ liệu*
 
@@ -93,32 +79,35 @@
 | Yêu cầu cung cấp thông tin | Enum(String(50)) | Không | Không chọn | Không thuộc phạm vi tài liệu này. Hiển thị theo tài liệu SRS ký duyệt Yêu cầu cung cấp thông tin của Lãnh đạo. |
 | Yêu cầu cung cấp bản sao | Enum(String(50)) | Không | Không chọn | Không thuộc phạm vi tài liệu này. Hiển thị theo tài liệu SRS ký duyệt Yêu cầu cung cấp bản sao của Lãnh đạo. |
 | **II. Bộ lọc tìm kiếm** | | | | |
-| Tìm kiếm | String(255) | Không | Trống | Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã hồ sơ, Số đăng ký, Mã PIN, Tên bên bảo đảm hoặc Tên bên nhận bảo đảm. |
-| Mã khách hàng | String(50) | Không | Trống | Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
-| Cán bộ trình ký | String(255) | Không | Trống | Tìm kiếm gần đúng theo Cán bộ đã trình ký hồ sơ. |
+| Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đăng ký/Mã hồ sơ của Phiếu đăng ký. |
+| Tên bên bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên bảo đảm trong Phiếu đăng ký. |
+| Tên bên nhận bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên nhận bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên nhận bảo đảm trong Phiếu đăng ký. |
+| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
+| Số biên lai | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số biên lai...".<br>- Tìm kiếm gần đúng theo Số biên lai thu phí/miễn phí của hồ sơ. |
+| Nguồn tiếp nhận | Enum(String(50)) | Không | "Tất cả" | Control UI: Combobox.<br>- Giá trị gồm: "Tất cả", "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính".<br>- Lọc theo nguồn phát sinh/tiếp nhận hồ sơ. |
+| Cán bộ xử lý | Enum(String(255)) | Không | "Tất cả" | Control UI: Combobox.<br>- Chọn Cán bộ/Chuyên viên đã xử lý hoặc trình ký hồ sơ, hoặc chọn "Tất cả".<br>- Danh sách lấy theo cán bộ thuộc phạm vi Trung tâm đăng ký của Lãnh đạo đăng nhập. |
 | Lãnh đạo ký | String(255) | Không | Lãnh đạo đăng nhập | - Cho phép tìm kiếm gần đúng theo tên Lãnh đạo được phân công ký.<br>- Hiển thị thông tin Lãnh đạo được phép ký/duyệt của đơn vị tại Cấu hình thông tin về người ký.<br>- Mặc định giới hạn theo Lãnh đạo đang đăng nhập.<br>- Chỉ vai trò được phân quyền giám sát/tra cứu thay mới được nhập tên Lãnh đạo khác theo phạm vi thẩm quyền. |
-| Loại đăng ký | Enum(String(50)) | Không | "Tất cả" | Tham chiếu [DM_04]. Chỉ lọc trong phạm vi nhóm Phiếu đăng ký. |
-| Loại hình giao dịch | Enum(String(50)) | Không | "Tất cả" | Tham chiếu [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | "Tất cả" | Tham chiếu [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn. |
-| Loại tài sản bảo đảm | Enum(String(255)) | Không | "Tất cả" | Tham chiếu [DM_07]. |
-| Nguồn tiếp nhận | Enum(String(50)) | Không | "Tất cả" | Giá trị gồm:<br>+ "Tất cả".<br>+ "Khách hàng".<br>+ "Cán bộ nhập liệu". |
+| Loại đăng ký | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. Chỉ lọc trong phạm vi nhóm Phiếu đăng ký. |
+| Loại hình giao dịch | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn. |
+| Loại tài sản bảo đảm | Enum(String(255)) | Không | "Tất cả" | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. |
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
 | **III. Bảng danh sách Phiếu đăng ký chờ duyệt** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
-| Bảng danh sách Phiếu đăng ký chờ duyệt | Text(4000) | Không | 20 bản ghi/trang | Chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ duyệt", thuộc phạm vi duyệt của Lãnh đạo đăng nhập và đã được Cán bộ trình tới Lãnh đạo đó. Sắp xếp mặc định theo Thời điểm trình ký tăng dần. Click trực tiếp vào dòng dữ liệu, ngoại trừ vùng checkbox/nút thao tác, để mở **4.3.2.4.3. UC-DK-LD.MH02 - Màn hình Chi tiết Phiếu đăng ký chờ duyệt**. Không thiết kế icon "Xem chi tiết" riêng theo quy tắc Row Click dùng chung.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
+| Bảng danh sách Phiếu đăng ký chờ duyệt | Text(4000) | Không | 20 bản ghi/trang | Chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ duyệt", thuộc phạm vi duyệt của Lãnh đạo đăng nhập và đã được Cán bộ trình tới Lãnh đạo đó. Sắp xếp mặc định theo Thời điểm trình ký tăng dần. Click trực tiếp vào dòng dữ liệu, ngoại trừ vùng checkbox/nút thao tác, để mở **UC-DK-LD.MH02 - Chi tiết Phiếu đăng ký chờ duyệt**. Không thiết kế icon "Xem chi tiết" riêng theo quy tắc Row Click dùng chung.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Checkbox chọn | Boolean | Không | Không tích | Cho phép chọn một hoặc nhiều hồ sơ đủ điều kiện để duyệt theo lô. Checkbox chọn tất cả tại tiêu đề bảng chỉ chọn các hồ sơ đủ điều kiện đang hiển thị trên trang hiện tại. |
 | STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Thời điểm hồ sơ được hệ thống ghi nhận. Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
-| Số đăng ký/Mã hồ sơ | String(50) | Có | Theo hồ sơ | Số đăng ký hoặc Mã hồ sơ của Phiếu đăng ký. Click vào giá trị xử lý tương tự Row Click và mở **4.3.2.4.3. UC-DK-LD.MH02 - Màn hình Chi tiết Phiếu đăng ký chờ duyệt**. |
+| Số đăng ký/Mã hồ sơ | String(50) | Có | Theo hồ sơ | Số đăng ký hoặc Mã hồ sơ của Phiếu đăng ký. Click vào giá trị xử lý tương tự Row Click và mở **UC-DK-LD.MH02 - Chi tiết Phiếu đăng ký chờ duyệt**. |
 | Mã PIN | String(20) | Không | Theo hồ sơ | Hiển thị Mã PIN bảo mật của hồ sơ nếu đã phát sinh. |
 | Tên bên bảo đảm | String(255) | Không | Theo hồ sơ | Hiển thị tên bên bảo đảm trong hồ sơ. |
 | Tên bên nhận bảo đảm | String(255) | Không | Theo hồ sơ | Hiển thị tên bên nhận bảo đảm trong hồ sơ. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Tham chiếu [DM_02] nếu Loại hình giao dịch là "Biện pháp bảo đảm"; tham chiếu [DM_03] nếu Loại hình giao dịch là "Hợp đồng". |
-| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | Tham chiếu [DM_07]. Nếu hồ sơ có nhiều Loại tài sản, hiển thị mỗi Loại tài sản trên một dòng riêng trong cùng ô. |
+| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] nếu Loại hình giao dịch là "Biện pháp bảo đảm"; Tham chiếu Danh mục Loại hợp đồng [DM_03] nếu Loại hình giao dịch là "Hợp đồng". |
+| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. Nếu hồ sơ có nhiều Loại tài sản, hiển thị mỗi Loại tài sản trên một dòng riêng trong cùng ô. |
 | Mã khách hàng | String(50) | Không | Theo hồ sơ | Hiển thị Mã khách hàng nộp hồ sơ nếu có. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Giá trị gồm:<br>+ "Khách hàng".<br>+ "Cán bộ nhập liệu". |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính". |
 | Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Cán bộ đã trình ký hồ sơ. |
 | Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Thời điểm Cán bộ trình ký thành công. |
 | Có phát sinh nghĩa vụ phí | Boolean | Có | Theo hồ sơ/biểu phí | Không áp dụng tại màn chờ duyệt cũ. Nghĩa vụ phí đã được xử lý trước khi hồ sơ vào "Chờ ký" của Lãnh đạo. |
@@ -138,8 +127,8 @@
 |  |  |  | Không áp dụng theo Plan BTNN. Lãnh đạo không thực hiện duyệt tại màn này. |
 |  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra toàn bộ danh sách hồ sơ đã chọn. Khi tất cả hồ sơ hợp lệ, hệ thống duyệt từng hồ sơ, chuyển trạng thái theo nghĩa vụ phí của từng hồ sơ và ghi nhận kết quả độc lập. |
 | 4 | Từ chối | Nút/Icon | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.4.4. UC-DK-LD.MH03 - Popup Từ chối Phiếu đăng ký chờ duyệt**. |
-| 5 | Click dòng dữ liệu | Row Click | Mở **4.3.2.4.3. UC-DK-LD.MH02 - Màn hình Chi tiết Phiếu đăng ký chờ duyệt**. Đây là phương thức chính để xem chi tiết hồ sơ trên lưới, ngoại trừ khi Lãnh đạo click trực tiếp vào checkbox hoặc các nút thao tác nghiệp vụ. |
+|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH03 - Popup Từ chối Phiếu đăng ký chờ duyệt**. |
+| 5 | Click dòng dữ liệu | Row Click | Mở **UC-DK-LD.MH02 - Chi tiết Phiếu đăng ký chờ duyệt**. Đây là phương thức chính để xem chi tiết hồ sơ trên lưới, ngoại trừ khi Lãnh đạo click trực tiếp vào checkbox hoặc các nút thao tác nghiệp vụ. |
 
 #### 4.3.2.4.3. UC-DK-LD.MH02 - Màn hình Chi tiết Phiếu đăng ký chờ duyệt (không áp dụng)
 
@@ -157,10 +146,10 @@
 | Mã khách hàng | String(50) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ có Mã khách hàng. |
 | Mã PIN | String(20) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã phát sinh Mã PIN. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm hồ sơ được hệ thống ghi nhận. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_02] hoặc [DM_03] theo Loại hình giao dịch. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị "Khách hàng" hoặc "Cán bộ nhập liệu". |
+| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch. |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính". |
 | Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Chỉ đọc. Cán bộ đã trình ký hồ sơ. |
 | Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm Cán bộ trình ký thành công. |
 | Lãnh đạo ký | String(255) | Có | Lãnh đạo đăng nhập | - Chỉ đọc.<br>- Lãnh đạo được Cán bộ chọn khi trình ký.<br>- Thông tin Lãnh đạo ký được xác định từ danh sách Lãnh đạo được phép ký/duyệt của đơn vị tại Cấu hình thông tin về người ký. |
@@ -184,12 +173,12 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Quay lại | Nút | Quay lại **4.3.2.4.2. UC-DK-LD.MH01 - Màn hình Danh sách Phiếu đăng ký chờ duyệt**, giữ nguyên bộ lọc và trang dữ liệu trước đó. |
+| 1 | Quay lại | Nút | Quay lại **UC-DK-LD.MH01 - Danh sách Phiếu đăng ký chờ duyệt**, giữ nguyên bộ lọc và trang dữ liệu trước đó. |
 | 2 | Xem file | Link/Nút | Cho phép xem file PDF dự thảo tại một tab riêng. |
 | 3 | Duyệt | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt", Lãnh đạo không có quyền ký hoặc file PDF dự thảo không hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005] hoặc [MSG-ERR-DK-010], không thực hiện duyệt. |
 |  |  |  | Không áp dụng theo Plan BTNN. Lãnh đạo không thực hiện duyệt tại màn này. |
 | 4 | Từ chối | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.4.4. UC-DK-LD.MH03 - Popup Từ chối Phiếu đăng ký chờ duyệt**. |
+|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH03 - Popup Từ chối Phiếu đăng ký chờ duyệt**. |
 
 #### 4.3.2.4.4. UC-DK-LD.MH03 - Popup Từ chối Phiếu đăng ký chờ duyệt (không áp dụng)
 
@@ -202,8 +191,8 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
 | Mã hồ sơ/Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_01]. |
+| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
 | Người yêu cầu | String(255) | Không | Theo hồ sơ | Chỉ đọc. |
 | Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
 | Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
@@ -234,32 +223,35 @@
 | Yêu cầu cung cấp thông tin | Enum(String(50)) | Không | Không chọn | Không thuộc phạm vi tài liệu này. Hiển thị theo tài liệu SRS ký duyệt Yêu cầu cung cấp thông tin của Lãnh đạo. |
 | Yêu cầu cung cấp bản sao | Enum(String(50)) | Không | Không chọn | Không thuộc phạm vi tài liệu này. Hiển thị theo tài liệu SRS ký duyệt Yêu cầu cung cấp bản sao của Lãnh đạo. |
 | **II. Bộ lọc tìm kiếm** | | | | |
-| Tìm kiếm | String(255) | Không | Trống | Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã hồ sơ, Số đăng ký, Mã PIN, Tên bên bảo đảm hoặc Tên bên nhận bảo đảm. |
-| Mã khách hàng | String(50) | Không | Trống | Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
-| Cán bộ trình ký | String(255) | Không | Trống | Tìm kiếm gần đúng theo Cán bộ đã trình ký hồ sơ. |
+| Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đăng ký/Mã hồ sơ của Phiếu đăng ký. |
+| Tên bên bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên bảo đảm trong Phiếu đăng ký. |
+| Tên bên nhận bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên nhận bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên nhận bảo đảm trong Phiếu đăng ký. |
+| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
+| Số biên lai | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số biên lai...".<br>- Tìm kiếm gần đúng theo Số biên lai thu phí/miễn phí của hồ sơ. |
+| Nguồn tiếp nhận | Enum(String(50)) | Không | "Tất cả" | Control UI: Combobox.<br>- Giá trị gồm: "Tất cả", "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính".<br>- Lọc theo nguồn phát sinh/tiếp nhận hồ sơ. |
+| Cán bộ xử lý | Enum(String(255)) | Không | "Tất cả" | Control UI: Combobox.<br>- Chọn Cán bộ/Chuyên viên đã xử lý hoặc trình ký hồ sơ, hoặc chọn "Tất cả".<br>- Danh sách lấy theo cán bộ thuộc phạm vi Trung tâm đăng ký của Lãnh đạo đăng nhập. |
 | Lãnh đạo ký | String(255) | Không | Lãnh đạo đăng nhập | - Cho phép tìm kiếm gần đúng theo tên Lãnh đạo được phân công ký.<br>- Thông tin Lãnh đạo ký được xác định từ danh sách Lãnh đạo được phép ký của đơn vị tại Cấu hình thông tin về người ký.<br>- Mặc định giới hạn theo Lãnh đạo đang đăng nhập.<br>- Chỉ vai trò được phân quyền giám sát/tra cứu thay mới được nhập tên Lãnh đạo khác theo phạm vi thẩm quyền. |
-| Loại đăng ký | Enum(String(50)) | Không | "Tất cả" | Tham chiếu [DM_04]. Chỉ lọc trong phạm vi nhóm Phiếu đăng ký. |
-| Loại hình giao dịch | Enum(String(50)) | Không | "Tất cả" | Tham chiếu [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | "Tất cả" | Tham chiếu [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn. |
-| Loại tài sản bảo đảm | Enum(String(255)) | Không | "Tất cả" | Tham chiếu [DM_07]. |
-| Nguồn tiếp nhận | Enum(String(50)) | Không | "Tất cả" | Giá trị gồm:<br>+ "Tất cả".<br>+ "Khách hàng".<br>+ "Cán bộ nhập liệu". |
+| Loại đăng ký | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. Chỉ lọc trong phạm vi nhóm Phiếu đăng ký. |
+| Loại hình giao dịch | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn. |
+| Loại tài sản bảo đảm | Enum(String(255)) | Không | "Tất cả" | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. |
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
 | **III. Bảng danh sách Phiếu đăng ký chờ ký** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
-| Bảng danh sách Phiếu đăng ký chờ ký | Text(4000) | Không | 20 bản ghi/trang | Chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký", thuộc phạm vi ký của Lãnh đạo đăng nhập và đã được Cán bộ trình tới Lãnh đạo đó. Sắp xếp mặc định theo Thời điểm chuyển sang "Chờ ký" tăng dần. Click trực tiếp vào dòng dữ liệu, ngoại trừ vùng checkbox/nút thao tác, để mở **4.3.2.4.6. UC-DK-LD.MH05 - Màn hình Chi tiết Phiếu đăng ký chờ ký**. Không thiết kế icon "Xem chi tiết" riêng theo quy tắc Row Click dùng chung.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
+| Bảng danh sách Phiếu đăng ký chờ ký | Text(4000) | Không | 20 bản ghi/trang | Chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký", thuộc phạm vi ký của Lãnh đạo đăng nhập và đã được Cán bộ trình tới Lãnh đạo đó. Sắp xếp mặc định theo Thời điểm chuyển sang "Chờ ký" tăng dần. Click trực tiếp vào dòng dữ liệu, ngoại trừ vùng checkbox/nút thao tác, để mở **UC-DK-LD.MH05 - Chi tiết Phiếu đăng ký chờ ký**. Không thiết kế icon "Xem chi tiết" riêng theo quy tắc Row Click dùng chung.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Checkbox chọn | Boolean | Không | Không tích | Cho phép chọn một hoặc nhiều hồ sơ đủ điều kiện để ký số theo lô. Checkbox chọn tất cả tại tiêu đề bảng chỉ chọn các hồ sơ đủ điều kiện đang hiển thị trên trang hiện tại. Khi đổi Tab nhóm nghiệp vụ, bộ lọc, trang dữ liệu hoặc số bản ghi/trang, hệ thống xóa danh sách hồ sơ đã chọn. |
 | STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Thời điểm hồ sơ được hệ thống ghi nhận. |
-| Số đăng ký/Mã hồ sơ | String(50) | Có | Theo hồ sơ | Số đăng ký hoặc Mã hồ sơ của Phiếu đăng ký. Click vào giá trị xử lý tương tự Row Click và mở **4.3.2.4.6. UC-DK-LD.MH05 - Màn hình Chi tiết Phiếu đăng ký chờ ký**. |
+| Số đăng ký/Mã hồ sơ | String(50) | Có | Theo hồ sơ | Số đăng ký hoặc Mã hồ sơ của Phiếu đăng ký. Click vào giá trị xử lý tương tự Row Click và mở **UC-DK-LD.MH05 - Chi tiết Phiếu đăng ký chờ ký**. |
 | Mã PIN | String(20) | Không | Theo hồ sơ | Hiển thị Mã PIN bảo mật của hồ sơ nếu đã phát sinh. |
 | Tên bên bảo đảm | String(255) | Không | Theo hồ sơ | Hiển thị tên bên bảo đảm trong hồ sơ. |
 | Tên bên nhận bảo đảm | String(255) | Không | Theo hồ sơ | Hiển thị tên bên nhận bảo đảm trong hồ sơ. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Tham chiếu [DM_02] nếu Loại hình giao dịch là "Biện pháp bảo đảm"; tham chiếu [DM_03] nếu Loại hình giao dịch là "Hợp đồng". |
-| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | Tham chiếu [DM_07]. Nếu hồ sơ có nhiều Loại tài sản, hiển thị mỗi Loại tài sản trên một dòng riêng trong cùng ô. |
+| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] nếu Loại hình giao dịch là "Biện pháp bảo đảm"; Tham chiếu Danh mục Loại hợp đồng [DM_03] nếu Loại hình giao dịch là "Hợp đồng". |
+| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. Nếu hồ sơ có nhiều Loại tài sản, hiển thị mỗi Loại tài sản trên một dòng riêng trong cùng ô. |
 | Mã khách hàng | String(50) | Không | Theo hồ sơ | Hiển thị Mã khách hàng nộp hồ sơ nếu có. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Giá trị gồm:<br>+ "Khách hàng".<br>+ "Cán bộ nhập liệu". |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính". |
 | Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Cán bộ đã trình ký hồ sơ. |
 | Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Thời điểm Cán bộ trình ký thành công hoặc thời điểm hồ sơ được chuyển sang "Chờ ký" sau thanh toán. |
 | Loại file chờ ký | Enum(String(100)) | Có | Theo hồ sơ | Giá trị gồm:<br>+ "Văn bản chứng nhận/Thông báo kết quả".<br>+ "Văn bản từ chối". |
@@ -276,13 +268,13 @@
 | 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Loại đăng ký/Loại hình giao dịch/Loại biện pháp hoặc Hợp đồng/Loại tài sản/Nguồn tiếp nhận về "Tất cả", Từ ngày/Đến ngày về mặc định và tải lại danh sách hồ sơ "Chờ ký". |
 | 3 | Ký số | Nút/Icon | TH1 (Chưa chọn bản ghi khi thao tác lô): Vi phạm [BR-DK-024], hiển thị [MSG-ERR-DK-008], không mở popup ký số. |
 |  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ ký", Lãnh đạo không có quyền ký hoặc file PDF chờ ký không hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005] hoặc [MSG-ERR-DK-010], không mở popup ký số. |
-|  |  |  | TH Hợp lệ thao tác dòng: Mở **4.3.2.4.7. UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký một hồ sơ. |
-|  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra danh sách hồ sơ đã chọn. Khi tất cả hồ sơ hợp lệ, mở **4.3.2.4.7. UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký nhiều hồ sơ. |
+|  |  |  | TH Hợp lệ thao tác dòng: Mở **UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký một hồ sơ. |
+|  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra danh sách hồ sơ đã chọn. Khi tất cả hồ sơ hợp lệ, mở **UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký nhiều hồ sơ. |
 | 4 | Từ chối | Nút/Icon | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.4.8. UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Từ chối". |
+|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Từ chối". |
 | 5 | Trả lại | Nút/Icon | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-035], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.4.8. UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Trả lại". |
-| 6 | Click dòng dữ liệu | Row Click | Mở **4.3.2.4.6. UC-DK-LD.MH05 - Màn hình Chi tiết Phiếu đăng ký chờ ký**. Đây là phương thức chính để xem chi tiết hồ sơ trên lưới, ngoại trừ khi Lãnh đạo click trực tiếp vào checkbox hoặc các nút thao tác nghiệp vụ. |
+|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Trả lại". |
+| 6 | Click dòng dữ liệu | Row Click | Mở **UC-DK-LD.MH05 - Chi tiết Phiếu đăng ký chờ ký**. Đây là phương thức chính để xem chi tiết hồ sơ trên lưới, ngoại trừ khi Lãnh đạo click trực tiếp vào checkbox hoặc các nút thao tác nghiệp vụ. |
 
 #### 4.3.2.4.6. UC-DK-LD.MH05 - Màn hình Chi tiết Phiếu đăng ký chờ ký
 
@@ -300,10 +292,10 @@
 | Mã khách hàng | String(50) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ có Mã khách hàng. |
 | Mã PIN | String(20) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã phát sinh Mã PIN. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm hồ sơ được hệ thống ghi nhận. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_02] hoặc [DM_03] theo Loại hình giao dịch. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị "Khách hàng" hoặc "Cán bộ nhập liệu". |
+| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch. |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính". |
 | Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Chỉ đọc. Cán bộ đã trình ký hồ sơ hoặc Cán bộ xử lý trước khi hồ sơ chuyển sang "Chờ ký". |
 | Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm Cán bộ trình ký thành công hoặc thời điểm hồ sơ được chuyển sang "Chờ ký" sau thanh toán. |
 | Lãnh đạo ký | String(255) | Có | Lãnh đạo đăng nhập | - Chỉ đọc.<br>- Lãnh đạo được Cán bộ chọn khi trình ký hoặc Lãnh đạo đã duyệt trước đó.<br>- Thông tin Lãnh đạo ký được xác định từ danh sách Lãnh đạo được phép ký của đơn vị tại Cấu hình thông tin về người ký. |
@@ -331,14 +323,14 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Quay lại | Nút | Quay lại **4.3.2.4.5. UC-DK-LD.MH04 - Màn hình Danh sách Phiếu đăng ký chờ ký**, giữ nguyên bộ lọc và trang dữ liệu trước đó. |
+| 1 | Quay lại | Nút | Quay lại **UC-DK-LD.MH04 - Danh sách Phiếu đăng ký chờ ký**, giữ nguyên bộ lọc và trang dữ liệu trước đó. |
 | 2 | Xem file | Link/Nút | Cho phép xem file PDF chờ ký tại một tab riêng. |
 | 3 | Ký số | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký", Lãnh đạo không có quyền ký hoặc file PDF chờ ký không hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005] hoặc [MSG-ERR-DK-010], không mở popup ký số. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.4.7. UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký một hồ sơ. |
+|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký một hồ sơ. |
 | 4 | Từ chối | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.4.8. UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Từ chối". |
+|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Từ chối". |
 | 5 | Trả lại | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-035], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.4.8. UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Trả lại". |
+|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Trả lại". |
 
 #### 4.3.2.4.7. UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký
 
@@ -392,8 +384,8 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
 | Mã hồ sơ/Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_01]. |
+| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
 | Người yêu cầu | String(255) | Không | Theo hồ sơ | Chỉ đọc. |
 | Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
 | Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
@@ -436,8 +428,3 @@
 | 3 | Lưu metadata chữ ký số | Khi ký số thành công, hệ thống lưu thông tin chứng thư số, người ký, thời điểm ký, thuật toán ký, trạng thái xác minh chữ ký và phiên bản file PDF đã ký. |
 | 4 | Đồng bộ trạng thái sang Website Khách hàng/Mobile | Khi trạng thái hồ sơ thay đổi sang "Chờ thanh toán", "Chờ ký", "Hoàn thành", "Bị từ chối" hoặc "Bị trả lại", hệ thống đồng bộ trạng thái và file kết quả tương ứng để Khách hàng theo dõi tại chức năng Quản lý yêu cầu đã đăng ký. |
 | 5 | Nguy cơ nghiệp vụ cần kiểm soát | Đây là bước phê duyệt và ban hành kết quả có giá trị pháp lý. Nếu Lãnh đạo ký/ký sai file, ký sai hồ sơ hoặc bỏ qua cảnh báo file không khớp phiên bản trình, có thể phát sinh khiếu nại/khiếu kiện hoặc trách nhiệm bồi thường nhà nước. |
-
-
-
-
-

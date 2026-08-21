@@ -1547,7 +1547,7 @@
                     </div>
 
                     <!-- Trường động tùy thuộc phương thức chi trả -->
-                    <div id="payoutBankFields" class="grid-3-cols" style="margin-top: 10px;">
+                    <div id="payoutBankFields" class="grid-4-cols" style="margin-top: 10px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Số tài khoản <span class="required">*</span></span>
                             <input type="text" class="form-control" id="payoutBankAccount" placeholder="Nhập số tài khoản...">
@@ -1560,12 +1560,21 @@
                             <span class="form-label">Tên chủ tài khoản <span class="required">*</span></span>
                             <input type="text" class="form-control" id="payoutBankUser" placeholder="Nhập tên chủ tài khoản...">
                         </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Chi nhánh <span class="required">*</span></span>
+                            <input type="text" class="form-control" id="payoutBankBranch" placeholder="Nhập chi nhánh ngân hàng...">
+                        </div>
                     </div>
 
                     <div id="payoutCashFields" class="form-group" style="margin-top: 10px; display: none;">
                         <span class="form-label">Số biên lai <span class="required">*</span></span>
                         <input type="text" class="form-control" id="payoutReceiptNo" placeholder="Nhập số biên lai nhận tiền...">
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Ý kiến / Nội dung thực hiện chi trả</span>
+                    <textarea class="form-control" id="payoutNote" rows="2" placeholder="Nhập ghi chú quá trình chi trả (nếu có)..." maxlength="1000"></textarea>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
@@ -1589,7 +1598,7 @@
         </div>
 
         <div class="inline-form-footer" style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button class="btn btn-secondary" id="btnCancelForm" onclick="closeCreateProposalForm()">Đóng</button>
+            <button class="btn btn-secondary" id="btnCancelForm" onclick="handleCloseProposalForm()">Đóng</button>
             
             <!-- Dynamic Actions for Specialist role in detailed view footer -->
             <button class="btn btn-success" id="btnViewActionFill" onclick="startActionFromView('Lập đề nghị')" style="display: none;"><i class="fa-solid fa-file-signature"></i> Lập đề nghị</button>
@@ -1706,6 +1715,7 @@
             </div>
         </div>
     </div>
+    <script src="../admin-ui-standardizer.js"></script>
 </body>
 
 </html>

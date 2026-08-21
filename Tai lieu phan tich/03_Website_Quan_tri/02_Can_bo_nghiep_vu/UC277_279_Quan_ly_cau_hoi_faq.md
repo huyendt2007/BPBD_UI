@@ -1,4 +1,4 @@
-﻿﻿### 4.3.2.14. UC277_UC279 - Phân hệ Quản lý câu hỏi và trả lời thường gặp (FAQ) (WebAdmin-08-09-03)
+### 4.3.2.14. UC277_UC279 - Phân hệ Quản lý câu hỏi và trả lời thường gặp (FAQ) (WebAdmin-08-09-03)
 
 #### 4.3.2.14.1. Mục đích
 \- Phân hệ Quản lý câu hỏi và trả lời thường gặp (FAQ) (WebAdmin-08-09-03) số hóa việc quản lý, tra cứu, đăng tải, cập nhật và phê duyệt các câu hỏi thường gặp và câu trả lời giải đáp thắc mắc của người dùng về lĩnh vực đăng ký biện pháp bảo đảm.

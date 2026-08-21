@@ -1,4 +1,4 @@
-﻿﻿### 4.3.2.12. UC268_UC272 - Phân hệ Quản lý yêu cầu hỗ trợ (WebAdmin-08-09-01)
+### 4.3.2.12. UC268_UC272 - Phân hệ Quản lý yêu cầu hỗ trợ (WebAdmin-08-09-01)
 
 #### 4.3.2.12.1. Mục đích
 \- Tính năng Quản lý yêu cầu hỗ trợ (WebAdmin-08-09-01) số hóa quy trình tiếp nhận, theo dõi, điều phối (phân công) và trả lời các thắc mắc, yêu cầu trợ giúp kỹ thuật hoặc nghiệp vụ từ người dùng hệ thống (Khách hàng Cá nhân, Khách hàng Tổ chức).
@@ -29,8 +29,8 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
 | Từ khóa tìm kiếm | String(255) | Không | Trống | - Nhập từ khóa để tìm kiếm theo Tiêu đề, Nội dung, Mã yêu cầu, Họ tên người yêu cầu hoặc Email. |
-| Trạng thái | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn trạng thái yêu cầu:<br>- Tất cả<br>- Chờ tiếp nhận<br>- Đang xử lý<br>- Yêu cầu làm rõ<br>- Hoàn thành |
-| Mức độ ưu tiên | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn mức độ ưu tiên:<br>- Tất cả mức độ<br>- Thấp<br>- Trung bình<br>- Cao |
+| Trạng thái | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn trạng thái yêu cầu:<br>+ Tất cả<br>+ Chờ tiếp nhận<br>+ Đang xử lý<br>+ Yêu cầu làm rõ<br>+ Hoàn thành |
+| Mức độ ưu tiên | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn mức độ ưu tiên:<br>+ Tất cả mức độ<br>+ Thấp<br>+ Trung bình<br>+ Cao |
 | Từ ngày | String(10) | Không | Ngày đầu tiên của tháng hiện tại | - Nhập tay theo định dạng `dd/mm/yyyy` (tự động thêm dấu `/` khi gõ).<br>- Có biểu tượng lịch hiển thị minh họa. |
 | Đến ngày | String(10) | Không | Ngày hiện tại | - Nhập tay theo định dạng `dd/mm/yyyy` (tự động thêm dấu `/` khi gõ).<br>- Có biểu tượng lịch hiển thị minh họa. |
 | Cán bộ xử lý | Enum(String(50)) | Không | "Tất cả" (Lãnh đạo)<br>Hoặc tên Chuyên viên đăng nhập | Control UI: Hộp chọn.<br>- Chọn cán bộ xử lý để lọc danh sách.<br>- Với vai trò Chuyên viên, mặc định lọc theo chính tài khoản của chuyên viên đó. |
@@ -41,13 +41,13 @@
 | Cột: Cơ quan tiếp nhận | Enum(String(255)) | Có | Lấy từ hệ thống | - Cơ quan/đơn vị tiếp nhận do Khách hàng đã chọn khi gửi yêu cầu (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, hoặc 1 trong 3 Trung tâm đăng ký giao dịch, tài sản). Chỉ hiển thị đúng bằng đơn vị mà Cán bộ đang đăng nhập trực thuộc (theo Nguyên tắc phân quyền dữ liệu tại mục 4.3.2.12.1). |
 | Cột: Tiêu đề | String(255) | Có | Lấy từ hệ thống | - Tiêu đề ngắn gọn của yêu cầu hỗ trợ. |
 | Cột: Nội dung | Text(2000) | Có | Lấy từ hệ thống | - Nội dung chi tiết của yêu cầu. Trên lưới hiển thị rút gọn kèm dấu ba chấm `...` nếu vượt quá giới hạn. Khi chọn hoặc di chuột (Hover) sẽ hiển thị đầy đủ thông tin nội dung qua tooltip độc lập nổi trên giao diện. |
-| Cột: Mức độ ưu tiên | Enum(String(50)) | Có | Lấy từ hệ thống | - Hiển thị mức độ ưu tiên bằng màu sắc tương ứng:<br>- Đỏ (Badge Cao)<br>- Vàng (Badge Trung bình)<br>- Xanh (Badge Thấp) |
+| Cột: Mức độ ưu tiên | Enum(String(50)) | Có | Lấy từ hệ thống | - Hiển thị mức độ ưu tiên bằng màu sắc tương ứng:<br>+ Đỏ (Badge Cao)<br>+ Vàng (Badge Trung bình)<br>+ Xanh (Badge Thấp) |
 | Cột: Người yêu cầu | String(100) | Có | Lấy từ hệ thống | - Họ và tên khách hàng gửi yêu cầu hỗ trợ. |
 | Cột: Email | String(255) | Có | Lấy từ hệ thống | - Địa chỉ email liên hệ của khách hàng. |
 | Cột: Cán bộ xử lý | String(255) | Có | Lấy từ hệ thống | - Họ tên cán bộ xử lý được phân công. Hiển thị "Chưa phân công" nếu yêu cầu chưa có người nhận. |
 | Cột: Ngày tiếp nhận/Phản hồi | Date | Có | Lấy từ hệ thống | - Thời gian cập nhật gần nhất đối với yêu cầu. |
 | Cột: Đánh giá | String(255) | Không | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Hiển thị kết quả đánh giá chất lượng hỗ trợ từ khách hàng (chỉ hiển thị khi yêu cầu ở trạng thái Hoàn thành và khách hàng đã thực hiện đánh giá): **Hài lòng**, **Không hài lòng** hoặc **Ý kiến khác** (Không hiển thị chi tiết nội dung đánh giá ngoài lưới). Để trống (hiển thị `-`) nếu chưa có đánh giá. |
-| Cột: Trạng thái | Enum(String(50)) | Có | Lấy từ hệ thống | - Hiển thị trạng thái hiện tại dưới dạng nhãn màu sắc:<br>- Xám nhạt: Chờ tiếp nhận<br>- Cam: Đang xử lý<br>- Xanh dương: Yêu cầu làm rõ<br>- Xanh lá: Hoàn thành |
+| Cột: Trạng thái | Enum(String(50)) | Có | Lấy từ hệ thống | - Hiển thị trạng thái hiện tại dưới dạng nhãn màu sắc:<br>+ Xám nhạt: Chờ tiếp nhận<br>+ Cam: Đang xử lý<br>+ Xanh dương: Yêu cầu làm rõ<br>+ Xanh lá: Hoàn thành |
 | Cột: Thao tác | - | Có | Lấy từ hệ thống | Control UI: Nút bấm.<br>- Tập hợp các hành động nghiệp vụ tương ứng cho mỗi vai trò.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ##### 4.3.2.12.2.3. Chức năng trên màn hình

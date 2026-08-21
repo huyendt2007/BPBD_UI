@@ -31,7 +31,7 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. PANEL BÊN TRÁI** | | | | |
-| Dropdown Phân hệ | Enum(String(50)) | Có | Website quản trị | Control UI: Hộp chọn.<br>Lựa chọn phân hệ của hệ thống để hiển thị cây quyền tương ứng, gồm:<br>- Website Khách hàng<br>- Ứng dụng Mobile<br>- Website quản trị |
+| Dropdown Phân hệ | Enum(String(50)) | Có | Website quản trị | Control UI: Hộp chọn.<br>Lựa chọn phân hệ của hệ thống để hiển thị cây quyền tương ứng, gồm:<br>+ Website Khách hàng<br>+ Ứng dụng Mobile<br>+ Website quản trị |
 | Tìm kiếm quyền | String(255) | Không | Trống | Control UI: Textbox.<br>Tìm kiếm trực tiếp (Live-search) theo tên quyền hoặc mã quyền hiển thị ở cây danh sách phía dưới. |
 | Danh sách quyền chức năng | String(255) | \- | \- | Hiển thị danh sách quyền dưới dạng cây phân cấp (Cha - Con).<br>Mỗi node hiển thị gồm: Icon đại diện + Tên chức năng (Mã chức năng).<br>Ví dụ: `Dashboard (00)`, `Quản lý danh mục & đồng bộ (03)`. |
 | **II. PANEL BÊN PHẢI** | | | | |
@@ -47,11 +47,11 @@
 | Mã chức năng | String(50) | Có | Trống | Nhập mã định danh duy nhất của chức năng. Chỉ cho phép nhập chữ cái không dấu, chữ số, ký tự gạch dưới (_).<br>*(Lưu ý: Bị khóa Read-only khi ở chế độ Xem chi tiết hoặc Sửa thông tin).* |
 | Tên chức năng | String(255) | Có | Trống | Nhập tên chức năng hiển thị bằng tiếng Việt. |
 | Tên chức năng (EN) | String(255) | Không | Trống | Nhập tên chức năng hiển thị bằng tiếng Anh. |
-| Loại | Enum(String(50)) | Có | MENU | Control UI: Hộp chọn.<br>Lựa chọn loại chức năng, gồm:<br>- **MENU**: Là chức năng giao diện, hiển thị thành các danh mục điều hướng trên thanh Menu chính.<br>- **API**: Tính năng nghiệp vụ/Endpoint API chạy ngầm thuộc chức năng đó. |
+| Loại | Enum(String(50)) | Có | MENU | Control UI: Hộp chọn.<br>Lựa chọn loại chức năng, gồm:<br>+ **MENU**: Là chức năng giao diện, hiển thị thành các danh mục điều hướng trên thanh Menu chính.<br>+ **API**: Tính năng nghiệp vụ/Endpoint API chạy ngầm thuộc chức năng đó. |
 | STT | Integer(10) | Không | Trống | Số thứ tự dùng để sắp xếp hiển thị trên cây và trên Menu. Hệ thống tự động sinh số lớn nhất tiếp theo nếu để trống. |
 | Đường dẫn | String(500) | Không | Trống | Đường dẫn (Route/URL) trỏ đến tính năng tương ứng trong sourcecode hoặc endpoint gọi API (Ví dụ: `/api/users`). |
 | Icon menu | String(100) | Không | Trống | Nhập tên Class icon hiển thị trên Menu (sử dụng thư viện `react-icons`, ví dụ: `io:IoIosPeople`). |
-| Trạng thái | Boolean | Có | Hoạt động | Control UI: Checkbox.<br>Trạng thái hoạt động của chức năng, gồm:<br>- Hoạt động (Active)<br>- Ngừng hoạt động (Inactive) |
+| Trạng thái | Boolean | Có | Hoạt động | Control UI: Checkbox.<br>Trạng thái hoạt động của chức năng, gồm:<br>+ Hoạt động (Active)<br>+ Ngừng hoạt động (Inactive) |
 | LƯU | - | \- | \- | Control UI: Nút bấm.<br>Lưu dữ liệu đang nhập (Chỉ hiển thị khi thêm mới, thêm con hoặc sửa). |
 | HỦY | - | \- | \- | Control UI: Nút bấm.<br>Hủy bỏ thay đổi và quay lại trạng thái trước đó (Chỉ hiển thị khi thêm mới, thêm con hoặc sửa). |
 

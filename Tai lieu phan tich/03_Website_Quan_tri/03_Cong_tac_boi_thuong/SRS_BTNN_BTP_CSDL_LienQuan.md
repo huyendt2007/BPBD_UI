@@ -1,4 +1,4 @@
-﻿﻿#### 4.3.3.20. UC503/UCPS018 - Quản lý thông tin từ các CSDL có liên quan đến công tác BTNN
+#### 4.3.3.20. UC503/UCPS018 - Quản lý thông tin từ các CSDL có liên quan đến công tác BTNN
 
 ##### 4.3.3.20.1. Mục đích
 
@@ -69,10 +69,10 @@ flowchart TD
 | 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Hợp lệ): Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 3 | Thêm mới | Button | Hệ thống mở **4.3.3.20.4. MH02 - Màn hình Thêm mới/Chỉnh sửa thông tin CSDL liên quan BTNN** ở chế độ thêm mới. |
-| 4 | Chỉnh sửa | Icon button | Hệ thống mở **4.3.3.20.4. MH02** ở chế độ chỉnh sửa. |
-| 5 | Xóa | Icon button | Hệ thống mở **4.3.3.20.5. Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
-| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **4.3.3.20.4. MH02** ở chế độ chỉ xem. |
+| 3 | Thêm mới | Button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa thông tin CSDL liên quan BTNN** ở chế độ thêm mới. |
+| 4 | Chỉnh sửa | Icon button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa thông tin CSDL liên quan BTNN** ở chế độ chỉnh sửa. |
+| 5 | Xóa | Icon button | Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
+| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa thông tin CSDL liên quan BTNN** ở chế độ chỉ xem. |
 
 ---
 
@@ -89,7 +89,7 @@ flowchart TD
 | Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Chỉ đọc. Hiển thị `THÊM MỚI THÔNG TIN CSDL LIÊN QUAN BTNN` hoặc `CHỈNH SỬA THÔNG TIN CSDL LIÊN QUAN BTNN`. |
 | Loại CSDL nguồn | Enum(String(100)) | Có | `CSDL về bản án, quyết định của Tòa án` | \- Giá trị gồm:<br>+ CSDL về bản án, quyết định của Tòa án<br>+ CSDL quốc gia về thủ tục hành chính (TTHC)<br>+ CSDL quốc gia về khiếu nại, tố cáo<br>+ Khác |
 | Tên/Mã bản ghi tham chiếu | String(100) | Có | Trống | Ghi mã/số hiệu bản ghi tại CSDL nguồn (ví dụ số bản án, mã hồ sơ TTHC, số đơn khiếu nại/tố cáo). Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Cơ quan quản lý CSDL nguồn | Enum(String(255)) | Có | Trống | Giá trị lấy từ Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
+| Cơ quan quản lý CSDL nguồn | Enum(String(255)) | Có | Trống | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Ngày trích xuất/nhận thông tin | Date | Có | Ngày hiện tại | Áp dụng rule ngày quá khứ [BR-VAL-008]. |
 | Vụ việc BTNN liên quan | String(255) | Không | Trống | Không bắt buộc liên kết với vụ việc trong hệ thống. Cán bộ có thể nhập mã vụ việc để tham khảo; để trống nếu không xác định cụ thể. |
 | Nội dung thông tin liên quan đến BTNN | Text(2000) | Có | Trống | Ghi tóm tắt nội dung trích xuất từ CSDL nguồn có liên quan đến công tác BTNN. Áp dụng rule bắt buộc [BR-VAL-001]. |
@@ -101,7 +101,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **4.3.3.20.3. MH01**. |
+| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **MH01 - Danh sách thông tin từ các CSDL liên quan đến công tác BTNN**. |
 | 2 | Lưu thông tin | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
 |  |  |  | TH2 (`Ngày trích xuất/nhận thông tin` lớn hơn ngày hiện tại): Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Không cho phép lưu. |
 |  |  |  | TH3 (Hợp lệ - thêm mới): Hệ thống lưu bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |

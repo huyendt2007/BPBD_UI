@@ -1,4 +1,4 @@
-﻿﻿## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
+## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
 
 ### 4.3.2.X. UC-BS-CB - Xử lý yêu cầu cung cấp bản sao văn bản chứng nhận
 
@@ -52,7 +52,7 @@
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
 | **II. Bảng danh sách hồ sơ** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
-| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Hiển thị danh sách hồ sơ Yêu cầu cung cấp bản sao thuộc phạm vi xử lý của Cán bộ. Sắp xếp mặc định theo Thời điểm đăng ký tăng dần. Click trực tiếp vào dòng dữ liệu để mở **4.3.2.X.3. UC-BS-CB.MH02**.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
+| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Hiển thị danh sách hồ sơ Yêu cầu cung cấp bản sao thuộc phạm vi xử lý của Cán bộ. Sắp xếp mặc định theo Thời điểm đăng ký tăng dần. Click trực tiếp vào dòng dữ liệu để mở **UC-BS-CB.MH02**.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Mã hồ sơ Yêu cầu cung cấp bản sao. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Thời điểm Khách hàng gửi yêu cầu. |
@@ -74,8 +74,8 @@
 | 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Trạng thái hồ sơ về "Chờ duyệt/Chờ giải quyết", Loại cung cấp bản sao về "Tất cả" và tải lại danh sách mặc định. |
 | 3 | Xử lý hồ sơ | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không mở màn hình xử lý. |
 |  |  |  | TH2 (Cán bộ không có quyền xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không mở màn hình xử lý. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.X.3. UC-BS-CB.MH02**. |
-| 4 | Click dòng dữ liệu | Row Click | Mở **4.3.2.X.3. UC-BS-CB.MH02**. Bảng danh sách đã lọc sẵn theo phạm vi quyền dữ liệu của Cán bộ, nên mọi dòng hiển thị đều thuộc quyền xử lý. |
+|  |  |  | TH Hợp lệ: Mở **UC-BS-CB.MH02**. |
+| 4 | Click dòng dữ liệu | Row Click | Mở **UC-BS-CB.MH02**. Bảng danh sách đã lọc sẵn theo phạm vi quyền dữ liệu của Cán bộ, nên mọi dòng hiển thị đều thuộc quyền xử lý. |
 
 #### 4.3.2.X.3. UC-BS-CB.MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp bản sao
 
@@ -96,7 +96,7 @@
 | Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc, không cho phép chỉnh sửa theo [BR-BS-001]. Kèm liên kết "Xem hồ sơ gốc" ngay cạnh giá trị Số đăng ký, cho phép Cán bộ mở xem chi tiết hồ sơ gốc theo yêu cầu (xem chức năng tương ứng tại mục 4.3.2.X.3.3); không tự động hiển thị sẵn trên màn hình. |
 | Loại cung cấp bản sao | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị "Bản sao điện tử" hoặc "Bản sao giấy". |
 | Số lượng bản sao | Integer(10) | Tùy điều kiện | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao giấy". |
-| Cơ quan tiếp nhận | Enum(String(100)) | Có | Theo hồ sơ | Chỉ đọc. Tham chiếu [DM_08]. |
+| Cơ quan tiếp nhận | Enum(String(100)) | Có | Theo hồ sơ | Chỉ đọc. Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08]. |
 | Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Khi Cán bộ xử lý, trạng thái phải là "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". |
 | Cán bộ xử lý | String(255) | Không | Theo phân công | Chỉ đọc. Hiển thị Cán bộ đang xử lý hồ sơ; nếu chưa có, hệ thống ghi nhận Cán bộ hiện tại khi bắt đầu xử lý. |
 | Lịch sử xử lý | Text(4000) | Không | Theo hồ sơ | Chỉ đọc. Hiển thị dòng thời gian các thao tác gửi yêu cầu/nhập liệu, thanh toán/thu phí, kết xuất, trình ký, ký số/trả kết quả, từ chối, trả lại và các lần thay đổi trạng thái. |
@@ -116,9 +116,9 @@
 | 3 | Xem file/Tải file | Link/Nút | Chỉ hiển thị sau khi có File bản sao điện tử dự thảo. Cho phép xem file tại một tab riêng hoặc tải theo quyền. |
 | 4 | Trình ký | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không cho phép trình ký. |
 |  |  |  | TH2 (Loại "Bản sao điện tử" nhưng chưa kết xuất file dự thảo): Vi phạm [BR-BS-004], hiển thị [MSG-ERR-BS-003], không cho phép trình ký. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.X.4. UC-BS-CB.MH03 - Popup Trình ký yêu cầu cung cấp bản sao**. |
-| 5 | Từ chối | Nút | Hiển thị khi hồ sơ ở trạng thái "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". Mở **4.3.2.X.5. UC-BS-CB.MH04 - Popup Từ chối yêu cầu cung cấp bản sao**. Nếu hồ sơ Online đã thanh toán, hệ thống tạo yêu cầu hoàn tiền và chuyển sang Module Quản lý đối soát thanh toán để theo dõi. Nếu hồ sơ giấy đã thu phí, hệ thống tạo khoản hoàn phí/thông báo kế toán xử lý tại Module Quản lý thu phí/hoàn phí hồ sơ giấy. |
-| 6 | Quay lại | Nút | Quay lại **4.3.2.X.2. UC-BS-CB.MH01**, giữ nguyên bộ lọc trước đó. |
+|  |  |  | TH Hợp lệ: Mở **UC-BS-CB.MH03 - Popup Trình ký yêu cầu cung cấp bản sao**. |
+| 5 | Từ chối | Nút | Hiển thị khi hồ sơ ở trạng thái "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". Mở **UC-BS-CB.MH04 - Popup Từ chối yêu cầu cung cấp bản sao**. Nếu hồ sơ Online đã thanh toán, hệ thống tạo yêu cầu hoàn tiền và chuyển sang Module Quản lý đối soát thanh toán để theo dõi. Nếu hồ sơ giấy đã thu phí, hệ thống tạo khoản hoàn phí/thông báo kế toán xử lý tại Module Quản lý thu phí/hoàn phí hồ sơ giấy. |
+| 6 | Quay lại | Nút | Quay lại **UC-BS-CB.MH01**, giữ nguyên bộ lọc trước đó. |
 
 #### 4.3.2.X.4. UC-BS-CB.MH03 - Popup Trình ký yêu cầu cung cấp bản sao
 
@@ -140,7 +140,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ, quay lại **4.3.2.X.3. UC-BS-CB.MH02**. |
+| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ, quay lại **UC-BS-CB.MH02**. |
 | 2 | Xác nhận | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không cho phép trình ký. |
 |  |  |  | TH2 (Chưa chọn Lãnh đạo ký hoặc Lãnh đạo đã chọn không còn hiệu lực/không có thẩm quyền tại thời điểm xác nhận): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không cho phép trình ký. |
 |  |  |  | TH3 (Hồ sơ gốc không còn ở trạng thái "Hoàn thành" khi hệ thống kiểm tra lại theo Số đăng ký, ví dụ đã bị Xóa đăng ký sau khi Khách hàng gửi yêu cầu): Vi phạm [BR-BS-011], hiển thị [MSG-ERR-BS-009], không cho phép trình ký. |
@@ -208,7 +208,7 @@
 | Câu hỏi kiểm tra | Đánh giá áp dụng |
 | :--- | :--- |
 | UC này có cần gọi dữ liệu từ tích hợp V.1 để tự động điền hoặc kiểm tra không? | Không; hồ sơ gốc đã được xác định tự động một lần tại thời điểm Khách hàng gửi yêu cầu, không tra cứu lại tại đây. |
-| Các trường lựa chọn đã tham chiếu đúng danh mục chưa? | Cơ quan tiếp nhận tham chiếu [DM_08]. |
+| Các trường lựa chọn đã tham chiếu đúng danh mục chưa? | Cơ quan tiếp nhận Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08]. |
 | Thao tác nào cần ghi log vào III.6? | Mở xử lý, kết xuất bản sao điện tử, trình ký, từ chối. |
 | Nguy cơ phát sinh bồi thường là gì? | Trình ký sai hồ sơ gốc hoặc trình ký file bản sao điện tử không đúng dữ liệu hồ sơ gốc có thể phát sinh khiếu kiện. Hệ thống kiểm tra lại hồ sơ gốc (theo Số đăng ký) vẫn còn hiệu lực ngay tại thời điểm trình ký, và khóa phiên bản file dự thảo ngay khi trình ký thành công. |
 | UC này có phiên bản Mobile tương ứng không? | Chức năng không có phiên bản tương ứng trên Mobile App dành cho Cán bộ; khách hàng gửi yêu cầu trực tuyến từ Website/Mobile Khách hàng, Cán bộ xử lý duy nhất trên Website Quản trị. |
@@ -237,4 +237,3 @@ flowchart TD
 | 4 | Cán bộ | Nếu Loại cung cấp bản sao là "Bản sao điện tử", kết xuất file bản sao điện tử dự thảo. Nếu là "Bản sao giấy", không kết xuất file. |
 | 5 | Cán bộ | Chọn "Trình ký" hoặc "Từ chối". |
 | 6 | Hệ thống | Nếu trình ký, kiểm tra lại hồ sơ gốc còn hiệu lực, khóa phiên bản file dự thảo (nếu có), chuyển hồ sơ sang "Chờ ký". Nếu từ chối, lưu lý do, chuyển hồ sơ sang "Bị từ chối" và phát sinh yêu cầu hoàn tiền/hoàn phí tương ứng nguồn hồ sơ. |
-

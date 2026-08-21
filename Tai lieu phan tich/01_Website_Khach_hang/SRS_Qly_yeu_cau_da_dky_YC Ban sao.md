@@ -1,4 +1,4 @@
-﻿﻿## 4.1. Yêu cầu cung cấp bản sao văn bản chứng nhận - Website Khách hàng
+## 4.1. Yêu cầu cung cấp bản sao văn bản chứng nhận - Website Khách hàng
 
 ### 4.1.X. UC149/UC195-BS - Quản lý yêu cầu đã đăng ký Yêu cầu cung cấp bản sao văn bản chứng nhận
 
@@ -86,7 +86,7 @@ Ghi chú: bộ trạng thái này thay thế hoàn toàn bộ trạng thái cũ 
 |  |  |  | TH Hợp lệ: Hệ thống tìm kiếm trong phạm vi hồ sơ thuộc tài khoản Khách hàng đăng nhập. Nếu không có dữ liệu phù hợp, hiển thị theo [MSG-WRN-SYS-001] hoặc trạng thái rỗng theo chuẩn danh sách. |
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về mặc định (trống hoặc "Tất cả") và tải lại lưới kết quả theo Thời điểm đăng ký giảm dần. |
 | 3 | Tạo mới | Nút | Mở [UC149.MH01](SRS_YC_cung_cap_ban_sao_van_ban_chung_nhan.md#41162-uc149mh01---man-hinh-yeu-cau-cap-ban-sao-van-ban-chung-nhan-dang-ky-bien-phap-bao-dam). |
-| 4 | Row Click | Thao tác dòng | Mở **4.1.X.4. UCPS007.MH03-BS - Màn hình Chi tiết yêu cầu cung cấp bản sao** tương ứng với yêu cầu được chọn. |
+| 4 | Row Click | Thao tác dòng | Mở **UCPS007.MH03-BS - Chi tiết yêu cầu cung cấp bản sao** tương ứng với yêu cầu được chọn. |
 | 5 | Thanh toán | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ thanh toán". TH1 (Sai trạng thái tại thời điểm click): Hiển thị [MSG-ERR-DK-005], không chuyển màn hình. TH Hợp lệ: Đóng gói thông tin thanh toán (Mã hồ sơ, Số tiền phải thu, Nội dung thanh toán, Mã đơn vị thụ hưởng, Return URL) và chuyển hướng sang [UC158 - Quản lý thanh toán phí](UC158_Quan_ly_thanh_toan_phi.md). |
 | 6 | Tải file | Nút | Chỉ hiển thị khi Trạng thái là "Hoàn thành" và Loại cung cấp bản sao là "Bản sao điện tử". Tải đúng file PDF bản sao văn bản chứng nhận đã được Lãnh đạo ký số xuống thiết bị của Khách hàng. Ghi nhật ký vào III.6. |
 
@@ -106,7 +106,7 @@ Mở khi Khách hàng click vào một dòng dữ liệu tại Tab "Yêu cầu c
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
 | Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị dạng nhãn màu theo bộ trạng thái tại mục 4.1.X.2. |
 | Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc. Số đăng ký của hồ sơ gốc gắn với yêu cầu. |
-| Cơ quan tiếp nhận | Enum(String(100)) | Có | Theo hồ sơ | Chỉ đọc. Tham chiếu [DM_08]. |
+| Cơ quan tiếp nhận | Enum(String(100)) | Có | Theo hồ sơ | Chỉ đọc. Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08]. |
 | Loại cung cấp bản sao | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị "Bản sao điện tử" hoặc "Bản sao giấy". |
 | Số lượng bản sao | Integer(10) | Tùy điều kiện | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao giấy". |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Định dạng `dd/mm/yyyy HH:mm`. |
@@ -149,4 +149,3 @@ Mở khi Khách hàng click vào một dòng dữ liệu tại Tab "Yêu cầu c
 | 2 | Thanh toán | Nút | Chỉ hiển thị khi Trạng thái là "Chờ thanh toán". TH1 (Sai trạng thái): [MSG-ERR-DK-005], không chuyển màn hình. TH Hợp lệ: Đóng gói thông tin thanh toán và chuyển hướng sang [UC158](UC158_Quan_ly_thanh_toan_phi.md). |
 | 3 | Xem file | Link/Nút | Chỉ hiển thị khi Trạng thái là "Hoàn thành" và Loại cung cấp bản sao là "Bản sao điện tử". Cho phép xem file tại một tab riêng. |
 | 4 | Tải file | Link/Nút | Chỉ hiển thị khi Trạng thái là "Hoàn thành" và Loại cung cấp bản sao là "Bản sao điện tử". Tải file PDF bản sao đã ký xuống thiết bị của Khách hàng. |
-

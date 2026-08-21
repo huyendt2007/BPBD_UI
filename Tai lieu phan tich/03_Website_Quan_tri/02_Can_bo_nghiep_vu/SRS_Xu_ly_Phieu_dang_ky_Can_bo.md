@@ -1,4 +1,4 @@
-﻿﻿## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
+## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
 
 ### 4.3.2.3. WebAdmin-025 - Phiếu đăng ký
 
@@ -44,21 +44,7 @@
 
 *d. Phạm vi Phiếu đăng ký*
 
-\- Nhóm Phiếu đăng ký bao gồm các loại hồ sơ đăng ký thuộc danh mục [DM_04]:
-
-\- "Đăng ký lần đầu".
-
-\- "Đăng ký thay đổi".
-
-\- "Xóa đăng ký".
-
-\- "Thông báo xử lý tài sản bảo đảm lần đầu".
-
-\- "Thay đổi thông báo xử lý tài sản bảo đảm".
-
-\- "Xóa đăng ký thông báo xử lý tài sản bảo đảm".
-
-\- Không bao gồm "Yêu cầu cung cấp thông tin", "Yêu cầu cung cấp bản sao" và "Yêu cầu cung cấp bản sao kèm thông báo".
+\- Nhóm Phiếu đăng ký Tham chiếu Danh mục Loại hình đăng ký [DM_04] và được xác định theo cấu hình nhóm nghiệp vụ trên hệ thống.
 
 *d. Nguyên tắc bố trí màn hình*
 
@@ -97,26 +83,26 @@
 | **III. Bộ lọc tìm kiếm** | | | | |
 | Tìm kiếm | String(255) | Không | Trống | Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đăng ký, Mã PIN, Tên bên bảo đảm hoặc Tên bên nhận bảo đảm. |
 | Mã khách hàng | String(50) | Không | Trống | Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
-| Loại đăng ký | Enum(String(50)) | Không | Tất cả | \- Tham chiếu [DM_04].<br>- Chỉ lọc trong phạm vi nhóm Phiếu đăng ký, không trả về hồ sơ Yêu cầu cung cấp thông tin/Yêu cầu cung cấp bản sao. |
-| Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | \- Tham chiếu [DM_01].<br>- Khi chọn "Biện pháp bảo đảm", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo [DM_02].<br>- Khi chọn "Hợp đồng", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo [DM_03].<br>- Khi chọn "Thông báo xử lý tài sản", hệ thống lọc các hồ sơ thông báo xử lý tài sản trong [DM_04]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Tất cả | \- Tham chiếu [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn.<br>- Nếu chưa chọn Loại hình giao dịch, chỉ hiển thị "Tất cả". |
-| Loại tài sản đảm bảo | Enum(String(255)) | Không | Tất cả | Tham chiếu [DM_07]. |
+| Loại đăng ký | Enum(String(50)) | Không | Tất cả | \- Tham chiếu Danh mục Loại hình đăng ký [DM_04].<br>- Chỉ lọc trong phạm vi nhóm Phiếu đăng ký, không trả về hồ sơ Yêu cầu cung cấp thông tin/Yêu cầu cung cấp bản sao. |
+| Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | \- Tham chiếu Danh mục Loại hình giao dịch [DM_01].<br>- Khi chọn "Biện pháp bảo đảm", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo Danh mục Loại biện pháp bảo đảm [DM_02].<br>- Khi chọn "Hợp đồng", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo Danh mục Loại hợp đồng [DM_03].<br>- Khi chọn "Thông báo xử lý tài sản", hệ thống lọc các hồ sơ thông báo xử lý tài sản trong [DM_04]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Tất cả | \- Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn.<br>- Nếu chưa chọn Loại hình giao dịch, chỉ hiển thị "Tất cả". |
+| Loại tài sản đảm bảo | Enum(String(255)) | Không | Tất cả | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. |
 | Trạng thái xử lý | Enum(String(50)) | Tùy điều kiện | Tất cả | \- Chỉ hiển thị tại danh sách "Hồ sơ đã xử lý".<br>- Giá trị gồm:<br>+ "Tất cả".<br>+ "Hoàn thành".<br>+ "Bị từ chối". |
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ quy tắc so sánh ngày [BR-VAL-007]. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ quy tắc so sánh ngày [BR-VAL-007]. |
 | **IV. Bảng danh sách Phiếu đăng ký** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
-| Bảng danh sách Phiếu đăng ký | Text(4000) | Không | 20 bản ghi/trang | \- Hiển thị hồ sơ thuộc phạm vi đơn vị của Cán bộ.<br>- Mặc định sắp xếp theo Thời điểm đăng ký tăng dần trong nhóm hồ sơ cần xử lý để ưu tiên hồ sơ đến trước; danh sách tra cứu/xem lại có thể sắp xếp giảm dần theo Thời điểm đăng ký để thuận tiện theo dõi hồ sơ mới nhất.<br>- Cho phép chọn số bản ghi/trang: 10, 20, 50, 100.<br>- Click trực tiếp vào dòng dữ liệu, ngoại trừ vùng checkbox/nút thao tác, để mở **4.3.2.3.3. UC-DK-CB.MH02 - Màn hình Xem chi tiết Phiếu đăng ký**.<br>- Không thiết kế icon "Xem chi tiết" riêng tại cột Thao tác theo quy tắc Row Click dùng chung.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
+| Bảng danh sách Phiếu đăng ký | Text(4000) | Không | 20 bản ghi/trang | \- Hiển thị hồ sơ thuộc phạm vi đơn vị của Cán bộ.<br>- Mặc định sắp xếp theo Thời điểm đăng ký tăng dần trong nhóm hồ sơ cần xử lý để ưu tiên hồ sơ đến trước; danh sách tra cứu/xem lại có thể sắp xếp giảm dần theo Thời điểm đăng ký để thuận tiện theo dõi hồ sơ mới nhất.<br>- Cho phép chọn số bản ghi/trang: 10, 20, 50, 100.<br>- Click trực tiếp vào dòng dữ liệu, ngoại trừ vùng checkbox/nút thao tác, để mở **UC-DK-CB.MH02 - Xem chi tiết Phiếu đăng ký**.<br>- Không thiết kế icon "Xem chi tiết" riêng tại cột Thao tác theo quy tắc Row Click dùng chung.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Checkbox | Boolean | Không | Không tích | \- Chỉ hiển thị tại Tab "Hồ sơ chờ duyệt" và Tab "Hồ sơ duyệt chờ ký".<br>- Cho phép chọn một hoặc nhiều hồ sơ để thực hiện thao tác lô trên Toolbar.<br>- Checkbox chọn tất cả tại tiêu đề bảng chỉ chọn các hồ sơ đang hiển thị trên trang hiện tại.<br>- Khi Cán bộ đổi Tab trạng thái, Tab nhóm nghiệp vụ, bộ lọc tìm kiếm hoặc số bản ghi/trang, hệ thống xóa danh sách hồ sơ đã chọn. |
 | STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
-| Số đăng ký | String(50) | Có | Theo hồ sơ | Mã hồ sơ/số đăng ký của Phiếu đăng ký. Click vào giá trị xử lý tương tự Row Click và mở **4.3.2.3.3. UC-DK-CB.MH02 - Màn hình Xem chi tiết Phiếu đăng ký**. |
+| Số đăng ký | String(50) | Có | Theo hồ sơ | Mã hồ sơ/số đăng ký của Phiếu đăng ký. Click vào giá trị xử lý tương tự Row Click và mở **UC-DK-CB.MH02 - Xem chi tiết Phiếu đăng ký**. |
 | Mã PIN | String(20) | Không | Theo hồ sơ | Hiển thị mã PIN bảo mật của hồ sơ nếu đã phát sinh. |
 | Tên bên bảo đảm | String(255) | Không | Theo hồ sơ | Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
 | Tên bên nhận bảo đảm | String(255) | Không | Theo hồ sơ | Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu [DM_04]. |
-| Loại hình GD | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Tham chiếu [DM_02] nếu Loại hình giao dịch là "Biện pháp bảo đảm"; tham chiếu [DM_03] nếu Loại hình giao dịch là "Hợp đồng". |
-| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | \- Tham chiếu [DM_07].<br>- Nếu hồ sơ có nhiều Loại tài sản, hiển thị mỗi Loại tài sản trên một dòng riêng trong cùng ô. |
+| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình GD | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] nếu Loại hình giao dịch là "Biện pháp bảo đảm"; Tham chiếu Danh mục Loại hợp đồng [DM_03] nếu Loại hình giao dịch là "Hợp đồng". |
+| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | \- Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07].<br>- Nếu hồ sơ có nhiều Loại tài sản, hiển thị mỗi Loại tài sản trên một dòng riêng trong cùng ô. |
 | Mã khách hàng | String(50) | Không | Theo hồ sơ | Hiển thị Mã khách hàng nộp hồ sơ nếu có. |
 | Số biên lai | String(50) | Không | Theo hồ sơ | Hiển thị số biên lai/biên nhận thanh toán lệ phí nếu có. |
 | Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | \- Tham chiếu bộ trạng thái workflow hồ sơ đăng ký.<br>- "Chờ thanh toán": Hồ sơ Online có phí, Khách hàng đã gửi và đang chờ thanh toán; không hiển thị tại màn xử lý của Cán bộ.<br>- "Chờ duyệt": Hồ sơ Online đã thanh toán thành công/miễn phí, đang chờ Cán bộ kiểm tra, duyệt hoặc trình ký.<br>- "Chờ giải quyết": Hồ sơ giấy đã hoàn tất thu phí/miễn phí, đang chờ Cán bộ kiểm tra, duyệt hoặc trình ký.<br>- "Duyệt chờ ký": Hồ sơ đã được Cán bộ duyệt, đang chờ Cán bộ trình Lãnh đạo ký.<br>- "Bị trả lại": Hồ sơ bị Lãnh đạo trả lại, Cán bộ cần xử lý lại theo ý kiến trả lại.<br>- "Chờ ký": Hồ sơ đã được Cán bộ trình ký, đang chờ Lãnh đạo ký số/ký duyệt.<br>- "Hoàn thành": Hồ sơ đã được ký số/ban hành kết quả hợp lệ.<br>- "Bị từ chối": Hồ sơ đã bị từ chối xử lý theo quy định nghiệp vụ. |
@@ -125,13 +111,13 @@
 | Cán bộ xử lý | String(255) | Không | Theo phân công | Tên Cán bộ đang được phân công hoặc đã xử lý hồ sơ. |
 | Thao tác | String(255) | Không | Theo trạng thái | \- Hiển thị các nút/icon thao tác nhanh theo trạng thái hồ sơ.<br>- Việc xem chi tiết thực hiện bằng Row Click.<br>- Các thao tác nghiệp vụ còn lại xem chi tiết tại bảng Chức năng trên màn hình. |
 | **V. Ma trận hiển thị nút chức năng theo từng Tab trạng thái** | | | | |
-| Toolbar tại Tab "Hồ sơ chờ duyệt" | Text(1000) | Không | Theo Tab | \- Hiển thị phía trên bên phải bảng danh sách Phiếu đăng ký.<br>- Hiển thị các nút theo thứ tự từ trái sang phải:<br>+ "Từ chối".<br>+ "Duyệt".<br>+ "Trình ký".<br>- Các nút toolbar chỉ thao tác trên các dòng đã tích chọn checkbox.<br>- Nếu chưa tích chọn dòng nào, khi bấm nút hệ thống chặn theo [BR-DK-024] và hiển thị [MSG-ERR-DK-008]. |
-| Thao tác dòng tại Tab "Hồ sơ chờ duyệt" | Text(1000) | Không | Theo Tab | \- Hiển thị tại cột Thao tác của từng dòng Phiếu đăng ký.<br>- Hiển thị các nút/icon theo thứ tự từ trái sang phải:<br>+ "Cập nhật".<br>+ "Duyệt".<br>+ "Trình ký".<br>+ "Từ chối".<br>- Nút "Cập nhật" chỉ hiển thị khi Nguồn tiếp nhận là "Cán bộ nhập liệu". |
+| Toolbar tại Tab "Hồ sơ chờ duyệt" | Text(1000) | Không | Theo Tab | \- Hiển thị phía trên bên phải bảng danh sách Phiếu đăng ký.<br>- Hiển thị các nút theo thứ tự từ trái sang phải:<br>+ "Từ chối".<br>+ "Duyệt".<br>+ "Trình ký".<br>+ Các nút toolbar chỉ thao tác trên các dòng đã tích chọn checkbox.<br>- Nếu chưa tích chọn dòng nào, khi bấm nút hệ thống chặn theo [BR-DK-024] và hiển thị [MSG-ERR-DK-008]. |
+| Thao tác dòng tại Tab "Hồ sơ chờ duyệt" | Text(1000) | Không | Theo Tab | \- Hiển thị tại cột Thao tác của từng dòng Phiếu đăng ký.<br>- Hiển thị các nút/icon theo thứ tự từ trái sang phải:<br>+ "Cập nhật".<br>+ "Duyệt".<br>+ "Trình ký".<br>+ "Từ chối".<br>+ Nút "Cập nhật" chỉ hiển thị khi Nguồn tiếp nhận là "Cán bộ nhập liệu". |
 | Checkbox tại Tab "Hồ sơ chờ duyệt" | Boolean | Không | Không tích | \- Chỉ hiển thị tại Tab "Hồ sơ chờ duyệt".<br>- Cho phép chọn một hoặc nhiều hồ sơ để thao tác lô.<br>- Checkbox chọn tất cả hiển thị tại tiêu đề bảng. |
-| Toolbar tại Tab "Hồ sơ duyệt chờ ký" | Text(1000) | Không | Theo Tab | \- Hiển thị phía trên bên phải bảng danh sách Phiếu đăng ký.<br>- Hiển thị các nút theo thứ tự từ trái sang phải:<br>+ "Từ chối".<br>+ "Trình ký".<br>- Các nút toolbar chỉ thao tác trên các dòng đã tích chọn checkbox. |
+| Toolbar tại Tab "Hồ sơ duyệt chờ ký" | Text(1000) | Không | Theo Tab | \- Hiển thị phía trên bên phải bảng danh sách Phiếu đăng ký.<br>- Hiển thị các nút theo thứ tự từ trái sang phải:<br>+ "Từ chối".<br>+ "Trình ký".<br>+ Các nút toolbar chỉ thao tác trên các dòng đã tích chọn checkbox. |
 | Thao tác dòng tại Tab "Hồ sơ duyệt chờ ký" | Text(1000) | Không | Theo Tab | \- Hiển thị tại cột Thao tác của từng dòng Phiếu đăng ký.<br>- Hiển thị các nút/icon theo thứ tự từ trái sang phải:<br>+ "Trình ký".<br>+ "Hủy duyệt".<br>+ "Từ chối". |
 | Checkbox tại Tab "Hồ sơ duyệt chờ ký" | Boolean | Không | Không tích | \- Chỉ hiển thị tại Tab "Hồ sơ duyệt chờ ký".<br>- Cho phép chọn một hoặc nhiều hồ sơ để thao tác lô đối với "Từ chối" và "Trình ký".<br>- Chức năng "Hủy duyệt" chỉ thực hiện theo từng dòng, không hỗ trợ thao tác lô. |
-| Thao tác dòng tại Tab "Hồ sơ bị trả lại" | Text(1000) | Không | Theo Tab | \- Hiển thị tại cột Thao tác của từng dòng Phiếu đăng ký.<br>- Hiển thị các nút/icon theo thứ tự từ trái sang phải:<br>+ "Cập nhật".<br>+ "Từ chối".<br>- Nút "Cập nhật" hiển thị với mọi hồ sơ ở trạng thái "Bị trả lại", không phân biệt Nguồn tiếp nhận, để Cán bộ xử lý theo ý kiến trả lại. |
+| Thao tác dòng tại Tab "Hồ sơ bị trả lại" | Text(1000) | Không | Theo Tab | \- Hiển thị tại cột Thao tác của từng dòng Phiếu đăng ký.<br>- Hiển thị các nút/icon theo thứ tự từ trái sang phải:<br>+ "Cập nhật".<br>+ "Từ chối".<br>+ Nút "Cập nhật" hiển thị với mọi hồ sơ ở trạng thái "Bị trả lại", không phân biệt Nguồn tiếp nhận, để Cán bộ xử lý theo ý kiến trả lại. |
 | Quy chuẩn hiển thị nút disabled | Text(1000) | Không | Theo trạng thái | \- Chỉ áp dụng khi chức năng vẫn cần hiển thị để Cán bộ nhận biết quyền thao tác theo nghiệp vụ.<br>- Nút/icon disabled hiển thị dạng mờ, không nhận click, không focus bằng bàn phím, không gửi request xử lý.<br>- Khi hover hiển thị tooltip nêu lý do không được thao tác.<br>- Áp dụng tối thiểu cho nút "Cập nhật" của hồ sơ Nguồn tiếp nhận "Khách hàng" tại Tab "Hồ sơ chờ duyệt". |
 
 ##### 4.3.2.3.2.3. Chức năng trên màn hình
@@ -150,17 +136,17 @@
 | 4 | Trình ký | Nút/Icon | TH1 (Chưa chọn bản ghi khi thao tác lô): Vi phạm [BR-DK-024], hiển thị [MSG-ERR-DK-008], không mở popup trình ký. |
 |  |  |  | TH2 (Có hồ sơ trong lô không ở trạng thái cho phép trình ký, đã thay đổi trạng thái hoặc Cán bộ không còn quyền xử lý): Nếu hồ sơ không ở trạng thái "Chờ duyệt", "Chờ giải quyết" hoặc "Duyệt chờ ký", vi phạm [BR-DK-026], hiển thị [MSG-ERR-DK-005], không mở popup trình ký cho toàn bộ lô. |
 |  |  |  | TH3 (Vượt quá số lượng hồ sơ trình ký/lần): Nếu số hồ sơ được chọn lớn hơn giới hạn cấu hình, mặc định 20 hồ sơ/lần, hệ thống hiển thị cảnh báo Inline/Modal theo cấu hình MessageList, không sinh file PDF dự thảo và không mở popup trình ký. |
-|  |  |  | TH Hợp lệ thao tác dòng: Ngay sau khi Cán bộ bấm "Trình ký" và hồ sơ hợp lệ, hệ thống sinh file PDF dự thảo theo mục **4.3.2.3.6**, sau đó mở **4.3.2.3.5. UC-DK-CB.MH04 - Popup Trình ký Phiếu đăng ký** cho hồ sơ tại dòng được chọn. |
-|  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra toàn bộ danh sách hồ sơ đã chọn. Khi tất cả hồ sơ hợp lệ, hệ thống sinh file PDF dự thảo riêng cho từng hồ sơ theo mục **4.3.2.3.6**, sau đó mở **4.3.2.3.5. UC-DK-CB.MH04 - Popup Trình ký Phiếu đăng ký** ở chế độ trình ký nhiều hồ sơ; trường "Lãnh đạo ký" chỉ hiển thị người có thẩm quyền ký toàn bộ hồ sơ trong lô. |
+|  |  |  | TH Hợp lệ thao tác dòng: Ngay sau khi Cán bộ bấm "Trình ký" và hồ sơ hợp lệ, hệ thống sinh file PDF dự thảo theo mục **4.3.2.3.6**, sau đó mở **UC-DK-CB.MH04 - Popup Trình ký Phiếu đăng ký** cho hồ sơ tại dòng được chọn. |
+|  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra toàn bộ danh sách hồ sơ đã chọn. Khi tất cả hồ sơ hợp lệ, hệ thống sinh file PDF dự thảo riêng cho từng hồ sơ theo mục **4.3.2.3.6**, sau đó mở **UC-DK-CB.MH04 - Popup Trình ký Phiếu đăng ký** ở chế độ trình ký nhiều hồ sơ; trường "Lãnh đạo ký" chỉ hiển thị người có thẩm quyền ký toàn bộ hồ sơ trong lô. |
 | 5 | Từ chối | Nút/Icon | TH1 (Chưa chọn bản ghi khi thao tác lô): Vi phạm [BR-DK-024], hiển thị [MSG-ERR-DK-008], không mở popup từ chối. |
 |  |  |  | TH2 (Có hồ sơ trong lô không ở trạng thái cho phép từ chối, đã thay đổi trạng thái hoặc Cán bộ không còn quyền xử lý): Nếu hồ sơ không ở trạng thái "Chờ duyệt", "Chờ giải quyết", "Duyệt chờ ký" hoặc "Bị trả lại", vi phạm [BR-DK-026], hiển thị [MSG-ERR-DK-005], không mở popup từ chối cho toàn bộ lô. |
-|  |  |  | TH Hợp lệ thao tác dòng: Hệ thống mở **4.3.2.3.4. UC-DK-CB.MH03 - Popup Từ chối Phiếu đăng ký** cho hồ sơ tại dòng được chọn. |
-|  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra toàn bộ danh sách hồ sơ đã chọn trước khi mở popup. Khi tất cả hồ sơ hợp lệ, hệ thống mở **4.3.2.3.4. UC-DK-CB.MH03 - Popup Từ chối Phiếu đăng ký** và truyền danh sách hồ sơ đã chọn vào popup; lý do từ chối áp dụng cho toàn bộ hồ sơ trong lô; trường "Lãnh đạo ký văn bản từ chối" chỉ hiển thị người có thẩm quyền ký toàn bộ văn bản từ chối trong lô. |
+|  |  |  | TH Hợp lệ thao tác dòng: Hệ thống mở **UC-DK-CB.MH03 - Popup Từ chối Phiếu đăng ký** cho hồ sơ tại dòng được chọn. |
+|  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra toàn bộ danh sách hồ sơ đã chọn trước khi mở popup. Khi tất cả hồ sơ hợp lệ, hệ thống mở **UC-DK-CB.MH03 - Popup Từ chối Phiếu đăng ký** và truyền danh sách hồ sơ đã chọn vào popup; lý do từ chối áp dụng cho toàn bộ hồ sơ trong lô; trường "Lãnh đạo ký văn bản từ chối" chỉ hiển thị người có thẩm quyền ký toàn bộ văn bản từ chối trong lô. |
 | 6 | Cập nhật | Icon | TH1 (Hồ sơ nguồn Khách hàng tại trạng thái "Chờ duyệt"): Theo [BR-DK-030], icon hiển thị dạng làm mờ, không cho phép thao tác; hồ sơ do Khách hàng nộp trực tuyến không được Cán bộ chỉnh sửa trực tiếp tại bước này. |
 |  |  |  | TH Hợp lệ: Hệ thống mở form nhập liệu tương ứng loại hồ sơ để Cán bộ cập nhật theo phạm vi được phép khi hồ sơ có Nguồn tiếp nhận là "Cán bộ nhập liệu" tại trạng thái "Chờ duyệt" hoặc hồ sơ ở trạng thái "Bị trả lại". |
 | 7 | Hủy duyệt | Icon | TH1 (Hồ sơ không ở trạng thái "Duyệt chờ ký"): Vi phạm [BR-DK-026], hiển thị [MSG-ERR-DK-005], không thực hiện hủy duyệt. |
 |  |  |  | TH Hợp lệ: Hệ thống chuyển hồ sơ từ trạng thái "Duyệt chờ ký" về "Chờ duyệt"; ghi nhận Cán bộ hủy duyệt, thời điểm hủy duyệt, trạng thái trước/sau; ghi lịch sử xử lý và Audit log; hiển thị [MSG-SUC-DK-KT-004]. |
-| 8 | Click dòng dữ liệu | Row Click | Mở **4.3.2.3.3. UC-DK-CB.MH02 - Màn hình Xem chi tiết Phiếu đăng ký**. Đây là phương thức chính để xem chi tiết hồ sơ trên lưới, ngoại trừ khi Cán bộ click trực tiếp vào checkbox hoặc các nút thao tác nghiệp vụ. |
+| 8 | Click dòng dữ liệu | Row Click | Mở **UC-DK-CB.MH02 - Xem chi tiết Phiếu đăng ký**. Đây là phương thức chính để xem chi tiết hồ sơ trên lưới, ngoại trừ khi Cán bộ click trực tiếp vào checkbox hoặc các nút thao tác nghiệp vụ. |
 
 #### 4.3.2.3.3. UC-DK-CB.MH02 - Màn hình Xem chi tiết Phiếu đăng ký
 
@@ -178,10 +164,10 @@
 | Mã khách hàng | String(50) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ có Mã khách hàng. |
 | Mã PIN | String(20) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã phát sinh Mã PIN. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm hồ sơ được hệ thống ghi nhận. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_02] hoặc [DM_03] theo Loại hình giao dịch. |
-| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | Chỉ đọc, tham chiếu [DM_07]. |
+| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch. |
+| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. |
 | Người yêu cầu | String(255) | Không | Theo hồ sơ | Chỉ đọc. Hiển thị người yêu cầu đăng ký theo hồ sơ. |
 | Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị "Khách hàng" hoặc "Cán bộ nhập liệu". |
 | Cán bộ xử lý | String(255) | Không | Theo phân công | Chỉ đọc. Hiển thị Cán bộ đang/đã xử lý hồ sơ. |
@@ -202,7 +188,7 @@
 | **VII. Thanh nút chức năng trên màn hình chi tiết** | | | | |
 | Nút tại hồ sơ trạng thái "Chờ duyệt" | Text(1000) | Không | Theo trạng thái hồ sơ | \- Hiển thị tại cuối màn hình chi tiết, theo thứ tự từ trái sang phải:<br>+ "Đóng".<br>+ "Từ chối".<br>+ "Duyệt".<br>+ "Trình ký".<br>- Nếu hồ sơ có Nguồn tiếp nhận là "Cán bộ nhập liệu", hiển thị thêm "Cập nhật" trước nút "Từ chối".<br>- Nếu hồ sơ có Nguồn tiếp nhận là "Khách hàng" và giao diện vẫn bố trí nút "Cập nhật", nút hiển thị dạng mờ/disabled kèm tooltip "Hồ sơ từ nguồn Khách hàng không được cập nhật". |
 | Nút tại hồ sơ trạng thái "Duyệt chờ ký" | Text(1000) | Không | Theo trạng thái hồ sơ | \- Hiển thị tại cuối màn hình chi tiết, theo thứ tự từ trái sang phải:<br>+ "Đóng".<br>+ "Từ chối".<br>+ "Trình ký". |
-| Nút tại hồ sơ trạng thái "Bị trả lại" | Text(1000) | Không | Theo trạng thái hồ sơ | \- Hiển thị tại cuối màn hình chi tiết, theo thứ tự từ trái sang phải:<br>+ "Đóng".<br>+ "Cập nhật".<br>+ "Từ chối".<br>- Nút "Cập nhật" cho phép Cán bộ mở form nhập liệu tương ứng và xử lý theo ý kiến trả lại của Lãnh đạo. |
+| Nút tại hồ sơ trạng thái "Bị trả lại" | Text(1000) | Không | Theo trạng thái hồ sơ | \- Hiển thị tại cuối màn hình chi tiết, theo thứ tự từ trái sang phải:<br>+ "Đóng".<br>+ "Cập nhật".<br>+ "Từ chối".<br>+ Nút "Cập nhật" cho phép Cán bộ mở form nhập liệu tương ứng và xử lý theo ý kiến trả lại của Lãnh đạo. |
 | Nút tại hồ sơ trạng thái "Chờ ký" | Text(1000) | Không | Theo trạng thái hồ sơ | \- Hiển thị tại cuối màn hình chi tiết:<br>+ "Đóng".<br>- Nếu hồ sơ có file PDF dự thảo, hiển thị "Xem file" tại khối Tệp hồ sơ và kết quả. |
 | Nút tại hồ sơ trạng thái "Hoàn thành" | Text(1000) | Không | Theo trạng thái hồ sơ | \- Hiển thị tại cuối màn hình chi tiết:<br>+ "Đóng".<br>- Nếu hồ sơ có file đã ký, hiển thị "Xem file" tại khối Tệp hồ sơ và kết quả. |
 | Nút tại hồ sơ trạng thái "Bị từ chối" | Text(1000) | Không | Theo trạng thái hồ sơ | \- Hiển thị tại cuối màn hình chi tiết:<br>+ "Đóng".<br>- Nếu hồ sơ có văn bản từ chối đã ký, hiển thị "Xem file" tại khối Tệp hồ sơ và kết quả. |
@@ -212,7 +198,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Đóng | Nút | Quay lại **4.3.2.3.2. UC-DK-CB.MH01 - Màn hình Danh sách Phiếu đăng ký theo trạng thái**, giữ nguyên tab trạng thái, tab nhóm nghiệp vụ, bộ lọc và trang dữ liệu trước đó. |
+| 1 | Đóng | Nút | Quay lại **UC-DK-CB.MH01 - Danh sách Phiếu đăng ký theo trạng thái**, giữ nguyên tab trạng thái, tab nhóm nghiệp vụ, bộ lọc và trang dữ liệu trước đó. |
 | 2 | Cập nhật | Nút | TH1 (Hồ sơ nguồn Khách hàng tại trạng thái "Chờ duyệt"): Theo [BR-DK-030], nếu giao diện vẫn bố trí nút "Cập nhật" thì nút hiển thị dạng mờ/disabled, không cho phép thao tác và hiển thị tooltip "Hồ sơ từ nguồn Khách hàng không được cập nhật". |
 |  |  |  | TH2 (Hồ sơ không ở trạng thái cho phép cập nhật): Nếu hồ sơ không ở trạng thái "Chờ duyệt" với Nguồn tiếp nhận là "Cán bộ nhập liệu" và không ở trạng thái "Bị trả lại", vi phạm [BR-DK-026], hệ thống không cho phép mở form cập nhật. |
 |  |  |  | TH Hợp lệ: Mở form nhập liệu tương ứng loại hồ sơ để Cán bộ cập nhật dữ liệu theo phạm vi được phép. |
@@ -221,10 +207,10 @@
 |  |  |  | TH Hợp lệ: Hệ thống cập nhật hồ sơ sang trạng thái "Duyệt chờ ký", ghi nhận người duyệt, thời điểm duyệt, ý kiến duyệt nếu có, trạng thái trước/sau, lịch sử xử lý và Audit log; hiển thị [MSG-SUC-DK-KT-001]. |
 | 4 | Trình ký | Nút | TH1 (Hồ sơ không ở trạng thái "Chờ duyệt", "Chờ giải quyết" hoặc "Duyệt chờ ký"): Vi phạm [BR-DK-026], hiển thị [MSG-ERR-DK-005], không mở popup trình ký. |
 |  |  |  | TH2 (Không sinh được file PDF dự thảo Văn bản chứng nhận): Hệ thống hiển thị lỗi workflow theo cấu hình MessageList; không mở popup trình ký, không chuyển trạng thái hồ sơ và ghi nhận lỗi vào Audit log. |
-|  |  |  | TH Hợp lệ: Ngay sau khi Cán bộ bấm "Trình ký" và hồ sơ hợp lệ, hệ thống sinh file PDF dự thảo Văn bản chứng nhận theo mục **4.3.2.3.6**, sau đó mở **4.3.2.3.5. UC-DK-CB.MH04 - Popup Trình ký Phiếu đăng ký** để Cán bộ kiểm tra file, chọn Lãnh đạo ký và xác nhận trình ký. |
+|  |  |  | TH Hợp lệ: Ngay sau khi Cán bộ bấm "Trình ký" và hồ sơ hợp lệ, hệ thống sinh file PDF dự thảo Văn bản chứng nhận theo mục **4.3.2.3.6**, sau đó mở **UC-DK-CB.MH04 - Popup Trình ký Phiếu đăng ký** để Cán bộ kiểm tra file, chọn Lãnh đạo ký và xác nhận trình ký. |
 | 5 | Từ chối | Nút | TH1 (Bỏ trống Ý kiến phê duyệt của Cán bộ/Lý do từ chối): Vi phạm [BR-DK-025] và [BR-VAL-001], hệ thống tô viền đỏ ô nhập, hiển thị [MSG-ERR-VAL-001] dạng Inline dưới ô nhập và không cho phép tiếp tục. |
 |  |  |  | TH2 (Hồ sơ không ở trạng thái cho phép từ chối): Vi phạm [BR-DK-026], hiển thị [MSG-ERR-DK-005], không thực hiện từ chối. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.3.4. UC-DK-CB.MH03 - Popup Từ chối Phiếu đăng ký** và mang theo lý do từ chối đã nhập. |
+|  |  |  | TH Hợp lệ: Mở **UC-DK-CB.MH03 - Popup Từ chối Phiếu đăng ký** và mang theo lý do từ chối đã nhập. |
 | 6 | Xem file | Link/Nút | Cho phép xem file tại một tab riêng. |
 
 #### 4.3.2.3.4. UC-DK-CB.MH03 - Popup Từ chối Phiếu đăng ký
@@ -281,7 +267,7 @@
 | 2 | Xác nhận trình ký | Nút | TH1 (Hồ sơ không ở trạng thái cho phép trình ký): Nếu hồ sơ không ở trạng thái "Chờ duyệt", "Chờ giải quyết" hoặc "Duyệt chờ ký", vi phạm [BR-DK-026], hiển thị [MSG-ERR-DK-005], không trình ký. |
 |  |  |  | TH2 (Chưa chọn Lãnh đạo ký hoặc Lãnh đạo ký không còn hiệu lực/không có thẩm quyền tại thời điểm xác nhận): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không trình ký. |
 |  |  |  | TH3 (Không có file PDF dự thảo hợp lệ): Hệ thống hiển thị lỗi workflow theo cấu hình MessageList; không chuyển trạng thái hồ sơ và ghi nhận lỗi vào Audit log. |
-|  |  |  | TH Hợp lệ: Hệ thống thực hiện:<br>- Khóa phiên bản dữ liệu hồ sơ và phiên bản file PDF dự thảo được trình ký.<br>- Ghi nhận Cán bộ trình ký, thời điểm trình ký, danh sách hồ sơ trình ký, Lãnh đạo ký đã chọn, trạng thái trước/sau.<br>- Chuyển hồ sơ sang trạng thái "Chờ ký".<br>- Chuyển hồ sơ vào danh sách ký duyệt của đúng Lãnh đạo ký đã chọn.<br>- Ghi lịch sử xử lý và Audit log.<br>- Hiển thị [MSG-SUC-DK-KT-002]. |
+|  |  |  | TH Hợp lệ: Hệ thống thực hiện:<br>+ Khóa phiên bản dữ liệu hồ sơ và phiên bản file PDF dự thảo được trình ký.<br>+ Ghi nhận Cán bộ trình ký, thời điểm trình ký, danh sách hồ sơ trình ký, Lãnh đạo ký đã chọn, trạng thái trước/sau.<br>+ Chuyển hồ sơ sang trạng thái "Chờ ký".<br>+ Chuyển hồ sơ vào danh sách ký duyệt của đúng Lãnh đạo ký đã chọn.<br>+ Ghi lịch sử xử lý và Audit log.<br>+ Hiển thị [MSG-SUC-DK-KT-002]. |
 
 #### 4.3.2.3.6. Quy tắc sinh file PDF dự thảo Văn bản chứng nhận theo Mẫu số 05d
 
@@ -289,7 +275,7 @@
 
 \- Thời điểm sinh file PDF dự thảo: ngay sau khi Cán bộ bấm "Trình ký" và hệ thống kiểm tra Phiếu đăng ký đủ điều kiện trình ký.
 
-\- File PDF dự thảo phải được sinh trước khi mở **4.3.2.3.5. UC-DK-CB.MH04 - Popup Trình ký Phiếu đăng ký** để Cán bộ xem/đối chiếu file trước khi xác nhận trình ký.
+\- File PDF dự thảo phải được sinh trước khi mở **UC-DK-CB.MH04 - Popup Trình ký Phiếu đăng ký** để Cán bộ xem/đối chiếu file trước khi xác nhận trình ký.
 
 \- Việc sinh file PDF dự thảo chưa làm thay đổi trạng thái hồ sơ. Hồ sơ chỉ chuyển sang "Chờ ký" sau khi Cán bộ xác nhận trình ký thành công tại Popup Trình ký.
 
@@ -322,7 +308,7 @@
 | 3 | Tên cơ quan đăng ký bên trái | Cấu hình đơn vị xử lý hồ sơ | Hiển thị tên cơ quan cấp trên và tên Trung tâm đăng ký xử lý hồ sơ theo đúng mẫu, ví dụ: "CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC" và "TRUNG TÂM ĐĂNG KÝ GIAO DỊCH, TÀI SẢN TẠI TP. HÀ NỘI". |
 | 4 | Quốc hiệu, tiêu ngữ | Cấu hình biểu mẫu | Hiển thị cố định: "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM" và "Độc lập - Tự do - Hạnh phúc". |
 | 5 | Địa danh, ngày tháng năm lập văn bản | Cấu hình đơn vị xử lý hồ sơ và thời điểm sinh PDF dự thảo | Địa danh lấy theo đơn vị xử lý hồ sơ. Ngày tháng năm lấy theo ngày hệ thống sinh file PDF dự thảo tại thao tác "Trình ký". Định dạng theo mẫu: "[Địa danh], ngày [dd] tháng [mm] năm [yyyy]". |
-| 6 | Tên văn bản | Loại hồ sơ/Loại hình giao dịch | Hiển thị in hoa, in đậm. Tiêu đề động theo loại hồ sơ:<br>- Nếu Loại hình giao dịch là "Biện pháp bảo đảm": "VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM".<br>- Nếu Loại hình giao dịch là "Hợp đồng": "VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM, HỢP ĐỒNG".<br>- Nếu hồ sơ là Thông báo xử lý tài sản bảo đảm: "VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM". |
+| 6 | Tên văn bản | Loại hồ sơ/Loại hình giao dịch | Hiển thị in hoa, in đậm. Tiêu đề động theo loại hồ sơ:<br>+ Nếu Loại hình giao dịch là "Biện pháp bảo đảm": "VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM".<br>+ Nếu Loại hình giao dịch là "Hợp đồng": "VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM, HỢP ĐỒNG".<br>+ Nếu hồ sơ là Thông báo xử lý tài sản bảo đảm: "VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM". |
 | 7 | Tên Trung tâm chứng nhận | Đơn vị xử lý hồ sơ | Hiển thị tên Trung tâm đăng ký giao dịch, tài sản xử lý hồ sơ, in hoa, in đậm theo mẫu, kết thúc bằng từ "CHỨNG NHẬN". |
 | 8 | Mục 1 - Nội dung chứng nhận | Dữ liệu Phiếu đăng ký, số đăng ký và thời điểm có hiệu lực đăng ký | Hiển thị đoạn văn theo mẫu: "1. Nội dung đăng ký của phiếu yêu cầu đăng ký số [Số hồ sơ/Số đăng ký] đã được cập nhật vào Cơ sở dữ liệu về biện pháp bảo đảm; có hiệu lực đăng ký từ thời điểm [HH giờ mm phút, ngày dd tháng mm năm yyyy] và được Trung tâm Đăng ký giao dịch, tài sản gửi kèm theo Văn bản chứng nhận.". |
 | 9 | Số đăng ký | Kết quả xử lý đăng ký | Mapping vào đoạn Mục 1 và phần chi tiết phía sau. Với hồ sơ đăng ký thay đổi/xóa đăng ký/thông báo xử lý tài sản, hiển thị số đăng ký/hồ sơ liên quan theo dữ liệu kết quả xử lý. |
@@ -341,7 +327,7 @@
 
 | STT | Thành phần trên file PDF | Nguồn dữ liệu hệ thống | Quy tắc mapping/xử lý |
 | :--- | :--- | :--- | :--- |
-| 1 | Tiêu đề phần chi tiết | Cấu hình biểu mẫu và dữ liệu hồ sơ | Hiển thị tiêu đề động theo loại hồ sơ, ví dụ:<br>- "CHI TIẾT ĐĂNG KÝ".<br>- "CHI TIẾT ĐĂNG KÝ THAY ĐỔI".<br>- "CHI TIẾT XÓA ĐĂNG KÝ".<br>- "CHI TIẾT THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM".<br>- "CHI TIẾT THAY ĐỔI THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM".<br>- "CHI TIẾT XÓA THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM". |
+| 1 | Tiêu đề phần chi tiết | Cấu hình biểu mẫu và dữ liệu hồ sơ | Hiển thị tiêu đề động theo loại hồ sơ, ví dụ:<br>+ "CHI TIẾT ĐĂNG KÝ".<br>+ "CHI TIẾT ĐĂNG KÝ THAY ĐỔI".<br>+ "CHI TIẾT XÓA ĐĂNG KÝ".<br>+ "CHI TIẾT THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM".<br>+ "CHI TIẾT THAY ĐỔI THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM".<br>+ "CHI TIẾT XÓA THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM". |
 | 2 | Thông tin định danh hồ sơ | Hồ sơ Phiếu đăng ký và kết quả xử lý | Hiển thị các thông tin nhận diện chính của hồ sơ ở đầu phần chi tiết, tối thiểu gồm: Số đăng ký lần đầu/Số đăng ký liên quan, Thời điểm đăng ký, Loại hình giao dịch, Loại đăng ký và các thông tin hồ sơ gốc/hồ sơ liên quan nếu có. |
 | 3 | Khối chi tiết đăng ký/hồ sơ | Dữ liệu Review nghiệp vụ tương ứng | Hiển thị thông tin chi tiết đăng ký/hồ sơ trong file PDF. Tham chiếu **III. KHUNG ĐỐI CHIẾU DỮ LIỆU CHI TIẾT** tại [UCPS003.MH01 - Màn hình Phiếu đăng ký - Xem chi tiết dành cho Khách hàng](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41124-ucps007mh02---man-hinh-phieu-dang-ky---xem-chi-tiet) và mục **4.3.2.2.7.4. Mapping dữ liệu chi tiết hồ sơ kết quả tra cứu** tại [SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md](SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md). |
 | 4 | Tiêu đề động của các khối bên liên quan | Loại hình giao dịch, Loại biện pháp/Hợp đồng | Tiêu đề khối Bên bảo đảm/Bên theo nghĩa vụ và Bên nhận bảo đảm/Bên nhận theo hợp đồng phải mapping theo đúng mô tả tại các trường **III. Bên bảo đảm (Tiêu đề động)** và **IV. Bên nhận bảo đảm (Tiêu đề động)** của [UC024.MH01 - Màn hình nhập liệu Đăng ký mới BPBĐ](../../01_Website_Khach_hang/UC024_Dang_ky_moi_BPBD_Ver2.md). Với thông báo xử lý tài sản, tiêu đề khối xử lý tài sản hiển thị theo từng nhóm Loại tài sản được xử lý. |

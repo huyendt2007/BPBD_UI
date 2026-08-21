@@ -1,4 +1,4 @@
-﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.10. UC-BTNN-KNTC - Giải quyết khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN
 
@@ -45,9 +45,9 @@ flowchart TD
 | Tiêu đề màn hình | String(255) | Không | Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN | Hiển thị tên màn hình. |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm gần đúng theo mã hồ sơ. |
 | Người/cơ quan gửi | String(255) | Không | Trống | Tìm gần đúng theo người/cơ quan gửi khiếu nại, tố cáo, phản ánh, kiến nghị. |
-| Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Khiếu nại<br>- Tố cáo<br>- Phản ánh<br>- Kiến nghị<br>- Xử lý vi phạm |
-| Nhóm nghiệp vụ liên quan | Enum(String(100)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Giải quyết yêu cầu bồi thường<br>- Cấp kinh phí bồi thường và chi trả tiền bồi thường<br>- Xác định trách nhiệm hoàn trả<br>- Xử lý kỷ luật<br>- Quản lý nhà nước về công tác BTNN<br>- Kiểm tra công tác BTNN<br>- Đôn đốc công tác BTNN |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Lưu nháp<br>- Đang xử lý<br>- Hoàn thành |
+| Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Khiếu nại<br>+ Tố cáo<br>+ Phản ánh<br>+ Kiến nghị<br>- Xử lý vi phạm |
+| Nhóm nghiệp vụ liên quan | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Giải quyết yêu cầu bồi thường<br>+ Cấp kinh phí bồi thường và chi trả tiền bồi thường<br>+ Xác định trách nhiệm hoàn trả<br>- Xử lý kỷ luật<br>- Quản lý nhà nước về công tác BTNN<br>- Kiểm tra công tác BTNN<br>- Đôn đốc công tác BTNN |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Đang xử lý<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Trống | Ngày tiếp nhận từ, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Ngày tiếp nhận đến, áp dụng [BR-VAL-007]. |
 | Thêm mới | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -71,14 +71,14 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Thêm mới | Button | Mở **4.3.3.10.4. MH02 - Màn hình Thêm mới/Cập nhật khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN** ở chế độ thêm mới. |
+| 1 | Thêm mới | Button | Mở **MH02 - Thêm mới/Cập nhật khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN** ở chế độ thêm mới. |
 | 2 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hệ thống hiển thị lỗi inline và không tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách theo tiêu chí nhập/chọn và đưa về trang 1. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa tiêu chí lọc, đưa về giá trị mặc định và tải lại danh sách. |
 | 4 | Kết xuất Excel | Button | Kết xuất danh sách theo kết quả tìm kiếm hiện hành, áp dụng [BR-EXP-040]. |
-| 5 | Click dòng dữ liệu | Row click | Mở **4.3.3.10.4. MH02** ở chế độ xem chi tiết. |
+| 5 | Click dòng dữ liệu | Row click | Mở **MH02 - Thêm mới/Cập nhật khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN** ở chế độ xem chi tiết. |
 | 6 | Lưu và xử lý | Button/Icon | Lưu thông tin tiếp nhận, chuyển hồ sơ sang trạng thái "Đang xử lý" và ghi nhận cán bộ/đơn vị xử lý. |
-| 7 | Cập nhật kết quả | Button/Icon | Mở **4.3.3.10.4. MH02** tại khối kết quả xử lý khi hồ sơ ở trạng thái "Đang xử lý". |
+| 7 | Cập nhật kết quả | Button/Icon | Mở **MH02 - Thêm mới/Cập nhật khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN** tại khối kết quả xử lý khi hồ sơ ở trạng thái "Đang xử lý". |
 
 ##### 4.3.3.10.4. MH02 - Màn hình Thêm mới/Cập nhật khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN
 
@@ -91,7 +91,7 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Mã hồ sơ | String(50) | Không | Hệ thống tự sinh | Chỉ đọc sau khi lưu lần đầu. |
-| Loại nội dung | Enum(String(100)) | Có | Khiếu nại | Gồm:<br>- Khiếu nại<br>- Tố cáo<br>- Phản ánh<br>- Kiến nghị<br>- Xử lý vi phạm |
+| Loại nội dung | Enum(String(100)) | Có | Khiếu nại | Gồm:<br>+ Khiếu nại<br>+ Tố cáo<br>+ Phản ánh<br>+ Kiến nghị<br>- Xử lý vi phạm |
 | Ngày tiếp nhận | Date | Có | Ngày hiện tại | Áp dụng [BR-VAL-001]. |
 | Người/cơ quan gửi | String(255) | Có | Trống | Tên người, cơ quan, tổ chức gửi nội dung. |
 | Thông tin liên hệ | String(255) | Không | Trống | Số điện thoại, email hoặc địa chỉ liên hệ nếu có. |
@@ -99,7 +99,7 @@ flowchart TD
 | Mã vụ việc liên quan | String(50) | Không | Trống | Cho phép liên kết vụ việc yêu cầu bồi thường hoặc hồ sơ hoàn trả nếu có. |
 | Cơ quan/cá nhân bị phản ánh | String(255) | Không | Trống | Cơ quan, tổ chức, cá nhân liên quan đến nội dung phản ánh/khiếu nại/tố cáo. |
 | Nội dung tiếp nhận | Text(4000) | Có | Trống | Nội dung khiếu nại, tố cáo, phản ánh, kiến nghị hoặc nội dung vi phạm cần xử lý. |
-| Mức độ ưu tiên | Enum(String(50)) | Có | Bình thường | Gồm:<br>- Bình thường<br>- Khẩn<br>- Rất khẩn |
+| Mức độ ưu tiên | Enum(String(50)) | Có | Bình thường | Gồm:<br>+ Bình thường<br>+ Khẩn<br>+ Rất khẩn |
 | Đơn vị/cán bộ xử lý | String(255) | Có khi lưu và xử lý | Trống | Đơn vị hoặc cán bộ được phân công xử lý. |
 | Hạn xử lý | Date | Không | Trống | Hạn xử lý nội dung tiếp nhận. |
 | Kết quả xác minh/xử lý | Text(4000) | Có khi hoàn thành | Trống | Kết quả xử lý nội dung khiếu nại, tố cáo, phản ánh, kiến nghị hoặc vi phạm. |

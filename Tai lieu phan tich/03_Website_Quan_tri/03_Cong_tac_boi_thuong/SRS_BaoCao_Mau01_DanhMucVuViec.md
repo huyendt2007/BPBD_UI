@@ -1,4 +1,4 @@
-﻿﻿#### 4.3.3.21. UCPS019 - Danh mục vụ việc giải quyết yêu cầu bồi thường (Mẫu số 01-TT08)
+#### 4.3.3.21. UCPS019 - Danh mục vụ việc giải quyết yêu cầu bồi thường (Mẫu số 01-TT08)
 
 ##### 4.3.3.21.1. Mục đích
 
@@ -18,7 +18,7 @@
 
 \- Người dùng được phân quyền truy cập màn hình `Danh mục vụ việc giải quyết yêu cầu bồi thường (Mẫu số 01-TT08)`.
 
-\- Loại cơ quan báo cáo tham chiếu danh mục [DM_43]. Loại kỳ báo cáo tham chiếu danh mục [DM_44]. Lĩnh vực phát sinh thiệt hại tham chiếu [DM_22].
+\- Loại cơ quan báo cáo Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. Loại kỳ báo cáo Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Lĩnh vực phát sinh thiệt hại Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22].
 
 \- Nguồn dữ liệu vụ việc lấy từ trường `Mã vụ việc`, `Tên vụ việc`, `Họ và tên người yêu cầu bồi thường`, `Địa chỉ chi tiết`/`Tỉnh/TP`, `Cơ quan giải quyết bồi thường`, `Pháp luật áp dụng để giải quyết bồi thường`, `Thời điểm tiếp nhận`, `Trạng thái` đã đặc tả tại SRS Tiếp nhận YCBT và Giải quyết yêu cầu bồi thường.
 
@@ -51,11 +51,11 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Khối chọn kỳ báo cáo** | | | | |
 | Năm báo cáo | Enum(String(10)) | Có | Năm hiện tại | Giá trị gồm 05 năm gần nhất tính đến năm hiện tại. |
-| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu [DM_44]. Xác định khoảng thời gian lấy số liệu tương ứng (01/01-31/10 hoặc 01/01-31/12 của năm báo cáo). |
-| Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Giá trị lấy từ Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
-| Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu [DM_43]. |
+| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Xác định khoảng thời gian lấy số liệu tương ứng (01/01-31/10 hoặc 01/01-31/12 của năm báo cáo). |
+| Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
+| Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
 | **II. Bộ lọc bổ sung** | | | | |
-| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Tham chiếu [DM_22]. Giá trị lọc gồm `Tất cả` và 06 lĩnh vực thuộc [DM_22]. |
+| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Mã vụ việc`, `Tên vụ việc` hoặc `Họ và tên người yêu cầu bồi thường`. |
 | **III. Bảng danh mục vụ việc** | | | | |
 | Nhóm dòng theo lĩnh vực | String(255) | - | Theo dữ liệu | Chỉ đọc. Vụ việc được nhóm theo 06 lĩnh vực phát sinh thiệt hại [DM_22], đánh số nhóm bằng số La Mã `I`, `II`, `III`, `IV`, `V`, `VI` tương ứng (Quản lý hành chính, Tố tụng hình sự, Tố tụng dân sự, Tố tụng hành chính, Thi hành án hình sự, Thi hành án dân sự). Dòng tiêu đề mỗi nhóm hiển thị số La Mã tại cột `STT`, còn tên nhóm lĩnh vực **merge (colspan) từ cột (1) đến hết cột (8)** thành một ô duy nhất, đúng bố cục Mẫu số 01-TT08 gốc. |
@@ -78,7 +78,7 @@ flowchart TD
 | 1 | Tổng hợp danh mục | Button | TH1 (Không có vụ việc phù hợp): Hệ thống hiển thị bảng danh mục trống kèm thông báo không có dữ liệu. |
 |  |  |  | TH2 (Có dữ liệu): Hệ thống tổng hợp toàn bộ vụ việc có `Thời điểm tiếp nhận` hoặc trạng thái xử lý phát sinh trong khoảng thời gian của `Loại kỳ báo cáo` đã chọn, nhóm theo 06 lĩnh vực phát sinh thiệt hại, tính dòng `Tổng cộng` và hiển thị lên bảng danh mục ở trạng thái kỳ tổng hợp `Nháp`. |
 | 2 | Tìm kiếm | Button | Hệ thống lọc bảng danh mục đang hiển thị theo `Lĩnh vực phát sinh thiệt hại`, `Từ khóa` đã nhập, không thực hiện tổng hợp lại từ đầu.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
-| 3 | Chỉnh sửa ghi chú | Icon button | Chỉ hiển thị với cán bộ nghiệp vụ BTNN. Hệ thống mở **4.3.3.21.4. Popup Chỉnh sửa ghi chú** cho dòng vụ việc được chọn. |
+| 3 | Chỉnh sửa ghi chú | Icon button | Chỉ hiển thị với cán bộ nghiệp vụ BTNN. Hệ thống mở **Popup Chỉnh sửa ghi chú** cho dòng vụ việc được chọn. |
 | 4 | Click dòng dữ liệu | Row click | Hệ thống mở màn hình chi tiết vụ việc tương ứng (SRS Giải quyết yêu cầu bồi thường) ở chế độ chỉ xem, tại một tab riêng; không thực hiện khi click vào icon `Chỉnh sửa ghi chú`. |
 | 5 | Kết xuất Excel | Button | Hệ thống kết xuất toàn bộ bảng danh mục hiện hành (đã nhóm theo lĩnh vực, có dòng Tổng cộng) ra file Excel theo đúng cấu trúc Mẫu số 01-TT08 và hiển thị [MSG-SUC-SYS-002]. |
 | 6 | Kết xuất Word/PDF | Button | Hệ thống kết xuất bảng danh mục hiện hành ra file Word/PDF theo đúng cấu trúc Mẫu số 01-TT08 để trình ký, cập nhật `Trạng thái kỳ tổng hợp` sang `Đã kết xuất` và hiển thị [MSG-SUC-SYS-002]. |
@@ -118,7 +118,7 @@ flowchart TD
 
 \- Dòng tiêu đề mỗi nhóm lĩnh vực (`I`, `II`, `III`, `IV`, `V`, `VI`) merge (colspan) nội dung tên nhóm từ cột (1) đến hết cột (8) thành một ô, số La Mã của nhóm hiển thị riêng tại cột `STT`. Dòng `Tổng cộng` ở cuối bảng không merge.
 
-\- Cột `Tình hình giải quyết bồi thường`, `Chi trả tiền bồi thường` và `Khó khăn, vướng mắc` đều do hệ thống tự tổng hợp từ dữ liệu vụ việc, không chỉnh sửa trực tiếp trên màn hình báo cáo; muốn thay đổi nội dung phải cập nhật lại tại hồ sơ vụ việc (SRS Giải quyết yêu cầu bồi thường), sau đó bấm `Tổng hợp danh mục` để tổng hợp lại. Cán bộ nghiệp vụ BTNN chỉ được phép nhập bổ sung cột `Ghi chú` tại **4.3.3.21.4. Popup Chỉnh sửa ghi chú**.
+\- Cột `Tình hình giải quyết bồi thường`, `Chi trả tiền bồi thường` và `Khó khăn, vướng mắc` đều do hệ thống tự tổng hợp từ dữ liệu vụ việc, không chỉnh sửa trực tiếp trên màn hình báo cáo; muốn thay đổi nội dung phải cập nhật lại tại hồ sơ vụ việc (SRS Giải quyết yêu cầu bồi thường), sau đó bấm `Tổng hợp danh mục` để tổng hợp lại. Cán bộ nghiệp vụ BTNN chỉ được phép nhập bổ sung cột `Ghi chú` tại **Popup Chỉnh sửa ghi chú**.
 
 \- Một `Mã vụ việc` chỉ được tính một lần trong cùng kỳ báo cáo và cùng nhóm lĩnh vực phát sinh thiệt hại.
 

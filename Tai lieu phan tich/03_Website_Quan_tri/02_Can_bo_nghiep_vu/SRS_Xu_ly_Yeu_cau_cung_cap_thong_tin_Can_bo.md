@@ -1,4 +1,4 @@
-﻿﻿## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
+## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
 
 ### 4.3.2.2. UC-CCTT-CB - Xử lý yêu cầu cung cấp thông tin
 
@@ -36,6 +36,10 @@
 
 \- Hệ thống tự động hiển thị đúng form tra cứu và điền đúng dữ liệu Khách hàng đã gửi.
 
+\- Trường hợp giao diện tra cứu hiển thị theo Tab "Tra cứu theo Số đăng ký", "Tra cứu theo Bên bảo đảm", "Tra cứu theo Số khung", hệ thống phải giữ nguyên toàn bộ dữ liệu đã nhập/đã hiển thị ở từng Tab khi Cán bộ chuyển qua lại giữa các Tab trong cùng phiên làm việc.
+
+\- Khi Cán bộ bấm "Tra cứu", hệ thống chỉ lấy tiêu chí và dữ liệu của Tab đang active hoặc tiêu chí đã khóa trong hồ sơ để thực thi tra cứu; không lấy hoặc ghi nhận dữ liệu của các Tab đang ẩn.
+
 \- Toàn bộ dữ liệu tra cứu ở trạng thái chỉ đọc, không cho phép chỉnh sửa theo [BR-CCTT-001].
 
 \- Cán bộ không được thay đổi tiêu chí, loại chủ thể, loại giấy tờ/loại định danh do hệ thống xác định, số giấy tờ, họ tên, tên tổ chức, số đăng ký, số khung hoặc thêm/bớt điều kiện tra cứu.
@@ -51,14 +55,16 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
-| Tìm kiếm | String(255) | Không | Trống | Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã hồ sơ, Người yêu cầu, Mã khách hàng hoặc Dữ liệu Khách hàng đã nhập. |
-| Mã khách hàng | String(50) | Không | Trống | Tìm kiếm chính xác hoặc gần đúng theo Mã khách hàng nộp yêu cầu. |
+| Mã hồ sơ | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã hồ sơ CCTT...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã hồ sơ Yêu cầu cung cấp thông tin. |
+| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm chính xác hoặc gần đúng theo Mã khách hàng nộp yêu cầu. |
+| Nguồn tiếp nhận | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Giá trị gồm: Tất cả, Trực tuyến, Trực tiếp.<br>- "Trực tuyến" áp dụng hồ sơ phát sinh từ Website/Mobile Khách hàng.<br>- "Trực tiếp" áp dụng hồ sơ giấy tiếp nhận trực tiếp tại quầy. |
+| Cán bộ xử lý | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Chọn Chuyên viên/Cán bộ xử lý hồ sơ hoặc chọn "Tất cả".<br>- Danh sách lấy theo cán bộ thuộc phạm vi Trung tâm đăng ký của người dùng đăng nhập. |
 | Trạng thái hồ sơ | Enum(String(50)) | Không | "Chờ duyệt" | \- Tham chiếu bộ trạng thái hồ sơ Yêu cầu cung cấp thông tin.<br>\- "Chờ thanh toán": Hồ sơ Online đã gửi và đang chờ Khách hàng thanh toán; không hiển thị tại màn xử lý của Cán bộ.<br>\- "Chờ duyệt": Hồ sơ Online đã thanh toán thành công/miễn phí, đang chờ Cán bộ kiểm tra, tra cứu và xử lý.<br>\- "Chờ giải quyết": Hồ sơ giấy đã hoàn tất thu phí/miễn phí, đang chờ Cán bộ kiểm tra, tra cứu và xử lý.<br>\- "Chờ ký": Hồ sơ đã được Cán bộ trình Lãnh đạo ký, đang chờ Lãnh đạo ký số file PDF.<br>\- "Hoàn thành": Hồ sơ đã được Lãnh đạo ký số thành công và Khách hàng/Người yêu cầu được xem/tải file PDF đã ký.<br>\- "Bị từ chối": Hồ sơ bị Cán bộ hoặc Lãnh đạo từ chối theo điều kiện nghiệp vụ, không dùng riêng cho trường hợp tra cứu không có dữ liệu còn hiệu lực.<br>\- "Bị trả lại": Hồ sơ bị Lãnh đạo trả lại từ bước ký để Cán bộ xử lý lại.<br>\- Màn hình mặc định hiển thị hồ sơ ở trạng thái "Chờ duyệt" và "Chờ giải quyết". |
 | Tiêu chí yêu cầu cung cấp thông tin | Enum(String(50)) | Không | Tất cả | \- Lọc theo tiêu chí Khách hàng đã chọn.<br>\- Các giá trị gồm:<br>\- Tất cả<br>\- Số đăng ký<br>\- Bên bảo đảm<br>\- Số khung |
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
 | **II. Bảng danh sách hồ sơ** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
-| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | \- Hiển thị danh sách hồ sơ Yêu cầu cung cấp thông tin thuộc phạm vi xử lý của Cán bộ.<br>\- Sắp xếp mặc định theo Thời điểm đăng ký tăng dần để ưu tiên xử lý hồ sơ đến trước.<br>\- Click trực tiếp vào dòng dữ liệu để mở **4.3.2.2.3. UC-CCTT-CB.MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin**.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
+| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | \- Hiển thị danh sách hồ sơ Yêu cầu cung cấp thông tin thuộc phạm vi xử lý của Cán bộ.<br>\- Sắp xếp mặc định theo Thời điểm đăng ký tăng dần để ưu tiên xử lý hồ sơ đến trước.<br>\- Click trực tiếp vào dòng dữ liệu để mở **UC-CCTT-CB.MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin**.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Mã hồ sơ Yêu cầu cung cấp thông tin. |
 | Mã khách hàng | String(50) | Không | Theo hồ sơ | Mã khách hàng gắn với tài khoản nộp yêu cầu, nếu có. |
@@ -66,7 +72,7 @@
 | Địa chỉ | Text(500) | Không | Theo hồ sơ | Địa chỉ của Người yêu cầu theo thông tin Khách hàng đã gửi trong hồ sơ. |
 | Tiêu chí yêu cầu | Enum(String(50)) | Có | Theo hồ sơ | Hiển thị một trong các giá trị: "Số đăng ký", "Bên bảo đảm", "Số khung". |
 | Dữ liệu đã nhập | Text(1000) | Có | Theo hồ sơ | Tóm tắt dữ liệu Khách hàng đã gửi theo tiêu chí yêu cầu. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị "Website Khách hàng" hoặc "Mobile Khách hàng". Màn hình này không hiển thị hồ sơ giấy có Nguồn tiếp nhận là "Cán bộ nhập liệu". |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị nguồn tiếp nhận theo nhóm nghiệp vụ: "Trực tuyến" hoặc "Trực tiếp". |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Thời điểm Khách hàng gửi yêu cầu. Cột này đặt ngay sau cột Nguồn tiếp nhận. |
 | Trạng thái | Enum(String(50)) | Có | "Chờ duyệt" | \- Hiển thị trạng thái hiện tại của hồ sơ.<br>\- "Chờ duyệt": Hồ sơ Online đã thanh toán thành công/miễn phí, đang chờ Cán bộ kiểm tra, tra cứu và xử lý.<br>\- "Chờ giải quyết": Hồ sơ giấy đã hoàn tất thu phí/miễn phí, đang chờ Cán bộ kiểm tra, tra cứu và xử lý.<br>\- "Chờ ký": Hồ sơ đã được Cán bộ trình Lãnh đạo ký, đang chờ Lãnh đạo ký số file PDF.<br>\- "Hoàn thành": Hồ sơ đã được Lãnh đạo ký số thành công và Khách hàng/Người yêu cầu được xem/tải file PDF đã ký.<br>\- "Bị từ chối": Hồ sơ bị Cán bộ hoặc Lãnh đạo từ chối theo điều kiện nghiệp vụ, không dùng riêng cho trường hợp tra cứu không có dữ liệu còn hiệu lực.<br>\- "Bị trả lại": Hồ sơ bị Lãnh đạo trả lại từ bước ký để Cán bộ xử lý lại.<br>\- Tại màn hình chờ xử lý, hệ thống mặc định hiển thị hồ sơ "Chờ duyệt" và "Chờ giải quyết". |
 | Cán bộ xử lý | String(255) | Không | Theo phân công | Hiển thị Cán bộ đang được phân công xử lý, nếu đã có. |
@@ -81,8 +87,8 @@
 | 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Trạng thái hồ sơ về "Chờ duyệt/Chờ giải quyết", Tiêu chí yêu cầu cung cấp thông tin về "Tất cả", Từ ngày/Đến ngày về mặc định và tải lại danh sách mặc định. |
 | 3 | Xử lý hồ sơ | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-002], không mở màn hình xử lý. |
 |  |  |  | TH2 (Cán bộ không có quyền xử lý): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-003], không mở màn hình xử lý. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.2.3. UC-CCTT-CB.MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin**. |
-| 4 | Click dòng dữ liệu | Row Click | Mở **4.3.2.2.3. UC-CCTT-CB.MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin** nếu hồ sơ còn thuộc quyền xử lý của Cán bộ. |
+|  |  |  | TH Hợp lệ: Mở **UC-CCTT-CB.MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin**. |
+| 4 | Click dòng dữ liệu | Row Click | Mở **UC-CCTT-CB.MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin** nếu hồ sơ còn thuộc quyền xử lý của Cán bộ. |
 
 #### 4.3.2.2.3. UC-CCTT-CB.MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin
 
@@ -99,16 +105,16 @@
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm Khách hàng gửi yêu cầu. |
 | Người yêu cầu | String(255) | Có | Theo hồ sơ | Chỉ đọc. Tên cá nhân/tổ chức yêu cầu cung cấp thông tin. |
 | Mã khách hàng | String(50) | Không | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị khi hồ sơ có dữ liệu. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | \- Chỉ đọc.<br>\- Các giá trị gồm:<br>\- Website Khách hàng<br>\- Mobile Khách hàng<br>\- Cán bộ nhập liệu<br>\- Màn hình này xử lý hồ sơ Online ở trạng thái "Chờ duyệt" và hồ sơ giấy ở trạng thái "Chờ giải quyết". |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | \- Chỉ đọc.<br>\- Hiển thị nguồn tiếp nhận theo nhóm nghiệp vụ: "Trực tuyến" hoặc "Trực tiếp".<br>\- Màn hình này xử lý hồ sơ trực tuyến ở trạng thái "Chờ duyệt" và hồ sơ trực tiếp ở trạng thái "Chờ giải quyết". |
 | Tiêu chí yêu cầu cung cấp thông tin | Enum(String(50)) | Có | Theo hồ sơ | \- Chỉ đọc.<br>\- Các giá trị gồm:<br>\- Số đăng ký<br>\- Bên bảo đảm<br>\- Số khung |
 | Dữ liệu Khách hàng đã nhập | Text(1000) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị nguyên dữ liệu tra cứu Khách hàng đã gửi, không cho phép chỉnh sửa. |
 | Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Khi Cán bộ xử lý, trạng thái phải là "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". |
 | Cán bộ xử lý | String(255) | Không | Theo phân công | Chỉ đọc. Hiển thị Cán bộ đang xử lý hồ sơ; nếu chưa có, hệ thống ghi nhận Cán bộ hiện tại khi bắt đầu xử lý. |
 | Lịch sử xử lý | Text(4000) | Không | Theo hồ sơ | Chỉ đọc. Hiển thị dòng thời gian các thao tác gửi yêu cầu/nhập liệu, thanh toán/thu phí, tra cứu, kết xuất, trình ký, ký số, từ chối, trả lại và các lần thay đổi trạng thái. |
 | **II. Khu vực tra cứu** | | | | |
-| Form tra cứu | Enum(String(50)) | Có | Theo tiêu chí hồ sơ | \- Chỉ đọc. Hệ thống tự động xác định form tra cứu theo tiêu chí Khách hàng đã lựa chọn.<br>\- Các giá trị gồm:<br>\- Tra cứu theo Số đăng ký<br>\- Tra cứu theo Bên bảo đảm<br>\- Tra cứu theo Số khung |
+| Form tra cứu | Enum(String(50)) | Có | Theo tiêu chí hồ sơ | \- Control UI: Tab/Segmented control hoặc Text hiển thị Read-only theo UI.<br>\- Chỉ đọc. Hệ thống tự động xác định form tra cứu theo tiêu chí Khách hàng đã lựa chọn.<br>\- Các giá trị gồm:<br>\- Tra cứu theo Số đăng ký<br>\- Tra cứu theo Bên bảo đảm<br>\- Tra cứu theo Số khung<br>\- Khi chuyển qua lại giữa các Tab, hệ thống giữ nguyên toàn bộ dữ liệu ở từng Tab trong phiên làm việc hiện tại.<br>\- Khi bấm `Tra cứu`, hệ thống chỉ lấy tiêu chí và dữ liệu của Tab đang active/tiêu chí đã khóa trong hồ sơ; không lấy hoặc ghi nhận dữ liệu của các Tab đang ẩn. |
 | Số đăng ký | String(50) | Tùy điều kiện | Theo hồ sơ | \- Chỉ hiển thị nếu Tiêu chí yêu cầu cung cấp thông tin là "Số đăng ký".<br>\- Chỉ đọc, không cho phép chỉnh sửa theo [BR-CCTT-001]. |
-| Loại chủ thể | Enum(String(50)) | Tùy điều kiện | Theo hồ sơ | \- Chỉ hiển thị nếu Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm".<br>\- Chỉ đọc, tham chiếu [DM_06]. |
+| Loại chủ thể | Enum(String(50)) | Tùy điều kiện | Theo hồ sơ | \- Chỉ hiển thị nếu Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm".<br>\- Chỉ đọc, Tham chiếu Danh mục Loại bên bảo đảm (Chủ thể) [DM_06]. |
 | Số CMND/Căn cước công dân/Chứng minh quân đội | String(12) | Tùy điều kiện | Theo hồ sơ | \- Chỉ hiển thị nếu Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm" và Loại chủ thể là "Công dân Việt Nam".<br>\- Chỉ đọc, không cho phép chỉnh sửa theo [BR-CCTT-001]. |
 | Mã số thuế/Số đăng ký kinh doanh | String(14) | Tùy điều kiện | Theo hồ sơ | \- Chỉ hiển thị nếu Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm" và Loại chủ thể là "Tổ chức có đăng ký kinh doanh trong nước".<br>\- Chỉ đọc, không cho phép chỉnh sửa theo [BR-CCTT-001]. |
 | Họ và tên | String(255) | Tùy điều kiện | Theo hồ sơ | \- Chỉ hiển thị nếu Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm" và Loại chủ thể là:<br>\- "Người nước ngoài"<br>\- "Người không quốc tịch cư trú tại Việt Nam"<br>\- Chỉ đọc, không cho phép chỉnh sửa theo [BR-CCTT-001]. |
@@ -140,15 +146,15 @@
 |  |  |  | TH3 (Dữ liệu tra cứu không khớp dữ liệu đã khóa trong hồ sơ): Vi phạm [BR-CCTT-001], hiển thị [MSG-ERR-CCTT-001], không gọi dịch vụ tra cứu. |
 |  |  |  | TH4 (Dịch vụ tra cứu lỗi hoặc không khả dụng): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-004], ghi nhận trạng thái lỗi vào hồ sơ và không cho phép kết xuất PDF/trình ký. |
 |  |  |  | TH5 (Tra cứu thành công nhưng không có dữ liệu): Hệ thống hiển thị [MSG-WRN-CCTT-001] với nội dung lấy từ MessageList dùng chung, dạng Inline ngay trong khu vực kết quả tra cứu, không hiển thị Toast; ghi nhận kết quả không có dữ liệu vào hồ sơ, hiển thị Nội dung thông báo không có kết quả và cho phép Cán bộ thực hiện "Kết xuất kết quả" để sinh file PDF dự thảo trình ký. |
-|  |  |  | TH Hợp lệ: Hệ thống thực hiện:<br>\- Gọi dịch vụ tra cứu theo đúng tiêu chí và dữ liệu Khách hàng đã gửi.<br>\- Chỉ lấy hồ sơ đăng ký ở trạng thái "Hoàn thành", còn hiệu lực tại thời điểm tra cứu theo [BR-CCTT-002].<br>\- Hiển thị danh sách kết quả.<br>\- Ghi nhận Cán bộ thực hiện, thời điểm tra cứu, tiêu chí tra cứu, dữ liệu đầu vào và kết quả tra cứu vào hồ sơ.<br>\- Ghi lịch sử xử lý của hồ sơ và Audit log hệ thống, gồm người thao tác, thời điểm, hành động "Tra cứu", tiêu chí tra cứu, dữ liệu đầu vào, trạng thái kết quả và mã lỗi nếu có.<br>\- Hiển thị [MSG-SUC-CCTT-001]. |
+|  |  |  | TH Hợp lệ: Hệ thống thực hiện:<br>\- Gọi dịch vụ tra cứu theo đúng tiêu chí và dữ liệu của Tab đang active/tiêu chí đã khóa trong hồ sơ.<br>\- Không lấy hoặc ghi nhận dữ liệu của các Tab đang ẩn vào phiên tra cứu hoặc hồ sơ xử lý.<br>\- Chỉ lấy hồ sơ đăng ký ở trạng thái "Hoàn thành", còn hiệu lực tại thời điểm tra cứu theo [BR-CCTT-002].<br>\- Hiển thị danh sách kết quả.<br>\- Ghi nhận Cán bộ thực hiện, thời điểm tra cứu, tiêu chí tra cứu, dữ liệu đầu vào và kết quả tra cứu vào hồ sơ.<br>\- Ghi lịch sử xử lý của hồ sơ và Audit log hệ thống, gồm người thao tác, thời điểm, hành động "Tra cứu", tiêu chí tra cứu, dữ liệu đầu vào, trạng thái kết quả và mã lỗi nếu có.<br>\- Hiển thị [MSG-SUC-CCTT-001]. |
 | 2 | Kết xuất kết quả | Nút | TH1 (Chưa có phiên tra cứu xử lý thành công): Vi phạm [BR-CCTT-004], hiển thị [MSG-ERR-CCTT-005], không sinh file PDF. |
 |  |  |  | TH Hợp lệ: Hệ thống thực hiện:<br>\- Lưu kết quả tra cứu vào hồ sơ, bao gồm cả trường hợp không có dữ liệu.<br>\- Sinh file PDF dự thảo theo đúng mẫu `docs/Bieu mau/GCN_Mau Giay chung nhan CCTT.pdf`, mapping lá mặt/trang ký tại mục 4.3.2.2.7.2 và mapping phần kết quả cung cấp thông tin/phụ lục tại mục 4.3.2.2.7.3.<br>\- Nếu có kết quả, đính kèm chi tiết hồ sơ kết quả tra cứu theo mục 4.3.2.2.7.4.<br>\- Nếu không có kết quả, hiển thị dòng thông báo không có kết quả theo đúng mẫu, không đính kèm chi tiết hồ sơ.<br>\- Gắn file PDF dự thảo vào hồ sơ.<br>\- Hiển thị [MSG-SUC-CCTT-002]. |
 | 3 | Xem file | Link/Nút | Chỉ hiển thị sau khi có File PDF dự thảo. Cho phép xem file tại một tab riêng. |
 | 4 | Trình ký | Nút | TH1 (Chưa có phiên tra cứu xử lý thành công hoặc chưa kết xuất PDF): Vi phạm [BR-CCTT-004], hiển thị [MSG-ERR-CCTT-005], không cho phép trình ký. |
 |  |  |  | TH2 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-002], không cho phép trình ký. |
-|  |  |  | TH Hợp lệ: Mở **4.3.2.2.5. UC-CCTT-CB.MH04 - Popup Trình ký kết quả cung cấp thông tin** để Cán bộ chọn Lãnh đạo ký và xác nhận trình ký. |
+|  |  |  | TH Hợp lệ: Mở **UC-CCTT-CB.MH04 - Popup Trình ký kết quả cung cấp thông tin** để Cán bộ chọn Lãnh đạo ký và xác nhận trình ký. |
 | 5 | Từ chối | Nút | Hiển thị khi hồ sơ ở trạng thái "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". Khi Cán bộ từ chối, hệ thống bắt buộc nhập lý do từ chối, lưu người từ chối, thời điểm từ chối, lý do từ chối, lịch sử xử lý và chuyển hồ sơ sang trạng thái "Bị từ chối" theo [BR-CCTT-007]. Nếu hồ sơ Online đã thanh toán, hệ thống tạo yêu cầu hoàn tiền và chuyển sang Module Quản lý đối soát thanh toán để theo dõi. Nếu hồ sơ giấy đã thu phí, hệ thống tạo khoản hoàn phí/thông báo kế toán xử lý tại Module Quản lý thu phí/hoàn phí hồ sơ giấy. Không dùng thao tác này cho riêng trường hợp tra cứu không có dữ liệu; trường hợp không có dữ liệu được xử lý bằng thao tác "Kết xuất kết quả" và "Trình ký" để Lãnh đạo ký file PDF thông báo kết quả. |
-| 6 | Quay lại | Nút | Quay lại **4.3.2.2.2. UC-CCTT-CB.MH01 - Màn hình Danh sách yêu cầu cung cấp thông tin chờ xử lý**, giữ nguyên bộ lọc trước đó. |
+| 6 | Quay lại | Nút | Quay lại **UC-CCTT-CB.MH01 - Danh sách yêu cầu cung cấp thông tin chờ xử lý**, giữ nguyên bộ lọc trước đó. |
 
 #### 4.3.2.2.5. UC-CCTT-CB.MH04 - Popup Trình ký kết quả cung cấp thông tin
 
@@ -170,7 +176,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại **4.3.2.2.3. UC-CCTT-CB.MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin**. |
+| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại **UC-CCTT-CB.MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin**. |
 | 2 | Xác nhận | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-CCTT-002], hiển thị [MSG-ERR-CCTT-002], không cho phép trình ký. |
 |  |  |  | TH2 (Chưa có phiên tra cứu xử lý thành công hoặc không có file PDF hợp lệ): Vi phạm [BR-CCTT-004], hiển thị [MSG-ERR-CCTT-005], không cho phép trình ký. |
 |  |  |  | TH3 (Chưa chọn Lãnh đạo ký hoặc Lãnh đạo ký không còn hiệu lực trong cấu hình): Vi phạm [BR-CCTT-004], hiển thị [MSG-ERR-VAL-001], không cho phép trình ký. |
@@ -195,9 +201,9 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Đóng | Nút | Đóng màn hình xem trước, giữ nguyên trạng thái hồ sơ và quay lại **4.3.2.2.3. UC-CCTT-CB.MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin**. |
+| 1 | Đóng | Nút | Đóng màn hình xem trước, giữ nguyên trạng thái hồ sơ và quay lại **UC-CCTT-CB.MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin**. |
 | 2 | Tải file dự thảo | Nút | Cho phép Cán bộ tải file PDF dự thảo để kiểm tra nội dung trước khi trình ký. |
-| 3 | Trình ký | Nút | Mở **4.3.2.2.5. UC-CCTT-CB.MH04 - Popup Trình ký kết quả cung cấp thông tin**. |
+| 3 | Trình ký | Nút | Mở **UC-CCTT-CB.MH04 - Popup Trình ký kết quả cung cấp thông tin**. |
 
 #### 4.3.2.2.7. Quy tắc xử lý kết quả tra cứu và kết xuất PDF kết quả cung cấp thông tin
 
@@ -287,4 +293,3 @@
 | 1 | Chi tiết hồ sơ kết quả tra cứu | Kết quả tra cứu đã lưu trong hồ sơ và dữ liệu Review nghiệp vụ tương ứng | Phần chi tiết hồ sơ kết quả tra cứu trong file PDF dự thảo/trình ký/ký số phải hiển thị giống hệt **VI. Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký** tại màn Xem chi tiết hồ sơ của Website Khách hàng trong tài liệu [SRS yêu cầu cung cấp thông tin.md](../../01_Website_Khach_hang/SRS%20y%C3%AAu%20c%E1%BA%A7u%20cung%20c%E1%BA%A5p%20th%C3%B4ng%20tin.md#vi-ket-qua-cung-cap-thong-tin-co-xac-nhan-cua-co-quan-dang-ky). Không mô tả lại các khối/cột chi tiết tại tài liệu này để bảo đảm Website Cán bộ, Lãnh đạo và Website Khách hàng dùng chung một cấu trúc hiển thị. |
 | 2 | Phạm vi hồ sơ đưa vào phần kết quả chi tiết | Kết quả tra cứu đã lưu trong hồ sơ | Chỉ đưa vào phần kết quả chi tiết các hồ sơ đăng ký ở trạng thái "Hoàn thành", còn hiệu lực tại thời điểm tra cứu và chưa có hồ sơ xóa đăng ký/xóa thông báo xử lý tài sản đã hoàn thành làm chấm dứt hiệu lực theo [BR-CCTT-002]. |
 | 3 | Số trang và liên kết với file chính | Trình sinh PDF | Đánh số trang liên tục cho toàn bộ file PDF. Phần kết quả chi tiết nếu có phải nằm trong cùng file PDF được trình ký và ký số. |
-

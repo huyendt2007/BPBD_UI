@@ -66,13 +66,13 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Đơn vị cha | String(255) | Không | Theo Node chọn hoặc Trống | Control UI: Hiển thị/Read-only.<br>Tự động điền theo Node vừa click Thêm mới. Nếu chọn hành động "Thêm mới Đơn vị gốc", trường này sẽ hiển thị là "Không có (Tạo đơn vị gốc mới)" và để trống. |
-| Loại đơn vị | Enum(String(100)) | Có | Nội bộ | Control UI: Hộp chọn.<br>Gồm:<br>- **Nội bộ**<br>- **Cơ quan ngoài ngành**<br>Trong đó:<br>- **Nội bộ**: Các đơn vị thuộc Bộ Tư pháp (Cục Đăng ký, các Trung tâm đăng ký và các Phòng ban trực thuộc).<br>- **Cơ quan ngoài ngành**: Các cơ quan ngoài Bộ Tư pháp (Bộ Công an, Tòa án nhân dân tối cao, Viện kiểm sát nhân dân tối cao, cơ quan Thi hành án dân sự, văn phòng đăng ký đất đai...). |
-| Cấp đơn vị | Enum(String(100)) | Không | Cấp Trung ương | Control UI: Hộp chọn.<br>Phân cấp quản lý đơn vị theo mô hình hiện hành và dữ liệu lịch sử.<br>Gồm:<br>- Cấp Trung ương<br>- Cấp Tỉnh/Thành phố<br>- Cấp Xã/Phường/Đặc khu<br>- Đơn vị trực thuộc/Phòng ban<br>- Cấp Quận/Huyện (chỉ dùng cho dữ liệu lịch sử/ngừng hoạt động hoặc giai đoạn chuyển tiếp, không chọn mặc định khi tạo đơn vị báo cáo mới). |
+| Loại đơn vị | Enum(String(100)) | Có | Nội bộ | Control UI: Hộp chọn.<br>Gồm:<br>+ **Nội bộ**<br>+ **Cơ quan ngoài ngành**<br>Trong đó:<br>+ **Nội bộ**: Các đơn vị thuộc Bộ Tư pháp (Cục Đăng ký, các Trung tâm đăng ký và các Phòng ban trực thuộc).<br>+ **Cơ quan ngoài ngành**: Các cơ quan ngoài Bộ Tư pháp (Bộ Công an, Tòa án nhân dân tối cao, Viện kiểm sát nhân dân tối cao, cơ quan Thi hành án dân sự, văn phòng đăng ký đất đai...). |
+| Cấp đơn vị | Enum(String(100)) | Không | Cấp Trung ương | Control UI: Hộp chọn.<br>Phân cấp quản lý đơn vị theo mô hình hiện hành và dữ liệu lịch sử.<br>Gồm:<br>+ Cấp Trung ương<br>+ Cấp Tỉnh/Thành phố<br>+ Cấp Xã/Phường/Đặc khu<br>+ Đơn vị trực thuộc/Phòng ban<br>+ Cấp Quận/Huyện (chỉ dùng cho dữ liệu lịch sử/ngừng hoạt động hoặc giai đoạn chuyển tiếp, không chọn mặc định khi tạo đơn vị báo cáo mới). |
 | Mã Đơn vị | String(50) | Có | Tự động sinh | Control UI: Hiển thị/Read-only.<br>Mã tham chiếu duy nhất của đơn vị, do hệ thống tự sinh và không cho phép người dùng chỉnh sửa. |
 | Tên đơn vị | String(255) | Có | Trống | Tên đầy đủ của đơn vị. |
 | Mã định danh báo cáo BTNN | String(50) | Không | Trống | Mã sử dụng trong báo cáo/nhập thay BTNN. Nếu có dữ liệu đồng bộ từ danh mục bên ngoài thì lưu mã tương ứng để tìm kiếm và đối soát. Không được trùng trong cùng cây đơn vị. |
-| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Trống | Tham chiếu [DM_43]. Gồm các nhóm đầu mối báo cáo như `UBND cấp tỉnh`, `TANDTC`, `VKSNDTC`, `Bộ/cơ quan ngang Bộ`, `Bộ Tư pháp/Cục BTNN`. |
-| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Trống | Tham chiếu [DM_46]. Cho phép chọn một hoặc nhiều vai trò: `Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại`, `Cơ quan là bị đơn/bị đơn dân sự/người bị kiện trong vụ án`. |
+| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Trống | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
+| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Trống | Tham chiếu Danh mục Vai trò báo cáo của cơ quan [DM_46]. Cho phép chọn một hoặc nhiều vai trò: `Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại`, `Cơ quan là bị đơn/bị đơn dân sự/người bị kiện trong vụ án`. |
 | Đầu mối tổng hợp trực tiếp | Enum(Tree) | Không | Theo cấu hình cấp trên | Chọn từ cây đơn vị. Xác định đơn vị nhận/tổng hợp báo cáo của đơn vị này. Với đơn vị địa phương, đầu mối tổng hợp là UBND cấp tỉnh hoặc đơn vị được ủy quyền nhập/tổng hợp theo cấu hình triển khai. |
 | Đơn vị được phép nhập thay | Enum(Tree/Multi-select) | Không | Trống | Chọn một hoặc nhiều đơn vị được phép tạo/nhập kỳ báo cáo thay cho đơn vị này. Giai đoạn hiện tại có thể cấu hình Sở Tư pháp địa phương được nhập thay các đơn vị báo cáo thực tế thuộc phạm vi tỉnh. |
 | Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Có | Nếu tắt, đơn vị chỉ tồn tại để cấu trúc cây/tra cứu lịch sử, không được chọn làm `Đơn vị báo cáo` khi tạo kỳ báo cáo mới. |
@@ -109,12 +109,12 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Mã Đơn vị | String(50) | Có | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Không cho phép sửa. |
-| Loại đơn vị | Enum(String(100)) | Có | Theo bản ghi | Control UI: Hộp chọn.<br>Không cho phép sửa loại đơn vị để bảo toàn tính toàn vẹn của dữ liệu liên kết.<br>Gồm:<br>- **Nội bộ**<br>- **Cơ quan ngoài ngành**<br>Trong đó:<br>- **Nội bộ**: Các đơn vị thuộc Bộ Tư pháp (Cục Đăng ký, các Trung tâm đăng ký và các Phòng ban trực thuộc).<br>- **Cơ quan ngoài ngành**: Các cơ quan ngoài Bộ Tư pháp (Bộ Công an, Tòa án nhân dân tối cao, Viện kiểm sát nhân dân tối cao, cơ quan Thi hành án dân sự, văn phòng đăng ký đất đai...). |
-| Cấp đơn vị | Enum(String(100)) | Không | Theo bản ghi | Control UI: Hộp chọn.<br>Cho phép sửa.<br>Gồm:<br>- Cấp Trung ương<br>- Cấp Tỉnh/Thành phố<br>- Cấp Xã/Phường/Đặc khu<br>- Đơn vị trực thuộc/Phòng ban<br>- Cấp Quận/Huyện (chỉ dùng cho dữ liệu lịch sử/ngừng hoạt động hoặc giai đoạn chuyển tiếp, không chọn mặc định khi tạo đơn vị báo cáo mới). |
+| Loại đơn vị | Enum(String(100)) | Có | Theo bản ghi | Control UI: Hộp chọn.<br>Không cho phép sửa loại đơn vị để bảo toàn tính toàn vẹn của dữ liệu liên kết.<br>Gồm:<br>+ **Nội bộ**<br>+ **Cơ quan ngoài ngành**<br>Trong đó:<br>+ **Nội bộ**: Các đơn vị thuộc Bộ Tư pháp (Cục Đăng ký, các Trung tâm đăng ký và các Phòng ban trực thuộc).<br>+ **Cơ quan ngoài ngành**: Các cơ quan ngoài Bộ Tư pháp (Bộ Công an, Tòa án nhân dân tối cao, Viện kiểm sát nhân dân tối cao, cơ quan Thi hành án dân sự, văn phòng đăng ký đất đai...). |
+| Cấp đơn vị | Enum(String(100)) | Không | Theo bản ghi | Control UI: Hộp chọn.<br>Cho phép sửa.<br>Gồm:<br>+ Cấp Trung ương<br>+ Cấp Tỉnh/Thành phố<br>+ Cấp Xã/Phường/Đặc khu<br>+ Đơn vị trực thuộc/Phòng ban<br>+ Cấp Quận/Huyện (chỉ dùng cho dữ liệu lịch sử/ngừng hoạt động hoặc giai đoạn chuyển tiếp, không chọn mặc định khi tạo đơn vị báo cáo mới). |
 | Tên đơn vị | String(255) | Có | Theo bản ghi | Cho phép sửa. |
 | Mã định danh báo cáo BTNN | String(50) | Không | Theo bản ghi | Cho phép sửa. Dùng để tìm kiếm, đối soát và import/đồng bộ danh mục đơn vị báo cáo BTNN. Không được trùng trong cùng cây đơn vị. |
-| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Theo bản ghi | Cho phép sửa. Tham chiếu [DM_43]. |
-| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Theo bản ghi | Cho phép sửa, cho phép chọn một hoặc nhiều vai trò theo [DM_46]. |
+| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Theo bản ghi | Cho phép sửa. Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
+| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Theo bản ghi | Cho phép sửa, cho phép chọn một hoặc nhiều vai trò theo Danh mục Vai trò báo cáo của cơ quan [DM_46]. |
 | Đầu mối tổng hợp trực tiếp | Enum(Tree) | Không | Theo bản ghi | Cho phép sửa. Chọn từ cây đơn vị để xác định nơi nhận/tổng hợp báo cáo của đơn vị này. |
 | Đơn vị được phép nhập thay | Enum(Tree/Multi-select) | Không | Theo bản ghi | Cho phép sửa. Chọn các đơn vị/tài khoản đầu mối được phép tạo kỳ báo cáo, nhập liệu, chỉnh lý thay cho đơn vị báo cáo thực tế này. |
 | Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Theo bản ghi | Cho phép sửa. Nếu tắt, đơn vị không được chọn làm `Đơn vị báo cáo` khi tạo kỳ báo cáo mới. |
@@ -156,7 +156,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1   | Đồng ý Xóa   | Nút         | Kiểm tra toàn vẹn dữ liệu trước khi xóa:<br>- Ngoại lệ 1 (Có Node con): Báo lỗi "Không thể xóa do Đơn vị này đang chứa các đơn vị/phòng ban con".<br>- Ngoại lệ 2 (Có Cán bộ trực thuộc): Báo lỗi "Không thể xóa do Đơn vị này đang có tài khoản cán bộ trực thuộc. Vui lòng thuyên chuyển cán bộ trước khi xóa".<br>- Hợp lệ: Xóa Đơn vị khỏi DB, hiển thị "Xóa thành công" và reload Cây. |
+| 1   | Đồng ý Xóa   | Nút         | Kiểm tra toàn vẹn dữ liệu trước khi xóa:<br>+ Ngoại lệ 1 (Có Node con): Báo lỗi "Không thể xóa do Đơn vị này đang chứa các đơn vị/phòng ban con".<br>+ Ngoại lệ 2 (Có Cán bộ trực thuộc): Báo lỗi "Không thể xóa do Đơn vị này đang có tài khoản cán bộ trực thuộc. Vui lòng thuyên chuyển cán bộ trước khi xóa".<br>+ Hợp lệ: Xóa Đơn vị khỏi DB, hiển thị "Xóa thành công" và reload Cây. |
 | 2   | Hủy             | Nút         | Đóng popup, không thực hiện xóa. |
 
 ##### 4.3.1.7.5. UC604.05 - Cấu hình Biến động Tổ chức & Kế thừa Đơn vị (Sáp nhập/Chia tách/Giải thể)
@@ -185,7 +185,7 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Thông tin văn bản pháp lý** | | | | |
-| Loại biến động | Enum(String(50)) | Có | - | Control UI: Hộp chọn.<br>Gồm các loại biến động:<br>- **Sáp nhập (Merged)**: Gộp nhiều đơn vị thành 1 đơn vị mới.<br>- **Chia tách (Split)**: Tách 1 đơn vị thành nhiều đơn vị mới.<br>- **Giải thể (Dissolved)**: Giải thể hoàn toàn đơn vị.<br>- **Đổi tên (Renamed)**: Chỉ đổi tên đơn vị, mã số và quyền hạn giữ nguyên. |
+| Loại biến động | Enum(String(50)) | Có | - | Control UI: Hộp chọn.<br>Gồm các loại biến động:<br>+ **Sáp nhập (Merged)**: Gộp nhiều đơn vị thành 1 đơn vị mới.<br>+ **Chia tách (Split)**: Tách 1 đơn vị thành nhiều đơn vị mới.<br>+ **Giải thể (Dissolved)**: Giải thể hoàn toàn đơn vị.<br>+ **Đổi tên (Renamed)**: Chỉ đổi tên đơn vị, mã số và quyền hạn giữ nguyên. |
 | Số văn bản pháp lý | String(100) | Có | Trống | Ví dụ: `668/QĐ-BTP`, `99/2022/NĐ-CP`... |
 | Cơ quan ban hành quyết định | String(255) | Có | Trống | Ví dụ: *Bộ trưởng Bộ Tư pháp*, *Chính phủ*... |
 | Ngày ban hành quyết định | Date | Có | Trống | Ngày ký văn bản. |
@@ -206,7 +206,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Lưu cấu hình | Nút | Thực hiện lưu lịch sử biến động và tự động cập nhật trạng thái đơn vị:<br>- **Validate**: Bắt buộc nhập các thông tin có dấu sao đỏ (`*`).<br>- **Xử lý nghiệp vụ ngầm (Background logic)**:<br>  1. Hệ thống tự động chuyển trạng thái `status` của các cơ quan cũ thành `INACTIVE` (Ngừng hoạt động) kể từ Ngày hiệu lực biến động.<br>  2. Ghi nhận dữ liệu vào bảng `SYS_ORG_HISTORY` và `SYS_ORG_SUCCESSOR` để kích hoạt công cụ gợi ý tự động (Smart Routing).<br>  3. Khóa tài khoản đăng nhập của các cán bộ trực thuộc cơ quan cũ (Yêu cầu làm thủ tục thuyên chuyển công tác sang đơn vị mới).<br>  4. Hiển thị thông báo "Thiết lập biến động tổ chức thành công" và đóng form. |
+| 1 | Lưu cấu hình | Nút | Thực hiện lưu lịch sử biến động và tự động cập nhật trạng thái đơn vị:<br>+ **Validate**: Bắt buộc nhập các thông tin có dấu sao đỏ (`*`).<br>+ **Xử lý nghiệp vụ ngầm (Background logic)**:<br>  1. Hệ thống tự động chuyển trạng thái `status` của các cơ quan cũ thành `INACTIVE` (Ngừng hoạt động) kể từ Ngày hiệu lực biến động.<br>  2. Ghi nhận dữ liệu vào bảng `SYS_ORG_HISTORY` và `SYS_ORG_SUCCESSOR` để kích hoạt công cụ gợi ý tự động (Smart Routing).<br>  3. Khóa tài khoản đăng nhập của các cán bộ trực thuộc cơ quan cũ (Yêu cầu làm thủ tục thuyên chuyển công tác sang đơn vị mới).<br>  4. Hiển thị thông báo "Thiết lập biến động tổ chức thành công" và đóng form. |
 | 2 | Hủy | Nút | Đóng form, không lưu cấu hình. |
 
 ##### 4.3.1.7.6. UC604.06 - Import/Đồng bộ danh mục đơn vị báo cáo BTNN
@@ -241,9 +241,9 @@
 | Tên đơn vị | String(255) | Có | Theo file | Tên đầy đủ của đơn vị. |
 | Mã đơn vị cha | String(50) | Không | Theo file | Dùng để dựng cây đơn vị. Nếu trống thì bản ghi là đơn vị gốc. |
 | Cấp đơn vị | Enum(String(100)) | Có | Theo file | Gồm `Cấp Trung ương`, `Cấp Tỉnh/Thành phố`, `Cấp Xã/Phường/Đặc khu`, `Đơn vị trực thuộc/Phòng ban`, `Cấp Quận/Huyện` (chỉ dữ liệu lịch sử/chuyển tiếp). |
-| Tỉnh/Thành phố | Enum(String(50)) | Không | Theo file | Tham chiếu [DM_03]. Bắt buộc với đơn vị địa phương. |
-| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Theo file | Tham chiếu [DM_43]. |
-| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Theo file | Tham chiếu [DM_46], cho phép nhiều vai trò. |
+| Tỉnh/Thành phố | Enum(String(50)) | Không | Theo file | Tham chiếu Danh mục Tỉnh/Thành phố [DM_03]. Bắt buộc với đơn vị địa phương. |
+| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Theo file | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
+| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Theo file | Tham chiếu Danh mục Vai trò báo cáo của cơ quan [DM_46], cho phép nhiều vai trò. |
 | Đầu mối tổng hợp trực tiếp | String(50) | Không | Theo file | Nhập `Mã đơn vị` của đầu mối tổng hợp trực tiếp. |
 | Đơn vị được phép nhập thay | String(1000) | Không | Theo file | Danh sách `Mã đơn vị` được phép nhập thay, phân tách bằng dấu phẩy. |
 | Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Có | Nếu `Không`, đơn vị không hiển thị trong cây chọn `Đơn vị báo cáo` khi tạo kỳ báo cáo mới. |
@@ -258,4 +258,3 @@
 | 2 | Kiểm tra dữ liệu | Button | Kiểm tra cấu trúc file, trường bắt buộc, trùng `Mã đơn vị`, tồn tại `Mã đơn vị cha`, tính hợp lệ của `Cấp đơn vị`, [DM_03], [DM_43], [DM_46], `Đầu mối tổng hợp trực tiếp` và `Đơn vị được phép nhập thay`; hiển thị kết quả tại bảng xem trước, chưa ghi dữ liệu vào hệ thống. |
 | 3 | Import dữ liệu | Button | Chỉ cho phép thực hiện khi toàn bộ dòng hợp lệ hoặc người dùng chọn bỏ qua dòng lỗi. Hệ thống ghi dữ liệu theo chế độ import đã chọn, cập nhật lại cây đơn vị và ghi lịch sử import. |
 | 4 | Hủy | Button | Đóng form, không ghi dữ liệu. |
-

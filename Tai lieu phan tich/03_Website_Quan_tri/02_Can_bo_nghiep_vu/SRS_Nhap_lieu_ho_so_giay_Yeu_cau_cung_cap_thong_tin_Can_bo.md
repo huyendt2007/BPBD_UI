@@ -1,4 +1,4 @@
-﻿﻿# UC-CCTT-GIAY - Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin
+# UC-CCTT-GIAY - Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin
 
 ## 1. Tổng quan
 
@@ -128,12 +128,12 @@ flowchart TD
 | Phương thức nhận kết quả | Enum(String(50)) | Có | Theo UCPS012 | Cán bộ được sửa nếu hồ sơ giấy thể hiện khác thông tin tiếp nhận. |
 | Email nhận kết quả | String(255) | Có điều kiện | Theo UCPS012 | Chỉ bắt buộc khi Phương thức nhận kết quả là "Cách thức điện tử" và hồ sơ chưa có email hợp lệ. Nếu nhập, kiểm tra [BR-VAL-002]. |
 | **IV. Tiêu chí và dữ liệu tra cứu** | | | | |
-| Tiêu chí yêu cầu cung cấp thông tin | Enum(String(50)) | Có | Trống hoặc theo phiên bản trước | Cán bộ chọn theo hồ sơ giấy. Giá trị gồm:<br>- "Số đăng ký"<br>- "Bên bảo đảm"<br>- "Số khung" |
+| Tiêu chí yêu cầu cung cấp thông tin | Enum(String(50)) | Có | Trống hoặc theo phiên bản trước | Cán bộ chọn theo hồ sơ giấy. Giá trị gồm:<br>+ "Số đăng ký"<br>+ "Bên bảo đảm"<br>+ "Số khung" |
 | Số đăng ký | String(50) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị và bắt buộc khi Tiêu chí yêu cầu cung cấp thông tin là "Số đăng ký". Cán bộ được nhập/sửa khi hồ sơ ở trạng thái "Chờ giải quyết" hoặc "Bị trả lại". |
-| Loại chủ thể | Enum(String(50)) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị và bắt buộc khi Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm". Tham chiếu [DM_06]. |
+| Loại chủ thể | Enum(String(50)) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị và bắt buộc khi Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm". Tham chiếu Danh mục Loại bên bảo đảm (Chủ thể) [DM_06]. |
 | Số CMND/Căn cước công dân/Chứng minh quân đội | String(12) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là "Công dân Việt Nam". |
 | Mã số thuế/Số đăng ký kinh doanh | String(14) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là "Tổ chức có đăng ký kinh doanh trong nước". |
-| Họ và tên | String(255) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là:<br>- "Người nước ngoài"<br>- "Người không quốc tịch cư trú tại Việt Nam" |
+| Họ và tên | String(255) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là:<br>+ "Người nước ngoài"<br>+ "Người không quốc tịch cư trú tại Việt Nam" |
 | Số Hộ chiếu | String(50) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là "Người nước ngoài". |
 | Mã số thuế/Số giấy phép đầu tư | String(50) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là "Tổ chức nước ngoài". |
 | Tên tổ chức | String(255) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là "Tổ chức khác". |
@@ -147,7 +147,7 @@ flowchart TD
 | Phiên bản PDF | String(50) | Không | Theo kết xuất | Chỉ đọc. Phiên bản file PDF hiện tại. Khi trình ký thành công, phiên bản này được khóa để Lãnh đạo ký. |
 | **VI. Kết quả tra cứu** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Khối Kết quả tra cứu | Text(4000) | Không | Ẩn | Chỉ hiển thị sau khi Cán bộ bấm "Tra cứu" và hệ thống xử lý xong phiên tra cứu.<br>- Trường hợp tra cứu hợp lệ và có dữ liệu: Hiển thị Trạng thái tra cứu, Thời điểm tra cứu, Tiêu chí tra cứu thực tế, Dữ liệu đầu vào tra cứu, Số lượng hồ sơ tra cứu được và Bảng danh sách kết quả tra cứu.<br>- Trường hợp tra cứu hợp lệ nhưng không có dữ liệu: Hiển thị Trạng thái tra cứu, Thời điểm tra cứu, Tiêu chí tra cứu thực tế, Dữ liệu đầu vào tra cứu và Thông báo kết quả dạng Inline theo [MSG-WRN-CCTT-001]. Không hiển thị Bảng danh sách kết quả tra cứu.<br>- Trường hợp dịch vụ tra cứu lỗi: Hiển thị Trạng thái tra cứu là "Lỗi dịch vụ" và thông báo lỗi Inline; không cho phép kết xuất PDF cho đến khi có phiên tra cứu xử lý thành công. |
-| Trạng thái tra cứu | Enum(String(50)) | Không | "Chưa tra cứu" | Chỉ đọc. Giá trị gồm:<br>- "Chưa tra cứu"<br>- "Đang tra cứu"<br>- "Có kết quả"<br>- "Không có kết quả"<br>- "Lỗi dịch vụ" |
+| Trạng thái tra cứu | Enum(String(50)) | Không | "Chưa tra cứu" | Chỉ đọc. Giá trị gồm:<br>+ "Chưa tra cứu"<br>+ "Đang tra cứu"<br>+ "Có kết quả"<br>+ "Không có kết quả"<br>+ "Lỗi dịch vụ" |
 | Thời điểm tra cứu | Datetime | Không | Theo lần tra cứu | Chỉ đọc. |
 | Tiêu chí tra cứu thực tế | Enum(String(50)) | Không | Theo lần tra cứu | Chỉ đọc. Ghi nhận đúng tiêu chí dùng để gọi dịch vụ tra cứu. |
 | Dữ liệu đầu vào tra cứu | Text(1000) | Không | Theo lần tra cứu | Chỉ đọc. Ghi nhận đúng dữ liệu đầu vào dùng để gọi dịch vụ tra cứu. |
@@ -316,4 +316,3 @@ Thông tin nhật ký tối thiểu gồm: Mã hồ sơ, Số đơn giấy, Ngu�
 | AC-CCTT-GIAY-008 | Trình ký thành công chuyển hồ sơ giấy CCTT sang "Chờ ký" và khóa phiên bản dữ liệu/PDF đã trình. |
 | AC-CCTT-GIAY-009 | Lãnh đạo trả lại hồ sơ giấy CCTT ở trạng thái "Chờ ký" thì hồ sơ chuyển "Bị trả lại" và Cán bộ được sửa, tra cứu, kết xuất và trình ký lại. |
 | AC-CCTT-GIAY-010 | Hồ sơ Online không áp dụng quyền sửa/trả lại như hồ sơ giấy trong tài liệu này. |
-

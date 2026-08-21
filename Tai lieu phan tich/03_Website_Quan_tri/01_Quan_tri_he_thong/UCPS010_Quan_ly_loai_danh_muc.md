@@ -1,4 +1,4 @@
-﻿﻿##### 4.3.1.5.2. UCPS010 - Quản lý loại danh mục
+##### 4.3.1.5.2. UCPS010 - Quản lý loại danh mục
 
 ###### 4.3.1.5.2.1. Mục đích
 
@@ -24,7 +24,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo Mã loại danh mục, Tên loại danh mục hoặc Mô tả. |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- Đang hoạt động<br>- Ngừng hoạt động |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Đang hoạt động<br>+ Ngừng hoạt động |
 | TÌM KIẾM | - | Không | \- | Control UI: Nút bấm.<br>Click để tìm kiếm dữ liệu. Chi tiết xem ở bảng Chức năng trên màn hình. |
 | **II. Bảng kết quả (Grid)** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | STT | Integer(10) | Không | \- | Số thứ tự tự tăng. |
@@ -58,7 +58,7 @@
 | Mã loại danh mục | String(50) | Không | Sinh tự động | Cho phép người dùng tự nhập hoặc hệ thống tự động sinh mã định danh duy nhất nếu để trống (Định dạng: LDM_xxxx).<br>*(Lưu ý: Không cho phép sửa nếu đang ở trạng thái Cập nhật bản ghi).* |
 | Tên loại danh mục | String(255) | Có | Trống | Nhập tên loại danh mục. |
 | Mô tả | Text(2000) | Không | Trống | Control UI: Textarea.<br>Nhập thông tin mô tả chi tiết khác nếu có. |
-| Trạng thái | Enum(String(50)) | Có | Đang hoạt động | Control UI: Hộp chọn.<br>Gồm:<br>- Đang hoạt động<br>- Ngừng hoạt động |
+| Trạng thái | Enum(String(50)) | Có | Đang hoạt động | Control UI: Hộp chọn.<br>Gồm:<br>+ Đang hoạt động<br>+ Ngừng hoạt động |
 
 ####### 4.3.1.5.2.3.3. Chức năng trên màn hình
 
@@ -77,7 +77,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Trạng thái | Enum(String(50)) | Có | Đang hoạt động | Control UI: Hộp chọn.<br>Gồm:<br>- Đang hoạt động<br>- Ngừng hoạt động |
+| Trạng thái | Enum(String(50)) | Có | Đang hoạt động | Control UI: Hộp chọn.<br>Gồm:<br>+ Đang hoạt động<br>+ Ngừng hoạt động |
 
 ####### 4.3.1.5.2.4.3. Chức năng trên màn hình
 

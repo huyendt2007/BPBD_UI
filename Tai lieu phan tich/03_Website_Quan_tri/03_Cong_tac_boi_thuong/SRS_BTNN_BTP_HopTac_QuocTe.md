@@ -1,4 +1,4 @@
-﻿﻿#### 4.3.3.16. UC465-466 - Hợp tác quốc tế trong công tác BTNN
+#### 4.3.3.16. UC465-466 - Hợp tác quốc tế trong công tác BTNN
 
 ##### 4.3.3.16.1. Mục đích
 
@@ -16,7 +16,7 @@
 
 \- Người dùng được phân quyền truy cập màn hình `Hợp tác quốc tế trong công tác BTNN`.
 
-\- Quốc gia đối tác tham chiếu danh mục [DM_09]. Đơn vị chủ trì tham chiếu Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`.
+\- Quốc gia đối tác Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. Đơn vị chủ trì tham chiếu Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`.
 
 ---
 
@@ -47,7 +47,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Tên hoạt động` hoặc `Đối tác/Tổ chức quốc tế`. |
-| Quốc gia đối tác | Enum(String(100)) | Không | Tất cả | Tham chiếu [DM_09]. Giá trị lọc gồm `Tất cả` và các giá trị thuộc [DM_09]. |
+| Quốc gia đối tác | Enum(String(100)) | Không | Tất cả | Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
 | Hình thức hợp tác | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Hội thảo/Tọa đàm<br>+ Trao đổi đoàn công tác<br>+ Ký kết văn bản hợp tác<br>+ Hỗ trợ kỹ thuật<br>+ Khác |
 | Từ ngày thực hiện | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |
 | Đến ngày thực hiện | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
@@ -55,7 +55,7 @@ flowchart TD
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Căn giữa, tăng theo phân trang. |
 | Cột: Tên hoạt động hợp tác quốc tế | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
 | Cột: Đối tác/Tổ chức quốc tế | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Quốc gia đối tác | Enum(String(100)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Tham chiếu [DM_09]. |
+| Cột: Quốc gia đối tác | Enum(String(100)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
 | Cột: Hình thức hợp tác | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
 | Cột: Thời gian thực hiện | String(50) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị dạng `Từ ngày - Đến ngày`, định dạng `dd/mm/yyyy`. |
 | Cột: Thao tác | String(255) | Không | Theo dữ liệu | Chỉ đọc. Gồm icon `Chỉnh sửa`, `Xóa`. |
@@ -68,10 +68,10 @@ flowchart TD
 | 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Hợp lệ): Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 3 | Thêm mới | Button | Hệ thống mở **4.3.3.16.4. MH02 - Màn hình Thêm mới/Chỉnh sửa hoạt động hợp tác quốc tế BTNN** ở chế độ thêm mới. |
-| 4 | Chỉnh sửa | Icon button | Hệ thống mở **4.3.3.16.4. MH02** ở chế độ chỉnh sửa. |
-| 5 | Xóa | Icon button | Hệ thống mở **4.3.3.16.5. Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
-| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **4.3.3.16.4. MH02** ở chế độ chỉ xem. |
+| 3 | Thêm mới | Button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa hoạt động hợp tác quốc tế BTNN** ở chế độ thêm mới. |
+| 4 | Chỉnh sửa | Icon button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa hoạt động hợp tác quốc tế BTNN** ở chế độ chỉnh sửa. |
+| 5 | Xóa | Icon button | Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
+| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa hoạt động hợp tác quốc tế BTNN** ở chế độ chỉ xem. |
 
 ---
 
@@ -88,9 +88,9 @@ flowchart TD
 | Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Chỉ đọc. Hiển thị `THÊM MỚI HOẠT ĐỘNG HỢP TÁC QUỐC TẾ BTNN` hoặc `CHỈNH SỬA HOẠT ĐỘNG HỢP TÁC QUỐC TẾ BTNN`. |
 | Tên hoạt động hợp tác quốc tế | String(255) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Đối tác/Tổ chức quốc tế | String(255) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Quốc gia đối tác | Enum(String(100)) | Có | Trống | Tham chiếu [DM_09]. Áp dụng rule bắt buộc [BR-VAL-001]. |
+| Quốc gia đối tác | Enum(String(100)) | Có | Trống | Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Hình thức hợp tác | Enum(String(50)) | Có | `Hội thảo/Tọa đàm` | \- Giá trị gồm:<br>+ Hội thảo/Tọa đàm<br>+ Trao đổi đoàn công tác<br>+ Ký kết văn bản hợp tác<br>+ Hỗ trợ kỹ thuật<br>+ Khác |
-| Đơn vị chủ trì | Enum(String(255)) | Có | Trống | Giá trị lấy từ Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
+| Đơn vị chủ trì | Enum(String(255)) | Có | Trống | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Từ ngày thực hiện | Date | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Đến ngày thực hiện | Date | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001] và rule khoảng ngày [BR-VAL-007] (phải lớn hơn hoặc bằng `Từ ngày thực hiện`). |
 | Nội dung/Kết quả hợp tác | Text(2000) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
@@ -102,7 +102,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **4.3.3.16.3. MH01**. |
+| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **MH01 - Danh sách hoạt động hợp tác quốc tế BTNN**. |
 | 2 | Lưu thông tin | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
 |  |  |  | TH2 (`Đến ngày thực hiện` nhỏ hơn `Từ ngày thực hiện`): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không cho phép lưu. |
 |  |  |  | TH3 (Hợp lệ - thêm mới): Hệ thống lưu bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |

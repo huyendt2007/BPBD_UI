@@ -1,4 +1,4 @@
-﻿### 4.1.7. UCPS004 - Đăng xuất tài khoản khách hàng
+### 4.1.7. UCPS004 - Đăng xuất tài khoản khách hàng
 
 #### 4.1.7.1. Mục đích
 

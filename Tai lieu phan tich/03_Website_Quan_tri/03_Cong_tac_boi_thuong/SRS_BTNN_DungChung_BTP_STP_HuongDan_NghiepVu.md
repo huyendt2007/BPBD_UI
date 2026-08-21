@@ -1,4 +1,4 @@
-﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.7. UC-BTNN-HD - Hướng dẫn nghiệp vụ, giải đáp vướng mắc BTNN
 
@@ -44,9 +44,9 @@ flowchart TD
 | Tiêu đề màn hình | String(255) | Không | Hướng dẫn nghiệp vụ, giải đáp vướng mắc BTNN | Hiển thị tên màn hình. |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm gần đúng theo mã hồ sơ, tự động trim space. |
 | Cơ quan/cá nhân đề nghị | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan, tổ chức, cá nhân đề nghị. |
-| Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Hướng dẫn nghiệp vụ<br>- Giải đáp vướng mắc |
-| Hình thức thực hiện | Enum(String(100)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Văn bản<br>- Trực tiếp<br>- Cổng thông tin điện tử<br>- Hòm thư điện tử<br>- Họp liên ngành |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Lưu nháp<br>- Đang xử lý<br>- Hoàn thành |
+| Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Hướng dẫn nghiệp vụ<br>+ Giải đáp vướng mắc |
+| Hình thức thực hiện | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Văn bản<br>+ Trực tiếp<br>+ Cổng thông tin điện tử<br>+ Hòm thư điện tử<br>+ Họp liên ngành |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Đang xử lý<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Trống | Ngày tiếp nhận từ, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Ngày tiếp nhận đến, áp dụng [BR-VAL-007]. |
 | Thêm mới | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -69,13 +69,13 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Thêm mới | Button | Mở **4.3.3.7.4. MH02 - Màn hình Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ thêm mới. |
+| 1 | Thêm mới | Button | Mở **MH02 - Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ thêm mới. |
 | 2 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hệ thống hiển thị lỗi inline tại trường ngày và không tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH Hợp lệ: Hệ thống lọc danh sách theo các tiêu chí đã nhập/chọn và đưa về trang 1. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí lọc, đưa về giá trị mặc định và tải lại danh sách. |
 | 4 | Kết xuất Excel | Button | Kết xuất danh sách theo kết quả tìm kiếm hiện hành, áp dụng [BR-EXP-040]. |
-| 5 | Click dòng dữ liệu | Row click | Mở **4.3.3.7.4. MH02 - Màn hình Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ xem chi tiết. |
-| 6 | Sửa | Icon/Button | Mở **4.3.3.7.4. MH02** ở chế độ cập nhật khi người dùng có quyền và hồ sơ ở trạng thái cho phép sửa. |
+| 5 | Click dòng dữ liệu | Row click | Mở **MH02 - Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ xem chi tiết. |
+| 6 | Sửa | Icon/Button | Mở **MH02 - Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ cập nhật khi người dùng có quyền và hồ sơ ở trạng thái cho phép sửa. |
 
 ##### 4.3.3.7.4. MH02 - Màn hình Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc
 
@@ -88,11 +88,11 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Mã hồ sơ | String(50) | Không | Hệ thống tự sinh | Chỉ đọc sau khi lưu lần đầu. |
-| Loại nội dung | Enum(String(100)) | Có | Hướng dẫn nghiệp vụ | Gồm:<br>- Hướng dẫn nghiệp vụ<br>- Giải đáp vướng mắc |
+| Loại nội dung | Enum(String(100)) | Có | Hướng dẫn nghiệp vụ | Gồm:<br>+ Hướng dẫn nghiệp vụ<br>+ Giải đáp vướng mắc |
 | Cơ quan/cá nhân đề nghị | String(255) | Có | Trống | Tên cơ quan, tổ chức, cá nhân đề nghị. |
-| Cấp/nhóm cơ quan đề nghị | Enum(String(100)) | Có | Trống | Gồm:<br>- Bộ, ngành Trung ương<br>- UBND cấp tỉnh<br>- Sở Tư pháp<br>- Cơ quan giải quyết bồi thường<br>- Tòa án<br>- Viện kiểm sát<br>- Cơ quan khác<br>- Cá nhân |
-| Lĩnh vực nội dung | Enum(String(100)) | Có | Trống | Gồm:<br>- Giải quyết yêu cầu bồi thường<br>- Đề nghị cấp kinh phí bồi thường và chi trả tiền bồi thường<br>- Xác định trách nhiệm hoàn trả<br>- Quản lý nhà nước về công tác BTNN<br>- Xác định phạm vi trách nhiệm bồi thường<br>- Xác định thiệt hại và giá trị thiệt hại được bồi thường |
-| Hình thức thực hiện | Enum(String(100)) | Có | Văn bản | Gồm:<br>- Văn bản<br>- Trực tiếp<br>- Cổng thông tin điện tử<br>- Hòm thư điện tử<br>- Họp liên ngành |
+| Cấp/nhóm cơ quan đề nghị | Enum(String(100)) | Có | Trống | Gồm:<br>+ Bộ, ngành Trung ương<br>+ UBND cấp tỉnh<br>+ Sở Tư pháp<br>+ Cơ quan giải quyết bồi thường<br>+ Tòa án<br>+ Viện kiểm sát<br>+ Cơ quan khác<br>+ Cá nhân |
+| Lĩnh vực nội dung | Enum(String(100)) | Có | Trống | Gồm:<br>+ Giải quyết yêu cầu bồi thường<br>+ Đề nghị cấp kinh phí bồi thường và chi trả tiền bồi thường<br>+ Xác định trách nhiệm hoàn trả<br>+ Quản lý nhà nước về công tác BTNN<br>+ Xác định phạm vi trách nhiệm bồi thường<br>+ Xác định thiệt hại và giá trị thiệt hại được bồi thường |
+| Hình thức thực hiện | Enum(String(100)) | Có | Văn bản | Gồm:<br>+ Văn bản<br>+ Trực tiếp<br>+ Cổng thông tin điện tử<br>+ Hòm thư điện tử<br>+ Họp liên ngành |
 | Ngày tiếp nhận | Date | Có | Ngày hiện tại | Áp dụng [BR-VAL-001]. |
 | Nội dung đề nghị | Text(4000) | Có | Trống | Nội dung đề xuất, kiến nghị hoặc vướng mắc cần xử lý. |
 | Quan điểm của cơ quan đề nghị | Text(4000) | Không | Trống | Ghi nhận quan điểm kèm theo nếu có. |

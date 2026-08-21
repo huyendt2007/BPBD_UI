@@ -1,4 +1,4 @@
-﻿﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.5. UC - Tra cứu vụ việc
 
@@ -29,9 +29,9 @@
 
 \- Dữ liệu vụ việc được kế thừa từ các module `Tiếp nhận YCBT`, `Giải quyết yêu cầu bồi thường`, `Quyết định giải quyết bồi thường`, `Cấp kinh phí tạm ứng/Bồi thường` và thông tin phục hồi danh dự phát sinh trong quá trình giải quyết.
 
-\- Trạng thái vụ việc yêu cầu bồi thường tham chiếu danh mục [DM_24].
+\- Trạng thái vụ việc yêu cầu bồi thường Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24].
 
-\- Hình thức phục hồi danh dự tham chiếu danh mục [DM_31].
+\- Hình thức phục hồi danh dự Tham chiếu Danh mục Hình thức phục hồi danh dự [DM_31].
 
 ---
 
@@ -91,19 +91,16 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Khối Lọc, tìm kiếm thông tin** | | | | Khối lọc hiển thị phía trên bảng kết quả của tab `Phục hồi danh dự`. |
-| Mã vụ việc | String(50) | Không | Trống | Tìm gần đúng theo mã vụ việc, tự động trim space trước khi lọc. |
-| Tên vụ việc | String(255) | Không | Trống | Tìm gần đúng theo tên vụ việc, không phân biệt hoa thường. |
-| Người bị thiệt hại/người yêu cầu | String(255) | Không | Trống | Tìm gần đúng theo họ tên người bị thiệt hại hoặc người yêu cầu bồi thường. |
-| Cơ quan giải quyết bồi thường | Enum(String(255)) | Không | `Tất cả` | Chọn cơ quan giải quyết bồi thường thuộc phạm vi phân quyền. |
-| Trạng thái giải quyết | Enum(String(50)) | Không | `Tất cả` | Tham chiếu [DM_24]. Cho phép lọc mọi trạng thái vụ việc để xem cả vụ việc đang xử lý, tạm dừng, kết thúc và hoàn thành. |
-| Nhóm trạng thái | Enum(String(50)) | Không | `Tất cả` | Lọc nhanh theo nhóm: `Đang xử lý`, `Tạm dừng`, `Kết thúc`. Khi chọn nhóm, hệ thống tự động áp dụng tập trạng thái tương ứng. |
-| Hình thức phục hồi danh dự | Enum(String(50)) | Không | `Tất cả` | Tham chiếu [DM_31], gồm `Trực tiếp xin lỗi`, `Đăng báo`, `Cả hai hình thức`. |
-| Cập nhật từ ngày | Date | Không | Ngày đầu tháng hiện tại | Định dạng `dd/mm/yyyy`. Áp dụng quy tắc kiểm tra khoảng ngày [BR-VAL-007]. |
-| Cập nhật đến ngày | Date | Không | Ngày hiện tại | Định dạng `dd/mm/yyyy`. Áp dụng quy tắc kiểm tra khoảng ngày [BR-VAL-007]. |
-| Xóa bộ lọc | Button | Không | Hiển thị | Xóa toàn bộ tiêu chí lọc trong tab `Phục hồi danh dự` và tải lại danh sách mặc định. |
-| Tìm kiếm | Button | Không | Hiển thị | Thực hiện tìm kiếm theo các tiêu chí đang nhập/chọn trong tab `Phục hồi danh dự`. |
-| Kết xuất Excel | Button | Không | Hiển thị | Kết xuất danh sách kết quả của tab `Phục hồi danh dự` theo tiêu chí lọc và sắp xếp hiện tại. |
+| **I. Khối Lọc, tìm kiếm thông tin** | - | - | - | Control UI: Filter panel.<br>- Khối lọc hiển thị phía trên bảng kết quả của tab `Phục hồi danh dự`.<br>- Các tiêu chí có dữ liệu được kết hợp theo điều kiện AND. |
+| Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo mã vụ việc, tự động trim space trước khi lọc. |
+| Tên vụ việc | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo tên vụ việc, không phân biệt hoa thường. |
+| Người bị thiệt hại/người yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo họ tên người bị thiệt hại hoặc người yêu cầu bồi thường. |
+| Cơ quan giải quyết bồi thường | Enum(String(255)) | Không | `Tất cả` | Control UI: Combobox.<br>- Chọn cơ quan giải quyết bồi thường thuộc phạm vi phân quyền. |
+| Trạng thái giải quyết | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24].<br>- Cho phép lọc mọi trạng thái vụ việc để xem cả vụ việc đang xử lý, tạm dừng, kết thúc và hoàn thành. |
+| Nhóm trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Lọc nhanh theo nhóm: `Đang xử lý`, `Tạm dừng`, `Kết thúc`.<br>- Khi chọn nhóm, hệ thống tự động áp dụng tập trạng thái tương ứng. |
+| Hình thức phục hồi danh dự | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Hình thức phục hồi danh dự [DM_31]. |
+| Cập nhật từ ngày | Date | Không | Ngày đầu tháng hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Áp dụng quy tắc kiểm tra khoảng ngày [BR-VAL-007]. |
+| Cập nhật đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Áp dụng quy tắc kiểm tra khoảng ngày [BR-VAL-007]. |
 | **II. Bảng kết quả tìm kiếm** | | | | Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Phục hồi danh dự`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | - | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Chỉ đọc. Hiển thị mã vụ việc. Người dùng click dòng dữ liệu để mở chi tiết. |
@@ -113,8 +110,8 @@ flowchart TD
 | Địa chỉ chi tiết | Text(1000) | - | Theo dữ liệu | Chỉ đọc. Hiển thị địa chỉ chi tiết của người yêu cầu/vụ việc. |
 | Cơ quan giải quyết bồi thường | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cơ quan giải quyết bồi thường. |
 | Cán bộ xử lý | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cán bộ đang xử lý hoặc cán bộ phụ trách phục hồi danh dự, nếu đã được phân công. |
-| Hình thức phục hồi | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị hình thức phục hồi danh dự theo [DM_31]. |
-| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị trạng thái vụ việc theo [DM_24] dưới dạng badge. |
+| Hình thức phục hồi | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị hình thức phục hồi danh dự theo Danh mục Hình thức phục hồi danh dự [DM_31]. |
+| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị trạng thái vụ việc theo Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24] dưới dạng badge. |
 | Thời hạn thực hiện | String(100) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tình trạng thời hạn phục hồi danh dự: còn hạn, sắp hết hạn, quá hạn, đã hoàn thành hoặc theo tiến trình kinh phí tùy dữ liệu vụ việc. |
 | Ngày cập nhật | Date | - | Theo dữ liệu | Định dạng `dd/mm/yyyy`. Hỗ trợ sắp xếp; mặc định sắp xếp giảm dần. |
 
@@ -128,22 +125,19 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Khối Lọc, tìm kiếm thông tin** | | | | Khối lọc hiển thị phía trên bảng kết quả của tab `Yêu cầu bồi thường`. |
-| Mã vụ việc | String(50) | Không | Trống | Tìm gần đúng theo mã vụ việc, tự động trim space trước khi lọc. |
-| Tên vụ việc | String(255) | Không | Trống | Tìm gần đúng theo tên vụ việc, không phân biệt hoa thường. |
-| Tên người yêu cầu | String(100) | Không | Trống | Tìm gần đúng theo họ tên người yêu cầu bồi thường. |
-| Cơ quan giải quyết | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan giải quyết bồi thường. |
-| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Tham chiếu [DM_22]. |
-| Hình thức tiếp nhận hồ sơ | Enum(String(50)) | Không | `Tất cả` | Tham chiếu [DM_25]. |
-| Trạng thái giải quyết | Enum(String(50)) | Không | `Tất cả` | Tham chiếu [DM_24]. Cho phép chọn từng trạng thái vụ việc. |
-| Nhóm trạng thái | Enum(String(50)) | Không | `Tất cả` | Lọc nhanh theo nhóm: `Đang xử lý`, `Tạm dừng`, `Kết thúc`. |
-| Tiếp nhận từ ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Lọc theo thời điểm tiếp nhận. Áp dụng [BR-VAL-007]. |
-| Tiếp nhận đến ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Lọc theo thời điểm tiếp nhận. Áp dụng [BR-VAL-007]. |
-| Hạn xử lý từ ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Lọc theo hạn xử lý. Áp dụng [BR-VAL-007]. |
-| Hạn xử lý đến ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Lọc theo hạn xử lý. Áp dụng [BR-VAL-007]. |
-| Xóa bộ lọc | Button | Không | Hiển thị | Xóa toàn bộ tiêu chí lọc trong tab `Yêu cầu bồi thường` và tải lại danh sách mặc định. |
-| Tìm kiếm | Button | Không | Hiển thị | Thực hiện tìm kiếm theo các tiêu chí đang nhập/chọn trong tab `Yêu cầu bồi thường`. |
-| Kết xuất Excel | Button | Không | Hiển thị | Kết xuất danh sách kết quả của tab `Yêu cầu bồi thường` theo tiêu chí lọc và sắp xếp hiện tại. |
+| **I. Khối Lọc, tìm kiếm thông tin** | - | - | - | Control UI: Filter panel.<br>- Khối lọc hiển thị phía trên bảng kết quả của tab `Yêu cầu bồi thường`.<br>- Các tiêu chí có dữ liệu được kết hợp theo điều kiện AND. |
+| Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo mã vụ việc, tự động trim space trước khi lọc. |
+| Tên vụ việc | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo tên vụ việc, không phân biệt hoa thường. |
+| Tên người yêu cầu | String(100) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo họ tên người yêu cầu bồi thường. |
+| Cơ quan giải quyết | String(255) | Không | Trống | Control UI: Input text/Combobox theo UI.<br>- Tìm gần đúng theo tên cơ quan giải quyết bồi thường. |
+| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
+| Hình thức tiếp nhận hồ sơ | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
+| Trạng thái giải quyết | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24].<br>- Cho phép chọn từng trạng thái vụ việc. |
+| Nhóm trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Lọc nhanh theo nhóm: `Đang xử lý`, `Tạm dừng`, `Kết thúc`. |
+| Tiếp nhận từ ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Lọc theo thời điểm tiếp nhận.<br>- Áp dụng [BR-VAL-007]. |
+| Tiếp nhận đến ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Lọc theo thời điểm tiếp nhận.<br>- Áp dụng [BR-VAL-007]. |
+| Hạn xử lý từ ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Lọc theo hạn xử lý.<br>- Áp dụng [BR-VAL-007]. |
+| Hạn xử lý đến ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Lọc theo hạn xử lý.<br>- Áp dụng [BR-VAL-007]. |
 | **II. Bảng kết quả tìm kiếm** | | | | Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Yêu cầu bồi thường`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | - | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Chỉ đọc. Hiển thị mã vụ việc. Người dùng click dòng dữ liệu để mở chi tiết. |
@@ -151,13 +145,13 @@ flowchart TD
 | Tên người yêu cầu | String(100) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tên người yêu cầu bồi thường. |
 | Tỉnh/TP | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tỉnh/thành phố của người yêu cầu hoặc địa bàn phát sinh vụ việc. |
 | Địa chỉ chi tiết | Text(1000) | - | Theo dữ liệu | Chỉ đọc. Hiển thị địa chỉ chi tiết của người yêu cầu/vụ việc. |
-| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị lĩnh vực phát sinh thiệt hại theo [DM_22]. |
+| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị lĩnh vực phát sinh thiệt hại theo Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
 | Cơ quan giải quyết | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cơ quan giải quyết bồi thường. |
 | Cán bộ xử lý | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cán bộ xử lý được phân công, nếu đã có. |
 | Ngày tiếp nhận | DateTime | - | Theo dữ liệu | Định dạng `dd/mm/yyyy HH:mm`. Hỗ trợ sắp xếp. |
 | Hạn xử lý | Date | - | Theo dữ liệu | Hiển thị hạn xử lý và cảnh báo SLA theo dữ liệu hệ thống. |
-| Hình thức tiếp nhận | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị hình thức tiếp nhận theo [DM_25]. |
-| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị trạng thái vụ việc theo [DM_24] dưới dạng badge. |
+| Hình thức tiếp nhận | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị hình thức tiếp nhận theo Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
+| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị trạng thái vụ việc theo Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24] dưới dạng badge. |
 | Ngày cập nhật | Date | - | Theo dữ liệu | Định dạng `dd/mm/yyyy`. Hỗ trợ sắp xếp; mặc định sắp xếp giảm dần. |
 
 ###### 4.3.3.5.3.5. Chức năng trên màn hình
@@ -165,13 +159,16 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển tab | Tab | Hệ thống tải danh sách vụ việc theo tab được chọn, đặt lại trang hiện tại về trang 1. Dữ liệu tab `Phục hồi danh dự` và tab `Yêu cầu bồi thường` là 02 tập dữ liệu loại trừ nhau theo phạm vi dữ liệu đã mô tả. |
-| 2 | Tìm kiếm | Button | Hệ thống lọc danh sách vụ việc trong tab hiện hành theo các tiêu chí đang nhập/chọn. Nếu khoảng ngày không hợp lệ, áp dụng [BR-VAL-007] và không thực hiện tìm kiếm. Nếu không có dữ liệu phù hợp, hiển thị trạng thái không có kết quả trong vùng bảng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
+| 2 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
+|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu khoảng ngày đang nhập không hợp lệ, áp dụng [BR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH2 - Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ. |
+|  |  |  | **TH Hợp lệ**: Hệ thống lọc danh sách vụ việc trong tab hiện hành theo các tiêu chí đang nhập/chọn, hiển thị kết quả lên bảng và đưa về trang 1. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí đã nhập, đưa các combobox về `Tất cả`, đưa danh sách về trang 1 và tải lại dữ liệu mặc định của tab hiện hành. |
 | 4 | Kết xuất Excel | Button | Hệ thống kết xuất danh sách kết quả hiện hành của tab đang chọn theo đúng tiêu chí lọc và sắp xếp hiện tại. Nếu danh sách rỗng, áp dụng [BR-EXP-040] và không tải file. |
 | 5 | Sắp xếp cột | Header cột | Người dùng click tiêu đề cột có hỗ trợ sắp xếp để đảo chiều tăng/giảm hoặc chọn cột sắp xếp mới. |
 | 6 | Đổi số dòng hiển thị | Dropdown | Hệ thống cập nhật số bản ghi trên mỗi trang theo giá trị người dùng chọn và đưa về trang 1. |
 | 7 | Chuyển trang | Pagination | Hệ thống chuyển trang theo thao tác của người dùng, giữ nguyên tiêu chí lọc và sắp xếp hiện hành. |
-| 8 | Click dòng dữ liệu | Row click | Hệ thống mở **Module Giải quyết yêu cầu bồi thường - MH03 - Màn hình Xem chi tiết và xử lý hồ sơ yêu cầu bồi thường** ở chế độ xem chi tiết. Với tab `Phục hồi danh dự`, hệ thống focus vào tab/khối `Phục hồi danh dự`. Với tab `Yêu cầu bồi thường`, hệ thống focus vào `Thông tin chung` hoặc tab/khối xử lý hiện hành theo trạng thái vụ việc. |
+| 8 | Click dòng dữ liệu | Row click | Hệ thống mở màn hình **UC431-466.MH03 - Xem chi tiết và xử lý hồ sơ yêu cầu bồi thường** (thuộc tài liệu SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md) ở chế độ xem chi tiết. Với tab `Phục hồi danh dự`, hệ thống focus vào tab/khối `Phục hồi danh dự`. Với tab `Yêu cầu bồi thường`, hệ thống focus vào `Thông tin chung` hoặc tab/khối xử lý hiện hành theo trạng thái vụ việc. |
 
 ###### 4.3.3.5.3.6. Quy tắc lọc theo nhóm trạng thái
 

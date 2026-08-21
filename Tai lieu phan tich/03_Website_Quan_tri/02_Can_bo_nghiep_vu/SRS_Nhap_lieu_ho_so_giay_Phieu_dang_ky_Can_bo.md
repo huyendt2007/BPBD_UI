@@ -1,4 +1,4 @@
-﻿﻿# UC-DK-GIAY - Nhập liệu hồ sơ giấy Phiếu đăng ký
+# UC-DK-GIAY - Nhập liệu hồ sơ giấy Phiếu đăng ký
 
 ## 1. Tổng quan
 
@@ -114,9 +114,9 @@ Không thuộc phạm vi tài liệu này:
 | Thời điểm trả lại | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
 | **III. Tra cứu hồ sơ tham chiếu** | | | | |
 | Khối Tra cứu hồ sơ tham chiếu | Text(1000) | Tùy điều kiện | Ẩn | - Chỉ hiển thị khi Loại yêu cầu là:<br>+ "Đăng ký thay đổi"<br>+ "Xóa đăng ký"<br>+ "Thông báo xử lý tài sản bảo đảm lần đầu"<br>+ "Thay đổi thông báo xử lý tài sản bảo đảm"<br>+ "Xóa đăng ký thông báo xử lý tài sản bảo đảm" |
-| Số đăng ký lần đầu | String(50) | Tùy điều kiện | Trống hoặc theo phiên bản trước | - Chỉ hiển thị và bắt buộc khi Loại yêu cầu là:<br>+ "Đăng ký thay đổi"<br>+ "Xóa đăng ký"<br>+ "Thông báo xử lý tài sản bảo đảm lần đầu"<br>- Cán bộ nhập theo hồ sơ giấy.<br>- Hệ thống không yêu cầu nhập PIN.<br>- Tự động trim space theo [BR-VAL-001]. |
-| Số đăng ký thông báo xử lý gốc | String(50) | Tùy điều kiện | Trống hoặc theo phiên bản trước | - Chỉ hiển thị và bắt buộc khi Loại yêu cầu là:<br>+ "Thay đổi thông báo xử lý tài sản bảo đảm"<br>+ "Xóa đăng ký thông báo xử lý tài sản bảo đảm"<br>- Cán bộ nhập một trong các giá trị:<br>+ Số đăng ký thông báo xử lý gốc.<br>+ Số đăng ký thông báo gần nhất đang có hiệu lực.<br>- Hệ thống không yêu cầu nhập PIN.<br>- Tự động trim space theo [BR-VAL-001]. |
-| Kết quả tra cứu hồ sơ tham chiếu | Text(2000) | Không | Ẩn | - Chỉ hiển thị sau khi bấm "Tra cứu".<br>- Nếu hợp lệ, hiển thị tóm tắt hồ sơ tham chiếu gồm:<br>+ Số đăng ký.<br>+ Loại đăng ký.<br>+ Thời điểm đăng ký.<br>+ Bên bảo đảm.<br>+ Bên nhận bảo đảm.<br>+ Trạng thái.<br>+ Cơ quan tiếp nhận.<br>- Toàn bộ dữ liệu chỉ đọc.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
+| Số đăng ký lần đầu | String(50) | Tùy điều kiện | Trống hoặc theo phiên bản trước | - Chỉ hiển thị và bắt buộc khi Loại yêu cầu là:<br>+ "Đăng ký thay đổi"<br>+ "Xóa đăng ký"<br>+ "Thông báo xử lý tài sản bảo đảm lần đầu"<br>+ Cán bộ nhập theo hồ sơ giấy.<br>- Hệ thống không yêu cầu nhập PIN.<br>- Tự động trim space theo [BR-VAL-001]. |
+| Số đăng ký thông báo xử lý gốc | String(50) | Tùy điều kiện | Trống hoặc theo phiên bản trước | - Chỉ hiển thị và bắt buộc khi Loại yêu cầu là:<br>+ "Thay đổi thông báo xử lý tài sản bảo đảm"<br>+ "Xóa đăng ký thông báo xử lý tài sản bảo đảm"<br>+ Cán bộ nhập một trong các giá trị:<br>+ Số đăng ký thông báo xử lý gốc.<br>+ Số đăng ký thông báo gần nhất đang có hiệu lực.<br>- Hệ thống không yêu cầu nhập PIN.<br>- Tự động trim space theo [BR-VAL-001]. |
+| Kết quả tra cứu hồ sơ tham chiếu | Text(2000) | Không | Ẩn | - Chỉ hiển thị sau khi bấm "Tra cứu".<br>- Nếu hợp lệ, hiển thị tóm tắt hồ sơ tham chiếu gồm:<br>+ Số đăng ký.<br>+ Loại đăng ký.<br>+ Thời điểm đăng ký.<br>+ Bên bảo đảm.<br>+ Bên nhận bảo đảm.<br>+ Trạng thái.<br>+ Cơ quan tiếp nhận.<br>+ Toàn bộ dữ liệu chỉ đọc.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | **IV. Chi tiết hồ sơ Phiếu đăng ký** | | | | |
 | Khối Chi tiết hồ sơ Phiếu đăng ký | Text(4000) | Có | Theo Loại yêu cầu | - Hiển thị form nhập liệu nghiệp vụ tương ứng tại mục 4.<br>- Không viết lại chi tiết trường/cột trong tài liệu này. |
 | Đăng ký lần đầu | Text(4000) | Tùy điều kiện | Theo Loại yêu cầu | - Khi Loại yêu cầu là "Đăng ký lần đầu", hiển thị giống form nhập liệu [UC024.MH01](../../01_Website_Khach_hang/UC024_Dang_ky_moi_BPBD_Ver2.md#4112-uc024mh01---man-hinh-nhap-lieu-dang-ky-moi-bpbd).<br>- Chỉ hiển thị các nút/thao tác dành cho Cán bộ trên Website quản trị. |
@@ -268,4 +268,3 @@ Thông tin nhật ký tối thiểu gồm: Mã hồ sơ, Số đơn giấy, Ngu�
 | AC-DK-GIAY-011 | "Trình ký" hợp lệ sinh file PDF dự thảo theo Mẫu số 05d, yêu cầu chọn Lãnh đạo ký và chuyển hồ sơ sang "Chờ ký" sau khi xác nhận trình ký. |
 | AC-DK-GIAY-012 | Màn nhập liệu và Review không hiển thị "Lưu nháp", thanh toán, tiếp tục thanh toán hoặc nút gửi đăng ký dành cho Khách hàng. |
 | AC-DK-GIAY-013 | Khi Lãnh đạo trả lại hồ sơ giấy ở trạng thái "Chờ ký", Cán bộ mở lại màn nhập liệu này để cập nhật theo ý kiến trả lại và trình ký lại. |
-

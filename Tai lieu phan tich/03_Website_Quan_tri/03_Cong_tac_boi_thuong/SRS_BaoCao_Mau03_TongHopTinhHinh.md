@@ -1,4 +1,4 @@
-﻿#### 4.3.3.22. UCPS020 - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường (Mẫu số 03-TT08)
+#### 4.3.3.22. UCPS020 - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường (Mẫu số 03-TT08)
 
 ##### 4.3.3.22.1. Mục đích
 
@@ -18,7 +18,7 @@
 
 \- Người dùng được phân quyền truy cập màn hình `Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường (Mẫu số 03-TT08)`.
 
-\- Loại cơ quan báo cáo tham chiếu danh mục [DM_43]. Loại kỳ báo cáo tham chiếu danh mục [DM_44]. Lĩnh vực phát sinh thiệt hại tham chiếu [DM_22].
+\- Loại cơ quan báo cáo Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. Loại kỳ báo cáo Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Lĩnh vực phát sinh thiệt hại Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22].
 
 \- Phân loại nguồn thụ lý của từng vụ việc (tại cơ quan trực tiếp quản lý người thi hành công vụ/tại Tòa án theo điểm a khoản 1 Điều 52/theo điểm b khoản 1 và khoản 2 Điều 52/trong quá trình tố tụng hình sự-hành chính theo Điều 55) được suy ra từ các trường `Tình trạng pháp lý hồ sơ`, `Nguồn phát sinh bản án`, `Trường hợp khởi kiện` đã đặc tả tại SRS Giải quyết yêu cầu bồi thường; không yêu cầu nhập liệu bổ sung.
 
@@ -56,9 +56,9 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Khối chọn kỳ báo cáo** | | | | |
 | Năm báo cáo | Enum(String(10)) | Có | Năm hiện tại | Giá trị gồm 05 năm gần nhất tính đến năm hiện tại. |
-| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu [DM_44]. |
-| Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Giá trị lấy từ Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
-| Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu [DM_43]. |
+| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. |
+| Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
+| Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
 | **II. Bảng Mẫu số 03/BTNN** | | | | |
 | STT | Integer(10) | - | Tự tăng | Chỉ đọc. Cột số thứ tự theo mẫu, đồng thời là chỉ tiêu `(1)` theo đúng đánh số của văn bản gốc. |
 | Dòng đánh số chỉ tiêu | String(255) | - | Cố định | Chỉ đọc. Ngay dưới dòng tiêu đề cột (đã lồng nhóm theo cấu trúc bên dưới), hệ thống hiển thị 1 dòng ghi số thứ tự chỉ tiêu `(1)` (tại cột `STT`) đến `(26)` tương ứng với đúng 26 cột của Mẫu số 03/BTNN, để đối chiếu nhanh với văn bản gốc. |

@@ -510,6 +510,7 @@ let noticeProofAttachedFile = null;
 let noticeTrackingAttachedFile = [];
 let treasuryAttachedFile = [];
 let showTreasuryEligibleOnly = false;
+let formEditingMode = false; // true only when the panel is opened to write new data (Lập/Cập nhật đề nghị)
 const TREASURY_DEMO_TODAY = new Date(2026, 6, 21);
 
 // Sync claimsList and proposalsList from localStorage on DOMContentLoaded
@@ -1421,9 +1422,11 @@ function renderProposalsTable() {
             let updateBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ cập nhật đề xuất ở trạng thái Bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>`;
             let payBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ thực hiện chi trả ở trạng thái Chờ chi trả"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
             let treasuryBtn = `<button class="icon-btn" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chưa đủ điều kiện sung quỹ"><i class="fa-solid fa-building-columns"></i></button>`;
+            let deleteBtn = `<button class="icon-btn delete" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ xóa được tờ trình ở trạng thái Chờ lập đề nghị"><i class="fa-regular fa-trash-can"></i></button>`;
 
             if (item.status === 'Chờ lập đề nghị') {
                 fillBtn = `<button class="icon-btn edit" title="Lập đề nghị kinh phí" onclick="fillProposalDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
+                deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình nháp" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
             } else if (item.status === 'Bị từ chối') {
                 updateBtn = `<button class="icon-btn edit" title="Cập nhật đề nghị" onclick="updateProposalDirect('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
             } else if (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần') {
@@ -1432,7 +1435,7 @@ function renderProposalsTable() {
             if (treasuryInfo.isEligible) {
                 treasuryBtn = `<button class="icon-btn reject" title="Sung quỹ Nhà nước" onclick="requestTreasuryForfeit('${item.id}')"><i class="fa-solid fa-building-columns"></i></button>`;
             }
-            actionsHtml = `${fillBtn} ${updateBtn} ${payBtn} ${treasuryBtn}`;
+            actionsHtml = `${fillBtn} ${updateBtn} ${payBtn} ${treasuryBtn} ${deleteBtn}`;
         }
 
         const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;
@@ -1946,7 +1949,7 @@ function renderKinhPhiDamageGrids(claim) {
             <td style="font-weight:600; vertical-align:middle;">${label}</td>
             <td style="text-align:right; font-weight:700; background-color:#F8FAFC; vertical-align:middle; padding-right:15px;">${amount.toLocaleString('vi-VN')} VNĐ</td>
             <td style="vertical-align:middle; text-align:right;">
-                <input type="text" class="form-control kp-approve-input" data-key="${key}" value="${amount.toLocaleString('vi-VN')}" oninput="formatNumberInput(this); calculateKinhPhiApproveTotal();" style="font-weight:700; text-align:right; border-color:#F59E0B; background-color:#FFFDF5; max-width:180px; display:block; margin-left:auto; height:26px; padding:2px 6px; font-size:12.5px;">
+                <input type="text" class="form-control kp-approve-input" data-key="${key}" data-max="${amount}" data-label="${label}" value="${amount.toLocaleString('vi-VN')}" oninput="formatNumberInput(this); calculateKinhPhiApproveTotal();" style="font-weight:700; text-align:right; border-color:#F59E0B; background-color:#FFFDF5; max-width:180px; display:block; margin-left:auto; height:26px; padding:2px 6px; font-size:12.5px;">
             </td>
         `;
         tbody.appendChild(tr);
@@ -2320,7 +2323,14 @@ function openCreateProposalForm() {
         document.getElementById('payoutBankName').value = '';
     }
     document.getElementById('payoutBankUser').value = '';
+    if (document.getElementById('payoutBankBranch')) {
+        document.getElementById('payoutBankBranch').value = '';
+    }
     document.getElementById('payoutReceiptNo').value = '';
+    if (document.getElementById('payoutNote')) {
+        document.getElementById('payoutNote').value = '';
+        document.getElementById('payoutNote').disabled = false;
+    }
     document.getElementById('payoutMethod').value = 'Chuyển khoản qua ngân hàng';
     const noticeInput = document.getElementById('payoutNoticeReceivedDate');
     if (noticeInput) noticeInput.value = '';
@@ -2356,7 +2366,20 @@ function openCreateProposalForm() {
     btnCancel.style.display = 'inline-flex';
 }
 
+// Wraps closeCreateProposalForm with a confirm step, but only while writing new
+// data (Lập/Cập nhật đề nghị). Xem chi tiết / Cập nhật chi trả / Xét duyệt đóng ngay lập tức.
+function handleCloseProposalForm() {
+    if (formEditingMode) {
+        showConfirmModal('Bạn có chắc chắn muốn đóng biểu mẫu và hủy bỏ các thay đổi đang nhập không?', () => {
+            closeCreateProposalForm();
+        });
+    } else {
+        closeCreateProposalForm();
+    }
+}
+
 function closeCreateProposalForm() {
+    formEditingMode = false;
     document.getElementById('inlineProposalFormPanel').style.display = 'none';
     document.getElementById('contentListProposals').style.display = 'block';
     document.getElementById('dashboardStats').style.display = 'grid'; // Restore dashboard
@@ -2434,14 +2457,35 @@ function saveProposal(statusStr) {
     } else {
         // Kinh phí bồi thường
         let approvedDamages = {};
+        let overCapField = null;
         const inputs = document.querySelectorAll('.kp-approve-input');
         inputs.forEach(input => {
             const key = input.dataset.key;
             const valStr = input.value.replace(/\D/g, '');
             const val = parseFloat(valStr) || 0;
+            const maxVal = parseFloat(input.dataset.max) || 0;
+            if (statusStr === 'Chờ duyệt' && val > maxVal && !overCapField) {
+                overCapField = { input, maxVal, label: input.dataset.label };
+            }
             approvedDamages[key] = val;
             amount += val;
         });
+
+        if (overCapField) {
+            overCapField.input.classList.add('is-invalid');
+            let err = overCapField.input.parentNode.querySelector('.error-message');
+            if (!err) {
+                err = document.createElement('div');
+                err.className = 'error-message';
+                err.style.color = 'var(--danger-color)';
+                err.style.fontSize = '11.5px';
+                err.style.marginTop = '4px';
+                overCapField.input.parentNode.appendChild(err);
+            }
+            err.innerText = `Số tiền duyệt cấp không được vượt quá mức đề nghị trong hồ sơ gốc (${overCapField.maxVal.toLocaleString('vi-VN')} VNĐ) đối với "${overCapField.label}"`;
+            overCapField.input.focus();
+            return;
+        }
 
         customFields = {
             approvedDamages: approvedDamages
@@ -2511,6 +2555,7 @@ function fillProposalDirect(id) {
 
     openCreateProposalForm();
     selectedProposalId = id;
+    formEditingMode = true;
 
     // Set form title based on type
     if (item.type === 'Kinh phí bồi thường' || item.type === 'Cấp kinh phí bồi thường') {
@@ -2580,6 +2625,7 @@ function updateProposalDirect(id) {
 
     openCreateProposalForm();
     selectedProposalId = id;
+    formEditingMode = true;
 
     // Set form title
     if (item.type === 'Kinh phí bồi thường' || item.type === 'Cấp kinh phí bồi thường') {
@@ -2668,6 +2714,7 @@ function viewProposalDetail(id) {
 
     openCreateProposalForm();
     selectedProposalId = id;
+    formEditingMode = false;
 
     // Hide standard save draft and submit proposal buttons during detailed viewing
     document.getElementById('btnSaveDraft').style.display = 'none';
@@ -2904,8 +2951,18 @@ function viewProposalDetail(id) {
         document.getElementById('payoutBankUser').value = item.payoutBankUser || "";
         document.getElementById('payoutBankUser').disabled = true;
 
+        if (document.getElementById('payoutBankBranch')) {
+            document.getElementById('payoutBankBranch').value = item.payoutBankBranch || "";
+            document.getElementById('payoutBankBranch').disabled = true;
+        }
+
         document.getElementById('payoutReceiptNo').value = item.payoutReceiptNo || "";
         document.getElementById('payoutReceiptNo').disabled = true;
+
+        if (document.getElementById('payoutNote')) {
+            document.getElementById('payoutNote').value = item.payoutNote || "";
+            document.getElementById('payoutNote').disabled = true;
+        }
 
         handlePayoutMethodChange(item.payoutMethod || "Chuyển khoản qua ngân hàng");
 
@@ -3052,19 +3109,22 @@ function submitLeaderApproval(decisionStatus) {
     }
 
     const item = proposalsList.find(p => p.id === selectedProposalId);
-    if (item) {
-        if (decisionStatus === 'Đã duyệt' || decisionStatus === 'Chờ chi trả' || decisionStatus === 'Hoàn thành') {
-            item.status = 'Chờ chi trả';
-        } else {
-            item.status = 'Bị từ chối';
-        }
+    if (!item) return;
+
+    const isApprove = (decisionStatus === 'Đã duyệt' || decisionStatus === 'Chờ chi trả' || decisionStatus === 'Hoàn thành');
+    const confirmMsg = isApprove
+        ? `Bạn có chắc chắn muốn phê duyệt cấp phát kinh phí bồi thường cho tờ trình ${item.code} này không?`
+        : `Bạn có chắc chắn muốn từ chối phê duyệt tờ trình cấp kinh phí bồi thường ${item.code} này không?`;
+
+    showConfirmModal(confirmMsg, () => {
+        item.status = isApprove ? 'Chờ chi trả' : 'Bị từ chối';
         item.leaderOpinion = opinion;
 
         showToast(`Tờ trình đề nghị ${item.code} đã được xử lý: ${item.status === 'Chờ chi trả' ? 'PHÊ DUYỆT (CHỜ CHI TRẢ)' : 'TỪ CHỐI'}!`, "success");
         saveProposalsToLocal();
         updateBudgetStats();
         closeCreateProposalForm();
-    }
+    });
 }
 
 // CUSTOM REJECT MODAL ENGINE
@@ -3118,7 +3178,9 @@ function closeRejectModal(confirm) {
 // LEADERS DIRECT QUICK APPROVAL FROM TABLE ROWS
 function approveProposalDirect(id, decisionStatus) {
     const item = proposalsList.find(p => p.id === id);
-    if (item) {
+    if (!item) return;
+
+    showConfirmModal(`Bạn có chắc chắn muốn phê duyệt cấp phát kinh phí bồi thường cho tờ trình ${item.code} này không?`, () => {
         item.status = decisionStatus; // 'Chờ chi trả'
         item.leaderOpinion = "Phê duyệt tờ trình cấp phát ngân sách bồi thường";
 
@@ -3126,7 +3188,7 @@ function approveProposalDirect(id, decisionStatus) {
         saveProposalsToLocal();
         updateBudgetStats();
         renderProposalsTable();
-    }
+    });
 }
 
 
@@ -3140,6 +3202,8 @@ function payProposalDirect(id) {
 
         // 1. Populate standard details (read-only)
         fillProposalDirect(id);
+        // Payout entry uses immediate-close on "Đóng" (matches MH05), not the MH02 confirm-before-close
+        formEditingMode = false;
 
         // 2. Lock all normal inputs
         setProposalFieldsDisabled(true);
@@ -3219,9 +3283,21 @@ function payProposalDirect(id) {
         payoutBankUserInput.disabled = false;
         payoutBankUserInput.value = claimDetails.advanceBankUser || item.nycName;
 
+        const payoutBankBranchInput = document.getElementById('payoutBankBranch');
+        if (payoutBankBranchInput) {
+            payoutBankBranchInput.disabled = false;
+            payoutBankBranchInput.value = claimDetails.advanceBankBranch || "";
+        }
+
         const payoutReceiptNoInput = document.getElementById('payoutReceiptNo');
         payoutReceiptNoInput.disabled = false;
         payoutReceiptNoInput.value = "";
+
+        const payoutNoteInput = document.getElementById('payoutNote');
+        if (payoutNoteInput) {
+            payoutNoteInput.disabled = false;
+            payoutNoteInput.value = "";
+        }
 
         document.getElementById('btnPayoutUpload').disabled = false;
         document.getElementById('btnPayoutUpload').style.display = 'inline-flex';
@@ -3366,8 +3442,21 @@ function submitPayoutReal() {
     if (!payoutDate) {
         triggerError('payoutDate', 'Đây là trường bắt buộc');
     }
+    let payoutAmountNumCheck = 0;
+    let remainingPayoutCheck = 0;
     if (!payoutAmountReal) {
         triggerError('payoutAmountReal', 'Đây là trường bắt buộc');
+    } else {
+        const itemCheck = proposalsList.find(p => p.id === selectedProposalId);
+        if (itemCheck) {
+            payoutAmountNumCheck = parseFloat(payoutAmountReal.replace(/\D/g, '')) || 0;
+            remainingPayoutCheck = getUnpaidAmount(itemCheck) || itemCheck.amount;
+            if (payoutAmountNumCheck <= 0) {
+                triggerError('payoutAmountReal', 'Số tiền thực tế chi trả phải lớn hơn 0');
+            } else if (payoutAmountNumCheck > remainingPayoutCheck) {
+                triggerError('payoutAmountReal', `Số tiền chi trả không được vượt quá số tiền còn phải chi (${remainingPayoutCheck.toLocaleString('vi-VN')} VNĐ)`);
+            }
+        }
     }
     if (!noticeReceivedDate) {
         triggerError('payoutNoticeReceivedDate', 'Đây là trường bắt buộc');
@@ -3390,6 +3479,7 @@ function submitPayoutReal() {
         const payoutBankAccount = document.getElementById('payoutBankAccount').value.trim();
         const payoutBankName = document.getElementById('payoutBankName') ? document.getElementById('payoutBankName').value.trim() : '';
         const payoutBankUser = document.getElementById('payoutBankUser').value.trim();
+        const payoutBankBranch = document.getElementById('payoutBankBranch') ? document.getElementById('payoutBankBranch').value.trim() : '';
         if (!payoutBankAccount) {
             triggerError('payoutBankAccount', 'Đây là trường bắt buộc');
         }
@@ -3398,6 +3488,9 @@ function submitPayoutReal() {
         }
         if (!payoutBankUser) {
             triggerError('payoutBankUser', 'Đây là trường bắt buộc');
+        }
+        if (document.getElementById('payoutBankBranch') && !payoutBankBranch) {
+            triggerError('payoutBankBranch', 'Đây là trường bắt buộc');
         }
     }
 
@@ -3427,13 +3520,14 @@ function submitPayoutReal() {
     if (item) {
         const payoutAmountNum = parseFloat(payoutAmountReal.replace(/\D/g, '')) || 0;
         const previousPaid = item.status === 'Chi trả một phần' ? (item.payoutAmountReal || 0) : 0;
-        const totalPaidAfter = Math.min(item.amount, previousPaid + payoutAmountNum);
+        const totalPaidAfter = previousPaid + payoutAmountNum;
         item.status = totalPaidAfter >= item.amount ? 'Hoàn thành' : 'Chi trả một phần';
         item.payoutDate = payoutDate;
         item.payoutAmountReal = totalPaidAfter;
         item.payoutMethod = payoutMethod;
         item.payoutRecName = payoutRecName;
         item.payoutRecAddress = payoutRecAddress;
+        item.payoutNote = document.getElementById('payoutNote') ? document.getElementById('payoutNote').value.trim() : '';
         item.noticeReceivedDate = noticeReceivedDate;
         item.noticeProofFile = noticeProofAttachedFile;
         const noticeDate = parseDateViGlobal(noticeReceivedDate);
@@ -3442,10 +3536,12 @@ function submitPayoutReal() {
             item.payoutReceiptNo = document.getElementById('payoutReceiptNo').value.trim();
             item.payoutBankAccount = '';
             item.payoutBankUser = '';
+            item.payoutBankBranch = '';
         } else {
             item.payoutBankAccount = document.getElementById('payoutBankAccount').value.trim();
             item.payoutBankName = document.getElementById('payoutBankName') ? document.getElementById('payoutBankName').value.trim() : '';
             item.payoutBankUser = document.getElementById('payoutBankUser').value.trim();
+            item.payoutBankBranch = document.getElementById('payoutBankBranch') ? document.getElementById('payoutBankBranch').value.trim() : '';
             item.payoutReceiptNo = '';
         }
         item.payoutFile = payoutAttachedFile;

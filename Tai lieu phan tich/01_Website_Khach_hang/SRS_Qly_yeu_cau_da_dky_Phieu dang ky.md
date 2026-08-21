@@ -1,9 +1,9 @@
-﻿﻿### 4.1.12. Quản lý yêu cầu đã đăng ký - Phiếu đăng ký dành cho Khách hàng
+### 4.1.12. Quản lý yêu cầu đã đăng ký - Phiếu đăng ký dành cho Khách hàng
 
 #### 4.1.12.1. Mục đích
 
 - Cho phép Khách hàng quản lý, tra cứu và xử lý các Phiếu đăng ký BPBĐ/hợp đồng/thông báo xử lý tài sản bảo đảm đã đăng ký trên Website Khách hàng.
-- Tài liệu này chỉ mô tả nhóm Phiếu đăng ký, gồm:<br>- Danh sách Phiếu đăng ký.<br>- Xem chi tiết Phiếu đăng ký.<br>- Các thao tác nghiệp vụ phát sinh từ Phiếu đăng ký.
+- Tài liệu này chỉ mô tả nhóm Phiếu đăng ký, gồm:<br>+ Danh sách Phiếu đăng ký.<br>+ Xem chi tiết Phiếu đăng ký.<br>+ Các thao tác nghiệp vụ phát sinh từ Phiếu đăng ký.
 - Không mô tả Yêu cầu cung cấp bản sao và Yêu cầu cung cấp thông tin trong tài liệu này.
 
 *a. Phân quyền*
@@ -67,9 +67,9 @@
 | Người tạo | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên người đang đăng nhập đã tạo hồ sơ/phiên bản. |
 | Từ ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. |
 | Đến ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. Nếu nhập cùng `Từ ngày`, áp dụng [BR-VAL-007]. |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Lưu nháp<br>- Chờ thanh toán<br>- Chờ duyệt<br>- Chờ ký<br>- Hoàn thành<br>- Bị từ chối<br>- Sai lệch thanh toán |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Chờ thanh toán<br>+ Chờ duyệt<br>+ Chờ ký<br>+ Hoàn thành<br>+ Bị từ chối<br>+ Sai lệch thanh toán |
 | Loại đăng ký | Enum(String(100)) | Không | Tất cả | Lọc theo trường hợp đăng ký của Phiếu đăng ký. |
-| Loại hình giao dịch | Enum(String(100)) | Không | Tất cả | Gồm:<br>- Tất cả<br>- Biện pháp bảo đảm<br>- Hợp đồng<br>- Thông báo xử lý tài sản bảo đảm |
+| Loại hình giao dịch | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Biện pháp bảo đảm<br>+ Hợp đồng<br>+ Thông báo xử lý tài sản bảo đảm |
 | Loại Biện pháp/Loại HĐ | Enum(String(100)) | Không | Tất cả | Giá trị thay đổi theo `Loại hình giao dịch`. |
 | Loại tài sản | Enum(String(255)) | Không | Tất cả | Lọc theo Danh mục Loại tài sản bảo đảm [DM_07]. Nếu chọn một loại tài sản cụ thể, hệ thống hiển thị thêm các trường lọc đặc thù của loại tài sản đó. |
 | **Khối lọc động theo Loại tài sản** | - | Không | Ẩn | Chỉ hiển thị khi NSD chọn một giá trị cụ thể tại trường `Loại tài sản`. Các trường trong khối lọc động phải tương ứng với cấu trúc thông tin tài sản tại màn Đăng ký mới BPBĐ. |
@@ -84,12 +84,12 @@
 | Cấp phương tiện | String(100) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` = `Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt`. |
 | Tên quyền | String(255) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` = `Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản`. |
 | Căn cứ phát sinh quyền | Text(2000) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` = `Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản`. |
-| Hàng hóa luân chuyển / Kho hàng | Enum(String(50)) | Không | Tất cả | Chỉ hiển thị khi `Loại tài sản` = `Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ`. Gồm:<br>- Tất cả<br>- Hàng hóa luân chuyển<br>- Kho hàng |
+| Hàng hóa luân chuyển / Kho hàng | Enum(String(50)) | Không | Tất cả | Chỉ hiển thị khi `Loại tài sản` = `Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ`. Gồm:<br>+ Tất cả<br>+ Hàng hóa luân chuyển<br>+ Kho hàng |
 | Giá trị hàng hóa/Tên, loại hàng hóa | Text(2000) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` = `Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ`. |
 | Địa chỉ kho hàng | String(500) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` = `Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ` và `Hàng hóa luân chuyển / Kho hàng` = `Kho hàng`. |
 | Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng | String(255) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` = `Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ` và `Hàng hóa luân chuyển / Kho hàng` = `Kho hàng`. |
 | Thời điểm đăng ký tại VSDC | Datetime/String(16) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` = `Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung`.<br>- Control UI: Ô nhập/chọn thời điểm dạng `HH:mm dd/MM/yyyy`.<br>- Hệ thống sử dụng giá trị gộp này để tìm kiếm theo dữ liệu gốc gồm Giờ, Phút, Ngày, Tháng, Năm. |
-| Mô tả | Text(1000) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` là một trong các giá trị có trường Mô tả tại màn Đăng ký mới BPBĐ, gồm:<br>- `Cây hằng năm, công trình tạm`<br>- `Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)` |
+| Mô tả | Text(1000) | Không | Trống | Chỉ hiển thị khi `Loại tài sản` là một trong các giá trị có trường Mô tả tại màn Đăng ký mới BPBĐ, gồm:<br>+ `Cây hằng năm, công trình tạm`<br>+ `Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)` |
 | Nút Tìm kiếm | Button | - | - | Thực hiện tìm kiếm theo điều kiện đã nhập. |
 | Nút Xóa bộ lọc | Button | - | - | Xóa toàn bộ điều kiện lọc và tải lại danh sách mặc định. |
 | **II. Vùng kết quả hiển thị** | - | - | 10 hồ sơ gốc/trang | Control UI: Tree Grid.<br>- Sắp xếp mặc định theo `Thời điểm đăng ký` giảm dần của hồ sơ gốc.<br>- Dòng con thụt vào dưới dòng cha tương ứng.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
@@ -133,7 +133,7 @@
 | :-- | :-- | :-- | :-- |
 | 1 | Tìm kiếm | Button | TH1 (Điều kiện ngày không hợp lệ): Nếu `Từ ngày` lớn hơn `Đến ngày`, hiển thị lỗi theo [BR-VAL-007].<br>TH Hợp lệ: Hệ thống tải danh sách Phiếu đăng ký thỏa mãn điều kiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Button | Đưa bộ lọc về mặc định và tải lại danh sách. |
-| 3 | Xem | Button/Row Click | Mở màn hình Phiếu đăng ký - Xem chi tiết tại mục 4.1.12.4. Phiên bản mặc định được chọn là phiên bản tương ứng với dòng NSD click. |
+| 3 | Xem | Button/Row Click | Mở màn hình **MH02 - Phiếu đăng ký - Xem chi tiết**. Phiên bản mặc định được chọn là phiên bản tương ứng với dòng NSD click. |
 | 4 | Thanh toán | Button | Khi NSD click, hệ thống chuyển sang luồng thanh toán theo UC158. |
 | 5 | Cập nhật | Button | Khi NSD click, hệ thống chuyển sang màn hình cập nhật của nghiệp vụ tương ứng. |
 | 6 | Xóa | Button | Khi NSD click, hệ thống thực hiện xóa bản ghi nháp/bị từ chối theo quy định nghiệp vụ sau khi NSD xác nhận. |

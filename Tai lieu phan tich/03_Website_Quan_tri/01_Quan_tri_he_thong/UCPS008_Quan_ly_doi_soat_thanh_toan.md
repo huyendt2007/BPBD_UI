@@ -1,4 +1,4 @@
-﻿﻿# UCPS008 - Quản lý đối soát thanh toán
+# UCPS008 - Quản lý đối soát thanh toán
 
 ## 1. Tổng quan
 

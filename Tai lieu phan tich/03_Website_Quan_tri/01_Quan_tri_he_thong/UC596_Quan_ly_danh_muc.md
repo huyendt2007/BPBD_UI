@@ -1,4 +1,4 @@
-﻿﻿##### 4.3.1.5.1. UC596 - Quản lý danh mục dùng chung (Master Data)
+##### 4.3.1.5.1. UC596 - Quản lý danh mục dùng chung (Master Data)
 
 ###### 4.3.1.5.1.1. Mục đích
 
@@ -19,7 +19,7 @@
 | **I. Bộ lọc tìm kiếm**     |                 |            |             |                                                                                                                                                                                                                                                                      |
 | Loại danh mục                      | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Cho phép chọn 1 trong các loại danh mục hệ thống. Danh sách lựa chọn được lấy ra từ Danh sách Loại danh mục đang hoạt động trên hệ thống (Trạng thái = Đang hoạt động). |
 | Từ khóa                            | String(255) | Không     | Trống      | Tìm kiếm linh hoạt theo Mã danh mục, Tên giá trị hoặc Nội dung danh mục.                                                                                                                                                                                  |
-| Trạng thái                         | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Gồm:<br>- Tất cả<br>- Hoạt động<br>- Ngừng hoạt động |
+| Trạng thái                         | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Hoạt động<br>+ Ngừng hoạt động |
 | TÌM KIẾM                           | - | Không     | \- | Control UI: Nút bấm.<br>Click để tìm kiếm dữ liệu. Chi tiết xem ở bảng Chức năng trên màn hình. |
 | **II. Bảng kết quả (Grid)** |                 |            |             |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | STT                                  | Integer(10) | Không     | \- | Số thứ tự tự tăng.                                                                                                                                                                                                                                              |
@@ -60,7 +60,7 @@
 | Viết tắt/Mô tả (EN)         | Text(2000) | Tùy điều kiện | Trống          | Control UI: Textarea.<br>Viết tắt hoặc nội dung chi tiết của bản ghi bằng tiếng Anh.<br>- Đối với danh mục thông thường (VD: Quốc gia): Có thể để trống.<br>- Đối với danh mục đặc thù (VD: Danh mục Tooltip, Template Email): Đây sẽ là trường bắt buộc chứa nội dung tiếng Anh. |
 | Danh mục cha (Trực thuộc) | Enum(String(50)) | Không            | Trống          | Control UI: Hộp chọn.<br>Cho phép chọn một bản ghi danh mục ĐÃ TỒN TẠI trên hệ thống để làm cấp cha (Dành cho cấu trúc cây phân cấp). Box tìm kiếm hiển thị Tên danh mục cha để người dùng lựa chọn, hệ thống ngầm lưu Mã danh mục cha. |
 | Mô tả / Ghi chú           | Text(2000) | Không            | Trống          | Control UI: Textarea.<br>Ghi chú nội bộ dành riêng cho Quản trị viên (Admin), không hiển thị ra người dùng cuối. |
-| Trạng thái                 | Enum(String(50)) | Có               | Hoạt động    | Control UI: Hộp chọn.<br>Gồm:<br>- Hoạt động<br>- Ngừng hoạt động<br>Các dữ liệu "Ngừng hoạt động" sẽ không xuất hiện trong Dropdown ở các form nghiệp vụ. |
+| Trạng thái                 | Enum(String(50)) | Có               | Hoạt động    | Control UI: Hộp chọn.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động<br>Các dữ liệu "Ngừng hoạt động" sẽ không xuất hiện trong Dropdown ở các form nghiệp vụ. |
 
 ####### 4.3.1.5.1.3.3. Chức năng trên màn hình
 
@@ -82,7 +82,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định  | Mô tả                                                    |
 | :------------------ | :-------------- | :--------- | :----------- | :--------------------------------------------------------- |
-| Trạng thái        | Enum(String(50)) | Có        | Hoạt động | Control UI: Hộp chọn.<br>Gồm:<br>- Hoạt động<br>- Ngừng hoạt động |
+| Trạng thái        | Enum(String(50)) | Có        | Hoạt động | Control UI: Hộp chọn.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
 
 ####### 4.3.1.5.1.4.3. Chức năng trên màn hình
 

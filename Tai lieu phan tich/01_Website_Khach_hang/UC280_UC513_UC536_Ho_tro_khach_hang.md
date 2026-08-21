@@ -1,4 +1,4 @@
-﻿﻿### 4.1.20. UC536 - Tra cứu Văn bản Quy phạm Pháp luật
+### 4.1.20. UC536 - Tra cứu Văn bản Quy phạm Pháp luật
 
 #### 4.1.20.1. Mục đích
 \- Cho phép khách hàng tra cứu, tìm kiếm, xem chi tiết và tải xuống các văn bản quy phạm pháp luật (QPPL) liên quan đến hai lĩnh vực nghiệp vụ chính: Đăng ký biện pháp bảo đảm (BPBĐ) và Bồi thường nhà nước (BTNN).  
@@ -34,7 +34,7 @@
 | Số văn bản | String(50) | Không | Trống | \- Nhập số hiệu văn bản cần tìm kiếm.<br>\- Tự động cắt khoảng trắng thừa (Trim space). |
 | Ngày văn bản | Date | Không | Trống | \- Chọn hoặc nhập ngày ban hành văn bản. Định dạng: dd/mm/yyyy. |
 | Trích yếu | String(250) | Không | Trống | \- Nhập từ khóa trích yếu hoặc nội dung tóm tắt văn bản để tìm gần đúng. |
-| Cơ quan ban hành | Enum(String(100)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>\- Chọn cơ quan ban hành văn bản để lọc kết quả.<br>\- Gồm các giá trị:<br>- **Tất cả**<br>- Các Cơ quan ban hành hiện có trên các văn bản QPPL |
+| Cơ quan ban hành | Enum(String(100)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>\- Chọn cơ quan ban hành văn bản để lọc kết quả.<br>\- Gồm các giá trị:<br>+ **Tất cả**<br>+ Các Cơ quan ban hành hiện có trên các văn bản QPPL |
 | Tìm kiếm | - | \- | \- | Control UI: Nút bấm.<br>\- Nút kích hoạt tìm kiếm.<br>\- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | Xóa bộ lọc | - | \- | \- | Control UI: Nút bấm.<br>\- Nút thiết lập lại bộ lọc về mặc định.<br>\- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | **III. Bảng danh sách kết quả** | - | \- | 30 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>\- Lưới hiển thị danh sách các văn bản thỏa mãn bộ lọc tìm kiếm.<br>\- Sắp xếp mặc định: Thời gian ban hành giảm dần.<br>\- Phân trang: Mặc định hiển thị 30 dòng/trang. Cho phép người dùng tùy chọn hiển thị: 5, 10, 20, 30 dòng/trang. Có tích hợp nút chuyển trang Trước, Sau, trang Đầu, trang Cuối.<br>\- Thao tác: NSD nhấp đúp hoặc nhấp chuột trực tiếp vào dòng bản ghi, hoặc click chọn nút [Xem] tại cột Thao tác để xem chi tiết văn bản (mở màn hình UC536.MH02 tại Tab mới).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
@@ -290,7 +290,7 @@
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển Tab "Câu hỏi thường gặp"/"Văn bản QPPL" | Nút | Đổi Tab con đang chọn và tải lại Khu vực kết quả nhanh theo từ khóa hiện có trong ô tìm kiếm. |
 | 2 | Tìm kiếm nhanh (nhập ký tự) | Ô nhập | Mỗi lần NSD gõ ký tự, hệ thống tự động lọc lại và hiển thị tối đa 6 kết quả phù hợp nhất của Tab con đang chọn; không giới hạn số lượng kết quả tồn tại phía sau (chỉ hiển thị 6 kết quả đầu, không có cách xem thêm).<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-| 3 | Tạo yêu cầu hỗ trợ | Nút | Mở **4.1.22.5. UC_HTKH.MH03 - Popup Tạo yêu cầu hỗ trợ (Khách vãng lai)**. |
+| 3 | Tạo yêu cầu hỗ trợ | Nút | Mở **UC_HTKH.MH03 - Popup Tạo yêu cầu hỗ trợ (Khách vãng lai)**. |
 
 ---
 

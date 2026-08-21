@@ -1,4 +1,4 @@
-﻿﻿#### 4.3.3.14. UC461-462 - Xây dựng chiến lược, chính sách về công tác BTNN
+#### 4.3.3.14. UC461-462 - Xây dựng chiến lược, chính sách về công tác BTNN
 
 ##### 4.3.3.14.1. Mục đích
 
@@ -69,10 +69,10 @@ flowchart TD
 | 1 | Tìm kiếm | Button | TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007]. Không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 |  |  |  | TH2 (Hợp lệ): Hệ thống lọc danh sách theo các tiêu chí đã nhập, cập nhật lưới kết quả và đưa về trang 1. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 3 | Thêm mới | Button | Hệ thống mở **4.3.3.14.4. MH02 - Màn hình Thêm mới/Chỉnh sửa chiến lược, chính sách BTNN** ở chế độ thêm mới. |
-| 4 | Chỉnh sửa | Icon button | Hệ thống mở **4.3.3.14.4. MH02** ở chế độ chỉnh sửa. |
-| 5 | Xóa | Icon button | Hệ thống mở **4.3.3.14.5. Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
-| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **4.3.3.14.4. MH02** ở chế độ chỉ xem. |
+| 3 | Thêm mới | Button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa chiến lược, chính sách BTNN** ở chế độ thêm mới. |
+| 4 | Chỉnh sửa | Icon button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa chiến lược, chính sách BTNN** ở chế độ chỉnh sửa. |
+| 5 | Xóa | Icon button | Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
+| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa chiến lược, chính sách BTNN** ở chế độ chỉ xem. |
 
 ---
 
@@ -91,7 +91,7 @@ flowchart TD
 | Loại văn bản | Enum(String(50)) | Có | `Chiến lược` | \- Giá trị gồm:<br>+ Chiến lược<br>+ Chính sách<br>+ Kế hoạch<br>+ Đề án<br>+ Chương trình |
 | Số văn bản | String(50) | Không | Trống | Nhập nếu đã ban hành chính thức. |
 | Giai đoạn/thời kỳ áp dụng | String(100) | Có | Trống | Ví dụ: `2026-2030`. Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Cơ quan chủ trì xây dựng | Enum(String(255)) | Có | Trống | Giá trị lấy từ Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
+| Cơ quan chủ trì xây dựng | Enum(String(255)) | Có | Trống | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Ngày ban hành | Date | Không | Trống | Áp dụng rule ngày quá khứ [BR-VAL-008] khi có dữ liệu. |
 | Trạng thái triển khai | Enum(String(50)) | Có | `Đang xây dựng` | \- Giá trị gồm:<br>+ Đang xây dựng<br>+ Đã ban hành<br>+ Đang triển khai<br>+ Đã hoàn thành |
 | Nội dung tóm tắt | Text(2000) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
@@ -103,7 +103,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **4.3.3.14.3. MH01**. |
+| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **MH01 - Danh sách chiến lược, chính sách BTNN**. |
 | 2 | Lưu thông tin | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
 |  |  |  | TH2 (`Ngày ban hành` lớn hơn ngày hiện tại): Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Không cho phép lưu. |
 |  |  |  | TH3 (Hợp lệ - thêm mới): Hệ thống lưu bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |

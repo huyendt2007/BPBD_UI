@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -649,6 +649,13 @@
             background-color: #b45309;
         }
 
+        .btn-action-square.btn-danger {
+            background-color: var(--danger-color);
+        }
+        .btn-action-square.btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+
         .btn-action-square.disabled {
             opacity: 0.5;
             background-color: #e2e8f0;
@@ -930,6 +937,7 @@
                     <option value="1.2">Bước 1.2: Chờ duyệt QĐ thành lập</option>
                     <option value="1.3">Bước 1.3: Trình ký bị từ chối</option>
                     <option value="2">Bước 2: Đang họp hội đồng (Kiến nghị)</option>
+                    <option value="2.9">Bước 2.9: Không xem xét trách nhiệm hoàn trả (Kết thúc)</option>
                     <option value="3">Bước 3.1: Dự thảo / Chờ trình ký</option>
                     <option value="3.1">Bước 3.2: Quyết định Chờ ký</option>
                     <option value="3.2">Bước 3.3: Quyết định Bị từ chối</option>
@@ -1245,8 +1253,56 @@
     <!-- BƯỚC 2: ĐANG HỌP HỘI ĐỒNG (CÓ KIẾN NGHỊ) -->
     <!-- ========================================== -->
     <div id="panelStep2" class="state-panel" style="display:none;">
+        <!-- Block 0: Kết luận của Hội đồng (HT-BR-019) -->
+        <div class="card" id="s2ConclusionCard">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-gavel"></i> Kết luận của Hội đồng xem xét trách nhiệm hoàn trả</div>
+            </div>
+            <div class="card-body">
+                <div class="grid-2-cols" style="gap:20px; margin-bottom:16px;">
+                    <div class="form-group">
+                        <span class="form-label">Kết luận của Hội đồng <span style="color:red;">*</span></span>
+                        <select class="form-control" id="s2Conclusion" onchange="updateS2ConclusionUI()">
+                            <option value="co_loi">Có lỗi - Kiến nghị hoàn trả</option>
+                            <option value="khong_co_loi">Không xem xét - Người thi hành công vụ không có lỗi</option>
+                            <option value="da_chet">Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Ngày họp / Lập biên bản kiến nghị <span style="color:red;">*</span></span>
+                        <input type="text" class="form-control" id="s2ConclusionDate" placeholder="dd/mm/yyyy">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <span class="form-label">Biên bản kiến nghị/kết luận đính kèm</span>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('s2ConclusionFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp biên bản</button>
+                    <input type="file" id="s2ConclusionFileInput" style="display:none;" onchange="handleS2ConclusionFileAttached(this)">
+                    <div id="s2ConclusionFileInfo" style="display:none; margin-top:10px;" class="attached-file-info">
+                        <span class="file-name" id="s2ConclusionFileName">-</span>
+                        <div>
+                            <a class="action-link" href="#" onclick="alert('Xem biên bản kiến nghị/kết luận'); return false;">Xem file</a>
+                            <a class="action-link delete-link" onclick="removeS2ConclusionFile()">Xóa</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Block 0b: Thanh thao tác khi kết luận thuộc nhóm Không xem xét (HT-BR-019) -->
+        <div class="card" id="s2NoReviewActionCard" style="display:none; border-left:4px solid var(--danger-color);">
+            <div class="card-body" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+                <div class="alert-message" style="font-size:13px; color:#b91c1c; max-width:640px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Khi lưu kết luận này, hồ sơ chuyển sang trạng thái <strong>"Không xem xét trách nhiệm hoàn trả"</strong> và kết thúc tiến trình; bước Ban hành Quyết định (Bước 3) sẽ không được mở.
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-secondary" onclick="switchSimulatorState(1)">Hủy bỏ</button>
+                    <button class="btn btn-danger" onclick="submitStep2NoReview()"><i class="fa-solid fa-flag-checkered"></i> Lưu kết luận & Kết thúc hồ sơ</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Block 1: Council Information -->
-        <div class="card">
+        <div class="card" id="s2CouncilInfoCard">
             <div class="card-header">
                 <div class="card-title"><i class="fa-solid fa-users-viewfinder"></i> Ban chuyên trách Hội đồng hoàn trả
                     (Điều 64)</div>
@@ -1272,7 +1328,7 @@
         </div>
 
         <!-- Block 2: Interactive Recommendation Form -->
-        <div class="card">
+        <div class="card" id="s2RecommendationCard">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <div class="card-title"><i class="fa-solid fa-clipboard-question"></i> Ý kiến kiến nghị của Hội đồng đối với từng cán bộ</div>
@@ -1302,6 +1358,44 @@
                 <button class="btn btn-secondary" onclick="switchSimulatorState(1)">Hủy bỏ</button>
                 <button class="btn btn-primary" onclick="submitStep2Recommendations()"><i
                         class="fa-solid fa-paper-plane"></i> Lưu ý kiến hội đồng & Trình duyệt kiến nghị</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TRẠNG THÁI KẾT THÚC: KHÔNG XEM XÉT TRÁCH NHIỆM HOÀN TRẢ (HT-BR-019) -->
+    <!-- ========================================== -->
+    <div id="panelNoReview" class="state-panel" style="display:none;">
+        <div class="card" style="border-left:4px solid var(--danger-color);">
+            <div class="card-body" style="padding:24px;">
+                <div style="display:flex; align-items:center; gap:16px;">
+                    <i class="fa-solid fa-circle-xmark" style="font-size:36px; color:var(--danger-color);"></i>
+                    <div>
+                        <h3 style="font-size:18px; font-weight:800; color:var(--primary-color);">Hồ sơ không xem xét trách nhiệm hoàn trả</h3>
+                        <p style="font-size:13.5px; color:var(--text-muted); margin-top:4px;">Hội đồng kết luận không đủ điều kiện xem xét trách nhiệm hoàn trả. Tiến trình đã kết thúc; bước Ban hành Quyết định không được mở.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-clipboard-check"></i> Nội dung kết luận của Hội đồng</div>
+            </div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-item" style="grid-column: span 2;">
+                        <div class="info-label">Kết luận của Hội đồng</div>
+                        <div class="info-value" id="noReviewConclusionText" style="color:var(--danger-color);">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ngày họp / Lập biên bản</div>
+                        <div class="info-value" id="noReviewConclusionDate">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Biên bản kiến nghị/kết luận đính kèm</div>
+                        <div class="info-value" id="noReviewConclusionFile">Chưa đính kèm</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1566,7 +1660,7 @@
                                 <th style="text-align:right;">Đã nộp (đ)</th>
                                 <th style="text-align:right;">Còn thiếu (đ)</th>
                                 <th style="width:250px;">Tiến độ thu hồi tiền</th>
-                                <th style="text-align:center; min-width:180px;">Thao tác</th>
+                                <th style="text-align:center; min-width:260px;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="s4ProgressTableBody">
@@ -1976,14 +2070,24 @@
                     <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
                         <div class="form-group">
                             <span class="form-label">Hình thức ban hành <span class="required" style="color:red;">*</span></span>
-                            <select class="form-control" id="issueQdSignMode">
+                            <select class="form-control" id="issueQdSignMode" onchange="toggleIssueQdSignMode(this.value)">
                                 <option>Ký số trên hệ thống</option>
                                 <option>Ký bên ngoài</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Người ký / Lãnh đạo ký ban hành <span class="required" style="color:red;">*</span></span>
+                        <div class="form-group" id="issueQdSignerDigitalContainer">
+                            <span class="form-label">Lãnh đạo ký ban hành <span class="required" style="color:red;">*</span></span>
                             <input type="text" class="form-control" id="issueQdSigner" value="Lê Minh Châu - Giám đốc Sở">
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" id="issueQdOfflineSignerContainer" style="gap:16px; margin-bottom:16px; display:none;">
+                        <div class="form-group">
+                            <span class="form-label">Người ký <span class="required" style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="issueQdSignerName" placeholder="Họ và tên người ký">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Chức vụ người ký <span class="required" style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="issueQdSignerRole" placeholder="Ví dụ: Giám đốc Sở">
                         </div>
                     </div>
                     <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
@@ -2024,6 +2128,235 @@
             <div class="modal-footer" style="padding:16px 24px 24px 24px;">
                 <button type="button" class="btn btn-secondary" onclick="closeIssueDecisionModal()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
                 <button type="button" class="btn btn-primary" onclick="submitIssueDecision()"><i class="fa-solid fa-circle-check"></i> Xác nhận Ban hành</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GIẢM MỨC HOÀN TRẢ (HT-BR-010/011, tương đương MH08) -->
+    <div class="modal" id="reduceModal">
+        <div class="modal-content" style="max-width: 780px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-arrow-trend-down"></i> Giảm mức hoàn trả</h3>
+                <button type="button" class="close-modal" onclick="closeReduceModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:24px;">
+                <form id="reduceForm">
+                    <input type="hidden" id="reduceOfficerIndex" value="-1">
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group">
+                            <span class="form-label">Mã vụ việc hoàn trả</span>
+                            <input type="text" class="form-control" id="reduceDossierCode" disabled style="background:#f1f5f9;">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Cán bộ phải hoàn trả</span>
+                            <input type="text" class="form-control" id="reduceOfficerName" disabled style="background:#f1f5f9; font-weight:700; color:var(--primary-color);">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:16px;">
+                        <span class="form-label">Số tiền phải hoàn trả hiện tại (đ)</span>
+                        <input type="text" class="form-control" id="reduceCurrentAmt" disabled style="background:#f1f5f9; text-align:right; font-weight:700; color:var(--danger-color);">
+                    </div>
+
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group">
+                            <span class="form-label">Đơn vị ban hành <span style="color:red;">*</span></span>
+                            <select class="form-control" id="reduceIssuingUnit">
+                                <option>Sở Tư pháp Hà Nội</option>
+                                <option>Cục Bồi thường nhà nước</option>
+                                <option>UBND Quận Cầu Giấy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Sổ văn bản áp dụng <span style="color:red;">*</span></span>
+                            <select class="form-control" id="reduceDocumentBook">
+                                <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
+                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
+                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 16px; background-color: #f1f5f9; padding: 10px 16px; border-radius: 8px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+                        <span class="form-label" style="margin-bottom: 0; font-weight:700;">Hình thức ban hành:</span>
+                        <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="reduceSignMode" value="digital" onchange="toggleReduceSignMode('digital')"> Ký số trên hệ thống
+                        </label>
+                        <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="reduceSignMode" value="offline" checked onchange="toggleReduceSignMode('offline')"> Ký bên ngoài
+                        </label>
+                    </div>
+
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group" id="reduceSignerContainer" style="display:none;">
+                            <span class="form-label">Lãnh đạo ký ban hành <span style="color:red;">*</span></span>
+                            <select class="form-control" id="reduceSignerSelect">
+                                <option value="Lê Minh Châu (Giám đốc Sở)">Lê Minh Châu (Giám đốc Sở)</option>
+                                <option value="Phạm Văn Hùng (Phó Giám đốc)">Phạm Văn Hùng (Phó Giám đốc)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Số quyết định giảm mức hoàn trả <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="reduceQdNo" placeholder="Ví dụ: 05/QĐ-STP">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Ngày quyết định <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="reduceQdDate" placeholder="dd/mm/yyyy">
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;" id="reduceOfflineSignerContainer">
+                        <div class="form-group">
+                            <span class="form-label">Người ký <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="reduceSignerName" placeholder="Họ và tên người ký">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Chức vụ người ký <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="reduceSignerRole" placeholder="Ví dụ: Giám đốc Sở">
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group">
+                            <span class="form-label">Số tiền được giảm (đ) <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="reduceAmt" placeholder="Ví dụ: 5.000.000" style="text-align:right; font-weight:700;" oninput="handleReduceAmtInput(this.value)">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Số tiền còn phải hoàn trả sau giảm (đ)</span>
+                            <input type="text" class="form-control" id="reduceRemainAmt" disabled style="background:#f1f5f9; text-align:right; font-weight:700; color:var(--success-color);">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:16px;">
+                        <span class="form-label">Căn cứ/Lý do giảm <span style="color:red;">*</span></span>
+                        <textarea class="form-control" id="reduceReason" rows="3" placeholder="Nhập căn cứ pháp lý và lý do giảm mức hoàn trả"></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <span class="form-label">Tài liệu liên quan <span style="color:red;">*</span></span>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('reduceFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm</button>
+                        <input type="file" id="reduceFileInput" style="display:none;" multiple onchange="handleReduceFileAttached(this)">
+                        <div id="reduceFileList" style="margin-top:10px; display:flex; flex-direction:column; gap:6px;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="padding:16px 24px 24px 24px;">
+                <button type="button" class="btn btn-secondary" onclick="closeReduceModal()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <button type="button" class="btn btn-primary" onclick="submitReduceDecision()"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: MIỄN HOÀN TRẢ (HT-BR-010/013, tương đương MH10) -->
+    <div class="modal" id="exemptModal">
+        <div class="modal-content" style="max-width: 780px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-circle-check"></i> Miễn hoàn trả</h3>
+                <button type="button" class="close-modal" onclick="closeExemptModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:24px;">
+                <form id="exemptForm">
+                    <input type="hidden" id="exemptOfficerIndex" value="-1">
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group">
+                            <span class="form-label">Mã vụ việc hoàn trả</span>
+                            <input type="text" class="form-control" id="exemptDossierCode" disabled style="background:#f1f5f9;">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Cán bộ phải hoàn trả</span>
+                            <input type="text" class="form-control" id="exemptOfficerName" disabled style="background:#f1f5f9; font-weight:700; color:var(--primary-color);">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:16px;">
+                        <span class="form-label">Số tiền còn phải hoàn trả (đ)</span>
+                        <input type="text" class="form-control" id="exemptCurrentAmt" disabled style="background:#f1f5f9; text-align:right; font-weight:700; color:var(--danger-color);">
+                    </div>
+
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group">
+                            <span class="form-label">Đơn vị ban hành <span style="color:red;">*</span></span>
+                            <select class="form-control" id="exemptIssuingUnit">
+                                <option>Sở Tư pháp Hà Nội</option>
+                                <option>Cục Bồi thường nhà nước</option>
+                                <option>UBND Quận Cầu Giấy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Sổ văn bản áp dụng <span style="color:red;">*</span></span>
+                            <select class="form-control" id="exemptDocumentBook">
+                                <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
+                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
+                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 16px; background-color: #f1f5f9; padding: 10px 16px; border-radius: 8px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+                        <span class="form-label" style="margin-bottom: 0; font-weight:700;">Hình thức ban hành:</span>
+                        <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="exemptSignMode" value="digital" onchange="toggleExemptSignMode('digital')"> Ký số trên hệ thống
+                        </label>
+                        <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="exemptSignMode" value="offline" checked onchange="toggleExemptSignMode('offline')"> Ký bên ngoài
+                        </label>
+                    </div>
+
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
+                        <div class="form-group" id="exemptSignerContainer" style="display:none;">
+                            <span class="form-label">Lãnh đạo ký ban hành <span style="color:red;">*</span></span>
+                            <select class="form-control" id="exemptSignerSelect">
+                                <option value="Lê Minh Châu (Giám đốc Sở)">Lê Minh Châu (Giám đốc Sở)</option>
+                                <option value="Phạm Văn Hùng (Phó Giám đốc)">Phạm Văn Hùng (Phó Giám đốc)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Số quyết định miễn hoàn trả <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="exemptQdNo" placeholder="Ví dụ: 06/QĐ-STP">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Ngày quyết định <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="exemptQdDate" placeholder="dd/mm/yyyy">
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;" id="exemptOfflineSignerContainer">
+                        <div class="form-group">
+                            <span class="form-label">Người ký <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="exemptSignerName" placeholder="Họ và tên người ký">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Chức vụ người ký <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="exemptSignerRole" placeholder="Ví dụ: Giám đốc Sở">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 16px; display: flex; align-items: center; gap: 24px;">
+                        <span class="form-label" style="margin-bottom: 0; font-weight:700;">Phạm vi miễn <span style="color:red;">*</span>:</span>
+                        <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="exemptScope" value="full" checked onchange="toggleExemptScope('full')"> Miễn toàn bộ
+                        </label>
+                        <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="exemptScope" value="partial" onchange="toggleExemptScope('partial')"> Miễn một phần
+                        </label>
+                    </div>
+                    <div class="form-group" style="margin-bottom:16px; display:none;" id="exemptPartialAmtContainer">
+                        <span class="form-label">Số tiền được miễn (đ) <span style="color:red;">*</span></span>
+                        <input type="text" class="form-control" id="exemptAmt" placeholder="Ví dụ: 5.000.000" style="text-align:right; font-weight:700;" oninput="handleExemptAmtInput(this.value)">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:16px;">
+                        <span class="form-label">Căn cứ/Lý do miễn <span style="color:red;">*</span></span>
+                        <textarea class="form-control" id="exemptReason" rows="3" placeholder="Nhập căn cứ pháp lý và lý do miễn hoàn trả"></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <span class="form-label">Tài liệu liên quan <span style="color:red;">*</span></span>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('exemptFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm</button>
+                        <input type="file" id="exemptFileInput" style="display:none;" multiple onchange="handleExemptFileAttached(this)">
+                        <div id="exemptFileList" style="margin-top:10px; display:flex; flex-direction:column; gap:6px;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="padding:16px 24px 24px 24px;">
+                <button type="button" class="btn btn-secondary" onclick="closeExemptModal()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <button type="button" class="btn btn-primary" onclick="submitExemptDecision()"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
             </div>
         </div>
     </div>
@@ -2749,6 +3082,7 @@
 
             // Dynamic State UI renderer
             function getCurrentWorkflowStep() {
+                if (activeDossier.status === 'Không xem xét trách nhiệm hoàn trả') return 2;
                 if (activeDossier.status === 'Chờ thành lập hội đồng') return 1;
                 if (activeDossier.status === 'Chờ duyệt QĐ thành lập' || activeDossier.status === 'Từ chối duyệt QĐ thành lập') return 1;
                 if (activeDossier.status === 'Đang họp hội đồng') return 2;
@@ -2769,14 +3103,32 @@
                 const stepFloor = Math.floor(currentStepState);
                 const workflowStep = getCurrentWorkflowStep();
                 const isCompletedDossier = activeDossier.status === 'Hoàn thành';
+                const isNoReviewDossier = activeDossier.status === 'Không xem xét trách nhiệm hoàn trả';
 
                 // Adjust Stepper visually
-                document.getElementById('stepProgressFill').style.width = isCompletedDossier ? '100%' : `${(workflowStep - 1) * 25}%`;
+                document.getElementById('stepProgressFill').style.width = isCompletedDossier ? '100%' : (isNoReviewDossier ? '25%' : `${(workflowStep - 1) * 25}%`);
 
                 for (let i = 1; i <= 5; i++) {
                     const node = document.getElementById(`stepNode${i}`);
                     const circle = document.getElementById(`stepCircle${i}`);
                     node.className = 'tracker-step';
+
+                    if (isNoReviewDossier) {
+                        if (i < 2) {
+                            node.className = 'tracker-step done';
+                            circle.innerHTML = '<i class="fa-solid fa-check"></i>';
+                            circle.style = '';
+                        } else if (i === 2) {
+                            node.className = 'tracker-step done';
+                            circle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                            circle.style = 'background-color:var(--danger-color); border-color:var(--danger-color); color:white;';
+                        } else {
+                            node.className = 'tracker-step disabled';
+                            circle.innerHTML = i === 5 ? '<i class="fa-solid fa-flag"></i>' : i;
+                            circle.style = 'border:2px solid #cbd5e1; background:white; color:#94a3b8;';
+                        }
+                        continue;
+                    }
 
                     if (isCompletedDossier && i <= 5) {
                         node.className = i === 4 ? 'tracker-step done active' : 'tracker-step done';
@@ -2798,6 +3150,13 @@
                 }
 
                 // Show and render specific active panel
+                if (isNoReviewDossier) {
+                    const noReviewPanel = document.getElementById('panelNoReview');
+                    if (noReviewPanel) noReviewPanel.style.display = 'block';
+                    renderNoReviewPanel();
+                    return;
+                }
+
                 const panel = document.getElementById(`panelStep${stepFloor}`);
                 if (panel) panel.style.display = 'block';
 
@@ -2812,6 +3171,12 @@
             function switchSimulatorState(stateNum) {
                 currentStepState = stateNum;
                 document.getElementById('simulatorStateSelect').value = stateNum;
+                if (Math.abs(stateNum - 2.9) < 0.001) {
+                    activeDossier.status = 'Không xem xét trách nhiệm hoàn trả';
+                } else if (activeDossier.status === 'Không xem xét trách nhiệm hoàn trả') {
+                    // Rời khỏi kịch bản mô phỏng "Không xem xét": khôi phục trạng thái minh họa mặc định
+                    activeDossier.status = 'Đang thi hành';
+                }
                 renderStateLayout();
             }
 
@@ -3148,9 +3513,15 @@
             // RENDER: BƯỚC 2 - CÓ KIẾN NGHỊ (ĐANG HỌP HỘI ĐỒNG)
             // ==========================================
             function renderStep2() {
+                const conclusionSelect = document.getElementById('s2Conclusion');
+                if (conclusionSelect) {
+                    conclusionSelect.value = activeDossier.conclusionType || 'co_loi';
+                    updateS2ConclusionUI();
+                }
                 const isLeaderPerspective = currentPerspective === 'leader';
                 const isReopenedForRejectedDecision = currentPerspective === 'staff' && activeDossier.qdStatus === 'Bị từ chối';
                 const isStepReadonly = isLeaderPerspective || (isReadonlyStep(2) && !isReopenedForRejectedDecision);
+                if (conclusionSelect) conclusionSelect.disabled = isStepReadonly;
                 document.getElementById('s2AddOfficerBtn').style.display = isStepReadonly ? 'none' : 'inline-flex';
                 document.getElementById('s2ActionBar').style.display = isStepReadonly ? 'none' : 'flex';
                 document.getElementById('s2HdNo').innerText = activeDossier.hdDecision || '45/QĐ-STP';
@@ -3208,14 +3579,13 @@
                             <td style="text-align: right; font-weight: 700; color: var(--primary-color);">${(o.total || 0).toLocaleString('vi-VN')} đ</td>
                             <td style="text-align: center;">${o.refundMethod || 'Một lần'}</td>
                             <td style="text-align: center;">${statusBadge}</td>
-                            <td style="text-align: center;">
-                                <div style="display:flex; justify-content:center; gap:8px;">
-                                    <button class="icon-btn view" title="Xem chi tiết kết luận" onclick="viewOfficerInStep2(${index})" style="color:#0284c7; background:#e0f2fe; border:1px solid #bae6fd;">Xem</button>
-                                    ${isStepReadonly ? '' : `
-                                        <button class="icon-btn edit" title="Chỉnh sửa chi tiết cán bộ" onclick="editOfficerInStep2(${index})"><i class="fa-solid fa-pen-to-square"></i></button>
-                                        <button class="icon-btn delete" title="Xóa cán bộ chịu trách nhiệm" onclick="deleteOfficerInStep2(${index})" style="color:var(--danger-color);"><i class="fa-solid fa-trash-can"></i></button>
-                                    `}
-                                </div>
+                            <td style="text-align: center; white-space:nowrap;">
+                                <button class="btn-action-square btn-info" title="Xem chi tiết kết luận" onclick="viewOfficerInStep2(${index}); return false;"><i class="fa-solid fa-eye"></i></button>
+                                ${isStepReadonly
+                                    ? `<button class="btn-action-square disabled" title="Chỉ được xem ở bước hiện tại"><i class="fa-solid fa-pen-to-square"></i></button>
+                                       <button class="btn-action-square disabled" title="Chỉ được xem ở bước hiện tại"><i class="fa-solid fa-trash-can"></i></button>`
+                                    : `<button class="btn-action-square btn-primary" title="Chỉnh sửa chi tiết cán bộ" onclick="editOfficerInStep2(${index}); return false;"><i class="fa-solid fa-pen-to-square"></i></button>
+                                       <button class="btn-action-square btn-danger" title="Xóa cán bộ chịu trách nhiệm" onclick="deleteOfficerInStep2(${index}); return false;"><i class="fa-solid fa-trash-can"></i></button>`}
                             </td>
                         `;
                         tbodyRec.appendChild(tr);
@@ -3237,6 +3607,75 @@
 
                 showToast("Lưu kết quả kiến nghị và trình phê duyệt thành công!", "success");
                 switchSimulatorState(3);
+            }
+
+            // ==========================================
+            // KẾT LUẬN CỦA HỘI ĐỒNG (HT-BR-019): Có lỗi / Không xem xét
+            // ==========================================
+            let s2ConclusionAttachedFile = null;
+
+            function updateS2ConclusionUI() {
+                const val = document.getElementById('s2Conclusion').value;
+                const isNoReview = val !== 'co_loi';
+                const recCard = document.getElementById('s2RecommendationCard');
+                const noReviewCard = document.getElementById('s2NoReviewActionCard');
+                if (recCard) recCard.style.display = isNoReview ? 'none' : '';
+                if (noReviewCard) noReviewCard.style.display = isNoReview ? 'block' : 'none';
+            }
+
+            function handleS2ConclusionFileAttached(input) {
+                if (input.files && input.files[0]) {
+                    s2ConclusionAttachedFile = input.files[0];
+                    const el = document.getElementById('s2ConclusionFileName');
+                    el.innerText = s2ConclusionAttachedFile.name;
+                    el.title = s2ConclusionAttachedFile.name;
+                    document.getElementById('s2ConclusionFileInfo').style.display = 'flex';
+                }
+            }
+
+            function removeS2ConclusionFile() {
+                s2ConclusionAttachedFile = null;
+                document.getElementById('s2ConclusionFileInput').value = '';
+                document.getElementById('s2ConclusionFileInfo').style.display = 'none';
+            }
+
+            function submitStep2NoReview() {
+                if (currentPerspective === 'leader') {
+                    showToast('Góc nhìn Lãnh đạo chỉ được xem kiến nghị Hội đồng.', 'warning');
+                    return;
+                }
+                if (!validateFieldRequired('s2ConclusionDate')) {
+                    showToast('Vui lòng nhập Ngày họp / Lập biên bản kiến nghị.', 'warning');
+                    return;
+                }
+
+                const conclusion = document.getElementById('s2Conclusion').value;
+                const conclusionSelect = document.getElementById('s2Conclusion');
+                const conclusionLabel = conclusionSelect.options[conclusionSelect.selectedIndex].innerText;
+                const conclusionDate = document.getElementById('s2ConclusionDate').value.trim();
+
+                activeDossier.conclusionType = conclusion;
+                activeDossier.conclusionDate = conclusionDate;
+                activeDossier.conclusionFile = s2ConclusionAttachedFile ? s2ConclusionAttachedFile.name : (activeDossier.conclusionFile || '');
+                activeDossier.status = 'Không xem xét trách nhiệm hoàn trả';
+
+                activeDossier.timeline.unshift({
+                    time: nowViShort(),
+                    text: `Hội đồng kết luận "${conclusionLabel}" tại Biên bản họp ngày ${conclusionDate}. Hồ sơ chuyển sang trạng thái Không xem xét trách nhiệm hoàn trả và kết thúc tiến trình (theo HT-BR-019).`
+                });
+
+                showToast('Đã lưu kết luận của Hội đồng. Hồ sơ chuyển sang trạng thái Không xem xét trách nhiệm hoàn trả.', 'success');
+                switchSimulatorState(2.9);
+            }
+
+            function renderNoReviewPanel() {
+                const labelMap = {
+                    khong_co_loi: 'Không xem xét - Người thi hành công vụ không có lỗi',
+                    da_chet: 'Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả'
+                };
+                document.getElementById('noReviewConclusionText').innerText = labelMap[activeDossier.conclusionType] || 'Không xem xét - Người thi hành công vụ không có lỗi';
+                document.getElementById('noReviewConclusionDate').innerText = activeDossier.conclusionDate || '-';
+                document.getElementById('noReviewConclusionFile').innerText = activeDossier.conclusionFile || 'Chưa đính kèm';
             }
 
             // ==========================================
@@ -3265,13 +3704,12 @@
                     <td style="text-align:right; font-weight:700; color:var(--danger-color);">${o.total.toLocaleString('vi-VN')}đ</td>
                     <td>${docSoTien(o.total)}</td>
                     <td>${o.refundMethod || 'Nộp một lần'}</td>
-                    <td style="text-align:center;">
-                        ${canEditRejectedDraft ? `
-                            <div style="display:inline-flex; justify-content:center; gap:8px;">
-                                <button class="icon-btn edit" title="Sửa cán bộ/mức hoàn trả" onclick="editOfficerInStep2(${index})"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="icon-btn delete" title="Xóa cán bộ khỏi danh sách dự thảo" onclick="deleteOfficerInStep2(${index})" style="color:var(--danger-color);"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        ` : '<span style="color:var(--text-muted); font-size:12px;">-</span>'}
+                    <td style="text-align:center; white-space:nowrap;">
+                        ${canEditRejectedDraft
+                            ? `<button class="btn-action-square btn-primary" title="Sửa cán bộ/mức hoàn trả" onclick="editOfficerInStep2(${index}); return false;"><i class="fa-solid fa-pen-to-square"></i></button>
+                               <button class="btn-action-square btn-danger" title="Xóa cán bộ khỏi danh sách dự thảo" onclick="deleteOfficerInStep2(${index}); return false;"><i class="fa-solid fa-trash-can"></i></button>`
+                            : `<button class="btn-action-square disabled" title="Chỉ được sửa khi dự thảo bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>
+                               <button class="btn-action-square disabled" title="Chỉ được xóa khi dự thảo bị từ chối"><i class="fa-solid fa-trash-can"></i></button>`}
                     </td>
                 `;
                     tbody.appendChild(tr);
@@ -3640,6 +4078,22 @@
                         btnGhiNhan = `<button class="btn-action-square disabled" title="Nghĩa vụ đang bị đóng băng tạm hoãn"><i class="fa-solid fa-snowflake"></i></button>`;
                     }
 
+                    // Slot 3: Giảm mức hoàn trả (HT-BR-010/011) - chỉ áp dụng khi đã có QĐ hoàn trả và còn nghĩa vụ
+                    let btnReduce = `<button class="btn-action-square btn-warning" title="Giảm mức hoàn trả" onclick="openReduceModal(${index}); return false;"><i class="fa-solid fa-arrow-trend-down"></i></button>`;
+                    if (isReadOnlyStep4) {
+                        btnReduce = '';
+                    } else if (o.status === 'Hoàn tất' || o.total <= 0) {
+                        btnReduce = `<button class="btn-action-square disabled" title="Cán bộ đã hoàn thành/miễn toàn bộ nghĩa vụ, không thể giảm mức"><i class="fa-solid fa-arrow-trend-down"></i></button>`;
+                    }
+
+                    // Slot 4: Miễn hoàn trả (HT-BR-013) - chỉ áp dụng khi đã có QĐ hoàn trả và còn nghĩa vụ
+                    let btnExempt = `<button class="btn-action-square btn-success" title="Miễn hoàn trả" onclick="openExemptModal(${index}); return false;"><i class="fa-solid fa-circle-check"></i></button>`;
+                    if (isReadOnlyStep4) {
+                        btnExempt = '';
+                    } else if (o.status === 'Hoàn tất' || o.total <= 0) {
+                        btnExempt = `<button class="btn-action-square disabled" title="Cán bộ đã hoàn thành/miễn toàn bộ nghĩa vụ"><i class="fa-solid fa-circle-check"></i></button>`;
+                    }
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                     <td>
@@ -3661,8 +4115,8 @@
                             ${stateBadge}
                         </div>
                     </td>
-                    <td style="text-align:center; white-space:nowrap; min-width:180px;">
-                        ${btnXem}${btnGhiNhan}
+                    <td style="text-align:center; white-space:nowrap; min-width:170px;">
+                        ${btnXem}${btnGhiNhan}${btnReduce}${btnExempt}
                     </td>
                 `;
                     tbody.appendChild(tr);
@@ -5090,6 +5544,12 @@
                 document.getElementById('previewStep3DecisionModal').classList.add('visible');
             }
 
+            function toggleIssueQdSignMode(mode) {
+                const isDigital = mode === 'Ký số trên hệ thống';
+                document.getElementById('issueQdSignerDigitalContainer').style.display = isDigital ? 'block' : 'none';
+                document.getElementById('issueQdOfflineSignerContainer').style.display = isDigital ? 'none' : 'grid';
+            }
+
             function openIssueDecisionModal() {
                 if (currentPerspective === 'leader') {
                     showToast('Góc nhìn Lãnh đạo không được ban hành Quyết định.', 'warning');
@@ -5101,6 +5561,9 @@
                 effEl.value = activeDossier.qdEffectiveDate || document.getElementById('issueQdDate').value;
                 delete effEl.dataset.manuallyEdited;
                 document.getElementById('issueQdSummary').value = activeDossier.qdSummary || document.getElementById('s3DraftSummary').value.trim();
+                document.getElementById('issueQdSignerName').value = '';
+                document.getElementById('issueQdSignerRole').value = '';
+                toggleIssueQdSignMode(document.getElementById('issueQdSignMode').value);
                 document.getElementById('issueDecisionModal').classList.add('visible');
             }
 
@@ -5137,12 +5600,17 @@
                 const qdIssuingUnit = document.getElementById('issueQdIssuingUnit').value;
                 const qdDocumentBook = document.getElementById('issueQdDocumentBook').value;
                 const qdSignMode = document.getElementById('issueQdSignMode').value;
-                const qdSigner = document.getElementById('issueQdSigner').value.trim();
+                const isDigitalIssue = qdSignMode === 'Ký số trên hệ thống';
+                const qdSigner = isDigitalIssue
+                    ? document.getElementById('issueQdSigner').value.trim()
+                    : `${document.getElementById('issueQdSignerName').value.trim()} - ${document.getElementById('issueQdSignerRole').value.trim()}`;
                 const fileInput = document.getElementById('issueQdFile');
                 const file = issuedDecisionFile || (fileInput.files && fileInput.files[0]);
                 let valid = true;
 
-                ['issueQdIssuingUnit', 'issueQdDocumentBook', 'issueQdSignMode', 'issueQdSigner', 'issueQdNo', 'issueQdDate', 'issueQdEffectiveDate'].forEach(id => {
+                const requiredIds = ['issueQdIssuingUnit', 'issueQdDocumentBook', 'issueQdSignMode', 'issueQdNo', 'issueQdDate', 'issueQdEffectiveDate']
+                    .concat(isDigitalIssue ? ['issueQdSigner'] : ['issueQdSignerName', 'issueQdSignerRole']);
+                requiredIds.forEach(id => {
                     const el = document.getElementById(id);
                     if (!el.value.trim()) { el.classList.add('is-invalid'); valid = false; }
                     else { el.classList.remove('is-invalid'); }
@@ -5201,6 +5669,289 @@
                     tbody.appendChild(tr);
                 });
             }
+            // ==========================================
+            // GIẢM MỨC HOÀN TRẢ (HT-BR-010/011, tương đương MH08)
+            // ==========================================
+            let reduceAttachedFiles = [];
+
+            function toggleReduceSignMode(mode) {
+                const isDigital = mode === 'digital';
+                document.getElementById('reduceSignerContainer').style.display = isDigital ? 'block' : 'none';
+                document.getElementById('reduceOfflineSignerContainer').style.display = isDigital ? 'none' : 'grid';
+            }
+
+            function handleReduceAmtInput(val) {
+                const el = document.getElementById('reduceAmt');
+                const num = parseInt(val.replace(/\D/g, ""), 10) || 0;
+                el.value = num > 0 ? num.toLocaleString('vi-VN') : "";
+
+                const idx = parseInt(document.getElementById('reduceOfficerIndex').value, 10);
+                const o = activeDossier.refundOfficers[idx];
+                if (!o) return;
+                const remain = Math.max(0, (o.total || 0) - num);
+                document.getElementById('reduceRemainAmt').value = `${remain.toLocaleString('vi-VN')} đ`;
+            }
+
+            function renderReduceFilesList() {
+                const container = document.getElementById('reduceFileList');
+                container.innerHTML = '';
+                reduceAttachedFiles.forEach((f, i) => {
+                    const row = document.createElement('div');
+                    row.className = 'attached-file-info';
+                    row.innerHTML = `<span class="file-name">${f.name}</span><div><a class="action-link delete-link" onclick="removeReduceFile(${i})">Xóa</a></div>`;
+                    container.appendChild(row);
+                });
+            }
+
+            function handleReduceFileAttached(input) {
+                if (input.files) {
+                    reduceAttachedFiles = reduceAttachedFiles.concat(Array.from(input.files));
+                    renderReduceFilesList();
+                }
+            }
+
+            function removeReduceFile(index) {
+                reduceAttachedFiles.splice(index, 1);
+                renderReduceFilesList();
+            }
+
+            function openReduceModal(index) {
+                if (currentPerspective === 'leader' || activeDossier.status === 'Hoàn thành') {
+                    showToast('Hồ sơ chỉ được xem thông tin thu hồi, không thể cập nhật nghĩa vụ hoàn trả.', 'warning');
+                    return;
+                }
+                const o = activeDossier.refundOfficers[index];
+                if (!o || o.status === 'Hoàn tất' || o.total <= 0) {
+                    showToast('Cán bộ đã hoàn thành/miễn toàn bộ nghĩa vụ, không thể giảm mức hoàn trả.', 'warning');
+                    return;
+                }
+                document.getElementById('reduceOfficerIndex').value = index;
+                document.getElementById('reduceDossierCode').value = activeDossier.code;
+                document.getElementById('reduceOfficerName').value = o.name;
+                document.getElementById('reduceCurrentAmt').value = `${o.total.toLocaleString('vi-VN')} đ`;
+                document.getElementById('reduceAmt').value = '';
+                document.getElementById('reduceRemainAmt').value = `${o.total.toLocaleString('vi-VN')} đ`;
+                document.getElementById('reduceReason').value = '';
+                document.getElementById('reduceQdNo').value = '';
+                document.getElementById('reduceQdDate').value = '';
+                document.getElementById('reduceSignerName').value = '';
+                document.getElementById('reduceSignerRole').value = '';
+                reduceAttachedFiles = [];
+                renderReduceFilesList();
+                document.querySelector('input[name="reduceSignMode"][value="offline"]').checked = true;
+                toggleReduceSignMode('offline');
+
+                const modal = document.getElementById('reduceModal');
+                modal.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                modal.classList.add('visible');
+            }
+
+            function closeReduceModal() {
+                document.getElementById('reduceModal').classList.remove('visible');
+            }
+
+            function submitReduceDecision() {
+                const idx = parseInt(document.getElementById('reduceOfficerIndex').value, 10);
+                const o = activeDossier.refundOfficers[idx];
+                if (!o) return;
+
+                const signMode = document.querySelector('input[name="reduceSignMode"]:checked').value;
+                let validated = true;
+                ['reduceQdNo', 'reduceQdDate', 'reduceReason'].forEach(id => { if (!validateFieldRequired(id)) validated = false; });
+                if (signMode === 'offline') {
+                    if (!validateFieldRequired('reduceSignerName')) validated = false;
+                    if (!validateFieldRequired('reduceSignerRole')) validated = false;
+                }
+
+                const rawAmt = document.getElementById('reduceAmt').value.replace(/\D/g, "");
+                const reduceAmt = parseInt(rawAmt, 10) || 0;
+                if (reduceAmt <= 0) {
+                    document.getElementById('reduceAmt').classList.add('is-invalid');
+                    validated = false;
+                } else if (reduceAmt > o.total) {
+                    showToast('Số tiền được giảm không được lớn hơn số tiền còn phải hoàn trả hiện tại.', 'warning');
+                    validated = false;
+                }
+
+                if (signMode === 'offline' && reduceAttachedFiles.length === 0) {
+                    showToast('Vui lòng đính kèm Quyết định giảm mức hoàn trả đã ký.', 'warning');
+                    validated = false;
+                }
+
+                if (!validated) {
+                    showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'warning');
+                    return;
+                }
+
+                const qdNo = document.getElementById('reduceQdNo').value.trim();
+                const qdDate = document.getElementById('reduceQdDate').value.trim();
+
+                o.total = o.total - reduceAmt;
+                if (!o.adjustmentHistory) o.adjustmentHistory = [];
+                o.adjustmentHistory.push({ type: 'reduce', qdNo, qdDate, amt: reduceAmt, reason: document.getElementById('reduceReason').value.trim() });
+
+                activeDossier.timeline.unshift({
+                    time: nowViShort(),
+                    text: `Ban hành Quyết định giảm mức hoàn trả số ${qdNo} cho cán bộ ${o.name}: giảm ${reduceAmt.toLocaleString('vi-VN')}đ. Số tiền còn phải hoàn trả: ${o.total.toLocaleString('vi-VN')}đ.`
+                });
+
+                closeReduceModal();
+                showToast(`Đã lưu Quyết định giảm mức hoàn trả cho cán bộ ${o.name}!`, 'success');
+                renderStep4();
+            }
+
+            // ==========================================
+            // MIỄN HOÀN TRẢ (HT-BR-010/013, tương đương MH10)
+            // ==========================================
+            let exemptAttachedFiles = [];
+
+            function toggleExemptSignMode(mode) {
+                const isDigital = mode === 'digital';
+                document.getElementById('exemptSignerContainer').style.display = isDigital ? 'block' : 'none';
+                document.getElementById('exemptOfflineSignerContainer').style.display = isDigital ? 'none' : 'grid';
+            }
+
+            function toggleExemptScope(scope) {
+                document.getElementById('exemptPartialAmtContainer').style.display = scope === 'partial' ? 'block' : 'none';
+            }
+
+            function handleExemptAmtInput(val) {
+                const el = document.getElementById('exemptAmt');
+                const num = parseInt(val.replace(/\D/g, ""), 10) || 0;
+                el.value = num > 0 ? num.toLocaleString('vi-VN') : "";
+            }
+
+            function renderExemptFilesList() {
+                const container = document.getElementById('exemptFileList');
+                container.innerHTML = '';
+                exemptAttachedFiles.forEach((f, i) => {
+                    const row = document.createElement('div');
+                    row.className = 'attached-file-info';
+                    row.innerHTML = `<span class="file-name">${f.name}</span><div><a class="action-link delete-link" onclick="removeExemptFile(${i})">Xóa</a></div>`;
+                    container.appendChild(row);
+                });
+            }
+
+            function handleExemptFileAttached(input) {
+                if (input.files) {
+                    exemptAttachedFiles = exemptAttachedFiles.concat(Array.from(input.files));
+                    renderExemptFilesList();
+                }
+            }
+
+            function removeExemptFile(index) {
+                exemptAttachedFiles.splice(index, 1);
+                renderExemptFilesList();
+            }
+
+            function openExemptModal(index) {
+                if (currentPerspective === 'leader' || activeDossier.status === 'Hoàn thành') {
+                    showToast('Hồ sơ chỉ được xem thông tin thu hồi, không thể cập nhật nghĩa vụ hoàn trả.', 'warning');
+                    return;
+                }
+                const o = activeDossier.refundOfficers[index];
+                if (!o || o.status === 'Hoàn tất' || o.total <= 0) {
+                    showToast('Cán bộ đã hoàn thành/miễn toàn bộ nghĩa vụ hoàn trả.', 'warning');
+                    return;
+                }
+                document.getElementById('exemptOfficerIndex').value = index;
+                document.getElementById('exemptDossierCode').value = activeDossier.code;
+                document.getElementById('exemptOfficerName').value = o.name;
+                document.getElementById('exemptCurrentAmt').value = `${(o.total - (o.paid || 0)).toLocaleString('vi-VN')} đ`;
+                document.getElementById('exemptAmt').value = '';
+                document.getElementById('exemptReason').value = '';
+                document.getElementById('exemptQdNo').value = '';
+                document.getElementById('exemptQdDate').value = '';
+                document.getElementById('exemptSignerName').value = '';
+                document.getElementById('exemptSignerRole').value = '';
+                exemptAttachedFiles = [];
+                renderExemptFilesList();
+                document.querySelector('input[name="exemptSignMode"][value="offline"]').checked = true;
+                toggleExemptSignMode('offline');
+                document.querySelector('input[name="exemptScope"][value="full"]').checked = true;
+                toggleExemptScope('full');
+
+                const modal = document.getElementById('exemptModal');
+                modal.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                modal.classList.add('visible');
+            }
+
+            function closeExemptModal() {
+                document.getElementById('exemptModal').classList.remove('visible');
+            }
+
+            function submitExemptDecision() {
+                const idx = parseInt(document.getElementById('exemptOfficerIndex').value, 10);
+                const o = activeDossier.refundOfficers[idx];
+                if (!o) return;
+
+                const signMode = document.querySelector('input[name="exemptSignMode"]:checked').value;
+                const scope = document.querySelector('input[name="exemptScope"]:checked').value;
+                let validated = true;
+                ['exemptQdNo', 'exemptQdDate', 'exemptReason'].forEach(id => { if (!validateFieldRequired(id)) validated = false; });
+                if (signMode === 'offline') {
+                    if (!validateFieldRequired('exemptSignerName')) validated = false;
+                    if (!validateFieldRequired('exemptSignerRole')) validated = false;
+                }
+
+                const remainingCurrent = o.total - (o.paid || 0);
+                let exemptAmt = remainingCurrent;
+                if (scope === 'partial') {
+                    const rawAmt = document.getElementById('exemptAmt').value.replace(/\D/g, "");
+                    exemptAmt = parseInt(rawAmt, 10) || 0;
+                    if (exemptAmt <= 0) {
+                        document.getElementById('exemptAmt').classList.add('is-invalid');
+                        validated = false;
+                    } else if (exemptAmt > remainingCurrent) {
+                        showToast('Số tiền được miễn không được lớn hơn số tiền còn phải hoàn trả.', 'warning');
+                        validated = false;
+                    }
+                }
+
+                if (signMode === 'offline' && exemptAttachedFiles.length === 0) {
+                    showToast('Vui lòng đính kèm Quyết định miễn hoàn trả đã ký.', 'warning');
+                    validated = false;
+                }
+
+                if (!validated) {
+                    showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'warning');
+                    return;
+                }
+
+                const qdNo = document.getElementById('exemptQdNo').value.trim();
+                const qdDate = document.getElementById('exemptQdDate').value.trim();
+
+                o.total = o.total - exemptAmt;
+                if (scope === 'full' || o.total <= (o.paid || 0)) {
+                    o.total = o.paid || 0;
+                    o.status = 'Hoàn tất';
+                    o.nextDate = '—';
+                }
+                if (!o.adjustmentHistory) o.adjustmentHistory = [];
+                o.adjustmentHistory.push({ type: 'exempt', qdNo, qdDate, amt: exemptAmt, scope, reason: document.getElementById('exemptReason').value.trim() });
+
+                activeDossier.timeline.unshift({
+                    time: nowViShort(),
+                    text: `Ban hành Quyết định miễn hoàn trả số ${qdNo} cho cán bộ ${o.name} (${scope === 'full' ? 'miễn toàn bộ' : 'miễn một phần ' + exemptAmt.toLocaleString('vi-VN') + 'đ'}). Nghĩa vụ còn lại: ${(o.total - (o.paid || 0)).toLocaleString('vi-VN')}đ.`
+                });
+
+                closeExemptModal();
+                showToast(`Đã lưu Quyết định miễn hoàn trả cho cán bộ ${o.name}!`, 'success');
+
+                const allDone = activeDossier.refundOfficers.every(officer => {
+                    const officerPaid = activeDossier.payments
+                        .filter(p => p.officerName === officer.name || (p.ky && p.ky.includes(officer.name)))
+                        .reduce((sum, p) => sum + p.amt, 0);
+                    return officerPaid >= officer.total || officer.total === 0;
+                });
+                if (allDone) {
+                    activeDossier.status = 'Hoàn thành';
+                    switchSimulatorState(5);
+                } else {
+                    renderStep4();
+                }
+            }
+
             function closePreviewStep3Modal() {
                 document.getElementById('previewStep3DecisionModal').classList.remove('visible');
             }
@@ -5209,6 +5960,7 @@
                 showToast("Đang kết xuất và tải xuống dự thảo quyết định hoàn trả Mẫu số 21/BTNN...", "success");
             }
         </script>
+    <script src="../admin-ui-standardizer.js"></script>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-﻿﻿# UC-BS-GIAY - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao văn bản chứng nhận
+# UC-BS-GIAY - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao văn bản chứng nhận
 
 ## 1. Tổng quan
 
@@ -129,7 +129,7 @@ Khi mở màn hình (cả chế độ nhập mới và chế độ sửa sau tr�
 | Số đăng ký | String(50) | Có | Trống hoặc theo phiên bản trước | Cán bộ nhập Số đăng ký của hồ sơ gốc theo hồ sơ giấy. Được sửa khi hồ sơ ở trạng thái "Chờ giải quyết" hoặc "Bị trả lại". Tự động trim space theo [BR-VAL-001]. |
 | Loại cung cấp bản sao | Enum(String(50)) | Có | "Bản sao giấy" | - Bản sao điện tử<br>- Bản sao giấy<br>Khi chọn "Bản sao điện tử", hệ thống ẩn trường "Số lượng bản sao". |
 | Số lượng bản sao | Integer(10) | Có điều kiện | Trống hoặc theo phiên bản trước | Chỉ hiển thị và bắt buộc khi Loại cung cấp bản sao là "Bản sao giấy". Số nguyên dương, tối đa 100 theo cùng quy tắc tại [UC149.MH01](../../01_Website_Khach_hang/SRS_YC_cung_cap_ban_sao_van_ban_chung_nhan.md#41162-uc149mh01---man-hinh-yeu-cau-cap-ban-sao-van-ban-chung-nhan-dang-ky-bien-phap-bao-dam). |
-| Cơ quan tiếp nhận | Enum(String(100)) | Có | Theo Đơn vị tiếp nhận tại Khối I | Tham chiếu [DM_08]. Cán bộ được sửa nếu hồ sơ giấy thể hiện khác đơn vị tiếp nhận gốc; đối chiếu theo [BR-DK-032]. |
+| Cơ quan tiếp nhận | Enum(String(100)) | Có | Theo Đơn vị tiếp nhận tại Khối I | Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08]. Cán bộ được sửa nếu hồ sơ giấy thể hiện khác đơn vị tiếp nhận gốc; đối chiếu theo [BR-DK-032]. |
 | Phiên bản xử lý hiện tại | String(50) | Có | Theo hồ sơ | Chỉ đọc. Tăng mỗi lần Cán bộ trình lại sau khi bị trả lại. |
 | **IV. Hồ sơ gốc (tham chiếu theo Số đăng ký)** | | | | |
 | Khối hồ sơ gốc | Text(1000) | Không | Ẩn | Chỉ hiển thị sau khi hệ thống tra cứu Số đăng ký thành công. Hiển thị theo cấu trúc dùng chung tại [4.1.12.6. Màn hình Chi tiết kết quả tra cứu](../../01_Website_Khach_hang/UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md#41126-man-hinh-chi-tiet-ket-qua-tra-cuu-dung-chung-sau-khi-bam-tim-kiem), bắt đầu từ tiêu đề **Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]**. Dữ liệu được truy vấn trực tiếp (join) theo Số đăng ký tại thời điểm hiển thị, không lưu bản sao dữ liệu tĩnh, theo [BR-BS-011]. Chỉ đọc. Nếu Cán bộ sửa lại Số đăng ký, khối này tự động truy vấn lại theo Số đăng ký mới. |
@@ -267,4 +267,3 @@ Thông tin nhật ký tối thiểu gồm: Mã hồ sơ, Số đơn giấy, Ngu�
 | AC-BS-GIAY-007 | Lãnh đạo trả lại hồ sơ giấy bản sao ở "Chờ ký" thì hồ sơ chuyển "Bị trả lại" và Cán bộ được sửa, trình lại. |
 | AC-BS-GIAY-009 | Tại "Chờ ký", Lãnh đạo Ký số nếu Loại là "Bản sao điện tử" (chuyển "Hoàn thành"), hoặc Ký duyệt không ký số nếu Loại là "Bản sao giấy" (chuyển "Đã duyệt - chờ trả kết quả"). |
 | AC-BS-GIAY-008 | Hồ sơ Online không áp dụng quyền sửa/trả lại như hồ sơ giấy trong tài liệu này. |
-

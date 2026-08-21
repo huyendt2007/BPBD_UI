@@ -1,4 +1,4 @@
-﻿﻿Bạn là Chuyên viên Phân tích Nghiệp vụ (BA) kiêm Technical Lead của dự án. Hãy rà soát toàn bộ các file tài liệu SRS (`.md`) trong thư mục `Tai lieu phan tich/` để chuẩn hóa và bổ sung kịch bản "Tìm kiếm/Lọc nhưng không có kết quả (Empty State)".
+Bạn là Chuyên viên Phân tích Nghiệp vụ (BA) kiêm Technical Lead của dự án. Hãy rà soát toàn bộ các file tài liệu SRS (`.md`) trong thư mục `Tai lieu phan tich/` để chuẩn hóa và bổ sung kịch bản "Tìm kiếm/Lọc nhưng không có kết quả (Empty State)".
 
 YÊU CẦU THỰC HIỆN TỰ ĐỘNG VÀ CHUẨN XÁC:
 

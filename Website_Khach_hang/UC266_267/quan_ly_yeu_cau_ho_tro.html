@@ -255,8 +255,13 @@
             font-size: 13px;
         }
 
-        .table tbody tr:hover {
-            background-color: rgba(241, 245, 249, 0.5);
+        .table tbody tr.support-row {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .table tbody tr.support-row:hover {
+            background-color: rgba(14, 116, 144, 0.04);
         }
 
         /* Badges & Tags */
@@ -556,12 +561,6 @@
             border-color: var(--primary-color);
         }
 
-        .icon-btn.view:hover {
-            color: var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.08);
-            border-color: var(--primary-color);
-        }
-
         .icon-btn.evaluate {
             color: #EAB308;
             /* Star color gold */
@@ -585,6 +584,30 @@
             color: #047857;
             background-color: #D1FAE5;
             border-color: #047857;
+        }
+
+        .icon-btn.cancel {
+            color: var(--danger-color);
+            border-color: #FECACA;
+            background-color: #FEF2F2;
+        }
+
+        .icon-btn.cancel:hover {
+            color: #B91C1C;
+            background-color: #FEE2E2;
+            border-color: #B91C1C;
+        }
+
+        .icon-btn.disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .actions-cell {
+            text-align: center;
+            vertical-align: middle;
+            min-width: 100px;
         }
 
         /* Rating badges styling matching the mockup image */
@@ -659,6 +682,7 @@
                                 <option value="Đang xử lý">Đang xử lý</option>
                                 <option value="Yêu cầu làm rõ">Yêu cầu làm rõ</option>
                                 <option value="Hoàn thành">Hoàn thành</option>
+                                <option value="Đã hủy">Đã hủy</option>
                             </select>
                         </div>
                         <!-- Row 2 -->
@@ -720,8 +744,8 @@
                                 <th style="width: 110px; text-align: center;">Mức độ ưu tiên</th>
                                 <th style="width: 130px; text-align: center;">Trạng thái</th>
                                 <th style="width: 130px;">Ngày tạo</th>
-                                <th style="width: 100px; text-align: center;">Đánh giá</th>
-                                <th style="width: 120px; text-align: center;">Thao tác</th>
+                                <th style="width: 130px; text-align: center;">Đánh giá</th>
+                                <th style="width: 120px; min-width: 100px; text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
@@ -1027,10 +1051,28 @@
     </div>
 
 
-    <!-- MODAL POPUP: ĐÁNH GIÁ KHÔNG HÀI LÒNG NHANH -->
+    <!-- MODAL POPUP: ĐÁNH GIÁ MỨC ĐỘ HÀI LÒNG -->
     <div class="modal" id="dislike-modal">
         <div class="modal-content">
-            <div class="modal-header">Đánh giá câu trả lời - Không hài lòng</div>
+            <div class="modal-header">Đánh giá câu trả lời</div>
+            <div class="form-group">
+                <label class="form-label">Mức độ hài lòng <span class="required-mark">*</span></label>
+                <div class="rating-options">
+                    <label class="rating-option">
+                        <input type="radio" name="quick-rating-option" value="Hài lòng">
+                        <span><i class="fa-solid fa-face-smile" style="color: #059669;"></i> Hài lòng</span>
+                    </label>
+                    <label class="rating-option">
+                        <input type="radio" name="quick-rating-option" value="Không hài lòng">
+                        <span><i class="fa-solid fa-face-frown" style="color: #DC2626;"></i> Không hài lòng</span>
+                    </label>
+                    <label class="rating-option">
+                        <input type="radio" name="quick-rating-option" value="Khác">
+                        <span><i class="fa-solid fa-circle-info" style="color: var(--text-muted);"></i> Khác</span>
+                    </label>
+                </div>
+                <div class="error-message" id="error-quick-rating-option">Vui lòng chọn mức độ hài lòng.</div>
+            </div>
             <div class="form-group">
                 <label class="form-label" for="quick-feedback-reason">Ý kiến đóng góp / Lý do không hài lòng <span
                         class="required-mark">*</span></label>
@@ -1789,6 +1831,7 @@
                     else if (ticket.status === 'Đang xử lý') statusBadge = '<span class="badge badge-status-processing">Đang xử lý</span>';
                     else if (ticket.status === 'Yêu cầu làm rõ') statusBadge = '<span class="badge badge-status-clarify">Yêu cầu làm rõ</span>';
                     else if (ticket.status === 'Hoàn thành') statusBadge = '<span class="badge badge-status-completed">Hoàn thành</span>';
+                    else if (ticket.status === 'Đã hủy') statusBadge = '<span class="badge" style="background-color: #F1F5F9; color: var(--text-muted); border: 1px solid #CBD5E1;">Đã hủy</span>';
 
                     // Content truncation
                     const contentTruncated = ticket.content.length > 100 ? ticket.content.substring(0, 100) + '...' : ticket.content;
@@ -1804,55 +1847,39 @@
                         titleWithIcon += ` <i class="fa-solid fa-paperclip" style="color: var(--secondary-color); cursor: pointer; font-size: 12px; margin-left: 6px;" title="Tải xuống tệp đính kèm: ${ticket.files.join(', ')}" onclick="event.stopPropagation(); downloadMockFile('${ticket.files[0]}')"></i>`;
                     }
 
-                    // Rating badge markup matching the user's uploaded mockup image
-                    let ratingMarkup = '-';
-                    if (ticket.rating === 'Hài lòng') {
-                        ratingMarkup = '<span class="badge-rating-like"><i class="fa-solid fa-thumbs-up"></i> Hài lòng</span>';
-                    } else if (ticket.rating === 'Không hài lòng') {
-                        ratingMarkup = '<span class="badge-rating-dislike"><i class="fa-solid fa-thumbs-down"></i> Không hài lòng</span>';
-                    } else if (ticket.rating === 'Khác') {
-                        ratingMarkup = '<span class="badge-rating-other"><i class="fa-solid fa-circle-info"></i> Ý kiến khác</span>';
-                    }
-
-                    // Action buttons (Fixed-Slot, horizontal layout with only icons)
-                    const btnView = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); showDetail('${ticket.id}')">Xem</button>`;
-
-                    let btnEvaluate = '';
+                    let ratingMarkup = '<span style="color: var(--text-muted); opacity: 0.6;">-</span>';
                     if (ticket.status === 'Hoàn thành' && !ticket.rating) {
-                        btnEvaluate = `
-                            <div class="actions-dropdown" style="display: inline-block;">
-                                <button class="icon-btn evaluate" title="Đánh giá" onclick="toggleActionsDropdown(event, '${ticket.id}')">
-                                    <i class="fa-regular fa-star"></i>
-                                </button>
-                                <div class="actions-dropdown-menu" id="dropdown-${ticket.id}" style="min-width: 130px;">
-                                    <button class="actions-dropdown-item" onclick="event.stopPropagation(); hideAllActionsDropdowns(); evaluateQuickLike('${ticket.id}')">
-                                        <i class="fa-regular fa-thumbs-up" style="color: var(--success-color);"></i> Hài lòng
-                                    </button>
-                                    <button class="actions-dropdown-item" onclick="event.stopPropagation(); hideAllActionsDropdowns(); evaluateQuickDislike('${ticket.id}')" style="border-top: 1px solid var(--border-color);">
-                                        <i class="fa-regular fa-thumbs-down" style="color: var(--danger-color);"></i> Không hài lòng
-                                    </button>
-                                    <button class="actions-dropdown-item" onclick="event.stopPropagation(); hideAllActionsDropdowns(); evaluateQuickOther('${ticket.id}')" style="border-top: 1px solid var(--border-color);">
-                                        <i class="fa-regular fa-lightbulb" style="color: var(--text-muted);"></i> Ý kiến khác
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        btnEvaluate = `<button class="icon-btn evaluate" title="Chỉ đánh giá khi yêu cầu ở trạng thái Hoàn thành và chưa đánh giá" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-star"></i></button>`;
+                        ratingMarkup = `<button class="btn btn-sm btn-outline-primary" style="padding: 4px 10px; font-size: 12px; border-radius: 20px; white-space: nowrap;" onclick="openRatingModal(event, '${ticket.id}')"><i class="fa-regular fa-star"></i> Đánh giá</button>`;
+                    } else if (ticket.rating === 'Hài lòng') {
+                        ratingMarkup = '<span class="badge badge-success" style="background-color: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; font-weight: 500; padding: 4px 10px; border-radius: 20px; font-size: 12px;"><i class="fa-solid fa-face-smile" style="margin-right: 4px;"></i> Hài lòng</span>';
+                    } else if (ticket.rating === 'Không hài lòng') {
+                        ratingMarkup = '<span class="badge badge-danger" style="background-color: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; font-weight: 500; padding: 4px 10px; border-radius: 20px; font-size: 12px;"><i class="fa-solid fa-face-frown" style="margin-right: 4px;"></i> Không hài lòng</span>';
+                    } else if (ticket.rating === 'Khác') {
+                        ratingMarkup = '<span class="badge badge-rating-other"><i class="fa-solid fa-circle-info" style="margin-right: 4px;"></i> Ý kiến khác</span>';
                     }
 
                     let btnEdit = '';
                     if (ticket.status === 'Yêu cầu làm rõ') {
                         btnEdit = `<button class="icon-btn edit" title="Cập nhật thông tin" onclick="event.stopPropagation(); goToEditScreen('${ticket.id}')"><i class="fa-regular fa-pen-to-square"></i></button>`;
                     } else {
-                        btnEdit = `<button class="icon-btn edit" title="Chỉ cập nhật khi có yêu cầu làm rõ từ cán bộ" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-pen-to-square"></i></button>`;
+                        btnEdit = `<span title="Chỉ cập nhật khi có yêu cầu làm rõ từ cán bộ" onclick="event.stopPropagation();" style="display: inline-flex;"><button class="icon-btn edit disabled" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-pen-to-square"></i></button></span>`;
                     }
 
-                    let actionButtons = `<div style="display: flex; gap: 4px; justify-content: center; align-items: center; width: 100%;">${btnView}${btnEvaluate}${btnEdit}</div>`;
+                    let btnCancel = '';
+                    if (ticket.status === 'Chờ tiếp nhận') {
+                        btnCancel = `<button class="icon-btn cancel" title="Hủy yêu cầu" onclick="event.stopPropagation(); cancelSupportTicket('${ticket.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
+                    } else {
+                        btnCancel = `<span title="Chỉ hủy khi yêu cầu ở trạng thái Chờ tiếp nhận" onclick="event.stopPropagation();" style="display: inline-flex;"><button class="icon-btn cancel disabled" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-regular fa-trash-can"></i></button></span>`;
+                    }
+
+                    let actionButtons = `<div style="display: flex; gap: 4px; justify-content: center; align-items: center; width: 100%;">${btnEdit}${btnCancel}</div>`;
 
                     const row = document.createElement('tr');
-                    row.style.cursor = 'pointer';
-                    row.onclick = () => showDetail(ticket.id);
+                    row.className = 'support-row';
+                    row.addEventListener('click', (event) => {
+                        if (event.target.closest('button, a, input, textarea, select, .actions-dropdown')) return;
+                        goToDetailScreen(ticket.id);
+                    });
                     row.innerHTML = `
                         <td style="text-align: center; font-weight: 600; color: var(--text-muted);">${idx + 1}</td>
                         <td style="font-weight: 500;">${titleWithIcon}</td>
@@ -1862,7 +1889,7 @@
                         <td style="text-align: center;">${statusBadge}</td>
                         <td>${ticket.created_at}</td>
                         <td style="text-align: center;">${ratingMarkup}</td>
-                        <td style="text-align: center; vertical-align: middle;">${actionButtons}</td>
+                        <td class="actions-cell">${actionButtons}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -2346,6 +2373,7 @@
                 else if (ticket.status === 'Đang xử lý') statusBadge = '<span class="badge badge-status-processing">Đang xử lý</span>';
                 else if (ticket.status === 'Yêu cầu làm rõ') statusBadge = '<span class="badge badge-status-clarify">Yêu cầu làm rõ</span>';
                 else if (ticket.status === 'Hoàn thành') statusBadge = '<span class="badge badge-status-completed">Hoàn thành</span>';
+                else if (ticket.status === 'Đã hủy') statusBadge = '<span class="badge" style="background-color: #F1F5F9; color: var(--text-muted); border: 1px solid #CBD5E1;">Đã hủy</span>';
                 statusDiv.innerHTML = statusBadge;
 
                 // Attachments
@@ -2525,63 +2553,98 @@
             }
         }
 
-        // Quick rating Hài lòng (Yes/Like) directly from grid table row
+        function goToDetailScreen(ticketId) {
+            showDetail(ticketId);
+        }
+
+        function cancelSupportTicket(ticketId) {
+            try {
+                if (!confirm('Bạn có chắc chắn muốn hủy yêu cầu hỗ trợ này?')) return;
+                const ticket = supportTickets.find(t => t.id === ticketId);
+                if (!ticket || ticket.status !== 'Chờ tiếp nhận') return;
+
+                ticket.status = 'Đã hủy';
+                saveSupportTicketsToStorage();
+                showToast('Đã hủy yêu cầu hỗ trợ.', 'success');
+                filterTable();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        let quickRatingType = "Hài lòng";
+
+        function setQuickRatingMode(value) {
+            quickRatingType = value || "Hài lòng";
+            const reasonInput = document.getElementById('quick-feedback-reason');
+            const reasonGroup = reasonInput ? reasonInput.closest('.form-group') : null;
+            const reasonError = document.getElementById('error-quick-feedback-reason');
+            const reasonLabel = document.querySelector('#dislike-modal label[for="quick-feedback-reason"]');
+
+            if (!reasonGroup || !reasonInput || !reasonError || !reasonLabel) return;
+
+            reasonInput.value = '';
+            reasonInput.style.borderColor = '';
+            reasonError.style.display = 'none';
+
+            if (quickRatingType === 'Hài lòng') {
+                reasonGroup.style.display = 'none';
+                reasonLabel.innerHTML = 'Ý kiến đóng góp';
+                reasonInput.placeholder = 'Nhập ý kiến đóng góp nếu có...';
+                reasonError.innerText = '';
+                return;
+            }
+
+            reasonGroup.style.display = 'block';
+            if (quickRatingType === 'Không hài lòng') {
+                reasonLabel.innerHTML = 'Ý kiến đóng góp / Lý do không hài lòng <span class="required-mark">*</span>';
+                reasonInput.placeholder = 'Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng...';
+                reasonError.innerText = 'Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng.';
+            } else {
+                reasonLabel.innerHTML = 'Nội dung ý kiến khác <span class="required-mark">*</span>';
+                reasonInput.placeholder = 'Vui lòng nhập nội dung ý kiến đóng góp khác...';
+                reasonError.innerText = 'Vui lòng nhập nội dung ý kiến đóng góp khác.';
+            }
+        }
+
+        function openRatingModal(event, ticketId) {
+            try {
+                if (event) event.stopPropagation();
+                quickDislikeTicketId = ticketId;
+                const radios = document.querySelectorAll('input[name="quick-rating-option"]');
+                radios.forEach(radio => {
+                    radio.checked = radio.value === 'Hài lòng';
+                    radio.onchange = () => setQuickRatingMode(radio.value);
+                });
+                document.getElementById('error-quick-rating-option').style.display = 'none';
+                setQuickRatingMode('Hài lòng');
+                document.getElementById('dislike-modal').classList.add('show');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
         function evaluateQuickLike(ticketId) {
-            try {
-                if (confirm("Bạn có chắc chắn muốn đánh giá Hài lòng cho câu trả lời của yêu cầu hỗ trợ này?")) {
-                    const ticket = supportTickets.find(t => t.id === ticketId);
-                    if (ticket) {
-                        ticket.rating = 'Hài lòng';
-                        ticket.rating_comment = '';
-                        saveSupportTicketsToStorage();
-                    }
-                    showToast('Gửi đánh giá thành công. Trân trọng cảm ơn ý kiến của bạn!', 'success');
-                    filterTable(); // Refresh table view
-                }
-            } catch (err) {
-                console.error(err);
-            }
+            quickDislikeTicketId = ticketId;
+            quickRatingType = 'Hài lòng';
+            submitQuickDislike();
         }
 
-        let quickRatingType = "Không hài lòng";
-
-        // Quick rating Không hài lòng (No/Dislike) directly from grid table row - opens modal
         function evaluateQuickDislike(ticketId) {
-            try {
-                quickDislikeTicketId = ticketId;
-                quickRatingType = "Không hài lòng";
-
-                document.querySelector('#dislike-modal .modal-header').innerText = 'Đánh giá câu trả lời - Không hài lòng';
-                document.querySelector('#dislike-modal label[for="quick-feedback-reason"]').innerHTML = 'Ý kiến đóng góp / Lý do không hài lòng <span class="required-mark">*</span>';
-                document.getElementById('quick-feedback-reason').placeholder = 'Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng...';
-                document.getElementById('error-quick-feedback-reason').innerText = 'Vui lòng nhập lý do/ý kiến đóng góp khi đánh giá Không hài lòng.';
-
-                document.getElementById('quick-feedback-reason').value = '';
-                document.getElementById('error-quick-feedback-reason').style.display = 'none';
-                document.getElementById('quick-feedback-reason').style.borderColor = '';
-                document.getElementById('dislike-modal').classList.add('show');
-            } catch (err) {
-                console.error(err);
+            openRatingModal(null, ticketId);
+            const radio = document.querySelector('input[name="quick-rating-option"][value="Không hài lòng"]');
+            if (radio) {
+                radio.checked = true;
+                setQuickRatingMode('Không hài lòng');
             }
         }
 
-        // Quick rating Ý kiến khác directly from grid table row - opens modal
         function evaluateQuickOther(ticketId) {
-            try {
-                quickDislikeTicketId = ticketId;
-                quickRatingType = "Khác";
-
-                document.querySelector('#dislike-modal .modal-header').innerText = 'Đánh giá câu trả lời - Ý kiến khác';
-                document.querySelector('#dislike-modal label[for="quick-feedback-reason"]').innerHTML = 'Nội dung ý kiến khác <span class="required-mark">*</span>';
-                document.getElementById('quick-feedback-reason').placeholder = 'Vui lòng nhập nội dung ý kiến đóng góp khác...';
-                document.getElementById('error-quick-feedback-reason').innerText = 'Vui lòng nhập nội dung ý kiến đóng góp khác.';
-
-                document.getElementById('quick-feedback-reason').value = '';
-                document.getElementById('error-quick-feedback-reason').style.display = 'none';
-                document.getElementById('quick-feedback-reason').style.borderColor = '';
-                document.getElementById('dislike-modal').classList.add('show');
-            } catch (err) {
-                console.error(err);
+            openRatingModal(null, ticketId);
+            const radio = document.querySelector('input[name="quick-rating-option"][value="Khác"]');
+            if (radio) {
+                radio.checked = true;
+                setQuickRatingMode('Khác');
             }
         }
 
@@ -2591,26 +2654,32 @@
 
         function submitQuickDislike() {
             try {
+                const selectedRadio = document.querySelector('input[name="quick-rating-option"]:checked');
+                const ratingVal = selectedRadio ? selectedRadio.value : quickRatingType;
                 const reasonInput = document.getElementById('quick-feedback-reason');
                 const reasonVal = reasonInput.value.trim();
 
-                if (!reasonVal) {
+                if (!ratingVal) {
+                    document.getElementById('error-quick-rating-option').style.display = 'block';
+                    return;
+                }
+
+                if (ratingVal !== 'Hài lòng' && !reasonVal) {
                     document.getElementById('error-quick-feedback-reason').style.display = 'block';
                     reasonInput.style.borderColor = 'var(--danger-color)';
                     return;
                 }
 
-                // Update database
                 const ticket = supportTickets.find(t => t.id === quickDislikeTicketId);
                 if (ticket) {
-                    ticket.rating = quickRatingType;
-                    ticket.rating_comment = reasonVal;
+                    ticket.rating = ratingVal;
+                    ticket.rating_comment = ratingVal === 'Hài lòng' ? '' : reasonVal;
                     saveSupportTicketsToStorage();
                 }
 
                 closeDislikeModal();
-                showToast('Gửi đánh giá thành công.', 'success');
-                filterTable(); // Refresh table view
+                showToast('Gửi đánh giá thành công. Trân trọng cảm ơn ý kiến của bạn!', 'success');
+                filterTable();
             } catch (err) {
                 console.error(err);
             }

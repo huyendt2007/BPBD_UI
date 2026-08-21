@@ -1,4 +1,4 @@
-﻿# Feature Map
+# Feature Map
 
 | STT | Mã tính năng | Tên tính năng | Tên file .md | Mã, UC | Trạng thái UI | Trạng thái tài liệu phân tích | Ghi chú |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -175,11 +175,11 @@
 |  | WebAdmin-009 | Nhận chuyển tiếp hồ sơ |  | UC127, UC128, UC129 |  |  |  |
 |  | WebAdmin-010 | Kiểm tra và xử lý hồ sơ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md | UC139 |  |  |  |
 |  | WebAdmin-011 | Hồ sơ chờ xử lý | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md | UC030, UC031, UC032, UC043, UC044, UC045, UC056, UC057, UC058, UC069, UC070, UC071, UC082, UC083, UC084, UC095, UC096, UC097, UC108, UC109, UC110, UC121, UC122, UC123, UC132, UC139, UC140, UC149, UC152, UC153, UC155, UC156, UC199, UC201, UC202 |  |  |  |
-|  | WebAdmin-012 | Hồ sơ chờ duyệt<br> (Bao gồm:<br>- Phiếu đăng ký<br>- Yêu cầu cung cấp thông tin<br>- Yêu cầu cung cấp bản sao |  |  |  |  |  |
-|  | WebAdmin-013 | Hồ sơ duyệt chờ ký<br>Bao gồm:<br>- Phiếu đăng ký<br>- Yêu cầu cung cấp thông tin<br>- Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
-|  | WebAdmin-014 | Hồ sơ bị trả lại<br>Bao gồm:<br>- Phiếu đăng ký<br>- Yêu cầu cung cấp thông tin<br>- Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
-|  | WebAdmin-015 | Hồ sơ đang chờ ký<br>Bao gồm:<br>- Phiếu đăng ký<br>- Yêu cầu cung cấp thông tin<br>- Yêu cầu cung cấp bản sao |  |  |  |  |  |
-|  | WebAdmin-016 | Hồ sơ đã xử lý<br>Bao gồm:<br>- Phiếu đăng ký<br>- Yêu cầu cung cấp thông tin<br>- Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
+|  | WebAdmin-012 | Hồ sơ chờ duyệt<br> (Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao |  |  |  |  |  |
+|  | WebAdmin-013 | Hồ sơ duyệt chờ ký<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
+|  | WebAdmin-014 | Hồ sơ bị trả lại<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
+|  | WebAdmin-015 | Hồ sơ đang chờ ký<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao |  |  |  |  |  |
+|  | WebAdmin-016 | Hồ sơ đã xử lý<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
 |  | WebAdmin-017 | Chỉnh lý thông tin/Hủy/Khôi phục đăng ký |  | UC203, UC205, UC208, UC210, UC212, UC213, UC215, UC217 |  |  |  |
 |  | WebAdmin-018 | Lập đề nghị |  | UC203, UC208, UC213, UC433, UC437 |  |  |  |
 |  | WebAdmin-019 | Theo dõi và xử lý đề nghị |  |  |  |  |  |

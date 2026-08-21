@@ -35,7 +35,7 @@ Các báo cáo từ mục 4.3.3.24.4 đến 4.3.3.24.8 dùng chung bộ chỉ ti
 | Nhóm dữ liệu | String(255) | - | Theo báo cáo | Giá trị nhóm theo từng màn: thời gian, loại cơ quan báo cáo, lĩnh vực phát sinh thiệt hại, đơn vị báo cáo hoặc địa phương. |
 | Số vụ thụ lý mới | Integer(10) | - | Hệ thống tính | Đếm vụ việc có ngày thụ lý nằm trong kỳ báo cáo. |
 | Số vụ kỳ trước chuyển sang | Integer(10) | - | Hệ thống tính | Đếm vụ việc thụ lý trước kỳ báo cáo nhưng chưa thuộc nhóm trạng thái kết thúc tại thời điểm đầu kỳ. |
-| Số vụ đang giải quyết | Integer(10) | - | Hệ thống tính | Đếm vụ việc có trạng thái thuộc nhóm đang xử lý theo [DM_24], bao gồm `Chờ thụ lý`, `Đang xác minh thiệt hại`, `Đang thương lượng`, `Chờ ban hành QĐ`, `Chờ thực thi`, `Hoãn giải quyết`, `Tạm đình chỉ giải quyết`. |
+| Số vụ đang giải quyết | Integer(10) | - | Hệ thống tính | Đếm vụ việc có trạng thái thuộc nhóm đang xử lý theo danh mục [DM_24]. |
 | Số vụ đã giải quyết xong | Integer(10) | - | Hệ thống tính | Đếm vụ việc đã có kết quả giải quyết cuối cùng, bao gồm `Hoàn thành` và các vụ đã có văn bản giải quyết bồi thường có hiệu lực pháp luật. |
 | Số vụ đình chỉ/tạm đình chỉ | Integer(10) | - | Hệ thống tính | Đếm vụ việc có trạng thái `Tạm đình chỉ giải quyết` hoặc `Đình chỉ giải quyết` trong kỳ báo cáo. |
 | Số vụ đã chi trả | Integer(10) | - | Hệ thống tính | Đếm vụ việc có phát sinh chi trả tiền bồi thường hoàn thành theo module Cấp kinh phí tạm ứng/Bồi thường. |
@@ -52,10 +52,10 @@ Các báo cáo từ mục 4.3.3.24.4 đến 4.3.3.24.8 dùng chung bộ chỉ ti
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Năm báo cáo | Enum(String(10)) | Có | Năm hiện tại | Hiển thị 05 năm gần nhất. |
-| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu [DM_44]. |
-| Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Tham chiếu [DM_DON_VI]. |
-| Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu [DM_43]. |
-| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Tham chiếu [DM_22]. |
+| Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. |
+| Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. |
+| Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
+| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
 | Tỉnh/TP | Enum(String(100)) | Không | `Tất cả` | Tham chiếu danh mục địa giới hành chính. |
 
 ##### 4.3.3.24.3.2. Chức năng chung
@@ -106,7 +106,7 @@ Các báo cáo từ mục 4.3.3.24.4 đến 4.3.3.24.8 dùng chung bộ chỉ ti
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **Khối chọn kỳ báo cáo** | | | | Xem mục 4.3.3.24.3.1. |
-| Loại cơ quan báo cáo | Enum(String(100)) | - | Theo dữ liệu | Nhóm theo [DM_43], gồm `UBND cấp tỉnh`, `TANDTC`, `VKSNDTC`, `Bộ/cơ quan ngang Bộ`. |
+| Loại cơ quan báo cáo | Enum(String(100)) | - | Theo dữ liệu | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
 | Số vụ thụ lý mới | Integer(10) | - | Hệ thống tính | Xem bộ chỉ tiêu dùng chung. |
 | Số vụ kỳ trước chuyển sang | Integer(10) | - | Hệ thống tính | Xem bộ chỉ tiêu dùng chung. |
 | Số vụ đang giải quyết | Integer(10) | - | Hệ thống tính | Xem bộ chỉ tiêu dùng chung. |
@@ -155,7 +155,7 @@ Các báo cáo từ mục 4.3.3.24.4 đến 4.3.3.24.8 dùng chung bộ chỉ ti
 | :--- | :--- | :--- | :--- | :--- |
 | **Khối chọn kỳ báo cáo** | | | | Xem mục 4.3.3.24.3.1. |
 | Đơn vị/Cơ quan | Enum(String(255)) | - | Theo dữ liệu | Nhóm theo từng đơn vị báo cáo/cơ quan giải quyết cụ thể trong [DM_DON_VI]. |
-| Loại cơ quan | Enum(String(100)) | - | Theo dữ liệu | Hiển thị loại cơ quan theo [DM_43] để so sánh trong cùng bảng. |
+| Loại cơ quan | Enum(String(100)) | - | Theo dữ liệu | Hiển thị loại cơ quan theo Danh mục Loại cơ quan báo cáo [DM_43] để so sánh trong cùng bảng. |
 | Tỉnh/TP | Enum(String(100)) | - | Theo dữ liệu | Hiển thị địa phương của cơ quan/đơn vị. |
 | Số vụ thụ lý mới | Integer(10) | - | Hệ thống tính | Xem bộ chỉ tiêu dùng chung. |
 | Số vụ kỳ trước chuyển sang | Integer(10) | - | Hệ thống tính | Xem bộ chỉ tiêu dùng chung. |

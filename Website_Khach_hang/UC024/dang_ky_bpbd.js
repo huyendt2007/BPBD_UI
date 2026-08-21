@@ -58,6 +58,41 @@ const initApp = () => {
     initFloatingTooltips();
     const isDisposalStandaloneMode = new URLSearchParams(window.location.search).get('mode') === 'disposalStandalone';
 
+    // Generic inline field message helpers (replace browser alert() popups)
+    const getFieldMessageContainer = (el) => (el.closest('.form-group') || el.parentElement);
+    const showFieldError = (el, message) => {
+        if (!el) return;
+        const container = getFieldMessageContainer(el);
+        let msg = container.querySelector(':scope > .error-text');
+        if (!msg) {
+            msg = document.createElement('span');
+            msg.className = 'error-text';
+            container.appendChild(msg);
+        }
+        msg.innerText = message;
+        el.classList.add('is-invalid');
+    };
+    const clearFieldError = (el) => {
+        if (!el) return;
+        el.classList.remove('is-invalid');
+        const container = getFieldMessageContainer(el);
+        const msg = container.querySelector(':scope > .error-text');
+        if (msg) msg.remove();
+    };
+    const showFieldNotice = (el, message) => {
+        if (!el) return;
+        const container = getFieldMessageContainer(el);
+        let msg = container.querySelector(':scope > .notice-text');
+        if (!msg) {
+            msg = document.createElement('span');
+            msg.className = 'notice-text';
+            container.appendChild(msg);
+        }
+        msg.innerText = message;
+        clearTimeout(msg._hideTimer);
+        msg._hideTimer = setTimeout(() => msg.remove(), 4000);
+    };
+
     // Early variables initialization to avoid TDZ reference errors
     let editingRowTC = null;
     let editingRowNTC = null;
@@ -312,19 +347,20 @@ const initApp = () => {
         if (file) {
             const ext = file.name.split('.').pop().toLowerCase();
             if (ext !== 'pdf') {
-                alert('Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.');
+                showFieldError(uploadTaiLieu, 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.');
                 uploadTaiLieu.value = '';
                 if (lbl) lbl.innerText = 'Chưa chọn tệp';
                 if (actions) actions.style.display = 'none';
                 return;
             }
             if (file.size > 20 * 1024 * 1024) {
-                alert('Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
+                showFieldError(uploadTaiLieu, 'Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
                 uploadTaiLieu.value = '';
                 if (lbl) lbl.innerText = 'Chưa chọn tệp';
                 if (actions) actions.style.display = 'none';
                 return;
             }
+            clearFieldError(uploadTaiLieu);
             if (lbl) lbl.innerText = file.name;
             if (lnk) lnk.href = URL.createObjectURL(file);
             if (actions) actions.style.display = 'flex';
@@ -352,19 +388,20 @@ const initApp = () => {
         if (file) {
             const ext = file.name.split('.').pop().toLowerCase();
             if (ext !== 'pdf') {
-                alert('Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.');
+                showFieldError(fileChungKhoan, 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.');
                 fileChungKhoan.value = '';
                 if (lbl) lbl.innerText = 'Chưa chọn tệp';
                 if (actions) actions.style.display = 'none';
                 return;
             }
             if (file.size > 20 * 1024 * 1024) {
-                alert('Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
+                showFieldError(fileChungKhoan, 'Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
                 fileChungKhoan.value = '';
                 if (lbl) lbl.innerText = 'Chưa chọn tệp';
                 if (actions) actions.style.display = 'none';
                 return;
             }
+            clearFieldError(fileChungKhoan);
             if (lbl) lbl.innerText = file.name;
             if (lnk) lnk.href = URL.createObjectURL(file);
             if (actions) actions.style.display = 'flex';
@@ -461,17 +498,18 @@ const initApp = () => {
             // Check format
             const ext = file.name.split('.').pop().toLowerCase();
             if (ext !== 'pdf') {
-                alert('Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.');
+                showFieldError(inputEl, 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.');
                 inputEl.value = '';
                 return;
             }
 
             // Check size (20MB)
             if (file.size > 20 * 1024 * 1024) {
-                alert('Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
+                showFieldError(inputEl, 'Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
                 inputEl.value = '';
                 return;
             }
+            clearFieldError(inputEl);
         });
     };
     // setupFilePDFValidator(uploadTaiLieu);
@@ -770,7 +808,7 @@ const initApp = () => {
         const rows = Array.from(tbodyTC.querySelectorAll('tr')).filter(r => r.dataset.giayTo);
         const isDuplicate = rows.some(r => r.dataset.giayTo === valGiayTo && r !== editingRowTC && valGiayTo !== '-');
         if (isDuplicate) {
-            alert('Chủ thể này đã tồn tại trong danh sách. Vui lòng kiểm tra lại.');
+            addError(elGiayTo, 'Chủ thể này đã tồn tại trong danh sách. Vui lòng kiểm tra lại.');
             return;
         }
 
@@ -937,7 +975,7 @@ const initApp = () => {
         const rows = Array.from(tbodyNTC.querySelectorAll('tr')).filter(r => r.dataset.ten);
         const isDuplicate = rows.some(r => r.dataset.ten === valTen && r.dataset.diachi === valDiaChi && r !== editingRowNTC);
         if (isDuplicate) {
-            alert('Chủ thể này đã tồn tại trong danh sách. Vui lòng kiểm tra lại.');
+            addError(elTen, 'Chủ thể này đã tồn tại trong danh sách. Vui lòng kiểm tra lại.');
             return;
         }
 
@@ -1331,18 +1369,18 @@ const initApp = () => {
     btnCancelImport?.addEventListener('click', closeImport);
 
     // File download simulation from forms or modal
-    const downloadTemplateFile = () => {
+    const downloadTemplateFile = (btnEl) => {
         const filename = currentImportType === 'sk'
             ? 'Mau_Import_SoKhung.xlsx'
             : 'Mau_Import_PhuongTien.xlsx';
-        
+
         // Simulate download
-        alert('Đang tải xuống biểu mẫu: ' + filename);
+        showFieldNotice(btnEl, 'Đang tải xuống biểu mẫu: ' + filename);
     };
 
-    btnDownloadTemplateInModal?.addEventListener('click', downloadTemplateFile);
-    document.getElementById('btnFileMauSK')?.addEventListener('click', () => { currentImportType = 'sk'; downloadTemplateFile(); });
-    document.getElementById('btnFileMauPT')?.addEventListener('click', () => { currentImportType = 'pt'; downloadTemplateFile(); });
+    btnDownloadTemplateInModal?.addEventListener('click', (e) => downloadTemplateFile(e.currentTarget));
+    document.getElementById('btnFileMauSK')?.addEventListener('click', (e) => { currentImportType = 'sk'; downloadTemplateFile(e.currentTarget); });
+    document.getElementById('btnFileMauPT')?.addEventListener('click', (e) => { currentImportType = 'pt'; downloadTemplateFile(e.currentTarget); });
 
     dropzoneExcel?.addEventListener('click', () => fileExcelInput.click());
     fileExcelInput?.addEventListener('click', (e) => {
@@ -1371,14 +1409,15 @@ const initApp = () => {
     const handleExcelUpload = (file) => {
         const ext = file.name.split('.').pop().toLowerCase();
         if (ext !== 'xls' && ext !== 'xlsx') {
-            alert('Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng Excel (.xls, .xlsx).');
+            showFieldError(dropzoneExcel, 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng Excel (.xls, .xlsx).');
             return;
         }
         if (file.size > 20 * 1024 * 1024) {
-            alert('Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
+            showFieldError(dropzoneExcel, 'Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
             return;
         }
 
+        clearFieldError(dropzoneExcel);
         document.getElementById('dropzoneText').innerText = file.name;
         simulateImportProgress();
     };
@@ -1602,7 +1641,7 @@ const initApp = () => {
         if (file) {
             const ext = file.name.split('.').pop().toLowerCase();
             if (ext !== 'pdf') {
-                alert('Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.');
+                showFieldError(c08ProofFile, 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf.');
                 c08ProofFile.value = '';
                 if (lbl) lbl.innerText = 'Chưa chọn tệp';
                 if (actions) actions.style.display = 'none';
@@ -1610,13 +1649,14 @@ const initApp = () => {
                 return;
             }
             if (file.size > 20 * 1024 * 1024) {
-                alert('Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
+                showFieldError(c08ProofFile, 'Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.');
                 c08ProofFile.value = '';
                 if (lbl) lbl.innerText = 'Chưa chọn tệp';
                 if (actions) actions.style.display = 'none';
                 btnConfirmWarning.disabled = true;
                 return;
             }
+            clearFieldError(c08ProofFile);
             if (lbl) lbl.innerText = file.name;
             if (lnk) lnk.href = URL.createObjectURL(file);
             if (actions) actions.style.display = 'flex';
@@ -1722,32 +1762,35 @@ const initApp = () => {
         // Must have at least 1 Bên thế chấp
         const hasBaoDamOwners = Array.from(tbodyTC.querySelectorAll('tr')).some(tr => tr.dataset.giayTo);
         if (!hasBaoDamOwners) {
-            alert('Vui lòng khai báo ít nhất một chủ thể Bên bảo đảm / Bên thế chấp.');
+            const anchor = document.getElementById('titleBenTheChap') || tbodyTC;
+            showFieldError(anchor, 'Vui lòng khai báo ít nhất một chủ thể Bên bảo đảm / Bên thế chấp.');
             formValid = false;
-            if (!firstErr) firstErr = document.getElementById('titleBenTheChap') || tbodyTC;
+            if (!firstErr) firstErr = anchor;
         }
 
         // Must have at least 1 Bên nhận thế chấp
         const hasNhanBaoDamOwners = Array.from(tbodyNTC.querySelectorAll('tr')).some(tr => tr.dataset.ten);
         if (!hasNhanBaoDamOwners) {
-            alert('Vui lòng khai báo ít nhất một chủ thể Bên nhận bảo đảm / Bên nhận thế chấp.');
+            const anchor = document.getElementById('titleBenNhanTheChap') || tbodyNTC;
+            showFieldError(anchor, 'Vui lòng khai báo ít nhất một chủ thể Bên nhận bảo đảm / Bên nhận thế chấp.');
             formValid = false;
-            if (!firstErr) firstErr = document.getElementById('titleBenNhanTheChap') || tbodyNTC;
+            if (!firstErr) firstErr = anchor;
         }
 
         // Must have select at least 1 Loại tài sản
         const checkedAssets = Array.from(document.querySelectorAll('.check-group input[type="checkbox"]:checked'));
         if (checkedAssets.length === 0) {
-            alert('Vui lòng tích chọn ít nhất một Loại tài sản.');
+            const anchor = document.getElementById('titleTaiSan');
+            showFieldError(anchor, 'Vui lòng tích chọn ít nhất một Loại tài sản.');
             formValid = false;
-            if (!firstErr) firstErr = document.getElementById('titleTaiSan');
+            if (!firstErr) firstErr = anchor;
         }
 
         // Check required grids if asset types checked
         if (document.getElementById('chkSoKhung').checked) {
             const hasSK = tbodySoKhung.querySelectorAll('tr').length > 0;
             if (!hasSK) {
-                alert('Vui lòng nhập danh sách Số khung phương tiện.');
+                showFieldError(document.getElementById('gridSoKhung'), 'Vui lòng nhập danh sách Số khung phương tiện.');
                 formValid = false;
             } else {
                 // Validate required items on Số khung grid
@@ -1765,8 +1808,7 @@ const initApp = () => {
                     if (skInput && skInput.value.trim()) {
                         const val = skInput.value.trim();
                         if (!/^[a-zA-Z0-9-]+$/.test(val)) {
-                            skInput.classList.add('is-invalid');
-                            alert(`Số khung ${val} chứa ký tự không hợp lệ (Chỉ nhận ký tự chữ, số và dấu -)`);
+                            showFieldError(skInput, `Số khung "${val}" chứa ký tự không hợp lệ (Chỉ nhận ký tự chữ, số và dấu -)`);
                             formValid = false;
                         }
                     }
@@ -1778,7 +1820,7 @@ const initApp = () => {
         if (document.getElementById('chkTauCa').checked) {
             const hasPT = tbodyTauCa.querySelectorAll('tr').length > 0;
             if (!hasPT) {
-                alert('Vui lòng nhập danh sách Phương tiện.');
+                showFieldError(document.getElementById('gridTauCa'), 'Vui lòng nhập danh sách Phương tiện.');
                 formValid = false;
             } else {
                 tbodyTauCa.querySelectorAll('tr').forEach(tr => {
@@ -1858,8 +1900,9 @@ const initApp = () => {
         // PDF file upload check
         if (document.getElementById('chkChungKhoan').checked) {
             if (fileChungKhoan && !fileChungKhoan.value) {
-                alert('Vui lòng đính kèm tệp tin hồ sơ PDF.');
+                showFieldError(fileChungKhoan, 'Vui lòng đính kèm tệp tin hồ sơ PDF.');
                 formValid = false;
+                if (!firstErr) firstErr = fileChungKhoan;
             }
         }
 
@@ -2097,12 +2140,14 @@ const initApp = () => {
     };
 
     // Connection checks for draft saving
-    document.querySelector('.footer-actions button:nth-child(1)')?.addEventListener('click', () => {
+    document.querySelector('.footer-actions button:nth-child(1)')?.addEventListener('click', (e) => {
+        const btn = e.currentTarget;
         // Simulate connections check
         if (navigator.onLine) {
-            alert('Lưu nháp thành công! Dữ liệu của bạn đã được ghi lại tạm thời trên máy chủ.');
+            clearFieldError(btn);
+            showFieldNotice(btn, 'Lưu nháp thành công! Dữ liệu của bạn đã được ghi lại tạm thời trên máy chủ.');
         } else {
-            alert('Lỗi kết nối máy chủ. Không thể lưu nháp vào lúc này. Vui lòng kiểm tra lại đường truyền mạng.');
+            showFieldError(btn, 'Lỗi kết nối máy chủ. Không thể lưu nháp vào lúc này. Vui lòng kiểm tra lại đường truyền mạng.');
         }
     });
 

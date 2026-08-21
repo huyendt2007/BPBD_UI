@@ -1,4 +1,4 @@
-﻿﻿### 4.3.2.13. UC274_UC276 - Phân hệ Quản lý tư liệu VBQPPL (WebAdmin-08-09-02)
+### 4.3.2.13. UC274_UC276 - Phân hệ Quản lý tư liệu VBQPPL (WebAdmin-08-09-02)
 
 #### 4.3.2.13.1. Mục đích
 \- Phân hệ Quản lý tư liệu VBQPPL (WebAdmin-08-09-02) số hóa việc quản lý, tra cứu, đăng tải, cập nhật và phê duyệt các văn bản quy phạm pháp luật (VBQPPL) liên quan đến hoạt động nghiệp vụ đăng ký biện pháp bảo đảm.

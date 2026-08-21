@@ -1,4 +1,4 @@
-﻿﻿### 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK):
+### 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK):
 
 #### 4.3.2.1. UC028 & UC029 - Kiểm tra và Xử lý hồ sơ Đăng ký Biện pháp bảo đảm, Hợp đồng
 
@@ -47,33 +47,38 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
-| Tìm kiếm | String(255) | Không | Trống | Placeholder: "Mã số đăng ký, PIN, Tên bên bảo đảm...". Tìm kiếm gần đúng (không phân biệt hoa/thường, Trim space) theo Số đăng ký, Mã PIN, Tên bên bảo đảm. |
-| Mã khách hàng | String(50) | Không | Trống | Ô nhập riêng biệt (không gộp chung với ô Tìm kiếm). Placeholder: "Nhập mã khách hàng...". Tìm kiếm theo mã khách hàng nộp hồ sơ. |
-| Loại đăng ký | Enum(String(50)) | Không | Tất cả | Tham chiếu **[DM_04]**. Gồm: Tất cả, Đăng ký mới, Đăng ký thay đổi, Xóa đăng ký, Yêu cầu cung cấp bản sao, Yêu cầu cung cấp bản sao kèm thông báo, Yêu cầu cung cấp thông tin, Thông báo xử lý tài sản, Thay đổi thông báo xử lý tài sản, Xóa thông báo xử lý tài sản. |
-| Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | Tham chiếu **[DM_01]**. Thay đổi giá trị sẽ tự động cập nhật lại danh sách tùy chọn của trường Loại biện pháp/Loại hợp đồng bên dưới. |
-| Loại biện pháp/Loại hợp đồng | Enum(String(50)) | Không | Tất cả | Danh mục con phụ thuộc (Cascading) theo Loại hình giao dịch đang chọn:<br>\- "Biện pháp bảo đảm": Tham chiếu **[DM_02]**.<br>\- "Hợp đồng": Tham chiếu **[DM_03]**.<br>\- Chưa chọn Loại hình giao dịch: Chỉ hiển thị "Tất cả". |
-| Loại tài sản bảo đảm | Enum(String(50)) | Không | Tất cả | Tham chiếu **[DM_07]**. |
+| Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đăng ký/Mã hồ sơ của Phiếu đăng ký. |
+| Tên bên bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên bảo đảm trong Phiếu đăng ký. |
+| Tên bên nhận bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên nhận bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên nhận bảo đảm trong Phiếu đăng ký. |
+| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
+| Số biên lai | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số biên lai...".<br>- Tìm kiếm gần đúng theo Số biên lai thu phí/miễn phí của hồ sơ. |
+| Nguồn tiếp nhận | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Giá trị gồm: Tất cả, Trực tuyến, Trực tiếp, Dịch vụ công Quốc gia, Bưu chính.<br>- Lọc theo nguồn phát sinh/tiếp nhận hồ sơ. |
+| Cán bộ xử lý | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Chọn Cán bộ/Chuyên viên đang xử lý hồ sơ hoặc chọn "Tất cả".<br>- Danh sách lấy theo cán bộ thuộc phạm vi Trung tâm đăng ký của người dùng đăng nhập. |
+| Loại đăng ký | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. Thay đổi giá trị sẽ tự động cập nhật lại danh sách tùy chọn của trường Loại biện pháp/Loại hợp đồng bên dưới. |
+| Loại biện pháp/Loại hợp đồng | Enum(String(50)) | Không | Tất cả | Danh mục con phụ thuộc (Cascading) theo Loại hình giao dịch đang chọn:<br>\- "Biện pháp bảo đảm": Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02].<br>\- "Hợp đồng": Tham chiếu Danh mục Loại hợp đồng [DM_03].<br>\- Chưa chọn Loại hình giao dịch: Chỉ hiển thị "Tất cả". |
+| Loại tài sản bảo đảm | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. |
 | Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Rule logic khoảng ngày - **[BR-VAL-007]**. |
 | Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Rule logic khoảng ngày - **[BR-VAL-007]**. |
 | **II. Bảng danh sách kết quả** | - | \- | 10 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>**Lưu ý phân quyền dữ liệu:** Chỉ hiển thị hồ sơ được định tuyến/tiếp nhận bởi Trung tâm đăng ký giao dịch, tài sản mà Cán bộ đang đăng nhập trực thuộc.<br>\- Cho phép chọn phân trang **10, 20, 50, 100** bản ghi/trang.<br>\- Mặc định sắp xếp theo Thời điểm đăng ký giảm dần; cho phép click tiêu đề cột Thời điểm đăng ký, Tên bên bảo đảm, Tên bên nhận bảo đảm để đổi chiều sắp xếp.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
 | Cột: Checkbox | Boolean | \- | \- | Hiển thị ở cả 3 Tab, nhưng chỉ thực sự phát huy tác dụng thao tác hàng loạt (Duyệt/Từ chối/Trình ký) ở Tab 1 (Chờ duyệt) và Tab 2 (Duyệt chờ ký); ở Tab 3 (Bị trả lại) không có thanh công cụ thao tác hàng loạt tương ứng. |
 | Cột: STT | Integer(10) | \- | \- | Số thứ tự tăng dần theo trang hiện hành. |
 | Cột: Thời điểm đăng ký | Datetime | \- | \- | Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
-| Cột: Số đăng ký | String(50) | \- | \- | Hiển thị dạng link (action-link), click vào mở **4.3.2.1.3. UC028_029.MH02 - Màn hình Xem chi tiết hồ sơ**. |
+| Cột: Số đăng ký | String(50) | \- | \- | Hiển thị dạng link (action-link), click vào mở **UC028_029.MH02 - Xem chi tiết hồ sơ**. |
 | Cột: Mã PIN | String(20) | \- | \- | Mã PIN chỉ được hệ thống cấp một lần duy nhất tại thời điểm Đăng ký mới (UC024). Cột này CHỈ hiển thị giá trị đối với hồ sơ có Loại đăng ký = "Đăng ký mới"; các loại hồ sơ khác (Đăng ký thay đổi, Xóa đăng ký, Thông báo xử lý tài sản, Yêu cầu cung cấp bản sao/thông tin,...) không phát sinh PIN mới nên hiển thị trống/"-". |
 | Cột: Tên bên bảo đảm | String(255) | \- | \- | Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
 | Cột: Tên bên nhận bảo đảm | String(255) | \- | \- | Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
-| Cột: Loại đăng ký | String(50) | \- | \- | Tham chiếu **[DM_04]**. |
-| Cột: Loại hình GD | String(50) | \- | \- | Tham chiếu **[DM_01]**. |
-| Cột: Loại biện pháp/Hợp đồng | String(50) | \- | \- | Tham chiếu **[DM_02]** hoặc **[DM_03]** tùy Loại hình giao dịch của hồ sơ. |
-| Cột: Loại tài sản | String(100) | \- | \- | Tham chiếu **[DM_07]**. Nếu hồ sơ có nhiều tài sản/nhiều loại, hiển thị tách dòng trong cùng ô. |
+| Cột: Loại đăng ký | String(50) | \- | \- | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Cột: Loại hình GD | String(50) | \- | \- | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
+| Cột: Loại biện pháp/Hợp đồng | String(50) | \- | \- | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc **[DM_03]** tùy Loại hình giao dịch của hồ sơ. |
+| Cột: Loại tài sản | String(100) | \- | \- | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. Nếu hồ sơ có nhiều tài sản/nhiều loại, hiển thị tách dòng trong cùng ô. |
 | Cột: Mã khách hàng | String(50) | \- | \- | Hiển thị `"—"` nếu không có dữ liệu. |
 | Cột: Số biên lai | String(50) | \- | \- | Số biên lai thu lệ phí. Hiển thị `"—"` nếu chưa thanh toán/không có dữ liệu. |
-| Cột: Trạng thái | String(50) | \- | \- | Tham chiếu **[DM_05]**, hiển thị dạng Tag màu tương ứng với giá trị mặc định khớp Tab đang chọn (Chờ duyệt/Duyệt chờ ký/Bị trả lại). |
+| Cột: Trạng thái | String(50) | \- | \- | Tham chiếu Danh mục Trạng thái hồ sơ đăng ký [DM_05], hiển thị dạng Tag màu tương ứng với giá trị mặc định khớp Tab đang chọn (Chờ duyệt/Duyệt chờ ký/Bị trả lại). |
 | Cột: Người yêu cầu | String(255) | \- | \- | Tên người yêu cầu nộp hồ sơ; nếu hồ sơ không có dữ liệu Người yêu cầu riêng, mặc định lấy theo Tên bên bảo đảm. |
-| Cột: Nguồn tiếp nhận | String(50) | \- | \- | Gồm 2 giá trị:<br>\- `Khách hàng`: Hồ sơ do khách hàng tự nộp theo hình thức điện tử (Portal/Mobile).<br>\- `Cán bộ nhập liệu`: Hồ sơ do Cán bộ nhập liệu hộ (nộp trực tiếp tại quầy hoặc qua bưu chính). |
+| Cột: Nguồn tiếp nhận | String(50) | \- | \- | Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: `Trực tuyến`, `Trực tiếp`, `Dịch vụ công Quốc gia`, `Bưu chính`. |
 | Cột: Cán bộ xử lý | String(255) | \- | \- | Tên Cán bộ nghiệp vụ đang phụ trách xử lý hồ sơ. Hiển thị `"—"` nếu chưa phân công. |
-| Cột: Thao tác | String(255) | \- | \- | Chứa các icon thao tác nhanh trên từng dòng, khác nhau theo từng Tab, chi tiết xem mục Chức năng trên màn hình bên dưới. Click trực tiếp vào dòng dữ liệu (ngoại trừ icon thao tác) để mở **4.3.2.1.3. UC028_029.MH02 - Màn hình Xem chi tiết hồ sơ**. |
+| Cột: Thao tác | String(255) | \- | \- | Chứa các icon thao tác nhanh trên từng dòng, khác nhau theo từng Tab, chi tiết xem mục Chức năng trên màn hình bên dưới. Click trực tiếp vào dòng dữ liệu (ngoại trừ icon thao tác) để mở **UC028_029.MH02 - Xem chi tiết hồ sơ**. |
 
 ###### 4.3.2.1.2.3. Chức năng trên Tab 1 (Hồ sơ chờ duyệt)
 
@@ -81,15 +86,15 @@
 | :-- | :--- | :--- | :--- |
 | 1 | Tìm kiếm | Nút | Hệ thống truy vấn dữ liệu theo các điều kiện lọc đã nhập và hiển thị kết quả ra lưới danh sách.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Đặt lại toàn bộ tiêu chí Bộ lọc về giá trị mặc định và tải lại danh sách kết quả. |
-| 3 | Từ chối | Nút | Từ chối hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH Hợp lệ: Mở **4.3.2.1.4. UC028_029.MH03 - Popup Từ chối hồ sơ** cho toàn bộ các hồ sơ đã chọn. |
+| 3 | Từ chối | Nút | Từ chối hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH Hợp lệ: Mở **UC028_029.MH03 - Popup Từ chối hồ sơ** cho toàn bộ các hồ sơ đã chọn. |
 | 4 | Duyệt | Nút | Duyệt hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH2 (Phát hiện hồ sơ trùng lặp): Vi phạm **[BR-DK-029]**, hiển thị **[MSG-CFM-DK-010]**, cho phép chọn Tiếp tục hoặc Hủy.<br>TH Hợp lệ: Cập nhật trạng thái các hồ sơ đã chọn sang "Duyệt chờ ký" (tự động chuyển sang Tab 2), hiển thị **[MSG-SUC-DK-KT-001]** và loại bỏ các hồ sơ vừa thao tác khỏi danh sách Tab 1 hiện hành. |
-| 5 | Trình ký | Nút | Trình ký hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH Hợp lệ: Mở **4.3.2.1.5. UC028_029.MH04 - Popup Trình ký hồ sơ** cho toàn bộ các hồ sơ đã chọn. |
-| 6 | Xem | Row Click | Luôn khả dụng. Mở **4.3.2.1.3. UC028_029.MH02 - Màn hình Xem chi tiết hồ sơ**. |
-| 7 | Cập nhật (Icon dòng) | Icon | Rule hạn chế cập nhật hồ sơ nguồn điện tử - **[BR-DK-030]**. Chỉ khả dụng (không làm mờ) đối với hồ sơ có Nguồn tiếp nhận là "Cán bộ nhập liệu" (nộp trực tiếp tại quầy/qua bưu chính); hồ sơ có Nguồn tiếp nhận là "Khách hàng" (nộp theo hình thức điện tử) hiển thị Icon ở dạng làm mờ kèm tooltip "Hồ sơ từ nguồn Khách hàng không được cập nhật", không cho phép bấm. Mở màn hình nhập liệu tương ứng loại hồ sơ (tham chiếu **[UC024]**) để Cán bộ chỉnh sửa lại thông tin trước khi duyệt. |
+| 5 | Trình ký | Nút | Trình ký hàng loạt các hồ sơ đã tích chọn ở Checkbox.<br>TH1 (Chưa chọn bản ghi): Vi phạm **[BR-DK-024]**, hiển thị **[MSG-ERR-DK-008]**.<br>TH Hợp lệ: Mở **UC028_029.MH04 - Popup Trình ký hồ sơ** cho toàn bộ các hồ sơ đã chọn. |
+| 6 | Xem | Row Click | Luôn khả dụng. Mở **UC028_029.MH02 - Xem chi tiết hồ sơ**. |
+| 7 | Cập nhật (Icon dòng) | Icon | Rule hạn chế cập nhật hồ sơ nguồn điện tử - **[BR-DK-030]**. Chỉ khả dụng (không làm mờ) đối với hồ sơ có Nguồn tiếp nhận là "Trực tiếp" hoặc "Bưu chính"; hồ sơ có Nguồn tiếp nhận là "Trực tuyến" hoặc "Dịch vụ công Quốc gia" hiển thị Icon ở dạng làm mờ kèm tooltip "Hồ sơ từ nguồn trực tuyến không được cập nhật", không cho phép bấm. Mở màn hình nhập liệu tương ứng loại hồ sơ (tham chiếu **[UC024]**) để Cán bộ chỉnh sửa lại thông tin trước khi duyệt. |
 | 8 | Duyệt (Icon dòng) | Icon | Phê duyệt nhanh 01 hồ sơ trên dòng tương ứng. Xử lý tương tự chức năng Duyệt (hàng loạt) ở trên nhưng chỉ áp dụng cho 01 hồ sơ. |
-| 9 | Trình ký (Icon dòng) | Icon | Mở **4.3.2.1.5. UC028_029.MH04** cho 01 hồ sơ trên dòng tương ứng. |
-| 10 | Từ chối (Icon dòng) | Icon | Mở **4.3.2.1.4. UC028_029.MH03** cho 01 hồ sơ trên dòng tương ứng. |
-| 11 | Click dòng dữ liệu | Row Click | Mở **4.3.2.1.3. UC028_029.MH02 - Màn hình Xem chi tiết hồ sơ**. |
+| 9 | Trình ký (Icon dòng) | Icon | Mở **UC028_029.MH04** cho 01 hồ sơ trên dòng tương ứng. |
+| 10 | Từ chối (Icon dòng) | Icon | Mở **UC028_029.MH03** cho 01 hồ sơ trên dòng tương ứng. |
+| 11 | Click dòng dữ liệu | Row Click | Mở **UC028_029.MH02 - Xem chi tiết hồ sơ**. |
 
 *Ghi chú thứ tự icon trên lưới (đúng theo giao diện)*: Xem → Cập nhật → Duyệt → Trình ký → Từ chối.
 
@@ -101,11 +106,11 @@
 | 2 | Xóa bộ lọc | Nút | Tương tự Tab 1. |
 | 3 | Từ chối | Nút | Từ chối hàng loạt các hồ sơ đã tích chọn. Xử lý tương tự chức năng Từ chối tại Tab 1. |
 | 4 | Trình ký | Nút | Trình ký hàng loạt các hồ sơ đã tích chọn. Xử lý tương tự chức năng Trình ký tại Tab 1. |
-| 5 | Xem | Row Click | Luôn khả dụng. Mở **4.3.2.1.3. UC028_029.MH02**. |
-| 6 | Trình ký (Icon dòng) | Icon | Mở **4.3.2.1.5. UC028_029.MH04** cho 01 hồ sơ trên dòng tương ứng. |
+| 5 | Xem | Row Click | Luôn khả dụng. Mở **UC028_029.MH02**. |
+| 6 | Trình ký (Icon dòng) | Icon | Mở **UC028_029.MH04** cho 01 hồ sơ trên dòng tương ứng. |
 | 7 | Hủy duyệt (Icon dòng) | Icon | Chỉ áp dụng cho 01 hồ sơ trên dòng tương ứng (không hỗ trợ hàng loạt). Rule luồng trạng thái - **[BR-DK-026]**.<br>TH Hợp lệ: Đưa hồ sơ về lại trạng thái "Chờ duyệt" (hồ sơ tự động chuyển về Tab 1), hiển thị **[MSG-SUC-DK-KT-004]** và loại bỏ hồ sơ khỏi danh sách Tab 2 hiện hành. |
-| 8 | Từ chối (Icon dòng) | Icon | Mở **4.3.2.1.4. UC028_029.MH03** cho 01 hồ sơ trên dòng tương ứng. |
-| 9 | Click dòng dữ liệu | Row Click | Mở **4.3.2.1.3. UC028_029.MH02**. |
+| 8 | Từ chối (Icon dòng) | Icon | Mở **UC028_029.MH03** cho 01 hồ sơ trên dòng tương ứng. |
+| 9 | Click dòng dữ liệu | Row Click | Mở **UC028_029.MH02**. |
 
 *Ghi chú thứ tự icon trên lưới (đúng theo giao diện)*: Xem → Trình ký → Hủy duyệt → Từ chối.
 
@@ -115,10 +120,10 @@
 | :-- | :--- | :--- | :--- |
 | 1 | Tìm kiếm | Nút | Tương tự Tab 1.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Nút | Tương tự Tab 1. |
-| 3 | Xem | Row Click | Luôn khả dụng. Mở **4.3.2.1.3. UC028_029.MH02**. |
+| 3 | Xem | Row Click | Luôn khả dụng. Mở **UC028_029.MH02**. |
 | 4 | Cập nhật (Icon dòng) | Icon | Luôn khả dụng (không áp dụng hạn chế theo Nguồn tiếp nhận, khác với icon Cập nhật ở Tab 1). Mở màn hình nhập liệu tương ứng loại hồ sơ (tham chiếu **[UC024]**) để Cán bộ chỉnh sửa lại thông tin theo đúng ý kiến/lý do trả lại của Lãnh đạo, sau đó gửi lại vào luồng xử lý. |
-| 5 | Từ chối (Icon dòng) | Icon | Mở **4.3.2.1.4. UC028_029.MH03** cho 01 hồ sơ trên dòng tương ứng. |
-| 6 | Click dòng dữ liệu | Row Click | Mở **4.3.2.1.3. UC028_029.MH02**. |
+| 5 | Từ chối (Icon dòng) | Icon | Mở **UC028_029.MH03** cho 01 hồ sơ trên dòng tương ứng. |
+| 6 | Click dòng dữ liệu | Row Click | Mở **UC028_029.MH02**. |
 
 *Ghi chú thứ tự icon trên lưới (đúng theo giao diện)*: Xem → Cập nhật → Từ chối. Tab này không có thanh công cụ thao tác hàng loạt (Checkbox chỉ hiển thị theo cấu trúc lưới chung, không có nút thao tác lô tương ứng).
 
@@ -128,7 +133,7 @@
 
 \- Thao tác Xem chi tiết (click dòng dữ liệu hoặc click trực tiếp vào dòng dữ liệu, ngoại trừ các icon thao tác khác) điều hướng sang màn hình Xem chi tiết lịch sử hồ sơ dành cho Cán bộ kiểm duyệt, đã được đặc tả đầy đủ tại **[UCPS005]**(UCPS005_Xem_lich_su_thay_doi_can_bo.md) (mục 4.3.2.6), bao gồm: dòng thời gian lịch sử phiên bản, kết quả rà soát rủi ro tự động, bảng đối chiếu chênh lệch Before/After theo từng loại hồ sơ và các nút thao tác Duyệt/Trình ký/Từ chối/Trả lại/Đóng.
 
-\- Màn hình danh sách tại đây (**4.3.2.1.2. UC028_029.MH01**) không hiển thị lại nội dung chi tiết hồ sơ; toàn bộ nghiệp vụ Duyệt/Trình ký/Từ chối/Hủy duyệt hàng loạt hoặc theo dòng đã được đặc tả tại mục 4.3.2.1.2.3-4.3.2.1.2.5, thao tác trên màn hình chi tiết (UCPS005) chỉ là kênh xử lý bổ sung cho từng hồ sơ đơn lẻ sau khi đã xem đối soát chi tiết.
+\- Màn hình danh sách tại đây (**UC028_029.MH01**) không hiển thị lại nội dung chi tiết hồ sơ; toàn bộ nghiệp vụ Duyệt/Trình ký/Từ chối/Hủy duyệt hàng loạt hoặc theo dòng đã được đặc tả tại mục 4.3.2.1.2.3-4.3.2.1.2.5, thao tác trên màn hình chi tiết (UCPS005) chỉ là kênh xử lý bổ sung cho từng hồ sơ đơn lẻ sau khi đã xem đối soát chi tiết.
 
 *(Ghi chú: Tại thời điểm biên soạn, UCPS005 mô tả 3 loại hồ sơ và một số hành động (Duyệt/Trình ký/Từ chối/Trả lại/Đóng) theo tên trạng thái cũ. Khi cập nhật UCPS005, cần đối chiếu bổ sung: đủ 9 loại hồ sơ tại mục 4.3.2.1.2.1, tên trạng thái "Duyệt chờ ký"/"Bị trả lại" theo tài liệu này, và bổ sung hành động Hủy duyệt/Cập nhật tương ứng.)*
 
@@ -196,7 +201,7 @@
 | 6 | `<<TenBenBaoDam>>` | Bảng Bên bảo đảm → Tên chủ thể | Nối bằng dấu phẩy nếu có nhiều bên bảo đảm |
 | 7 | `<<TenBenNhanBaoDam>>` | Bảng Bên nhận bảo đảm → Tên chủ thể | |
 | 8 | `<<ThoiDiemTiepNhan>>` | Ngày giờ hệ thống tiếp nhận hồ sơ thành công | Format: `dd/MM/yyyy HH:mm` |
-| 9 | `<<LoaiDangKy>>` | Loại hình đăng ký/loại hồ sơ | Tham chiếu **[DM_04]** |
+| 9 | `<<LoaiDangKy>>` | Loại hình đăng ký/loại hồ sơ | Tham chiếu Danh mục Loại hình đăng ký [DM_04] |
 | 10 | `<<LyDoTuChoi>>` | Nội dung Cán bộ nhập tại ô Lý do từ chối | |
 | 11 | `<<HuongDanHoanThien>>` | Nội dung hướng dẫn bổ sung, sửa đổi hồ sơ | |
 | 12 | `<<TenTrungTamVietTat>>` | Tên viết tắt Trung tâm tiếp nhận xử lý hồ sơ | Dùng cho số văn bản hành chính (VD: Cục GDBD, TTĐK1...) |

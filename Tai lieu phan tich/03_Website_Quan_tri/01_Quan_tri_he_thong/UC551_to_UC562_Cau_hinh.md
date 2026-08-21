@@ -1,4 +1,4 @@
-﻿﻿#### 4.3.1.6. Quản lý cấu hình
+#### 4.3.1.6. Quản lý cấu hình
 
 ##### 4.3.1.6.1. Giải pháp tối ưu hóa trải nghiệm người dùng (UX/UI Optimization)
 
@@ -170,7 +170,7 @@
 | 1 | Tìm kiếm | Nút | Thực hiện lọc dữ liệu trên lưới theo từ khóa tìm kiếm và bộ lọc đối tượng áp dụng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Thêm mới | Nút | Mở Popup Thêm mới cấu hình thời gian chờ (UC553.MH02) với các trường trống để nhập liệu. |
 | 3 | Cập nhật | Icon (Dòng) | Hiển thị tại cột Thao tác của từng dòng. Khi click, mở Popup Cập nhật cấu hình thời gian chờ (UC553.MH02) đã điền sẵn dữ liệu. |
-| 4 | Xóa | Icon (Dòng) | Hiển thị tại cột Thao tác. Khi click, kiểm tra ràng buộc hệ thống:<br>- Nếu là cấu hình mặc định bắt buộc của hệ thống: Hiển thị cảnh báo lỗi "Đây là cấu hình hệ thống cốt lõi, không được phép xóa".<br>- Nếu là cấu hình tùy biến: Hiển thị xác nhận "Bạn có chắc chắn muốn xóa cấu hình thời gian chờ này?". Chọn Đồng ý để xóa mềm trong CSDL. |
+| 4 | Xóa | Icon (Dòng) | Hiển thị tại cột Thao tác. Khi click, kiểm tra ràng buộc hệ thống:<br>+ Nếu là cấu hình mặc định bắt buộc của hệ thống: Hiển thị cảnh báo lỗi "Đây là cấu hình hệ thống cốt lõi, không được phép xóa".<br>+ Nếu là cấu hình tùy biến: Hiển thị xác nhận "Bạn có chắc chắn muốn xóa cấu hình thời gian chờ này?". Chọn Đồng ý để xóa mềm trong CSDL. |
 
 ###### 4.3.1.6.4.3. UC553.MH02 - Popup Thêm mới / Cập nhật cấu hình thời gian chờ
 
@@ -573,7 +573,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Lưu             | Nút         | Thực hiện kiểm tra dữ liệu và lưu vào CSDL:<br>- Bỏ trống trường bắt buộc: Hiển thị viền đỏ (``.is-invalid``), chữ báo lỗi đỏ phía dưới ô và tự động focus vào ô bị lỗi đầu tiên.<br>- Mức phí < 0: Báo lỗi "Mức phí dịch vụ không được phép nhỏ hơn 0 VNĐ".<br>- Ngày áp dụng ở quá khứ khi thêm mới: Báo lỗi "Ngày áp dụng phải lớn hơn hoặc bằng ngày hiện tại".<br>- Trùng mã biểu phí: Báo lỗi "Mã biểu phí đã tồn tại".<br>- TH Hợp lệ: Lưu cấu hình thành công, báo Toast thành công. |
+| 1   | Lưu             | Nút         | Thực hiện kiểm tra dữ liệu và lưu vào CSDL:<br>+ Bỏ trống trường bắt buộc: Hiển thị viền đỏ (``.is-invalid``), chữ báo lỗi đỏ phía dưới ô và tự động focus vào ô bị lỗi đầu tiên.<br>+ Mức phí < 0: Báo lỗi "Mức phí dịch vụ không được phép nhỏ hơn 0 VNĐ".<br>+ Ngày áp dụng ở quá khứ khi thêm mới: Báo lỗi "Ngày áp dụng phải lớn hơn hoặc bằng ngày hiện tại".<br>+ Trùng mã biểu phí: Báo lỗi "Mã biểu phí đã tồn tại".<br>+ TH Hợp lệ: Lưu cấu hình thành công, báo Toast thành công. |
 | 2   | Hủy             | Nút         | Đóng Popup và không lưu thay đổi. |
 
 
@@ -694,7 +694,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Lưu | Nút | Thực hiện kiểm tra dữ liệu và lưu vào CSDL. Validate theo từng tham số cụ thể:<br>- **Số lần đăng nhập sai tối đa (LOCKOUT_MAX_ATTEMPTS):** Nhập số nguyên từ 3 đến 10 (Mặc định: 5).<br>- **Thời gian khóa tài khoản tạm thời (LOCKOUT_DURATION):** Nhập số nguyên lớn hơn hoặc bằng 0 đại diện cho số phút. Giá trị mặc định là 3 (3 phút). Nhập 0 nếu muốn khóa vĩnh viễn.<br>- **Thời hạn hiệu lực của mật khẩu (PASSWORD_EXPIRY_DAYS):** Nhập số nguyên từ 30 đến 365 ngày (Mặc định: 90).<br>- **Yêu cầu độ phức tạp mật khẩu (PASSWORD_COMPLEXITY_REQUIRED):** Cấu hình độ phức tạp mật khẩu bắt buộc: độ dài từ 8 đến 20 ký tự, chứa ít nhất một chữ hoa (A-Z), một chữ thường (a-z), một chữ số (0-9), và một ký tự đặc biệt (!@#$%^&*...).<br>- **Kích thước tập tin tối đa (MAX_FILE_SIZE_MB):** Nhập số nguyên (MB) từ 1 đến 100 (Mặc định: 20). |
+| 1 | Lưu | Nút | Thực hiện kiểm tra dữ liệu và lưu vào CSDL. Validate theo từng tham số cụ thể:<br>+ **Số lần đăng nhập sai tối đa (LOCKOUT_MAX_ATTEMPTS):** Nhập số nguyên từ 3 đến 10 (Mặc định: 5).<br>+ **Thời gian khóa tài khoản tạm thời (LOCKOUT_DURATION):** Nhập số nguyên lớn hơn hoặc bằng 0 đại diện cho số phút. Giá trị mặc định là 3 (3 phút). Nhập 0 nếu muốn khóa vĩnh viễn.<br>+ **Thời hạn hiệu lực của mật khẩu (PASSWORD_EXPIRY_DAYS):** Nhập số nguyên từ 30 đến 365 ngày (Mặc định: 90).<br>+ **Yêu cầu độ phức tạp mật khẩu (PASSWORD_COMPLEXITY_REQUIRED):** Cấu hình độ phức tạp mật khẩu bắt buộc: độ dài từ 8 đến 20 ký tự, chứa ít nhất một chữ hoa (A-Z), một chữ thường (a-z), một chữ số (0-9), và một ký tự đặc biệt (!@#$%^&*...).<br>+ **Kích thước tập tin tối đa (MAX_FILE_SIZE_MB):** Nhập số nguyên (MB) từ 1 đến 100 (Mặc định: 20). |
 | 2 | Hủy | Nút | Đóng Popup và không lưu thay đổi. |
 
 ---
@@ -742,7 +742,7 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Nhóm đối tượng áp dụng | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>Chọn nhóm đối tượng áp dụng (Quản trị hệ thống / Cán bộ nghiệp vụ / Đăng ký viên / Khách hàng v.v.). Bị khóa nếu ở chế độ Cập nhật. |
-| Phương thức xác thực MFA | Enum(String(50)) | Có | Email OTP | Control UI: Hộp chọn.<br>Lựa chọn phương thức xác thực hỗ trợ:<br>- Email OTP<br>- Authenticator App (Google/Microsoft Authenticator) |
+| Phương thức xác thực MFA | Enum(String(50)) | Có | Email OTP | Control UI: Hộp chọn.<br>Lựa chọn phương thức xác thực hỗ trợ:<br>+ Email OTP<br>+ Authenticator App (Google/Microsoft Authenticator) |
 | Trạng thái kích hoạt | Boolean | Không | Unchecked | Control UI: Checkbox.<br>Cho phép bật/tắt xác thực 2 lớp đối với nhóm đối tượng đã chọn. |
 | Mô tả | String(500) | Không | Trống | Ghi chú thêm chi tiết về cấu hình MFA này. |
 
@@ -756,5 +756,3 @@
 |  |  |  | \- TH3 (Trùng lặp cấu hình cho nhóm đối tượng): Nếu nhóm đối tượng đã được thiết lập trước đó, báo lỗi: "Nhóm đối tượng này đã được cấu hình MFA. Vui lòng cập nhật cấu hình cũ". |
 |  |  |  | \- TH Hợp lệ: Cập nhật thành công, báo Toast "Lưu cấu hình bảo mật MFA thành công" và đóng Popup. |
 | 2 | Hủy | Nút | Đóng Popup và hủy thao tác. |
-
-

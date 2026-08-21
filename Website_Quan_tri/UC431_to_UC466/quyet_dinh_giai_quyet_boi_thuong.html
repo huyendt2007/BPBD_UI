@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -1043,6 +1043,27 @@
                     <span class="form-label">Ban hành: Đến ngày</span>
                     <input type="text" class="form-control" id="searchDecToDate" placeholder="dd/mm/yyyy">
                 </div>
+            </div>
+            <div class="grid-4-cols" style="margin-bottom: 16px;">
+                <div>
+                    <span class="form-label">Hình thức ban hành</span>
+                    <select class="form-control" id="searchDecIssueMode">
+                        <option value="">Tất cả</option>
+                        <option value="Ký số trên hệ thống">Ký số trên hệ thống</option>
+                        <option value="Ký bên ngoài">Ký bên ngoài</option>
+                    </select>
+                </div>
+                <div>
+                    <span class="form-label">Đơn vị ban hành</span>
+                    <select class="form-control" id="searchDecIssuingUnit">
+                        <option value="">Tất cả</option>
+                        <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
+                        <option value="Cục Bồi thường nhà nước">Cục Bồi thường nhà nước</option>
+                        <option value="UBND Quận Cầu Giấy">UBND Quận Cầu Giấy</option>
+                        <option value="Tòa án nhân dân TP. Hà Nội">Tòa án nhân dân TP. Hà Nội</option>
+                        <option value="Cục Thi hành án dân sự Hà Nội">Cục Thi hành án dân sự Hà Nội</option>
+                    </select>
+                </div>
                 <div></div>
                 <div style="display: flex; justify-content: flex-end; gap: 8px; align-items: flex-end; height: 100%;">
                     <button class="btn btn-secondary" onclick="clearDecFilters()">Xóa bộ lọc</button>
@@ -1075,6 +1096,8 @@
                         <th style="width: 110px; text-align: center;">Ngày hiệu lực</th>
                         <th style="width: 160px;">Loại quyết định</th>
                         <th style="width: 130px;">Người ký</th>
+                        <th style="width: 140px;">Hình thức ban hành</th>
+                        <th style="width: 170px;">Đơn vị ban hành</th>
                         <th style="width: auto; min-width: 240px;">Trích yếu quyết định</th>
                         <th style="width: 120px; text-align: center;">Mã vụ việc</th>
                         <th style="width: 170px;">Tên vụ việc</th>
@@ -2265,6 +2288,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <th style="width: 110px; text-align: center;">Ngày hiệu lực</th>
                         <th style="width: 160px;">Loại quyết định</th>
                         <th style="width: 150px;">Cán bộ xử lý</th>
+                        <th style="width: 140px;">Hình thức ban hành</th>
+                        <th style="width: 170px;">Đơn vị ban hành</th>
                         <th style="width: auto; min-width: 240px;">Trích yếu quyết định</th>
                         <th style="width: 120px; text-align: center;">Mã vụ việc</th>
                         <th style="width: 170px;">Tên vụ việc</th>
@@ -2281,6 +2306,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <th style="width: 110px; text-align: center;">Ngày hiệu lực</th>
                         <th style="width: 160px;">Loại quyết định</th>
                         <th style="width: 150px;">Người ký</th>
+                        <th style="width: 140px;">Hình thức ban hành</th>
+                        <th style="width: 170px;">Đơn vị ban hành</th>
                         <th style="width: auto; min-width: 240px;">Trích yếu quyết định</th>
                         <th style="width: 120px; text-align: center;">Mã vụ việc</th>
                         <th style="width: 170px;">Tên vụ việc</th>
@@ -2302,6 +2329,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             const decisionType = document.getElementById('searchDecisionType').value;
             const signer = document.getElementById('searchSigner').value.trim().toLowerCase();
             const status = document.getElementById('searchDecStatus').value;
+            const issueMode = document.getElementById('searchDecIssueMode').value;
+            const issuingUnitFilter = document.getElementById('searchDecIssuingUnit').value;
 
             const fromDateInput = document.getElementById('searchDecFromDate').value;
             const toDateInput = document.getElementById('searchDecToDate').value;
@@ -2312,6 +2341,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             if (decisionType) filtered = filtered.filter(item => (item.decisionType || 'Quyết định giải quyết bồi thường') === decisionType);
             if (signer) filtered = filtered.filter(item => item.approver.toLowerCase().includes(signer) || item.signer.toLowerCase().includes(signer));
             if (status) filtered = filtered.filter(item => item.status === status);
+            if (issueMode) filtered = filtered.filter(item => (item.signMode || 'Ký số trên hệ thống') === issueMode);
+            if (issuingUnitFilter) filtered = filtered.filter(item => (item.issuingUnit || item.agency) === issuingUnitFilter);
 
             const parseDateVi = (str) => {
                 if (!str) return null;
@@ -2352,7 +2383,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             const endIdx = Math.min(startIdx + decPageSize, total);
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy quyết định nào phù hợp</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
                 document.getElementById('decCurrentRange').innerText = "0-0";
                 return;
             }
@@ -2420,6 +2451,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                 
                 const displayNo = item.decNo === 'Chưa cấp số' ? '<span style="color:#94a3b8; font-style:italic; font-weight:normal;">Chưa cấp số</span>' : `<strong>${item.decNo}</strong>`;
                 const displayDate = item.date === 'Chưa ban hành' ? '<span style="color:#94a3b8; font-style:italic;">Chưa ban hành</span>' : item.date;
+                const displayIssueMode = item.signMode || 'Ký số trên hệ thống';
+                const displayIssuingUnit = item.issuingUnit || item.agency || '';
 
                 let rowCols = '';
                 if (currentRole === 'leader') {
@@ -2430,6 +2463,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <td style="text-align:center;">${item.activeDate}</td>
                         <td title="${decisionType}">${decisionType}</td>
                         <td><strong>${item.officerName || 'Lê Thị Chuyên Viên'}</strong></td>
+                        <td title="${displayIssueMode}">${displayIssueMode}</td>
+                        <td title="${displayIssuingUnit}">${displayIssuingUnit}</td>
                         <td class="excerpt-col" title="${item.excerpt}">${item.excerpt}</td>
                         <td style="text-align:center;"><a href="quan_ly_boi_thuong.html?id=${item.ycbtCode}&from=quyet_dinh&returnUrl=${encodeURIComponent('quyet_dinh_giai_quyet_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
                         <td title="${caseNameText}">${caseNameText}</td>
@@ -2448,6 +2483,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <td style="text-align:center;">${item.activeDate}</td>
                         <td title="${decisionType}">${decisionType}</td>
                         <td><strong>${signerClean}</strong></td>
+                        <td title="${displayIssueMode}">${displayIssueMode}</td>
+                        <td title="${displayIssuingUnit}">${displayIssuingUnit}</td>
                         <td class="excerpt-col" title="${item.excerpt}">${item.excerpt}</td>
                         <td style="text-align:center;"><a href="quan_ly_boi_thuong.html?id=${item.ycbtCode}&from=quyet_dinh&returnUrl=${encodeURIComponent('quyet_dinh_giai_quyet_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
                         <td title="${caseNameText}">${caseNameText}</td>
@@ -2520,11 +2557,13 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             document.getElementById('searchDecisionType').value = '';
             document.getElementById('searchSigner').value = '';
             document.getElementById('searchDecStatus').value = '';
-            
+            document.getElementById('searchDecIssueMode').value = '';
+            document.getElementById('searchDecIssuingUnit').value = '';
+
             const today = new Date();
             const threeMonthsAgo = new Date();
             threeMonthsAgo.setMonth(today.getMonth() - 3);
-            
+
             const formatDate = (date) => {
                 const d = String(date.getDate()).padStart(2, '0');
                 const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -2533,13 +2572,59 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             };
             document.getElementById('searchDecFromDate').value = formatDate(threeMonthsAgo);
             document.getElementById('searchDecToDate').value = formatDate(today);
-            
+            clearDecDateRangeError();
+
             currentDecPage = 1;
             renderDecTable();
             showToast("Đã xóa bộ lọc tìm kiếm!", "info");
         }
 
+        // Parse a dd/mm/yyyy string into a Date, or null if invalid/empty
+        function parseVNDateString(str) {
+            if (!str) return null;
+            const parts = String(str).trim().split('/');
+            if (parts.length !== 3) return null;
+            const d = parseInt(parts[0], 10), m = parseInt(parts[1], 10), y = parseInt(parts[2], 10);
+            if (!d || !m || !y) return null;
+            const dt = new Date(y, m - 1, d);
+            return isNaN(dt.getTime()) ? null : dt;
+        }
+
+        function clearDecDateRangeError() {
+            const fromInput = document.getElementById('searchDecFromDate');
+            const toInput = document.getElementById('searchDecToDate');
+            [fromInput, toInput].forEach(el => { el.style.borderColor = ''; });
+            const existingErr = document.getElementById('decDateRangeError');
+            if (existingErr) existingErr.remove();
+        }
+
+        // BR-VAL-007: "Ban hành: Từ ngày" must not be greater than "Ban hành: Đến ngày"
+        function validateDecDateRange() {
+            clearDecDateRangeError();
+            const fromInput = document.getElementById('searchDecFromDate');
+            const toInput = document.getElementById('searchDecToDate');
+            const fromDate = parseVNDateString(fromInput.value);
+            const toDate = parseVNDateString(toInput.value);
+            if (fromDate && toDate && fromDate > toDate) {
+                fromInput.style.borderColor = 'red';
+                toInput.style.borderColor = 'red';
+                const errorMsg = document.createElement('div');
+                errorMsg.id = 'decDateRangeError';
+                errorMsg.style.color = 'red';
+                errorMsg.style.fontSize = '12px';
+                errorMsg.style.marginTop = '4px';
+                errorMsg.innerText = '"Ban hành: Từ ngày" không được lớn hơn "Ban hành: Đến ngày".';
+                toInput.parentNode.appendChild(errorMsg);
+                return false;
+            }
+            return true;
+        }
+
         function triggerSearchDecisions() {
+            if (!validateDecDateRange()) {
+                showToast('Khoảng ngày ban hành không hợp lệ: "Từ ngày" phải nhỏ hơn hoặc bằng "Đến ngày".', 'error');
+                return;
+            }
             currentDecPage = 1;
             renderDecTable();
         }
@@ -2560,6 +2645,22 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             if ((unitName || '').includes('Cục Bồi thường')) return 'Sổ QĐ BTNN - Cục Bồi thường nhà nước - 2026';
             if ((unitName || '').includes('UBND')) return 'Sổ QĐ GQBT - UBND Quận Cầu Giấy - 2026';
             return 'Sổ QĐ GQBT - Sở Tư pháp Hà Nội - 2026';
+        }
+
+        // Kiểm tra số quyết định ký bên ngoài: trùng số trong cùng sổ/năm, và có liền kề số hiện tại của sổ hay không
+        function checkExternalDecisionNumber(documentBook, enteredNo, excludeId) {
+            const trimmedNo = String(enteredNo || '').trim();
+            const peers = decisionsList.filter(d => d.id !== excludeId
+                && (d.documentBook || getDocumentBookByUnit(d.agency)) === documentBook
+                && d.decNo && d.decNo !== 'Chưa cấp số' && !String(d.decNo).includes('['));
+            const isDuplicate = peers.some(d => String(d.decNo).trim().toLowerCase() === trimmedNo.toLowerCase());
+            const numbers = peers
+                .map(d => parseInt((String(d.decNo).match(/^\d+/) || [])[0], 10))
+                .filter(n => !isNaN(n));
+            const maxNum = numbers.length ? Math.max(...numbers) : 0;
+            const enteredNum = parseInt((trimmedNo.match(/^\d+/) || [])[0], 10);
+            const isSequential = isNaN(enteredNum) ? true : (enteredNum === maxNum + 1);
+            return { isDuplicate, isSequential, maxNum, enteredNum };
         }
 
         function formatDateToVi(value) {
@@ -2802,7 +2903,63 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             origin.cancelReason = cancelDecision.cancelReason || 'Đã có quyết định hủy quyết định giải quyết bồi thường.';
         }
 
+        // [BR-VAL-001] Validate the minimum required fields of the Hủy/Sửa chữa, bổ sung form
+        function validateAdjustmentBeforeSubmit(requireSignDetails) {
+            const panel = document.getElementById('adjustDecisionPanel');
+            panel.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+            panel.querySelectorAll('.is-invalid').forEach(el => { el.classList.remove('is-invalid'); el.style.borderColor = ''; });
+
+            let isValid = true;
+            let firstInvalidInput = null;
+            const validateField = (id) => {
+                const input = document.getElementById(id);
+                if (!input || !input.value || !input.value.trim()) {
+                    isValid = false;
+                    if (input) {
+                        input.classList.add('is-invalid');
+                        input.style.borderColor = 'red';
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'invalid-feedback';
+                        errorMsg.style.color = 'red';
+                        errorMsg.style.fontSize = '12px';
+                        errorMsg.style.marginTop = '4px';
+                        errorMsg.innerText = 'Đây là trường bắt buộc';
+                        input.parentNode.appendChild(errorMsg);
+                    }
+                    if (!firstInvalidInput) firstInvalidInput = input;
+                }
+            };
+
+            validateField('adjustIssuingUnit');
+            validateField('adjustDocumentBook');
+            validateField('adjustAgencyAbbr');
+            validateField('adjustHeadPosition');
+            validateField('adjustEffectiveDate');
+            validateField('adjustBasis');
+            if (currentAdjustmentMode === 'cancel') {
+                validateField('adjustCancelReason');
+            } else {
+                validateField('adjustAmendContent');
+            }
+
+            if (requireSignDetails) {
+                const signMode = document.getElementById('adjustSignMode').value;
+                if (signMode === 'Ký bên ngoài') {
+                    validateField('adjustDecisionNo');
+                    validateField('adjustDecisionDate');
+                    validateField('adjustExternalSigner');
+                }
+            }
+
+            if (!isValid) {
+                if (firstInvalidInput) firstInvalidInput.focus();
+                showToast('Vui lòng nhập đầy đủ các trường bắt buộc trước khi tiếp tục.', 'error');
+            }
+            return isValid;
+        }
+
         function saveAdjustmentDraft() {
+            if (!validateAdjustmentBeforeSubmit(false)) return;
             const draft = buildAdjustmentDecision('Lưu nháp');
             if (!draft) return;
             decisionsList.unshift(draft);
@@ -2813,8 +2970,29 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
         }
 
         function submitAdjustmentDecision() {
+            if (!validateAdjustmentBeforeSubmit(true)) return;
             const signMode = document.getElementById('adjustSignMode').value;
             const status = signMode === 'Ký bên ngoài' ? 'Đã ban hành' : 'Chờ ký';
+
+            if (signMode === 'Ký bên ngoài') {
+                const documentBook = document.getElementById('adjustDocumentBook').value;
+                const enteredNo = document.getElementById('adjustDecisionNo').value.trim();
+                const excludeId = currentAdjustmentDecision ? currentAdjustmentDecision.id : null;
+                const check = checkExternalDecisionNumber(documentBook, enteredNo, excludeId);
+                if (check.isDuplicate) {
+                    showToast('Số quyết định đã tồn tại trong Sổ văn bản áp dụng (trùng số trong cùng sổ/năm). Vui lòng nhập số khác.', 'error');
+                    return;
+                }
+                if (!check.isSequential) {
+                    const seqReason = document.getElementById('adjustSequenceReason').value.trim();
+                    if (!seqReason) {
+                        showToast(`Số quyết định không liền kề với số hiện tại của sổ (số tiếp theo dự kiến: ${check.maxNum + 1}). Vui lòng nhập lý do vào ô "Lý do nhập số chưa tuần tự".`, 'error');
+                        document.getElementById('adjustSequenceReason').focus();
+                        return;
+                    }
+                }
+            }
+
             const adjustment = buildAdjustmentDecision(status);
             if (!adjustment) return;
             decisionsList.unshift(adjustment);
@@ -2870,9 +3048,28 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             updateDocRowIndices();
         }
 
+        // [BR-FILE-010] Only .pdf files up to 20MB are accepted for legal-basis attachments
+        function isValidBasisFile(file) {
+            const isPdf = /\.pdf$/i.test(file.name);
+            if (!isPdf) {
+                showToast('Tệp đính kèm không đúng định dạng cho phép (chỉ chấp nhận .pdf).', 'error'); // [MSG-ERR-FILE-001]
+                return false;
+            }
+            const maxSize = 20 * 1024 * 1024; // 20MB
+            if (file.size > maxSize) {
+                showToast('Dung lượng tệp đính kèm vượt quá 20MB cho phép.', 'error'); // [MSG-ERR-FILE-002]
+                return false;
+            }
+            return true;
+        }
+
         function handleDocFileSelect(input, rowId) {
             if (input.files && input.files.length > 0) {
                 const file = input.files[0];
+                if (!isValidBasisFile(file)) {
+                    input.value = '';
+                    return;
+                }
                 const tr = document.getElementById(rowId);
                 if (tr) {
                     tr.querySelector('.doc-file-name').innerHTML = `<span title="${file.name}" style="display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; font-size: 13px; color: var(--primary-color);">${file.name}</span>`;
@@ -3184,7 +3381,25 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             const dataEntryUnit = document.getElementById('decFormDataEntryUnit')?.value || 'Sở Tư pháp Hà Nội';
             const issuingUnit = document.getElementById('decFormIssuingUnit')?.value || agency;
             const documentBook = document.getElementById('decFormDocumentBook')?.value || getDocumentBookByUnit(issuingUnit);
-            
+
+            // [BR-VAL-007-like check] Khi xác nhận đã ký bên ngoài: kiểm tra trùng số và tính liền kề của sổ văn bản
+            if (externalSign && finalStatus === 'Đã ban hành') {
+                const enteredNo = document.getElementById('decFormExternalNo').value.trim();
+                const check = checkExternalDecisionNumber(documentBook, enteredNo, selectedDecId);
+                if (check.isDuplicate) {
+                    showToast('Số quyết định đã tồn tại trong Sổ văn bản áp dụng (trùng số trong cùng sổ/năm). Vui lòng nhập số khác.', 'error');
+                    return;
+                }
+                if (!check.isSequential) {
+                    const seqReason = document.getElementById('decFormSequenceReason').value.trim();
+                    if (!seqReason) {
+                        showToast(`Số quyết định không liền kề với số hiện tại của sổ (số tiếp theo dự kiến: ${check.maxNum + 1}). Vui lòng nhập lý do vào ô "Lý do nhập số chưa tuần tự".`, 'error');
+                        document.getElementById('decFormSequenceReason').focus();
+                        return;
+                    }
+                }
+            }
+
             const compAmount = parseFormattedMoney(document.getElementById('decFormCompensationAmount').value);
             const advAmount = parseFormattedMoney(document.getElementById('decFormAdvanceAmount').value);
 
@@ -4319,5 +4534,6 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             </div>
         </div>
     </div>
+    <script src="../admin-ui-standardizer.js"></script>
 </body>
 </html>

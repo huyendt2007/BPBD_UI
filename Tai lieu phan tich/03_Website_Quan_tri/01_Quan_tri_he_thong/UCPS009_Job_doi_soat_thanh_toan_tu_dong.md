@@ -1,4 +1,4 @@
-﻿### 5.1.3. UCPS009 - Tác vụ đối soát thanh toán tự động
+### 5.1.3. UCPS009 - Tác vụ đối soát thanh toán tự động
 
 #### 5.1.3.1. Mục đích
 - Đặc tả quy trình tiến trình chạy ngầm tự động đối soát giao dịch thanh toán lệ phí trực tuyến giữa hệ thống Đăng ký biện pháp bảo đảm (BPBĐ) và Cổng thanh toán vào lúc 23:00 hàng ngày, nhằm đồng bộ trạng thái hồ sơ, xử lý các trường hợp mất thông báo thanh toán tự động từ Cổng thanh toán, phát hiện sai lệch số tiền, xử lý giao dịch không xác định và theo dõi kết quả hoàn tiền phát sinh khi hồ sơ Online đã thanh toán bị từ chối.
