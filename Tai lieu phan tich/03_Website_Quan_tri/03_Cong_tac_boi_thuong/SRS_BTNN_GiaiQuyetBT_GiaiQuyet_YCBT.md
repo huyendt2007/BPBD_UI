@@ -27,8 +27,6 @@
 
 \- Các vụ việc đã kết thúc vòng đời xử lý như `Hoàn thành`, `Bị từ chối`, `Từ chối thụ lý`, `Đình chỉ giải quyết` được tra cứu tập trung tại SRS `Tra cứu vụ việc`, không ưu tiên hiển thị trong các tab xử lý nghiệp vụ của module này.
 
-\- Trạng thái vụ việc yêu cầu bồi thường Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24].
-
 ---
 
 ##### 4.3.3.1.2. Sơ đồ luồng nghiệp vụ theo giao diện
