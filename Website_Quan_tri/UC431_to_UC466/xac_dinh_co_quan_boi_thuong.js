@@ -827,18 +827,6 @@ function showCreateClaimScreen(id) {
     document.getElementById('claimDocBase').value = `Quyết định chuyển giao cơ quan GQBT số 04/QĐ-XĐCQ đính kèm: ${item.procDecisionFile || 'QD.pdf'}`;
     document.getElementById('claimHanhVi').value = item.hanhVi;
 
-    const firstOfficer = item.officers && item.officers.length > 0 ? item.officers[0] : {};
-    document.getElementById('claimOfficerName').value = firstOfficer.name || '';
-    document.getElementById('claimOfficerPosition').value = firstOfficer.position || '';
-    document.getElementById('claimOfficerAgency').value = firstOfficer.agency || '';
-    document.getElementById('claimOfficerStatus').value = firstOfficer.status || 'Vẫn công tác tại đơn vị cũ';
-    if (firstOfficer.status === 'Đã chuyển công tác') {
-        document.getElementById('claimOfficerCurrentGroup').style.display = 'block';
-        document.getElementById('claimOfficerCurrentAgency').value = firstOfficer.currentAgency || '';
-    } else {
-        document.getElementById('claimOfficerCurrentGroup').style.display = 'none';
-    }
-
     document.getElementById('claimTotalAmount').value = '';
     clearAttachedFile('claimFile', 'claimFileAttachmentInfo');
 }

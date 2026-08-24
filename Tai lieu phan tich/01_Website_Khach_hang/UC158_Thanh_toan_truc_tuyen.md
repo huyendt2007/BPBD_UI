@@ -146,10 +146,10 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xem chi tiết hồ sơ | Button | Chỉ hiển thị khi `Mã loại thanh toán = THANH_TOAN_DANG_KY`. Điều hướng sang màn hình Xem chi tiết hồ sơ đăng ký tương ứng. |
-| 2 | Xem chi tiết yêu cầu CCTT | Button | Chỉ hiển thị khi `Mã loại thanh toán = THANH_TOAN_CCTT`. Điều hướng sang màn hình Xem chi tiết yêu cầu cung cấp thông tin tương ứng. |
-| 3 | Xem chi tiết yêu cầu bản sao | Button | Chỉ hiển thị khi `Mã loại thanh toán = THANH_TOAN_BAN_SAO`. Điều hướng sang màn hình Xem chi tiết yêu cầu cung cấp bản sao tương ứng. |
-| 4 | Tra cứu ngay | Button | Chỉ hiển thị khi `Mã loại thanh toán = THANH_TOAN_CAP_MA_CSDL`. Button primary xanh đậm kèm icon `fa-search`. |
+| 1 | Xem chi tiết hồ sơ | Button | Điều hướng sang màn hình Xem chi tiết hồ sơ đăng ký tương ứng. |
+| 2 | Xem chi tiết yêu cầu CCTT | Button | Điều hướng sang màn hình Xem chi tiết yêu cầu cung cấp thông tin tương ứng. |
+| 3 | Xem chi tiết yêu cầu bản sao | Button | Điều hướng sang màn hình Xem chi tiết yêu cầu cung cấp bản sao tương ứng. |
+| 4 | Tra cứu ngay | Button | Button primary xanh đậm kèm icon `fa-search`. |
 |  |  |  | **TH Hợp lệ**: Khi người dùng click nút, hệ thống tự động chuyển người dùng quay trở lại màn hình Tra cứu thông tin trước đó theo `Return URL`, đồng thời tự động điền sẵn mã số CSDL vừa được cấp vào ô nhập mã số tra cứu để người dùng thực hiện tra cứu ngay. |
 | 5 | Xem/Tải biên lai điện tử | Button/Link | Mở xem hoặc tải file biên lai thu phí điện tử dạng PDF nếu biên lai đã được phát hành. |
 |  |  |  | **TH1 - Biên lai đã phát hành**: Hệ thống mở file biên lai điện tử đúng với giao dịch thanh toán hiện tại; cho phép người dùng tải file PDF. |
