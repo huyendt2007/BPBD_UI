@@ -83,10 +83,10 @@ Ghi chú:
 | 1 | Tìm kiếm | Button | TH1 (Điều kiện ngày không hợp lệ): Nếu `Từ ngày` lớn hơn `Đến ngày`, hiển thị [MSG-ERR-VAL-007] và không tìm kiếm.<br>TH2 (Không có dữ liệu): Nếu không có bản ghi phù hợp, hiển thị trạng thái rỗng theo chuẩn danh sách.<br>TH Hợp lệ: Hệ thống tải danh sách hồ sơ thỏa mãn điều kiện.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | 2 | Xóa bộ lọc | Button | Xóa toàn bộ tiêu chí lọc và tải lại danh sách mặc định theo `Thời điểm đăng ký` giảm dần. |
 | 3 | Row Click | Row | Mở màn hình chi tiết hồ sơ Yêu cầu cung cấp thông tin tương ứng. |
-| 4 | Thanh toán | Button | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`. Khi click, hệ thống đóng gói tham số `Mã loại thanh toán = THANH_TOAN_CCTT`, `Mã hồ sơ`, `Số tiền phải thu`, `Mã đơn vị thụ hưởng`, `Return URL` và chuyển sang UC158 theo tài liệu [UC158_Thanh_toan_truc_tuyen.md](UC158_Thanh_toan_truc_tuyen.md). |
-| 5 | Xem file | Link/Button | Chỉ hiển thị khi hồ sơ `Hoàn thành` và có file PDF kết quả đã ký. Cho phép mở file tại tab/trình xem riêng. |
-| 6 | Tải file | Link/Button | Chỉ hiển thị khi hồ sơ `Hoàn thành` và có file PDF kết quả đã ký. |
-| 7 | In biên lai | Button | Chỉ hiển thị khi hồ sơ đã thanh toán trực tuyến thành công qua UC158 và có biên lai điện tử. |
+| 4 | Thanh toán | Button | Khi click, hệ thống đóng gói tham số `Mã loại thanh toán = THANH_TOAN_CCTT`, `Mã hồ sơ`, `Số tiền phải thu`, `Mã đơn vị thụ hưởng`, `Return URL` và chuyển sang UC158 theo tài liệu [UC158_Thanh_toan_truc_tuyen.md](UC158_Thanh_toan_truc_tuyen.md). |
+| 5 | Xem file | Link/Button | Cho phép mở file tại tab/trình xem riêng. |
+| 6 | Tải file | Link/Button | Tải file PDF kết quả xuống thiết bị của Khách hàng. |
+| 7 | In biên lai | Button | Mở/in biên lai điện tử của giao dịch thanh toán. |
 
 ---
 
@@ -132,10 +132,10 @@ Ghi chú:
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :-- | :-- | :-- |
 | 1 | Quay lại | Button | Quay lại tab `Yêu cầu cung cấp thông tin`, giữ nguyên bộ lọc và trang hiện tại. |
-| 2 | Thanh toán | Button | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`, có nghĩa vụ phí. Khi click, hệ thống đóng gói tham số `Mã loại thanh toán = THANH_TOAN_CCTT`, `Mã hồ sơ`, `Số tiền phải thu`, `Mã đơn vị thụ hưởng`, `Return URL` và chuyển sang UC158 theo tài liệu [UC158_Thanh_toan_truc_tuyen.md](UC158_Thanh_toan_truc_tuyen.md). |
-| 3 | Xem file | Link/Button | Chỉ hiển thị khi hồ sơ `Hoàn thành` và có file PDF kết quả đã ký. |
-| 4 | Tải file | Link/Button | Chỉ hiển thị khi hồ sơ `Hoàn thành` và có file PDF kết quả đã ký. |
-| 5 | Xem/In biên lai | Link/Button | Chỉ hiển thị khi hồ sơ đã thanh toán trực tuyến thành công qua UC158 và có biên lai điện tử. |
+| 2 | Thanh toán | Button | Khi click, hệ thống đóng gói tham số `Mã loại thanh toán = THANH_TOAN_CCTT`, `Mã hồ sơ`, `Số tiền phải thu`, `Mã đơn vị thụ hưởng`, `Return URL` và chuyển sang UC158 theo tài liệu [UC158_Thanh_toan_truc_tuyen.md](UC158_Thanh_toan_truc_tuyen.md). |
+| 3 | Xem file | Link/Button | Mở file PDF kết quả đã ký tại tab/trình xem riêng. |
+| 4 | Tải file | Link/Button | Tải file PDF kết quả đã ký xuống thiết bị của Khách hàng. |
+| 5 | Xem/In biên lai | Link/Button | Mở/in biên lai điện tử của giao dịch thanh toán. |
 
 ---
 

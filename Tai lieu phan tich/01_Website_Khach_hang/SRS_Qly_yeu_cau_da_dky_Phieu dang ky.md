@@ -135,11 +135,10 @@
 | | | | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 yêu cầu"* và các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút `Kết xuất Excel` nếu có được khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Xóa bộ lọc | Button | Đưa toàn bộ bộ lọc về mặc định: các ô nhập về trống, các combobox về `Tất cả`; tải lại danh sách hồ sơ gốc thuộc quyền tài khoản đang đăng nhập theo thứ tự mặc định. |
 | 3 | Xem chi tiết hồ sơ | Row Click | Không bố trí nút/button `Xem` riêng biệt trên từng dòng. Khi NSD click trực tiếp vào một dòng dữ liệu trên Tree Grid, hệ thống mở màn hình **MH02 - Phiếu đăng ký - Xem chi tiết** và chọn mặc định đúng phiên bản tương ứng với dòng được click. |
-| 4 | Thanh toán | Button/Icon | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`. Khi NSD click, hệ thống chuyển sang luồng thanh toán trực tuyến theo UC158. |
-| 5 | Cập nhật | Button/Icon | Chỉ hiển thị khi hồ sơ ở trạng thái cho phép cập nhật theo nghiệp vụ tương ứng. Khi NSD click, hệ thống chuyển sang màn hình cập nhật của nghiệp vụ tương ứng. |
-| 6 | Xóa | Button/Icon | Chỉ hiển thị và chỉ cho phép thực hiện với hồ sơ ở trạng thái `Lưu nháp`. |
-| | | | **TH1 - Hồ sơ không ở trạng thái Lưu nháp**: Hệ thống không hiển thị nút `Xóa`; hồ sơ ở trạng thái `Bị từ chối` tuyệt đối không được xóa vì đã được lưu vết chính thức trong CSDL hệ thống. |
-| | | | **TH2 - NSD hủy xác nhận xóa**: Hệ thống đóng popup xác nhận và giữ nguyên hồ sơ. |
+| 4 | Thanh toán | Button/Icon | Khi NSD click nút `Thanh toán`, hệ thống chuyển sang luồng thanh toán trực tuyến theo UC158. |
+| 5 | Cập nhật | Button/Icon | Khi NSD click nút `Cập nhật`, hệ thống chuyển sang màn hình cập nhật của nghiệp vụ tương ứng. |
+| 6 | Xóa | Button/Icon | Khi NSD click nút `Xóa`, hệ thống hiển thị popup xác nhận trước khi thực hiện xóa hồ sơ. |
+| | | | **TH1 - NSD hủy xác nhận xóa**: Hệ thống đóng popup xác nhận và giữ nguyên hồ sơ. |
 | | | | **TH Hợp lệ**: Sau khi NSD xác nhận, hệ thống xóa hồ sơ `Lưu nháp`, ghi Audit Log và tải lại danh sách. |
 | 7 | Thao tác khác | Dropdown | Khi NSD click chọn một thao tác trong Dropdown, hệ thống kiểm tra điều kiện nghiệp vụ của hồ sơ/phiên bản đang chọn và điều hướng sang màn hình nghiệp vụ tương ứng. |
 | | | | **TH Đăng ký thay đổi**: Hệ thống chuyển sang màn hình **Đăng ký thay đổi biện pháp bảo đảm** (UC025), kế thừa toàn bộ thông tin hồ sơ gốc gồm `Số đăng ký`, `Số PIN`, thông tin bên bảo đảm, bên nhận bảo đảm, tài sản bảo đảm và các thông tin liên quan; hệ thống đưa NSD tới bước nhập nội dung thay đổi mà không yêu cầu nhập lại số đăng ký/số PIN. |
@@ -207,17 +206,16 @@
 | | | | **TH6 - Phiên bản là Xóa đăng ký thông báo xử lý tài sản bảo đảm**: Hiển thị chi tiết phiên bản xóa thông báo xử lý tài sản bảo đảm dạng Read-only theo cấu trúc màn Review của [UC131_Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md](UC131_Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md), không hiển thị chức năng `Chỉ hiển thị vùng dữ liệu có biến động`. |
 | | | | **TH7 - Phiên bản là Hủy đăng ký/Khôi phục hủy/Chỉnh lý thông tin**: Hiển thị chi tiết phiên bản dạng Read-only theo cấu trúc màn hình nghiệp vụ tương ứng và ghi nhận đầy đủ lịch sử xử lý. |
 | | | | **TH8 - Phiên bản bị từ chối**: Hiển thị thêm khối `Lý do bị từ chối`. |
-| 2 | Bật/Tắt chỉ hiển thị vùng dữ liệu có biến động | Toggle | Chỉ thao tác được khi phiên bản đang chọn là `Đăng ký thay đổi` hoặc `Thay đổi thông báo xử lý tài sản bảo đảm`. |
-| | | | **TH Hợp lệ**: Khi bật, hệ thống chỉ hiển thị các vùng/trường có thay đổi so với phiên bản gần nhất đã có hiệu lực; khi tắt, hệ thống hiển thị đầy đủ thông tin phiên bản. |
+| 2 | Bật/Tắt chỉ hiển thị vùng dữ liệu có biến động | Toggle | Khi NSD bật, hệ thống chỉ hiển thị các vùng/trường có thay đổi so với phiên bản gần nhất đã có hiệu lực; khi tắt, hệ thống hiển thị đầy đủ thông tin phiên bản. |
 | 3 | Tìm kiếm phiên bản trên Sidebar | Button | Khi NSD click nút `Tìm kiếm` tại Sidebar, hệ thống kiểm tra tính hợp lệ của khoảng ngày theo [BR-VAL-007] và lọc danh sách node phiên bản thỏa mãn đồng thời các tiêu chí `Số đăng ký`, `Loại đăng ký`, `Từ ngày`, `Đến ngày`. |
 | | | | **TH1 - Điều kiện ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị thông báo lỗi theo MessageList dùng chung. Không thực hiện lọc. |
 | | | | **TH Hợp lệ**: Hệ thống hiển thị danh sách node phiên bản thỏa mãn điều kiện lọc, sắp xếp theo `Thời điểm đăng ký` giảm dần; nếu không có dữ liệu, Sidebar hiển thị thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*. Sidebar tiếp tục sử dụng cơ chế danh sách cuộn với `Xem thêm`/`Thu gọn`. |
 | 4 | Xóa lọc phiên bản trên Sidebar | Button | Xóa toàn bộ tiêu chí lọc tại Sidebar, đặt `Loại đăng ký` về `Tất cả`, xóa `Số đăng ký`, `Từ ngày`, `Đến ngày` và hiển thị lại tối đa 10 phiên bản gần nhất theo thứ tự mặc định. |
 | 5 | Xem thêm | Button | Hiển thị ở cuối danh sách khi còn phiên bản chưa hiển thị. Mỗi lần click, hệ thống tải thêm 10 phiên bản theo bộ lọc hiện tại. |
 | 6 | Thu gọn | Button | Chỉ hiển thị khi danh sách phiên bản đang hiển thị nhiều hơn 10 phiên bản. Khi NSD click, hệ thống thu gọn danh sách về 10 phiên bản đầu tiên theo bộ lọc hiện tại. |
-| 7 | Tải/Xem văn bản kết quả | Icon/Button | Chỉ hiển thị khi hồ sơ đã có file văn bản kết quả, trạng thái `Hoàn thành` và đã sinh/ký số file kết quả. Khi NSD click, hệ thống mở xem hoặc tải file PDF trực tiếp. |
+| 7 | Tải/Xem văn bản kết quả | Icon/Button | Khi NSD click, hệ thống mở xem hoặc tải file PDF văn bản kết quả trực tiếp. |
 | | | | **TH Ngoại lệ - Kết nối bị gián đoạn**: Nếu kết nối mạng hoặc hệ thống lưu trữ file bị gián đoạn, hệ thống hiển thị thông báo lỗi theo MessageList dùng chung và không tải file. |
-| 8 | Cập nhật | Button | Chuyển sang màn hình cập nhật của nghiệp vụ tương ứng nếu hồ sơ đang ở trạng thái cho phép cập nhật. |
-| 9 | Thanh toán | Button | Chuyển sang luồng thanh toán nếu hồ sơ đang ở trạng thái `Chờ thanh toán`. |
+| 8 | Cập nhật | Button | Khi NSD click nút `Cập nhật`, hệ thống chuyển sang màn hình cập nhật của nghiệp vụ tương ứng. |
+| 9 | Thanh toán | Button | Khi NSD click nút `Thanh toán`, hệ thống chuyển sang luồng thanh toán trực tuyến theo UC158. |
 | 10 | Thao tác khác | Dropdown | Thực hiện theo chức năng `Thao tác khác` tại mục [4.1.12.3.3](#411233-chuc-nang-tren-man-hinh). |
 | 11 | Đóng | Button | Đóng màn hình và quay lại danh sách Phiếu đăng ký. |

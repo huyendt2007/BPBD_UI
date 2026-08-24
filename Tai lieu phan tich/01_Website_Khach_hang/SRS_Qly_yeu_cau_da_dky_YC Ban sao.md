@@ -87,8 +87,8 @@ Ghi chú: bộ trạng thái này thay thế hoàn toàn bộ trạng thái cũ 
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về mặc định (trống hoặc "Tất cả") và tải lại lưới kết quả theo Thời điểm đăng ký giảm dần. |
 | 3 | Tạo mới | Nút | Mở [UC149.MH01](SRS_YC_cung_cap_ban_sao_van_ban_chung_nhan.md#41162-uc149mh01---man-hinh-yeu-cau-cap-ban-sao-van-ban-chung-nhan-dang-ky-bien-phap-bao-dam). |
 | 4 | Row Click | Thao tác dòng | Mở **UCPS007.MH03-BS - Chi tiết yêu cầu cung cấp bản sao** tương ứng với yêu cầu được chọn. |
-| 5 | Thanh toán | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ thanh toán". TH1 (Sai trạng thái tại thời điểm click): Hiển thị [MSG-ERR-DK-005], không chuyển màn hình. TH Hợp lệ: Đóng gói thông tin thanh toán (Mã hồ sơ, Số tiền phải thu, Nội dung thanh toán, Mã đơn vị thụ hưởng, Return URL) và chuyển hướng sang [UC158 - Quản lý thanh toán phí](UC158_Quan_ly_thanh_toan_phi.md). |
-| 6 | Tải file | Nút | Chỉ hiển thị khi Trạng thái là "Hoàn thành" và Loại cung cấp bản sao là "Bản sao điện tử". Tải đúng file PDF bản sao văn bản chứng nhận đã được Lãnh đạo ký số xuống thiết bị của Khách hàng. Ghi nhật ký vào III.6. |
+| 5 | Thanh toán | Nút | TH1 (Sai trạng thái tại thời điểm click): Hiển thị [MSG-ERR-DK-005], không chuyển màn hình.<br>- TH Hợp lệ: Đóng gói thông tin thanh toán (Mã hồ sơ, Số tiền phải thu, Nội dung thanh toán, Mã đơn vị thụ hưởng, Return URL) và chuyển hướng sang [UC158 - Quản lý thanh toán phí](UC158_Quan_ly_thanh_toan_phi.md). |
+| 6 | Tải file | Nút | Tải đúng file PDF bản sao văn bản chứng nhận đã được Lãnh đạo ký số xuống thiết bị của Khách hàng. Ghi nhật ký vào III.6. |
 
 ---
 
@@ -147,6 +147,6 @@ Mở khi Khách hàng click vào một dòng dữ liệu tại Tab "Yêu cầu c
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Quay lại | Nút | Quay lại Tab "Yêu cầu cung cấp bản sao" (mục 4.1.X.3), giữ nguyên bộ lọc và trang hiện tại. |
-| 2 | Thanh toán | Nút | Chỉ hiển thị khi Trạng thái là "Chờ thanh toán". TH1 (Sai trạng thái): [MSG-ERR-DK-005], không chuyển màn hình. TH Hợp lệ: Đóng gói thông tin thanh toán và chuyển hướng sang [UC158](UC158_Quan_ly_thanh_toan_phi.md). |
-| 3 | Xem file | Link/Nút | Chỉ hiển thị khi Trạng thái là "Hoàn thành" và Loại cung cấp bản sao là "Bản sao điện tử". Cho phép xem file tại một tab riêng. |
-| 4 | Tải file | Link/Nút | Chỉ hiển thị khi Trạng thái là "Hoàn thành" và Loại cung cấp bản sao là "Bản sao điện tử". Tải file PDF bản sao đã ký xuống thiết bị của Khách hàng. |
+| 2 | Thanh toán | Nút | TH1 (Sai trạng thái): [MSG-ERR-DK-005], không chuyển màn hình.<br>- TH Hợp lệ: Đóng gói thông tin thanh toán và chuyển hướng sang [UC158](UC158_Quan_ly_thanh_toan_phi.md). |
+| 3 | Xem file | Link/Nút | Cho phép xem file tại một tab riêng. |
+| 4 | Tải file | Link/Nút | Tải file PDF bản sao đã ký xuống thiết bị của Khách hàng. |

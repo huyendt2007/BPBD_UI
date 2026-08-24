@@ -20,12 +20,6 @@
 
 \- Người dùng đã đăng nhập Website quản trị và được phân quyền truy cập chức năng Tiếp nhận yêu cầu.
 
-\- Danh mục `Hình thức tiếp nhận hồ sơ` Tham chiếu Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25].
-
-\- Danh mục `Lĩnh vực phát sinh thiệt hại` Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22].
-
-\- Trạng thái vụ việc/hồ sơ bồi thường Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24].
-
 ---
 
 ##### 4.3.3.0.2. Sơ đồ luồng nghiệp vụ theo giao diện

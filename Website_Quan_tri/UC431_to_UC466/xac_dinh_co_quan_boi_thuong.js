@@ -892,7 +892,7 @@ function renderFormDocs() {
             <td style="text-align: center;">
                 <div class="action-flex">
                     <button type="button" class="icon-btn view" ${doc.file ? '' : 'style="opacity:0.35; pointer-events:none;"'} title="Xem file" onclick="viewFormDoc(${idx})"><i class="fa-solid fa-eye"></i></button>
-                    <button type="button" class="icon-btn delete" title="Xóa tài liệu" onclick="deleteFormDoc(${idx})"><i class="fa-solid fa-trash-can"></i></button>
+                    <button type="button" class="icon-btn delete" title="Xóa tài liệu" onclick="deleteFormDoc(${idx})"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </td>
         </tr>
@@ -1460,7 +1460,7 @@ function getActionButtons(item) {
             break;
         case 'Lưu nháp':
             html += `<button class="icon-btn edit" title="Chỉnh sửa thông tin" onclick="showFormScreen('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-            html += `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>`;
+            html += `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash"></i></button>`;
             break;
         case 'Đang xác minh':
             html += `<button class="icon-btn edit" title="Cập nhật kết quả xác minh" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-clipboard-check"></i></button>`;
@@ -1632,7 +1632,7 @@ function handleRejectFileUpload(input) {
                 <i class="fa-solid fa-file-pdf" style="color: #EF4444;"></i>
                 <span style="font-weight: 500;">${file.name}</span>
                 <a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(file.name)}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 10px;">Xem file</a>
-                <a href="#" title="Xóa file" onclick="event.preventDefault(); removeRejectFile();" style="color: var(--danger-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 5px;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
+                <a href="#" title="Xóa file" onclick="event.preventDefault(); removeRejectFile();" style="color: var(--danger-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 5px;"><i class="fa-solid fa-trash"></i> Xóa file</a>
             </div>
         `;
     }
