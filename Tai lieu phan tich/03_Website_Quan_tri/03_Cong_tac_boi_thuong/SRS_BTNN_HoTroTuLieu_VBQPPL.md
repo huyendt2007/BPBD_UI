@@ -153,9 +153,9 @@ Nguồn UI: modal `docModal` với tiêu đề `Chi tiết thông tin tư liệu
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Phê duyệt | Button | Chỉ hiển thị với tài khoản Cán bộ phê duyệt khi bản ghi ở trạng thái "Chờ duyệt". Hệ thống cập nhật trạng thái bản ghi sang "Đã duyệt", ghi nhận người duyệt/ngày duyệt, đóng màn hình chi tiết, tải lại danh sách và hiển thị [MSG-SUC-BTNN-HTTL-006]. |
+| 1 | Phê duyệt | Button | Hệ thống cập nhật trạng thái bản ghi sang "Đã duyệt", ghi nhận người duyệt/ngày duyệt, đóng màn hình chi tiết, tải lại danh sách và hiển thị [MSG-SUC-BTNN-HTTL-006]. |
 | 2 | Từ chối | Button | TH1 (Bỏ trống lý do từ chối): Vi phạm [BR-VAL-001]. Hệ thống hiển thị [MSG-ERR-VAL-001] dưới trường `Lý do từ chối`, không cho phép từ chối. |
-|  |  |  | TH Hợp lệ: Chỉ hiển thị với tài khoản Cán bộ phê duyệt khi bản ghi ở trạng thái "Chờ duyệt". Hệ thống cập nhật trạng thái bản ghi sang "Từ chối", lưu lý do từ chối, ghi nhận người duyệt/ngày duyệt, đóng màn hình chi tiết, tải lại danh sách và hiển thị [MSG-SUC-BTNN-HTTL-007]. |
+|  |  |  | TH Hợp lệ: Hệ thống cập nhật trạng thái bản ghi sang "Từ chối", lưu lý do từ chối, ghi nhận người duyệt/ngày duyệt, đóng màn hình chi tiết, tải lại danh sách và hiển thị [MSG-SUC-BTNN-HTTL-007]. |
 | 3 | Xem file | Link | Cho phép xem file tại một tab riêng. |
 | 4 | Hủy | Button | Hệ thống đóng màn hình chi tiết và quay lại **MH01 - Danh sách thông tin tư liệu VBQPPL**. |
 | 5 | Đóng | Icon button | Hệ thống đóng màn hình chi tiết và quay lại **MH01 - Danh sách thông tin tư liệu VBQPPL**. |

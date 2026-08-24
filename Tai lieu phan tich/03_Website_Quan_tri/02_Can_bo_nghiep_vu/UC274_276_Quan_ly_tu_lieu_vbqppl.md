@@ -102,8 +102,8 @@
 ##### 4.3.2.13.2.3. Chức năng trên màn hình
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Phê duyệt | Nút | - **Điều kiện hiển thị**: Chỉ hiển thị với người dùng là Lãnh đạo đơn vị khi bản ghi ở trạng thái "Chờ duyệt".<br>- **Thao tác**: Lãnh đạo bấm nút **[Phê duyệt]**.<br>- **Xử lý**: Hệ thống cập nhật trạng thái bản ghi sang "Đã duyệt"; ghi nhận thông tin người duyệt và ngày duyệt; hiển thị thông báo toast: *"Phê duyệt tư liệu văn bản thành công"*; đóng Modal và tải lại danh sách. |
-| 2 | Từ chối | Nút | - **Điều kiện hiển thị**: Chỉ hiển thị với người dùng là Lãnh đạo đơn vị khi bản ghi ở trạng thái "Chờ duyệt".<br>- **Thao tác**: Lãnh đạo bấm nút **[Từ chối]**. |
+| 1 | Phê duyệt | Nút | - **Thao tác**: Lãnh đạo bấm nút **[Phê duyệt]**.<br>- **Xử lý**: Hệ thống cập nhật trạng thái bản ghi sang "Đã duyệt"; ghi nhận thông tin người duyệt và ngày duyệt; hiển thị thông báo toast: *"Phê duyệt tư liệu văn bản thành công"*; đóng Modal và tải lại danh sách. |
+| 2 | Từ chối | Nút | - **Thao tác**: Lãnh đạo bấm nút **[Từ chối]**. |
 | | | | - TH1 (Trống lý do): Nếu trường Lý do từ chối để trống hoặc chỉ nhập ký tự trắng, hệ thống hiển thị cảnh báo đỏ dưới ô nhập liệu: *"Vui lòng nhập lý do từ chối duyệt"*, highlight viền đỏ ô nhập và chặn từ chối. |
 | | | | - TH Hợp lệ: Hệ thống cập nhật trạng thái bản ghi sang "Từ chối"; lưu lý do từ chối đã nhập; ghi nhận thông tin người duyệt; hiển thị thông báo toast: *"Từ chối duyệt tư liệu văn bản thành công"*; đóng Modal và tải lại danh sách. |
 | 3 | Xem file | Link | - Thao tác: NSD click liên kết "Xem file" cạnh tên tệp tin.<br>- Xử lý: Mở xem trực tiếp tệp tin PDF/ảnh trong tab mới hoặc thực hiện tải xuống tệp tin. |

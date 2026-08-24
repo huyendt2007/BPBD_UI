@@ -111,9 +111,8 @@
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Xem hồ sơ gốc | Link | Luôn hiển thị cạnh Số đăng ký. Khi Cán bộ click, mở popup/tab riêng ở chế độ chỉ đọc, hiển thị theo cấu trúc dùng chung tại [4.1.12.6. Màn hình Chi tiết kết quả tra cứu](../../01_Website_Khach_hang/UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md#41126-man-hinh-chi-tiet-ket-qua-tra-cuu-dung-chung-sau-khi-bam-tim-kiem), bắt đầu từ tiêu đề **Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]**. Dữ liệu được truy vấn trực tiếp (join) theo Số đăng ký ngay tại thời điểm click, không phải bản sao dữ liệu tĩnh, theo [BR-BS-011]. Nếu hồ sơ gốc không còn ở trạng thái "Hoàn thành" tại thời điểm xem, vi phạm [BR-BS-011], hiển thị [MSG-ERR-BS-009] và không mở popup. |
-| 2 | Kết xuất bản sao điện tử | Nút | Điều kiện hiển thị: Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao điện tử" và hồ sơ ở trạng thái Cán bộ được phép xử lý. |
-|  |  |  | TH Hợp lệ: Hệ thống sinh file bản sao điện tử dự thảo dựa trên dữ liệu hồ sơ gốc truy vấn theo Số đăng ký, hiển thị tại **II. Tệp bản sao điện tử dự thảo**, hiển thị [MSG-SUC-BS-001]. |
-| 3 | Xem file/Tải file | Link/Nút | Chỉ hiển thị sau khi có File bản sao điện tử dự thảo. Cho phép xem file tại một tab riêng hoặc tải theo quyền. |
+| 2 | Kết xuất bản sao điện tử | Nút | Khi Cán bộ click, hệ thống sinh file bản sao điện tử dự thảo dựa trên dữ liệu hồ sơ gốc truy vấn theo Số đăng ký, hiển thị tại **II. Tệp bản sao điện tử dự thảo**, hiển thị [MSG-SUC-BS-001]. |
+| 3 | Xem file/Tải file | Link/Nút | Cho phép xem file tại một tab riêng hoặc tải theo quyền. |
 | 4 | Trình ký | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không cho phép trình ký. |
 |  |  |  | TH2 (Loại "Bản sao điện tử" nhưng chưa kết xuất file dự thảo): Vi phạm [BR-BS-004], hiển thị [MSG-ERR-BS-003], không cho phép trình ký. |
 |  |  |  | TH Hợp lệ: Mở **UC-BS-CB.MH03 - Popup Trình ký yêu cầu cung cấp bản sao**. |

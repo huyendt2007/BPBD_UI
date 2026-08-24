@@ -131,7 +131,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xem file/Tải file | Nút | Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao điện tử" và có File bản sao điện tử dự thảo. |
+| 1 | Xem file/Tải file | Nút | Khi Lãnh đạo click, hệ thống mở xem hoặc tải file bản sao điện tử dự thảo tương ứng. |
 | 2 | Duyệt | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Vi phạm [BR-BS-003], hiển thị [MSG-ERR-BS-002], không cho phép duyệt. |
 |  |  |  | TH2 (Lãnh đạo không có quyền): Vi phạm [BR-BS-003], hiển thị [MSG-ERR-BS-004], không cho phép duyệt. |
 |  |  |  | TH3 (Hồ sơ gốc không còn ở trạng thái "Hoàn thành" khi kiểm tra lại theo Số đăng ký): Vi phạm [BR-BS-011], hiển thị [MSG-ERR-BS-009], không cho phép duyệt. |

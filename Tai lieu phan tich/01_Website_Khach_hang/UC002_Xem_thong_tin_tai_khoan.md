@@ -91,8 +91,8 @@
 | :--- | :--- | :--- | :--- |
 | 1 | Cập nhật | Button | - Chuyển sang màn hình UC003 - Cập nhật thông tin tài khoản.<br>- Hệ thống giữ nguyên Loại khách hàng (`Cá nhân`/`Tổ chức`) của hồ sơ để hiển thị đúng form cập nhật. |
 | 2 | Đóng | Button | - Đóng màn hình xem chi tiết và quay về Trang chủ Website Khách hàng. |
-| 3 | Thiết lập ngay | Button | - Chỉ hiển thị tại thẻ Nội bộ khi trạng thái là `Chưa thiết lập`.<br>- Khi click, mở Popup UC002.MH02 - Thiết lập phương thức đăng nhập Nội bộ. |
-| 4 | Đổi mật khẩu | Button | - Chỉ hiển thị tại thẻ Nội bộ khi trạng thái là `Đã liên kết`.<br>- Khi click, điều hướng người dùng sang màn hình UCPS006 - Đổi mật khẩu. |
+| 3 | Thiết lập ngay | Button | Khi click, mở Popup UC002.MH02 - Thiết lập phương thức đăng nhập Nội bộ. |
+| 4 | Đổi mật khẩu | Button | Khi click, điều hướng người dùng sang màn hình UCPS006 - Đổi mật khẩu. |
 
 #### 4.1.7.4. UC002.MH02 - Popup Thiết lập phương thức đăng nhập Nội bộ
 
