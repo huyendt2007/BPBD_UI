@@ -57,7 +57,7 @@ flowchart TD
 | Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. |
 | Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
 | Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
-| **II. Bảng tổng hợp** | | | | |
+| **II. Bảng tổng hợp** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Nhóm dòng theo lĩnh vực | String(255) | - | Theo dữ liệu | Chỉ đọc. Số liệu trình bày theo 06 dòng lĩnh vực phát sinh thiệt hại [DM_22] (Quản lý hành chính, Tố tụng hình sự, Tố tụng dân sự, Tố tụng hành chính, Thi hành án hình sự, Thi hành án dân sự) và 01 dòng `Tổng cộng`. |
 | Chỉ tiêu 1 - STT/nhóm lĩnh vực | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị mã nhóm (I-VI) hoặc `TC` (Tổng cộng). |
 | Chỉ tiêu 2 - Số tiền đã chi trả xong cho người yêu cầu bồi thường | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc. Đơn vị nghìn đồng. Tổng `Số tiền thực tế chi trả` (SRS Cấp kinh phí bồi thường) của các vụ việc đã chi trả xong, làm căn cứ xem xét hoàn trả trong kỳ báo cáo. |
@@ -76,6 +76,7 @@ flowchart TD
 | Chỉ tiêu 15 - Số tiền còn phải hoàn trả | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc. Đơn vị nghìn đồng. Công thức `15 = Tổng số tiền phải hoàn trả (Chỉ tiêu 5, lũy kế) − Chỉ tiêu 12 (lũy kế) − Tổng số tiền hoàn trả được giảm (Chỉ tiêu 10, lũy kế)`; không bao gồm phần thuộc các hồ sơ đang `Hoãn hoàn trả` (Chỉ tiêu 11) trong kỳ. |
 | Ghi chú giải trình | Text(2000) | Không | Trống | Không thuộc chỉ tiêu pháp lý chính; dùng để cán bộ lưu giải trình chênh lệch, nguồn số liệu điều chỉnh thủ công (nếu có) trước khi kết xuất. |
 | Trạng thái kỳ tổng hợp | Enum(String(50)) | - | `Nháp` | \- Giá trị gồm:<br>+ Nháp<br>+ Đã kết xuất |
+| Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.23.3.3. Chức năng trên màn hình
 

@@ -21,9 +21,9 @@
 
 \- Người dùng truy cập màn hình `Giải quyết Yêu cầu Bồi thường Nhà nước - Cán bộ` trên Website quản trị.
 
-\- Danh sách vụ việc được nạp từ nguồn dữ liệu nghiệp vụ hiện hành của phân hệ Giải quyết yêu cầu bồi thường. Các vụ việc ở trạng thái "Chờ nhập liệu" được tạo từ SRS Tiếp nhận YCBT.
+\- Danh sách vụ việc được nạp từ nguồn dữ liệu nghiệp vụ hiện hành của phân hệ Giải quyết yêu cầu bồi thường. Các vụ việc ở trạng thái "Chờ tiếp nhận" được tạo từ SRS Tiếp nhận yêu cầu.
 
-\- Màn hình danh sách được chia thành các tab nghiệp vụ: `Vụ việc chờ nhập liệu`, `Vụ việc chờ kiểm tra`, `Vụ việc chờ xử lý`. Dữ liệu trong từng tab được lọc theo trạng thái và vai trò người dùng.
+\- Màn hình danh sách được chia thành các tab nghiệp vụ: `Vụ việc chờ tiếp nhận`, `Vụ việc chờ kiểm tra`, `Vụ việc chờ xử lý`. Dữ liệu trong từng tab được lọc theo trạng thái và vai trò người dùng.
 
 \- Các vụ việc đã kết thúc vòng đời xử lý như `Hoàn thành`, `Bị từ chối`, `Từ chối thụ lý`, `Đình chỉ giải quyết` được tra cứu tập trung tại SRS `Tra cứu vụ việc`, không ưu tiên hiển thị trong các tab xử lý nghiệp vụ của module này.
 
@@ -36,12 +36,14 @@
 ```mermaid
 flowchart TD
     A[Danh sách vụ việc/hồ sơ yêu cầu bồi thường theo tab] --> B[Tìm kiếm / Xóa bộ lọc / Phân trang / Kết xuất Excel]
-    TN[Tiếp nhận YCBT - SRS riêng] --> D["Chờ nhập liệu"]
+    TN[Tiếp nhận yêu cầu - SRS riêng] --> D["Chờ tiếp nhận"]
     D --> A
-    A --> T1[Tab Vụ việc chờ nhập liệu]
+    A --> T1[Tab Vụ việc chờ tiếp nhận]
     A --> T2[Tab Vụ việc chờ kiểm tra]
     A --> T3[Tab Vụ việc chờ xử lý]
-    T1 -->|"Chờ nhập liệu / Yêu cầu bổ sung"| E[Nhập hồ sơ vụ việc]
+    T1 -->|"Chờ tiếp nhận"| E1[Tiếp nhận - mở MH02 kế thừa dữ liệu tiếp nhận]
+    T1 -->|"Chờ tiếp nhận / Yêu cầu bổ sung"| E2[Yêu cầu bổ sung hoặc Từ chối]
+    E1 --> E[Nhập hồ sơ vụ việc]
     T2 -->|"Chờ kiểm tra"| I[Tiếp nhận / Yêu cầu bổ sung / Từ chối]
     T3 -->|"Lãnh đạo: Chờ thụ lý"| M[Thụ lý hoặc từ chối thụ lý]
     T3 -->|"Chuyên viên: được phân công / đang xử lý"| G[Click dòng dữ liệu]
@@ -85,7 +87,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tab nghiệp vụ** | Enum(String(100)) | Có | `Vụ việc chờ nhập liệu` | Control UI: Tabs navigation.<br>- Tab 1: "Vụ việc chờ nhập liệu" - Hiển thị các vụ việc ở trạng thái: "Chờ nhập liệu", "Yêu cầu bổ sung".<br>- Tab 2: "Vụ việc chờ kiểm tra" - Hiển thị các vụ việc ở trạng thái: "Chờ kiểm tra".<br>- Tab 3: "Vụ việc chờ xử lý" - Hiển thị các vụ việc thuộc các trạng thái tiếp theo gồm: "Chờ thụ lý", "Đang xác minh thiệt hại", "Đang thương lượng", "Thương lượng không thành công", "Chờ ban hành QĐ", "Chờ thực thi", "Hoãn giải quyết", "Tạm đình chỉ giải quyết", "Đình chỉ giải quyết". |
+| **Tab nghiệp vụ** | Enum(String(100)) | Có | `Vụ việc chờ tiếp nhận` | Control UI: Tabs navigation.<br>- Tab 1: "Vụ việc chờ tiếp nhận" - Hiển thị các vụ việc ở trạng thái: "Chờ tiếp nhận", "Yêu cầu bổ sung".<br>- Tab 2: "Vụ việc chờ kiểm tra" - Hiển thị các vụ việc ở trạng thái: "Chờ kiểm tra".<br>- Tab 3: "Vụ việc chờ xử lý" - Hiển thị các vụ việc thuộc các trạng thái tiếp theo gồm: "Chờ thụ lý", "Đang xác minh thiệt hại", "Đang thương lượng", "Thương lượng không thành công", "Chờ ban hành QĐ", "Chờ thực thi", "Hoãn giải quyết", "Tạm đình chỉ giải quyết", "Đình chỉ giải quyết". |
 | **Bộ lọc tìm kiếm** | String(255) | - | - | Khối tiêu chí lọc danh sách vụ việc trong tab đang chọn. |
 | Mã vụ việc | String(50) | Không | Trống | Tìm gần đúng theo mã vụ việc, tự động trim space. |
 | Tên vụ việc | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo tên vụ việc, không phân biệt hoa thường.<br>- Dữ liệu lấy từ thông tin tiếp nhận YCBT hoặc hồ sơ xác định cơ quan liên thông. |
@@ -98,13 +100,14 @@ flowchart TD
 | Hạn xử lý: Từ ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
 | Hạn xử lý: Đến ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
 | Hình thức tiếp nhận | Enum(String(50)) | Không | `Tất cả` | Tham chiếu Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
-| Bảng danh sách vụ việc/hồ sơ yêu cầu bồi thường | List(Object) | Không | Danh sách dữ liệu theo tab | Control UI: Data grid.<br>- Hiển thị danh sách vụ việc/hồ sơ theo tab đang chọn, sắp xếp mặc định theo `Ngày tiếp nhận` giảm dần.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
+| Bảng danh sách vụ việc/hồ sơ yêu cầu bồi thường | List(Object) | Không | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tiếp nhận" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | - | Tự tăng | Căn giữa, tăng theo phân trang. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Hiển thị mã vụ việc. Người dùng click vào dòng dữ liệu để mở màn hình chi tiết. |
 | Tên vụ việc | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tên vụ việc đã ghi nhận ở bước tiếp nhận YCBT. |
 | Tên người yêu cầu | String(100) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tên người yêu cầu bồi thường. |
-| Tỉnh/TP | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tỉnh/thành phố của người yêu cầu hoặc địa bàn phát sinh vụ việc. |
-| Địa chỉ chi tiết | Text(1000) | - | Theo dữ liệu | Chỉ đọc. Hiển thị địa chỉ chi tiết của người yêu cầu/vụ việc. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | - | Theo dữ liệu | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | - | Theo dữ liệu | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Địa chỉ chi tiết | Text(1000) / String(500) | - | Theo dữ liệu | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
 | Hành vi gây thiệt hại | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tóm tắt hành vi gây thiệt hại của người thi hành công vụ. |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị lĩnh vực phát sinh thiệt hại theo Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
 | Cơ quan giải quyết | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cơ quan giải quyết bồi thường. |
@@ -113,29 +116,31 @@ flowchart TD
 | Hạn xử lý | Date | - | Theo dữ liệu | Hiển thị hạn xử lý và trạng thái cảnh báo SLA theo dữ liệu hệ thống. |
 | Hình thức tiếp nhận | Enum(String(50)) | - | Theo dữ liệu | Hiển thị hình thức tiếp nhận theo Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
 | Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Hiển thị trạng thái theo Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. Trạng thái "Hoãn giải quyết" và "Tạm đình chỉ giải quyết" hiển thị badge cảnh báo; trạng thái "Đình chỉ giải quyết" hiển thị badge lỗi/kết thúc. |
-| Thao tác | String(255) | - | Theo vai trò/trạng thái | Control UI: Icon buttons.<br>- Đối với vai trò Chuyên viên/Cán bộ: Hiển thị các icon thao tác nghiệp vụ gồm `Nhập hồ sơ`, `Cập nhật hồ sơ`, `Tiếp nhận`, `Yêu cầu bổ sung`, `Từ chối` theo trạng thái và phạm vi xử lý của vụ việc.<br>- Đối với vai trò Lãnh đạo/Thủ trưởng: Hiển thị các icon thao tác nghiệp vụ gồm `Thụ lý hồ sơ`, `Từ chối thụ lý` theo trạng thái và phạm vi xử lý của vụ việc.<br>- Không có nút/icon `Xem chi tiết` riêng biệt trong cột Thao tác.<br>- Người dùng xem chi tiết bằng sự kiện click trực tiếp vào dòng dữ liệu (Row-Click).<br>- Các icon không đủ điều kiện thao tác theo trạng thái, vai trò hoặc phân công xử lý hiển thị dạng khóa mờ (Disabled). |
-| Phân trang | String(255) | Không | `20 bản ghi/trang` | Tuân thủ quy chuẩn phân trang chung [BR-UI-001]. |
+| Thao tác | String(255) | - | Theo vai trò/trạng thái | Control UI: Icon buttons.<br>- Tại tab `Vụ việc chờ tiếp nhận`, hồ sơ trạng thái `Chờ tiếp nhận` hiển thị các thao tác `Tiếp nhận`, `Yêu cầu bổ sung`, `Từ chối` theo phạm vi xử lý của cán bộ.<br>- Đối với vai trò Chuyên viên/Cán bộ ở các tab còn lại: Hiển thị các icon thao tác nghiệp vụ gồm `Cập nhật hồ sơ`, `Tiếp nhận kiểm tra`, `Yêu cầu bổ sung sau kiểm tra`, `Từ chối sau kiểm tra` theo trạng thái và phạm vi xử lý của vụ việc.<br>- Đối với vai trò Lãnh đạo/Thủ trưởng: Hiển thị các icon thao tác nghiệp vụ gồm `Thụ lý hồ sơ`, `Từ chối thụ lý` theo trạng thái và phạm vi xử lý của vụ việc.<br>- Không có nút/icon `Xem chi tiết` riêng biệt trong cột Thao tác.<br>- Người dùng xem chi tiết bằng sự kiện click trực tiếp vào dòng dữ liệu (Row-Click).<br>- Các icon không đủ điều kiện thao tác theo trạng thái, vai trò hoặc phân công xử lý hiển thị dạng khóa mờ (Disabled). |
+| Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.1.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển tab | Tab | Hệ thống tải danh sách vụ việc theo tab được chọn và đặt lại trang hiện tại về trang 1. Bộ lọc đang nhập có thể được giữ nguyên nếu cùng trường dữ liệu hoặc xóa theo thao tác `Xóa bộ lọc`. |
-| 2 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu khoảng ngày không hợp lệ, áp dụng [BR-VAL-007] và không thực hiện tìm kiếm. |
-|  |  |  | **TH2 - Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ; nút "Kết xuất Excel" ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
-|  |  |  | **TH Hợp lệ**: Hệ thống tìm kiếm vụ việc theo các tiêu chí lọc đang nhập/chọn trong tab hiện hành, hiển thị kết quả lên bảng và đưa về trang 1. |
+| 2 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí lọc, đặt lại danh sách theo dữ liệu mặc định của tab hiện hành và đưa về trang 1. |
 | 4 | Kết xuất Excel | Button | Hệ thống kết xuất dữ liệu thống kê theo danh sách đang hiển thị trong tab hiện hành. |
 | 5 | Click dòng dữ liệu | Row click | Hệ thống mở **MH03 - Xem chi tiết và xử lý hồ sơ yêu cầu bồi thường** tương ứng với vụ việc được chọn. Nếu click vào icon thao tác, hệ thống thực hiện chức năng của icon và không kích hoạt row click. |
-| 6 | Nhập hồ sơ | Icon button/Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Vụ việc ở trạng thái "Chờ nhập liệu"**: Hệ thống mở **MH02 - Nhập liệu hồ sơ vụ việc**; các thông tin đã nhập ở bước Tiếp nhận YCBT được tự động điền sẵn vào form. |
-|  |  |  | **TH2 - Vụ việc ở trạng thái "Yêu cầu bổ sung"**: Hệ thống mở **MH02 - Nhập liệu hồ sơ vụ việc** ở chế độ cập nhật, hiển thị đầy đủ toàn bộ dữ liệu hồ sơ đã nhập liệu trước đó và cho phép sửa lại; tự động focus/cuộn tới khối `Thông tin yêu cầu bổ sung` để Cán bộ nhìn thấy ngay nội dung cần bổ sung. |
-| 7 | Tiếp nhận | Icon button/Button | Hiển thị tại tab `Vụ việc chờ kiểm tra` khi vụ việc ở trạng thái "Chờ kiểm tra". Hệ thống xác nhận hồ sơ hợp lệ, chuyển vụ việc sang trạng thái "Chờ thụ lý", cập nhật timeline xử lý. |
-| 8 | Yêu cầu bổ sung | Icon button/Button | Hiển thị tại tab `Vụ việc chờ kiểm tra` khi vụ việc ở trạng thái "Chờ kiểm tra". Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập nội dung yêu cầu bổ sung hồ sơ. |
-| 9 | Từ chối | Icon button/Button | Hiển thị tại tab `Vụ việc chờ kiểm tra` khi vụ việc ở trạng thái "Chờ kiểm tra". Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập lý do từ chối. Sau khi xác nhận, vụ việc chuyển sang trạng thái "Bị từ chối". |
-| 10 | Thụ lý hồ sơ | Icon button/Button | Hiển thị tại tab `Vụ việc chờ xử lý` với Lãnh đạo khi vụ việc ở trạng thái "Chờ thụ lý". Hệ thống mở popup nhập thông tin cử người giải quyết hồ sơ; không chọn cán bộ từ danh sách người dùng/cán bộ trên hệ thống. Sau khi nhập hợp lệ, hệ thống cập nhật hồ sơ sang trạng thái "Đang xác minh thiệt hại". |
-| 11 | Từ chối thụ lý | Icon button/Button | Hiển thị tại tab `Vụ việc chờ xử lý` với Lãnh đạo khi vụ việc ở trạng thái "Chờ thụ lý". Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập lý do từ chối thụ lý. |
+| 6 | Tiếp nhận | Icon button/Button | Hiển thị tại tab `Vụ việc chờ tiếp nhận` khi vụ việc ở trạng thái `Chờ tiếp nhận`. Khi người dùng click nút, hệ thống mở **MH02 - Nhập liệu hồ sơ vụ việc** để cán bộ nhập đầy đủ thông tin chi tiết. |
+|  |  |  | **TH1 - Mở từ hồ sơ liên thông Tiếp nhận yêu cầu**: Hệ thống tự động kế thừa toàn bộ thông tin đã nhập ở bước **Tiếp nhận yêu cầu** gồm `Tên vụ việc`, `Hình thức tiếp nhận`, `Lĩnh vực phát sinh thiệt hại`, `Họ và tên người yêu cầu`, `Tỉnh/TP`, `Địa chỉ chi tiết`, `Danh sách tài liệu đính kèm` và các thông tin liên quan; dữ liệu kế thừa hiển thị sẵn trên form **MH02 - Nhập liệu hồ sơ vụ việc** để cán bộ tiếp tục nhập liệu chi tiết. |
+| 7 | Yêu cầu bổ sung | Icon button/Button | Hiển thị tại tab `Vụ việc chờ tiếp nhận` khi vụ việc ở trạng thái `Chờ tiếp nhận`. Khi người dùng click nút, hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** ở ngữ cảnh yêu cầu bổ sung để nhập nội dung yêu cầu bổ sung thông tin/hồ sơ. |
+| 8 | Từ chối | Icon button/Button | Hiển thị tại tab `Vụ việc chờ tiếp nhận` khi vụ việc ở trạng thái `Chờ tiếp nhận`. Khi người dùng click nút, hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** ở ngữ cảnh từ chối để nhập lý do từ chối tiếp nhận hồ sơ; sau khi xác nhận hợp lệ, vụ việc chuyển sang trạng thái `Bị từ chối`. |
+| 9 | Cập nhật hồ sơ | Icon button/Button | Hiển thị tại tab `Vụ việc chờ tiếp nhận` khi vụ việc ở trạng thái `Yêu cầu bổ sung`. Hệ thống mở **MH02 - Nhập liệu hồ sơ vụ việc** ở chế độ cập nhật, hiển thị đầy đủ toàn bộ dữ liệu hồ sơ đã nhập liệu trước đó và cho phép sửa lại; tự động focus/cuộn tới khối `Thông tin yêu cầu bổ sung` để Cán bộ nhìn thấy ngay nội dung cần bổ sung. |
+| 10 | Tiếp nhận kiểm tra | Icon button/Button | Hiển thị tại tab `Vụ việc chờ kiểm tra` khi vụ việc ở trạng thái `Chờ kiểm tra`. Hệ thống xác nhận hồ sơ hợp lệ, chuyển vụ việc sang trạng thái `Chờ thụ lý`, cập nhật timeline xử lý. |
+| 11 | Yêu cầu bổ sung sau kiểm tra | Icon button/Button | Hiển thị tại tab `Vụ việc chờ kiểm tra` khi vụ việc ở trạng thái `Chờ kiểm tra`. Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập nội dung yêu cầu bổ sung hồ sơ. |
+| 12 | Từ chối sau kiểm tra | Icon button/Button | Hiển thị tại tab `Vụ việc chờ kiểm tra` khi vụ việc ở trạng thái `Chờ kiểm tra`. Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập lý do từ chối. Sau khi xác nhận, vụ việc chuyển sang trạng thái `Bị từ chối`. |
+| 13 | Thụ lý hồ sơ | Icon button/Button | Hiển thị tại tab `Vụ việc chờ xử lý` với Lãnh đạo khi vụ việc ở trạng thái `Chờ thụ lý`. Hệ thống mở popup nhập thông tin cử người giải quyết hồ sơ; không chọn cán bộ từ danh sách người dùng/cán bộ trên hệ thống. Sau khi nhập hợp lệ, hệ thống cập nhật hồ sơ sang trạng thái `Đang xác minh thiệt hại`. |
+| 14 | Từ chối thụ lý | Icon button/Button | Hiển thị tại tab `Vụ việc chờ xử lý` với Lãnh đạo khi vụ việc ở trạng thái `Chờ thụ lý`. Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập lý do từ chối thụ lý. |
 
 ---
 
@@ -149,12 +154,13 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Chỉ đọc. Hiển thị động theo trạng thái vụ việc khi mở màn hình:<br>+ Vụ việc ở trạng thái "Chờ nhập liệu": `NHẬP LIỆU HỒ SƠ VỤ VIỆC`.<br>+ Vụ việc ở trạng thái "Yêu cầu bổ sung": `BỔ SUNG HỒ SƠ VỤ VIỆC`.<br>+ Các trạng thái khác (mở lại để cập nhật/trình lại): `CẬP NHẬT HỒ SƠ VỤ VIỆC`. |
+| Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Chỉ đọc. Hiển thị động theo trạng thái vụ việc khi mở màn hình:<br>+ Vụ việc ở trạng thái "Chờ tiếp nhận": `NHẬP LIỆU HỒ SƠ VỤ VIỆC`.<br>+ Vụ việc ở trạng thái "Yêu cầu bổ sung": `BỔ SUNG HỒ SƠ VỤ VIỆC`.<br>+ Các trạng thái khác (mở lại để cập nhật/trình lại): `CẬP NHẬT HỒ SƠ VỤ VIỆC`. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu tiếp nhận | Chỉ đọc. Tự động điền từ vụ việc đã tiếp nhận. |
 | Thời điểm tiếp nhận | Datetime | - | Theo dữ liệu tiếp nhận | Chỉ đọc. Tự động điền từ vụ việc đã tiếp nhận. |
 | Tên vụ việc | String(255) | - | Theo dữ liệu tiếp nhận | Control UI: Input text.<br>- Tự động điền từ bước tiếp nhận YCBT hoặc hồ sơ xác định cơ quan liên thông.<br>- Cho phép điều chỉnh nếu cần chuẩn hóa hồ sơ. |
-| Tỉnh/TP | Enum(String(100)) | Có | Theo dữ liệu tiếp nhận | Control UI: Combobox.<br>- Tự động điền từ bước tiếp nhận YCBT.<br>- Cho phép điều chỉnh nếu cần chuẩn hóa địa bàn vụ việc.<br>- Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. |
-| Địa chỉ chi tiết | Text(1000) | Có | Theo dữ liệu tiếp nhận | Control UI: Textarea.<br>- Tự động điền từ bước tiếp nhận YCBT.<br>- Cho phép điều chỉnh nếu cần chuẩn hóa địa chỉ vụ việc.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Theo dữ liệu tiếp nhận | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Có | Theo dữ liệu tiếp nhận | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Địa chỉ chi tiết | Text(1000) / String(500) | Có | Theo dữ liệu tiếp nhận | Control UI: Textarea / Input text.<br>- Nhập số nhà, tên đường/phố, thôn/xóm/ấp...<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
 | Tìm nhanh từ vụ việc xác định cơ quan | String(50) | Không | Trống | Control UI: Input text.<br>- Cho phép nhập mã vụ việc xác định cơ quan để tìm nhanh hồ sơ liên quan.<br>- Khi thực hiện chức năng `Tìm kiếm`, hệ thống mở popup tìm kiếm và tự điền giá trị ô này vào trường `Mã vụ việc` trên popup để cán bộ chọn hồ sơ phù hợp.<br>- Chức năng `Tìm kiếm nâng cao` được đặc tả tại Bảng Chức năng trên màn hình. |
 | Liên kết hồ sơ xác định cơ quan | String(255) | Không | Ẩn | Control UI: Text link (Hyperlink).<br>- Chỉ hiển thị sau khi cán bộ chọn một hồ sơ xác định cơ quan từ popup tìm kiếm hoặc khi mở lại hồ sơ đã lưu liên kết.<br>- Khi người dùng click vào liên kết: Hệ thống mở màn hình **Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường** thuộc nhóm tính năng **Xác định cơ quan giải quyết bồi thường** ở chế độ chỉ xem trong cùng tab làm việc.<br>- Cho phép cán bộ xem lại toàn bộ thông tin kết quả xác định thẩm quyền của vụ việc mà không làm ảnh hưởng đến dữ liệu đang nhập trên form hiện tại. |
 | Thông tin yêu cầu bổ sung | String(255) | - | Ẩn | Chỉ hiển thị khi vụ việc ở trạng thái "Yêu cầu bổ sung". Hiển thị nội dung yêu cầu bổ sung do Cán bộ kiểm tra đã nhập tại **Popup Yêu cầu bổ sung / Từ chối hồ sơ**. Khi mở màn hình ở trạng thái này, hệ thống tự động focus/cuộn tới khối này để Cán bộ nhìn thấy ngay nội dung cần bổ sung; toàn bộ dữ liệu hồ sơ đã nhập liệu trước đó vẫn hiển thị đầy đủ trên form và cho phép sửa lại, không bị khóa. |
@@ -175,8 +181,8 @@ flowchart TD
 | Ngày Bản án/Quyết định có hiệu lực | Date | Có theo điều kiện | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Hình thức tiếp nhận hồ sơ | Enum(String(50)) | Không | Theo dữ liệu tiếp nhận | Tự động điền từ bước tiếp nhận YCBT, Tham chiếu Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. Khi hồ sơ đã có bản án, UI tự động khóa/đặt theo luồng cán bộ chủ động nhập theo tố tụng/thi hành án. |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Có | Theo dữ liệu tiếp nhận | Tự động điền từ bước tiếp nhận YCBT, Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
-| Ngày văn bản yêu cầu bồi thường | Date | Có | Trống | Nhập ngày ghi trên đơn/văn bản yêu cầu bồi thường của người yêu cầu. Trường được nhập tại màn `Nhập liệu hồ sơ vụ việc`, không nhập ở màn Tiếp nhận YCBT. Control UI: DatePicker. Định dạng hiển thị trên UI `mm/dd/yyyy`. Áp dụng rule bắt buộc [BR-VAL-001] và rule ngày quá khứ [BR-VAL-008]. Phục vụ tổng hợp báo cáo theo Mẫu số 01/03 Thông tư 08/2019/TT-BTP. |
-| Pháp luật áp dụng để giải quyết bồi thường | Enum(String(100)) | Có | Theo danh mục | Control UI: Combobox.<br>- Trường được nhập tại màn `Nhập liệu hồ sơ vụ việc`, không nhập ở màn Tiếp nhận YCBT.<br>- Tham chiếu Danh mục Pháp luật áp dụng để giải quyết bồi thường [DM_28].<br>- Xác định căn cứ theo thời điểm phát sinh vụ việc và ngày văn bản yêu cầu bồi thường.<br>- Phục vụ tổng hợp báo cáo theo Mẫu số 01 Thông tư 08/2019/TT-BTP. |
+| Ngày văn bản yêu cầu bồi thường | Date | Có | Trống | Nhập ngày ghi trên đơn/văn bản yêu cầu bồi thường của người yêu cầu. Trường được nhập tại màn `Nhập liệu hồ sơ vụ việc`, không nhập ở màn Tiếp nhận yêu cầu. Control UI: DatePicker. Định dạng hiển thị trên UI `mm/dd/yyyy`. Áp dụng rule bắt buộc [BR-VAL-001] và rule ngày quá khứ [BR-VAL-008]. Phục vụ tổng hợp báo cáo theo Mẫu số 01/03 Thông tư 08/2019/TT-BTP. |
+| Pháp luật áp dụng để giải quyết bồi thường | Enum(String(100)) | Có | Theo danh mục | Control UI: Combobox.<br>- Trường được nhập tại màn `Nhập liệu hồ sơ vụ việc`, không nhập ở màn Tiếp nhận yêu cầu.<br>- Tham chiếu Danh mục Pháp luật áp dụng để giải quyết bồi thường [DM_28].<br>- Xác định căn cứ theo thời điểm phát sinh vụ việc và ngày văn bản yêu cầu bồi thường.<br>- Phục vụ tổng hợp báo cáo theo Mẫu số 01 Thông tư 08/2019/TT-BTP. |
 | Cơ quan giải quyết bồi thường | Enum(String(255)) | Không | Trống | Control UI: Ô chọn có tìm kiếm (combobox). Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng (chứa chuỗi nhập, không phân biệt hoa/thường và dấu tiếng Việt). |
 | **Thông tin người yêu cầu bồi thường** | String(100) | - | - | Khối thông tin nhân thân/tổ chức của người yêu cầu. |
 | Họ và tên người yêu cầu bồi thường | String(100) | Có | Theo dữ liệu tiếp nhận | Tự động điền từ bước tiếp nhận YCBT; áp dụng rule bắt buộc [BR-VAL-001]. |
@@ -191,8 +197,9 @@ flowchart TD
 | Ngày cấp | Date | Có | Trống | Áp dụng rule ngày quá khứ [BR-VAL-008]. |
 | Nơi cấp | String(255) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Quốc gia | Enum(String(100)) | Có | `Việt Nam` | Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. Nếu chọn `Quốc gia khác`, UI chuyển phần tỉnh/thành sang nhập tự do. |
-| Tỉnh/TP | Enum(String(100)) | Có | Theo quốc gia | Tham chiếu Danh mục Tỉnh/Thành phố [DM_13] khi Quốc gia là Việt Nam [DM_09]. |
-| Địa chỉ chi tiết | Text(1000) | Có | Theo dữ liệu tiếp nhận | Tự động điền từ `Địa chỉ người yêu cầu` ở bước tiếp nhận YCBT; áp dụng rule bắt buộc [BR-VAL-001]. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Theo quốc gia | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Có | Theo quốc gia | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Địa chỉ chi tiết | Text(1000) / String(500) | Có | Theo dữ liệu tiếp nhận | Control UI: Textarea / Input text.<br>- Nhập số nhà, tên đường/phố, thôn/xóm/ấp...<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
 | Hành vi gây thiệt hại của người thi hành công vụ | Text(2000) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại | Text(2000) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Bảng thiệt hại yêu cầu bồi thường | List(Object) | Không | Các dòng mặc định | Control UI: Data grid.<br>- Tham chiếu danh mục loại thiệt hại [DM_27]. |
@@ -230,23 +237,25 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Có hồ sơ phù hợp**: Có hồ sơ xác định cơ quan trùng với mã tìm kiếm, đang ở trạng thái "Hoàn thành" và chưa gắn với hồ sơ yêu cầu bồi thường khác; hệ thống mở **Popup Tìm kiếm Vụ việc xác định cơ quan giải quyết bồi thường**, tự điền `Mã vụ việc`, tự thực hiện tìm kiếm và hiển thị danh sách kết quả để cán bộ chọn hồ sơ phù hợp. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ. |
-|  |  |  | **TH2 - Không tìm thấy hồ sơ phù hợp**: Hệ thống vẫn mở popup tìm kiếm, tự điền `Mã vụ việc` bằng giá trị đã nhập, hiển thị `Bảng kết quả tìm kiếm` trống; trong phần thân bảng hiển thị một dòng thông báo [MSG-INF-BTNN-GQBT-001] căn giữa, không hiển thị Toast và không thay đổi dữ liệu đang có trên form. |
-| 2 | Tìm kiếm nâng cao | Button | Hệ thống mở **Popup Tìm kiếm Vụ việc xác định cơ quan giải quyết bồi thường** để tìm theo nhiều tiêu chí khi không nhớ chính xác mã. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ. |
+| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống mở popup tìm kiếm hồ sơ liên quan và xử lý theo các trường hợp bên dưới: |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống tự điền giá trị đang nhập tại trường tìm nhanh vào tiêu chí tìm kiếm tương ứng, hiển thị danh sách bản ghi phù hợp trên popup để người dùng lựa chọn. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
+| 2 | Tìm kiếm nâng cao | Button | Khi người dùng click nút, hệ thống mở popup tìm kiếm nâng cao; khi thực hiện tìm kiếm trên popup, hệ thống kiểm tra điều kiện dữ liệu và xử lý theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn trên popup, hiển thị kết quả lên bảng và đưa về Trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Liên kết hồ sơ xác định cơ quan | Link | Chỉ hiển thị sau khi cán bộ chọn hồ sơ xác định cơ quan từ popup tìm kiếm hoặc khi mở lại hồ sơ đã lưu thông tin liên kết.<br>- Khi click vào liên kết, hệ thống mở màn hình **Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường** thuộc nhóm tính năng **Xác định cơ quan giải quyết bồi thường** ở chế độ chỉ xem trong cùng tab làm việc.<br>- Thao tác này không làm thay đổi dữ liệu đang nhập trên **MH02 - Nhập liệu hồ sơ vụ việc**. |
-| 4 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Có vụ việc phù hợp**: Có vụ việc gốc trùng mã và đang ở một trong các trạng thái hợp lệ để liên kết theo Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]; hệ thống mở **Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan**, tự điền `Mã vụ việc/Số quyết định`, tự thực hiện tìm kiếm và hiển thị danh sách kết quả để cán bộ chọn vụ việc phù hợp. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ. |
-|  |  |  | **TH2 - Không tìm thấy vụ việc phù hợp hoặc vụ việc không ở trạng thái hợp lệ để liên kết**: Hệ thống vẫn mở popup tìm kiếm, tự điền `Mã vụ việc` bằng giá trị đã nhập, hiển thị `Bảng kết quả tìm kiếm` trống; trong phần thân bảng hiển thị một dòng thông báo [MSG-INF-BTNN-GQBT-002] căn giữa, không hiển thị Toast và không thay đổi dữ liệu đang có trên form. |
-| 5 | Tìm kiếm nâng cao | Button | Hệ thống mở **Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan** để tìm theo nhiều tiêu chí khi không nhớ chính xác mã. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ. |
+| 4 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống mở popup tìm kiếm hồ sơ liên quan và xử lý theo các trường hợp bên dưới: |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống tự điền giá trị đang nhập tại trường tìm nhanh vào tiêu chí tìm kiếm tương ứng, hiển thị danh sách bản ghi phù hợp trên popup để người dùng lựa chọn. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
+| 5 | Tìm kiếm nâng cao | Button | Khi người dùng click nút, hệ thống mở popup tìm kiếm nâng cao; khi thực hiện tìm kiếm trên popup, hệ thống kiểm tra điều kiện dữ liệu và xử lý theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn trên popup, hiển thị kết quả lên bảng và đưa về Trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 6 | Liên kết hồ sơ gốc | Link | Chỉ hiển thị sau khi cán bộ chọn vụ việc gốc từ popup tìm kiếm hoặc khi mở lại hồ sơ đã lưu thông tin liên kết gốc.<br>- Khi click vào liên kết tại trường `Vụ việc yêu cầu bồi thường gốc liên quan`, hệ thống mở **MH03 - Xem chi tiết và xử lý hồ sơ yêu cầu bồi thường** ở chế độ chỉ xem trong cùng tab làm việc.<br>- Thao tác này không làm thay đổi dữ liệu đang nhập trên **MH02 - Nhập liệu hồ sơ vụ việc**. |
 | 7 | Hủy bỏ | Button | Hệ thống đóng form nhập liệu hồ sơ vụ việc và quay lại danh sách. |
 | 8 | Lưu nháp | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Nhập liệu từ vụ việc**: Hệ thống lưu dữ liệu đang nhập, giữ trạng thái "Chờ nhập liệu" và hiển thị thông báo [MSG-SUC-SYS-001]. |
+|  |  |  | **TH1 - Nhập liệu từ vụ việc**: Hệ thống lưu dữ liệu đang nhập, giữ trạng thái "Chờ tiếp nhận" và hiển thị thông báo [MSG-SUC-SYS-001]. |
 |  |  |  | **TH2 - Cập nhật**: Hệ thống cập nhật dữ liệu hồ sơ hiện tại, giữ trạng thái hiện hành và hiển thị thông báo [MSG-SUC-SYS-002]. |
 | 9 | Lưu thông tin | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc, bao gồm `Tên vụ việc`, `Tỉnh/TP`, `Địa chỉ chi tiết`, `Ngày văn bản yêu cầu bồi thường`, `Pháp luật áp dụng để giải quyết bồi thường`**: Vi phạm quy tắc [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]. Không cho phép lưu thông tin. |
@@ -284,7 +293,7 @@ flowchart TD
 | Tiêu đề màn hình | String(255) | - | - | Chỉ đọc. Hiển thị `CHI TIẾT HỒ SƠ` hoặc `CẬP NHẬT HỒ SƠ` theo chế độ mở. |
 | Badge trạng thái | Enum(String(50)) | - | Theo hồ sơ | Hiển thị trạng thái hồ sơ theo Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
 | Tab Thông tin chung | String(255) | - | Active | Hiển thị thông tin chi tiết hồ sơ ở dạng chỉ đọc. |
-| Tab Kết quả xử lý | Text(2000) | - | Theo trạng thái | Hiển thị các khối nghiệp vụ có thể mở rộng/thu gọn.<br>- Ẩn với vụ việc ở trạng thái "Chờ nhập liệu" chưa có hồ sơ chi tiết. |
+| Tab Kết quả xử lý | Text(2000) | - | Theo trạng thái | Hiển thị các khối nghiệp vụ có thể mở rộng/thu gọn.<br>- Ẩn với vụ việc ở trạng thái "Chờ tiếp nhận" chưa có hồ sơ chi tiết. |
 | Tab Phục hồi danh dự | String(255) | - | Theo hồ sơ | Hiển thị khi hồ sơ có yêu cầu phục hồi danh dự và trạng thái thuộc nhóm từ "Chờ ban hành QĐ" trở đi. |
 | Thông tin chung vụ việc | String(255) | - | Theo vụ việc | Chỉ đọc. Hiển thị mã vụ việc, tên vụ việc, người yêu cầu, Tỉnh/TP, địa chỉ chi tiết, căn cứ yêu cầu, hành vi gây thiệt hại, mối quan hệ nhân quả, lĩnh vực, cơ quan giải quyết, cán bộ xử lý, danh sách file đính kèm và danh sách thiệt hại. |
 | Khối thông tin thu gọn Thụ lý hồ sơ | String(255) | - | Theo trạng thái | Control UI: Khối nghiệp vụ có thể mở rộng/thu gọn.<br>- Hiển thị kênh tiếp nhận, ngày tiếp nhận, hạn xử lý và đơn vị giải quyết.<br>- Hiển thị thông tin người được cử giải quyết, thông tin Quyết định cử người giải quyết và thông tin từ chối/thụ lý nếu có. |
@@ -359,7 +368,7 @@ flowchart TD
 | Thời điểm thao tác | Datetime | - | Theo dữ liệu | Chỉ đọc. Định dạng `dd/mm/yyyy HH:mm`. |
 | Người thực hiện | String(255) | - | Theo dữ liệu | Chỉ đọc. Họ tên người thực hiện thao tác. |
 | Vai trò | String(100) | - | Theo dữ liệu | Chỉ đọc. Vai trò của người thực hiện (Cán bộ/Chuyên viên/Thủ trưởng). |
-| Hành động | String(255) | - | Theo dữ liệu | Chỉ đọc. Tên thao tác nghiệp vụ đã thực hiện, ví dụ `Tiếp nhận YCBT`, `Nhập liệu hồ sơ`, `Kiểm tra hồ sơ`, `Yêu cầu bổ sung`, `Từ chối`, `Thụ lý`, `Từ chối thụ lý`, `Hoàn thành xác minh`, `Hoàn thành thương lượng`, `Hoãn/Tạm đình chỉ/Đình chỉ giải quyết`, `Tiếp tục giải quyết`, `Trình ký QĐ`, `Duyệt ký số QĐ`, `Hoàn thành thực thi`, cập nhật phục hồi danh dự. |
+| Hành động | String(255) | - | Theo dữ liệu | Chỉ đọc. Tên thao tác nghiệp vụ đã thực hiện, ví dụ `Tiếp nhận yêu cầu`, `Nhập liệu hồ sơ`, `Kiểm tra hồ sơ`, `Yêu cầu bổ sung`, `Từ chối`, `Thụ lý`, `Từ chối thụ lý`, `Hoàn thành xác minh`, `Hoàn thành thương lượng`, `Hoãn/Tạm đình chỉ/Đình chỉ giải quyết`, `Tiếp tục giải quyết`, `Trình ký QĐ`, `Duyệt ký số QĐ`, `Hoàn thành thực thi`, cập nhật phục hồi danh dự. |
 | Trạng thái trước | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Trạng thái vụ việc trước khi thực hiện thao tác, Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
 | Trạng thái sau | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Trạng thái vụ việc sau khi thực hiện thao tác, Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
 | Nội dung/Lý do | Text(2000) | - | Theo dữ liệu | Chỉ đọc. Nội dung giải trình, lý do từ chối/yêu cầu bổ sung, hoặc căn cứ/lý do hoãn/tạm đình chỉ/đình chỉ nếu thao tác có nhập. |
@@ -560,11 +569,11 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Không nhập tiêu chí nào**: Vi phạm [BR-VAL-001] (yêu cầu nhập tối thiểu 1 tiêu chí), hiển thị [MSG-ERR-VAL-001]. Không thực hiện tìm kiếm. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ. |
-|  |  |  | **TH2 - Có kết quả**: Hệ thống tìm kiếm theo các tiêu chí đã nhập (kết hợp AND các tiêu chí có dữ liệu), chỉ lấy các vụ việc đang ở một trong các trạng thái hợp lệ để liên kết (Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]): `Đình chỉ giải quyết` (ứng với rút yêu cầu), `Thương lượng không thành công`, `Chờ ban hành QĐ`, `Hoàn thành` (đã có quyết định giải quyết bồi thường); các trạng thái khác không hợp lệ để liên kết. Hiển thị kết quả tại `Bảng kết quả tìm kiếm`. |
-|  |  |  | **TH3 - Không có kết quả**: Hệ thống hiển thị `Bảng kết quả tìm kiếm` trống; trong phần thân bảng hiển thị một dòng thông báo [MSG-INF-BTNN-GQBT-002] căn giữa, không hiển thị Toast. |
+| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm trên popup theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Không nhập tiêu chí nào**: Nếu người dùng chưa nhập/chọn tối thiểu 01 tiêu chí tìm kiếm, vi phạm [BR-VAL-001], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001] và không thực hiện tìm kiếm. |
+|  |  |  | **TH2 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn trên popup, hiển thị kết quả lên bảng và đưa về Trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Chọn (trên dòng kết quả) | Button/Row Click | Hệ thống lấy dữ liệu vụ việc/hồ sơ gốc được chọn, tự động điền (autofill) vào các trường liên quan trên màn hình gọi popup, chuyển hiển thị trường liên kết sang dạng liên kết (hyperlink) đến hồ sơ gốc, và tự động đóng popup. |
 | 3 | Hủy bỏ | Button | Hệ thống đóng popup, không thay đổi dữ liệu đang có trên màn hình gọi popup. |
 
@@ -584,14 +593,16 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 | Mã vụ việc | String(50) | Không | Trống | Một trong các tiêu chí tìm kiếm; áp dụng tìm gần đúng (chứa chuỗi nhập). |
 | Tên vụ việc | String(255) | Không | Trống | Control UI: Input text.<br>- Một trong các tiêu chí tìm kiếm; áp dụng tìm gần đúng.<br>- Hồ sơ xác định cơ quan lưu trực tiếp trường `Tên vụ việc`; với dữ liệu cũ chưa có trường riêng, hệ thống so khớp theo tên vụ việc được sinh tự động theo quy tắc `Vụ việc yêu cầu bồi thường của [Họ và tên người yêu cầu]`. |
 | Họ và tên người yêu cầu bồi thường | String(100) | Không | Trống | Một trong các tiêu chí tìm kiếm; áp dụng tìm gần đúng. |
-| Tỉnh/Thành phố | Enum(String(100)) | Không | Trống | Một trong các tiêu chí tìm kiếm; Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. |
-| Địa chỉ chi tiết | String(500) | Không | Trống | Một trong các tiêu chí tìm kiếm; áp dụng tìm gần đúng. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Địa chỉ chi tiết | Text(1000) / String(500) | Không | Trống | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
 | Khối Bảng kết quả tìm kiếm | List(Object) | Không | Trống (chưa tìm kiếm) | Control UI: Data grid.<br>- Hiển thị sau khi thực hiện chức năng `Tìm kiếm`.<br>- Hover vào dòng sẽ tô nổi bật để làm rõ dòng đang được thao tác.<br>- Người dùng chọn hồ sơ xác định cơ quan bằng chức năng `Chọn` hoặc click trực tiếp vào dòng kết quả tương ứng, trừ liên kết `Mã vụ việc`. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Hiển thị dạng liên kết. Bấm vào liên kết mở màn hình **Xem chi tiết Yêu cầu xác định cơ quan giải quyết bồi thường** ở chế độ chỉ xem trong cùng tab làm việc; menu trái active vào `Xác định cơ quan giải quyết bồi thường`. Khi đóng màn chi tiết, hệ thống quay lại menu `Giải quyết bồi thường/Giải quyết yêu cầu bồi thường`; bắt buộc hiển thị do là tiêu chí tìm kiếm. |
 | Tên vụ việc | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị trường `Tên vụ việc` của hồ sơ xác định cơ quan; với dữ liệu cũ chưa có trường riêng, hiển thị theo quy tắc `Vụ việc yêu cầu bồi thường của [Họ và tên người yêu cầu]`. |
 | Họ và tên người yêu cầu bồi thường | String(100) | - | Theo dữ liệu | Chỉ đọc. Hiển thị họ tên người yêu cầu bồi thường; bắt buộc hiển thị do là tiêu chí tìm kiếm. |
-| Tỉnh/Thành phố | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị Tỉnh/Thành phố của người yêu cầu; bắt buộc hiển thị do là tiêu chí tìm kiếm. |
-| Địa chỉ chi tiết | String(500) | - | Theo dữ liệu | Chỉ đọc. Hiển thị địa chỉ chi tiết của người yêu cầu; bắt buộc hiển thị do là tiêu chí tìm kiếm. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | - | Theo dữ liệu | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | - | Theo dữ liệu | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Địa chỉ chi tiết | Text(1000) / String(500) | - | Theo dữ liệu | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
 | Ngày tiếp nhận | Date | - | Theo dữ liệu | Chỉ đọc. Hiển thị ngày tiếp nhận vụ việc xác định cơ quan. |
 | Thao tác | String(50) | - | Hiển thị | Chỉ đọc. Hiển thị nút `Chọn` ở cột cuối dòng. |
 
@@ -599,11 +610,11 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Không nhập tiêu chí nào**: Vi phạm [BR-VAL-001] (yêu cầu nhập tối thiểu 1 tiêu chí), hiển thị [MSG-ERR-VAL-001]. Không thực hiện tìm kiếm. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ. |
-|  |  |  | **TH2 - Có kết quả**: Hệ thống tìm kiếm theo các tiêu chí đã nhập (kết hợp AND các tiêu chí có dữ liệu), chỉ lấy các hồ sơ xác định cơ quan đang ở trạng thái "Hoàn thành" và chưa được gắn với vụ việc yêu cầu bồi thường khác (`Mã vụ việc YCBT` đang là `-`). Hiển thị kết quả tại `Bảng kết quả tìm kiếm`. |
-|  |  |  | **TH3 - Không có kết quả**: Hệ thống hiển thị `Bảng kết quả tìm kiếm` trống; trong phần thân bảng hiển thị một dòng thông báo [MSG-INF-BTNN-GQBT-001] căn giữa, không hiển thị Toast. |
+| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm trên popup theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Không nhập tiêu chí nào**: Nếu người dùng chưa nhập/chọn tối thiểu 01 tiêu chí tìm kiếm, vi phạm [BR-VAL-001], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001] và không thực hiện tìm kiếm. |
+|  |  |  | **TH2 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn trên popup, hiển thị kết quả lên bảng và đưa về Trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Mở chi tiết Mã vụ việc | Link | Hệ thống mở màn hình **Xem chi tiết Yêu cầu xác định cơ quan giải quyết bồi thường** của vụ việc được chọn ở chế độ chỉ xem trong cùng tab làm việc; menu trái active vào `Xác định cơ quan giải quyết bồi thường`. Khi người dùng bấm `Đóng` tại màn chi tiết, hệ thống quay lại menu `Giải quyết bồi thường/Giải quyết yêu cầu bồi thường`. Thao tác này không làm thay đổi dữ liệu đang có trên **MH02 - Nhập liệu hồ sơ vụ việc**. |
 | 3 | Chọn (trên dòng kết quả) | Button/Row Click | Hệ thống lấy dữ liệu hồ sơ xác định cơ quan được chọn, tự động điền (autofill) thông tin người yêu cầu, tên vụ việc, Tỉnh/TP, địa chỉ chi tiết, hành vi gây thiệt hại, cơ quan giải quyết và lĩnh vực phát sinh thiệt hại vào các trường liên quan trên **MH02 - Nhập liệu hồ sơ vụ việc**, chuyển hiển thị trường `Tìm nhanh từ vụ việc xác định cơ quan` sang dạng liên kết (hyperlink) đến màn hình **Xem chi tiết Yêu cầu xác định cơ quan giải quyết bồi thường**, và tự động đóng popup. |
 | 4 | Hủy bỏ | Button | Hệ thống đóng popup, không thay đổi dữ liệu đang có trên **MH02 - Nhập liệu hồ sơ vụ việc**. |

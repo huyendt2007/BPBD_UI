@@ -129,7 +129,8 @@ Mở khi Khách hàng click vào một dòng dữ liệu tại Tab "Yêu cầu c
 | Người ký duyệt | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
 | Nội dung hướng dẫn nhận bản sao giấy | Text(500) | Có | "Bản sao giấy của bạn đã được phê duyệt và đang được chuẩn bị. Vui lòng đến [Cơ quan tiếp nhận] hoặc theo hình thức nhận đã đăng ký để nhận kết quả." | Chỉ đọc. |
 | **Nếu Trạng thái là "Hoàn thành"** | | | | |
-| Thời điểm ký/Thời điểm trả kết quả | Datetime | Có | Theo hồ sơ | Chỉ đọc. Là thời điểm Lãnh đạo ký số (điện tử) hoặc thời điểm Cán bộ xác nhận trả kết quả (giấy). |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Theo hồ sơ | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Có | Theo hồ sơ | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Người ký/Người trả kết quả | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
 | Số tiền đã thanh toán (VNĐ) | Decimal(18,0) | Tùy điều kiện | Theo hồ sơ | Chỉ hiển thị khi hồ sơ thuộc diện phải thu phí. Nhãn trường ghi rõ đơn vị tính `(VNĐ)`, giá trị hiển thị chỉ là số đã phân tách hàng nghìn, không lặp lại hậu tố `VNĐ`. |
 | Mã giao dịch thanh toán | String(100) | Tùy điều kiện | Theo kết quả UC158 | Chỉ hiển thị khi phát sinh giao dịch thanh toán. |

@@ -60,7 +60,8 @@ Màn hình cung cấp biểu mẫu nhập thông tin tiếp công dân chia làm
 | **Thông tin liên hệ chung** | | | | |
 | Số điện thoại liên hệ | String(20) | Có | Trống | - Nhập số điện thoại liên hệ.<br>- Validate định dạng số điện thoại Việt Nam (10 số, bắt đầu bằng 0) hoặc nước ngoài (8-15 ký tự, cho phép dấu `+`). |
 | Email nhận phản hồi | String(100) | Có | Trống | - Nhập email liên hệ.<br>- Validate đúng định dạng email tiêu chuẩn.<br>- Bắt buộc phải nhập để hệ thống gửi thông báo kết quả. |
-| Tỉnh/Thành phố | Enum(String(50)) | Có | Trống | Control UI: Hộp chọn.<br>- Chọn từ Danh mục Tỉnh/Thành phố hành chính `[DM_13]`. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Có | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Địa chỉ liên hệ / Thường trú | String(500) | Có | Trống | - Nhập chi tiết địa chỉ liên hệ của chủ thể (số nhà, tên đường, phường/xã, quận/huyện). |
 | Có văn bản ủy quyền hợp pháp của bên liên quan | Boolean | Không | Uncheck | Control UI: Checkbox.<br>- Gồm:<br>+ Check (Có ủy quyền)<br>+ Uncheck (Không ủy quyền) |
 | **Nếu chọn: [Có ủy quyền]** | | | | |

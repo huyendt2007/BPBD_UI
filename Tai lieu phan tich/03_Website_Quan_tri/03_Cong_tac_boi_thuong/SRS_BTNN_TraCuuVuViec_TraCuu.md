@@ -101,13 +101,14 @@ flowchart TD
 | Hình thức phục hồi danh dự | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Hình thức phục hồi danh dự [DM_31]. |
 | Cập nhật từ ngày | Date | Không | Ngày đầu tháng hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Áp dụng quy tắc kiểm tra khoảng ngày [BR-VAL-007]. |
 | Cập nhật đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Áp dụng quy tắc kiểm tra khoảng ngày [BR-VAL-007]. |
-| **II. Bảng kết quả tìm kiếm** | | | | Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Phục hồi danh dự`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
+| **II. Bảng kết quả tìm kiếm** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Phục hồi danh dự`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | - | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Chỉ đọc. Hiển thị mã vụ việc. Người dùng click dòng dữ liệu để mở chi tiết. |
 | Tên vụ việc | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tên vụ việc. |
 | Người yêu cầu | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị người bị thiệt hại/người yêu cầu bồi thường. |
-| Tỉnh/TP | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tỉnh/thành phố của người yêu cầu hoặc địa bàn phát sinh vụ việc. |
-| Địa chỉ chi tiết | Text(1000) | - | Theo dữ liệu | Chỉ đọc. Hiển thị địa chỉ chi tiết của người yêu cầu/vụ việc. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | - | Theo dữ liệu | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | - | Theo dữ liệu | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Địa chỉ chi tiết | Text(1000) / String(500) | - | Theo dữ liệu | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
 | Cơ quan giải quyết bồi thường | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cơ quan giải quyết bồi thường. |
 | Cán bộ xử lý | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cán bộ đang xử lý hoặc cán bộ phụ trách phục hồi danh dự, nếu đã được phân công. |
 | Hình thức phục hồi | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị hình thức phục hồi danh dự theo Danh mục Hình thức phục hồi danh dự [DM_31]. |
@@ -138,13 +139,14 @@ flowchart TD
 | Tiếp nhận đến ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Lọc theo thời điểm tiếp nhận.<br>- Áp dụng [BR-VAL-007]. |
 | Hạn xử lý từ ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Lọc theo hạn xử lý.<br>- Áp dụng [BR-VAL-007]. |
 | Hạn xử lý đến ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Lọc theo hạn xử lý.<br>- Áp dụng [BR-VAL-007]. |
-| **II. Bảng kết quả tìm kiếm** | | | | Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Yêu cầu bồi thường`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
+| **II. Bảng kết quả tìm kiếm** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Bảng kết quả hiển thị danh sách vụ việc thuộc phạm vi dữ liệu của tab `Yêu cầu bồi thường`.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | - | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Chỉ đọc. Hiển thị mã vụ việc. Người dùng click dòng dữ liệu để mở chi tiết. |
 | Tên vụ việc | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tên vụ việc đã ghi nhận ở bước tiếp nhận/nhập hồ sơ. |
 | Tên người yêu cầu | String(100) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tên người yêu cầu bồi thường. |
-| Tỉnh/TP | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị tỉnh/thành phố của người yêu cầu hoặc địa bàn phát sinh vụ việc. |
-| Địa chỉ chi tiết | Text(1000) | - | Theo dữ liệu | Chỉ đọc. Hiển thị địa chỉ chi tiết của người yêu cầu/vụ việc. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | - | Theo dữ liệu | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | - | Theo dữ liệu | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Địa chỉ chi tiết | Text(1000) / String(500) | - | Theo dữ liệu | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị lĩnh vực phát sinh thiệt hại theo Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
 | Cơ quan giải quyết | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cơ quan giải quyết bồi thường. |
 | Cán bộ xử lý | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cán bộ xử lý được phân công, nếu đã có. |
@@ -159,15 +161,15 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển tab | Tab | Hệ thống tải danh sách vụ việc theo tab được chọn, đặt lại trang hiện tại về trang 1. Dữ liệu tab `Phục hồi danh dự` và tab `Yêu cầu bồi thường` là 02 tập dữ liệu loại trừ nhau theo phạm vi dữ liệu đã mô tả. |
-| 2 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu khoảng ngày đang nhập không hợp lệ, áp dụng [BR-VAL-007] và không thực hiện tìm kiếm. |
-|  |  |  | **TH2 - Không có dữ liệu trả về**: Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng trang ở trạng thái ẩn/khóa mờ. |
-|  |  |  | **TH Hợp lệ**: Hệ thống lọc danh sách vụ việc trong tab hiện hành theo các tiêu chí đang nhập/chọn, hiển thị kết quả lên bảng và đưa về trang 1. |
+| 2 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí đã nhập, đưa các combobox về `Tất cả`, đưa danh sách về trang 1 và tải lại dữ liệu mặc định của tab hiện hành. |
 | 4 | Kết xuất Excel | Button | Hệ thống kết xuất danh sách kết quả hiện hành của tab đang chọn theo đúng tiêu chí lọc và sắp xếp hiện tại. Nếu danh sách rỗng, áp dụng [BR-EXP-040] và không tải file. |
 | 5 | Sắp xếp cột | Header cột | Người dùng click tiêu đề cột có hỗ trợ sắp xếp để đảo chiều tăng/giảm hoặc chọn cột sắp xếp mới. |
 | 6 | Đổi số dòng hiển thị | Dropdown | Hệ thống cập nhật số bản ghi trên mỗi trang theo giá trị người dùng chọn và đưa về trang 1. |
-| 7 | Chuyển trang | Pagination | Hệ thống chuyển trang theo thao tác của người dùng, giữ nguyên tiêu chí lọc và sắp xếp hiện hành. |
+| 7 | Chuyển trang | Pagination | Hệ thống chuyển đến trang đầu (&#124;&lt;&lt;), trang trước (&lt;), trang được chọn, trang sau (&gt;) hoặc trang cuối (&gt;&gt;&#124;) theo thao tác người dùng; dữ liệu hiển thị giữ nguyên tiêu chí lọc/sắp xếp hiện hành và cấu hình mặc định 20 bản ghi/trang. |
 | 8 | Click dòng dữ liệu | Row click | Hệ thống mở màn hình **UC431-466.MH03 - Xem chi tiết và xử lý hồ sơ yêu cầu bồi thường** (thuộc tài liệu SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md) ở chế độ xem chi tiết. Với tab `Phục hồi danh dự`, hệ thống focus vào tab/khối `Phục hồi danh dự`. Với tab `Yêu cầu bồi thường`, hệ thống focus vào `Thông tin chung` hoặc tab/khối xử lý hiện hành theo trạng thái vụ việc. |
 
 ###### 4.3.3.5.3.6. Quy tắc lọc theo nhóm trạng thái

@@ -221,6 +221,12 @@ body {
     transition: background 0.3s ease;
 }
 
+.custom-table td.action-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+    text-align: center;
+}
+
 .custom-table tbody tr:hover {
     background-color: #fafafa;
 }
@@ -246,6 +252,12 @@ body {
     background-color: #FEF3C7;
     color: #D97706;
     border: 1px solid #FCD34D;
+}
+
+.badge-warning {
+    background-color: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FBBF24;
 }
 
 .badge-verifying {
@@ -329,9 +341,14 @@ body {
 /* Fixed action column alignment */
 .action-flex {
     display: flex;
-    gap: 4px;
+    gap: 6px;
     justify-content: center;
     align-items: center;
+}
+
+.muted-action {
+    color: var(--text-muted);
+    font-size: 13px;
 }
 
 .icon-btn {
@@ -375,6 +392,15 @@ body {
     background-color: #FEF3C7;
 }
 
+.icon-btn.reject {
+    color: #EA580C;
+    background-color: #FFF7ED;
+}
+
+.icon-btn.reject:hover {
+    background-color: #FFEDD5;
+}
+
 .icon-btn.claim {
     color: #8B5CF6;
     background-color: #F5F3FF;
@@ -385,7 +411,7 @@ body {
 }
 
 .icon-btn.delete {
-    color: var(--danger-color);
+    color: #DC2626;
     background-color: #FEF2F2;
 }
 

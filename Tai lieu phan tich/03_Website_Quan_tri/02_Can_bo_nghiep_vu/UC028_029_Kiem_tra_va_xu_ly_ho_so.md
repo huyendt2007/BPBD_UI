@@ -197,7 +197,7 @@
 | 2 | `<<TenCoQuanDangKy>>` | Tên Trung tâm đăng ký giao dịch, tài sản tiếp nhận xử lý hồ sơ | Lấy từ thông tin Đơn vị hành chính của Cán bộ tiếp nhận đang đăng nhập |
 | 3 | `<<SoDangKy>>` | Số đăng ký của hồ sơ bị từ chối (tương ứng từng loại hồ sơ) | Sinh ra khi khách hàng nộp hồ sơ thành công |
 | 4 | `<<TenNguoiNop>>` | Thông tin người nộp hồ sơ → Họ và tên | Người thực tế thực hiện nộp hồ sơ |
-| 5 | `<<DiaChiNguoiNop>>` | Địa chỉ chi tiết - Tỉnh/Thành phố - Quốc gia của người nộp hồ sơ | Cá nhân lấy theo thông tin cá nhân; Cá nhân thuộc tổ chức lấy theo thông tin tổ chức |
+| 5 | `<<DiaChiNguoiNop>>` | Địa chỉ chi tiết - Phường/Xã - Tỉnh/Thành phố - Quốc gia của người nộp hồ sơ | Cá nhân lấy theo thông tin cá nhân; Cá nhân thuộc tổ chức lấy theo thông tin tổ chức |
 | 6 | `<<TenBenBaoDam>>` | Bảng Bên bảo đảm → Tên chủ thể | Nối bằng dấu phẩy nếu có nhiều bên bảo đảm |
 | 7 | `<<TenBenNhanBaoDam>>` | Bảng Bên nhận bảo đảm → Tên chủ thể | |
 | 8 | `<<ThoiDiemTiepNhan>>` | Ngày giờ hệ thống tiếp nhận hồ sơ thành công | Format: `dd/MM/yyyy HH:mm` |

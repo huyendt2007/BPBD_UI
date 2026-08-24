@@ -77,7 +77,8 @@
 | Đơn vị được phép nhập thay | Enum(Tree/Multi-select) | Không | Trống | Chọn một hoặc nhiều đơn vị được phép tạo/nhập kỳ báo cáo thay cho đơn vị này. Giai đoạn hiện tại có thể cấu hình Sở Tư pháp địa phương được nhập thay các đơn vị báo cáo thực tế thuộc phạm vi tỉnh. |
 | Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Có | Nếu tắt, đơn vị chỉ tồn tại để cấu trúc cây/tra cứu lịch sử, không được chọn làm `Đơn vị báo cáo` khi tạo kỳ báo cáo mới. |
 | Mã số thuế | String(50) | Không | Trống | Mã số thuế của Cơ quan/Đơn vị. |
-| Tỉnh/Thành phố | Enum(String(50)) | Không | Trống | Control UI: Hộp chọn.<br>Lấy từ danh mục Tỉnh/Thành phố [DM_03]. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Địa chỉ | String(500) | Không | Trống | Địa chỉ trụ sở đơn vị. |
 | Số điện thoại | String(10) | Không | Trống | Số điện thoại liên hệ. Định dạng 10 chữ số của Việt Nam. |
 | Người đại diện | String(255) | Không | Trống | Tên người đứng đầu đơn vị. |
@@ -119,7 +120,8 @@
 | Đơn vị được phép nhập thay | Enum(Tree/Multi-select) | Không | Theo bản ghi | Cho phép sửa. Chọn các đơn vị/tài khoản đầu mối được phép tạo kỳ báo cáo, nhập liệu, chỉnh lý thay cho đơn vị báo cáo thực tế này. |
 | Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Theo bản ghi | Cho phép sửa. Nếu tắt, đơn vị không được chọn làm `Đơn vị báo cáo` khi tạo kỳ báo cáo mới. |
 | Mã số thuế | String(50) | Không | Theo bản ghi | Cho phép sửa. |
-| Tỉnh/Thành phố | Enum(String(50)) | Không | Theo bản ghi | Control UI: Hộp chọn.<br>Cho phép sửa. Lấy từ danh mục Tỉnh/Thành phố [DM_03]. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo bản ghi | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Không | Theo bản ghi | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Địa chỉ | String(500) | Không | Theo bản ghi | Cho phép sửa. |
 | Số điện thoại | String(10) | Không | Theo bản ghi | Cho phép sửa. Định dạng 10 chữ số của Việt Nam. |
 | Người đại diện | String(255) | Không | Theo bản ghi | Cho phép sửa. |
@@ -241,7 +243,8 @@
 | Tên đơn vị | String(255) | Có | Theo file | Tên đầy đủ của đơn vị. |
 | Mã đơn vị cha | String(50) | Không | Theo file | Dùng để dựng cây đơn vị. Nếu trống thì bản ghi là đơn vị gốc. |
 | Cấp đơn vị | Enum(String(100)) | Có | Theo file | Gồm `Cấp Trung ương`, `Cấp Tỉnh/Thành phố`, `Cấp Xã/Phường/Đặc khu`, `Đơn vị trực thuộc/Phòng ban`, `Cấp Quận/Huyện` (chỉ dữ liệu lịch sử/chuyển tiếp). |
-| Tỉnh/Thành phố | Enum(String(50)) | Không | Theo file | Tham chiếu Danh mục Tỉnh/Thành phố [DM_03]. Bắt buộc với đơn vị địa phương. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo file | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Không | Theo file | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Theo file | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
 | Vai trò báo cáo BTNN | Enum(String(100)) | Không | Theo file | Tham chiếu Danh mục Vai trò báo cáo của cơ quan [DM_46], cho phép nhiều vai trò. |
 | Đầu mối tổng hợp trực tiếp | String(50) | Không | Theo file | Nhập `Mã đơn vị` của đầu mối tổng hợp trực tiếp. |

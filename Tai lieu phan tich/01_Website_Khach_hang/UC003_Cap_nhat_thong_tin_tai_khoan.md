@@ -49,8 +49,9 @@
 | Phân loại khách hàng | Enum(String(50)) | Không | Tự động theo Quốc tịch/Quốc gia đăng ký | - Control UI: Text hiển thị (Read-only).<br>- Giá trị: Tự động hiển thị `Trong nước` nếu Quốc tịch/Quốc gia là `Việt Nam`; hiển thị `Nước ngoài` nếu khác `Việt Nam`.<br>- Quyền chỉnh sửa: Luôn chỉ đọc. |
 | Trung tâm Đăng ký mặc định | Enum(String(255)) | Không | Theo hồ sơ tài khoản | - Control UI: Combobox.<br>- Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08].<br>- Quyền chỉnh sửa: Luôn cho phép chỉnh sửa. |
 | Nhu cầu sử dụng tài khoản | List(String) | Không | Theo hồ sơ tài khoản | - Control UI: Chip (Chọn nhiều).<br>- Giá trị: `Đăng ký`, `Tra cứu`.<br>- Quyền chỉnh sửa: Cho phép chỉnh sửa. |
-| Tỉnh/Thành phố | Enum/String(255) | Có | Theo hồ sơ tài khoản | - Control UI: Combobox khi trong nước, Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]; Input text khi nước ngoài.<br>- Quyền chỉnh sửa: Luôn cho phép chỉnh sửa. |
-| Địa chỉ chi tiết | String(500) | Không | Theo hồ sơ tài khoản | - Control UI: Textarea.<br>- Quyền chỉnh sửa: Luôn cho phép chỉnh sửa. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Theo hồ sơ tài khoản | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Có | Theo hồ sơ tài khoản | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Địa chỉ chi tiết | Text(1000) / String(500) | Không | Theo hồ sơ tài khoản | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
 
 ##### 4.1.8.3.3. Quy tắc hiển thị theo Loại khách hàng
 

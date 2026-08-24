@@ -57,11 +57,11 @@ flowchart TD
 | **II. Bộ lọc bổ sung** | | | | |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Mã vụ việc`, `Tên vụ việc` hoặc `Họ và tên người yêu cầu bồi thường`. |
-| **III. Bảng danh mục vụ việc** | | | | |
+| **III. Bảng danh mục vụ việc** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Thời điểm tiếp nhận" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | Nhóm dòng theo lĩnh vực | String(255) | - | Theo dữ liệu | Chỉ đọc. Vụ việc được nhóm theo 06 lĩnh vực phát sinh thiệt hại [DM_22], đánh số nhóm bằng số La Mã `I`, `II`, `III`, `IV`, `V`, `VI` tương ứng (Quản lý hành chính, Tố tụng hình sự, Tố tụng dân sự, Tố tụng hành chính, Thi hành án hình sự, Thi hành án dân sự). Dòng tiêu đề mỗi nhóm hiển thị số La Mã tại cột `STT`, còn tên nhóm lĩnh vực **merge (colspan) từ cột (1) đến hết cột (8)** thành một ô duy nhất, đúng bố cục Mẫu số 01-TT08 gốc. |
 | Cột: STT | Integer(10) | - | Tự tăng | Chỉ đọc. Tại dòng tiêu đề nhóm hiển thị số La Mã của nhóm; tại dòng vụ việc đánh số thứ tự 1, 2, 3... theo thứ tự hiển thị trong từng nhóm lĩnh vực (không đánh số liên tục toàn bảng). |
 | Cột (1): Họ và tên của người yêu cầu bồi thường | String(100) | - | Theo dữ liệu | Chỉ đọc. Với tổ chức, hiển thị tên tổ chức kèm người đại diện theo pháp luật nếu có. |
-| Cột (2): Địa chỉ của người yêu cầu bồi thường | String(500) | - | Theo dữ liệu | Chỉ đọc. Hiển thị dạng `[Địa chỉ chi tiết], [Tỉnh/TP]`. |
+| Cột (2): Địa chỉ của người yêu cầu bồi thường | String(500) | - | Theo dữ liệu | Chỉ đọc. Hiển thị dạng `[Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố]`. |
 | Cột (3): Cơ quan giải quyết bồi thường | String(255) | - | Theo dữ liệu | Chỉ đọc. |
 | Cột (4): Pháp luật áp dụng để giải quyết bồi thường | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị đúng giá trị đã ghi nhận tại bước nhập liệu hồ sơ vụ việc. |
 | Cột (5): Tình hình giải quyết bồi thường | Text(1000) | - | Hệ thống tự tổng hợp | Chỉ đọc. Hệ thống tự sinh mô tả ngắn theo `Trạng thái` hiện tại và mốc xử lý chính (ngày thụ lý, ngày hoàn thành xác minh, ngày thương lượng, ngày ban hành quyết định) theo dữ liệu Timeline xử lý của vụ việc. |
@@ -70,6 +70,7 @@ flowchart TD
 | Cột (8): Ghi chú | Text(500) | Không | Trống | Cho phép cán bộ nhập bổ sung thông tin phục vụ quản lý. |
 | Dòng Tổng cộng | Integer(10) | - | Hệ thống tính | Chỉ đọc. Hiển thị tại cột `STT` chữ `Tổng cộng`, số liệu tổng số vụ việc của toàn bộ 06 nhóm lĩnh vực hiển thị tại các cột số liệu tương ứng (nếu có); không merge dòng này. |
 | Trạng thái kỳ tổng hợp | Enum(String(50)) | - | `Nháp` | \- Giá trị gồm:<br>+ Nháp<br>+ Đã kết xuất |
+| Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.21.3.3. Chức năng trên màn hình
 
@@ -77,7 +78,10 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | 1 | Tổng hợp danh mục | Button | TH1 (Không có vụ việc phù hợp): Hệ thống hiển thị bảng danh mục trống kèm thông báo không có dữ liệu. |
 |  |  |  | TH2 (Có dữ liệu): Hệ thống tổng hợp toàn bộ vụ việc có `Thời điểm tiếp nhận` hoặc trạng thái xử lý phát sinh trong khoảng thời gian của `Loại kỳ báo cáo` đã chọn, nhóm theo 06 lĩnh vực phát sinh thiệt hại, tính dòng `Tổng cộng` và hiển thị lên bảng danh mục ở trạng thái kỳ tổng hợp `Nháp`. |
-| 2 | Tìm kiếm | Button | Hệ thống lọc bảng danh mục đang hiển thị theo `Lĩnh vực phát sinh thiệt hại`, `Từ khóa` đã nhập, không thực hiện tổng hợp lại từ đầu.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
+| 2 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Chỉnh sửa ghi chú | Icon button | Chỉ hiển thị với cán bộ nghiệp vụ BTNN. Hệ thống mở **Popup Chỉnh sửa ghi chú** cho dòng vụ việc được chọn. |
 | 4 | Click dòng dữ liệu | Row click | Hệ thống mở màn hình chi tiết vụ việc tương ứng (SRS Giải quyết yêu cầu bồi thường) ở chế độ chỉ xem, tại một tab riêng; không thực hiện khi click vào icon `Chỉnh sửa ghi chú`. |
 | 5 | Kết xuất Excel | Button | Hệ thống kết xuất toàn bộ bảng danh mục hiện hành (đã nhóm theo lĩnh vực, có dòng Tổng cộng) ra file Excel theo đúng cấu trúc Mẫu số 01-TT08 và hiển thị [MSG-SUC-SYS-002]. |

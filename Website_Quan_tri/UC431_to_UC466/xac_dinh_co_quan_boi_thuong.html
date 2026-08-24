@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- External stylesheet -->
-    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css">
+    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20260824-officer-files">
 </head>
 
 <body>
@@ -64,6 +64,7 @@
                     <select class="form-control" id="filterStatus">
                         <option value="">Tất cả trạng thái</option>
                         <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
+                        <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
                         <option value="Đang xác minh">Đang xác minh</option>
                         <option value="Bị từ chối">Bị từ chối</option>
                         <option value="Hoàn thành">Hoàn thành</option>
@@ -117,7 +118,7 @@
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
                             <th style="width: 130px; text-align: center;">Mã hồ sơ YCBT</th>
                             <th style="width: 130px; text-align: center;">Trạng thái</th>
-                            <th style="width: 160px; text-align: center; min-width: 160px;">Thao tác</th>
+                            <th style="width: 128px; text-align: center; min-width: 128px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -132,8 +133,9 @@
                     <span>Số dòng hiển thị:</span>
                     <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize(this.value)">
                         <option value="10">10</option>
-                        <option value="30">30</option>
+                        <option value="20" selected>20</option>
                         <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                     <span id="rangeText">Hiển thị 1-10 trong số 12 bản ghi</span>
                 </div>
@@ -156,6 +158,10 @@
             <!-- General info section -->
             <div class="sub-section-title">I. THÔNG TIN CHUNG</div>
             <div class="grid-2">
+                <div class="form-group" id="formStatusGroup" style="display: none;">
+                    <span class="form-label">Trạng thái hồ sơ</span>
+                    <div id="formStatusBadge" style="padding-top: 8px;"></div>
+                </div>
                 <div class="form-group">
                     <span class="form-label">Hình thức tiếp nhận hồ sơ<span class="required">*</span></span>
                     <select class="form-control" id="formHinhThucTiepNhan">
@@ -293,13 +299,14 @@
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Tỉnh / Thành phố<span class="required">*</span></span>
                             <div id="countryViSelection">
-                                <select class="form-control" id="formNYCTinhThanh">
-                                    <option value="Thành phố Hà Nội">Thành phố Hà Nội</option>
-                                    <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
-                                    <option value="Thành phố Đà Nẵng">Thành phố Đà Nẵng</option>
-                                    <option value="Tỉnh Lâm Đồng">Tỉnh Lâm Đồng</option>
-                                    <option value="Thành phố Hải Phòng">Thành phố Hải Phòng</option>
-                                </select>
+                                <input class="form-control" id="formNYCTinhThanh" list="provinceOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố..." oninput="updateWardOptions()">
+                                <datalist id="provinceOptions">
+                                    <option value="01 - Thành phố Hà Nội"></option>
+                                    <option value="79 - Thành phố Hồ Chí Minh"></option>
+                                    <option value="48 - Thành phố Đà Nẵng"></option>
+                                    <option value="68 - Tỉnh Lâm Đồng"></option>
+                                    <option value="31 - Thành phố Hải Phòng"></option>
+                                </datalist>
                             </div>
                             <div id="countryOtherSelection" style="display: none;">
                                 <input type="text" class="form-control" id="formNYCTinhThanhText" placeholder="Nhập tỉnh/thành phố nước ngoài...">
@@ -308,9 +315,23 @@
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <span class="form-label">Địa chỉ chi tiết</span>
-                        <input type="text" class="form-control" id="formNYCAddressDetail" placeholder="Nhập địa chỉ nhà, tên đường, phường/xã...">
+                    <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Phường / Xã<span class="required">*</span></span>
+                            <div id="wardViSelection">
+                                <input class="form-control" id="formNYCPhuongXa" list="wardOptions" placeholder="Vui lòng chọn Tỉnh/Thành phố trước" disabled>
+                                <datalist id="wardOptions"></datalist>
+                            </div>
+                            <div id="wardOtherSelection" style="display: none;">
+                                <input type="text" class="form-control" id="formNYCPhuongXaText" placeholder="Nhập phường/xã/khu vực nước ngoài...">
+                            </div>
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Địa chỉ chi tiết<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="formNYCAddressDetail" placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -334,21 +355,26 @@
                         </label>
                     </div>
                 </div>
-                <div class="form-group">
-                    <span class="form-label">Tài liệu đính kèm (Đơn đề nghị xác định cơ quan và chứng minh nhân thân)</span>
-                    <div class="file-upload-container">
-                        <div class="file-upload-trigger" onclick="triggerFileInput('formFile')">
-                            <i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm +
-                        </div>
-                        <input type="file" id="formFile" style="display: none;" onchange="handleFileSelected('formFile', 'formFileAttachmentInfo')">
-                        <div id="formFileAttachmentInfo" style="display: none;" class="attached-file-info">
-                            <span class="file-icon"><i class="fa-solid fa-file-pdf"></i></span>
-                            <span class="file-name" id="formFileName">document.pdf</span>
-                            <a href="#" target="_blank" class="action-link view-link" id="formFileViewLink">Xem file</a>
-                            <a href="javascript:void(0)" class="action-link delete-link" onclick="removeAttachedFile('formFile', 'formFileAttachmentInfo')">Xóa</a>
-                        </div>
-                    </div>
-                </div>
+            </div>
+
+            <div class="sub-section-title">IV. BẢNG TÀI LIỆU ĐÍNH KÈM</div>
+            <div class="table-container">
+                <table class="custom-table" style="min-width: 760px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px; text-align: center;">STT</th>
+                            <th>Tên tài liệu</th>
+                            <th style="width: 260px;">File đính kèm</th>
+                            <th style="width: 180px; text-align: center;">Thao tác tài liệu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="formDocsTableBody"></tbody>
+                </table>
+            </div>
+            <div style="margin-top: 10px; margin-bottom: 18px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addFormDocRow()">
+                    <i class="fa-solid fa-plus"></i> Thêm dòng tài liệu
+                </button>
             </div>
 
             <div class="form-footer">
@@ -411,36 +437,6 @@
                 <textarea class="form-control" id="procReason" rows="4" placeholder="Nhập lập luận, phân tích lý do chỉ định cơ quan giải quyết này dựa trên hồ sơ xác minh..."></textarea>
             </div>
 
-            <!-- THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; margin-bottom: 10px;">
-                <div class="sub-section-title" style="margin: 0; border: none; padding: 0;">THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI</div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="openOfficerModal()"><i class="fa-solid fa-plus"></i> Thêm người thi hành công vụ</button>
-            </div>
-            
-            <div class="table-container" style="margin-bottom: 20px;">
-                <table class="custom-table" id="officerTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px; text-align: center;">STT</th>
-                            <th style="min-width: 150px;">Họ và tên</th>
-                            <th style="min-width: 150px;">Chức vụ lúc gây thiệt hại</th>
-                            <th style="min-width: 180px;">Cơ quan lúc gây thiệt hại</th>
-                            <th style="min-width: 150px;">Tình trạng hiện tại</th>
-                            <th style="min-width: 150px;">Chức vụ hiện tại</th>
-                            <th style="min-width: 180px;">Đơn vị hiện tại</th>
-                            <th style="width: 100px; text-align: center; min-width: 100px;">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="officerTableBody">
-                        <tr>
-                            <td colspan="8" style="text-align: center; color: var(--text-muted); font-style: italic;">
-                                Chưa có dữ liệu cán bộ gây thiệt hại. Bấm "Thêm người thi hành công vụ" để thêm mới.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
             <div class="form-group">
                 <span class="form-label">Tải lên file scan quyết định xác định cơ quan giải quyết bồi thường</span>
                 <div class="file-upload-container">
@@ -452,7 +448,7 @@
                         <span class="file-icon"><i class="fa-solid fa-file-pdf"></i></span>
                         <span class="file-name" id="procFileName">quyet_dinh.pdf</span>
                         <a href="#" target="_blank" class="action-link view-link" id="procFileViewLink">Xem file</a>
-                        <a href="javascript:void(0)" class="action-link delete-link" onclick="removeAttachedFile('procDecisionFile', 'procFileAttachmentInfo')">Xóa</a>
+                        <a href="javascript:void(0)" class="action-link delete-link" title="Xóa file" onclick="removeAttachedFile('procDecisionFile', 'procFileAttachmentInfo')"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
                     </div>
                 </div>
             </div>
@@ -570,31 +566,6 @@
                         <div class="detail-value" style="line-height: 1.5;" id="dtProcReason"></div>
                     </div>
                     
-                    <!-- THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI (READ-ONLY TABLE) -->
-                    <div class="sub-section-title" style="color: var(--warning-color); margin-top: 15px;">V. THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI</div>
-                    <div class="table-container" style="margin-bottom: 20px;">
-                        <table class="custom-table" id="dtOfficerTable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px; text-align: center;">STT</th>
-                                    <th style="min-width: 150px;">Họ và tên</th>
-                                    <th style="min-width: 150px;">Chức vụ lúc gây thiệt hại</th>
-                                    <th style="min-width: 180px;">Cơ quan lúc gây thiệt hại</th>
-                                    <th style="min-width: 150px;">Tình trạng hiện tại</th>
-                                    <th style="min-width: 150px;">Chức vụ hiện tại</th>
-                                    <th style="min-width: 180px;">Đơn vị hiện tại</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dtOfficerTableBody">
-                                <tr>
-                                    <td colspan="7" style="text-align: center; color: var(--text-muted); font-style: italic;">
-                                        Không có dữ liệu người thi hành công vụ gây thiệt hại.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
                     <div class="detail-row">
                         <div class="detail-label">Quyết định chuyển giao đính kèm</div>
                         <div class="detail-value" id="dtProcDecisionFile"></div>
@@ -709,7 +680,7 @@
                             <span class="file-icon"><i class="fa-solid fa-file-pdf"></i></span>
                             <span class="file-name" id="claimFileName">don_yeu_cau.pdf</span>
                             <a href="#" target="_blank" class="action-link view-link" id="claimFileViewLink">Xem file</a>
-                            <a href="javascript:void(0)" class="action-link delete-link" onclick="removeAttachedFile('claimFile', 'claimFileAttachmentInfo')">Xóa</a>
+                            <a href="javascript:void(0)" class="action-link delete-link" title="Xóa file" onclick="removeAttachedFile('claimFile', 'claimFileAttachmentInfo')"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
                         </div>
                     </div>
                 </div>
@@ -729,68 +700,12 @@
         <span>Thông báo thành công!</span>
     </div>
 
-    <!-- POPUP MODAL FOR ADDING/EDITING OFFICER -->
-    <div id="claimOfficerModal" class="confirm-modal-overlay">
-        <div class="confirm-modal-container" style="max-width: 850px; width: 90%; max-height: 90vh; display: flex; flex-direction: column;">
-            <div class="modal-content" style="display: flex; flex-direction: column; height: 100%; max-height: 90vh; overflow: hidden;">
-                <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 24px 24px 16px 24px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0;">
-                    <h3 style="margin: 0; font-size: 16px; color: var(--primary-color);">
-                        <i class="fa-solid fa-user-shield"></i> Thông tin Người thi hành công vụ gây thiệt hại
-                    </h3>
-                    <span onclick="closeClaimOfficerModal()" style="cursor: pointer; font-size: 18px; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></span>
-                </div>
-                <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
-                    <input type="hidden" id="modalClaimOfficerId">
-                    <div class="grid-2" style="margin-bottom: 15px;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Họ và tên cán bộ gây thiệt hại</span>
-                            <input type="text" class="form-control" id="modalClaimOfficerName" placeholder="Nhập họ và tên cán bộ...">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Chức vụ tại thời điểm gây thiệt hại</span>
-                            <input type="text" class="form-control" id="modalClaimOfficerPosition" placeholder="Ví dụ: Điều tra viên sơ cấp...">
-                        </div>
-                    </div>
-                    <div class="grid-2" style="margin-bottom: 15px;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Cơ quan công tác tại thời điểm gây thiệt hại</span>
-                            <input type="text" class="form-control" id="modalClaimOfficerAgency" placeholder="Nhập cơ quan công tác...">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Tình trạng công tác hiện tại</span>
-                            <select class="form-control" id="modalClaimOfficerStatus" onchange="toggleModalClaimOfficerStatus()">
-                                <option value="Vẫn công tác tại đơn vị cũ">Vẫn công tác tại đơn vị cũ</option>
-                                <option value="Đã chuyển công tác">Đã chuyển công tác</option>
-                                <option value="Đã nghỉ hưu / nghỉ việc">Đã nghỉ hưu / nghỉ việc</option>
-                                <option value="Không rõ">Không rõ</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="grid-2" id="modalClaimOfficerCurrentGroup" style="display: none; margin-bottom: 0;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Cơ quan công tác hiện tại</span>
-                            <input type="text" class="form-control" id="modalClaimOfficerCurrentAgency" placeholder="Nhập cơ quan hiện tại...">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Chức vụ hiện tại</span>
-                            <input type="text" class="form-control" id="modalClaimOfficerCurrentPosition" placeholder="Nhập chức vụ hiện tại...">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--border-color); padding: 16px 24px 24px 24px; text-align: right; background: #f8fafc; flex-shrink: 0; display: flex; justify-content: flex-end; gap: 10px;">
-                    <button class="btn btn-secondary" onclick="closeClaimOfficerModal()">Hủy bỏ</button>
-                    <button class="btn btn-primary" onclick="saveClaimOfficerModal()">Lưu lại</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Reject Acceptance Modal HTML -->
     <div id="rejectAcceptanceModal" class="confirm-modal-overlay">
         <div class="confirm-modal-container" style="max-width: 650px; width: 90%; max-height: 90vh; display: flex; flex-direction: column;">
             <div class="modal-content" style="display: flex; flex-direction: column; height: 100%; max-height: 90vh; overflow: hidden; background: #fff; border-radius: 12px;">
                 <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 24px 24px 16px 24px; display: flex; justify-content: space-between; align-items: center; background: #fff; flex-shrink: 0;">
-                    <h3 style="margin: 0; font-size: 16px; color: var(--danger-color); font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                    <h3 id="rejectAcceptanceTitle" style="margin: 0; font-size: 16px; color: var(--danger-color); font-weight: 700; display: flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-circle-xmark"></i> Từ chối tiếp nhận hồ sơ
                     </h3>
                     <span onclick="closeRejectAcceptanceModal()" style="cursor: pointer; font-size: 18px; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></span>
@@ -798,13 +713,13 @@
                 <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
                     <input type="hidden" id="modalRejectRequestId">
                     <div class="form-group" style="margin-bottom: 20px;">
-                        <span class="form-label" style="font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px; display: block;">Lý do từ chối tiếp nhận<span class="required">*</span></span>
+                        <span class="form-label" id="rejectAcceptanceReasonLabel" style="font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px; display: block;">Lý do từ chối tiếp nhận<span class="required">*</span></span>
                         <textarea class="form-control" id="rejectAcceptanceReason" rows="4" placeholder="Nhập lý do chi tiết từ chối tiếp nhận hồ sơ..." style="border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; font-size: 13.5px; width: 100%; box-sizing: border-box; resize: vertical; color: #1e293b;"></textarea>
                         <div class="error-message" style="color: var(--danger-color); font-size: 11px; margin-top: 4px; display: none;">Đây là trường bắt buộc</div>
                     </div>
                     
                     <div class="form-group" style="margin-bottom: 10px;">
-                        <span class="form-label" style="font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px; display: block;">Văn bản thông báo từ chối đính kèm</span>
+                        <span class="form-label" id="rejectAcceptanceFileLabel" style="font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px; display: block;">Văn bản thông báo từ chối đính kèm</span>
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <input type="file" id="rejectAcceptanceFileInput" style="display: none;" onchange="handleRejectFileUpload(this)">
                             <button class="btn btn-secondary btn-sm" type="button" onclick="document.getElementById('rejectAcceptanceFileInput').click()" style="background-color: #fff; border: 1px solid #cbd5e1; color: #475569; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s;">
@@ -817,7 +732,7 @@
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid var(--border-color); padding: 16px 24px 24px 24px; text-align: right; background: #fff; flex-shrink: 0; display: flex; justify-content: flex-end; gap: 12px;">
                     <button class="btn btn-secondary" onclick="closeRejectAcceptanceModal()" style="background-color: #fff; border: 1px solid #cbd5e1; color: #475569; padding: 9px 20px; border-radius: 6px; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.15s;">Hủy bỏ</button>
-                    <button class="btn btn-danger" onclick="submitRejectAcceptance()" style="background-color: #ef4444; border: 1px solid #ef4444; color: #fff; padding: 9px 24px; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.15s;">Xác nhận từ chối</button>
+                    <button class="btn btn-danger" id="rejectAcceptanceSubmitBtn" onclick="submitRejectAcceptance()" style="background-color: #ef4444; border: 1px solid #ef4444; color: #fff; padding: 9px 24px; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.15s;">Xác nhận từ chối</button>
                 </div>
             </div>
         </div>
@@ -840,7 +755,7 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="xac_dinh_co_quan_boi_thuong.js"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20260824-officer-files"></script>
     <script src="../admin-ui-standardizer.js"></script>
 </body>
 

@@ -76,6 +76,11 @@ Người dùng thuộc nhóm có quyền quản lý công tác bồi thường t
 
 #### 4.1.4. Lưới Danh Sách Hồ Sơ Hoàn Trả
 
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+|---|---|---|---|---|
+| Bảng danh sách hồ sơ hoàn trả | List(Object) | Không | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
+| Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
+
 | STT | Tên cột | Kiểu dữ liệu | Mô tả |
 |---:|---|---|---|
 | 1 | STT | Integer(5) | Số thứ tự dòng trên trang hiện tại. |
@@ -96,9 +101,10 @@ Người dùng thuộc nhóm có quyền quản lý công tác bồi thường t
 
 | STT | Chức năng | Điều kiện | Xử lý |
 |---:|---|---|---|
-| 1 | Tìm kiếm | Có ít nhất một tiêu chí hoặc để trống toàn bộ tiêu chí | TH1 (Dữ liệu ngày/từ khóa không hợp lệ): Vi phạm quy tắc tương ứng trong mục 2, hệ thống hiển thị cảnh báo theo MessageList chung và không thực hiện tìm kiếm. |
-|  |  |  | **TH Hợp lệ:** Hệ thống lọc danh sách theo tiêu chí nhập/chọn và cập nhật phân trang. |
-|  |  |  | **TH Không có dữ liệu trả về:** Bảng kết quả hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng; thanh phân trang (Pagination) hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang (`&#124;&lt;&lt;`, `&lt;`, các số trang, `&gt;`, `&gt;&gt;&#124;`) ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" khóa mờ (Disabled) kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
+| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Xóa bộ lọc | Người dùng chọn nút Xóa bộ lọc | Hệ thống đưa các tiêu chí về giá trị mặc định và tải lại danh sách. |
 | 3 | Lập hồ sơ hoàn trả mới | Người dùng chọn nút Lập hồ sơ hoàn trả mới | Hệ thống mở MH02 - Popup Lập hồ sơ hoàn trả: Chọn vụ việc bồi thường. |
 | 4 | Kết xuất Excel | Danh sách đang có dữ liệu | Hệ thống kết xuất danh sách theo bộ lọc hiện tại, áp dụng [BR-EXP-040]. |

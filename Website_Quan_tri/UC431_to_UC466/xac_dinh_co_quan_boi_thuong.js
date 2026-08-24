@@ -362,8 +362,20 @@ let requestList = [
 
 // Active State
 let currentPage = 1;
-let pageSize = 10;
+let pageSize = 20;
 let filteredList = [];
+let formMode = 'create';
+let formDocRows = [];
+
+const REQUEST_TYPE_XDCQ = "Xác định cơ quan giải quyết bồi thường";
+const RECEPTION_STORAGE_KEY = "claimsList";
+const wardCatalog = {
+    "Thành phố Hà Nội": ["00001 - Phường Ba Đình", "00004 - Phường Hoàn Kiếm", "00007 - Phường Cầu Giấy", "00010 - Phường Thanh Xuân"],
+    "Thành phố Hồ Chí Minh": ["26734 - Phường Bến Thành", "26737 - Phường Sài Gòn", "26740 - Phường Tân Định", "26743 - Phường Chợ Lớn"],
+    "Thành phố Đà Nẵng": ["20194 - Phường Hải Châu", "20197 - Phường Thanh Khê", "20200 - Phường Sơn Trà", "20203 - Phường Ngũ Hành Sơn"],
+    "Tỉnh Lâm Đồng": ["24778 - Phường Xuân Hương - Đà Lạt", "24781 - Phường Lâm Viên - Đà Lạt", "24784 - Xã Đức Trọng", "24787 - Xã Di Linh"],
+    "Thành phố Hải Phòng": ["11359 - Phường Hồng Bàng", "11362 - Phường Ngô Quyền", "11365 - Phường Lê Chân", "11368 - Phường Hải An"]
+};
 
 function getCaseName(item) {
     return (item && item.caseName) ? item.caseName : `Vụ việc yêu cầu bồi thường của ${(item && item.nycName) || 'người yêu cầu'}`;
@@ -371,7 +383,6 @@ function getCaseName(item) {
 
 // Temporary file upload cache
 let fileCache = {
-    formFile: null,
     procDecisionFile: null,
     claimFile: null
 };
@@ -393,12 +404,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('filterFromDate').value = formatDate(threeMonthsAgo);
     document.getElementById('filterToDate').value = formatDate(today);
+    const pageSizeSelect = document.getElementById('pageSizeSelect');
+    if (pageSizeSelect) pageSizeSelect.value = String(pageSize);
 
     // Initialize flatpickr for dates
     flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true });
     flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true });
     flatpickr("#formNYCDob", { dateFormat: "d/m/Y", allowInput: true });
     flatpickr("#formNYCDocDate", { dateFormat: "d/m/Y", allowInput: true });
+
+    syncReceptionRequests();
+    normalizeRequestData();
 
     // Initial render
     applyFilters();
@@ -412,16 +428,86 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function syncReceptionRequests() {
+    const stored = localStorage.getItem(RECEPTION_STORAGE_KEY);
+    if (!stored) return;
+    let receptionRows = [];
+    try {
+        receptionRows = JSON.parse(stored);
+    } catch (e) {
+        receptionRows = [];
+    }
+
+    receptionRows
+        .filter(item => !item.deleted && item.requestType === REQUEST_TYPE_XDCQ)
+        .forEach(item => {
+            const existing = requestList.find(req => req.sourceReceptionCode === item.code || req.code === item.code);
+            if (existing) return;
+            requestList.unshift({
+                id: `REQ-TN-${item.code || Date.now()}`,
+                code: item.code || `XD-${new Date().getFullYear()}-${String(requestList.length + 1).padStart(3, '0')}`,
+                sourceReceptionCode: item.code,
+                date: (item.receivedAt || item.date || '').split(' ')[0] || formatDateValue(new Date()),
+                receivedAt: item.receivedAt || item.date || '',
+                caseName: item.caseName,
+                nycName: item.nyc,
+                nycRole: "Người bị thiệt hại",
+                nycGender: "Nam",
+                nycDob: "",
+                nycDocType: "CCCD",
+                nycDocNo: "",
+                nycDocDate: "",
+                nycDocPlace: "",
+                nycPhone: "",
+                nycEmail: "",
+                nycCountry: "Việt Nam",
+                nycTinhThanh: item.nycTinhThanh || "",
+                nycPhuongXa: item.nycPhuongXa || "",
+                nycAddressDetail: item.nycAddressDetail || item.address || "",
+                hinhThucTiepNhan: item.nopKenh || "Trực tiếp",
+                linhVuc: mapReceptionFieldGroup(item.fieldGroup),
+                hanhVi: "",
+                hinhThucNhan: "Phương thức điện tử",
+                status: "Chờ tiếp nhận",
+                attachedFile: item.files && item.files[0] ? item.files[0].name : "",
+                attachedDocs: (item.receptionDocs || []).map(doc => ({ name: doc.name || doc.file || "", file: doc.file || doc.name || "" })),
+                procBasis: "",
+                procTargetAgency: "",
+                procReason: "",
+                procDecisionFile: "",
+                claimCode: "-"
+            });
+        });
+}
+
+function normalizeRequestData() {
+    requestList.forEach(item => {
+        if (item.status === "Chờ nhập liệu") item.status = "Chờ tiếp nhận";
+        if (!item.nycPhuongXa) item.nycPhuongXa = inferWard(item.nycTinhThanh);
+        if (!item.attachedDocs) {
+            item.attachedDocs = item.attachedFile ? [{ name: "Tài liệu đính kèm", file: item.attachedFile }] : [];
+        }
+        if (!item.caseName) item.caseName = getCaseName(item);
+    });
+}
+
 // Toggle Country input for Form (Viet Nam -> dropdown, Other -> Text input)
 function toggleCountrySelect(val) {
     const viDiv = document.getElementById('countryViSelection');
     const otherDiv = document.getElementById('countryOtherSelection');
+    const wardViDiv = document.getElementById('wardViSelection');
+    const wardOtherDiv = document.getElementById('wardOtherSelection');
     if (val === 'Việt Nam') {
         viDiv.style.display = 'block';
         otherDiv.style.display = 'none';
+        if (wardViDiv) wardViDiv.style.display = 'block';
+        if (wardOtherDiv) wardOtherDiv.style.display = 'none';
+        updateWardOptions();
     } else {
         viDiv.style.display = 'none';
         otherDiv.style.display = 'block';
+        if (wardViDiv) wardViDiv.style.display = 'none';
+        if (wardOtherDiv) wardOtherDiv.style.display = 'block';
     }
 }
 
@@ -459,7 +545,7 @@ function closeDetailOrReturn() {
     showListScreen();
 }
 
-function showFormScreen(id = null) {
+function showFormScreen(id = null, mode = null) {
     document.getElementById('screenList').style.display = 'none';
     document.getElementById('screenForm').style.display = 'block';
     document.getElementById('screenProcess').style.display = 'none';
@@ -470,9 +556,19 @@ function showFormScreen(id = null) {
 
     const title = document.getElementById('formScreenTitle');
     const formRequestId = document.getElementById('formRequestId');
+    const item = id ? requestList.find(r => r.id === id) : null;
+    formMode = mode || (!id ? 'create' : item && item.status === 'Chờ tiếp nhận' ? 'accept' : 'editDraft');
 
     // Reset form fields
     formRequestId.value = id || '';
+    const statusGroup = document.getElementById('formStatusGroup');
+    const statusBadge = document.getElementById('formStatusBadge');
+    if (statusGroup && statusBadge) {
+        statusGroup.style.display = formMode === 'create' ? 'none' : 'block';
+        statusBadge.innerHTML = formMode === 'accept'
+            ? `<span class="badge badge-pending">Chờ tiếp nhận</span>`
+            : `<span class="badge badge-draft">Lưu nháp</span>`;
+    }
     document.getElementById('formHinhThucTiepNhan').value = 'Trực tiếp';
     document.getElementById('formLinhVuc').value = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
     document.getElementById('formCaseName').value = '';
@@ -488,19 +584,22 @@ function showFormScreen(id = null) {
     document.getElementById('formNYCEmail').value = '';
     document.getElementById('formNYCCountry').value = 'Việt Nam';
     toggleCountrySelect('Việt Nam');
-    document.getElementById('formNYCTinhThanh').value = 'Thành phố Hà Nội';
+    document.getElementById('formNYCTinhThanh').value = '';
     document.getElementById('formNYCTinhThanhText').value = '';
+    document.getElementById('formNYCPhuongXa').value = '';
+    document.getElementById('formNYCPhuongXaText').value = '';
     document.getElementById('formNYCAddressDetail').value = '';
     document.getElementById('formHanhVi').value = '';
     document.querySelector('input[name="formHinhThucNhan"][value="Phương thức điện tử"]').checked = true;
     toggleFormEmailRequired(true);
 
-    // Reset attached file cache
-    clearAttachedFile('formFile', 'formFileAttachmentInfo');
+    formDocRows = [{ name: "", file: "" }];
+    renderFormDocs();
 
     if (id) {
-        title.innerHTML = `<i class="fa-solid fa-file-pen"></i> CHỈNH SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
-        const item = requestList.find(r => r.id === id);
+        title.innerHTML = formMode === 'accept'
+            ? `<i class="fa-solid fa-file-import"></i> TIẾP NHẬN YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`
+            : `<i class="fa-solid fa-file-pen"></i> CHỈNH SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
         if (item) {
             document.getElementById('formHinhThucTiepNhan').value = item.hinhThucTiepNhan;
             document.getElementById('formLinhVuc').value = item.linhVuc;
@@ -518,9 +617,11 @@ function showFormScreen(id = null) {
             document.getElementById('formNYCCountry').value = item.nycCountry;
             toggleCountrySelect(item.nycCountry);
             if (item.nycCountry === 'Việt Nam') {
-                document.getElementById('formNYCTinhThanh').value = item.nycTinhThanh;
+                document.getElementById('formNYCTinhThanh').value = normalizeProvinceOption(item.nycTinhThanh);
+                updateWardOptions(item.nycPhuongXa || inferWard(item.nycTinhThanh));
             } else {
                 document.getElementById('formNYCTinhThanhText').value = item.nycTinhThanh;
+                document.getElementById('formNYCPhuongXaText').value = item.nycPhuongXa || "";
             }
             document.getElementById('formNYCAddressDetail').value = item.nycAddressDetail;
             document.getElementById('formHanhVi').value = item.hanhVi;
@@ -533,9 +634,10 @@ function showFormScreen(id = null) {
                 toggleFormEmailRequired(false);
             }
 
-            if (item.attachedFile) {
-                displayAttachedFile('formFile', 'formFileAttachmentInfo', item.attachedFile);
-            }
+            formDocRows = item.attachedDocs && item.attachedDocs.length
+                ? item.attachedDocs.map(doc => ({ name: doc.name || "", file: doc.file || "" }))
+                : item.attachedFile ? [{ name: "Tài liệu đính kèm", file: item.attachedFile }] : [{ name: "", file: "" }];
+            renderFormDocs();
         }
     } else {
         title.innerHTML = `<i class="fa-solid fa-file-signature"></i> THÊM MỚI YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
@@ -569,11 +671,6 @@ function showProcessScreen(id) {
     document.getElementById('procTargetAgency').value = agencyVal;
 
     document.getElementById('procReason').value = item.procReason || "";
-
-    // Prefill officer fields
-    // Prefill officer fields
-    currentOfficers = item.officers ? JSON.parse(JSON.stringify(item.officers)) : [];
-    renderOfficerTable();
 
     clearAttachedFile('procDecisionFile', 'procFileAttachmentInfo');
     if (item.procDecisionFile) {
@@ -627,15 +724,19 @@ function showDetailScreen(id) {
     document.getElementById('dtNYCEmail').innerText = item.nycEmail || 'Chưa cung cấp';
 
     const city = item.nycCountry === 'Việt Nam' ? item.nycTinhThanh : item.nycTinhThanh;
-    document.getElementById('dtNYCAddress').innerText = `${item.nycAddressDetail}, ${city}, ${item.nycCountry}`;
+    const ward = item.nycPhuongXa ? `${item.nycPhuongXa}, ` : '';
+    document.getElementById('dtNYCAddress').innerText = `${item.nycAddressDetail}, ${ward}${city}, ${item.nycCountry}`;
 
     // Attached file
-    if (item.attachedFile) {
+    const attachedDocs = item.attachedDocs && item.attachedDocs.length ? item.attachedDocs : (item.attachedFile ? [{ name: 'Tài liệu đính kèm', file: item.attachedFile }] : []);
+    if (attachedDocs.length) {
         document.getElementById('dtFileAttachment').innerHTML = `
-            <div style="font-weight: 600; color: #0F766E;">
-                <i class="fa-solid fa-file-pdf"></i> ${item.attachedFile}
-                <a href="#" target="_blank" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>
-            </div>
+            ${attachedDocs.map(doc => `
+                <div style="font-weight: 600; color: #0F766E; margin-bottom: 6px;">
+                    <i class="fa-solid fa-file-pdf"></i> ${escapeHtml(doc.name || 'Tài liệu')} - ${escapeHtml(doc.file || 'Chưa có file')}
+                    ${doc.file ? `<a href="#" target="_blank" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>` : ''}
+                </div>
+            `).join('')}
         `;
     } else {
         document.getElementById('dtFileAttachment').innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Không có file đính kèm</span>`;
@@ -648,6 +749,7 @@ function showDetailScreen(id) {
     // Status Badge
     let badgeClass = 'badge-draft';
     if (item.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
+    else if (item.status === 'Yêu cầu bổ sung') badgeClass = 'badge-warning';
     else if (item.status === 'Đang xác minh') badgeClass = 'badge-verifying';
     else if (item.status === 'Bị từ chối') badgeClass = 'badge-rejected';
     else if (item.status === 'Hoàn thành') badgeClass = 'badge-success';
@@ -660,11 +762,6 @@ function showDetailScreen(id) {
         document.getElementById('dtProcBasis').innerText = item.procBasis || 'Đang xác minh, chưa có căn cứ';
         document.getElementById('dtProcTargetAgency').innerText = item.procTargetAgency || 'Đang tiến hành chỉ định';
         document.getElementById('dtProcReason').innerText = item.procReason || 'Đang cập nhật báo cáo kết luận...';
-
-        // Populate officer fields
-        // Populate officer fields
-        currentOfficers = item.officers ? JSON.parse(JSON.stringify(item.officers)) : [];
-        renderDtOfficerTable();
 
         if (item.procDecisionFile) {
             document.getElementById('dtProcDecisionFile').innerHTML = `
@@ -693,8 +790,9 @@ function showDetailScreen(id) {
     footer.innerHTML = `<button class="btn btn-secondary" onclick="closeDetailOrReturn()">Đóng</button>`;
 
     if (item.status === 'Chờ tiếp nhận') {
-        footer.innerHTML += `<button class="btn btn-danger" onclick="openRejectAcceptanceModal('${item.id}')"><i class="fa-solid fa-circle-xmark"></i> Từ chối tiếp nhận</button>`;
-        footer.innerHTML += `<button class="btn btn-success" onclick="acceptRequest('${item.id}', true)"><i class="fa-solid fa-circle-check"></i> Tiếp nhận hồ sơ</button>`;
+        footer.innerHTML += `<button class="btn btn-secondary" onclick="openRejectAcceptanceModal('${item.id}', 'supplement')"><i class="fa-solid fa-file-circle-question"></i> Yêu cầu bổ sung</button>`;
+        footer.innerHTML += `<button class="btn btn-danger" onclick="openRejectAcceptanceModal('${item.id}', 'reject')"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
+        footer.innerHTML += `<button class="btn btn-success" onclick="acceptRequest('${item.id}', true)"><i class="fa-solid fa-file-import"></i> Tiếp nhận</button>`;
     } else if (item.status === 'Đang xác minh') {
         footer.innerHTML += `<button class="btn btn-primary" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i> Cập nhật kết quả xác minh</button>`;
     } else if (item.status === 'Hoàn thành') {
@@ -723,7 +821,8 @@ function showCreateClaimScreen(id) {
     document.getElementById('claimNYCEmail').value = item.nycEmail || 'Không có';
 
     const city = item.nycCountry === 'Việt Nam' ? item.nycTinhThanh : item.nycTinhThanh;
-    document.getElementById('claimNYCAddress').value = `${item.nycAddressDetail}, ${city}, ${item.nycCountry}`;
+    const ward = item.nycPhuongXa ? `${item.nycPhuongXa}, ` : '';
+    document.getElementById('claimNYCAddress').value = `${item.nycAddressDetail}, ${ward}${city}, ${item.nycCountry}`;
 
     document.getElementById('claimDocBase').value = `Quyết định chuyển giao cơ quan GQBT số 04/QĐ-XĐCQ đính kèm: ${item.procDecisionFile || 'QD.pdf'}`;
     document.getElementById('claimHanhVi').value = item.hanhVi;
@@ -746,22 +845,13 @@ function showCreateClaimScreen(id) {
 
 // Action methods
 function acceptRequest(id, fromDetail = false) {
-    const item = requestList.find(r => r.id === id);
-    if (item && item.status === 'Chờ tiếp nhận') {
-        item.status = 'Đang xác minh';
-        showToast("Đã tiếp nhận hồ sơ. Trạng thái chuyển sang [Đang xác minh]!", "success");
-        if (fromDetail) {
-            showDetailScreen(id);
-        } else {
-            renderTable();
-        }
-    }
+    showFormScreen(id, 'accept');
 }
 
 function submitDraft(id) {
     const item = requestList.find(r => r.id === id);
     if (item && item.status === 'Lưu nháp') {
-        item.status = 'Chờ tiếp nhận';
+        item.status = 'Đang xác minh';
         showToast("Đã gửi yêu cầu xác định cơ quan thành công!", "success");
         showDetailScreen(id);
     }
@@ -776,6 +866,143 @@ function deleteRequest(id) {
             renderTable();
         });
     }
+}
+
+function addFormDocRow() {
+    formDocRows.push({ name: "", file: "" });
+    renderFormDocs();
+}
+
+function renderFormDocs() {
+    const tbody = document.getElementById('formDocsTableBody');
+    if (!tbody) return;
+    if (!formDocRows.length) formDocRows = [{ name: "", file: "" }];
+    tbody.innerHTML = formDocRows.map((doc, idx) => `
+        <tr>
+            <td style="text-align: center;">${idx + 1}</td>
+            <td>
+                <input class="form-control" id="formDocName_${idx}" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên tài liệu..." oninput="updateFormDocName(${idx}, this.value)">
+            </td>
+            <td>
+                ${doc.file
+                    ? `<span style="font-weight: 600; color: #0F766E;"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${escapeHtml(doc.file)}</span>`
+                    : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('formDocFile_${idx}').click()"><i class="fa-solid fa-file-arrow-up"></i> Tải lên</button>`}
+                <input type="file" id="formDocFile_${idx}" style="display:none;" onchange="uploadFormDoc(${idx}, this)">
+            </td>
+            <td style="text-align: center;">
+                <div class="action-flex">
+                    <button type="button" class="icon-btn view" ${doc.file ? '' : 'style="opacity:0.35; pointer-events:none;"'} title="Xem file" onclick="viewFormDoc(${idx})"><i class="fa-solid fa-eye"></i></button>
+                    <button type="button" class="icon-btn delete" title="Xóa tài liệu" onclick="deleteFormDoc(${idx})"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function updateFormDocName(index, value) {
+    if (formDocRows[index]) formDocRows[index].name = value;
+}
+
+function uploadFormDoc(index, input) {
+    if (!formDocRows[index] || !input.files || !input.files[0]) return;
+    const fileName = input.files[0].name;
+    formDocRows[index].file = fileName;
+    if (!formDocRows[index].name) formDocRows[index].name = fileName.replace(/\.[^.]+$/, '');
+    renderFormDocs();
+    showToast(`Đính kèm tập tin: ${fileName} thành công!`, "success");
+}
+
+function viewFormDoc(index) {
+    const doc = formDocRows[index];
+    if (!doc || !doc.file) return;
+    previewNamedFile(doc.file);
+}
+
+function previewNamedFile(fileName) {
+    const preview = window.open('', '_blank');
+    if (preview) {
+        preview.document.write(`<title>${escapeHtml(fileName)}</title><body style="font-family:Arial;padding:24px;"><h3>Xem file đính kèm</h3><p>${escapeHtml(fileName)}</p></body>`);
+        preview.document.close();
+    }
+}
+
+function deleteFormDoc(index) {
+    const doc = formDocRows[index];
+    const remove = () => {
+        if (formDocRows.length === 1) {
+            formDocRows = [{ name: "", file: "" }];
+        } else {
+            formDocRows.splice(index, 1);
+        }
+        renderFormDocs();
+    };
+    if (doc && (doc.name || doc.file)) {
+        showConfirmModal("Bạn có chắc chắn muốn xóa tài liệu này khỏi bảng không?", remove);
+    } else {
+        remove();
+    }
+}
+
+function updateWardOptions(selectedWard = "") {
+    const provinceInput = document.getElementById('formNYCTinhThanh');
+    const wardInput = document.getElementById('formNYCPhuongXa');
+    const wardOptions = document.getElementById('wardOptions');
+    if (!provinceInput || !wardInput || !wardOptions) return;
+    const province = stripAdministrativeCode(provinceInput.value);
+    const wards = wardCatalog[province] || [];
+    wardOptions.innerHTML = wards.map(ward => `<option value="${escapeAttr(ward)}"></option>`).join('');
+    wardInput.disabled = wards.length === 0;
+    wardInput.placeholder = wards.length ? "Gõ Mã hoặc Tên Phường/Xã..." : "Vui lòng chọn Tỉnh/Thành phố trước";
+    if (selectedWard) {
+        wardInput.value = selectedWard;
+    } else if (!wards.includes(wardInput.value)) {
+        wardInput.value = "";
+    }
+}
+
+function stripAdministrativeCode(value) {
+    return String(value || '').replace(/^\d+\s*-\s*/, '').trim();
+}
+
+function normalizeProvinceOption(value) {
+    const province = stripAdministrativeCode(value);
+    const options = Array.from(document.querySelectorAll('#provinceOptions option'));
+    const found = options.find(option => stripAdministrativeCode(option.value) === province || option.value.includes(province));
+    return found ? found.value : value || '';
+}
+
+function inferWard(provinceValue) {
+    const wards = wardCatalog[stripAdministrativeCode(provinceValue)] || wardCatalog[stripAdministrativeCode(normalizeProvinceOption(provinceValue))] || [];
+    return wards[0] || '';
+}
+
+function mapReceptionFieldGroup(value) {
+    const map = {
+        "hành chính": "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH",
+        "hình sự": "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
+        "dân sự": "TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ",
+        "tố tụng hành chính": "TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH",
+        "thi hành án hình sự": "TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ",
+        "thi hành án dân sự": "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ"
+    };
+    return map[value] || value || "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH";
+}
+
+function formatDateValue(date) {
+    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+}
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function escapeAttr(value) {
+    return escapeHtml(value);
 }
 
 // File Selection Utilities
@@ -844,8 +1071,19 @@ function saveForm(isDraft) {
     const docPlace = document.getElementById('formNYCDocPlace').value.trim();
     const phone = document.getElementById('formNYCPhone').value.trim();
     const email = document.getElementById('formNYCEmail').value.trim();
+    const country = document.getElementById('formNYCCountry').value;
+    const city = country === 'Việt Nam'
+        ? stripAdministrativeCode(document.getElementById('formNYCTinhThanh').value)
+        : document.getElementById('formNYCTinhThanhText').value.trim();
+    const ward = country === 'Việt Nam'
+        ? document.getElementById('formNYCPhuongXa').value.trim()
+        : document.getElementById('formNYCPhuongXaText').value.trim();
+    const addressDetail = document.getElementById('formNYCAddressDetail').value.trim();
     const isEmailRequired = document.querySelector('input[name="formHinhThucNhan"]:checked').value === 'Phương thức điện tử';
     const hanhVi = document.getElementById('formHanhVi').value.trim();
+    const cleanDocs = formDocRows
+        .filter(doc => (doc.name || '').trim() || (doc.file || '').trim())
+        .map(doc => ({ name: (doc.name || '').trim(), file: doc.file || '' }));
 
     if (!isDraft) {
         let firstInvalid = null;
@@ -898,6 +1136,24 @@ function saveForm(isDraft) {
             el.closest('.form-group').querySelector('.error-message').style.display = 'block';
             if (!firstInvalid) firstInvalid = el;
         }
+        if (!city) {
+            const el = country === 'Việt Nam' ? document.getElementById('formNYCTinhThanh') : document.getElementById('formNYCTinhThanhText');
+            el.classList.add('is-invalid');
+            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
+            if (!firstInvalid) firstInvalid = el;
+        }
+        if (!ward) {
+            const el = country === 'Việt Nam' ? document.getElementById('formNYCPhuongXa') : document.getElementById('formNYCPhuongXaText');
+            el.classList.add('is-invalid');
+            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
+            if (!firstInvalid) firstInvalid = el;
+        }
+        if (!addressDetail) {
+            const el = document.getElementById('formNYCAddressDetail');
+            el.classList.add('is-invalid');
+            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
+            if (!firstInvalid) firstInvalid = el;
+        }
         if (!hanhVi) {
             const el = document.getElementById('formHanhVi');
             el.classList.add('is-invalid');
@@ -910,9 +1166,6 @@ function saveForm(isDraft) {
             return;
         }
     }
-
-    const country = document.getElementById('formNYCCountry').value;
-    const city = country === 'Việt Nam' ? document.getElementById('formNYCTinhThanh').value : document.getElementById('formNYCTinhThanhText').value;
 
     if (formRequestId) {
         // Edit
@@ -933,14 +1186,18 @@ function saveForm(isDraft) {
             item.nycEmail = email;
             item.nycCountry = country;
             item.nycTinhThanh = city;
-            item.nycAddressDetail = document.getElementById('formNYCAddressDetail').value;
+            item.nycPhuongXa = ward;
+            item.nycAddressDetail = addressDetail;
             item.hanhVi = hanhVi;
             item.hinhThucNhan = document.querySelector('input[name="formHinhThucNhan"]:checked').value;
-            item.attachedFile = fileCache['formFile'] || "";
-            if (!isDraft) {
-                item.status = 'Chờ tiếp nhận';
+            item.attachedDocs = cleanDocs;
+            item.attachedFile = cleanDocs[0] ? cleanDocs[0].file : "";
+            if (isDraft) {
+                item.status = formMode === 'accept' ? 'Chờ tiếp nhận' : 'Lưu nháp';
+            } else {
+                item.status = 'Đang xác minh';
             }
-            showToast(isDraft ? "Đã lưu nháp cập nhật hồ sơ thành công!" : "Cập nhật và gửi yêu cầu thành công!", "success");
+            showToast(isDraft ? "Đã lưu nháp cập nhật hồ sơ thành công!" : "Đã gửi yêu cầu. Hồ sơ chuyển sang [Đang xác minh]!", "success");
         }
     } else {
         // Create
@@ -967,18 +1224,20 @@ function saveForm(isDraft) {
             nycEmail: email,
             nycCountry: country,
             nycTinhThanh: city,
-            nycAddressDetail: document.getElementById('formNYCAddressDetail').value,
+            nycPhuongXa: ward,
+            nycAddressDetail: addressDetail,
             hanhVi: hanhVi,
             hinhThucNhan: document.querySelector('input[name="formHinhThucNhan"]:checked').value,
-            attachedFile: fileCache['formFile'] || "",
-            status: isDraft ? 'Lưu nháp' : 'Chờ tiếp nhận',
+            attachedFile: cleanDocs[0] ? cleanDocs[0].file : "",
+            attachedDocs: cleanDocs,
+            status: isDraft ? 'Lưu nháp' : 'Đang xác minh',
             procBasis: "",
             procTargetAgency: "",
             procReason: "",
             procDecisionFile: "",
             claimCode: "-"
         });
-        showToast(isDraft ? "Đã lưu nháp hồ sơ yêu cầu thành công!" : "Gửi yêu cầu tiếp nhận thành công!", "success");
+        showToast(isDraft ? "Đã lưu nháp hồ sơ yêu cầu thành công!" : "Gửi yêu cầu thành công. Hồ sơ chuyển sang [Đang xác minh]!", "success");
     }
     showListScreen();
 }
@@ -1018,8 +1277,6 @@ function saveProcessResult(isComplete) {
         item.procTargetAgency = agency;
         item.procReason = reason;
         item.procDecisionFile = file || "Quyet_dinh_chuyen_giao.pdf";
-
-        item.officers = JSON.parse(JSON.stringify(currentOfficers));
 
         if (isComplete) {
             item.status = 'Hoàn thành';
@@ -1098,7 +1355,7 @@ function filterData() {
     // Parse dates
     const parseDate = (str) => {
         if (!str) return null;
-        const p = str.split('/');
+        const p = String(str).split(' ')[0].split('/');
         if (p.length === 3) {
             return new Date(p[2], p[1] - 1, p[0]);
         }
@@ -1122,7 +1379,7 @@ function filterData() {
             if (toDate && itemDate > toDate) return false;
         }
         return true;
-    });
+    }).sort((a, b) => parseDate(b.receivedAt || b.date) - parseDate(a.receivedAt || a.date));
 
     renderTable();
 }
@@ -1165,40 +1422,12 @@ function renderTable() {
         // Status Badges
         let badgeClass = 'badge-draft';
         if (item.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
+        else if (item.status === 'Yêu cầu bổ sung') badgeClass = 'badge-warning';
         else if (item.status === 'Đang xác minh') badgeClass = 'badge-verifying';
         else if (item.status === 'Bị từ chối') badgeClass = 'badge-rejected';
         else if (item.status === 'Hoàn thành') badgeClass = 'badge-success';
 
-        const isDraft = item.status === 'Lưu nháp';
-        const isPending = item.status === 'Chờ tiếp nhận';
-        const isVerifying = item.status === 'Đang xác minh';
-        const isCompleted = item.status === 'Hoàn thành';
-
-        // Accept button (single checkmark)
-        let acceptBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ tiếp nhận khi ở trạng thái Chờ tiếp nhận"><i class="fa-solid fa-check"></i></button>`;
-        if (isPending) {
-            acceptBtn = `<button class="icon-btn accept" title="Tiếp nhận hồ sơ" onclick="acceptRequest('${item.id}')"><i class="fa-solid fa-check"></i></button>`;
-        }
-
-        // Update button (always active)
-        let updateBtn;
-        if (isVerifying) {
-            updateBtn = `<button class="icon-btn edit" title="Cập nhật kết quả xác minh" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-scale-balanced"></i></button>`;
-        } else {
-            updateBtn = `<button class="icon-btn edit" title="Chỉnh sửa thông tin" onclick="showFormScreen('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-        }
-
-        // Create claim button - title adjusted to "Tạo yêu cầu bồi thường"
-        let claimBtn = `<button class="icon-btn claim" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Tạo yêu cầu bồi thường (Chỉ dành cho hồ sơ Hoàn thành)"><i class="fa-solid fa-file-invoice"></i></button>`;
-        if (isCompleted && item.claimCode === '-') {
-            claimBtn = `<button class="icon-btn claim" title="Tạo yêu cầu bồi thường" onclick="showCreateClaimScreen('${item.id}')"><i class="fa-solid fa-file-invoice"></i></button>`;
-        }
-
-        // Delete button (active for Draft and Pending)
-        let deleteBtn = `<button class="icon-btn delete" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ được phép xóa hồ sơ Lưu nháp hoặc Chờ tiếp nhận"><i class="fa-solid fa-trash"></i></button>`;
-        if (isDraft || isPending) {
-            deleteBtn = `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash"></i></button>`;
-        }
+        const actionButtons = getActionButtons(item);
 
         tr.innerHTML = `
             <td style="text-align:center;">${startIdx + index + 1}</td>
@@ -1211,19 +1440,40 @@ function renderTable() {
             <td style="text-align:center;">${item.date}</td>
             <td style="text-align:center; font-weight:700; color:#8B5CF6;">${item.claimCode}</td>
             <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
-            <td style="text-align:center;">
-                <div class="action-flex">
-                    ${acceptBtn}
-                    ${updateBtn}
-                    ${claimBtn}
-                    ${deleteBtn}
-                </div>
+            <td class="action-cell">
+                <div class="action-flex">${actionButtons || '<span class="muted-action">-</span>'}</div>
             </td>
         `;
         tbody.appendChild(tr);
     });
 
     renderPagination(totalPages);
+}
+
+function getActionButtons(item) {
+    let html = '';
+    switch (item.status) {
+        case 'Chờ tiếp nhận':
+            html += `<button class="icon-btn accept" title="Tiếp nhận" onclick="acceptRequest('${item.id}')"><i class="fa-solid fa-file-import"></i></button>`;
+            html += `<button class="icon-btn edit" title="Yêu cầu bổ sung" onclick="openRejectAcceptanceModal('${item.id}', 'supplement')"><i class="fa-solid fa-file-circle-question"></i></button>`;
+            html += `<button class="icon-btn reject" title="Từ chối" onclick="openRejectAcceptanceModal('${item.id}', 'reject')"><i class="fa-solid fa-ban"></i></button>`;
+            break;
+        case 'Lưu nháp':
+            html += `<button class="icon-btn edit" title="Chỉnh sửa thông tin" onclick="showFormScreen('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+            html += `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash-can"></i></button>`;
+            break;
+        case 'Đang xác minh':
+            html += `<button class="icon-btn edit" title="Cập nhật kết quả xác minh" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-clipboard-check"></i></button>`;
+            break;
+        case 'Hoàn thành':
+            if (!item.claimCode || item.claimCode === '-') {
+                html += `<button class="icon-btn claim" title="Tạo yêu cầu bồi thường" onclick="showCreateClaimScreen('${item.id}')"><i class="fa-solid fa-file-invoice"></i></button>`;
+            }
+            break;
+        default:
+            break;
+    }
+    return html;
 }
 
 function renderPagination(totalPages) {
@@ -1368,161 +1618,8 @@ document.addEventListener('click', function (event) {
 });
 
 
-// ==========================================
-// OFFICER CRUD LOGIC FOR XAC_DINH_CO_QUAN
-// ==========================================
-let currentOfficers = [];
-
-function renderOfficerTable() {
-    const tbody = document.getElementById('officerTableBody');
-    if (!tbody) return;
-    
-    if (!currentOfficers || currentOfficers.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); font-style: italic;">Chưa có dữ liệu cán bộ gây thiệt hại. Bấm "Thêm người thi hành công vụ" để thêm mới.</td></tr>`;
-        return;
-    }
-    
-    let html = '';
-    currentOfficers.forEach((off, idx) => {
-        html += `
-        <tr>
-            <td style="text-align: center;">${idx + 1}</td>
-            <td style="font-weight: 600;">${off.name}</td>
-            <td>${off.position}</td>
-            <td>${off.agency}</td>
-            <td>${off.status}</td>
-            <td>${off.status === 'Đã chuyển công tác' && off.currentPosition ? off.currentPosition : '-'}</td>
-            <td>${off.status === 'Đã chuyển công tác' && off.currentAgency ? off.currentAgency : '-'}</td>
-            <td style="text-align: center;">
-                <button type="button" class="icon-btn edit" onclick="editOfficer(${idx})" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button type="button" class="icon-btn delete" onclick="confirmDeleteOfficer(${idx})" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-        </tr>
-        `;
-    });
-    tbody.innerHTML = html;
-}
-
-function renderDtOfficerTable() {
-    const tbody = document.getElementById('dtOfficerTableBody');
-    if (!tbody) return;
-    
-    if (!currentOfficers || currentOfficers.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); font-style: italic;">Không có dữ liệu người thi hành công vụ gây thiệt hại.</td></tr>`;
-        return;
-    }
-    
-    let html = '';
-    currentOfficers.forEach((off, idx) => {
-        html += `
-        <tr>
-            <td style="text-align: center;">${idx + 1}</td>
-            <td style="font-weight: 600;">${off.name}</td>
-            <td>${off.position}</td>
-            <td>${off.agency}</td>
-            <td>${off.status}</td>
-            <td>${off.status === 'Đã chuyển công tác' && off.currentPosition ? off.currentPosition : '-'}</td>
-            <td>${off.status === 'Đã chuyển công tác' && off.currentAgency ? off.currentAgency : '-'}</td>
-        </tr>
-        `;
-    });
-    tbody.innerHTML = html;
-}
-
-function openOfficerModal() {
-    document.getElementById('modalClaimOfficerId').value = '';
-    document.getElementById('modalClaimOfficerName').value = '';
-    document.getElementById('modalClaimOfficerPosition').value = '';
-    document.getElementById('modalClaimOfficerAgency').value = '';
-    document.getElementById('modalClaimOfficerStatus').value = 'Vẫn công tác tại đơn vị cũ';
-    document.getElementById('modalClaimOfficerCurrentAgency').value = '';
-    document.getElementById('modalClaimOfficerCurrentPosition').value = '';
-    toggleModalClaimOfficerStatus();
-    
-    const modal = document.getElementById('claimOfficerModal');
-    modal.style.display = 'flex';
-    setTimeout(() => {
-        modal.classList.add('visible');
-    }, 10);
-}
-
-function editOfficer(index) {
-    const off = currentOfficers[index];
-    document.getElementById('modalClaimOfficerId').value = index;
-    document.getElementById('modalClaimOfficerName').value = off.name;
-    document.getElementById('modalClaimOfficerPosition').value = off.position;
-    document.getElementById('modalClaimOfficerAgency').value = off.agency;
-    document.getElementById('modalClaimOfficerStatus').value = off.status;
-    document.getElementById('modalClaimOfficerCurrentAgency').value = off.currentAgency || '';
-    document.getElementById('modalClaimOfficerCurrentPosition').value = off.currentPosition || '';
-    toggleModalClaimOfficerStatus();
-    
-    const modal = document.getElementById('claimOfficerModal');
-    modal.style.display = 'flex';
-    setTimeout(() => {
-        modal.classList.add('visible');
-    }, 10);
-}
-
-function closeClaimOfficerModal() {
-    const modal = document.getElementById('claimOfficerModal');
-    modal.classList.remove('visible');
-    setTimeout(() => {
-        modal.style.display = 'none';
-    }, 200);
-}
-
-function toggleModalClaimOfficerStatus() {
-    const status = document.getElementById('modalClaimOfficerStatus').value;
-    const group = document.getElementById('modalClaimOfficerCurrentGroup');
-    if (status === 'Đã chuyển công tác') {
-        if (group) group.style.display = 'grid';
-    } else {
-        if (group) group.style.display = 'none';
-        document.getElementById('modalClaimOfficerCurrentAgency').value = '';
-        document.getElementById('modalClaimOfficerCurrentPosition').value = '';
-    }
-}
-
-function saveClaimOfficerModal() {
-    const name = document.getElementById('modalClaimOfficerName').value.trim();
-    const position = document.getElementById('modalClaimOfficerPosition').value.trim();
-    const agency = document.getElementById('modalClaimOfficerAgency').value.trim();
-    const status = document.getElementById('modalClaimOfficerStatus').value;
-    const currentAgency = document.getElementById('modalClaimOfficerCurrentAgency').value.trim();
-    const currentPosition = document.getElementById('modalClaimOfficerCurrentPosition').value.trim();
-    
-    if (!name) {
-        showToast("Vui lòng nhập Họ và tên cán bộ!", "error");
-        return;
-    }
-    
-    const off = {
-        name, position, agency, status, currentAgency, currentPosition
-    };
-    
-    const idx = document.getElementById('modalClaimOfficerId').value;
-    if (idx !== '') {
-        currentOfficers[parseInt(idx)] = off;
-        showToast("Đã cập nhật thông tin cán bộ", "success");
-    } else {
-        currentOfficers.push(off);
-        showToast("Đã thêm cán bộ vào danh sách", "success");
-    }
-    
-    closeClaimOfficerModal();
-    renderOfficerTable();
-}
-
-function confirmDeleteOfficer(index) {
-    showConfirmModal("Bạn có chắc chắn muốn xóa người thi hành công vụ này ra khỏi danh sách không?", () => {
-        currentOfficers.splice(index, 1);
-        renderOfficerTable();
-        showToast("Đã xóa người thi hành công vụ khỏi danh sách", "success");
-    });
-}
-
 let currentRejectFile = null;
+let rejectAcceptanceMode = 'reject';
 
 function handleRejectFileUpload(input) {
     if (input.files && input.files[0]) {
@@ -1534,8 +1631,8 @@ function handleRejectFileUpload(input) {
             <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; margin-top: 5px; background: #F3F4F6; padding: 6px 12px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); width: fit-content;">
                 <i class="fa-solid fa-file-pdf" style="color: #EF4444;"></i>
                 <span style="font-weight: 500;">${file.name}</span>
-                <a href="#" onclick="event.preventDefault(); alert('Xem thử file: ' + '${file.name}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 10px;">Xem file</a>
-                <a href="#" onclick="event.preventDefault(); removeRejectFile();" style="color: #EF4444; text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 5px;">Xóa</a>
+                <a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(file.name)}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 10px;">Xem file</a>
+                <a href="#" title="Xóa file" onclick="event.preventDefault(); removeRejectFile();" style="color: var(--danger-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 5px;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
             </div>
         `;
     }
@@ -1559,9 +1656,42 @@ function clearRejectAcceptanceValidation() {
     }
 }
 
-function openRejectAcceptanceModal(id) {
+function openRejectAcceptanceModal(id, mode = 'reject') {
+    rejectAcceptanceMode = mode;
     document.getElementById('modalRejectRequestId').value = id;
     document.getElementById('rejectAcceptanceReason').value = '';
+    const isSupplement = mode === 'supplement';
+    const title = document.getElementById('rejectAcceptanceTitle');
+    const reasonLabel = document.getElementById('rejectAcceptanceReasonLabel');
+    const fileLabel = document.getElementById('rejectAcceptanceFileLabel');
+    const submitBtn = document.getElementById('rejectAcceptanceSubmitBtn');
+    if (title) {
+        title.style.color = isSupplement ? 'var(--warning-color)' : 'var(--danger-color)';
+        title.innerHTML = isSupplement
+            ? `<i class="fa-solid fa-file-circle-question"></i> Yêu cầu bổ sung hồ sơ`
+            : `<i class="fa-solid fa-circle-xmark"></i> Từ chối tiếp nhận hồ sơ`;
+    }
+    if (reasonLabel) {
+        reasonLabel.innerHTML = isSupplement
+            ? `Nội dung yêu cầu bổ sung<span class="required">*</span>`
+            : `Lý do từ chối tiếp nhận<span class="required">*</span>`;
+    }
+    const reasonInput = document.getElementById('rejectAcceptanceReason');
+    if (reasonInput) {
+        reasonInput.placeholder = isSupplement
+            ? 'Nhập nội dung yêu cầu bổ sung hồ sơ...'
+            : 'Nhập lý do chi tiết từ chối tiếp nhận hồ sơ...';
+    }
+    if (fileLabel) {
+        fileLabel.textContent = isSupplement ? 'Văn bản yêu cầu bổ sung đính kèm' : 'Văn bản thông báo từ chối đính kèm';
+    }
+    if (submitBtn) {
+        submitBtn.textContent = isSupplement ? 'Xác nhận yêu cầu bổ sung' : 'Xác nhận từ chối';
+        submitBtn.className = isSupplement ? 'btn btn-secondary' : 'btn btn-danger';
+        submitBtn.style.backgroundColor = isSupplement ? '#fff' : '#ef4444';
+        submitBtn.style.borderColor = isSupplement ? '#cbd5e1' : '#ef4444';
+        submitBtn.style.color = isSupplement ? '#475569' : '#fff';
+    }
     removeRejectFile();
     clearRejectAcceptanceValidation();
     
@@ -1599,11 +1729,18 @@ function submitRejectAcceptance() {
     const id = document.getElementById('modalRejectRequestId').value;
     const item = requestList.find(r => r.id === id);
     if (item) {
-        item.status = 'Bị từ chối';
-        item.rejectionReason = reason;
-        item.rejectionFile = currentRejectFile;
+        if (rejectAcceptanceMode === 'supplement') {
+            item.status = 'Yêu cầu bổ sung';
+            item.supplementReason = reason;
+            item.supplementFile = currentRejectFile;
+            showToast("Đã gửi yêu cầu bổ sung hồ sơ thành công", "success");
+        } else {
+            item.status = 'Bị từ chối';
+            item.rejectionReason = reason;
+            item.rejectionFile = currentRejectFile;
+            showToast("Đã từ chối tiếp nhận hồ sơ thành công", "success");
+        }
         
-        showToast("Đã từ chối tiếp nhận hồ sơ thành công", "success");
         closeRejectAcceptanceModal();
         showListScreen();
         renderTable();

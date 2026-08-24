@@ -51,7 +51,7 @@
 | :--- | :--- | :---: | :--- | :--- |
 | **I. Thông Tin Người Đăng Ký** | | | | |
 | Họ và tên | String(100) | Có | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Nếu là cá nhân tự đăng ký:<br>+ Hiển thị Họ và tên của cá nhân.<br>+ Nếu là cá nhân thuộc tổ chức (đại diện tổ chức):<br>+ Hiển thị Tên đầy đủ của Tổ chức (Ví dụ: `Tài khoản test FPT`). |
-| Địa chỉ | String(500) | Có | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Nếu là cá nhân tự đăng ký:<br>+ Hiển thị địa chỉ của cá nhân.<br>+ Nếu là cá nhân thuộc tổ chức:<br>+ Hiển thị địa chỉ của Tổ chức.<br>+ Định dạng hiển thị bắt buộc:<br>+ "Địa chỉ chi tiết - Tỉnh/Thành phố - Quốc gia" (Ví dụ: `25 Nguyễn Cơ Thạch, thành phố Hà Nội`). |
+| Địa chỉ | String(500) | Có | Lấy từ hệ thống | Control UI: Hiển thị/Read-only.<br>- Nếu là cá nhân tự đăng ký:<br>+ Hiển thị địa chỉ của cá nhân.<br>+ Nếu là cá nhân thuộc tổ chức:<br>+ Hiển thị địa chỉ của Tổ chức.<br>+ Định dạng hiển thị bắt buộc:<br>+ "Địa chỉ chi tiết - Phường/Xã - Tỉnh/Thành phố - Quốc gia" (Ví dụ: `25 Nguyễn Cơ Thạch, thành phố Hà Nội`). |
 | **II. Hồ sơ gốc (tham chiếu theo Số đăng ký)** | Text(10000) | Có | Theo hồ sơ gốc | Control UI: Khối hiển thị chỉ đọc.<br>- Dữ liệu được truy vấn trực tiếp theo Số đăng ký tại thời điểm hiển thị, không lưu bản sao dữ liệu tĩnh.<br>- Từ dòng tiêu đề hồ sơ **"Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]"** trở xuống, hiển thị theo cấu trúc dùng chung tại [4.1.12.6.2.1. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng](UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md#cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong). |
 
 ##### 4.1.17.3.3. Chức năng trên màn hình

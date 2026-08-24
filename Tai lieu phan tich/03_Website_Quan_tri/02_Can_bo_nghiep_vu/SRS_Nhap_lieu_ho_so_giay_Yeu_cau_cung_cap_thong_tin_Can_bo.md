@@ -124,7 +124,7 @@ flowchart TD
 | Phiên bản xử lý hiện tại | String(50) | Có | Theo hồ sơ | Chỉ đọc. Mỗi lần Cán bộ trình ký lại sau khi bị trả lại, hệ thống tăng phiên bản xử lý. |
 | **III. Thông tin yêu cầu cung cấp thông tin** | | | | |
 | Người yêu cầu cung cấp thông tin | String(255) | Có | Theo UCPS012 | Cán bộ được sửa nếu thông tin trên hồ sơ giấy khác dữ liệu tiếp nhận. Không sửa ngược lại dữ liệu tiếp nhận gốc tại UCPS012. |
-| Địa chỉ liên hệ | Text(500) | Có | Theo UCPS012 | Cán bộ được sửa theo hồ sơ giấy. Gồm Địa chỉ chi tiết, Tỉnh/Thành phố, Quốc gia nếu hồ sơ giấy có thông tin. |
+| Địa chỉ liên hệ | Text(500) | Có | Theo UCPS012 | Cán bộ được sửa theo hồ sơ giấy. Gồm Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia nếu hồ sơ giấy có thông tin. |
 | Phương thức nhận kết quả | Enum(String(50)) | Có | Theo UCPS012 | Cán bộ được sửa nếu hồ sơ giấy thể hiện khác thông tin tiếp nhận. |
 | Email nhận kết quả | String(255) | Có điều kiện | Theo UCPS012 | Chỉ bắt buộc khi Phương thức nhận kết quả là "Cách thức điện tử" và hồ sơ chưa có email hợp lệ. Nếu nhập, kiểm tra [BR-VAL-002]. |
 | **IV. Tiêu chí và dữ liệu tra cứu** | | | | |

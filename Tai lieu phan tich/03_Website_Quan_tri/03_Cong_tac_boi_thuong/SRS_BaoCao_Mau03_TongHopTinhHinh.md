@@ -59,7 +59,7 @@ flowchart TD
 | Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. |
 | Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
 | Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
-| **II. Bảng Mẫu số 03/BTNN** | | | | |
+| **II. Bảng Mẫu số 03/BTNN** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Thời điểm tiếp nhận" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* |
 | STT | Integer(10) | - | Tự tăng | Chỉ đọc. Cột số thứ tự theo mẫu, đồng thời là chỉ tiêu `(1)` theo đúng đánh số của văn bản gốc. |
 | Dòng đánh số chỉ tiêu | String(255) | - | Cố định | Chỉ đọc. Ngay dưới dòng tiêu đề cột (đã lồng nhóm theo cấu trúc bên dưới), hệ thống hiển thị 1 dòng ghi số thứ tự chỉ tiêu `(1)` (tại cột `STT`) đến `(26)` tương ứng với đúng 26 cột của Mẫu số 03/BTNN, để đối chiếu nhanh với văn bản gốc. |
 | Lĩnh vực phát sinh thiệt hại | String(255) | - | Theo dữ liệu | Chỉ đọc. Số liệu trình bày theo 06 dòng lĩnh vực phát sinh thiệt hại [DM_22] (Quản lý hành chính, Tố tụng hình sự, Tố tụng dân sự, Tố tụng hành chính, Thi hành án hình sự, Thi hành án dân sự) và 01 dòng `Tổng cộng`. |
@@ -93,6 +93,7 @@ flowchart TD
 | (26) Số tiền đã chi trả theo bản án, quyết định có hiệu lực của Tòa án (nghìn đồng) | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc. Tổng `Số tiền thực tế chi trả` của các vụ việc đã giải quyết tại Tòa án hoặc trong quá trình tố tụng hình sự/hành chính, quy đổi đơn vị nghìn đồng. |
 | Ghi chú nội bộ hệ thống | Text(2000) | Không | Trống | **Không thuộc 26 cột chính thức của Mẫu số 03/BTNN gốc** (không có số chỉ tiêu riêng), hiển thị thành 1 khung ghi chú riêng ngay dưới bảng. Dùng để cán bộ nghiệp vụ BTNN giải trình chênh lệch số liệu hoặc ghi chú nguồn dữ liệu khi cần điều chỉnh thủ công; không in ra khi kết xuất đúng theo Mẫu số 03/BTNN gốc. |
 | Trạng thái kỳ tổng hợp | Enum(String(50)) | - | `Nháp` | \- Giá trị gồm:<br>+ Nháp<br>+ Đã kết xuất |
+| Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.22.3.3. Chức năng trên màn hình
 
