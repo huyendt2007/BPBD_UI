@@ -10,7 +10,6 @@
 *b. Điều kiện thực hiện*
 
 \- Hệ thống đang hoạt động bình thường, tài khoản người dùng hợp lệ và Người dùng được phân quyền thực hiện tính năng.  
-\- Các danh mục từ điển (Tỉnh/Thành, Loại tài sản...) đã được tải đầy đủ.  
 
 #### 4.1.1.2. UC024.MH01 - Màn hình Nhập liệu Đăng ký mới BPBĐ
 
