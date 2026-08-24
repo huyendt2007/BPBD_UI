@@ -8,7 +8,8 @@
         { test: /trinh ky|trinh lanh dao/i, icon: 'fa-solid fa-paper-plane', cls: 'submit', title: 'Trinh lanh dao ky' },
         { test: /ky so|phe duyet|duyet/i, icon: 'fa-solid fa-file-signature', cls: 'sign', title: 'Ky so phe duyet' },
         { test: /xac nhan|tra ket qua/i, icon: 'fa-solid fa-check', cls: 'sign', title: 'Xac nhan tra ket qua' },
-        { test: /tu choi|tra lai|huy|xoa/i, icon: 'fa-solid fa-ban', cls: 'reject', title: 'Tu choi ho so' }
+        { test: /tu choi|tra lai|huy bo/i, icon: 'fa-solid fa-ban', cls: 'reject', title: 'Tu choi ho so' },
+        { test: /xoa|go bo|xoa ho so|xoa yeu cau|xoa tai lieu|xoa file/i, icon: 'fa-solid fa-trash', cls: 'delete', title: 'Xoa' }
     ];
 
     function injectStyle() {
@@ -101,7 +102,8 @@
             .icon-btn.edit { color: #047857; background: #ecfdf5; border-color: #a7f3d0; }
             .icon-btn.submit { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
             .icon-btn.sign { color: #7c3aed; background: #f5f3ff; border-color: #ddd6fe; }
-            .icon-btn.reject { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
+            .icon-btn.reject { color: #ea580c; background: #fff7ed; border-color: #fed7aa; }
+            .icon-btn.delete { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
             .icon-btn.disabled,
             .icon-btn:disabled {
                 opacity: 0.35 !important;
