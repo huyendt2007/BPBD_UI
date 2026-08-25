@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -3505,80 +3505,49 @@
 
                         <!-- METHOD SELECTION GATEWAY GRID (Resembling Payment Gateway Options) -->
                         <div id="login-gateway-selector">
-                            <div class="login-gateway-title"
-                                style="text-align: center; font-size: 15px; font-weight: 700; margin-bottom: 20px;">Lựa
-                                chọn Phương thức đăng nhập và Xác thực</div>
                             <div class="login-method-grid"
-                                style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px; background-color: #FFFFFF;">
-                                <!-- Card 1: Dịch vụ Công Quốc gia -->
+                                style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 30px 20px 20px 20px; background-color: #FFFFFF;">
+                                <!-- Card 1: VNeID -->
                                 <div class="login-method-card dvcqg-card"
-                                    style="border: 1px solid #E2E8F0; border-radius: var(--border-radius-lg); padding: 35px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: all 0.25s;"
+                                    style="border: 1px solid #E2E8F0; border-radius: var(--border-radius-lg); padding: 30px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; transition: all 0.25s; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"
                                     onclick="switchLoginMethod('vneid')">
-                                    <div class="login-card-logo" style="margin-bottom: 5px;">
-                                        <svg width="60" height="60" viewBox="0 0 100 100" style="display: block;">
-                                            <circle cx="50" cy="50" r="48" fill="#DA251D" />
-                                            <polygon
-                                                points="50,15 60,45 90,45 66,63 75,93 50,75 25,93 34,63 10,45 40,45"
-                                                fill="#FFFF00" />
-                                        </svg>
+                                    <div
+                                        style="font-size: 15px; font-weight: 700; color: #0F172A; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        CÔNG DÂN</div>
+                                    <div class="login-card-logo" style="margin: 4px 0;">
+                                        <img src="https://xacthuc.dichvucong.gov.vn/authenticationendpoint/images/logo_bca.png"
+                                            alt="VNeID"
+                                            style="width: 70px; height: 70px; object-fit: contain; border-radius: 8px; display: block;">
                                     </div>
                                     <div style="text-align: center;">
                                         <div
-                                            style="font-size: 16px; font-weight: 700; color: #1E293B; margin-bottom: 6px;">
-                                            ĐĂNG NHẬP</div>
-                                        <div style="font-size: 13px; color: #64748B; margin-bottom: 6px;">Tài khoản cấp
-                                            bởi</div>
-                                        <div
-                                            style="font-size: 14px; font-weight: 600; color: #0F172A; line-height: 1.4;">
-                                            Cổng dịch vụ công quốc gia</div>
+                                            style="font-size: 15px; font-weight: 600; color: #0284C7; line-height: 1.4;">
+                                            Tài khoản Định danh điện tử (VNeID)</div>
                                     </div>
                                 </div>
 
                                 <!-- Card 2: Tài khoản Hệ thống đăng ký trực tuyến -->
                                 <div class="login-method-card internal-card"
-                                    style="border: 1px solid #E2E8F0; border-radius: var(--border-radius-lg); padding: 35px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: all 0.25s;"
+                                    style="border: 1px solid #E2E8F0; border-radius: var(--border-radius-lg); padding: 30px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; transition: all 0.25s; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"
                                     onclick="switchLoginMethod('internal')">
-                                    <div class="login-card-logo" style="margin-bottom: 5px;">
-                                        <svg width="60" height="60" viewBox="0 0 100 100" style="display: block;">
-                                            <circle cx="50" cy="50" r="48" fill="#005A9C" stroke="#FFD700"
-                                                stroke-width="2" />
-                                            <circle cx="50" cy="50" r="42" fill="none" stroke="#FFD700" stroke-width="1"
-                                                stroke-dasharray="2,2" />
-                                            <path
-                                                d="M35,40 H65 M50,40 V70 M35,40 L40,58 H30 Z M65,40 L70,58 H60 Z M42,70 H58"
-                                                fill="none" stroke="#FFD700" stroke-width="3" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                            <path d="M45,28 Q50,22 55,28" fill="none" stroke="#FFD700"
-                                                stroke-width="2" />
-                                        </svg>
+                                    <div
+                                        style="font-size: 15px; font-weight: 700; color: #0F172A; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        TÀI KHOẢN ĐƯỢC CẤP</div>
+                                    <div class="login-card-logo" style="margin: 4px 0;">
+                                        <img src="https://dktructuyen.moj.gov.vn/skin/frontend/rwd/default/images/logo_cucdangky.png"
+                                            alt="Cục Đăng ký"
+                                            style="width: 70px; height: 70px; object-fit: contain; display: block;">
                                     </div>
                                     <div style="text-align: center;">
                                         <div
-                                            style="font-size: 16px; font-weight: 700; color: #1E293B; margin-bottom: 6px;">
-                                            ĐĂNG NHẬP</div>
-                                        <div style="font-size: 13px; color: #64748B; margin-bottom: 6px;">Tài khoản cấp
-                                            bởi</div>
-                                        <div
-                                            style="font-size: 14px; font-weight: 600; color: #0F172A; line-height: 1.4;">
-                                            Hệ thống đăng ký trực tuyến giao dịch bảo đảm</div>
+                                            style="font-size: 15px; font-weight: 600; color: #0284C7; line-height: 1.4;">
+                                            Tài khoản cấp bởi Hệ thống đăng ký trực tuyến</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Warning Note Box exactly matching screenshot color and text -->
-                            <div class="login-note-box"
-                                style="margin: 15px 20px; padding: 15px; border: 1px dashed #FCA5A5; font-size: 13px; line-height: 1.6; color: #DC2626; text-align: left; background-color: #FEF2F2; border-radius: var(--border-radius-md);">
-                                <div style="font-weight: 800; font-size: 13px; margin-bottom: 4px;">Chú ý:</div>
-                                <div>Công dân muốn đăng nhập lại bằng một tài khoản cổng DVCQG khác thì tiến hành.</div>
-                                <div style="margin-left: 0px; margin-top: 2px; margin-bottom: 2px;">
-                                    <div>- Xóa cache trình duyệt.</div>
-                                    <div>- Reload (F5) lại trang hiện tại.</div>
-                                </div>
-                                <div>Sau đó tiến hành đăng nhập bằng cổng DVCQG như bình thường.</div>
-                            </div>
-
-                            <div style="text-align: center; padding: 10px 0 20px 0;">
-                                <button class="btn btn-outline-primary" style="padding: 6px 20px;"
+                            <div style="text-align: center; padding: 15px 0 25px 0;">
+                                <button class="btn btn-outline-secondary" style="padding: 8px 24px; font-size: 14px; font-weight: 500;"
                                     onclick="showScreen('home')">
                                     <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ
                                 </button>
