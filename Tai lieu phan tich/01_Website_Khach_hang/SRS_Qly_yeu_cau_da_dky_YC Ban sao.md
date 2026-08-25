@@ -30,7 +30,7 @@
 
 ---
 
-#### 4.1.X.2. Bộ trạng thái hồ sơ Yêu cầu cung cấp bản sao (thay thế bộ trạng thái cũ)
+#### 4.1.X.2. Bộ trạng thái hồ sơ Yêu cầu cung cấp bản sao
 
 | STT | Trạng thái | Áp dụng | Mô tả |
 | :--- | :--- | :--- | :--- |
@@ -42,11 +42,9 @@
 | 7 | "Bị từ chối" | Mọi hồ sơ | Cán bộ hoặc Lãnh đạo từ chối hồ sơ theo điều kiện nghiệp vụ. Nếu hồ sơ Online đã thanh toán, hệ thống phát sinh yêu cầu hoàn tiền để theo dõi tại Module Quản lý đối soát thanh toán. |
 | 8 | "Bị trả lại" | Mọi hồ sơ | Lãnh đạo trả lại từ bước "Chờ ký" để Cán bộ xử lý lại, chưa phát sinh hoàn tiền/hoàn phí. |
 
-Ghi chú: bộ trạng thái này thay thế hoàn toàn bộ trạng thái cũ ("Chờ duyệt"/"Duyệt chờ ký"/"Chờ thanh toán"/"Hoàn thành"/"Bị từ chối") đang mô tả tại `UCPS007.MH02`/`UCPS007.MH03` (mục 4.1.12.3/4.1.12.4) — hai mục đó đã được tách và thay thế bằng tài liệu này.
-
 ---
 
-#### 4.1.X.3. UCPS007.MH02-BS - Tab "Yêu cầu cung cấp bản sao" (thay thế mục 4.1.12.3 cũ)
+#### 4.1.X.3. Tab "Yêu cầu cung cấp bản sao"
 
 ##### 4.1.X.3.1. Giao diện
 
@@ -66,7 +64,7 @@ Ghi chú: bộ trạng thái này thay thế hoàn toàn bộ trạng thái cũ 
 | Người tạo | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên người đang đăng nhập đã tạo Yêu cầu cung cấp bản sao. |
 | Từ ngày | Date | Không | Trống | Lọc theo Thời điểm đăng ký. Nếu nhập cùng Đến ngày, tuân thủ [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Lọc theo Thời điểm đăng ký. Nếu nhập cùng Từ ngày, tuân thủ [BR-VAL-007]. |
-| **II. Vùng kết quả hiển thị (Grid)** | - | - | 20 bản ghi/trang | Hiển thị dạng lưới phẳng, thuộc phạm vi tài khoản Khách hàng đăng nhập. Sắp xếp mặc định theo Thời điểm đăng ký giảm dần. Click trực tiếp vào dòng dữ liệu để mở màn hình chi tiết, ngoại trừ khi click nút tại cột Thao tác.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*|
+| **II. Vùng kết quả hiển thị (Grid)** | - | - | 20 bản ghi/trang | Hiển thị dạng lưới phẳng, thuộc phạm vi tài khoản Khách hàng đăng nhập. Sắp xếp mặc định theo Thời điểm đăng ký giảm dần. Click trực tiếp vào dòng dữ liệu để mở màn hình chi tiết, ngoại trừ khi click nút tại cột Thao tác.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
 | STT | Integer(10) | - | - | Số thứ tự bản ghi trên trang hiện tại. |
 | Mã hồ sơ | String(50) | - | - | Mã hồ sơ yêu cầu cung cấp bản sao. |
 | Số đăng ký | String(50) | - | - | Số đăng ký của hồ sơ gốc gắn với yêu cầu. |
@@ -82,13 +80,11 @@ Ghi chú: bộ trạng thái này thay thế hoàn toàn bộ trạng thái cũ 
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-|  |  |  | TH Hợp lệ: Hệ thống tìm kiếm trong phạm vi hồ sơ thuộc tài khoản Khách hàng đăng nhập. Nếu không có dữ liệu phù hợp, hiển thị theo [MSG-WRN-SYS-001] hoặc trạng thái rỗng theo chuẩn danh sách. |
+| 1 | Tìm kiếm | Nút | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới:<br>- **TH1 (Khoảng ngày không hợp lệ)**: Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thuộc tài khoản Khách hàng thỏa mãn tiêu chí tìm kiếm/lọc, đưa về Trang 1.<br>- **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về mặc định (trống hoặc "Tất cả") và tải lại lưới kết quả theo Thời điểm đăng ký giảm dần. |
-| 3 | Tạo mới | Nút | Mở [UC149.MH01](SRS_YC_cung_cap_ban_sao_van_ban_chung_nhan.md#41162-uc149mh01---man-hinh-yeu-cau-cap-ban-sao-van-ban-chung-nhan-dang-ky-bien-phap-bao-dam). |
-| 4 | Row Click | Thao tác dòng | Mở **UCPS007.MH03-BS - Chi tiết yêu cầu cung cấp bản sao** tương ứng với yêu cầu được chọn. |
-| 5 | Thanh toán | Nút | TH1 (Sai trạng thái tại thời điểm click): Hiển thị [MSG-ERR-DK-005], không chuyển màn hình.<br>- TH Hợp lệ: Đóng gói thông tin thanh toán (Mã hồ sơ, Số tiền phải thu, Nội dung thanh toán, Mã đơn vị thụ hưởng, Return URL) và chuyển hướng sang [UC158 - Quản lý thanh toán phí](UC158_Quan_ly_thanh_toan_phi.md). |
-| 6 | Tải file | Nút | Tải đúng file PDF bản sao văn bản chứng nhận đã được Lãnh đạo ký số xuống thiết bị của Khách hàng. Ghi nhật ký vào III.6. |
+| 3 | Row Click | Thao tác dòng | Mở **UCPS007.MH03-BS - Chi tiết yêu cầu cung cấp bản sao** tương ứng với yêu cầu được chọn. |
+| 4 | Thanh toán | Nút | Khi click, hệ thống đóng gói thông tin thanh toán (Mã hồ sơ, Số tiền phải thu, Nội dung thanh toán, Mã đơn vị thụ hưởng, Return URL) và chuyển hướng sang cổng thanh toán trực tuyến [UC158 - Quản lý thanh toán phí](UC158_Quan_ly_thanh_toan_phi.md). |
+| 5 | Tải file | Nút | Tải đúng file PDF bản sao văn bản chứng nhận đã được Lãnh đạo ký số xuống thiết bị của Khách hàng. |
 
 ---
 
@@ -96,7 +92,7 @@ Ghi chú: bộ trạng thái này thay thế hoàn toàn bộ trạng thái cũ 
 
 ##### 4.1.X.4.1. Màn hình
 
-Mở khi Khách hàng click vào một dòng dữ liệu tại Tab "Yêu cầu cung cấp bản sao" (mục 4.1.X.3). Toàn bộ thông tin hiển thị dưới dạng chỉ đọc; các khối thông tin xử lý/thanh toán/kết quả hiển thị động theo Trạng thái hiện tại.
+Mở khi Khách hàng click vào một dòng dữ liệu tại Tab "Yêu cầu cung cấp bản sao" (mục 4.1.X.3). Toàn bộ thông tin hiển thị dưới dạng chỉ đọc; các khối thông tin xử lý/thanh toán/kết quả hiển thị theo dữ liệu phát sinh của hồ sơ. Toàn bộ các nút hành động của màn hình (Quay lại, Thanh toán, Tải file, Xem file) được bố trí thống nhất tại khu vực Header (góc trên bên phải màn hình).
 
 ##### 4.1.X.4.2. Mô tả thông tin trên màn hình
 
@@ -113,40 +109,30 @@ Mở khi Khách hàng click vào một dòng dữ liệu tại Tab "Yêu cầu c
 | Người tạo | String(255) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị tên người tạo Yêu cầu cung cấp bản sao. |
 | **II. Thông tin chi tiết hồ sơ gốc** | | | | **Hiển thị khối này khi hồ sơ Yêu cầu cung cấp bản sao ở Trạng thái "Đã duyệt - chờ trả kết quả" hoặc "Hoàn thành".** Khi đó, màn hình hiển thị đầy đủ chi tiết hồ sơ gốc (hồ sơ đăng ký giao dịch bảo đảm/hợp đồng) gắn với Số đăng ký của yêu cầu này. |
 | Khối thông tin chi tiết hồ sơ gốc | - | Có | Theo hồ sơ gốc | Hiển thị khi Trạng thái là "Đã duyệt - chờ trả kết quả" hoặc "Hoàn thành". Hiển thị theo đúng cấu trúc dùng chung tại [4.1.12.6.2.1. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng của tài liệu UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md](UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md#cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong). Không cho phép chỉnh sửa. |
-| **III. Thông tin xử lý (HIỂN THỊ ĐỘNG THEO TRẠNG THÁI)** | | | | |
+| **III. Thông tin xử lý** | | | | Hiển thị thông tin tổng quan theo tiến trình xử lý thực tế của hồ sơ; trường nào có thông tin thì hiển thị, chưa phát sinh thì để trống hoặc ẩn. |
 | Thời điểm tiếp nhận | Datetime | Không | Theo hồ sơ | Chỉ hiển thị từ khi hồ sơ đã được Cán bộ tiếp nhận. |
+| Thời điểm duyệt | Datetime | Không | Theo hồ sơ | Chỉ hiển thị từ khi hồ sơ đã được Cán bộ kiểm tra/xử lý. |
+| Người duyệt | String(255) | Không | Theo hồ sơ | Họ và tên Cán bộ đã kiểm tra/xử lý hồ sơ. |
 | Thời điểm trình ký | Datetime | Không | Theo hồ sơ | Chỉ hiển thị từ khi hồ sơ đã được Cán bộ trình Lãnh đạo ký. |
-| **Nếu Trạng thái là "Chờ thanh toán"** | | | | |
-| Thời điểm duyệt | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
-| Người duyệt | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Số tiền phải thanh toán | Decimal(18,0) | Có | Theo hồ sơ | Chỉ đọc. |
-| **Nếu Trạng thái là "Chờ ký"** (áp dụng chung cho cả 2 Loại cung cấp bản sao) | | | | |
-| Thời điểm duyệt | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
-| Người duyệt | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Thời điểm thanh toán | Datetime | Tùy điều kiện | Theo kết quả UC158 | Chỉ hiển thị khi hồ sơ thuộc diện phải thu phí. |
-| **Nếu Trạng thái là "Đã duyệt - chờ trả kết quả"** (chỉ Loại giấy) | | | | |
-| Thời điểm ký duyệt | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm Lãnh đạo Ký duyệt tại "Chờ ký" theo [BR-BS-013]. |
-| Người ký duyệt | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Nội dung hướng dẫn nhận bản sao giấy | Text(500) | Có | "Bản sao giấy của bạn đã được phê duyệt và đang được chuẩn bị. Vui lòng đến [Cơ quan tiếp nhận] hoặc theo hình thức nhận đã đăng ký để nhận kết quả." | Chỉ đọc. |
-| **Nếu Trạng thái là "Hoàn thành"** | | | | |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Theo hồ sơ | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Có | Theo hồ sơ | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Người ký/Người trả kết quả | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Số tiền đã thanh toán (VNĐ) | Decimal(18,0) | Tùy điều kiện | Theo hồ sơ | Chỉ hiển thị khi hồ sơ thuộc diện phải thu phí. Nhãn trường ghi rõ đơn vị tính `(VNĐ)`, giá trị hiển thị chỉ là số đã phân tách hàng nghìn, không lặp lại hậu tố `VNĐ`. |
-| Mã giao dịch thanh toán | String(100) | Tùy điều kiện | Theo kết quả UC158 | Chỉ hiển thị khi phát sinh giao dịch thanh toán. |
-| Số biên lai | String(100) | Không | Theo hệ thống tài chính | Chỉ hiển thị nếu hệ thống có phát hành biên lai điện tử. |
-| File bản sao điện tử đã ký | File | Tùy điều kiện | Theo hồ sơ | Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao điện tử". Đây là đúng file đã được Lãnh đạo ký số; link "Xem file"/"Tải file" phải trỏ tới file này. |
-| Thông tin trả bản sao giấy | Text(500) | Tùy điều kiện | "Bản sao giấy đã được trả cho Khách hàng." | Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao giấy". Không hiển thị liên kết Xem/Tải file. |
-| **Nếu Trạng thái là "Bị từ chối"** | | | | |
-| Lý do từ chối | Text(1000) | Có | Theo hồ sơ | Chỉ đọc. |
-| Thời điểm từ chối | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
-| Người từ chối | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
+| Thời điểm ký duyệt / ký số | Datetime | Không | Theo hồ sơ | Thời điểm Lãnh đạo phê duyệt/ký số văn bản bản sao. |
+| Người ký duyệt | String(255) | Không | Theo hồ sơ | Họ và tên Lãnh đạo ký duyệt/ký số. |
+| Số tiền phải thanh toán | Decimal(18,0) | Không | Theo hồ sơ | Hiển thị đối với hồ sơ thuộc diện phải thu phí. |
+| Số tiền đã thanh toán (VNĐ) | Decimal(18,0) | Không | Theo hồ sơ | Hiển thị số tiền đã thanh toán sau khi giao dịch thanh toán thành công. |
+| Thời điểm thanh toán | Datetime | Không | Theo kết quả UC158 | Thời điểm thanh toán thành công qua cổng thanh toán. |
+| Mã giao dịch thanh toán | String(100) | Không | Theo kết quả UC158 | Mã giao dịch do cổng thanh toán cấp. |
+| Số biên lai | String(100) | Không | Theo hệ thống tài chính | Số biên lai thu phí điện tử (nếu có). |
+| File bản sao điện tử đã ký | File | Không | Theo hồ sơ | Chỉ hiển thị link Xem file / Tải file khi Loại cung cấp bản sao là "Bản sao điện tử" và hồ sơ ở trạng thái "Hoàn thành". |
+| Hướng dẫn nhận kết quả bản sao giấy | Text(500) | Không | Theo hồ sơ | Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao giấy" và hồ sơ từ trạng thái "Đã duyệt - chờ trả kết quả" trở đi. |
+| Thông tin trả bản sao giấy | Text(500) | Không | Theo hồ sơ | Hiển thị khi Cán bộ đã hoàn tất xác nhận bàn giao bản sao giấy cho Khách hàng. |
+| Lý do từ chối | Text(1000) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ ở trạng thái "Bị từ chối". |
+| Thời điểm từ chối | Datetime | Không | Theo hồ sơ | Thời điểm Cán bộ/Lãnh đạo từ chối hồ sơ. |
+| Người từ chối | String(255) | Không | Theo hồ sơ | Họ và tên người thực hiện từ chối hồ sơ. |
 
 ##### 4.1.X.4.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Quay lại | Nút | Quay lại Tab "Yêu cầu cung cấp bản sao" (mục 4.1.X.3), giữ nguyên bộ lọc và trang hiện tại. |
-| 2 | Thanh toán | Nút | TH1 (Sai trạng thái): [MSG-ERR-DK-005], không chuyển màn hình.<br>- TH Hợp lệ: Đóng gói thông tin thanh toán và chuyển hướng sang [UC158](UC158_Quan_ly_thanh_toan_phi.md). |
-| 3 | Xem file | Link/Nút | Cho phép xem file tại một tab riêng. |
-| 4 | Tải file | Link/Nút | Tải file PDF bản sao đã ký xuống thiết bị của Khách hàng. |
+| 1 | Quay lại | Nút | Bố trí tại Header góc trên bên phải màn hình. Khi click: Quay lại Tab "Yêu cầu cung cấp bản sao" (mục 4.1.X.3), giữ nguyên bộ lọc và trang hiện tại. |
+| 2 | Thanh toán | Nút | Bố trí tại Header góc trên bên phải màn hình (hiển thị khi hồ sơ ở trạng thái "Chờ thanh toán"). Khi click: Đóng gói thông tin thanh toán và chuyển hướng sang cổng thanh toán trực tuyến [UC158 - Quản lý thanh toán phí](UC158_Quan_ly_thanh_toan_phi.md). |
+| 3 | Xem file | Link/Nút | Bố trí tại Header góc trên bên phải màn hình và cạnh trường file đính kèm. Cho phép xem file PDF bản sao đã ký số tại một tab riêng. |
+| 4 | Tải file | Link/Nút | Bố trí tại Header góc trên bên phải màn hình và cạnh trường file đính kèm. Tải file PDF bản sao văn bản chứng nhận đã ký số xuống thiết bị của Khách hàng. |

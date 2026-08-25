@@ -12,12 +12,12 @@ YÊU CẦU THỰC HIỆN TỰ ĐỘNG VÀ CHUẨN XÁC:
 A. Tại Bảng "Mô tả thông tin trên màn hình" (ở dòng mô tả Bảng danh sách/Lưới dữ liệu):
 - Cột "Mô tả" bổ sung các gạch đầu dòng rõ ràng:
   <br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.
-  <br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung: *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."*
+  <br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].
 
 B. Tại Bảng "Chức năng trên màn hình" (ở dòng hành động Nút "Tìm kiếm" / "Lọc"):
 - Cột "Mô tả" bổ sung trường hợp:
   <br>- **TH Không có dữ liệu trả về**:
-    + Bảng kết quả: Hiển thị dòng thông báo rỗng *"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."* ở giữa bảng.
+    + Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].
     + Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"* (hoặc *"Hiển thị 0-0 của 0 yêu cầu"*); các nút điều hướng trang (`|<<`, `<`, các số trang, `>`, `>>|`) ở trạng thái ẩn hoặc khóa mờ (Disabled).
     + Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.
 

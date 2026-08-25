@@ -195,6 +195,7 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-SYS-002]** | Lỗi | `"Kết nối tới hệ thống bị gián đoạn. Vui lòng thử lại sau."` | Toast | Không |
 | **[MSG-WRN-SYS-001]** | Cảnh báo | `"Không có dữ liệu để xuất Excel."` | Toast | Không |
 | **[MSG-WRN-SYS-002]** | Cảnh báo | `"Không có dữ liệu để kết xuất."` | Toast | Không |
+| **[MSG-INF-SYS-001]** | Thông tin (Info / Empty State) | `"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."` | Inline (Duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng `colspan`, in nghiêng) | Không |
 | **[MSG-CFM-SYS-001]** | Xác nhận | `"Bạn có chắc chắn muốn xóa bản ghi [Tên bản ghi] không?"` | Popup Custom Modal | Đồng ý / Hủy |
 | **[MSG-SUC-SYS-001]** | Thành công | `"Lưu nháp hồ sơ thành công"` | Toast | Không |
 | **[MSG-SUC-SYS-002]** | Thành công | `"Cập nhật dữ liệu thành công."` | Toast | Không |
