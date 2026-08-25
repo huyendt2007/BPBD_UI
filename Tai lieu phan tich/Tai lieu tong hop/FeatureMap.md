@@ -166,7 +166,7 @@
 |  |  | Website Quản trị |  |  |  |  |  |
 |  | WebAdmin-001 | Đăng nhập | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UCPS001_Dang_nhap_can_bo.md | UC574 |  |  |  |
 |  | WebAdmin-002 | Đăng xuất |  | UC577 |  |  |  |
-|  | WebAdmin-003 | Quên mật khẩu | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UCPS002_Quen_mat_khau.md | UC575 |  |  |  |
+|  | WebAdmin-003 | Quên mật khẩu | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UCPS001_Dang_nhap_can_bo.md | UC575 |  |  | Đã gộp chung vào file Đăng nhập (WebAdmin-001) |
 |  | WebAdmin-004 | Đổi mật khẩu |  | UC576 |  |  |  |
 |  | WebAdmin-005 | Đặt lại mật khẩu |  |  |  |  |  |
 |  | WebAdmin-006 | Cập nhật thông tin Tài khoản |  |  |  |  |  |

@@ -19,34 +19,12 @@
 - Hồ sơ tài khoản khách hàng tồn tại trên hệ thống và chưa ở trạng thái đóng/xóa.
 - Hệ thống truy xuất được thông tin hồ sơ tài khoản, loại tài khoản của người dùng đang đăng nhập và thông tin nguồn xác thực liên kết.
 
-#### 4.1.7.2. Điều hướng và bố cục chung
+#### 4.1.7.2. UC002.MH01 - Xem chi tiết tài khoản
 
-- Người dùng truy cập từ khối hồ sơ ở góc phải header: **Hồ sơ cá nhân**.
-- Hệ thống mở màn hình `Thông tin tài khoản Khách hàng`.
-- Góc phải tiêu đề màn hình hiển thị:
-  - Nút `Cập nhật`: chuyển sang UC003 - Cập nhật thông tin tài khoản.
-  - Nút `Đóng`: quay về Trang chủ Website Khách hàng.
-- Toàn bộ thông tin trên màn hình UC002 hiển thị chỉ đọc, trừ các button thao tác.
-- Thông tin của `Cá nhân` và `Tổ chức` được mô tả chung trong cùng một bảng. Hệ thống căn cứ `Loại khách hàng` để ẩn/hiện các khối thông tin tương ứng.
+##### 4.1.7.2.1. Màn hình
 
-#### 4.1.7.3. UC002.MH01 - Xem chi tiết tài khoản
 
-##### 4.1.7.3.1. Màn hình
-
-- Tên màn hình: `Thông tin tài khoản Khách hàng`.
-- Màn hình hiển thị các khối thông tin:
-  - Khối I: `Thông tin chung tài khoản`.
-  - Khối II.A: `Thông tin định danh Cá nhân`, chỉ hiển thị khi `Loại khách hàng = Cá nhân`.
-  - Khối II.B: `Thông tin định danh & Người đại diện Tổ chức`, chỉ hiển thị khi `Loại khách hàng = Tổ chức`.
-  - Khối III: `Thông tin địa chỉ & Thiết lập sử dụng`, dùng chung cho Cá nhân và Tổ chức.
-  - Khối IV: `Trạng thái Phương thức đăng nhập`, chỉ có ở màn hình xem chi tiết UC002.
-- Các trường thông tin hiển thị dạng lưới 2 cột; các trường có nội dung dài như `Nhu cầu sử dụng tài khoản` và `Địa chỉ chi tiết` hiển thị toàn dòng.
-- `Nhu cầu sử dụng tài khoản` hiển thị dạng chip, ví dụ: `Đăng ký`, `Tra cứu`.
-- Nhãn trường định danh của Tổ chức thay đổi theo `Loại tổ chức`:
-  - Nếu `Loại tổ chức = Tổ chức có đăng ký kinh doanh trong nước`: hiển thị `Mã định danh tổ chức`.
-  - Nếu `Loại tổ chức = Tổ chức nước ngoài`: hiển thị `Mã số thuế/Số giấy phép đầu tư`.
-
-##### 4.1.7.3.2. Mô tả thông tin trên màn hình
+##### 4.1.7.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
