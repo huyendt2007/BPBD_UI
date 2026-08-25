@@ -44,7 +44,7 @@
       <td rowspan="8" style="text-align: center; vertical-align: middle; font-weight: bold;">1</td>
       <td rowspan="8" style="vertical-align: middle; font-weight: bold;">Chọn Thẻ "Tài khoản Định danh điện tử (VNeID)"</td>
       <td rowspan="8" style="text-align: center; vertical-align: middle;">Card</td>
-      <td>Người dùng click chọn Thẻ để thực hiện xác thực bằng tài khoản định danh VNeID qua kênh tích hợp Cổng DVCQG/SSO CSDL Quốc gia về dân cư (đường dẫn <code>https://sso.dancuquocgia.gov.vn</code>).</td>
+      <td>Người dùng click chọn Thẻ Hệ thống redirect sang trang Xác thực đăng nhập của CSDL Quốc gia về dân cư  <code>https://sso.dancuquocgia.gov.vn</code> để thực hiện xác thực thông tin đăng nhập qua VNeID: </td>
     </tr>
     <tr>
       <td><b>TH1 (Mất kết nối)</b>: Khi gọi API xác thực bị lỗi (Timeout, lỗi kết nối mạng...), hệ thống hiển thị thông báo lỗi <b>[MSG-ERR-SYS-002]</b>.</td>
