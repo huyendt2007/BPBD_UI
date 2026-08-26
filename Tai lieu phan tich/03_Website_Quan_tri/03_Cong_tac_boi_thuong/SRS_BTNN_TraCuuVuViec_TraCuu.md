@@ -170,7 +170,7 @@ flowchart TD
 | 5 | Sắp xếp cột | Header cột | Người dùng click tiêu đề cột có hỗ trợ sắp xếp để đảo chiều tăng/giảm hoặc chọn cột sắp xếp mới. |
 | 6 | Đổi số dòng hiển thị | Dropdown | Hệ thống cập nhật số bản ghi trên mỗi trang theo giá trị người dùng chọn và đưa về trang 1. |
 | 7 | Chuyển trang | Pagination | Hệ thống chuyển đến trang đầu (&#124;&lt;&lt;), trang trước (&lt;), trang được chọn, trang sau (&gt;) hoặc trang cuối (&gt;&gt;&#124;) theo thao tác người dùng; dữ liệu hiển thị giữ nguyên tiêu chí lọc/sắp xếp hiện hành và cấu hình mặc định 20 bản ghi/trang. |
-| 8 | Click dòng dữ liệu | Row click | Hệ thống mở màn hình **UC431-466.MH03 - Xem chi tiết và xử lý hồ sơ yêu cầu bồi thường** (thuộc tài liệu SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md) ở chế độ xem chi tiết. Với tab `Phục hồi danh dự`, hệ thống focus vào tab/khối `Phục hồi danh dự`. Với tab `Yêu cầu bồi thường`, hệ thống focus vào `Thông tin chung` hoặc tab/khối xử lý hiện hành theo trạng thái vụ việc. |
+| 8 | Click dòng dữ liệu | Row click | Hệ thống mở màn hình **UC431-466.MH04 - Xem chi tiết hồ sơ yêu cầu bồi thường** (thuộc tài liệu SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md) ở chế độ xem chi tiết. Với tab `Phục hồi danh dự`, hệ thống focus vào tab/khối `Phục hồi danh dự`. Với tab `Chi tiết xử lý hồ sơ`, hệ thống focus vào `Thông tin Hồ sơ yêu cầu` hoặc tab/khối xử lý hiện hành theo trạng thái vụ việc. |
 
 ###### 4.3.3.5.3.6. Quy tắc lọc theo nhóm trạng thái
 

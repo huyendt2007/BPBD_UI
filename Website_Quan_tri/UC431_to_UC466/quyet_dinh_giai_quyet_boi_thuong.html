@@ -188,6 +188,16 @@
         .icon-btn.reject { color: #dc2626; }
         .icon-btn.reject:hover { background-color: #fef2f2; }
 
+        /* Action column: force single-row layout, prevent icons from wrapping/stacking vertically */
+        .action-flex {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
         /* Search & Form Grids */
         .card-section {
             background-color: var(--bg-surface);
@@ -1102,7 +1112,7 @@
                         <th style="width: 120px; text-align: center;">Mã vụ việc</th>
                         <th style="width: 170px;">Tên vụ việc</th>
                         <th style="width: 110px; text-align: center;">Trạng thái</th>
-                        <th style="width: 170px; text-align: center; min-width: 170px;">Thao tác</th>
+                        <th style="width: 130px; text-align: center; min-width: 130px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="decTableBody">
@@ -2294,7 +2304,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <th style="width: 120px; text-align: center;">Mã vụ việc</th>
                         <th style="width: 170px;">Tên vụ việc</th>
                         <th style="width: 110px; text-align: center;">Trạng thái</th>
-                        <th style="width: 170px; text-align: center; min-width: 170px;">Thao tác</th>
+                        <th style="width: 130px; text-align: center; min-width: 130px;">Thao tác</th>
                     </tr>
                 `;
             } else {
@@ -2312,7 +2322,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <th style="width: 120px; text-align: center;">Mã vụ việc</th>
                         <th style="width: 170px;">Tên vụ việc</th>
                         <th style="width: 110px; text-align: center;">Trạng thái</th>
-                        <th style="width: 170px; text-align: center; min-width: 170px;">Thao tác</th>
+                        <th style="width: 130px; text-align: center; min-width: 130px;">Thao tác</th>
                     </tr>
                 `;
             }
@@ -2433,15 +2443,17 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
 
                     actionHtml = `${editBtn}${deleteBtn}${cancelBtn}${amendBtn}`;
                 } else {
-                    const acceptBtn = isPending 
-                        ? `<button class="icon-btn accept" title="Ký duyệt quyết định" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>` 
-                        : `<button class="icon-btn accept" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Quyết định đã được xử lý"><i class="fa-solid fa-file-signature"></i></button>`;
-                    
-                    const rejectBtn = isPending 
-                        ? `<button class="icon-btn reject" title="Từ chối ký duyệt" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i></button>` 
-                        : `<button class="icon-btn reject" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Quyết định đã được xử lý"><i class="fa-solid fa-ban"></i></button>`;
+                    const viewBtn = `<button class="icon-btn view" title="Xem chi tiết quyết định" onclick="viewDecisionDetail('${item.id}')"><i class="fa-solid fa-eye"></i></button>`;
 
-                    actionHtml = `${acceptBtn}${rejectBtn}`;
+                    const acceptBtn = isPending
+                        ? `<button class="icon-btn accept" title="Ký duyệt quyết định" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`
+                        : `<button class="icon-btn accept" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Quyết định đã được xử lý"><i class="fa-solid fa-file-signature"></i></button>`;
+
+                    const rejectBtn = isPending
+                        ? `<button class="icon-btn reject" title="Từ chối ký duyệt" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-circle-xmark"></i></button>`
+                        : `<button class="icon-btn reject" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Quyết định đã được xử lý"><i class="fa-solid fa-circle-xmark"></i></button>`;
+
+                    actionHtml = `${viewBtn}${acceptBtn}${rejectBtn}`;
                 }
 
                 // Split signer name for nice display
@@ -2470,7 +2482,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <td title="${caseNameText}">${caseNameText}</td>
                         <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                         <td style="text-align:center;">
-                            <div class="action-flex" style="justify-content: center; gap: 4px;">
+                            <div class="action-flex">
                                 ${actionHtml}
                             </div>
                         </td>
@@ -2490,7 +2502,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <td title="${caseNameText}">${caseNameText}</td>
                         <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                         <td style="text-align:center;">
-                            <div class="action-flex" style="justify-content: center; gap: 4px;">
+                            <div class="action-flex">
                                 ${actionHtml}
                             </div>
                         </td>

@@ -616,17 +616,59 @@
         let ycbtPageSize = 10;
         let ycbtSortAsc = false;
 
+        const FILTER_STORAGE_KEY = 'traCuuVuViec_filterState';
+        const phddFilterFields = ['phddCode', 'phddTitle', 'phddNyc', 'phddAgency', 'phddStatus', 'phddStatusGroup', 'phddType', 'phddFromDate', 'phddToDate'];
+        const ycbtFilterFields = ['ycbtCode', 'ycbtTitle', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtNopKenh', 'ycbtStatus', 'ycbtStatusGroup', 'ycbtFromDate', 'ycbtToDate', 'ycbtDeadlineFrom', 'ycbtDeadlineTo'];
+
         document.addEventListener('DOMContentLoaded', () => {
             populateStatusSelects();
             allClaims = normalizeClaims(loadClaims());
             phddList = allClaims.filter(item => item.restoreHonor).map(buildPhddRow);
             ycbtList = allClaims.filter(item => !item.restoreHonor);
             setDefaultDates();
+            // Khôi phục bộ lọc đã lưu (nếu có) trước khi tìm kiếm, để khi quay lại từ màn Xem chi
+            // tiết/Đóng, các tiêu chí đã lọc (bao gồm Trạng thái giải quyết) vẫn được giữ nguyên.
+            restoreFilterState('phdd');
+            restoreFilterState('ycbt');
             searchPhdd();
             searchYcbt();
             const initialTab = new URLSearchParams(window.location.search).get('tab') === 'ycbt' ? 'ycbt' : 'phdd';
             switchLookupTab(initialTab);
         });
+
+        function loadFilterState() {
+            try {
+                const raw = sessionStorage.getItem(FILTER_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch (err) {
+                console.warn('Không đọc được trạng thái bộ lọc đã lưu', err);
+                return {};
+            }
+        }
+
+        function saveFilterState(tab) {
+            const fields = tab === 'phdd' ? phddFilterFields : ycbtFilterFields;
+            const state = loadFilterState();
+            state[tab] = {};
+            fields.forEach(id => { state[tab][id] = document.getElementById(id).value; });
+            try {
+                sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(state));
+            } catch (err) {
+                console.warn('Không lưu được trạng thái bộ lọc', err);
+            }
+        }
+
+        function restoreFilterState(tab) {
+            const saved = loadFilterState()[tab];
+            if (!saved) return false;
+            const fields = tab === 'phdd' ? phddFilterFields : ycbtFilterFields;
+            fields.forEach(id => {
+                if (Object.prototype.hasOwnProperty.call(saved, id)) {
+                    document.getElementById(id).value = saved[id];
+                }
+            });
+            return true;
+        }
 
         function populateStatusSelects() {
             ['phddStatus', 'ycbtStatus'].forEach(id => {
@@ -776,6 +818,7 @@
         }
 
         function searchPhdd() {
+            saveFilterState('phdd');
             const code = normalizeText(document.getElementById('phddCode').value);
             const title = normalizeText(document.getElementById('phddTitle').value);
             const nyc = normalizeText(document.getElementById('phddNyc').value);
@@ -871,6 +914,7 @@
         }
 
         function searchYcbt() {
+            saveFilterState('ycbt');
             const code = normalizeText(document.getElementById('ycbtCode').value);
             const title = normalizeText(document.getElementById('ycbtTitle').value);
             const nyc = normalizeText(document.getElementById('ycbtNyc').value);

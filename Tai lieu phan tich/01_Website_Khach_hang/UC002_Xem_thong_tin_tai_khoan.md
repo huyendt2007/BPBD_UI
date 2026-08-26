@@ -31,9 +31,9 @@
 | **I. Thông tin tài khoản chung** | - | - | - | Khối luôn hiển thị cho cả tài khoản `Cá nhân` và `Tổ chức`. Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản của người dùng đang đăng nhập. |
 | Loại khách hàng | Enum(String(50)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại khách hàng gắn với hồ sơ tài khoản của người dùng đang đăng nhập: `Cá nhân` hoặc `Tổ chức`. |
 | Loại tài khoản | Enum(String(50)) | Có | Theo người dùng đang đăng nhập | Chỉ đọc. Hiển thị loại tài khoản của người dùng đang đăng nhập: `Tài khoản chính` hoặc `Tài khoản phụ`. |
-| Nguồn xác thực | Enum(String(100)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị nguồn xác thực đang liên kết với hồ sơ tài khoản của người dùng đang đăng nhập: `VNeID`, `Nội bộ` hoặc `VNeID, Nội bộ`. |
-| **II.A. Thông tin khách hàng Cá nhân** | - | - | - | Khối chỉ hiển thị khi `Loại khách hàng = Cá nhân`; ẩn khi `Loại khách hàng = Tổ chức`. Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản cá nhân của người dùng đang đăng nhập. |
-| Loại giấy tờ | Enum(String(50)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại giấy tờ pháp lý của cá nhân, ví dụ: `Căn cước công dân`, `Chứng minh nhân dân`, `Hộ chiếu`. |
+| Nguồn xác thực | Enum(String(100)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị nguồn xác thực đang liên kết với hồ sơ tài khoản của người dùng đang đăng nhập bao gồm các nguồn: <br> - `VNeID` <br> - `Nội bộ` <br> - `VNeID, Nội bộ`. |
+| **II.A. Thông tin khách hàng Cá nhân** | - | - | - | Khối chỉ hiển thị khi `Loại khách hàng = Cá nhân. <br>  Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản cá nhân của người dùng đang đăng nhập. |
+| Loại giấy tờ | Enum(String(50)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại giấy tờ pháp lý của cá nhân đang đăng nhập |
 | Số giấy tờ | String(50) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị số giấy tờ chứng minh tư cách pháp lý của cá nhân. |
 | Tên khách hàng | String(255) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị họ và tên của khách hàng cá nhân. |
 | Ngày sinh | Date | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị ngày tháng năm sinh của cá nhân, định dạng `DD/MM/YYYY`. |
@@ -41,8 +41,8 @@
 | Quốc tịch | String(255) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị quốc tịch của cá nhân. |
 | Email (Tên đăng nhập) | String(255) | Có theo hồ sơ | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị email gắn với hồ sơ tài khoản cá nhân. Nếu tài khoản đã liên kết Email/Mật khẩu Nội bộ, email này đồng thời là tên đăng nhập hệ thống. |
 | Số điện thoại | String(20) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị số điện thoại liên hệ gắn với hồ sơ tài khoản cá nhân. |
-| **II.B. Thông tin khách hàng Tổ chức** | - | - | - | Khối chỉ hiển thị khi `Loại khách hàng = Tổ chức`; ẩn khi `Loại khách hàng = Cá nhân`. Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản tổ chức của người dùng đang đăng nhập. |
-| Loại tổ chức | Enum(String(100)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại tổ chức đã lưu của tài khoản tổ chức, ví dụ: `Tổ chức có đăng ký kinh doanh trong nước`, `Tổ chức nước ngoài`. |
+| **II.B. Thông tin khách hàng Tổ chức** | - | - | - | Khối chỉ hiển thị khi `Loại khách hàng = Tổ chức`. Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản tổ chức của người dùng đang đăng nhập. |
+| Loại tổ chức | Enum(String(100)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại tổ chức đã lưu của tài khoản tổ chức|
 | Mã định danh tổ chức | String(100) | Có theo loại tổ chức | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị mã định danh tổ chức đã lưu gắn với hồ sơ tài khoản tổ chức trong nước. |
 | Mã số thuế/Số giấy phép đầu tư | String(100) | Có theo loại tổ chức | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị mã số thuế hoặc số giấy phép đầu tư đã lưu gắn với hồ sơ tài khoản tổ chức nước ngoài. |
 | Tên tổ chức | String(255) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị tên tổ chức đã lưu gắn với hồ sơ tài khoản tổ chức. |
@@ -50,7 +50,7 @@
 | Email tổ chức (Tên đăng nhập) | String(255) | Có theo hồ sơ | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị email gắn với hồ sơ tài khoản tổ chức. Nếu tài khoản đã liên kết Email/Mật khẩu Nội bộ, email này đồng thời là tên đăng nhập hệ thống. |
 | Số điện thoại tổ chức | String(20) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị số điện thoại liên hệ gắn với hồ sơ tài khoản tổ chức. |
 | Họ tên người đại diện | String(255) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị họ tên người đại diện đã lưu gắn với hồ sơ tài khoản tổ chức. |
-| Loại giấy tờ người đại diện | Enum(String(50)) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại giấy tờ pháp lý của người đại diện đã lưu, ví dụ: `Căn cước công dân`, `Chứng minh nhân dân`, `Hộ chiếu`. |
+| Loại giấy tờ người đại diện | Enum(String(50)) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại giấy tờ pháp lý của người đại diện đã lưu |
 | Số giấy tờ người đại diện | String(50) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị số giấy tờ pháp lý của người đại diện đã lưu gắn với hồ sơ tài khoản tổ chức. |
 | **III. Thông tin địa chỉ & Thiết lập sử dụng** | - | - | - | Khối dùng chung cho cả tài khoản `Cá nhân` và `Tổ chức`. Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản của người dùng đang đăng nhập. |
 | Phân loại khách hàng | Enum(String(50)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị phân loại khách hàng gắn với hồ sơ tài khoản: `Trong nước` hoặc `Nước ngoài`. |

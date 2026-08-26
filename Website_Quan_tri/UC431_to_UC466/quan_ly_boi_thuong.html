@@ -1433,7 +1433,7 @@
                 style="padding: 0 20px 14px 20px; border-radius: var(--border-radius-md); background: white; margin-bottom: 12px;">
                 <div style="display:flex; gap: 8px; align-items:center; border-bottom:1px solid var(--border-color); overflow-x:auto; overflow-y:hidden;">
                     <button class="tab-btn active" id="workflowTabNhapLieu" onclick="switchClaimsWorkflowTab('nhap-lieu')">
-                        <i class="fa-solid fa-keyboard"></i> Vụ việc chờ nhập liệu
+                        <i class="fa-solid fa-inbox"></i> Vụ việc chờ tiếp nhận
                     </button>
                     <button class="tab-btn" id="workflowTabKiemTra" onclick="switchClaimsWorkflowTab('kiem-tra')">
                         <i class="fa-solid fa-clipboard-check"></i> Vụ việc chờ kiểm tra
@@ -1481,21 +1481,9 @@
                         <span class="form-label">Trạng thái giải quyết</span>
                         <select class="form-control" id="searchStatus">
                             <option value="">Tất cả</option>
-                            <option value="Chờ nhập liệu">Chờ nhập liệu</option>
-                            <option value="Chờ kiểm tra">Chờ kiểm tra</option>
+                            <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                             <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
-                            <option value="Bị từ chối">Bị từ chối</option>
-                            <option value="Chờ thụ lý">Chờ thụ lý</option>
-                            <option value="Từ chối thụ lý">Từ chối thụ lý</option>
-                            <option value="Đang xác minh thiệt hại">Đang xác minh thiệt hại</option>
-                            <option value="Đang thương lượng">Đang thương lượng</option>
-                            <option value="Thương lượng không thành công">Thương lượng không thành công</option>
-                            <option value="Chờ ban hành QĐ">Chờ ban hành QĐ</option>
-                            <option value="Hoãn giải quyết">Hoãn giải quyết</option>
-                            <option value="Tạm đình chỉ giải quyết">Tạm đình chỉ giải quyết</option>
-                            <option value="Đình chỉ giải quyết">Đình chỉ giải quyết</option>
-                            <option value="Chờ thực thi">Chờ thực thi</option>
-                            <option value="Hoàn thành">Hoàn thành</option>
+                            <option value="Lưu nháp">Lưu nháp</option>
                         </select>
                     </div>
                     <div>
@@ -2639,13 +2627,16 @@
                     style="font-size: 12.5px; padding: 6px 12px; font-weight: 600;">Trạng thái</span>
             </div>
 
-            <!-- TWO MAIN TABS -->
+            <!-- THREE MAIN TABS -->
             <div style="display: flex; gap: 4px; border-bottom: 2px solid var(--border-color); margin-bottom: 20px;">
                 <button class="tab-btn active" id="detailTab1Btn" onclick="switchDetailTab('chung')">
                     <i class="fa-solid fa-user-tie"></i> Thông tin Hồ sơ yêu cầu
                 </button>
                 <button class="tab-btn" id="detailTab2Btn" onclick="switchDetailTab('xu-ly')">
                     <i class="fa-solid fa-list-check"></i> Chi tiết xử lý Hồ sơ
+                </button>
+                <button class="tab-btn" id="detailTab3Btn" onclick="switchDetailTab('phuc-hoi')" style="display: none;">
+                    <i class="fa-solid fa-ribbon"></i> Phục hồi danh dự
                 </button>
             </div>
 
@@ -2656,22 +2647,8 @@
                 </div>
             </div>
 
-            <!-- TAB 2 CONTENT: ACCORDIONS -->
+            <!-- TAB 2 CONTENT: ACCORDIONS (Kết quả xử lý nghiệp vụ) -->
             <div id="detailTabXuLy" style="display: none;">
-                <!-- SUB-TABS: KẾT QUẢ XỬ LÝ & PHỤC HỒI DANH DỰ -->
-                <div style="display: flex; gap: 4px; border-bottom: 1px solid var(--border-color); margin-bottom: 16px;"
-                    id="detailSubTabsContainer">
-                    <button class="tab-btn active" id="detailSubTab1Btn" onclick="switchDetailSubTab('kq-xl')"
-                        style="font-size: 13px; padding: 8px 14px;">
-                        <i class="fa-solid fa-scale-balanced"></i> Kết quả xử lý nghiệp vụ
-                    </button>
-                    <button class="tab-btn" id="detailSubTab2Btn" onclick="switchDetailSubTab('phdd')"
-                        style="font-size: 13px; padding: 8px 14px; display: none;">
-                        <i class="fa-solid fa-ribbon"></i> Phục hồi danh dự (Điều 58/59)
-                    </button>
-                </div>
-
-                <!-- SUB-TAB 1: KẾT QUẢ XỬ LÝ ACCORDIONS -->
                 <div id="detailSubTabKqXl" style="display: block;">
 
                     <!-- 1. Tiếp nhận & Thụ lý -->
@@ -3398,9 +3375,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- SUB-TAB 2: PHỤC HỒI DANH DỰ -->
-                <div id="detailSubTabPhdd" style="display: none;">
+            <!-- TAB 3 CONTENT: PHỤC HỒI DANH DỰ -->
+            <div id="detailSubTabPhdd" style="display: none;">
                     <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px;">
 
                         <!-- 1. KHỐI THÔNG TIN PHÁP LÝ & TỔNG QUAN -->
@@ -4173,7 +4151,6 @@
 
                     </div>
                 </div>
-            </div>
 
             <!-- Sticky Action Bar at the bottom of Case Detail Section -->
             <div class="detail-action-bar" id="detailActionBar">
@@ -6110,11 +6087,24 @@
             'Hoãn giải quyết',
             'Tạm đình chỉ giải quyết'
         ];
+        // Ordered set of statuses from "Đang xác minh thiệt hại" onward, used as the shared threshold for
+        // showing Tab 2 (Chi tiết xử lý hồ sơ) and Tab 3 (Phục hồi danh dự) on MH03/MH04.
+        const CLAIM_STATUSES_FROM_VERIFICATION = [
+            'Đang xác minh thiệt hại',
+            'Đang thương lượng',
+            'Thương lượng không thành công',
+            'Chờ ban hành QĐ',
+            'Chờ thực thi',
+            'Hoãn giải quyết',
+            'Tạm đình chỉ giải quyết',
+            'Đình chỉ giải quyết',
+            'Hoàn thành'
+        ];
 
         function canonicalClaimStatus(status) {
             const nStatus = normalizeStatusText(status);
             if (nStatus === 'luu nhap') return 'Chờ nhập liệu';
-            if (nStatus === 'cho tiep nhan') return 'Chờ kiểm tra';
+            if (nStatus === 'cho tiep nhan') return 'Chờ tiếp nhận';
             if (nStatus === 'tu choi tiep nhan') return 'Bị từ chối';
             if (nStatus === 'yeu cau bo sung') return 'Yêu cầu bổ sung';
             if (nStatus === 'cho nhap lieu') return 'Chờ nhập liệu';
@@ -6532,7 +6522,7 @@
             const st = canonicalClaimStatus(status);
             if (st === 'Hoàn thành') return 'badge-success';
             if (st === 'Chờ nhập liệu') return 'badge-draft';
-            if (st === 'Chờ kiểm tra' || st === 'Chờ thụ lý') return 'badge-pending';
+            if (st === 'Chờ tiếp nhận' || st === 'Chờ kiểm tra' || st === 'Chờ thụ lý') return 'badge-pending';
             if (st === 'Yêu cầu bổ sung' || st === 'Chờ ban hành QĐ' || st === 'Chờ thực thi') return 'badge-warning';
             if (st === 'Bị từ chối' || st === 'Từ chối thụ lý' || st === 'Thương lượng không thành công' || st === 'Đình chỉ giải quyết') return 'badge-danger';
             if (SPECIAL_STATUS_PAUSED_STATES.includes(st)) return 'badge-warning';
@@ -6548,7 +6538,7 @@
         function claimInActiveWorkflowTab(item, currentRole, currentOfficer) {
             const status = canonicalClaimStatus(item.status);
             if (activeClaimsWorkflowTab === 'nhap-lieu') {
-                return ['Chờ nhập liệu', 'Yêu cầu bổ sung'].includes(status);
+                return ['Chờ tiếp nhận', 'Chờ nhập liệu', 'Yêu cầu bổ sung'].includes(status);
             }
             if (activeClaimsWorkflowTab === 'kiem-tra') {
                 return status === 'Chờ kiểm tra';
@@ -6559,11 +6549,43 @@
             return status === 'Chờ thụ lý' || (!isClaimAssignedToOther(item, currentRole, currentOfficer) && CLAIM_PROCESSING_STATES.includes(status));
         }
 
+        function updateSearchStatusOptionsByTab(tab) {
+            const sel = document.getElementById('searchStatus');
+            if (!sel) return;
+            if (tab === 'nhap-lieu') {
+                sel.innerHTML = `
+                    <option value="">Tất cả</option>
+                    <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
+                    <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
+                    <option value="Lưu nháp">Lưu nháp</option>
+                `;
+                sel.value = "";
+            } else if (tab === 'kiem-tra') {
+                sel.innerHTML = `
+                    <option value="Chờ kiểm tra">Chờ kiểm tra</option>
+                `;
+                sel.value = "Chờ kiểm tra";
+            } else if (tab === 'cho-xu-ly') {
+                sel.innerHTML = `
+                    <option value="">Tất cả</option>
+                    <option value="Chờ thụ lý">Chờ thụ lý</option>
+                    <option value="Đang xác minh thiệt hại">Đang xác minh thiệt hại</option>
+                    <option value="Đang thương lượng">Đang thương lượng</option>
+                    <option value="Chờ ban hành QĐ">Chờ ban hành QĐ</option>
+                    <option value="Chờ thực thi">Chờ thực thi</option>
+                    <option value="Hoãn giải quyết">Hoãn giải quyết</option>
+                    <option value="Tạm đình chỉ giải quyết">Tạm đình chỉ giải quyết</option>
+                `;
+                sel.value = "";
+            }
+        }
+
         function switchClaimsWorkflowTab(tab) {
             activeClaimsWorkflowTab = tab;
             document.getElementById('workflowTabNhapLieu').classList.toggle('active', tab === 'nhap-lieu');
             document.getElementById('workflowTabKiemTra').classList.toggle('active', tab === 'kiem-tra');
             document.getElementById('workflowTabXuLy').classList.toggle('active', tab === 'cho-xu-ly');
+            updateSearchStatusOptionsByTab(tab);
             currentClaimsPage = 1;
             renderClaimsTable();
         }
@@ -6576,26 +6598,38 @@
             if (currentRole === 'thu-truong') {
                 if (status === 'Chờ thụ lý') {
                     return `
-                        <button class="icon-btn accept" title="Thụ lý hồ sơ" onclick="event.stopPropagation(); triggerLeaderAcceptClaim('${item.id}')"><i class="fa-solid fa-square-check"></i></button>
+                        <button class="icon-btn accept" title="Thụ lý hồ sơ" onclick="event.stopPropagation(); triggerLeaderAcceptClaim('${item.id}')"><i class="fa-solid fa-circle-check"></i></button>
                         <button class="icon-btn reject" title="Từ chối thụ lý" onclick="event.stopPropagation(); triggerRejectClaim('${item.id}', 'Từ chối thụ lý')"><i class="fa-solid fa-ban"></i></button>
                     `;
                 }
-                return `${disabled('fa-solid fa-square-check', 'Chỉ thụ lý khi vụ việc ở trạng thái Chờ thụ lý')}${disabled('fa-solid fa-ban', 'Chỉ từ chối thụ lý khi vụ việc ở trạng thái Chờ thụ lý')}`;
+                return `${disabled('fa-solid fa-circle-check', 'Chỉ thụ lý khi vụ việc ở trạng thái Chờ thụ lý')}${disabled('fa-solid fa-ban', 'Chỉ từ chối thụ lý khi vụ việc ở trạng thái Chờ thụ lý')}`;
             }
 
             if (isAssignedToOther) {
                 return disabled('fa-solid fa-lock', `Vụ việc được giao cho cán bộ ${item.assignedOfficer}. Bạn chỉ có quyền xem.`);
             }
 
-            if (status === 'Chờ nhập liệu' || status === 'Yêu cầu bổ sung') {
-                return `<button class="icon-btn edit" title="Nhập hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-keyboard"></i></button>`;
+            if (status === 'Chờ tiếp nhận') {
+                return `
+                    <button class="icon-btn accept" title="Tiếp nhận" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-check-to-slot"></i></button>
+                    <button class="icon-btn supplement" title="Yêu cầu bổ sung" onclick="event.stopPropagation(); triggerRequireAdditionClaim('${item.id}')"><i class="fa-solid fa-circle-question"></i></button>
+                    <button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); triggerRejectClaim('${item.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i></button>
+                `;
+            }
+
+            if (status === 'Yêu cầu bổ sung') {
+                return `<button class="icon-btn edit" title="Bổ sung hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>`;
+            }
+
+            if (status === 'Chờ nhập liệu') {
+                return `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
             }
 
             if (status === 'Chờ kiểm tra') {
                 return `
-                    <button class="icon-btn accept" title="Tiếp nhận hồ sơ" onclick="event.stopPropagation(); triggerAcceptClaim('${item.id}')"><i class="fa-solid fa-square-check"></i></button>
-                    <button class="icon-btn supplement" title="Yêu cầu bổ sung" onclick="event.stopPropagation(); triggerRequireAdditionClaim('${item.id}')"><i class="fa-solid fa-circle-question"></i></button>
-                    <button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); triggerRejectClaim('${item.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i></button>
+                    <button class="icon-btn accept" title="Tiếp nhận kiểm tra" onclick="event.stopPropagation(); triggerAcceptClaim('${item.id}')"><i class="fa-solid fa-square-check"></i></button>
+                    <button class="icon-btn supplement" title="Yêu cầu bổ sung sau kiểm tra" onclick="event.stopPropagation(); triggerRequireAdditionClaim('${item.id}')"><i class="fa-solid fa-circle-question"></i></button>
+                    <button class="icon-btn reject" title="Từ chối sau kiểm tra" onclick="event.stopPropagation(); triggerRejectClaim('${item.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i></button>
                 `;
             }
 
@@ -6801,7 +6835,7 @@
             document.getElementById('searchNyc').value = '';
             document.getElementById('searchAgency').value = '';
             document.getElementById('searchFieldGroup').value = '';
-            document.getElementById('searchStatus').value = '';
+            updateSearchStatusOptionsByTab(activeClaimsWorkflowTab);
             if (document.getElementById('searchNopKenh')) document.getElementById('searchNopKenh').value = '';
             document.getElementById('searchFromDate').value = '';
             document.getElementById('searchToDate').value = '';
@@ -8949,7 +8983,9 @@
             renderDetailActionBar(claim);
 
             const tab2Btn = document.getElementById('detailTab2Btn');
-            if (claim.status === 'Chờ nhập liệu') {
+            const showTab2 = CLAIM_STATUSES_FROM_VERIFICATION.includes(canonicalClaimStatus(claim.status)) &&
+                (claim.requestType === 'both' || claim.requestType === 'money');
+            if (!showTab2) {
                 if (tab2Btn) tab2Btn.style.display = 'none';
                 switchDetailTab('chung');
             } else {
@@ -9075,7 +9111,7 @@
             const isAssignedToOther = (currentRole === 'chuyen-vien') && nAssigned && (nAssigned !== nCurrent);
 
             // Close button (only shown in read-only mode)
-            const closeBtnHtml = `<button class="btn btn-secondary" onclick="closeCaseDetailWithCheck()"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
+            const closeBtnHtml = `<button class="btn btn-secondary" onclick="closeCaseDetailWithCheck()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>`;
 
             // Cancel button (only shown in edit mode)
             const cancelBtnHtml = `<button class="btn btn-secondary" onclick="switchToReadOnlyMode()">Hủy bỏ</button>`;
@@ -9087,7 +9123,8 @@
                 return;
             }
 
-            const pauseActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}')"><i class="fa-solid fa-pause"></i> Hoãn giải quyết</button>`;
+            const pauseActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Hoãn giải quyết')"><i class="fa-solid fa-pause"></i> Hoãn giải quyết</button>`;
+            const suspendActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Tạm đình chỉ giải quyết')"><i class="fa-solid fa-circle-pause"></i> Tạm đình chỉ / Đình chỉ</button>`;
             let buttonsHtml = '';
             let showCloseButton = true; // by default we show Close button in read-only
 
@@ -9122,7 +9159,7 @@
 
                 case 'yeu cau bo sung':
                     buttonsHtml = `
-                        <button class="btn btn-primary" onclick="switchToEditMode('bosung')"><i class="fa-solid fa-keyboard"></i> Nhập bổ sung</button>
+                        <button class="btn btn-primary" onclick="switchToEditMode('bosung')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả bổ sung</button>
                     `;
                     break;
 
@@ -9160,6 +9197,7 @@
                         buttonsHtml = `
                             <button class="btn btn-primary" onclick="switchToEditMode('xacminh')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật xác minh</button>
                             ${pauseActionBtnHtml}
+                            ${suspendActionBtnHtml}
                         `;
                     }
                     break;
@@ -9176,6 +9214,7 @@
                         buttonsHtml = `
                             <button class="btn btn-primary" onclick="switchToEditMode('thuongluong')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả thương lượng</button>
                             ${pauseActionBtnHtml}
+                            ${suspendActionBtnHtml}
                         `;
                     }
                     break;
@@ -9184,6 +9223,7 @@
                     buttonsHtml = `
                         <button class="btn btn-primary" onclick="claimRedoNegotiation('${claim.id}')"><i class="fa-solid fa-rotate-left"></i> Cập nhật lại kết quả thương lượng</button>
                         ${pauseActionBtnHtml}
+                            ${suspendActionBtnHtml}
                     `;
                     break;
 
@@ -9192,11 +9232,13 @@
                         buttonsHtml = `
                             <button class="btn btn-success" onclick="approveAndSignDecision('${claim.id}')"><i class="fa-solid fa-file-signature"></i> Duyệt ký số QĐ</button>
                             ${pauseActionBtnHtml}
+                            ${suspendActionBtnHtml}
                             <button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>
                         `;
                     } else {
                         buttonsHtml = `
                             ${pauseActionBtnHtml}
+                            ${suspendActionBtnHtml}
                             <button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>
                         `;
                     }
@@ -9303,18 +9345,19 @@
             activeDetailTab = tab;
             document.getElementById('detailTab1Btn').classList.toggle('active', tab === 'chung');
             document.getElementById('detailTab2Btn').classList.toggle('active', tab === 'xu-ly');
+            const tab3BtnEl = document.getElementById('detailTab3Btn');
+            if (tab3BtnEl) tab3BtnEl.classList.toggle('active', tab === 'phuc-hoi');
 
             document.getElementById('detailTabChung').style.display = tab === 'chung' ? 'block' : 'none';
             document.getElementById('detailTabXuLy').style.display = tab === 'xu-ly' ? 'block' : 'none';
+            document.getElementById('detailSubTabPhdd').style.display = tab === 'phuc-hoi' ? 'block' : 'none';
         }
 
+        // Kept for backward compatibility with older call sites: "Kết quả xử lý nghiệp vụ" now renders
+        // directly under Tab 2 (Chi tiết xử lý hồ sơ), and "Phục hồi danh dự" is its own top-level tab (Tab 3),
+        // so this simply routes to the corresponding top-level tab.
         function switchDetailSubTab(sub) {
-            activeDetailSubTab = sub;
-            document.getElementById('detailSubTab1Btn').classList.toggle('active', sub === 'kq-xl');
-            document.getElementById('detailSubTab2Btn').classList.toggle('active', sub === 'phdd');
-
-            document.getElementById('detailSubTabKqXl').style.display = sub === 'kq-xl' ? 'block' : 'none';
-            document.getElementById('detailSubTabPhdd').style.display = sub === 'phdd' ? 'block' : 'none';
+            switchDetailTab(sub === 'phdd' ? 'phuc-hoi' : 'xu-ly');
         }
 
         function renderReadOnlyClaimInfo(claim) {
@@ -10380,19 +10423,14 @@
         }
 
         function renderAccordions(claim) {
-            const subTabsContainer = document.getElementById('detailSubTabsContainer');
-            const phddTabBtn = document.getElementById('detailSubTab2Btn');
-            const kqxlTabBtn = document.getElementById('detailSubTab1Btn');
+            const tab3Btn = document.getElementById('detailTab3Btn');
 
-            const showPhdd = claim.restoreHonor && ['Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status);
+            const showPhdd = claim.restoreHonor && CLAIM_STATUSES_FROM_VERIFICATION.includes(canonicalClaimStatus(claim.status));
             if (showPhdd) {
-                if (subTabsContainer) subTabsContainer.style.display = 'flex';
-                if (phddTabBtn) phddTabBtn.style.display = 'inline-block';
-                if (kqxlTabBtn) kqxlTabBtn.innerHTML = '<i class="fa-solid fa-scale-balanced"></i> Kết quả xử lý hồ sơ';
+                if (tab3Btn) tab3Btn.style.display = 'inline-block';
             } else {
-                if (subTabsContainer) subTabsContainer.style.display = 'none';
-                if (phddTabBtn) phddTabBtn.style.display = 'none';
-                switchDetailSubTab('kq-xl');
+                if (tab3Btn) tab3Btn.style.display = 'none';
+                if (activeDetailTab === 'phuc-hoi') switchDetailTab('xu-ly');
             }
             const isCanBoNhap = claim.nopKenh === 'Cán bộ chủ động nhập theo tố tụng/thi hành án' && (claim.status === 'Chờ thực thi' || claim.status === 'Hoàn thành');
             const accBosung = document.getElementById('accHead_bosung') ? document.getElementById('accHead_bosung').parentElement : null;
@@ -13791,7 +13829,7 @@
             document.getElementById(infoDivId).style.display = 'none';
         }
 
-        function openSpecialStatusAction(id) {
+        function openSpecialStatusAction(id, presetType = null) {
             const claim = claimsList.find(c => c.id === id);
             if (!claim) return;
             if (!isSpecialStatusSource(claim.status)) {
@@ -13801,6 +13839,13 @@
             showCaseDetail(id, true, 'trangthai');
             switchDetailTab('xu-ly');
             forceOpenAccordion('trangthai');
+            if (presetType) {
+                const radio = document.querySelector(`input[name="specialStatusType"][value="${presetType}"]`);
+                if (radio) {
+                    radio.checked = true;
+                    handleSpecialStatusTypeChanged(presetType);
+                }
+            }
         }
 
         function handleSpecialStatusTypeChanged(value) {

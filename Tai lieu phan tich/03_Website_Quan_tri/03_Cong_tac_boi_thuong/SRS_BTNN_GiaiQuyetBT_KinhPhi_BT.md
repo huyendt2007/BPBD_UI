@@ -16,8 +16,7 @@
 *b. Điều kiện thực hiện*
 
 \- Người dùng đã đăng nhập vào hệ thống thành công.  
-\- Có hồ sơ yêu cầu bồi thường liên kết đang ở trạng thái phù hợp (Đang xác minh thiệt hại để tạm ứng, hoặc đã có Quyết định giải quyết bồi thường/Phán quyết Tòa án có hiệu lực để lập đề nghị chính thức).  
-\- Phân hệ này hiện quản lý tờ trình/đề nghị và kết quả phê duyệt cấp kinh phí, không tự phát sinh số quyết định ban hành. Trường hợp bổ sung nghiệp vụ ban hành Quyết định cấp kinh phí/tạm ứng trên hệ thống, quyết định đó phải áp dụng nguyên tắc chung: phân biệt `Đơn vị nhập liệu` và `Đơn vị ban hành`, lấy số từ `Sổ văn bản áp dụng` theo đơn vị ban hành, ký số thì trình lãnh đạo đơn vị ban hành, ký bên ngoài thì ghi nhận số/ngày/file quyết định đã ký và kiểm tra trùng số/tính tuần tự trong sổ.
+\- Người dùng được phân quyền thực hiện tính năng
 
 ---
 
