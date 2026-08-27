@@ -4,13 +4,8 @@
 
 ##### 4.3.3.1.1. Mục đích
 
-\- Cho phép người dùng trên Website quản trị quản lý danh sách yêu cầu xác định cơ quan giải quyết bồi thường.
+\- Cho phép người dùng trên Website quản trị quản lý danh sách yêu cầu xác định cơ quan giải quyết bồi thường chờ tiếp nhận hoặc thực hiện Tạo mới trực tiếp Yêu cầu xác định cơ quan giải quyết bồi thường.
 
-\- Cho phép tạo mới, lưu nháp, gửi yêu cầu, xem chi tiết, tiếp nhận, từ chối tiếp nhận, cập nhật kết quả xác định cơ quan giải quyết bồi thường.
-
-\- Cho phép tiếp nhận và xử lý hồ sơ liên thông từ phân hệ **Tiếp nhận yêu cầu**, tự động kế thừa dữ liệu tiếp nhận ban đầu để cán bộ tiếp tục nhập liệu/xác minh.
-
-\- Cho phép khởi tạo hồ sơ yêu cầu bồi thường liên thông từ hồ sơ xác định cơ quan đã hoàn thành và chưa có mã hồ sơ yêu cầu bồi thường.
 
 *a. Phân quyền*
 
@@ -20,10 +15,7 @@
 
 \- Người dùng truy cập màn hình `Xác định cơ quan giải quyết bồi thường` trên Website quản trị.
 
-\- Danh sách dữ liệu được nạp từ nguồn dữ liệu nghiệp vụ hiện hành của hệ thống.
-
-\- Trạng thái hồ sơ sử dụng trong nhóm tính năng gồm: "Lưu nháp", "Chờ tiếp nhận", "Yêu cầu bổ sung", "Đang xác minh", "Bị từ chối", "Hoàn thành".
-
+\- Người dùng được phân quyền thực hiện tính năng.
 ---
 
 ##### 4.3.3.1.2. Sơ đồ luồng nghiệp vụ theo giao diện
