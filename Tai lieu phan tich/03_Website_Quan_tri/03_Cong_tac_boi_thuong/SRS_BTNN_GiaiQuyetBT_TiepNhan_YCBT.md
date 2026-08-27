@@ -4,17 +4,11 @@
 
 ##### 4.3.3.0.1. Mục đích
 
-\- Cho phép Cán bộ tiếp nhận tra cứu, quản lý danh sách các yêu cầu đã tiếp nhận và ghi nhận thông tin tổng quan ban đầu trước khi chuyển sang phân hệ xử lý nghiệp vụ tương ứng.
-
-\- Cho phép nhập thông tin chung của vụ việc, thông tin người yêu cầu và danh sách tài liệu đính kèm liên quan.
-
-\- Sau khi tiếp nhận thành công, hệ thống tự động sinh mã hồ sơ/yêu cầu, ghi nhận `Thời điểm tiếp nhận` và tạo bản ghi ở trạng thái `Chờ tiếp nhận` tại phân hệ xử lý tương ứng theo `Loại yêu cầu`.
+\- Cho phép Cán bộ tiếp nhận tra cứu, quản lý danh sách các yêu cầu đã tiếp nhận và ghi nhận thông tin tổng quan ban đầu trước khi chuyển hồ sơ sang cho Cán bộ xử lý vụ việc.
 
 *a. Phân quyền*
 
 \- Cán bộ tiếp nhận: Được tra cứu danh sách yêu cầu đã tiếp nhận, tạo mới yêu cầu, nhập thông tin tiếp nhận ban đầu, đính kèm tài liệu, lưu thông tin tiếp nhận, sửa hoặc xóa bản ghi do mình tiếp nhận khi bản ghi còn ở trạng thái `Chờ tiếp nhận`.
-
-\- Cán bộ xử lý: Được tra cứu hồ sơ/yêu cầu đã tiếp nhận ở trạng thái `Chờ tiếp nhận` tại phân hệ Xác định cơ quan giải quyết bồi thường hoặc Giải quyết yêu cầu bồi thường để thực hiện bước tiếp nhận nghiệp vụ tiếp theo.
 
 *b. Điều kiện thực hiện*
 
@@ -22,41 +16,13 @@
 
 ---
 
-##### 4.3.3.0.2. Sơ đồ luồng nghiệp vụ theo giao diện
+##### 4.3.3.0.2. MH01 - Màn hình Danh sách quản lý các Yêu cầu
 
-```mermaid
-flowchart TD
-    Z[Danh sách quản lý các Yêu cầu] --> Z1[Tìm kiếm / Xóa bộ lọc / Phân trang]
-    Z --> A[Tiếp nhận mới]
-    Z --> Z2[Click dòng dữ liệu]
-    Z2 -->|"Chờ tiếp nhận" - do mình tiếp nhận| A
-    Z2 -->|Trạng thái khác| Z3[Mở chi tiết tại phân hệ xử lý tương ứng]
-    Z --> Z4[Xóa bản ghi - chỉ "Chờ tiếp nhận" do mình tiếp nhận]
-    A --> B[Nhập thông tin tổng quan vụ việc]
-    B --> C[Nhập thông tin người yêu cầu]
-    C --> D[Đính kèm tài liệu liên quan]
-    D --> E{Bấm Lưu thông tin}
-    E -->|Thiếu dữ liệu bắt buộc| F[Hiển thị lỗi kiểm tra dữ liệu]
-    F --> B
-    E -->|Dữ liệu hợp lệ| G[Hệ thống sinh mã hồ sơ/yêu cầu]
-    G --> H[Ghi nhận Thời điểm tiếp nhận]
-    H --> I[Lưu vụ việc và tài liệu đính kèm]
-    I --> J{"Loại yêu cầu"}
-    J -->|Xác định cơ quan giải quyết bồi thường| K["Tạo hồ sơ Xác định cơ quan - Chờ tiếp nhận"]
-    J -->|Yêu cầu bồi thường| L["Tạo hồ sơ Giải quyết YCBT - Chờ tiếp nhận"]
-    K --> Z
-    L --> Z
-```
-
----
-
-##### 4.3.3.0.3. MH01 - Màn hình Danh sách quản lý các Yêu cầu
-
-###### 4.3.3.0.3.1. Màn hình
+###### 4.3.3.0.2.1. Màn hình
 
 Hình ảnh giao diện sẽ được cập nhật sau khi có mockup màn Danh sách quản lý yêu cầu riêng.
 
-###### 4.3.3.0.3.2. Mô tả thông tin trên màn hình
+###### 4.3.3.0.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
@@ -94,8 +60,8 @@ Hình ảnh giao diện sẽ được cập nhật sau khi có mockup màn Danh 
 | 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
 |  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
 |  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
-| 2 | Xóa bộ lọc | Button | Hệ thống xóa `Mã vụ việc`, `Tên vụ việc`, `Họ và tên người yêu cầu`, đưa `Loại yêu cầu`/`Hình thức tiếp nhận hồ sơ`/`Lĩnh vực phát sinh thiệt hại`/`Trạng thái` về `Tất cả`, đặt lại `Từ ngày` = ngày 01 của tháng hiện tại và `Đến ngày` = ngày hiện tại, tải lại danh sách theo trang 1. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled)*. |
+| 2 | Xóa bộ lọc | Button | Hệ thống xóa các điều kiện lọc, tải lại danh sách theo điều kiện mặc định. |
 | 3 | Tiếp nhận mới | Button | Nút nằm phía trên bên phải bảng danh sách. Khi người dùng click nút, hệ thống mở **MH02 - Tiếp nhận yêu cầu** ở trạng thái rỗng để nhập mới. |
 | 4 | Click dòng dữ liệu | Row click | Khi người dùng click vào dòng dữ liệu, hệ thống xử lý theo các trường hợp bên dưới. |
 |  |  |  | **TH1 - Bản ghi ở trạng thái `Chờ tiếp nhận` và do người dùng hiện tại tiếp nhận**: Hệ thống mở **MH02 - Tiếp nhận yêu cầu** và tự động điền dữ liệu của bản ghi đó. |
@@ -152,7 +118,7 @@ Hình ảnh giao diện sẽ được cập nhật sau khi có mockup màn Tiế
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Nếu bỏ trống một trong các trường bắt buộc đang hiển thị, vi phạm [BR-VAL-001], hệ thống tô viền đỏ trường lỗi đầu tiên, hiển thị [MSG-ERR-VAL-001] và không cho lưu. |
 |  |  |  | **TH2 - Thêm mới, Loại yêu cầu = `Xác định cơ quan giải quyết bồi thường`**: Hệ thống tự động sinh mã yêu cầu, ghi nhận `Thời điểm tiếp nhận`, lưu thông tin tổng quan và tài liệu đính kèm, tạo timeline tiếp nhận ban đầu, tạo hồ sơ tại phân hệ **Xác định cơ quan giải quyết bồi thường** ở trạng thái `Chờ tiếp nhận`, hiển thị thông báo thành công và quay về **MH01 - Danh sách quản lý các Yêu cầu**. |
 |  |  |  | **TH3 - Thêm mới, Loại yêu cầu = `Yêu cầu bồi thường`**: Hệ thống tự động sinh `Mã vụ việc`, ghi nhận `Thời điểm tiếp nhận`, lưu thông tin tổng quan và tài liệu đính kèm, tạo timeline tiếp nhận ban đầu, tạo hồ sơ tại phân hệ **Giải quyết yêu cầu bồi thường** ở trạng thái `Chờ tiếp nhận`, hiển thị thông báo thành công và quay về **MH01 - Danh sách quản lý các Yêu cầu**. |
-|  |  |  | **TH4 - Chỉnh sửa, dữ liệu hợp lệ**: Hệ thống cập nhật thông tin tổng quan và tài liệu đính kèm của bản ghi hiện tại, giữ nguyên mã đã sinh/`Thời điểm tiếp nhận`/trạng thái `Chờ tiếp nhận`, ghi nhận vào timeline, hiển thị thông báo thành công và quay về **MH01 - Danh sách quản lý các Yêu cầu**. |
+|  |  |  | **TH4 - Chỉnh sửa, dữ liệu hợp lệ**: Hệ thống ghi nhận thông tin cập nhật thông tin, trạng thái `Chờ tiếp nhận`hiển thị thông báo thành công và quay về **MH01 - Danh sách quản lý các Yêu cầu**. |
 
 ---
 |

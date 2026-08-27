@@ -474,7 +474,7 @@
 
         .lookup-modal-table-container {
             max-height: 320px;
-            overflow-x: hidden;
+            overflow-x: auto;
             overflow-y: auto;
         }
 
@@ -1306,8 +1306,10 @@
             border-top: 1px solid var(--border-color);
             padding: 16px 24px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: flex-end;
             gap: 12px;
+            row-gap: 10px;
             z-index: 100;
             box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05), 0 -2px 4px -1px rgba(0, 0, 0, 0.03);
             border-bottom-left-radius: var(--border-radius-md);
@@ -1874,7 +1876,7 @@
                     <div class="form-group">
                         <span class="form-label">Ngày văn bản yêu cầu bồi thường<span class="required">*</span></span>
                         <div class="date-input-wrapper">
-                            <input type="text" class="form-control" id="claimRequestDocDate" placeholder="mm/dd/yyyy">
+                            <input type="text" class="form-control" id="claimRequestDocDate" placeholder="dd/mm/yyyy">
                             <i class="fa-regular fa-calendar-days"></i>
                         </div>
                         <div class="error-message">Đây là trường bắt buộc</div>
@@ -6085,7 +6087,9 @@
             'Chờ ban hành QĐ',
             'Chờ thực thi',
             'Hoãn giải quyết',
-            'Tạm đình chỉ giải quyết'
+            'Tạm đình chỉ giải quyết',
+            'Sung quỹ nhà nước',
+            'Hoàn thành'
         ];
         // Ordered set of statuses from "Đang xác minh thiệt hại" onward, used as the shared threshold for
         // showing Tab 2 (Chi tiết xử lý hồ sơ) and Tab 3 (Phục hồi danh dự) on MH03/MH04.
@@ -6329,8 +6333,11 @@
             claim.timeline = claim.timeline || [];
             claim.reporting = getClaimReport(claim);
             if (!claim.assignedOfficer && CLAIM_PROCESSING_STATES.includes(claim.status)) {
-                const officers = ['Nguyễn Văn Chuyên Viên', 'Trần Thị Chuyên Viên', 'Lê Văn Chuyên Viên'];
-                claim.assignedOfficer = officers[idx % officers.length];
+                // Luôn gán mặc định cho cán bộ đang đăng nhập mặc định (Nguyễn Văn Chuyên Viên) thay vì
+                // xoay vòng theo idx % 3 - tránh trường hợp hồ sơ demo bị gán "ngẫu nhiên" cho cán bộ khác,
+                // khiến isAssignedToOther bật lên và toàn bộ thanh thao tác (Cập nhật xác minh, Hoãn giải
+                // quyết, Tạm đình chỉ/Đình chỉ...) bị thu gọn về chỉ còn nút Đóng một cách không mong muốn.
+                claim.assignedOfficer = 'Nguyễn Văn Chuyên Viên';
             }
             return claim;
         }
@@ -6396,7 +6403,7 @@
             ['#claimRequestDocDate', '#claimRequestDocDate_edit'].forEach(selector => {
                 const el = document.querySelector(selector);
                 if (el && !el._flatpickr) {
-                    flatpickr(el, { dateFormat: "m/d/Y", allowInput: true });
+                    flatpickr(el, { dateFormat: "d/m/Y", allowInput: true });
                 }
             });
         }
@@ -6525,6 +6532,7 @@
             if (st === 'Chờ tiếp nhận' || st === 'Chờ kiểm tra' || st === 'Chờ thụ lý') return 'badge-pending';
             if (st === 'Yêu cầu bổ sung' || st === 'Chờ ban hành QĐ' || st === 'Chờ thực thi') return 'badge-warning';
             if (st === 'Bị từ chối' || st === 'Từ chối thụ lý' || st === 'Thương lượng không thành công' || st === 'Đình chỉ giải quyết') return 'badge-danger';
+            if (st === 'Sung quỹ nhà nước') return 'badge-warning';
             if (SPECIAL_STATUS_PAUSED_STATES.includes(st)) return 'badge-warning';
             return 'badge-info';
         }
@@ -6575,6 +6583,8 @@
                     <option value="Chờ thực thi">Chờ thực thi</option>
                     <option value="Hoãn giải quyết">Hoãn giải quyết</option>
                     <option value="Tạm đình chỉ giải quyết">Tạm đình chỉ giải quyết</option>
+                    <option value="Sung quỹ nhà nước">Sung quỹ nhà nước</option>
+                    <option value="Hoàn thành">Hoàn thành</option>
                 `;
                 sel.value = "";
             }
@@ -6609,20 +6619,29 @@
                 return disabled('fa-solid fa-lock', `Vụ việc được giao cho cán bộ ${item.assignedOfficer}. Bạn chỉ có quyền xem.`);
             }
 
-            if (status === 'Chờ tiếp nhận') {
+            if (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung' || status === 'Chờ nhập liệu') {
+                // Fixed-slot Action Column (Tab 1: Vụ việc chờ tiếp nhận) - always render the 5 slots,
+                // enabling only the action(s) applicable to the row's current status.
+                const canTiepNhan = status === 'Chờ tiếp nhận';
+                const canBoSungHoSo = status === 'Yêu cầu bổ sung';
+                const canCapNhatHoSo = status === 'Chờ nhập liệu';
                 return `
-                    <button class="icon-btn accept" title="Tiếp nhận" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-check-to-slot"></i></button>
-                    <button class="icon-btn supplement" title="Yêu cầu bổ sung" onclick="event.stopPropagation(); triggerRequireAdditionClaim('${item.id}')"><i class="fa-solid fa-circle-question"></i></button>
-                    <button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); triggerRejectClaim('${item.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i></button>
+                    ${canTiepNhan
+                        ? `<button class="icon-btn accept" title="Tiếp nhận" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-check-to-slot"></i></button>`
+                        : disabled('fa-solid fa-check-to-slot', 'Chỉ áp dụng khi vụ việc ở trạng thái Chờ tiếp nhận')}
+                    ${canTiepNhan
+                        ? `<button class="icon-btn supplement" title="Yêu cầu bổ sung" onclick="event.stopPropagation(); triggerRequireAdditionClaim('${item.id}')"><i class="fa-solid fa-circle-question"></i></button>`
+                        : disabled('fa-solid fa-circle-question', 'Chỉ áp dụng khi vụ việc ở trạng thái Chờ tiếp nhận')}
+                    ${canTiepNhan
+                        ? `<button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); triggerRejectClaim('${item.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i></button>`
+                        : disabled('fa-solid fa-ban', 'Chỉ áp dụng khi vụ việc ở trạng thái Chờ tiếp nhận')}
+                    ${canBoSungHoSo
+                        ? `<button class="icon-btn edit" title="Bổ sung hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>`
+                        : disabled('fa-solid fa-file-circle-plus', 'Chỉ áp dụng khi vụ việc ở trạng thái Yêu cầu bổ sung')}
+                    ${canCapNhatHoSo
+                        ? `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`
+                        : disabled('fa-solid fa-pen-to-square', 'Chỉ áp dụng khi vụ việc ở trạng thái Chờ nhập liệu')}
                 `;
-            }
-
-            if (status === 'Yêu cầu bổ sung') {
-                return `<button class="icon-btn edit" title="Bổ sung hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>`;
-            }
-
-            if (status === 'Chờ nhập liệu') {
-                return `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
             }
 
             if (status === 'Chờ kiểm tra') {
@@ -6633,15 +6652,20 @@
                 `;
             }
 
-            if (CLAIM_PROCESSING_STATES.includes(status)) {
-                if (status === 'Từ chối thụ lý') {
-                    return `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                }
-                return `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); showCaseDetail('${item.id}', true)"><i class="fa-solid fa-pen-to-square"></i></button>`;
-            }
-
-            if (status === 'Chờ thụ lý') {
-                return disabled('fa-solid fa-clock', 'Chờ lãnh đạo thụ lý. Cán bộ theo dõi bằng cách chọn dòng.');
+            if (status === 'Chờ thụ lý' || CLAIM_PROCESSING_STATES.includes(status)) {
+                // Fixed-slot Action Column (Tab 3: Vụ việc chờ xử lý) - always render the 3 slots.
+                // Thụ lý hồ sơ / Từ chối thụ lý are Lãnh đạo-only actions, always disabled for Chuyên viên.
+                // Cập nhật hồ sơ is enabled only while the row is in an editable processing status.
+                const isTuChoiThuLy = status === 'Từ chối thụ lý';
+                const isTerminal = status === 'Hoàn thành' || status === 'Sung quỹ nhà nước';
+                const canCapNhatHoSo = CLAIM_PROCESSING_STATES.includes(status) && !isTerminal;
+                return `
+                    ${disabled('fa-solid fa-circle-check', 'Chỉ Lãnh đạo mới có quyền thụ lý hồ sơ')}
+                    ${disabled('fa-solid fa-ban', 'Chỉ Lãnh đạo mới có quyền từ chối thụ lý hồ sơ')}
+                    ${canCapNhatHoSo
+                        ? `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); ${isTuChoiThuLy ? `openInlineClaimForm('${item.id}')` : `showCaseDetail('${item.id}', true)`}"><i class="fa-solid fa-pen-to-square"></i></button>`
+                        : disabled('fa-solid fa-pen-to-square', status === 'Chờ thụ lý' ? 'Chờ lãnh đạo thụ lý. Cán bộ theo dõi bằng cách chọn dòng.' : 'Không áp dụng cho trạng thái hiện tại')}
+                `;
             }
 
             return disabled('fa-solid fa-circle-info', 'Trạng thái này chỉ cho phép xem bằng cách chọn dòng.');
@@ -7385,12 +7409,21 @@
             formPanel.style.display = 'flex';
 
             editingClaimId = id;
+            const claim = id ? claimsList.find(c => c.id === id) : null;
             const mainTitle = document.querySelector('.inline-form-title');
             if (mainTitle) {
-                mainTitle.innerHTML = id ? `<i class="fa-solid fa-keyboard"></i> NHẬP HỒ SƠ VỤ VIỆC` : `<i class="fa-solid fa-file-signature"></i> NHẬP HỒ SƠ VỤ VIỆC`;
+                let formTitleText = 'NHẬP LIỆU HỒ SƠ VỤ VIỆC';
+                if (claim) {
+                    if (claim.status === 'Chờ tiếp nhận') {
+                        formTitleText = 'NHẬP LIỆU HỒ SƠ VỤ VIỆC';
+                    } else if (claim.status === 'Yêu cầu bổ sung') {
+                        formTitleText = 'BỔ SUNG HỒ SƠ VỤ VIỆC';
+                    } else {
+                        formTitleText = 'CẬP NHẬT HỒ SƠ VỤ VIỆC';
+                    }
+                }
+                mainTitle.innerHTML = `<i class="fa-solid fa-keyboard"></i> ${formTitleText}`;
             }
-
-            const claim = id ? claimsList.find(c => c.id === id) : null;
 
             if (claim) {
                 if (claim.status === 'Từ chối thụ lý' || claim.status === 'Bị từ chối') {
@@ -9273,6 +9306,10 @@
                 case 'dinh chi giai quyet':
                     // Only Close button
                     break;
+
+                case 'sung quy nha nuoc':
+                    // Only Close button
+                    break;
             }
 
             bar.innerHTML = buttonsHtml + (showCloseButton ? closeBtnHtml : '');
@@ -9404,9 +9441,10 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Ngày văn bản yêu cầu bồi thường *</span>
                                 <div class="date-input-wrapper">
-                                    <input type="text" class="form-control" id="claimRequestDocDate_edit" value="${claim.requestDocDate || ''}" placeholder="mm/dd/yyyy">
+                                    <input type="text" class="form-control" id="claimRequestDocDate_edit" value="${claim.requestDocDate || ''}" placeholder="dd/mm/yyyy">
                                     <i class="fa-regular fa-calendar-days"></i>
                                 </div>
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Pháp luật áp dụng để giải quyết bồi thường *</span>
@@ -9416,6 +9454,7 @@
                                     <option value="Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003" ${claim.applicableLaw === 'Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003' ? 'selected' : ''}>Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003</option>
                                     <option value="Nghị định số 47-CP ngày 03/05/1997" ${claim.applicableLaw === 'Nghị định số 47-CP ngày 03/05/1997' ? 'selected' : ''}>Nghị định số 47-CP ngày 03/05/1997</option>
                                 </select>
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
                         <!-- II. THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG -->
@@ -9424,7 +9463,7 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Họ và tên người yêu cầu bồi thường *</span>
                                 <input type="text" class="form-control" id="claimNYCName_edit" value="${claim.nyc}">
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Tư cách người yêu cầu *</span>
@@ -9448,7 +9487,7 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Ngày tháng năm sinh *</span>
                                 <input type="text" class="form-control" id="claimNYCBirth_edit" value="${claim.nycBirth || ''}" placeholder="dd/mm/yyyy">
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Trạng thái người bị thiệt hại *</span>
@@ -9460,7 +9499,7 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Số điện thoại liên hệ *</span>
                                 <input type="text" class="form-control" id="claimNYCPhone_edit" value="${claim.nycPhone || ''}">
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
                         <div class="grid-3-cols" style="margin-bottom:12px;">
@@ -9479,19 +9518,19 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Số giấy tờ thân nhân *</span>
                                 <input type="text" class="form-control" id="claimNYCCardNo_edit" value="${claim.nycCardNo || ''}">
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
                         <div class="grid-3-cols" style="margin-bottom:12px;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Ngày cấp *</span>
                                 <input type="text" class="form-control" id="claimNYCCardDate_edit" value="${claim.nycCardDate || ''}" placeholder="dd/mm/yyyy">
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Nơi cấp *</span>
                                 <input type="text" class="form-control" id="claimNYCCardPlace_edit" value="${claim.nycCardPlace || ''}">
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Quốc gia *</span>
@@ -9505,12 +9544,12 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Tỉnh / Thành phố *</span>
                                 <input type="text" class="form-control" id="claimNYCCity_edit" value="${claim.nycTinhThanh || ''}">
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Địa chỉ chi tiết *</span>
                                 <input type="text" class="form-control" id="claimNYCAddressDetail_edit" value="${claim.nycAddressDetail || ''}">
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
@@ -9520,12 +9559,12 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Hành vi gây thiệt hại của người thi hành công vụ *</span>
                                 <textarea class="form-control" id="claimHanhVi_edit" rows="2">${claim.hanhVi || ''}</textarea>
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại *</span>
                                 <textarea class="form-control" id="claimNhanQua_edit" rows="2">${claim.nhanQua || ''}</textarea>
-                                
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
@@ -9631,17 +9670,17 @@
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <span class="form-label">Họ và tên người nhận *</span>
                                         <input type="text" class="form-control" id="claimRecName_edit" value="${claim.advanceRecName || claim.nyc}">
-                                        
+                                        <div class="error-message">Đây là trường bắt buộc</div>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <span class="form-label">Giấy tờ thân nhân người nhận *</span>
                                         <input type="text" class="form-control" id="claimRecCard_edit" value="${claim.advanceRecCard || claim.nycCardNo}">
-                                        
+                                        <div class="error-message">Đây là trường bắt buộc</div>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <span class="form-label">Địa chỉ người nhận *</span>
                                         <input type="text" class="form-control" id="claimRecAddress_edit" value="${claim.advanceRecAddress || claim.nycAddressDetail}">
-                                        
+                                        <div class="error-message">Đây là trường bắt buộc</div>
                                     </div>
                                 </div>
                                 
@@ -9662,21 +9701,22 @@
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <span class="form-label">Chủ tài khoản *</span>
                                         <input type="text" class="form-control" id="claimRecBankUser_edit" value="${claim.advanceBankUser || ''}">
-                                        
+                                        <div class="error-message">Đây là trường bắt buộc</div>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <span class="form-label">Số tài khoản *</span>
                                         <input type="text" class="form-control" id="claimRecBankAccount_edit" value="${claim.advanceBankAccount || ''}">
-                                        
+                                        <div class="error-message">Đây là trường bắt buộc</div>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <span class="form-label">Tên ngân hàng *</span>
                                         <input type="text" class="form-control" id="claimRecBankName_edit" value="${claim.advanceBankName || ''}">
-                                        
+                                        <div class="error-message">Đây là trường bắt buộc</div>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <span class="form-label">Chi nhánh *</span>
                                         <input type="text" class="form-control" id="claimRecBankBranch_edit" value="${claim.advanceBankBranch || ''}">
+                                        <div class="error-message">Đây là trường bắt buộc</div>
                                         
                                     </div>
                                 </div>
@@ -10064,7 +10104,11 @@
 
             // Remove previous error states
             const inputs = document.querySelectorAll('#readOnlyClaimInfo .is-invalid');
-            inputs.forEach(el => el.classList.remove('is-invalid'));
+            inputs.forEach(el => {
+                el.classList.remove('is-invalid');
+                const errMsg = el.closest('.form-group') ? el.closest('.form-group').querySelector('.error-message') : null;
+                if (errMsg) errMsg.style.display = 'none';
+            });
 
             if (submit) {
                 let firstErrEl = null;
@@ -10072,6 +10116,8 @@
                     const el = document.getElementById(id);
                     if (el && !el.value.trim()) {
                         el.classList.add('is-invalid');
+                        const errMsg = el.closest('.form-group') ? el.closest('.form-group').querySelector('.error-message') : null;
+                        if (errMsg) errMsg.style.display = 'block';
                         if (!firstErrEl) firstErrEl = el;
                         return false;
                     }
@@ -10109,7 +10155,6 @@
 
                 if (!isValid) {
                     if (firstErrEl) firstErrEl.focus();
-                    showToast("Vui lòng nhập đầy đủ các trường bắt buộc màu đỏ!", "error");
                     return;
                 }
             }
@@ -10976,6 +11021,56 @@
                 if (accItem) accItem.style.display = 'none';
             } else {
                 if (accItem) accItem.style.display = 'block';
+                if (claim.status === 'Sung quỹ nhà nước') {
+                    // Khối B: Thông tin sung quỹ nhà nước (chỉ đọc) - SRS §4.3.3.1.5.2, Khối 6
+                    ttRead.innerHTML = `
+                        <div style="background-color: #FFFBEB; border: 1px solid #FDE68A; padding: 12px; border-radius: 6px; margin-bottom: 12px; font-size: 12.5px; color: #92400E; line-height: 1.5; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 14px;"></i>
+                            <span>Quá hạn 03 năm kể từ ngày nhận thông báo mà người yêu cầu không đến nhận tiền bồi thường. Khoản tiền bồi thường đã được cơ quan nộp sung quỹ nhà nước.</span>
+                        </div>
+                        <div class="fund-card-compact" style="border: 1px solid #FDE68A; border-radius: 10px; background: #FFFBEB; padding: 16px 18px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                <span style="font-weight: 700; color: #92400E; font-size: 13px;"><i class="fa-solid fa-building-columns" style="margin-right: 6px;"></i>Thông tin sung quỹ nhà nước</span>
+                                <span class="badge badge-warning" style="font-size: 11px;">Sung quỹ nhà nước</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; margin-bottom: 10px;">
+                                <div>
+                                    <span style="font-size: 11px; color: #64748B; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Ngày người yêu cầu nhận thông báo</span>
+                                    <span style="font-size: 13px; font-weight: 600; color: #1E293B;">${claim.sungQuyNoticeDate || '-'}</span>
+                                </div>
+                                <div>
+                                    <span style="font-size: 11px; color: #64748B; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Tệp chứng minh đã thông báo</span>
+                                    <span style="font-size: 13px; font-weight: 600; color: #1D4ED8;">${claim.sungQuyNoticeFile ? `<a href="javascript:void(0)" style="text-decoration: underline;">${claim.sungQuyNoticeFile}</a>` : '-'}</span>
+                                </div>
+                            </div>
+                            <div style="border-top: 1px dashed #FDE68A; padding-top: 10px; margin-top: 4px;">
+                                <div style="font-weight: 700; color: #92400E; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Thông tin sung quỹ nhà nước</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px;">
+                                    <div>
+                                        <span style="font-size: 11px; color: #64748B; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Số chứng từ / quyết định sung quỹ</span>
+                                        <span style="font-size: 13px; font-weight: 600; color: #1E293B;">${claim.sungQuyDocNo || '-'}</span>
+                                    </div>
+                                    <div>
+                                        <span style="font-size: 11px; color: #64748B; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Ngày sung quỹ</span>
+                                        <span style="font-size: 13px; font-weight: 600; color: #1E293B;">${claim.sungQuyDate || '-'}</span>
+                                    </div>
+                                    <div>
+                                        <span style="font-size: 11px; color: #64748B; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Số tiền sung quỹ (VNĐ)</span>
+                                        <span style="font-size: 13px; font-weight: 700; color: #B45309;">${(claim.sungQuyAmount || claim.totalNum || 0).toLocaleString('vi-VN')} đ</span>
+                                    </div>
+                                    <div>
+                                        <span style="font-size: 11px; color: #64748B; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Tài khoản trích nộp</span>
+                                        <span style="font-size: 13px; font-weight: 600; color: #1E293B;">${claim.sungQuyAccount || '-'}</span>
+                                    </div>
+                                    <div>
+                                        <span style="font-size: 11px; color: #64748B; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Mã giao dịch</span>
+                                        <span style="font-size: 13px; font-weight: 600; color: #1E293B;">${claim.sungQuyTransactionCode || '-'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
                 const requests = getClaimFundRequests(claim);
                 if (requests.length === 0) {
                     ttRead.innerHTML = `<div style="font-size:12.5px; color:var(--text-muted); font-style:italic;">Không tìm thấy thông tin kinh phí liên kết.</div>`;
@@ -11077,6 +11172,7 @@
                             ${cardsHtml}
                         </div>
                     `;
+                }
                 }
             }
 
@@ -12145,7 +12241,6 @@
                     firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     firstInvalid.focus();
                 }
-                showToast("Vui lòng nhập đủ các trường bắt buộc để ban hành thông báo!", "error");
                 return;
             }
 
@@ -12210,7 +12305,6 @@
 
             if (!receiveDate) {
                 validatePhddInput('editPhddStep2ReceiveDate', true);
-                showToast("Vui lòng nhập Ngày nhận văn bản ý kiến phản hồi!", "error");
                 document.getElementById('editPhddStep2ReceiveDate').focus();
                 return;
             }
@@ -12247,7 +12341,6 @@
                     firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     firstInvalid.focus();
                 }
-                showToast("Vui lòng điền đầy đủ thông tin phản hồi bắt buộc!", "error");
                 return;
             }
 
@@ -12437,7 +12530,6 @@
                     firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     firstInvalid.focus();
                 }
-                showToast("Vui lòng nhập đủ các trường bắt buộc!", "error");
                 return;
             }
 
@@ -12626,7 +12718,6 @@
                         firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         firstInvalid.focus();
                     }
-                    showToast("Vui lòng nhập đủ các trường bắt buộc!", "error");
                     return;
                 }
 
@@ -12890,7 +12981,6 @@
                         firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         firstInvalid.focus();
                     }
-                    showToast("Vui lòng nhập đủ các trường bắt buộc!", "error");
                     return;
                 }
 
@@ -13488,8 +13578,6 @@
                 });
 
                 if (hasValidationErrors) {
-                    showToast("Vui lòng điền đầy đủ các thông tin bắt buộc trong phần chi tiết xác minh thiệt hại!", "danger");
-
                     // Auto-expand the collapsible row containing the first error
                     if (firstInvalidIdx !== -1) {
                         const detailRow = document.getElementById(`xmDetailRow_${firstInvalidIdx}`);
@@ -13933,9 +14021,12 @@
             if ((document.getElementById('specialStatusSignMode')?.value || '') === 'Ký bên ngoài') {
                 requiredIds.push('specialStatusExternalSigner');
             }
-            const isValid = requiredIds.map(validateSpecialStatusField).every(Boolean);
+            const validationResults = requiredIds.map(validateSpecialStatusField);
+            const isValid = validationResults.every(Boolean);
             if (!isValid) {
-                showToast("Vui lòng nhập đầy đủ thông tin bắt buộc trong khối Hoãn giải quyết.", "error");
+                const firstInvalidId = requiredIds[validationResults.indexOf(false)];
+                const firstInvalidEl = document.getElementById(firstInvalidId);
+                if (firstInvalidEl) firstInvalidEl.focus();
                 return;
             }
 
@@ -14065,16 +14156,20 @@
 
             const requiredIds = ['continueSpecialIssuingUnit', 'continueSpecialDocumentBook', 'continueSpecialSignMode', 'continueSpecialSigner', 'continueSpecialDocNo', 'continueSpecialDocDate', 'continueSpecialReason'];
             let isValid = true;
+            let firstInvalidEl = null;
             requiredIds.forEach(fieldId => {
                 const field = document.getElementById(fieldId);
                 const err = field && field.parentElement.querySelector('.error-message');
                 const empty = !field || !field.value.trim();
                 if (field) field.classList.toggle('is-invalid', empty);
                 if (err) err.style.display = empty ? 'block' : 'none';
-                if (empty) isValid = false;
+                if (empty) {
+                    isValid = false;
+                    if (!firstInvalidEl) firstInvalidEl = field;
+                }
             });
             if (!isValid) {
-                showToast('Vui lòng nhập đầy đủ thông tin bắt buộc.', 'error');
+                if (firstInvalidEl) firstInvalidEl.focus();
                 return;
             }
 
@@ -14606,14 +14701,14 @@
     <div id="continueSpecialStatusOverlay" class="confirm-modal-overlay">
         <div class="sticky-modal-container" style="width: 720px; max-width: 96%;">
             <div class="confirm-modal-header"
-                style="color: var(--primary-light); background-color: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;">
+                style="color: var(--primary-light); background-color: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px 24px;">
                 <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600;">
                     <i class="fa-solid fa-play"></i> Tiếp tục giải quyết
                 </div>
                 <span onclick="closeContinueSpecialStatusModal()"
                     style="cursor: pointer; font-size: 20px; font-weight: bold; color: #64748b; line-height: 1;">&times;</span>
             </div>
-            <div class="sticky-modal-body" style="padding: 20px;">
+            <div class="sticky-modal-body" style="padding: 24px;">
                 <input type="hidden" id="continueSpecialClaimId">
                 <div class="grid-3-cols" style="margin-bottom:12px;">
                     <div class="form-group">
@@ -14677,7 +14772,7 @@
                 </div>
             </div>
             <div class="confirm-modal-footer"
-                style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border-color);background:#f8fafc;">
+                style="display:flex;justify-content:flex-end;gap:8px;padding:16px 24px 24px 24px;border-top:1px solid var(--border-color);background:#f8fafc;">
                 <button class="btn btn-secondary btn-sm" onclick="closeContinueSpecialStatusModal()">Hủy bỏ</button>
                 <button class="btn btn-success btn-sm" onclick="submitContinueSpecialStatus()"><i class="fa-solid fa-check"></i> Tiếp tục giải quyết</button>
             </div>
@@ -14688,14 +14783,14 @@
     <div id="officerSelectOverlay" class="confirm-modal-overlay">
         <div class="sticky-modal-container" style="width: 760px; max-width: 96%;">
             <div class="confirm-modal-header"
-                style="color: var(--primary-light); background-color: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;">
+                style="color: var(--primary-light); background-color: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px 24px;">
                 <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600;">
                     <i class="fa-solid fa-user-tie"></i> Cử người giải quyết hồ sơ
                 </div>
                 <span onclick="closeOfficerSelectModal(false)"
                     style="cursor: pointer; font-size: 20px; font-weight: bold; color: #64748b; line-height: 1;">&times;</span>
             </div>
-            <div class="sticky-modal-body" style="padding: 20px;">
+            <div class="sticky-modal-body" style="padding: 24px;">
                 <p style="margin-bottom: 12px; font-weight: 500; color: #334155; font-size: 13.5px;">
                     Nhập thông tin cán bộ được cử giải quyết hồ sơ bồi thường và thông tin Quyết định cử người giải quyết:
                 </p>
@@ -14764,7 +14859,7 @@
                 </div>
             </div>
             <div class="confirm-modal-footer"
-                style="padding: 16px 20px; display: flex; justify-content: flex-end; gap: 10px; background-color: #f8fafc; border-top: 1px solid var(--border-color);">
+                style="padding: 16px 24px 24px 24px; display: flex; justify-content: flex-end; gap: 10px; background-color: #f8fafc; border-top: 1px solid var(--border-color);">
                 <button class="btn btn-secondary btn-sm" onclick="closeOfficerSelectModal(false)">Hủy bỏ</button>
                 <button class="btn btn-success btn-sm" onclick="closeOfficerSelectModal(true)"
                     style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-sm); font-weight: 500; cursor: pointer;">
@@ -14776,16 +14871,16 @@
 
     <!-- Advanced Search: Xác định cơ quan -->
     <div id="xdAgencySearchOverlay" class="confirm-modal-overlay">
-        <div class="sticky-modal-container" style="width: 980px; max-width: 96%;">
+        <div class="sticky-modal-container" style="width: 850px; max-width: 96%;">
             <div class="confirm-modal-header"
-                style="color:#1e3a8a; background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:16px 20px;">
+                style="color:#1e3a8a; background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
                 <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600;">
                     <i class="fa-solid fa-building-circle-check"></i> Tìm kiếm vụ việc xác định cơ quan giải quyết bồi thường
                 </div>
                 <span onclick="closeXdAgencySearchModal()"
                     style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
             </div>
-            <div class="sticky-modal-body" style="padding:20px;">
+            <div class="sticky-modal-body" style="padding:24px;">
                 <div class="grid-4-cols" style="gap:12px; margin-bottom:14px;">
                     <div>
                         <span class="form-label">Mã vụ việc</span>
@@ -14839,7 +14934,7 @@
                 </div>
             </div>
             <div class="confirm-modal-footer"
-                style="padding:16px 20px; display:flex; justify-content:flex-end; gap:10px; background-color:#f8fafc; border-top:1px solid var(--border-color);">
+                style="padding:16px 24px 24px 24px; display:flex; justify-content:flex-end; gap:10px; background-color:#f8fafc; border-top:1px solid var(--border-color);">
                 <button class="btn btn-secondary btn-sm" onclick="closeXdAgencySearchModal()">Hủy bỏ</button>
             </div>
         </div>
@@ -14847,16 +14942,16 @@
 
     <!-- Advanced Search: Vụ việc gốc liên quan -->
     <div id="originClaimSearchOverlay" class="confirm-modal-overlay">
-        <div class="sticky-modal-container" style="width: 1100px; max-width: 96%;">
+        <div class="sticky-modal-container" style="width: 850px; max-width: 96%;">
             <div class="confirm-modal-header"
-                style="color:#b45309; background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:16px 20px;">
+                style="color:#b45309; background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
                 <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600;">
                     <i class="fa-solid fa-link"></i> Tìm kiếm vụ việc yêu cầu bồi thường gốc
                 </div>
                 <span onclick="closeOriginClaimSearchModal()"
                     style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
             </div>
-            <div class="sticky-modal-body" style="padding:20px;">
+            <div class="sticky-modal-body" style="padding:24px;">
                 <div class="grid-4-cols" style="gap:12px; margin-bottom:14px;">
                     <div>
                         <span class="form-label">Mã vụ việc</span>
@@ -14912,7 +15007,7 @@
                 </div>
             </div>
             <div class="confirm-modal-footer"
-                style="padding:16px 20px; display:flex; justify-content:flex-end; gap:10px; background-color:#f8fafc; border-top:1px solid var(--border-color);">
+                style="padding:16px 24px 24px 24px; display:flex; justify-content:flex-end; gap:10px; background-color:#f8fafc; border-top:1px solid var(--border-color);">
                 <button class="btn btn-secondary btn-sm" onclick="closeOriginClaimSearchModal()">Hủy bỏ</button>
             </div>
         </div>
@@ -14920,9 +15015,9 @@
 
     <!-- Custom Rejection Reason Modal HTML -->
     <div id="rejectionReasonOverlay" class="confirm-modal-overlay">
-        <div class="sticky-modal-container" style="width: 500px; max-width: 95%;">
+        <div class="sticky-modal-container" style="width: 650px; max-width: 95%;">
             <div id="rejectionModalHeader" class="confirm-modal-header"
-                style="color: var(--danger-color); background-color: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;">
+                style="color: var(--danger-color); background-color: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px 24px;">
                 <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600;">
                     <i id="rejectionModalIcon" class="fa-solid fa-ban"></i> <span id="rejectionModalTitle">Yêu cầu nhập
                         lý do từ chối</span>
@@ -14930,7 +15025,7 @@
                 <span onclick="closeRejectionModal(false)"
                     style="cursor: pointer; font-size: 20px; font-weight: bold; color: #64748b; line-height: 1;">&times;</span>
             </div>
-            <div class="sticky-modal-body" style="padding: 20px;">
+            <div class="sticky-modal-body" style="padding: 24px;">
                 <div class="form-group" style="margin-bottom: 10px;">
                     <label class="form-label"
                         style="font-weight: 600; color: #334155; margin-bottom: 6px; display: block;"
@@ -14944,7 +15039,7 @@
                 </div>
             </div>
             <div class="confirm-modal-footer"
-                style="padding: 16px 20px; display: flex; justify-content: flex-end; gap: 10px; background-color: #f8fafc; border-top: 1px solid var(--border-color);">
+                style="padding: 16px 24px 24px 24px; display: flex; justify-content: flex-end; gap: 10px; background-color: #f8fafc; border-top: 1px solid var(--border-color);">
                 <button class="btn btn-secondary btn-sm" onclick="closeRejectionModal(false)">Hủy bỏ</button>
                 <button id="rejectionModalConfirmBtn" class="btn btn-danger btn-sm" onclick="closeRejectionModal(true)"
                     style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-sm); font-weight: 500; cursor: pointer;">

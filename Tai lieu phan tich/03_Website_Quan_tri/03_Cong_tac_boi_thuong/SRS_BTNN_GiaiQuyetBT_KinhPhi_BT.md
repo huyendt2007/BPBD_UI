@@ -35,18 +35,18 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Khối tiêu đề trang** | | | | Control UI: Thanh tiêu đề trang.<br>- Hiển thị tên màn hình "Quản lý kinh phí bồi thường Nhà nước".<br>- Badge số đếm cạnh tiêu đề: hiển thị số hồ sơ cần xử lý theo vai trò đang chọn (Lãnh đạo: đếm hồ sơ "Chờ duyệt"; Chuyên viên: đếm hồ sơ "Chờ lập đề nghị", "Bị từ chối", "Chờ chi trả", "Chi trả một phần"). |
+| **Khối tiêu đề trang** | | | | Control UI: Thanh tiêu đề trang.<br>- Hiển thị tên màn hình "Quản lý kinh phí bồi thường Nhà nước".<br>- Badge số đếm cạnh tiêu đề: hiển thị số hồ sơ cần xử lý theo vai trò đang chọn (Lãnh đạo: đếm hồ sơ "Chờ duyệt"; Chuyên viên: đếm hồ sơ "Chờ lập đề nghị", "Bị từ chối", "Chờ chi trả"). |
 | Quyền xem Cán bộ | Enum(String(50)) | Không | Chuyên viên lập đề xuất | Control UI: Hộp chọn vai trò demo ở góc phải tiêu đề trang, gồm "Chuyên viên lập đề xuất" và "Lãnh đạo phê duyệt".<br>- Chuyển đổi vai trò làm thay đổi bộ nút Thao tác hiển thị trên lưới dữ liệu và số đếm ở badge tiêu đề. |
 | **Khối chỉ số ngân sách** | | | | Control UI: 4 thẻ thống kê phía trên bộ lọc tìm kiếm. |
 | Tổng ngân sách được giao năm | Decimal(18,0) | \- | \- | Chỉ đọc. Hiển thị tổng ngân sách được giao trong năm hiện tại (VNĐ). |
-| Đã cấp phát thực tế | Decimal(18,0) | \- | \- | Chỉ đọc. Tự động tính tổng số tiền các đề nghị cấp kinh phí bồi thường (không tính tạm ứng) ở trạng thái "Hoàn thành", "Chờ chi trả", "Chi trả một phần" hoặc "Đã sung quỹ". |
-| Kinh phí tạm ứng đang cấp | Decimal(18,0) | \- | \- | Chỉ đọc. Tự động tính tổng số tiền các đề nghị tạm ứng ở trạng thái "Hoàn thành", "Chờ chi trả", "Chi trả một phần" hoặc "Đã sung quỹ". |
+| Đã cấp phát thực tế | Decimal(18,0) | \- | \- | Chỉ đọc. Tự động tính tổng số tiền các đề nghị cấp kinh phí bồi thường (không tính tạm ứng) ở trạng thái "Hoàn thành", "Chờ chi trả" hoặc "Sung quỹ nhà nước". |
+| Kinh phí tạm ứng đang cấp | Decimal(18,0) | \- | \- | Chỉ đọc. Tự động tính tổng số tiền các đề nghị tạm ứng ở trạng thái "Hoàn thành", "Chờ chi trả" hoặc "Sung quỹ nhà nước". |
 | Kinh phí còn dư dự phòng | Decimal(18,0) | \- | \- | Chỉ đọc. Bằng Tổng ngân sách được giao trừ Đã cấp phát thực tế và Kinh phí tạm ứng đang cấp. |
 | **Bộ lọc tìm kiếm** | | | | |
 | Mã đề xuất | String(50) | Không | Trống | Tìm kiếm gần đúng theo mã đề xuất kinh phí bồi thường. |
 | Loại đề nghị | Enum(String(50)) | Không | Tất cả | Lựa chọn loại đề nghị gồm:<br>+ Tất cả<br>+ Đề nghị tạm ứng<br>+ Đề nghị cấp kinh phí bồi thường |
 | Mã vụ việc gốc | String(50) | Không | Trống | Tìm kiếm gần đúng theo mã vụ việc yêu cầu bồi thường liên kết. |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Lựa chọn trạng thái của đề xuất gồm:<br>+ Tất cả<br>+ Chờ lập đề nghị<br>+ Chờ duyệt<br>+ Bị từ chối<br>+ Chờ chi trả<br>+ Chi trả một phần<br>+ Đã sung quỹ<br>+ Hoàn thành<br>+ Chưa hoàn thành chi trả |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Lựa chọn trạng thái của đề xuất gồm:<br>+ Tất cả<br>+ Chờ lập đề nghị<br>+ Chờ duyệt<br>+ Chờ chi trả<br>+ Hoàn thành<br>+ Sung quỹ nhà nước<br>+ Bị từ chối |
 | Người yêu cầu | String(100) | Không | Trống | Tìm kiếm gần đúng theo họ tên người yêu cầu bồi thường. |
 | Cán bộ đề xuất | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên cán bộ lập đề xuất. |
 | Từ ngày | Date | Không | Đầu tháng hiện tại | Định dạng `dd/mm/yyyy`. Chỉ hiển thị ngày nhỏ hơn ngày hiện tại. [BR-VAL-008] |
@@ -62,7 +62,7 @@
 | Số tiền đề nghị (VNĐ) | Decimal(18,0) | \- | \- | Chỉ đọc. Số tiền đề nghị hiển thị dạng phân cách hàng ngàn (VNĐ). |
 | Cán bộ xử lý | String(255) | \- | \- | Chỉ đọc. Hiển thị tên cán bộ lập/cập nhật đề nghị gần nhất. |
 | Ngày đề nghị | Date | \- | \- | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
-| Hạn nhận / Sung quỹ | String(255) | \- | \- | Chỉ đọc. Hiển thị `-` khi chưa có thông tin thông báo nhận kinh phí. Khi đã có ngày nhận thông báo, hiển thị hạn nhận kinh phí bằng ngày nhận thông báo cộng 3 năm. Nếu khoản chi quá hạn 3 năm và còn số tiền chưa chi trả ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần", hiển thị số ngày quá hạn và số tiền còn phải chi. Nếu trạng thái là "Đã sung quỹ", hiển thị thông tin đã sung quỹ và ngày sung quỹ. |
+| Hạn nhận / Sung quỹ | String(255) | \- | \- | Chỉ đọc. Hiển thị `-` khi chưa có thông tin thông báo nhận kinh phí. Khi đã có ngày nhận thông báo, hiển thị hạn nhận kinh phí bằng ngày nhận thông báo cộng 3 năm. Nếu khoản chi quá hạn 3 năm và còn số tiền chưa chi trả ở trạng thái "Chờ chi trả", hiển thị số ngày quá hạn và số tiền còn phải chi. Nếu trạng thái là "Sung quỹ nhà nước", hiển thị thông tin đã sung quỹ và ngày sung quỹ. |
 | Trạng thái | Enum(String(50)) | \- | \- | Chỉ đọc. Hiển thị trạng thái tương ứng dưới dạng badge màu sắc. |
 | Thao tác | - | \- | \- | Control UI: Cột hiển thị các icon thao tác theo cơ chế vị trí cố định (icon luôn hiện diện đúng vị trí theo vai trò, chỉ khóa mờ 35% khi không khả dụng theo trạng thái hồ sơ hiện tại, không ẩn/hiện).<br>- Không có icon "Xem" riêng trong cột này; xem chi tiết thực hiện bằng cách nhấp vào dòng dữ liệu (xem chức năng #5).<br>- Chi tiết từng icon thao tác theo vai trò và điều kiện khả dụng được đặc tả tại bảng Chức năng trên màn hình bên dưới (chức năng #6 đến #12). |
 
@@ -77,14 +77,14 @@
 | 2 | Xóa bộ lọc | Nút | Người dùng nhấn nút Xóa bộ lọc.<br>+ Hệ thống xóa toàn bộ giá trị tìm kiếm đã nhập, khôi phục ngày tháng về mặc định (Từ ngày: đầu tháng, Đến ngày: hôm nay).<br>+ Tải lại toàn bộ lưới dữ liệu mặc định. |
 | 3 | Kết xuất Excel | Nút | Trường hợp lưới dữ liệu có bản ghi:<br>+ Thực hiện kết xuất danh sách dữ liệu hiện tại ra file định dạng Excel theo mẫu.<br>+ Ghi log kết xuất dữ liệu vào nhật ký hệ thống [III.6]. |
 | | | | Trường hợp lưới dữ liệu rỗng:<br>+ Vi phạm quy tắc [BR-EXP-040].<br>+ Hiển thị thông báo lỗi [MSG-WRN-SYS-001] và không tải file. |
-| 4 | Xem khoản cần xử lý | Nút cảnh báo | Hiển thị khi hệ thống phát hiện có khoản chi đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái thuộc "Chờ chi trả" hoặc "Chi trả một phần". Khi chọn, hệ thống chuyển bộ lọc trạng thái sang "Chưa hoàn thành chi trả" và chỉ hiển thị danh sách khoản chi cần xử lý sung quỹ. |
+| 4 | Xem khoản cần xử lý | Nút cảnh báo | Khi người dùng tích chọn / bấm bộ lọc nhanh "Xem khoản cần xử lý": Hệ thống thực hiện lọc và chỉ hiển thị danh sách các bản ghi thỏa mãn đồng thời điều kiện: Trạng thái đề nghị là "Chờ chi trả" VÀ đã quá hạn 03 năm kể từ ngày người yêu cầu nhận thông báo chi trả mà chưa đến nhận tiền, để Cán bộ kịp thời theo dõi và lập thủ tục Sung quỹ nhà nước. |
 | 5 | Xem | Row Click | Nhấp chọn row click ở bất kỳ trạng thái nào để mở Màn hình Xem chi tiết đề nghị bồi thường/Tạm ứng [UC450_456.01.MH03] ở chế độ chỉ đọc. |
 | 6 | Lập đề nghị | Icon (Lưới) | Nhấp chọn icon Lập đề nghị (chỉ khả dụng với trạng thái "Chờ lập đề nghị").<br>+ Mở Màn hình Lập đề nghị cấp kinh phí/Tạm ứng [UC450_456.01.MH02] ở chế độ biên tập. |
 | 7 | Cập nhật đề nghị | Icon (Lưới) | Nhấp chọn icon Cập nhật (chỉ khả dụng với trạng thái "Bị từ chối").<br>+ Mở Màn hình Lập đề nghị cấp kinh phí/Tạm ứng [UC450_456.01.MH02] nạp sẵn dữ liệu cũ, tự động cuộn xuống và focus vào ô "Ý kiến phê duyệt/Lý do từ chối" của Lãnh đạo. |
-| 8 | Cập nhật chi trả | Icon (Lưới) | Trường hợp không hợp lệ: Khoản kinh phí không ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần". Hệ thống hiển thị icon dạng không khả dụng và không cho phép thao tác. |
-| | | | Trường hợp hợp lệ: Nhấp chọn icon Cập nhật chi trả với khoản kinh phí ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần". Hệ thống mở Màn hình Cập nhật kết quả chi trả thực tế [UC450_456.01.MH05] ở chế độ biên tập. |
-| 9 | Sung quỹ Nhà nước | Icon (Lưới) | Trường hợp không hợp lệ: Khoản kinh phí chưa quá hạn 3 năm, không còn số tiền chưa chi trả hoặc trạng thái không thuộc "Chờ chi trả"/"Chi trả một phần". Hệ thống hiển thị icon dạng không khả dụng và không cho phép thao tác. |
-| | | | Trường hợp hợp lệ: Khoản kinh phí đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái thuộc "Chờ chi trả" hoặc "Chi trả một phần". Hệ thống mở Màn hình Xem chi tiết đề nghị bồi thường/Tạm ứng [UC450_456.01.MH03], hiển thị khối Thông tin sung quỹ Nhà nước để cán bộ nhập và hoàn thành sung quỹ. |
+| 8 | Cập nhật chi trả | Icon (Lưới) | Trường hợp không hợp lệ: Khoản kinh phí không ở trạng thái "Chờ chi trả". Hệ thống hiển thị icon dạng không khả dụng và không cho phép thao tác. |
+| | | | Trường hợp hợp lệ: Nhấp chọn icon Cập nhật chi trả với khoản kinh phí ở trạng thái "Chờ chi trả". Hệ thống mở Màn hình Cập nhật kết quả chi trả thực tế [UC450_456.01.MH05] ở chế độ biên tập. |
+| 9 | Sung quỹ Nhà nước | Icon (Lưới) | Trường hợp không hợp lệ: Khoản kinh phí chưa quá hạn 3 năm, không còn số tiền chưa chi trả hoặc trạng thái không thuộc "Chờ chi trả". Hệ thống hiển thị icon dạng không khả dụng và không cho phép thao tác. |
+| | | | Trường hợp hợp lệ: Khoản kinh phí đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái là "Chờ chi trả". Hệ thống mở Màn hình Xem chi tiết đề nghị bồi thường/Tạm ứng [UC450_456.01.MH03], hiển thị khối Thông tin sung quỹ Nhà nước để cán bộ nhập và hoàn thành sung quỹ. |
 | 10 | Phê duyệt | Icon (Lưới) | Lãnh đạo nhấp chọn icon Phê duyệt (chỉ khả dụng với trạng thái "Chờ duyệt") để duyệt nhanh ngay tại danh sách, không mở màn hình riêng.<br>+ Hiển thị popup xác nhận tùy chỉnh: "Bạn có chắc chắn muốn phê duyệt cấp phát kinh phí bồi thường cho tờ trình [Mã đề xuất] này không?".<br>+ Nếu chọn Đồng ý, hệ thống đổi trạng thái đề xuất thành "Chờ chi trả", ghi nhận ý kiến phê duyệt mặc định và cập nhật lại lưới.<br>+ Để tự nhập ý kiến chỉ đạo riêng trước khi duyệt, Lãnh đạo dùng Row-Click (chức năng #5) mở Màn hình Xem chi tiết [UC450_456.01.MH03]; khối Xét duyệt tờ trình [UC450_456.01.MH04] hiển thị ở cuối màn hình cho phép nhập ý kiến và phê duyệt/từ chối tương tự mục 4.3.3.2.5.2. |
 | 11 | Từ chối | Icon (Lưới) | Lãnh đạo nhấp chọn icon Từ chối (chỉ khả dụng với trạng thái "Chờ duyệt").<br>+ Hiển thị popup nhập lý do từ chối kèm nút xác nhận (gộp bước nhập lý do và xác nhận vào cùng một popup, không mở màn hình riêng): ô "Lý do từ chối phê duyệt" bắt buộc nhập.<br>+ Nếu bỏ trống và bấm "Xác nhận từ chối": hiển thị cảnh báo "Lý do từ chối không được để trống!", tô đỏ viền ô nhập, không đóng popup.<br>+ Nếu nhập hợp lệ và bấm "Xác nhận từ chối": hệ thống đổi trạng thái đề xuất thành "Bị từ chối", ghi nhận lý do và cập nhật lại lưới.<br>+ Lãnh đạo cũng có thể dùng Row-Click (chức năng #5) mở Màn hình Xem chi tiết [UC450_456.01.MH03] để xem toàn bộ hồ sơ trước khi từ chối tại khối Xét duyệt tờ trình [UC450_456.01.MH04]. |
 | 12 | Xóa | Icon (Lưới) | Chuyên viên nhấp chọn icon Xóa (chỉ khả dụng với trạng thái "Chờ lập đề nghị"; các trạng thái khác hiển thị icon khóa mờ 35%, không phản hồi click).<br>+ Hiển thị popup xác nhận xóa tùy chỉnh: "Bạn có chắc chắn muốn xóa đề xuất kinh phí [Mã đề xuất] không?".<br>+ Nếu người dùng nhấn Đồng ý, hệ thống xóa bản ghi khỏi lưới, cập nhật lại khối chỉ số ngân sách và hiển thị Toast thông báo thành công. |
@@ -218,7 +218,7 @@
 | Cán bộ đề xuất xử lý | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị cán bộ lập/cập nhật đề nghị. |
 | Nguồn kinh phí đề xuất cấp | Enum(String(100)) | Không | Theo đề nghị | Chỉ đọc. Hiển thị nguồn kinh phí đã chọn khi lập đề nghị. |
 | Cơ quan cấp phát kinh phí | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị cơ quan cấp phát kinh phí. |
-| Trạng thái đề nghị | Enum(String(50)) | Không | Theo đề nghị | Chỉ đọc. Hiển thị trạng thái đề nghị dưới dạng badge, gồm các trạng thái như "Chờ lập đề nghị", "Chờ duyệt", "Bị từ chối", "Chờ chi trả", "Chi trả một phần", "Đã sung quỹ", "Hoàn thành". |
+| Trạng thái đề nghị | Enum(String(50)) | Không | Theo đề nghị | Chỉ đọc. Hiển thị trạng thái đề nghị dưới dạng badge, gồm 06 trạng thái: "Chờ lập đề nghị", "Chờ duyệt", "Chờ chi trả", "Hoàn thành", "Sung quỹ nhà nước", "Bị từ chối". |
 | Mã vụ việc yêu cầu bồi thường liên kết | String(50) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị mã vụ việc yêu cầu bồi thường liên kết; cho phép mở chi tiết vụ việc gốc trong cùng tab tại module Giải quyết yêu cầu bồi thường. |
 | Tên vụ việc | String(255) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị tên vụ việc yêu cầu bồi thường liên kết. |
 | Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo vụ việc liên kết | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
@@ -298,7 +298,7 @@ Bảng này chỉ hiển thị khi `Loại đề nghị cấp kinh phí` là "Đ
 
 **VII. Thông tin xét duyệt tờ trình**
 
-Khối này hiển thị khi đề nghị đã phát sinh dữ liệu phê duyệt/từ chối hoặc trạng thái thuộc nhóm "Bị từ chối", "Chờ chi trả", "Chi trả một phần", "Đã sung quỹ", "Hoàn thành".
+Khối này hiển thị khi đề nghị đã phát sinh dữ liệu phê duyệt/từ chối hoặc trạng thái thuộc nhóm "Bị từ chối", "Chờ chi trả", "Sung quỹ nhà nước", "Hoàn thành".
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
@@ -309,14 +309,14 @@ Khối này hiển thị khi đề nghị đã phát sinh dữ liệu phê duy�
 
 **VIII. Thông tin thông báo nhận kinh phí và hạn 3 năm**
 
-Khối này hiển thị đối với đề nghị ở trạng thái "Chờ chi trả", "Chi trả một phần", "Đã sung quỹ" hoặc "Hoàn thành" nếu đã phát sinh thông tin thông báo. Đối với trạng thái "Chờ chi trả" hoặc "Chi trả một phần", cán bộ được phép lưu/cập nhật thông tin thông báo để bắt đầu tính hạn 3 năm. Khi đã lưu thông báo, nút hiển thị là "Cập nhật thông báo"; khi chưa có thông tin thông báo, nút hiển thị là "Lưu thông báo".
+Khối này hiển thị đối với đề nghị ở trạng thái "Chờ chi trả", "Sung quỹ nhà nước" hoặc "Hoàn thành" nếu đã phát sinh thông tin thông báo. Đối với trạng thái "Chờ chi trả", cán bộ được phép lưu/cập nhật thông tin thông báo để bắt đầu tính hạn 3 năm. Khi đã lưu thông báo, nút hiển thị là "Cập nhật thông báo"; khi chưa có thông tin thông báo, nút hiển thị là "Lưu thông báo".
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Ngày người yêu cầu nhận thông báo | Date | Có khi lưu/cập nhật thông báo | Trống hoặc theo dữ liệu thông báo | Ngày bắt đầu tính hạn nhận kinh phí 3 năm. Định dạng `dd/mm/yyyy`. Khi hồ sơ không ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần", trường hiển thị Chỉ đọc. |
+| Ngày người yêu cầu nhận thông báo | Date | Có khi lưu/cập nhật thông báo | Trống hoặc theo dữ liệu thông báo | Ngày bắt đầu tính hạn nhận kinh phí 3 năm. Định dạng `dd/mm/yyyy`. Khi hồ sơ không ở trạng thái "Chờ chi trả", trường hiển thị Chỉ đọc. |
 | Hạn nhận kinh phí | Date | Không | Hệ thống tính | Chỉ đọc. Bằng ngày người yêu cầu nhận thông báo cộng 3 năm. Đây là mốc hệ thống dùng để cảnh báo khoản chi chưa hoàn thành và xác định điều kiện sung quỹ Nhà nước. |
-| Tệp chứng minh đã thông báo | File | Có khi lưu/cập nhật thông báo | Trống hoặc theo dữ liệu thông báo | Cho phép upload đồng thời nhiều file chứng minh đã thông báo. Hỗ trợ xem file tại một tab riêng và xóa file trước khi lưu. Kiểm tra file theo [BR-FILE-010]. Khi hồ sơ không ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần", danh sách file hiển thị Chỉ đọc. |
-| Ghi chú thông báo | Text(1000) | Không | Trống hoặc theo dữ liệu thông báo | Nhập ghi chú quá trình gửi/nhận thông báo. Khi hồ sơ không ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần", trường hiển thị Chỉ đọc. |
+| Tệp chứng minh đã thông báo | File | Có khi lưu/cập nhật thông báo | Trống hoặc theo dữ liệu thông báo | Cho phép upload đồng thời nhiều file chứng minh đã thông báo. Hỗ trợ xem file tại một tab riêng và xóa file trước khi lưu. Kiểm tra file theo [BR-FILE-010]. Khi hồ sơ không ở trạng thái "Chờ chi trả", danh sách file hiển thị Chỉ đọc. |
+| Ghi chú thông báo | Text(1000) | Không | Trống hoặc theo dữ liệu thông báo | Nhập ghi chú quá trình gửi/nhận thông báo. Khi hồ sơ không ở trạng thái "Chờ chi trả", trường hiển thị Chỉ đọc. |
 
 **IX. Thông tin theo dõi hạn nhận kinh phí / sung quỹ**
 
@@ -325,20 +325,20 @@ Khối này hiển thị khi đã phát sinh ngày người yêu cầu nhận th
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Số tiền còn phải chi (VNĐ) | Decimal(18,0) | Không | Hệ thống tính | Chỉ đọc. Bằng tổng số tiền được duyệt trừ số tiền thực tế đã chi trả. |
-| Tình trạng hạn nhận kinh phí | String(255) | Không | Hệ thống tính | Chỉ đọc. Hiển thị "Cần theo dõi" khi còn trong hạn cảnh báo, "Đủ điều kiện lập đề nghị sung quỹ" khi đã quá hạn 3 năm và còn số tiền chưa chi trả, hoặc "Đã sung quỹ Nhà nước" khi trạng thái hồ sơ là "Đã sung quỹ". |
+| Tình trạng hạn nhận kinh phí | String(255) | Không | Hệ thống tính | Chỉ đọc. Hiển thị "Cần theo dõi" khi còn trong hạn cảnh báo, "Đủ điều kiện lập đề nghị sung quỹ" khi đã quá hạn 3 năm và còn số tiền chưa chi trả, hoặc "Đã sung quỹ Nhà nước" khi trạng thái hồ sơ là "Sung quỹ nhà nước". |
 | Số ngày quá hạn/còn hạn | Integer(10) | Không | Hệ thống tính | Chỉ đọc. Nếu quá hạn, hiển thị số ngày quá hạn. Nếu chưa quá hạn nhưng còn trong ngưỡng cảnh báo, hiển thị số ngày còn lại đến hạn. |
 
 **X. Thông tin sung quỹ Nhà nước**
 
-Khối này hiển thị khi đề nghị đã phát sinh dữ liệu sung quỹ hoặc khi cán bộ chọn thao tác "Sung quỹ" đối với khoản chi đủ điều kiện: đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái thuộc "Chờ chi trả" hoặc "Chi trả một phần". Khi mở từ thao tác "Sung quỹ", hệ thống cho phép nhập dữ liệu; khi hồ sơ ở trạng thái "Đã sung quỹ", toàn bộ khối hiển thị Chỉ đọc.
+Khối này hiển thị khi đề nghị đã phát sinh dữ liệu sung quỹ hoặc khi cán bộ chọn thao tác "Sung quỹ" đối với khoản chi đủ điều kiện: đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái là "Chờ chi trả". Khi mở từ thao tác "Sung quỹ", hệ thống cho phép nhập dữ liệu; khi hồ sơ ở trạng thái "Sung quỹ nhà nước", toàn bộ khối hiển thị Chỉ đọc.
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Số chứng từ / quyết định sung quỹ | String(100) | Có khi hoàn thành sung quỹ | Trống hoặc theo dữ liệu sung quỹ | Nhập số chứng từ/quyết định sung quỹ. Khi hồ sơ ở trạng thái "Đã sung quỹ", trường hiển thị Chỉ đọc. |
-| Ngày sung quỹ | Date | Có khi hoàn thành sung quỹ | Ngày hiện tại hoặc theo dữ liệu sung quỹ | Định dạng `dd/mm/yyyy`. Khi hồ sơ ở trạng thái "Đã sung quỹ", trường hiển thị Chỉ đọc. |
-| Số tiền sung quỹ (VNĐ) | Decimal(18,0) | Có khi hoàn thành sung quỹ | Số tiền còn phải chi | Số tiền sung quỹ phải bằng số tiền còn phải chi tại thời điểm thực hiện. Kiểm tra số tiền dương theo [BR-VAL-010]. Khi hồ sơ ở trạng thái "Đã sung quỹ", trường hiển thị Chỉ đọc. |
-| Căn cứ / lý do sung quỹ | Text(2000) | Có khi hoàn thành sung quỹ | Gợi ý theo điều kiện quá hạn | Nhập căn cứ/lý do sung quỹ do quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo nhưng chưa hoàn thành chi trả. Khi hồ sơ ở trạng thái "Đã sung quỹ", trường hiển thị Chỉ đọc. |
-| Tài liệu liên quan | File | Có khi hoàn thành sung quỹ | Trống hoặc theo dữ liệu sung quỹ | Cho phép upload đồng thời nhiều tài liệu liên quan đến sung quỹ. Hỗ trợ xem file tại một tab riêng và xóa file trước khi hoàn thành sung quỹ. Kiểm tra file theo [BR-FILE-010]. Khi hồ sơ ở trạng thái "Đã sung quỹ", danh sách file hiển thị Chỉ đọc. |
+| Số chứng từ / quyết định sung quỹ | String(100) | Có khi hoàn thành sung quỹ | Trống hoặc theo dữ liệu sung quỹ | Nhập số chứng từ/quyết định sung quỹ. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", trường hiển thị Chỉ đọc. |
+| Ngày sung quỹ | Date | Có khi hoàn thành sung quỹ | Ngày hiện tại hoặc theo dữ liệu sung quỹ | Định dạng `dd/mm/yyyy`. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", trường hiển thị Chỉ đọc. |
+| Số tiền sung quỹ (VNĐ) | Decimal(18,0) | Có khi hoàn thành sung quỹ | Số tiền còn phải chi | Số tiền sung quỹ phải bằng số tiền còn phải chi tại thời điểm thực hiện. Kiểm tra số tiền dương theo [BR-VAL-010]. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", trường hiển thị Chỉ đọc. |
+| Căn cứ / lý do sung quỹ | Text(2000) | Có khi hoàn thành sung quỹ | Gợi ý theo điều kiện quá hạn | Nhập căn cứ/lý do sung quỹ do quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo nhưng chưa hoàn thành chi trả. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", trường hiển thị Chỉ đọc. |
+| Tài liệu liên quan | File | Có khi hoàn thành sung quỹ | Trống hoặc theo dữ liệu sung quỹ | Cho phép upload đồng thời nhiều tài liệu liên quan đến sung quỹ. Hỗ trợ xem file tại một tab riêng và xóa file trước khi hoàn thành sung quỹ. Kiểm tra file theo [BR-FILE-010]. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", danh sách file hiển thị Chỉ đọc. |
 
 **Chức năng trên màn hình**:
 
@@ -346,18 +346,18 @@ Khối này hiển thị khi đề nghị đã phát sinh dữ liệu sung quỹ
 | :--- | :--- | :--- | :--- |
 | 1 | Lập đề nghị | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ lập đề nghị" và người dùng là Chuyên viên. Khi chọn, hệ thống mở **UC450_456.01.MH02 - Lập đề nghị cấp kinh phí/Tạm ứng** ở chế độ biên tập. |
 | 2 | Cập nhật đề nghị | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Bị từ chối" và người dùng là Chuyên viên. Khi chọn, hệ thống mở **UC450_456.01.MH02 - Lập đề nghị cấp kinh phí/Tạm ứng** ở chế độ cập nhật, nạp dữ liệu đề nghị đã lưu và hiển thị lý do từ chối để cán bộ điều chỉnh. |
-| 3 | Cập nhật chi trả | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần" và người dùng là Chuyên viên. Khi chọn, hệ thống mở **UC450_456.01.MH05 - Cập nhật kết quả chi trả thực tế**. |
-| 4 | Lưu thông báo | Nút trên khối thông báo | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần", người dùng là Chuyên viên và chưa có thông tin thông báo nhận kinh phí. |
+| 3 | Cập nhật chi trả | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả" và người dùng là Chuyên viên. Khi chọn, hệ thống mở **UC450_456.01.MH05 - Cập nhật kết quả chi trả thực tế**. |
+| 4 | Lưu thông báo | Nút trên khối thông báo | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả", người dùng là Chuyên viên và chưa có thông tin thông báo nhận kinh phí. |
 | | | | Trường hợp bỏ trống trường bắt buộc: Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]/[MSG-ERR-FILE-001]/[MSG-ERR-FILE-002] và không lưu thông báo. |
 | | | | Trường hợp hợp lệ: Cán bộ nhập ngày người yêu cầu nhận thông báo và tải lên tệp chứng minh. Hệ thống lưu thông tin thông báo, tự động tính hạn nhận kinh phí bằng ngày nhận thông báo cộng 3 năm, đổi nút thành "Cập nhật thông báo" và cập nhật lại cột "Hạn nhận / Sung quỹ" trên danh sách. |
-| 5 | Cập nhật thông báo | Nút trên khối thông báo | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả" hoặc "Chi trả một phần", người dùng là Chuyên viên và đã có thông tin thông báo nhận kinh phí. |
-| | | | Trường hợp bỏ trống trường bắt buộc: Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]/[MSG-ERR-FILE-001]/[MSG-ERR-FILE-002] và không cập nhật thông báo. |
+| 5 | Cập nhật thông báo | Nút trên khối thông báo | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả", người dùng là Chuyên viên và đã có thông tin thông báo nhận kinh phí. |
+| | | | Trường hợp bỏ trống trường bắt buộc: Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]/[MSG-ERR-FILE-002] và không cập nhật thông báo. |
 | | | | Trường hợp hợp lệ: Cán bộ chỉnh sửa thông tin thông báo đã lưu. Hệ thống cập nhật ngày nhận thông báo, danh sách file chứng minh, ghi chú, tự động tính lại hạn 3 năm và cập nhật lại cột "Hạn nhận / Sung quỹ" trên danh sách. |
-| 6 | Sung quỹ | Nút | Chỉ hiển thị khi người dùng là Chuyên viên, khoản kinh phí đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái thuộc "Chờ chi trả" hoặc "Chi trả một phần". Khi chọn, hệ thống mở khối **X. Thông tin sung quỹ Nhà nước**, tự động gợi ý số tiền sung quỹ bằng số tiền còn phải chi và hiển thị nút "Hoàn thành sung quỹ". |
+| 6 | Sung quỹ | Nút | Chỉ hiển thị khi người dùng là Chuyên viên, khoản kinh phí đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái là "Chờ chi trả". Khi chọn, hệ thống mở khối **X. Thông tin sung quỹ Nhà nước**, tự động gợi ý số tiền sung quỹ bằng số tiền còn phải chi và hiển thị nút "Hoàn thành sung quỹ". |
 | 7 | Hoàn thành sung quỹ | Nút | Chỉ hiển thị sau khi cán bộ chọn nút "Sung quỹ" và khối **X. Thông tin sung quỹ Nhà nước** đang ở chế độ nhập liệu. |
 | | | | Trường hợp bỏ trống trường bắt buộc: Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]/[MSG-ERR-FILE-001]/[MSG-ERR-FILE-002] và không lưu sung quỹ. |
 | | | | Trường hợp dữ liệu không hợp lệ: Ngày sung quỹ không đúng định dạng `dd/mm/yyyy` hoặc số tiền sung quỹ không phải số dương theo [BR-VAL-010], hoặc số tiền sung quỹ khác số tiền còn phải chi. Hệ thống hiển thị cảnh báo lỗi tương ứng và không lưu sung quỹ. |
-| | | | Trường hợp hợp lệ: Cán bộ nhập đầy đủ số chứng từ/quyết định sung quỹ, ngày sung quỹ, số tiền sung quỹ, căn cứ/lý do và tài liệu liên quan. Hệ thống lưu thông tin sung quỹ, chuyển trạng thái đề nghị thành "Đã sung quỹ", cập nhật số tiền thực tế đã chi trả/số tiền còn phải chi, đóng màn hình chi tiết và làm mới danh sách. |
+| | | | Trường hợp hợp lệ: Cán bộ nhập đầy đủ số chứng từ/quyết định sung quỹ, ngày sung quỹ, số tiền sung quỹ, căn cứ/lý do và tài liệu liên quan. Hệ thống lưu thông tin sung quỹ, chuyển trạng thái đề nghị thành "Sung quỹ nhà nước", cập nhật số tiền thực tế đã chi trả/số tiền còn phải chi, đóng màn hình chi tiết và làm mới danh sách. |
 | 8 | Phê duyệt | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ duyệt" và người dùng là Lãnh đạo. Khi chọn, hệ thống mở **UC450_456.01.MH04 - Xét duyệt tờ trình cấp kinh phí bồi thường** để phê duyệt. |
 | 9 | Từ chối | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ duyệt" và người dùng là Lãnh đạo. Khi chọn, hệ thống mở **UC450_456.01.MH04 - Xét duyệt tờ trình cấp kinh phí bồi thường** để nhập lý do từ chối. |
 | 10 | Xem file | Link | Cho phép xem file tại một tab riêng. |
@@ -414,7 +414,7 @@ Khối này hiển thị khi đề nghị đã phát sinh dữ liệu sung quỹ
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Ngày thực hiện chi trả | Date | Có | Ngày hiện tại | Định dạng `dd/mm/yyyy`. Chỉ hiển thị ngày nhỏ hơn ngày hiện tại [BR-VAL-008]. |
-| Số tiền thực tế chi trả (VNĐ) | Decimal(18,0) | Có | Pre-fill số tiền còn phải chi | Cho phép chỉnh sửa. Tự động format phân tách hàng ngàn. Chỉ cho phép nhập số dương và không được vượt quá số tiền còn phải chi tại thời điểm chi trả [BR-VAL-010]; hệ thống cộng dồn với số đã chi trước đó (nếu đang ở trạng thái "Chi trả một phần") để xác định trạng thái "Hoàn thành" hoặc tiếp tục "Chi trả một phần". |
+| Số tiền thực tế chi trả (VNĐ) | Decimal(18,0) | Có | Pre-fill số tiền còn phải chi | Cho phép chỉnh sửa. Tự động format phân tách hàng ngàn. Chỉ cho phép nhập số dương và không được vượt quá số tiền còn phải chi tại thời điểm chi trả [BR-VAL-010]. |
 | Phương thức chi trả thực tế | Enum(String(50)) | Có | Chuyển khoản qua ngân hàng | Lựa chọn phương thức gồm:<br>+ Chuyển khoản qua ngân hàng<br>+ Tiền mặt |
 | **Nếu chọn: Chuyển khoản qua ngân hàng** | | | | Hiển thị thêm các trường thông tin ngân hàng bên dưới: |
 | Số tài khoản chuyển | String(255) | Có | Trống | Nhập số tài khoản ngân hàng thực hiện chuyển tiền bồi thường. |
@@ -432,14 +432,14 @@ Khối này hiển thị khi đề nghị đã phát sinh dữ liệu sung quỹ
 | Ghi chú thông báo | Text(1000) | Không | Trống hoặc theo dữ liệu đã lưu | Nhập ghi chú quá trình gửi/nhận thông báo. |
 | **VII. Theo dõi hạn nhận kinh phí / sung quỹ** | | | | Hiển thị khi đã có ngày người yêu cầu nhận thông báo và hồ sơ còn số tiền chưa chi trả. |
 | Số tiền còn phải chi (VNĐ) | Decimal(18,0) | Không | Hệ thống tính | Chỉ đọc. Bằng tổng số tiền được duyệt trừ số tiền thực tế đã chi trả. |
-| Tình trạng hạn nhận kinh phí | String(255) | Không | Hệ thống tính | Chỉ đọc. Hiển thị tình trạng theo dõi hạn 3 năm: còn hạn/cần theo dõi, đủ điều kiện sung quỹ hoặc đã sung quỹ Nhà nước. |
+| Tình trạng hạn nhận kinh phí | String(255) | Không | Hệ thống tính | Chỉ đọc. Hiển thị tình trạng theo dõi hạn 3 năm: còn hạn/cần theo dõi, đủ điều kiện sung quỹ hoặc đã sung quỹ Nhà nước (trạng thái "Sung quỹ nhà nước"). |
 | Chứng từ sung quỹ | String(100) | Không | Theo dữ liệu sung quỹ | Chỉ đọc. Hiển thị số chứng từ/quyết định sung quỹ dưới dạng văn bản tóm tắt (không phải liên kết xem file) khi hồ sơ đã phát sinh thông tin sung quỹ. Tài liệu sung quỹ đầy đủ (có thể xem file) được quản lý tại khối X. Thông tin sung quỹ Nhà nước của Màn hình Xem chi tiết [UC450_456.01.MH03]. |
 
 **Chức năng trên màn hình**:  
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hoàn thành chi trả | Nút (Footer) | Trường hợp nhập đầy đủ thông tin và tải lên file chứng từ hợp lệ:<br>+ Nếu tổng số tiền đã chi (cộng dồn với số đã chi trước đó nếu có) đạt đủ số tiền được duyệt, hệ thống đổi trạng thái đề xuất thành "Hoàn thành"; nếu còn thiếu, chuyển thành "Chi trả một phần".<br>+ Đóng biểu mẫu, hiển thị Toast thông báo thành công và cập nhật lại lưới danh sách.<br>+ Ghi log hoàn thành chi trả thực tế vào nhật ký hệ thống [III.6]. |
+| 1 | Hoàn thành chi trả | Nút (Footer) | Trường hợp nhập đầy đủ thông tin và tải lên file chứng từ hợp lệ:<br>+ Hệ thống cập nhật kết quả chi trả và chuyển trạng thái đề xuất thành "Hoàn thành".<br>+ Đóng biểu mẫu, hiển thị Toast thông báo thành công và cập nhật lại lưới danh sách.<br>+ Ghi log hoàn thành chi trả thực tế vào nhật ký hệ thống [III.6]. |
 | | | | Trường hợp có trường bắt buộc bị bỏ trống hoặc không tải lên chứng từ đính kèm:<br>+ Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010].<br>+ Tô đỏ viền trường trống đầu tiên bằng class `.is-invalid`, hiển thị cảnh báo: "Đây là trường bắt buộc" dưới ô nhập và focus con trỏ vào ô nhập lỗi đầu tiên đó. Không lưu chi trả. |
 | | | | Trường hợp số tiền thực tế chi trả không hợp lệ (nhỏ hơn hoặc bằng 0, hoặc vượt quá số tiền còn phải chi):<br>+ Vi phạm quy tắc [BR-VAL-010].<br>+ Tô đỏ viền ô "Số tiền thực tế chi trả", hiển thị cảnh báo tương ứng ("Số tiền thực tế chi trả phải lớn hơn 0" hoặc "Số tiền chi trả không được vượt quá số tiền còn phải chi (X VNĐ)") và focus con trỏ vào ô đó. Không lưu chi trả. |
 | 2 | Đóng | Nút (Footer) | Người dùng nhấn nút Đóng.<br>+ Hệ thống thực hiện đóng modal cập nhật chi trả ngay lập tức, hủy bỏ các thay đổi. |

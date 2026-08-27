@@ -1,10 +1,7 @@
 ### 4.1.5. Đăng nhập dành cho Cá nhân/Tổ chức/Cơ quan có thẩm quyền
 
 #### 4.1.5.1. Mục đích
-- Cung cấp cơ chế xác thực danh tính cho Cá nhân, Tổ chức và Cơ quan có thẩm quyền truy cập vào Website Khách hàng thông qua 2 hình thức:
-  + Đăng nhập qua VNeID (tích hợp qua Cổng Dịch vụ công Quốc gia).
-  + Đăng nhập bằng tài khoản và mật khẩu được cấp bởi hệ thống.
-- Đảm bảo an toàn bảo mật, phân quyền đúng vai trò và ghi nhận nhật ký truy cập (Audit Logs).
+- Cung cấp cơ chế xác thực danh tính cho Cá nhân, Tổ chức và Cơ quan có thẩm quyền truy cập vào Website Khách hàng qua VNeID hoặc tài khoản cấp bởi hệ thống.
 
 *a. Phân quyền*
 - Người dùng: Cá nhân/Tổ chức/Cơ quan có thẩm quyền có tài khoản VNeID hoặc tài khoản do hệ thống cấp.
@@ -266,10 +263,10 @@
       <td><b>TH6 (Email đăng nhập Nội bộ bị trùng)</b>: Nếu có chọn Thiết lập đăng nhập bằng Email/Mật khẩu và Email đã tồn tại ở nguồn xác thực Nội bộ của tài khoản khác trên hệ thống, vi phạm <b>[BR-VAL-009]</b>, hiển thị thông báo lỗi <b>[MSG-ERR-VAL-009]</b>.</td>
     </tr>
     <tr>
-      <td><b>TH7 (Đăng ký thành công - Chỉ chọn Tài khoản đăng ký)</b>: Hệ thống tạo/liên kết hồ sơ tài khoản khách hàng với nguồn xác thực VNeID (và nguồn xác thực Nội bộ nếu có chọn), khởi tạo phiên đăng nhập và chuyển hướng về Trang chủ.</td>
+      <td><b>TH7 (Đăng ký thành công - Chỉ chọn Tài khoản đăng ký)</b>: Hệ thống tạo/liên kết hồ sơ tài khoản khách hàng với nguồn xác thực VNeID (và nguồn xác thực Nội bộ nếu có chọn), tự động gán tài khoản vào Nhóm người dùng (User Group) tương ứng: nhóm <b>Đăng ký cá nhân</b> (nếu chủ thể là Cá nhân) hoặc nhóm <b>Đăng ký tổ chức</b> (nếu chủ thể là Tổ chức); khởi tạo phiên đăng nhập và chuyển hướng về Trang chủ.</td>
     </tr>
     <tr>
-      <td><b>TH8 (Đăng ký thành công - Có chọn Tài khoản tra cứu)</b>: Hệ thống tạo/liên kết hồ sơ tài khoản khách hàng theo TH7, đồng thời khởi tạo Yêu cầu cấp mã số sử dụng CSDL loại <code>Thường xuyên</code> theo đúng quy định và chuyển hướng người dùng sang Cổng thanh toán.</td>
+      <td><b>TH8 (Đăng ký thành công - Có chọn Tài khoản tra cứu)</b>: Hệ thống tạo/liên kết hồ sơ tài khoản khách hàng, tự động gán tài khoản vào Nhóm người dùng: nhóm <b>Tài khoản tra cứu</b> (nếu chỉ chọn tra cứu) hoặc gán đồng thời cả hai nhóm (<b>Tài khoản tra cứu</b> và <b>Đăng ký cá nhân</b> / <b>Đăng ký tổ chức</b>) nếu chọn cả hai nhu cầu; đồng thời khởi tạo Yêu cầu cấp mã số sử dụng CSDL loại <code>Thường xuyên</code> theo đúng quy định và chuyển hướng người dùng sang Cổng thanh toán.</td>
     </tr>
     <tr>
       <td style="text-align: center; vertical-align: middle;">4</td>

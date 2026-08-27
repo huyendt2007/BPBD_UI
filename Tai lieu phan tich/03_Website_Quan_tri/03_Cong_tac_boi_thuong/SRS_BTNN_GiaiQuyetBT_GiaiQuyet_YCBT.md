@@ -1,6 +1,6 @@
 ﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
-#### 4.3.3.1. UC431-466 - Giải quyết yêu cầu bồi thường
+#### 4.3.3.1. Giải quyết yêu cầu bồi thường
 
 ##### 4.3.3.1.1. Mục đích
 
@@ -36,15 +36,19 @@ flowchart TD
     T1 -->|"Chờ tiếp nhận / Yêu cầu bổ sung"| E2[Yêu cầu bổ sung hoặc Từ chối]
     E1 --> E[Nhập hồ sơ vụ việc]
     T2 -->|"Chờ kiểm tra"| I[Tiếp nhận / Yêu cầu bổ sung / Từ chối]
-    T3 -->|"Lãnh đạo: Chờ thụ lý"| M[Thụ lý hoặc từ chối thụ lý]
-    T3 -->|"Chuyên viên: được phân công / đang xử lý"| G[Click dòng dữ liệu]
+    T3 -->|"Chờ thụ lý"| M[Thụ lý hoặc từ chối thụ lý]
+    T3 -->|"Được phân công / Đang xử lý"| G[Click dòng dữ liệu]
     G --> H{Trạng thái vụ việc/hồ sơ}
     E --> F["Chờ kiểm tra"]
     I -->|"Tiếp nhận"| J["Chờ thụ lý"]
     I -->|"Yêu cầu bổ sung"| K["Yêu cầu bổ sung"]
     I -->|"Từ chối"| L["Bị từ chối"]
-    M -->|"Thụ lý"| N["Đang xác minh thiệt hại"]
+    M -->|"Thụ lý - Chưa có Bản án/QĐ Tòa án"| N["Đang xác minh thiệt hại"]
+    M -->|"Thụ lý - Đã có Bản án/QĐ Tòa án"| V["Chờ thực thi"]
     M -->|"Từ chối thụ lý"| O["Từ chối thụ lý"]
+    V --> V1[Tự tạo Đề nghị cấp kinh phí / Thực thi chi trả]
+    V1 -->|"Hoàn thành chi trả / Phục hồi danh dự nếu có"| X["Hoàn thành"]
+    V1 -->|"Quá hạn 3 năm & Sung quỹ"| SQ["Sung quỹ nhà nước"]
     N --> Y[Hoãn / Tạm đình chỉ / Đình chỉ giải quyết]
     Q --> Y
     T --> Y
@@ -60,13 +64,12 @@ flowchart TD
     R -->|"Thành công"| S["Chờ ban hành QĐ"]
     R -->|"Không thành công"| T["Thương lượng không thành công"]
     T --> Q
-    S --> U[Trình ký / Duyệt ký số quyết định]
-    U --> V["Chờ thực thi"]
-    V --> W[Cập nhật thực thi / Phục hồi danh dự nếu có]
-    W --> X["Hoàn thành"]
+    S --> U[Module Quyết định: Ban hành QĐ]
+    U --> V
 ```
 
 ---
+
 
 ##### 4.3.3.1.3. MH01 - Màn hình Danh sách vụ việc/hồ sơ yêu cầu bồi thường
 
@@ -78,7 +81,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tab nghiệp vụ** | Enum(String(100)) | Có | `Vụ việc chờ tiếp nhận` | Control UI: Tabs navigation.<br>- **Tab 1: "Vụ việc chờ tiếp nhận"**- Hiển thị các vụ việc ở trạng thái:<br>+ Chờ tiếp nhận<br>+ Yêu cầu bổ sung<br>+ Lưu nháp<br>- **Tab 2: "Vụ việc chờ kiểm tra"**- Hiển thị các vụ việc ở trạng thái:<br>+ Chờ kiểm tra<br>- **Tab 3: "Vụ việc chờ xử lý"**- Hiển thị các vụ việc thuộc các trạng thái tiếp theo gồm:<br>+ Chờ thụ lý<br>+ Đang xác minh thiệt hại<br>+ Đang thương lượng<br>+ Chờ ban hành QĐ<br>+ Chờ thực thi<br>+ Hoãn giải quyết<br>+ Tạm đình chỉ giải quyết |
+| **Tab nghiệp vụ** | Enum(String(100)) | Có | `Vụ việc chờ tiếp nhận` | Control UI: Tabs navigation.<br>- **Tab 1: "Vụ việc chờ tiếp nhận"**- Hiển thị các vụ việc ở trạng thái:<br>+ Chờ tiếp nhận<br>+ Yêu cầu bổ sung<br>+ Lưu nháp<br>- **Tab 2: "Vụ việc chờ kiểm tra"**- Hiển thị các vụ việc ở trạng thái:<br>+ Chờ kiểm tra<br>- **Tab 3: "Vụ việc chờ xử lý"**- Hiển thị các vụ việc thuộc các trạng thái tiếp theo gồm:<br>+ Chờ thụ lý<br>+ Đang xác minh thiệt hại<br>+ Đang thương lượng<br>+ Chờ ban hành QĐ<br>+ Chờ thực thi<br>+ Hoãn giải quyết<br>+ Tạm đình chỉ giải quyết<br>+ Sung quỹ nhà nước<br>+ Hoàn thành |
 | **Bộ lọc tìm kiếm** | String(255) | - | - | Khối tiêu chí lọc danh sách vụ việc trong tab đang chọn. |
 | Mã vụ việc | String(50) | Không | Trống | Tìm gần đúng theo mã vụ việc, tự động trim space. |
 | Tên vụ việc | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo tên vụ việc, không phân biệt hoa thường.<br>- Dữ liệu lấy từ thông tin tiếp nhận YCBT hoặc hồ sơ xác định cơ quan liên thông. |
@@ -86,7 +89,7 @@ flowchart TD
 | Cơ quan giải quyết | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan giải quyết. |
 | Tỉnh/Thành phố | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox có tìm kiếm.<br>- Tham chiếu Danh mục Tỉnh/Thành phố [DM_13].<br>- Cho phép gõ tìm kiếm nhanh theo Mã hoặc Tên Tỉnh/Thành phố. |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
-| Trạng thái giải quyết | Enum(String(50)) | Không | Theo từng tab | Control UI: Combobox.<br>- Danh sách lựa chọn và giá trị mặc định thay đổi động theo Tab đang chọn:<br>+ **Tab 1 "Vụ việc chờ tiếp nhận"**: Giá trị mặc định khi vào tab là `Tất cả`. Danh sách trạng thái có thể lọc: `Tất cả`, `Chờ tiếp nhận`, `Yêu cầu bổ sung`, `Lưu nháp`.<br>+ **Tab 2 "Vụ việc chờ kiểm tra"**: Giá trị mặc định khi vào tab là `Chờ kiểm tra`. Danh sách trạng thái có thể lọc: `Chờ kiểm tra`.<br>+ **Tab 3 "Vụ việc chờ xử lý"**: Giá trị mặc định khi vào tab là `Tất cả`. Danh sách trạng thái có thể lọc: `Tất cả`, `Chờ thụ lý`, `Đang xác minh thiệt hại`, `Đang thương lượng`, `Chờ ban hành QĐ`, `Chờ thực thi`, `Hoãn giải quyết`, `Tạm đình chỉ giải quyết`.<br>- Khi chuyển tab hoặc bấm nút `Xóa bộ lọc`, trường tự động reset về giá trị mặc định của tab đó|
+| Trạng thái giải quyết | Enum(String(50)) | Không | Theo từng tab | Control UI: Combobox.<br>- Danh sách lựa chọn và giá trị mặc định thay đổi động theo Tab đang chọn:<br>+ **Tab 1 "Vụ việc chờ tiếp nhận"**: Giá trị mặc định khi vào tab là `Tất cả`. Danh sách trạng thái có thể lọc: `Tất cả`, `Chờ tiếp nhận`, `Yêu cầu bổ sung`, `Lưu nháp`.<br>+ **Tab 2 "Vụ việc chờ kiểm tra"**: Giá trị mặc định khi vào tab là `Chờ kiểm tra`. Danh sách trạng thái có thể lọc: `Chờ kiểm tra`.<br>+ **Tab 3 "Vụ việc chờ xử lý"**: Giá trị mặc định khi vào tab là `Tất cả`. Danh sách trạng thái có thể lọc: `Tất cả`, `Chờ thụ lý`, `Đang xác minh thiệt hại`, `Đang thương lượng`, `Chờ ban hành QĐ`, `Chờ thực thi`, `Hoãn giải quyết`, `Tạm đình chỉ giải quyết`, `Sung quỹ nhà nước`, `Hoàn thành`.<br>- Khi chuyển tab hoặc bấm nút `Xóa bộ lọc`, trường tự động reset về giá trị mặc định của tab đó|
 | Tiếp nhận: Từ ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
 | Tiếp nhận: Đến ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
 | Hạn xử lý: Từ ngày | Date | Không | Trống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
@@ -106,7 +109,7 @@ flowchart TD
 | Ngày tiếp nhận | Date | - | Theo dữ liệu | Căn giữa. Cho phép click tiêu đề cột để đảo chiều sắp xếp tăng/giảm. |
 | Hạn xử lý | Date | - | Theo dữ liệu | Hiển thị hạn xử lý và trạng thái cảnh báo SLA theo dữ liệu hệ thống. |
 | Hình thức tiếp nhận | Enum(String(50)) | - | Theo dữ liệu | Hiển thị hình thức tiếp nhận theo Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
-| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Text hiển thị kèm Badge màu theo trạng thái.<br>- Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
+| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Text hiển thị kèm Badge màu theo trạng thái vụ việc. |
 | Thao tác | String(255) | - | Theo vai trò/trạng thái | Control UI: Icon buttons (Fixed-slot Action Column).<br>- Không có nút/icon `Xem chi tiết` riêng biệt trong cột Thao tác; người dùng xem chi tiết bằng sự kiện click trực tiếp vào dòng dữ liệu (Row-Click).<br>- **Tại Tab 1: "Vụ việc chờ tiếp nhận"**:<br>+ `Tiếp nhận`, `Yêu cầu bổ sung`, `Từ chối`: Chỉ hiển thị khi vụ việc ở trạng thái `Chờ tiếp nhận`.<br>+ `Bổ sung hồ sơ`: Chỉ hiển thị khi vụ việc ở trạng thái `Yêu cầu bổ sung`.<br>+ `Cập nhật hồ sơ`: Chỉ hiển thị khi vụ việc ở trạng thái `Lưu nháp`.<br>- **Tại Tab 2: "Vụ việc chờ kiểm tra"**:<br>+ `Tiếp nhận kiểm tra` <br> + `Yêu cầu bổ sung sau kiểm tra` <br> + `Từ chối sau kiểm tra`<br>- **Tại Tab 3: "Vụ việc chờ xử lý"**:<br>+ `Thụ lý hồ sơ`, `Từ chối thụ lý`: Chỉ hiển thị khi vụ việc ở trạng thái `Chờ thụ lý`.<br>+ `Cập nhật hồ sơ`: Chỉ hiển thị đối với các hồ sơ đang trong quá trình giải quyết sau thụ lý gồm các trạng thái:<br>  * `Đang xác minh thiệt hại`<br>  * `Đang thương lượng`<br>  * `Chờ ban hành QĐ`<br>  * `Chờ thực thi`<br>  * `Hoãn giải quyết`<br>  * `Tạm đình chỉ giải quyết`<br>- Các thao tác không thỏa mãn điều kiện theo trạng thái hồ sơ sẽ bị ẩn hoàn toàn khỏi danh sách. |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
@@ -121,7 +124,7 @@ flowchart TD
 |  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí lọc, đặt lại danh sách theo dữ liệu mặc định của tab hiện hành và đưa về trang 1. |
 | 4 | Kết xuất Excel | Button | Hệ thống kết xuất dữ liệu thống kê theo danh sách đang hiển thị trong tab hiện hành. |
-| 5 | Click dòng dữ liệu | Row click | Hệ thống mở [MH04 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường](#43316-mh04---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tương ứng với vụ việc được chọn. Nếu click vào icon thao tác, hệ thống thực hiện chức năng của icon và không kích hoạt row click. |
+| 5 | Click dòng dữ liệu | Row click | Hệ thống mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường](#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tương ứng với vụ việc được chọn. Nếu click vào icon thao tác, hệ thống thực hiện chức năng của icon và không kích hoạt row click. |
 | 6 | Tiếp nhận | Icon button/Button | Khi người dùng click nút, hệ thống mở **MH02 - Nhập liệu hồ sơ vụ việc** để cán bộ nhập đầy đủ thông tin chi tiết. <br> Hệ thống tự động kế thừa toàn bộ thông tin đã nhập ở bước **Tiếp nhận yêu cầu**, cán bộ có thể chỉnh sửa và bổ sung thêm các thông tin khác|
 | 7 | Yêu cầu bổ sung | Icon button/Button | Khi người dùng click nút, hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** ở ngữ cảnh yêu cầu bổ sung để nhập nội dung yêu cầu bổ sung thông tin/hồ sơ. |
 | 8 | Từ chối | Icon button/Button | Khi người dùng click nút, hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** ở ngữ cảnh từ chối để nhập lý do từ chối tiếp nhận hồ sơ; sau khi xác nhận hợp lệ, vụ việc chuyển sang trạng thái `Bị từ chối`. |
@@ -131,10 +134,11 @@ flowchart TD
 | 10 | Tiếp nhận kiểm tra | Icon button/Button | Hệ thống xác nhận hồ sơ hợp lệ, chuyển vụ việc sang trạng thái `Chờ thụ lý`, cập nhật timeline xử lý. |
 | 11 | Yêu cầu bổ sung sau kiểm tra | Icon button/Button | Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập nội dung yêu cầu bổ sung hồ sơ. |
 | 12 | Từ chối sau kiểm tra | Icon button/Button | Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập lý do từ chối. Sau khi xác nhận, vụ việc chuyển sang trạng thái `Bị từ chối`. |
-| 13 | Thụ lý hồ sơ | Icon button/Button | Hệ thống mở [Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường](#433112-popup-thụ-lý-hồ-sơ-và-cử-người-giải-quyết-bồi-thường). Sau khi xác nhận hợp lệ, hệ thống cập nhật hồ sơ sang trạng thái `Đang xác minh thiệt hại`. |
+| 13 | Thụ lý hồ sơ | Icon button/Button | Hệ thống mở [Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường](#43318-popup-thụ-lý-hồ-sơ-và-cử-người-giải-quyết-bồi-thường). |
 | 14 | Từ chối thụ lý | Icon button/Button | Hệ thống mở **Popup Yêu cầu bổ sung / Từ chối hồ sơ** để nhập lý do từ chối thụ lý. |
 
 ---
+
 
 ##### 4.3.3.1.4. MH02 - Màn hình Nhập liệu hồ sơ vụ việc
 
@@ -153,16 +157,16 @@ flowchart TD
 | Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Theo dữ liệu tiếp nhận | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
 | Phường/Xã | Enum(String(100)) / String(100) | Có | Theo dữ liệu tiếp nhận | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Địa chỉ chi tiết | Text(1000) / String(500) | Có | Theo dữ liệu tiếp nhận | Control UI: Textarea / Input text.<br>- Nhập số nhà, tên đường/phố, thôn/xóm/ấp...<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
-| Tìm nhanh từ vụ việc xác định cơ quan | String(50) | Không | Trống | Control UI: Input text kèm nút `Tìm kiếm` (icon kính lúp) và liên kết `Tìm kiếm nâng cao`.<br>- Chỉ hiển thị khi Tình trạng pháp lý hồ sơ là `Yêu cầu chưa có Bản án/Quyết định của Tòa án`.<br>- Nếu bấm `Tìm kiếm` khi chưa nhập dữ liệu: Vi phạm quy tắc [BR-VAL-001], hệ thống hiển thị thông báo cảnh báo lỗi [MSG-ERR-VAL-001] (*"Vui lòng nhập Mã vụ việc để tìm kiếm"*) và không mở popup. |
+| Tìm nhanh từ vụ việc xác định cơ quan | String(50) | Không | Trống | Control UI: Input text kèm nút `Tìm kiếm` (icon kính lúp) và liên kết `Tìm kiếm nâng cao`.<br>- Chỉ hiển thị khi Tình trạng pháp lý hồ sơ là `Chưa có Bản án/Quyết định của Tòa án`.<br>- Nếu bấm `Tìm kiếm` khi chưa nhập dữ liệu: Vi phạm quy tắc [BR-VAL-001], hệ thống hiển thị thông báo cảnh báo lỗi [MSG-ERR-VAL-001] (*"Vui lòng nhập Mã vụ việc để tìm kiếm"*) và không mở popup. |
 | Liên kết hồ sơ xác định cơ quan | String(255) | Không | Ẩn | Control UI: Text link (Hyperlink).<br>- Chỉ hiển thị sau khi cán bộ chọn một hồ sơ xác định cơ quan từ popup tìm kiếm hoặc khi mở lại hồ sơ đã lưu liên kết trước đó.<br>- Khi click vào liên kết: Hệ thống mở màn hình [Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường](SRS_BTNN_Xác%20định%20cơ%20quan%20giải%20quyết.md#43316-mh04---màn-hình-chi-tiết-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) ở chế độ chỉ xem trong cùng tab làm việc; thanh Menu Sidebar tự động Active vào menu "Xác định cơ quan giải quyết bồi thường". Khi đóng màn hình chi tiết, hệ thống quay trở lại đúng màn hình MH02 đang nhập liệu và Focus lại menu "Giải quyết yêu cầu bồi thường". |
 | Thông tin yêu cầu bổ sung | String(255) | - | Ẩn | Chỉ hiển thị khi vụ việc ở trạng thái "Yêu cầu bổ sung". Hiển thị nội dung yêu cầu bổ sung do Cán bộ kiểm tra đã nhập tại **Popup Yêu cầu bổ sung / Từ chối hồ sơ**. Khi mở màn hình ở trạng thái này, hệ thống tự động focus/cuộn tới khối này để Cán bộ nhìn thấy ngay nội dung cần bổ sung; toàn bộ dữ liệu hồ sơ đã nhập liệu trước đó vẫn hiển thị đầy đủ trên form và cho phép sửa lại, không bị khóa. |
 | Loại yêu cầu giải quyết bồi thường | Enum(String(100)) | Có | `Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)` | Control UI: Radio button.<br>Giá trị gồm:<br>+ `Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)`<br>+ `Chỉ yêu cầu bồi thường thiệt hại bằng tiền`<br>+ `Chỉ yêu cầu phục hồi danh dự` |
-| Tình trạng pháp lý hồ sơ | Enum(String(50)) | Có | `Yêu cầu chưa có Bản án/Quyết định của Tòa án` | Giá trị gồm:<br>+ `Yêu cầu chưa có Bản án/Quyết định của Tòa án`<br>+ `Đã có Bản án/Quyết định của Tòa án` |
+| Tình trạng pháp lý hồ sơ | Enum(String(50)) | Có | `Chưa có Bản án/Quyết định của Tòa án` | Giá trị gồm:<br>+ `Chưa có Bản án/Quyết định của Tòa án`<br>+ `Đã có Bản án/Quyết định của Tòa án` |
 | **Thông tin bản án gốc** | String(255) | - | Ẩn | Chỉ hiển thị khi chọn `Đã có Bản án/Quyết định của Tòa án`. |
 | Nguồn phát sinh bản án | Enum(String(100)) | Có theo điều kiện | `Khởi kiện vụ án dân sự (Điều 52)` | Giá trị gồm:<br>+ `Khởi kiện vụ án dân sự (Điều 52)`<br>+ `Giải quyết trong quá trình tố tụng hình sự, tố tụng hành chính (Điều 55)` |
 | Trường hợp khởi kiện | Enum(String(255)) | Có theo điều kiện | `Đã yêu cầu cơ quan giải quyết trước khi khởi kiện (điểm b khoản 1 và khoản 2 Điều 52)` | Chỉ hiển thị khi `Nguồn phát sinh bản án` là `Khởi kiện vụ án dân sự (Điều 52)`. Cán bộ chọn theo đúng căn cứ thụ lý đã nêu trong bản án/hồ sơ vụ án của Tòa án gửi về; **không** suy ra từ việc tìm/không tìm thấy hồ sơ gốc trên hệ thống ở trường bên dưới. Giá trị gồm:<br>+ `Khởi kiện thẳng ra Tòa án, chưa từng yêu cầu cơ quan giải quyết (điểm a khoản 1 Điều 52)`<br>+ `Đã yêu cầu cơ quan giải quyết trước khi khởi kiện — rút yêu cầu hoặc không đồng ý/thương lượng không thành (điểm b khoản 1 và khoản 2 Điều 52)` |
 | Vụ việc yêu cầu bồi thường gốc liên quan | String(255) | Không | Trống | Control UI: Input text kèm nút `Tìm kiếm` (icon kính lúp) và liên kết `Tìm kiếm nâng cao`.<br>- Chỉ hiển thị khi "Trường hợp khởi kiện" là "Đã yêu cầu cơ quan giải quyết trước khi khởi kiện — rút yêu cầu hoặc không đồng ý/thương lượng không thành (điểm b khoản 1 và khoản 2 Điều 52)".<br>- Cho phép nhập `Mã vụ việc gốc` để tìm nhanh vụ việc/hồ sơ gốc liên quan.<br>- Nếu bấm `Tìm kiếm` khi chưa nhập dữ liệu: Vi phạm quy tắc [BR-VAL-001], hệ thống hiển thị thông báo cảnh báo lỗi [MSG-ERR-VAL-001] (*"Vui lòng nhập Mã vụ việc gốc để tìm kiếm"*) và không mở popup. |
-| Liên kết hồ sơ gốc | String(255) | Không | Ẩn | Control UI: Text link (Read-only Hyperlink).<br>- Chỉ hiển thị sau khi cán bộ đã chọn một vụ việc gốc từ popup tìm kiếm hoặc khi mở lại hồ sơ đã có dữ liệu liên kết gốc trước đó.<br>- Vị trí: Hiển thị ngay dưới trường `Vụ việc yêu cầu bồi thường gốc liên quan`.<br>- Khi click vào liên kết: Hệ thống mở màn hình [MH04 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường](#43316-mh04---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) của hồ sơ gốc ở chế độ chỉ xem trong cùng tab làm việc. Khi đóng màn hình chi tiết, hệ thống quay trở lại đúng màn hình MH02 đang nhập liệu. |
+| Liên kết hồ sơ gốc | String(255) | Không | Ẩn | Control UI: Text link (Read-only Hyperlink).<br>- Chỉ hiển thị sau khi cán bộ đã chọn một vụ việc gốc từ popup tìm kiếm hoặc khi mở lại hồ sơ đã có dữ liệu liên kết gốc trước đó.<br>- Vị trí: Hiển thị ngay dưới trường `Vụ việc yêu cầu bồi thường gốc liên quan`.<br>- Khi click vào liên kết: Hệ thống mở màn hình [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường](#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) của hồ sơ gốc ở chế độ chỉ xem trong cùng tab làm việc. Khi đóng màn hình chi tiết, hệ thống quay trở lại đúng màn hình MH02 đang nhập liệu. |
 | Không có hồ sơ gốc trên hệ thống | Boolean | Không | Chưa chọn | <br>- Chỉ hiển thị khi "Trường hợp khởi kiện" là "Đã yêu cầu cơ quan giải quyết trước khi khởi kiện — rút yêu cầu hoặc không đồng ý/thương lượng không thành (điểm b khoản 1 và khoản 2 Điều 52)". <br>- Khi tick, hiển thị 3 trường bắt buộc thay thế ngay dưới đây để lưu vết căn cứ pháp lý dù không liên kết được hồ sơ gốc trên hệ thống. |
 | Số quyết định/biên bản/đơn xin rút yêu cầu gốc | String(100) | Có theo điều kiện | Trống | Chỉ hiển thị và bắt buộc khi tick `Không có hồ sơ gốc trên hệ thống`. Lấy theo nội dung bản án/hồ sơ vụ án của Tòa án đã trích dẫn (tùy tình huống: số quyết định giải quyết bồi thường, số biên bản thương lượng không thành, hoặc số đơn xin rút yêu cầu). <br> - Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Ngày ban hành (hồ sơ gốc) | Date | Có theo điều kiện | Trống | Chỉ hiển thị và bắt buộc khi tick `Không có hồ sơ gốc trên hệ thống`. <br> - Áp dụng rule bắt buộc [BR-VAL-001]. |
@@ -201,7 +205,7 @@ flowchart TD
 | *Khối Đề nghị tạm ứng kinh phí* | Boolean | Không | Chưa chọn | Control UI: Checkbox.<br>- Hiển thị theo điều kiện của nhóm cha (ẩn thêm khi hồ sơ theo luồng đã có bản án của Tòa án).<br>- Tick để mở rộng các trường nhập tạm ứng kinh phí bên dưới. |
 | Tạm ứng Thiệt hại tinh thần (đồng) | Decimal(18,0) | Không | Trống | Chỉ nhập khi có đề nghị tạm ứng và loại thiệt hại tinh thần phù hợp được chọn. |
 | Tài liệu đính kèm kèm tạm ứng tinh thần | File | Không | Trống | Cho phép chọn file đính kèm. |
-| Tạm ứng Thiệt hại khác tính được ngay | List(Enum(String(100))) | Không | Trống | Control UI: Checkbox list / Multi-select (Chọn nhiều).<br>- Chỉ hiển thị khi có tick chọn "Đề nghị tạm ứng kinh phí".<br>- Cho phép tích chọn một hoặc nhiều loại thiệt hại khác có thể tính được ngay.<br>- Tham chiếu Danh mục Loại thiệt hại yêu cầu bồi thường [DM_27]. |
+| Tạm ứng Thiệt hại khác tính được ngay | List(Enum(String(100))) | Không | Trống | Control UI: Checkbox list / Multi-select (Chọn nhiều).<br>- Chỉ hiển thị khi có tick chọn "Đề nghị tạm ứng kinh phí".<br>- Cho phép tích chọn một hoặc nhiều loại thiệt hại khác có thể tính được ngay.<br>- Tham chiếu Danh mục Loại thiệt hại yêu cầu bồi thường [DM_27] trừ giá trị "Thiệt hại tinh thần" |
 | Tài liệu đính kèm kèm tạm ứng thiệt hại khác | File | Không | Trống | Cho phép chọn file đính kèm. |
 | *Khối Thông tin người nhận tiền* | String(100) | - | Ẩn | **Khối thông tin nhân thân và phương thức chi trả tiền tạm ứng/bồi thường.**<br>- *Điều kiện hiển thị*: Chỉ hiển thị khi tick chọn "Đề nghị tạm ứng kinh phí" (hoặc khi phát sinh chi trả tiền bồi thường thực tế).<br>- *Phạm vi khối*: Bao gồm các trường từ "Họ và tên người nhận tiền" đến "Chi nhánh ngân hàng". |
 | Họ và tên người nhận tiền | String(100) | Có khi hiển thị | Trống | Control UI: Input text.<br>- Nhập đầy đủ họ và tên của cá nhân hoặc người đại diện nhận tiền.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
@@ -228,12 +232,12 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm (tại Khối Tìm nhanh từ vụ việc xác định cơ quan) | Button | - Nếu chưa nhập dữ liệu tại ô tìm kiếm: Vi phạm quy tắc [BR-VAL-001], hệ thống hiển thị thông báo cảnh báo lỗi [MSG-ERR-VAL-001] (*"Vui lòng nhập Mã vụ việc để tìm kiếm"*) và không mở popup.<br>- Nếu đã nhập dữ liệu: Hệ thống mở [Popup Tìm kiếm Vụ việc xác định cơ quan giải quyết bồi thường](#433110-popup-tìm-kiếm-vụ-việc-xác-định-cơ-quan-giải-quyết-bồi-thường), tự động điền giá trị đang nhập vào trường `Mã vụ việc` trên Popup và kích hoạt tìm kiếm. |
-| 2 | Tìm kiếm nâng cao (tại Khối Tìm nhanh từ vụ việc xác định cơ quan) | Button | - Hệ thống mở [Popup Tìm kiếm Vụ việc xác định cơ quan giải quyết bồi thường](#433110-popup-tìm-kiếm-vụ-việc-xác-định-cơ-quan-giải-quyết-bồi-thường) ở chế độ mở rộng đầy đủ các tiêu chí lọc.<br>- Tự động kế thừa giá trị mã vụ việc đang nhập ở form chính (nếu có).<br>- Cho phép Cán bộ nhập thêm các tiêu chí lọc và bấm nút `Tìm kiếm` trên Popup. |
+| 1 | Tìm kiếm (tại Khối Tìm nhanh từ vụ việc xác định cơ quan) | Button | - Nếu chưa nhập dữ liệu tại ô tìm kiếm: Vi phạm quy tắc [BR-VAL-001], hệ thống hiển thị thông báo cảnh báo lỗi [MSG-ERR-VAL-001] (*"Vui lòng nhập Mã vụ việc để tìm kiếm"*) và không mở popup.<br>- Nếu đã nhập dữ liệu: Hệ thống mở [Popup Tìm kiếm Vụ việc xác định cơ quan giải quyết bồi thường](#433111-popup-tìm-kiếm-vụ-việc-xác-định-cơ-quan-giải-quyết-bồi-thường), tự động điền giá trị đang nhập vào trường `Mã vụ việc` trên Popup và kích hoạt tìm kiếm. |
+| 2 | Tìm kiếm nâng cao (tại Khối Tìm nhanh từ vụ việc xác định cơ quan) | Button | - Hệ thống mở [Popup Tìm kiếm Vụ việc xác định cơ quan giải quyết bồi thường](#433111-popup-tìm-kiếm-vụ-việc-xác-định-cơ-quan-giải-quyết-bồi-thường) ở chế độ mở rộng đầy đủ các tiêu chí lọc.<br>- Tự động kế thừa giá trị mã vụ việc đang nhập ở form chính (nếu có).<br>- Cho phép Cán bộ nhập thêm các tiêu chí lọc và bấm nút `Tìm kiếm` trên Popup. |
 | 3 | Liên kết hồ sơ xác định cơ quan | Link | - Khi click vào liên kết: Hệ thống mở màn hình [Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường](SRS_BTNN_Xác%20định%20cơ%20quan%20giải%20quyết.md#43316-mh04---màn-hình-chi-tiết-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) ở chế độ chỉ xem trong cùng tab làm việc.<br>- Thanh Menu Sidebar tự động chuyển Focus sang "Xác định cơ quan giải quyết bồi thường".<br>- Khi người dùng bấm "Đóng" tại màn chi tiết: Hệ thống điều hướng quay về đúng màn hình MH02 đang mở, Active lại menu "Giải quyết yêu cầu bồi thường" và giữ nguyên toàn bộ dữ liệu đang nhập trên form. |
-| 4 | Tìm kiếm (tại trường Vụ việc yêu cầu bồi thường gốc liên quan) | Button | - Nếu chưa nhập dữ liệu tại ô tìm kiếm: Vi phạm quy tắc [BR-VAL-001], hệ thống hiển thị thông báo cảnh báo lỗi [MSG-ERR-VAL-001] (*"Vui lòng nhập Mã vụ việc gốc để tìm kiếm"*) và không mở popup.<br>- Nếu đã nhập dữ liệu: Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan](#43319-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan), tự động điền giá trị đang nhập vào trường `Mã vụ việc/Số quyết định` trên Popup và kích hoạt tìm kiếm. |
-| 5 | Tìm kiếm nâng cao (tại trường Vụ việc yêu cầu bồi thường gốc liên quan) | Button | - Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan](#43319-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan) ở chế độ mở rộng đầy đủ các tiêu chí lọc.<br>- Tự động kế thừa giá trị đang nhập ở form chính (nếu có).<br>- Cho phép Cán bộ nhập thêm các tiêu chí lọc và bấm nút `Tìm kiếm` trên Popup. |
-| 6 | Liên kết hồ sơ gốc | Link | - Khi click vào liên kết tại trường `Vụ việc yêu cầu bồi thường gốc liên quan`: Hệ thống mở màn hình [MH04 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường](#43316-mh04---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) của vụ việc gốc ở chế độ chỉ xem trong cùng tab làm việc.<br>- Khi người dùng bấm "Đóng" tại màn chi tiết: Hệ thống điều hướng quay về đúng màn hình MH02 đang mở, giữ nguyên toàn bộ dữ liệu đang nhập trên form. |
+| 4 | Tìm kiếm (tại trường Vụ việc yêu cầu bồi thường gốc liên quan) | Button | - Nếu chưa nhập dữ liệu tại ô tìm kiếm: Vi phạm quy tắc [BR-VAL-001], hệ thống hiển thị thông báo cảnh báo lỗi [MSG-ERR-VAL-001] (*"Vui lòng nhập Mã vụ việc gốc để tìm kiếm"*) và không mở popup.<br>- Nếu đã nhập dữ liệu: Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan](#433110-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan), tự động điền giá trị đang nhập vào trường `Mã vụ việc/Số quyết định` trên Popup và kích hoạt tìm kiếm. |
+| 5 | Tìm kiếm nâng cao (tại trường Vụ việc yêu cầu bồi thường gốc liên quan) | Button | - Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan](#433110-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan) ở chế độ mở rộng đầy đủ các tiêu chí lọc.<br>- Tự động kế thừa giá trị đang nhập ở form chính (nếu có).<br>- Cho phép Cán bộ nhập thêm các tiêu chí lọc và bấm nút `Tìm kiếm` trên Popup. |
+| 6 | Liên kết hồ sơ gốc | Link | - Khi click vào liên kết tại trường `Vụ việc yêu cầu bồi thường gốc liên quan`: Hệ thống mở màn hình [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường](#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) của vụ việc gốc ở chế độ chỉ xem trong cùng tab làm việc.<br>- Khi người dùng bấm "Đóng" tại màn chi tiết: Hệ thống điều hướng quay về đúng màn hình MH02 đang mở, giữ nguyên toàn bộ dữ liệu đang nhập trên form. |
 | 7 | Hủy bỏ | Button | Hệ thống đóng form nhập liệu hồ sơ vụ việc và quay lại danh sách. |
 | 8 | Lưu nháp | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
 |  |  |  | **TH1 - Nhập liệu từ vụ việc**: Hệ thống lưu dữ liệu đang nhập, giữ trạng thái "Chờ tiếp nhận" và hiển thị thông báo [MSG-SUC-SYS-001]. |
@@ -245,8 +249,8 @@ flowchart TD
 |  |  |  | **TH4 - `Số giấy tờ thân nhân` là CCCD nhưng không đúng 12 chữ số**: Vi phạm [BR-VAL-004], hiển thị [MSG-ERR-VAL-004]. Không cho phép lưu thông tin. |
 |  |  |  | **TH5 - `Ngày văn bản yêu cầu bồi thường`, `Ngày tháng năm sinh`, `Ngày cấp` lớn hơn ngày hiện tại**: Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Không cho phép lưu thông tin. |
 |  |  |  | **TH6 - Dòng thiệt hại được tick nhưng chưa nhập cách tính hoặc số tiền không lớn hơn 0**: Vi phạm [BR-VAL-001]/[BR-VAL-010], hiển thị [MSG-ERR-VAL-001]/[MSG-ERR-VAL-012]. Không cho phép lưu thông tin. |
-|  |  |  | **TH7 - Hợp lệ (Hồ sơ thông thường chưa có bản án)**: Hệ thống sinh/cập nhật mã vụ việc theo quy tắc hiện hành, lưu toàn bộ thông tin hồ sơ vụ việc, chuyển trạng thái sang `Chờ kiểm tra`, cập nhật timeline và hiển thị thông báo [MSG-SUC-SYS-003]. |
-|  |  |  | **TH8 - Hợp lệ (Hồ sơ đã có Bản án/Quyết định của Tòa án theo Điều 52, 55)**: Hệ thống lưu toàn bộ thông tin bản án và mức bồi thường đã nhập; chuyển trạng thái sang `Chờ kiểm tra` để Cán bộ kiểm tra/Lãnh đạo rà soát tính hợp lệ của Bản án trước khi chuyển thẳng sang bước `Chờ thực thi` (chi trả bồi thường) và `Đề nghị cấp kinh phí`, không cần qua các bước Thụ lý, Xác minh thiệt hại, Thương lượng hay Ban hành Quyết định bồi thường. |
+|  |  |  | **TH7 - Hợp lệ (Hồ sơ Chưa có Bản án/Quyết định của Tòa án)**: Hệ thống sinh/cập nhật mã vụ việc theo quy tắc hiện hành, lưu toàn bộ thông tin hồ sơ vụ việc, chuyển trạng thái sang `Chờ kiểm tra`, cập nhật timeline và hiển thị thông báo [MSG-SUC-SYS-003]. |
+|  |  |  | **TH8 - Hợp lệ (Hồ sơ Đã có Bản án/Quyết định của Tòa án)**: Hệ thống lưu toàn bộ thông tin bản án và mức bồi thường đã nhập; chuyển trạng thái sang `Chờ kiểm tra` để Cán bộ kiểm tra rà soát tính hợp lệ trước khi chuyển sang bước Thụ lý hồ sơ (sau khi Thụ lý thành công sẽ chuyển thẳng sang `Chờ thực thi` và Cán bộ xử lý tự tạo `Đề nghị cấp kinh phí`, không qua các bước Xác minh thiệt hại, Thương lượng hay Ban hành Quyết định bồi thường). |
 | 10 | Gửi lại hồ sơ | Button | - Điều kiện hiển thị: Chỉ hiển thị khi mở màn hình MH02 đối với hồ sơ đang ở trạng thái "Yêu cầu bổ sung" (tiêu đề "BỔ SUNG HỒ SƠ VỤ VIỆC").<br>- Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới: |
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc hoặc thông tin bổ sung**: Vi phạm quy tắc [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]. Không cho phép gửi lại hồ sơ. |
 |  |  |  | **TH2 - Lỗi định dạng dữ liệu (Email, SĐT, Số CCCD, Ngày tháng...)**: Vi phạm các quy tắc [BR-VAL-002], [BR-VAL-003], [BR-VAL-004], [BR-VAL-008]. Hệ thống hiển thị thông báo lỗi tương ứng và dừng xử lý. |
@@ -259,28 +263,21 @@ flowchart TD
 
 ---
 
+
 ##### 4.3.3.1.5. MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường
 
 ###### 4.3.3.1.5.1. Màn hình
 
 ![Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](images/UC431_466_MH03_Xem_chi_tiet_xu_ly_ho_so_boi_thuong.png)
 
-**\* Quy chế hoạt động của Màn hình MH03:**
 
-- Màn hình MH03 mở ở **chế độ Cập nhật kết quả xử lý**; áp dụng khi người dùng có thẩm quyền bấm thao tác Cập nhật hồ sơ trên danh sách tra cứu (MH01) hoặc bấm nút kích hoạt nghiệp vụ tương ứng (Cập nhật kết quả bổ sung, Cập nhật xác minh, Cập nhật kết quả thương lượng, Cập nhật kết quả thực thi, Hoãn giải quyết, Tạm đình chỉ / Đình chỉ, Tiếp tục giải quyết...) trên [MH04 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường](#43316-mh04---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường).
-- **Tab 1: Thông tin Hồ sơ yêu cầu**: Luôn hiển thị, luôn ở chế độ **Chỉ đọc**, kế thừa toàn bộ dữ liệu đã nhập ở [MH02 - Màn hình Nhập liệu hồ sơ vụ việc](#43314-mh02---màn-hình-nhập-liệu-hồ-sơ-vụ-việc) (Thông tin chung, Thông tin người yêu cầu, Thông tin bồi thường thiệt hại bằng tiền, Thông tin phục hồi danh dự, Bảng tài liệu đính kèm hồ sơ).
-- **Tab 2: Chi tiết xử lý hồ sơ**: 
-  - *Điều kiện hiển thị*: Chỉ hiển thị khi Hồ sơ ở trạng thái từ Đang xác minh thiệt hại trở đi VÀ Loại yêu cầu giải quyết bồi thường là **"Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)"** hoặc **"Chỉ yêu cầu bồi thường thiệt hại bằng tiền"**.
-  - *Quy tắc mở rộng / thu gọn*: Chỉ duy nhất khối nghiệp vụ tương ứng với **Trạng thái hiện tại** của hồ sơ mới mở rộng và cho phép nhập liệu/chỉnh sửa; các khối thuộc giai đoạn trước hiển thị thu gọn (chỉ đọc, có badge [✓ Đã hoàn thành]); các khối thuộc giai đoạn sau bị khóa mờ ([🔒 Chưa thực hiện]). Khi điều hướng vào MH03 từ một nút kích hoạt cụ thể trên MH04, hệ thống tự động cuộn/focus và mở rộng sẵn đúng khối nghiệp vụ tương ứng.
-- **Tab 3: Phục hồi danh dự**: 
-  - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ có yêu cầu phục hồi danh dự (Loại yêu cầu giải quyết bồi thường là *"Yêu cầu cả hai"* hoặc *"Chỉ yêu cầu phục hồi danh dự"*) VÀ trạng thái hồ sơ thuộc nhóm từ Đang xác minh thiệt hại trở đi. Cho phép nhập/cập nhật theo Stepper 04 bước phục hồi danh dự; cấu trúc và trường thông tin chi tiết được đặc tả tại [MH05 - Tab Phục hồi danh dự](#43317-mh05---tab-phục-hồi-danh-dự).
 
 ###### 4.3.3.1.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | - | CẬP NHẬT HỒ SƠ | Chỉ đọc. |
-| Badge trạng thái | Enum(String(50)) | - | Theo hồ sơ | Hiển thị trạng thái hồ sơ theo Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
+| Tiêu đề màn hình | String(255) | - | CẬP NHẬT TIẾN TRÌNH VỤ VIỆC: [Mã vụ việc] - [Tên vụ việc] | Control UI: Tiêu đề trang.<br>- Hiển thị dạng `CẬP NHẬT TIẾN TRÌNH VỤ VIỆC: [Mã vụ việc] - [Tên vụ việc]`. Chỉ đọc. |
+| Badge trạng thái | Enum(String(50)) | - | Theo hồ sơ | Control UI: Badge màu hiển thị tại góc phải tiêu đề trang thể hiện trạng thái hồ sơ vụ việc yêu cầu bồi thường (`Chờ thực thi`, `Hoàn thành`...). |
 | Tab nghiệp vụ | Enum(String(50)) | - | Thông tin Hồ sơ yêu cầu | Control UI: Tab navigation.<br>Bao gồm 03 tab nghiệp vụ:<br>+ **Tab 1: "Thông tin Hồ sơ yêu cầu"**: Luôn hiển thị (Active mặc định). Hiển thị toàn bộ thông tin chi tiết của hồ sơ vụ việc yêu cầu bồi thường ở chế độ chỉ đọc.<br>+ **Tab 2: "Chi tiết xử lý hồ sơ"**: Chỉ hiển thị khi Hồ sơ ở trạng thái từ Đang xác minh thiệt hại trở đi VÀ Loại yêu cầu giải quyết bồi thường là "Yêu cầu cả hai" hoặc "Chỉ yêu cầu bồi thường thiệt hại bằng tiền".<br>+ **Tab 3: "Phục hồi danh dự"**: Chỉ hiển thị trên thanh điều hướng tab khi thỏa mãn đồng thời 2 điều kiện: Hồ sơ có yêu cầu phục hồi danh dự (Loại yêu cầu giải quyết bồi thường là *"Yêu cầu cả hai"* hoặc *"Chỉ yêu cầu phục hồi danh dự"*) VÀ trạng thái hồ sơ thuộc nhóm từ Đang xác minh thiệt hại trở đi. |
 | **Tab 1: Thông tin Hồ sơ yêu cầu** | String(100) | - | Active | Khối thông tin chi tiết hồ sơ vụ việc yêu cầu bồi thường ở chế độ chỉ đọc.<br>- Điều kiện hiển thị: Luôn hiển thị.<br>- Phạm vi khối: Bao gồm các thông tin chi tiết từ "Mã vụ việc" đến "Bảng tài liệu đính kèm hồ sơ" được mô tả chi tiết từng dòng bên dưới (kế thừa toàn bộ dữ liệu từ MH02 ở chế độ chỉ đọc). |
 | Mã vụ việc | String(50) | - | Theo dữ liệu tiếp nhận | Chỉ đọc. Tự động điền từ vụ việc đã tiếp nhận. |
@@ -292,7 +289,7 @@ flowchart TD
 | Liên kết hồ sơ xác định cơ quan | String(255) | - | Theo dữ liệu | Control UI: Text link (Hyperlink).<br>- Chỉ hiển thị nếu hồ sơ có liên kết với vụ việc xác định cơ quan.<br>- Khi click vào liên kết: Hệ thống mở màn hình [Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường](SRS_BTNN_Xác%20định%20cơ%20quan%20giải%20quyết.md#43316-mh04---màn-hình-chi-tiết-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) ở chế độ chỉ xem trong cùng tab làm việc; Menu Sidebar tự động Active vào "Xác định cơ quan giải quyết bồi thường". Khi đóng màn chi tiết, hệ thống quay trở lại đúng màn hình MH03 và Focus lại menu "Giải quyết yêu cầu bồi thường". |
 | Thông tin yêu cầu bổ sung | String(255) | - | Theo dữ liệu | Chỉ hiển thị khi hồ sơ từng có yêu cầu bổ sung. Hiển thị nội dung yêu cầu bổ sung do Cán bộ kiểm tra đã nhập. |
 | Loại yêu cầu giải quyết bồi thường | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Gồm Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự), Chỉ yêu cầu bồi thường thiệt hại bằng tiền hoặc Chỉ yêu cầu phục hồi danh dự. |
-| Tình trạng pháp lý hồ sơ | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Gồm Yêu cầu chưa có Bản án/Quyết định của Tòa án hoặc Đã có Bản án/Quyết định của Tòa án. |
+| Tình trạng pháp lý hồ sơ | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Gồm Chưa có Bản án/Quyết định của Tòa án hoặc Đã có Bản án/Quyết định của Tòa án. |
 | **Thông tin bản án gốc** | String(255) | - | Ẩn | Chỉ hiển thị khi hồ sơ thuộc trường hợp Đã có Bản án/Quyết định của Tòa án. |
 | Nguồn phát sinh bản án | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. Gồm Khởi kiện vụ án dân sự (Điều 52) hoặc Giải quyết trong quá trình tố tụng hình sự, tố tụng hành chính (Điều 55). |
 | Trường hợp khởi kiện | Enum(String(255)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị căn cứ khởi kiện theo bản án. |
@@ -417,216 +414,245 @@ flowchart TD
 | Mức bồi thường qua thương lượng (đồng) | Decimal(18,0) | Có theo điều kiện | Trống | Control UI: Ô nhập số tiền.<br>- Nhập số tiền bồi thường hai bên đã thống nhất qua thương lượng.<br>- Bắt buộc nhập khi chọn Thương lượng thành công [BR-VAL-001], áp dụng quy tắc số dương [BR-VAL-010]. |
 | Ghi chú thương lượng | String(500) | Không | Trống | Control UI: Ô nhập text ngắn ghi chú thêm về khoản thiệt hại. |
 | Tổng số tiền bồi thường thống nhất (đồng) | Decimal(18,0) | - | Tự động tính | Chỉ đọc. Tự động tính tổng các mức bồi thường qua thương lượng của các mục thiệt hại. |
-| Tài liệu biên bản thương lượng đính kèm | File/List(File) | Có khi hoàn thành thương lượng | Trống | Control UI: Upload file.<br>- Cho phép đính kèm Biên bản thương lượng thành (Mẫu 09/BTNN) hoặc Biên bản thương lượng không thành (Mẫu 10/BTNN) và các tài liệu liên quan.<br>- Sau khi tải lên hiển thị tên file kèm link Xem file và nút Xóa. Áp dụng [BR-FILE-010]. |
-| **5. Khối Quyết định giải quyết bồi thường** | String(255) | - | Theo trạng thái | Control UI: Khối nghiệp vụ có thể mở rộng/thu gọn.<br>- *Quy tắc hiển thị*: Mặc định thu gọn.<br>- Tự động mở rộng ở chế độ chỉnh sửa khi hồ sơ ở trạng thái Chờ ban hành QĐ hoặc khi người dùng thực hiện soạn thảo dự thảo Quyết định.<br>- Khi đã ban hành (từ Chờ thực thi trở đi) hiển thị Thu gọn và Chỉ đọc kèm [✓ Đã hoàn thành].<br>- Trước bước ban hành QĐ hiển thị Thu gọn và Khóa mờ [🔒 Chưa thực hiện]. |
-| Hình thức ban hành | Enum(String(50)) | Có khi lập QĐ | Ký số trên hệ thống | Control UI: Radio button.<br>- Gồm Ký số trên hệ thống hoặc Ký bên ngoài.<br>- Nếu chọn Ký số trên hệ thống: Hiển thị ô chọn Lãnh đạo ký ban hành và kích hoạt nút Trình ký QĐ.<br>- Nếu chọn Ký bên ngoài: Ẩn chọn Lãnh đạo ký, hiển thị các trường nhập số/ngày QĐ và tải file QĐ đã ký ngoài. |
-| Đơn vị ban hành | Enum(String(255)) | Có khi lập QĐ | Theo cơ quan giải quyết | Control UI: Combobox chọn đơn vị có thẩm quyền ban hành quyết định. |
-| Sổ văn bản áp dụng | Enum(String(255)) | Có khi lập QĐ | Tự động theo đơn vị ban hành | Control UI: Combobox chọn sổ văn bản tương ứng. |
-| Lãnh đạo ký ban hành | Enum(String(255)) | Có khi ký số | Trống | Control UI: Dropdown chọn Lãnh đạo phê duyệt/ký số thuộc đơn vị ban hành. |
-| Số quyết định | String(50) | Có khi ký ngoài | Tự động cấp / Trống | Control UI: Input text. Tự động cấp số từ sổ khi ký số thành công; hoặc cán bộ tự nhập số khi chọn ký bên ngoài. |
-| Ngày quyết định / Ngày ban hành | Date | Có khi lập QĐ | Ngày hiện tại | Control UI: Datepicker (định dạng dd/mm/yyyy). Ngày ban hành quyết định giải quyết bồi thường. |
-| Trích yếu nội dung quyết định | String(500) | Có khi lập QĐ | Trống | Control UI: Textarea / Input text. Tóm tắt nội dung quyết định giải quyết bồi thường. |
-| Tổng số tiền bồi thường theo quyết định (đồng) | Decimal(18,0) | - | Theo thương lượng | Chỉ đọc. Tự động lấy tổng số tiền bồi thường đã thương lượng thành công (hoặc theo mức bản án). |
-| Ngày có hiệu lực thi hành | Date | Có khi lập QĐ | Trống | Control UI: Datepicker (định dạng dd/mm/yyyy). Ngày quyết định có hiệu lực pháp luật. Áp dụng [BR-VAL-001]. |
-| Tài liệu Quyết định giải quyết bồi thường | File/List(File) | Có khi ban hành | Trống | Control UI: Upload file.<br>- Đính kèm file dự thảo quyết định hoặc file quyết định đã ký đóng dấu (bắt buộc khi ký bên ngoài).<br>- Hỗ trợ đính kèm nhiều file căn cứ; sau khi tải lên hiển thị tên file kèm liên kết Xem file và nút Xóa. Áp dụng [BR-FILE-010]. |
-| **6. Khối Thực thi Quyết định giải quyết bồi thường** | String(255) | - | Theo trạng thái | Control UI: Khối nghiệp vụ có thể mở rộng/thu gọn.<br>- *Quy tắc hiển thị*: Mặc định thu gọn.<br>- Tự động mở rộng ở chế độ chỉnh sửa khi hồ sơ ở trạng thái Chờ thực thi.<br>- Khi đã hoàn thành thực thi (Hoàn thành) hiển thị Thu gọn và Chỉ đọc kèm [✓ Đã hoàn thành].<br>- Trước bước thực thi hiển thị Thu gọn và Khóa mờ [🔒 Chưa thực hiện]. |
-| Ngày thực hiện chi trả | Date | Có khi hoàn thành thực thi | Trống | Control UI: Datepicker (định dạng dd/mm/yyyy). Ngày cơ quan hoàn tất chi trả tiền bồi thường cho người bị thiệt hại. Áp dụng [BR-VAL-001] và [BR-VAL-008]. |
-| Hình thức chi trả | Enum(String(50)) | Có khi hoàn thành thực thi | Chuyển khoản | Control UI: Radio button / Combobox.<br>- Gồm Chuyển khoản hoặc Tiền mặt. |
-| Số tiền thực tế đã chi trả (đồng) | Decimal(18,0) | Có khi hoàn thành thực thi | Theo quyết định | Control UI: Ô nhập số tiền. Mặc định bằng số tiền theo Quyết định bồi thường trừ số tiền đã tạm ứng. Áp dụng [BR-VAL-010]. |
-| Chứng từ / Biên nhận chi trả đính kèm | File/List(File) | Có khi hoàn thành thực thi | Trống | Control UI: Upload file.<br>- Đính kèm Ủy nhiệm chi, Giấy nộp tiền hoặc Phiếu chi/Biên nhận giao nhận tiền mặt.<br>- Sau khi tải lên hiển thị tên file kèm link Xem file và nút Xóa. Áp dụng [BR-FILE-010]. |
-| Ghi chú thực thi | Text(2000) | Không | Trống | Control UI: Textarea. Ghi nhận tình hình thực thi chi trả hoặc các nội dung phát sinh khác. |
-| **7. Khối thông tin Hoãn / Tạm đình chỉ / Đình chỉ giải quyết** | String(255) | - | Theo trạng thái | Control UI: Khối nghiệp vụ có thể mở rộng/thu gọn.<br>- *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ phát sinh quyết định Hoãn giải quyết, Tạm đình chỉ giải quyết hoặc Đình chỉ giải quyết (thuộc nhóm trạng thái từ Đang xác minh thiệt hại trở đi).<br>- *Quy tắc hiển thị*: Tự động mở rộng ở chế độ chỉnh sửa khi người dùng bấm thao tác Hoãn giải quyết hoặc Tạm đình chỉ / Đình chỉ từ MH04; hiển thị Thu gọn và Chỉ đọc kèm [✓ Đã hoàn thành] khi đã ban hành quyết định tương ứng. |
-| Loại quyết định áp dụng | Enum(String(100)) | Có khi áp dụng | Quyết định hoãn giải quyết bồi thường | Control UI: Combobox / Radio button.<br>- Giá trị gồm: Quyết định hoãn giải quyết bồi thường, Quyết định tạm đình chỉ giải quyết bồi thường, Quyết định đình chỉ giải quyết bồi thường. |
-| Hình thức ban hành | Enum(String(50)) | Có khi áp dụng | Ký số trên hệ thống | Control UI: Radio button.<br>- Gồm: Ký số trên hệ thống hoặc Ký bên ngoài. |
+| Tài liệu kèm theo | File/List(File) | Có khi hoàn thành thương lượng | Trống | Control UI: Upload file.<br>- Cho phép đính kèm Biên bản thương lượng thành (Mẫu 09/BTNN) hoặc Biên bản thương lượng không thành (Mẫu 10/BTNN) và các tài liệu liên quan.<br>- Sau khi tải lên hiển thị tên file kèm link Xem file và nút Xóa. Áp dụng [BR-FILE-010]. |
+| **5. Khối Quyết định giải quyết bồi thường** | Section | - | Theo liên kết | **Khối thông tin Quyết định giải quyết bồi thường liên kết với hồ sơ.**<br>- *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái từ `Chờ ban hành QĐ` trở đi (sau khi thương lượng thành công hoặc theo luồng hồ sơ có bản án).<br>- *Quy chế hoạt động*: Hoạt động ở chế độ liên kết với module Quản lý Quyết định giải quyết bồi thường; phân biệt rõ 02 trường hợp bên dưới. |
+| *TH1: Chưa tạo QĐ giải quyết bồi thường liên kết* | Object | - | Trạng thái rỗng | - **Biểu tượng (Icon)**: Hiển thị icon tài liệu minh họa trạng thái rỗng (Empty State).<br>- **Thông báo trạng thái**: Hiển thị dòng thông báo *"Chưa có quyết định giải quyết bồi thường liên kết với hồ sơ này."*<br>- **Nút tác vụ chính**: Hiển thị nút `+ Thêm quyết định` (Primary Button màu xanh dương).|
+| *TH2: Đã tạo QĐ giải quyết bồi thường liên kết* | Object | - | Theo dữ liệu | Hiển thị toàn bộ thông tin chi tiết của Quyết định đã liên kết ở chế độ **Chỉ đọc (Read-only)** gồm các trường bên dưới: |
+| Số Quyết định | String(50) | - | Theo dữ liệu / `-` | Chỉ đọc. Hiển thị số quyết định nếu QĐ đã được ban hành; nếu QĐ đang soạn thảo/chờ ký thì hiển thị `-`. |
+| Ngày Quyết định / Ngày ban hành | Date | - | Theo dữ liệu / `-` | Chỉ đọc. Ngày ký ban hành văn bản (định dạng `dd/mm/yyyy`). Chỉ hiển thị khi QĐ đã ban hành, còn lại hiển thị `-`. |
+| Ngày hiệu lực | Date | - | Theo dữ liệu / `-` | Chỉ đọc. Ngày văn bản chính thức phát sinh hiệu lực thi hành (định dạng `dd/mm/yyyy`). Chỉ hiển thị khi QĐ đã ban hành, còn lại hiển thị `-`. |
+| Người ký duyệt | String(255) | - | Theo dữ liệu / `-` | Chỉ đọc. Họ tên và chức vụ của người ký duyệt. Chỉ hiển thị khi QĐ đã ban hành, còn lại hiển thị `-`. |
+| Trích yếu nội dung | Text(2000) | - | Theo dữ liệu / `-` | Chỉ đọc. Tóm tắt nội dung quyết định. Chỉ hiển thị khi QĐ đã ban hành, còn lại hiển thị `-`. |
+| Trạng thái quyết định | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Badge màu thể hiện tiến độ xử lý văn bản (ví dụ: `Lưu nháp`, `Chờ ký duyệt`, `Đã ban hành`...). |
+| Tài liệu đính kèm | File/List(File) | - | Theo dữ liệu / `-` | Chỉ đọc. Tệp tin văn bản quyết định chính thức (PDF ký số hoặc scan đóng dấu đỏ) kèm dung lượng file, nút `Xem file` (mở tab mới) và `Tải về`. Chỉ hiển thị khi QĐ đã ban hành, còn lại hiển thị `-`. |
+| **6. Khối Thực thi Quyết định giải quyết bồi thường** | Section | - | Theo trạng thái đề nghị | **Khối thông tin thực thi chi trả kinh phí theo quyết định giải quyết bồi thường.**<br>- *Quy chế hoạt động*: Hoạt động ở chế độ **Chỉ đọc (Read-only)**; tự động kế thừa và đồng bộ dữ liệu từ **Module Cấp kinh phí tạm ứng/Bồi thường** (không cho phép nhập liệu hay cập nhật trực tiếp tại đây).<br>- *Quy tắc hiển thị loại trừ (Mandatory)*: Khối 6 **chỉ hiển thị 1 trong 2 khối con** tùy theo Trạng thái đề nghị từ Module Cấp kinh phí tạm ứng/Bồi thường, tuyệt đối không hiển thị đồng thời cả 2 khối con. |
+| *Khối A: Chi trả kinh phí thông thường* | Group | - | Hiển thị khi Chờ chi trả / Hoàn thành chi trả | **Chỉ hiển thị khi Trạng thái đề nghị kinh phí là `Chờ chi trả` hoặc `Hoàn thành chi trả`.** Gồm các trường thông tin chỉ đọc bên dưới: |
+| Trạng thái | Enum(String(50)) | - | Theo đề nghị kinh phí | Chỉ đọc. Badge màu thể hiện Trạng thái đề nghị từ Module Cấp kinh phí tạm ứng/Bồi thường (`Chờ chi trả` hoặc `Hoàn thành chi trả`). |
+| Ngày thực hiện chi trả | Date | - | Theo dữ liệu / `-` | Chỉ đọc. Kế thừa ngày chi trả thực tế từ Module Cấp kinh phí tạm ứng/Bồi thường (định dạng `dd/mm/yyyy`); nếu đang `Chờ chi trả` thì hiển thị `-`. |
+| Phương thức chi trả | Enum(String(50)) | - | Theo dữ liệu / `-` | Chỉ đọc. Kế thừa phương thức chi trả (`Chuyển khoản`, `Tiền mặt`); nếu chưa chi trả thì hiển thị `-`. |
+| Số tiền thực tế đã chi trả (đồng) | Decimal(18,0) | - | Theo dữ liệu / `-` | Chỉ đọc. Kế thừa tổng số tiền đã chi trả thực tế cho người thụ hưởng (định dạng phân tách hàng nghìn); nếu chưa chi trả thì hiển thị `-`. |
+| Chứng từ / Biên nhận chi trả đính kèm | File/List(File) | - | Theo dữ liệu / `-` | Chỉ đọc. Hiển thị danh sách file chứng từ chi trả kèm liên kết `Xem file` (mở tab mới) và `Tải về`; nếu chưa có thì hiển thị `-`. |
+| Ý kiến / Nội dung thực hiện chi trả | Text(2000) | - | Theo dữ liệu | Chỉ đọc. Kế thừa nội dung thực hiện chi trả; chỉ hiển thị nếu bên Module Cấp kinh phí tạm ứng/Bồi thường có nhập thông tin này. |
+| *Khối B: Thông tin sung quỹ nhà nước* | Group | - | Hiển thị khi Sung quỹ nhà nước | **Chỉ hiển thị khi Trạng thái đề nghị kinh phí là `Sung quỹ nhà nước`** (áp dụng khi quá hạn 03 năm kể từ ngày nhận thông báo mà người yêu cầu không đến nhận tiền bồi thường và cơ quan đã nộp ngân sách nhà nước). Gồm các trường thông tin chỉ đọc bên dưới: |
+| Trạng thái | Enum(String(50)) | - | `Sung quỹ nhà nước` | Chỉ đọc. Hiển thị badge cảnh báo `Sung quỹ nhà nước`. |
+| Ngày người yêu cầu nhận thông báo | Date | - | Theo dữ liệu | Chỉ đọc. Kế thừa ngày người yêu cầu nhận được thông báo nhận tiền chi trả (định dạng `dd/mm/yyyy`). |
+| Tệp chứng minh đã thông báo | File/List(File) | - | Theo dữ liệu | Chỉ đọc. Kế thừa file thông báo/giấy báo phát bưu điện/biên bản giao nhận kèm liên kết `Xem file` và `Tải về`. |
+| **THÔNG TIN SUNG QUỸ NHÀ NƯỚC** | Section | - | Theo dữ liệu | Khối chi tiết thủ tục nộp ngân sách nhà nước: |
+| Số chứng từ / quyết định sung quỹ | String(100) | - | Theo dữ liệu | Chỉ đọc. Số hiệu Quyết định sung quỹ hoặc Giấy nộp tiền vào NSNN. |
+| Ngày sung quỹ | Date | - | Theo dữ liệu | Chỉ đọc. Ngày thực hiện nộp tiền sung quỹ nhà nước (định dạng `dd/mm/yyyy`). |
+| Số tiền sung quỹ (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Chỉ đọc. Tổng số tiền bồi thường nộp sung quỹ nhà nước (định dạng phân tách hàng nghìn). |
+| Tài khoản trích nộp | String(100) | - | Theo dữ liệu | Chỉ đọc. Số tài khoản / Kho bạc nhà nước tiếp nhận nộp ngân sách. |
+| Mã giao dịch | String(100) | - | Theo dữ liệu | Chỉ đọc. Mã giao dịch ngân hàng / Kho bạc hoặc số bút toán. |
+| **7. Khối thông tin Hoãn / Tạm đình chỉ / Đình chỉ giải quyết** | Section | - | Theo trạng thái | Control UI: Khối nghiệp vụ có thể mở rộng/thu gọn.<br>- *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ phát sinh quyết định Hoãn giải quyết, Tạm đình chỉ giải quyết hoặc Đình chỉ giải quyết (thuộc nhóm trạng thái từ `Đang xác minh thiệt hại` trở đi).<br>- *Quy tắc hiển thị*: Tự động mở rộng ở chế độ chỉnh sửa khi cán bộ bấm thao tác `Hoãn / Tạm đình chỉ / Đình chỉ giải quyết` từ MH05; hiển thị Thu gọn và Chỉ đọc kèm `[✓ Đã hoàn thành]` khi đã ban hành quyết định tương ứng. |
+| Loại quyết định áp dụng | Enum(String(100)) | Có khi áp dụng | `Hoãn giải quyết` | Control UI: Combobox / Radio button gồm:<br>- `Hoãn giải quyết`<br>- `Tạm đình chỉ giải quyết`<br>- `Đình chỉ giải quyết` |
 | Đơn vị ban hành | Enum(String(255)) | Có khi áp dụng | Theo cơ quan giải quyết | Control UI: Combobox chọn đơn vị ban hành quyết định hoãn/tạm đình chỉ/đình chỉ. |
-| Sổ văn bản áp dụng | Enum(String(255)) | Có khi áp dụng | Tự động theo đơn vị ban hành | Control UI: Combobox chọn sổ văn bản tương ứng. |
-| Số quyết định | String(50) | Có khi áp dụng | Tự động cấp / Trống | Control UI: Input text. Tự động cấp số từ sổ khi ký số; hoặc cán bộ tự nhập số khi chọn ký ngoài. |
-| Ngày ban hành quyết định | Date | Có khi áp dụng | Ngày hiện tại | Control UI: Datepicker (định dạng dd/mm/yyyy). Ngày ban hành quyết định hoãn/tạm đình chỉ/đình chỉ. |
-| Ngày bắt đầu áp dụng | Date | Có khi áp dụng | Trống | Control UI: Datepicker (định dạng dd/mm/yyyy). Thời điểm bắt đầu có hiệu lực tạm dừng/hoãn/đình chỉ. Áp dụng [BR-VAL-001]. |
-| Ngày dự kiến kết thúc / Hạn hoãn | Date | Không | Trống | Control UI: Datepicker (định dạng dd/mm/yyyy). Áp dụng khi hoãn hoặc tạm đình chỉ có thời hạn xác định. |
+| Số quyết định | String(50) | Có khi áp dụng | Trống | Control UI: Input text. Nhập số hiệu quyết định hoãn/tạm đình chỉ/đình chỉ. Áp dụng [BR-VAL-001]. |
+| Ngày ban hành quyết định | Date | Có khi áp dụng | Ngày hiện tại | Control UI: Datepicker (định dạng `dd/mm/yyyy`). Ngày ký ban hành văn bản. |
+| Ngày bắt đầu áp dụng | Date | Có khi áp dụng | Trống | Control UI: Datepicker (định dạng `dd/mm/yyyy`). Thời điểm bắt đầu có hiệu lực tạm dừng/hoãn/đình chỉ. Áp dụng [BR-VAL-001]. |
+| Ngày dự kiến kết thúc / Hạn hoãn | Date | Không | Trống | Control UI: Datepicker (định dạng `dd/mm/yyyy`). Áp dụng khi hoãn hoặc tạm đình chỉ có thời hạn xác định. |
 | Căn cứ pháp lý và Lý do áp dụng | Text(2000) | Có khi áp dụng | Trống | Control UI: Textarea. Ghi nhận căn cứ pháp luật và lý do chi tiết thực hiện hoãn, tạm đình chỉ hoặc đình chỉ giải quyết vụ việc. Áp dụng [BR-VAL-001]. |
-| Tài liệu quyết định đính kèm | File/List(File) | Có khi áp dụng | Trống | Control UI: Upload file.<br>- Với ký bên ngoài, bắt buộc đính kèm file quyết định đã ký; cho phép đính kèm thêm nhiều file căn cứ. Sau khi chọn file, UI hiển thị tên file, dung lượng, link Xem file và link Xóa. Áp dụng [BR-FILE-010]. |
-| Popup Tiếp tục giải quyết | String(255) | - | Ẩn | Hiển thị khi người dùng bấm Tiếp tục giải quyết đối với vụ việc đang Hoãn giải quyết hoặc Tạm đình chỉ giải quyết. |
-| Số quyết định tiếp tục giải quyết | String(50) | Có khi tiếp tục giải quyết | Trống | Số quyết định/văn bản cho phép tiếp tục giải quyết vụ việc; áp dụng cùng nguyên tắc Đơn vị ban hành + Sổ văn bản áp dụng + Hình thức ban hành như quyết định hoãn/tạm đình chỉ/đình chỉ. |
-| Ngày quyết định tiếp tục giải quyết | Date | Có khi tiếp tục giải quyết | Trống | Định dạng dd/mm/yyyy. Áp dụng [BR-VAL-001]. |
-| Lý do/Nội dung tiếp tục giải quyết | Text(2000) | Có khi tiếp tục giải quyết | Trống | Ghi nhận căn cứ hoặc nội dung cho phép tiếp tục giải quyết. |
-| Tài liệu tiếp tục giải quyết | File/List(File) | Không | Trống | Cho phép đính kèm nhiều file, hỗ trợ Xem file và Xóa. |
-| **Tab Phục hồi danh dự** | String(100) | - | Ẩn/Hiện | Khối quản lý quy trình tổ chức phục hồi danh dự cho người bị thiệt hại, cho phép nhập/cập nhật.<br>- Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ có yêu cầu phục hồi danh dự và thuộc nhóm trạng thái từ "Đang xác minh thiệt hại" trở đi.<br>- Phạm vi khối: Bao gồm "Thẻ thông tin phục hồi danh dự" và Stepper 04 bước phục hồi danh dự (chi tiết đặc tả tại [MH05 - Tab Phục hồi danh dự](#43317-mh05---tab-phục-hồi-danh-dự)). |
+| Tài liệu quyết định đính kèm | File / List(File) | Có khi áp dụng | Trống | Control UI: Upload file. Đính kèm tệp tin quyết định đã ký và các tài liệu căn cứ liên quan. Hiển thị tên file kèm liên kết `Xem file` và `Xóa`. Áp dụng [BR-FILE-010]. |
+| **Tab 3: Phục hồi danh dự** | String(100) | - | Ẩn/Hiện | Khối quản lý quy trình tổ chức phục hồi danh dự cho người bị thiệt hại, cho phép nhập/cập nhật.<br>- Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ có yêu cầu phục hồi danh dự và thuộc nhóm trạng thái từ "Đang xác minh thiệt hại" trở đi.<br>- Phạm vi khối: Bao gồm "Thẻ thông tin phục hồi danh dự" và Stepper 04 bước phục hồi danh dự (chi tiết đặc tả tại [MH04 - Tab Phục hồi danh dự](#43316-mh04---tab-phục-hồi-danh-dự)). |
 | Timeline xử lý | List(Object) | - | Theo hồ sơ | Hiển thị theo thứ tự thời gian toàn bộ lịch xử lý của vụ việc; mỗi dòng lịch sử gồm các trường mô tả bên dưới. |
 | Thời điểm thao tác | Datetime | - | Theo dữ liệu | Chỉ đọc. Định dạng dd/mm/yyyy HH:mm. |
 | Người thực hiện | String(255) | - | Theo dữ liệu | Chỉ đọc. Họ tên người thực hiện thao tác. |
 | Vai trò | String(100) | - | Theo dữ liệu | Chỉ đọc. Vai trò của người thực hiện (Cán bộ/Chuyên viên/Thủ trưởng). |
 | Hành động | String(255) | - | Theo dữ liệu | Chỉ đọc. Tên thao tác nghiệp vụ đã thực hiện, ví dụ Tiếp nhận yêu cầu, Nhập liệu hồ sơ, Kiểm tra hồ sơ, Yêu cầu bổ sung, Từ chối, Thụ lý, Từ chối thụ lý, Hoàn thành xác minh, Hoàn thành thương lượng, Hoãn/Tạm đình chỉ/Đình chỉ giải quyết, Tiếp tục giải quyết, Trình ký QĐ, Duyệt ký số QĐ, Hoàn thành thực thi, cập nhật phục hồi danh dự. |
-| Trạng thái trước | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Trạng thái vụ việc trước khi thực hiện thao tác, Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
-| Trạng thái sau | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Trạng thái vụ việc sau khi thực hiện thao tác, Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
 | Nội dung/Lý do | Text(2000) | - | Theo dữ liệu | Chỉ đọc. Nội dung giải trình, lý do từ chối/yêu cầu bổ sung, hoặc căn cứ/lý do hoãn/tạm đình chỉ/đình chỉ nếu thao tác có nhập. |
-| Thanh thao tác cuối màn hình | String(255) | - | Theo phân quyền/trạng thái | Control UI: Fixed action bar.<br>- Render động theo trạng thái hồ sơ, quyền người dùng và cán bộ được giao.<br>- Thanh thao tác hiển thị các nút hoàn tất giai đoạn tương ứng với khối nghiệp vụ đang mở rộng/nhập liệu (ví dụ Hoàn thành bổ sung, Hoàn thành xác minh, Lưu thông tin thương lượng/Hoàn thành thương lượng, Hoàn thành thực thi...) kèm nút Hủy.<br>- Điều kiện hiển thị chi tiết của từng nút được đặc tả tại bảng Chức năng trên màn hình. |
+| Thanh thao tác cuối màn hình | String(255) | - | Theo phân quyền/trạng thái | Control UI: Fixed action bar.<br>- Render động theo trạng thái hồ sơ, quyền người dùng và cán bộ được giao.<br>- Thanh thao tác hiển thị các nút hoàn tất giai đoạn tương ứng với khối nghiệp vụ đang mở rộng/nhập liệu (ví dụ Hoàn thành bổ sung, Hoàn thành xác minh, Lưu thông tin thương lượng/Hoàn thành thương lượng...) kèm nút Hủy.<br>- Điều kiện hiển thị chi tiết của từng nút được đặc tả tại bảng Chức năng trên màn hình. |
 
 ###### 4.3.3.1.5.3. Chức năng trên màn hình
 
-| STT | Tên chức năng | Định dạng | Mô tả |
+| STT | Tên chức năng | Vị trí / Định dạng | Mô tả thao tác & Luồng xử lý |
 | :--- | :--- | :--- | :--- |
-| 1 | Hoàn thành bổ sung | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ đang ở trạng thái Yêu cầu bổ sung (đã được điều hướng vào MH03 từ chức năng Cập nhật kết quả bổ sung trên MH04, khối Bổ sung hồ sơ đã tự động mở rộng ở chế độ chỉnh sửa).<br>- Khi click: Hệ thống kiểm tra điều kiện dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Bỏ trống trường bắt buộc Nhập thông tin đã bổ sung**: Vi phạm [BR-VAL-001], hệ thống highlight viền đỏ ô nhập lỗi, hiển thị cảnh báo [MSG-ERR-VAL-001] và không cho lưu. |
-|  |  |  | **TH2 - Hợp lệ**: Hệ thống lưu nội dung thông tin và tài liệu bổ sung, chuyển trạng thái hồ sơ sang Chờ kiểm tra, cập nhật timeline xử lý và hiển thị thông báo thành công [MSG-SUC-SYS-002]. |
-| 2 | Hoàn thành xác minh | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ đang ở trạng thái Đang xác minh thiệt hại (đã được điều hướng vào MH03 từ chức năng Cập nhật xác minh trên MH04, khối Xác minh thiệt hại đã tự động mở rộng ở chế độ chỉnh sửa).<br>- Khi click: Hệ thống kiểm tra dữ liệu và lưu kết quả xác minh thiệt hại, chuyển hồ sơ sang trạng thái Đang thương lượng, cập nhật timeline và hiển thị [MSG-SUC-SYS-002]. |
-| 3 | Lưu thông tin thương lượng | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ đang ở trạng thái Đang thương lượng (đã được điều hướng vào MH03 từ chức năng Cập nhật kết quả thương lượng trên MH04, khối Thương lượng bồi thường đã tự động mở rộng ở chế độ chỉnh sửa).<br>- Khi click: Hệ thống lưu tạm thông tin dự kiến/kết quả phiên thương lượng đang nhập và giữ nguyên trạng thái hồ sơ, hiển thị [MSG-SUC-SYS-001]. |
-| 4 | Hoàn thành thương lượng | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ đang ở trạng thái Đang thương lượng.<br>- Khi click: Kiểm tra các trường bắt buộc; nếu kết quả là Thương lượng thành công chuyển hồ sơ sang Chờ ban hành QĐ, nếu Thương lượng không thành công chuyển sang trạng thái Thương lượng không thành công, cập nhật timeline và hiển thị [MSG-SUC-SYS-002]. |
-| 5 | Tạo mới Quyết định | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái Chờ ban hành QĐ và chưa có quyết định dự thảo.<br>- Khi click: Hệ thống mở rộng khối Quyết định giải quyết bồi thường ở chế độ nhập liệu và hiển thị các nút Xem trước QĐ, Lưu nháp QĐ, Trình ký QĐ. |
-| 6 | Xem trước QĐ | Button | - Điều kiện hiển thị: Chỉ hiển thị khi đang soạn thảo quyết định bồi thường.<br>- Khi click: Mở bản xem trước nội dung quyết định. |
-| 7 | Lưu nháp QĐ | Button | - Điều kiện hiển thị: Chỉ hiển thị khi đang soạn thảo quyết định bồi thường.<br>- Khi click: Lưu dự thảo quyết định với trạng thái Lưu nháp và giữ nguyên trạng thái hồ sơ. |
-| 8 | Trình ký QĐ | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái Chờ ban hành QĐ và hình thức ban hành là Ký số trên hệ thống.<br>- Khi click: Chuyển quyết định sang trạng thái Chờ ký và chuyển đến đúng Lãnh đạo ký ban hành đã chọn. |
-| 9 | Duyệt ký số QĐ | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái Chờ ban hành QĐ và Quyết định đang ở trạng thái Chờ ký.<br>- Khi click: Ký số duyệt quyết định, hệ thống cấp số/ngày ban hành theo sổ, chuyển quyết định sang Đã ban hành, chuyển hồ sơ sang Chờ thực thi và cập nhật timeline. |
-| 10 | Hoàn thành thực thi | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ đang ở trạng thái Chờ thực thi (đã được điều hướng vào MH03 từ chức năng Cập nhật kết quả thực thi trên MH04, khối Thực thi giải quyết bồi thường đã tự động mở rộng ở chế độ chỉnh sửa).<br>- Khi click: Kiểm tra ngày chi trả và chứng từ chi trả; nếu hồ sơ có phục hồi danh dự thì kiểm tra đã hoàn tất phục hồi danh dự; nếu hợp lệ chuyển hồ sơ sang trạng thái Hoàn thành và cập nhật timeline, hiển thị [MSG-SUC-SYS-002]. |
-| 11 | Lưu quyết định Hoãn / Tạm đình chỉ / Đình chỉ | Button | - Điều kiện hiển thị: Chỉ hiển thị khi khối Hoãn / Tạm đình chỉ / Đình chỉ giải quyết đang mở ở chế độ nhập liệu (đã được điều hướng vào MH03 từ chức năng Hoãn / Tạm đình chỉ / Đình chỉ giải quyết trên MH04) và hồ sơ ở một trong các trạng thái Đang xác minh thiệt hại, Đang thương lượng, Thương lượng không thành công, Chờ ban hành QĐ.<br>- Khi click: Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Bỏ trống trường bắt buộc (Đơn vị ban hành, Số quyết định/ký số, Ngày bắt đầu áp dụng, Căn cứ/Lý do, hoặc tài liệu đính kèm khi ký bên ngoài)**: Vi phạm [BR-VAL-001], hệ thống tô viền đỏ ô trống đầu tiên và hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]. Không cho phép lưu. |
-|  |  |  | **TH2 - Hợp lệ**: Hệ thống lưu thông tin quyết định hoãn/tạm đình chỉ/đình chỉ, chuyển hồ sơ sang trạng thái tương ứng (Hoãn giải quyết, Tạm đình chỉ giải quyết hoặc Đình chỉ giải quyết), cập nhật timeline và hiển thị [MSG-SUC-SYS-002]. |
-| 12 | Xác nhận tiếp tục giải quyết | Button | - Điều kiện hiển thị: Chỉ hiển thị khi khối Popup Tiếp tục giải quyết đang mở ở chế độ nhập liệu (đã được điều hướng vào MH03 từ chức năng Tiếp tục giải quyết trên MH04) và hồ sơ ở trạng thái Hoãn giải quyết hoặc Tạm đình chỉ giải quyết.<br>- Khi click: Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001]. Không cho phép xác nhận. |
-|  |  |  | **TH2 - Hợp lệ**: Hệ thống lưu số/ngày quyết định và lý do tiếp tục giải quyết, khôi phục hồ sơ về đúng Bước xử lý trước khi áp dụng đã ghi nhận, cập nhật timeline và hiển thị [MSG-SUC-SYS-002]. |
-| 13 | Xem file | Link | - Điều kiện hiển thị: Hiển thị ngay sau tên file đính kèm.<br>- Cho phép xem file tại tab riêng. |
-| 14 | Hủy | Button | - Điều kiện hiển thị: Luôn hiển thị.<br>- Khi click: Hệ thống hủy thay đổi chưa lưu của khối đang chỉnh sửa và đóng màn hình cập nhật, quay lại danh sách tra cứu. |
+| 1 | Hoàn thành bổ sung | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Yêu cầu bổ sung` (đã được điều hướng vào MH03 từ chức năng `Cập nhật kết quả bổ sung` trên MH05, khối Bổ sung hồ sơ đã tự động mở rộng ở chế độ chỉnh sửa).<br>- Xử lý:<br>+ **TH1 - Bỏ trống trường bắt buộc Nhập thông tin đã bổ sung**: Vi phạm [BR-VAL-001], hệ thống highlight viền đỏ ô nhập lỗi, hiển thị cảnh báo [MSG-ERR-VAL-001] và không cho lưu.<br>+ **TH2 - Hợp lệ**: Hệ thống lưu nội dung thông tin và tài liệu bổ sung, chuyển trạng thái hồ sơ sang `Chờ kiểm tra`, cập nhật timeline xử lý và hiển thị thông báo thành công [MSG-SUC-SYS-002]. |
+| 2 | Hoàn thành xác minh | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang xác minh thiệt hại` (đã được điều hướng vào MH03 từ chức năng `Cập nhật xác minh` trên MH05, khối Xác minh thiệt hại đã tự động mở rộng ở chế độ chỉnh sửa).<br>- Xử lý: Hệ thống kiểm tra dữ liệu và lưu kết quả xác minh thiệt hại, chuyển hồ sơ sang trạng thái `Đang thương lượng`, cập nhật timeline và hiển thị [MSG-SUC-SYS-002]. |
+| 3 | Lưu thông tin thương lượng | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang thương lượng` (đã được điều hướng vào MH03 từ chức năng `Cập nhật kết quả thương lượng` trên MH05, khối Thương lượng bồi thường đã tự động mở rộng ở chế độ chỉnh sửa).<br>- Xử lý: Hệ thống lưu tạm thông tin dự kiến/kết quả phiên thương lượng đang nhập và giữ nguyên trạng thái hồ sơ, hiển thị [MSG-SUC-SYS-001]. |
+| 4 | Hoàn thành thương lượng | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang thương lượng`.<br>- Xử lý: Kiểm tra các trường bắt buộc; nếu kết quả là Thương lượng thành công chuyển hồ sơ sang `Chờ ban hành QĐ`, nếu Thương lượng không thành công chuyển sang trạng thái `Thương lượng không thành công`, cập nhật timeline và hiển thị [MSG-SUC-SYS-002]. |
+| 5 | + Thêm quyết định | Button tại Khối 5 | - Điều kiện hiển thị: Hiển thị tại Khối 5 khi hồ sơ ở trạng thái `Chờ ban hành QĐ` và chưa có Quyết định liên kết.<br>- Xử lý: Khi click, hệ thống điều hướng mở màn hình/form Thêm mới Quyết định giải quyết bồi thường (thuộc module Quyết định giải quyết bồi thường), tự động kế thừa và liên kết sẵn thông tin từ hồ sơ yêu cầu bồi thường hiện tại. |
+| 6 | Xem chi tiết Quyết định | Link/Button tại Khối 5 | - Điều kiện hiển thị: Hiển thị tại Khối 5 khi đã có Quyết định giải quyết bồi thường liên kết.<br>- Xử lý: Khi click, hệ thống điều hướng mở màn hình **Xem chi tiết Quyết định giải quyết bồi thường** thuộc Module Quyết định giải quyết bồi thường ở chế độ chỉ xem. |
+| 7 | Xem chi tiết kinh phí | Link/Button tại Khối 6 | - Điều kiện hiển thị: Hiển thị tại Khối 6 khi hồ sơ ở trạng thái `Chờ thực thi`, `Hoàn thành` hoặc `Sung quỹ nhà nước`.<br>- Xử lý: Khi click, hệ thống điều hướng mở màn hình **Xem chi tiết đề nghị cấp kinh phí** tại Module Cấp kinh phí tạm ứng/Bồi thường, tự động focus/cuộn tới đúng khối thông tin tương ứng (*Khối Chi trả kinh phí* hoặc *Khối Sung quỹ nhà nước*). |
+| 8 | Lưu thông tin | Button tại Khối 7 | - Điều kiện hiển thị: Chỉ hiển thị khi khối Hoãn / Tạm đình chỉ / Đình chỉ giải quyết đang mở ở chế độ nhập liệu (đã được điều hướng vào MH03 từ chức năng `Hoãn / Tạm đình chỉ / Đình chỉ giải quyết` trên MH05) và hồ sơ ở một trong các trạng thái `Đang xác minh thiệt hại`, `Đang thương lượng`, `Thương lượng không thành công`, `Chờ ban hành QĐ`.<br>- Xử lý:<br>+ **TH1 - Bỏ trống trường bắt buộc **: Vi phạm [BR-VAL-001], hệ thống tô viền đỏ ô trống đầu tiên và hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]. Không cho phép lưu.<br>+ **TH2 - Hợp lệ**: Hệ thống lưu thông tin trong khối quyết định hoãn/tạm đình chỉ/đình chỉ, chuyển hồ sơ sang trạng thái tương ứng với Loại quyết định đã chọn (`Hoãn giải quyết`, `Tạm đình chỉ giải quyết` hoặc `Đình chỉ giải quyết`), cập nhật timeline và hiển thị [MSG-SUC-SYS-002]. |
+| 9 | Xem file | Link | - Điều kiện hiển thị: Hiển thị ngay sau tên file đính kèm.<br>- Cho phép xem file tại tab riêng. |
+| 10 | Hủy | Button | - Điều kiện hiển thị: Luôn hiển thị.<br>- Khi click: Hệ thống hủy thay đổi chưa lưu của khối đang chỉnh sửa và đóng màn hình cập nhật, quay lại danh sách tra cứu. |
 
 ---
-##### 4.3.3.1.6. MH04 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường
+
+##### 4.3.3.1.6. MH04 - Tab Phục hồi danh dự
 
 ###### 4.3.3.1.6.1. Màn hình
 
+![Phục hồi danh dự](images/UC431_466_MH04_Phuc_hoi_danh_du.png)
+
+###### 4.3.3.1.6.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả & Quy tắc hiển thị |
+| :--- | :--- | :--- | :--- | :--- |
+| **I. Khối thông tin tổng quan phục hồi danh dự** | Section | - | - | Control UI: Thẻ tổng quan 02 cột hiển thị phía trên Stepper tiến trình: |
+| Căn cứ phục hồi danh dự | String(255) | - | Theo hồ sơ | Chỉ đọc. Kế thừa từ quyết định/văn bản căn cứ giải quyết bồi thường. |
+| Cơ quan ban hành căn cứ | String(255) | - | Theo hồ sơ | Chỉ đọc. Tên cơ quan ban hành văn bản căn cứ. |
+| Ngày văn bản căn cứ có hiệu lực | Date | - | Theo hồ sơ | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
+| Hình thức Phục hồi danh dự | Enum(String(100)) | - | Theo hồ sơ | Chỉ đọc. Kế thừa hình thức phục hồi danh dự từ hồ sơ yêu cầu. |
+| Trạng thái hiện tại | Enum(String(50)) | - | Theo hồ sơ | Chỉ đọc. Trạng thái tiến trình phục hồi danh dự. |
+| Thời hạn xử lý | Icon (SLA) | - | Theo hệ thống | Chỉ đọc. Icon chấm màu thể hiện thời hạn xử lý SLA (Xanh lá: Còn hạn; Vàng: Sắp đến hạn; Đỏ: Quá hạn). |
+| Ngày bắt đầu tính thời hạn | Date | - | Theo hồ sơ | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
+| **II. Thanh tiến trình Stepper 04 bước** | Stepper | - | Theo tiến trình | Control UI: Thanh tiến trình 04 bước.<br>- **Quy tắc màu sắc và trạng thái Stepper**:<br>+ *Màu xám*: Áp dụng cho các bước chưa thực hiện / chưa tới lượt xử lý.<br>+ *Màu xanh dương*: Áp dụng cho bước đang hoạt động / đang mở để thao tác nhập liệu.<br>+ *Tích check màu xanh lá*: Áp dụng cho các bước đã hoàn thành việc ghi nhận thông tin.<br>- **Danh sách 04 bước**:<br>+ Bước 1: `Thông báo`<br>+ Bước 2: `Ý kiến phản hồi của người yêu cầu`<br>+ Bước 3: `Thực hiện`<br>+ Bước 4: `Hoàn thành` |
+| **III. 1. KHỐI THÔNG BÁO TỔ CHỨC PHỤC HỒI DANH DỰ** | Section | - | - | Khối quản lý và ban hành thông báo tổ chức phục hồi danh dự: |
+| Số thông báo | String(50) | Có (*) | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
+| Ngày ban hành | Date | Có (*) | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). Chế độ xem: Hiển thị text chỉ đọc. |
+| Ngày gửi thông báo | Date | Có (*) | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). Chế độ xem: Hiển thị text chỉ đọc. |
+| Người ký | String(255) | Có (*) | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
+| Chức vụ | String(255) | Có (*) | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
+| Thông tin đăng báo, thông tin công khai dự kiến | Section | - | - | Khối màu nền xanh nhạt chứa thông tin công khai dự kiến: |
+| Cấp cơ quan quản lý báo chí dự kiến | Enum(String(50)) | Có | `Cơ quan ở Địa phương` | Control UI: Radio button gồm:<br>- `Cơ quan ở Trung ương`<br>- `Cơ quan ở Địa phương` |
+| Tên tờ báo Trung ương dự kiến | String(255) | Có khi chọn Trung ương | Trống | Control UI: Input text.<br>- **Điều kiện hiển thị:** Bắt buộc nhập và chỉ hiển thị khi *Cấp cơ quan quản lý báo chí dự kiến* chọn giá trị **`Cơ quan ở Trung ương`**. |
+| Tên báo Địa phương nơi cư trú/đặt trụ sở dự kiến | String(255) | Có khi chọn Địa phương | Trống | Control UI: Input text.<br>- **Điều kiện hiển thị:** Bắt buộc nhập và chỉ hiển thị khi *Cấp cơ quan quản lý báo chí dự kiến* chọn giá trị **`Cơ quan ở Địa phương`**. |
+| Số số báo phát hành liên tiếp dự kiến | Integer(10) | Có | `3` | Control UI: Input number / text. |
+| Đăng tải lên Cổng thông tin điện tử dự kiến | Boolean | Không | Checked | Control UI: Checkbox. |
+| Thông tin niêm yết tại UBND cấp xã dự kiến (Khoản c - Điều 59) | Boolean | Không | Unchecked  | Control UI: Checkbox. |
+| Nơi nhận | List(String) | Có (*) | `Người bị thiệt hại` | Control UI: Checkbox đa chọn gồm:<br>- `Người bị thiệt hại`<br>- `UBND cấp xã`<br>- `Cơ quan liên quan`<br>- `Khác`<br>*(Chế độ xem: Hiển thị danh sách các nơi nhận đã chọn)*. |
+| Tài liệu đính kèm thông báo | File / List(File) | Có (*) | Trống | Control UI: Nút `+ Chọn tài liệu đính kèm` để tải tệp PDF lên.<br>- **Chế độ cập nhật / nhập liệu:** Hiển thị tên tệp kèm liên kết **`Xem file`** và liên kết **`Xóa`** ngay sau tên tệp.<br>- **Chế độ xem (Đã lưu):** Chỉ hiển thị tên tệp và liên kết **`Xem file`** (không hiển thị liên kết Xóa). |
+| Thao tác | Action Buttons | - | - | Control UI: Nhóm nút ở góc phải chân Khối 1:<br>- **Chế độ cập nhật / nhập liệu:**<br>+ `Lưu thông báo`<br>+ `Cập nhật thông báo`<br>+ `Xem thông báo`<br>+ `Hủy bỏ`<br>- **Chế độ xem (Đã lưu):**<br>+ `Cập nhật thông báo`<br>+ `Xem thông báo` |
+| **IV. 2. Ý KIẾN PHẢN HỒI CỦA NGƯỜI YÊU CẦU** | Section | - | - | Khối tiếp nhận ý kiến phản hồi của người bị thiệt hại/người yêu cầu: |
+| Ý kiến của người yêu cầu | Enum(String(50)) | Có (*) | `Đồng ý` | Control UI: Radio button gồm:<br>- `Đồng ý`<br>- `Không đồng ý`<br>- `Không có ý kiến phản hồi` |
+| Ngày nhận được ý kiến phản hồi | Date | Có (*) khi có phản hồi | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
+| Hình thức gửi phản hồi | Enum(String(50)) | Có (*) | `Bằng văn bản` | Control UI: Combobox/Radio gồm:<br>- `Bằng văn bản`<br>- `Trực tiếp tại trụ sở`<br>- `Khác` |
+| Nội dung ý kiến chi tiết / Yêu cầu điều chỉnh | Text(2000) | Không | Trống | Control UI: Textarea. Nhập chi tiết nội dung phản hồi. |
+| Tài liệu phản hồi đính kèm | File / List(File) | Không | Trống | Control UI: Nút `+ Chọn tài liệu đính kèm`.<br>- **Chế độ cập nhật / nhập liệu:** Hiển thị tên tệp kèm liên kết **`Xem file`** và liên kết **`Xóa`**.<br>- **Chế độ xem (Đã lưu):** Chỉ hiển thị tên tệp và liên kết **`Xem file`** (không hiển thị liên kết Xóa). |
+| Thao tác | Action Buttons | - | - | Control UI: Nhóm nút ở góc phải chân Khối 2:<br>- **Chế độ cập nhật / nhập liệu:**<br>+ `Lưu thông tin`<br>+ `Hủy bỏ`<br>- **Chế độ xem (Đã lưu):**<br>+ `Cập nhật thông tin` |
+| **V. 3. KHỐI TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ** | Section | - | - | Khối ghi nhận kết quả thực tế tổ chức thực hiện phục hồi danh dự: |
+| Thông tin đăng báo xin lỗi cải chính (Điều 59) | Section | - | - | Khối màu nền xanh nhạt chứa thông tin thực tế đăng báo: |
+| Cấp cơ quan quản lý | Enum(String(50)) | Có (*) | `Cơ quan ở Trung ương` | Control UI: Radio button gồm:<br>- `Cơ quan ở Trung ương`<br>- `Cơ quan ở Địa phương` |
+| Tên tờ báo Trung ương | String(255) | Có khi chọn Trung ương | Trống | Control UI: Input text.<br>- **Điều kiện hiển thị:** Bắt buộc nhập và chỉ hiển thị khi *Cấp cơ quan quản lý* chọn giá trị **`Cơ quan ở Trung ương`**. |
+| Tên báo Địa phương nơi cư trú/đặt trụ sở | String(255) | Có khi chọn Địa phương | Trống | Control UI: Input text.<br>- **Điều kiện hiển thị:** Bắt buộc nhập và chỉ hiển thị khi *Cấp cơ quan quản lý* chọn giá trị **`Cơ quan ở Địa phương`**. |
+| Số số báo phát hành liên tiếp | Integer(10) | Có (*) | `3` | Control UI: Input number / text. |
+| Thông tin các số báo phát hành | String(500) | Có (*) | Trống | Control UI: Input text / Textarea. Nhập chi tiết số báo và ngày phát hành của từng số báo. |
+| Đăng tải lên Cổng thông tin điện tử | Boolean | Không | Checked | Control UI: Checkbox. |
+| Thông tin niêm yết tại UBND cấp xã (Khoản c - Điều 59) | Boolean | Không | Unchecked  | Control UI: Checkbox. |
+| TÀI LIỆU ĐÍNH KÈM HỖ TRỢ HỒ SƠ | Dropzone File | Có (*) | Trống | Control UI: Vùng kéo thả tệp tin hoặc click để tải lên nhiều tài liệu (Đính kèm biên bản, kế hoạch, trang báo... dung lượng tối đa 20MB/tệp).<br>- **Chế độ cập nhật / nhập liệu:** Hiển thị danh sách tệp kèm liên kết **`Xem file`** và liên kết **`Xóa`**.<br>- **Chế độ xem (Đã lưu):** Chỉ hiển thị tên tệp và liên kết **`Xem file`** (không hiển thị liên kết Xóa). |
+| Thao tác | Action Buttons | - | - | Control UI: Nhóm nút ở góc phải chân Khối 3:<br>- **Chế độ cập nhật / nhập liệu:**<br>+ `Lưu thông tin`<br>+ `Hủy bỏ`<br>- **Chế độ xem (Đã lưu):**<br>+ `Cập nhật thông tin` |
+| **Lịch sử quá trình xử lý phục hồi danh dự** | List(Object) | - | Theo hồ sơ | Control UI: Vertical Timeline (Lịch sử xử lý dạng dọc) đặt ở cuối tab Phục hồi danh dự, hiển thị theo trình tự thời gian các mốc thực hiện phục hồi danh dự: |
+| Tên tiến trình / Hành động | String(255) | - | Theo dữ liệu | Chỉ đọc. Tiêu đề mốc sự kiện (ví dụ: `Tiếp nhận Yêu cầu Phục hồi danh dự`, `Ban hành thông báo tổ chức phục hồi danh dự`, `Người bị hại phản hồi ý kiến`, `Ghi nhận kết quả thực hiện phục hồi danh dự`, `Hoàn thành thực thi phục hồi danh dự`). |
+| Ngày thực hiện | Date / Datetime | - | Theo dữ liệu | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
+| Người / Cán bộ thực hiện | String(255) | - | Theo dữ liệu | Chỉ đọc. Họ tên cán bộ xử lý hoặc `Hệ thống / Người nộp đơn` hoặc `Người bị thiệt hại`. |
+| Nội dung mô tả chi tiết | Text(2000) | - | Theo dữ liệu | Chỉ đọc. Chi tiết văn bản thông báo ban hành, ý kiến phản hồi nhận được hoặc thông tin đăng báo phát hành. |
+
+###### 4.3.3.1.6.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Vị trí / Định dạng | Mô tả thao tác & Luồng xử lý nghiệp vụ |
+| :--- | :--- | :--- | :--- |
+| 1 | Lưu thông báo | Nút tại Khối 1 | Khi cán bộ nhập thông tin tại Khối 1 và click nút, hệ thống kiểm tra dữ liệu:<br>- **TH1 - Bỏ trống trường bắt buộc:** Vi phạm [BR-VAL-001], hệ thống tô viền đỏ ô trống đầu tiên (class `.is-invalid`), hiển thị cảnh báo lỗi [MSG-ERR-VAL-001] và tự động focus con trỏ. Không cho phép lưu.<br>- **TH2 - Thiếu tệp đính kèm thông báo:** Vi phạm [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] hoặc [MSG-ERR-FILE-002]. Không cho phép lưu.<br>- **TH3 - Hợp lệ:** Lưu thông tin thông báo, chuyển Khối 1 sang Chế độ xem, cập nhật Stepper Bước 1 sang icon Check màu xanh lá, đổi bộ nút Khối 1 thành `Xem thông báo` và `Cập nhật thông báo`, hiển thị thông báo thành công [MSG-SUC-SYS-002]. |
+| 2 | Cập nhật thông báo | Nút tại Khối 1 | Khi cán bộ click nút tại Khối 1 (ở Chế độ xem):<br>- Hệ thống mở lại các trường nhập liệu cho phép chỉnh sửa thông tin thông báo và danh sách tệp đính kèm.<br>- Đổi bộ nút sang `Lưu thông báo`, `Cập nhật thông báo`, `Xem thông báo`, `Hủy bỏ`. |
+| 3 | Xem thông báo | Nút tại Khối 1 | Mở popup **"Xem trước Mẫu 17/BTNN (Thông báo tổ chức thực hiện phục hồi danh dự)"**, tự động đổ dữ liệu đã nhập vào biểu mẫu chuẩn.<br>- Popup cung cấp nút **`In thông báo`** (thực hiện lệnh in/xuất văn bản) và nút **`Đóng`**. |
+| 4 | Lưu thông tin | Nút tại Khối 2 hoặc Khối 3 | Khi cán bộ click nút Lưu thông tin:<br>- **Tại Khối 2:**<br>+ **TH Bỏ trống trường bắt buộc:** Vi phạm [BR-VAL-001], hiển thị cảnh báo lỗi [MSG-ERR-VAL-001].<br>+ **TH Hợp lệ:** Lưu thông tin phản hồi của người yêu cầu, chuyển Khối 2 sang Chế độ xem, cập nhật Stepper Bước 2 sang icon Check màu xanh lá, đổi nút thành `Cập nhật thông tin`, hiển thị thông báo thành công [MSG-SUC-SYS-002].<br>- **Tại Khối 3:**<br>+ **TH Bỏ trống trường bắt buộc hoặc thiếu tệp đính kèm:** Vi phạm [BR-VAL-001] hoặc [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-VAL-001] hoặc [MSG-ERR-FILE-001]. Không cho phép lưu.<br>+ **TH Hợp lệ:** Lưu thông tin thực hiện phục hồi danh dự, chuyển Khối 3 sang Chế độ xem, cập nhật Stepper Bước 3 sang icon Check màu xanh lá, kích hoạt nút `Hoàn thành thực thi` ở footer màn hình, hiển thị thông báo thành công [MSG-SUC-SYS-002]. |
+| 5 | Cập nhật thông tin | Nút tại Khối 2 hoặc Khối 3 | - **Khi click tại Khối 2:** Mở lại các trường dữ liệu cho phép điều chỉnh ý kiến phản hồi hoặc cập nhật lại tệp đính kèm.<br>- **Khi click tại Khối 3:** Mở lại chế độ biên tập Khối 3 cho phép sửa đổi thông tin số báo phát hành hoặc thêm/xóa tệp đính kèm. |
+| 6 | Hủy bỏ | Nút tại từng Khối / Footer | - **Khi click tại Khối 1, Khối 2, Khối 3:** Hủy bỏ các nội dung đang nhập dở, khôi phục lại trạng thái dữ liệu đã lưu gần nhất của khối tương ứng.<br>- **Khi click tại Footer màn hình:** Đóng màn hình cập nhật tiến trình và quay về màn hình danh sách vụ việc. |
+| 7 | Xem file | Liên kết tại từng tệp | Mở tệp tài liệu PDF tại một tab trình duyệt mới ở cả chế độ xem và chế độ cập nhật. |
+| 8 | Xóa | Liên kết tại từng tệp | Chỉ hiển thị ở chế độ cập nhật/nhập liệu:<br>- **TH1 - Xác nhận xóa:** Hệ thống mở Popup Xác nhận với nội dung [MSG-CFM-SYS-001]. Nếu người dùng xác nhận, hệ thống gỡ tệp khỏi danh sách đính kèm.<br>- **TH2 - Hủy thao tác:** Đóng popup xác nhận và giữ nguyên tệp tin. |
+| 9 | Hoàn thành thực thi | Nút tại Footer màn hình | Khi cán bộ đã hoàn tất toàn bộ các bước phục hồi danh dự và click nút:<br>- Hệ thống hiển thị Popup Xác nhận với nội dung [MSG-CFM-SYS-001] (hoặc nội dung xác nhận hoàn thành thực thi theo [MSG-CFM-BTNN-001]).<br>- Khi chọn **Đồng ý**: Chuyển trạng thái vụ việc từ **`Chờ thực thi`** sang **`Hoàn thành`**, cập nhật Stepper Bước 4 sang màu xanh, ghi log hoàn tất thực thi vào nhật ký hệ thống, hiển thị thông báo thành công [MSG-SUC-SYS-003] và quay về màn hình danh sách vụ việc. |
+
+---
+
+
+##### 4.3.3.1.7. MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường
+
+###### 4.3.3.1.7.1. Màn hình
+
 ![Xem chi tiết hồ sơ yêu cầu bồi thường](images/UC431_466_MH03_Xem_chi_tiet_xu_ly_ho_so_boi_thuong.png)
 
-**\* Quy chế hoạt động của Màn hình MH04:**
+**\* Quy chế hoạt động của Màn hình MH05:**
 
 - Áp dụng khi người dùng mở xem từ danh sách tra cứu (click dòng dữ liệu) hoặc mở từ liên kết hồ sơ của màn hình khác.
 - Cấu trúc Tab và toàn bộ các khối thông tin **y hệt** [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường) mục 4.3.3.1.5.2 (03 tab: `Thông tin Hồ sơ yêu cầu`, `Chi tiết xử lý hồ sơ`, `Phục hồi danh dự`; cùng điều kiện hiển thị từng tab/từng khối nghiệp vụ), khác biệt duy nhất là **toàn bộ trường dữ liệu và khối nghiệp vụ đều hiển thị ở chế độ Chỉ đọc** (không có control nhập liệu/nút mở rộng chỉnh sửa nào được kích hoạt trực tiếp trên màn hình này).
 - **Quy tắc Auto-focus/Scroll**: Khi mở màn hình, hệ thống tự động cuộn/focus tới đúng khối nghiệp vụ tương ứng với trạng thái hiện tại của hồ sơ (khối đang xử lý hiển thị mở rộng chỉ đọc; các khối trước đó thu gọn kèm `[✓ Đã hoàn thành]`; các khối sau bị khóa mờ kèm `[🔒 Chưa thực hiện]`).
 - Muốn chỉnh sửa/nhập liệu, người dùng sử dụng các nút thao tác ở thanh cuối màn hình để điều hướng sang [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường).
 
-###### 4.3.3.1.6.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | - | `CHI TIẾT HỒ SƠ` | Chỉ đọc. |
-| Badge trạng thái | Enum(String(50)) | - | Theo hồ sơ | Hiển thị trạng thái hồ sơ theo Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
-| Tab nghiệp vụ | Enum(String(50)) | - | `Thông tin Hồ sơ yêu cầu` | Control UI: Tab navigation (Chỉ đọc), kế thừa đúng 03 tab và điều kiện hiển thị đã đặc tả tại mục 4.3.3.1.5.2 (MH03). |
-| **Tab Thông tin Hồ sơ yêu cầu** | String(100) | - | Active | Kế thừa nguyên trạng toàn bộ trường thông tin từ "Mã vụ việc" đến "Bảng tài liệu đính kèm hồ sơ" đã đặc tả tại mục 4.3.3.1.5.2 (MH03), hiển thị Chỉ đọc. |
-| **Tab Chi tiết xử lý hồ sơ** | Text(2000) | - | Theo trạng thái | Kế thừa nguyên trạng toàn bộ các khối nghiệp vụ từ "***Khối thông tin Thụ lý hồ sơ***" đến "***Khối thông tin Hoãn / Tạm đình chỉ / Đình chỉ giải quyết***" đã đặc tả tại mục 4.3.3.1.5.2 (MH03), hiển thị Chỉ đọc; không có ô nhập liệu, datepicker, combobox hay nút tải file nào được kích hoạt. |
-| **Tab Phục hồi danh dự** | String(100) | - | Ẩn/Hiện | Kế thừa nguyên trạng "Thẻ thông tin phục hồi danh dự" và Stepper 04 bước đã đặc tả tại [MH05 - Tab Phục hồi danh dự](#43317-mh05---tab-phục-hồi-danh-dự), hiển thị Chỉ đọc. |
-| Timeline xử lý | List(Object) | - | Theo hồ sơ | Hiển thị theo thứ tự thời gian toàn bộ lịch sử xử lý của vụ việc; mỗi dòng lịch sử gồm các trường mô tả bên dưới. |
-| Thời điểm thao tác | Datetime | - | Theo dữ liệu | Chỉ đọc. Định dạng `dd/mm/yyyy HH:mm`. |
-| Người thực hiện | String(255) | - | Theo dữ liệu | Chỉ đọc. Họ tên người thực hiện thao tác. |
-| Vai trò | String(100) | - | Theo dữ liệu | Chỉ đọc. Vai trò của người thực hiện (Cán bộ/Chuyên viên/Thủ trưởng). |
-| Hành động | String(255) | - | Theo dữ liệu | Chỉ đọc. Tên thao tác nghiệp vụ đã thực hiện, ví dụ `Tiếp nhận yêu cầu`, `Nhập liệu hồ sơ`, `Kiểm tra hồ sơ`, `Yêu cầu bổ sung`, `Từ chối`, `Thụ lý`, `Từ chối thụ lý`, `Hoàn thành xác minh`, `Hoàn thành thương lượng`, `Hoãn/Tạm đình chỉ/Đình chỉ giải quyết`, `Tiếp tục giải quyết`, `Trình ký QĐ`, `Duyệt ký số QĐ`, `Hoàn thành thực thi`, cập nhật phục hồi danh dự. |
-| Trạng thái trước | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Trạng thái vụ việc trước khi thực hiện thao tác, Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
-| Trạng thái sau | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Trạng thái vụ việc sau khi thực hiện thao tác, Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24]. |
-| Nội dung/Lý do | Text(2000) | - | Theo dữ liệu | Chỉ đọc. Nội dung giải trình, lý do từ chối/yêu cầu bổ sung, hoặc căn cứ/lý do hoãn/tạm đình chỉ/đình chỉ nếu thao tác có nhập. |
-| Thanh thao tác cuối màn hình | String(255) | - | Theo phân quyền/trạng thái | Control UI: Fixed action bar.<br>- Render động theo trạng thái hồ sơ, quyền người dùng và cán bộ được giao.<br>- Chỉ hiển thị nút `Đóng` và các nút kích hoạt nghiệp vụ/điều hướng sang MH03 tương ứng với trạng thái hồ sơ hiện tại.<br>- Điều kiện hiển thị chi tiết của từng nút được đặc tả tại bảng Chức năng trên màn hình. |
-
-###### 4.3.3.1.6.3. Chức năng trên màn hình
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Tiếp nhận | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ kiểm tra`.<br>- Khi click: Hệ thống xác nhận hồ sơ hợp lệ, chuyển trạng thái sang `Chờ thụ lý` và cập nhật timeline. |
-| 2 | Yêu cầu bổ sung | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Chờ kiểm tra`.<br>- Khi click: Hệ thống mở [Popup Yêu cầu bổ sung / Từ chối hồ sơ](#43318-popup-yêu-cầu-bổ-sung--từ-chối-hồ-sơ) ở ngữ cảnh yêu cầu bổ sung. |
-| 3 | Từ chối | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Chờ kiểm tra`.<br>- Khi click: Hệ thống mở [Popup Yêu cầu bổ sung / Từ chối hồ sơ](#43318-popup-yêu-cầu-bổ-sung--từ-chối-hồ-sơ) để nhập lý do từ chối. |
-| 4 | Thụ lý | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thụ lý`.<br>- Khi click: Hệ thống mở [Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường](#433112-popup-thụ-lý-hồ-sơ-và-cử-người-giải-quyết-bồi-thường). Sau khi xác nhận thụ lý hợp lệ, hồ sơ chuyển sang trạng thái `Đang xác minh thiệt hại`. |
-| 5 | Từ chối thụ lý | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thụ lý`.<br>- Khi click: Hệ thống mở [Popup Yêu cầu bổ sung / Từ chối hồ sơ](#43318-popup-yêu-cầu-bổ-sung--từ-chối-hồ-sơ) để nhập lý do từ chối thụ lý. |
-| 6 | Cập nhật kết quả bổ sung | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Yêu cầu bổ sung`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở rộng khối `Bổ sung hồ sơ` ở chế độ chỉnh sửa (ô nhập liệu `Nhập thông tin đã bổ sung` và đính kèm file) và cuộn focus tới khối này. |
-| 7 | Cập nhật xác minh | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang xác minh thiệt hại`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở rộng khối `Xác minh thiệt hại` ở chế độ chỉnh sửa và cuộn focus tới khối này. |
-| 8 | Cập nhật kết quả thương lượng | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang thương lượng` hoặc `Thương lượng không thành công`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở rộng khối `Thương lượng bồi thường` ở chế độ chỉnh sửa và cuộn focus tới khối này. |
-| 9 | Cập nhật kết quả thực thi | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thực thi`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở rộng khối `Thực thi giải quyết bồi thường` ở chế độ chỉnh sửa và cuộn focus tới khối này. |
-| 10 | Hoãn / Tạm đình chỉ / Đình chỉ giải quyết | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở một trong các trạng thái `Đang xác minh thiệt hại`, `Đang thương lượng`, `Thương lượng không thành công`, `Chờ ban hành QĐ`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở khối `Hoãn / Tạm đình chỉ / Đình chỉ giải quyết` ở chế độ nhập liệu để nhập căn cứ và quyết định hoãn/tạm đình chỉ/đình chỉ. |
-| 11 | Tiếp tục giải quyết | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Hoãn giải quyết` hoặc `Tạm đình chỉ giải quyết`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), mở khối `Popup Tiếp tục giải quyết` ở chế độ nhập liệu để nhập số/ngày quyết định cho phép tiếp tục giải quyết. |
-| 12 | Xem file | Link | - Điều kiện hiển thị: Hiển thị ngay sau tên file đính kèm.<br>- Cho phép xem file tại tab riêng. |
-| 13 | Đóng | Button | - Điều kiện hiển thị: Luôn hiển thị.<br>- Khi click: Hệ thống đóng màn hình chi tiết và quay về danh sách hồ sơ. |
-
----
-
-##### 4.3.3.1.7. MH05 - Tab Phục hồi danh dự
-
-###### 4.3.3.1.7.1. Màn hình
-
-![Phục hồi danh dự](images/UC431_466_MH04_Phuc_hoi_danh_du.png)
-
 ###### 4.3.3.1.7.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Thẻ thông tin phục hồi danh dự | String(255) | - | Theo hồ sơ | Hiển thị căn cứ pháp lý, cơ quan giải quyết, ngày lập văn bản, hình thức phục hồi danh dự, trạng thái phục hồi danh dự, SLA và ngày bắt đầu. |
-| Stepper phục hồi danh dự | String(255) | - | Theo hồ sơ | Gồm 04 bước: thông báo tổ chức phục hồi danh dự, ý kiến người bị thiệt hại, quyết định tổ chức phục hồi danh dự, kết quả thực hiện phục hồi danh dự. |
-| **Bước 1 - Thông báo tổ chức phục hồi danh dự** | String(255) | - | Theo dữ liệu | Nhập thông báo tổ chức phục hồi danh dự. |
-| Số thông báo | String(50) | Có | Trống | Áp dụng [BR-VAL-001]. |
-| Ngày ban hành | Date | Có | Trống | Áp dụng [BR-VAL-001]. |
-| Ngày gửi thông báo | Date | Có | Trống | Áp dụng [BR-VAL-001]. |
-| Người ký | String(100) | Có | Trống | Áp dụng [BR-VAL-001]. |
-| Chức vụ | String(100) | Có | Trống | Áp dụng [BR-VAL-001]. |
-| Cơ quan tổ chức dự kiến | String(255) | Không | Trống | Hiển thị theo hình thức phục hồi danh dự. |
-| Ngày tổ chức dự kiến | Date | Không | Trống | Hiển thị theo hình thức phục hồi danh dự. |
-| Địa điểm tổ chức dự kiến | String(255) | Không | Trống | Hiển thị theo hình thức phục hồi danh dự. |
-| Thành phần tham gia dự kiến | Boolean | Không | Theo UI | Gồm:<br>+ `Đại diện cơ quan tiến hành tố tụng/cơ quan quản lý`<br>+ `Đại diện cơ quan giải quyết bồi thường`<br>+ `Cá nhân khác có liên quan` |
-| Thông tin cá nhân khác tham gia dự kiến | Text(1000) | Có theo điều kiện | Trống | Hiển thị khi tick `Cá nhân khác có liên quan`. |
-| Cấp cơ quan quản lý báo chí dự kiến | Enum(String(100)) | Không | `Trung ương` | Giá trị gồm:<br>+ `Trung ương`<br>+ `Địa phương` |
-| Tên tờ báo Trung ương dự kiến | String(255) | Theo điều kiện | Trống | Hiển thị theo cấp cơ quan quản lý báo chí. |
-| Tên báo Địa phương nơi cư trú/đặt trụ sở dự kiến | String(255) | Theo điều kiện | Trống | Hiển thị theo cấp cơ quan quản lý báo chí. |
-| Số số báo phát hành liên tiếp dự kiến | Integer(3) | Không | Trống | Ghi số kỳ báo dự kiến. |
-| Đăng tải trên Cổng thông tin điện tử | Boolean | Không | Checked | Hình thức công bố trên cổng thông tin. |
-| Thông tin niêm yết tại UBND cấp xã | Boolean | Không | Chưa chọn | Nếu tick, nhập thông tin UBND cấp xã. |
-| Nơi nhận | Boolean | Có | Theo UI | Gồm người bị thiệt hại, UBND cấp xã, cơ quan liên quan, nơi nhận khác. |
-| Tên UBND cấp xã | String(255) | Có theo điều kiện | Trống | Hiển thị khi chọn nơi nhận UBND cấp xã. |
-| Địa chỉ UBND cấp xã | String(500) | Có theo điều kiện | Trống | Hiển thị khi chọn nơi nhận UBND cấp xã. |
-| Nhập Tên cơ quan liên quan | String(255) | Có theo điều kiện | Trống | Hiển thị khi chọn cơ quan liên quan. |
-| Nhập thông tin Nơi nhận khác | String(500) | Có theo điều kiện | Trống | Hiển thị khi chọn nơi nhận khác. |
-| Tài liệu đính kèm thông báo | File | Có | Trống | Áp dụng [BR-FILE-010]. |
-| **Bước 2 - Ý kiến người bị thiệt hại** | String(100) | - | Theo dữ liệu | Ghi nhận ý kiến của người bị thiệt hại hoặc người đại diện. |
-| Ngày nhận văn bản đồng ý/yêu cầu của người bị thiệt hại | Date | Không | Trống | Hiển thị trên UI. |
-| Ý kiến của người bị thiệt hại | Enum(String(50)) | Có | `Đồng ý thực hiện` | Giá trị gồm:<br>+ `Đồng ý thực hiện`<br>+ `Không đồng ý`<br>+ `Đề nghị tạm hoãn`<br>+ `Từ chối` |
-| Nội dung đề xuất điều chỉnh | Text(2000) | Có theo điều kiện | Trống | Hiển thị khi ý kiến có đề xuất điều chỉnh. |
-| Lý do đề nghị tạm hoãn | Text(2000) | Có theo điều kiện | Trống | Hiển thị khi chọn `Đề nghị tạm hoãn`. |
-| Văn bản / Biên bản từ chối đính kèm | File | Có theo điều kiện | Trống | Hiển thị khi chọn `Từ chối`. |
-| **Bước 3 - Quyết định/Tổ chức phục hồi danh dự** | String(255) | - | Theo dữ liệu | Ghi nhận thông tin tổ chức phục hồi danh dự. |
-| Cơ quan tổ chức | String(255) | Có | Trống | Áp dụng [BR-VAL-001]. |
-| Ngày tổ chức thực tế | Date | Có | Trống | Áp dụng [BR-VAL-001]. |
-| Địa điểm tổ chức | String(255) | Có theo hình thức | Trống | Hiển thị với hình thức trực tiếp xin lỗi. |
-| Thành phần tham gia | Boolean | Có theo hình thức | Trống | Hiển thị với hình thức trực tiếp xin lỗi. |
-| Cấp cơ quan quản lý | Enum(String(100)) | Có theo hình thức | `Trung ương` | Hiển thị với hình thức đăng báo. |
-| Tên tờ báo Trung ương | String(255) | Có theo điều kiện | Trống | Hiển thị khi chọn cấp Trung ương. |
-| Tên báo Địa phương nơi cư trú/đặt trụ sở | String(255) | Có theo điều kiện | Trống | Hiển thị khi chọn cấp Địa phương. |
-| Tên tờ báo cấp tỉnh | String(255) | Có theo điều kiện | Trống | Hiển thị theo UI. |
-| Số số báo phát hành liên tiếp | Integer(3) | Có theo điều kiện | Trống | Hiển thị theo UI. |
-| Thông tin các số báo phát hành | Text(2000) | Có theo điều kiện | Trống | Hiển thị theo UI. |
-| Đường dẫn bài viết trên Cổng thông tin điện tử | String(500) | Không | Trống | Hiển thị khi tick đăng tải cổng thông tin. |
-| Ngày gửi tờ báo niêm yết | Date | Có theo điều kiện | Trống | Hiển thị khi tick thông tin niêm yết tại UBND cấp xã. |
-| Tài liệu phục hồi danh dự | File | Có theo bước | Trống | Áp dụng [BR-FILE-010]. |
+| Tiêu đề màn hình | String(255) | - | `CHI TIẾT HỒ SƠ` | Chỉ đọc. |
+| Badge trạng thái | Enum(String(50)) | - | Theo hồ sơ | Hiển thị trạng thái hồ sơ vụ việc yêu cầu bồi thường. |
+| Tab nghiệp vụ | Enum(String(50)) | - | `Thông tin Hồ sơ yêu cầu` | Control UI: Tab navigation (Chỉ đọc), kế thừa đúng 03 tab và điều kiện hiển thị đã đặc tả tại mục 4.3.3.1.5.2 (MH03). |
+| **Tab Thông tin Hồ sơ yêu cầu** | String(100) | - | Active | Kế thừa nguyên trạng toàn bộ trường thông tin từ "Mã vụ việc" đến "Bảng tài liệu đính kèm hồ sơ" đã đặc tả tại mục 4.3.3.1.5.2 (MH03), hiển thị Chỉ đọc. |
+| **Tab Chi tiết xử lý hồ sơ** | Text(2000) | - | Theo trạng thái | Kế thừa nguyên trạng toàn bộ các khối nghiệp vụ từ "***Khối thông tin Thụ lý hồ sơ***" đến "***Khối thông tin Hoãn / Tạm đình chỉ / Đình chỉ giải quyết***" đã đặc tả tại mục 4.3.3.1.5.2 (MH03), hiển thị Chỉ đọc; không có ô nhập liệu, datepicker, combobox hay nút tải file nào được kích hoạt. |
+| **Tab Phục hồi danh dự** | String(100) | - | Ẩn/Hiện | Kế thừa nguyên trạng "Thẻ thông tin phục hồi danh dự" và Stepper 04 bước đã đặc tả tại [MH04 - Tab Phục hồi danh dự](#43316-mh04---tab-phục-hồi-danh-dự), hiển thị Chỉ đọc. |
+| Timeline xử lý | List(Object) | - | Theo hồ sơ | Hiển thị theo thứ tự thời gian toàn bộ lịch sử xử lý của vụ việc; mỗi dòng lịch sử gồm các trường mô tả bên dưới. |
+| Thời điểm thao tác | Datetime | - | Theo dữ liệu | Chỉ đọc. Định dạng `dd/mm/yyyy HH:mm`. |
+| Người thực hiện | String(255) | - | Theo dữ liệu | Chỉ đọc. Họ tên người thực hiện thao tác. |
+| Vai trò | String(100) | - | Theo dữ liệu | Chỉ đọc. Vai trò của người thực hiện (Cán bộ/Chuyên viên/Thủ trưởng). |
+| Hành động | String(255) | - | Theo dữ liệu | Chỉ đọc. Tên thao tác nghiệp vụ đã thực hiện, ví dụ `Tiếp nhận yêu cầu`, `Nhập liệu hồ sơ`, `Kiểm tra hồ sơ`, `Yêu cầu bổ sung`, `Từ chối`, `Thụ lý`, `Từ chối thụ lý`, `Hoàn thành xác minh`, `Hoàn thành thương lượng`, `Hoãn/Tạm đình chỉ/Đình chỉ giải quyết`, `Tiếp tục giải quyết`, `Trình ký QĐ`, `Duyệt ký số QĐ`, cập nhật phục hồi danh dự. |
+| Nội dung/Lý do | Text(2000) | - | Theo dữ liệu | Chỉ đọc. Nội dung giải trình, lý do từ chối/yêu cầu bổ sung, hoặc căn cứ/lý do hoãn/tạm đình chỉ/đình chỉ nếu thao tác có nhập. |
+| Thanh thao tác cuối màn hình | String(255) | - | Theo phân quyền/trạng thái | Control UI: Fixed action bar.<br>- Render động theo trạng thái hồ sơ, quyền người dùng và cán bộ được giao.<br>- Chỉ hiển thị nút `Đóng` và các nút kích hoạt nghiệp vụ/điều hướng sang MH03 tương ứng với trạng thái hồ sơ hiện tại.<br>- Điều kiện hiển thị chi tiết của từng nút được đặc tả tại bảng Chức năng trên màn hình. |
 
 ###### 4.3.3.1.7.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống hủy chế độ nhập/cập nhật phục hồi danh dự và quay về màn hình chi tiết hồ sơ. |
-| 2 | Lưu nháp | Button | Hệ thống lưu tạm dữ liệu của bước phục hồi danh dự đang nhập và giữ nguyên trạng thái bước. |
-| 3 | Ban hành thông báo / Hoàn thành bước | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Bỏ trống trường bắt buộc theo bước**: Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001]. Không cho phép hoàn thành bước. |
-|  |  |  | **TH2 - Thiếu file bắt buộc**: Vi phạm [BR-FILE-010], hiển thị [MSG-ERR-FILE-001] hoặc [MSG-ERR-FILE-002]. Không cho phép hoàn thành bước. |
-|  |  |  | **TH3 - Hợp lệ**: Hệ thống lưu dữ liệu bước phục hồi danh dự, cập nhật stepper và hiển thị [MSG-SUC-SYS-002]. |
-| 4 | Xem trước Mẫu 17 | Button | Hệ thống mở xem trước mẫu thông báo phục hồi danh dự. |
-| 5 | Cập nhật | Button | Hệ thống mở lại dữ liệu bước phục hồi danh dự đã lưu ở chế độ cập nhật. |
-| 6 | Xem file | Link | Cho phép xem file tại một tab riêng. |
+| 1 | Tiếp nhận | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ kiểm tra`.<br>- Khi click: Hệ thống xác nhận hồ sơ hợp lệ, chuyển trạng thái sang `Chờ thụ lý` và cập nhật timeline. |
+| 2 | Yêu cầu bổ sung | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Chờ kiểm tra`.<br>- Khi click: Hệ thống mở [Popup Yêu cầu bổ sung / Từ chối hồ sơ](#43319-popup-yêu-cầu-bổ-sung--từ-chối-hồ-sơ) ở ngữ cảnh yêu cầu bổ sung. |
+| 3 | Từ chối | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Chờ kiểm tra`.<br>- Khi click: Hệ thống mở [Popup Yêu cầu bổ sung / Từ chối hồ sơ](#43319-popup-yêu-cầu-bổ-sung--từ-chối-hồ-sơ) để nhập lý do từ chối. |
+| 4 | Thụ lý | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thụ lý`.<br>- Khi click: Hệ thống mở [Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường](#43318-popup-thụ-lý-hồ-sơ-và-cử-người-giải-quyết-bồi-thường).|
+| 5 | Từ chối thụ lý | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thụ lý`.<br>- Khi click: Hệ thống mở [Popup Yêu cầu bổ sung / Từ chối hồ sơ](#43319-popup-yêu-cầu-bổ-sung--từ-chối-hồ-sơ) để nhập lý do từ chối thụ lý. |
+| 6 | Cập nhật kết quả bổ sung | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Yêu cầu bổ sung`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở rộng khối `Bổ sung hồ sơ` ở chế độ chỉnh sửa (ô nhập liệu `Nhập thông tin đã bổ sung` và đính kèm file) và cuộn focus tới khối này. |
+| 7 | Cập nhật xác minh | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang xác minh thiệt hại`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở rộng khối `Xác minh thiệt hại` ở chế độ chỉnh sửa và cuộn focus tới khối này. |
+| 8 | Cập nhật kết quả thương lượng | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang thương lượng` hoặc `Thương lượng không thành công`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở rộng khối `Thương lượng bồi thường` ở chế độ chỉnh sửa và cuộn focus tới khối này. |
+| 9 | Xem chi tiết kinh phí | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thực thi`, `Hoàn thành` hoặc `Sung quỹ nhà nước`.<br>- Khi click: Hệ thống điều hướng mở màn hình **Xem chi tiết đề nghị cấp kinh phí** tại Module Cấp kinh phí tạm ứng/Bồi thường, tự động focus/cuộn tới đúng khối thông tin tương ứng (*Khối Chi trả kinh phí* hoặc *Khối Sung quỹ nhà nước*). |
+| 10 | Hoãn / Tạm đình chỉ / Đình chỉ giải quyết | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở một trong các trạng thái `Đang xác minh thiệt hại`, `Đang thương lượng`, `Thương lượng không thành công`, `Chờ ban hành QĐ`.<br>- Khi click: Hệ thống điều hướng mở [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xử-lý-hồ-sơ-yêu-cầu-bồi-thường), tự động chuyển sang tab `Chi tiết xử lý hồ sơ`, mở khối `Hoãn / Tạm đình chỉ / Đình chỉ giải quyết` ở chế độ nhập liệu để nhập căn cứ và quyết định hoãn/tạm đình chỉ/đình chỉ. |
+| 11 | Tiếp tục giải quyết | Button | - Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Hoãn giải quyết` hoặc `Tạm đình chỉ giải quyết`.<br>- Khi click: Hệ thống mở [Popup Tiếp tục giải quyết](#433113-popup-tiếp-tục-giải-quyết) |
+| 12 | Xem file | Link | - Điều kiện hiển thị: Hiển thị ngay sau tên file đính kèm.<br>- Cho phép xem file tại tab riêng. |
+| 13 | Đóng | Button | - Điều kiện hiển thị: Luôn hiển thị.<br>- Khi click: Hệ thống đóng màn hình chi tiết và quay về danh sách hồ sơ. |
 
 ---
 
-##### 4.3.3.1.8. Popup Yêu cầu bổ sung / Từ chối hồ sơ
+
+##### 4.3.3.1.8. Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường
 
 ###### 4.3.3.1.8.1. Màn hình
 
-![Popup yêu cầu bổ sung hoặc từ chối hồ sơ](images/UC431_466_POPUP_Yeu_cau_bo_sung_tu_choi.png)
+Popup mở từ chức năng `Thụ lý hồ sơ` tại MH01 và `Thụ lý` tại MH05 khi hồ sơ ở trạng thái `Chờ thụ lý`, cho phép Lãnh đạo/Thủ trưởng cử người giải quyết vụ việc.
 
 ###### 4.3.3.1.8.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| Họ và tên cán bộ giải quyết | String(100) | Có | Trống | Lãnh đạo nhập trực tiếp họ và tên cán bộ được cử giải quyết hồ sơ; không chọn từ danh sách cán bộ/người dùng trên hệ thống. |
+| Chức vụ cán bộ giải quyết | String(100) | Có | Trống | Lãnh đạo nhập chức vụ của cán bộ được cử giải quyết hồ sơ. |
+| Đơn vị cán bộ giải quyết | Enum(Tree) | Có | Trống | Lãnh đạo chọn đơn vị của cán bộ được cử giải quyết trên cây đơn vị của cơ quan. |
+| Đơn vị ban hành QĐ cử người giải quyết | Enum(String(255)) | Có | Theo cơ quan giải quyết | Đơn vị ban hành quyết định cử người giải quyết. |
+| Số QĐ cử người giải quyết | String(50) | Có | Trống | Nhập số Quyết định cử người giải quyết hồ sơ yêu cầu bồi thường; hệ thống kiểm tra trùng số quyết định theo đơn vị ban hành/năm nếu có cấu hình kiểm tra trùng. |
+| Ngày QĐ cử người giải quyết | Date | Có | Ngày hiện tại | Nhập/chọn ngày ban hành Quyết định cử người giải quyết bằng datepicker; áp dụng quy tắc kiểm tra ngày hợp lệ [BR-VAL-008]. |
+| Người ký/Chức vụ người ký QĐ | String(255) | Không | Trống | Ghi nhận người ký và chức vụ trên quyết định cử người giải quyết nếu có. |
+| Tài liệu QĐ cử người giải quyết đính kèm | File | Có | Trống | Khối tài liệu đặt dưới phần thông tin quyết định; cho phép đính kèm tài liệu Quyết định cử người giải quyết, sau khi chọn file hiển thị tên file và liên kết `Xem file`, `Xóa`. Đây là file QĐ đã ký bên ngoài, module này không thực hiện trình ký số riêng cho QĐ cử người giải quyết. |
+
+###### 4.3.3.1.8.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Xác nhận | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
+|  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001], hệ thống tô viền đỏ trường thiếu dữ liệu và không cho xác nhận thụ lý. |
+|  |  |  | **TH2 - Hợp lệ**: Hệ thống lưu thông tin người được cử giải quyết và thông tin QĐ cử người giải quyết, cập nhật timeline, hiển thị [MSG-SUC-SYS-002], đóng popup và xử lý chuyển trạng thái theo 02 trường hợp:<br>+ **Trường hợp 1 - Tình trạng pháp lý là "Đã có Bản án/Quyết định của Tòa án"**: Hệ thống chuyển trạng thái vụ việc từ `Chờ thụ lý` sang thẳng **`Chờ thực thi`**; Cán bộ xử lý phải tự tạo Đề nghị cấp kinh phí để thực hiện chi trả tiền bồi thường / phục hồi danh dự theo Bản án/Quyết định của Tòa án.<br>+ **Trường hợp 2 - Tình trạng pháp lý là "Chưa có Bản án/Quyết định của Tòa án"**: Hệ thống chuyển trạng thái vụ việc từ `Chờ thụ lý` sang **`Đang xác minh thiệt hại`** để tiếp tục các bước giải quyết tiếp theo (Xác minh thiệt hại $\rightarrow$ Thương lượng $\rightarrow$ Ban hành Quyết định $\rightarrow$ Thực thi). |
+| 2 | Hủy bỏ | Button | Hệ thống đóng popup, giữ nguyên trạng thái hồ sơ. |
+| 3 | Xem file | Link | Cho phép xem file đính kèm tại một tab riêng. |
+| 4 | Xóa | Link | Hệ thống gỡ file đính kèm khỏi popup. |
+
+---
+
+
+##### 4.3.3.1.9. Popup Yêu cầu bổ sung / Từ chối hồ sơ
+
+###### 4.3.3.1.9.1. Màn hình
+
+![Popup yêu cầu bổ sung hoặc từ chối hồ sơ](images/UC431_466_POPUP_Yeu_cau_bo_sung_tu_choi.png)
+
+###### 4.3.3.1.9.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề popup | String(255) | - | Theo thao tác | Chỉ đọc. Giá trị hiển thị động:<br>+ `Yêu cầu bổ sung hồ sơ`<br>+ `Yêu cầu nhập lý do từ chối`<br>+ `Yêu cầu nhập lý do từ chối thụ lý` |
 | Nội dung yêu cầu bổ sung hồ sơ / Nội dung lý do từ chối | Text(2000) | Có | Trống | Label và placeholder thay đổi theo loại thao tác. Áp dụng [BR-VAL-001]. |
 
-###### 4.3.3.1.8.3. Chức năng trên màn hình
+###### 4.3.3.1.9.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
@@ -639,15 +665,16 @@ flowchart TD
 
 ---
 
-##### 4.3.3.1.9. Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan
 
-###### 4.3.3.1.9.1. Màn hình
+##### 4.3.3.1.10. Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan
+
+###### 4.3.3.1.10.1. Màn hình
 
 ![Popup chuẩn tìm kiếm vụ việc/hồ sơ gốc liên quan](images/UC431_466_POPUP_Tim_kiem_vu_viec_goc.png)
 
 Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm kiếm và liên kết vụ việc/hồ sơ gốc trong phân hệ Bồi thường nhà nước. Các module khác chỉ tham chiếu lại mục này, không mô tả lại cấu trúc popup. Tùy nghiệp vụ gọi popup, hệ thống cấu hình lại tiêu đề, nguồn dữ liệu, nhãn cột và màn chi tiết được mở từ liên kết.
 
-###### 4.3.3.1.9.2. Mô tả thông tin trên màn hình
+###### 4.3.3.1.10.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
@@ -667,7 +694,7 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 | Ngày phát sinh | Date | - | Theo dữ liệu | Chỉ đọc. Hiển thị ngày nộp, ngày tiếp nhận, ngày ban hành quyết định hoặc ngày phát sinh nghiệp vụ theo nguồn dữ liệu. |
 | Thao tác | - | - | - | Hiển thị nút `Chọn` ở cột cuối dòng. |
 
-###### 4.3.3.1.9.3. Chức năng trên màn hình
+###### 4.3.3.1.10.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
@@ -681,13 +708,14 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 
 ---
 
-##### 4.3.3.1.10. Popup Tìm kiếm Vụ việc xác định cơ quan giải quyết bồi thường
 
-###### 4.3.3.1.10.1. Màn hình
+##### 4.3.3.1.11. Popup Tìm kiếm Vụ việc xác định cơ quan giải quyết bồi thường
+
+###### 4.3.3.1.11.1. Màn hình
 
 ![Popup tìm kiếm vụ việc xác định cơ quan giải quyết bồi thường](images/UC431_466_POPUP_Tim_kiem_vu_viec_xdcq.png)
 
-###### 4.3.3.1.10.2. Mô tả thông tin trên màn hình
+###### 4.3.3.1.11.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
@@ -708,7 +736,7 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 | Ngày tiếp nhận | Date | - | Theo dữ liệu | Chỉ đọc. Hiển thị ngày tiếp nhận vụ việc xác định cơ quan. |
 | Thao tác | String(50) | - | Hiển thị | Chỉ đọc. Hiển thị nút `Chọn` ở cột cuối dòng. |
 
-###### 4.3.3.1.10.3. Chức năng trên màn hình
+###### 4.3.3.1.11.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
@@ -723,20 +751,21 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 
 ---
 
-##### 4.3.3.1.11. Popup Xác nhận
 
-###### 4.3.3.1.11.1. Màn hình
+##### 4.3.3.1.12. Popup Xác nhận
+
+###### 4.3.3.1.12.1. Màn hình
 
 ![Popup xác nhận](images/UC431_466_POPUP_Xac_nhan.png)
 
-###### 4.3.3.1.11.2. Mô tả thông tin trên màn hình
+###### 4.3.3.1.12.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề popup | String(255) | - | Theo thao tác | Chỉ đọc. Hiển thị icon cảnh báo và nội dung xác nhận theo thao tác đang thực hiện. |
 | Nội dung xác nhận | Text(2000) | - | Theo thao tác | Chỉ đọc. Áp dụng message xác nhận [MSG-CFM-SYS-001] hoặc nội dung xác nhận tương ứng thao tác. |
 
-###### 4.3.3.1.11.3. Chức năng trên màn hình
+###### 4.3.3.1.12.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
@@ -745,34 +774,30 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 
 ---
 
-##### 4.3.3.1.12. Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường
 
-###### 4.3.3.1.12.1. Màn hình
+##### 4.3.3.1.13. Popup Tiếp tục giải quyết
 
-Popup mở từ chức năng `Thụ lý hồ sơ` tại MH01 và `Thụ lý` tại MH04 khi hồ sơ ở trạng thái `Chờ thụ lý`, cho phép Lãnh đạo/Thủ trưởng cử người giải quyết vụ việc.
+###### 4.3.3.1.13.1. Màn hình
 
-###### 4.3.3.1.12.2. Mô tả thông tin trên màn hình
+Popup mở từ nút **`Tiếp tục giải quyết`** tại MH05 khi hồ sơ đang ở trạng thái `Hoãn giải quyết` hoặc `Tạm đình chỉ giải quyết`. Cho phép cán bộ nhập số, ngày quyết định và lý do cho phép tiếp tục giải quyết vụ việc bồi thường.
+
+###### 4.3.3.1.13.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Họ và tên cán bộ giải quyết | String(100) | Có | Trống | Lãnh đạo nhập trực tiếp họ và tên cán bộ được cử giải quyết hồ sơ; không chọn từ danh sách cán bộ/người dùng trên hệ thống. |
-| Chức vụ cán bộ giải quyết | String(100) | Có | Trống | Lãnh đạo nhập chức vụ của cán bộ được cử giải quyết hồ sơ. |
-| Đơn vị cán bộ giải quyết | Enum(Tree) | Có | Trống | Lãnh đạo chọn đơn vị của cán bộ được cử giải quyết trên cây đơn vị của cơ quan. |
-| Đơn vị ban hành QĐ cử người giải quyết | Enum(String(255)) | Có | Theo cơ quan giải quyết | Đơn vị ban hành quyết định cử người giải quyết. |
-| Số QĐ cử người giải quyết | String(50) | Có | Trống | Nhập số Quyết định cử người giải quyết hồ sơ yêu cầu bồi thường; hệ thống kiểm tra trùng số quyết định theo đơn vị ban hành/năm nếu có cấu hình kiểm tra trùng. |
-| Ngày QĐ cử người giải quyết | Date | Có | Ngày hiện tại | Nhập/chọn ngày ban hành Quyết định cử người giải quyết bằng datepicker; áp dụng quy tắc kiểm tra ngày hợp lệ [BR-VAL-008]. |
-| Người ký/Chức vụ người ký QĐ | String(255) | Không | Trống | Ghi nhận người ký và chức vụ trên quyết định cử người giải quyết nếu có. |
-| Tài liệu QĐ cử người giải quyết đính kèm | File | Có | Trống | Khối tài liệu đặt dưới phần thông tin quyết định; cho phép đính kèm tài liệu Quyết định cử người giải quyết, sau khi chọn file hiển thị tên file và liên kết `Xem file`, `Xóa`. Đây là file QĐ đã ký bên ngoài, module này không thực hiện trình ký số riêng cho QĐ cử người giải quyết. |
+| Số quyết định tiếp tục giải quyết | String(50) | Có (*) | Trống | Control UI: Input text. Nhập số văn bản/quyết định cho phép tiếp tục giải quyết vụ việc. Áp dụng [BR-VAL-001]. |
+| Ngày quyết định tiếp tục giải quyết | Date | Có (*) | Ngày hiện tại | Control UI: Datepicker (định dạng `dd/mm/yyyy`). Ngày ban hành quyết định tiếp tục giải quyết. Áp dụng [BR-VAL-001]. |
+| Lý do / Căn cứ tiếp tục giải quyết | Text(2000) | Có (*) | Trống | Control UI: Textarea. Ghi nhận căn cứ pháp luật hoặc lý do cho phép tiếp tục giải quyết vụ việc. Áp dụng [BR-VAL-001]. |
+| Tài liệu quyết định đính kèm | File / List(File) | Không | Trống | Control UI: Upload file. Đính kèm tệp tin quyết định tiếp tục giải quyết và tài liệu liên quan. Hiển thị tên tệp kèm liên kết `Xem file` và `Xóa`. |
 
-###### 4.3.3.1.12.3. Chức năng trên màn hình
+###### 4.3.3.1.13.3. Chức năng trên màn hình
 
-| STT | Tên chức năng | Định dạng | Mô tả |
+| STT | Tên chức năng | Vị trí / Định dạng | Mô tả thao tác & Luồng xử lý nghiệp vụ |
 | :--- | :--- | :--- | :--- |
-| 1 | Xác nhận | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001], hệ thống tô viền đỏ trường thiếu dữ liệu và không cho xác nhận thụ lý. |
-|  |  |  | **TH2 - Hợp lệ**: Hệ thống lưu thông tin người được cử giải quyết và thông tin QĐ cử người giải quyết, chuyển hồ sơ sang trạng thái `Đang xác minh thiệt hại`, cập nhật timeline và hiển thị [MSG-SUC-SYS-002], đóng popup. |
-| 2 | Hủy bỏ | Button | Hệ thống đóng popup, giữ nguyên trạng thái hồ sơ. |
-| 3 | Xem file | Link | Cho phép xem file đính kèm tại một tab riêng. |
-| 4 | Xóa | Link | Hệ thống gỡ file đính kèm khỏi popup. |
+| 1 | Xác nhận | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu:<br>- **TH1 - Bỏ trống trường bắt buộc:** Vi phạm [BR-VAL-001], tô viền đỏ ô lỗi đầu tiên và hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]. Không cho phép xác nhận.<br>- **TH2 - Hợp lệ:** Lưu thông tin quyết định tiếp tục giải quyết, khôi phục hồ sơ về đúng trạng thái và bước xử lý trước khi bị hoãn/tạm đình chỉ (`Đang xác minh thiệt hại`, `Đang thương lượng`...), cập nhật timeline xử lý, hiển thị thông báo thành công [MSG-SUC-SYS-002] và đóng popup. |
+| 2 | Hủy bỏ | Button | Đóng popup, giữ nguyên trạng thái hồ sơ. |
+| 3 | Xem file | Link | Mở tệp tài liệu đính kèm tại một tab riêng. |
+| 4 | Xóa | Link | Gỡ tệp đính kèm khỏi popup. |
 
 ---
+

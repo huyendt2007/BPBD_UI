@@ -1,12 +1,8 @@
-### 4.1.7. UC002 - Xem thông tin tài khoản dành cho Khách hàng
+### 4.1.7. Xem thông tin tài khoản dành cho Khách hàng
 
 #### 4.1.7.1. Mục đích
 
-- Cho phép Khách hàng đã đăng nhập xem thông tin hồ sơ tài khoản của mình tại menu người dùng **Hồ sơ cá nhân** trên Website Khách hàng.
-- Hiển thị thông tin tài khoản theo đúng **Loại khách hàng** của hồ sơ đang đăng nhập: `Cá nhân` hoặc `Tổ chức`.
-- Hiển thị thông tin **Loại tài khoản** theo đúng vai trò/tài khoản người dùng đang đăng nhập: `Tài khoản chính` hoặc `Tài khoản phụ`.
-- Hiển thị trạng thái các phương thức đăng nhập đang liên kết với cùng hồ sơ tài khoản: `VNeID` và `Nội bộ (Email/Mật khẩu)`.
-- Cho phép người dùng chuyển sang màn hình **Cập nhật thông tin tài khoản**, thiết lập thêm phương thức đăng nhập Nội bộ hoặc đổi mật khẩu Nội bộ nếu đã thiết lập.
+- Cho phép Khách hàng xem thông tin chi tiết hồ sơ tài khoản, trạng thái liên kết phương thức đăng nhập và điều hướng thực hiện các thiết lập tài khoản trên Website Khách hàng.
 
 **Phân quyền**
 
@@ -19,10 +15,11 @@
 - Hồ sơ tài khoản khách hàng tồn tại trên hệ thống và chưa ở trạng thái đóng/xóa.
 - Hệ thống truy xuất được thông tin hồ sơ tài khoản, loại tài khoản của người dùng đang đăng nhập và thông tin nguồn xác thực liên kết.
 
-#### 4.1.7.2. UC002.MH01 - Xem chi tiết tài khoản
+#### 4.1.7.2. Màn hình Xem chi tiết tài khoản
 
 ##### 4.1.7.2.1. Màn hình
 
+![Xem chi tiết tài khoản](images/UC002_MH01_Xem_chi_tiet_tai_khoan.png)
 
 ##### 4.1.7.2.2. Mô tả thông tin trên màn hình
 
@@ -32,11 +29,11 @@
 | Loại khách hàng | Enum(String(50)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại khách hàng gắn với hồ sơ tài khoản của người dùng đang đăng nhập: `Cá nhân` hoặc `Tổ chức`. |
 | Loại tài khoản | Enum(String(50)) | Có | Theo người dùng đang đăng nhập | Chỉ đọc. Hiển thị loại tài khoản của người dùng đang đăng nhập: `Tài khoản chính` hoặc `Tài khoản phụ`. |
 | Nguồn xác thực | Enum(String(100)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị nguồn xác thực đang liên kết với hồ sơ tài khoản của người dùng đang đăng nhập bao gồm các nguồn: <br> - `VNeID` <br> - `Nội bộ` <br> - `VNeID, Nội bộ`. |
-| **II.A. Thông tin khách hàng Cá nhân** | - | - | - | Khối chỉ hiển thị khi `Loại khách hàng = Cá nhân. <br>  Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản cá nhân của người dùng đang đăng nhập. |
+| **II.A. Thông tin khách hàng Cá nhân** | - | - | - | Khối chỉ hiển thị khi `Loại khách hàng = Cá nhân`. <br>  Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản cá nhân của người dùng đang đăng nhập. |
 | Loại giấy tờ | Enum(String(50)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại giấy tờ pháp lý của cá nhân đang đăng nhập |
 | Số giấy tờ | String(50) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị số giấy tờ chứng minh tư cách pháp lý của cá nhân. |
 | Tên khách hàng | String(255) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị họ và tên của khách hàng cá nhân. |
-| Ngày sinh | Date | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị ngày tháng năm sinh của cá nhân, định dạng `DD/MM/YYYY`. |
+| Ngày sinh | Date | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị ngày tháng năm sinh của cá nhân, định dạng `dd/mm/yyyy`. |
 | Giới tính | Enum(String(20)) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị giới tính của cá nhân: `Nam`, `Nữ` hoặc `Khác`. |
 | Quốc tịch | String(255) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị quốc tịch của cá nhân. |
 | Email (Tên đăng nhập) | String(255) | Có theo hồ sơ | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị email gắn với hồ sơ tài khoản cá nhân. Nếu tài khoản đã liên kết Email/Mật khẩu Nội bộ, email này đồng thời là tên đăng nhập hệ thống. |
@@ -58,7 +55,7 @@
 | Phường/Xã | Enum(String(100)) / String(100) | Không | Theo hồ sơ tài khoản | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Địa chỉ chi tiết | Text(1000) / String(500) | Không | Theo hồ sơ tài khoản | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
 | Trung tâm Đăng ký mặc định | String(255) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị Trung tâm Đăng ký mặc định đã lưu gắn với hồ sơ tài khoản. |
-| Nhu cầu sử dụng tài khoản | List(String) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị nhu cầu sử dụng tài khoản đã lưu, dạng chip, gồm một hoặc nhiều giá trị: `Đăng ký`, `Tra cứu`. |
+| Nhu cầu sử dụng tài khoản | List(Enum(String(50))) | Không | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị nhu cầu sử dụng tài khoản đã lưu, gồm một hoặc nhiều giá trị: `Tài khoản đăng ký`, `Tài khoản tra cứu`. |
 | **IV. Trạng thái Phương thức đăng nhập** | - | - | - | - Khối hiển thị dạng 2 Card/Thẻ trạng thái.<br>- Luôn hiển thị cho cả tài khoản `Cá nhân` và `Tổ chức`.<br>- Thông tin trong khối phản ánh trạng thái liên kết phương thức đăng nhập của hồ sơ tài khoản đang đăng nhập. |
 | Phương thức VNeID / DVCQG | Card/Badge | Không | Theo hồ sơ tài khoản | - Tiêu đề thẻ: `VNeID`.<br>- Dòng mô tả phụ trên giao diện: `Đăng nhập bằng thông tin định danh đã xác thực qua DVCQG/VNeID`.<br>- Trạng thái `Đã liên kết` (Badge xanh lá): Hiển thị khi hồ sơ tài khoản có nguồn xác thực VNeID.<br>- Trạng thái `Chưa liên kết` (Badge màu xám): Hiển thị khi hồ sơ tài khoản chưa liên kết nguồn VNeID. |
 | Phương thức Nội bộ (Email/Mật khẩu) | Card/Badge | Không | Theo hồ sơ tài khoản | - Tiêu đề thẻ: `Nội bộ (Email/Mật khẩu)`.<br>- Dòng mô tả phụ trên giao diện: `Sử dụng Email làm tên đăng nhập trên hệ thống BPBĐ`.<br>- Trạng thái `Đã liên kết` (Badge xanh lá): Hiển thị khi hồ sơ đã thiết lập mật khẩu nội bộ.<br>- Khi trạng thái là `Đã liên kết`, hiển thị kèm Email đăng nhập và nút bấm `[Đổi mật khẩu]`.<br>- Trạng thái `Chưa thiết lập` (Badge màu vàng/xám): Hiển thị khi tài khoản chưa tạo mật khẩu nội bộ.<br>- Khi trạng thái là `Chưa thiết lập`, hiển thị kèm nút bấm `[Thiết lập ngay]`. |
@@ -67,19 +64,16 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Cập nhật | Button | - Chuyển sang màn hình UC003 - Cập nhật thông tin tài khoản.<br>- Hệ thống giữ nguyên Loại khách hàng (`Cá nhân`/`Tổ chức`) của hồ sơ để hiển thị đúng form cập nhật. |
+| 1 | Cập nhật | Button | - Chuyển sang Màn hình Cập nhật thông tin tài khoản.<br>- Hệ thống giữ nguyên Loại khách hàng (`Cá nhân`/`Tổ chức`) của hồ sơ để hiển thị đúng form cập nhật. |
 | 2 | Đóng | Button | - Đóng màn hình xem chi tiết và quay về Trang chủ Website Khách hàng. |
-| 3 | Thiết lập ngay | Button | Khi click, mở Popup UC002.MH02 - Thiết lập phương thức đăng nhập Nội bộ. |
-| 4 | Đổi mật khẩu | Button | Khi click, điều hướng người dùng sang màn hình UCPS006 - Đổi mật khẩu. |
+| 3 | Thiết lập ngay | Button | Khi click, mở Popup Thiết lập phương thức đăng nhập Nội bộ. |
+| 4 | Đổi mật khẩu | Button | Khi click, điều hướng người dùng sang Màn hình Đổi mật khẩu. |
 
-#### 4.1.7.4. UC002.MH02 - Popup Thiết lập phương thức đăng nhập Nội bộ
+#### 4.1.7.4. Popup Thiết lập phương thức đăng nhập Nội bộ
 
 ##### 4.1.7.4.1. Màn hình
 
-- Popup hiển thị khi người dùng click `Thiết lập ngay` tại thẻ `Nội bộ (Email/Mật khẩu)` trên màn hình xem chi tiết tài khoản.
-- Popup mở trên màn hình UC002 hiện tại, không chuyển trang.
-- Mục đích: gắn thêm nguồn xác thực Nội bộ vào cùng hồ sơ tài khoản khách hàng đang đăng nhập, không tạo hồ sơ tài khoản mới.
-- Các trường mật khẩu có icon con mắt để ẩn/hiện ký tự.
+![Thiết lập phương thức đăng nhập Nội bộ](images/UC002_MH02_Thiet_lap_dang_nhap_noi_bo.png)
 
 ##### 4.1.7.4.2. Mô tả thông tin trên màn hình
 
