@@ -266,93 +266,159 @@
             border: 1px solid #99f6e4;
         }
 
-        /* Icon Buttons */
+        /* Icon Buttons - Modernized & Premium Styling */
         .icon-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: var(--border-radius-sm);
-            border: 1px solid #e2e8f0;
-            background-color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid #E2E8F0;
+            background-color: #FFFFFF;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: #64748b;
+            color: #64748B;
+            font-size: 13.5px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0 3px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            vertical-align: middle;
         }
 
         .icon-btn:hover {
-            background-color: #f8fafc;
-            border-color: #cbd5e1;
+            transform: translateY(-1.5px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
+        .icon-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 👁️ View / Detail */
         .icon-btn.view {
-            color: #3b82f6;
+            color: #2563EB;
+            background-color: #EFF6FF;
+            border-color: #BFDBFE;
         }
-
         .icon-btn.view:hover {
-            background-color: #eff6ff;
+            background-color: #DBEAFE;
+            border-color: #93C5FD;
+            color: #1D4ED8;
         }
 
+        /* ✏️ Edit */
         .icon-btn.edit {
-            color: #f59e0b;
+            color: #D97706;
+            background-color: #FFFBEB;
+            border-color: #FDE68A;
         }
-
         .icon-btn.edit:hover {
-            background-color: #fffbeb;
+            background-color: #FEF3C7;
+            border-color: #FCD34D;
+            color: #B45309;
         }
 
+        /* 🗑️ Delete */
         .icon-btn.delete {
-            color: #ef4444;
+            color: #DC2626;
+            background-color: #FEF2F2;
+            border-color: #FECACA;
         }
-
         .icon-btn.delete:hover {
-            background-color: #fef2f2;
+            background-color: #FEE2E2;
+            border-color: #FCA5A5;
+            color: #B91C1C;
         }
 
-        .icon-btn.accept {
-            color: #10b981;
+        /* ✅ Accept / Thụ lý / Đồng ý */
+        .icon-btn.accept, .icon-btn.success {
+            color: #059669;
+            background-color: #ECFDF5;
+            border-color: #A7F3D0;
+        }
+        .icon-btn.accept:hover, .icon-btn.success:hover {
+            background-color: #D1FAE5;
+            border-color: #6EE7B7;
+            color: #047857;
         }
 
-        .icon-btn.accept:hover {
-            background-color: #ecfdf5;
-        }
-
+        /* 🚫 Reject / Từ chối */
         .icon-btn.reject {
-            color: #dc2626;
+            color: #E11D48;
+            background-color: #FFF1F2;
+            border-color: #FECDD3;
         }
-
         .icon-btn.reject:hover {
-            background-color: #fef2f2;
+            background-color: #FFE4E6;
+            border-color: #FDA4AF;
+            color: #BE123C;
         }
 
+        /* 📝 Supplement / Yêu cầu bổ sung */
         .icon-btn.supplement {
-            color: #8b5cf6;
+            color: #7C3AED;
+            background-color: #F5F3FF;
+            border-color: #DDD6FE;
         }
-
         .icon-btn.supplement:hover {
-            background-color: #f5f3ff;
+            background-color: #EDE9FE;
+            border-color: #C4B5FD;
+            color: #6D28D9;
         }
 
-        /* admin-ui-standardizer.js (loaded globally at the bottom of the page) injects its own
-           .icon-btn rules at runtime, which - by pure CSS source order - would otherwise override
-           the Fixed-slot Action Column styling above (different size/background/colors) regardless
-           of JS-level guards. Re-declaring the same rules scoped under #claimsTableBody gives them
-           higher specificity so this table's action icons always keep their intended look. */
-        #claimsTableBody .icon-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: var(--border-radius-sm);
-            border: 1px solid #e2e8f0;
-            background-color: white;
-            color: #64748b;
+        /* ⏰ Renew / Gia hạn */
+        .icon-btn.renew {
+            color: #D97706;
+            background-color: #FFFBEB;
+            border-color: #FDE68A;
         }
-        #claimsTableBody .icon-btn.view { color: #3b82f6; }
-        #claimsTableBody .icon-btn.edit { color: #f59e0b; }
-        #claimsTableBody .icon-btn.delete { color: #ef4444; }
-        #claimsTableBody .icon-btn.accept { color: #10b981; }
-        #claimsTableBody .icon-btn.reject { color: #dc2626; }
-        #claimsTableBody .icon-btn.supplement { color: #8b5cf6; }
+        .icon-btn.renew:hover {
+            background-color: #FEF3C7;
+            border-color: #FCD34D;
+            color: #B45309;
+        }
+
+        /* Disabled state */
+        .icon-btn.disabled, .icon-btn:disabled {
+            opacity: 0.35 !important;
+            cursor: not-allowed !important;
+            pointer-events: none !important;
+            background-color: #F8FAFC !important;
+            border-color: #E2E8F0 !important;
+            color: #94A3B8 !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        /* Specificity overrides for tables */
+        #claimsTableBody .icon-btn, .custom-table .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            font-size: 13.5px;
+            margin: 0 3px;
+        }
+        #claimsTableBody .icon-btn.view, .custom-table .icon-btn.view { color: #2563EB; background-color: #EFF6FF; border-color: #BFDBFE; }
+        #claimsTableBody .icon-btn.view:hover, .custom-table .icon-btn.view:hover { background-color: #DBEAFE; border-color: #93C5FD; color: #1D4ED8; }
+        #claimsTableBody .icon-btn.edit, .custom-table .icon-btn.edit { color: #D97706; background-color: #FFFBEB; border-color: #FDE68A; }
+        #claimsTableBody .icon-btn.edit:hover, .custom-table .icon-btn.edit:hover { background-color: #FEF3C7; border-color: #FCD34D; color: #B45309; }
+        #claimsTableBody .icon-btn.delete, .custom-table .icon-btn.delete { color: #DC2626; background-color: #FEF2F2; border-color: #FECACA; }
+        #claimsTableBody .icon-btn.delete:hover, .custom-table .icon-btn.delete:hover { background-color: #FEE2E2; border-color: #FCA5A5; color: #B91C1C; }
+        #claimsTableBody .icon-btn.accept, .custom-table .icon-btn.accept { color: #059669; background-color: #ECFDF5; border-color: #A7F3D0; }
+        #claimsTableBody .icon-btn.accept:hover, .custom-table .icon-btn.accept:hover { background-color: #D1FAE5; border-color: #6EE7B7; color: #047857; }
+        #claimsTableBody .icon-btn.reject, .custom-table .icon-btn.reject { color: #E11D48; background-color: #FFF1F2; border-color: #FECDD3; }
+        #claimsTableBody .icon-btn.reject:hover, .custom-table .icon-btn.reject:hover { background-color: #FFE4E6; border-color: #FDA4AF; color: #BE123C; }
+        #claimsTableBody .icon-btn.supplement, .custom-table .icon-btn.supplement { color: #7C3AED; background-color: #F5F3FF; border-color: #DDD6FE; }
+        #claimsTableBody .icon-btn.supplement:hover, .custom-table .icon-btn.supplement:hover { background-color: #EDE9FE; border-color: #C4B5FD; color: #6D28D9; }
+        #claimsTableBody .icon-btn.disabled, .custom-table .icon-btn.disabled {
+            opacity: 0.35 !important;
+            background-color: #F8FAFC !important;
+            border-color: #E2E8F0 !important;
+            color: #94A3B8 !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
 
         /* Card Section & Layout */
         .card-section {

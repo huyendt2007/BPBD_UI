@@ -219,9 +219,9 @@
         .custom-table .action-cell {
             text-align: center;
             white-space: nowrap;
-            width: 230px;
-            min-width: 230px;
-            max-width: 230px;
+            width: 205px;
+            min-width: 205px;
+            max-width: 205px;
         }
 
         .custom-table tbody tr.row-clickable {
@@ -525,8 +525,16 @@
         <form id="filterForm">
             <div class="grid-4-cols">
                 <div class="form-group">
-                    <label class="form-label">Từ khóa tìm kiếm</label>
-                    <input type="text" id="filterKeyword" class="form-control" placeholder="Tên KH, MST/CCCD, Mã YC, Mã CSDL...">
+                    <label class="form-label">Mã yêu cầu</label>
+                    <input type="text" id="filterMaYC" class="form-control" placeholder="Nhập mã yêu cầu...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mã số sử dụng CSDL</label>
+                    <input type="text" id="filterMaCSDL" class="form-control" placeholder="Nhập mã số CSDL...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên đối tượng đề nghị</label>
+                    <input type="text" id="filterTenDT" class="form-control" placeholder="Nhập tên đối tượng...">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Loại đối tượng</label>
@@ -537,6 +545,8 @@
                         <option value="co_quan">Cơ quan có thẩm quyền</option>
                     </select>
                 </div>
+            </div>
+            <div class="grid-4-cols">
                 <div class="form-group">
                     <label class="form-label">Loại mã số CSDL</label>
                     <select id="filterLoaiMa" class="form-select">
@@ -555,8 +565,6 @@
                         <option value="mien_phi">Miễn phí</option>
                     </select>
                 </div>
-            </div>
-            <div class="grid-4-cols">
                 <div class="form-group">
                     <label class="form-label">Trạng thái</label>
                     <select id="filterTrangThai" class="form-select">
@@ -574,10 +582,14 @@
                     <label class="form-label">Từ ngày</label>
                     <input type="text" id="filterTuNgay" class="form-control" placeholder="dd/mm/yyyy">
                 </div>
+            </div>
+            <div class="grid-4-cols">
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
                     <input type="text" id="filterDenNgay" class="form-control" placeholder="dd/mm/yyyy">
                 </div>
+                <div class="form-group"></div>
+                <div class="form-group"></div>
                 <div class="form-group"></div>
             </div>
 
@@ -603,13 +615,13 @@
                     <th>Mã yêu cầu</th>
                     <th>Mã số sử dụng CSDL</th>
                     <th>Tên đối tượng đề nghị</th>
-                    <th>Số CCCD/MST</th>
+                    <th>Mã tài khoản trực tuyến</th>
                     <th>Loại đối tượng</th>
                     <th style="text-align: center;">Loại mã số CSDL</th>
                     <th>Phương thức thanh toán</th>
                     <th style="text-align: center;">Ngày tạo</th>
                     <th style="text-align: center;">Trạng thái</th>
-                    <th style="text-align: center; width: 230px; min-width: 230px;">Thao tác</th>
+                    <th style="text-align: center; width: 205px; min-width: 205px;">Thao tác</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -731,7 +743,6 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeModal('createModal')">Hủy</button>
-            <button class="btn btn-outline-primary" id="btnPrintReceipt" onclick="printReceipt()" style="display: none;"><i class="fa-solid fa-print"></i> In biên lai</button>
             <button class="btn btn-primary" id="btnSaveCreate" onclick="saveCreate('draft')"><i class="fa-solid fa-save"></i> Lưu nháp</button>
             <button class="btn btn-success" id="btnApproveCreate" onclick="saveCreate('approve')"><i class="fa-solid fa-check-circle"></i> Cấp mã</button>
         </div>
@@ -972,23 +983,6 @@
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<!-- Modal: In biên lai thu phí -->
-<div class="modal-overlay" id="receiptModal">
-    <div class="modal-content modal-sm" style="max-width: 500px;">
-        <div class="modal-header">
-            <h3><i class="fa-solid fa-receipt"></i> Biên lai thu phí, lệ phí</h3>
-            <button class="close-modal" onclick="closeModal('receiptModal')">&times;</button>
-        </div>
-        <div class="modal-body" id="receiptModalBody">
-            <!-- Sẽ render động nội dung biên lai -->
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('receiptModal')">Đóng</button>
-            <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> In ngay</button>
-        </div>
-    </div>
-</div>
-
 <script>
     // ==================== MOCK DATA ====================
     const mockData = [
@@ -998,21 +992,21 @@
             mst: '0312998877', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
             pttt: 'Chuyển khoản ngân hàng', ngayTao: '25/06/2026', trangThai: 'Lưu nháp',
             mucPhi: '300.000 VNĐ', email: 'kimlong@company.vn', sdt: '0281112233', diaChi: '12 Nguyễn Trãi, Q.5, TP.HCM',
-            tkLienKet: ''
+            tkLienKet: '', ngayHH: '31/12/2026'
         },
         {
-            stt: 2, maYC: 'RQ-20260624-0066', maCSDL: '—', tenKH: 'Đặng Văn Sơn',
+            stt: 2, maYC: 'RQ-20260624-0066', maCSDL: '1L-771209', tenKH: 'Đặng Văn Sơn',
             mst: '025187654321', loaiDT: 'Cá nhân', loaiMa: 'Một lần',
             pttt: 'Nộp tiền mặt', ngayTao: '24/06/2026', trangThai: 'Lưu nháp',
             mucPhi: '20.000 VNĐ', email: 'son.dang@gmail.com', sdt: '0911223344', diaChi: '34 Lý Thường Kiệt, Đà Nẵng',
-            tkLienKet: ''
+            tkLienKet: '', ngayHH: '—'
         },
         {
-            stt: 3, maYC: 'RQ-20260623-0059', maCSDL: 'CQ-118820', tenKH: 'Chi cục THADS Quận 3',
+            stt: 3, maYC: 'RQ-20260623-0059', maCSDL: 'CQ-118820', tenKH: 'Chi cục Thi hành án dân sự Quận 1',
             mst: '0109988776', loaiDT: 'Cơ quan có thẩm quyền', loaiMa: 'Thường xuyên',
             pttt: 'Miễn phí', ngayTao: '23/06/2026', trangThai: 'Lưu nháp',
-            mucPhi: 'Miễn phí', email: 'thads.q3@moj.gov.vn', sdt: '0283344556', diaChi: '25 Nam Kỳ Khởi Nghĩa, Q.3, TP.HCM',
-            tkLienKet: 'thads_hcm'
+            mucPhi: 'Miễn phí', email: 'thads.q1@moj.gov.vn', sdt: '0283344556', diaChi: '25 Nam Kỳ Khởi Nghĩa, Q.1, TP.HCM',
+            tkLienKet: 'thads_q1', ngayHH: '—'
         },
         // ---- Chờ thanh toán ----
         {
@@ -1059,14 +1053,35 @@
             ngayCap: '08/06/2026', ngayHH: '—', tkLienKet: 'sotp_hanoi'
         },
         {
-            stt: 10, maYC: 'RQ-20260212-0912', maCSDL: 'TX-384521', tenKH: 'Trần Thị Bình',
+            stt: 10, maYC: 'RQ-20260510-0012', maCSDL: 'CQ-108821', tenKH: 'Tòa án nhân dân TP. Hà Nội',
+            mst: '0103456789', loaiDT: 'Cơ quan có thẩm quyền', loaiMa: 'Thường xuyên',
+            pttt: 'Miễn phí', ngayTao: '10/05/2026', trangThai: 'Hoạt động',
+            mucPhi: 'Miễn phí', email: 'tand.hn@court.gov.vn', sdt: '0243825678', diaChi: '43 Hai Bà Trưng, Hoàn Kiếm, Hà Nội',
+            ngayCap: '10/05/2026', ngayHH: '—', tkLienKet: 'tand_hanoi'
+        },
+        {
+            stt: 11, maYC: 'RQ-20260405-0063', maCSDL: 'CQ-209934', tenKH: 'Cơ quan CSĐT Công an TP.HCM',
+            mst: '0104567890', loaiDT: 'Cơ quan có thẩm quyền', loaiMa: 'Thường xuyên',
+            pttt: 'Miễn phí', ngayTao: '05/04/2026', trangThai: 'Hoạt động',
+            mucPhi: 'Miễn phí', email: 'csdt.hcm@bocongan.gov.vn', sdt: '0283838799', diaChi: '268 Trần Hưng Đạo, Q.1, TP.HCM',
+            ngayCap: '05/04/2026', ngayHH: '—', tkLienKet: 'csdt_hcm'
+        },
+        {
+            stt: 12, maYC: 'RQ-20260312-0081', maCSDL: 'CQ-332211', tenKH: 'Sở Tư pháp TP. Đà Nẵng',
+            mst: '0105678901', loaiDT: 'Cơ quan có thẩm quyền', loaiMa: 'Thường xuyên',
+            pttt: 'Miễn phí', ngayTao: '12/03/2026', trangThai: 'Hoạt động',
+            mucPhi: 'Miễn phí', email: 'sotp.danang@danang.gov.vn', sdt: '0236382245', diaChi: '24 Trần Phú, Hải Châu, Đà Nẵng',
+            ngayCap: '12/03/2026', ngayHH: '—', tkLienKet: 'sotp_danang'
+        },
+        {
+            stt: 13, maYC: 'RQ-20260212-0912', maCSDL: 'TX-384521', tenKH: 'Trần Thị Bình',
             mst: '079087654322', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
             pttt: 'Thanh toán trực tuyến', ngayTao: '12/02/2026', trangThai: 'Hoạt động',
             mucPhi: '300.000 VNĐ', email: 'binh2.tran@gmail.com', sdt: '0987654322', diaChi: '78 Trần Hưng Đạo, Q.5, TP.HCM',
             ngayCap: '12/02/2026', ngayHH: '31/12/2026'
         },
         {
-            stt: 11, maYC: 'RQ-20260115-0203', maCSDL: 'TX-773301', tenKH: 'CTCP Xây dựng Phú Mỹ',
+            stt: 14, maYC: 'RQ-20260115-0203', maCSDL: 'TX-773301', tenKH: 'CTCP Xây dựng Phú Mỹ',
             mst: '0309876543', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
             pttt: 'Chuyển khoản ngân hàng', ngayTao: '15/01/2026', trangThai: 'Hoạt động',
             mucPhi: '300.000 VNĐ', email: 'phumy@construction.vn', sdt: '0287654321', diaChi: '88 Hoàng Văn Thụ, Q.Phú Nhuận, TP.HCM',
@@ -1074,14 +1089,14 @@
         },
         // ---- Hết hạn ----
         {
-            stt: 12, maYC: 'RQ-20250610-0055', maCSDL: 'TX-291047', tenKH: 'Lê Hoàng Minh',
+            stt: 15, maYC: 'RQ-20250610-0055', maCSDL: 'TX-291047', tenKH: 'Lê Hoàng Minh',
             mst: '038198765432', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
             pttt: 'Chuyển khoản ngân hàng', ngayTao: '10/06/2025', trangThai: 'Hết hạn',
             mucPhi: '300.000 VNĐ', email: 'minh.le@yahoo.com', sdt: '0976543210', diaChi: '256 Điện Biên Phủ, Q.3, TP.HCM',
             ngayCap: '10/06/2025', ngayHH: '31/12/2025'
         },
         {
-            stt: 13, maYC: 'RQ-20250420-0301', maCSDL: 'TX-560098', tenKH: 'CTCP Thương mại Hòa Bình',
+            stt: 16, maYC: 'RQ-20250420-0301', maCSDL: 'TX-560098', tenKH: 'CTCP Thương mại Hòa Bình',
             mst: '0311122334', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
             pttt: 'Nộp tiền mặt', ngayTao: '20/04/2025', trangThai: 'Hết hạn',
             mucPhi: '300.000 VNĐ', email: 'hoabinh@thuongmai.vn', sdt: '0286677889', diaChi: '9 Lê Duẩn, Q.1, TP.HCM',
@@ -1089,29 +1104,36 @@
         },
         // ---- Khóa ----
         {
-            stt: 14, maYC: 'RQ-20260605-0033', maCSDL: 'TX-673218', tenKH: 'CTCP Đầu tư XYZ',
+            stt: 17, maYC: 'RQ-20260605-0033', maCSDL: 'TX-673218', tenKH: 'CTCP Đầu tư XYZ',
             mst: '0398765432', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
             pttt: 'Chuyển khoản ngân hàng', ngayTao: '05/06/2026', trangThai: 'Khóa',
             mucPhi: '300.000 VNĐ', email: 'info@xyz.vn', sdt: '0289876543', diaChi: '55 Pasteur, Q.1, TP.HCM',
             ngayCap: '05/06/2026', ngayHH: '31/12/2026', lyDoKhoa: 'Phát hiện dấu hiệu tra cứu bất thường, tạm khóa để xác minh'
         },
         {
-            stt: 15, maYC: 'RQ-20260318-0189', maCSDL: 'TX-204471', tenKH: 'Bùi Thị Hạnh',
+            stt: 18, maYC: 'RQ-20260318-0189', maCSDL: 'TX-204471', tenKH: 'Bùi Thị Hạnh',
             mst: '048076543210', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
             pttt: 'Thanh toán trực tuyến', ngayTao: '18/03/2026', trangThai: 'Khóa',
             mucPhi: '300.000 VNĐ', email: 'hanh.bui@gmail.com', sdt: '0923456789', diaChi: '61 Trường Chinh, Q.Tân Bình, TP.HCM',
             ngayCap: '18/03/2026', ngayHH: '31/12/2026', lyDoKhoa: 'Khách hàng yêu cầu tạm khóa để bảo mật thông tin'
         },
+        {
+            stt: 19, maYC: 'RQ-20260218-0099', maCSDL: 'CQ-554433', tenKH: 'Viện Kiểm sát nhân dân tối cao',
+            mst: '0106789012', loaiDT: 'Cơ quan có thẩm quyền', loaiMa: 'Thường xuyên',
+            pttt: 'Miễn phí', ngayTao: '18/02/2026', trangThai: 'Khóa',
+            mucPhi: 'Miễn phí', email: 'vksnd.tc@vks.gov.vn', sdt: '0243825567', diaChi: '09 Phạm Văn Bạch, Cầu Giấy, Hà Nội',
+            ngayCap: '18/02/2026', ngayHH: '—', tkLienKet: 'vksnd_tc', lyDoKhoa: 'Đơn vị thay đổi đầu mối cán bộ tiếp nhận tài khoản, tạm khóa để bàn giao'
+        },
         // ---- Ngưng sử dụng ----
         {
-            stt: 16, maYC: 'RQ-20260528-0067', maCSDL: 'TX-412876', tenKH: 'Nguyễn Thị Mai',
+            stt: 20, maYC: 'RQ-20260528-0067', maCSDL: 'TX-412876', tenKH: 'Nguyễn Thị Mai',
             mst: '027098765432', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
             pttt: 'Thanh toán trực tuyến', ngayTao: '28/05/2026', trangThai: 'Ngưng sử dụng',
             mucPhi: '300.000 VNĐ', email: 'mai.nguyen@outlook.com', sdt: '0934567890', diaChi: '167 Hai Bà Trưng, Q.1, TP.HCM',
             ngayCap: '28/05/2025', ngayHH: '31/12/2025'
         },
         {
-            stt: 17, maYC: 'RQ-20250915-0421', maCSDL: '1L-330982', tenKH: 'Vũ Đình Khoa',
+            stt: 21, maYC: 'RQ-20250915-0421', maCSDL: '1L-330982', tenKH: 'Vũ Đình Khoa',
             mst: '—', loaiDT: 'Cá nhân', loaiMa: 'Một lần',
             pttt: 'Thanh toán trực tuyến', ngayTao: '15/09/2025', trangThai: 'Ngưng sử dụng',
             mucPhi: '20.000 VNĐ', email: '—', sdt: '—', diaChi: '—',
@@ -1119,40 +1141,25 @@
         },
         // ---- Bị từ chối ----
         {
-            stt: 18, maYC: 'RQ-20260601-0021', maCSDL: '—', tenKH: 'Phạm Đức Hùng',
+            stt: 22, maYC: 'RQ-20260601-0021', maCSDL: '—', tenKH: 'Phạm Đức Hùng',
             mst: '012345678901', loaiDT: 'Cá nhân', loaiMa: 'Thường xuyên',
             pttt: 'Nộp tiền mặt', ngayTao: '01/06/2026', trangThai: 'Bị từ chối',
             mucPhi: '300.000 VNĐ', email: 'hung.pham@gmail.com', sdt: '0965432109', diaChi: '89 Võ Văn Tần, Q.3, TP.HCM',
             lyDoTuChoi: 'Chứng từ thanh toán không hợp lệ, không xác định được người nộp'
         },
         {
-            stt: 19, maYC: 'RQ-20260530-0071', maCSDL: '—', tenKH: 'CTCP Vận tải Đông Á',
+            stt: 23, maYC: 'RQ-20260530-0071', maCSDL: '—', tenKH: 'CTCP Vận tải Đông Á',
             mst: '0322233445', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
             pttt: 'Chuyển khoản ngân hàng', ngayTao: '30/05/2026', trangThai: 'Bị từ chối',
             mucPhi: '300.000 VNĐ', email: 'donga@vantai.vn', sdt: '0281122334', diaChi: '77 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM',
             lyDoTuChoi: 'Chưa nộp đủ phí theo quy định, số tiền chuyển khoản thiếu so với biểu phí'
         },
         {
-            stt: 20, maYC: 'RQ-20260519-0084', maCSDL: '—', tenKH: 'Trịnh Thị Ngọc',
+            stt: 24, maYC: 'RQ-20260519-0084', maCSDL: '—', tenKH: 'Trịnh Thị Ngọc',
             mst: '034187654321', loaiDT: 'Cá nhân', loaiMa: 'Một lần',
             pttt: 'Nộp tiền mặt', ngayTao: '19/05/2026', trangThai: 'Bị từ chối',
             mucPhi: '20.000 VNĐ', email: 'ngoc.trinh@gmail.com', sdt: '0945678901', diaChi: '14 Bạch Đằng, Hải Phòng',
             lyDoTuChoi: 'Thông tin đối tượng đề nghị không khớp với hồ sơ gốc'
-        },
-        // ---- Thêm dữ liệu để phân trang/lọc có ý nghĩa ----
-        {
-            stt: 21, maYC: 'RQ-20260110-0011', maCSDL: 'TX-651029', tenKH: 'Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)',
-            mst: '0100150619', loaiDT: 'Tổ chức', loaiMa: 'Thường xuyên',
-            pttt: 'Miễn phí', ngayTao: '10/01/2026', trangThai: 'Hoạt động',
-            mucPhi: 'Miễn phí', email: 'contact@bidv.com.vn', sdt: '19009247', diaChi: 'Tháp BIDV, 35 Hàng Vôi, Hoàn Kiếm, Hà Nội',
-            ngayCap: '10/01/2026', ngayHH: '31/12/2026', tkLienKet: 'bidv_agent'
-        },
-        {
-            stt: 22, maYC: 'RQ-20260703-0104', maCSDL: '—', tenKH: 'Trần Việt Anh',
-            mst: '0123456789', loaiDT: 'Cá nhân', loaiMa: 'Một lần',
-            pttt: 'Thanh toán trực tuyến', ngayTao: '03/07/2026', trangThai: 'Chờ thanh toán',
-            mucPhi: '20.000 VNĐ', email: 'vietanh@gmail.com', sdt: '0988889999', diaChi: '100 Cầu Giấy, Hà Nội',
-            tkLienKet: ''
         }
     ];
 
@@ -1182,7 +1189,7 @@
                 <td><strong>${item.maYC}</strong></td>
                 <td>${item.maCSDL === '—' ? '<span style="color: var(--text-muted);">—</span>' : '<strong style="color: var(--primary-color);">' + item.maCSDL + '</strong>'}</td>
                 <td>${item.tenKH}</td>
-                <td>${item.mst}</td>
+                <td>${item.tkLienKet ? '<code style="font-weight: 600; color: var(--primary-color);">' + item.tkLienKet + '</code>' : '<span style="color: var(--text-muted);">—</span>'}</td>
                 <td>${item.loaiDT}</td>
                 <td style="text-align: center;">${item.loaiMa}</td>
                 <td>${item.pttt}</td>
@@ -1213,9 +1220,9 @@
         return `<span class="badge ${badgeClass}">${status}</span>`;
     }
 
-    // Sinh HTML nút thao tác dạng "fixed-slot": LUÔN hiển thị đủ 5 icon + 1 công tắc,
-    // chỉ bật/tắt (enable/disable) theo trạng thái bản ghi - theo mục 4.3.2.15.2.2 (Thao tác)
-    // và 4.3.2.15.2.3 (STT 6-11). Không được thêm/bớt số lượng slot theo trạng thái.
+    // Sinh HTML nút thao tác dạng "fixed-slot": Cố định 4 icon (Sửa, Kích hoạt, Từ chối, Gia hạn)
+    // + 1 công tắc Khóa/Mở khóa, đúng theo mục 4.3.2.15.2.2 (STT "Thao tác") và 4.3.2.15.2.3 (STT 6-10).
+    // Nút Xóa chỉ hiển thị trong Popup Xem chi tiết (MH07) đối với hồ sơ Lưu nháp, không có trên lưới ngoài.
     function getActions(item) {
         const idx = item.stt - 1; // index in mockData
         const disabledTip = 'Không thể thực hiện thao tác này ở trạng thái hiện tại của bản ghi';
@@ -1227,25 +1234,22 @@
             return `<button class="icon-btn ${cls} disabled" title="${disabledTip}" onclick="event.stopPropagation(); return false;"><i class="fa-solid ${icon}"></i></button>`;
         };
 
-        // Trạng thái "Ngưng sử dụng": toàn bộ 5 icon + công tắc khóa mờ hoàn toàn, không ngoại lệ
+        // Trạng thái "Ngưng sử dụng": toàn bộ icon + công tắc khóa mờ hoàn toàn, không ngoại lệ
         const isSuspended = item.trangThai === 'Ngưng sử dụng';
 
         // Slot 1: Sửa - chỉ khả dụng khi "Lưu nháp"
-        const btnEdit = slot(!isSuspended && item.trangThai === 'Lưu nháp', 'edit', 'fa-pen-to-square', 'Chỉnh sửa yêu cầu', 'openEditModal');
+        const btnEdit = slot(!isSuspended && item.trangThai === 'Lưu nháp', 'edit', 'fa-pen-to-square', 'Sửa', 'openEditModal');
 
-        // Slot 2: Xóa - chỉ khả dụng khi "Lưu nháp"
-        const btnDelete = slot(!isSuspended && item.trangThai === 'Lưu nháp', 'delete', 'fa-trash', 'Xóa yêu cầu', 'openDeleteConfirm');
-
-        // Slot 3: Kích hoạt - chỉ khả dụng khi "Chờ thanh toán"
+        // Slot 2: Kích hoạt - chỉ khả dụng khi "Chờ thanh toán"
         const btnApprove = slot(!isSuspended && item.trangThai === 'Chờ thanh toán', 'success', 'fa-check', 'Kích hoạt', 'openApproveModal');
 
-        // Slot 4: Từ chối - chỉ khả dụng khi "Chờ thanh toán"
+        // Slot 3: Từ chối - chỉ khả dụng khi "Chờ thanh toán"
         const btnReject = slot(!isSuspended && item.trangThai === 'Chờ thanh toán', 'delete', 'fa-ban', 'Từ chối', 'openRejectModal');
 
-        // Slot 5: Gia hạn - chỉ khả dụng khi "Hết hạn"
+        // Slot 4: Gia hạn - chỉ khả dụng khi "Hết hạn"
         const btnRenew = slot(!isSuspended && item.trangThai === 'Hết hạn', 'renew', 'fa-clock-rotate-left', 'Gia hạn', 'openRenewModal');
 
-        // Slot 6: Công tắc Khóa/Mở khóa - chỉ khả dụng khi "Hoạt động" hoặc "Khóa"
+        // Slot 5: Công tắc Khóa/Mở khóa - chỉ khả dụng khi "Hoạt động" hoặc "Khóa"
         const toggleEnabled = !isSuspended && (item.trangThai === 'Hoạt động' || item.trangThai === 'Khóa');
         const isToggleChecked = item.trangThai === 'Hoạt động';
         const toggleTooltip = !toggleEnabled ? disabledTip : (isToggleChecked ? 'Gạt sang trái để yêu cầu Khóa' : 'Gạt sang phải để yêu cầu Mở khóa');
@@ -1257,7 +1261,7 @@
             </label>
         `;
 
-        return btnEdit + btnDelete + btnApprove + btnReject + btnRenew + toggleSwitch;
+        return btnEdit + btnApprove + btnReject + btnRenew + toggleSwitch;
     }
 
     function renderPagination(totalItems) {
@@ -1345,7 +1349,12 @@
         'vietanh': { tenDT: 'Trần Việt Anh', mst: '0123456789', email: 'vietanh@gmail.com', sdt: '0988889999', diaChi: '100 Cầu Giấy, Hà Nội' },
         'abc_company': { tenDT: 'Công ty TNHH ABC', mst: '0312345678', email: 'abc@company.vn', sdt: '0281234567', diaChi: '123 Nguyễn Huệ, Q.1, TP.HCM' },
         'thads_hcm': { tenDT: 'Cục THADS TP.HCM', mst: '0101234567', email: 'thads.hcm@moj.gov.vn', sdt: '0283456789', diaChi: '141 Nguyễn Du, Q.1, TP.HCM' },
-        'sotp_hanoi': { tenDT: 'Sở Tư pháp Hà Nội', mst: '0102345678', email: 'sotp.hanoi@moj.gov.vn', sdt: '0241234567', diaChi: '221 Trần Phú, Ba Đình, Hà Nội' }
+        'thads_q1': { tenDT: 'Chi cục Thi hành án dân sự Quận 1', mst: '0109988776', email: 'thads.q1@moj.gov.vn', sdt: '0283344556', diaChi: '25 Nam Kỳ Khởi Nghĩa, Q.1, TP.HCM' },
+        'sotp_hanoi': { tenDT: 'Sở Tư pháp Hà Nội', mst: '0102345678', email: 'sotp.hanoi@moj.gov.vn', sdt: '0241234567', diaChi: '221 Trần Phú, Ba Đình, Hà Nội' },
+        'tand_hanoi': { tenDT: 'Tòa án nhân dân TP. Hà Nội', mst: '0103456789', email: 'tand.hn@court.gov.vn', sdt: '0243825678', diaChi: '43 Hai Bà Trưng, Hoàn Kiếm, Hà Nội' },
+        'csdt_hcm': { tenDT: 'Cơ quan CSĐT Công an TP.HCM', mst: '0104567890', email: 'csdt.hcm@bocongan.gov.vn', sdt: '0283838799', diaChi: '268 Trần Hưng Đạo, Q.1, TP.HCM' },
+        'sotp_danang': { tenDT: 'Sở Tư pháp TP. Đà Nẵng', mst: '0105678901', email: 'sotp.danang@danang.gov.vn', sdt: '0236382245', diaChi: '24 Trần Phú, Hải Châu, Đà Nẵng' },
+        'vksnd_tc': { tenDT: 'Viện Kiểm sát nhân dân tối cao', mst: '0106789012', email: 'vksnd.tc@vks.gov.vn', sdt: '0243825567', diaChi: '09 Phạm Văn Bạch, Cầu Giấy, Hà Nội' }
     };
 
     function calculateFee(loaiDT, loaiMa, dateStr) {
@@ -1848,7 +1857,7 @@
                 <div><div class="detail-row"><span class="detail-label">Phương thức TT:</span><span class="detail-value">${item.pttt}</span></div></div>
             </div>
 
-            <div class="detail-section-title">Lịch sử thay đổi trạng thái</div>
+            <div class="detail-section-title">Lịch sử xử lý</div>
             <div class="table-container" style="margin-top: 10px;">
                 <table class="custom-table">
                     <thead><tr>
@@ -2235,11 +2244,12 @@
     function applyFilters() {
         currentPage = 1;
         applyFiltersSilent();
-        showToast('Đã áp dụng bộ lọc tìm kiếm', 'success');
     }
 
     function applyFiltersSilent() {
-        const keyword = document.getElementById('filterKeyword').value.toLowerCase().trim();
+        const maYC = (document.getElementById('filterMaYC').value || '').toLowerCase().trim();
+        const maCSDL = (document.getElementById('filterMaCSDL').value || '').toLowerCase().trim();
+        const tenDT = (document.getElementById('filterTenDT').value || '').toLowerCase().trim();
         const loaiDT = document.getElementById('filterLoaiDT').value;
         const loaiMa = document.getElementById('filterLoaiMa').value;
         const pttt = document.getElementById('filterPTTT').value;
@@ -2262,14 +2272,9 @@
                 const itemDate = new Date(`${itemParts[2]}-${itemParts[1]}-${itemParts[0]}T00:00:00`);
                 if (itemDate > toDate) return false;
             }
-            if (keyword) {
-                const matchKeyword = 
-                    item.tenKH.toLowerCase().includes(keyword) ||
-                    item.maYC.toLowerCase().includes(keyword) ||
-                    item.maCSDL.toLowerCase().includes(keyword) ||
-                    item.mst.toLowerCase().includes(keyword);
-                if (!matchKeyword) return false;
-            }
+            if (maYC && !item.maYC.toLowerCase().includes(maYC)) return false;
+            if (maCSDL && (!item.maCSDL || !item.maCSDL.toLowerCase().includes(maCSDL))) return false;
+            if (tenDT && !item.tenKH.toLowerCase().includes(tenDT)) return false;
             if (loaiDT) {
                 const mapDT = {
                     'ca_nhan': 'Cá nhân',
@@ -2338,7 +2343,7 @@
                 <td><strong>${item.maYC}</strong></td>
                 <td>${item.maCSDL === '—' ? '<span style="color: var(--text-muted);">—</span>' : '<strong style="color: var(--primary-color);">' + item.maCSDL + '</strong>'}</td>
                 <td>${item.tenKH}</td>
-                <td>${item.mst}</td>
+                <td>${item.tkLienKet ? '<code style="font-weight: 600; color: var(--primary-color);">' + item.tkLienKet + '</code>' : '<span style="color: var(--text-muted);">—</span>'}</td>
                 <td>${item.loaiDT}</td>
                 <td style="text-align: center;">${item.loaiMa}</td>
                 <td>${item.pttt}</td>
