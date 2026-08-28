@@ -7,16 +7,25 @@
 Cho phép Cán bộ nghiệp vụ quản lý tập trung toàn bộ danh sách các yêu cầu đăng ký cấp mã số sử dụng CSDL và các mã số sử dụng Cơ sở dữ liệu (CSDL) đã được cấp trên hệ thống, bao gồm:
 
 \- Quản lý tập trung toàn bộ danh sách các yêu cầu đăng ký cấp mã số sử dụng CSDL và các mã số sử dụng CSDL đã được cấp trên hệ thống.
-\- Tạo mới yêu cầu cấp mã số sử dụng CSDL trực tiếp tại quầy đối với khách hàng đến nộp trực tiếp.
-\- Xóa yêu cầu cấp mã số sử dụng CSDL ở trạng thái Lưu nháp.
+
+\- Tạo mới yêu cầu cấp mã số sử dụng CSDL.
+
 \- Kích hoạt yêu cầu cấp mã số sử dụng CSDL sau khi đối soát thành công thông tin thanh toán (chuyển khoản ngân hàng hoặc tiền mặt).
+
 \- Từ chối các yêu cầu cấp mã số sử dụng CSDL không hợp lệ hoặc chưa nộp phí đầy đủ.
+
 \- Gia hạn thời hạn sử dụng đối với các mã số sử dụng CSDL thường xuyên của Cá nhân/Tổ chức khi hết hạn.
+
 \- Khóa hoặc Mở khóa đối với các mã số sử dụng CSDL đã cấp.
 
 *a. Phân quyền*
 
-\- Cán bộ nghiệp vụ (Phòng Quản lý đăng ký trực tuyến và tra cứu thông tin, dữ liệu - QLĐKTT&TTDL): Được thực hiện toàn bộ chức năng tra cứu, tạo mới, chỉnh sửa, xóa hồ sơ nháp, kích hoạt, từ chối, gia hạn, khóa và mở khóa mã số sử dụng CSDL.
+\- Chỉ người dùng có vai trò được gán quyền mới được truy cập và thao tác trên chức năng 
+\- Các quyền có thể tách nhỏ: Xem danh sách, Tạo mới yêu cầu, Sửa, Xóa, Gia hạn, Kích hoạt, Ngưng sử dụng, Khóa/Mở khóa; hệ thống phân quyền có thể cấu hình bật/tắt từng quyền theo từng vai trò
+\- Người dùng không có quyền:
++ Không nhìn thấy menu/chức năng trên giao diện,  hoặc
++ Nếu truy cập trực tiếp qua URL, hệ thống trả về thông báo không đủ quyền (ví dụ: "Bạn không có quyền truy cập chức năng này")
+
 
 *b. Điều kiện thực hiện*
 
