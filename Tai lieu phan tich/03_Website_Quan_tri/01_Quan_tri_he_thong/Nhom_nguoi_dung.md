@@ -1,222 +1,128 @@
-#### 4.3.1.2. Quản lý Nhóm người dùng
+#### 4.3.1.2. Quản lý nhóm người dùng
 
-##### 4.3.1.2.1. UC603.01 - Tra cứu và hiển thị nhóm người dùng
-
-###### 4.3.1.2.1.1. Mục đích
-
-\- Quản lý và thiết lập danh sách Nhóm người dùng trên hệ thống.  
-\- **Tiện ích và lợi ích:** Việc thiết lập Nhóm người dùng cho phép hệ thống Đăng ký Biện pháp bảo đảm và Bồi thường nhà nước phân quyền theo cơ chế "Kế thừa".  
-\- Thay vì phải gán Vai trò (Roles) lẻ tẻ cho hàng ngàn chủ thể, Quản trị viên chỉ cần phân bổ các đối tượng (như nhóm Khách hàng Cá nhân/Tổ chức, nhóm Cán bộ BTP, nhóm Cán bộ Sở Tư pháp (STP), hay nhóm Cơ quan có thẩm quyền...) vào các Nhóm tương ứng và gán quyền cho Nhóm đó.  
-\- Toàn bộ người dùng thuộc Nhóm sẽ tự động được hưởng quyền hạn xử lý hồ sơ tương ứng.  
-\- Khi có người dùng luân chuyển công tác hoặc có tổ chức mới tham gia hệ thống, quản trị viên chỉ cần thêm/bớt họ vào Nhóm, giúp hệ thống vận hành trơn tru, tiết kiệm thời gian và triệt tiêu rủi ro sai sót trong phân quyền nghiệp vụ.  
+##### 4.3.1.2.1. Mục đích
+Cho phép quản lý danh mục nhóm người dùng và cơ chế phân quyền kế thừa trong hệ thống, bao gồm:
+- Tra cứu, tìm kiếm và hiển thị danh sách các nhóm người dùng (Khách hàng, Cán bộ nội bộ, Cán bộ cơ quan ngoài ngành...).
+- Khởi tạo mới, cập nhật thông tin nhóm và gán danh sách vai trò cho nhóm (hệ thống tự động cộng dồn/union quyền hạn của các vai trò).
+- Xem trước (Preview) cây quyền hạn tổng hợp của nhóm ở chế độ chỉ đọc.
+- Quản lý danh sách tài khoản người dùng được gán vào nhóm và gán bổ sung tài khoản.
 
 *a. Phân quyền*
-
-\- Quản trị hệ thống (QTHT).  
-
-*b. Điều kiện thực hiện*
-
-\- NSD đã đăng nhập hệ thống.  
-  \+ NSD được Phân quyền thực hiện tính năng.  
-
-###### 4.3.1.2.1.2. UC603.01.MH01 - Màn hình Tra cứu nhóm người dùng
-
-**Màn hình**:
-\- Hình ảnh minh họa giao diện.
-
-**Mô tả thông tin trên màn hình**:
-
-| Trường thông tin                        | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                                                                                                                                                    |
-| :----------------------------------------- | :-------------- | :--------- | :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Panel Trái: Nhóm người dùng** |                 |            |             |                                                                                                                                                                                            |
-| Tìm kiếm nhanh                           | String(255) | Không     | Trống      | Control UI: Textbox.<br>Hệ thống lọc danh sách tức thời. |
-| Bảng Nhóm                                | - | \- | 50 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị tên nhóm.<br>- Mặc định phân trang **50 bản ghi/trang**. |
-| **Panel Phải: Chi tiết Nhóm**     |                 |            |             |                                                                                                                                                                                            |
-| Tab Thông tin chung                       | String(255) | \- | \- | Hiển thị Tên nhóm, Mã nhóm, Loại tài khoản.                                                                                                                                       |
-| Tab Danh sách người dùng được gán      | - | \- | \- | Hiển thị danh sách tài khoản (Khách hàng/Cán bộ/Cơ quan có thẩm quyền theo đúng `Loại tài khoản áp dụng` của nhóm đang xem) đang được gán vào nhóm này. |
-| Tìm kiếm người dùng                     | String(255) | Không | Trống | Control UI: Textbox.<br>Lọc nhanh (live-search) danh sách theo Họ và tên/Tên đăng nhập/Email/Số điện thoại. |
-| Nút: Thêm người dùng                    | - | \- | \- | Control UI: Nút bấm.<br>Mở popup Thêm người dùng vào nhóm (UC603.05) để chọn thêm tài khoản gán vào nhóm đang xem. |
-| Bảng danh sách người dùng được gán    | - | \- | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| Cột: Họ và tên/Tên tổ chức (Tab Danh sách người dùng được gán) | String(255) | \- | Theo bản ghi | Chỉ đọc.<br>Họ và tên (nếu là tài khoản Cá nhân/Cán bộ) hoặc Tên tổ chức (nếu là tài khoản Tổ chức). |
-| Cột: Tên đăng nhập (Tab Danh sách người dùng được gán) | String(255) | \- | Theo bản ghi | Chỉ đọc.<br>Tên đăng nhập của tài khoản. |
-| Cột: Loại tài khoản (Tab Danh sách người dùng được gán) | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc.<br>Hiển thị Cá nhân/Tổ chức nếu nhóm áp dụng cho Khách hàng, hoặc Cán bộ/Cơ quan có thẩm quyền tương ứng. |
-| Cột: Email (Tab Danh sách người dùng được gán) | String(255) | \- | Theo bản ghi | Chỉ đọc. |
-| Cột: Số điện thoại (Tab Danh sách người dùng được gán) | String(20) | \- | Theo bản ghi | Chỉ đọc. |
-| Cột: Trạng thái tài khoản (Tab Danh sách người dùng được gán) | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc.<br>Hiển thị Đang hoạt động hoặc Bị khóa. |
-| Cột: Thao tác (Tab Danh sách người dùng được gán) | - | \- | \- | Control UI: Icon.<br>Icon **Gỡ khỏi nhóm**: mở xác nhận [MSG-CFM-SYS-001] dạng "Bạn có chắc chắn muốn gỡ [Tên người dùng] khỏi nhóm [Tên nhóm]?"; sau xác nhận, hệ thống xóa nhóm này khỏi danh sách Nhóm người dùng của tài khoản tương ứng và tải lại bảng. |
-| Tab Vai trò                               | Enum(String(50)) | \- | \- | Hiển thị danh sách Vai trò mà nhóm đang được gán.                                                                                                                               |
-| **Tab Cây quyền hạn**                     | Date | \- | \- | Tab hiển thị quyền hạn cộng dồn của Nhóm người dùng, bao gồm:                                                                                                                     |
-| Tìm kiếm quyền                          | String(255) | Không     | Trống       | Control UI: Textbox.<br>Nhập từ khóa để lọc nhanh danh sách chức năng trên cây bên dưới theo Tên chức năng hoặc Mã chức năng. |
-| Cây quyền hạn                           | Date | \- | \- | Hiển thị cây danh mục quyền phân cấp (Cha - Con) dưới dạng **chỉ đọc (Read-only)**, tổng hợp tất cả các quyền được cộng dồn từ danh sách Vai trò mà Nhóm đang sở hữu:<br>+ **Logic hiển thị (Chỉ hiển thị quyền được chọn)**: Cây chỉ hiển thị những quyền/chức năng mà Nhóm người dùng này sở hữu (được cộng dồn từ danh sách Vai trò đang gán cho Nhóm). Các quyền khác không được phân cho Nhóm sẽ bị ẩn đi khỏi cây.<br>+ **Nhánh gốc cao nhất (Root nodes)**: Chỉ hiển thị các phân hệ chính mà Nhóm có quyền truy cập (tối đa 3 phân hệ: **Website Khách hàng**, **Ứng dụng Mobile**, **Website quản trị**). Phân hệ nào Nhóm không có quyền sẽ không hiển thị làm node gốc trên cây.<br>+ **Định dạng hiển thị node**: Checkbox chỉ đọc (luôn ở trạng thái tích chọn) + Icon (Thư mục đối với MENU, Chìa khóa đối với API) + Tên chức năng (Mã chức năng).<br>+ **Logic hiển thị (Quyền cộng dồn)**: Hệ thống tự động gộp/cộng dồn (Union) tất cả các quyền của tất cả các Vai trò đang gán cho Nhóm người dùng này để hiển thị các node tương ứng trên cây. |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả                                                             |
-| :-- | :--------------- | :----------- | :------------------------------------------------------------------ |
-| 1   | Xem chi tiết    | Click (Row)  | Click vào 1 Nhóm ở Panel trái, load chi tiết sang Panel phải. |
-| 2   | Thêm mới       | Nút         | Mở màn hình Thêm mới nhóm (UC603.02).                         |
-| 3   | Sửa             | Icon         | Mở màn hình Sửa nhóm (UC603.03) ứng với bản ghi.            |
-| 4   | Xóa             | Icon         | Gọi chức năng xóa (UC603.04).                                   |
-| 5   | Tìm kiếm quyền  | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền trên tab Cây quyền hạn.<br>\- Xử lý: Hệ thống thực hiện lọc (live-filter) danh sách chức năng hiển thị trên cây. Các node không khớp sẽ bị ẩn đi, các node khớp sẽ được hiển thị kèm các node cha trực thuộc.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-| 6   | Chuyển Tab Danh sách người dùng được gán | Tab | Hiển thị bảng danh sách tài khoản đang được gán vào nhóm đang xem, theo đúng mô tả tại mục Panel Phải. |
-| 7   | Tìm kiếm người dùng | Textbox | \- Thao tác: QTHT nhập từ khóa tại textbox Tìm kiếm người dùng.<br>\- Xử lý: Hệ thống lọc (live-search) bảng danh sách người dùng được gán theo từ khóa.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-| 8   | Thêm người dùng | Nút | Mở popup Thêm người dùng vào nhóm (UC603.05). |
-| 9   | Gỡ khỏi nhóm | Icon (Lưới) | Gỡ 1 tài khoản khỏi nhóm đang xem, chi tiết xem tại Cột: Thao tác (Tab Danh sách người dùng được gán). |
-
-##### 4.3.1.2.2. UC603.02 - Thêm mới nhóm người dùng
-
-###### 4.3.1.2.2.1. Mục đích
-
-\- Cho phép Thêm mới một nhóm người dùng vào hệ thống.  
-
-*a. Phân quyền*
-
-\- Quản trị hệ thống (QTHT).  
+- Quản trị hệ thống (QTHT).
 
 *b. Điều kiện thực hiện*
+- Cán bộ quản trị đã đăng nhập thành công vào Website quản trị.
+- Hệ thống hoạt động bình thường.
 
-\- NSD đã đăng nhập hệ thống.  
+---
 
-###### 4.3.1.2.2.2. UC603.02.MH01 - Màn hình Thêm mới nhóm người dùng
+##### 4.3.1.2.2. MH01 - Màn hình Tra cứu nhóm người dùng
 
-**Màn hình**:
-\- Hình ảnh minh họa giao diện.
+###### 4.3.1.2.2.1. Màn hình
 
-**Mô tả thông tin trên màn hình**:
+![Màn hình Tra cứu nhóm người dùng](images/UC603.01.MH01.png)
 
-| Trường thông tin         | Kiểu dữ liệu     | Bắt buộc | Mặc định     | Mô tả                                                                                                                                                            |
-| :-------------------------- | :------------------ | :--------- | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mã nhóm                   | String(50) | Có        | Sinh tự động | Control UI: Hiển thị/Read-only.<br>Hệ thống tự động sinh mã định danh khi mở form thêm mới. Không cho phép sửa. |
-| Tên nhóm                  | String(255) | Có        | Trống          | Nhập tên nhóm.                                                                                                                                                  |
-| Loại tài khoản áp dụng | Enum(String(50)) | Có        | Trống          | Control UI: Hộp chọn.<br>Chọn 1 trong 3 loại:<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền<br>Trong đó:<br>+ Cán bộ: Áp dụng cho Loại đơn vị là "Nội bộ"<br>+ Khách hàng: Áp dụng cho loại Khách hàng là Cá nhân/Tổ chức<br>+ Cơ quan có thẩm quyền: Áp dụng cho Loại đơn vị là "Cơ quan ngoài ngành" |
-| Danh sách Vai trò         | Enum(String(50)) | Không     | Trống          | Control UI: Hộp chọn.<br>Chọn các Vai trò muốn gán cho Nhóm.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| Tìm kiếm quyền (Preview)  | String(255) | Không     | Trống          | Control UI: Textbox.<br>Nhập từ khóa để lọc nhanh danh sách chức năng trên cây xem trước. |
-| Cây quyền hạn (Preview)   | Date | \- | \- | Hiển thị cây danh mục quyền phân cấp (Cha - Con) dưới dạng **chỉ đọc (Read-only)** để xem trước các quyền mà nhóm người dùng sở hữu:<br>+ **Logic hiển thị (Chỉ hiển thị quyền được chọn)**: Cây chỉ hiển thị những quyền/chức năng được gán thông qua các vai trò được tích chọn. Các quyền khác không được chọn sẽ bị ẩn đi khỏi cây.<br>+ **Nhánh gốc cao nhất (Root nodes)**: Chỉ hiển thị các phân hệ chính mà các vai trò được chọn có quyền truy cập (tối đa 3 phân hệ: **Website Khách hàng**, **Ứng dụng Mobile**, **Website quản trị**). Phân hệ nào hoàn toàn không được chọn quyền sẽ không hiển thị làm node gốc trên cây.<br>+ **Định dạng hiển thị node**: Checkbox chỉ đọc (luôn ở trạng thái tích chọn) + Icon (Thư mục đối với MENU, Chìa khóa đối với API) + Tên chức năng (Mã chức năng).<br>+ **Logic tích chọn tự động (Preview)**: Khi người dùng chọn/bỏ chọn các vai trò tại dropdown **Danh sách Vai trò**, hệ thống sẽ tự động tính toán cộng dồn (Union) các quyền tương ứng của các vai trò đó để hiển thị và tích chọn các node trên cây tương ứng trong thời gian thực (Real-time). Các quyền không được chọn sẽ tự động ẩn đi khỏi cây. |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả                                                                                                                                                               |
-| :-- | :--------------- | :----------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Lưu lại        | Nút         | Lưu thông tin vào CSDL.                                                                                                                                            |
-|     |                  |              | \- TH1 (Trống trường bắt buộc): Báo lỗi "Vui lòng nhập thông tin bắt buộc".                                                                               |
-|     |                  |              | \- TH2 (Dữ liệu không hợp lệ): Kiểm tra các trường hợp dữ liệu sai định dạng, vượt quá độ dài, hoặc chứa ký tự đặc biệt (Chi tiết theo yêu cầu tại trường thông tin). Nếu vi phạm, hiển thị cảnh báo lỗi "[Tên trường] không hợp lệ" hoặc "[Tên trường] vượt quá độ dài cho phép". |
-|     |                  |              | \- TH3 (Trùng lặp): Nếu Tên nhóm trùng lặp, báo lỗi: "Tên nhóm đã tồn tại".                                                                            |
-|     |                  |              | \- TH Hợp lệ: Báo: "Thêm mới nhóm thành công" và đóng form.                                                                                                |
-| 2   | Hủy             | Nút         | Đóng Form Modal, không lưu dữ liệu.                                                                                                                             |
-| 3   | Tìm kiếm quyền (Preview) | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền (Preview).<br>\- Xử lý: Hệ thống lọc danh sách chức năng hiển thị trên cây xem trước tương ứng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-
-##### 4.3.1.2.3. UC603.03 - Sửa nhóm người dùng
-
-###### 4.3.1.2.3.1. Mục đích
-
-\- Cho phép Sửa thông tin nhóm người dùng.  
-
-*a. Phân quyền*
-
-\- Quản trị hệ thống (QTHT).  
-
-*b. Điều kiện thực hiện*
-
-\- NSD đã đăng nhập hệ thống.  
-
-###### 4.3.1.2.3.2. UC603.03.MH01 - Màn hình Sửa nhóm người dùng
-
-**Màn hình**:
-\- Hình ảnh minh họa giao diện.
-
-**Mô tả thông tin trên màn hình**:
-
-| Trường thông tin         | Kiểu dữ liệu     | Bắt buộc | Mặc định   | Mô tả                                                                                                                                                            |
-| :-------------------------- | :------------------ | :--------- | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mã nhóm                   | String(50) | Có        | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Không cho phép sửa. |
-| Tên nhóm                  | String(255) | Có        | Theo bản ghi | Cho phép sửa.                                                                                                                                                    |
-| Loại tài khoản áp dụng | Enum(String(50)) | Có        | Theo bản ghi | Control UI: Hộp chọn.<br>Cho phép sửa. Chọn 1 trong 3 loại:<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền<br>Trong đó:<br>+ Cán bộ: Áp dụng cho Loại đơn vị là "Nội bộ"<br>+ Khách hàng: Áp dụng cho loại Khách hàng là Cá nhân/Tổ chức<br>+ Cơ quan có thẩm quyền: Áp dụng cho Loại đơn vị là "Cơ quan ngoài ngành" |
-| Danh sách Vai trò         | Enum(String(50)) | Không     | Theo bản ghi | Control UI: Hộp chọn.<br>Thêm/bớt các Vai trò của Nhóm.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| Tìm kiếm quyền (Preview)  | String(255) | Không     | Trống          | Control UI: Textbox.<br>Nhập từ khóa để lọc nhanh danh sách chức năng trên cây xem trước. |
-| Cây quyền hạn (Preview)   | Date | \- | \- | Hiển thị cây danh mục quyền phân cấp (Cha - Con) dưới dạng **chỉ đọc (Read-only)** để xem trước các quyền mà nhóm người dùng sở hữu:<br>+ **Logic hiển thị (Chỉ hiển thị quyền được chọn)**: Cây chỉ hiển thị những quyền/chức năng được gán thông qua các vai trò được tích chọn. Các quyền khác không được chọn sẽ bị ẩn đi khỏi cây.<br>+ **Nhánh gốc cao nhất (Root nodes)**: Chỉ hiển thị các phân hệ chính mà các vai trò được chọn có quyền truy cập (tối đa 3 phân hệ: **Website Khách hàng**, **Ứng dụng Mobile**, **Website quản trị**). Phân hệ nào hoàn toàn không được chọn quyền sẽ không hiển thị làm node gốc trên cây.<br>+ **Định dạng hiển thị node**: Checkbox chỉ đọc (luôn ở trạng thái tích chọn) + Icon (Thư mục đối với MENU, Chìa khóa đối với API) + Tên chức năng (Mã chức năng).<br>+ **Logic tích chọn tự động (Preview)**: Khi người dùng chọn/bỏ chọn các vai trò tại dropdown **Danh sách Vai trò**, hệ thống sẽ tự động tính toán cộng dồn (Union) các quyền tương ứng của các vai trò đó để hiển thị và tích chọn các node trên cây tương ứng trong thời gian thực (Real-time). Các quyền không được chọn sẽ tự động ẩn đi khỏi cây. |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả                                                                                                                                                               |
-| :-- | :--------------- | :----------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Cập nhật       | Nút         | Cập nhật thông tin vào CSDL.                                                                                                                                      |
-|     |                  |              | \- TH1 (Trống trường bắt buộc): Báo lỗi "Vui lòng nhập thông tin bắt buộc".                                                                               |
-|     |                  |              | \- TH2 (Dữ liệu không hợp lệ): Kiểm tra các trường hợp dữ liệu sai định dạng, vượt quá độ dài, hoặc chứa ký tự đặc biệt (Chi tiết theo yêu cầu tại trường thông tin). Nếu vi phạm, hiển thị cảnh báo lỗi "[Tên trường] không hợp lệ" hoặc "[Tên trường] vượt quá độ dài cho phép". |
-|     |                  |              | \- TH3 (Trùng lặp): Nếu Tên nhóm sửa bị trùng, báo lỗi: "Tên nhóm đã tồn tại".                                                                        |
-|     |                  |              | \- TH Hợp lệ: Đóng popup, báo: "Cập nhật thành công".                                                                                                        |
-| 2   | Hủy             | Nút         | Đóng Form Modal, không lưu dữ liệu.                                                                                                                             |
-| 3   | Tìm kiếm quyền (Preview) | Textbox     | \- Thao tác: QTHT nhập từ khóa tìm kiếm tại textbox Tìm kiếm quyền (Preview).<br>\- Xử lý: Hệ thống lọc danh sách chức năng hiển thị trên cây xem trước tương ứng.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-
-##### 4.3.1.2.4. UC603.04 - Xóa nhóm người dùng
-
-###### 4.3.1.2.4.1. Mục đích
-
-\- Cho phép xóa nhóm người dùng khỏi hệ thống.  
-
-*a. Phân quyền*
-
-\- Quản trị hệ thống (QTHT).  
-
-*b. Điều kiện thực hiện*
-
-\- NSD đã đăng nhập hệ thống.  
-
-###### 4.3.1.2.4.2. UC603.04.MH01 - Màn hình Xác nhận xóa nhóm
-
-**Màn hình**:
-\- Hình ảnh minh họa giao diện.
-
-**Mô tả thông tin trên màn hình**:
-
-| Trường thông tin  | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                         |
-| :------------------- | :-------------- | :--------- | :---------- | :-------------------------------------------------------------- |
-| Nội dung cảnh báo | Text(2000) | \- | \- | Control UI: Hiển thị/Read-only.<br>Bật cảnh báo: "Bạn có chắc chắn muốn xóa nhóm này?". |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả                                                                                                                                                                                                                                                     |
-| :-- | :--------------- | :----------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Đồng ý        | Nút         | Xác nhận xóa.<br>- Hợp lệ: Xóa nhóm và báo: "Xóa dữ liệu thành công".<br>- Không hợp lệ: Nếu nhóm đang có thành viên hoặc đang được gán vai trò, báo: "Không thể xóa do nhóm đang có dữ liệu ràng buộc". |
-| 2   | Hủy             | Nút         | Đóng popup.                                                                                                                                                                                                                                               |
-
-##### 4.3.1.2.5. UC603.05 - Thêm người dùng vào nhóm người dùng
-
-###### 4.3.1.2.5.1. Mục đích
-
-\- Cho phép Quản trị hệ thống (QTHT) gán thêm tài khoản đã có sẵn trên hệ thống vào nhóm người dùng đang xem, từ Tab Danh sách người dùng được gán (UC603.01).  
-\- Không tạo tài khoản mới tại màn hình này; chỉ chọn và gán quan hệ giữa tài khoản đã tồn tại với nhóm.  
-
-*a. Phân quyền*
-
-\- Quản trị hệ thống (QTHT).  
-
-*b. Điều kiện thực hiện*
-
-\- NSD đã đăng nhập hệ thống thành công và đang thao tác tại Tab Danh sách người dùng được gán của màn hình Tra cứu nhóm người dùng (UC603.01).  
-
-###### 4.3.1.2.5.2. UC603.05.MH01 - Màn hình Thêm người dùng vào nhóm người dùng
-
-**Màn hình**:
-\- Hiển thị dưới dạng Modal Popup "Thêm người dùng vào nhóm [Tên nhóm]".
-
-**Mô tả thông tin trên màn hình**:
+###### 4.3.1.2.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tên nhóm | String(255) | \- | Tên nhóm đang chọn | Control UI: Hiển thị/Read-only.<br>Hiển thị tên nhóm đang thực hiện gán thêm người dùng. |
-| Tìm kiếm tài khoản | String(255) | Không | Trống | Control UI: Textbox.<br>Nhập từ khóa để lọc nhanh (live-search) danh sách tài khoản theo Họ và tên/Tên tổ chức, Tên đăng nhập, Email hoặc Số điện thoại. |
-| Danh sách tài khoản khả dụng | - | \- | Theo `Loại tài khoản áp dụng` của nhóm | Control UI: Bảng có Checkbox chọn nhiều dòng.<br>Chỉ hiển thị tài khoản đúng `Loại tài khoản áp dụng` của nhóm đang xem: nếu nhóm áp dụng cho **Khách hàng** thì chỉ hiển thị tài khoản khách hàng (Cá nhân/Tổ chức); nếu áp dụng cho **Cán bộ** thì chỉ hiển thị tài khoản cán bộ thuộc Loại đơn vị "Nội bộ"; nếu áp dụng cho **Cơ quan có thẩm quyền** thì chỉ hiển thị tài khoản thuộc Loại đơn vị "Cơ quan ngoài ngành". Không hiển thị các tài khoản đã được gán nhóm này từ trước.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| Số lượng đã chọn | - | \- | 0 | Control UI: Hiển thị/Read-only.<br>Hiển thị dạng `Đã chọn: X tài khoản`. |
-| Hủy | - | \- | \- | Control UI: Nút bấm.<br>Đóng popup, không lưu thay đổi. |
-| Thêm vào nhóm | - | \- | \- | Control UI: Nút bấm.<br>Chỉ bật (enable) khi đã chọn ít nhất 1 tài khoản. |
+| **I. Panel bên trái: Danh sách nhóm** | - | - | - | Khối tìm kiếm và bảng nhóm người dùng. |
+| Tìm kiếm nhanh | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập từ khóa tìm kiếm theo Tên nhóm hoặc Mã nhóm. |
+| Thêm mới | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại header danh sách nhóm. |
+| Bảng danh sách nhóm | - | - | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- **Mặc định khi truy cập:** Hiển thị danh sách toàn bộ nhóm người dùng trên hệ thống, mặc định 20 bản ghi/trang, sắp xếp theo Ngày tạo giảm dần và tự động chọn bản ghi đầu tiên để hiển thị chi tiết sang Panel phải.<br>- Cho phép chọn 10, 20, 50, 100 bản ghi/trang, mặc định 20.<br>- Click vào dòng dữ liệu để xem chi tiết thông tin ở Panel phải.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| STT | Integer(10) | - | - | Control UI: Text hiển thị (Read-only). |
+| Mã nhóm | String(50) | - | - | Control UI: Text hiển thị (Read-only). |
+| Tên nhóm | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
+| Loại tài khoản áp dụng | Enum(String(50)) | - | - | Control UI: Text hiển thị (Read-only).<br>Gồm:<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền |
+| Ngày tạo | DateTime | - | - | Control UI: Text hiển thị (Read-only).<br>- Định dạng `dd/mm/yyyy HH:mm`. |
+| Thao tác nhóm | String(255) | - | - | Control UI: Nhóm icon thao tác.<br>- `Cập nhật`: Luôn hiển thị.<br>- `Xóa`: Luôn hiển thị. |
+| **II. Panel bên phải: Chi tiết nhóm** | - | - | - | Khối xem chi tiết thông tin, quyền cộng dồn và danh sách thành viên. |
+| Tab Thông tin chung | Tab | - | Mặc định chọn | Control UI: Tab điều hướng.<br>- Hiển thị thông tin chi tiết: Tên nhóm, Mã nhóm, Loại tài khoản áp dụng, Danh sách vai trò đã gán. |
+| Tab Danh sách người dùng được gán | Tab | - | - | Control UI: Tab điều hướng.<br>- Hiển thị danh sách các tài khoản đang thuộc nhóm này. |
+| Tìm kiếm người dùng | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm theo Họ tên, Tên đăng nhập, Email hoặc Số điện thoại. |
+| Thêm người dùng | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại Tab Danh sách người dùng được gán. |
+| Bảng người dùng được gán | - | - | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- **Mặc định khi truy cập:** Tự động tải danh sách các tài khoản thuộc nhóm đang chọn, mặc định 20 bản ghi/trang, sắp xếp theo Ngày gán giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| STT | Integer(10) | - | - | Control UI: Text hiển thị (Read-only). |
+| Họ và tên / Tên tổ chức | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
+| Tên đăng nhập | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
+| Loại tài khoản | Enum(String(50)) | - | - | Control UI: Text hiển thị (Read-only).<br>Gồm:<br>+ Cá nhân<br>+ Tổ chức<br>+ Cán bộ<br>+ Cơ quan có thẩm quyền |
+| Email | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
+| Số điện thoại | String(20) | - | - | Control UI: Text hiển thị (Read-only). |
+| Ngày gán | DateTime | - | - | Control UI: Text hiển thị (Read-only).<br>- Định dạng `dd/mm/yyyy HH:mm`. |
+| Trạng thái tài khoản | Enum(String(50)) | - | - | Control UI: Badge/Tag hiển thị.<br>Gồm:<br>+ Đang hoạt động<br>+ Bị khóa |
+| Thao tác người dùng | Icon | - | - | Control UI: Icon `Gỡ khỏi nhóm`. |
+| Tab Cây quyền hạn | Tab | - | - | Control UI: Tab điều hướng.<br>- Hiển thị toàn bộ quyền hạn cộng dồn (Union) từ tất cả các vai trò của nhóm ở chế độ chỉ đọc (Read-only). |
+| Tìm kiếm quyền | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập từ khóa lọc nhanh trên cây quyền hạn. |
+| Cây quyền hạn tổng hợp | Tree | - | - | Control UI: Cây phân cấp chỉ đọc (Read-only). |
 
-**Chức năng trên màn hình**:
+###### 4.3.1.2.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm tài khoản | Textbox | \- Thao tác: QTHT nhập từ khóa.<br>\- Xử lý: Hệ thống lọc (live-search) danh sách tài khoản khả dụng theo từ khóa, vẫn giữ nguyên phạm vi lọc theo `Loại tài khoản áp dụng` của nhóm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-| 2 | Chọn tài khoản | Checkbox | \- Thao tác: QTHT tích chọn/bỏ chọn 1 hoặc nhiều dòng tài khoản.<br>\- Xử lý: Hệ thống cập nhật số lượng đã chọn và bật/tắt nút **Thêm vào nhóm** tương ứng. |
-| 3 | Thêm vào nhóm | Nút | \- Thao tác: QTHT click nút **Thêm vào nhóm**.<br>\- Xử lý: Hệ thống gán nhóm đang xem vào danh sách Nhóm người dùng của toàn bộ tài khoản đã chọn, ghi nhận Audit Log (Người thực hiện, Ngày thực hiện, Nhóm, danh sách tài khoản được gán), hiển thị Toast "Đã thêm [X] tài khoản vào nhóm thành công", đóng popup và tải lại Tab Danh sách người dùng được gán. |
-| 4 | Hủy | Nút | \- Thao tác: QTHT click nút **Hủy**.<br>\- Xử lý: Đóng popup, không lưu thay đổi. |
+| :--- | :--- | :--- | :--- |
+| 1 | Tìm kiếm nhanh | Input text | Khi người dùng nhập từ khóa tìm kiếm nhóm:<br>- **TH Không có dữ liệu**: Bảng danh sách hiển thị duy nhất 01 dòng căn giữa nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng khóa mờ.<br>- **TH Có dữ liệu**: Hiển thị danh sách các nhóm người dùng thỏa mãn điều kiện tìm kiếm. |
+| 2 | Click dòng nhóm | Row Click | Tải dữ liệu chi tiết của nhóm được chọn sang Panel phải (Tab Thông tin chung, Tab Danh sách người dùng được gán và Tab Cây quyền hạn). |
+| 3 | Thêm mới | Button | Mở **MH02 - Popup Thêm mới / Cập nhật nhóm người dùng** ở chế độ Thêm mới. |
+| 4 | Sửa | Icon | Mở **MH02 - Popup Thêm mới / Cập nhật nhóm người dùng** ở chế độ Cập nhật cho nhóm tương ứng. |
+| 5 | Xóa | Icon | Mở **[POPUP-CFM-001]** với `Loại thao tác` là `Xóa` kèm thông báo xác nhận [MSG-CFM-SYS-001]:<br>- **TH1 (Nhóm đang có dữ liệu ràng buộc)**: Nhóm đang có thành viên trực thuộc hoặc đang được gán quyền $\rightarrow$ Hệ thống chặn xóa, hiển thị thông báo lỗi yêu cầu gỡ người dùng khỏi nhóm trước.<br>- **TH Hợp lệ**: Khi người dùng chọn "Xác nhận", hệ thống xóa nhóm khỏi CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001] và làm mới danh sách nhóm. |
+| 6 | Tìm kiếm người dùng | Input text | Lọc danh sách tài khoản tại Tab Danh sách người dùng được gán theo từ khóa. |
+| 7 | Thêm người dùng | Button | Mở **MH03 - Popup Thêm người dùng vào nhóm** cho nhóm đang chọn. |
+| 8 | Gỡ khỏi nhóm | Icon | Mở **[POPUP-CFM-001]** với `Loại thao tác` là `Xóa` kèm thông báo xác nhận. Khi chọn "Xác nhận", hệ thống gỡ tài khoản khỏi nhóm, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001] và tải lại bảng người dùng được gán. |
+| 9 | Tìm kiếm quyền | Input text | Lọc trực tiếp các chức năng trên cây quyền hạn tổng hợp ở Tab Cây quyền hạn theo từ khóa. |
 
-#### 4.3.1.3. Quản lý tài khoản cán bộ
+---
+
+##### 4.3.1.2.3. MH02 - Popup Thêm mới / Cập nhật nhóm người dùng
+
+###### 4.3.1.2.3.1. Màn hình
+
+![Popup Thêm mới / Cập nhật nhóm người dùng](images/UC603.02.MH01.png)
+
+###### 4.3.1.2.3.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **Form Nhóm người dùng** | - | - | - | Hiển thị dạng Popup Modal (Sticky Header & Footer). |
+| Mã nhóm | String(50) | Có | Tự động sinh (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Text hiển thị (Read-only).<br>- Tự động sinh mã định danh khi thêm mới. Không cho phép sửa. |
+| Tên nhóm | String(255) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Nhập tên nhóm người dùng.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Loại tài khoản áp dụng | Enum(String(50)) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>Gồm:<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền |
+| Danh sách Vai trò | Enum(String(50)) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox (Multi-select).<br>- Chọn danh sách các Vai trò muốn gán cho Nhóm. |
+| Tìm kiếm quyền (Xem trước) | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập từ khóa để lọc cây quyền xem trước. |
+| Cây quyền hạn (Xem trước) | Tree | - | - | Control UI: Cây phân cấp chỉ đọc (Read-only).<br>- Tự động cộng dồn (Union) quyền của các vai trò đã chọn theo thời gian thực (Real-time). |
+| Lưu | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+
+###### 4.3.1.2.3.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Lưu | Button | Kiểm tra dữ liệu trên form:<br>- **TH1 (Bỏ trống trường bắt buộc)**: Vi phạm quy tắc [BR-VAL-001]. Highlight viền đỏ ô lỗi đầu tiên, hiển thị thông báo lỗi [MSG-ERR-VAL-001] và focus con trỏ vào ô lỗi.<br>- **TH2 (Sai độ dài dữ liệu)**: Tên nhóm vượt quá 255 ký tự (vi phạm [BR-VAL-003]) $\rightarrow$ Highlight viền đỏ, hiển thị thông báo lỗi [MSG-ERR-VAL-003] và focus con trỏ.<br>- **TH3 (Trùng lặp dữ liệu)**: Kiểm tra trùng `Tên nhóm` đối với các bản ghi đang ở trạng thái `Hoạt động` hoặc `Ngừng hoạt động` theo [BR-VAL-009] (khi Sửa thì loại trừ chính nhóm đang xử lý). Nếu trùng, hiển thị thông báo lỗi [MSG-ERR-VAL-009].<br>- **TH Hợp lệ**: Lưu thông tin nhóm và danh sách vai trò liên kết vào CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và làm mới danh sách nhóm tại MH01. |
+| 2 | Hủy | Button | Đóng Popup Modal, hủy bỏ các thay đổi và quay lại màn hình chính. |
+
+---
+
+##### 4.3.1.2.4. MH03 - Popup Thêm người dùng vào nhóm
+
+###### 4.3.1.2.4.1. Màn hình
+
+![Popup Thêm người dùng vào nhóm](images/UC603.05.MH01.png)
+
+###### 4.3.1.2.4.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **Popup Thêm người dùng** | - | - | - | Hiển thị dạng Popup Modal. |
+| Tên nhóm | String(255) | - | Theo nhóm chọn | Control UI: Text hiển thị (Read-only). |
+| Tìm kiếm tài khoản | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập từ khóa tìm kiếm theo Tên, Tên đăng nhập, Email hoặc Số điện thoại. |
+| Bảng tài khoản khả dụng | - | - | Danh sách phù hợp | Control UI: Bảng có Checkbox chọn nhiều dòng.<br>- Chỉ hiển thị các tài khoản phù hợp với `Loại tài khoản áp dụng` của nhóm và chưa thuộc nhóm này.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| Số lượng đã chọn | String(50) | - | Đã chọn: 0 tài khoản | Control UI: Text hiển thị (Read-only). |
+| Thêm vào nhóm | String(50) | - | - | Control UI: Button.<br>- Chỉ kích hoạt (Enable) khi đã tích chọn ít nhất 01 tài khoản. |
+| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+
+###### 4.3.1.2.4.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Tìm kiếm tài khoản | Input text | Lọc danh sách tài khoản khả dụng theo từ khóa đã nhập. |
+| 2 | Chọn tài khoản | Checkbox | Tích chọn/bỏ chọn tài khoản để thêm vào nhóm, cập nhật dòng số lượng `Đã chọn: X tài khoản` và kích hoạt nút `Thêm vào nhóm`. |
+| 3 | Thêm vào nhóm | Button | Gán nhóm đang xem cho toàn bộ các tài khoản đã tích chọn, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và tải lại Tab Danh sách người dùng được gán tại MH01. |
+| 4 | Hủy | Button | Đóng Popup Modal, hủy bỏ thao tác và quay lại màn hình chính. |

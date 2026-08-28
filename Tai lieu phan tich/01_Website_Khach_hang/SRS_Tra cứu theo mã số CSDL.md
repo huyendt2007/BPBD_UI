@@ -190,31 +190,31 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng** | Text(10000) | Tùy điều kiện | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
-| Tiêu đề hồ sơ | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| **I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng** | - | - | - | Hiển thị lần lượt theo từng hồ sơ. |
+| Tiêu đề hồ sơ | String(255) | Có | - | Chỉ đọc. Định dạng "Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]". |
 | Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Loại biện pháp | Enum(String(255)) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Loại hợp đồng | Enum(String(255)) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| Trường hợp đăng ký | Enum(String(255)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Trường hợp đăng ký | Enum(String(255)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. <br> - Chỉ hiển thị Tên trường hợp đăng ký ví dụ: ĐĂNG KÝ LẦN ĐẦU, ĐĂNG KÝ THAY ĐỔI, ... <br> - Hiển thị đậm, viết hoa |
+| Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. <br> - Chỉ hiển thị Tên trạng thái ví dụ: Hoàn thành, Chờ duyệt...|
 | Số hợp đồng | String(100) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Ngày có hiệu lực của hợp đồng | Date | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| **II. Thông tin người đăng ký** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| **II. Thông tin người đăng ký** | - | Có | -| Control UI: Label|
 | Họ và tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| **III. Thông tin đăng ký** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| **III. Thông tin đăng ký** | - | Có | - | Control UI: Label |
 | Số đăng ký | String(50) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Thời điểm có hiệu lực | Datetime | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| **IV. Bên bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| **IV. Bên bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Label Theo hồ sơ |
 | Loại chủ thể | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Số giấy tờ chứng minh tư cách pháp lý | String(50) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| **V. Bên nhận bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| **V. Bên nhận bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Label.<br>- Theo hồ sơ dạng Chỉ đọc. |
 | Tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| **VI. Tài sản bảo đảm (Tên động)** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| **VI. Tài sản bảo đảm (Tên động)** | - | Có | Theo hồ sơ | Control UI: Label.<br>- Theo hồ sơ dạng Chỉ đọc. |
 | Loại tài sản | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Mô tả | Text(2000) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Bảng thông tin Số khung | - | Tùy điều kiện | Theo hồ sơ | Control UI: Bảng/Lưới chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |

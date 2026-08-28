@@ -1,263 +1,155 @@
-#### 4.3.1.7. Quản lý Cơ cấu tổ chức (Đơn vị)
+#### 4.3.1.7. Quản lý cơ cấu tổ chức (Đơn vị)
 
-##### 4.3.1.7.1. UC604.01 - Tra cứu và hiển thị Sơ đồ Đơn vị
-
-###### 4.3.1.7.1.1. Mục đích
-
-\- Quản lý và tra cứu Sơ đồ cơ cấu tổ chức dưới dạng phân cấp đa cội (Multi-root Tree).  
-\- Cho phép quản lý cả cơ cấu tổ chức nội bộ của Bộ Tư pháp và hệ thống các Cơ quan có thẩm quyền ngoài bộ (Tòa án, Viện kiểm sát, Cơ quan điều tra, Thi hành án...).  
-\- Đáp ứng nhu cầu quản lý danh mục đơn vị báo cáo BTNN quy mô lớn (khoảng 22.000 đơn vị hoặc nhiều hơn), trong đó giai đoạn triển khai hiện tại có thể chỉ cấp tài khoản cho một số đơn vị đầu mối như 34 Sở Tư pháp địa phương và Cục Bồi thường nhà nước, nhưng vẫn phải khai báo được đầy đủ đơn vị báo cáo thực tế để phục vụ nhập thay, tổng hợp và thống kê theo Thông tư 08/2019/TT-BTP.
-
-*a. Phân quyền*
-
-\- Quản trị hệ thống (QTHT).  
-
-*b. Điều kiện thực hiện*
-
-\- NSD đã đăng nhập hệ thống.  
-
-###### 4.3.1.7.1.2. UC604.01.MH01 - Màn hình Tra cứu Sơ đồ Tổ chức
-
-**Màn hình**:
-\- Giao diện Split-view (Trái: Sơ đồ cây đa cội, Phải: Chi tiết Node đang chọn).
-
-**Mô tả thông tin trên màn hình**:
-
-| Trường thông tin                        | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                                                                                                       |
-| :----------------------------------------- | :-------------- | :--------- | :---------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Panel Trái: Sơ đồ tổ chức**  |                 |            |             |                                                                                                                                               |
-| Ô tìm kiếm nhanh                        | String(255) | Không     | Trống      | Control UI: Textbox.<br>Tìm kiếm nhanh Node theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng, không phân biệt hoa/thường và dấu tiếng Việt. Khi tìm kiếm trong cây lớn, hệ thống hiển thị kết quả kèm đường dẫn đơn vị cha để người dùng biết đơn vị thuộc tỉnh/khối/đầu mối nào. |
-| Cây Sơ đồ Đơn vị                    | String(255) | \- | \- | Hiển thị cấu trúc Đơn vị cha - Đơn vị con dạng Đa cội (nhiều gốc độc lập). Cây phải hỗ trợ lazy-load/virtual scroll để đáp ứng danh mục quy mô khoảng 22.000 đơn vị; không tải toàn bộ node con khi mở màn hình. Cho phép click chọn 1 Node để xem chi tiết. |
-| **Panel Phải: Chi tiết Đơn vị** |                 |            |             |                                                                                                                                               |
-| Tab Thông tin chung                       | String(255) | \- | \- | Hiển thị thông tin chi tiết của Đơn vị đang chọn trên cây.                                                                        |
-| Tab Cán bộ trực thuộc                  | String(255) | \- | \- | Hiển thị danh sách Cán bộ đang thuộc Đơn vị này.                                                                                   |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng          | Định dạng        | Mô tả                                                                                                                                                                  |
-| :-- | :------------------------ | :------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Xem chi tiết             | Click (Node)        | Hệ thống tải thông tin chi tiết của Node sang Panel Phải.                                                                                                         |
-| 2   | Thêm mới Đơn vị con  | Nút / Context Menu | Mở màn hình Thêm mới (UC604.02). Đơn vị cha sẽ được tự động điền bằng Node đang chọn.                                                                |
-| 3   | Thêm mới Đơn vị gốc | Nút / Context Menu | Mở màn hình Thêm mới (UC604.02) để tạo một nút gốc mới (ví dụ: Tạo một Bộ/Ngành ngoài Bộ Tư pháp). Khi đó Đơn vị cha sẽ được để trống. |
-| 4   | Sửa                      | Nút / Icon         | Mở màn hình Sửa Đơn vị (UC604.03).                                                                                                                                |
-| 5   | Xóa                      | Nút / Icon         | Gọi chức năng xóa (UC604.04).                                                                                                                                        |
-
-##### 4.3.1.7.2. UC604.02 - Thêm mới Đơn vị / Phòng ban
-
-###### 4.3.1.7.2.1. Mục đích
-
-\- Cho phép Thêm mới 1 Đơn vị hoặc Phòng ban vào Sơ đồ tổ chức (dưới dạng Đơn vị con hoặc tạo mới Đơn vị gốc độc lập).  
+##### 4.3.1.7.1. Mục đích
+Cho phép quản lý và tra cứu cơ cấu tổ chức, sơ đồ đơn vị hành chính và cơ quan nhà nước dưới dạng phân cấp cây đa cội (Multi-root Tree), bao gồm:
+- Quản lý sơ đồ cơ cấu tổ chức nội bộ của Bộ Tư pháp và các cơ quan có thẩm quyền ngoài ngành (Tòa án, Viện kiểm sát, Cơ quan điều tra, Thi hành án, Sở Tư pháp...).
+- Khởi tạo, cập nhật thông tin đơn vị gốc, đơn vị trực thuộc/phòng ban và cấu hình phạm vi báo cáo BTNN (khoảng 22.000 đơn vị).
+- Cấu hình biến động tổ chức (Sáp nhập, Chia tách, Giải thể, Đổi tên) và thiết lập ánh xạ kế thừa đơn vị (Succession Mapping).
+- Nhận file (Import) đồng bộ danh mục đơn vị báo cáo BTNN hàng loạt từ file Excel.
 
 *a. Phân quyền*
-
-\- Quản trị hệ thống (QTHT).  
-
-*b. Điều kiện thực hiện*
-
-\- NSD đã đăng nhập hệ thống.  
-
-###### 4.3.1.7.2.2. UC604.02.MH01 - Màn hình Thêm mới Đơn vị
-
-**Màn hình**:
-\- Form nhập liệu (Popup hoặc Panel).
-
-**Mô tả thông tin trên màn hình**:
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Đơn vị cha | String(255) | Không | Theo Node chọn hoặc Trống | Control UI: Hiển thị/Read-only.<br>Tự động điền theo Node vừa click Thêm mới. Nếu chọn hành động "Thêm mới Đơn vị gốc", trường này sẽ hiển thị là "Không có (Tạo đơn vị gốc mới)" và để trống. |
-| Loại đơn vị | Enum(String(100)) | Có | Nội bộ | Control UI: Hộp chọn.<br>Gồm:<br>+ **Nội bộ**<br>+ **Cơ quan ngoài ngành**<br>Trong đó:<br>+ **Nội bộ**: Các đơn vị thuộc Bộ Tư pháp (Cục Đăng ký, các Trung tâm đăng ký và các Phòng ban trực thuộc).<br>+ **Cơ quan ngoài ngành**: Các cơ quan ngoài Bộ Tư pháp (Bộ Công an, Tòa án nhân dân tối cao, Viện kiểm sát nhân dân tối cao, cơ quan Thi hành án dân sự, văn phòng đăng ký đất đai...). |
-| Cấp đơn vị | Enum(String(100)) | Không | Cấp Trung ương | Control UI: Hộp chọn.<br>Phân cấp quản lý đơn vị theo mô hình hiện hành và dữ liệu lịch sử.<br>Gồm:<br>+ Cấp Trung ương<br>+ Cấp Tỉnh/Thành phố<br>+ Cấp Xã/Phường/Đặc khu<br>+ Đơn vị trực thuộc/Phòng ban<br>+ Cấp Quận/Huyện (chỉ dùng cho dữ liệu lịch sử/ngừng hoạt động hoặc giai đoạn chuyển tiếp, không chọn mặc định khi tạo đơn vị báo cáo mới). |
-| Mã Đơn vị | String(50) | Có | Tự động sinh | Control UI: Hiển thị/Read-only.<br>Mã tham chiếu duy nhất của đơn vị, do hệ thống tự sinh và không cho phép người dùng chỉnh sửa. |
-| Tên đơn vị | String(255) | Có | Trống | Tên đầy đủ của đơn vị. |
-| Mã định danh báo cáo BTNN | String(50) | Không | Trống | Mã sử dụng trong báo cáo/nhập thay BTNN. Nếu có dữ liệu đồng bộ từ danh mục bên ngoài thì lưu mã tương ứng để tìm kiếm và đối soát. Không được trùng trong cùng cây đơn vị. |
-| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Trống | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
-| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Trống | Tham chiếu Danh mục Vai trò báo cáo của cơ quan [DM_46]. Cho phép chọn một hoặc nhiều vai trò: `Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại`, `Cơ quan là bị đơn/bị đơn dân sự/người bị kiện trong vụ án`. |
-| Đầu mối tổng hợp trực tiếp | Enum(Tree) | Không | Theo cấu hình cấp trên | Chọn từ cây đơn vị. Xác định đơn vị nhận/tổng hợp báo cáo của đơn vị này. Với đơn vị địa phương, đầu mối tổng hợp là UBND cấp tỉnh hoặc đơn vị được ủy quyền nhập/tổng hợp theo cấu hình triển khai. |
-| Đơn vị được phép nhập thay | Enum(Tree/Multi-select) | Không | Trống | Chọn một hoặc nhiều đơn vị được phép tạo/nhập kỳ báo cáo thay cho đơn vị này. Giai đoạn hiện tại có thể cấu hình Sở Tư pháp địa phương được nhập thay các đơn vị báo cáo thực tế thuộc phạm vi tỉnh. |
-| Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Có | Nếu tắt, đơn vị chỉ tồn tại để cấu trúc cây/tra cứu lịch sử, không được chọn làm `Đơn vị báo cáo` khi tạo kỳ báo cáo mới. |
-| Mã số thuế | String(50) | Không | Trống | Mã số thuế của Cơ quan/Đơn vị. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Địa chỉ | String(500) | Không | Trống | Địa chỉ trụ sở đơn vị. |
-| Số điện thoại | String(10) | Không | Trống | Số điện thoại liên hệ. Định dạng 10 chữ số của Việt Nam. |
-| Người đại diện | String(255) | Không | Trống | Tên người đứng đầu đơn vị. |
-| Trạng thái | Enum(String(50)) | Có | Đang hoạt động | Control UI: Hộp chọn.<br>Gồm: Đang hoạt động, Ngừng hoạt động. |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Lưu lại | Nút | Lưu thông tin vào CSDL. |
-|  |  |  | \- TH1 (Trống trường bắt buộc): Báo lỗi "Vui lòng nhập thông tin bắt buộc". |
-|  |  |  | \- TH2 (Dữ liệu không hợp lệ): Kiểm tra các trường hợp dữ liệu sai định dạng, vượt quá độ dài, hoặc chứa ký tự đặc biệt (Chi tiết theo yêu cầu tại trường thông tin). Nếu vi phạm, hiển thị cảnh báo lỗi "[Tên trường] không hợp lệ" hoặc "[Tên trường] vượt quá độ dài cho phép". |
-|  |  |  | \- TH Hợp lệ: Hệ thống tự động sinh Mã Đơn vị theo quy tắc tăng dần, lưu thông tin vào CSDL, hiển thị thông báo "Thêm mới đơn vị thành công", đóng form và reload Cây sơ đồ. |
-| 2 | Hủy | Nút | Đóng Form, không lưu dữ liệu. |
-
-##### 4.3.1.7.3. UC604.03 - Sửa Đơn vị / Phòng ban
-
-###### 4.3.1.7.3.1. Mục đích
-
-\- Sửa thông tin Đơn vị đang tồn tại.  
-
-###### 4.3.1.7.3.2. UC604.03.MH01 - Màn hình Sửa Đơn vị
-
-**Màn hình**:
-\- Form nhập liệu (Popup hoặc Panel, hiển thị thông tin sẵn có).
-
-**Mô tả thông tin trên màn hình**:
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Mã Đơn vị | String(50) | Có | Theo bản ghi | Control UI: Hiển thị/Read-only.<br>Không cho phép sửa. |
-| Loại đơn vị | Enum(String(100)) | Có | Theo bản ghi | Control UI: Hộp chọn.<br>Không cho phép sửa loại đơn vị để bảo toàn tính toàn vẹn của dữ liệu liên kết.<br>Gồm:<br>+ **Nội bộ**<br>+ **Cơ quan ngoài ngành**<br>Trong đó:<br>+ **Nội bộ**: Các đơn vị thuộc Bộ Tư pháp (Cục Đăng ký, các Trung tâm đăng ký và các Phòng ban trực thuộc).<br>+ **Cơ quan ngoài ngành**: Các cơ quan ngoài Bộ Tư pháp (Bộ Công an, Tòa án nhân dân tối cao, Viện kiểm sát nhân dân tối cao, cơ quan Thi hành án dân sự, văn phòng đăng ký đất đai...). |
-| Cấp đơn vị | Enum(String(100)) | Không | Theo bản ghi | Control UI: Hộp chọn.<br>Cho phép sửa.<br>Gồm:<br>+ Cấp Trung ương<br>+ Cấp Tỉnh/Thành phố<br>+ Cấp Xã/Phường/Đặc khu<br>+ Đơn vị trực thuộc/Phòng ban<br>+ Cấp Quận/Huyện (chỉ dùng cho dữ liệu lịch sử/ngừng hoạt động hoặc giai đoạn chuyển tiếp, không chọn mặc định khi tạo đơn vị báo cáo mới). |
-| Tên đơn vị | String(255) | Có | Theo bản ghi | Cho phép sửa. |
-| Mã định danh báo cáo BTNN | String(50) | Không | Theo bản ghi | Cho phép sửa. Dùng để tìm kiếm, đối soát và import/đồng bộ danh mục đơn vị báo cáo BTNN. Không được trùng trong cùng cây đơn vị. |
-| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Theo bản ghi | Cho phép sửa. Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
-| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Theo bản ghi | Cho phép sửa, cho phép chọn một hoặc nhiều vai trò theo Danh mục Vai trò báo cáo của cơ quan [DM_46]. |
-| Đầu mối tổng hợp trực tiếp | Enum(Tree) | Không | Theo bản ghi | Cho phép sửa. Chọn từ cây đơn vị để xác định nơi nhận/tổng hợp báo cáo của đơn vị này. |
-| Đơn vị được phép nhập thay | Enum(Tree/Multi-select) | Không | Theo bản ghi | Cho phép sửa. Chọn các đơn vị/tài khoản đầu mối được phép tạo kỳ báo cáo, nhập liệu, chỉnh lý thay cho đơn vị báo cáo thực tế này. |
-| Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Theo bản ghi | Cho phép sửa. Nếu tắt, đơn vị không được chọn làm `Đơn vị báo cáo` khi tạo kỳ báo cáo mới. |
-| Mã số thuế | String(50) | Không | Theo bản ghi | Cho phép sửa. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo bản ghi | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Không | Theo bản ghi | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Địa chỉ | String(500) | Không | Theo bản ghi | Cho phép sửa. |
-| Số điện thoại | String(10) | Không | Theo bản ghi | Cho phép sửa. Định dạng 10 chữ số của Việt Nam. |
-| Người đại diện | String(255) | Không | Theo bản ghi | Cho phép sửa. |
-| Trạng thái | Enum(String(50)) | Có | Theo bản ghi | Control UI: Hộp chọn.<br>Cho phép sửa. |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Cập nhật | Nút | Cập nhật thông tin vào CSDL. |
-|  |  |  | \- TH1 (Trống trường bắt buộc): Báo lỗi "Vui lòng nhập thông tin bắt buộc". |
-|  |  |  | \- TH2 (Dữ liệu không hợp lệ): Kiểm tra các trường hợp dữ liệu sai định dạng, vượt quá độ dài, hoặc chứa ký tự đặc biệt (Chi tiết theo yêu cầu tại trường thông tin). Nếu vi phạm, hiển thị cảnh báo lỗi "[Tên trường] không hợp lệ" hoặc "[Tên trường] vượt quá độ dài cho phép". |
-|  |  |  | \- TH Hợp lệ: Đóng popup, báo: "Cập nhật thành công". |
-| 2 | Hủy | Nút | Đóng Form, không lưu dữ liệu. |
-
-##### 4.3.1.7.4. UC604.04 - Xóa Đơn vị
-
-###### 4.3.1.7.4.1. Mục đích
-
-\- Xóa 1 Đơn vị khỏi Sơ đồ tổ chức.  
-
-###### 4.3.1.7.4.2. UC604.04.MH01 - Màn hình Xác nhận Xóa
-
-**Màn hình**:
-\- Popup xác nhận xóa.
-
-**Mô tả thông tin trên màn hình**:
-
-| Trường thông tin    | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                                   |
-| :--------------------- | :-------------- | :--------- | :---------- | :------------------------------------------------------------------------ |
-| Thông báo xác nhận | String(255) | \- | \- | Control UI: Hiển thị/Read-only.<br>Hiển thị: "Bạn có chắc chắn muốn xóa đơn vị [Tên đơn vị]?" |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1   | Đồng ý Xóa   | Nút         | Kiểm tra toàn vẹn dữ liệu trước khi xóa:<br>+ Ngoại lệ 1 (Có Node con): Báo lỗi "Không thể xóa do Đơn vị này đang chứa các đơn vị/phòng ban con".<br>+ Ngoại lệ 2 (Có Cán bộ trực thuộc): Báo lỗi "Không thể xóa do Đơn vị này đang có tài khoản cán bộ trực thuộc. Vui lòng thuyên chuyển cán bộ trước khi xóa".<br>+ Hợp lệ: Xóa Đơn vị khỏi DB, hiển thị "Xóa thành công" và reload Cây. |
-| 2   | Hủy             | Nút         | Đóng popup, không thực hiện xóa. |
-
-##### 4.3.1.7.5. UC604.05 - Cấu hình Biến động Tổ chức & Kế thừa Đơn vị (Sáp nhập/Chia tách/Giải thể)
-
-###### 4.3.1.7.5.1. Mục đích
-
-- Cho phép Quản trị hệ thống khai báo thông tin biến động cơ cấu đơn vị hành chính/tư pháp (sáp nhập nhiều cơ quan thành một cơ quan mới; chia tách một cơ quan thành nhiều cơ quan; giải thể cơ quan hoàn toàn).
-- Thiết lập liên kết kế thừa (Succession Mapping) để phục vụ cho thuật toán tự động gợi ý cơ quan giải quyết bồi thường (GQBT) tại các module nghiệp vụ.
-
-*a. Phân quyền*
-
 - Quản trị hệ thống (QTHT).
 
 *b. Điều kiện thực hiện*
+- Cán bộ quản trị đã đăng nhập thành công vào Website quản trị.
+- Hệ thống hoạt động bình thường.
 
-- NSD đã đăng nhập hệ thống.
-- Các cơ quan liên quan (cả cơ quan cũ và cơ quan mới) đã tồn tại trong danh mục `sys_organization`. Nếu cơ quan mới chưa có, QTHT phải thêm mới cơ quan mới ở trạng thái `Đang hoạt động` trước (sử dụng UC604.02).
+---
 
-###### 4.3.1.7.5.2. UC604.05.MH01 - Màn hình Cấu hình Biến động Tổ chức
+##### 4.3.1.7.2. MH01 - Màn hình Tra cứu sơ đồ tổ chức
 
-**Màn hình**:
-- Form nhập liệu / Popup Cấu hình Biến động.
+###### 4.3.1.7.2.1. Màn hình
 
-**Mô tả thông tin trên màn hình**:
+![Màn hình Tra cứu sơ đồ tổ chức](images/UC604.01.MH01.png)
 
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| **I. Thông tin văn bản pháp lý** | | | | |
-| Loại biến động | Enum(String(50)) | Có | - | Control UI: Hộp chọn.<br>Gồm các loại biến động:<br>+ **Sáp nhập (Merged)**: Gộp nhiều đơn vị thành 1 đơn vị mới.<br>+ **Chia tách (Split)**: Tách 1 đơn vị thành nhiều đơn vị mới.<br>+ **Giải thể (Dissolved)**: Giải thể hoàn toàn đơn vị.<br>+ **Đổi tên (Renamed)**: Chỉ đổi tên đơn vị, mã số và quyền hạn giữ nguyên. |
-| Số văn bản pháp lý | String(100) | Có | Trống | Ví dụ: `668/QĐ-BTP`, `99/2022/NĐ-CP`... |
-| Cơ quan ban hành quyết định | String(255) | Có | Trống | Ví dụ: *Bộ trưởng Bộ Tư pháp*, *Chính phủ*... |
-| Ngày ban hành quyết định | Date | Có | Trống | Ngày ký văn bản. |
-| Ngày hiệu lực biến động | Date | Có | Trống | Ngày bắt đầu áp dụng việc biến động trên thực tế. |
-| Mô tả chi tiết | String(1000) | Không | Trống | Nhập tóm tắt văn bản pháp lý. |
-| **II. Thiết lập Kế thừa đơn vị (Dynamic Section)** | | | | |
-| **[Trường hợp Sáp nhập / Đổi tên]** | | | | |
-| Danh sách cơ quan bị sáp nhập | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>Cho phép chọn một hoặc nhiều cơ quan cũ sẽ bị ngừng hoạt động. |
-| Cơ quan mới kế thừa | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>Chọn 01 cơ quan mới được thành lập/kế thừa toàn bộ quyền lợi và nghĩa vụ. |
-| **[Trường hợp Chia tách]** | | | | |
-| Cơ quan cũ bị chia tách | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>Chọn 01 cơ quan cũ sẽ bị ngừng hoạt động. |
-| Danh sách các cơ quan mới kế thừa | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>Cho phép chọn nhiều cơ quan mới cùng chia sẻ quyền lợi/nghĩa vụ của cơ quan cũ. |
-| **[Trường hợp Giải thể]** | | | | |
-| Cơ quan bị giải thể | Enum(String(100)) | Có | Trống | Control UI: Hộp chọn.<br>Chọn cơ quan bị giải thể hoàn toàn, không có cơ quan kế thừa trực tiếp. |
-| Đơn vị nhận giải quyết hậu quả | String(255) | - | Mặc định | Control UI: Hiển thị/Read-only.<br>Hệ thống tự động xác định là "Cơ quan ban hành quyết định giải thể" (theo Điểm a Khoản 1 Điều 40 Luật TNBTCNN). |
-
-**Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Lưu cấu hình | Nút | Thực hiện lưu lịch sử biến động và tự động cập nhật trạng thái đơn vị:<br>+ **Validate**: Bắt buộc nhập các thông tin có dấu sao đỏ (`*`).<br>+ **Xử lý nghiệp vụ ngầm (Background logic)**:<br>  1. Hệ thống tự động chuyển trạng thái `status` của các cơ quan cũ thành `INACTIVE` (Ngừng hoạt động) kể từ Ngày hiệu lực biến động.<br>  2. Ghi nhận dữ liệu vào bảng `SYS_ORG_HISTORY` và `SYS_ORG_SUCCESSOR` để kích hoạt công cụ gợi ý tự động (Smart Routing).<br>  3. Khóa tài khoản đăng nhập của các cán bộ trực thuộc cơ quan cũ (Yêu cầu làm thủ tục thuyên chuyển công tác sang đơn vị mới).<br>  4. Hiển thị thông báo "Thiết lập biến động tổ chức thành công" và đóng form. |
-| 2 | Hủy | Nút | Đóng form, không lưu cấu hình. |
-
-##### 4.3.1.7.6. UC604.06 - Import/Đồng bộ danh mục đơn vị báo cáo BTNN
-
-###### 4.3.1.7.6.1. Mục đích
-
-- Cho phép Quản trị hệ thống nạp mới hoặc cập nhật hàng loạt danh mục đơn vị phục vụ báo cáo BTNN theo cây đơn vị, đáp ứng quy mô khoảng 22.000 đơn vị hoặc nhiều hơn.
-- Hỗ trợ giai đoạn triển khai hiện tại: có thể chỉ cấp tài khoản cho 34 Sở Tư pháp địa phương và Cục Bồi thường nhà nước, nhưng vẫn khai báo được đầy đủ đơn vị báo cáo thực tế để Sở Tư pháp/Bộ Tư pháp nhập thay, tổng hợp và đối soát số liệu.
-- Đảm bảo danh mục đơn vị phù hợp mô hình chính quyền địa phương 2 cấp hiện hành; dữ liệu cấp Quận/Huyện chỉ dùng cho lịch sử/ngừng hoạt động hoặc giai đoạn chuyển tiếp.
-
-*a. Phân quyền*
-
-- Quản trị hệ thống (QTHT).
-
-*b. Điều kiện thực hiện*
-
-- NSD đã đăng nhập hệ thống.
-- File import đúng mẫu dữ liệu do hệ thống cung cấp.
-
-###### 4.3.1.7.6.2. UC604.06.MH01 - Màn hình Import/Đồng bộ danh mục đơn vị báo cáo BTNN
-
-**Màn hình**:
-- Form import dữ liệu kèm bảng xem trước kết quả kiểm tra.
-
-**Mô tả thông tin trên màn hình**:
+###### 4.3.1.7.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| File dữ liệu | File | Có | Trống | Control UI: Upload file. Cho phép import file Excel theo mẫu hệ thống. |
-| Chế độ import | Enum(String(100)) | Có | Kiểm tra dữ liệu | Gồm: `Kiểm tra dữ liệu`, `Thêm mới`, `Cập nhật bản ghi hiện có`, `Thêm mới và cập nhật`. |
-| Mã đơn vị | String(50) | Có | Theo file | Mã định danh duy nhất của đơn vị trên hệ thống. |
-| Tên đơn vị | String(255) | Có | Theo file | Tên đầy đủ của đơn vị. |
-| Mã đơn vị cha | String(50) | Không | Theo file | Dùng để dựng cây đơn vị. Nếu trống thì bản ghi là đơn vị gốc. |
-| Cấp đơn vị | Enum(String(100)) | Có | Theo file | Gồm `Cấp Trung ương`, `Cấp Tỉnh/Thành phố`, `Cấp Xã/Phường/Đặc khu`, `Đơn vị trực thuộc/Phòng ban`, `Cấp Quận/Huyện` (chỉ dữ liệu lịch sử/chuyển tiếp). |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo file | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Không | Theo file | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Theo file | Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
-| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Theo file | Tham chiếu Danh mục Vai trò báo cáo của cơ quan [DM_46], cho phép nhiều vai trò. |
-| Đầu mối tổng hợp trực tiếp | String(50) | Không | Theo file | Nhập `Mã đơn vị` của đầu mối tổng hợp trực tiếp. |
-| Đơn vị được phép nhập thay | String(1000) | Không | Theo file | Danh sách `Mã đơn vị` được phép nhập thay, phân tách bằng dấu phẩy. |
-| Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Có | Nếu `Không`, đơn vị không hiển thị trong cây chọn `Đơn vị báo cáo` khi tạo kỳ báo cáo mới. |
-| Trạng thái | Enum(String(50)) | Có | Đang hoạt động | Gồm `Đang hoạt động`, `Ngừng hoạt động`. |
-| Bảng xem trước kết quả kiểm tra | Text(2000) | - | Theo file | Hiển thị danh sách dòng hợp lệ/không hợp lệ, lỗi trùng mã, thiếu mã cha, sai cấp đơn vị, sai đầu mối tổng hợp, sai đơn vị nhập thay, sai danh mục tham chiếu. |
+| **I. Panel bên trái: Sơ đồ tổ chức** | - | - | - | Khối tìm kiếm và cây cấu trúc đơn vị. |
+| Tìm kiếm nhanh | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm theo Mã đơn vị hoặc Tên đơn vị (không phân biệt hoa thường/dấu tiếng Việt). |
+| Cây sơ đồ đơn vị | Tree | - | - | Control UI: Cây phân cấp đa cội (Multi-root).<br>- Hỗ trợ lazy-load hiển thị cấu trúc đơn vị cha - con.<br>- Cho phép click chọn từng node để xem chi tiết ở Panel phải. |
+| Thêm đơn vị gốc | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại header Panel trái. |
+| **II. Panel bên phải: Chi tiết đơn vị** | - | - | - | Khối xem chi tiết và danh sách cán bộ. |
+| Thêm đơn vị con | String(50) | - | - | Control UI: Button.<br>- Chỉ hiển thị khi đã chọn 01 node trên cây. |
+| Sửa | String(50) | - | - | Control UI: Button.<br>- Chỉ hiển thị khi đã chọn 01 node trên cây. |
+| Xóa | String(50) | - | - | Control UI: Button.<br>- Chỉ hiển thị khi đã chọn 01 node trên cây. |
+| Cấu hình biến động | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại thanh công cụ. |
+| Nhận file Excel | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại thanh công cụ. |
+| Tab Thông tin chung | Tab | - | Mặc định chọn | Control UI: Tab điều hướng.<br>- Hiển thị thông tin chi tiết của đơn vị đang chọn trên cây. |
+| Tab Cán bộ trực thuộc | Tab | - | - | Control UI: Tab điều hướng.<br>- Hiển thị danh sách cán bộ thuộc đơn vị. |
+| Bảng danh sách cán bộ | - | - | 20 bản ghi/trang | Control UI: Bảng/Lưới dữ liệu.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
 
-**Chức năng trên màn hình**:
+###### 4.3.1.7.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tải file mẫu | Button | Tải file Excel mẫu import danh mục đơn vị báo cáo BTNN. |
-| 2 | Kiểm tra dữ liệu | Button | Kiểm tra cấu trúc file, trường bắt buộc, trùng `Mã đơn vị`, tồn tại `Mã đơn vị cha`, tính hợp lệ của `Cấp đơn vị`, [DM_03], [DM_43], [DM_46], `Đầu mối tổng hợp trực tiếp` và `Đơn vị được phép nhập thay`; hiển thị kết quả tại bảng xem trước, chưa ghi dữ liệu vào hệ thống. |
-| 3 | Import dữ liệu | Button | Chỉ cho phép thực hiện khi toàn bộ dòng hợp lệ hoặc người dùng chọn bỏ qua dòng lỗi. Hệ thống ghi dữ liệu theo chế độ import đã chọn, cập nhật lại cây đơn vị và ghi lịch sử import. |
-| 4 | Hủy | Button | Đóng form, không ghi dữ liệu. |
+| 1 | Tìm kiếm nhanh | Input text | Khi người dùng nhập từ khóa tìm kiếm:<br>- **TH Không có dữ liệu**: Cây đơn vị hiển thị thông báo [MSG-INF-SYS-001].<br>- **TH Có dữ liệu**: Lọc và hiển thị các node khớp từ khóa kèm đường dẫn phân cấp đơn vị cha. |
+| 2 | Chọn node cây | Click Node | Tải thông tin chi tiết của đơn vị được chọn sang Panel phải (Tab Thông tin chung và Tab Cán bộ trực thuộc). |
+| 3 | Thêm đơn vị gốc | Button | Mở **MH02 - Popup Thêm mới / Cập nhật đơn vị** với trường `Đơn vị cha` để trống. |
+| 4 | Thêm đơn vị con | Button | Mở **MH02 - Popup Thêm mới / Cập nhật đơn vị** với trường `Đơn vị cha` tự động điền theo node đang chọn. |
+| 5 | Sửa | Button | Mở **MH02 - Popup Thêm mới / Cập nhật đơn vị** ở chế độ Sửa cho đơn vị đang chọn. |
+| 6 | Xóa | Button | Mở **[POPUP-CFM-001]** với `Loại thao tác` là `Xóa` kèm thông báo xác nhận [MSG-CFM-SYS-001]:<br>- **TH1 (Có đơn vị con trực thuộc)**: Đơn vị đang chọn có chứa các đơn vị/phòng ban con $\rightarrow$ Hệ thống chặn xóa, hiển thị thông báo lỗi yêu cầu xóa các đơn vị con trước.<br>- **TH2 (Có cán bộ trực thuộc)**: Đơn vị đang có tài khoản cán bộ trực thuộc $\rightarrow$ Hệ thống chặn xóa, hiển thị thông báo lỗi yêu cầu thuyên chuyển cán bộ trước.<br>- **TH Hợp lệ**: Khi người dùng chọn "Xác nhận", hệ thống xóa đơn vị khỏi CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001] và làm mới lại cây đơn vị. |
+| 7 | Cấu hình biến động | Button | Mở **MH03 - Popup Cấu hình biến động tổ chức & Kế thừa đơn vị**. |
+| 8 | Nhận file Excel | Button | Mở **MH04 - Popup Nhận file / Đồng bộ danh mục đơn vị báo cáo BTNN**. |
+
+---
+
+##### 4.3.1.7.3. MH02 - Popup Thêm mới / Cập nhật đơn vị
+
+###### 4.3.1.7.3.1. Màn hình
+
+![Popup Thêm mới / Cập nhật đơn vị](images/UC604.02.MH01.png)
+
+###### 4.3.1.7.3.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **Form Đơn vị** | - | - | - | Hiển thị dạng Popup Modal. |
+| Đơn vị cha | String(255) | Không | Theo node chọn / Trống | Control UI: Text hiển thị (Read-only).<br>- Tự động điền theo node đang chọn khi Thêm con, để trống khi Thêm đơn vị gốc. |
+| Loại đơn vị | Enum(String(100)) | Có | Nội bộ (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>Gồm:<br>+ Nội bộ<br>+ Cơ quan ngoài ngành<br>*(Khóa chỉ đọc khi Sửa).* |
+| Cấp đơn vị | Enum(String(100)) | Không | Cấp Trung ương (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>Gồm:<br>+ Cấp Trung ương<br>+ Cấp Tỉnh/Thành phố<br>+ Cấp Xã/Phường/Đặc khu<br>+ Đơn vị trực thuộc/Phòng ban<br>+ Cấp Quận/Huyện (Dữ liệu lịch sử) |
+| Mã Đơn vị | String(50) | Có | Tự động sinh (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Text hiển thị (Read-only).<br>- Tự động sinh mã định danh duy nhất. Không cho phép sửa. |
+| Tên đơn vị | String(255) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Nhập tên đầy đủ của đơn vị.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Mã định danh báo cáo BTNN | String(50) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Mã phục vụ báo cáo và đối soát BTNN. |
+| Nhóm cơ quan báo cáo BTNN | Enum(String(100)) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
+| Vai trò báo cáo BTNN | Enum(String(100)) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox (Multi-select).<br>- Tham chiếu Danh mục Vai trò báo cáo của cơ quan [DM_46]. |
+| Đầu mối tổng hợp trực tiếp | Enum(Tree) | Không | Theo bản ghi | Control UI: Tree Select.<br>- Chọn đơn vị tiếp nhận/tổng hợp báo cáo của đơn vị này. |
+| Đơn vị được phép nhập thay | Enum(Tree/Multi-select) | Không | Theo bản ghi | Control UI: Tree Multi-select.<br>- Chọn các đơn vị được phép tạo/nhập kỳ báo cáo thay. |
+| Cho phép tạo kỳ báo cáo BTNN | Boolean | Không | Có | Control UI: Checkbox.<br>- Nếu tắt, đơn vị không xuất hiện trong danh sách chọn Đơn vị báo cáo khi lập kỳ báo cáo mới. |
+| Mã số thuế | String(50) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox có tìm kiếm.<br>- Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. |
+| Phường/Xã | Enum(String(100)) / String(100) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox có tìm kiếm.<br>- Tham chiếu Danh mục Xã/Phường [DM_15] (lọc theo Tỉnh/Thành phố). |
+| Địa chỉ | String(500) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text. |
+| Số điện thoại | String(10) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text. |
+| Người đại diện | String(255) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text. |
+| Trạng thái | Enum(String(50)) | Có | Hoạt động (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox / Radio.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
+| Lưu | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+
+###### 4.3.1.7.3.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Lưu | Button | Kiểm tra dữ liệu trên form:<br>- **TH1 (Bỏ trống trường bắt buộc)**: Vi phạm quy tắc [BR-VAL-001]. Highlight viền đỏ ô lỗi đầu tiên, hiển thị thông báo lỗi [MSG-ERR-VAL-001] và focus con trỏ vào ô lỗi.<br>- **TH2 (Sai định dạng / Độ dài)**: Dữ liệu vi phạm quy tắc [BR-VAL-002] hoặc [BR-VAL-003] $\rightarrow$ Highlight viền đỏ ô lỗi, hiển thị thông báo lỗi [MSG-ERR-VAL-002] hoặc [MSG-ERR-VAL-003] và focus con trỏ.<br>- **TH3 (Trùng lặp dữ liệu)**: Kiểm tra trùng `Mã định danh báo cáo BTNN` hoặc `Tên đơn vị` trong cùng nhánh cha đối với các bản ghi đang ở trạng thái `Hoạt động` hoặc `Ngừng hoạt động` theo [BR-VAL-009] (khi Sửa thì loại trừ chính đơn vị đang xử lý). Nếu trùng, hiển thị thông báo lỗi [MSG-ERR-VAL-009].<br>- **TH Hợp lệ**: Lưu thông tin vào CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và làm mới lại cây đơn vị tại MH01. |
+| 2 | Hủy | Button | Đóng Popup Modal, hủy bỏ các thay đổi và quay lại màn hình chính. |
+
+---
+
+##### 4.3.1.7.4. MH03 - Popup Cấu hình biến động tổ chức & Kế thừa đơn vị
+
+###### 4.3.1.7.4.1. Màn hình
+
+![Popup Cấu hình biến động tổ chức](images/UC604.05.MH01.png)
+
+###### 4.3.1.7.4.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **I. Thông tin văn bản pháp lý** | - | - | - | Khối thông tin quyết định biến động. |
+| Loại biến động | Enum(String(50)) | Có | Trống | Control UI: Combobox.<br>Gồm:<br>+ Sáp nhập<br>+ Chia tách<br>+ Giải thể<br>+ Đổi tên |
+| Số văn bản pháp lý | String(100) | Có | Trống | Control UI: Input text.<br>- Ví dụ: `668/QĐ-BTP`. |
+| Cơ quan ban hành | String(255) | Có | Trống | Control UI: Input text.<br>- Ví dụ: *Bộ Tư pháp*, *Chính phủ*... |
+| Ngày ban hành | Date | Có | Trống | Control UI: Datepicker (`dd/mm/yyyy`). |
+| Ngày hiệu lực | Date | Có | Trống | Control UI: Datepicker (`dd/mm/yyyy`). |
+| Mô tả chi tiết | Text(1000) | Không | Trống | Control UI: Textarea. |
+| **II. Thiết lập Kế thừa đơn vị** | - | - | - | Khối chọn cơ quan cũ và cơ quan mới kế thừa. |
+| Danh sách cơ quan cũ | Enum(String(100)) | Có | Trống | Control UI: Combobox (Multi-select).<br>- Chọn các đơn vị cũ sẽ chuyển sang trạng thái Ngừng hoạt động. |
+| Cơ quan mới kế thừa | Enum(String(100)) | Có | Trống | Control UI: Combobox.<br>- Chọn cơ quan mới kế thừa quyền và nghĩa vụ. |
+| Lưu cấu hình | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+
+###### 4.3.1.7.4.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Lưu cấu hình | Button | Kiểm tra và ghi nhận lịch sử biến động:<br>- **TH1 (Bỏ trống trường bắt buộc)**: Vi phạm quy tắc [BR-VAL-001]. Highlight viền đỏ ô lỗi đầu tiên, hiển thị thông báo lỗi [MSG-ERR-VAL-001] và focus con trỏ vào ô lỗi.<br>- **TH Hợp lệ**: Tự động chuyển trạng thái các đơn vị cũ sang `Ngừng hoạt động` kể từ Ngày hiệu lực, lưu dữ liệu kế thừa vào bảng lịch sử phục vụ thuật toán gợi ý giải quyết bồi thường, tạm khóa tài khoản cán bộ trực thuộc đơn vị cũ, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và làm mới cây đơn vị. |
+| 2 | Hủy | Button | Đóng Popup Modal, không lưu cấu hình biến động. |
+
+---
+
+##### 4.3.1.7.5. MH04 - Popup Nhận file / Đồng bộ danh mục đơn vị báo cáo BTNN
+
+###### 4.3.1.7.5.1. Màn hình
+
+![Popup Nhận file đơn vị báo cáo BTNN](images/UC604.06.MH01.png)
+
+###### 4.3.1.7.5.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **Popup Nhận file** | - | - | - | Hiển thị dạng Popup Modal. |
+| Tệp dữ liệu | File | Có | Trống | Control UI: Upload file.<br>- Tải lên tệp Excel (`.xls`, `.xlsx`) theo biểu mẫu hệ thống. |
+| Tải file mẫu | String(50) | - | - | Control UI: Link / Button.<br>- Tải biểu mẫu Excel chuẩn để nhập dữ liệu. |
+| Chế độ import | Enum(String(100)) | Có | Thêm mới và cập nhật | Control UI: Combobox.<br>Gồm:<br>+ Kiểm tra dữ liệu<br>+ Thêm mới<br>+ Cập nhật bản ghi hiện có<br>+ Thêm mới và cập nhật |
+| Bảng xem trước kết quả kiểm tra | Table | - | - | Control UI: Bảng/Lưới hiển thị chi tiết các dòng hợp lệ và dòng lỗi. |
+| Nhận dữ liệu | String(50) | - | - | Control UI: Button.<br>- Chỉ kích hoạt khi tệp hợp lệ hoặc có ít nhất 01 dòng hợp lệ. |
+| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+
+###### 4.3.1.7.5.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Tải file mẫu | Button | Tải file Excel biểu mẫu chuẩn `yyyyMMdd_Bieu_mau_don_vi_BTNN.xlsx` về máy tính người dùng. |
+| 2 | Nhận dữ liệu | Button | Xử lý theo đúng Quy chuẩn Xử lý Tính năng Nhận file (Mục 5.6 trong Phụ lục `04_Danh_muc_va_Phu_luc.md`):<br>- **Giai đoạn 1 (File Validation)**: Kiểm tra đuôi file, dung lượng $\le 20MB$ và cấu trúc header. Nếu sai, hiển thị thông báo lỗi tương ứng.<br>- **Giai đoạn 2 (Row Validation & Cơ chế Thành công một phần)**: Đọc từng dòng, kiểm tra trường bắt buộc, trùng mã, mã cha hợp lệ, cấp đơn vị, danh mục tham chiếu. Ghi nhận các dòng hợp lệ vào CSDL và tổng hợp danh sách dòng lỗi.<br>- **Kết quả**: Hiển thị popup báo cáo Thống kê (*Tải lên thành công: X bản ghi / Tải lên thất bại: Y bản ghi*) và Bảng chi tiết lỗi (nếu có $Y > 0$), cập nhật lại cây đơn vị tại MH01 và ghi Audit Log. |
+| 3 | Hủy | Button | Đóng Popup Modal, hủy bỏ thao tác. |

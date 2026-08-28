@@ -3,7 +3,7 @@
 #### 4.3.3.1. Giải quyết yêu cầu bồi thường
 
 ##### 4.3.3.1.1. Mục đích
-Quản lý toàn diện quy trình tiếp nhận, thụ lý và giải quyết hồ sơ vụ việc yêu cầu bồi thường nhà nước theo đúng quy định của Luật Trách nhiệm bồi thường của Nhà nước, bao gồm:
+Cho phép quản lý quy trình tiếp nhận, thụ lý và giải quyết hồ sơ vụ việc yêu cầu bồi thường nhà nước theo đúng quy định của Luật Trách nhiệm bồi thường của Nhà nước, bao gồm:
 - Tra cứu danh sách vụ việc theo phân trang và các tab trạng thái nghiệp vụ (Vụ việc chờ tiếp nhận, Vụ việc chờ kiểm tra, Vụ việc chờ xử lý), hỗ trợ tìm kiếm và lọc đa tiêu chí.
 - Tiếp nhận và nhập liệu hồ sơ vụ việc yêu cầu bồi thường từ các nguồn tiếp nhận, tự động kế thừa thông tin và kiểm tra tính hợp lệ của hồ sơ.
 - Kiểm tra tính đầy đủ, hợp lệ của hồ sơ yêu cầu bồi thường; thực hiện yêu cầu bổ sung hồ sơ hoặc từ chối tiếp nhận khi không đủ điều kiện.

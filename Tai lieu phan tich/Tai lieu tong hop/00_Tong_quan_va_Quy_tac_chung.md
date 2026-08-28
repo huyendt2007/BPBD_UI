@@ -48,24 +48,7 @@ Gói thầu: [Tên gói thầu]
 
 ## 3.1. Quản lý đăng ký, cung cấp thông tin về biện pháp bảo đảm
 
-### 3.1.1. Quản lý hồ sơ đăng ký biện pháp bảo đảm
-
-\- (Cập nhật quy trình nghiệp vụ L1, L2 tại đây)
-
-### 3.1.2. Vòng đời trạng thái của hồ sơ đăng ký
-
-Dưới đây là danh sách các trạng thái áp dụng chung cho các loại hồ sơ Đăng ký mới, Đăng ký thay đổi, và Xóa đăng ký.
-
-| STT | Tên trạng thái | Ý nghĩa nghiệp vụ                                                                                                                                                    | Vai trò tác động chính                   |
-| :-- | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
-| 1   | Lưu nháp        | Hồ sơ đã được tạo nhưng chưa nộp. Người dùng có thể tiếp tục chỉnh sửa hoặc xóa bỏ.                                                               | NSD (Người khởi tạo)                      |
-| 2   | Chờ thanh toán  | Hồ sơ đã được nộp nhưng hệ thống đang chờ xác nhận thanh toán phí/lệ phí theo quy định trước khi chuyển sang các bước phê duyệt tiếp theo. | NSD (Khách hàng) / Hệ thống thanh toán   |
-| 3   | Sai lệch thanh toán | Hồ sơ đã trừ tiền thành công trên Cổng thanh toán nhưng số tiền không khớp với lệ phí của hồ sơ. Bị tạm khóa chờ kế toán đối soát thủ công. | Hệ thống / Kế toán đối soát               |
-| 4   | Chờ duyệt  | Hồ sơ đã thanh toán thành công hợp lệ (hoặc đã đối soát khớp tiền) và đang chờ chuyên viên kiểm tra tính hợp lệ của thông tin.                             | Chuyên viên phê duyệt / Trưởng phòng   |
-| 5   | Duyệt Duyệt chờ ký   | Hồ sơ đã qua bước kiểm tra chuyên môn, chốt dữ liệu thành công. Dữ liệu lúc này bị khóa (Read-only) và chờ để chuyển sang luồng trình ký.    | Chuyên viên phê duyệt / Lãnh đạo       |
-| 6   | Duyệt chờ ký          | Hồ sơ đang nằm trong khay công việc của người có thẩm quyền ký. Chờ thực hiện ép chữ ký số (USB Token/HSM) vào file hồ sơ.                        | Lãnh đạo / Người đại diện pháp luật |
-| 7   | Hoàn thành      | Hồ sơ đã được ký số, nộp thành công và đã được Cục đăng ký giao dịch bảo đảm và bồi thường nhà nước cấp chứng nhận. **Lưu ý:** Số PIN chỉ được cấp mới duy nhất một lần đối với hồ sơ Đăng ký mới (UC024); các loại hồ sơ khác (Đăng ký thay đổi, Xóa đăng ký, Thông báo xử lý tài sản,...) khi đạt trạng thái Hoàn thành chỉ được cấp chứng nhận, không cấp Số PIN mới. | Hệ thống NRAST / Bộ Tư pháp              |
-| 8   | Bị từ chối     | Hồ sơ bị từ chối do sai sót thông tin nội bộ hoặc bị cơ quan quản lý nhà nước từ chối cấp chứng nhận. Hệ thống có lưu kèm lý do từ chối.   | Người phê duyệt / Cơ quan quản lý      |
+- (Cập nhật quy trình nghiệp vụ L1, L2 tại đây)
 
 ## 3.2. Danh mục dữ liệu dùng chung (Master Data Dictionary)
 
@@ -112,65 +95,16 @@ Danh sách các danh mục dùng chung (Master Data) áp dụng xuyên suốt to
 | **[DM_46]** | Vai trò báo cáo của cơ quan (thống kê BTNN theo Thông tư 08/2019/TT-BTP, khoản 1 Điều 26) | \- Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại<br>- Cơ quan là bị đơn/bị đơn dân sự/người bị kiện trong vụ án |
 
 
-## 3.3. Các Quy tắc Xử lý chung (Common Business Rules)
+## 3.3. Các Quy tắc Xử lý Dùng chung (Common Processing Rules)
 
-### 3.3.1. Quy chuẩn xử lý tính năng Import File (Tải lên danh sách)
-
-- Toàn bộ các tính năng Import Excel trên hệ thống bắt buộc tuân thủ cơ chế **"Thành công một phần"**. Luồng xử lý được chia làm 2 giai đoạn kiểm tra cực kỳ nghiêm ngặt:
-- **1. Kiểm tra mức độ File - Xử lý vòng ngoài:**
-- Ngay khi người dùng thao tác chọn file hoặc kéo thả file, hệ thống sẽ kiểm tra cấu trúc vỏ trước khi đọc dữ liệu. Nếu vi phạm, hệ thống **chặn toàn bộ quá trình Import** và hiển thị **Toast báo lỗi** (nền màu đỏ).
-- **Lỗi sai định dạng tệp:** Người dùng tải lên tệp không phải đuôi `.xls` hoặc `.xlsx` (VD: .pdf, .doc). Hiển thị Toast: *"Định dạng tệp không hợp lệ. Vui lòng tải lên tệp .xls hoặc .xlsx"*.
-- **Lỗi vượt quá dung lượng:** Kích thước file lớn hơn mức cấu hình hệ thống (Mặc định: 20MB). Hiển thị Toast: *"Tệp tải lên vượt quá dung lượng cho phép (Tối đa 20MB)."*
-- **Lỗi sai cấu trúc biểu mẫu:** Số lượng cột, tên tiêu đề các cột trong file không khớp chính xác với File mẫu do hệ thống xuất ra (do người dùng tự ý xóa/sửa cột). Hiển thị Toast: *"Cấu trúc file không đúng biểu mẫu. Vui lòng tải 'File mẫu' để nhập dữ liệu."*
-- **2. Kiểm tra mức độ Dòng & Cơ chế Thành công một phần:**
-- Nếu file hợp lệ, hệ thống tiến hành đọc dữ liệu từng dòng:
-- **Xử lý Dòng rỗng:** Nếu một dòng trong Excel không chứa bất kỳ dữ liệu nào ở TẤT CẢ các cột -> Hệ thống tự động **Bỏ qua** dòng này, không tính là dữ liệu hợp lệ, cũng KHÔNG cộng vào tổng số dòng lỗi.
-- **Dòng hợp lệ:** Được tự động đưa vào hệ thống (VD: đẩy lên lưới).
-- **Dòng lỗi:** Bị loại bỏ, hệ thống ghi nhận lại vị trí dòng và nguyên nhân lỗi theo định nghĩa của *Ma trận Ràng buộc dữ liệu*.
-- **3. Quy chuẩn giao diện báo cáo Kết quả:**
-- Sau khi quét xong dữ liệu, bắt buộc hiển thị một **Popup** ở giữa màn hình để báo cáo chi tiết kết quả xử lý. Popup bao gồm 2 phần:
-- **Phần Thống kê:**
-
-  \- Hiển thị chữ màu xanh: *"Tải lên thành công: **[X]** bản ghi."* (Trong đó X là số dòng hợp lệ).
-
-  \- Hiển thị chữ màu đỏ: *"Tải lên thất bại: **[Y]** bản ghi."* (Y là số dòng bị lỗi).
-
-\- **Phần Bảng chi tiết lỗi:**
-
-  \- *Điều kiện hiển thị:* Chỉ hiển thị bảng này nếu số dòng lỗi **Y > 0**.
-
-  \- *Cấu trúc bảng:* Gồm 2 cột.
-
-    \- **Cột 1 (Vị trí lỗi):** Hiển thị `"Dòng [Số thứ tự dòng trong file Excel]"`. *(Ví dụ: Dòng 5)*.
-
-    \- **Cột 2 (Chi tiết lỗi):** Hiển thị câu thông báo lỗi chuẩn đã được quy định trong *Ma trận Ràng buộc dữ liệu* của từng màn hình. *(Ví dụ: "Số khung không được để trống")*.
-
-  \- *Gộp lỗi:* Nếu 1 dòng vi phạm nhiều lỗi ở nhiều cột khác nhau, hệ thống gộp các câu lỗi lại, phân cách bằng dấu phẩy (`, `) hoặc xuống dòng. *(Ví dụ: "Số khung không được để trống, Nhãn hiệu vượt quá 255 ký tự")*.
-
-\- **4. Quy định xử lý dữ liệu đặc thù:**
-
-\- **Với các trường Yêu cầu xác nhận (Chọn/Không chọn):** Trên biểu mẫu Excel không thể để kiểu dữ liệu Checkbox, do đó quy định sử dụng kiểu `Số`. Các trường này (Ví dụ: Yêu cầu thông báo) chỉ nhận giá trị `1` (Chọn) hoặc `0` (Không chọn). Nếu NSD nhập khoảng trắng, chữ cái, hay bất kỳ số nào khác, hệ thống bắt buộc bắn lỗi: *"Sai định dạng dữ liệu (chỉ chấp nhận 1 hoặc 0)"*.
-
-### 3.3.2. Quy chuẩn nhất quán giữa nhãn giao diện và bảng mô tả chức năng
-
-Để đảm bảo tính đồng nhất tuyệt đối giữa thiết kế giao diện (UI/UX) và tài liệu đặc tả chức năng (SRS):
-- **Tên chức năng trong bảng mô tả**: Bắt buộc phải ghi chính xác theo nhãn (label)/tên hiển thị của nút bấm, trường thông tin hoặc chức năng trên màn hình thiết kế. Không tự ý sáng tạo hoặc diễn giải dài dòng.
-- **Ví dụ cụ thể**:
-  - Nếu nút bấm trên thiết kế giao diện là **[Thêm mới]**, tên chức năng trong bảng mô tả SRS phải ghi là **Thêm mới** (không ghi là *Thêm mới quyền*, *Thêm mới thông tin*,...).
-  - Nếu nút là **[Lưu]**, tên chức năng phải là **Lưu** (không ghi là *Lưu thông tin*, *Lưu cấu hình*,...).
-  - Nếu nút là **[Hủy]**, tên chức năng phải là **Hủy** (không ghi là *Hủy thao tác*,...).
-  - Nếu nút là **[Sửa]**, tên chức năng phải là **Sửa** (không ghi là *Sửa chức năng*,...).
-  - Nếu nút là **[Cập nhật]**, tên chức năng phải là **Cập nhật** (không ghi là *Cập nhật phân quyền*,...).
-
-Quy chuẩn này là bắt buộc đối với tất cả các tài liệu đặc tả Use Case nhằm tránh gây hiểu lầm hoặc sai lệch giữa đội ngũ Thiết kế, Lập trình và Kiểm thử.
-
-### 3.3.3. Quy chuẩn phân trang danh sách (Pagination)
-
-Áp dụng thống nhất cho mọi màn hình danh sách/bảng dữ liệu trong toàn hệ thống, trừ khi SRS của màn hình cụ thể nêu rõ lý do cần áp dụng khác:
-
-- Giá trị số bản ghi/trang cho phép chọn: `10`, `20`, `50`, `100`.
-- Giá trị mặc định khi mở màn hình lần đầu: `20 bản ghi/trang`.
-
-Tham chiếu quy tắc [BR-UI-001] tại Danh mục Business Rule (`04_Danh_muc_va_Phu_luc.md`). Các tài liệu SRS đặc tả từng màn hình không lặp lại đầy đủ bộ giá trị này; chỉ cần ghi mặc định của màn hình và tham chiếu [BR-UI-001].
+Toàn bộ các quy tắc xử lý kỹ thuật và nghiệp vụ dùng chung trên toàn hệ thống Xem tại Phụ lục kèm theo tài liệu bao gồm: 
+\- Danh mục Business Rules `[BR]`,
+\- Danh mục MessageList `[MSG]`
+\- Tooltip & Hướng dẫn
+\- Danh mục Popup Dùng chung `[POPUP]`, 
+\- Quy chuẩn Kết xuất Excel
+\- Quy chuẩn Nhận file/Import Excel,
+\- và Quy chuẩn Phân trang
 
 # 4. ĐẶC TẢ CHI TIẾT YÊU CẦU CHỨC NĂNG
+

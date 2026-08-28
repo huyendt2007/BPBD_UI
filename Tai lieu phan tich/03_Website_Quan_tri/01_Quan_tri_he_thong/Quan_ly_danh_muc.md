@@ -1,110 +1,86 @@
-##### 4.3.1.5.1. UC596 - Quản lý danh mục dùng chung (Master Data)
+#### 4.3.1.5. Quản lý danh mục dùng chung (Master Data)
 
-###### 4.3.1.5.1.1. Mục đích
+##### 4.3.1.5.1. Mục đích
+Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ thống Đăng ký biện pháp bảo đảm và Bồi thường nhà nước, bao gồm:
+- Tra cứu, lọc danh mục theo Loại danh mục, từ khóa và trạng thái hoạt động.
+- Thêm mới, chỉnh sửa thông tin danh mục hỗ trợ cả cấu trúc danh mục phẳng (Flat List) và danh mục phân cấp đa cấp (Hierarchical Tree List).
+- Chuyển đổi trạng thái hoạt động (Hoạt động / Ngừng hoạt động) và xóa các bản ghi danh mục chưa phát sinh ràng buộc dữ liệu.
 
-\- Cho phép Quản trị viên hệ thống thiết lập, thêm, sửa, xóa các giá trị thuộc nhóm Danh mục dùng chung (Master Data) của hệ thống.  
+*a. Phân quyền*
+- Quản trị hệ thống (QTHT).
 
-\- Thiết kế một Form đa dụng (Generic Form) để hỗ trợ cả danh mục dạng phẳng (Flat List) lẫn danh mục phân cấp (Hierarchical List).  
+*b. Điều kiện thực hiện*
+- Cán bộ quản trị đã đăng nhập thành công vào Website quản trị.
+- Hệ thống hoạt động bình thường.
 
-###### 4.3.1.5.1.2. UC596.MH01 - Tra cứu và hiển thị Danh mục
+---
 
-####### 4.3.1.5.1.2.1. Màn hình
+##### 4.3.1.5.2. MH01 - Màn hình Tra cứu danh mục dùng chung
 
-\- Giao diện gồm 2 phần: Bộ lọc tìm kiếm và Bảng danh sách kết quả (Grid).
+###### 4.3.1.5.2.1. Màn hình
 
-####### 4.3.1.5.1.2.2. Mô tả thông tin trên màn hình
+![Màn hình Tra cứu danh mục dùng chung](images/UC596.MH01.png)
 
-| Trường thông tin                  | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                                                                                                                                                                                                                              |
-| :----------------------------------- | :-------------- | :--------- | :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **I. Bộ lọc tìm kiếm**     |                 |            |             |                                                                                                                                                                                                                                                                      |
-| Loại danh mục                      | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Cho phép chọn 1 trong các loại danh mục hệ thống. Danh sách lựa chọn được lấy ra từ Danh sách Loại danh mục đang hoạt động trên hệ thống (Trạng thái = Đang hoạt động). |
-| Từ khóa                            | String(255) | Không     | Trống      | Tìm kiếm linh hoạt theo Mã danh mục, Tên giá trị hoặc Nội dung danh mục.                                                                                                                                                                                  |
-| Trạng thái                         | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Hoạt động<br>+ Ngừng hoạt động |
-| TÌM KIẾM                           | - | Không     | \- | Control UI: Nút bấm.<br>Click để tìm kiếm dữ liệu. Chi tiết xem ở bảng Chức năng trên màn hình. |
-| **II. Bảng kết quả (Grid)** |                 |            |             |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| STT                                  | Integer(10) | Không     | \- | Số thứ tự tự tăng.                                                                                                                                                                                                                                              |
-| Cột: Tên danh mục                    | String(255) | Không     | \- | Hiển thị tên định danh tiếng Việt của danh mục (Ví dụ: "Biện pháp bảo đảm").                                                                                                                                                                                                             |
-| Cột: Tên danh mục (EN)               | String(255) | Không     | \- | Hiển thị tên định danh tiếng Anh của danh mục (Ví dụ: "Secured measures").                                                                                                                                                                                                             |
-| Cột: Loại danh mục                   | String(50) | Không     | \- | Hiển thị loại danh mục (Ví dụ: "Loại biện pháp bảo đảm").                                                                                                                                                                                                           |
-| Cột: Viết tắt/Mô tả                  | String(1000) | Không     | \- | Hiển thị viết tắt tiếng Việt hoặc nội dung chi tiết/mô tả của danh mục. Cắt ngắn kèm tooltip nếu quá dài.                                                                                                                                                                                                 |
-| Cột: Viết tắt/Mô tả (EN)             | String(1000) | Không     | \- | Hiển thị viết tắt tiếng Anh hoặc nội dung chi tiết/mô tả của danh mục. Cắt ngắn kèm tooltip nếu quá dài.                                                                                                                                                                                                 |
-| Cột: Trạng thái                      | String(50) | Không     | \- | Hiển thị trạng thái (Hoạt động/Ngừng hoạt động) bằng Tag màu tương ứng.                                                                                                                                                                              |
-| Cột: Thao tác                        | String(255) | Không     | \- | Control UI: Hiển thị/Read-only.<br>Gồm các nút: Sửa (icon bút chì), Xóa (icon thùng rác). Xem chi tiết bằng cách click trực tiếp vào dòng dữ liệu, không dùng icon con mắt riêng. |
-| THÊM MỚI                             | - | Không     | \- | Control UI: Nút bấm.<br>Nút bấm để mở Form Modal thêm mới danh mục (UC596.MH02). |
+###### 4.3.1.5.2.2. Mô tả thông tin trên màn hình
 
-####### 4.3.1.5.1.2.3. Chức năng trên màn hình
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Khối điều kiện tìm kiếm danh mục. |
+| Loại danh mục | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Lấy danh sách các Loại danh mục đang hoạt động từ hệ thống. |
+| Từ khóa | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm theo Mã danh mục, Tên danh mục hoặc Nội dung mô tả. |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Hoạt động<br>+ Ngừng hoạt động |
+| Tìm kiếm | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại bộ lọc. |
+| Xóa bộ lọc | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại bộ lọc. |
+| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Bảng/Lưới dữ liệu.<br>- Cho phép chọn 10, 20, 50, 100 bản ghi/trang, mặc định 20.<br>- Click vào dòng dữ liệu để mở MH02 ở chế độ Sửa thông tin.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| STT | Integer(10) | - | - | Control UI: Text hiển thị (Read-only). |
+| Tên danh mục | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Tên hiển thị tiếng Việt của danh mục. |
+| Tên danh mục (EN) | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Tên hiển thị tiếng Anh của danh mục. |
+| Loại danh mục (Cột) | String(100) | - | - | Control UI: Text hiển thị (Read-only). |
+| Viết tắt / Mô tả | String(1000) | - | - | Control UI: Text hiển thị (Read-only).<br>- Cắt ngắn kèm tooltip nếu nội dung quá dài. |
+| Viết tắt / Mô tả (EN) | String(1000) | - | - | Control UI: Text hiển thị (Read-only). |
+| Trạng thái (Cột) | Enum(String(50)) | - | - | Control UI: Badge/Tag hiển thị.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
+| Thao tác | String(255) | - | - | Control UI: Nhóm icon thao tác.<br>- `Sửa`: Luôn hiển thị.<br>- `Xóa`: Luôn hiển thị. |
+| Thêm mới | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị phía trên bảng dữ liệu. |
 
-| STT | Tên chức năng | Định dạng | Mô tả                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| :-- | :--------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Tìm kiếm       | Nút         | Hệ thống lọc dữ liệu lưới hiển thị theo Từ khóa, Loại danh mục, Trạng thái. Hỗ trợ phân trang (Pagination).<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-| 2   | Thêm mới       | Nút         | Bật Form Modal (UC596.MH02) ở trạng thái rỗng để nhập mới.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| 3   | Sửa             | Icon         | Bật Form Modal (UC596.MH02) và tự động load toàn bộ dữ liệu hiện tại của bản ghi đó lên Form.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| 4   | Xóa             | Row Click | Bật Popup xác nhận:*"Bạn có chắc chắn muốn xóa danh mục [Tên danh mục]?"*.<br>- Hệ thống kiểm tra xem Mã danh mục này **ĐÃ ĐƯỢC SỬ DỤNG** ở bất kỳ hồ sơ/tài khoản hay có làm Danh mục cha cho danh mục con nào chưa.<br>- Nếu ĐÃ SỬ DỤNG: Hệ thống chặn thao tác Xóa và hiển thị cảnh báo lỗi: *"Không thể xóa do danh mục này đang được sử dụng. Vui lòng đổi trạng thái thành Ngừng hoạt động."*<br>- Nếu CHƯA SỬ DỤNG: Xóa bản ghi khỏi Database, báo Toast thành công và reload lại lưới. |
-| 5   | Click dòng dữ liệu | Row Click | Khi click vào bất kỳ dòng dữ liệu nào trên lưới danh sách (ngoại trừ khi click trực tiếp vào icon Sửa/Xóa tại cột Thao tác), hệ thống mở Form Modal (UC596.MH02) và tự động load toàn bộ dữ liệu hiện tại của bản ghi đó lên Form, tương tự thao tác Sửa. |
+###### 4.3.1.5.2.3. Chức năng trên màn hình
 
-###### 4.3.1.5.1.3. UC596.MH02 - Form Thêm mới / Cập nhật Danh mục
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Tìm kiếm | Button | Khi người dùng click nút "Tìm kiếm":<br>- **TH Không có dữ liệu**: Bảng hiển thị duy nhất 01 dòng căn giữa với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng bị khóa mờ.<br>- **TH Có dữ liệu**: Hiển thị danh sách các bản ghi danh mục thỏa mãn điều kiện lọc. |
+| 2 | Xóa bộ lọc | Button | Đưa toàn bộ các trường trong bộ lọc tìm kiếm về giá trị mặc định (`Loại danh mục` = Tất cả, `Từ khóa` = Trống, `Trạng thái` = Tất cả) và tải lại danh sách ban đầu. |
+| 3 | Thêm mới | Button | Mở **MH02 - Popup Thêm mới / Cập nhật Danh mục** ở trạng thái rỗng để nhập mới. Nếu đang lọc sẵn một Loại danh mục thì tự động điền sẵn Loại danh mục đó. |
+| 4 | Sửa | Icon | Mở **MH02 - Popup Thêm mới / Cập nhật Danh mục** và tải toàn bộ dữ liệu hiện tại của bản ghi để chỉnh sửa. |
+| 5 | Xóa | Icon | Mở **[POPUP-CFM-001]** với `Loại thao tác` là `Xóa` kèm thông báo xác nhận [MSG-CFM-SYS-001]:<br>- **TH1 (Danh mục đang được sử dụng)**: Danh mục đã được sử dụng trong các hồ sơ, tài khoản hoặc đang làm Danh mục cha cho các danh mục con khác $\rightarrow$ Hệ thống chặn xóa, hiển thị cảnh báo lỗi yêu cầu chuyển trạng thái sang Ngừng hoạt động.<br>- **TH Hợp lệ**: Khi người dùng chọn "Xác nhận", hệ thống xóa bản ghi khỏi CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001] và làm mới danh sách bảng kết quả. |
+| 6 | Click dòng dữ liệu | Row Click | Mở **MH02 - Popup Thêm mới / Cập nhật Danh mục** tương tự thao tác Sửa. |
 
-####### 4.3.1.5.1.3.1. Màn hình
+---
 
-\- Hiển thị dưới dạng Modal Popup chồng lên màn hình danh sách, giúp NSD không phải chuyển trang.
+##### 4.3.1.5.3. MH02 - Popup Thêm mới / Cập nhật Danh mục
 
-####### 4.3.1.5.1.3.2. Mô tả thông tin trên màn hình
+###### 4.3.1.5.3.1. Màn hình
 
-| Trường thông tin          | Kiểu dữ liệu         | Bắt buộc        | Mặc định     | Mô tả                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| :--------------------------- | :---------------------- | :---------------- | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Loại danh mục              | Enum(String(50)) | Có               | (Tùy chọn)    | Control UI: Hộp chọn.<br>Load danh sách các loại danh mục đang hoạt động trên hệ thống (Trạng thái = Đang hoạt động).<br>*Tiện ích UX:* Nếu NSD đang đứng ở màn hình tìm kiếm đã filter sẵn loại danh mục thì lúc thêm mới tự động mồi sẵn giá trị này.<br>*(Lưu ý: Không cho phép sửa nếu đang ở trạng thái Cập nhật bản ghi).* |
-| Mã danh mục                | String(50) | Có               | Sinh tự động | Control UI: Hiển thị/Read-only.<br>Hệ thống tự động sinh mã định danh duy nhất khi mở form thêm mới<br>*(Lưu ý: Không cho phép sửa).* |
-| Tên danh mục               | String(255) | Có               | Trống          | Tên tiếng Việt của danh mục hiển thị trên giao diện người dùng để định danh. (VD: "Việt Nam", "Mẫu email Đăng ký"). |
-| Tên danh mục (EN)           | String(255) | Có               | Trống          | Tên tiếng Anh của danh mục. (VD: "Vietnam", "Registration Email Template"). |
-| Viết tắt/Mô tả             | Text(2000) | Tùy điều kiện | Trống          | Control UI: Textarea.<br>Viết tắt hoặc nội dung chi tiết của bản ghi bằng tiếng Việt.<br>- Đối với danh mục thông thường (VD: Quốc gia): Có thể để trống.<br>- Đối với danh mục đặc thù (VD: Danh mục Tooltip, Template Email): Đây sẽ là trường bắt buộc chứa nội dung text/HTML dài để hiển thị. |
-| Viết tắt/Mô tả (EN)         | Text(2000) | Tùy điều kiện | Trống          | Control UI: Textarea.<br>Viết tắt hoặc nội dung chi tiết của bản ghi bằng tiếng Anh.<br>- Đối với danh mục thông thường (VD: Quốc gia): Có thể để trống.<br>- Đối với danh mục đặc thù (VD: Danh mục Tooltip, Template Email): Đây sẽ là trường bắt buộc chứa nội dung tiếng Anh. |
-| Danh mục cha (Trực thuộc) | Enum(String(50)) | Không            | Trống          | Control UI: Hộp chọn.<br>Cho phép chọn một bản ghi danh mục ĐÃ TỒN TẠI trên hệ thống để làm cấp cha (Dành cho cấu trúc cây phân cấp). Box tìm kiếm hiển thị Tên danh mục cha để người dùng lựa chọn, hệ thống ngầm lưu Mã danh mục cha. |
-| Mô tả / Ghi chú           | Text(2000) | Không            | Trống          | Control UI: Textarea.<br>Ghi chú nội bộ dành riêng cho Quản trị viên (Admin), không hiển thị ra người dùng cuối. |
-| Trạng thái                 | Enum(String(50)) | Có               | Hoạt động    | Control UI: Hộp chọn.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động<br>Các dữ liệu "Ngừng hoạt động" sẽ không xuất hiện trong Dropdown ở các form nghiệp vụ. |
+![Popup Thêm mới / Cập nhật Danh mục](images/UC596.MH02.png)
 
-####### 4.3.1.5.1.3.3. Chức năng trên màn hình
+###### 4.3.1.5.3.2. Mô tả thông tin trên màn hình
 
-| STT | Tên chức năng | Định dạng | Mô tả                                                                                                                                            |
-| :-- | :--------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2   | HỦY             | Nút         | \- Thao tác: NSD click nút HỦY.<br>- Xử lý: Hệ thống đóng Form Modal, hủy bỏ mọi thao tác nhập liệu và không lưu dữ liệu. |
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **Form Danh mục** | - | - | - | Hiển thị dạng Popup Modal. |
+| Loại danh mục | Enum(String(50)) | Có | Lựa chọn hiện tại (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>- Danh sách lấy từ các Loại danh mục đang hoạt động.<br>- Khóa chỉ đọc (Read-only) khi ở chế độ Sửa. |
+| Mã danh mục | String(50) | Có | Tự động sinh (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Text hiển thị (Read-only).<br>- Tự động sinh mã định danh duy nhất. Không cho phép sửa. |
+| Tên danh mục | String(255) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Nhập tên tiếng Việt của danh mục.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Tên danh mục (EN) | String(255) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Nhập tên tiếng Anh của danh mục.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Viết tắt / Mô tả | Text(2000) | Tùy điều kiện | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Textarea.<br>- Bắt buộc đối với các loại danh mục đặc thù (như Tooltip, Mẫu email...). |
+| Viết tắt / Mô tả (EN) | Text(2000) | Tùy điều kiện | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Textarea.<br>- Bắt buộc đối với các loại danh mục đặc thù cần đa ngôn ngữ. |
+| Danh mục cha (Trực thuộc) | Enum(String(50)) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>- Chọn danh mục cha đã có trên hệ thống (đối với danh mục dạng cây phân cấp). |
+| Ghi chú | Text(2000) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Textarea.<br>- Ghi chú nội bộ dành cho quản trị viên. |
+| Trạng thái | Enum(String(50)) | Có | Hoạt động (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox / Radio.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
+| Lưu | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
 
-###### 4.3.1.5.1.4. UC596.MH03 - Tạm ngưng Danh mục
+###### 4.3.1.5.3.3. Chức năng trên màn hình
 
-####### 4.3.1.5.1.4.1. Màn hình
-
-| 1 | LƯU | Nút | \- Thao tác: NSD click nút LƯU.<br>- Kiểm tra: Hệ thống thực hiện validate dữ liệu.<br>- Xử lý: |
-|   |   |   | \- TH1 (Bỏ trống trường bắt buộc): Vi phạm quy tắc **[BR-VAL-001]**. Focus vào ô trống đầu tiên, highlight viền đỏ và hiển thị báo lỗi **[MSG-ERR-VAL-001]**. |
-|   |   |   | \- TH2 (Dữ liệu không hợp lệ): Kiểm tra các trường hợp dữ liệu sai định dạng, vượt quá độ dài, hoặc chứa ký tự đặc biệt (Chi tiết theo yêu cầu tại trường thông tin). Nếu vi phạm, hiển thị cảnh báo lỗi "[Tên trường] không hợp lệ" hoặc "[Tên trường] vượt quá độ dài cho phép". |
-|   |   |   | \- TH3 (Trùng lặp dữ liệu): Kiểm tra trùng `Tên giá trị` trong cùng một `Loại danh mục`. Nếu phát hiện trùng, hiển thị thông báo lỗi "Giá trị danh mục này đã tồn tại trên hệ thống". |
-|   |   |   | \- TH Hợp lệ: Cập nhật thông tin vào CSDL. Đóng Modal, hiển thị thông báo thành công và Refresh lại lưới danh sách. |
-
-####### 4.3.1.5.1.4.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định  | Mô tả                                                    |
-| :------------------ | :-------------- | :--------- | :----------- | :--------------------------------------------------------- |
-| Trạng thái        | Enum(String(50)) | Có        | Hoạt động | Control UI: Hộp chọn.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
-
-####### 4.3.1.5.1.4.3. Chức năng trên màn hình
-
-| STT | Tên chức năng        | Định dạng | Mô tả                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| :-- | :---------------------- | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Cập nhật trạng thái | Nút         | Chuyển trạng thái của Danh mục từ "Hoạt động" sang "Ngừng hoạt động" thông qua Form Chỉnh sửa.<br>- **Hợp lệ:** Dữ liệu này sẽ KHÔNG còn được load lên các Combobox/Dropdown chọn danh mục ở màn hình nghiệp vụ (VD: Form Đăng ký mới hồ sơ). Tuy nhiên, các hồ sơ cũ trong quá khứ đã trỏ vào danh mục này vẫn hiển thị bình thường để đảm bảo tính toàn vẹn dữ liệu lịch sử. |
-
-###### 4.3.1.5.1.5. UC596.MH04 - Xóa Danh mục
-
-####### 4.3.1.5.1.5.1. Màn hình
-
-\- Popup xác nhận thao tác xóa danh mục.
-
-####### 4.3.1.5.1.5.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin    | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả                                                                   |
-| :--------------------- | :-------------- | :--------- | :---------- | :------------------------------------------------------------------------ |
-| Thông báo xác nhận | String(255) | \- | \- | Control UI: Hiển thị/Read-only.<br>Hiển thị: "Bạn có chắc chắn muốn xóa danh mục [Tên danh mục]?" |
-
-####### 4.3.1.5.1.5.3. Chức năng trên màn hình
-
-| STT | Tên chức năng | Định dạng | Mô tả                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| :-- | :--------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Đồng ý        | Nút         | Bấm Icon [Xóa] trên lưới danh sách danh mục để kích hoạt xác nhận.<br>- **Hợp lệ (CHƯA SỬ DỤNG):** Xóa cứng/mềm bản ghi khỏi Database, báo Toast thành công và reload lại lưới.<br>- **Ngoại lệ (ĐÃ SỬ DỤNG):** Hệ thống kiểm tra xem Mã danh mục này ĐÃ ĐƯỢC SỬ DỤNG ở bất kỳ hồ sơ, tài khoản hay có đang đóng vai trò làm Danh mục cha cho danh mục con nào khác chưa. Nếu ĐÃ SỬ DỤNG, Hệ thống chặn thao tác Xóa và hiển thị cảnh báo lỗi (Màu đỏ): *"Không thể xóa do danh mục này đang được sử dụng. Vui lòng đổi trạng thái thành Ngừng hoạt động."* |
-| 2   | Hủy             | Nút         | Đóng Popup, hủy thao tác.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Lưu | Button | Kiểm tra dữ liệu trên form:<br>- **TH1 (Bỏ trống trường bắt buộc)**: Vi phạm quy tắc [BR-VAL-001]. Highlight viền đỏ ô lỗi đầu tiên, hiển thị thông báo lỗi [MSG-ERR-VAL-001] và focus con trỏ vào ô lỗi.<br>- **TH2 (Sai định dạng / Độ dài)**: Dữ liệu vi phạm quy tắc [BR-VAL-002] hoặc [BR-VAL-003] $\rightarrow$ Highlight viền đỏ ô lỗi, hiển thị thông báo lỗi [MSG-ERR-VAL-002] hoặc [MSG-ERR-VAL-003] và focus con trỏ.<br>- **TH3 (Trùng lặp dữ liệu)**: Kiểm tra trùng `Tên danh mục` trong cùng một `Loại danh mục` đối với các bản ghi đang ở trạng thái `Hoạt động` hoặc `Ngừng hoạt động` theo [BR-VAL-009] (khi Sửa thì loại trừ chính bản ghi đang xử lý). Nếu trùng, hiển thị thông báo lỗi [MSG-ERR-VAL-009].<br>- **TH Hợp lệ**: Lưu thông tin vào CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và làm mới danh sách dữ liệu tại MH01. Dữ liệu có trạng thái "Ngừng hoạt động" sẽ không xuất hiện trong các combobox nghiệp vụ mới nhưng vẫn duy trì toàn vẹn dữ liệu cho các hồ sơ lịch sử. |
+| 2 | Hủy | Button | Đóng Popup Modal, hủy bỏ các thay đổi và quay lại màn hình chính. |
