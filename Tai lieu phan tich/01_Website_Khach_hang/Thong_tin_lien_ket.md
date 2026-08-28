@@ -1,9 +1,9 @@
-### 4.1.24. UCPS017 - Thông tin liên kết
+﻿### 4.1.24. UCPS017 - Thông tin liên kết
 
 #### 4.1.24.1. Mục đích
 
 \- Cung cấp menu "Liên kết" tại Top Navigation của Website khách hàng, cho phép Khách hàng điều hướng nhanh tới các cổng thông tin liên quan (Cổng thông tin điện tử Bộ Tư pháp, Trang thông tin Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước...).
-\- Toàn bộ danh sách Link liên kết được quản trị tập trung tại Website quản trị ([UC540](../03_Website_Quan_tri/01_Quan_tri_he_thong/UC540_Quan_ly_noi_dung_ho_tro_nguoi_dung.md)), không hard-code trên giao diện.
+\- Toàn bộ danh sách Link liên kết được quản trị tập trung tại Website quản trị ([UC540](../03_Website_Quan_tri/01_Quan_tri_he_thong/Quan_ly_noi_dung_ho_tro_nguoi_dung.md)), không hard-code trên giao diện.
 
 *a. Phân quyền*
 
@@ -25,7 +25,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **Khối Danh sách liên kết** | — | — | — | Danh sách Link hiển thị trong menu "Liên kết", theo cấu hình [UC540](../03_Website_Quan_tri/01_Quan_tri_he_thong/UC540_Quan_ly_noi_dung_ho_tro_nguoi_dung.md). |
+| **Khối Danh sách liên kết** | — | — | — | Danh sách Link hiển thị trong menu "Liên kết", theo cấu hình [UC540](../03_Website_Quan_tri/01_Quan_tri_he_thong/Quan_ly_noi_dung_ho_tro_nguoi_dung.md). |
 | Tên hiển thị | String(255) | Không | Theo cấu hình Website quản trị | Chỉ đọc. Tên Link hiển thị trong menu, hiển thị đúng thứ tự đã cấu hình và chỉ hiển thị các Link đang ở trạng thái hiển thị. |
 
 ##### 4.1.24.2.3. Chức năng trên màn hình
@@ -40,7 +40,7 @@
 
 #### 4.1.24.3. Ánh xạ Business Rule và MessageList
 
-Menu "Liên kết" chỉ hiển thị dữ liệu chỉ đọc, không phát sinh nghiệp vụ nhập liệu/validate; toàn bộ Business Rule liên quan đến kiểm soát dữ liệu Link liên kết được áp dụng tại [UC540](../03_Website_Quan_tri/01_Quan_tri_he_thong/UC540_Quan_ly_noi_dung_ho_tro_nguoi_dung.md), mục 4.3.1.13.4.
+Menu "Liên kết" chỉ hiển thị dữ liệu chỉ đọc, không phát sinh nghiệp vụ nhập liệu/validate; toàn bộ Business Rule liên quan đến kiểm soát dữ liệu Link liên kết được áp dụng tại [UC540](../03_Website_Quan_tri/01_Quan_tri_he_thong/Quan_ly_noi_dung_ho_tro_nguoi_dung.md), mục 4.3.1.13.4.
 
 #### 4.1.24.4. Tiêu chí nghiệm thu
 

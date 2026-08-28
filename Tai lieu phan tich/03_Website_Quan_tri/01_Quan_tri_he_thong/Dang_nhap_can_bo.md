@@ -1,4 +1,4 @@
-#### 4.3.1.8. Đăng nhập tài khoản cán bộ
+﻿#### 4.3.1.8. Đăng nhập tài khoản cán bộ
 
 ##### 4.3.1.8.1. Mục đích
 \- Cho phép cán bộ thuộc các đơn vị của Bộ Tư pháp, các Trung tâm đăng ký và các cơ quan có thẩm quyền liên quan thực hiện đăng nhập vào Website Quản trị để thực hiện công tác chuyên môn.
@@ -42,7 +42,7 @@
       <td style="text-align: center; vertical-align: middle;">1</td>
       <td style="vertical-align: middle;">Tích/Bỏ tích "Ghi nhớ đăng nhập"</td>
       <td style="text-align: center; vertical-align: middle;">Checkbox</td>
-      <td>Người dùng click chọn hoặc bỏ chọn hộp kiểm để thiết lập thời hạn phiên làm việc:<br>- <b>Tích chọn (Check)</b>: Kích hoạt cơ chế ghi nhớ phiên. Khi cán bộ đăng nhập thành công, hệ thống tạo mã Token an toàn (RememberMe Token) và ghi vào cookie bảo mật trên trình duyệt với thời hạn hiệu lực là 30 ngày.<br>- <b>Bỏ tích (Uncheck)</b>: Hủy cơ chế ghi nhớ phiên. Phiên đăng nhập chỉ có hiệu lực theo thời gian chờ phiên thông thường (Session Timeout mặc định 15 phút cấu hình tại <a href="UC551_to_UC562_Cau_hinh.md#43164-uc553---cấu-hình-thời-gian-chờ-timeout">UC553</a>).</td>
+      <td>Người dùng click chọn hoặc bỏ chọn hộp kiểm để thiết lập thời hạn phiên làm việc:<br>- <b>Tích chọn (Check)</b>: Kích hoạt cơ chế ghi nhớ phiên. Khi cán bộ đăng nhập thành công, hệ thống tạo mã Token an toàn (RememberMe Token) và ghi vào cookie bảo mật trên trình duyệt với thời hạn hiệu lực là 30 ngày.<br>- <b>Bỏ tích (Uncheck)</b>: Hủy cơ chế ghi nhớ phiên. Phiên đăng nhập chỉ có hiệu lực theo thời gian chờ phiên thông thường (Session Timeout mặc định 15 phút cấu hình tại <a href="Cau_hinh.md#43164-uc553---cấu-hình-thời-gian-chờ-timeout">UC553</a>).</td>
     </tr>
     <tr>
       <td rowspan="8" style="text-align: center; vertical-align: middle; font-weight: bold;">2</td>
@@ -69,7 +69,7 @@
       <td><b>TH7 (Xác thực MFA)</b>: Nếu nhóm tài khoản cán bộ được kích hoạt cơ chế xác thực đa nhân tố tại <b>[Cấu hình bảo mật đa nhân tố - MFA / UC562]</b>, hệ thống sinh mã OTP ngẫu nhiên gửi qua Email đăng ký và chuyển hướng sang màn hình nhập mã xác thực OTP.</td>
     </tr>
     <tr>
-      <td><b>TH Hợp lệ (Đăng nhập thành công)</b>: Reset số lần nhập sai về 0, khởi tạo phiên làm việc (Session) với thời gian timeout cấu hình tại <a href="UC551_to_UC562_Cau_hinh.md#43164-uc553---cấu-hình-thời-gian-chờ-timeout">UC553</a> (mặc định 15 phút), ghi nhận nhật ký đăng nhập (Audit Log) gồm Tên tài khoản, Địa chỉ IP, Thời gian đăng nhập, và chuyển hướng cán bộ đến Dashboard Quản trị tương ứng với vai trò và phân quyền.</td>
+      <td><b>TH Hợp lệ (Đăng nhập thành công)</b>: Reset số lần nhập sai về 0, khởi tạo phiên làm việc (Session) với thời gian timeout cấu hình tại <a href="Cau_hinh.md#43164-uc553---cấu-hình-thời-gian-chờ-timeout">UC553</a> (mặc định 15 phút), ghi nhận nhật ký đăng nhập (Audit Log) gồm Tên tài khoản, Địa chỉ IP, Thời gian đăng nhập, và chuyển hướng cán bộ đến Dashboard Quản trị tương ứng với vai trò và phân quyền.</td>
     </tr>
     <tr>
       <td rowspan="4" style="text-align: center; vertical-align: middle; font-weight: bold;">3</td>
@@ -100,7 +100,7 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
 | Mật khẩu hiện tại | String(20) | Có | Trống | Control UI: Ô nhập mật khẩu hiện tại (mật khẩu khởi tạo hoặc mật khẩu tạm thời).<br>- Có biểu tượng con mắt để ẩn/hiện ký tự đã nhập. |
-| Mật khẩu mới | String(20) | Có | Trống | Control UI: Ô nhập mật khẩu mới.<br>- Áp dụng quy tắc phức tạp mật khẩu <b>[BR-VAL-006]</b> theo cấu hình tại <a href="UC551_to_UC562_Cau_hinh.md#431612-uc561---cấu-hình-các-tham-số-khác-của-hệ-thống">UC561</a> (mặc định: 8-20 ký tự, ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt).<br>- Có biểu tượng con mắt để ẩn/hiện ký tự đã nhập. |
+| Mật khẩu mới | String(20) | Có | Trống | Control UI: Ô nhập mật khẩu mới.<br>- Áp dụng quy tắc phức tạp mật khẩu <b>[BR-VAL-006]</b> theo cấu hình tại <a href="Cau_hinh.md#431612-uc561---cấu-hình-các-tham-số-khác-của-hệ-thống">UC561</a> (mặc định: 8-20 ký tự, ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt).<br>- Có biểu tượng con mắt để ẩn/hiện ký tự đã nhập. |
 | Xác nhận mật khẩu mới | String(20) | Có | Trống | Control UI: Ô nhập lại mật khẩu mới để so khớp.<br>- Có biểu tượng con mắt để ẩn/hiện ký tự đã nhập. |
 
 ###### 4.3.1.8.3.3. Chức năng trên màn hình
@@ -124,7 +124,7 @@
       <td><b>TH2 (Dữ liệu vượt quá độ dài hoặc ký tự không hợp lệ)</b>: Hiển thị cảnh báo lỗi <b>[MSG-ERR-UCPS001-008]</b> tại trường tương ứng.</td>
     </tr>
     <tr>
-      <td><b>TH3 (Mật khẩu mới không đạt độ phức tạp)</b>: Vi phạm quy tắc độ phức tạp mật khẩu <b>[BR-VAL-006]</b> theo cấu hình tại <a href="UC551_to_UC562_Cau_hinh.md#431612-uc561---cấu-hình-các-tham-số-khác-của-hệ-thống">UC561</a>, hiển thị thông báo lỗi <b>[MSG-ERR-VAL-006]</b>.</td>
+      <td><b>TH3 (Mật khẩu mới không đạt độ phức tạp)</b>: Vi phạm quy tắc độ phức tạp mật khẩu <b>[BR-VAL-006]</b> theo cấu hình tại <a href="Cau_hinh.md#431612-uc561---cấu-hình-các-tham-số-khác-của-hệ-thống">UC561</a>, hiển thị thông báo lỗi <b>[MSG-ERR-VAL-006]</b>.</td>
     </tr>
     <tr>
       <td><b>TH4 (Xác nhận mật khẩu mới không khớp)</b>: Hiển thị thông báo lỗi <b>[MSG-ERR-VAL-011]</b> tại ô Xác nhận mật khẩu mới.</td>

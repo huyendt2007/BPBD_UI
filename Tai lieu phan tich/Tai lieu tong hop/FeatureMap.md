@@ -1,23 +1,23 @@
-# Feature Map
+﻿# Feature Map
 
 | STT | Mã tính năng | Tên tính năng | Tên file .md | Mã, UC | Trạng thái UI | Trạng thái tài liệu phân tích | Ghi chú |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | I | Web Khách hàng | Website khách hàng |  |  |  |  |  |
 |  |  | Website khách hàng |  |  |  |  |  |
-|  | WebKH-001 | Đăng nhập | Tai lieu phan tich\01_Website_Khach_hang\UC001_Dang_nhap_khach_hang.md | UC001 | Hoàn thành | Done |  |
-|  | WebKH-002 | Đăng xuất | Tai lieu phan tich\01_Website_Khach_hang\UCPS004_Dang_xuat.md | UC022 | Hoàn thành | Done |  |
-|  | WebKH-003 | Quên mật khẩu | Tai lieu phan tich\01_Website_Khach_hang\UC001_Dang_nhap_khach_hang.md | UC021 | Hoàn thành |  |  |
-|  | WebKH-004 | Đổi mật khẩu | Tai lieu phan tich\01_Website_Khach_hang\UCPS006_Doi_mat_khau_khach_hang.md | UC020 | Hoàn thành |  |  |
-|  | WebKH-005 | Cập nhật thông tin tài khoản cá nhân/ tổ chức | Tai lieu phan tich\01_Website_Khach_hang\UC003_Cap_nhat_thong_tin_tai_khoan.md | UC002 | Hoàn thành |  |  |
-|  | WebKH-006 | Quản lý người dùng trong tài khoản chính | Tai lieu phan tich\01_Website_Khach_hang\UC005_to_UC008_Quan_ly_tai_khoan_truc_thuoc.md | UC004, UC005, UC006 | Hoàn thành |  |  |
+|  | WebKH-001 | Đăng nhập | Tai lieu phan tich\01_Website_Khach_hang\Dang_nhap_khach_hang.md | UC001 | Hoàn thành | Done |  |
+|  | WebKH-002 | Đăng xuất | Tai lieu phan tich\01_Website_Khach_hang\Dang_xuat.md | UC022 | Hoàn thành | Done |  |
+|  | WebKH-003 | Quên mật khẩu | Tai lieu phan tich\01_Website_Khach_hang\Dang_nhap_khach_hang.md | UC021 | Hoàn thành |  |  |
+|  | WebKH-004 | Đổi mật khẩu | Tai lieu phan tich\01_Website_Khach_hang\Doi_mat_khau_khach_hang.md | UC020 | Hoàn thành |  |  |
+|  | WebKH-005 | Cập nhật thông tin tài khoản cá nhân/ tổ chức | Tai lieu phan tich\01_Website_Khach_hang\Cap_nhat_thong_tin_tai_khoan.md | UC002 | Hoàn thành |  |  |
+|  | WebKH-006 | Quản lý người dùng trong tài khoản chính | Tai lieu phan tich\01_Website_Khach_hang\Quan_ly_tai_khoan_truc_thuoc.md | UC004, UC005, UC006 | Hoàn thành |  |  |
 |  | WebKH-007 | Đăng ký biện pháp bảo đảm | Tai lieu phan tich\01_Website_Khach_hang\UC024_Dang_ky_moi_BPBD_Ver2.md | UC023, UC036, UC049, UC062, UC075, UC088, UC101, UC114 | Hoàn thành |  |  |
-|  | WebKH-008 | Đăng ký thay đổi BPBĐ | Tai lieu phan tich\01_Website_Khach_hang\UC025_Dang_ky_thay_doi_BPBD.md | UC024, UC037, UC050, UC063, UC076, UC089, UC102, UC115 | Hoàn thành |  |  |
+|  | WebKH-008 | Đăng ký thay đổi BPBĐ | Tai lieu phan tich\01_Website_Khach_hang\Dang_ky_thay_doi_BPBD.md | UC024, UC037, UC050, UC063, UC076, UC089, UC102, UC115 | Hoàn thành |  |  |
 |  | WebKH-009 | Xóa đăng ký | Tai lieu phan tich\01_Website_Khach_hang\UC026_Xoa_dang_ky_BPBD_Ver2.md | UC025, UC038, UC051, UC064, UC077, UC090, UC103, UC116 | Hoàn thành |  |  |
 |  | WebKH-010 | Yêu cầu cung cấp thông tin miễn phí | Tai lieu phan tich\01_Website_Khach_hang\SRS yêu cầu cung cấp thông tin.md | UC198 |  |  |  |
 |  | WebKH-011 | Yêu cầu cung cấp thông tin kèm giấy chứng nhận | Tai lieu phan tich\01_Website_Khach_hang\SRS yêu cầu cung cấp thông tin.md | UC148, UC197 |  |  |  |
 |  | WebKH-012 | Yêu cầu cung cấp bản sao | Tai lieu phan tich\01_Website_Khach_hang\SRS_YC_cung_cap_ban_sao_van_ban_chung_nhan.md, Tai lieu phan tich\01_Website_Khach_hang\SRS_Qly_yeu_cau_da_dky_YC Ban sao.md | UC152 | Hoàn thành | Review |  |
 |  | WebKH-013 | Yêu cầu cung cấp bản sao kèm thông báo | Tai lieu phan tich\01_Website_Khach_hang\SRS_YC_cung_cap_ban_sao_kem_thong_bao.md | UC155 | Hoàn thành |  |  |
-|  | WebKH-014 | Thông báo xử lý tài sản | Tai lieu phan tich\01_Website_Khach_hang\UC131_Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md | UC130, UC134, UC135, UC138 | Hoàn thành |  |  |
+|  | WebKH-014 | Thông báo xử lý tài sản | Tai lieu phan tich\01_Website_Khach_hang\Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md | UC130, UC134, UC135, UC138 | Hoàn thành |  |  |
 |  | WebKH-015 | Quản lý yêu cầu đăng ký đã thực hiện | Tai lieu phan tich\01_Website_Khach_hang\SRS_Qly_yeu_cau_da_dky_Phieu dang ky.md |  | Hoàn thành |  |  |
 |  | WebKH-016 | Tab Phiếu đăng ký | Tai lieu phan tich\01_Website_Khach_hang\SRS_Qly_yeu_cau_da_dky_Phieu dang ky.md |  |  |  |  |
 |  | WebKH-017 | Tab Yêu cầu cung cấp thông tin | Tai lieu phan tich\01_Website_Khach_hang\SRS yêu cầu cung cấp thông tin.md, Tai lieu phan tich\01_Website_Khach_hang\SRS_Qly_yeu_cau_da_dky_Phieu dang ky.md |  |  |  |  |
@@ -28,14 +28,14 @@
 |  | WebKH-022 | Tra cứu theo Số đăng ký | Tai lieu phan tich\01_Website_Khach_hang\UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md | UC192 |  |  |  |
 |  | WebKH-023 | Tra cứu theo Bên bảo đảm | Tai lieu phan tich\01_Website_Khach_hang\UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md | UC193 |  |  |  |
 |  | WebKH-024 | Tra cứu theo Số khung | Tai lieu phan tich\01_Website_Khach_hang\UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md | UC194 |  |  |  |
-|  | WebKH-025 | Tra cứu mã hồ sơ | Tai lieu phan tich\01_Website_Khach_hang\UC193_Tra_cuu_ma_ho_so_TTHC.md | UC195 | Hoàn thành |  |  |
-|  | WebKH-026 | Hỗ trợ khách hàng | Tai lieu phan tich\01_Website_Khach_hang\UC266_to_UC267_Quan_ly_yeu_cau_ho_tro.md | UC265, UC268, UC269, UC493, UC496, UC497, UC498, UC499 | Hoàn thành |  |  |
-|  | WebKH-027 | Trang chủ | Tai lieu phan tich\01_Website_Khach_hang\UCPS015_Trang_chu_khach_hang.md | UC017 | Hoàn thành | Done |  |
-|  | WebKH-028 | Liên kết | Tai lieu phan tich\01_Website_Khach_hang\UCPS017_Thong_tin_lien_ket.md | UC018 | Hoàn thành | Done |  |
-|  | WebKH-029 | Quản lý yêu cầu hỗ trợ | Tai lieu phan tich\01_Website_Khach_hang\UC266_to_UC267_Quan_ly_yeu_cau_ho_tro.md | UC253, UC254, UC255, UC260 | Hoàn thành | Done |  |
-|  | WebKH-030 | Câu hỏi thường gặp | Tai lieu phan tich\01_Website_Khach_hang\UC280_UC513_UC536_Ho_tro_khach_hang.md | UC265, UC268, UC269, UC493, UC496, UC497 |  |  |  |
-|  | WebKH-031 | Văn bản Quy phạm Pháp luật | Tai lieu phan tich\01_Website_Khach_hang\UC280_UC513_UC536_Ho_tro_khach_hang.md | UC498, UC499 |  |  |  |
-|  | WebKH-032 | Chatbot hỏi đáp | Tai lieu phan tich\01_Website_Khach_hang\UC280_UC513_UC536_Ho_tro_khach_hang.md |  |  |  |  |
+|  | WebKH-025 | Tra cứu mã hồ sơ | Tai lieu phan tich\01_Website_Khach_hang\Tra_cuu_ma_ho_so_TTHC.md | UC195 | Hoàn thành |  |  |
+|  | WebKH-026 | Hỗ trợ khách hàng | Tai lieu phan tich\01_Website_Khach_hang\Quan_ly_yeu_cau_ho_tro.md | UC265, UC268, UC269, UC493, UC496, UC497, UC498, UC499 | Hoàn thành |  |  |
+|  | WebKH-027 | Trang chủ | Tai lieu phan tich\01_Website_Khach_hang\Trang_chu_khach_hang.md | UC017 | Hoàn thành | Done |  |
+|  | WebKH-028 | Liên kết | Tai lieu phan tich\01_Website_Khach_hang\Thong_tin_lien_ket.md | UC018 | Hoàn thành | Done |  |
+|  | WebKH-029 | Quản lý yêu cầu hỗ trợ | Tai lieu phan tich\01_Website_Khach_hang\Quan_ly_yeu_cau_ho_tro.md | UC253, UC254, UC255, UC260 | Hoàn thành | Done |  |
+|  | WebKH-030 | Câu hỏi thường gặp | Tai lieu phan tich\01_Website_Khach_hang\Ho_tro_khach_hang.md | UC265, UC268, UC269, UC493, UC496, UC497 |  |  |  |
+|  | WebKH-031 | Văn bản Quy phạm Pháp luật | Tai lieu phan tich\01_Website_Khach_hang\Ho_tro_khach_hang.md | UC498, UC499 |  |  |  |
+|  | WebKH-032 | Chatbot hỏi đáp | Tai lieu phan tich\01_Website_Khach_hang\Ho_tro_khach_hang.md |  |  |  |  |
 |  | WebKH-033 | Chuyển đổi ngôn ngữ |  | UC019 |  |  |  |
 | II | App Mobile | Ứng dụng Mobile |  |  |  |  |  |
 |  |  | Ứng dụng Mobile |  |  |  |  |  |
@@ -164,29 +164,29 @@
 |  | Mobile-123 | Ứng dụng mobile cán bộ<br>Biện pháp bảo đảm<br>Báo cáo quản lý |  | UC404 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
 | III | WebAdmin | Website Cán bộ |  |  |  |  |  |
 |  |  | Website Quản trị |  |  |  |  |  |
-|  | WebAdmin-001 | Đăng nhập | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UCPS001_Dang_nhap_can_bo.md | UC574 |  |  |  |
+|  | WebAdmin-001 | Đăng nhập | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Dang_nhap_can_bo.md | UC574 |  |  |  |
 |  | WebAdmin-002 | Đăng xuất |  | UC577 |  |  |  |
-|  | WebAdmin-003 | Quên mật khẩu | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UCPS001_Dang_nhap_can_bo.md | UC575 |  |  | Đã gộp chung vào file Đăng nhập (WebAdmin-001) |
+|  | WebAdmin-003 | Quên mật khẩu | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Dang_nhap_can_bo.md | UC575 |  |  | Đã gộp chung vào file Đăng nhập (WebAdmin-001) |
 |  | WebAdmin-004 | Đổi mật khẩu |  | UC576 |  |  |  |
 |  | WebAdmin-005 | Đặt lại mật khẩu |  |  |  |  |  |
 |  | WebAdmin-006 | Cập nhật thông tin Tài khoản |  |  |  |  |  |
 |  | WebAdmin-007 | Biện pháp bảo đảm |  | UC023, UC024, UC025, UC026, UC027, UC028, UC029, UC030, UC031, UC032, UC033, UC034, UC035, UC036, UC037, UC038, UC039, UC040, UC041, UC042, UC043, UC044, UC045, UC046, UC047, UC048, UC049, UC050, UC051, UC052, UC053, UC054, UC055, UC056, UC057, UC058, UC059, UC060, UC061, UC062, UC063, UC064, UC065, UC066, UC067, UC068, UC069, UC070, UC071, UC072, UC073, UC074, UC075, UC076, UC077, UC078, UC079, UC080, UC081, UC082, UC083, UC084, UC085, UC086, UC087, UC088, UC089, UC090, UC091, UC092, UC093, UC094, UC095, UC096, UC097, UC098, UC099, UC100, UC101, UC102, UC103, UC104, UC105, UC106, UC107, UC108, UC109, UC110, UC111, UC112, UC113, UC114, UC115, UC116, UC117, UC118, UC119, UC120, UC121, UC122, UC123, UC124, UC125, UC126, UC127, UC128, UC129, UC139, UC152, UC153, UC154, UC158, UC172, UC173, UC184, UC196, UC197, UC203, UC205, UC208, UC209, UC210, UC211, UC212, UC213, UC214, UC215, UC216, UC217, UC218, UC219, UC220, UC221, UC222, UC223, UC224, UC225, UC226, UC227, UC228, UC229, UC230, UC231, UC232, UC233, UC234, UC235, UC236, UC237, UC238, UC239, UC240, UC241, UC242, UC243, UC244, UC245, UC246, UC247, UC248, UC249, UC250, UC251, UC252, UC253, UC254, UC255, UC256, UC257, UC258, UC259, UC260, UC261, UC262, UC263, UC264, UC266, UC267, UC270, UC271, UC272, UC273, UC274, UC275, UC276, UC277, UC278, UC279, UC280, UC281, UC282, UC283, UC284, UC285, UC286, UC287, UC288, UC289, UC290, UC291, UC292, UC293, UC294, UC295, UC296, UC297, UC298, UC299, UC547, UC582, UC583, UC584, UC585, UC586, UC587, UC588, UC589, UC590, UC591, UC592, UC593, UC602, UC603, UC604, UC605, UC606, UC607, UC608, UC609, UC610, UC611, UC612, UC619, UC620, UC621, UC622, UC623, UC624, UC625, UC626, UC627, UC628, UC629, UC630, UC631, UC632, UC633, UC636, UC637, UC638, UC639, UC641, UC642, UC643, UC644, UC645, UC647, UC649, UC650, UC651, UC652, UC653, UC654, UC655, UC656, UC666, UC667, UC668, UC669, UC670, UC671, UC672 |  |  |  |
-|  | WebAdmin-008 | Tiếp nhận và nhập liệu hồ sơ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Nhap_lieu_ho_so_giay_Phieu_dang_ky_Can_bo.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_thong_tin_Can_bo.md |  |  | Review |  |
+|  | WebAdmin-008 | Tiếp nhận và nhập liệu hồ sơ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Nhap_lieu_ho_so_giay_Phieu_dang_ky_Can_bo.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_thong_tin_Can_bo.md |  |  | Review |  |
 |  | WebAdmin-009 | Nhận chuyển tiếp hồ sơ |  | UC127, UC128, UC129 |  |  |  |
-|  | WebAdmin-010 | Kiểm tra và xử lý hồ sơ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md | UC139 |  |  |  |
-|  | WebAdmin-011 | Hồ sơ chờ xử lý | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md | UC030, UC031, UC032, UC043, UC044, UC045, UC056, UC057, UC058, UC069, UC070, UC071, UC082, UC083, UC084, UC095, UC096, UC097, UC108, UC109, UC110, UC121, UC122, UC123, UC132, UC139, UC140, UC149, UC152, UC153, UC155, UC156, UC199, UC201, UC202 |  |  |  |
+|  | WebAdmin-010 | Kiểm tra và xử lý hồ sơ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Kiem_tra_va_xu_ly_ho_so.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md | UC139 |  |  |  |
+|  | WebAdmin-011 | Hồ sơ chờ xử lý | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Kiem_tra_va_xu_ly_ho_so.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md | UC030, UC031, UC032, UC043, UC044, UC045, UC056, UC057, UC058, UC069, UC070, UC071, UC082, UC083, UC084, UC095, UC096, UC097, UC108, UC109, UC110, UC121, UC122, UC123, UC132, UC139, UC140, UC149, UC152, UC153, UC155, UC156, UC199, UC201, UC202 |  |  |  |
 |  | WebAdmin-012 | Hồ sơ chờ duyệt<br> (Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao |  |  |  |  |  |
-|  | WebAdmin-013 | Hồ sơ duyệt chờ ký<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
-|  | WebAdmin-014 | Hồ sơ bị trả lại<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
+|  | WebAdmin-013 | Hồ sơ duyệt chờ ký<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
+|  | WebAdmin-014 | Hồ sơ bị trả lại<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
 |  | WebAdmin-015 | Hồ sơ đang chờ ký<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao |  |  |  |  |  |
-|  | WebAdmin-016 | Hồ sơ đã xử lý<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
+|  | WebAdmin-016 | Hồ sơ đã xử lý<br>Bao gồm:<br>+ Phiếu đăng ký<br>+ Yêu cầu cung cấp thông tin<br>+ Yêu cầu cung cấp bản sao | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
 |  | WebAdmin-017 | Chỉnh lý thông tin/Hủy/Khôi phục đăng ký |  | UC203, UC205, UC208, UC210, UC212, UC213, UC215, UC217 |  |  |  |
 |  | WebAdmin-018 | Lập đề nghị |  | UC203, UC208, UC213, UC433, UC437 |  |  |  |
 |  | WebAdmin-019 | Theo dõi và xử lý đề nghị |  |  |  |  |  |
 |  | WebAdmin-020 | Đề nghị/Hồ sơ chờ duyệt |  |  |  |  |  |
 |  | WebAdmin-021 | Hồ sơ chờ thực hiện |  |  |  |  |  |
-|  | WebAdmin-022 | Đề nghị/Hồ sơ bị trả lại | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
-|  | WebAdmin-023 | Đề nghị/Hồ sơ đã xử lý | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC028_029_Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
+|  | WebAdmin-022 | Đề nghị/Hồ sơ bị trả lại | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
+|  | WebAdmin-023 | Đề nghị/Hồ sơ đã xử lý | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Kiem_tra_va_xu_ly_ho_so.md |  |  |  |  |
 |  | WebAdmin-024 | Ký duyệt hồ sơ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ky_duyet_Yeu_cau_cung_cap_thong_tin_Lanh_dao.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ky_duyet_Phieu_dang_ky_Lanh_dao.md | UC033, UC034, UC035, UC046, UC047, UC048, UC059, UC060, UC061, UC072, UC073, UC074, UC085, UC086, UC087, UC098, UC099, UC100, UC111, UC112, UC113, UC124, UC125, UC126, UC133, UC141, UC142, UC150, UC154, UC157, UC200, UC201, UC202, UC204, UC206, UC209, UC211, UC214, UC216 |  | Review |  |
 |  | WebAdmin-025 | Phiếu đăng ký | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Xu_ly_Phieu_dang_ky_Can_bo.md | UC029, UC030, UC031, UC032, UC033, UC034, UC035, UC042, UC043, UC044, UC045, UC046, UC047, UC048, UC055, UC056, UC057, UC058, UC059, UC060, UC061, UC068, UC069, UC070, UC071, UC072, UC073, UC074, UC081, UC082, UC083, UC084, UC085, UC086, UC087, UC094, UC095, UC096, UC097, UC098, UC099, UC100, UC107, UC108, UC109, UC110, UC111, UC112, UC113, UC120, UC121, UC122, UC123, UC124, UC125, UC126, UC132, UC133, UC138, UC140, UC141, UC142, UC149, UC150, UC153, UC154, UC156, UC157, UC196, UC201, UC202, UC204, UC206, UC207 |  | Review |  |
 |  | WebAdmin-026 | Yêu cầu cung cấp thông tin | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ky_duyet_Yeu_cau_cung_cap_thong_tin_Lanh_dao.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_thong_tin_Can_bo.md | UC148, UC149, UC150, UC151, UC197, UC199, UC200 |  |  |  |
@@ -196,10 +196,10 @@
 |  | WebAdmin-030 | Tra cứu Yêu cầu cung cấp thông tin |  |  |  |  |  |
 |  | WebAdmin-031 | Tra cứu Yêu cầu cung cấp bản sao |  |  |  |  |  |
 |  | WebAdmin-032 | Quản lý cảnh báo đăng ký |  | UC143 |  |  |  |
-|  | WebAdmin-033 | Quản lý cấp mã số sử dụng CSDL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC015_017_Quan_ly_cap_ma_so_CSDL.md | UC012 |  |  |  |
-|  | WebAdmin-034 | Quản lý thu phí/hoàn phí hồ sơ giấy | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md |  |  |  |  |
-|  | WebAdmin-035 | Quản lý thu phí/hoàn phí hồ sơ giấy | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md |  |  |  |  |
-|  | WebAdmin-036 | Quản lý đối soát thanh toán | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UCPS008_Quan_ly_doi_soat_thanh_toan.md | UC191 |  |  |  |
+|  | WebAdmin-033 | Quản lý cấp mã số sử dụng CSDL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cap_ma_so_CSDL.md | UC012 |  |  |  |
+|  | WebAdmin-034 | Quản lý thu phí/hoàn phí hồ sơ giấy | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md |  |  |  |  |
+|  | WebAdmin-035 | Quản lý thu phí/hoàn phí hồ sơ giấy | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md |  |  |  |  |
+|  | WebAdmin-036 | Quản lý đối soát thanh toán | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_doi_soat_thanh_toan.md | UC191 |  |  |  |
 |  | WebAdmin-037 | Quản lý nghiệp vụ chuyên ngành BPBĐ |  |  |  |  |  |
 |  | WebAdmin-038 | Quản lý tham mưu xây dựng VBQPPL, chương trình, KH công tác |  | UC218, UC219, UC220, UC221, UC222, UC223 |  |  |  |
 |  | WebAdmin-039 | Tham mưu xây dựng văn bản QPPL |  | UC218, UC219 |  |  |  |
@@ -255,23 +255,23 @@
 |  | WebAdmin-089 | Cập nhật thông tin phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  |  |  |  |  |
 |  | WebAdmin-090 | Xóa thông tin phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  |  |  |  |  |
 |  | WebAdmin-091 | Tra cứu thông tin phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ trên mobile |  |  |  |  |  |
-|  | WebAdmin-092 | Quản lý thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC604_Co_cau_to_chuc.md | UC251, UC252 |  |  |  |
-|  | WebAdmin-093 | Thêm mới  thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC604_Co_cau_to_chuc.md |  |  |  |  |
-|  | WebAdmin-094 | Cập nhật thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC604_Co_cau_to_chuc.md |  |  |  |  |
+|  | WebAdmin-092 | Quản lý thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md | UC251, UC252 |  |  |  |
+|  | WebAdmin-093 | Thêm mới  thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md |  |  |  |  |
+|  | WebAdmin-094 | Cập nhật thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md |  |  |  |  |
 |  | WebAdmin-095 | Xóa thông tin phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  |  |  |  |  |
-|  | WebAdmin-096 | Tra cứu thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC604_Co_cau_to_chuc.md |  |  |  |  |
+|  | WebAdmin-096 | Tra cứu thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md |  |  |  |  |
 |  | WebAdmin-097 | Quản lý yêu cầu và hỗ trợ người dùng |  | UC256, UC257, UC258, UC259, UC261, UC262, UC263, UC264, UC266 |  |  |  |
-|  | WebAdmin-098 | Quản lý yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC268_272_Quan_ly_yeu_cau_ho_tro.md | UC253, UC254, UC255, UC256, UC257, UC258, UC259, UC260 | Hoàn thành |  |  |
-|  | WebAdmin-099 | Tra cứu yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC268_272_Quan_ly_yeu_cau_ho_tro.md | UC259 |  |  |  |
-|  | WebAdmin-100 | Xem chi tiết yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC268_272_Quan_ly_yeu_cau_ho_tro.md |  |  |  |  |
-|  | WebAdmin-101 | Phân công xử lý yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC268_272_Quan_ly_yeu_cau_ho_tro.md | UC256 |  |  |  |
-|  | WebAdmin-102 | Hủy phân công xử lý yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC268_272_Quan_ly_yeu_cau_ho_tro.md |  |  |  |  |
-|  | WebAdmin-103 | Trả lời yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC268_272_Quan_ly_yeu_cau_ho_tro.md | UC257 |  |  |  |
-|  | WebAdmin-104 | Đề nghị làm rõ yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC268_272_Quan_ly_yeu_cau_ho_tro.md | UC258 |  |  |  |
-|  | WebAdmin-105 | Quản lý thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC274_276_Quan_ly_tu_lieu_vbqppl.md | UC261, UC262, UC266, UC489 |  |  |  |
-|  | WebAdmin-106 | Phê duyệt thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC274_276_Quan_ly_tu_lieu_vbqppl.md | UC262, UC490 |  |  |  |
-|  | WebAdmin-107 | Quản lý câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC277_279_Quan_ly_cau_hoi_faq.md | UC263, UC264 |  |  |  |
-|  | WebAdmin-108 | Phê duyệt câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC277_279_Quan_ly_cau_hoi_faq.md |  |  |  |  |
+|  | WebAdmin-098 | Quản lý yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tiep_nhan_ho_tro.md | UC253, UC254, UC255, UC256, UC257, UC258, UC259, UC260 | Hoàn thành |  |  |
+|  | WebAdmin-099 | Tra cứu yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tiep_nhan_ho_tro.md | UC259 |  |  |  |
+|  | WebAdmin-100 | Xem chi tiết yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tiep_nhan_ho_tro.md |  |  |  |  |
+|  | WebAdmin-101 | Phân công xử lý yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tiep_nhan_ho_tro.md | UC256 |  |  |  |
+|  | WebAdmin-102 | Hủy phân công xử lý yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tiep_nhan_ho_tro.md |  |  |  |  |
+|  | WebAdmin-103 | Trả lời yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tiep_nhan_ho_tro.md | UC257 |  |  |  |
+|  | WebAdmin-104 | Đề nghị làm rõ yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tiep_nhan_ho_tro.md | UC258 |  |  |  |
+|  | WebAdmin-105 | Quản lý thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tu_lieu_vbqppl.md | UC261, UC262, UC266, UC489 |  |  |  |
+|  | WebAdmin-106 | Phê duyệt thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tu_lieu_vbqppl.md | UC262, UC490 |  |  |  |
+|  | WebAdmin-107 | Quản lý câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cau_hoi_faq.md | UC263, UC264 |  |  |  |
+|  | WebAdmin-108 | Phê duyệt câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cau_hoi_faq.md |  |  |  |  |
 |  | WebAdmin-109 | Kiểm tra thử nghiệm ứng dụng hỏi đáp về lĩnh vực nghiệp vụ đăng ký BPBĐ |  | UC267 |  |  |  |
 |  | WebAdmin-110 | Báo cáo quản lý về ĐKBPBĐ |  | UC270, UC271 |  |  |  |
 |  | WebAdmin-111 | Báo cáo thống kê số lượng hồ sơ đăng ký về biện pháp bảo đảm (Đăng ký lần đầu, thay đổi, xóa) |  | UC270 |  |  |  |
@@ -280,7 +280,7 @@
 |  | WebAdmin-114 | Báo cáo đăng ký Yêu cầu tạm dừng, dừng, không thực hiện đăng ký |  | UC273 |  |  |  |
 |  | WebAdmin-115 | Báo cáo giá trị nghĩa vụ được bảo đảm |  | UC274 |  |  |  |
 |  | WebAdmin-116 | Báo cáo về tổ chức, cá nhân không thường xuyên |  | UC275 |  |  |  |
-|  | WebAdmin-117 | Báo cáo thu phí tổ chức, cá nhân không thường xuyên | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC276 |  |  |  |
+|  | WebAdmin-117 | Báo cáo thu phí tổ chức, cá nhân không thường xuyên | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC276 |  |  |  |
 |  | WebAdmin-118 | Báo cáo tình hỉnh chỉnh lý thông tin đăng ký |  | UC277 |  |  |  |
 |  | WebAdmin-119 | Báo cáo tình hình hủy thông tin đăng ký |  | UC278 |  |  |  |
 |  | WebAdmin-120 | Báo cáo tình hình khôi phục đăng ký đã hủy |  | UC279 |  |  |  |
@@ -303,7 +303,7 @@
 |  | WebAdmin-137 | Báo cáo kết quả công tác theo lĩnh vực tập huấn, hội nghị, hội thảo, tọa đàm;  nghiên cứu khoa học trong lĩnh vực bảo đảm thực hiện nghĩa vụ, đăng ký BPBĐ |  | UC296 |  |  |  |
 |  | WebAdmin-138 | Báo cáo kết quả công tác theo lĩnh vực tiếp công dân, giải quyết khiếu nại, tố cáo, kiến nghị, phản ánh trong đăng ký, cung cấp thông tin về BPBĐ |  | UC297 |  |  |  |
 |  | WebAdmin-139 | Báo cáo kết quả công tác theo lĩnh vực phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  | UC298 |  |  |  |
-|  | WebAdmin-140 | Báo cáo kết quả công tác theo lĩnh vực khác theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC604_Co_cau_to_chuc.md | UC299 |  |  |  |
+|  | WebAdmin-140 | Báo cáo kết quả công tác theo lĩnh vực khác theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md | UC299 |  |  |  |
 |  | WebAdmin-141 | Bồi thường nhà nước | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC412, UC413, UC414, UC415, UC416, UC417, UC418, UC419, UC420, UC421, UC422, UC423, UC424, UC425, UC426, UC427, UC428, UC429, UC430, UC431, UC432, UC433, UC434, UC435, UC436, UC437, UC438, UC439, UC440, UC441, UC442, UC443, UC444, UC445, UC446, UC447, UC448, UC449, UC450, UC451, UC452, UC453, UC454, UC455, UC456, UC457, UC458, UC459, UC460, UC461, UC462, UC463, UC464, UC465, UC466, UC467, UC468, UC469, UC470, UC471, UC472, UC473, UC474, UC475, UC476, UC477, UC478, UC479, UC480, UC481, UC482, UC483, UC484, UC485, UC486, UC487, UC488, UC489, UC490, UC491, UC492, UC494, UC495, UC500, UC501, UC502, UC503, UC504, UC505, UC506, UC507, UC508, UC509, UC617, UC618 |  |  |  |
 |  | WebAdmin-142 | Quản lý việc giải quyết yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-143 | Xác định cơ quan giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC412, UC413, UC659 |  |  |  |
@@ -315,7 +315,7 @@
 |  | WebAdmin-149 | Nhập thông tin ý kiến của người bị thiệt hại |  | UC416 |  |  |  |
 |  | WebAdmin-150 | Cập nhật kết quả việc thực hiện phục hồi danh dự |  | UC417 |  |  |  |
 |  | WebAdmin-151 | Giải quyết yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC412, UC413, UC414, UC415, UC416, UC417, UC418, UC419, UC420, UC421, UC422, UC423, UC424, UC425, UC426, UC427, UC428, UC429, UC430, UC431, UC432, UC433, UC434, UC435, UC436, UC437, UC438, UC439, UC440, UC441, UC442, UC443, UC444, UC445, UC446, UC447, UC448, UC449, UC450, UC508, UC661 |  |  |  |
-|  | WebAdmin-152 | Tiếp nhận hồ sơ yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC418 |  |  |  |
+|  | WebAdmin-152 | Tiếp nhận hồ sơ yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC418 |  |  |  |
 |  | WebAdmin-153 | Yêu cầu bổ sung hồ sơ yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC419 |  |  |  |
 |  | WebAdmin-154 | Thụ lý hồ sơ yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC420 |  |  |  |
 |  | WebAdmin-155 | Cử người giải quyết yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC421 |  |  |  |
@@ -360,19 +360,19 @@
 |  | WebAdmin-194 | Cập nhật Chấm điểm theo Bộ tiêu chí đánh giá |  |  |  |  |  |
 |  | WebAdmin-195 | Đánh giá Chấm điểm theo Bộ tiêu chí đánh giá |  |  |  |  |  |
 |  | WebAdmin-196 | Quản lý yêu cầu và hỗ trợ nghiệp vụ BTNN | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
-|  | WebAdmin-197 | Quản lý thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC274_276_Quan_ly_tu_lieu_vbqppl.md | UC261, UC262, UC266, UC489 |  |  |  |
-|  | WebAdmin-198 | Tra cứu thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC274_276_Quan_ly_tu_lieu_vbqppl.md |  |  |  |  |
-|  | WebAdmin-199 | Thêm mới thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC274_276_Quan_ly_tu_lieu_vbqppl.md |  |  |  |  |
-|  | WebAdmin-200 | Sửa thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC274_276_Quan_ly_tu_lieu_vbqppl.md |  |  |  |  |
-|  | WebAdmin-201 | Xóa thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC274_276_Quan_ly_tu_lieu_vbqppl.md |  |  |  |  |
-|  | WebAdmin-202 | Phê duyệt thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC274_276_Quan_ly_tu_lieu_vbqppl.md | UC262, UC490 |  |  |  |
+|  | WebAdmin-197 | Quản lý thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tu_lieu_vbqppl.md | UC261, UC262, UC266, UC489 |  |  |  |
+|  | WebAdmin-198 | Tra cứu thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tu_lieu_vbqppl.md |  |  |  |  |
+|  | WebAdmin-199 | Thêm mới thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tu_lieu_vbqppl.md |  |  |  |  |
+|  | WebAdmin-200 | Sửa thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tu_lieu_vbqppl.md |  |  |  |  |
+|  | WebAdmin-201 | Xóa thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tu_lieu_vbqppl.md |  |  |  |  |
+|  | WebAdmin-202 | Phê duyệt thông tin tư liệu VBQPPL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_tu_lieu_vbqppl.md | UC262, UC490 |  |  |  |
 |  | WebAdmin-203 | Kiểm tra thử nghiệm ứng dụng hỏi đáp về lĩnh vực nghiệp vụ bồi thường nhà nước | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC495 |  |  |  |
-|  | WebAdmin-204 | Quản lý câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC277_279_Quan_ly_cau_hoi_faq.md | UC263, UC264 |  |  |  |
-|  | WebAdmin-205 | Tra cứu câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC277_279_Quan_ly_cau_hoi_faq.md |  |  |  |  |
-|  | WebAdmin-206 | Thêm mới câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC277_279_Quan_ly_cau_hoi_faq.md |  |  |  |  |
-|  | WebAdmin-207 | Cập nhật câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC277_279_Quan_ly_cau_hoi_faq.md |  |  |  |  |
-|  | WebAdmin-208 | Xóa câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC277_279_Quan_ly_cau_hoi_faq.md |  |  |  |  |
-|  | WebAdmin-209 | Phê duyệt câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC277_279_Quan_ly_cau_hoi_faq.md |  |  |  |  |
+|  | WebAdmin-204 | Quản lý câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cau_hoi_faq.md | UC263, UC264 |  |  |  |
+|  | WebAdmin-205 | Tra cứu câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cau_hoi_faq.md |  |  |  |  |
+|  | WebAdmin-206 | Thêm mới câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cau_hoi_faq.md |  |  |  |  |
+|  | WebAdmin-207 | Cập nhật câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cau_hoi_faq.md |  |  |  |  |
+|  | WebAdmin-208 | Xóa câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cau_hoi_faq.md |  |  |  |  |
+|  | WebAdmin-209 | Phê duyệt câu hỏi và trả lời thường gặp | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cau_hoi_faq.md |  |  |  |  |
 |  | WebAdmin-210 | Quản lý thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_BTP_DauMoi_CanBo.md | UC501, UC502 |  | Review |  |
 |  | WebAdmin-211 | Tra cứu thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_BTP_DauMoi_CanBo.md | UC501 |  | Review |  |
 |  | WebAdmin-212 | Cập nhật thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_BTP_DauMoi_CanBo.md | UC502 |  | Review |  |
@@ -436,11 +436,11 @@
 |  | WebAdmin-270 | Quản lý nhà nước |  | UC582, UC583, UC584, UC585, UC586, UC587, UC588, UC589, UC590, UC591, UC592, UC593, UC594, UC595, UC596, UC597, UC598, UC599, UC600, UC601, UC602, UC603, UC604, UC605, UC606, UC607, UC608, UC609, UC610, UC611, UC612, UC613, UC614, UC615, UC616, UC617, UC618, UC619, UC620, UC621, UC622, UC623, UC624, UC625, UC626, UC627, UC628, UC629, UC630, UC631, UC632, UC633 |  |  |  |
 |  | WebAdmin-271 | Dashboard trực quan thông tin về tình hình đăng ký biện pháp bảo đảm |  |  |  |  |  |
 |  | WebAdmin-272 | Xem màn hình trực quan thông tin chung về tình hình đăng ký BPBĐ |  | UC582 |  |  |  |
-|  | WebAdmin-273 | Cấu hình lựa chọn hình thức hiển thị thông tin về tình hình đăng ký BPBĐ | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC551_to_UC562_Cau_hinh.md | UC583 |  |  |  |
+|  | WebAdmin-273 | Cấu hình lựa chọn hình thức hiển thị thông tin về tình hình đăng ký BPBĐ | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh.md | UC583 |  |  |  |
 |  | WebAdmin-274 | Phân tích tình hình chung đăng ký, cung cấp thông tin về biện pháp bảo đảm |  | UC584 |  |  |  |
-|  | WebAdmin-275 | Phân tích tình hình thu phí đăng ký, cung cấp thông tin về biện pháp bảo đảm | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC586 |  |  |  |
+|  | WebAdmin-275 | Phân tích tình hình thu phí đăng ký, cung cấp thông tin về biện pháp bảo đảm | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC586 |  |  |  |
 |  | WebAdmin-276 | Phân tích tình hình cung cấp thông tin cho cơ quan có thẩm quyền, người có thẩm quyền |  | UC587 |  |  |  |
-|  | WebAdmin-277 | Phân tích tình hình cấp mã số sử dụng CSDL (cho cơ quan có thẩm quyền, cho tổ chức/cá nhân) | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC015_017_Quan_ly_cap_ma_so_CSDL.md | UC588 |  |  |  |
+|  | WebAdmin-277 | Phân tích tình hình cấp mã số sử dụng CSDL (cho cơ quan có thẩm quyền, cho tổ chức/cá nhân) | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cap_ma_so_CSDL.md | UC588 |  |  |  |
 |  | WebAdmin-278 | Phân tích thống kê số lượng hồ sơ đăng ký biện pháp bảo đảm theo người dùng (tổ chức/cá nhân) |  | UC589 |  |  |  |
 |  | WebAdmin-279 | Phân tích thống kê số lượng hồ sơ đăng ký biện pháp bảo đảm theo loại tài sản bảo đảm |  | UC590 |  |  |  |
 |  | WebAdmin-280 | Xem danh sách tổ chức/cá nhân có số lượng hồ sơ đăng ký biện pháp bảo đảm nhiều nhất (TOP 10) |  | UC591 |  |  |  |
@@ -448,7 +448,7 @@
 |  | WebAdmin-282 | Xem báo cáo về cấp văn bản chứng nhận dạng biểu đồ |  | UC593 |  |  |  |
 |  | WebAdmin-283 | Dashboard trực quan thông tin về tình hình quản lý công tác bồi thường nhà nước | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-284 | Xem màn hình trực quan thông tin chung về tình hình quản lý công tác BTNN | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC594 |  |  |  |
-|  | WebAdmin-285 | Cấu hình lựa chọn hình thức hiển thị thông tin về tình hình quản lý công tác BTNN | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC551_to_UC562_Cau_hinh.md, Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC595 |  |  |  |
+|  | WebAdmin-285 | Cấu hình lựa chọn hình thức hiển thị thông tin về tình hình quản lý công tác BTNN | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh.md, Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC595 |  |  |  |
 |  | WebAdmin-286 | Phân tích tình hình kết quả đánh giá công tác BTNN theo thời gian | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC596 |  |  |  |
 |  | WebAdmin-287 | Phân tích tình hình kết quả đánh giá công tác BTNN theo địa phương | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC597 |  |  |  |
 |  | WebAdmin-288 | Phân tích tình hình kết quả đánh giá công tác BTNN theo phạm vi trách nhiệm bồi thường của Nhà nước | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC598 |  |  |  |
@@ -462,8 +462,8 @@
 |  | WebAdmin-296 | Báo cáo thống kê tổ chức/cá nhân có số lượng hồ sơ đăng ký biện pháp bảo đảm nhiều nhất (TOP 10) theo thẩm quyền quản lý |  | UC605 |  |  |  |
 |  | WebAdmin-297 | Báo cáo thống kê số lượng hồ sơ đăng ký biện pháp bảo đảm theo loại tài sản bảo đảm theo thẩm quyền quản lý |  | UC606 |  |  |  |
 |  | WebAdmin-298 | Báo cáo thống kê số lượng hồ sơ đăng ký biện pháp bảo đảm theo người dùng (tổ chức/cá nhân) theo thẩm quyền quản lý |  | UC607 |  |  |  |
-|  | WebAdmin-299 | Báo cáo nguồn thu phí, lệ phí về đăng ký, cung cấp thông tin biện pháp bảo đảm theo thẩm quyền quản lý | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC608 |  |  |  |
-|  | WebAdmin-300 | Báo cáo nguồn thu phí về cấp mã số sử dụng CSDL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UC015_017_Quan_ly_cap_ma_so_CSDL.md | UC609 |  |  |  |
+|  | WebAdmin-299 | Báo cáo nguồn thu phí, lệ phí về đăng ký, cung cấp thông tin biện pháp bảo đảm theo thẩm quyền quản lý | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC608 |  |  |  |
+|  | WebAdmin-300 | Báo cáo nguồn thu phí về cấp mã số sử dụng CSDL | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_cap_ma_so_CSDL.md | UC609 |  |  |  |
 |  | WebAdmin-301 | Báo cáo thống kê cá nhân/tổ chức sử dụng dịch vụ (user) |  | UC610 |  |  |  |
 |  | WebAdmin-302 | Báo cáo công tác xây dựng thể chế chính sách, pháp luật trong lĩnh vực đăng ký biện pháp bảo đảm |  | UC611 |  |  |  |
 |  | WebAdmin-303 | Báo cáo công tác tổ chức thi hành pháp luật trong lĩnh vực đăng ký biện pháp bảo đảm |  | UC612 |  |  |  |
@@ -477,7 +477,7 @@
 |  | WebAdmin-311 | Quản lý theo dõi, giám sát về đăng ký biện pháp bảo đảm và bồi thường nhà nước | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-312 | Hỗ trợ kiểm duyệt các hồ sơ đăng ký biện pháp bảo đảm |  | UC619 |  |  |  |
 |  | WebAdmin-313 | Hỗ trợ kiểm tra thông tin trong hồ sơ theo các tiêu chí xác định |  | UC620 |  |  |  |
-|  | WebAdmin-314 | Hỗ trợ kiểm tra nội dung xác định theo thông tin cấu hình (số khung, chủ sở hữu, …) | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC551_to_UC562_Cau_hinh.md |  |  |  |  |
+|  | WebAdmin-314 | Hỗ trợ kiểm tra nội dung xác định theo thông tin cấu hình (số khung, chủ sở hữu, …) | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh.md |  |  |  |  |
 |  | WebAdmin-315 | Hỗ trợ xác định, so sánh nội dung thay đổi |  | UC621 |  |  |  |
 |  | WebAdmin-316 | Quản lý nhà nước về đăng ký biện pháp bảo đảm của các Bộ/ Ngành khác |  |  |  |  |  |
 |  | WebAdmin-317 | Báo cáo thống kê về biện pháp bảo đảm bằng quyền sử dụng đất, tài sản gắn liền với đất |  | UC622 |  |  |  |
@@ -494,25 +494,25 @@
 |  | WebAdmin-328 | Quản trị hệ thống trang tin |  |  |  |  |  |
 |  | WebAdmin-329 | Quản lý thông tin liên kết |  | UC528 |  |  |  |
 |  | WebAdmin-330 | Quản lý nội dung hỗ trợ người dùng |  | UC529 |  |  |  |
-|  | WebAdmin-331 | Quản lý vai trò | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC600_Quan_ly_vai_tro.md | UC556, UC557, UC558, UC559 |  |  |  |
-|  | WebAdmin-332 | Quản lý nhóm người dùng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC603_Nhom_nguoi_dung.md | UC013, UC014, UC015, UC016, UC559 |  |  |  |
-|  | WebAdmin-333 | Quản lý tài khoản khách hàng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC009_Tai_khoan_khach_hang.md | UC003, UC007, UC008, UC009, UC010 |  |  |  |
-|  | WebAdmin-334 | Quản lý tài khoản cán bộ | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC595_Tai_khoan_can_bo.md | UC553, UC554, UC555 |  |  |  |
-|  | WebAdmin-335 | Quản lý đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC604_Co_cau_to_chuc.md | UC560 |  |  |  |
+|  | WebAdmin-331 | Quản lý vai trò | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_vai_tro.md | UC556, UC557, UC558, UC559 |  |  |  |
+|  | WebAdmin-332 | Quản lý nhóm người dùng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Nhom_nguoi_dung.md | UC013, UC014, UC015, UC016, UC559 |  |  |  |
+|  | WebAdmin-333 | Quản lý tài khoản khách hàng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Tai_khoan_khach_hang.md | UC003, UC007, UC008, UC009, UC010 |  |  |  |
+|  | WebAdmin-334 | Quản lý tài khoản cán bộ | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Tai_khoan_can_bo.md | UC553, UC554, UC555 |  |  |  |
+|  | WebAdmin-335 | Quản lý đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md | UC560 |  |  |  |
 |  | WebAdmin-336 | Quản lý sao lưu, phục hồi dữ liệu |  | UC561, UC562 |  |  |  |
-|  | WebAdmin-337 | Quản lý loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UCPS010_Quan_ly_loai_danh_muc.md |  |  |  |  |
-|  | WebAdmin-338 | Xóa loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UCPS010_Quan_ly_loai_danh_muc.md |  |  |  |  |
-|  | WebAdmin-339 | Quản lý danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC596_Quan_ly_danh_muc.md | UC266, UC494, UC541, UC542, UC543, UC544, UC545, UC546, UC547, UC548, UC549, UC550, UC551, UC552 |  |  |  |
-|  | WebAdmin-340 | Quản lý cấu hình hệ thống | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC551_to_UC562_Cau_hinh.md |  |  |  |  |
+|  | WebAdmin-337 | Quản lý loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_loai_danh_muc.md |  |  |  |  |
+|  | WebAdmin-338 | Xóa loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_loai_danh_muc.md |  |  |  |  |
+|  | WebAdmin-339 | Quản lý danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_danh_muc.md | UC266, UC494, UC541, UC542, UC543, UC544, UC545, UC546, UC547, UC548, UC549, UC550, UC551, UC552 |  |  |  |
+|  | WebAdmin-340 | Quản lý cấu hình hệ thống | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh.md |  |  |  |  |
 |  | WebAdmin-341 | Quản lý Nhật ký hệ thống |  | UC563, UC564, UC565, UC566, UC567, UC568, UC569, UC570, UC571, UC572, UC573 |  |  |  |
 |  | WebAdmin-342 | Quản lý Nhật ký truy cập Phần mềm |  |  |  |  |  |
 |  | WebAdmin-343 | Tra cứu danh sách nhật ký |  |  |  |  |  |
 |  | WebAdmin-344 | Quản lý nhật ký đăng nhập khi quản trị Phần mềm |  |  |  |  |  |
 |  | WebAdmin-345 | Quản lý nhật ký các lỗi phát sinh trong quá trình hoạt động |  |  |  |  |  |
 |  | WebAdmin-346 | Quản lý nhật ký quản lý tài khoản |  |  |  |  |  |
-|  | WebAdmin-347 | Quản lý nhật ký thay đổi cấu hình Phần mềm | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC551_to_UC562_Cau_hinh.md |  |  |  |  |
+|  | WebAdmin-347 | Quản lý nhật ký thay đổi cấu hình Phần mềm | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh.md |  |  |  |  |
 |  | WebAdmin-348 | Kết nối chia sẻ dữ liệu | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC634, UC635, UC636, UC637, UC638, UC639, UC640, UC641, UC642, UC643, UC644, UC645, UC646, UC647, UC648, UC649, UC650, UC651, UC652, UC653, UC654, UC655, UC656, UC657, UC658, UC659, UC660, UC661, UC662, UC663, UC664, UC665, UC666, UC667, UC668, UC669, UC670, UC671, UC672, UC673 |  |  |  |
-|  | WebAdmin-349 | Tiếp nhận thông tin từ các hệ thống khác | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md | UC634, UC635, UC636, UC637, UC638, UC639, UC640, UC641, UC642, UC643, UC644, UC645, UC646, UC647, UC648, UC649, UC650, UC651, UC652, UC653, UC654, UC655, UC656, UC657, UC658, UC659, UC660, UC661, UC662, UC663, UC664, UC665 |  |  |  |
+|  | WebAdmin-349 | Tiếp nhận thông tin từ các hệ thống khác | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md | UC634, UC635, UC636, UC637, UC638, UC639, UC640, UC641, UC642, UC643, UC644, UC645, UC646, UC647, UC648, UC649, UC650, UC651, UC652, UC653, UC654, UC655, UC656, UC657, UC658, UC659, UC660, UC661, UC662, UC663, UC664, UC665 |  |  |  |
 |  | WebAdmin-350 | API dữ liệu tài khoản Cá nhân/Tổ chức sử dụng dịch vụ công | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
 |  | WebAdmin-351 | API Đăng ký mới biện pháp bảo đảm | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
 |  | WebAdmin-352 | API Cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
@@ -528,25 +528,25 @@
 |  | WebAdmin-362 | API Đăng ký thay đổi thông báo xử lý tài sản bảo đảm | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
 |  | WebAdmin-363 | API Xóa đăng ký thông báo xử lý tài sản bảo đảm | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
 |  | WebAdmin-364 | API Cung cấp thông tin về biện pháp bảo đảm | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-365 | API tiếp nhận hồ sơ thực hiện dịch vụ Đăng ký mới biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-366 | API tiếp nhận hồ sơ thực hiện dịch vụ Cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-367 | API tiếp nhận hồ sơ thực hiện dịch vụ Đăng ký thay đổi biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-368 | API tiếp nhận hồ sơ thực hiện dịch vụ Xóa đăng ký biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-369 | API tiếp nhận hồ sơ thực hiện dịch vụ Đăng ký thông báo xử lý tài sản bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-370 | API tiếp nhận hồ sơ thực hiện dịch vụ đăng ký thay đổi thông báo xử lý tài sản bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-371 | API tiếp nhận hồ sơ thực hiện dịch vụ Đăng ký thông báo xử lý tài sản bảo đảm, đăng ký thay đổi, xóa đăng ký thông báo xử lý tài sản bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-372 | API tiếp nhận hồ sơ thực hiện dịch vụ Cung cấp thông tin về biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
+|  | WebAdmin-365 | API tiếp nhận hồ sơ thực hiện dịch vụ Đăng ký mới biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
+|  | WebAdmin-366 | API tiếp nhận hồ sơ thực hiện dịch vụ Cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
+|  | WebAdmin-367 | API tiếp nhận hồ sơ thực hiện dịch vụ Đăng ký thay đổi biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
+|  | WebAdmin-368 | API tiếp nhận hồ sơ thực hiện dịch vụ Xóa đăng ký biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
+|  | WebAdmin-369 | API tiếp nhận hồ sơ thực hiện dịch vụ Đăng ký thông báo xử lý tài sản bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
+|  | WebAdmin-370 | API tiếp nhận hồ sơ thực hiện dịch vụ đăng ký thay đổi thông báo xử lý tài sản bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
+|  | WebAdmin-371 | API tiếp nhận hồ sơ thực hiện dịch vụ Đăng ký thông báo xử lý tài sản bảo đảm, đăng ký thay đổi, xóa đăng ký thông báo xử lý tài sản bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
+|  | WebAdmin-372 | API tiếp nhận hồ sơ thực hiện dịch vụ Cung cấp thông tin về biện pháp bảo đảm từ DVC | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
 |  | WebAdmin-373 | API dữ liệu kết quả thanh toán dịch vụ công | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC648 |  |  |  |
 |  | WebAdmin-374 | API dữ liệu hồ sơ đăng ký biện pháp bảo đảm bằng chứng khoán đã lưu ký tập trung (thông tin theo biểu mẫu) | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC650 |  |  |  |
 |  | WebAdmin-375 | API dữ liệu hồ sơ đăng ký biện pháp bảo đảm bằng tàu bay | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC654 |  |  |  |
 |  | WebAdmin-376 | API dữ liệu hồ sơ đăng ký biện pháp bảo đảm bằng tàu biển | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC656 |  |  |  |
 |  | WebAdmin-377 | Trao đổi qua API dữ liệu tài sản sở hữu trí tuệ | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC657 |  |  |  |
 |  | WebAdmin-378 | API dữ liệu về phương tiện giao thông | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC658 |  |  |  |
-|  | WebAdmin-379 | API dữ liệu tiếp nhận dữ liệu thực hiện dịch vụ Xác định cơ quan giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC659 |  |  |  |
-|  | WebAdmin-380 | API dữ liệu tiếp nhận dữ liệu thực hiện dịch vụ Phục hồi danh dự | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC660 |  |  |  |
-|  | WebAdmin-381 | API dữ liệu tiếp nhận dữ liệu thực hiện dịch vụ Giải quyết yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC661 |  |  |  |
+|  | WebAdmin-379 | API dữ liệu tiếp nhận dữ liệu thực hiện dịch vụ Xác định cơ quan giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC659 |  |  |  |
+|  | WebAdmin-380 | API dữ liệu tiếp nhận dữ liệu thực hiện dịch vụ Phục hồi danh dự | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC660 |  |  |  |
+|  | WebAdmin-381 | API dữ liệu tiếp nhận dữ liệu thực hiện dịch vụ Giải quyết yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC661 |  |  |  |
 |  | WebAdmin-382 | API thông tin người sử dụng từ Nền tảng số dùng chung của Bộ Tư pháp | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
-|  | WebAdmin-383 | Kết quả thực hiện API tiếp nhận dữ liệu | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC665 |  |  |  |
+|  | WebAdmin-383 | Kết quả thực hiện API tiếp nhận dữ liệu | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md, Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC665 |  |  |  |
 |  | WebAdmin-384 | API kết nối cổng thanh toán | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md |  |  |  |  |
 |  | WebAdmin-385 | Chia sẻ dữ liệu với các hệ thống khác | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC666, UC667, UC668, UC669, UC670, UC671, UC672, UC673 |  |  |  |
 |  | WebAdmin-386 | Chia sẻ dữ liệu với các hệ thống khác | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC666, UC667, UC668, UC669, UC670, UC671, UC672, UC673 |  |  |  |
@@ -559,10 +559,10 @@
 |  | WebAdmin-393 | Trao đổi qua API dữ liệu theo cấu trúc biểu mẫu TTHC về BPBĐ | Tai lieu phan tich\03_Website_Quan_tri\04_Tich_hop_va_chia_se_du_lieu.md | UC672 |  |  |  |
 |  | WebAdmin-11-13-02-08 | Kết quả thực hiện API chia sẻ dữ liệu |  |  |  |  |  |
 |  | WebAdmin-394 | Cập nhật thông tin hồ sơ |  | UC131, UC136, UC137 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
-|  | WebAdmin-395 | Quản lý thu phí/hoàn phí | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC144, UC145, UC146, UC147 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
-|  | WebAdmin-396 | 1. Website quản trị<br>Tiếp nhận hồ sơ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md | UC160, UC162, UC164, UC166, UC168, UC170, UC174, UC176, UC178 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
-|  | WebAdmin-397 | 1. Website quản trị<br>Quản lý thu phí/hoàn phí | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC161, UC163, UC165, UC167, UC169, UC171, UC175, UC177, UC179, UC180, UC181, UC182, UC183, UC185, UC186, UC187, UC188, UC189, UC190 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
-|  | WebAdmin-398 | Quản lý cấu hình | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\UC551_to_UC562_Cau_hinh.md | UC530, UC531, UC532, UC533, UC534, UC535, UC536, UC537, UC538, UC539, UC540 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
+|  | WebAdmin-395 | Quản lý thu phí/hoàn phí | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC144, UC145, UC146, UC147 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
+|  | WebAdmin-396 | 1. Website quản trị<br>Tiếp nhận hồ sơ | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md, Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\SRS_Ho_so_cho_nhap_lieu.md | UC160, UC162, UC164, UC166, UC168, UC170, UC174, UC176, UC178 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
+|  | WebAdmin-397 | 1. Website quản trị<br>Quản lý thu phí/hoàn phí | Tai lieu phan tich\03_Website_Quan_tri\02_Can_bo_nghiep_vu\Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md | UC161, UC163, UC165, UC167, UC169, UC171, UC175, UC177, UC179, UC180, UC181, UC182, UC183, UC185, UC186, UC187, UC188, UC189, UC190 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
+|  | WebAdmin-398 | Quản lý cấu hình | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh.md | UC530, UC531, UC532, UC533, UC534, UC535, UC536, UC537, UC538, UC539, UC540 |  |  | Bổ sung theo file 30072026_DSCN_Gui-Hien.xlsx |
 |  | WebAdmin-399 | Danh mục vụ việc giải quyết yêu cầu bồi thường (Mẫu số 01-TT08) | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BaoCao_Mau01_DanhMucVuViec.md | UCPS019 |  | Review | Bổ sung theo yêu cầu báo cáo Mẫu số 01 Thông tư 08/2019/TT-BTP |
 |  | WebAdmin-400 | Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường (Mẫu số 03-TT08) | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BaoCao_Mau03_TongHopTinhHinh.md | UCPS020 |  | Review | Bổ sung theo yêu cầu báo cáo Mẫu số 03 Thông tư 08/2019/TT-BTP |
 |  | WebAdmin-401 | Tình hình thực hiện trách nhiệm hoàn trả (Mẫu số 04-TT08) | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BaoCao_Mau04_TinhHinhHoanTra.md | UCPS021 |  | Review | Bổ sung theo yêu cầu báo cáo Mẫu số 04 Thông tư 08/2019/TT-BTP |

@@ -1,4 +1,4 @@
-# UC-BS-GIAY - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao văn bản chứng nhận
+﻿# UC-BS-GIAY - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao văn bản chứng nhận
 
 ## 1. Tổng quan
 
@@ -12,15 +12,15 @@ Khác với hồ sơ trực tuyến do Khách hàng tự gửi, hồ sơ giấy 
 
 ### 1.2. Phạm vi
 
-Phạm vi bắt đầu khi hồ sơ giấy loại "Yêu cầu cung cấp bản sao" đã hoàn tất thu phí/miễn phí tại [UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md) và chuyển sang trạng thái "Chờ giải quyết".
+Phạm vi bắt đầu khi hồ sơ giấy loại "Yêu cầu cung cấp bản sao" đã hoàn tất thu phí/miễn phí tại [UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md) và chuyển sang trạng thái "Chờ giải quyết".
 
 Phạm vi kết thúc khi Cán bộ giải quyết trình thành công hồ sơ giấy Yêu cầu cung cấp bản sao tới Lãnh đạo, hồ sơ chuyển sang trạng thái "Chờ ký" (áp dụng chung cho cả Loại "Bản sao điện tử" và "Bản sao giấy") tại [SRS_Ky_duyet_Yeu_cau_cung_cap_ban_sao_Lanh_dao](SRS_Ky_duyet_Yeu_cau_cung_cap_ban_sao_Lanh_dao.md).
 
 Không thuộc phạm vi tài liệu này:
 
-\- Tiếp nhận hồ sơ giấy: xem [UCPS012](UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md).
+\- Tiếp nhận hồ sơ giấy: xem [UCPS012](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md).
 
-\- Thu phí/miễn phí hồ sơ giấy: xem [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
+\- Thu phí/miễn phí hồ sơ giấy: xem [UCPS013](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
 
 \- Duyệt/Ký số/Từ chối/Trả lại bằng USB Token của Lãnh đạo: xem [SRS_Ky_duyet_Yeu_cau_cung_cap_ban_sao_Lanh_dao](SRS_Ky_duyet_Yeu_cau_cung_cap_ban_sao_Lanh_dao.md).
 

@@ -163,7 +163,7 @@
 ##### 4.1.12.7.1. Màn hình
 ![Màn hình Chi tiết kết quả tra cứu](images/MH06_Chi_tiet_ket_qua_tra_cuu.png)
 
-##### 4.1.12.7.2. Mô tả thông tin hiển thị
+##### 4.1.12.7.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
@@ -186,61 +186,61 @@
 
 <a id="cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong"></a>
 
-###### 4.1.12.6.2.1. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng
+###### 4.1.12.7.2.1. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng** | Text(10000) | Tùy điều kiện | Theo dữ liệu nguồn của tính năng gọi | Control UI: Khối hiển thị chỉ đọc. Mỗi hồ sơ hiển thị thành 01 khối riêng theo cấu trúc các thông tin bên dưới. Không cho phép thêm, sửa, xóa hoặc thay đổi dữ liệu tại các màn hình sử dụng cấu trúc dùng chung này.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| Tiêu đề hồ sơ | String(255) | Có | Theo hồ sơ | Chỉ đọc. Định dạng **"Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]"**. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị **Biện pháp bảo đảm** hoặc **Hợp đồng**. |
-| Loại biện pháp | Enum(String(255)) | Tùy điều kiện | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị khi Loại hình giao dịch là **Biện pháp bảo đảm**; Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02]. |
-| Loại hợp đồng | Enum(String(255)) | Tùy điều kiện | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị khi Loại hình giao dịch là **Hợp đồng**; Tham chiếu Danh mục Loại hợp đồng [DM_03]. |
-| Trường hợp đăng ký | Enum(String(255)) | Có | Theo hồ sơ | Chỉ đọc. Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
-| Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị trạng thái xử lý thực tế của hồ sơ theo dữ liệu nguồn của tính năng gọi. |
-| Số hợp đồng | String(100) | Tùy điều kiện | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị nếu hồ sơ có kê khai Số hợp đồng. |
-| Ngày có hiệu lực của hợp đồng | Date | Tùy điều kiện | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị nếu hồ sơ có kê khai Ngày có hiệu lực của hợp đồng; định dạng `dd/mm/yyyy`. |
-| **II. Thông tin người đăng ký** | - | Có | Theo hồ sơ | Chỉ đọc. Hiển thị thông tin người/tổ chức đã thực hiện đăng ký hồ sơ. |
-| Họ và tên | String(255) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị họ tên người đăng ký hoặc tên tổ chức/ngân hàng thực hiện đăng ký theo dữ liệu hồ sơ. |
-| Địa chỉ | String(500) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị theo quy tắc **Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia**. |
-| **III. Thông tin đăng ký** | - | Có | Theo hồ sơ | Chỉ đọc. Hiển thị thông tin số đăng ký và thời điểm của hồ sơ. |
-| Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị số đăng ký của hồ sơ. |
-| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Định dạng `dd/mm/yyyy HH:mm`. |
-| Thời điểm có hiệu lực | Datetime | Có | Theo hồ sơ | Chỉ đọc. Định dạng `dd/mm/yyyy HH:mm`. |
-| **IV. Bên bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Chỉ đọc. Tự động điều chỉnh theo Loại hình giao dịch là **Biện pháp bảo đảm** hoặc **Hợp đồng**.<br>Nếu Loại hình giao dịch là **Biện pháp bảo đảm** thì hiển thị tương ứng, cụ thể:<br>+ **Thế chấp**: Hiển thị **Bên thế chấp**.<br>+ **Bảo lưu quyền sở hữu**: Hiển thị **Bên mua**.<br>+ **Cầm cố**: Hiển thị **Bên cầm cố**.<br>+ **Đặt cọc**: Hiển thị **Bên đặt cọc**.<br>+ **Ký cược**: Hiển thị **Bên ký cược**.<br>+ **Ký quỹ**: Hiển thị **Bên ký quỹ**.<br>Nếu Loại hình giao dịch là **Hợp đồng** thì hiển thị tương ứng, cụ thể:<br>+ **Hợp đồng cho thuê tài chính**: Hiển thị **Bên thuê tài chính**.<br>+ **Hợp đồng thuê tài sản có thời hạn 1 năm trở lên**: Hiển thị **Bên thuê tài sản**.<br>+ **Hợp đồng chuyển giao đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác**: Hiển thị **Bên chuyển giao quyền**.<br>+ **Hợp đồng ký gửi**: Hiển thị **Bên nhận ký gửi**. |
-| Loại chủ thể | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Tham chiếu Danh mục Loại bên bảo đảm (Chủ thể) [DM_06]. |
-| Số giấy tờ chứng minh tư cách pháp lý | String(50) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị số giấy tờ tương ứng với Loại chủ thể. |
-| Tên | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Địa chỉ | String(500) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị theo quy tắc **Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia**. |
-| **V. Bên nhận bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Chỉ đọc. Tự động điều chỉnh theo Loại hình giao dịch là **Biện pháp bảo đảm** hoặc **Hợp đồng**.<br>Nếu Loại hình giao dịch là **Biện pháp bảo đảm** thì hiển thị tương ứng, cụ thể:<br>+ **Thế chấp**: Hiển thị **Bên nhận thế chấp**.<br>+ **Bảo lưu quyền sở hữu**: Hiển thị **Bên bán**.<br>+ **Cầm cố**: Hiển thị **Bên nhận cầm cố**.<br>+ **Đặt cọc**: Hiển thị **Bên nhận đặt cọc**.<br>+ **Ký cược**: Hiển thị **Bên nhận ký cược**.<br>+ **Ký quỹ**: Hiển thị **Bên có quyền trong ký quỹ**.<br>Nếu Loại hình giao dịch là **Hợp đồng** thì hiển thị tương ứng, cụ thể:<br>+ **Hợp đồng cho thuê tài chính**: Hiển thị **Bên cho thuê tài chính**.<br>+ **Hợp đồng thuê tài sản có thời hạn 1 năm trở lên**: Hiển thị **Bên cho thuê tài sản**.<br>+ **Hợp đồng chuyển giao đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác**: Hiển thị **Bên nhận chuyển giao quyền**.<br>+ **Hợp đồng ký gửi**: Hiển thị **Bên ký gửi**. |
-| Tên | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Địa chỉ | String(500) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị theo quy tắc **Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia**. |
-| **VI. Tài sản bảo đảm (Tên động)** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>Tự động điều chỉnh theo Loại hình giao dịch là **Biện pháp bảo đảm** hoặc **Hợp đồng**.<br>Nếu Loại hình giao dịch là **Biện pháp bảo đảm** thì hiển thị **Tài sản bảo đảm**.<br>Nếu Loại hình giao dịch là **Hợp đồng** thì hiển thị tương ứng theo Loại hợp đồng, cụ thể:<br>+ **Hợp đồng cho thuê tài chính**: Hiển thị **Tài sản cho thuê tài chính**.<br>+ **Hợp đồng thuê tài sản có thời hạn 1 năm trở lên**: Hiển thị **Tài sản thuê**.<br>+ **Hợp đồng chuyển giao đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác**: Hiển thị **Quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác được chuyển giao**.<br>+ **Hợp đồng ký gửi**: Hiển thị **Hàng hóa ký gửi**.|
-| Loại tài sản | Enum(String(50)) | Có | Theo hồ sơ | Control UI: Label chỉ đọc.<br>Hiển thị một hoặc nhiều Loại tài sản đã kê khai trong hồ sơ, lấy theo Danh mục Loại tài sản bảo đảm [DM_07]. Trường hợp hồ sơ có nhiều Loại tài sản, hệ thống hiển thị lần lượt từng Loại tài sản; thông tin chi tiết của từng loại nằm ngay bên dưới Loại tài sản tương ứng, không gom thành một bảng chung. |
-| Mô tả | Text(2000) | Tùy điều kiện | Theo hồ sơ | Control UI: Label chỉ đọc.<br>Chỉ hiển thị ngay bên dưới từng Loại tài sản tương ứng nếu hồ sơ có kê khai nội dung Mô tả cho Loại tài sản đó. Trường hợp hồ sơ có nhiều Loại tài sản có nội dung Mô tả, hệ thống hiển thị riêng từng nội dung Mô tả ngay bên dưới từng Loại tài sản tương ứng. |
-| Bảng thông tin Số khung | - | Tùy điều kiện | Theo hồ sơ | Control UI: Bảng/Lưới chỉ đọc.<br>Chỉ hiển thị ngay bên dưới Loại tài sản **Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)** nếu hồ sơ có kê khai loại tài sản này.<br>Tiêu đề bảng là **Số khung**. Bảng hiển thị danh sách phương tiện có số khung theo dữ liệu đã kê khai trong hồ sơ. Không hiển thị checkbox thao tác, icon xóa dòng, nút thêm, nút xóa, nút File mẫu hoặc nút import. Các thông tin hiển thị gồm: **STT**, **Tên phương tiện**, **Nhãn hiệu, màu sơn**, **Số khung**, **Số máy**, **Biển số**. |
-| Tên phương tiện | Enum/String(255) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Số khung.<br>Hiển thị tên phương tiện đã kê khai trong hồ sơ. Nếu hệ thống có cấu hình danh mục phương tiện thì hiển thị giá trị đã chọn từ danh mục tương ứng. |
-| Nhãn hiệu, màu sơn | String(255) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Số khung.<br>Hiển thị nhãn hiệu, màu sơn của phương tiện theo dữ liệu đã kê khai trong hồ sơ. |
-| Số khung | String(50) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Số khung.<br>Hiển thị số khung của phương tiện theo dữ liệu đã kê khai trong hồ sơ. |
-| Số máy | String(50) | Không | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Số khung.<br>Hiển thị số máy của phương tiện nếu hồ sơ có kê khai; trường hợp không có dữ liệu thì để trống. |
-| Biển số | String(50) | Tùy điều kiện | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Số khung.<br>Hiển thị biển số của phương tiện nếu hồ sơ có kê khai; trường hợp không có dữ liệu thì để trống. |
-| Bảng thông tin Phương tiện | - | Tùy điều kiện | Theo hồ sơ | Control UI: Bảng/Lưới chỉ đọc.<br>Chỉ hiển thị ngay bên dưới Loại tài sản **Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt** nếu hồ sơ có kê khai loại tài sản này.<br>Tiêu đề bảng là **Phương tiện**. Bảng hiển thị danh sách phương tiện theo dữ liệu đã kê khai trong hồ sơ. Không hiển thị checkbox thao tác, icon xóa dòng, nút thêm, nút xóa, nút File mẫu hoặc nút import. Các thông tin hiển thị gồm: **STT**, **Tên phương tiện, nhãn hiệu**, **Tên/Họ tên chủ phương tiện/Chủ sở hữu**, **Số đăng ký**, **Cơ quan cấp giấy chứng nhận**, **Cấp phương tiện**. |
-| Tên phương tiện, nhãn hiệu | String(255) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Phương tiện.<br>Hiển thị tên phương tiện, nhãn hiệu theo dữ liệu đã kê khai trong hồ sơ. |
-| Tên/Họ tên chủ phương tiện/Chủ sở hữu | String(255) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Phương tiện.<br>Hiển thị tên hoặc họ tên chủ phương tiện/chủ sở hữu theo dữ liệu đã kê khai trong hồ sơ. |
-| Số đăng ký | String(50) | Không | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Phương tiện.<br>Hiển thị số đăng ký của phương tiện do cơ quan đăng ký phương tiện cấp nếu hồ sơ có kê khai; trường hợp không có dữ liệu thì để trống. |
-| Cơ quan cấp giấy chứng nhận | String(100) | Không | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Phương tiện.<br>Hiển thị cơ quan cấp giấy chứng nhận của phương tiện nếu hồ sơ có kê khai; trường hợp không có dữ liệu thì để trống. |
-| Cấp phương tiện | String(100) | Không | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Phương tiện.<br>Hiển thị cấp phương tiện nếu hồ sơ có kê khai; trường hợp không có dữ liệu thì để trống. |
-| Tên quyền | String(255) | Tùy điều kiện | Theo hồ sơ | Control UI: Label chỉ đọc.<br>Chỉ hiển thị ngay bên dưới Loại tài sản **Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản** nếu hồ sơ có kê khai loại tài sản này. Hiển thị tên quyền theo dữ liệu đã kê khai trong hồ sơ. |
-| Căn cứ phát sinh quyền | Text(2000) | Tùy điều kiện | Theo hồ sơ | Control UI: Label chỉ đọc.<br>Chỉ hiển thị ngay bên dưới Loại tài sản **Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản** nếu hồ sơ có kê khai loại tài sản này. Hiển thị căn cứ phát sinh quyền theo dữ liệu đã kê khai trong hồ sơ. |
-| Hàng hóa luân chuyển / Kho hàng | Enum(String(50)) | Tùy điều kiện | Theo hồ sơ | Control UI: Label chỉ đọc.<br>Chỉ hiển thị ngay bên dưới Loại tài sản **Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ** nếu hồ sơ có kê khai loại tài sản này. Hiển thị giá trị hồ sơ đã chọn là **Hàng hóa luân chuyển** hoặc **Kho hàng**. |
-| Giá trị hàng hóa/Tên, loại hàng hóa | Text(2000) | Tùy điều kiện | Theo hồ sơ | Control UI: Label chỉ đọc.<br>Chỉ hiển thị khi hồ sơ kê khai **Hàng hóa luân chuyển** hoặc **Kho hàng**. Hiển thị giá trị hàng hóa hoặc tên, loại hàng hóa theo dữ liệu đã kê khai trong hồ sơ. |
-| Địa chỉ kho hàng | String(500) | Tùy điều kiện | Theo hồ sơ | Control UI: Label chỉ đọc.<br>Chỉ hiển thị khi hồ sơ kê khai là **Kho hàng**. Hiển thị địa chỉ kho hàng theo quy tắc **Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia**. |
-| Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng | String(255) | Tùy điều kiện | Theo hồ sơ | Control UI: Label chỉ đọc.<br>Chỉ hiển thị khi hồ sơ kê khai là **Kho hàng**. Hiển thị số hiệu kho hàng hoặc dấu hiệu khác của vị trí kho hàng theo dữ liệu đã kê khai trong hồ sơ. |
-| Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam | - | Tùy điều kiện | Theo hồ sơ | Control UI: Bảng/Lưới chỉ đọc.<br>Chỉ hiển thị ngay bên dưới Loại tài sản **Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung** nếu hồ sơ có kê khai loại tài sản này. Bảng hiển thị 01 dòng thông tin thời điểm đăng ký theo dữ liệu đã kê khai trong hồ sơ. Các thông tin hiển thị gồm: **Giờ**, **Phút**, **Ngày**, **Tháng**, **Năm**. |
-| Giờ | Integer(10) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam.<br>Hiển thị giờ theo dữ liệu đã kê khai trong hồ sơ. |
-| Phút | Integer(10) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam.<br>Hiển thị phút theo dữ liệu đã kê khai trong hồ sơ. |
-| Ngày | Date | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam.<br>Hiển thị ngày theo dữ liệu đã kê khai trong hồ sơ. |
-| Tháng | Integer(10) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam.<br>Hiển thị tháng theo dữ liệu đã kê khai trong hồ sơ. |
-| Năm | Integer(10) | Có | Theo hồ sơ | Control UI: Label chỉ đọc trong Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam.<br>Hiển thị năm theo dữ liệu đã kê khai trong hồ sơ. |
+| **I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng** | Text(10000) | Tùy điều kiện | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Tiêu đề hồ sơ | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Loại biện pháp | Enum(String(255)) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Loại hợp đồng | Enum(String(255)) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Trường hợp đăng ký | Enum(String(255)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Số hợp đồng | String(100) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Ngày có hiệu lực của hợp đồng | Date | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| **II. Thông tin người đăng ký** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Họ và tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| **III. Thông tin đăng ký** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Số đăng ký | String(50) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Thời điểm có hiệu lực | Datetime | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| **IV. Bên bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Loại chủ thể | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Số giấy tờ chứng minh tư cách pháp lý | String(50) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| **V. Bên nhận bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| **VI. Tài sản bảo đảm (Tên động)** | - | Có | Theo hồ sơ | Control UI: Khối hiển thị chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Loại tài sản | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Mô tả | Text(2000) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Bảng thông tin Số khung | - | Tùy điều kiện | Theo hồ sơ | Control UI: Bảng/Lưới chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Tên phương tiện | Enum/String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Nhãn hiệu, màu sơn | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Số khung | String(50) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Số máy | String(50) | Không | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Biển số | String(50) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Bảng thông tin Phương tiện | - | Tùy điều kiện | Theo hồ sơ | Control UI: Bảng/Lưới chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Tên phương tiện, nhãn hiệu | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Tên/Họ tên chủ phương tiện/Chủ sở hữu | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Số đăng ký | String(50) | Không | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Cơ quan cấp giấy chứng nhận | String(100) | Không | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Cấp phương tiện | String(100) | Không | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Tên quyền | String(255) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Căn cứ phát sinh quyền | Text(2000) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Hàng hóa luân chuyển / Kho hàng | Enum(String(50)) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Giá trị hàng hóa/Tên, loại hàng hóa | Text(2000) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Địa chỉ kho hàng | String(500) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng | String(255) | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam | - | Tùy điều kiện | Theo hồ sơ | Control UI: Bảng/Lưới chỉ đọc.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| Giờ | Integer(10) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Phút | Integer(10) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Ngày | Date | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Tháng | Integer(10) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Năm | Integer(10) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 
 ##### 4.1.12.7.3. Chức năng trên màn hình
 

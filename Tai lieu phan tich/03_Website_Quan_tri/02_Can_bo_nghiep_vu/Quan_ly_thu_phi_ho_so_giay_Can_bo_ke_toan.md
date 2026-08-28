@@ -1,10 +1,10 @@
-# UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy của Cán bộ kế toán
+﻿# UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy của Cán bộ kế toán
 
 ## 1. Tổng quan
 
 ### 1.1. Mục đích
 
-Tài liệu này đặc tả chức năng **Quản lý thu phí/hoàn phí** trên Website quản trị, dành cho Cán bộ kế toán/Cán bộ thu phí xử lý các khoản phải thu phát sinh từ hồ sơ giấy đã tiếp nhận tại [UCPS012 - Tiếp nhận hồ sơ giấy](UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md) và các khoản phải hoàn phát sinh khi hồ sơ giấy đã thu phí bị từ chối.
+Tài liệu này đặc tả chức năng **Quản lý thu phí/hoàn phí** trên Website quản trị, dành cho Cán bộ kế toán/Cán bộ thu phí xử lý các khoản phải thu phát sinh từ hồ sơ giấy đã tiếp nhận tại [UCPS012 - Tiếp nhận hồ sơ giấy](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md) và các khoản phải hoàn phát sinh khi hồ sơ giấy đã thu phí bị từ chối.
 
 Chức năng cho phép Cán bộ kế toán tra cứu khoản phải thu/khoản phải hoàn, mở chi tiết, xác nhận thu tiền mặt, xác nhận khoản ghi Có/chuyển khoản theo sao kê tài khoản đơn vị, xác nhận miễn phí, phát hành và in biên lai thu phí/lệ phí, ghi nhận hoàn phí và in chứng từ hoàn phí.
 
@@ -22,9 +22,9 @@ Sau khi xác nhận thu thành công, khoản phải thu chuyển sang **"Đã t
 
 Không thuộc phạm vi tài liệu này:
 
-- Tạo hồ sơ tiếp nhận và tính phí ban đầu: xem [UCPS012](UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md).
+- Tạo hồ sơ tiếp nhận và tính phí ban đầu: xem [UCPS012](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md).
 - Hồ sơ chờ nhập liệu sau khi đã hoàn tất thu phí/miễn phí: xem [SRS_Ho_so_cho_nhap_lieu](SRS_Ho_so_cho_nhap_lieu.md).
-- Thanh toán trực tuyến tự phục vụ trên Website khách hàng và hoàn tiền Online qua Cổng thanh toán: xem [UCPS008 - Quản lý đối soát thanh toán](../01_Quan_tri_he_thong/UCPS008_Quan_ly_doi_soat_thanh_toan.md).
+- Thanh toán trực tuyến tự phục vụ trên Website khách hàng và hoàn tiền Online qua Cổng thanh toán: xem [UCPS008 - Quản lý đối soát thanh toán](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md).
 
 ### 1.3. Đối tượng sử dụng
 
@@ -38,9 +38,9 @@ Không thuộc phạm vi tài liệu này:
 
 | Tài liệu | Link |
 | :--- | :--- |
-| Tiếp nhận hồ sơ giấy | [UCPS012](UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md) |
+| Tiếp nhận hồ sơ giấy | [UCPS012](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md) |
 | Hồ sơ chờ nhập liệu | [SRS_Ho_so_cho_nhap_lieu](SRS_Ho_so_cho_nhap_lieu.md) |
-| Quản lý biểu phí | [UC559_Quan_ly_bieu_phi_SRS](../01_Quan_tri_he_thong/UC559_Quan_ly_bieu_phi_SRS.md) |
+| Quản lý biểu phí | [UC559_Quan_ly_bieu_phi_SRS](../01_Quan_tri_he_thong/Quan_ly_bieu_phi.md) |
 
 ## 2. Nguyên tắc nghiệp vụ
 
@@ -188,7 +188,7 @@ flowchart LR
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **Khối Thông tin tiếp nhận** |  |  |  | Hiển thị lại các thông tin tiếp nhận hồ sơ giấy từ [UCPS012](UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md). Toàn bộ trường trong khối chỉ đọc, không cho phép Cán bộ kế toán chỉnh sửa. |
+| **Khối Thông tin tiếp nhận** |  |  |  | Hiển thị lại các thông tin tiếp nhận hồ sơ giấy từ [UCPS012](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md). Toàn bộ trường trong khối chỉ đọc, không cho phép Cán bộ kế toán chỉnh sửa. |
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị Mã hồ sơ đã sinh tại bước tiếp nhận. |
 | Số đơn giấy | String(50) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị số đơn giấy của hồ sơ giấy. |
 | Kênh tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị kênh tiếp nhận đã ghi nhận tại UCPS012.<br>- Trực tiếp tại quầy<br>- Qua bưu điện<br>- Fax<br>- Email |

@@ -1,8 +1,8 @@
-#### 4.3.1.13. UC540 - Quản lý nội dung hỗ trợ người dùng (Cấu hình Link liên kết)
+﻿#### 4.3.1.13. UC540 - Quản lý nội dung hỗ trợ người dùng (Cấu hình Link liên kết)
 
 ##### 4.3.1.13.1. Mục đích
 
-\- Cho phép Quản trị viên hệ thống (QTHT) quản lý danh sách các link/tin liên kết hiển thị tại menu "Liên kết" trên Top Navigation của Website khách hàng ([UCPS017](../../01_Website_Khach_hang/UCPS017_Thong_tin_lien_ket.md)), phục vụ điều hướng nhanh người dùng tới các cổng thông tin liên quan (Cổng thông tin điện tử Bộ Tư pháp, Trang thông tin Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước...) mà không cần can thiệp mã nguồn khi cần thêm/sửa/gỡ liên kết.
+\- Cho phép Quản trị viên hệ thống (QTHT) quản lý danh sách các link/tin liên kết hiển thị tại menu "Liên kết" trên Top Navigation của Website khách hàng ([UCPS017](../../01_Website_Khach_hang/Thong_tin_lien_ket.md)), phục vụ điều hướng nhanh người dùng tới các cổng thông tin liên quan (Cổng thông tin điện tử Bộ Tư pháp, Trang thông tin Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước...) mà không cần can thiệp mã nguồn khi cần thêm/sửa/gỡ liên kết.
 \- Thuộc phân hệ III.1 - Quản lý nội dung (CMS) theo Sơ đồ tính năng hệ thống.
 
 > **Ghi chú mã UC**: Theo yêu cầu nghiệp vụ, tài liệu này sử dụng mã **UC540**. Danh sách UC gốc (`BPBD_Danh_sach_ma_UC.md`) hiện đang gán mã UC540 cho tính năng khác ("Tra cứu lịch sử hỏi đáp về lĩnh vực bồi thường nhà nước trên mobile"). Đây là ngoại lệ đã được xác nhận với người yêu cầu; cần cập nhật lại danh sách UC gốc để tránh trùng lặp khi rà soát tổng thể dự án.
@@ -96,5 +96,5 @@ Thông tin nhật ký gồm: người thực hiện, vai trò, thời điểm, c
 | :--- | :--- |
 | AC-UC540-001 | QTHT quản lý được danh sách Link liên kết: thêm mới, cập nhật, xóa, sắp xếp thứ tự, bật/tắt hiển thị. |
 | AC-UC540-002 | Đường dẫn (URL) được kiểm tra đúng định dạng bắt buộc bắt đầu bằng http:// hoặc https://. |
-| AC-UC540-003 | Menu "Liên kết" tại Website khách hàng ([UCPS017](../../01_Website_Khach_hang/UCPS017_Thong_tin_lien_ket.md)) hiển thị đúng danh sách Link đang ở trạng thái hiển thị, theo đúng thứ tự đã cấu hình. |
+| AC-UC540-003 | Menu "Liên kết" tại Website khách hàng ([UCPS017](../../01_Website_Khach_hang/Thong_tin_lien_ket.md)) hiển thị đúng danh sách Link đang ở trạng thái hiển thị, theo đúng thứ tự đã cấu hình. |
 | AC-UC540-004 | Toàn bộ thao tác cấu hình được ghi nhật ký đầy đủ. |

@@ -1,4 +1,4 @@
-# UCPS012 - Tiếp nhận hồ sơ giấy của Cán bộ tiếp nhận
+﻿# UCPS012 - Tiếp nhận hồ sơ giấy của Cán bộ tiếp nhận
 
 ## 1. Tổng quan
 
@@ -8,11 +8,11 @@ Tài liệu này đặc tả yêu cầu phần mềm cho chức năng **Tiếp n
 
 ### 1.2. Phạm vi
 
-Phạm vi bắt đầu khi Cán bộ tiếp nhận mở màn hình **Tiếp nhận hồ sơ giấy** và kết thúc khi hồ sơ được hoàn tất tiếp nhận, tạo khoản phải thu thành công và chuyển trạng thái hồ sơ sang "Chờ thu phí" để Cán bộ kế toán xử lý tại [UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy của Cán bộ kế toán](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
+Phạm vi bắt đầu khi Cán bộ tiếp nhận mở màn hình **Tiếp nhận hồ sơ giấy** và kết thúc khi hồ sơ được hoàn tất tiếp nhận, tạo khoản phải thu thành công và chuyển trạng thái hồ sơ sang "Chờ thu phí" để Cán bộ kế toán xử lý tại [UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy của Cán bộ kế toán](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
 
 Không thuộc phạm vi tài liệu này:
 
-- Thu tiền, xác nhận chuyển khoản, xác nhận miễn phí và in biên lai: xem [UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy của Cán bộ kế toán](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
+- Thu tiền, xác nhận chuyển khoản, xác nhận miễn phí và in biên lai: xem [UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy của Cán bộ kế toán](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
 - Hồ sơ chờ nhập liệu sau khi hoàn tất thu phí/miễn phí: xem [SRS - Hồ sơ chờ nhập liệu](SRS_Ho_so_cho_nhap_lieu.md).
 - Điều hướng SRS nhập liệu nghiệp vụ theo Loại yêu cầu: xem bảng mapping tại [SRS - Hồ sơ chờ nhập liệu, mục 4](SRS_Ho_so_cho_nhap_lieu.md#4-dieu-huong-srs-theo-loai-yeu-cau).
 
@@ -38,8 +38,8 @@ Không thuộc phạm vi tài liệu này:
 | Tài liệu | Link |
 | :--- | :--- |
 | Quy tắc chung hệ thống | [00_Tong_quan_va_Quy_tac_chung](../../00_Tong_quan_va_Quy_tac_chung.md) |
-| Quản lý biểu phí | [UC559_Quan_ly_bieu_phi_SRS](../01_Quan_tri_he_thong/UC559_Quan_ly_bieu_phi_SRS.md) |
-| Quản lý thu phí/hoàn phí hồ sơ giấy | [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md) |
+| Quản lý biểu phí | [UC559_Quan_ly_bieu_phi_SRS](../01_Quan_tri_he_thong/Quan_ly_bieu_phi.md) |
+| Quản lý thu phí/hoàn phí hồ sơ giấy | [UCPS013](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md) |
 | Hồ sơ chờ nhập liệu | [SRS_Ho_so_cho_nhap_lieu](SRS_Ho_so_cho_nhap_lieu.md) |
 
 ## 2. Nguyên tắc nghiệp vụ
@@ -53,7 +53,7 @@ Không thuộc phạm vi tài liệu này:
 7. Đơn vị tiếp nhận và Cán bộ tiếp nhận lấy theo tài khoản đăng nhập, chỉ đọc, không cho sửa.
 8. Số đơn giấy phải kiểm tra trùng theo Số đơn giấy, Đơn vị tiếp nhận và Năm tiếp nhận.
 9. Trạng thái hồ sơ giấy sử dụng xuyên suốt như hồ sơ trực tuyến, chỉ gồm: "Chờ thu phí", "Chờ giải quyết", "Duyệt chờ ký", "Chờ ký", "Bị trả lại", "Bị từ chối", "Hoàn thành".
-10. Sau khi hoàn tất tiếp nhận thành công, hồ sơ luôn chuyển sang "Chờ thu phí"; mọi phương thức thu tiền, xác nhận chuyển khoản hoặc xác nhận miễn phí đều do Cán bộ kế toán xử lý tại [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
+10. Sau khi hoàn tất tiếp nhận thành công, hồ sơ luôn chuyển sang "Chờ thu phí"; mọi phương thức thu tiền, xác nhận chuyển khoản hoặc xác nhận miễn phí đều do Cán bộ kế toán xử lý tại [UCPS013](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
 
 ## 3. Sơ đồ nghiệp vụ
 
@@ -189,7 +189,7 @@ flowchart LR
 | Mã biểu phí | String(50) | Có | Tự động | Chỉ đọc. Lấy theo biểu phí đang có hiệu lực. |
 | Tên khoản phí | String(255) | Có | Tự động | Chỉ đọc. Xác định theo Loại yêu cầu. |
 | Số tiền phải thu | Decimal(18,0) | Có | Tự động | Chỉ đọc. Hệ thống tính theo tham số phí và biểu phí hiệu lực. |
-| Đối tượng miễn phí | Enum(String(50)) | Không | Trống | Chỉ hiển thị khi Loại yêu cầu hoặc đối tượng hồ sơ thuộc trường hợp có thể được miễn lệ phí theo cấu hình biểu phí.<br>- Cán bộ tiếp nhận chỉ ghi nhận/cung cấp căn cứ ban đầu để hệ thống tính số tiền phải thu.<br>- Việc xác nhận miễn phí cuối cùng do Cán bộ kế toán thực hiện tại [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
+| Đối tượng miễn phí | Enum(String(50)) | Không | Trống | Chỉ hiển thị khi Loại yêu cầu hoặc đối tượng hồ sơ thuộc trường hợp có thể được miễn lệ phí theo cấu hình biểu phí.<br>- Cán bộ tiếp nhận chỉ ghi nhận/cung cấp căn cứ ban đầu để hệ thống tính số tiền phải thu.<br>- Việc xác nhận miễn phí cuối cùng do Cán bộ kế toán thực hiện tại [UCPS013](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
 | Trạng thái lệ phí | Enum(String(50)) | Có | Chưa tạo khoản thu | Chỉ đọc. Cập nhật sau Hoàn tất tiếp nhận. |
 | **Khối Phương thức nhận kết quả** | — | — | — | Phương thức và địa chỉ/email nhận kết quả giải quyết hồ sơ. |
 | Phương thức nhận kết quả | Enum(String(50)) | Có | Trống | Giá trị gồm:<br>+ Trực tiếp tại quầy<br>+ Qua dịch vụ bưu chính<br>+ Cách thức điện tử |
@@ -231,7 +231,7 @@ flowchart LR
 | **Khối Thông tin tiếp nhận** | — | — | — | Chỉ đọc. Hiển thị Mã hồ sơ, Số đơn giấy, Kênh tiếp nhận, Thời điểm tiếp nhận, Đơn vị tiếp nhận, Cán bộ tiếp nhận. |
 | **Khối Thông tin người yêu cầu** | — | — | — | Chỉ đọc. Hiển thị dữ liệu đã ghi nhận tại **7. UCPS012.MH02 - Màn hình Tiếp nhận hồ sơ giấy**. |
 | **Khối Thông tin người nộp hồ sơ** | — | — | — | Chỉ đọc. Hiển thị họ tên, giấy tờ định danh, số điện thoại, email, quan hệ với người yêu cầu. |
-| **Khối Thông tin loại yêu cầu và lệ phí** | — | — | — | Chỉ đọc. Hiển thị Loại yêu cầu, tham số tính phí, số tiền phải thu, trạng thái lệ phí. Không hiển thị Phương thức thanh toán tại UCPS012 vì thông tin này do Cán bộ kế toán chọn/xác nhận tại [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
+| **Khối Thông tin loại yêu cầu và lệ phí** | — | — | — | Chỉ đọc. Hiển thị Loại yêu cầu, tham số tính phí, số tiền phải thu, trạng thái lệ phí. Không hiển thị Phương thức thanh toán tại UCPS012 vì thông tin này do Cán bộ kế toán chọn/xác nhận tại [UCPS013](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
 | **Khối Tài liệu đính kèm (Danh mục tài liệu gửi kèm)** | — | — | — | Chỉ đọc (Readonly). Hiển thị bảng Danh mục tài liệu gửi kèm dạng 4 cột (`STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác`).<br>- **Tên tài liệu**: Hiển thị tên thành phần tài liệu đã ghi nhận (kèm badge "Bắt buộc" màu đỏ nếu là tài liệu bắt buộc theo Loại yêu cầu).<br>- **File đính kèm**: Hiển thị icon định dạng tệp kèm Tên tệp tin đính kèm (nếu chưa có tệp hiển thị dấu `-`).<br>- **Thao tác**: Ngay tại từng dòng đã đính kèm tệp tin, hiển thị 2 liên kết thao tác:<br>  + **`Xem file`**: Mở xem nội dung tệp tin trực tiếp trong tab mới.<br>  + **`📥 Tải tệp`**: Tải tệp tin về máy tính người dùng.<br>+ **Khác biệt với màn hình tiếp nhận**: Ẩn toàn bộ nút **`📁 Chọn file`**, nút **`🗑 Xóa`** và nút **`➕ Thêm thành phần hồ sơ mới`**. |
 | **Khối Lịch sử trạng thái** | — | — | — | Chỉ đọc. Hiển thị trạng thái hồ sơ, trạng thái lệ phí và lịch sử xử lý liên quan. |
 
@@ -318,7 +318,7 @@ Luồng chính:
 5. Hệ thống tạo bản ghi hồ sơ tiếp nhận.
 6. Hệ thống tạo khoản phải thu.
 7. Hệ thống cập nhật trạng thái hồ sơ thành "Chờ thu phí".
-8. Hệ thống chuyển khoản phải thu sang [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md) để Cán bộ kế toán chọn hình thức thanh toán và xác nhận thu phí/miễn phí.
+8. Hệ thống chuyển khoản phải thu sang [UCPS013](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md) để Cán bộ kế toán chọn hình thức thanh toán và xác nhận thu phí/miễn phí.
 9. Hệ thống ghi nhật ký.
 10. Hệ thống hiển thị thông báo hoàn tất và cho phép in Phiếu tiếp nhận/Tem hồ sơ.
 
@@ -409,5 +409,5 @@ Thông tin nhật ký gồm: người thực hiện, vai trò, đơn vị, thờ
 | AC-UCPS012-005 | Sau khi hoàn tất, hệ thống sinh Mã hồ sơ duy nhất, mã QR/mã vạch, Phiếu tiếp nhận và Tem hồ sơ. |
 | AC-UCPS012-006 | Nếu tạo khoản phải thu thất bại, hệ thống không tạo hồ sơ ở trạng thái hoàn tất. |
 | AC-UCPS012-007 | Cán bộ tiếp nhận không thấy các trường nghiệp vụ chi tiết như bên bảo đảm, bên nhận bảo đảm, tài sản, hợp đồng, nghĩa vụ. |
-| AC-UCPS012-008 | Hồ sơ hoàn tất theo phương thức tiền mặt/chuyển khoản/miễn phí chuyển đúng trạng thái ban đầu để Cán bộ kế toán xử lý tại [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
+| AC-UCPS012-008 | Hồ sơ hoàn tất theo phương thức tiền mặt/chuyển khoản/miễn phí chuyển đúng trạng thái ban đầu để Cán bộ kế toán xử lý tại [UCPS013](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md). |
 | AC-UCPS012-009 | Danh mục tài liệu gửi kèm hỗ trợ đính kèm tối đa 10 tệp, dung lượng tối đa 20MB/tệp theo [BR-FILE-010], không yêu cầu chọn Loại tài liệu. Ngay khi tệp được tải lên thành công hiển thị liên kết "Xem file" (mở tab mới) và "Xóa". |

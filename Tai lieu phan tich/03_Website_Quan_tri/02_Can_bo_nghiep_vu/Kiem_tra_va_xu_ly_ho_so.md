@@ -1,4 +1,4 @@
-### 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK):
+﻿### 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK):
 
 #### 4.3.2.1. UC028 & UC029 - Kiểm tra và Xử lý hồ sơ Đăng ký Biện pháp bảo đảm, Hợp đồng
 
@@ -131,7 +131,7 @@
 
 ##### 4.3.2.1.3. UC028_029.MH02 - Màn hình Xem chi tiết hồ sơ
 
-\- Thao tác Xem chi tiết (click dòng dữ liệu hoặc click trực tiếp vào dòng dữ liệu, ngoại trừ các icon thao tác khác) điều hướng sang màn hình Xem chi tiết lịch sử hồ sơ dành cho Cán bộ kiểm duyệt, đã được đặc tả đầy đủ tại **[UCPS005]**(UCPS005_Xem_lich_su_thay_doi_can_bo.md) (mục 4.3.2.6), bao gồm: dòng thời gian lịch sử phiên bản, kết quả rà soát rủi ro tự động, bảng đối chiếu chênh lệch Before/After theo từng loại hồ sơ và các nút thao tác Duyệt/Trình ký/Từ chối/Trả lại/Đóng.
+\- Thao tác Xem chi tiết (click dòng dữ liệu hoặc click trực tiếp vào dòng dữ liệu, ngoại trừ các icon thao tác khác) điều hướng sang màn hình Xem chi tiết lịch sử hồ sơ dành cho Cán bộ kiểm duyệt, đã được đặc tả đầy đủ tại **[UCPS005]**(Xem_lich_su_thay_doi_can_bo.md) (mục 4.3.2.6), bao gồm: dòng thời gian lịch sử phiên bản, kết quả rà soát rủi ro tự động, bảng đối chiếu chênh lệch Before/After theo từng loại hồ sơ và các nút thao tác Duyệt/Trình ký/Từ chối/Trả lại/Đóng.
 
 \- Màn hình danh sách tại đây (**UC028_029.MH01**) không hiển thị lại nội dung chi tiết hồ sơ; toàn bộ nghiệp vụ Duyệt/Trình ký/Từ chối/Hủy duyệt hàng loạt hoặc theo dòng đã được đặc tả tại mục 4.3.2.1.2.3-4.3.2.1.2.5, thao tác trên màn hình chi tiết (UCPS005) chỉ là kênh xử lý bổ sung cho từng hồ sơ đơn lẻ sau khi đã xem đối soát chi tiết.
 

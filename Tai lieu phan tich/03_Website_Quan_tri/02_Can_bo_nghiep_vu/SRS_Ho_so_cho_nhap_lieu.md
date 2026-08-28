@@ -1,4 +1,4 @@
-# SRS - Hồ sơ chờ nhập liệu
+﻿# SRS - Hồ sơ chờ nhập liệu
 
 ## 1. Tổng quan
 
@@ -14,7 +14,7 @@ Chức năng cho phép Cán bộ giải quyết:
 
 ### 1.2. Phạm vi
 
-Phạm vi bắt đầu khi hồ sơ giấy được chuyển sang trạng thái **"Chờ giải quyết"** từ [UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
+Phạm vi bắt đầu khi hồ sơ giấy được chuyển sang trạng thái **"Chờ giải quyết"** từ [UCPS013 - Quản lý thu phí/hoàn phí hồ sơ giấy](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
 
 Tài liệu này chỉ mô tả:
 
@@ -24,8 +24,8 @@ Tài liệu này chỉ mô tả:
 
 Không thuộc phạm vi tài liệu này:
 
-- Tiếp nhận hồ sơ giấy: xem [UCPS012](UCPS012_Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md).
-- Thu phí/miễn phí hồ sơ giấy: xem [UCPS013](UCPS013_Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
+- Tiếp nhận hồ sơ giấy: xem [UCPS012](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md).
+- Thu phí/miễn phí hồ sơ giấy: xem [UCPS013](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md).
 - Nhập liệu chi tiết Phiếu đăng ký: xem [SRS_Nhap_lieu_ho_so_giay_Phieu_dang_ky_Can_bo](SRS_Nhap_lieu_ho_so_giay_Phieu_dang_ky_Can_bo.md).
 - Nhập liệu chi tiết Yêu cầu cung cấp thông tin: xem [SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_thong_tin_Can_bo](SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_thong_tin_Can_bo.md).
 - Nhập liệu chi tiết Yêu cầu cung cấp bản sao: xem [SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo](SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo.md).

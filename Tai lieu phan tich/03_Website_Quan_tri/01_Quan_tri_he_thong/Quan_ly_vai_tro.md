@@ -1,4 +1,4 @@
-## 4.3 Webite Quản trị
+﻿## 4.3 Webite Quản trị
 
 ### 4.3.1 Dành cho Quản trị hệ thống:
 
@@ -35,7 +35,7 @@
 | Tên vai trò              | Enum(String(50)) | \- | \- | Hiển thị tên vai trò.                                                               |
 | Mô tả                    | Text(2000) | \- | \- | Hiển thị mô tả của vai trò.                                                             |
 | Trạng thái               | Enum(String(50)) | \- | \- | Hiển thị trạng thái vai trò (Hoạt động/Ngừng hoạt động).                                |
-| Thao tác                  | - | \- | \- | Chứa các Icon: Sửa, Xóa, Phân quyền chức năng. Nhấp chọn Icon Phân quyền chức năng sẽ mở màn hình phân quyền [UC600.05](UC600_Quan_ly_vai_tro.md#43115-uc60005---phan-quyen-theo-vai-tro). |
+| Thao tác                  | - | \- | \- | Chứa các Icon: Sửa, Xóa, Phân quyền chức năng. Nhấp chọn Icon Phân quyền chức năng sẽ mở màn hình phân quyền [UC600.05](Quan_ly_vai_tro.md#43115-uc60005---phan-quyen-theo-vai-tro). |
 | **Panel phải: Chi tiết vai trò (Xem chi tiết)** | |          |             |                                                                                         |
 | Tab Phân quyền           | - | \- | \- | Tab mặc định khi chọn 1 vai trò ở Panel trái. Hiển thị khối Tìm kiếm quyền và Cây quyền hạn như mô tả dưới đây. |
 | Tìm kiếm quyền           | String(255) | Không     | Trống      | Control UI: Textbox.<br>Nhập từ khóa để lọc nhanh danh sách quyền trên cây bên dưới. |

@@ -1,4 +1,4 @@
-##### 4.3.1.5.2. UCPS010 - Quản lý loại danh mục
+﻿##### 4.3.1.5.2. UCPS010 - Quản lý loại danh mục
 
 ###### 4.3.1.5.2.1. Mục đích
 
@@ -101,5 +101,5 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | Đồng ý | Nút | Bấm nút xác nhận xóa trên popup.<br>- **Ngoại lệ (ĐÃ SỬ DỤNG):** Hệ thống kiểm tra xem Loại danh mục này đã được gán cho bất kỳ bản ghi Danh mục dùng chung nào tại [UC596](UC596_Quan_ly_danh_muc.md) chưa. Nếu đã có dữ liệu danh mục liên kết, hệ thống chặn xóa và báo lỗi: *"Không thể xóa do Loại danh mục này đang được sử dụng. Vui lòng đổi trạng thái thành Ngừng hoạt động."*<br>- **Hợp lệ (CHƯA SỬ DỤNG):** Xóa cứng/mềm bản ghi khỏi Database, báo thành công và reload lại lưới. |
+| 1 | Đồng ý | Nút | Bấm nút xác nhận xóa trên popup.<br>- **Ngoại lệ (ĐÃ SỬ DỤNG):** Hệ thống kiểm tra xem Loại danh mục này đã được gán cho bất kỳ bản ghi Danh mục dùng chung nào tại [UC596](Quan_ly_danh_muc.md) chưa. Nếu đã có dữ liệu danh mục liên kết, hệ thống chặn xóa và báo lỗi: *"Không thể xóa do Loại danh mục này đang được sử dụng. Vui lòng đổi trạng thái thành Ngừng hoạt động."*<br>- **Hợp lệ (CHƯA SỬ DỤNG):** Xóa cứng/mềm bản ghi khỏi Database, báo thành công và reload lại lưới. |
 | 2 | Hủy | Nút | Đóng Popup, hủy thao tác. |

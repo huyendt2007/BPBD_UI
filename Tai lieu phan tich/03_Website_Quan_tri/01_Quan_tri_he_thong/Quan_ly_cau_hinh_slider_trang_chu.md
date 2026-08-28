@@ -1,8 +1,8 @@
-#### 4.3.1.12. UCPS016 - Quản lý cấu hình Slider/Trang chủ Website khách hàng
+﻿#### 4.3.1.12. UCPS016 - Quản lý cấu hình Slider/Trang chủ Website khách hàng
 
 ##### 4.3.1.12.1. Mục đích
 
-\- Cho phép Quản trị viên hệ thống (QTHT) quản lý tập trung nội dung hiển thị tại Trang chủ Website khách hàng ([UCPS015](../../01_Website_Khach_hang/UCPS015_Trang_chu_khach_hang.md)), gồm Banner Slider ảnh và các khối nội dung giới thiệu (Tra cứu/Đăng ký/Hỗ trợ, dòng thông báo khẩn), mà không cần can thiệp mã nguồn khi cần cập nhật, thay đổi thông báo.
+\- Cho phép Quản trị viên hệ thống (QTHT) quản lý tập trung nội dung hiển thị tại Trang chủ Website khách hàng ([UCPS015](../../01_Website_Khach_hang/Trang_chu_khach_hang.md)), gồm Banner Slider ảnh và các khối nội dung giới thiệu (Tra cứu/Đăng ký/Hỗ trợ, dòng thông báo khẩn), mà không cần can thiệp mã nguồn khi cần cập nhật, thay đổi thông báo.
 \- Thuộc phân hệ III.1 - Quản lý nội dung (CMS) theo Sơ đồ tính năng hệ thống.
 
 *a. Phân quyền*
@@ -137,5 +137,5 @@ Thông tin nhật ký gồm: người thực hiện, vai trò, thời điểm, c
 | AC-UCPS016-001 | QTHT quản lý được danh sách Slide: thêm mới, cập nhật, xóa, sắp xếp thứ tự, bật/tắt hiển thị. |
 | AC-UCPS016-002 | Hệ thống chặn thêm/bật hiển thị Slide thứ 11 khi đã có 10 Slide đang hiển thị. |
 | AC-UCPS016-003 | Ảnh Slider được kiểm tra đúng định dạng .jpg/.jpeg/.png và dung lượng tối đa 5MB. |
-| AC-UCPS016-004 | QTHT cập nhật được nội dung các khối Chào mừng/Tra cứu/Đăng ký/Hỗ trợ/Thông báo khẩn và tệp văn bản mẫu hiển thị tại Trang chủ Khách hàng ([UCPS015](../../01_Website_Khach_hang/UCPS015_Trang_chu_khach_hang.md)). |
+| AC-UCPS016-004 | QTHT cập nhật được nội dung các khối Chào mừng/Tra cứu/Đăng ký/Hỗ trợ/Thông báo khẩn và tệp văn bản mẫu hiển thị tại Trang chủ Khách hàng ([UCPS015](../../01_Website_Khach_hang/Trang_chu_khach_hang.md)). |
 | AC-UCPS016-005 | Toàn bộ thao tác cấu hình được ghi nhật ký đầy đủ. |
