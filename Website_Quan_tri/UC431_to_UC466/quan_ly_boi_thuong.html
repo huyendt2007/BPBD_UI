@@ -204,6 +204,18 @@
             color: #78350f;
         }
 
+        .btn-outline-danger {
+            background-color: white;
+            color: #b91c1c;
+            border-color: #ef4444;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            color: #991b1b;
+        }
+
         .btn-sm {
             padding: 5px 10px;
             font-size: 12px;
@@ -321,6 +333,26 @@
         .icon-btn.supplement:hover {
             background-color: #f5f3ff;
         }
+
+        /* admin-ui-standardizer.js (loaded globally at the bottom of the page) injects its own
+           .icon-btn rules at runtime, which - by pure CSS source order - would otherwise override
+           the Fixed-slot Action Column styling above (different size/background/colors) regardless
+           of JS-level guards. Re-declaring the same rules scoped under #claimsTableBody gives them
+           higher specificity so this table's action icons always keep their intended look. */
+        #claimsTableBody .icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            color: #64748b;
+        }
+        #claimsTableBody .icon-btn.view { color: #3b82f6; }
+        #claimsTableBody .icon-btn.edit { color: #f59e0b; }
+        #claimsTableBody .icon-btn.delete { color: #ef4444; }
+        #claimsTableBody .icon-btn.accept { color: #10b981; }
+        #claimsTableBody .icon-btn.reject { color: #dc2626; }
+        #claimsTableBody .icon-btn.supplement { color: #8b5cf6; }
 
         /* Card Section & Layout */
         .card-section {
@@ -4181,6 +4213,19 @@
             if (wrapper) {
                 wrapper.style.display = val === 'chuyen-vien' ? 'inline-block' : 'none';
             }
+
+            // Vai trò Lãnh đạo (Thủ trưởng CQ giải quyết) chỉ được xem Tab 3 "Vụ việc chờ xử lý";
+            // Tab 1 "Chờ tiếp nhận" và Tab 2 "Chờ kiểm tra" ẩn hoàn toàn (thuộc phạm vi Cán bộ xử lý).
+            const isLeader = val === 'thu-truong';
+            const tabNhapLieu = document.getElementById('workflowTabNhapLieu');
+            const tabKiemTra = document.getElementById('workflowTabKiemTra');
+            if (tabNhapLieu) tabNhapLieu.style.display = isLeader ? 'none' : '';
+            if (tabKiemTra) tabKiemTra.style.display = isLeader ? 'none' : '';
+            if (isLeader && activeClaimsWorkflowTab !== 'cho-xu-ly') {
+                switchClaimsWorkflowTab('cho-xu-ly');
+                return;
+            }
+
             renderClaimsTable();
         }
 
@@ -5889,6 +5934,93 @@
                 ]
             },
             {
+                id: "HS_KT1",
+                code: "BT-2026-029",
+                fieldGroup: "hành chính",
+                date: "10/08/2026",
+                nyc: "Đỗ Thị Ngọc",
+                cardType: "Cá nhân",
+                cardNo: "001091223344",
+                address: "Phường Yên Hòa, Cầu Giấy, Hà Nội",
+                phone: "0912345678",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định hủy Quyết định xử phạt vi phạm hành chính số 88/QĐ-UBND",
+                hanhVi: "Áp dụng biện pháp xử phạt và tịch thu tang vật không đúng thẩm quyền.",
+                nhanQua: "Thiệt hại về hàng hóa bị tịch thu và gián đoạn kinh doanh.",
+                status: "Chờ kiểm tra",
+                totalNum: 78000000,
+                advanceNum: 0,
+                slaDays: 3,
+                slaStatus: "normal",
+                slaText: "Đã tiếp nhận, chờ cán bộ kiểm tra hồ sơ",
+                restoreHonor: false,
+                agency: "UBND Quận Cầu Giấy",
+                deadline: "10/09/2026",
+                files: [{ name: "Don_yeu_cau_boi_thuong_KT1.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "05/08/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "10/08/2026", desc: "Cán bộ đã nhập liệu hồ sơ, chuyển sang bước kiểm tra.", status: "active" }
+                ]
+            },
+            {
+                id: "HS_KT2",
+                code: "BT-2026-030",
+                fieldGroup: "hình sự",
+                date: "12/08/2026",
+                nyc: "Bùi Văn Khánh",
+                cardType: "Cá nhân",
+                cardNo: "001092556677",
+                address: "Phường Định Công, Hoàng Mai, Hà Nội",
+                phone: "0987112233",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định đình chỉ điều tra do không đủ căn cứ buộc tội",
+                hanhVi: "Khởi tố, tạm giam 10 ngày đối với người không thực hiện hành vi phạm tội.",
+                nhanQua: "Ảnh hưởng danh dự, uy tín và mất thu nhập trong thời gian bị tạm giam.",
+                status: "Chờ kiểm tra",
+                totalNum: 45000000,
+                advanceNum: 0,
+                slaDays: 4,
+                slaStatus: "normal",
+                slaText: "Đã tiếp nhận, chờ cán bộ kiểm tra hồ sơ",
+                restoreHonor: true,
+                agency: "Công an Quận Hoàng Mai",
+                deadline: "12/09/2026",
+                files: [{ name: "Don_yeu_cau_boi_thuong_KT2.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "07/08/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "12/08/2026", desc: "Cán bộ đã nhập liệu hồ sơ, chuyển sang bước kiểm tra.", status: "active" }
+                ]
+            },
+            {
+                id: "HS_KT3",
+                code: "BT-2026-031",
+                fieldGroup: "thi hành án dân sự",
+                date: "14/08/2026",
+                nyc: "Công ty TNHH Phát Đạt",
+                cardType: "Tổ chức",
+                cardNo: "0102567890",
+                address: "Cụm công nghiệp Ngọc Hồi, Thanh Trì, Hà Nội",
+                phone: "0243999888",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định kê biên tài sản vượt quá nghĩa vụ thi hành án",
+                hanhVi: "Kê biên toàn bộ dây chuyền sản xuất vượt quá giá trị nghĩa vụ phải thi hành.",
+                nhanQua: "Ngừng sản xuất kéo dài, thiệt hại hợp đồng với đối tác.",
+                status: "Chờ kiểm tra",
+                totalNum: 320000000,
+                advanceNum: 0,
+                slaDays: 2,
+                slaStatus: "warning",
+                slaText: "Đã tiếp nhận, chờ cán bộ kiểm tra hồ sơ (sắp đến hạn)",
+                restoreHonor: false,
+                agency: "Chi cục Thi hành án dân sự Thanh Trì",
+                deadline: "20/08/2026",
+                files: [{ name: "Don_yeu_cau_boi_thuong_KT3.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "09/08/2026", desc: "Hồ sơ tiếp nhận qua bưu điện/bưu chính.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "14/08/2026", desc: "Cán bộ đã nhập liệu hồ sơ, chuyển sang bước kiểm tra.", status: "active" }
+                ]
+            },
+            {
                 id: "HS22",
                 code: "BT-2026-022",
                 fieldGroup: "hành chính",
@@ -6398,6 +6530,21 @@
             return words.trim().replace(/\s+/g, ' ') + " đồng";
         }
 
+        // Mặc định Từ ngày = ngày đầu tháng hiện tại, Đến ngày = ngày hiện tại (dùng chung cho
+        // lần tải trang đầu tiên và cho nút "Xóa bộ lọc").
+        function setDefaultClaimsSearchDates() {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const formatDate = (date) => {
+                const d = String(date.getDate()).padStart(2, '0');
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const y = date.getFullYear();
+                return `${d}/${m}/${y}`;
+            };
+            document.getElementById('searchFromDate').value = formatDate(firstDayOfMonth);
+            document.getElementById('searchToDate').value = formatDate(today);
+        }
+
         function initRequestDocDatePickers() {
             if (typeof flatpickr === 'undefined') return;
             ['#claimRequestDocDate', '#claimRequestDocDate_edit'].forEach(selector => {
@@ -6445,18 +6592,14 @@
             flatpickr("#editPhddStep4CommuneDate", { dateFormat: "d/m/Y", allowInput: true });
 
             // Set default date values for filters
+            setDefaultClaimsSearchDates();
             const today = new Date();
-            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
             const formatDate = (date) => {
                 const d = String(date.getDate()).padStart(2, '0');
                 const m = String(date.getMonth() + 1).padStart(2, '0');
                 const y = date.getFullYear();
                 return `${d}/${m}/${y}`;
             };
-
-            document.getElementById('searchFromDate').value = formatDate(firstDayOfMonth);
-            document.getElementById('searchToDate').value = formatDate(today);
             document.getElementById('claimCreateDate').value = formatDate(today);
 
             // Force reset mock data for testing updates
@@ -6826,6 +6969,11 @@
                         </div>
                     </td>
                 `;
+                // admin-ui-standardizer.js (global script) re-skins/re-icons action buttons whose
+                // title matches its own generic keyword patterns, which conflicts with the deliberate
+                // per-status Fixed-slot icon/color/enable-disable design of this action column. Marking
+                // every icon-btn here as already-normalized makes that script skip them entirely.
+                tr.querySelectorAll('.icon-btn').forEach(btn => { btn.dataset.adminIconNormalized = '1'; });
                 tbody.appendChild(tr);
             });
 
@@ -6861,8 +7009,7 @@
             document.getElementById('searchFieldGroup').value = '';
             updateSearchStatusOptionsByTab(activeClaimsWorkflowTab);
             if (document.getElementById('searchNopKenh')) document.getElementById('searchNopKenh').value = '';
-            document.getElementById('searchFromDate').value = '';
-            document.getElementById('searchToDate').value = '';
+            setDefaultClaimsSearchDates();
             document.getElementById('searchFromHan').value = '';
             document.getElementById('searchToHan').value = '';
 
@@ -9157,7 +9304,8 @@
             }
 
             const pauseActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Hoãn giải quyết')"><i class="fa-solid fa-pause"></i> Hoãn giải quyết</button>`;
-            const suspendActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Tạm đình chỉ giải quyết')"><i class="fa-solid fa-circle-pause"></i> Tạm đình chỉ / Đình chỉ</button>`;
+            const suspendActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Tạm đình chỉ giải quyết')"><i class="fa-solid fa-circle-pause"></i> Tạm đình chỉ giải quyết</button>`;
+            const stopActionBtnHtml = `<button class="btn btn-outline-danger detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Đình chỉ giải quyết')"><i class="fa-solid fa-ban"></i> Đình chỉ giải quyết</button>`;
             let buttonsHtml = '';
             let showCloseButton = true; // by default we show Close button in read-only
 
@@ -9231,6 +9379,7 @@
                             <button class="btn btn-primary" onclick="switchToEditMode('xacminh')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật xác minh</button>
                             ${pauseActionBtnHtml}
                             ${suspendActionBtnHtml}
+                            ${stopActionBtnHtml}
                         `;
                     }
                     break;
@@ -9248,6 +9397,7 @@
                             <button class="btn btn-primary" onclick="switchToEditMode('thuongluong')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả thương lượng</button>
                             ${pauseActionBtnHtml}
                             ${suspendActionBtnHtml}
+                            ${stopActionBtnHtml}
                         `;
                     }
                     break;
@@ -9256,7 +9406,8 @@
                     buttonsHtml = `
                         <button class="btn btn-primary" onclick="claimRedoNegotiation('${claim.id}')"><i class="fa-solid fa-rotate-left"></i> Cập nhật lại kết quả thương lượng</button>
                         ${pauseActionBtnHtml}
-                            ${suspendActionBtnHtml}
+                        ${suspendActionBtnHtml}
+                        ${stopActionBtnHtml}
                     `;
                     break;
 
@@ -9266,12 +9417,14 @@
                             <button class="btn btn-success" onclick="approveAndSignDecision('${claim.id}')"><i class="fa-solid fa-file-signature"></i> Duyệt ký số QĐ</button>
                             ${pauseActionBtnHtml}
                             ${suspendActionBtnHtml}
+                            ${stopActionBtnHtml}
                             <button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>
                         `;
                     } else {
                         buttonsHtml = `
                             ${pauseActionBtnHtml}
                             ${suspendActionBtnHtml}
+                            ${stopActionBtnHtml}
                             <button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>
                         `;
                     }

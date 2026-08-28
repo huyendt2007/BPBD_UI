@@ -1,26 +1,30 @@
-﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.1. Giải quyết yêu cầu bồi thường
 
 ##### 4.3.3.1.1. Mục đích
+Quản lý toàn diện quy trình tiếp nhận, thụ lý và giải quyết hồ sơ vụ việc yêu cầu bồi thường nhà nước theo đúng quy định của Luật Trách nhiệm bồi thường của Nhà nước, bao gồm:
+- Tra cứu danh sách vụ việc theo phân trang và các tab trạng thái nghiệp vụ (Vụ việc chờ tiếp nhận, Vụ việc chờ kiểm tra, Vụ việc chờ xử lý), hỗ trợ tìm kiếm và lọc đa tiêu chí.
+- Tiếp nhận và nhập liệu hồ sơ vụ việc yêu cầu bồi thường từ các nguồn tiếp nhận, tự động kế thừa thông tin và kiểm tra tính hợp lệ của hồ sơ.
+- Kiểm tra tính đầy đủ, hợp lệ của hồ sơ yêu cầu bồi thường; thực hiện yêu cầu bổ sung hồ sơ hoặc từ chối tiếp nhận khi không đủ điều kiện.
+- Thụ lý hồ sơ vụ việc trong thời hạn quy định (02 ngày làm việc) hoặc từ chối thụ lý hồ sơ.
+- Theo dõi và cập nhật toàn diện tiến trình giải quyết vụ việc sau thụ lý: xác minh thiệt hại, lập biên bản xác minh, tổ chức thương lượng việc bồi thường và lập biên bản kết quả thương lượng.
+- Xử lý các nghiệp vụ gián đoạn giải quyết theo quy định pháp luật: hoãn giải quyết, tạm đình chỉ giải quyết, đình chỉ giải quyết và khôi phục tiếp tục giải quyết vụ việc.
+- Thực thi chi trả tiền bồi thường (lập đề nghị cấp kinh phí, tạm ứng kinh phí) và theo dõi thực hiện thủ tục phục hồi danh dự cho người bị thiệt hại.
+- Quản lý trạng thái vòng đời vụ việc và ghi nhận toàn bộ lịch sử xử lý, dòng thời gian (timeline) qua từng giai đoạn.
 
-\- Cho phép người dùng trên Website quản trị quản lý danh sách vụ việc/hồ sơ yêu cầu bồi thường nhà nước.
+a. Phân quyền
+Hệ thống phân quyền thao tác theo vai trò và quyền hạn được cấp:
+- Xem: Tra cứu danh sách vụ việc theo tab, xem chi tiết tiến trình hồ sơ vụ việc, xem tài liệu đính kèm và lịch sử xử lý.
+- Thêm mới / Nhập liệu: Tiếp nhận và nhập liệu hồ sơ vụ việc mới, tải lên các văn bản căn cứ.
+- Cập nhật tiến độ: Cập nhật thông tin kiểm tra hồ sơ, cập nhật kết quả xác minh thiệt hại, cập nhật kết quả thương lượng.
+- Xử lý nghiệp vụ gián đoạn: Thực hiện hoãn, tạm đình chỉ, đình chỉ giải quyết hoặc tiếp tục giải quyết vụ việc.
+- Thụ lý / Phê duyệt: Thủ trưởng/Lãnh đạo cơ quan giải quyết thực hiện thụ lý vụ việc, từ chối thụ lý, phê duyệt kết quả xử lý.
+- Quản lý trạng thái / Xóa: Xóa hồ sơ ở trạng thái Lưu nháp hoặc đóng hồ sơ khi hoàn thành toàn bộ nghĩa vụ.
 
-\- Cho phép nhập hồ sơ vụ việc từ các vụ việc đã tiếp nhận, kiểm tra hồ sơ, yêu cầu bổ sung, từ chối, thụ lý, từ chối thụ lý, xác minh thiệt hại, thương lượng, hoãn giải quyết, tạm đình chỉ giải quyết, đình chỉ giải quyết, ban hành quyết định, thực thi chi trả và theo dõi phục hồi danh dự.
-
-*a. Phân quyền*
-
-\- Chuyên viên Thụ lý nghiệp vụ: Được tra cứu, nhập/cập nhật hồ sơ thuộc phạm vi được giao, kiểm tra hồ sơ, yêu cầu bổ sung, từ chối hồ sơ ở bước kiểm tra, cập nhật bổ sung, cập nhật xác minh, cập nhật thương lượng, thực hiện hoãn giải quyết/tạm đình chỉ giải quyết/đình chỉ giải quyết từ bước "Đang xác minh thiệt hại" trở đi, cập nhật thực thi và phục hồi danh dự theo trạng thái hồ sơ.
-
-\- Thủ trưởng Cơ quan giải quyết: Được tra cứu, xem chi tiết, thụ lý hồ sơ, từ chối thụ lý, duyệt ký số Quyết định giải quyết bồi thường đối với hồ sơ ở trạng thái phù hợp.
-
-\- Nếu hồ sơ đang được giao cho chuyên viên khác, chuyên viên hiện tại chỉ được xem chi tiết, không được cập nhật dữ liệu hoặc thực hiện thao tác nghiệp vụ.
-
-
-*b. Điều kiện thực hiện*
-
-\- Người dùng truy cập màn hình `Giải quyết Yêu cầu Bồi thường Nhà nước - Cán bộ` trên Website quản trị. 
-<br> \- Người dùng được phép phân quyền sử dụng tính năng trên màn hình.
+b. Điều kiện thực hiện
+- Người dùng đã đăng nhập hệ thống.
+- Người dùng được cấp quyền truy cập chức năng "Giải quyết yêu cầu bồi thường".
 
 ##### 4.3.3.1.2. Sơ đồ luồng nghiệp vụ theo giao diện
 
@@ -211,12 +215,12 @@ flowchart TD
 | Họ và tên người nhận tiền | String(100) | Có khi hiển thị | Trống | Control UI: Input text.<br>- Nhập đầy đủ họ và tên của cá nhân hoặc người đại diện nhận tiền.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
 | Số giấy tờ thân nhân người nhận | String(50) | Có khi hiển thị | Trống | Control UI: Input text.<br>- Nhập số CCCD/Hộ chiếu/Giấy tờ pháp lý của người nhận tiền.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
 | Địa chỉ chi tiết người nhận | Text(1000) | Có khi hiển thị | Trống | Control UI: Textarea / Input text.<br>- Nhập địa chỉ cư trú hoặc địa chỉ liên hệ của người nhận tiền.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
-| Phương thức nhận tiền | Enum(String(50)) | Có khi hiển thị | `Nhận tiền mặt` | Control UI: Radio button / Combobox.<br>- Tham chiếu Danh mục Phương thức nhận tiền bồi thường/tạm ứng [DM_28].<br>- Giá trị gồm: "Nhận tiền mặt", "Nhận qua chuyển khoản". |
-| Số biên lai nhận tiền mặt | String(50) | Không | Trống | Control UI: Input text.<br>- Chỉ hiển thị khi phương thức nhận tiền là "Nhận tiền mặt".<br>- Nhập số biên lai/phiếu chi giao nhận tiền mặt trực tiếp. |
-| Chủ tài khoản | String(100) | Có theo điều kiện | Trống | Control UI: Input text.<br>- Chỉ hiển thị và bắt buộc khi phương thức nhận tiền là "Nhận qua chuyển khoản".<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
-| Số tài khoản | String(50) | Có theo điều kiện | Trống | Control UI: Input text.<br>- Chỉ hiển thị và bắt buộc khi phương thức nhận tiền là "Nhận qua chuyển khoản".<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
-| Tên ngân hàng | String(255) | Có theo điều kiện | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Chỉ hiển thị và bắt buộc khi phương thức nhận tiền là "Nhận qua chuyển khoản".<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
-| Chi nhánh ngân hàng | String(255) | Có theo điều kiện | Trống | Control UI: Input text.<br>- Chỉ hiển thị và bắt buộc khi phương thức nhận tiền là "Nhận qua chuyển khoản".<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Phương thức chi trả tiền bồi thường | Enum(String(100)) | Có khi hiển thị | `Chi trả trực tiếp bằng tiền mặt` | Control UI: Radio button / Combobox.<br>Danh sách giá trị lựa chọn cố định gồm:<br>- `Chi trả trực tiếp bằng tiền mặt`<br>- `Chi trả qua chuyển khoản` |
+| Số biên lai nhận tiền mặt | String(50) | Không | Trống | Control UI: Input text.<br>- Chỉ hiển thị khi phương thức chi trả tiền bồi thường là "Chi trả trực tiếp bằng tiền mặt".<br>- Nhập số biên lai/phiếu chi giao nhận tiền mặt trực tiếp. |
+| Chủ tài khoản | String(100) | Có theo điều kiện | Trống | Control UI: Input text.<br>- Chỉ hiển thị và bắt buộc khi phương thức chi trả tiền bồi thường là "Chi trả qua chuyển khoản".<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Số tài khoản | String(50) | Có theo điều kiện | Trống | Control UI: Input text.<br>- Chỉ hiển thị và bắt buộc khi phương thức chi trả tiền bồi thường là "Chi trả qua chuyển khoản".<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Tên ngân hàng | String(255) | Có theo điều kiện | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Chỉ hiển thị và bắt buộc khi phương thức chi trả tiền bồi thường là "Chi trả qua chuyển khoản".<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Chi nhánh ngân hàng | String(255) | Có theo điều kiện | Trống | Control UI: Input text.<br>- Chỉ hiển thị và bắt buộc khi phương thức chi trả tiền bồi thường là "Chi trả qua chuyển khoản".<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
 | **Thông tin phục hồi danh dự** | Section | - | Ẩn/Hiện | **Nhóm thông tin về đề nghị phục hồi danh dự.**<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi `Loại yêu cầu giải quyết bồi thường` là *"Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)"* hoặc *"Chỉ yêu cầu phục hồi danh dự"*; ẩn hoàn toàn khi chọn *"Chỉ yêu cầu bồi thường thiệt hại bằng tiền"*.<br>- **Phạm vi nhóm**: Bao gồm các trường từ "Đề nghị phục hồi danh dự" đến "Yêu cầu khôi phục quyền, lợi ích hợp pháp khác". |
 | Đề nghị phục hồi danh dự | Boolean | Không | Theo loại yêu cầu | Control UI: Checkbox.<br>- Nếu `Loại yêu cầu` là `Chỉ yêu cầu phục hồi danh dự`: Bắt buộc tick và khóa mờ (Disabled). |
 | Trực tiếp xin lỗi và cải chính công khai | Boolean | Không | Checked | Hình thức phục hồi danh dự. |
@@ -339,12 +343,12 @@ flowchart TD
 | Họ và tên người nhận tiền | String(100) | - | Theo dữ liệu | Chỉ đọc. Họ và tên người nhận tiền. |
 | Số giấy tờ thân nhân người nhận | String(50) | - | Theo dữ liệu | Chỉ đọc. Số giấy tờ thân nhân người nhận. |
 | Địa chỉ chi tiết người nhận | Text(1000) | - | Theo dữ liệu | Chỉ đọc. Địa chỉ liên hệ người nhận. |
-| Phương thức nhận tiền | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Nhận tiền mặt hoặc Nhận qua chuyển khoản. |
-| Số biên lai nhận tiền mặt | String(50) | - | Theo dữ liệu | Chỉ đọc. Số biên lai giao nhận tiền mặt (nếu nhận tiền mặt). |
-| Chủ tài khoản | String(100) | - | Theo dữ liệu | Chỉ đọc. Tên chủ tài khoản ngân hàng (nếu nhận chuyển khoản). |
-| Số tài khoản | String(50) | - | Theo dữ liệu | Chỉ đọc. Số tài khoản ngân hàng (nếu nhận chuyển khoản). |
-| Tên ngân hàng | String(255) | - | Theo dữ liệu | Chỉ đọc. Tên ngân hàng (nếu nhận chuyển khoản). |
-| Chi nhánh ngân hàng | String(255) | - | Theo dữ liệu | Chỉ đọc. Chi nhánh ngân hàng (nếu nhận chuyển khoản). |
+| Phương thức chi trả tiền bồi thường | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc. `Chi trả trực tiếp bằng tiền mặt` hoặc `Chi trả qua chuyển khoản`. |
+| Số biên lai nhận tiền mặt | String(50) | - | Theo dữ liệu | Chỉ đọc. Số biên lai giao nhận tiền mặt (nếu chi trả trực tiếp bằng tiền mặt). |
+| Chủ tài khoản | String(100) | - | Theo dữ liệu | Chỉ đọc. Tên chủ tài khoản ngân hàng (nếu chi trả qua chuyển khoản). |
+| Số tài khoản | String(50) | - | Theo dữ liệu | Chỉ đọc. Số tài khoản ngân hàng (nếu chi trả qua chuyển khoản). |
+| Tên ngân hàng | String(255) | - | Theo dữ liệu | Chỉ đọc. Tên ngân hàng (nếu chi trả qua chuyển khoản). |
+| Chi nhánh ngân hàng | String(255) | - | Theo dữ liệu | Chỉ đọc. Chi nhánh ngân hàng (nếu chi trả qua chuyển khoản). |
 | **Thông tin phục hồi danh dự** | Section | - | Theo dữ liệu | **Nhóm thông tin về đề nghị phục hồi danh dự ở chế độ chỉ đọc.**<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi Loại yêu cầu giải quyết bồi thường là *"Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)"* hoặc *"Chỉ yêu cầu phục hồi danh dự"*; <br>- **Phạm vi nhóm**: Bao gồm các trường từ "Đề nghị phục hồi danh dự" đến "Yêu cầu khôi phục quyền, lợi ích hợp pháp khác". |
 | Đề nghị phục hồi danh dự | Boolean | - | Theo dữ liệu | Chỉ đọc. Trạng thái có/không đề nghị phục hồi danh dự. |
 | Trực tiếp xin lỗi và cải chính công khai | Boolean | - | Theo dữ liệu | Chỉ đọc. Chỉ hiển thị khi có tích chọn tại hồ sơ Vụ việc YCBT. |
@@ -429,7 +433,7 @@ flowchart TD
 | *Khối A: Chi trả kinh phí thông thường* | Group | - | Hiển thị khi Chờ chi trả / Hoàn thành chi trả | **Chỉ hiển thị khi Trạng thái đề nghị kinh phí là `Chờ chi trả` hoặc `Hoàn thành chi trả`.** Gồm các trường thông tin chỉ đọc bên dưới: |
 | Trạng thái | Enum(String(50)) | - | Theo đề nghị kinh phí | Chỉ đọc. Badge màu thể hiện Trạng thái đề nghị từ Module Cấp kinh phí tạm ứng/Bồi thường (`Chờ chi trả` hoặc `Hoàn thành chi trả`). |
 | Ngày thực hiện chi trả | Date | - | Theo dữ liệu / `-` | Chỉ đọc. Kế thừa ngày chi trả thực tế từ Module Cấp kinh phí tạm ứng/Bồi thường (định dạng `dd/mm/yyyy`); nếu đang `Chờ chi trả` thì hiển thị `-`. |
-| Phương thức chi trả | Enum(String(50)) | - | Theo dữ liệu / `-` | Chỉ đọc. Kế thừa phương thức chi trả (`Chuyển khoản`, `Tiền mặt`); nếu chưa chi trả thì hiển thị `-`. |
+| Phương thức chi trả | Enum(String(50)) | - | Theo dữ liệu / `-` | Chỉ đọc. Kế thừa phương thức chi trả; nếu chưa chi trả thì hiển thị `-`. |
 | Số tiền thực tế đã chi trả (đồng) | Decimal(18,0) | - | Theo dữ liệu / `-` | Chỉ đọc. Kế thừa tổng số tiền đã chi trả thực tế cho người thụ hưởng (định dạng phân tách hàng nghìn); nếu chưa chi trả thì hiển thị `-`. |
 | Chứng từ / Biên nhận chi trả đính kèm | File/List(File) | - | Theo dữ liệu / `-` | Chỉ đọc. Hiển thị danh sách file chứng từ chi trả kèm liên kết `Xem file` (mở tab mới) và `Tải về`; nếu chưa có thì hiển thị `-`. |
 | Ý kiến / Nội dung thực hiện chi trả | Text(2000) | - | Theo dữ liệu | Chỉ đọc. Kế thừa nội dung thực hiện chi trả; chỉ hiển thị nếu bên Module Cấp kinh phí tạm ứng/Bồi thường có nhập thông tin này. |
@@ -498,11 +502,11 @@ flowchart TD
 | Ngày bắt đầu tính thời hạn | Date | - | Theo hồ sơ | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
 | **II. Thanh tiến trình Stepper 04 bước** | Stepper | - | Theo tiến trình | Control UI: Thanh tiến trình 04 bước.<br>- **Quy tắc màu sắc và trạng thái Stepper**:<br>+ *Màu xám*: Áp dụng cho các bước chưa thực hiện / chưa tới lượt xử lý.<br>+ *Màu xanh dương*: Áp dụng cho bước đang hoạt động / đang mở để thao tác nhập liệu.<br>+ *Tích check màu xanh lá*: Áp dụng cho các bước đã hoàn thành việc ghi nhận thông tin.<br>- **Danh sách 04 bước**:<br>+ Bước 1: `Thông báo`<br>+ Bước 2: `Ý kiến phản hồi của người yêu cầu`<br>+ Bước 3: `Thực hiện`<br>+ Bước 4: `Hoàn thành` |
 | **III. 1. KHỐI THÔNG BÁO TỔ CHỨC PHỤC HỒI DANH DỰ** | Section | - | - | Khối quản lý và ban hành thông báo tổ chức phục hồi danh dự: |
-| Số thông báo | String(50) | Có (*) | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
-| Ngày ban hành | Date | Có (*) | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). Chế độ xem: Hiển thị text chỉ đọc. |
-| Ngày gửi thông báo | Date | Có (*) | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). Chế độ xem: Hiển thị text chỉ đọc. |
-| Người ký | String(255) | Có (*) | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
-| Chức vụ | String(255) | Có (*) | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
+| Số thông báo | String(50) | Có | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
+| Ngày ban hành | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). Chế độ xem: Hiển thị text chỉ đọc. |
+| Ngày gửi thông báo | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). Chế độ xem: Hiển thị text chỉ đọc. |
+| Người ký | String(255) | Có | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
+| Chức vụ | String(255) | Có | Trống | Control UI: Input text. Chế độ xem: Hiển thị text chỉ đọc. |
 | Thông tin đăng báo, thông tin công khai dự kiến | Section | - | - | Khối màu nền xanh nhạt chứa thông tin công khai dự kiến: |
 | Cấp cơ quan quản lý báo chí dự kiến | Enum(String(50)) | Có | `Cơ quan ở Địa phương` | Control UI: Radio button gồm:<br>- `Cơ quan ở Trung ương`<br>- `Cơ quan ở Địa phương` |
 | Tên tờ báo Trung ương dự kiến | String(255) | Có khi chọn Trung ương | Trống | Control UI: Input text.<br>- **Điều kiện hiển thị:** Bắt buộc nhập và chỉ hiển thị khi *Cấp cơ quan quản lý báo chí dự kiến* chọn giá trị **`Cơ quan ở Trung ương`**. |
@@ -510,26 +514,26 @@ flowchart TD
 | Số số báo phát hành liên tiếp dự kiến | Integer(10) | Có | `3` | Control UI: Input number / text. |
 | Đăng tải lên Cổng thông tin điện tử dự kiến | Boolean | Không | Checked | Control UI: Checkbox. |
 | Thông tin niêm yết tại UBND cấp xã dự kiến (Khoản c - Điều 59) | Boolean | Không | Unchecked  | Control UI: Checkbox. |
-| Nơi nhận | List(String) | Có (*) | `Người bị thiệt hại` | Control UI: Checkbox đa chọn gồm:<br>- `Người bị thiệt hại`<br>- `UBND cấp xã`<br>- `Cơ quan liên quan`<br>- `Khác`<br>*(Chế độ xem: Hiển thị danh sách các nơi nhận đã chọn)*. |
-| Tài liệu đính kèm thông báo | File / List(File) | Có (*) | Trống | Control UI: Nút `+ Chọn tài liệu đính kèm` để tải tệp PDF lên.<br>- **Chế độ cập nhật / nhập liệu:** Hiển thị tên tệp kèm liên kết **`Xem file`** và liên kết **`Xóa`** ngay sau tên tệp.<br>- **Chế độ xem (Đã lưu):** Chỉ hiển thị tên tệp và liên kết **`Xem file`** (không hiển thị liên kết Xóa). |
+| Nơi nhận | List(String) | Có | `Người bị thiệt hại` | Control UI: Checkbox đa chọn gồm:<br>- `Người bị thiệt hại`<br>- `UBND cấp xã`<br>- `Cơ quan liên quan`<br>- `Khác`<br>*(Chế độ xem: Hiển thị danh sách các nơi nhận đã chọn)*. |
+| Tài liệu đính kèm thông báo | File / List(File) | Có | Trống | Control UI: Nút `+ Chọn tài liệu đính kèm` để tải tệp PDF lên.<br>- **Chế độ cập nhật / nhập liệu:** Hiển thị tên tệp kèm liên kết **`Xem file`** và liên kết **`Xóa`** ngay sau tên tệp.<br>- **Chế độ xem (Đã lưu):** Chỉ hiển thị tên tệp và liên kết **`Xem file`** (không hiển thị liên kết Xóa). |
 | Thao tác | Action Buttons | - | - | Control UI: Nhóm nút ở góc phải chân Khối 1:<br>- **Chế độ cập nhật / nhập liệu:**<br>+ `Lưu thông báo`<br>+ `Cập nhật thông báo`<br>+ `Xem thông báo`<br>+ `Hủy bỏ`<br>- **Chế độ xem (Đã lưu):**<br>+ `Cập nhật thông báo`<br>+ `Xem thông báo` |
 | **IV. 2. Ý KIẾN PHẢN HỒI CỦA NGƯỜI YÊU CẦU** | Section | - | - | Khối tiếp nhận ý kiến phản hồi của người bị thiệt hại/người yêu cầu: |
-| Ý kiến của người yêu cầu | Enum(String(50)) | Có (*) | `Đồng ý` | Control UI: Radio button gồm:<br>- `Đồng ý`<br>- `Không đồng ý`<br>- `Không có ý kiến phản hồi` |
-| Ngày nhận được ý kiến phản hồi | Date | Có (*) khi có phản hồi | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
-| Hình thức gửi phản hồi | Enum(String(50)) | Có (*) | `Bằng văn bản` | Control UI: Combobox/Radio gồm:<br>- `Bằng văn bản`<br>- `Trực tiếp tại trụ sở`<br>- `Khác` |
+| Ý kiến của người yêu cầu | Enum(String(50)) | Có | `Đồng ý` | Control UI: Radio button gồm:<br>- `Đồng ý`<br>- `Không đồng ý`<br>- `Không có ý kiến phản hồi` |
+| Ngày nhận được ý kiến phản hồi | Date | Có khi có phản hồi | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
+| Hình thức gửi phản hồi | Enum(String(50)) | Có | `Bằng văn bản` | Control UI: Combobox/Radio gồm:<br>- `Bằng văn bản`<br>- `Trực tiếp tại trụ sở`<br>- `Khác` |
 | Nội dung ý kiến chi tiết / Yêu cầu điều chỉnh | Text(2000) | Không | Trống | Control UI: Textarea. Nhập chi tiết nội dung phản hồi. |
 | Tài liệu phản hồi đính kèm | File / List(File) | Không | Trống | Control UI: Nút `+ Chọn tài liệu đính kèm`.<br>- **Chế độ cập nhật / nhập liệu:** Hiển thị tên tệp kèm liên kết **`Xem file`** và liên kết **`Xóa`**.<br>- **Chế độ xem (Đã lưu):** Chỉ hiển thị tên tệp và liên kết **`Xem file`** (không hiển thị liên kết Xóa). |
 | Thao tác | Action Buttons | - | - | Control UI: Nhóm nút ở góc phải chân Khối 2:<br>- **Chế độ cập nhật / nhập liệu:**<br>+ `Lưu thông tin`<br>+ `Hủy bỏ`<br>- **Chế độ xem (Đã lưu):**<br>+ `Cập nhật thông tin` |
 | **V. 3. KHỐI TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ** | Section | - | - | Khối ghi nhận kết quả thực tế tổ chức thực hiện phục hồi danh dự: |
 | Thông tin đăng báo xin lỗi cải chính (Điều 59) | Section | - | - | Khối màu nền xanh nhạt chứa thông tin thực tế đăng báo: |
-| Cấp cơ quan quản lý | Enum(String(50)) | Có (*) | `Cơ quan ở Trung ương` | Control UI: Radio button gồm:<br>- `Cơ quan ở Trung ương`<br>- `Cơ quan ở Địa phương` |
+| Cấp cơ quan quản lý | Enum(String(50)) | Có | `Cơ quan ở Trung ương` | Control UI: Radio button gồm:<br>- `Cơ quan ở Trung ương`<br>- `Cơ quan ở Địa phương` |
 | Tên tờ báo Trung ương | String(255) | Có khi chọn Trung ương | Trống | Control UI: Input text.<br>- **Điều kiện hiển thị:** Bắt buộc nhập và chỉ hiển thị khi *Cấp cơ quan quản lý* chọn giá trị **`Cơ quan ở Trung ương`**. |
 | Tên báo Địa phương nơi cư trú/đặt trụ sở | String(255) | Có khi chọn Địa phương | Trống | Control UI: Input text.<br>- **Điều kiện hiển thị:** Bắt buộc nhập và chỉ hiển thị khi *Cấp cơ quan quản lý* chọn giá trị **`Cơ quan ở Địa phương`**. |
-| Số số báo phát hành liên tiếp | Integer(10) | Có (*) | `3` | Control UI: Input number / text. |
-| Thông tin các số báo phát hành | String(500) | Có (*) | Trống | Control UI: Input text / Textarea. Nhập chi tiết số báo và ngày phát hành của từng số báo. |
+| Số số báo phát hành liên tiếp | Integer(10) | Có | `3` | Control UI: Input number / text. |
+| Thông tin các số báo phát hành | String(500) | Có | Trống | Control UI: Input text / Textarea. Nhập chi tiết số báo và ngày phát hành của từng số báo. |
 | Đăng tải lên Cổng thông tin điện tử | Boolean | Không | Checked | Control UI: Checkbox. |
 | Thông tin niêm yết tại UBND cấp xã (Khoản c - Điều 59) | Boolean | Không | Unchecked  | Control UI: Checkbox. |
-| TÀI LIỆU ĐÍNH KÈM HỖ TRỢ HỒ SƠ | Dropzone File | Có (*) | Trống | Control UI: Vùng kéo thả tệp tin hoặc click để tải lên nhiều tài liệu (Đính kèm biên bản, kế hoạch, trang báo... dung lượng tối đa 20MB/tệp).<br>- **Chế độ cập nhật / nhập liệu:** Hiển thị danh sách tệp kèm liên kết **`Xem file`** và liên kết **`Xóa`**.<br>- **Chế độ xem (Đã lưu):** Chỉ hiển thị tên tệp và liên kết **`Xem file`** (không hiển thị liên kết Xóa). |
+| TÀI LIỆU ĐÍNH KÈM HỖ TRỢ HỒ SƠ | Dropzone File | Có | Trống | Control UI: Vùng kéo thả tệp tin hoặc click để tải lên nhiều tài liệu (Đính kèm biên bản, kế hoạch, trang báo... dung lượng tối đa 20MB/tệp).<br>- **Chế độ cập nhật / nhập liệu:** Hiển thị danh sách tệp kèm liên kết **`Xem file`** và liên kết **`Xóa`**.<br>- **Chế độ xem (Đã lưu):** Chỉ hiển thị tên tệp và liên kết **`Xem file`** (không hiển thị liên kết Xóa). |
 | Thao tác | Action Buttons | - | - | Control UI: Nhóm nút ở góc phải chân Khối 3:<br>- **Chế độ cập nhật / nhập liệu:**<br>+ `Lưu thông tin`<br>+ `Hủy bỏ`<br>- **Chế độ xem (Đã lưu):**<br>+ `Cập nhật thông tin` |
 | **Lịch sử quá trình xử lý phục hồi danh dự** | List(Object) | - | Theo hồ sơ | Control UI: Vertical Timeline (Lịch sử xử lý dạng dọc) đặt ở cuối tab Phục hồi danh dự, hiển thị theo trình tự thời gian các mốc thực hiện phục hồi danh dự: |
 | Tên tiến trình / Hành động | String(255) | - | Theo dữ liệu | Chỉ đọc. Tiêu đề mốc sự kiện (ví dụ: `Tiếp nhận Yêu cầu Phục hồi danh dự`, `Ban hành thông báo tổ chức phục hồi danh dự`, `Người bị hại phản hồi ý kiến`, `Ghi nhận kết quả thực hiện phục hồi danh dự`, `Hoàn thành thực thi phục hồi danh dự`). |
@@ -698,12 +702,8 @@ Popup này là màn hình chuẩn dùng chung cho các chức năng cần tìm k
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm trên popup theo các trường hợp bên dưới: |
-|  |  |  | **TH1 - Không nhập tiêu chí nào**: Nếu người dùng chưa nhập/chọn tối thiểu 01 tiêu chí tìm kiếm, vi phạm [BR-VAL-001], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001] và không thực hiện tìm kiếm. |
-|  |  |  | **TH2 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
-|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn trên popup, hiển thị kết quả lên bảng và đưa về Trang 1. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled);  |
-| 2 | Chọn (trên dòng kết quả) | Button/Row Click | Hệ thống lấy dữ liệu vụ việc/hồ sơ gốc được chọn, tự động điền (autofill) vào các trường liên quan trên màn hình gọi popup, chuyển hiển thị trường liên kết sang dạng liên kết (hyperlink) đến hồ sơ gốc, và tự động đóng popup. |
+| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm trên popup theo các trường hợp bên dưới:<br>- **TH1 - Không nhập tiêu chí nào**: Nếu người dùng chưa nhập/chọn tối thiểu 01 tiêu chí tìm kiếm, vi phạm [BR-VAL-001], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001] và không thực hiện tìm kiếm.<br>- **TH2 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn trên popup, hiển thị kết quả lên bảng và đưa về Trang 1.<br>- **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng, in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ (Disabled). |
+| 2 | Chọn (trên dòng kết quả) | Button/Row Click | Hệ thống lấy dữ liệu vụ việc/hồ sơ gốc được chọn, tự động điền (autofill) dữ liệu tương ứng theo từng màn hình/nguồn gọi popup và tự động đóng popup:<br><br>**1. Nguồn 1: Gọi từ [MH02 - Màn hình Trình ký/Cập nhật Quyết định giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md#43334-mh02---màn-hình-trình-kýcập-nhật-quyết-định-giải-quyết-bồi-thường) (Module Quyết định giải quyết bồi thường):**<br>- *Mục đích*: Tìm hồ sơ vụ việc YCBT đã hoàn thành thương lượng để lấy dữ liệu lập Quyết định giải quyết bồi thường.<br>- *Dữ liệu kế thừa & Tự động điền*:<br>  + `Mã vụ việc`: Điền mã vụ việc đã chọn (hiển thị dưới dạng hyperlink mở xem chi tiết hồ sơ YCBT).<br>  + Tự động điền toàn bộ thông tin trong **Khối Chi tiết nội dung quyết định**:<br>    * `Tên vụ việc`: Tên vụ việc yêu cầu bồi thường.<br>    * `Người yêu cầu bồi thường`: Họ và tên người yêu cầu bồi thường.<br>    * `Địa chỉ người yêu cầu`: Địa chỉ nơi cư trú của người yêu cầu (Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố).<br>    * `Cơ quan quản lý người thi hành công vụ gây thiệt hại`: Tên cơ quan quản lý người thi hành công vụ gây thiệt hại.<br>    * `Ngày thương lượng`: Ngày lập Biên bản kết quả thương lượng thành công.<br>    * `Phương thức chi trả tiền bồi thường`: Nếu là tiền mặt tự động điền *"Chi trả trực tiếp bằng tiền mặt tại [Tên Cơ quan giải quyết bồi thường]"*; nếu là chuyển khoản tự động điền *"Chi trả qua chuyển khoản"* và điền sẵn các thông tin tài khoản ngân hàng (`Số tài khoản`, `Chủ tài khoản`, `Tên ngân hàng`, `Chi nhánh ngân hàng`).<br>    * `Các quyền, lợi ích hợp pháp khác được khôi phục`: Kế thừa nội dung quyền và lợi ích hợp pháp khác được khôi phục (nếu có).<br>    * `Tổng số tiền bồi thường`: Tổng số tiền thương lượng thành công của vụ việc.<br>    * `Số tiền bồi thường đã tạm ứng`: Số tiền tạm ứng kinh phí đã nhận (nếu có).<br>    * `Số tiền bồi thường còn lại`: Tự động tính = `Tổng số tiền bồi thường` - `Số tiền bồi thường đã tạm ứng`.<br>- Tự động đóng popup sau khi chọn.<br><br>**2. Nguồn 2: Gọi từ [MH02 - Màn hình Nhập liệu hồ sơ vụ việc](#43314-mh02---màn-hình-nhập-liệu-hồ-sơ-vụ-việc) (Module Giải quyết YCBT):**<br>- *Mục đích*: Tìm kiếm vụ việc yêu cầu bồi thường gốc liên quan khi tiếp nhận/nhập liệu hồ sơ mới có liên quan đến vụ việc trước đó.<br>- *Dữ liệu kế thừa & Tự động điền*:<br>  + `Vụ việc yêu cầu bồi thường gốc liên quan`: Điền mã vụ việc gốc (dạng hyperlink mở xem hồ sơ gốc).<br>  + Kế thừa thông tin nhân thân người yêu cầu bồi thường, cơ quan giải quyết và các tài liệu chứng minh thiệt hại liên quan từ vụ việc gốc.<br>- Tự động đóng popup sau khi chọn.<br><br>**3. Nguồn 3: Gọi từ [MH08 - Màn hình Hủy/Sửa chữa, bổ sung Quyết định giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md#433310-mh08---màn-hình-hủysửa-chữa-bổ-sung-quyết-định-giải-quyết-bồi-thường) (Module Quyết định giải quyết bồi thường):**<br>- *Mục đích*: Tìm Quyết định giải quyết bồi thường gốc đã ban hành để thực hiện Hủy (Mẫu 11/BTNN) hoặc Sửa chữa, bổ sung (Mẫu 12/BTNN).<br>- *Dữ liệu kế thừa & Tự động điền*:<br>  + `Quyết định gốc`: Số quyết định, ngày ban hành, ngày hiệu lực, cơ quan ban hành của quyết định gốc.<br>  + `Mã vụ việc`, `Tên vụ việc`, `Người yêu cầu bồi thường`: Kế thừa từ quyết định gốc.<br>  + `Căn cứ ban hành`: Kế thừa danh sách căn cứ pháp lý của quyết định gốc.<br>- Tự động đóng popup sau khi chọn.<br><br>**4. Nguồn 4: Gọi từ Form Đề nghị cấp kinh phí bồi thường / Tạm ứng kinh phí (Module Cấp kinh phí):**<br>- *Mục đích*: Tìm vụ việc YCBT hoặc Quyết định giải quyết bồi thường để lập văn bản đề nghị cấp kinh phí.<br>- *Dữ liệu kế thừa & Tự động điền*:<br>  + `Mã vụ việc`, `Số quyết định bồi thường`: Điền thông tin vụ việc/quyết định liên kết.<br>  + `Người yêu cầu bồi thường`, `Số tiền đề nghị cấp kinh phí`, `Thông tin tài khoản nhận tiền`: Kế thừa từ hồ sơ/quyết định tương ứng.<br>- Tự động đóng popup sau khi chọn.<br><br>**5. Nguồn 5: Gọi từ Form Yêu cầu hoàn trả (Module Yêu cầu hoàn trả):**<br>- *Mục đích*: Tìm Quyết định giải quyết bồi thường đã chi trả xong để lập hồ sơ yêu cầu người thi hành công vụ hoàn trả.<br>- *Dữ liệu kế thừa & Tự động điền*:<br>  + `Số quyết định bồi thường`, `Mã vụ việc`, `Tên vụ việc`.<br>  + `Người thi hành công vụ gây thiệt hại`, `Cơ quan quản lý`, `Tổng số tiền đã bồi thường`.<br>- Tự động đóng popup sau khi chọn. |
 | 3 | Hủy bỏ | Button | Hệ thống đóng popup, không thay đổi dữ liệu đang có trên màn hình gọi popup. |
 
 ---
@@ -785,9 +785,9 @@ Popup mở từ nút **`Tiếp tục giải quyết`** tại MH05 khi hồ sơ �
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Số quyết định tiếp tục giải quyết | String(50) | Có (*) | Trống | Control UI: Input text. Nhập số văn bản/quyết định cho phép tiếp tục giải quyết vụ việc. Áp dụng [BR-VAL-001]. |
-| Ngày quyết định tiếp tục giải quyết | Date | Có (*) | Ngày hiện tại | Control UI: Datepicker (định dạng `dd/mm/yyyy`). Ngày ban hành quyết định tiếp tục giải quyết. Áp dụng [BR-VAL-001]. |
-| Lý do / Căn cứ tiếp tục giải quyết | Text(2000) | Có (*) | Trống | Control UI: Textarea. Ghi nhận căn cứ pháp luật hoặc lý do cho phép tiếp tục giải quyết vụ việc. Áp dụng [BR-VAL-001]. |
+| Số quyết định tiếp tục giải quyết | String(50) | Có | Trống | Control UI: Input text. Nhập số văn bản/quyết định cho phép tiếp tục giải quyết vụ việc. Áp dụng [BR-VAL-001]. |
+| Ngày quyết định tiếp tục giải quyết | Date | Có | Ngày hiện tại | Control UI: Datepicker (định dạng `dd/mm/yyyy`). Ngày ban hành quyết định tiếp tục giải quyết. Áp dụng [BR-VAL-001]. |
+| Lý do / Căn cứ tiếp tục giải quyết | Text(2000) | Có | Trống | Control UI: Textarea. Ghi nhận căn cứ pháp luật hoặc lý do cho phép tiếp tục giải quyết vụ việc. Áp dụng [BR-VAL-001]. |
 | Tài liệu quyết định đính kèm | File / List(File) | Không | Trống | Control UI: Upload file. Đính kèm tệp tin quyết định tiếp tục giải quyết và tài liệu liên quan. Hiển thị tên tệp kèm liên kết `Xem file` và `Xóa`. |
 
 ###### 4.3.3.1.13.3. Chức năng trên màn hình

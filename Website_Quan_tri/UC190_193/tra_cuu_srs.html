@@ -1141,7 +1141,7 @@
                     <table class="table payment-info-table">
                         <thead>
                             <tr>
-                                <th>Số thông báo phí</th>
+                                <th>Mã yêu cầu</th>
                                 <th>Ngày tạo</th>
                                 <th>Tên khách hàng</th>
                                 <th>Mức phí</th>
@@ -1151,13 +1151,13 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="vertical-align: middle;"><strong id="blocker-fee-num">200644960</strong></td>
+                                <td style="vertical-align: middle;"><strong id="blocker-fee-num">RQ-20260529-001</strong></td>
                                 <td style="vertical-align: middle;" id="blocker-fee-date">29/05/2026</td>
                                 <td style="vertical-align: middle;"><strong>Đào Thị Huyền (VNeID)</strong></td>
                                 <td style="vertical-align: middle;"><strong id="blocker-fee-amount">300.000 VNĐ / năm</strong></td>
-                                <td style="vertical-align: middle;"><span class="status-tag status-processing">Đang xử lý</span></td>
+                                <td style="vertical-align: middle;"><span class="status-tag status-processing">Chờ thanh toán</span></td>
                                 <td style="text-align: center; vertical-align: middle;">
-                                    <a href="javascript:void(0)" style="color: var(--secondary-color); font-weight: 600; text-decoration: none; margin-right: 12px; font-size: 12.5px;" onclick="viewHistory('200644960')">XEM</a>
+                                    <a href="javascript:void(0)" style="color: var(--secondary-color); font-weight: 600; text-decoration: none; margin-right: 12px; font-size: 12.5px;" onclick="viewHistory('RQ-20260529-001')">XEM</a>
                                     <button class="btn-pay-online" onclick="payPendingRegularCode()">
                                         <i class="fa-solid fa-credit-card"></i> THANH TOÁN
                                     </button>
@@ -1194,7 +1194,7 @@
                                 </tr>
                                 <tr>
                                     <td>Nội dung chuyển:</td>
-                                    <td style="color: #B91C1C; font-family: monospace; font-weight: 700;" id="blocker-transfer-desc">Nop phi cap ma CSDL 200644960</td>
+                                    <td style="color: #B91C1C; font-family: monospace; font-weight: 700;" id="blocker-transfer-desc">Nop phi cap ma CSDL RQ-20260529-001</td>
                                 </tr>
                             </table>
                         </div>
@@ -1784,7 +1784,7 @@
         if (isUserLoggedIn && (userCsdlState === 'pending_before_july' || userCsdlState === 'pending_after_july')) {
             isSearchBlocked = true;
             
-            const feeNum = "200644960";
+            const feeNum = "RQ-20260529-001";
             const feeDate = userCsdlState === 'pending_before_july' ? '29/05/2026' : '10/07/2026';
             const feeAmount = userCsdlState === 'pending_before_july' ? '300.000 VNĐ / năm' : '150.000 VNĐ / năm';
             
@@ -1930,7 +1930,7 @@
     }
 
     function payPendingRegularCode() {
-        alert("Hệ thống đang chuyển hướng sang Cổng thanh toán quốc gia để thanh toán Thông báo phí số 200644960...");
+        alert("Hệ thống đang chuyển hướng sang Cổng thanh toán quốc gia để thanh toán Mã yêu cầu RQ-20260529-001...");
         const sel = document.getElementById('sim-login-state');
         sel.value = 'logged_active_code';
         showSuccessPanel();

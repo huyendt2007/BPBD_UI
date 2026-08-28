@@ -2,8 +2,7 @@
 
 #### 4.1.23.1. Mục đích
 
-\- Là màn hình mặc định hiển thị khi Khách hàng (đã đăng nhập hoặc khách vãng lai) truy cập Website khách hàng, giới thiệu tổng quan hệ thống và điều hướng nhanh tới 3 nhóm chức năng chính: Tra cứu, Đăng ký, Hỗ trợ.
-\- Toàn bộ nội dung hiển thị (Banner Slider và các khối giới thiệu) được quản trị tập trung tại Website quản trị ([UCPS016](../03_Website_Quan_tri/01_Quan_tri_he_thong/UCPS016_Quan_ly_cau_hinh_slider_trang_chu.md)), không hard-code trên giao diện.
+\- Hiển thị các thông tin trang chủ theo nội dung được cấu hình trên Website quản trị
 
 *a. Phân quyền*
 
@@ -12,25 +11,6 @@
 *b. Điều kiện thực hiện*
 
 \- Hệ thống hoạt động bình thường; đã có ít nhất cấu hình mặc định cho Slider và Nội dung Trang chủ.
-
----
-
-#### 4.1.23.2. Phạm vi
-
-\- Phạm vi tài liệu này chỉ đặc tả nội dung riêng của màn hình Trang chủ (Banner Slider và khối nội dung giới thiệu Tra cứu/Đăng ký/Hỗ trợ/Thông báo khẩn).
-\- Không thuộc phạm vi tài liệu này: Header (thanh liên hệ, logo, chuyển đổi ngôn ngữ), Top Navigation và Sidebar menu nghiệp vụ - đây là khung giao diện dùng chung cho mọi màn hình của Website khách hàng, không riêng Trang chủ.
-\- Không thuộc phạm vi tài liệu này: cấu hình Slider/Nội dung Trang chủ phía Website quản trị, xem [UCPS016](../03_Website_Quan_tri/01_Quan_tri_he_thong/UCPS016_Quan_ly_cau_hinh_slider_trang_chu.md).
-
----
-
-#### 4.1.23.3. Tài liệu liên quan
-
-| Tài liệu | Link |
-| :--- | :--- |
-| Đăng nhập dành cho Cá nhân/Tổ chức/Cơ quan có thẩm quyền | [UC001](UC001_Dang_nhap_khach_hang.md) |
-| Tra cứu thông tin đăng ký | [UC027](UC027_Tra_cuu_thong_tin.md) |
-| Khung giao diện tổng thể Trang Hỗ trợ khách hàng | [UC280_UC513_UC536, mục 4.1.22](UC280_UC513_UC536_Ho_tro_khach_hang.md#41222-uc_htkhmh01---khung-giao-dien-tong-the--module-switcher-che-do-da-dang-nhap) |
-| Quản lý cấu hình Slider/Trang chủ (Website quản trị) | [UCPS016](../03_Website_Quan_tri/01_Quan_tri_he_thong/UCPS016_Quan_ly_cau_hinh_slider_trang_chu.md) |
 
 ---
 
@@ -67,16 +47,3 @@
 | 8 | Nhóm hỗ trợ của chúng tôi | Link | Mở Trang Hỗ trợ khách hàng ([UC280_UC513_UC536, mục 4.1.22](UC280_UC513_UC536_Ho_tro_khach_hang.md#41222-uc_htkhmh01---khung-giao-dien-tong-the--module-switcher-che-do-da-dang-nhap)). |
 
 ---
-
-#### 4.1.23.5. Ánh xạ Business Rule và MessageList
-
-Màn hình Trang chủ chỉ hiển thị dữ liệu chỉ đọc, không phát sinh nghiệp vụ nhập liệu/validate; toàn bộ Business Rule liên quan đến kiểm soát dữ liệu Slider/Nội dung Trang chủ được áp dụng tại [UCPS016](../03_Website_Quan_tri/01_Quan_tri_he_thong/UCPS016_Quan_ly_cau_hinh_slider_trang_chu.md), mục 4.3.1.12.5.
-
-#### 4.1.23.6. Tiêu chí nghiệm thu
-
-| Mã tiêu chí | Nội dung nghiệm thu |
-| :--- | :--- |
-| AC-UCPS015-001 | Trang chủ hiển thị đúng danh sách Slide đang ở trạng thái hiển thị theo thứ tự đã cấu hình tại UCPS016, tự động chuyển Slide và cho phép chuyển thủ công bằng nút trước/sau hoặc chọn chỉ số (dot). |
-| AC-UCPS015-002 | Nội dung khối Chào mừng/Tra cứu/Đăng ký/Hỗ trợ/Thông báo khẩn hiển thị đúng theo dữ liệu đã cấu hình tại UCPS016, không hard-code trên giao diện. |
-| AC-UCPS015-003 | Liên kết "Tra cứu", "Đăng nhập", "Nhóm hỗ trợ của chúng tôi" điều hướng đúng tới màn hình tương ứng. |
-| AC-UCPS015-004 | Liên kết "văn bản" mở đúng popup và tải được tệp văn bản mẫu yêu cầu cấp Tài khoản đăng ký trực tuyến. |

@@ -1,15 +1,15 @@
 ### 4.1.5. Đăng nhập dành cho Cá nhân/Tổ chức/Cơ quan có thẩm quyền
 
 #### 4.1.5.1. Mục đích
-- Cung cấp cơ chế xác thực danh tính cho Cá nhân, Tổ chức và Cơ quan có thẩm quyền truy cập vào Website Khách hàng qua VNeID hoặc tài khoản cấp bởi hệ thống.
+\- Cung cấp cơ chế xác thực danh tính cho Cá nhân, Tổ chức và Cơ quan có thẩm quyền truy cập vào Website Khách hàng qua VNeID hoặc tài khoản cấp bởi hệ thống.
 
 *a. Phân quyền*
-- Người dùng: Cá nhân/Tổ chức/Cơ quan có thẩm quyền có tài khoản VNeID hoặc tài khoản do hệ thống cấp.
+\- Người dùng: Cá nhân/Tổ chức/Cơ quan có thẩm quyền có tài khoản VNeID hoặc tài khoản do hệ thống cấp.
 
 *b. Điều kiện thực hiện*
-- Hệ thống hoạt động bình thường.
-- Đối với Đăng nhập qua VNeID: Có kết nối mạng ổn định với Cổng Dịch vụ công Quốc gia (DVCQG) và tài khoản VNeID của người dùng đã được kích hoạt định danh điện tử Mức độ 2 (IAL2) trở lên.
-- Đối với Đăng nhập bằng tài khoản được cấp: Người dùng đã được cấp tài khoản nội bộ (Tên đăng nhập và mật khẩu khởi tạo).
+\- Hệ thống hoạt động bình thường.
+\- Đối với Đăng nhập qua VNeID: Có kết nối mạng ổn định với Cổng Dịch vụ công Quốc gia (DVCQG) và tài khoản VNeID của người dùng đã được kích hoạt định danh điện tử Mức độ 2 (IAL2) trở lên.
+\- Đối với Đăng nhập bằng tài khoản được cấp: Người dùng đã được cấp tài khoản nội bộ (Tên đăng nhập và mật khẩu khởi tạo).
 
 ---
 

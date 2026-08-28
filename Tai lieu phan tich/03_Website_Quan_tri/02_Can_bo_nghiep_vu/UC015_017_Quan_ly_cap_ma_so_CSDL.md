@@ -4,330 +4,282 @@
 
 **Mục đích**:
 
-\- Cho phép Cán bộ nghiệp vụ quản lý tập trung toàn bộ danh sách các yêu cầu đăng ký cấp mã số sử dụng CSDL và các mã số sử dụng Cơ sở dữ liệu (CSDL) đã được kích hoạt trên hệ thống.
+Cho phép Cán bộ nghiệp vụ quản lý tập trung toàn bộ danh sách các yêu cầu đăng ký cấp mã số sử dụng CSDL và các mã số sử dụng Cơ sở dữ liệu (CSDL) đã được cấp trên hệ thống, bao gồm:
 
-\- Cho phép Cán bộ nghiệp vụ tự tạo hộ yêu cầu cấp mã số sử dụng CSDL trực tiếp tại quầy (thu phí ngay và cấp mã ngay, hoặc lưu nháp để xử lý sau) đối với khách hàng đến làm việc trực tiếp.
-
-\- Cho phép Cán bộ nghiệp vụ thực hiện đối soát chứng từ thanh toán (chuyển khoản ngân hàng/tiền mặt) để kích hoạt các yêu cầu do khách hàng tự gửi trực tuyến, hoặc từ chối yêu cầu không hợp lệ.
-
-\- Cung cấp tính năng gia hạn, thay đổi trạng thái (khóa/ngưng sử dụng/kích hoạt lại) đối với các mã số sử dụng CSDL đã cấp.
+\- Quản lý tập trung toàn bộ danh sách các yêu cầu đăng ký cấp mã số sử dụng CSDL và các mã số sử dụng CSDL đã được cấp trên hệ thống.
+\- Tạo mới yêu cầu cấp mã số sử dụng CSDL trực tiếp tại quầy đối với khách hàng đến nộp trực tiếp.
+\- Xóa yêu cầu cấp mã số sử dụng CSDL ở trạng thái Lưu nháp.
+\- Kích hoạt yêu cầu cấp mã số sử dụng CSDL sau khi đối soát thành công thông tin thanh toán (chuyển khoản ngân hàng hoặc tiền mặt).
+\- Từ chối các yêu cầu cấp mã số sử dụng CSDL không hợp lệ hoặc chưa nộp phí đầy đủ.
+\- Gia hạn thời hạn sử dụng đối với các mã số sử dụng CSDL thường xuyên của Cá nhân/Tổ chức khi hết hạn.
+\- Khóa hoặc Mở khóa đối với các mã số sử dụng CSDL đã cấp.
 
 *a. Phân quyền*
 
-\- Cán bộ nghiệp vụ (Phòng Quản lý đăng ký trực tuyến và tra cứu thông tin, dữ liệu - QLĐKTT&TTDL): Được thực hiện toàn bộ chức năng tra cứu, tạo mới, chỉnh sửa, kích hoạt, từ chối, gia hạn và thay đổi trạng thái mã số sử dụng CSDL.
+\- Cán bộ nghiệp vụ (Phòng Quản lý đăng ký trực tuyến và tra cứu thông tin, dữ liệu - QLĐKTT&TTDL): Được thực hiện toàn bộ chức năng tra cứu, tạo mới, chỉnh sửa, xóa hồ sơ nháp, kích hoạt, từ chối, gia hạn, khóa và mở khóa mã số sử dụng CSDL.
 
 *b. Điều kiện thực hiện*
 
-\- Cán bộ nghiệp vụ đã đăng nhập thành công vào phân hệ Website Quản trị.
-
-\- Tài khoản cán bộ có quyền truy cập chức năng "Quản lý yêu cầu và cấp mã số sử dụng CSDL".
+\- Người dùng đã đăng nhập thành công vào phân hệ Website Quản trị.
+\- Người dùng được cấp quyền truy cập chức năng "Quản lý yêu cầu và cấp mã số sử dụng CSDL".
 
 ---
 
-##### 4.3.2.15.2. UC015_017.MH01 - Màn hình Danh sách yêu cầu và mã số sử dụng CSDL
+##### 4.3.2.15.2. MH01 - Màn hình Danh sách yêu cầu và mã số sử dụng CSDL
 
-**4.3.2.15.2.1. Màn hình**:
-
-\- Giao diện gồm khu vực Bộ lọc tìm kiếm, Thanh công cụ thao tác và Bảng danh sách kết quả (Grid) hiển thị chung cả yêu cầu đang xử lý lẫn mã số đã cấp.
+###### 4.3.2.15.2.1. Màn hình
 
 ![Màn hình Danh sách yêu cầu và mã số sử dụng CSDL](images/UC015_017_List.png)
 
-**4.3.2.15.2.2. Mô tả thông tin trên màn hình**:
+###### 4.3.2.15.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Bộ lọc tìm kiếm** | | | | |
-| Từ khóa tìm kiếm | String(255) | Không | Trống | Tìm kiếm gần đúng (không phân biệt hoa/thường, tự động Trim space) theo Tên đối tượng đề nghị, Số CCCD/MST, Mã yêu cầu hoặc Mã số sử dụng CSDL. |
-| Loại đối tượng | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. |
-| Loại mã số CSDL | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. |
-| Phương thức thanh toán | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Trạng thái mã số sử dụng CSDL [DM_39]. |
-| Từ ngày | Date | Không | Ngày hiện tại trừ 2 tháng | Lọc theo Ngày tạo yêu cầu, định dạng nhập `dd/mm/yyyy`. Rule so sánh khoảng ngày - **[BR-VAL-007]**. |
-| Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Ngày tạo yêu cầu, định dạng nhập `dd/mm/yyyy`. Nếu Từ ngày lớn hơn Đến ngày, vi phạm **[BR-VAL-007]**, hiển thị **[MSG-ERR-VAL-007]**. |
-| **Thanh công cụ** | - | \- | \- | Vị trí phía trên Bảng danh sách kết quả. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
-| Nút: Tạo mới yêu cầu | - | \- | \- | Control UI: Nút bấm. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
-| Nút: Kết xuất Excel | - | \- | \- | Control UI: Nút bấm. Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
-| **Bảng danh sách kết quả** | - | \- | 10 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>\- Hiển thị đồng thời yêu cầu đang xử lý và mã số sử dụng CSDL đã cấp.<br>\- Sắp xếp mặc định theo Ngày tạo giảm dần.<br>\- Tùy chọn số bản ghi/trang: 5/10/20/50, mặc định **10**.<br>\- Nếu không có dữ liệu phù hợp, hiển thị `"Không tìm thấy bản ghi nào"`.<br>\- Chỉ hiển thị bản ghi trong phạm vi đơn vị Cán bộ nghiệp vụ đăng nhập.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| Cột: STT | Integer(10) | \- | \- | Số thứ tự tăng dần theo trang hiện hành. |
-| Cột: Mã yêu cầu | String(50) | \- | \- | Mã số yêu cầu do hệ thống tự sinh, định dạng `RQ-YYYYMMDD-XXXX` (ví dụ: `RQ-20260625-0001`). |
-| Cột: Mã số sử dụng CSDL | String(50) | \- | \- | Mã truy cập CSDL, định dạng `CQ-XXXXXX` (Cơ quan), `TX-XXXXXX` (Thường xuyên) hoặc `1L-XXXXXX` (Một lần). Hiển thị `"—"` nếu yêu cầu chưa được cấp mã (đang ở trạng thái "Bị từ chối" và chưa xử lý). |
-| Cột: Tên đối tượng đề nghị | String(255) | \- | \- | Tên đối tượng đăng ký cấp mã theo dữ liệu hồ sơ. |
-| Cột: Số CCCD/MST | String(50) | \- | \- | Số CCCD hoặc Mã số thuế của đối tượng đề nghị. Hiển thị `"—"` nếu không có dữ liệu. |
-| Cột: Mã tài khoản trực tuyến | String(255) | \- | \- | Chỉ hiển thị đối với khách hàng có liên kết Tài khoản trực tuyến (quản lý tại **[UC009]**), theo đúng giá trị Mã Tài khoản trực tuyến (Tên đăng nhập) đã liên kết tại **4.3.2.15.3**. Hiển thị `"—"` đối với các bản ghi không liên kết tài khoản trực tuyến. |
-| Cột: Loại đối tượng | Enum(String(50)) | \- | \- | Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. |
-| Cột: Loại mã số CSDL | Enum(String(50)) | \- | \- | Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. |
-| Cột: Phương thức thanh toán | Enum(String(50)) | \- | \- | Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
-| Cột: Ngày tạo | Date | \- | \- | Ngày tạo yêu cầu, định dạng hiển thị bắt buộc: `DD/MM/YYYY`. |
-| Cột: Trạng thái | Enum(String(50)) | \- | \- | Tham chiếu Danh mục Trạng thái mã số sử dụng CSDL [DM_39], hiển thị dạng Tag màu tương ứng.<br>Riêng trạng thái "Bị từ chối" hiển thị thêm biểu tượng gợi ý, di chuột vào hiển thị Lý do từ chối theo dữ liệu hồ sơ. |
-| Cột: Thao tác | String(255) | \- | \- | Gồm các nút thao tác, chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình:<br>\- Xem<br>\- Sửa<br>\- Kích hoạt<br>\- Từ chối<br>\- Gia hạn<br>\- Công tắc bật/tắt trạng thái sử dụng |
+| **Bộ lọc tìm kiếm** | - | - | - | |
+| Mã yêu cầu | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm chính xác hoặc gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Mã yêu cầu. |
+| Mã số sử dụng CSDL | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm chính xác hoặc gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Mã số sử dụng CSDL. |
+| Tên đối tượng đề nghị | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Tên đối tượng đăng ký/đề nghị cấp mã. |
+| Loại đối tượng | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. |
+| Loại mã số CSDL | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. |
+| Phương thức thanh toán | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Lọc theo trạng thái yêu cầu / mã số sử dụng CSDL, gồm các giá trị: `Tất cả`, `Lưu nháp`, `Chờ thanh toán`, `Hoạt động`, `Hết hạn`, `Khóa`, `Ngưng sử dụng`, `Bị từ chối`. |
+| Từ ngày | Date | Không | Ngày hiện tại trừ 2 tháng | Control UI: Datepicker.<br>- Lọc theo Ngày tạo yêu cầu, định dạng nhập `dd/mm/yyyy`.<br>- Rule so sánh khoảng ngày - **[BR-VAL-007]**. |
+| Đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker.<br>- Lọc theo Ngày tạo yêu cầu, định dạng nhập `dd/mm/yyyy`.<br>- Nếu Từ ngày lớn hơn Đến ngày, vi phạm **[BR-VAL-007]**, hiển thị **[MSG-ERR-VAL-007]**. |
+| **Bảng danh sách kết quả** | - | - | 10 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- Hiển thị đồng thời yêu cầu đang xử lý và mã số sử dụng CSDL đã cấp.<br>- Sắp xếp mặc định theo Ngày tạo giảm dần.<br>- Tùy chọn số bản ghi/trang: 10/20/50/100, mặc định **10**.<br>- Chỉ hiển thị bản ghi trong phạm vi đơn vị Cán bộ nghiệp vụ đăng nhập.<br>- Sự kiện Click dòng (Row-click): Cho phép người dùng click vào bất kỳ dòng bản ghi nào trên bảng để mở màn hình Xem chi tiết.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| STT | Integer(10) | - | - | Control UI: Text hiển thị (Read-only).<br>- Số thứ tự tăng dần theo trang hiện hành. |
+| Mã yêu cầu | String(50) | - | - | Control UI: Text hiển thị (Read-only).<br>- Mã số yêu cầu do hệ thống tự sinh, định dạng `RQ-YYYYMMDD-XXXX` (ví dụ: `RQ-20260625-0001`). |
+| Mã số sử dụng CSDL | String(50) | - | - | Control UI: Text hiển thị (Read-only).<br>- Mã truy cập CSDL, định dạng `CQ-XXXXXX` (Cơ quan), `TX-XXXXXX` (Thường xuyên) hoặc `1L-XXXXXX` (Một lần).<br>- Hiển thị `"—"` nếu yêu cầu chưa được cấp mã. |
+| Tên đối tượng đề nghị | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Tên đối tượng đăng ký cấp mã theo dữ liệu hồ sơ. |
+| Mã tài khoản trực tuyến | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Chỉ hiển thị đối với khách hàng có liên kết Tài khoản trực tuyến (quản lý tại Module Quản lý tài khoản khách hàng), theo đúng giá trị Mã Tài khoản trực tuyến (Tên đăng nhập) đã liên kết.<br>- Hiển thị `"—"` đối với các bản ghi không liên kết tài khoản trực tuyến. |
+| Loại đối tượng | Enum(String(50)) | - | - | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. |
+| Loại mã số CSDL | Enum(String(50)) | - | - | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. |
+| Phương thức thanh toán | Enum(String(50)) | - | - | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
+| Ngày tạo | Date | - | - | Control UI: Text hiển thị (Read-only).<br>- Ngày tạo yêu cầu, định dạng hiển thị: `dd/mm/yyyy`. |
+| Trạng thái | Enum(String(50)) | - | - | Control UI: Badge/Tag trạng thái.<br>- Hiển thị badge theo trạng thái hồ sơ: `Lưu nháp`, `Chờ thanh toán`, `Hoạt động`, `Hết hạn`, `Khóa`, `Ngưng sử dụng`, `Bị từ chối`.<br>- Riêng trạng thái `Bị từ chối` hiển thị thêm biểu tượng gợi ý (tooltip), di chuột vào hiển thị Lý do từ chối theo dữ liệu hồ sơ. |
+| Thao tác | String(255) | - | - | Control UI: Nhóm nút thao tác.<br>- Hiển thị các nút/icon thao tác tương ứng theo trạng thái bản ghi:<br>+ **Sửa**: Chỉ hiển thị thao tác được khi bản ghi ở trạng thái "Lưu nháp"; các trạng thái khác hiển thị icon ở dạng làm mờ.<br>+ **Xóa**: Chỉ hiển thị thao tác được khi bản ghi ở trạng thái "Lưu nháp"; các trạng thái khác hiển thị icon ở dạng làm mờ.<br>+ **Kích hoạt**: Chỉ hiển thị thao tác được khi bản ghi ở trạng thái "Chờ thanh toán"; các trạng thái khác hiển thị icon ở dạng làm mờ.<br>+ **Từ chối**: Chỉ hiển thị thao tác được khi bản ghi ở trạng thái "Chờ thanh toán"; các trạng thái khác hiển thị icon ở dạng làm mờ.<br>+ **Gia hạn**: Chỉ hiển thị thao tác được khi bản ghi ở trạng thái "Hết hạn"; các trạng thái khác hiển thị icon ở dạng làm mờ.<br>+ **Công tắc bật/tắt (Khóa / Mở khóa)**: Chỉ cho phép thao tác khi bản ghi ở trạng thái "Hoạt động" hoặc "Khóa"; các trạng thái khác ("Lưu nháp", "Chờ thanh toán", "Hết hạn", "Ngưng sử dụng", "Bị từ chối") hiển thị công tắc ở dạng làm mờ.<br>+ **Nguyên tắc đối với trạng thái "Ngưng sử dụng"**: Toàn bộ các nút thao tác và công tắc đều ở trạng thái khóa mờ hoàn toàn, không cho phép thực hiện bất kỳ thao tác nào. |
 
-**4.3.2.15.2.3. Chức năng trên màn hình**:
+###### 4.3.2.15.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Hệ thống lọc lại Bảng danh sách kết quả theo đúng các tiêu chí đang thiết lập ở Bộ lọc tìm kiếm. Từ khóa rỗng hiển thị lại toàn bộ danh sách mặc định.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-| 2 | Xóa bộ lọc | Nút | Đặt lại toàn bộ tiêu chí Bộ lọc tìm kiếm về giá trị mặc định (riêng Từ ngày/Đến ngày trở về khoảng 2 tháng gần nhất tính đến ngày hiện tại) và làm mới Bảng danh sách kết quả. |
-| 3 | Tạo mới yêu cầu | Nút | Mở **UC015_017.MH02 - Popup Tạo mới/Chỉnh sửa yêu cầu cấp mã số sử dụng CSDL** ở chế độ Tạo mới. |
-| 4 | Kết xuất Excel | Nút | Rule Export Excel - **[BR-EXP-040]**.<br>Xuất tệp Excel theo đúng kết quả tìm kiếm/lọc hiện hành trên Bảng danh sách kết quả.<br>Nếu danh sách rỗng, hiển thị **[MSG-WRN-SYS-001]** và không thực hiện xuất tệp. |
-| 5 | Xem | Row Click | Luôn hiển thị và cho phép thao tác với mọi trạng thái. Mở **UC015_017.MH07 - Popup Xem chi tiết yêu cầu và mã số sử dụng CSDL**. |
-| 6 | Sửa | Icon | Chỉ hiển thị thao tác được (không làm mờ) khi bản ghi ở trạng thái "Chờ kích hoạt"; các trạng thái khác hiển thị Icon ở dạng làm mờ, không cho phép bấm. Mở **UC015_017.MH02** ở chế độ Chỉnh sửa. |
-| 7 | Kích hoạt | Icon | Chỉ hiển thị thao tác được khi bản ghi ở trạng thái "Chờ kích hoạt"; các trạng thái khác hiển thị Icon ở dạng làm mờ. Mở **UC015_017.MH03 - Popup Kích hoạt yêu cầu cấp mã số sử dụng CSDL**. |
-| 8 | Từ chối | Icon | Chỉ hiển thị thao tác được khi bản ghi ở trạng thái "Chờ kích hoạt"; các trạng thái khác hiển thị Icon ở dạng làm mờ. Mở **UC015_017.MH04 - Popup Từ chối yêu cầu cấp mã số sử dụng CSDL**. |
-| 9 | Gia hạn | Icon | Chỉ hiển thị thao tác được khi bản ghi ở trạng thái "Hết hạn"; các trạng thái khác hiển thị Icon ở dạng làm mờ. Mở **UC015_017.MH05 - Popup Gia hạn mã số sử dụng CSDL**. |
-| 10 | Công tắc bật/tắt trạng thái sử dụng | Toggle/Switch | Chỉ cho phép thao tác khi bản ghi ở trạng thái "Hoạt động", "Khóa" hoặc "Ngưng sử dụng"; các trạng thái khác hiển thị công tắc ở dạng làm mờ, không cho phép gạt.<br>\- Trạng thái bật (ON) tương ứng "Hoạt động"; trạng thái tắt (OFF) tương ứng "Khóa"/"Ngưng sử dụng".<br>\- Gạt công tắc theo bất kỳ chiều nào (Hoạt động → Khóa/Ngưng sử dụng, hoặc Khóa/Ngưng sử dụng → Hoạt động) đều không thay đổi trạng thái ngay lập tức, mà mở **UC015_017.MH06 - Popup Thay đổi trạng thái sử dụng mã số sử dụng CSDL** với "Hành động yêu cầu" được gợi ý sẵn tương ứng chiều gạt (Khóa/Ngưng sử dụng hoặc Kích hoạt lại) để người dùng xác nhận lý do trước khi hệ thống thực sự cập nhật trạng thái.<br>\- Nếu người dùng bấm Hủy tại popup, công tắc tự động khôi phục về đúng trạng thái hiện hành trên hệ thống (không giữ theo vị trí vừa gạt). |
+| :--- | :--- | :--- | :--- |
+| 1 | Tìm kiếm | Button | **TH1 (Tìm kiếm không hợp lệ)**: Nhập ngày sai định dạng `dd/mm/yyyy` hoặc Từ ngày lớn hơn Đến ngày. Vi phạm **[BR-VAL-007]**, hệ thống chặn tìm kiếm, highlight đỏ viền ô nhập lỗi đầu tiên (class `.is-invalid`), hiển thị thông báo lỗi **[MSG-ERR-VAL-007]** ngay phía dưới ô nhập và tự động focus con trỏ vào ô lỗi đó. |
+| | | | **TH2 (Không có dữ liệu trả về)**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung **[MSG-INF-SYS-001]**.<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel": Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*. |
+| | | | **TH3 (Có dữ liệu trả về)**:<br>+ Bảng kết quả: Hiển thị danh sách các bản ghi thỏa mãn điều kiện lọc theo đúng cấu trúc các cột quy định, sắp xếp mặc định theo Ngày tạo giảm dần.<br>+ Thanh phân trang (Pagination): Hiển thị thông tin phân trang thực tế (ví dụ: *"Hiển thị 1-10 của 25 bản ghi"*), kích hoạt khả dụng các nút điều hướng trang tương ứng theo số lượng trang.<br>+ Nút "Kết xuất Excel": Thiết lập ở trạng thái khả dụng (Enabled) cho phép người dùng click để xuất dữ liệu. |
+| 2 | Xóa bộ lọc | Button | Đặt lại toàn bộ tiêu chí Bộ lọc tìm kiếm về giá trị mặc định (riêng Từ ngày/Đến ngày trở về khoảng 2 tháng gần nhất tính đến ngày hiện tại) và làm mới Bảng danh sách kết quả. |
+| 3 | Tạo mới yêu cầu | Button | Mở **MH02 - Popup Tạo mới/Chỉnh sửa yêu cầu cấp mã số sử dụng CSDL** ở chế độ Tạo mới. |
+| 4 | Kết xuất Excel | Button | Rule Export Excel - **[BR-EXP-040]**.<br>- Xuất tệp Excel theo đúng kết quả tìm kiếm/lọc hiện hành trên Bảng danh sách kết quả.<br>- Nếu danh sách rỗng, hiển thị **[MSG-WRN-SYS-001]** và không thực hiện xuất tệp. |
+| 5 | Click dòng (Row-click) | Row Click | Khi người dùng click vào bất kỳ dòng bản ghi nào trên bảng kết quả, hệ thống mở **MH07 - Popup Xem chi tiết yêu cầu và mã số sử dụng CSDL** để xem toàn bộ thông tin chi tiết. |
+| 6 | Sửa | Icon | Chỉ khả dụng khi bản ghi ở trạng thái "Lưu nháp". Mở **MH02 - Popup Tạo mới/Chỉnh sửa yêu cầu cấp mã số sử dụng CSDL** ở chế độ Chỉnh sửa. |
+| 7 | Xóa | Icon | Chỉ khả dụng khi bản ghi ở trạng thái "Lưu nháp".<br>- Khi click, hệ thống mở **[POPUP-CFM-001]** (Popup Xác nhận dùng chung quy định tại Phụ lục) hiển thị nội dung thông điệp **[MSG-CFM-SYS-001]**: *"Bạn có chắc chắn muốn xóa yêu cầu cấp mã số sử dụng CSDL [Mã yêu cầu] không?"*.<br>- Nếu người dùng chọn **Đồng ý**: Hệ thống thực hiện xóa vĩnh viễn bản ghi lưu nháp, hiển thị thông báo thành công theo quy chuẩn dùng chung **[MSG-SUC-SYS-004]** và làm mới Bảng danh sách kết quả.<br>- Nếu chọn **Hủy**: Đóng popup xác nhận và giữ nguyên dữ liệu. |
+| 8 | Kích hoạt | Icon | Chỉ khả dụng khi bản ghi ở trạng thái "Chờ thanh toán". Mở **MH03 - Popup Kích hoạt yêu cầu cấp mã số sử dụng CSDL**. |
+| 9 | Từ chối | Icon | Chỉ khả dụng khi bản ghi ở trạng thái "Chờ thanh toán". Mở **MH04 - Popup Từ chối yêu cầu cấp mã số sử dụng CSDL**. |
+| 10 | Gia hạn | Icon | Chỉ khả dụng khi bản ghi ở trạng thái "Hết hạn". Mở **MH05 - Popup Gia hạn mã số sử dụng CSDL**. |
+| 11 | Công tắc bật/tắt (Khóa / Mở khóa) | Toggle/Switch | - Chỉ khả dụng khi bản ghi ở trạng thái "Hoạt động" hoặc "Khóa".<br>- Trạng thái bật (ON) tương ứng "Hoạt động"; trạng thái tắt (OFF) tương ứng "Khóa".<br>- Gạt công tắc theo bất kỳ chiều nào (Hoạt động → Khóa, hoặc Khóa → Mở khóa) đều không thay đổi trạng thái ngay lập tức, mà mở **MH06 - Popup Khóa / Mở khóa mã số sử dụng CSDL** với "Hành động yêu cầu" được gợi ý sẵn tương ứng chiều gạt (Khóa hoặc Mở khóa) để người dùng xác nhận lý do trước khi hệ thống thực sự cập nhật trạng thái.<br>- Nếu người dùng bấm Hủy tại popup, công tắc tự động khôi phục về đúng trạng thái hiện hành trên hệ thống (không giữ theo vị trí vừa gạt). |
 
 ---
 
-##### 4.3.2.15.3. UC015_017.MH02 - Popup Tạo mới/Chỉnh sửa yêu cầu cấp mã số sử dụng CSDL
+##### 4.3.2.15.3. MH02 - Popup Tạo mới/Chỉnh sửa yêu cầu cấp mã số sử dụng CSDL
 
-**4.3.2.15.3.1. Màn hình**:
-
-\- Giao diện Popup Modal nhập liệu, dùng chung cho 2 chế độ Tạo mới và Chỉnh sửa (chỉ áp dụng chỉnh sửa với yêu cầu đang ở trạng thái "Chờ kích hoạt").
+###### 4.3.2.15.3.1. Màn hình
 
 ![Màn hình Tạo mới/Chỉnh sửa yêu cầu cấp mã số sử dụng CSDL](images/UC015_017_Create.png)
 
-**4.3.2.15.3.2. Mô tả thông tin trên màn hình**:
+###### 4.3.2.15.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Loại đối tượng | Enum(String(50)) | Có | Trống | Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. Rule bắt buộc nhập - **[BR-VAL-001]**.<br>Khi chọn "Cơ quan có thẩm quyền": ẩn trường Loại mã số sử dụng CSDL (mặc định luôn là "Sử dụng thường xuyên", Vô thời hạn) và mức phí luôn là Miễn phí. |
-| Loại mã số sử dụng CSDL | Enum(String(50)) | Có | Sử dụng thường xuyên | Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. Chỉ hiển thị khi Loại đối tượng là "Cá nhân" hoặc "Tổ chức". |
-| Mã Tài khoản trực tuyến (Tên đăng nhập) | String(255) | Có* | Trống | (*) Bắt buộc và hiển thị khi: Loại đối tượng là "Cá nhân"/"Tổ chức" và Loại mã số là "Sử dụng thường xuyên", hoặc Loại đối tượng là "Cơ quan có thẩm quyền". Ẩn hoàn toàn với trường hợp "Cá nhân"/"Tổ chức" chọn "Sử dụng một lần".<br>Nhập tên đăng nhập để tìm và liên kết tài khoản khách hàng quản lý tại **[UC009]**.<br>\- Nếu tìm thấy: Hệ thống tự động điền và chuyển các trường Tên đối tượng đề nghị, Số CCCD/MST, Email, Số điện thoại, Địa chỉ liên hệ sang chế độ Chỉ đọc theo đúng dữ liệu tài khoản.<br>\- Nếu không tìm thấy: Hiển thị trạng thái không tìm thấy, giữ nguyên các trường thông tin ở chế độ nhập tay. |
-| Tên đối tượng đề nghị | String(255) | Có | Trống | Rule bắt buộc nhập - **[BR-VAL-001]**.<br>Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay. |
-| Số CCCD/MST | String(50) | Không | Trống | Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay.<br>Nếu nhập CCCD: Rule định dạng CCCD - **[BR-VAL-004]**.<br>Nếu nhập Mã số thuế: Rule định dạng MST - **[BR-VAL-005]**. |
-| Email nhận thông tin | String(255) | Không | Trống | Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay. Rule định dạng Email - **[BR-VAL-002]**. |
-| Số điện thoại liên hệ | String(20) | Không | Trống | Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay. Rule định dạng Số điện thoại - **[BR-VAL-003]**. |
-| Địa chỉ liên hệ | String(500) | Không | Trống | Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay. |
-| Ngày tạo | Datetime | \- | Ngày giờ hiện tại | Chỉ đọc. Ghi nhận thời điểm lập yêu cầu, định dạng hiển thị bắt buộc: `DD/MM/YYYY HH:mm:ss`. |
-| Ngày hết hạn | Date | \- | Theo cấu hình | Chỉ đọc. Hiển thị ngày hết hạn dự kiến; giá trị chính thức được hệ thống tính lại tại thời điểm Kích hoạt/Cấp mã theo quy tắc:<br>\- Cơ quan có thẩm quyền: Vô thời hạn (hiển thị `"—"`).<br>\- Cá nhân/Tổ chức (Sử dụng thường xuyên): Ngày `31/12` của năm cấp mã.<br>\- Cá nhân/Tổ chức (Sử dụng một lần): Không giới hạn thời gian (hiển thị `"—"`); mã có hiệu lực cho tới khi được sử dụng (tra cứu) đúng 01 lần. |
-| Phương thức thanh toán | Enum(String(50)) | Không | Chuyển khoản ngân hàng | Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40] (không hiển thị tùy chọn "Tất cả"). Tự động khóa cố định về "Miễn phí" (không cho chọn lại) khi Loại đối tượng là "Cơ quan có thẩm quyền". |
-| Mức phí cần thu | Decimal(18,0) | \- | Theo cấu hình | Chỉ đọc. Hệ thống tự động tính theo Loại đối tượng, Loại mã số sử dụng CSDL và thời điểm lập yêu cầu:<br>\- Cơ quan có thẩm quyền: Miễn phí.<br>\- Cá nhân/Tổ chức, Sử dụng một lần: `20.000 VNĐ` (yêu cầu lập trước ngày 01/07 hàng năm) hoặc `25.000 VNĐ` (yêu cầu lập từ ngày 01/07 hàng năm trở đi).<br>\- Cá nhân/Tổ chức, Sử dụng thường xuyên: `300.000 VNĐ` (yêu cầu lập trước ngày 01/07 hàng năm) hoặc `350.000 VNĐ` (yêu cầu lập từ ngày 01/07 hàng năm trở đi). |
-| Ghi chú thanh toán | String(500) | Không | Trống | Ghi chú thêm về thông tin thanh toán. |
+| Loại đối tượng | Enum(String(50)) | Có | Trống | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37].<br>- Rule bắt buộc nhập - **[BR-VAL-001]**.<br>- Khi chọn "Cơ quan có thẩm quyền": ẩn trường Loại mã số sử dụng CSDL (mặc định luôn là "Sử dụng thường xuyên", Vô thời hạn) và mức phí luôn là Miễn phí. |
+| Loại mã số sử dụng CSDL | Enum(String(50)) | Có | Sử dụng thường xuyên | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38].<br>- Chỉ hiển thị khi Loại đối tượng là "Cá nhân" hoặc "Tổ chức". |
+| Mã Tài khoản trực tuyến (Tên đăng nhập) | String(255) | Có* | Trống | Control UI: Input text kèm nút Tìm kiếm.<br>- (*) Bắt buộc và hiển thị khi: Loại đối tượng là "Cá nhân"/"Tổ chức" và Loại mã số là "Sử dụng thường xuyên", hoặc Loại đối tượng là "Cơ quan có thẩm quyền". Ẩn hoàn toàn với trường hợp "Cá nhân"/"Tổ chức" chọn "Sử dụng một lần".<br>- Nhập tên đăng nhập để tìm và liên kết tài khoản khách hàng quản lý tại Module Quản lý tài khoản khách hàng.<br>- Nếu tìm thấy: Hệ thống tự động điền và chuyển các trường Tên đối tượng đề nghị, Số CCCD/MST, Email, Số điện thoại, Địa chỉ liên hệ sang chế độ Chỉ đọc theo đúng dữ liệu tài khoản.<br>- Nếu không tìm thấy: Hiển thị trạng thái không tìm thấy, giữ nguyên các trường thông tin ở chế độ nhập tay. |
+| Tên đối tượng đề nghị | String(255) | Có | Trống | Control UI: Input text.<br>- Rule bắt buộc nhập - **[BR-VAL-001]**.<br>- Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay. |
+| Số CCCD/MST | String(50) | Không | Trống | Control UI: Input text.<br>- Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay.<br>- Nếu nhập CCCD: Rule định dạng CCCD - **[BR-VAL-004]**.<br>- Nếu nhập Mã số thuế: Rule định dạng MST - **[BR-VAL-005]**. |
+| Email nhận thông tin | String(255) | Không | Trống | Control UI: Input text.<br>- Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay.<br>- Rule định dạng Email - **[BR-VAL-002]**. |
+| Số điện thoại liên hệ | String(20) | Không | Trống | Control UI: Input text.<br>- Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay.<br>- Rule định dạng Số điện thoại - **[BR-VAL-003]**. |
+| Địa chỉ liên hệ | String(500) | Không | Trống | Control UI: Input text.<br>- Tự động điền và Chỉ đọc nếu đã liên kết Tài khoản trực tuyến hợp lệ; ngược lại cho phép nhập tay. |
+| Ngày tạo | Datetime | - | Ngày giờ hiện tại | Control UI: Text hiển thị (Read-only).<br>- Ghi nhận thời điểm lập yêu cầu, định dạng hiển thị: `dd/mm/yyyy HH:mm:ss`. |
+| Ngày hết hạn | Date | - | Theo cấu hình | Control UI: Text hiển thị (Read-only).<br>- Hiển thị ngày hết hạn dự kiến; giá trị chính thức được hệ thống tính lại tại thời điểm Kích hoạt/Cấp mã theo quy tắc:<br>+ Cơ quan có thẩm quyền: Vô thời hạn (hiển thị `"—"`).<br>+ Cá nhân/Tổ chức (Sử dụng thường xuyên): Ngày `31/12` của năm cấp mã.<br>+ Cá nhân/Tổ chức (Sử dụng một lần): Không giới hạn thời gian (hiển thị `"—"`); mã có hiệu lực cho tới khi được sử dụng (tra cứu) đúng 01 lần. |
+| Phương thức thanh toán | Enum(String(50)) | Không | Chuyển khoản ngân hàng | Control UI: Combobox.<br>- Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40] (không hiển thị tùy chọn "Tất cả").<br>- Tự động khóa cố định về "Miễn phí" (không cho chọn lại) khi Loại đối tượng là "Cơ quan có thẩm quyền". |
+| Mức phí cần thu | Decimal(18,0) | - | Theo cấu hình | Control UI: Text hiển thị (Read-only).<br>- Hệ thống tự động tính theo Loại đối tượng, Loại mã số sử dụng CSDL và thời điểm lập yêu cầu:<br>+ Cơ quan có thẩm quyền: Miễn phí.<br>+ Cá nhân/Tổ chức, Sử dụng một lần: Lấy theo cấu hình biểu phí dịch vụ cấp mã tra cứu một lần.<br>+ Cá nhân/Tổ chức, Sử dụng thường xuyên: Lấy theo cấu hình biểu phí dịch vụ cấp mã tra cứu thường xuyên (yêu cầu lập trước ngày 01/07 thu 100%; yêu cầu lập từ ngày 01/07 trở đi thu 50%). |
+| Ghi chú thanh toán | String(500) | Không | Trống | Control UI: Textarea.<br>- Ghi chú thêm về thông tin thanh toán. |
 
-**4.3.2.15.3.3. Chức năng trên màn hình**:
+###### 4.3.2.15.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng Popup Modal, không lưu bất kỳ thay đổi nào. |
-| 2 | Lưu nháp | Nút | TH1 (Trống trường bắt buộc): Vi phạm **[BR-VAL-001]**, hiển thị **[MSG-ERR-VAL-001]** dưới ô nhập lỗi đầu tiên. Không cho phép lưu.<br>TH2 (Trùng đối tượng đã được cấp mã CSDL): Vi phạm **[BR-DK-027]**; Cá nhân/Tổ chức hiển thị **[MSG-ERR-VAL-009]** và chặn lưu; Cơ quan có thẩm quyền hiển thị **[MSG-CFM-DK-009]** cho phép chọn Tiếp tục hoặc Hủy.<br>TH Hợp lệ:<br>\+ Lưu yêu cầu với trạng thái "Chờ kích hoạt", tự sinh Mã yêu cầu `RQ-YYYYMMDD-XXXX`.<br>\+ Tự động sinh trước Mã số sử dụng CSDL tương ứng loại đối tượng/loại mã (chi tiết tại mục Quy trình sinh mã bên dưới), lưu ở trạng thái "Chờ kích hoạt" (chưa thể tra cứu, chưa liên kết tài khoản).<br>\+ Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-001]** (chế độ Tạo mới) hoặc **[MSG-SUC-DK-CSDL-003]** (chế độ Chỉnh sửa) và làm mới Bảng danh sách kết quả. |
-| 3 | Cấp mã | Nút | Chỉ áp dụng khi Cán bộ nghiệp vụ trực tiếp thu phí tại quầy ngay thời điểm lập/chỉnh sửa yêu cầu (không yêu cầu đính kèm chứng từ do chính cán bộ là người thu tiền và chịu trách nhiệm đối chiếu).<br>TH1 (Trống trường bắt buộc): Tương tự chức năng Lưu nháp - **[BR-VAL-001]**/**[MSG-ERR-VAL-001]**.<br>TH2 (Trùng đối tượng đã được cấp mã CSDL): Tương tự chức năng Lưu nháp - **[BR-DK-027]**.<br>TH Hợp lệ:<br>\+ Lưu yêu cầu với trạng thái "Hoàn thành".<br>\+ Thực hiện Quy trình Kích hoạt & Cấp mã (chi tiết tại mục Quy trình sinh mã bên dưới): cập nhật Mã số sử dụng CSDL từ "Chờ kích hoạt" sang "Hoạt động", thiết lập ngày cấp = ngày hiện tại và ngày hết hạn theo quy tắc tương ứng, tạo/liên kết tài khoản tra cứu.<br>\+ Nếu Mức phí khác Miễn phí: Bật khả dụng nút "In biên lai" để in ngay biên lai thu phí, lệ phí tại **UC015_017.MH08**.<br>\+ Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-002]** và làm mới Bảng danh sách kết quả. |
-| 4 | In biên lai | Nút | Chỉ khả dụng (không làm mờ) khi Mức phí cần thu khác Miễn phí. Mở **UC015_017.MH08 - Popup Biên lai thu phí, lệ phí** hiển thị nội dung biên lai theo dữ liệu yêu cầu hiện hành để in tại chỗ cho khách hàng. |
-
-**Quy trình sinh mã và Kích hoạt mã số sử dụng CSDL** *(áp dụng chung cho chức năng Cấp mã tại MH02 và chức năng Kích hoạt tại MH03)*:
-
-\- **Sinh mã và kiểm tra trùng lặp** (thực hiện ngay khi Lưu nháp/Gửi yêu cầu):
-  \+ Cơ quan có thẩm quyền: Sinh mã dạng `CQ-XXXXXX` (6 chữ số ngẫu nhiên).
-  \+ Cá nhân/Tổ chức (Sử dụng thường xuyên): Sinh mã dạng `TX-XXXXXX` (6 chữ số ngẫu nhiên).
-  \+ Cá nhân/Tổ chức (Sử dụng một lần): Sinh mã dạng `1L-XXXXXX` (6 chữ số ngẫu nhiên).
-  \+ Hệ thống kiểm tra trùng lặp mã số trong CSDL (Rule kiểm tra trùng lặp - **[BR-VAL-009]**), nếu trùng sẽ sinh lại mã khác đến khi duy nhất.
-
-\- **Kích hoạt & thiết lập tài khoản tra cứu**:
-  \+ Cơ quan có thẩm quyền: Tự động tạo tài khoản đăng nhập mới (Tên đăng nhập = mã `CQ-XXXXXX`, mật khẩu sinh ngẫu nhiên gửi qua email), vai trò "Tra cứu Cơ quan có thẩm quyền", chỉ dùng để tra cứu CSDL.
-  \+ Cá nhân/Tổ chức (Sử dụng thường xuyên): Liên kết trực tiếp mã `TX-XXXXXX` vào tài khoản khách hàng đã chọn (quản lý tại **[UC009]**), kích hoạt quyền tra cứu nâng cao trên tài khoản hiện có, không sinh thêm tài khoản mới.
-  \+ Cá nhân/Tổ chức (Sử dụng một lần): Liên kết mã `1L-XXXXXX` vào tài khoản khách hàng đã chọn (nếu có) hoặc lưu độc lập; thiết lập số lượt tra cứu bằng 1 (chỉ tra cứu đúng 01 lần duy nhất). Sau khi khách hàng sử dụng lượt tra cứu duy nhất này tại phân hệ Website Khách hàng, hệ thống tự động chuyển trạng thái mã số sang "Đã sử dụng" (thao tác nằm ngoài phạm vi tính năng này).
-
-\- **Thiết lập ngày hết hạn**:
-  \+ Cơ quan có thẩm quyền: Vô thời hạn (`—`, lưu giá trị NULL).
-  \+ Cá nhân/Tổ chức (Sử dụng thường xuyên): `31/12` của năm cấp mã.
-  \+ Cá nhân/Tổ chức (Sử dụng một lần): Không thiết lập ngày hết hạn (`—`, lưu giá trị NULL); mã có hiệu lực cho tới khi được sử dụng (tra cứu) đúng 01 lần, không ràng buộc theo thời gian.
-
-\- **Ghi nhận giao dịch**: Ghi nhận thông tin đóng phí tương ứng phương thức thanh toán đã chọn.
-
-\- **Gửi email thông báo**:
-  \+ Mã một lần: Gửi email chứa Mã số sử dụng CSDL đã cấp, có hiệu lực tra cứu đúng 01 lần, không ràng buộc thời gian sử dụng.
-  \+ Mã thường xuyên/Cơ quan có thẩm quyền: Gửi email chứa mật khẩu tài khoản truy cập mới sinh (Cơ quan có thẩm quyền) hoặc thông báo kích hoạt thành công (Cá nhân/Tổ chức, tài khoản đã liên kết sẵn).
+| :--- | :--- | :--- | :--- |
+| 1 | Hủy | Button | Đóng Popup Modal, không lưu bất kỳ thay đổi nào. |
+| 2 | Lưu nháp | Button | **TH1 (Trống trường bắt buộc)**: Vi phạm **[BR-VAL-001]**, hiển thị **[MSG-ERR-VAL-001]** dưới ô nhập lỗi đầu tiên. Không cho phép lưu. |
+| | | | **TH2 (Trùng đối tượng đã được cấp mã CSDL)**: Vi phạm **[BR-DK-027]**; Cá nhân/Tổ chức hiển thị **[MSG-ERR-VAL-009]** và chặn lưu; Cơ quan có thẩm quyền hiển thị **[MSG-CFM-DK-009]** cho phép chọn Tiếp tục hoặc Hủy. |
+| | | | **TH Hợp lệ**:<br>+ Lưu yêu cầu với trạng thái "Lưu nháp", tự sinh Mã yêu cầu `RQ-YYYYMMDD-XXXX`.<br>+ Tự động sinh trước Mã số sử dụng CSDL duy nhất (không trùng lặp - **[BR-VAL-009]**) tương ứng theo loại đối tượng/loại mã (`CQ-XXXXXX`, `TX-XXXXXX`, hoặc `1L-XXXXXX`), lưu ở trạng thái "Lưu nháp" (chưa thể tra cứu, chưa liên kết tài khoản).<br>+ Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-001]** (chế độ Tạo mới) hoặc **[MSG-SUC-DK-CSDL-003]** (chế độ Chỉnh sửa) và làm mới Bảng danh sách kết quả. |
+| 3 | Cấp mã | Button | **TH1 (Trống trường bắt buộc)**: Tương tự chức năng Lưu nháp - **[BR-VAL-001]**/**[MSG-ERR-VAL-001]**. |
+| | | | **TH2 (Trùng đối tượng đã được cấp mã CSDL)**: Tương tự chức năng Lưu nháp - **[BR-DK-027]**. |
+| | | | **TH Hợp lệ**:<br>+ Tự sinh Mã yêu cầu `RQ-YYYYMMDD-XXXX`.<br>+ Sinh ngẫu nhiên Mã số sử dụng CSDL duy nhất (không trùng lặp - **[BR-VAL-009]**): dạng `CQ-XXXXXX` (Cơ quan có thẩm quyền), `TX-XXXXXX` (Cá nhân/Tổ chức sử dụng thường xuyên), hoặc `1L-XXXXXX` (Cá nhân/Tổ chức sử dụng một lần); thiết lập trạng thái bản ghi / mã số sang "Hoạt động".<br>+ Thiết lập Ngày cấp: Ngày hiện tại (định dạng `dd/mm/yyyy`).<br>+ Thiết lập Ngày hết hạn:<br>&nbsp;&nbsp;• **Cơ quan có thẩm quyền**: Vô thời hạn (`—`, lưu giá trị NULL).<br>&nbsp;&nbsp;• **Sử dụng thường xuyên**: Ngày `31/12` của năm cấp mã.<br>&nbsp;&nbsp;• **Sử dụng một lần**: Không giới hạn thời gian (`—`, lưu giá trị NULL; mã có hiệu lực cho tới khi được sử dụng tra cứu đúng 01 lần).<br>+ Ghi nhận thông tin đóng phí tương ứng phương thức thanh toán đã chọn.<br>+ Tự động gửi email thông báo cấp mã/kích hoạt thành công kèm thông tin tài khoản cho khách hàng.<br>+ Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-002]** và làm mới Bảng danh sách kết quả. |
 
 ---
 
-##### 4.3.2.15.4. UC015_017.MH03 - Popup Kích hoạt yêu cầu cấp mã số sử dụng CSDL
+##### 4.3.2.15.4. MH03 - Popup Kích hoạt yêu cầu cấp mã số sử dụng CSDL
 
-**4.3.2.15.4.1. Màn hình**:
-
-\- Giao diện Popup Modal nhập thông tin đối soát thanh toán và kích hoạt, mở khi Cán bộ nghiệp vụ bấm "Kích hoạt" đối với yêu cầu đang ở trạng thái "Chờ kích hoạt" (áp dụng cho các yêu cầu do khách hàng tự gửi trực tuyến, cần đối soát chứng từ trước khi cấp mã).
+###### 4.3.2.15.4.1. Màn hình
 
 ![Màn hình Kích hoạt yêu cầu cấp mã số sử dụng CSDL](images/UC015_017_Approve.png)
 
-**4.3.2.15.4.2. Mô tả thông tin trên màn hình**:
+###### 4.3.2.15.4.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Mã yêu cầu | String(50) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Loại mã số sử dụng CSDL | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Tên đối tượng đề nghị | String(255) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Loại đối tượng | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Mức phí cần thanh toán | Decimal(18,0) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Phương thức thanh toán | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Số biên lai / Mã giao dịch | String(50) | Có | Trống | Nhập số biên lai/mã giao dịch thực tế đã đối soát thành công. Rule bắt buộc nhập - **[BR-VAL-001]**. |
-| Ngày giao dịch | Date | Có | Ngày hiện tại | Định dạng nhập `dd/mm/yyyy`. Rule logic ngày quá khứ - **[BR-VAL-008]** (phải nhỏ hơn hoặc bằng ngày hiện tại). |
-| Tệp chứng từ thanh toán | File | Có | Trống | Rule File chứng từ thanh toán (đơn) - **[BR-FILE-012]** (.pdf/.jpg/.png, tối đa 1 tệp, 20MB). |
-| Ghi chú kích hoạt | String(500) | Không | Trống | Ghi chú thêm về thông tin đối soát nếu cần. |
+| Mã yêu cầu | String(50) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Loại mã số sử dụng CSDL | Enum(String(50)) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Tên đối tượng đề nghị | String(255) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Loại đối tượng | Enum(String(50)) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Mức phí cần thanh toán | Decimal(18,0) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Phương thức thanh toán | Enum(String(50)) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Số biên lai / Mã giao dịch | String(50) | Có | Trống | Control UI: Input text.<br>- Nhập số biên lai/mã giao dịch thực tế đã đối soát thành công.<br>- Rule bắt buộc nhập - **[BR-VAL-001]**. |
+| Ngày giao dịch | Date | Có | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng nhập `dd/mm/yyyy`.<br>- Rule logic ngày quá khứ - **[BR-VAL-008]** (phải nhỏ hơn hoặc bằng ngày hiện tại). |
+| Tệp chứng từ thanh toán | File | Có | Trống | Control UI: Upload file.<br>- Rule File chứng từ thanh toán (đơn) - **[BR-FILE-012]** (.pdf/.jpg/.png, tối đa 1 tệp, 20MB). |
+| Ghi chú kích hoạt | String(500) | Không | Trống | Control UI: Textarea.<br>- Ghi chú thêm về thông tin đối soát nếu cần. |
 
-**4.3.2.15.4.3. Chức năng trên màn hình**:
+###### 4.3.2.15.4.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng Popup Modal, không lưu bất kỳ thay đổi nào. |
-| 2 | Kích hoạt | Nút | TH1 (Trống trường bắt buộc): Vi phạm **[BR-VAL-001]**, hiển thị **[MSG-ERR-VAL-001]**. Không cho phép lưu.<br>TH2 (Dữ liệu không hợp lệ): Tệp chứng từ đính kèm không đúng định dạng hoặc vượt quá 20MB, hoặc đính kèm quá 1 tệp: Vi phạm **[BR-FILE-012]**, hiển thị **[MSG-ERR-FILE-003]**/**[MSG-ERR-FILE-004]** màu đỏ dưới ô tải tệp. Không cho phép lưu.<br>TH3 (Trùng Số biên lai/Mã giao dịch): Vi phạm **[BR-DK-028]**, hiển thị **[MSG-ERR-VAL-009]** dưới ô nhập tương ứng. Không cho phép lưu.<br>TH Hợp lệ: Thực hiện Quy trình Kích hoạt & Cấp mã mô tả tại mục 4.3.2.15.3 (cập nhật trạng thái yêu cầu thành "Hoàn thành", cập nhật Mã số sử dụng CSDL từ "Chờ kích hoạt" sang "Hoạt động", thiết lập ngày cấp/ngày hết hạn, tạo/liên kết tài khoản tra cứu, ghi nhận giao dịch đóng phí, gửi email thông báo). Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-004]** và làm mới Bảng danh sách kết quả. |
+| :--- | :--- | :--- | :--- |
+| 1 | Hủy | Button | Đóng Popup Modal, không lưu bất kỳ thay đổi nào. |
+| 2 | Kích hoạt | Button | **TH1 (Trống trường bắt buộc)**: Vi phạm **[BR-VAL-001]**, hiển thị **[MSG-ERR-VAL-001]**. Không cho phép lưu. |
+| | | | **TH2 (Dữ liệu không hợp lệ)**: Tệp chứng từ đính kèm không đúng định dạng hoặc vượt quá 20MB, hoặc đính kèm quá 1 tệp: Vi phạm **[BR-FILE-012]**, hiển thị **[MSG-ERR-FILE-003]**/**[MSG-ERR-FILE-004]** màu đỏ dưới ô tải tệp. Không cho phép lưu. |
+| | | | **TH3 (Trùng Số biên lai/Mã giao dịch)**: Vi phạm **[BR-DK-028]**, hiển thị **[MSG-ERR-VAL-009]** dưới ô nhập tương ứng. Không cho phép lưu. |
+| | | | **TH Hợp lệ**:<br>+ Cập nhật trạng thái bản ghi / Mã số sử dụng CSDL từ "Chờ thanh toán" sang "Hoạt động".<br>+ Thiết lập Ngày cấp: Ngày hiện tại (định dạng `dd/mm/yyyy`).<br>+ Thiết lập Ngày hết hạn:<br>&nbsp;&nbsp;• **Cơ quan có thẩm quyền**: Vô thời hạn (`—`, lưu giá trị NULL).<br>&nbsp;&nbsp;• **Sử dụng thường xuyên**: Ngày `31/12` của năm cấp mã.<br>&nbsp;&nbsp;• **Sử dụng một lần**: Không giới hạn thời gian (`—`, lưu giá trị NULL; mã có hiệu lực cho tới khi được sử dụng tra cứu đúng 01 lần).<br>+ Ghi nhận giao dịch đóng phí kèm Số biên lai/Mã giao dịch và tệp chứng từ đính kèm.<br>+ Tự động gửi email thông báo kích hoạt mã số thành công cho khách hàng.<br>+ Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-004]** và làm mới Bảng danh sách kết quả. |
 
 ---
 
-##### 4.3.2.15.5. UC015_017.MH04 - Popup Từ chối yêu cầu cấp mã số sử dụng CSDL
+##### 4.3.2.15.5. MH04 - Popup Từ chối yêu cầu cấp mã số sử dụng CSDL
 
-**4.3.2.15.5.1. Màn hình**:
-
-\- Giao diện Popup Modal nhỏ, mở khi Cán bộ nghiệp vụ bấm "Từ chối" đối với yêu cầu đang ở trạng thái "Chờ kích hoạt".
+###### 4.3.2.15.5.1. Màn hình
 
 ![Màn hình Từ chối yêu cầu cấp mã số sử dụng CSDL](images/UC015_017_Reject.png)
 
-**4.3.2.15.5.2. Mô tả thông tin trên màn hình**:
+###### 4.3.2.15.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Mã yêu cầu | String(50) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Tên đối tượng đề nghị | String(255) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Lý do từ chối | Text(500) | Có | Trống | Rule bắt buộc nhập ý kiến/lý do từ chối hồ sơ - **[BR-DK-025]**. |
+| Mã yêu cầu | String(50) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Tên đối tượng đề nghị | String(255) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Lý do từ chối | Text(500) | Có | Trống | Control UI: Textarea.<br>- Rule bắt buộc nhập ý kiến/lý do từ chối hồ sơ - **[BR-DK-025]**. |
 
-**4.3.2.15.5.3. Chức năng trên màn hình**:
+###### 4.3.2.15.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng Popup Modal, không lưu bất kỳ thay đổi nào. |
-| 2 | Xác nhận từ chối | Nút | TH1 (Bỏ trống Lý do từ chối): Vi phạm **[BR-DK-025]**, hiển thị **[MSG-ERR-VAL-001]**. Không cho phép lưu.<br>TH Hợp lệ: Cập nhật trạng thái yêu cầu thành "Bị từ chối", lưu Lý do từ chối vào hồ sơ. Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-005]** và làm mới Bảng danh sách kết quả. |
+| :--- | :--- | :--- | :--- |
+| 1 | Hủy | Button | Đóng Popup Modal, không lưu bất kỳ thay đổi nào. |
+| 2 | Xác nhận từ chối | Button | **TH1 (Bỏ trống Lý do từ chối)**: Vi phạm **[BR-DK-025]**, hiển thị **[MSG-ERR-VAL-001]**. Không cho phép lưu. |
+| | | | **TH Hợp lệ**: Cập nhật trạng thái yêu cầu thành "Bị từ chối", lưu Lý do từ chối vào hồ sơ. Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-005]** và làm mới Bảng danh sách kết quả. |
 
 ---
 
-##### 4.3.2.15.6. UC015_017.MH05 - Popup Gia hạn mã số sử dụng CSDL
+##### 4.3.2.15.6. MH05 - Popup Gia hạn mã số sử dụng CSDL
 
-**4.3.2.15.6.1. Màn hình**:
-
-\- Giao diện Popup Modal, mở khi Cán bộ nghiệp vụ bấm "Gia hạn" đối với mã số sử dụng CSDL của Cá nhân/Tổ chức đang ở trạng thái "Hết hạn".
+###### 4.3.2.15.6.1. Màn hình
 
 ![Màn hình Gia hạn mã số sử dụng CSDL](images/UC015_017_Renew.png)
 
-**4.3.2.15.6.2. Mô tả thông tin trên màn hình**:
+###### 4.3.2.15.6.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Mã số sử dụng CSDL | String(50) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Tên đối tượng sử dụng | String(255) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Ngày hết hạn hiện tại | Date | \- | Theo bản ghi | Chỉ đọc. Định dạng hiển thị bắt buộc: `DD/MM/YYYY`. |
-| Phí gia hạn | Decimal(18,0) | \- | 300.000 VNĐ | Chỉ đọc. Mức phí gia hạn cố định `300.000 VNĐ`/năm, lấy tự động từ cấu hình biểu phí, không phụ thuộc Loại mã số hay thời điểm gia hạn. |
-| Phương thức thanh toán | Enum(String(50)) | Có | Chuyển khoản ngân hàng | Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
-| Số biên lai / Mã giao dịch | String(50) | Có | Trống | Rule bắt buộc nhập - **[BR-VAL-001]**. |
-| Tệp chứng từ thanh toán | File | Có | Trống | Rule File đính kèm hỗ trợ - **[BR-FILE-011]** (.pdf/.jpg/.jpeg/.png, tối đa 3 tệp, 20MB/tệp). Hiển thị danh sách tên tệp đã tải kèm chức năng Xem file (cho phép xem file tại một tab riêng) và Xóa (cho phép xóa tệp đã tải lên). |
-| Ghi chú gia hạn | String(500) | Không | Trống | Nhập ghi chú về thông tin gia hạn. |
+| Mã số sử dụng CSDL | String(50) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Tên đối tượng sử dụng | String(255) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Ngày hết hạn hiện tại | Date | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Định dạng hiển thị: `dd/mm/yyyy`. |
+| Phí gia hạn | Decimal(18,0) | - | Theo cấu hình | Control UI: Text hiển thị (Read-only).<br>- Mức phí gia hạn lấy tự động từ cấu hình biểu phí dịch vụ cấp mã thường xuyên. |
+| Phương thức thanh toán | Enum(String(50)) | Có | Chuyển khoản ngân hàng | Control UI: Combobox.<br>- Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
+| Số biên lai / Mã giao dịch | String(50) | Có | Trống | Control UI: Input text.<br>- Rule bắt buộc nhập - **[BR-VAL-001]**. |
+| Tệp chứng từ thanh toán | File | Có | Trống | Control UI: Upload file.<br>- Rule File đính kèm hỗ trợ - **[BR-FILE-011]** (.pdf/.jpg/.jpeg/.png, tối đa 3 tệp, 20MB/tệp).<br>- Hiển thị danh sách tên tệp đã tải kèm chức năng Xem file (mở tab mới) và Xóa file đã tải. |
+| Ghi chú gia hạn | String(500) | Không | Trống | Control UI: Textarea.<br>- Nhập ghi chú về thông tin gia hạn nếu cần. |
 
-**4.3.2.15.6.3. Chức năng trên màn hình**:
+###### 4.3.2.15.6.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng Popup Modal, không lưu bất kỳ thay đổi nào. |
-| 2 | Xác nhận gia hạn | Nút | TH1 (Trống trường bắt buộc): Vi phạm **[BR-VAL-001]**, hiển thị **[MSG-ERR-VAL-001]**. Không cho phép lưu.<br>TH2 (Dữ liệu không hợp lệ): Tệp đính kèm không đúng định dạng hoặc vượt quá 20MB, hoặc vượt quá 3 tệp: Vi phạm **[BR-FILE-011]**, hiển thị **[MSG-ERR-FILE-003]**/**[MSG-ERR-FILE-004]**/**[MSG-ERR-FILE-005]** tương ứng. Không cho phép lưu.<br>TH3 (Trùng Số biên lai/Mã giao dịch): Vi phạm **[BR-DK-028]**, hiển thị **[MSG-ERR-VAL-009]**. Không cho phép lưu.<br>TH Hợp lệ:<br>\+ Nếu mã số chưa hết hạn tại thời điểm gia hạn: Ngày hết hạn mới là `31/12` của năm tiếp theo.<br>\+ Nếu mã số đã hết hạn tại thời điểm gia hạn: Ngày hết hạn mới là `31/12` của năm thực hiện gia hạn.<br>\+ Cập nhật trạng thái mã số sử dụng CSDL về "Hoạt động".<br>\+ Ghi nhận lịch sử đóng phí gia hạn `300.000 VNĐ`.<br>\+ Gửi email thông báo gia hạn thành công, xác nhận thời hạn sử dụng mới.<br>\+ Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-006]** và làm mới Bảng danh sách kết quả. |
+| :--- | :--- | :--- | :--- |
+| 1 | Hủy | Button | Đóng Popup Modal, không lưu bất kỳ thay đổi nào. |
+| 2 | Xác nhận gia hạn | Button | **TH1 (Trống trường bắt buộc)**: Vi phạm **[BR-VAL-001]**, hiển thị **[MSG-ERR-VAL-001]**. Không cho phép lưu. |
+| | | | **TH2 (Dữ liệu không hợp lệ)**: Tệp đính kèm không đúng định dạng hoặc vượt quá 20MB, hoặc vượt quá 3 tệp: Vi phạm **[BR-FILE-011]**, hiển thị **[MSG-ERR-FILE-003]**/**[MSG-ERR-FILE-004]**/**[MSG-ERR-FILE-005]** tương ứng. Không cho phép lưu. |
+| | | | **TH3 (Trùng Số biên lai/Mã giao dịch)**: Vi phạm **[BR-DK-028]**, hiển thị **[MSG-ERR-VAL-009]**. Không cho phép lưu. |
+| | | | **TH Hợp lệ**:<br>+ Nếu mã số chưa hết hạn tại thời điểm gia hạn: Ngày hết hạn mới là `31/12` của năm tiếp theo.<br>+ Nếu mã số đã hết hạn tại thời điểm gia hạn: Ngày hết hạn mới là `31/12` của năm thực hiện gia hạn.<br>+ Cập nhật trạng thái mã số sử dụng CSDL về "Hoạt động".<br>+ Ghi nhận lịch sử đóng phí gia hạn.<br>+ Gửi email thông báo gia hạn thành công, xác nhận thời hạn sử dụng mới.<br>+ Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-006]** và làm mới Bảng danh sách kết quả. |
 
 ---
 
-##### 4.3.2.15.7. UC015_017.MH06 - Popup Thay đổi trạng thái sử dụng mã số sử dụng CSDL
+##### 4.3.2.15.7. MH06 - Popup Khóa / Mở khóa mã số sử dụng CSDL
 
-**4.3.2.15.7.1. Màn hình**:
+###### 4.3.2.15.7.1. Màn hình
 
-\- Giao diện Popup Modal nhỏ xác nhận thay đổi trạng thái, mở khi Cán bộ nghiệp vụ gạt Công tắc bật/tắt tại Bảng danh sách kết quả, đối với mã số sử dụng CSDL đang ở trạng thái "Hoạt động", "Khóa" hoặc "Ngưng sử dụng".
+![Màn hình Khóa / Mở khóa mã số sử dụng CSDL](images/UC015_017_Status.png)
 
-![Màn hình Thay đổi trạng thái sử dụng mã số sử dụng CSDL](images/UC015_017_Status.png)
-
-**4.3.2.15.7.2. Mô tả thông tin trên màn hình**:
+###### 4.3.2.15.7.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Mã số sử dụng CSDL | String(50) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Tên đối tượng sử dụng | String(255) | \- | Theo bản ghi | Chỉ đọc. Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
-| Trạng thái hiện tại | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Trạng thái mã số sử dụng CSDL [DM_39]. |
-| Hành động yêu cầu | Enum(String(50)) | Có | Theo chiều gạt Công tắc | Rule bắt buộc nhập - **[BR-VAL-001]**. Tùy chọn hiển thị phụ thuộc Trạng thái hiện tại:<br>\- Nếu đang "Hoạt động": Gồm `Khóa`, `Ngưng sử dụng`.<br>\- Nếu đang "Khóa": Gồm `Kích hoạt lại`, `Ngưng sử dụng`.<br>\- Nếu đang "Ngưng sử dụng": Gồm `Kích hoạt lại`. |
-| Lý do thay đổi | Text(500) | Có | Trống | Rule bắt buộc nhập - **[BR-VAL-001]**. Nhập lý do chi tiết thay đổi trạng thái sử dụng (bao gồm cả trường hợp Kích hoạt lại). |
+| Mã số sử dụng CSDL | String(50) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Tên đối tượng sử dụng | String(255) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dữ liệu hồ sơ, không cho phép chỉnh sửa. |
+| Trạng thái hiện tại | Enum(String(50)) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Hiển thị trạng thái hiện tại của mã số (`Hoạt động` hoặc `Khóa`). |
+| Hành động yêu cầu | Enum(String(50)) | Có | Theo chiều gạt Công tắc | Control UI: Combobox.<br>- Rule bắt buộc nhập - **[BR-VAL-001]**.<br>- Tùy chọn hiển thị phụ thuộc Trạng thái hiện tại:<br>+ Nếu đang "Hoạt động": Hiển thị cố định `Khóa`.<br>+ Nếu đang "Khóa": Hiển thị cố định `Mở khóa`. |
+| Lý do thay đổi | Text(500) | Có | Trống | Control UI: Textarea.<br>- Rule bắt buộc nhập - **[BR-VAL-001]**.<br>- Nhập lý do chi tiết Khóa hoặc Mở khóa mã số sử dụng CSDL. |
 
-**4.3.2.15.7.3. Chức năng trên màn hình**:
+###### 4.3.2.15.7.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng Popup Modal, khôi phục Công tắc về đúng trạng thái hiện hành, không lưu thay đổi. |
-| 2 | Xác nhận | Nút | TH1 (Trống trường bắt buộc): Chưa chọn Hành động yêu cầu hoặc chưa nhập Lý do thay đổi. Vi phạm **[BR-VAL-001]**, hiển thị **[MSG-ERR-VAL-001]**. Không cho phép lưu.<br>TH Hợp lệ: Cập nhật trạng thái mã số sử dụng CSDL theo Hành động yêu cầu (`Khóa`, `Ngưng sử dụng` hoặc `Hoạt động`), đồng thời khóa/kích hoạt lại tương ứng quyền tra cứu của tài khoản liên kết. Ghi nhật ký hệ thống (Audit Log) lưu lịch sử thay đổi kèm lý do. Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-007]** (Khóa)/**[MSG-SUC-DK-CSDL-008]** (Ngưng sử dụng)/**[MSG-SUC-DK-CSDL-009]** (Kích hoạt lại) tương ứng và làm mới Bảng danh sách kết quả. |
+| :--- | :--- | :--- | :--- |
+| 1 | Hủy | Button | Đóng Popup Modal, khôi phục Công tắc về đúng trạng thái hiện hành, không lưu thay đổi. |
+| 2 | Xác nhận | Button | **TH1 (Trống trường bắt buộc)**: Chưa chọn Hành động yêu cầu hoặc chưa nhập Lý do thay đổi. Vi phạm **[BR-VAL-001]**, hiển thị **[MSG-ERR-VAL-001]**. Không cho phép lưu. |
+| | | | **TH Hợp lệ**: Cập nhật trạng thái mã số sử dụng CSDL theo Hành động yêu cầu (`Khóa` hoặc `Hoạt động`), đồng thời tạm khóa / mở khóa tương ứng quyền tra cứu của tài khoản liên kết. Ghi nhật ký hệ thống (Audit Log) lưu lịch sử thay đổi kèm lý do. Đóng popup, hiển thị **[MSG-SUC-DK-CSDL-007]** (Khóa) hoặc **[MSG-SUC-DK-CSDL-009]** (Mở khóa) tương ứng và làm mới Bảng danh sách kết quả. |
 
 ---
 
-##### 4.3.2.15.8. UC015_017.MH07 - Popup Xem chi tiết yêu cầu và mã số sử dụng CSDL
+##### 4.3.2.15.8. MH07 - Popup Xem chi tiết yêu cầu và mã số sử dụng CSDL
 
-**4.3.2.15.8.1. Màn hình**:
-
-\- Giao diện Popup Modal ở chế độ Chỉ đọc (Read-only), hiển thị toàn bộ thông tin yêu cầu, mã số sử dụng CSDL đã cấp (nếu có) và lịch sử thao tác liên quan.
+###### 4.3.2.15.8.1. Màn hình
 
 ![Màn hình Xem chi tiết yêu cầu và mã số sử dụng CSDL](images/UC015_017_View.png)
 
-**4.3.2.15.8.2. Mô tả thông tin trên màn hình**:
+###### 4.3.2.15.8.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Thông tin chung** | - | \- | \- | Nhóm thông tin định danh yêu cầu và đối tượng đăng ký. |
-| Mã yêu cầu | String(50) | \- | Theo bản ghi | Chỉ đọc. |
-| Loại mã số sử dụng CSDL | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. |
-| Ngày yêu cầu | Datetime | \- | Theo bản ghi | Chỉ đọc. Định dạng hiển thị bắt buộc: `DD/MM/YYYY`. |
-| Trạng thái | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Trạng thái mã số sử dụng CSDL [DM_39]. |
-| Lý do từ chối | Text(2000) | \- | Theo bản ghi | Chỉ đọc. Nguyên tắc ẩn trường trống: chỉ hiển thị khi yêu cầu ở trạng thái "Bị từ chối" và có dữ liệu. |
-| Loại đối tượng | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. |
-| Mã tài khoản trực tuyến | String(255) | \- | Theo bản ghi | Chỉ đọc. Chính là Mã Tài khoản trực tuyến (Tên đăng nhập) đã liên kết tại **4.3.2.15.3** với tài khoản khách hàng quản lý ở **[UC009]**. Nguyên tắc ẩn trường trống: chỉ hiển thị nếu yêu cầu có liên kết tài khoản trực tuyến. |
-| Tên đối tượng đề nghị | String(255) | \- | Theo bản ghi | Chỉ đọc. |
-| Số CCCD/MST | String(50) | \- | Theo bản ghi | Chỉ đọc. Nguyên tắc ẩn trường trống: chỉ hiển thị nếu có dữ liệu gốc. |
-| Email | String(255) | \- | Theo bản ghi | Chỉ đọc. Nguyên tắc ẩn trường trống: chỉ hiển thị nếu có dữ liệu gốc. |
-| Số điện thoại | String(20) | \- | Theo bản ghi | Chỉ đọc. Nguyên tắc ẩn trường trống: chỉ hiển thị nếu có dữ liệu gốc. |
-| Địa chỉ | String(500) | \- | Theo bản ghi | Chỉ đọc. Nguyên tắc ẩn trường trống: chỉ hiển thị nếu có dữ liệu gốc. |
-| **II. Thông tin mã số sử dụng CSDL** | - | \- | \- | Chỉ hiển thị toàn bộ nhóm này khi yêu cầu đã được cấp mã (Mã số sử dụng CSDL khác `"—"`). |
-| Mã số sử dụng CSDL | String(50) | \- | Theo bản ghi | Chỉ đọc. |
-| Tên đăng nhập liên kết | String(255) | \- | Theo bản ghi | Chỉ đọc. Chính là mã số sử dụng CSDL được cấp hoặc tên đăng nhập của tài khoản khách hàng được liên kết từ **[UC009]**. |
-| Ngày cấp | Date | \- | Theo bản ghi | Chỉ đọc. Định dạng hiển thị bắt buộc: `DD/MM/YYYY`. |
-| Ngày hết hạn | Date | \- | Theo bản ghi | Chỉ đọc. Định dạng hiển thị bắt buộc: `DD/MM/YYYY` hoặc `—` (Cơ quan có thẩm quyền/Sử dụng một lần). |
-| **III. Thông tin đóng phí** | - | \- | \- | Nhóm thông tin thanh toán của yêu cầu. |
-| Mức phí | Decimal(18,0) | \- | Theo bản ghi | Chỉ đọc. |
-| Phương thức thanh toán | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
-| **IV. Lịch sử thay đổi trạng thái** | - | \- | \- | Control UI: Bảng/Lưới hiển thị. Sắp xếp theo Ngày thực hiện giảm dần. |
-| Cột: STT | Integer(10) | \- | \- | Số thứ tự tăng dần. |
-| Cột: Ngày thực hiện | Datetime | \- | \- | Định dạng hiển thị bắt buộc: `DD/MM/YYYY HH:mm:ss`. |
-| Cột: Hành động | String(255) | \- | \- | Gồm các giá trị:<br>\- Tạo yêu cầu<br>\- Kích hoạt (Cấp mã/Phê duyệt)<br>\- Từ chối<br>\- Gia hạn<br>\- Khóa<br>\- Ngưng sử dụng<br>\- Kích hoạt lại |
-| Cột: Người thực hiện | String(255) | \- | \- | Họ tên Cán bộ nghiệp vụ thực hiện thao tác, hoặc `"Khách hàng"` nếu là yêu cầu gửi trực tuyến. |
-| Cột: Ghi chú | Text(2000) | \- | \- | Lý do thay đổi hoặc ghi chú giao dịch tương ứng. |
+| **I. Thông tin chung** | - | - | - | Nhóm thông tin định danh yêu cầu và đối tượng đăng ký. |
+| Mã yêu cầu | String(50) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only). |
+| Loại mã số sử dụng CSDL | Enum(String(50)) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Loại mã số sử dụng CSDL [DM_38]. |
+| Ngày yêu cầu | Datetime | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Định dạng hiển thị: `dd/mm/yyyy`. |
+| Trạng thái | Enum(String(50)) | - | Theo bản ghi | Control UI: Badge/Tag trạng thái.<br>- Hiển thị trạng thái của yêu cầu / mã số. |
+| Lý do từ chối | Text(2000) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Chỉ hiển thị khi yêu cầu ở trạng thái "Bị từ chối" và có dữ liệu. |
+| Loại đối tượng | Enum(String(50)) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Loại đối tượng đề nghị cấp mã số sử dụng CSDL [DM_37]. |
+| Mã tài khoản trực tuyến | String(255) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Chỉ hiển thị nếu yêu cầu có liên kết tài khoản trực tuyến từ Module Quản lý tài khoản khách hàng. |
+| Tên đối tượng đề nghị | String(255) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only). |
+| Số CCCD/MST | String(50) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Chỉ hiển thị nếu có dữ liệu gốc. |
+| Email | String(255) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Chỉ hiển thị nếu có dữ liệu gốc. |
+| Số điện thoại | String(20) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Chỉ hiển thị nếu có dữ liệu gốc. |
+| Địa chỉ | String(500) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Chỉ hiển thị nếu có dữ liệu gốc. |
+| **II. Thông tin mã số sử dụng CSDL** | - | - | - | Chỉ hiển thị toàn bộ nhóm này khi yêu cầu đã được cấp mã (Mã số sử dụng CSDL khác `"—"`). |
+| Mã số sử dụng CSDL | String(50) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only). |
+| Tên đăng nhập liên kết | String(255) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Chính là mã số sử dụng CSDL được cấp hoặc tên đăng nhập của tài khoản khách hàng được liên kết. |
+| Ngày cấp | Date | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Định dạng hiển thị: `dd/mm/yyyy`. |
+| Ngày hết hạn | Date | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Định dạng hiển thị: `dd/mm/yyyy` hoặc `—` (đối với Cơ quan có thẩm quyền hoặc Sử dụng một lần). |
+| **III. Thông tin đóng phí** | - | - | - | Nhóm thông tin thanh toán của yêu cầu. |
+| Mức phí | Decimal(18,0) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only). |
+| Phương thức thanh toán | Enum(String(50)) | - | Theo bản ghi | Control UI: Text hiển thị (Read-only).<br>- Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
+| **IV. Lịch sử thay đổi trạng thái** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>- Sắp xếp theo Ngày thực hiện giảm dần. |
+| STT | Integer(10) | - | - | Control UI: Text hiển thị (Read-only).<br>- Số thứ tự tăng dần. |
+| Ngày thực hiện | Datetime | - | - | Control UI: Text hiển thị (Read-only).<br>- Định dạng hiển thị: `dd/mm/yyyy HH:mm:ss`. |
+| Hành động | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Gồm các giá trị: Tạo yêu cầu, Kích hoạt (Cấp mã/Phê duyệt), Từ chối, Gia hạn, Khóa, Mở khóa. |
+| Người thực hiện | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Họ tên Cán bộ nghiệp vụ thực hiện thao tác, hoặc "Khách hàng" nếu là yêu cầu gửi trực tuyến. |
+| Ghi chú | Text(2000) | - | - | Control UI: Text hiển thị (Read-only).<br>- Lý do thay đổi hoặc ghi chú giao dịch tương ứng. |
 
-**4.3.2.15.8.3. Chức năng trên màn hình**:
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Đóng | Nút | Đóng Popup Modal và quay lại **UC015_017.MH01**. |
-| 2 | Tạo bản sao / Yêu cầu lại | Nút | Chỉ hiển thị khi yêu cầu đang ở trạng thái "Bị từ chối". Mở **UC015_017.MH02** ở chế độ Tạo mới, tự động điền sẵn Loại đối tượng, Loại mã số, Tên đối tượng đề nghị, Số CCCD/MST, Email, Số điện thoại, Địa chỉ liên hệ, Phương thức thanh toán theo dữ liệu của yêu cầu bị từ chối để Cán bộ nghiệp vụ chỉnh sửa và gửi lại. |
-
----
-
-##### 4.3.2.15.9. UC015_017.MH08 - Popup Biên lai thu phí, lệ phí
-
-**4.3.2.15.9.1. Màn hình**:
-
-\- Giao diện Popup Modal hiển thị nội dung biên lai thu phí, mở khi Cán bộ nghiệp vụ bấm "In biên lai" tại **UC015_017.MH02** ngay sau khi cấp mã thành công cho yêu cầu có phát sinh phí.
-
-![Màn hình Biên lai thu phí, lệ phí](images/UC015_017_Receipt.png)
-
-**4.3.2.15.9.2. Mô tả thông tin trên màn hình**:
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Tên cơ quan phát hành | String(255) | \- | Theo cấu hình đơn vị | Chỉ đọc. Hiển thị theo dữ liệu hệ thống (tên và địa chỉ Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước). |
-| Số hóa đơn | String(50) | \- | Tự sinh | Chỉ đọc. Hệ thống tự sinh số hóa đơn duy nhất tại thời điểm in. |
-| Ngày in | Datetime | \- | Ngày giờ hiện tại | Chỉ đọc. |
-| Đơn vị/Người đề nghị | String(255) | \- | Theo bản ghi | Chỉ đọc. Lấy theo Tên đối tượng đề nghị. |
-| Số CCCD/MST | String(50) | \- | Theo bản ghi | Chỉ đọc. |
-| Nội dung thu | String(255) | \- | Theo bản ghi | Chỉ đọc. Hiển thị `"Cấp mã số sử dụng CSDL ([Loại mã số])"`. |
-| Phương thức thanh toán | Enum(String(50)) | \- | Theo bản ghi | Chỉ đọc. Tham chiếu Danh mục Phương thức thanh toán cấp mã số sử dụng CSDL [DM_40]. |
-| Tổng tiền thu | Decimal(18,0) | \- | Theo bản ghi | Chỉ đọc. Lấy theo Mức phí cần thu đã tính tại **4.3.2.15.3**. |
-
-**4.3.2.15.9.3. Chức năng trên màn hình**:
+###### 4.3.2.15.8.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Đóng | Nút | Đóng Popup Modal, quay lại **UC015_017.MH02**. |
-| 2 | In ngay | Nút | Gọi lệnh in của trình duyệt để in trực tiếp nội dung biên lai đang hiển thị. |
+| :--- | :--- | :--- | :--- |
+| 1 | Đóng | Button | Luôn hiển thị ở mọi trạng thái. Đóng Popup Modal và quay lại **MH01**. |
+| 2 | Sửa | Button | **Điều kiện hiển thị**: Chỉ hiển thị khi bản ghi ở trạng thái **"Lưu nháp"**.<br>- Khi click, hệ thống đóng MH07 và mở **MH02 - Popup Tạo mới/Chỉnh sửa yêu cầu cấp mã số sử dụng CSDL** ở chế độ Chỉnh sửa với toàn bộ thông tin của bản ghi hiện hành. |
+| 3 | Xóa | Button | **Điều kiện hiển thị**: Chỉ hiển thị khi bản ghi ở trạng thái **"Lưu nháp"**.<br>- Khi click, hệ thống mở **[POPUP-CFM-001]** (Popup Xác nhận dùng chung quy định tại Phụ lục) hiển thị nội dung thông điệp **[MSG-CFM-SYS-001]**: *"Bạn có chắc chắn muốn xóa yêu cầu cấp mã số sử dụng CSDL [Mã yêu cầu] không?"*.<br>- Nếu người dùng chọn **Đồng ý**: Hệ thống thực hiện xóa vĩnh viễn bản ghi, đóng MH07, hiển thị thông báo thành công theo quy chuẩn dùng chung **[MSG-SUC-SYS-004]** và làm mới Bảng danh sách kết quả tại **MH01**.<br>- Nếu chọn **Hủy**: Đóng popup xác nhận và giữ nguyên màn hình MH07. |
+| 4 | Kích hoạt | Button | **Điều kiện hiển thị**: Chỉ hiển thị khi bản ghi ở trạng thái **"Chờ thanh toán"**.<br>- Khi click, hệ thống đóng MH07 và mở **MH03 - Popup Kích hoạt yêu cầu cấp mã số sử dụng CSDL** để Cán bộ nghiệp vụ nhập thông tin đối soát chứng từ thanh toán. |
+| 5 | Từ chối | Button | **Điều kiện hiển thị**: Chỉ hiển thị khi bản ghi ở trạng thái **"Chờ thanh toán"**.<br>- Khi click, hệ thống đóng MH07 và mở **MH04 - Popup Từ chối yêu cầu cấp mã số sử dụng CSDL** để Cán bộ nghiệp vụ nhập lý do từ chối yêu cầu. |
+| 6 | Gia hạn | Button | **Điều kiện hiển thị**: Chỉ hiển thị khi bản ghi ở trạng thái **"Hết hạn"**.<br>- Khi click, hệ thống đóng MH07 và mở **MH05 - Popup Gia hạn mã số sử dụng CSDL** để Cán bộ nghiệp vụ thực hiện gia hạn thời hạn sử dụng. |
+| 7 | Khóa | Button | **Điều kiện hiển thị**: Chỉ hiển thị khi bản ghi ở trạng thái **"Hoạt động"**.<br>- Khi click, hệ thống đóng MH07 và mở **MH06 - Popup Khóa / Mở khóa mã số sử dụng CSDL** với Hành động yêu cầu được chọn sẵn là `Khóa` để nhập lý do tạm khóa mã số. |
+| 8 | Mở khóa | Button | **Điều kiện hiển thị**: Chỉ hiển thị khi bản ghi ở trạng thái **"Khóa"**.<br>- Khi click, hệ thống đóng MH07 và mở **MH06 - Popup Khóa / Mở khóa mã số sử dụng CSDL** với Hành động yêu cầu được chọn sẵn là `Mở khóa` để kích hoạt lại mã số. |
+| 9 | Tạo bản sao | Button | **Điều kiện hiển thị**: Chỉ hiển thị khi bản ghi ở trạng thái **"Bị từ chối"**.<br>- Khi click, hệ thống đóng MH07 và mở **MH02** ở chế độ Tạo mới, tự động điền sẵn Loại đối tượng, Loại mã số, Tên đối tượng đề nghị, Số CCCD/MST, Email, Số điện thoại, Địa chỉ liên hệ, Phương thức thanh toán theo dữ liệu của yêu cầu bị từ chối để Cán bộ nghiệp vụ chỉnh sửa và gửi lại. |
 
----
+*Ghi chú*: Đối với bản ghi ở trạng thái **"Ngưng sử dụng"**, màn hình chỉ hiển thị duy nhất nút **Đóng**, không hiển thị bất kỳ nút thao tác xử lý nghiệp vụ nào.

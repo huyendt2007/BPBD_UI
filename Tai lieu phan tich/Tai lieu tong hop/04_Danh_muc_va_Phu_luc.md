@@ -185,6 +185,10 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-DK-006]** | Lỗi | `"Hồ sơ gốc đã được đăng ký thông báo xử lý tài sản bảo đảm lần đầu đang có hiệu lực. Vui lòng chọn loại hình Thay đổi hoặc Xóa thông báo."` | Toast | Không |
 | **[MSG-ERR-DK-007]** | Lỗi | `"Hồ sơ gốc chưa được đăng ký thông báo xử lý tài sản bảo đảm lần đầu. Không thể thực hiện thao tác."` | Toast | Không |
 | **[MSG-ERR-DK-008]** | Lỗi | `"Vui lòng chọn ít nhất một hồ sơ để thực hiện thao tác."` | Toast | Không |
+| **[MSG-ERR-CSDL-001]** | Lỗi | `"Mã số sử dụng CSDL không tồn tại trên hệ thống. Vui lòng kiểm tra lại."` | Inline / Toast | Không |
+| **[MSG-ERR-CSDL-002]** | Cảnh báo | `"Mã số sử dụng CSDL đang ở trạng thái chờ kích hoạt. Vui lòng hoàn tất thanh toán để sử dụng."` | Inline / Toast | Không |
+| **[MSG-ERR-CSDL-003]** | Lỗi | `"Mã số sử dụng CSDL đang bị khóa, ngưng sử dụng hoặc đã hết lượt sử dụng."` | Inline / Toast | Không |
+| **[MSG-ERR-CSDL-004]** | Cảnh báo | `"Mã số sử dụng CSDL đã hết hạn sử dụng. Vui lòng liên hệ hỗ trợ hoặc thực hiện gia hạn để tiếp tục."` | Inline / Toast | Không |
 | **[MSG-ERR-IMP-001]** | Lỗi | `"Định dạng tệp không hợp lệ. Vui lòng tải lên tệp .xls hoặc .xlsx"` | Toast | Không |
 | **[MSG-ERR-IMP-002]** | Lỗi | `"Tệp tải lên vượt quá dung lượng cho phép (Tối đa 20MB)."` | Toast | Không |
 | **[MSG-ERR-IMP-003]** | Lỗi | `"Cấu trúc file không đúng biểu mẫu. Vui lòng tải 'File mẫu' để nhập dữ liệu."` | Toast | Không |
@@ -375,6 +379,54 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | 3   | Tooltip/Hướng dẫn | Tooltip Hướng dẫn Số giấy tờ                    | Kê khai chứng minh quân đội đối với người đang công tác trong quân đội và không có Chứng minh thư nhân dân, căn cước công dân                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | 4   | Tooltip/Hướng dẫn | Tooltip Hướng dẫn Loại tài sản                  | 1. Đối với hàng hóa luân chuyển trong quá trình sản xuất kinh doanh: Kê khai theo giá trị hàng hóa hoặc theo loại hàng hóa.<br>2. Đối với kho hàng: Kê khai theo giá trị hàng hóa hoặc theo tên, loại hàng hóa và kê khai thêm thông tin về địa chỉ hoặc số hiệu kho hoặc dấu hiệu khác của vị trí kho hàng. Không kê khai nhà kho, công trình xây dựng khác hoặc kho bãi được sử dụng cho việc chứa hoặc lưu trữ hàng hóa.<br>4. Đối với quyền tài sản: Kê khai tên quyền tài sản được dùng để bảo đảm và căn cứ phát sinh quyền tài sản. Trường hợp căn cứ phát sinh quyền có ghi rõ tên quyền tài sản thì kê khai thông tin về tên quyền phải phù hợp với thông tin này.<br>4.1. Trường hợp căn cứ phát sinh quyền tài sản là hợp đồng: Kê khai tên hợp đồng, số hợp đồng (nếu có); thời điểm có hiệu lực của hợp đồng; các bên tham gia xác lập hợp đồng.<br>4.2. Trường hợp quyền tài sản phát sinh từ căn cứ khác: Kê khai tên căn cứ, tên chủ thể ban hành căn cứ, số căn cứ (nếu có); thời điểm có hiệu lực hoặc thời điểm ký.<br>5. Đối với chứng khoán không đăng ký tập trung: Thông tin kê khai phải thể hiện được tài sản là chứng khoán không đăng ký tập trung, bao gồm cả chứng khoán đã đăng ký tập trung tại Tổng công quy lưu ký và bù trừ chứng khoán Việt Nam mà trở thành chứng khoán không đăng ký tập trung.<br>6. Đối với động sản khác: Phạm vi kê khai có thể là một, một số hoặc toàn bộ tài sản hiện có hoặc tài sản hình thành trong tương lai nhưng không bao gồm tàu bay, tàu biển, chứng khoán đã đăng ký tập trung, quyền sử dụng đất, quyền sở hữu nhà ở, quyền sở hữu tài sản khác gắn liền với đất, quyền sử dụng khu vực biển, quyền sở hữu tài sản gắn liền với khu vực biển, quyền sở hữu, quyền khác phải đăng ký đối với tàu bay theo quy định của pháp luật về hàng không, đối với tàu biển theo quy định của pháp luật về hàng hải; quyền sở hữu đối với chứng khoán đã đăng ký tập trung theo quy định của pháp luật về chứng khoán. Trường hợp tài sản bảo đảm là động sản được lắp đặt, đặt tại hoặc đặt trên đất, nhà ở, công trình xây dựng khác thì thông tin kê khai phải thể hiện được tài sản đó là động sản, không phải là tài sản gắn liền với đất đai, nhà ở, công trình xây dựng.<br>Trường hợp tài sản bảo đảm là vật có vật phụ, vật đồng bộ hoặc vật đặc định: Thông tin kê khai phải thể hiện được đặc điểm theo quy định của Bộ luật Dân sự để xác định được vật này. |
 | 5   | Tooltip/Hướng dẫn | Tooltip Hướng dẫn Biển số                        | Để có đủ thông tin đáp ứng yêu cầu kết nối, chia sẻ dữ liệu với Cục CSGT, đề nghị người yêu cầu đăng ký kê khai biển số của phương tiện theo Giấy chứng nhận nhưng không nhập thông tin "(T)" hoặc "(V)", nếu có trên Giấy chứng nhận.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+
+---
+
+## 5.4. Danh mục Popup Dùng chung Toàn hệ thống (Common Popups & Modals)
+
+Dưới đây là danh mục 03 Popup dùng chung chuẩn hóa áp dụng xuyên suốt toàn bộ hệ thống cho cả 02 Phân hệ: **Biện pháp bảo đảm (BPBĐ)** và **Bồi thường nhà nước (BTNN)**. Các tài liệu đặc tả SRS chi tiết không định nghĩa lại các màn hình popup này mà tham chiếu trực tiếp theo mã `[POPUP-XXX]`.
+
+### 5.4.1. [POPUP-CFM-001] - Popup Xác nhận Dùng chung (Common Confirmation Modal)
+- **Mục đích**: Hiển thị hộp thoại cảnh báo đồng bộ giao diện yêu cầu người dùng xác nhận trước khi thực hiện các hành động có tác động dữ liệu (Xóa bản ghi nháp, Hủy thao tác, Xóa dòng tài liệu/dòng dữ liệu, Thu hồi, Rút hồ sơ, Kích hoạt/Khóa mã số...).
+- **Cấu trúc thông tin Popup**:
+  - `Tiêu đề popup`: String(200) - Hiển thị động theo thao tác (*Xác nhận xóa bản ghi, Xác nhận hủy yêu cầu, Xác nhận thu hồi, Xác nhận xóa tệp...*).
+  - `Icon cảnh báo`: Tùy biến theo mức độ (Icon Thùng rác đỏ đối với Xóa vĩnh viễn; Icon Chấm than vàng đối với Cảnh báo rủi ro; Icon Dấu hỏi xanh đối với Xác nhận tiếp tục).
+  - `Nội dung thông điệp`: Text - Lấy theo mã thông báo chuẩn `[MSG-CFM-...]` (Ví dụ: `[MSG-CFM-SYS-001]: Bạn có chắc chắn muốn xóa bản ghi [Tên bản ghi] không?`).
+  - `Nút Hủy bỏ`: Button (Secondary/Outline) - Đóng popup, không thực hiện hành động, giữ nguyên dữ liệu hiện hành.
+  - `Nút Đồng ý / Xác nhận`: Button (Danger hoặc Primary) - Đóng popup, thực thi hành động tương ứng và hiển thị Toast thông báo kết quả `[MSG-SUC-...]`.
+- **Phạm vi ánh xạ**:
+  - *Khối BPBĐ*: Xóa hồ sơ lưu nháp, Hủy yêu cầu trực tuyến, Xóa tài sản/chủ thể trong form đăng ký, Xóa chứng từ đối soát, Khóa/Mở khóa mã số CSDL...
+  - *Khối BTNN*: Xóa quyết định lưu nháp, Xóa đề xuất kinh phí nháp, Xóa dòng văn bản căn cứ, Xóa hồ sơ kiến nghị/khiếu nại...
+
+---
+
+### 5.4.2. [POPUP-REJ-001] - Popup Từ chối / Trả lại Dùng chung (Common Rejection & Return Modal)
+- **Mục đích**: Dành cho Cán bộ tiếp nhận hoặc Lãnh đạo phê duyệt nhập lý do/ý kiến chỉ đạo khi Từ chối hồ sơ, Trả lại hồ sơ giấy yêu cầu sửa đổi, hoặc Từ chối phê duyệt văn bản/dự thảo quyết định.
+- **Cấu trúc thông tin Popup**:
+  - `Tiêu đề popup`: String(200) - Hiển thị động theo nghiệp vụ (*Từ chối duyệt hồ sơ đăng ký, Trả lại hồ sơ giấy, Từ chối quyết định bồi thường, Từ chối cấp kinh phí, Từ chối thụ lý hồ sơ...*).
+  - `Lý do từ chối / Ý kiến chỉ đạo`: Text(2000) - **Bắt buộc nhập**. Cán bộ/Lãnh đạo nhập rõ lý do để người gửi nắm bắt và hoàn thiện lại. Áp dụng quy tắc kiểm tra bắt buộc [BR-VAL-001].
+  - `Nút Hủy bỏ`: Button (Secondary) - Đóng popup, giữ nguyên trạng thái hồ sơ đang chờ duyệt.
+  - `Nút Xác nhận từ chối / Trả lại`: Button (Danger) - Kiểm tra bắt buộc nhập lý do; cập nhật trạng thái hồ sơ sang `Bị từ chối` / `Bị trả lại`, ghi nhận lý do vào Lịch sử xử lý, đóng popup và hiển thị thông báo thành công.
+- **Phạm vi ánh xạ**:
+  - *Khối BPBĐ*: Cán bộ từ chối hồ sơ trực tuyến / hồ sơ giấy; Lãnh đạo từ chối / trả lại Phiếu đăng ký (Mẫu số 01-05) hoặc Giấy chứng nhận CCTT (Mẫu số 10d).
+  - *Khối BTNN*: Cán bộ từ chối thụ lý hồ sơ YCBT; Lãnh đạo từ chối phê duyệt Quyết định giải quyết bồi thường (Mẫu 09/BTNN), từ chối tờ trình cấp kinh phí, từ chối Quyết định hoàn trả.
+
+---
+
+### 5.4.3. [POPUP-SIGN-001] - Popup Ký số Điện tử Dùng chung (Common Digital Signature Modal)
+- **Mục đích**: Hộp thoại giao tiếp với thành phần ký số (USB Token / Chứng thư số HSM / Cloud-CA) phục vụ Lãnh đạo thực hiện ký số điện tử phê duyệt văn bản, phiếu đăng ký hoặc quyết định.
+- **Cấu trúc thông tin Popup**:
+  - `Tiêu đề popup`: String(200) - *Ký số văn bản điện tử / Ký duyệt hồ sơ*.
+  - `Thông tin văn bản ký`: Hiển thị tóm tắt Tên văn bản/loại hồ sơ, Số văn bản, Ngày ký, Cơ quan ban hành.
+  - `Chọn chứng thư số`: Dropdown/Select - Danh sách chứng thư số hợp lệ của Lãnh đạo đang đăng nhập.
+  - `Mã PIN USB Token / Mã xác thực`: Password(20) - Bắt buộc nhập khi ký qua thiết bị phần cứng USB Token.
+  - `Nút Hủy bỏ`: Button (Secondary) - Hủy thao tác ký, giữ nguyên trạng thái `Chờ ký`.
+  - `Nút Ký số`: Button (Primary) - Gửi dữ liệu sang dịch vụ ký số:
+    + **TH Thất bại/Hủy**: Giữ nguyên trạng thái `Chờ ký`, hiển thị cảnh báo lỗi `[MSG-ERR-SYS-001]`.
+    + **TH Thành công**: Hệ thống tự động cấp số và ngày ban hành từ Sổ văn bản điện tử áp dụng, đóng dấu thời gian, lưu tệp PDF đã ký chính thức, chuyển trạng thái sang `Đã ban hành` (hoặc `Hoàn thành`), ghi lịch sử xử lý và hiển thị thông báo thành công `[MSG-SUC-...]`.
+- **Phạm vi ánh xạ**:
+  - *Khối BPBĐ*: Lãnh đạo ký số Phiếu đăng ký (Mẫu 01 - 05), Giấy chứng nhận CCTT (Mẫu 10d), Văn bản từ chối đăng ký.
+  - *Khối BTNN*: Lãnh đạo ký số Quyết định giải quyết bồi thường (Mẫu 09/BTNN), Quyết định hủy (Mẫu 11/BTNN), Quyết định sửa chữa bổ sung (Mẫu 12/BTNN), Quyết định hoàn trả, Báo cáo công tác bồi thường.
 
 ---
 

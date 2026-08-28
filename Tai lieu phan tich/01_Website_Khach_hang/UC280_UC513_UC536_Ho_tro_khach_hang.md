@@ -4,11 +4,13 @@
 \- Cho phép khách hàng tra cứu, tìm kiếm, xem chi tiết và tải xuống các văn bản quy phạm pháp luật (QPPL) liên quan đến hai lĩnh vực nghiệp vụ chính: Đăng ký biện pháp bảo đảm (BPBĐ) và Bồi thường nhà nước (BTNN).  
 
 *a. Phân quyền*
+
 \- Mọi đối tượng người sử dụng truy cập Website Khách hàng (bao gồm cả khách hàng vãng lai chưa đăng nhập và khách hàng đã đăng nhập tài khoản).  
 
 *b. Điều kiện thực hiện*
 \- Người sử dụng truy cập vào Website Khách hàng.  
-\- Hệ thống hoạt động bình thường, kết nối internet và máy chủ lưu trữ file PDF ổn định.  
+\- Hệ thống hoạt động bình thường, kết nối internet.
+\- Đối với Tra cứu sử dụng mã số sử dụng CSDL thường xuyên thì bắt buộc phải đăng nhập thành công.
 
 ---
 
