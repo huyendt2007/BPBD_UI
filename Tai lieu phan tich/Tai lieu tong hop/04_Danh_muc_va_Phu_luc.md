@@ -98,7 +98,7 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-UC001-003]** | Lỗi | `"Địa chỉ email/Tên đăng nhập không tồn tại trên hệ thống hoặc không thuộc tài khoản có quản lý mật khẩu."` | Toast | Không |
 | **[MSG-ERR-UC001-004]** | Lỗi | `"Xác thực tài khoản VNeID không thành công. Vui lòng thử lại."` | Toast | Không |
 | **[MSG-ERR-UC001-005]** | Lỗi | `"Tài khoản VNeID chưa đạt mức độ định danh điện tử Mức 2. Vui lòng nâng cấp tài khoản VNeID và thử lại."` | Toast | Không |
-| **[MSG-ERR-UC001-006]** | Lỗi | `"Hồ sơ tài khoản của bạn đang bị khóa hoặc không được phép đăng nhập. Vui lòng liên hệ quản trị hệ thống để được hỗ trợ."` | Toast | Không |
+| **[MSG-ERR-UC001-006]** | Lỗi | `"Tài khoản đang bị khóa hoặc Đóng. Vui lòng liên hệ quản trị hệ thống để được hỗ trợ."` | Toast | Không |
 | **[MSG-ERR-UC001-007]** | Lỗi | `"Tên đăng nhập/Email hoặc mật khẩu không chính xác."` | Inline | Không |
 | **[MSG-ERR-UC001-008]** | Lỗi | `"[Tên trường] không hợp lệ hoặc vượt quá độ dài cho phép."` | Inline | Không |
 | **[MSG-ERR-UC001-009]** | Lỗi | `"Mã OTP phải gồm 6 chữ số."` | Inline | Không |

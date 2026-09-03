@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Website Khách hàng | Hệ thống Đăng ký BPBĐ & BTNN</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Brand Colors - Portal Khách hàng */
+            --primary-color: #1E3A8A;       /* Xanh Navy chủ đạo */
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;     /* Xanh tương tác */
+            --accent-color: #F59E0B;        /* Vàng kim điểm nhấn */
+            --accent-hover: #D97706;
+            
+            /* Semantic Colors */
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #0284C7;
+            
+            /* Neutral Colors */
+            --bg-body: #F8FAFC;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --border-focus: #3B82F6;
+            
+            /* Sizing & Radius */
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #172554 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+        }
+
+        /* Top Government Header Strip */
+        .gov-banner-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #E2E8F0;
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            z-index: 10;
+        }
+
+        .gov-banner-top .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #F8FAFC;
+        }
+
+        .gov-banner-top .brand i {
+            color: var(--accent-color);
+            font-size: 16px;
+        }
+
+        .gov-banner-top .portal-name {
+            color: #94A3B8;
+        }
+
+        /* Main Container Card */
+        .auth-container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-modal);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            margin-top: 40px;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            color: white;
+            padding: 28px 24px 20px;
+            text-align: center;
+            position: relative;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        .auth-header .logo-badge {
+            width: 56px;
+            height: 56px;
+            background: white;
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-header h1 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        .auth-header p {
+            font-size: 12px;
+            color: #BFDBFE;
+            margin-top: 6px;
+        }
+
+        .auth-body {
+            padding: 28px 24px;
+        }
+
+        /* Gateway Cards (MH01) */
+        .gateway-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .gateway-card {
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #FFFFFF;
+        }
+
+        .gateway-card:hover {
+            border-color: var(--secondary-color);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .gateway-card .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F1F5F9;
+            flex-shrink: 0;
+            font-size: 24px;
+        }
+
+        .gateway-card.vneid .card-icon {
+            background: #FEF2F2;
+            color: #DC2626;
+        }
+
+        .gateway-card.internal .card-icon {
+            background: #EFF6FF;
+            color: var(--primary-color);
+        }
+
+        .gateway-card .card-info {
+            flex: 1;
+        }
+
+        .gateway-card .group-badge {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .gateway-card .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .gateway-card .card-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .gateway-card .card-arrow {
+            color: #94A3B8;
+            font-size: 14px;
+        }
+
+        /* Form Group Styles (MH02) */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .form-label .required {
+            color: var(--danger-color);
+            margin-left: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            height: 40px;
+            padding: 8px 12px 8px 36px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 13.5px;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            background: #FFFFFF;
+        }
+
+        .form-control:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Rule 9 Validation: .is-invalid */
+        .form-control.is-invalid {
+            border-color: var(--danger-color) !important;
+            background-color: #FEF2F2 !important;
+        }
+
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+        }
+
+        .field-error-msg {
+            display: none;
+            font-size: 12px;
+            color: var(--danger-color);
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .field-error-msg i {
+            margin-right: 4px;
+        }
+
+        /* Row Options: Remember me & Forgot pass */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #475569;
+            user-select: none;
+        }
+
+        .checkbox-container input {
+            accent-color: var(--primary-color);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .link-forgot {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .link-forgot:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        /* Action Buttons */
+        .btn {
+            height: 40px;
+            padding: 0 20px;
+            border-radius: var(--border-radius-md);
+            font-size: 13.5px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+            font-family: inherit;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            box-shadow: 0 2px 4px rgba(30, 58, 138, 0.25);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #475569;
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            color: var(--text-main);
+            border-color: #CBD5E1;
+        }
+
+        .switch-method-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+
+        .switch-method-link a {
+            color: var(--text-muted);
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .switch-method-link a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* Modal Backdrop & Container - Sticky Header & Footer */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 16px;
+            animation: fadeInModal 0.2s ease-out;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Quy chuẩn Rule 1 & Rule 11 Modal */
+        .modal-dialog {
+            width: 100%;
+            max-width: 540px; /* Chuẩn 500px - 600px cân đối */
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh; /* Giữ trong viewport */
+            overflow: hidden; /* Header và Footer cố định */
+            background: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-modal);
+            border: 1px solid var(--border-color);
+            animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Header: padding: 24px 24px 16px 24px; */
+        .modal-header {
+            padding: 24px 24px 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #FFFFFF;
+            flex-shrink: 0;
+        }
+
+        .modal-header h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .modal-header h3 i {
+            color: var(--accent-color);
+            font-size: 18px;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748B;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .modal-close-btn:hover {
+            background: #F1F5F9;
+            color: var(--danger-color);
+        }
+
+        /* Body: padding: 24px; overflow-y: auto; flex: 1; */
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+            background: #FFFFFF;
+        }
+
+        .modal-instruction {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Footer: padding: 16px 24px 24px 24px; */
+        .modal-footer {
+            padding: 16px 24px 24px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            background: #F8FAFC;
+            flex-shrink: 0;
+        }
+
+        /* Toast Notification Container */
+        .toast-container {
+            position: fixed;
+            top: 70px;
+            right: 24px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast-item {
+            min-width: 340px;
+            max-width: 460px;
+            padding: 14px 16px;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 13.5px;
+            line-height: 1.4;
+            pointer-events: auto;
+            animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-left: 4px solid;
+            background: #FFFFFF;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast-item.success {
+            border-left-color: var(--success-color);
+            color: #065F46;
+        }
+        .toast-item.success i.status-icon {
+            color: var(--success-color);
+            font-size: 18px;
+            margin-top: 1px;
+        }
+
+        .toast-item.error {
+            border-left-color: var(--danger-color);
+            color: #991B1B;
+        }
+        .toast-item.error i.status-icon {
+            color: var(--danger-color);
+            font-size: 18px;
+            margin-top: 1px;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .toast-desc {
+            font-size: 12.5px;
+            color: #475569;
+        }
+
+        /* Test Helper Panel */
+        .test-helper-panel {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 320px;
+            z-index: 999;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .test-helper-panel h4 {
+            font-size: 12.5px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .test-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .test-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #E2E8F0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .test-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Government Banner -->
+    <div class="gov-banner-top">
+        <div class="brand">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span>BỘ TƯ PHÁP - CỤC ĐĂNG KÝ QUỐC GIA GIAO DỊCH BẢO ĐẢM</span>
+        </div>
+        <div class="portal-name">
+            <i class="fa-solid fa-globe" style="margin-right: 4px;"></i>Website Khách hàng
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Main Auth Card -->
+    <div class="auth-container">
+        
+        <!-- Header -->
+        <div class="auth-header">
+            <div class="logo-badge">
+                <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <h1>ĐĂNG NHẬP HỆ THỐNG ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM VÀ BỒI THƯỜNG NHÀ NƯỚC</h1>
+            <p>Hệ thống dịch vụ công đăng ký giao dịch bảo đảm trực tuyến</p>
+        </div>
+
+        <!-- Body: Screen 1 - MH01 Gateway Grid -->
+        <div id="screenMH01" class="auth-body" style="display: none;">
+            <div class="gateway-grid">
+                <!-- Card 1: VNeID -->
+                <div class="gateway-card vneid" onclick="handleVNeIDLogin()">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                    <div class="card-info">
+                        <div class="group-badge">CÔNG DÂN</div>
+                        <div class="card-title">Tài khoản Định danh điện tử (VNeID)</div>
+                        <div class="card-sub">Dành cho cá nhân/tổ chức xác thực qua Cổng DVCQG</div>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2: Tài khoản cấp bởi hệ thống -->
+                <div class="gateway-card internal" onclick="switchToMH02()">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="card-info">
+                        <div class="group-badge">TÀI KHOẢN ĐƯỢC CẤP</div>
+                        <div class="card-title">Tài khoản cấp bởi Hệ thống đăng ký trực tuyến</div>
+                        <div class="card-sub">Đăng nhập bằng Tên đăng nhập/Email và Mật khẩu</div>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="switch-method-link" style="margin-top: 24px;">
+                <a href="../HomePage_KH.html">
+                    <i class="fa-solid fa-arrow-left"></i>Quay lại trang chủ
+                </a>
+            </div>
+        </div>
+
+        <!-- Body: Screen 2 - MH02 Đăng nhập bằng tài khoản và mật khẩu -->
+        <div id="screenMH02" class="auth-body">
+            <form id="formLogin" onsubmit="handleLoginSubmit(event)" novalidate>
+                <!-- Tên đăng nhập -->
+                <div class="form-group">
+                    <label class="form-label" for="loginUsername">
+                        Tên đăng nhập <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        <input type="text" id="loginUsername" class="form-control" 
+                               placeholder="Nhập tên đăng nhập, email hoặc MST" 
+                               autocomplete="username">
+                    </div>
+                    <div id="loginUsernameError" class="field-error-msg">
+                        <i class="fa-solid fa-circle-exclamation"></i>Đây là trường bắt buộc
+                    </div>
+                </div>
+
+                <!-- Mật khẩu -->
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">
+                        Mật khẩu tài khoản <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="loginPassword" class="form-control" 
+                               placeholder="Nhập mật khẩu" 
+                               autocomplete="current-password"
+                               style="padding-right: 38px;">
+                        <span class="toggle-password" onclick="togglePasswordVisibility('loginPassword', this)" title="Ẩn/hiện mật khẩu">
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                    </div>
+                    <div id="loginPasswordError" class="field-error-msg">
+                        <i class="fa-solid fa-circle-exclamation"></i>Đây là trường bắt buộc
+                    </div>
+                </div>
+
+                <!-- Ghi nhớ & Quên mật khẩu -->
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="chkRememberMe">
+                        <span>Ghi nhớ đăng nhập</span>
+                    </label>
+                    <a class="link-forgot" onclick="openForgotPasswordModal()">Quên mật khẩu?</a>
+                </div>
+
+                <!-- Nút Đăng nhập -->
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fa-solid fa-right-to-bracket"></i>Đăng nhập
+                </button>
+
+                <!-- Chọn phương thức khác -->
+                <div class="switch-method-link">
+                    <a onclick="switchToMH01()">
+                        <i class="fa-solid fa-arrow-left"></i>Chọn phương thức đăng nhập khác
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- MODAL POPUP: QUÊN MẬT KHẨU (SRS Mục 4.1.5.3.4)                -->
+    <!-- Tuân thủ Rule 1 (Sticky Header/Footer) & Rule 11 (Padding 24) -->
+    <!-- ============================================================= -->
+    <div id="modalForgotPassword" class="modal-backdrop" onclick="handleBackdropClick(event)">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                
+                <!-- 1. Header cố định: padding: 24px 24px 16px 24px -->
+                <div class="modal-header">
+                    <h3>
+                        <i class="fa-solid fa-key"></i>Quên mật khẩu
+                    </h3>
+                    <button type="button" class="modal-close-btn" onclick="closeForgotPasswordModal()" title="Đóng (ESC)">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- 2. Body cuộn độc lập: padding: 24px; overflow-y: auto; flex: 1 -->
+                <div class="modal-body">
+                    <p class="modal-instruction">
+                        Vui lòng nhập thông tin Tên đăng nhập (Email) đã đăng ký với hệ thống để nhận mật khẩu tạm thời.
+                    </p>
+
+                    <!-- Trường nhập: Tên đăng nhập (Email) -->
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="txtForgotEmail">
+                            Tên đăng nhập (Email) <span class="required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                            <input type="text" id="txtForgotEmail" class="form-control" 
+                                   placeholder="Nhập email đã đăng ký" 
+                                   autocomplete="email">
+                        </div>
+                        <!-- Cảnh báo lỗi Rule 9: .is-invalid + Text đỏ "Đây là trường bắt buộc" -->
+                        <div id="forgotEmailError" class="field-error-msg">
+                            <i class="fa-solid fa-circle-exclamation"></i>Đây là trường bắt buộc
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Footer cố định: padding: 16px 24px 24px 24px -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeForgotPasswordModal()">
+                        <i class="fa-solid fa-xmark"></i>Hủy
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="submitForgotPassword()">
+                        <i class="fa-solid fa-paper-plane"></i>Gửi yêu cầu
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Testing Bar for BA/QA -->
+    <div class="test-helper-panel">
+        <h4><i class="fa-solid fa-flask"></i> Dữ liệu giả lập test Popup:</h4>
+        <div class="test-btn-group">
+            <button class="test-btn" onclick="quickFillLogin('nguyenvana@gmail.com')">Fill MH02: Hợp lệ</button>
+            <button class="test-btn" onclick="quickFillLogin('khoa@moj.gov.vn')">Fill MH02: Bị khóa</button>
+            <button class="test-btn" onclick="quickFillLogin('')">Xóa ô MH02</button>
+            <button class="test-btn" onclick="testScenario('empty')">Test TH1 (Bỏ trống)</button>
+            <button class="test-btn" onclick="testScenario('notfound')">Test TH2 (Không tồn tại)</button>
+            <button class="test-btn" onclick="testScenario('locked')">Test TH3 (Bị khóa/đóng)</button>
+            <button class="test-btn" onclick="testScenario('success')">Test TH Hợp lệ</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // Chuyển đổi màn hình MH01 <-> MH02
+        // ==========================================
+        function switchToMH01() {
+            document.getElementById('screenMH02').style.display = 'none';
+            document.getElementById('screenMH01').style.display = 'block';
+        }
+
+        function switchToMH02() {
+            document.getElementById('screenMH01').style.display = 'none';
+            document.getElementById('screenMH02').style.display = 'block';
+        }
+
+        function handleVNeIDLogin() {
+            showToast('info', 'Chuyển hướng VNeID', 'Đang chuyển hướng sang Cổng xác thực DVCQG/VNeID (sso.dancuquocgia.gov.vn)...');
+        }
+
+        // ==========================================
+        // Ẩn/hiện mật khẩu
+        // ==========================================
+        function togglePasswordVisibility(inputId, toggleElem) {
+            const input = document.getElementById(inputId);
+            const icon = toggleElem.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // ==========================================
+        // Xử lý Popup Quên mật khẩu (SRS Mục 4.1.5.3.4)
+        // ==========================================
+
+        /**
+         * Mở Modal Popup Quên mật khẩu
+         * Kế thừa dữ liệu (Pre-fill) từ MH02 nếu đã nhập
+         */
+        function openForgotPasswordModal() {
+            const loginUsername = document.getElementById('loginUsername')?.value.trim() || '';
+            const txtForgotEmail = document.getElementById('txtForgotEmail');
+            const errorDiv = document.getElementById('forgotEmailError');
+
+            // Reset trạng thái lỗi
+            clearFieldError(txtForgotEmail, errorDiv);
+
+            // Pre-fill từ ô "Tên đăng nhập" tại MH02
+            txtForgotEmail.value = loginUsername;
+
+            // Hiển thị modal
+            const modal = document.getElementById('modalForgotPassword');
+            modal.style.display = 'flex';
+
+            // Tự động focus con trỏ
+            setTimeout(() => {
+                txtForgotEmail.focus();
+                if (txtForgotEmail.value) {
+                    txtForgotEmail.select();
+                }
+            }, 100);
+        }
+
+        /**
+         * Đóng Modal Popup Quên mật khẩu
+         */
+        function closeForgotPasswordModal() {
+            const modal = document.getElementById('modalForgotPassword');
+            modal.style.display = 'none';
+            
+            // Xóa trạng thái lỗi khi đóng
+            const txtForgotEmail = document.getElementById('txtForgotEmail');
+            const errorDiv = document.getElementById('forgotEmailError');
+            clearFieldError(txtForgotEmail, errorDiv);
+        }
+
+        /**
+         * Đóng modal khi click ra ngoài backdrop
+         */
+        function handleBackdropClick(event) {
+            if (event.target.id === 'modalForgotPassword') {
+                closeForgotPasswordModal();
+            }
+        }
+
+        /**
+         * Lắng nghe phím ESC để đóng modal
+         */
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('modalForgotPassword');
+                if (modal && modal.style.display === 'flex') {
+                    closeForgotPasswordModal();
+                }
+            }
+        });
+
+        /**
+         * Xóa lỗi trên trường nhập
+         */
+        function clearFieldError(inputElem, errorElem) {
+            if (inputElem) {
+                inputElem.classList.remove('is-invalid');
+            }
+            if (errorElem) {
+                errorElem.style.display = 'none';
+            }
+        }
+
+        /**
+         * Bật lỗi trên trường nhập theo Rule 9
+         */
+        function setFieldError(inputElem, errorElem, message) {
+            if (inputElem) {
+                inputElem.classList.add('is-invalid');
+                inputElem.focus();
+            }
+            if (errorElem) {
+                errorElem.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i>${message}`;
+                errorElem.style.display = 'block';
+            }
+        }
+
+        // Tự động xóa lỗi khi người dùng bắt đầu gõ
+        document.getElementById('txtForgotEmail')?.addEventListener('input', function() {
+            clearFieldError(this, document.getElementById('forgotEmailError'));
+        });
+
+        /**
+         * Gửi yêu cầu cấp lại mật khẩu
+         */
+        function submitForgotPassword() {
+            const txtForgotEmail = document.getElementById('txtForgotEmail');
+            const errorDiv = document.getElementById('forgotEmailError');
+            const val = txtForgotEmail.value.trim();
+
+            // ----------------------------------------------------
+            // TH1: Bỏ trống trường bắt buộc [BR-VAL-001]
+            // Áp dụng Rule 9: highlight viền đỏ, hiển thị text [MSG-ERR-VAL-001], focus con trỏ, không toast
+            // ----------------------------------------------------
+            if (!val) {
+                setFieldError(txtForgotEmail, errorDiv, 'Đây là trường bắt buộc');
+                return;
+            }
+
+            // ----------------------------------------------------
+            // TH2: Sai định dạng Email [BR-VAL-002]
+            // Áp dụng Rule 9: highlight viền đỏ, hiển thị text [MSG-ERR-VAL-002], focus con trỏ, không toast
+            // ----------------------------------------------------
+            const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+            if (!emailRegex.test(val)) {
+                setFieldError(txtForgotEmail, errorDiv, 'Địa chỉ email không đúng định dạng (ví dụ: abc@domain.com)');
+                return;
+            }
+
+            // ----------------------------------------------------
+            // TH3: Tài khoản không tồn tại / Không có phương thức Nội bộ [MSG-ERR-UC001-003]
+            // Giả lập test: giá trị chứa "notfound" hoặc "khongtontai"
+            // ----------------------------------------------------
+            if (val.toLowerCase().includes('notfound') || val.toLowerCase().includes('khongtontai')) {
+                showToast(
+                    'error', 
+                    '[MSG-ERR-UC001-003]', 
+                    'Địa chỉ email/Tên đăng nhập không tồn tại trên hệ thống hoặc không thuộc tài khoản có quản lý mật khẩu.'
+                );
+                return;
+            }
+
+            // ----------------------------------------------------
+            // TH4: Tài khoản Bị khóa hoặc Đóng [MSG-ERR-UC001-006]
+            // Cập nhật chuẩn theo danh mục thông báo mới:
+            // "Tài khoản đang bị khóa hoặc Đóng. Vui lòng liên hệ quản trị hệ thống để được hỗ trợ."
+            // Giả lập test: giá trị chứa "khoa" hoặc "dong"
+            // ----------------------------------------------------
+            if (val.toLowerCase().includes('khoa') || val.toLowerCase().includes('dong') || val === 'locked@moj.gov.vn') {
+                showToast(
+                    'error', 
+                    '[MSG-ERR-UC001-006]', 
+                    'Tài khoản đang bị khóa hoặc Đóng. Vui lòng liên hệ quản trị hệ thống để được hỗ trợ.'
+                );
+                return;
+            }
+
+            // ----------------------------------------------------
+            // TH Hợp lệ: Thành công [MSG-SUC-UC001-001]
+            // Đóng popup, hiển thị toast thành công trên MH02, giữ nguyên dữ liệu trên MH02
+            // ----------------------------------------------------
+            closeForgotPasswordModal();
+
+            // Nếu MH02 trước đó chưa có Tên đăng nhập thì điền sẵn email này vào để tiện đăng nhập
+            const loginUsername = document.getElementById('loginUsername');
+            if (loginUsername && !loginUsername.value.trim()) {
+                loginUsername.value = val;
+            }
+
+            // Hiển thị toast thông báo thành công
+            showToast(
+                'success', 
+                '[MSG-SUC-UC001-001]', 
+                'Mật khẩu tạm thời đã được gửi đến email của bạn. Vui lòng kiểm tra email và đăng nhập lại.'
+            );
+        }
+
+        // ==========================================
+        // Xử lý Submit Form Đăng nhập chính (MH02)
+        // ==========================================
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername');
+            const password = document.getElementById('loginPassword');
+            const userErr = document.getElementById('loginUsernameError');
+            const passErr = document.getElementById('loginPasswordError');
+
+            let hasError = false;
+
+            if (!username.value.trim()) {
+                setFieldError(username, userErr, 'Đây là trường bắt buộc');
+                hasError = true;
+            } else {
+                clearFieldError(username, userErr);
+            }
+
+            if (!password.value) {
+                setFieldError(password, passErr, 'Đây là trường bắt buộc');
+                if (!hasError) hasError = true;
+            } else {
+                clearFieldError(password, passErr);
+            }
+
+            if (hasError) return;
+
+            // Giả lập đăng nhập thành công
+            showToast('success', 'Đăng nhập thành công', 'Hệ thống đang khởi tạo phiên làm việc và chuyển hướng về Trang chủ...');
+            setTimeout(() => {
+                window.location.href = '../HomePage_KH.html';
+            }, 1200);
+        }
+
+        // ==========================================
+        // Toast Notification System
+        // ==========================================
+        function showToast(type, title, message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${type}`;
+
+            const iconClass = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
+
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass} status-icon"></i>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-desc">${message}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 4500);
+        }
+
+        // ==========================================
+        // Test Helper Functions
+        // ==========================================
+        function quickFillLogin(val) {
+            document.getElementById('loginUsername').value = val;
+            clearFieldError(document.getElementById('loginUsername'), document.getElementById('loginUsernameError'));
+            showToast('info', 'Dữ liệu thử nghiệm', `Đã điền vào ô Tên đăng nhập: "${val || '(trống)'}"`);
+        }
+
+        function testScenario(type) {
+            openForgotPasswordModal();
+            const input = document.getElementById('txtForgotEmail');
+
+            if (type === 'empty') {
+                input.value = '';
+                submitForgotPassword();
+            } else if (type === 'notfound') {
+                input.value = 'khongtontai@gmail.com';
+                submitForgotPassword();
+            } else if (type === 'locked') {
+                input.value = 'khoa@moj.gov.vn';
+                submitForgotPassword();
+            } else if (type === 'success') {
+                input.value = 'nguyenvana@gmail.com';
+                submitForgotPassword();
+            }
+        }
+    </script>
+</body>
+</html>

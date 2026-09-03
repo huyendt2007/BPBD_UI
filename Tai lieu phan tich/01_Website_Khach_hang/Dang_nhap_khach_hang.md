@@ -4,12 +4,21 @@
 \- Cung cấp cơ chế xác thực danh tính cho Cá nhân, Tổ chức và Cơ quan có thẩm quyền truy cập vào Website Khách hàng qua VNeID hoặc tài khoản cấp bởi hệ thống.
 
 *a. Phân quyền*
-\- Người dùng: Cá nhân/Tổ chức/Cơ quan có thẩm quyền có tài khoản VNeID hoặc tài khoản do hệ thống cấp.
+
+- Người dùng thuộc các nhóm đối tượng sau có tài khoản VNeID hoặc tài khoản do hệ thống cấp:  
+  + Cá nhân.  
+  + Tổ chức.  
+  + Cơ quan có thẩm quyền.  
 
 *b. Điều kiện thực hiện*
-\- Hệ thống hoạt động bình thường.
-\- Đối với Đăng nhập qua VNeID: Có kết nối mạng ổn định với Cổng Dịch vụ công Quốc gia (DVCQG) và tài khoản VNeID của người dùng đã được kích hoạt định danh điện tử Mức độ 2 (IAL2) trở lên.
-\- Đối với Đăng nhập bằng tài khoản được cấp: Người dùng đã được cấp tài khoản nội bộ (Tên đăng nhập và mật khẩu khởi tạo).
+
+- Điều kiện chung của hệ thống:  
+  + Hệ thống CSDL Biện pháp bảo đảm và Bồi thường nhà nước hoạt động bình thường.  
+- Đối với luồng Đăng nhập qua VNeID:  
+  + Thiết bị người dùng có kết nối mạng ổn định với Cổng Dịch vụ công Quốc gia (DVCQG) / CSDL Quốc gia về dân cư.  
+  + Tài khoản VNeID của người dùng đã được kích hoạt định danh điện tử Mức độ 2 (IAL2) trở lên.  
+- Đối với luồng Đăng nhập bằng tài khoản được cấp:  
+  + Người dùng đã được cấp tài khoản nội bộ (Tên đăng nhập và mật khẩu khởi tạo đang ở trạng thái hoạt động).  
 
 ---
 
@@ -139,19 +148,10 @@
       <td><b>TH Hợp lệ (Đăng nhập thành công)</b>: Reset số lần nhập sai về 0, khởi tạo phiên làm việc (Session) với thời gian timeout cấu hình (mặc định 15 phút), ghi nhận nhật ký đăng nhập (Audit Log) và chuyển hướng người dùng về Trang chủ.</td>
     </tr>
     <tr>
-      <td rowspan="4" style="text-align: center; vertical-align: middle; font-weight: bold;">3</td>
-      <td rowspan="4" style="vertical-align: middle; font-weight: bold;">Quên mật khẩu?</td>
-      <td rowspan="4" style="text-align: center; vertical-align: middle;">Link</td>
-      <td><b>TH1 (Chưa nhập Tên đăng nhập)</b>: Nếu ô "Tên đăng nhập" đang để trống, vi phạm [BR-VAL-001]. Hệ thống focus, highlight viền đỏ ô "Tên đăng nhập" và hiển thị thông báo lỗi <b>[MSG-ERR-VAL-001]</b> yêu cầu nhập Tên đăng nhập trước khi yêu cầu cấp lại mật khẩu. Không thực hiện gửi yêu cầu.</td>
-    </tr>
-    <tr>
-      <td><b>TH2 (Tên đăng nhập không tồn tại hoặc không có phương thức đăng nhập Nội bộ)</b>: Nếu giá trị nhập không khớp với bất kỳ tài khoản nào trên hệ thống hoặc tài khoản này chỉ đăng nhập qua VNeID mà không quản lý mật khẩu Nội bộ, hệ thống hiển thị <b>[MSG-ERR-UC001-003]</b>.</td>
-    </tr>
-    <tr>
-      <td><b>TH3 (Tài khoản Bị khóa hoặc Đóng)</b>: Nếu tài khoản đang ở trạng thái <code>Bị khóa</code> hoặc <code>Đóng</code>, hệ thống từ chối cấp lại mật khẩu và hiển thị <b>[MSG-ERR-UC001-006]</b>.</td>
-    </tr>
-    <tr>
-      <td><b>TH Hợp lệ</b>: Hệ thống tự động tạo mật khẩu tạm thời ngẫu nhiên mới đáp ứng quy chuẩn độ phức tạp <b>[BR-VAL-006]</b>; mã hóa băm một chiều (Hash + Salt) mật khẩu tạm thời trước khi cập nhật vào CSDL; kích hoạt cờ bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo (<code>ForcePasswordChange</code> = <code>True</code>); gửi email thông báo tài khoản kèm mật khẩu tạm thời mới đến địa chỉ Email đã liên kết với tài khoản; ghi nhận nhật ký hệ thống (Audit Log); hiển thị thông báo thành công <b>[MSG-SUC-UC001-001]</b>; giữ nguyên tại màn hình MH02 (không chuyển trang) để người dùng nhập mật khẩu tạm thời vừa nhận được và đăng nhập lại.</td>
+      <td style="text-align: center; vertical-align: middle;">3</td>
+      <td style="vertical-align: middle;">Quên mật khẩu?</td>
+      <td style="text-align: center; vertical-align: middle;">Link</td>
+      <td>Khi người dùng click chọn "Quên mật khẩu?", hệ thống mở hộp thoại <a href="#41534-popup-quên-mật-khẩu">Popup Quên mật khẩu</a>:<br>- <b>Tự động điền dữ liệu (Pre-fill)</b>: Nếu tại ô "Tên đăng nhập" trên màn hình MH02 đã có giá trị, hệ thống tự động trích xuất và điền sẵn giá trị này vào ô <b>Tên đăng nhập (Email)</b> trên Popup.<br>- Nếu ô "Tên đăng nhập" trên MH02 đang để trống, mở Popup với ô nhập trống để người dùng chủ động nhập thông tin.</td>
     </tr>
     <tr>
       <td style="text-align: center; vertical-align: middle;">4</td>
@@ -164,6 +164,56 @@
       <td style="vertical-align: middle;">Ẩn/hiện mật khẩu</td>
       <td style="text-align: center; vertical-align: middle;">Icon</td>
       <td>Khi click icon con mắt tại trường Mật khẩu tài khoản, hệ thống chuyển đổi hiển thị giữa che ký tự và hiện ký tự đã nhập. Thao tác này không làm thay đổi giá trị mật khẩu và không kích hoạt validate/đăng nhập.</td>
+    </tr>
+  </tbody>
+</table>
+
+##### 4.1.5.3.4. Popup Quên mật khẩu
+
+###### 4.1.5.3.4.1. Giao diện Popup
+- Giao diện dạng Popup Modal hiển thị đè lên màn hình MH02 khi người dùng click vào liên kết "Quên mật khẩu?". Thiết kế Header và Footer cố định, lề trong đạt chuẩn 24px, chiều cao tối đa không vượt quá 90vh (`max-height: 90vh`).  
+- Tiêu đề popup: **Quên mật khẩu**, góc trên bên phải có nút Đóng [X].  
+
+###### 4.1.5.3.4.2. Mô tả thông tin trên Popup
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :---: | :--- | :--- |
+| **Tiêu đề Popup** | String(100) | - | "Quên mật khẩu" | Control UI: Tiêu đề hộp thoại kèm icon chìa khóa/khóa bảo mật, đặt tại phần header của popup kèm nút Đóng [X]. |
+| **Tên đăng nhập (Email)** | String(255) | Có | Lấy từ MH02 nếu có | Control UI: Ô nhập văn bản (Input text).<br>- Tự động điền giá trị từ ô "Tên đăng nhập" của màn hình MH02 sang nếu người dùng đã nhập trước đó.<br>- Cho phép người dùng nhập Email đã đăng ký với hệ thống để nhận mật khẩu tạm thời. Gợi ý placeholder: *"Nhập email đã đăng ký"*.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001] và quy tắc định dạng Email [BR-VAL-002]. |
+
+###### 4.1.5.3.4.3. Chức năng trên Popup
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center; width: 60px;">STT</th>
+      <th style="text-align: left; width: 240px;">Tên chức năng</th>
+      <th style="text-align: center; width: 110px;">Định dạng</th>
+      <th style="text-align: left;">Mô tả</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="5" style="text-align: center; vertical-align: middle; font-weight: bold;">1</td>
+      <td rowspan="5" style="vertical-align: middle; font-weight: bold;">Gửi yêu cầu</td>
+      <td rowspan="5" style="text-align: center; vertical-align: middle;">Button</td>
+      <td><b>TH1 (Bỏ trống trường bắt buộc)</b>: Vi phạm quy tắc <b>[BR-VAL-001]</b>. Hệ thống highlight viền đỏ ô nhập (<code>.is-invalid</code>), hiển thị cảnh báo lỗi <b>[MSG-ERR-VAL-001]</b> ngay phía dưới ô nhập và tự động focus con trỏ vào ô nhập. Không thực hiện gửi yêu cầu.</td>
+    </tr>
+    <tr>
+      <td><b>TH2 (Sai định dạng Email)</b>: Người dùng nhập giá trị không đúng định dạng địa chỉ Email chuẩn. Vi phạm quy tắc <b>[BR-VAL-002]</b>, hệ thống highlight viền đỏ ô nhập (<code>.is-invalid</code>), hiển thị cảnh báo lỗi <b>[MSG-ERR-VAL-002]</b> ngay phía dưới ô nhập và tự động focus con trỏ vào ô nhập. Không thực hiện gửi yêu cầu.</td>
+    </tr>
+    <tr>
+      <td><b>TH3 (Tài khoản không tồn tại hoặc không có phương thức đăng nhập Nội bộ)</b>: Nếu giá trị nhập không khớp với bất kỳ tài khoản nào trên hệ thống hoặc tài khoản này chỉ đăng nhập qua VNeID mà không quản lý mật khẩu Nội bộ, hệ thống hiển thị thông báo lỗi <b>[MSG-ERR-UC001-003]</b>.</td>
+    </tr>
+    <tr>
+      <td><b>TH4 (Tài khoản Bị khóa hoặc Đóng)</b>: Nếu tài khoản đang ở trạng thái <code>Bị khóa</code> hoặc <code>Đóng</code>, hệ thống từ chối cấp lại mật khẩu và hiển thị <b>[MSG-ERR-UC001-006]</b>.</td>
+    </tr>
+    <tr>
+      <td><b>TH Hợp lệ</b>: Hệ thống tự động tạo mật khẩu tạm thời ngẫu nhiên mới đáp ứng quy chuẩn độ phức tạp <b>[BR-VAL-006]</b>; mã hóa băm một chiều (Hash + Salt) mật khẩu tạm thời trước khi cập nhật vào CSDL; kích hoạt cờ bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo (<code>ForcePasswordChange</code> = <code>True</code>); gửi email thông báo tài khoản kèm mật khẩu tạm thời mới đến địa chỉ Email đã liên kết với tài khoản; ghi nhận nhật ký hệ thống (Audit Log); đóng Popup Quên mật khẩu; hiển thị thông báo thành công <b>[MSG-SUC-UC001-001]</b> trên màn hình đăng nhập MH02 để người dùng nhập mật khẩu tạm thời vừa nhận được và đăng nhập lại.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: middle;">2</td>
+      <td style="vertical-align: middle;">Hủy</td>
+      <td style="text-align: center; vertical-align: middle;">Button/Icon</td>
+      <td>Đóng Popup Quên mật khẩu và quay về màn hình Đăng nhập MH02 (giữ nguyên dữ liệu hiện có trên MH02). Thao tác này có thể thực hiện bằng cách click nút "Hủy", click icon [X] ở góc trên bên phải hoặc nhấn phím ESC.</td>
     </tr>
   </tbody>
 </table>
