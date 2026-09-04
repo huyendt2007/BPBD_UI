@@ -93,6 +93,13 @@ Danh sách các danh mục dùng chung (Master Data) áp dụng xuyên suốt to
 | **[DM_43]** | Loại cơ quan báo cáo (thống kê BTNN theo Thông tư 08/2019/TT-BTP) | \- UBND cấp tỉnh<br>- Tòa án nhân dân tối cao<br>- Viện kiểm sát nhân dân tối cao<br>- Bộ/cơ quan ngang Bộ |
 | **[DM_44]** | Loại kỳ báo cáo (thống kê BTNN theo Thông tư 08/2019/TT-BTP) | \- Báo cáo năm số liệu thực tế (01/01 - 31/10)<br>- Số liệu thống kê năm chính thức (01/01 - 31/12) |
 | **[DM_46]** | Vai trò báo cáo của cơ quan (thống kê BTNN theo Thông tư 08/2019/TT-BTP, khoản 1 Điều 26) | \- Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại<br>- Cơ quan là bị đơn/bị đơn dân sự/người bị kiện trong vụ án |
+| **[DM_47]** | Trạng thái hồ sơ xem xét trách nhiệm hoàn trả | \- Chờ thành lập Hội đồng<br>- Chờ duyệt QĐ thành lập<br>- Từ chối duyệt QĐ thành lập<br>- Đang họp Hội đồng<br>- Không xem xét trách nhiệm hoàn trả<br>- Chờ trình ký QĐ hoàn trả<br>- Chờ duyệt QĐ hoàn trả<br>- Từ chối duyệt QĐ hoàn trả<br>- Chờ ban hành QĐ hoàn trả<br>- Đang thi hành thu hồi<br>- Hoàn thành |
+| **[DM_48]** | Mức độ lỗi của người thi hành công vụ gây thiệt hại | \- Lỗi vô ý gây hậu quả không nghiêm trọng<br>- Lỗi vô ý gây hậu quả nghiêm trọng<br>- Lỗi cố ý |
+| **[DM_49]** | Phương thức thực hiện hoàn trả | \- Nộp một lần<br>- Nộp nhiều lần |
+| **[DM_50]** | Hình thức nộp tiền hoàn trả | \- Khấu trừ lương tại cơ quan<br>- BHXH khấu trừ lương hưu<br>- Nộp tiền mặt trực tiếp<br>- Chuyển khoản vào Kho bạc Nhà nước |
+| **[DM_51]** | Nhiệm vụ thành viên Hội đồng xem xét trách nhiệm hoàn trả | \- Chủ tịch Hội đồng<br>- Phó Chủ tịch Hội đồng<br>- Thư ký Hội đồng<br>- Ủy viên<br>- Khác (người dùng nhập tên nhiệm vụ cụ thể) |
+| **[DM_52]** | Lý do hoãn thực hiện nghĩa vụ hoàn trả | \- Đang mắc bệnh hiểm nghèo cần điều trị nội trú lâu dài<br>- Hoàn cảnh gia đình đặc biệt khó khăn (mất mùa, thiên tai)<br>- Lý do bất khả kháng khác được cơ quan có thẩm quyền xác nhận |
+| **[DM_53]** | Hình thức ban hành văn bản | \- Ký số trên hệ thống<br>- Ký ngoài hệ thống |
 
 
 ## 3.3. Các Quy tắc Xử lý Dùng chung (Common Processing Rules)

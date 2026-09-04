@@ -67,8 +67,8 @@ flowchart TD
 | Mã YCBT | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập mã YCBT...`.<br>- Tìm kiếm gần đúng theo mã hồ sơ yêu cầu bồi thường đã được khởi tạo liên thông từ hồ sơ xác định cơ quan.<br>- Nếu hồ sơ chưa có mã YCBT, dữ liệu trên lưới hiển thị `-`. |
 | Tên vụ việc | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập tên vụ việc...`.<br>- Tìm kiếm gần đúng theo tên vụ việc, không phân biệt hoa thường, có trim khoảng trắng. |
 | Tên người yêu cầu | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập tên người yêu cầu...`.<br>- Tìm kiếm gần đúng theo tên người yêu cầu, không phân biệt hoa thường, có trim khoảng trắng. |
-| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả lĩnh vực` | Control UI: Combobox.<br>- Tham chiếu danh mục Lĩnh vực phát sinh thiệt hại [DM_22].<br>- Cho phép lọc theo một lĩnh vực cụ thể hoặc tất cả lĩnh vực. |
-| Trạng thái | Enum(String(50)) | Không | `Tất cả trạng thái` | Control UI: Combobox.<br>- Lọc theo trạng thái xử lý của hồ sơ.<br>- Cho phép lọc theo một trạng thái cụ thể hoặc tất cả trạng thái. |
+| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>Tham chiếu danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
+| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ tiếp nhận<br>+ Lưu nháp<br>+ Đang xác minh<br>+ Yêu cầu bổ sung<br>+ Bị từ chối<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Ngày hiện tại trừ 03 tháng | Control UI: Datepicker.<br>- Định dạng hiển thị `dd/mm/yyyy`.<br>- Có icon lịch.<br>- Lọc theo ngày tiếp nhận từ ngày. |
 | Đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng hiển thị `dd/mm/yyyy`.<br>- Có icon lịch.<br>- Lọc theo ngày tiếp nhận đến ngày. |
 | **Bảng danh sách yêu cầu xác định cơ quan giải quyết bồi thường** | Text(4000) | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Thời điểm tiếp nhận" giảm dần (mới nhất hiển thị lên đầu).<br>- Cho phép click trực tiếp vào dòng dữ liệu để mở màn hình chi tiết, trừ khi click vào icon thao tác.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
@@ -82,10 +82,8 @@ flowchart TD
 | Ngày tiếp nhận | Date | - | Theo dữ liệu | Control UI: Text hiển thị (Read-only).<br>- Căn giữa.<br>- Định dạng `dd/mm/yyyy`. |
 | Mã hồ sơ YCBT | String(50) | - | Theo dữ liệu | Control UI: Text link (Hyperlink).<br>- Căn giữa.<br>- Hiển thị mã hồ sơ yêu cầu bồi thường đã khởi tạo liên thông.<br>- Nếu chưa có mã hồ sơ YCBT: Hiển thị `-`.<br>- Nếu đã có mã hồ sơ YCBT: Hiển thị dạng Text link màu xanh (có thể click). |
 | Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge trạng thái.<br>- Hiển thị badge theo trạng thái hồ sơ. |
-| Thao tác | String(255) | - | Theo trạng thái | Control UI: Icon button group.<br>- Gồm các icon thao tác theo trạng thái hồ sơ: `Tiếp nhận`, `Yêu cầu bổ sung`, `Từ chối`, nút động `Chỉnh sửa thông tin`/`Cập nhật kết quả xác minh`, `Tạo yêu cầu bồi thường`, `Xóa yêu cầu`.<br>- Nút `Chỉnh sửa thông tin` và `Cập nhật kết quả xác minh` là cùng 01 nút tại cùng 01 vị trí (slot) trong cột Thao tác, tự động đổi nhãn/icon theo trạng thái hồ sơ.<br>- Khi hồ sơ ở trạng thái `Lưu nháp`: nút hiển thị là `Chỉnh sửa thông tin` (icon Chỉnh sửa).<br>- Khi hồ sơ ở trạng thái `Đang xác minh`: nút hiển thị là `Cập nhật kết quả xác minh` (icon Cập nhật kết quả).<br>- Khi hồ sơ ở các trạng thái `Chờ tiếp nhận`, `Hoàn thành`, `Bị từ chối`: nút động ở trạng thái khóa mờ (Disabled).<br>- `Xóa yêu cầu` chỉ hiển thị với bản ghi ở trạng thái `Lưu nháp`; không cho phép xóa hồ sơ đã gửi hoặc hồ sơ bị từ chối. |
-| Số dòng hiển thị | Enum(String(50)) | Không | 20 bản ghi/trang | Control UI: Dropdown.<br>- Cho phép chọn số bản ghi hiển thị trên mỗi trang.<br>- Giá trị gồm:<br>+ `10`<br>+ `20`<br>+ `50`<br>+ `100`. |
-| Thông tin số lượng bản ghi | String(255) | - | Theo dữ liệu | Control UI: Text hiển thị (Read-only).<br>- Hiển thị khoảng bản ghi đang xem và tổng số bản ghi theo kết quả lọc hiện tại.<br>- Khi không có dữ liệu, hiển thị tổng số bản ghi bằng 0. |
-| Thanh phân trang | String(255) | - | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
+| Thao tác | String(255) | - | Theo trạng thái | Control UI: Action Buttons.<br>- Thao tác không áp dụng cho trạng thái hồ sơ hiện tại thì Ẩn.<br>- **Tiếp nhận**: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận`.<br>- **Yêu cầu bổ sung**: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận`.<br>- **Từ chối**: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận`.<br>- **Chỉnh sửa**: Chỉ hiển thị khi hồ sơ ở trạng thái `Lưu nháp`.<br>- **Cập nhật kết quả xác minh**: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang xác minh`.<br>- **Tạo yêu cầu bồi thường**: Chỉ hiển thị khi hồ sơ ở trạng thái `Hoàn thành` và chưa khởi tạo mã YCBT liên thông.<br>- **Xóa**: Chỉ hiển thị khi hồ sơ ở trạng thái `Lưu nháp`. |
+| Phân trang | Pagination | - | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị (10, 20, 50, 100); mặc định 20 bản ghi/trang.<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi" (khi không có dữ liệu hiển thị 0-0 của 0).<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;). |
 
 ###### 4.3.3.1.3.3. Chức năng trên màn hình
 
@@ -94,8 +92,8 @@ flowchart TD
 | 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
 |  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
 |  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
-| 2 | Xóa bộ lọc | Button | Hệ thống xóa `Mã yêu cầu`, `Mã YCBT`, `Tên vụ việc`, `Tên người yêu cầu`, `Lĩnh vực phát sinh thiệt hại`, `Trạng thái`; đặt lại `Từ ngày` là ngày hiện tại trừ 03 tháng và `Đến ngày` là ngày hiện tại; tải lại danh sách theo bộ lọc mặc định. |
+|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled). |
+| 2 | Xóa bộ lọc | Button | Xóa các bộ lọc, đưa về thông tin mặc định và tải lại danh sách về trang 1. |
 | 3 | Tạo yêu cầu | Button | Khi người dùng click nút, hệ thống mở **MH02 - Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường** ở ngữ cảnh tạo mới trực tiếp tại phân hệ Xác định cơ quan; tiêu đề hiển thị `THÊM MỚI YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG` và toàn bộ trường thông tin trên form ở trạng thái trống/mặc định ban đầu. |
 | 4 | Click dòng dữ liệu | Row click | Khi người dùng click vào dòng dữ liệu, hệ thống xử lý theo các trường hợp bên dưới. |
 |  |  |  | **TH1 - Click vào dòng dữ liệu**: Hệ thống mở màn hình **MH04 - Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường** của bản ghi được chọn. |
@@ -103,17 +101,10 @@ flowchart TD
 | 5 | Tiếp nhận | Icon button | Khi người dùng click icon, hệ thống mở **MH02 - Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường** ở ngữ cảnh tiếp nhận hồ sơ liên thông từ bước **Tiếp nhận yêu cầu**; tiêu đề hiển thị `TIẾP NHẬN YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`, tự động kế thừa dữ liệu tiếp nhận ban đầu và cho phép cán bộ chỉnh sửa/nhập bổ sung trước khi gửi yêu cầu. |
 | 6 | Yêu cầu bổ sung | Icon button | Khi người dùng click icon, hệ thống mở **Popup Yêu cầu bổ sung / Từ chối yêu cầu** ở ngữ cảnh yêu cầu bổ sung để nhập nội dung yêu cầu bổ sung hồ sơ. |
 | 7 | Từ chối | Icon button | Khi người dùng click icon, hệ thống mở **Popup Yêu cầu bổ sung / Từ chối yêu cầu** ở ngữ cảnh từ chối để nhập lý do từ chối yêu cầu; sau khi xác nhận, hồ sơ chuyển sang trạng thái "Bị từ chối". |
-| 8 | Chỉnh sửa thông tin / Cập nhật kết quả xác minh | Icon button | Nút thao tác động tại cùng một vị trí, thay đổi theo trạng thái của bản ghi: |
-|  |  |  | **TH1 - Hồ sơ ở trạng thái `Lưu nháp`**: Nút hiển thị là `Chỉnh sửa thông tin`. Khi click, hệ thống mở **MH02 - Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường** ở chế độ chỉnh sửa và điền sẵn toàn bộ dữ liệu của bản ghi nháp để cán bộ cập nhật. |
-|  |  |  | **TH2 - Hồ sơ ở trạng thái `Đang xác minh`**: Nút hiển thị là `Cập nhật kết quả xác minh`. Khi click, hệ thống mở **MH03 - Cập nhật kết quả xác định cơ quan giải quyết bồi thường** để cán bộ ghi nhận cơ quan có thẩm quyền giải quyết bồi thường và đính kèm văn bản kết luận xác minh. |
-|  |  |  | **TH3 - Hồ sơ ở trạng thái khác**: Nút ở trạng thái khóa mờ (Disabled), không cho phép thao tác. |
+| 8 | Chỉnh sửa thông tin / Cập nhật kết quả xác minh | Icon button | Nút thao tác động tại cùng một vị trí, thay đổi theo trạng thái của bản ghi:<br>- **TH1 - Hồ sơ ở trạng thái `Lưu nháp`**: Nút hiển thị là `Chỉnh sửa thông tin`. Khi click, hệ thống mở **MH02 - Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường** ở chế độ chỉnh sửa và điền sẵn toàn bộ dữ liệu của bản ghi nháp để cán bộ cập nhật.<br>- **TH2 - Hồ sơ ở trạng thái `Đang xác minh`**: Nút hiển thị là `Cập nhật kết quả xác minh`. Khi click, hệ thống mở **MH03 - Cập nhật kết quả xác định cơ quan giải quyết bồi thường** để cán bộ ghi nhận cơ quan có thẩm quyền giải quyết bồi thường và đính kèm văn bản kết luận xác minh. |
 | 9 | Tạo yêu cầu bồi thường | Icon button | Hệ thống mở màn hình **MH05 - Khởi tạo hồ sơ yêu cầu bồi thường liên thông**. |
 | 10 | Liên kết Mã hồ sơ YCBT | Text link | Khi người dùng click vào đường link `Mã hồ sơ YCBT` trên lưới danh sách:<br>- Hệ thống điều hướng mở màn hình **MH05 - Xem chi tiết hồ sơ yêu cầu bồi thường** thuộc phân hệ **Giải quyết yêu cầu bồi thường** (`SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md`) tương ứng với mã hồ sơ được chọn.<br>- Thanh Menu Sidebar bên trái tự động chuyển trạng thái active/focus vào đúng menu chức năng **`Giải quyết yêu cầu bồi thường`**. |
-| 11 | Xóa yêu cầu | Icon button | Khi người dùng click icon, hệ thống xử lý theo các trường hợp bên dưới: |
-|  |  |  | **TH1 - Người dùng xác nhận xóa**: Hệ thống mở popup xác nhận [MSG-CFM-BTNN-XDCQ-001]. Nếu người dùng chọn `Đồng ý`, hệ thống xóa bản ghi `Lưu nháp` khỏi danh sách và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-003]. |
-|  |  |  | **TH2 - Người dùng hủy thao tác**: Hệ thống đóng popup, không xóa bản ghi. |
-| 12 | Số dòng hiển thị | Dropdown | Khi người dùng chọn `10`, `20`, `50` hoặc `100`, hệ thống cập nhật số bản ghi hiển thị trên mỗi trang, đưa trang hiện tại về trang 1 và tải lại lưới dữ liệu; mặc định chọn sẵn `20`. |
-| 13 | Phân trang | Pagination | Hệ thống chuyển đến trang đầu (&#124;&lt;&lt;), trang trước (&lt;), trang được chọn, trang sau (&gt;) hoặc trang cuối (&gt;&gt;&#124;) theo thao tác người dùng; dữ liệu hiển thị giữ nguyên tiêu chí lọc/sắp xếp hiện hành và cấu hình mặc định 20 bản ghi/trang. |
+| 11 | Xóa yêu cầu | Icon button | Mở Custom Confirmation Modal xác nhận xóa [MSG-CFM-BTNN-XDCQ-001]. Nếu người dùng chọn `Đồng ý`, hệ thống xóa bản ghi `Lưu nháp` khỏi danh sách và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-003]. Nếu người dùng chọn `Hủy bỏ`, đóng modal và giữ nguyên dữ liệu. |
 
 ---
 
@@ -128,8 +119,6 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Control UI: Text heading (Read-only).<br>- Khi mở form do `Tiếp nhận` hồ sơ liên thông từ bước **Tiếp nhận yêu cầu**: hiển thị `TIẾP NHẬN YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`.<br>- Khi `Tạo yêu cầu` trực tiếp tại phân hệ Xác định cơ quan: hiển thị `THÊM MỚI YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`.<br>- Khi chỉnh sửa hồ sơ ở trạng thái `Lưu nháp`: hiển thị `CHỈNH SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`. |
-| Ngữ cảnh mở form | Enum(String(50)) | - | Theo thao tác gọi màn hình | Control UI: Hidden/Context state.<br>- `Tiếp nhận hồ sơ`: phát sinh khi cán bộ click icon `Tiếp nhận` tại dòng hồ sơ trạng thái `Chờ tiếp nhận` trên MH01.<br>- `Tạo mới trực tiếp`: phát sinh khi cán bộ click nút `Tạo yêu cầu`/`Thêm mới` trên thanh công cụ MH01, không qua bước Tiếp nhận yêu cầu.<br>- `Chỉnh sửa nháp`: phát sinh khi cán bộ click nút động `Chỉnh sửa thông tin` tại dòng hồ sơ trạng thái `Lưu nháp`. |
-| Cơ chế kế thừa/khởi tạo dữ liệu | Text(2000) | - | Theo ngữ cảnh | Control UI: Quy tắc xử lý dữ liệu form.<br>- **TH1 - Tiếp nhận hồ sơ liên thông**: Hệ thống tự động kế thừa và điền sẵn 08 nhóm thông tin từ phân hệ **Tiếp nhận yêu cầu** gồm `Tên vụ việc`, `Hình thức tiếp nhận hồ sơ`, `Lĩnh vực phát sinh thiệt hại`, `Họ và tên người yêu cầu bồi thường`, `Tỉnh/Thành phố`, `Phường/Xã`, `Địa chỉ chi tiết`, `Tài liệu đính kèm`. Cán bộ được phép chỉnh sửa các thông tin kế thừa để chuẩn hóa dữ liệu và nhập bổ sung các trường còn thiếu trên form.<br>- **TH2 - Tạo mới trực tiếp**: Toàn bộ trường thông tin ở trạng thái trống/mặc định ban đầu; cán bộ tự nhập liệu từ đầu các khối thông tin chung, thông tin người yêu cầu, hành vi gây thiệt hại, hình thức nhận kết quả và tệp đính kèm.<br>- **TH3 - Chỉnh sửa nháp**: Hệ thống điền sẵn toàn bộ thông tin của bản ghi `Lưu nháp` để cán bộ tiếp tục cập nhật. |
 | **I. THÔNG TIN CHUNG** | String(255) | - | - | Control UI: Section header.<br>- Khối thông tin chung của yêu cầu. |
 | Trạng thái hồ sơ | Enum(String(50)) | - | Ẩn khi Thêm mới | Control UI: Badge trạng thái (Read-only).<br>- Điều kiện hiển thị:<br>+ **Khi mở ở chế độ Thêm mới trực tiếp**: **ẨN / KHÔNG HIỂN THỊ** trường thông tin trạng thái.<br>+ **Khi mở ở chế độ Tiếp nhận hồ sơ liên thông**: Hiển thị badge trạng thái `Chờ tiếp nhận`.<br>+ **Khi mở ở chế độ Chỉnh sửa hồ sơ lưu nháp**: Hiển thị badge trạng thái `Lưu nháp`. |
 | Hình thức tiếp nhận hồ sơ | Enum(String(50)) | Có | Theo ngữ cảnh | Control UI: Combobox.<br>- Trường được điền sẵn theo dữ liệu kế thừa khi mở form từ `Tiếp nhận hồ sơ`; cán bộ được phép chỉnh sửa nếu cần chuẩn hóa.<br>- Khi tạo mới trực tiếp, mặc định `Trực tiếp` và cho phép cán bộ chọn lại. |
@@ -168,19 +157,15 @@ flowchart TD
 |  |  |  | **TH1 - Tiếp nhận hồ sơ liên thông từ bước Tiếp nhận yêu cầu**: Hệ thống lưu tạm các thông tin đang nhập/chỉnh sửa, giữ nguyên trạng thái `Chờ tiếp nhận` hoặc cập nhật sang `Lưu nháp` theo cấu hình quy trình tiếp nhận của hệ thống; chưa chuyển hồ sơ sang bước xác minh. |
 |  |  |  | **TH2 - Tạo mới trực tiếp tại phân hệ Xác định cơ quan**: Hệ thống sinh mã yêu cầu mới nếu chưa có, ghi nhận ngày hiện tại, lưu hồ sơ ở trạng thái `Lưu nháp` và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-006]. |
 |  |  |  | **TH3 - Chỉnh sửa hồ sơ Lưu nháp**: Hệ thống cập nhật dữ liệu bản ghi nháp hiện tại, giữ nguyên trạng thái `Lưu nháp` và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-008]. |
-| 3 | Gửi yêu cầu | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Nếu bỏ trống một trong các trường bắt buộc gồm `Tên vụ việc`, `Hình thức tiếp nhận hồ sơ`, `Lĩnh vực phát sinh thiệt hại`, `Họ và tên người yêu cầu bồi thường`, `Ngày tháng năm sinh`, `Số giấy tờ thân nhân`, `Ngày cấp`, `Nơi cấp`, `Số điện thoại liên hệ`, `Tỉnh/Thành phố`, `Phường/Xã`, `Địa chỉ chi tiết`, `Hành vi gây thiệt hại của người thi hành công vụ gây thiệt hại`, hoặc `Địa chỉ Email` khi `Hình thức nhận kết quả giải quyết` là `Phương thức điện tử`, vi phạm [BR-VAL-001], hệ thống tô viền đỏ ô trống đầu tiên, hiển thị [MSG-ERR-VAL-001] và focus vào ô lỗi đầu tiên. Không cho phép gửi yêu cầu. |
+| 3 | Gửi yêu cầu | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Nếu bỏ trống bất kỳ trường bắt buộc nào trên form, vi phạm [BR-VAL-001], hệ thống tô viền đỏ ô trống đầu tiên (`.is-invalid`), hiển thị cảnh báo đỏ *"Đây là trường bắt buộc"* [MSG-ERR-VAL-001] ngay dưới ô nhập và auto-focus con trỏ vào ô lỗi đầu tiên. Không cho phép gửi yêu cầu. |
 |  |  |  | **TH2 - Hợp lệ, tiếp nhận hồ sơ liên thông từ bước Tiếp nhận yêu cầu**: Hệ thống lưu toàn bộ thông tin đã kế thừa/chỉnh sửa/bổ sung và chuyển hồ sơ từ trạng thái `Chờ tiếp nhận` sang trạng thái `Đang xác minh`; hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-007]. |
 |  |  |  | **TH3 - Hợp lệ, tạo mới trực tiếp tại phân hệ Xác định cơ quan**: Hệ thống sinh mã yêu cầu nếu chưa có, ghi nhận ngày hiện tại, lưu toàn bộ thông tin và chuyển thẳng hồ sơ sang trạng thái `Đang xác minh` (bỏ qua trạng thái `Chờ tiếp nhận`); hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-007]. |
 |  |  |  | **TH4 - Hợp lệ, chỉnh sửa hồ sơ Lưu nháp**: Hệ thống cập nhật dữ liệu bản ghi nháp, chuyển hồ sơ sang trạng thái `Đang xác minh` và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-009]. |
 | 4 | Thêm dòng tài liệu | Button | Khi người dùng click nút, hệ thống chèn thêm 01 dòng trống mới vào `Bảng tài liệu đính kèm` để cán bộ nhập `Tên tài liệu` và bấm `Tải lên` chọn file. |
-| 5 | Tải lên | File trigger | Khi người dùng click nút tại dòng tài liệu tương ứng, hệ thống mở trình chọn file trên máy tính. Sau khi chọn file hợp lệ, hệ thống hiển thị tên file trên dòng tài liệu và hiển thị link `Xem file`. |
-|  |  |  | **TH File không hợp lệ**: Nếu file vi phạm quy tắc file dùng chung [BR-FILE-010], hệ thống hiển thị cảnh báo lỗi tương ứng và không gắn file vào dòng tài liệu. |
+| 5 | Tải lên | File trigger | Khi người dùng click nút tại dòng tài liệu tương ứng, hệ thống mở trình chọn file trên máy tính và xử lý theo các trường hợp:<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng cho phép theo [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp vượt quá 20MB theo [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Tải tệp thành công, hiển thị tên file trên dòng tài liệu kèm liên kết "Xem file" (mở tab mới) và nút "Xóa". |
 | 6 | Xem file | Link | Khi người dùng click link, hệ thống mở xem trước nội dung file đính kèm trong một tab mới của trình duyệt. |
-| 7 | Xóa | Link/Icon button | Khi người dùng click nút, hệ thống xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Dòng đã có file đính kèm**: Hệ thống mở popup xác nhận [MSG-CFM-BTNN-XDCQ-002]. Nếu người dùng chọn `Đồng ý`, hệ thống gỡ file khỏi dòng tài liệu hoặc xóa dòng tài liệu tương ứng khỏi bảng và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-005]. |
-|  |  |  | **TH2 - Dòng trống chưa lưu file**: Hệ thống xóa dòng tài liệu khỏi bảng, không yêu cầu xác nhận. |
-|  |  |  | **TH3 - Người dùng hủy thao tác**: Hệ thống đóng popup xác nhận, giữ nguyên file/dòng tài liệu. |
+| 7 | Xóa | Link/Icon button | Khi người dùng click nút, hệ thống xử lý theo các trường hợp bên dưới:<br>- **TH1 - Dòng đã có file đính kèm**: Hệ thống mở Custom Confirmation Modal xác nhận xóa [MSG-CFM-BTNN-XDCQ-002]. Nếu người dùng chọn `Đồng ý`, hệ thống gỡ file khỏi dòng tài liệu hoặc xóa dòng tài liệu tương ứng khỏi bảng và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-005]. Nếu chọn `Hủy bỏ`, đóng modal và giữ nguyên dữ liệu.<br>- **TH2 - Dòng trống chưa lưu file**: Hệ thống xóa dòng tài liệu khỏi bảng, không yêu cầu xác nhận. |
 
 ---
 
@@ -202,7 +187,7 @@ flowchart TD
 | Lĩnh vực phát sinh thiệt hại | Enum(String(50)) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị lĩnh vực phát sinh thiệt hại trong khối tóm tắt theo danh mục [DM_22]. |
 | Số điện thoại | String(20) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị số điện thoại liên hệ trong khối tóm tắt. |
 | Hành vi gây thiệt hại | String(255) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị tóm tắt hành vi gây thiệt hại trong khối tóm tắt. |
-| **NỘI DUNG XÁC ĐỊNH THẨM QUYỀN (ĐIỀU 40 LUẬT TNBTCNN)** | Text(2000) | - | - | Control UI: Section header.<br>- Khối nhập kết quả xác định thẩm quyền. |
+| **NỘI DUNG XÁC ĐỊNH THẨM QUYỀN** | Section | - | - | Control UI: Section header.<br>- Khối nhập kết quả xác định thẩm quyền. |
 | Căn cứ pháp lý xác định thẩm quyền | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Placeholder: `Nhập căn cứ pháp lý xác định thẩm quyền...`.<br>- Nhập căn cứ pháp lý làm cơ sở xác định cơ quan có thẩm quyền giải quyết bồi thường. |
 | Chỉ định Cơ quan có thẩm quyền giải quyết bồi thường | Enum(String(255)) | Có | Trống | Control UI: Combobox có tìm kiếm.<br>- Cho phép tìm kiếm theo Mã đơn vị hoặc Tên đơn vị trong Danh sách đơn vị trên hệ thống.<br>- Người dùng chọn một cơ quan có thẩm quyền giải quyết bồi thường từ kết quả tìm kiếm. |
 | Nhận định lý do xác định chi tiết | Text(2000) | Có | Theo hồ sơ nếu có | Control UI: Textarea.<br>- Placeholder: `Nhập lập luận, phân tích lý do chỉ định cơ quan giải quyết này dựa trên hồ sơ xác minh...`.<br>- Nhập nhận định, phân tích và lý do chỉ định cơ quan giải quyết bồi thường. |
@@ -216,11 +201,9 @@ flowchart TD
 | 2 | Hoàn thành xác minh | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Nếu bỏ trống các trường bắt buộc vi phạm [BR-VAL-001], hệ thống hiển thị [MSG-ERR-VAL-001]. Không cho phép hoàn thành xác minh. |
 |  |  |  | **TH Hợp lệ**: Hệ thống lưu lại các thông tin kết quả xác minh; chuyển trạng thái hồ sơ sang "Hoàn thành"; hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-010]; mở màn hình **MH04 - Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường**. |
-| 3 | Chọn tệp đính kèm + | File trigger | Hệ thống mở trình chọn file. Sau khi chọn file, hệ thống hiển thị tên file đã chọn. |
-| 4 | Xem file | Link | Cho phép xem file tại một tab riêng. |
-| 5 | Xóa | Link | Khi người dùng click link, hệ thống xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Người dùng xác nhận xóa file**: Hệ thống mở popup xác nhận [MSG-CFM-BTNN-XDCQ-002]. Nếu người dùng chọn `Đồng ý`, hệ thống gỡ file và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-005]. |
-|  |  |  | **TH2 - Người dùng hủy thao tác**: Hệ thống đóng popup xác nhận, giữ nguyên file đính kèm. |
+| 3 | Chọn tệp đính kèm + | File trigger | Khi người dùng click nút, hệ thống mở trình chọn file trên máy tính và xử lý theo các trường hợp:<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng cho phép theo [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp vượt quá 20MB theo [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Tải tệp thành công, hiển thị tên file kèm liên kết "Xem file" (mở tab mới) và nút "Xóa". |
+| 4 | Xem file | Link | Khi người dùng click link, hệ thống mở xem trước nội dung file đính kèm trong một tab mới của trình duyệt. |
+| 5 | Xóa | Link | Mở Custom Confirmation Modal xác nhận xóa [MSG-CFM-BTNN-XDCQ-002]. Nếu người dùng chọn `Đồng ý`, hệ thống gỡ file và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-005]. Nếu chọn `Hủy bỏ`, đóng modal và giữ nguyên file đính kèm. |
 
 ---
 
@@ -236,35 +219,35 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | String(255) | - | - | Control UI: Text heading (Read-only).<br>- Hiển thị `CHI TIẾT YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`. |
 | **THÔNG TIN TỪ CHỐI TIẾP NHẬN** | String(255) | - | Ẩn | Control UI: Section header.<br>- Chỉ hiển thị khi trạng thái hồ sơ là "Bị từ chối". |
-| Lý do bị từ chối | Text(2000) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị lý do từ chối tiếp nhận đã lưu trong hồ sơ.<br>- Nếu không có lý do, hiển thị `Không có lý do.` |
-| Văn bản đính kèm | File | - | Theo hồ sơ | Control UI: File link (Read-only).<br>- Nếu có văn bản đính kèm, hiển thị tên file và link `Xem file`.<br>- Nếu không có file, hiển thị `Không có tệp đính kèm`. |
+| Lý do bị từ chối | Text(2000) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Văn bản đính kèm | File | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ kèm liên kết "Xem file". |
 | **I. THÔNG TIN TIẾP NHẬN HỒ SƠ** | String(255) | - | - | Control UI: Section header.<br>- Khối thông tin tiếp nhận hồ sơ. |
-| Mã yêu cầu | String(50) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị mã yêu cầu xác định cơ quan giải quyết bồi thường. |
-| Tên vụ việc | String(255) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị tên vụ việc.<br>- Với dữ liệu cũ chưa có trường riêng, hệ thống hiển thị theo quy tắc `Vụ việc yêu cầu bồi thường của [Tên người yêu cầu]`. |
-| Trạng thái xử lý | Enum(String(50)) | - | Theo hồ sơ | Control UI: Badge trạng thái.<br>- Hiển thị trạng thái hiện tại của hồ sơ. |
-| Hình thức tiếp nhận | Enum(String(50)) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị hình thức tiếp nhận hồ sơ. |
-| Thời điểm tiếp nhận | Datetime | - | Ẩn khi tạo trực tiếp | Control UI: Text hiển thị (Read-only).<br>- Định dạng `dd/mm/yyyy HH:mm`.<br>- **Điều kiện hiển thị**:<br>+ **Hiển thị** thời điểm tiếp nhận ban đầu nếu hồ sơ được tạo liên thông từ phân hệ **Tiếp nhận yêu cầu**.<br>+ **Ẩn/Không hiển thị** trường này nếu hồ sơ được tạo mới trực tiếp tại phân hệ Xác định cơ quan giải quyết bồi thường. |
-| Cán bộ tiếp nhận | String(255) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị họ và tên cán bộ đã thực hiện tiếp nhận ban đầu từ phân hệ Tiếp nhận yêu cầu (hoặc cán bộ tạo lập hồ sơ khi tạo trực tiếp). |
-| Cán bộ xử lý | String(255) | - | Ẩn khi chưa cập nhật kết quả | Control UI: Text hiển thị (Read-only).<br>- Hiển thị họ và tên cán bộ đã thực hiện cập nhật kết quả xác minh cơ quan giải quyết bồi thường.<br>- **Điều kiện hiển thị**: Chỉ hiển thị sau khi cán bộ đã thực hiện thao tác `Cập nhật kết quả xác minh`.<br>- Nếu hồ sơ chưa được cập nhật kết quả xác minh, **ẩn/không hiển thị** trường này. |
-| Lĩnh vực phát sinh thiệt hại | Enum(String(50)) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị lĩnh vực phát sinh thiệt hại theo danh mục [DM_22]. |
+| Mã yêu cầu | String(50) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Tên vụ việc | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Trạng thái xử lý | Enum(String(50)) | - | Theo hồ sơ | Control UI: Badge trạng thái (Read-only).<br>Hiển thị theo trạng thái hồ sơ. |
+| Hình thức tiếp nhận | Enum(String(50)) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Thời điểm tiếp nhận | Datetime | - | Ẩn khi tạo trực tiếp | Dạng chỉ đọc. Hiển thị theo hồ sơ.<br>- **Điều kiện hiển thị**: Ẩn khi hồ sơ được tạo mới trực tiếp tại phân hệ Xác định cơ quan; chỉ hiển thị khi được tạo liên thông từ phân hệ Tiếp nhận yêu cầu. |
+| Cán bộ tiếp nhận | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Cán bộ xử lý | String(255) | - | Ẩn khi chưa cập nhật kết quả | Dạng chỉ đọc. Hiển thị theo hồ sơ.<br>- **Điều kiện hiển thị**: Chỉ hiển thị sau khi đã thực hiện Cập nhật kết quả xác minh. Ẩn khi chưa cập nhật kết quả. |
+| Lĩnh vực phát sinh thiệt hại | Enum(String(50)) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
 | **II. THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG** | String(100) | - | - | Control UI: Section header.<br>- Khối thông tin người yêu cầu bồi thường. |
-| Họ và tên người yêu cầu | String(100) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị họ và tên người yêu cầu bồi thường. |
-| Tư cách người yêu cầu | String(100) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị tư cách người yêu cầu. |
-| Giới tính / Ngày sinh | Date | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dạng `[Giới tính] / [Ngày sinh]`.<br>- Giới tính Tham chiếu Danh mục Giới tính [DM_23]. |
-| Giấy tờ thân nhân | String(255) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dạng `[Loại giấy tờ] - Số: [Số giấy tờ] (Cấp ngày: [Ngày cấp] tại [Nơi cấp])`.<br>- Loại giấy tờ tham chiếu danh mục loại giấy tờ pháp lý [DM_10]. |
-| Số điện thoại liên hệ | String(20) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị số điện thoại liên hệ. |
-| Địa chỉ Email | String(255) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị địa chỉ email của người yêu cầu.<br>- Nếu không có dữ liệu, hiển thị `Chưa cung cấp`. |
-| Địa chỉ cư trú / liên hệ | String(500) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị theo dạng `[Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], [Quốc gia]`. |
-| Đính kèm đơn đề nghị ban đầu | File | - | Theo hồ sơ | Control UI: File link (Read-only).<br>- Nếu có file, hiển thị tên file và link `Xem file`.<br>- Nếu không có file, hiển thị `Không có file đính kèm`. |
+| Họ và tên người yêu cầu | String(100) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Tư cách người yêu cầu | String(100) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Giới tính / Ngày sinh | Date | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Giấy tờ thân nhân | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Số điện thoại liên hệ | String(20) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Địa chỉ Email | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Địa chỉ cư trú / liên hệ | String(500) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Đính kèm đơn đề nghị ban đầu | File | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ kèm liên kết "Xem file". |
 | **III. HÀNH VI GÂY THIỆT HẠI & PHƯƠNG THỨC NHẬN KẾT QUẢ** | Text(2000) | - | - | Control UI: Section header.<br>- Khối hành vi và phương thức nhận kết quả. |
-| Hành vi gây thiệt hại của công chức | String(255) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị nội dung hành vi gây thiệt hại. |
-| Phương thức nhận kết quả | Text(2000) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị phương thức nhận kết quả. |
+| Hành vi gây thiệt hại của công chức | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Phương thức nhận kết quả | Text(2000) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
 | **IV. KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG** | String(255) | - | Ẩn | Control UI: Section header.<br>- Chỉ hiển thị khi hồ sơ có thông tin kết quả xác định cơ quan giải quyết bồi thường. |
-| Căn cứ pháp lý xác định | Text(2000) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị căn cứ pháp lý xác định thẩm quyền đã lưu trong hồ sơ.<br>- Nếu trạng thái "Đang xác minh" nhưng chưa có căn cứ, hiển thị `Đang xác minh, chưa có căn cứ`. |
-| Cơ quan được chỉ định giải quyết | String(255) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị cơ quan được chỉ định giải quyết bồi thường.<br>- Nếu trạng thái "Đang xác minh" nhưng chưa có cơ quan, hiển thị `Đang tiến hành chỉ định`. |
-| Nhận định lý do chi tiết | Text(2000) | - | Theo hồ sơ | Control UI: Text hiển thị (Read-only).<br>- Hiển thị nhận định lý do xác định cơ quan giải quyết bồi thường.<br>- Nếu trạng thái "Đang xác minh" nhưng chưa có nhận định, hiển thị `Đang cập nhật báo cáo kết luận...`. |
-| Tài liệu kèm theo | File | - | Theo hồ sơ | Control UI: File link (Read-only).<br>- Nếu có file, hiển thị tên file và link `Xem file`.<br>- Nếu chưa có file, hiển thị `Chưa đính kèm quyết định`. |
-| Mã hồ sơ yêu cầu bồi thường | String(50) | - | Ẩn khi chưa liên thông | Control UI: Text link (Hyperlink).<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi hồ sơ ở trạng thái `Hoàn thành` và đã phát sinh mã hồ sơ YCBT liên thông.<br>- Hiển thị mã hồ sơ dưới dạng Text link cho phép click để tra cứu trực tiếp vụ việc bồi thường gốc. |
+| Căn cứ pháp lý xác định | Text(2000) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Cơ quan được chỉ định giải quyết | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Nhận định lý do chi tiết | Text(2000) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
+| Tài liệu kèm theo | File | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ kèm liên kết "Xem file". |
+| Mã hồ sơ yêu cầu bồi thường | String(50) | - | Ẩn khi chưa liên thông | Dạng chỉ đọc. Hiển thị theo hồ sơ.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi hồ sơ ở trạng thái `Hoàn thành` và đã phát sinh mã hồ sơ YCBT liên thông. |
 
 ###### 4.3.3.1.6.3. Chức năng trên màn hình
 
@@ -316,11 +299,9 @@ flowchart TD
 | 2 | Lưu hồ sơ bồi thường | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
 |  |  |  | **TH1 - Số tiền yêu cầu bồi thường không hợp lệ**: Nếu `Tổng số tiền yêu cầu bồi thường (đồng)` trống hoặc nhỏ hơn/bằng 0, vi phạm [BR-VAL-010], hệ thống hiển thị [MSG-ERR-VAL-012]. Không cho phép lưu hồ sơ bồi thường. |
 |  |  |  | **TH Hợp lệ**: Hệ thống sinh mã hồ sơ yêu cầu bồi thường theo cấu trúc mã hồ sơ YCBT của hệ thống, gán vào hồ sơ nguồn, hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-011] và quay về danh sách. |
-| 3 | Chọn tệp đính kèm + | File trigger | Hệ thống mở trình chọn file. Sau khi chọn file, hệ thống hiển thị tên file đã chọn và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-004]. |
+| 3 | Chọn tệp đính kèm + | File trigger | Khi người dùng click nút, hệ thống mở trình chọn file trên máy tính và xử lý theo các trường hợp:<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng cho phép theo [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp vượt quá 20MB theo [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Tải tệp thành công, hiển thị tên file đã chọn kèm liên kết "Xem file" (mở tab mới) và nút "Xóa". |
 | 4 | Xem file | Link | Cho phép xem file tại một tab riêng. |
-| 5 | Xóa | Link | Khi người dùng click link, hệ thống xử lý theo các trường hợp bên dưới. |
-|  |  |  | **TH1 - Người dùng xác nhận xóa file**: Hệ thống mở popup xác nhận [MSG-CFM-BTNN-XDCQ-002]. Nếu người dùng chọn `Đồng ý`, hệ thống gỡ file và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-005]. |
-|  |  |  | **TH2 - Người dùng hủy thao tác**: Hệ thống đóng popup xác nhận, giữ nguyên file đính kèm. |
+| 5 | Xóa | Link | Mở Custom Confirmation Modal xác nhận xóa [MSG-CFM-BTNN-XDCQ-002]. Nếu người dùng chọn `Đồng ý`, hệ thống gỡ file và hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-005]. Nếu chọn `Hủy bỏ`, đóng modal và giữ nguyên dữ liệu. |
 
 ---
 
@@ -336,7 +317,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề popup | String(255) | - | Theo thao tác | Control UI: Text heading (Read-only).<br>- Khi thao tác là `Yêu cầu bổ sung`, hiển thị `Yêu cầu bổ sung hồ sơ`.<br>- Khi thao tác là `Từ chối`, hiển thị `Từ chối yêu cầu xác định cơ quan giải quyết bồi thường`. |
 | Nội dung xử lý | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Khi thao tác là `Yêu cầu bổ sung`, placeholder hiển thị `Nhập nội dung yêu cầu bổ sung hồ sơ...`.<br>- Khi thao tác là `Từ chối`, placeholder hiển thị `Nhập lý do chi tiết từ chối yêu cầu...`.<br>- Bắt buộc nhập trước khi xác nhận. |
-| Văn bản đính kèm | File | Không | Trống | Control UI: File upload.<br>- Cho phép đính kèm văn bản yêu cầu bổ sung hoặc văn bản thông báo từ chối.<br>- Sau khi đính kèm, hiển thị icon file PDF và tên file đã chọn.<br>- Chi tiết nghiệp vụ nút thao tác tệp đính kèm xem tại bảng Chức năng trên màn hình. |
+| Văn bản đính kèm | File | Không | Trống | Control UI: File upload.<br>- Cho phép đính kèm văn bản yêu cầu bổ sung hoặc văn bản thông báo từ chối.<br>- Sau khi đính kèm, hiển thị tên file đã chọn.<br>- Chi tiết nghiệp vụ nút thao tác tệp đính kèm xem tại bảng Chức năng trên màn hình. |
 
 ###### 4.3.3.1.8.3. Chức năng trên màn hình
 
@@ -347,28 +328,7 @@ flowchart TD
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Nếu `Nội dung xử lý` bị bỏ trống, vi phạm [BR-VAL-001], hệ thống tô viền đỏ textarea, hiển thị [MSG-ERR-VAL-001] và focus vào trường lỗi. Không cho phép xác nhận. |
 |  |  |  | **TH2 - Hợp lệ, yêu cầu bổ sung**: Hệ thống lưu nội dung yêu cầu bổ sung, lưu tên file đính kèm nếu có, chuyển trạng thái hồ sơ sang `Yêu cầu bổ sung`, cập nhật timeline, hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-015], đóng popup và quay về danh sách. |
 |  |  |  | **TH3 - Hợp lệ, từ chối**: Hệ thống lưu lý do từ chối, lưu tên file đính kèm nếu có, chuyển trạng thái hồ sơ sang `Bị từ chối`, cập nhật timeline, hiển thị thông báo thành công [MSG-SUC-BTNN-XDCQ-015], đóng popup và quay về danh sách. |
-| 3 | Chọn tệp đính kèm... | File trigger | Hệ thống mở trình chọn file, hiển thị tên file đã chọn cùng link `Xem file` và `Xóa`. |
+| 3 | Chọn tệp đính kèm... | File trigger | Khi người dùng click nút, hệ thống mở trình chọn file trên máy tính và xử lý theo các trường hợp:<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng cho phép theo [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp vượt quá 20MB theo [BR-FILE-010], hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Tải tệp thành công, hiển thị tên file đã chọn kèm liên kết "Xem file" (mở tab mới) và nút "Xóa". |
 | 4 | Xem file | Link | Cho phép xem file đính kèm tại trình xem tài liệu. |
-| 5 | Xóa | Link | Hệ thống gỡ file khỏi popup từ chối tiếp nhận. |
+| 5 | Xóa | Link | Mở Custom Confirmation Modal xác nhận xóa [MSG-CFM-BTNN-XDCQ-002]. Nếu người dùng chọn `Đồng ý`, hệ thống gỡ file khỏi popup. Nếu chọn `Hủy bỏ`, đóng modal và giữ nguyên file. |
 
----
-
-##### 4.3.3.1.9. Popup Xác nhận xóa
-
-###### 4.3.3.1.9.1. Màn hình
-
-![Popup xác nhận xóa](images/UC484_486_POPUP_Xac_nhan_xoa.png)
-
-###### 4.3.3.1.9.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề popup | String(255) | - | - | Control UI: Text heading (Read-only).<br>- Hiển thị `Xác nhận xóa`. |
-| Nội dung xác nhận | Text(2000) | - | Theo thao tác | Control UI: Text hiển thị (Read-only).<br>- Nội dung thay đổi theo thao tác gọi popup.<br>- Trường hợp xóa nháp mặc định tham chiếu [MSG-CFM-BTNN-XDCQ-001]. |
-
-###### 4.3.3.1.9.3. Chức năng trên màn hình
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng popup và không thực hiện thao tác đang chờ xác nhận. |
-| 2 | Đồng ý | Button | Hệ thống đóng popup và thực hiện thao tác đã xác nhận, ví dụ xóa yêu cầu lưu nháp hoặc gỡ file đính kèm. |

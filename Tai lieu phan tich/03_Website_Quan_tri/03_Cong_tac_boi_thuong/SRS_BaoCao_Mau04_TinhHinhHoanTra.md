@@ -20,7 +20,7 @@
 
 \- Loại cơ quan báo cáo Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. Loại kỳ báo cáo Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Lĩnh vực phát sinh thiệt hại Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22], lấy theo `Lĩnh vực phát sinh thiệt hại` của vụ việc yêu cầu bồi thường gốc liên kết với hồ sơ hoàn trả.
 
-\- Nguồn dữ liệu chính lấy từ module Xem xét trách nhiệm hoàn trả (`SRS_BTNN_TrachNhiemHoanTra_XemXet.md`): `Trạng thái tiến trình`, `Kết luận của Hội đồng`, `Số tiền phải hoàn trả chính thức`, `Ngày quyết định hoàn trả có hiệu lực`, dữ liệu `Giảm mức hoàn trả` (MH08), `Hoãn hoàn trả` (MH09), giao dịch thu hồi (MH06); và từ module Cấp kinh phí bồi thường (`SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md`): `Số tiền thực tế chi trả`.
+\- Nguồn dữ liệu chính lấy từ module Xem xét trách nhiệm hoàn trả (`SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md`): `Trạng thái tiến trình`, `Kết luận của Hội đồng`, `Số tiền phải hoàn trả chính thức`, `Ngày quyết định hoàn trả có hiệu lực`, dữ liệu `Giảm mức hoàn trả` (MH08), `Hoãn hoàn trả` (MH09), giao dịch thu hồi (MH06); và từ module Cấp kinh phí bồi thường (`SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md`): `Số tiền thực tế chi trả`.
 
 \- Số tiền trên biểu mẫu kết xuất quy đổi theo đơn vị `nghìn đồng`; hệ thống tự động quy đổi từ dữ liệu nghiệp vụ lưu theo đơn vị đồng.
 
@@ -96,6 +96,6 @@ flowchart TD
 
 \- Một hồ sơ hoàn trả chỉ được tính một lần trong cùng kỳ báo cáo, cùng lĩnh vực phát sinh thiệt hại (lấy theo vụ việc bồi thường gốc) và cùng chỉ tiêu; hệ thống tự loại trùng khi tổng hợp.
 
-\- Chỉ tiêu 7, 8 (không xem xét trách nhiệm hoàn trả) yêu cầu module Xem xét trách nhiệm hoàn trả đã ghi nhận `Kết luận của Hội đồng` tại MH04 theo đúng 1 trong 3 giá trị đã đặc tả tại `SRS_BTNN_TrachNhiemHoanTra_XemXet.md` (mục 4.4.1) và trạng thái hồ sơ "Không xem xét trách nhiệm hoàn trả" (HT-BR-002, HT-BR-019).
+\- Chỉ tiêu 7, 8 (không xem xét trách nhiệm hoàn trả) yêu cầu module Xem xét trách nhiệm hoàn trả đã ghi nhận `Kết luận của Hội đồng` tại MH04 theo đúng 1 trong 3 giá trị đã đặc tả tại `SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md` (mục 4.4.1) và trạng thái hồ sơ "Không xem xét trách nhiệm hoàn trả" (HT-BR-002, HT-BR-019).
 
 \- Kỳ tổng hợp ở trạng thái `Nháp` cho phép bấm `Tổng hợp số liệu` để tính lại khi dữ liệu nghiệp vụ thay đổi; sau khi chuyển `Đã kết xuất`, lần kết xuất tiếp theo tạo phiên bản file mới, không ghi đè phiên bản đã kết xuất trước đó.

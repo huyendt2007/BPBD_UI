@@ -324,7 +324,7 @@
 |  | WebAdmin-158 | Cập nhật trạng thái tạm đình chỉ giải quyết YCBT |  | UC424 |  |  |  |
 |  | WebAdmin-159 | Cập nhật trạng thái đình chỉ giải quyết YCBT |  | UC425 |  |  |  |
 |  | WebAdmin-160 | Cập nhật trạng thái thương lượng YCBT |  | UC426 |  |  |  |
-|  | WebAdmin-161 | Tra cứu thông tin về yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC429 |  |  |  |
+|  | WebAdmin-161 | Tra cứu thông tin về yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_TraCuu_VuViec.md | UC429 | Hoàn thành | Hoàn thành |  |
 |  | WebAdmin-162 | Quản lý Quyết định giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-163 | Tra cứu Quyết định giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-164 | Ban hành Quyết định giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC427 |  |  |  |
@@ -344,16 +344,16 @@
 |  | WebAdmin-178 | Duyệt gửi đề nghị cấp kinh phí bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-179 | Cập nhật kết quả chi trả kinh phí bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC439 |  |  |  |
 |  | WebAdmin-180 | Tra cứu thông tin kinh phí bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC440 |  |  |  |
-|  | WebAdmin-181 | Quản lý xem xét trách nhiệm hoàn trả |  | UC442, UC443, UC444, UC445, UC446, UC447, UC448, UC449, UC450 |  |  |  |
-|  | WebAdmin-182 | Nhập hồ sơ thành lập Hội đồng xem xét trách nhiệm hoàn trả |  | UC442 |  |  |  |
-|  | WebAdmin-183 | Ký duyệt Quyết định thành lập Hội đồng |  |  |  |  |  |
-|  | WebAdmin-184 | Tra cứu thông tin Quyết định thành lập Hội đồng |  |  |  |  |  |
-|  | WebAdmin-185 | Cập nhật quá trình làm việc của Hội đồng |  | UC445 |  |  |  |
-|  | WebAdmin-186 | Cập nhật kiến nghị của Hội đồng về xem xét trách nhiệm hoàn trả |  | UC446 |  |  |  |
-|  | WebAdmin-187 | Tra cứu thông tin kiến nghị của Hội đồng về xem xét trách nhiệm hoàn trả |  | UC447 |  |  |  |
-|  | WebAdmin-188 | Ban hành Quyết định hoàn trả |  | UC448 |  |  |  |
-|  | WebAdmin-189 | Cập nhật thực hiện hoàn trả |  | UC449 |  |  |  |
-|  | WebAdmin-190 | Tra cứu thông tin thực hiện hoàn trả |  | UC450 |  |  |  |
+|  | WebAdmin-181 | Quản lý xem xét trách nhiệm hoàn trả | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md | UC442, UC443, UC444, UC445, UC446, UC447, UC448, UC449, UC450 |  | Review |  |
+|  | WebAdmin-182 | Nhập hồ sơ thành lập Hội đồng xem xét trách nhiệm hoàn trả | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md | UC442 |  | Review |  |
+|  | WebAdmin-183 | Ký duyệt Quyết định thành lập Hội đồng | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md |  |  | Review |  |
+|  | WebAdmin-184 | Tra cứu thông tin Quyết định thành lập Hội đồng | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md |  |  | Review |  |
+|  | WebAdmin-185 | Cập nhật quá trình làm việc của Hội đồng | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md | UC445 |  | Review |  |
+|  | WebAdmin-186 | Cập nhật kiến nghị của Hội đồng về xem xét trách nhiệm hoàn trả | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md | UC446 |  | Review |  |
+|  | WebAdmin-187 | Tra cứu thông tin kiến nghị của Hội đồng về xem xét trách nhiệm hoàn trả | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md | UC447 |  | Review |  |
+|  | WebAdmin-188 | Ban hành Quyết định hoàn trả | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md | UC448 |  | Review |  |
+|  | WebAdmin-189 | Cập nhật thực hiện hoàn trả | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md | UC449 |  | Review |  |
+|  | WebAdmin-190 | Tra cứu thông tin thực hiện hoàn trả | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md | UC450 |  | Review |  |
 |  | WebAdmin-191 | Quản lý Chấm điểm theo Bộ tiêu chí đánh giá kết quả thực hiện công tác BTNN | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-192 | Tra cứu chấm điểm theo Bộ tiêu chí đánh giá |  |  |  |  |  |
 |  | WebAdmin-193 | Chấm điểm theo Bộ tiêu chí đánh giá |  |  |  |  |  |

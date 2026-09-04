@@ -1,4 +1,4 @@
-﻿let mockClaims = [
+let mockClaims = [
     {
         code: "BT-2026-002",
         nyc: "Trần Thị B",
@@ -179,6 +179,9 @@ let proposalsList = [
         ],
         advApproveTinhThan: 60000000,
         advApproveKhac: 40000000,
+        leaderOpinion: "Đồng ý cấp tạm ứng kinh phí bồi thường cho bà Trần Thị B.",
+        approvedDate: "16/05/2026 09:15",
+        approvedLeader: "Lãnh đạo cơ quan",
         noticeReceivedDate: "01/09/2023",
         noticeProofFile: "Thong_bao_nhan_tam_ung_B.pdf"
     },
@@ -321,6 +324,9 @@ let proposalsList = [
             tinhThan: 80000000,
             chiPhiKhac: 20000000
         },
+        leaderOpinion: "Đồng ý cấp phát kinh phí bồi thường bổ sung cho ông Lê Văn D.",
+        approvedDate: "08/07/2026 14:20",
+        approvedLeader: "Lãnh đạo cơ quan",
         noticeReceivedDate: "15/07/2023",
         noticeProofFile: "Thong_bao_nhan_kinh_phi_bo_sung_LeVanD.pdf"
     },
@@ -419,10 +425,10 @@ let proposalsList = [
         amount: 180000000,
         user: "Nguyễn Văn Thụ",
         date: "18/06/2026",
-        status: "Chi trả một phần",
+        status: "Chờ chi trả",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Người yêu cầu mới nhận một phần kinh phí, số còn lại đang quá hạn 3 năm kể từ ngày nhận thông báo.",
+        notes: "Khoản kinh phí bồi thường đã thông báo nhận nhưng quá hạn 3 năm người yêu cầu chưa đến nhận, đủ điều kiện sung quỹ.",
         leaderOpinion: "Đồng ý cấp kinh phí bồi thường theo quyết định đã ban hành.",
         files: [{ name: "Tờ trình kinh phí Hoàng Văn H", file: "To_trinh_KPBT_H.pdf" }],
         approvedDamages: {
@@ -431,15 +437,10 @@ let proposalsList = [
             tinhThan: 80000000,
             chiPhiKhac: 20000000
         },
-        payoutDate: "20/06/2026",
-        payoutAmountReal: 60000000,
-        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutDate: "",
+        payoutAmountReal: 0,
         payoutRecName: "Hoàng Văn H",
         payoutRecAddress: "Phường Minh Khai, Bắc Từ Liêm, Hà Nội",
-        payoutBankAccount: "9704000012345678",
-        payoutBankName: "BIDV",
-        payoutBankUser: "HOÀNG VĂN H",
-        payoutFile: "Chung_tu_chi_tra_mot_phan_H.pdf",
         noticeReceivedDate: "10/06/2023",
         noticeProofFile: "Thong_bao_nhan_kinh_phi_H.pdf"
     },
@@ -475,7 +476,7 @@ let proposalsList = [
         amount: 200000000,
         user: "Lê Văn Nam",
         date: "23/06/2026",
-        status: "Đã sung quỹ",
+        status: "Sung quỹ nhà nước",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
         notes: "Khoản kinh phí bồi thường đã hoàn tất sung quỹ Nhà nước do người yêu cầu không nhận sau hạn 3 năm.",
@@ -497,6 +498,172 @@ let proposalsList = [
         treasuryAmount: 200000000,
         treasuryReason: "Người yêu cầu bồi thường không nhận kinh phí sau 3 năm kể từ ngày nhận thông báo.",
         treasuryFile: "Chung_tu_sung_quy_KP_2026_015.pdf"
+    },
+    {
+        id: "P16",
+        code: "KP-2026-016",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-021",
+        nycName: "Đỗ Quốc Cường",
+        nycRole: "Người bị thiệt hại",
+        amount: 450000000,
+        user: "Nguyễn Văn Thụ",
+        date: "25/06/2026",
+        status: "Hoàn thành",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Chi trả kinh phí bồi thường oan sai trong hoạt động tố tụng hình sự cho ông Đỗ Quốc Cường.",
+        leaderOpinion: "Đồng ý chi trả kinh phí theo đúng bản án có hiệu lực pháp luật.",
+        files: [{ name: "Tờ trình chi trả Đỗ Quốc Cường", file: "To_trinh_KPBT_DoQuocCuong.pdf" }],
+        approvedDamages: {
+            taiSan: 100000000,
+            thuNhap: 120000000,
+            tinhThan: 180000000,
+            chiPhiKhac: 50000000
+        },
+        payoutDate: "30/06/2026",
+        payoutAmountReal: 450000000,
+        payoutMethod: "Chi trả qua chuyển khoản",
+        payoutRecName: "ĐỖ QUỐC CƯỜNG",
+        payoutRecAddress: "Số 45 phố Hai Bà Trưng, Hoàn Kiếm, Hà Nội",
+        payoutBankAccount: "001100456789",
+        payoutBankUser: "ĐỖ QUỐC CƯỜNG",
+        payoutBankName: "Vietcombank",
+        payoutBankBranch: "Sở Giao Dịch",
+        payoutFile: "Uy_nhiem_chi_DoQuocCuong_VCB.pdf",
+        noticeReceivedDate: "26/06/2026",
+        noticeProofFile: "Giay_bao_nhan_DoQuocCuong.pdf",
+        payoutNote: "Đã hoàn tất thủ tục ủy nhiệm chi số 045/UNC-TC chuyển tiền bồi thường vào tài khoản Vietcombank."
+    },
+    {
+        id: "P17",
+        code: "KP-2026-017",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-022",
+        nycName: "Vũ Thị Mai",
+        nycRole: "Người đại diện hợp pháp",
+        amount: 85000000,
+        user: "Lê Văn Nam",
+        date: "28/06/2026",
+        status: "Hoàn thành",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Tạm ứng kinh phí cứu chữa, bồi hoàn chi phí y tế khẩn cấp cho người bị thiệt hại.",
+        leaderOpinion: "Phê duyệt tạm ứng kịp thời hỗ trợ người dân.",
+        files: [{ name: "Tờ trình tạm ứng Vũ Thị Mai", file: "To_trinh_tam_ung_VuThiMai.pdf" }],
+        advApproveTinhThan: 45000000,
+        advApproveKhac: 40000000,
+        payoutDate: "02/07/2026",
+        payoutAmountReal: 85000000,
+        payoutMethod: "Chi trả trực tiếp bằng tiền mặt",
+        payoutRecName: "Vũ Thị Mai",
+        payoutRecAddress: "Tổ 12, phường Phúc Diễn, Bắc Từ Liêm, Hà Nội",
+        payoutReceiptNo: "BL-TM-2026/089",
+        payoutFile: "Phieu_chi_tien_mat_VuThiMai_signed.pdf",
+        noticeReceivedDate: "29/06/2026",
+        noticeProofFile: "Thong_bao_nhan_tam_ung_VuThiMai.pdf",
+        payoutNote: "Đã giao trực tiếp tiền mặt 85.000.000 VNĐ tại bộ phận kế toán, người nhận đã ký nhận đầy đủ biên lai."
+    },
+    {
+        id: "P18",
+        code: "KP-2026-018",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-023",
+        nycName: "Ngô Văn Hùng",
+        nycRole: "Người bị thiệt hại",
+        amount: 520000000,
+        user: "Nguyễn Văn Thụ",
+        date: "05/07/2026",
+        status: "Hoàn thành",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Chi trả bồi thường tài sản và thu nhập thực tế bị mất do quyết định hành chính trái pháp luật.",
+        leaderOpinion: "Đồng ý giải ngân toàn bộ kinh phí theo quyết định giải quyết bồi thường.",
+        files: [{ name: "Tờ trình chi trả Ngô Văn Hùng", file: "To_trinh_KPBT_NgoVanHung.pdf" }],
+        approvedDamages: {
+            taiSan: 250000000,
+            thuNhap: 150000000,
+            tinhThan: 80000000,
+            chiPhiKhac: 40000000
+        },
+        payoutDate: "10/07/2026",
+        payoutAmountReal: 520000000,
+        payoutMethod: "Chi trả qua chuyển khoản",
+        payoutRecName: "NGÔ VĂN HÙNG",
+        payoutRecAddress: "Số 78 đường Quang Trung, Hà Đông, Hà Nội",
+        payoutBankAccount: "102888999123",
+        payoutBankUser: "NGÔ VĂN HÙNG",
+        payoutBankName: "BIDV",
+        payoutBankBranch: "Chi nhánh Hà Tây",
+        payoutFile: "Chung_tu_chuyen_khoan_BIDV_NgoVanHung.pdf",
+        noticeReceivedDate: "06/07/2026",
+        noticeProofFile: "Phieu_bao_phat_NgoVanHung.pdf",
+        payoutNote: "Đã hoàn thành chuyển khoản 100% kinh phí bồi thường qua tài khoản ngân hàng BIDV."
+    },
+    {
+        id: "P19",
+        code: "KP-2026-019",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-024",
+        nycName: "Bùi Thị Ngọc",
+        nycRole: "Người thừa kế của người bị thiệt hại",
+        amount: 175000000,
+        user: "Lê Văn Nam",
+        date: "08/07/2026",
+        status: "Hoàn thành",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Chi trả bồi thường tổn thất tinh thần và chi phí mai táng cho thân nhân người bị thiệt hại.",
+        leaderOpinion: "Duyệt chi trả kinh phí theo đúng văn bản phân chia di sản thừa kế.",
+        files: [{ name: "Tờ trình chi trả Bùi Thị Ngọc", file: "To_trinh_KPBT_BuiThiNgoc.pdf" }],
+        approvedDamages: {
+            taiSan: 0,
+            thuNhap: 25000000,
+            tinhThan: 100000000,
+            chiPhiKhac: 50000000
+        },
+        payoutDate: "14/07/2026",
+        payoutAmountReal: 175000000,
+        payoutMethod: "Chi trả qua chuyển khoản",
+        payoutRecName: "BÙI THỊ NGỌC",
+        payoutRecAddress: "Số 12 ngõ 89 Thái Hà, Đống Đa, Hà Nội",
+        payoutBankAccount: "19034567890123",
+        payoutBankUser: "BÙI THỊ NGỌC",
+        payoutBankName: "Techcombank",
+        payoutBankBranch: "Chi nhánh Thăng Long",
+        payoutFile: "Lenh_chuyen_tien_TCB_BuiThiNgoc.pdf",
+        noticeReceivedDate: "09/07/2026",
+        noticeProofFile: "Giay_xac_nhan_nhan_thong_bao_BuiThiNgoc.pdf",
+        payoutNote: "Đã hoàn tất thanh toán chuyển khoản liên ngân hàng Techcombank."
+    },
+    {
+        id: "P20",
+        code: "KP-2026-020",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-025",
+        nycName: "Dương Đình Trọng",
+        nycRole: "Người bị thiệt hại",
+        amount: 60000000,
+        user: "Nguyễn Văn Thụ",
+        date: "12/07/2026",
+        status: "Hoàn thành",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Tạm ứng chi phí phục hồi sức khỏe và điều trị thương tích.",
+        leaderOpinion: "Đồng ý duyệt tạm ứng theo quy định tại Điều 44 Luật TNBTCNN.",
+        files: [{ name: "Tờ trình tạm ứng Dương Đình Trọng", file: "To_trinh_tam_ung_DuongDinhTrong.pdf" }],
+        advApproveTinhThan: 30000000,
+        advApproveKhac: 30000000,
+        payoutDate: "16/07/2026",
+        payoutAmountReal: 60000000,
+        payoutMethod: "Chi trả trực tiếp bằng tiền mặt",
+        payoutRecName: "Dương Đình Trọng",
+        payoutRecAddress: "Số 9 phố Nguyễn Đình Chiểu, Hai Bà Trưng, Hà Nội",
+        payoutReceiptNo: "BL-TM-2026/102",
+        payoutFile: "Phieu_chi_TM_DuongDinhTrong_signed.pdf",
+        noticeReceivedDate: "13/07/2026",
+        noticeProofFile: "Bien_ban_giao_nhan_thong_bao_DuongDinhTrong.pdf",
+        payoutNote: "Chi trả tiền mặt tại trụ sở cơ quan, ông Dương Đình Trọng đã trực tiếp ký nhận tiền mặt."
     }
 ];
 
@@ -516,8 +683,8 @@ const TREASURY_DEMO_TODAY = new Date(2026, 6, 21);
 // Sync claimsList and proposalsList from localStorage on DOMContentLoaded
 function syncFromLocalStorage() {
     // Force reset if version is old to fetch updated files and statuses
-    if (localStorage.getItem('proposals_version') !== 'v20') {
-        localStorage.setItem('proposals_version', 'v20');
+    if (localStorage.getItem('proposals_version') !== 'v27') {
+        localStorage.setItem('proposals_version', 'v27');
         localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
     }
 
@@ -608,8 +775,59 @@ function syncFromLocalStorage() {
     }
 }
 
+let lastProcessedUrl = '';
+
+function checkAndHandleUrlParams() {
+    const search = window.location.search;
+    const hash = window.location.hash ? window.location.hash.substring(1) : '';
+    const currentParams = search || (hash ? '?' + hash : '');
+    if (!currentParams) return;
+
+    const urlParams = new URLSearchParams(currentParams);
+    const viewCode = urlParams.get('viewCode');
+    if (!viewCode) return;
+
+    const actionType = urlParams.get('actionType');
+    const paramKey = `${viewCode}_${actionType}`;
+    if (lastProcessedUrl === paramKey) return;
+    lastProcessedUrl = paramKey;
+
+    let prop = proposalsList.find(p => p.code === viewCode || p.ycbtCode === viewCode || p.id === viewCode);
+    if (!prop) {
+        const newId = "P_DYN_" + Date.now();
+        prop = {
+            id: newId,
+            code: "KP-2026-DYN",
+            type: "Cấp kinh phí bồi thường",
+            ycbtCode: viewCode,
+            nycName: "Nguyễn Văn Người Nhận",
+            amount: 150000000,
+            user: "Lê Văn Chuyên Viên",
+            date: new Date().toLocaleDateString('vi-VN'),
+            status: "Chờ chi trả",
+            source: "Ngân sách địa phương (Dự phòng)",
+            cqCap: "Sở Tài chính Hà Nội",
+            notes: "Đề xuất kinh phí bồi thường được sinh tự động phục vụ liên kết module."
+        };
+        proposalsList.push(prop);
+        saveProposalsToLocal();
+    }
+
+    if (prop) {
+        if (actionType === 'payout' || actionType === 'pay') {
+            payProposalDirect(prop.id);
+        } else if (actionType === 'update') {
+            updateProposalDirect(prop.id);
+        } else if (actionType === 'forfeit' || actionType === 'treasury') {
+            requestTreasuryForfeit(prop.id);
+        } else {
+            viewProposalDetail(prop.id);
+        }
+    }
+}
+
 // Start initialization
-document.addEventListener('DOMContentLoaded', () => {
+function initKinhPhiApp() {
     syncFromLocalStorage();
     flatpickr("#searchFromDate", { dateFormat: "d/m/Y", allowInput: true });
     flatpickr("#searchToDate", { dateFormat: "d/m/Y", allowInput: true });
@@ -629,9 +847,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${d}/${m}/${y}`;
     };
 
-    document.getElementById('searchFromDate').value = formatDate(threeMonthsAgo);
-    document.getElementById('searchToDate').value = formatDate(today);
-    document.getElementById('formProposalDate').value = formatDate(today);
+    const sFrom = document.getElementById('searchFromDate');
+    const sTo = document.getElementById('searchToDate');
+    const fDate = document.getElementById('formProposalDate');
+    if (sFrom) sFrom.value = formatDate(threeMonthsAgo);
+    if (sTo) sTo.value = formatDate(today);
+    if (fDate) fDate.value = formatDate(today);
 
     // Populate table on load
     renderProposalsTable();
@@ -640,7 +861,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const embed = urlParams.get('embed') === 'true';
     if (embed) {
-        // Clear document body background & margins
         document.body.style.backgroundColor = 'white';
         document.body.style.padding = '0';
         document.body.style.margin = '0';
@@ -663,7 +883,6 @@ document.addEventListener('DOMContentLoaded', () => {
             panel.style.backgroundColor = 'white';
         }
 
-        // Make form Selector Block borderless and zero-padded
         const selectorBlock = document.getElementById('formSelectorBlock');
         if (selectorBlock) {
             selectorBlock.style.backgroundColor = 'white';
@@ -672,7 +891,6 @@ document.addEventListener('DOMContentLoaded', () => {
             selectorBlock.style.marginBottom = '15px';
         }
 
-        // Optimize inline form body for single scrolling container
         const formBody = document.querySelector('#inlineProposalFormPanel .inline-form-body');
         if (formBody) {
             formBody.style.padding = '10px 0';
@@ -687,76 +905,91 @@ document.addEventListener('DOMContentLoaded', () => {
         if (footer) footer.style.display = 'none';
     }
 
-    const viewCode = urlParams.get('viewCode');
-    if (viewCode) {
-        let prop = proposalsList.find(p => p.code === viewCode || p.ycbtCode === viewCode);
-        if (!prop) {
-            // Dynamically generate proposal if it doesn't exist to ensure smooth integration testing
-            const newId = "P_DYN_" + Date.now();
-            prop = {
-                id: newId,
-                code: "KP-2026-DYN",
-                type: "Cấp kinh phí bồi thường",
-                ycbtCode: viewCode,
-                nycName: "Nguyễn Văn Người Nhận",
-                amount: 150000000,
-                user: "Lê Văn Chuyên Viên",
-                date: new Date().toLocaleDateString('vi-VN'),
-                status: "Chờ chi trả",
-                source: "Ngân sách địa phương (Dự phòng)",
-                cqCap: "Sở Tài chính Hà Nội",
-                notes: "Đề xuất kinh phí bồi thường được sinh tự động phục vụ liên kết module."
-            };
-            proposalsList.push(prop);
-            saveProposalsToLocal();
-        }
-        
-        if (prop) {
-            const actionType = urlParams.get('actionType');
-            if (actionType === 'payout') {
-                const formPanel = document.getElementById('inlineProposalFormPanel');
-                if (formPanel) formPanel.style.display = 'flex';
-                if (urlParams.get('embed')) {
-                    const listPanel = document.getElementById('proposalListPanel');
-                    if (listPanel) listPanel.style.display = 'none';
-                }
-                payProposalDirect(prop.id);
-            } else {
-                viewProposalDetail(prop.id);
-            }
-        }
-    }
+    // Process viewCode / actionType parameters
+    checkAndHandleUrlParams();
 
     // Bind keypress for quick claim code search
-    document.getElementById('formClaimSearchInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            searchClaimByCode();
-        }
-    });
-});
+    const claimSearchInput = document.getElementById('formClaimSearchInput');
+    if (claimSearchInput) {
+        claimSearchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchClaimByCode();
+            }
+        });
+    }
+}
 
-// UPDATE STATISTICAL CARDS DYNAMICALLY
+if (document.readyState !== 'loading') {
+    initKinhPhiApp();
+} else {
+    document.addEventListener('DOMContentLoaded', initKinhPhiApp);
+}
+window.addEventListener('popstate', checkAndHandleUrlParams);
+window.addEventListener('hashchange', checkAndHandleUrlParams);
+
+// COLLAPSIBLE ACCORDION ENGINE (Section 4.3.3.2 SRS compliance)
+function toggleAccordion(blockId) {
+    const item = document.getElementById(blockId);
+    if (!item) return;
+    const header = item.querySelector('.accordion-header');
+    const body = item.querySelector('.accordion-body');
+    const icon = item.querySelector('.accordion-icon');
+
+    const isOpen = body && body.classList.contains('show');
+    if (isOpen) {
+        if (body) body.classList.remove('show');
+        if (header) header.classList.remove('active');
+        if (icon) icon.classList.remove('rotated');
+    } else {
+        if (body) body.classList.add('show');
+        if (header) header.classList.add('active');
+        if (icon) icon.classList.add('rotated');
+    }
+}
+
+function setAccordionState(blockId, isOpen) {
+    const item = document.getElementById(blockId);
+    if (!item) return;
+    const header = item.querySelector('.accordion-header');
+    const body = item.querySelector('.accordion-body');
+    const icon = item.querySelector('.accordion-icon');
+
+    if (isOpen) {
+        if (body) body.classList.add('show');
+        if (header) header.classList.add('active');
+        if (icon) icon.classList.add('rotated');
+    } else {
+        if (body) body.classList.remove('show');
+        if (header) header.classList.remove('active');
+        if (icon) icon.classList.remove('rotated');
+    }
+}
+
+// UPDATE STATISTICAL CARDS DYNAMICALLY (Exactly 3 cards complying with SRS)
 function updateBudgetStats() {
-    let totalCapReal = 0;
-    let totalTamUngReal = 0;
+    let totalCapPhat = 0;
+    let totalChoChiTra = 0;
+    let totalSungQuy = 0;
 
     proposalsList.forEach(p => {
-        if (p.status === 'Hoàn thành' || p.status === 'Chờ chi trả' || p.status === 'Chi trả một phần' || p.status === 'Đã sung quỹ') {
-            if (p.type === 'Đề nghị tạm ứng' || p.type === 'Cấp tạm ứng') {
-                totalTamUngReal += p.amount;
-            } else {
-                totalCapReal += p.amount;
-            }
+        const amt = typeof p.amount === 'number' ? p.amount : parseFloat(String(p.amount).replace(/\D/g, '')) || 0;
+        if (p.status === 'Hoàn thành') {
+            totalCapPhat += (p.payoutAmountReal || amt);
+        } else if (p.status === 'Chờ chi trả') {
+            totalChoChiTra += amt;
+        } else if (p.status === 'Sung quỹ nhà nước' || p.status === 'Đã sung quỹ') {
+            totalSungQuy += (p.treasuryAmount || amt);
         }
     });
 
-    document.getElementById('statCapPhat').innerText = `${totalCapReal.toLocaleString('vi-VN')} VNĐ`;
-    document.getElementById('statTamUng').innerText = `${totalTamUngReal.toLocaleString('vi-VN')} VNĐ`;
+    const elCapPhat = document.getElementById('statCapPhat');
+    const elChoChiTra = document.getElementById('statChoChiTra');
+    const elSungQuy = document.getElementById('statSungQuy');
 
-    const budget = 50000000000;
-    const remaining = budget - totalCapReal - totalTamUngReal;
-    document.getElementById('statConDu').innerText = `${remaining.toLocaleString('vi-VN')} VNĐ`;
+    if (elCapPhat) elCapPhat.innerText = `${totalCapPhat.toLocaleString('vi-VN')} VNĐ`;
+    if (elChoChiTra) elChoChiTra.innerText = `${totalChoChiTra.toLocaleString('vi-VN')} VNĐ`;
+    if (elSungQuy) elSungQuy.innerText = `${totalSungQuy.toLocaleString('vi-VN')} VNĐ`;
 }
 
 function parseDateViGlobal(str) {
@@ -787,7 +1020,7 @@ function diffDays(fromDate, toDate) {
 }
 
 function getPaidAmount(item) {
-    return item.status === 'Hoàn thành' ? (item.payoutAmountReal || item.amount || 0) : (item.payoutAmountReal || 0);
+    return item.status === 'Hoàn thành' ? (item.payoutAmountReal || item.amount || 0) : 0;
 }
 
 function getUnpaidAmount(item) {
@@ -815,7 +1048,7 @@ function getTreasuryInfo(item) {
     const deadline = noticeDate ? addYearsToDate(noticeDate, 3) : null;
     const unpaid = getUnpaidAmount(item);
     const daysLeft = deadline ? diffDays(TREASURY_DEMO_TODAY, deadline) : null;
-    const isWaitingPayout = item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần';
+    const isWaitingPayout = item.status === 'Chờ chi trả';
     const isEligible = !!deadline && unpaid > 0 && isWaitingPayout && daysLeft < 0;
     const isWarning = !!deadline && unpaid > 0 && isWaitingPayout && daysLeft >= 0 && daysLeft <= 180;
 
@@ -850,7 +1083,7 @@ function renderTreasuryWarningPanel() {
                 <div>
                     <div style="font-weight:800; color:#9a3412;">Cảnh báo khoản chi đã quá hạn 3 năm</div>
                     <div style="font-size:12.5px; color:#9a3412; margin-top:3px;">
-                        ${eligible.length} khoản Chờ chi trả/Chi trả một phần đủ điều kiện xử lý, tổng số tiền chưa chi ${eligibleAmt.toLocaleString('vi-VN')} VNĐ.
+                        ${eligible.length} khoản Chờ chi trả đủ điều kiện xử lý sung quỹ, tổng số tiền ${eligibleAmt.toLocaleString('vi-VN')} VNĐ (Theo Điều 45 Luật TNBTCNN).
                     </div>
                 </div>
             </div>
@@ -861,36 +1094,134 @@ function renderTreasuryWarningPanel() {
     `;
 }
 
+// Render dynamic content for Block 9: Theo dõi hạn nhận kinh phí / Sung quỹ
+function renderTreasuryTrackingBlock(item) {
+    const block = document.getElementById('block9_TreasuryTracking');
+    if (!block) return;
+
+    const unpaidEl = document.getElementById('treasuryTrackingUnpaidAmount');
+    const statusEl = document.getElementById('treasuryTrackingStatusText');
+    const daysEl = document.getElementById('treasuryTrackingDaysCount') || document.getElementById('treasuryTrackingDaysRemaining');
+    const badgeEl = document.getElementById('treasuryTrackingStatusBadge');
+    const noticeEl = document.getElementById('treasuryTrackingNoticeDate');
+    const deadlineEl = document.getElementById('treasuryTrackingDeadlineDate');
+
+    if (!item) return;
+
+    const info = getTreasuryInfo(item);
+    const isSungQuy = (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ');
+
+    if (unpaidEl) {
+        const unpaidAmt = isSungQuy ? (item.treasuryAmount || info.unpaid || 0) : info.unpaid;
+        unpaidEl.value = (unpaidAmt || 0).toLocaleString('vi-VN');
+    }
+
+    if (noticeEl) noticeEl.innerText = item.noticeReceivedDate || '-';
+    if (deadlineEl) deadlineEl.innerText = info.deadlineText || '-';
+
+    let statusText = 'Chưa có thông báo';
+    let badgeClass = 'badge badge-draft';
+    let daysText = '-';
+
+    if (isSungQuy) {
+        statusText = 'Đã sung quỹ nhà nước';
+        badgeClass = 'badge badge-success';
+        daysText = item.treasuryForfeitDate ? `Đã sung quỹ (${item.treasuryForfeitDate})` : 'Đã sung quỹ';
+    } else if (!item.noticeReceivedDate) {
+        statusText = 'Chưa gửi thông báo';
+        badgeClass = 'badge badge-draft';
+        daysText = '-';
+    } else if (info.isEligible) {
+        statusText = 'Đã quá hạn 3 năm (Đủ điều kiện sung quỹ)';
+        badgeClass = 'badge badge-danger';
+        daysText = `Quá hạn ${Math.abs(info.daysLeft)} ngày`;
+    } else if (info.isWarning) {
+        statusText = 'Sắp đến hạn 3 năm';
+        badgeClass = 'badge badge-warning';
+        daysText = `Còn ${info.daysLeft} ngày`;
+    } else {
+        statusText = 'Trong thời hạn 3 năm';
+        badgeClass = 'badge badge-info';
+        daysText = info.daysLeft !== null ? `Còn ${info.daysLeft} ngày` : '-';
+    }
+
+    if (statusEl) {
+        statusEl.value = statusText;
+        if (info.isEligible && !isSungQuy) {
+            statusEl.style.color = 'var(--danger-color, #ef4444)';
+            statusEl.style.fontWeight = '700';
+        } else if (isSungQuy) {
+            statusEl.style.color = '#7c3aed';
+            statusEl.style.fontWeight = '700';
+        } else if (info.isWarning) {
+            statusEl.style.color = '#b45309';
+            statusEl.style.fontWeight = '700';
+        } else {
+            statusEl.style.color = '#1e293b';
+            statusEl.style.fontWeight = '600';
+        }
+    }
+
+    if (daysEl) {
+        if (daysEl.tagName === 'INPUT') {
+            daysEl.value = daysText;
+            if (info.isEligible && !isSungQuy) {
+                daysEl.style.color = 'var(--danger-color, #ef4444)';
+            } else if (isSungQuy) {
+                daysEl.style.color = '#7c3aed';
+            } else if (info.isWarning) {
+                daysEl.style.color = '#b45309';
+            } else {
+                daysEl.style.color = '#15803d';
+            }
+        } else {
+            if (info.daysLeft === null || isSungQuy) {
+                daysEl.innerText = daysText;
+            } else if (info.daysLeft < 0) {
+                daysEl.innerHTML = `<span style="color: var(--danger-color); font-weight: 700;">Quá hạn ${Math.abs(info.daysLeft)} ngày</span>`;
+            } else {
+                daysEl.innerHTML = `<span style="color: ${info.daysLeft <= 180 ? '#B45309' : '#15803D'}; font-weight: 700;">Còn ${info.daysLeft} ngày</span>`;
+            }
+        }
+    }
+
+    if (badgeEl) {
+        badgeEl.className = badgeClass;
+        badgeEl.innerText = isSungQuy ? 'Đã sung quỹ nhà nước' : (info.isEligible ? 'Đã quá hạn 3 năm' : (info.isWarning ? 'Sắp đến hạn' : (item.noticeReceivedDate ? 'Trong hạn 3 năm' : 'Chưa kích hoạt')));
+    }
+}
+
+// Cột Hạn nhận / Sung quỹ trên Bảng MH01 chuẩn 5 trạng thái theo SRS Mục 4.3.3.2.1 dòng 95:
 function renderTreasuryCell(item, info = getTreasuryInfo(item)) {
-    if (item.status === 'Đã sung quỹ') {
+    const isSungQuy = (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ');
+    if (isSungQuy) {
+        const forfeitDate = item.treasuryForfeitDate || item.date || '-';
         return `
-            <div style="font-weight:700; color:#15803d;">Đã sung quỹ</div>
-            <div style="font-size:11.5px; color:#64748b;">${item.treasuryForfeitDate || '-'}</div>
+            <div style="font-weight:700; color:#7c3aed;"><i class="fa-solid fa-building-columns"></i> Đã sung quỹ</div>
+            <div style="font-size:11.5px; color:#64748b;">${forfeitDate !== '-' ? `Ngày: ${forfeitDate}` : '-'}</div>
         `;
     }
-    if (!item.noticeReceivedDate) {
+    if (item.status === 'Hoàn thành') {
+        const payDate = item.payoutDate || item.date || '-';
+        return `
+            <div style="font-weight:700; color:#15803d;"><i class="fa-solid fa-circle-check"></i> Đã chi trả đủ</div>
+            <div style="font-size:11.5px; color:#64748b;">${payDate !== '-' ? `Ngày: ${payDate}` : '-'}</div>
+        `;
+    }
+    if (!item.noticeReceivedDate || item.status === 'Chờ lập đề nghị' || item.status === 'Chờ duyệt' || item.status === 'Bị từ chối') {
         return `<span style="font-size:12px; color:#94a3b8;">-</span>`;
     }
 
     if (info.isEligible) {
         return `
-            <div style="font-weight:800; color:#b91c1c;">Quá hạn ${Math.abs(info.daysLeft)} ngày</div>
-            <div style="font-size:11.5px; color:#64748b;">Hạn: ${info.deadlineText}</div>
-            <div style="font-size:11.5px; color:#b91c1c; font-weight:700;">Chưa chi: ${info.unpaid.toLocaleString('vi-VN')}đ</div>
-        `;
-    }
-
-    if (info.isWarning) {
-        return `
-            <div style="font-weight:800; color:#a16207;">Còn ${info.daysLeft} ngày</div>
-            <div style="font-size:11.5px; color:#64748b;">Hạn: ${info.deadlineText}</div>
-            <div style="font-size:11.5px; color:#a16207; font-weight:700;">Cần theo dõi</div>
+            <div style="font-weight:800; color:#b91c1c;"><i class="fa-solid fa-triangle-exclamation"></i> Quá hạn ${Math.abs(info.daysLeft)} ngày</div>
+            <div style="font-size:11.5px; color:#64748b;">Hạn nhận: ${info.deadlineText}</div>
         `;
     }
 
     return `
-        <div style="font-weight:600; color:#334155;">${info.deadlineText || '-'}</div>
-        <div style="font-size:11.5px; color:#64748b;">Ngày TB: ${item.noticeReceivedDate}</div>
+        <div style="font-weight:800; color:#0369a1;"><i class="fa-solid fa-clock"></i> Còn ${info.daysLeft} ngày</div>
+        <div style="font-size:11.5px; color:#64748b;">Hạn nhận: ${info.deadlineText}</div>
     `;
 }
 
@@ -929,17 +1260,21 @@ function openLinkedClaimDetail(ycbtCode) {
     window.location.href = detailUrl;
 }
 
-function requestTreasuryForfeit(id) {
+function forfeitProposalDirect(id) {
     const item = proposalsList.find(p => p.id === id);
     if (!item) return;
     const info = getTreasuryInfo(item);
     if (!info.isEligible) {
-        showToast('Khoản này chưa đủ điều kiện sung quỹ.', 'warning');
+        showToast('Khoản này chưa đủ điều kiện sung quỹ (chưa quá thời hạn 03 năm kể từ ngày nhận thông báo).', 'warning');
         return;
     }
 
     viewProposalDetail(id);
     setTimeout(() => startTreasuryForfeitFromDetail(), 80);
+}
+
+function requestTreasuryForfeit(id) {
+    forfeitProposalDirect(id);
 }
 
 function renderPayoutTreasuryResult(item) {
@@ -1070,66 +1405,141 @@ function removeNoticeTrackingFile(index) {
     renderNoticeTrackingFile();
 }
 
-function renderNoticeTrackingSection(item) {
+function renderNoticeTrackingSection(item, forceEditing = null) {
     const section = document.getElementById('sectionNoticeTracking');
-    if (!section) return;
+    if (!section || !item) return;
 
-    const shouldShow = item && (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần' || item.status === 'Đã sung quỹ' || !!item.noticeReceivedDate);
+    const block8 = document.getElementById('block8_NoticeTracking');
+    const shouldShow = item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần' || item.status === 'Hoàn thành' || item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ' || !!item.noticeReceivedDate;
     if (!shouldShow) {
+        if (block8) block8.style.display = 'none';
         section.style.display = 'none';
-        document.getElementById('btnSaveNoticeTracking').style.display = 'none';
         return;
     }
 
-    const activeRole = document.getElementById('roleSelector').value;
-    const canMaintainNotice = activeRole === 'chuyen-vien' && (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần');
-    const hasNotice = !!item.noticeReceivedDate || normalizeFileList(item.noticeProofFile).length > 0;
-    const editing = section.dataset.editing === 'true' || !hasNotice;
-
+    if (block8) block8.style.display = 'block';
     section.style.display = 'block';
-    document.getElementById('noticeTrackingDate').value = item.noticeReceivedDate || '';
-    document.getElementById('noticeTrackingDate').disabled = !(canMaintainNotice && editing);
-    document.getElementById('noticeTrackingNote').value = item.noticeNote || '';
-    document.getElementById('noticeTrackingNote').disabled = !(canMaintainNotice && editing);
-    document.getElementById('btnNoticeTrackingUpload').style.display = canMaintainNotice && editing ? 'inline-flex' : 'none';
-    document.getElementById('btnNoticeTrackingUpload').disabled = !(canMaintainNotice && editing);
+
+    const roleSelector = document.getElementById('roleSelector');
+    const activeRole = roleSelector ? roleSelector.value : 'chuyen-vien';
+    const canMaintainNotice = activeRole === 'chuyen-vien' && (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần');
+    const hasNotice = !!item.noticeReceivedDate && item.noticeReceivedDate.trim() !== '';
+
+    let editing = false;
+    if (forceEditing !== null) {
+        editing = forceEditing;
+        section.dataset.editing = editing ? 'true' : 'false';
+    } else {
+        editing = section.dataset.editing === 'true' || !hasNotice;
+    }
+
+    // Controls editable state
+    const isFieldsEditable = canMaintainNotice && editing;
+    const dateInput = document.getElementById('noticeTrackingDate');
+    if (dateInput) {
+        dateInput.value = item.noticeReceivedDate || '';
+        dateInput.disabled = !isFieldsEditable;
+    }
+    const noteInput = document.getElementById('noticeTrackingNote');
+    if (noteInput) {
+        noteInput.value = item.noticeNote || '';
+        noteInput.disabled = !isFieldsEditable;
+    }
+
+    const uploadBtn = document.getElementById('btnNoticeTrackingUpload');
+    if (uploadBtn) {
+        uploadBtn.style.display = isFieldsEditable ? 'inline-flex' : 'none';
+        uploadBtn.disabled = !isFieldsEditable;
+    }
+
     noticeTrackingAttachedFile = normalizeFileList(item.noticeProofFile);
-    renderNoticeTrackingFile(!(canMaintainNotice && editing));
+    renderNoticeTrackingFile(!isFieldsEditable);
     previewNoticeTrackingDeadline();
-    const saveBtn = document.getElementById('btnSaveNoticeTracking');
-    saveBtn.style.display = canMaintainNotice ? 'inline-flex' : 'none';
-    saveBtn.innerHTML = hasNotice && !editing
-        ? '<i class="fa-solid fa-pen-to-square"></i> Cập nhật thông báo'
-        : '<i class="fa-solid fa-bell"></i> Lưu thông báo';
+
+    // Buttons at Khối 8
+    const btnSave = document.getElementById('btnSaveNoticeTracking');
+    const btnEdit = document.getElementById('btnEditNoticeTracking');
+    const btnCancel = document.getElementById('btnCancelNoticeTracking');
+
+    if (canMaintainNotice) {
+        if (hasNotice && !editing) {
+            // View mode with existing notice data: Show "Cập nhật thông báo"
+            if (btnEdit) btnEdit.style.display = 'inline-flex';
+            if (btnSave) btnSave.style.display = 'none';
+            if (btnCancel) btnCancel.style.display = 'none';
+        } else if (hasNotice && editing) {
+            // Edit mode modifying existing notice data: Show "Lưu thông báo" and "Hủy"
+            if (btnEdit) btnEdit.style.display = 'none';
+            if (btnSave) btnSave.style.display = 'inline-flex';
+            if (btnCancel) btnCancel.style.display = 'inline-flex';
+        } else {
+            // Initial input (no notice data yet): Show "Lưu thông báo"
+            if (btnEdit) btnEdit.style.display = 'none';
+            if (btnSave) btnSave.style.display = 'inline-flex';
+            if (btnCancel) btnCancel.style.display = 'none';
+        }
+    } else {
+        if (btnEdit) btnEdit.style.display = 'none';
+        if (btnSave) btnSave.style.display = 'none';
+        if (btnCancel) btnCancel.style.display = 'none';
+    }
+}
+
+function editNoticeTracking() {
+    const item = proposalsList.find(p => p.id === selectedProposalId);
+    if (!item) return;
+    clearFieldErrors();
+    const section = document.getElementById('sectionNoticeTracking');
+    if (section) section.dataset.editing = 'true';
+    renderNoticeTrackingSection(item, true);
+    setAccordionState('block8_NoticeTracking', true);
+    setTimeout(() => {
+        const dateInput = document.getElementById('noticeTrackingDate');
+        if (dateInput) dateInput.focus();
+    }, 100);
+}
+
+function cancelNoticeTracking() {
+    const item = proposalsList.find(p => p.id === selectedProposalId);
+    if (!item) return;
+    clearFieldErrors();
+    const section = document.getElementById('sectionNoticeTracking');
+    if (section) section.dataset.editing = 'false';
+    renderNoticeTrackingSection(item, false);
 }
 
 function saveNoticeTracking() {
+    clearFieldErrors();
     const item = proposalsList.find(p => p.id === selectedProposalId);
     if (!item) return;
-    const section = document.getElementById('sectionNoticeTracking');
-    const hasNotice = !!item.noticeReceivedDate || normalizeFileList(item.noticeProofFile).length > 0;
-    if (hasNotice && section.dataset.editing !== 'true') {
-        section.dataset.editing = 'true';
-        renderNoticeTrackingSection(item);
-        return;
-    }
 
     const noticeDateText = document.getElementById('noticeTrackingDate').value.trim();
     const noticeDate = parseDateViGlobal(noticeDateText);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
+    let hasError = false;
     if (!noticeDateText) {
         showFieldError('noticeTrackingDate', 'Đây là trường bắt buộc');
-        return;
-    }
-    if (!noticeDate) {
+        hasError = true;
+    } else if (!noticeDate) {
         showFieldError('noticeTrackingDate', 'Ngày không hợp lệ, vui lòng nhập dd/mm/yyyy');
-        return;
+        hasError = true;
+    } else if (noticeDate > today) {
+        showFieldError('noticeTrackingDate', 'Ngày nhận thông báo không được lớn hơn ngày hiện tại');
+        hasError = true;
     }
+
     if (normalizeFileList(noticeTrackingAttachedFile).length === 0) {
         const link = document.getElementById('noticeTrackingFileLink');
-        link.style.color = 'var(--danger-color)';
-        link.innerText = 'Vui lòng đính kèm tài liệu chứng minh đã thông báo';
-        return;
+        if (link) {
+            link.style.color = 'var(--danger-color)';
+            link.innerText = 'Vui lòng đính kèm tài liệu chứng minh đã thông báo';
+        }
+        hasError = true;
     }
+
+    if (hasError) return;
 
     item.noticeReceivedDate = noticeDateText;
     item.noticeProofFile = normalizeFileList(noticeTrackingAttachedFile);
@@ -1137,10 +1547,12 @@ function saveNoticeTracking() {
     item.treasuryDeadline = formatDateViGlobal(addYearsToDate(noticeDate, 3));
 
     saveProposalsToLocal();
-    section.dataset.editing = 'false';
-    renderNoticeTrackingSection(item);
+    const section = document.getElementById('sectionNoticeTracking');
+    if (section) section.dataset.editing = 'false';
+    renderNoticeTrackingSection(item, false);
+    renderTreasuryTrackingBlock(item);
     renderProposalsTable();
-    showToast(`Đã lưu thông tin thông báo nhận kinh phí cho ${item.code}.`, 'success');
+    showToast('Lưu thông tin thông báo nhận kinh phí thành công!', 'success');
 }
 
 function renderTreasuryFile(readOnly = false) {
@@ -1211,16 +1623,43 @@ function startTreasuryForfeitFromDetail() {
     if (!item) return;
     const info = getTreasuryInfo(item);
     if (!info.isEligible) {
-        showToast('Chỉ được sung quỹ khi hồ sơ Chờ chi trả/Chi trả một phần đã quá hạn 3 năm kể từ ngày nhận thông báo.', 'warning');
+        showToast('Chỉ được sung quỹ khi hồ sơ Chờ chi trả đã quá hạn 3 năm kể từ ngày nhận thông báo.', 'warning');
         return;
     }
 
+    // Modal title per MH04
+    const modalTitleEl = document.getElementById('formProposalTitle');
+    if (modalTitleEl) {
+        modalTitleEl.innerHTML = `<i class="fa-solid fa-building-columns"></i> CẬP NHẬT SUNG QUỸ NHÀ NƯỚC: ${item.code}`;
+    }
+
+    // Collapse Blocks 1 to 9 per SRS Section 4.3.3.2 (MH04)
+    ['block1_General', 'block2_Claimant', 'block3_AdvanceTable', 'block4_KinhPhiTable', 'block5_Recipient', 'block6_NotesAndDocs', 'block7_LeaderApproval', 'block8_NoticeTracking', 'block9_TreasuryTracking'].forEach(bid => {
+        setAccordionState(bid, false);
+    });
+    const block8 = document.getElementById('block8_NoticeTracking');
+    if (block8) block8.style.display = 'block';
+    const block9 = document.getElementById('block9_TreasuryTracking');
+    if (block9) {
+        block9.style.display = 'block';
+        renderTreasuryTrackingBlock(item);
+    }
+    const block10 = document.getElementById('block10_PayoutReal');
+    if (block10) block10.style.display = 'none';
+
+    // Show & expand Block 11
+    const block11 = document.getElementById('block11_TreasuryForfeit');
+    if (block11) {
+        block11.style.display = 'block';
+        setAccordionState('block11_TreasuryForfeit', true);
+    }
+
     const section = document.getElementById('sectionTreasuryForfeit');
-    section.style.display = 'block';
+    if (section) section.style.display = 'block';
     document.getElementById('treasuryVoucherNo').value = item.treasuryVoucherNo || `SQ-${item.code.replace(/\D/g, '')}`;
     document.getElementById('treasuryForfeitDate').value = item.treasuryForfeitDate || formatDateViGlobal(TREASURY_DEMO_TODAY);
     document.getElementById('treasuryForfeitAmount').value = (item.treasuryAmount || info.unpaid).toLocaleString('vi-VN');
-    document.getElementById('treasuryForfeitReason').value = item.treasuryReason || `Người yêu cầu bồi thường không nhận kinh phí sau 3 năm kể từ ngày nhận thông báo (${item.noticeReceivedDate}), hạn nhận kinh phí ${info.deadlineText}.`;
+    document.getElementById('treasuryForfeitReason').value = item.treasuryReason || `Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả kinh phí nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.`;
     treasuryAttachedFile = normalizeFileList(item.treasuryFile);
     renderTreasuryFile();
 
@@ -1228,7 +1667,17 @@ function startTreasuryForfeitFromDetail() {
     document.getElementById('btnSaveNoticeTracking').style.display = 'none';
     document.getElementById('btnViewActionForfeit').style.display = 'none';
     document.getElementById('btnCompleteTreasuryForfeit').style.display = 'inline-flex';
-    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const btnCancel = document.getElementById('btnCancelForm');
+    if (btnCancel) {
+        btnCancel.style.display = 'inline-flex';
+        btnCancel.innerText = 'Đóng';
+    }
+
+    setTimeout(() => {
+        if (block11) block11.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const vNo = document.getElementById('treasuryVoucherNo');
+        if (vNo) vNo.focus();
+    }, 150);
 }
 
 function cancelTreasuryForfeit() {
@@ -1238,6 +1687,7 @@ function cancelTreasuryForfeit() {
 }
 
 function completeTreasuryForfeit() {
+    clearFieldErrors();
     const item = proposalsList.find(p => p.id === selectedProposalId);
     if (!item) return;
 
@@ -1275,23 +1725,62 @@ function completeTreasuryForfeit() {
     }
     if (normalizeFileList(treasuryAttachedFile).length === 0) {
         const link = document.getElementById('treasuryFileLink');
-        link.style.color = 'var(--danger-color)';
-        link.innerText = 'Vui lòng chọn tài liệu sung quỹ';
+        if (link) {
+            link.style.color = 'var(--danger-color, #ef4444)';
+            link.innerText = 'Vui lòng chọn tài liệu chứng từ nộp ngân sách';
+        }
+        showToast('Vui lòng đính kèm tài liệu chứng từ nộp ngân sách.', 'warning');
         return;
     }
 
-    item.status = 'Đã sung quỹ';
-    item.treasuryForfeitDate = forfeitDateText;
-    item.treasuryVoucherNo = voucherNo;
-    item.treasuryAmount = amount;
-    item.treasuryReason = reason;
-    item.treasuryFile = normalizeFileList(treasuryAttachedFile);
-    item.payoutAmountReal = Math.max(0, item.amount - amount);
+    const confirmTitle = 'Xác nhận hoàn thành thủ tục sung quỹ nhà nước';
+    const confirmMsg = `
+        <div style="text-align: left; font-size: 13.5px; line-height: 1.6;">
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+                <div style="display: grid; grid-template-columns: 140px 1fr; gap: 6px; margin-bottom: 4px;">
+                    <span style="color: #64748B;">Mã đề xuất:</span>
+                    <strong style="color: #1E293B;">${item.code}</strong>
+                </div>
+                <div style="display: grid; grid-template-columns: 140px 1fr; gap: 6px; margin-bottom: 4px;">
+                    <span style="color: #64748B;">Vụ việc liên kết:</span>
+                    <strong style="color: #1E293B;">${item.ycbtCode} - ${item.nycName}</strong>
+                </div>
+                <div style="display: grid; grid-template-columns: 140px 1fr; gap: 6px; margin-bottom: 4px;">
+                    <span style="color: #64748B;">Số chứng từ/QĐ:</span>
+                    <strong style="color: #1E293B;">${voucherNo}</strong>
+                </div>
+                <div style="display: grid; grid-template-columns: 140px 1fr; gap: 6px; margin-bottom: 4px;">
+                    <span style="color: #64748B;">Ngày sung quỹ:</span>
+                    <strong style="color: #1E293B;">${forfeitDateText}</strong>
+                </div>
+                <div style="display: grid; grid-template-columns: 140px 1fr; gap: 6px;">
+                    <span style="color: #64748B;">Số tiền sung quỹ:</span>
+                    <strong style="color: #DC2626; font-size: 15px;">${amount.toLocaleString('vi-VN')} VNĐ</strong>
+                </div>
+            </div>
+            <div style="color: #334155; margin-bottom: 8px;">
+                Bạn có chắc chắn muốn xác nhận hoàn thành thủ tục nộp toàn bộ số tiền <strong style="color: #DC2626;">${amount.toLocaleString('vi-VN')} VNĐ</strong> vào ngân sách nhà nước không?
+            </div>
+            <div style="font-size: 12px; color: #B45309; background: #FFFBEB; border-left: 3px solid #F59E0B; padding: 8px 10px; border-radius: 4px;">
+                <i class="fa-solid fa-triangle-exclamation"></i> <strong>Lưu ý:</strong> Sau khi xác nhận, đề xuất cấp kinh phí và Vụ việc bồi thường gốc liên kết sẽ chuyển sang trạng thái <strong>Sung quỹ nhà nước</strong> và không thể điều chỉnh hoặc hoàn tác.
+            </div>
+        </div>
+    `;
 
-    saveProposalsToLocal();
-    updateBudgetStats();
-    closeCreateProposalForm();
-    showToast(`Đã hoàn thành sung quỹ cho ${item.code}.`, 'success');
+    showConfirmModal(confirmMsg, () => {
+        item.status = 'Sung quỹ nhà nước';
+        item.treasuryForfeitDate = forfeitDateText;
+        item.treasuryVoucherNo = voucherNo;
+        item.treasuryAmount = amount;
+        item.treasuryReason = reason;
+        item.treasuryFile = normalizeFileList(treasuryAttachedFile);
+        item.payoutAmountReal = Math.max(0, item.amount - amount);
+
+        saveProposalsToLocal();
+        updateBudgetStats();
+        closeCreateProposalForm();
+        showToast(`Cập nhật sung quỹ nhà nước thành công cho đề xuất ${item.code}!`, 'success');
+    }, confirmTitle);
 }
 
 // RENDER DATA TABLE GRID
@@ -1316,10 +1805,12 @@ function renderProposalsTable() {
     if (code) filtered = filtered.filter(item => item.code.toLowerCase().includes(code));
     if (type) filtered = filtered.filter(item => item.type === type);
     if (ycbtCode) filtered = filtered.filter(item => item.ycbtCode.toLowerCase().includes(ycbtCode));
-    if (status === 'Chưa') {
-        filtered = filtered.filter(item => item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần');
-    } else if (status) {
-        filtered = filtered.filter(item => item.status === status);
+    if (status) {
+        if (status === 'Sung quỹ nhà nước') {
+            filtered = filtered.filter(item => item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ');
+        } else {
+            filtered = filtered.filter(item => item.status === status);
+        }
     }
     if (showTreasuryEligibleOnly) filtered = filtered.filter(item => getTreasuryInfo(item).isEligible);
     if (nyc) filtered = filtered.filter(item => item.nycName.toLowerCase().includes(nyc));
@@ -1378,7 +1869,7 @@ function renderProposalsTable() {
     if (isLeader) {
         pendingCount = proposalsList.filter(p => p.status === 'Chờ duyệt').length;
     } else {
-        pendingCount = proposalsList.filter(p => p.status === 'Chờ lập đề nghị' || p.status === 'Bị từ chối' || p.status === 'Chờ chi trả' || p.status === 'Chi trả một phần').length;
+        pendingCount = proposalsList.filter(p => p.status === 'Chờ lập đề nghị' || p.status === 'Bị từ chối' || p.status === 'Chờ chi trả').length;
     }
     const headerBadge = document.getElementById('headerProposalBadge');
     if (headerBadge) {
@@ -1398,8 +1889,7 @@ function renderProposalsTable() {
         if (item.status === 'Hoàn thành') badgeClass = 'badge-success';
         else if (item.status === 'Chờ duyệt') badgeClass = 'badge-pending';
         else if (item.status === 'Chờ chi trả') badgeClass = 'badge-warning';
-        else if (item.status === 'Chi trả một phần') badgeClass = 'badge-warning';
-        else if (item.status === 'Đã sung quỹ') badgeClass = 'badge-success';
+        else if (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ') badgeClass = 'badge-success';
         else if (item.status === 'Bị từ chối') badgeClass = 'badge-danger';
         else if (item.status === 'Chờ lập đề nghị') badgeClass = 'badge-info';
         const treasuryInfo = getTreasuryInfo(item);
@@ -1412,8 +1902,8 @@ function renderProposalsTable() {
             let rejectBtn = `<button class="icon-btn reject" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ từ chối đề xuất ở trạng thái Chờ duyệt"><i class="fa-solid fa-ban"></i></button>`;
 
             if (item.status === 'Chờ duyệt') {
-                approveBtn = `<button class="icon-btn accept" title="Phê duyệt đề xuất" onclick="approveProposalDirect('${item.id}', 'Chờ chi trả')"><i class="fa-solid fa-circle-check"></i></button>`;
-                rejectBtn = `<button class="icon-btn reject" title="Từ chối phê duyệt" onclick="rejectProposalDirect('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
+                approveBtn = `<button class="icon-btn accept" title="Phê duyệt đề xuất" onclick="openApproveModal('${item.id}')"><i class="fa-solid fa-circle-check"></i></button>`;
+                rejectBtn = `<button class="icon-btn reject" title="Từ chối phê duyệt" onclick="openRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
             }
             actionsHtml = `${approveBtn} ${rejectBtn}`;
         } else {
@@ -1429,17 +1919,18 @@ function renderProposalsTable() {
                 deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình nháp" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
             } else if (item.status === 'Bị từ chối') {
                 updateBtn = `<button class="icon-btn edit" title="Cập nhật đề nghị" onclick="updateProposalDirect('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-            } else if (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần') {
+            } else if (item.status === 'Chờ chi trả') {
                 payBtn = `<button class="icon-btn accept" title="Thực hiện chi trả" onclick="payProposalDirect('${item.id}')"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
             }
             if (treasuryInfo.isEligible) {
-                treasuryBtn = `<button class="icon-btn reject" title="Sung quỹ Nhà nước" onclick="requestTreasuryForfeit('${item.id}')"><i class="fa-solid fa-building-columns"></i></button>`;
+                treasuryBtn = `<button class="icon-btn reject" title="Sung quỹ Nhà nước" onclick="forfeitProposalDirect('${item.id}')"><i class="fa-solid fa-building-columns"></i></button>`;
             }
             actionsHtml = `${fillBtn} ${updateBtn} ${payBtn} ${treasuryBtn} ${deleteBtn}`;
         }
 
         const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;
         const actionAlign = isLeader ? 'center' : 'flex-start';
+        const displayStatus = item.status === 'Đã sung quỹ' ? 'Sung quỹ nhà nước' : item.status;
 
         tr.innerHTML = `
             <td style="text-align:center; vertical-align:middle;">${startIdx + idx + 1}</td>
@@ -1452,7 +1943,7 @@ function renderProposalsTable() {
             <td style="text-align:left; vertical-align:middle;">${item.user}</td>
             <td style="text-align:left; vertical-align:middle;">${item.date}</td>
             <td style="text-align:left; vertical-align:middle;">${treasuryHtml}</td>
-            <td style="text-align:left; vertical-align:middle;"><span class="badge ${badgeClass}">${item.status}</span></td>
+            <td style="text-align:left; vertical-align:middle;"><span class="badge ${badgeClass}">${displayStatus}</span></td>
             <td style="text-align:${isLeader ? 'center' : 'left'}; vertical-align:middle;">
                 <div class="action-flex" style="display:flex; justify-content:${actionAlign}; gap:6px;">
                     ${actionsHtml}
@@ -1578,13 +2069,28 @@ function handleTypeChange(selectedType) {
         }
     }
 
-    // Show/hide wrappers
+    // Show/hide wrappers & accordion blocks (Section 4.3.3.2)
+    const block3 = document.getElementById('block3_AdvanceTable');
+    const block4 = document.getElementById('block4_KinhPhiTable');
+    const recAdv = document.getElementById('recAdvanceBlock');
+    const recKp = document.getElementById('recKinhPhiBlock');
+    const wrapAdv = document.getElementById('wrapperAdvanceProposal');
+    const wrapKp = document.getElementById('wrapperKinhPhiProposal');
+
     if (selectedType === 'Cấp tạm ứng') {
-        document.getElementById('wrapperAdvanceProposal').style.display = 'block';
-        document.getElementById('wrapperKinhPhiProposal').style.display = 'none';
+        if (block3) { block3.style.display = 'block'; setAccordionState('block3_AdvanceTable', true); }
+        if (block4) block4.style.display = 'none';
+        if (recAdv) recAdv.style.display = 'block';
+        if (recKp) recKp.style.display = 'none';
+        if (wrapAdv) wrapAdv.style.display = 'block';
+        if (wrapKp) wrapKp.style.display = 'none';
     } else {
-        document.getElementById('wrapperAdvanceProposal').style.display = 'none';
-        document.getElementById('wrapperKinhPhiProposal').style.display = 'block';
+        if (block3) block3.style.display = 'none';
+        if (block4) { block4.style.display = 'block'; setAccordionState('block4_KinhPhiTable', true); }
+        if (recAdv) recAdv.style.display = 'none';
+        if (recKp) recKp.style.display = 'block';
+        if (wrapAdv) wrapAdv.style.display = 'none';
+        if (wrapKp) wrapKp.style.display = 'block';
     }
 }
 
@@ -1616,10 +2122,14 @@ function clearClaimDetails() {
     document.getElementById('formProposalNotes').value = '';
 
     // Clear advance section fields
-    document.getElementById('advClaimTinhThan').value = '';
-    document.getElementById('advClaimTinhThanFileLink').innerHTML = '';
-    document.getElementById('advClaimKhac').value = '';
-    document.getElementById('advClaimKhacFileLink').innerHTML = '';
+    const elAdvTt = document.getElementById('advClaimTinhThan');
+    if (elAdvTt) elAdvTt.value = '';
+    const elAdvTtFile = document.getElementById('advClaimTinhThanFileLink');
+    if (elAdvTtFile) elAdvTtFile.innerHTML = '';
+    const elAdvKhac = document.getElementById('advClaimKhac');
+    if (elAdvKhac) elAdvKhac.value = '';
+    const elAdvKhacFile = document.getElementById('advClaimKhacFileLink');
+    if (elAdvKhacFile) elAdvKhacFile.innerHTML = '';
     document.getElementById('advClaimTotal').value = '';
     document.getElementById('advClaimTotalWord').innerText = 'Viết bằng chữ: Không đồng';
     document.getElementById('advRecName').value = '';
@@ -1829,30 +2339,38 @@ function handleClaimSelected(code) {
 
         // Tạm ứng
         if (selectedType === 'Cấp tạm ứng') {
-            document.getElementById('advClaimTinhThan').value = claim.advanceTinhThan.toLocaleString('vi-VN') + " VNĐ";
-            if (claim.advanceTinhThanFile) {
-                document.getElementById('advClaimTinhThanFileLink').innerHTML = `
-                    <div style="display:flex; justify-content:center; gap:8px; font-weight:600; font-size:12px; white-space:nowrap;">
-                        <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem</a>
-                        <span style="color:#CBD5E1;">|</span>
-                        <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('TinhThan')"><i class="fa-regular fa-trash-can"></i> Xóa</a>
-                    </div>
-                `;
-            } else {
-                document.getElementById('advClaimTinhThanFileLink').innerHTML = '';
+            const elAdvTtVal = document.getElementById('advClaimTinhThan');
+            if (elAdvTtVal) elAdvTtVal.value = claim.advanceTinhThan.toLocaleString('vi-VN') + " VNĐ";
+            const elAdvTtLink = document.getElementById('advClaimTinhThanFileLink');
+            if (elAdvTtLink) {
+                if (claim.advanceTinhThanFile) {
+                    elAdvTtLink.innerHTML = `
+                        <div style="display:flex; justify-content:center; gap:8px; font-weight:600; font-size:12px; white-space:nowrap;">
+                            <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem</a>
+                            <span style="color:#CBD5E1;">|</span>
+                            <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('TinhThan')"><i class="fa-regular fa-trash-can"></i> Xóa</a>
+                        </div>
+                    `;
+                } else {
+                    elAdvTtLink.innerHTML = '';
+                }
             }
 
-            document.getElementById('advClaimKhac').value = claim.advanceKhac.toLocaleString('vi-VN') + " VNĐ";
-            if (claim.advanceKhacFile) {
-                document.getElementById('advClaimKhacFileLink').innerHTML = `
-                    <div style="display:flex; justify-content:center; gap:8px; font-weight:600; font-size:12px; white-space:nowrap;">
-                        <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem</a>
-                        <span style="color:#CBD5E1;">|</span>
-                        <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('Khac')"><i class="fa-regular fa-trash-can"></i> Xóa</a>
-                    </div>
-                `;
-            } else {
-                document.getElementById('advClaimKhacFileLink').innerHTML = '';
+            const elAdvKhacVal = document.getElementById('advClaimKhac');
+            if (elAdvKhacVal) elAdvKhacVal.value = claim.advanceKhac.toLocaleString('vi-VN') + " VNĐ";
+            const elAdvKhacLink = document.getElementById('advClaimKhacFileLink');
+            if (elAdvKhacLink) {
+                if (claim.advanceKhacFile) {
+                    elAdvKhacLink.innerHTML = `
+                        <div style="display:flex; justify-content:center; gap:8px; font-weight:600; font-size:12px; white-space:nowrap;">
+                            <a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem</a>
+                            <span style="color:#CBD5E1;">|</span>
+                            <a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="clearClaimFile('Khac')"><i class="fa-regular fa-trash-can"></i> Xóa</a>
+                        </div>
+                    `;
+                } else {
+                    elAdvKhacLink.innerHTML = '';
+                }
             }
 
             const totalAdv = claim.advanceTinhThan + claim.advanceKhac;
@@ -2167,10 +2685,12 @@ function clearClaimFile(type) {
     }
     showConfirmModal("Bạn có chắc chắn muốn gỡ tài liệu đính kèm liên quan này không?", () => {
         if (type === 'TinhThan') {
-            document.getElementById('advClaimTinhThanFileLink').innerHTML = '<span style="color:var(--text-muted);">Đã xóa</span>';
+            const el = document.getElementById('advClaimTinhThanFileLink');
+            if (el) el.innerHTML = '<span style="color:var(--text-muted);">Đã xóa</span>';
             // showToast("Đã gỡ tài liệu đính kèm tinh thần!", "info");
         } else {
-            document.getElementById('advClaimKhacFileLink').innerHTML = '<span style="color:var(--text-muted);">Đã xóa</span>';
+            const el = document.getElementById('advClaimKhacFileLink');
+            if (el) el.innerHTML = '<span style="color:var(--text-muted);">Đã xóa</span>';
             //showToast("Đã gỡ tài liệu đính kèm thiệt hại khác!", "info");
         }
     });
@@ -2267,6 +2787,7 @@ function clearFieldErrors() {
 // CREATE/EDIT PROPOSAL SUBMIT
 function openCreateProposalForm() {
     selectedProposalId = null;
+    formEditingMode = true;
     document.getElementById('contentListProposals').style.display = 'none';
     document.getElementById('dashboardStats').style.display = 'none'; // Rule 1: Hide dashboard on form view
 
@@ -2275,6 +2796,25 @@ function openCreateProposalForm() {
 
     const badge = document.getElementById('formProposalStatusBadge');
     if (badge) badge.style.display = 'none';
+
+    // Hide Reject Notice by default
+    const rej = document.getElementById('blockRejectNotice');
+    if (rej) rej.style.display = 'none';
+    const quickAction = document.getElementById('rejectNoticeQuickAction');
+    if (quickAction) quickAction.style.display = 'none';
+
+    // Accordion setup: Blocks 1, 2, 5, 6 are visible & expanded (Section 4.3.3.2)
+    ['block1_General', 'block2_Claimant', 'block5_Recipient', 'block6_NotesAndDocs'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'block';
+        setAccordionState(id, true);
+    });
+
+    // Blocks 7-11 are hidden by default during proposal creation
+    ['block7_LeaderApproval', 'block8_NoticeTracking', 'block9_TreasuryTracking', 'block10_PayoutReal', 'block11_TreasuryForfeit'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
 
     document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> LẬP ĐỀ NGHỊ CẤP PHÁT KINH PHÍ BỒI THƯỜNG`;
 
@@ -2331,48 +2871,37 @@ function openCreateProposalForm() {
         document.getElementById('payoutNote').value = '';
         document.getElementById('payoutNote').disabled = false;
     }
-    document.getElementById('payoutMethod').value = 'Chuyển khoản qua ngân hàng';
-    const noticeInput = document.getElementById('payoutNoticeReceivedDate');
-    if (noticeInput) noticeInput.value = '';
-    const deadlineInput = document.getElementById('payoutTreasuryDeadline');
-    if (deadlineInput) deadlineInput.value = '';
-    const hint = document.getElementById('payoutTreasuryHint');
-    if (hint) {
-        hint.innerText = 'Hệ thống sẽ cảnh báo nếu sau 3 năm kể từ ngày nhận thông báo vẫn còn kinh phí chưa hoàn thành chi trả.';
-        hint.style.color = '#9a3412';
-    }
-    const treasuryResultBox = document.getElementById('payoutTreasuryResultBox');
-    if (treasuryResultBox) {
-        treasuryResultBox.style.display = 'none';
-        treasuryResultBox.innerHTML = '';
-    }
-    noticeProofAttachedFile = null;
-    renderNoticeProofFile();
-    noticeTrackingAttachedFile = [];
-    document.getElementById('sectionNoticeTracking').style.display = 'none';
-    document.getElementById('sectionNoticeTracking').dataset.editing = 'false';
-    resetTreasuryForfeitForm();
-    handlePayoutMethodChange('Chuyển khoản qua ngân hàng');
+    const radioTransfer = document.getElementById('payoutMethod_Transfer');
+    const radioCash = document.getElementById('payoutMethod_Cash');
+    if (radioTransfer) { radioTransfer.checked = true; radioTransfer.disabled = false; }
+    if (radioCash) { radioCash.checked = false; radioCash.disabled = false; }
+    handlePayoutMethodChange('Chi trả qua chuyển khoản');
 
-    // Populate selector dropdown based on default type
+    // Populate selector dropdown based on default type (automatically toggles Block 3 / Block 4)
     handleTypeChange(document.getElementById('formProposalType').value);
 
     // Enable NYC editable fields (Always read-only per rule 2)
     setNycFieldsDisabled(true);
     setProposalFieldsDisabled(false);
 
-    // Handle Cancel button display rules: Always show the bottom "Đóng" button
+    // Handle Cancel button display rules: MH02 uses "Hủy"
     const btnCancel = document.getElementById('btnCancelForm');
     btnCancel.style.display = 'inline-flex';
+    btnCancel.innerText = 'Hủy';
 }
 
-// Wraps closeCreateProposalForm with a confirm step, but only while writing new
-// data (Lập/Cập nhật đề nghị). Xem chi tiết / Cập nhật chi trả / Xét duyệt đóng ngay lập tức.
+// Thao tác Hủy / Đóng form:
+// - Màn MH02 (Lập / Cập nhật): Nút Hủy -> hiển thị popup xác nhận với tiêu đề "Xác nhận hủy bỏ"
+// - Màn MH05 (Xem chi tiết) / MH03 / MH04: Nút Đóng -> đóng màn hình luôn ngay lập tức, không hiển thị popup xác nhận
 function handleCloseProposalForm() {
     if (formEditingMode) {
-        showConfirmModal('Bạn có chắc chắn muốn đóng biểu mẫu và hủy bỏ các thay đổi đang nhập không?', () => {
-            closeCreateProposalForm();
-        });
+        showConfirmModal(
+            'Bạn có chắc chắn muốn hủy bỏ các thay đổi đang nhập và đóng biểu mẫu không?',
+            () => {
+                closeCreateProposalForm();
+            },
+            'Xác nhận hủy bỏ'
+        );
     } else {
         closeCreateProposalForm();
     }
@@ -2383,6 +2912,12 @@ function closeCreateProposalForm() {
     document.getElementById('inlineProposalFormPanel').style.display = 'none';
     document.getElementById('contentListProposals').style.display = 'block';
     document.getElementById('dashboardStats').style.display = 'grid'; // Restore dashboard
+    const rej = document.getElementById('blockRejectNotice');
+    if (rej) rej.style.display = 'none';
+    ['block7_LeaderApproval', 'block8_NoticeTracking', 'block9_TreasuryTracking', 'block10_PayoutReal', 'block11_TreasuryForfeit'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
     document.getElementById('sectionPayoutReal').style.display = 'none';
     document.getElementById('sectionNoticeTracking').style.display = 'none';
     document.getElementById('sectionTreasuryForfeit').style.display = 'none';
@@ -2671,14 +3206,50 @@ function updateProposalDirect(id) {
         calculateKinhPhiApproveTotal();
     }
 
-    // Show Leader opinion section as read-only
+    // Show Reject Notice Banner (Section 4.3.3.2)
+    const blockReject = document.getElementById('blockRejectNotice');
+    if (blockReject) {
+        blockReject.style.display = 'block';
+        const reasonEl = document.getElementById('rejectNoticeReasonText');
+        if (reasonEl) reasonEl.innerText = item.leaderOpinion || 'Hồ sơ chưa đạt yêu cầu, cần bổ sung căn cứ xác minh thiệt hại.';
+        const leaderEl = document.getElementById('rejectNoticeLeaderName');
+        if (leaderEl) leaderEl.innerText = item.approvedLeader || 'Lãnh đạo cơ quan';
+        const rejDateEl = document.getElementById('rejectNoticeDate');
+        if (rejDateEl) rejDateEl.innerText = item.approvedDate || item.date || '05/07/2026';
+    }
+
+    // Show Block 7 (Leader opinion section) as read-only and expand it
+    const block7 = document.getElementById('block7_LeaderApproval');
     if (item.leaderOpinion) {
+        if (block7) {
+            block7.style.display = 'block';
+            setAccordionState('block7_LeaderApproval', true);
+        }
         document.getElementById('sectionLeaderApproval').style.display = 'block';
-        document.getElementById('formLeaderOpinion').value = item.leaderOpinion;
-        document.getElementById('formLeaderOpinion').disabled = true;
+        const badge = document.getElementById('leaderApprovalBadge');
+        if (badge) {
+            badge.className = 'badge badge-danger';
+            badge.innerText = 'Bị từ chối';
+        }
+        const nameEl = document.getElementById('viewLeaderName');
+        if (nameEl) nameEl.innerText = item.approvedLeader || 'Lãnh đạo cơ quan';
+        const dateEl = document.getElementById('viewLeaderDate');
+        if (dateEl) dateEl.innerText = item.approvedDate || (item.createdAt || '04/09/2026');
+        const textEl = document.getElementById('viewLeaderOpinionText');
+        if (textEl) {
+            textEl.innerText = item.leaderOpinion;
+            textEl.style.borderLeftColor = 'var(--danger-color)';
+        }
     } else {
+        if (block7) block7.style.display = 'none';
         document.getElementById('sectionLeaderApproval').style.display = 'none';
     }
+
+    // Ensure Blocks 8 to 11 remain hidden
+    ['block8_NoticeTracking', 'block9_TreasuryTracking', 'block10_PayoutReal', 'block11_TreasuryForfeit'].forEach(bid => {
+        const el = document.getElementById(bid);
+        if (el) el.style.display = 'none';
+    });
 
     // Custom buttons for edit mode: Hide save draft, show submit proposal
     document.getElementById('btnSaveDraft').style.display = 'none';
@@ -2687,6 +3258,11 @@ function updateProposalDirect(id) {
     document.getElementById('btnCompletePayout').style.display = 'none';
     document.getElementById('btnLeaderReject').style.display = 'none';
     document.getElementById('btnLeaderApprove').style.display = 'none';
+    const btnCancel = document.getElementById('btnCancelForm');
+    if (btnCancel) {
+        btnCancel.style.display = 'inline-flex';
+        btnCancel.innerText = 'Hủy';
+    }
 
     // Attached files
     proposalAttachedDocs = item.files ? [...item.files] : [];
@@ -2809,7 +3385,16 @@ function viewProposalDetail(id) {
     document.getElementById('formProposalNotes').value = item.notes;
 
     // Display dynamic grids based on type
+    const block3 = document.getElementById('block3_AdvanceTable');
+    const block4 = document.getElementById('block4_KinhPhiTable');
+    const recAdv = document.getElementById('recAdvanceBlock');
+    const recKp = document.getElementById('recKinhPhiBlock');
+
     if (item.type === 'Đề nghị tạm ứng' || item.type === 'Cấp tạm ứng') {
+        if (block3) { block3.style.display = 'block'; setAccordionState('block3_AdvanceTable', true); }
+        if (block4) block4.style.display = 'none';
+        if (recAdv) recAdv.style.display = 'block';
+        if (recKp) recKp.style.display = 'none';
         document.getElementById('wrapperAdvanceProposal').style.display = 'block';
         document.getElementById('wrapperKinhPhiProposal').style.display = 'none';
 
@@ -2851,6 +3436,10 @@ function viewProposalDetail(id) {
 
         calculateAdvanceApproveTotal();
     } else {
+        if (block3) block3.style.display = 'none';
+        if (block4) { block4.style.display = 'block'; setAccordionState('block4_KinhPhiTable', true); }
+        if (recAdv) recAdv.style.display = 'none';
+        if (recKp) recKp.style.display = 'block';
         document.getElementById('wrapperAdvanceProposal').style.display = 'none';
         document.getElementById('wrapperKinhPhiProposal').style.display = 'block';
 
@@ -2897,17 +3486,51 @@ function viewProposalDetail(id) {
     // Disable attached doc row addition / updates
     document.querySelectorAll('#proposalAttachedDocsBody input').forEach(inp => inp.disabled = true);
 
-    // Adjust Cancel button
-    document.getElementById('btnCancelForm').style.display = 'inline-flex';
+    // Adjust Cancel button (MH05 uses "Đóng")
+    const btnCancel = document.getElementById('btnCancelForm');
+    if (btnCancel) {
+        btnCancel.style.display = 'inline-flex';
+        btnCancel.innerText = 'Đóng';
+    }
+
+    // Reject notice banner (Khối Lý do bị từ chối theo SRS 4.3.3.2.7.2)
+    const blockReject = document.getElementById('blockRejectNotice');
+    if (item.status === 'Bị từ chối') {
+        if (blockReject) {
+            blockReject.style.display = 'block';
+            const reasonEl = document.getElementById('rejectNoticeReasonText');
+            if (reasonEl) reasonEl.innerText = item.leaderOpinion || 'Hồ sơ chưa đạt yêu cầu, cần bổ sung căn cứ xác minh thiệt hại.';
+            const leaderEl = document.getElementById('rejectNoticeLeaderName');
+            if (leaderEl) leaderEl.innerText = item.approvedLeader || 'Lãnh đạo cơ quan';
+            const rejDateEl = document.getElementById('rejectNoticeDate');
+            if (rejDateEl) rejDateEl.innerText = item.approvedDate || item.date || '05/07/2026';
+        }
+    } else {
+        if (blockReject) blockReject.style.display = 'none';
+    }
+
+    // Accordion setup: Blocks 1, 2, 5, 6 default to EXPANDED (MH05)
+    ['block1_General', 'block2_Claimant', 'block5_Recipient', 'block6_NotesAndDocs'].forEach(b => {
+        const el = document.getElementById(b);
+        if (el) el.style.display = 'block';
+        setAccordionState(b, true);
+    });
 
     // Payout section handling
     const sectionPayout = document.getElementById('sectionPayoutReal');
     document.getElementById('sectionNoticeTracking').dataset.editing = 'false';
     renderNoticeTrackingSection(item);
     resetTreasuryForfeitForm();
-    if (item.status === 'Đã sung quỹ') {
+
+    const isSungQuy = (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ');
+    const b11 = document.getElementById('block11_TreasuryForfeit');
+    if (isSungQuy) {
+        if (b11) {
+            b11.style.display = 'block';
+            setAccordionState('block11_TreasuryForfeit', true);
+        }
         const sectionTreasury = document.getElementById('sectionTreasuryForfeit');
-        sectionTreasury.style.display = 'block';
+        if (sectionTreasury) sectionTreasury.style.display = 'block';
         document.getElementById('treasuryVoucherNo').value = item.treasuryVoucherNo || '';
         document.getElementById('treasuryForfeitDate').value = item.treasuryForfeitDate || '';
         document.getElementById('treasuryForfeitAmount').value = (item.treasuryAmount || 0).toLocaleString('vi-VN');
@@ -2920,19 +3543,36 @@ function viewProposalDetail(id) {
         if (treasuryUploadBtn) treasuryUploadBtn.style.display = 'none';
         treasuryAttachedFile = normalizeFileList(item.treasuryFile);
         renderTreasuryFile(true);
+    } else {
+        if (b11) b11.style.display = 'none';
     }
 
-    const hasPayoutTracking = item.payoutDate || item.status === 'Chi trả một phần';
+    const b10 = document.getElementById('block10_PayoutReal');
+    const hasPayoutTracking = item.payoutDate || item.status === 'Hoàn thành';
     if (hasPayoutTracking) {
+        if (b10) {
+            b10.style.display = 'block';
+            setAccordionState('block10_PayoutReal', true);
+        }
         sectionPayout.style.display = 'block';
         document.getElementById('payoutDate').value = item.payoutDate || '';
         document.getElementById('payoutDate').disabled = true;
 
-        document.getElementById('payoutAmountReal').value = (item.payoutAmountReal || 0).toLocaleString('vi-VN');
+        document.getElementById('payoutAmountReal').value = (item.payoutAmountReal || item.amount || 0).toLocaleString('vi-VN');
         document.getElementById('payoutAmountReal').disabled = true;
 
-        document.getElementById('payoutMethod').value = item.payoutMethod || "Chuyển khoản qua ngân hàng";
-        document.getElementById('payoutMethod').disabled = true;
+        const isCash = item.payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || item.payoutMethod === 'Tiền mặt';
+        const radioTransfer = document.getElementById('payoutMethod_Transfer');
+        const radioCash = document.getElementById('payoutMethod_Cash');
+        if (isCash) {
+            if (radioCash) { radioCash.checked = true; radioCash.disabled = true; }
+            if (radioTransfer) { radioTransfer.checked = false; radioTransfer.disabled = true; }
+            handlePayoutMethodChange('Chi trả trực tiếp bằng tiền mặt');
+        } else {
+            if (radioTransfer) { radioTransfer.checked = true; radioTransfer.disabled = true; }
+            if (radioCash) { radioCash.checked = false; radioCash.disabled = true; }
+            handlePayoutMethodChange('Chi trả qua chuyển khoản');
+        }
 
         document.getElementById('payoutRecName').value = item.payoutRecName || item.nycName;
         document.getElementById('payoutRecName').disabled = true;
@@ -2964,23 +3604,8 @@ function viewProposalDetail(id) {
             document.getElementById('payoutNote').disabled = true;
         }
 
-        handlePayoutMethodChange(item.payoutMethod || "Chuyển khoản qua ngân hàng");
-
         // Hide payout select file button
         document.getElementById('btnPayoutUpload').style.display = 'none';
-        const noticeInput = document.getElementById('payoutNoticeReceivedDate');
-        if (noticeInput) {
-            noticeInput.value = item.noticeReceivedDate || '';
-            noticeInput.disabled = true;
-        }
-        const noticeUploadBtn = document.getElementById('btnNoticeUpload');
-        if (noticeUploadBtn) {
-            noticeUploadBtn.disabled = true;
-            noticeUploadBtn.style.display = 'none';
-        }
-        noticeProofAttachedFile = item.noticeProofFile || null;
-        renderNoticeProofFile(true);
-        previewTreasuryDeadline();
 
         // Show payout file link as read-only
         document.getElementById('payoutFileLink').innerHTML = `
@@ -2993,6 +3618,7 @@ function viewProposalDetail(id) {
         `;
         renderPayoutTreasuryResult(item);
     } else {
+        if (b10) b10.style.display = 'none';
         sectionPayout.style.display = 'none';
         document.getElementById('btnPayoutUpload').style.display = 'inline-flex';
         const treasuryResultBox = document.getElementById('payoutTreasuryResultBox');
@@ -3002,43 +3628,81 @@ function viewProposalDetail(id) {
         }
     }
 
+    // Block 8 (Notice Tracking) Accordion configuration (Section 4.3.3.2 MH05)
+    const b8 = document.getElementById('block8_NoticeTracking');
+    if (item.status === 'Chờ chi trả') {
+        if (b8) {
+            b8.style.display = 'block';
+            setAccordionState('block8_NoticeTracking', true);
+        }
+    } else if (item.status === 'Hoàn thành' || isSungQuy) {
+        if (b8) {
+            b8.style.display = 'block';
+            setAccordionState('block8_NoticeTracking', false); // collapsed when finished or forfeited
+        }
+    } else {
+        if (b8) b8.style.display = 'none';
+    }
+
+    // Block 9 (Treasury Tracking) Accordion configuration
+    const b9 = document.getElementById('block9_TreasuryTracking');
+    if (item.noticeReceivedDate) {
+        if (b9) {
+            b9.style.display = 'block';
+            setAccordionState('block9_TreasuryTracking', true);
+            renderTreasuryTrackingBlock(item);
+        }
+    } else {
+        if (b9) b9.style.display = 'none';
+    }
+
     // Hide complete payout button when just viewing
     document.getElementById('btnCompletePayout').style.display = 'none';
 
-    // IF LEADER and status is "Chờ duyệt", show Leader Panel
-    // (activeRole/isLeader/isPending đã được khai báo ở đầu hàm viewProposalDetail, dùng lại tại đây)
+    // Block 7 (Leader opinion section) & Leader actions
+    const b7 = document.getElementById('block7_LeaderApproval');
     if (isLeader && isPending) {
-        document.getElementById('sectionLeaderApproval').style.display = 'block';
-        document.getElementById('formLeaderOpinion').value = '';
-        document.getElementById('formLeaderOpinion').disabled = false;
+        if (b7) b7.style.display = 'none';
+        document.getElementById('sectionLeaderApproval').style.display = 'none';
         document.getElementById('btnSaveDraft').style.display = 'none';
         document.getElementById('btnSubmitProposal').style.display = 'none';
         document.getElementById('btnLeaderReject').style.display = 'inline-flex';
         document.getElementById('btnLeaderApprove').style.display = 'inline-flex';
-
-        // Re-enable approved inputs for the leader to edit
-        if (item.type === 'Đề nghị tạm ứng' || item.type === 'Cấp tạm ứng') {
-            document.getElementById('advApproveTinhThan').disabled = false;
-            document.getElementById('advApproveKhac').disabled = false;
-        } else {
-            document.querySelectorAll('.kp-approve-input').forEach(inp => inp.disabled = false);
-        }
     } else {
-        document.getElementById('sectionLeaderApproval').style.display = 'none';
         document.getElementById('btnLeaderReject').style.display = 'none';
         document.getElementById('btnLeaderApprove').style.display = 'none';
 
         // If it is in Read-only or Approved status, hide form actions too except cancel
-        if (item.status === 'Hoàn thành' || item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần' || item.status === 'Đã sung quỹ' || item.status === 'Bị từ chối' || isLeader) {
+        if (item.status === 'Hoàn thành' || item.status === 'Chờ chi trả' || isSungQuy || item.status === 'Bị từ chối' || isLeader) {
             document.getElementById('btnSaveDraft').style.display = 'none';
             document.getElementById('btnSubmitProposal').style.display = 'none';
 
-            if (item.leaderOpinion) {
+            if (item.leaderOpinion || item.status === 'Chờ chi trả' || item.status === 'Hoàn thành' || isSungQuy) {
+                if (b7) {
+                    b7.style.display = 'block';
+                    setAccordionState('block7_LeaderApproval', true);
+                }
                 document.getElementById('sectionLeaderApproval').style.display = 'block';
-                document.getElementById('formLeaderOpinion').value = item.leaderOpinion;
-                document.getElementById('formLeaderOpinion').disabled = true;
+                const approvalBadge = document.getElementById('leaderApprovalBadge');
+                if (approvalBadge) {
+                    approvalBadge.className = item.status === 'Bị từ chối' ? 'badge badge-danger' : 'badge badge-success';
+                    approvalBadge.innerText = item.status === 'Bị từ chối' ? 'Bị từ chối' : 'Đã phê duyệt';
+                }
+                const nameEl = document.getElementById('viewLeaderName');
+                if (nameEl) nameEl.innerText = item.approvedLeader || 'Lãnh đạo cơ quan';
+                const dateEl = document.getElementById('viewLeaderDate');
+                if (dateEl) dateEl.innerText = item.approvedDate || (item.createdAt || '04/09/2026');
+                const textEl = document.getElementById('viewLeaderOpinionText');
+                if (textEl) {
+                    textEl.innerText = item.leaderOpinion || 'Đồng ý phê duyệt tờ trình cấp kinh phí bồi thường theo quy định.';
+                    textEl.style.borderLeftColor = item.status === 'Bị từ chối' ? 'var(--danger-color)' : 'var(--success-color)';
+                }
+            } else {
+                if (b7) b7.style.display = 'none';
+                document.getElementById('sectionLeaderApproval').style.display = 'none';
             }
         }
+    }
 
         // Render opinion history
         const historyWrapper = document.getElementById('leaderOpinionHistoryWrapper');
@@ -3059,7 +3723,6 @@ function viewProposalDetail(id) {
                 historyContainer.innerHTML = '';
             }
         }
-    }
 
     // Dynamic actions for Specialist role in detailed view footer
     document.getElementById('btnViewActionFill').style.display = 'none';
@@ -3101,59 +3764,138 @@ function startActionFromView(actionType) {
 }
 
 // LEADERS DIRECT APPROVAL/REJECTION SUBMIT FROM WITHIN DETAILED VIEW FOOTER
+// LEADERS APPROVAL & REJECTION MODAL HANDLERS
 function submitLeaderApproval(decisionStatus) {
-    const opinion = document.getElementById('formLeaderOpinion').value.trim();
-    if (!opinion) {
-        showFieldError('formLeaderOpinion', 'Ý kiến phê duyệt / lý do từ chối là bắt buộc!');
-        return;
+    if (decisionStatus === 'Bị từ chối') {
+        openRejectModal(selectedProposalId);
+    } else {
+        openApproveModal(selectedProposalId);
     }
+}
 
-    const item = proposalsList.find(p => p.id === selectedProposalId);
+// CUSTOM APPROVE MODAL ENGINE
+let approveProposalId = null;
+
+function openApproveModal(id) {
+    const item = proposalsList.find(p => p.id === id);
     if (!item) return;
 
-    const isApprove = (decisionStatus === 'Đã duyệt' || decisionStatus === 'Chờ chi trả' || decisionStatus === 'Hoàn thành');
-    const confirmMsg = isApprove
-        ? `Bạn có chắc chắn muốn phê duyệt cấp phát kinh phí bồi thường cho tờ trình ${item.code} này không?`
-        : `Bạn có chắc chắn muốn từ chối phê duyệt tờ trình cấp kinh phí bồi thường ${item.code} này không?`;
+    approveProposalId = id;
+    document.getElementById('approveModalCode').innerText = item.code;
+    document.getElementById('approveModalRequester').innerText = item.nycName || '-';
+    
+    const isAdv = (item.type === 'Cấp tạm ứng' || item.type === 'Đề nghị tạm ứng');
+    document.getElementById('approveModalType').innerHTML = isAdv 
+        ? '<span class="badge badge-info" style="font-size:11px; font-weight:600;">Đề nghị tạm ứng</span>'
+        : '<span class="badge badge-primary" style="font-size:11px; font-weight:600;">Đề nghị cấp kinh phí bồi thường</span>';
 
-    showConfirmModal(confirmMsg, () => {
-        item.status = isApprove ? 'Chờ chi trả' : 'Bị từ chối';
-        item.leaderOpinion = opinion;
+    document.getElementById('approveModalClaim').innerText = item.ycbtCode || '-';
 
-        showToast(`Tờ trình đề nghị ${item.code} đã được xử lý: ${item.status === 'Chờ chi trả' ? 'PHÊ DUYỆT (CHỜ CHI TRẢ)' : 'TỪ CHỐI'}!`, "success");
-        saveProposalsToLocal();
-        updateBudgetStats();
-        closeCreateProposalForm();
-    });
+    const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;
+    document.getElementById('approveModalAmount').innerText = amtVal.toLocaleString('vi-VN') + ' VNĐ';
+    document.getElementById('approveModalAmountWord').innerText = '(Bằng chữ: ' + docTienBangChu(amtVal) + ')';
+
+    const opinionInp = document.getElementById('modalApproveOpinion');
+    if (opinionInp) opinionInp.value = '';
+
+    const overlay = document.getElementById('customApproveOverlay');
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+        overlay.classList.add('visible');
+        if (opinionInp) opinionInp.focus();
+    }, 50);
+}
+
+function formatCurrentDateTime() {
+    const now = new Date();
+    const d = String(now.getDate()).padStart(2, '0');
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const y = now.getFullYear();
+    const h = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    return `${d}/${m}/${y} ${h}:${min}`;
+}
+
+function closeApproveModal(confirm) {
+    const overlay = document.getElementById('customApproveOverlay');
+    if (confirm) {
+        const opinionInp = document.getElementById('modalApproveOpinion');
+        const opinion = opinionInp ? opinionInp.value.trim() : '';
+        const item = proposalsList.find(p => p.id === approveProposalId);
+        if (item) {
+            item.status = 'Chờ chi trả';
+            item.leaderOpinion = opinion || 'Đồng ý phê duyệt cấp kinh phí bồi thường.';
+            item.approvedDate = formatCurrentDateTime();
+            item.approvedLeader = 'Lãnh đạo cơ quan';
+
+            showToast("Phê duyệt cấp kinh phí bồi thường thành công!", "success");
+            saveProposalsToLocal();
+            updateBudgetStats();
+
+            // If detail popup is currently open for this item, refresh it
+            const modalDetail = document.getElementById('createProposalModal');
+            if (modalDetail && modalDetail.style.display !== 'none' && selectedProposalId === approveProposalId) {
+                viewProposalDetail(item.id);
+            }
+            renderProposalsTable();
+        }
+    }
+
+    overlay.classList.remove('visible');
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 200);
+    approveProposalId = null;
 }
 
 // CUSTOM REJECT MODAL ENGINE
 let rejectProposalId = null;
 
-function rejectProposalDirect(id) {
+function openRejectModal(id) {
     const item = proposalsList.find(p => p.id === id);
-    if (item) {
-        rejectProposalId = id;
-        document.getElementById('modalRejectOpinion').value = '';
-        document.getElementById('modalRejectOpinion').classList.remove('is-invalid');
-        const err = document.getElementById('modalRejectOpinion').parentNode.querySelector('.error-message');
-        if (err) err.remove();
+    if (!item) return;
 
-        const overlay = document.getElementById('customRejectOverlay');
-        overlay.style.display = 'flex';
-        setTimeout(() => {
-            overlay.classList.add('visible');
-            document.getElementById('modalRejectOpinion').focus();
-        }, 50);
+    rejectProposalId = id;
+    document.getElementById('rejectModalCode').innerText = item.code;
+    document.getElementById('rejectModalRequester').innerText = item.nycName || '-';
+
+    const isAdv = (item.type === 'Cấp tạm ứng' || item.type === 'Đề nghị tạm ứng');
+    document.getElementById('rejectModalType').innerHTML = isAdv 
+        ? '<span class="badge badge-info" style="font-size:11px; font-weight:600;">Đề nghị tạm ứng</span>'
+        : '<span class="badge badge-primary" style="font-size:11px; font-weight:600;">Đề nghị cấp kinh phí bồi thường</span>';
+
+    const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;
+    document.getElementById('rejectModalAmount').innerText = amtVal.toLocaleString('vi-VN') + ' VNĐ';
+
+    const opinionInp = document.getElementById('modalRejectOpinion');
+    if (opinionInp) {
+        opinionInp.value = '';
+        opinionInp.classList.remove('is-invalid');
     }
+    const errText = document.getElementById('modalRejectOpinionError');
+    if (errText) errText.style.display = 'none';
+
+    const overlay = document.getElementById('customRejectOverlay');
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+        overlay.classList.add('visible');
+        if (opinionInp) opinionInp.focus();
+    }, 50);
 }
 
 function closeRejectModal(confirm) {
     const overlay = document.getElementById('customRejectOverlay');
     if (confirm) {
-        const opinion = document.getElementById('modalRejectOpinion').value.trim();
+        const opinionInp = document.getElementById('modalRejectOpinion');
+        const opinion = opinionInp ? opinionInp.value.trim() : '';
+        const errText = document.getElementById('modalRejectOpinionError');
+
         if (!opinion) {
-            showFieldError('modalRejectOpinion', 'Lý do từ chối không được để trống!');
+            if (opinionInp) {
+                opinionInp.classList.add('is-invalid');
+                opinionInp.focus();
+            }
+            if (errText) errText.style.display = 'block';
             return;
         }
 
@@ -3161,9 +3903,25 @@ function closeRejectModal(confirm) {
         if (item) {
             item.status = 'Bị từ chối';
             item.leaderOpinion = opinion;
-            showToast(`Đã từ chối phê duyệt tờ trình ${item.code}!`, "success");
+            item.approvedDate = formatCurrentDateTime();
+            item.approvedLeader = 'Lãnh đạo cơ quan';
+
+            if (!item.rejectHistory) item.rejectHistory = [];
+            item.rejectHistory.unshift({
+                date: formatCurrentDateTime(),
+                leader: 'Lãnh đạo cơ quan',
+                opinion: opinion
+            });
+
+            showToast("Đã từ chối phê duyệt tờ trình cấp kinh phí!", "success");
             saveProposalsToLocal();
             updateBudgetStats();
+
+            // If detail popup is currently open for this item, refresh it
+            const modalDetail = document.getElementById('createProposalModal');
+            if (modalDetail && modalDetail.style.display !== 'none' && selectedProposalId === rejectProposalId) {
+                viewProposalDetail(item.id);
+            }
             renderProposalsTable();
         }
     }
@@ -3175,25 +3933,32 @@ function closeRejectModal(confirm) {
     rejectProposalId = null;
 }
 
-// LEADERS DIRECT QUICK APPROVAL FROM TABLE ROWS
-function approveProposalDirect(id, decisionStatus) {
-    const item = proposalsList.find(p => p.id === id);
-    if (!item) return;
-
-    showConfirmModal(`Bạn có chắc chắn muốn phê duyệt cấp phát kinh phí bồi thường cho tờ trình ${item.code} này không?`, () => {
-        item.status = decisionStatus; // 'Chờ chi trả'
-        item.leaderOpinion = "Phê duyệt tờ trình cấp phát ngân sách bồi thường";
-
-        showToast(`Đã duyệt tờ trình ${item.code}: Chuyển sang CHỜ CHI TRẢ!`, "success");
-        saveProposalsToLocal();
-        updateBudgetStats();
-        renderProposalsTable();
-    });
+// Backward compatibility wrappers
+function approveProposalDirect(id) {
+    openApproveModal(id);
 }
 
+function rejectProposalDirect(id) {
+    openRejectModal(id);
+}
+
+// Auto-remove validation error on typing
+document.addEventListener('DOMContentLoaded', () => {
+    const rejectInp = document.getElementById('modalRejectOpinion');
+    if (rejectInp) {
+        rejectInp.addEventListener('input', () => {
+            if (rejectInp.value.trim()) {
+                rejectInp.classList.remove('is-invalid');
+                const errText = document.getElementById('modalRejectOpinionError');
+                if (errText) errText.style.display = 'none';
+            }
+        });
+    }
+});
 
 
-// DYNAMICS PAYOUT ACTION (Chờ chi trả -> Hoàn thành)
+
+// DYNAMICS PAYOUT ACTION (Chờ chi trả -> Hoàn thành) - MH03
 function payProposalDirect(id) {
     const item = proposalsList.find(p => p.id === id);
     if (item) {
@@ -3210,9 +3975,40 @@ function payProposalDirect(id) {
         setNycFieldsDisabled(true);
 
         // 3. Customize form title
-        document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-cash-register"></i> Cập nhật kết quả chi trả: ${item.code}`;
+        document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-cash-register"></i> CẬP NHẬT KẾT QUẢ CHI TRẢ: ${item.code}`;
 
-        // 4. Populate approved proposal amounts explicitly
+        // 4. Accordion state per SRS Section 4.3.3.2 (MH03):
+        // Blocks 1 to 9 default to COLLAPSED
+        ['block1_General', 'block2_Claimant', 'block3_AdvanceTable', 'block4_KinhPhiTable', 'block5_Recipient', 'block6_NotesAndDocs', 'block7_LeaderApproval', 'block8_NoticeTracking', 'block9_TreasuryTracking'].forEach(bid => {
+            setAccordionState(bid, false);
+        });
+
+        // Ensure Khối 8 is visible in MH03 per SRS (Section 4.3.3.2.5.2) and rendered with proper state
+        const block8 = document.getElementById('block8_NoticeTracking');
+        if (block8) {
+            block8.style.display = 'block';
+            setAccordionState('block8_NoticeTracking', false);
+            renderNoticeTrackingSection(item, false);
+        }
+
+        // Ensure Khối 9 is visible if notice received date exists
+        const block9 = document.getElementById('block9_TreasuryTracking');
+        if (block9) {
+            block9.style.display = item.noticeReceivedDate ? 'block' : 'none';
+            setAccordionState('block9_TreasuryTracking', false);
+            if (item.noticeReceivedDate) renderTreasuryTrackingBlock(item);
+        }
+
+        // Block 10 defaults to EXPANDED
+        const block10 = document.getElementById('block10_PayoutReal');
+        if (block10) {
+            block10.style.display = 'block';
+            setAccordionState('block10_PayoutReal', true);
+        }
+        const block11 = document.getElementById('block11_TreasuryForfeit');
+        if (block11) block11.style.display = 'none';
+
+        // Populate approved proposal amounts explicitly
         if (item.type === 'Cấp tạm ứng' || item.type === 'Đề nghị tạm ứng') {
             document.getElementById('advApproveTinhThan').value = (item.advApproveTinhThan || 0).toLocaleString('vi-VN');
             document.getElementById('advApproveKhac').value = (item.advApproveKhac || 0).toLocaleString('vi-VN');
@@ -3240,23 +4036,10 @@ function payProposalDirect(id) {
         const remainingPayoutAmount = getUnpaidAmount(item) || item.amount;
         payoutAmountInput.value = remainingPayoutAmount.toLocaleString('vi-VN');
 
-        const noticeInput = document.getElementById('payoutNoticeReceivedDate');
-        if (noticeInput) {
-            noticeInput.disabled = false;
-            noticeInput.value = item.noticeReceivedDate || '';
-        }
-        const noticeUploadBtn = document.getElementById('btnNoticeUpload');
-        if (noticeUploadBtn) {
-            noticeUploadBtn.disabled = false;
-            noticeUploadBtn.style.display = 'inline-flex';
-        }
-        noticeProofAttachedFile = item.noticeProofFile || null;
-        renderNoticeProofFile();
-        previewTreasuryDeadline();
-        renderPayoutTreasuryResult(item);
-
-        const payoutMethodSelect = document.getElementById('payoutMethod');
-        payoutMethodSelect.disabled = false;
+        const radioTransfer = document.getElementById('payoutMethod_Transfer');
+        const radioCash = document.getElementById('payoutMethod_Cash');
+        if (radioTransfer) radioTransfer.disabled = false;
+        if (radioCash) radioCash.disabled = false;
 
         // Pre-fill recipient info from linked claim
         const claimDetails = mockClaims.find(c => c.code === item.ycbtCode) || mockClaims[0];
@@ -3291,7 +4074,7 @@ function payProposalDirect(id) {
 
         const payoutReceiptNoInput = document.getElementById('payoutReceiptNo');
         payoutReceiptNoInput.disabled = false;
-        payoutReceiptNoInput.value = "";
+        payoutReceiptNoInput.value = item.payoutReceiptNo || "";
 
         const payoutNoteInput = document.getElementById('payoutNote');
         if (payoutNoteInput) {
@@ -3302,9 +4085,18 @@ function payProposalDirect(id) {
         document.getElementById('btnPayoutUpload').disabled = false;
         document.getElementById('btnPayoutUpload').style.display = 'inline-flex';
 
-        // Default to Bank transfer or check method from claim channel
-        const defaultMethod = claimDetails.advanceRecKenh === 'tien-mat' ? 'Tiền mặt' : 'Chuyển khoản qua ngân hàng';
-        payoutMethodSelect.value = defaultMethod;
+        // Select correct radio button per SRS
+        const defaultMethod = (claimDetails.advanceRecKenh === 'tien-mat' || item.payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || item.payoutMethod === 'Tiền mặt')
+            ? 'Chi trả trực tiếp bằng tiền mặt'
+            : 'Chi trả qua chuyển khoản';
+
+        if (defaultMethod === 'Chi trả trực tiếp bằng tiền mặt') {
+            if (radioCash) radioCash.checked = true;
+            if (radioTransfer) radioTransfer.checked = false;
+        } else {
+            if (radioTransfer) radioTransfer.checked = true;
+            if (radioCash) radioCash.checked = false;
+        }
         handlePayoutMethodChange(defaultMethod);
 
         // Set today's date
@@ -3322,16 +4114,21 @@ function payProposalDirect(id) {
         document.getElementById('btnSaveDraft').style.display = 'none';
         document.getElementById('btnSubmitProposal').style.display = 'none';
         document.getElementById('btnCompletePayout').style.display = 'inline-flex';
+        const btnCancel = document.getElementById('btnCancelForm');
+        if (btnCancel) {
+            btnCancel.style.display = 'inline-flex';
+            btnCancel.innerText = 'Đóng';
+        }
 
         // Reload attached files as read-only (1-2 pre-filled files)
         proposalAttachedDocs = item.files ? [...item.files] : [];
         renderProposalAttachedDocs();
 
-        // Scroll to bottom
+        // Auto-focus on payout date and scroll to Block 10
         setTimeout(() => {
-            const body = document.querySelector('.modal-body') || document.querySelector('.inline-form-container');
-            if (body) body.scrollTop = body.scrollHeight;
-        }, 100);
+            if (block10) block10.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (payoutDateInput) payoutDateInput.focus();
+        }, 150);
     }
 }
 
@@ -3362,73 +4159,15 @@ function removePayoutFile() {
     document.getElementById('payoutFileLink').innerHTML = 'Chưa có tệp tin đính kèm';
 }
 
-function triggerNoticeProofUpload() {
-    document.getElementById('noticeProofFileInput').click();
-}
-
-function handleNoticeProofFileChange(input) {
-    if (input.files && input.files[0]) {
-        noticeProofAttachedFile = input.files[0].name;
-        renderNoticeProofFile();
-    }
-}
-
-function renderNoticeProofFile(readOnly = false) {
-    const link = document.getElementById('noticeProofFileLink');
-    if (!link) return;
-    if (noticeProofAttachedFile) {
-        link.innerHTML = `
-            <span style="font-weight:600; color:var(--text-color);">${noticeProofAttachedFile}</span>
-            ${readOnly
-                ? `<span style="margin-left:8px;"><a href="#" target="_blank" style="color: var(--secondary-color); text-decoration:none;">Xem file</a></span>`
-                : `<span style="margin-left:8px;"><a href="javascript:void(0)" style="color:var(--danger-color); text-decoration:none;" onclick="removeNoticeProofFile()"><i class="fa-regular fa-trash-can"></i> Xóa</a></span>`}
-        `;
-        link.style.color = 'var(--text-color)';
-    } else {
-        link.innerText = 'Chưa có tệp thông báo';
-        link.style.color = 'var(--text-muted)';
-    }
-}
-
-function removeNoticeProofFile() {
-    noticeProofAttachedFile = null;
-    document.getElementById('noticeProofFileInput').value = '';
-    renderNoticeProofFile();
-}
-
-function previewTreasuryDeadline() {
-    const input = document.getElementById('payoutNoticeReceivedDate');
-    const deadlineInput = document.getElementById('payoutTreasuryDeadline');
-    const hint = document.getElementById('payoutTreasuryHint');
-    if (!input || !deadlineInput || !hint) return;
-
-    const noticeDate = parseDateViGlobal(input.value.trim());
-    const deadline = noticeDate ? addYearsToDate(noticeDate, 3) : null;
-    deadlineInput.value = deadline ? formatDateViGlobal(deadline) : '';
-    if (!deadline) {
-        hint.innerText = 'Nhập ngày người yêu cầu nhận thông báo để hệ thống tự tính hạn 3 năm.';
-        hint.style.color = '#9a3412';
-        return;
-    }
-    const daysLeft = diffDays(TREASURY_DEMO_TODAY, deadline);
-    if (daysLeft < 0) {
-        hint.innerText = `Đã quá hạn ${Math.abs(daysLeft)} ngày so với mốc 3 năm. Nếu còn kinh phí chưa chi, hệ thống sẽ cảnh báo sung quỹ.`;
-        hint.style.color = '#b91c1c';
-    } else {
-        hint.innerText = `Còn ${daysLeft} ngày đến mốc 3 năm kể từ ngày nhận thông báo.`;
-        hint.style.color = daysLeft <= 180 ? '#a16207' : '#166534';
-    }
-}
-
 function submitPayoutReal() {
     clearFieldErrors();
 
     const payoutDate = document.getElementById('payoutDate').value.trim();
     const payoutAmountReal = document.getElementById('payoutAmountReal').value.trim();
-    const payoutMethod = document.getElementById('payoutMethod').value;
+    const methodRadio = document.querySelector('input[name="payoutMethod"]:checked');
+    const payoutMethod = methodRadio ? methodRadio.value : 'Chi trả qua chuyển khoản';
     const payoutRecName = document.getElementById('payoutRecName').value.trim();
     const payoutRecAddress = document.getElementById('payoutRecAddress').value.trim();
-    const noticeReceivedDate = document.getElementById('payoutNoticeReceivedDate').value.trim();
 
     let hasError = false;
     let firstErrorField = null;
@@ -3439,30 +4178,25 @@ function submitPayoutReal() {
         if (!firstErrorField) firstErrorField = fieldId;
     };
 
+    const parsedPayoutDate = parseDateViGlobal(payoutDate);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
     if (!payoutDate) {
         triggerError('payoutDate', 'Đây là trường bắt buộc');
+    } else if (!parsedPayoutDate) {
+        triggerError('payoutDate', 'Ngày không hợp lệ, vui lòng nhập dd/mm/yyyy');
+    } else if (parsedPayoutDate > today) {
+        triggerError('payoutDate', 'Ngày chi trả không được lớn hơn ngày hiện tại');
     }
-    let payoutAmountNumCheck = 0;
-    let remainingPayoutCheck = 0;
+
+    const payoutAmountNum = parseFloat(payoutAmountReal.replace(/\D/g, '')) || 0;
     if (!payoutAmountReal) {
         triggerError('payoutAmountReal', 'Đây là trường bắt buộc');
-    } else {
-        const itemCheck = proposalsList.find(p => p.id === selectedProposalId);
-        if (itemCheck) {
-            payoutAmountNumCheck = parseFloat(payoutAmountReal.replace(/\D/g, '')) || 0;
-            remainingPayoutCheck = getUnpaidAmount(itemCheck) || itemCheck.amount;
-            if (payoutAmountNumCheck <= 0) {
-                triggerError('payoutAmountReal', 'Số tiền thực tế chi trả phải lớn hơn 0');
-            } else if (payoutAmountNumCheck > remainingPayoutCheck) {
-                triggerError('payoutAmountReal', `Số tiền chi trả không được vượt quá số tiền còn phải chi (${remainingPayoutCheck.toLocaleString('vi-VN')} VNĐ)`);
-            }
-        }
+    } else if (payoutAmountNum <= 0) {
+        triggerError('payoutAmountReal', 'Số tiền chi trả phải lớn hơn 0');
     }
-    if (!noticeReceivedDate) {
-        triggerError('payoutNoticeReceivedDate', 'Đây là trường bắt buộc');
-    } else if (!parseDateViGlobal(noticeReceivedDate)) {
-        triggerError('payoutNoticeReceivedDate', 'Ngày không hợp lệ, vui lòng nhập dd/mm/yyyy');
-    }
+
     if (!payoutRecName) {
         triggerError('payoutRecName', 'Đây là trường bắt buộc');
     }
@@ -3470,7 +4204,7 @@ function submitPayoutReal() {
         triggerError('payoutRecAddress', 'Đây là trường bắt buộc');
     }
 
-    if (payoutMethod === 'Tiền mặt') {
+    if (payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || payoutMethod === 'Tiền mặt') {
         const payoutReceiptNo = document.getElementById('payoutReceiptNo').value.trim();
         if (!payoutReceiptNo) {
             triggerError('payoutReceiptNo', 'Đây là trường bắt buộc');
@@ -3479,7 +4213,6 @@ function submitPayoutReal() {
         const payoutBankAccount = document.getElementById('payoutBankAccount').value.trim();
         const payoutBankName = document.getElementById('payoutBankName') ? document.getElementById('payoutBankName').value.trim() : '';
         const payoutBankUser = document.getElementById('payoutBankUser').value.trim();
-        const payoutBankBranch = document.getElementById('payoutBankBranch') ? document.getElementById('payoutBankBranch').value.trim() : '';
         if (!payoutBankAccount) {
             triggerError('payoutBankAccount', 'Đây là trường bắt buộc');
         }
@@ -3489,23 +4222,16 @@ function submitPayoutReal() {
         if (!payoutBankUser) {
             triggerError('payoutBankUser', 'Đây là trường bắt buộc');
         }
-        if (document.getElementById('payoutBankBranch') && !payoutBankBranch) {
-            triggerError('payoutBankBranch', 'Đây là trường bắt buộc');
-        }
     }
 
     if (!payoutAttachedFile) {
         const fileLinkContainer = document.getElementById('payoutFileLink');
-        fileLinkContainer.style.color = 'var(--danger-color)';
-        fileLinkContainer.innerText = 'Vui lòng chọn chứng từ đính kèm (Đây là trường bắt buộc)';
+        if (fileLinkContainer) {
+            fileLinkContainer.style.color = 'var(--danger-color)';
+            fileLinkContainer.innerText = 'Vui lòng chọn chứng từ đính kèm (Đây là trường bắt buộc)';
+        }
         hasError = true;
-    }
-
-    if (!noticeProofAttachedFile) {
-        const noticeLink = document.getElementById('noticeProofFileLink');
-        noticeLink.style.color = 'var(--danger-color)';
-        noticeLink.innerText = 'Vui lòng đính kèm tài liệu chứng minh đã thông báo';
-        hasError = true;
+        if (!firstErrorField) firstErrorField = 'btnPayoutUpload';
     }
 
     if (hasError) {
@@ -3517,25 +4243,45 @@ function submitPayoutReal() {
     }
 
     const item = proposalsList.find(p => p.id === selectedProposalId);
-    if (item) {
-        const payoutAmountNum = parseFloat(payoutAmountReal.replace(/\D/g, '')) || 0;
-        const previousPaid = item.status === 'Chi trả một phần' ? (item.payoutAmountReal || 0) : 0;
-        const totalPaidAfter = previousPaid + payoutAmountNum;
-        item.status = totalPaidAfter >= item.amount ? 'Hoàn thành' : 'Chi trả một phần';
+    if (!item) return;
+
+    // Show Confirmation Modal before completing 100% full payout
+    const methodDetailHtml = (payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || payoutMethod === 'Tiền mặt')
+        ? `Số biên lai/phiếu chi: <strong>${document.getElementById('payoutReceiptNo').value.trim()}</strong>`
+        : `STK: <strong>${document.getElementById('payoutBankAccount').value.trim()}</strong> - Ngân hàng: <strong>${document.getElementById('payoutBankName') ? document.getElementById('payoutBankName').value.trim() : ''}</strong> (Chủ TK: <strong>${document.getElementById('payoutBankUser').value.trim()}</strong>)`;
+
+    const confirmHtml = `
+        <div style="text-align: left; font-size: 13.5px; color: #334155;">
+            <p style="margin-bottom: 10px;">Vui lòng kiểm tra kỹ thông tin chi trả thực tế trước khi xác nhận hoàn thành:</p>
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px; margin-bottom: 12px; line-height: 1.6;">
+                <div>• <strong>Mã đề nghị:</strong> ${item.code}</div>
+                <div>• <strong>Họ tên người nhận:</strong> ${payoutRecName}</div>
+                <div>• <strong>Địa chỉ người nhận:</strong> ${payoutRecAddress}</div>
+                <div>• <strong>Số tiền chi trả:</strong> <span style="color: #16A34A; font-weight: 700;">${payoutAmountNum.toLocaleString('vi-VN')} VNĐ</span> (100% trọn gói)</div>
+                <div>• <strong>Phương thức:</strong> ${payoutMethod} (${methodDetailHtml})</div>
+                <div>• <strong>Ngày chi trả:</strong> ${payoutDate}</div>
+                <div>• <strong>Chứng từ đính kèm:</strong> ${payoutAttachedFile || 'Đã đính kèm'}</div>
+            </div>
+            <p style="color: #B45309; font-weight: 600; margin-bottom: 0;">
+                <i class="fa-solid fa-triangle-exclamation"></i> Lưu ý: Thao tác này ghi nhận hoàn thành chi trả 100% kinh phí bồi thường và chuyển trạng thái hồ sơ sang "Hoàn thành", không thể hoàn tác. Bạn có chắc chắn muốn xác nhận?
+            </p>
+        </div>
+    `;
+
+    showConfirmModal(confirmHtml, () => {
+        item.status = 'Hoàn thành';
         item.payoutDate = payoutDate;
-        item.payoutAmountReal = totalPaidAfter;
+        item.payoutAmountReal = payoutAmountNum;
         item.payoutMethod = payoutMethod;
         item.payoutRecName = payoutRecName;
         item.payoutRecAddress = payoutRecAddress;
         item.payoutNote = document.getElementById('payoutNote') ? document.getElementById('payoutNote').value.trim() : '';
-        item.noticeReceivedDate = noticeReceivedDate;
-        item.noticeProofFile = noticeProofAttachedFile;
-        const noticeDate = parseDateViGlobal(noticeReceivedDate);
-        item.treasuryDeadline = noticeDate ? formatDateViGlobal(addYearsToDate(noticeDate, 3)) : '';
-        if (payoutMethod === 'Tiền mặt') {
+
+        if (payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || payoutMethod === 'Tiền mặt') {
             item.payoutReceiptNo = document.getElementById('payoutReceiptNo').value.trim();
             item.payoutBankAccount = '';
             item.payoutBankUser = '';
+            item.payoutBankName = '';
             item.payoutBankBranch = '';
         } else {
             item.payoutBankAccount = document.getElementById('payoutBankAccount').value.trim();
@@ -3546,17 +4292,11 @@ function submitPayoutReal() {
         }
         item.payoutFile = payoutAttachedFile;
 
-        const remainingAfterPay = getUnpaidAmount(item);
-        showToast(
-            item.status === 'Hoàn thành'
-                ? `Đã hoàn thành chi trả thực tế cho đề nghị ${item.code}! Trạng thái chuyển sang HOÀN THÀNH.`
-                : `Đã ghi nhận chi trả một phần cho ${item.code}. Tổng đã chi ${totalPaidAfter.toLocaleString('vi-VN')}đ, còn ${remainingAfterPay.toLocaleString('vi-VN')}đ tiếp tục theo dõi hạn 3 năm.`,
-            "success"
-        );
         saveProposalsToLocal();
         updateBudgetStats();
         closeCreateProposalForm();
         renderProposalsTable();
+        showToast(`Đã hoàn thành chi trả thực tế cho đề nghị ${item.code}! Trạng thái chuyển sang HOÀN THÀNH.`, "success");
 
         // Sync back to claimsList in localStorage
         const localClaimsStr = localStorage.getItem('claimsList');
@@ -3565,36 +4305,33 @@ function submitPayoutReal() {
             const matchedClaim = localClaims.find(c => c.code === item.ycbtCode);
             if (matchedClaim) {
                 matchedClaim.thucthiDate = payoutDate;
-                matchedClaim.thucthiNote = `${item.status === 'Hoàn thành' ? 'Đã hoàn thành' : 'Đã ghi nhận một phần'} chi trả thực tế số tiền ${payoutAmountNum.toLocaleString('vi-VN')}đ qua ${payoutMethod}. Tổng đã chi: ${totalPaidAfter.toLocaleString('vi-VN')}đ. Người nhận: ${payoutRecName}. Địa chỉ: ${payoutRecAddress}. Ngày nhận thông báo: ${noticeReceivedDate}.`;
+                matchedClaim.thucthiNote = `Đã hoàn thành chi trả thực tế số tiền ${payoutAmountNum.toLocaleString('vi-VN')}đ qua ${payoutMethod}. Người nhận: ${payoutRecName}. Địa chỉ: ${payoutRecAddress}.`;
                 
                 // Add timeline entry
                 if (!matchedClaim.timeline) matchedClaim.timeline = [];
                 matchedClaim.timeline.push({
                     title: "Thực thi chi trả bồi thường",
                     date: payoutDate,
-                    desc: `${item.status === 'Hoàn thành' ? 'Hoàn thành' : 'Chi trả một phần'} tiền bồi thường thực tế qua ${payoutMethod}. Số tiền: ${payoutAmountReal} VNĐ.`,
-                    status: item.status === 'Hoàn thành' ? "completed" : "in-progress"
+                    desc: `Hoàn thành chi trả 100% kinh phí bồi thường thực tế qua ${payoutMethod}. Số tiền: ${payoutAmountReal} VNĐ.`,
+                    status: "completed"
                 });
 
-                // Update status based on scenario
-                if (item.status === 'Hoàn thành' && !matchedClaim.restoreHonor) {
+                if (!matchedClaim.restoreHonor) {
                     matchedClaim.status = 'Hoàn thành';
-                } else {
-                    matchedClaim.moneyPaid = item.status === 'Hoàn thành';
                 }
+                matchedClaim.moneyPaid = true;
 
                 localStorage.setItem('claimsList', JSON.stringify(localClaims));
 
-                // Send sync event through local storage
                 localStorage.setItem('claimPayoutCompleted_' + matchedClaim.code, JSON.stringify({
                     code: matchedClaim.code,
                     date: payoutDate,
-                    moneyPaid: item.status === 'Hoàn thành',
+                    moneyPaid: true,
                     status: matchedClaim.status
                 }));
             }
         }
-    }
+    }, 'Xác nhận hoàn thành chi trả kinh phí bồi thường');
 }
 
 // Delete Proposal
@@ -3643,9 +4380,11 @@ function showToast(message, type) {
 // Custom Confirmation Modal Helper
 let confirmCallback = null;
 
-function showConfirmModal(message, callback) {
+function showConfirmModal(message, callback, title = 'Xác nhận xóa') {
     const overlay = document.getElementById('customConfirmOverlay');
-    document.getElementById('customConfirmMessage').innerText = message;
+    const titleEl = document.getElementById('customConfirmTitle');
+    if (titleEl) titleEl.innerText = title;
+    document.getElementById('customConfirmMessage').innerHTML = message;
     confirmCallback = callback;
 
     overlay.style.display = 'flex';
@@ -3669,12 +4408,15 @@ function closeConfirmModal(result) {
 
 // PAYOUT METHOD TOGGLING
 function handlePayoutMethodChange(val) {
-    if (val === 'Tiền mặt') {
-        document.getElementById('payoutBankFields').style.display = 'none';
-        document.getElementById('payoutCashFields').style.display = 'block';
+    const isCash = val === 'Tiền mặt' || val === 'Chi trả trực tiếp bằng tiền mặt';
+    const bankFields = document.getElementById('payoutBankFields');
+    const cashFields = document.getElementById('payoutCashFields');
+    if (isCash) {
+        if (bankFields) bankFields.style.display = 'none';
+        if (cashFields) cashFields.style.display = 'block';
     } else {
-        document.getElementById('payoutBankFields').style.display = 'grid';
-        document.getElementById('payoutCashFields').style.display = 'none';
+        if (bankFields) bankFields.style.display = 'grid';
+        if (cashFields) cashFields.style.display = 'none';
     }
 }
 

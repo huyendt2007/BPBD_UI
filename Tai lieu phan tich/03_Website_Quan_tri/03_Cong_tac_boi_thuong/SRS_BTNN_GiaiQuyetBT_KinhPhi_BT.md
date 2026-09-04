@@ -1,445 +1,544 @@
-### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước:
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
-#### 4.3.3.2. UC450_456 - Quản lý kinh phí bồi thường
+#### 4.3.3.2. Quản lý kinh phí bồi thường
 
 ##### 4.3.3.2.1. Mục đích
+Quản lý toàn diện vòng đời của hồ sơ kinh phí bồi thường nhà nước và tạm ứng kinh phí nhằm chuẩn hóa quy trình lập tờ trình, phê duyệt ngân sách, giải ngân chi trả thực tế một lần duy nhất và theo dõi xử lý nghĩa vụ tài chính sau bồi thường, bao gồm:
+- Tra cứu và quản lý danh sách đề xuất tạm ứng kinh phí, đề nghị cấp kinh phí bồi thường theo phân trang, hỗ trợ tìm kiếm đa tiêu chí theo mã đề xuất, mã vụ việc, loại đề nghị, trạng thái và khoảng thời gian.
+- Thống kê chỉ số kinh phí bồi thường tập trung: Tự động tổng hợp kinh phí đã cấp phát thực tế (Hoàn thành), kinh phí chờ chi trả và kinh phí đã sung quỹ nhà nước.
+- Cảnh báo tự động các khoản chi quá hạn 03 năm kể từ ngày người yêu cầu nhận thông báo chi trả mà không đến nhận tiền, kịp thời kích hoạt luồng thủ tục sung quỹ nhà nước theo đúng quy định pháp luật.
+- Lập tờ trình đề nghị cấp kinh phí bồi thường hoặc tạm ứng kinh phí mới với cơ chế tự động kế thừa và ánh xạ dữ liệu từ hồ sơ vụ việc yêu cầu bồi thường gốc; kiểm soát chặt chẽ định mức tạm ứng (tối thiểu 50% mức yêu cầu của từng loại thiệt hại) và hạn mức cấp kinh phí bồi thường (không vượt quá mức yêu cầu bồi thường gốc).
+- Xét duyệt tờ trình kinh phí: Cho phép phê duyệt hoặc từ chối cấp phát kinh phí kèm ý kiến chỉ đạo.
+- Cập nhật kết quả chi trả thực tế: Thực hiện giải ngân chi trả 1 lần duy nhất toàn bộ 100% số tiền bồi thường được duyệt (qua chuyển khoản ngân hàng hoặc chi tiền mặt) kèm chứng từ giải ngân, hoàn thành dứt điểm hồ sơ kinh phí.
+- Ghi nhận thông báo chi trả và theo dõi hạn 03 năm: Trong giai đoạn chờ chi trả, ghi nhận mốc thời gian người yêu cầu nhận thông báo nhận kinh phí kèm văn bản/chứng từ chứng minh để kích hoạt đồng hồ theo dõi hạn 03 năm.
+- Lập và hoàn thành thủ tục Sung quỹ nhà nước đối với các khoản kinh phí bồi thường quá hạn 03 năm không có người đến nhận, sung quỹ 100% toàn bộ khoản kinh phí vào ngân sách nhà nước.
 
-\- Cho phép Cán bộ chuyên viên lập tờ trình/đề nghị tạm ứng hoặc đề nghị cấp kinh phí bồi thường chính thức từ hồ sơ yêu cầu bồi thường gốc.  
-\- Hỗ trợ Lãnh đạo duyệt hoặc từ chối cấp phát kinh phí bồi thường dựa trên cơ sở pháp lý và dự toán ngân sách.  
-\- Hỗ trợ đối soát kết quả chi trả thực tế (qua ngân hàng hoặc tiền mặt) đến tay người bị hại, đảm bảo dòng tiền ngân sách bồi thường nhà nước được quản lý tập trung và minh bạch.  
+a. Phân quyền
+Hệ thống phân quyền thao tác theo các quyền nghiệp vụ được cấp:
+- **Xem**: Tra cứu danh sách đề xuất kinh phí, xem chi tiết đề nghị kinh phí/tạm ứng (thông qua click dòng dữ liệu), xem thông tin theo dõi hạn 3 năm, xem và tải tài liệu/chứng từ liên quan.
+- **Lập đề nghị**: Tạo mới đề xuất tạm ứng kinh phí hoặc đề xuất cấp kinh phí bồi thường từ vụ việc yêu cầu bồi thường gốc.
+- **Chỉnh sửa**: Cập nhật thông tin đề xuất kinh phí ở trạng thái `Bị từ chối`.
+- **Phê duyệt**: Xét duyệt chấp thuận cấp phát kinh phí bồi thường/tạm ứng cho tờ trình đề xuất.
+- **Từ chối**: Từ chối phê duyệt tờ trình đề xuất cấp kinh phí kèm nội dung lý do chỉ đạo.
+- **Cập nhật chi trả**: Ghi nhận kết quả giải ngân chi trả thực tế 1 lần duy nhất toàn bộ 100% kinh phí kèm chứng từ giải ngân.
+- **Sung quỹ nhà nước**: Lập hồ sơ và xác nhận hoàn thành thủ tục sung quỹ nhà nước đối với các khoản kinh phí quá hạn 03 năm không có người đến nhận tiền.
+- **Xóa**: Xóa đề xuất kinh phí ở trạng thái `Chờ lập đề nghị`.
 
-*a. Phân quyền*
+b. Điều kiện thực hiện
+- Người dùng đã đăng nhập vào hệ thống thành công.
+- Người dùng được phân quyền truy cập chức năng "Quản lý kinh phí bồi thường".
 
-\- Chuyên viên xử lý nghiệp vụ bồi thường (`chuyen-vien`): Được quyền lập đề nghị, chỉnh sửa đề xuất bị từ chối, cập nhật kết quả chi trả và thực hiện xóa tờ trình nháp.  
-\- Lãnh đạo cơ quan phê duyệt (`lanh-dao`): Được quyền xem chi tiết tờ trình, nhập ý kiến chỉ đạo và thực hiện phê duyệt hoặc từ chối cấp phát kinh phí.  
+##### 4.3.3.2.2. Sơ đồ luồng nghiệp vụ theo giao diện
 
-*b. Điều kiện thực hiện*
-
-\- Người dùng đã đăng nhập vào hệ thống thành công.  
-\- Người dùng được phân quyền thực hiện tính năng
-
----
-
-##### 4.3.3.2.2. UC450_456.01 - Tra cứu danh sách đề xuất kinh phí
-
-###### 4.3.3.2.2.1. Mục đích
-
-\- Cung cấp màn hình tìm kiếm, lọc danh sách các đề xuất kinh phí/tạm ứng và quản lý các tác vụ xử lý theo trạng thái.  
-
-###### 4.3.3.2.2.2. UC450_456.01.MH01 - Màn hình Danh sách đề nghị kinh phí
-
-**Màn hình**:  
-![Màn hình danh sách đề nghị](images/UC450_List.png)  
-
-**Mô tả thông tin trên màn hình**:  
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| **Khối tiêu đề trang** | | | | Control UI: Thanh tiêu đề trang.<br>- Hiển thị tên màn hình "Quản lý kinh phí bồi thường Nhà nước".<br>- Badge số đếm cạnh tiêu đề: hiển thị số hồ sơ cần xử lý theo vai trò đang chọn (Lãnh đạo: đếm hồ sơ "Chờ duyệt"; Chuyên viên: đếm hồ sơ "Chờ lập đề nghị", "Bị từ chối", "Chờ chi trả"). |
-| Quyền xem Cán bộ | Enum(String(50)) | Không | Chuyên viên lập đề xuất | Control UI: Hộp chọn vai trò demo ở góc phải tiêu đề trang, gồm "Chuyên viên lập đề xuất" và "Lãnh đạo phê duyệt".<br>- Chuyển đổi vai trò làm thay đổi bộ nút Thao tác hiển thị trên lưới dữ liệu và số đếm ở badge tiêu đề. |
-| **Khối chỉ số ngân sách** | | | | Control UI: 4 thẻ thống kê phía trên bộ lọc tìm kiếm. |
-| Tổng ngân sách được giao năm | Decimal(18,0) | \- | \- | Chỉ đọc. Hiển thị tổng ngân sách được giao trong năm hiện tại (VNĐ). |
-| Đã cấp phát thực tế | Decimal(18,0) | \- | \- | Chỉ đọc. Tự động tính tổng số tiền các đề nghị cấp kinh phí bồi thường (không tính tạm ứng) ở trạng thái "Hoàn thành", "Chờ chi trả" hoặc "Sung quỹ nhà nước". |
-| Kinh phí tạm ứng đang cấp | Decimal(18,0) | \- | \- | Chỉ đọc. Tự động tính tổng số tiền các đề nghị tạm ứng ở trạng thái "Hoàn thành", "Chờ chi trả" hoặc "Sung quỹ nhà nước". |
-| Kinh phí còn dư dự phòng | Decimal(18,0) | \- | \- | Chỉ đọc. Bằng Tổng ngân sách được giao trừ Đã cấp phát thực tế và Kinh phí tạm ứng đang cấp. |
-| **Bộ lọc tìm kiếm** | | | | |
-| Mã đề xuất | String(50) | Không | Trống | Tìm kiếm gần đúng theo mã đề xuất kinh phí bồi thường. |
-| Loại đề nghị | Enum(String(50)) | Không | Tất cả | Lựa chọn loại đề nghị gồm:<br>+ Tất cả<br>+ Đề nghị tạm ứng<br>+ Đề nghị cấp kinh phí bồi thường |
-| Mã vụ việc gốc | String(50) | Không | Trống | Tìm kiếm gần đúng theo mã vụ việc yêu cầu bồi thường liên kết. |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Lựa chọn trạng thái của đề xuất gồm:<br>+ Tất cả<br>+ Chờ lập đề nghị<br>+ Chờ duyệt<br>+ Chờ chi trả<br>+ Hoàn thành<br>+ Sung quỹ nhà nước<br>+ Bị từ chối |
-| Người yêu cầu | String(100) | Không | Trống | Tìm kiếm gần đúng theo họ tên người yêu cầu bồi thường. |
-| Cán bộ đề xuất | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên cán bộ lập đề xuất. |
-| Từ ngày | Date | Không | Đầu tháng hiện tại | Định dạng `dd/mm/yyyy`. Chỉ hiển thị ngày nhỏ hơn ngày hiện tại. [BR-VAL-008] |
-| Đến ngày | Date | Không | Ngày hiện tại | Định dạng `dd/mm/yyyy`. Chỉ hiển thị ngày nhỏ hơn ngày hiện tại. [BR-VAL-008] |
-| Cảnh báo khoản chi quá hạn | - | - | Ẩn | Control UI: Khối cảnh báo hiển thị phía trên thanh công cụ khi có ít nhất 01 khoản chi đủ điều kiện sung quỹ.<br>- Hiển thị số lượng khoản đủ điều kiện và tổng số tiền chưa chi tương ứng. |
-| **Lưới dữ liệu** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| STT | Integer(10) | \- | \- | Chỉ đọc. Số thứ tự tự động tăng dần. |
-| Mã đề xuất | String(50) | \- | \- | Chỉ đọc. Hiển thị mã đề xuất. |
-| Loại đề nghị | Enum(String(50)) | \- | \- | Chỉ đọc. Hiển thị loại đề nghị (Đề nghị tạm ứng/Đề nghị cấp kinh phí bồi thường). |
-| Mã vụ việc | String(50) | \- | \- | Chỉ đọc. Hiển thị mã vụ việc bồi thường liên kết. Cho phép bấm vào mã để mở nhanh chi tiết vụ việc gốc tại module Giải quyết yêu cầu bồi thường (không kích hoạt Row-Click mở đề xuất kinh phí). |
-| Tên người yêu cầu | String(100) | \- | \- | Chỉ đọc. Hiển thị họ tên người yêu cầu bồi thường. |
-| Tư cách người yêu cầu | Enum(String(100)) | \- | \- | Chỉ đọc. Hiển thị tư cách của người yêu cầu bồi thường (mặc định "Người bị thiệt hại" nếu chưa xác định). |
-| Số tiền đề nghị (VNĐ) | Decimal(18,0) | \- | \- | Chỉ đọc. Số tiền đề nghị hiển thị dạng phân cách hàng ngàn (VNĐ). |
-| Cán bộ xử lý | String(255) | \- | \- | Chỉ đọc. Hiển thị tên cán bộ lập/cập nhật đề nghị gần nhất. |
-| Ngày đề nghị | Date | \- | \- | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
-| Hạn nhận / Sung quỹ | String(255) | \- | \- | Chỉ đọc. Hiển thị `-` khi chưa có thông tin thông báo nhận kinh phí. Khi đã có ngày nhận thông báo, hiển thị hạn nhận kinh phí bằng ngày nhận thông báo cộng 3 năm. Nếu khoản chi quá hạn 3 năm và còn số tiền chưa chi trả ở trạng thái "Chờ chi trả", hiển thị số ngày quá hạn và số tiền còn phải chi. Nếu trạng thái là "Sung quỹ nhà nước", hiển thị thông tin đã sung quỹ và ngày sung quỹ. |
-| Trạng thái | Enum(String(50)) | \- | \- | Chỉ đọc. Hiển thị trạng thái tương ứng dưới dạng badge màu sắc. |
-| Thao tác | - | \- | \- | Control UI: Cột hiển thị các icon thao tác theo cơ chế vị trí cố định (icon luôn hiện diện đúng vị trí theo vai trò, chỉ khóa mờ 35% khi không khả dụng theo trạng thái hồ sơ hiện tại, không ẩn/hiện).<br>- Không có icon "Xem" riêng trong cột này; xem chi tiết thực hiện bằng cách nhấp vào dòng dữ liệu (xem chức năng #5).<br>- Chi tiết từng icon thao tác theo vai trò và điều kiện khả dụng được đặc tả tại bảng Chức năng trên màn hình bên dưới (chức năng #6 đến #12). |
-
-**Chức năng trên màn hình**:  
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
-|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
-|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng, đưa về Trang 1 và ghi log thao tác tra cứu vào nhật ký hệ thống [III.6]. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
-| 2 | Xóa bộ lọc | Nút | Người dùng nhấn nút Xóa bộ lọc.<br>+ Hệ thống xóa toàn bộ giá trị tìm kiếm đã nhập, khôi phục ngày tháng về mặc định (Từ ngày: đầu tháng, Đến ngày: hôm nay).<br>+ Tải lại toàn bộ lưới dữ liệu mặc định. |
-| 3 | Kết xuất Excel | Nút | Trường hợp lưới dữ liệu có bản ghi:<br>+ Thực hiện kết xuất danh sách dữ liệu hiện tại ra file định dạng Excel theo mẫu.<br>+ Ghi log kết xuất dữ liệu vào nhật ký hệ thống [III.6]. |
-| | | | Trường hợp lưới dữ liệu rỗng:<br>+ Vi phạm quy tắc [BR-EXP-040].<br>+ Hiển thị thông báo lỗi [MSG-WRN-SYS-001] và không tải file. |
-| 4 | Xem khoản cần xử lý | Nút cảnh báo | Khi người dùng tích chọn / bấm bộ lọc nhanh "Xem khoản cần xử lý": Hệ thống thực hiện lọc và chỉ hiển thị danh sách các bản ghi thỏa mãn đồng thời điều kiện: Trạng thái đề nghị là "Chờ chi trả" VÀ đã quá hạn 03 năm kể từ ngày người yêu cầu nhận thông báo chi trả mà chưa đến nhận tiền, để Cán bộ kịp thời theo dõi và lập thủ tục Sung quỹ nhà nước. |
-| 5 | Xem | Row Click | Nhấp chọn row click ở bất kỳ trạng thái nào để mở Màn hình Xem chi tiết đề nghị bồi thường/Tạm ứng [UC450_456.01.MH03] ở chế độ chỉ đọc. |
-| 6 | Lập đề nghị | Icon (Lưới) | Nhấp chọn icon Lập đề nghị (chỉ khả dụng với trạng thái "Chờ lập đề nghị").<br>+ Mở Màn hình Lập đề nghị cấp kinh phí/Tạm ứng [UC450_456.01.MH02] ở chế độ biên tập. |
-| 7 | Cập nhật đề nghị | Icon (Lưới) | Nhấp chọn icon Cập nhật (chỉ khả dụng với trạng thái "Bị từ chối").<br>+ Mở Màn hình Lập đề nghị cấp kinh phí/Tạm ứng [UC450_456.01.MH02] nạp sẵn dữ liệu cũ, tự động cuộn xuống và focus vào ô "Ý kiến phê duyệt/Lý do từ chối" của Lãnh đạo. |
-| 8 | Cập nhật chi trả | Icon (Lưới) | Trường hợp không hợp lệ: Khoản kinh phí không ở trạng thái "Chờ chi trả". Hệ thống hiển thị icon dạng không khả dụng và không cho phép thao tác. |
-| | | | Trường hợp hợp lệ: Nhấp chọn icon Cập nhật chi trả với khoản kinh phí ở trạng thái "Chờ chi trả". Hệ thống mở Màn hình Cập nhật kết quả chi trả thực tế [UC450_456.01.MH05] ở chế độ biên tập. |
-| 9 | Sung quỹ Nhà nước | Icon (Lưới) | Trường hợp không hợp lệ: Khoản kinh phí chưa quá hạn 3 năm, không còn số tiền chưa chi trả hoặc trạng thái không thuộc "Chờ chi trả". Hệ thống hiển thị icon dạng không khả dụng và không cho phép thao tác. |
-| | | | Trường hợp hợp lệ: Khoản kinh phí đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái là "Chờ chi trả". Hệ thống mở Màn hình Xem chi tiết đề nghị bồi thường/Tạm ứng [UC450_456.01.MH03], hiển thị khối Thông tin sung quỹ Nhà nước để cán bộ nhập và hoàn thành sung quỹ. |
-| 10 | Phê duyệt | Icon (Lưới) | Lãnh đạo nhấp chọn icon Phê duyệt (chỉ khả dụng với trạng thái "Chờ duyệt") để duyệt nhanh ngay tại danh sách, không mở màn hình riêng.<br>+ Hiển thị popup xác nhận tùy chỉnh: "Bạn có chắc chắn muốn phê duyệt cấp phát kinh phí bồi thường cho tờ trình [Mã đề xuất] này không?".<br>+ Nếu chọn Đồng ý, hệ thống đổi trạng thái đề xuất thành "Chờ chi trả", ghi nhận ý kiến phê duyệt mặc định và cập nhật lại lưới.<br>+ Để tự nhập ý kiến chỉ đạo riêng trước khi duyệt, Lãnh đạo dùng Row-Click (chức năng #5) mở Màn hình Xem chi tiết [UC450_456.01.MH03]; khối Xét duyệt tờ trình [UC450_456.01.MH04] hiển thị ở cuối màn hình cho phép nhập ý kiến và phê duyệt/từ chối tương tự mục 4.3.3.2.5.2. |
-| 11 | Từ chối | Icon (Lưới) | Lãnh đạo nhấp chọn icon Từ chối (chỉ khả dụng với trạng thái "Chờ duyệt").<br>+ Hiển thị popup nhập lý do từ chối kèm nút xác nhận (gộp bước nhập lý do và xác nhận vào cùng một popup, không mở màn hình riêng): ô "Lý do từ chối phê duyệt" bắt buộc nhập.<br>+ Nếu bỏ trống và bấm "Xác nhận từ chối": hiển thị cảnh báo "Lý do từ chối không được để trống!", tô đỏ viền ô nhập, không đóng popup.<br>+ Nếu nhập hợp lệ và bấm "Xác nhận từ chối": hệ thống đổi trạng thái đề xuất thành "Bị từ chối", ghi nhận lý do và cập nhật lại lưới.<br>+ Lãnh đạo cũng có thể dùng Row-Click (chức năng #5) mở Màn hình Xem chi tiết [UC450_456.01.MH03] để xem toàn bộ hồ sơ trước khi từ chối tại khối Xét duyệt tờ trình [UC450_456.01.MH04]. |
-| 12 | Xóa | Icon (Lưới) | Chuyên viên nhấp chọn icon Xóa (chỉ khả dụng với trạng thái "Chờ lập đề nghị"; các trạng thái khác hiển thị icon khóa mờ 35%, không phản hồi click).<br>+ Hiển thị popup xác nhận xóa tùy chỉnh: "Bạn có chắc chắn muốn xóa đề xuất kinh phí [Mã đề xuất] không?".<br>+ Nếu người dùng nhấn Đồng ý, hệ thống xóa bản ghi khỏi lưới, cập nhật lại khối chỉ số ngân sách và hiển thị Toast thông báo thành công. |
-| 13 | Mở nhanh vụ việc gốc | Link (cột Mã vụ việc) | Nhấp chọn liên kết mã vụ việc trong cột "Mã vụ việc" (không phải Row-Click cả dòng).<br>+ Hệ thống mở màn hình chi tiết vụ việc yêu cầu bồi thường gốc tương ứng tại module Giải quyết yêu cầu bồi thường, có tham số quay lại màn hình danh sách kinh phí hiện tại. |
-| 14 | Chuyển đổi vai trò xem | Hộp chọn | Người dùng chọn lại giá trị ở hộp "Quyền xem Cán bộ" (Chuyên viên lập đề xuất/Lãnh đạo phê duyệt).<br>+ Hệ thống tải lại bộ nút Thao tác trên lưới dữ liệu và số đếm ở badge tiêu đề trang theo vai trò vừa chọn. |
+```mermaid
+flowchart TD
+    A[MH01 - Danh sách Đề nghị kinh phí bồi thường] --> B[Tìm kiếm / Xóa bộ lọc / Phân trang / Kết xuất Excel]
+    A -->|Row Click| V[MH05 - Xem chi tiết đề nghị cấp kinh phí]
+    A -->|Nút Lập đề nghị trên Toolbar| C[MH02 - Lập đề nghị tạo mới từ đầu]
+    C --> D[Chọn vụ việc yêu cầu bồi thường gốc]
+    D --> E[Kế thừa thông tin người yêu cầu & vụ việc]
+    A -->|Icon Lập đề nghị trên dòng Chờ lập đề nghị| E
+    E --> F{Loại đề nghị}
+    F -->|Đề nghị tạm ứng| F1[Nhập mức duyệt tạm ứng >= 50% mức yêu cầu gốc]
+    F -->|Đề nghị cấp kinh phí bồi thường| F2[Nhập mức duyệt chi <= mức yêu cầu gốc]
+    F1 --> G[Trình phê duyệt]
+    F2 --> G
+    G --> H[Trạng thái: Chờ duyệt]
+    H -->|Popup Phê duyệt từ dòng / Chi tiết| J[Trạng thái: Chờ chi trả]
+    H -->|Popup Từ chối từ dòng / Chi tiết| K[Trạng thái: Bị từ chối]
+    K -->|Nút Cập nhật đề nghị trên dòng| E
+    J --> P[Ghi nhận thông báo nhận tiền & Bắt đầu tính hạn 3 năm]
+    P --> Q{Kiểm tra quá hạn 3 năm}
+    Q -->|Trong hạn 3 năm & Người yêu cầu đến nhận| L[MH03 - Cập nhật kết quả chi trả thực tế]
+    L -->|Chi trả 1 lần 100%| N[Trạng thái: Hoàn thành]
+    Q -->|Quá hạn 3 năm & Không đến nhận tiền| R[Alert Banner: Cảnh báo quá hạn 3 năm]
+    R -->|Nút Sung quỹ nhà nước trên dòng| S[MH04 - Cập nhật sung quỹ nhà nước]
+    S -->|Sung quỹ 100% kinh phí| U[Trạng thái: Sung quỹ nhà nước]
+```
 
 ---
 
-##### 4.3.3.2.3. UC450_456.02 - Lập / Cập nhật đề nghị cấp kinh phí
+##### 4.3.3.2.3. MH01 - Màn hình Danh sách Cấp kinh phí
 
-###### 4.3.3.2.3.1. Mục đích
+###### 4.3.3.2.3.1. Màn hình
 
-\- Cho phép Chuyên viên lập tờ trình đề xuất kinh phí bồi thường chính thức hoặc tạm ứng bồi thường chi tiết theo từng hạng mục để gửi trình Lãnh đạo xét duyệt.  
+![Màn hình danh sách đề nghị](images/UC450_List.png)
 
-###### 4.3.3.2.3.2. UC450_456.01.MH02 - Màn hình Lập đề nghị cấp kinh phí/Tạm ứng
-
-**Màn hình**:  
-![Màn hình lập đề nghị](images/UC450_Create.png)  
-
-**Mô tả thông tin trên màn hình**:  
+###### 4.3.3.2.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Thông tin chung của tờ trình** | | | | |
-| Mã đề xuất kinh phí | Decimal(18,0) | Có | Hệ thống tự sinh | Định dạng `KP-YYYY-XXX` (YYYY: Năm hiện tại, XXX: Số tăng dần). Khóa chỉ đọc. |
-| Ngày lập đề nghị | Date | Có | Ngày hiện tại | Định dạng `dd/mm/yyyy`. Chỉ đọc. |
-| Cán bộ đề xuất xử lý | String(255) | Có | Tên tài khoản | Tên cán bộ đang đăng nhập hệ thống. Chỉ đọc. |
-| Nguồn kinh phí đề xuất cấp | Enum(String(50)) | Có | Trống | Tham chiếu Danh mục Phường/Xã [DM_15]. |
-| Cơ quan cấp phát kinh phí | Decimal(18,0) | Có | Trống | Tên cơ quan cấp phát tài chính tương ứng. Tối đa 250 ký tự. |
-| Mã vụ việc | String(50) | Có | Trống | Cho phép nhập mã vụ việc yêu cầu bồi thường liên kết để lập đề nghị cấp kinh phí/tạm ứng. Khi chọn vụ việc từ popup, hệ thống tự động điền mã vụ việc vào trường này. |
-| Tìm kiếm | - | Không | Hiển thị cạnh trường Mã vụ việc | Khi bấm, hệ thống mở popup chuẩn **Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan**, tự động điền sẵn Mã vụ việc đã nhập vào popup và hiển thị bảng kết quả để người dùng chọn vụ việc phù hợp. |
-| Tìm kiếm nâng cao | - | Không | Hiển thị cạnh trường Mã vụ việc | Mở **Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan** với tiêu đề `Tìm kiếm vụ việc yêu cầu bồi thường liên kết`; nguồn dữ liệu là các vụ việc đủ điều kiện lập đề nghị cấp kinh phí/tạm ứng theo loại đề nghị đang chọn. |
-| **I.1. Chi tiết thông tin người yêu cầu bồi thường** | - | | | Control UI: 02 khối thẻ hiển thị song song, tự động điền và khóa Chỉ đọc ngay sau khi chọn vụ việc liên kết (không hiển thị trước khi chọn vụ việc). |
-| Họ và tên người yêu cầu bồi thường | String(255) | \- | Pre-fill từ vụ việc | Chỉ đọc. |
-| Tư cách người yêu cầu bồi thường | Enum(String(100)) | \- | Pre-fill từ vụ việc | Chỉ đọc. |
-| Giới tính | Enum(String(20)) | \- | Pre-fill từ vụ việc | Chỉ đọc. Tham chiếu danh mục Giới tính. |
-| Ngày tháng năm sinh | Date | \- | Pre-fill từ vụ việc | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
-| Số điện thoại liên hệ | String(20) | \- | Pre-fill từ vụ việc | Chỉ đọc. |
-| Thư điện tử (Email) | String(255) | \- | Pre-fill từ vụ việc | Chỉ đọc. |
-| Trạng thái người bị thiệt hại | Enum(String(20)) | \- | Pre-fill từ vụ việc | Chỉ đọc. Radio "Còn sống"/"Đã mất". |
-| Loại giấy tờ thân nhân | Enum(String(50)) | \- | Pre-fill từ vụ việc | Chỉ đọc. |
-| Số giấy tờ thân nhân | String(50) | \- | Pre-fill từ vụ việc | Chỉ đọc. |
-| Ngày cấp | Date | \- | Pre-fill từ vụ việc | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
-| Nơi cấp | String(255) | \- | Pre-fill từ vụ việc | Chỉ đọc. |
-| Quốc gia | Enum(String(50)) | \- | Pre-fill từ vụ việc | Chỉ đọc. Tham chiếu danh mục Quốc gia. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | \- | Pre-fill từ vụ việc | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | \- | Pre-fill từ vụ việc | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Địa chỉ chi tiết | Text(1000) / String(500) | \- | Pre-fill từ vụ việc | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
-| **II. Bảng nội dung đề xuất cấp tạm ứng** | - | | | Chỉ hiển thị khi loại đề nghị là "Đề nghị tạm ứng". |
-| STT | Integer(10) | \- | \- | Chỉ đọc. 1 và 2. |
-| Nội dung tạm ứng | Enum(String(255)) | \- | \- | Chỉ đọc. Hiển thị đúng Loại thiệt hại yêu cầu bồi thường trong Hồ sơ gốc liên kết. Chỉ hiển thị các loại thiệt hại đã được tích chọn/có phát sinh yêu cầu bồi thường trong hồ sơ gốc; các loại không tích chọn thì không hiển thị. |
-| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | \- | \- | Chỉ đọc. Số tiền đề xuất từ hồ sơ gốc (pre-fill từ yêu cầu bồi thường liên kết). |
-| Số tiền duyệt cấp tạm ứng (VNĐ) | Decimal(18,0) | Có | Trống | Ô nhập số tiền bồi thường tạm ứng. Cho phép nhập số, tự động định dạng phân tách hàng ngàn. Khi trình phê duyệt, số tiền duyệt của mỗi dòng phải tối thiểu bằng 50% Mức đề nghị trong hồ sơ gốc tương ứng của dòng đó. |
-| Tổng cộng | Decimal(18,0) | \- | \- | Chỉ đọc. Tự động tính toán tổng số tiền của 2 dòng trên. Hiển thị dạng chữ số và viết bằng chữ. |
-| **III. Bảng nội dung đề xuất cấp kinh phí bồi thường** | - | | | Chỉ hiển thị khi loại đề nghị là "Đề nghị cấp kinh phí bồi thường". |
-| STT | Integer(10) | \- | \- | Chỉ đọc. Số tăng dần từ 1 đến 6. |
-| Loại thiệt hại được yêu cầu | Enum(String(255)) | \- | \- | Chỉ đọc. Hiển thị đúng Loại thiệt hại yêu cầu bồi thường trong Hồ sơ gốc liên kết. Chỉ hiển thị các loại thiệt hại đã được tích chọn/có phát sinh yêu cầu bồi thường trong hồ sơ gốc; các loại không tích chọn thì không hiển thị. |
-| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | \- | \- | Chỉ đọc. Hiển thị số tiền đề xuất tương ứng từ hồ sơ yêu cầu bồi thường gốc liên kết. |
-| Số tiền duyệt cấp bồi thường (VNĐ) | Decimal(18,0) | Có | Trống | Ô nhập tiền duyệt cấp. Tự động format phân tách hàng ngàn. Giới hạn tối đa bằng số tiền hồ sơ gốc (Mức đề nghị trong hồ sơ gốc của cùng dòng); khi trình phê duyệt, hệ thống kiểm tra từng dòng và không cho lưu nếu vượt mức. |
-| Tổng cộng | Decimal(18,0) | \- | \- | Chỉ đọc. Tự động tính toán tổng số tiền của 6 dòng trên. Hiển thị dạng chữ số và viết bằng chữ. |
-| **IV. Thông tin người nhận tạm ứng/bồi thường & phương thức chi trả** | | | | |
-| Họ và tên người nhận | String(100) | Có | Pre-fill từ hồ sơ | Họ tên người nhận bồi thường. Chỉ đọc. |
-| Giấy tờ thân nhân | String(255) | Có | Pre-fill từ hồ sơ | Loại giấy tờ + Số hiệu. Chỉ đọc. |
-| Địa chỉ | String(500) | Có | Pre-fill từ hồ sơ | Địa chỉ liên lạc của người nhận. Chỉ đọc. |
-| Phương thức nhận tiền | Decimal(18,0) | Có | Pre-fill từ hồ sơ | Đứng riêng 1 hàng để hiển thị rõ. Hiển thị: "Nhận tiền mặt" hoặc "Nhận qua chuyển khoản". Chỉ đọc. |
-| **Nếu Phương thức nhận tiền là "Nhận qua chuyển khoản"** | | | | Hiển thị thêm các trường thông tin ngân hàng dưới đây: |
-| Chủ tài khoản | String(255) | Có | Pre-fill | Tên chủ tài khoản thụ hưởng. Chỉ đọc. |
-| Số tài khoản | String(255) | Có | Pre-fill | Số tài khoản ngân hàng thụ hưởng. Chỉ đọc. |
-| Tên ngân hàng | String(255) | Có | Pre-fill | Tên ngân hàng thụ hưởng. Chỉ đọc. |
-| Chi nhánh | String(255) | Có | Pre-fill | Chi nhánh ngân hàng thụ hưởng. Chỉ đọc. |
-| Ý kiến đề xuất / Trích yếu nội dung tờ trình | Text(2000) | Có | Trống | Nội dung tờ trình tóm tắt căn cứ cấp phát kinh phí. Tối đa 2000 ký tự. |
-| **V. Danh mục tài liệu, tờ trình gửi kèm** | - | | | Bảng chứa danh sách tài liệu đính kèm. Hỗ trợ thêm/xóa dòng. |
-| STT | Integer(10) | \- | \- | Chỉ đọc. Số tăng dần. Căn lề giữa. |
-| Thành phần hồ sơ / Tên tài liệu | String(255) | Có | Trống | Tên tài liệu đính kèm. Căn lề trái. |
-| File đính kèm | File | Có | Trống | Cột chứa nút "Chọn file" để tải tệp PDF lên. Căn lề trái. |
-| Thao tác | - | \- | \- | Cột chứa liên kết: "Xem file" (nếu đã tải lên) và "Xóa" dòng. Căn lề giữa. |
+| **Tiêu đề màn hình** | String(200) | Không | `Quản lý kinh phí bồi thường Nhà nước` | Control UI: Thanh tiêu đề trang.<br>- Hiển thị tên màn hình tại vùng tiêu đề trang. |
+| **Khối chỉ số ngân sách** | Section | - | - | Control UI: 03 thẻ thống kê đặt phía trên bộ lọc tìm kiếm. |
+| Đã cấp phát thực tế | Decimal(18,0) | - | - | Chỉ đọc.<br>Tự động tính tổng số tiền các khoản kinh phí ở trạng thái "Hoàn thành".<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). |
+| Chờ chi trả | Decimal(18,0) | - | - | Chỉ đọc.<br>Tự động tính tổng số tiền các khoản kinh phí ở trạng thái "Chờ chi trả".<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). |
+| Sung quỹ nhà nước | Decimal(18,0) | - | - | Chỉ đọc.<br>Tự động tính tổng số tiền các khoản kinh phí ở trạng thái "Sung quỹ nhà nước".<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). |
+| **Cảnh báo khoản chi quá hạn** | Alert Banner | - | Ẩn | Control UI: Alert Banner.<br>- **Điều kiện hiển thị**: Tự động hiển thị phía trên bảng dữ liệu khi trên hệ thống có ít nhất 01 khoản chi thỏa mãn đồng thời cả 3 điều kiện:<br>  1. Trạng thái đề xuất là `Chờ chi trả`.<br>  2. Đã có thông tin `Ngày người yêu cầu nhận thông báo nhận kinh phí`.<br>  3. Thời điểm hiện tại đã quá hạn 03 năm kể từ ngày nhận thông báo (`Ngày hiện tại > Ngày nhận thông báo + 3 năm`) mà chưa thực hiện chi trả.<br>- **Nội dung thông báo**: *"Có [X] khoản chi quá hạn 03 năm chưa đến nhận tiền với tổng số tiền [Y] VNĐ đủ điều kiện làm thủ tục sung quỹ nhà nước."* kèm nút bấm tác vụ nhanh **"Xem khoản cần xử lý"**.<br>- **Trong đó**:<br>  + **[X]**: Tổng số lượng các khoản chi thỏa mãn đồng thời cả 3 điều kiện nêu trên.<br>  + **[Y]**: Tổng số tiền kinh phí của toàn bộ [X] khoản chi quá hạn nêu trên, định dạng phân cách hàng nghìn bằng dấu chấm (ví dụ: `250.000.000`). |
+| **Khối Bộ lọc tìm kiếm** | Section | - | - | Khối tiêu chí tìm kiếm và lọc danh sách đề xuất kinh phí. |
+| Mã đề xuất | String(50) | Không | Trống | Cho phép nhập mã đề xuất kinh phí để tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space. |
+| Loại đề nghị | Enum(String(50)) | Không | `Tất cả` | Control UI: Dropdown/Select.<br>Gồm:<br>+ Tất cả<br>+ Đề nghị tạm ứng<br>+ Đề nghị cấp kinh phí bồi thường |
+| Mã vụ việc gốc | String(50) | Không | Trống | Cho phép nhập mã vụ việc yêu cầu bồi thường liên kết để tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space. |
+| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Dropdown/Select.<br>Gồm:<br>+ Tất cả<br>+ Chờ lập đề nghị<br>+ Chờ duyệt<br>+ Chờ chi trả<br>+ Hoàn thành<br>+ Sung quỹ nhà nước<br>+ Bị từ chối |
+| Người yêu cầu | String(100) | Không | Trống | Cho phép nhập họ tên người yêu cầu bồi thường để tìm kiếm gần đúng. |
+| Từ ngày | Date | Không | Ngày đầu tháng | Định dạng `dd/mm/yyyy`. Ô nhập ngày có icon lịch. Mặc định là ngày đầu tháng hiện tại. Tìm kiếm theo ngày đề nghị bắt đầu. Kiểm tra logic khoảng ngày theo [BR-VAL-007]. |
+| Đến ngày | Date | Không | Ngày hiện tại | Định dạng `dd/mm/yyyy`. Ô nhập ngày có icon lịch. Mặc định là ngày hiện tại. Tìm kiếm theo ngày đề nghị kết thúc. Kiểm tra logic khoảng ngày theo [BR-VAL-007]. |
+| **Bảng danh sách đề xuất kinh phí** | List(Object) | Không | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày đề nghị" giảm dần (mới nhất lên đầu). Cho phép click tiêu đề cột Ngày đề nghị để đảo chiều sắp xếp tăng/giảm.<br>- Xem chi tiết: Sử dụng thao tác Click vào dòng dữ liệu (Row click), không bố trí nút Xem chi tiết trên cột Thao tác.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| STT | Integer(10) | - | Tự tăng | Căn giữa, tăng dần theo phân trang. |
+| Mã đề xuất | String(50) | - | Theo dữ liệu | Hiển thị mã đề xuất kinh phí (ví dụ: `KP-2026-001`). |
+| Loại đề nghị | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge.<br>Gồm:<br>+ Đề nghị tạm ứng<br>+ Đề nghị cấp kinh phí bồi thường |
+| Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Text link (Hyperlink). Cho phép click mở màn hình Chi tiết vụ việc yêu cầu bồi thường liên kết tại module Giải quyết yêu cầu bồi thường. |
+| Tên người yêu cầu | String(100) | - | Theo dữ liệu | Hiển thị họ tên người yêu cầu bồi thường. |
+| Tư cách người yêu cầu | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc.<br>Tham chiếu danh mục Tư cách người yêu cầu. |
+| Số tiền đề nghị (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (ví dụ: `150.000.000 VNĐ`). |
+| Cán bộ xử lý | String(255) | - | Theo dữ liệu | Hiển thị họ tên cán bộ lập hoặc xử lý đề nghị gần nhất. |
+| Ngày đề nghị | Date | - | Theo dữ liệu | Hiển thị ngày lập đề nghị theo định dạng `dd/mm/yyyy`. |
+| Hạn nhận / Sung quỹ | String(255) | - | Theo dữ liệu | Hiển thị thông tin hạn nhận kinh phí hoặc tình trạng sung quỹ trực quan theo từng trường hợp hồ sơ:<br>- **Hồ sơ ở trạng thái `Sung quỹ nhà nước`**: Hiển thị 02 dòng gồm:<br>  + Dòng 1: Biểu tượng tòa nhà kèm chữ in đậm màu tím: **Đã sung quỹ**.<br>  + Dòng 2: Hiển thị ngày sung quỹ với tiền tố "Ngày:" theo định dạng `Ngày: dd/mm/yyyy` (ví dụ: *Ngày: 18/07/2026*).<br>- **Hồ sơ ở trạng thái `Hoàn thành`**: Hiển thị 02 dòng gồm:<br>  + Dòng 1: Biểu tượng tích xanh kèm chữ in đậm màu xanh lá: **Đã chi trả đủ**.<br>  + Dòng 2: Hiển thị ngày chi trả thực tế với tiền tố "Ngày:" theo định dạng `Ngày: dd/mm/yyyy` (ví dụ: *Ngày: 05/05/2026*).<br>- **Chưa có thông báo hoặc chưa đến bước chi trả** (hồ sơ ở trạng thái `Chờ lập đề nghị`, `Chờ duyệt`, `Bị từ chối` hoặc chưa nhập ngày nhận thông báo): Hiển thị duy nhất 01 ký tự `-` căn giữa, màu chữ xám nhạt.<br>- **Hồ sơ `Chờ chi trả` - Đã quá hạn 03 năm chưa chi trả (đủ điều kiện sung quỹ)**: Hiển thị 02 dòng gồm:<br>  + Dòng 1: Biểu tượng cảnh báo kèm chữ in đậm màu đỏ: **Quá hạn X ngày** (với X là số ngày đã quá hạn 03 năm tính từ ngày nhận thông báo).<br>  + Dòng 2: Mốc hạn nhận với tiền tố "Hạn nhận:" theo định dạng `Hạn nhận: dd/mm/yyyy`.<br>- **Hồ sơ `Chờ chi trả` - Chưa quá hạn 03 năm**: Hiển thị 02 dòng gồm:<br>  + Dòng 1: Biểu tượng đồng hồ kèm chữ in đậm: **Còn X ngày** (với X là số ngày còn lại đến hạn 03 năm tính từ ngày nhận thông báo).<br>  + Dòng 2: Mốc hạn nhận với tiền tố "Hạn nhận:" theo định dạng `Hạn nhận: dd/mm/yyyy`. |
+| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge trạng thái.<br>Gồm:<br>+ Chờ lập đề nghị<br>+ Chờ duyệt<br>+ Chờ chi trả<br>+ Hoàn thành<br>+ Sung quỹ nhà nước<br>+ Bị từ chối |
+| Thao tác | Action Buttons | - | Theo trạng thái | Control UI: Action Buttons.<br>- **Hiển thị dạng mờ, không cho phép click đối với thao tác không được phép** tại trạng thái hồ sơ hiện tại.<br>- **Lập đề nghị**: Chỉ hiển thị khi đề nghị ở trạng thái `Chờ lập đề nghị`.<br>- **Cập nhật đề nghị**: Chỉ hiển thị khi đề nghị ở trạng thái `Bị từ chối`.<br>- **Phê duyệt**: Chỉ hiển thị khi đề nghị ở trạng thái `Chờ duyệt`.<br>- **Từ chối**: Chỉ hiển thị khi đề nghị ở trạng thái `Chờ duyệt`.<br>- **Cập nhật chi trả**: Chỉ hiển thị khi đề nghị ở trạng thái `Chờ chi trả` (khi còn trong hạn 03 năm).<br>- **Sung quỹ nhà nước**: Chỉ hiển thị khi đề nghị ở trạng thái `Chờ chi trả` ĐỒNG THỜI đã quá hạn 03 năm tính từ ngày nhận thông báo mà chưa chi trả.<br>- **Xóa**: Chỉ hiển thị khi đề nghị ở trạng thái `Chờ lập đề nghị`. |
 
-**Chức năng trên màn hình**:  
+###### 4.3.3.2.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm hồ sơ liên quan theo các trường hợp bên dưới: |
-|  |  |  | **TH1 - Thiếu tiêu chí bắt buộc**: Nếu người dùng chưa nhập giá trị tại trường tìm nhanh liên quan, vi phạm [BR-VAL-001], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001] và không thực hiện tìm kiếm. |
-|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống mở popup tìm kiếm hồ sơ liên quan, tự điền giá trị đang nhập vào tiêu chí tìm kiếm tương ứng và hiển thị danh sách bản ghi phù hợp để người dùng lựa chọn. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
-| 2 | Tìm kiếm nâng cao | Button | Khi người dùng click nút, hệ thống mở popup tìm kiếm nâng cao; khi thực hiện tìm kiếm trên popup, hệ thống kiểm tra điều kiện dữ liệu và xử lý theo các trường hợp bên dưới: |
-|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
-|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn trên popup, hiển thị kết quả lên bảng và đưa về Trang 1. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
-| 3 | Thêm thành phần hồ sơ mới | Nút | Người dùng bấm nút.<br>+ Hệ thống chèn thêm một hàng trống mới vào bảng tài liệu đính kèm bên trên. |
-| 4 | Trình phê duyệt | Nút | Trường hợp dữ liệu nhập hợp lệ:<br>+ Hệ thống kiểm tra dữ liệu và lưu tờ trình thành công.<br>+ Trạng thái đề nghị chuyển sang "Chờ duyệt".<br>+ Đóng modal form, hiển thị thông báo thành công và làm mới danh sách lưới dữ liệu bên ngoài.<br>+ Ghi log tạo mới/cập nhật tờ trình kinh phí vào nhật ký hệ thống [III.6]. |
-| | | | Trường hợp có trường bắt buộc bị bỏ trống hoặc không chọn file tài liệu đính kèm:<br>+ Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010].<br>+ Tô đỏ viền trường trống đầu tiên bằng class `.is-invalid`, hiển thị dòng cảnh báo lỗi màu đỏ dưới ô nhập: "Đây là trường bắt buộc".<br>+ Tự động focus con trỏ vào ô nhập lỗi đầu tiên để người dùng xử lý. Không đóng modal form. |
-| | | | Trường hợp Đề nghị tạm ứng có số tiền duyệt cấp (Tổn thất tinh thần hoặc Chi phí khác) thấp hơn 50% Mức đề nghị trong hồ sơ gốc tương ứng:<br>+ Tô đỏ viền ô nhập, hiển thị cảnh báo: "Số tiền duyệt phải tối thiểu bằng 50% mức yêu cầu (X VNĐ)" ngay dưới ô nhập và focus con trỏ vào ô đó. Không lưu tờ trình. |
-| | | | Trường hợp Đề nghị cấp kinh phí bồi thường có số tiền duyệt cấp của một loại thiệt hại vượt quá Mức đề nghị trong hồ sơ gốc tương ứng:<br>+ Tô đỏ viền ô nhập, hiển thị cảnh báo: "Số tiền duyệt cấp không được vượt quá mức đề nghị trong hồ sơ gốc (X VNĐ) đối với "[Loại thiệt hại]"" ngay dưới ô nhập và focus con trỏ vào ô đó. Không lưu tờ trình. |
-| 5 | Đóng | Nút | Người dùng nhấn nút Đóng ở chân modal.<br>+ Hệ thống hiển thị popup xác nhận: "Bạn có chắc chắn muốn đóng biểu mẫu và hủy bỏ các thay đổi đang nhập không?".<br>+ Nếu người dùng chọn Đồng ý, đóng modal form và không lưu dữ liệu.<br>+ Áp dụng riêng cho chế độ Lập đề nghị/Cập nhật đề nghị; các chế độ Xem chi tiết, Xét duyệt và Cập nhật chi trả sử dụng nút Đóng riêng ở mục tương ứng (đóng ngay lập tức, xem [UC450_456.01.MH03]/[UC450_456.01.MH04]/[UC450_456.01.MH05]). |
+| 1 | Xóa bộ lọc | Button | Xóa toàn bộ điều kiện tìm kiếm/lọc đã nhập, đưa các trường nhập về giá trị mặc định (`Từ ngày` là ngày đầu tháng hiện tại, `Đến ngày` là ngày hiện tại) và tải lại danh sách ở Trang 1. |
+| 2 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm:<br>- **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Hợp lệ**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã chọn, đưa kết quả về Trang 1.<br>- **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng, in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ; nút "Kết xuất Excel" ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
+| 3 | Xem khoản cần xử lý | Button trên Alert Banner | Khi người dùng click nút "Xem khoản cần xử lý" trên Alert Banner, hệ thống xử lý theo 02 trường hợp:<br>- **TH Có dữ liệu phù hợp**: Hệ thống tự động thiết lập bộ lọc hiển thị danh sách các bản ghi thỏa mãn đồng thời: Trạng thái là `Chờ chi trả` và đã quá hạn 03 năm kể từ ngày nhận thông báo chưa được chi trả để người dùng kịp thời thực hiện thủ tục Sung quỹ nhà nước.<br>- **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng, in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ; nút "Kết xuất Excel" ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
+| 4 | Lập đề nghị | Button (Toolbar) | Khi người dùng click vào nút "Lập đề nghị" trên thanh công cụ phía trên bảng danh sách.<br>- Hệ thống mở màn hình **MH02 - Màn hình Lập/Cập nhật đề nghị cấp kinh phí** ở chế độ tạo mới từ đầu.<br>- Trên form hiển thị trường `Mã vụ việc gốc` kèm nút `Tìm kiếm` và liên kết `Tìm kiếm nâng cao` để người dùng thực hiện tìm kiếm, lựa chọn vụ việc yêu cầu bồi thường gốc. |
+| 5 | Kết xuất Excel | Button | Kết xuất danh sách đề xuất kinh phí bồi thường ra file Excel theo đúng điều kiện tìm kiếm/lọc hiện hành theo quy chuẩn [BR-EXP-040]. |
+| 6 | Click dòng dữ liệu (Row click) | Row click | Mở màn hình **MH05 - Màn hình Xem chi tiết đề nghị cấp kinh phí** tương ứng với bản ghi được chọn ở chế độ chỉ đọc.<br>- Nếu click vào icon thao tác hoặc liên kết `Mã vụ việc`, hệ thống thực hiện chức năng riêng của icon/liên kết đó và không kích hoạt Row click. |
+| 7 | Mã vụ việc | Link | Điều hướng sang màn hình Chi tiết vụ việc yêu cầu bồi thường liên kết trong Module Giải quyết yêu cầu bồi thường. |
+| 8 | Lập đề nghị | Icon button (Dòng) | Mở màn hình **MH02 - Màn hình Lập/Cập nhật đề nghị cấp kinh phí**, tự động nạp sẵn mã vụ việc gốc và thông tin người yêu cầu bồi thường từ chính bản ghi được chọn, ẩn nút Tìm kiếm và khóa chỉ đọc trường `Mã vụ việc gốc`. |
+| 9 | Cập nhật đề nghị | Icon button (Dòng) | Mở màn hình **MH02 - Màn hình Lập/Cập nhật đề nghị cấp kinh phí** ở chế độ cập nhật, nạp lại toàn bộ dữ liệu đã lưu và tự động hiển thị **Khối Lý do bị từ chối / Ý kiến chỉ đạo** ở phía trên form để chỉnh sửa lại dữ liệu. |
+| 10 | Phê duyệt | Icon button (Dòng) | Mở Custom Confirmation Modal xác nhận phê duyệt cấp kinh phí với các thông tin chi tiết:<br>- **Tiêu đề popup**: *"Xác nhận phê duyệt cấp kinh phí bồi thường"*.<br>- **Thông tin hiển thị đối chiếu trên popup**: Mã đề xuất (`[Mã đề xuất]`), Người yêu cầu (`[Tên người yêu cầu]`), Loại đề nghị (`[Loại đề nghị]`), Số tiền duyệt cấp (**`[Số tiền duyệt cấp] VNĐ`**, kèm số tiền viết bằng chữ).<br>- **Ô nhập dữ liệu**: `Ý kiến phê duyệt` (Control UI: Textarea, tối đa 2000 ký tự, không bắt buộc).<br>- **Khi người dùng bấm "Phê duyệt"**: Hệ thống đóng popup modal, chuyển trạng thái đề xuất sang `Chờ chi trả`, lưu ý kiến phê duyệt và lịch sử xét duyệt vào hệ thống, hiển thị thông báo thành công [MSG-SUC-BTNN-KP-001] (*"Phê duyệt cấp kinh phí bồi thường thành công!"*) và làm mới danh sách tại MH01.<br>- **Khi người dùng bấm "Hủy bỏ"**: Đóng popup modal và giữ nguyên trạng thái hồ sơ. |
+| 11 | Từ chối | Icon button (Dòng) | Mở Custom Modal từ chối phê duyệt tờ trình với các thông tin chi tiết:<br>- **Tiêu đề popup**: *"Từ chối phê duyệt cấp kinh phí bồi thường"*.<br>- **Thông tin hiển thị đối chiếu trên popup**: Mã đề xuất (`[Mã đề xuất]`), Người yêu cầu (`[Tên người yêu cầu]`), Loại đề nghị (`[Loại đề nghị]`), Số tiền đề nghị (**`[Số tiền đề nghị] VNĐ`**).<br>- **Ô nhập dữ liệu**: `Lý do từ chối / Ý kiến chỉ đạo` (Control UI: Textarea, tối đa 2000 ký tự, bắt buộc nhập).<br>- **Kiểm tra dữ liệu**: Nếu bỏ trống ô lý do từ chối, vi phạm [BR-VAL-001], tô đỏ viền ô trống `.is-invalid`, hiển thị cảnh báo đỏ *"Đây là trường bắt buộc"* ngay dưới ô nhập và auto-focus con trỏ. Không thực hiện từ chối.<br>- **Khi người dùng bấm "Xác nhận từ chối"**: Hệ thống đóng popup modal, chuyển trạng thái đề xuất sang `Bị từ chối`, lưu nội dung lý do từ chối vào hệ thống (để hiển thị tại Khối Lý do bị từ chối khi Cán bộ cập nhật lại tờ trình), hiển thị thông báo thành công [MSG-SUC-BTNN-KP-002] (*"Đã từ chối phê duyệt tờ trình cấp kinh phí!"*) và làm mới danh sách tại MH01.<br>- **Khi người dùng bấm "Hủy bỏ"**: Đóng popup modal và giữ nguyên trạng thái hồ sơ. |
+| 12 | Cập nhật chi trả | Icon button (Dòng) | Mở màn hình **MH03 - Màn hình Cập nhật kết quả chi trả thực tế**, tự động cuộn và focus tới **Khối Thông tin Kết quả chi trả thực tế** ở chế độ nhập liệu để ghi nhận giải ngân 1 lần toàn bộ 100% kinh phí bồi thường. |
+| 13 | Sung quỹ nhà nước | Icon button (Dòng) | Mở màn hình **MH04 - Màn hình Cập nhật sung quỹ nhà nước**, tự động cuộn và focus tới **Khối Thông tin sung quỹ Nhà nước** ở chế độ nhập liệu để thực hiện thủ tục nộp tiền vào ngân sách nhà nước. |
+| 14 | Xóa | Icon button (Dòng) | Mở Custom Confirmation Modal với nội dung [MSG-CFM-SYS-001].<br>- Khi người dùng chọn "Đồng ý": Hệ thống thực hiện xóa bản ghi đề xuất lưu nháp khỏi danh sách, cập nhật lại khối chỉ số ngân sách và hiển thị thông báo thành công [MSG-SUC-SYS-004].<br>- Khi người dùng chọn "Hủy bỏ": Đóng modal và giữ nguyên dữ liệu. |
 
 ---
 
-##### 4.3.3.2.4. UC450_456.03 - Xem chi tiết đề nghị bồi thường
+##### 4.3.3.2.4. MH02 - Màn hình Lập/Cập nhật đề nghị cấp kinh phí
 
-###### 4.3.3.2.4.1. Mục đích
+###### 4.3.3.2.4.1. Màn hình
 
-\- Cho phép người dùng xem toàn bộ thông tin đề nghị tạm ứng/cấp kinh phí bồi thường theo dữ liệu đã lập và trạng thái xử lý hiện tại.
+![Màn hình lập đề nghị](images/UC450_Create.png)
 
-\- Màn hình hiển thị dữ liệu ở chế độ chỉ đọc, đồng thời hiển thị các nút thao tác phù hợp theo vai trò người dùng và trạng thái đề nghị.
-
-###### 4.3.3.2.4.2. UC450_456.01.MH03 - Màn hình Xem chi tiết đề nghị kinh phí
-
-**Màn hình**:  
-![Màn hình xem chi tiết](images/UC450_Detail.png)  
-
-**Nguyên tắc hiển thị**:
-
-\- Toàn bộ thông tin nghiệp vụ trên màn hình hiển thị ở chế độ chỉ đọc, không cho phép chỉnh sửa trực tiếp tại màn hình xem chi tiết.
-
-\- Không hiển thị nút `Thêm thành phần hồ sơ mới`, không hiển thị liên kết `Xóa` tại danh sách tài liệu đính kèm.
-
-\- Đối với file đính kèm, chỉ hiển thị tên file và liên kết `Xem file`; cho phép xem file tại một tab riêng.
-
-\- Các thao tác xử lý tiếp theo được hiển thị ở thanh nút cuối màn hình theo đúng vai trò và trạng thái đề nghị.
-
-**Mô tả thông tin trên màn hình**:
-
-**I. Thông tin chung đề nghị kinh phí**
+###### 4.3.3.2.4.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Mã đề xuất kinh phí | String(50) | Không | Theo đề nghị | Chỉ đọc. Hiển thị mã đề xuất kinh phí do hệ thống cấp/lưu theo đề nghị. |
-| Loại đề nghị cấp kinh phí | Enum(String(100)) | Không | Theo đề nghị | Chỉ đọc. Giá trị hiển thị gồm "Đề nghị tạm ứng" hoặc "Đề nghị cấp kinh phí bồi thường". |
-| Ngày lập đề nghị | Date | Không | Theo đề nghị | Chỉ đọc. Hiển thị ngày lập đề nghị theo định dạng `dd/mm/yyyy`. |
-| Cán bộ đề xuất xử lý | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị cán bộ lập/cập nhật đề nghị. |
-| Nguồn kinh phí đề xuất cấp | Enum(String(100)) | Không | Theo đề nghị | Chỉ đọc. Hiển thị nguồn kinh phí đã chọn khi lập đề nghị. |
-| Cơ quan cấp phát kinh phí | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị cơ quan cấp phát kinh phí. |
-| Trạng thái đề nghị | Enum(String(50)) | Không | Theo đề nghị | Chỉ đọc. Hiển thị trạng thái đề nghị dưới dạng badge, gồm 06 trạng thái: "Chờ lập đề nghị", "Chờ duyệt", "Chờ chi trả", "Hoàn thành", "Sung quỹ nhà nước", "Bị từ chối". |
-| Mã vụ việc yêu cầu bồi thường liên kết | String(50) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị mã vụ việc yêu cầu bồi thường liên kết; cho phép mở chi tiết vụ việc gốc trong cùng tab tại module Giải quyết yêu cầu bồi thường. |
-| Tên vụ việc | String(255) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị tên vụ việc yêu cầu bồi thường liên kết. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo vụ việc liên kết | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Không | Theo vụ việc liên kết | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Địa chỉ chi tiết | Text(1000) / String(500) | Không | Theo vụ việc liên kết | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
-| Cơ quan chịu trách nhiệm | String(255) | Không | Theo vụ việc liên kết | Chỉ đọc. Kế thừa từ vụ việc yêu cầu bồi thường liên kết. |
-| Lĩnh vực gây thiệt hại | Enum(String(100)) | Không | Theo vụ việc liên kết | Chỉ đọc. Kế thừa từ vụ việc yêu cầu bồi thường liên kết, tham chiếu danh mục Lĩnh vực gây thiệt hại. |
-| Số tiền gốc theo vụ việc (VNĐ) | Decimal(18,0) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị tổng số tiền gốc theo vụ việc yêu cầu bồi thường liên kết. |
+| **Tiêu đề form** | String(200) | Không | Theo ngữ cảnh | Hiển thị động theo chế độ:<br>- Khi tạo mới: `LẬP ĐỀ NGHỊ CẤP KINH PHÍ BỒI THƯỜNG / TẠM ỨNG MỚI`.<br>- Khi cập nhật bị từ chối: `CẬP NHẬT ĐỀ NGHỊ CẤP KINH PHÍ BỒI THƯỜNG / TẠM ỨNG`. |
+| **Khối Lý do bị từ chối** | Section | - | Ẩn | Khối thông báo đặt ở phía trên cùng của form; chỉ hiển thị khi mở màn hình đối với đề xuất ở trạng thái `Bị từ chối`. Bao gồm các trường thông tin chỉ đọc dưới đây: |
+| Ngày từ chối | Date | Không | Theo dữ liệu | Chỉ đọc.<br>Định dạng `dd/mm/yyyy`.<br>Hiển thị ngày cấp có thẩm quyền thực hiện từ chối phê duyệt tờ trình. |
+| Người từ chối | String(100) | Không | Theo dữ liệu | Chỉ đọc.<br>Hiển thị họ và tên người đã thực hiện từ chối phê duyệt tờ trình. |
+| Nội dung ý kiến chỉ đạo / Lý do từ chối | Text(2000) | Không | Theo dữ liệu | Chỉ đọc.<br>Hiển thị chi tiết nội dung lý do từ chối và ý kiến chỉ đạo điều chỉnh của cấp phê duyệt. |
+| **Khối Thông tin chung tờ trình** | Section | - | - | Khối thông tin liên kết và hành chính đề xuất. |
+| Mã đề xuất kinh phí | String(50) | Có | Hệ thống tự sinh | Định dạng `KP-YYYY-XXX` (YYYY: Năm hiện tại, XXX: Số tăng dần). Khóa chỉ đọc. |
+| Ngày lập đề nghị | Date | Có | Ngày hiện tại | Định dạng `dd/mm/yyyy`. Khóa chỉ đọc. |
+| Cán bộ đề xuất xử lý | String(255) | Có | Tên tài khoản | Tên cán bộ đang đăng nhập hệ thống. Khóa chỉ đọc. |
+| Loại đề nghị | Enum(String(50)) | Có | `Đề nghị tạm ứng` | Control UI: Radio button.<br>Gồm:<br>+ Đề nghị tạm ứng<br>+ Đề nghị cấp kinh phí bồi thường<br>- Khi thay đổi loại đề nghị, hệ thống tự động chuyển đổi bảng phân rã nội dung tương ứng (Khối Bảng tạm ứng hoặc Khối Bảng cấp kinh phí bồi thường). |
+| Nguồn kinh phí đề xuất cấp | Enum(String(100)) | Có | Trống | Control UI: Dropdown/Select.<br>Gồm:<br>+ Ngân sách nhà nước cấp<br>+ Quỹ dự phòng bồi thường<br>+ Nguồn hợp pháp khác |
+| Cơ quan cấp phát kinh phí | Enum(String(255)) | Có | Trống | Control UI: Combobox có tìm kiếm.<br>Gồm:<br>+ [Mã đơn vị] - [Tên đơn vị] (lấy theo danh mục đơn vị [DM_DON_VI])<br>Người dùng chọn cơ quan tài chính có thẩm quyền cấp phát kinh phí. |
+| Mã vụ việc gốc | String(50) | Có | Trống / Theo bản ghi chọn | Control UI: Input text kết hợp Text link xem chi tiết.<br>- **Khi lập đề nghị từ Toolbar ngoài lưới**: Hiển thị ô nhập kèm nút `Tìm kiếm` và liên kết `Tìm kiếm nâng cao`.<br>- **Khi lập từ icon dòng hoặc Cập nhật đề nghị**: Tự động hiển thị mã vụ việc ở chế độ Chỉ đọc, ẩn nút `Tìm kiếm` và `Tìm kiếm nâng cao`. |
+| **Khối Chi tiết thông tin người yêu cầu bồi thường** | Section | - | - | Control UI: 02 khối thẻ hiển thị song song, tự động kế thừa từ hồ sơ vụ việc gốc ở chế độ Chỉ đọc. |
+| Họ và tên người yêu cầu bồi thường | String(255) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Tư cách người yêu cầu bồi thường | Enum(String(100)) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Giới tính | Enum(String(20)) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Ngày tháng năm sinh | Date | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc (định dạng `dd/mm/yyyy`). |
+| Số điện thoại liên hệ | String(20) | Không | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Thư điện tử (Email) | String(255) | Không | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Trạng thái người bị thiệt hại | Enum(String(20)) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Loại giấy tờ thân nhân | Enum(String(50)) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Số giấy tờ thân nhân | String(50) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Ngày cấp | Date | Không | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc (định dạng `dd/mm/yyyy`). |
+| Nơi cấp | String(255) | Không | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Quốc gia | Enum(String(50)) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Tỉnh/Thành phố | Enum(String(100)) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Phường/Xã | Enum(String(100)) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| Địa chỉ chi tiết | Text(1000) | Có | Pre-fill từ vụ việc | Chỉ đọc.<br>Lấy theo thông tin vụ việc. |
+| **Khối Bảng nội dung đề xuất cấp tạm ứng** | Section | - | - | Chỉ hiển thị khi `Loại đề nghị` là "Đề nghị tạm ứng". |
+| STT | Integer(10) | - | Tự tăng | Chỉ đọc.<br>Số thứ tự dòng. |
+| Nội dung tạm ứng | Enum(String(255)) | - | Theo hồ sơ gốc | Chỉ đọc.<br>Hiển thị loại thiệt hại có yêu cầu bồi thường trong hồ sơ gốc liên kết. |
+| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | Theo hồ sơ gốc | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). |
+| Số tiền duyệt cấp tạm ứng (VNĐ) | Decimal(18,0) | Có | Trống | Control UI: Input number.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). Quy tắc: Mức duyệt tạm ứng phải đạt tối thiểu 50% mức yêu cầu trong hồ sơ gốc. |
+| Tổng cộng tạm ứng | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). Tự động tính tổng tiền tạm ứng và hiển thị số tiền bằng chữ ngay phía dưới. |
+| **Khối Bảng nội dung đề xuất cấp kinh phí bồi thường** | Section | - | - | Chỉ hiển thị khi `Loại đề nghị` là "Đề nghị cấp kinh phí bồi thường". |
+| STT | Integer(10) | - | Tự tăng | Chỉ đọc.<br>Số thứ tự dòng. |
+| Loại thiệt hại được yêu cầu | Enum(String(255)) | - | Theo hồ sơ gốc | Chỉ đọc.<br>Hiển thị các loại thiệt hại được chấp thuận bồi thường theo Quyết định giải quyết bồi thường. |
+| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | Theo hồ sơ gốc | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). |
+| Số tiền duyệt cấp bồi thường (VNĐ) | Decimal(18,0) | Có | Trống | Control UI: Input number.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). Quy tắc: Không được vượt quá mức đề nghị trong hồ sơ gốc tương ứng. |
+| Tổng kinh phí duyệt cấp | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). Tự động tính tổng tiền duyệt cấp và hiển thị bằng chữ. |
+| Số tiền tạm ứng đã cấp | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). Tự động truy xuất tổng số tiền tạm ứng đã giải ngân trước đó cho vụ việc này. |
+| Số tiền thực nhận còn lại | Decimal(18,0) | - | Hệ thống tính | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ). Bằng Tổng kinh phí duyệt cấp trừ đi Số tiền tạm ứng đã cấp. Đây là số tiền sẽ được giải ngân chi trả 1 lần duy nhất. |
+| **Khối Người nhận bồi thường và Phương thức chi trả** | Section | - | - | Khối thông tin thụ hưởng và chi trả. |
+| Họ và tên người nhận | String(100) | Có | Pre-fill từ hồ sơ | Chỉ đọc.<br>Hiển thị họ tên người thụ hưởng nhận tiền bồi thường. |
+| Giấy tờ thân nhân | String(255) | Có | Pre-fill từ hồ sơ | Chỉ đọc.<br>Hiển thị loại giấy tờ và số hiệu giấy tờ pháp lý của người nhận. |
+| Địa chỉ | String(500) | Có | Pre-fill từ hồ sơ | Chỉ đọc.<br>Hiển thị địa chỉ liên lạc của người nhận tiền. |
+| Phương thức chi trả tiền bồi thường | Enum(String(100)) | Có | Pre-fill từ hồ sơ | Control UI: Radio button.<br>Gồm:<br>+ Chi trả trực tiếp bằng tiền mặt<br>+ Chi trả qua chuyển khoản |
+| Chủ tài khoản | String(255) | Có tùy điều kiện | Pre-fill | Chỉ hiển thị khi Phương thức chi trả tiền bồi thường là "Chi trả qua chuyển khoản".<br>Chủ tài khoản thụ hưởng nhận tiền bồi thường. |
+| Số tài khoản | String(50) | Có tùy điều kiện | Pre-fill | Chỉ hiển thị khi Phương thức chi trả tiền bồi thường là "Chi trả qua chuyển khoản".<br>Số tài khoản ngân hàng của người thụ hưởng. |
+| Tên ngân hàng | String(255) | Có tùy điều kiện | Pre-fill | Chỉ hiển thị khi Phương thức chi trả tiền bồi thường là "Chi trả qua chuyển khoản".<br>Tên ngân hàng thụ hưởng nhận tiền. |
+| Chi nhánh | String(255) | Có tùy điều kiện | Pre-fill | Chỉ hiển thị khi Phương thức chi trả tiền bồi thường là "Chi trả qua chuyển khoản".<br>Tên chi nhánh ngân hàng thụ hưởng. |
+| **Khối Nội dung tờ trình và Tài liệu gửi kèm** | Section | - | - | Khối thông tin nội dung tờ trình và hồ sơ tài liệu gửi kèm. |
+| Ý kiến đề xuất / Trích yếu nội dung tờ trình | Text(2000) | Có | Trống | Control UI: Textarea.<br>Nhập nội dung tờ trình tóm tắt căn cứ cấp phát kinh phí bồi thường. Tối đa 2000 ký tự. |
+| Bảng danh mục tài liệu gửi kèm | List(Object) | Không | Danh mục tài liệu theo loại đề nghị | Control UI: Data grid.<br>Bao gồm nút **`+ Thêm tài liệu`** cho phép bổ sung thêm dòng tài liệu ngoài danh mục mặc định. |
+| STT | Integer(10) | - | Tự tăng | Căn giữa. |
+| Tên tài liệu | String(255) | Có khi thêm dòng | Theo danh mục / Trống | Tên tài liệu theo danh mục hoặc ô nhập text cho phép nhập tên tài liệu bổ sung. |
+| File đính kèm | File | - | Theo dữ liệu | Hiển thị tên file đã tải lên (.pdf tối đa 20MB) kèm dung lượng hoặc trạng thái chưa có file. |
+| Thao tác | String(255) | - | Theo dữ liệu | Gồm các nút: `Tải lên`, liên kết `Xem file` (mở tab mới), `Xóa` (kèm Custom Modal xác nhận). |
 
-**II. Thông tin người yêu cầu bồi thường**
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Họ và tên người yêu cầu bồi thường | String(255) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị người yêu cầu bồi thường/đại diện nhận kinh phí. |
-| Tư cách người yêu cầu bồi thường | Enum(String(100)) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị tư cách người yêu cầu bồi thường. |
-| Giới tính | Enum(String(20)) | Không | Theo vụ việc liên kết | Chỉ đọc. Tham chiếu danh mục Giới tính. |
-| Ngày tháng năm sinh | Date | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị ngày sinh theo định dạng `dd/mm/yyyy`. |
-| Số điện thoại liên hệ | String(20) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị số điện thoại liên hệ, áp dụng [BR-VAL-003] khi dữ liệu được nhập/cập nhật ở màn hình nguồn. |
-| Thư điện tử (Email) | String(255) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị email, áp dụng [BR-VAL-002] khi dữ liệu được nhập/cập nhật ở màn hình nguồn. |
-| Loại giấy tờ thân nhân | Enum(String(50)) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị loại giấy tờ thân nhân. |
-| Số giấy tờ thân nhân | String(50) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị số giấy tờ thân nhân. |
-| Ngày cấp | Date | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị ngày cấp giấy tờ. |
-| Nơi cấp | String(255) | Không | Theo vụ việc liên kết | Chỉ đọc. Hiển thị nơi cấp giấy tờ. |
-| Quốc gia | Enum(String(50)) | Không | Theo vụ việc liên kết | Chỉ đọc. Tham chiếu danh mục Quốc gia. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo vụ việc liên kết | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Không | Theo vụ việc liên kết | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Địa chỉ chi tiết | Text(1000) / String(500) | Không | Theo vụ việc liên kết | Control UI: Textarea / Input text.<br>- Nhập/hiển thị số nhà, tên đường/phố, thôn/xóm/ấp... |
-
-**III. Bảng nội dung đề xuất cấp tạm ứng**
-
-Bảng này chỉ hiển thị khi `Loại đề nghị cấp kinh phí` là "Đề nghị tạm ứng".
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| STT | Integer(10) | Không | Tự tăng | Chỉ đọc. Số thứ tự dòng trong bảng. |
-| Nội dung tạm ứng | Enum(String(255)) | Không | Theo hồ sơ gốc liên kết | Chỉ đọc. Hiển thị đúng Loại thiệt hại yêu cầu bồi thường trong Hồ sơ gốc liên kết. Chỉ hiển thị các loại thiệt hại đã được tích chọn/có phát sinh yêu cầu bồi thường trong hồ sơ gốc; các loại không tích chọn thì không hiển thị. |
-| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | Không | Theo hồ sơ gốc liên kết | Chỉ đọc. Hiển thị số tiền đề nghị tương ứng với loại thiệt hại trong hồ sơ gốc. |
-| Số tiền duyệt cấp tạm ứng (VNĐ) | Decimal(18,0) | Không | Theo đề nghị | Chỉ đọc. Hiển thị số tiền đã nhập/lưu khi lập hoặc cập nhật đề nghị tạm ứng. |
-| Tổng cộng | Decimal(18,0) | Không | Hệ thống tính | Chỉ đọc. Tổng số tiền duyệt cấp tạm ứng của các dòng đang hiển thị. |
-
-**IV. Bảng nội dung đề xuất cấp kinh phí bồi thường**
-
-Bảng này chỉ hiển thị khi `Loại đề nghị cấp kinh phí` là "Đề nghị cấp kinh phí bồi thường".
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| STT | Integer(10) | Không | Tự tăng | Chỉ đọc. Số thứ tự dòng trong bảng. |
-| Loại thiệt hại được yêu cầu | Enum(String(255)) | Không | Theo hồ sơ gốc liên kết | Chỉ đọc. Hiển thị đúng Loại thiệt hại yêu cầu bồi thường trong Hồ sơ gốc liên kết. Chỉ hiển thị các loại thiệt hại đã được tích chọn/có phát sinh yêu cầu bồi thường trong hồ sơ gốc; các loại không tích chọn thì không hiển thị. |
-| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | Không | Theo hồ sơ gốc liên kết | Chỉ đọc. Hiển thị số tiền đề nghị tương ứng với loại thiệt hại trong hồ sơ gốc. |
-| Số tiền duyệt cấp bồi thường (VNĐ) | Decimal(18,0) | Không | Theo đề nghị | Chỉ đọc. Hiển thị số tiền đã nhập/lưu khi lập hoặc cập nhật đề nghị cấp kinh phí bồi thường. |
-| Tổng kinh phí duyệt cấp | Decimal(18,0) | Không | Hệ thống tính | Chỉ đọc. Tổng số tiền duyệt cấp bồi thường. |
-| Số tiền tạm ứng đã cấp | Decimal(18,0) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị số tiền tạm ứng đã cấp trước đó nếu có. |
-| Số tiền thực nhận còn lại | Decimal(18,0) | Không | Hệ thống tính | Chỉ đọc. Số tiền còn lại sau khi trừ số tiền tạm ứng đã cấp. |
-
-**V. Thông tin người nhận tạm ứng/bồi thường và phương thức chi trả**
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Họ và tên người nhận | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị người nhận tạm ứng/bồi thường. |
-| Giấy tờ thân nhân | String(100) | Không | Theo đề nghị | Chỉ đọc. Hiển thị thông tin giấy tờ người nhận. |
-| Địa chỉ | String(500) | Không | Theo đề nghị | Chỉ đọc. Hiển thị địa chỉ người nhận. |
-| Phương thức nhận tiền | Enum(String(50)) | Không | Theo đề nghị | Chỉ đọc. Giá trị gồm "Chuyển khoản qua ngân hàng" hoặc "Tiền mặt". |
-| Chủ tài khoản | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị khi phương thức nhận tiền là "Chuyển khoản qua ngân hàng". |
-| Số tài khoản | String(50) | Không | Theo đề nghị | Chỉ đọc. Hiển thị khi phương thức nhận tiền là "Chuyển khoản qua ngân hàng". |
-| Tên ngân hàng | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị khi phương thức nhận tiền là "Chuyển khoản qua ngân hàng". |
-| Chi nhánh | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị khi phương thức nhận tiền là "Chuyển khoản qua ngân hàng". |
-
-**VI. Nội dung tờ trình và tài liệu gửi kèm**
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Ý kiến đề xuất / Trích yếu nội dung tờ trình | Text(2000) | Không | Theo đề nghị | Chỉ đọc. Hiển thị nội dung tờ trình đã lưu. |
-| STT tài liệu | Integer(10) | Không | Tự tăng | Chỉ đọc. Số thứ tự dòng tài liệu. |
-| Thành phần hồ sơ / Tên tài liệu | String(255) | Không | Theo đề nghị | Chỉ đọc. Hiển thị tên tài liệu gửi kèm. |
-| File đính kèm | File | Không | Theo đề nghị | Chỉ đọc. Hiển thị tên file đã đính kèm; cho phép xem file tại một tab riêng. |
-| Thao tác tài liệu | String(100) | Không | Theo từng file | Chỉ hiển thị liên kết `Xem file`; không hiển thị liên kết `Xóa` tại màn hình xem chi tiết. |
-
-**VII. Thông tin xét duyệt tờ trình**
-
-Khối này hiển thị khi đề nghị đã phát sinh dữ liệu phê duyệt/từ chối hoặc trạng thái thuộc nhóm "Bị từ chối", "Chờ chi trả", "Sung quỹ nhà nước", "Hoàn thành".
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Ý kiến phê duyệt / Lý do từ chối tờ trình | Text(2000) | Không | Theo dữ liệu xét duyệt | Chỉ đọc. Hiển thị ý kiến phê duyệt hoặc lý do từ chối của lãnh đạo. |
-| Lịch sử ý kiến Lãnh đạo | Text(4000) | Không | Theo dữ liệu xử lý | Chỉ đọc. Hiển thị lịch sử ý kiến lãnh đạo nếu đề nghị có phát sinh từ chối/phê duyệt trước đó. |
-| Thời gian xử lý | Datetime | Không | Theo dữ liệu xử lý | Chỉ đọc. Hiển thị thời điểm phát sinh ý kiến xử lý. |
-| Người xử lý | String(255) | Không | Theo dữ liệu xử lý | Chỉ đọc. Hiển thị lãnh đạo/cán bộ đã thực hiện tác vụ xử lý. |
-
-**VIII. Thông tin thông báo nhận kinh phí và hạn 3 năm**
-
-Khối này hiển thị đối với đề nghị ở trạng thái "Chờ chi trả", "Sung quỹ nhà nước" hoặc "Hoàn thành" nếu đã phát sinh thông tin thông báo. Đối với trạng thái "Chờ chi trả", cán bộ được phép lưu/cập nhật thông tin thông báo để bắt đầu tính hạn 3 năm. Khi đã lưu thông báo, nút hiển thị là "Cập nhật thông báo"; khi chưa có thông tin thông báo, nút hiển thị là "Lưu thông báo".
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Ngày người yêu cầu nhận thông báo | Date | Có khi lưu/cập nhật thông báo | Trống hoặc theo dữ liệu thông báo | Ngày bắt đầu tính hạn nhận kinh phí 3 năm. Định dạng `dd/mm/yyyy`. Khi hồ sơ không ở trạng thái "Chờ chi trả", trường hiển thị Chỉ đọc. |
-| Hạn nhận kinh phí | Date | Không | Hệ thống tính | Chỉ đọc. Bằng ngày người yêu cầu nhận thông báo cộng 3 năm. Đây là mốc hệ thống dùng để cảnh báo khoản chi chưa hoàn thành và xác định điều kiện sung quỹ Nhà nước. |
-| Tệp chứng minh đã thông báo | File | Có khi lưu/cập nhật thông báo | Trống hoặc theo dữ liệu thông báo | Cho phép upload đồng thời nhiều file chứng minh đã thông báo. Hỗ trợ xem file tại một tab riêng và xóa file trước khi lưu. Kiểm tra file theo [BR-FILE-010]. Khi hồ sơ không ở trạng thái "Chờ chi trả", danh sách file hiển thị Chỉ đọc. |
-| Ghi chú thông báo | Text(1000) | Không | Trống hoặc theo dữ liệu thông báo | Nhập ghi chú quá trình gửi/nhận thông báo. Khi hồ sơ không ở trạng thái "Chờ chi trả", trường hiển thị Chỉ đọc. |
-
-**IX. Thông tin theo dõi hạn nhận kinh phí / sung quỹ**
-
-Khối này hiển thị khi đã phát sinh ngày người yêu cầu nhận thông báo. Hệ thống tự động đối chiếu hạn 3 năm với số tiền còn chưa chi trả để hiển thị trạng thái theo dõi.
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Số tiền còn phải chi (VNĐ) | Decimal(18,0) | Không | Hệ thống tính | Chỉ đọc. Bằng tổng số tiền được duyệt trừ số tiền thực tế đã chi trả. |
-| Tình trạng hạn nhận kinh phí | String(255) | Không | Hệ thống tính | Chỉ đọc. Hiển thị "Cần theo dõi" khi còn trong hạn cảnh báo, "Đủ điều kiện lập đề nghị sung quỹ" khi đã quá hạn 3 năm và còn số tiền chưa chi trả, hoặc "Đã sung quỹ Nhà nước" khi trạng thái hồ sơ là "Sung quỹ nhà nước". |
-| Số ngày quá hạn/còn hạn | Integer(10) | Không | Hệ thống tính | Chỉ đọc. Nếu quá hạn, hiển thị số ngày quá hạn. Nếu chưa quá hạn nhưng còn trong ngưỡng cảnh báo, hiển thị số ngày còn lại đến hạn. |
-
-**X. Thông tin sung quỹ Nhà nước**
-
-Khối này hiển thị khi đề nghị đã phát sinh dữ liệu sung quỹ hoặc khi cán bộ chọn thao tác "Sung quỹ" đối với khoản chi đủ điều kiện: đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái là "Chờ chi trả". Khi mở từ thao tác "Sung quỹ", hệ thống cho phép nhập dữ liệu; khi hồ sơ ở trạng thái "Sung quỹ nhà nước", toàn bộ khối hiển thị Chỉ đọc.
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Số chứng từ / quyết định sung quỹ | String(100) | Có khi hoàn thành sung quỹ | Trống hoặc theo dữ liệu sung quỹ | Nhập số chứng từ/quyết định sung quỹ. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", trường hiển thị Chỉ đọc. |
-| Ngày sung quỹ | Date | Có khi hoàn thành sung quỹ | Ngày hiện tại hoặc theo dữ liệu sung quỹ | Định dạng `dd/mm/yyyy`. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", trường hiển thị Chỉ đọc. |
-| Số tiền sung quỹ (VNĐ) | Decimal(18,0) | Có khi hoàn thành sung quỹ | Số tiền còn phải chi | Số tiền sung quỹ phải bằng số tiền còn phải chi tại thời điểm thực hiện. Kiểm tra số tiền dương theo [BR-VAL-010]. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", trường hiển thị Chỉ đọc. |
-| Căn cứ / lý do sung quỹ | Text(2000) | Có khi hoàn thành sung quỹ | Gợi ý theo điều kiện quá hạn | Nhập căn cứ/lý do sung quỹ do quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo nhưng chưa hoàn thành chi trả. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", trường hiển thị Chỉ đọc. |
-| Tài liệu liên quan | File | Có khi hoàn thành sung quỹ | Trống hoặc theo dữ liệu sung quỹ | Cho phép upload đồng thời nhiều tài liệu liên quan đến sung quỹ. Hỗ trợ xem file tại một tab riêng và xóa file trước khi hoàn thành sung quỹ. Kiểm tra file theo [BR-FILE-010]. Khi hồ sơ ở trạng thái "Sung quỹ nhà nước", danh sách file hiển thị Chỉ đọc. |
-
-**Chức năng trên màn hình**:
+###### 4.3.3.2.4.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Lập đề nghị | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ lập đề nghị" và người dùng là Chuyên viên. Khi chọn, hệ thống mở **UC450_456.01.MH02 - Lập đề nghị cấp kinh phí/Tạm ứng** ở chế độ biên tập. |
-| 2 | Cập nhật đề nghị | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Bị từ chối" và người dùng là Chuyên viên. Khi chọn, hệ thống mở **UC450_456.01.MH02 - Lập đề nghị cấp kinh phí/Tạm ứng** ở chế độ cập nhật, nạp dữ liệu đề nghị đã lưu và hiển thị lý do từ chối để cán bộ điều chỉnh. |
-| 3 | Cập nhật chi trả | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả" và người dùng là Chuyên viên. Khi chọn, hệ thống mở **UC450_456.01.MH05 - Cập nhật kết quả chi trả thực tế**. |
-| 4 | Lưu thông báo | Nút trên khối thông báo | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả", người dùng là Chuyên viên và chưa có thông tin thông báo nhận kinh phí. |
-| | | | Trường hợp bỏ trống trường bắt buộc: Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]/[MSG-ERR-FILE-001]/[MSG-ERR-FILE-002] và không lưu thông báo. |
-| | | | Trường hợp hợp lệ: Cán bộ nhập ngày người yêu cầu nhận thông báo và tải lên tệp chứng minh. Hệ thống lưu thông tin thông báo, tự động tính hạn nhận kinh phí bằng ngày nhận thông báo cộng 3 năm, đổi nút thành "Cập nhật thông báo" và cập nhật lại cột "Hạn nhận / Sung quỹ" trên danh sách. |
-| 5 | Cập nhật thông báo | Nút trên khối thông báo | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ chi trả", người dùng là Chuyên viên và đã có thông tin thông báo nhận kinh phí. |
-| | | | Trường hợp bỏ trống trường bắt buộc: Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]/[MSG-ERR-FILE-002] và không cập nhật thông báo. |
-| | | | Trường hợp hợp lệ: Cán bộ chỉnh sửa thông tin thông báo đã lưu. Hệ thống cập nhật ngày nhận thông báo, danh sách file chứng minh, ghi chú, tự động tính lại hạn 3 năm và cập nhật lại cột "Hạn nhận / Sung quỹ" trên danh sách. |
-| 6 | Sung quỹ | Nút | Chỉ hiển thị khi người dùng là Chuyên viên, khoản kinh phí đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo, còn số tiền chưa chi trả và trạng thái là "Chờ chi trả". Khi chọn, hệ thống mở khối **X. Thông tin sung quỹ Nhà nước**, tự động gợi ý số tiền sung quỹ bằng số tiền còn phải chi và hiển thị nút "Hoàn thành sung quỹ". |
-| 7 | Hoàn thành sung quỹ | Nút | Chỉ hiển thị sau khi cán bộ chọn nút "Sung quỹ" và khối **X. Thông tin sung quỹ Nhà nước** đang ở chế độ nhập liệu. |
-| | | | Trường hợp bỏ trống trường bắt buộc: Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010]. Hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]/[MSG-ERR-FILE-001]/[MSG-ERR-FILE-002] và không lưu sung quỹ. |
-| | | | Trường hợp dữ liệu không hợp lệ: Ngày sung quỹ không đúng định dạng `dd/mm/yyyy` hoặc số tiền sung quỹ không phải số dương theo [BR-VAL-010], hoặc số tiền sung quỹ khác số tiền còn phải chi. Hệ thống hiển thị cảnh báo lỗi tương ứng và không lưu sung quỹ. |
-| | | | Trường hợp hợp lệ: Cán bộ nhập đầy đủ số chứng từ/quyết định sung quỹ, ngày sung quỹ, số tiền sung quỹ, căn cứ/lý do và tài liệu liên quan. Hệ thống lưu thông tin sung quỹ, chuyển trạng thái đề nghị thành "Sung quỹ nhà nước", cập nhật số tiền thực tế đã chi trả/số tiền còn phải chi, đóng màn hình chi tiết và làm mới danh sách. |
-| 8 | Phê duyệt | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ duyệt" và người dùng là Lãnh đạo. Khi chọn, hệ thống mở **UC450_456.01.MH04 - Xét duyệt tờ trình cấp kinh phí bồi thường** để phê duyệt. |
-| 9 | Từ chối | Nút | Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ duyệt" và người dùng là Lãnh đạo. Khi chọn, hệ thống mở **UC450_456.01.MH04 - Xét duyệt tờ trình cấp kinh phí bồi thường** để nhập lý do từ chối. |
-| 10 | Xem file | Link | Cho phép xem file tại một tab riêng. |
-| 11 | Đóng | Nút | Hệ thống đóng màn hình xem chi tiết và quay về danh sách đề nghị kinh phí. |
-
----
-##### 4.3.3.2.5. UC450_456.04 - Phê duyệt / Từ chối đề xuất cấp kinh phí (Lãnh đạo)
-
-###### 4.3.3.2.5.1. Mục đích
-
-\- Cho phép Lãnh đạo cơ quan xem xét tờ trình đề xuất kinh phí bồi thường/tạm ứng, đưa ra ý kiến chỉ đạo và thực hiện phê duyệt hoặc từ chối cấp phát kinh phí.  
-
-###### 4.3.3.2.5.2. UC450_456.01.MH04 - Màn hình Xét duyệt tờ trình cấp kinh phí bồi thường
-
-**Màn hình**:  
-![Màn hình xét duyệt](images/UC450_Approval.png)  
-
-**Mô tả thông tin trên màn hình**:  
-\- Màn hình hiển thị toàn bộ thông tin tờ trình ở trạng thái Chỉ đọc tương tự như màn hình Xem chi tiết.  
-\- Hiển thị thêm khối: **IV. PHÊ DUYỆT ĐỀ XUẤT (DÀNH CHO LÃNH ĐẠO)** ở phía dưới biểu mẫu:  
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Ý kiến phê duyệt / Lý do từ chối tờ trình | Text(2000) | Có | Trống | Nhập nội dung phê duyệt hoặc lý do từ chối. Tối đa 2000 ký tự. |
-
-**Chức năng trên màn hình**:  
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Phê duyệt | Nút (Footer) | Trường hợp nhập đầy đủ ý kiến chỉ đạo và bấm Phê duyệt:<br>+ Hiển thị popup xác nhận tùy chỉnh: "Bạn có chắc chắn muốn phê duyệt cấp phát kinh phí bồi thường cho tờ trình này không?".<br>+ Nếu chọn Đồng ý, hệ thống đổi trạng thái đề xuất thành "Chờ chi trả".<br>+ Ghi nhận ý kiến chỉ đạo, đóng biểu mẫu, hiển thị thông báo thành công và cập nhật trạng thái trên lưới.<br>+ Ghi log thao tác ký số phê duyệt vào nhật ký hệ thống [III.6]. |
-| | | | Trường hợp ô Ý kiến phê duyệt bị bỏ trống:<br>+ Vi phạm quy tắc [BR-VAL-001].<br>+ Thực hiện bôi đỏ viền ô textarea, hiển thị cảnh báo: "Đây là trường bắt buộc" và focus con trỏ vào ô nhập. Không duyệt hồ sơ. |
-| 2 | Từ chối | Nút (Footer) | Trường hợp nhập đầy đủ lý do từ chối và bấm Từ chối:<br>+ Hiển thị popup xác nhận tùy chỉnh: "Bạn có chắc chắn muốn từ chối phê duyệt tờ trình cấp kinh phí bồi thường này không?".<br>+ Nếu chọn Đồng ý, hệ thống đổi trạng thái đề xuất thành "Bị từ chối".<br>+ Đóng biểu mẫu, hiển thị thông báo thành công và cập nhật trạng thái trên lưới.<br>+ Ghi log từ chối phê duyệt vào nhật ký hệ thống [III.6]. |
-| | | | Trường hợp ô Lý do từ chối bị bỏ trống:<br>+ Vi phạm quy tắc [BR-VAL-001].<br>+ Thực hiện bôi đỏ viền ô textarea, hiển thị cảnh báo: "Đây là trường bắt buộc" và focus con trỏ vào ô nhập. Không từ chối hồ sơ. |
-| 3 | Đóng | Nút (Footer) | Người dùng nhấn nút Đóng.<br>+ Hệ thống thực hiện đóng modal xét duyệt ngay lập tức, hủy bỏ các thay đổi tạm thời trên ô ý kiến chỉ đạo. |
+| 1 | Tìm kiếm (tại trường Mã vụ việc gốc) | Button | - Nếu chưa nhập dữ liệu tại ô tìm kiếm: Vi phạm quy tắc [BR-VAL-001], hệ thống hiển thị thông báo lỗi [MSG-ERR-VAL-001] và không mở popup.<br>- Nếu đã nhập dữ liệu: Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433110-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan) (thuộc Module Giải quyết yêu cầu bồi thường), tự động điền giá trị đang nhập vào trường `Mã vụ việc` trên Popup và kích hoạt tìm kiếm.<br>- Khi người dùng chọn vụ việc trên Popup: Hệ thống tự động điền mã vụ việc vào form chính, đồng thời kế thừa toàn bộ thông tin tại Khối Chi tiết thông tin người yêu cầu bồi thường và nạp mức đề nghị gốc vào bảng phân rã kinh phí. |
+| 2 | Tìm kiếm nâng cao (tại trường Mã vụ việc gốc) | Button | - Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433110-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan) (thuộc Module Giải quyết yêu cầu bồi thường) ở chế độ mở rộng đầy đủ các tiêu chí lọc.<br>- Tự động kế thừa giá trị mã vụ việc đang nhập ở form chính (nếu có).<br>- Cho phép Cán bộ nhập thêm các tiêu chí lọc và bấm nút `Tìm kiếm` trên Popup.<br>- Khi người dùng chọn vụ việc trên Popup: Hệ thống tự động điền mã vụ việc vào form chính, đồng thời kế thừa toàn bộ thông tin người yêu cầu và nạp mức đề nghị gốc vào bảng phân rã kinh phí. |
+| 3 | Liên kết Mã vụ việc gốc | Link | Mở màn hình [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) (thuộc Module Giải quyết yêu cầu bồi thường) trong một tab trình duyệt mới ở chế độ Chỉ xem. |
+| 4 | + Thêm tài liệu | Button | Chèn thêm 01 dòng trống vào cuối bảng danh mục tài liệu gửi kèm. |
+| 5 | Tải lên | Button (Dòng tài liệu) | Khi người dùng click nút "Tải lên" tại dòng tài liệu, hệ thống mở hộp thoại chọn tệp tin từ thiết bị và thực hiện kiểm tra:<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng `.pdf`, vi phạm quy chuẩn [BR-FILE-010], hệ thống hiển thị thông báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp tin vượt quá 20MB, vi phạm quy chuẩn [BR-FILE-010], hệ thống hiển thị thông báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Hệ thống tải tệp tin lên thành công, cập nhật cột `File đính kèm` hiển thị tên tệp tin kèm dung lượng, kích hoạt liên kết `Xem file` và nút `Xóa` tại cột Thao tác, đồng thời hiển thị thông báo thành công [MSG-SUC-BTNN-KP-008]. |
+| 6 | Xem file | Link (Dòng tài liệu) | Mở xem nội dung tệp tin đính kèm tại tab trình duyệt mới. |
+| 7 | Xóa (tại dòng tài liệu) | Icon/Button | Mở Custom Confirmation Modal xác nhận trước khi gỡ file hoặc xóa dòng tài liệu tự bổ sung. |
+| 8 | Trình phê duyệt | Button (Footer) | Hệ thống kiểm tra dữ liệu trước khi lưu:<br>- **TH1 - Bỏ trống trường bắt buộc hoặc thiếu tài liệu đính kèm**: Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010], tô viền đỏ `.is-invalid` ô trống đầu tiên, hiển thị thông báo lỗi "Đây là trường bắt buộc" ngay dưới ô nhập và tự động focus con trỏ vào ô lỗi đó. Không lưu dữ liệu.<br>- **TH2 - Mức duyệt kinh phí không hợp lệ**: Nếu là Đề nghị tạm ứng mà mức duyệt nhỏ hơn 50% mức yêu cầu gốc, hoặc Đề nghị cấp kinh phí mà mức duyệt vượt quá mức yêu cầu gốc trong hồ sơ vụ việc, vi phạm [BR-VAL-010], tô viền đỏ ô nhập số tiền bị vi phạm, hiển thị thông báo lỗi [MSG-ERR-BTNN-KP-001] ngay dưới ô nhập và tự động focus con trỏ. Không lưu dữ liệu.<br>- **TH Hợp lệ**: Hệ thống thực hiện lưu dữ liệu và điều chuyển trạng thái theo ngữ cảnh:<br>  + *Trường hợp Lập mới đề nghị*: Lưu bản ghi đề xuất mới vào CSDL, tự động cấp mã đề xuất mới `KP-YYYY-XXX`, chuyển trạng thái đề xuất thành `Chờ duyệt`, ghi log lịch sử lập mới tờ trình vào nhật ký hệ thống, đóng modal form, hiển thị thông báo thành công [MSG-SUC-BTNN-KP-003] và tải lại bảng danh sách đề xuất.<br>  + *Trường hợp Cập nhật đề nghị (khi hồ sơ ở trạng thái `Bị từ chối`)*: Cập nhật nội dung tờ trình đã chỉnh sửa, chuyển trạng thái đề xuất từ `Bị từ chối` sang `Chờ duyệt`, ghi log lịch sử chỉnh sửa và trình lại tờ trình, đóng modal form, hiển thị thông báo thành công [MSG-SUC-BTNN-KP-007] và tải lại bảng danh sách đề xuất. |
+| 9 | Hủy | Button (Footer) | Mở Custom Confirmation Modal với tiêu đề *"Xác nhận hủy bỏ"*, nội dung *"Bạn có chắc chắn muốn hủy bỏ các thay đổi đang nhập và đóng biểu mẫu không?"*.<br>- Khi người dùng chọn "Đồng ý": Hệ thống đóng màn hình và hủy bỏ các thay đổi đang nhập.<br>- Khi người dùng chọn "Hủy bỏ": Đóng modal xác nhận và giữ nguyên màn hình cùng dữ liệu đang nhập. |
 
 ---
 
-##### 4.3.3.2.6. UC450_456.05 - Cập nhật kết quả chi trả thực tế (Cán bộ)
+##### 4.3.3.2.5. MH03 - Màn hình Cập nhật kết quả chi trả thực tế
 
-###### 4.3.3.2.6.1. Mục đích
+###### 4.3.3.2.5.1. Màn hình
 
-\- Cho phép Chuyên viên cập nhật kết quả giải ngân và chi trả kinh phí/tạm ứng thực tế đến tay người nhận bồi thường để chuyển tiếp hồ sơ sang trạng thái Hoàn thành.  
+![Màn hình cập nhật chi trả](images/UC450_Payout.png)
 
-###### 4.3.3.2.6.2. UC450_456.01.MH05 - Màn hình Cập nhật kết quả chi trả thực tế
-
-**Màn hình**:  
-![Màn hình cập nhật chi trả](images/UC450_Payout.png)  
-
-**Mô tả thông tin trên màn hình**:  
-\- Màn hình hiển thị thông tin chung của tờ trình và bảng phân rã kinh phí đã duyệt ở chế độ chỉ đọc.  
-\- Tại phần Chờ chi trả của Đề nghị cấp kinh phí bồi thường, hiển thị thêm khối thông tin **Thông tin người nhận và Phương thức chi trả** ở chế độ chỉ đọc (bao gồm các thông tin họ tên người nhận, giấy tờ thân nhân, địa chỉ, phương thức nhận tiền và chi tiết tài khoản ngân hàng nếu có).  
-\- Hiển thị thêm khối: **V. THÔNG TIN CHI TRẢ THỰC TẾ** ở phía dưới biểu mẫu:  
+###### 4.3.3.2.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Ngày thực hiện chi trả | Date | Có | Ngày hiện tại | Định dạng `dd/mm/yyyy`. Chỉ hiển thị ngày nhỏ hơn ngày hiện tại [BR-VAL-008]. |
-| Số tiền thực tế chi trả (VNĐ) | Decimal(18,0) | Có | Pre-fill số tiền còn phải chi | Cho phép chỉnh sửa. Tự động format phân tách hàng ngàn. Chỉ cho phép nhập số dương và không được vượt quá số tiền còn phải chi tại thời điểm chi trả [BR-VAL-010]. |
-| Phương thức chi trả thực tế | Enum(String(50)) | Có | Chuyển khoản qua ngân hàng | Lựa chọn phương thức gồm:<br>+ Chuyển khoản qua ngân hàng<br>+ Tiền mặt |
-| **Nếu chọn: Chuyển khoản qua ngân hàng** | | | | Hiển thị thêm các trường thông tin ngân hàng bên dưới: |
-| Số tài khoản chuyển | String(255) | Có | Trống | Nhập số tài khoản ngân hàng thực hiện chuyển tiền bồi thường. |
-| Tên chủ tài khoản nhận | String(255) | Có | Tên người nhận | Họ tên chủ tài khoản nhận tiền bồi thường. |
-| Tên ngân hàng nhận | String(255) | Có | Trống | Tên ngân hàng nhận. |
-| Chi nhánh | String(255) | Có | Trống | Tên chi nhánh ngân hàng nhận. |
-| **Nếu chọn: Tiền mặt** | | | | Hiển thị thêm trường thông tin biên lai bên dưới: |
-| Số biên lai nhận tiền mặt | Decimal(18,0) | Có | Trống | Nhập số hiệu biên lai chi tiền mặt. |
-| Ý kiến / Nội dung thực hiện chi trả | Text(1000) | Không | Trống | Nhập nội dung ghi chú quá trình chi trả. Tối đa 1000 ký tự. |
-| Chứng từ chi trả đính kèm | File | Có | Trống | Tải lên file chứng từ giải ngân (.pdf), dung lượng tối đa 20MB [BR-FILE-010]. Hiển thị link "Xem file" và "Xóa" ngay sau khi tải lên thành công. |
-| **VI. Thông tin thông báo nhận kinh phí và hạn 3 năm** | | | | Hiển thị trong màn hình cập nhật kết quả chi trả để cán bộ ghi nhận thông tin thông báo cho trường hợp người yêu cầu bồi thường chưa nhận hoặc chưa nhận đủ kinh phí. |
-| Ngày người yêu cầu nhận thông báo | Date | Có khi lưu thông tin thông báo | Trống hoặc theo dữ liệu đã lưu | Ngày bắt đầu tính hạn nhận kinh phí 3 năm. Định dạng `dd/mm/yyyy`. |
-| Hạn nhận kinh phí | Date | Không | Hệ thống tính | Chỉ đọc. Bằng ngày người yêu cầu nhận thông báo cộng 3 năm. |
-| Tệp chứng minh đã thông báo | File | Có khi lưu thông tin thông báo | Trống hoặc theo dữ liệu đã lưu | Cho phép upload file chứng minh đã thông báo. Hỗ trợ xem file tại một tab riêng và xóa file trước khi lưu. Kiểm tra file theo [BR-FILE-010]. |
-| Ghi chú thông báo | Text(1000) | Không | Trống hoặc theo dữ liệu đã lưu | Nhập ghi chú quá trình gửi/nhận thông báo. |
-| **VII. Theo dõi hạn nhận kinh phí / sung quỹ** | | | | Hiển thị khi đã có ngày người yêu cầu nhận thông báo và hồ sơ còn số tiền chưa chi trả. |
-| Số tiền còn phải chi (VNĐ) | Decimal(18,0) | Không | Hệ thống tính | Chỉ đọc. Bằng tổng số tiền được duyệt trừ số tiền thực tế đã chi trả. |
-| Tình trạng hạn nhận kinh phí | String(255) | Không | Hệ thống tính | Chỉ đọc. Hiển thị tình trạng theo dõi hạn 3 năm: còn hạn/cần theo dõi, đủ điều kiện sung quỹ hoặc đã sung quỹ Nhà nước (trạng thái "Sung quỹ nhà nước"). |
-| Chứng từ sung quỹ | String(100) | Không | Theo dữ liệu sung quỹ | Chỉ đọc. Hiển thị số chứng từ/quyết định sung quỹ dưới dạng văn bản tóm tắt (không phải liên kết xem file) khi hồ sơ đã phát sinh thông tin sung quỹ. Tài liệu sung quỹ đầy đủ (có thể xem file) được quản lý tại khối X. Thông tin sung quỹ Nhà nước của Màn hình Xem chi tiết [UC450_456.01.MH03]. |
+| **1. Khối Thông tin chung đề nghị kinh phí** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Mã đề xuất kinh phí | String(50) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại đề nghị cấp kinh phí | Enum(String(100)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày lập đề nghị | Date | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cán bộ đề xuất xử lý | String(255) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nguồn kinh phí đề xuất cấp | Enum(String(100)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cơ quan cấp phát kinh phí | Enum(String(255)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Trạng thái đề nghị | Enum(String(50)) | Không | `Chờ chi trả` | Control UI: Badge trạng thái. Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mã vụ việc gốc | String(50) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết xem chi tiết vụ việc gốc. |
+| Tên vụ việc | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cơ quan chịu trách nhiệm | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Lĩnh vực gây thiệt hại | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số tiền gốc theo vụ việc (VNĐ) | Decimal(18,0) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **2. Khối Thông tin người yêu cầu bồi thường** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Họ và tên người yêu cầu bồi thường | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tư cách người yêu cầu bồi thường | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Giới tính | Enum(String(20)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày tháng năm sinh | Date | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số điện thoại liên hệ | String(20) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thư điện tử (Email) | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Trạng thái người bị thiệt hại | Enum(String(20)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại giấy tờ thân nhân | Enum(String(50)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số giấy tờ thân nhân | String(50) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày cấp | Date | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nơi cấp | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Quốc gia | Enum(String(50)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Phường/Xã | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Địa chỉ chi tiết | Text(1000) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| **3. Khối Bảng nội dung cấp tạm ứng** | Section | - | Thu gọn | Hiển thị khi Loại đề nghị là "Đề nghị tạm ứng". Mặc định ở trạng thái Thu gọn (Collapsed). |
+| STT | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nội dung tạm ứng | String(500) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền duyệt cấp tạm ứng (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tổng cộng tạm ứng (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **4. Khối Bảng nội dung cấp kinh phí bồi thường** | Section | - | Thu gọn | Hiển thị khi Loại đề nghị là "Đề nghị cấp kinh phí bồi thường". Mặc định ở trạng thái Thu gọn (Collapsed). |
+| STT | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại thiệt hại được yêu cầu | Enum(String(255)) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền duyệt cấp bồi thường (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tổng kinh phí duyệt cấp (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền tạm ứng đã cấp (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền thực nhận còn lại (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **5. Khối Người nhận bồi thường và Phương thức chi trả** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Họ và tên người nhận bồi thường | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số giấy tờ thân nhân | String(50) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Địa chỉ người nhận bồi thường | Text(1000) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Phương thức chi trả tiền bồi thường | Enum(String(100)) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số tài khoản chuyển | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
+| Tên chủ tài khoản nhận | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
+| Tên ngân hàng | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
+| Chi nhánh | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
+| **6. Khối Nội dung tờ trình và Tài liệu gửi kèm** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Ý kiến đề xuất / Trích yếu nội dung tờ trình | Text(2000) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Bảng danh mục tài liệu gửi kèm | List(Object) | - | - | Control UI: Data grid. Dạng chỉ đọc - theo thông tin đề nghị. |
+| STT (trong bảng tài liệu) | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tên loại tài liệu | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tệp tin đính kèm | File | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thao tác tệp | String(100) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết "Xem file" và "Tải file". |
+| **7. Khối Thông tin xét duyệt tờ trình** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Ý kiến phê duyệt tờ trình | Text(2000) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Lịch sử ý kiến phê duyệt | Text(4000) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thời gian xét duyệt | Datetime | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy HH:mm`. |
+| Người xét duyệt | String(255) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| **8. Khối Thông tin thông báo nhận kinh phí và hạn 3 năm** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin hoặc thực hiện Lưu/Cập nhật thông báo nhận tiền. |
+| Ngày người yêu cầu nhận thông báo | Date | Có tùy điều kiện | Trống hoặc theo dữ liệu | Control UI: DatePicker `dd/mm/yyyy`.<br>Ngày người yêu cầu nhận được thông báo chi trả kinh phí. Không được lớn hơn ngày hiện tại theo [BR-VAL-008]. Bắt buộc khi bấm "Lưu thông báo" tại khối (không bắt buộc đối với thao tác hoàn thành chi trả tại Khối 10). |
+| Hạn nhận kinh phí | Date | Không | Hệ thống tính | Chỉ đọc.<br>Định dạng `dd/mm/yyyy`.<br>Hệ thống tự động tính bằng Ngày người yêu cầu nhận thông báo cộng 03 năm (nếu đã có ngày nhận thông báo). |
+| Tệp chứng minh đã thông báo | File | Có tùy điều kiện | Trống hoặc theo dữ liệu | Control UI: Upload file.<br>Tải lên file văn bản/phiếu báo phát có chữ ký xác nhận của người nhận bồi thường.<br>Định dạng tệp tin cho phép: `.pdf`, dung lượng tối đa 20MB theo [BR-FILE-010].<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng `.pdf`, vi phạm quy chuẩn [BR-FILE-010], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp tin vượt quá 20MB, vi phạm quy chuẩn [BR-FILE-010], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Tải tệp tin lên thành công, hiển thị tên file kèm liên kết "Xem file" (mở tab mới) và nút "Xóa". Bắt buộc khi bấm "Lưu thông báo" tại khối. |
+| Ghi chú thông báo | Text(1000) | Không | Trống hoặc theo dữ liệu | Control UI: Textarea.<br>Nhập ghi chú chi tiết quá trình gửi và nhận thông báo. Tối đa 1000 ký tự. |
+| Lưu thông báo | Button | - | - | Hiển thị tại khối khi hồ sơ chưa có dữ liệu thông báo hoặc khi đang ở chế độ chỉnh sửa thông báo (sau khi bấm "Cập nhật thông báo"). |
+| Cập nhật thông báo | Button | - | - | Hiển thị tại khối khi ĐÃ CÓ dữ liệu thông báo trước đó ở chế độ xem. Cho phép mở lại các ô nhập tại Khối 8 để Cán bộ điều chỉnh. |
+| Hủy | Button | - | - | Hiển thị khi đang ở chế độ chỉnh sửa thông báo tại Khối 8. Khôi phục lại dữ liệu thông báo đã lưu gần nhất và đóng chế độ sửa. |
+| **9. Khối Theo dõi hạn nhận kinh phí / Sung quỹ** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. Căn cứ Điều 45 Luật Trách nhiệm bồi thường của Nhà nước. |
+| Số tiền kinh phí chưa đến nhận (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tình trạng hạn nhận kinh phí | Enum(String(100)) | - | Hệ thống tính | Control UI: Badge/Text.<br>Dạng chỉ đọc - hệ thống tự động tính toán.<br>Gồm:<br>+ Trong thời hạn 3 năm<br>+ Sắp đến hạn 3 năm<br>+ Đã quá hạn 3 năm (Đủ điều kiện sung quỹ)<br>+ Đã sung quỹ nhà nước |
+| Thời gian còn lại / Số ngày quá hạn | Integer(10) | - | Hệ thống tính | Dạng chỉ đọc - hệ thống tính toán. Căn lề phải. Hiển thị "Còn X ngày" (nếu trong hạn) hoặc "Quá hạn X ngày" (chữ đỏ nổi bật nếu đã quá hạn 03 năm theo Điều 45 Luật TNBTCNN). |
+| **10. Khối Thông tin Kết quả chi trả thực tế** | Section | - | Mở rộng | Mặc định ở trạng thái Mở rộng (Expanded) và tự động focus để Cán bộ nhập liệu kết quả chi trả 1 lần duy nhất toàn bộ 100% kinh phí. |
+| Ngày thực hiện chi trả | Date | Có | Ngày hiện tại | Control UI: DatePicker `dd/mm/yyyy`.<br>Ngày thực tế giải ngân tiền bồi thường. Bắt buộc nhập, không được lớn hơn ngày hiện tại [BR-VAL-008]. |
+| Số tiền thực tế chi trả (VNĐ) | Decimal(18,0) | Có | 100% số tiền thực nhận | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ).<br>Hệ thống tự động hiển thị và cố định chính xác bằng 100% Số tiền thực nhận được duyệt cấp chi trả. Áp dụng quy tắc chi trả một lần trọn gói (không chi trả nhiều đợt). |
+| Phương thức chi trả thực tế | Enum(String(100)) | Có | Theo đề xuất | Control UI: Radio button.<br>Gồm:<br>+ Chi trả qua chuyển khoản<br>+ Chi trả trực tiếp bằng tiền mặt |
+| Số tài khoản chuyển | String(255) | Có tùy điều kiện | Trống | Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả qua chuyển khoản".<br>Nhập số tài khoản ngân hàng của cơ quan thực hiện chuyển tiền bồi thường. |
+| Tên chủ tài khoản nhận | String(255) | Có tùy điều kiện | Tên người nhận | Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả qua chuyển khoản".<br>Họ và tên chủ tài khoản thụ hưởng nhận tiền bồi thường. |
+| Tên ngân hàng nhận | String(255) | Có tùy điều kiện | Trống | Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả qua chuyển khoản".<br>Tên ngân hàng thụ hưởng nhận tiền. |
+| Chi nhánh ngân hàng nhận | String(255) | Có tùy điều kiện | Trống | Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả qua chuyển khoản".<br>Tên chi nhánh ngân hàng thụ hưởng nhận tiền. |
+| Số biên lai nhận tiền mặt | String(100) | Có tùy điều kiện | Trống | Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả trực tiếp bằng tiền mặt".<br>Nhập số hiệu biên lai/phiếu chi tiền mặt đã ký nhận bồi thường. |
+| Ý kiến / Nội dung thực hiện chi trả | Text(1000) | Không | Trống | Control UI: Textarea.<br>Nhập ghi chú chi tiết quá trình chi trả tiền bồi thường. Tối đa 1000 ký tự. |
+| Tài liệu kèm theo | File | Có | Trống | Control UI: Upload file.<br>Tải lên file chứng từ giải ngân/ủy nhiệm chi/phiếu chi có chữ ký xác nhận.<br>Định dạng tệp tin cho phép: `.pdf`, dung lượng tối đa 20MB theo [BR-FILE-010].<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng `.pdf`, vi phạm quy chuẩn [BR-FILE-010], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp tin vượt quá 20MB, vi phạm quy chuẩn [BR-FILE-010], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Tải tệp tin lên thành công, hiển thị tên file kèm liên kết "Xem file" (mở tab mới) và nút "Xóa". |
 
-**Chức năng trên màn hình**:  
+###### 4.3.3.2.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hoàn thành chi trả | Nút (Footer) | Trường hợp nhập đầy đủ thông tin và tải lên file chứng từ hợp lệ:<br>+ Hệ thống cập nhật kết quả chi trả và chuyển trạng thái đề xuất thành "Hoàn thành".<br>+ Đóng biểu mẫu, hiển thị Toast thông báo thành công và cập nhật lại lưới danh sách.<br>+ Ghi log hoàn thành chi trả thực tế vào nhật ký hệ thống [III.6]. |
-| | | | Trường hợp có trường bắt buộc bị bỏ trống hoặc không tải lên chứng từ đính kèm:<br>+ Vi phạm quy tắc [BR-VAL-001] hoặc [BR-FILE-010].<br>+ Tô đỏ viền trường trống đầu tiên bằng class `.is-invalid`, hiển thị cảnh báo: "Đây là trường bắt buộc" dưới ô nhập và focus con trỏ vào ô nhập lỗi đầu tiên đó. Không lưu chi trả. |
-| | | | Trường hợp số tiền thực tế chi trả không hợp lệ (nhỏ hơn hoặc bằng 0, hoặc vượt quá số tiền còn phải chi):<br>+ Vi phạm quy tắc [BR-VAL-010].<br>+ Tô đỏ viền ô "Số tiền thực tế chi trả", hiển thị cảnh báo tương ứng ("Số tiền thực tế chi trả phải lớn hơn 0" hoặc "Số tiền chi trả không được vượt quá số tiền còn phải chi (X VNĐ)") và focus con trỏ vào ô đó. Không lưu chi trả. |
-| 2 | Đóng | Nút (Footer) | Người dùng nhấn nút Đóng.<br>+ Hệ thống thực hiện đóng modal cập nhật chi trả ngay lập tức, hủy bỏ các thay đổi. |
+| 1 | Hoàn thành chi trả | Button (Footer) | Hệ thống kiểm tra dữ liệu chi trả tại Khối 10 (không bắt buộc nhập thông tin thông báo tại Khối 8):<br>- **TH1 - Bỏ trống trường bắt buộc hoặc thiếu tài liệu kèm theo**: Vi phạm [BR-VAL-001] hoặc [BR-FILE-010], tô đỏ viền ô trống `.is-invalid`, hiển thị thông báo lỗi "Đây là trường bắt buộc" ngay dưới ô nhập và auto-focus con trỏ. Không lưu chi trả.<br>- **TH2 - Ngày chi trả lớn hơn ngày hiện tại**: Vi phạm [BR-VAL-008], tô đỏ viền ô nhập ngày, báo lỗi và focus con trỏ.<br>- **TH3 - Hợp lệ**: Hệ thống mở Custom Confirmation Modal xác nhận giải ngân với các thông tin và nội dung chi tiết:<br>  + **Tiêu đề popup**: *"Xác nhận hoàn thành chi trả kinh phí bồi thường"*.<br>  + **Thông tin đối chiếu hiển thị trên popup**: Mã đề xuất kinh phí (`[Mã đề xuất]`), Họ và tên người nhận (`[Họ và tên người nhận]`), Phương thức chi trả (kèm số tài khoản/ngân hàng nếu chuyển khoản, hoặc số biên lai nếu chi tiền mặt), Ngày chi trả (`dd/mm/yyyy`) và Số tiền thực tế chi trả (**`[Số tiền thực tế chi trả] VNĐ`**, kèm số tiền viết bằng chữ).<br>  + **Nội dung cảnh báo xác nhận**: *"Bạn có chắc chắn muốn xác nhận hoàn thành chi trả số tiền **[Số tiền thực tế chi trả] VNĐ** cho người nhận **[Họ và tên người nhận bồi thường]** không?<br>Lưu ý: Hệ thống áp dụng quy tắc chi trả một lần trọn gói toàn bộ 100% kinh phí. Sau khi xác nhận, đề xuất cấp kinh phí sẽ chuyển sang trạng thái **Hoàn thành** và không thể điều chỉnh hoặc hoàn tác."*<br>  + **Khi người dùng chọn "Đồng ý"**: Hệ thống đóng popup xác nhận, lưu kết quả chi trả 100% kinh phí vào CSDL (đồng thời tự động lưu dữ liệu thông báo tại Khối 8 nếu Cán bộ có nhập hợp lệ), chuyển trạng thái đề xuất sang `Hoàn thành`, ghi nhật ký xử lý hệ thống, đóng modal cập nhật chi trả (MH03), hiển thị thông báo thành công [MSG-SUC-BTNN-KP-005] (*"Cập nhật kết quả chi trả kinh phí bồi thường thành công!"*) và làm mới danh sách tại MH01.<br>  + **Khi người dùng chọn "Hủy bỏ"**: Đóng popup xác nhận, không lưu dữ liệu và giữ nguyên màn hình MH03 cùng các dữ liệu đang nhập để Cán bộ tiếp tục rà soát. |
+| 2 | Lưu thông báo | Button (Khối 8) | Khi Cán bộ click nút "Lưu thông báo" tại Khối 8, hệ thống kiểm tra dữ liệu thông báo:<br>- **TH1 - Bỏ trống ngày nhận hoặc thiếu tệp đính kèm**: Vi phạm [BR-VAL-001] hoặc [BR-FILE-010], tô đỏ viền ô trống `.is-invalid`, hiển thị "Đây là trường bắt buộc" và auto-focus.<br>- **TH2 - Ngày nhận thông báo lớn hơn ngày hiện tại**: Vi phạm [BR-VAL-008], báo lỗi và focus con trỏ.<br>- **TH3 - Hợp lệ**: Hệ thống lưu mốc thời gian nhận thông báo và tệp chứng minh vào CSDL, tự động tính hạn nhận kinh phí 03 năm, hiển thị thông báo thành công [MSG-SUC-BTNN-KP-006] (*"Lưu thông tin thông báo nhận kinh phí thành công!"*), khóa các trường tại Khối 8 về chế độ xem và hiển thị nút "Cập nhật thông báo". |
+| 3 | Cập nhật thông báo | Button (Khối 8) | Mở lại các ô nhập tại Khối 8 cho phép Cán bộ điều chỉnh ngày nhận thông báo, tải lại tệp chứng minh hoặc ghi chú; đồng thời ẩn nút "Cập nhật thông báo" và hiển thị 02 nút "Lưu thông báo" và "Hủy". |
+| 4 | Hủy | Button (Khối 8) | Đóng chế độ chỉnh sửa thông báo tại Khối 8, khôi phục lại dữ liệu thông báo đã lưu gần nhất và chuyển khối về chế độ xem. |
+| 5 | Xem file | Link (Tệp đính kèm) | Mở xem nội dung tệp tin đã tải lên tại một tab trình duyệt mới. |
+| 6 | Xóa | Button (Tệp đính kèm) | Mở Custom Confirmation Modal xác nhận gỡ bỏ tệp tin đã tải lên với nội dung [MSG-CFM-SYS-001] (*"Bạn có chắc chắn muốn xóa tệp tin này không?"*):<br>- Khi chọn "Đồng ý": Hệ thống xóa tệp tin khỏi biểu mẫu, đưa trường về trạng thái chưa có file.<br>- Khi chọn "Hủy bỏ": Đóng modal xác nhận và giữ nguyên tệp tin. |
+| 7 | Đóng | Button (Footer) | Đóng modal cập nhật chi trả ngay lập tức, hủy bỏ các thay đổi đang nhập tạm. |
+
+---
+
+##### 4.3.3.2.6. MH04 - Màn hình Cập nhật sung quỹ nhà nước
+
+###### 4.3.3.2.6.1. Màn hình
+
+![Màn hình sung quỹ](images/UC450_StateFund.png)
+
+###### 4.3.3.2.6.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. Khối Thông tin chung đề nghị kinh phí** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Mã đề xuất kinh phí | String(50) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại đề nghị cấp kinh phí | Enum(String(100)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày lập đề nghị | Date | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cán bộ đề xuất xử lý | String(255) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nguồn kinh phí đề xuất cấp | Enum(String(100)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cơ quan cấp phát kinh phí | Enum(String(255)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Trạng thái đề nghị | Enum(String(50)) | Không | `Chờ chi trả` | Control UI: Badge trạng thái. Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mã vụ việc gốc | String(50) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết xem chi tiết vụ việc gốc. |
+| Tên vụ việc | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cơ quan chịu trách nhiệm | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Lĩnh vực gây thiệt hại | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số tiền gốc theo vụ việc (VNĐ) | Decimal(18,0) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **2. Khối Thông tin người yêu cầu bồi thường** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Họ và tên người yêu cầu bồi thường | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tư cách người yêu cầu bồi thường | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Giới tính | Enum(String(20)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày tháng năm sinh | Date | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số điện thoại liên hệ | String(20) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thư điện tử (Email) | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Trạng thái người bị thiệt hại | Enum(String(20)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại giấy tờ thân nhân | Enum(String(50)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số giấy tờ thân nhân | String(50) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày cấp | Date | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nơi cấp | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Quốc gia | Enum(String(50)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Phường/Xã | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Địa chỉ chi tiết | Text(1000) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| **3. Khối Bảng nội dung cấp tạm ứng** | Section | - | Thu gọn | Hiển thị khi Loại đề nghị là "Đề nghị tạm ứng". Mặc định ở trạng thái Thu gọn (Collapsed). |
+| STT | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nội dung tạm ứng | String(500) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền duyệt cấp tạm ứng (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tổng cộng tạm ứng (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **4. Khối Bảng nội dung cấp kinh phí bồi thường** | Section | - | Thu gọn | Hiển thị khi Loại đề nghị là "Đề nghị cấp kinh phí bồi thường". Mặc định ở trạng thái Thu gọn (Collapsed). |
+| STT | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại thiệt hại được yêu cầu | Enum(String(255)) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền duyệt cấp bồi thường (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tổng kinh phí duyệt cấp (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền tạm ứng đã cấp (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền thực nhận còn lại (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **5. Khối Người nhận bồi thường và Phương thức chi trả** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Họ và tên người nhận bồi thường | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số giấy tờ thân nhân | String(50) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Địa chỉ người nhận bồi thường | Text(1000) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Phương thức chi trả tiền bồi thường | Enum(String(100)) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số tài khoản chuyển | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
+| Tên chủ tài khoản nhận | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
+| Tên ngân hàng | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
+| Chi nhánh | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
+| **6. Khối Nội dung tờ trình và Tài liệu gửi kèm** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Ý kiến đề xuất / Trích yếu nội dung tờ trình | Text(2000) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Bảng danh mục tài liệu gửi kèm | List(Object) | - | - | Control UI: Data grid. Dạng chỉ đọc - theo thông tin đề nghị. |
+| STT (trong bảng tài liệu) | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tên loại tài liệu | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tệp tin đính kèm | File | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thao tác tệp | String(100) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết "Xem file" và "Tải file". |
+| **7. Khối Thông tin xét duyệt tờ trình** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Ý kiến phê duyệt tờ trình | Text(2000) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Lịch sử ý kiến phê duyệt | Text(4000) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thời gian xét duyệt | Datetime | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy HH:mm`. |
+| Người xét duyệt | String(255) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| **8. Khối Thông tin thông báo nhận kinh phí và hạn 3 năm** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
+| Ngày người yêu cầu nhận thông báo | Date | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy`. |
+| Hạn nhận kinh phí | Date | - | Hệ thống tính | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy`. |
+| Tệp chứng minh đã thông báo | File | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết "Xem file" và "Tải file". |
+| Ghi chú thông báo | Text(1000) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| **9. Khối Theo dõi hạn nhận kinh phí / Sung quỹ** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. Căn cứ Điều 45 Luật Trách nhiệm bồi thường của Nhà nước. |
+| Số tiền kinh phí chưa đến nhận (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tình trạng hạn nhận kinh phí | Enum(String(100)) | - | Hệ thống tính | Control UI: Badge/Text.<br>Dạng chỉ đọc - hệ thống tự động tính toán.<br>Gồm:<br>+ Trong thời hạn 3 năm<br>+ Sắp đến hạn 3 năm<br>+ Đã quá hạn 3 năm (Đủ điều kiện sung quỹ)<br>+ Đã sung quỹ nhà nước |
+| Thời gian còn lại / Số ngày quá hạn | Integer(10) | - | Hệ thống tính | Dạng chỉ đọc - hệ thống tính toán. Căn lề phải. Hiển thị "Quá hạn X ngày" (chữ đỏ nổi bật theo Điều 45 Luật TNBTCNN). |
+| **10. Khối Thông tin sung quỹ Nhà nước** | Section | - | Mở rộng | Mặc định ở trạng thái Mở rộng (Expanded) và tự động focus để Cán bộ thực hiện lập hồ sơ và hoàn thành thủ tục nộp toàn bộ 100% số tiền bồi thường vào ngân sách nhà nước. |
+| Số chứng từ / quyết định sung quỹ | String(100) | Có | Trống | Control UI: Input text.<br>Nhập số hiệu văn bản quyết định hoặc chứng từ nộp tiền vào ngân sách nhà nước. Bắt buộc nhập. |
+| Ngày sung quỹ | Date | Có | Ngày hiện tại | Control UI: DatePicker `dd/mm/yyyy`.<br>Ngày thực hiện nộp tiền sung quỹ. Bắt buộc nhập, không được lớn hơn ngày hiện tại [BR-VAL-008]. |
+| Số tiền sung quỹ (VNĐ) | Decimal(18,0) | Có | 100% số tiền chưa nhận | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (VNĐ).<br>Hệ thống tự động gán và cố định bằng chính xác 100% số tiền kinh phí chưa được chi trả. Khóa chỉ đọc. |
+| Căn cứ / lý do sung quỹ | Text(2000) | Có | Gợi ý hệ thống | Control UI: Textarea.<br>Gợi ý nội dung: *"Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả kinh phí nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước."* Cho phép Cán bộ bổ sung thêm căn cứ pháp lý cụ thể. |
+| Tài liệu chứng từ nộp ngân sách | File | Có | Trống | Control UI: Upload file.<br>Tải lên file quyết định sung quỹ/giấy nộp tiền vào ngân sách nhà nước.<br>Định dạng tệp tin cho phép: `.pdf`, dung lượng tối đa 20MB theo [BR-FILE-010].<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng `.pdf`, vi phạm quy chuẩn [BR-FILE-010], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp tin vượt quá 20MB, vi phạm quy chuẩn [BR-FILE-010], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Tải tệp tin lên thành công, hiển thị tên file kèm liên kết "Xem file" (mở tab mới) và nút "Xóa". |
+
+###### 4.3.3.2.6.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Hoàn thành sung quỹ | Button (Footer) | Kiểm tra dữ liệu sung quỹ trước khi lưu:<br>- **TH1 - Bỏ trống trường bắt buộc hoặc thiếu chứng từ nộp tiền**: Vi phạm [BR-VAL-001] hoặc [BR-FILE-010], tô đỏ viền ô trống `.is-invalid`, hiển thị thông báo lỗi "Đây là trường bắt buộc" ngay dưới ô nhập và auto-focus con trỏ. Không lưu dữ liệu.<br>- **TH2 - Hợp lệ**: Hệ thống mở Custom Confirmation Modal xác nhận nộp ngân sách với các thông tin và nội dung chi tiết:<br>  + **Tiêu đề popup**: *"Xác nhận hoàn thành thủ tục sung quỹ nhà nước"*.<br>  + **Thông tin đối chiếu hiển thị trên popup**: Mã đề xuất kinh phí (`[Mã đề xuất]`), Tên vụ việc liên kết (`[Tên vụ việc]`), Số chứng từ/quyết định sung quỹ, Ngày sung quỹ (`dd/mm/yyyy`) và Số tiền sung quỹ (**`[Số tiền sung quỹ] VNĐ`**, kèm số tiền viết bằng chữ).<br>  + **Nội dung cảnh báo xác nhận**: *"Bạn có chắc chắn muốn xác nhận hoàn thành thủ tục nộp toàn bộ số tiền **[Số tiền sung quỹ] VNĐ** vào ngân sách nhà nước không?<br>Lưu ý: Sau khi xác nhận, đề xuất cấp kinh phí và Vụ việc bồi thường gốc liên kết sẽ chuyển sang trạng thái **Sung quỹ nhà nước** và không thể điều chỉnh hoặc hoàn tác."*<br>  + **Khi người dùng chọn "Đồng ý"**: Hệ thống đóng popup xác nhận, lưu thông tin sung quỹ vào CSDL, chuyển trạng thái đề xuất thành `Sung quỹ nhà nước`, đồng thời cập nhật trạng thái của Vụ việc bồi thường gốc liên kết sang `Sung quỹ nhà nước`, ghi nhật ký xử lý hệ thống, đóng modal cập nhật sung quỹ (MH04), hiển thị thông báo thành công [MSG-SUC-BTNN-KP-004] (*"Cập nhật sung quỹ nhà nước thành công!"*) và làm mới danh sách tại MH01.<br>  + **Khi người dùng chọn "Hủy bỏ"**: Đóng popup xác nhận, không lưu dữ liệu và giữ nguyên màn hình MH04 để Cán bộ tiếp tục rà soát. |
+| 2 | Xem file | Link (Tệp đính kèm) | Mở xem nội dung tệp tin đã tải lên tại tab trình duyệt mới. |
+| 3 | Xóa | Button (Tệp đính kèm) | Mở Custom Confirmation Modal xác nhận gỡ bỏ tệp tin đã tải lên với nội dung [MSG-CFM-SYS-001] (*"Bạn có chắc chắn muốn xóa tệp tin này không?"*):<br>- Khi chọn "Đồng ý": Hệ thống xóa tệp tin khỏi biểu mẫu, đưa trường về trạng thái chưa có file.<br>- Khi chọn "Hủy bỏ": Đóng modal xác nhận và giữ nguyên tệp tin. |
+| 4 | Đóng | Button (Footer) | Đóng modal cập nhật sung quỹ ngay lập tức, hủy bỏ các thay đổi đang nhập tạm. |
+
+---
+
+##### 4.3.3.2.7. MH05 - Màn hình Xem chi tiết đề nghị cấp kinh phí
+
+###### 4.3.3.2.7.1. Màn hình
+
+![Màn hình xem chi tiết](images/UC450_Detail.png)
+
+###### 4.3.3.2.7.2. Mô tả thông tin trên màn hình
+
+Toàn bộ thông tin hiển thị tại màn hình Xem chi tiết ở chế độ **Chỉ đọc (Read-only)**, ngoại trừ trường hợp Cán bộ thực hiện cập nhật thông tin thông báo tại Khối 8 khi hồ sơ ở trạng thái `Chờ chi trả`.
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **Khối Lý do bị từ chối** | Section | - | Ẩn | Khối thông báo nổi bật đặt ở phía trên cùng của màn hình chi tiết; chỉ hiển thị khi mở màn hình đối với đề xuất ở trạng thái `Bị từ chối`. |
+| Ngày từ chối | Date | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị.<br>Định dạng `dd/mm/yyyy`. |
+| Người từ chối | String(100) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nội dung ý kiến chỉ đạo / Lý do từ chối | Text(2000) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| **1. Khối Thông tin chung đề nghị kinh phí** | Section | - | Mở rộng | Mặc định ở trạng thái Mở rộng (Expanded). Cho phép click tiêu đề để thu gọn/mở rộng xem thông tin. |
+| Mã đề xuất kinh phí | String(50) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại đề nghị cấp kinh phí | Enum(String(100)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày lập đề nghị | Date | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cán bộ đề xuất xử lý | String(255) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nguồn kinh phí đề xuất cấp | Enum(String(100)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cơ quan cấp phát kinh phí | Enum(String(255)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Trạng thái đề nghị | Enum(String(50)) | Không | Theo đề nghị | Control UI: Badge trạng thái. Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mã vụ việc gốc | String(50) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết xem chi tiết vụ việc gốc. |
+| Tên vụ việc | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Cơ quan chịu trách nhiệm | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Lĩnh vực gây thiệt hại | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số tiền gốc theo vụ việc (VNĐ) | Decimal(18,0) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **2. Khối Thông tin người yêu cầu bồi thường** | Section | - | Mở rộng | Mặc định ở trạng thái Mở rộng (Expanded). Cho phép click tiêu đề để thu gọn/mở rộng xem thông tin. |
+| Họ và tên người yêu cầu bồi thường | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tư cách người yêu cầu bồi thường | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Giới tính | Enum(String(20)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày tháng năm sinh | Date | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số điện thoại liên hệ | String(20) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thư điện tử (Email) | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Trạng thái người bị thiệt hại | Enum(String(20)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại giấy tờ thân nhân | Enum(String(50)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số giấy tờ thân nhân | String(50) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày cấp | Date | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nơi cấp | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Quốc gia | Enum(String(50)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Phường/Xã | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Địa chỉ chi tiết | Text(1000) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
+| **3. Khối Bảng nội dung cấp tạm ứng** | Section | - | Tùy loại đề nghị | Chỉ hiển thị khi Loại đề nghị là "Đề nghị tạm ứng" (từ trạng thái Chờ duyệt trở đi). Mặc định ở trạng thái Mở rộng (Expanded). |
+| STT | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Nội dung tạm ứng | String(500) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền duyệt cấp tạm ứng (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tổng cộng tạm ứng (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **4. Khối Bảng nội dung cấp kinh phí bồi thường** | Section | - | Tùy loại đề nghị | Chỉ hiển thị khi Loại đề nghị là "Đề nghị cấp kinh phí bồi thường" (từ trạng thái Chờ duyệt trở đi). Mặc định ở trạng thái Mở rộng (Expanded). |
+| STT | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Loại thiệt hại được yêu cầu | Enum(String(255)) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền duyệt cấp bồi thường (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tổng kinh phí duyệt cấp (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền tạm ứng đã cấp (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Số tiền thực nhận còn lại (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| **5. Khối Người nhận bồi thường và Phương thức chi trả** | Section | - | Tùy trạng thái | Chỉ hiển thị từ trạng thái Chờ duyệt trở đi. Mặc định ở trạng thái Mở rộng (Expanded). Cho phép click tiêu đề để thu gọn/mở rộng xem thông tin. |
+| Họ và tên người nhận bồi thường | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số giấy tờ thân nhân | String(50) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Địa chỉ người nhận bồi thường | Text(1000) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Phương thức chi trả tiền bồi thường | Enum(String(100)) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số tài khoản chuyển | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi chuyển khoản. |
+| Tên chủ tài khoản nhận | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi chuyển khoản. |
+| Tên ngân hàng | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi chuyển khoản. |
+| Chi nhánh | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi chuyển khoản. |
+| **6. Khối Nội dung tờ trình và Tài liệu gửi kèm** | Section | - | Tùy trạng thái | Chỉ hiển thị từ trạng thái Chờ duyệt trở đi. Mặc định ở trạng thái Mở rộng (Expanded). Cho phép click tiêu đề để thu gọn/mở rộng xem thông tin. |
+| Ý kiến đề xuất / Trích yếu nội dung tờ trình | Text(2000) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Bảng danh mục tài liệu gửi kèm | List(Object) | - | - | Control UI: Data grid. Dạng chỉ đọc - theo thông tin đề nghị. |
+| STT (trong bảng tài liệu) | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tên loại tài liệu | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tệp tin đính kèm | File | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thao tác tệp | String(100) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết "Xem file" và "Tải file". |
+| **7. Khối Thông tin xét duyệt tờ trình** | Section | - | Tùy trạng thái | Chỉ hiển thị khi đề xuất đã qua xét duyệt (ở trạng thái `Bị từ chối`, `Chờ chi trả`, `Hoàn thành`, `Sung quỹ nhà nước`). Mặc định ở trạng thái Mở rộng (Expanded) để xem ý kiến phê duyệt/lý do từ chối. |
+| Ý kiến phê duyệt / Lý do từ chối tờ trình | Text(2000) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Lịch sử ý kiến phê duyệt | Text(4000) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Thời gian xử lý | Datetime | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy HH:mm`. |
+| Người xử lý | String(255) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| **8. Khối Thông tin thông báo nhận kinh phí và hạn 3 năm** | Section | - | Tùy trạng thái | Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ chi trả`, `Sung quỹ nhà nước` hoặc `Hoàn thành`. Mặc định ở trạng thái Mở rộng (Expanded) khi ở trạng thái `Chờ chi trả` (để theo dõi/cập nhật thông báo); Mặc định ở trạng thái Thu gọn (Collapsed) khi ở trạng thái `Hoàn thành` hoặc `Sung quỹ nhà nước`. |
+| Ngày người yêu cầu nhận thông báo | Date | Có khi lưu/cập nhật | Trống hoặc theo dữ liệu | Định dạng `dd/mm/yyyy`. Ngày người yêu cầu nhận thông báo chi trả, làm mốc bắt đầu tính hạn 03 năm.<br>- Khi ở trạng thái `Chờ chi trả`: Cho phép nhập hoặc chỉnh sửa ngày nhận thông báo (không được lớn hơn ngày hiện tại theo [BR-VAL-008]).<br>- Khi ở trạng thái `Hoàn thành` hoặc `Sung quỹ nhà nước`: Dạng chỉ đọc - theo thông tin đề nghị. |
+| Hạn nhận kinh phí | Date | Không | Hệ thống tính | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy`. Hệ thống tự động tính bằng Ngày người yêu cầu nhận thông báo cộng 03 năm. |
+| Tệp chứng minh đã thông báo | File | Có khi lưu/cập nhật | Trống hoặc theo dữ liệu | Tải lên tệp văn bản/phiếu báo phát có chữ ký xác nhận của người nhận bồi thường (.pdf tối đa 20MB theo [BR-FILE-010]).<br>- Khi ở trạng thái `Chờ chi trả`: Cho phép tải lên, hỗ trợ `Xem file` và `Xóa file`.<br>- Khi ở trạng thái `Hoàn thành` hoặc `Sung quỹ nhà nước`: Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ghi chú thông báo | Text(1000) | Không | Trống hoặc theo dữ liệu | Nhập ghi chú chi tiết quá trình gửi và nhận thông báo.<br>- Khi ở trạng thái `Chờ chi trả`: Cho phép nhập/chỉnh sửa.<br>- Khi ở trạng thái khác: Dạng chỉ đọc - theo thông tin đề nghị. |
+| Lưu thông báo | Button | - | - | Chỉ hiển thị tại khối khi hồ sơ ở trạng thái `Chờ chi trả` (khi chưa có dữ liệu thông báo hoặc khi đang ở chế độ chỉnh sửa). Giống với chức năng Lưu thông báo (STT 2) tại MH03 - Màn hình Cập nhật kết quả chi trả thực tế. |
+| Cập nhật thông báo | Button | - | - | Chỉ hiển thị tại khối khi hồ sơ ở trạng thái `Chờ chi trả` ĐÃ CÓ dữ liệu thông báo trước đó. Giống với chức năng Cập nhật thông báo (STT 3) tại MH03 - Màn hình Cập nhật kết quả chi trả thực tế. |
+| Hủy | Button | - | - | Chỉ hiển thị khi đang ở chế độ chỉnh sửa thông báo tại trạng thái `Chờ chi trả`. Giống với chức năng Hủy (STT 4) tại MH03 - Màn hình Cập nhật kết quả chi trả thực tế. |
+| **9. Khối Theo dõi hạn nhận kinh phí / Sung quỹ** | Section | - | Tùy trạng thái | Chỉ hiển thị khi đã có ngày nhận thông báo tại trạng thái `Chờ chi trả` hoặc `Sung quỹ nhà nước`. Mặc định ở trạng thái Mở rộng (Expanded) để theo dõi đếm hạn. Căn cứ Điều 45 Luật Trách nhiệm bồi thường của Nhà nước. |
+| Số tiền kinh phí chưa đến nhận (VNĐ) | Decimal(18,0) | Không | Hệ thống tính | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Tình trạng hạn nhận kinh phí | Enum(String(100)) | Không | Hệ thống tính | Control UI: Badge/Text.<br>Dạng chỉ đọc - hệ thống tự động tính toán.<br>Gồm:<br>+ Trong thời hạn 3 năm<br>+ Sắp đến hạn 3 năm<br>+ Đã quá hạn 3 năm (Đủ điều kiện sung quỹ)<br>+ Đã sung quỹ nhà nước |
+| Thời gian còn lại / Số ngày quá hạn | Integer(10) | Không | Hệ thống tính | Dạng chỉ đọc - hệ thống tính toán. Căn lề phải. Hiển thị "Còn X ngày" (nếu trong hạn) hoặc "Quá hạn X ngày" (chữ đỏ nổi bật nếu đã quá hạn 03 năm theo Điều 45 Luật TNBTCNN). |
+| **10. Khối Thông tin Kết quả chi trả thực tế** | Section | - | Tùy trạng thái | Chỉ hiển thị khi hồ sơ ở trạng thái `Hoàn thành`. Mặc định ở trạng thái Mở rộng (Expanded) để đối chiếu kết quả chi trả thực tế. |
+| Ngày thực hiện chi trả | Date | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy`. |
+| Số tiền thực tế chi trả (VNĐ) | Decimal(18,0) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Phương thức chi trả thực tế | Enum(String(100)) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Số tài khoản chuyển | String(255) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả qua chuyển khoản". |
+| Tên chủ tài khoản nhận | String(255) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả qua chuyển khoản". |
+| Tên ngân hàng nhận | String(255) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả qua chuyển khoản". |
+| Chi nhánh ngân hàng nhận | String(255) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả qua chuyển khoản". |
+| Số biên lai nhận tiền mặt | String(100) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Chỉ hiển thị khi Phương thức chi trả thực tế là "Chi trả trực tiếp bằng tiền mặt". |
+| Ý kiến / Nội dung thực hiện chi trả | Text(1000) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tài liệu kèm theo | File | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết "Xem file" và "Tải file". |
+| **11. Khối Thông tin sung quỹ Nhà nước** | Section | - | Tùy trạng thái | Chỉ hiển thị khi hồ sơ ở trạng thái `Sung quỹ nhà nước`. Mặc định ở trạng thái Mở rộng (Expanded) để đối chiếu quyết định và chứng từ nộp ngân sách. |
+| Số chứng từ / quyết định sung quỹ | String(100) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Ngày sung quỹ | Date | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy`. |
+| Số tiền sung quỹ (VNĐ) | Decimal(18,0) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
+| Căn cứ / lý do sung quỹ | Text(2000) | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
+| Tài liệu chứng từ nộp ngân sách | File | Không | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết "Xem file" và "Tải file". |
+
+###### 4.3.3.2.7.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Lập đề nghị | Button (Footer) | - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ lập đề nghị`.<br>- Mở **MH02 - Màn hình Lập/Cập nhật đề nghị cấp kinh phí** để tiếp tục hoàn thiện tờ trình. |
+| 2 | Cập nhật đề nghị | Button (Footer) | - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái `Bị từ chối`.<br>- Mở **MH02 - Màn hình Lập/Cập nhật đề nghị cấp kinh phí** để chỉnh sửa lại thông tin theo ý kiến chỉ đạo. |
+| 3 | Phê duyệt | Button (Footer) | - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ duyệt`.<br>- *Mô tả*: Mở Custom Confirmation Modal xác nhận phê duyệt cấp kinh phí (giống với chức năng Phê duyệt - STT 10 tại MH01 - Màn hình Danh sách Cấp kinh phí). Khi Lãnh đạo xác nhận "Phê duyệt", hệ thống cập nhật trạng thái đề xuất thành `Chờ chi trả`, lưu ý kiến phê duyệt và lịch sử xét duyệt vào hệ thống, làm mới giao diện màn hình chi tiết sang trạng thái `Chờ chi trả` (hiển thị Khối 8 Thông tin thông báo và cập nhật lại các nút thao tác tương ứng) và hiển thị thông báo thành công [MSG-SUC-BTNN-KP-001]. |
+| 4 | Từ chối | Button (Footer) | - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ duyệt`.<br>- *Mô tả*: Mở Custom Modal từ chối phê duyệt tờ trình (giống với chức năng Từ chối - STT 11 tại MH01 - Màn hình Danh sách Cấp kinh phí). Lãnh đạo bắt buộc nhập `Lý do từ chối / Ý kiến chỉ đạo` (áp dụng kiểm tra [BR-VAL-001], tô viền đỏ `.is-invalid` nếu bỏ trống). Khi xác nhận "Xác nhận từ chối", hệ thống chuyển trạng thái đề xuất thành `Bị từ chối`, lưu nội dung lý do từ chối vào hệ thống, làm mới giao diện màn hình chi tiết sang trạng thái `Bị từ chối` và hiển thị thông báo thành công [MSG-SUC-BTNN-KP-002]. |
+| 5 | Cập nhật chi trả | Button (Footer) | - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ chi trả` (khi còn trong hạn 03 năm).<br>- Mở **MH03 - Màn hình Cập nhật kết quả chi trả thực tế**, tự động focus vào Khối Thông tin Kết quả chi trả thực tế. |
+| 6 | Sung quỹ nhà nước | Button (Footer) | - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ chi trả` ĐỒNG THỜI đã quá hạn 03 năm kể từ ngày người yêu cầu nhận thông báo mà chưa chi trả.<br>- Mở **MH04 - Màn hình Cập nhật sung quỹ nhà nước**, tự động focus vào Khối Thông tin sung quỹ Nhà nước. |
+| 7 | Lưu thông báo | Button (Khối thông báo) | - *Điều kiện hiển thị*: Chỉ hiển thị tại **Khối Thông tin thông báo nhận kinh phí và hạn 3 năm** khi hồ sơ ở trạng thái `Chờ chi trả`.<br>- *Mô tả*: Giống với chức năng Lưu thông báo (STT 2) tại **MH03 - Màn hình Cập nhật kết quả chi trả thực tế**. |
+| 8 | Cập nhật thông báo | Button (Khối thông báo) | - *Điều kiện hiển thị*: Chỉ hiển thị tại **Khối Thông tin thông báo nhận kinh phí và hạn 3 năm** khi hồ sơ ở trạng thái `Chờ chi trả` VÀ đã có dữ liệu thông báo trước đó.<br>- *Mô tả*: Giống với chức năng Cập nhật thông báo (STT 3) tại **MH03 - Màn hình Cập nhật kết quả chi trả thực tế**. |
+| 9 | Hủy | Button (Khối thông báo) | - *Điều kiện hiển thị*: Hiển thị khi đang chỉnh sửa thông báo tại trạng thái `Chờ chi trả`.<br>- *Mô tả*: Giống với chức năng Hủy (STT 4) tại **MH03 - Màn hình Cập nhật kết quả chi trả thực tế**. |
+| 10 | Xem file | Link (Dòng tài liệu / Tệp) | Mở xem nội dung tệp tin đính kèm tại một tab trình duyệt mới. |
+| 11 | Tải file | Link/Button | Tải tệp tin đính kèm về thiết bị. |
+| 12 | Đóng | Button (Footer) | Đóng màn hình xem chi tiết và quay về danh sách đề xuất kinh phí. Luôn hiển thị trên mọi trạng thái. |

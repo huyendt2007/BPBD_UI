@@ -373,17 +373,17 @@
                         <label class="form-label" for="phddType">Hình thức phục hồi danh dự</label>
                         <select class="form-control" id="phddType">
                             <option value="">Tất cả</option>
-                            <option value="Trực tiếp xin lỗi">Trực tiếp xin lỗi</option>
-                            <option value="Đăng báo">Đăng báo</option>
-                            <option value="Cả hai hình thức">Cả hai hình thức</option>
+                            <option value="Trực tiếp xin lỗi và cải chính công khai">Trực tiếp xin lỗi và cải chính công khai</option>
+                            <option value="Đăng báo xin lỗi và cải chính công khai">Đăng báo xin lỗi và cải chính công khai</option>
+                            <option value="Cả 2 hình thức">Cả 2 hình thức</option>
                         </select>
                     </div>
                     <div class="form-block">
-                        <label class="form-label" for="phddFromDate">Cập nhật từ ngày</label>
+                        <label class="form-label" for="phddFromDate">Tiếp nhận từ ngày</label>
                         <input type="text" class="form-control" id="phddFromDate" placeholder="dd/mm/yyyy">
                     </div>
                     <div class="form-block">
-                        <label class="form-label" for="phddToDate">Cập nhật đến ngày</label>
+                        <label class="form-label" for="phddToDate">Tiếp nhận đến ngày</label>
                         <input type="text" class="form-control" id="phddToDate" placeholder="dd/mm/yyyy">
                     </div>
                 </div>
@@ -413,8 +413,7 @@
                                 <th style="min-width:150px;">Cán bộ xử lý</th>
                                 <th style="width:145px;">Hình thức phục hồi</th>
                                 <th style="width:145px; text-align:center;">Trạng thái</th>
-                                <th style="width:125px; text-align:center;">Thời hạn</th>
-                                <th style="width:128px; text-align:center; cursor:pointer;" onclick="togglePhddSort()">Ngày cập nhật <i class="fa-solid fa-sort" id="phddSortIcon"></i></th>
+                                <th style="width:128px; text-align:center; cursor:pointer;" onclick="togglePhddSort()">Ngày tiếp nhận <i class="fa-solid fa-sort" id="phddSortIcon"></i></th>
                             </tr>
                         </thead>
                         <tbody id="phddBody"></tbody>
@@ -747,11 +746,10 @@
         }
 
         function getPhddType(item) {
-            if (item.phddForm === 'Đăng báo xin lỗi') return 'Đăng báo';
-            if (item.phddForm) return item.phddForm;
-            if (item.phddFormApology && item.phddFormNews) return 'Cả hai hình thức';
-            if (item.phddFormNews) return 'Đăng báo';
-            return 'Trực tiếp xin lỗi';
+            if (item.phddForm === 'Đăng báo xin lỗi' || item.phddForm === 'Đăng báo xin lỗi và cải chính công khai') return 'Đăng báo xin lỗi và cải chính công khai';
+            if (item.phddForm === 'Cả hai hình thức' || item.phddForm === 'Cả 2 hình thức' || (item.phddFormApology && item.phddFormNews)) return 'Cả 2 hình thức';
+            if (item.phddFormNews) return 'Đăng báo xin lỗi và cải chính công khai';
+            return 'Trực tiếp xin lỗi và cải chính công khai';
         }
 
         function getDeadlineText(item) {
@@ -773,9 +771,15 @@
 
         function setDefaultDates() {
             const today = new Date();
-            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-            document.getElementById('phddFromDate').value = formatDateVi(firstDay);
-            document.getElementById('phddToDate').value = formatDateVi(today);
+            const threeMonthsAgoFirstDay = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+            const fromStr = formatDateVi(threeMonthsAgoFirstDay);
+            const toStr = formatDateVi(today);
+            document.getElementById('phddFromDate').value = fromStr;
+            document.getElementById('phddToDate').value = toStr;
+            document.getElementById('ycbtFromDate').value = fromStr;
+            document.getElementById('ycbtToDate').value = toStr;
+            document.getElementById('phddStatus').value = 'Hoàn thành';
+            document.getElementById('ycbtStatus').value = 'Hoàn thành';
         }
 
         function switchLookupTab(tab) {
@@ -836,7 +840,7 @@
                 if (agency && !normalizeText(item.agency).includes(agency)) return false;
                 if (!matchesStatus(item, status, group)) return false;
                 if (type && item.type !== type) return false;
-                const itemDate = parseDateVi(item.updatedDate);
+                const itemDate = parseDateVi(item.date || item.updatedDate);
                 if (fromDate && itemDate && itemDate < fromDate) return false;
                 if (toDate && itemDate && itemDate > toDate) return false;
                 return true;
@@ -847,7 +851,7 @@
         }
 
         function resetPhddFilters() {
-            ['phddCode', 'phddTitle', 'phddNyc', 'phddAgency', 'phddStatus', 'phddStatusGroup', 'phddType'].forEach(id => document.getElementById(id).value = '');
+            ['phddCode', 'phddTitle', 'phddNyc', 'phddAgency', 'phddStatusGroup', 'phddType'].forEach(id => document.getElementById(id).value = '');
             setDefaultDates();
             searchPhdd();
             showToast('Đã xóa bộ lọc phục hồi danh dự');
@@ -862,8 +866,8 @@
 
         function sortPhdd() {
             phddFiltered.sort((a, b) => {
-                const da = parseDateVi(a.updatedDate) || new Date(0);
-                const db = parseDateVi(b.updatedDate) || new Date(0);
+                const da = parseDateVi(a.date || a.updatedDate) || new Date(0);
+                const db = parseDateVi(b.date || b.updatedDate) || new Date(0);
                 return phddSortAsc ? da - db : db - da;
             });
         }
@@ -880,7 +884,7 @@
             const end = Math.min(start + phddPageSize, total);
             document.getElementById('phddRange').innerText = total ? `${start + 1}-${end}` : '0-0';
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
                 renderPages('phddPages', phddPage, totalPages, page => { phddPage = page; renderPhdd(); });
                 return;
             }
@@ -899,8 +903,7 @@
                     <td>${escapeHtml(item.assignedOfficer || 'Chưa phân công')}</td>
                     <td>${escapeHtml(item.type || '--')}</td>
                     <td style="text-align:center;">${statusBadge(item.status || '--')}</td>
-                    <td style="text-align:center;">${escapeHtml(item.deadlineText || '--')}</td>
-                    <td style="text-align:center;">${escapeHtml(item.updatedDate || '--')}</td>
+                    <td style="text-align:center;">${escapeHtml(item.date || item.updatedDate || '--')}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -950,7 +953,8 @@
         }
 
         function resetYcbtFilters() {
-            ['ycbtCode', 'ycbtTitle', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtStatus', 'ycbtStatusGroup', 'ycbtFromDate', 'ycbtToDate', 'ycbtDeadlineFrom', 'ycbtDeadlineTo', 'ycbtNopKenh'].forEach(id => document.getElementById(id).value = '');
+            ['ycbtCode', 'ycbtTitle', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtStatusGroup', 'ycbtDeadlineFrom', 'ycbtDeadlineTo', 'ycbtNopKenh'].forEach(id => document.getElementById(id).value = '');
+            setDefaultDates();
             searchYcbt();
             showToast('Đã xóa bộ lọc yêu cầu bồi thường');
         }
@@ -1070,11 +1074,11 @@
         }
 
         function goToPhddDetail(code) {
-            window.location.href = buildClaimDetailUrl(code, 'phdd');
+            window.open(buildClaimDetailUrl(code, 'phdd'), '_blank');
         }
 
         function goToClaimDetail(code) {
-            window.location.href = buildClaimDetailUrl(code, 'ycbt');
+            window.open(buildClaimDetailUrl(code, 'ycbt'), '_blank');
         }
 
         function buildClaimDetailUrl(code, tab) {
