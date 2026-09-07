@@ -1530,12 +1530,12 @@ function openRejectSingle(id) {
 
 function startDigitize(id) {
     localStorage.setItem('selected_dossier_id', id);
-    window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id);
+    window.location.href = 'nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id);
 }
 
 function openPaperReadonly(id) {
     localStorage.setItem('selected_dossier_id', id);
-    window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id);
+    window.location.href = 'nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id);
 }
 
 function searchList() {
@@ -1673,7 +1673,7 @@ function openDetail(id) {
             if (activeNode) focusId = activeNode.id;
         }
     }
-    window.location.href = '../UC027/xem_chi_tiet_lich_su_can_bo.html?id=' + id + (focusId ? '&focusId=' + focusId : '') + '&from=ky_duyet';
+    window.location.href = 'xem_chi_tiet_lich_su_can_bo.html?id=' + id + (focusId ? '&focusId=' + focusId : '') + '&from=ky_duyet';
 }
 
 // Render Trục Vòng đời Giao dịch (Vùng 1)

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -1226,10 +1226,10 @@
             // Find parent window references or load as normal
             if (window.parent && window.parent !== window && typeof window.parent.clickNotifItem === 'function') {
                 // If loaded inside frame, simulate clicking notifications to redirect correctly
-                window.parent.clickNotifItem('UC431_to_UC466/quan_ly_boi_thuong.html?id=' + maHoSo + '&focusTab=phdd', 'Giải quyết yêu cầu bồi thường', 'Giải quyết yêu cầu bồi thường');
+                window.parent.clickNotifItem('quan_ly_boi_thuong.html?id=' + maHoSo + '&focusTab=phdd', 'Giải quyết yêu cầu bồi thường', 'Giải quyết yêu cầu bồi thường');
             } else {
                 // Standalone page redirection
-                window.location.href = '../UC431_to_UC466/quan_ly_boi_thuong.html?id=' + maHoSo + '&focusTab=phdd';
+                window.location.href = 'quan_ly_boi_thuong.html?id=' + maHoSo + '&focusTab=phdd';
             }
         }
 
@@ -1244,7 +1244,7 @@
             }, 3000);
         }
     </script>
-    <script src="../admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js"></script>
 </body>
 
 </html>

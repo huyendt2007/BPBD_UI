@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -1365,9 +1365,9 @@
         }
 
         function openRelatedLookupDetail(code, detailType = 'claim') {
-            const returnUrl = `UC431_to_UC466/quan_ly_nghiep_vu_btnn_muc6.html?module=${moduleKey}`;
-            const activeUrl = 'UC431_to_UC466/quan_ly_nghiep_vu_btnn_muc6.html';
-            const detailPage = detailType === 'refund' ? 'UC431_to_UC466/xem_xet_trach_nhiem_hoan_tra.html' : 'UC431_to_UC466/quan_ly_boi_thuong.html';
+            const returnUrl = `quan_ly_nghiep_vu_btnn_muc6.html?module=${moduleKey}`;
+            const activeUrl = 'quan_ly_nghiep_vu_btnn_muc6.html';
+            const detailPage = detailType === 'refund' ? 'xem_xet_trach_nhiem_hoan_tra.html' : 'quan_ly_boi_thuong.html';
             const targetUrl = `${detailPage}?id=${encodeURIComponent(code)}&returnUrl=${encodeURIComponent(returnUrl)}&returnActiveUrl=${encodeURIComponent(activeUrl)}`;
             if (window.parent && typeof window.parent.openAdminModule === 'function') {
                 window.parent.openAdminModule(targetUrl, activeUrl);
@@ -1625,7 +1625,7 @@
 
         init();
     </script>
-    <script src="../admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js"></script>
 </body>
 
 </html>

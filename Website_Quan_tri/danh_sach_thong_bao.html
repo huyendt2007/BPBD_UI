@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -289,7 +289,7 @@
         <!-- Notification rows list -->
         <div class="notif-list" id="notif-rows-container">
             <!-- Row 1 -->
-            <div class="notif-row unread" data-type="ho_so" data-status="unread" onclick="clickRow(this, '../UC028/kiem_tra_ho_so.html', 'Kiểm tra hồ sơ BPBĐ', 'Biện pháp bảo đảm')">
+            <div class="notif-row unread" data-type="ho_so" data-status="unread" onclick="clickRow(this, 'kiem_tra_ho_so.html', 'Kiểm tra hồ sơ BPBĐ', 'Biện pháp bảo đảm')">
                 <div class="notif-left">
                     <div class="notif-icon blue">
                         <i class="fa-solid fa-file-circle-plus"></i>
@@ -306,7 +306,7 @@
             </div>
 
             <!-- Row 2 -->
-            <div class="notif-row unread" data-type="ho_so" data-status="unread" onclick="clickRow(this, '../UC028/kiem_tra_ho_so.html', 'Kiểm tra hồ sơ BPBĐ', 'Biện pháp bảo đảm')">
+            <div class="notif-row unread" data-type="ho_so" data-status="unread" onclick="clickRow(this, 'kiem_tra_ho_so.html', 'Kiểm tra hồ sơ BPBĐ', 'Biện pháp bảo đảm')">
                 <div class="notif-left">
                     <div class="notif-icon blue">
                         <i class="fa-solid fa-file-circle-plus"></i>
@@ -340,7 +340,7 @@
             </div>
 
             <!-- Row 4 -->
-            <div class="notif-row" data-type="ho_so" data-status="read" onclick="clickRow(this, '../UC031/ky_duyet_ho_so.html', 'Hồ sơ chờ phê duyệt', 'Biện pháp bảo đảm')">
+            <div class="notif-row" data-type="ho_so" data-status="read" onclick="clickRow(this, 'ky_duyet_ho_so.html', 'Hồ sơ chờ phê duyệt', 'Biện pháp bảo đảm')">
                 <div class="notif-left">
                     <div class="notif-icon green">
                         <i class="fa-solid fa-circle-check"></i>
@@ -498,6 +498,6 @@
         document.getElementById('pagination-label').innerHTML = `Hiển thị <b>1 - ${visibleCount}</b> trong tổng số <b>${visibleCount}</b> kết quả tìm kiếm`;
     }
 </script>
-    <script src="../admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js"></script>
 </body>
 </html>

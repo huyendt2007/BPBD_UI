@@ -1975,16 +1975,16 @@ function startDigitize(id) {
         const paperCctt = getPaperCcttRows().find(x => x.id === id);
         if (paperCctt) {
             const returned = paperCctt.status === 'Bị trả lại' ? '&returned=1' : '';
-            window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id) + '&type=cctt' + returned;
+            window.location.href = 'nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id) + '&type=cctt' + returned;
             return;
         }
     }
-    window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id);
+    window.location.href = 'nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id);
 }
 
 function openPaperReadonly(id) {
     localStorage.setItem('selected_dossier_id', id);
-    window.location.href = '../UCPS014/nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id);
+    window.location.href = 'nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id);
 }
 
 function searchList() {
@@ -2122,7 +2122,7 @@ function openDetail(id) {
             if (activeNode) focusId = activeNode.id;
         }
     }
-    window.location.href = '../UC027/xem_chi_tiet_lich_su_can_bo.html?id=' + id + (focusId ? '&focusId=' + focusId : '') + '&from=kiem_tra';
+    window.location.href = 'xem_chi_tiet_lich_su_can_bo.html?id=' + id + (focusId ? '&focusId=' + focusId : '') + '&from=kiem_tra';
 }
 
 // Render Trục Vòng đời Giao dịch (Vùng 1)
@@ -3778,7 +3778,7 @@ function renderPaperCcttListTable(thead, tbody) {
                     <td>${row.status === 'Bị trả lại' ? (row.returnReason || 'Lãnh đạo trả lại để sửa dữ liệu tra cứu.') : '-'}</td>
                     <td>${row.handlingOfficer || 'Nguyễn Văn Cán Bộ'}</td>
                     <td style="text-align:center" onclick="event.stopPropagation()">
-                        <button class="btn btn-primary" style="padding:6px 10px;font-size:12px" onclick="localStorage.setItem('selected_dossier_id','${row.id}'); window.location.href='../UCPS014/nhap_lieu_ho_so_giay.html?id=${row.id}${modeUrl}'">${actionText}</button>
+                        <button class="btn btn-primary" style="padding:6px 10px;font-size:12px" onclick="localStorage.setItem('selected_dossier_id','${row.id}'); window.location.href='nhap_lieu_ho_so_giay.html?id=${row.id}${modeUrl}'">${actionText}</button>
                     </td>
                 </tr>`;
         }).join('');

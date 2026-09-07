@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -2644,7 +2644,7 @@
                 const returnActiveUrl = 'xem_xet_trach_nhiem_hoan_tra.html';
                 const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(claimCode)}&from=hoan_tra_detail&returnUrl=${encodeURIComponent(returnUrl)}&returnActiveUrl=${encodeURIComponent(returnActiveUrl)}`;
                 const shellDetailUrl = `UC431_to_UC466/${detailUrl}`;
-                const activeClaimUrl = 'UC431_to_UC466/quan_ly_boi_thuong.html';
+                const activeClaimUrl = 'quan_ly_boi_thuong.html';
 
                 if (window.parent && window.parent !== window) {
                     if (typeof window.parent.openAdminModule === 'function') {
@@ -5960,7 +5960,7 @@
                 showToast("Đang kết xuất và tải xuống dự thảo quyết định hoàn trả Mẫu số 21/BTNN...", "success");
             }
         </script>
-    <script src="../admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js"></script>
 </body>
 
 </html>

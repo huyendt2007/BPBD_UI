@@ -2216,15 +2216,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (portalParam === 'can_bo') {
                 if (fromParam === 'search' || fromParam === 'tthc') {
                     if (window.top !== window.self) {
-                        window.top.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
+                        window.top.location.href = 'HomePageAdmin.html?menu=search';
                     } else {
-                        window.location.href = '../trang_tong_the_website_can_bo.html?menu=search';
+                        window.location.href = 'HomePageAdmin.html?menu=search';
                     }
                 } else {
                     if (window.top !== window.self) {
-                        window.top.location.href = '../trang_tong_the_website_can_bo.html';
+                        window.top.location.href = 'HomePageAdmin.html';
                     } else {
-                        window.location.href = '../trang_tong_the_website_can_bo.html';
+                        window.location.href = 'HomePageAdmin.html';
                     }
                 }
             } else {
@@ -2240,15 +2240,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 } else {
                     if (fromParam === 'search') {
-                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=search';
+                        window.location.href = '../Website_Khach_hang/HomePage_KH.html?screen=search';
                     } else if (fromParam === 'tthc') {
-                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=search&tab=tthc';
+                        window.location.href = '../Website_Khach_hang/HomePage_KH.html?screen=search&tab=tthc';
                     } else if (fromParam === 'change') {
-                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=change-registration';
+                        window.location.href = '../Website_Khach_hang/HomePage_KH.html?screen=change-registration';
                     } else if (fromParam === 'registered') {
-                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                        window.location.href = '../Website_Khach_hang/HomePage_KH.html?screen=registered-requests';
                     } else {
-                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                        window.location.href = '../Website_Khach_hang/HomePage_KH.html?screen=registered-requests';
                     }
                 }
             }
@@ -2343,6 +2343,6 @@ function goHome() {
     if (window.top !== window.self && typeof window.top.showScreen === 'function') {
         window.top.showScreen('home');
     } else {
-        window.location.href = '../trang_tong_the_website_khach_hang.html';
+        window.location.href = '../Website_Khach_hang/HomePage_KH.html';
     }
 }

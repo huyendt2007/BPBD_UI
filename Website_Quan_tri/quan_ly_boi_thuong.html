@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -8026,9 +8026,9 @@
         }
 
         function openMockXdAgencyDetail(code) {
-            const returnUrl = 'UC431_to_UC466/quan_ly_boi_thuong.html?v=1';
-            const activeUrl = 'UC431_to_UC466/xac_dinh_co_quan_boi_thuong.html?v=1';
-            const targetUrl = `UC431_to_UC466/xac_dinh_co_quan_boi_thuong.html?detail=${encodeURIComponent(code)}&returnUrl=${encodeURIComponent(returnUrl)}`;
+            const returnUrl = 'quan_ly_boi_thuong.html?v=1';
+            const activeUrl = 'xac_dinh_co_quan_boi_thuong.html?v=1';
+            const targetUrl = `xac_dinh_co_quan_boi_thuong.html?detail=${encodeURIComponent(code)}&returnUrl=${encodeURIComponent(returnUrl)}`;
             if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
                 window.parent.openAdminModule(targetUrl, activeUrl);
                 return;
@@ -15894,8 +15894,8 @@
             }
 
             closeOriginClaimSearchModal();
-            const activeUrl = 'UC431_to_UC466/quan_ly_boi_thuong.html?v=1';
-            const targetUrl = `UC431_to_UC466/quan_ly_boi_thuong.html?id=${encodeURIComponent(found.code || id)}&returnUrl=${encodeURIComponent(activeUrl)}&returnActiveUrl=${encodeURIComponent(activeUrl)}`;
+            const activeUrl = 'quan_ly_boi_thuong.html?v=1';
+            const targetUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(found.code || id)}&returnUrl=${encodeURIComponent(activeUrl)}&returnActiveUrl=${encodeURIComponent(activeUrl)}`;
 
             if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
                 window.parent.openAdminModule(targetUrl, activeUrl);
@@ -16267,7 +16267,7 @@
             </div>
         </div>
     </div>
-    <script src="../admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js"></script>
 </body>
 
 </html>

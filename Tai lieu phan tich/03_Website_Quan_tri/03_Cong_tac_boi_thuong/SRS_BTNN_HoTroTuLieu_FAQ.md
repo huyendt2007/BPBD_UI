@@ -1,4 +1,4 @@
-### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.8. UC508-510 - Quản lý câu hỏi và trả lời thường gặp
 
@@ -22,7 +22,7 @@
 
 \- Người dùng được phân quyền truy cập màn hình `Quản lý câu hỏi và trả lời thường gặp (FAQ)`.
 
-\- Nguồn giao diện: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_cau_hoi_faq.html`.
+\- Nguồn giao diện: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cau_hoi_faq.html`.
 
 \- Nhóm chủ đề câu hỏi thường gặp Tham chiếu Danh mục Nhóm chủ đề câu hỏi thường gặp [DM_36].
 
@@ -56,7 +56,7 @@ flowchart TD
 
 ###### 4.3.3.8.3.1. Màn hình
 
-Nguồn UI: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_cau_hoi_faq.html`.
+Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cau_hoi_faq.html`.
 
 ###### 4.3.3.8.3.2. Mô tả thông tin trên màn hình
 

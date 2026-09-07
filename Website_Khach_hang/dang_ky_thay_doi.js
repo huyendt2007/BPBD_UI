@@ -2522,7 +2522,7 @@ function goBackToSearch() {
             window.top.returnFromCustomerModule();
             return;
         }
-        window.location.href = 'tra_cuu_goc.html';
+        window.location.href = 'tra_cuu_goc_thay_doi.html';
     }
 }
 
@@ -3634,7 +3634,7 @@ function openHistoryModal() {
         regNum = 'BD-2026-001';
     }
 
-    let url = `../UC027/WebKH_Phieu_Dang_ky_Xem_Chi_Tiet.html?regNum=${regNum}&focusId=${regNum}&from=change`;
+    let url = `WebKH_Phieu_Dang_ky_Xem_Chi_Tiet.html?regNum=${regNum}&focusId=${regNum}&from=change`;
 
     sessionStorage.setItem('prevCanBoPage', window.location.href);
     window.location.href = url;
@@ -3654,7 +3654,7 @@ function goHome() {
     if (window.top !== window.self && typeof window.top.showScreen === 'function') {
         window.top.showScreen('home');
     } else {
-        window.location.href = '../trang_tong_the_website_khach_hang.html';
+        window.location.href = 'HomePage_KH.html';
     }
 }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -644,7 +644,7 @@
                 // Success MFA
                 showToast('Mã OTP xác thực hợp lệ! Đang đăng nhập...', 'success');
                 setTimeout(() => {
-                    window.location.href = '../trang_tong_the_website_can_bo.html';
+                    window.location.href = 'HomePageAdmin.html';
                 }, 1000);
                 return;
             }
@@ -705,12 +705,12 @@
                     sessionStorage.setItem('isAdminLoggedIn', 'true');
                     sessionStorage.setItem('adminUsername', userInp.value.trim());
                     setTimeout(() => {
-                        window.location.href = '../trang_tong_the_website_can_bo.html';
+                        window.location.href = 'HomePageAdmin.html';
                     }, 1000);
                     break;
             }
         };
     </script>
-    <script src="../admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js"></script>
 </body>
 </html>

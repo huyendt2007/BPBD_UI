@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -6,8 +6,8 @@
     <title>Tra cứu thông tin đăng ký biện pháp bảo đảm</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../Common/style_iframe.css">
-    <script src="../../Common/iframe_helper.js"></script>
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <script src="../Common/iframe_helper.js"></script>
     <style>
         :root {
             --primary-color: #1E3A8A;
@@ -2194,7 +2194,7 @@
                 portalParam = '&portal=can_bo';
             }
         }
-        let url = `../UC035/xem_chi_tiet_thay_doi.html?regNum=${rootCode}&focusId=${regCode}&from=${fromMode}${portalParam}`;
+        let url = `xem_chi_tiet_thay_doi.html?regNum=${rootCode}&focusId=${regCode}&from=${fromMode}${portalParam}`;
         const matched = mockRegistrations[rootCode];
         if (matched && (!matched.children || matched.children.length === 0)) {
             url += `&mode=single`;
@@ -2577,6 +2577,6 @@
         errors.forEach(el => el.remove());
     }
 </script>
-    <script src="../admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js"></script>
 </body>
 </html>

@@ -7,8 +7,8 @@
     <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../Common/style_iframe.css">
-    <script src="../../Common/iframe_helper.js"></script>
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <script src="../Common/iframe_helper.js"></script>
     <style>
         :root {
             --primary-color: #1E3A8A;
@@ -1424,7 +1424,7 @@
             sessionStorage.setItem('registeredPaymentData', JSON.stringify(buildPaymentPayload(item)));
             sessionStorage.setItem('registeredReturnTab', 'cctt');
             showToast(`Đang mở màn hình thanh toán cho hồ sơ ${item.dossierCode}...`, 'info');
-            window.top.showScreen('registered-request-payment', `UC024/dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(item.dossierCode)}&t=${Date.now()}`);
+            window.top.showScreen('registered-request-payment', `dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(item.dossierCode)}&t=${Date.now()}`);
         }
 
         function payFromList(code) {

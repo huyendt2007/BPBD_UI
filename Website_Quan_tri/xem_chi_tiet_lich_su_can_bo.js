@@ -3205,9 +3205,9 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 const fromParam = urlParams.get('from');
                 if (fromParam === 'ky_duyet') {
-                    window.location.href = '../UC031/ky_duyet_ho_so.html';
+                    window.location.href = 'ky_duyet_ho_so.html';
                 } else if (fromParam === 'kiem_tra') {
-                    window.location.href = '../UC028/kiem_tra_ho_so.html';
+                    window.location.href = 'kiem_tra_ho_so.html';
                 } else {
                     window.location.href = 'tra_cuu_thong_tin.html';
                 }
@@ -3226,5 +3226,5 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function goHome() {
-    window.location.href = '../UC028/kiem_tra_ho_so.html';
+    window.location.href = 'kiem_tra_ho_so.html';
 }

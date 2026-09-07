@@ -573,7 +573,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.top.returnFromCustomerModule();
                 return;
             }
-            window.location.href = 'tra_cuu_goc.html';
+            window.location.href = 'tra_cuu_goc_xoa.html';
         }
     });
 
@@ -802,6 +802,6 @@ function goHome() {
     if (window.top !== window.self && typeof window.top.showScreen === 'function') {
         window.top.showScreen('home');
     } else {
-        window.location.href = '../trang_tong_the_website_khach_hang.html';
+        window.location.href = 'HomePage_KH.html';
     }
 }

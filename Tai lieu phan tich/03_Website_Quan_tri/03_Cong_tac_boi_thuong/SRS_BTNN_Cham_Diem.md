@@ -1,4 +1,4 @@
-### 4.3.3. DÃ nh cho CÃ¡n bá»™ CÃ´ng tÃ¡c bá»“i thÆ°á»ng nhÃ  nÆ°á»›c
+﻿### 4.3.3. DÃ nh cho CÃ¡n bá»™ CÃ´ng tÃ¡c bá»“i thÆ°á»ng nhÃ  nÆ°á»›c
 
 #### 4.3.3.6. UC467-476 - Quáº£n lÃ½ cháº¥m Ä‘iá»ƒm cÃ´ng tÃ¡c BTNN
 
@@ -20,7 +20,7 @@
 
 \- NgÆ°á»i dÃ¹ng truy cáº­p mÃ n hÃ¬nh `Cháº¥m Ä‘iá»ƒm Bá»™ tiÃªu chÃ­ Ä‘Ã¡nh giÃ¡ cÃ´ng tÃ¡c Bá»“i thÆ°á»ng nhÃ  nÆ°á»›c (BTNN)` trÃªn Website quáº£n trá»‹.
 
-\- Nguá»“n giao diá»‡n: `UI_Mockups/Website_Quan_tri/UC467_to_UC476/quan_ly_cham_diem_btnn.html`.
+\- Nguá»“n giao diá»‡n: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cham_diem_btnn.html`.
 
 \- Tráº¡ng thÃ¡i ká»³ cháº¥m Ä‘iá»ƒm tham chiáº¿u danh má»¥c [DM_32].
 
@@ -65,7 +65,7 @@ flowchart TD
 
 ###### 4.3.3.6.3.1. MÃ n hÃ¬nh
 
-Nguá»“n UI: `UI_Mockups/Website_Quan_tri/UC467_to_UC476/quan_ly_cham_diem_btnn.html`.
+Nguá»“n UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cham_diem_btnn.html`.
 
 ###### 4.3.3.6.3.2. MÃ´ táº£ thÃ´ng tin trÃªn mÃ n hÃ¬nh
 

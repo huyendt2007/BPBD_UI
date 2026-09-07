@@ -1,4 +1,4 @@
-### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.7. UC505-507 - Quản lý thông tin tư liệu VBQPPL
 
@@ -22,7 +22,7 @@
 
 \- Người dùng được phân quyền truy cập màn hình `Quản lý thông tin tư liệu VBQPPL`.
 
-\- Nguồn giao diện: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_tu_lieu_vbqppl.html`.
+\- Nguồn giao diện: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_tu_lieu_vbqppl.html`.
 
 \- Loại văn bản Tham chiếu Danh mục Loại văn bản quy phạm pháp luật [DM_21].
 
@@ -56,7 +56,7 @@ flowchart TD
 
 ###### 4.3.3.7.3.1. Màn hình
 
-Nguồn UI: `UI_Mockups/Website_Quan_tri/UC505_UC510/quan_ly_tu_lieu_vbqppl.html`.
+Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_tu_lieu_vbqppl.html`.
 
 ###### 4.3.3.7.3.2. Mô tả thông tin trên màn hình
 

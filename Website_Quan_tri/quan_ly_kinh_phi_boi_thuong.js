@@ -1,4 +1,4 @@
-let mockClaims = [
+﻿let mockClaims = [
     {
         code: "BT-2026-002",
         nyc: "Trần Thị B",
@@ -1242,7 +1242,7 @@ function filterTreasuryEligible() {
 function openLinkedClaimDetail(ycbtCode) {
     const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}`;
     const shellDetailUrl = `UC431_to_UC466/${detailUrl}`;
-    const activeClaimUrl = 'UC431_to_UC466/quan_ly_boi_thuong.html';
+    const activeClaimUrl = 'quan_ly_boi_thuong.html';
 
     if (window.parent && window.parent !== window) {
         if (typeof window.parent.openAdminModule === 'function') {

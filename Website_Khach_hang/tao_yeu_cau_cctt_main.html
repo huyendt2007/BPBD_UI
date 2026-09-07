@@ -6,8 +6,8 @@
     <title>Yêu cầu cung cấp thông tin về biện pháp bảo đảm</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../Common/style_iframe.css">
-    <script src="../../Common/iframe_helper.js"></script>
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <script src="../Common/iframe_helper.js"></script>
     <style>
         :root {
             --primary-color: #1E3A8A;
@@ -651,7 +651,7 @@
             sessionStorage.setItem('registeredPaymentData', JSON.stringify(buildPaymentPayload(dossierCode, displayDatetime)));
             sessionStorage.setItem('registeredReturnTab', 'cctt');
 
-            const paymentUrl = `UC024/dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(dossierCode)}&t=${Date.now()}`;
+            const paymentUrl = `dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(dossierCode)}&t=${Date.now()}`;
             const standalonePaymentUrl = `../${paymentUrl}`;
 
             if (window.top !== window.self && typeof window.top.showScreen === 'function') {

@@ -1,4 +1,4 @@
-### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.5. UC434-437 - Tra cứu phục hồi danh dự
 
@@ -50,7 +50,7 @@ flowchart TD
 
 ###### 4.3.3.5.3.1. Màn hình
 
-Nguồn UI: `UI_Mockups/Website_Quan_tri/UC434_to_UC437/phuc_hoi_danh_du.html`
+Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/phuc_hoi_danh_du.html`
 
 ###### 4.3.3.5.3.2. Mô tả thông tin trên màn hình
 

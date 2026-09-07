@@ -1320,7 +1320,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (window.parent && window.parent !== window && typeof window.parent.showScreen === 'function') {
                     window.parent.showScreen('registered-requests');
                 } else {
-                    window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                    window.location.href = 'HomePage_KH.html?screen=registered-requests';
                 }
                 return false;
             };
@@ -3635,15 +3635,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             if (screenId === 'search') {
                 const tab = customUrl === 'tthc' ? 'tthc' : 'reg';
-                window.location.href = `../UC190_193/tra_cuu_srs.html?tab=${tab}`;
+                window.location.href = `tra_cuu_srs.html?tab=${tab}`;
                 return;
             }
             const fallbackUrls = {
-                'billing-payment': '../trang_tong_the_website_khach_hang.html?screen=billing-payment',
-                'asset-disposal': '../trang_tong_the_website_khach_hang.html?screen=asset-disposal',
-                'request-information': '../UC141_UC144_UC195/tao_yeu_cau_cctt_main.html',
-                'request-copies': '../UC149/lap_yeu_cau_sao_luc_main.html',
-                'request-copies-notif': '../UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html'
+                'billing-payment': 'HomePage_KH.html?screen=billing-payment',
+                'asset-disposal': 'HomePage_KH.html?screen=asset-disposal',
+                'request-information': 'tao_yeu_cau_cctt_main.html',
+                'request-copies': 'lap_yeu_cau_sao_luc_main.html',
+                'request-copies-notif': 'lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html'
             };
             if (!customUrl && fallbackUrls[screenId]) {
                 window.location.href = fallbackUrls[screenId];
@@ -3653,7 +3653,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.href = `../${customUrl}`;
                 return;
             }
-            window.location.href = '../trang_tong_the_website_khach_hang.html';
+            window.location.href = 'HomePage_KH.html';
         }
 
         function runParentCustomerShortcut(functionName, regNum) {
@@ -3667,8 +3667,8 @@ document.addEventListener('DOMContentLoaded', function () {
         function buildCopyRequestUrl(regNum, withNotice = false) {
             const targetRegNum = registeredDetailContext?.rootRegNum || regNum;
             const modulePath = withNotice
-                ? 'UC152/lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html'
-                : 'UC149/lap_yeu_cau_sao_luc_main.html';
+                ? 'lap_yeu_cau_cung_cap_ban_sao_kem_thong_bao_main.html'
+                : 'lap_yeu_cau_sao_luc_main.html';
             const focusParam = withNotice ? 'continue' : 'copyQty';
             sessionStorage.setItem('registeredRequestCopyContext', JSON.stringify({
                 action: withNotice ? 'request-copy-notice' : 'request-copy',
@@ -3685,7 +3685,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 selectedRegNum: regNum,
                 firstRegNum: targetRegNum
             }));
-            return `UC141_UC144_UC195/tao_yeu_cau_cctt_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`;
+            return `tao_yeu_cau_cctt_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`;
         }
 
         window.toggleDetailOtherActions = function(event) {
@@ -3738,12 +3738,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (window.parent && window.parent !== window && typeof window.parent.updateRegisteredRequest === 'function') {
                         window.parent.updateRegisteredRequest(regNum, getCleanRegistrationCase(currentSelectedVersion) || registeredDetailContext?.type || '');
                     } else {
-                        navigateCustomerModule('change-registration', `UC0025/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                        navigateCustomerModule('change-registration', `tra_cuu_goc_thay_doi.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
                     }
                     break;
                 case 'change-registration':
                     if (!runParentCustomerShortcut('shortcutChangeRegistration', regNum)) {
-                        navigateCustomerModule('change-registration', `UC0025/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                        navigateCustomerModule('change-registration', `tra_cuu_goc_thay_doi.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
                     }
                     break;
                 case 'asset-disposal':
@@ -3767,7 +3767,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
                 case 'delete-registration':
                     if (!runParentCustomerShortcut('shortcutDeleteRegistration', regNum)) {
-                        navigateCustomerModule('delete-registration', `UC026/tra_cuu_goc.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
+                        navigateCustomerModule('delete-registration', `tra_cuu_goc_xoa.html?regNum=${encodeURIComponent(regNum)}&pin=${encodeURIComponent(pin)}&bypass=true`);
                     }
                     break;
                 case 'change-notice':
@@ -3812,15 +3812,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (window.parent && window.parent !== window && typeof window.parent.showScreen === 'function') {
                         window.parent.showScreen('registered-requests');
                     } else {
-                        window.location.href = '../trang_tong_the_website_khach_hang.html?screen=registered-requests';
+                        window.location.href = 'HomePage_KH.html?screen=registered-requests';
                     }
                 } else if (fromParam === 'search' || fromParam === 'tthc') {
                     const tab = fromParam === 'tthc' ? 'tthc' : 'reg';
-                    window.location.href = `../UC190_193/tra_cuu_srs.html?tab=${tab}`;
+                    window.location.href = `tra_cuu_srs.html?tab=${tab}`;
                 } else if (fromParam === 'ky_duyet') {
-                    window.location.href = '../UC031/ky_duyet_ho_so.html';
+                    window.location.href = '../Website_Quan_tri/ky_duyet_ho_so.html';
                 } else if (fromParam === 'kiem_tra') {
-                    window.location.href = '../UC028/kiem_tra_ho_so.html';
+                    window.location.href = '../Website_Quan_tri/kiem_tra_ho_so.html';
                 } else {
                     window.location.href = 'tra_cuu_thong_tin.html';
                 }
@@ -3839,5 +3839,5 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function goHome() {
-    window.location.href = '../UC028/kiem_tra_ho_so.html';
+    window.location.href = '../Website_Quan_tri/kiem_tra_ho_so.html';
 }

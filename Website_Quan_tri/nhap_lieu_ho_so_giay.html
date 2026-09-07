@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -899,7 +899,7 @@ function downloadFile(name) { alert('Tải xuống file: ' + name); }
 function cancelEdit() {
     if (confirm('Hủy thao tác và quay về danh sách hồ sơ chờ nhập liệu?')) goBack();
 }
-function goBack() { location.href = '../UC028/kiem_tra_ho_so.html?view=chonhaplieu'; }
+function goBack() { location.href = 'kiem_tra_ho_so.html?view=chonhaplieu'; }
 function closeModal() { modal.classList.remove('show'); }
 
 function initPaperInfoChrome() {
@@ -923,6 +923,6 @@ renderAttachments();
 renderBusinessForm();
 switchView(mode);
 </script>
-    <script src="../admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js"></script>
 </body>
 </html>
