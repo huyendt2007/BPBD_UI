@@ -503,6 +503,7 @@
 |  | WebAdmin-337 | Quản lý loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_loai_danh_muc.md |  |  |  |  |
 |  | WebAdmin-338 | Xóa loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_loai_danh_muc.md |  |  |  |  |
 |  | WebAdmin-339 | Quản lý danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_danh_muc.md | UC266, UC494, UC541, UC542, UC543, UC544, UC545, UC546, UC547, UC548, UC549, UC550, UC551, UC552 |  |  |  |
+|  | WebAdmin-339-01 | Quản lý danh mục Địa bàn | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_danh_muc_dia_ban.md |  | Hoàn thành | Hoàn thành | Quản lý danh mục địa bàn và đơn vị hành chính đa cấp |
 |  | WebAdmin-340 | Quản lý cấu hình hệ thống | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh.md |  |  |  |  |
 |  | WebAdmin-341 | Quản lý Nhật ký hệ thống |  | UC563, UC564, UC565, UC566, UC567, UC568, UC569, UC570, UC571, UC572, UC573 |  |  |  |
 |  | WebAdmin-342 | Quản lý Nhật ký truy cập Phần mềm |  |  |  |  |  |

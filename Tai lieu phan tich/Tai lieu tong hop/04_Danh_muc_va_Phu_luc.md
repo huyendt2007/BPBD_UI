@@ -210,6 +210,8 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-SEC-003]** | Lỗi | `"Mã OTP đã hết hiệu lực. Vui lòng bấm Gửi lại mã để nhận mã mới."` | Toast hoặc Inline | Không |
 | **[MSG-ERR-SYS-001]** | Lỗi | `"Lưu hồ sơ thất bại. Vui lòng thử lại sau."` | Toast | Không |
 | **[MSG-ERR-SYS-002]** | Lỗi | `"Kết nối tới hệ thống bị gián đoạn. Vui lòng thử lại sau."` | Toast | Không |
+| **[MSG-ERR-SYS-003]** | Lỗi | `"Không thể xóa vai trò do đang được gán cho người dùng trên hệ thống. Vui lòng gỡ vai trò khỏi người dùng trước."` | Toast | Không |
+| **[MSG-ERR-SYS-004]** | Lỗi | `"Vui lòng chọn ít nhất một người dùng để thực hiện thao tác."` | Toast | Không |
 | **[MSG-WRN-SYS-001]** | Cảnh báo | `"Không có dữ liệu để xuất Excel."` | Toast | Không |
 | **[MSG-WRN-SYS-002]** | Cảnh báo | `"Không có dữ liệu để kết xuất."` | Toast | Không |
 | **[MSG-INF-SYS-001]** | Thông tin (Info / Empty State) | `"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."` | Inline (Duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng `colspan`, in nghiêng) | Không |
@@ -219,6 +221,7 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-SUC-SYS-003]** | Thành công | `"Gửi yêu cầu đăng ký thành công."` | Toast | Không |
 | **[MSG-SUC-SYS-004]** | Thành công | `"Đổi mật khẩu thành công. Đang chuyển hướng..."` | Toast | Không |
 | **[MSG-SUC-SYS-005]** | Thành công | `"Kết xuất tệp thành công."` | Toast | Không |
+| **[MSG-SUC-SYS-006]** | Thành công | `"Xóa bản ghi thành công."` | Toast | Không |
 | **[MSG-CFM-BTNN-XDCQ-001]** | Xác nhận | `"Bạn có chắc chắn muốn xóa yêu cầu Lưu nháp này không?"` | Popup Custom Modal | Đồng ý / Hủy bỏ |
 | **[MSG-CFM-BTNN-XDCQ-002]** | Xác nhận | `"Bạn có chắc chắn muốn gỡ tệp đính kèm này không?"` | Popup Custom Modal | Đồng ý / Hủy bỏ |
 | **[MSG-CFM-BTNN-XDCQ-003]** | Xác nhận | `"Bạn có chắc chắn muốn xóa người thi hành công vụ này ra khỏi danh sách không?"` | Popup Custom Modal | Đồng ý / Hủy bỏ |

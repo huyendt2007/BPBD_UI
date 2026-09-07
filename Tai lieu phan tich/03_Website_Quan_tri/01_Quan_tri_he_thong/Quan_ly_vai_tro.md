@@ -1,11 +1,14 @@
-#### 4.3.1.1. Quản lý vai trò
+#### 4.3.1.1. Thiết lập Vai trò & Phân quyền
 
 ##### 4.3.1.1.1. Mục đích
-Cho phép quản lý danh mục vai trò người dùng trong hệ thống, bao gồm:
-- Tra cứu, tìm kiếm và hiển thị danh sách vai trò áp dụng cho các đối tượng (Cán bộ, Khách hàng, Cơ quan có thẩm quyền).
-- Khởi tạo mới, cập nhật thông tin và trạng thái hoạt động của vai trò.
-- Thiết lập phân quyền chi tiết các chức năng, menu và API theo từng vai trò.
-- Quản lý danh sách tài khoản người dùng được gán vào vai trò và gán bổ sung tài khoản.
+Cho phép quản lý danh mục vai trò người dùng trong hệ thống, thiết lập phân quyền chức năng và quản trị danh sách người dùng được gán vào từng vai trò, bao gồm:
+- Thiết lập, tra cứu danh sách vai trò áp dụng cho các đối tượng (Cán bộ, Khách hàng, Cơ quan có thẩm quyền).
+- Khởi tạo mới, cập nhật thông tin vai trò.
+- Thiết lập phân quyền trực tiếp các chức năng/menu (đã được khai báo và quản lý tại phần Quản lý chức năng) cho từng vai trò trên 3 phân hệ (Website khách hàng, Ứng dụng Mobile App, Website Cán bộ).
+- Quản lý danh sách tài khoản người dùng/cán bộ đang được gán vào từng vai trò.
+- Cho phép gán thêm người dùng vào vai trò hoặc gỡ bỏ vai trò khỏi người dùng trực tiếp từ màn hình vai trò.
+- Tra cứu nhanh thông tin chi tiết của tài khoản người dùng được gán (chuyển tiếp tới màn hình / popup chi tiết tương ứng theo loại tài khoản Cán bộ, Khách hàng hoặc Cơ quan có thẩm quyền).
+- Xóa các vai trò không còn sử dụng.
 
 *a. Phân quyền*
 - Quản trị hệ thống (QTHT).
@@ -16,156 +19,171 @@ Cho phép quản lý danh mục vai trò người dùng trong hệ thống, bao 
 
 ---
 
-##### 4.3.1.1.2. MH01 - Màn hình Tra cứu vai trò
+##### 4.3.1.1.2. MH01 - Màn hình Thiết lập Vai trò & Phân quyền
 
 ###### 4.3.1.1.2.1. Màn hình
 
-![Màn hình Tra cứu vai trò](images/UC600.01.MH01.png)
+![Màn hình Thiết lập Vai trò & Phân quyền](images/UC600.01.MH01.png)
 
 ###### 4.3.1.1.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Panel bên trái: Danh sách vai trò** | - | - | - | Khối tìm kiếm và bảng danh sách vai trò. |
-| Tên vai trò | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập từ khóa tìm kiếm gần đúng theo Tên vai trò. |
-| Loại tài khoản áp dụng | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Hoạt động<br>+ Ngừng hoạt động |
-| Tìm kiếm | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại khối tìm kiếm vai trò. |
-| Xóa bộ lọc | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại khối tìm kiếm vai trò. |
-| Thêm mới | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại header danh sách vai trò. |
-| Bảng danh sách vai trò | - | - | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- **Mặc định khi truy cập:** Hiển thị danh sách toàn bộ vai trò trên hệ thống, mặc định 20 bản ghi/trang, sắp xếp theo Ngày tạo giảm dần và tự động chọn bản ghi đầu tiên để hiển thị chi tiết sang Panel phải.<br>- Cho phép chọn 10, 20, 50, 100 bản ghi/trang, mặc định 20.<br>- Click vào dòng dữ liệu để xem chi tiết thông tin ở Panel phải.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| STT | Integer(10) | - | - | Control UI: Text hiển thị (Read-only). |
-| Mã vai trò | String(50) | - | - | Control UI: Text hiển thị (Read-only). |
-| Tên vai trò | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
-| Loại tài khoản áp dụng | Enum(String(50)) | - | - | Control UI: Text hiển thị (Read-only).<br>Gồm:<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền |
-| Ngày tạo | DateTime | - | - | Control UI: Text hiển thị (Read-only).<br>- Định dạng `dd/mm/yyyy HH:mm`. |
-| Trạng thái | Enum(String(50)) | - | - | Control UI: Badge/Tag hiển thị.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
-| Thao tác | String(255) | - | - | Control UI: Nhóm icon thao tác trên lưới.<br>- `Phân quyền`: Luôn hiển thị.<br>- `Cập nhật`: Luôn hiển thị.<br>- `Xóa`: Luôn hiển thị. |
-| **II. Panel bên phải: Chi tiết vai trò** | - | - | - | Khối xem chi tiết quyền và danh sách người dùng được gán. |
-| Tab Phân quyền | Tab | - | Mặc định chọn | Control UI: Tab điều hướng.<br>- Hiển thị cây danh mục quyền hạn mà vai trò đang sở hữu ở chế độ chỉ đọc. |
-| Tìm kiếm quyền | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập Tên chức năng hoặc Mã chức năng để lọc trên cây quyền. |
-| Tìm kiếm (Quyền) | String(50) | - | - | Control UI: Button/Icon.<br>- Luôn hiển thị cạnh ô tìm kiếm quyền. |
-| Xóa bộ lọc (Quyền) | String(50) | - | - | Control UI: Button/Icon.<br>- Luôn hiển thị cạnh ô tìm kiếm quyền. |
-| Cây quyền hạn | Tree | - | - | Control UI: Cây phân cấp chỉ đọc (Read-only).<br>- Chỉ hiển thị các chức năng/quyền mà vai trò đang được gán. |
-| Tab Danh sách người dùng được gán | Tab | - | - | Control UI: Tab điều hướng.<br>- Hiển thị danh sách các tài khoản đang được gán vai trò này. |
-| Họ và tên / Tên tổ chức | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng theo Họ và tên cá nhân hoặc Tên tổ chức. |
-| Tên đăng nhập / Email | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng theo Tên đăng nhập hoặc Email tài khoản. |
-| Số điện thoại | String(20) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng theo số điện thoại. |
-| Trạng thái tài khoản | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đang hoạt động<br>+ Bị khóa |
-| Tìm kiếm (Người dùng) | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại khối tìm kiếm người dùng. |
-| Xóa bộ lọc (Người dùng) | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại khối tìm kiếm người dùng. |
-| Thêm người dùng | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại Tab Danh sách người dùng được gán. |
-| Bảng người dùng được gán | - | - | 20 bản ghi/trang | Control UI: Bảng/Lưới hiển thị.<br>- **Mặc định khi truy cập:** Tự động tải danh sách các tài khoản được gán vai trò đang chọn, mặc định 20 bản ghi/trang, sắp xếp theo Ngày gán giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| STT | Integer(10) | - | - | Control UI: Text hiển thị (Read-only). |
-| Họ và tên / Tên tổ chức | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
-| Tên đăng nhập | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
-| Loại tài khoản | Enum(String(50)) | - | - | Control UI: Text hiển thị (Read-only).<br>Gồm:<br>+ Cá nhân<br>+ Tổ chức<br>+ Cán bộ<br>+ Cơ quan có thẩm quyền |
-| Email | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
-| Số điện thoại | String(20) | - | - | Control UI: Text hiển thị (Read-only). |
-| Ngày gán | DateTime | - | - | Control UI: Text hiển thị (Read-only).<br>- Định dạng `dd/mm/yyyy HH:mm`. |
-| Trạng thái tài khoản | Enum(String(50)) | - | - | Control UI: Badge/Tag hiển thị.<br>Gồm:<br>+ Đang hoạt động<br>+ Bị khóa |
-| Thao tác người dùng | Icon | - | - | Control UI: Icon `Gỡ khỏi vai trò`. |
+| **I. Panel bên trái: Danh sách vai trò** | - | - | - | Khối tìm kiếm và danh sách các vai trò trong hệ thống. |
+| Tìm kiếm vai trò | String(255) | Không | Trống | Control UI: Input text kèm icon kính lúp.<br>- Nhập từ khóa để tìm kiếm nhanh (Live-search) theo Tên vai trò hoặc Mã vai trò. |
+| Danh sách vai trò | List | - | - | Control UI: Danh mục cuộn dọc.<br>- **Mặc định khi truy cập:** Hiển thị toàn bộ danh sách vai trò và tự động chọn vai trò đầu tiên trong danh sách để hiển thị dữ liệu sang Panel phải.<br>- Click chọn vào dòng vai trò: Highlight màu nền và hiển thị dữ liệu phân quyền cùng danh sách người dùng của vai trò tương ứng sang Panel phải.<br>- Khi không tìm thấy kết quả phù hợp với từ khóa tìm kiếm: Hiển thị dòng thông báo theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| Tên vai trò | String(255) | - | - | Control UI: Text hiển thị (Read-only, chữ đậm). |
+| Mã vai trò | String(50) | - | - | Control UI: Text hiển thị (Read-only, tiền tố `Mã: `). |
+| Phạm vi áp dụng | Enum(String(50)) | - | - | Control UI: Badge nhãn màu hiển thị (Read-only).<br>Gồm:<br>+ Cán bộ (màu xanh lá)<br>+ Khách hàng (màu xanh dương)<br>+ Cơ quan có thẩm quyền (màu cam) |
+| Thao tác nhanh | - | - | - | Control UI: Nhóm icon thao tác (hiển thị khi hover vào dòng vai trò).<br>- Sửa (Icon bút chì)<br>- Xóa (Icon thùng rác) |
+| **II. Panel bên phải: Quản lý Phân quyền & Người dùng** | - | - | - | Khối thiết lập cây phân quyền chức năng và quản lý danh sách người dùng được gán cho vai trò đang chọn. |
+| Dòng thông báo hướng dẫn | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Chỉ hiển thị khi ở trạng thái Chưa chọn vai trò: *"Vui lòng chọn một Vai trò ở bên trái để thiết lập quyền và người dùng."* |
+| Tiêu đề chi tiết | String(255) | - | Vai trò: [Tên vai trò] | Control UI: Text hiển thị (Read-only).<br>- Tự động hiển thị Tên vai trò đang được chọn (ví dụ: *"Vai trò: Lãnh đạo Cục"*). |
+| **Hệ thống Tabs điều hướng** | Tab | - | Tab Phân quyền chức năng | Control UI: Tab chuyển đổi giao diện.<br>Gồm:<br>+ Tab Phân quyền chức năng (Mặc định chọn)<br>+ Tab Người dùng được gán (Tiêu đề Tab hiển thị thông tin tổng số người dùng đang được gán cho vai trò, định dạng: `Người dùng được gán ([Tổng số])`) |
+| **II.1. Tab Phân quyền chức năng** | - | - | - | Khối thiết lập cây phân quyền chức năng của vai trò. |
+| Thanh thống kê số lượng chức năng | Badge | - | Tự động đếm | Control UI: Nhóm Badge hiển thị số lượng chức năng được gán theo thời gian thực (Real-time).<br>- **Các chỉ số thống kê**:<br>  + **Tổng số**: `Tổng số: X / Y chức năng`<br>  + **Website Cán bộ**: `Website Cán bộ: X_cb / Y_cb`<br>  + **Website Khách hàng**: `Website Khách hàng: X_kh / Y_kh`<br>  + **Mobile App**: `Mobile App: X_app / Y_app`<br>- **Quy tắc hiển thị màu sắc**:<br>  + *Phân hệ có chức năng được chọn* (X > 0): Hiển thị màu sắc nổi bật đặc trưng của từng phân hệ (Website Cán bộ: màu xanh lá, Website Khách hàng: màu xanh dương, Mobile App: màu tím).<br>  + *Phân hệ chưa có chức năng nào được chọn* (X = 0): Hiển thị dạng chữ mờ xám để phân biệt trực quan các phân hệ chưa được phân quyền. |
+| Tìm kiếm chức năng nhanh | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập từ khóa để lọc trực tiếp các chức năng trên cây phân quyền theo Tên hoặc Mã chức năng. |
+| Cây chức năng phân quyền | Tree Checkbox | - | Theo vai trò chọn | Control UI: Cây phân cấp đa cấp kèm Checkbox chọn quyền.<br>- **Cấu trúc hiển thị từng node trên cây**:<br>  + **Node Cấp 1 (Phân hệ)**: Icon đóng/mở nhánh (`>` / `v`), Checkbox chọn toàn bộ phân hệ (Cascade), Icon phân hệ (Website Cán bộ, Website Khách hàng, Mobile App), Tên phân hệ (chữ in đậm) và Badge đếm số lượng chức năng: `(X / Y)` (X là số chức năng con được chọn, Y là tổng số chức năng trực thuộc).<br>  + **Node Cấp 2 (Nhóm chức năng / Menu cha)**: Icon đóng/mở nhánh, Checkbox chọn toàn bộ nhóm, Icon thư mục/menu, Tên nhóm chức năng và Badge đếm số lượng chức năng: `(X / Y)`.<br>  + **Node Cấp 3 (Chức năng / Menu con)**: Checkbox chọn quyền và Tên chức năng.<br>- **Cơ chế hoạt động & tương tác**:<br>  + Hỗ trợ đóng/mở từng nhánh cây (Accordion / Collapse).<br>  + Checkbox đa cấp (Cascade Checkbox): Tích/bỏ tích node cha tự động chọn/bỏ chọn tất cả node con; tích/bỏ tích node con tự động cập nhật trạng thái của node cha liên quan và tự động tính toán lại các Badge số đếm trên từng node và Thanh thống kê.<br>  + Tìm kiếm chức năng nhanh: Nhập từ khóa lọc theo Tên chức năng, hệ thống tự động mở rộng nhánh cây chứa kết quả tìm kiếm và highlight từ khóa. |
+| Lưu phân quyền | Button | - | - | Control UI: Nút bấm lưu phân quyền.<br>- Luôn hiển thị tại Footer của Tab Phân quyền chức năng. |
+| **II.2. Tab Người dùng được gán** | - | - | - | Khối tìm kiếm và danh sách tài khoản người dùng được gán vào vai trò này. Tiêu đề Tab hiển thị tổng số người dùng đang được gán cho vai trò: `Người dùng được gán ([Tổng số])`. |
+| **Bộ lọc tìm kiếm người dùng** | - | - | - | Khối các ô nhập tìm kiếm độc lập tại phần đầu của Tab. |
+| Mã tài khoản | String(50) | Không | Trống | Control UI: Input text.<br>- Nhập mã tài khoản cần tìm kiếm (ví dụ: `CB0001`, `KH0002`...). |
+| Tên tài khoản | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập tên tài khoản hoặc họ và tên cá nhân, tên tổ chức/doanh nghiệp. |
+| Email (Tên đăng nhập) | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập địa chỉ Email hoặc Tên đăng nhập của tài khoản. |
+| Tìm kiếm | Button | - | - | Control UI: Nút bấm.<br>- Luôn hiển thị tại thanh nút bấm bộ lọc để thực hiện tìm kiếm. |
+| Xóa bộ lọc | Button | - | - | Control UI: Nút bấm.<br>- Xóa các tiêu chí lọc đã nhập, đưa về trạng thái mặc định và hiển thị danh sách ban đầu. |
+| Gán người dùng | Button | - | - | Control UI: Nút bấm.<br>- Luôn hiển thị tại góc phải thanh công cụ để mở popup gán người dùng vào vai trò. |
+| **Bảng người dùng được gán** | Table | - | - | Khối hiển thị danh sách người dùng đang nắm giữ vai trò. |
+| STT | Integer | - | - | Control UI: Text hiển thị số thứ tự tăng dần (Read-only, căn giữa). |
+| Mã tài khoản | String(50) | - | - | Control UI: Text link (chữ xanh, gạch chân khi hover).<br>- Click vào mã tài khoản hoặc click vào dòng dữ liệu để mở màn hình/popup Xem chi tiết tài khoản tương ứng với Loại tài khoản. |
+| Tên | String(255) | - | - | Control UI: Text hiển thị (Read-only, in đậm).<br>- Hiển thị Họ và tên cá nhân hoặc Tên tổ chức/doanh nghiệp. |
+| Email (Tên đăng nhập) | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Hiển thị địa chỉ Email hoặc Tên đăng nhập của tài khoản. |
+| Loại tài khoản | Enum(String(50)) | - | - | Control UI: Badge nhãn màu hiển thị (Read-only).<br>Gồm:<br>+ Cán bộ (màu xanh lá)<br>+ Khách hàng (màu xanh dương)<br>+ Cơ quan có thẩm quyền (màu cam) |
+| Đơn vị | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Với tài khoản Cán bộ: Ghi rõ Tên phòng ban - Tên đơn vị.<br>- Đối với tài khoản Loại Khách hàng: Hiển thị `-`.<br>- Với tài khoản Cơ quan có thẩm quyền: Hiển thị Tên cơ quan hoặc `-`. |
+| Trạng thái | Enum(String(50)) | - | - | Control UI: Badge nhãn trạng thái hiển thị (Read-only).<br>Gồm:<br>+ Đang hoạt động (màu xanh lá)<br>+ Bị khóa (màu đỏ) |
+| Thao tác | Action Button | - | - | Control UI: Nút thao tác .<br>- Gỡ vai trò. |
 
 ###### 4.3.1.1.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Lọc danh sách vai trò theo các tiêu chí `Tên vai trò`, `Loại tài khoản áp dụng`, `Trạng thái`:<br>- **TH Không có dữ liệu**: Bảng danh sách hiển thị duy nhất 01 dòng căn giữa nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"* và các nút điều hướng khóa mờ.<br>- **TH Có dữ liệu**: Hiển thị danh sách các vai trò phù hợp điều kiện lọc, sắp xếp mặc định theo Ngày tạo giảm dần. |
-| 2 | Xóa bộ lọc | Button | Đặt lại toàn bộ tiêu chí tìm kiếm vai trò về giá trị mặc định (`Trống`, `Tất cả`, `Tất cả`) và tải lại danh sách kết quả. |
-| 3 | Thêm mới | Button | Mở **MH02 - Popup Thêm mới / Cập nhật vai trò** ở chế độ Thêm mới. |
-| 4 | Cập nhật | Icon | Mở **MH02 - Popup Thêm mới / Cập nhật vai trò** ở chế độ Cập nhật cho vai trò tương ứng. |
-| 5 | Xóa | Icon | Mở **[POPUP-CFM-001]** với `Loại thao tác` là `Xóa` kèm thông báo cảnh báo [MSG-CFM-SYS-001]:<br>- **TH1 (Vai trò đang được sử dụng)**: Vai trò đang được gán cho ít nhất 01 tài khoản người dùng $\rightarrow$ Hệ thống chặn xóa, hiển thị thông báo lỗi yêu cầu gỡ vai trò khỏi người dùng trước.<br>- **TH Hợp lệ**: Khi người dùng chọn "Xác nhận", hệ thống xóa vai trò khỏi CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001] và làm mới danh sách vai trò. |
-| 6 | Phân quyền | Icon | Mở **MH03 - Popup Phân quyền theo vai trò** để cấu hình cây chức năng cho vai trò tương ứng. |
-| 7 | Click dòng vai trò | Row Click | Tải dữ liệu chi tiết của vai trò được chọn sang Panel phải (Tab Phân quyền và Tab Danh sách người dùng được gán). |
-| 8 | Tìm kiếm (Quyền) | Button/Icon | Lọc trực tiếp các chức năng trên cây quyền hạn ở Panel phải theo Tên hoặc Mã chức năng:<br>- **TH Có dữ liệu**: Tự động mở rộng (Expand) các nhánh cây chứa quyền thỏa mãn từ khóa và highlight màu nổi bật.<br>- **TH Không có dữ liệu**: Cây quyền hạn hiển thị thông báo *"Không tìm thấy chức năng/quyền phù hợp"*. |
-| 9 | Xóa bộ lọc (Quyền) | Button/Icon | Xóa từ khóa tìm kiếm quyền và hiển thị lại toàn bộ cây quyền hạn của vai trò. |
-| 10 | Tìm kiếm (Người dùng) | Button | Lọc danh sách người dùng được gán theo các tiêu chí `Họ và tên/Tên tổ chức`, `Tên đăng nhập/Email`, `Số điện thoại`, `Trạng thái tài khoản`:<br>- **TH Không có dữ liệu**: Bảng hiển thị duy nhất 01 dòng căn giữa nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng khóa mờ.<br>- **TH Có dữ liệu**: Hiển thị danh sách tài khoản thỏa mãn điều kiện lọc. |
-| 11 | Xóa bộ lọc (Người dùng) | Button | Đặt lại toàn bộ tiêu chí tìm kiếm người dùng về mặc định và tải lại danh sách người dùng được gán. |
-| 12 | Thêm người dùng | Button | Mở **MH04 - Popup Thêm người dùng vào vai trò** cho vai trò đang chọn. |
-| 13 | Gỡ khỏi vai trò | Icon | Mở **[POPUP-CFM-001]** với `Loại thao tác` là `Xóa` kèm thông báo xác nhận. Khi chọn "Xác nhận", hệ thống gỡ tài khoản khỏi vai trò, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001] và tải lại bảng người dùng được gán. |
+| 1 | Thêm mới | Button | Nằm tại Header Panel trái. Mở **MH02 - Popup Thêm mới / Sửa Vai trò** ở chế độ Thêm mới. |
+| 2 | Tìm kiếm vai trò | Input text | Khi người dùng nhập từ khóa: Hệ thống tự động lọc trực tiếp danh sách vai trò ở Panel trái theo Tên hoặc Mã vai trò khớp từ khóa. |
+| 3 | Chọn vai trò | Click Item | Khi click vào một vai trò trong danh sách:<br>- Đánh dấu trạng thái đang chọn (Highlight màu nền và viền xanh).<br>- Cập nhật tiêu đề Panel phải thành *"Vai trò: [Tên vai trò]"*.<br>- Tải toàn bộ cây phân quyền, tích chọn sẵn các quyền đang sở hữu, tính toán và hiển thị các chỉ số đếm số lượng chức năng trên Thanh thống kê và trên từng node phân hệ.<br>- Tải danh sách các tài khoản người dùng đang được gán vai trò này sang Tab Người dùng được gán. |
+| 4 | Sửa vai trò | Icon | Hiển thị khi hover vào dòng vai trò. Mở **MH02 - Popup Thêm mới / Sửa Vai trò** ở chế độ Chỉnh sửa cho vai trò tương ứng. |
+| 5 | Xóa vai trò | Icon | Hiển thị khi hover vào dòng vai trò. Mở **[POPUP-CFM-001]** để xác nhận thao tác xóa vai trò. |
+| 6 | Chuyển Tab | Tab click | Chuyển đổi qua lại giữa Tab "Phân quyền chức năng" và Tab "Người dùng được gán" cho vai trò đang chọn. Tiêu đề Tab "Người dùng được gán" hiển thị tổng số người dùng đang được gán theo thời gian thực. |
+| 7 | Tìm kiếm chức năng nhanh | Input text | Lọc trực tiếp các chức năng trên cây phân quyền theo Tên hoặc Mã chức năng chứa từ khóa. Tự động mở rộng (Expand) các nhánh cây chứa chức năng khớp điều kiện lọc. |
+| 8 | Đóng/Mở nhánh cây | Icon | Click vào icon mũi tên (`>`) để đóng/mở các nhánh phân hệ hoặc nhóm chức năng con. |
+| 9 | Chọn quyền trên cây | Checkbox | Tích chọn/bỏ chọn quyền hạn cho vai trò. Áp dụng quy tắc Cascade Checkbox (chọn cha tự động chọn con, tích con tự động cập nhật cha). Hệ thống tự động cập nhật số lượng đếm tại Thanh thống kê và các node gốc tương ứng theo thời gian thực (Real-time). |
+| 10 | Lưu phân quyền | Button | Nằm tại Footer Tab Phân quyền. Khi click nút "Lưu phân quyền": Lưu danh sách các quyền đã tích chọn cho vai trò vào CSDL, ghi Audit Log và hiển thị thông báo thành công [MSG-SUC-SYS-002]. |
+| 11 | Tìm kiếm | Button | Nằm tại Tab Người dùng được gán. Khi click nút "Tìm kiếm":<br>- Hệ thống tiến hành lọc danh sách người dùng được gán theo các tiêu chí đã nhập (kết hợp đồng thời: Mã tài khoản, Tên tài khoản, Email (Tên đăng nhập)).<br>- **TH Không tìm thấy dữ liệu phù hợp**: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng theo [MSG-INF-SYS-001].<br>- **TH Có dữ liệu trả về**: Hiển thị danh sách các tài khoản thỏa mãn bộ lọc. |
+| 12 | Xóa bộ lọc | Button | Nằm tại Tab Người dùng được gán. Khi click nút "Xóa bộ lọc": Hệ thống xóa các tiêu chí lọc đã nhập, đưa về trạng thái mặc định và hiển thị danh sách ban đầu. |
+| 13 | Gán người dùng | Button | Nằm tại Header Tab Người dùng được gán. Mở **MH03 - [POPUP-ASSIGN-001] - Popup Gán người dùng vào vai trò**. |
+| 14 | Xem chi tiết tài khoản | Row Click / Link | Khi người dùng click vào dòng dữ liệu hoặc click vào Mã tài khoản tại bảng người dùng được gán:<br>- **Nếu `Loại tài khoản` là `Cán bộ` hoặc `Cơ quan có thẩm quyền`**: Hệ thống mở màn hình / popup Chi tiết tài khoản cán bộ (tham chiếu màn hình Xem chi tiết tại mục 4.3.1.3 tài liệu `Tai_khoan_can_bo.md`).<br>- **Nếu `Loại tài khoản` là `Khách hàng`**: Hệ thống mở màn hình / popup Chi tiết tài khoản khách hàng (tham chiếu tài liệu `Quan_ly_tk_khach_hang.md`) |
+| 15 | Gỡ vai trò | Button | Mở **MH04 - [POPUP-CFM-002] - Popup Xác nhận gỡ vai trò khỏi người dùng** để xác nhận gỡ vai trò khỏi tài khoản tương ứng. |
 
 ---
 
-##### 4.3.1.1.3. MH02 - Popup Thêm mới / Cập nhật vai trò
+##### 4.3.1.1.3. MH02 - Popup Thêm mới / Sửa Vai trò
 
 ###### 4.3.1.1.3.1. Màn hình
 
-![Màn hình Thêm mới / Cập nhật vai trò](images/UC600.02.MH01.png)
+![Popup Thêm mới / Sửa Vai trò](images/UC600.02.MH01.png)
 
 ###### 4.3.1.1.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **Form Vai trò** | - | - | - | Hiển thị dạng Popup Modal. |
-| Mã vai trò | String(50) | Có | Tự động sinh (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Text hiển thị (Read-only).<br>- Hệ thống tự động sinh mã định danh khi thêm mới. Không cho phép chỉnh sửa. |
-| Tên vai trò | String(255) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Nhập tên vai trò.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
-| Loại tài khoản áp dụng | Enum(String(50)) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>Gồm:<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền |
-| Trạng thái | Enum(String(50)) | Có | Hoạt động (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox / Radio.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
-| Lưu | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
-| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+| Mã vai trò | String(50) | Có | Tự động sinh (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Text hiển thị / Input text (Read-only).<br>- Thêm mới: Hệ thống tự động sinh mã định danh duy nhất (định dạng `R_xxxxxx`). Khóa chỉ đọc, không cho phép chỉnh sửa.<br>- Sửa: Hiển thị mã vai trò hiện tại. Khóa chỉ đọc, không cho phép chỉnh sửa. |
+| Tên vai trò | String(255) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Input text.<br>- Nhập tên hiển thị của vai trò.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Phạm vi áp dụng | Enum(String(50)) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>Gồm:<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền |
 
 ###### 4.3.1.1.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Lưu | Button | Kiểm tra dữ liệu trên form:<br>- **TH1 (Bỏ trống trường bắt buộc)**: Vi phạm quy tắc [BR-VAL-001]. Highlight viền đỏ ô lỗi đầu tiên, hiển thị thông báo lỗi [MSG-ERR-VAL-001] và focus con trỏ vào ô lỗi.<br>- **TH2 (Sai độ dài dữ liệu)**: Tên vai trò vượt quá 255 ký tự (vi phạm [BR-VAL-003]) $\rightarrow$ Highlight viền đỏ, hiển thị thông báo lỗi [MSG-ERR-VAL-003] và focus con trỏ.<br>- **TH3 (Trùng lặp dữ liệu)**: Kiểm tra trùng `Tên vai trò` trên toàn hệ thống đối với các bản ghi đang ở trạng thái `Hoạt động` hoặc `Ngừng hoạt động` theo [BR-VAL-009] (khi Sửa thì loại trừ chính vai trò đang xử lý). Nếu trùng, hiển thị thông báo lỗi [MSG-ERR-VAL-009].<br>- **TH Hợp lệ**: Lưu thông tin vai trò vào CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và làm mới danh sách vai trò tại MH01. |
+| 1 | Lưu lại | Button | Kiểm tra dữ liệu trên form:<br>- **TH1 (Bỏ trống trường bắt buộc)**: Vi phạm quy tắc [BR-VAL-001] (chưa nhập Tên vai trò hoặc chưa chọn Phạm vi áp dụng). Highlight viền đỏ ô lỗi đầu tiên, hiển thị thông báo lỗi [MSG-ERR-VAL-001] và focus con trỏ vào ô lỗi.<br>- **TH2 (Sai độ dài dữ liệu)**: Tên vai trò vượt quá 255 ký tự (vi phạm [BR-VAL-003]) $\rightarrow$ Highlight viền đỏ, hiển thị thông báo lỗi [MSG-ERR-VAL-003] và focus con trỏ.<br>- **TH3 (Trùng lặp dữ liệu)**: Kiểm tra trùng `Mã vai trò` hoặc `Tên vai trò` trên hệ thống đối với các bản ghi đang ở trạng thái `Đang hoạt động` theo [BR-VAL-009] (khi Sửa loại trừ chính vai trò đang xử lý). Nếu trùng, hiển thị thông báo lỗi [MSG-ERR-VAL-009].<br>- **TH Hợp lệ**: Lưu thông tin vai trò vào CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và làm mới danh sách vai trò tại MH01. |
 | 2 | Hủy | Button | Đóng Popup Modal, hủy bỏ các thay đổi và quay lại màn hình chính. |
 
 ---
 
-##### 4.3.1.1.4. MH03 - Popup Phân quyền theo vai trò
+##### 4.3.1.1.4. [POPUP-CFM-001] - Popup Xác nhận xóa vai trò
 
-###### 4.3.1.1.4.1. Màn hình
-
-![Màn hình Phân quyền theo vai trò](images/UC600.05.MH01.png)
-
-###### 4.3.1.1.4.2. Mô tả thông tin trên màn hình
+###### 4.3.1.1.4.1. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Popup Phân quyền** | - | - | - | Hiển thị dạng Popup Modal. |
-| Mã vai trò | String(50) | - | Theo vai trò chọn | Control UI: Text hiển thị (Read-only). |
-| Tên vai trò | String(255) | - | Theo vai trò chọn | Control UI: Text hiển thị (Read-only). |
-| Số lượng quyền đã chọn | String(50) | - | Đã chọn: X/Y | Control UI: Badge hiển thị (Read-only). |
-| Tìm kiếm | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập từ khóa để lọc danh sách chức năng trên cây phân quyền. |
-| Cây danh mục chức năng | Tree Checkbox | Có | Theo vai trò chọn | Control UI: Cây phân cấp kèm Checkbox chọn.<br>- Hiển thị đầy đủ cây chức năng các phân hệ.<br>- Cascade Checkbox: Tích/bỏ tích node cha tự động chọn/bỏ chọn tất cả node con. |
-| Cập nhật | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
-| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+| **Popup Xác nhận xóa** | - | - | - | Hiển thị dạng Popup Modal xác nhận. |
+| Tiêu đề popup | String(100) | - | Xác nhận xóa | Control UI: Text hiển thị (Header). |
+| Nội dung cảnh báo | String(500) | - | Theo bản ghi | Control UI: Text hiển thị.<br>- Hiển thị nội dung: *"Bạn có chắc chắn muốn xóa vai trò [Tên vai trò]?"* kèm dòng cảnh báo màu đỏ: *"Hành động này không thể hoàn tác."*. |
 
-###### 4.3.1.1.4.3. Chức năng trên màn hình
+###### 4.3.1.1.4.2. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Input text | Lọc trực tiếp các chức năng trên cây theo Tên hoặc Mã chức năng chứa từ khóa. |
-| 2 | Chọn quyền trên cây | Checkbox | Thay đổi trạng thái tích chọn của chức năng, tự động cập nhật số lượng quyền đã chọn tại badge `Đã chọn: X/Y`. |
-| 3 | Cập nhật | Button | Lưu danh sách các quyền đã tích chọn cho vai trò vào CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và làm mới thông tin tại MH01. |
-| 4 | Hủy | Button | Đóng Popup Modal, hủy bỏ các thay đổi và giữ nguyên cấu hình phân quyền hiện tại. |
+| 1 | Xóa | Button | Khi người dùng click chọn "Xóa":<br>- **TH Xóa lỗi (Thất bại)**:<br>  + **TH Vai trò đang được sử dụng**: Vai trò đang được gán cho người dùng trong hệ thống $\rightarrow$ Hệ thống chặn xóa, đóng popup và hiển thị thông báo lỗi [MSG-ERR-SYS-003].<br>  + **TH Lỗi hệ thống**: Quá trình xử lý xóa bản ghi phát sinh lỗi kết nối cơ sở dữ liệu hoặc lỗi hệ thống $\rightarrow$ Hệ thống không xóa bản ghi, đóng popup và hiển thị thông báo lỗi [MSG-ERR-SYS-001] để người dùng thử lại sau.<br>- **TH Xóa thành công**: Vai trò không có người dùng đang gán $\rightarrow$ Hệ thống thực hiện xóa vai trò khỏi CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-006], đóng popup và làm mới danh sách vai trò tại Panel trái của MH01. Nếu vai trò vừa xóa đang được chọn ở Panel phải thì đưa Panel phải về trạng thái Chưa chọn vai trò (hiển thị thông báo Empty State). |
+| 2 | Hủy | Button | Đóng Popup Modal, hủy bỏ thao tác xóa và giữ nguyên dữ liệu vai trò. |
 
 ---
 
-##### 4.3.1.1.5. MH04 - Popup Thêm người dùng vào vai trò
+##### 4.3.1.1.5. MH03 - [POPUP-ASSIGN-001] - Popup Gán người dùng vào vai trò
 
 ###### 4.3.1.1.5.1. Màn hình
 
-![Màn hình Thêm người dùng vào vai trò](images/UC600.06.MH01.png)
+Hiển thị dưới dạng Modal Popup "Gán người dùng vào vai trò: [Tên vai trò]".
 
 ###### 4.3.1.1.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Popup Thêm người dùng** | - | - | - | Hiển thị dạng Popup Modal. |
-| Tên vai trò | String(255) | - | Theo vai trò chọn | Control UI: Text hiển thị (Read-only). |
-| Tìm kiếm tài khoản | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập từ khóa tìm kiếm theo Tên, Tên đăng nhập, Email hoặc Số điện thoại. |
-| Bảng tài khoản khả dụng | - | - | Danh sách phù hợp | Control UI: Bảng có Checkbox chọn nhiều dòng.<br>- Chỉ hiển thị các tài khoản phù hợp với `Loại tài khoản áp dụng` của vai trò và chưa được gán vai trò này.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| Số lượng đã chọn | String(50) | - | Đã chọn: 0 tài khoản | Control UI: Text hiển thị (Read-only). |
-| Thêm vào vai trò | String(50) | - | - | Control UI: Button.<br>- Chỉ kích hoạt (Enable) khi đã tích chọn ít nhất 01 tài khoản. |
-| Hủy | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
+| Tiêu đề popup | String(150) | - | Gán người dùng vào vai trò: [Tên vai trò] | Control UI: Text hiển thị (Header Modal). |
+| **Bộ lọc tìm kiếm tài khoản** | - | - | - | Khối các tiêu chí lọc tài khoản người dùng tại phần đầu của popup. |
+| Loại tài khoản | Enum(String(50)) | Không | Cán bộ | Control UI: Combobox.<br>Gồm:<br>+ Cán bộ<br>+ Khách hàng<br>+ Cơ quan có thẩm quyền |
+| Mã tài khoản | String(50) | Không | Trống | Control UI: Input text.<br>- Nhập mã tài khoản cần tìm kiếm (ví dụ: `CB0001`, `KH0001`...). |
+| Họ và tên (Tên) | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập họ và tên cá nhân hoặc tên tổ chức/doanh nghiệp cần tìm kiếm. |
+| Email (Tên đăng nhập) | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập địa chỉ email hoặc tên đăng nhập của tài khoản. |
+| Đơn vị | String(255) | Không | Tất cả | Control UI: Combobox.<br>- Chọn từ danh sách đơn vị trên hệ thống. |
+| Tìm kiếm | Button | - | - | Control UI: Nút bấm.<br>- Luôn hiển thị tại thanh nút bấm bộ lọc để thực hiện tìm kiếm tài khoản theo các điều kiện lọc. |
+| Xóa bộ lọc | Button | - | - | Control UI: Nút bấm.<br>- Xóa các tiêu chí lọc đã nhập, đưa về trạng thái mặc định và hiển thị danh sách ban đầu. |
+| **Bảng kết quả tìm kiếm tài khoản** | Table | - | - | Khối hiển thị danh sách tài khoản khả dụng để gán vai trò.<br>- **Khi mặc định mở Popup**: Hệ thống tự động tải và hiển thị danh sách các tài khoản thỏa mãn đồng thời: thuộc `Loại tài khoản` mặc định (`Cán bộ`), có trạng thái `Đang hoạt động` và chưa được gán vai trò đang chọn.<br>- **Số lượng bản ghi**: Mặc định hiển thị 10 bản ghi trên mỗi trang (có thanh phân trang phía dưới).<br>- **Quy tắc sắp xếp**: Mặc định sắp xếp theo `Ngày tạo` giảm dần.<br>- **Trạng thái không có dữ liệu (Empty State)**: Khi không tìm thấy kết quả phù hợp, bảng hiển thị 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| Cột chọn | Checkbox | - | Bỏ chọn | Control UI: Checkbox chọn nhiều dòng.<br>- Checkbox chọn từng dòng và Checkbox Chọn tất cả trên Header bảng để chọn hàng loạt tài khoản gán vai trò. |
+| STT | Integer | - | - | Control UI: Text hiển thị số thứ tự tăng dần (Read-only, căn giữa). |
+| Mã tài khoản | String(50) | - | - | Control UI: Text hiển thị (Read-only).<br>- Hiển thị mã định danh tài khoản. |
+| Họ và tên (Tên) | String(255) | - | - | Control UI: Text hiển thị (Read-only, in đậm).<br>- Hiển thị Họ và tên cá nhân hoặc Tên tổ chức/doanh nghiệp. |
+| Email (Tên đăng nhập) | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Hiển thị địa chỉ Email hoặc Tên đăng nhập của tài khoản. |
+| Đơn vị | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Với tài khoản Cán bộ: Ghi rõ Tên phòng ban - Tên đơn vị.<br>- Đối với tài khoản Loại Khách hàng: Hiển thị `-`.<br>- Với tài khoản Cơ quan có thẩm quyền: Hiển thị Tên cơ quan hoặc `-`. |
+| Trạng thái | Enum(String(50)) | - | - | Control UI: Badge nhãn trạng thái hiển thị (Read-only).<br>- Chỉ tải lên các tài khoản có trạng thái:<br>+ Đang hoạt động (màu xanh lá) |
+| Số lượng đã chọn | String(100) | - | Đã chọn: 0 tài khoản | Control UI: Text hiển thị số lượng bản ghi đang được tích chọn theo thời gian thực (ví dụ: *Đã chọn: X tài khoản*). |
 
 ###### 4.3.1.1.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm tài khoản | Input text | Lọc danh sách tài khoản khả dụng theo từ khóa đã nhập. |
-| 2 | Chọn tài khoản | Checkbox | Tích chọn/bỏ chọn tài khoản để gán vai trò, cập nhật dòng số lượng `Đã chọn: X tài khoản` và kích hoạt nút `Thêm vào vai trò`. |
-| 3 | Thêm vào vai trò | Button | Gán vai trò đang xem cho toàn bộ các tài khoản đã tích chọn, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-001], đóng popup và tải lại Tab Danh sách người dùng được gán tại MH01. |
-| 4 | Hủy | Button | Đóng Popup Modal, hủy bỏ thao tác và quay lại màn hình chính. |
+| 1 | Tìm kiếm | Button | Khi người dùng click nút "Tìm kiếm":<br>- Hệ thống lọc danh sách tài khoản theo các tiêu chí đã nhập (kết hợp đồng thời: Loại tài khoản, Mã tài khoản, Họ và tên (Tên), Email (Tên đăng nhập), Đơn vị).<br>- Chỉ tải và hiển thị các tài khoản có trạng thái `Đang hoạt động` và chưa được gán vai trò này.<br>- **TH Không tìm thấy kết quả**: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng theo [MSG-INF-SYS-001].<br>- **TH Có kết quả**: Hiển thị danh sách các tài khoản thỏa mãn, giữ nguyên các lựa chọn đã tích trước đó (nếu có). |
+| 2 | Xóa bộ lọc | Button | Khi người dùng click nút "Xóa bộ lọc": Hệ thống xóa các tiêu chí lọc đã nhập, đưa về trạng thái mặc định và hiển thị danh sách ban đầu. |
+| 3 | Chọn tài khoản | Checkbox | Tích chọn/bỏ chọn từng tài khoản hoặc tích chọn tất cả trên Header. Hệ thống tự động cập nhật dòng thông tin `Đã chọn: X tài khoản` theo thời gian thực. |
+| 4 | Lưu lại | Button | Khi người dùng click nút "Lưu lại":<br>- **TH Chưa chọn tài khoản**: Chưa có tài khoản nào được tích chọn $\rightarrow$ Hệ thống hiển thị thông báo lỗi [MSG-ERR-SYS-004] ("Vui lòng chọn ít nhất một người dùng để thực hiện thao tác.").<br>- **TH Hợp lệ**: Hệ thống gán vai trò đang xem cho toàn bộ các tài khoản đã tích chọn, lưu CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-002], đóng popup và làm mới bảng người dùng được gán tại Tab 2 của MH01. |
+| 5 | Hủy | Button | Đóng Popup Modal, hủy bỏ thao tác gán và giữ nguyên dữ liệu. |
+
+---
+
+##### 4.3.1.1.6. MH04 - [POPUP-CFM-002] - Popup Xác nhận gỡ vai trò khỏi người dùng
+
+###### 4.3.1.1.6.1. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **Popup Xác nhận gỡ vai trò** | - | - | - | Hiển thị dạng Popup Modal xác nhận. |
+| Tiêu đề popup | String(100) | - | Xác nhận gỡ vai trò | Control UI: Text hiển thị (Header). |
+| Nội dung cảnh báo | String(500) | - | Theo bản ghi | Control UI: Text hiển thị.<br>- Hiển thị nội dung: *"Bạn có chắc chắn muốn gỡ vai trò [Tên vai trò] khỏi người dùng [Tên người dùng] không?"*. |
+| Đồng ý | Button | - | - | Control UI: Nút bấm xác nhận tại footer popup. |
+| Hủy | Button | - | - | Control UI: Nút bấm hủy tại footer popup. |
+
+###### 4.3.1.1.6.2. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Đồng ý | Button | Khi người dùng click "Đồng ý":<br>- Hệ thống gỡ vai trò đang chọn khỏi tài khoản người dùng tương ứng, hủy liên kết vai trò trong CSDL, ghi Audit Log, hiển thị thông báo thành công [MSG-SUC-SYS-002], đóng popup và làm mới bảng người dùng được gán tại Tab 2 của MH01.<br>- Tài khoản người dùng sau khi bị gỡ khỏi vai trò sẽ không được phép truy cập và thao tác vào các chức năng theo phân quyền của vai trò đã gỡ bỏ (áp dụng ngay từ phiên làm việc tiếp theo hoặc sau khi làm mới trang). Các quyền hạn thuộc các vai trò khác của người dùng (nếu có) vẫn được giữ nguyên; trường hợp người dùng không còn vai trò nào thì không được phép truy cập vào các phân hệ nghiệp vụ. |
+| 2 | Hủy | Button | Đóng Popup Modal, giữ nguyên vai trò của người dùng. |

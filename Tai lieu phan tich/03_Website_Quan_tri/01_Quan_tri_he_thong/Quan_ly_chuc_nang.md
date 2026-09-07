@@ -1,4 +1,4 @@
-#### 4.3.1.11. Quản lý quyền
+#### 4.3.1.11. Quản lý chức năng
 
 ##### 4.3.1.11.1. Mục đích
 Cho phép quản lý cây phân cấp quyền và chức năng trên hệ thống cho từng phân hệ (Website Khách hàng, Ứng dụng Mobile, Website quản trị), bao gồm:
@@ -15,12 +15,12 @@ Cho phép quản lý cây phân cấp quyền và chức năng trên hệ thốn
 
 ---
 
-##### 4.3.1.11.2. MH01 - Màn hình Quản lý quyền
+##### 4.3.1.11.2. MH01 - Màn hình Quản lý chức năng
 
 ###### 4.3.1.11.2.1. Màn hình
 
-![Giao diện Quản lý quyền khi chưa chọn node](images/UCPS011.MH01_Unselected.png)
-![Giao diện Quản lý quyền khi đã chọn node](images/UCPS011.MH01_Selected.png)
+![Giao diện Quản lý chức năng khi chưa chọn node](images/UCPS011.MH01_Unselected.png)
+![Giao diện Quản lý chức năng khi đã chọn node](images/UCPS011.MH01_Selected.png)
 
 ###### 4.3.1.11.2.2. Mô tả thông tin trên màn hình
 

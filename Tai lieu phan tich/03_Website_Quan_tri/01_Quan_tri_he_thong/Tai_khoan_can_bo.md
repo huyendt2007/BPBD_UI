@@ -36,8 +36,8 @@ Cho phép quản lý hồ sơ tài khoản cán bộ và cán bộ thuộc cơ q
 | Loại đơn vị | Enum(String(100)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Nội bộ<br>+ Cơ quan ngoài ngành |
 | Phòng ban | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Các Phòng ban thuộc Đơn vị đã chọn |
 | Chức vụ | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Các Chức vụ trong hệ thống |
-| Vai trò | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Các vai trò ở trạng thái Hoạt động có Loại tài khoản áp dụng là Cán bộ |
-| Nhóm người dùng | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Các nhóm người dùng ở trạng thái Hoạt động có Loại tài khoản áp dụng là Cán bộ |
+| Vai trò | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Các vai trò ở trạng thái Đang hoạt động có Loại tài khoản áp dụng là Cán bộ |
+| Nhóm người dùng | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Các nhóm người dùng ở trạng thái Đang hoạt động có Loại tài khoản áp dụng là Cán bộ |
 | Từ ngày | Date | Không | Ngày đầu tháng hiện tại | Control UI: Datepicker (`dd/mm/yyyy`).<br>- Mặc định là ngày đầu tiên của tháng hiện tại.<br>- Áp dụng quy tắc so sánh khoảng ngày [BR-VAL-007]. |
 | Đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`).<br>- Mặc định là ngày hiện tại.<br>- Áp dụng quy tắc so sánh khoảng ngày [BR-VAL-007]. |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đang hoạt động<br>+ Bị khóa<br>+ Đóng |
@@ -92,8 +92,8 @@ Cho phép quản lý hồ sơ tài khoản cán bộ và cán bộ thuộc cơ q
 | Đơn vị | Enum(String(100)) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox dạng cây (Tree-Select).<br>- Chỉ hiển thị Đơn vị trực thuộc phạm vi quản lý của người dùng đang thực hiện trở xuống. |
 | Phòng ban | Enum(String(50)) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>- Danh sách Phòng ban trực thuộc Đơn vị đã chọn. Tự động cập nhật khi Đơn vị thay đổi. |
 | Chức vụ | Enum(String(50)) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox.<br>- Chọn từ Danh mục Chức vụ. |
-| Nhóm người dùng | Enum(String(50)) | Không* | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox (Multi-select) / Checkbox có ô tìm kiếm.<br>- **Chỉ hiển thị các Nhóm người dùng ở trạng thái `Hoạt động` có `Loại tài khoản áp dụng` là `Cán bộ`.** |
-| Vai trò | Enum(String(50)) | Không* | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox (Multi-select) / Checkbox có ô tìm kiếm.<br>- **Chỉ hiển thị các Vai trò ở trạng thái `Hoạt động` có `Loại tài khoản áp dụng` là `Cán bộ`.** |
+| Nhóm người dùng | Enum(String(50)) | Không* | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox (Multi-select) / Checkbox có ô tìm kiếm.<br>- **Chỉ hiển thị các Nhóm người dùng ở trạng thái `Đang hoạt động` có `Loại tài khoản áp dụng` là `Cán bộ`.** |
+| Vai trò | Enum(String(50)) | Không* | Trống (Thêm mới) / Theo bản ghi (Sửa) | Control UI: Combobox (Multi-select) / Checkbox có ô tìm kiếm.<br>- **Chỉ hiển thị các Vai trò ở trạng thái `Đang hoạt động` có `Loại tài khoản áp dụng` là `Cán bộ`.** |
 | Cây quyền hạn (Preview) | Tree | - | Theo Nhóm/Vai trò | Control UI: Cây phân quyền chỉ đọc (Read-only).<br>- Hiển thị trước các quyền được cộng dồn theo thời gian thực (Real-time). |
 | Lưu | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
 | Đặt lại mật khẩu | String(50) | - | - | Control UI: Button.<br>- Chỉ hiển thị tại footer popup khi ở chế độ Cập nhật. |

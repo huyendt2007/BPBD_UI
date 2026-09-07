@@ -1,0 +1,2943 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đơn vị hành chính - Danh mục Địa bàn</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0284c7;
+            --primary-hover: #0369a1;
+            --primary-light: #e0f2fe;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --danger-hover: #DC2626;
+            --danger-light: #FEE2E2;
+            --warning-color: #F59E0B;
+            --warning-light: #FEF3C7;
+            --info-color: #3B82F6;
+            --bg-body: #F8FAFC;
+            --bg-surface: #FFFFFF;
+            --text-main: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --border-focus: #0284c7;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --box-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: 13.5px;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Breadcrumb & Toolbar Header */
+        .page-header-wrapper {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-nav i {
+            font-size: 11px;
+        }
+
+        .breadcrumb-nav span.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1E293B;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Buttons Styling */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn:hover:not(:disabled) {
+            background-color: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-primary {
+            background-color: #0284c7;
+            border-color: #0284c7;
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: #0369a1;
+            border-color: #0369a1;
+        }
+
+        .btn-danger-outline {
+            color: var(--danger-color);
+            border-color: #FCA5A5;
+            background-color: #FFFFFF;
+        }
+
+        .btn-danger-outline:hover:not(:disabled) {
+            background-color: #FEF2F2;
+            border-color: var(--danger-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+            color: #FFFFFF;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background-color: var(--danger-hover);
+        }
+
+        .btn-icon-only {
+            padding: 7px 10px;
+        }
+
+        /* Split Main Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background-color: var(--bg-body);
+        }
+
+        /* Left Panel - Tree View */
+        .left-panel {
+            width: 380px;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .tree-filter-box {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #FAFAFA;
+        }
+
+        .search-input-wrap {
+            position: relative;
+        }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            background-color: #FFFFFF;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+        }
+
+        .filter-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .filter-checkbox-label input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: var(--primary-color);
+            width: 15px;
+            height: 15px;
+        }
+
+        /* Tree List Container */
+        .tree-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .tree-node {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tree-node-row {
+            display: flex;
+            align-items: center;
+            padding: 6px 12px 6px 8px;
+            cursor: pointer;
+            transition: background-color 0.15s;
+            border-left: 3px solid transparent;
+            user-select: none;
+        }
+
+        .tree-node-row:hover {
+            background-color: #F1F5F9;
+        }
+
+        .tree-node-row.selected {
+            background-color: #E0F2FE;
+            border-left-color: #0284c7;
+        }
+
+        .tree-expand-btn {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-right: 4px;
+            flex-shrink: 0;
+        }
+
+        .tree-expand-btn:hover {
+            background-color: #E2E8F0;
+            color: var(--text-main);
+        }
+
+        .tree-expand-btn.hidden {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .node-icon {
+            font-size: 14px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .node-icon.level-1 {
+            color: #0284c7;
+        }
+
+        .node-icon.level-2,
+        .node-icon.level-3 {
+            color: #10B981;
+        }
+
+        .node-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .node-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .node-title.inactive {
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .node-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .tree-children {
+            display: none;
+            position: relative;
+            margin-left: 20px;
+            border-left: 1px dashed #CBD5E1;
+        }
+
+        .tree-children.expanded {
+            display: block;
+        }
+
+        /* Right Panel - Details & Tabs */
+        .right-panel {
+            flex: 1;
+            background-color: var(--bg-surface);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Empty State */
+        .empty-state-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            gap: 16px;
+            padding: 40px;
+        }
+
+        .empty-state-icon {
+            width: 90px;
+            height: 90px;
+            background-color: #F1F5F9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #94A3B8;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Tabs Container */
+        .detail-tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+            background-color: var(--bg-surface);
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            padding: 14px 20px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border: none;
+            background: none;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2.5px;
+            background-color: var(--primary-color);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .detail-tabs-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .tab-pane {
+            display: none;
+            height: 100%;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Tab 1: Key-Value Table */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #FFFFFF;
+        }
+
+        .info-table tr {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .info-table td {
+            padding: 12px 18px;
+            font-size: 13px;
+        }
+
+        .info-table td.label-col {
+            width: 250px;
+            color: var(--text-secondary);
+            background-color: #F8FAFC;
+            font-weight: 500;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .info-table td.value-col {
+            color: var(--text-main);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-level {
+            background-color: #E0F2FE;
+            color: #0369A1;
+            border: 1px solid #BAE6FD;
+        }
+
+        .badge-disbanded {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+            margin-left: 10px;
+        }
+
+        .badge-primary {
+            background-color: #E0F2FE;
+            color: #0284c7;
+            border: 1px solid #BAE6FD;
+        }
+
+        .badge-warning {
+            background-color: #FEF3C7;
+            color: #D97706;
+            border: 1px solid #FDE68A;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 38px;
+            height: 20px;
+            vertical-align: middle;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: default;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #CBD5E1;
+            transition: .3s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(18px);
+        }
+
+        /* Tab 2: Lịch sử biến động (Node Graph) */
+        .graph-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 12px;
+        }
+
+        .graph-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E293B;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .graph-canvas {
+            flex: 1;
+            min-height: 400px;
+            background-color: #F8FAFC;
+            background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+            background-size: 20px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .graph-controls {
+            position: absolute;
+            left: 16px;
+            bottom: 16px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--box-shadow);
+        }
+
+        .graph-ctrl-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 13px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .graph-ctrl-btn:last-child {
+            border-bottom: none;
+        }
+
+        .graph-ctrl-btn:hover {
+            background-color: #F1F5F9;
+            color: var(--primary-color);
+        }
+
+        /* Graph Nodes Representation */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            position: relative;
+        }
+
+        .flow-node {
+            background: #FFFFFF;
+            padding: 16px 20px;
+            border-radius: 8px;
+            min-width: 220px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            position: relative;
+        }
+
+        .flow-node.source {
+            border: 2px solid #0284c7;
+        }
+
+        .flow-node.target {
+            border: 2px dashed #94A3B8;
+        }
+
+        .flow-node h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 4px;
+        }
+
+        .flow-node p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 2px 0;
+        }
+
+        .flow-edge-line {
+            position: absolute;
+            left: 220px;
+            top: 50%;
+            width: 80px;
+            height: 2px;
+            border-top: 2px dashed #0284c7;
+            transform: translateY(-50%);
+        }
+
+        .flow-edge-label {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #E0F2FE;
+            color: #0369A1;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        /* Tab 3: Timeline */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background-color: #E2E8F0;
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 14px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #0284c7;
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 0 0 2px #0284c7;
+        }
+
+        .timeline-date-badge {
+            display: inline-block;
+            background-color: #F1F5F9;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Modal Dialogs (Rule 1 & Rule 11 Compliance) */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #FFFFFF;
+            border-radius: var(--border-radius-lg);
+            width: 800px;
+            max-width: 90%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 24px 24px 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1E293B;
+        }
+
+        .modal-close-btn {
+            border: none;
+            background: none;
+            font-size: 18px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--danger-color);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: 75vh;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-col-full {
+            grid-column: span 2;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .form-label span.req {
+            color: var(--danger-color);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+        }
+
+        .form-control:disabled,
+        .form-control[readonly] {
+            background-color: #F1F5F9;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Validation Rule 9: Red border & warning text */
+        .form-control.is-invalid {
+            border-color: var(--danger-color) !important;
+            background-color: #FFF5F5 !important;
+        }
+
+        .error-feedback {
+            display: none;
+            color: var(--danger-color);
+            font-size: 11.5px;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .form-group.has-error .error-feedback {
+            display: block;
+        }
+
+        .form-helper {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Card Section inside Modal */
+        .modal-section-card {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .modal-section-card h4 {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #0284c7;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-shrink: 0;
+            background-color: #FAFAFA;
+        }
+
+        /* Custom Delete Confirmation Modal (Rule 10 Compliance) */
+        .modal-confirm {
+            width: 440px;
+        }
+
+        .modal-confirm-body {
+            padding: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .confirm-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #FEF2F2;
+            color: var(--danger-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .confirm-text h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1E293B;
+            margin-bottom: 6px;
+        }
+
+        .confirm-text p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Toast notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-msg {
+            padding: 12px 18px;
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--box-shadow-md);
+            animation: slideInRight 0.3s ease;
+        }
+
+        .toast-msg.success {
+            background-color: #059669;
+        }
+
+        .toast-msg.error {
+            background-color: var(--danger-color);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Header Wrapper -->
+    <div class="page-header-wrapper">
+        <div class="breadcrumb-nav">
+            <i class="fa-solid fa-table-cells-large"></i>
+            <span>Quản lý danh mục hệ thống</span>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span class="active">Danh mục Địa bàn</span>
+        </div>
+        <div class="page-header">
+            <div class="header-title">
+                <h1>Quản lý Đơn vị hành chính</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="btnThemMoi" title="Thêm mới đơn vị hành chính">
+                    <i class="fa-solid fa-plus"></i> Thêm mới
+                </button>
+                <button class="btn" id="btnSua" disabled title="Chỉnh sửa đơn vị đang chọn">
+                    <i class="fa-regular fa-pen-to-square"></i> Sửa
+                </button>
+                <button class="btn" id="btnXuatExcel" title="Kết xuất danh sách ra file Excel">
+                    <i class="fa-solid fa-file-excel" style="color: #10B981;"></i> Kết xuất Excel
+                </button>
+                <button class="btn" id="btnLamMoi" title="Xóa bộ lọc và tải lại danh sách">
+                    <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                </button>
+                <button class="btn btn-danger-outline" id="btnXoa" disabled title="Xóa đơn vị đang chọn">
+                    <i class="fa-regular fa-trash-can"></i> Xóa
+                </button>
+                <button class="btn" id="btnNhanExcel" title="Nhận dữ liệu từ tệp Excel (Quy chuẩn 5.6)">
+                    <i class="fa-solid fa-file-import" style="color: #0284c7;"></i> Nhận Excel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Split Layout -->
+    <div class="main-container">
+
+        <!-- Left Panel: Tree View -->
+        <div class="left-panel">
+            <div class="tree-filter-box">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div class="search-input-wrap">
+                        <i class="fa-solid fa-barcode"></i>
+                        <input type="text" id="treeSearchMa" class="search-input" placeholder="Mã đơn vị...">
+                    </div>
+                    <div class="search-input-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="treeSearchTen" class="search-input" placeholder="Tên đơn vị...">
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 4px; border-top: 1px dashed var(--border-color);">
+                    <span style="font-size: 11.5px; color: #64748B;"><i class="fa-solid fa-sitemap" style="margin-right: 4px; color: #0284c7;"></i>Tỉnh/TP trực thuộc</span>
+                    <div style="display: flex; gap: 4px;">
+                        <button type="button" class="btn" id="btnExpandAll" title="Mở rộng tất cả các cấp" style="padding: 3px 8px; font-size: 11px; height: 24px;">
+                            <i class="fa-solid fa-plus" style="font-size: 10px; color: #0284c7;"></i> Mở rộng
+                        </button>
+                        <button type="button" class="btn" id="btnCollapseAll" title="Thu gọn chỉ giữ Tỉnh/Thành phố" style="padding: 3px 8px; font-size: 11px; height: 24px;">
+                            <i class="fa-solid fa-minus" style="font-size: 10px; color: #64748B;"></i> Thu gọn
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrollable Administrative Units Tree -->
+            <div class="tree-scroll-area" id="adminTree">
+                <!-- Rendered dynamically by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Right Panel: Details & Tabs View -->
+        <div class="right-panel">
+
+            <!-- Empty State when no unit is selected -->
+            <div class="empty-state-wrap" id="emptyState">
+                <div class="empty-state-icon">
+                    <i class="fa-regular fa-folder-open"></i>
+                </div>
+                <div class="empty-state-text">Vui lòng chọn một tổ chức để xem chi tiết</div>
+            </div>
+
+            <!-- Detail Pane (Visible when a unit is selected) -->
+            <div id="detailContainer" style="display: none; height: 100%; flex-direction: column;">
+                <!-- Tabs Header -->
+                <div class="detail-tabs-header">
+                    <button class="tab-btn active" data-tab="tabThongTinChung">Thông tin chung</button>
+                    <button class="tab-btn" data-tab="tabLichSuBienDong">Lịch sử biến động</button>
+                    <button class="tab-btn" data-tab="tabDongThoiGian">Dòng thời gian</button>
+                </div>
+
+                <!-- Tabs Body -->
+                <div class="detail-tabs-content">
+
+                    <!-- Tab 1: Thông tin chung -->
+                    <div class="tab-pane active" id="tabThongTinChung">
+                        <table class="info-table">
+                            <tbody>
+                                <tr>
+                                    <td class="label-col">Tên đơn vị</td>
+                                    <td class="value-col" id="lblTenDonVi" style="font-weight: 700; font-size: 14px;">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Mã đơn vị</td>
+                                    <td class="value-col" id="lblMaDonVi">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Cấp đơn vị</td>
+                                    <td class="value-col">
+                                        <span class="badge badge-level" id="lblCapDonVi">-</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Loại đơn vị</td>
+                                    <td class="value-col" id="lblLoaiDonVi">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Ngày thành lập</td>
+                                    <td class="value-col" id="lblNgayThanhLap">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Đang hoạt động</td>
+                                    <td class="value-col">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="lblDangHoatDong" disabled>
+                                            <span class="slider"></span>
+                                        </label>
+                                        <span class="badge badge-disbanded" id="lblTagGiaiThe" style="display: none;">Đã giải thể</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Hiện trạng sắp xếp</td>
+                                    <td class="value-col" id="lblChangeStatus">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">Căn cứ pháp lý biến động</td>
+                                    <td class="value-col" id="lblChangeDoc">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tab 2: Lịch sử biến động (Node Graph) -->
+                    <div class="tab-pane" id="tabLichSuBienDong">
+                        <div class="graph-wrapper">
+                            <div class="graph-header" id="lblGraphHeading">
+                                <i class="fa-solid fa-code-branch" style="color: var(--primary-color);"></i>
+                                <span>Đã kế thừa bởi (đi đâu) — Chia tách · QĐ 323</span>
+                            </div>
+                            <div class="graph-canvas" id="graphCanvas">
+                                <div class="flow-container">
+                                    <div class="flow-node source" id="nodeSource">
+                                        <h4 id="graphSourceTitle">Thành phố Hà Nội</h4>
+                                        <p id="graphSourceCode">Mã: 01</p>
+                                        <p id="graphSourceDates">01/01/2000 - 06/09/2026</p>
+                                    </div>
+                                    <div class="flow-edge-line">
+                                        <div class="flow-edge-label" id="graphEdgeLabel">Chia tách</div>
+                                    </div>
+                                    <div class="flow-node target" id="nodeTarget">
+                                        <h4 id="graphTargetTitle">Test</h4>
+                                        <p id="graphTargetCode">Mã: 98</p>
+                                        <p id="graphTargetDates">07/09/2026</p>
+                                    </div>
+                                </div>
+
+                                <!-- Floating Graph Controls -->
+                                <div class="graph-controls">
+                                    <button class="graph-ctrl-btn" title="Thu phóng to" onclick="zoomGraph(1.1)"><i class="fa-solid fa-plus"></i></button>
+                                    <button class="graph-ctrl-btn" title="Thu nhỏ lại" onclick="zoomGraph(0.9)"><i class="fa-solid fa-minus"></i></button>
+                                    <button class="graph-ctrl-btn" title="Vừa khung nhìn" onclick="resetGraphZoom()"><i class="fa-solid fa-expand"></i></button>
+                                    <button class="graph-ctrl-btn" title="Khóa sơ đồ"><i class="fa-solid fa-lock"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Dòng thời gian (Timeline) -->
+                    <div class="tab-pane" id="tabDongThoiGian">
+                        <div class="timeline-container" id="timelineList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Modal: Thêm mới / Chỉnh sửa Đơn vị hành chính (Rule 1 & Rule 11 Compliance) -->
+    <div class="modal-backdrop" id="modalUnit">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalUnitTitle">Thêm mới Đơn vị hành chính</h3>
+                <button type="button" class="modal-close-btn" id="btnModalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <form id="formUnit" novalidate>
+                    <div class="form-grid-2">
+                        <!-- Mã đơn vị -->
+                        <div class="form-group" id="groupMaDonVi">
+                            <label class="form-label">Mã đơn vị <span class="req">*</span></label>
+                            <input type="text" class="form-control" id="txtMaDonVi" placeholder="Ví dụ: HN, 01">
+                            <div class="error-feedback">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Tên đơn vị -->
+                        <div class="form-group" id="groupTenDonVi">
+                            <label class="form-label">Tên đơn vị <span class="req">*</span></label>
+                            <input type="text" class="form-control" id="txtTenDonVi" placeholder="Ví dụ: Thành phố Hà Nội">
+                            <div class="error-feedback">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Cấp đơn vị -->
+                        <div class="form-group" id="groupCapDonVi">
+                            <label class="form-label">Cấp đơn vị <span class="req">*</span></label>
+                            <select class="form-control" id="cboCapDonVi">
+                                <option value="">-- Chọn cấp đơn vị --</option>
+                                <option value="1">Cấp 1 (Tỉnh/Thành phố TW)</option>
+                                <option value="2">Cấp 2 (Xã/Phường/Thị trấn)</option>
+                            </select>
+                            <div class="error-feedback">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Loại đơn vị -->
+                        <div class="form-group" id="groupLoaiDonVi">
+                            <label class="form-label">Loại đơn vị <span class="req">*</span></label>
+                            <select class="form-control" id="cboLoaiDonVi">
+                                <option value="">Chọn loại đơn vị</option>
+                                <option value="Tỉnh">Tỉnh</option>
+                                <option value="Thành phố trực thuộc Trung ương">Thành phố trực thuộc Trung ương</option>
+                                <option value="Phường">Phường</option>
+                                <option value="Xã">Xã</option>
+                                <option value="Thị trấn">Thị trấn</option>
+                            </select>
+                            <div class="error-feedback">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Chọn đơn vị cấp trên -->
+                        <div class="form-group form-col-full" id="groupCapTren">
+                            <label class="form-label">Chọn đơn vị cấp trên <span class="req" id="reqCapTren">*</span></label>
+                            <select class="form-control" id="cboCapTren">
+                                <option value="">Chọn đơn vị cấp trên</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                            <div class="form-helper" id="helperCapTren" style="display: none;">(Cấp 1 không có cấp trên)</div>
+                            <div class="error-feedback">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Ngày thành lập -->
+                        <div class="form-group" id="groupNgayThanhLap">
+                            <label class="form-label">Ngày thành lập <span class="req">*</span></label>
+                            <input type="text" class="form-control" id="txtNgayThanhLap" placeholder="dd/mm/yyyy" value="07/09/2026">
+                            <div class="error-feedback">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Ngày giải thể -->
+                        <div class="form-group" id="groupNgayGiaiThe">
+                            <label class="form-label">Ngày giải thể</label>
+                            <input type="text" class="form-control" id="txtNgayGiaiThe" placeholder="dd/mm/yyyy">
+                        </div>
+                    </div>
+
+                    <!-- Khối Lịch sử biến động -->
+                    <div class="modal-section-card" style="margin-top: 16px;">
+                        <h4>Lịch sử biến động</h4>
+                        <div class="form-grid-2">
+                            <div class="form-group" id="groupLoaiBienDong">
+                                <label class="form-label">Loại biến động <span class="req">*</span></label>
+                                <select class="form-control" id="cboLoaiBienDong">
+                                    <option value="">-- Chọn loại --</option>
+                                    <option value="Thành lập mới">Thành lập mới</option>
+                                    <option value="Chia tách">Chia tách</option>
+                                    <option value="Sáp nhập">Sáp nhập</option>
+                                    <option value="Đổi tên">Đổi tên</option>
+                                    <option value="Giải thể">Giải thể</option>
+                                    <option value="Điều chỉnh địa giới">Điều chỉnh địa giới</option>
+                                </select>
+                                <div class="error-feedback">Đây là trường bắt buộc</div>
+                            </div>
+
+                            <div class="form-group" id="groupSoQD">
+                                <label class="form-label">Số QĐ <span class="req">*</span></label>
+                                <input type="text" class="form-control" id="txtSoQD" placeholder="VD: 171/2025/NQ-CP">
+                                <div class="error-feedback">Đây là trường bắt buộc</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Cơ quan ban hành</label>
+                                <select class="form-control" id="cboCoQuanBanHanh">
+                                    <option value="">-- Chọn cơ quan --</option>
+                                    <option value="Chính phủ">Chính phủ</option>
+                                    <option value="Ủy ban Thường vụ Quốc hội">Ủy ban Thường vụ Quốc hội</option>
+                                    <option value="Bộ Tư pháp">Bộ Tư pháp</option>
+                                    <option value="UBND Tỉnh/Thành phố">UBND Tỉnh/Thành phố</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Ngày ban hành QĐ</label>
+                                <input type="text" class="form-control" id="txtNgayBanHanhQD" placeholder="dd/mm/yyyy">
+                            </div>
+
+                            <div class="form-group form-col-full" id="groupDonViNguon">
+                                <label class="form-label">Đơn vị nguồn <span class="req">*</span></label>
+                                <select class="form-control" id="cboDonViNguon">
+                                    <option value="">Chọn đơn vị nguồn</option>
+                                </select>
+                                <div class="error-feedback">Đây là trường bắt buộc</div>
+                            </div>
+
+                            <div class="form-group form-col-full" id="groupLyDoGiaiThe">
+                                <label class="form-label">Lý do giải thể</label>
+                                <input type="text" class="form-control" id="txtLyDoGiaiThe" placeholder="Nhập lý do giải thể">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" id="btnModalHuy">Hủy</button>
+                <button type="button" class="btn btn-primary" id="btnModalSave">Thêm mới</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xác nhận xóa tùy chỉnh (Rule 10 Compliance) -->
+    <div class="modal-backdrop" id="modalConfirmDelete">
+        <div class="modal-content modal-confirm">
+            <div class="modal-confirm-body">
+                <div class="confirm-icon">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="confirm-text">
+                    <h4>Xác nhận xóa đơn vị?</h4>
+                    <p>Bạn có chắc chắn muốn xóa đơn vị <strong id="delUnitName">Thành phố Hà Nội</strong>? Thao tác này sẽ xóa vĩnh viễn dữ liệu đơn vị hành chính và không thể khôi phục.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" id="btnConfirmDeleteCancel">Hủy</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDeleteSubmit">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal MH03: Nhận Excel danh mục địa bàn (Rule 5.6 Compliance) -->
+    <div class="modal-backdrop" id="modalNhanExcel">
+        <div class="modal-content" style="width: 720px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-file-import" style="color: #0284c7; margin-right: 8px;"></i>
+                    <span>Nhận dữ liệu đơn vị hành chính từ Excel</span>
+                </div>
+                <button type="button" class="modal-close-btn" id="btnCloseNhanExcel"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-info-box" style="background-color: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 8px; padding: 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <i class="fa-solid fa-circle-info" style="color: #0284c7; font-size: 18px; margin-top: 2px;"></i>
+                    <div style="font-size: 13px; color: #0C4A6E; line-height: 1.5;">
+                        <strong>Hướng dẫn nạp dữ liệu:</strong> Vui lòng tải tệp tin biểu mẫu chuẩn, điền đầy đủ và chính xác thông tin theo hướng dẫn trước khi tải lên hệ thống. Hệ thống áp dụng cơ chế <strong>Thành công một phần</strong> (dòng hợp lệ sẽ nạp vào CSDL, dòng lỗi sẽ được tổng hợp báo cáo chi tiết).
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 13px; color: #1E293B;">Biểu mẫu nạp dữ liệu chuẩn</div>
+                        <div style="font-size: 11.5px; color: #64748B;">Gồm 02 Sheet: Danh_Muc_Dia_Ban (9 cột dữ liệu) và Huong_Dan_Nhap_Lieu (Danh mục giá trị chuẩn)</div>
+                    </div>
+                    <button type="button" class="btn" id="btnDownloadTemplate" style="color: #0284c7; border-color: #0284c7; background: #FFFFFF; white-space: nowrap;">
+                        <i class="fa-solid fa-file-arrow-down" style="margin-right: 6px;"></i> Tải file mẫu
+                    </button>
+                </div>
+
+                <div class="upload-dropzone" id="uploadDropzone" style="border: 2px dashed #CBD5E1; border-radius: 10px; padding: 28px 20px; text-align: center; background: #FAFBFD; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 36px; color: #0284c7; margin-bottom: 10px;"></i>
+                    <div style="font-size: 14px; font-weight: 600; color: #1E293B;">Kéo thả tệp tin vào đây hoặc <span style="color: #0284c7; text-decoration: underline;">Chọn tệp</span></div>
+                    <div style="font-size: 12px; color: #64748B; margin-top: 4px;">Chỉ chấp nhận tệp định dạng .xls, .xlsx (Dung lượng tối đa 20MB)</div>
+                    <input type="file" id="fileExcelInput" accept=".xls,.xlsx" style="display: none;">
+                </div>
+
+                <div id="selectedFileInfo" style="display: none; align-items: center; justify-content: space-between; padding: 12px 16px; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-file-excel" style="font-size: 24px; color: #10B981;"></i>
+                        <div>
+                            <div id="lblFileName" style="font-weight: 600; font-size: 13px; color: #065F46;">Danh_muc_dia_ban_import.xlsx</div>
+                            <div id="lblFileSize" style="font-size: 11.5px; color: #047857;">142.5 KB • Đã sẵn sàng nạp</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn" id="btnRemoveFile" style="padding: 4px 8px; font-size: 11.5px; color: #EF4444; border: 1px solid #FECACA; background: #FFFFFF;">
+                        <i class="fa-regular fa-trash-can"></i> Xóa tệp
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" id="btnHuyNhanExcel">Hủy</button>
+                <button type="button" class="btn btn-primary" id="btnSubmitNhanExcel" disabled>
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Nhận dữ liệu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast message container -->
+    <div class="toast-container" id="toastBox"></div>
+
+    <script>
+        // Mock Data for Administrative Units Tree Hierarchy (Chuẩn hóa sau sáp nhập theo các Nghị quyết UBTVQH)
+        const rawAdministrativeUnits = [
+            {
+                id: '01',
+                name: 'Thành phố Hà Nội',
+                code: '01',
+                level: 1,
+                levelName: 'Cấp 1 (Tỉnh/Thành phố TW)',
+                type: 'Thành phố trực thuộc Trung ương',
+                parentId: null,
+                establishedDate: '01/08/2008',
+                isActive: true,
+                changeDoc: 'Nghị quyết số 15/2008/QH12 (Hợp nhất Hà Nội và Hà Tây)',
+                changeStatus: 'Đơn vị hành chính cấp tỉnh - Đang hoạt động',
+                history: {
+                    heading: 'Hợp nhất địa giới hành chính Hà Nội mở rộng — Hợp nhất · NQ 15/2008/QH12',
+                    source: { title: 'Tỉnh Hà Tây & H. Mê Linh', code: 'HT-ML', dates: 'Trước 01/08/2008' },
+                    edgeLabel: 'Hợp nhất',
+                    target: { title: 'Thành phố Hà Nội', code: '01', dates: '01/08/2008 - Nay' }
+                },
+                timeline: [
+                    { date: '01/08/2008', content: 'Chính thức hợp nhất toàn bộ tỉnh Hà Tây và huyện Mê Linh vào Thành phố Hà Nội theo NQ 15/2008/QH12' },
+                    { date: '28/09/2024', content: 'UBTVQH ban hành Nghị quyết số 1199/NQ-UBTVQH15 về sắp xếp đơn vị hành chính cấp xã của TP. Hà Nội giai đoạn 2023 - 2025' },
+                    { date: '01/01/2025', content: 'Nghị quyết 1199/NQ-UBTVQH15 chính thức có hiệu lực thi hành: sáp nhập hàng loạt phường, xã tại Ba Đình, Đống Đa, Hai Bà Trưng, Long Biên, Sơn Tây...' }
+                ],
+                children: [
+                    {
+                        id: '001',
+                        name: 'Quận Ba Đình',
+                        code: '001',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '01',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 1199/NQ-UBTVQH15',
+                        changeStatus: 'Sắp xếp giảm từ 14 xuống 13 phường',
+                        children: [
+                            {
+                                id: '00001',
+                                name: 'Phường Trúc Bạch',
+                                code: '00001',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '001',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeDoc: 'Nghị quyết 1199/NQ-UBTVQH15',
+                                changeStatus: 'Nhận sáp nhập toàn bộ Phường Nguyễn Trung Trực',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường Nguyễn Trung Trực — Sáp nhập · NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'Phường Nguyễn Trung Trực', code: '00002', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường Trúc Bạch (mới)', code: '00001', dates: '01/01/2025 - Nay' }
+                                },
+                                timeline: [
+                                    { date: '28/09/2024', content: 'Ban hành NQ 1199/NQ-UBTVQH15 sáp nhập toàn bộ diện tích & dân số P. Nguyễn Trung Trực vào P. Trúc Bạch' },
+                                    { date: '01/01/2025', content: 'Chính thức hoạt động theo địa giới hành chính mới sau sáp nhập' }
+                                ]
+                            },
+                            { id: '00025', name: 'Phường Giảng Võ', code: '00025', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '001', establishedDate: '01/01/2000', isActive: true, changeStatus: 'Giữ nguyên địa giới' },
+                            { id: '00030', name: 'Phường Kim Mã', code: '00030', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '001', establishedDate: '01/01/2000', isActive: true, changeStatus: 'Giữ nguyên địa giới' },
+                            { id: '00035', name: 'Phường Điện Biên', code: '00035', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '001', establishedDate: '01/01/2000', isActive: true, changeStatus: 'Giữ nguyên địa giới' },
+                            { id: '00040', name: 'Phường Cống Vị', code: '00040', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '001', establishedDate: '01/01/2000', isActive: true, changeStatus: 'Giữ nguyên địa giới' },
+                            { id: '00045', name: 'Phường Ngọc Khánh', code: '00045', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '001', establishedDate: '01/01/2000', isActive: true, changeStatus: 'Giữ nguyên địa giới' },
+                            { id: '00050', name: 'Phường Liễu Giai', code: '00050', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '001', establishedDate: '01/01/2000', isActive: true, changeStatus: 'Giữ nguyên địa giới' }
+                        ]
+                    },
+                    {
+                        id: '006',
+                        name: 'Quận Đống Đa',
+                        code: '006',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '01',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 1199/NQ-UBTVQH15',
+                        changeStatus: 'Sắp xếp giảm từ 21 xuống 17 phường',
+                        children: [
+                            {
+                                id: '00200',
+                                name: 'Phường Khâm Thiên',
+                                code: '00200',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '006',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeDoc: 'Nghị quyết 1199/NQ-UBTVQH15',
+                                changeStatus: 'Nhận sáp nhập toàn bộ Phường Trung Phụng',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường Trung Phụng — Sáp nhập · NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'Phường Trung Phụng (Cũ)', code: '00205', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường Khâm Thiên (Mới)', code: '00200', dates: '01/01/2025 - Nay' }
+                                },
+                                timeline: [
+                                    { date: '28/09/2024', content: 'NQ 1199/NQ-UBTVQH15 quyết nghị sáp nhập Phường Trung Phụng vào Phường Khâm Thiên' },
+                                    { date: '01/01/2025', content: 'Chính thức hoạt động theo địa giới mới' }
+                                ]
+                            },
+                            {
+                                id: '00210',
+                                name: 'Phường Văn Miếu - Quốc Tử Giám',
+                                code: '00210',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '006',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeDoc: 'Nghị quyết 1199/NQ-UBTVQH15',
+                                changeStatus: 'Thành lập mới do sáp nhập P. Văn Miếu và P. Quốc Tử Giám',
+                                history: {
+                                    heading: 'Thành lập mới do sáp nhập P. Văn Miếu & P. Quốc Tử Giám — NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'P. Văn Miếu + P. Quốc Tử Giám', code: '00211/12', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập thành',
+                                    target: { title: 'Phường Văn Miếu - Quốc Tử Giám', code: '00210', dates: '01/01/2025 - Nay' }
+                                },
+                                timeline: [
+                                    { date: '28/09/2024', content: 'UBTVQH ban hành NQ 1199 thành lập Phường Văn Miếu - Quốc Tử Giám' },
+                                    { date: '01/01/2025', content: 'Chính thức ra mắt bộ máy chính quyền phường mới' }
+                                ]
+                            },
+                            {
+                                id: '00220',
+                                name: 'Phường Phương Liên - Trung Tự',
+                                code: '00220',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '006',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeDoc: 'Nghị quyết 1199/NQ-UBTVQH15',
+                                changeStatus: 'Thành lập mới do sáp nhập P. Phương Liên và P. Trung Tự',
+                                history: {
+                                    heading: 'Thành lập mới sáp nhập P. Phương Liên & P. Trung Tự — NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'P. Phương Liên + P. Trung Tự', code: '00221/22', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập thành',
+                                    target: { title: 'Phường Phương Liên - Trung Tự', code: '00220', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            { id: '00230', name: 'Phường Láng Hạ', code: '00230', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '006', establishedDate: '01/01/2000', isActive: true, changeStatus: 'Giữ nguyên địa giới' },
+                            { id: '00235', name: 'Phường Ô Chợ Dừa', code: '00235', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '006', establishedDate: '01/01/2000', isActive: true, changeStatus: 'Giữ nguyên địa giới' }
+                        ]
+                    },
+                    {
+                        id: '007',
+                        name: 'Quận Hai Bà Trưng',
+                        code: '007',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '01',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 1199/NQ-UBTVQH15',
+                        changeStatus: 'Sắp xếp giảm từ 18 xuống 15 phường',
+                        children: [
+                            {
+                                id: '00250',
+                                name: 'Phường Đồng Nhân',
+                                code: '00250',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '007',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập Phường Đống Mác',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường Đống Mác — NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'Phường Đống Mác (Cũ)', code: '00251', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường Đồng Nhân', code: '00250', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            {
+                                id: '00260',
+                                name: 'Phường Bạch Mai',
+                                code: '00260',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '007',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập Phường Quỳnh Lôi',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường Quỳnh Lôi — NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'Phường Quỳnh Lôi (Cũ)', code: '00261', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường Bạch Mai', code: '00260', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            {
+                                id: '00270',
+                                name: 'Phường Bách Khoa',
+                                code: '00270',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '007',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập một phần Phường Cầu Dền',
+                                history: {
+                                    heading: 'Nhận sáp nhập địa giới Phường Cầu Dền — NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'Phường Cầu Dền (Cũ)', code: '00271', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường Bách Khoa', code: '00270', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            {
+                                id: '00275',
+                                name: 'Phường Thanh Nhàn',
+                                code: '00275',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '007',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập một phần Phường Cầu Dền'
+                            }
+                        ]
+                    },
+                    {
+                        id: '004',
+                        name: 'Quận Long Biên',
+                        code: '004',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '01',
+                        establishedDate: '01/01/2004',
+                        isActive: true,
+                        children: [
+                            {
+                                id: '00136',
+                                name: 'Phường Phúc Lợi',
+                                code: '00136',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '004',
+                                establishedDate: '01/01/2004',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập một phần Phường Sài Đồng',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập một phần Phường Sài Đồng — NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'Phường Sài Đồng (Cũ)', code: '00138', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường Phúc Lợi', code: '00136', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            {
+                                id: '00137',
+                                name: 'Phường Phúc Đồng',
+                                code: '00137',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '004',
+                                establishedDate: '01/01/2004',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập một phần Phường Sài Đồng'
+                            },
+                            { id: '00118', name: 'Phường Bồ Đề', code: '00118', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '004', establishedDate: '01/01/2004', isActive: true },
+                            { id: '00127', name: 'Phường Việt Hưng', code: '00127', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '004', establishedDate: '01/01/2004', isActive: true }
+                        ]
+                    },
+                    {
+                        id: '005',
+                        name: 'Quận Cầu Giấy',
+                        code: '005',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '01',
+                        establishedDate: '01/01/1997',
+                        isActive: true,
+                        children: [
+                            { id: '00160', name: 'Phường Nghĩa Đô', code: '00160', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '005', establishedDate: '01/01/1997', isActive: true },
+                            { id: '00165', name: 'Phường Dịch Vọng Hậu', code: '00165', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '005', establishedDate: '01/01/1997', isActive: true },
+                            { id: '00170', name: 'Phường Yên Hòa', code: '00170', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '005', establishedDate: '01/01/1997', isActive: true }
+                        ]
+                    },
+                    {
+                        id: '018',
+                        name: 'Thị xã Sơn Tây',
+                        code: '018',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Thị xã',
+                        parentId: '01',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        children: [
+                            {
+                                id: '00400',
+                                name: 'Phường Ngô Quyền',
+                                code: '00400',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '018',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Thành lập mới sáp nhập P. Lê Lợi và P. Quang Trung',
+                                history: {
+                                    heading: 'Thành lập mới sáp nhập P. Lê Lợi & P. Quang Trung — NQ 1199/NQ-UBTVQH15',
+                                    source: { title: 'P. Lê Lợi + P. Quang Trung', code: '00401/02', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Hợp nhất thành',
+                                    target: { title: 'Phường Ngô Quyền', code: '00400', dates: '01/01/2025 - Nay' }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '79',
+                name: 'Thành phố Hồ Chí Minh',
+                code: '79',
+                level: 1,
+                levelName: 'Cấp 1 (Tỉnh/Thành phố TW)',
+                type: 'Thành phố trực thuộc Trung ương',
+                parentId: null,
+                establishedDate: '01/01/2000',
+                isActive: true,
+                changeDoc: 'Nghị quyết 1111/NQ-UBTVQH14 & Nghị quyết 1278/NQ-UBTVQH15',
+                changeStatus: 'Đang hoạt động',
+                timeline: [
+                    { date: '01/01/2021', content: 'Chính thức thành lập Thành phố Thủ Đức trên cơ sở sáp nhập toàn bộ diện tích & dân số Quận 2, Quận 9 và Quận Thủ Đức theo NQ 1111/NQ-UBTVQH14' },
+                    { date: '28/09/2024', content: 'UBTVQH ban hành NQ 1278/NQ-UBTVQH15 sắp xếp đơn vị hành chính cấp xã của TP. Hồ Chí Minh giai đoạn 2023 - 2025' },
+                    { date: '01/01/2025', content: 'Chính thức có hiệu lực: sáp nhập các phường tại Quận 3, Quận 5, Quận 10, Quận 11, Phú Nhuận, Bình Thạnh...' }
+                ],
+                children: [
+                    {
+                        id: '769',
+                        name: 'Thành phố Thủ Đức',
+                        code: '769',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Thành phố thuộc thành phố trực thuộc Trung ương',
+                        parentId: '79',
+                        establishedDate: '01/01/2021',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 1111/NQ-UBTVQH14',
+                        changeStatus: 'Thành lập mới do sáp nhập Quận 2, Quận 9 và Quận Thủ Đức',
+                        history: {
+                            heading: 'Thành lập TP. Thủ Đức do sáp nhập 3 quận — NQ 1111/NQ-UBTVQH14',
+                            source: { title: 'Quận 2 + Quận 9 + Quận Thủ Đức', code: '770-771-772', dates: 'Trước 01/01/2021' },
+                            edgeLabel: 'Sáp nhập thành lập',
+                            target: { title: 'Thành phố Thủ Đức', code: '769', dates: '01/01/2021 - Nay' }
+                        },
+                        timeline: [
+                            { date: '09/12/2020', content: 'UBTVQH thông qua Nghị quyết 1111/NQ-UBTVQH14 thành lập TP Thủ Đức' },
+                            { date: '01/01/2021', content: 'Chính thức đi vào hoạt động mô hình thành phố trong thành phố đầu tiên của cả nước' }
+                        ],
+                        children: [
+                            { id: '07150', name: 'Phường Thảo Điền', code: '07150', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '769', establishedDate: '01/01/2021', isActive: true },
+                            { id: '07155', name: 'Phường Thủ Thiêm', code: '07155', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '769', establishedDate: '01/01/2021', isActive: true },
+                            { id: '07160', name: 'Phường Hiệp Phú', code: '07160', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '769', establishedDate: '01/01/2021', isActive: true },
+                            { id: '07165', name: 'Phường Linh Trung', code: '07165', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '769', establishedDate: '01/01/2021', isActive: true }
+                        ]
+                    },
+                    {
+                        id: '770B',
+                        name: 'Quận 3',
+                        code: '770B',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '79',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 1278/NQ-UBTVQH15',
+                        changeStatus: 'Sắp xếp giảm 2 phường',
+                        children: [
+                            {
+                                id: '07200',
+                                name: 'Phường 10',
+                                code: '07200',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '770B',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập Phường 9 theo NQ 1278',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường 9 — NQ 1278/NQ-UBTVQH15',
+                                    source: { title: 'Phường 9 (Cũ)', code: '07201', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường 10', code: '07200', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            {
+                                id: '07210',
+                                name: 'Phường 12',
+                                code: '07210',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '770B',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập Phường 11 theo NQ 1278',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường 11 — NQ 1278/NQ-UBTVQH15',
+                                    source: { title: 'Phường 11 (Cũ)', code: '07211', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường 12', code: '07210', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            { id: '07205', name: 'Phường Võ Thị Sáu', code: '07205', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '770B', establishedDate: '01/01/2021', isActive: true, changeStatus: 'Thành lập từ sáp nhập P.6, P.7, P.8 cũ' }
+                        ]
+                    },
+                    {
+                        id: '774',
+                        name: 'Quận 5',
+                        code: '774',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '79',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 1278/NQ-UBTVQH15',
+                        children: [
+                            {
+                                id: '07300',
+                                name: 'Phường 3',
+                                code: '07300',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '774',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập Phường 2',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường 2 — NQ 1278/NQ-UBTVQH15',
+                                    source: { title: 'Phường 2 (Cũ)', code: '07301', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường 3', code: '07300', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            {
+                                id: '07310',
+                                name: 'Phường 6',
+                                code: '07310',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '774',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập Phường 5',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường 5 — NQ 1278/NQ-UBTVQH15',
+                                    source: { title: 'Phường 5 (Cũ)', code: '07311', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường 6', code: '07310', dates: '01/01/2025 - Nay' }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: '760',
+                        name: 'Quận 1',
+                        code: '760',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '79',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        children: [
+                            { id: '07100', name: 'Phường Bến Nghé', code: '07100', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '760', establishedDate: '01/01/2000', isActive: true },
+                            { id: '07105', name: 'Phường Bến Thành', code: '07105', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '760', establishedDate: '01/01/2000', isActive: true },
+                            { id: '07110', name: 'Phường Đa Kao', code: '07110', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '760', establishedDate: '01/01/2000', isActive: true }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '22',
+                name: 'Tỉnh Quảng Ninh',
+                code: '22',
+                level: 1,
+                levelName: 'Cấp 1 (Tỉnh/Thành phố TW)',
+                type: 'Tỉnh',
+                parentId: null,
+                establishedDate: '01/01/2000',
+                isActive: true,
+                changeDoc: 'Nghị quyết 837/NQ-UBTVQH14 & Nghị quyết 1199/NQ-UBTVQH15',
+                changeStatus: 'Đang hoạt động',
+                children: [
+                    {
+                        id: '193',
+                        name: 'Thành phố Hạ Long',
+                        code: '193',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Thành phố thuộc tỉnh',
+                        parentId: '22',
+                        establishedDate: '01/01/2020',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 837/NQ-UBTVQH14',
+                        changeStatus: 'Mở rộng địa giới: Nhận sáp nhập toàn bộ Huyện Hoành Bồ',
+                        history: {
+                            heading: 'Nhận sáp nhập toàn bộ Huyện Hoành Bồ — Sáp nhập · NQ 837/NQ-UBTVQH14',
+                            source: { title: 'Huyện Hoành Bồ', code: '205', dates: 'Trước 01/01/2020' },
+                            edgeLabel: 'Sáp nhập vào',
+                            target: { title: 'Thành phố Hạ Long (mở rộng)', code: '193', dates: '01/01/2020 - Nay' }
+                        },
+                        timeline: [
+                            { date: '17/12/2019', content: 'UBTVQH thông qua Nghị quyết 837 sáp nhập huyện Hoành Bồ vào TP Hạ Long' },
+                            { date: '01/01/2020', content: 'TP Hạ Long mới chính thức đi vào hoạt động với diện tích gấp 4 lần diện tích cũ' }
+                        ],
+                        children: [
+                            { id: '02201', name: 'Phường Bạch Đằng', code: '02201', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '193', establishedDate: '01/01/2000', isActive: true },
+                            { id: '02205', name: 'Phường Bãi Cháy', code: '02205', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '193', establishedDate: '01/01/2000', isActive: true },
+                            { id: '02250', name: 'Xã Dân Chủ', code: '02250', level: 3, levelName: 'Cấp 3', type: 'Xã', parentId: '193', establishedDate: '01/01/2020', isActive: true, changeStatus: 'Chuyển từ Huyện Hoành Bồ cũ sang TP Hạ Long' },
+                            { id: '02255', name: 'Xã Sơn Dương', code: '02255', level: 3, levelName: 'Cấp 3', type: 'Xã', parentId: '193', establishedDate: '01/01/2020', isActive: true, changeStatus: 'Chuyển từ Huyện Hoành Bồ cũ sang TP Hạ Long' }
+                        ]
+                    },
+                    {
+                        id: '196',
+                        name: 'Thành phố Đông Triều',
+                        code: '196',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Thành phố thuộc tỉnh',
+                        parentId: '22',
+                        establishedDate: '01/11/2024',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 1199/NQ-UBTVQH15 / NQ 1243',
+                        changeStatus: 'Nâng cấp từ Thị xã Đông Triều lên Thành phố'
+                    }
+                ]
+            },
+            {
+                id: '36',
+                name: 'Tỉnh Nam Định',
+                code: '36',
+                level: 1,
+                levelName: 'Cấp 1 (Tỉnh/Thành phố TW)',
+                type: 'Tỉnh',
+                parentId: null,
+                establishedDate: '01/01/2000',
+                isActive: true,
+                changeDoc: 'Nghị quyết 1104/NQ-UBTVQH15',
+                children: [
+                    {
+                        id: '356',
+                        name: 'Thành phố Nam Định',
+                        code: '356',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Thành phố thuộc tỉnh',
+                        parentId: '36',
+                        establishedDate: '01/09/2024',
+                        isActive: true,
+                        changeDoc: 'Nghị quyết 1104/NQ-UBTVQH15',
+                        changeStatus: 'Mở rộng địa giới: Nhận sáp nhập toàn bộ diện tích & dân số Huyện Mỹ Lộc',
+                        history: {
+                            heading: 'Nhận sáp nhập toàn bộ Huyện Mỹ Lộc — Sáp nhập · NQ 1104/NQ-UBTVQH15',
+                            source: { title: 'Huyện Mỹ Lộc (Cũ)', code: '362', dates: 'Đến 31/08/2024' },
+                            edgeLabel: 'Sáp nhập vào',
+                            target: { title: 'Thành phố Nam Định (Mới)', code: '356', dates: '01/09/2024 - Nay' }
+                        },
+                        timeline: [
+                            { date: '23/07/2024', content: 'UBTVQH ban hành NQ 1104/NQ-UBTVQH15 sáp nhập huyện Mỹ Lộc vào TP Nam Định' },
+                            { date: '01/09/2024', content: 'Chính thức có hiệu lực thi hành' }
+                        ],
+                        children: [
+                            { id: '03601', name: 'Phường Nam Phong', code: '03601', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '356', establishedDate: '01/09/2024', isActive: true },
+                            { id: '03605', name: 'Phường Nam Vân', code: '03605', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '356', establishedDate: '01/09/2024', isActive: true },
+                            { id: '03610', name: 'Phường Vị Hoàng', code: '03610', level: 3, levelName: 'Cấp 3', type: 'Phường', parentId: '356', establishedDate: '01/01/2000', isActive: true }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '48',
+                name: 'Thành phố Đà Nẵng',
+                code: '48',
+                level: 1,
+                levelName: 'Cấp 1 (Tỉnh/Thành phố TW)',
+                type: 'Thành phố trực thuộc Trung ương',
+                parentId: null,
+                establishedDate: '01/01/2000',
+                isActive: true,
+                changeDoc: 'Nghị quyết 1251/NQ-UBTVQH15',
+                children: [
+                    {
+                        id: '490',
+                        name: 'Quận Hải Châu',
+                        code: '490',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '48',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        children: [
+                            {
+                                id: '04901',
+                                name: 'Phường Hải Châu',
+                                code: '04901',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '490',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Sáp nhập Phường Hải Châu I và Hải Châu II',
+                                history: {
+                                    heading: 'Thành lập mới do sáp nhập P. Hải Châu I & P. Hải Châu II — NQ 1251/NQ-UBTVQH15',
+                                    source: { title: 'P. Hải Châu I + P. Hải Châu II', code: '04902/03', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Hợp nhất thành',
+                                    target: { title: 'Phường Hải Châu', code: '04901', dates: '01/01/2025 - Nay' }
+                                }
+                            },
+                            {
+                                id: '04911',
+                                name: 'Phường Nam Dương',
+                                code: '04911',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '490',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Nhận sáp nhập Phường Phước Ninh',
+                                history: {
+                                    heading: 'Tiếp nhận sáp nhập Phường Phước Ninh — NQ 1251/NQ-UBTVQH15',
+                                    source: { title: 'Phường Phước Ninh (Cũ)', code: '04910', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Sáp nhập vào',
+                                    target: { title: 'Phường Nam Dương', code: '04911', dates: '01/01/2025 - Nay' }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: '491',
+                        name: 'Quận Thanh Khê',
+                        code: '491',
+                        level: 2,
+                        levelName: 'Cấp 2',
+                        type: 'Quận',
+                        parentId: '48',
+                        establishedDate: '01/01/2000',
+                        isActive: true,
+                        children: [
+                            {
+                                id: '04920',
+                                name: 'Phường Thanh Khê',
+                                code: '04920',
+                                level: 3,
+                                levelName: 'Cấp 3',
+                                type: 'Phường',
+                                parentId: '491',
+                                establishedDate: '01/01/2025',
+                                isActive: true,
+                                changeStatus: 'Sáp nhập Phường Thanh Khê Đông và Thanh Khê Tây',
+                                history: {
+                                    heading: 'Thành lập mới sáp nhập P. Thanh Khê Đông & P. Thanh Khê Tây — NQ 1251/NQ-UBTVQH15',
+                                    source: { title: 'P. Thanh Khê Đông + P. Thanh Khê Tây', code: '04921/22', dates: 'Đến 31/12/2024' },
+                                    edgeLabel: 'Hợp nhất thành',
+                                    target: { title: 'Phường Thanh Khê', code: '04920', dates: '01/01/2025 - Nay' }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: '31',
+                name: 'Thành phố Hải Phòng',
+                code: '31',
+                level: 1,
+                levelName: 'Cấp 1 (Tỉnh/Thành phố TW)',
+                type: 'Thành phố trực thuộc Trung ương',
+                parentId: null,
+                establishedDate: '01/01/2000',
+                isActive: true,
+                changeDoc: 'Nghị quyết 1232/NQ-UBTVQH15',
+                children: [
+                    { id: '303', name: 'Quận Hồng Bàng', code: '303', level: 2, levelName: 'Cấp 2', type: 'Quận', parentId: '31', establishedDate: '01/01/2000', isActive: true },
+                    { id: '308', name: 'Thành phố Thủy Nguyên', code: '308', level: 2, levelName: 'Cấp 2', type: 'Thành phố thuộc thành phố trực thuộc Trung ương', parentId: '31', establishedDate: '01/01/2025', isActive: true, changeStatus: 'Thành lập trên cơ sở chuyển đổi nguyên trạng huyện Thủy Nguyên' }
+                ]
+            },
+            { id: '92', name: 'Thành phố Cần Thơ', code: '92', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Thành phố trực thuộc Trung ương', parentId: null, establishedDate: '01/01/2004', isActive: true },
+            { id: '27', name: 'Tỉnh Bắc Ninh', code: '27', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '30', name: 'Tỉnh Hải Dương', code: '30', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '33', name: 'Tỉnh Hưng Yên', code: '33', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '34', name: 'Tỉnh Thái Bình', code: '34', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '35', name: 'Tỉnh Ninh Bình', code: '35', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '37', name: 'Tỉnh Hà Nam', code: '37', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '26', name: 'Tỉnh Vĩnh Phúc', code: '26', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '38', name: 'Tỉnh Thanh Hóa', code: '38', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '40', name: 'Tỉnh Nghệ An', code: '40', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '42', name: 'Tỉnh Hà Tĩnh', code: '42', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '44', name: 'Tỉnh Quảng Bình', code: '44', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '45', name: 'Tỉnh Quảng Trị', code: '45', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '46', name: 'Tỉnh Thừa Thiên Huế', code: '46', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true, changeStatus: 'Đề án thành lập Thành phố Huế trực thuộc Trung ương' },
+            { id: '49', name: 'Tỉnh Quảng Nam', code: '49', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '51', name: 'Tỉnh Quảng Ngãi', code: '51', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '52', name: 'Tỉnh Bình Định', code: '52', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '54', name: 'Tỉnh Phú Yên', code: '54', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '56', name: 'Tỉnh Khánh Hòa', code: '56', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '58', name: 'Tỉnh Ninh Thuận', code: '58', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '60', name: 'Tỉnh Bình Thuận', code: '60', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '62', name: 'Tỉnh Kon Tum', code: '62', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '64', name: 'Tỉnh Gia Lai', code: '64', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '66', name: 'Tỉnh Đắk Lắk', code: '66', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '67', name: 'Tỉnh Đắk Nông', code: '67', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2004', isActive: true },
+            { id: '68', name: 'Tỉnh Lâm Đồng', code: '68', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '70', name: 'Tỉnh Bình Phước', code: '70', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '72', name: 'Tỉnh Tây Ninh', code: '72', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '74', name: 'Tỉnh Bình Dương', code: '74', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '75', name: 'Tỉnh Đồng Nai', code: '75', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '77', name: 'Tỉnh Bà Rịa - Vũng Tàu', code: '77', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '80', name: 'Tỉnh Long An', code: '80', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '82', name: 'Tỉnh Tiền Giang', code: '82', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '83', name: 'Tỉnh Bến Tre', code: '83', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '84', name: 'Tỉnh Trà Vinh', code: '84', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '86', name: 'Tỉnh Vĩnh Long', code: '86', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '87', name: 'Tỉnh Đồng Tháp', code: '87', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '89', name: 'Tỉnh An Giang', code: '89', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '91', name: 'Tỉnh Kiên Giang', code: '91', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '93', name: 'Tỉnh Hậu Giang', code: '93', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2004', isActive: true },
+            { id: '94', name: 'Tỉnh Sóc Trăng', code: '94', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '95', name: 'Tỉnh Bạc Liêu', code: '95', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '96', name: 'Tỉnh Cà Mau', code: '96', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '02', name: 'Tỉnh Hà Giang', code: '02', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '04', name: 'Tỉnh Cao Bằng', code: '04', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '06', name: 'Tỉnh Bắc Kạn', code: '06', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '08', name: 'Tỉnh Tuyên Quang', code: '08', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '10', name: 'Tỉnh Lào Cai', code: '10', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '11', name: 'Tỉnh Điện Biên', code: '11', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2004', isActive: true },
+            { id: '12', name: 'Tỉnh Lai Châu', code: '12', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2004', isActive: true },
+            { id: '14', name: 'Tỉnh Sơn La', code: '14', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '15', name: 'Tỉnh Yên Bái', code: '15', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '17', name: 'Tỉnh Hoà Bình', code: '17', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '19', name: 'Tỉnh Thái Nguyên', code: '19', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+            { id: '20', name: 'Tỉnh Lạng Sơn', code: '20', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/2000', isActive: true },
+            { id: '24', name: 'Tỉnh Bắc Giang', code: '24', level: 1, levelName: 'Cấp 1 (Tỉnh/Thành phố TW)', type: 'Tỉnh', parentId: null, establishedDate: '01/01/1997', isActive: true },
+        ];
+
+        // Chuẩn hóa mô hình hành chính 2 cấp: Cấp 1 (Tỉnh/Thành phố TW) -> Cấp 2 (Xã/Phường/Thị trấn)
+        function flattenToTwoTiers(units) {
+            return units.map(province => {
+                const flatChildren = [];
+                function collectWards(node) {
+                    if (!node.children || node.children.length === 0) {
+                        flatChildren.push({
+                            ...node,
+                            level: 2,
+                            levelName: 'Cấp 2 (Xã/Phường/Thị trấn)',
+                            parentId: province.id
+                        });
+                    } else {
+                        node.children.forEach(child => collectWards(child));
+                    }
+                }
+                if (province.children) {
+                    province.children.forEach(child => collectWards(child));
+                }
+                return {
+                    ...province,
+                    level: 1,
+                    levelName: 'Cấp 1 (Tỉnh/Thành phố TW)',
+                    children: flatChildren
+                };
+            });
+        }
+
+        const administrativeUnits = flattenToTwoTiers(rawAdministrativeUnits);
+
+        // State variables
+        let selectedUnit = null;
+        let isEditMode = false;
+        let currentGraphScale = 1;
+
+        // Flatten helper to find unit by id
+        function findUnitById(id, list = administrativeUnits) {
+            for (const item of list) {
+                if (item.id === id) return item;
+                if (item.children && item.children.length > 0) {
+                    const found = findUnitById(id, item.children);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        // Render Tree List
+        function renderTree() {
+            const treeContainer = document.getElementById('adminTree');
+            const searchMa = (document.getElementById('treeSearchMa')?.value || '').trim().toLowerCase();
+            const searchTen = (document.getElementById('treeSearchTen')?.value || '').trim().toLowerCase();
+
+            treeContainer.innerHTML = '';
+
+            function checkUnitMatch(u) {
+                if (searchMa && !u.code.toLowerCase().includes(searchMa)) return false;
+                if (searchTen) {
+                    const matchName = u.name.toLowerCase().includes(searchTen);
+                    const matchChange = u.changeStatus && u.changeStatus.toLowerCase().includes(searchTen);
+                    const matchDoc = u.changeDoc && u.changeDoc.toLowerCase().includes(searchTen);
+                    const matchSource = u.history && u.history.source && u.history.source.title.toLowerCase().includes(searchTen);
+                    if (!matchName && !matchChange && !matchDoc && !matchSource) return false;
+                }
+                return true;
+            }
+
+            function buildNodes(units, parentElem, depth = 0) {
+                units.forEach(unit => {
+                    const matchesSearch = checkUnitMatch(unit);
+                    const hasChildren = unit.children && unit.children.length > 0;
+                    let childrenMatch = false;
+
+                    if (hasChildren) {
+                        function anyChildMatches(children) {
+                            return children.some(c => checkUnitMatch(c) || (c.children && anyChildMatches(c.children)));
+                        }
+                        childrenMatch = anyChildMatches(unit.children);
+                    }
+
+                    if (!matchesSearch && !childrenMatch) return;
+
+                    const nodeDiv = document.createElement('div');
+                    nodeDiv.className = 'tree-node';
+
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'tree-node-row';
+                    if (selectedUnit && selectedUnit.id === unit.id) {
+                        rowDiv.classList.add('selected');
+                    }
+                    rowDiv.dataset.id = unit.id;
+                    rowDiv.style.paddingLeft = (depth * 16 + 8) + 'px';
+
+                    // Expand icon
+                    const expandBtn = document.createElement('div');
+                    expandBtn.className = 'tree-expand-btn' + (hasChildren ? '' : ' hidden');
+                    const isExpanded = (searchMa.length > 0 || searchTen.length > 0) || (unit.id === '01'); // Auto expand Hanoi or on search
+                    expandBtn.innerHTML = isExpanded ? '<i class="fa-regular fa-square-minus"></i>' : '<i class="fa-regular fa-square-plus"></i>';
+                    
+                    expandBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const childContainer = nodeDiv.querySelector('.tree-children');
+                        if (childContainer) {
+                            const expanded = childContainer.classList.toggle('expanded');
+                            expandBtn.innerHTML = expanded ? '<i class="fa-regular fa-square-minus"></i>' : '<i class="fa-regular fa-square-plus"></i>';
+                        }
+                    });
+                    rowDiv.appendChild(expandBtn);
+
+                    // Node icon
+                    const iconEl = document.createElement('i');
+                    if (unit.level === 1) {
+                        iconEl.className = 'node-icon level-1 fa-solid fa-earth-americas';
+                    } else {
+                        iconEl.className = 'node-icon level-2 fa-regular fa-circle-dot';
+                    }
+                    rowDiv.appendChild(iconEl);
+
+                    // Node Info
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'node-info';
+                    infoDiv.innerHTML = `
+                        <div class="node-title ${!unit.isActive ? 'inactive' : ''}">${unit.name}</div>
+                        <div class="node-subtitle">${unit.code} • ${unit.type || (unit.level === 1 ? 'Tỉnh' : 'Xã/Phường')}</div>
+                    `;
+                    rowDiv.appendChild(infoDiv);
+
+                    // Row click to select
+                    rowDiv.addEventListener('click', () => {
+                        selectUnitNode(unit);
+                    });
+
+                    // Double click row to toggle expand if has children
+                    if (hasChildren) {
+                        rowDiv.addEventListener('dblclick', (e) => {
+                            const childContainer = nodeDiv.querySelector('.tree-children');
+                            if (childContainer) {
+                                const expanded = childContainer.classList.toggle('expanded');
+                                expandBtn.innerHTML = expanded ? '<i class="fa-regular fa-square-minus"></i>' : '<i class="fa-regular fa-square-plus"></i>';
+                            }
+                        });
+                    }
+
+                    nodeDiv.appendChild(rowDiv);
+
+                    // Children container
+                    if (hasChildren) {
+                        const childContainer = document.createElement('div');
+                        childContainer.className = 'tree-children' + (isExpanded ? ' expanded' : '');
+                        buildNodes(unit.children, childContainer, depth + 1);
+                        nodeDiv.appendChild(childContainer);
+                    }
+
+                    parentElem.appendChild(nodeDiv);
+                });
+            }
+
+            buildNodes(administrativeUnits, treeContainer, 0);
+        }
+
+        // Select Node Handler
+        function selectUnitNode(unit) {
+            selectedUnit = unit;
+
+            // Highlight row in tree
+            document.querySelectorAll('.tree-node-row').forEach(row => {
+                row.classList.toggle('selected', row.dataset.id === unit.id);
+            });
+
+            // Enable action buttons
+            document.getElementById('btnSua').disabled = false;
+            document.getElementById('btnXoa').disabled = false;
+
+            // Show details
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('detailContainer').style.display = 'flex';
+
+            // Populate Tab 1: Thông tin chung
+            document.getElementById('lblTenDonVi').textContent = unit.name;
+            document.getElementById('lblMaDonVi').textContent = unit.code;
+            document.getElementById('lblCapDonVi').textContent = unit.levelName || (unit.level === 1 ? 'Cấp 1 (Tỉnh/Thành phố TW)' : 'Cấp 2 (Xã/Phường/Thị trấn)');
+            document.getElementById('lblLoaiDonVi').textContent = unit.type;
+            document.getElementById('lblNgayThanhLap').textContent = unit.establishedDate || '01/01/2000';
+            
+            const chkActive = document.getElementById('lblDangHoatDong');
+            chkActive.checked = unit.isActive;
+
+            const tagGiaiThe = document.getElementById('lblTagGiaiThe');
+            if (!unit.isActive) {
+                tagGiaiThe.style.display = 'inline-flex';
+                tagGiaiThe.textContent = `Đã giải thể ${unit.disbandedDate || '01/01/2025'}`;
+            } else {
+                tagGiaiThe.style.display = 'none';
+            }
+
+            // Hiện trạng sắp xếp & Căn cứ pháp lý
+            const elChangeStatus = document.getElementById('lblChangeStatus');
+            if (unit.changeStatus) {
+                const badgeClass = !unit.isActive ? 'badge-disbanded' : (unit.changeStatus.includes('sáp nhập') || unit.changeStatus.includes('Hợp nhất') ? 'badge-primary' : 'badge-warning');
+                elChangeStatus.innerHTML = `<span class="badge ${badgeClass}">${unit.changeStatus}</span>`;
+            } else {
+                elChangeStatus.innerHTML = '<span style="color: #64748B;">Đang hoạt động ổn định</span>';
+            }
+
+            const elChangeDoc = document.getElementById('lblChangeDoc');
+            if (unit.changeDoc) {
+                elChangeDoc.innerHTML = `<i class="fa-solid fa-file-contract" style="color: #0284c7; margin-right: 6px;"></i><strong>${unit.changeDoc}</strong>`;
+            } else {
+                elChangeDoc.innerHTML = '<span style="color: #64748B;">Hồ sơ địa giới chuẩn quốc gia</span>';
+            }
+
+            // Populate Tab 2: Lịch sử biến động (Node Graph)
+            let heading = '';
+            let srcTitle = '';
+            let srcCode = '';
+            let srcDates = '';
+            let targetTitle = '';
+            let targetCode = '';
+            let targetDates = '';
+            let edgeLabel = '';
+
+            if (unit.history) {
+                heading = unit.history.heading;
+                srcTitle = unit.history.source.title;
+                srcCode = `Mã: ${unit.history.source.code}`;
+                srcDates = unit.history.source.dates;
+                targetTitle = unit.history.target.title;
+                targetCode = `Mã: ${unit.history.target.code}`;
+                targetDates = unit.history.target.dates;
+                edgeLabel = unit.history.edgeLabel || 'Kế thừa';
+            } else if (!unit.isActive) {
+                heading = `Đơn vị đã chấm dứt hoạt động — Sáp nhập/Giải thể · ${unit.changeDoc || 'QĐ cấp thẩm quyền'}`;
+                srcTitle = unit.name;
+                srcCode = `Mã: ${unit.code}`;
+                srcDates = `${unit.establishedDate || '01/01/2000'} - ${unit.disbandedDate || '01/01/2025'}`;
+                targetTitle = unit.reasonDisbanded ? unit.reasonDisbanded.replace('Sáp nhập toàn bộ diện tích tự nhiên và dân số vào ', '').replace('Sáp nhập vào ', '') : 'Đơn vị tiếp nhận mới';
+                targetCode = 'Đã kế thừa';
+                targetDates = `${unit.disbandedDate || '01/01/2025'} - Nay`;
+                edgeLabel = 'Sáp nhập vào';
+            } else if (unit.changeStatus && (unit.changeStatus.includes('sáp nhập') || unit.changeStatus.includes('Sáp nhập') || unit.changeStatus.includes('Hợp nhất'))) {
+                heading = `Đơn vị tiếp nhận sắp xếp địa giới — ${unit.changeDoc || 'Quy hoạch hành chính'}`;
+                srcTitle = 'Các đơn vị cũ sáp nhập';
+                srcCode = 'Hồ sơ lưu trữ';
+                srcDates = 'Trước sắp xếp';
+                targetTitle = unit.name;
+                targetCode = `Mã: ${unit.code}`;
+                targetDates = `${unit.establishedDate || '01/01/2025'} - Nay`;
+                edgeLabel = 'Hợp nhất thành';
+            } else {
+                heading = `Lịch sử đơn vị ${unit.name} — Quản lý hành chính ổn định`;
+                srcTitle = `${unit.name} (Thành lập)`;
+                srcCode = `Mã: ${unit.code}`;
+                srcDates = `${unit.establishedDate || '01/01/2000'}`;
+                targetTitle = `${unit.name} (Hiện tại)`;
+                targetCode = `Mã: ${unit.code}`;
+                targetDates = 'Đang hoạt động';
+                edgeLabel = 'Hoạt động liên tục';
+            }
+
+            document.getElementById('lblGraphHeading').querySelector('span').textContent = heading;
+            document.getElementById('graphSourceTitle').textContent = srcTitle;
+            document.getElementById('graphSourceCode').textContent = srcCode;
+            document.getElementById('graphSourceDates').textContent = srcDates;
+            document.getElementById('graphTargetTitle').textContent = targetTitle;
+            document.getElementById('graphTargetCode').textContent = targetCode;
+            document.getElementById('graphTargetDates').textContent = targetDates;
+            document.getElementById('graphEdgeLabel').textContent = edgeLabel;
+
+            // Populate Tab 3: Dòng thời gian
+            const timelineContainer = document.getElementById('timelineList');
+            timelineContainer.innerHTML = '';
+            
+            let events = unit.timeline;
+            if (!events || events.length === 0) {
+                events = [
+                    { date: unit.establishedDate || '01/01/2000', content: `Thành lập đơn vị hành chính: ${unit.name} (${unit.type}) — Mã định danh: ${unit.code}` }
+                ];
+                if (unit.changeDoc) {
+                    events.push({ date: '28/09/2024', content: `Ban hành căn cứ điều chỉnh địa giới hành chính: ${unit.changeDoc}` });
+                }
+                if (!unit.isActive) {
+                    events.push({ date: unit.disbandedDate || '01/01/2025', content: `Chính thức chấm dứt hoạt động đơn vị độc lập (${unit.reasonDisbanded || 'Sáp nhập theo Nghị quyết của UBTVQH'})` });
+                } else {
+                    events.push({ date: '07/09/2026', content: `Đơn vị đang duy trì hoạt động bình thường, phục vụ giải quyết thủ tục ĐKBDBĐ và BTNN.` });
+                }
+            }
+
+            events.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'timeline-item';
+                itemDiv.innerHTML = `
+                    <div class="timeline-date-badge">${item.date}</div>
+                    <div class="timeline-content-card">${item.content}</div>
+                `;
+                timelineContainer.appendChild(itemDiv);
+            });
+        }
+
+        // Tab Switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+                btn.classList.add('active');
+                const targetId = btn.dataset.tab;
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // Graph Zoom Controls
+        function zoomGraph(factor) {
+            currentGraphScale *= factor;
+            if (currentGraphScale < 0.5) currentGraphScale = 0.5;
+            if (currentGraphScale > 2) currentGraphScale = 2;
+            document.querySelector('.flow-container').style.transform = `scale(${currentGraphScale})`;
+        }
+
+        function resetGraphZoom() {
+            currentGraphScale = 1;
+            document.querySelector('.flow-container').style.transform = `scale(1)`;
+        }
+
+        // Populate Parent Combobox
+        function populateParentOptions() {
+            const select = document.getElementById('cboCapTren');
+            const sourceSelect = document.getElementById('cboDonViNguon');
+            select.innerHTML = '<option value="">Chọn đơn vị cấp trên</option>';
+            sourceSelect.innerHTML = '<option value="">Chọn đơn vị nguồn</option>';
+
+            function addOpts(units) {
+                units.forEach(u => {
+                    const opt = document.createElement('option');
+                    opt.value = u.id;
+                    opt.textContent = `${u.name} (${u.code})`;
+                    select.appendChild(opt);
+
+                    const optSrc = document.createElement('option');
+                    optSrc.value = u.id;
+                    optSrc.textContent = `${u.name} (${u.code})`;
+                    sourceSelect.appendChild(optSrc);
+
+                    if (u.children) addOpts(u.children);
+                });
+            }
+            addOpts(administrativeUnits);
+        }
+
+        // Modal Open - Add Mode
+        document.getElementById('btnThemMoi').addEventListener('click', () => {
+            isEditMode = false;
+            document.getElementById('modalUnitTitle').textContent = 'Thêm mới Đơn vị hành chính';
+            document.getElementById('btnModalSave').textContent = 'Thêm mới';
+            clearFormValidation();
+
+            document.getElementById('formUnit').reset();
+            document.getElementById('txtMaDonVi').disabled = false;
+            document.getElementById('txtNgayThanhLap').value = '07/09/2026';
+
+            populateParentOptions();
+
+            // If a unit was selected, pre-select as parent
+            if (selectedUnit) {
+                document.getElementById('cboCapTren').value = selectedUnit.id;
+                document.getElementById('cboDonViNguon').value = selectedUnit.id;
+                const nextLevel = Math.min(selectedUnit.level + 1, 2);
+                document.getElementById('cboCapDonVi').value = nextLevel;
+                handleLevelChange();
+            }
+
+            document.getElementById('modalUnit').classList.add('show');
+        });
+
+        // Modal Open - Edit Mode
+        document.getElementById('btnSua').addEventListener('click', () => {
+            if (!selectedUnit) return;
+            isEditMode = true;
+            document.getElementById('modalUnitTitle').textContent = 'Chỉnh sửa Đơn vị hành chính';
+            document.getElementById('btnModalSave').textContent = 'Lưu thay đổi';
+            clearFormValidation();
+
+            populateParentOptions();
+
+            document.getElementById('txtMaDonVi').value = selectedUnit.code;
+            document.getElementById('txtMaDonVi').disabled = true; // Rule: Read-only in edit
+            document.getElementById('txtTenDonVi').value = selectedUnit.name;
+            document.getElementById('cboCapDonVi').value = selectedUnit.level;
+            document.getElementById('cboLoaiDonVi').value = selectedUnit.type;
+            document.getElementById('cboCapTren').value = selectedUnit.parentId || '';
+            document.getElementById('txtNgayThanhLap').value = selectedUnit.establishedDate || '01/01/2000';
+            document.getElementById('txtNgayGiaiThe').value = selectedUnit.disbandedDate || '';
+            document.getElementById('txtLyDoGiaiThe').value = selectedUnit.reasonDisbanded || '';
+
+            handleLevelChange();
+
+            document.getElementById('modalUnit').classList.add('show');
+        });
+
+        // Level change handler: Cấp 1 has no parent
+        document.getElementById('cboCapDonVi').addEventListener('change', handleLevelChange);
+        function handleLevelChange() {
+            const level = document.getElementById('cboCapDonVi').value;
+            const cboCapTren = document.getElementById('cboCapTren');
+            const helper = document.getElementById('helperCapTren');
+            const req = document.getElementById('reqCapTren');
+
+            if (level === '1') {
+                cboCapTren.disabled = true;
+                cboCapTren.value = '';
+                helper.style.display = 'block';
+                req.style.display = 'none';
+            } else {
+                cboCapTren.disabled = false;
+                helper.style.display = 'none';
+                req.style.display = 'inline';
+            }
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('modalUnit').classList.remove('show');
+            clearFormValidation();
+        }
+        document.getElementById('btnModalClose').addEventListener('click', closeModal);
+        document.getElementById('btnModalHuy').addEventListener('click', closeModal);
+
+        // Validation Rule 9: Red border & warning text "Đây là trường bắt buộc" + focus first invalid input
+        function validateForm() {
+            let isValid = true;
+            let firstInvalidEl = null;
+
+            function checkField(id, groupId) {
+                const el = document.getElementById(id);
+                const group = document.getElementById(groupId);
+                const val = el.value.trim();
+
+                if (!val) {
+                    el.classList.add('is-invalid');
+                    group.classList.add('has-error');
+                    if (!firstInvalidEl) firstInvalidEl = el;
+                    isValid = false;
+                } else {
+                    el.classList.remove('is-invalid');
+                    group.classList.remove('has-error');
+                }
+            }
+
+            checkField('txtMaDonVi', 'groupMaDonVi');
+            checkField('txtTenDonVi', 'groupTenDonVi');
+            checkField('cboCapDonVi', 'groupCapDonVi');
+            checkField('cboLoaiDonVi', 'groupLoaiDonVi');
+
+            // Cấp trên required if level != 1
+            if (document.getElementById('cboCapDonVi').value !== '1') {
+                checkField('cboCapTren', 'groupCapTren');
+            } else {
+                document.getElementById('cboCapTren').classList.remove('is-invalid');
+                document.getElementById('groupCapTren').classList.remove('has-error');
+            }
+
+            checkField('txtNgayThanhLap', 'groupNgayThanhLap');
+            checkField('cboLoaiBienDong', 'groupLoaiBienDong');
+            checkField('txtSoQD', 'groupSoQD');
+            checkField('cboDonViNguon', 'groupDonViNguon');
+
+            if (!isValid && firstInvalidEl) {
+                firstInvalidEl.focus();
+                // Scroll into view within modal body
+                firstInvalidEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            return isValid;
+        }
+
+        function clearFormValidation() {
+            document.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-invalid'));
+            document.querySelectorAll('.form-group').forEach(grp => grp.classList.remove('has-error'));
+        }
+
+        // Form Submit
+        document.getElementById('btnModalSave').addEventListener('click', () => {
+            if (!validateForm()) return;
+
+            const name = document.getElementById('txtTenDonVi').value.trim();
+            const code = document.getElementById('txtMaDonVi').value.trim();
+            const level = parseInt(document.getElementById('cboCapDonVi').value, 10);
+            const type = document.getElementById('cboLoaiDonVi').value;
+            const parentId = document.getElementById('cboCapTren').value || null;
+            const estDate = document.getElementById('txtNgayThanhLap').value;
+            const disDate = document.getElementById('txtNgayGiaiThe').value;
+
+            if (isEditMode && selectedUnit) {
+                selectedUnit.name = name;
+                selectedUnit.type = type;
+                selectedUnit.level = level;
+                selectedUnit.levelName = `Cấp ${level}`;
+                selectedUnit.parentId = parentId;
+                selectedUnit.establishedDate = estDate;
+                selectedUnit.disbandedDate = disDate;
+                selectedUnit.isActive = !disDate;
+
+                showToast(`Cập nhật đơn vị "${name}" thành công!`, 'success');
+                selectUnitNode(selectedUnit);
+            } else {
+                const newUnit = {
+                    id: code.toLowerCase(),
+                    name: name,
+                    code: code,
+                    level: level,
+                    levelName: `Cấp ${level}`,
+                    type: type,
+                    parentId: parentId,
+                    establishedDate: estDate,
+                    isActive: !disDate,
+                    children: []
+                };
+
+                if (parentId) {
+                    const parent = findUnitById(parentId);
+                    if (parent) {
+                        if (!parent.children) parent.children = [];
+                        parent.children.push(newUnit);
+                    } else {
+                        administrativeUnits.push(newUnit);
+                    }
+                } else {
+                    administrativeUnits.push(newUnit);
+                }
+
+                showToast(`Thêm mới đơn vị "${name}" thành công!`, 'success');
+                selectUnitNode(newUnit);
+            }
+
+            closeModal();
+            renderTree();
+        });
+
+        // Delete Confirmation Modal (Rule 10 Compliance)
+        document.getElementById('btnXoa').addEventListener('click', () => {
+            if (!selectedUnit) return;
+            document.getElementById('delUnitName').textContent = selectedUnit.name;
+            document.getElementById('modalConfirmDelete').classList.add('show');
+        });
+
+        document.getElementById('btnConfirmDeleteCancel').addEventListener('click', () => {
+            document.getElementById('modalConfirmDelete').classList.remove('show');
+        });
+
+        document.getElementById('btnConfirmDeleteSubmit').addEventListener('click', () => {
+            if (!selectedUnit) return;
+            const deletedName = selectedUnit.name;
+
+            // Remove unit from list
+            function removeNode(list) {
+                const idx = list.findIndex(u => u.id === selectedUnit.id);
+                if (idx !== -1) {
+                    list.splice(idx, 1);
+                    return true;
+                }
+                for (const item of list) {
+                    if (item.children && removeNode(item.children)) return true;
+                }
+                return false;
+            }
+            removeNode(administrativeUnits);
+
+            document.getElementById('modalConfirmDelete').classList.remove('show');
+            showToast(`Đã xóa đơn vị "${deletedName}" khỏi hệ thống!`, 'success');
+
+            // Reset selection
+            selectedUnit = null;
+            document.getElementById('btnSua').disabled = true;
+            document.getElementById('btnXoa').disabled = true;
+            document.getElementById('emptyState').style.display = 'flex';
+            document.getElementById('detailContainer').style.display = 'none';
+
+            renderTree();
+        });
+
+        // Search and Filter Events
+        document.getElementById('treeSearchMa').addEventListener('input', renderTree);
+        document.getElementById('treeSearchTen').addEventListener('input', renderTree);
+
+        // Expand All / Collapse All buttons
+        document.getElementById('btnExpandAll').addEventListener('click', () => {
+            document.querySelectorAll('.tree-children').forEach(el => el.classList.add('expanded'));
+            document.querySelectorAll('.tree-expand-btn:not(.hidden)').forEach(btn => {
+                btn.innerHTML = '<i class="fa-regular fa-square-minus"></i>';
+            });
+            showToast('Đã mở rộng toàn bộ các nhánh đơn vị hành chính', 'success');
+        });
+
+        document.getElementById('btnCollapseAll').addEventListener('click', () => {
+            document.querySelectorAll('.tree-children').forEach(el => el.classList.remove('expanded'));
+            document.querySelectorAll('.tree-expand-btn:not(.hidden)').forEach(btn => {
+                btn.innerHTML = '<i class="fa-regular fa-square-plus"></i>';
+            });
+            showToast('Đã thu gọn toàn bộ cây đơn vị', 'success');
+        });
+
+        // Reset Filter Button (Rule 1 Compliance: "Xóa bộ lọc")
+        document.getElementById('btnLamMoi').addEventListener('click', () => {
+            document.getElementById('treeSearchMa').value = '';
+            document.getElementById('treeSearchTen').value = '';
+            renderTree();
+            showToast('Đã xóa bộ lọc và tải lại danh sách!', 'success');
+        });
+
+        // Import Excel Modal (Rule 5.6 Compliance: "Nhận Excel" & Thành công một phần)
+        const modalNhanExcel = document.getElementById('modalNhanExcel');
+        const uploadDropzone = document.getElementById('uploadDropzone');
+        const fileExcelInput = document.getElementById('fileExcelInput');
+        const selectedFileInfo = document.getElementById('selectedFileInfo');
+        const lblFileName = document.getElementById('lblFileName');
+        const lblFileSize = document.getElementById('lblFileSize');
+        const btnSubmitNhanExcel = document.getElementById('btnSubmitNhanExcel');
+        const btnRemoveFile = document.getElementById('btnRemoveFile');
+
+        function resetImportModal() {
+            fileExcelInput.value = '';
+            selectedFileInfo.style.display = 'none';
+            uploadDropzone.style.display = 'block';
+            btnSubmitNhanExcel.disabled = true;
+        }
+
+        document.getElementById('btnNhanExcel').addEventListener('click', () => {
+            resetImportModal();
+            modalNhanExcel.classList.add('show');
+        });
+
+        document.getElementById('btnCloseNhanExcel').addEventListener('click', () => {
+            modalNhanExcel.classList.remove('show');
+        });
+
+        document.getElementById('btnHuyNhanExcel').addEventListener('click', () => {
+            modalNhanExcel.classList.remove('show');
+        });
+
+        // Download Template File
+        document.getElementById('btnDownloadTemplate').addEventListener('click', () => {
+            const now = new Date();
+            const dateStr = now.getFullYear().toString() +
+                String(now.getMonth() + 1).padStart(2, '0') +
+                String(now.getDate()).padStart(2, '0');
+            const link = document.createElement('a');
+            link.href = 'Bieu_mau_import_danh_muc_dia_ban.xlsx';
+            link.download = `${dateStr}_Bieu_mau_import_danh_muc_dia_ban.xlsx`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast(`Đã tải xuống biểu mẫu chuẩn: ${dateStr}_Bieu_mau_import_danh_muc_dia_ban.xlsx`, 'success');
+        });
+
+        // Upload handling
+        uploadDropzone.addEventListener('click', () => {
+            fileExcelInput.click();
+        });
+
+        function handleFileSelection(file) {
+            if (!file) return;
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext !== 'xls' && ext !== 'xlsx') {
+                showToast('Định dạng tệp tin không hợp lệ. Hệ thống chỉ hỗ trợ tệp tin định dạng .xls, .xlsx.', 'danger');
+                return;
+            }
+            if (file.size > 20 * 1024 * 1024) {
+                showToast('Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.', 'danger');
+                return;
+            }
+            lblFileName.textContent = file.name;
+            lblFileSize.textContent = (file.size / 1024).toFixed(1) + ' KB • Sẵn sàng nạp dữ liệu';
+            uploadDropzone.style.display = 'none';
+            selectedFileInfo.style.display = 'flex';
+            btnSubmitNhanExcel.disabled = false;
+            showToast(`Đã tải lên tệp: ${file.name}`, 'success');
+        }
+
+        fileExcelInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelection(e.target.files[0]);
+            }
+        });
+
+        uploadDropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadDropzone.style.borderColor = '#0284c7';
+            uploadDropzone.style.background = '#F0F9FF';
+        });
+
+        uploadDropzone.addEventListener('dragleave', () => {
+            uploadDropzone.style.borderColor = '#CBD5E1';
+            uploadDropzone.style.background = '#FAFBFD';
+        });
+
+        uploadDropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadDropzone.style.borderColor = '#CBD5E1';
+            uploadDropzone.style.background = '#FAFBFD';
+            if (e.dataTransfer.files.length > 0) {
+                handleFileSelection(e.dataTransfer.files[0]);
+            }
+        });
+
+        btnRemoveFile.addEventListener('click', () => {
+            resetImportModal();
+        });
+
+        btnSubmitNhanExcel.addEventListener('click', () => {
+            showToast('Hệ thống đang quét, bóc tách và validate từng dòng dữ liệu theo quy chuẩn 5.6...', 'info');
+            btnSubmitNhanExcel.disabled = true;
+            setTimeout(() => {
+                modalNhanExcel.classList.remove('show');
+                showToast('Nhận Excel thành công (Thành công một phần): Đã nạp thành công 8 dòng hợp lệ vào CSDL! (2 dòng lỗi đã tổng hợp vào báo cáo lỗi)', 'success');
+                renderTree();
+            }, 1200);
+        });
+
+        // Export Excel Button (Rule 5 Compliance: "Kết xuất Excel")
+        document.getElementById('btnXuatExcel').addEventListener('click', () => {
+            showToast('Đang kết xuất toàn bộ dữ liệu địa bàn ra file Excel...', 'success');
+            setTimeout(() => {
+                const now = new Date();
+                const dateStr = now.getFullYear().toString() +
+                    String(now.getMonth() + 1).padStart(2, '0') +
+                    String(now.getDate()).padStart(2, '0');
+                const filename = `${dateStr}_Danh_muc_Dia_ban.xlsx`;
+                showToast(`Đã tải xuống thành công tệp: ${filename}`, 'success');
+            }, 1000);
+        });
+
+        // Toast feedback function
+        function showToast(message, type = 'success') {
+            const toastBox = document.getElementById('toastBox');
+            const toast = document.createElement('div');
+            toast.className = `toast-msg ${type}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i>
+                <span>${message}</span>
+            `;
+            toastBox.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Initial Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTree();
+            // Automatically select Hanoi as demo initial state
+            const hanoi = findUnitById('01');
+            if (hanoi) {
+                selectUnitNode(hanoi);
+            }
+        });
+    </script>
+</body>
+
+</html>

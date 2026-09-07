@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Nhóm người dùng & Phân quyền</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Quản lý Nhóm người dùng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="permissions_data.js"></script>
     <style>
         :root {
+            /* Design System Tokens */
             --primary-color: #1E3A8A;
             --primary-hover: #1E40AF;
             --secondary-color: #3B82F6;
             --success-color: #10B981;
             --danger-color: #EF4444;
+            --warning-color: #F59E0B;
             --bg-body: #F3F4F6;
             --bg-surface: #FFFFFF;
             --text-main: #1E293B;
@@ -38,371 +40,751 @@
 
         /* Split View Layout */
         .split-layout { display: flex; gap: var(--spacing-lg); flex: 1; min-height: 0; }
+        
         .panel { background-color: var(--bg-surface); border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow); display: flex; flex-direction: column; border: 1px solid var(--border-color); }
         .panel-left { flex: 0 0 32%; }
-        .panel-right { flex: 1; }
+        .panel-right { flex: 1; display: flex; flex-direction: column; min-width: 0; }
         
         .panel-header { padding: var(--spacing-md); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--table-header-bg); border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; }
-        .panel-header h3 { color: var(--primary-color); font-size: 16px; margin: 0; }
+        .panel-header h3 { color: var(--primary-color); font-size: 16px; margin: 0; display: flex; align-items: center; gap: 8px; }
         
         .panel-body { padding: var(--spacing-md); flex: 1; overflow-y: auto; }
+        .panel-right > .panel-body { overflow: hidden; display: flex; flex-direction: column; padding: 0; }
+        .panel-footer { padding: 12px var(--spacing-md); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; background-color: #FAFAFA; }
 
-        /* Form & Buttons */
-        .form-control { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 8px 12px; width: 100%; outline: none; }
-        .form-control:focus { border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
-        .form-label { font-weight: 500; margin-bottom: 4px; display: block; }
-        .form-group { margin-bottom: var(--spacing-md); }
-        
-        .btn { font-weight: 500; border-radius: var(--border-radius-md); padding: 0.5rem 1rem; transition: all 0.2s; cursor: pointer; border: none; font-size: var(--base-size); display: inline-flex; align-items: center; gap: 6px; }
+        /* Buttons */
+        .btn { font-weight: 500; border-radius: var(--border-radius-md); padding: 0.5rem 1rem; transition: all 0.2s; cursor: pointer; border: none; font-size: var(--base-size); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
         .btn-primary { background-color: var(--primary-color); color: white; }
         .btn-primary:hover { background-color: var(--primary-hover); }
-        .btn-secondary { background-color: var(--text-muted); color: white; }
-        .btn-outline { background-color: white; border: 1px solid var(--border-color); color: var(--text-main); }
-        .btn-sm { padding: 4px 8px; font-size: 12px; }
+        .btn-secondary { background-color: white; color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background-color: #F1F5F9; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-danger:hover { background-color: #DC2626; }
+        .btn-sm { padding: 5px 12px; font-size: 13px; }
+
         /* Group List */
         .group-list { list-style: none; }
         .group-item { padding: 12px var(--spacing-md); border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; }
         .group-item:hover { background-color: #F8FAFC; }
         .group-item.active { background-color: #EFF6FF; border-left: 4px solid var(--primary-color); padding-left: 12px; }
-        .group-item strong { display: block; color: var(--primary-color); margin-bottom: 4px; }
-        .group-item span { font-size: 12px; color: var(--text-muted); }
+        .group-item-info strong { display: block; color: var(--primary-color); margin-bottom: 4px; }
+        .group-item-info span { font-size: 12px; color: var(--text-muted); }
         .group-actions { opacity: 0; transition: opacity 0.2s; display: flex; gap: 4px; }
         .group-item:hover .group-actions { opacity: 1; }
-        .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; font-size: 14px; }
-        .btn-icon:hover { color: var(--primary-color); }
-        .btn-icon.delete:hover { color: var(--danger-color); }
+        .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-icon:hover { color: var(--primary-color); background-color: #E2E8F0; }
+        .btn-icon.delete:hover { color: var(--danger-color); background-color: #FEE2E2; }
 
         /* Search Box */
-        .search-box {
-            position: relative;
-        }
-        .search-box input {
-            width: 100%;
-            padding: 8px 12px 8px 32px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            font-size: var(--base-size);
-            outline: none;
-        }
-        .search-box input:focus {
-            border-color: var(--secondary-color);
-        }
-        .search-box i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
+        .search-box { position: relative; }
+        .search-box input { width: 100%; padding: 8px 12px 8px 32px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); font-size: var(--base-size); outline: none; }
+        .search-box input:focus { border-color: var(--secondary-color); }
+        .search-box i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
-        /* Permissions Matrix */s Matrix */
-        .perm-section { margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); overflow: hidden; }
-        .perm-section-header { background-color: #F8FAFC; padding: 10px 16px; font-weight: 600; color: var(--primary-color); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .perm-row { padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; }
-        .perm-row:last-child { border-bottom: none; }
-        .perm-row:hover { background-color: #F1F5F9; }
-        
-        .custom-checkbox { display: flex; align-items: center; cursor: pointer; gap: 8px; width: 100%; }
-        .custom-checkbox input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary-color); }
-        .role-desc { font-size: 12px; color: var(--text-muted); display: block; margin-top: 2px; }
+        /* Tabs Navigation */
+        .tab-nav { display: flex; border-bottom: 1px solid var(--border-color); background-color: var(--table-header-bg); padding: 0 16px; gap: 4px; }
+        .tab-btn { padding: 10px 18px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-muted); transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .tab-btn:hover { color: var(--primary-color); }
+        .tab-btn.active { color: var(--primary-color); border-bottom-color: var(--primary-color); font-weight: 600; background-color: #FFFFFF; border-radius: 4px 4px 0 0; }
+        .tab-badge { background-color: #E2E8F0; color: var(--text-main); font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+        .tab-btn.active .tab-badge { background-color: #DBEAFE; color: var(--primary-color); }
+
+        /* Assigned Roles Tag Block */
+        .assigned-roles-section { padding: 12px 16px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); }
+        .assigned-roles-header { font-size: 13px; font-weight: 600; color: var(--primary-color); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .roles-tag-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .role-badge-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; border: 1px solid #BFDBFE; background-color: #EFF6FF; color: #1E40AF; }
+        .role-badge-tag i { font-size: 11px; color: var(--secondary-color); }
+
+        /* Stat Summary Bar */
+        .perm-stat-bar { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px 16px; background-color: #F8FAFC; border-bottom: 1px solid var(--border-color); align-items: center; }
+        .stat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: white; color: var(--text-main); }
+        .stat-badge.total { background-color: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; font-weight: 600; }
+        .stat-badge.admin-scope { background-color: #F0FDF4; border-color: #BBF7D0; color: #166534; font-weight: 500; }
+        .stat-badge.web-scope { background-color: #F0F9FF; border-color: #BAE6FD; color: #0369A1; font-weight: 500; }
+        .stat-badge.app-scope { background-color: #FAF5FF; border-color: #E9D5FF; color: #6B21A8; font-weight: 500; }
+        .stat-badge.zero { opacity: 0.65; background-color: #F8FAFC; border-color: #E2E8F0; color: var(--text-muted); font-weight: normal; }
 
         /* Tree View */
         .tree-view { list-style: none; padding-left: 20px; }
         .tree-view.root { padding-left: 0; }
-        .tree-node { margin: 8px 0; }
-        .tree-node-label { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 4px; }
+        .tree-node { margin: 6px 0; }
+        .tree-node-label { display: flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 4px; }
         .tree-node-label:hover { background-color: #F8FAFC; }
-        .tree-node-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; }
-        
-        /* Inherited Badge */
-        .inherited-badge {
-            font-size: 11px;
-            background-color: #ECFDF5;
-            color: #047857;
-            padding: 2px 6px;
-            border-radius: 12px;
-            margin-left: 8px;
-            display: inline-block;
-            font-weight: 500;
-        }
+
+        /* User Filter Form Box in Tab 2 */
+        .user-filter-box { padding: 14px 16px; background-color: #FAFAFA; border-bottom: 1px solid var(--border-color); }
+        .filter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+        .filter-field label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: var(--text-muted); }
+        .filter-field input, .filter-field select { width: 100%; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); outline: none; }
+        .filter-field input:focus, .filter-field select:focus { border-color: var(--secondary-color); }
+        .filter-actions { display: flex; gap: 10px; align-items: center; }
 
         /* Table */
-        .table { width: 100%; border-collapse: collapse; margin-bottom: var(--spacing-md); }
-        .table th { background-color: var(--table-header-bg); color: var(--primary-color); font-weight: 600; font-size: 13px; padding: 12px; border-bottom: 2px solid var(--border-color); text-align: left; }
-        .table td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+        .table { width: 100%; border-collapse: collapse; }
+        .table th { background-color: var(--table-header-bg); color: var(--primary-color); font-weight: 600; font-size: 13px; padding: 10px 12px; border-bottom: 2px solid var(--border-color); text-align: left; }
+        .table td { padding: 10px 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .table tbody tr { cursor: pointer; transition: background-color 0.15s; }
+        .table tbody tr:hover { background-color: #F1F5F9; }
 
-        /* Toast */
-        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
-        .toast { background-color: var(--success-color); color: white; padding: 12px 24px; border-radius: var(--border-radius-md); display: none; box-shadow: var(--box-shadow); }
-        .toast.show { display: block; animation: slideUp 0.3s forwards; }
-        /* Modal */
+        /* Form & Modal */
+        .form-group { margin-bottom: var(--spacing-md); }
+        .form-label { font-weight: 500; margin-bottom: 4px; display: block; font-size: 13px; }
+        .form-control { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 8px 12px; width: 100%; font-size: 14px; outline: none; }
+        .form-control:focus { border-color: var(--secondary-color); }
+        .form-control.error, .form-control.is-invalid { border-color: var(--danger-color); }
+        .error-msg { color: var(--danger-color); font-size: 12px; margin-top: 4px; display: none; }
+
+        /* Standard Sticky Modal */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: var(--bg-surface); border-radius: var(--border-radius-lg); width: 450px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; }
-        .modal-body { padding: 24px; }
-        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; }
-        .error-msg { color: var(--danger-color); font-size: 12px; margin-top: 4px; display: none; }
+        .modal-content { background: var(--bg-surface); border-radius: var(--border-radius-lg); width: 680px; max-width: 90%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden; }
+        .modal-header { padding: 24px 24px 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--table-header-bg); }
+        .modal-header h3 { font-size: 16px; color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 8px; }
+        .modal-body { padding: 24px; overflow-y: auto; flex: 1; max-height: 80vh; }
+        .modal-footer { padding: 16px 24px 24px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; background-color: #FAFAFA; }
+
+        .sortable-th:hover { background-color: #E2E8F0; }
+        .page-nav-btn {
+            min-width: 30px;
+            height: 30px;
+            padding: 0 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-main);
+            border-radius: var(--border-radius-sm);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .page-nav-btn:hover:not(:disabled) {
+            background: #EFF6FF;
+            color: var(--primary-color);
+            border-color: var(--secondary-color);
+        }
+        .page-nav-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            font-weight: 600;
+        }
+        .page-nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #F8FAFC;
+        }
+
+        /* Detail Grid in View Modal */
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+        .detail-item label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+        .detail-item .value { font-weight: 500; color: var(--text-main); font-size: 14px; word-break: break-word; }
+
+        /* Modal Role Checklist Row */
+        .modal-role-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--border-color); transition: background-color 0.15s; }
+        .modal-role-item:last-child { border-bottom: none; }
+        .modal-role-item:hover { background-color: #F8FAFC; }
+        .modal-role-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; }
+
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        .toast { background-color: var(--success-color); color: white; padding: 12px 24px; border-radius: var(--border-radius-md); display: none; margin-top: 10px; box-shadow: var(--box-shadow); }
+        .toast.error { background-color: var(--danger-color); }
+        .toast.show { display: block; animation: fadeIn 0.2s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="header-title">Quản lý Nhóm người dùng & Phân quyền</div>
+    <div class="header-title">Quản lý Nhóm người dùng</div>
 
     <div class="split-layout">
         <!-- Panel Left: Group List -->
         <div class="panel panel-left">
             <div class="panel-header">
-                <h3>Danh sách Nhóm người dùng</h3>
-                <button class="btn btn-primary btn-sm" onclick="openGroupModal('add')">+ Thêm Nhóm mới</button>
-            </div>
-            <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">
-                <div class="search-box" style="margin-bottom: 0;">
-                    <i class="fa fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
-                    <input type="text" id="inpSearchGroup" placeholder="Tìm kiếm nhóm..." onkeyup="filterGroups(this.value)">
-                </div>
+                <h3><i class="fa-solid fa-users-gear"></i> Danh sách Nhóm người dùng</h3>
+                <button class="btn btn-primary btn-sm" onclick="openGroupModal('add')"><i class="fa-solid fa-plus"></i> Thêm mới</button>
             </div>
             <div class="panel-body" style="padding: 0;">
+                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color);">
+                    <div class="search-box" style="margin-bottom: 0;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="inpSearchGroup" placeholder="Tìm kiếm theo Tên hoặc Mã nhóm..." onkeyup="filterGroups(this.value)">
+                    </div>
+                </div>
                 <ul class="group-list" id="groupList">
                     <!-- Groups rendered via JS -->
                 </ul>
             </div>
         </div>
 
-        <!-- Panel Right: Details & Permissions -->
+        <!-- Panel Right: Group Details (Tabs: Vai trò & Quyền hạn | Người dùng được gán) -->
         <div class="panel panel-right">
             <div class="panel-header">
-                <h3 id="panelRightTitle">Thiết lập cho nhóm: Cán bộ giải quyết hồ sơ BPBĐ</h3>
-                <div>
-                    <button class="btn btn-danger btn-sm" id="lockGroupBtn" onclick="toggleLockGroup()">🔒 Khóa nhóm</button>
+                <h3 id="panelRightTitle"><i class="fa-solid fa-shield-halved"></i> Chi tiết Nhóm người dùng</h3>
+            </div>
+            
+            <div id="noGroupSelected" style="color: var(--text-muted); text-align: center; margin: auto; padding: 40px 20px;">
+                <i class="fa-solid fa-arrow-left" style="font-size: 28px; margin-bottom: 12px; color: var(--secondary-color);"></i>
+                <p>Vui lòng chọn một Nhóm người dùng ở bên trái để xem thông tin và người dùng.</p>
+            </div>
+
+            <div id="groupDetailContainer" style="display: none; flex: 1; flex-direction: column; min-height: 0;">
+                <!-- Tab Navigation Bar -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" id="btnTabPerm" onclick="switchTab('perm')">
+                        <i class="fa-solid fa-key"></i> Vai trò & Quyền hạn
+                    </button>
+                    <button class="tab-btn" id="btnTabUsers" onclick="switchTab('users')">
+                        <i class="fa-solid fa-users"></i> Người dùng được gán
+                        <span class="tab-badge" id="tabBadgeUsers" title="Tổng số người dùng thuộc nhóm">0</span>
+                    </button>
+                </div>
+
+                <!-- Tab 1: Vai trò & Quyền hạn -->
+                <div id="tabContentPerm" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                    <!-- Block 1: Assigned Roles Tag List -->
+                    <div class="assigned-roles-section">
+                        <div class="assigned-roles-header">
+                            <span id="lblAssignedRolesTitle"><i class="fa-solid fa-tags" style="margin-right: 6px;"></i> Vai trò đã gán (0)</span>
+                        </div>
+                        <div class="roles-tag-container" id="assignedRolesTagContainer">
+                            <!-- Tags rendered via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Block 2: Stat Summary Bar -->
+                    <div class="perm-stat-bar">
+                        <div class="stat-badge total" id="statTotal">
+                            <i class="fa-solid fa-chart-pie"></i> Tổng số: <strong>0 / 0</strong> chức năng
+                        </div>
+                        <div class="stat-badge admin-scope" id="statAdmin">
+                            🏢 Website Cán bộ: <strong>0 / 0</strong>
+                        </div>
+                        <div class="stat-badge web-scope" id="statWeb">
+                            🌐 Website Khách hàng: <strong>0 / 0</strong>
+                        </div>
+                        <div class="stat-badge app-scope" id="statApp">
+                            📱 Mobile App: <strong>0 / 0</strong>
+                        </div>
+                    </div>
+
+                    <!-- Block 3: Search Filter on Tree -->
+                    <div style="padding: 10px 16px; border-bottom: 1px solid var(--border-color); background-color: #FFFFFF;">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="inpSearchInheritedPerm" placeholder="Tìm kiếm chức năng nhanh trên cây..." onkeyup="filterInheritedPermTree(this.value)">
+                        </div>
+                    </div>
+
+                    <!-- Block 4: Tree Container (Read-only) -->
+                    <div class="panel-body" style="flex: 1; overflow-y: auto; padding: 12px 16px;">
+                        <ul class="tree-view root" id="inheritedPermissionsTree">
+                            <!-- Tree rendered via JS -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Assigned Users List (Identical to Role Management) -->
+                <div id="tabContentUsers" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
+                    <!-- Search Filter Form Box (Separated Inputs) -->
+                    <div class="user-filter-box">
+                        <div class="filter-grid">
+                            <div class="filter-field">
+                                <label for="inpFilterUserCode">Mã tài khoản</label>
+                                <input type="text" id="inpFilterUserCode" placeholder="Mã tài khoản (CB0001, KH0001...)">
+                            </div>
+                            <div class="filter-field">
+                                <label for="inpFilterUserName">Tên tài khoản</label>
+                                <input type="text" id="inpFilterUserName" placeholder="Tên tài khoản, họ và tên...">
+                            </div>
+                            <div class="filter-field">
+                                <label for="inpFilterUserEmail">Email (Tên đăng nhập)</label>
+                                <input type="text" id="inpFilterUserEmail" placeholder="Email / Tên đăng nhập...">
+                            </div>
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn btn-primary btn-sm" onclick="filterAssignedUsers()">
+                                <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="resetUserFilter()">
+                                <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                            </button>
+                            <button class="btn btn-primary btn-sm" style="margin-left: auto;" onclick="openAssignModal()">
+                                <i class="fa-solid fa-user-plus"></i> Gán người dùng
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table Container -->
+                    <div class="panel-body" style="flex: 1; overflow-y: auto; padding: 0;">
+                        <table class="table" id="assignedUsersTable">
+                            <thead>
+                                <tr>
+                                    <th width="5%" style="text-align: center;">STT</th>
+                                    <th width="12%" class="sortable-th" style="cursor: pointer;" onclick="sortAssignedUsers('code')">Mã tài khoản <i class="fa-solid fa-sort" id="sortIconCode" style="font-size: 11px; margin-left: 4px; color: var(--text-muted);"></i></th>
+                                    <th width="18%" class="sortable-th" style="cursor: pointer;" onclick="sortAssignedUsers('name')">Tên <i class="fa-solid fa-sort" id="sortIconName" style="font-size: 11px; margin-left: 4px; color: var(--text-muted);"></i></th>
+                                    <th width="18%">Email (Tên đăng nhập)</th>
+                                    <th width="13%">Loại tài khoản</th>
+                                    <th width="17%">Đơn vị</th>
+                                    <th width="11%">Trạng thái</th>
+                                    <th width="6%" style="text-align: center; min-width: 80px;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assignedUsersBody">
+                                <!-- Users rendered via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Bar -->
+                    <div class="table-pagination" id="assignedUsersPagination" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-top: 1px solid var(--border-color); background: #FAFAFA; font-size: 13px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>Hiển thị</span>
+                            <select id="userPageSize" onchange="changeUserPageSize(this.value)" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: white; cursor: pointer;">
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                            </select>
+                            <span id="userPaginationInfo" style="color: var(--text-muted);">1 - 5 / 10 bản ghi</span>
+                        </div>
+                        <div class="pagination-buttons" id="userPaginationButtons" style="display: flex; gap: 4px; align-items: center;">
+                            <!-- Buttons rendered via JS -->
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="panel-body">
-                <!-- Group Permissions Setup -->
-                <div id="groupPermissionsContainer">
-                    <div style="margin-bottom: 16px;">
-                        <span style="color: var(--text-muted); font-size: 13px;">Gán Vai trò cho nhóm người dùng này. Các tính năng kế thừa sẽ tự động đồng bộ theo vai trò tương ứng.</span>
-                    </div>
+        </div>
+    </div>
 
-                    <!-- Vai trò của Nhóm -->
-                    <div class="perm-section">
-                        <div class="perm-section-header" style="display: flex; justify-content: space-between; align-items: center;">
-                            <span>Vai trò của Nhóm</span>
-                            <div class="search-box" style="margin: 0; width: 220px; position: relative;">
-                                <i class="fa fa-search" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 11px;"></i>
-                                <input type="text" id="inpSearchGroupRole" placeholder="Tìm kiếm vai trò..." onkeyup="filterGroupRoles(this.value)" style="width: 100%; padding: 4px 8px 4px 24px; font-size: 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); outline: none;">
+    <!-- Modal Thêm mới / Cập nhật Nhóm người dùng (MH02) -->
+    <div class="modal-overlay" id="groupModal">
+        <div class="modal-content" style="width: 940px; max-width: 92vw;">
+            <div class="modal-header">
+                <h3 id="modalGroupTitle"><i class="fa-solid fa-users-gear"></i> Thêm mới Nhóm người dùng</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);" onclick="closeModal('groupModal')">×</button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 24px; min-height: 480px;">
+                    <!-- Left Column: Group Form & Roles Checklist -->
+                    <div style="display: flex; flex-direction: column;">
+                        <div class="form-group">
+                            <label class="form-label">Mã nhóm <span style="color:var(--danger-color)">*</span></label>
+                            <input type="text" class="form-control" id="inpGroupCode" readonly style="background-color: var(--bg-body); color: var(--text-muted);">
+                            <div class="error-msg" id="errGroupCode">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tên nhóm <span style="color:var(--danger-color)">*</span></label>
+                            <input type="text" class="form-control" id="inpGroupName" placeholder="Nhập tên nhóm người dùng...">
+                            <div class="error-msg" id="errGroupName">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Loại tài khoản áp dụng <span style="color:var(--danger-color)">*</span></label>
+                            <select class="form-control" id="inpGroupScope" style="background:#fff;" onchange="handleModalScopeChange()">
+                                <option value="">-- Chọn loại tài khoản áp dụng --</option>
+                                <option value="Cán bộ">Cán bộ</option>
+                                <option value="Khách hàng">Khách hàng</option>
+                                <option value="Cơ quan có thẩm quyền">Cơ quan có thẩm quyền</option>
+                            </select>
+                            <div class="error-msg" id="errGroupScope">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Roles Checklist Box -->
+                        <div style="display: flex; flex-direction: column; flex: 1; margin-top: 6px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label class="form-label" style="margin: 0; font-weight: 600; color: var(--primary-color);">
+                                    Danh sách Vai trò
+                                    <span id="lblModalRolesCount" style="font-size: 11px; font-weight: normal; color: var(--text-muted); margin-left: 6px;">Đã chọn: 0 / 0 vai trò</span>
+                                </label>
+                            </div>
+                            <div style="margin-bottom: 8px;">
+                                <div class="search-box">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="inpModalSearchRole" placeholder="Tìm kiếm vai trò theo tên/mã..." onkeyup="filterModalRoles(this.value)">
+                                </div>
+                            </div>
+                            <div id="modalRolesChecklist" style="border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); max-height: 200px; overflow-y: auto; background: white;">
+                                <!-- Role checklist items rendered via JS -->
                             </div>
                         </div>
-                        <div id="rolesCheckboxContainer" style="padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <!-- Dynamically rendered roles with checkboxes -->
-                        </div>
                     </div>
 
-                    <!-- Danh sách chức năng kế thừa -->
-                    <div class="perm-section">
-                        <div class="perm-section-header" style="display: flex; justify-content: space-between; align-items: center;">
-                            <span>Danh sách chức năng kế thừa</span>
-                            <div class="search-box" style="margin: 0; width: 220px; position: relative;">
-                                <i class="fa fa-search" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 11px;"></i>
-                                <input type="text" id="inpSearchInheritedPerm" placeholder="Tìm kiếm chức năng..." onkeyup="filterInheritedPermTree(this.value)" style="width: 100%; padding: 4px 8px 4px 24px; font-size: 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); outline: none;">
+                    <!-- Right Column: Preview Tree & Stat Bar -->
+                    <div style="display: flex; flex-direction: column; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); overflow: hidden; background: #FAFAFA;">
+                        <div style="padding: 10px 14px; background: var(--table-header-bg); border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 13px; color: var(--primary-color); display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-eye"></i> Xem trước Cây chức năng phân quyền
+                        </div>
+                        
+                        <!-- Modal Stat Bar -->
+                        <div class="perm-stat-bar" style="padding: 8px 12px; gap: 6px; background: white;">
+                            <div class="stat-badge total" id="statTotalModal" style="font-size: 11px; padding: 2px 8px;">
+                                <i class="fa-solid fa-chart-pie"></i> Tổng: <strong>0 / 0</strong>
+                            </div>
+                            <div class="stat-badge admin-scope" id="statAdminModal" style="font-size: 11px; padding: 2px 8px;">
+                                🏢 Cán bộ: <strong>0 / 0</strong>
+                            </div>
+                            <div class="stat-badge web-scope" id="statWebModal" style="font-size: 11px; padding: 2px 8px;">
+                                🌐 Khách: <strong>0 / 0</strong>
+                            </div>
+                            <div class="stat-badge app-scope" id="statAppModal" style="font-size: 11px; padding: 2px 8px;">
+                                📱 App: <strong>0 / 0</strong>
                             </div>
                         </div>
-                        <div style="padding: 16px; max-height: 400px; overflow-y: auto;">
-                            <ul class="tree-view root" id="inheritedPermissionsTree">
-                                <!-- Dynamically rendered read-only tree -->
+
+                        <!-- Search input for modal tree -->
+                        <div style="padding: 8px 12px; border-bottom: 1px solid var(--border-color); background: white;">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="inpModalSearchPerm" placeholder="Tìm kiếm chức năng xem trước..." onkeyup="filterModalPreviewTree(this.value)" style="font-size: 12px; padding: 6px 10px 6px 30px;">
+                            </div>
+                        </div>
+
+                        <!-- Tree view scroll area -->
+                        <div style="flex: 1; overflow-y: auto; padding: 12px; max-height: 320px; background: white;">
+                            <ul class="tree-view root" id="modalPreviewTree">
+                                <!-- Preview tree rendered via JS -->
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="panel-footer" id="groupPermissionsFooter">
-                <button class="btn btn-primary" onclick="savePermissions()">Lưu phân quyền</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Thêm/Sửa Nhóm -->
-    <div class="modal-overlay" id="groupModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Thêm mới Nhóm người dùng</h3>
-                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Mã nhóm <span style="color:var(--danger-color)">*</span></label>
-                    <input type="text" class="form-control" id="inpGroupCode">
-                    <div class="error-msg" id="errGroupCode">Vui lòng nhập Mã nhóm</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Tên nhóm <span style="color:var(--danger-color)">*</span></label>
-                    <input type="text" class="form-control" id="inpGroupName">
-                    <div class="error-msg" id="errGroupName">Vui lòng nhập Tên nhóm</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Phạm vi áp dụng <span style="color:var(--danger-color)">*</span></label>
-                    <select class="form-control" id="inpGroupScope" style="background:#fff;">
-                        <option value="">-- Chọn phạm vi áp dụng --</option>
-                        <option value="Cán bộ">Cán bộ</option>
-                        <option value="Khách hàng">Khách hàng</option>
-                        <option value="Cơ quan có thẩm quyền">Cơ quan có thẩm quyền</option>
-                    </select>
-                    <div class="error-msg" id="errGroupScope">Vui lòng chọn Phạm vi áp dụng</div>
-                </div>
-            </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
-                <button class="btn btn-primary" onclick="saveGroup()">Lưu lại</button>
+                <button class="btn btn-secondary" onclick="closeModal('groupModal')">Hủy</button>
+                <button class="btn btn-primary" onclick="saveGroup()"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Xác nhận xóa Nhóm -->
+    <!-- Modal Xác nhận xóa Nhóm (POPUP-CFM-001) -->
     <div class="modal-overlay" id="deleteGroupModal">
-        <div class="modal-content">
+        <div class="modal-content" style="width: 440px;">
             <div class="modal-header">
-                <h3>Xác nhận xóa Nhóm người dùng</h3>
-                <button style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="closeModal('deleteGroupModal')">×</button>
+                <h3><i class="fa-solid fa-triangle-exclamation" style="color: var(--danger-color);"></i> Xác nhận xóa</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);" onclick="closeModal('deleteGroupModal')">×</button>
             </div>
             <div class="modal-body">
-                <p>Bạn có chắc chắn muốn xóa nhóm người dùng <strong id="deleteGroupName"></strong>?</p>
-                <p style="color: var(--danger-color); margin-top: 10px; font-size: 13px;">Hành động này không thể hoàn tác.</p>
+                <p>Bạn có chắc chắn muốn xóa nhóm <strong id="deleteGroupName"></strong>?</p>
+                <p style="color: var(--danger-color); margin-top: 10px; font-size: 13px;"><i class="fa-solid fa-triangle-exclamation"></i> Hành động này không thể hoàn tác.</p>
                 <input type="hidden" id="deleteGroupId">
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('deleteGroupModal')">Hủy</button>
-                <button class="btn btn-danger" onclick="executeDeleteGroup()">Xóa</button>
+                <button class="btn btn-danger" onclick="executeDeleteGroup()"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gán Người dùng vào Nhóm (MH03 - Identical to Role Management) -->
+    <div class="modal-overlay" id="assignModal">
+        <div class="modal-content" style="width: 880px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus"></i> Gán người dùng vào nhóm: <span id="modalTargetGroupName"></span></h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);" onclick="closeModal('assignModal')">×</button>
+            </div>
+            <div class="modal-body" style="padding: 0;">
+                <!-- Filter form box in assign modal -->
+                <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-color); background-color: #FAFAFA;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                        <div class="filter-field">
+                            <label for="assignFilterType" style="font-size: 12px; font-weight: 500; margin-bottom: 4px; display: block; color: var(--text-muted);">Loại tài khoản</label>
+                            <select id="assignFilterType" style="width: 100%; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 4px; background: white;" onchange="filterUnassignedUsers()">
+                                <option value="Cán bộ" selected>Cán bộ</option>
+                                <option value="Khách hàng">Khách hàng</option>
+                                <option value="Cơ quan có thẩm quyền">Cơ quan có thẩm quyền</option>
+                            </select>
+                        </div>
+                        <div class="filter-field">
+                            <label for="assignFilterCode" style="font-size: 12px; font-weight: 500; margin-bottom: 4px; display: block; color: var(--text-muted);">Mã tài khoản</label>
+                            <input type="text" id="assignFilterCode" placeholder="Mã tài khoản..." style="width: 100%; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 4px;">
+                        </div>
+                        <div class="filter-field">
+                            <label for="assignFilterName" style="font-size: 12px; font-weight: 500; margin-bottom: 4px; display: block; color: var(--text-muted);">Họ và tên (Tên)</label>
+                            <input type="text" id="assignFilterName" placeholder="Họ và tên / Tên tổ chức..." style="width: 100%; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 4px;">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <div class="filter-field">
+                            <label for="assignFilterEmail" style="font-size: 12px; font-weight: 500; margin-bottom: 4px; display: block; color: var(--text-muted);">Email (Tên đăng nhập)</label>
+                            <input type="text" id="assignFilterEmail" placeholder="Email / Tên đăng nhập..." style="width: 100%; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 4px;">
+                        </div>
+                        <div class="filter-field">
+                            <label for="assignFilterDept" style="font-size: 12px; font-weight: 500; margin-bottom: 4px; display: block; color: var(--text-muted);">Đơn vị</label>
+                            <select id="assignFilterDept" style="width: 100%; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 4px; background: white;">
+                                <option value="">-- Tất cả đơn vị --</option>
+                                <option value="Phòng Kế hoạch">Phòng Kế hoạch</option>
+                                <option value="Phòng Nghiệp vụ 1">Phòng Nghiệp vụ 1</option>
+                                <option value="Phòng Nghiệp vụ 2">Phòng Nghiệp vụ 2</option>
+                                <option value="Văn phòng Cục">Văn phòng Cục</option>
+                                <option value="Cục ĐKGDBĐ">Cục ĐKGDBĐ</option>
+                                <option value="Trung tâm ĐKGD&TS">Trung tâm ĐKGD&TS</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 4px;">
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-primary btn-sm" onclick="filterUnassignedUsers()">
+                                <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="resetAssignFilter()">
+                                <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                            </button>
+                        </div>
+                        <div style="font-size: 13px; color: var(--primary-color); font-weight: 600;">
+                            Đã chọn: <strong id="lblSelectedCount" style="color: var(--primary-color);">0</strong> tài khoản
+                        </div>
+                    </div>
+                </div>
+                <!-- Table in modal -->
+                <div style="max-height: 320px; overflow-y: auto;">
+                    <table class="table" style="margin: 0;">
+                        <thead style="position: sticky; top: 0; z-index: 2; background-color: var(--table-header-bg);">
+                            <tr>
+                                <th width="5%" style="text-align: center;"><input type="checkbox" id="checkAll" onclick="toggleAllUnassigned(this.checked)"></th>
+                                <th width="6%" style="text-align: center;">STT</th>
+                                <th width="14%">Mã tài khoản</th>
+                                <th width="22%">Họ và tên (Tên)</th>
+                                <th width="22%">Email (Tên đăng nhập)</th>
+                                <th width="19%">Đơn vị</th>
+                                <th width="12%">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unassignedUsersBody">
+                            <!-- JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Bar for Assign Modal -->
+                <div class="table-pagination" id="assignUsersPagination" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-top: 1px solid var(--border-color); background: #FAFAFA; font-size: 13px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span>Hiển thị</span>
+                        <select id="assignPageSize" onchange="changeAssignPageSize(this.value)" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: white; cursor: pointer;">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                        </select>
+                        <span id="assignPaginationInfo" style="color: var(--text-muted);">1 - 5 / 20 bản ghi</span>
+                    </div>
+                    <div class="pagination-buttons" id="assignPaginationButtons" style="display: flex; gap: 4px; align-items: center;">
+                        <!-- Buttons rendered via JS -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('assignModal')">Hủy</button>
+                <button class="btn btn-primary" onclick="handleAssignUsers()"><i class="fa-solid fa-user-check"></i> Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xem Chi tiết Tài khoản (Identical to Role Management) -->
+    <div class="modal-overlay" id="userDetailModal">
+        <div class="modal-content" style="width: 720px;">
+            <div class="modal-header">
+                <h3 id="userDetailTitle"><i class="fa-solid fa-user-gear"></i> Chi tiết tài khoản</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);" onclick="closeModal('userDetailModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-grid" id="userDetailContent">
+                    <!-- Rendered dynamically based on account type -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('userDetailModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xác nhận Gỡ người dùng khỏi nhóm (MH04 - POPUP-CFM-002) -->
+    <div class="modal-overlay" id="deleteUserModal">
+        <div class="modal-content" style="width: 440px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-triangle-exclamation" style="color: var(--danger-color);"></i> Xác nhận gỡ người dùng</h3>
+                <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);" onclick="closeModal('deleteUserModal')">×</button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn gỡ người dùng <strong id="delUserName"></strong> khỏi nhóm <strong id="delGroupName"></strong> không?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteUserModal')">Hủy</button>
+                <button class="btn btn-danger" onclick="confirmDeleteUser()"><i class="fa-solid fa-trash-can"></i> Đồng ý</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
     <div class="toast-container">
-        <div class="toast" id="toastMsg">Đã lưu cấu hình phân quyền thành công!</div>
+        <div class="toast" id="toastMsg">Thao tác thành công!</div>
     </div>
 
     <script>
-        // Default Mock Groups Data (with assigned role IDs)
-        const DEFAULT_GROUPS = [
-            { id: 1, code: "G_CB_BPBD", name: "Cán bộ giải quyết hồ sơ BPBĐ", scope: "Cán bộ", members: 45, roles: [4, 5] },
-            { id: 2, code: "G_LD_TRUNGTAM", name: "Lãnh đạo Trung tâm Đăng ký", scope: "Cán bộ", members: 5, roles: [3] },
-            { id: 3, code: "G_CB_CUC", name: "Cán bộ Nghiệp vụ Cục (QLNN)", scope: "Cán bộ", members: 12, roles: [4] },
-            { id: 4, code: "G_LD_CUC", name: "Lãnh đạo Cục (QLNN BPBĐ)", scope: "Cán bộ", members: 3, roles: [1] },
-            { id: 5, code: "G_KH_CANHAN", name: "Khách hàng Cá nhân", scope: "Khách hàng", members: 1250, roles: [6] },
-            { id: 6, code: "G_KH_TOCHUC", name: "Khách hàng Tổ chức", scope: "Khách hàng", members: 420, roles: [7] },
-            { id: 7, code: "G_TOA_AN", name: "Cơ quan Tòa án", scope: "Cơ quan có thẩm quyền", members: 60, roles: [8] },
-            { id: 8, code: "G_VKS", name: "Viện Kiểm sát", scope: "Cơ quan có thẩm quyền", members: 30, roles: [8] },
-            { id: 9, code: "G_THADS", name: "Cơ quan Thi hành án Dân sự", scope: "Cơ quan có thẩm quyền", members: 45, roles: [8] },
-            { id: 10, code: "G_CONG_AN", name: "Cơ quan Điều tra (Công an)", scope: "Cơ quan có thẩm quyền", members: 15, roles: [8] }
+        // Shared Mock Roles Data (Aligned with quan_ly_vai_tro_phan_quyen.html)
+        const DEFAULT_ROLES = [
+            { id: 1, code: "R_CUC_01", name: "Lãnh đạo Cục", scope: "Cán bộ", permissions: ["WebAdmin-08-01", "WebAdmin-08-04", "WebAdmin-10-01", "WebAdmin-28-01", "WebAdmin-28-03", "WebAdmin-29-05", "WebAdmin-29-06"] },
+            { id: 2, code: "R_CUC_02", name: "Quản trị viên Cục", scope: "Cán bộ", permissions: ["WebAdmin-29-01", "WebAdmin-29-02", "WebAdmin-29-03", "WebAdmin-29-04", "WebAdmin-29-05", "WebAdmin-29-06", "WebAdmin-29-07", "WebAdmin-29-08", "WebAdmin-29-09", "WebAdmin-29-10", "WebAdmin-29-11", "WebAdmin-29-12"] },
+            { id: 3, code: "R_PHONG_01", name: "Lãnh đạo phòng", scope: "Cán bộ", permissions: ["WebAdmin-08-01", "WebAdmin-08-02", "WebAdmin-08-03", "WebAdmin-08-04", "WebAdmin-29-05"] },
+            { id: 4, code: "R_PHONG_02", name: "Chuyên viên xử lý", scope: "Cán bộ", permissions: ["WebAdmin-08-01", "WebAdmin-08-02", "WebAdmin-08-03"] },
+            { id: 5, code: "R_PHONG_03", name: "Chuyên viên tổng hợp", scope: "Cán bộ", permissions: ["WebAdmin-08-10", "WebAdmin-27-01", "WebAdmin-27-02", "WebAdmin-29-09"] },
+            { id: 6, code: "R_KH_01", name: "Khách hàng cá nhân chuẩn", scope: "Khách hàng", permissions: ["Web-11", "Web-12", "Web-13", "Web-14", "App-09", "App-10", "App-11"] },
+            { id: 7, code: "R_KH_02", name: "Quản trị viên Tổ chức", scope: "Khách hàng", permissions: ["Web-10-01", "Web-10-02", "Web-10-03", "Web-10-04", "Web-11", "Web-12", "Web-13", "App-08-01", "App-08-02"] },
+            { id: 8, code: "R_CQ_01", name: "Cơ quan Tòa án", scope: "Cơ quan có thẩm quyền", permissions: ["WebAdmin-08-05", "WebAdmin-10-01"] },
+            { id: 9, code: "R_ALL_01", name: "Xem Bảng tin công khai", scope: "Khách hàng", permissions: ["Web-23-01", "App-22-01"] },
+            { id: 10, code: "R_ALL_02", name: "Tạo Yêu cầu Hỗ trợ", scope: "Khách hàng", permissions: ["Web-22-01", "Web-22-02", "App-21-01"] }
         ];
 
-        // Default Mock Roles Data (as fallback)
-        const DEFAULT_ROLES = [
-            { id: 1, code: "R_CUC_01", name: "Lãnh đạo Cục", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-01", "WebAdmin-29-04-01-01", "WebAdmin-29-04-01-02", "WebAdmin-29-05", "WebAdmin-29-06"] },
-            { id: 2, code: "R_CUC_02", name: "Quản trị viên Cục", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-10", "WebAdmin-29-10-01", "WebAdmin-29-10-02", "WebAdmin-29-10-03"] },
-            { id: 3, code: "R_PHONG_01", name: "Lãnh đạo phòng", scope: "Cán bộ", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-01", "WebAdmin-29-04-01-01"] },
-            { id: 4, code: "R_PHONG_02", name: "Chuyên viên xử lý", scope: "Cán bộ", permissions: ["WebAdmin-29-04-01-01", "WebAdmin-29-04-01-02"] },
-            { id: 5, code: "R_PHONG_03", name: "Chuyên viên tổng hợp", scope: "Cán bộ", permissions: ["WebAdmin-29-09", "WebAdmin-29-09-01", "WebAdmin-29-09-02"] },
-            { id: 6, code: "R_KH_01", name: "Khách hàng cá nhân chuẩn", scope: "Khách hàng", permissions: ["Web-05", "Web-11", "Web-12", "Web-13", "App-01", "App-02", "App-05"] },
-            { id: 7, code: "R_KH_02", name: "Quản trị viên Tổ chức", scope: "Khách hàng", permissions: ["Web-05", "Web-10", "Web-10-01", "Web-10-02", "Web-11", "Web-12", "App-01", "App-02"] },
-            { id: 8, code: "R_CQ_01", name: "Cơ quan Tòa án", scope: "Cơ quan có thẩm quyền", permissions: ["WebAdmin-29-04", "WebAdmin-29-04-03"] },
-            { id: 9, code: "R_ALL_01", name: "Xem Bảng tin công khai", scope: "Khách hàng", permissions: ["Web-05", "App-01"] },
-            { id: 10, code: "R_ALL_02", name: "Tạo Yêu cầu Hỗ trợ", scope: "Khách hàng", permissions: ["Web-22", "Web-22-02", "App-10"] }
+        // Mock Groups Data with Assigned Role IDs
+        const DEFAULT_GROUPS = [
+            { id: 1, code: "G_CB_BPBD", name: "Cán bộ giải quyết hồ sơ BPBĐ", scope: "Cán bộ", roleIds: [1, 4], status: "ACTIVE" },
+            { id: 2, code: "G_LD_TRUNGTAM", name: "Lãnh đạo Trung tâm Đăng ký", scope: "Cán bộ", roleIds: [3], status: "ACTIVE" },
+            { id: 3, code: "G_CB_CUC", name: "Cán bộ Nghiệp vụ Cục (QLNN)", scope: "Cán bộ", roleIds: [4, 5], status: "ACTIVE" },
+            { id: 4, code: "G_LD_CUC", name: "Lãnh đạo Cục (QLNN BPBĐ)", scope: "Cán bộ", roleIds: [1, 2], status: "ACTIVE" },
+            { id: 5, code: "G_KH_CANHAN", name: "Khách hàng Cá nhân", scope: "Khách hàng", roleIds: [6, 9], status: "ACTIVE" },
+            { id: 6, code: "G_KH_TOCHUC", name: "Khách hàng Tổ chức", scope: "Khách hàng", roleIds: [7, 9, 10], status: "ACTIVE" },
+            { id: 7, code: "G_TOA_AN", name: "Cơ quan Tòa án", scope: "Cơ quan có thẩm quyền", roleIds: [8], status: "ACTIVE" },
+            { id: 8, code: "G_THADS", name: "Cơ quan Thi hành án Dân sự", scope: "Cơ quan có thẩm quyền", roleIds: [8], status: "ACTIVE" },
+            { id: 9, code: "G_CONG_AN", name: "Cơ quan Điều tra (Công an)", scope: "Cơ quan có thẩm quyền", roleIds: [8], status: "ACTIVE" },
+            { id: 10, code: "G_VKS", name: "Viện Kiểm sát", scope: "Cơ quan có thẩm quyền", roleIds: [8], status: "ACTIVE" }
         ];
+
+        // Mock Users Data with groupIds & roleIds (25 Officers, 8 Customers, 4 Agencies)
+        const DEFAULT_USERS = [
+            { id: 101, code: "CB0001", name: "Nguyễn Văn An", username: "an_nv@moj.gov.vn", phone: "0912 345 001", accountType: "Cán bộ", dept: "Phòng Kế hoạch - Trung tâm ĐKGD&TS", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [1, 4], roleIds: [1, 4, 5] },
+            { id: 102, code: "CB0002", name: "Trần Thị Bình", username: "binh_tt@moj.gov.vn", phone: "0912 345 002", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 1 - Cục ĐKGDBĐ", position: "Phó Trưởng phòng", status: "Đang hoạt động", groupIds: [1, 2], roleIds: [1, 3] },
+            { id: 103, code: "CB0003", name: "Lê Hoàng Cường", username: "cuong_lh@moj.gov.vn", phone: "0912 345 003", accountType: "Cán bộ", dept: "Văn phòng Cục - Cục ĐKGDBĐ", position: "Quản trị viên hệ thống", status: "Đang hoạt động", groupIds: [4], roleIds: [1, 2] },
+            { id: 104, code: "CB0004", name: "Phạm Thu Dung", username: "dung_pt@moj.gov.vn", phone: "0912 345 004", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 2 - Cục ĐKGDBĐ", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [1], roleIds: [1, 4] },
+            { id: 105, code: "CB0005", name: "Hoàng Tuấn Anh", username: "anh_ht@moj.gov.vn", phone: "0912 345 005", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 1 - Cục ĐKGDBĐ", position: "Cục trưởng", status: "Đang hoạt động", groupIds: [1, 4], roleIds: [1, 4] },
+            { id: 106, code: "CB0006", name: "Vũ Mai Hoa", username: "hoa_vm@moj.gov.vn", phone: "0912 345 006", accountType: "Cán bộ", dept: "Phòng Kế hoạch - Cục ĐKGDBĐ", position: "Chuyên viên tổng hợp", status: "Đang hoạt động", groupIds: [3], roleIds: [5] },
+            { id: 107, code: "CB0007", name: "Đặng Quang Khải", username: "khai_dq@moj.gov.vn", phone: "0912 345 007", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 2 - Cục ĐKGDBĐ", position: "Phó Cục trưởng", status: "Đang hoạt động", groupIds: [2], roleIds: [3, 4] },
+            { id: 108, code: "CB0008", name: "Bùi Thị Lan", username: "lan_bt@moj.gov.vn", phone: "0912 345 008", accountType: "Cán bộ", dept: "Văn phòng Cục - Cục ĐKGDBĐ", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [3], roleIds: [5] },
+            { id: 109, code: "CB0009", name: "Đỗ Minh Nhật", username: "nhat_dm@moj.gov.vn", phone: "0912 345 009", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 1 - Cục ĐKGDBĐ", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [1], roleIds: [4] },
+            { id: 110, code: "CB0010", name: "Ngô Thanh Phương", username: "phuong_nt@moj.gov.vn", phone: "0912 345 010", accountType: "Cán bộ", dept: "Phòng Kế hoạch - Cục ĐKGDBĐ", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [4], roleIds: [2] },
+            { id: 111, code: "CB0011", name: "Hoàng Đình Trọng", username: "trong_hd@moj.gov.vn", phone: "0912 345 011", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 1 - Cục ĐKGDBĐ", position: "Chuyên viên thụ lý", status: "Đang hoạt động", groupIds: [1], roleIds: [4] },
+            { id: 112, code: "CB0012", name: "Đinh Thị Ngọc", username: "ngoc_dt@moj.gov.vn", phone: "0912 345 012", accountType: "Cán bộ", dept: "Phòng Kế hoạch - Trung tâm ĐKGD&TS", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [3], roleIds: [5] },
+            { id: 113, code: "CB0013", name: "Trịnh Quốc Việt", username: "viet_tq@moj.gov.vn", phone: "0912 345 013", accountType: "Cán bộ", dept: "Văn phòng Cục - Cục ĐKGDBĐ", position: "Chuyên viên CNTT", status: "Đang hoạt động", groupIds: [4], roleIds: [2] },
+            { id: 114, code: "CB0014", name: "Mai Hồng Hạnh", username: "hanh_mh@moj.gov.vn", phone: "0912 345 014", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 2 - Cục ĐKGDBĐ", position: "Chuyên viên thụ lý", status: "Đang hoạt động", groupIds: [1], roleIds: [4] },
+            { id: 115, code: "CB0015", name: "Dương Văn Thành", username: "thanh_dv@moj.gov.vn", phone: "0912 345 015", accountType: "Cán bộ", dept: "Trung tâm ĐKGD&TS - Cục ĐKGDBĐ", position: "Chuyên viên lưu trữ", status: "Đang hoạt động", groupIds: [3], roleIds: [5] },
+            { id: 116, code: "CB0016", name: "Nguyễn Hải Yến", username: "yen_nh@moj.gov.vn", phone: "0912 345 016", accountType: "Cán bộ", dept: "Phòng Kế hoạch - Cục ĐKGDBĐ", position: "Chuyên viên tổng hợp", status: "Đang hoạt động", groupIds: [3], roleIds: [5] },
+            { id: 117, code: "CB0017", name: "Phan Văn Minh", username: "minh_pv@moj.gov.vn", phone: "0912 345 017", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 1 - Cục ĐKGDBĐ", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [1], roleIds: [4] },
+            { id: 118, code: "CB0018", name: "Lê Thu Trang", username: "trang_lt@moj.gov.vn", phone: "0912 345 018", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 2 - Cục ĐKGDBĐ", position: "Phó Trưởng phòng", status: "Đang hoạt động", groupIds: [2], roleIds: [3] },
+            { id: 119, code: "CB0019", name: "Vũ Đức Thắng", username: "thang_vd@moj.gov.vn", phone: "0912 345 019", accountType: "Cán bộ", dept: "Văn phòng Cục - Cục ĐKGDBĐ", position: "Quản trị viên mạng", status: "Đang hoạt động", groupIds: [4], roleIds: [2] },
+            { id: 120, code: "CB0020", name: "Tạ Quang Dũng", username: "dung_tq@moj.gov.vn", phone: "0912 345 020", accountType: "Cán bộ", dept: "Trung tâm ĐKGD&TS - Cục ĐKGDBĐ", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [], roleIds: [4] },
+            { id: 121, code: "CB0021", name: "Nguyễn Thị Hằng", username: "hang_nt@moj.gov.vn", phone: "0912 345 021", accountType: "Cán bộ", dept: "Phòng Kế hoạch - Cục ĐKGDBĐ", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [3], roleIds: [5] },
+            { id: 122, code: "CB0022", name: "Trần Quốc Toản", username: "toan_tq@moj.gov.vn", phone: "0912 345 022", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 1 - Cục ĐKGDBĐ", position: "Chuyên viên kiểm tra", status: "Đang hoạt động", groupIds: [1], roleIds: [4] },
+            { id: 123, code: "CB0023", name: "Đặng Thùy Linh", username: "linh_dt@moj.gov.vn", phone: "0912 345 023", accountType: "Cán bộ", dept: "Văn phòng Cục - Cục ĐKGDBĐ", position: "Chuyên viên văn thư", status: "Đang hoạt động", groupIds: [3], roleIds: [5] },
+            { id: 124, code: "CB0024", name: "Bùi Quang Huy", username: "huy_bq@moj.gov.vn", phone: "0912 345 024", accountType: "Cán bộ", dept: "Phòng Nghiệp vụ 2 - Cục ĐKGDBĐ", position: "Chuyên viên thụ lý", status: "Đang hoạt động", groupIds: [1], roleIds: [4] },
+            { id: 125, code: "CB0025", name: "Phạm Kim Oanh", username: "oanh_pk@moj.gov.vn", phone: "0912 345 025", accountType: "Cán bộ", dept: "Trung tâm ĐKGD&TS - Cục ĐKGDBĐ", position: "Chuyên viên", status: "Đang hoạt động", groupIds: [3], roleIds: [5] },
+            { id: 126, code: "KH0001", name: "Công ty Cổ phần Đầu tư Alpha", username: "contact@alphacorp.vn", phone: "024 3987 6543", accountType: "Khách hàng", dept: "Tổ chức (Doanh nghiệp)", taxCode: "0101234567", representative: "Nguyễn Văn Doanh", address: "Số 12 phố Trần Phú, Ba Đình, Hà Nội", status: "Đang hoạt động", groupIds: [6], roleIds: [7, 9] },
+            { id: 127, code: "KH0002", name: "Trần Văn Khách", username: "khachtv@gmail.com", phone: "0988 776 655", accountType: "Khách hàng", dept: "Cá nhân", cccd: "001088012345", address: "Số 88 Cầu Giấy, Hà Nội", status: "Đang hoạt động", groupIds: [5], roleIds: [6, 9] },
+            { id: 128, code: "KH0003", name: "Ngân hàng TMCP Ngoại thương Việt Nam", username: "admin_vietcombank@vcb.com.vn", phone: "024 3934 3366", accountType: "Khách hàng", dept: "Tổ chức tín dụng", taxCode: "0100112437", representative: "Phạm Quang Dũng", address: "198 Trần Quang Khải, Hoàn Kiếm, Hà Nội", status: "Đang hoạt động", groupIds: [6], roleIds: [7, 9, 10] },
+            { id: 129, code: "KH0004", name: "Công ty TNHH Luật Minh Khuê", username: "contact@luatminhkhue.vn", phone: "024 3991 6057", accountType: "Khách hàng", dept: "Tổ chức hành nghề luật", taxCode: "0106123984", representative: "Lê Minh Khuê", address: "Tòa nhà 119 Nguyễn Ngọc Nại, Thanh Xuân, Hà Nội", status: "Đang hoạt động", groupIds: [6], roleIds: [7, 9] },
+            { id: 130, code: "KH0005", name: "Lê Minh Thảo", username: "thaolm@gmail.com", phone: "0904 123 456", accountType: "Khách hàng", dept: "Cá nhân", cccd: "001192004567", address: "Tổ 4 Định Công, Hoàng Mai, Hà Nội", status: "Đang hoạt động", groupIds: [5], roleIds: [6, 9] },
+            { id: 131, code: "KH0006", name: "Ngân hàng TMCP Quân Đội (MB)", username: "admin_mbbank@mbbank.com.vn", phone: "024 3767 4050", accountType: "Khách hàng", dept: "Tổ chức tín dụng", taxCode: "0100283873", representative: "Lưu Trung Thái", address: "Số 18 Lê Văn Lương, Cầu Giấy, Hà Nội", status: "Đang hoạt động", groupIds: [6], roleIds: [9] },
+            { id: 132, code: "KH0007", name: "Công ty Tài chính FE Credit", username: "fe_admin@fecredit.com.vn", phone: "028 3911 5212", accountType: "Khách hàng", dept: "Tổ chức tín dụng", taxCode: "0313028682", representative: "Nguyễn Thành Phúc", address: "144 Cộng Hòa, Tân Bình, TP. HCM", status: "Đang hoạt động", groupIds: [6], roleIds: [9] },
+            { id: 133, code: "KH0008", name: "Văn phòng Công chứng Thăng Long", username: "congchung_thanglong@gmail.com", phone: "024 3755 8989", accountType: "Khách hàng", dept: "Tổ chức hành nghề công chứng", taxCode: "0102874112", representative: "Trần Hồng Nga", address: "Số 2 Hoàng Đạo Thúy, Cầu Giấy, Hà Nội", status: "Đang hoạt động", groupIds: [6], roleIds: [9] },
+            { id: 134, code: "CQ0001", name: "Tòa án Nhân dân TP. Hà Nội", username: "toaan_hn@moj.gov.vn", phone: "024 3825 4321", accountType: "Cơ quan có thẩm quyền", dept: "Tòa án Nhân dân TP. Hà Nội", address: "Số 43 Hai Bà Trưng, Hoàn Kiếm, Hà Nội", status: "Đang hoạt động", groupIds: [7], roleIds: [8] },
+            { id: 135, code: "CQ0002", name: "Cục Thi hành án Dân sự TP. Hà Nội", username: "thads_hn@moj.gov.vn", phone: "024 3784 8484", accountType: "Cơ quan có thẩm quyền", dept: "Cục Thi hành án Dân sự TP. Hà Nội", address: "Số 142 Trần Phú, Hà Đông, Hà Nội", status: "Đang hoạt động", groupIds: [8], roleIds: [8] },
+            { id: 136, code: "CQ0003", name: "Tòa án Nhân dân TP. Hồ Chí Minh", username: "toaan_hcm@moj.gov.vn", phone: "028 3829 3456", accountType: "Cơ quan có thẩm quyền", dept: "Tòa án Nhân dân TP. Hồ Chí Minh", address: "131 Nam Kỳ Khởi Nghĩa, Q.1, TP. HCM", status: "Đang hoạt động", groupIds: [7], roleIds: [] },
+            { id: 137, code: "CQ0004", name: "Cơ quan Cảnh sát điều tra Bộ Công an", username: "c03_bca@bca.gov.vn", phone: "069 234 5678", accountType: "Cơ quan có thẩm quyền", dept: "Cơ quan Cảnh sát điều tra Bộ Công an", address: "47 Phạm Văn Đồng, Cầu Giấy, Hà Nội", status: "Đang hoạt động", groupIds: [9], roleIds: [] }
+        ];
+
+        // Storage migration & versioning
+        const MOCK_VERSION_GROUP = 'v7_perfect_counts_sync';
+        if (localStorage.getItem('sys_mock_group_version') !== MOCK_VERSION_GROUP) {
+            localStorage.removeItem('sys_mock_groups');
+            localStorage.removeItem('sys_mock_roles');
+            localStorage.removeItem('sys_mock_users');
+            localStorage.setItem('sys_mock_group_version', MOCK_VERSION_GROUP);
+        }
 
         let groups = [];
         const savedGroups = localStorage.getItem('sys_mock_groups');
         if (savedGroups) {
             groups = JSON.parse(savedGroups);
-            let migrated = false;
-            groups.forEach(g => {
-                if (g.scope === 'INTERNAL') { g.scope = 'Cán bộ'; migrated = true; }
-                else if (g.scope === 'INDIVIDUAL' || g.scope === 'ORGANIZATION' || g.scope === 'ALL') { g.scope = 'Khách hàng'; migrated = true; }
-                else if (g.scope === 'AUTHORITY') { g.scope = 'Cơ quan có thẩm quyền'; migrated = true; }
-            });
-            if (migrated) {
-                localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
-            }
         } else {
             groups = JSON.parse(JSON.stringify(DEFAULT_GROUPS));
-            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
         }
 
-        let activeGroupId = 1;
+        let roles = [];
+        const savedRoles = localStorage.getItem('sys_mock_roles');
+        if (savedRoles) {
+            roles = JSON.parse(savedRoles);
+        } else {
+            roles = JSON.parse(JSON.stringify(DEFAULT_ROLES));
+        }
+
+        let users = [];
+        const savedUsers = localStorage.getItem('sys_mock_users');
+        if (savedUsers) {
+            users = JSON.parse(savedUsers);
+        } else {
+            users = JSON.parse(JSON.stringify(DEFAULT_USERS));
+        }
+
+        let activeGroupId = null;
         let groupMode = 'add';
         let editGroupId = null;
+        let currentTab = 'perm'; // 'perm' or 'users'
+        let removeUserId = null;
+        let collapsedInheritedNodes = {};
+        let collapsedModalPreviewNodes = {};
 
+        // Tab 2: Assigned Users Pagination & Sort State
+        let userCurrentPage = 1;
+        let userPageSize = 5;
+        let userSortColumn = null;
+        let userSortDir = 'asc';
+
+        // Assign Modal Pagination State
+        let assignCurrentPage = 1;
+        let assignPageSize = 5;
+        let selectedAssignUserIds = new Set();
+
+        // Modal Role Checklist State
+        let modalSelectedRoleIds = new Set();
+
+        const scopeColors = {
+            'Cán bộ': '#10B981',
+            'Khách hàng': '#3B82F6',
+            'Cơ quan có thẩm quyền': '#F59E0B'
+        };
+
+        // Render Group List in Left Panel
         function renderGroups() {
             const list = document.getElementById('groupList');
             list.innerHTML = '';
             
-            const scopeColors = {
-                'Cán bộ': '#10B981', 
-                'Khách hàng': '#3B82F6', 
-                'Cơ quan có thẩm quyền': '#F59E0B'
-            };
-            
-            groups.forEach(g => {
-                if (!g.status) g.status = 'ACTIVE';
+            groups.forEach(group => {
+                const memberCount = users.filter(u => u.groupIds && u.groupIds.includes(group.id)).length;
                 const li = document.createElement('li');
-                li.className = `group-item ${activeGroupId === g.id ? 'active' : ''}`;
-                li.onclick = () => {
-                    activeGroupId = g.id;
-                    selectGroup(g);
-                };
-                
-                const statusBadge = g.status === 'LOCKED' 
-                    ? `<span style="display:inline-block; margin-left:8px; padding:2px 6px; border-radius:10px; font-size:10px; background:#EF444420; color:#EF4444">ĐÃ KHÓA</span>`
-                    : '';
+                li.className = `group-item ${activeGroupId === group.id ? 'active' : ''}`;
+                li.onclick = () => selectGroup(group.id);
                 
                 li.innerHTML = `
-                    <div style="flex:1;">
-                        <strong>${g.name} ${statusBadge}</strong>
-                        <span>${g.code} • ${g.members} thành viên 
-                        <span style="display:inline-block; margin-left:8px; padding:2px 6px; border-radius:10px; font-size:10px; background:${scopeColors[g.scope]}20; color:${scopeColors[g.scope]}">${g.scope}</span>
-                        </span>
+                    <div class="group-item-info">
+                        <strong>${group.name}</strong>
+                        <span>Mã: ${group.code} • ${memberCount} người dùng <span style="display:inline-block; margin-left:6px; padding:2px 6px; border-radius:10px; font-size:10px; background:${scopeColors[group.scope]}20; color:${scopeColors[group.scope]}; font-weight:600;">${group.scope}</span></span>
                     </div>
                     <div class="group-actions">
-                        <button class="btn-icon" onclick="event.stopPropagation(); openGroupModal('edit', ${g.id})" title="Sửa">✏️</button>
-                        <button class="btn-icon delete" onclick="event.stopPropagation(); confirmDeleteGroup(${g.id})" title="Xóa">🗑️</button>
+                        <button class="btn-icon" onclick="event.stopPropagation(); openGroupModal('edit', ${group.id})" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn-icon delete" onclick="event.stopPropagation(); confirmDeleteGroup(${group.id})" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
                 list.appendChild(li);
             });
-        }
-
-        function selectGroup(g) {
-            document.getElementById('panelRightTitle').innerText = `Thiết lập cho nhóm: ${g.name}`;
-            
-            // Set search values back to empty
-            document.getElementById('inpSearchGroupRole').value = '';
-            document.getElementById('inpSearchInheritedPerm').value = '';
-            
-            // Update lock button style and text
-            const lockBtn = document.getElementById('lockGroupBtn');
-            if (g.status === 'LOCKED') {
-                lockBtn.innerHTML = '🔒 Mở khóa';
-                lockBtn.className = 'btn btn-secondary btn-sm';
-                lockBtn.style.backgroundColor = '#10B981';
-                lockBtn.style.color = 'white';
-            } else {
-                lockBtn.innerHTML = '🔒 Khóa nhóm';
-                lockBtn.className = 'btn btn-danger btn-sm';
-                lockBtn.style.backgroundColor = '';
-                lockBtn.style.color = '';
-            }
-
-            renderGroups();
-            renderRolesChecklist();
-            renderInheritedTree();
+            filterGroups(document.getElementById('inpSearchGroup').value);
         }
 
         function filterGroups(keyword) {
             keyword = keyword.toLowerCase();
             const items = document.querySelectorAll('.group-item');
             items.forEach(item => {
-                const name = item.querySelector('strong').textContent.toLowerCase();
-                const code = item.querySelector('span').textContent.toLowerCase();
+                const name = item.querySelector('.group-item-info strong').textContent.toLowerCase();
+                const code = item.querySelector('.group-item-info span').textContent.toLowerCase();
                 if (name.includes(keyword) || code.includes(keyword)) {
                     item.style.display = 'flex';
                 } else {
@@ -411,126 +793,90 @@
             });
         }
 
-        function filterGroupRoles(keyword) {
-            keyword = keyword.trim().toLowerCase();
-            const items = document.querySelectorAll('#rolesCheckboxContainer .perm-row');
-            items.forEach(item => {
-                const name = item.querySelector('strong').textContent.toLowerCase();
-                const code = item.querySelector('span').textContent.toLowerCase();
-                if (name.includes(keyword) || code.includes(keyword)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-
-        function toggleLockGroup() {
-            const currentGroup = groups.find(g => g.id === activeGroupId);
-            if (!currentGroup) return;
-
-            if (currentGroup.status === 'LOCKED') {
-                currentGroup.status = 'ACTIVE';
-                showToast(`Đã mở khóa nhóm: ${currentGroup.name}`);
+        // Tab Switching
+        function switchTab(tab) {
+            currentTab = tab;
+            if (tab === 'perm') {
+                document.getElementById('btnTabPerm').classList.add('active');
+                document.getElementById('btnTabUsers').classList.remove('active');
+                document.getElementById('tabContentPerm').style.display = 'flex';
+                document.getElementById('tabContentUsers').style.display = 'none';
             } else {
-                currentGroup.status = 'LOCKED';
-                showToast(`Đã khóa nhóm: ${currentGroup.name}`);
+                document.getElementById('btnTabPerm').classList.remove('active');
+                document.getElementById('btnTabUsers').classList.add('active');
+                document.getElementById('tabContentPerm').style.display = 'none';
+                document.getElementById('tabContentUsers').style.display = 'flex';
+                renderAssignedUsers();
             }
-
-            // Save to localStorage
-            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
-            selectGroup(currentGroup);
         }
 
-        function confirmDeleteGroup(id) {
+        // Select Group
+        function selectGroup(id) {
+            activeGroupId = id;
+            userCurrentPage = 1;
+            userSortColumn = null;
+            userSortDir = 'asc';
+            renderGroups();
+            
             const group = groups.find(g => g.id === id);
             if (!group) return;
 
-            document.getElementById('deleteGroupId').value = group.id;
-            document.getElementById('deleteGroupName').innerText = group.name;
-            document.getElementById('deleteGroupModal').classList.add('active');
-        }
-
-        function executeDeleteGroup() {
-            const id = parseInt(document.getElementById('deleteGroupId').value);
-            groups = groups.filter(g => g.id !== id);
-
-            // Save to localStorage
-            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
-            closeModal('deleteGroupModal');
-            showToast("Đã xóa nhóm người dùng thành công!");
-
-            // Reset active group
-            if (groups.length > 0) {
-                activeGroupId = groups[0].id;
-                selectGroup(groups[0]);
-            } else {
-                activeGroupId = null;
-                document.getElementById('panelRightTitle').innerText = 'Không có nhóm nào';
-                document.getElementById('rolesCheckboxContainer').innerHTML = '';
-                document.getElementById('inheritedPermissionsTree').innerHTML = '';
-                renderGroups();
-            }
-        }
-
-        // Render Roles Checklist for Group
-        function renderRolesChecklist() {
-            const container = document.getElementById('rolesCheckboxContainer');
-            container.innerHTML = '';
-
-            const currentGroup = groups.find(g => g.id === activeGroupId);
-            if (!currentGroup) return;
-
-            // Load shared roles from localStorage
-            let currentRoles = [];
-            const savedRoles = localStorage.getItem('sys_mock_roles');
-            if (savedRoles) {
-                currentRoles = JSON.parse(savedRoles);
-            } else {
-                currentRoles = DEFAULT_ROLES;
-            }
-
-            currentRoles.forEach(role => {
-                const isChecked = currentGroup.roles.includes(role.id) ? 'checked' : '';
-                
-                const div = document.createElement('div');
-                div.className = 'perm-row';
-                div.style.padding = '8px 12px';
-                div.style.border = '1px solid var(--border-color)';
-                div.style.borderRadius = 'var(--border-radius-md)';
-                div.innerHTML = `
-                    <label class="custom-checkbox" style="gap: 10px;">
-                        <input type="checkbox" ${isChecked} onchange="toggleRoleForGroup(${role.id}, this.checked)">
-                        <div>
-                            <strong>${role.name}</strong>
-                            <span style="font-size: 11px; color: var(--text-muted);">Mã: ${role.code} • Phạm vi: ${role.scope}</span>
-                        </div>
-                    </label>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function toggleRoleForGroup(roleId, isChecked) {
-            const currentGroup = groups.find(g => g.id === activeGroupId);
-            if (!currentGroup) return;
-
-            if (isChecked) {
-                if (!currentGroup.roles.includes(roleId)) {
-                    currentGroup.roles.push(roleId);
-                }
-            } else {
-                currentGroup.roles = currentGroup.roles.filter(id => id !== roleId);
-            }
-
-            // Save to localStorage
-            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
-
-            // Update permissions tree
+            document.getElementById('noGroupSelected').style.display = 'none';
+            document.getElementById('groupDetailContainer').style.display = 'flex';
+            document.getElementById('panelRightTitle').innerHTML = `<i class="fa-solid fa-users-gear"></i> Nhóm: <strong>${group.name}</strong>`;
+            
+            // Render Tab 1 (Vai trò & Quyền hạn)
+            renderAssignedRolesTags();
             renderInheritedTree();
+
+            // Render Tab 2 (Người dùng được gán)
+            renderAssignedUsers();
         }
 
-        let collapsedInheritedNodes = {};
+        // Render Assigned Roles Tags in Tab 1
+        function renderAssignedRolesTags() {
+            const currentGroup = groups.find(g => g.id === activeGroupId);
+            const container = document.getElementById('assignedRolesTagContainer');
+            const titleEl = document.getElementById('lblAssignedRolesTitle');
+            if (!currentGroup || !container) return;
+
+            const groupRoleIds = currentGroup.roleIds || [];
+            const assignedRoles = roles.filter(r => groupRoleIds.includes(r.id));
+
+            titleEl.innerHTML = `<i class="fa-solid fa-tags" style="margin-right: 6px;"></i> Vai trò đã gán (${assignedRoles.length})`;
+
+            if (assignedRoles.length === 0) {
+                container.innerHTML = `<span style="color: var(--text-muted); font-size: 13px; font-style: italic;">Nhóm này chưa được gán vai trò nào. Vui lòng bấm Sửa để gán vai trò.</span>`;
+                return;
+            }
+
+            container.innerHTML = assignedRoles.map(r => `
+                <div class="role-badge-tag" title="Mã: ${r.code} • Phạm vi: ${r.scope}">
+                    <i class="fa-solid fa-id-badge"></i>
+                    <strong>${r.name}</strong>
+                    <span style="font-size: 11px; opacity: 0.8;">(${r.code})</span>
+                </div>
+            `).join('');
+        }
+
+        // Check if node is general user feature
+        function isCommonUserFeature(node) {
+            if (!node || !node.name) return false;
+            const nameLower = node.name.toLowerCase().replace(/\s+/g, ' ').trim();
+            const keywords = ['đăng nhập', 'đăng xuất', 'quên mật khẩu', 'đổi mật khẩu', 'đặt lại mật khẩu', 'trang chủ', 'xem chi tiết tài khoản', 'cập nhật thông tin tài khoản'];
+            return keywords.some(kw => nameLower.includes(kw));
+        }
+
+        // Get Union Permissions of a group
+        function getGroupUnionPermissions(group) {
+            if (!group || !group.roleIds) return [];
+            const groupRoles = roles.filter(r => group.roleIds.includes(r.id));
+            const permSet = new Set();
+            groupRoles.forEach(r => {
+                (r.permissions || []).forEach(p => permSet.add(p));
+            });
+            return Array.from(permSet);
+        }
 
         function toggleInheritedCollapse(event, nodeId) {
             event.stopPropagation();
@@ -538,121 +884,202 @@
             renderInheritedTree();
         }
 
-        function isCommonUserFeature(node) {
-            if (!node || !node.name) return false;
-            const nameLower = node.name.toLowerCase().replace(/\s+/g, ' ').trim();
-            const keywords = [
-                'đăng nhập',
-                'đăng xuất',
-                'quên mật khẩu',
-                'đổi mật khẩu',
-                'đặt lại mật khẩu',
-                'trang chủ',
-                'xem chi tiết tài khoản',
-                'cập nhật thông tin tài khoản'
-            ];
-            return keywords.some(kw => nameLower.includes(kw));
-        }
-
-        function hasGrantedDescendant(node, activeGroupRoles) {
-            if (isCommonUserFeature(node)) return false;
-            const isSelfGranted = activeGroupRoles.some(r => r.permissions.includes(node.id));
-            if (isSelfGranted) return true;
-            
-            if (node.children && node.children.length > 0) {
-                return node.children.some(child => hasGrantedDescendant(child, activeGroupRoles));
-            }
-            return false;
-        }
-
-        // Render Inherited Permissions Tree
+        // Render Inherited Permissions Tree (Tab 1 - Only Selected/Union Functions)
         function renderInheritedTree() {
-            const container = document.getElementById('inheritedPermissionsTree');
-            container.innerHTML = '';
+            const tree = document.getElementById('inheritedPermissionsTree');
+            if (!tree) return;
+            tree.innerHTML = '';
 
             const currentGroup = groups.find(g => g.id === activeGroupId);
-            if (!currentGroup) return;
+            const unionPerms = currentGroup ? getGroupUnionPermissions(currentGroup) : [];
 
-            // Load shared roles
-            let currentRoles = [];
-            const savedRoles = localStorage.getItem('sys_mock_roles');
-            if (savedRoles) {
-                currentRoles = JSON.parse(savedRoles);
-            } else {
-                currentRoles = DEFAULT_ROLES;
+            if (unionPerms.length === 0) {
+                tree.innerHTML = `
+                    <div style="padding: 40px 20px; text-align: center; color: var(--text-muted); font-style: italic;">
+                        <i class="fa-solid fa-folder-open" style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
+                        Nhóm chưa có chức năng phân quyền nào được gán. Vui lòng bấm Sửa để chọn vai trò.
+                    </div>
+                `;
+                updateInheritedTreeStats(unionPerms);
+                return;
             }
 
-            // Get active roles for this group
-            const activeGroupRoles = currentRoles.filter(r => currentGroup.roles.includes(r.id));
-
-            // Render tree HTML grouping by root categories statically
             let html = '';
             systemPermissions.forEach(root => {
-                if (!hasGrantedDescendant(root, activeGroupRoles)) return;
+                const childrenHtml = buildInheritedTreeHtml(root.children, unionPerms, root.id, 2);
+                if (!childrenHtml) return; // Hide root category if no granted functions under it
 
                 let displayName = '';
-                if (root.id === 'Web') displayName = 'Website khách hàng';
-                else if (root.id === 'App') displayName = 'Ứng dụng Mobile App';
-                else if (root.id === 'WebAdmin') displayName = 'Website Cán bộ';
+                let scopeIcon = '';
+                if (root.id === 'Web') {
+                    displayName = 'Website khách hàng';
+                    scopeIcon = '<i class="fa-solid fa-globe" style="margin-right: 6px; color: #0284C7;"></i>';
+                } else if (root.id === 'App') {
+                    displayName = 'Ứng dụng Mobile App';
+                    scopeIcon = '<i class="fa-solid fa-mobile-screen" style="margin-right: 6px; color: #7E22CE;"></i>';
+                } else if (root.id === 'WebAdmin') {
+                    displayName = 'Website Cán bộ';
+                    scopeIcon = '<i class="fa-solid fa-building-columns" style="margin-right: 6px; color: #047857;"></i>';
+                }
 
                 const isCollapsed = collapsedInheritedNodes[root.id];
-                const toggleIcon = `<span class="perm-tree-toggle" onclick="toggleInheritedCollapse(event, '${root.id}')" style="margin-right: 4px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`;
+                const toggleIcon = `<span class="perm-tree-toggle" onclick="toggleInheritedCollapse(event, '${root.id}')" style="margin-right: 6px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`;
 
                 html += `
                     <li class="tree-node root-category" data-id="${root.id}" style="list-style: none; margin-bottom: 8px;">
-                        <div class="tree-node-label category-header" style="display: flex; align-items: center; gap: 4px; padding: 6px; background: #f1f5f9; border-radius: 4px; font-weight: bold; color: var(--primary-color);">
+                        <div class="tree-node-label category-header" style="display: flex; align-items: center; gap: 4px; padding: 7px 10px; background: #F1F5F9; border-radius: 4px; font-weight: 600; color: var(--primary-color);">
                             ${toggleIcon}
-                            <span style="user-select: none;">${displayName}</span>
+                            <span style="user-select: none; display: flex; align-items: center;">${scopeIcon} ${displayName}</span>
+                            <span class="root-node-counter" id="inherited-counter-${root.id}" style="font-size: 11px; font-weight: 600; margin-left: 6px; padding: 2px 8px; border-radius: 10px; background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;">(0 chức năng)</span>
                         </div>
                         <ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 20px; margin-top: 4px;">
-                            ${buildInheritedTreeHtml(root.children, activeGroupRoles, root.id)}
+                            ${childrenHtml}
                         </ul>
                     </li>
                 `;
             });
-            container.innerHTML = html;
+            tree.innerHTML = html;
 
-            // Reapply search filter if there is active search keyword
+            updateInheritedTreeStats(unionPerms);
+
             const searchKeyword = document.getElementById('inpSearchInheritedPerm').value;
             filterInheritedPermTree(searchKeyword);
         }
 
-        function buildInheritedTreeHtml(nodes, activeGroupRoles, parentId = null) {
+        // Build 3-level tree: Only include nodes that are in unionPerms
+        function buildInheritedTreeHtml(nodes, unionPerms, parentId = null, currentLevel = 2) {
             if (!nodes || nodes.length === 0) return '';
-
+            
             let html = '';
             nodes.forEach(node => {
                 if (!node || node.id === 'Web' || node.id === 'App' || node.id === 'WebAdmin') return;
                 if (isCommonUserFeature(node)) return;
-                if (!hasGrantedDescendant(node, activeGroupRoles)) return;
 
-                const grantingRoles = activeGroupRoles.filter(r => r.permissions.includes(node.id)).map(r => r.name);
-                const isChecked = grantingRoles.length > 0 ? 'checked' : '';
-                const badge = grantingRoles.length > 0 ? `<span class="inherited-badge">Kế thừa: ${grantingRoles.join(', ')}</span>` : '';
+                if (currentLevel === 2) {
+                    const hasChildren = node.children && node.children.length > 0;
+                    if (hasChildren) {
+                        // Level 2: Nhóm chức năng / Menu cha
+                        const validChildren = node.children.filter(c => c && !isCommonUserFeature(c) && c.id !== 'Web' && c.id !== 'App' && c.id !== 'WebAdmin' && unionPerms.includes(c.id));
+                        
+                        // If NO granted children under this Level 2 group, DO NOT display this Level 2 group!
+                        if (validChildren.length === 0) return;
 
-                const hasChildren = node.children && node.children.length > 0;
-                const isCollapsed = collapsedInheritedNodes[node.id];
+                        const isCollapsed = collapsedInheritedNodes[node.id];
+                        const toggleIcon = `<span class="perm-tree-toggle" onclick="toggleInheritedCollapse(event, '${node.id}')" style="margin-right: 6px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`;
+                        const nodeIcon = `<i class="${isCollapsed ? 'fa-regular fa-folder' : 'fa-regular fa-folder-open'}" style="color: #3B82F6; font-size: 13px; margin-right: 2px;"></i>`;
+                        const counterBadge = `<span class="level2-node-counter" id="inherited-counter-${node.id}" style="font-size: 11px; font-weight: 600; margin-left: 6px; padding: 1px 7px; border-radius: 10px; background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; display: inline-block;">(${validChildren.length} chức năng)</span>`;
 
-                const toggleIcon = hasChildren 
-                    ? `<span class="perm-tree-toggle" onclick="toggleInheritedCollapse(event, '${node.id}')" style="margin-right: 4px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`
-                    : '<span style="width: 12px; display: inline-block;"></span>';
+                        html += `
+                            <li class="tree-node level-2 group" data-id="${node.id}">
+                                <div class="tree-node-label" style="display: flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 4px;">
+                                    ${toggleIcon}
+                                    ${nodeIcon}
+                                    <span class="perm-name" style="user-select: none;"><strong>${node.name}</strong></span>
+                                    ${counterBadge}
+                                </div>
+                                <ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 24px;">
+                                    ${buildInheritedTreeHtml(validChildren, unionPerms, node.id, 3)}
+                                </ul>
+                            </li>
+                        `;
+                    } else {
+                        // Standalone function directly at Level 2 (e.g. Web-11, Web-12, App-09...)
+                        if (!unionPerms.includes(node.id)) return;
+                        const leafIcon = `<i class="fa-solid fa-circle-check" style="color: #10B981; font-size: 13px; margin-right: 4px;"></i>`;
+                        html += `
+                            <li class="tree-node level-2 perm-leaf granted" data-id="${node.id}" data-granted="1">
+                                <div class="tree-node-label" style="display: flex; align-items: center; gap: 6px; padding: 3px 6px; border-radius: 4px;">
+                                    <span style="width: 14px; display: inline-block;"></span>
+                                    ${leafIcon}
+                                    <span class="perm-name" style="user-select: none; color: var(--text-main); font-weight: 500;">${node.name}</span>
+                                </div>
+                            </li>
+                        `;
+                    }
+                } else {
+                    // Level 3: Leaf node
+                    // Only render if granted in unionPerms
+                    if (!unionPerms.includes(node.id)) return;
 
-                html += `
-                    <li class="tree-node" data-id="${node.id}">
-                        <div class="tree-node-label" style="display: flex; align-items: center; gap: 4px; padding: 4px 6px; border-radius: 4px;">
-                            ${toggleIcon}
-                            <input type="checkbox" disabled ${isChecked} value="${node.id}">
-                            <span>${hasChildren ? `<strong>${node.name}</strong>` : node.name}</span>
-                            ${badge}
-                        </div>
-                        ${hasChildren ? `<ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 20px;">${buildInheritedTreeHtml(node.children, activeGroupRoles, node.id)}</ul>` : ''}
-                    </li>
-                `;
+                    const leafIcon = `<i class="fa-solid fa-circle-check" style="color: #10B981; font-size: 13px; margin-right: 4px;"></i>`;
+                    html += `
+                        <li class="tree-node level-3 perm-leaf granted" data-id="${node.id}" data-granted="1">
+                            <div class="tree-node-label" style="display: flex; align-items: center; gap: 6px; padding: 3px 6px; border-radius: 4px;">
+                                <span style="width: 14px; display: inline-block;"></span>
+                                ${leafIcon}
+                                <span class="perm-name" style="user-select: none; color: var(--text-main); font-weight: 500;">${node.name}</span>
+                            </div>
+                        </li>
+                    `;
+                }
             });
             return html;
         }
 
-        // Filter the inherited tree nodes based on search keyword
+        // Helper to calculate total system functions in 3-level tree
+        function getSystemFunctionTotals() {
+            const totals = { total: 0, WebAdmin: 0, Web: 0, App: 0 };
+            systemPermissions.forEach(root => {
+                const rootId = root.id;
+                if (!totals.hasOwnProperty(rootId)) return;
+                (root.children || []).forEach(node2 => {
+                    if (!node2 || isCommonUserFeature(node2) || node2.id === 'Web' || node2.id === 'App' || node2.id === 'WebAdmin') return;
+                    const validChildren = (node2.children && node2.children.length > 0)
+                        ? node2.children.filter(c => c && !isCommonUserFeature(c) && c.id !== 'Web' && c.id !== 'App' && c.id !== 'WebAdmin')
+                        : [];
+                    if (validChildren.length > 0) {
+                        totals[rootId] += validChildren.length;
+                        totals.total += validChildren.length;
+                    } else {
+                        totals[rootId] += 1;
+                        totals.total += 1;
+                    }
+                });
+            });
+            return totals;
+        }
+
+        // Update Stat Bar and Badges for Inherited Tree (Accurate Match with Rendered Tree)
+        function updateInheritedTreeStats(unionPerms) {
+            const sysTotals = getSystemFunctionTotals();
+
+            // Count granted leaf nodes directly from rendered tree for 100% accuracy
+            const totalGranted = document.querySelectorAll('#inheritedPermissionsTree li.perm-leaf.granted').length;
+            const adminGranted = document.querySelectorAll('#inheritedPermissionsTree li.root-category[data-id="WebAdmin"] li.perm-leaf.granted').length;
+            const webGranted = document.querySelectorAll('#inheritedPermissionsTree li.root-category[data-id="Web"] li.perm-leaf.granted').length;
+            const appGranted = document.querySelectorAll('#inheritedPermissionsTree li.root-category[data-id="App"] li.perm-leaf.granted').length;
+
+            // 1. Update Header Summary Badges
+            document.getElementById('statTotal').innerHTML = `<i class="fa-solid fa-chart-pie"></i> Tổng số: <strong>${totalGranted} / ${sysTotals.total}</strong> chức năng`;
+            
+            const badgeAdmin = document.getElementById('statAdmin');
+            badgeAdmin.innerHTML = `🏢 Website Cán bộ: <strong>${adminGranted} / ${sysTotals.WebAdmin}</strong>`;
+            badgeAdmin.className = `stat-badge admin-scope ${adminGranted > 0 ? '' : 'zero'}`;
+
+            const badgeWeb = document.getElementById('statWeb');
+            badgeWeb.innerHTML = `🌐 Website Khách hàng: <strong>${webGranted} / ${sysTotals.Web}</strong>`;
+            badgeWeb.className = `stat-badge web-scope ${webGranted > 0 ? '' : 'zero'}`;
+
+            const badgeApp = document.getElementById('statApp');
+            badgeApp.innerHTML = `📱 Mobile App: <strong>${appGranted} / ${sysTotals.App}</strong>`;
+            badgeApp.className = `stat-badge app-scope ${appGranted > 0 ? '' : 'zero'}`;
+
+            // 2. Update Root Node counters (Node Cấp 1) - Exact parity with child functions
+            const rootCounts = { WebAdmin: adminGranted, Web: webGranted, App: appGranted };
+            ['WebAdmin', 'Web', 'App'].forEach(rid => {
+                const counterEl = document.getElementById(`inherited-counter-${rid}`);
+                const cnt = rootCounts[rid];
+                if (counterEl) {
+                    counterEl.innerHTML = `(${cnt} chức năng)`;
+                    counterEl.style.background = '#EFF6FF';
+                    counterEl.style.color = '#1D4ED8';
+                    counterEl.style.borderColor = '#BFDBFE';
+                    counterEl.style.fontWeight = '600';
+                }
+            });
+        }
+
+        // Filter inherited permissions tree by keyword
         function filterInheritedPermTree(keyword) {
             keyword = keyword.trim().toLowerCase();
             const nodes = document.querySelectorAll('#inheritedPermissionsTree .tree-node');
@@ -670,9 +1097,11 @@
             }
 
             const matchedIds = new Set();
-            function searchNodes(nodeList) {
+            function searchNodes(nodeList, parentMatched = false) {
                 nodeList.forEach(n => {
-                    if (n.name.toLowerCase().includes(keyword) || n.id.toLowerCase().includes(keyword)) {
+                    const isSelfMatched = n.name.toLowerCase().includes(keyword) || n.id.toLowerCase().includes(keyword);
+                    const isMatched = isSelfMatched || parentMatched;
+                    if (isMatched) {
                         matchedIds.add(n.id);
                         let parts = n.id.split("-");
                         while (parts.length > 0) {
@@ -681,7 +1110,7 @@
                         }
                     }
                     if (n.children && n.children.length > 0) {
-                        searchNodes(n.children);
+                        searchNodes(n.children, isMatched);
                     }
                 });
             }
@@ -701,119 +1130,1043 @@
             });
         }
 
-        // Modal Logic
-        function openGroupModal(mode, id = null) {
-            groupMode = mode;
-            editGroupId = id;
-            const modal = document.getElementById('groupModal');
-            document.getElementById('errGroupCode').style.display = 'none';
-            document.getElementById('errGroupName').style.display = 'none';
-            document.getElementById('errGroupScope').style.display = 'none';
-            document.getElementById('inpGroupCode').classList.remove('error');
-            document.getElementById('inpGroupName').classList.remove('error');
-            document.getElementById('inpGroupScope').classList.remove('error');
+        // ==========================================
+        // TAB 2: ASSIGNED USERS LOGIC (PARITY WITH ROLE MANAGEMENT)
+        // ==========================================
 
-            if (mode === 'add') {
-                document.getElementById('modalTitle').innerText = 'Thêm mới Nhóm người dùng';
-                document.getElementById('inpGroupCode').value = '';
-                document.getElementById('inpGroupName').value = '';
-                document.getElementById('inpGroupScope').value = '';
-                document.getElementById('inpGroupCode').readOnly = false;
-            } else {
-                document.getElementById('modalTitle').innerText = 'Sửa thông tin Nhóm';
-                const group = groups.find(g => g.id === id);
-                document.getElementById('inpGroupCode').value = group.code;
-                document.getElementById('inpGroupName').value = group.name;
-                document.getElementById('inpGroupScope').value = group.scope || '';
-                document.getElementById('inpGroupCode').readOnly = true;
+        function renderAssignedUsers() {
+            if (!activeGroupId) return;
+            const tbody = document.getElementById('assignedUsersBody');
+            tbody.innerHTML = '';
+            
+            const assigned = users.filter(u => u.groupIds && u.groupIds.includes(activeGroupId));
+            document.getElementById('tabBadgeUsers').innerText = assigned.length;
+
+            // Get separated filter inputs
+            const fCode = (document.getElementById('inpFilterUserCode') ? document.getElementById('inpFilterUserCode').value : '').toLowerCase().trim();
+            const fName = (document.getElementById('inpFilterUserName') ? document.getElementById('inpFilterUserName').value : '').toLowerCase().trim();
+            const fEmail = (document.getElementById('inpFilterUserEmail') ? document.getElementById('inpFilterUserEmail').value : '').toLowerCase().trim();
+
+            let filtered = assigned.filter(u => {
+                const matchCode = !fCode || (u.code && u.code.toLowerCase().includes(fCode));
+                const matchName = !fName || (u.name && u.name.toLowerCase().includes(fName));
+                const matchEmail = !fEmail || (u.username && u.username.toLowerCase().includes(fEmail));
+                return matchCode && matchName && matchEmail;
+            });
+
+            // Sorting
+            if (userSortColumn) {
+                filtered.sort((a, b) => {
+                    let valA = (a[userSortColumn] || '').toString().toLowerCase();
+                    let valB = (b[userSortColumn] || '').toString().toLowerCase();
+                    return userSortDir === 'asc' ? valA.localeCompare(valB, 'vi') : valB.localeCompare(valA, 'vi');
+                });
             }
+
+            // Update Sort Icons in Header
+            const iconCode = document.getElementById('sortIconCode');
+            const iconName = document.getElementById('sortIconName');
+            if (iconCode) {
+                iconCode.className = userSortColumn === 'code' ? (userSortDir === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down') : 'fa-solid fa-sort';
+                iconCode.style.color = userSortColumn === 'code' ? 'var(--primary-color)' : 'var(--text-muted)';
+            }
+            if (iconName) {
+                iconName.className = userSortColumn === 'name' ? (userSortDir === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down') : 'fa-solid fa-sort';
+                iconName.style.color = userSortColumn === 'name' ? 'var(--primary-color)' : 'var(--text-muted)';
+            }
+
+            const totalItems = filtered.length;
+            const paginationEl = document.getElementById('assignedUsersPagination');
+
+            if (totalItems === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px; font-style: italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                if (paginationEl) paginationEl.style.display = 'none';
+                return;
+            }
+
+            if (paginationEl) paginationEl.style.display = 'flex';
+
+            // Pagination calculation
+            const totalPages = Math.ceil(totalItems / userPageSize) || 1;
+            if (userCurrentPage > totalPages) userCurrentPage = totalPages;
+            if (userCurrentPage < 1) userCurrentPage = 1;
+
+            const startIndex = (userCurrentPage - 1) * userPageSize;
+            const endIndex = Math.min(startIndex + userPageSize, totalItems);
+            const pageItems = filtered.slice(startIndex, endIndex);
+
+            pageItems.forEach((user, index) => {
+                const tr = document.createElement('tr');
+                tr.onclick = (e) => {
+                    if (!e.target.closest('.btn-icon') && !e.target.closest('a')) {
+                        openUserDetailModal(user.id);
+                    }
+                };
+                
+                const typeColor = scopeColors[user.accountType] || '#3B82F6';
+                const statusBadge = (user.status === 'Đang hoạt động' || user.status === 'Hoạt động')
+                    ? `<span style="display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; background:#ECFDF5; color:#059669;">Đang hoạt động</span>`
+                    : `<span style="display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; background:#FEF2F2; color:#DC2626;">Bị khóa</span>`;
+
+                const deptDisplay = user.accountType === 'Khách hàng' ? '-' : (user.dept || '-');
+
+                tr.innerHTML = `
+                    <td style="text-align: center;">${startIndex + index + 1}</td>
+                    <td><a href="javascript:void(0)" onclick="openUserDetailModal(${user.id})" style="color:var(--secondary-color); font-weight:600; text-decoration:none;" title="Xem chi tiết tài khoản">${user.code}</a></td>
+                    <td><strong>${user.name}</strong></td>
+                    <td>${user.username || '-'}</td>
+                    <td><span style="display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; background:${typeColor}15; color:${typeColor};">${user.accountType}</span></td>
+                    <td>${deptDisplay}</td>
+                    <td>${statusBadge}</td>
+                    <td style="text-align: center;">
+                        <button class="btn-icon delete" style="color: var(--danger-color);" onclick="event.stopPropagation(); openDeleteUserModal(${user.id})" title="Gỡ khỏi nhóm">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update Pagination UI
+            renderUserPaginationUI(totalItems, totalPages, startIndex, endIndex);
+        }
+
+        function renderUserPaginationUI(totalItems, totalPages, startIndex, endIndex) {
+            const infoEl = document.getElementById('userPaginationInfo');
+            if (infoEl) {
+                infoEl.innerText = `${startIndex + 1} - ${endIndex} / ${totalItems} bản ghi`;
+            }
+
+            const btnContainer = document.getElementById('userPaginationButtons');
+            if (!btnContainer) return;
+            btnContainer.innerHTML = '';
+
+            // First Page (|<<)
+            const btnFirst = document.createElement('button');
+            btnFirst.className = 'page-nav-btn';
+            btnFirst.title = 'Trang đầu';
+            btnFirst.innerHTML = '<i class="fa-solid fa-angles-left"></i>';
+            btnFirst.disabled = userCurrentPage === 1;
+            btnFirst.onclick = () => goToUserPage(1);
+            btnContainer.appendChild(btnFirst);
+
+            // Prev Page (<)
+            const btnPrev = document.createElement('button');
+            btnPrev.className = 'page-nav-btn';
+            btnPrev.title = 'Trang trước';
+            btnPrev.innerHTML = '<i class="fa-solid fa-angle-left"></i>';
+            btnPrev.disabled = userCurrentPage === 1;
+            btnPrev.onclick = () => goToUserPage(userCurrentPage - 1);
+            btnContainer.appendChild(btnPrev);
+
+            // Page Numbers
+            for (let p = 1; p <= totalPages; p++) {
+                const btnPage = document.createElement('button');
+                btnPage.className = `page-nav-btn ${p === userCurrentPage ? 'active' : ''}`;
+                btnPage.innerText = p;
+                btnPage.onclick = () => goToUserPage(p);
+                btnContainer.appendChild(btnPage);
+            }
+
+            // Next Page (>)
+            const btnNext = document.createElement('button');
+            btnNext.className = 'page-nav-btn';
+            btnNext.title = 'Trang sau';
+            btnNext.innerHTML = '<i class="fa-solid fa-angle-right"></i>';
+            btnNext.disabled = userCurrentPage === totalPages;
+            btnNext.onclick = () => goToUserPage(userCurrentPage + 1);
+            btnContainer.appendChild(btnNext);
+
+            // Last Page (>>|)
+            const btnLast = document.createElement('button');
+            btnLast.className = 'page-nav-btn';
+            btnLast.title = 'Trang cuối';
+            btnLast.innerHTML = '<i class="fa-solid fa-angles-right"></i>';
+            btnLast.disabled = userCurrentPage === totalPages;
+            btnLast.onclick = () => goToUserPage(totalPages);
+            btnContainer.appendChild(btnLast);
+        }
+
+        function goToUserPage(page) {
+            userCurrentPage = page;
+            renderAssignedUsers();
+        }
+
+        function changeUserPageSize(size) {
+            userPageSize = parseInt(size);
+            userCurrentPage = 1;
+            renderAssignedUsers();
+        }
+
+        function sortAssignedUsers(col) {
+            if (userSortColumn === col) {
+                userSortDir = userSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                userSortColumn = col;
+                userSortDir = 'asc';
+            }
+            userCurrentPage = 1;
+            renderAssignedUsers();
+        }
+
+        function filterAssignedUsers() {
+            userCurrentPage = 1;
+            renderAssignedUsers();
+        }
+
+        function resetUserFilter() {
+            if (document.getElementById('inpFilterUserCode')) document.getElementById('inpFilterUserCode').value = '';
+            if (document.getElementById('inpFilterUserName')) document.getElementById('inpFilterUserName').value = '';
+            if (document.getElementById('inpFilterUserEmail')) document.getElementById('inpFilterUserEmail').value = '';
+            userCurrentPage = 1;
+            renderAssignedUsers();
+        }
+
+        // ==========================================
+        // MODAL VIEW USER DETAILS
+        // ==========================================
+
+        function openUserDetailModal(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            const modal = document.getElementById('userDetailModal');
+            const titleEl = document.getElementById('userDetailTitle');
+            const contentEl = document.getElementById('userDetailContent');
+
+            titleEl.innerHTML = user.accountType === 'Cán bộ' 
+                ? `<i class="fa-solid fa-user-shield"></i> Chi tiết Tài khoản Cán bộ`
+                : (user.accountType === 'Khách hàng' 
+                    ? `<i class="fa-solid fa-user"></i> Chi tiết Tài khoản Khách hàng`
+                    : `<i class="fa-solid fa-building-columns"></i> Chi tiết Tài khoản Cơ quan có thẩm quyền`);
+
+            // Fetch user group names
+            const userGroupNames = (user.groupIds || []).map(gId => {
+                const g = groups.find(item => item.id === gId);
+                return g ? g.name : '';
+            }).filter(Boolean).join(', ') || 'Chưa thuộc nhóm nào';
+
+            // Fetch role names
+            const userRoleNames = (user.roleIds || []).map(rId => {
+                const r = roles.find(item => item.id === rId);
+                return r ? r.name : '';
+            }).filter(Boolean).join(', ') || 'Chưa gán vai trò';
+
+            if (user.accountType === 'Cán bộ') {
+                contentEl.innerHTML = `
+                    <div class="detail-item"><label>Mã cán bộ</label><div class="value" style="color:var(--secondary-color); font-weight:600;">${user.code}</div></div>
+                    <div class="detail-item"><label>Họ và tên</label><div class="value">${user.name}</div></div>
+                    <div class="detail-item"><label>Email (Tên đăng nhập)</label><div class="value">${user.username}</div></div>
+                    <div class="detail-item"><label>Số điện thoại</label><div class="value">${user.phone || '0912 345 678'}</div></div>
+                    <div class="detail-item"><label>Đơn vị công tác</label><div class="value">${user.dept}</div></div>
+                    <div class="detail-item"><label>Chức vụ</label><div class="value">${user.position || 'Chuyên viên'}</div></div>
+                    <div class="detail-item" style="grid-column: span 2;"><label>Nhóm người dùng trực thuộc</label><div class="value" style="color:var(--primary-color); font-weight:600;">${userGroupNames}</div></div>
+                    <div class="detail-item" style="grid-column: span 2;"><label>Danh sách vai trò đảm nhiệm</label><div class="value" style="color:var(--text-muted);">${userRoleNames}</div></div>
+                    <div class="detail-item"><label>Loại tài khoản</label><div class="value"><span style="padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; background:#10B98115; color:#10B981;">Cán bộ</span></div></div>
+                    <div class="detail-item"><label>Trạng thái tài khoản</label><div class="value"><span style="padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; background:#ECFDF5; color:#059669;">${user.status}</span></div></div>
+                `;
+            } else if (user.accountType === 'Khách hàng') {
+                contentEl.innerHTML = `
+                    <div class="detail-item"><label>Mã khách hàng</label><div class="value" style="color:var(--secondary-color); font-weight:600;">${user.code}</div></div>
+                    <div class="detail-item"><label>Tên khách hàng / Tổ chức</label><div class="value">${user.name}</div></div>
+                    <div class="detail-item"><label>Email đăng nhập</label><div class="value">${user.username}</div></div>
+                    <div class="detail-item"><label>Số điện thoại</label><div class="value">${user.phone || '024 3987 6543'}</div></div>
+                    <div class="detail-item"><label>Phân loại khách hàng</label><div class="value">${user.dept}</div></div>
+                    <div class="detail-item"><label>${user.dept.includes('Tổ chức') ? 'Mã số thuế / ĐKKD' : 'Số CCCD / Định danh'}</label><div class="value">${user.taxCode || user.cccd || '0101234567'}</div></div>
+                    ${user.representative ? `<div class="detail-item"><label>Người đại diện</label><div class="value">${user.representative}</div></div>` : ''}
+                    <div class="detail-item" style="grid-column: span 2;"><label>Địa chỉ liên hệ</label><div class="value">${user.address || 'Hà Nội'}</div></div>
+                    <div class="detail-item" style="grid-column: span 2;"><label>Nhóm người dùng trực thuộc</label><div class="value" style="color:var(--primary-color); font-weight:600;">${userGroupNames}</div></div>
+                    <div class="detail-item"><label>Trạng thái tài khoản</label><div class="value"><span style="padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; background:#ECFDF5; color:#059669;">${user.status}</span></div></div>
+                `;
+            } else {
+                contentEl.innerHTML = `
+                    <div class="detail-item"><label>Mã cơ quan</label><div class="value" style="color:var(--secondary-color); font-weight:600;">${user.code}</div></div>
+                    <div class="detail-item"><label>Tên cơ quan có thẩm quyền</label><div class="value">${user.name}</div></div>
+                    <div class="detail-item"><label>Email liên hệ</label><div class="value">${user.username}</div></div>
+                    <div class="detail-item"><label>Số điện thoại</label><div class="value">${user.phone || '024 3825 4321'}</div></div>
+                    <div class="detail-item"><label>Phân loại</label><div class="value">${user.dept}</div></div>
+                    <div class="detail-item" style="grid-column: span 2;"><label>Địa chỉ trụ sở</label><div class="value">${user.address || 'Hà Nội'}</div></div>
+                    <div class="detail-item" style="grid-column: span 2;"><label>Nhóm người dùng trực thuộc</label><div class="value" style="color:var(--primary-color); font-weight:600;">${userGroupNames}</div></div>
+                    <div class="detail-item"><label>Trạng thái</label><div class="value"><span style="padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; background:#ECFDF5; color:#059669;">${user.status}</span></div></div>
+                `;
+            }
+
             modal.classList.add('active');
         }
 
-        function closeModal(modalId = 'groupModal') {
+        // ==========================================
+        // MODAL ASSIGN USERS (MH03)
+        // ==========================================
+
+        function openAssignModal() {
+            if (!activeGroupId) return;
+            const group = groups.find(g => g.id === activeGroupId);
+            document.getElementById('modalTargetGroupName').innerText = group.name;
+            
+            // Set default scope in filter based on group's scope
+            if (document.getElementById('assignFilterType')) {
+                document.getElementById('assignFilterType').value = group.scope || 'Cán bộ';
+            }
+            if (document.getElementById('assignFilterCode')) document.getElementById('assignFilterCode').value = '';
+            if (document.getElementById('assignFilterName')) document.getElementById('assignFilterName').value = '';
+            if (document.getElementById('assignFilterEmail')) document.getElementById('assignFilterEmail').value = '';
+            if (document.getElementById('assignFilterDept')) document.getElementById('assignFilterDept').value = '';
+            
+            selectedAssignUserIds.clear();
+            assignCurrentPage = 1;
+            const checkAll = document.getElementById('checkAll');
+            if (checkAll) checkAll.checked = false;
+            updateSelectedCount();
+            
+            renderUnassignedUsers();
+            document.getElementById('assignModal').classList.add('active');
+        }
+
+        function renderUnassignedUsers() {
+            const tbody = document.getElementById('unassignedUsersBody');
+            tbody.innerHTML = '';
+            
+            const fType = document.getElementById('assignFilterType') ? document.getElementById('assignFilterType').value : 'Cán bộ';
+            const fCode = document.getElementById('assignFilterCode') ? document.getElementById('assignFilterCode').value.toLowerCase().trim() : '';
+            const fName = document.getElementById('assignFilterName') ? document.getElementById('assignFilterName').value.toLowerCase().trim() : '';
+            const fEmail = document.getElementById('assignFilterEmail') ? document.getElementById('assignFilterEmail').value.toLowerCase().trim() : '';
+            const fDept = document.getElementById('assignFilterDept') ? document.getElementById('assignFilterDept').value.toLowerCase().trim() : '';
+
+            const unassigned = users.filter(u => {
+                const notInGroup = !u.groupIds || !u.groupIds.includes(activeGroupId);
+                const isActive = u.status === 'Đang hoạt động' || u.status === 'Hoạt động';
+                const matchType = !fType || u.accountType === fType;
+                const matchCode = !fCode || (u.code && u.code.toLowerCase().includes(fCode));
+                const matchName = !fName || (u.name && u.name.toLowerCase().includes(fName));
+                const matchEmail = !fEmail || (u.username && u.username.toLowerCase().includes(fEmail));
+                const matchDept = !fDept || (u.dept && u.dept.toLowerCase().includes(fDept));
+                return notInGroup && isActive && matchType && matchCode && matchName && matchEmail && matchDept;
+            });
+
+            // Sort by id descending
+            unassigned.sort((a, b) => (b.id || 0) - (a.id || 0));
+
+            const totalItems = unassigned.length;
+            const paginationEl = document.getElementById('assignUsersPagination');
+
+            if (totalItems === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px; font-style: italic;">Không tìm thấy kết quả phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                if (paginationEl) paginationEl.style.display = 'none';
+                return;
+            }
+
+            if (paginationEl) paginationEl.style.display = 'flex';
+
+            // Pagination calculation
+            const totalPages = Math.ceil(totalItems / assignPageSize) || 1;
+            if (assignCurrentPage > totalPages) assignCurrentPage = totalPages;
+            if (assignCurrentPage < 1) assignCurrentPage = 1;
+
+            const startIndex = (assignCurrentPage - 1) * assignPageSize;
+            const endIndex = Math.min(startIndex + assignPageSize, totalItems);
+            const pageItems = unassigned.slice(startIndex, endIndex);
+
+            pageItems.forEach((user, index) => {
+                const tr = document.createElement('tr');
+                const isChecked = selectedAssignUserIds.has(user.id);
+                const deptDisplay = user.accountType === 'Khách hàng' ? '-' : (user.dept || '-');
+
+                tr.innerHTML = `
+                    <td style="text-align: center;"><input type="checkbox" class="user-assign-cb" value="${user.id}" ${isChecked ? 'checked' : ''} onchange="toggleAssignUser(${user.id}, this.checked)"></td>
+                    <td style="text-align: center;">${startIndex + index + 1}</td>
+                    <td><code style="background:#F1F5F9; padding:2px 5px; border-radius:4px; font-size:12px; font-weight:600; color:var(--primary-color);">${user.code}</code></td>
+                    <td><strong>${user.name}</strong></td>
+                    <td>${user.username || '-'}</td>
+                    <td>${deptDisplay}</td>
+                    <td><span style="display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; background:#ECFDF5; color:#059669;">Đang hoạt động</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            updateCheckAllState();
+            renderAssignPaginationUI(totalItems, totalPages, startIndex, endIndex);
+        }
+
+        function renderAssignPaginationUI(totalItems, totalPages, startIndex, endIndex) {
+            const infoEl = document.getElementById('assignPaginationInfo');
+            if (infoEl) {
+                infoEl.innerText = `${startIndex + 1} - ${endIndex} / ${totalItems} bản ghi`;
+            }
+
+            const btnContainer = document.getElementById('assignPaginationButtons');
+            if (!btnContainer) return;
+            btnContainer.innerHTML = '';
+
+            // First Page (|<<)
+            const btnFirst = document.createElement('button');
+            btnFirst.className = 'page-nav-btn';
+            btnFirst.title = 'Trang đầu';
+            btnFirst.innerHTML = '<i class="fa-solid fa-angles-left"></i>';
+            btnFirst.disabled = assignCurrentPage === 1;
+            btnFirst.onclick = () => goToAssignPage(1);
+            btnContainer.appendChild(btnFirst);
+
+            // Prev Page (<)
+            const btnPrev = document.createElement('button');
+            btnPrev.className = 'page-nav-btn';
+            btnPrev.title = 'Trang trước';
+            btnPrev.innerHTML = '<i class="fa-solid fa-angle-left"></i>';
+            btnPrev.disabled = assignCurrentPage === 1;
+            btnPrev.onclick = () => goToAssignPage(assignCurrentPage - 1);
+            btnContainer.appendChild(btnPrev);
+
+            // Page Numbers
+            for (let p = 1; p <= totalPages; p++) {
+                const btnPage = document.createElement('button');
+                btnPage.className = `page-nav-btn ${p === assignCurrentPage ? 'active' : ''}`;
+                btnPage.innerText = p;
+                btnPage.onclick = () => goToAssignPage(p);
+                btnContainer.appendChild(btnPage);
+            }
+
+            // Next Page (>)
+            const btnNext = document.createElement('button');
+            btnNext.className = 'page-nav-btn';
+            btnNext.title = 'Trang sau';
+            btnNext.innerHTML = '<i class="fa-solid fa-angle-right"></i>';
+            btnNext.disabled = assignCurrentPage === totalPages;
+            btnNext.onclick = () => goToAssignPage(assignCurrentPage + 1);
+            btnContainer.appendChild(btnNext);
+
+            // Last Page (>>|)
+            const btnLast = document.createElement('button');
+            btnLast.className = 'page-nav-btn';
+            btnLast.title = 'Trang cuối';
+            btnLast.innerHTML = '<i class="fa-solid fa-angles-right"></i>';
+            btnLast.disabled = assignCurrentPage === totalPages;
+            btnLast.onclick = () => goToAssignPage(totalPages);
+            btnContainer.appendChild(btnLast);
+        }
+
+        function goToAssignPage(page) {
+            assignCurrentPage = page;
+            renderUnassignedUsers();
+        }
+
+        function changeAssignPageSize(size) {
+            assignPageSize = parseInt(size);
+            assignCurrentPage = 1;
+            renderUnassignedUsers();
+        }
+
+        function toggleAssignUser(userId, isChecked) {
+            if (isChecked) {
+                selectedAssignUserIds.add(userId);
+            } else {
+                selectedAssignUserIds.delete(userId);
+            }
+            updateSelectedCount();
+            updateCheckAllState();
+        }
+
+        function filterUnassignedUsers() {
+            assignCurrentPage = 1;
+            renderUnassignedUsers();
+        }
+
+        function resetAssignFilter() {
+            const group = groups.find(g => g.id === activeGroupId);
+            if (document.getElementById('assignFilterType')) document.getElementById('assignFilterType').value = group ? group.scope : 'Cán bộ';
+            if (document.getElementById('assignFilterCode')) document.getElementById('assignFilterCode').value = '';
+            if (document.getElementById('assignFilterName')) document.getElementById('assignFilterName').value = '';
+            if (document.getElementById('assignFilterEmail')) document.getElementById('assignFilterEmail').value = '';
+            if (document.getElementById('assignFilterDept')) document.getElementById('assignFilterDept').value = '';
+            assignCurrentPage = 1;
+            renderUnassignedUsers();
+        }
+
+        function toggleAllUnassigned(checked) {
+            document.querySelectorAll('.user-assign-cb').forEach(cb => {
+                cb.checked = checked;
+                const userId = parseInt(cb.value);
+                if (checked) selectedAssignUserIds.add(userId);
+                else selectedAssignUserIds.delete(userId);
+            });
+            updateSelectedCount();
+        }
+
+        function updateCheckAllState() {
+            const checkboxes = document.querySelectorAll('.user-assign-cb');
+            const checkAll = document.getElementById('checkAll');
+            if (!checkAll || checkboxes.length === 0) return;
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkAll.checked = allChecked;
+        }
+
+        function updateSelectedCount() {
+            const count = selectedAssignUserIds.size;
+            const lbl = document.getElementById('lblSelectedCount');
+            if (lbl) lbl.innerText = count;
+        }
+
+        function handleAssignUsers() {
+            if (selectedAssignUserIds.size === 0) {
+                showToast("Vui lòng chọn ít nhất một người dùng để thực hiện thao tác.", true);
+                return;
+            }
+            
+            selectedAssignUserIds.forEach(userId => {
+                const user = users.find(u => u.id === userId);
+                if (user) {
+                    if (!user.groupIds) user.groupIds = [];
+                    if (!user.groupIds.includes(activeGroupId)) {
+                        user.groupIds.push(activeGroupId);
+                    }
+                }
+            });
+
+            localStorage.setItem('sys_mock_users', JSON.stringify(users));
+            closeModal('assignModal');
+            showToast("Cập nhật dữ liệu thành công.");
+            renderGroups();
+            renderAssignedUsers();
+        }
+
+        // ==========================================
+        // MODAL REMOVE USER FROM GROUP (MH04 / POPUP-CFM-002)
+        // ==========================================
+
+        function openDeleteUserModal(userId) {
+            removeUserId = userId;
+            const user = users.find(u => u.id === userId);
+            const group = groups.find(g => g.id === activeGroupId);
+            
+            document.getElementById('delUserName').innerText = user ? user.name : '';
+            document.getElementById('delGroupName').innerText = group ? group.name : '';
+            
+            document.getElementById('deleteUserModal').classList.add('active');
+        }
+
+        function confirmDeleteUser() {
+            const user = users.find(u => u.id === removeUserId);
+            if (user && user.groupIds) {
+                user.groupIds = user.groupIds.filter(id => id !== activeGroupId);
+            }
+            
+            localStorage.setItem('sys_mock_users', JSON.stringify(users));
+            closeModal('deleteUserModal');
+            showToast("Cập nhật dữ liệu thành công.");
+            renderGroups();
+            renderAssignedUsers();
+        }
+
+        // ==========================================
+        // MODAL ADD / EDIT GROUP (MH02)
+        // ==========================================
+
+        function openGroupModal(mode, id = null) {
+            groupMode = mode;
+            editGroupId = id;
+            modalSelectedRoleIds.clear();
+            
+            // Clear validation errors
+            clearGroupModalErrors();
+
+            const modal = document.getElementById('groupModal');
+            const titleEl = document.getElementById('modalGroupTitle');
+            const codeInput = document.getElementById('inpGroupCode');
+            const nameInput = document.getElementById('inpGroupName');
+            const scopeSelect = document.getElementById('inpGroupScope');
+            const searchRoleInput = document.getElementById('inpModalSearchRole');
+            const searchPermInput = document.getElementById('inpModalSearchPerm');
+            if (searchRoleInput) searchRoleInput.value = '';
+            if (searchPermInput) searchPermInput.value = '';
+
+            if (mode === 'add') {
+                titleEl.innerHTML = `<i class="fa-solid fa-users-gear"></i> Thêm mới Nhóm người dùng`;
+                codeInput.value = 'G_' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                nameInput.value = '';
+                scopeSelect.value = 'Cán bộ';
+            } else {
+                titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Cập nhật Nhóm người dùng`;
+                const group = groups.find(g => g.id === id);
+                if (group) {
+                    codeInput.value = group.code;
+                    nameInput.value = group.name;
+                    scopeSelect.value = group.scope || 'Cán bộ';
+                    (group.roleIds || []).forEach(rId => modalSelectedRoleIds.add(rId));
+                }
+            }
+
+            renderModalRolesChecklist();
+            renderModalPreviewTree();
+            modal.classList.add('active');
+        }
+
+        function clearGroupModalErrors() {
+            ['errGroupCode', 'errGroupName', 'errGroupScope'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            ['inpGroupCode', 'inpGroupName', 'inpGroupScope'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('error', 'is-invalid');
+            });
+        }
+
+        function handleModalScopeChange() {
+            // When scope changes, filter available roles and clear non-matching selections
+            const scope = document.getElementById('inpGroupScope').value;
+            const matchingRoles = roles.filter(r => r.scope === scope);
+            const matchingRoleIds = new Set(matchingRoles.map(r => r.id));
+
+            // Clean selected roles not in current scope
+            Array.from(modalSelectedRoleIds).forEach(rId => {
+                if (!matchingRoleIds.has(rId)) {
+                    modalSelectedRoleIds.delete(rId);
+                }
+            });
+
+            renderModalRolesChecklist();
+            renderModalPreviewTree();
+        }
+
+        function renderModalRolesChecklist() {
+            const container = document.getElementById('modalRolesChecklist');
+            const scope = document.getElementById('inpGroupScope').value;
+            const searchKeyword = (document.getElementById('inpModalSearchRole') ? document.getElementById('inpModalSearchRole').value : '').toLowerCase().trim();
+            container.innerHTML = '';
+
+            const availableRoles = roles.filter(r => !scope || r.scope === scope);
+            const filteredRoles = availableRoles.filter(r => {
+                return !searchKeyword || r.name.toLowerCase().includes(searchKeyword) || r.code.toLowerCase().includes(searchKeyword);
+            });
+
+            // Update header count: Đã chọn: X / Y vai trò
+            const selectedCountInScope = availableRoles.filter(r => modalSelectedRoleIds.has(r.id)).length;
+            const lblCount = document.getElementById('lblModalRolesCount');
+            if (lblCount) {
+                lblCount.innerText = `Đã chọn: ${selectedCountInScope} / ${availableRoles.length} vai trò`;
+            }
+
+            if (filteredRoles.length === 0) {
+                container.innerHTML = `<div style="padding: 16px; text-align: center; color: var(--text-muted); font-style: italic; font-size: 13px;">Không có vai trò phù hợp</div>`;
+                return;
+            }
+
+            filteredRoles.forEach(role => {
+                const isChecked = modalSelectedRoleIds.has(role.id);
+                const permCount = (role.permissions || []).length;
+                const div = document.createElement('div');
+                div.className = 'modal-role-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="mrole_${role.id}" value="${role.id}" ${isChecked ? 'checked' : ''} onchange="toggleModalRole(${role.id}, this.checked)">
+                    <label for="mrole_${role.id}" style="cursor: pointer; flex: 1; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: var(--primary-color); font-size: 13px;">${role.name}</strong>
+                            <span style="font-size: 11px; color: var(--text-muted); margin-left: 6px;">(${role.code})</span>
+                        </div>
+                        <span style="font-size: 11px; padding: 2px 7px; border-radius: 10px; background: #F1F5F9; color: var(--text-muted); border: 1px solid var(--border-color);">${permCount} chức năng</span>
+                    </label>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function filterModalRoles(keyword) {
+            renderModalRolesChecklist();
+        }
+
+        function toggleModalRole(roleId, isChecked) {
+            if (isChecked) {
+                modalSelectedRoleIds.add(roleId);
+            } else {
+                modalSelectedRoleIds.delete(roleId);
+            }
+
+            // Update counter
+            const scope = document.getElementById('inpGroupScope').value;
+            const availableRoles = roles.filter(r => !scope || r.scope === scope);
+            const selectedCountInScope = availableRoles.filter(r => modalSelectedRoleIds.has(r.id)).length;
+            const lblCount = document.getElementById('lblModalRolesCount');
+            if (lblCount) {
+                lblCount.innerText = `Đã chọn: ${selectedCountInScope} / ${availableRoles.length} vai trò`;
+            }
+
+            // Re-render Preview Tree in Real-Time
+            renderModalPreviewTree();
+        }
+
+        function toggleModalPreviewCollapse(event, nodeId) {
+            event.stopPropagation();
+            collapsedModalPreviewNodes[nodeId] = !collapsedModalPreviewNodes[nodeId];
+            renderModalPreviewTree();
+        }
+
+        // Render Preview Tree inside Modal (Real-Time Union of Selected Roles - Only Granted Functions)
+        function renderModalPreviewTree() {
+            const tree = document.getElementById('modalPreviewTree');
+            if (!tree) return;
+            tree.innerHTML = '';
+
+            const selectedRoles = roles.filter(r => modalSelectedRoleIds.has(r.id));
+            const permSet = new Set();
+            selectedRoles.forEach(r => {
+                (r.permissions || []).forEach(p => permSet.add(p));
+            });
+            const unionPerms = Array.from(permSet);
+
+            if (unionPerms.length === 0) {
+                tree.innerHTML = `
+                    <div style="padding: 36px 16px; text-align: center; color: var(--text-muted); font-style: italic; font-size: 13px;">
+                        <i class="fa-solid fa-folder-open" style="font-size: 28px; margin-bottom: 8px; display: block; opacity: 0.4;"></i>
+                        Chưa chọn vai trò nào. Vui lòng tích chọn vai trò ở danh sách bên trái để xem trước các chức năng phân quyền.
+                    </div>
+                `;
+                updateModalPreviewStats(unionPerms);
+                return;
+            }
+
+            let html = '';
+            systemPermissions.forEach(root => {
+                const childrenHtml = buildModalPreviewTreeHtml(root.children, unionPerms, root.id, 2);
+                if (!childrenHtml) return; // Hide root category if no granted functions under it
+
+                let displayName = '';
+                let scopeIcon = '';
+                if (root.id === 'Web') {
+                    displayName = 'Website khách hàng';
+                    scopeIcon = '<i class="fa-solid fa-globe" style="margin-right: 6px; color: #0284C7;"></i>';
+                } else if (root.id === 'App') {
+                    displayName = 'Ứng dụng Mobile App';
+                    scopeIcon = '<i class="fa-solid fa-mobile-screen" style="margin-right: 6px; color: #7E22CE;"></i>';
+                } else if (root.id === 'WebAdmin') {
+                    displayName = 'Website Cán bộ';
+                    scopeIcon = '<i class="fa-solid fa-building-columns" style="margin-right: 6px; color: #047857;"></i>';
+                }
+
+                const isCollapsed = collapsedModalPreviewNodes[root.id];
+                const toggleIcon = `<span class="perm-tree-toggle" onclick="toggleModalPreviewCollapse(event, '${root.id}')" style="margin-right: 6px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`;
+
+                html += `
+                    <li class="tree-node root-category" data-id="${root.id}" style="list-style: none; margin-bottom: 8px;">
+                        <div class="tree-node-label category-header" style="display: flex; align-items: center; gap: 4px; padding: 6px 8px; background: #F1F5F9; border-radius: 4px; font-weight: 600; color: var(--primary-color);">
+                            ${toggleIcon}
+                            <span style="user-select: none; display: flex; align-items: center;">${scopeIcon} ${displayName}</span>
+                            <span class="root-node-counter" id="mpreview-counter-${root.id}" style="font-size: 11px; font-weight: 600; margin-left: 6px; padding: 1px 7px; border-radius: 10px; background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;">(0 chức năng)</span>
+                        </div>
+                        <ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 18px; margin-top: 4px;">
+                            ${childrenHtml}
+                        </ul>
+                    </li>
+                `;
+            });
+            tree.innerHTML = html;
+
+            updateModalPreviewStats(unionPerms);
+
+            const searchKeyword = document.getElementById('inpModalSearchPerm') ? document.getElementById('inpModalSearchPerm').value : '';
+            filterModalPreviewTree(searchKeyword);
+        }
+
+        function buildModalPreviewTreeHtml(nodes, unionPerms, parentId = null, currentLevel = 2) {
+            if (!nodes || nodes.length === 0) return '';
+            
+            let html = '';
+            nodes.forEach(node => {
+                if (!node || node.id === 'Web' || node.id === 'App' || node.id === 'WebAdmin') return;
+                if (isCommonUserFeature(node)) return;
+
+                if (currentLevel === 2) {
+                    const hasChildren = node.children && node.children.length > 0;
+                    if (hasChildren) {
+                        const validChildren = node.children.filter(c => c && !isCommonUserFeature(c) && c.id !== 'Web' && c.id !== 'App' && c.id !== 'WebAdmin' && unionPerms.includes(c.id));
+                        
+                        // If NO granted children under this Level 2 group, DO NOT display this Level 2 group!
+                        if (validChildren.length === 0) return;
+
+                        const isCollapsed = collapsedModalPreviewNodes[node.id];
+                        const toggleIcon = `<span class="perm-tree-toggle" onclick="toggleModalPreviewCollapse(event, '${node.id}')" style="margin-right: 6px; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-angle-${isCollapsed ? 'right' : 'down'}"></i></span>`;
+                        const nodeIcon = `<i class="${isCollapsed ? 'fa-regular fa-folder' : 'fa-regular fa-folder-open'}" style="color: #3B82F6; font-size: 13px; margin-right: 2px;"></i>`;
+                        const counterBadge = `<span class="level2-node-counter" id="mpreview-counter-${node.id}" style="font-size: 11px; font-weight: 600; margin-left: 6px; padding: 1px 7px; border-radius: 10px; background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; display: inline-block;">(${validChildren.length} chức năng)</span>`;
+
+                        html += `
+                            <li class="tree-node level-2 group" data-id="${node.id}">
+                                <div class="tree-node-label" style="display: flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 4px;">
+                                    ${toggleIcon}
+                                    ${nodeIcon}
+                                    <span class="perm-name" style="user-select: none;"><strong>${node.name}</strong></span>
+                                    ${counterBadge}
+                                </div>
+                                <ul class="tree-view" style="display: ${isCollapsed ? 'none' : 'block'}; list-style: none; padding-left: 20px;">
+                                    ${buildModalPreviewTreeHtml(validChildren, unionPerms, node.id, 3)}
+                                </ul>
+                            </li>
+                        `;
+                    } else {
+                        // Standalone function directly at Level 2
+                        if (!unionPerms.includes(node.id)) return;
+                        const leafIcon = `<i class="fa-solid fa-circle-check" style="color: #10B981; font-size: 13px; margin-right: 4px;"></i>`;
+                        html += `
+                            <li class="tree-node level-2 perm-leaf granted" data-id="${node.id}" data-granted="1">
+                                <div class="tree-node-label" style="display: flex; align-items: center; gap: 6px; padding: 3px 6px; border-radius: 4px;">
+                                    <span style="width: 14px; display: inline-block;"></span>
+                                    ${leafIcon}
+                                    <span class="perm-name" style="user-select: none; color: var(--text-main); font-weight: 500;">${node.name}</span>
+                                </div>
+                            </li>
+                        `;
+                    }
+                } else {
+                    // Level 3: Leaf node
+                    // Only render if granted in unionPerms
+                    if (!unionPerms.includes(node.id)) return;
+
+                    const leafIcon = `<i class="fa-solid fa-circle-check" style="color: #10B981; font-size: 13px; margin-right: 4px;"></i>`;
+                    html += `
+                        <li class="tree-node level-3 perm-leaf granted" data-id="${node.id}" data-granted="1">
+                            <div class="tree-node-label" style="display: flex; align-items: center; gap: 6px; padding: 3px 6px; border-radius: 4px;">
+                                <span style="width: 14px; display: inline-block;"></span>
+                                ${leafIcon}
+                                <span class="perm-name" style="user-select: none; color: var(--text-main); font-weight: 500;">${node.name}</span>
+                            </div>
+                        </li>
+                    `;
+                }
+            });
+            return html;
+        }
+
+        function updateModalPreviewStats(unionPerms) {
+            const sysTotals = getSystemFunctionTotals();
+
+            const totalGranted = document.querySelectorAll('#modalPreviewTree li.perm-leaf.granted').length;
+            const adminGranted = document.querySelectorAll('#modalPreviewTree li.root-category[data-id="WebAdmin"] li.perm-leaf.granted').length;
+            const webGranted = document.querySelectorAll('#modalPreviewTree li.root-category[data-id="Web"] li.perm-leaf.granted').length;
+            const appGranted = document.querySelectorAll('#modalPreviewTree li.root-category[data-id="App"] li.perm-leaf.granted').length;
+
+            // Update Modal Stat Badges
+            document.getElementById('statTotalModal').innerHTML = `<i class="fa-solid fa-chart-pie"></i> Tổng: <strong>${totalGranted} / ${sysTotals.total}</strong>`;
+            
+            const bAdmin = document.getElementById('statAdminModal');
+            bAdmin.innerHTML = `🏢 Cán bộ: <strong>${adminGranted} / ${sysTotals.WebAdmin}</strong>`;
+            bAdmin.className = `stat-badge admin-scope ${adminGranted > 0 ? '' : 'zero'}`;
+
+            const bWeb = document.getElementById('statWebModal');
+            bWeb.innerHTML = `🌐 Khách: <strong>${webGranted} / ${sysTotals.Web}</strong>`;
+            bWeb.className = `stat-badge web-scope ${webGranted > 0 ? '' : 'zero'}`;
+
+            const bApp = document.getElementById('statAppModal');
+            bApp.innerHTML = `📱 App: <strong>${appGranted} / ${sysTotals.App}</strong>`;
+            bApp.className = `stat-badge app-scope ${appGranted > 0 ? '' : 'zero'}`;
+
+            // Update Level 1 Root Node counters
+            const rootCounts = { WebAdmin: adminGranted, Web: webGranted, App: appGranted };
+            ['WebAdmin', 'Web', 'App'].forEach(rid => {
+                const counterEl = document.getElementById(`mpreview-counter-${rid}`);
+                const cnt = rootCounts[rid];
+                if (counterEl) {
+                    counterEl.innerHTML = `(${cnt} chức năng)`;
+                    counterEl.style.background = '#EFF6FF';
+                    counterEl.style.color = '#1D4ED8';
+                    counterEl.style.borderColor = '#BFDBFE';
+                }
+            });
+        }
+
+        function filterModalPreviewTree(keyword) {
+            keyword = (keyword || '').trim().toLowerCase();
+            const nodes = document.querySelectorAll('#modalPreviewTree .tree-node');
+            
+            if (!keyword) {
+                nodes.forEach(node => {
+                    node.style.display = "block";
+                    const ul = node.querySelector('ul');
+                    if (ul) {
+                        const id = node.dataset.id;
+                        ul.style.display = collapsedModalPreviewNodes[id] ? "none" : "block";
+                    }
+                });
+                return;
+            }
+
+            const matchedIds = new Set();
+            function searchNodes(nodeList, parentMatched = false) {
+                nodeList.forEach(n => {
+                    const isSelfMatched = n.name.toLowerCase().includes(keyword) || n.id.toLowerCase().includes(keyword);
+                    const isMatched = isSelfMatched || parentMatched;
+                    if (isMatched) {
+                        matchedIds.add(n.id);
+                        let parts = n.id.split("-");
+                        while (parts.length > 0) {
+                            matchedIds.add(parts.join("-"));
+                            parts.pop();
+                        }
+                    }
+                    if (n.children && n.children.length > 0) {
+                        searchNodes(n.children, isMatched);
+                    }
+                });
+            }
+            searchNodes(systemPermissions);
+
+            nodes.forEach(node => {
+                const id = node.dataset.id;
+                if (matchedIds.has(id)) {
+                    node.style.display = "block";
+                    const ul = node.querySelector('ul');
+                    if (ul) {
+                        ul.style.display = "block";
+                    }
+                } else {
+                    node.style.display = "none";
+                }
+            });
+        }
+
+        // Save Group
+        function saveGroup() {
+            clearGroupModalErrors();
+
+            const codeInput = document.getElementById('inpGroupCode');
+            const nameInput = document.getElementById('inpGroupName');
+            const scopeSelect = document.getElementById('inpGroupScope');
+
+            const code = codeInput.value.trim();
+            const name = nameInput.value.trim();
+            const scope = scopeSelect.value;
+
+            let firstErrorEl = null;
+
+            if (!code) {
+                document.getElementById('errGroupCode').innerText = "Đây là trường bắt buộc";
+                document.getElementById('errGroupCode').style.display = 'block';
+                codeInput.classList.add('error', 'is-invalid');
+                if (!firstErrorEl) firstErrorEl = codeInput;
+            }
+
+            if (!name) {
+                document.getElementById('errGroupName').innerText = "Đây là trường bắt buộc";
+                document.getElementById('errGroupName').style.display = 'block';
+                nameInput.classList.add('error', 'is-invalid');
+                if (!firstErrorEl) firstErrorEl = nameInput;
+            } else if (name.length > 255) {
+                document.getElementById('errGroupName').innerText = "Tên nhóm không được vượt quá 255 ký tự";
+                document.getElementById('errGroupName').style.display = 'block';
+                nameInput.classList.add('error', 'is-invalid');
+                if (!firstErrorEl) firstErrorEl = nameInput;
+            } else if (groups.some(g => g.name.toLowerCase() === name.toLowerCase() && g.id !== editGroupId)) {
+                document.getElementById('errGroupName').innerText = "Tên nhóm đã tồn tại trong hệ thống";
+                document.getElementById('errGroupName').style.display = 'block';
+                nameInput.classList.add('error', 'is-invalid');
+                if (!firstErrorEl) firstErrorEl = nameInput;
+            }
+
+            if (!scope) {
+                document.getElementById('errGroupScope').innerText = "Đây là trường bắt buộc";
+                document.getElementById('errGroupScope').style.display = 'block';
+                scopeSelect.classList.add('error', 'is-invalid');
+                if (!firstErrorEl) firstErrorEl = scopeSelect;
+            }
+
+            if (firstErrorEl) {
+                firstErrorEl.focus();
+                return;
+            }
+
+            const selectedRolesArray = Array.from(modalSelectedRoleIds);
+
+            if (groupMode === 'add') {
+                const newGroup = {
+                    id: Date.now(),
+                    code: code,
+                    name: name,
+                    scope: scope,
+                    roleIds: selectedRolesArray,
+                    status: 'ACTIVE'
+                };
+                groups.unshift(newGroup);
+                showToast("Thêm mới nhóm người dùng thành công.");
+                activeGroupId = newGroup.id;
+            } else {
+                const index = groups.findIndex(g => g.id === editGroupId);
+                if (index !== -1) {
+                    groups[index].name = name;
+                    groups[index].scope = scope;
+                    groups[index].roleIds = selectedRolesArray;
+                }
+                showToast("Cập nhật thông tin nhóm thành công.");
+            }
+
+            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
+            closeModal('groupModal');
+            renderGroups();
+            if (activeGroupId) {
+                selectGroup(activeGroupId);
+            }
+        }
+
+        // ==========================================
+        // MODAL DELETE GROUP (POPUP-CFM-001)
+        // ==========================================
+
+        function confirmDeleteGroup(id) {
+            const group = groups.find(g => g.id === id);
+            if (!group) return;
+
+            document.getElementById('deleteGroupName').innerText = group.name;
+            document.getElementById('deleteGroupId').value = id;
+            document.getElementById('deleteGroupModal').classList.add('active');
+        }
+
+        function executeDeleteGroup() {
+            const id = parseInt(document.getElementById('deleteGroupId').value);
+            const group = groups.find(g => g.id === id);
+            if (!group) return;
+
+            // Check if group has assigned users
+            const assignedCount = users.filter(u => u.groupIds && u.groupIds.includes(id)).length;
+            if (assignedCount > 0) {
+                closeModal('deleteGroupModal');
+                showToast("Không thể xóa nhóm người dùng do đang có tài khoản trực thuộc. Vui lòng gỡ người dùng khỏi nhóm trước khi xóa.", true);
+                return;
+            }
+
+            groups = groups.filter(g => g.id !== id);
+            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
+
+            closeModal('deleteGroupModal');
+            showToast("Xóa nhóm người dùng thành công.");
+
+            if (activeGroupId === id) {
+                if (groups.length > 0) {
+                    selectGroup(groups[0].id);
+                } else {
+                    activeGroupId = null;
+                    document.getElementById('noGroupSelected').style.display = 'block';
+                    document.getElementById('groupDetailContainer').style.display = 'none';
+                    document.getElementById('panelRightTitle').innerHTML = `<i class="fa-solid fa-shield-halved"></i> Chi tiết Nhóm người dùng`;
+                }
+            }
+            renderGroups();
+        }
+
+        function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
 
-        function saveGroup() {
-            const code = document.getElementById('inpGroupCode').value.trim();
-            const name = document.getElementById('inpGroupName').value.trim();
-            const scope = document.getElementById('inpGroupScope').value;
-            
-            let isValid = true;
-            if (!code) { document.getElementById('errGroupCode').style.display = 'block'; document.getElementById('inpGroupCode').classList.add('error'); isValid = false; }
-            if (!name) { document.getElementById('errGroupName').style.display = 'block'; document.getElementById('inpGroupName').classList.add('error'); isValid = false; }
-            if (!scope) { document.getElementById('errGroupScope').style.display = 'block'; document.getElementById('inpGroupScope').classList.add('error'); isValid = false; }
-            
-            if (!isValid) return;
+        // Toast Notification
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
 
-            if (groupMode === 'add') {
-                groups.unshift({ id: Date.now(), code: code, name: name, scope: scope, members: 0, roles: [], status: 'ACTIVE' });
-                showToast("Thêm mới nhóm thành công!");
-            } else {
-                const index = groups.findIndex(g => g.id === editGroupId);
-                groups[index].name = name;
-                groups[index].scope = scope;
-                showToast("Cập nhật thông tin nhóm thành công!");
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('sys_mock_groups', JSON.stringify(groups));
-
-            closeModal();
+        // Page Initialization
+        window.onload = () => {
             renderGroups();
-            renderRolesChecklist();
-            renderInheritedTree();
-        }
-
-        // Toast
-        function savePermissions() {
-            showToast('Đã lưu cấu hình phân quyền cho nhóm thành công!');
-        }
-
-        // Init
-        function initPage() {
-            // Migrate shared roles if present
-            const savedRoles = localStorage.getItem('sys_mock_roles');
-            if (savedRoles) {
-                try {
-                    const parsedRoles = JSON.parse(savedRoles);
-                    let migrated = false;
-                    parsedRoles.forEach(r => {
-                        if (r.scope === 'INTERNAL') { r.scope = 'Cán bộ'; migrated = true; }
-                        else if (r.scope === 'INDIVIDUAL' || r.scope === 'ORGANIZATION' || r.scope === 'ALL') { r.scope = 'Khách hàng'; migrated = true; }
-                        else if (r.scope === 'AUTHORITY') { r.scope = 'Cơ quan có thẩm quyền'; migrated = true; }
-                        
-                        if (r.permissions) {
-                            r.permissions = r.permissions.map(p => {
-                                if (p && p.startsWith('WebAdmin-33-')) {
-                                    migrated = true;
-                                    return p.replace('WebAdmin-33-', 'WebAdmin-29-');
-                                }
-                                if (p === 'WebAdmin-33') {
-                                    migrated = true;
-                                    return 'WebAdmin-29';
-                                }
-                                return p;
-                            });
-                        }
-                    });
-                    if (migrated) {
-                        localStorage.setItem('sys_mock_roles', JSON.stringify(parsedRoles));
-                    }
-                } catch(e) {}
+            if (groups.length > 0) {
+                selectGroup(groups[0].id);
             }
-
-            const currentGroup = groups.find(g => g.id === activeGroupId);
-            if (currentGroup) {
-                selectGroup(currentGroup);
-            } else {
-                renderGroups();
-                renderRolesChecklist();
-                renderInheritedTree();
-            }
-        }
-
-        window.onload = initPage;
+        };
     </script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
