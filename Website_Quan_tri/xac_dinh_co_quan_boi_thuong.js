@@ -1,4 +1,4 @@
-// Mock Data: 12 items for testing pagination
+﻿// Mock Data: 12 items for testing pagination
 let requestList = [
     {
         id: "REQ1",
@@ -655,7 +655,7 @@ function closeDetailOrReturn() {
             window.parent.openAdminModule(returnUrl, returnUrl);
             return;
         }
-        window.location.href = returnUrl.replace(/^UC431_to_UC466\//, '');
+        window.location.href = returnUrl;
         return;
     }
     showListScreen();

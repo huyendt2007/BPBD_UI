@@ -1695,7 +1695,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
         function openLinkedClaimDetail(claimCode) {
             const returnUrl = 'quyet_dinh_giai_quyet_boi_thuong.html';
             const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(claimCode)}&from=quyet_dinh&returnUrl=${encodeURIComponent(returnUrl)}`;
-            const shellDetailUrl = `UC431_to_UC466/${detailUrl}`;
+            const shellDetailUrl = detailUrl;
             const activeClaimUrl = 'quan_ly_boi_thuong.html';
 
             if (window.parent && window.parent !== window) {

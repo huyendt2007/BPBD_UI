@@ -1575,7 +1575,7 @@
         function openLinkedClaimDetail(claimCode) {
             const returnUrl = 'xem_xet_trach_nhiem_hoan_tra.html';
             const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(claimCode)}&from=hoan_tra&returnUrl=${encodeURIComponent(returnUrl)}`;
-            const shellDetailUrl = `UC431_to_UC466/${detailUrl}`;
+            const shellDetailUrl = detailUrl;
             const activeClaimUrl = 'quan_ly_boi_thuong.html';
 
             if (window.parent && window.parent !== window) {

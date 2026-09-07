@@ -3410,12 +3410,8 @@
             if (!returnUrl) return false;
             const returnActiveUrl = params.get('returnActiveUrl') || returnUrl;
 
-            const shellReturnUrl = returnUrl.indexOf('UC431_to_UC466/') === 0
-                ? returnUrl
-                : `UC431_to_UC466/${returnUrl}`;
-            const shellActiveReturnUrl = returnActiveUrl.indexOf('UC431_to_UC466/') === 0
-                ? returnActiveUrl
-                : `UC431_to_UC466/${returnActiveUrl}`;
+            const shellReturnUrl = returnUrl;
+            const shellActiveReturnUrl = returnActiveUrl;
             const activeReturnUrl = shellActiveReturnUrl.split('?')[0];
 
             if (window.parent && window.parent !== window) {

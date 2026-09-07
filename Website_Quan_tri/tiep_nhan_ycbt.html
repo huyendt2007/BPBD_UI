@@ -997,9 +997,9 @@
             const isDetermineAgency = item && item.requestType === REQUEST_TYPE_XDCQ;
             const detailPage = isDetermineAgency ? "xac_dinh_co_quan_boi_thuong.html" : "quan_ly_boi_thuong.html";
             const param = isDetermineAgency ? "detail" : "viewCode";
-            const url = `UC431_to_UC466/${detailPage}?${param}=${encodeURIComponent(code)}&mode=view`;
+            const url = `${detailPage}?${param}=${encodeURIComponent(code)}&mode=view`;
             if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === "function") {
-                window.parent.openAdminModule(url, `UC431_to_UC466/${detailPage}?v=1`);
+                window.parent.openAdminModule(url, `${detailPage}?v=1`);
                 return;
             }
             window.location.href = `${detailPage}?${param}=${encodeURIComponent(code)}&mode=view`;

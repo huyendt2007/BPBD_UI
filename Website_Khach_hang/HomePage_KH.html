@@ -16670,7 +16670,7 @@
                 amountText: `${Number(item.amount || 0).toLocaleString('vi-VN')} VNĐ`
             }));
             showToast(`Đang mở màn hình thanh toán cho yêu cầu ${code}...`, 'info');
-            showScreen('registered-request-payment', `UC024/dang_ky_bpbd_thanh_toan.html?from=copy-requests&regNum=${encodeURIComponent(code)}&t=${Date.now()}`);
+            showScreen('registered-request-payment', `dang_ky_bpbd_thanh_toan.html?from=copy-requests&regNum=${encodeURIComponent(code)}&t=${Date.now()}`);
         }
 
         function viewCopyRequestFile(code) {
@@ -17191,7 +17191,7 @@
             }
             showToast('Đang mở xem chi tiết lịch sử hồ sơ...', 'info');
             setTimeout(() => {
-                const url = `UC027/WebKH_Phieu_Dang_ky_Xem_Chi_Tiet.html?regNum=${rootRegNum}&focusId=${regNum}&from=registered`;
+                const url = `WebKH_Phieu_Dang_ky_Xem_Chi_Tiet.html?regNum=${rootRegNum}&focusId=${regNum}&from=registered`;
                 showScreen('view-detail-history', url);
             }, 400);
         }
@@ -17258,7 +17258,7 @@
             }));
 
             showToast(`Đang mở màn hình thanh toán cho hồ sơ ${regNum}...`, 'info');
-            showScreen('registered-request-payment', `UC024/dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(regNum)}&t=${Date.now()}`);
+            showScreen('registered-request-payment', `dang_ky_bpbd_thanh_toan.html?from=registered&regNum=${encodeURIComponent(regNum)}&t=${Date.now()}`);
         }
 
         function updateRegisteredRequest(regNum, type) {
@@ -17315,7 +17315,7 @@
             setTimeout(() => {
                 const actionContext = seedRegisteredChangeForm(regNum);
                 const targetRegNum = actionContext ? actionContext.firstRegNum : regNum;
-                showScreen('change-registration', `UC0025/dang_ky_thay_doi_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`);
+                showScreen('change-registration', `dang_ky_thay_doi_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`);
             }, 400);
         }
 
@@ -17349,7 +17349,7 @@
             setTimeout(() => {
                 const actionContext = seedRegisteredDeleteForm(regNum);
                 const targetRegNum = actionContext ? actionContext.firstRegNum : regNum;
-                showScreen('delete-registration', `UC026/xoa_dang_ky_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`);
+                showScreen('delete-registration', `xoa_dang_ky_main.html?from=registered&regNum=${encodeURIComponent(targetRegNum)}&t=${Date.now()}`);
             }, 400);
         }
 
@@ -17361,7 +17361,7 @@
             }));
             showToast(`Đang mở luồng Yêu cầu cung cấp thông tin cho hồ sơ ${regNum}...`, 'info');
             setTimeout(() => {
-                showScreen('request-information', `UC141_UC144_UC195/tao_yeu_cau_cctt_main.html?from=registered&regNum=${encodeURIComponent(regNum)}&t=${Date.now()}`);
+                showScreen('request-information', `tao_yeu_cau_cctt_main.html?from=registered&regNum=${encodeURIComponent(regNum)}&t=${Date.now()}`);
             }, 400);
         }
 
