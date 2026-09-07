@@ -495,9 +495,9 @@
 |  | WebAdmin-329 | Quản lý thông tin liên kết |  | UC528 |  |  |  |
 |  | WebAdmin-330 | Quản lý nội dung hỗ trợ người dùng |  | UC529 |  |  |  |
 |  | WebAdmin-331 | Quản lý vai trò | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_vai_tro.md | UC556, UC557, UC558, UC559 |  |  |  |
-|  | WebAdmin-332 | Quản lý nhóm người dùng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Nhom_nguoi_dung.md | UC013, UC014, UC015, UC016, UC559 |  |  |  |
+|  | WebAdmin-332 | Quản lý nhóm người dùng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_nhom_nguoi_dung.md | UC013, UC014, UC015, UC016, UC559 |  |  |  |
 |  | WebAdmin-333 | Quản lý tài khoản khách hàng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\SRS_Quan_ly_tai_khoan_khach_hang.md | UC003, UC007, UC008, UC009, UC010 |  |  |  |
-|  | WebAdmin-334 | Quản lý tài khoản cán bộ | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Tai_khoan_can_bo.md | UC553, UC554, UC555 |  |  |  |
+|  | WebAdmin-334 | Quản lý tài khoản cán bộ | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_tai_khoan_can_bo.md | UC553, UC554, UC555 |  |  |  |
 |  | WebAdmin-335 | Quản lý đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md | UC560 |  |  |  |
 |  | WebAdmin-336 | Quản lý sao lưu, phục hồi dữ liệu |  | UC561, UC562 |  |  |  |
 |  | WebAdmin-337 | Quản lý loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_loai_danh_muc.md |  |  |  |  |

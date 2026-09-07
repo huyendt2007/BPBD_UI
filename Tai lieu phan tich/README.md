@@ -84,9 +84,9 @@ Tai lieu phan tich/
     │
     ├── 01_Quan_tri_he_thong/                    # Quản trị hệ thống, Tài khoản & Cấu hình
     │   ├── Dang_nhap_can_bo.md                  # Đăng nhập Cán bộ nghiệp vụ / Quản trị
-    │   ├── Tai_khoan_can_bo.md                  # Quản lý danh sách tài khoản cán bộ
+    │   ├── Quan_ly_tai_khoan_can_bo.md          # Quản lý danh sách tài khoản cán bộ
     │   ├── SRS_Quan_ly_tai_khoan_khach_hang.md  # Duyệt, khóa, kích hoạt tài khoản khách hàng
-    │   ├── Nhom_nguoi_dung.md                   # Quản lý nhóm người dùng
+    │   ├── Quan_ly_nhom_nguoi_dung.md           # Quản lý nhóm người dùng
     │   ├── Quan_ly_vai_tro.md                   # Phân quyền vai trò (Role-based Access Control)
     │   ├── Quan_ly_chuc_nang.md                 # Danh mục chức năng (Menu/API Functions)
     │   ├── Co_cau_to_chuc.md                    # Cây cơ cấu tổ chức đơn vị, phòng ban
