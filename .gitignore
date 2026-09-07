@@ -3,3 +3,5 @@
 # Muốn bỏ qua cả thư mục: Thêm dấu gạch chéo ở cuối (Ví dụ: node_modules/)
 # Muốn bỏ qua tất cả file cùng loại: Dùng dấu sao * (Ví dụ: *.mp4 sẽ bỏ qua mọi file video đuôi mp4).
 desktop.ini
+Website_Khach_hang/UC*/
+Website_Quan_tri/UC*/
