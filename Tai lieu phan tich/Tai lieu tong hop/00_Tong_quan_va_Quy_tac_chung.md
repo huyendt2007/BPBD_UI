@@ -77,7 +77,7 @@ Danh sách các danh mục dùng chung (Master Data) áp dụng xuyên suốt to
 | **[DM_21]** | Loại văn bản quy phạm pháp luật | \- Luật<br>- Nghị định<br>- Thông tư<br>- Quyết định<br>- Nghị quyết<br>- Chỉ thị<br>- Thông tư liên tịch<br>- Khác |
 | **[DM_22]** | Lĩnh vực phát sinh thiệt hại | \- TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH<br>- TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ<br>- TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ<br>- TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH<br>- TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ<br>- TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ |
 | **[DM_23]** | Giới tính | \- Nam<br>- Nữ<br>- Khác |
-| **[DM_25]** | Hình thức tiếp nhận hồ sơ bồi thường | \- Tiếp nhận trực tiếp<br>- Nhận qua bưu điện/Bưu chính<br>- Dịch vụ công<br>- Cán bộ chủ động nhập theo tố tụng/thi hành án |
+| **[DM_25]** | Hình thức tiếp nhận hồ sơ bồi thường | \- Tiếp nhận trực tiếp<br>- Nhận qua bưu điện/Bưu chính<br>- Dịch vụ công<br>- Cán bộ chủ động nhập theo tố tụng/thi hành án <br>- Cán bộ chủ động phục hồi danh dự khi có đủ thông tin|
 | **[DM_26]** | Tư cách người yêu cầu bồi thường | \- Người bị thiệt hại<br>- Người thừa kế của người bị thiệt hại<br>- Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại<br>- Người đại diện theo pháp luật của người bị thiệt hại<br>- Cá nhân, pháp nhân được ủy quyền hợp pháp |
 | **[DM_27]** | Loại thiệt hại yêu cầu bồi thường | \- Tài sản bị xâm phạm<br>- Thu nhập thực tế bị mất/giảm sút<br>- Vật chất do người bị thiệt hại chết<br>- Vật chất do sức khỏe bị xâm phạm<br>- Thiệt hại về tinh thần<br>- Các chi phí hợp lý khác |
 | **[DM_28]** | Phương thức nhận tiền bồi thường/tạm ứng | \- Nhận tiền mặt<br>- Nhận qua chuyển khoản |
@@ -93,12 +93,12 @@ Danh sách các danh mục dùng chung (Master Data) áp dụng xuyên suốt to
 | **[DM_43]** | Loại cơ quan báo cáo (thống kê BTNN theo Thông tư 08/2019/TT-BTP) | \- UBND cấp tỉnh<br>- Tòa án nhân dân tối cao<br>- Viện kiểm sát nhân dân tối cao<br>- Bộ/cơ quan ngang Bộ |
 | **[DM_44]** | Loại kỳ báo cáo (thống kê BTNN theo Thông tư 08/2019/TT-BTP) | \- Báo cáo năm số liệu thực tế (01/01 - 31/10)<br>- Số liệu thống kê năm chính thức (01/01 - 31/12) |
 | **[DM_46]** | Vai trò báo cáo của cơ quan (thống kê BTNN theo Thông tư 08/2019/TT-BTP, khoản 1 Điều 26) | \- Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại<br>- Cơ quan là bị đơn/bị đơn dân sự/người bị kiện trong vụ án |
-| **[DM_47]** | Trạng thái hồ sơ xem xét trách nhiệm hoàn trả | \- Chờ thành lập Hội đồng<br>- Chờ duyệt QĐ thành lập<br>- Từ chối duyệt QĐ thành lập<br>- Đang họp Hội đồng<br>- Không xem xét trách nhiệm hoàn trả<br>- Chờ trình ký QĐ hoàn trả<br>- Chờ duyệt QĐ hoàn trả<br>- Từ chối duyệt QĐ hoàn trả<br>- Chờ ban hành QĐ hoàn trả<br>- Đang thi hành thu hồi<br>- Hoàn thành |
-| **[DM_48]** | Mức độ lỗi của người thi hành công vụ gây thiệt hại | \- Lỗi vô ý gây hậu quả không nghiêm trọng<br>- Lỗi vô ý gây hậu quả nghiêm trọng<br>- Lỗi cố ý |
+| **[DM_47]** | Trạng thái hồ sơ xem xét trách nhiệm hoàn trả | \- Chờ thành lập Hội đồng<br>- Chờ duyệt QĐ thành lập<br>- Chờ ban hành QĐ thành lập<br>- Từ chối duyệt QĐ thành lập<br>- Đang họp Hội đồng<br>- Không xem xét trách nhiệm hoàn trả<br>- Chờ trình ký QĐ hoàn trả<br>- Chờ duyệt QĐ hoàn trả<br>- Từ chối duyệt QĐ hoàn trả<br>- Chờ ban hành QĐ hoàn trả<br>- Đang thi hành thu hồi<br>- Hoàn thành<br>- Chấm dứt thu hồi |
+| **[DM_48]** | Mức độ lỗi của người thi hành công vụ gây thiệt hại | \- Lỗi vô ý<br>- Lỗi cố ý nhưng chưa đến mức bị truy cứu trách nhiệm hình sự<br>- Lỗi cố ý và bị truy cứu trách nhiệm hình sự |
 | **[DM_49]** | Phương thức thực hiện hoàn trả | \- Nộp một lần<br>- Nộp nhiều lần |
 | **[DM_50]** | Hình thức nộp tiền hoàn trả | \- Khấu trừ lương tại cơ quan<br>- BHXH khấu trừ lương hưu<br>- Nộp tiền mặt trực tiếp<br>- Chuyển khoản vào Kho bạc Nhà nước |
 | **[DM_51]** | Nhiệm vụ thành viên Hội đồng xem xét trách nhiệm hoàn trả | \- Chủ tịch Hội đồng<br>- Phó Chủ tịch Hội đồng<br>- Thư ký Hội đồng<br>- Ủy viên<br>- Khác (người dùng nhập tên nhiệm vụ cụ thể) |
-| **[DM_52]** | Lý do hoãn thực hiện nghĩa vụ hoàn trả | \- Đang mắc bệnh hiểm nghèo cần điều trị nội trú lâu dài<br>- Hoàn cảnh gia đình đặc biệt khó khăn (mất mùa, thiên tai)<br>- Lý do bất khả kháng khác được cơ quan có thẩm quyền xác nhận |
+| **[DM_52]** | Lý do hoãn thực hiện nghĩa vụ hoàn trả | \- Đang mắc bệnh hiểm nghèo cần điều trị nội trú lâu dài<br>- Nữ đang mang thai hoặc đang nuôi con nhỏ dưới 36 tháng tuổi<br>- Hoàn cảnh gia đình đặc biệt khó khăn (mất mùa, thiên tai)<br>- Lý do bất khả kháng khác được cơ quan có thẩm quyền xác nhận |
 | **[DM_53]** | Hình thức ban hành văn bản | \- Ký số trên hệ thống<br>- Ký ngoài hệ thống |
 
 

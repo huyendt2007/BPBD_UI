@@ -67,7 +67,6 @@
 | **I. Bảng xác nhận biểu phí** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>Hiển thị dịch vụ đăng ký và mức phí trước khi thanh toán. |
 | STT | Integer(10) | - | `1` | Số thứ tự dòng dữ liệu. Chỉ đọc. |
 | Loại yêu cầu cấp | Enum(String(50)) | - | `Mã tra cứu cơ sở dữ liệu (Thường xuyên)` | Tên dịch vụ yêu cầu cấp. Chỉ đọc. |
-| Số lượng | Integer(10) | - | `1` | Số lượng mã đăng ký cấp. Chỉ đọc. |
 | Mức phí | Decimal(18,0) | - | Theo cấu hình | Mức phí cấp mã thường xuyên lấy tự động từ cấu hình biểu phí dịch vụ "Cấp mã số sử dụng CSDL thường xuyên" (tại Module Cấu hình thông tin biểu phí - UC559 thuộc Website Quản trị, đường dẫn: *Biện pháp bảo đảm -> Quản lý phí -> Quản lý Biểu phí*).<br>- Quy tắc tính mức phí theo thời điểm thanh toán:<br>+ Thanh toán **trước ngày 01/07**: Thu **100%** mức phí theo cấu hình.<br>+ Thanh toán **từ ngày 01/07 trở đi của năm hiện tại**: Thu **50%** giá trị đã cấu hình. Chỉ đọc. |
 | Lưu ý chân trang | Text(2000) | Không | Theo hệ thống | Hiển thị nội dung: `* Lưu ý: Sau khi thanh toán thành công, mã số thường xuyên sẽ được kích hoạt liên kết với tài khoản. Đồng thời Biên lai thu phí điện tử và mã số sẽ được gửi vào email đăng ký của người dùng.` |
 
@@ -122,7 +121,6 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bảng biểu phí cần nộp** | - | - | - | Control UI: Bảng/Lưới hiển thị.<br>Hiển thị dịch vụ đăng ký và mức phí. |
 | Loại yêu cầu cấp | Enum(String(50)) | - | `Mã tra cứu cơ sở dữ liệu` | Tên dịch vụ yêu cầu cấp. Chỉ đọc. |
-| Số lượng | Integer(10) | - | `1` | Số lượng mã đăng ký cấp. Chỉ đọc. |
 | Mức phí | Decimal(18,0) | - | Theo cấu hình | Mức phí cấp 1 lần lấy tự động từ cấu hình biểu phí dịch vụ "Cấp mã tra cứu CSDL một lần" tại Module Cấu hình thông tin biểu phí (UC559). Chỉ đọc. |
 | Ghi chú chân trang | Text(2000) | - | Ghi chú điều khoản Nghị định 99/2022/NĐ-CP | Quy định về việc người yêu cầu tự chịu phí thanh toán không dùng tiền mặt (nếu có). |
 

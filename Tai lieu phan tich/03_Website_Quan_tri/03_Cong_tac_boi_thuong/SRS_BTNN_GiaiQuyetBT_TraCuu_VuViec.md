@@ -4,15 +4,8 @@
 
 ##### 4.3.3.4.1. Mục đích
 
-Cho phép quản lý hoạt động tra cứu, khai thác thông tin và kết xuất danh sách hồ sơ vụ việc bồi thường nhà nước tập trung trên hệ thống Website quản trị, bao gồm:
-
-\- Tra cứu tập trung toàn bộ các vụ việc bồi thường nhà nước theo phân trang, phân tách độc lập qua 02 Tab nghiệp vụ chuyên biệt: Tab "Yêu cầu bồi thường" (các vụ việc độc lập không có nội dung phục hồi danh dự) và Tab "Phục hồi danh dự" (các vụ việc có yêu cầu hoặc phát sinh tiến trình trực tiếp xin lỗi, đăng báo).
-
-\- Tự động thiết lập điều kiện lọc mặc định ưu tiên hiển thị các vụ việc ở trạng thái "Hoàn thành" có thời gian tiếp nhận trong 03 tháng gần nhất để tối ưu hiệu năng tra cứu, đồng thời cho phép người dùng chủ động tùy biến mở rộng phạm vi tra cứu toàn bộ các trạng thái vòng đời vụ việc.
-
-\- Kết xuất danh sách kết quả tra cứu ra tệp tin Excel chuẩn định dạng phục vụ công tác báo cáo, thống kê và lưu trữ.
-
-\- Xem chi tiết hồ sơ: Cho phép click dòng dữ liệu (Row click) để liên thông điều hướng mở màn hình chi tiết vụ việc (MH05 thuộc phân hệ Giải quyết yêu cầu bồi thường) tại một tab trình duyệt mới, tự động cuộn (focus) đúng tab/khối nghiệp vụ tương ứng theo trạng thái hồ sơ.
+Cho phép thực hiện tra cứu các yêu cầu về giải quyết bồi thường và các yêu cầu về phục hồi danh dự.
+Mặc định sẽ hiển thị danh sách các yêu cầu ở trạng thái hoàn thành trong thời gian tiếp nhận 03 tháng gần nhất. 
 
 *a. Phân quyền*
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UC035 - Xem chi tiết Hồ sơ lịch sử (UCPS003)
  * Logic xử lý hiển thị Timeline đa phiên bản, bộ lọc nâng cao, phân trang và so sánh biến động chi tiết (Diff Viewer).
  */
@@ -1958,6 +1958,41 @@ document.addEventListener('DOMContentLoaded', function () {
         mockTimelineData.sort((a, b) => b.version - a.version);
     }
 
+    // Người tạo của từng phiên bản trên dòng thời gian lịch sử.
+    // Theo SRS: hiển thị tên người dùng đã tạo hồ sơ/phiên bản, không hiển thị account/email đăng nhập.
+    const mockCreatorPool = [
+        "Nguyễn Thị Ngân",
+        "Trần Minh Hải",
+        "Lê Thu Hương",
+        "Phạm Quốc An",
+        "Vũ Hoàng Long"
+    ];
+    const contextCreatorName = registeredDetailContext?.creatorName || '';
+
+    function pickMockCreator(node, index) {
+        const seed = Number.isFinite(Number(node?.version)) ? Number(node.version) : Number(index) || 0;
+        return mockCreatorPool[Math.abs(seed) % mockCreatorPool.length];
+    }
+
+    function applyTimelineCreators() {
+        mockTimelineData.forEach((node, index) => {
+            if (!node) return;
+            let creator = node.creator || node.data?.creator || '';
+            // Ưu tiên tên người tạo lấy từ màn hình Quản lý yêu cầu đã đăng ký cho đúng phiên bản được mở.
+            if (!creator && contextCreatorName) {
+                const focusedRegNum = registeredDetailContext?.regNum || '';
+                if (focusedRegNum && String(node.regCode || '').includes(focusedRegNum)) {
+                    creator = contextCreatorName;
+                }
+            }
+            if (!creator) creator = pickMockCreator(node, index);
+            node.creator = creator;
+            if (node.data) node.data.creator = creator;
+        });
+    }
+
+    applyTimelineCreators();
+
     // Cập nhật giả lập các trường thông tin chung theo yêu cầu.
     // Loại hình giao dịch là thông tin gốc, không giả lập thay đổi qua các phiên bản đăng ký.
     const immutableRegistrationTransactionType = "Hợp đồng";
@@ -2207,12 +2242,14 @@ document.addEventListener('DOMContentLoaded', function () {
             generatedNode.active = false;
             generatedNode.isPending = false;
             generatedNode.nodeId = `mock-history-${i}`;
+            generatedNode.creator = pickMockCreator(generatedNode, i);
 
             if (generatedNode.data) {
                 generatedNode.data = JSON.parse(JSON.stringify(previousGeneratedData));
                 generatedNode.data.regCase = 'Đăng ký thay đổi';
                 generatedNode.data.firstRegNo = rootRegCode;
                 generatedNode.data.firstRegDate = initialNode?.data?.firstRegDate || initialNode?.date || generatedNode.date;
+                generatedNode.data.creator = generatedNode.creator;
                 generatedNode.data.hasDeRegistration = false;
                 generatedNode.data.hasCancelReg = false;
                 generatedNode.data.hasRestoreReg = false;
@@ -2257,29 +2294,6 @@ document.addEventListener('DOMContentLoaded', function () {
         fromDate: '',
         toDate: ''
     };
-
-    // Read stored registration number if any to show banner
-    const savedRegNum = localStorage.getItem('canBoRegNum');
-    if (savedRegNum) {
-        viewBanner.style.display = 'flex';
-        viewBanner.querySelector('strong').textContent = savedRegNum;
-    }
-
-    // Check if timeline sidebar is displayed (only for dossiers with related dossiers, mockTimelineData.length >= 2)
-    const timelineSidebar = document.querySelector('.timeline-sidebar');
-    const workspaceGrid = document.querySelector('.workspace-grid');
-    const diffToggleContainer = document.querySelector('.diff-toggle-container');
-    const hasRelatedDossiers = mockTimelineData.length >= 2;
-
-    if (!hasRelatedDossiers) {
-        if (timelineSidebar) timelineSidebar.style.display = 'none';
-        if (workspaceGrid) workspaceGrid.style.gridTemplateColumns = '1fr';
-        if (diffToggleContainer) diffToggleContainer.style.display = 'none';
-    } else {
-        if (timelineSidebar) timelineSidebar.style.display = 'block';
-        if (workspaceGrid) workspaceGrid.style.gridTemplateColumns = '360px 1fr';
-        if (diffToggleContainer) diffToggleContainer.style.display = 'flex';
-    }
 
     // Initialize page
     renderTimeline(true);
@@ -2416,6 +2430,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const isCompleted = node.statusText === 'Hoàn thành';
             const cleanCase = getCleanRegistrationCase(node);
+            const nodeCreator = node.creator || node.data?.creator || '-';
             nodeEl.innerHTML = `
                 <div class="node-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span class="node-badge ${node.badgeClass}">${node.label}</span>
@@ -2428,10 +2443,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     <strong>Số đăng ký:</strong> ${node.regCode}
                 </div>
                 <div class="node-date" style="font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                    <i class="fa-regular fa-calendar"></i> <strong>Thời điểm đăng ký:</strong> ${node.date}
+                    <i class="fa-regular fa-calendar" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Thời điểm đăng ký:</strong> ${node.date}
                 </div>
-                <div class="node-status-text" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
-                    <strong>Trạng thái:</strong> ${node.statusText || '-'}
+                <div class="node-status-text" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                    <i class="fa-solid fa-circle-info" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Trạng thái:</strong> ${node.statusText || '-'}
+                </div>
+                <div class="node-creator" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                    <i class="fa-regular fa-user" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Người tạo:</strong> ${nodeCreator}
                 </div>
                 <p class="node-desc" style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; border-top: 1px dashed #E2E8F0; padding-top: 6px;">
                     ${node.description}

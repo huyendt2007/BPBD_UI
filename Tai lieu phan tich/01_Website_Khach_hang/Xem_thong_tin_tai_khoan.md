@@ -3,6 +3,7 @@
 #### 4.1.7.1. Mục đích
 
 - Cho phép Khách hàng xem thông tin chi tiết hồ sơ tài khoản, trạng thái liên kết phương thức đăng nhập và điều hướng thực hiện các thiết lập tài khoản trên Website Khách hàng.
+- Có thể thực hiện điều hướng để Cập nhật hoặc Đổi mật khẩu
 
 **Phân quyền**
 

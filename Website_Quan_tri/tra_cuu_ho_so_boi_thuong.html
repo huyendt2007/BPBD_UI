@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -338,11 +338,6 @@
         </div>
 
         <section class="lookup-panel active" id="panelPhdd">
-            <div class="section-heading">
-                <div class="section-title"><i class="fa-solid fa-ribbon"></i>Tra cứu vụ việc có phục hồi danh dự</div>
-                <div class="section-desc">Hiển thị vụ việc có yêu cầu hoặc đã phát sinh thông tin phục hồi danh dự.</div>
-            </div>
-
             <div class="filter-panel">
                 <div class="filter-grid">
                     <div class="form-block">
@@ -390,14 +385,16 @@
                 <div class="filter-actions">
                     <button class="btn btn-secondary" type="button" onclick="resetPhddFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                     <button class="btn btn-primary" type="button" onclick="searchPhdd()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                    <button class="btn btn-secondary" type="button" onclick="exportLookup('phdd')"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i> Kết xuất Excel</button>
                 </div>
             </div>
 
             <div class="table-card">
                 <div class="table-header">
-                    <div class="table-title"><i class="fa-solid fa-table-list"></i>Bảng kết quả tìm kiếm</div>
-                    <div class="result-count" id="phddCountText">0 bản ghi</div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="table-title"><i class="fa-solid fa-table-list"></i>Bảng kết quả tìm kiếm</div>
+                        <div class="result-count" id="phddCountText">0 bản ghi</div>
+                    </div>
+                    <button class="btn btn-secondary" type="button" onclick="exportLookup('phdd')"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i> Kết xuất Excel</button>
                 </div>
                 <div class="table-responsive">
                     <table class="custom-table">
@@ -435,11 +432,6 @@
         </section>
 
         <section class="lookup-panel" id="panelYcbt">
-            <div class="section-heading">
-                <div class="section-title"><i class="fa-solid fa-file-lines"></i>Tra cứu vụ việc yêu cầu bồi thường</div>
-                <div class="section-desc">Hiển thị vụ việc yêu cầu bồi thường không có yêu cầu phục hồi danh dự.</div>
-            </div>
-
             <div class="filter-panel">
                 <div class="filter-grid">
                     <div class="form-block">
@@ -508,14 +500,16 @@
                 <div class="filter-actions">
                     <button class="btn btn-secondary" type="button" onclick="resetYcbtFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                     <button class="btn btn-primary" type="button" onclick="searchYcbt()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                    <button class="btn btn-secondary" type="button" onclick="exportLookup('ycbt')"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i> Kết xuất Excel</button>
                 </div>
             </div>
 
             <div class="table-card">
                 <div class="table-header">
-                    <div class="table-title"><i class="fa-solid fa-table-list"></i>Bảng kết quả tìm kiếm</div>
-                    <div class="result-count" id="ycbtCountText">0 bản ghi</div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="table-title"><i class="fa-solid fa-table-list"></i>Bảng kết quả tìm kiếm</div>
+                        <div class="result-count" id="ycbtCountText">0 bản ghi</div>
+                    </div>
+                    <button class="btn btn-secondary" type="button" onclick="exportLookup('ycbt')"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i> Kết xuất Excel</button>
                 </div>
                 <div class="table-responsive">
                     <table class="custom-table">
@@ -1093,7 +1087,7 @@
         }
 
         function exportLookup(type) {
-            showToast(type === 'phdd' ? 'Đang kết xuất danh sách phục hồi danh dự...' : 'Đang kết xuất danh sách yêu cầu bồi thường...');
+            showToast(type === 'phdd' ? 'Hệ thống đang kết xuất danh sách phục hồi danh dự ra tệp Excel...' : 'Hệ thống đang kết xuất danh sách yêu cầu bồi thường ra tệp Excel...');
         }
 
         function showToast(message) {
