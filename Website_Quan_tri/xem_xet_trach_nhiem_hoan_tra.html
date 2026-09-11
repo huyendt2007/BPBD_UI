@@ -898,7 +898,7 @@
                     <tr>
                         <th style="width: 50px; text-align:center;">STT</th>
                         <th style="width: 120px; text-align:center;">Mã hồ sơ</th>
-                        <th style="min-width: 250px;">Cán bộ gây sai phạm</th>
+                        <th style="min-width: 280px; width: 22%;">Cán bộ gây sai phạm</th>
                         <th style="width: 170px;">Đơn vị công tác</th>
                         <th style="width: 130px; text-align:center;">Mã vụ việc</th>
                         <th style="text-align:right; width: 140px;">Số tiền bồi thường (VNĐ)</th>
@@ -1731,17 +1731,17 @@
                 hdDate: "02/04/2026",
                 deadlineDate: "",
                 daysLeft: null,
-                refundTotal: 86000000,
+                refundTotal: 101000000,
                 refundMethod: "Khấu trừ lương",
                 refundMonthly: 5000000,
                 status: "Đang thi hành",
                 dateCreated: "02/04/2026",
                 qdDate: "15/04/2026",
                 refundOfficers: [
-                    { name: "Nguyễn Văn Đạt", loi: "Vô ý", total: 36000000, paid: 36000000, nextDate: "—", status: "Hoàn tất", progressClass: "success", agency: "Sở Tài nguyên & Môi trường", role: "Chuyên viên phòng Đăng ký" },
-                    { name: "Lê Văn Cường", loi: "Vô ý", total: 20000000, paid: 8000000, nextDate: "02/07", status: "Quá hạn", progressClass: "danger", agency: "Sở Tài nguyên & Môi trường", role: "Phó Phòng Quản lý đất đai" },
-                    { name: "Trần Thị Bình", loi: "Cố ý", total: 30000000, paid: 3000000, nextDate: "15/07", status: "Đang thu", progressClass: "primary", agency: "UBND Huyện Cầu Giấy", role: "Trưởng phòng Tư pháp" },
-                    { name: "Hoàng Văn D", loi: "Vô ý", total: 0, paid: 0, nextDate: "—", status: "Chờ ban hành QĐ", progressClass: "secondary", agency: "Sở Xây dựng", role: "Thanh tra viên" }
+                    { name: "Nguyễn Văn Đạt", loi: "Vô ý", total: 36000000, paid: 36000000, nextDate: "—", status: "Hoàn tất", refundMethod: "Một lần", progressClass: "success", agency: "Sở Tài nguyên & Môi trường", role: "Chuyên viên phòng Đăng ký" },
+                    { name: "Lê Văn Cường", loi: "Vô ý", total: 20000000, paid: 8000000, nextDate: "02/07", status: "Quá hạn", refundMethod: "Khấu trừ lương", progressClass: "danger", agency: "Sở Tài nguyên & Môi trường", role: "Phó Phòng Quản lý đất đai" },
+                    { name: "Trần Thị Bình", loi: "Cố ý", total: 30000000, paid: 3000000, nextDate: "15/07", status: "Đang thu", refundMethod: "Nhiều lần", progressClass: "primary", agency: "UBND Huyện Cầu Giấy", role: "Trưởng phòng Tư pháp" },
+                    { name: "Hoàng Văn D", loi: "Vô ý", total: 15000000, paid: 0, nextDate: "25/07", status: "Chưa nộp", refundMethod: "Một lần", progressClass: "secondary", agency: "Sở Xây dựng", role: "Thanh tra viên" }
                 ],
                 payments: [
                     { ky: "Kỳ 1 - Nguyễn Văn Đạt", method: "Khấu trừ lương tự động", amt: 36000000, date: "30/04/2026", code: "BL-99231" },
@@ -1771,7 +1771,7 @@
                 dateCreated: "25/07/2026",
                 qdDate: "05/08/2026",
                 refundOfficers: [
-                    { name: "Hoàng Thị M", loi: "Vô ý", total: 30000000, paid: 6000000, nextDate: "25/08", status: "Đang thu", progressClass: "primary", agency: "UBND Tỉnh Lâm Đồng", role: "Chuyên viên Phòng Đăng ký" }
+                    { name: "Hoàng Thị M", loi: "Vô ý", total: 30000000, paid: 6000000, nextDate: "25/08", status: "Đang thu", refundMethod: "Khấu trừ lương", progressClass: "primary", agency: "UBND Tỉnh Lâm Đồng", role: "Chuyên viên Phòng Đăng ký" }
                 ],
                 payments: [
                     { ky: "Tháng 08/2026", method: "Khấu trừ lương tự động", amt: 3000000, date: "30/08/2026", code: "BL-99245" },
@@ -2429,6 +2429,7 @@
             pageData.forEach((d, index) => {
                 const tr = document.createElement('tr');
                 tr.style.cursor = 'pointer';
+                tr.title = 'Click để mở hồ sơ ở chế độ Xem chi tiết';
 
                 let focusStep = 1;
                 if (['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ'].includes(d.status)) focusStep = 1;
@@ -2439,8 +2440,7 @@
 
                 tr.onclick = (e) => {
                     if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && !e.target.closest('a')) {
-                        const modeParam = currentMockRole === 'chuyen_vien' ? 'edit' : 'view';
-                        window.location.href = `chi_tiet_ho_so_hoan_tra.html?mode=${modeParam}&id=${d.id}&focusStep=${focusStep}&role=${currentMockRole}`;
+                        window.location.href = `chi_tiet_ho_so_hoan_tra.html?mode=view&id=${d.id}&focusStep=${focusStep}&role=${currentMockRole}`;
                     }
                 };
 
@@ -3337,7 +3337,16 @@
         }
 
         function openDetailRefundModal(id) {
-            window.location.href = `chi_tiet_ho_so_hoan_tra.html?id=${id}`;
+            const d = dossiersList.find(item => item.id === id);
+            let focusStep = 1;
+            if (d) {
+                if (['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ'].includes(d.status)) focusStep = 1;
+                else if (['Đang họp hội đồng', 'Không xem xét trách nhiệm hoàn trả'].includes(d.status)) focusStep = 2;
+                else if (['Chờ ban hành QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả'].includes(d.status)) focusStep = 3;
+                else if (['Đang thi hành', 'Chấm dứt thu hồi'].includes(d.status)) focusStep = 4;
+                else if (d.status === 'Hoàn thành') focusStep = 5;
+            }
+            window.location.href = `chi_tiet_ho_so_hoan_tra.html?mode=view&id=${id}&focusStep=${focusStep}&role=${currentMockRole}`;
         }
 
         function switchDetailRefundTab(tabName) {

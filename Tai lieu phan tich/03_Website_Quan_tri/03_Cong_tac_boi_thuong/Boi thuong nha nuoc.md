@@ -233,9 +233,9 @@ Mỗi hồ sơ yêu cầu giải quyết bồi thường được hệ thống �
         *   *Tổng số tiền yêu cầu bồi thường (Số & Chữ)*: Hệ thống tự động tính tổng (Không cho sửa tay) và tự động chuyển đổi số tiền thành chữ tiếng Việt chính xác.
     4.  **Khối II. Đề nghị tạm ứng kinh phí**:
         *   *Có đề nghị tạm ứng?*: Checkbox. Nếu tích sẽ mở ra các trường:
-            *   *Thiệt hại tinh thần đề nghị tạm ứng*: Số tiền (Validate: Chỉ cho phép nhập nếu mục "Thiệt hại tinh thần" ở khối trên > 0. Áp dụng cho khoản 1, 2, 3, 4, 6 Điều 27; hệ thống sẽ tự động vô hiệu hóa nếu chỉ yêu cầu bồi thường tinh thần thuộc khoản 5).
+            *   *Thiệt hại tinh thần đề nghị tạm ứng*: Số tiền (Validate: Chỉ cho phép nhập nếu mục "Thiệt hại tinh thần" ở khối trên > 0. Bắt buộc số tiền tạm ứng phải nhỏ hơn số tiền yêu cầu bồi thường thiệt hại tinh thần đã nhập. Áp dụng cho khoản 1, 2, 3, 4, 6 Điều 27; hệ thống sẽ tự động vô hiệu hóa nếu chỉ yêu cầu bồi thường tinh thần thuộc khoản 5).
             *   *Tài liệu chứng cứ kèm tạm ứng tinh thần*: Upload file.
-            *   *Thiệt hại khác tính được ngay đề nghị tạm ứng*: Ghi rõ loại thiệt hại (chọn từ các mục còn lại của khối trên) + Số tiền đề nghị tạm ứng.
+            *   *Thiệt hại khác tính được ngay đề nghị tạm ứng*: Ô nhập văn bản (Text) tên/nội dung loại thiệt hại khác tính được ngay (không phải danh sách List chọn) + Ô nhập số tiền đề nghị tạm ứng (Validate: Bắt buộc số tiền tạm ứng thiệt hại khác phải nhỏ hơn tổng các loại thiệt hại khác đã yêu cầu).
             *   *Tài liệu chứng cứ kèm*: Upload file.
             *   *Tổng số tiền tạm ứng (Số & Chữ)*: Tự động tính toán (Validate: Tổng tạm ứng phải <= Tổng số tiền yêu cầu bồi thường).
             *   *Thông tin người NHẬN tạm ứng (Tách biệt khỏi người yêu cầu)*: Họ tên người nhận, Giấy tờ thân nhân, Địa chỉ, Phương thức nhận tiền (Tiền mặt / Chuyển khoản). Nếu chuyển khoản, bắt buộc nhập Số TK, Chủ TK, Ngân hàng. Mặc định tự động điền theo thông tin NYC nhưng cho phép sửa (chú thích 9 mẫu).

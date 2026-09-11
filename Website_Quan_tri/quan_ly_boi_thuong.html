@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -2446,7 +2446,8 @@
                                 <div class="form-group">
                                     <span class="form-label">Tạm ứng Thiệt hại tinh thần (đồng)</span>
                                     <input type="number" class="form-control" id="claimAdvanceTinhThan"
-                                        placeholder="Nhập số tiền tạm ứng tinh thần..." oninput="sumClaimAdvance()">
+                                        placeholder="Nhập số tiền tạm ứng tinh thần..." oninput="clearAdvanceError(this); sumClaimAdvance()">
+                                    <div class="error-message" id="errClaimAdvanceTinhThan" style="display: none;">Số tiền tạm ứng thiệt hại tinh thần phải nhỏ hơn số tiền yêu cầu bồi thường thiệt hại tinh thần đã nhập</div>
                                     <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
                                         (Validate: Chỉ cho phép nhập nếu chọn bồi thường tinh thần ở trên. Bị khóa
                                         nếu thuộc khoản 5 Điều 27).
@@ -2476,22 +2477,19 @@
 
                             <div class="grid-2-cols" style="margin-bottom: 16px;">
                                 <div class="form-group">
-                                    <span class="form-label">Tạm ứng Thiệt hại khác tính được ngay (chọn loại ở
-                                        trên)</span>
-                                    <div style="display: flex; gap: 8px;">
-                                        <select class="form-control" style="flex: 1.2;" id="claimAdvanceKhacName">
-                                            <option value="">-- Chọn mục thiệt hại --</option>
-                                            <option value="1">1. Tài sản bị xâm phạm</option>
-                                            <option value="2">2. Thu nhập thực tế bị mất/giảm sút</option>
-                                            <option value="3">3. Vật chất do người bị thiệt hại chết</option>
-                                            <option value="4">4. Vật chất do sức khỏe bị xâm phạm</option>
-                                            <option value="6">6. Các chi phí hợp lý khác</option>
-                                        </select>
-                                        <input type="number" class="form-control" style="flex: 1;"
-                                            id="claimAdvanceKhacVal" placeholder="Số tiền tạm ứng..."
-                                            oninput="sumClaimAdvance()">
-                                    </div>
+                                    <span class="form-label">Loại thiệt hại khác tính được ngay</span>
+                                    <input type="text" class="form-control" id="claimAdvanceKhacName"
+                                        placeholder="Nhập loại thiệt hại khác tính được ngay...">
                                 </div>
+                                <div class="form-group">
+                                    <span class="form-label">Tạm ứng Thiệt hại khác tính được ngay (đồng)</span>
+                                    <input type="number" class="form-control" id="claimAdvanceKhacVal"
+                                        placeholder="Số tiền tạm ứng..." oninput="clearAdvanceError(this); sumClaimAdvance()">
+                                    <div class="error-message" id="errClaimAdvanceKhacVal" style="display: none;">Số tiền tạm ứng thiệt hại khác phải nhỏ hơn tổng các loại thiệt hại khác đã yêu cầu bồi thường</div>
+                                </div>
+                            </div>
+
+                            <div class="grid-2-cols" style="margin-bottom: 16px;">
                                 <div class="form-group">
                                     <span class="form-label">Tài liệu đính kèm kèm tạm ứng thiệt hại khác</span>
                                     <div class="file-upload-container">
@@ -2650,17 +2648,6 @@
                     <div id="claimOtherRestoreWrapper" style="display: none;">
                         <textarea class="form-control" id="claimOtherRestore" rows="2"
                             placeholder="Ví dụ: Khôi phục chức vụ cũ, nâng lương, đóng BHXH bổ sung..."></textarea>
-                    </div>
-                </div>
-
-                <div class="grid-2" style="margin-bottom: 20px;">
-                    <div class="form-group">
-                        <span class="form-label">Địa điểm lập đơn<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="claimCreatePlace" value="Hà Nội">
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Ngày lập đơn<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="claimCreateDate" placeholder="dd/mm/yyyy" disabled>
                     </div>
                 </div>
 
@@ -5381,6 +5368,7 @@
                 advanceNum: 80000000,
                 advanceTinhThan: 50000000,
                 advanceKhac: 30000000,
+                advanceKhacName: "Chi phí điều trị y tế cấp cứu tại bệnh viện",
                 advanceRecKenh: "chuyen-khoan",
                 advanceBankUser: "VŨ VĂN L",
                 advanceBankAccount: "1023456789",
@@ -6666,7 +6654,9 @@
                 const y = date.getFullYear();
                 return `${d}/${m}/${y}`;
             };
-            document.getElementById('claimCreateDate').value = formatDate(today);
+            if (document.getElementById('claimCreateDate')) {
+                document.getElementById('claimCreateDate').value = formatDate(today);
+            }
 
             // Force reset mock data for testing updates
             localStorage.removeItem('claimsList');
@@ -7738,9 +7728,10 @@
                 const needAdv = claim.advanceNum > 0;
                 document.getElementById('claimNeedAdvance').checked = needAdv;
                 document.getElementById('claimAdvancePanel').style.display = needAdv ? 'block' : 'none';
-                document.getElementById('claimAdvanceTinhThan').value = needAdv ? claim.advanceNum : '';
-                document.getElementById('claimAdvanceKhacVal').value = '';
-                document.getElementById('claimAdvanceKhacName').value = '';
+                document.getElementById('claimAdvanceTinhThan').value = needAdv ? (claim.advanceTinhThan !== undefined ? claim.advanceTinhThan : claim.advanceNum) : '';
+                document.getElementById('claimAdvanceKhacVal').value = (needAdv && claim.advanceKhac) ? claim.advanceKhac : '';
+                document.getElementById('claimAdvanceKhacName').value = (needAdv && claim.advanceKhacName) ? claim.advanceKhacName : '';
+                sumClaimAdvance();
 
                 // Section IV Recipient fields
                 document.getElementById('claimRecName').value = claim.advanceRecName || '';
@@ -8228,6 +8219,16 @@
             }
         }
 
+        function clearAdvanceError(el) {
+            if (!el) return;
+            el.classList.remove('is-invalid');
+            const parent = el.closest('.form-group');
+            if (parent) {
+                const err = parent.querySelector('.error-message');
+                if (err) err.style.display = 'none';
+            }
+        }
+
         function sumClaimAdvance() {
             const tinhThan = parseFloat(document.getElementById('claimAdvanceTinhThan').value) || 0;
             const khac = parseFloat(document.getElementById('claimAdvanceKhacVal').value) || 0;
@@ -8444,7 +8445,7 @@
                 const phddFormApology = document.getElementById('claimPhddFormApology').checked;
                 const phddFormNews = document.getElementById('claimPhddFormNews').checked;
 
-                const datePlace = document.getElementById('claimCreatePlace').value || "Hà Nội";
+                const datePlace = (document.getElementById('claimCreatePlace') ? document.getElementById('claimCreatePlace').value : '') || (document.getElementById('claimNYCCity') ? document.getElementById('claimNYCCity').value : "Hà Nội");
                 const today = new Date();
                 const day = String(today.getDate()).padStart(2, '0');
                 const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -8822,6 +8823,8 @@
             }
 
             let total = 0;
+            let thietHaiTinhThanVal = 0;
+            let thietHaiKhacTotal = 0;
             if (requestType !== 'honor') {
                 for (let i = 1; i <= 6; i++) {
                     const checked = document.getElementById(`claimThietHaiCb_${i}`).checked;
@@ -8835,6 +8838,11 @@
                             return;
                         }
                         total += val;
+                        if (i === 5) {
+                            thietHaiTinhThanVal = val;
+                        } else {
+                            thietHaiKhacTotal += val;
+                        }
                     }
                 }
 
@@ -8846,14 +8854,47 @@
 
             // Tạm ứng validations
             let adv = 0;
+            let tinhThan = 0;
+            let khac = 0;
+            let advKhacName = "";
             const needAdvance = document.getElementById('claimNeedAdvance').checked;
             if (requestType !== 'honor' && needAdvance) {
-                const tinhThan = parseFloat(document.getElementById('claimAdvanceTinhThan').value) || 0;
-                const khac = parseFloat(document.getElementById('claimAdvanceKhacVal').value) || 0;
+                tinhThan = parseFloat(document.getElementById('claimAdvanceTinhThan').value) || 0;
+                khac = parseFloat(document.getElementById('claimAdvanceKhacVal').value) || 0;
+                advKhacName = (document.getElementById('claimAdvanceKhacName').value || "").trim();
                 adv = tinhThan + khac;
-                if (!isDraft && adv > total) {
-                    showToast("Tổng tiền đề nghị tạm ứng không được lớn hơn tổng tiền yêu cầu bồi thường!", "error");
-                    return;
+
+                if (!isDraft) {
+                    // Kiểm tra tạm ứng thiệt hại tinh thần: bắt buộc nhỏ hơn số tiền thiệt hại tinh thần đã yêu cầu
+                    if (tinhThan > 0) {
+                        if (tinhThan >= thietHaiTinhThanVal) {
+                            const el = document.getElementById('claimAdvanceTinhThan');
+                            el.classList.add('is-invalid');
+                            const err = document.getElementById('errClaimAdvanceTinhThan');
+                            if (err) err.style.display = 'block';
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.focus();
+                            return;
+                        }
+                    }
+
+                    // Kiểm tra tạm ứng thiệt hại khác: bắt buộc nhỏ hơn tổng các loại thiệt hại khác đã yêu cầu
+                    if (khac > 0) {
+                        if (khac >= thietHaiKhacTotal) {
+                            const el = document.getElementById('claimAdvanceKhacVal');
+                            el.classList.add('is-invalid');
+                            const err = document.getElementById('errClaimAdvanceKhacVal');
+                            if (err) err.style.display = 'block';
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.focus();
+                            return;
+                        }
+                    }
+
+                    if (adv > total) {
+                        showToast("Tổng tiền đề nghị tạm ứng không được lớn hơn tổng tiền yêu cầu bồi thường!", "error");
+                        return;
+                    }
                 }
             }
 
@@ -8985,6 +9026,9 @@
                     claim.agency = cqNhan || "Chưa phân công";
                     claim.totalNum = total;
                     claim.advanceNum = adv;
+                    claim.advanceTinhThan = tinhThan;
+                    claim.advanceKhac = khac;
+                    claim.advanceKhacName = advKhacName;
                     claim.advanceRecName = recName;
                     claim.advanceRecCard = recCard;
                     claim.advanceRecAddress = recAddress;
@@ -9095,6 +9139,9 @@
                 deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
                 totalNum: total,
                 advanceNum: adv,
+                advanceTinhThan: tinhThan,
+                advanceKhac: khac,
+                advanceKhacName: advKhacName,
                 advanceRecName: recName,
                 advanceRecCard: recCard,
                 advanceRecAddress: recAddress,
@@ -9857,21 +9904,16 @@
                                 <div class="grid-2-cols" style="margin-bottom: 12px;">
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <span class="form-label">Tạm ứng Thiệt hại tinh thần (đồng)</span>
-                                        <input type="text" class="form-control" style="text-align: right;" id="claimAdvanceTinhThan_edit" value="${(claim.advanceTinhThan || 0).toLocaleString('vi-VN')}" oninput="formatCurrencyInput(this); sumDraftAdvance();">
+                                        <input type="text" class="form-control" style="text-align: right;" id="claimAdvanceTinhThan_edit" value="${(claim.advanceTinhThan || 0).toLocaleString('vi-VN')}" oninput="clearAdvanceError(this); formatCurrencyInput(this); sumDraftAdvance();">
+                                        <div class="error-message" id="errClaimAdvanceTinhThan_edit" style="display: none;">Số tiền tạm ứng thiệt hại tinh thần phải nhỏ hơn số tiền yêu cầu bồi thường thiệt hại tinh thần đã nhập</div>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0;">
-                                        <span class="form-label">Tạm ứng Thiệt hại khác (chọn loại ở trên)</span>
+                                        <span class="form-label">Tạm ứng Thiệt hại khác tính được ngay</span>
                                         <div style="display: flex; gap: 8px;">
-                                            <select class="form-control" style="flex: 1.2;" id="claimAdvanceKhacName_edit">
-                                                <option value="">-- Chọn mục thiệt hại --</option>
-                                                <option value="1" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 1) ? '' : 'disabled'}>1. Tài sản bị xâm phạm</option>
-                                                <option value="2" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 2) ? '' : 'disabled'}>2. Thu nhập thực tế bị mất/giảm sút</option>
-                                                <option value="3" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 3) ? '' : 'disabled'}>3. Vật chất do người bị thiệt hại chết</option>
-                                                <option value="4" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 4) ? '' : 'disabled'}>4. Vật chất do sức khỏe bị xâm phạm</option>
-                                                <option value="6" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 6) ? '' : 'disabled'}>6. Các chi phí hợp lý khác</option>
-                                            </select>
-                                            <input type="text" class="form-control" style="flex: 1; text-align: right;" id="claimAdvanceKhacVal_edit" value="${(claim.advanceKhac || 0).toLocaleString('vi-VN')}" placeholder="Số tiền..." oninput="formatCurrencyInput(this); sumDraftAdvance();">
+                                            <input type="text" class="form-control" style="flex: 1.2;" id="claimAdvanceKhacName_edit" value="${claim.advanceKhacName || ''}" placeholder="Nhập loại thiệt hại khác...">
+                                            <input type="text" class="form-control" style="flex: 1; text-align: right;" id="claimAdvanceKhacVal_edit" value="${(claim.advanceKhac || 0).toLocaleString('vi-VN')}" placeholder="Số tiền (đồng)..." oninput="clearAdvanceError(this); formatCurrencyInput(this); sumDraftAdvance();">
                                         </div>
+                                        <div class="error-message" id="errClaimAdvanceKhacVal_edit" style="display: none;">Số tiền tạm ứng thiệt hại khác phải nhỏ hơn tổng các loại thiệt hại khác đã yêu cầu bồi thường</div>
                                     </div>
                                 </div>
                                 
@@ -10020,7 +10062,7 @@
                         </span>
                         <div class="grid-3-cols" style="gap: 12px; font-size: 13px;">
                             <div><strong>Tạm ứng thiệt hại tinh thần:</strong> ${(claim.advanceTinhThan || 0).toLocaleString('vi-VN')} đ</div>
-                            <div><strong>Tạm ứng thiệt hại khác:</strong> ${(claim.advanceKhac || 0).toLocaleString('vi-VN')} đ</div>
+                            <div><strong>Tạm ứng thiệt hại khác:</strong> ${claim.advanceKhacName ? claim.advanceKhacName + ': ' : ''}${(claim.advanceKhac || 0).toLocaleString('vi-VN')} đ</div>
                             <div><strong>Tổng số tiền tạm ứng đề nghị:</strong> <span style="font-weight:700; color:var(--secondary-color);">${claim.advanceNum.toLocaleString('vi-VN')} đ</span></div>
                         </div>
                         <div style="font-size:11.5px; font-style:italic; margin-top:4px; color:var(--text-muted);">Viết bằng chữ: ${numberToVietnameseWords(claim.advanceNum)}</div>
@@ -10410,6 +10452,8 @@
             // Collect damages
             claim.thietHaiList = [];
             let total = 0;
+            let tinhThanRequested = 0;
+            let khacRequestedTotal = 0;
             for (let i = 1; i <= 6; i++) {
                 const cb = document.getElementById(`claimThietHaiCb_edit_${i}`);
                 if (cb && cb.checked) {
@@ -10417,6 +10461,11 @@
                     const val = parseFloat(document.getElementById(`claimThietHaiVal_edit_${i}`).value.replace(/\./g, '')) || 0;
                     claim.thietHaiList.push({ type: i, calc: calc, val: val });
                     total += val;
+                    if (i === 5) {
+                        tinhThanRequested = val;
+                    } else {
+                        khacRequestedTotal += val;
+                    }
                 }
             }
             claim.totalNum = total;
@@ -10424,8 +10473,35 @@
             // Collect advance
             const needAdvance = document.getElementById('claimNeedAdvance_edit').checked;
             if (needAdvance) {
-                claim.advanceTinhThan = parseFloat(document.getElementById('claimAdvanceTinhThan_edit').value.replace(/\./g, '')) || 0;
-                claim.advanceKhac = parseFloat(document.getElementById('claimAdvanceKhacVal_edit').value.replace(/\./g, '')) || 0;
+                const advTinhThan = parseFloat(document.getElementById('claimAdvanceTinhThan_edit').value.replace(/\./g, '')) || 0;
+                const advKhac = parseFloat(document.getElementById('claimAdvanceKhacVal_edit').value.replace(/\./g, '')) || 0;
+                const advKhacName = (document.getElementById('claimAdvanceKhacName_edit').value || '').trim();
+
+                if (submit) {
+                    if (advTinhThan > 0 && advTinhThan >= tinhThanRequested) {
+                        const el = document.getElementById('claimAdvanceTinhThan_edit');
+                        el.classList.add('is-invalid');
+                        const err = document.getElementById('errClaimAdvanceTinhThan_edit');
+                        if (err) err.style.display = 'block';
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.focus();
+                        return;
+                    }
+
+                    if (advKhac > 0 && advKhac >= khacRequestedTotal) {
+                        const el = document.getElementById('claimAdvanceKhacVal_edit');
+                        el.classList.add('is-invalid');
+                        const err = document.getElementById('errClaimAdvanceKhacVal_edit');
+                        if (err) err.style.display = 'block';
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.focus();
+                        return;
+                    }
+                }
+
+                claim.advanceTinhThan = advTinhThan;
+                claim.advanceKhac = advKhac;
+                claim.advanceKhacName = advKhacName;
                 claim.advanceNum = claim.advanceTinhThan + claim.advanceKhac;
 
                 claim.advanceRecName = document.getElementById('claimRecName_edit').value;
@@ -10450,6 +10526,7 @@
                 claim.advanceNum = 0;
                 claim.advanceTinhThan = 0;
                 claim.advanceKhac = 0;
+                claim.advanceKhacName = '';
             }
 
             if (submit) {

@@ -25,6 +25,8 @@ Dưới đây là danh mục các Quy tắc Nghiệp vụ (Business Rules - BR) 
 | **[BR-VAL-008]** | Logic ngày quá khứ | Validation | Trường nhập ngày liên quan đến cá nhân (Ngày sinh, Ngày cấp...) bắt buộc validate nhỏ hơn ngày hiện tại. | **[MSG-ERR-VAL-008]** |
 | **[BR-VAL-009]** | Kiểm tra trùng lặp | Validation | Kiểm tra trùng lặp dữ liệu đối với các trường định danh: Mã, Tên, CCCD/CMND, Mã số thuế, Email, Username/Tên đăng nhập, Số điện thoại. Đối với thao tác **Sửa**, hệ thống phải kiểm tra trùng lặp (ngoại trừ chính bản ghi đang cập nhật). | **[MSG-ERR-VAL-009]** |
 | **[BR-VAL-010]** | Số tiền dương | Validation | Trường nhập số tiền bắt buộc phải là số lớn hơn 0. Hệ thống chặn thao tác lưu/gửi nếu giá trị trống, bằng 0, nhỏ hơn 0 hoặc không phải dữ liệu số hợp lệ. | **[MSG-ERR-VAL-012]** |
+| **[BR-VAL-013]** | Ràng buộc số tiền tạm ứng thiệt hại tinh thần | Validation | Trong trường hợp có đề nghị tạm ứng kinh phí bồi thường, nếu có nhập số tiền tạm ứng thiệt hại tinh thần thì số tiền tạm ứng này bắt buộc phải nhỏ hơn số tiền yêu cầu bồi thường thiệt hại tinh thần đã khai báo tại Khối Bảng thiệt hại. | **[MSG-ERR-VAL-013]** |
+| **[BR-VAL-014]** | Ràng buộc số tiền tạm ứng thiệt hại khác tính được ngay | Validation | Trong trường hợp có đề nghị tạm ứng kinh phí bồi thường, nếu có nhập số tiền tạm ứng thiệt hại khác tính được ngay thì số tiền tạm ứng này bắt buộc phải nhỏ hơn tổng số tiền của các loại thiệt hại khác (trừ thiệt hại tinh thần) đã khai báo tại Khối Bảng thiệt hại. | **[MSG-ERR-VAL-014]** |
 | **[BR-FILE-010]** | File đính kèm hồ sơ | Validation | Tài liệu đính kèm chính thức của hồ sơ đăng ký yêu cầu dạng `.pdf`, dung lượng tối đa mỗi file là 20MB. | **[MSG-ERR-FILE-001]**<br>**[MSG-ERR-FILE-002]** |
 | **[BR-UI-001]** | Quy chuẩn phân trang danh sách | Workflow | Áp dụng thống nhất cho mọi màn hình danh sách/bảng dữ liệu trong toàn hệ thống, trừ khi SRS của màn hình cụ thể nêu rõ lý do cần áp dụng khác. Giá trị số bản ghi/trang cho phép chọn: `10`, `20`, `50`, `100`. Giá trị mặc định khi mở màn hình lần đầu: `20 bản ghi/trang`. | Không |
 | **[BR-FILE-011]** | File đính kèm hỗ trợ | Validation | Tệp đính kèm gửi yêu cầu hỗ trợ chấp nhận các định dạng `.pdf`, `.jpg`, `.jpeg`, `.png`. Số lượng tối đa: 3 tệp. Dung lượng mỗi tệp tối đa: 20MB. | **[MSG-ERR-FILE-003]**<br>**[MSG-ERR-FILE-004]**<br>**[MSG-ERR-FILE-005]** |
@@ -190,6 +192,8 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-VAL-010]** | Lỗi | `"Mật khẩu mới không được trùng với mật khẩu cũ."` | Inline | Không |
 | **[MSG-ERR-VAL-011]** | Lỗi | `"Xác nhận mật khẩu mới không khớp."` | Inline | Không |
 | **[MSG-ERR-VAL-012]** | Lỗi | `"Giá trị [Tên trường] bắt buộc phải lớn hơn 0."` | Inline | Không |
+| **[MSG-ERR-VAL-013]** | Lỗi | `"Số tiền tạm ứng thiệt hại tinh thần phải nhỏ hơn số tiền yêu cầu bồi thường thiệt hại tinh thần đã nhập"` | Inline (Dưới trường nhập liệu) | Không |
+| **[MSG-ERR-VAL-014]** | Lỗi | `"Số tiền tạm ứng thiệt hại khác phải nhỏ hơn tổng các loại thiệt hại khác đã yêu cầu bồi thường"` | Inline (Dưới trường nhập liệu) | Không |
 | **[MSG-ERR-FILE-001]** | Lỗi | `"Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf."` | Inline | Không |
 | **[MSG-ERR-FILE-002]** | Lỗi | `"Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại."` | Inline | Không |
 | **[MSG-ERR-FILE-003]** | Lỗi | `"Định dạng tệp tin [Tên tệp] không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png."` | Inline | Không |

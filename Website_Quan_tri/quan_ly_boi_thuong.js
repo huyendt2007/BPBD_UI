@@ -1,4 +1,4 @@
-﻿// Synchronize Role Selectors and update table
+// Synchronize Role Selectors and update table
         function syncRole(el) {
             const val = el.value;
             const selMain = document.getElementById('roleSelectorMain');
@@ -4016,17 +4016,10 @@
                                         <input type="text" class="form-control" style="text-align: right;" id="claimAdvanceTinhThan_edit" value="${(claim.advanceTinhThan || 0).toLocaleString('vi-VN')}" oninput="formatCurrencyInput(this); sumDraftAdvance();">
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0;">
-                                        <span class="form-label">Tạm ứng Thiệt hại khác (chọn loại ở trên)</span>
+                                        <span class="form-label">Tạm ứng Thiệt hại khác tính được ngay</span>
                                         <div style="display: flex; gap: 8px;">
-                                            <select class="form-control" style="flex: 1.2;" id="claimAdvanceKhacName_edit">
-                                                <option value="">-- Chọn mục thiệt hại --</option>
-                                                <option value="1" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 1) ? '' : 'disabled'}>1. Tài sản bị xâm phạm</option>
-                                                <option value="2" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 2) ? '' : 'disabled'}>2. Thu nhập thực tế bị mất/giảm sút</option>
-                                                <option value="3" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 3) ? '' : 'disabled'}>3. Vật chất do người bị thiệt hại chết</option>
-                                                <option value="4" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 4) ? '' : 'disabled'}>4. Vật chất do sức khỏe bị xâm phạm</option>
-                                                <option value="6" ${claim.thietHaiList && claim.thietHaiList.some(x => x.type === 6) ? '' : 'disabled'}>6. Các chi phí hợp lý khác</option>
-                                            </select>
-                                            <input type="text" class="form-control" style="flex: 1; text-align: right;" id="claimAdvanceKhacVal_edit" value="${(claim.advanceKhac || 0).toLocaleString('vi-VN')}" placeholder="Số tiền..." oninput="formatCurrencyInput(this); sumDraftAdvance();">
+                                            <input type="text" class="form-control" style="flex: 1.2;" id="claimAdvanceKhacName_edit" value="${claim.advanceKhacName || ''}" placeholder="Nhập loại thiệt hại khác...">
+                                            <input type="text" class="form-control" style="flex: 1; text-align: right;" id="claimAdvanceKhacVal_edit" value="${(claim.advanceKhac || 0).toLocaleString('vi-VN')}" placeholder="Số tiền (đồng)..." oninput="formatCurrencyInput(this); sumDraftAdvance();">
                                         </div>
                                     </div>
                                 </div>
@@ -4184,7 +4177,7 @@
                         </span>
                         <div class="grid-3-cols" style="gap: 12px; font-size: 13px;">
                             <div><strong>Tạm ứng thiệt hại tinh thần:</strong> ${(claim.advanceTinhThan || 0).toLocaleString('vi-VN')} đ</div>
-                            <div><strong>Tạm ứng thiệt hại khác:</strong> ${(claim.advanceKhac || 0).toLocaleString('vi-VN')} đ</div>
+                            <div><strong>Tạm ứng thiệt hại khác:</strong> ${claim.advanceKhacName ? claim.advanceKhacName + ': ' : ''}${(claim.advanceKhac || 0).toLocaleString('vi-VN')} đ</div>
                             <div><strong>Tổng số tiền tạm ứng đề nghị:</strong> <span style="font-weight:700; color:var(--secondary-color);">${claim.advanceNum.toLocaleString('vi-VN')} đ</span></div>
                         </div>
                         <div style="font-size:11.5px; font-style:italic; margin-top:4px; color:var(--text-muted);">Viết bằng chữ: ${numberToVietnameseWords(claim.advanceNum)}</div>
@@ -4485,6 +4478,7 @@
             const needAdvance = document.getElementById('claimNeedAdvance_edit').checked;
             if (needAdvance) {
                 claim.advanceTinhThan = parseFloat(document.getElementById('claimAdvanceTinhThan_edit').value.replace(/\./g, '')) || 0;
+                claim.advanceKhacName = (document.getElementById('claimAdvanceKhacName_edit').value || '').trim();
                 claim.advanceKhac = parseFloat(document.getElementById('claimAdvanceKhacVal_edit').value.replace(/\./g, '')) || 0;
                 claim.advanceNum = claim.advanceTinhThan + claim.advanceKhac;
                 
