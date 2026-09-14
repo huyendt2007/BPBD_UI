@@ -919,15 +919,15 @@
             display: none;
             position: absolute;
             right: 0;
-            top: 100%;
-            z-index: 1050;
+            bottom: 100%;
+            z-index: 1060;
             min-width: 195px;
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
             padding: 6px 0;
-            margin-top: 4px;
+            margin-bottom: 4px;
         }
         .more-actions-menu.show {
             display: block;
@@ -1174,7 +1174,7 @@
     <div id="panelStep1" class="state-panel" style="display:none; margin-bottom:28px;">
         <div style="margin-bottom: 14px;">
             <h3 style="font-size: 16px; font-weight: 800; color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-users"></i> Bước 1: Thành lập Hội đồng xem xét trách nhiệm hoàn trả
+                <i class="fa-solid fa-users"></i> Thành lập Hội đồng xem xét trách nhiệm hoàn trả
             </h3>
         </div>
 
@@ -1247,6 +1247,11 @@
                         <option value="Phạm Văn Hùng (Phó Giám đốc)">Phạm Văn Hùng (Phó Giám đốc)</option>
                         <option value="Trần Văn Lãnh Đạo (Giám đốc Sở)">Trần Văn Lãnh Đạo (Giám đốc Sở)</option>
                     </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <span class="form-label">Ngày ký</span>
+                    <div id="s1SignDateReadonly" class="info-value">02/04/2026</div>
                 </div>
 
                 <!-- Tệp văn bản Quyết định -->
@@ -1322,7 +1327,7 @@
     <div id="panelStep2" class="state-panel" style="display:none; margin-bottom:28px;">
         <div style="margin-bottom: 14px;">
             <h3 style="font-size: 16px; font-weight: 800; color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-gavel"></i> Bước 2: Ý kiến của hội đồng
+                <i class="fa-solid fa-gavel"></i> Ý kiến của hội đồng
             </h3>
         </div>
 
@@ -1379,7 +1384,6 @@
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-users-viewfinder"></i> Ý kiến kiến nghị của Hội đồng đối với từng cán bộ</div>
-                    <span class="badge badge-warning" style="font-weight:700; font-size:11.5px;">Giai đoạn xét mức lỗi &amp; số tiền hoàn trả</span>
                 </div>
                 <button type="button" class="btn btn-primary btn-sm" id="s2AddOfficerBtn" onclick="openAddOfficerModal()"><i class="fa-solid fa-plus"></i> Thêm cán bộ gây sai phạm</button>
             </div>
@@ -1403,9 +1407,6 @@
                     </tbody>
                 </table>
             </div>
-            <div class="action-bar" id="s2ActionBar" style="padding: 16px 24px; border-top: 1px solid var(--border-color); display:flex; justify-content:flex-end; gap:12px;">
-                <button type="button" class="btn btn-primary" onclick="submitStep2Recommendations()"><i class="fa-solid fa-paper-plane"></i> Trình duyệt kiến nghị</button>
-            </div>
         </div>
     </div>
 
@@ -1413,7 +1414,7 @@
     <div id="panelNoReview" class="state-panel" style="display:none; margin-bottom:28px;">
         <div style="margin-bottom: 14px;">
             <h3 style="font-size: 16px; font-weight: 800; color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-gavel"></i> Bước 2: Ý kiến của hội đồng (Không xem xét trách nhiệm hoàn trả)
+                <i class="fa-solid fa-gavel"></i> Ý kiến của hội đồng (Không xem xét trách nhiệm hoàn trả)
             </h3>
         </div>
         <div class="card" style="border-left:4px solid var(--danger-color); margin-bottom: 20px;">
@@ -1456,7 +1457,7 @@
     <div id="panelStep3" class="state-panel" style="display:none; margin-bottom:28px;">
         <div style="margin-bottom: 14px;">
             <h3 style="font-size: 16px; font-weight: 800; color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-file-contract"></i> Bước 3: Ban hành Quyết định hoàn trả
+                <i class="fa-solid fa-file-contract"></i> Ban hành Quyết định hoàn trả
             </h3>
         </div>
 
@@ -1503,6 +1504,7 @@
                         <input type="radio" name="s3PublishTypeRadio" value="offline" onchange="handleS3PublishTypeChange(this.value)">
                         Ký ngoài hệ thống
                     </label>
+                    <span id="s3PublishTypeNote" style="display:none; font-size:12.5px; color:#b91c1c; font-style:italic; font-weight:600;"></span>
                 </div>
 
                 <div class="grid-2-cols" style="gap: 20px; margin-bottom: 16px;">
@@ -1533,17 +1535,23 @@
                     </div>
                 </div>
 
+                <div class="form-group" id="s3SignDateGroup" style="margin-bottom: 16px;">
+                    <span class="form-label">Ngày ký</span>
+                    <div class="info-value" id="s3SignDateReadonly" style="padding: 9px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 600; color: #1e293b;">Chưa ký</div>
+                </div>
+
                 <div class="form-group" style="margin-bottom: 16px;">
                     <span class="form-label">Trích yếu: <span style="color:red;">*</span></span>
-                    <textarea class="form-control" id="s3DraftSummary" rows="3" style="font-size:13.5px;">Căn cứ Biên bản họp Hội đồng xem xét trách nhiệm hoàn trả và kiến nghị mức hoàn trả đã được phê duyệt đối với các cán bộ gây thiệt hại trong vụ việc cưỡng chế tại Cầu Giấy.</textarea>
+                    <textarea class="form-control" id="s3DraftSummary" rows="3" style="font-size:13.5px;" placeholder="Nhập nội dung trích yếu Quyết định hoàn trả..."></textarea>
                     <span class="invalid-feedback" id="s3SummaryError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                 </div>
 
                 <!-- Tệp văn bản Quyết định -->
                 <div class="form-group" style="margin-bottom: 20px; background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px 20px;">
                     <span class="form-label" style="font-weight:700; color:var(--primary-color); display:flex; align-items:center; gap:6px;">
-                        <i class="fa-solid fa-file-pdf"></i> Tệp văn bản Quyết định hoàn trả
+                        <i class="fa-solid fa-file-pdf"></i> Tệp văn bản Quyết định hoàn trả <span style="color:red;">*</span>
                     </span>
+                    <span class="invalid-feedback" id="s3FileError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                     <div id="s3FileContainer" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; width: 100%;">
                         <!-- Populated dynamically -->
                     </div>
@@ -1636,7 +1644,7 @@
     <div id="panelStep4" class="state-panel" style="display:none; margin-bottom:28px;">
         <div style="margin-bottom: 14px;">
             <h3 style="font-size: 16px; font-weight: 800; color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-money-bill-trend-up"></i> Bước 4: Đang thi hành quyết định hoàn trả
+                <i class="fa-solid fa-money-bill-trend-up"></i> Đang thi hành quyết định hoàn trả
             </h3>
         </div>
 
@@ -1713,8 +1721,8 @@
             </div>
         </div>
 
-        <!-- Timeline Lịch sử nộp tiền thực tế -->
-        <div class="card" id="s4TimelineCard" style="display:none; margin-bottom: 20px;">
+        <!-- Timeline Lịch sử nộp tiền thực tế - ĐÃ BỎ theo yêu cầu -->
+        <div class="card" id="s4TimelineCard" style="display:none !important; margin-bottom: 20px;">
             <div class="card-header">
                 <div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-timeline"></i> Nhật ký lịch sử thi hành và nộp tiền ngân sách</div>
             </div>
@@ -1732,7 +1740,7 @@
     <div id="panelStep5" class="state-panel" style="display:none; margin-bottom:28px;">
         <div style="margin-bottom: 14px;">
             <h3 style="font-size: 16px; font-weight: 800; color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-flag-checkered"></i> Bước 5: Hoàn thành nghĩa vụ hoàn trả
+                <i class="fa-solid fa-flag-checkered"></i> Hoàn thành nghĩa vụ hoàn trả
             </h3>
         </div>
 
@@ -2322,7 +2330,7 @@
                         <div id="issueQdFileInfo" class="attached-file-info" style="display:none; margin-top:10px;">
                             <span class="file-name" id="issueQdFileName">QĐ_Hoan_tra_signed.pdf</span>
                             <div>
-                                <a class="action-link" href="#" onclick="alert('Mở xem file Quyết định đã ký'); return false;">Xem file</a>
+                                <a class="action-link" href="javascript:void(0)" onclick="viewAttachedFileMock('QĐ_Hoan_tra_signed.pdf')">Xem file</a>
                                 <a class="action-link delete-link" onclick="removeIssueDecisionFile()">Xóa</a>
                             </div>
                         </div>
@@ -2347,10 +2355,7 @@
                 <form id="adjustObligationForm">
                     <input type="hidden" id="adjOfficerIndex" value="-1">
 
-                    <!-- I. Thông tin hồ sơ -->
-                    <div style="font-weight:700; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:6px; margin-bottom:16px; font-size:14.5px;">
-                        <i class="fa-solid fa-folder-open"></i> I. Thông tin hồ sơ
-                    </div>
+                    <!-- I. Thông tin cán bộ & hồ sơ (theo SRS 4.3.3.5.12) -->
                     <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
                         <div class="form-group">
                             <span class="form-label">Mã hồ sơ</span>
@@ -2363,17 +2368,27 @@
                     </div>
                     <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
                         <div class="form-group">
-                            <span class="form-label">Cán bộ thực hiện hoàn trả</span>
+                            <span class="form-label">Cán bộ gây sai phạm</span>
                             <input type="text" class="form-control" id="adjOfficerName" disabled style="background:#f1f5f9; font-weight:700; color:var(--primary-color);">
                         </div>
+                        <div class="form-group">
+                            <span class="form-label">Chức vụ</span>
+                            <input type="text" class="form-control" id="adjOfficerRole" disabled style="background:#f1f5f9;">
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
                         <div class="form-group">
                             <span class="form-label">Đơn vị công tác</span>
                             <input type="text" class="form-control" id="adjOfficerAgency" disabled style="background:#f1f5f9;">
                         </div>
+                        <div class="form-group">
+                            <span class="form-label">Mã hồ sơ</span>
+                            <input type="text" class="form-control" id="adjDossierCode2" disabled style="background:#f1f5f9;">
+                        </div>
                     </div>
                     <div class="grid-3-cols" style="gap:16px; margin-bottom:20px;">
                         <div class="form-group">
-                            <span class="form-label">Tổng phải hoàn trả ban đầu (VNĐ)</span>
+                            <span class="form-label">Số tiền hoàn trả (VNĐ)</span>
                             <input type="text" class="form-control" id="adjTotalAmt" disabled style="background:#f1f5f9; text-align:right; font-weight:700;">
                         </div>
                         <div class="form-group">
@@ -2381,7 +2396,7 @@
                             <input type="text" class="form-control" id="adjPaidAmt" disabled style="background:#f1f5f9; text-align:right; font-weight:700; color:var(--success-color);">
                         </div>
                         <div class="form-group">
-                            <span class="form-label">Số tiền còn phải nộp (VNĐ)</span>
+                            <span class="form-label">Số tiền còn thiếu (VNĐ)</span>
                             <input type="text" class="form-control" id="adjRemainAmt" disabled style="background:#f1f5f9; text-align:right; font-weight:700; color:var(--danger-color);">
                         </div>
                     </div>
@@ -2473,57 +2488,8 @@
                         </div>
                     </div>
 
-                    <!-- III. Văn bản quyết định -->
-                    <div style="font-weight:700; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:6px; margin-bottom:16px; font-size:14.5px;">
-                        <i class="fa-solid fa-file-contract"></i> III. Văn bản quyết định
-                    </div>
-                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
-                        <div class="form-group">
-                            <span class="form-label">Số quyết định điều chỉnh <span style="color:red;">*</span></span>
-                            <input type="text" class="form-control" id="adjDecisionNo" placeholder="Ví dụ: 15/QĐ-STP">
-                            <div class="invalid-feedback" id="adjDecisionNoError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Ngày quyết định <span style="color:red;">*</span></span>
-                            <div class="date-input-wrapper" style="position:relative;">
-                                <input type="text" class="form-control" id="adjDecisionDate" placeholder="dd/mm/yyyy">
-                                <i class="fa-regular fa-calendar-days" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); pointer-events:none;"></i>
-                            </div>
-                            <div class="invalid-feedback" id="adjDecisionDateError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                        </div>
-                    </div>
-                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
-                        <div class="form-group">
-                            <span class="form-label">Đơn vị ban hành <span style="color:red;">*</span></span>
-                            <select class="form-control" id="adjIssuingUnit">
-                                <option>Sở Tư pháp Hà Nội</option>
-                                <option>Cục Bồi thường nhà nước</option>
-                                <option>UBND Quận Cầu Giấy</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Sổ văn bản áp dụng <span style="color:red;">*</span></span>
-                            <select class="form-control" id="adjDocumentBook">
-                                <option>Sổ QĐ HT - Sở Tư pháp Hà Nội - 2026</option>
-                                <option>Sổ QĐ HT - Cục Bồi thường nhà nước - 2026</option>
-                                <option>Sổ QĐ HT - UBND Quận Cầu Giấy - 2026</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
-                        <div class="form-group">
-                            <span class="form-label">Hình thức ban hành <span style="color:red;">*</span></span>
-                            <select class="form-control" id="adjSignMode">
-                                <option>Ký số trên hệ thống</option>
-                                <option>Ký bên ngoài</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Người ký / Lãnh đạo ký ban hành <span style="color:red;">*</span></span>
-                            <input type="text" class="form-control" id="adjSigner" value="Lê Minh Châu - Giám đốc Sở">
-                            <div class="invalid-feedback" id="adjSignerError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                        </div>
-                    </div>
+                    <!-- Theo SRS 4.3.3.5.12, popup KHÔNG CÓ phần Văn bản quyết định -->
+                    <!-- Chỉ có: Lý do và Văn bản căn cứ -->
 
                     <!-- IV. Lý do và Văn bản căn cứ -->
                     <div style="font-weight:700; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:6px; margin-bottom:16px; font-size:14.5px;">
@@ -2589,6 +2555,10 @@
                         <div class="info-label">Phương thức thực hiện</div>
                         <div class="info-value" id="vOfficerMethod">Một lần</div>
                     </div>
+                    <div class="info-item">
+                        <div class="info-label">Trạng thái hoãn</div>
+                        <div class="info-value" id="vOfficerPostponeStatusBadge"><span style="color:#94a3b8; font-weight:600;">Không hoãn</span></div>
+                    </div>
                     <div class="info-item" style="grid-column: span 2;">
                         <div class="info-label">Số tiền phải hoàn trả</div>
                         <div class="info-value" style="font-size:16px; font-weight:800; color:var(--danger-color);" id="vOfficerAmt">150.000.000 đ</div>
@@ -2602,7 +2572,7 @@
 
                 <div id="vOfficerPostponeSection" style="display:none;">
                     <div style="font-weight:700; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:6px; margin-bottom:16px; font-size:14.5px;">
-                        <i class="fa-solid fa-hourglass-half"></i> III. Phương án hoãn thực hiện hoàn trả (Đã kích hoạt)
+                        <i class="fa-solid fa-hourglass-half" style="color:#ea580c;"></i> III. Khối Hoãn thực hiện hoàn trả
                     </div>
                     <div class="info-grid" style="margin-bottom: 16px;">
                         <div class="info-item">
@@ -2614,19 +2584,19 @@
                             <div class="info-value" id="vOfficerPostponeEnd">17/10/2026</div>
                         </div>
                         <div class="info-item" style="grid-column: span 2;">
-                            <div class="info-label">Lý do hoãn chi tiết</div>
+                            <div class="info-label">Lý do hoãn</div>
                             <div class="info-value" id="vOfficerPostponeReason" style="line-height:1.5; background:#f8fafc; padding:10px 14px; border:1px solid var(--border-color); border-radius:6px;">Đang điều trị bệnh hiểm nghèo...</div>
                         </div>
                     </div>
 
                     <!-- File attachment view (strictly Read-only, no Delete button) -->
                     <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px; padding: 12px 16px;">
-                        <span class="form-label" style="margin-bottom: 6px; font-weight:700; color:#b45309;"><i class="fa-solid fa-file-pdf"></i> Quyết định cho phép hoãn đính kèm</span>
+                        <span class="form-label" style="margin-bottom: 6px; font-weight:700; color:#b45309;"><i class="fa-solid fa-file-pdf"></i> Văn bản đính kèm</span>
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                             <span class="file-name" id="vOfficerPostponeFileName" style="font-size:13px; font-weight:600; color:#334155;"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>quyet_dinh_hoan.pdf</span>
                             <div style="display:flex; gap:8px;">
-                                <a class="action-link" href="#" id="vOfficerPostponeViewLink" onclick="alert('Mở xem file quyết định hoãn bồi thường'); return false;" style="font-weight:600; color:#0284c7;">[Xem]</a>
-                                <a class="action-link" href="#" id="vOfficerPostponeDownloadLink" onclick="showToast('Đang tải quyết định hoãn...', 'success'); return false;" style="font-weight:600; color:var(--success-color);">[📥 Tải về]</a>
+                                <a class="action-link" href="javascript:void(0)" id="vOfficerPostponeViewLink" onclick="viewAttachedFileMock('quyet_dinh_hoan.pdf')" style="font-weight:600; color:#0284c7;">[Xem file]</a>
+                                <a class="action-link" href="javascript:void(0)" id="vOfficerPostponeDownloadLink" onclick="showToast('Đang tải quyết định hoãn...', 'success')" style="font-weight:600; color:var(--success-color);">[Tải về]</a>
                             </div>
                         </div>
                     </div>
@@ -2657,15 +2627,33 @@
                         <div class="form-group">
                             <span class="form-label">Họ và tên cán bộ <span style="color:red;">*</span></span>
                             <input type="text" class="form-control" id="oName" placeholder="Ví dụ: Nguyễn Văn A" required>
+                            <span class="invalid-feedback" id="oNameError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                         </div>
                         <div class="form-group">
                             <span class="form-label">Chức vụ <span style="color:red;">*</span></span>
                             <input type="text" class="form-control" id="oRole" placeholder="Ví dụ: Chuyên viên" required>
+                            <span class="invalid-feedback" id="oRoleError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                         </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 16px;">
+                    <div class="form-group" style="margin-bottom: 16px; position: relative;">
                         <span class="form-label">Đơn vị công tác <span style="color:red;">*</span></span>
-                        <input type="text" class="form-control" id="oAgency" placeholder="Ví dụ: Phòng Quản lý đất đai - Sở Tài nguyên & Môi trường" required>
+                        <input type="hidden" id="oAgency" required>
+                        <div id="oAgencySelectBox" style="display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; min-height: 38px; background: #fff; cursor: pointer;" onclick="toggleAgencyDropdown(event)">
+                            <span id="oAgencySelectedText" style="color: var(--text-muted); font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">-- Chọn hoặc tìm kiếm đơn vị công tác --</span>
+                            <i class="fa-solid fa-chevron-down" style="color: #64748b; font-size: 12px; margin-left: 8px;"></i>
+                        </div>
+                        <div id="oAgencyDropdownPanel" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1px solid var(--border-color); border-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1060; max-height: 280px; flex-direction: column;">
+                            <div style="padding: 8px 10px; border-bottom: 1px solid var(--border-color); background: #f8fafc;">
+                                <div style="position: relative;">
+                                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 10px; color: #94a3b8; font-size: 12px;"></i>
+                                    <input type="text" id="oAgencySearchInput" placeholder="Tìm theo mã hoặc tên đơn vị..." style="width: 100%; padding: 6px 10px 6px 30px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none;" oninput="filterAgencyList(this.value)" onclick="event.stopPropagation();">
+                                </div>
+                            </div>
+                            <div id="oAgencyListContainer" style="overflow-y: auto; max-height: 220px; padding: 4px 0;">
+                                <!-- Populated dynamically by hierarchical tree -->
+                            </div>
+                        </div>
+                        <span class="invalid-feedback" id="oAgencyError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                     </div>
 
                     <div style="font-weight:700; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:6px; margin-bottom:16px; margin-top:20px; font-size:14.5px;">
@@ -2692,6 +2680,7 @@
                     <div class="form-group" style="margin-bottom: 16px;">
                         <span class="form-label">Số tiền phải hoàn trả (đ) <span style="color:red;">*</span></span>
                         <input type="text" class="form-control" id="oAmt" placeholder="Ví dụ: 50.000.000" style="text-align: right; font-weight:700;" oninput="handleModalAmtInput(this.value)" required>
+                        <span class="invalid-feedback" id="oAmtError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                         <div id="oAmtText" style="font-size:12.5px; color:var(--text-muted); font-style:italic; margin-top:4px;">Chưa nhập số tiền</div>
                     </div>
 
@@ -2700,40 +2689,47 @@
                         <textarea class="form-control" id="oNote" rows="3" placeholder="Nhập các thông tin mô tả khác liên quan đến trách nhiệm hoàn trả của cán bộ (nếu có)..."></textarea>
                     </div>
 
-                    <!-- Postponement Registration Section -->
-                    <div style="margin-top: 24px; padding: 12px 16px; background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px;">
-                        <label style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--primary-color); cursor: pointer; user-select: none;">
-                            <input type="checkbox" id="oRegisterPostpone" onchange="togglePostponeBlock(this.checked)">
-                            <i class="fa-solid fa-hourglass-half"></i> Đăng ký Hoãn thực hiện hoàn trả
-                        </label>
-                        
-                        <!-- Postponement dynamic sub-form with slide animation -->
-                        <div id="oPostponeBlock" style="max-height: 0px; overflow: hidden; transition: max-height 0.4s ease; padding-top: 0;">
-                            <div class="grid-2-cols" style="gap:16px; margin-top: 16px; margin-bottom: 16px;">
-                                <div class="form-group">
-                                    <span class="form-label">Ngày bắt đầu hoãn <span style="color:red;">*</span></span>
-                                    <input type="text" class="form-control" id="oPostponeStart" placeholder="dd/mm/yyyy">
-                                </div>
-                                <div class="form-group">
-                                    <span class="form-label">Ngày kết thúc hoãn (nếu có)</span>
-                                    <input type="text" class="form-control" id="oPostponeEnd" placeholder="dd/mm/yyyy">
-                                </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <span class="form-label">Trạng thái hoãn <span style="color:red;">*</span></span>
+                        <select class="form-control" id="oPostponeStatus" onchange="handlePostponeStatusChange(this.value)" required>
+                            <option value="Không hoãn">Không hoãn</option>
+                            <option value="Đề xuất hoãn">Đề xuất hoãn</option>
+                        </select>
+                    </div>
+
+                    <!-- Khối Hoãn thực hiện hoàn trả (Chỉ hiển thị khi chọn Đề xuất hoãn) -->
+                    <div id="oPostponeBlock" style="display: none; margin-top: 16px; padding: 16px; background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px;">
+                        <div style="font-weight:700; color:var(--primary-color); border-bottom:1px solid #e2e8f0; padding-bottom:6px; margin-bottom:14px; font-size:14px;">
+                            <i class="fa-solid fa-hourglass-half" style="color:#ea580c;"></i> Khối Hoãn thực hiện hoàn trả
+                        </div>
+                        <div class="grid-2-cols" style="gap:16px; margin-bottom: 16px;">
+                            <div class="form-group">
+                                <span class="form-label">Ngày bắt đầu hoãn <span style="color:red;">*</span></span>
+                                <input type="text" class="form-control" id="oPostponeStart" placeholder="dd/mm/yyyy">
+                                <span class="invalid-feedback" id="oPostponeStartError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                             </div>
-                            <div class="form-group" style="margin-bottom: 16px;">
-                                <span class="form-label">Lý do hoãn <span style="color:red;">*</span></span>
-                                <textarea class="form-control" id="oPostponeReason" rows="3" placeholder="Ghi rõ hoàn cảnh khó khăn hoặc lý do y tế..."></textarea>
+                            <div class="form-group">
+                                <span class="form-label">Ngày kết thúc hoãn (nếu có)</span>
+                                <input type="text" class="form-control" id="oPostponeEnd" placeholder="dd/mm/yyyy">
+                                <span class="invalid-feedback" id="oPostponeEndError" style="display:none; color:red; font-size:12px; margin-top:4px;">Ngày kết thúc hoãn phải lớn hơn hoặc bằng ngày bắt đầu</span>
                             </div>
-                            <div class="form-group" style="margin-bottom: 8px;">
-                                <span class="form-label">Văn bản đính kèm (Quyết định hoãn) <span style="color:red;">*</span></span>
-                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('oPostponeFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn file quyết định hoãn</button>
-                                <input type="file" id="oPostponeFileInput" style="display:none;" onchange="handlePostponeFileAttached(this)">
-                                
-                                <div id="oPostponeFileInfo" style="display:none; margin-top: 10px;" class="attached-file-info">
-                                    <span class="file-name" id="oPostponeFileName">quyet_dinh_hoan.pdf</span>
-                                    <div>
-                                        <a class="action-link" href="#" id="oPostponeFileViewLink" onclick="alert('Xem tệp đính kèm'); return false;">Xem file</a>
-                                        <a class="action-link delete-link" onclick="removePostponeFileAttached()">Xóa</a>
-                                    </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <span class="form-label">Lý do hoãn <span style="color:red;">*</span></span>
+                            <textarea class="form-control" id="oPostponeReason" rows="3" placeholder="Ghi rõ hoàn cảnh khó khăn hoặc lý do y tế..."></textarea>
+                            <span class="invalid-feedback" id="oPostponeReasonError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 4px;">
+                            <span class="form-label">Văn bản đính kèm <span style="color:red;">*</span></span>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('oPostponeFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm</button>
+                            <input type="file" id="oPostponeFileInput" style="display:none;" onchange="handlePostponeFileAttached(this)">
+                            <span class="invalid-feedback" id="oPostponeFileError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                            
+                            <div id="oPostponeFileInfo" style="display:none; margin-top: 10px;" class="attached-file-info">
+                                <span class="file-name" id="oPostponeFileName">quyet_dinh_hoan.pdf</span>
+                                <div>
+                                    <a class="action-link" href="javascript:void(0)" id="oPostponeFileViewLink" onclick="viewAttachedFileMock('quyet_dinh_hoan.pdf')">Xem file</a>
+                                    <a class="action-link delete-link" onclick="removePostponeFileAttached()">Xóa</a>
                                 </div>
                             </div>
                         </div>
@@ -2741,8 +2737,8 @@
                 </form>
             </div>
             <div class="modal-footer" style="padding: 16px 24px 24px 24px;">
-                <button type="button" class="btn btn-secondary" onclick="closeOfficerStep2Modal()">Hủy bỏ</button>
-                <button type="button" class="btn btn-primary" onclick="saveOfficerStep2()"><i class="fa-solid fa-floppy-disk"></i> Lưu cán bộ 💾</button>
+                <button type="button" class="btn btn-secondary" onclick="closeOfficerStep2Modal()">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="saveOfficerStep2()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
             </div>
         </div>
     </div>
@@ -2765,28 +2761,165 @@
     </div>
 
 
-    <!-- REJECT REASON MODAL -->
+    <!-- REJECT REASON MODAL (MH21) -->
     <div class="modal" id="rejectReasonModal" style="z-index: 1070;">
-        <div class="modal-content" style="max-width: 560px; margin-top: 12%;">
-            <div class="modal-header">
+        <div class="modal-content" style="max-width: 680px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
+            <div class="modal-header" style="padding: 24px 24px 16px 24px;">
                 <h3 class="modal-title" style="color:var(--danger-color);"><i class="fa-solid fa-ban"></i> Xác nhận từ chối phê duyệt</h3>
                 <button type="button" class="close-modal" onclick="closeRejectReasonModal()">&times;</button>
             </div>
-            <div class="modal-body">
-                <div class="form-group">
+            <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
+                <div class="alert alert-danger" style="background:#fef2f2; border:1px solid #fee2e2; border-left:4px solid var(--danger-color); border-radius:6px; padding:12px 16px; margin-bottom:18px; font-size:13.5px; color:#991b1b;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Khi xác nhận từ chối, hồ sơ sẽ chuyển trạng thái bị từ chối và gửi phản hồi đến cán bộ phụ trách để cập nhật lại thông tin.
+                </div>
+                <div class="form-group" style="margin-bottom: 18px;">
                     <span class="form-label">Lý do từ chối <span style="color:var(--danger-color);">*</span></span>
-                    <textarea class="form-control" id="rejectReasonInput" rows="5" placeholder="Nhập rõ lý do từ chối để cán bộ xử lý cập nhật lại hồ sơ"></textarea>
-                    <span class="invalid-feedback" id="rejectReasonError" style="display:none; color:#ef4444; font-size:11.5px; margin-top:4px; font-weight:600;">Vui lòng nhập lý do từ chối</span>
+                    <textarea class="form-control" id="rejectReasonInput" rows="4" placeholder="Nhập rõ nội dung, lý do từ chối phê duyệt theo chỉ đạo của Lãnh đạo..."></textarea>
+                    <span class="invalid-feedback" id="rejectReasonError" style="display:none; color:var(--danger-color); font-size:12px; margin-top:4px; font-weight:600;">Đây là trường bắt buộc</span>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Văn bản chỉ đạo kèm theo (nếu có):</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('rejectFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp văn bản đính kèm</button>
+                    <input type="file" id="rejectFileInput" style="display:none;" onchange="handleRejectFileAttached(this)">
+                    <div id="rejectFileInfo" class="attached-file-info" style="display:none; margin-top:10px;">
+                        <span class="file-name" id="rejectFileName"><i class="fa-solid fa-file-pdf"></i> van_ban_chi_dao.pdf</span>
+                        <div>
+                            <a class="action-link" href="javascript:void(0)" onclick="viewAttachedFileMock(document.getElementById('rejectFileName').innerText)">Xem file</a>
+                            <a class="action-link delete-link" onclick="removeRejectFileAttached()">Xóa</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer" style="justify-content:flex-end; gap:8px;">
-                <button type="button" class="btn btn-secondary" onclick="closeRejectReasonModal()">Hủy bỏ</button>
+            <div class="modal-footer" style="padding: 16px 24px 24px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-secondary" onclick="closeRejectReasonModal()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
                 <button type="button" class="btn btn-danger" onclick="submitRejectReason()"><i class="fa-solid fa-circle-xmark"></i> Xác nhận từ chối</button>
             </div>
         </div>
     </div>
 
+    <!-- LEADER DIGITAL SIGN & APPROVE MODAL (MH20) -->
+    <div class="modal" id="leaderSignApprovalModal" style="z-index: 1070;">
+        <div class="modal-content" style="max-width: 820px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
+            <div class="modal-header" style="padding: 24px 24px 16px 24px;">
+                <h3 class="modal-title" style="color:var(--success-color);"><i class="fa-solid fa-file-signature"></i> Phê duyệt &amp; Ký số Quyết định</h3>
+                <button type="button" class="close-modal" onclick="closeLeaderSignModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
+                <div class="grid-2-cols" style="gap: 20px;">
+                    <!-- Cột 1: Thông tin văn bản trình ký -->
+                    <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:8px; padding:16px;">
+                        <h4 style="margin:0 0 12px 0; font-size:14px; color:var(--primary-color); display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-file-invoice"></i> Thông tin văn bản trình duyệt
+                        </h4>
+                        <div style="font-size:13px; display:flex; flex-direction:column; gap:10px;">
+                            <div>
+                                <span style="color:var(--text-muted); font-size:12px; display:block;">Tên văn bản:</span>
+                                <strong id="m20DocTitle" style="color:#0f172a;">Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả</strong>
+                            </div>
+                            <div>
+                                <span style="color:var(--text-muted); font-size:12px; display:block;">Hồ sơ liên quan:</span>
+                                <strong id="m20DossierCode" style="color:var(--primary-color);">HT-2026-001</strong>
+                            </div>
+                            <div>
+                                <span style="color:var(--text-muted); font-size:12px; display:block;">Đơn vị trình / Người soạn thảo:</span>
+                                <span id="m20Submitter">Phòng Bồi thường Nhà nước - Chuyên viên Nguyễn Văn Chuyên Viên</span>
+                            </div>
+                            <div>
+                                <span style="color:var(--text-muted); font-size:12px; display:block;">Trích yếu văn bản:</span>
+                                <div id="m20Summary" style="font-style:italic; color:#475569; background:#fff; border:1px solid #e2e8f0; border-radius:6px; padding:8px 10px; margin-top:2px;">
+                                    V/v thành lập Hội đồng xem xét trách nhiệm hoàn trả đối với vụ việc bồi thường cưỡng chế Cầu Giấy.
+                                </div>
+                            </div>
+                            <div style="margin-top:6px;">
+                                <a href="javascript:void(0)" class="action-link" onclick="openPreviewFromLeaderModal()" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
+                                    <i class="fa-solid fa-eye"></i> Xem trước toàn văn dự thảo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Cột 2: Thiết lập chữ ký số Lãnh đạo -->
+                    <div>
+                        <h4 style="margin:0 0 12px 0; font-size:14px; color:var(--primary-color); display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-certificate"></i> Phương thức ký số xác thực
+                        </h4>
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <span class="form-label">Hình thức ký số: <span style="color:red;">*</span></span>
+                            <select class="form-control" id="m20SignMethod" style="height:38px;">
+                                <option value="token">USB Token (Chứng thư số chuyên dùng PKI)</option>
+                                <option value="sim">SIM PKI (Chữ ký số di động)</option>
+                                <option value="cloud">Cloud CA / HSM (Ký số từ xa doanh nghiệp)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <span class="form-label">Chứng thư số người ký:</span>
+                            <input type="text" class="form-control" id="m20SignerCert" value="Trần Văn Lãnh Đạo - Giám đốc Sở Tư pháp" readonly style="height:38px; background-color:#f1f5f9; font-weight:600;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <span class="form-label">Tổ chức chứng thực (CA):</span>
+                            <input type="text" class="form-control" value="Ban Cơ yếu Chính phủ (VGCA Root)" readonly style="height:38px; background-color:#f1f5f9;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <span class="form-label">Mã PIN / OTP xác thực: <span style="color:red;">*</span></span>
+                            <input type="password" class="form-control" id="m20PinInput" value="123456" placeholder="Nhập mã PIN Token hoặc OTP" style="height:38px; letter-spacing:2px; font-size:15px;">
+                            <span class="invalid-feedback" id="m20PinError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 16px 24px 24px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-secondary" onclick="closeLeaderSignModal()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <button type="button" class="btn btn-success" onclick="confirmLeaderDigitalSign()"><i class="fa-solid fa-file-signature"></i> Ký số &amp; Phê duyệt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD RELATED DOCUMENT MODAL (MH04) -->
+    <div class="modal" id="addRelatedDocModal" style="z-index: 1065;">
+        <div class="modal-content" style="max-width: 720px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
+            <div class="modal-header" style="padding: 24px 24px 16px 24px;">
+                <h3 class="modal-title"><i class="fa-solid fa-file-circle-plus"></i> Thêm văn bản liên quan</h3>
+                <button type="button" class="close-modal" onclick="closeAddRelatedDocModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <span class="form-label">Tên văn bản liên quan: <span style="color:red;">*</span></span>
+                    <input type="text" class="form-control" id="addDocTitle" placeholder="Ví dụ: Biên bản giải trình cán bộ sai phạm..." style="height:38px;">
+                    <span class="invalid-feedback" id="addDocTitleError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                </div>
+                <div class="grid-2-cols" style="gap: 20px; margin-bottom: 16px;">
+                    <div class="form-group">
+                        <span class="form-label">Số hiệu văn bản:</span>
+                        <input type="text" class="form-control" id="addDocCode" placeholder="Số/Ký hiệu văn bản" style="height:38px;">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Ngày ban hành:</span>
+                        <input type="text" class="form-control" id="addDocDate" placeholder="dd/mm/yyyy" style="height:38px;">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <span class="form-label">Cơ quan / Đơn vị ban hành:</span>
+                    <input type="text" class="form-control" id="addDocAgency" placeholder="Đơn vị phát hành văn bản" style="height:38px;">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Tệp đính kèm văn bản:</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('addDocFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp văn bản đính kèm</button>
+                    <input type="file" id="addDocFileInput" style="display:none;" onchange="handleAddDocFileAttached(this)">
+                    <div id="addDocFileInfo" class="attached-file-info" style="display:none; margin-top:10px;">
+                        <span class="file-name" id="addDocFileName"><i class="fa-solid fa-file-pdf"></i> van_ban_lien_quan.pdf</span>
+                        <div>
+                            <a class="action-link" href="javascript:void(0)" onclick="viewAttachedFileMock(document.getElementById('addDocFileName').innerText)">Xem file</a>
+                            <a class="action-link delete-link" onclick="removeAddDocFileAttached()">Xóa</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 16px 24px 24px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-secondary" onclick="closeAddRelatedDocModal()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+                <button type="button" class="btn btn-primary" onclick="saveRelatedDocument()"><i class="fa-solid fa-floppy-disk"></i> Lưu văn bản</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL: PREVIEW QUYẾT ĐỊNH (MẪU 20/BTNN) -->
     <div class="modal" id="previewDecisionModal">
@@ -2812,9 +2945,10 @@
                 <button type="button" class="btn btn-secondary" onclick="closePreviewDecisionModal()">Đóng ❌</button>
             </div>
         </div>
+    </div>
 
-        <!-- Toast message container -->
-        <div class="toast-container" id="toastContainer"></div>
+    <!-- Toast message container -->
+    <div class="toast-container" id="toastContainer"></div>
 
 
         <!-- ========================================== -->
@@ -2928,6 +3062,15 @@
             function addMockDossier(overrides) {
                 if (dossiersList.some(d => d.id === overrides.id)) return;
                 const dossier = cloneDossier(dossiersList[0]);
+                if (overrides.status && ['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ', 'Đang họp hội đồng', 'Không xem xét trách nhiệm hoàn trả'].includes(overrides.status)) {
+                    dossier.qdStatus = null;
+                    dossier.qdNo = "";
+                    dossier.qdDate = "";
+                    dossier.qdSigner = "";
+                    dossier.qdSummary = "";
+                    dossier.qdFileName = "";
+                    dossier.conclusionFile = "";
+                }
                 Object.assign(dossier, overrides);
                 dossiersList.push(dossier);
             }
@@ -3077,25 +3220,28 @@
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 180000000,
                 claimDate: "20/07/2026",
-                refundTotal: 40000000,
+                officerName: "Nguyễn Văn Nhầm",
+                officerRole: "Điều tra viên sơ cấp",
+                hdDecision: "11/QĐ-TLHD",
+                hdDate: "05/09/2026",
+                deadlineDate: "12/09/2026",
+                daysLeft: 2,
+                refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đang họp hội đồng",
-                dateCreated: "20/06/2026",
-                hdDecision: "11/QĐ-TLHD",
-                hdDate: "20/06/2026",
-                qdStatus: "",
+                status: "Chờ duyệt QĐ thành lập",
+                dateCreated: "05/09/2026",
+                qdStatus: null,
                 qdNo: "",
                 qdDate: "",
                 qdSummary: "",
                 qdFileName: "",
                 refundOfficers: [
-                    { name: "Nguyễn Văn Nhầm", loi: "Cố ý", total: 40000000, paid: 0, nextDate: "—", status: "Đang kiến nghị", progressClass: "secondary", agency: "UBND Tỉnh Lâm Đồng", role: "Điều tra viên sơ cấp", isPostponed: false }
+                    { name: "Nguyễn Văn Nhầm", loi: "Chờ duyệt QĐ", total: 0, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ", progressClass: "warning", agency: "UBND Tỉnh Lâm Đồng", role: "Điều tra viên sơ cấp", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
-                    { time: "20/06/2026 09:00", text: "Ban hành Quyết định thành lập Hội đồng số 11/QĐ-TLHD." },
-                    { time: "21/06/2026 14:00", text: "Hội đồng đang họp, rà soát mức độ lỗi và đề xuất hoàn trả." }
+                    { time: "05/09/2026 09:00", text: "Cán bộ lập dự thảo QĐ thành lập Hội đồng số 11/QĐ-TLHD và trình Lãnh đạo phê duyệt." }
                 ]
             });
 
@@ -3108,32 +3254,30 @@
                 agency: "Sở Tư pháp Hải Phòng",
                 claimAmt: 200000000,
                 claimDate: "10/07/2026",
-                refundTotal: 65000000,
-                refundMethod: "Khấu trừ lương",
-                refundMonthly: 4000000,
-                status: "Chờ ban hành QĐ",
-                dateCreated: "05/07/2026",
-                hdDecision: "12/QĐ-TLHD",
-                hdDate: "05/07/2026",
-                qdStatus: "Chờ ban hành",
+                officerName: "Trần Văn C",
+                officerRole: "Chuyên viên thẩm định",
+                hdDecision: "",
+                hdDate: "",
+                deadlineDate: "08/09/2026",
+                daysLeft: -2,
+                refundTotal: 0,
+                refundMethod: "",
+                refundMonthly: 0,
+                status: "Bị từ chối thành lập HĐ",
+                dateCreated: "25/08/2026",
+                qdStatus: null,
                 qdNo: "",
                 qdDate: "",
-                qdSummary: "Dự thảo Quyết định hoàn trả kinh phí bồi thường theo kiến nghị đã được lãnh đạo phê duyệt.",
-                qdFileName: "",
-                qdDraftAttachmentName: "du_thao_qd_hoan_tra_HT_2026_007.docx",
+                councilRejectActor: "Lãnh đạo Sở Tư pháp - Lê Minh Châu",
+                councilRejectTime: "28/08/2026 - 10:00",
+                councilRejectReason: "Cần bổ sung thêm đại diện Sở Tài chính vào thành phần Hội đồng để đảm bảo tính khách quan.",
                 refundOfficers: [
-                    { name: "Phạm Văn Kiểm", loi: "Vô ý", total: 45000000, paid: 0, nextDate: "—", status: "Chờ ban hành QĐ", progressClass: "secondary", agency: "Sở Tư pháp Hải Phòng", role: "Chuyên viên thẩm định hồ sơ", isPostponed: false },
-                    { name: "Vũ Thị Lan", loi: "Vô ý", total: 20000000, paid: 0, nextDate: "—", status: "Chờ ban hành QĐ", progressClass: "secondary", agency: "UBND Quận Lê Chân", role: "Phó phòng Tư pháp", isPostponed: false }
+                    { name: "Trần Văn C", loi: "Chờ cập nhật lại dự thảo", total: 0, paid: 0, nextDate: "—", status: "Bị từ chối thành lập HĐ", progressClass: "danger", agency: "Sở Tư pháp Hải Phòng", role: "Chuyên viên thẩm định", isPostponed: false }
                 ],
                 payments: [],
-                qdAudit: [
-                    { type: "approve", actor: "Lãnh đạo Nguyễn Văn B", time: "21/07/2026 10:00", detail: "Phê duyệt dự thảo Quyết định hoàn trả. Trạng thái chuyển sang Chờ ban hành.", file: "du_thao_qd_hoan_tra_HT_2026_007.docx" },
-                    { type: "submit", actor: "Cán bộ Nguyễn Văn A", time: "21/07/2026 09:15", detail: "Trình lãnh đạo phê duyệt dự thảo Quyết định hoàn trả.", file: "du_thao_qd_hoan_tra_HT_2026_007.docx" }
-                ],
                 timeline: [
-                    { time: "05/07/2026 08:30", text: "Ban hành Quyết định thành lập Hội đồng hoàn trả số 12/QĐ-TLHD." },
-                    { time: "18/07/2026 15:00", text: "Hội đồng hoàn tất kiến nghị mức hoàn trả 65.000.000đ." },
-                    { time: "21/07/2026 10:00", text: "Lãnh đạo phê duyệt dự thảo Quyết định hoàn trả. Hồ sơ đang chờ cán bộ ban hành." }
+                    { time: "25/08/2026 09:00", text: "Trình ký dự thảo QĐ thành lập Hội đồng." },
+                    { time: "28/08/2026 10:00", text: "Lãnh đạo từ chối duyệt: Yêu cầu bổ sung thêm đại diện Sở Tài chính." }
                 ]
             });
 
@@ -3182,16 +3326,17 @@
                 dateCreated: "20/08/2026",
                 hdDecision: "26/QĐ-TLHD",
                 hdDate: "20/08/2026",
-                qdStatus: "Chờ ban hành",
-                qdNo: "95/QĐ-STP",
-                qdDate: "25/08/2026",
+                qdStatus: "Chưa tạo",
+                qdCreated: false,
+                qdNo: "",
+                qdDate: "",
                 refundOfficers: [
                     { name: "Vũ Văn Tài", loi: "Vô ý nặng", total: 30000000, paid: 0, nextDate: "—", status: "Chờ ban hành QĐ", progressClass: "warning", agency: "Sở Tư pháp Hà Nội", role: "Chấp hành viên", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
                     { time: "20/08/2026 09:00", text: "Ban hành Quyết định thành lập Hội đồng hoàn trả số 26/QĐ-TLHD." },
-                    { time: "25/08/2026 10:00", text: "Lãnh đạo đã phê duyệt dự thảo Quyết định hoàn trả số 95/QĐ-STP." }
+                    { time: "25/08/2026 10:00", text: "Hội đồng hoàn tất kiến nghị, chờ lập dự thảo Quyết định hoàn trả." }
                 ]
             });
 
@@ -3404,16 +3549,17 @@
                 dateCreated: "25/08/2026",
                 hdDecision: "33/QĐ-TLHD",
                 hdDate: "25/08/2026",
-                qdStatus: "Chờ ban hành",
-                qdNo: "102/QĐ-UBND",
-                qdDate: "02/09/2026",
+                qdStatus: "Chưa tạo",
+                qdCreated: false,
+                qdNo: "",
+                qdDate: "",
                 refundOfficers: [
                     { name: "Lưu Quốc Toàn", loi: "Vô ý nặng", total: 45000000, paid: 0, nextDate: "—", status: "Chờ ban hành QĐ", progressClass: "warning", agency: "UBND Tỉnh Lâm Đồng", role: "Đội viên QLTT", isPostponed: false }
                 ],
                 payments: [],
                 timeline: [
                     { time: "25/08/2026 09:00", text: "Ban hành Quyết định thành lập Hội đồng số 33/QĐ-TLHD." },
-                    { time: "02/09/2026 11:00", text: "Lãnh đạo phê duyệt dự thảo QĐ hoàn trả số 102/QĐ-UBND, chờ ban hành." }
+                    { time: "30/08/2026 11:00", text: "Hội đồng hoàn tất kiến nghị, chờ lập dự thảo Quyết định hoàn trả." }
                 ]
             });
 
@@ -3498,6 +3644,50 @@
                 timeline: [
                     { time: "05/06/2026 09:00", text: "Ban hành Quyết định thành lập Hội đồng số 40/QĐ-TLHD." },
                     { time: "18/06/2026 14:00", text: "Ban hành Quyết định chấm dứt thu hồi số 68/QĐ-CDTH do cán bộ thi hành công vụ đã qua đời." }
+                ]
+            });
+
+            addMockDossier({
+                id: "HT-2026-021",
+                code: "HT-2026-021",
+                claimCode: "BT-2026-001",
+                claimTitle: "Thu hồi đất trái thẩm quyền tại Long Biên",
+                claimSummary: "Cán bộ ký ban hành quyết định thu hồi đất không đúng thẩm quyền gây thiệt hại cho người dân.",
+                agency: "Sở Tư pháp Hà Nội",
+                claimAmt: 200000000,
+                claimDate: "10/05/2026",
+                refundTotal: 85000000,
+                refundMethod: "",
+                refundMonthly: 0,
+                status: "Chờ duyệt QĐ hoàn trả",
+                dateCreated: "20/06/2026",
+                hdDecision: "42/QĐ-TLHD",
+                hdDate: "20/06/2026",
+                hdSummary: "Về việc thành lập Hội đồng xem xét trách nhiệm hoàn trả đối với vụ thu hồi đất tại Long Biên.",
+                hdLeader: "Lê Minh Châu (Giám đốc Sở)",
+                hdFileName: "QD_thanh_lap_HD_42.pdf",
+                qdCreated: true,
+                qdStatus: "Chờ duyệt",
+                qdNo: "[Dự thảo - Cấp tự động khi ký]",
+                qdDate: "05/08/2026",
+                qdSummary: "Căn cứ Biên bản họp Hội đồng xem xét trách nhiệm hoàn trả và kiến nghị mức hoàn trả đã được phê duyệt đối với các cán bộ gây thiệt hại trong vụ thu hồi đất trái thẩm quyền tại Long Biên.",
+                qdAttachmentName: "Du_thao_QD_hoan_tra_HT021.pdf",
+                qdSignDate: "",
+                conclusionType: "co_loi",
+                conclusionDate: "15/07/2026",
+                conclusionFile: "Bien_ban_hop_HD_42.pdf",
+                refundOfficers: [
+                    { name: "Phạm Quốc Huy", loi: "Cố ý", total: 55000000, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ hoàn trả", refundMethod: "Một lần", progressClass: "warning", agency: "UBND Quận Long Biên", role: "Phó Trưởng phòng TN&MT", isPostponed: false },
+                    { name: "Đặng Thị Lan", loi: "Vô ý", total: 30000000, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ hoàn trả", refundMethod: "Nhiều lần", progressClass: "warning", agency: "UBND Quận Long Biên", role: "Chuyên viên địa chính", isPostponed: false }
+                ],
+                payments: [],
+                timeline: [
+                    { time: "20/06/2026 09:00", text: "Khởi tạo hồ sơ xem xét trách nhiệm hoàn trả từ hồ sơ bồi thường BT-2026-001." },
+                    { time: "20/06/2026 10:30", text: "Ban hành Quyết định thành lập Hội đồng hoàn trả số 42/QĐ-TLHD." },
+                    { time: "15/07/2026 14:00", text: "Hội đồng họp, kết luận có lỗi và kiến nghị mức hoàn trả đối với 02 cán bộ." },
+                    { time: "20/07/2026 08:30", text: "Cán bộ lưu kết luận kiến nghị, chuyển sang giai đoạn Ban hành Quyết định hoàn trả." },
+                    { time: "05/08/2026 09:15", text: "Cán bộ lập dự thảo Quyết định hoàn trả và trình ký điện tử cho Lãnh đạo." },
+                    { time: "05/08/2026 09:15", text: "Chuyển trạng thái hồ sơ sang Chờ duyệt QĐ hoàn trả." }
                 ]
             });
 
@@ -3602,6 +3792,13 @@
                     }
                 }
 
+                // Đối với hồ sơ ở trạng thái "Chờ ban hành QĐ hoàn trả" mà chưa lập quyết định:
+                // Theo SRS Mục 4.3.3.5.7.2/4.3.3.5.7.3, luôn mở ở chế độ Xem chi tiết (view mode), không hiển thị nút Cập nhật
+                if (activeDossier && activeDossier.status === 'Chờ ban hành QĐ hoàn trả' && !activeDossier.qdCreated) {
+                    currentMode = 'view';
+                    isViewMode = true;
+                }
+
                 // Sync layout headers
                 if (isViewMode) {
                     document.getElementById('breadcrumbCode').innerText = `Chi tiết hồ sơ ${activeDossier.code}`;
@@ -3679,6 +3876,254 @@
                 }, 3000);
             }
 
+            // View file utility (Opens preview in new window without browser alert)
+            function viewAttachedFileMock(fileName) {
+                const name = fileName || 'tai_lieu_dinh_kem.pdf';
+                showToast(`Đang mở xem tệp tin: ${name}`, 'info');
+                const mockWin = window.open('', '_blank');
+                if (mockWin) {
+                    const dossierCode = (typeof activeDossier !== 'undefined' && activeDossier && activeDossier.code) ? activeDossier.code : 'HT-2026-001';
+                    const timeNow = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN');
+                    const previewHtml = [
+                        '<!DOCTYPE html>',
+                        '<html lang="vi">',
+                        '<head>',
+                        '    <meta charset="UTF-8">',
+                        '    <title>Xem tệp đính kèm - ' + name + '</title>',
+                        '    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">',
+                        '    <style>',
+                        '        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #525659; margin: 0; padding: 30px 20px; display: flex; justify-content: center; min-height: 100vh; box-sizing: border-box; }',
+                        '        .doc-wrapper { background: #ffffff; width: 100%; max-width: 820px; min-height: 1050px; padding: 48px 56px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); border-radius: 4px; box-sizing: border-box; }',
+                        '        .header-badge { display: inline-flex; align-items: center; gap: 8px; background: #eff6ff; color: #1d4ed8; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 700; margin-bottom: 16px; }',
+                        '        .title-block { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 16px; margin-bottom: 24px; }',
+                        '        .content-block { font-size: 14px; line-height: 1.8; color: #334155; }',
+                        '    </style>',
+                        '<' + '/head>',
+                        '<' + 'body>',
+                        '    <div class="doc-wrapper">',
+                        '        <div class="header-badge"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ' + name + '</div>',
+                        '        <div class="title-block">',
+                        '            <h3 style="margin: 0 0 6px 0; color: #0f172a; text-transform: uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h3>',
+                        '            <p style="margin: 0; font-weight: 700; text-decoration: underline;">Độc lập - Tự do - Hạnh phúc</p>',
+                        '            <h4 style="margin: 20px 0 0 0; color: #1e3a8a;">BẢN XEM TRƯỚC TỆP TIN ĐÍNH KÈM</h4>',
+                        '        </div>',
+                        '        <div class="content-block">',
+                        '            <p><strong>Tên tài liệu:</strong> ' + name + '</p>',
+                        '            <p><strong>Hồ sơ hoàn trả liên quan:</strong> ' + dossierCode + '</p>',
+                        '            <p><strong>Thời điểm mở xem:</strong> ' + timeNow + '</p>',
+                        '            <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 24px 0;">',
+                        '            <p style="text-align: justify;">Tài liệu này được lưu trữ hợp lệ trong Hệ thống Quản lý công tác Bồi thường Nhà nước, phục vụ công tác xem xét và xử lý trách nhiệm hoàn trả theo quy định pháp luật.</p>',
+                        '            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; margin-top: 40px; text-align: center;">',
+                        '                <i class="fa-solid fa-file-shield" style="font-size: 48px; color: #10b981; margin-bottom: 12px;"></i>',
+                        '                <div style="font-weight: 700; color: #0f172a; font-size: 15px;">Tệp tin đã được xác thực an toàn</div>',
+                        '                <div style="font-size: 12.5px; color: #64748b; margin-top: 4px;">Dữ liệu toàn vẹn, có giá trị pháp lý trong quy trình bồi thường và hoàn trả NSNN.</div>',
+                        '            </div>',
+                        '        </div>',
+                        '    </div>',
+                        '<' + '/body>',
+                        '<' + '/html>'
+                    ].join('\n');
+                    mockWin.document.write(previewHtml);
+                    mockWin.document.close();
+                }
+            }
+
+            // ==========================================
+            // XỬ LÝ POPUP KÝ SỐ LÃNH ĐẠO (MH20) & TỪ CHỐI (MH21) & THÊM VĂN BẢN (MH04)
+            // ==========================================
+            let pendingLeaderSignTarget = 'council';
+            let rejectAttachedFile = null;
+            let activeAddDocContext = 's1';
+            let addDocAttachedFile = null;
+
+            function openLeaderSignModal(target) {
+                pendingLeaderSignTarget = target;
+                const titleEl = document.getElementById('m20DocTitle');
+                const codeEl = document.getElementById('m20DossierCode');
+                const submitterEl = document.getElementById('m20Submitter');
+                const summaryEl = document.getElementById('m20Summary');
+                const pinInput = document.getElementById('m20PinInput');
+                const pinError = document.getElementById('m20PinError');
+
+                if (codeEl && activeDossier) codeEl.innerText = activeDossier.code;
+                if (pinInput) {
+                    pinInput.value = '123456';
+                    pinInput.classList.remove('is-invalid');
+                }
+                if (pinError) pinError.style.display = 'none';
+
+                if (target === 'council') {
+                    if (titleEl) titleEl.innerText = 'Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả';
+                    if (submitterEl) submitterEl.innerText = 'Phòng Bồi thường Nhà nước - Chuyên viên Nguyễn Văn Chuyên Viên';
+                    if (summaryEl) summaryEl.innerText = activeDossier.councilDraftSummary || 'Thành lập Hội đồng xem xét trách nhiệm hoàn trả đối với vụ việc bồi thường cưỡng chế Cầu Giấy.';
+                } else {
+                    if (titleEl) titleEl.innerText = 'Quyết định hoàn trả kinh phí bồi thường (Mẫu số 21/BTNN)';
+                    if (submitterEl) submitterEl.innerText = 'Phòng Bồi thường Nhà nước - Chuyên viên Nguyễn Văn Chuyên Viên';
+                    if (summaryEl) summaryEl.innerText = activeDossier.qdSummary || document.getElementById('s3DraftSummary')?.value || 'Ban hành Quyết định hoàn trả kinh phí bồi thường đối với các cán bộ có sai phạm.';
+                }
+
+                document.getElementById('leaderSignApprovalModal').classList.add('visible');
+            }
+
+            function closeLeaderSignModal() {
+                document.getElementById('leaderSignApprovalModal').classList.remove('visible');
+            }
+
+            function openPreviewFromLeaderModal() {
+                if (pendingLeaderSignTarget === 'council') {
+                    openPreviewDecisionModal();
+                } else {
+                    openPreviewStep3Modal();
+                }
+            }
+
+            function confirmLeaderDigitalSign() {
+                const pinInput = document.getElementById('m20PinInput');
+                const pinError = document.getElementById('m20PinError');
+                if (!pinInput || !pinInput.value.trim()) {
+                    if (pinInput) {
+                        pinInput.classList.add('is-invalid');
+                        pinInput.focus();
+                    }
+                    if (pinError) pinError.style.display = 'block';
+                    return;
+                }
+
+                closeLeaderSignModal();
+
+                if (pendingLeaderSignTarget === 'council') {
+                    currentPerspective = 'leader';
+                    activeDossier.status = 'Đang họp hội đồng';
+                    const nowTime = nowViShort();
+                    if (councilSignHistory.length === 0 || councilSignHistory[0].type !== 'submit') {
+                        councilSignHistory.unshift({
+                            type: 'submit',
+                            actor: 'Chuyên viên Nguyễn Văn Chuyên Viên',
+                            time: '17/07/2026 - 16:00',
+                            detail: 'Trình ký Quyết định thành lập Hội đồng hoàn trả.'
+                        });
+                    }
+                    councilSignHistory.unshift({
+                        type: 'approve',
+                        actor: 'Giám đốc Trần Văn Lãnh Đạo',
+                        time: nowTime,
+                        detail: 'Quyết định số QĐ-123/QĐ-UBND đã được ký số và ban hành chính thức.'
+                    });
+                    showToast('Lãnh đạo đã phê duyệt ký số Quyết định thành lập Hội đồng thành công!', 'success');
+                    switchSimulatorState(2);
+                } else if (pendingLeaderSignTarget === 'refundDecision') {
+                    currentPerspective = 'leader';
+                    activeDossier.qdStatus = 'Đã ban hành';
+                    activeDossier.status = 'Đang thi hành';
+                    addStep3Audit('approve', 'Giám đốc Sở - Trần Văn Lãnh Đạo', 'Ký số phê duyệt Quyết định hoàn trả số 89/QĐ-STP. Quyết định hoàn trả được ban hành và chuyển sang giai đoạn Đang thi hành.');
+                    activeDossier.timeline.unshift({
+                        time: nowViShort(),
+                        text: 'Lãnh đạo phê duyệt ký số Quyết định hoàn trả. Quyết định chính thức có hiệu lực thi hành.'
+                    });
+                    showToast('Lãnh đạo đã phê duyệt ký số Quyết định hoàn trả thành công! Hồ sơ chuyển sang trạng thái Đang thi hành.', 'success');
+                    switchSimulatorState(4);
+                }
+            }
+
+            function handleRejectFileAttached(input) {
+                if (input.files && input.files[0]) {
+                    rejectAttachedFile = input.files[0];
+                    const el = document.getElementById('rejectFileName');
+                    if (el) el.innerHTML = `<i class="fa-solid fa-file-pdf"></i> ${rejectAttachedFile.name}`;
+                    const info = document.getElementById('rejectFileInfo');
+                    if (info) info.style.display = 'flex';
+                }
+            }
+
+            function removeRejectFileAttached() {
+                rejectAttachedFile = null;
+                const fi = document.getElementById('rejectFileInput');
+                if (fi) fi.value = '';
+                const info = document.getElementById('rejectFileInfo');
+                if (info) info.style.display = 'none';
+            }
+
+            function openAddRelatedDocModal(context) {
+                activeAddDocContext = context;
+                addDocAttachedFile = null;
+                const titleInput = document.getElementById('addDocTitle');
+                const codeInput = document.getElementById('addDocCode');
+                const dateInput = document.getElementById('addDocDate');
+                const agencyInput = document.getElementById('addDocAgency');
+                const errTitle = document.getElementById('addDocTitleError');
+                const fileInfo = document.getElementById('addDocFileInfo');
+                const fileInput = document.getElementById('addDocFileInput');
+
+                if (titleInput) {
+                    titleInput.value = '';
+                    titleInput.classList.remove('is-invalid');
+                }
+                if (errTitle) errTitle.style.display = 'none';
+                if (codeInput) codeInput.value = '';
+                if (dateInput) dateInput.value = new Date().toLocaleDateString('vi-VN');
+                if (agencyInput) agencyInput.value = activeDossier ? (activeDossier.agency || 'Sở Tư pháp Hà Nội') : 'Sở Tư pháp Hà Nội';
+                if (fileInput) fileInput.value = '';
+                if (fileInfo) fileInfo.style.display = 'none';
+
+                document.getElementById('addRelatedDocModal').classList.add('visible');
+                if (titleInput) setTimeout(() => titleInput.focus(), 50);
+            }
+
+            function closeAddRelatedDocModal() {
+                document.getElementById('addRelatedDocModal').classList.remove('visible');
+            }
+
+            function handleAddDocFileAttached(input) {
+                if (input.files && input.files[0]) {
+                    addDocAttachedFile = input.files[0];
+                    const nameEl = document.getElementById('addDocFileName');
+                    if (nameEl) nameEl.innerHTML = `<i class="fa-solid fa-file-pdf"></i> ${addDocAttachedFile.name}`;
+                    const infoEl = document.getElementById('addDocFileInfo');
+                    if (infoEl) infoEl.style.display = 'flex';
+                }
+            }
+
+            function removeAddDocFileAttached() {
+                addDocAttachedFile = null;
+                const fileInput = document.getElementById('addDocFileInput');
+                if (fileInput) fileInput.value = '';
+                const infoEl = document.getElementById('addDocFileInfo');
+                if (infoEl) infoEl.style.display = 'none';
+            }
+
+            function saveRelatedDocument() {
+                const titleInput = document.getElementById('addDocTitle');
+                const errTitle = document.getElementById('addDocTitleError');
+                const title = titleInput ? titleInput.value.trim() : '';
+
+                if (!title) {
+                    if (titleInput) {
+                        titleInput.classList.add('is-invalid');
+                        titleInput.focus();
+                    }
+                    if (errTitle) errTitle.style.display = 'block';
+                    return;
+                }
+
+                if (titleInput) titleInput.classList.remove('is-invalid');
+                if (errTitle) errTitle.style.display = 'none';
+
+                const code = (document.getElementById('addDocCode')?.value.trim()) || '-';
+                const date = (document.getElementById('addDocDate')?.value.trim()) || new Date().toLocaleDateString('vi-VN');
+                const fileName = addDocAttachedFile ? addDocAttachedFile.name : 'van_ban_lien_quan.pdf';
+
+                if (activeAddDocContext === 's1') {
+                    s1RelatedDocs.push({ title, code, date, fileName });
+                    renderS1RelatedDocs();
+                } else {
+                    s3RelatedDocs.push({ title, code, date, fileName });
+                    renderS3RelatedDocs();
+                }
+
+                closeAddRelatedDocModal();
+                showToast('Đã lưu văn bản liên quan thành công!', 'success');
+            }
+
             function getActiveSubStateForDossier() {
                 if (activeDossier.status === 'Chờ thành lập hội đồng') return 1;
                 if (activeDossier.status === 'Chờ duyệt QĐ thành lập') return 1.2;
@@ -3686,9 +4131,11 @@
                 if (activeDossier.status === 'Đang họp hội đồng') return 2;
                 if (activeDossier.status === 'Không xem xét trách nhiệm hoàn trả') return 2.9;
                 if (activeDossier.status === 'Bị từ chối QĐ hoàn trả' || activeDossier.qdStatus === 'Bị từ chối') return 3.2;
-                if (activeDossier.qdStatus === 'Chờ ký') return 3.1;
-                if (activeDossier.qdStatus === 'Chờ ban hành') return 3.3;
-                if (activeDossier.status === 'Chờ ban hành QĐ' || activeDossier.status === 'Chờ ban hành QĐ hoàn trả') return 3;
+                if (activeDossier.status === 'Chờ duyệt QĐ hoàn trả' || activeDossier.qdStatus === 'Chờ ký') return 3.1;
+                if (activeDossier.status === 'Chờ ban hành QĐ' || activeDossier.status === 'Chờ ban hành QĐ hoàn trả') {
+                    if (activeDossier.qdCreated) return 3.0;
+                    return 3;
+                }
                 if (activeDossier.status === 'Chấm dứt thu hồi') return 4.5;
                 if (activeDossier.status === 'Đang thi hành') return 4;
                 if (activeDossier.status === 'Hoàn thành') return 5;
@@ -3701,7 +4148,7 @@
                 if (activeDossier.status === 'Chờ thành lập hội đồng') return 1;
                 if (activeDossier.status === 'Chờ duyệt QĐ thành lập' || activeDossier.status === 'Từ chối duyệt QĐ thành lập' || activeDossier.status === 'Bị từ chối thành lập HĐ') return 1;
                 if (activeDossier.status === 'Đang họp hội đồng') return 2;
-                if (activeDossier.qdStatus === 'Chờ ký' || activeDossier.qdStatus === 'Bị từ chối' || activeDossier.qdStatus === 'Chờ ban hành') return 3;
+                if (activeDossier.status === 'Chờ duyệt QĐ hoàn trả' || activeDossier.qdStatus === 'Chờ ký' || activeDossier.qdStatus === 'Bị từ chối' || activeDossier.qdStatus === 'Chờ ban hành') return 3;
                 if (activeDossier.status === 'Chờ ban hành QĐ' || activeDossier.status === 'Chờ ban hành QĐ hoàn trả' || activeDossier.status === 'Bị từ chối QĐ hoàn trả') return 3;
                 if (activeDossier.status === 'Đang thi hành' || activeDossier.status === 'Chấm dứt thu hồi') return 4;
                 if (activeDossier.status === 'Hoàn thành') return 5;
@@ -3730,6 +4177,8 @@
                     case 'Chờ ban hành QĐ':
                     case 'Chờ ban hành QĐ hoàn trả':
                         return '<span class="badge" style="background:#fef9c3; color:#a16207; font-weight:600; border:1px solid #fde047; font-size:12px; padding:4px 10px;"><i class="fa-solid fa-file-signature" style="margin-right:4px;"></i>Chờ ban hành QĐ hoàn trả</span>';
+                    case 'Chờ duyệt QĐ hoàn trả':
+                        return '<span class="badge" style="background:#fef3c7; color:#92400e; font-weight:600; border:1px solid #fde68a; font-size:12px; padding:4px 10px;"><i class="fa-solid fa-hourglass-half" style="margin-right:4px;"></i>Chờ duyệt QĐ hoàn trả</span>';
                     case 'Bị từ chối QĐ hoàn trả':
                         return '<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:600; border:1px solid #fca5a5; font-size:12px; padding:4px 10px;"><i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i>Bị từ chối QĐ hoàn trả</span>';
                     case 'Đang thi hành':
@@ -3837,24 +4286,31 @@
                 let html = '';
 
                 if (isViewMode) {
-                    // 1. "Thành lập hội đồng": Chỉ hiển thị khi hồ sơ ở trạng thái Chờ thành lập hội đồng hoặc Bị từ chối thành lập HĐ
-                    if (status === 'Chờ thành lập hội đồng' || status === 'Bị từ chối thành lập HĐ') {
-                        html += `<button type="button" class="btn btn-primary" onclick="openCreateCouncilModal()"><i class="fa-solid fa-users-gear"></i> Thành lập hội đồng</button>`;
-                    }
+                    // Xử lý theo vai trò
+                    if (currentPerspective === 'leader') {
+                        // Lãnh đạo chỉ hiển thị Phê duyệt / Từ chối khi hồ sơ ở trạng thái chờ duyệt
+                        if (status === 'Chờ duyệt QĐ thành lập' || status === 'Chờ duyệt QĐ hoàn trả') {
+                            html += `<button type="button" class="btn btn-success" onclick="handleHeaderApprove()"><i class="fa-solid fa-check"></i> Phê duyệt</button>`;
+                            html += `<button type="button" class="btn btn-danger" onclick="handleHeaderReject()"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
+                        }
+                        // Nút Đóng
+                        html += `<button type="button" class="btn btn-secondary" onclick="closeRefundDetail()" title="Đóng màn hình"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
+                    } else {
+                    // Vai trò Chuyên viên / Tra cứu
+                    // Nút "Thành lập hội đồng" đã được hiển thị tại CTA card Bước 1, không render ở footer nữa.
 
-                    // 2 & 3. "Phê duyệt" & "Từ chối": Chỉ hiển thị khi người dùng được phân quyền và hồ sơ ở trạng thái Chờ duyệt QĐ thành lập hoặc Chờ ban hành QĐ hoàn trả
-                    if (status === 'Chờ duyệt QĐ thành lập' || status === 'Chờ ban hành QĐ hoàn trả') {
+                    // 2 & 3. "Phê duyệt" & "Từ chối"
+                    if (status === 'Chờ duyệt QĐ thành lập' || status === 'Chờ duyệt QĐ hoàn trả') {
                         html += `<button type="button" class="btn btn-success" onclick="handleHeaderApprove()"><i class="fa-solid fa-check"></i> Phê duyệt</button>`;
                         html += `<button type="button" class="btn btn-danger" onclick="handleHeaderReject()"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
                     }
 
-                    // 4 & 5. "Cập nhật" / "Cập nhật hoàn trả":
-                    // Hiển thị khi hồ sơ ở trạng thái Bị từ chối thành lập HĐ, Đang họp hội đồng, Chờ ban hành QĐ hoàn trả, Bị từ chối QĐ hoàn trả, hoặc Đang thi hành
+                    // 4 & 5. "Cập nhật" / "Cập nhật hoàn trả"
                     if (status === 'Bị từ chối thành lập HĐ') {
                         html += `<button type="button" class="btn btn-primary" onclick="switchToEditMode(1)"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
                     } else if (status === 'Đang họp hội đồng') {
                         html += `<button type="button" class="btn btn-primary" onclick="switchToEditMode(2)"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
-                    } else if (status === 'Chờ ban hành QĐ hoàn trả' || status === 'Bị từ chối QĐ hoàn trả') {
+                    } else if (status === 'Bị từ chối QĐ hoàn trả') {
                         html += `<button type="button" class="btn btn-primary" onclick="switchToEditMode(3)"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
                     } else if (status === 'Đang thi hành') {
                         html += `<button type="button" class="btn btn-primary" onclick="switchToEditMode(4)"><i class="fa-solid fa-money-bill-trend-up"></i> Cập nhật hoàn trả</button>`;
@@ -3862,8 +4318,31 @@
 
                     // 6. "Đóng": Luôn hiển thị
                     html += `<button type="button" class="btn btn-secondary" onclick="closeRefundDetail()" title="Đóng màn hình"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
-                } else {
-                    // Chế độ Cập nhật (mode=edit): Bỏ nút "Xem chi tiết", chỉ hiển thị nút "Đóng"
+                    }} else {
+                    // Chế độ Cập nhật (mode=edit): Bỏ nút "Xem chi tiết", hiển thị nút tác vụ của bước + nút "Đóng"
+                    if (currentViewStep === 1) {
+                        if (status === 'Bị từ chối thành lập HĐ') {
+                            html += `<button type="button" class="btn btn-primary" onclick="submitS1Resubmit()"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>`;
+                        } else if (false && status === 'Chờ thành lập hội đồng') {
+                            // Bỏ nút Thành lập hội đồng ở footer vì đã có ở CTA card Bước 1
+                        }
+                    } else if (currentViewStep === 2) {
+                        const conc = document.getElementById('s2Conclusion')?.value || 'co_loi';
+                        if (conc === 'khong_co_loi' || conc === 'da_chet') {
+                            html += `<button type="button" class="btn btn-danger" onclick="submitStep2NoReview()"><i class="fa-solid fa-ban"></i> Lưu kết luận &amp; Kết thúc hồ sơ</button>`;
+                        } else {
+                            html += `<button type="button" class="btn btn-primary" onclick="submitStep2Recommendations()"><i class="fa-solid fa-paper-plane"></i> Trình duyệt kiến nghị</button>`;
+                        }
+                    } else if (currentViewStep === 3) {
+                        const isDigital = s3PublishType === 'digital';
+                        if (isDigital) {
+                            html += `<button type="button" class="btn btn-primary" onclick="submitStep3ForApproval()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>`;
+                        } else {
+                            html += `<button type="button" class="btn btn-success" onclick="issueStep3OfflineDecision()"><i class="fa-solid fa-file-circle-check"></i> Ban hành QĐ</button>`;
+                        }
+                    }
+
+                    // Nút Đóng: Luôn có mặt trong thanh sticky footer
                     html += `<button type="button" class="btn btn-secondary" onclick="closeRefundDetail()" title="Đóng màn hình"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
                 }
 
@@ -3877,20 +4356,20 @@
             function handleHeaderApprove() {
                 if (activeDossier.status === 'Chờ duyệt QĐ thành lập') {
                     currentPerspective = 'leader';
-                    simulatedLeaderApprove();
-                } else if (activeDossier.status === 'Chờ ban hành QĐ hoàn trả') {
+                    openLeaderSignModal('council');
+                } else if (activeDossier.status === 'Chờ duyệt QĐ hoàn trả') {
                     currentPerspective = 'leader';
-                    simulatedStep3Approve();
+                    openLeaderSignModal('refundDecision');
                 }
             }
 
             function handleHeaderReject() {
                 if (activeDossier.status === 'Chờ duyệt QĐ thành lập') {
                     currentPerspective = 'leader';
-                    simulatedLeaderReject();
-                } else if (activeDossier.status === 'Chờ ban hành QĐ hoàn trả') {
+                    openRejectReasonModal('council');
+                } else if (activeDossier.status === 'Chờ duyệt QĐ hoàn trả') {
                     currentPerspective = 'leader';
-                    simulatedStep3Reject();
+                    openRejectReasonModal('refundDecision');
                 }
             }
 
@@ -3911,7 +4390,7 @@
                     const panel = document.getElementById(`panelStep${step}`);
                     if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 50);
-                showToast(`Đã chuyển sang chế độ Cập nhật hồ sơ (Bước ${step}).`, 'info');
+                // Toast bỏ: showToast(`Đã chuyển sang chế độ Cập nhật hồ sơ (Bước ${step}).`, 'info');
             }
 
             function switchToViewMode() {
@@ -3926,7 +4405,7 @@
                     const panel = document.getElementById(`panelStep${focusTarget}`);
                     if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 50);
-                showToast('Đã chuyển sang chế độ Xem chi tiết (Chỉ đọc).', 'info');
+                // Toast bỏ: showToast('Đã chuyển sang chế độ Xem chi tiết (Chỉ đọc).', 'info');
             }
 
             function toggleCommonClaimCard() {
@@ -4093,13 +4572,16 @@
                         renderStep5();
                     }
                 }
+
+                // Luôn đồng bộ thanh nút sticky footer theo đúng currentViewStep và isViewMode
+                renderPageHeaderActions();
             }
 
             function toggleEditViewMode() {
                 isViewMode = !isViewMode;
                 currentMode = isViewMode ? 'view' : 'edit';
                 renderStateLayout();
-                showToast(isViewMode ? 'Đã chuyển sang chế độ Xem chi tiết (Chỉ đọc)' : 'Đã chuyển sang chế độ Cập nhật hồ sơ', 'info');
+                // Toast bỏ: showToast(isViewMode ? 'Đã chuyển sang chế độ Xem chi tiết (Chỉ đọc)' : 'Đã chuyển sang chế độ Cập nhật hồ sơ', 'info');
             }
 
             // Chuyển bước trên Stepper: Mở form riêng của bước được bấm (ẩn toàn bộ các bước khác)
@@ -4142,15 +4624,19 @@
                     currentViewStep = 2;
                 } else if (Math.abs(stateNum - 1.3) < 0.001) {
                     activeDossier.status = 'Bị từ chối thành lập HĐ';
+                    activeDossier.qdStatus = null; activeDossier.qdCreated = false;
                     currentViewStep = 1;
                 } else if (Math.abs(stateNum - 1.2) < 0.001) {
                     activeDossier.status = 'Chờ duyệt QĐ thành lập';
+                    activeDossier.qdStatus = null; activeDossier.qdCreated = false;
                     currentViewStep = 1;
                 } else if (Math.abs(stateNum - 1) < 0.001) {
                     activeDossier.status = 'Chờ thành lập hội đồng';
+                    activeDossier.qdStatus = null; activeDossier.qdCreated = false;
                     currentViewStep = 1;
                 } else if (Math.abs(stateNum - 2) < 0.001) {
                     activeDossier.status = 'Đang họp hội đồng';
+                    activeDossier.qdStatus = null; activeDossier.qdCreated = false;
                     currentViewStep = 2;
                 } else if (Math.abs(stateNum - 3) < 0.001) {
                     activeDossier.status = 'Chờ ban hành QĐ hoàn trả';
@@ -4158,7 +4644,7 @@
                     activeDossier.qdCreated = false;
                     currentViewStep = 3;
                 } else if (Math.abs(stateNum - 3.1) < 0.001) {
-                    activeDossier.status = 'Chờ ban hành QĐ hoàn trả';
+                    activeDossier.status = 'Chờ duyệt QĐ hoàn trả';
                     activeDossier.qdStatus = 'Chờ ký';
                     activeDossier.qdCreated = true;
                     currentViewStep = 3;
@@ -4289,10 +4775,16 @@
                 const isPendingStatus = (activeDossier.status === 'Chờ duyệt QĐ thành lập' || Math.abs(currentStepState - 1.2) < 0.01);
                 const isWaitingCreation = (activeDossier.status === 'Chờ thành lập hội đồng') && !isRejectedStatus && !isPendingStatus && (Math.floor(currentStepState) === 1);
 
-                if (isWaitingCreation && !isStepReadonly) {
-                    // Trạng thái 1: Chờ thành lập hội đồng -> hiển thị CTA card
+                if (isWaitingCreation) {
+                    // Trạng thái 1: Chờ thành lập hội đồng -> hiển thị CTA card, ẩn hoàn toàn Khối QĐ thành lập & Lịch sử
                     if (rejectBox) rejectBox.style.display = 'none';
-                    if (ctaCard) ctaCard.style.display = 'block';
+                    if (ctaCard) {
+                        ctaCard.style.display = 'block';
+                        const ctaBtn = ctaCard.querySelector('button');
+                        if (ctaBtn) {
+                            ctaBtn.style.display = (currentPerspective === 'leader' || (isViewMode && currentPerspective === 'tra_cuu')) ? 'none' : 'inline-flex';
+                        }
+                    }
                     if (officialCard) officialCard.style.display = 'none';
                     if (auditCard) auditCard.style.display = 'none';
                     return;
@@ -4335,6 +4827,16 @@
                 document.getElementById('s1OfficialNo').innerText = activeDossier.hdDecision || (isPendingStatus || isRejectedStatus ? 'Chờ cấp số' : '45/QĐ-STP');
                 document.getElementById('s1OfficialSignDate').innerText = activeDossier.hdSignDate || activeDossier.hdDate || '02/04/2026';
 
+                // Ngày ký Step 1
+                const s1SignDateEl = document.getElementById('s1SignDateReadonly');
+                if (s1SignDateEl) {
+                    if (isPendingStatus || isRejectedStatus || activeDossier.status === 'Chờ thành lập hội đồng') {
+                        s1SignDateEl.innerText = 'Chưa ký';
+                    } else {
+                        s1SignDateEl.innerText = activeDossier.hdSignDate || activeDossier.hdDate || '02/04/2026';
+                    }
+                }
+
                 // Trích yếu & Lãnh đạo ký: chỉ cho phép sửa khi canEditS1
                 const s1SummaryReadonly = document.getElementById('s1SummaryReadonly');
                 const s1SummaryEditable = document.getElementById('s1SummaryEditable');
@@ -4366,9 +4868,10 @@
                     if (s1AddDocBtn) s1AddDocBtn.style.display = 'inline-block';
                     if (s1DocActionHeader) s1DocActionHeader.style.display = 'table-cell';
                     document.querySelectorAll('.s1DocActionCell').forEach(c => c.style.display = 'table-cell');
+                    // Nút Trình ký inline đã được hiển thị tại Footer chân trang, ẩn ở đây để tránh trùng lặp
                     if (s1ResubmitContainer) {
-                        s1ResubmitContainer.style.display = 'flex';
-                        s1ResubmitContainer.innerHTML = '<button type="button" class="btn btn-primary" onclick="submitS1Resubmit()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>';
+                        s1ResubmitContainer.style.display = 'none';
+                        s1ResubmitContainer.innerHTML = '';
                     }
                 } else {
                     if (s1SummaryReadonly) {
@@ -4449,7 +4952,7 @@
                         <td>${doc.title}</td>
                         <td style="text-align:center;">${doc.code}</td>
                         <td style="text-align:center;">${doc.date}</td>
-                        <td style="text-align:center;"><a href="javascript:void(0)" onclick="window.open('#', '_blank')" class="action-link"><i class="fa-solid fa-file-pdf"></i> Xem file</a></td>
+                        <td style="text-align:center;"><a href="javascript:void(0)" onclick="viewAttachedFileMock('${doc.fileName || 'tai_lieu_dinh_kem.pdf'}')" class="action-link"><i class="fa-solid fa-file-pdf"></i> Xem file</a></td>
                         ${actionColHtml}
                     `;
                     tbody.appendChild(tr);
@@ -4457,13 +4960,10 @@
             }
 
             function openS1AddDocModal() {
-                const title = prompt("Nhập Tên văn bản liên quan:");
-                if (!title) return;
-                const code = prompt("Nhập Số hiệu văn bản:") || "-";
-                const date = prompt("Nhập Ngày văn bản (dd/mm/yyyy):") || new Date().toLocaleDateString('vi-VN');
-                s1RelatedDocs.push({ title, code, date, fileName: "tai_lieu_dinh_kem.pdf" });
+                // Thêm trực tiếp 1 dòng mới vào bảng thay vì mở popup
+                s1RelatedDocs.push({ title: '', code: '', date: '', fileName: '' });
                 renderS1RelatedDocs();
-                showToast("Đã thêm văn bản liên quan!", "success");
+                showToast('Đã thêm dòng văn bản liên quan mới. Vui lòng nhập thông tin.', 'info');
             }
 
             function removeS1RelatedDoc(index) {
@@ -4568,9 +5068,6 @@
                 const addBtn = document.getElementById('s2AddOfficerBtn');
                 if (addBtn) addBtn.style.display = isStepReadonly ? 'none' : 'inline-flex';
 
-                const actionBar = document.getElementById('s2ActionBar');
-                if (actionBar) actionBar.style.display = isStepReadonly ? 'none' : 'flex';
-
                 const btnUpload = document.getElementById('btnS2UploadFile');
                 if (btnUpload) btnUpload.style.display = isStepReadonly ? 'none' : 'inline-flex';
 
@@ -4579,7 +5076,7 @@
 
                 const fileInfo = document.getElementById('s2ConclusionFileInfo');
                 if (fileInfo) {
-                    if (s2ConclusionAttachedFile || activeDossier.conclusionFile || workflowStep >= 2) {
+                    if (s2ConclusionAttachedFile || activeDossier.conclusionFile || getCurrentWorkflowStep() >= 2) {
                         fileInfo.style.display = 'flex';
                         const el = document.getElementById('s2ConclusionFileName');
                         if (el) el.innerHTML = `<i class="fa-solid fa-file-pdf"></i> ${s2ConclusionAttachedFile ? s2ConclusionAttachedFile.name : (activeDossier.conclusionFile || 'Bien_ban_hop_Hoi_dong.pdf')}`;
@@ -4611,6 +5108,13 @@
 
                 activeDossier.refundOfficers.forEach((o, index) => {
                     const tr = document.createElement('tr');
+                    tr.style.cursor = 'pointer';
+                    tr.title = 'Bấm vào dòng để xem chi tiết cán bộ';
+                    tr.onclick = (e) => {
+                        if (!e.target.closest('.btn-action-square') && !e.target.closest('a')) {
+                            viewOfficerInStep2(index);
+                        }
+                    };
                     const statusBadge = o.isPostponed 
                         ? `<span class="badge" style="background:#fff7ed; color:#ea580c; border:1px solid #ffedd5; font-weight:700;"><i class="fa-solid fa-hourglass-half" style="color:#d97706; margin-right:4px;"></i>Đề xuất hoãn</span>`
                         : `<span style="color:#94a3b8; font-weight:600;">Không hoãn</span>`;
@@ -4619,8 +5123,8 @@
                     if (showActionCol) {
                         actionColHtml = `
                             <td style="text-align: center; white-space:nowrap;">
-                                <button class="btn-action-square btn-primary" title="Chỉnh sửa chi tiết cán bộ" onclick="editOfficerInStep2(${index}); return false;"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(${index}); return false;"><i class="fa-solid fa-trash-can"></i></button>
+                                <button class="btn-action-square btn-primary" title="Chỉnh sửa chi tiết cán bộ" onclick="event.stopPropagation(); editOfficerInStep2(${index}); return false;"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="event.stopPropagation(); deleteOfficerInStep2(${index}); return false;"><i class="fa-solid fa-trash-can"></i></button>
                             </td>
                         `;
                     }
@@ -4649,6 +5153,7 @@
                 const noReviewCard = document.getElementById('s2NoReviewActionCard');
                 if (recCard) recCard.style.display = isCoLoi ? 'block' : 'none';
                 if (noReviewCard) noReviewCard.style.display = isCoLoi ? 'none' : 'block';
+                renderPageHeaderActions();
             }
 
             function handleS2ConclusionFileAttached(input) {
@@ -4765,9 +5270,13 @@
                 activeDossier.qdCreated = true;
                 activeDossier.qdStatus = 'Dự thảo';
                 currentStepState = 3.0;
+                isViewMode = false;
+                currentMode = 'edit';
                 if (!activeDossier.qdNo) activeDossier.qdNo = '89/QĐ-STP';
                 if (!activeDossier.qdDate) activeDossier.qdDate = new Date().toLocaleDateString('vi-VN');
                 renderStep3();
+                renderStep3Actions();
+                renderPageHeaderActions();
                 showToast("Đã mở biểu mẫu lập dự thảo Quyết định hoàn trả.", "success");
             }
 
@@ -4777,6 +5286,7 @@
                 const decNoInput = document.getElementById('s3DecisionNo');
                 const reqMark = document.getElementById('s3DecisionNoRequired');
                 const signerGroup = document.getElementById('s3SignerGroup');
+                const signDateGroup = document.getElementById('s3SignDateGroup');
 
                 if (isDigital) {
                     if (currentStepState === 3.1 || currentStepState === 3.2 || activeDossier.status === 'Bị từ chối QĐ hoàn trả') {
@@ -4785,13 +5295,18 @@
                     }
                     if (reqMark) reqMark.style.display = 'none';
                     if (signerGroup) signerGroup.style.display = 'block';
+                    // Ẩn Ngày ký khi trình ký điện tử (hệ thống tự ghi nhận khi Lãnh đạo ký số)
+                    if (signDateGroup) signDateGroup.style.display = 'none';
                 } else {
                     decNoInput.value = activeDossier.qdDecision || '89/QĐ-STP';
                     decNoInput.readOnly = isReadonlyStep(3);
                     if (reqMark) reqMark.style.display = 'inline';
                     if (signerGroup) signerGroup.style.display = 'none';
+                    // Hiển thị Ngày ký khi ký ngoài hệ thống
+                    if (signDateGroup) signDateGroup.style.display = 'block';
                 }
                 renderStep3Actions();
+                renderPageHeaderActions();
             }
 
             function renderStep3() {
@@ -4803,8 +5318,9 @@
 
                 const isRejected = (activeDossier.status === 'Bị từ chối QĐ hoàn trả' || activeDossier.qdStatus === 'Bị từ chối' || Math.abs(currentStepState - 3.2) < 0.01);
 
-                // Kiểm tra trạng thái "Khi chưa tạo quyết định hoàn trả":
-                const isNotYetCreated = (activeDossier.status === 'Chờ ban hành QĐ hoàn trả' && (activeDossier.qdStatus === 'Chưa tạo' || !activeDossier.qdCreated) && !isRejected && !isPastReadonly);
+                // Điều kiện hiển thị Khối thông báo chưa ban hành QĐ hoàn trả theo SRS Mục 4.3.3.5.7.2:
+                // Chỉ hiển thị khi hồ sơ ở trạng thái "Chờ ban hành QĐ hoàn trả" nhưng chưa tạo quyết định hoàn trả (chưa click Tạo QĐ hoàn trả).
+                const isNotYetCreated = (activeDossier.status === 'Chờ ban hành QĐ hoàn trả' && !activeDossier.qdCreated && !isRejected);
 
                 if (isNotYetCreated) {
                     if (ctaCard) {
@@ -4863,24 +5379,35 @@
                     dateEl.value = activeDossier.qdDate || new Date().toLocaleDateString('vi-VN');
                 }
 
+                // Ngày ký Step 3
+                const s3SignDateEl = document.getElementById('s3SignDateReadonly');
+                if (s3SignDateEl) {
+                    const isSigned = (activeDossier.qdStatus === 'Đã ban hành' || getCurrentWorkflowStep() >= 4 || activeDossier.status === 'Đang thi hành' || activeDossier.status === 'Hoàn thành' || activeDossier.status === 'Chấm dứt thu hồi');
+                    if (isSigned) {
+                        s3SignDateEl.innerText = activeDossier.qdSignDate || activeDossier.qdDate || '21/07/2026';
+                    } else {
+                        s3SignDateEl.innerText = 'Chưa ký';
+                    }
+                }
+
                 // Can edit form
                 const canEdit = currentPerspective === 'staff' && !isPastReadonly && !isViewMode && (Math.abs(currentStepState - 3.1) < 0.01 || Math.abs(currentStepState - 3.2) < 0.01 || isRejected || activeDossier.status === 'Chờ ban hành QĐ hoàn trả' || activeDossier.status === 'Bị từ chối QĐ hoàn trả');
                 if (dateEl) dateEl.disabled = !canEdit;
                 document.getElementById('s3DraftSummary').disabled = !canEdit;
                 document.getElementById('s3SignerSelect').disabled = !canEdit;
 
-                // Hình thức ban hành Radio: Cho phép sửa khi canEdit (kể cả khi bị từ chối)
+                // Hình thức ban hành Radio: Khi bị từ chối QĐ hoàn trả thì khóa chỉ đọc, không cho sửa
                 const publishRadios = document.getElementsByName('s3PublishTypeRadio');
                 const publishContainer = document.getElementById('s3PublishTypeContainer');
                 const publishNote = document.getElementById('s3PublishTypeNote');
 
-                if (!canEdit) {
+                if (!canEdit || isRejected) {
                     publishRadios.forEach(r => {
                         r.disabled = true;
                     });
                     if (publishContainer) {
                         publishContainer.style.pointerEvents = 'none';
-                        publishContainer.style.opacity = '0.9';
+                        publishContainer.style.opacity = '0.85';
                     }
                     if (publishNote) {
                         publishNote.style.display = 'none';
@@ -4905,18 +5432,30 @@
 
                 // Decision file container
                 const fileContainer = document.getElementById('s3FileContainer');
+                const fileError = document.getElementById('s3FileError');
                 if (fileContainer) {
-                    const fileName = s3AttachedDecisionFile ? s3AttachedDecisionFile.name : (activeDossier.qdAttachmentName || 'du_thao_quyet_dinh_hoan_tra.docx');
-                    fileContainer.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <i class="fa-solid fa-file-contract" style="color:var(--primary-color); font-size:18px;"></i>
-                            <strong style="color:var(--primary-color); font-size:13.5px;">${fileName}</strong>
-                        </div>
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <a href="javascript:void(0)" onclick="window.open('#', '_blank')" class="action-link"><i class="fa-solid fa-eye"></i> Xem file</a>
-                            <a href="javascript:void(0)" onclick="showToast('Đang tải tệp tin ${fileName}...', 'info')" class="action-link" style="color:var(--secondary-color);"><i class="fa-solid fa-download"></i> Tải xuống</a>
-                        </div>
-                    `;
+                    const hasFile = s3AttachedDecisionFile || activeDossier.qdAttachmentName;
+                    if (hasFile) {
+                        const fileName = s3AttachedDecisionFile ? s3AttachedDecisionFile.name : activeDossier.qdAttachmentName;
+                        fileContainer.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-file-contract" style="color:var(--primary-color); font-size:18px;"></i>
+                                <strong style="color:var(--primary-color); font-size:13.5px;">${fileName}</strong>
+                            </div>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <a href="javascript:void(0)" onclick="window.open('#', '_blank')" class="action-link"><i class="fa-solid fa-eye"></i> Xem file</a>
+                                <a href="javascript:void(0)" onclick="showToast('Đang tải tệp tin ${fileName}...', 'info')" class="action-link" style="color:var(--secondary-color);"><i class="fa-solid fa-download"></i> Tải xuống</a>
+                            </div>
+                        `;
+                        if (fileError) fileError.style.display = 'none';
+                    } else {
+                        fileContainer.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:8px; color:var(--text-muted); font-style:italic; font-size:13.5px;">
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size:16px;"></i>
+                                Chưa đính kèm tệp văn bản. Vui lòng chọn tệp bên dưới.
+                            </div>
+                        `;
+                    }
                 }
                 const uploadWrapper = document.getElementById('s3FileUploadWrapper');
                 if (uploadWrapper) uploadWrapper.style.display = canEdit ? 'block' : 'none';
@@ -4940,12 +5479,19 @@
                     } else {
                         activeDossier.refundOfficers.forEach((o, index) => {
                             const tr = document.createElement('tr');
+                            tr.style.cursor = 'pointer';
+                            tr.title = 'Bấm vào dòng để xem chi tiết cán bộ';
+                            tr.onclick = (e) => {
+                                if (!e.target.closest('.btn-action-square') && !e.target.closest('a')) {
+                                    viewOfficerInStep2(index);
+                                }
+                            };
                             let actionColHtml = '';
                             if (showActionCol) {
                                 actionColHtml = `
                                     <td style="text-align: center; white-space:nowrap;">
-                                        <button class="btn-action-square btn-primary" title="Sửa cán bộ/mức hoàn trả" onclick="editOfficerInStep2(${index}); return false;"><i class="fa-solid fa-pen-to-square"></i></button>
-                                        <button class="btn-action-square btn-danger" title="Xóa cán bộ khỏi danh sách dự thảo" onclick="deleteOfficerInStep2(${index}); return false;"><i class="fa-solid fa-trash-can"></i></button>
+                                        <button class="btn-action-square btn-primary" title="Sửa cán bộ/mức hoàn trả" onclick="event.stopPropagation(); editOfficerInStep2(${index}); return false;"><i class="fa-solid fa-pen-to-square"></i></button>
+                                        <button class="btn-action-square btn-danger" title="Xóa cán bộ khỏi danh sách dự thảo" onclick="event.stopPropagation(); deleteOfficerInStep2(${index}); return false;"><i class="fa-solid fa-trash-can"></i></button>
                                     </td>
                                 `;
                             }
@@ -4974,7 +5520,7 @@
                 const tbody = document.getElementById('s3RelatedDocsTableBody');
                 if (!tbody) return;
                 tbody.innerHTML = '';
-                const canEdit = currentPerspective === 'staff' && !isReadonlyStep(3) && !isViewMode && (Math.abs(currentStepState - 3.1) < 0.01 || Math.abs(currentStepState - 3.2) < 0.01 || activeDossier.status === 'Bị từ chối QĐ hoàn trả' || activeDossier.qdStatus === 'Bị từ chối');
+                const canEdit = currentPerspective === 'staff' && !isReadonlyStep(3) && !isViewMode && (Math.abs(currentStepState - 3.0) < 0.01 || Math.abs(currentStepState - 3.1) < 0.01 || Math.abs(currentStepState - 3.2) < 0.01 || activeDossier.status === 'Chờ ban hành QĐ hoàn trả' || activeDossier.status === 'Bị từ chối QĐ hoàn trả' || activeDossier.qdStatus === 'Bị từ chối');
 
                 const addBtn = document.getElementById('s3AddDocBtn');
                 if (addBtn) addBtn.style.display = canEdit ? 'inline-block' : 'none';
@@ -4997,7 +5543,7 @@
                         <td>${doc.title}</td>
                         <td style="text-align:center;">${doc.code}</td>
                         <td style="text-align:center;">${doc.date}</td>
-                        <td style="text-align:center;"><a href="javascript:void(0)" onclick="window.open('#', '_blank')" class="action-link"><i class="fa-solid fa-file-pdf"></i> Xem file</a></td>
+                        <td style="text-align:center;"><a href="javascript:void(0)" onclick="viewAttachedFileMock('${doc.fileName || 'tai_lieu_dinh_kem.pdf'}')" class="action-link"><i class="fa-solid fa-file-pdf"></i> Xem file</a></td>
                         ${actionColHtml}
                     `;
                     tbody.appendChild(tr);
@@ -5005,13 +5551,10 @@
             }
 
             function openS3AddDocModal() {
-                const title = prompt("Nhập Tên văn bản liên quan:");
-                if (!title) return;
-                const code = prompt("Nhập Số hiệu văn bản:") || "-";
-                const date = prompt("Nhập Ngày văn bản (dd/mm/yyyy):") || new Date().toLocaleDateString('vi-VN');
-                s3RelatedDocs.push({ title, code, date, fileName: "tai_lieu_dinh_kem.pdf" });
+                // Thêm trực tiếp 1 dòng mới vào bảng thay vì mở popup
+                s3RelatedDocs.push({ title: '', code: '', date: '', fileName: '' });
                 renderS3RelatedDocs();
-                showToast("Đã thêm văn bản liên quan!", "success");
+                showToast('Đã thêm dòng văn bản liên quan mới. Vui lòng nhập thông tin.', 'info');
             }
 
             function removeS3RelatedDoc(index) {
@@ -5033,49 +5576,11 @@
             function renderStep3Actions() {
                 const actionArea = document.getElementById('s3ActionArea');
                 if (!actionArea) return;
+                // Các nút tác nghiệp (Xem trước QĐ, Trình ký, Ban hành QĐ, Phê duyệt, Từ chối)
+                // đã được hiển thị tại thanh Footer chân trang (renderPageHeaderActions).
+                // Ẩn hoàn toàn vùng nút tác nghiệp inline trong Bước 3 để tránh trùng lặp.
                 actionArea.innerHTML = '';
-
-                const isPastReadonly = isReadonlyStep(3) || activeDossier.status === 'Đang thi hành' || activeDossier.status === 'Hoàn thành';
-                const isLeader = currentPerspective === 'leader';
-                const isDigital = s3PublishType === 'digital';
-                const isRejected = (activeDossier.status === 'Bị từ chối QĐ hoàn trả' || activeDossier.qdStatus === 'Bị từ chối' || Math.abs(currentStepState - 3.2) < 0.01);
-                const isPendingSign = (activeDossier.status === 'Chờ ban hành QĐ hoàn trả' && activeDossier.qdStatus === 'Chờ ký') || Math.abs(currentStepState - 3.1) < 0.01;
-
-                if (isPastReadonly || isViewMode) {
-                    actionArea.innerHTML = '';
-                    actionArea.style.display = 'none';
-                    return;
-                }
-                actionArea.style.display = 'flex';
-
-                if (isLeader && isPendingSign) {
-                    actionArea.innerHTML = `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
-                        <button type="button" class="btn btn-success" onclick="simulatedStep3Approve()"><i class="fa-solid fa-check"></i> Phê duyệt</button>
-                        <button type="button" class="btn btn-danger" onclick="simulatedStep3Reject()"><i class="fa-solid fa-xmark"></i> Từ chối</button>
-                    `;
-                    return;
-                }
-
-                if (isDigital) {
-                    if (isPendingSign || isRejected || Math.abs(currentStepState - 3.2) < 0.01 || activeDossier.status === 'Bị từ chối QĐ hoàn trả' || activeDossier.qdStatus === 'Dự thảo' || !activeDossier.qdStatus) {
-                        actionArea.innerHTML = `
-                            <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
-                            <button type="button" class="btn btn-primary" onclick="submitStep3ForApproval()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
-                        `;
-                    } else if (currentStepState === 3.3 || activeDossier.qdStatus === 'Chờ ban hành') {
-                        actionArea.innerHTML = `
-                            <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
-                            <button type="button" class="btn btn-success" onclick="issueStep3OfflineDecision()"><i class="fa-solid fa-file-circle-check"></i> Ban hành Quyết định</button>
-                        `;
-                    }
-                } else {
-                    // Ký ngoài hệ thống: Nút Ban hành QĐ (Success)
-                    actionArea.innerHTML = `
-                        <button type="button" class="btn btn-secondary" onclick="openPreviewStep3Modal()">Xem trước Quyết định</button>
-                        <button type="button" class="btn btn-success" onclick="issueStep3OfflineDecision()"><i class="fa-solid fa-file-circle-check"></i> Ban hành QĐ</button>
-                    `;
-                }
+                actionArea.style.display = 'none';
             }
 
             function submitStep3ForApproval() {
@@ -5341,7 +5846,7 @@
                         let tooltip = isViewMode ? "Chế độ xem chi tiết không cho phép ghi nhận nộp tiền" : (o.status === 'Hoàn tất' ? "Cán bộ đã hoàn thành nghĩa vụ" : "Không thể thao tác");
                         btnGhiNhan = `<button type="button" class="action-icon-btn btn-disabled" title="${tooltip}"><i class="fa-solid fa-money-bill-transfer"></i></button>`;
                     } else if (o.isPostponed) {
-                        btnGhiNhan = `<button type="button" class="action-icon-btn btn-disabled" title="Nghĩa vụ đang tạm hoãn thi hành"><i class="fa-solid fa-money-bill-transfer"></i></button>`;
+                        btnGhiNhan = `<button type="button" class="action-icon-btn btn-pay-active" title="Cán bộ đang hoãn (cho phép ghi nhận nộp tiền tự nguyện)" onclick="event.stopPropagation(); openPaymentModal(${index}); return false;"><i class="fa-solid fa-money-bill-transfer"></i></button>`;
                     } else {
                         btnGhiNhan = `<button type="button" class="action-icon-btn btn-pay-active" title="Ghi nhận nộp tiền hoàn trả ngân sách" onclick="event.stopPropagation(); openPaymentModal(${index}); return false;"><i class="fa-solid fa-money-bill-transfer"></i></button>`;
                     }
@@ -5404,10 +5909,10 @@
                     tbody.appendChild(tr);
                 });
 
-                // Timeline Lịch sử thi hành / nộp tiền (Chỉ hiển thị ở chế độ Xem chi tiết)
+                // Timeline Lịch sử thi hành / nộp tiền - ĐÃ BỎ theo yêu cầu
                 const timelineCard = document.getElementById('s4TimelineCard');
                 if (timelineCard) {
-                    timelineCard.style.display = isViewMode ? 'block' : 'none';
+                    timelineCard.style.display = 'none'; // Đã bỏ phần lịch sử tại Bước 4
                 }
                 const timelineDiv = document.getElementById('s4Timeline');
                 if (timelineDiv && isViewMode) {
@@ -5918,7 +6423,7 @@
                                 <td style="text-align:right; font-weight:700; color:var(--primary-color);">${contentText}</td>
                                 <td style="font-size:12.5px;">${adj.reason || '—'}</td>
                                 <td style="text-align:center;">
-                                    ${adj.fileName ? `<a href="javascript:void(0)" class="action-link" onclick="alert('Xem file căn cứ: ${adj.fileName}')">Xem file</a>` : '<span style="color:var(--text-muted); font-style:italic;">Không có file</span>'}
+                                    ${adj.fileName ? `<a href="javascript:void(0)" class="action-link" onclick="viewAttachedFileMock('${adj.fileName}')">Xem file</a>` : '<span style="color:var(--text-muted); font-style:italic;">Không có file</span>'}
                                 </td>
                             `;
                             adjTbody.appendChild(trAdj);
@@ -6430,6 +6935,180 @@
                 });
             }
 
+            // Cây đơn vị công tác phân cấp phục vụ tìm kiếm MH10
+            const agencyTreeData = [
+                {
+                    code: "STP-HN",
+                    name: "Sở Tư pháp Thành phố Hà Nội",
+                    children: [
+                        { code: "STP-TCCB", name: "Phòng Tổ chức Cán bộ - Sở Tư pháp Hà Nội" },
+                        { code: "STP-PC", name: "Phòng Pháp chế - Sở Tư pháp Hà Nội" },
+                        { code: "STP-KHTC", name: "Phòng Kế hoạch - Tài chính - Sở Tư pháp Hà Nội" },
+                        { code: "STP-BTTP", name: "Phòng Bổ trợ tư pháp - Sở Tư pháp Hà Nội" },
+                        { code: "STP-TGPL", name: "Trung tâm Trợ giúp pháp lý nhà nước - STP Hà Nội" }
+                    ]
+                },
+                {
+                    code: "C-BTNN",
+                    name: "Cục Bồi thường nhà nước - Bộ Tư pháp",
+                    children: [
+                        { code: "BTNN-NV", name: "Phòng Nghiệp vụ giải quyết bồi thường" },
+                        { code: "BTNN-TH", name: "Phòng Tổng hợp và Phổ biến bồi thường" }
+                    ]
+                },
+                {
+                    code: "THADS-HN",
+                    name: "Cục Thi hành án dân sự Thành phố Hà Nội",
+                    children: [
+                        { code: "THADS-CG", name: "Chi cục Thi hành án dân sự Quận Cầu Giấy" },
+                        { code: "THADS-BD", name: "Chi cục Thi hành án dân sự Quận Ba Đình" },
+                        { code: "THADS-TX", name: "Chi cục Thi hành án dân sự Quận Thanh Xuân" }
+                    ]
+                },
+                {
+                    code: "UBND-CG",
+                    name: "UBND Quận Cầu Giấy - TP. Hà Nội",
+                    children: [
+                        { code: "PTP-CG", name: "Phòng Tư pháp Quận Cầu Giấy" },
+                        { code: "PTNMT-CG", name: "Phòng Tài nguyên & Môi trường Q. Cầu Giấy" }
+                    ]
+                },
+                {
+                    code: "UBND-LD",
+                    name: "UBND Tỉnh Lâm Đồng",
+                    children: [
+                        { code: "STP-LD", name: "Sở Tư pháp Tỉnh Lâm Đồng" },
+                        { code: "STNMT-LD", name: "Sở Tài nguyên & Môi trường Tỉnh Lâm Đồng" }
+                    ]
+                }
+            ];
+
+            function toggleAgencyDropdown(event) {
+                if (event) event.stopPropagation();
+                const panel = document.getElementById('oAgencyDropdownPanel');
+                if (!panel) return;
+                const isShown = (panel.style.display === 'flex');
+                if (isShown) {
+                    panel.style.display = 'none';
+                } else {
+                    panel.style.display = 'flex';
+                    const searchInput = document.getElementById('oAgencySearchInput');
+                    if (searchInput) {
+                        searchInput.value = '';
+                        setTimeout(() => searchInput.focus(), 80);
+                    }
+                    renderAgencyList('');
+                }
+            }
+
+            function filterAgencyList(query) {
+                renderAgencyList(query);
+            }
+
+            function selectAgency(name) {
+                const hiddenInput = document.getElementById('oAgency');
+                const selectBox = document.getElementById('oAgencySelectBox');
+                const selectedText = document.getElementById('oAgencySelectedText');
+                const errorEl = document.getElementById('oAgencyError');
+
+                if (hiddenInput) hiddenInput.value = name;
+                if (selectedText) {
+                    selectedText.innerText = name;
+                    selectedText.style.color = 'var(--text-main)';
+                    selectedText.style.fontWeight = '500';
+                }
+                if (selectBox) selectBox.classList.remove('is-invalid');
+                if (errorEl) errorEl.style.display = 'none';
+
+                const panel = document.getElementById('oAgencyDropdownPanel');
+                if (panel) panel.style.display = 'none';
+            }
+
+            function renderAgencyList(query = '') {
+                const container = document.getElementById('oAgencyListContainer');
+                if (!container) return;
+                container.innerHTML = '';
+                const q = (query || '').trim().toLowerCase();
+
+                let totalMatches = 0;
+
+                agencyTreeData.forEach(parent => {
+                    const parentMatch = parent.name.toLowerCase().includes(q) || parent.code.toLowerCase().includes(q);
+                    const matchingChildren = parent.children.filter(c => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q));
+
+                    if (!q || parentMatch || matchingChildren.length > 0) {
+                        totalMatches++;
+                        // Render parent unit
+                        const pDiv = document.createElement('div');
+                        pDiv.style = 'padding: 8px 12px; background: #f8fafc; font-weight: 700; font-size: 13px; color: var(--primary-color); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; cursor: pointer;';
+                        pDiv.innerHTML = `<i class="fa-solid fa-sitemap" style="color: #64748b; font-size: 11.5px;"></i> <span>${parent.name}</span> <span style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 1px 6px; border-radius: 4px; font-weight: 600; margin-left: auto;">${parent.code}</span>`;
+                        pDiv.onclick = (e) => {
+                            e.stopPropagation();
+                            selectAgency(parent.name);
+                        };
+                        container.appendChild(pDiv);
+
+                        // Render child units
+                        const childrenToRender = q ? (parentMatch ? parent.children : matchingChildren) : parent.children;
+                        childrenToRender.forEach(child => {
+                            const cDiv = document.createElement('div');
+                            cDiv.style = 'padding: 8px 12px 8px 30px; font-size: 13px; color: #334155; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid #f8fafc;';
+                            cDiv.onmouseover = () => { cDiv.style.backgroundColor = '#eff6ff'; };
+                            cDiv.onmouseout = () => { cDiv.style.backgroundColor = 'transparent'; };
+                            cDiv.innerHTML = `<span><i class="fa-regular fa-building" style="color: #94a3b8; font-size: 11.5px; margin-right: 6px;"></i>${child.name}</span> <span style="font-size: 11px; color: #94a3b8;">${child.code}</span>`;
+                            cDiv.onclick = (e) => {
+                                e.stopPropagation();
+                                selectAgency(child.name);
+                            };
+                            container.appendChild(cDiv);
+                        });
+                    }
+                });
+
+                if (totalMatches === 0) {
+                    container.innerHTML = `<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic;"><i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i>Không tìm thấy đơn vị nào khớp với từ khóa</div>`;
+                }
+            }
+
+            document.addEventListener('click', (e) => {
+                const panel = document.getElementById('oAgencyDropdownPanel');
+                const selectBox = document.getElementById('oAgencySelectBox');
+                if (panel && selectBox && !panel.contains(e.target) && !selectBox.contains(e.target)) {
+                    panel.style.display = 'none';
+                }
+            });
+
+            function handlePostponeStatusChange(val) {
+                const block = document.getElementById('oPostponeBlock');
+                if (!block) return;
+                if (val === 'Đề xuất hoãn') {
+                    block.style.display = 'block';
+                } else {
+                    block.style.display = 'none';
+                    ['oPostponeStart', 'oPostponeEnd', 'oPostponeReason'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.classList.remove('is-invalid');
+                        const err = document.getElementById(id + 'Error');
+                        if (err) err.style.display = 'none';
+                    });
+                    const fileErr = document.getElementById('oPostponeFileError');
+                    if (fileErr) fileErr.style.display = 'none';
+                    const fileBtn = document.querySelector('button[onclick="document.getElementById(\'oPostponeFileInput\').click()"]');
+                    if (fileBtn) fileBtn.classList.remove('is-invalid');
+                }
+            }
+
+            function parseDateVN(str) {
+                if (!str) return null;
+                const parts = str.trim().split('/');
+                if (parts.length !== 3) return null;
+                const d = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10) - 1;
+                const y = parseInt(parts[2], 10);
+                const date = new Date(y, m, d);
+                return isNaN(date.getTime()) ? null : date;
+            }
+
             function openAddOfficerModal() {
                 if (currentPerspective === 'leader') {
                     showToast('Góc nhìn Lãnh đạo chỉ được xem danh sách cán bộ.', 'warning');
@@ -6439,9 +7118,17 @@
                 document.getElementById('editOfficerIndex').value = "-1";
                 document.getElementById('officerModalTitle').innerHTML = '<i class="fa-solid fa-user-plus"></i> Thêm cán bộ chịu trách nhiệm';
                 
-                // Reset postpone fields & animation
-                document.getElementById('oRegisterPostpone').checked = false;
-                togglePostponeBlock(false);
+                // Reset Agency selection
+                document.getElementById('oAgency').value = "";
+                document.getElementById('oAgencySelectedText').innerText = "-- Chọn hoặc tìm kiếm đơn vị công tác --";
+                document.getElementById('oAgencySelectedText').style.color = "var(--text-muted)";
+                document.getElementById('oAgencySelectedText').style.fontWeight = "normal";
+                const agencyPanel = document.getElementById('oAgencyDropdownPanel');
+                if (agencyPanel) agencyPanel.style.display = 'none';
+
+                // Reset postpone fields
+                document.getElementById('oPostponeStatus').value = "Không hoãn";
+                handlePostponeStatusChange("Không hoãn");
                 
                 postponeAttachedFile = null;
                 document.getElementById('oPostponeFileInfo').style.display = 'none';
@@ -6452,25 +7139,15 @@
                 // Clear invalid styles
                 const modal = document.getElementById('officerStep2Modal');
                 modal.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                modal.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+                modal.querySelectorAll('.invalid-feedback').forEach(el => {
+                    el.style.display = 'none';
+                });
                 
                 modal.classList.add('visible');
             }
 
             function closeOfficerStep2Modal() {
                 document.getElementById('officerStep2Modal').classList.remove('visible');
-            }
-
-            function togglePostponeBlock(isChecked) {
-                const block = document.getElementById('oPostponeBlock');
-                if (!block) return;
-                if (isChecked) {
-                    block.style.maxHeight = '500px';
-                    block.style.paddingTop = '10px';
-                } else {
-                    block.style.maxHeight = '0px';
-                    block.style.paddingTop = '0px';
-                }
             }
 
             function handleModalAmtInput(val) {
@@ -6484,12 +7161,12 @@
                 }
                 
                 const label = document.getElementById('oAmtText');
+                const amtErr = document.getElementById('oAmtError');
                 if (num > 0) {
                     label.innerText = docSoTien(num);
                     label.style.color = "var(--success-color)";
                     el.classList.remove('is-invalid');
-                    let feedback = el.parentNode.querySelector('.invalid-feedback');
-                    if (feedback) feedback.remove();
+                    if (amtErr) amtErr.style.display = 'none';
                 } else {
                     label.innerText = "Chưa nhập số tiền";
                     label.style.color = "var(--text-muted)";
@@ -6501,13 +7178,11 @@
                     postponeAttachedFile = input.files[0];
                     document.getElementById('oPostponeFileName').innerText = postponeAttachedFile.name;
                     document.getElementById('oPostponeFileInfo').style.display = 'flex';
-                    // Clear errors if any
+                    
                     const btn = document.querySelector('button[onclick="document.getElementById(\'oPostponeFileInput\').click()"]');
-                    if (btn) {
-                        btn.classList.remove('is-invalid');
-                        let feedback = btn.parentNode.querySelector('.invalid-feedback');
-                        if (feedback) feedback.remove();
-                    }
+                    if (btn) btn.classList.remove('is-invalid');
+                    const err = document.getElementById('oPostponeFileError');
+                    if (err) err.style.display = 'none';
                 }
             }
 
@@ -6520,77 +7195,133 @@
                 });
             }
 
-            function validateFieldRequired(elId) {
-                const el = document.getElementById(elId);
-                if (!el) return true;
-                const val = el.value.trim();
-                if (!val) {
-                    el.classList.add('is-invalid');
-                    let parent = el.parentNode;
-                    let feedback = parent.querySelector('.invalid-feedback');
-                    if (!feedback) {
-                        feedback = document.createElement('span');
-                        feedback.className = 'invalid-feedback';
-                        feedback.style = 'color:#ef4444; font-size:11.5px; display:block; margin-top:4px; font-weight:500;';
-                        feedback.innerText = 'Đây là trường bắt buộc';
-                        parent.appendChild(feedback);
-                    }
-                    return false;
-                } else {
-                    el.classList.remove('is-invalid');
-                    let feedback = el.parentNode.querySelector('.invalid-feedback');
-                    if (feedback) feedback.remove();
-                    return true;
-                }
-            }
-
             function saveOfficerStep2() {
                 let validated = true;
-                if (!validateFieldRequired('oName')) validated = false;
-                if (!validateFieldRequired('oRole')) validated = false;
-                if (!validateFieldRequired('oAgency')) validated = false;
-                if (!validateFieldRequired('oAmt')) validated = false;
-                
-                const isPostponed = document.getElementById('oRegisterPostpone').checked;
-                if (isPostponed) {
-                    if (!validateFieldRequired('oPostponeStart')) validated = false;
-                    if (!validateFieldRequired('oPostponeReason')) validated = false;
-                    
-                    if (!postponeAttachedFile) {
-                        const btn = document.querySelector('button[onclick="document.getElementById(\'oPostponeFileInput\').click()"]');
-                        if (btn) {
-                            btn.classList.add('is-invalid');
-                            let parent = btn.parentNode;
-                            let feedback = parent.querySelector('.invalid-feedback');
-                            if (!feedback) {
-                                feedback = document.createElement('span');
-                                feedback.className = 'invalid-feedback';
-                                feedback.style = 'color:#ef4444; font-size:11.5px; display:block; margin-top:4px; font-weight:500;';
-                                feedback.innerText = 'Đây là trường bắt buộc';
-                                parent.appendChild(feedback);
-                            }
+                let firstInvalidEl = null;
+
+                function checkRequired(inputId, errorId) {
+                    const el = document.getElementById(inputId);
+                    const err = document.getElementById(errorId);
+                    if (!el) return true;
+                    if (!el.value.trim()) {
+                        el.classList.add('is-invalid');
+                        if (err) {
+                            err.innerText = 'Đây là trường bắt buộc';
+                            err.style.display = 'block';
                         }
-                        validated = false;
+                        if (!firstInvalidEl) firstInvalidEl = el;
+                        return false;
+                    } else {
+                        el.classList.remove('is-invalid');
+                        if (err) err.style.display = 'none';
+                        return true;
                     }
                 }
-                
+
+                if (!checkRequired('oName', 'oNameError')) validated = false;
+                if (!checkRequired('oRole', 'oRoleError')) validated = false;
+
+                // Validate Agency
+                const agencyVal = document.getElementById('oAgency').value.trim();
+                const agencySelectBox = document.getElementById('oAgencySelectBox');
+                const agencyError = document.getElementById('oAgencyError');
+                if (!agencyVal) {
+                    if (agencySelectBox) agencySelectBox.classList.add('is-invalid');
+                    if (agencyError) {
+                        agencyError.innerText = 'Đây là trường bắt buộc';
+                        agencyError.style.display = 'block';
+                    }
+                    if (!firstInvalidEl) firstInvalidEl = agencySelectBox;
+                    validated = false;
+                } else {
+                    if (agencySelectBox) agencySelectBox.classList.remove('is-invalid');
+                    if (agencyError) agencyError.style.display = 'none';
+                }
+
+                // Validate Amount
+                const rawAmt = document.getElementById('oAmt').value.replace(/\D/g, "");
+                const numAmt = parseInt(rawAmt, 10) || 0;
+                const amtEl = document.getElementById('oAmt');
+                const amtErr = document.getElementById('oAmtError');
+                if (numAmt <= 0) {
+                    amtEl.classList.add('is-invalid');
+                    if (amtErr) {
+                        amtErr.innerText = 'Đây là trường bắt buộc';
+                        amtErr.style.display = 'block';
+                    }
+                    if (!firstInvalidEl) firstInvalidEl = amtEl;
+                    validated = false;
+                } else {
+                    amtEl.classList.remove('is-invalid');
+                    if (amtErr) amtErr.style.display = 'none';
+                }
+
+                // Validate Postponement if 'Đề xuất hoãn'
+                const postponeStatus = document.getElementById('oPostponeStatus').value;
+                const isPostponed = (postponeStatus === 'Đề xuất hoãn');
+                if (isPostponed) {
+                    if (!checkRequired('oPostponeStart', 'oPostponeStartError')) validated = false;
+                    if (!checkRequired('oPostponeReason', 'oPostponeReasonError')) validated = false;
+
+                    const startStr = document.getElementById('oPostponeStart').value.trim();
+                    const endStr = document.getElementById('oPostponeEnd').value.trim();
+                    const endEl = document.getElementById('oPostponeEnd');
+                    const endErr = document.getElementById('oPostponeEndError');
+
+                    if (startStr && endStr) {
+                        const dStart = parseDateVN(startStr);
+                        const dEnd = parseDateVN(endStr);
+                        if (dStart && dEnd && dEnd < dStart) {
+                            endEl.classList.add('is-invalid');
+                            if (endErr) {
+                                endErr.innerText = 'Ngày kết thúc hoãn phải lớn hơn hoặc bằng ngày bắt đầu';
+                                endErr.style.display = 'block';
+                            }
+                            if (!firstInvalidEl) firstInvalidEl = endEl;
+                            validated = false;
+                        } else {
+                            endEl.classList.remove('is-invalid');
+                            if (endErr) endErr.style.display = 'none';
+                        }
+                    } else {
+                        endEl.classList.remove('is-invalid');
+                        if (endErr) endErr.style.display = 'none';
+                    }
+
+                    // Postpone attachment file required
+                    const fileBtn = document.querySelector('button[onclick="document.getElementById(\'oPostponeFileInput\').click()"]');
+                    const fileErr = document.getElementById('oPostponeFileError');
+                    if (!postponeAttachedFile) {
+                        if (fileBtn) fileBtn.classList.add('is-invalid');
+                        if (fileErr) {
+                            fileErr.innerText = 'Đây là trường bắt buộc';
+                            fileErr.style.display = 'block';
+                        }
+                        if (!firstInvalidEl) firstInvalidEl = fileBtn;
+                        validated = false;
+                    } else {
+                        if (fileBtn) fileBtn.classList.remove('is-invalid');
+                        if (fileErr) fileErr.style.display = 'none';
+                    }
+                }
+
                 if (!validated) {
-                    showToast("Vui lòng nhập đầy đủ các trường thông tin bắt buộc!", "warning");
-                    const firstInvalid = document.querySelector('#officerStep2Modal .is-invalid');
-                    if (firstInvalid) firstInvalid.focus();
+                    if (firstInvalidEl) {
+                        firstInvalidEl.focus();
+                        if (firstInvalidEl.scrollIntoView) {
+                            firstInvalidEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
                     return;
                 }
-                
+
                 const name = document.getElementById('oName').value.trim();
                 const role = document.getElementById('oRole').value.trim();
-                const agency = document.getElementById('oAgency').value.trim();
+                const agency = agencyVal;
                 const loi = document.getElementById('oLoi').value;
                 const refundMethod = document.getElementById('oMethod').value;
-                
-                const rawAmt = document.getElementById('oAmt').value.replace(/\D/g, "");
-                const total = parseInt(rawAmt, 10) || 0;
+                const total = numAmt;
                 const note = document.getElementById('oNote').value.trim();
-
                 const idx = parseInt(document.getElementById('editOfficerIndex').value, 10);
 
                 const officerData = {
@@ -6601,16 +7332,17 @@
                     refundMethod,
                     total,
                     note,
-                    paid: idx >= 0 ? activeDossier.refundOfficers[idx].paid : 0,
-                    nextDate: idx >= 0 ? activeDossier.refundOfficers[idx].nextDate : '—',
+                    paid: idx >= 0 ? (activeDossier.refundOfficers[idx].paid || 0) : 0,
+                    nextDate: idx >= 0 ? (activeDossier.refundOfficers[idx].nextDate || '—') : '—',
                     status: idx >= 0 ? activeDossier.refundOfficers[idx].status : (isPostponed ? 'Hoãn thu' : 'Đang thu'),
                     isPostponed,
+                    postponeStatus,
                     postponeStart: isPostponed ? document.getElementById('oPostponeStart').value.trim() : null,
                     postponeEnd: isPostponed ? document.getElementById('oPostponeEnd').value.trim() : null,
                     postponeReason: isPostponed ? document.getElementById('oPostponeReason').value.trim() : null,
                     postponeFile: isPostponed && postponeAttachedFile ? postponeAttachedFile.name : null
                 };
-                
+
                 if (idx >= 0) {
                     activeDossier.refundOfficers[idx] = { ...activeDossier.refundOfficers[idx], ...officerData };
                     showToast(`Đã cập nhật thông tin cán bộ ${name}!`, "success");
@@ -6618,9 +7350,12 @@
                     activeDossier.refundOfficers.push(officerData);
                     showToast(`Đã thêm cán bộ chịu trách nhiệm ${name}!`, "success");
                 }
-                
+
                 closeOfficerStep2Modal();
                 renderStep2();
+                if (Math.floor(currentStepState) === 3) {
+                    renderStep3();
+                }
                 if (editingStep2FromStep3) {
                     showToast('Đã cập nhật danh sách cán bộ. Quay lại Bước 3 để xem trước và trình ký lại.', 'info');
                 }
@@ -6632,12 +7367,28 @@
                     return;
                 }
                 const o = activeDossier.refundOfficers[index];
+                if (!o) return;
                 document.getElementById('editOfficerIndex').value = index;
                 document.getElementById('officerModalTitle').innerHTML = '<i class="fa-solid fa-user-pen"></i> Cập nhật cán bộ chịu trách nhiệm';
                 
                 document.getElementById('oName').value = o.name || "";
                 document.getElementById('oRole').value = o.role || "";
-                document.getElementById('oAgency').value = o.agency || "";
+                
+                const agencyVal = o.agency || "";
+                document.getElementById('oAgency').value = agencyVal;
+                const selectedText = document.getElementById('oAgencySelectedText');
+                if (agencyVal) {
+                    selectedText.innerText = agencyVal;
+                    selectedText.style.color = "var(--text-main)";
+                    selectedText.style.fontWeight = "500";
+                } else {
+                    selectedText.innerText = "-- Chọn hoặc tìm kiếm đơn vị công tác --";
+                    selectedText.style.color = "var(--text-muted)";
+                    selectedText.style.fontWeight = "normal";
+                }
+                const agencyPanel = document.getElementById('oAgencyDropdownPanel');
+                if (agencyPanel) agencyPanel.style.display = 'none';
+
                 document.getElementById('oLoi').value = o.loi || "Vô ý";
                 document.getElementById('oMethod').value = o.refundMethod || "Một lần";
                 
@@ -6647,11 +7398,12 @@
                 document.getElementById('oAmtText').style.color = o.total ? "var(--success-color)" : "var(--text-muted)";
                 document.getElementById('oNote').value = o.note || "";
                 
-                const hasPostpone = !!o.isPostponed;
-                document.getElementById('oRegisterPostpone').checked = hasPostpone;
-                togglePostponeBlock(hasPostpone);
+                const isPostponed = !!(o.isPostponed || o.postponeStatus === 'Đề xuất hoãn');
+                const postponeStatusVal = isPostponed ? 'Đề xuất hoãn' : 'Không hoãn';
+                document.getElementById('oPostponeStatus').value = postponeStatusVal;
+                handlePostponeStatusChange(postponeStatusVal);
                 
-                if (hasPostpone) {
+                if (isPostponed) {
                     document.getElementById('oPostponeStart').value = o.postponeStart || "";
                     document.getElementById('oPostponeEnd').value = o.postponeEnd || "";
                     document.getElementById('oPostponeReason').value = o.postponeReason || "";
@@ -6671,7 +7423,9 @@
                 
                 const modal = document.getElementById('officerStep2Modal');
                 modal.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                modal.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+                modal.querySelectorAll('.invalid-feedback').forEach(el => {
+                    el.style.display = 'none';
+                });
                 
                 modal.classList.add('visible');
             }
@@ -6709,6 +7463,17 @@
                 
                 document.getElementById('vOfficerMethod').innerText = o.refundMethod || 'Một lần';
                 
+                // Postpone Status Badge
+                const isPostponed = !!(o.isPostponed || o.postponeStatus === 'Đề xuất hoãn');
+                const postponeBadge = document.getElementById('vOfficerPostponeStatusBadge');
+                if (postponeBadge) {
+                    if (isPostponed) {
+                        postponeBadge.innerHTML = `<span class="badge" style="background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; font-weight:700;"><i class="fa-solid fa-hourglass-half" style="margin-right:4px;"></i>Đề xuất hoãn</span>`;
+                    } else {
+                        postponeBadge.innerHTML = `<span style="color:#64748b; font-weight:600;"><i class="fa-solid fa-circle-check" style="color:#22c55e; margin-right:4px;"></i>Không hoãn</span>`;
+                    }
+                }
+
                 // Amount
                 document.getElementById('vOfficerAmt').innerText = `${(o.total || 0).toLocaleString('vi-VN')} đ`;
                 document.getElementById('vOfficerAmtText').innerText = o.total ? docSoTien(o.total) : "Chưa nhập số tiền";
@@ -6718,7 +7483,7 @@
 
                 // Postponement info
                 const postponeSec = document.getElementById('vOfficerPostponeSection');
-                if (o.isPostponed) {
+                if (isPostponed) {
                     postponeSec.style.display = 'block';
                     document.getElementById('vOfficerPostponeStart').innerText = o.postponeStart || '-';
                     document.getElementById('vOfficerPostponeEnd').innerText = o.postponeEnd || 'Chưa xác định';
@@ -6727,10 +7492,9 @@
                     const fn = o.postponeFile || 'quyet_dinh_hoan.pdf';
                     document.getElementById('vOfficerPostponeFileName').innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${fn}`;
                     
-                    // Setup viewer alerts
                     document.getElementById('vOfficerPostponeViewLink').onclick = (e) => {
                         e.preventDefault();
-                        alert(`Mở xem file đính kèm: ${fn}`);
+                        viewAttachedFileMock(fn);
                     };
                     document.getElementById('vOfficerPostponeDownloadLink').onclick = (e) => {
                         e.preventDefault();
@@ -7039,7 +7803,10 @@
                 document.getElementById('adjDossierCode').value = activeDossier.code;
                 document.getElementById('adjClaimCode').value = activeDossier.claimCode;
                 document.getElementById('adjOfficerName').value = o.name;
+                document.getElementById('adjOfficerRole').value = o.role || 'Chuyên viên';
                 document.getElementById('adjOfficerAgency').value = o.agency || 'Sở Tư pháp Hà Nội';
+                const dc2 = document.getElementById('adjDossierCode2');
+                if (dc2) dc2.value = activeDossier.code;
                 document.getElementById('adjTotalAmt').value = `${(o.total || 0).toLocaleString('vi-VN')} đ`;
                 document.getElementById('adjPaidAmt').value = `${(o.paid || 0).toLocaleString('vi-VN')} đ`;
                 document.getElementById('adjRemainAmt').value = `${remainCurrent.toLocaleString('vi-VN')} đ`;
@@ -7064,9 +7831,7 @@
                 document.getElementById('adjPostponeFromDate').value = '';
                 document.getElementById('adjPostponeToDate').value = '';
 
-                document.getElementById('adjDecisionNo').value = '';
-                document.getElementById('adjDecisionDate').value = new Date().toLocaleDateString('vi-VN');
-                document.getElementById('adjSigner').value = 'Lê Minh Châu - Giám đốc Sở';
+                // Removed adjDecisionNo, adjDecisionDate, adjSigner - not in SRS 4.3.3.5.12
                 document.getElementById('adjReason').value = '';
 
                 // Clear errors
@@ -7136,9 +7901,7 @@
                     checkField(document.getElementById('adjPostponeToDate'), document.getElementById('adjPostponeToError'), !!postponeTo);
                 }
 
-                checkField(document.getElementById('adjDecisionNo'), document.getElementById('adjDecisionNoError'));
-                checkField(document.getElementById('adjDecisionDate'), document.getElementById('adjDecisionDateError'));
-                checkField(document.getElementById('adjSigner'), document.getElementById('adjSignerError'));
+                // Validation theo SRS 4.3.3.5.12: Lý do + Văn bản căn cứ (bỏ adjDecisionNo, adjDecisionDate, adjSigner)
                 checkField(document.getElementById('adjReason'), document.getElementById('adjReasonError'));
 
                 if (firstInvalid) {
@@ -7146,8 +7909,6 @@
                     return;
                 }
 
-                const decisionNo = document.getElementById('adjDecisionNo').value.trim();
-                const decisionDate = document.getElementById('adjDecisionDate').value.trim();
                 const reason = document.getElementById('adjReason').value.trim();
                 const fileName = adjAttachedFiles[0] ? adjAttachedFiles[0].name : '';
 
