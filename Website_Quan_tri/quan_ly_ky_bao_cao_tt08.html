@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -186,6 +186,9 @@
                 <option value="cap2">Đầu mối tổng hợp - UBND Thành phố Hà Nội</option>
                 <option value="cap3">Bộ Tư pháp/Cục BTNN</option>
             </select>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="openProcessModal()" style="margin-top:6px; width:100%; justify-content:center; background:rgba(255,255,255,0.25); color:#fff; border:1px solid rgba(255,255,255,0.4); font-size:12px;">
+                <i class="fa-solid fa-diagram-project"></i> Xem Quy trình tổng hợp 3 cấp vai trò
+            </button>
         </div>
     </div>
 
@@ -345,11 +348,54 @@
             <div id="alertArea"></div>
 
             <div class="tab-panel active" id="panel-mau01">
+                <!-- BANNER HƯỚNG DẪN 3 PHƯƠNG THỨC NẠP SỐ LIỆU -->
+                <div class="mau01-guide-banner" style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:12px 16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="width:38px; height:38px; border-radius:50%; background:#2563EB; color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:13px; font-weight:700; color:#1E40AF;">
+                                3 PHƯƠNG THỨC NẠP SỐ LIỆU VÀO MẪU 01 (DANH MỤC VỤ VIỆC):
+                            </div>
+                            <div style="font-size:12px; color:#1E3A8A; margin-top:2px;">
+                                <span style="background:#DBEAFE; padding:1px 6px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-rotate"></i> 1. Đồng bộ từ hệ thống</span> (Quét tự động CSDL) &nbsp;|&nbsp; 
+                                <span style="background:#DBEAFE; padding:1px 6px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-list-check"></i> 2. Chọn vụ việc từ hệ thống</span> (Chọn chủ động từ CSDL) &nbsp;|&nbsp; 
+                                <span style="background:#DBEAFE; padding:1px 6px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-plus"></i> 3. Thêm vụ việc thủ công</span> (Nhập vụ việc ngoài phần mềm)
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mau01QuickDemoBtnWrap" style="display:flex; gap:8px; align-items:center;">
+                        <!-- Hiển thị trạng thái/nút qua JS -->
+                    </div>
+                </div>
+
                 <div class="source-toggle-row readonly-source-row">
                     <span class="form-label">Nguồn số liệu - Mẫu 01</span>
-                    <span class="source-pill" data-source-label="mau01"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
-                    <span class="formula-hint">Danh mục vụ việc được nhập/tổng hợp theo nguồn dữ liệu đã chọn khi tạo kỳ báo cáo.</span>
+                    <span class="source-pill" id="mau01SourcePill" data-source-label="mau01"><i class="fa-solid fa-database"></i> Tự động kết hợp nhập tay (Hybrid Smart Grid)</span>
+                    <span class="formula-hint">Khóa thông tin định danh hệ thống (Cột 1-4); cho phép hiệu chỉnh thuyết minh tiến độ, chi trả (Cột 5-8).</span>
                 </div>
+
+                <!-- Thanh công cụ Toolbar Mẫu 01 -->
+                <div class="toolbar-row" id="mau01Toolbar" style="justify-content:space-between; margin-top:8px; margin-bottom:12px;">
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-sm" id="btnSyncSystem" onclick="syncMau01FromSystem()" title="Đồng bộ lại dữ liệu hồ sơ BTNN mới phát sinh trong kỳ">
+                            <i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="btnPickCase" onclick="openCasePickerModal()" title="Mở danh sách vụ việc để chọn đưa vào Mẫu 01">
+                            <i class="fa-solid fa-list-check"></i> Chọn vụ việc từ hệ thống
+                        </button>
+                        <button class="btn btn-primary btn-sm" id="btnAddManualRow" onclick="openAddMau01Modal()" title="Thêm vụ việc thủ công phát sinh ngoài phần mềm">
+                            <i class="fa-solid fa-plus"></i> Thêm vụ việc thủ công
+                        </button>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-success btn-sm" onclick="exportPeriod('Excel')">
+                            <i class="fa-solid fa-file-excel"></i> Kết xuất Excel (Mẫu 01)
+                        </button>
+                    </div>
+                </div>
+
                 <div class="table-container" id="mau01TableWrap"></div>
             </div>
             <div class="tab-panel" id="panel-mau03">
@@ -1374,7 +1420,8 @@ function onSourceChange(form, value) {
     if (currentTab === form) switchTab(form);
 }
 
-// ===================== Render Mẫu 01 =====================
+
+// ===================== Render Mẫu 01 Nâng Cao (Đa Nguồn) =====================
 const APPLICABLE_LAW_OPTIONS = [
     'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
     'Luật Trách nhiệm bồi thường của Nhà nước năm 2009',
@@ -1382,69 +1429,392 @@ const APPLICABLE_LAW_OPTIONS = [
     'Nghị định số 47-CP ngày 03/05/1997'
 ];
 
+// CSDL GIẢ LẬP HỒ SƠ BTNN TRÊN HỆ THỐNG PHÁT SINH TRONG KỲ (DÙNG CHO ĐỒNG BỘ VÀ CHỌN VỤ VIỆC)
+const SYSTEM_CASE_POOL = [
+    {
+        code: 'BT-2026-088', origin: 'system', isOverridden: false,
+        field: 'I. Trong hoạt động quản lý hành chính',
+        requester: 'Trương Quốc Bảo', address: 'Số 18 phố Hàng Gai, Q. Hoàn Kiếm, Hà Nội',
+        agency: 'UBND quận Hoàn Kiếm', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
+        situation: 'Đã có văn bản kết luận giải quyết khiếu nại xác định hành vi ban hành quyết định thu hồi giấy phép KD sai thẩm quyền. Đang chuẩn bị tổ chức thương lượng bồi thường.',
+        payment: 'Chưa chi trả.', vuongMac: 'Đang chờ thẩm định giá trị tổn thất tài chính.', note: 'Hồ sơ thụ lý ngày 12/08/2026.'
+    },
+    {
+        code: 'BT-2026-092', origin: 'system', isOverridden: false,
+        field: 'I. Trong hoạt động quản lý hành chính',
+        requester: 'Nguyễn Thị Bích Thủy', address: 'Số 95 đường Nguyễn Trãi, P. Thượng Đình, Q. Thanh Xuân, Hà Nội',
+        agency: 'Sở Xây dựng Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
+        situation: 'Đã thương lượng thành công ngày 05/09/2026; đang làm thủ tục trình phê duyệt dự toán kinh phí bồi thường.',
+        payment: 'Chưa chi trả.', vuongMac: 'Không có.', note: 'Thương lượng xong mức 340 triệu đồng.'
+    },
+    {
+        code: 'BT-2026-105', origin: 'system', isOverridden: false,
+        field: 'II. Trong hoạt động tố tụng hình sự',
+        requester: 'Đặng Đình Toàn', address: 'Số 42 đường Hoàng Hoa Thám, P. Liễu Giai, Q. Ba Đình, Hà Nội',
+        agency: 'Công an Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
+        situation: 'Viện kiểm sát đã ra Quyết định đình chỉ điều tra do hành vi không cấu thành tội phạm. Đã thụ lý hồ sơ yêu cầu bồi thường oan sai.',
+        payment: 'Chưa chi trả.', vuongMac: 'Cần xác minh thời gian chấp hành biện pháp tạm giam thực tế.', note: 'Thụ lý mới ngày 20/08/2026.'
+    },
+    {
+        code: 'BT-2026-118', origin: 'system', isOverridden: false,
+        field: 'VI. Trong hoạt động thi hành án dân sự',
+        requester: 'Công ty Cổ phần Đầu tư Sông Hồng', address: 'Tầng 5 tòa nhà Pacific, 83B Lý Thường Kiệt, Hoàn Kiếm, Hà Nội',
+        agency: 'Cục Thi hành án dân sự Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
+        situation: 'Chấp hành viên phong tỏa nhầm tài sản bảo đảm của bên thứ ba không thuộc diện phải thi hành án. Tòa án đã thụ lý yêu cầu bồi thường kèm theo.',
+        payment: 'Chưa chi trả.', vuongMac: 'Chờ phán quyết của Tòa án có thẩm quyền.', note: 'Vụ việc có tính chất phức tạp.'
+    }
+];
+
 function renderMau01(ky, readOnly) {
-    const editable = ky.sources.mau01 === 'thu_cong' && !readOnly;
-    const colCount = 9;
-    let html = `<table class="custom-table"><thead><tr>
-        <th style="width:40px;">STT</th><th style="min-width:150px;">Họ và tên người yêu cầu bồi thường</th>
-        <th style="min-width:170px;">Địa chỉ người yêu cầu bồi thường</th><th style="min-width:170px;">Cơ quan giải quyết bồi thường</th><th style="min-width:180px;">Pháp luật áp dụng để giải quyết bồi thường</th>
-        <th style="min-width:200px;">Tình hình giải quyết bồi thường</th><th style="min-width:150px;">Chi trả tiền bồi thường</th>
-        <th style="min-width:170px;">Khó khăn, vướng mắc</th><th style="min-width:150px;">Ghi chú</th>
-    </tr><tr class="column-number-row"><th></th>${Array.from({ length: 8 }, (_, i) => `<th>(${i + 1})</th>`).join('')}</tr></thead><tbody>`;
+    const editable = ky.status === 'dang_nhap_lieu' || ky.status === 'yeu_cau_chinh_ly';
+    const colCount = 10;
+    
+    // Cập nhật trạng thái hiển thị trên Toolbar Mẫu 01
+    const btnSync = document.getElementById('btnSyncSystem');
+    const btnPick = document.getElementById('btnPickCase');
+    const btnAdd = document.getElementById('btnAddManualRow');
+    if (btnSync) btnSync.style.display = 'inline-flex';
+    if (btnPick) btnPick.style.display = 'inline-flex';
+    if (btnAdd) btnAdd.style.display = 'inline-flex';
+
+    // Cập nhật thẻ trạng thái demo ở banner
+    const demoWrap = document.getElementById('mau01QuickDemoBtnWrap');
+    if (demoWrap) {
+        if (editable) {
+            demoWrap.innerHTML = `<span class="badge badge-success" style="font-size:11.5px; padding:5px 10px;"><i class="fa-solid fa-lock-open"></i> Đang mở quyền nhập liệu</span>`;
+        } else {
+            demoWrap.innerHTML = `
+                <span class="badge badge-info" style="font-size:11px; padding:4px 8px;"><i class="fa-solid fa-lock"></i> Chỉ đọc (Chờ duyệt/Đã duyệt)</span>
+                <button type="button" class="btn btn-warning btn-sm" onclick="openDetail(10)" style="font-size:11.5px; padding:4px 10px;" title="Mở Sở TN&MT để trải nghiệm thêm/sửa/đồng bộ trực tiếp">
+                    <i class="fa-solid fa-arrow-right"></i> Mở Kỳ đang nhập (Sở TN&MT)
+                </button>
+            `;
+        }
+    }
+
+    let html = `<table class="custom-table" style="font-size:12.5px;">
+        <thead>
+            <tr>
+                <th style="width:40px;">STT</th>
+                <th style="min-width:180px;">Họ và tên của người yêu cầu bồi thường</th>
+                <th style="min-width:180px;">Địa chỉ của người yêu cầu bồi thường</th>
+                <th style="min-width:180px;">Cơ quan giải quyết bồi thường</th>
+                <th style="min-width:170px;">Pháp luật áp dụng để giải quyết bồi thường</th>
+                <th style="min-width:240px;">Tình hình giải quyết bồi thường</th>
+                <th style="min-width:160px;">Chi trả tiền bồi thường</th>
+                <th style="min-width:170px;">Khó khăn, vướng mắc</th>
+                <th style="min-width:130px;">Ghi chú</th>
+                <th style="min-width:120px; text-align:center;">Thao tác</th>
+            </tr>
+            <tr class="column-number-row">
+                <th></th>${Array.from({ length: 8 }, (_, i) => `<th>(${i + 1})</th>`).join('')}<th></th>
+            </tr>
+        </thead>
+        <tbody>`;
+
     let total = 0;
     FIELDS.forEach((field, fieldIndex) => {
         const rows = ky.mau01Rows[field] || [];
         total += rows.length;
         const roman = ['I','II','III','IV','V','VI'][fieldIndex];
-        html += `<tr class="group-header"><td>${roman}</td><td colspan="${colCount - 1}">${field.replace(/^[IVX]+\.\s*/, '')} (${rows.length} vụ việc)</td></tr>`;
-        rows.forEach((row, idx) => {
-            if (editable) {
+        html += `<tr class="group-header">
+            <td>${roman}</td>
+            <td colspan="8">${field.replace(/^[IVX]+\.\s*/, '')} (${rows.length} vụ việc)</td>
+            <td style="text-align:center;">
+                <button class="btn btn-secondary btn-sm" onclick="openAddMau01Modal('${escapeJs(field)}')" style="font-size:11px; padding:2px 6px;">
+                    <i class="fa-solid fa-plus"></i> Thêm vụ
+                </button>
+            </td>
+        </tr>`;
+
+        if (rows.length === 0) {
+            html += `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); font-style:italic; padding:10px;">Chưa có vụ việc nào trong lĩnh vực này.</td></tr>`;
+        } else {
+            rows.forEach((row, idx) => {
+                const isSys = row.origin === 'system';
+                const originBadge = isSys 
+                    ? '<span class="badge badge-info" style="font-size:10px; margin-right:4px;"><i class="fa-solid fa-database"></i> Hệ thống</span>' 
+                    : '<span class="badge badge-warning" style="font-size:10px; margin-right:4px;"><i class="fa-solid fa-pen"></i> Nhập tay</span>';
+                const overrideBadge = row.isOverridden 
+                    ? '<span class="badge badge-warning" style="font-size:10px; margin-left:4px;" title="Đã có hiệu chỉnh thuyết minh"><i class="fa-solid fa-pencil"></i> Đã hiệu chỉnh</span>' 
+                    : '';
+
+                // Thao tác cố định 3 slot theo Rule #3
+                const btnSlot1 = `<button class="icon-btn" title="Chỉnh sửa vụ việc" onclick="openEditMau01Row('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                
+                const btnSlot2 = (isSys && row.isOverridden)
+                    ? `<button class="icon-btn" style="color:var(--warning-color);" title="Khôi phục nguyên bản từ hệ thống" onclick="restoreMau01Original('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-rotate-left"></i></button>`
+                    : `<button class="icon-btn" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Không có thay đổi để khôi phục"><i class="fa-solid fa-rotate-left"></i></button>`;
+                
+                const btnSlot3 = `<button class="icon-btn danger" title="Xóa vụ việc này" onclick="deleteMau01Row('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-trash-can"></i></button>`;
+
                 html += `<tr>
-                    <td>${idx + 1}<br><button class="icon-btn danger" title="Xóa dòng" onclick="deleteMau01Row('${field}',${idx})"><i class="fa-solid fa-trash-can"></i></button></td>
-                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'requester',this.value)">${row.requester}</textarea></td>
-                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'address',this.value)">${row.address || ''}</textarea></td>
-                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'agency',this.value)">${row.agency}</textarea></td>
-                    <td class="text-left"><select class="cell-input text-left" onchange="updateMau01Field('${field}',${idx},'law',this.value)">
-                        ${APPLICABLE_LAW_OPTIONS.map(opt => `<option value="${opt}" ${row.law === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                    </select></td>
-                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'situation',this.value)">${row.situation}</textarea></td>
-                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'payment',this.value)">${row.payment}</textarea></td>
-                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'vuongMac',this.value)">${row.vuongMac}</textarea></td>
-                    <td class="text-left"><textarea class="cell-textarea" rows="1" onchange="updateMau01Field('${field}',${idx},'note',this.value)">${row.note}</textarea></td>
+                    <td>${idx + 1}</td>
+                    <td class="text-left">
+                        ${originBadge}<strong>${row.requester || '-'}</strong>
+                        ${overrideBadge}
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Mã: ${row.code || '-'}</div>
+                    </td>
+                    <td class="text-left" style="font-size:12px;">${row.address || '-'}</td>
+                    <td class="text-left"><strong>${row.agency || '-'}</strong></td>
+                    <td style="font-size:12px;">${row.law || '-'}</td>
+                    <td class="text-left" style="font-size:12px; line-height:1.4;">${row.situation || '-'}</td>
+                    <td class="text-left" style="font-size:12px;">${row.payment || '-'}</td>
+                    <td class="text-left" style="font-size:12px; color:#B45309;">${row.vuongMac || '-'}</td>
+                    <td class="text-left" style="font-size:12px;">${row.note || '-'}</td>
+                    <td style="white-space:nowrap; text-align:center;">
+                        ${btnSlot1} ${btnSlot2} ${btnSlot3}
+                    </td>
                 </tr>`;
-            } else {
-                html += `<tr>
-                    <td>${idx + 1}</td><td class="text-left">${row.requester}</td>
-                    <td class="text-left">${row.address || ''}</td><td class="text-left">${row.agency}</td><td class="text-left">${row.law}</td><td class="text-left">${row.situation}</td>
-                    <td class="text-left">${row.payment}</td><td class="text-left">${row.vuongMac}</td><td class="text-left">${row.note}</td>
-                </tr>`;
-            }
-        });
-        if (editable) {
-            html += `<tr><td colspan="${colCount}" style="text-align:left; background:#F8FAFC;"><button class="btn btn-secondary btn-sm" onclick="addMau01Row('${field}')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></td></tr>`;
+            });
         }
     });
-    html += `<tr class="total-row"><td>Tổng cộng</td><td colspan="${colCount - 1}" class="text-left">${total} vụ việc</td></tr>`;
+
+    html += `<tr class="total-row"><td>Tổng</td><td colspan="9" class="text-left" style="font-weight:700; color:var(--primary-color);">Tổng số vụ việc giải quyết yêu cầu bồi thường: <strong>${total}</strong> vụ việc</td></tr>`;
     html += '</tbody></table>';
     document.getElementById('mau01TableWrap').innerHTML = html;
 }
 
-function addMau01Row(field) {
+// ----------------- CÁC HÀM NẠP DỮ LIỆU MẪU 01 -----------------
+function syncMau01FromSystem() {
     const ky = findKy(currentDetailId);
-    ky.mau01Rows[field].push({ code: `BT-${ky.year}-${String(Math.floor(Math.random()*900)+100)}`, requester: '', address: '', agency: '', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: '', payment: '', vuongMac: '', note: '' });
+    let added = 0;
+    const existingCodes = new Set();
+    FIELDS.forEach(f => {
+        (ky.mau01Rows[f] || []).forEach(r => existingCodes.add(r.code));
+    });
+
+    SYSTEM_CASE_POOL.forEach(poolItem => {
+        if (!existingCodes.has(poolItem.code)) {
+            const f = poolItem.field || FIELDS[0];
+            if (!ky.mau01Rows[f]) ky.mau01Rows[f] = [];
+            ky.mau01Rows[f].push({
+                code: poolItem.code, origin: 'system', isOverridden: false,
+                requester: poolItem.requester, address: poolItem.address, agency: poolItem.agency,
+                law: poolItem.law, situation: poolItem.situation, payment: poolItem.payment,
+                vuongMac: poolItem.vuongMac, note: poolItem.note,
+                originalData: { situation: poolItem.situation, payment: poolItem.payment, vuongMac: poolItem.vuongMac, note: poolItem.note }
+            });
+            existingCodes.add(poolItem.code);
+            added++;
+        }
+    });
+
+    if (added > 0) {
+        showToast(`Đã quét tự động và nạp thêm ${added} vụ việc từ CSDL Hồ sơ BTNN vào Mẫu 01!`, 'success');
+    } else {
+        showToast('Tất cả vụ việc từ hệ thống đã có đầy đủ trong Mẫu 01.', 'info');
+    }
     renderMau01(ky, false);
-    showToast('Đã thêm 01 dòng vụ việc.', 'success');
 }
-function updateMau01Field(field, idx, key, value) {
+
+function openCasePickerModal() {
     const ky = findKy(currentDetailId);
-    ky.mau01Rows[field][idx][key] = value;
+    const existingCodes = new Set();
+    FIELDS.forEach(f => {
+        (ky.mau01Rows[f] || []).forEach(r => existingCodes.add(r.code));
+    });
+
+    const tbody = document.getElementById('casePickerTableBody');
+    if (tbody) {
+        tbody.innerHTML = SYSTEM_CASE_POOL.map(c => {
+            const isExists = existingCodes.has(c.code);
+            return `
+                <tr style="${isExists ? 'opacity:0.5; background:#F8FAFC;' : ''}">
+                    <td><input type="checkbox" class="case-picker-cb" value="${c.code}" ${isExists ? 'disabled checked' : ''}></td>
+                    <td><strong style="color:var(--primary-color);">${c.code}</strong></td>
+                    <td><strong>${c.requester}</strong></td>
+                    <td style="font-size:11.5px;">${c.field}</td>
+                    <td>${c.agency}</td>
+                    <td class="text-left" style="font-size:11.5px;">${c.situation} ${isExists ? '<span class="badge badge-muted">Đã có</span>' : ''}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+    const overlay = document.getElementById('casePickerModalOverlay');
+    if (overlay) overlay.style.display = 'flex';
 }
+
+function closeCasePickerModal() {
+    const overlay = document.getElementById('casePickerModalOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+function submitCasePicker() {
+    const ky = findKy(currentDetailId);
+    const checked = Array.from(document.querySelectorAll('.case-picker-cb:checked:not(:disabled)')).map(cb => cb.value);
+    if (!checked.length) {
+        showToast('Vui lòng chọn ít nhất 01 vụ việc để thêm.', 'warning');
+        return;
+    }
+
+    let added = 0;
+    checked.forEach(code => {
+        const item = SYSTEM_CASE_POOL.find(c => c.code === code);
+        if (item) {
+            const f = item.field || FIELDS[0];
+            if (!ky.mau01Rows[f]) ky.mau01Rows[f] = [];
+            ky.mau01Rows[f].push({
+                code: item.code, origin: 'system', isOverridden: false,
+                requester: item.requester, address: item.address, agency: item.agency,
+                law: item.law, situation: item.situation, payment: item.payment,
+                vuongMac: item.vuongMac, note: item.note,
+                originalData: { situation: item.situation, payment: item.payment, vuongMac: item.vuongMac, note: item.note }
+            });
+            added++;
+        }
+    });
+
+    closeCasePickerModal();
+    showToast(`Đã thêm thành công ${added} vụ việc đã chọn vào Mẫu 01.`, 'success');
+    renderMau01(ky, false);
+}
+
+function openAddMau01Modal(defaultField) {
+    document.getElementById('editMau01Idx').value = '-1';
+    document.getElementById('editMau01Field').value = defaultField || FIELDS[0];
+    document.getElementById('editMau01Origin').value = 'manual';
+    document.getElementById('m01_modal_title').textContent = 'Thêm mới vụ việc thủ công (Ngoài phần mềm)';
+    document.getElementById('m01_field_select').value = defaultField || FIELDS[0];
+    document.getElementById('m01_requester').value = '';
+    document.getElementById('m01_address').value = '';
+    document.getElementById('m01_agency').value = '';
+    document.getElementById('m01_situation').value = '';
+    document.getElementById('m01_payment').value = 'Chưa chi trả.';
+    document.getElementById('m01_vuongMac').value = '';
+    document.getElementById('m01_note').value = '';
+    
+    // Mở khóa cho phép sửa thông tin định danh vì là nhập tay
+    ['m01_requester', 'm01_address', 'm01_agency', 'm01_law'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = false;
+    });
+
+    const overlay = document.getElementById('editMau01ModalOverlay');
+    if (overlay) overlay.style.display = 'flex';
+}
+
+function openEditMau01Row(field, idx) {
+    const ky = findKy(currentDetailId);
+    const row = (ky.mau01Rows[field] || [])[idx];
+    if (!row) return;
+
+    document.getElementById('editMau01Idx').value = idx;
+    document.getElementById('editMau01Field').value = field;
+    document.getElementById('editMau01Origin').value = row.origin || 'manual';
+    document.getElementById('m01_field_select').value = field;
+    document.getElementById('m01_requester').value = row.requester || '';
+    document.getElementById('m01_address').value = row.address || '';
+    document.getElementById('m01_agency').value = row.agency || '';
+    document.getElementById('m01_law').value = row.law || APPLICABLE_LAW_OPTIONS[0];
+    document.getElementById('m01_situation').value = row.situation || '';
+    document.getElementById('m01_payment').value = row.payment || '';
+    document.getElementById('m01_vuongMac').value = row.vuongMac || '';
+    document.getElementById('m01_note').value = row.note || '';
+
+    const isSys = row.origin === 'system';
+    document.getElementById('m01_modal_title').textContent = isSys
+        ? `Hiệu chỉnh thuyết minh vụ việc hệ thống [${row.code}]`
+        : `Chỉnh sửa vụ việc nhập tay [${row.code}]`;
+
+    // Đối với vụ việc hệ thống, khóa các trường Cột 1-4 theo SRS
+    ['m01_requester', 'm01_address', 'm01_agency', 'm01_law'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = isSys;
+    });
+
+    const overlay = document.getElementById('editMau01ModalOverlay');
+    if (overlay) overlay.style.display = 'flex';
+}
+
+function closeEditMau01Modal() {
+    const overlay = document.getElementById('editMau01ModalOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+function saveEditMau01Row() {
+    const ky = findKy(currentDetailId);
+    const idx = parseInt(document.getElementById('editMau01Idx').value, 10);
+    const oldField = document.getElementById('editMau01Field').value;
+    const newField = document.getElementById('m01_field_select').value;
+    const origin = document.getElementById('editMau01Origin').value;
+
+    const requester = document.getElementById('m01_requester').value.trim();
+    const address = document.getElementById('m01_address').value.trim();
+    const agency = document.getElementById('m01_agency').value.trim();
+    const law = document.getElementById('m01_law').value;
+    const situation = document.getElementById('m01_situation').value.trim();
+    const payment = document.getElementById('m01_payment').value.trim();
+    const vuongMac = document.getElementById('m01_vuongMac').value.trim();
+    const note = document.getElementById('m01_note').value.trim();
+
+    if (!requester || !agency) {
+        showToast('Vui lòng nhập đầy đủ Người yêu cầu và Cơ quan giải quyết.', 'error');
+        return;
+    }
+
+    if (idx === -1) {
+        // Thêm mới
+        const newCode = `BT-${ky.year}-${String(Math.floor(Math.random() * 900) + 100)}`;
+        if (!ky.mau01Rows[newField]) ky.mau01Rows[newField] = [];
+        ky.mau01Rows[newField].push({
+            code: newCode, origin: 'manual', isOverridden: false,
+            requester, address, agency, law, situation, payment, vuongMac, note
+        });
+        showToast('Đã thêm 01 vụ việc thủ công vào Mẫu 01.', 'success');
+    } else {
+        // Cập nhật
+        const row = ky.mau01Rows[oldField][idx];
+        if (origin === 'system') {
+            row.isOverridden = true;
+            row.situation = situation;
+            row.payment = payment;
+            row.vuongMac = vuongMac;
+            row.note = note;
+            showToast('Đã cập nhật thuyết minh vụ việc hệ thống.', 'success');
+        } else {
+            row.requester = requester;
+            row.address = address;
+            row.agency = agency;
+            row.law = law;
+            row.situation = situation;
+            row.payment = payment;
+            row.vuongMac = vuongMac;
+            row.note = note;
+            if (oldField !== newField) {
+                ky.mau01Rows[oldField].splice(idx, 1);
+                if (!ky.mau01Rows[newField]) ky.mau01Rows[newField] = [];
+                ky.mau01Rows[newField].push(row);
+            }
+            showToast('Đã cập nhật thông tin vụ việc.', 'success');
+        }
+    }
+
+    closeEditMau01Modal();
+    renderMau01(ky, false);
+}
+
+function restoreMau01Original(field, idx) {
+    const ky = findKy(currentDetailId);
+    const row = (ky.mau01Rows[field] || [])[idx];
+    if (!row || !row.originalData) return;
+
+    if (!confirm('Bạn có chắc muốn khôi phục nội dung thuyết minh gốc ban đầu từ hệ thống không?')) return;
+    row.situation = row.originalData.situation || '';
+    row.payment = row.originalData.payment || '';
+    row.vuongMac = row.originalData.vuongMac || '';
+    row.note = row.originalData.note || '';
+    row.isOverridden = false;
+    showToast('Đã khôi phục nội dung thuyết minh nguyên bản.', 'info');
+    renderMau01(ky, false);
+}
+
 function deleteMau01Row(field, idx) {
     if (!confirm('Bạn có chắc chắn muốn xóa vụ việc này khỏi danh mục không?')) return;
     const ky = findKy(currentDetailId);
     ky.mau01Rows[field].splice(idx, 1);
     renderMau01(ky, false);
-    showToast('Đã xóa vụ việc.', 'success');
+    showToast('Đã xóa vụ việc khỏi Mẫu 01.', 'success');
 }
 
 // ===================== Render Mẫu 03 - đúng bố cục biểu mẫu gốc (lĩnh vực = dòng, chỉ tiêu = cột lồng nhóm) =====================
@@ -1869,6 +2239,244 @@ function approveUnit() {
 // ===================== Init =====================
 renderListView();
 </script>
+<script>
+function openProcessModal() {
+    document.getElementById('processModalOverlay').style.display = 'flex';
+}
+function closeProcessModal() {
+    document.getElementById('processModalOverlay').style.display = 'none';
+}
+</script>
+
+<!-- 1. MODAL POPUP: QUY TRÌNH TỔNG HỢP BÁO CÁO THEO 3 CẤP VAI TRÒ -->
+<div class="confirm-modal-overlay" id="processModalOverlay" style="display:none; align-items:center; justify-content:center;">
+    <div class="sticky-modal-container" style="width: 920px; max-width: 95%;">
+        <div class="confirm-modal-header" style="background:#1E3A8A; color:#fff; padding:18px 24px;">
+            <div style="font-size:15.5px; font-weight:700; display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-diagram-project"></i> QUY TRÌNH TỔNG HỢP BÁO CÁO THÔNG TƯ 08 THEO 3 CẤP VAI TRÒ
+            </div>
+            <span onclick="closeProcessModal()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#fff; line-height:1;">&times;</span>
+        </div>
+        <div class="confirm-modal-body" style="padding:24px; background:#F8FAFC;">
+            <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:6px; padding:12px 16px; margin-bottom:20px; font-size:13px; color:#1E40AF;">
+                <strong>Nguyên lý tổng hợp hình tháp (Pyramid Roll-up):</strong> Dữ liệu đi từ <strong>Đơn vị cơ sở (Cấp 1)</strong> nạp vụ việc Mẫu 01 (bằng 3 cách) -> hệ thống tự động tính toán Mẫu 03 & 04 -> gửi lên <strong>Đầu mối Tỉnh/Bộ (Cấp 2)</strong> duyệt và tự động gom vào Kỳ tổng hợp của tỉnh -> gửi lên <strong>Cục Bồi thường nhà nước - Bộ Tư pháp (Cấp 3)</strong> để tổng hợp Báo cáo Quốc gia.
+            </div>
+
+            <!-- 3 CỘT CẤP VAI TRÒ -->
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+                <!-- CỘT 1: CẤP 1 -->
+                <div style="background:#fff; border:2px solid #BFDBFE; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display:flex; align-items:center; gap:8px; border-bottom:2px solid #3B82F6; padding-bottom:8px;">
+                        <div style="width:28px; height:28px; border-radius:50%; background:#3B82F6; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;">1</div>
+                        <div>
+                            <div style="font-weight:700; color:#1E3A8A; font-size:13.5px;">CẤP 1: ĐƠN VỊ CƠ SỞ</div>
+                            <div style="font-size:11.5px; color:#64748B;">Sở, Ban, Ngành, UBND quận/huyện, TAND, THADS</div>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; line-height:1.5; color:#334155; display:flex; flex-direction:column; gap:10px;">
+                        <div>
+                            <strong>Bước 1. Tạo kỳ báo cáo:</strong><br>
+                            Bấm nút <code>+ Tạo kỳ báo cáo</code> (hoặc hệ thống tự sinh kỳ theo mốc lịch quy định).
+                        </div>
+                        <div>
+                            <strong>Bước 2. Nạp số liệu Mẫu 01 (3 cách):</strong><br>
+                            • <span style="color:#2563EB; font-weight:600;"><i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống</span>: Quét tự động hồ sơ thụ lý trong kỳ.<br>
+                            • <span style="color:#059669; font-weight:600;"><i class="fa-solid fa-list-check"></i> Chọn vụ việc</span>: Tích chọn vụ việc từ CSDL kho lưu trữ.<br>
+                            • <span style="color:#D97706; font-weight:600;"><i class="fa-solid fa-plus"></i> Thêm thủ công</span>: Nhập vụ việc ngoài phần mềm.
+                        </div>
+                        <div>
+                            <strong>Bước 3. Tự động tính toán Mẫu 03 & 04:</strong><br>
+                            Số vụ việc từ Mẫu 01 tự động liên thông sang 26 chỉ tiêu Mẫu 03 và 15 chỉ tiêu Mẫu 04.
+                        </div>
+                        <div>
+                            <strong>Bước 4. Gửi báo cáo:</strong><br>
+                            Soát xét số liệu và bấm <code>Gửi báo cáo</code> lên Cấp 2.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CỘT 2: CẤP 2 -->
+                <div style="background:#fff; border:2px solid #FDE68A; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display:flex; align-items:center; gap:8px; border-bottom:2px solid #F59E0B; padding-bottom:8px;">
+                        <div style="width:28px; height:28px; border-radius:50%; background:#F59E0B; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;">2</div>
+                        <div>
+                            <div style="font-weight:700; color:#92400E; font-size:13.5px;">CẤP 2: ĐẦU MỐI TỈNH / BỘ</div>
+                            <div style="font-size:11.5px; color:#64748B;">Sở Tư pháp, UBND cấp tỉnh, Pháp chế Bộ/ngành</div>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; line-height:1.5; color:#334155; display:flex; flex-direction:column; gap:10px;">
+                        <div>
+                            <strong>Bước 1. Giám sát tiến độ nộp:</strong><br>
+                            Theo dõi danh sách đơn vị <code>Chưa nộp</code>, bấm nút <code>Đôn đốc</code> để nhắc nhở khẩn.
+                        </div>
+                        <div>
+                            <strong>Bước 2. Nhập thay (khi cần):</strong><br>
+                            Bấm <code>+ Tạo kỳ / Nhập thay</code> để nhập số liệu hộ các đơn vị cấp dưới chưa có tài khoản.
+                        </div>
+                        <div>
+                            <strong>Bước 3. Thẩm duyệt báo cáo Cấp 1:</strong><br>
+                            Mở báo cáo Cấp 1 -> Chọn <code>Phê duyệt</code> hoặc <code>Yêu cầu chỉnh lý</code> (kèm lý do).
+                        </div>
+                        <div>
+                            <strong>Bước 4. Tự động gom & Gửi Bộ:</strong><br>
+                            Mở <code>Kỳ tổng hợp tỉnh</code> -> Dữ liệu từ các đơn vị đã duyệt tự động cộng dồn -> Bấm <code>Gửi báo cáo</code> lên Bộ Tư pháp.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CỘT 3: CẤP 3 -->
+                <div style="background:#fff; border:2px solid #DDD6FE; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display:flex; align-items:center; gap:8px; border-bottom:2px solid #7C3AED; padding-bottom:8px;">
+                        <div style="width:28px; height:28px; border-radius:50%; background:#7C3AED; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;">3</div>
+                        <div>
+                            <div style="font-weight:700; color:#5B21B6; font-size:13.5px;">CẤP 3: CỤC BTNN - BỘ TƯ PHÁP</div>
+                            <div style="font-size:11.5px; color:#64748B;">Cơ quan quản lý Trung ương toàn quốc</div>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; line-height:1.5; color:#334155; display:flex; flex-direction:column; gap:10px;">
+                        <div>
+                            <strong>Bước 1. Giám sát 83 đầu mối:</strong><br>
+                            Quản lý 63 tỉnh/thành + 20 Bộ/ngành. Theo dõi tỷ lệ nộp, đôn đốc các tỉnh quá hạn.
+                        </div>
+                        <div>
+                            <strong>Bước 2. Thẩm duyệt Báo cáo Cấp 2:</strong><br>
+                            Xem xét báo cáo tổng hợp của tỉnh -> <code>Phê duyệt</code> hoặc trả lại yêu cầu giải trình.
+                        </div>
+                        <div>
+                            <strong>Bước 3. Tổng hợp Báo cáo Quốc gia:</strong><br>
+                            Mở <code>Kỳ tổng hợp toàn quốc</code> -> Hệ thống tự động hợp nhất toàn bộ dữ liệu 83 đầu mối.
+                        </div>
+                        <div>
+                            <strong>Bước 4. Kết xuất phục vụ báo cáo:</strong><br>
+                            Bấm <code>Kết xuất Excel</code> bộ biểu mẫu Thông tư 08 phục vụ Lãnh đạo Bộ ký trình Chính phủ, Quốc hội.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="confirm-modal-footer" style="padding:14px 24px; display:flex; justify-content:flex-end;">
+            <button type="button" class="btn btn-primary" onclick="closeProcessModal()"><i class="fa-solid fa-check"></i> Đã hiểu quy trình</button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. MODAL POPUP: CHỌN VỤ VIỆC TỪ CSDL HỆ THỐNG VÀO MẪU 01 -->
+<div class="confirm-modal-overlay" id="casePickerModalOverlay" style="display:none; align-items:center; justify-content:center;">
+    <div class="sticky-modal-container" style="width: 850px; max-width: 95%;">
+        <div class="confirm-modal-header">
+            <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--primary-color);">
+                <i class="fa-solid fa-list-check"></i> CHỌN VỤ VIỆC TỪ CSDL HỆ THỐNG ĐƯA VÀO MẪU 01
+            </div>
+            <span onclick="closeCasePickerModal()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
+        </div>
+        <div class="confirm-modal-body" style="padding:20px;">
+            <div style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">
+                Tích chọn các hồ sơ bồi thường nhà nước đã phát sinh trong kỳ từ kho CSDL để đưa vào danh mục Mẫu 01:
+            </div>
+            <div class="table-container" style="max-height:360px; overflow-y:auto;">
+                <table class="custom-table" style="font-size:12px;">
+                    <thead>
+                        <tr>
+                            <th style="width:36px;">Chọn</th>
+                            <th style="min-width:110px;">Mã hồ sơ</th>
+                            <th style="min-width:140px;">Người yêu cầu</th>
+                            <th style="min-width:160px;">Lĩnh vực hoạt động</th>
+                            <th style="min-width:160px;">Cơ quan giải quyết</th>
+                            <th style="min-width:200px;">Tình hình xử lý</th>
+                        </tr>
+                    </thead>
+                    <tbody id="casePickerTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="confirm-modal-footer" style="padding:14px 20px; display:flex; justify-content:flex-end; gap:8px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeCasePickerModal()">Hủy bỏ</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="submitCasePicker()"><i class="fa-solid fa-plus"></i> Thêm vào Mẫu 01</button>
+        </div>
+    </div>
+</div>
+
+<!-- 3. MODAL POPUP: THÊM / SỬA VỤ VIỆC MẪU 01 (CHUẨN 8 CỘT TT08) -->
+<div class="confirm-modal-overlay" id="editMau01ModalOverlay" style="display:none; align-items:center; justify-content:center;">
+    <div class="sticky-modal-container" style="width: 820px; max-width: 95%;">
+        <div class="confirm-modal-header">
+            <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--primary-color);">
+                <i class="fa-solid fa-file-signature"></i> <span id="m01_modal_title">Biên tập vụ việc Mẫu 01</span>
+            </div>
+            <span onclick="closeEditMau01Modal()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
+        </div>
+        <div class="confirm-modal-body" style="padding:24px;">
+            <input type="hidden" id="editMau01Idx" value="-1">
+            <input type="hidden" id="editMau01Field" value="">
+            <input type="hidden" id="editMau01Origin" value="manual">
+
+            <!-- BỐ CỤC 2 CỘT SONG SONG CHUẨN RULE 11 -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group" style="grid-column:1/-1;">
+                    <span class="form-label">Lĩnh vực phát sinh thiệt hại <span style="color:var(--danger-color);">*</span></span>
+                    <select class="form-control" id="m01_field_select">
+                        <option value="I. Trong hoạt động quản lý hành chính">I. Trong hoạt động quản lý hành chính</option>
+                        <option value="II. Trong hoạt động tố tụng hình sự">II. Trong hoạt động tố tụng hình sự</option>
+                        <option value="III. Trong hoạt động tố tụng dân sự">III. Trong hoạt động tố tụng dân sự</option>
+                        <option value="IV. Trong hoạt động tố tụng hành chính">IV. Trong hoạt động tố tụng hành chính</option>
+                        <option value="V. Trong hoạt động thi hành án hình sự">V. Trong hoạt động thi hành án hình sự</option>
+                        <option value="VI. Trong hoạt động thi hành án dân sự">VI. Trong hoạt động thi hành án dân sự</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Cột (1): Họ và tên người YCBT <span style="color:var(--danger-color);">*</span></span>
+                    <input type="text" class="form-control" id="m01_requester" placeholder="Nhập họ và tên người yêu cầu...">
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Cột (2): Địa chỉ người YCBT</span>
+                    <input type="text" class="form-control" id="m01_address" placeholder="Nhập địa chỉ người yêu cầu...">
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Cột (3): Cơ quan giải quyết bồi thường <span style="color:var(--danger-color);">*</span></span>
+                    <input type="text" class="form-control" id="m01_agency" placeholder="Nhập cơ quan giải quyết...">
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Cột (4): Pháp luật áp dụng để giải quyết</span>
+                    <select class="form-control" id="m01_law">
+                        <option value="Luật Trách nhiệm bồi thường của Nhà nước năm 2017">Luật Trách nhiệm bồi thường của Nhà nước năm 2017</option>
+                        <option value="Luật Trách nhiệm bồi thường của Nhà nước năm 2009">Luật Trách nhiệm bồi thường của Nhà nước năm 2009</option>
+                        <option value="Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003">Nghị quyết số 388/2003/NQ-UBTVQH11 ngày 17/03/2003</option>
+                        <option value="Nghị định số 47-CP ngày 03/05/1997">Nghị định số 47-CP ngày 03/05/1997</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1;">
+                    <span class="form-label">Cột (5): Tình hình giải quyết bồi thường</span>
+                    <textarea class="form-control" id="m01_situation" rows="2" placeholder="Tóm tắt tiến độ, các bước thụ lý, xác minh, thương lượng..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Cột (6): Chi trả tiền bồi thường</span>
+                    <input type="text" class="form-control" id="m01_payment" placeholder="Ví dụ: Đã chi trả 850 triệu đồng / Chưa chi trả...">
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Cột (7): Khó khăn, vướng mắc</span>
+                    <input type="text" class="form-control" id="m01_vuongMac" placeholder="Nêu khó khăn vướng mắc phát sinh...">
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1;">
+                    <span class="form-label">Cột (8): Ghi chú</span>
+                    <input type="text" class="form-control" id="m01_note" placeholder="Nhập ghi chú khác (nếu có)...">
+                </div>
+            </div>
+        </div>
+        <div class="confirm-modal-footer" style="padding:14px 24px; display:flex; justify-content:flex-end; gap:8px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeEditMau01Modal()">Hủy bỏ</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="saveEditMau01Row()"><i class="fa-solid fa-floppy-disk"></i> Lưu vụ việc</button>
+        </div>
+    </div>
+</div>
+
     <script src="admin-ui-standardizer.js"></script>
 </body>
 </html>
