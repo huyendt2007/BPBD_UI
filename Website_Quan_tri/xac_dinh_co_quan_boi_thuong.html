@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -708,6 +708,52 @@
                     <button class="btn btn-secondary" onclick="closeRejectAcceptanceModal()" style="background-color: #fff; border: 1px solid #cbd5e1; color: #475569; padding: 9px 20px; border-radius: 6px; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.15s;">Hủy bỏ</button>
                     <button class="btn btn-danger" id="rejectAcceptanceSubmitBtn" onclick="submitRejectAcceptance()" style="background-color: #ef4444; border: 1px solid #ef4444; color: #fff; padding: 9px 24px; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.15s;">Xác nhận từ chối</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal for Phiếu hướng dẫn bổ sung hồ sơ xác định cơ quan -->
+    <div id="previewModalSupplement" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div class="sticky-modal-container" style="background:#fff; width:800px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+            <div class="confirm-modal-header" style="color:var(--primary-color); background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
+                <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:var(--primary-color); text-transform:uppercase;">
+                    <i class="fa-solid fa-print"></i> IN PHIẾU YÊU CẦU BỔ SUNG HỒ SƠ
+                </div>
+                <span onclick="closePreviewSupplementModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
+            </div>
+            <div class="sticky-modal-body" id="printSupplementBody" style="padding:24px 32px; overflow-y:auto; flex:1; font-family:'Times New Roman', Times, serif; font-size:14.5px; line-height:1.6; color:#111;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                    <div style="text-align:center;">
+                        <div style="font-weight:bold; font-size:13px; text-transform:uppercase;" id="supplementHeaderAgency">SỞ TƯ PHÁP TP. HÀ NỘI</div>
+                        <div style="font-weight:bold; font-size:13px;">BỘ PHẬN TIẾP NHẬN VÀ TRẢ KẾT QUẢ</div>
+                        <div style="border-bottom:1px solid #000; width:130px; margin:4px auto;"></div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-weight:bold; font-size:13.5px; text-transform:uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                        <div style="font-weight:bold; font-size:13px; font-style:italic;">Độc lập - Tự do - Hạnh phúc</div>
+                        <div style="border-bottom:1px solid #000; width:160px; margin:4px auto;"></div>
+                    </div>
+                </div>
+                <div style="text-align:center; margin:20px 0 15px 0;">
+                    <h3 style="font-size:17px; font-weight:bold; text-transform:uppercase; margin:0 0 5px 0; color:#0f172a;">PHIẾU HƯỚNG DẪN BỔ SUNG HỒ SƠ</h3>
+                    <div style="font-style:italic; font-size:13.5px; color:#475569;">(Về việc yêu cầu xác định cơ quan giải quyết bồi thường)</div>
+                </div>
+                <div id="supplementNoticeContent" style="margin-top:16px;">
+                    <!-- Content injected by JS -->
+                </div>
+                <div style="display:flex; justify-content:flex-end; margin-top:35px; text-align:center;">
+                    <div style="width:45%;">
+                        <div style="font-style:italic; font-size:13.5px; color:#475569;" id="supplementNoticeDate">Hà Nội, ngày ... tháng ... năm 2026</div>
+                        <div style="font-weight:bold; margin-top:5px; text-transform:uppercase;">NGƯỜI HƯỚNG DẪN BỔ SUNG</div>
+                        <div style="font-style:italic; font-size:13px; color:#64748b;">(Ký và ghi rõ họ tên)</div>
+                        <div style="height:75px;"></div>
+                        <div style="font-weight:bold; color:#0f172a;" id="supplementNoticeSigner">Nguyễn Văn Chuyên Viên</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
+                <button type="button" class="btn btn-secondary" onclick="closePreviewSupplementModal()">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="executePrintSupplement()"><i class="fa-solid fa-print"></i> In phiếu</button>
             </div>
         </div>
     </div>

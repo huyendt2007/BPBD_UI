@@ -1496,6 +1496,54 @@
             flex: 1;
             /* Allow body to grow and fill available space */
         }
+
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #previewModalSupplement,
+            #previewModalSupplement #printSupplementBody,
+            #previewModalSupplement #printSupplementBody * {
+                visibility: visible !important;
+            }
+            #previewModalSupplement {
+                display: block !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                z-index: 99999 !important;
+            }
+            #previewModalSupplement .sticky-modal-container {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            #previewModalSupplement .confirm-modal-header,
+            #previewModalSupplement .modal-footer {
+                display: none !important;
+            }
+            #printSupplementBody {
+                padding: 10mm 15mm !important;
+                overflow: visible !important;
+                max-height: none !important;
+            }
+            .supplement-print-text {
+                display: block !important;
+            }
+            .supplement-screen-input,
+            .supplement-no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -1583,7 +1631,6 @@
                             <option value="">Tất cả</option>
                             <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                             <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
-                            <option value="Lưu nháp">Lưu nháp</option>
                         </select>
                     </div>
                     <div>
@@ -1665,7 +1712,7 @@
                             <th style="width: 110px; text-align: center;">Hạn xử lý</th>
                             <th style="width: 122px; text-align: center;">Hình thức tiếp nhận</th>
                             <th style="width: 122px; text-align: center;">Trạng thái</th>
-                            <th style="width: 120px; text-align: center; min-width: 120px;">Thao tác</th>
+                            <th style="width: 155px; text-align: center; min-width: 155px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="claimsTableBody">
@@ -4491,7 +4538,7 @@
                 officerStatus: "Đã chuyển công tác",
                 officerCurrentAgency: "UBND Phường Mai Động",
                 officerCurrentPosition: "Phó Chủ tịch UBND Phường",
-                status: "Lưu nháp",
+                status: "Chờ tiếp nhận",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 100000000,
                 advanceNum: 0,
@@ -5159,7 +5206,7 @@
                 code: "BT-2026-004",
                 assignedOfficer: "Nguyễn Văn Chuyên Viên",
                 fieldGroup: "dân sự",
-                date: "04/04/2026",
+                date: "08/09/2026",
                 nyc: "Trần Minh T",
                 cardType: "Cá nhân",
                 cardNo: "001094002934",
@@ -5333,7 +5380,7 @@
                 docBase: "Quyết định hoãn thi hành án dân sự trái luật số 12/QD-HTHA",
                 hanhVi: "Hoãn thi hành án dân sự dẫn đến tẩu tán tài sản.",
                 nhanQua: "Không thu hồi được khoản nợ 420 triệu.",
-                status: "Lưu nháp",
+                status: "Chờ tiếp nhận",
                 thulyVenue: "tòa án dân sự B",
                 totalNum: 420000000,
                 advanceNum: 0,
@@ -6293,11 +6340,13 @@
 
         function canonicalClaimStatus(status) {
             const nStatus = normalizeStatusText(status);
-            if (nStatus === 'luu nhap') return 'Chờ nhập liệu';
+            // Không còn trạng thái nháp riêng: mọi hồ sơ chưa gửi kiểm tra đều ở 'Chờ tiếp nhận'.
+            // Giữ ánh xạ từ 2 tên cũ để dữ liệu đã lưu trước đây vẫn đọc được.
+            if (nStatus === 'luu nhap') return 'Chờ tiếp nhận';
+            if (nStatus === 'cho nhap lieu') return 'Chờ tiếp nhận';
             if (nStatus === 'cho tiep nhan') return 'Chờ tiếp nhận';
             if (nStatus === 'tu choi tiep nhan') return 'Bị từ chối';
             if (nStatus === 'yeu cau bo sung') return 'Yêu cầu bổ sung';
-            if (nStatus === 'cho nhap lieu') return 'Chờ nhập liệu';
             if (nStatus === 'cho kiem tra') return 'Chờ kiểm tra';
             if (nStatus === 'bi tu choi') return 'Bị từ chối';
             if (nStatus === 'cho thu ly') return 'Chờ thụ lý';
@@ -6311,7 +6360,7 @@
             if (nStatus === 'tam dinh chi giai quyet') return 'Tạm đình chỉ giải quyết';
             if (nStatus === 'dinh chi giai quyet') return 'Đình chỉ giải quyết';
             if (nStatus === 'hoan thanh') return 'Hoàn thành';
-            return status || 'Chờ nhập liệu';
+            return status || 'Chờ tiếp nhận';
         }
 
         function getClaimDisplayName(claim) {
@@ -6611,9 +6660,9 @@
 
         // Initialize flatpickr on startup
         document.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('claimsList_v24_srs_tabs')) {
+            if (!localStorage.getItem('claimsList_v25_supplement_print')) {
                 localStorage.removeItem('claimsList');
-                localStorage.setItem('claimsList_v24_srs_tabs', 'true');
+                localStorage.setItem('claimsList_v25_supplement_print', 'true');
             }
 
             flatpickr("#searchFromDate", { dateFormat: "d/m/Y", allowInput: true });
@@ -6727,7 +6776,7 @@
         function getClaimStatusBadgeClass(status) {
             const st = canonicalClaimStatus(status);
             if (st === 'Hoàn thành') return 'badge-success';
-            if (st === 'Chờ nhập liệu') return 'badge-draft';
+            
             if (st === 'Chờ tiếp nhận' || st === 'Chờ kiểm tra' || st === 'Chờ thụ lý') return 'badge-pending';
             if (st === 'Yêu cầu bổ sung' || st === 'Chờ ban hành QĐ' || st === 'Chờ thực thi') return 'badge-warning';
             if (st === 'Bị từ chối' || st === 'Từ chối thụ lý' || st === 'Thương lượng không thành công' || st === 'Đình chỉ giải quyết') return 'badge-danger';
@@ -6745,7 +6794,7 @@
         function claimInActiveWorkflowTab(item, currentRole, currentOfficer) {
             const status = canonicalClaimStatus(item.status);
             if (activeClaimsWorkflowTab === 'nhap-lieu') {
-                return ['Chờ tiếp nhận', 'Chờ nhập liệu', 'Yêu cầu bổ sung'].includes(status);
+                return ['Chờ tiếp nhận', 'Yêu cầu bổ sung'].includes(status);
             }
             if (activeClaimsWorkflowTab === 'kiem-tra') {
                 return status === 'Chờ kiểm tra';
@@ -6764,7 +6813,6 @@
                     <option value="">Tất cả</option>
                     <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                     <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
-                    <option value="Lưu nháp">Lưu nháp</option>
                 `;
                 sel.value = "";
             } else if (tab === 'kiem-tra') {
@@ -6818,12 +6866,11 @@
                 return disabled('fa-solid fa-lock', `Vụ việc được giao cho cán bộ ${item.assignedOfficer}. Bạn chỉ có quyền xem.`);
             }
 
-            if (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung' || status === 'Chờ nhập liệu') {
+            if (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung') {
                 // Fixed-slot Action Column (Tab 1: Vụ việc chờ tiếp nhận) - always render the 5 slots,
                 // enabling only the action(s) applicable to the row's current status.
                 const canTiepNhan = status === 'Chờ tiếp nhận';
                 const canBoSungHoSo = status === 'Yêu cầu bổ sung';
-                const canCapNhatHoSo = status === 'Chờ nhập liệu';
                 return `
                     ${canTiepNhan
                         ? `<button class="icon-btn accept" title="Tiếp nhận" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-check-to-slot"></i></button>`
@@ -6835,11 +6882,11 @@
                         ? `<button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); triggerRejectClaim('${item.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i></button>`
                         : disabled('fa-solid fa-ban', 'Chỉ áp dụng khi vụ việc ở trạng thái Chờ tiếp nhận')}
                     ${canBoSungHoSo
-                        ? `<button class="icon-btn edit" title="Bổ sung hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>`
-                        : disabled('fa-solid fa-file-circle-plus', 'Chỉ áp dụng khi vụ việc ở trạng thái Yêu cầu bổ sung')}
-                    ${canCapNhatHoSo
+                        ? `<button class="icon-btn print" title="In Phiếu Bổ sung" onclick="event.stopPropagation(); printSupplementNotice('${item.id}')"><i class="fa-solid fa-print"></i></button>`
+                        : disabled('fa-solid fa-print', 'Chỉ áp dụng khi vụ việc ở trạng thái Yêu cầu bổ sung')}
+                    ${canBoSungHoSo
                         ? `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`
-                        : disabled('fa-solid fa-pen-to-square', 'Chỉ áp dụng khi vụ việc ở trạng thái Chờ nhập liệu')}
+                        : disabled('fa-solid fa-pen-to-square', 'Chỉ áp dụng khi vụ việc ở trạng thái Yêu cầu bổ sung')}
                 `;
             }
 
@@ -6852,15 +6899,13 @@
             }
 
             if (status === 'Chờ thụ lý' || CLAIM_PROCESSING_STATES.includes(status)) {
-                // Fixed-slot Action Column (Tab 3: Vụ việc chờ xử lý) - always render the 3 slots.
-                // Thụ lý hồ sơ / Từ chối thụ lý are Lãnh đạo-only actions, always disabled for Chuyên viên.
-                // Cập nhật hồ sơ is enabled only while the row is in an editable processing status.
+                // Action Column (Tab 3: Vụ việc chờ xử lý) - vai trò Cán bộ xử lý.
+                // Thụ lý hồ sơ / Từ chối thụ lý là thao tác riêng của Lãnh đạo nên được ẩn hoàn toàn
+                // khỏi cột Thao tác của Cán bộ, chỉ còn lại thao tác Cập nhật hồ sơ.
                 const isTuChoiThuLy = status === 'Từ chối thụ lý';
                 const isTerminal = status === 'Hoàn thành' || status === 'Sung quỹ nhà nước';
                 const canCapNhatHoSo = CLAIM_PROCESSING_STATES.includes(status) && !isTerminal;
                 return `
-                    ${disabled('fa-solid fa-circle-check', 'Chỉ Lãnh đạo mới có quyền thụ lý hồ sơ')}
-                    ${disabled('fa-solid fa-ban', 'Chỉ Lãnh đạo mới có quyền từ chối thụ lý hồ sơ')}
                     ${canCapNhatHoSo
                         ? `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); ${isTuChoiThuLy ? `openInlineClaimForm('${item.id}')` : `showCaseDetail('${item.id}', true)`}"><i class="fa-solid fa-pen-to-square"></i></button>`
                         : disabled('fa-solid fa-pen-to-square', status === 'Chờ thụ lý' ? 'Chờ lãnh đạo thụ lý. Cán bộ theo dõi bằng cách chọn dòng.' : 'Không áp dụng cho trạng thái hiện tại')}
@@ -7203,7 +7248,7 @@
         }
 
         function triggerRejectClaim(id, rejectType = 'Bị từ chối') {
-            showRejectionModal(id, rejectType, (claimId, type, reason) => {
+            showRejectionModal(id, rejectType, (claimId, type, reason, attachedFiles) => {
                 const claim = claimsList.find(c => c.id === claimId);
                 if (claim) {
                     const finalStatus = canonicalClaimStatus(type);
@@ -7214,13 +7259,17 @@
                     claim.rejectReason = reason;
                     claim.rejectDate = todayStr;
                     claim.rejectOfficer = currentOfficer;
+                    if (Array.isArray(attachedFiles) && attachedFiles.length > 0) {
+                        claim.rejectFiles = attachedFiles;
+                    }
 
                     if (!claim.rejectionLog) claim.rejectionLog = [];
                     claim.rejectionLog.push({
                         date: todayStr,
                         officer: currentOfficer,
                         action: finalStatus,
-                        reason: reason
+                        reason: reason,
+                        files: Array.isArray(attachedFiles) ? attachedFiles.map(f => f.name) : []
                     });
 
                     changeStatus(claimId, finalStatus, `Đã chuyển vụ việc sang trạng thái [${finalStatus}]!`);
@@ -7229,7 +7278,7 @@
         }
 
         function triggerRequireAdditionClaim(id) {
-            showRejectionModal(id, 'Yêu cầu bổ sung', (claimId, type, reason) => {
+            showRejectionModal(id, 'Yêu cầu bổ sung', (claimId, type, reason, attachedFiles) => {
                 const claim = claimsList.find(c => c.id === claimId);
                 if (claim) {
                     const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : "Trần Thị Chuyên Viên (Cán bộ một cửa)";
@@ -7240,15 +7289,28 @@
                     claim.rejectDate = todayStr;
                     claim.rejectOfficer = currentOfficer;
 
+                    // Nội dung yêu cầu bổ sung là trường dùng chung giữa popup Yêu cầu bổ sung
+                    // và popup In Phiếu yêu cầu bổ sung -> lưu vào đúng một nguồn dữ liệu duy nhất
+                    claim.additionRequestContent = reason;
+
+                    // Tài liệu kèm theo được kế thừa sang popup In Phiếu yêu cầu bổ sung
+                    if (Array.isArray(attachedFiles) && attachedFiles.length > 0) {
+                        claim.supplementFiles = attachedFiles;
+                    }
+
                     if (!claim.rejectionLog) claim.rejectionLog = [];
                     claim.rejectionLog.push({
                         date: todayStr,
                         officer: currentOfficer,
                         action: type,
-                        reason: reason
+                        reason: reason,
+                        files: Array.isArray(attachedFiles) ? attachedFiles.map(f => f.name) : []
                     });
 
                     changeStatus(claimId, type, `Đã chuyển hồ sơ sang trạng thái [Yêu cầu bổ sung]!`);
+
+                    // Tự động mở tiếp popup In Phiếu yêu cầu bổ sung để cán bộ in giao ngay cho người yêu cầu
+                    setTimeout(() => printSupplementNotice(claimId), 350);
                 }
             });
         }
@@ -8014,6 +8076,19 @@
                     </a>
                 `;
             }
+        }
+
+        // MH05 chức năng 13: điều hướng sang màn Xem chi tiết đề nghị cấp kinh phí
+        // tại Module Quản lý kinh phí bồi thường (không mở popup nhúng).
+        function openFundDetailModule(code) {
+            const returnUrl = 'quan_ly_boi_thuong.html?v=1';
+            const activeUrl = 'quan_ly_kinh_phi_boi_thuong.html?v=1';
+            const targetUrl = `quan_ly_kinh_phi_boi_thuong.html?viewCode=${encodeURIComponent(code)}&returnUrl=${encodeURIComponent(returnUrl)}`;
+            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+                window.parent.openAdminModule(targetUrl, activeUrl);
+                return;
+            }
+            window.location.href = targetUrl;
         }
 
         function openMockXdAgencyDetail(code) {
@@ -9021,7 +9096,7 @@
                             });
                         }
                     } else {
-                        claim.status = isDraft ? "Chờ nhập liệu" : "Chờ kiểm tra";
+                        claim.status = isDraft ? "Chờ tiếp nhận" : "Chờ kiểm tra";
                     }
                     claim.agency = cqNhan || "Chưa phân công";
                     claim.totalNum = total;
@@ -9130,7 +9205,7 @@
                 role: role,
                 hanhVi: hanhVi || "Hành vi gây thiệt hại chưa tóm tắt",
                 nhanQua: nhanQua || "Mối quan hệ nhân quả chưa mô tả",
-                status: isDraft ? "Chờ nhập liệu" : "Chờ kiểm tra",
+                status: isDraft ? "Chờ tiếp nhận" : "Chờ kiểm tra",
                 agency: cqNhan || "Chưa phân công",
                 nopKenh: nopKenh,
                 requestDocDate: requestDocDate,
@@ -9231,7 +9306,7 @@
             if (!claim) return;
             migrateClaimForSrs(claim);
 
-            if (editMode && (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Chờ nhập liệu' || claim.status === 'Từ chối thụ lý')) {
+            if (editMode && (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Từ chối thụ lý')) {
                 openInlineClaimForm(id);
                 return;
             }
@@ -9356,7 +9431,7 @@
 
             let isEditing = false;
             if (isDetailEditMode) {
-                const draftStatuses = ['Chờ nhập liệu', 'Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ thực thi'];
+                const draftStatuses = ['Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ thực thi'];
                 if (draftStatuses.includes(claim.status)) {
                     isEditing = true;
                 }
@@ -9415,6 +9490,13 @@
             const pauseActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Hoãn giải quyết')"><i class="fa-solid fa-pause"></i> Hoãn giải quyết</button>`;
             const suspendActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Tạm đình chỉ giải quyết')"><i class="fa-solid fa-circle-pause"></i> Tạm đình chỉ giải quyết</button>`;
             const stopActionBtnHtml = `<button class="btn btn-outline-danger detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Đình chỉ giải quyết')"><i class="fa-solid fa-ban"></i> Đình chỉ giải quyết</button>`;
+
+            // MH05 chức năng 13: Xem chi tiết kinh phí - chỉ ở Chờ thực thi / Hoàn thành / Sung quỹ nhà nước
+            const firstFundCode = (claim.fundRequests && claim.fundRequests.length > 0) ? claim.fundRequests[0].code : '';
+            // Hồ sơ chưa phát sinh đề nghị kinh phí thì ẩn hẳn nút, không hiển thị dạng mờ
+            const fundDetailBtnHtml = firstFundCode
+                ? `<button class="btn btn-secondary" onclick="openFundDetailModule('${firstFundCode}')"><i class="fa-solid fa-money-check-dollar"></i> Xem chi tiết kinh phí</button>`
+                : '';
             let buttonsHtml = '';
             let showCloseButton = true; // by default we show Close button in read-only
 
@@ -9431,25 +9513,31 @@
             }
 
             switch (sStat) {
-                case 'cho nhap lieu':
+                // MH05 chức năng 1-3: Tiếp nhận / Yêu cầu bổ sung / Từ chối - chỉ khi Chờ tiếp nhận
+                case 'cho tiep nhan':
                     buttonsHtml = `
-                        <button class="btn btn-primary" onclick="openInlineClaimForm('${claim.id}')"><i class="fa-solid fa-keyboard"></i> Nhập hồ sơ</button>
+                        <button class="btn btn-success" onclick="openInlineClaimForm('${claim.id}')"><i class="fa-solid fa-check-to-slot"></i> Tiếp nhận</button>
+                        <button class="btn btn-warning" style="background-color: var(--warning-color); color: white;" onclick="triggerRequireAdditionClaim('${claim.id}')"><i class="fa-solid fa-circle-question"></i> Yêu cầu bổ sung</button>
+                        <button class="btn btn-danger" onclick="triggerRejectClaim('${claim.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i> Từ chối</button>
                     `;
                     break;
 
+                // MH05 chức năng 6-8: các thao tác sau kiểm tra - chỉ khi Chờ kiểm tra
                 case 'cho kiem tra':
                     if (currentRole === 'chuyen-vien') {
                         buttonsHtml = `
-                            <button class="btn btn-success" onclick="triggerAcceptClaim('${claim.id}')"><i class="fa-solid fa-square-check"></i> Tiếp nhận</button>
-                            <button class="btn btn-warning" style="background-color: var(--warning-color); color: white;" onclick="triggerRequireAdditionClaim('${claim.id}')"><i class="fa-solid fa-circle-question"></i> Yêu cầu bổ sung</button>
-                            <button class="btn btn-danger" onclick="triggerRejectClaim('${claim.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i> Từ chối</button>
+                            <button class="btn btn-success" onclick="triggerAcceptClaim('${claim.id}')"><i class="fa-solid fa-square-check"></i> Tiếp nhận kiểm tra</button>
+                            <button class="btn btn-warning" style="background-color: var(--warning-color); color: white;" onclick="triggerRequireAdditionClaim('${claim.id}')"><i class="fa-solid fa-circle-question"></i> Yêu cầu bổ sung sau kiểm tra</button>
+                            <button class="btn btn-danger" onclick="triggerRejectClaim('${claim.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i> Từ chối sau kiểm tra</button>
                         `;
                     }
                     break;
 
+                // MH05 chức năng 4-5: Cập nhật hồ sơ / In Phiếu Bổ sung - chỉ khi Yêu cầu bổ sung
                 case 'yeu cau bo sung':
                     buttonsHtml = `
-                        <button class="btn btn-primary" onclick="switchToEditMode('bosung')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả bổ sung</button>
+                        <button class="btn btn-primary" onclick="openInlineClaimForm('${claim.id}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật hồ sơ</button>
+                        <button class="btn btn-secondary" onclick="printSupplementNotice('${claim.id}')"><i class="fa-solid fa-print"></i> In Phiếu Bổ sung</button>
                     `;
                     break;
 
@@ -9557,12 +9645,14 @@
                     } else {
                         buttonsHtml = `
                             <button class="btn btn-primary" onclick="switchToEditMode('thucthi')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả thực thi</button>
+                            ${fundDetailBtnHtml}
                         `;
                     }
                     break;
 
                 case 'hoan thanh':
-                    // Only Close button
+                    // MH05 chức năng 13: Xem chi tiết kinh phí
+                    buttonsHtml = fundDetailBtnHtml;
                     break;
 
                 case 'dinh chi giai quyet':
@@ -9570,7 +9660,8 @@
                     break;
 
                 case 'sung quy nha nuoc':
-                    // Only Close button
+                    // MH05 chức năng 13: Xem chi tiết kinh phí
+                    buttonsHtml = fundDetailBtnHtml;
                     break;
             }
 
@@ -10090,7 +10181,7 @@
                 extraBlockHtml = `
                     <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
                         <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
-                            <i class="fa-solid fa-gavel"></i> THÔNG TIN BẢN ÁN/QUYẾT ĐỊNH
+                            <i class="fa-solid fa-gavel"></i> THÔNG TIN BẢN ÁN GỐC
                         </div>
                         <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
                             <div><strong style="color:var(--text-muted);">Nguồn phát sinh bản án:</strong> <br><span style="font-weight:600; color:var(--text-main);">Tòa án nhân dân</span></div>
@@ -10133,30 +10224,10 @@
 
                 ${extraBlockHtml}
 
-                <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
-                    <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
-                        <i class="fa-solid fa-chart-column"></i> THÔNG TIN TỔNG HỢP BÁO CÁO
-                    </div>
-                    <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
-                        <div><strong style="color:var(--text-muted);">Ngày thụ lý:</strong> <br>${report.thulyDate || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Ngày thông báo thụ lý:</strong> <br>${report.noticeDate || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Nguồn thụ lý thống kê:</strong> <br>${report.source || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Phát sinh trong kỳ:</strong> <br>${report.periodType || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Pháp luật áp dụng:</strong> <br>${report.law || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Loại văn bản có hiệu lực:</strong> <br>${report.effectiveDocType || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Ngày văn bản có hiệu lực:</strong> <br>${report.effectiveDate || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Số tiền theo văn bản có hiệu lực:</strong> <br>${reportMoney(report.effectiveAmount)}</div>
-                        <div><strong style="color:var(--text-muted);">Phân loại đình chỉ:</strong> <br>${report.suspendType || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Tiền chi trả theo quyết định cơ quan:</strong> <br>${reportMoney(report.agencyPaidAmount)}</div>
-                        <div><strong style="color:var(--text-muted);">Tiền chi trả theo bản án/QĐ Tòa án:</strong> <br>${reportMoney(report.courtPaidAmount)}</div>
-                        <div><strong style="color:var(--text-muted);">Ghi chú báo cáo:</strong> <br>${report.note || '--'}</div>
-                    </div>
-                </div>
-
                 <!-- Section 1: Thông tin người yêu cầu -->
                 <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
                     <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
-                        <i class="fa-solid fa-user-tie"></i> I. THÔNG TIN NGƯỜI YÊU CẦU BỒI THƯỜNG
+                        <i class="fa-solid fa-user-tie"></i> THÔNG TIN NGƯỜI YÊU CẦU BỒI THƯỜNG
                     </div>
                     <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
                         <div><strong style="color:var(--text-muted);">Họ và tên:</strong> <br><span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${claim.nyc}</span></div>
@@ -10179,7 +10250,7 @@
                 <!-- Section 2: Thông tin vụ việc gây thiệt hại & Căn cứ -->
                 <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
                     <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
-                        <i class="fa-solid fa-circle-info"></i> II. THÔNG TIN VỤ VIỆC GÂY THIỆT HẠI & CĂN CỨ
+                        <i class="fa-solid fa-circle-info"></i> THÔNG TIN VỤ VIỆC YÊU CẦU BỒI THƯỜNG
                     </div>
                     <div class="grid-3-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Tên vụ việc:</strong> <br><span style="font-weight:700; color:var(--text-main);">${getClaimDisplayName(claim)}</span></div>
@@ -10191,60 +10262,13 @@
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Hành vi gây thiệt hại của người thi hành công vụ:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.hanhVi}</span></div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.nhanQua}</span></div>
                         
-                        ${(claim.officers || claim.officerName || (claim.status && !/nhap|tiep nhan|thu ly|bo sung/i.test(claim.status.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd')))) ? `
-                        <!-- ADDED: THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI -->
-                        <div style="grid-column: span 3; font-weight:700; color:var(--primary-color); border-bottom:1px solid #E2E8F0; padding-bottom:4px; margin-top:8px;">THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI</div>
-                        <div style="grid-column: span 3;">
-                            <div class="table-container" style="margin-top: 8px; margin-bottom: 8px; overflow-x: auto;">
-                                <table class="custom-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 50px; text-align: center;">STT</th>
-                                            <th style="min-width: 130px;">Họ và tên</th>
-                                            <th style="min-width: 150px;">Chức vụ lúc gây thiệt hại</th>
-                                            <th style="min-width: 180px;">Cơ quan lúc gây thiệt hại</th>
-                                            <th style="min-width: 150px;">Tình trạng hiện tại</th>
-                                            <th style="min-width: 130px;">Chức vụ hiện tại</th>
-                                            <th style="min-width: 180px;">Đơn vị hiện tại</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${(() => {
-                        const list = claim.officers || (claim.officerName ? [{
-                            name: claim.officerName,
-                            position: claim.officerPosition,
-                            agency: claim.officerAgency,
-                            status: claim.officerStatus || 'Vẫn công tác tại đơn vị cũ',
-                            currentAgency: claim.officerCurrentAgency || '',
-                            currentPosition: claim.officerCurrentPosition || ''
-                        }] : []);
-                        if (list.length === 0) {
-                            return `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); font-style: italic;">Chưa có dữ liệu cán bộ.</td></tr>`;
-                        }
-                        return list.map((off, idx) => `
-                                                <tr>
-                                                    <td style="text-align: center;">${idx + 1}</td>
-                                                    <td style="font-weight: 600;">${off.name}</td>
-                                                    <td>${off.position}</td>
-                                                    <td>${off.agency}</td>
-                                                    <td>${off.status}</td>
-                                                    <td>${off.status === 'Đã chuyển công tác' ? (off.currentPosition || '-') : '-'}</td>
-                                                    <td>${off.status === 'Đã chuyển công tác' ? (off.currentAgency || '-') : '-'}</td>
-                                                </tr>
-                                            `).join('');
-                    })()}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        ` : ''}
                     </div>
                 </div>
 
                 <!-- Section 3: Thiệt hại & đề nghị bồi thường -->
                 <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
                     <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
-                        <i class="fa-solid fa-money-check-dollar"></i> III. THIỆT HẠI YÊU CẦU BỒI THƯỜNG
+                        <i class="fa-solid fa-money-check-dollar"></i> THÔNG TIN BỒI THƯỜNG THIỆT HẠI BẰNG TIỀN
                     </div>
                     
                     <div class="table-container" style="margin-bottom: 15px;">
@@ -10273,20 +10297,29 @@
                         </table>
                     </div>
 
-                    <div class="grid-2-cols" style="gap: 16px; margin-bottom: 12px; font-size: 13px;">
-                        <div>
-                            <strong>Yêu cầu phục hồi danh dự:</strong> 
-                            ${claim.restoreHonor ? '<span class="badge badge-success" style="font-size:10.5px; padding:3px 8px;">Có yêu cầu phục hồi danh dự</span>' : '<span style="color:var(--text-muted); font-style:italic;">Không yêu cầu</span>'}
-                        </div>
-                    </div>
-
                     <!-- Advance Payment and Recipient Blocks -->
                     ${advanceSectionHtml}
+                </div>
 
-                    <div style="margin-top:15px; border-top:1px dashed #e2e8f0; padding-top:12px;">
-                        <strong style="display:block; margin-bottom:6px; font-size:12.5px; color:var(--text-muted);">Hồ sơ tài liệu đính kèm kèm đơn yêu cầu:</strong>
-                        ${filesHtml}
+                <!-- Khối: Thông tin phục hồi danh dự -->
+                <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                    <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
+                        <i class="fa-solid fa-ribbon"></i> THÔNG TIN PHỤC HỒI DANH DỰ
                     </div>
+                    <div class="grid-2-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
+                        <div><strong style="color:var(--text-muted);">Đề nghị phục hồi danh dự:</strong> <br>${claim.restoreHonor ? '<span class="badge badge-success" style="font-size:10.5px; padding:3px 8px;">Có</span>' : '<span class="badge badge-secondary" style="font-size:10.5px; padding:3px 8px;">Không</span>'}</div>
+                        <div><strong style="color:var(--text-muted);">Trực tiếp xin lỗi và cải chính công khai:</strong> <br>${claim.restoreHonor ? (claim.phddFormApology ? 'Có' : 'Không') : '--'}</div>
+                        <div><strong style="color:var(--text-muted);">Đăng báo xin lỗi và cải chính công khai:</strong> <br>${claim.restoreHonor ? (claim.phddFormNews ? 'Có' : 'Không') : '--'}</div>
+                        <div><strong style="color:var(--text-muted);">Yêu cầu khôi phục quyền, lợi ích hợp pháp khác:</strong> <br>${claim.otherRightsRequest || '--'}</div>
+                    </div>
+                </div>
+
+                <!-- Khối: Bảng tài liệu đính kèm hồ sơ -->
+                <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                    <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
+                        <i class="fa-solid fa-paperclip"></i> BẢNG TÀI LIỆU ĐÍNH KÈM HỒ SƠ
+                    </div>
+                    ${filesHtml}
                 </div>
             `;
                 initRequestDocDatePickers();
@@ -14817,10 +14850,84 @@
         let rejectionSelectType = '';
         let rejectionCallback = null;
 
+        // Tài liệu kèm theo của popup Yêu cầu bổ sung / Từ chối hồ sơ
+        let currentRejectionFiles = [];
+
+        function renderRejectionFilesList() {
+            const listEl = document.getElementById('rejectionFilesList');
+            if (!listEl) return;
+            if (!currentRejectionFiles || currentRejectionFiles.length === 0) {
+                listEl.innerHTML = '<div style="font-size:12.5px; color:#64748b; font-style:italic;">Chưa có tài liệu kèm theo.</div>';
+                return;
+            }
+            listEl.innerHTML = currentRejectionFiles.map((file, idx) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 12px; margin-bottom:6px; font-size:13px;">
+                    <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
+                        <i class="fa-solid fa-file-lines" style="color:#0284c7;"></i>
+                        <span style="font-weight:500; color:#1e293b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(file.name)}</span>
+                        <span style="color:#94a3b8; font-size:12px; flex-shrink:0;">(${file.size})</span>
+                    </div>
+                    <div style="display:flex; gap:12px; align-items:center; flex-shrink:0;">
+                        <a href="javascript:void(0)" onclick="viewRejectionFile('${escapeHtml(file.name)}')" style="color:#2563eb; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                        <a href="javascript:void(0)" onclick="removeRejectionFile(${idx})" style="color:#dc2626; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleRejectionFilesUpload(input) {
+            if (!input || !input.files || input.files.length === 0) return;
+
+            const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'jpg', 'png'];
+            const MAX_SIZE = 20 * 1024 * 1024; // 20MB theo [BR-FILE-010]
+            let addedCount = 0;
+
+            for (let i = 0; i < input.files.length; i++) {
+                const file = input.files[i];
+                const ext = file.name.split('.').pop().toLowerCase();
+
+                if (ALLOWED_EXT.indexOf(ext) === -1) {
+                    showToast(`Tệp "${file.name}" không đúng định dạng cho phép (.pdf, .doc, .docx, .jpg, .png)!`, 'error');
+                    continue;
+                }
+                if (file.size > MAX_SIZE) {
+                    showToast(`Tệp "${file.name}" vượt quá dung lượng cho phép (tối đa 20MB)!`, 'error');
+                    continue;
+                }
+
+                const sizeStr = (file.size / 1024 < 1024)
+                    ? `${Math.round(file.size / 1024)} KB`
+                    : `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+                currentRejectionFiles.push({ name: file.name, size: sizeStr });
+                addedCount++;
+            }
+            input.value = '';
+            renderRejectionFilesList();
+            if (addedCount > 0) showToast('Tải tài liệu đính kèm thành công!', 'success');
+        }
+
+        function viewRejectionFile(name) {
+            window.open('about:blank', '_blank');
+        }
+
+        function removeRejectionFile(idx) {
+            if (idx < 0 || idx >= currentRejectionFiles.length) return;
+            const fileName = currentRejectionFiles[idx].name;
+            showConfirmModal(`Bạn có chắc chắn muốn xóa tài liệu: "${fileName}" khỏi danh sách tài liệu kèm theo không?`, () => {
+                currentRejectionFiles.splice(idx, 1);
+                renderRejectionFilesList();
+                showToast(`Đã xóa tài liệu: ${fileName}`, 'success');
+            });
+        }
+
         function showRejectionModal(id, rejectType, callback) {
             rejectionSelectId = id;
             rejectionSelectType = rejectType;
             rejectionCallback = callback;
+
+            // Mỗi lần mở popup bắt đầu với danh sách tài liệu rỗng
+            currentRejectionFiles = [];
+            renderRejectionFilesList();
 
             const isAddition = (rejectType === 'Yêu cầu bổ sung');
             const iconEl = document.getElementById('rejectionModalIcon');
@@ -14876,7 +14983,7 @@
                 }, 200);
 
                 if (rejectionCallback) {
-                    rejectionCallback(rejectionSelectId, rejectionSelectType, val);
+                    rejectionCallback(rejectionSelectId, rejectionSelectType, val, currentRejectionFiles.slice());
                 }
                 rejectionSelectId = null;
                 rejectionSelectType = '';
@@ -14967,6 +15074,381 @@
                 const iframe = document.getElementById('frModalIframe');
                 if (iframe) iframe.src = 'about:blank';
             }, 200);
+        }
+
+        function escapeHtml(value) {
+            if (value === null || value === undefined) return '';
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        let currentSupplementFiles = [
+            { name: 'Huong_dan_ke_khai_thiet_hai.pdf', size: '245 KB' },
+            { name: 'Mau_don_bo_sung_ho_so_yeu_cau.docx', size: '48 KB' }
+        ];
+
+        // Mã hồ sơ đang mở tại popup In Phiếu yêu cầu bổ sung (dùng khi lưu lại dữ liệu lúc in)
+        let supplementPrintClaimId = null;
+
+        function renderSupplementFilesList() {
+            const listEl = document.getElementById('supplementAttachedFilesList');
+            if (!listEl) return;
+            if (!currentSupplementFiles || currentSupplementFiles.length === 0) {
+                listEl.innerHTML = '<div style="font-size:13px; color:#64748b; font-style:italic;">Chưa có tài liệu kèm theo.</div>';
+                return;
+            }
+            listEl.innerHTML = currentSupplementFiles.map((file, idx) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 12px; margin-bottom:6px; font-size:13px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-file-lines" style="color:#0284c7;"></i>
+                        <span style="font-weight:500; color:#1e293b;">${escapeHtml(file.name)}</span>
+                        <span style="color:#94a3b8; font-size:12px;">(${file.size})</span>
+                    </div>
+                    <div class="supplement-no-print" style="display:flex; gap:12px; align-items:center;">
+                        <a href="javascript:void(0)" onclick="viewSupplementFile('${escapeHtml(file.name)}')" style="color:#2563eb; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                        <a href="javascript:void(0)" onclick="downloadSupplementFile('${escapeHtml(file.name)}')" style="color:#059669; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-download"></i> Tải file về</a>
+                        <a href="javascript:void(0)" onclick="removeSupplementFile(${idx})" style="color:#dc2626; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleSupplementFilesUpload(input) {
+            if (!input || !input.files || input.files.length === 0) return;
+
+            const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'jpg', 'png'];
+            const MAX_SIZE = 20 * 1024 * 1024; // 20MB theo [BR-FILE-010]
+            let addedCount = 0;
+
+            for (let i = 0; i < input.files.length; i++) {
+                const file = input.files[i];
+                const ext = file.name.split('.').pop().toLowerCase();
+
+                if (ALLOWED_EXT.indexOf(ext) === -1) {
+                    if (typeof showToast === 'function') {
+                        showToast(`Tệp "${file.name}" không đúng định dạng cho phép (.pdf, .doc, .docx, .jpg, .png)!`, 'error');
+                    }
+                    continue;
+                }
+                if (file.size > MAX_SIZE) {
+                    if (typeof showToast === 'function') {
+                        showToast(`Tệp "${file.name}" vượt quá dung lượng cho phép (tối đa 20MB)!`, 'error');
+                    }
+                    continue;
+                }
+
+                const sizeStr = (file.size / 1024 < 1024)
+                    ? `${Math.round(file.size / 1024)} KB`
+                    : `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+                currentSupplementFiles.push({
+                    name: file.name,
+                    size: sizeStr
+                });
+                addedCount++;
+            }
+            input.value = '';
+            renderSupplementFilesList();
+            if (addedCount > 0 && typeof showToast === 'function') {
+                showToast('Tải tài liệu đính kèm thành công!', 'success');
+            }
+        }
+
+        function viewSupplementFile(name) {
+            window.open('about:blank', '_blank');
+        }
+
+        function downloadSupplementFile(name) {
+            if (typeof showToast === 'function') {
+                showToast(`Bắt đầu tải tệp tin: ${name}`, 'info');
+            }
+        }
+
+        function removeSupplementFile(idx) {
+            if (idx < 0 || idx >= currentSupplementFiles.length) return;
+            const fileName = currentSupplementFiles[idx].name;
+            showConfirmModal(`Bạn có chắc chắn muốn xóa tài liệu: "${fileName}" khỏi danh sách tài liệu kèm theo không?`, () => {
+                currentSupplementFiles.splice(idx, 1);
+                renderSupplementFilesList();
+                if (typeof showToast === 'function') {
+                    showToast(`Đã xóa tài liệu: ${fileName}`, 'success');
+                }
+            });
+        }
+
+        function clearSupplementInputError(inputEl, errorElId) {
+            if (inputEl && inputEl.value.trim()) {
+                inputEl.classList.remove('is-invalid');
+                const err = document.getElementById(errorElId);
+                if (err) err.style.display = 'none';
+            }
+        }
+
+        // In Phiếu hướng dẫn bổ sung hồ sơ
+        function printSupplementNotice(id) {
+            const claim = claimsList.find(c => c.id === id);
+            if (!claim) return;
+
+            const modal = document.getElementById('previewModalSupplement');
+            const container = document.getElementById('supplementNoticeContent');
+            if (!modal || !container) {
+                window.print();
+                return;
+            }
+
+            const today = new Date();
+            const dateStr = `Hà Nội, ngày ${String(today.getDate()).padStart(2, '0')} tháng ${String(today.getMonth() + 1).padStart(2, '0')} năm ${today.getFullYear()}`;
+            const dateEl = document.getElementById('supplementNoticeDate');
+            if (dateEl) dateEl.innerText = dateStr;
+
+            const signerEl = document.getElementById('supplementNoticeSigner');
+            if (signerEl) signerEl.innerText = claim.assignedOfficer || "Nguyễn Văn Chuyên Viên";
+
+            // Kế thừa nội dung yêu cầu bổ sung hiện hành của hồ sơ (một nguồn dữ liệu duy nhất).
+            // claim.rejectReason là nơi popup Yêu cầu bổ sung đang lưu, giữ lại để tương thích dữ liệu cũ.
+            const reason = claim.additionRequestContent
+                || claim.rejectReason
+                || "Hồ sơ yêu cầu bồi thường còn thiếu tài liệu chứng minh mức độ thiệt hại thực tế theo quy định tại Điều 41 Luật Trách nhiệm bồi thường của Nhà nước.";
+
+            // Thời hạn bổ sung: lấy giá trị đã lưu, nếu chưa có thì đề xuất ngày hiện tại + 15 ngày
+            let deadlineValue = claim.additionDeadline;
+            if (!deadlineValue) {
+                const d = new Date();
+                d.setDate(d.getDate() + 15);
+                deadlineValue = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+            }
+            supplementPrintClaimId = claim.id;
+
+            // Tài liệu kèm theo quản lý theo từng vụ việc
+            currentSupplementFiles = Array.isArray(claim.supplementFiles)
+                ? claim.supplementFiles.slice()
+                : [
+                    { name: 'Huong_dan_ke_khai_thiet_hai.pdf', size: '245 KB' },
+                    { name: 'Mau_don_bo_sung_ho_so_yeu_cau.docx', size: '48 KB' }
+                ];
+            const ngayTiepNhan = claim.receivedAt || claim.ngayTiepNhan || claim.date || '01/03/2026';
+            const canBo = claim.assignedOfficer || claim.officer || "Nguyễn Văn Chuyên Viên";
+            const chucVu = claim.officerPosition || "Chuyên viên Phòng Bồi thường nhà nước";
+            const donVi = claim.agency || "Sở Tư pháp TP. Hà Nội";
+
+            container.innerHTML = `
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:16px; margin-bottom:18px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:13.5px; font-family:sans-serif;">
+                        <div><strong style="color:#475569;">Mã vụ việc:</strong> <span style="font-weight:700; color:#1e3a8a;">${escapeHtml(claim.code)}</span></div>
+                        <div><strong style="color:#475569;">Ngày tiếp nhận:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(ngayTiepNhan)}</span></div>
+                        <div style="grid-column: span 2;"><strong style="color:#475569;">Tên vụ việc:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(claim.caseName || claim.hanhVi || 'Yêu cầu bồi thường thiệt hại')}</span></div>
+                        <div><strong style="color:#475569;">Cán bộ xử lý:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(canBo)}</span></div>
+                        <div><strong style="color:#475569;">Chức vụ:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(chucVu)}</span></div>
+                        <div style="grid-column: span 2;"><strong style="color:#475569;">Đơn vị:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(donVi)}</span></div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <p><strong>Kính gửi:</strong> Ông/Bà <strong>${escapeHtml(claim.nyc || 'Người yêu cầu bồi thường')}</strong></p>
+                    <p><strong>Địa chỉ liên hệ:</strong> ${escapeHtml(claim.address || 'Hà Nội')}</p>
+                    <p><strong>Số điện thoại:</strong> ${escapeHtml(claim.phone || '0912 345 678')}</p>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017;</p>
+                    <p>Sau khi tiếp nhận và kiểm tra hồ sơ yêu cầu bồi thường mang mã số: <strong>${escapeHtml(claim.code)}</strong> liên quan đến vụ việc <em>"${escapeHtml(claim.caseName || claim.hanhVi || 'Yêu cầu bồi thường thiệt hại')}"</em>;</p>
+                    <p>Cơ quan giải quyết bồi thường thông báo và hướng dẫn Ông/Bà thực hiện bổ sung các nội dung, tài liệu sau đây để đủ điều kiện thụ lý giải quyết:</p>
+                </div>
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">
+                    <!-- 1. Nội dung yêu cầu bổ sung -->
+                    <div class="supplement-screen-input" style="margin-bottom:14px;">
+                        <label style="display:block; font-weight:bold; color:#1e3a8a; margin-bottom:6px; font-size:13.5px;">
+                            1. Nội dung yêu cầu bổ sung: <span style="color:#dc2626;">*</span>
+                        </label>
+                        <textarea id="supplementReasonInput" class="form-control" rows="4" style="width:100%; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:6px; padding:10px 12px; font-family:sans-serif; font-size:13.5px; line-height:1.5; resize:vertical;" placeholder="Nhập nội dung yêu cầu bổ sung hồ sơ..." oninput="clearSupplementInputError(this, 'supplementReasonError')">${escapeHtml(reason)}</textarea>
+                        <div class="error-message" id="supplementReasonError" style="display:none; color:#dc2626; font-size:12px; font-family:sans-serif; margin-top:4px;">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="supplement-print-text" style="display:none;">
+                        <p style="font-weight:bold; color:#1e3a8a; margin-top:0; margin-bottom:4px; font-family:serif;">1. Nội dung yêu cầu bổ sung:</p>
+                        <p id="supplementReasonPrint" style="margin-bottom:12px; line-height:1.6; text-align:justify; white-space:pre-wrap; font-family:serif;"></p>
+                    </div>
+
+                    <!-- 2. Thời hạn bổ sung -->
+                    <div class="supplement-screen-input">
+                        <label style="display:block; font-weight:bold; color:#1e3a8a; margin-bottom:6px; font-size:13.5px;">
+                            2. Thời hạn bổ sung: <span style="color:#dc2626;">*</span>
+                        </label>
+                        <input type="text" id="supplementDeadlineInput" class="form-control" value="${escapeHtml(deadlineValue)}" style="width:100%; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:6px; padding:8px 12px; font-family:sans-serif; font-size:13.5px;" placeholder="dd/mm/yyyy" oninput="clearSupplementInputError(this, 'supplementDeadlineError')">
+                        <div class="error-message" id="supplementDeadlineError" style="display:none; color:#dc2626; font-size:12px; font-family:sans-serif; margin-top:4px;">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="supplement-print-text" style="display:none;">
+                        <p style="font-weight:bold; color:#1e3a8a; margin-top:8px; margin-bottom:4px; font-family:serif;">2. Thời hạn bổ sung:</p>
+                        <p id="supplementDeadlinePrint" style="margin-bottom:0; line-height:1.6; font-family:serif;"></p>
+                    </div>
+                </div>
+
+                <!-- Khối Tài liệu kèm theo (Nếu có) -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <p style="font-weight:bold; color:#1e3a8a; margin:0; font-size:14px;"><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo (Nếu có):</p>
+                        <div class="supplement-no-print">
+                            <input type="file" id="supplementFileInput" multiple style="display:none;" onchange="handleSupplementFilesUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('supplementFileInput').click()" style="padding:5px 12px; font-size:12.5px;">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Tải file
+                            </button>
+                        </div>
+                    </div>
+                    <div id="supplementAttachedFilesList">
+                        <!-- Injected by renderSupplementFilesList -->
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <p style="font-style:italic; font-size:13.5px; color:#475569;">* Hết thời hạn trên nếu không nhận được văn bản, tài liệu bổ sung, Cơ quan giải quyết bồi thường sẽ thực hiện thủ tục từ chối thụ lý theo đúng quy định pháp luật.</p>
+                </div>
+            `;
+
+            renderSupplementFilesList();
+
+            // Thời hạn bổ sung là kiểu Ngày -> gắn datepicker, chỉ cho chọn ngày sau ngày lập phiếu
+            if (typeof flatpickr === 'function') {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                flatpickr('#supplementDeadlineInput', {
+                    dateFormat: 'd/m/Y',
+                    allowInput: true,
+                    minDate: tomorrow
+                });
+            }
+
+            modal.style.display = 'flex';
+            modal.classList.add('visible');
+        }
+
+        function closePreviewSupplementModal() {
+            const modal = document.getElementById('previewModalSupplement');
+            if (modal) {
+                modal.classList.remove('visible');
+                modal.style.display = 'none';
+            }
+        }
+
+        function executePrintSupplement() {
+            const reasonInput = document.getElementById('supplementReasonInput');
+            const deadlineInput = document.getElementById('supplementDeadlineInput');
+            const reasonErr = document.getElementById('supplementReasonError');
+            const deadlineErr = document.getElementById('supplementDeadlineError');
+            const reasonPrint = document.getElementById('supplementReasonPrint');
+            const deadlinePrint = document.getElementById('supplementDeadlinePrint');
+
+            let hasError = false;
+            let firstErrorElement = null;
+
+            if (reasonInput) {
+                if (!reasonInput.value.trim()) {
+                    reasonInput.classList.add('is-invalid');
+                    if (reasonErr) reasonErr.style.display = 'block';
+                    hasError = true;
+                    if (!firstErrorElement) firstErrorElement = reasonInput;
+                } else {
+                    reasonInput.classList.remove('is-invalid');
+                    if (reasonErr) reasonErr.style.display = 'none';
+                }
+            }
+
+            if (deadlineInput) {
+                if (!deadlineInput.value.trim()) {
+                    deadlineInput.classList.add('is-invalid');
+                    if (deadlineErr) {
+                        deadlineErr.textContent = 'Đây là trường bắt buộc';
+                        deadlineErr.style.display = 'block';
+                    }
+                    hasError = true;
+                    if (!firstErrorElement) firstErrorElement = deadlineInput;
+                } else {
+                    deadlineInput.classList.remove('is-invalid');
+                    if (deadlineErr) deadlineErr.style.display = 'none';
+                }
+            }
+
+            if (hasError) {
+                if (firstErrorElement) firstErrorElement.focus();
+                return;
+            }
+
+            // Thời hạn bổ sung phải lớn hơn ngày lập phiếu (ngày hiện tại)
+            if (deadlineInput) {
+                const parts = deadlineInput.value.trim().split('/');
+                const deadlineDate = (parts.length === 3)
+                    ? new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]))
+                    : null;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (!deadlineDate || isNaN(deadlineDate.getTime()) || deadlineDate <= today) {
+                    deadlineInput.classList.add('is-invalid');
+                    if (deadlineErr) {
+                        deadlineErr.textContent = 'Thời hạn bổ sung phải lớn hơn ngày lập Phiếu';
+                        deadlineErr.style.display = 'block';
+                    }
+                    deadlineInput.focus();
+                    return;
+                }
+            }
+
+            const claim = claimsList.find(c => c.id === supplementPrintClaimId);
+
+            // Đã in trước đó mà nay sửa lại nội dung/thời hạn thì phải xác nhận
+            const isEdited = claim && claim.supplementPrintedAt &&
+                (claim.additionRequestContent !== reasonInput.value.trim() ||
+                 claim.additionDeadline !== deadlineInput.value.trim());
+
+            if (isEdited) {
+                showConfirmModal(
+                    `Phiếu hướng dẫn bổ sung của vụ việc này đã được in ngày ${claim.supplementPrintedAt}. Việc chỉnh sửa nội dung sẽ được ghi nhận vào Lịch sử Yêu cầu bổ sung hồ sơ. Bạn có chắc chắn muốn tiếp tục?`,
+                    () => doSaveAndPrintSupplement(claim, reasonInput, deadlineInput, reasonPrint, deadlinePrint),
+                    { title: 'Xác nhận chỉnh sửa Phiếu đã in' }
+                );
+                return;
+            }
+
+            doSaveAndPrintSupplement(claim, reasonInput, deadlineInput, reasonPrint, deadlinePrint);
+        }
+
+        function doSaveAndPrintSupplement(claim, reasonInput, deadlineInput, reasonPrint, deadlinePrint) {
+            const reasonVal = reasonInput ? reasonInput.value.trim() : '';
+            const deadlineVal = deadlineInput ? deadlineInput.value.trim() : '';
+
+            if (claim) {
+                const officer = document.getElementById('currentOfficerSelector')
+                    ? document.getElementById('currentOfficerSelector').value
+                    : 'Trần Thị Chuyên Viên (Cán bộ một cửa)';
+                const nowStr = new Date().toLocaleDateString('vi-VN') + ' ' +
+                    new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+                // Ghi đè lên đúng trường dùng chung -> MH02/MH03/MH05 và phiếu in luôn thống nhất
+                claim.additionRequestContent = reasonVal;
+                claim.rejectReason = reasonVal;
+                claim.additionDeadline = deadlineVal;
+                claim.supplementFiles = currentSupplementFiles.slice();
+                claim.supplementPrintedAt = nowStr;
+
+                // Mỗi lần in ghi thêm một dòng lịch sử, không ghi đè các dòng trước
+                if (!claim.rejectionLog) claim.rejectionLog = [];
+                claim.rejectionLog.push({
+                    date: nowStr,
+                    officer: officer,
+                    action: 'In Phiếu hướng dẫn bổ sung',
+                    reason: reasonVal,
+                    deadline: deadlineVal
+                });
+
+                if (typeof saveClaimsToStorage === 'function') saveClaimsToStorage();
+                else localStorage.setItem('claimsList', JSON.stringify(claimsList));
+            }
+
+            if (reasonPrint) reasonPrint.textContent = reasonVal;
+            if (deadlinePrint) {
+                deadlinePrint.textContent = `Trong thời hạn đến hết ngày ${deadlineVal}, đề nghị Ông/Bà hoàn thành và gửi lại tài liệu bổ sung về Cơ quan giải quyết bồi thường.`;
+            }
+
+            window.print();
         }
     </script>
 
@@ -15086,7 +15568,7 @@
                 <p style="margin-bottom: 12px; font-weight: 500; color: #334155; font-size: 13.5px;">
                     Nhập thông tin cán bộ được cử giải quyết hồ sơ bồi thường và thông tin Quyết định cử người giải quyết:
                 </p>
-                <div class="grid-3-cols" style="gap:12px; margin-bottom:14px;">
+                <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
                     <div class="form-group">
                         <span class="form-label">Họ và tên cán bộ<span class="required">*</span></span>
                         <input type="text" id="appointedOfficerName" class="form-control" placeholder="Nhập họ và tên cán bộ...">
@@ -15095,6 +15577,8 @@
                         <span class="form-label">Chức vụ<span class="required">*</span></span>
                         <input type="text" id="appointedOfficerPosition" class="form-control" placeholder="Nhập chức vụ...">
                     </div>
+                </div>
+                <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
                     <div class="form-group">
                         <span class="form-label">Đơn vị<span class="required">*</span></span>
                         <select id="appointedOfficerUnit" class="form-control">
@@ -15108,6 +15592,10 @@
                             <option value="UBND Quận Cầu Giấy">UBND Quận Cầu Giấy</option>
                             <option value="UBND Quận Cầu Giấy / Phòng Tư pháp">-- Phòng Tư pháp</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Email cán bộ<span class="required">*</span></span>
+                        <input type="email" id="appointedOfficerEmail" class="form-control" placeholder="Nhập email cán bộ...">
                     </div>
                 </div>
                 <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
@@ -15329,6 +15817,25 @@
                         style="display: none; color: var(--danger-color); font-size: 12px; margin-top: 4px;"><i
                             class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</span>
                 </div>
+
+                <!-- Tài liệu kèm theo (Nếu có) - cho phép tải lên nhiều tệp -->
+                <div class="form-group" id="rejectionAttachBlock" style="margin-bottom: 0;">
+                    <label class="form-label"
+                        style="font-weight: 600; color: #334155; margin-bottom: 6px; display: block;">
+                        <i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo (Nếu có):
+                    </label>
+                    <input type="file" id="rejectionFilesInput" multiple style="display:none;"
+                        accept=".pdf,.doc,.docx,.jpg,.png" onchange="handleRejectionFilesUpload(this)">
+                    <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="document.getElementById('rejectionFilesInput').click()"
+                        style="padding:5px 12px; font-size:12.5px;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Tải file
+                    </button>
+                    <div style="font-size:11.5px; color:#94a3b8; margin-top:5px;">
+                        Định dạng cho phép: .pdf, .doc, .docx, .jpg, .png - tối đa 20MB/tệp.
+                    </div>
+                    <div id="rejectionFilesList" style="margin-top:10px;"></div>
+                </div>
             </div>
             <div class="confirm-modal-footer"
                 style="padding: 16px 24px 24px 24px; display: flex; justify-content: flex-end; gap: 10px; background-color: #f8fafc; border-top: 1px solid var(--border-color);">
@@ -15520,6 +16027,52 @@
                 <button type="button" class="btn btn-secondary" onclick="closePreviewM17()">Đóng</button>
                 <button type="button" class="btn btn-primary" onclick="printPreviewM17()"><i
                         class="fa-solid fa-print"></i> In thông báo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal for Phiếu hướng dẫn bổ sung hồ sơ (MH14) -->
+    <div id="previewModalSupplement" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div class="sticky-modal-container" style="background:#fff; width:800px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+            <div class="confirm-modal-header" style="color:var(--primary-light); background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
+                <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:var(--primary-light); text-transform:uppercase;">
+                    <i class="fa-solid fa-print"></i> IN PHIẾU YÊU CẦU BỔ SUNG HỒ SƠ
+                </div>
+                <span onclick="closePreviewSupplementModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
+            </div>
+            <div class="sticky-modal-body" id="printSupplementBody" style="padding:24px 32px; overflow-y:auto; flex:1; font-family:'Times New Roman', Times, serif; font-size:14.5px; line-height:1.6; color:#111;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                    <div style="text-align:center;">
+                        <div style="font-weight:bold; font-size:13px; text-transform:uppercase;" id="supplementHeaderAgency">SỞ TƯ PHÁP TP. HÀ NỘI</div>
+                        <div style="font-weight:bold; font-size:13px;">BỘ PHẬN TIẾP NHẬN VÀ TRẢ KẾT QUẢ</div>
+                        <div style="border-bottom:1px solid #000; width:130px; margin:4px auto;"></div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-weight:bold; font-size:13.5px; text-transform:uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                        <div style="font-weight:bold; font-size:13px; font-style:italic;">Độc lập - Tự do - Hạnh phúc</div>
+                        <div style="border-bottom:1px solid #000; width:160px; margin:4px auto;"></div>
+                    </div>
+                </div>
+                <div style="text-align:center; margin:20px 0 15px 0;">
+                    <h3 style="font-size:17px; font-weight:bold; text-transform:uppercase; margin:0 0 5px 0; color:#0f172a;">PHIẾU HƯỚNG DẪN BỔ SUNG HỒ SƠ YÊU CẦU BỒI THƯỜNG</h3>
+                    <div style="font-style:italic; font-size:13.5px; color:#475569;">(Ban hành kèm theo Luật Trách nhiệm bồi thường của Nhà nước)</div>
+                </div>
+                <div id="supplementNoticeContent" style="margin-top:16px;">
+                    <!-- Content will be injected dynamically -->
+                </div>
+                <div style="display:flex; justify-content:flex-end; margin-top:35px; text-align:center;">
+                    <div style="width:45%;">
+                        <div style="font-style:italic; font-size:13.5px; color:#475569;" id="supplementNoticeDate">Hà Nội, ngày ... tháng ... năm 2026</div>
+                        <div style="font-weight:bold; margin-top:5px; text-transform:uppercase;">NGƯỜI HƯỚNG DẪN BỔ SUNG</div>
+                        <div style="font-style:italic; font-size:13px; color:#64748b;">(Ký và ghi rõ họ tên)</div>
+                        <div style="height:75px;"></div>
+                        <div style="font-weight:bold; color:#0f172a;" id="supplementNoticeSigner">Nguyễn Văn Chuyên Viên</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
+                <button type="button" class="btn btn-secondary" onclick="closePreviewSupplementModal()">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="executePrintSupplement()"><i class="fa-solid fa-print"></i> In phiếu</button>
             </div>
         </div>
     </div>

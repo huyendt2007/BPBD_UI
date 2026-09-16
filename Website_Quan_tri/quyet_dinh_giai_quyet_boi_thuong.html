@@ -1371,6 +1371,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             <button class="btn btn-secondary" onclick="downloadAdjustmentDoc('PDF')"><i class="fa-solid fa-file-pdf"></i> Tải PDF</button>
             <button class="btn btn-secondary" onclick="saveAdjustmentDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
             <button class="btn btn-primary" id="adjustSubmitBtn" onclick="submitAdjustmentDecision()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
+            <button class="btn btn-primary" id="adjustIssueBtn" style="display:none;" onclick="submitAdjustmentDecision()"><i class="fa-solid fa-circle-check"></i> Ban hành QĐ</button>
+            <button class="btn btn-secondary" onclick="closeCreateDecForm()"><i class="fa-solid fa-arrow-left-long"></i> Hủy bỏ</button>
         </div>
     </div>
 
@@ -1386,6 +1388,21 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
         <div class="inline-form-body" id="formBodyLayout">
             <!-- LEFT COLUMN: Form Inputs -->
             <div class="form-inputs-column">
+                <!-- KHỐI LÝ DO BỊ TỪ CHỐI: chỉ hiển thị khi mở Quyết định ở trạng thái Bị từ chối -->
+                <div id="decFormRejectBlock" style="display:none; background-color:#FEF2F2; border:1px solid #FECACA; border-left:4px solid #DC2626; padding:16px 18px; border-radius:var(--border-radius-sm); margin-bottom:20px;">
+                    <div style="font-weight:700; color:#B91C1C; margin-bottom:10px; font-size:13.5px;">
+                        <i class="fa-solid fa-circle-exclamation"></i> DỰ THẢO QUYẾT ĐỊNH BỊ TỪ CHỐI - ĐỀ NGHỊ HOÀN THIỆN LẠI
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 24px; font-size:13px; margin-bottom:10px;">
+                        <div><span style="color:#64748b;">Ngày từ chối:</span> <strong id="decFormRejectDate" style="color:#0f172a;">--</strong></div>
+                        <div><span style="color:#64748b;">Người từ chối:</span> <strong id="decFormRejectBy" style="color:#0f172a;">--</strong></div>
+                    </div>
+                    <div style="font-size:13px;">
+                        <span style="color:#64748b; display:block; margin-bottom:4px;">Nội dung ý kiến chỉ đạo / Lý do từ chối:</span>
+                        <div id="decFormRejectReason" style="color:#7f1d1d; font-weight:500; white-space:pre-wrap; background:#fff; border:1px solid #FECACA; border-radius:4px; padding:10px 12px;">--</div>
+                    </div>
+                </div>
+
                 <!-- AUTO-FILL SEARCH BLOCK (Select claims in 'Chờ ban hành QĐ') -->
                 <div id="autofillClaimBlock" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 18px; border-radius: var(--border-radius-sm); margin-bottom: 20px;">
                     <span class="form-label" style="font-weight: 700; color: var(--primary-light); margin-bottom: 8px;">
@@ -2707,14 +2724,18 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             const approverGroup = document.getElementById('decFormApproverGroup');
             const noInput = document.getElementById('decFormNo');
             const submitBtn = document.getElementById('btnSubmitDecision');
+            const issueBtn = document.getElementById('btnIssueDecision');
+            const previewBtn = document.getElementById('btnPreviewDecision');
             if (externalGroup) externalGroup.style.display = external ? 'grid' : 'none';
             if (approverGroup) approverGroup.style.display = external ? 'none' : 'block';
             if (noInput) noInput.value = external ? '[Nhập theo số quyết định ký ngoài]' : '[Hệ thống tự động cấp số sau khi ký]';
-            if (submitBtn) {
-                submitBtn.innerHTML = external
-                    ? '<i class="fa-solid fa-circle-check"></i> Xác nhận đã ký bên ngoài'
-                    : '<i class="fa-solid fa-paper-plane"></i> Trình ký';
-            }
+
+            // Theo SRS 4.3.3.3.4.3: Trình ký và Xem Trước Quyết định chỉ hiển thị khi Ký số trên hệ thống;
+            // Ban hành QĐ chỉ hiển thị khi Ký bên ngoài.
+            if (submitBtn) submitBtn.style.display = external ? 'none' : 'inline-flex';
+            if (issueBtn) issueBtn.style.display = external ? 'inline-flex' : 'none';
+            if (previewBtn) previewBtn.style.display = external ? 'none' : 'inline-flex';
+
             updateLivePreview();
         }
 
@@ -2772,9 +2793,12 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             document.getElementById('adjustExternalSignerGroup').style.display = external ? 'block' : 'none';
             document.getElementById('adjustExternalSequenceReasonGroup').style.display = external ? 'block' : 'none';
             document.getElementById('adjustExternalFileGroup').style.display = external ? 'block' : 'none';
-            document.getElementById('adjustSubmitBtn').innerHTML = external
-                ? '<i class="fa-solid fa-circle-check"></i> Xác nhận đã ký bên ngoài'
-                : '<i class="fa-solid fa-paper-plane"></i> Trình ký';
+            // Theo SRS 4.3.3.3.7.3: Trình ký chỉ hiển thị khi Ký số trên hệ thống;
+            // Ban hành QĐ chỉ hiển thị khi Ký bên ngoài.
+            const adjustSubmitBtn = document.getElementById('adjustSubmitBtn');
+            const adjustIssueBtn = document.getElementById('adjustIssueBtn');
+            if (adjustSubmitBtn) adjustSubmitBtn.style.display = external ? 'none' : 'inline-flex';
+            if (adjustIssueBtn) adjustIssueBtn.style.display = external ? 'inline-flex' : 'none';
         }
 
         function getAdjustmentFormData() {
@@ -2900,7 +2924,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                 historyLogs: [{
                     time: `${d}/${m}/${y} ${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`,
                     actor: 'Lê Thị Chuyên Viên',
-                    action: status === 'Lưu nháp' ? 'Lưu nháp' : (status === 'Chờ ký' ? 'Trình ký duyệt' : 'Xác nhận đã ký bên ngoài'),
+                    action: status === 'Lưu nháp' ? 'Lưu nháp' : (status === 'Chờ ký' ? 'Trình ký' : 'Ban hành QĐ (ký bên ngoài)'),
                     content: isCancel ? 'Tạo quyết định hủy quyết định giải quyết bồi thường.' : 'Tạo quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường.'
                 }]
             };
@@ -3116,9 +3140,13 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             document.getElementById('adjustDecisionPanel').style.display = 'none';
             document.getElementById('inlineDecFormPanel').style.display = 'block';
             
-            // Adjust title and header blocks
-            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> TRÌNH KÝ QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG MỚI`;
+            // Adjust title and header blocks (SRS 4.3.3.3.4.2 - tiêu đề khi tạo mới)
+            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> LẬP QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG MỚI`;
             document.getElementById('autofillClaimBlock').style.display = 'block';
+
+            // Ẩn khối Lý do bị từ chối khi tạo mới
+            const rejectBlock = document.getElementById('decFormRejectBlock');
+            if (rejectBlock) rejectBlock.style.display = 'none';
             
             // Reset existing inputs safely
             const formInputs = document.querySelectorAll('#inlineDecFormPanel input, #inlineDecFormPanel select, #inlineDecFormPanel textarea');
@@ -3160,9 +3188,10 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             const footer = document.getElementById('formDecFooter');
             footer.style.display = 'flex';
             footer.innerHTML = `
-                <button class="btn btn-primary" onclick="previewDecisionDocument()" style="background-color:#0284c7; border-color:#0284c7;"><i class="fa-solid fa-file-magnifying-glass"></i> Xem Trước Quyết định</button>
+                <button class="btn btn-primary" id="btnPreviewDecision" onclick="previewDecisionDocument()" style="background-color:#0284c7; border-color:#0284c7;"><i class="fa-solid fa-file-magnifying-glass"></i> Xem Trước Quyết định</button>
                 <button class="btn btn-secondary" onclick="saveDecision('Lưu nháp')" style="background-color:#f1f5f9; border-color:#cbd5e1;"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
                 <button class="btn btn-success" id="btnSubmitDecision" onclick="saveDecision('Chờ ký')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
+                <button class="btn btn-success" id="btnIssueDecision" style="display:none;" onclick="saveDecision('Đã ban hành')"><i class="fa-solid fa-circle-check"></i> Ban hành QĐ</button>
                 <button class="btn btn-secondary" onclick="closeCreateDecForm()"><i class="fa-solid fa-arrow-left-long"></i> Hủy bỏ</button>
             `;
             toggleDecisionSignMode();
@@ -3489,7 +3518,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         item.historyLogs.unshift({
                             time: new Date().toLocaleString('vi-VN'),
                             actor: "Cán bộ xử lý",
-                            action: 'Xác nhận đã ký bên ngoài',
+                            action: 'Ban hành QĐ (ký bên ngoài)',
                             content: `Ghi nhận quyết định ký bên ngoài số ${savedNo} theo ${documentBook}`
                         });
                     }
@@ -3529,7 +3558,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                     }] : (finalStatus === 'Đã ban hành' ? [{
                         time: new Date().toLocaleString('vi-VN'),
                         actor: "Cán bộ xử lý",
-                        action: 'Xác nhận đã ký bên ngoài',
+                        action: 'Ban hành QĐ (ký bên ngoài)',
                         content: `Ghi nhận quyết định ký bên ngoài số ${savedNo} theo ${documentBook}`
                     }] : [])
                 });
@@ -3540,14 +3569,42 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
         }
 
         // Edit draft/rejected decisions
+        // Hiển thị khối Lý do bị từ chối ở đầu form MH02 (SRS 4.3.3.3.4.2)
+        function renderDecFormRejectBlock(item) {
+            const block = document.getElementById('decFormRejectBlock');
+            if (!block) return;
+            if (!item || item.status !== 'Bị từ chối') {
+                block.style.display = 'none';
+                return;
+            }
+            // Lấy mốc từ chối gần nhất trong lịch sử xử lý nếu có
+            const rejectLog = (item.historyLogs || []).find(log =>
+                String(log.action || '').toLowerCase().includes('từ chối'));
+            document.getElementById('decFormRejectDate').textContent =
+                item.rejectDate || (rejectLog ? rejectLog.time : '--');
+            document.getElementById('decFormRejectBy').textContent =
+                item.rejectedBy || (rejectLog ? rejectLog.actor : 'Lãnh đạo đơn vị');
+            document.getElementById('decFormRejectReason').textContent =
+                item.rejectReason || '(Không có nội dung ý kiến chỉ đạo)';
+            block.style.display = 'block';
+        }
+
         function editDecision(id) {
             const item = decisionsList.find(d => d.id === id);
             if (!item) return;
 
             openCreateDecForm();
             selectedDecId = id;
-            document.getElementById('formDecTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT DỰ THẢO QUYẾT ĐỊNH: ${item.decNo}`;
+
+            // Tiêu đề form hiển thị động theo trạng thái (SRS 4.3.3.3.4.2)
+            const isRejected = item.status === 'Bị từ chối';
+            document.getElementById('formDecTitle').innerHTML = isRejected
+                ? `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT DỰ THẢO QUYẾT ĐỊNH BỊ TỪ CHỐI: ${item.decNo}`
+                : `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT DỰ THẢO QUYẾT ĐỊNH: ${item.decNo}`;
             document.getElementById('autofillClaimBlock').style.display = 'none';
+
+            // Khối Lý do bị từ chối: chỉ hiển thị với quyết định ở trạng thái Bị từ chối
+            renderDecFormRejectBlock(item);
 
             populateFormInputs(item);
         }
@@ -3655,7 +3712,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             if (currentRole === 'leader' && item.status === 'Chờ ký') {
                 footer.innerHTML = `
                     <button class="btn btn-danger" onclick="rejectDecisionDirect('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>
-                    <button class="btn btn-success" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i> Phê duyệt</button>
+                    <button class="btn btn-success" onclick="signDecisionDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>
                     <button class="btn btn-secondary" onclick="closeCreateDecForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                 `;
             } else {
@@ -3831,8 +3888,8 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         closeCreateDecForm();
                         renderDecTable();
                     },
-                    "Xác nhận phê duyệt",
-                    "Phê duyệt",
+                    "Xác nhận ký duyệt",
+                    "Ký duyệt",
                     false
                 );
             }

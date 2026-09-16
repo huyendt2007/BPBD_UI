@@ -1598,6 +1598,11 @@
                     }
                 }
 
+                let printSuppBtn = `<button class="icon-btn print" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ in phiếu bổ sung khi hồ sơ ở trạng thái Yêu cầu bổ sung"><i class="fa-solid fa-print"></i></button>`;
+                if (item.status === 'Yêu cầu bổ sung') {
+                    printSuppBtn = `<button class="icon-btn print" title="In Phiếu Bổ sung" onclick="event.stopPropagation(); printSupplementNotice('${item.id}')"><i class="fa-solid fa-print"></i></button>`;
+                }
+
                 let actionsHtml = '';
                 if (currentRole === 'thu-truong') {
                     const isChoThuly = item.status === 'Chờ thụ lý';
@@ -1613,6 +1618,7 @@
                         ${viewBtn}
                         ${lThuLyBtn}
                         ${lTuChoiBtn}
+                        ${printSuppBtn}
                     `;
                 } else {
                     actionsHtml = `
@@ -1621,6 +1627,7 @@
                         ${deleteBtn}
                         ${acceptBtn}
                         ${suppBtn}
+                        ${printSuppBtn}
                         ${denyBtn}
                     `;
                 }
@@ -3636,6 +3643,7 @@
                     } else {
                         buttonsHtml = `
                             <button class="btn btn-primary" onclick="switchToEditMode('bosung')"><i class="fa-solid fa-circle-check"></i> Bổ sung hồ sơ</button>
+                            <button class="btn btn-secondary" onclick="printSupplementNotice('${claim.id}')"><i class="fa-solid fa-print"></i> In Phiếu Bổ sung</button>
                         `;
                     }
                     break;
@@ -6671,4 +6679,250 @@ function confirmDeleteClaimOfficer(index) {
         claimOfficerToDelete = -1;
         window.closeConfirmModal = window.originalCloseConfirmModal;
     };
+function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
+
+let currentSupplementFiles = [
+    { name: 'Huong_dan_ke_khai_thiet_hai.pdf', size: '245 KB' },
+    { name: 'Mau_don_bo_sung_ho_so_yeu_cau.docx', size: '48 KB' }
+];
+
+function renderSupplementFilesList() {
+    const listEl = document.getElementById('supplementAttachedFilesList');
+    if (!listEl) return;
+    if (!currentSupplementFiles || currentSupplementFiles.length === 0) {
+        listEl.innerHTML = '<div style="font-size:13px; color:#64748b; font-style:italic;">Chưa có tài liệu đính kèm kèm theo.</div>';
+        return;
+    }
+    listEl.innerHTML = currentSupplementFiles.map((file, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 12px; margin-bottom:6px; font-size:13px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-file-lines" style="color:#0284c7;"></i>
+                <span style="font-weight:500; color:#1e293b;">${escapeHtml(file.name)}</span>
+                <span style="color:#94a3b8; font-size:12px;">(${file.size})</span>
+            </div>
+            <div class="supplement-no-print" style="display:flex; gap:12px; align-items:center;">
+                <a href="javascript:void(0)" onclick="viewSupplementFile('${escapeHtml(file.name)}')" style="color:#2563eb; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                <a href="javascript:void(0)" onclick="downloadSupplementFile('${escapeHtml(file.name)}')" style="color:#059669; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-download"></i> Tải file về</a>
+                <a href="javascript:void(0)" onclick="removeSupplementFile(${idx})" style="color:#dc2626; text-decoration:none; font-weight:500; font-size:12.5px;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
+            </div>
+        </div>
+    `).join('');
+}
+
+function handleSupplementFilesUpload(input) {
+    if (!input || !input.files || input.files.length === 0) return;
+    for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        const sizeStr = (file.size / 1024 < 1024) 
+            ? `${Math.round(file.size / 1024)} KB` 
+            : `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+        currentSupplementFiles.push({
+            name: file.name,
+            size: sizeStr
+        });
+    }
+    input.value = '';
+    renderSupplementFilesList();
+    if (typeof showToast === 'function') {
+        showToast('Tải tài liệu đính kèm thành công!', 'success');
+    }
+}
+
+function viewSupplementFile(name) {
+    window.open('about:blank', '_blank');
+}
+
+function downloadSupplementFile(name) {
+    if (typeof showToast === 'function') {
+        showToast(`Bắt đầu tải tệp tin: ${name}`, 'info');
+    }
+}
+
+function removeSupplementFile(idx) {
+    if (idx < 0 || idx >= currentSupplementFiles.length) return;
+    const fileName = currentSupplementFiles[idx].name;
+    showConfirmModal(`Bạn có chắc chắn muốn xóa tài liệu: "${fileName}" khỏi danh sách tài liệu kèm theo không?`, () => {
+        currentSupplementFiles.splice(idx, 1);
+        renderSupplementFilesList();
+        if (typeof showToast === 'function') {
+            showToast(`Đã xóa tài liệu: ${fileName}`, 'success');
+        }
+    });
+}
+
+function clearSupplementInputError(inputEl, errorElId) {
+    if (inputEl && inputEl.value.trim()) {
+        inputEl.classList.remove('is-invalid');
+        const err = document.getElementById(errorElId);
+        if (err) err.style.display = 'none';
+    }
+}
+
+// In Phiếu hướng dẫn bổ sung hồ sơ
+function printSupplementNotice(id) {
+    const claim = claimsList.find(c => c.id === id);
+    if (!claim) return;
+
+    const modal = document.getElementById('previewModalSupplement');
+    const container = document.getElementById('supplementNoticeContent');
+    if (!modal || !container) {
+        window.print();
+        return;
+    }
+
+    const today = new Date();
+    const dateStr = `Hà Nội, ngày ${String(today.getDate()).padStart(2, '0')} tháng ${String(today.getMonth() + 1).padStart(2, '0')} năm ${today.getFullYear()}`;
+    const dateEl = document.getElementById('supplementNoticeDate');
+    if (dateEl) dateEl.innerText = dateStr;
+
+    const signerEl = document.getElementById('supplementNoticeSigner');
+    if (signerEl) signerEl.innerText = claim.assignedOfficer || "Nguyễn Văn Chuyên Viên";
+
+    const reason = claim.additionRequestContent || "Hồ sơ yêu cầu bồi thường còn thiếu tài liệu chứng minh mức độ thiệt hại thực tế theo quy định tại Điều 41 Luật Trách nhiệm bồi thường của Nhà nước.";
+    const ngayTiepNhan = claim.receivedAt || claim.ngayTiepNhan || claim.date || '01/03/2026';
+    const canBo = claim.assignedOfficer || claim.officer || "Nguyễn Văn Chuyên Viên";
+    const chucVu = claim.officerPosition || "Chuyên viên Phòng Bồi thường nhà nước";
+    const donVi = claim.agency || "Sở Tư pháp TP. Hà Nội";
+
+    container.innerHTML = `
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:16px; margin-bottom:18px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:13.5px; font-family:sans-serif;">
+                <div><strong style="color:#475569;">Mã vụ việc:</strong> <span style="font-weight:700; color:#1e3a8a;">${escapeHtml(claim.code)}</span></div>
+                <div><strong style="color:#475569;">Ngày tiếp nhận:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(ngayTiepNhan)}</span></div>
+                <div style="grid-column: span 2;"><strong style="color:#475569;">Tên vụ việc:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(claim.caseName || claim.hanhVi || 'Yêu cầu bồi thường thiệt hại')}</span></div>
+                <div><strong style="color:#475569;">Cán bộ xử lý:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(canBo)}</span></div>
+                <div><strong style="color:#475569;">Chức vụ:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(chucVu)}</span></div>
+                <div style="grid-column: span 2;"><strong style="color:#475569;">Đơn vị:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(donVi)}</span></div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <p><strong>Kính gửi:</strong> Ông/Bà <strong>${escapeHtml(claim.nyc || 'Người yêu cầu bồi thường')}</strong></p>
+            <p><strong>Địa chỉ liên hệ:</strong> ${escapeHtml(claim.address || 'Hà Nội')}</p>
+            <p><strong>Số điện thoại:</strong> ${escapeHtml(claim.phone || '0912 345 678')}</p>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017;</p>
+            <p>Sau khi tiếp nhận và kiểm tra hồ sơ yêu cầu bồi thường mang mã số: <strong>${escapeHtml(claim.code)}</strong> liên quan đến vụ việc <em>"${escapeHtml(claim.caseName || claim.hanhVi || 'Yêu cầu bồi thường thiệt hại')}"</em>;</p>
+            <p>Cơ quan giải quyết bồi thường thông báo và hướng dẫn Ông/Bà thực hiện bổ sung các nội dung, tài liệu sau đây để đủ điều kiện thụ lý giải quyết:</p>
+        </div>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">
+            <!-- 1. Nội dung yêu cầu bổ sung -->
+            <div class="supplement-screen-input" style="margin-bottom:14px;">
+                <label style="display:block; font-weight:bold; color:#1e3a8a; margin-bottom:6px; font-size:13.5px;">
+                    1. Nội dung yêu cầu bổ sung: <span style="color:#dc2626;">*</span>
+                </label>
+                <textarea id="supplementReasonInput" class="form-control" rows="4" style="width:100%; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:6px; padding:10px 12px; font-family:sans-serif; font-size:13.5px; line-height:1.5; resize:vertical;" placeholder="Nhập nội dung yêu cầu bổ sung hồ sơ..." oninput="clearSupplementInputError(this, 'supplementReasonError')">${escapeHtml(reason)}</textarea>
+                <div class="error-message" id="supplementReasonError" style="display:none; color:#dc2626; font-size:12px; font-family:sans-serif; margin-top:4px;">Đây là trường bắt buộc</div>
+            </div>
+            <div class="supplement-print-text" style="display:none;">
+                <p style="font-weight:bold; color:#1e3a8a; margin-top:0; margin-bottom:4px; font-family:serif;">1. Nội dung yêu cầu bổ sung:</p>
+                <p id="supplementReasonPrint" style="margin-bottom:12px; line-height:1.6; text-align:justify; white-space:pre-wrap; font-family:serif;"></p>
+            </div>
+
+            <!-- 2. Thời hạn bổ sung -->
+            <div class="supplement-screen-input">
+                <label style="display:block; font-weight:bold; color:#1e3a8a; margin-bottom:6px; font-size:13.5px;">
+                    2. Thời hạn bổ sung: <span style="color:#dc2626;">*</span>
+                </label>
+                <input type="text" id="supplementDeadlineInput" class="form-control" value="15 ngày kể từ ngày nhận được Phiếu hướng dẫn" style="width:100%; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:6px; padding:8px 12px; font-family:sans-serif; font-size:13.5px;" placeholder="Ví dụ: 15 ngày kể từ ngày nhận được Phiếu hướng dẫn" oninput="clearSupplementInputError(this, 'supplementDeadlineError')">
+                <div class="error-message" id="supplementDeadlineError" style="display:none; color:#dc2626; font-size:12px; font-family:sans-serif; margin-top:4px;">Đây là trường bắt buộc</div>
+            </div>
+            <div class="supplement-print-text" style="display:none;">
+                <p style="font-weight:bold; color:#1e3a8a; margin-top:8px; margin-bottom:4px; font-family:serif;">2. Thời hạn bổ sung:</p>
+                <p id="supplementDeadlinePrint" style="margin-bottom:0; line-height:1.6; font-family:serif;"></p>
+            </div>
+        </div>
+
+        <!-- Khối Tài liệu kèm theo (Nếu có) -->
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <p style="font-weight:bold; color:#1e3a8a; margin:0; font-size:14px;"><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo (Nếu có):</p>
+                <div class="supplement-no-print">
+                    <input type="file" id="supplementFileInput" multiple style="display:none;" onchange="handleSupplementFilesUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('supplementFileInput').click()" style="padding:5px 12px; font-size:12.5px;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Tải file
+                    </button>
+                </div>
+            </div>
+            <div id="supplementAttachedFilesList">
+                <!-- Injected by renderSupplementFilesList -->
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <p style="font-style:italic; font-size:13.5px; color:#475569;">* Hết thời hạn trên nếu không nhận được văn bản, tài liệu bổ sung, Cơ quan giải quyết bồi thường sẽ thực hiện thủ tục từ chối thụ lý theo đúng quy định pháp luật.</p>
+        </div>
+    `;
+
+    renderSupplementFilesList();
+    modal.style.display = 'flex';
+    modal.classList.add('visible');
+}
+
+function closePreviewSupplementModal() {
+    const modal = document.getElementById('previewModalSupplement');
+    if (modal) {
+        modal.classList.remove('visible');
+        modal.style.display = 'none';
+    }
+}
+
+function executePrintSupplement() {
+    const reasonInput = document.getElementById('supplementReasonInput');
+    const deadlineInput = document.getElementById('supplementDeadlineInput');
+    const reasonErr = document.getElementById('supplementReasonError');
+    const deadlineErr = document.getElementById('supplementDeadlineError');
+    const reasonPrint = document.getElementById('supplementReasonPrint');
+    const deadlinePrint = document.getElementById('supplementDeadlinePrint');
+
+    let hasError = false;
+    let firstErrorElement = null;
+
+    if (reasonInput) {
+        if (!reasonInput.value.trim()) {
+            reasonInput.classList.add('is-invalid');
+            if (reasonErr) reasonErr.style.display = 'block';
+            hasError = true;
+            if (!firstErrorElement) firstErrorElement = reasonInput;
+        } else {
+            reasonInput.classList.remove('is-invalid');
+            if (reasonErr) reasonErr.style.display = 'none';
+        }
+    }
+
+    if (deadlineInput) {
+        if (!deadlineInput.value.trim()) {
+            deadlineInput.classList.add('is-invalid');
+            if (deadlineErr) deadlineErr.style.display = 'block';
+            hasError = true;
+            if (!firstErrorElement) firstErrorElement = deadlineInput;
+        } else {
+            deadlineInput.classList.remove('is-invalid');
+            if (deadlineErr) deadlineErr.style.display = 'none';
+        }
+    }
+
+    if (hasError) {
+        if (firstErrorElement) firstErrorElement.focus();
+        return;
+    }
+
+    if (reasonPrint && reasonInput) {
+        reasonPrint.textContent = reasonInput.value;
+    }
+    if (deadlinePrint && deadlineInput) {
+        deadlinePrint.textContent = `Trong thời hạn ${deadlineInput.value}, đề nghị Ông/Bà hoàn thành và gửi lại tài liệu bổ sung về Cơ quan giải quyết bồi thường.`;
+    }
+
+    window.print();
+}
+

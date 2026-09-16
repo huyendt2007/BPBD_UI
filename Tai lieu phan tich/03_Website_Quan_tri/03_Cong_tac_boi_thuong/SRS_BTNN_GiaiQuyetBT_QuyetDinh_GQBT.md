@@ -20,7 +20,7 @@ Hệ thống phân quyền thao tác theo vai trò và quyền hạn được c�
 - Chỉnh sửa: Cập nhật thông tin quyết định ở trạng thái Lưu nháp hoặc Bị từ chối.
 - Xóa: Xóa quyết định ở trạng thái Lưu nháp.
 - Trình ký / Ban hành: Cán bộ thực hiện trình Lãnh đạo ký số hoặc xác nhận ban hành quyết định ký ngoài.
-- Phê duyệt / Ký số: Lãnh đạo thực hiện ký số điện tử phê duyệt quyết định hoặc từ chối yêu cầu hiệu chỉnh.
+- Ký duyệt/Từ chối: Lãnh đạo thực hiện ký số điện tử phê duyệt quyết định hoặc từ chối yêu cầu hiệu chỉnh.
 
 b. Điều kiện thực hiện
 - Người dùng đã đăng nhập hệ thống.
@@ -45,7 +45,7 @@ flowchart TD
     H --> K[Cập nhật dự thảo]
     K --> F
     I --> L{Thao tác của Lãnh đạo}
-    L -->|Phê duyệt / Ký số| J
+    L -->|Ký duyệt| J
     L -->|Từ chối| M[Nhập lý do từ chối]
     M --> N[Trạng thái: Bị từ chối]
     N -->|Hiển thị khối Lý do bị từ chối| K
@@ -89,7 +89,7 @@ flowchart TD
 | Cán bộ xử lý | String(100) | - | Theo dữ liệu | Hiển thị họ tên cán bộ phụ trách xử lý/lập quyết định. |
 | Hình thức ban hành | Enum(String(50)) | - | Theo dữ liệu | Hiển thị `Ký số trên hệ thống` hoặc `Ký bên ngoài`. |
 | Đơn vị ban hành | String(255) | - | Theo dữ liệu | Hiển thị đơn vị sở hữu sổ văn bản và có thẩm quyền ban hành quyết định. |
-| Trích yếu quyết định | String(500) | - | Theo dữ liệu | Hiển thị tóm tắt trích yếu nội dung quyết định giải quyết bồi thường. |
+| Trích yếu quyết định | String(500) | - | Theo dữ liệu | Hiển thị tóm tắt trích yếu nội dung quyết định giải quyết bồi thường theo cú pháp "Quyết định giải quyết bồi thường đối với " + [Họ và tên người yêu cầu bồi thường |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Text link (Hyperlink). Cho phép click mở màn hình Chi tiết vụ việc yêu cầu bồi thường liên kết. |
 | Tên vụ việc | String(255) | - | Theo dữ liệu | Hiển thị tên vụ việc bồi thường liên kết. |
 | Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Text hiển thị kèm Badge màu theo trạng thái quyết định [DM_30]. |
@@ -179,7 +179,7 @@ flowchart TD
 | 4 | Tải lên | Button (Dòng tài liệu) | Khi người dùng click nút "Tải lên" tại dòng tài liệu, hệ thống mở hộp thoại chọn tệp tin từ thiết bị và thực hiện kiểm tra:<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không đúng định dạng `.pdf`, vi phạm [BR-FILE-010], hệ thống hiển thị thông báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Nếu dung lượng tệp tin vượt quá 20MB, vi phạm [BR-FILE-010], hệ thống hiển thị thông báo lỗi [MSG-ERR-FILE-002] và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Hệ thống tải tệp tin lên thành công, cập nhật cột `File đính kèm` hiển thị tên tệp tin kèm dung lượng, kích hoạt liên kết `Xem file` và nút `Xóa` tại cột Thao tác, đồng thời hiển thị thông báo thành công [MSG-SUC-BTNN-QD-004]. |
 | 5 | Xem file | Link (Dòng tài liệu) | Mở xem nội dung tệp tin đính kèm tại một tab trình duyệt mới. |
 | 6 | Xóa dòng tài liệu | Icon/Button (Dòng tài liệu) | Mở popup xác nhận [POPUP-CFM-001] với nội dung [MSG-CFM-BTNN-XDCQ-002].<br>- Khi người dùng chọn "Đồng ý": Hệ thống gỡ bỏ file đính kèm và xóa dòng tài liệu căn cứ tương ứng khỏi bảng danh sách.<br>- Khi người dùng chọn "Hủy bỏ": Đóng popup và giữ nguyên dữ liệu. |
-| 7 | Xem Trước Quyết định | Button | - **TH1 - Chưa chọn vụ việc YCBT**: Vi phạm [BR-VAL-001], hiển thị cảnh báo [MSG-ERR-VAL-001] và không mở xem trước.<br>- **TH Hợp lệ**: Sinh nội dung dự thảo quyết định theo biểu mẫu 09/BTNN của Thông tư 04/2018/TT-BTP tại **MH04 - Xem trước Quyết định Giải quyết yêu cầu bồi thường** từ dữ liệu đang nhập trên form và mở trong một tab trình duyệt mới (khổ A4), kèm nút "In/Tải PDF". |
+| 7 | Xem Trước Quyết định | Button | -- *Điều kiện hiển thị*: Chỉ hiển thị khi chọn `Hình thức ban hành` = `Ký số trên hệ thống` <br> **TH1 - Chưa chọn vụ việc YCBT**: Vi phạm [BR-VAL-001], hiển thị cảnh báo [MSG-ERR-VAL-001] và không mở xem trước.<br>- **TH Hợp lệ**: Sinh nội dung dự thảo quyết định theo biểu mẫu 09/BTNN của Thông tư 04/2018/TT-BTP tại **MH04 - Xem trước Quyết định Giải quyết yêu cầu bồi thường** từ dữ liệu đang nhập trên form và mở trong một tab trình duyệt mới (khổ A4), kèm nút "In/Tải PDF". |
 | 8 | Lưu nháp | Button | - Lưu lại các thông tin quyết định đã nhập ở trạng thái `Lưu nháp`, hiển thị thông báo thành công [MSG-SUC-SYS-001] và đóng màn hình nhập liệu. |
 | 9 | Trình ký | Button | - *Điều kiện hiển thị*: Chỉ hiển thị khi chọn `Hình thức ban hành` = `Ký số trên hệ thống`.<br>- **TH1 - Bỏ trống trường bắt buộc hoặc chưa chọn Lãnh đạo ký**: Vi phạm [BR-VAL-001], highlight đỏ ô lỗi và cảnh báo [MSG-ERR-VAL-001].<br>- **TH Hợp lệ**: Lưu thông tin, tự động sinh file dự thảo PDF, chuyển trạng thái quyết định sang `Chờ ký`, gửi đến Lãnh đạo đã chọn, ghi nhận lịch sử xử lý và hiển thị thông báo thành công [MSG-SUC-BTNN-QD-001]. |
 | 10 | Ban hành QĐ | Button | - *Điều kiện hiển thị*: Chỉ hiển thị khi chọn `Hình thức ban hành` = `Ký bên ngoài`.<br>- **TH1 - Thiếu số QĐ, ngày QĐ hoặc thiếu tệp quyết định đã ký ngoài**: Vi phạm [BR-VAL-001]/[BR-FILE-010], không cho phép xác nhận.<br>- **TH2 - Trùng số quyết định trong cùng sổ/năm**: Hệ thống cảnh báo trùng số và không cho lưu.<br>- **TH3 - Số quyết định không liền kề**: Cảnh báo và yêu cầu nhập lý do số ngoài không tuần tự.<br>- **TH Hợp lệ**: Lưu thông tin, lưu tệp QĐ đã ký và các tệp căn cứ riêng biệt, chuyển trạng thái quyết định sang `Đã ban hành`, ghi nhận lịch sử và hiển thị thông báo thành công [MSG-SUC-BTNN-QD-002]. |
@@ -228,7 +228,7 @@ flowchart TD
 | 1 | Đóng | Button | Luôn hiển thị. Đóng màn hình xem chi tiết và quay lại danh sách Quyết định giải quyết bồi thường. |
 | 2 | Xem file | Button/Link | Luôn hiển thị. Mở xem tệp PDF (Dự thảo quyết định nếu chưa ban hành, hoặc Quyết định đã ký số/ký ngoài nếu đã ban hành) tại một tab trình duyệt mới. |
 | 3 | Tải file | Button/Link | Luôn hiển thị. Tải tệp PDF (Dự thảo quyết định hoặc Quyết định đã ban hành) về máy tính cá nhân. |
-| 4 | Phê duyệt | Button | - *Điều kiện hiển thị*: Chỉ hiển thị khi Quyết định ở trạng thái `Chờ ký`.<br>- *Xử lý*: Mở **[POPUP-SIGN-001]** để Lãnh đạo thực hiện ký số điện tử trên dự thảo quyết định:<br>+ **TH Thất bại hoặc Hủy ký**: Giữ nguyên trạng thái `Chờ ký`, không cấp số/ngày từ sổ văn bản và hiển thị cảnh báo lỗi [MSG-ERR-SYS-001].<br>+ **TH Ký số thành công**: Hệ thống tự động cấp số và ngày quyết định từ Sổ văn bản điện tử áp dụng, đóng dấu thời gian, lưu tệp PDF đã ký số, chuyển trạng thái quyết định sang `Đã ban hành`, ghi nhận lịch sử xử lý và thực hiện cập nhật liên kết theo từng Loại quyết định:<br>  * *Nếu là Quyết định giải quyết bồi thường*: Chuyển trạng thái sang `Đã ban hành`, hoàn tất quy trình ban hành quyết định gốc.<br>  * *Nếu là Quyết định hủy quyết định giải quyết bồi thường*: Chuyển trạng thái QĐ hủy sang `Đã ban hành`, đồng thời tự động cập nhật trạng thái của Quyết định gốc sang `Đã hủy` và gắn liên kết QĐ hủy vào hồ sơ quyết định gốc.<br>  * *Nếu là Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường*: Chuyển trạng thái QĐ sửa chữa/bổ sung sang `Đã ban hành`, đồng thời gắn liên kết QĐ sửa chữa/bổ sung vào hồ sơ Quyết định gốc.<br>  * Hiển thị thông báo thành công [MSG-SUC-BTNN-QD-002]. |
+| 4 | Ký duyệt | Button | - *Điều kiện hiển thị*: Chỉ hiển thị khi Quyết định ở trạng thái `Chờ ký`.<br>- *Xử lý*: Mở **[POPUP-SIGN-001]** để Lãnh đạo thực hiện ký số điện tử trên dự thảo quyết định:<br>+ **TH Thất bại hoặc Hủy ký**: Giữ nguyên trạng thái `Chờ ký`, không cấp số/ngày từ sổ văn bản và hiển thị cảnh báo lỗi [MSG-ERR-SYS-001].<br>+ **TH Ký số thành công**: Hệ thống tự động cấp số và ngày quyết định từ Sổ văn bản điện tử áp dụng, đóng dấu thời gian, lưu tệp PDF đã ký số, chuyển trạng thái quyết định sang `Đã ban hành`, ghi nhận lịch sử xử lý và thực hiện cập nhật liên kết theo từng Loại quyết định:<br>  * *Nếu là Quyết định giải quyết bồi thường*: Chuyển trạng thái sang `Đã ban hành`, hoàn tất quy trình ban hành quyết định gốc.<br>  * *Nếu là Quyết định hủy quyết định giải quyết bồi thường*: Chuyển trạng thái QĐ hủy sang `Đã ban hành`, đồng thời tự động cập nhật trạng thái của Quyết định gốc sang `Đã hủy` và gắn liên kết QĐ hủy vào hồ sơ quyết định gốc.<br>  * *Nếu là Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường*: Chuyển trạng thái QĐ sửa chữa/bổ sung sang `Đã ban hành`, đồng thời gắn liên kết QĐ sửa chữa/bổ sung vào hồ sơ Quyết định gốc.<br>  * Hiển thị thông báo thành công [MSG-SUC-BTNN-QD-002]. |
 | 5 | Từ chối | Button | - *Điều kiện hiển thị*: Chỉ hiển thị khi Quyết định ở trạng thái `Chờ ký`.<br>- *Xử lý*: Mở **[POPUP-REJ-001]** (Tiêu đề: *"Từ chối quyết định"*) để nhập lý do từ chối; sau khi xác nhận từ chối hợp lệ, hệ thống chuyển trạng thái quyết định sang `Bị từ chối`, lưu lý do vào lịch sử xử lý và hiển thị thông báo [MSG-SUC-SYS-002]. |
 
 ---

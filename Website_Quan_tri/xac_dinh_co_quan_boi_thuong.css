@@ -759,3 +759,50 @@ body {
     overflow-y: auto; /* Enable independent vertical scrolling */
     flex: 1; /* Allow body to grow and fill available space */
 }
+
+/* Print styles for In Phiếu yêu cầu bổ sung hồ sơ */
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    #previewModalSupplement,
+    #previewModalSupplement #printSupplementBody,
+    #previewModalSupplement #printSupplementBody * {
+        visibility: visible !important;
+    }
+    #previewModalSupplement {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        z-index: 99999 !important;
+    }
+    #previewModalSupplement .sticky-modal-container {
+        box-shadow: none !important;
+        border: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+    #previewModalSupplement .confirm-modal-header,
+    #previewModalSupplement .modal-footer,
+    .supplement-screen-input,
+    .supplement-no-print {
+        display: none !important;
+    }
+    #printSupplementBody {
+        padding: 10mm 15mm !important;
+        overflow: visible !important;
+        max-height: none !important;
+    }
+    .supplement-print-text {
+        display: block !important;
+    }
+}
