@@ -8102,12 +8102,80 @@
             window.location.href = `xac_dinh_co_quan_boi_thuong.html?detail=${encodeURIComponent(code)}&returnUrl=${encodeURIComponent('quan_ly_boi_thuong.html?v=1')}`;
         }
 
+        // ==============================================
+        // PHÂN TRANG DÙNG CHUNG CHO CÁC POPUP TRA CỨU
+        // ==============================================
+        const lookupPagers = {};
+
+        function getLookupPager(key) {
+            if (!lookupPagers[key]) lookupPagers[key] = { page: 1, size: 10 };
+            return lookupPagers[key];
+        }
+
+        // Đưa về trang 1 (dùng khi đổi tiêu chí lọc hoặc mở lại popup)
+        function resetLookupPager(key) {
+            getLookupPager(key).page = 1;
+        }
+
+        function sliceLookupPage(key, rows) {
+            const pager = getLookupPager(key);
+            const totalPages = Math.max(1, Math.ceil(rows.length / pager.size));
+            if (pager.page > totalPages) pager.page = totalPages;
+            const start = (pager.page - 1) * pager.size;
+            return rows.slice(start, start + pager.size);
+        }
+
+        function goLookupPage(key, page, renderFnName) {
+            const pager = getLookupPager(key);
+            pager.page = Math.max(1, page);
+            if (typeof window[renderFnName] === 'function') window[renderFnName]();
+        }
+
+        function changeLookupPageSize(key, size, renderFnName) {
+            const pager = getLookupPager(key);
+            pager.size = Number(size) || 10;
+            pager.page = 1;
+            if (typeof window[renderFnName] === 'function') window[renderFnName]();
+        }
+
+        function renderLookupPagerBar(key, containerId, total, renderFnName) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            const pager = getLookupPager(key);
+            const totalPages = Math.max(1, Math.ceil(total / pager.size));
+            const from = total === 0 ? 0 : (pager.page - 1) * pager.size + 1;
+            const to = Math.min(pager.page * pager.size, total);
+            const navBtn = (label, targetPage, disabled, title) => `
+                <button type="button" class="btn btn-secondary btn-sm" title="${title}" ${disabled ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}
+                    onclick="goLookupPage('${key}', ${targetPage}, '${renderFnName}')" style="padding:3px 9px; font-size:12px;">${label}</button>`;
+
+            el.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:10px 2px 2px 2px; font-size:12.5px; color:var(--text-muted);">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span>Số bản ghi/trang:</span>
+                        <select class="form-control" style="width:80px; padding:3px 6px; font-size:12.5px;"
+                            onchange="changeLookupPageSize('${key}', this.value, '${renderFnName}')">
+                            ${[10, 20, 50, 100].map(n => `<option value="${n}" ${pager.size === n ? 'selected' : ''}>${n}</option>`).join('')}
+                        </select>
+                        <span>Hiển thị ${from}-${to} của ${total} bản ghi</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        ${navBtn('&#124;&lt;&lt;', 1, pager.page === 1, 'Trang đầu')}
+                        ${navBtn('&lt;', pager.page - 1, pager.page === 1, 'Trang trước')}
+                        <span style="padding:0 8px; font-weight:600; color:var(--text-main);">Trang ${pager.page}/${totalPages}</span>
+                        ${navBtn('&gt;', pager.page + 1, pager.page >= totalPages, 'Trang sau')}
+                        ${navBtn('&gt;&gt;&#124;', totalPages, pager.page >= totalPages, 'Trang cuối')}
+                    </div>
+                </div>`;
+        }
+
         function openXdAgencySearchModal(prefillCode = null) {
             const overlay = document.getElementById('xdAgencySearchOverlay');
             if (!overlay) return;
             if (prefillCode !== null) {
                 setInputValue('xdAgencySearchCode', prefillCode);
             }
+            resetLookupPager('xdAgency');
             renderXdAgencySearchResults();
             overlay.style.display = 'flex';
             setTimeout(() => overlay.classList.add('visible'), 10);
@@ -8122,6 +8190,7 @@
 
         function clearXdAgencySearch() {
             ['xdAgencySearchCode', 'xdAgencySearchCaseName', 'xdAgencySearchName', 'xdAgencySearchCity', 'xdAgencySearchAddress'].forEach(id => setInputValue(id, ''));
+            resetLookupPager('xdAgency');
             renderXdAgencySearchResults();
         }
 
@@ -8144,10 +8213,14 @@
 
             if (results.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc xác định cơ quan phù hợp</td></tr>`;
+                renderLookupPagerBar('xdAgency', 'xdAgencySearchPager', 0, 'renderXdAgencySearchResults');
                 return;
             }
 
-            tbody.innerHTML = results.map(item => `
+            const pageRows = sliceLookupPage('xdAgency', results);
+            renderLookupPagerBar('xdAgency', 'xdAgencySearchPager', results.length, 'renderXdAgencySearchResults');
+
+            tbody.innerHTML = pageRows.map(item => `
                 <tr style="cursor:pointer;" onclick="selectXdAgencyFromModal('${item.code}')">
                     <td>
                         <a href="javascript:void(0)" onclick="event.stopPropagation(); openMockXdAgencyDetail('${item.code}')"
@@ -15685,7 +15758,7 @@
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
                     <button class="btn btn-secondary btn-sm" onclick="clearXdAgencySearch()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                    <button class="btn btn-primary btn-sm" onclick="renderXdAgencySearchResults()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                    <button class="btn btn-primary btn-sm" onclick="resetLookupPager('xdAgency'); renderXdAgencySearchResults()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
                 <div class="table-container lookup-modal-table-container">
                     <table class="custom-table lookup-modal-table">
@@ -15712,6 +15785,7 @@
                         <tbody id="xdAgencySearchResultsBody"></tbody>
                     </table>
                 </div>
+                <div id="xdAgencySearchPager"></div>
             </div>
             <div class="confirm-modal-footer"
                 style="padding:16px 24px 24px 24px; display:flex; justify-content:flex-end; gap:10px; background-color:#f8fafc; border-top:1px solid var(--border-color);">
@@ -15756,7 +15830,7 @@
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
                     <button class="btn btn-secondary btn-sm" onclick="clearOriginClaimSearch()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                    <button class="btn btn-primary btn-sm" onclick="renderOriginClaimSearchResults()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                    <button class="btn btn-primary btn-sm" onclick="resetLookupPager('originClaim'); renderOriginClaimSearchResults()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
                 <div class="table-container lookup-modal-table-container">
                     <table class="custom-table lookup-modal-table">
@@ -15785,6 +15859,7 @@
                         <tbody id="originClaimSearchResultsBody"></tbody>
                     </table>
                 </div>
+                <div id="originClaimSearchPager"></div>
             </div>
             <div class="confirm-modal-footer"
                 style="padding:16px 24px 24px 24px; display:flex; justify-content:flex-end; gap:10px; background-color:#f8fafc; border-top:1px solid var(--border-color);">
@@ -16293,6 +16368,7 @@
             if (prefillCode !== null) {
                 setInputValue('originSearchCode', prefillCode);
             }
+            resetLookupPager('originClaim');
             renderOriginClaimSearchResults();
             overlay.style.display = 'flex';
             setTimeout(() => overlay.classList.add('visible'), 10);
@@ -16307,6 +16383,7 @@
 
         function clearOriginClaimSearch() {
             ['originSearchCode', 'originSearchCaseName', 'originSearchNyc', 'originSearchCardNo', 'originSearchDocNo'].forEach(id => setInputValue(id, ''));
+            resetLookupPager('originClaim');
             renderOriginClaimSearchResults();
         }
 
@@ -16328,10 +16405,14 @@
 
             if (results.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc gốc hợp lệ để liên kết</td></tr>`;
+                renderLookupPagerBar('originClaim', 'originClaimSearchPager', 0, 'renderOriginClaimSearchResults');
                 return;
             }
 
-            tbody.innerHTML = results.map(claim => `
+            const pageRows = sliceLookupPage('originClaim', results);
+            renderLookupPagerBar('originClaim', 'originClaimSearchPager', results.length, 'renderOriginClaimSearchResults');
+
+            tbody.innerHTML = pageRows.map(claim => `
                 <tr style="cursor:pointer;" onclick="selectOriginClaimFromModal('${claim.id}')">
                     <td>
                         <a href="javascript:void(0)"

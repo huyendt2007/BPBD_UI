@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+    <!-- flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         body {
             background: var(--bg-body);
@@ -142,6 +145,24 @@
         .form-control:focus {
             border-color: var(--secondary-color);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        /* Cặp ô "từ ngày - đến ngày" nằm chung một ô lưới để không bị tách sang 2 dòng */
+        .date-range {
+            align-items: center;
+            display: grid;
+            gap: 6px;
+            grid-template-columns: 1fr auto 1fr;
+        }
+
+        .date-range .form-control {
+            min-width: 0;
+        }
+
+        .date-range-sep {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1;
         }
 
         .filter-actions {
@@ -374,12 +395,12 @@
                         </select>
                     </div>
                     <div class="form-block">
-                        <label class="form-label" for="phddFromDate">Tiếp nhận từ ngày</label>
-                        <input type="text" class="form-control" id="phddFromDate" placeholder="dd/mm/yyyy">
-                    </div>
-                    <div class="form-block">
-                        <label class="form-label" for="phddToDate">Tiếp nhận đến ngày</label>
-                        <input type="text" class="form-control" id="phddToDate" placeholder="dd/mm/yyyy">
+                        <label class="form-label" for="phddFromDate">Thời điểm tiếp nhận</label>
+                        <div class="date-range">
+                            <input type="text" class="form-control" id="phddFromDate" placeholder="Từ ngày">
+                            <span class="date-range-sep">-</span>
+                            <input type="text" class="form-control" id="phddToDate" placeholder="Đến ngày">
+                        </div>
                     </div>
                 </div>
                 <div class="filter-actions">
@@ -587,11 +608,11 @@
             { id: 'HS_SUPPLEMENT', code: 'BT-2026-021', title: 'Bổ sung hồ sơ yêu cầu bồi thường do cưỡng chế sai', date: '02/08/2026', updatedDate: '06/08/2026', nyc: 'Nguyễn Văn D', nycTinhThanh: 'Đà Nẵng', address: 'Tổ 8 phường Hải Châu, Đà Nẵng', hanhVi: 'Cưỡng chế hành chính sai đối tượng.', fieldGroup: 'hành chính', agency: 'UBND Quận Hải Châu', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Yêu cầu bổ sung', deadline: '25/08/2026', nopKenh: 'Dịch vụ công', totalNum: 65000000, restoreHonor: false },
             { id: 'HS_CHECK', code: 'BT-2026-022', title: 'Kiểm tra hồ sơ bồi thường thiệt hại tài sản', date: '03/08/2026', updatedDate: '06/08/2026', nyc: 'Công ty Hòa Bình', nycTinhThanh: 'Hải Phòng', address: 'Số 7 Lạch Tray, Ngô Quyền, Hải Phòng', hanhVi: 'Kê biên tài sản của bên thứ ba không có nghĩa vụ.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự TP. Hải Phòng', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ kiểm tra', deadline: '28/08/2026', nopKenh: 'Nhận qua bưu điện/Bưu chính', totalNum: 185000000, restoreHonor: false },
             { id: 'HS_REJECT', code: 'BT-2026-023', title: 'Từ chối vụ việc không đủ căn cứ yêu cầu bồi thường', date: '25/07/2026', updatedDate: '02/08/2026', nyc: 'Vũ Văn L', nycTinhThanh: 'Bắc Ninh', address: 'Phường Võ Cường, Bắc Ninh', hanhVi: 'Yêu cầu chưa có văn bản làm căn cứ yêu cầu bồi thường.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Bắc Ninh', assignedOfficer: 'Phạm Minh Chuyên Viên', status: 'Bị từ chối', deadline: '15/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: false },
-            { id: 'HS_THULY', code: 'BT-2026-024', title: 'Chờ thụ lý vụ việc bồi thường trong tố tụng hình sự', date: '22/07/2026', updatedDate: '03/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 41 Trần Phú, Hà Đông, Hà Nội', hanhVi: 'Tạm giữ người không đúng trình tự tố tụng.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: '', status: 'Chờ thụ lý', deadline: '18/08/2026', nopKenh: 'Cán bộ chủ động nhập theo tố tụng/thi hành án', totalNum: 210000000, restoreHonor: false },
-            { id: 'HS_VERIFY', code: 'BT-2026-025', title: 'Xác minh thiệt hại do tạm giữ phương tiện trái pháp luật', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Phước Hải, Nha Trang, Khánh Hòa', hanhVi: 'Tạm giữ phương tiện kinh doanh trái quy định.', fieldGroup: 'hành chính', agency: 'Tòa án nhân dân TP. Nha Trang', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Đang xác minh thiệt hại', deadline: '26/09/2026', nopKenh: 'Dịch vụ công', totalNum: 90000000, restoreHonor: false },
-            { id: 'HS_PAUSE', code: 'BT-2026-026', title: 'Hoãn giải quyết do chờ kết quả giám định bổ sung', date: '12/07/2026', updatedDate: '05/08/2026', nyc: 'Hoàng Thị H', nycTinhThanh: 'Hồ Chí Minh', address: 'Số 18 Nguyễn Du, Quận 1, TP. Hồ Chí Minh', hanhVi: 'Áp dụng biện pháp xử phạt và cưỡng chế trái pháp luật.', fieldGroup: 'hành chính', agency: 'Công an Quận 1, TP. HCM', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Hoãn giải quyết', deadline: '18/09/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 185000000, restoreHonor: false },
-            { id: 'HS_STOP', code: 'BT-2026-027', title: 'Đình chỉ vụ việc do người yêu cầu rút yêu cầu', date: '08/07/2026', updatedDate: '04/08/2026', nyc: 'Công ty Minh An', nycTinhThanh: 'Hà Nội', address: 'Tầng 5, tòa nhà Vân Hồ, Hai Bà Trưng, Hà Nội', hanhVi: 'Thi hành án dân sự sai đối tượng tài sản.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Đình chỉ giải quyết', deadline: '25/09/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 620000000, restoreHonor: false },
-            { id: 'HS_DONE', code: 'BT-2026-028', title: 'Hoàn thành chi trả bồi thường theo quyết định đã ban hành', date: '02/06/2026', updatedDate: '05/08/2026', nyc: 'Nguyễn Văn F', nycTinhThanh: 'Hà Nội', address: 'Số 5 Nguyễn Trãi, Thanh Xuân, Hà Nội', hanhVi: 'Không thống nhất được mức tiền bồi thường sau xác minh.', fieldGroup: 'hình sự', agency: 'Công an Quận Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '15/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 120000000, restoreHonor: false },
+            { id: 'HS_THULY', code: 'BT-2026-018', title: 'Chờ thụ lý vụ việc bồi thường trong tố tụng hình sự', date: '22/07/2026', updatedDate: '03/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 41 Trần Phú, Hà Đông, Hà Nội', hanhVi: 'Tạm giữ người không đúng trình tự tố tụng.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: '', status: 'Chờ thụ lý', deadline: '18/08/2026', nopKenh: 'Cán bộ chủ động nhập theo tố tụng/thi hành án', totalNum: 210000000, restoreHonor: false },
+            { id: 'HS_VERIFY', code: 'BT-2026-007', title: 'Xác minh thiệt hại do tạm giữ phương tiện trái pháp luật', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Phước Hải, Nha Trang, Khánh Hòa', hanhVi: 'Tạm giữ phương tiện kinh doanh trái quy định.', fieldGroup: 'hành chính', agency: 'Tòa án nhân dân TP. Nha Trang', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Đang xác minh thiệt hại', deadline: '26/09/2026', nopKenh: 'Dịch vụ công', totalNum: 90000000, restoreHonor: false },
+            { id: 'HS_PAUSE', code: 'BT-2026-001', title: 'Hoãn giải quyết do chờ kết quả giám định bổ sung', date: '12/07/2026', updatedDate: '05/08/2026', nyc: 'Hoàng Thị H', nycTinhThanh: 'Hồ Chí Minh', address: 'Số 18 Nguyễn Du, Quận 1, TP. Hồ Chí Minh', hanhVi: 'Áp dụng biện pháp xử phạt và cưỡng chế trái pháp luật.', fieldGroup: 'hành chính', agency: 'Công an Quận 1, TP. HCM', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Đang thương lượng', deadline: '18/09/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 185000000, restoreHonor: false },
+            { id: 'HS_STOP', code: 'BT-2026-010', title: 'Đình chỉ vụ việc do người yêu cầu rút yêu cầu', date: '08/07/2026', updatedDate: '04/08/2026', nyc: 'Công ty Minh An', nycTinhThanh: 'Hà Nội', address: 'Tầng 5, tòa nhà Vân Hồ, Hai Bà Trưng, Hà Nội', hanhVi: 'Thi hành án dân sự sai đối tượng tài sản.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Thương lượng không thành công', deadline: '25/09/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 620000000, restoreHonor: false },
+            { id: 'HS_DONE', code: 'BT-2026-008', title: 'Hoàn thành chi trả bồi thường theo quyết định đã ban hành', date: '02/06/2026', updatedDate: '05/08/2026', nyc: 'Nguyễn Văn F', nycTinhThanh: 'Hà Nội', address: 'Số 5 Nguyễn Trãi, Thanh Xuân, Hà Nội', hanhVi: 'Không thống nhất được mức tiền bồi thường sau xác minh.', fieldGroup: 'hình sự', agency: 'Công an Quận Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '15/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 120000000, restoreHonor: false },
             { id: 'HS_PHDD_1', code: 'BT-2026-010-TDC', title: 'Tạm đình chỉ vụ việc có phục hồi danh dự do chờ bản án liên quan', date: '07/07/2026', updatedDate: '06/08/2026', nyc: 'Đặng Văn T', nycTinhThanh: 'Hà Nội', address: 'Số 33 Kim Mã, Ba Đình, Hà Nội', hanhVi: 'Đình chỉ điều tra không đúng thời điểm làm ảnh hưởng danh dự.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Tạm đình chỉ giải quyết', deadline: '22/09/2026', nopKenh: 'Dịch vụ công', totalNum: 260000000, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '22/09/2026' },
             { id: 'HS_PHDD_2', code: 'BT-2026-012', title: 'Phục hồi danh dự do bản án oan sai trong tố tụng hình sự', date: '14/06/2026', updatedDate: '05/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 9 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội', hanhVi: 'Bản án oan sai trong hoạt động tố tụng hình sự.', fieldGroup: 'hình sự', agency: 'Tòa án nhân dân TP. Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ thực thi', deadline: '30/08/2026', nopKenh: 'Cán bộ chủ động nhập theo tố tụng/thi hành án', totalNum: 350000000, restoreHonor: true, phddForm: 'Đăng báo', phddDateExp: '25/08/2026' },
             { id: 'HS_PHDD_3', code: 'BT-2026-013', title: 'Hoàn thành phục hồi danh dự công khai tại địa phương', date: '10/05/2026', updatedDate: '03/08/2026', nyc: 'Công ty Hải Phát', nycTinhThanh: 'Hà Nội', address: 'Khu đô thị mới Cầu Giấy, Hà Nội', hanhVi: 'Công bố thông tin xử lý vi phạm không đúng sự thật.', fieldGroup: 'hành chính', agency: 'UBND Quận Cầu Giấy', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '10/07/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '10/07/2026', phddStep4DateAct: '02/08/2026' }
@@ -609,7 +630,9 @@
         let ycbtPageSize = 10;
         let ycbtSortAsc = false;
 
-        const FILTER_STORAGE_KEY = 'traCuuVuViec_filterState';
+        // Đổi khoá khi thay đổi bộ tiêu chí mặc định, để bộ lọc cũ đã lưu trong phiên
+        // (ví dụ Trạng thái = 'Hoàn thành') không làm danh sách rỗng khi mở lại màn hình.
+        const FILTER_STORAGE_KEY = 'traCuuVuViec_filterState_v2';
         const phddFilterFields = ['phddCode', 'phddTitle', 'phddNyc', 'phddAgency', 'phddStatus', 'phddStatusGroup', 'phddType', 'phddFromDate', 'phddToDate'];
         const ycbtFilterFields = ['ycbtCode', 'ycbtTitle', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtNopKenh', 'ycbtStatus', 'ycbtStatusGroup', 'ycbtFromDate', 'ycbtToDate', 'ycbtDeadlineFrom', 'ycbtDeadlineTo'];
 
@@ -623,6 +646,7 @@
             // tiết/Đóng, các tiêu chí đã lọc (bao gồm Trạng thái giải quyết) vẫn được giữ nguyên.
             restoreFilterState('phdd');
             restoreFilterState('ycbt');
+            initLookupDatePickers();
             searchPhdd();
             searchYcbt();
             const initialTab = new URLSearchParams(window.location.search).get('tab') === 'ycbt' ? 'ycbt' : 'phdd';
@@ -649,6 +673,41 @@
             } catch (err) {
                 console.warn('Không lưu được trạng thái bộ lọc', err);
             }
+        }
+
+        // Gắn Datepicker cho toàn bộ ô nhập khoảng ngày của màn tra cứu.
+        // Ràng buộc: "Từ ngày" không được lớn hơn "Đến ngày" và ngược lại [BR-VAL-007].
+        function initLookupDatePickers() {
+            if (typeof flatpickr !== 'function') return;
+            const pairs = [
+                ['phddFromDate', 'phddToDate'],
+                ['ycbtFromDate', 'ycbtToDate'],
+                ['ycbtDeadlineFrom', 'ycbtDeadlineTo']
+            ];
+            pairs.forEach(([fromId, toId]) => {
+                const fromEl = document.getElementById(fromId);
+                const toEl = document.getElementById(toId);
+                if (!fromEl || !toEl) return;
+
+                const toPicker = flatpickr(toEl, {
+                    dateFormat: 'd/m/Y',
+                    allowInput: true,
+                    onChange: dates => {
+                        if (fromPicker) fromPicker.set('maxDate', dates[0] || null);
+                    }
+                });
+                const fromPicker = flatpickr(fromEl, {
+                    dateFormat: 'd/m/Y',
+                    allowInput: true,
+                    onChange: dates => {
+                        toPicker.set('minDate', dates[0] || null);
+                    }
+                });
+
+                // Áp ràng buộc ngay theo giá trị mặc định/đã khôi phục
+                if (fromEl.value) toPicker.set('minDate', parseDateVi(fromEl.value) || null);
+                if (toEl.value) fromPicker.set('maxDate', parseDateVi(toEl.value) || null);
+            });
         }
 
         function restoreFilterState(tab) {
@@ -685,13 +744,13 @@
                 if (stored) {
                     const parsed = JSON.parse(stored);
                     if (Array.isArray(parsed) && parsed.length) {
-                        return parsed.concat(fallbackClaims);
+                        return parsed.concat(spreadLookupDates(fallbackClaims));
                     }
                 }
             } catch (err) {
                 console.warn('Không đọc được dữ liệu vụ việc từ localStorage', err);
             }
-            return fallbackClaims;
+            return spreadLookupDates(fallbackClaims);
         }
 
         function normalizeClaims(claims) {
@@ -772,8 +831,30 @@
             document.getElementById('phddToDate').value = toStr;
             document.getElementById('ycbtFromDate').value = fromStr;
             document.getElementById('ycbtToDate').value = toStr;
-            document.getElementById('phddStatus').value = 'Hoàn thành';
-            document.getElementById('ycbtStatus').value = 'Hoàn thành';
+            // Màn tra cứu mặc định hiển thị toàn bộ trạng thái, không lọc sẵn theo 'Hoàn thành'
+            document.getElementById('phddStatus').value = '';
+            document.getElementById('ycbtStatus').value = '';
+        }
+
+        // Rải ngày của dữ liệu giả lập vào đúng khoảng lọc mặc định (3 tháng gần nhất)
+        // để danh sách luôn có dữ liệu bất kể mở màn hình vào thời điểm nào.
+        function spreadLookupDates(claims) {
+            const today = new Date();
+            const windowStart = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+            const spanDays = Math.max(1, Math.floor((today - windowStart) / 86400000));
+            claims.forEach((item, idx) => {
+                const d = new Date(windowStart.getTime());
+                d.setDate(d.getDate() + ((idx * 7) % spanDays));
+                const dateStr = formatDateVi(d);
+                item.date = dateStr;
+                if (item.updatedDate) item.updatedDate = dateStr;
+                if (item.deadline) {
+                    const dl = new Date(d.getTime());
+                    dl.setDate(dl.getDate() + 30);
+                    item.deadline = formatDateVi(dl);
+                }
+            });
+            return claims;
         }
 
         function switchLookupTab(tab) {
@@ -1067,12 +1148,25 @@
             return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
         }
 
+        // Mở màn Xem chi tiết hồ sơ của module Giải quyết yêu cầu bồi thường ngay trong khung
+        // quản trị (không mở tab mới). Màn chi tiết tự động mở đúng khối nghiệp vụ theo trạng
+        // thái hồ sơ, dùng lại nguyên logic sẵn có của showCaseDetail().
+        function openClaimDetailModule(code, tab) {
+            const targetUrl = buildClaimDetailUrl(code, tab);
+            const activeUrl = 'quan_ly_boi_thuong.html?v=1';
+            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+                window.parent.openAdminModule(targetUrl, activeUrl);
+                return;
+            }
+            window.location.href = targetUrl;
+        }
+
         function goToPhddDetail(code) {
-            window.open(buildClaimDetailUrl(code, 'phdd'), '_blank');
+            openClaimDetailModule(code, 'phdd');
         }
 
         function goToClaimDetail(code) {
-            window.open(buildClaimDetailUrl(code, 'ycbt'), '_blank');
+            openClaimDetailModule(code, 'ycbt');
         }
 
         function buildClaimDetailUrl(code, tab) {

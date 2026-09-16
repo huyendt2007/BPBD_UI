@@ -1326,10 +1326,6 @@
                         <span class="form-label">Chức vụ của người đứng đầu<span class="required">*</span></span>
                         <input type="text" class="form-control" id="adjustHeadPosition" placeholder="Ví dụ: Giám đốc / Cục trưởng / Chủ tịch UBND">
                     </div>
-                    <div class="grid-full" id="adjustExternalSequenceReasonGroup" style="display:none;">
-                        <span class="form-label">Lý do nhập số chưa tuần tự</span>
-                        <textarea class="form-control" id="adjustSequenceReason" rows="2" placeholder="Nhập lý do nếu số quyết định ký ngoài không liền kề với số gần nhất trên sổ..."></textarea>
-                    </div>
                 </div>
 
                 <div class="info-block-title">II. Nội dung xử lý</div>
@@ -1532,10 +1528,6 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                             <span class="form-label">Tệp quyết định ký bên ngoài<span class="required">*</span></span>
                             <button class="btn btn-secondary btn-sm" onclick="showToast('Đã chọn file quyết định ký bên ngoài', 'success')"><i class="fa-solid fa-upload"></i> Tải lên</button>
                             <span class="file-name" style="margin-left:8px;">quyet_dinh_da_ky.pdf</span>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Lý do nhập số chưa tuần tự</span>
-                            <input type="text" class="form-control" id="decFormSequenceReason" placeholder="Nhập khi số ký ngoài không liền kề...">
                         </div>
                     </div>
 
@@ -2791,7 +2783,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             document.getElementById('adjustDecisionNo').placeholder = external ? 'Nhập số quyết định đã ký...' : 'Hệ thống tự cấp số sau khi ký';
             document.getElementById('adjustDigitalSignerGroup').style.display = external ? 'none' : 'block';
             document.getElementById('adjustExternalSignerGroup').style.display = external ? 'block' : 'none';
-            document.getElementById('adjustExternalSequenceReasonGroup').style.display = external ? 'block' : 'none';
+            // (Đã bỏ ô 'Lý do nhập số chưa tuần tự' - số quyết định buộc phải liền kề theo sổ)
             document.getElementById('adjustExternalFileGroup').style.display = external ? 'block' : 'none';
             // Theo SRS 4.3.3.3.7.3: Trình ký chỉ hiển thị khi Ký số trên hệ thống;
             // Ban hành QĐ chỉ hiển thị khi Ký bên ngoài.
@@ -3019,13 +3011,11 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                     showToast('Số quyết định đã tồn tại trong Sổ văn bản áp dụng (trùng số trong cùng sổ/năm). Vui lòng nhập số khác.', 'error');
                     return;
                 }
+                // Số quyết định phải liền kề theo Sổ văn bản áp dụng, không cho ban hành nếu nhảy số
                 if (!check.isSequential) {
-                    const seqReason = document.getElementById('adjustSequenceReason').value.trim();
-                    if (!seqReason) {
-                        showToast(`Số quyết định không liền kề với số hiện tại của sổ (số tiếp theo dự kiến: ${check.maxNum + 1}). Vui lòng nhập lý do vào ô "Lý do nhập số chưa tuần tự".`, 'error');
-                        document.getElementById('adjustSequenceReason').focus();
-                        return;
-                    }
+                    showToast(`Số quyết định không liền kề với số hiện tại của Sổ văn bản áp dụng. Số tiếp theo hợp lệ là ${check.maxNum + 1}. Vui lòng nhập đúng số để ban hành.`, 'error');
+                    document.getElementById('adjustDecisionNo').focus();
+                    return;
                 }
             }
 
@@ -3227,7 +3217,16 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             document.getElementById('decisionClaimSearchCode').value = prefillCode || '';
             document.getElementById('decisionClaimSearchName').value = '';
             document.getElementById('decisionClaimSearchRequester').value = '';
-            renderDecisionClaimSearchResults();
+
+            // Chỉ tự động tìm khi popup được mở kèm Mã vụ việc (nút Tìm kiếm tại form chính).
+            // Mở từ "Tìm kiếm nâng cao" thì bảng để trống, chờ người dùng bấm Tìm kiếm.
+            if (prefillCode) {
+                resetLookupPager('decisionClaim');
+                renderDecisionClaimSearchResults();
+            } else {
+                resetDecisionClaimSearchResults();
+            }
+
             overlay.style.display = 'flex';
             setTimeout(() => overlay.classList.add('visible'), 10);
         }
@@ -3237,6 +3236,84 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
             if (!overlay) return;
             overlay.classList.remove('visible');
             setTimeout(() => overlay.style.display = 'none', 160);
+        }
+
+        // ==============================================
+        // PHÂN TRANG DÙNG CHUNG CHO CÁC POPUP TRA CỨU
+        // ==============================================
+        const lookupPagers = {};
+
+        function getLookupPager(key) {
+            if (!lookupPagers[key]) lookupPagers[key] = { page: 1, size: 10 };
+            return lookupPagers[key];
+        }
+
+        // Đưa về trang 1 (dùng khi đổi tiêu chí lọc hoặc mở lại popup)
+        function resetLookupPager(key) {
+            getLookupPager(key).page = 1;
+        }
+
+        function sliceLookupPage(key, rows) {
+            const pager = getLookupPager(key);
+            const totalPages = Math.max(1, Math.ceil(rows.length / pager.size));
+            if (pager.page > totalPages) pager.page = totalPages;
+            const start = (pager.page - 1) * pager.size;
+            return rows.slice(start, start + pager.size);
+        }
+
+        function goLookupPage(key, page, renderFnName) {
+            const pager = getLookupPager(key);
+            pager.page = Math.max(1, page);
+            if (typeof window[renderFnName] === 'function') window[renderFnName]();
+        }
+
+        function changeLookupPageSize(key, size, renderFnName) {
+            const pager = getLookupPager(key);
+            pager.size = Number(size) || 10;
+            pager.page = 1;
+            if (typeof window[renderFnName] === 'function') window[renderFnName]();
+        }
+
+        function renderLookupPagerBar(key, containerId, total, renderFnName) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            const pager = getLookupPager(key);
+            const totalPages = Math.max(1, Math.ceil(total / pager.size));
+            const from = total === 0 ? 0 : (pager.page - 1) * pager.size + 1;
+            const to = Math.min(pager.page * pager.size, total);
+            const navBtn = (label, targetPage, disabled, title) => `
+                <button type="button" class="btn btn-secondary btn-sm" title="${title}" ${disabled ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}
+                    onclick="goLookupPage('${key}', ${targetPage}, '${renderFnName}')" style="padding:3px 9px; font-size:12px;">${label}</button>`;
+
+            el.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:10px 2px 2px 2px; font-size:12.5px; color:#64748b;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span>Số bản ghi/trang:</span>
+                        <select class="form-control" style="width:80px; padding:3px 6px; font-size:12.5px;"
+                            onchange="changeLookupPageSize('${key}', this.value, '${renderFnName}')">
+                            ${[10, 20, 50, 100].map(n => `<option value="${n}" ${pager.size === n ? 'selected' : ''}>${n}</option>`).join('')}
+                        </select>
+                        <span>Hiển thị ${from}-${to} của ${total} bản ghi</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        ${navBtn('&#124;&lt;&lt;', 1, pager.page === 1, 'Trang đầu')}
+                        ${navBtn('&lt;', pager.page - 1, pager.page === 1, 'Trang trước')}
+                        <span style="padding:0 8px; font-weight:600; color:#0f172a;">Trang ${pager.page}/${totalPages}</span>
+                        ${navBtn('&gt;', pager.page + 1, pager.page >= totalPages, 'Trang sau')}
+                        ${navBtn('&gt;&gt;&#124;', totalPages, pager.page >= totalPages, 'Trang cuối')}
+                    </div>
+                </div>`;
+        }
+
+        // Trạng thái ban đầu của bảng kết quả: chưa thực hiện tìm kiếm
+        function resetDecisionClaimSearchResults() {
+            const tbody = document.getElementById('decisionClaimSearchResults');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; font-style:italic; padding:18px;">Nhập tiêu chí tìm kiếm và bấm nút "Tìm kiếm" để hiển thị danh sách vụ việc.</td></tr>`;
+            // Chưa tìm kiếm thì không hiển thị thanh phân trang
+            const pagerEl = document.getElementById('decisionClaimSearchPager');
+            if (pagerEl) pagerEl.innerHTML = '';
+            resetLookupPager('decisionClaim');
         }
 
         function renderDecisionClaimSearchResults() {
@@ -3253,10 +3330,14 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
 
             if (!rows.length) {
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; font-style:italic; padding:18px;">Không tìm thấy vụ việc phù hợp</td></tr>`;
+                renderLookupPagerBar('decisionClaim', 'decisionClaimSearchPager', 0, 'renderDecisionClaimSearchResults');
                 return;
             }
 
-            tbody.innerHTML = rows.map(item => `
+            const pageRows = sliceLookupPage('decisionClaim', rows);
+            renderLookupPagerBar('decisionClaim', 'decisionClaimSearchPager', rows.length, 'renderDecisionClaimSearchResults');
+
+            tbody.innerHTML = pageRows.map(item => `
                 <tr onclick="selectDecisionClaimFromLookup('${item.code}')" style="cursor:pointer;">
                     <td style="font-weight:700; color:#1d4ed8; text-align:center;">${item.code}</td>
                     <td>${item.caseName}</td>
@@ -3431,13 +3512,11 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                     showToast('Số quyết định đã tồn tại trong Sổ văn bản áp dụng (trùng số trong cùng sổ/năm). Vui lòng nhập số khác.', 'error');
                     return;
                 }
+                // Số quyết định phải liền kề theo Sổ văn bản áp dụng, không cho ban hành nếu nhảy số
                 if (!check.isSequential) {
-                    const seqReason = document.getElementById('decFormSequenceReason').value.trim();
-                    if (!seqReason) {
-                        showToast(`Số quyết định không liền kề với số hiện tại của sổ (số tiếp theo dự kiến: ${check.maxNum + 1}). Vui lòng nhập lý do vào ô "Lý do nhập số chưa tuần tự".`, 'error');
-                        document.getElementById('decFormSequenceReason').focus();
-                        return;
-                    }
+                    showToast(`Số quyết định không liền kề với số hiện tại của Sổ văn bản áp dụng. Số tiếp theo hợp lệ là ${check.maxNum + 1}. Vui lòng nhập đúng số để ban hành.`, 'error');
+                    document.getElementById('decFormExternalNo').focus();
+                    return;
                 }
             }
 
@@ -4558,10 +4637,10 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                     </div>
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('decisionClaimSearchCode').value='';document.getElementById('decisionClaimSearchName').value='';document.getElementById('decisionClaimSearchRequester').value='';renderDecisionClaimSearchResults();">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('decisionClaimSearchCode').value='';document.getElementById('decisionClaimSearchName').value='';document.getElementById('decisionClaimSearchRequester').value='';resetDecisionClaimSearchResults();">
                         <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
                     </button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="renderDecisionClaimSearchResults()">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="resetLookupPager('decisionClaim'); renderDecisionClaimSearchResults()">
                         <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
                     </button>
                 </div>
@@ -4581,6 +4660,7 @@ Căn cứ hồ sơ vụ việc và Quyết định giải quyết bồi thườn
                         <tbody id="decisionClaimSearchResults"></tbody>
                     </table>
                 </div>
+                <div id="decisionClaimSearchPager"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeDecisionClaimSearchModal()">Hủy bỏ</button>
