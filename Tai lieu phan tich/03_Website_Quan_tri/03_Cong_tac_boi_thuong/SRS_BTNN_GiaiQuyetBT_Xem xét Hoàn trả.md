@@ -18,7 +18,7 @@ Cho phép quản lý toàn diện tiến trình xem xét, xác định và thự
 
 \- Người dùng đã đăng nhập Website Quản trị thành công và được phân quyền truy cập chức năng `Quản lý xem xét trách nhiệm hoàn trả`.
 
-\- Vụ việc bồi thường nhà nước gốc đã hoàn thành chi trả kinh phí bồi thường và chưa phát sinh hồ sơ xem xét trách nhiệm hoàn trả theo [BR-BTNN-HT-001].
+\- Vụ việc bồi thường nhà nước gốc đã hoàn tất chi trả kinh phí bồi thường, chưa phát sinh hồ sơ xem xét trách nhiệm hoàn trả và thuộc phạm vi dữ liệu được phân quyền của người dùng đăng nhập.
 
 ---
 
@@ -26,22 +26,24 @@ Cho phép quản lý toàn diện tiến trình xem xét, xác định và thự
 
 ```mermaid
 flowchart TD
-    A["Menu: Quản lý xem xét trách nhiệm hoàn trả"] --> B["4.3.3.5.3. MH01 - Danh sách hồ sơ xem xét trách nhiệm hoàn trả"]
-    B -->|Lập hồ sơ hoàn trả mới| C["4.3.3.5.4. MH02 - Popup Chọn vụ việc bồi thường"]
-    C -->|Khởi tạo thành công| D["4.3.3.5.5. Màn hình Cập nhật hồ sơ hoàn trả"]
-    B -->|Click dòng dữ liệu| E["4.3.3.5.7. MH03 - Màn hình Xem chi tiết hồ sơ hoàn trả"]
+    A["Menu: Quản lý xem xét trách nhiệm hoàn trả"] --> B["MH01 - Danh sách hồ sơ xem xét trách nhiệm hoàn trả"]
+    B -->|Lập hồ sơ hoàn trả mới| C["MH02 - Popup Chọn vụ việc bồi thường"]
+    C -->|Khởi tạo thành công| D["Màn hình Cập nhật hồ sơ hoàn trả"]
+    B -->|Click dòng dữ liệu| E["MH03 - Màn hình Xem chi tiết hồ sơ hoàn trả"]
     B -->|Cập nhật| D
     B -->|Phê duyệt / Từ chối| J["Popup Phê duyệt / Từ chối"]
-    D -->|Bước 1: Sửa dự thảo HĐ| F["4.3.3.5.6. Popup Tạo mới Hội đồng"]
-    D -->|Bước 4: Ghi nhận nộp tiền| H["4.3.3.5.10. Popup Ghi nhận nộp tiền"]
-    D -->|Bước 4: Thao tác khác| I["4.3.3.5.12. Popup Điều chỉnh nghĩa vụ hoàn trả"]
+    D -->|Bước 1: Sửa dự thảo HĐ| F["Popup Tạo mới Hội đồng"]
+    D -->|Bước 2: Thêm/Cập nhật cán bộ| G["Popup Thêm/Cập nhật cán bộ chịu trách nhiệm hoàn trả"]
+    D -->|Bước 4: Ghi nhận nộp tiền| H["Popup Ghi nhận nộp tiền"]
+    D -->|Bước 4: Thao tác khác| I["Popup Điều chỉnh nghĩa vụ hoàn trả"]
     E -->|Thao tác tác nghiệp theo trạng thái| D
-    E -->|Phê duyệt| J1["4.3.3.5.20. Popup Phê duyệt / Ký số"]
-    E -->|Từ chối| J2["4.3.3.5.21. Popup Từ chối phê duyệt"]
+    E -->|Phê duyệt| J1["Popup Phê duyệt / Ký số"]
+    E -->|Từ chối| J2["Popup Từ chối phê duyệt"]
 ```
 
 ---
 
+<a id="mh01-danh-sach-ho-so-hoan-tra"></a>
 #### 4.3.3.5.3. MH01 - Màn hình Danh sách hồ sơ xem xét trách nhiệm hoàn trả
 
 ##### 4.3.3.5.3.1. Màn hình
@@ -86,17 +88,18 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | 1 | Tìm kiếm | Button | Khi người dùng click nút Tìm kiếm, hệ thống lọc dữ liệu theo các điều kiện đã nhập/chọn.<br>- **TH Không trả về dữ liệu**: Bảng kết quả hiển thị 01 dòng thông báo [MSG-INF-SYS-001]; thanh phân trang hiển thị `0-0 của 0 bản ghi`; toàn bộ thẻ số liệu tổng quan đang hiển thị đều trả về giá trị `0`; nút `Kết xuất Excel` khóa mờ kèm tooltip `Không có dữ liệu để kết xuất`.<br>- **TH Trả về dữ liệu**: Hệ thống hiển thị danh sách hồ sơ hoàn trả theo phân trang, cập nhật lại toàn bộ thẻ số liệu tổng quan đang hiển thị theo đúng tập dữ liệu sau lọc và đưa con trỏ phân trang về trang 1. |
 | 2 | Xóa bộ lọc | Button | Khi người dùng click nút Xóa bộ lọc, hệ thống xóa toàn bộ giá trị đã nhập/chọn trên khối bộ lọc, khôi phục giá trị mặc định của các combobox, tải lại danh sách mặc định theo phạm vi dữ liệu được phân quyền và đưa con trỏ phân trang về trang 1. |
-| 3 | Lập hồ sơ hoàn trả mới | Button | Khi người dùng click nút Lập hồ sơ hoàn trả mới, hệ thống mở `MH02 - Popup Chọn vụ việc bồi thường để lập hồ sơ hoàn trả` và tải danh sách vụ việc bồi thường đủ điều kiện theo [BR-BTNN-HT-001]. |
+| 3 | Lập hồ sơ hoàn trả mới | Button | Khi người dùng click nút Lập hồ sơ hoàn trả mới, hệ thống mở [Popup Chọn vụ việc bồi thường để lập hồ sơ hoàn trả](#mh02-popup-chon-vu-viec-boi-thuong) và tải danh sách vụ việc bồi thường thỏa mãn đồng thời: đã hoàn tất chi trả kinh phí bồi thường, chưa phát sinh hồ sơ xem xét trách nhiệm hoàn trả và thuộc phạm vi dữ liệu được phân quyền của người dùng đăng nhập. |
 | 4 | Kết xuất Excel | Button | Khi người dùng click nút Kết xuất Excel, hệ thống thực hiện kết xuất dữ liệu danh sách theo đúng quy định tại Mục 5.5 của tài liệu `04_Danh_muc_va_Phu_luc.md`. |
 | 5 | Click dòng dữ liệu | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (ngoại trừ cột Thao tác và liên kết `Mã vụ việc`), hệ thống hiển thị `MH03 - Màn hình Xem chi tiết hồ sơ hoàn trả`, đồng thời tự động cuộn (focus) tới đúng khối thông tin theo đúng trạng thái tương ứng hiện tại của hồ sơ:<br>- Trạng thái `Chờ thành lập hội đồng`, `Chờ duyệt QĐ thành lập`, `Bị từ chối thành lập HĐ`: focus tới `Khối IV. Thông tin Bước 1: Thành lập Hội đồng`.<br>- Trạng thái `Đang họp hội đồng`, `Không xem xét trách nhiệm hoàn trả`: focus tới `Khối V. Thông tin Bước 2: Ý kiến của hội đồng`.<br>- Trạng thái `Chờ ban hành QĐ hoàn trả`, `Chờ duyệt QĐ hoàn trả`, `Bị từ chối QĐ hoàn trả`: focus tới `Khối VI. Thông tin Bước 3: Ban hành Quyết định hoàn trả`.<br>- Trạng thái `Đang thi hành`, `Chấm dứt thu hồi`: focus tới `Khối VII. Thông tin Bước 4: Đang thi hành`.<br>- Trạng thái `Hoàn thành`: focus tới `Khối VIII. Thông tin Bước 5: Hoàn thành`. |
 | 6 | Mã vụ việc | Text link | Khi người dùng click vào mã vụ việc bồi thường, hệ thống mở màn hình chi tiết vụ việc bồi thường nhà nước gốc tại `SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md` trên một tab trình duyệt mới, đồng thời giữ nguyên trạng thái bộ lọc và trang hiện tại của màn hình danh sách. |
 | 7 | Cập nhật | Button | Khi người dùng click nút Cập nhật, hệ thống điều hướng sang `Màn hình Cập nhật hồ sơ hoàn trả` và mở trực tiếp bước cần cập nhật theo trạng thái hồ sơ:<br>- Trạng thái `Bị từ chối thành lập HĐ`: chuyển sang `Bước 1: Thành lập Hội đồng` tại `Màn hình Cập nhật hồ sơ hoàn trả` để chỉnh sửa thông tin/dự thảo Quyết định thành lập Hội đồng và trình duyệt lại.<br>- Trạng thái `Đang họp hội đồng`: chuyển sang `Bước 2: Ý kiến của hội đồng` tại `Màn hình Cập nhật hồ sơ hoàn trả`.<br>- Trạng thái `Bị từ chối QĐ hoàn trả`: chuyển sang `Bước 3: Ban hành Quyết định hoàn trả` tại `Màn hình Cập nhật hồ sơ hoàn trả` để chỉnh sửa lại dự thảo Quyết định hoàn trả và trình duyệt lại.<br>- Trạng thái `Đang thi hành`: chuyển sang `Bước 4: Đang thi hành` tại `Màn hình Cập nhật hồ sơ hoàn trả`. |
-| 8 | Phê duyệt | Button | Khi click, hệ thống mở **Popup Phê duyệt / Ký số Quyết định** để Lãnh đạo thực hiện ký số hoặc xác nhận phê duyệt theo hình thức ban hành của văn bản. |
-| 9 | Từ chối | Button | Khi click, hệ thống mở **Popup Từ chối phê duyệt Quyết định** để Lãnh đạo nhập lý do từ chối và đính kèm văn bản chỉ đạo. |
+| 8 | Phê duyệt | Button | Khi click, hệ thống mở [Popup Phê duyệt / Ký số Quyết định](#popup-phe-duyet-ky-so-quyet-dinh) để Lãnh đạo thực hiện ký số hoặc xác nhận phê duyệt theo hình thức ban hành của văn bản. |
+| 9 | Từ chối | Button | Khi click, hệ thống mở [Popup Từ chối phê duyệt Quyết định](#popup-tu-choi-phe-duyet-quyet-dinh) để Lãnh đạo nhập lý do từ chối và đính kèm văn bản chỉ đạo. |
 | 10 | Xóa | Button | Khi người dùng click nút Xóa, hệ thống mở [POPUP-CFM-001] với tham số `Loại thao tác` = `Xóa` và nội dung xác nhận [MSG-CFM-SYS-001].<br>- **TH Người dùng chọn Hủy bỏ**: Hệ thống đóng popup, không thay đổi dữ liệu.<br>- **TH Người dùng chọn Đồng ý**: Hệ thống kiểm tra lại điều kiện xóa theo [BR-BTNN-HT-012]; nếu hợp lệ thì xóa hồ sơ hoàn trả, ghi Audit Log, hiển thị thông báo [MSG-SUC-BTNN-HT-018], làm mới danh sách và cập nhật lại toàn bộ thẻ số liệu tổng quan đang hiển thị; nếu không hợp lệ thì hiển thị thông báo [MSG-ERR-BTNN-HT-008] và không thực hiện xóa. |
 
 ---
 
+<a id="mh02-popup-chon-vu-viec-boi-thuong"></a>
 #### 4.3.3.5.4. MH02 - Popup Chọn vụ việc bồi thường để lập hồ sơ hoàn trả
 
 ##### 4.3.3.5.4.1. Màn hình
@@ -109,7 +112,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề popup | String(255) | - | - | Control UI: Text heading (Read-only).<br>- Hiển thị `Lập hồ sơ hoàn trả: Chọn vụ việc bồi thường`. |
 | Nội dung hướng dẫn | Text(500) | - | - | Control UI: Text (Read-only).<br>- Hiển thị nội dung hướng dẫn về phạm vi danh sách: các vụ việc bồi thường nhà nước đã chi trả xong, đủ điều kiện khởi tạo hồ sơ xem xét trách nhiệm hoàn trả. |
-| **Bảng danh sách vụ việc đủ điều kiện** | Section | - | - | Control UI: Data grid.<br>- Danh sách vụ việc bồi thường nhà nước thỏa mãn [BR-BTNN-HT-001], thuộc phạm vi dữ liệu được phân quyền của người dùng.<br>- Mặc định hiển thị 10 bản ghi/trang, sắp xếp theo `Ngày hoàn thành chi trả` tăng dần. |
+| **Bảng danh sách vụ việc đủ điều kiện** | Section | - | - | Control UI: Data grid.<br>- Danh sách vụ việc bồi thường nhà nước thỏa mãn đồng thời các điều kiện:<br>+ Vụ việc đã hoàn tất chi trả kinh phí bồi thường (đã có `Ngày hoàn tất chi trả bồi thường`).<br>+ Vụ việc chưa phát sinh hồ sơ xem xét trách nhiệm hoàn trả nào trên hệ thống.<br>+ Vụ việc thuộc phạm vi dữ liệu được phân quyền của người dùng đăng nhập.<br>- Mặc định hiển thị 10 bản ghi/trang, sắp xếp theo `Ngày hoàn thành chi trả` tăng dần. |
 | Mã vụ việc | String(50) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị mã vụ việc bồi thường nhà nước in đậm. |
 | Người yêu cầu | String(255) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị họ tên cá nhân/tổ chức yêu cầu bồi thường của vụ việc gốc. |
 | Số tiền bồi thường (VNĐ) | Decimal(18,0) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Tổng số tiền Nhà nước đã chi trả bồi thường của vụ việc.<br>- Căn phải, định dạng số có dấu phân cách hàng nghìn. |
@@ -120,10 +123,11 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Khởi tạo hồ sơ | Button | Khi người dùng click nút Khởi tạo hồ sơ trên một dòng vụ việc, hệ thống thực hiện kiểm tra và xử lý:<br>- **TH Vụ việc không còn đủ điều kiện** (đã có hồ sơ hoàn trả do người dùng khác vừa khởi tạo): Hệ thống hiển thị thông báo [MSG-ERR-BTNN-HT-009], làm mới lại danh sách trong popup và không khởi tạo hồ sơ.<br>- **TH Hợp lệ**: Hệ thống thực hiện tuần tự các bước:<br>+ Bước 1: Tự động sinh `Mã hồ sơ` theo quy tắc `HT-<năm>-<số thứ tự 3 chữ số>` (Ví dụ: `HT-2026-001`).<br>+ Bước 2: Lưu hồ sơ hoàn trả vào cơ sở dữ liệu ở trạng thái `Chờ thành lập hội đồng`, tự động kế thừa các thông tin từ vụ việc gốc gồm: Mã vụ việc, Tên vụ việc, Nội dung vụ việc, Đơn vị chi trả bồi thường, Tổng số tiền đã chi trả, Ngày hoàn thành chi trả.<br>+ Bước 3: Ghi Audit Log thao tác khởi tạo hồ sơ hoàn trả.<br>+ Bước 4: Hiển thị thông báo thành công [MSG-SUC-BTNN-HT-001].<br>+ Bước 5: Đóng popup và điều hướng sang `Màn hình Cập nhật hồ sơ hoàn trả` tại Bước 1: Thành lập Hội đồng xem xét trách nhiệm hoàn trả. |
-| 2 | Đóng | Button | Khi người dùng click nút Đóng hoặc biểu tượng `×` trên tiêu đề popup, hệ thống đóng popup và quay lại `MH01 - Màn hình Danh sách hồ sơ xem xét trách nhiệm hoàn trả`, không thay đổi dữ liệu. |
+| 2 | Đóng | Button | Khi người dùng click nút Đóng hoặc biểu tượng `×` trên tiêu đề popup, hệ thống đóng popup và quay lại [MH01 - Màn hình Danh sách hồ sơ xem xét trách nhiệm hoàn trả](#mh01-danh-sach-ho-so-hoan-tra), không thay đổi dữ liệu. |
 
 ---
 
+<a id="man-hinh-cap-nhat-ho-so-hoan-tra"></a>
 #### 4.3.3.5.5. Màn hình Cập nhật hồ sơ hoàn trả
 
 ##### 4.3.3.5.5.1. Màn hình
@@ -168,21 +172,21 @@ flowchart TD
 | Bảng Văn bản liên quan | Section | Không | - | Control UI: Data grid.<br>- **Quy tắc thao tác**:<br>+ Trạng thái `Bị từ chối thành lập HĐ`: Cho phép tải lên thêm văn bản liên quan hoặc xóa văn bản đã có.<br>+ Các trạng thái khác: Chỉ đọc danh sách (nếu không có văn bản liên quan thì không hiển thị bảng này).<br>- Cột: `STT` \| `Tên văn bản` \| `Số hiệu` \| `Ngày văn bản` (`dd/mm/yyyy`) \| `Tệp đính kèm` (kèm liên kết Xem file - mở tab mới) \| `Thao tác` (Xóa - chỉ hiển thị khi `Bị từ chối thành lập HĐ`). |
 | Trình ký | Button | - | - | Control UI: Button primary.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi hồ sơ ở trạng thái `Bị từ chối thành lập HĐ` và người dùng có quyền Cán bộ xử lý nghiệp vụ. |
 | **V. Bước 2: Ý kiến của hội đồng** | Section | - | - | Mở khóa khi hồ sơ ở trạng thái `Đang họp hội đồng` hoặc các bước sau. |
-| Kết luận của Hội đồng | Enum(String(100)) | Có | Trống | Control UI: Combobox.<br>Gồm 03 giá trị:<br>+ `Có lỗi - Kiến nghị hoàn trả`<br>+ `Không xem xét - Người thi hành công vụ không có lỗi`<br>+ `Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả` |
+| Kết luận của Hội đồng | Enum(String(100)) | Có | Trống | Control UI: Radio button.<br>Gồm 03 giá trị:<br>+ `Có lỗi - Kiến nghị hoàn trả`<br>+ `Không xem xét - Người thi hành công vụ không có lỗi`<br>+ `Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả` |
 | Ngày họp / Lập biên bản kiến nghị | Date | Có | Trống | Control UI: Datepicker `dd/mm/yyyy`.<br>- Không được lớn hơn ngày hiện tại. |
 | Biên bản kiến nghị/kết luận đính kèm | File | Có | Trống | Control UI: File upload (Tải file lên).<br>- Kèm liên kết Xem file và Xóa file. |
 | Khối Ý kiến kiến nghị đối với từng cán bộ | Section | - | - | Control UI: Form card.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi trường `Kết luận của Hội đồng` được chọn giá trị là `Có lỗi - Kiến nghị hoàn trả`. |
-| Thêm cán bộ gây sai phạm | Button | Không | - | Control UI: Button primary.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang họp hội đồng` và `Kết luận của Hội đồng` được chọn là `Có lỗi - Kiến nghị hoàn trả`. |
-| Bảng danh sách cán bộ chịu trách nhiệm hoàn trả | Section | Có | - | Control UI: Data grid.<br>- Bảng danh sách cán bộ chịu trách nhiệm hoàn trả do người dùng thiết lập. |
-| STT | Integer | - | - | Control UI: Text (Read-only).<br>- Số thứ tự tự động tăng (1, 2, 3...). |
-| Cán bộ gây sai phạm | String(255) | Có | Trống | Control UI: Input text.<br>- Nhập họ và tên cán bộ gây sai phạm, thiệt hại. |
-| Chức vụ | String(255) | Có | Trống | Control UI: Input text.<br>- Nhập chức vụ của cán bộ tại thời điểm gây sai phạm, thiệt hại. |
-| Đơn vị công tác | String(255) | Có | Trống | Control UI: Combobox (hỗ trợ nhập tự do & tìm kiếm).<br>- Cho phép nhập tay hoặc tìm kiếm, chọn từ danh sách đơn vị trên hệ thống theo mã đơn vị hoặc tên đơn vị. |
-| Mức độ lỗi | Enum(String(50)) | Có | Trống | Control UI: Combobox.<br>Gồm:<br>+ `Cố ý`<br>+ `Vô ý` |
-| Số tiền hoàn trả (VNĐ) | Decimal(18,0) | Có | Trống | Control UI: Input number / text.<br>- Căn phải, định dạng phân cách hàng nghìn. |
-| Phương thức hoàn trả | Enum(String(50)) | Có | Trống | Control UI: Combobox.<br>Gồm:<br>+ `Một lần`<br>+ `Nhiều lần` |
-| Trạng thái hoãn | Enum(String(50)) | Có | `Không hoãn` | Control UI: Combobox.<br>Gồm:<br>+ `Không hoãn`<br>+ `Đề xuất hoãn` |
-| Thao tác trên dòng | Action | Không | - | Control UI: Nhóm nút thao tác trên từng dòng.<br>Gồm:<br>- `Sửa`: Mở khóa các ô nhập liệu trên dòng để chỉnh sửa trực tiếp.<br>- `Xóa`: Xóa dòng cán bộ khỏi danh sách kiến nghị. |
+| Thêm cán bộ gây sai phạm | Button | Không | - | Control UI: Button primary.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang họp hội đồng` và `Kết luận của Hội đồng` được chọn là `Có lỗi - Kiến nghị hoàn trả`.<br>- Khi người dùng click, hệ thống mở [Popup Thêm/Cập nhật cán bộ chịu trách nhiệm hoàn trả](#popup-them-cap-nhat-can-bo-hoan-tra) ở chế độ thêm mới, toàn bộ trường để trống. |
+| Bảng danh sách cán bộ chịu trách nhiệm hoàn trả | Section | Có | - | Control UI: Data grid.<br>- Bảng danh sách cán bộ chịu trách nhiệm hoàn trả do người dùng thiết lập.<br>- Toàn bộ cột trong bảng ở chế độ chỉ đọc; việc nhập và chỉnh sửa dữ liệu thực hiện tại [Popup Thêm/Cập nhật cán bộ chịu trách nhiệm hoàn trả](#popup-them-cap-nhat-can-bo-hoan-tra). |
+| STT | Integer | - | - | Control UI: Label. Chỉ đọc.<br>- Số thứ tự tự động tăng (1, 2, 3...). |
+| Cán bộ gây sai phạm | String(255) | - | Theo dữ liệu | Control UI: Label. Chỉ đọc.<br>- Họ và tên cán bộ gây sai phạm, thiệt hại. |
+| Chức vụ | String(255) | - | Theo dữ liệu | Control UI: Label. Chỉ đọc.<br>- Chức vụ của cán bộ tại thời điểm gây sai phạm, thiệt hại. |
+| Đơn vị công tác | String(255) | - | Theo dữ liệu | Control UI: Label. Chỉ đọc.<br>- Đơn vị công tác của cán bộ. |
+| Mức độ lỗi | Enum(String(50)) | - | Theo dữ liệu | Control UI: Label. Chỉ đọc.<br>Gồm:<br>+ `Cố ý`<br>+ `Vô ý` |
+| Số tiền hoàn trả (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Control UI: Label. Chỉ đọc.<br>- Căn phải, định dạng phân cách hàng nghìn bằng dấu chấm. |
+| Phương thức hoàn trả | Enum(String(50)) | - | Theo dữ liệu | Control UI: Label. Chỉ đọc.<br>Gồm:<br>+ `Một lần`<br>+ `Nhiều lần` |
+| Trạng thái hoãn | Enum(String(50)) | - | Theo dữ liệu | Control UI: Label. Chỉ đọc.<br>Gồm:<br>+ `Không hoãn`<br>+ `Đề xuất hoãn` |
+| Thao tác trên dòng | Action | Không | - | Control UI: Nhóm nút thao tác trên từng dòng.<br>Gồm:<br>- `Cập nhật`: Mở [Popup Thêm/Cập nhật cán bộ chịu trách nhiệm hoàn trả](#popup-them-cap-nhat-can-bo-hoan-tra) ở chế độ cập nhật, nạp sẵn dữ liệu của dòng cán bộ được chọn.<br>- `Xóa`: Xóa dòng cán bộ khỏi danh sách kiến nghị sau khi người dùng xác nhận trên Custom Confirmation Modal.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang họp hội đồng` và người dùng có quyền tác nghiệp trên hồ sơ. |
 | Lưu kết luận & Kết thúc hồ sơ | Button | - | - | Control UI: Button warning.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang họp hội đồng` và `Kết luận của Hội đồng` được chọn là `Không xem xét - Người thi hành công vụ không có lỗi` hoặc `Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả`. |
 | Trình duyệt kiến nghị | Button | - | - | Control UI: Button primary.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang họp hội đồng` và `Kết luận của Hội đồng` được chọn là `Có lỗi - Kiến nghị hoàn trả`. |
 | **VI. Bước 3: Ban hành Quyết định hoàn trả** | Section | - | - | Mở khóa khi hồ sơ chuyển sang giai đoạn ban hành QĐ hoàn trả. |
@@ -226,12 +230,13 @@ flowchart TD
 | Số tiền còn thiếu (VNĐ) | Decimal(18,0) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Số tiền cán bộ còn phải tiếp tục nộp (bằng Số tiền hoàn trả trừ đi Số tiền đã nộp và trừ Số tiền được giảm/miễn nếu có).<br>- Căn phải, định dạng phân cách hàng nghìn. |
 | Tiến độ thu hồi tiền | Decimal(5,2) | Không | Theo dữ liệu | Control UI: Progress bar kèm Text (Read-only).<br>- Tỷ lệ % hoàn thành nghĩa vụ nộp tiền của cán bộ (tính theo Số tiền đã nộp / Số tiền hoàn trả). |
 | Trạng thái hoàn trả | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Badge (Read-only).<br>Hiển thị tình trạng thực hiện nghĩa vụ của cán bộ:<br>+ `Đang thi hành` (Badge xanh dương): Đang thực hiện nộp tiền theo tiến độ bình thường.<br>- Trường hợp cán bộ vừa kết thúc thời hạn tạm hoãn, hiển thị bổ sung tag cảnh báo màu đỏ cam: `[Hết hạn hoãn từ dd/mm/yyyy]` để nhắc nhở cán bộ đôn đốc thu hồi nộp ngân sách.<br>+ `Đang hoãn` (Badge vàng cam): Đang trong thời hạn tạm hoãn thực hiện nghĩa vụ hoàn trả; hiển thị kèm khoảng thời gian `(Từ dd/mm/yyyy đến dd/mm/yyyy)`.<br>- Khi thời gian tạm hoãn còn lại ≤ 05 ngày, hiển thị bổ sung tag cảnh báo: `[Sắp hết hạn hoãn: còn X ngày]`.<br>+ `Hoàn thành` (Badge xanh lá): Đã thu hồi đủ 100% nghĩa vụ nộp NSNN (Số tiền còn thiếu = 0).<br>+ `Miễn hoàn trả` (Badge tím): Được miễn hoàn trả 100% nghĩa vụ theo [BR-BTNN-HT-010].<br>+ `Chấm dứt hoàn trả` (Badge xám): Đã ghi nhận chấm dứt nghĩa vụ do người thi hành công vụ qua đời theo [BR-BTNN-HT-017]. |
-| Click dòng dữ liệu | Row click | Không | - | Control UI: Row click.<br>- Khi người dùng click vào bất kỳ vị trí nào trên dòng cán bộ (ngoại trừ cột Thao tác), hệ thống mở `Popup Chi tiết tiến trình nộp tiền của cán bộ` để xem toàn bộ lịch sử các đợt nộp tiền, số chứng từ biên lai, và chi tiết các đợt điều chỉnh nghĩa vụ hoàn trả (Giảm mức hoàn trả, Miễn hoàn trả, Hoãn hoàn trả, Chấm dứt hoàn trả) kèm văn bản căn cứ đính kèm của cán bộ. |
+| Click dòng dữ liệu | Row click | Không | - | Control UI: Row click.<br>- Khi người dùng click vào bất kỳ vị trí nào trên dòng cán bộ (ngoại trừ cột Thao tác), hệ thống mở [Popup Chi tiết tiến trình nộp tiền của cán bộ](#popup-chi-tiet-tien-trinh-nop-tien) để xem toàn bộ lịch sử các đợt nộp tiền, số chứng từ biên lai, và chi tiết các đợt điều chỉnh nghĩa vụ hoàn trả (Giảm mức hoàn trả, Miễn hoàn trả, Hoãn hoàn trả, Chấm dứt hoàn trả) kèm văn bản căn cứ đính kèm của cán bộ. |
 | Thao tác | Action | Không | - | Control UI: Nhóm nút thao tác trên từng dòng dữ liệu.<br>Gồm:<br>- **Ghi nhận nộp tiền**:<br>+ Hiển thị và cho phép click khi cán bộ ở trạng thái `Đang thi hành` hoặc `Đang hoãn` (với Số tiền còn thiếu > 0) và người dùng có quyền tác nghiệp hồ sơ.<br>+ Khi cán bộ ở trạng thái `Đang hoãn`, hiển thị tooltip: *"Cán bộ đang trong thời gian tạm hoãn, vẫn cho phép ghi nhận nếu cán bộ tự nguyện nộp tiền trước hạn"*.<br>- **Thao tác khác** (Dropdown menu):<br>+ Hiển thị và cho phép click mở menu khi cán bộ ở trạng thái `Đang thi hành` hoặc `Đang hoãn` (với Số tiền còn thiếu > 0) và người dùng có quyền tác nghiệp hồ sơ.<br>+ Khi hồ sơ chuyển sang Bước 5 (`Hoàn thành` hoặc `Chấm dứt thu hồi`), toàn bộ bảng danh sách chuyển sang chế độ Chỉ đọc, không hiển thị cột Thao tác.<br>+ Menu thả xuống gồm 04 thao tác:<br>+ `Giảm mức hoàn trả`<br>+ `Miễn hoàn trả`<br>+ `Hoãn hoàn trả`<br>+ `Chấm dứt hoàn trả` |
 | **VIII. Bước 5: Hoàn thành** | Section | - | - | **Quy tắc chuyển trạng thái tự động theo [BR-BTNN-HT-013]**:<br>- Sau mỗi lần cán bộ thực hiện thao tác tại Bước 4 (ghi nhận nộp tiền, thực hiện điều chỉnh nghĩa vụ hoàn trả hoặc ghi nhận chấm dứt hoàn trả), hệ thống tự động kiểm tra lại toàn bộ cán bộ chịu trách nhiệm của hồ sơ.<br>- Khi **tất cả các cán bộ** đều có `Số tiền còn thiếu = 0` (đã nộp đủ 100% số tiền hoàn trả hoặc được miễn hoàn trả toàn bộ), hệ thống **tự động chuyển trạng thái hồ sơ sang `Hoàn thành`**:<br>+ Mở khóa phân hệ `Bước 5: Hoàn thành` trên thanh tiến trình Stepper và trên màn hình cập nhật.<br>+ Chuyển toàn bộ các trường thông tin và nút thao tác tại Bước 1, Bước 2, Bước 3, Bước 4 sang chế độ chỉ xem (Read-only, khóa không cho phép chỉnh sửa thêm).<br>+ Tại Bước 5 chỉ hiển thị nút `Đóng`.<br>- *Trường hợp ngoại lệ*: Nếu toàn bộ cán bộ còn nghĩa vụ đều được ghi nhận chấm dứt do qua đời theo [BR-BTNN-HT-017], hệ thống tự động chuyển hồ sơ sang trạng thái `Chấm dứt thu hồi` thay vì `Hoàn thành`. |
 | Banner thông báo hoàn tất nghĩa vụ | Section | - | - | Control UI: Alert box (Read-only).<br>- Thông báo hoàn thành 100% nghĩa vụ nộp tiền vào Kho bạc Nhà nước. |
 | Khối Báo cáo tổng hợp số liệu thu hồi | Section | - | - | Control UI: Stat cards (Read-only).<br>- Thẻ Tổng số cán bộ hoàn thành (Ví dụ: `3 / 3 cán bộ`).<br>- Thẻ Tổng số tiền đã thu hồi (VNĐ, đạt 100%).<br>- Thẻ Số dư còn nợ (`0 VNĐ`). |
 
+<a id="chuc-nang-man-hinh-cap-nhat-ho-so-hoan-tra"></a>
 ##### 4.3.3.5.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
@@ -239,8 +244,8 @@ flowchart TD
 | - | **Bước 1: Thành lập Hội đồng** | - | - |
 | 1 | Trình ký | Button | Khi click, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp:<br>- **TH1 (Chưa nhập đủ thông tin bắt buộc)**: Người dùng chưa nhập hoặc để trống một hoặc nhiều trường thông tin bắt buộc $\rightarrow$ Hệ thống áp dụng [BR-VAL-001], ngăn chặn gửi trình duyệt, highlight đỏ viền/nền ô lỗi đầu tiên (`.is-invalid`), hiển thị thông báo [MSG-ERR-VAL-001] ngay phía dưới ô nhập và tự động focus con trỏ vào ô lỗi đó.<br>- **TH2 (Hợp lệ)**: Hệ thống lưu lại các thông tin đã chỉnh sửa, gửi trình duyệt lại cho Lãnh đạo, chuyển trạng thái hồ sơ sang `Chờ duyệt QĐ thành lập` và hiển thị thông báo [MSG-SUC-BTNN-HT-002]. |
 | - | **Bước 2: Ý kiến của hội đồng** | - | - |
-| 2 | Thêm cán bộ gây sai phạm | Button | Khi click, hệ thống tự động thêm 01 dòng mới trực tiếp ở Bảng danh sách cán bộ chịu trách nhiệm hoàn trả để người dùng nhập liệu trực tiếp trên các ô của dòng đó. |
-| 3 | Sửa | Button / Icon | Khi người dùng click icon `Sửa` trên lưới Bảng danh sách cán bộ chịu trách nhiệm hoàn trả, hệ thống mở khóa các ô nhập liệu trên dòng cán bộ đó để cho phép chỉnh sửa lại trực tiếp trên dòng. |
+| 2 | Thêm cán bộ gây sai phạm | Button | - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang họp hội đồng` và `Kết luận của Hội đồng` được chọn là `Có lỗi - Kiến nghị hoàn trả`.<br>- *Xử lý*: Hệ thống mở [Popup Thêm/Cập nhật cán bộ chịu trách nhiệm hoàn trả](#popup-them-cap-nhat-can-bo-hoan-tra) ở chế độ thêm mới với toàn bộ trường để trống. Sau khi người dùng nhấn `Lưu` hợp lệ, hệ thống bổ sung 01 dòng cán bộ vào cuối bảng và đánh lại STT. |
+| 3 | Cập nhật | Button / Icon | - *Điều kiện hiển thị*: Chỉ hiển thị khi hồ sơ ở trạng thái `Đang họp hội đồng` và người dùng có quyền tác nghiệp trên hồ sơ.<br>- *Xử lý*: Hệ thống mở [Popup Thêm/Cập nhật cán bộ chịu trách nhiệm hoàn trả](#popup-them-cap-nhat-can-bo-hoan-tra) ở chế độ cập nhật, nạp sẵn toàn bộ dữ liệu của dòng cán bộ được chọn để người dùng chỉnh sửa lại. |
 | 4 | Xóa | Button / Icon | Khi người dùng click icon `Xóa` trên lưới Bảng danh sách cán bộ chịu trách nhiệm hoàn trả, hệ thống mở [POPUP-CFM-001] với nội dung xác nhận [MSG-CFM-SYS-001].<br>- **TH Người dùng chọn Hủy bỏ**: Hệ thống đóng popup, giữ nguyên dữ liệu.<br>- **TH Người dùng chọn Đồng ý**: Hệ thống xóa dòng cán bộ khỏi danh sách kiến nghị hoàn trả và hiển thị thông báo [MSG-SUC-BTNN-HT-009]. |
 | 5 | Lưu kết luận & Kết thúc hồ sơ | Button | Khi click, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp:<br>- **TH1 (Chưa nhập đủ thông tin bắt buộc)**: Người dùng chưa nhập hoặc để trống một hoặc nhiều trường thông tin bắt buộc $\rightarrow$ Hệ thống áp dụng [BR-VAL-001], ngăn chặn, highlight đỏ viền ô lỗi đầu tiên (`.is-invalid`), hiển thị thông báo [MSG-ERR-VAL-001] ngay phía dưới ô nhập và tự động focus con trỏ vào ô lỗi đó.<br>- **TH2 (Hợp lệ)**: Hệ thống lưu lại thông tin kết luận của Hội đồng ("Không xem xét trách nhiệm hoàn trả"), chuyển hồ sơ sang trạng thái `Không xem xét trách nhiệm hoàn trả` và kết thúc toàn bộ tiến trình hồ sơ theo [BR-BTNN-HT-005]:<br>+ Thanh tiến trình Stepper dừng lại tại Bước 2 với trạng thái hoàn tất/kết thúc vụ việc.<br>+ Các bước tiếp theo gồm `Bước 3: Ban hành Quyết định hoàn trả`, `Bước 4: Đang thi hành`, `Bước 5: Hoàn thành` được đóng hoàn toàn (khóa xám, không mở khóa, không phát sinh nghĩa vụ hoàn trả ngân sách).<br>+ Toàn bộ thông tin hồ sơ tại Bước 1 và Bước 2 được chuyển sang chế độ chỉ đọc (Read-only, không cho phép chỉnh sửa).<br>+ Hệ thống hiển thị thông báo [MSG-SUC-BTNN-HT-007]; người dùng chỉ có thể thực hiện thao tác `Đóng` để quay lại màn hình danh sách MH01. |
 | 6 | Trình duyệt kiến nghị | Button | Khi click, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp:<br>- **TH1 (Bỏ trống thông tin bắt buộc của Hội đồng)**: Người dùng chưa nhập hoặc để trống một hoặc nhiều trường thông tin bắt buộc của Hội đồng $\rightarrow$ Hệ thống áp dụng [BR-VAL-001], ngăn chặn trình duyệt, highlight đỏ viền/nền ô lỗi đầu tiên (`.is-invalid`), hiển thị thông báo [MSG-ERR-VAL-001] ngay phía dưới ô nhập và tự động focus con trỏ vào ô lỗi đó.<br>- **TH2 (Chưa có cán bộ nào trong danh sách kiến nghị)**: Bảng danh sách cán bộ chịu trách nhiệm hoàn trả chưa có dữ liệu (chưa thêm bất kỳ cán bộ nào) $\rightarrow$ Hệ thống ngăn chặn trình duyệt, hiển thị thông báo [MSG-ERR-BTNN-HT-007].<br>- **TH3 (Dòng cán bộ bỏ trống thông tin bắt buộc)**: Có dòng cán bộ trong danh sách bị bỏ trống một hoặc nhiều trường thông tin bắt buộc $\rightarrow$ Hệ thống áp dụng [BR-VAL-001], ngăn chặn trình duyệt, tự động cuộn đến dòng lỗi, highlight đỏ viền/nền ô trống đầu tiên (`.is-invalid`), hiển thị thông báo [MSG-ERR-VAL-001] ngay phía dưới ô nhập và tự động focus con trỏ vào ô lỗi đó.<br>- **TH4 (Số tiền hoàn trả không hợp lệ)**: Trường `Số tiền hoàn trả` của cán bộ có giá trị nhỏ hơn hoặc bằng 0 VNĐ $\rightarrow$ Hệ thống ngăn chặn trình duyệt, highlight đỏ viền ô nhập số tiền (`.is-invalid`), hiển thị thông báo [MSG-ERR-VAL-012] và tự động focus con trỏ vào ô lỗi.<br>- **TH5 (Hợp lệ)**: Toàn bộ thông tin Hội đồng và danh sách kiến nghị cán bộ đều đầy đủ, hợp lệ $\rightarrow$ Hệ thống lưu toàn bộ kết luận, biên bản và danh sách kiến nghị cán bộ hoàn trả; hiển thị thông báo [MSG-SUC-BTNN-HT-006]; chuyển trạng thái hồ sơ sang `Chờ ban hành QĐ hoàn trả`; tự động mở khóa phân hệ `Bước 3: Ban hành Quyết định hoàn trả` trên thanh tiến trình Stepper. |
@@ -251,17 +256,18 @@ flowchart TD
 | 10 | Trình ký | Button | Khi click, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp:<br>- **TH1 (Chưa nhập đủ thông tin bắt buộc)**: Người dùng chưa nhập hoặc để trống một hoặc nhiều trường thông tin bắt buộc $\rightarrow$ Hệ thống áp dụng [BR-VAL-001], ngăn chặn, highlight đỏ viền/nền ô lỗi đầu tiên (`.is-invalid`), hiển thị thông báo [MSG-ERR-VAL-001] ngay phía dưới ô nhập và tự động focus con trỏ vào ô lỗi đó.<br>- **TH2 (Hợp lệ)**: Hệ thống gửi trình duyệt dự thảo Quyết định hoàn trả cho Lãnh đạo, chuyển trạng thái hồ sơ sang `Chờ duyệt QĐ hoàn trả` và hiển thị thông báo [MSG-SUC-BTNN-HT-010]. |
 | 11 | Ban hành QĐ | Button | Khi click, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp:<br>- **TH1 (Chưa nhập đủ thông tin bắt buộc)**: Người dùng chưa nhập hoặc để trống một hoặc nhiều trường thông tin bắt buộc $\rightarrow$ Hệ thống áp dụng [BR-VAL-001], ngăn chặn, highlight đỏ viền/nền ô lỗi đầu tiên (`.is-invalid`), hiển thị thông báo [MSG-ERR-VAL-001] ngay phía dưới ô nhập và tự động focus con trỏ vào ô lỗi đó.<br>- **TH2 (Hợp lệ)**: Hệ thống hoàn tất ban hành quyết định, hiển thị thông báo [MSG-SUC-BTNN-HT-013], chuyển hồ sơ sang trạng thái `Đang thi hành` và mở khóa phân hệ `Bước 4: Đang thi hành` trên thanh tiến trình Stepper. |
 | - | **Bước 4: Đang thi hành** | - | - |
-| 12 | Click dòng cán bộ | Row click | Khi click dòng cán bộ (ngoại trừ cột Thao tác), hệ thống mở `Popup Chi tiết tiến trình nộp tiền của cán bộ`. |
-| 13 | Ghi nhận nộp tiền | Button | Khi click, hệ thống mở `Popup Ghi nhận nộp tiền hoàn trả ngân sách`. |
-| 14 | Thao tác khác - Giảm mức hoàn trả | Button / Menu item | Khi click, hệ thống mở `Popup Điều chỉnh nghĩa vụ hoàn trả` với Loại điều chỉnh chọn sẵn là "Giảm mức hoàn trả". |
-| 15 | Thao tác khác - Miễn hoàn trả | Button / Menu item | Khi click, hệ thống mở `Popup Điều chỉnh nghĩa vụ hoàn trả` với Loại điều chỉnh chọn sẵn là "Miễn hoàn trả". |
-| 16 | Thao tác khác - Hoãn hoàn trả | Button / Menu item | Khi click, hệ thống mở `Popup Điều chỉnh nghĩa vụ hoàn trả` với Loại điều chỉnh chọn sẵn là "Hoãn hoàn trả". |
-| 17 | Thao tác khác - Chấm dứt hoàn trả | Button / Menu item | Khi click, hệ thống mở `Popup Điều chỉnh nghĩa vụ hoàn trả` với Loại điều chỉnh chọn sẵn là "Chấm dứt hoàn trả". |
+| 12 | Click dòng cán bộ | Row click | Khi click dòng cán bộ (ngoại trừ cột Thao tác), hệ thống mở [Popup Chi tiết tiến trình nộp tiền của cán bộ](#popup-chi-tiet-tien-trinh-nop-tien). |
+| 13 | Ghi nhận nộp tiền | Button | Khi click, hệ thống mở [Popup Ghi nhận nộp tiền hoàn trả ngân sách](#popup-ghi-nhan-nop-tien). |
+| 14 | Thao tác khác - Giảm mức hoàn trả | Button / Menu item | Khi click, hệ thống mở [Popup Điều chỉnh nghĩa vụ hoàn trả](#popup-dieu-chinh-nghia-vu-hoan-tra) với Loại điều chỉnh chọn sẵn là "Giảm mức hoàn trả". |
+| 15 | Thao tác khác - Miễn hoàn trả | Button / Menu item | Khi click, hệ thống mở [Popup Điều chỉnh nghĩa vụ hoàn trả](#popup-dieu-chinh-nghia-vu-hoan-tra) với Loại điều chỉnh chọn sẵn là "Miễn hoàn trả". |
+| 16 | Thao tác khác - Hoãn hoàn trả | Button / Menu item | Khi click, hệ thống mở [Popup Điều chỉnh nghĩa vụ hoàn trả](#popup-dieu-chinh-nghia-vu-hoan-tra) với Loại điều chỉnh chọn sẵn là "Hoãn hoàn trả". |
+| 17 | Thao tác khác - Chấm dứt hoàn trả | Button / Menu item | Khi click, hệ thống mở [Popup Điều chỉnh nghĩa vụ hoàn trả](#popup-dieu-chinh-nghia-vu-hoan-tra) với Loại điều chỉnh chọn sẵn là "Chấm dứt hoàn trả". |
 | - | **Thao tác chung màn hình** | - | - |
-| 18 | Đóng | Button | Khi click, hệ thống đóng màn hình cập nhật và quay lại `MH01 - Màn hình Danh sách hồ sơ xem xét trách nhiệm hoàn trả`, không thực hiện lưu dữ liệu gì. |
+| 18 | Đóng | Button | Khi click, hệ thống đóng màn hình cập nhật và quay lại [MH01 - Màn hình Danh sách hồ sơ xem xét trách nhiệm hoàn trả](#mh01-danh-sach-ho-so-hoan-tra), không thực hiện lưu dữ liệu gì. |
 
 ---
 
+<a id="popup-tao-moi-hoi-dong"></a>
 #### 4.3.3.5.6. Popup Tạo mới Hội đồng xem xét trách nhiệm hoàn trả
 
 ##### 4.3.3.5.6.1. Màn hình
@@ -303,6 +309,7 @@ flowchart TD
 
 ---
 
+<a id="mh03-xem-chi-tiet-ho-so-hoan-tra"></a>
 #### 4.3.3.5.7. MH03 - Màn hình Xem chi tiết hồ sơ hoàn trả
 
 ##### 4.3.3.5.7.1. Màn hình
@@ -329,7 +336,7 @@ flowchart TD
 | Đơn vị chi trả bồi thường | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
 | Tổng số tiền Nhà nước đã chi trả bồi thường | Decimal(18,0) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng số có dấu phân cách hàng nghìn, đơn vị `VNĐ`. Chỉ đọc. Theo thông tin hồ sơ. |
 | **III. Khối thanh tiến trình xử lý hồ sơ** | Section | - | - | Control UI: Progress tracker (Stepper 5 bước).<br>- Gồm 05 bước: `Thành lập Hội đồng`, `Ý kiến hội đồng`, `Ban hành QĐ`, `Đang thi hành`, `Hoàn thành`. |
-| Trạng thái hiển thị bước trên Stepper | Enum(String(50)) | - | Theo dữ liệu | Control UI: Step node (Read-only).<br>Gồm:<br>+ Đã hoàn thành<br>+ Đang xử lý<br>+ Chưa mở khóa<br>+ Kết thúc do không xem xét<br>+ Kết thúc do chấm dứt thu hồi<br>- Chỉ đọc. Theo thông tin hồ sơ. |
+| Trạng thái hiển thị bước trên Stepper | Enum(String(50)) | - | Theo dữ liệu | Control UI: Step node (Read-only). Hiển thị theo trạng thái tương ứng với Hồ sơ xem xét trách nhiệm hoàn trả |
 | **IV. Bước 1: Thành lập Hội đồng** | Section | - | - | Vùng hiển thị thông tin thành lập Hội đồng xem xét trách nhiệm hoàn trả theo tiến trình xử lý hồ sơ. |
 | Khối thông tin cảnh báo từ chối | Section | - | - | Control UI: Alert box (Danger).<br>- Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Bị từ chối thành lập HĐ`. |
 | Tiêu đề cảnh báo | String(255) | - | Theo dữ liệu | Control UI: Text heading (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
@@ -339,7 +346,7 @@ flowchart TD
 | Khối thông báo chưa thành lập Hội đồng | Section | - | - | Control UI: Call-to-action card.<br>- Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thành lập hội đồng`. |
 | Tiêu đề thông báo | String(255) | - | Theo dữ liệu | Control UI: Text heading (Read-only).<br>- Hiển thị `Chưa thành lập Hội đồng xem xét trách nhiệm hoàn trả`. |
 | Nội dung thông báo | Text(500) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị `Hồ sơ chưa thành lập Hội đồng xem xét trách nhiệm hoàn trả.` |
-| Thành lập hội đồng | Button | Không | - | Control UI: Button primary .<br>- Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thành lập hội đồng` và người dùng có quyền Cán bộ xử lý nghiệp vụ. Khi click, mở `Popup Tạo mới Hội đồng xem xét trách nhiệm hoàn trả` (MH04). |
+| Thành lập hội đồng | Button | Không | - | Control UI: Button primary .<br>- Điều kiện hiển thị: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thành lập hội đồng` và người dùng có quyền Cán bộ xử lý nghiệp vụ. Khi click, mở [Popup Tạo mới Hội đồng xem xét trách nhiệm hoàn trả](#popup-tao-moi-hoi-dong). |
 | **Thông tin văn bản** | Section | - | - | Control UI: Info card.<br>- Điều kiện hiển thị: Hiển thị khi hồ sơ chuyển sang các trạng thái từ `Chờ duyệt QĐ thành lập` trở đi. Kế thừa toàn bộ thông tin đã tạo lập tại bước tạo mới Hội đồng. |
 | Hình thức ban hành | Enum(String(50)) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
 | Đơn vị ban hành | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
@@ -427,18 +434,59 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Đóng | Button | Khi click, hệ thống đóng màn hình chi tiết và quay lại `MH01 - Màn hình Danh sách hồ sơ xem xét trách nhiệm hoàn trả`, không thực hiện lưu dữ liệu gì. |
-| 2 | Thành lập hội đồng | Button | Khi click, hệ thống mở `Popup Tạo mới Hội đồng xem xét trách nhiệm hoàn trả` (MH04) để tạo mới hoặc chỉnh sửa lại thông tin Hội đồng. |
+| 1 | Đóng | Button | Khi click, hệ thống đóng màn hình chi tiết và quay lại [MH01 - Màn hình Danh sách hồ sơ xem xét trách nhiệm hoàn trả](#mh01-danh-sach-ho-so-hoan-tra), không thực hiện lưu dữ liệu gì. |
+| 2 | Thành lập hội đồng | Button | Khi click, hệ thống mở [Popup Tạo mới Hội đồng xem xét trách nhiệm hoàn trả](#popup-tao-moi-hoi-dong) để tạo mới hoặc chỉnh sửa lại thông tin Hội đồng. |
 | 2.1 | Tạo QĐ hoàn trả | Button | Khi click, hệ thống ẩn Khối thông báo chưa ban hành và hiển thị `Khối Thông tin văn bản Quyết định hoàn trả` cho phép người dùng nhập liệu các thông tin ban hành, đính kèm văn bản dự thảo và danh sách cán bộ chịu trách nhiệm hoàn trả để chuẩn bị trình ký hoặc ban hành quyết định. |
-| 2.2 | Trình ký (Bước 3) | Button | Thực hiện giống mục STT 10 - Trình ký tại [4.3.3.5.5.3. Chức năng trên màn hình - Màn hình Cập nhật hồ sơ hoàn trả](#4.3.3.5.5.3). |
-| 2.3 | Ban hành QĐ (Bước 3) | Button | Thực hiện giống mục STT 11 - Ban hành QĐ tại [4.3.3.5.5.3. Chức năng trên màn hình - Màn hình Cập nhật hồ sơ hoàn trả](#4.3.3.5.5.3). |
-| 3 | Phê duyệt | Button | Khi click, hệ thống mở `MH08 - Popup Phê duyệt / Ký số Quyết định`. |
-| 4 | Từ chối | Button | Khi click, hệ thống mở `MH09 - Popup Từ chối phê duyệt Quyết định`. |
+| 2.2 | Trình ký (Bước 3) | Button | Thực hiện giống chức năng `Trình ký` mô tả tại [Chức năng trên màn hình - Màn hình Cập nhật hồ sơ hoàn trả](#chuc-nang-man-hinh-cap-nhat-ho-so-hoan-tra). |
+| 2.3 | Ban hành QĐ (Bước 3) | Button | Thực hiện giống chức năng `Ban hành QĐ` mô tả tại [Chức năng trên màn hình - Màn hình Cập nhật hồ sơ hoàn trả](#chuc-nang-man-hinh-cap-nhat-ho-so-hoan-tra). |
+| 3 | Phê duyệt | Button | Khi click, hệ thống mở [Popup Phê duyệt / Ký số Quyết định](#popup-phe-duyet-ky-so-quyet-dinh). |
+| 4 | Từ chối | Button | Khi click, hệ thống mở [Popup Từ chối phê duyệt Quyết định](#popup-tu-choi-phe-duyet-quyet-dinh). |
 | 5 | Cập nhật | Button | Khi click, hệ thống điều hướng sang `Màn hình Cập nhật hồ sơ hoàn trả` và mở trực tiếp bước tương ứng để chỉnh sửa:<br>+ Trạng thái `Bị từ chối thành lập HĐ`: chuyển sang `Bước 1: Thành lập Hội đồng` để chỉnh sửa dự thảo QĐ thành lập Hội đồng.<br>+ Trạng thái `Đang họp hội đồng`: chuyển sang `Bước 2: Ý kiến của hội đồng` để ghi nhận kết luận hoặc danh sách kiến nghị hoàn trả.<br>+ Trạng thái `Bị từ chối QĐ hoàn trả`: chuyển sang `Bước 3: Ban hành Quyết định hoàn trả` để chỉnh sửa lại dự thảo Quyết định hoàn trả. |
 | 6 | Cập nhật hoàn trả | Button | Khi click, điều hướng sang `Màn hình Cập nhật hồ sơ hoàn trả` và chuyển sang `Bước 4: Đang thi hành`. |
 
 ---
 
+<a id="popup-them-cap-nhat-can-bo-hoan-tra"></a>
+#### 4.3.3.5.9. Popup Thêm/Cập nhật cán bộ chịu trách nhiệm hoàn trả
+
+##### 4.3.3.5.9.1. Màn hình
+
+![Popup Thêm/Cập nhật cán bộ chịu trách nhiệm hoàn trả](images/UC_Xem_Xet_Hoan_Tra_MH12.png)
+
+##### 4.3.3.5.9.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| **Tiêu đề popup** | - | - | Theo ngữ cảnh | Control UI: Label. Hiển thị động theo chế độ mở popup:<br>+ `Thêm cán bộ chịu trách nhiệm hoàn trả`: Khi mở từ nút `Thêm cán bộ gây sai phạm`.<br>+ `Cập nhật cán bộ chịu trách nhiệm hoàn trả`: Khi mở từ thao tác `Cập nhật` trên dòng cán bộ. |
+| Họ và tên cán bộ | String(255) | Có | Trống / Theo dòng được chọn | Control UI: Input text.<br>- Họ và tên cán bộ gây sai phạm, thiệt hại.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Chức vụ | String(255) | Có | Trống / Theo dòng được chọn | Control UI: Input text.<br>- Chức vụ của cán bộ tại thời điểm gây sai phạm, thiệt hại.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Đơn vị công tác | String(255) | Có | Trống / Theo dòng được chọn | Control UI: Combobox có tìm kiếm.<br>- Cho phép tìm kiếm theo Mã đơn vị hoặc Tên đơn vị, giá trị lấy từ danh mục đơn vị [DM_DON_VI], hiển thị dạng **[Mã đơn vị] - [Tên đơn vị]**.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Mức độ lỗi | Enum(String(50)) | Có | `Vô ý` | Control UI: Combobox.<br>Gồm:<br>+ `Vô ý`<br>+ `Cố ý` |
+| Phương thức thực hiện hoàn trả | Enum(String(50)) | Có | `Một lần` | Control UI: Combobox.<br>Gồm:<br>+ `Một lần`<br>+ `Nhiều lần` |
+| Số tiền phải hoàn trả (đ) | Decimal(18,0) | Có | Trống | Control UI: Input text.<br>- Căn lề phải, định dạng phân cách hàng nghìn bằng dấu chấm ngay khi nhập.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
+| Thông tin mô tả khác | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Ghi nhận các thông tin mô tả khác liên quan đến trách nhiệm hoàn trả của cán bộ. |
+| Trạng thái hoãn | Enum(String(50)) | Có | `Không hoãn` | Control UI: Combobox.<br>Gồm:<br>+ `Không hoãn`<br>+ `Đề xuất hoãn`<br>- Khi chọn `Đề xuất hoãn`, hệ thống hiển thị bổ sung Khối thông tin hoãn hoàn trả bên dưới. |
+| **Khối thông tin hoãn hoàn trả** | Section | - | Ẩn | Control UI: Form card.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi `Trạng thái hoãn` là `Đề xuất hoãn`. |
+| Ngày bắt đầu hoãn | Date | Có | Trống | Control UI: Datepicker định dạng `dd/mm/yyyy`.<br>- Bắt buộc nhập khi `Trạng thái hoãn` là `Đề xuất hoãn`. |
+| Ngày kết thúc hoãn (nếu có) | Date | Không | Trống | Control UI: Datepicker định dạng `dd/mm/yyyy`.<br>- Không được nhỏ hơn `Ngày bắt đầu hoãn`. |
+| Lý do hoãn | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Ghi rõ hoàn cảnh khó khăn về kinh tế hoặc lý do sức khỏe làm căn cứ hoãn hoàn trả.<br>- Bắt buộc nhập khi `Trạng thái hoãn` là `Đề xuất hoãn`. |
+| Văn bản đính kèm | File | Có | Trống | Control UI: File upload.<br>- Bắt buộc đính kèm khi `Trạng thái hoãn` là `Đề xuất hoãn`.<br>- Sau khi tải lên, hiển thị tên tệp kèm liên kết `Xem file` và `Xóa`. |
+
+##### 4.3.3.5.9.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Chọn đơn vị công tác | Combobox | Khi người dùng click vào ô `Đơn vị công tác`, hệ thống mở danh sách đơn vị kèm ô tìm kiếm; người dùng nhập Mã hoặc Tên đơn vị để lọc và chọn 01 đơn vị. |
+| 2 | Thay đổi Trạng thái hoãn | Combobox | Khi người dùng chọn `Đề xuất hoãn`, hệ thống hiển thị Khối thông tin hoãn hoàn trả và đặt các trường `Ngày bắt đầu hoãn`, `Lý do hoãn`, `Văn bản đính kèm` thành bắt buộc. Khi chọn lại `Không hoãn`, hệ thống ẩn khối này và xóa dữ liệu đã nhập trong khối. |
+| 3 | Tải file | Button | Hệ thống mở hộp thoại chọn tệp từ thiết bị và kiểm tra:<br>- **TH1 - Sai định dạng hoặc vượt dung lượng**: Vi phạm [BR-FILE-010], hiển thị thông báo lỗi [MSG-ERR-FILE-001] và không tiếp nhận tệp.<br>- **TH2 - Hợp lệ**: Hệ thống tiếp nhận tệp, hiển thị tên tệp kèm liên kết `Xem file` và `Xóa`. |
+| 4 | Xem file | Text link | Mở xem nội dung tệp đính kèm tại một tab trình duyệt mới. |
+| 5 | Xóa (tệp đính kèm) | Text link | Hệ thống hiển thị Custom Confirmation Modal xác nhận; khi người dùng chọn `Đồng ý`, hệ thống gỡ bỏ tệp đính kèm khỏi popup. |
+| 6 | Lưu | Button | Hệ thống kiểm tra tính hợp lệ của dữ liệu trước khi lưu:<br>- **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001], tô viền đỏ `.is-invalid` ô trống đầu tiên, hiển thị thông báo lỗi ngay dưới ô nhập và không đóng popup.<br>- **TH2 - Hợp lệ, chế độ thêm mới**: Hệ thống bổ sung 01 dòng cán bộ vào cuối Bảng danh sách cán bộ chịu trách nhiệm hoàn trả tại Bước 2, tự động đánh lại STT, đóng popup và hiển thị thông báo thành công.<br>- **TH3 - Hợp lệ, chế độ cập nhật**: Hệ thống cập nhật lại dữ liệu của dòng cán bộ đang chọn, đóng popup và hiển thị thông báo thành công. |
+| 7 | Đóng | Button | Khi người dùng click nút `Đóng` hoặc biểu tượng `×` trên tiêu đề popup, hệ thống đóng popup và hủy bỏ các thay đổi đang nhập. |
+
+---
+
+<a id="popup-ghi-nhan-nop-tien"></a>
 #### 4.3.3.5.10. Popup Ghi nhận nộp tiền hoàn trả ngân sách
 
 ##### 4.3.3.5.10.1. Màn hình
@@ -473,6 +521,7 @@ flowchart TD
 
 ---
 
+<a id="popup-chi-tiet-tien-trinh-nop-tien"></a>
 #### 4.3.3.5.11. Popup Chi tiết tiến trình nộp tiền của cán bộ
 
 ##### 4.3.3.5.11.1. Màn hình
@@ -522,12 +571,18 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | 1 | Xem file | Text link | Khi người dùng click liên kết "Xem file" tại Bảng lịch sử nộp tiền hoặc Bảng lịch sử điều chỉnh nghĩa vụ hoàn trả, hệ thống mở tệp tương ứng trên một tab mới của trình duyệt ở chế độ chỉ đọc. |
 | 2 | Tải file | Text link | Khi người dùng click liên kết "Tải file" tại Bảng lịch sử nộp tiền hoặc Bảng lịch sử điều chỉnh nghĩa vụ hoàn trả, hệ thống tải tệp về máy tính người dùng và ghi nhận Audit Log thao tác tải tệp. |
-| 3 | Đóng | Button | Khi người dùng click nút Đóng hoặc biểu tượng "×" trên tiêu đề popup, hệ thống đóng popup và quay lại Bước 4: Đang thi hành của Màn hình Cập nhật kết quả hồ sơ hoàn trả, không thay đổi dữ liệu. |
+| 3 | Ghi nhận nộp tiền | Button | - *Điều kiện hiển thị*: Chỉ hiển thị khi đồng thời thỏa mãn:<br>+ Cán bộ đang ở trạng thái `Đang thi hành` hoặc `Đang hoãn`.<br>+ `Số tiền còn thiếu` của cán bộ lớn hơn 0.<br>+ Người dùng có quyền tác nghiệp trên hồ sơ (không phải vai trò Lãnh đạo, hồ sơ chưa ở trạng thái `Hoàn thành`).<br>- *Ẩn hoàn toàn* khi cán bộ ở trạng thái `Hoàn tất`, `Miễn hoàn trả` hoặc `Chấm dứt hoàn trả`.<br>- *Xử lý*: Hệ thống mở [Popup Ghi nhận nộp tiền hoàn trả ngân sách](#popup-ghi-nhan-nop-tien) với thông tin cán bộ được chọn sẵn. |
+| 4 | Thao tác khác - Giảm mức hoàn trả | Button / Menu item | - *Điều kiện hiển thị*: Chỉ hiển thị khi đồng thời thỏa mãn:<br>+ Cán bộ đang ở trạng thái `Đang thi hành` hoặc `Đang hoãn`.<br>+ `Số tiền còn thiếu` của cán bộ lớn hơn 0.<br>+ Người dùng có quyền tác nghiệp trên hồ sơ.<br>- *Xử lý*: Hệ thống mở [Popup Điều chỉnh nghĩa vụ hoàn trả](#popup-dieu-chinh-nghia-vu-hoan-tra) với `Loại điều chỉnh` chọn sẵn là `Giảm mức hoàn trả`. |
+| 5 | Thao tác khác - Miễn hoàn trả | Button / Menu item | - *Điều kiện hiển thị*: Giống điều kiện hiển thị của chức năng `Giảm mức hoàn trả`.<br>- *Xử lý*: Hệ thống mở [Popup Điều chỉnh nghĩa vụ hoàn trả](#popup-dieu-chinh-nghia-vu-hoan-tra) với `Loại điều chỉnh` chọn sẵn là `Miễn hoàn trả`. |
+| 6 | Thao tác khác - Hoãn hoàn trả | Button / Menu item | - *Điều kiện hiển thị*: Chỉ hiển thị khi cán bộ đang ở trạng thái `Đang thi hành`, `Số tiền còn thiếu` lớn hơn 0 và người dùng có quyền tác nghiệp trên hồ sơ.<br>- *Ẩn hoàn toàn* khi cán bộ đang ở trạng thái `Đang hoãn`.<br>- *Xử lý*: Hệ thống mở [Popup Điều chỉnh nghĩa vụ hoàn trả](#popup-dieu-chinh-nghia-vu-hoan-tra) với `Loại điều chỉnh` chọn sẵn là `Hoãn hoàn trả`. |
+| 7 | Thao tác khác - Chấm dứt hoàn trả | Button / Menu item | - *Điều kiện hiển thị*: Giống điều kiện hiển thị của chức năng `Giảm mức hoàn trả`.<br>- *Xử lý*: Hệ thống mở [Popup Điều chỉnh nghĩa vụ hoàn trả](#popup-dieu-chinh-nghia-vu-hoan-tra) với `Loại điều chỉnh` chọn sẵn là `Chấm dứt hoàn trả`. |
+| 8 | Đóng | Button | Khi người dùng click nút Đóng hoặc biểu tượng "×" trên tiêu đề popup, hệ thống đóng popup và quay lại Bước 4: Đang thi hành của Màn hình Cập nhật kết quả hồ sơ hoàn trả, không thay đổi dữ liệu. |
 
 
 
 ---
 
+<a id="popup-dieu-chinh-nghia-vu-hoan-tra"></a>
 #### 4.3.3.5.12. Popup Điều chỉnh nghĩa vụ hoàn trả
 
 ##### 4.3.3.5.12.1. Màn hình
@@ -573,6 +628,7 @@ flowchart TD
 
 ---
 
+<a id="popup-phe-duyet-ky-so-quyet-dinh"></a>
 #### 4.3.3.5.20. Popup Phê duyệt / Ký số Quyết định
 
 ##### 4.3.3.5.20.1. Màn hình
@@ -598,6 +654,7 @@ flowchart TD
 
 ---
 
+<a id="popup-tu-choi-phe-duyet-quyet-dinh"></a>
 #### 4.3.3.5.21. Popup Từ chối phê duyệt Quyết định
 
 ##### 4.3.3.5.21.1. Màn hình

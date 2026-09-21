@@ -68,6 +68,14 @@
     .custom-table tr.group-header td { background: #EFF6FF; font-weight: 700; color: var(--primary-color); text-align: left; }
     .custom-table tr.total-row td { background: #FEF3C7; font-weight: 700; }
     .cell-formula-bad { background: #FEE2E2 !important; color: var(--danger-color); font-weight: 700; }
+    .pager-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 12px; font-size: 13px; color: var(--text-main); }
+    .pager-bar .pager-left { display: flex; align-items: center; gap: 8px; }
+    .pager-bar .pager-right { display: flex; align-items: center; gap: 4px; }
+    .pager-bar select { padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; font-family: inherit; }
+    .pager-btn { min-width: 32px; height: 30px; padding: 0 8px; border: 1px solid var(--border-color); background: #fff; border-radius: 4px; cursor: pointer; font-size: 13px; font-family: inherit; }
+    .pager-btn:hover:not(:disabled) { background: #F1F5F9; }
+    .pager-btn.active { background: var(--primary-color); border-color: var(--primary-color); color: #fff; font-weight: 700; }
+    .pager-btn:disabled { opacity: .4; cursor: not-allowed; }
     .cell-input { width: 100%; min-width: 60px; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: 3px; font-size: 12px; font-family: inherit; text-align: center; }
     .cell-input.text-left { text-align: left; }
     .cell-textarea { width: 100%; min-width: 140px; min-height: 34px; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: 3px; font-size: 12px; font-family: inherit; text-align: left; resize: vertical; overflow: auto; white-space: pre-wrap; word-break: break-word; }
@@ -144,6 +152,17 @@
     .tab-item.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
+
+    /* Thanh tab ngang chuyển đổi biểu mẫu TT08 */
+    .form-tabs { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 2px solid var(--border-color); margin-bottom: 14px; }
+    .form-tab {
+        background: transparent; border: 0; border-bottom: 3px solid transparent;
+        color: var(--text-muted); cursor: pointer; font-size: 13.5px; font-weight: 600;
+        padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+    }
+    .form-tab:hover { color: var(--primary-light); }
+    .form-tab.active { border-bottom-color: var(--primary-light); color: var(--primary-light); }
+
     .source-toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
     .report-control-panel { display: grid; grid-template-columns: minmax(260px, 360px) minmax(260px, 1fr); gap: 16px; align-items: end; padding: 14px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: #F8FAFC; margin-bottom: 16px; }
     .source-readonly-box { border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background: #fff; padding: 8px 10px; min-height: 36px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -182,7 +201,8 @@
         <div class="role-switch">
             <label>Xem theo vai trò (mô phỏng đăng nhập)</label>
             <select id="roleSwitch" onchange="onRoleChange()">
-                <option value="cap1">Đơn vị nhập thay - Sở Tư pháp Thành phố Hà Nội</option>
+                <option value="don_vi">Đơn vị báo cáo - Sở Tài nguyên và Môi trường Thành phố Hà Nội</option>
+                <option value="cap1" selected>Đơn vị nhập thay - Sở Tư pháp Thành phố Hà Nội</option>
                 <option value="cap2">Đầu mối tổng hợp - UBND Thành phố Hà Nội</option>
                 <option value="cap3">Bộ Tư pháp/Cục BTNN</option>
             </select>
@@ -221,10 +241,15 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <span class="form-label">Mã hoặc tên đơn vị</span>
+                    <input type="text" class="form-control" id="fUnitKeyword" placeholder="Nhập mã hoặc tên đơn vị báo cáo" onkeydown="if(event.key==='Enter'){applyListFilter();}">
+                </div>
+                <div class="form-group">
                     <span class="form-label">Trạng thái</span>
                     <select class="form-control" id="fStatus">
                         <option value="all" selected>Tất cả</option>
                         <option value="dang_nhap_lieu">Đang nhập liệu</option>
+                        <option value="yeu_cau_chinh_ly">Yêu cầu chỉnh lý</option>
                         <option value="da_gui">Đã gửi chờ duyệt</option>
                         <option value="da_duyet">Đã duyệt chờ tổng hợp</option>
                         <option value="da_tong_hop">Đã tổng hợp</option>
@@ -233,8 +258,8 @@
                 </div>
             </div>
             <div class="toolbar-row">
-                <button class="btn btn-secondary" onclick="renderListView()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="applyListFilter()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                <button class="btn btn-secondary" onclick="resetListFilter()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="pagers.list.page = 1; applyListFilter();"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 <button class="btn btn-success" id="btnCreatePeriod" onclick="openCreatePeriod()"><i class="fa-solid fa-plus"></i> Tạo kỳ báo cáo</button>
             </div>
         </div>
@@ -269,6 +294,7 @@
                     <tbody id="listTableBody"></tbody>
                 </table>
             </div>
+            <div class="pager-bar" id="listPagerBar"></div>
         </div>
     </section>
 
@@ -306,6 +332,12 @@
                 </button>
             </div>
             <div class="collapsible-content" id="aggregateMembersContent" style="display:none;">
+                <div class="toolbar-row" style="justify-content:flex-start; margin-bottom:10px;">
+                    <div class="form-group" style="margin:0; min-width:320px;">
+                        <span class="form-label">Tên đơn vị</span>
+                        <input type="text" class="form-control" id="memberKeyword" placeholder="Nhập tên đơn vị thành viên để tìm kiếm" oninput="onMemberKeywordChange()">
+                    </div>
+                </div>
                 <div class="table-container">
                     <table class="custom-table">
                         <thead>
@@ -316,60 +348,45 @@
                                 <th>Trạng thái</th>
                                 <th>Ngày gửi gần nhất</th>
                                 <th>Kết quả tổng hợp</th>
+                                <th style="width:180px;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="aggregateMembersBody"></tbody>
                     </table>
                 </div>
+                <div class="pager-bar" id="memberPagerBar"></div>
             </div>
         </div>
 
         <div class="card-section">
             <div class="report-control-panel">
-                <div class="form-group">
-                    <span class="form-label">Chọn báo cáo</span>
-                    <select class="form-control" id="reportSelect" onchange="switchTab(this.value)">
-                        <option value="mau01">Mẫu 01 - Danh mục vụ việc</option>
-                        <option value="mau03">Mẫu 03 - Tổng hợp tình hình</option>
-                        <option value="mau04">Mẫu 04 - Tình hình hoàn trả</option>
-                        <option value="mau05">Mẫu 05 - Sổ thụ lý</option>
-                        <option value="history">Lịch sử xử lý</option>
-                    </select>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <div class="form-tabs" id="formTabs">
+                        <button type="button" class="form-tab active" data-tab="mau01" onclick="switchTab('mau01')"><i class="fa-solid fa-list-ul"></i> Mẫu 01 - Danh mục vụ việc</button>
+                        <button type="button" class="form-tab" data-tab="mau03" onclick="switchTab('mau03')"><i class="fa-solid fa-table-cells-large"></i> Mẫu 03 - Tổng hợp tình hình</button>
+                        <button type="button" class="form-tab" data-tab="mau04" onclick="switchTab('mau04')"><i class="fa-solid fa-rotate-left"></i> Mẫu 04 - Tình hình hoàn trả</button>
+                        <button type="button" class="form-tab" data-tab="mau05" onclick="switchTab('mau05')"><i class="fa-solid fa-book"></i> Mẫu 05 - Sổ thụ lý</button>
+                        <button type="button" class="form-tab" data-tab="history" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</button>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <span class="form-label">Nguồn dữ liệu kỳ báo cáo</span>
-                    <div class="source-readonly-box">
+                    <span class="form-label">Nguồn dữ liệu của biểu mẫu</span>
+                    <!-- Khi kỳ đang cho nhập liệu: cho chọn nguồn. Khi đã gửi/duyệt: chỉ hiển thị nhãn. -->
+                    <select class="form-control" id="detailSourceSelect" style="display:none;"
+                        onchange="onSourceChange(currentTab, this.value)">
+                        <option value="tu_dong">Tự động tổng hợp từ hệ thống</option>
+                        <option value="thu_cong">Nhập liệu thủ công</option>
+                    </select>
+                    <div class="source-readonly-box" id="detailSourceReadonlyBox">
                         <span class="source-pill" id="detailSourceBadge"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
-                        <span class="formula-hint" id="detailSourceHint">Nguồn dữ liệu được xác định khi tạo kỳ báo cáo.</span>
                     </div>
+                    <span class="formula-hint" id="detailSourceHint">Nguồn dữ liệu được xác định khi tạo kỳ báo cáo.</span>
                 </div>
             </div>
 
             <div id="alertArea"></div>
 
             <div class="tab-panel active" id="panel-mau01">
-                <!-- BANNER HƯỚNG DẪN 3 PHƯƠNG THỨC NẠP SỐ LIỆU -->
-                <div class="mau01-guide-banner" style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:12px 16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div style="width:38px; height:38px; border-radius:50%; background:#2563EB; color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        </div>
-                        <div>
-                            <div style="font-size:13px; font-weight:700; color:#1E40AF;">
-                                3 PHƯƠNG THỨC NẠP SỐ LIỆU VÀO MẪU 01 (DANH MỤC VỤ VIỆC):
-                            </div>
-                            <div style="font-size:12px; color:#1E3A8A; margin-top:2px;">
-                                <span style="background:#DBEAFE; padding:1px 6px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-rotate"></i> 1. Đồng bộ từ hệ thống</span> (Quét tự động CSDL) &nbsp;|&nbsp; 
-                                <span style="background:#DBEAFE; padding:1px 6px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-list-check"></i> 2. Chọn vụ việc từ hệ thống</span> (Chọn chủ động từ CSDL) &nbsp;|&nbsp; 
-                                <span style="background:#DBEAFE; padding:1px 6px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-plus"></i> 3. Thêm vụ việc thủ công</span> (Nhập vụ việc ngoài phần mềm)
-                            </div>
-                        </div>
-                    </div>
-                    <div id="mau01QuickDemoBtnWrap" style="display:flex; gap:8px; align-items:center;">
-                        <!-- Hiển thị trạng thái/nút qua JS -->
-                    </div>
-                </div>
-
                 <div class="source-toggle-row readonly-source-row">
                     <span class="form-label">Nguồn số liệu - Mẫu 01</span>
                     <span class="source-pill" id="mau01SourcePill" data-source-label="mau01"><i class="fa-solid fa-database"></i> Tự động kết hợp nhập tay (Hybrid Smart Grid)</span>
@@ -382,14 +399,11 @@
                         <button class="btn btn-secondary btn-sm" id="btnSyncSystem" onclick="syncMau01FromSystem()" title="Đồng bộ lại dữ liệu hồ sơ BTNN mới phát sinh trong kỳ">
                             <i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống
                         </button>
-                        <button class="btn btn-secondary btn-sm" id="btnPickCase" onclick="openCasePickerModal()" title="Mở danh sách vụ việc để chọn đưa vào Mẫu 01">
-                            <i class="fa-solid fa-list-check"></i> Chọn vụ việc từ hệ thống
-                        </button>
-                        <button class="btn btn-primary btn-sm" id="btnAddManualRow" onclick="openAddMau01Modal()" title="Thêm vụ việc thủ công phát sinh ngoài phần mềm">
-                            <i class="fa-solid fa-plus"></i> Thêm vụ việc thủ công
-                        </button>
                     </div>
                     <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" id="btnImportMau01" onclick="openImportExcelModal('mau01')" title="Nhận số liệu Mẫu 01 từ file Excel">
+                            <i class="fa-solid fa-file-import"></i> Nhận Excel
+                        </button>
                         <button class="btn btn-success btn-sm" onclick="exportPeriod('Excel')">
                             <i class="fa-solid fa-file-excel"></i> Kết xuất Excel (Mẫu 01)
                         </button>
@@ -404,6 +418,24 @@
                     <span class="source-pill" data-source-label="mau03"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
                     <span class="formula-hint">26 chỉ tiêu theo Mẫu số 03/BTNN; các ô công thức tự tính theo số liệu thành phần.</span>
                 </div>
+                <div class="toolbar-row" id="mau03Toolbar" style="justify-content:space-between; margin-top:8px; margin-bottom:12px;">
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-sm" id="btnSyncMau03" onclick="syncMau03FromSystem()" title="Đồng bộ lại số liệu Mẫu 03 từ CSDL hồ sơ BTNN">
+                            <i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="btnCheckMau03" onclick="checkFormulas('Mẫu 03')" title="Kiểm tra các chỉ tiêu công thức">
+                            <i class="fa-solid fa-square-check"></i> Kiểm tra công thức
+                        </button>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" id="btnImportMau03" onclick="openImportExcelModal('mau03')" title="Nhận số liệu Mẫu 03 từ file Excel">
+                            <i class="fa-solid fa-file-import"></i> Nhận Excel
+                        </button>
+                        <button class="btn btn-success btn-sm" onclick="exportPeriod('Excel')">
+                            <i class="fa-solid fa-file-excel"></i> Kết xuất Excel (Mẫu 03)
+                        </button>
+                    </div>
+                </div>
                 <div class="table-container" id="mau03TableWrap"></div>
                 <div class="form-group" style="margin-top:14px;">
                     <span class="form-label">Ghi chú nội bộ hệ thống (chỉ tiêu 26 - không thuộc bảng chính thức, dùng giải trình chênh lệch nếu có)</span>
@@ -416,6 +448,24 @@
                     <span class="source-pill" data-source-label="mau04"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
                     <span class="formula-hint">15 chỉ tiêu theo Mẫu số 04/BTNN; các ô công thức tự tính theo số liệu thành phần.</span>
                 </div>
+                <div class="toolbar-row" id="mau04Toolbar" style="justify-content:space-between; margin-top:8px; margin-bottom:12px;">
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-sm" id="btnSyncMau04" onclick="syncMau04FromSystem()" title="Đồng bộ lại số liệu Mẫu 04 từ CSDL hồ sơ BTNN">
+                            <i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="btnCheckMau04" onclick="checkFormulas('Mẫu 04')" title="Kiểm tra các chỉ tiêu công thức">
+                            <i class="fa-solid fa-square-check"></i> Kiểm tra công thức
+                        </button>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" id="btnImportMau04" onclick="openImportExcelModal('mau04')" title="Nhận số liệu Mẫu 04 từ file Excel">
+                            <i class="fa-solid fa-file-import"></i> Nhận Excel
+                        </button>
+                        <button class="btn btn-success btn-sm" onclick="exportPeriod('Excel')">
+                            <i class="fa-solid fa-file-excel"></i> Kết xuất Excel (Mẫu 04)
+                        </button>
+                    </div>
+                </div>
                 <div class="table-container" id="mau04TableWrap"></div>
             </div>
             <div class="tab-panel" id="panel-mau05">
@@ -423,6 +473,21 @@
                     <span class="form-label">Nguồn số liệu - Mẫu 05</span>
                     <span class="source-pill" data-source-label="mau05"><i class="fa-solid fa-database"></i> Tự động tổng hợp từ hệ thống</span>
                     <span class="formula-hint">Sổ thụ lý hồ sơ theo vụ việc, sử dụng nguồn dữ liệu đã chọn khi tạo kỳ báo cáo.</span>
+                </div>
+                <div class="toolbar-row" id="mau05Toolbar" style="justify-content:space-between; margin-top:8px; margin-bottom:12px;">
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-sm" id="btnSyncMau05" onclick="syncMau05FromSystem()" title="Đồng bộ lại sổ thụ lý Mẫu 05 từ CSDL hồ sơ BTNN">
+                            <i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống
+                        </button>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" id="btnImportMau05" onclick="openImportExcelModal('mau05')" title="Nhận số liệu Mẫu 05 từ file Excel">
+                            <i class="fa-solid fa-file-import"></i> Nhận Excel
+                        </button>
+                        <button class="btn btn-success btn-sm" onclick="exportPeriod('Excel')">
+                            <i class="fa-solid fa-file-excel"></i> Kết xuất Excel (Mẫu 05)
+                        </button>
+                    </div>
                 </div>
                 <div class="table-container" id="mau05TableWrap"></div>
             </div>
@@ -473,7 +538,7 @@
                         <option value="don_vi">Riêng đơn vị được chọn</option>
                         <option value="tong_hop">Tổng hợp đơn vị trực thuộc</option>
                     </select>
-                    <div class="form-hint">Chọn `Tổng hợp đơn vị trực thuộc` khi đơn vị nhập liệu tổng hợp chung số liệu của các đơn vị cấp dưới thuộc phạm vi quản lý.</div>
+                    <div class="form-hint" id="createReportScopeHint">Vui lòng chọn Đơn vị báo cáo ở trên trước. Chỉ đơn vị có đơn vị trực thuộc mới chọn được phạm vi tổng hợp.</div>
                 </div>
                 <div class="form-group">
                     <span class="form-label">Đơn vị nhập liệu</span>
@@ -559,6 +624,68 @@
     </div>
 </div>
 
+<!-- Popup Nhận dữ liệu từ Excel (màn hình giả lập) -->
+<div id="importExcelOverlay" class="confirm-modal-overlay">
+    <div class="sticky-modal-container" style="width: 620px; max-width: 95%;">
+        <div class="confirm-modal-header">
+            <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--primary-color);">
+                <i class="fa-solid fa-file-import"></i> Nhận dữ liệu từ Excel
+            </div>
+            <span onclick="closeImportExcelModal()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
+        </div>
+        <div class="sticky-modal-body">
+            <div class="form-group">
+                <button class="btn btn-success" onclick="downloadImportTemplate()">
+                    <i class="fa-solid fa-file-arrow-down"></i> Tải file mẫu Excel
+                </button>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+                <span class="form-label">Tải file lên<span style="color:red;">*</span></span>
+                <!-- Ẩn input file gốc để thay bằng nút tiếng Việt, tránh nhãn "Choose File" của trình duyệt -->
+                <input type="file" id="importExcelFile" accept=".xls,.xlsx" onchange="onImportFileChange()" style="display:none;">
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-secondary" onclick="document.getElementById('importExcelFile').click()">
+                        <i class="fa-solid fa-folder-open"></i> Chọn tệp
+                    </button>
+                    <span id="importExcelFileName" style="font-size:13px; color:var(--text-muted);">Chưa chọn tệp nào</span>
+                </div>
+                <div class="error-message" id="importExcelError" style="display:none; color:var(--danger-color); font-size:12px; margin-top:6px;">Vui lòng chọn file Excel theo đúng định dạng file mẫu.</div>
+                <div id="importExcelFileInfo" style="display:none; margin-top:8px; font-size:12px; color:var(--text-main); background:#F8FAFC; border:1px solid var(--border-color); border-radius:4px; padding:8px 10px;"></div>
+            </div>
+        </div>
+        <div class="confirm-modal-footer">
+            <button class="btn btn-secondary" onclick="closeImportExcelModal()">Hủy bỏ</button>
+            <button class="btn btn-primary" onclick="submitImportExcel()"><i class="fa-solid fa-file-import"></i> Nhận dữ liệu</button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup xác nhận dùng chung (thay cho hộp thoại mặc định của trình duyệt) -->
+<div id="appConfirmOverlay" class="confirm-modal-overlay">
+    <div class="sticky-modal-container" style="width: 520px; max-width: 95%;">
+        <div class="confirm-modal-header">
+            <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600;" id="appConfirmTitleWrap">
+                <i class="fa-solid fa-circle-question" id="appConfirmIcon"></i>
+                <span id="appConfirmTitle">Xác nhận</span>
+            </div>
+            <span onclick="closeAppConfirm()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
+        </div>
+        <div class="sticky-modal-body">
+            <div id="appConfirmMessage" style="font-size:14px; line-height:1.6; color:var(--text-main);"></div>
+            <div class="form-group" id="appConfirmInputWrap" style="display:none; margin-top:14px; margin-bottom:0;">
+                <span class="form-label" id="appConfirmInputLabel">Lý do<span style="color:red;">*</span></span>
+                <textarea class="form-control" id="appConfirmInput" rows="3" placeholder="Nhập nội dung..."></textarea>
+                <div class="error-message" id="appConfirmInputError" style="display:none; color:var(--danger-color); font-size:12px; margin-top:4px;">Vui lòng nhập đầy đủ thông tin bắt buộc.</div>
+            </div>
+        </div>
+        <div class="confirm-modal-footer">
+            <button class="btn btn-secondary" onclick="closeAppConfirm()" id="appConfirmCancelBtn">Hủy bỏ</button>
+            <button class="btn btn-primary" onclick="acceptAppConfirm()" id="appConfirmOkBtn">Đồng ý</button>
+        </div>
+    </div>
+</div>
+
 <div id="toastContainer"></div>
 
 <script>
@@ -567,6 +694,7 @@ const FIELDS = ['I. Trong hoạt động quản lý hành chính', 'II. Trong ho
 
 const STATUS_META = {
     dang_nhap_lieu: { label: 'Đang nhập liệu', cls: 'badge-muted' },
+    yeu_cau_chinh_ly: { label: 'Yêu cầu chỉnh lý', cls: 'badge-danger' },
     da_gui: { label: 'Đã gửi chờ duyệt', cls: 'badge-info' },
     da_duyet: { label: 'Đã duyệt chờ tổng hợp', cls: 'badge-warning' },
     da_tong_hop: { label: 'Đã tổng hợp', cls: 'badge-warning' },
@@ -634,6 +762,92 @@ const MAU05_COLUMNS = ['Mã vụ việc', 'Tên vụ việc', 'Ngày thụ lý',
 let nextId = 100;
 const KY_BAO_CAO = [
     {
+        // Kỳ RIÊNG ĐƠN VỊ của UBND Thành phố Hà Nội: đầu mối cũng phải báo cáo số liệu
+        // phát sinh tại chính cơ quan mình, độc lập với kỳ tổng hợp toàn tỉnh (id 4).
+        id: 22, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND Thành phố Hà Nội', unitCode: 'HN', reportScope: 'don_vi',
+        parentUnit: 'Bộ Tư pháp - Cục Bồi thường nhà nước',
+        status: 'dang_nhap_lieu', submittedDate: '', submittedBy: '',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        mau01Rows: {
+            'I. Trong hoạt động quản lý hành chính': [
+                { code: 'BT-2026-041', origin: 'system', name: 'Yêu cầu bồi thường của Ngô Văn R', requester: 'Ngô Văn R', address: 'Số 3 phố Lê Thái Tổ, phường Hàng Trống, Thành phố Hà Nội', agency: 'UBND Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý ngày 08/07/2026, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: '', note: '' }
+            ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
+        },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,1,1,0,0, 1,0,0,0, null,0,0,0,0, 0, null,0,0,0,0, 0,0, 1,0,0,0] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
+        mau05Rows: {
+            'I. Trong hoạt động quản lý hành chính': [
+                { code: 'BT-2026-041', origin: 'system', name: 'Yêu cầu bồi thường của Ngô Văn R', dateThuLy: '08/07/2026', requesterInfo: 'Ngô Văn R - Số 3 phố Lê Thái Tổ' }
+            ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
+        },
+        history: [ { time: '15/10/2026 00:05', text: 'Hệ thống tự động khởi tạo kỳ báo cáo định kỳ cho đơn vị.' } ]
+    },
+    {
+        // Kỳ RIÊNG ĐƠN VỊ của Cục Bồi thường nhà nước, độc lập với kỳ tổng hợp toàn quốc (id 5)
+        id: 23, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Cục Bồi thường nhà nước - Bộ Tư pháp', unitCode: 'BTP-CBTNN', reportScope: 'don_vi',
+        parentUnit: 'Bộ Tư pháp',
+        status: 'dang_nhap_lieu', submittedDate: '', submittedBy: '',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        mau01Rows: Object.fromEntries(['I. Trong hoạt động quản lý hành chính','II. Trong hoạt động tố tụng hình sự','III. Trong hoạt động tố tụng dân sự','IV. Trong hoạt động tố tụng hành chính','V. Trong hoạt động thi hành án hình sự','VI. Trong hoạt động thi hành án dân sự'].map(f => [f, []])),
+        mau03Values: {}, mau04Values: {},
+        mau05Rows: Object.fromEntries(['I. Trong hoạt động quản lý hành chính','II. Trong hoạt động tố tụng hình sự','III. Trong hoạt động tố tụng dân sự','IV. Trong hoạt động tố tụng hành chính','V. Trong hoạt động thi hành án hình sự','VI. Trong hoạt động thi hành án dân sự'].map(f => [f, []])),
+        history: [ { time: '15/10/2026 00:05', text: 'Hệ thống tự động khởi tạo kỳ báo cáo định kỳ cho đơn vị.' } ]
+    },
+    {
+        // Kỳ báo cáo hệ thống tự sinh, đơn vị đang nhập liệu và chưa gửi - nguồn Tự động tổng hợp từ hệ thống
+        id: 21, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Sở Tài nguyên và Môi trường Thành phố Hà Nội', unitCode: 'HN-STNMT',
+        parentUnit: 'UBND Thành phố Hà Nội',
+        status: 'dang_nhap_lieu', submittedDate: '', submittedBy: '',
+        sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
+        mau01Rows: {
+            'I. Trong hoạt động quản lý hành chính': [
+                { code: 'BT-2026-031', origin: 'system', name: 'Yêu cầu bồi thường của Vũ Văn P', requester: 'Vũ Văn P', address: 'Số 21 phố Lý Thường Kiệt, phường Cửa Nam, Thành phố Hà Nội', agency: 'Sở Tài nguyên và Môi trường Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý ngày 02/07/2026, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: '', note: '' },
+                { code: 'BT-2026-032', origin: 'system', name: 'Yêu cầu bồi thường của Hoàng Thị Q', requester: 'Hoàng Thị Q', address: 'Số 5 ngõ 12 phố Khâm Thiên, phường Văn Miếu, Thành phố Hà Nội', agency: 'Sở Tài nguyên và Môi trường Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thương lượng thành ngày 20/07/2026, chờ ban hành quyết định.', payment: 'Chưa chi trả.', vuongMac: '', note: '' }
+            ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
+        },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,2,2,0,0, 2,0,0,0, null,1,0,1,0, 450000, null,0,0,0,0, 0,0, 2,0,0,0] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
+        mau05Rows: {
+            'I. Trong hoạt động quản lý hành chính': [
+                { code: 'BT-2026-031', origin: 'system', name: 'Yêu cầu bồi thường của Vũ Văn P', dateThuLy: '02/07/2026', requesterInfo: 'Vũ Văn P - Số 21 phố Lý Thường Kiệt' },
+                { code: 'BT-2026-032', origin: 'system', name: 'Yêu cầu bồi thường của Hoàng Thị Q', dateThuLy: '10/07/2026', requesterInfo: 'Hoàng Thị Q - Số 5 ngõ 12 phố Khâm Thiên' }
+            ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
+        },
+        history: [
+            { time: '15/10/2026 00:05', text: 'Hệ thống tự động khởi tạo kỳ báo cáo định kỳ cho đơn vị.' },
+            { time: '16/10/2026 09:20', text: 'Hệ thống đồng bộ 02 vụ việc từ cơ sở dữ liệu nghiệp vụ vào Mẫu 01.' }
+        ]
+    },
+    {
+        // Kỳ báo cáo bị cấp trên trả lại yêu cầu chỉnh lý, toàn bộ 04 biểu mẫu dùng nguồn Nhập liệu thủ công
+        id: 20, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND phường Trúc Bạch', unitCode: 'HN-PTB',
+        parentUnit: 'UBND Thành phố Hà Nội',
+        status: 'yeu_cau_chinh_ly', submittedDate: '18/07/2026', submittedBy: 'Phạm Thị M',
+        sources: { mau01: 'thu_cong', mau03: 'thu_cong', mau04: 'thu_cong', mau05: 'thu_cong' },
+        mau01Rows: {
+            'I. Trong hoạt động quản lý hành chính': [
+                { code: 'TC-2026-001', origin: 'manual', name: 'Yêu cầu bồi thường của Đỗ Thị N', requester: 'Đỗ Thị N', address: 'Số 8 phố Châu Long, phường Trúc Bạch, Thành phố Hà Nội', agency: 'UBND phường Trúc Bạch', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: 'Chưa thu thập đủ tài liệu chứng minh thiệt hại.', note: 'Vụ việc phát sinh ngoài phần mềm, nhập tay.' }
+            ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
+        },
+        mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,1,1,0,0, 1,0,0,0, null,0,0,0,0, 0, null,0,0,0,0, 0,0, 1,0,0,0] },
+        mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
+        mau05Rows: {
+            'I. Trong hoạt động quản lý hành chính': [
+                { code: 'TC-2026-001', origin: 'manual', name: 'Yêu cầu bồi thường của Đỗ Thị N', dateThuLy: '12/07/2026', requesterInfo: 'Đỗ Thị N - Số 8 phố Châu Long' }
+            ],
+            'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
+        },
+        history: [
+            { time: '18/07/2026 14:05', text: 'Phạm Thị M gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' },
+            { time: '19/07/2026 08:30', text: 'UBND Thành phố Hà Nội yêu cầu chỉnh lý kỳ báo cáo.', reason: 'Số liệu Mẫu 03 chỉ tiêu số 2 và số 6 chưa khớp với số vụ việc đã kê tại Mẫu 01. Đề nghị rà soát, nhập lại và gửi lại báo cáo.' }
+        ]
+    },
+    {
         id: 1, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Sở Tư pháp Thành phố Hà Nội', unitCode: 'HN-STP', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
         status: 'da_gui', submittedDate: '20/07/2026', submittedBy: 'Nguyễn Văn A',
         sources: { mau01: 'thu_cong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'thu_cong' },
@@ -655,7 +869,7 @@ const KY_BAO_CAO = [
     },
     {
         id: 2, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND phường Cầu Giấy', unitCode: 'HN-P.CG', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
-        status: 'dang_nhap_lieu', submittedDate: '18/07/2026', submittedBy: 'Trần Thị B',
+        status: 'yeu_cau_chinh_ly', submittedDate: '18/07/2026', submittedBy: 'Trần Thị B',
         sources: { mau01: 'thu_cong', mau03: 'thu_cong', mau04: 'tu_dong', mau05: 'thu_cong' },
         mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-045', name: 'Yêu cầu bồi thường của Phạm Văn K', requester: 'Phạm Văn K', agency: 'UBND phường Cầu Giấy', law: 'Luật TNBTCNN 2017', situation: 'Đang thương lượng.', payment: '', vuongMac: '', note: '' } ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
@@ -665,7 +879,7 @@ const KY_BAO_CAO = [
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         history: [
             { time: '18/07/2026 14:00', text: 'Trần Thị B gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' },
-            { time: '19/07/2026 08:30', text: 'UBND Thành phố Hà Nội yêu cầu chỉnh lý.', reason: 'Lý do: Chỉ tiêu 2 (Thụ lý mới) của Mẫu 03 chưa khớp với số dòng vụ việc đã nhập ở Mẫu 01, đề nghị rà soát lại.' }
+            { time: '19/07/2026 08:30', text: 'UBND Thành phố Hà Nội yêu cầu chỉnh lý.', reason: 'Chỉ tiêu 2 (Thụ lý mới) của Mẫu 03 chưa khớp với số dòng vụ việc đã nhập ở Mẫu 01, đề nghị rà soát lại.' }
         ]
     },
     {
@@ -818,6 +1032,7 @@ const KY_BAO_CAO = [
 ];
 
 const UNIT_OPTIONS = {
+    don_vi: [{ value: 'all', label: 'Tất cả' }],
     cap1: [{ value: 'all', label: 'Tất cả' }],
     cap2: [
         { value: 'all', label: 'Tất cả' },
@@ -880,7 +1095,10 @@ const REPORT_UNIT_TREE = [
 let currentRole = 'cap1';
 let currentDetailId = null;
 let currentTab = 'mau01';
+// Khối Danh sách đơn vị thành viên mặc định hiển thị dạng thu gọn khi mở chi tiết kỳ báo cáo.
 let aggregateMembersExpanded = false;
+// Giữ nguyên trạng thái mở rộng khi mở lại chi tiết ngay sau thao tác loại trừ/nhắc nộp
+let preserveMembersPanel = false;
 let collapsedCreateUnitCodes = new Set(['BTP', 'HP', 'TANDTC', 'VKSNDTC']);
 
 // ===================== Toast / helpers =====================
@@ -893,7 +1111,13 @@ function showToast(message, type = 'success') {
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
 }
+// Mã đơn vị tương ứng tài khoản đang đăng nhập (mô phỏng)
+const ROLE_UNIT_CODE = { don_vi: 'HN-STNMT', cap1: 'HN-STP', cap2: 'HN', cap3: 'BTP-CBTNN' };
+// Đơn vị có đơn vị trực thuộc mới được tạo kỳ báo cáo (kỳ đột xuất/tạm tính hoặc nhập thay cấp dưới)
+const ROLE_HAS_CHILDREN = { don_vi: false, cap1: true, cap2: true, cap3: true };
+
 function currentActorName() {
+    if (currentRole === 'don_vi') return 'Sở Tài nguyên và Môi trường Thành phố Hà Nội';
     if (currentRole === 'cap1') return 'Sở Tư pháp Thành phố Hà Nội';
     if (currentRole === 'cap2') return 'UBND Thành phố Hà Nội';
     return 'Cục Bồi thường nhà nước - Bộ Tư pháp';
@@ -903,9 +1127,14 @@ function fmtMoney(v) { return (v || 0).toLocaleString('vi-VN'); }
 function statusBadge(status) { const m = STATUS_META[status]; return `<span class="badge ${m.cls}">${m.label}</span>`; }
 function findKy(id) { return KY_BAO_CAO.find(k => k.id === id); }
 const AGGREGATABLE_STATUSES = ['da_duyet', 'da_tong_hop', 'hoan_thanh'];
-const BTP_VISIBLE_STATUSES = ['da_gui', 'da_duyet', 'hoan_thanh'];
+// (Đã bỏ lọc trạng thái khi hiển thị danh sách cho Bộ Tư pháp - xem isVisibleToBtp)
 function isVisibleToBtp(ky) {
-    return ky.level === 3 || (ky.level === 2 && ky.parentUnit === 'Cục Bồi thường nhà nước - Bộ Tư pháp' && BTP_VISIBLE_STATUSES.includes(ky.status));
+    // Kỳ riêng đơn vị của chính Cục BTNN cũng thuộc phạm vi làm việc của Bộ Tư pháp
+    if (ky.unitCode === 'BTP-CBTNN') return true;
+    // Bộ Tư pháp phải thấy TOÀN BỘ đầu mối cấp dưới kèm trạng thái, kể cả đầu mối chưa gửi,
+    // để theo dõi tiến độ và đôn đốc. Việc chưa gửi chỉ ảnh hưởng tới phạm vi cộng dồn số
+    // liệu (xử lý bằng AGGREGATABLE_STATUSES), không phải ẩn đơn vị khỏi danh sách.
+    return ky.level === 3 || (ky.level === 2 && ky.parentUnit === 'Cục Bồi thường nhà nước - Bộ Tư pháp');
 }
 function getAggregateChildrenForView(ky) {
     const children = (ky.childUnits || []).map(cid => findKy(cid)).filter(Boolean);
@@ -984,6 +1213,12 @@ function escapeJs(value) {
     return String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
+function escapeHtml(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 function selectCreateUnit(code, name, hasChildren) {
     document.getElementById('createUnit').value = name;
     document.getElementById('createUnitCode').value = code;
@@ -993,6 +1228,12 @@ function selectCreateUnit(code, name, hasChildren) {
     const scope = document.getElementById('createReportScope');
     scope.disabled = !hasChildren;
     if (!hasChildren) scope.value = 'don_vi';
+    const scopeHint = document.getElementById('createReportScopeHint');
+    if (scopeHint) {
+        scopeHint.textContent = hasChildren
+            ? 'Chọn "Tổng hợp đơn vị trực thuộc" để gom số liệu của toàn bộ đơn vị cấp dưới vào một báo cáo chung.'
+            : `Đơn vị "${name}" không có đơn vị trực thuộc nên chỉ lập được báo cáo riêng của đơn vị.`;
+    }
     renderCreateUnitTree(document.getElementById('createUnitSearch').value);
 }
 
@@ -1002,14 +1243,191 @@ function onRoleChange() {
     renderListView();
 }
 
+
+// ===================== Nhận dữ liệu từ Excel (màn hình giả lập) =====================
+// Chỉ khả dụng khi Nguồn dữ liệu của biểu mẫu là Nhập liệu thủ công [BR-BTNN-BC-005].
+const IMPORT_FORM_META = {
+    mau01: { label: 'Mẫu 01 - Danh mục vụ việc giải quyết yêu cầu bồi thường', template: 'Mau_01_BTNN.xlsx' },
+    mau03: { label: 'Mẫu 03 - Tổng hợp tình hình yêu cầu bồi thường', template: 'Mau_03_BTNN.xlsx' },
+    mau04: { label: 'Mẫu 04 - Tổng hợp trách nhiệm hoàn trả', template: 'Mau_04_BTNN.xlsx' },
+    mau05: { label: 'Mẫu 05 - Sổ thụ lý hồ sơ giải quyết bồi thường', template: 'Mau_05_BTNN.xlsx' }
+};
+let importExcelForm = 'mau01';
+
+function openImportExcelModal(form) {
+    importExcelForm = form;
+    document.getElementById('importExcelFile').value = '';
+    document.getElementById('importExcelError').style.display = 'none';
+    document.getElementById('importExcelFileInfo').style.display = 'none';
+    document.getElementById('importExcelFileName').textContent = 'Chưa chọn tệp nào';
+    document.getElementById('importExcelOverlay').classList.add('visible');
+}
+
+function closeImportExcelModal() {
+    document.getElementById('importExcelOverlay').classList.remove('visible');
+}
+
+function downloadImportTemplate() {
+    const meta = IMPORT_FORM_META[importExcelForm] || IMPORT_FORM_META.mau01;
+    showToast(`Đang tải file mẫu ${meta.template}.`, 'info');
+}
+
+function onImportFileChange() {
+    const input = document.getElementById('importExcelFile');
+    const info = document.getElementById('importExcelFileInfo');
+    const err = document.getElementById('importExcelError');
+    const nameBox = document.getElementById('importExcelFileName');
+    const file = (input.files || [])[0];
+    if (!file) {
+        info.style.display = 'none';
+        nameBox.textContent = 'Chưa chọn tệp nào';
+        return;
+    }
+    err.style.display = 'none';
+    nameBox.textContent = file.name;
+    const sizeMb = (file.size / 1024 / 1024).toFixed(2);
+    info.style.display = 'block';
+    info.innerHTML = `<i class="fa-solid fa-file-excel" style="color:var(--success-color);"></i> <strong>${escapeHtml(file.name)}</strong> — ${sizeMb} MB`;
+}
+
+function submitImportExcel() {
+    const input = document.getElementById('importExcelFile');
+    const file = (input.files || [])[0];
+    if (!file) {
+        document.getElementById('importExcelError').style.display = 'block';
+        return;
+    }
+    const meta = IMPORT_FORM_META[importExcelForm] || IMPORT_FORM_META.mau01;
+    closeImportExcelModal();
+    // Màn hình giả lập: chỉ mô phỏng luồng nhận file, không xử lý bóc tách dữ liệu thật
+    showToast(`Đã nhận file ${file.name} cho ${meta.label.split(' - ')[0]}. (Màn hình giả lập, chưa bóc tách dữ liệu thật)`, 'success');
+}
+
+// ===================== Popup xác nhận dùng chung =====================
+// Toàn bộ thao tác cần xác nhận đều dùng popup trong giao diện, không dùng hộp thoại
+// confirm()/prompt() mặc định của trình duyệt.
+let appConfirmCallback = null;
+let appConfirmNeedInput = false;
+
+function showAppConfirm(options) {
+    const opt = options || {};
+    appConfirmCallback = opt.onConfirm || null;
+    appConfirmNeedInput = !!opt.requireInput;
+
+    document.getElementById('appConfirmTitle').textContent = opt.title || 'Xác nhận';
+    document.getElementById('appConfirmMessage').innerHTML = opt.message || '';
+    const icon = document.getElementById('appConfirmIcon');
+    icon.className = `fa-solid ${opt.icon || 'fa-circle-question'}`;
+    const tone = opt.tone || 'primary';
+    icon.style.color = `var(--${tone === 'danger' ? 'danger' : tone === 'warning' ? 'warning' : tone === 'success' ? 'success' : 'primary'}-color)`;
+    document.getElementById('appConfirmTitleWrap').style.color = icon.style.color;
+
+    const okBtn = document.getElementById('appConfirmOkBtn');
+    okBtn.className = `btn btn-${tone === 'danger' ? 'danger' : tone === 'warning' ? 'warning' : tone === 'success' ? 'success' : 'primary'}`;
+    okBtn.innerHTML = opt.okIcon ? `<i class="fa-solid ${opt.okIcon}"></i> ${opt.okText || 'Đồng ý'}` : (opt.okText || 'Đồng ý');
+    document.getElementById('appConfirmCancelBtn').textContent = opt.cancelText || 'Hủy bỏ';
+
+    const inputWrap = document.getElementById('appConfirmInputWrap');
+    const input = document.getElementById('appConfirmInput');
+    document.getElementById('appConfirmInputError').style.display = 'none';
+    input.value = '';
+    inputWrap.style.display = appConfirmNeedInput ? 'block' : 'none';
+    if (appConfirmNeedInput) {
+        document.getElementById('appConfirmInputLabel').innerHTML = `${opt.inputLabel || 'Lý do'}<span style="color:red;">*</span>`;
+        input.placeholder = opt.inputPlaceholder || 'Nhập nội dung...';
+    }
+
+    document.getElementById('appConfirmOverlay').classList.add('visible');
+    if (appConfirmNeedInput) setTimeout(() => input.focus(), 50);
+}
+
+function closeAppConfirm() {
+    document.getElementById('appConfirmOverlay').classList.remove('visible');
+    appConfirmCallback = null;
+    appConfirmNeedInput = false;
+}
+
+function acceptAppConfirm() {
+    const input = document.getElementById('appConfirmInput');
+    const value = input.value.trim();
+    if (appConfirmNeedInput && !value) {
+        document.getElementById('appConfirmInputError').style.display = 'block';
+        input.focus();
+        return;
+    }
+    const cb = appConfirmCallback;
+    closeAppConfirm();
+    if (typeof cb === 'function') cb(value);
+}
+
+// ===================== Phân trang dùng chung =====================
+// Mỗi bảng giữ riêng trang hiện tại và số bản ghi trên trang, cho phép người dùng tùy chỉnh.
+const pagers = {
+    list: { page: 1, size: 10 },
+    member: { page: 1, size: 10 }
+};
+const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
+
+function slicePage(key, rows) {
+    const p = pagers[key];
+    const totalPages = Math.max(1, Math.ceil(rows.length / p.size));
+    if (p.page > totalPages) p.page = totalPages;
+    if (p.page < 1) p.page = 1;
+    const start = (p.page - 1) * p.size;
+    return { items: rows.slice(start, start + p.size), start, total: rows.length, totalPages };
+}
+
+function renderPagerBar(key, barId, info, onChange) {
+    const bar = document.getElementById(barId);
+    if (!bar) return;
+    if (!info.total) { bar.innerHTML = ''; return; }
+    const p = pagers[key];
+    const from = info.start + 1;
+    const to = Math.min(info.start + p.size, info.total);
+
+    let buttons = `<button class="pager-btn" ${p.page === 1 ? 'disabled' : ''} onclick="goPage('${key}',${p.page - 1},'${onChange}')" title="Trang trước"><i class="fa-solid fa-chevron-left"></i></button>`;
+    for (let i = 1; i <= info.totalPages; i++) {
+        if (info.totalPages > 7 && i > 2 && i < info.totalPages - 1 && Math.abs(i - p.page) > 1) {
+            if (i === 3 || i === info.totalPages - 2) buttons += `<span style="padding:0 4px; color:var(--text-muted);">...</span>`;
+            continue;
+        }
+        buttons += `<button class="pager-btn ${i === p.page ? 'active' : ''}" onclick="goPage('${key}',${i},'${onChange}')">${i}</button>`;
+    }
+    buttons += `<button class="pager-btn" ${p.page === info.totalPages ? 'disabled' : ''} onclick="goPage('${key}',${p.page + 1},'${onChange}')" title="Trang sau"><i class="fa-solid fa-chevron-right"></i></button>`;
+
+    bar.innerHTML = `
+        <div class="pager-left">
+            <span>Hiển thị</span>
+            <select onchange="changePageSize('${key}', this.value, '${onChange}')">
+                ${PAGE_SIZE_OPTIONS.map(n => `<option value="${n}" ${n === p.size ? 'selected' : ''}>${n}</option>`).join('')}
+            </select>
+            <span>bản ghi/trang — Đang xem ${from} đến ${to} trong tổng số <strong>${info.total}</strong> bản ghi</span>
+        </div>
+        <div class="pager-right">${buttons}</div>`;
+}
+
+function goPage(key, page, fnName) {
+    pagers[key].page = page;
+    if (typeof window[fnName] === 'function') window[fnName]();
+}
+
+function changePageSize(key, size, fnName) {
+    pagers[key].size = Number(size) || 10;
+    pagers[key].page = 1;
+    if (typeof window[fnName] === 'function') window[fnName]();
+}
+
 function renderListView() {
     document.getElementById('detailView').style.display = 'none';
     document.getElementById('listView').style.display = 'block';
     const unitSelect = document.getElementById('fUnit');
     unitSelect.innerHTML = UNIT_OPTIONS[currentRole].map(o => `<option value="${o.value}">${o.label}</option>`).join('');
-    document.getElementById('fUnitLabel').textContent = currentRole === 'cap1' ? 'Đơn vị báo cáo' : (currentRole === 'cap2' ? 'Đơn vị báo cáo thuộc phạm vi' : 'Đầu mối tổng hợp');
-    document.getElementById('btnCreatePeriod').style.display = currentRole === 'cap1' ? 'inline-flex' : 'none';
-    document.getElementById('listTitle').innerHTML = currentRole === 'cap1'
+    const isOwnUnitRole = currentRole === 'don_vi' || currentRole === 'cap1';
+    document.getElementById('fUnitLabel').textContent = isOwnUnitRole ? 'Đơn vị báo cáo' : (currentRole === 'cap2' ? 'Đơn vị báo cáo thuộc phạm vi' : 'Đầu mối tổng hợp');
+    // Kỳ báo cáo định kỳ do hệ thống tự sinh theo [BR-BTNN-BC-008]. Nút Tạo kỳ chỉ dành cho
+    // đơn vị có đơn vị trực thuộc, phục vụ kỳ đột xuất/tạm tính hoặc nhập thay cho cấp dưới.
+    document.getElementById('btnCreatePeriod').style.display = ROLE_HAS_CHILDREN[currentRole] ? 'inline-flex' : 'none';
+    document.getElementById('listTitle').innerHTML = isOwnUnitRole
         ? '<i class="fa-solid fa-table-list"></i> Danh sách kỳ báo cáo của đơn vị'
         : '<i class="fa-solid fa-table-list"></i> Danh sách kỳ báo cáo cần duyệt/tổng hợp';
     renderQuickAggregateCard();
@@ -1019,7 +1437,7 @@ function renderListView() {
 function renderQuickAggregateCard() {
     const card = document.getElementById('quickAggregateCard');
     const body = document.getElementById('quickAggregateBody');
-    if (currentRole === 'cap1') {
+    if (currentRole === 'don_vi' || currentRole === 'cap1') {
         card.style.display = 'none';
         return;
     }
@@ -1045,14 +1463,50 @@ function renderQuickAggregateCard() {
 }
 
 function getScopedList() {
-    if (currentRole === 'cap1') return KY_BAO_CAO.filter(k => k.level === 1 && k.parentUnit === 'UBND Thành phố Hà Nội');
+    // Đơn vị báo cáo thường: chỉ thấy kỳ báo cáo của chính đơn vị mình
+    if (currentRole === 'don_vi') {
+        return KY_BAO_CAO.filter(k => k.unitCode === 'HN-STNMT');
+    }
+    // Cấp 1 thấy kỳ báo cáo của các đơn vị mình phụ trách, đồng thời thấy cả kỳ báo cáo
+    // tổng hợp do chính mình tạo (phạm vi Tổng hợp đơn vị trực thuộc), nếu không sau khi
+    // tạo xong kỳ tổng hợp sẽ không tìm lại được trong danh sách.
+    if (currentRole === 'cap1') {
+        return KY_BAO_CAO.filter(k =>
+            (k.level === 1 && k.parentUnit === 'UBND Thành phố Hà Nội') ||
+            (k.level > 1 && k.inputUnit === 'Sở Tư pháp Thành phố Hà Nội')
+        );
+    }
     if (currentRole === 'cap2') {
         return KY_BAO_CAO.filter(k =>
             (k.level === 1 && k.parentUnit === 'UBND Thành phố Hà Nội') ||
-            (k.level === 2 && k.unitCode === 'HN')
+            k.unitCode === 'HN' // gồm cả kỳ riêng đơn vị và kỳ tổng hợp của chính UBND Thành phố
         );
     }
     return KY_BAO_CAO.filter(isVisibleToBtp);
+}
+
+// Nút thao tác trên từng dòng nói rõ việc người dùng làm được với kỳ báo cáo đó,
+// thay vì chỉ một icon "Mở" chung chung cho mọi trạng thái.
+function getRowActionButton(k) {
+    const mode = currentViewMode(k);
+    const editable = ['dang_nhap_lieu', 'yeu_cau_chinh_ly'].includes(k.status);
+
+    if (mode === 'own' && editable) {
+        return `<button class="btn btn-primary btn-sm" onclick="openDetail(${k.id})" style="white-space:nowrap;"><i class="fa-solid fa-pen-to-square"></i> Nhập liệu &amp; Gửi</button>`;
+    }
+    if (mode === 'approve' && k.status === 'da_gui') {
+        return `<button class="btn btn-success btn-sm" onclick="openDetail(${k.id})" style="white-space:nowrap;"><i class="fa-solid fa-clipboard-check"></i> Xem &amp; Duyệt</button>`;
+    }
+    return `<button class="btn btn-secondary btn-sm" onclick="openDetail(${k.id})" style="white-space:nowrap;"><i class="fa-solid fa-eye"></i> Xem</button>`;
+}
+
+function resetListFilter() {
+    document.getElementById('fPeriodType').value = 'all';
+    document.getElementById('fUnit').value = 'all';
+    document.getElementById('fStatus').value = 'all';
+    document.getElementById('fUnitKeyword').value = '';
+    pagers.list.page = 1;
+    renderListView();
 }
 
 function applyListFilter() {
@@ -1060,18 +1514,27 @@ function applyListFilter() {
     const periodType = document.getElementById('fPeriodType').value;
     const unit = document.getElementById('fUnit').value;
     const status = document.getElementById('fStatus').value;
+    const keyword = (document.getElementById('fUnitKeyword').value || '').trim().toLowerCase();
     let rows = getScopedList().filter(k => String(k.year) === year);
     if (periodType !== 'all') rows = rows.filter(k => k.periodType === periodType);
     if (unit !== 'all') rows = rows.filter(k => String(k.id) === String(unit));
     if (status !== 'all') rows = rows.filter(k => k.status === status);
+    // Tìm kiếm không phân biệt hoa thường theo cả mã đơn vị và tên đơn vị báo cáo
+    if (keyword) {
+        rows = rows.filter(k =>
+            String(k.unitCode || '').toLowerCase().includes(keyword) ||
+            String(k.unit || '').toLowerCase().includes(keyword)
+        );
+    }
 
     const tbody = document.getElementById('listTableBody');
+    const pageInfo = slicePage('list', rows);
     if (!rows.length) {
         tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:20px;">Không có dữ liệu phù hợp.</td></tr>`;
     } else {
-        tbody.innerHTML = rows.map((k, i) => `
+        tbody.innerHTML = pageInfo.items.map((k, i) => `
             <tr class="list-row" onclick="openDetail(${k.id})">
-                <td>${i + 1}</td>
+                <td>${pageInfo.start + i + 1}</td>
                 <td>${k.year}</td>
                 <td>${PERIOD_META[k.periodType]}</td>
                 <td>${reportKindBadge(k)}</td>
@@ -1080,19 +1543,20 @@ function applyListFilter() {
                 <td>${statusBadge(k.status)}</td>
                 <td>${k.submittedDate || '-'}</td>
                 <td onclick="event.stopPropagation();">
-                    <button class="icon-btn" title="${currentRole === 'cap1' ? 'Mở' : 'Xem/Duyệt'}" onclick="openDetail(${k.id})"><i class="fa-solid fa-folder-open"></i></button>
-                    ${(currentRole === 'cap1' && k.status === 'dang_nhap_lieu') ? `<button class="icon-btn danger" title="Xóa" onclick="deletePeriod(${k.id})"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                    ${getRowActionButton(k)}
+                    ${((currentRole === 'don_vi' || currentRole === 'cap1') && k.status === 'dang_nhap_lieu') ? `<button class="icon-btn danger" title="Xóa" onclick="deletePeriod(${k.id})"><i class="fa-solid fa-trash-can"></i></button>` : ''}
                 </td>
             </tr>`).join('');
     }
+    renderPagerBar('list', 'listPagerBar', pageInfo, 'applyListFilter');
 
     // Pending group (chưa tổng hợp) - only for cấp 2/3 viewing their own aggregate record
     const pendingCard = document.getElementById('pendingGroupCard');
-    if (currentRole !== 'cap1') {
+    if (currentRole === 'cap2' || currentRole === 'cap3') {
         const parentId = currentRole === 'cap2' ? 4 : 5;
         const parent = findKy(parentId);
         const pendingSource = currentRole === 'cap3' ? getAggregateChildrenForView(parent) : (parent.childUnits || []).map(cid => findKy(cid)).filter(Boolean);
-        const pending = pendingSource.filter(c => !AGGREGATABLE_STATUSES.includes(c.status));
+        const pending = pendingSource.filter(c => !AGGREGATABLE_STATUSES.includes(c.status) && !isMemberExcluded(parent, c.id));
         if (pending.length) {
             pendingCard.style.display = 'block';
             document.getElementById('pendingGroupBody').innerHTML = `
@@ -1109,11 +1573,21 @@ function applyListFilter() {
 }
 
 function deletePeriod(id) {
-    if (!confirm('Bạn có chắc chắn muốn xóa kỳ báo cáo này không?')) return;
-    const idx = KY_BAO_CAO.findIndex(k => k.id === id);
-    if (idx > -1) KY_BAO_CAO.splice(idx, 1);
-    showToast('Đã xóa kỳ báo cáo.', 'success');
-    renderListView();
+    const ky = findKy(id);
+    showAppConfirm({
+        title: 'Xác nhận xóa kỳ báo cáo',
+        icon: 'fa-trash-can',
+        tone: 'danger',
+        okText: 'Xóa kỳ báo cáo',
+        okIcon: 'fa-trash-can',
+        message: `Bạn có chắc chắn muốn xóa kỳ báo cáo <strong>${ky ? escapeHtml(ky.unit) : ''}</strong> không? Thao tác này không thể khôi phục.`,
+        onConfirm: () => {
+            const idx = KY_BAO_CAO.findIndex(k => k.id === id);
+            if (idx > -1) KY_BAO_CAO.splice(idx, 1);
+            showToast('Đã xóa kỳ báo cáo.', 'success');
+            renderListView();
+        }
+    });
 }
 
 function openCreatePeriod() {
@@ -1211,10 +1685,18 @@ function submitCreatePeriod() {
     const duplicate = findDuplicateOfficialPeriod({ unitCode, reportScope, reportType, periodType, year });
     if (duplicate) {
         showToast('Kỳ báo cáo đã tồn tại, hệ thống không tạo trùng kỳ chính thức.', 'warning');
-        if (confirm('Kỳ báo cáo đã tồn tại. Bạn có muốn mở kỳ báo cáo hiện có không?')) {
-            closeCreatePeriod();
-            openDetail(duplicate.id, duplicate.reportType);
-        }
+        showAppConfirm({
+            title: 'Kỳ báo cáo đã tồn tại',
+            icon: 'fa-triangle-exclamation',
+            tone: 'warning',
+            okText: 'Mở kỳ báo cáo hiện có',
+            okIcon: 'fa-arrow-up-right-from-square',
+            message: `Kỳ báo cáo này đã tồn tại trên hệ thống, không thể tạo trùng kỳ chính thức. Bạn có muốn mở kỳ báo cáo hiện có của <strong>${escapeHtml(duplicate.unit)}</strong> không?`,
+            onConfirm: () => {
+                closeCreatePeriod();
+                openDetail(duplicate.id, duplicate.reportType);
+            }
+        });
         return;
     }
     const selectedNode = findUnitNode(unitCode);
@@ -1276,9 +1758,12 @@ function getLatestRevisionRequest(ky) {
 function currentViewMode(ky) {
     // 'own' = cấp 1 xem kỳ báo cáo của chính mình (hoặc cấp 2/3 xem bản tổng hợp của chính mình)
     // 'approve' = cấp trên xem kỳ báo cáo của đơn vị cấp dưới để duyệt/yêu cầu chỉnh lý
+    // Kỳ báo cáo thuộc chính đơn vị đang đăng nhập (kể cả kỳ riêng đơn vị lẫn kỳ tổng hợp)
+    // thì ở chế độ 'own'; kỳ của đơn vị khác thì ở chế độ 'approve'.
+    if (ky.unitCode === ROLE_UNIT_CODE[currentRole]) return 'own';
+    // Sở Tư pháp làm đầu mối kỹ thuật, được nhập thay nên vẫn ở chế độ 'own' với kỳ do mình lập
     if (currentRole === 'cap1') return 'own';
-    if (currentRole === 'cap2') return ky.level === 2 ? 'own' : 'approve';
-    return ky.level === 3 ? 'own' : 'approve';
+    return 'approve';
 }
 
 function getInitialReportTab(reportType) {
@@ -1287,16 +1772,39 @@ function getInitialReportTab(reportType) {
 
 function openDetail(id, initialTab) {
     currentDetailId = id;
-    aggregateMembersExpanded = false;
+    // Mặc định thu gọn khối Danh sách đơn vị thành viên; chỉ giữ mở nếu vừa thao tác trong khối đó
+    if (preserveMembersPanel) {
+        preserveMembersPanel = false;
+    } else {
+        aggregateMembersExpanded = false;
+        pagers.member.page = 1;
+        const kwBox = document.getElementById('memberKeyword');
+        if (kwBox) kwBox.value = '';
+    }
     const ky = findKy(id);
     currentTab = getInitialReportTab(initialTab || ky.reportType);
+
+    // Kỳ báo cáo chỉ gồm 01 biểu mẫu thì chỉ hiện đúng tab của biểu mẫu đó và tab Lịch sử xử lý
+    const kind = ky.reportType || 'tt08_all';
+    document.querySelectorAll('.form-tab').forEach(btn => {
+        const t = btn.dataset.tab;
+        const show = kind === 'tt08_all' || t === kind || t === 'history';
+        btn.style.display = show ? 'inline-flex' : 'none';
+    });
+
     document.getElementById('listView').style.display = 'none';
     document.getElementById('detailView').style.display = 'block';
     document.getElementById('detailTitle').textContent = `Kỳ báo cáo ${ky.year} - ${ky.unit}`;
+    // [BR-BTNN-BC-003] Kỳ ở trạng thái Yêu cầu chỉnh lý phải hiển thị nổi bật lý do cấp trên trả lại
     const latestRevision = getLatestRevisionRequest(ky);
-    document.getElementById('alertArea').innerHTML = latestRevision && ky.status === 'dang_nhap_lieu'
-        ? `<div class="alert-box alert-warning"><i class="fa-solid fa-rotate-left" style="margin-top:2px;"></i><div><strong>Nội dung yêu cầu chỉnh lý:</strong><br>${latestRevision.reason}<br><span style="color:var(--text-muted);">Thời điểm yêu cầu: ${latestRevision.time}</span></div></div>`
+    const alertAreaEl = document.getElementById('alertArea');
+    const showRevision = latestRevision && ky.status === 'yeu_cau_chinh_ly';
+    alertAreaEl.innerHTML = showRevision
+        ? `<div class="alert-box alert-danger"><i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i><div><strong>KỲ BÁO CÁO BỊ YÊU CẦU CHỈNH LÝ</strong><br><strong>Nội dung yêu cầu chỉnh lý:</strong> ${latestRevision.reason}<br><span style="color:var(--text-muted);">Người yêu cầu: ${latestRevision.text || '--'} - Thời điểm: ${latestRevision.time}</span></div></div>`
         : '';
+    if (showRevision) {
+        setTimeout(() => alertAreaEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+    }
     document.getElementById('mYear').textContent = ky.year;
     document.getElementById('mPeriodType').textContent = ky.reportFromDate && ky.reportToDate
         ? `Báo cáo năm số liệu thực tế (${ky.reportFromDate} - ${ky.reportToDate})`
@@ -1313,7 +1821,8 @@ function openDetail(id, initialTab) {
     // Pending units info block (for level 2/3 own aggregate view)
     const pendingCard = document.getElementById('pendingUnitsCard');
     if (mode === 'own' && ky.level > 1) {
-        const visibleChildren = getAggregateChildrenForView(ky);
+        // Đơn vị đã bị loại trừ không tính vào tiến độ tổng hợp
+        const visibleChildren = getAggregateChildrenForView(ky).filter(c => !isMemberExcluded(ky, c.id));
         const pending = visibleChildren.filter(c => !AGGREGATABLE_STATUSES.includes(c.status));
         const approved = visibleChildren.filter(c => AGGREGATABLE_STATUSES.includes(c.status));
         pendingCard.style.display = 'block';
@@ -1341,7 +1850,22 @@ function updateReadonlySourceLabels(ky) {
         history: 'Lịch sử xử lý kỳ báo cáo.'
     };
     if (detailBadge) detailBadge.innerHTML = `<i class="fa-solid fa-database"></i> ${sourceLabel}`;
-    if (detailHint) detailHint.textContent = sourceHints[currentTab] || 'Nguồn dữ liệu được xác định khi tạo kỳ báo cáo.';
+
+    // Chỉ cho đổi Nguồn dữ liệu khi kỳ đang mở quyền nhập liệu và không phải tab Lịch sử
+    const canChooseSource = ['dang_nhap_lieu', 'yeu_cau_chinh_ly'].includes(ky.status) && currentTab !== 'history';
+    const sourceSelect = document.getElementById('detailSourceSelect');
+    const readonlyBox = document.getElementById('detailSourceReadonlyBox');
+    if (sourceSelect) {
+        sourceSelect.style.display = canChooseSource ? 'block' : 'none';
+        sourceSelect.value = ky.sources?.[activeSourceForm] || 'tu_dong';
+    }
+    if (readonlyBox) readonlyBox.style.display = canChooseSource ? 'none' : 'flex';
+
+    if (detailHint) {
+        detailHint.textContent = canChooseSource
+            ? 'Chọn cách lấy số liệu cho biểu mẫu đang xem: lấy tự động từ hệ thống hoặc tự nhập tay.'
+            : (sourceHints[currentTab] || 'Nguồn dữ liệu được xác định khi tạo kỳ báo cáo.');
+    }
     document.querySelectorAll('[data-source-label]').forEach(el => {
         const form = el.dataset.sourceLabel;
         el.innerHTML = `<i class="fa-solid fa-database"></i> ${getSourceLabel(ky.sources?.[form] || 'tu_dong')}`;
@@ -1355,31 +1879,130 @@ function renderAggregateMembers(ky, mode) {
     const content = document.getElementById('aggregateMembersContent');
     const toggleText = document.getElementById('aggregateMembersToggleText');
     const toggleIcon = document.getElementById('aggregateMembersToggleIcon');
-    if (!(mode === 'own' && ky.level > 1)) {
+    // Hiển thị cho mọi kỳ báo cáo có phạm vi Tổng hợp đơn vị trực thuộc, kể cả khi cấp trên
+    // mở ra để duyệt - để theo dõi được đơn vị nào đã gửi, đơn vị nào chưa.
+    const isAggregatePeriod = ky.level > 1 || ky.reportScope === 'tong_hop' || (ky.childUnits || []).length > 0;
+    if (!isAggregatePeriod) {
         card.style.display = 'none';
         return;
     }
-    const children = getAggregateChildrenForView(ky);
+    const allChildren = getAggregateChildrenForView(ky);
     card.style.display = 'block';
-    title.innerHTML = `<i class="fa-solid fa-sitemap"></i> Danh sách đơn vị thành viên (${children.length})`;
+    title.innerHTML = `<i class="fa-solid fa-sitemap"></i> Danh sách đơn vị thành viên (${allChildren.length})`;
     content.style.display = aggregateMembersExpanded ? 'block' : 'none';
     toggleText.textContent = aggregateMembersExpanded ? 'Thu gọn' : 'Mở rộng';
     toggleIcon.className = `fa-solid ${aggregateMembersExpanded ? 'fa-chevron-up' : 'fa-chevron-down'}`;
+
+    // Tìm kiếm theo tên đơn vị thành viên, không phân biệt hoa thường
+    const kw = ((document.getElementById('memberKeyword') || {}).value || '').trim().toLowerCase();
+    const children = kw
+        ? allChildren.filter(c => String(c.unit || '').toLowerCase().includes(kw))
+        : allChildren;
+
     if (!children.length) {
-        body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:16px;">Chưa có đơn vị thành viên thuộc phạm vi tổng hợp.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:16px;">${kw ? 'Không tìm thấy đơn vị thành viên phù hợp từ khóa tìm kiếm.' : 'Chưa có đơn vị thành viên thuộc phạm vi tổng hợp.'}</td></tr>`;
+        renderPagerBar('member', 'memberPagerBar', { total: 0, start: 0, totalPages: 1 }, 'refreshAggregateMembers');
         return;
     }
-    body.innerHTML = children.map((child, index) => {
-        const included = ky.periodType === 'tam_tinh' || AGGREGATABLE_STATUSES.includes(child.status);
-        return `<tr class="list-row" onclick="openDetail(${child.id})">
-            <td>${index + 1}</td>
+    const memberPage = slicePage('member', children);
+    // Chỉ đơn vị đầu mối đang lập báo cáo tổng hợp mới được loại trừ / nhắc nộp;
+    // khóa lại khi kỳ tổng hợp đã gửi hoặc đã chốt.
+    const canManageMembers = mode === 'own' && ['dang_nhap_lieu', 'yeu_cau_chinh_ly', 'da_tong_hop'].includes(ky.status);
+
+    body.innerHTML = memberPage.items.map((child, index) => {
+        const excluded = isMemberExcluded(ky, child.id);
+        const included = !excluded && (ky.periodType === 'tam_tinh' || AGGREGATABLE_STATUSES.includes(child.status));
+        const submitted = AGGREGATABLE_STATUSES.includes(child.status) || child.status === 'da_gui';
+
+        let resultBadge;
+        if (excluded) resultBadge = '<span class="badge badge-danger">Đã loại trừ</span>';
+        else if (included) resultBadge = '<span class="badge badge-success">Được tổng hợp</span>';
+        else resultBadge = '<span class="badge badge-muted">Chưa tổng hợp</span>';
+
+        let actions = '';
+        if (canManageMembers) {
+            actions += excluded
+                ? `<button class="btn btn-secondary btn-sm" title="Đưa đơn vị trở lại phạm vi tổng hợp" onclick="event.stopPropagation(); toggleExcludeMember(${child.id})"><i class="fa-solid fa-rotate-left"></i> Đưa lại vào</button>`
+                : `<button class="btn btn-secondary btn-sm" title="Loại trừ đơn vị khỏi kỳ tổng hợp này" onclick="event.stopPropagation(); toggleExcludeMember(${child.id})"><i class="fa-solid fa-ban"></i> Loại trừ</button>`;
+            if (!excluded && !submitted) {
+                actions += ` <button class="btn btn-warning btn-sm" title="Gửi thông báo nhắc đơn vị nộp báo cáo" onclick="event.stopPropagation(); remindMember(${child.id})"><i class="fa-solid fa-bell"></i> Nhắc nộp</button>`;
+            }
+        }
+        if (!actions) actions = '<span style="color:var(--text-muted); font-size:12px;">-</span>';
+
+        return `<tr class="list-row" onclick="openDetail(${child.id})" style="${excluded ? 'opacity:.55;' : ''}">
+            <td>${memberPage.start + index + 1}</td>
             <td class="text-left">${child.unit}</td>
             <td>${countCases(child)}</td>
             <td>${statusBadge(child.status)}</td>
             <td>${child.submittedDate || '-'}</td>
-            <td>${included ? '<span class="badge badge-success">Được tổng hợp</span>' : '<span class="badge badge-muted">Chưa tổng hợp</span>'}</td>
+            <td>${resultBadge}</td>
+            <td onclick="event.stopPropagation();" style="white-space:nowrap;">${actions}</td>
         </tr>`;
     }).join('');
+    renderPagerBar('member', 'memberPagerBar', memberPage, 'refreshAggregateMembers');
+}
+
+// Vẽ lại riêng bảng đơn vị thành viên khi đổi từ khóa tìm kiếm hoặc phân trang
+function refreshAggregateMembers() {
+    const ky = findKy(currentDetailId);
+    if (ky) renderAggregateMembers(ky, currentViewMode(ky));
+}
+
+function onMemberKeywordChange() {
+    pagers.member.page = 1;
+    refreshAggregateMembers();
+}
+
+// ===== Loại trừ đơn vị khỏi kỳ tổng hợp & Nhắc nộp =====
+function isMemberExcluded(ky, childId) {
+    return (ky.excludedUnits || []).includes(childId);
+}
+
+function toggleExcludeMember(childId) {
+    const ky = findKy(currentDetailId);
+    const child = findKy(childId);
+    if (!ky || !child) return;
+    if (!ky.excludedUnits) ky.excludedUnits = [];
+
+    if (isMemberExcluded(ky, childId)) {
+        ky.excludedUnits = ky.excludedUnits.filter(id => id !== childId);
+        ky.history.push({ time: nowLog(), text: `${currentActorName()} đưa đơn vị ${child.unit} trở lại phạm vi tổng hợp.` });
+        showToast(`Đã đưa ${child.unit} trở lại phạm vi tổng hợp. Vui lòng bấm Tổng hợp số liệu để tính lại.`, 'success');
+        aggregateMembersExpanded = true; preserveMembersPanel = true;
+        openDetail(ky.id);
+        return;
+    }
+
+    showAppConfirm({
+        title: 'Loại trừ đơn vị khỏi kỳ tổng hợp',
+        icon: 'fa-ban',
+        tone: 'warning',
+        okText: 'Xác nhận loại trừ',
+        okIcon: 'fa-ban',
+        message: `Đơn vị <strong>${escapeHtml(child.unit)}</strong> sẽ bị loại khỏi phạm vi cộng dồn và khỏi tiến độ theo dõi nộp báo cáo của kỳ tổng hợp này.`,
+        requireInput: true,
+        inputLabel: 'Lý do loại trừ',
+        inputPlaceholder: 'Nhập lý do loại trừ đơn vị khỏi kỳ tổng hợp...',
+        onConfirm: (reason) => {
+            ky.excludedUnits.push(childId);
+            ky.history.push({ time: nowLog(), text: `${currentActorName()} loại trừ đơn vị ${child.unit} khỏi kỳ tổng hợp.`, reason: `Lý do loại trừ: ${reason}` });
+            showToast(`Đã loại trừ ${child.unit}. Vui lòng bấm Tổng hợp số liệu để tính lại.`, 'warning');
+            aggregateMembersExpanded = true; preserveMembersPanel = true;
+            openDetail(ky.id);
+        }
+    });
+}
+
+function remindMember(childId) {
+    const ky = findKy(currentDetailId);
+    const child = findKy(childId);
+    if (!ky || !child) return;
+    ky.history.push({ time: nowLog(), text: `${currentActorName()} gửi thông báo nhắc nộp báo cáo tới ${child.unit}.` });
+    child.history.push({ time: nowLog(), text: `${currentActorName()} nhắc nộp kỳ báo cáo.` });
+    showToast(`Đã gửi thông báo nhắc nộp tới ${child.unit}.`, 'success');
+    aggregateMembersExpanded = true; preserveMembersPanel = true;
+    openDetail(ky.id);
 }
 
 function toggleAggregateMembers() {
@@ -1393,7 +2016,7 @@ function closeDetail() { renderListView(); }
 
 function switchTab(tab) {
     currentTab = tab;
-    document.getElementById('reportSelect').value = tab;
+    document.querySelectorAll('.form-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
     const ky = findKy(currentDetailId);
     updateReadonlySourceLabels(ky);
@@ -1409,9 +2032,11 @@ function switchTab(tab) {
 function onSourceChange(form, value) {
     const ky = findKy(currentDetailId);
     if (value === 'tu_dong') {
-        if (!confirm(`Dữ liệu nhập tay của ${form.toUpperCase()} sẽ bị thay thế bằng dữ liệu tổng hợp từ hệ thống, bạn có chắc chắn muốn tiếp tục?`)) {
-            updateReadonlySourceLabels(ky);
-            return;
+        // Chuyển sang nguồn tự động: loại bỏ toàn bộ dòng nhập tay, biểu mẫu chỉ còn số liệu hệ thống
+        if (form === 'mau01' && ky.mau01Rows) {
+            Object.keys(ky.mau01Rows).forEach(f => {
+                ky.mau01Rows[f] = (ky.mau01Rows[f] || []).filter(r => r.origin === 'system');
+            });
         }
         showToast(`Đã tổng hợp lại ${form.toUpperCase()} từ dữ liệu hệ thống.`, 'success');
     }
@@ -1469,28 +2094,19 @@ function renderMau01(ky, readOnly) {
     const editable = ky.status === 'dang_nhap_lieu' || ky.status === 'yeu_cau_chinh_ly';
     const colCount = 10;
     
-    // Cập nhật trạng thái hiển thị trên Toolbar Mẫu 01
+    // Toolbar Mẫu 01 hiển thị theo Nguồn dữ liệu của biểu mẫu [BR-BTNN-BC-005]:
+    // - Tự động tổng hợp từ hệ thống: chỉ cho Đồng bộ, không cho chọn/thêm dòng thủ công.
+    // - Nhập liệu thủ công: cho Thêm dòng nhập tay và Nhận Excel, không có Đồng bộ.
+    // Kỳ đã gửi/đã duyệt hoặc cấp trên đang xem để duyệt thì ẩn toàn bộ nút tác động dữ liệu.
+    const isAutoSource = (ky.sources?.mau01 || 'tu_dong') === 'tu_dong';
     const btnSync = document.getElementById('btnSyncSystem');
-    const btnPick = document.getElementById('btnPickCase');
-    const btnAdd = document.getElementById('btnAddManualRow');
-    if (btnSync) btnSync.style.display = 'inline-flex';
-    if (btnPick) btnPick.style.display = 'inline-flex';
-    if (btnAdd) btnAdd.style.display = 'inline-flex';
+    const canEditRows = editable && !readOnly;
+    if (btnSync) btnSync.style.display = (canEditRows && isAutoSource) ? 'inline-flex' : 'none';
+    // Nhập tay trực tiếp trên lưới: chỉ khi nguồn là Nhập liệu thủ công và kỳ còn được sửa
+    const canAddManual = canEditRows && !isAutoSource;
+    const btnImport01 = document.getElementById('btnImportMau01');
+    if (btnImport01) btnImport01.style.display = canAddManual ? 'inline-flex' : 'none';
 
-    // Cập nhật thẻ trạng thái demo ở banner
-    const demoWrap = document.getElementById('mau01QuickDemoBtnWrap');
-    if (demoWrap) {
-        if (editable) {
-            demoWrap.innerHTML = `<span class="badge badge-success" style="font-size:11.5px; padding:5px 10px;"><i class="fa-solid fa-lock-open"></i> Đang mở quyền nhập liệu</span>`;
-        } else {
-            demoWrap.innerHTML = `
-                <span class="badge badge-info" style="font-size:11px; padding:4px 8px;"><i class="fa-solid fa-lock"></i> Chỉ đọc (Chờ duyệt/Đã duyệt)</span>
-                <button type="button" class="btn btn-warning btn-sm" onclick="openDetail(10)" style="font-size:11.5px; padding:4px 10px;" title="Mở Sở TN&MT để trải nghiệm thêm/sửa/đồng bộ trực tiếp">
-                    <i class="fa-solid fa-arrow-right"></i> Mở Kỳ đang nhập (Sở TN&MT)
-                </button>
-            `;
-        }
-    }
 
     let html = `<table class="custom-table" style="font-size:12.5px;">
         <thead>
@@ -1514,24 +2130,35 @@ function renderMau01(ky, readOnly) {
 
     let total = 0;
     FIELDS.forEach((field, fieldIndex) => {
-        const rows = ky.mau01Rows[field] || [];
+        // Nguồn tự động: chỉ hiển thị vụ việc lấy từ hệ thống, không có dòng nhập tay
+        const all = ky.mau01Rows[field] || [];
+        const rows = all
+            .map((r, realIdx) => ({ r, realIdx }))
+            .filter(x => !isAutoSource || x.r.origin === 'system');
         total += rows.length;
         const roman = ['I','II','III','IV','V','VI'][fieldIndex];
         html += `<tr class="group-header">
             <td>${roman}</td>
-            <td colspan="8">${field.replace(/^[IVX]+\.\s*/, '')} (${rows.length} vụ việc)</td>
-            <td style="text-align:center;">
-                <button class="btn btn-secondary btn-sm" onclick="openAddMau01Modal('${escapeJs(field)}')" style="font-size:11px; padding:2px 6px;">
-                    <i class="fa-solid fa-plus"></i> Thêm vụ
-                </button>
-            </td>
+            <td colspan="9" class="text-left">${field.replace(/^[IVX]+\.\s*/, '')} (${rows.length} vụ việc)</td>
         </tr>`;
 
         if (rows.length === 0) {
             html += `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); font-style:italic; padding:10px;">Chưa có vụ việc nào trong lĩnh vực này.</td></tr>`;
         } else {
-            rows.forEach((row, idx) => {
+            rows.forEach((entry, order) => {
+                const row = entry.r;
+                const idx = entry.realIdx;
                 const isSys = row.origin === 'system';
+                // Dòng nhập tay: cho nhập trực tiếp trên lưới (cột 1-4 + cột 5-8)
+                // Dòng hệ thống: khóa cột định danh 1-4, chỉ cho hiệu chỉnh thuyết minh cột 5-8 [BR-BTNN-BC-011]
+                const inlineEdit = canEditRows && !isSys;
+                const inlineNote = canEditRows;
+                const rowKey = btoa(unescape(encodeURIComponent(field))).replace(/[^A-Za-z0-9]/g, '');
+                const txt = (k, extra = '') => `<input class="cell-input text-left" id="${k === 'requester' ? `m01_inline_${rowKey}_${idx}` : ''}" style="font-size:12px;${extra}" value="${escapeHtml(row[k] || '')}" onchange="updateMau01Field('${escapeJs(field)}',${idx},'${k}',this.value)">`;
+                const area = (k) => `<textarea class="cell-textarea" rows="2" onchange="updateMau01Field('${escapeJs(field)}',${idx},'${k}',this.value)">${escapeHtml(row[k] || '')}</textarea>`;
+                const lawSelect = `<select class="cell-input" style="font-size:12px;" onchange="updateMau01Field('${escapeJs(field)}',${idx},'law',this.value)">
+                    ${APPLICABLE_LAW_OPTIONS.map(o => `<option value="${escapeHtml(o)}" ${row.law === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('')}
+                </select>`;
                 const originBadge = isSys 
                     ? '<span class="badge badge-info" style="font-size:10px; margin-right:4px;"><i class="fa-solid fa-database"></i> Hệ thống</span>' 
                     : '<span class="badge badge-warning" style="font-size:10px; margin-right:4px;"><i class="fa-solid fa-pen"></i> Nhập tay</span>';
@@ -1539,34 +2166,39 @@ function renderMau01(ky, readOnly) {
                     ? '<span class="badge badge-warning" style="font-size:10px; margin-left:4px;" title="Đã có hiệu chỉnh thuyết minh"><i class="fa-solid fa-pencil"></i> Đã hiệu chỉnh</span>' 
                     : '';
 
-                // Thao tác cố định 3 slot theo Rule #3
-                const btnSlot1 = `<button class="icon-btn" title="Chỉnh sửa vụ việc" onclick="openEditMau01Row('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                
-                const btnSlot2 = (isSys && row.isOverridden)
+                // Thao tác cố định 2 slot theo Rule #3. Không còn slot Chỉnh sửa vì toàn bộ
+                // ô dữ liệu đã cho nhập/sửa trực tiếp ngay trên lưới.
+                const btnSlot1 = (isSys && row.isOverridden)
                     ? `<button class="icon-btn" style="color:var(--warning-color);" title="Khôi phục nguyên bản từ hệ thống" onclick="restoreMau01Original('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-rotate-left"></i></button>`
                     : `<button class="icon-btn" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Không có thay đổi để khôi phục"><i class="fa-solid fa-rotate-left"></i></button>`;
                 
-                const btnSlot3 = `<button class="icon-btn danger" title="Xóa vụ việc này" onclick="deleteMau01Row('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-trash-can"></i></button>`;
+                const btnSlot2 = canEditRows
+                    ? `<button class="icon-btn danger" title="Xóa vụ việc này" onclick="deleteMau01Row('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-trash-can"></i></button>`
+                    : `<button class="icon-btn danger" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Kỳ báo cáo không còn được chỉnh sửa"><i class="fa-solid fa-trash-can"></i></button>`;
 
                 html += `<tr>
-                    <td>${idx + 1}</td>
+                    <td>${order + 1}</td>
                     <td class="text-left">
-                        ${originBadge}<strong>${row.requester || '-'}</strong>
-                        ${overrideBadge}
+                        ${originBadge}${overrideBadge}
+                        ${inlineEdit ? txt('requester') : `<strong>${row.requester || '-'}</strong>`}
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Mã: ${row.code || '-'}</div>
                     </td>
-                    <td class="text-left" style="font-size:12px;">${row.address || '-'}</td>
-                    <td class="text-left"><strong>${row.agency || '-'}</strong></td>
-                    <td style="font-size:12px;">${row.law || '-'}</td>
-                    <td class="text-left" style="font-size:12px; line-height:1.4;">${row.situation || '-'}</td>
-                    <td class="text-left" style="font-size:12px;">${row.payment || '-'}</td>
-                    <td class="text-left" style="font-size:12px; color:#B45309;">${row.vuongMac || '-'}</td>
-                    <td class="text-left" style="font-size:12px;">${row.note || '-'}</td>
+                    <td class="text-left" style="font-size:12px;">${inlineEdit ? txt('address') : (row.address || '-')}</td>
+                    <td class="text-left">${inlineEdit ? txt('agency') : `<strong>${row.agency || '-'}</strong>`}</td>
+                    <td style="font-size:12px;">${inlineEdit ? lawSelect : (row.law || '-')}</td>
+                    <td class="text-left" style="font-size:12px; line-height:1.4;">${inlineNote ? area('situation') : (row.situation || '-')}</td>
+                    <td class="text-left" style="font-size:12px;">${inlineNote ? area('payment') : (row.payment || '-')}</td>
+                    <td class="text-left" style="font-size:12px; color:#B45309;">${inlineNote ? area('vuongMac') : (row.vuongMac || '-')}</td>
+                    <td class="text-left" style="font-size:12px;">${inlineNote ? area('note') : (row.note || '-')}</td>
                     <td style="white-space:nowrap; text-align:center;">
-                        ${btnSlot1} ${btnSlot2} ${btnSlot3}
+                        ${btnSlot1} ${btnSlot2}
                     </td>
                 </tr>`;
             });
+        }
+        // Nút Thêm dòng đặt cuối mỗi khối lĩnh vực trong lưới [BR-BTNN-BC-005]
+        if (canAddManual) {
+            html += `<tr><td colspan="10" style="text-align:left; background:#F8FAFC;"><button class="btn btn-secondary btn-sm" onclick="addMau01InlineRow('${escapeJs(field)}')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></td></tr>`;
         }
     });
 
@@ -1717,8 +2349,9 @@ function openEditMau01Row(field, idx) {
         ? `Hiệu chỉnh thuyết minh vụ việc hệ thống [${row.code}]`
         : `Chỉnh sửa vụ việc nhập tay [${row.code}]`;
 
-    // Đối với vụ việc hệ thống, khóa các trường Cột 1-4 theo SRS
-    ['m01_requester', 'm01_address', 'm01_agency', 'm01_law'].forEach(id => {
+    // Vụ việc lấy từ hệ thống: khóa toàn bộ trường định danh và pháp lý (Lĩnh vực, Cột 1-4);
+    // chỉ mở 04 nhóm thuyết minh là Cột (5) Tình hình, (6) Chi trả, (7) Vướng mắc, (8) Ghi chú.
+    ['m01_field_select', 'm01_requester', 'm01_address', 'm01_agency', 'm01_law'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.disabled = isSys;
     });
@@ -1794,27 +2427,140 @@ function saveEditMau01Row() {
     renderMau01(ky, false);
 }
 
+// Thêm trực tiếp 01 dòng trống vào khối lĩnh vực trong lưới để người dùng nhập tay
+function addMau01InlineRow(field) {
+    const ky = findKy(currentDetailId);
+    if (!ky.mau01Rows[field]) ky.mau01Rows[field] = [];
+    ky.mau01Rows[field].push({
+        code: `BT-${ky.year}-${String(Math.floor(Math.random() * 900) + 100)}`,
+        origin: 'manual', isOverridden: false,
+        requester: '', address: '', agency: '', law: APPLICABLE_LAW_OPTIONS[0],
+        situation: '', payment: '', vuongMac: '', note: ''
+    });
+    renderMau01(ky, false);
+    showToast('Đã thêm 01 dòng trống, vui lòng nhập thông tin vụ việc trực tiếp trên lưới.', 'success');
+    // Đưa con trỏ vào ô đầu tiên của dòng vừa thêm
+    const el = document.getElementById(`m01_inline_${btoa(unescape(encodeURIComponent(field))).replace(/[^A-Za-z0-9]/g, '')}_${ky.mau01Rows[field].length - 1}`);
+    if (el) { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+}
+
+// Cập nhật trực tiếp một ô trên lưới Mẫu 01
+function updateMau01Field(field, idx, key, value) {
+    const ky = findKy(currentDetailId);
+    const row = (ky.mau01Rows[field] || [])[idx];
+    if (!row) return;
+    row[key] = value;
+    // Dòng lấy từ hệ thống: mọi thay đổi thuyết minh đều được đánh dấu là đã hiệu chỉnh
+    if (row.origin === 'system' && ['situation','payment','vuongMac','note'].includes(key)) {
+        row.isOverridden = true;
+    }
+}
+
 function restoreMau01Original(field, idx) {
     const ky = findKy(currentDetailId);
     const row = (ky.mau01Rows[field] || [])[idx];
     if (!row || !row.originalData) return;
 
-    if (!confirm('Bạn có chắc muốn khôi phục nội dung thuyết minh gốc ban đầu từ hệ thống không?')) return;
-    row.situation = row.originalData.situation || '';
-    row.payment = row.originalData.payment || '';
-    row.vuongMac = row.originalData.vuongMac || '';
-    row.note = row.originalData.note || '';
-    row.isOverridden = false;
-    showToast('Đã khôi phục nội dung thuyết minh nguyên bản.', 'info');
-    renderMau01(ky, false);
+    showAppConfirm({
+        title: 'Khôi phục nguyên bản từ hệ thống',
+        icon: 'fa-rotate-left',
+        tone: 'warning',
+        okText: 'Khôi phục nguyên bản',
+        okIcon: 'fa-rotate-left',
+        message: `Toàn bộ nội dung thuyết minh tại Cột (5) đến Cột (8) của vụ việc <strong>${escapeHtml(row.code || '')}</strong> sẽ được nạp lại nguyên bản từ hệ thống. Các nội dung bạn đã hiệu chỉnh sẽ bị ghi đè.`,
+        onConfirm: () => {
+            row.situation = row.originalData.situation || '';
+            row.payment = row.originalData.payment || '';
+            row.vuongMac = row.originalData.vuongMac || '';
+            row.note = row.originalData.note || '';
+            row.isOverridden = false;
+            showToast('Đã khôi phục nội dung thuyết minh nguyên bản.', 'info');
+            renderMau01(ky, false);
+        }
+    });
 }
 
 function deleteMau01Row(field, idx) {
-    if (!confirm('Bạn có chắc chắn muốn xóa vụ việc này khỏi danh mục không?')) return;
     const ky = findKy(currentDetailId);
-    ky.mau01Rows[field].splice(idx, 1);
-    renderMau01(ky, false);
-    showToast('Đã xóa vụ việc khỏi Mẫu 01.', 'success');
+    const row = (ky.mau01Rows[field] || [])[idx];
+    // Không cho xóa vụ việc lấy từ hệ thống: muốn loại khỏi báo cáo phải xử lý tại hồ sơ gốc
+    // rồi Đồng bộ lại, để số liệu báo cáo luôn đối chiếu được với CSDL nghiệp vụ.
+    if (row && row.origin === 'system') {
+        showToast('Không thể xóa vụ việc lấy từ hệ thống. Vui lòng điều chỉnh tại hồ sơ gốc rồi bấm Đồng bộ từ hệ thống.', 'error');
+        return;
+    }
+    showAppConfirm({
+        title: 'Xác nhận xóa vụ việc',
+        icon: 'fa-trash-can',
+        tone: 'danger',
+        okText: 'Xóa vụ việc',
+        okIcon: 'fa-trash-can',
+        message: `Bạn có chắc chắn muốn xóa vụ việc <strong>${escapeHtml(row.requester || row.code || '')}</strong> khỏi danh mục Mẫu 01 không? Số liệu liên thông sang Mẫu 03/04/05 sẽ được tính lại.`,
+        onConfirm: () => {
+            ky.mau01Rows[field].splice(idx, 1);
+            renderMau01(ky, false);
+            showToast('Đã xóa vụ việc khỏi Mẫu 01.', 'success');
+        }
+    });
+}
+
+// Hiển thị thanh công cụ của Mẫu 03/04/05 theo Nguồn dữ liệu của biểu mẫu [BR-BTNN-BC-005]:
+// - Tự động tổng hợp từ hệ thống: chỉ hiện nút Đồng bộ từ hệ thống, lưới ở chế độ chỉ đọc.
+// - Nhập liệu thủ công: ẩn nút Đồng bộ, cho nhập trực tiếp trên lưới.
+// Kỳ đã gửi/đã duyệt hoặc cấp trên đang xem để duyệt thì ẩn toàn bộ nút tác động dữ liệu.
+function syncFormToolbar(form, ky, readOnly) {
+    const periodEditable = ['dang_nhap_lieu', 'yeu_cau_chinh_ly'].includes(ky.status) && !readOnly;
+    const isAuto = (ky.sources?.[form] || 'tu_dong') === 'tu_dong';
+    const suffix = form.charAt(0).toUpperCase() + form.slice(1);
+    const btnSync = document.getElementById('btnSync' + suffix);
+    if (btnSync) btnSync.style.display = (periodEditable && isAuto) ? 'inline-flex' : 'none';
+    // Nhận Excel chỉ dành cho biểu mẫu có nguồn Nhập liệu thủ công
+    const btnImport = document.getElementById('btnImport' + suffix);
+    if (btnImport) btnImport.style.display = (periodEditable && !isAuto) ? 'inline-flex' : 'none';
+}
+
+// Đồng bộ số liệu chỉ tiêu Mẫu 03/04 và sổ thụ lý Mẫu 05 từ CSDL hồ sơ BTNN
+function syncMatrixFromSystem(form, dataKey, indicators, renderFn) {
+    const ky = findKy(currentDetailId);
+    FIELDS.forEach(field => {
+        const rows = (ky.mau01Rows[field] || []).length;
+        if (!ky[dataKey][field]) ky[dataKey][field] = new Array(indicators.length).fill(0);
+        ky[dataKey][field][0] = rows;
+    });
+    renderFn(ky, false);
+    showToast(`Đã đồng bộ lại số liệu ${form} từ CSDL Hồ sơ BTNN theo danh mục vụ việc Mẫu 01.`, 'success');
+}
+
+function syncMau03FromSystem() {
+    syncMatrixFromSystem('Mẫu 03', 'mau03Values', BM03_INDICATORS.filter(i => i.no <= 25), renderMau03Matrix);
+}
+
+function syncMau04FromSystem() {
+    syncMatrixFromSystem('Mẫu 04', 'mau04Values', BM04_INDICATORS, renderMau04Matrix);
+}
+
+function syncMau05FromSystem() {
+    const ky = findKy(currentDetailId);
+    let added = 0;
+    const existing = new Set();
+    FIELDS.forEach(f => (ky.mau05Rows[f] || []).forEach(r => existing.add(r.code)));
+    FIELDS.forEach(field => {
+        (ky.mau01Rows[field] || []).forEach(src => {
+            if (src.origin !== 'system' || existing.has(src.code)) return;
+            if (!ky.mau05Rows[field]) ky.mau05Rows[field] = [];
+            ky.mau05Rows[field].push({
+                code: src.code, name: src.requester || '', dateThuLy: '', requesterInfo: src.address || '',
+                vanBanCanCu: '', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '',
+                quyetDinh: '', capKinhPhi: '', chiTra: src.payment || '', hoan: '', khoiKien: '', phucHoi: ''
+            });
+            existing.add(src.code);
+            added++;
+        });
+    });
+    renderMau05(ky, false);
+    showToast(added > 0
+        ? `Đã đồng bộ và nạp thêm ${added} vụ việc vào sổ thụ lý Mẫu 05.`
+        : 'Sổ thụ lý Mẫu 05 đã đầy đủ vụ việc từ hệ thống.', added > 0 ? 'success' : 'info');
 }
 
 // ===================== Render Mẫu 03 - đúng bố cục biểu mẫu gốc (lĩnh vực = dòng, chỉ tiêu = cột lồng nhóm) =====================
@@ -1849,6 +2595,7 @@ function fmtIndicatorValue(ind, val) {
 
 function renderMau03Matrix(ky, readOnly) {
     const editable = ky.sources.mau03 === 'thu_cong' && !readOnly;
+    syncFormToolbar('mau03', ky, readOnly);
     const indicators = BM03_INDICATORS.filter(i => i.no <= 25);
     const totalsRow = getTotalsRow(ky, 'mau03Values', indicators);
     const intakeColumnLevel3 = `
@@ -1944,6 +2691,7 @@ function updateMau03Note(value) { findKy(currentDetailId).mau03Note = value; }
 // ===================== Render Mẫu 04 - đúng bố cục biểu mẫu gốc =====================
 function renderMau04Matrix(ky, readOnly) {
     const editable = ky.sources.mau04 === 'thu_cong' && !readOnly;
+    syncFormToolbar('mau04', ky, readOnly);
     const totalsRow = getTotalsRow(ky, 'mau04Values', BM04_INDICATORS);
 
     let html = `<table class="custom-table mau04-table">
@@ -2014,6 +2762,7 @@ function checkFormulas(form) {
 // ===================== Render Mẫu 05 =====================
 function renderMau05(ky, readOnly) {
     const editable = ky.sources.mau05 === 'thu_cong' && !readOnly;
+    syncFormToolbar('mau05', ky, readOnly);
     let html = `<table class="custom-table"><thead><tr>`;
     MAU05_COLUMNS.forEach(c => html += `<th style="min-width:130px;">${c}</th>`);
     if (editable) html += '<th style="width:50px;"></th>';
@@ -2023,7 +2772,7 @@ function renderMau05(ky, readOnly) {
     FIELDS.forEach(field => {
         const rows = ky.mau05Rows[field] || [];
         total += rows.length;
-        html += `<tr class="group-header"><td colspan="${editable ? 16 : 15}">${field} (${rows.length} vụ việc)</td></tr>`;
+        html += `<tr class="group-header"><td colspan="${editable ? 16 : 15}" class="text-left">${field} (${rows.length} vụ việc)</td></tr>`;
         rows.forEach((row, idx) => {
             html += '<tr>';
             keys.forEach(k => {
@@ -2056,11 +2805,21 @@ function updateMau05Field(field, idx, key, value) {
     ky.mau05Rows[field][idx][key] = value;
 }
 function deleteMau05Row(field, idx) {
-    if (!confirm('Bạn có chắc chắn muốn xóa vụ việc này khỏi sổ thụ lý không?')) return;
     const ky = findKy(currentDetailId);
-    ky.mau05Rows[field].splice(idx, 1);
-    renderMau05(ky, false);
-    showToast('Đã xóa vụ việc khỏi sổ.', 'success');
+    const row = (ky.mau05Rows[field] || [])[idx] || {};
+    showAppConfirm({
+        title: 'Xác nhận xóa vụ việc khỏi sổ thụ lý',
+        icon: 'fa-trash-can',
+        tone: 'danger',
+        okText: 'Xóa vụ việc',
+        okIcon: 'fa-trash-can',
+        message: `Bạn có chắc chắn muốn xóa vụ việc <strong>${escapeHtml(row.name || row.code || '')}</strong> khỏi sổ thụ lý Mẫu 05 không?`,
+        onConfirm: () => {
+            ky.mau05Rows[field].splice(idx, 1);
+            renderMau05(ky, false);
+            showToast('Đã xóa vụ việc khỏi sổ.', 'success');
+        }
+    });
 }
 
 // ===================== Lịch sử xử lý =====================
@@ -2124,7 +2883,9 @@ function renderDetailActionBar(ky, mode, readOnlyWhole) {
 
 function saveDraft() {
     const ky = findKy(currentDetailId);
-    ky.status = 'dang_nhap_lieu';
+    // Kỳ đang bị Yêu cầu chỉnh lý thì giữ nguyên trạng thái cho tới khi Gửi lại báo cáo,
+    // để cảnh báo lý do chỉnh lý không bị mất khi cán bộ lưu nháp giữa chừng.
+    if (ky.status !== 'yeu_cau_chinh_ly') ky.status = 'dang_nhap_lieu';
     ky.history.push({ time: nowLog(), text: `${currentActorName()} lưu nháp kỳ báo cáo.` });
     showToast('Đã lưu nháp kỳ báo cáo.', 'success');
     openDetail(ky.id);
@@ -2145,21 +2906,31 @@ function submitToParent() {
         showToast('Chưa tổng hợp số liệu.', 'error');
         return;
     }
-    if (!confirm(`Bạn có chắc chắn muốn gửi kỳ báo cáo này lên ${ky.parentUnit || 'cấp trên'} không? Sau khi gửi, dữ liệu sẽ chuyển sang chế độ chỉ đọc.`)) return;
-    ky.status = 'da_gui';
-    ky.submittedDate = '29/07/2026';
-    ky.submittedBy = currentActorName();
-    ky.sendVersion = (ky.sendVersion || 0) + 1;
-    ky.history.push({ time: nowLog(), text: `${ky.submittedBy} gửi kỳ báo cáo lần ${ky.sendVersion} lên ${ky.parentUnit || 'cấp trên'}.` });
-    showToast('Đã gửi kỳ báo cáo lên cấp trên.', 'success');
-    openDetail(ky.id);
+    showAppConfirm({
+        title: 'Xác nhận gửi báo cáo',
+        icon: 'fa-paper-plane',
+        tone: 'primary',
+        okText: 'Gửi báo cáo',
+        okIcon: 'fa-paper-plane',
+        message: `Bạn có chắc chắn muốn gửi kỳ báo cáo này lên <strong>${escapeHtml(ky.parentUnit || 'cấp trên')}</strong> không? Sau khi gửi, toàn bộ số liệu của kỳ sẽ chuyển sang chế độ chỉ đọc.`,
+        onConfirm: () => {
+            ky.status = 'da_gui';
+            ky.submittedDate = '29/07/2026';
+            ky.submittedBy = currentActorName();
+            ky.sendVersion = (ky.sendVersion || 0) + 1;
+            ky.history.push({ time: nowLog(), text: `${ky.submittedBy} gửi kỳ báo cáo lần ${ky.sendVersion} lên ${ky.parentUnit || 'cấp trên'}.` });
+            showToast('Đã gửi kỳ báo cáo lên cấp trên.', 'success');
+            openDetail(ky.id);
+        }
+    });
 }
 
 function reAggregate() {
     const ky = findKy(currentDetailId);
-    const sourceChildren = ky.level === 3
+    const sourceChildren = (ky.level === 3
         ? getAggregateChildrenForView(ky)
-        : (ky.childUnits || []).map(cid => findKy(cid)).filter(Boolean);
+        : (ky.childUnits || []).map(cid => findKy(cid)).filter(Boolean)
+    ).filter(c => !isMemberExcluded(ky, c.id)); // bỏ qua đơn vị đã bị loại trừ khỏi kỳ tổng hợp
     const aggregateChildren = ky.periodType === 'tam_tinh'
         ? sourceChildren
         : sourceChildren.filter(c => AGGREGATABLE_STATUSES.includes(c.status));
@@ -2203,11 +2974,20 @@ function finishNational() {
         showToast('Vui lòng tổng hợp số liệu toàn quốc trước khi chốt hoàn thành.', 'error');
         return;
     }
-    if (!confirm('Xác nhận chốt số liệu toàn quốc? Sau khi Hoàn thành, mọi điều chỉnh sau đó phải tạo phiên bản mới, không sửa trực tiếp vào bản đã chốt.')) return;
-    ky.status = 'hoan_thanh';
-    ky.history.push({ time: nowLog(), text: `${currentActorName()} chốt số liệu toàn quốc (Hoàn thành).` });
-    showToast('Đã chốt kỳ báo cáo toàn quốc.', 'success');
-    openDetail(ky.id);
+    showAppConfirm({
+        title: 'Xác nhận chốt số liệu toàn quốc',
+        icon: 'fa-flag-checkered',
+        tone: 'success',
+        okText: 'Hoàn thành',
+        okIcon: 'fa-flag-checkered',
+        message: 'Bạn có chắc chắn muốn chốt số liệu báo cáo toàn quốc không? Sau khi Hoàn thành, mọi điều chỉnh phải tạo phiên bản mới, không sửa trực tiếp vào bản đã chốt.',
+        onConfirm: () => {
+            ky.status = 'hoan_thanh';
+            ky.history.push({ time: nowLog(), text: `${currentActorName()} chốt số liệu toàn quốc (Hoàn thành).` });
+            showToast('Đã chốt kỳ báo cáo toàn quốc.', 'success');
+            openDetail(ky.id);
+        }
+    });
 }
 
 function openReviseModal() {
@@ -2220,8 +3000,9 @@ function submitRevise() {
     const reason = document.getElementById('reviseReason').value.trim();
     if (!reason) { document.getElementById('reviseReasonError').style.display = 'block'; return; }
     const ky = findKy(currentDetailId);
-    ky.status = 'dang_nhap_lieu';
-    ky.history.push({ time: nowLog(), text: `${currentActorName()} yêu cầu chỉnh lý báo cáo.`, reason: `Lý do: ${reason}` });
+    // [BR-BTNN-BC-003] Trả lại phải chuyển đúng trạng thái Yêu cầu chỉnh lý, không đưa về Đang nhập liệu
+    ky.status = 'yeu_cau_chinh_ly';
+    ky.history.push({ time: nowLog(), text: `${currentActorName()} yêu cầu chỉnh lý báo cáo.`, reason: reason });
     closeReviseModal();
     showToast(`Đã yêu cầu ${ky.unit} chỉnh lý số liệu.`, 'warning');
     openDetail(ky.id);
@@ -2229,11 +3010,20 @@ function submitRevise() {
 
 function approveUnit() {
     const ky = findKy(currentDetailId);
-    if (!confirm(`Xác nhận duyệt số liệu của ${ky.unit}? Số liệu sẽ được tính vào bảng tổng hợp của bạn.`)) return;
-    ky.status = 'da_duyet';
-    ky.history.push({ time: nowLog(), text: `${currentActorName()} đã duyệt kỳ báo cáo.` });
-    showToast(`Đã duyệt kỳ báo cáo của ${ky.unit}.`, 'success');
-    openDetail(ky.id);
+    showAppConfirm({
+        title: 'Xác nhận duyệt kỳ báo cáo',
+        icon: 'fa-check',
+        tone: 'success',
+        okText: 'Duyệt',
+        okIcon: 'fa-check',
+        message: `Bạn có chắc chắn muốn duyệt số liệu của <strong>${escapeHtml(ky.unit)}</strong> không? Sau khi duyệt, số liệu sẽ được tính vào bảng tổng hợp của bạn.`,
+        onConfirm: () => {
+            ky.status = 'da_duyet';
+            ky.history.push({ time: nowLog(), text: `${currentActorName()} đã duyệt kỳ báo cáo.` });
+            showToast(`Đã duyệt kỳ báo cáo của ${ky.unit}.`, 'success');
+            openDetail(ky.id);
+        }
+    });
 }
 
 // ===================== Init =====================

@@ -182,6 +182,7 @@ flowchart TD
 | Ngày phản hồi | Date | Có | Ngày hiện tại | Áp dụng rule ngày quá khứ [BR-VAL-008]. |
 | Kết quả phản hồi | Enum(String(50)) | Có | `Đã có phản hồi` | \- Giá trị gồm:<br>+ Đã có phản hồi<br>+ Đã thực hiện<br>+ Không thực hiện |
 | Nội dung phản hồi | Text(2000) | Có | Trống | Ghi nội dung phản hồi/kết quả xử lý (ví dụ số Quyết định hủy nếu đã ban hành). Áp dụng rule bắt buộc [BR-VAL-001]. |
+| Quyết định hủy liên kết | String(50) | Có khi `Kết quả phản hồi` là đã hủy quyết định | Trống | Control UI: Input text kèm nút `Tìm kiếm` và Text link xem chi tiết.<br>- Chỉ hiển thị và bắt buộc khi cơ quan quản lý phản hồi là **đã hủy Quyết định giải quyết bồi thường**.<br>- Cho phép chọn Quyết định hủy thực tế đã được ban hành tại Module Quyết định giải quyết bồi thường (Quyết định có `Loại quyết định` là `Quyết định hủy quyết định giải quyết bồi thường`, trạng thái `Đã ban hành`, gắn với đúng vụ việc của yêu cầu hủy).<br>- Sau khi chọn, hệ thống hiển thị Số quyết định, Ngày quyết định và Cơ quan ban hành ở chế độ chỉ đọc, kèm liên kết mở màn hình Chi tiết Quyết định hủy.<br>- Mục đích: bảo đảm kết quả phản hồi ghi nhận tại Sở Tư pháp và Quyết định hủy thực tế tại Module Quyết định là cùng một văn bản, tránh hai nơi ghi nhận lệch nhau. |
 | Tài liệu phản hồi đính kèm | File | Không | Trống | Áp dụng [BR-FILE-010]. |
 | Hủy bỏ | - | Không | Hiển thị | Đóng popup, không lưu dữ liệu. |
 | Lưu lại | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -192,7 +193,8 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | 1 | Hủy bỏ | Button | Hệ thống đóng popup, không lưu dữ liệu. |
 | 2 | Lưu lại | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
-|  |  |  | TH2 (Hợp lệ): Hệ thống lưu kết quả phản hồi, cập nhật trạng thái bản ghi theo `Kết quả phản hồi` đã chọn, đóng popup, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
+|  |  |  | TH2 (Chưa chọn Quyết định hủy liên kết): Khi `Kết quả phản hồi` là đã hủy Quyết định giải quyết bồi thường mà chưa chọn `Quyết định hủy liên kết`, vi phạm [BR-VAL-001], hệ thống highlight viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] và không cho phép lưu. |
+|  |  |  | TH3 (Hợp lệ): Hệ thống lưu kết quả phản hồi, cập nhật trạng thái bản ghi theo `Kết quả phản hồi` đã chọn, gắn liên kết hai chiều giữa bản ghi yêu cầu hủy và Quyết định hủy tại Module Quyết định giải quyết bồi thường (nếu có), đóng popup, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
 
 ---
 

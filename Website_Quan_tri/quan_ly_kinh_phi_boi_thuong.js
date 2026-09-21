@@ -1,4 +1,4 @@
-﻿let mockClaims = [
+let mockClaims = [
     {
         code: "BT-2026-002",
         nyc: "Trần Thị B",
@@ -114,11 +114,164 @@
             sucKhoe: 80000000,
             tinhThan: 120000000
         }
+    },
+    {
+        code: "BT-2026-028",
+        nyc: "Hoàng Văn Thái",
+        role: "Người bị thiệt hại",
+        gender: "Nam",
+        birth: "18/08/1987",
+        nycVictimAlive: "yes",
+        cardType: "CCCD",
+        cardNo: "001087009988",
+        cardDate: "12/03/2021",
+        cardPlace: "Cục Cảnh sát QLHC về TTXH",
+        phone: "0988776655",
+        email: "hoangvanthai@example.com",
+        address: "Số 45 Hoàng Hoa Thám, Ba Đình, Hà Nội",
+        agency: "Tòa án nhân dân TP. Hà Nội",
+        field: "Trong hoạt động tố tụng hình sự",
+        amount: 320000000,
+        status: "Đang xác minh thiệt hại",
+        suggestedAdvance: 90000000,
+        advanceTinhThan: 50000000,
+        advanceKhac: 40000000,
+        advanceTinhThanFile: "Don_tam_ung_tinh_than_BT28.pdf",
+        advanceKhacFile: "Bao_cao_ton_that_tai_san_BT28.pdf",
+        advanceRecKenh: "chuyen-khoan",
+        advanceBankUser: "HOÀNG VĂN THÁI",
+        advanceBankAccount: "001100456789",
+        advanceBankName: "Vietcombank",
+        advanceBankBranch: "Chi nhánh Ba Đình"
+    },
+    {
+        code: "BT-2026-029",
+        nyc: "Nguyễn Thị Mai",
+        role: "Người bị thiệt hại",
+        gender: "Nữ",
+        birth: "05/11/1982",
+        nycVictimAlive: "yes",
+        cardType: "CCCD",
+        cardNo: "001082006789",
+        cardDate: "15/09/2021",
+        cardPlace: "Cục Cảnh sát QLHC về TTXH",
+        phone: "0977223344",
+        email: "nguyenthimai@example.com",
+        address: "Số 112 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+        agency: "Sở Tư pháp Hà Nội",
+        field: "Trong hoạt động quản lý hành chính",
+        amount: 280000000,
+        status: "Chờ thực thi",
+        advanceRecKenh: "chuyen-khoan",
+        advanceBankUser: "NGUYỄN THỊ MAI",
+        advanceBankAccount: "190223344556",
+        advanceBankName: "Techcombank",
+        advanceBankBranch: "Chi nhánh Thanh Xuân",
+        selectedDamages: {
+            taiSan: 80000000,
+            thuNhap: 50000000,
+            tinhThan: 150000000
+        }
     }
 ];
 
 // MOCK PROPOSALS LIST DATA (10 items satisfying Rule 3 & 4)
 let proposalsList = [
+    // ===== Bổ sung giả lập các trạng thái mới phát sinh do Quyết định bị hủy / sửa chữa, bổ sung =====
+    {
+        id: "P90",
+        code: "KP-2026-090",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-007",
+        nycName: "Trần Thị Hòa",
+        amount: 180000000,
+        user: "Nguyễn Văn Thụ",
+        date: "12/06/2026",
+        status: "Đã hủy",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Đề nghị cấp kinh phí bồi thường bị hủy do Quyết định giải quyết bồi thường gốc bị hủy.",
+        baseDecisionNo: "45/QĐ-GQBT",
+        baseDecisionDate: "05/06/2026",
+        // Khối Căn cứ thay đổi trạng thái theo Quyết định
+        statusChangeBasis: {
+            decisionType: "Quyết định hủy quyết định giải quyết bồi thường",
+            decisionNo: "12/QĐ-HQĐGQBT",
+            decisionDate: "20/06/2026",
+            reason: "Hủy quyết định gốc do nội dung quyết định không còn phù hợp với kết quả xác minh bổ sung.",
+            statusBefore: "Chờ duyệt",
+            statusAfter: "Đã hủy",
+            changedAt: "20/06/2026 14:35"
+        },
+        files: []
+    },
+    {
+        id: "P91",
+        code: "KP-2026-091",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-007",
+        nycName: "Trần Thị Hòa",
+        amount: 40000000,
+        user: "Nguyễn Văn Thụ",
+        date: "18/04/2026",
+        status: "Chờ thu hồi",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Khoản tạm ứng đã chi trả xong, phát sinh nghĩa vụ thu hồi do Quyết định giải quyết bồi thường bị hủy.",
+        payoutDate: "22/04/2026",
+        payoutAmountReal: 40000000,
+        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutRecName: "Trần Thị Hòa",
+        statusChangeBasis: {
+            decisionType: "Quyết định hủy quyết định giải quyết bồi thường",
+            decisionNo: "12/QĐ-HQĐGQBT",
+            decisionDate: "20/06/2026",
+            reason: "Hủy quyết định gốc do nội dung quyết định không còn phù hợp với kết quả xác minh bổ sung.",
+            statusBefore: "Hoàn thành",
+            statusAfter: "Chờ thu hồi",
+            changedAt: "20/06/2026 14:35"
+        },
+        // Khối Thu hồi kinh phí
+        recovery: {
+            basisDecisionNo: "12/QĐ-HQĐGQBT",
+            basisDecisionDate: "20/06/2026",
+            amountToRecover: 40000000,
+            amountRecovered: 15000000,
+            amountRemain: 25000000,
+            recordDate: "05/07/2026",
+            note: "Đơn vị đã thu hồi một phần, phần còn lại đang tiếp tục đôn đốc hoàn trả ngân sách.",
+            files: [{ name: "Chứng từ thu hồi đợt 1", file: "Chung_tu_thu_hoi_dot1.pdf" }]
+        },
+        files: []
+    },
+    {
+        id: "P92",
+        code: "KP-2026-092",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-002",
+        nycName: "Phạm Văn Minh",
+        amount: 95000000,
+        user: "Nguyễn Văn Thụ",
+        date: "10/07/2026",
+        status: "Chờ lập đề nghị",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Bản ghi được đưa về Chờ lập đề nghị để lập lại theo Quyết định sửa chữa, bổ sung. Trước đó đang ở Chờ chi trả, phê duyệt cũ đã bị thu hồi, Lãnh đạo phải phê duyệt lại.",
+        baseDecisionNo: "52/QĐ-GQBT",
+        baseDecisionDate: "28/06/2026",
+        statusChangeBasis: {
+            decisionType: "Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường",
+            decisionNo: "07/QĐ-SCBSGQBT",
+            decisionDate: "10/07/2026",
+            reason: "Sửa chữa, bổ sung số tiền bồi thường tại Điều 1 của quyết định gốc theo kết quả rà soát lại hồ sơ xác minh thiệt hại.",
+            amountBefore: 120000000,
+            amountAfter: 95000000,
+            statusBefore: "Chờ chi trả",
+            statusAfter: "Chờ lập đề nghị",
+            changedAt: "10/07/2026 09:20"
+        },
+        files: []
+    },
     {
         id: "P1",
         code: "KP-2026-001",
@@ -1892,6 +2045,8 @@ function renderProposalsTable() {
         else if (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ') badgeClass = 'badge-success';
         else if (item.status === 'Bị từ chối') badgeClass = 'badge-danger';
         else if (item.status === 'Chờ lập đề nghị') badgeClass = 'badge-info';
+        else if (item.status === 'Chờ thu hồi') badgeClass = 'badge-warning';
+        else if (item.status === 'Đã hủy') badgeClass = 'badge-danger';
         const treasuryInfo = getTreasuryInfo(item);
         const treasuryHtml = renderTreasuryCell(item, treasuryInfo);
 
@@ -2042,27 +2197,158 @@ function triggerSearchProposals() {
     renderProposalsTable();
 }
 
+// VALIDATION HELPER: Check duplicate proposal and claim status compatibility
+function validateClaimForProposalType(claimCode, proposalType) {
+    if (!claimCode) return { valid: true };
+    const claim = mockClaims.find(c => c.code === claimCode);
+    if (!claim) return { valid: false, code: 'ERR_NOT_FOUND', message: `Không tìm thấy thông tin vụ việc [${claimCode}] trên hệ thống!` };
+
+    // Active status lists according to system dropdown
+    const ACTIVE_KINH_PHI_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước'];
+    const ACTIVE_TAM_UNG_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành'];
+
+    // Check existing proposals in proposalsList for this claim
+    const hasKinhPhi = proposalsList.some(p => 
+        p.ycbtCode === claimCode && 
+        (p.type === 'Cấp kinh phí bồi thường' || p.type === 'Kinh phí bồi thường') && 
+        ACTIVE_KINH_PHI_STATUSES.includes(p.status) && 
+        (!selectedProposalId || p.id !== selectedProposalId)
+    );
+    const hasTamUng = proposalsList.some(p => 
+        p.ycbtCode === claimCode && 
+        (p.type === 'Cấp tạm ứng' || p.type === 'Đề nghị tạm ứng') && 
+        ACTIVE_TAM_UNG_STATUSES.includes(p.status) && 
+        (!selectedProposalId || p.id !== selectedProposalId)
+    );
+
+    if (proposalType === 'Cấp tạm ứng' || proposalType === 'Đề nghị tạm ứng') {
+        // [BR-KP-DUP-002]: If already has compensation proposal -> NEVER allow advance
+        if (hasKinhPhi) {
+            return {
+                valid: false,
+                code: 'ERR_HAS_COMPENSATION',
+                message: `Vụ việc [${claimCode}] đã tồn tại Đề nghị cấp kinh phí bồi thường trên hệ thống. Theo quy định, không được phép lập mới Đề nghị tạm ứng kinh phí khi vụ việc đã có đề nghị cấp kinh phí!`
+            };
+        }
+        // [BR-KP-DUP-001]: If already has active advance proposal
+        if (hasTamUng) {
+            return {
+                valid: false,
+                code: 'ERR_DUP_ADVANCE',
+                message: `Vụ việc [${claimCode}] đã tồn tại Đề nghị tạm ứng đang trong quy trình xử lý. Không được phép lập trùng lặp!`
+            };
+        }
+        // [BR-KP-STATUS-001]: Status must be from "Đang xác minh thiệt hại" onwards, but not "Chờ thực thi"
+        const validStatuses = ['Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ'];
+        if (!validStatuses.includes(claim.status)) {
+            return {
+                valid: false,
+                code: 'ERR_INVALID_STATUS_ADVANCE',
+                message: `Vụ việc [${claimCode}] đang ở trạng thái "${claim.status}", không thuộc giai đoạn được phép lập Đề nghị tạm ứng (chỉ áp dụng cho các vụ việc từ 'Đang xác minh thiệt hại' đến trước khi có Quyết định giải quyết bồi thường)!`
+            };
+        }
+    } else if (proposalType === 'Cấp kinh phí bồi thường' || proposalType === 'Kinh phí bồi thường') {
+        // [BR-KP-DUP-001]: Duplicate compensation check
+        if (hasKinhPhi) {
+            return {
+                valid: false,
+                code: 'ERR_DUP_COMPENSATION',
+                message: `Vụ việc [${claimCode}] đã tồn tại Đề nghị cấp kinh phí bồi thường trên hệ thống. Không được phép tạo trùng lặp!`
+            };
+        }
+        // [BR-KP-STATUS-001]: Status must be 'Chờ thực thi'
+        if (claim.status !== 'Chờ thực thi') {
+            return {
+                valid: false,
+                code: 'ERR_INVALID_STATUS_COMPENSATION',
+                message: `Vụ việc [${claimCode}] đang ở trạng thái "${claim.status}", chưa đủ điều kiện lập Đề nghị cấp kinh phí bồi thường (chưa có Quyết định giải quyết bồi thường có hiệu lực / chưa đạt trạng thái 'Chờ thực thi')!`
+            };
+        }
+    }
+
+    return { valid: true };
+}
+
+function handleTypeRadioChange(val) {
+    const hiddenType = document.getElementById('formProposalType');
+    if (hiddenType) hiddenType.value = val;
+    handleTypeChange(val);
+}
+
+function setProposalTypeRadio(val, isDisabled = false) {
+    const hiddenType = document.getElementById('formProposalType');
+    if (hiddenType) hiddenType.value = val;
+
+    const rAdv = document.getElementById('radioTypeAdvance');
+    const rKp = document.getElementById('radioTypeKinhPhi');
+    if (rAdv && rKp) {
+        if (val === 'Cấp kinh phí bồi thường' || val === 'Kinh phí bồi thường') {
+            rKp.checked = true;
+        } else {
+            rAdv.checked = true;
+        }
+        rAdv.disabled = isDisabled;
+        rKp.disabled = isDisabled;
+    }
+}
+
 // DYNAMIC TYPE & CLAIMS LOAD IN FORM
 function handleTypeChange(selectedType) {
+    // Số / Ngày Quyết định làm căn cứ chỉ áp dụng cho Đề nghị cấp kinh phí bồi thường
+    const isKinhPhi = (selectedType === 'Cấp kinh phí bồi thường' || selectedType === 'Kinh phí bồi thường');
+    document.querySelectorAll('.baseDecisionField').forEach(el => { el.style.display = isKinhPhi ? '' : 'none'; });
+    if (!isKinhPhi) {
+        const bn = document.getElementById('formBaseDecisionNo'); if (bn) bn.value = '';
+        const bd = document.getElementById('formBaseDecisionDate'); if (bd) bd.value = '';
+    }
+    setProposalTypeRadio(selectedType);
+
+    const currentClaimCode = document.getElementById('formClaimCode')?.value || document.getElementById('formClaimSearchInput')?.value.trim();
+
+    // Check compatibility if a claim is already chosen
+    if (currentClaimCode) {
+        const check = validateClaimForProposalType(currentClaimCode, selectedType);
+        if (!check.valid) {
+            showCustomAlertModal(
+                `<div style="display:flex; gap:12px; align-items:flex-start;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size:24px; color:#f59e0b; margin-top:2px;"></i>
+                    <div>
+                        <div style="font-weight:700; margin-bottom:6px; color:#1e293b;">Không thỏa mãn điều kiện loại đề nghị mới</div>
+                        <div style="color:#475569; margin-bottom:10px;">${check.message}</div>
+                        <div style="color:#dc2626; font-weight:600; font-size:12.5px;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Thông tin vụ việc đã chọn sẽ được xóa để bạn chọn lại!
+                        </div>
+                    </div>
+                </div>`,
+                "Cảnh báo không tương thích",
+                "warning"
+            );
+            clearClaimDetails();
+        } else {
+            // Claim is valid for the new type, refresh its display
+            handleClaimSelected(currentClaimCode);
+        }
+    } else {
+        clearClaimDetails();
+    }
+
     const claimSelector = document.getElementById('formClaimSelector');
-    claimSelector.innerHTML = `<option value="">-- Chọn vụ việc bồi thường liên kết --</option>`;
-
-    // Filter relevant claims based on type
-    const targetStatus = selectedType === 'Cấp tạm ứng' ? 'Đang xác minh thiệt hại' : 'Chờ thực thi';
-    const filteredClaims = mockClaims.filter(c => c.status === targetStatus);
-
-    filteredClaims.forEach(c => {
-        const amountText = c.status === 'Đang xác minh thiệt hại' ? `Đề xuất tạm ứng: ${c.suggestedAdvance.toLocaleString('vi-VN')} đ` : `Tổng bồi thường: ${c.amount.toLocaleString('vi-VN')} đ`;
-        claimSelector.innerHTML += `<option value="${c.code}">${c.code} - ${c.nyc} (${amountText})</option>`;
-    });
-
-    // Clear selected details
-    clearClaimDetails();
+    if (claimSelector) {
+        claimSelector.innerHTML = `<option value="">-- Chọn vụ việc bồi thường liên kết --</option>`;
+        const filteredClaims = mockClaims.filter(c => validateClaimForProposalType(c.code, selectedType).valid);
+        filteredClaims.forEach(c => {
+            const amountText = selectedType === 'Cấp tạm ứng' ? `Đề xuất tạm ứng: ${(c.suggestedAdvance || 0).toLocaleString('vi-VN')} đ` : `Tổng bồi thường: ${(c.amount || 0).toLocaleString('vi-VN')} đ`;
+            claimSelector.innerHTML += `<option value="${c.code}">${c.code} - ${c.nyc} (${amountText})</option>`;
+        });
+        if (currentClaimCode && validateClaimForProposalType(currentClaimCode, selectedType).valid) {
+            claimSelector.value = currentClaimCode;
+        }
+    }
 
     // Dynamically update form title based on selection type
     const secTitle = document.getElementById('formProposalSectionTitle');
     if (secTitle) {
-        if (selectedType === 'Cấp tạm ứng') {
+        if (selectedType === 'Cấp tạm ứng' || selectedType === 'Đề nghị tạm ứng') {
             secTitle.innerText = "III. Nội dung đề xuất cấp tạm ứng";
         } else {
             secTitle.innerText = "III. Nội dung đề xuất cấp kinh phí bồi thường";
@@ -2077,7 +2363,7 @@ function handleTypeChange(selectedType) {
     const wrapAdv = document.getElementById('wrapperAdvanceProposal');
     const wrapKp = document.getElementById('wrapperKinhPhiProposal');
 
-    if (selectedType === 'Cấp tạm ứng') {
+    if (selectedType === 'Cấp tạm ứng' || selectedType === 'Đề nghị tạm ứng') {
         if (block3) { block3.style.display = 'block'; setAccordionState('block3_AdvanceTable', true); }
         if (block4) block4.style.display = 'none';
         if (recAdv) recAdv.style.display = 'block';
@@ -2117,6 +2403,8 @@ function clearClaimDetails() {
     document.getElementById('formNycCardPlace').value = '';
     document.getElementById('formNycCountry').value = 'Việt Nam';
     document.getElementById('formNycCity').value = 'Hà Nội';
+    document.getElementById('formNycWard').value = '';
+    document.getElementById('formClaimName').value = '';
     document.getElementById('formNycAddress').value = '';
 
     document.getElementById('formProposalNotes').value = '';
@@ -2135,7 +2423,7 @@ function clearClaimDetails() {
     document.getElementById('advRecName').value = '';
     document.getElementById('advRecCard').value = '';
     document.getElementById('advRecAddress').value = '';
-    document.getElementById('advRecMethod').value = '';
+    setAdvPayMethod('Chi trả trực tiếp bằng tiền mặt');
     document.getElementById('advRecBankWrapper').style.display = 'none';
     document.getElementById('advBankUser').value = '';
     document.getElementById('advBankAccount').value = '';
@@ -2158,7 +2446,7 @@ function clearClaimDetails() {
     document.getElementById('kpRecName').value = '';
     document.getElementById('kpRecCard').value = '';
     document.getElementById('kpRecAddress').value = '';
-    document.getElementById('kpRecMethod').value = '';
+    setKpPayMethod('Chi trả trực tiếp bằng tiền mặt');
     document.getElementById('kpRecBankWrapper').style.display = 'none';
     document.getElementById('kpBankUser').value = '';
     document.getElementById('kpBankAccount').value = '';
@@ -2180,18 +2468,20 @@ function getFundingClaimTargetStatus() {
 }
 
 function getFundingClaimLookupRows() {
-    const targetStatus = getFundingClaimTargetStatus();
     const selectedType = document.getElementById('formProposalType').value;
     return mockClaims
-        .filter(claim => claim.status === targetStatus)
+        .filter(claim => {
+            const check = validateClaimForProposalType(claim.code, selectedType);
+            return check.valid;
+        })
         .map(claim => {
-            const amount = selectedType === 'Cấp tạm ứng' ? claim.suggestedAdvance : claim.amount;
+            const amount = selectedType === 'Cấp tạm ứng' ? (claim.suggestedAdvance || 0) : (claim.amount || 0);
             return {
                 code: claim.code,
                 caseName: claim.caseName || `Vụ việc yêu cầu bồi thường của ${claim.nyc || ''}`,
                 requester: claim.nyc || '',
                 agency: claim.agency || '',
-                amount: amount || 0,
+                amount: amount,
                 status: claim.status
             };
         });
@@ -2272,14 +2562,24 @@ function renderFundingClaimLookupResults() {
 }
 
 function selectFundingClaimFromLookup(code) {
+    const selectedType = document.getElementById('formProposalType').value;
+    const check = validateClaimForProposalType(code, selectedType);
+    if (!check.valid) {
+        showCustomAlertModal(check.message, "Vụ việc không hợp lệ", "warning");
+        return;
+    }
+
     const claim = mockClaims.find(c => c.code === code);
     if (!claim) return;
 
     const claimSelector = document.getElementById('formClaimSelector');
-    claimSelector.innerHTML = `<option value="${claim.code}">${claim.code} - ${claim.nyc}</option>`;
-    claimSelector.value = claim.code;
+    if (claimSelector) {
+        claimSelector.innerHTML = `<option value="${claim.code}">${claim.code} - ${claim.nyc}</option>`;
+        claimSelector.value = claim.code;
+    }
 
     document.getElementById('formClaimSearchInput').value = claim.code;
+    clearFieldErrors();
     handleClaimSelected(claim.code);
     closeFundingClaimLookupModal();
     showToast(`Đã chọn vụ việc ${claim.code} và tự động điền dữ liệu liên quan!`, "success");
@@ -2289,10 +2589,10 @@ function selectFundingClaimFromLookup(code) {
 function searchClaimByCode() {
     const searchInputVal = document.getElementById('formClaimSearchInput').value.trim();
     if (!searchInputVal) {
-        showToast("Vui lòng nhập Mã vụ việc hợp lệ!", "warning");
+        showCustomAlertModal("Vui lòng nhập ít nhất một tiêu chí tìm kiếm!", "Thông báo", "warning");
         return;
     }
-    openFundingClaimLookupModal(searchInputVal);
+    openFundingLookupByType(searchInputVal);
 }
 
 // AUTO-FILL ALL DETAILS RELATING TO THE SELECT CLAIM
@@ -2335,6 +2635,8 @@ function handleClaimSelected(code) {
         document.getElementById('formNycCardPlace').value = claim.cardPlace;
         document.getElementById('formNycCountry').value = claim.country || "Việt Nam";
         document.getElementById('formNycCity').value = claim.city || "Hà Nội";
+        document.getElementById('formNycWard').value = claim.ward || 'Phường Dịch Vọng';
+        document.getElementById('formClaimName').value = claim.caseName || ('Vụ việc yêu cầu bồi thường của ' + (claim.nyc || ''));
         document.getElementById('formNycAddress').value = claim.address;
 
         // Tạm ứng
@@ -2380,7 +2682,7 @@ function handleClaimSelected(code) {
             document.getElementById('advRecName').value = claim.nyc;
             document.getElementById('advRecCard').value = claim.cardNo;
             document.getElementById('advRecAddress').value = claim.address;
-            document.getElementById('advRecMethod').value = claim.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt';
+            setAdvPayMethod(claim.advanceRecKenh === 'chuyen-khoan' ? 'Chi trả qua chuyển khoản' : 'Chi trả trực tiếp bằng tiền mặt');
 
             if (claim.advanceRecKenh === 'chuyen-khoan') {
                 document.getElementById('advRecBankWrapper').style.display = 'grid';
@@ -2405,7 +2707,7 @@ function handleClaimSelected(code) {
             document.getElementById('kpRecName').value = claim.nyc;
             document.getElementById('kpRecCard').value = claim.cardNo;
             document.getElementById('kpRecAddress').value = claim.address;
-            document.getElementById('kpRecMethod').value = claim.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt';
+            setKpPayMethod(claim.advanceRecKenh === 'chuyen-khoan' ? 'Chi trả qua chuyển khoản' : 'Chi trả trực tiếp bằng tiền mặt');
 
             if (claim.advanceRecKenh === 'chuyen-khoan') {
                 document.getElementById('kpRecBankWrapper').style.display = 'grid';
@@ -2459,6 +2761,8 @@ function renderKinhPhiDamageGrids(claim) {
 
     DAMAGE_KEYS.forEach(key => {
         const amount = (claim.selectedDamages && claim.selectedDamages[key]) ? claim.selectedDamages[key] : 0;
+        // Theo SRS: chỉ hiển thị các loại thiệt hại có số tiền bồi thường lớn hơn 0
+        if (!(amount > 0)) return;
         const label = DAMAGE_LABELS[key] || key;
 
         const tr = document.createElement('tr');
@@ -2467,7 +2771,7 @@ function renderKinhPhiDamageGrids(claim) {
             <td style="font-weight:600; vertical-align:middle;">${label}</td>
             <td style="text-align:right; font-weight:700; background-color:#F8FAFC; vertical-align:middle; padding-right:15px;">${amount.toLocaleString('vi-VN')} VNĐ</td>
             <td style="vertical-align:middle; text-align:right;">
-                <input type="text" class="form-control kp-approve-input" data-key="${key}" data-max="${amount}" data-label="${label}" value="${amount.toLocaleString('vi-VN')}" oninput="formatNumberInput(this); calculateKinhPhiApproveTotal();" style="font-weight:700; text-align:right; border-color:#F59E0B; background-color:#FFFDF5; max-width:180px; display:block; margin-left:auto; height:26px; padding:2px 6px; font-size:12.5px;">
+                <input type="text" class="form-control kp-approve-input" data-key="${key}" data-max="${amount}" data-label="${label}" value="${amount.toLocaleString('vi-VN')}" readonly style="font-weight:700; text-align:right; background-color:#F1F5F9; max-width:180px; display:block; margin-left:auto; height:26px; padding:2px 6px; font-size:12.5px;">
             </td>
         `;
         tbody.appendChild(tr);
@@ -2819,7 +3123,7 @@ function openCreateProposalForm() {
     document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> LẬP ĐỀ NGHỊ CẤP PHÁT KINH PHÍ BỒI THƯỜNG`;
 
     // Enable selector block
-    document.getElementById('formProposalType').disabled = false;
+    setProposalTypeRadio('Cấp tạm ứng', false);
     document.getElementById('formClaimSelector').disabled = false;
     const selectorBlock = document.getElementById('formSelectorBlock');
     if (selectorBlock) selectorBlock.style.display = 'block';
@@ -2946,7 +3250,16 @@ function saveProposal(statusStr) {
     const user = "Lê Văn Nam"; // Cán bộ xử lý tự động lấy cán bộ đăng nhập
 
     if (!ycbtCode) {
-        showToast("Vui lòng chọn vụ việc bồi thường liên kết trước!", "error");
+        showFieldError('formClaimSearchInput', 'Đây là trường bắt buộc');
+        showCustomAlertModal("Vui lòng tìm kiếm và chọn vụ việc yêu cầu bồi thường liên kết trước khi thực hiện!", "Chưa chọn vụ việc", "warning");
+        return;
+    }
+
+    // Business rules validation: Duplicate & Status checks
+    const claimValidation = validateClaimForProposalType(ycbtCode, proposalType);
+    if (!claimValidation.valid) {
+        showFieldError('formClaimSearchInput', claimValidation.message);
+        showCustomAlertModal(claimValidation.message, "Không thể lưu đề nghị", "error");
         return;
     }
 
@@ -3100,12 +3413,11 @@ function fillProposalDirect(id) {
     }
 
     // Set type and disable it so it cannot be edited
-    const typeSelect = document.getElementById('formProposalType');
-    typeSelect.value = (item.type === 'Kinh phí bồi thường' || item.type === 'Cấp kinh phí bồi thường') ? 'Cấp kinh phí bồi thường' : 'Cấp tạm ứng';
-    typeSelect.disabled = true;
+    const typeVal = (item.type === 'Kinh phí bồi thường' || item.type === 'Cấp kinh phí bồi thường') ? 'Cấp kinh phí bồi thường' : 'Cấp tạm ứng';
+    setProposalTypeRadio(typeVal, true);
 
     // Trigger type change to render correct dynamic tables
-    handleTypeChange(typeSelect.value);
+    handleTypeChange(typeVal);
 
     // Hide linked claim selector block
     const selectorBlock = document.getElementById('formSelectorBlock');
@@ -3170,10 +3482,9 @@ function updateProposalDirect(id) {
     }
 
     // Lock type select and hide selector block
-    const typeSelect = document.getElementById('formProposalType');
-    typeSelect.value = (item.type === 'Kinh phí bồi thường' || item.type === 'Cấp kinh phí bồi thường') ? 'Cấp kinh phí bồi thường' : 'Cấp tạm ứng';
-    typeSelect.disabled = true;
-    handleTypeChange(typeSelect.value);
+    const typeVal = (item.type === 'Kinh phí bồi thường' || item.type === 'Cấp kinh phí bồi thường') ? 'Cấp kinh phí bồi thường' : 'Cấp tạm ứng';
+    setProposalTypeRadio(typeVal, true);
+    handleTypeChange(typeVal);
 
     const selectorBlock = document.getElementById('formSelectorBlock');
     if (selectorBlock) selectorBlock.style.display = 'none';
@@ -3321,8 +3632,8 @@ function viewProposalDetail(id) {
     }
 
     // Disable proposal selector block and hide search wrapper
-    document.getElementById('formProposalType').value = (item.type === 'Đề nghị tạm ứng' || item.type === 'Cấp tạm ứng') ? 'Cấp tạm ứng' : 'Cấp kinh phí bồi thường';
-    document.getElementById('formProposalType').disabled = true;
+    const typeVal = (item.type === 'Đề nghị tạm ứng' || item.type === 'Cấp tạm ứng') ? 'Cấp tạm ứng' : 'Cấp kinh phí bồi thường';
+    setProposalTypeRadio(typeVal, true);
 
     const selectorBlock = document.getElementById('formSelectorBlock');
     if (selectorBlock) selectorBlock.style.display = 'block';
@@ -3370,6 +3681,8 @@ function viewProposalDetail(id) {
     document.getElementById('formNycCardPlace').value = claimDetails.cardPlace;
     document.getElementById('formNycCountry').value = claimDetails.country || "Việt Nam";
     document.getElementById('formNycCity').value = claimDetails.city || "Hà Nội";
+    document.getElementById('formNycWard').value = claimDetails.ward || 'Phường Dịch Vọng';
+    document.getElementById('formClaimName').value = claimDetails.caseName || ('Vụ việc yêu cầu bồi thường của ' + (claimDetails.nyc || ''));
     document.getElementById('formNycAddress').value = claimDetails.address;
 
     // Disable claimant fields
@@ -3408,7 +3721,7 @@ function viewProposalDetail(id) {
         document.getElementById('advRecName').value = claimDetails.nyc;
         document.getElementById('advRecCard').value = claimDetails.cardNo;
         document.getElementById('advRecAddress').value = claimDetails.address;
-        document.getElementById('advRecMethod').value = claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt';
+        setAdvPayMethod(claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Chi trả qua chuyển khoản' : 'Chi trả trực tiếp bằng tiền mặt');
 
         if (claimDetails.advanceRecKenh === 'chuyen-khoan') {
             document.getElementById('advRecBankWrapper').style.display = 'grid';
@@ -3464,7 +3777,7 @@ function viewProposalDetail(id) {
         document.getElementById('kpRecName').value = claimDetails.nyc;
         document.getElementById('kpRecCard').value = claimDetails.cardNo;
         document.getElementById('kpRecAddress').value = claimDetails.address;
-        document.getElementById('kpRecMethod').value = claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt';
+        setKpPayMethod(claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Chi trả qua chuyển khoản' : 'Chi trả trực tiếp bằng tiền mặt');
 
         if (claimDetails.advanceRecKenh === 'chuyen-khoan') {
             document.getElementById('kpRecBankWrapper').style.display = 'grid';
@@ -4406,6 +4719,57 @@ function closeConfirmModal(result) {
     confirmCallback = null;
 }
 
+// Custom Alert / Warning Modal Helper
+let alertCallback = null;
+
+function showCustomAlertModal(message, title = 'Cảnh báo', type = 'warning', callback = null) {
+    const overlay = document.getElementById('customAlertOverlay');
+    if (!overlay) {
+        alert(message);
+        if (callback) callback();
+        return;
+    }
+    const titleEl = document.getElementById('customAlertTitle');
+    const headerEl = document.getElementById('customAlertHeader');
+    const iconEl = document.getElementById('customAlertIcon');
+    const msgEl = document.getElementById('customAlertMessage');
+
+    if (titleEl) titleEl.innerText = title;
+    if (msgEl) msgEl.innerHTML = message;
+    alertCallback = callback;
+
+    if (type === 'error') {
+        if (headerEl) headerEl.style.backgroundColor = 'var(--danger-color, #ef4444)';
+        if (iconEl) iconEl.className = 'fa-solid fa-circle-xmark';
+    } else if (type === 'info') {
+        if (headerEl) headerEl.style.backgroundColor = 'var(--primary-color, #1e40af)';
+        if (iconEl) iconEl.className = 'fa-solid fa-circle-info';
+    } else {
+        if (headerEl) headerEl.style.backgroundColor = '#f59e0b';
+        if (iconEl) iconEl.className = 'fa-solid fa-triangle-exclamation';
+    }
+
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+        overlay.classList.add('visible');
+    }, 10);
+}
+
+function closeCustomAlertModal() {
+    const overlay = document.getElementById('customAlertOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('visible');
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 200);
+
+    if (alertCallback) {
+        const cb = alertCallback;
+        alertCallback = null;
+        cb();
+    }
+}
+
 // PAYOUT METHOD TOGGLING
 function handlePayoutMethodChange(val) {
     const isCash = val === 'Tiền mặt' || val === 'Chi trả trực tiếp bằng tiền mặt';
@@ -4434,3 +4798,179 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ===================== Popup Tìm kiếm Quyết định giải quyết bồi thường =====================
+// Chỉ dùng khi Loại đề nghị = Đề nghị cấp kinh phí bồi thường. Popup dựng giao diện giả lập,
+// không xử lý logic nghiệp vụ Ban hành/Ký duyệt.
+let fundingDecPage = 1;
+const FUNDING_DEC_PAGE_SIZE = 10;
+
+// Danh sách Quyết định giải quyết bồi thường Đã ban hành (dữ liệu giả lập)
+const MOCK_ISSUED_DECISIONS = [
+    { decNo: '45/QĐ-GQBT', date: '05/06/2026', claimCode: 'BT-2026-007', requester: 'Trần Thị Hòa', agency: 'Sở Tư pháp Hà Nội', status: 'Đã ban hành', amount: 180000000 },
+    { decNo: '52/QĐ-GQBT', date: '28/06/2026', claimCode: 'BT-2026-002', requester: 'Phạm Văn Minh', agency: 'Sở Tư pháp Hà Nội', status: 'Đã ban hành', amount: 120000000 },
+    { decNo: '58/QĐ-GQBT', date: '12/07/2026', claimCode: 'BT-2026-011', requester: 'Nguyễn Thị Lan', agency: 'UBND Quận Cầu Giấy', status: 'Đã ban hành', amount: 75000000 },
+    { decNo: '61/QĐ-GQBT', date: '20/07/2026', claimCode: 'BT-2026-014', requester: 'Đỗ Văn Nam', agency: 'Cục Bồi thường nhà nước', status: 'Đã ban hành', amount: 210000000 },
+    { decNo: '63/QĐ-GQBT', date: '02/08/2026', claimCode: 'BT-2026-018', requester: 'Vũ Thị Mai', agency: 'Sở Tư pháp Hà Nội', status: 'Đã ban hành', amount: 96000000 }
+];
+
+const FUNDING_DEC_FILTER_IDS = ['fundingDecSearchNo', 'fundingDecSearchClaim', 'fundingDecSearchRequester',
+    'fundingDecSearchAgency', 'fundingDecSearchFrom', 'fundingDecSearchTo'];
+
+const FUNDING_DEC_EMPTY_HINT = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:24px;">Nhập tiêu chí và bấm Tìm kiếm để hiển thị danh sách Quyết định.</td></tr>';
+
+function openFundingDecisionLookupModal(prefillCode = '') {
+    const overlay = document.getElementById('fundingDecisionLookupOverlay');
+    if (!overlay) return;
+    FUNDING_DEC_FILTER_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    const claimInput = document.getElementById('fundingDecSearchClaim');
+    if (claimInput) claimInput.value = prefillCode || '';
+
+    fundingDecPage = 1;
+    // Không tự động tải dữ liệu khi mở popup; chỉ tải khi có prefill hoặc khi bấm Tìm kiếm
+    const tbody = document.getElementById('fundingDecisionLookupResults');
+    const pager = document.getElementById('fundingDecisionLookupPager');
+    if (prefillCode) {
+        renderFundingDecisionLookupResults();
+    } else {
+        if (tbody) tbody.innerHTML = FUNDING_DEC_EMPTY_HINT;
+        if (pager) pager.innerHTML = '';
+    }
+    overlay.style.display = 'flex';
+    overlay.classList.add('visible');
+}
+
+function closeFundingDecisionLookupModal() {
+    const overlay = document.getElementById('fundingDecisionLookupOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('visible');
+    overlay.style.display = 'none';
+}
+
+function clearFundingDecisionLookupFilters() {
+    FUNDING_DEC_FILTER_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    fundingDecPage = 1;
+    const tbody = document.getElementById('fundingDecisionLookupResults');
+    if (tbody) tbody.innerHTML = FUNDING_DEC_EMPTY_HINT;
+    const pager = document.getElementById('fundingDecisionLookupPager');
+    if (pager) pager.innerHTML = '';
+}
+
+function renderFundingDecisionLookupResults() {
+    const tbody = document.getElementById('fundingDecisionLookupResults');
+    if (!tbody) return;
+    const norm = v => String(v || '').toLowerCase().trim();
+    const kNo = norm(document.getElementById('fundingDecSearchNo') && document.getElementById('fundingDecSearchNo').value);
+    const kClaim = norm(document.getElementById('fundingDecSearchClaim') && document.getElementById('fundingDecSearchClaim').value);
+    const kReq = norm(document.getElementById('fundingDecSearchRequester') && document.getElementById('fundingDecSearchRequester').value);
+    const kAgency = norm(document.getElementById('fundingDecSearchAgency') && document.getElementById('fundingDecSearchAgency').value);
+
+    // Loại trừ các Quyết định mà vụ việc đã có Đề nghị cấp kinh phí bồi thường còn hiệu lực
+    const EFFECTIVE = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Chờ thu hồi', 'Hoàn thành', 'Sung quỹ nhà nước', 'Đã sung quỹ'];
+    const sourceList = (typeof proposalsList !== 'undefined') ? proposalsList : [];
+    const usedClaims = new Set(
+        sourceList
+            .filter(p => String(p.type || '').indexOf('tạm ứng') === -1 && EFFECTIVE.indexOf(p.status) > -1)
+            .map(p => p.ycbtCode)
+    );
+
+    const results = MOCK_ISSUED_DECISIONS.filter(d =>
+        d.status === 'Đã ban hành'
+        && !usedClaims.has(d.claimCode)
+        && (!kNo || norm(d.decNo).includes(kNo))
+        && (!kClaim || norm(d.claimCode).includes(kClaim))
+        && (!kReq || norm(d.requester).includes(kReq))
+        && (!kAgency || norm(d.agency).includes(kAgency))
+    );
+
+    const pager = document.getElementById('fundingDecisionLookupPager');
+    if (!results.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy Quyết định giải quyết bồi thường phù hợp.</td></tr>';
+        if (pager) pager.innerHTML = '';
+        return;
+    }
+
+    const totalPages = Math.max(1, Math.ceil(results.length / FUNDING_DEC_PAGE_SIZE));
+    if (fundingDecPage > totalPages) fundingDecPage = totalPages;
+    const start = (fundingDecPage - 1) * FUNDING_DEC_PAGE_SIZE;
+    const pageRows = results.slice(start, start + FUNDING_DEC_PAGE_SIZE);
+
+    tbody.innerHTML = pageRows.map((d, i) =>
+        '<tr>'
+        + '<td style="text-align:center;">' + (start + i + 1) + '</td>'
+        + '<td><a href="quan_ly_boi_thuong.html?id=' + encodeURIComponent(d.claimCode) + '" target="_blank" style="font-weight:700; color:#1d4ed8; text-decoration:none;">' + d.claimCode + '</a></td>'
+        + '<td><strong>' + d.decNo + '</strong></td>'
+        + '<td style="text-align:center;">' + d.date + '</td>'
+        + '<td>' + d.requester + '</td>'
+        + '<td style="text-align:center;"><span class="badge badge-success">' + d.status + '</span></td>'
+        + '<td style="text-align:center;"><button type="button" class="btn btn-primary btn-sm" style="padding:4px 10px; font-size:12px;" onclick="selectFundingDecision(\'' + d.decNo + '\')"><i class="fa-solid fa-check"></i> Chọn</button></td>'
+        + '</tr>'
+    ).join('');
+
+    if (pager) {
+        let btns = '';
+        for (let i = 1; i <= totalPages; i++) {
+            btns += '<button type="button" class="btn ' + (i === fundingDecPage ? 'btn-primary' : 'btn-secondary') + ' btn-sm" style="min-width:32px; padding:4px 8px;" onclick="fundingDecPage=' + i + '; renderFundingDecisionLookupResults()">' + i + '</button>';
+        }
+        const to = Math.min(start + FUNDING_DEC_PAGE_SIZE, results.length);
+        pager.innerHTML = '<span>Hiển thị ' + (start + 1) + ' đến ' + to + ' trong tổng số <strong>' + results.length + '</strong> bản ghi</span>'
+            + '<span style="display:flex; gap:4px;">' + btns + '</span>';
+    }
+}
+
+// Chọn 01 Quyết định: điền dữ liệu về form lập đề nghị
+function selectFundingDecision(decNo) {
+    const d = MOCK_ISSUED_DECISIONS.find(x => x.decNo === decNo);
+    if (!d) return;
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+    setVal('formBaseDecisionNo', d.decNo);
+    setVal('formBaseDecisionDate', d.date);
+    closeFundingDecisionLookupModal();
+    if (typeof handleClaimSelected === 'function') handleClaimSelected(d.claimCode);
+    if (typeof showToast === 'function') showToast('Đã chọn Quyết định số ' + d.decNo + ' làm căn cứ lập đề nghị.', 'success');
+}
+
+// Điều hướng popup theo Loại đề nghị đang chọn trên form
+function openFundingLookupByType(prefillCode = '') {
+    const radioKinhPhi = document.getElementById('radioTypeKinhPhi');
+    if (radioKinhPhi && radioKinhPhi.checked) {
+        openFundingDecisionLookupModal(prefillCode);
+    } else {
+        openFundingClaimLookupModal(prefillCode);
+    }
+}
+
+// ===== Phương thức chi trả tiền bồi thường (Radio button theo SRS 4.3.3.2.4.2) =====
+function onAdvPayMethodChange(value) {
+    document.getElementById('advRecMethod').value = value;
+    document.getElementById('advRecBankWrapper').style.display =
+        value === 'Chi trả qua chuyển khoản' ? 'grid' : 'none';
+}
+
+function setAdvPayMethod(value) {
+    const method = value || 'Chi trả trực tiếp bằng tiền mặt';
+    document.querySelectorAll('input[name="advRecMethodRadio"]').forEach(r => {
+        r.checked = r.value === method;
+    });
+    onAdvPayMethodChange(method);
+}
+
+function onKpPayMethodChange(value) {
+    document.getElementById('kpRecMethod').value = value;
+    document.getElementById('kpRecBankWrapper').style.display =
+        value === 'Chi trả qua chuyển khoản' ? 'grid' : 'none';
+}
+
+function setKpPayMethod(value) {
+    const method = value || 'Chi trả trực tiếp bằng tiền mặt';
+    document.querySelectorAll('input[name="kpRecMethodRadio"]').forEach(r => {
+        r.checked = r.value === method;
+    });
+    onKpPayMethodChange(method);
+}

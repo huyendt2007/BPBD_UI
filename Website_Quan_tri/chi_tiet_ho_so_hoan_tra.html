@@ -2149,8 +2149,11 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="padding: 16px 24px 24px 24px;">
-                <button type="button" class="btn btn-secondary" onclick="closeViewHistoryModal()">Đóng</button>
+            <div class="modal-footer"
+                style="padding: 16px 24px 24px 24px; display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap;">
+                <!-- Thao tác đồng nhất với cột Thao tác tại lưới Bước 4 -->
+                <div id="viewHistoryActions" style="display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap;"></div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeViewHistoryModal()">Đóng</button>
             </div>
         </div>
     </div>
@@ -5061,7 +5064,7 @@
                     dateInput.value = activeDossier.conclusionDate || new Date().toLocaleDateString('vi-VN');
                 }
 
-                const isStepReadonly = isReadonlyStep(2) || currentPerspective === 'leader' || isViewMode;
+                const isStepReadonly = isReadonlyStep(2) || currentPerspective === 'leader';
                 if (conclusionSelect) conclusionSelect.disabled = isStepReadonly;
                 if (dateInput) dateInput.disabled = isStepReadonly;
 
@@ -5090,7 +5093,8 @@
                 if (!tbody) return;
                 tbody.innerHTML = '';
 
-                const showActionCol = !isViewMode && !isStepReadonly;
+                // Màn Xem chi tiết vẫn hiển thị cột Thao tác như lưới danh sách
+                const showActionCol = !isStepReadonly;
                 const s2ActionHeader = document.getElementById('s2OfficerActionHeader');
                 if (s2ActionHeader) s2ActionHeader.style.display = showActionCol ? '' : 'none';
 
@@ -5789,9 +5793,10 @@
                 }
 
                 renderIssuedDecisionReadonly();
-                const isLeaderPerspective = isViewMode ? (currentPerspective === 'leader') : false;
+                const isLeaderPerspective = currentPerspective === 'leader';
                 const isCompletedDossier = activeDossier.status === 'Hoàn thành';
-                const isReadOnlyStep4 = isViewMode || isCompletedDossier || isLeaderPerspective;
+                // Màn Xem chi tiết vẫn cho thao tác; chỉ khóa khi hồ sơ đã Hoàn thành hoặc vai trò Lãnh đạo
+                const isReadOnlyStep4 = isCompletedDossier || isLeaderPerspective;
 
                 const completeBanner = document.getElementById('s4CompletedBanner');
                 if (completeBanner) {
@@ -5802,7 +5807,8 @@
                 if (!tbody) return;
                 tbody.innerHTML = '';
 
-                const showActionCol = !isViewMode;
+                // Cột Thao tác hiển thị cả ở màn Xem chi tiết, đồng nhất với lưới danh sách
+                const showActionCol = true;
                 const s4ActionHeader = document.getElementById('s4ActionColumnHeader');
                 if (s4ActionHeader) s4ActionHeader.style.display = showActionCol ? '' : 'none';
 
@@ -5843,7 +5849,7 @@
                     // Slot 1: Nút Ghi nhận nộp tiền (icon fa-money-bill-transfer)
                     let btnGhiNhan = '';
                     if (isReadOnlyStep4 || o.status === 'Hoàn tất' || remaining <= 0 || o.isTerminated) {
-                        let tooltip = isViewMode ? "Chế độ xem chi tiết không cho phép ghi nhận nộp tiền" : (o.status === 'Hoàn tất' ? "Cán bộ đã hoàn thành nghĩa vụ" : "Không thể thao tác");
+                        let tooltip = (o.status === 'Hoàn tất' ? "Cán bộ đã hoàn thành nghĩa vụ" : "Không thể thao tác");
                         btnGhiNhan = `<button type="button" class="action-icon-btn btn-disabled" title="${tooltip}"><i class="fa-solid fa-money-bill-transfer"></i></button>`;
                     } else if (o.isPostponed) {
                         btnGhiNhan = `<button type="button" class="action-icon-btn btn-pay-active" title="Cán bộ đang hoãn (cho phép ghi nhận nộp tiền tự nguyện)" onclick="event.stopPropagation(); openPaymentModal(${index}); return false;"><i class="fa-solid fa-money-bill-transfer"></i></button>`;
@@ -6431,7 +6437,64 @@
                     }
                 }
 
+                // Thanh thao tác của popup, đồng nhất với cột Thao tác tại lưới Bước 4
+                renderViewHistoryActions(index, o);
+
                 document.getElementById('viewHistoryModal').classList.add('visible');
+            }
+            // Dựng thanh thao tác trong Popup Chi tiết tiến trình nộp tiền của cán bộ
+            // Bố trí đồng nhất với cột Thao tác tại lưới Bước 4: 01 nút Ghi nhận nộp tiền
+            // và 01 nút Thao tác khác chứa menu 04 mục điều chỉnh nghĩa vụ hoàn trả.
+            function renderViewHistoryActions(index, o) {
+                const wrap = document.getElementById('viewHistoryActions');
+                if (!wrap) return;
+                wrap.innerHTML = '';
+
+                const remaining = Math.max(0, (o.total || 0) - (o.paid || 0));
+                const isLeader = currentPerspective === 'leader';
+                const isCompletedDossier = activeDossier.status === 'Hoàn thành';
+                const canOperate = !isLeader && !isCompletedDossier
+                    && o.status !== 'Hoàn tất' && remaining > 0
+                    && !o.isTerminated && !o.isExempt;
+
+                if (!canOperate) {
+                    wrap.innerHTML = '<span style="font-size:12.5px; color:var(--text-muted); font-style:italic; margin-right:auto;">Cán bộ đã kết thúc nghĩa vụ hoàn trả hoặc người dùng không có quyền tác nghiệp trên hồ sơ.</span>';
+                    return;
+                }
+
+                // Hoãn hoàn trả ẩn khi cán bộ đang ở trạng thái Đang hoãn
+                const postponeItem = o.isPostponed ? '' :
+                    `<button type="button" class="more-actions-item" onclick="selectViewHistoryMoreAction(event, ${index}, 'postpone')"><i class="fa-solid fa-clock-rotate-left" style="color:#0284c7;"></i> Hoãn hoàn trả</button>`;
+
+                wrap.innerHTML = `
+                    <button type="button" class="btn btn-primary btn-sm" onclick="closeViewHistoryModal(); openPaymentModal(${index});"><i class="fa-solid fa-money-bill-transfer"></i> Ghi nhận nộp tiền</button>
+                    <div class="more-actions-wrapper" onclick="event.stopPropagation();">
+                        <button type="button" class="btn btn-secondary btn-sm" title="Thao tác khác" onclick="toggleViewHistoryMoreActions(event); return false;"><i class="fa-solid fa-ellipsis-vertical"></i> Thao tác khác</button>
+                        <div class="more-actions-menu" id="viewHistoryMoreMenu" style="right:0; left:auto;">
+                            <button type="button" class="more-actions-item" onclick="selectViewHistoryMoreAction(event, ${index}, 'reduce')"><i class="fa-solid fa-arrow-down-wide-short" style="color:#d97706;"></i> Giảm mức hoàn trả</button>
+                            <button type="button" class="more-actions-item" onclick="selectViewHistoryMoreAction(event, ${index}, 'exempt')"><i class="fa-solid fa-shield-halved" style="color:#16a34a;"></i> Miễn hoàn trả</button>
+                            ${postponeItem}
+                            <button type="button" class="more-actions-item" onclick="selectViewHistoryMoreAction(event, ${index}, 'terminate')"><i class="fa-solid fa-ban" style="color:#dc2626;"></i> Chấm dứt hoàn trả</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function toggleViewHistoryMoreActions(event) {
+                event.stopPropagation();
+                document.querySelectorAll('.more-actions-menu').forEach(m => {
+                    if (m.id !== 'viewHistoryMoreMenu') m.classList.remove('show');
+                });
+                const menu = document.getElementById('viewHistoryMoreMenu');
+                if (menu) menu.classList.toggle('show');
+            }
+
+            function selectViewHistoryMoreAction(event, index, actionType) {
+                event.stopPropagation();
+                const menu = document.getElementById('viewHistoryMoreMenu');
+                if (menu) menu.classList.remove('show');
+                closeViewHistoryModal();
+                openAdjustObligationModal(index, actionType);
             }
             
             function closeViewHistoryModal() {

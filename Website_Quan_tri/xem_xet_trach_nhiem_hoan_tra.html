@@ -1112,13 +1112,31 @@
                     <div class="info-group-title">I. Kết luận của Hội đồng</div>
                     <div class="form-group" style="margin-bottom: 16px;">
                         <span class="form-label">Kết luận của Hội đồng<span class="required">*</span></span>
-                        <select class="form-control" id="formKienNghiConclusion" onchange="toggleKienNghiConclusion()" required>
-                            <option value="co_loi" selected>Có lỗi - Kiến nghị hoàn trả</option>
-                            <option value="khong_co_loi">Không xem xét - Người thi hành công vụ không có lỗi</option>
-                            <option value="da_chet">Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả</option>
-                        </select>
+                        <div style="display:flex; flex-direction:column; gap:10px; margin-top:6px;">
+                            <label
+                                style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
+                                <input type="radio" name="formKienNghiConclusionRadio" value="co_loi" checked
+                                    onchange="onKienNghiConclusionChange(this.value)" style="margin-top:2px;">
+                                <span style="font-size:13.5px; line-height:1.5;"><strong>Có lỗi - Kiến nghị hoàn
+                                        trả</strong></span>
+                            </label>
+                            <label
+                                style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
+                                <input type="radio" name="formKienNghiConclusionRadio" value="khong_co_loi"
+                                    onchange="onKienNghiConclusionChange(this.value)" style="margin-top:2px;">
+                                <span style="font-size:13.5px; line-height:1.5;"><strong>Không xem xét</strong> - Người
+                                    thi hành công vụ không có lỗi</span>
+                            </label>
+                            <label
+                                style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
+                                <input type="radio" name="formKienNghiConclusionRadio" value="da_chet"
+                                    onchange="onKienNghiConclusionChange(this.value)" style="margin-top:2px;">
+                                <span style="font-size:13.5px; line-height:1.5;"><strong>Không xem xét</strong> - Người
+                                    thi hành công vụ đã chết trước khi ra quyết định hoàn trả</span>
+                            </label>
+                        </div>
+                        <input type="hidden" id="formKienNghiConclusion" value="co_loi">
                     </div>
-
                     <div id="kienNghiCoLoiBlock">
                         <div class="info-group-title">II. Xác minh lỗi và tiền đề xuất hoàn trả</div>
                         <div class="grid-2-cols" style="margin-bottom: 16px;">
@@ -3133,8 +3151,23 @@
 
             document.getElementById('formKienNghiFileInfo').style.display = 'none';
             
+            setKienNghiConclusion(d.hdConclusion || 'co_loi');
             autoCalculateRefundProposed();
             document.getElementById('updateKienNghiModalRefund').classList.add('visible');
+        }
+
+        // Kết luận của Hội đồng hiển thị dạng Radio button
+        function onKienNghiConclusionChange(value) {
+            document.getElementById('formKienNghiConclusion').value = value;
+            toggleKienNghiConclusion();
+        }
+
+        function setKienNghiConclusion(value) {
+            const conclusion = value || 'co_loi';
+            document.querySelectorAll('input[name="formKienNghiConclusionRadio"]').forEach(r => {
+                r.checked = r.value === conclusion;
+            });
+            onKienNghiConclusionChange(conclusion);
         }
 
         function toggleKienNghiConclusion() {

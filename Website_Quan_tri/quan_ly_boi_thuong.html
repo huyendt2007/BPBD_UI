@@ -1686,6 +1686,9 @@
                     </select>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center;">
+                    <!-- Chỉ hiển thị tại Tab "Vụ việc chờ tiếp nhận": mở màn nhập liệu hồ sơ ở chế độ tạo mới -->
+                    <button class="btn btn-primary" id="btnCreateClaimRequest" onclick="openInlineClaimForm(null)"><i
+                            class="fa-solid fa-plus"></i> Tạo yêu cầu</button>
                     <button class="btn btn-secondary" onclick="exportExcelB()"><i class="fa-solid fa-file-excel"></i>
                         Kết xuất Excel</button>
                 </div>
@@ -4521,43 +4524,74 @@
                 assignedOfficer: "Nguyễn Văn Chuyên Viên",
                 code: "BT-2026-006",
                 fieldGroup: "hành chính",
-                date: "01/07/2026",
-                nyc: "Hoàng Tuấn C",
+                date: "02/09/2026",
+                nyc: "Lý Thị K",
                 victimAlive: "yes",
                 cardType: "Cá nhân",
                 cardNo: "001090112233",
                 address: "KĐT Times City, Hai Bà Trưng, Hà Nội",
                 phone: "0901234567",
                 role: "Người bị thiệt hại",
-                docBase: "Quyết định hủy bỏ Quyết định xử phạt hành chính số 111/QĐ-UBND",
-                hanhVi: "Tịch thu phương tiện kinh doanh không đúng quy định.",
-                nhanQua: "Thiệt hại doanh thu do ngừng hoạt động kinh doanh 3 tháng.",
+                docBase: "Quyết định hủy bỏ Quyết định cưỡng chế công trình trái quy định pháp luật số 89/QĐ-CC",
+                hanhVi: "Cưỡng chế tháo dỡ nhà ở khi chưa hết thời hạn giải quyết khiếu nại.",
+                nhanQua: "Thiệt hại tài sản và ngừng trệ hoạt động kinh doanh 3 tháng.",
                 officerName: "Phạm Minh Đ",
                 officerPosition: "Cán bộ Đội Quản lý trật tự đô thị",
                 officerAgency: "UBND Phường Vĩnh Tuy",
-                officerStatus: "Đã chuyển công tác",
-                officerCurrentAgency: "UBND Phường Mai Động",
-                officerCurrentPosition: "Phó Chủ tịch UBND Phường",
-                status: "Chờ tiếp nhận",
+                officerStatus: "Đang công tác",
+                status: "Đình chỉ giải quyết",
                 thulyVenue: "cơ quan quản lý",
-                totalNum: 100000000,
+                totalNum: 220000000,
                 advanceNum: 0,
-                slaDays: 20,
+                slaDays: 0,
                 slaStatus: "normal",
-                slaText: "Đang tiến hành xác minh thiệt hại (hạn còn 20 ngày)",
+                slaText: "Đình chỉ giải quyết do Quyết định giải quyết bồi thường bị hủy",
                 restoreHonor: false,
-                agency: "UBND Quận Hai Bà Trưng",
-                deadline: "30/08/2026",
+                agency: "UBND Quận Hoàng Mai",
+                deadline: "15/10/2026",
+                decStatus: "Đã hủy",
+                decNo: "18/QĐ-GQBT",
+                decDate: "20/07/2026",
+                decPublishDate: "20/07/2026",
+                decEffectiveDate: "05/08/2026",
+                decSigner: "Vũ Minh Khang (Phó Chủ tịch UBND Quận)",
+                decPosition: "Phó Chủ tịch UBND Quận",
+                decContent: "Quyết định giải quyết bồi thường cho bà Lý Thị K do cưỡng chế sai quy trình số tiền 220.000.000đ.",
+                cancelDecNo: "39/QĐ-HGQBT",
+                cancelDecDate: "15/08/2026",
+                cancelSigner: "Vũ Minh Khang (Phó Chủ tịch UBND Quận)",
+                cancelReason: "Hủy quyết định do quyết định hành chính bị khiếu nại đã được cơ quan có thẩm quyền bãi bỏ toàn bộ.",
                 files: [
-                    { name: "Don_yeu_cau_boi_thuong.pdf", url: "#" }
+                    { name: "Don_yeu_cau_boi_thuong.pdf", url: "#" },
+                    { name: "Quyet_dinh_18_GQBT_signed.pdf", url: "#" },
+                    { name: "Quyet_dinh_huy_18_BTNN_signed.pdf", url: "#" }
+                ],
+                specialStatusLogs: [
+                    {
+                        type: "Đình chỉ giải quyết",
+                        source: "Tự động do Quyết định giải quyết bồi thường bị hủy",
+                        docNo: "39/QĐ-HGQBT",
+                        docDate: "15/08/2026",
+                        startDate: "15/08/2026",
+                        endDate: "--",
+                        previousStatus: "Chờ thực thi",
+                        reason: "Quyết định giải quyết bồi thường số 18/QĐ-GQBT bị hủy theo Quyết định số 39/QĐ-HGQBT ngày 15/08/2026 do cơ quan có thẩm quyền bãi bỏ văn bản làm căn cứ bồi thường.",
+                        note: "Hệ thống tự động chuyển trạng thái hồ sơ sang Đình chỉ giải quyết theo Mẫu 11/BTNN.",
+                        cancelDecNo: "39/QĐ-HGQBT",
+                        files: [{ name: "Quyet_dinh_huy_18_BTNN_signed.pdf", size: "1.8 MB", url: "#" }]
+                    }
                 ],
                 thietHaiList: [
-                    { type: 2, calc: "Thu nhập thực tế bị mất trong 3 tháng: 100.000.000 đ", val: 100000000 }
+                    { type: 1, calc: "Thiệt hại tài sản bị cưỡng chế hư hỏng: 150.000.000 đ", val: 150000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất trong 3 tháng: 70.000.000 đ", val: 70000000 }
                 ],
                 timeline: [
-                    { title: "Nộp hồ sơ bồi thường", date: "01/07/2026", desc: "Hồ sơ tiếp nhận trực tiếp", status: "completed" },
-                    { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "05/07/2026", desc: "Quyết định thụ lý số 112/QĐ-TLHS.", status: "completed" },
-                    { title: "Xác minh thiệt hại", date: "10/07/2026", desc: "Đang tổ chức xác minh thiệt hại.", status: "active" }
+                    { title: "Nộp hồ sơ bồi thường", date: "02/09/2026", desc: "Hồ sơ tiếp nhận trực tiếp", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "05/09/2026", desc: "Quyết định thụ lý số 112/QĐ-TLHS", status: "completed" },
+                    { title: "Xác minh thiệt hại", date: "10/09/2026", desc: "Hoàn thành báo cáo xác minh thiệt hại", status: "completed" },
+                    { title: "Thương lượng bồi thường", date: "15/09/2026", desc: "Thương lượng thành công, lập biên bản Mẫu 09/BTNN", status: "completed" },
+                    { title: "Ban hành Quyết định giải quyết bồi thường", date: "18/09/2026", desc: "Ban hành Quyết định số 18/QĐ-GQBT", status: "completed" },
+                    { title: "Đình chỉ giải quyết vụ việc", date: "20/09/2026", desc: "Tự động đình chỉ do Quyết định số 18/QĐ-GQBT bị hủy theo QĐ số 39/QĐ-HGQBT", status: "completed" }
                 ]
             },
             {
@@ -5569,34 +5603,77 @@
             },
             {
                 id: "HS11",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
                 code: "BT-2026-011",
                 fieldGroup: "hành chính",
-                date: "12/06/2026",
+                date: "05/09/2026",
                 nyc: "Trần Thị G",
+                victimAlive: "yes",
                 cardType: "Cá nhân",
                 cardNo: "001095002934",
                 address: "Phường Tràng Tiền, Hoàn Kiếm, Hà Nội",
                 phone: "0904556677",
                 role: "Người bị thiệt hại",
-                docBase: "Quyết định thu hồi đất sai luật số 05/QD-TH",
+                docBase: "Quyết định thu hồi đất trái pháp luật số 05/QĐ-TH",
                 hanhVi: "Kê biên giải phóng mặt bằng sai diện tích đất thực tế.",
                 nhanQua: "Giảm sút diện tích mặt bằng kinh doanh buôn bán.",
-                status: "Chờ ban hành QĐ",
+                officerName: "Đỗ Văn Long",
+                officerPosition: "Trưởng phòng Tài nguyên & Môi trường",
+                officerAgency: "UBND Quận Hoàn Kiếm",
+                officerStatus: "Đang công tác",
+                status: "Đình chỉ giải quyết",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 300000000,
                 advanceNum: 0,
-                slaDays: 5,
+                slaDays: 0,
                 slaStatus: "normal",
-                slaText: "Chờ ban hành quyết định bồi thường chính thức",
-                restoreHonor: false,
+                slaText: "Đình chỉ giải quyết do Quyết định giải quyết bồi thường bị hủy",
+                restoreHonor: true,
                 agency: "Sở Tư pháp Hà Nội",
-                deadline: "12/09/2026",
-                files: [{ name: "Biên bản thương lượng thành.pdf", url: "#" }],
+                deadline: "20/10/2026",
+                decStatus: "Đã hủy",
+                decNo: "26/QĐ-GQBT",
+                decDate: "06/07/2026",
+                decPublishDate: "06/07/2026",
+                decEffectiveDate: "21/07/2026",
+                decSigner: "Bùi Thị Nhàn",
+                decPosition: "Thủ trưởng cơ quan giải quyết bồi thường",
+                decContent: "Quyết định giải quyết bồi thường thiệt hại thu hồi đất đối với bà Trần Thị G số tiền 300.000.000đ.",
+                cancelDecNo: "33/QĐ-HGQBT",
+                cancelDecDate: "12/07/2026",
+                cancelSigner: "Bùi Thị Nhàn",
+                cancelReason: "Hủy quyết định gốc do nội dung quyết định không còn phù hợp với kết quả xác minh bổ sung.",
+                files: [
+                    { name: "Biên bản thương lượng thành.pdf", url: "#" },
+                    { name: "Quyet_dinh_26_GQBT_signed.pdf", url: "#" },
+                    { name: "Quyet_dinh_huy_33_HGQBT.pdf", url: "#" }
+                ],
+                specialStatusLogs: [
+                    {
+                        type: "Đình chỉ giải quyết",
+                        source: "Tự động do Quyết định giải quyết bồi thường bị hủy",
+                        docNo: "33/QĐ-HGQBT",
+                        docDate: "12/07/2026",
+                        startDate: "12/07/2026",
+                        endDate: "--",
+                        previousStatus: "Chờ thực thi",
+                        reason: "Quyết định giải quyết bồi thường số 26/QĐ-GQBT bị hủy theo Quyết định số 33/QĐ-HGQBT ngày 12/07/2026.",
+                        note: "Hệ thống tự động chuyển trạng thái hồ sơ sang Đình chỉ giải quyết theo Mẫu 11/BTNN.",
+                        cancelDecNo: "33/QĐ-HGQBT",
+                        files: [{ name: "Quyet_dinh_26_GQBT_signed.pdf", size: "2.1 MB", url: "#" }]
+                    }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Thiệt hại về tài sản do thu hồi sai: 200.000.000 đ", val: 200000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất: 100.000.000 đ", val: 100000000 }
+                ],
                 timeline: [
-                    { title: "Nộp hồ sơ bồi thường", date: "12/06/2026", desc: "Hồ sơ tiếp nhận trực tiếp", status: "completed" },
-                    { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "16/06/2026", desc: "Thụ lý giải quyết bồi thường", status: "completed" },
-                    { title: "Xác minh thiệt hại", date: "02/07/2026", desc: "Ban hành báo cáo xác minh thiệt hại thực tế", status: "completed" },
-                    { title: "Thương lượng bồi thường", date: "05/07/2026", desc: "Thương lượng thành công, ký biên bản thỏa thuận bồi thường.", status: "completed" }
+                    { title: "Nộp hồ sơ bồi thường", date: "05/09/2026", desc: "Hồ sơ tiếp nhận trực tiếp", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu bồi thường", date: "08/09/2026", desc: "Thụ lý giải quyết bồi thường", status: "completed" },
+                    { title: "Xác minh thiệt hại", date: "12/09/2026", desc: "Ban hành báo cáo xác minh thiệt hại thực tế", status: "completed" },
+                    { title: "Thương lượng bồi thường", date: "15/09/2026", desc: "Thương lượng thành công, ký biên bản thỏa thuận bồi thường", status: "completed" },
+                    { title: "Ban hành Quyết định giải quyết bồi thường", date: "17/09/2026", desc: "Ban hành Quyết định số 26/QĐ-GQBT", status: "completed" },
+                    { title: "Đình chỉ giải quyết vụ việc", date: "19/09/2026", desc: "Tự động đình chỉ do Quyết định số 26/QĐ-GQBT bị hủy theo QĐ số 33/QĐ-HGQBT", status: "completed" }
                 ]
             },
             {
@@ -6321,6 +6398,7 @@
             'Chờ thực thi',
             'Hoãn giải quyết',
             'Tạm đình chỉ giải quyết',
+            'Đình chỉ giải quyết',
             'Sung quỹ nhà nước',
             'Hoàn thành'
         ];
@@ -6830,6 +6908,7 @@
                     <option value="Chờ thực thi">Chờ thực thi</option>
                     <option value="Hoãn giải quyết">Hoãn giải quyết</option>
                     <option value="Tạm đình chỉ giải quyết">Tạm đình chỉ giải quyết</option>
+                    <option value="Đình chỉ giải quyết">Đình chỉ giải quyết</option>
                     <option value="Sung quỹ nhà nước">Sung quỹ nhà nước</option>
                     <option value="Hoàn thành">Hoàn thành</option>
                 `;
@@ -6843,6 +6922,9 @@
             document.getElementById('workflowTabKiemTra').classList.toggle('active', tab === 'kiem-tra');
             document.getElementById('workflowTabXuLy').classList.toggle('active', tab === 'cho-xu-ly');
             updateSearchStatusOptionsByTab(tab);
+            // Nút Tạo yêu cầu chỉ dùng để lập hồ sơ mới nên chỉ hiện tại Tab "Vụ việc chờ tiếp nhận"
+            const btnCreate = document.getElementById('btnCreateClaimRequest');
+            if (btnCreate) btnCreate.style.display = (tab === 'nhap-lieu') ? 'inline-flex' : 'none';
             currentClaimsPage = 1;
             renderClaimsTable();
         }
@@ -6903,12 +6985,12 @@
                 // Thụ lý hồ sơ / Từ chối thụ lý là thao tác riêng của Lãnh đạo nên được ẩn hoàn toàn
                 // khỏi cột Thao tác của Cán bộ, chỉ còn lại thao tác Cập nhật hồ sơ.
                 const isTuChoiThuLy = status === 'Từ chối thụ lý';
-                const isTerminal = status === 'Hoàn thành' || status === 'Sung quỹ nhà nước';
+                const isTerminal = status === 'Hoàn thành' || status === 'Sung quỹ nhà nước' || status === 'Đình chỉ giải quyết';
                 const canCapNhatHoSo = CLAIM_PROCESSING_STATES.includes(status) && !isTerminal;
                 return `
                     ${canCapNhatHoSo
                         ? `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); ${isTuChoiThuLy ? `openInlineClaimForm('${item.id}')` : `showCaseDetail('${item.id}', true)`}"><i class="fa-solid fa-pen-to-square"></i></button>`
-                        : disabled('fa-solid fa-pen-to-square', status === 'Chờ thụ lý' ? 'Chờ lãnh đạo thụ lý. Cán bộ theo dõi bằng cách chọn dòng.' : 'Không áp dụng cho trạng thái hiện tại')}
+                        : disabled('fa-solid fa-pen-to-square', status === 'Chờ thụ lý' ? 'Chờ lãnh đạo thụ lý. Cán bộ theo dõi bằng cách chọn dòng.' : status === 'Đình chỉ giải quyết' ? 'Vụ việc đã đình chỉ giải quyết (do QĐ giải quyết bồi thường bị hủy)' : 'Không áp dụng cho trạng thái hiện tại')}
                 `;
             }
 
@@ -9338,6 +9420,15 @@
         // ==============================================
         // CASE DETAIL & EDIT TABS VIEW LOGIC
         // ==============================================
+        function openDecisionModuleDetail(decNo, claimId) {
+            const targetUrl = `quyet_dinh_giai_quyet_boi_thuong.html?decNo=${encodeURIComponent(decNo || '')}${claimId ? `&claimId=${encodeURIComponent(claimId)}` : ''}`;
+            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+                window.parent.openAdminModule(targetUrl, targetUrl);
+                return;
+            }
+            window.open(targetUrl, '_blank');
+        }
+
         function getLinkedDetailReturnUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('returnUrl') || '';
@@ -9420,8 +9511,11 @@
             renderDetailActionBar(claim);
 
             const tab2Btn = document.getElementById('detailTab2Btn');
+            // Hồ sơ cũ/dữ liệu giả lập không có trường requestType (chỉ được ghi khi lập hồ sơ qua form).
+            // Mặc định 'both' giống cách form nhập liệu đang đọc giá trị này, nếu không Tab 2 sẽ bị ẩn ở mọi hồ sơ.
+            const claimRequestType = claim.requestType || 'both';
             const showTab2 = CLAIM_STATUSES_FROM_VERIFICATION.includes(canonicalClaimStatus(claim.status)) &&
-                (claim.requestType === 'both' || claim.requestType === 'money');
+                (claimRequestType === 'both' || claimRequestType === 'money');
             if (!showTab2) {
                 if (tab2Btn) tab2Btn.style.display = 'none';
                 switchDetailTab('chung');
@@ -10817,6 +10911,7 @@
                                 <div>
                                     <span class="badge ${badgeClass}" style="font-size:11.5px;">${log.type}</span>
                                     <span style="font-weight:700; color:#1e293b; margin-left:8px;">${log.docNo || '--'}</span>
+                                    ${log.source ? `<span class="badge" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; margin-left:8px; font-size:11px;"><i class="fa-solid fa-robot" style="margin-right:4px;"></i>${log.source}</span>` : ''}
                                 </div>
                                 <span style="font-size:11.5px; color:#64748b;">#${idx + 1}</span>
                             </div>
@@ -10825,7 +10920,10 @@
                                 <div><strong>Bắt đầu áp dụng:</strong> ${log.startDate || '--'}</div>
                                 <div><strong>Kết thúc dự kiến:</strong> ${log.endDate || '--'}</div>
                             </div>
-                            <div style="font-size:12.5px; margin-bottom:8px;"><strong>Bước xử lý:</strong> ${log.previousStatus || '--'}</div>
+                            <div style="font-size:12.5px; margin-bottom:8px;">
+                                <strong>Bước xử lý:</strong> ${log.previousStatus || '--'}
+                                ${log.cancelDecNo ? ` &nbsp;|&nbsp; <strong>QĐ hủy liên kết:</strong> <a href="javascript:void(0)" onclick="openDecisionModuleDetail('${log.cancelDecNo}', '${claim.id}')" style="font-weight:700; color:#1D4ED8; text-decoration:underline; display:inline-flex; align-items:center; gap:3px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> ${log.cancelDecNo}</a>` : ''}
+                            </div>
                             <div style="font-size:13px; line-height:1.5; background:white; border:1px solid #fde68a; border-radius:4px; padding:8px; margin-bottom:8px;">
                                 <strong>Căn cứ/Lý do:</strong> ${log.reason || '--'}
                                 ${log.note ? `<div style="margin-top:5px;"><strong>Ghi chú:</strong> ${log.note}</div>` : ''}
@@ -11348,11 +11446,13 @@
             } else {
                 // Kịch bản 2: Đã tạo Quyết định trước đó
                 const isHoanThanh = decStatus === 'Hoàn thành';
+                const isDaHuy = decStatus === 'Đã hủy';
+                const hasIssuedInfo = isHoanThanh || isDaHuy;
 
                 // Data Masking Rule
-                const displayNo = isHoanThanh ? (claim.decNo || '--') : '--';
-                const displayDate = isHoanThanh ? (claim.decDate || '--') : '--';
-                const displayContent = isHoanThanh ? (claim.decContent || '--') : '--';
+                const displayNo = hasIssuedInfo ? (claim.decNo || '--') : '--';
+                const displayDate = hasIssuedInfo ? (claim.decDate || '--') : '--';
+                const displayContent = hasIssuedInfo ? (claim.decContent || '--') : '--';
 
                 const displayPublishDate = claim.decPublishDate || '--';
                 const displayEffectiveDate = claim.decEffectiveDate || '--';
@@ -11367,19 +11467,52 @@
                     decStatusHtml = `<span class="badge" style="font-size:11px; padding:4px 8px; font-weight: 600; border-radius: 4px; color: #744210; background-color: #FEFCBF; border: 1px solid #FADF7F; display: inline-block;">Chờ ký</span>`;
                 } else if (decStatus === 'Bị từ chối') {
                     decStatusHtml = `<span class="badge" style="font-size:11px; padding:4px 8px; font-weight: 600; border-radius: 4px; color: #742A2A; background-color: #FED7D7; border: 1px solid #FEB2B2; display: inline-block;">Bị từ chối</span>`;
+                } else if (decStatus === 'Đã hủy') {
+                    decStatusHtml = `<span class="badge" style="font-size:11px; padding:4px 8px; font-weight: 600; border-radius: 4px; color: #991B1B; background-color: #FEE2E2; border: 1px solid #FCA5A5; display: inline-block;"><i class="fa-solid fa-ban" style="margin-right:4px;"></i>Đã hủy</span>`;
                 } else {
                     decStatusHtml = `<span class="badge" style="font-size:11px; padding:4px 8px; font-weight: 600; border-radius: 4px; color: #4A5568; background-color: #EDF2F7; border: 1px solid #E2E8F0; display: inline-block;">${decStatus}</span>`;
                 }
 
                 // Add decision hyperlink to navigate to Module Quyết định giải quyết bồi thường
-                const decNoLink = isHoanThanh
+                const decNoLink = hasIssuedInfo
                     ? `<a href="javascript:void(0)" onclick="openDecisionModuleDetail('${claim.decNo}', '${claim.id}')" title="Xem chi tiết tại Module Quyết định" style="font-weight:700; color:#1D4ED8; text-decoration:underline; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> ${displayNo}</a>`
                     : `<span style="font-weight:700; color:#475569;">${displayNo}</span>`;
 
+                // SRS §4.3.3.1.5.2 TH3: Alert Box màu đỏ khi Quyết định giải quyết bồi thường đã bị hủy
+                let alertDaHuyHtml = '';
+                if (isDaHuy) {
+                    alertDaHuyHtml = `
+                        <div style="background-color: #FEF2F2; border: 1px solid #FCA5A5; border-left: 4px solid #EF4444; padding: 14px 16px; border-radius: 6px; margin-bottom: 14px; font-size: 13px; line-height: 1.6;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #991B1B; font-size: 13.5px;">
+                                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 16px; color: #DC2626;"></i>
+                                    <span>QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG ĐÃ BỊ HỦY</span>
+                                </div>
+                                <span class="badge badge-danger" style="font-size: 11px; padding: 4px 9px; font-weight: 600; border-radius: 4px;">Đình chỉ giải quyết</span>
+                            </div>
+                            <div style="color: #7F1D1D; margin-bottom: 8px;">
+                                Hồ sơ vụ việc đã chuyển sang trạng thái <strong>Đình chỉ giải quyết</strong> theo Quyết định hủy số 
+                                <a href="javascript:void(0)" onclick="openDecisionModuleDetail('${claim.cancelDecNo || '39/QĐ-HGQBT'}', '${claim.id}')" style="font-weight: 700; color: #1D4ED8; text-decoration: underline; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 11px;"></i> ${claim.cancelDecNo || '39/QĐ-HGQBT'}
+                                </a>.
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; font-size: 12.5px; color: #991B1B; background: #FFF5F5; padding: 10px 12px; border-radius: 4px; border: 1px dashed #FECACA;">
+                                <div><strong>Ngày QĐ hủy:</strong> ${claim.cancelDecDate || '--'}</div>
+                                <div><strong>Người ký QĐ hủy:</strong> ${claim.cancelSigner || '--'}</div>
+                                <div style="grid-column: 1 / -1;"><strong>Lý do hủy quyết định:</strong> ${claim.cancelReason || 'Hủy quyết định do phát hiện căn cứ định giá thiệt hại tài sản trong biên bản xác minh chưa chuẩn xác.'}</div>
+                            </div>
+                            <div style="margin-top: 8px; font-size: 11.5px; color: #64748B; font-style: italic;">
+                                * Hệ thống giữ nguyên toàn bộ thông tin và lịch sử của Quyết định gốc bên dưới ở chế độ chỉ đọc để phục vụ đối chiếu, tra cứu.
+                            </div>
+                        </div>
+                    `;
+                }
+
                 qdRead.innerHTML = `
+                    ${alertDaHuyHtml}
                     <div style="font-size:13px; line-height:1.6; display:grid; grid-template-columns:1fr 1fr; gap:12px 24px; padding:15px; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; position:relative;">
                         <div style="position:absolute; top:12px; right:15px;">
-                            ${isHoanThanh ? `
+                            ${hasIssuedInfo ? `
                                 <a href="javascript:void(0)" onclick="openDecisionModuleDetail('${claim.decNo}', '${claim.id}')" style="font-size:13px; color:#1D4ED8; font-weight:600; text-decoration:underline; display:inline-flex; align-items:center; gap:5px;">
                                     <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> Xem chi tiết
                                 </a>
@@ -11396,7 +11529,7 @@
                             <p style="margin:4px 0;"><strong>Ngày hiệu lực:</strong> ${displayEffectiveDate}</p>
                             <p style="margin:4px 0;"><strong>Người ký duyệt:</strong> ${displaySigner}</p>
                             <p style="margin:4px 0;"><strong>Tài liệu đính kèm:</strong> 
-                                ${isHoanThanh
+                                ${hasIssuedInfo
                         ? `<a href="#" onclick="event.preventDefault(); viewPhddMockFile('Quyet_dinh_boi_thuong_chinh_thuc.pdf')" class="action-link view-link"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> Quyet_dinh_boi_thuong_chinh_thuc.pdf</a>`
                         : `<span style="color:#94a3b8; font-style:italic;">(Chưa ban hành chính thức)</span>`
                     }
@@ -15835,24 +15968,26 @@
                 <div class="table-container lookup-modal-table-container">
                     <table class="custom-table lookup-modal-table">
                         <colgroup>
+                            <col style="width:5%;">
                             <col style="width:11%;">
                             <col style="width:18%;">
-                            <col style="width:14%;">
-                            <col style="width:12%;">
-                            <col style="width:16%;">
+                            <col style="width:13%;">
+                            <col style="width:15%;">
                             <col style="width:11%;">
                             <col style="width:10%;">
+                            <col style="width:9%;">
                             <col style="width:8%;">
                         </colgroup>
                         <thead>
                             <tr>
+                                <th>STT</th>
                                 <th>Mã vụ việc</th>
                                 <th>Tên vụ việc</th>
-                                <th>Tên người yêu cầu</th>
-                                <th>Số giấy tờ thân nhân</th>
-                                <th>Số văn bản/QĐ gốc</th>
+                                <th>Người yêu cầu</th>
+                                <th>Lĩnh vực phát sinh thiệt hại</th>
+                                <th>Tỉnh/Thành phố</th>
+                                <th class="nowrap-cell">Ngày tiếp nhận</th>
                                 <th>Trạng thái</th>
-                                <th class="nowrap-cell">Ngày nộp</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
@@ -16386,6 +16521,12 @@
             resetLookupPager('originClaim');
             renderOriginClaimSearchResults();
         }
+        // Nhãn ngắn của Lĩnh vực phát sinh thiệt hại dùng cho lưới kết quả tìm kiếm
+        function getFieldGroupLabel(val) {
+            if (!val) return "--";
+            return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+        }
+
 
         function renderOriginClaimSearchResults() {
             const tbody = document.getElementById('originClaimSearchResultsBody');
@@ -16404,7 +16545,7 @@
             });
 
             if (results.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc gốc hợp lệ để liên kết</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc gốc hợp lệ để liên kết</td></tr>`;
                 renderLookupPagerBar('originClaim', 'originClaimSearchPager', 0, 'renderOriginClaimSearchResults');
                 return;
             }
@@ -16412,8 +16553,10 @@
             const pageRows = sliceLookupPage('originClaim', results);
             renderLookupPagerBar('originClaim', 'originClaimSearchPager', results.length, 'renderOriginClaimSearchResults');
 
-            tbody.innerHTML = pageRows.map(claim => `
+            const startIdx = getLookupPager('originClaim').page ? (getLookupPager('originClaim').page - 1) * getLookupPager('originClaim').size : 0;
+            tbody.innerHTML = pageRows.map((claim, i) => `
                 <tr style="cursor:pointer;" onclick="selectOriginClaimFromModal('${claim.id}')">
+                    <td style="text-align:center;">${startIdx + i + 1}</td>
                     <td>
                         <a href="javascript:void(0)"
                             onclick="event.stopPropagation(); openMockOriginClaim('${claim.id}')"
@@ -16423,10 +16566,10 @@
                     </td>
                     <td>${getClaimDisplayName(claim)}</td>
                     <td>${claim.nyc || '--'}</td>
-                    <td>${claim.cardNo || claim.nycCardNo || '--'}</td>
-                    <td>${claim.docBase || claim.decNo || '--'}</td>
-                    <td><span class="badge ${getClaimStatusBadgeClass(claim.status)}">${canonicalClaimStatus(claim.status)}</span></td>
+                    <td>${getFieldGroupLabel(claim.fieldGroup)}</td>
+                    <td>${getClaimCity(claim)}</td>
                     <td class="nowrap-cell" style="text-align:center;">${claim.date || '--'}</td>
+                    <td><span class="badge ${getClaimStatusBadgeClass(claim.status)}">${canonicalClaimStatus(claim.status)}</span></td>
                     <td style="text-align:center;">
                         <button type="button" class="btn btn-primary btn-sm" style="padding:4px 10px; font-size:12px;"
                             onclick="event.stopPropagation(); selectOriginClaimFromModal('${claim.id}')">
