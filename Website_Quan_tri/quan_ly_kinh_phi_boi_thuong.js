@@ -175,178 +175,204 @@ let mockClaims = [
     }
 ];
 
-// MOCK PROPOSALS LIST DATA (10 items satisfying Rule 3 & 4)
+// MOCK PROPOSALS LIST DATA (29 items covering ALL 8 statuses in September 2026)
 let proposalsList = [
-    // ===== Bổ sung giả lập các trạng thái mới phát sinh do Quyết định bị hủy / sửa chữa, bổ sung =====
+    // ===== 1. TRẠNG THÁI: ĐÃ HỦY (02 bản ghi) =====
     {
         id: "P90",
         code: "KP-2026-090",
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-007",
         nycName: "Trần Thị Hòa",
+        nycRole: "Người bị thiệt hại",
         amount: 180000000,
         user: "Nguyễn Văn Thụ",
-        date: "12/06/2026",
+        date: "03/09/2026",
         status: "Đã hủy",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
         notes: "Đề nghị cấp kinh phí bồi thường bị hủy do Quyết định giải quyết bồi thường gốc bị hủy.",
         baseDecisionNo: "45/QĐ-GQBT",
-        baseDecisionDate: "05/06/2026",
-        // Khối Căn cứ thay đổi trạng thái theo Quyết định
+        baseDecisionDate: "25/08/2026",
         statusChangeBasis: {
             decisionType: "Quyết định hủy quyết định giải quyết bồi thường",
             decisionNo: "12/QĐ-HQĐGQBT",
-            decisionDate: "20/06/2026",
+            decisionDate: "03/09/2026",
             reason: "Hủy quyết định gốc do nội dung quyết định không còn phù hợp với kết quả xác minh bổ sung.",
             statusBefore: "Chờ duyệt",
             statusAfter: "Đã hủy",
-            changedAt: "20/06/2026 14:35"
+            changedAt: "03/09/2026 14:35"
         },
         files: []
     },
+    {
+        id: "P26",
+        code: "KP-2026-026",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-028",
+        nycName: "Hoàng Văn Thái",
+        nycRole: "Người bị thiệt hại",
+        amount: 45000000,
+        user: "Nguyễn Văn Thụ",
+        date: "13/09/2026",
+        status: "Đã hủy",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Đề nghị tạm ứng bị hủy do người yêu cầu đã tự nguyện rút đơn yêu cầu bồi thường.",
+        statusChangeBasis: {
+            decisionType: "Quyết định đình chỉ giải quyết bồi thường",
+            decisionNo: "18/QĐ-ĐCGQBT",
+            decisionDate: "13/09/2026",
+            reason: "Đình chỉ giải quyết do người yêu cầu rút toàn bộ yêu cầu bồi thường.",
+            statusBefore: "Chờ duyệt",
+            statusAfter: "Đã hủy",
+            changedAt: "13/09/2026 10:20"
+        },
+        files: []
+    },
+
+    // ===== 2. TRẠNG THÁI: CHỜ THU HỒI (02 bản ghi) =====
     {
         id: "P91",
         code: "KP-2026-091",
         type: "Cấp tạm ứng",
         ycbtCode: "BT-2026-007",
         nycName: "Trần Thị Hòa",
+        nycRole: "Người bị thiệt hại",
         amount: 40000000,
         user: "Nguyễn Văn Thụ",
-        date: "18/04/2026",
+        date: "04/09/2026",
         status: "Chờ thu hồi",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tài chính Hà Nội",
         notes: "Khoản tạm ứng đã chi trả xong, phát sinh nghĩa vụ thu hồi do Quyết định giải quyết bồi thường bị hủy.",
-        payoutDate: "22/04/2026",
+        payoutDate: "06/09/2026",
         payoutAmountReal: 40000000,
         payoutMethod: "Chuyển khoản qua ngân hàng",
         payoutRecName: "Trần Thị Hòa",
         statusChangeBasis: {
             decisionType: "Quyết định hủy quyết định giải quyết bồi thường",
             decisionNo: "12/QĐ-HQĐGQBT",
-            decisionDate: "20/06/2026",
+            decisionDate: "04/09/2026",
             reason: "Hủy quyết định gốc do nội dung quyết định không còn phù hợp với kết quả xác minh bổ sung.",
             statusBefore: "Hoàn thành",
             statusAfter: "Chờ thu hồi",
-            changedAt: "20/06/2026 14:35"
+            changedAt: "04/09/2026 14:35"
         },
-        // Khối Thu hồi kinh phí
         recovery: {
             basisDecisionNo: "12/QĐ-HQĐGQBT",
-            basisDecisionDate: "20/06/2026",
+            basisDecisionDate: "04/09/2026",
             amountToRecover: 40000000,
             amountRecovered: 15000000,
             amountRemain: 25000000,
-            recordDate: "05/07/2026",
+            recordDate: "10/09/2026",
             note: "Đơn vị đã thu hồi một phần, phần còn lại đang tiếp tục đôn đốc hoàn trả ngân sách.",
             files: [{ name: "Chứng từ thu hồi đợt 1", file: "Chung_tu_thu_hoi_dot1.pdf" }]
         },
         files: []
     },
     {
+        id: "P25",
+        code: "KP-2026-025",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-029",
+        nycName: "Nguyễn Thị Mai",
+        nycRole: "Người bị thiệt hại",
+        amount: 90000000,
+        user: "Lê Văn Nam",
+        date: "15/09/2026",
+        status: "Chờ thu hồi",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Khoản kinh phí chi trả thừa cần thu hồi do Quyết định sửa chữa giảm số tiền bồi thường.",
+        payoutDate: "16/09/2026",
+        payoutAmountReal: 90000000,
+        payoutMethod: "Chi trả qua chuyển khoản",
+        payoutRecName: "NGUYỄN THỊ MAI",
+        recovery: {
+            basisDecisionNo: "21/QĐ-SCBSGQBT",
+            basisDecisionDate: "15/09/2026",
+            amountToRecover: 90000000,
+            amountRecovered: 30000000,
+            amountRemain: 60000000,
+            recordDate: "18/09/2026",
+            note: "Đang yêu cầu đương sự hoàn nộp 60.000.000 VNĐ tiền thừa vào kho bạc.",
+            files: [{ name: "Biên lai thu hồi đợt 1", file: "Bien_lai_thu_hoi_P25.pdf" }]
+        },
+        files: []
+    },
+
+    // ===== 3. TRẠNG THÁI: CHỜ LẬP ĐỀ NGHỊ (03 bản ghi) =====
+    {
         id: "P92",
         code: "KP-2026-092",
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-002",
         nycName: "Phạm Văn Minh",
+        nycRole: "Người thừa kế của người bị thiệt hại",
         amount: 95000000,
         user: "Nguyễn Văn Thụ",
-        date: "10/07/2026",
+        date: "03/09/2026",
         status: "Chờ lập đề nghị",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
-        notes: "Bản ghi được đưa về Chờ lập đề nghị để lập lại theo Quyết định sửa chữa, bổ sung. Trước đó đang ở Chờ chi trả, phê duyệt cũ đã bị thu hồi, Lãnh đạo phải phê duyệt lại.",
+        notes: "Bản ghi được đưa về Chờ lập đề nghị để lập lại theo Quyết định sửa chữa, bổ sung.",
         baseDecisionNo: "52/QĐ-GQBT",
-        baseDecisionDate: "28/06/2026",
-        statusChangeBasis: {
-            decisionType: "Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường",
-            decisionNo: "07/QĐ-SCBSGQBT",
-            decisionDate: "10/07/2026",
-            reason: "Sửa chữa, bổ sung số tiền bồi thường tại Điều 1 của quyết định gốc theo kết quả rà soát lại hồ sơ xác minh thiệt hại.",
-            amountBefore: 120000000,
-            amountAfter: 95000000,
-            statusBefore: "Chờ chi trả",
-            statusAfter: "Chờ lập đề nghị",
-            changedAt: "10/07/2026 09:20"
-        },
+        baseDecisionDate: "01/09/2026",
         files: []
     },
     {
-        id: "P1",
-        code: "KP-2026-001",
+        id: "P5",
+        code: "KP-2026-005",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-002",
+        nycName: "Trần Thị B",
+        nycRole: "Người thừa kế của người bị thiệt hại",
+        amount: 50000000,
+        user: "Lê Văn Nam",
+        date: "06/09/2026",
+        status: "Chờ lập đề nghị",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Tờ trình nháp cấp tạm ứng bồi thường chi phí y tế khẩn cấp.",
+        files: [],
+        advApproveTinhThan: 30000000,
+        advApproveKhac: 20000000
+    },
+    {
+        id: "P6",
+        code: "KP-2026-006",
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-005",
         nycName: "Lê Văn D",
-        amount: 250000000,
-        user: "Nguyễn Văn Thụ",
-        date: "02/05/2026",
-        status: "Hoàn thành",
+        nycRole: "Người bị thiệt hại",
+        amount: 300000000,
+        user: "Lê Văn Nam",
+        date: "09/09/2026",
+        status: "Chờ lập đề nghị",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
-        notes: "Trình duyệt chi trả kinh phí bồi thường cho vụ việc của ông Lê Văn D.",
-        leaderOpinion: "Đồng ý phê duyệt tờ trình đề xuất kinh phí bồi thường của ông Lê Văn D.",
-        files: [{ name: "Tờ trình chi trả Lê Văn D", file: "To_trinh_chi_tra_Le_Van_D_signed.pdf" }],
+        notes: "Tờ trình nháp kinh phí bồi thường theo Quyết định 104/QĐ-BT.",
+        files: [],
         approvedDamages: {
             taiSan: 50000000,
             thuNhap: 30000000,
             tinhThan: 150000000,
             chiPhiKhac: 20000000
-        },
-        rejectHistory: [
-            {
-                date: "28/04/2026",
-                leader: "Nguyễn Thế Anh (Lãnh đạo)",
-                opinion: "Từ chối phê duyệt do tờ trình chưa đính kèm Quyết định giải quyết bồi thường có hiệu lực pháp luật để đối chiếu số tiền."
-            }
-        ],
-        payoutDate: "05/05/2026",
-        payoutAmountReal: 250000000,
-        payoutMethod: "Chuyển khoản qua ngân hàng",
-        payoutRecName: "Lê Văn D",
-        payoutRecAddress: "Số 234 Láng Hạ, Đống Đa, Hà Nội",
-        payoutBankAccount: "123456789012",
-        payoutBankUser: "LÊ VĂN D",
-        payoutBankName: "Vietcombank",
-        payoutBankBranch: "Chi nhánh Đống Đa",
-        payoutFile: "Chung_tu_chi_tra_KP_LeVanD.pdf",
-        noticeReceivedDate: "01/05/2026",
-        noticeProofFile: "Thong_bao_nhan_kinh_phi_LeVanD.pdf"
+        }
     },
-    {
-        id: "P2",
-        code: "KP-2026-002",
-        type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-002",
-        nycName: "Trần Thị B",
-        amount: 100000000,
-        user: "Nguyễn Văn Thụ",
-        date: "15/05/2026",
-        status: "Chờ chi trả",
-        source: "Tạm ứng kinh phí Bộ Tài chính",
-        cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Cấp tạm ứng bồi thường thiệt hại cho bà Trần Thị B.",
-        files: [
-            { name: "Tờ trình đề xuất cấp kinh phí", file: "De_xuat_tam_ung_B.pdf" },
-            { name: "Quyết định phê duyệt tạm ứng", file: "Quyet_dinh_duyet_tam_ung_002.pdf" }
-        ],
-        advApproveTinhThan: 60000000,
-        advApproveKhac: 40000000,
-        leaderOpinion: "Đồng ý cấp tạm ứng kinh phí bồi thường cho bà Trần Thị B.",
-        approvedDate: "16/05/2026 09:15",
-        approvedLeader: "Lãnh đạo cơ quan",
-        noticeReceivedDate: "01/09/2023",
-        noticeProofFile: "Thong_bao_nhan_tam_ung_B.pdf"
-    },
+
+    // ===== 4. TRẠNG THÁI: CHỜ DUYỆT (04 bản ghi - Phục vụ Lọc nhanh) =====
     {
         id: "P3",
         code: "KP-2026-003",
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-005",
         nycName: "Lê Văn D",
+        nycRole: "Người bị thiệt hại",
         amount: 200000000,
         user: "Lê Văn Nam",
-        date: "01/07/2026",
+        date: "14/09/2026",
         status: "Chờ duyệt",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
@@ -365,9 +391,10 @@ let proposalsList = [
         type: "Cấp tạm ứng",
         ycbtCode: "BT-2026-002",
         nycName: "Trần Thị B",
+        nycRole: "Người thừa kế của người bị thiệt hại",
         amount: 50000000,
         user: "Lê Văn Nam",
-        date: "02/07/2026",
+        date: "16/09/2026",
         status: "Chờ duyệt",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tư pháp Hà Nội",
@@ -377,52 +404,56 @@ let proposalsList = [
         advApproveKhac: 20000000
     },
     {
-        id: "P5",
-        code: "KP-2026-005",
-        type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-002",
-        nycName: "Trần Thị B",
-        amount: 50000000,
-        user: "Lê Văn Nam",
-        date: "03/07/2026",
-        status: "Chờ lập đề nghị",
-        source: "Tạm ứng kinh phí Bộ Tài chính",
-        cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Tờ trình nháp cấp tạm ứng bồi thường.",
-        files: [],
-        advApproveTinhThan: 30000000,
-        advApproveKhac: 20000000
-    },
-    {
-        id: "P6",
-        code: "KP-2026-006",
+        id: "P21",
+        code: "KP-2026-021",
         type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-005",
-        nycName: "Lê Văn D",
-        amount: 300000000,
+        ycbtCode: "BT-2026-028",
+        nycName: "Hoàng Văn Thái",
+        nycRole: "Người bị thiệt hại",
+        amount: 180000000,
         user: "Lê Văn Nam",
-        date: "04/07/2026",
-        status: "Chờ lập đề nghị",
+        date: "18/09/2026",
+        status: "Chờ duyệt",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
-        notes: "Tờ trình nháp kinh phí bồi thường.",
-        files: [],
+        notes: "Tờ trình đề nghị cấp phát kinh phí bồi thường tổn thất tài sản và thu nhập thực tế.",
+        files: [{ name: "Tờ trình cấp kinh phí Hoàng Văn Thái", file: "To_trinh_KP_HoangVanThai.pdf" }],
         approvedDamages: {
-            taiSan: 50000000,
-            thuNhap: 30000000,
-            tinhThan: 150000000,
-            chiPhiKhac: 20000000
+            taiSan: 80000000,
+            thuNhap: 40000000,
+            tinhThan: 60000000
         }
     },
+    {
+        id: "P22",
+        code: "KP-2026-022",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-029",
+        nycName: "Nguyễn Thị Mai",
+        nycRole: "Người bị thiệt hại",
+        amount: 70000000,
+        user: "Nguyễn Văn Thụ",
+        date: "19/09/2026",
+        status: "Chờ duyệt",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Tờ trình đề xuất tạm ứng kinh phí bồi thường cho bà Nguyễn Thị Mai.",
+        files: [{ name: "Tờ trình đề xuất tạm ứng Mai", file: "To_trinh_tam_ung_NguyenThiMai.pdf" }],
+        advApproveTinhThan: 40000000,
+        advApproveKhac: 30000000
+    },
+
+    // ===== 5. TRẠNG THÁI: BỊ TỪ CHỐI (03 bản ghi - Phục vụ Lọc nhanh) =====
     {
         id: "P7",
         code: "KP-2026-007",
         type: "Cấp tạm ứng",
         ycbtCode: "BT-2026-002",
         nycName: "Trần Thị B",
+        nycRole: "Người thừa kế của người bị thiệt hại",
         amount: 80000000,
         user: "Lê Văn Nam",
-        date: "05/07/2026",
+        date: "08/09/2026",
         status: "Bị từ chối",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tư pháp Hà Nội",
@@ -438,9 +469,10 @@ let proposalsList = [
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-005",
         nycName: "Lê Văn D",
+        nycRole: "Người bị thiệt hại",
         amount: 350000000,
         user: "Lê Văn Nam",
-        date: "06/07/2026",
+        date: "11/09/2026",
         status: "Bị từ chối",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
@@ -455,18 +487,64 @@ let proposalsList = [
         }
     },
     {
+        id: "P23",
+        code: "KP-2026-023",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-028",
+        nycName: "Hoàng Văn Thái",
+        nycRole: "Người bị thiệt hại",
+        amount: 120000000,
+        user: "Lê Văn Nam",
+        date: "15/09/2026",
+        status: "Bị từ chối",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Đề nghị cấp kinh phí bồi thường bị từ chối do hóa đơn viện phí không hợp lệ.",
+        leaderOpinion: "Từ chối phê duyệt: Cần bổ sung chứng từ hóa đơn viện phí bản gốc có chứng thực của cơ sở khám chữa bệnh.",
+        files: []
+    },
+
+    // ===== 6. TRẠNG THÁI: CHỜ CHI TRẢ (04 bản ghi - Gồm 3 khoản Quá hạn 3 năm) =====
+    {
+        id: "P2",
+        code: "KP-2026-002",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-002",
+        nycName: "Trần Thị B",
+        nycRole: "Người thừa kế của người bị thiệt hại",
+        amount: 100000000,
+        user: "Nguyễn Văn Thụ",
+        date: "04/09/2026",
+        status: "Chờ chi trả",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Cấp tạm ứng bồi thường thiệt hại cho bà Trần Thị B. Đã gửi thông báo nhưng quá hạn 3 năm chưa đến nhận.",
+        files: [
+            { name: "Tờ trình đề xuất cấp kinh phí", file: "De_xuat_tam_ung_B.pdf" },
+            { name: "Quyết định phê duyệt tạm ứng", file: "Quyet_dinh_duyet_tam_ung_002.pdf" }
+        ],
+        advApproveTinhThan: 60000000,
+        advApproveKhac: 40000000,
+        leaderOpinion: "Đồng ý cấp tạm ứng kinh phí bồi thường cho bà Trần Thị B.",
+        approvedDate: "05/09/2026 09:15",
+        approvedLeader: "Lãnh đạo cơ quan",
+        noticeReceivedDate: "01/09/2023",
+        noticeProofFile: "Thong_bao_nhan_tam_ung_B.pdf"
+    },
+    {
         id: "P9",
         code: "KP-2026-009",
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-005",
         nycName: "Lê Văn D",
+        nycRole: "Người bị thiệt hại",
         amount: 150000000,
         user: "Nguyễn Văn Thụ",
-        date: "07/07/2026",
+        date: "07/09/2026",
         status: "Chờ chi trả",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
-        notes: "Tờ trình cấp phát kinh phí bồi thường bổ sung đã được thông qua và chuyển sang trạng thái chờ chi trả.",
+        notes: "Tờ trình cấp phát kinh phí bồi thường bổ sung đã thông qua, quá hạn 3 năm người nhận chưa đến nhận.",
         files: [
             { name: "Tờ trình đề xuất cấp kinh phí bồi thường", file: "To_trinh_bo_sung_LeVanD.pdf" },
             { name: "Quyết định phê duyệt kinh phí bồi thường", file: "Quyet_dinh_duyet_kinh_phi_009.pdf" }
@@ -478,96 +556,10 @@ let proposalsList = [
             chiPhiKhac: 20000000
         },
         leaderOpinion: "Đồng ý cấp phát kinh phí bồi thường bổ sung cho ông Lê Văn D.",
-        approvedDate: "08/07/2026 14:20",
+        approvedDate: "08/09/2026 14:20",
         approvedLeader: "Lãnh đạo cơ quan",
         noticeReceivedDate: "15/07/2023",
         noticeProofFile: "Thong_bao_nhan_kinh_phi_bo_sung_LeVanD.pdf"
-    },
-    {
-        id: "P10",
-        code: "KP-2026-010",
-        type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-015",
-        nycName: "Phạm Văn C",
-        amount: 50000000,
-        user: "Nguyễn Văn Thụ",
-        date: "10/05/2026",
-        status: "Hoàn thành",
-        source: "Tạm ứng kinh phí Bộ Tài chính",
-        cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Đã hoàn thành cấp tạm ứng bồi thường cho ông Phạm Văn C.",
-        leaderOpinion: "Đồng ý tạm ứng 50.000.000 VNĐ.",
-        files: [{ name: "Tờ trình tạm ứng Phạm Văn C", file: "To_trinh_tam_ung_C.pdf" }],
-        advApproveTinhThan: 30000000,
-        advApproveKhac: 20000000,
-        payoutDate: "12/05/2026",
-        payoutAmountReal: 50000000,
-        payoutMethod: "Tiền mặt",
-        payoutRecName: "Phạm Văn C",
-        payoutRecAddress: "Số 15 đường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
-        payoutReceiptNo: "BL-2026-088",
-        payoutFile: "Bien_lai_chi_tam_ung_C.pdf",
-        noticeReceivedDate: "11/05/2026",
-        noticeProofFile: "Thong_bao_nhan_tam_ung_C.pdf"
-    },
-    {
-        id: "P11",
-        code: "KP-2026-011",
-        type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-002",
-        nycName: "Trần Thị B",
-        amount: 100000000,
-        user: "Nguyễn Văn Thụ",
-        date: "20/05/2026",
-        status: "Hoàn thành",
-        source: "Tạm ứng kinh phí Bộ Tài chính",
-        cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Đã hoàn thành cấp tạm ứng bồi thường cho bà Trần Thị B.",
-        leaderOpinion: "Đồng ý cấp tạm ứng 100 triệu.",
-        files: [{ name: "Tờ trình tạm ứng Trần Thị B", file: "To_trinh_tam_ung_B.pdf" }],
-        advApproveTinhThan: 60000000,
-        advApproveKhac: 40000000,
-        payoutDate: "22/05/2026",
-        payoutAmountReal: 100000000,
-        payoutMethod: "Chuyển khoản qua ngân hàng",
-        payoutRecName: "Trần Thị B",
-        payoutRecAddress: "Số 88 đường Lạch Tray, Ngô Quyền, Hải Phòng",
-        payoutBankAccount: "190333444555",
-        payoutBankName: "Techcombank",
-        payoutBankUser: "TRẦN THỊ B",
-        payoutFile: "Bien_lai_chuyen_khoan_tam_ung_B.pdf",
-        noticeReceivedDate: "21/05/2026",
-        noticeProofFile: "Thong_bao_nhan_tam_ung_B_hoan_thanh.pdf"
-    },
-    {
-        id: "P12",
-        code: "KP-2026-012",
-        type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-011",
-        nycName: "Trần Thị G",
-        amount: 300000000,
-        user: "Lê Văn Nam",
-        date: "25/05/2026",
-        status: "Hoàn thành",
-        source: "Ngân sách địa phương (Dự phòng)",
-        cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Đã thực hiện chi trả kinh phí bồi thường tiền mặt cho bà Trần Thị G.",
-        leaderOpinion: "Đồng ý phê duyệt cấp kinh phí bồi thường.",
-        files: [{ name: "Tờ trình kinh phí bồi thường", file: "To_trinh_KPBT_G.pdf" }],
-        approvedDamages: {
-            taiSan: 100000000,
-            sucKhoe: 80000000,
-            tinhThan: 120000000
-        },
-        payoutDate: "27/05/2026",
-        payoutAmountReal: 300000000,
-        payoutMethod: "Tiền mặt",
-        payoutRecName: "Trần Thị G",
-        payoutRecAddress: "Phường Tràng Tiền, Hoàn Kiếm, Hà Nội",
-        payoutReceiptNo: "BL-2026-099",
-        payoutFile: "Bien_lai_chi_tra_tien_mat_G.pdf",
-        noticeReceivedDate: "26/05/2026",
-        noticeProofFile: "Thong_bao_nhan_kinh_phi_G.pdf"
     },
     {
         id: "P13",
@@ -575,9 +567,10 @@ let proposalsList = [
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-018",
         nycName: "Hoàng Văn H",
-        amount: 180000000,
+        nycRole: "Người đại diện theo ủy quyền",
+        amount: 200000000,
         user: "Nguyễn Văn Thụ",
-        date: "18/06/2026",
+        date: "10/09/2026",
         status: "Chờ chi trả",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tư pháp Hà Nội",
@@ -588,7 +581,7 @@ let proposalsList = [
             taiSan: 50000000,
             thuNhap: 30000000,
             tinhThan: 80000000,
-            chiPhiKhac: 20000000
+            chiPhiKhac: 40000000
         },
         payoutDate: "",
         payoutAmountReal: 0,
@@ -603,32 +596,36 @@ let proposalsList = [
         type: "Cấp tạm ứng",
         ycbtCode: "BT-2026-019",
         nycName: "Nguyễn Thị K",
-        amount: 120000000,
+        nycRole: "Người bị thiệt hại",
+        amount: 250000000,
         user: "Nguyễn Văn Thụ",
-        date: "21/06/2026",
+        date: "17/09/2026",
         status: "Chờ chi trả",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Khoản tạm ứng đã thông báo nhận kinh phí nhưng quá hạn 3 năm vẫn chưa thực hiện chi trả.",
+        notes: "Khoản tạm ứng đã phê duyệt, trong hạn 3 năm chờ đương sự đến nhận.",
         leaderOpinion: "Đồng ý cấp tạm ứng theo hồ sơ đủ điều kiện.",
         files: [{ name: "Tờ trình tạm ứng Nguyễn Thị K", file: "To_trinh_tam_ung_K.pdf" }],
-        advApproveTinhThan: 70000000,
-        advApproveKhac: 50000000,
+        advApproveTinhThan: 150000000,
+        advApproveKhac: 100000000,
         payoutRecName: "Nguyễn Thị K",
         payoutRecAddress: "Xã An Khánh, Hoài Đức, Hà Nội",
-        noticeReceivedDate: "01/03/2023",
+        noticeReceivedDate: "01/03/2024",
         noticeProofFile: "Thong_bao_nhan_tam_ung_K.pdf",
-        noticeNote: "Đã gửi thông báo nhận kinh phí bằng văn bản và qua điện thoại, người yêu cầu không đến nhận."
+        noticeNote: "Đã gửi thông báo nhận kinh phí bằng văn bản cho người yêu cầu."
     },
+
+    // ===== 7. TRẠNG THÁI: SUNG QUỸ NHÀ NƯỚC (02 bản ghi) =====
     {
         id: "P15",
         code: "KP-2026-015",
         type: "Cấp kinh phí bồi thường",
         ycbtCode: "BT-2026-020",
         nycName: "Phạm Thị M",
-        amount: 200000000,
+        nycRole: "Người thừa kế của người bị thiệt hại",
+        amount: 120000000,
         user: "Lê Văn Nam",
-        date: "23/06/2026",
+        date: "08/09/2026",
         status: "Sung quỹ nhà nước",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
@@ -636,9 +633,9 @@ let proposalsList = [
         leaderOpinion: "Phê duyệt sung quỹ theo đề nghị của cán bộ xử lý.",
         files: [{ name: "Tờ trình cấp kinh phí Phạm Thị M", file: "To_trinh_KPBT_M.pdf" }],
         approvedDamages: {
-            taiSan: 70000000,
-            thuNhap: 40000000,
-            tinhThan: 70000000,
+            taiSan: 50000000,
+            thuNhap: 20000000,
+            tinhThan: 30000000,
             chiPhiKhac: 20000000
         },
         payoutAmountReal: 0,
@@ -646,11 +643,162 @@ let proposalsList = [
         payoutRecAddress: "Phường Cầu Diễn, Nam Từ Liêm, Hà Nội",
         noticeReceivedDate: "05/01/2023",
         noticeProofFile: "Thong_bao_nhan_kinh_phi_M.pdf",
-        treasuryForfeitDate: "18/07/2026",
+        treasuryForfeitDate: "18/09/2026",
         treasuryVoucherNo: "SQ-2026-015",
-        treasuryAmount: 200000000,
+        treasuryAmount: 120000000,
         treasuryReason: "Người yêu cầu bồi thường không nhận kinh phí sau 3 năm kể từ ngày nhận thông báo.",
         treasuryFile: "Chung_tu_sung_quy_KP_2026_015.pdf"
+    },
+    {
+        id: "P24",
+        code: "KP-2026-024",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-015",
+        nycName: "Phạm Văn C",
+        nycRole: "Người bị thiệt hại",
+        amount: 80000000,
+        user: "Nguyễn Văn Thụ",
+        date: "14/09/2026",
+        status: "Sung quỹ nhà nước",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Khoản tạm ứng đã quá hạn 3 năm, đã thực hiện nộp sung quỹ Nhà nước.",
+        leaderOpinion: "Phê duyệt sung quỹ theo tờ trình số 12/TTr-KP.",
+        files: [{ name: "Tờ trình sung quỹ P24", file: "To_trinh_sung_quy_P24.pdf" }],
+        payoutAmountReal: 0,
+        payoutRecName: "Phạm Văn C",
+        noticeReceivedDate: "10/02/2023",
+        treasuryForfeitDate: "20/09/2026",
+        treasuryVoucherNo: "SQ-2026-024",
+        treasuryAmount: 80000000,
+        treasuryReason: "Quá thời hạn 03 năm không đến nhận tiền tạm ứng bồi thường.",
+        treasuryFile: "Chung_tu_sung_quy_KP_2026_024.pdf"
+    },
+
+    // ===== 8. TRẠNG THÁI: HOÀN THÀNH (09 bản ghi) =====
+    {
+        id: "P1",
+        code: "KP-2026-001",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-005",
+        nycName: "Lê Văn D",
+        nycRole: "Người bị thiệt hại",
+        amount: 250000000,
+        user: "Nguyễn Văn Thụ",
+        date: "02/09/2026",
+        status: "Hoàn thành",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Trình duyệt chi trả kinh phí bồi thường cho vụ việc của ông Lê Văn D.",
+        leaderOpinion: "Đồng ý phê duyệt tờ trình đề xuất kinh phí bồi thường của ông Lê Văn D.",
+        files: [{ name: "Tờ trình chi trả Lê Văn D", file: "To_trinh_chi_tra_Le_Van_D_signed.pdf" }],
+        approvedDamages: {
+            taiSan: 50000000,
+            thuNhap: 30000000,
+            tinhThan: 150000000,
+            chiPhiKhac: 20000000
+        },
+        payoutDate: "05/09/2026",
+        payoutAmountReal: 250000000,
+        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutRecName: "Lê Văn D",
+        payoutRecAddress: "Số 234 Láng Hạ, Đống Đa, Hà Nội",
+        payoutBankAccount: "123456789012",
+        payoutBankUser: "LÊ VĂN D",
+        payoutBankName: "Vietcombank",
+        payoutBankBranch: "Chi nhánh Đống Đa",
+        payoutFile: "Chung_tu_chi_tra_KP_LeVanD.pdf",
+        noticeReceivedDate: "03/09/2026",
+        noticeProofFile: "Thong_bao_nhan_kinh_phi_LeVanD.pdf"
+    },
+    {
+        id: "P10",
+        code: "KP-2026-010",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-015",
+        nycName: "Phạm Văn C",
+        nycRole: "Người bị thiệt hại",
+        amount: 50000000,
+        user: "Nguyễn Văn Thụ",
+        date: "05/09/2026",
+        status: "Hoàn thành",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Đã hoàn thành cấp tạm ứng bồi thường cho ông Phạm Văn C.",
+        leaderOpinion: "Đồng ý tạm ứng 50.000.000 VNĐ.",
+        files: [{ name: "Tờ trình tạm ứng Phạm Văn C", file: "To_trinh_tam_ung_C.pdf" }],
+        advApproveTinhThan: 30000000,
+        advApproveKhac: 20000000,
+        payoutDate: "08/09/2026",
+        payoutAmountReal: 50000000,
+        payoutMethod: "Tiền mặt",
+        payoutRecName: "Phạm Văn C",
+        payoutRecAddress: "Số 15 đường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
+        payoutReceiptNo: "BL-2026-088",
+        payoutFile: "Bien_lai_chi_tam_ung_C.pdf",
+        noticeReceivedDate: "06/09/2026",
+        noticeProofFile: "Thong_bao_nhan_tam_ung_C.pdf"
+    },
+    {
+        id: "P11",
+        code: "KP-2026-011",
+        type: "Cấp tạm ứng",
+        ycbtCode: "BT-2026-002",
+        nycName: "Trần Thị B",
+        nycRole: "Người thừa kế của người bị thiệt hại",
+        amount: 100000000,
+        user: "Nguyễn Văn Thụ",
+        date: "12/09/2026",
+        status: "Hoàn thành",
+        source: "Tạm ứng kinh phí Bộ Tài chính",
+        cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Đã hoàn thành cấp tạm ứng bồi thường cho bà Trần Thị B.",
+        leaderOpinion: "Đồng ý cấp tạm ứng 100 triệu.",
+        files: [{ name: "Tờ trình tạm ứng Trần Thị B", file: "To_trinh_tam_ung_B.pdf" }],
+        advApproveTinhThan: 60000000,
+        advApproveKhac: 40000000,
+        payoutDate: "15/09/2026",
+        payoutAmountReal: 100000000,
+        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutRecName: "Trần Thị B",
+        payoutRecAddress: "Số 88 đường Lạch Tray, Ngô Quyền, Hải Phòng",
+        payoutBankAccount: "190333444555",
+        payoutBankName: "Techcombank",
+        payoutBankUser: "TRẦN THỊ B",
+        payoutFile: "Bien_lai_chuyen_khoan_tam_ung_B.pdf",
+        noticeReceivedDate: "13/09/2026",
+        noticeProofFile: "Thong_bao_nhan_tam_ung_B_hoan_thanh.pdf"
+    },
+    {
+        id: "P12",
+        code: "KP-2026-012",
+        type: "Cấp kinh phí bồi thường",
+        ycbtCode: "BT-2026-011",
+        nycName: "Trần Thị G",
+        nycRole: "Người bị thiệt hại",
+        amount: 300000000,
+        user: "Lê Văn Nam",
+        date: "13/09/2026",
+        status: "Hoàn thành",
+        source: "Ngân sách địa phương (Dự phòng)",
+        cqCap: "Sở Tài chính Hà Nội",
+        notes: "Đã thực hiện chi trả kinh phí bồi thường tiền mặt cho bà Trần Thị G.",
+        leaderOpinion: "Đồng ý phê duyệt cấp kinh phí bồi thường.",
+        files: [{ name: "Tờ trình kinh phí bồi thường", file: "To_trinh_KPBT_G.pdf" }],
+        approvedDamages: {
+            taiSan: 100000000,
+            sucKhoe: 80000000,
+            tinhThan: 120000000
+        },
+        payoutDate: "16/09/2026",
+        payoutAmountReal: 300000000,
+        payoutMethod: "Tiền mặt",
+        payoutRecName: "Trần Thị G",
+        payoutRecAddress: "Phường Tràng Tiền, Hoàn Kiếm, Hà Nội",
+        payoutReceiptNo: "BL-2026-099",
+        payoutFile: "Bien_lai_chi_tra_tien_mat_G.pdf",
+        noticeReceivedDate: "14/09/2026",
+        noticeProofFile: "Thong_bao_nhan_kinh_phi_G.pdf"
     },
     {
         id: "P16",
@@ -661,7 +809,7 @@ let proposalsList = [
         nycRole: "Người bị thiệt hại",
         amount: 450000000,
         user: "Nguyễn Văn Thụ",
-        date: "25/06/2026",
+        date: "16/09/2026",
         status: "Hoàn thành",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
@@ -674,7 +822,7 @@ let proposalsList = [
             tinhThan: 180000000,
             chiPhiKhac: 50000000
         },
-        payoutDate: "30/06/2026",
+        payoutDate: "18/09/2026",
         payoutAmountReal: 450000000,
         payoutMethod: "Chi trả qua chuyển khoản",
         payoutRecName: "ĐỖ QUỐC CƯỜNG",
@@ -684,7 +832,7 @@ let proposalsList = [
         payoutBankName: "Vietcombank",
         payoutBankBranch: "Sở Giao Dịch",
         payoutFile: "Uy_nhiem_chi_DoQuocCuong_VCB.pdf",
-        noticeReceivedDate: "26/06/2026",
+        noticeReceivedDate: "17/09/2026",
         noticeProofFile: "Giay_bao_nhan_DoQuocCuong.pdf",
         payoutNote: "Đã hoàn tất thủ tục ủy nhiệm chi số 045/UNC-TC chuyển tiền bồi thường vào tài khoản Vietcombank."
     },
@@ -697,7 +845,7 @@ let proposalsList = [
         nycRole: "Người đại diện hợp pháp",
         amount: 85000000,
         user: "Lê Văn Nam",
-        date: "28/06/2026",
+        date: "18/09/2026",
         status: "Hoàn thành",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tư pháp Hà Nội",
@@ -706,14 +854,14 @@ let proposalsList = [
         files: [{ name: "Tờ trình tạm ứng Vũ Thị Mai", file: "To_trinh_tam_ung_VuThiMai.pdf" }],
         advApproveTinhThan: 45000000,
         advApproveKhac: 40000000,
-        payoutDate: "02/07/2026",
+        payoutDate: "20/09/2026",
         payoutAmountReal: 85000000,
         payoutMethod: "Chi trả trực tiếp bằng tiền mặt",
         payoutRecName: "Vũ Thị Mai",
         payoutRecAddress: "Tổ 12, phường Phúc Diễn, Bắc Từ Liêm, Hà Nội",
         payoutReceiptNo: "BL-TM-2026/089",
         payoutFile: "Phieu_chi_tien_mat_VuThiMai_signed.pdf",
-        noticeReceivedDate: "29/06/2026",
+        noticeReceivedDate: "19/09/2026",
         noticeProofFile: "Thong_bao_nhan_tam_ung_VuThiMai.pdf",
         payoutNote: "Đã giao trực tiếp tiền mặt 85.000.000 VNĐ tại bộ phận kế toán, người nhận đã ký nhận đầy đủ biên lai."
     },
@@ -726,7 +874,7 @@ let proposalsList = [
         nycRole: "Người bị thiệt hại",
         amount: 520000000,
         user: "Nguyễn Văn Thụ",
-        date: "05/07/2026",
+        date: "19/09/2026",
         status: "Hoàn thành",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
@@ -739,17 +887,14 @@ let proposalsList = [
             tinhThan: 80000000,
             chiPhiKhac: 40000000
         },
-        payoutDate: "10/07/2026",
+        payoutDate: "21/09/2026",
         payoutAmountReal: 520000000,
         payoutMethod: "Chi trả qua chuyển khoản",
         payoutRecName: "NGÔ VĂN HÙNG",
         payoutRecAddress: "Số 78 đường Quang Trung, Hà Đông, Hà Nội",
-        payoutBankAccount: "102888999123",
+        payoutBankAccount: "034567891011",
         payoutBankUser: "NGÔ VĂN HÙNG",
-        payoutBankName: "BIDV",
-        payoutBankBranch: "Chi nhánh Hà Tây",
-        payoutFile: "Chung_tu_chuyen_khoan_BIDV_NgoVanHung.pdf",
-        noticeReceivedDate: "06/07/2026",
+        noticeReceivedDate: "20/09/2026",
         noticeProofFile: "Phieu_bao_phat_NgoVanHung.pdf",
         payoutNote: "Đã hoàn thành chuyển khoản 100% kinh phí bồi thường qua tài khoản ngân hàng BIDV."
     },
@@ -762,7 +907,7 @@ let proposalsList = [
         nycRole: "Người thừa kế của người bị thiệt hại",
         amount: 175000000,
         user: "Lê Văn Nam",
-        date: "08/07/2026",
+        date: "20/09/2026",
         status: "Hoàn thành",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
@@ -775,7 +920,7 @@ let proposalsList = [
             tinhThan: 100000000,
             chiPhiKhac: 50000000
         },
-        payoutDate: "14/07/2026",
+        payoutDate: "21/09/2026",
         payoutAmountReal: 175000000,
         payoutMethod: "Chi trả qua chuyển khoản",
         payoutRecName: "BÙI THỊ NGỌC",
@@ -785,7 +930,7 @@ let proposalsList = [
         payoutBankName: "Techcombank",
         payoutBankBranch: "Chi nhánh Thăng Long",
         payoutFile: "Lenh_chuyen_tien_TCB_BuiThiNgoc.pdf",
-        noticeReceivedDate: "09/07/2026",
+        noticeReceivedDate: "20/09/2026",
         noticeProofFile: "Giay_xac_nhan_nhan_thong_bao_BuiThiNgoc.pdf",
         payoutNote: "Đã hoàn tất thanh toán chuyển khoản liên ngân hàng Techcombank."
     },
@@ -798,7 +943,7 @@ let proposalsList = [
         nycRole: "Người bị thiệt hại",
         amount: 60000000,
         user: "Nguyễn Văn Thụ",
-        date: "12/07/2026",
+        date: "21/09/2026",
         status: "Hoàn thành",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tư pháp Hà Nội",
@@ -807,14 +952,14 @@ let proposalsList = [
         files: [{ name: "Tờ trình tạm ứng Dương Đình Trọng", file: "To_trinh_tam_ung_DuongDinhTrong.pdf" }],
         advApproveTinhThan: 30000000,
         advApproveKhac: 30000000,
-        payoutDate: "16/07/2026",
+        payoutDate: "21/09/2026",
         payoutAmountReal: 60000000,
         payoutMethod: "Chi trả trực tiếp bằng tiền mặt",
         payoutRecName: "Dương Đình Trọng",
         payoutRecAddress: "Số 9 phố Nguyễn Đình Chiểu, Hai Bà Trưng, Hà Nội",
         payoutReceiptNo: "BL-TM-2026/102",
         payoutFile: "Phieu_chi_TM_DuongDinhTrong_signed.pdf",
-        noticeReceivedDate: "13/07/2026",
+        noticeReceivedDate: "21/09/2026",
         noticeProofFile: "Bien_ban_giao_nhan_thong_bao_DuongDinhTrong.pdf",
         payoutNote: "Chi trả tiền mặt tại trụ sở cơ quan, ông Dương Đình Trọng đã trực tiếp ký nhận tiền mặt."
     }
@@ -832,35 +977,124 @@ let treasuryAttachedFile = [];
 let showTreasuryEligibleOnly = false;
 let formEditingMode = false; // true only when the panel is opened to write new data (Lập/Cập nhật đề nghị)
 const TREASURY_DEMO_TODAY = new Date(2026, 6, 21);
+let activeKpiFilterKp = 'all';
+let kpSortColumn = 'stt';
+let kpSortDirection = 'asc';
+
+function updateKpiCountersKp() {
+    const all = proposalsList.length;
+    const pending = proposalsList.filter(p => p.status === 'Chờ duyệt').length;
+    const rejected = proposalsList.filter(p => p.status === 'Bị từ chối' || (p.status && p.status.toLowerCase().includes('từ chối'))).length;
+
+    const countAllEl = document.getElementById('countAll');
+    const countPendingEl = document.getElementById('countPending');
+    const countRejectedEl = document.getElementById('countRejected');
+
+    if (countAllEl) countAllEl.innerText = all;
+    if (countPendingEl) countPendingEl.innerText = pending;
+    if (countRejectedEl) countRejectedEl.innerText = rejected;
+}
+
+function filterByKpiKinhPhi(type) {
+    activeKpiFilterKp = type;
+    document.querySelectorAll('#kpiStatsRow .stat-badge-btn').forEach(btn => btn.classList.remove('active'));
+
+    if (type === 'all') {
+        document.getElementById('kpiBtnAll')?.classList.add('active');
+    } else if (type === 'Chờ duyệt') {
+        document.getElementById('kpiBtnPending')?.classList.add('active');
+    } else if (type === 'Bị từ chối') {
+        document.getElementById('kpiBtnRejected')?.classList.add('active');
+    }
+
+    // Synchronize dropdown search status
+    const statusSelect = document.getElementById('searchProposalStatus');
+    if (statusSelect) {
+        if (type === 'all') {
+            statusSelect.value = '';
+        } else if (type === 'Chờ duyệt') {
+            statusSelect.value = 'Chờ duyệt';
+        } else if (type === 'Bị từ chối') {
+            statusSelect.value = 'Bị từ chối';
+        }
+    }
+
+    currentPage = 1;
+    renderProposalsTable();
+}
+
+function handleStatusSelectChange(val) {
+    if (val === 'Chờ duyệt') {
+        filterByKpiKinhPhi('Chờ duyệt');
+    } else if (val === 'Bị từ chối') {
+        filterByKpiKinhPhi('Bị từ chối');
+    } else {
+        activeKpiFilterKp = 'all';
+        document.querySelectorAll('#kpiStatsRow .stat-badge-btn').forEach(btn => btn.classList.remove('active'));
+        if (!val) {
+            document.getElementById('kpiBtnAll')?.classList.add('active');
+        }
+        currentPage = 1;
+        renderProposalsTable();
+    }
+}
+
+function sortKinhPhiTable(col) {
+    if (kpSortColumn === col) {
+        kpSortDirection = kpSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        kpSortColumn = col;
+        kpSortDirection = 'asc';
+    }
+    renderProposalsTable();
+}
+
+function updateKpSortIcons() {
+    const cols = ['stt', 'code', 'type', 'ycbtCode', 'nycName', 'amount', 'date', 'status'];
+    cols.forEach(c => {
+        const icon = document.getElementById(`sortIcon_${c}`);
+        if (!icon) return;
+        if (c === kpSortColumn) {
+            icon.className = kpSortDirection === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+            icon.style.opacity = '1';
+            icon.style.color = 'var(--primary-light, #1e3a8a)';
+        } else {
+            icon.className = 'fa-solid fa-sort';
+            icon.style.opacity = '0.4';
+            icon.style.color = '';
+        }
+    });
+}
+
+function exportExcelKinhPhi() {
+    showToast("Đang kết xuất danh sách đề xuất kinh phí bồi thường ra file Excel...", "success");
+}
+
+const CURRENT_PROPOSALS_VERSION = 'v36_sep2026_all8statuses';
 
 // Sync claimsList and proposalsList from localStorage on DOMContentLoaded
 function syncFromLocalStorage() {
     // Force reset if version is old to fetch updated files and statuses
-    if (localStorage.getItem('proposals_version') !== 'v27') {
-        localStorage.setItem('proposals_version', 'v27');
+    const savedVersion = localStorage.getItem('proposals_version');
+    if (savedVersion !== CURRENT_PROPOSALS_VERSION) {
+        localStorage.setItem('proposals_version', CURRENT_PROPOSALS_VERSION);
         localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
-    }
-
-    const localProposals = localStorage.getItem('proposalsList');
-    if (localProposals) {
-        try {
-            let parsed = JSON.parse(localProposals);
-            if (!Array.isArray(parsed)) {
-                localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
-            } else {
-                // If the mock dataset has less items than our rich list, replace it
-                if (parsed.length < 9) {
-                    localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
-                } else {
+    } else {
+        const localProposals = localStorage.getItem('proposalsList');
+        if (localProposals) {
+            try {
+                let parsed = JSON.parse(localProposals);
+                if (Array.isArray(parsed) && parsed.length >= proposalsList.length) {
                     proposalsList = parsed;
+                } else {
                     localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
                 }
+            } catch (e) {
+                localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
             }
-        } catch (e) {
+        } else {
             localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
         }
-    } else {
-        localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
     }
 
     // 2. Load claimsList and map to mockClaims
@@ -988,10 +1222,9 @@ function initKinhPhiApp() {
     flatpickr("#formNycBirth", { dateFormat: "d/m/Y", allowInput: true });
     flatpickr("#formNycCardDate", { dateFormat: "d/m/Y", allowInput: true });
 
-    // Default dates within 3 months
+    // Default dates: first day of current month to current date (Rule 2)
     const today = new Date();
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(today.getMonth() - 3);
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
     const formatDate = (date) => {
         const d = String(date.getDate()).padStart(2, '0');
@@ -1003,13 +1236,14 @@ function initKinhPhiApp() {
     const sFrom = document.getElementById('searchFromDate');
     const sTo = document.getElementById('searchToDate');
     const fDate = document.getElementById('formProposalDate');
-    if (sFrom) sFrom.value = formatDate(threeMonthsAgo);
+    if (sFrom) sFrom.value = formatDate(firstDayOfMonth);
     if (sTo) sTo.value = formatDate(today);
     if (fDate) fDate.value = formatDate(today);
 
     // Populate table on load
     renderProposalsTable();
     updateBudgetStats();
+    updateKpiCountersKp();
 
     const urlParams = new URLSearchParams(window.location.search);
     const embed = urlParams.get('embed') === 'true';
@@ -1969,11 +2203,23 @@ function renderProposalsTable() {
     if (nyc) filtered = filtered.filter(item => item.nycName.toLowerCase().includes(nyc));
     if (cb) filtered = filtered.filter(item => item.user.toLowerCase().includes(cb));
 
+    // Lọc nhanh theo KPI (Tất cả / Chờ duyệt / Bị từ chối)
+    if (activeKpiFilterKp === 'Chờ duyệt') {
+        filtered = filtered.filter(item => item.status === 'Chờ duyệt');
+    } else if (activeKpiFilterKp === 'Bị từ chối') {
+        filtered = filtered.filter(item => item.status === 'Bị từ chối' || (item.status && item.status.toLowerCase().includes('từ chối')));
+    }
+
     const parseDateVi = (str) => {
         if (!str) return null;
         const parts = str.split('/');
         if (parts.length === 3) {
-            return new Date(parts[2], parts[1] - 1, parts[0]);
+            const d = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10);
+            const y = parseInt(parts[2], 10);
+            if (!isNaN(d) && !isNaN(m) && !isNaN(y)) {
+                return new Date(y, m - 1, d);
+            }
         }
         return null;
     };
@@ -1982,17 +2228,77 @@ function renderProposalsTable() {
     const toDateVal = parseDateVi(toDateInput);
 
     if (fromDateVal) {
+        fromDateVal.setHours(0, 0, 0, 0);
         filtered = filtered.filter(item => {
             const itemDate = parseDateVi(item.date);
-            return itemDate && itemDate >= fromDateVal;
+            if (!itemDate) return false;
+            itemDate.setHours(0, 0, 0, 0);
+            return itemDate >= fromDateVal;
         });
     }
     if (toDateVal) {
+        toDateVal.setHours(23, 59, 59, 999);
         filtered = filtered.filter(item => {
             const itemDate = parseDateVi(item.date);
-            return itemDate && itemDate <= toDateVal;
+            if (!itemDate) return false;
+            itemDate.setHours(0, 0, 0, 0);
+            return itemDate <= toDateVal;
         });
     }
+
+    // Sort filtered dataset
+    filtered.sort((a, b) => {
+        let valA, valB;
+        switch (kpSortColumn) {
+            case 'stt':
+                valA = a.id;
+                valB = b.id;
+                break;
+            case 'code':
+                valA = a.code || '';
+                valB = b.code || '';
+                break;
+            case 'type':
+                valA = a.type || '';
+                valB = b.type || '';
+                break;
+            case 'ycbtCode':
+                valA = a.ycbtCode || '';
+                valB = b.ycbtCode || '';
+                break;
+            case 'nycName':
+                valA = a.nycName || '';
+                valB = b.nycName || '';
+                break;
+            case 'amount':
+                valA = typeof a.amount === 'number' ? a.amount : parseFloat(String(a.amount).replace(/\D/g, '')) || 0;
+                valB = typeof b.amount === 'number' ? b.amount : parseFloat(String(b.amount).replace(/\D/g, '')) || 0;
+                break;
+            case 'date':
+                valA = parseDateVi(a.date) || new Date(0);
+                valB = parseDateVi(b.date) || new Date(0);
+                break;
+            case 'status':
+                valA = a.status || '';
+                valB = b.status || '';
+                break;
+            default:
+                valA = a.code || '';
+                valB = b.code || '';
+        }
+        let res = 0;
+        if (valA instanceof Date && valB instanceof Date) {
+            res = valA.getTime() - valB.getTime();
+        } else if (typeof valA === 'string') {
+            res = valA.localeCompare(valB, 'vi');
+        } else {
+            res = valA < valB ? -1 : (valA > valB ? 1 : 0);
+        }
+        return kpSortDirection === 'asc' ? res : -res;
+    });
+
+    updateKpSortIcons();
+    updateKpiCountersKp();
 
     const total = filtered.length;
     document.getElementById('totalCount').innerText = total;
@@ -2084,23 +2390,22 @@ function renderProposalsTable() {
         }
 
         const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;
-        const actionAlign = isLeader ? 'center' : 'flex-start';
         const displayStatus = item.status === 'Đã sung quỹ' ? 'Sung quỹ nhà nước' : item.status;
 
         tr.innerHTML = `
             <td style="text-align:center; vertical-align:middle;">${startIdx + idx + 1}</td>
-            <td style="text-align:left; vertical-align:middle;"><strong>${item.code}</strong></td>
+            <td style="text-align:left; vertical-align:middle; font-weight:700; color:var(--primary-light);">${item.code}</td>
             <td style="font-weight: 500; font-size:12.5px; text-align:left; vertical-align:middle;">${item.type === 'Cấp tạm ứng' ? 'Đề nghị tạm ứng' : 'Đề nghị cấp kinh phí bồi thường'}</td>
-            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
-            <td style="text-align:left; vertical-align:middle;"><strong>${item.nycName}</strong></td>
+            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
+            <td style="text-align:left; vertical-align:middle; font-weight:600;">${item.nycName}</td>
             <td style="text-align:left; vertical-align:middle;">${item.nycRole || 'Người bị thiệt hại'}</td>
-            <td style="text-align:left; font-weight:700; vertical-align:middle;">${amtVal.toLocaleString('vi-VN')}</td>
+            <td style="text-align:right; font-weight:700; vertical-align:middle;">${amtVal.toLocaleString('vi-VN')}</td>
             <td style="text-align:left; vertical-align:middle;">${item.user}</td>
-            <td style="text-align:left; vertical-align:middle;">${item.date}</td>
+            <td style="text-align:center; vertical-align:middle;">${item.date}</td>
             <td style="text-align:left; vertical-align:middle;">${treasuryHtml}</td>
-            <td style="text-align:left; vertical-align:middle;"><span class="badge ${badgeClass}">${displayStatus}</span></td>
-            <td style="text-align:${isLeader ? 'center' : 'left'}; vertical-align:middle;">
-                <div class="action-flex" style="display:flex; justify-content:${actionAlign}; gap:6px;">
+            <td style="text-align:center; vertical-align:middle;"><span class="badge ${badgeClass}">${displayStatus}</span></td>
+            <td style="text-align:center; vertical-align:middle;">
+                <div class="action-flex" style="display:flex; justify-content:center; gap:4px;">
                     ${actionsHtml}
                 </div>
             </td>
@@ -2115,7 +2420,7 @@ function renderPaginationPages(maxPages) {
     const container = document.getElementById('paginationPages');
     container.innerHTML = '';
 
-    const firstPage = `<span class="page-item ${currentPage === 1 ? 'disabled' : ''}" onclick="goPage(1)" title="Đầu">&lt;&lt;</span>`;
+    const firstPage = `<span class="page-item ${currentPage === 1 ? 'disabled' : ''}" onclick="goPage(1)" title="Đầu">&verbar;&lt;&lt;</span>`;
     const prevPage = `<span class="page-item ${currentPage === 1 ? 'disabled' : ''}" onclick="prevPage()" title="Trước">&lt;</span>`;
     container.innerHTML += firstPage + prevPage;
 
@@ -2124,7 +2429,7 @@ function renderPaginationPages(maxPages) {
     }
 
     const nextPage = `<span class="page-item ${currentPage === maxPages ? 'disabled' : ''}" onclick="nextPage()" title="Sau">&gt;</span>`;
-    const lastPage = `<span class="page-item ${currentPage === maxPages ? 'disabled' : ''}" onclick="goPage('last')" title="Cuối">&gt;&gt;</span>`;
+    const lastPage = `<span class="page-item ${currentPage === maxPages ? 'disabled' : ''}" onclick="goPage('last')" title="Cuối">&gt;&gt;&verbar;</span>`;
     container.innerHTML += nextPage + lastPage;
 }
 
@@ -2174,8 +2479,7 @@ function clearFilters() {
     document.getElementById('searchCbXuLy').value = '';
 
     const today = new Date();
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(today.getMonth() - 3);
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
     const formatDate = (date) => {
         const d = String(date.getDate()).padStart(2, '0');
@@ -2184,8 +2488,14 @@ function clearFilters() {
         return `${d}/${m}/${y}`;
     };
 
-    document.getElementById('searchFromDate').value = formatDate(threeMonthsAgo);
+    document.getElementById('searchFromDate').value = formatDate(firstDayOfMonth);
     document.getElementById('searchToDate').value = formatDate(today);
+
+    // Reset lọc nhanh về Tất cả
+    activeKpiFilterKp = 'all';
+    document.querySelectorAll('#kpiStatsRow .stat-badge-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('kpiBtnAll')?.classList.add('active');
+
     currentPage = 1;
     renderProposalsTable();
     showToast("Đã xóa bộ lọc tìm kiếm!", "info");

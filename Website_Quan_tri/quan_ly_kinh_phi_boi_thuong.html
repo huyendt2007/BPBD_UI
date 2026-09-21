@@ -42,8 +42,8 @@
             font-family: var(--font-family);
             background-color: var(--bg-body);
             color: var(--text-main);
-            padding: 20px;
-            line-height: 1.5;
+            padding: 14px 18px;
+            line-height: 1.4;
         }
 
         /* Top Page Header */
@@ -51,9 +51,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             background: white;
-            padding: 16px 24px;
+            padding: 10px 18px;
             border-radius: var(--border-radius-md);
             box-shadow: var(--box-shadow);
             border: 1px solid var(--border-color);
@@ -62,11 +62,11 @@
         .page-title h2 {
             font-size: 18px;
             color: var(--primary-light);
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .page-title p {
-            font-size: 12.5px;
+            font-size: 12px;
             color: var(--text-muted);
             margin-top: 2px;
         }
@@ -95,14 +95,14 @@
         /* Statistical Cards */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
         .stat-card {
             background: white;
-            padding: 20px;
+            padding: 10px 16px;
             border-radius: var(--border-radius-md);
             border: 1px solid var(--border-color);
             box-shadow: var(--box-shadow);
@@ -114,7 +114,7 @@
         }
 
         .stat-title {
-            font-size: 11.5px;
+            font-size: 11px;
             color: var(--text-muted);
             font-weight: 700;
             text-transform: uppercase;
@@ -122,9 +122,9 @@
         }
 
         .stat-val {
-            font-size: 22px;
-            font-weight: 700;
-            margin-top: 8px;
+            font-size: 19px;
+            font-weight: 800;
+            margin-top: 3px;
             color: var(--primary-light);
         }
 
@@ -132,8 +132,8 @@
         .card-section {
             background-color: var(--bg-surface);
             border-radius: var(--border-radius-md);
-            padding: 24px;
-            margin-bottom: 20px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
             border: 1px solid var(--border-color);
             box-shadow: var(--box-shadow);
         }
@@ -142,30 +142,30 @@
         .grid-4-cols {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
+            gap: 10px;
         }
 
         .grid-3-cols {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
+            gap: 12px;
         }
 
         .grid-2-cols {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            gap: 12px;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .form-label {
             display: block;
             font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 13px;
+            margin-bottom: 4px;
+            font-size: 12px;
             color: #334155;
         }
 
@@ -176,8 +176,8 @@
 
         .form-control {
             width: 100%;
-            height: 38px;
-            padding: 9px 12px;
+            height: 34px;
+            padding: 4px 10px;
             font-size: 13px;
             border: 1px solid #CBD5E1;
             border-radius: var(--border-radius-sm);
@@ -204,12 +204,81 @@
             resize: vertical;
         }
 
+        /* Date input wrapper with calendar icon (Rule 2) */
+        .date-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .date-input-wrapper input {
+            padding-right: 32px;
+        }
+
+        .date-input-wrapper i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+            font-size: 13px;
+        }
+
+        /* KPI Quick Stats Row (Tương tự module Quản lý thông tin tư liệu VBQPPL) */
+        .stats-badge-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .stat-badge-btn {
+            background-color: #e2e8f0;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            user-select: none;
+            outline: none;
+        }
+
+        .stat-badge-btn:hover {
+            background-color: #cbd5e1;
+        }
+
+        .stat-badge-btn.active {
+            background-color: var(--primary-light, #1e3a8a);
+            color: white;
+            border-color: var(--primary-light, #1e3a8a);
+        }
+
+        .stat-badge-btn .count {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 1px 5px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .stat-badge-btn.active .count {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
         /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 9px 18px;
+            justify-content: center;
+            gap: 6px;
+            height: 34px;
+            padding: 4px 14px;
             font-size: 13px;
             font-weight: 600;
             border-radius: var(--border-radius-sm);
@@ -233,6 +302,31 @@
             background-color: white;
             color: #1e3a8a;
             border-color: #1e3a8a;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #eff6ff;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #475569;
+            border-color: #cbd5e1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        .btn-clear-filter {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-clear-filter:hover {
+            background-color: #e2e8f0;
         }
 
         .btn-outline-primary:hover {
@@ -370,23 +464,27 @@
         .custom-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 12.5px;
+            text-align: left;
         }
 
         .custom-table th {
-            padding: 12px 16px;
-            font-weight: 600;
+            padding: 8px 10px;
+            font-weight: 700;
             color: #334155;
             background-color: #F8FAFC;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             white-space: nowrap;
+            font-size: 12px;
         }
 
         .custom-table td {
-            padding: 12px 16px;
+            padding: 8px 10px;
             border-bottom: 1px solid var(--border-color);
             color: #475569;
             vertical-align: middle;
+            font-size: 12.5px;
+            line-height: 1.35;
         }
 
         .custom-table tbody tr:hover {
@@ -395,13 +493,13 @@
 
         /* Compact Table Row Height Adjustment */
         .compact-table th {
-            padding: 10px 14px !important;
-            font-size: 13px;
+            padding: 8px 10px !important;
+            font-size: 12px;
         }
 
         .compact-table td {
-            padding: 8px 14px !important;
-            font-size: 13px;
+            padding: 6px 10px !important;
+            font-size: 12.5px;
         }
 
         /* Borderless read-only input columns inside custom tables for approved money fields */
@@ -433,7 +531,7 @@
         /* Badges */
         .badge {
             display: inline-block;
-            padding: 3px 8px;
+            padding: 2px 7px;
             font-size: 11px;
             font-weight: 600;
             border-radius: 12px;
@@ -481,27 +579,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 24px;
+            padding: 8px 16px;
             background-color: #f8fafc;
             border-top: 1px solid var(--border-color);
             border-bottom-left-radius: var(--border-radius-sm);
             border-bottom-right-radius: var(--border-radius-sm);
+            margin-top: 10px;
+            font-size: 12.5px;
         }
 
         .pagination-left {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 12.5px;
+            font-size: 12px;
             color: var(--text-muted);
         }
 
         .page-size-select {
-            padding: 4px 8px;
+            height: 28px;
+            padding: 2px 6px;
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
             outline: none;
             cursor: pointer;
+            font-size: 12px;
+            background: white;
         }
 
         .pagination-pages {
@@ -510,12 +613,17 @@
         }
 
         .page-item {
-            padding: 6px 12px;
+            min-width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
             background-color: white;
             color: var(--text-main);
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             user-select: none;
@@ -805,15 +913,15 @@
 
         <!-- SEARCH FILTERS CARD (FAFAFA theme complying with Gen_ui rule 10) -->
         <div class="card-section"
-            style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
-            <div class="grid-4-cols" style="margin-bottom: 16px;">
+            style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 12px 16px; margin-bottom: 12px; border-radius: var(--border-radius-md);">
+            <div class="grid-4-cols" style="margin-bottom: 8px;">
                 <div>
                     <span class="form-label">Mã đề nghị</span>
                     <input type="text" class="form-control" id="searchProposalCode" placeholder="Nhập mã đề nghị...">
                 </div>
                 <div>
                     <span class="form-label">Loại đề nghị</span>
-                    <select class="form-control" id="searchProposalType">
+                    <select class="form-control" id="searchProposalType" style="height: 34px;">
                         <option value="">Tất cả</option>
                         <option value="Cấp tạm ứng">Đề nghị tạm ứng</option>
                         <option value="Cấp kinh phí bồi thường">Đề nghị cấp kinh phí bồi thường</option>
@@ -825,7 +933,7 @@
                 </div>
                 <div>
                     <span class="form-label">Trạng thái đề nghị</span>
-                    <select class="form-control" id="searchProposalStatus">
+                    <select class="form-control" id="searchProposalStatus" style="height: 34px;" onchange="handleStatusSelectChange(this.value)">
                         <option value="">Tất cả</option>
                         <option value="Chờ lập đề nghị">Chờ lập đề nghị</option>
                         <option value="Chờ duyệt">Chờ duyệt</option>
@@ -850,76 +958,97 @@
                 </div>
                 <div>
                     <span class="form-label">Đề nghị: Từ ngày</span>
-                    <input type="text" class="form-control" id="searchFromDate" placeholder="dd/mm/yyyy">
+                    <div class="date-input-wrapper">
+                        <input type="text" class="form-control" id="searchFromDate" placeholder="dd/mm/yyyy">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
                 </div>
                 <div>
                     <span class="form-label">Đề nghị: Đến ngày</span>
-                    <input type="text" class="form-control" id="searchToDate" placeholder="dd/mm/yyyy">
+                    <div class="date-input-wrapper">
+                        <input type="text" class="form-control" id="searchToDate" placeholder="dd/mm/yyyy">
+                        <i class="fa-regular fa-calendar-days"></i>
+                    </div>
                 </div>
             </div>
 
             <!-- Align buttons right, separated with top border (Gen_ui rule 10) -->
             <div
-                style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
-                <button class="btn btn-outline-primary" onclick="clearFilters()">Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="triggerSearchProposals()"><i class="fa fa-search"></i> Tìm
-                    kiếm</button>
+                style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px; display: flex; justify-content: flex-end; gap: 8px;">
+                <button type="button" class="btn btn-clear-filter" onclick="clearFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button type="button" class="btn btn-primary" onclick="triggerSearchProposals()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         </div>
 
         <div class="card-section" id="treasuryWarningPanel"
-            style="display:none; background:#fff7ed; border:1px solid #fed7aa; padding:14px 16px; margin-bottom:20px; border-radius:var(--border-radius-md);">
+            style="display:none; background:#fff7ed; border:1px solid #fed7aa; padding:12px 16px; margin-bottom:12px; border-radius:var(--border-radius-md);">
             <!-- Populated dynamically -->
         </div>
 
-        <!-- ACTION TOOLBAR (Gen_ui rule 11) -->
-        <div
-            style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: var(--spacing-md); margin-top: var(--spacing-md);">
-            <button class="btn btn-primary" onclick="openCreateProposalForm()"><i class="fa fa-plus"></i> Lập đề
-                nghị</button>
-            <button class="btn btn-secondary" onclick="exportExcelKinhPhi()"><i class="fa-solid fa-file-excel"></i> Kết
-                xuất Excel</button>
-        </div>
+        <!-- MAIN DATA TABLE & ACTION CARD -->
+        <div class="card-section" style="padding: 14px 16px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                <!-- KPI Quick Filters (Tương tự module Quản lý thông tin tư liệu VBQPPL) -->
+                <div class="stats-badge-row" id="kpiStatsRow">
+                    <button type="button" class="stat-badge-btn active" onclick="filterByKpiKinhPhi('all')" id="kpiBtnAll">
+                        Tất cả <span class="count" id="countAll">0</span>
+                    </button>
+                    <button type="button" class="stat-badge-btn" onclick="filterByKpiKinhPhi('Chờ duyệt')" id="kpiBtnPending">
+                        Chờ duyệt <span class="count" id="countPending">0</span>
+                    </button>
+                    <button type="button" class="stat-badge-btn" onclick="filterByKpiKinhPhi('Bị từ chối')" id="kpiBtnRejected">
+                        Bị từ chối <span class="count" id="countRejected">0</span>
+                    </button>
+                </div>
 
-        <!-- DATA TABLE -->
-        <div class="table-container">
-            <table class="custom-table" id="proposalsTable">
-                <thead>
-                    <tr>
-                        <th style="width: 50px; text-align: center;">STT</th>
-                        <th style="width: 120px; text-align: left;">Mã đề nghị</th>
-                        <th style="min-width: 150px; text-align: left;">Loại đề nghị</th>
-                        <th style="width: 120px; text-align: left;">Mã vụ việc</th>
-                        <th style="min-width: 160px; text-align: left;">Tên người yêu cầu</th>
-                        <th style="min-width: 150px; text-align: left;">Tư cách người yêu cầu</th>
-                        <th style="width: 160px; text-align: left;">Số tiền đề nghị (VNĐ)</th>
-                        <th style="min-width: 150px; text-align: left;">Cán bộ xử lý</th>
-                        <th style="width: 110px; text-align: left;">Ngày đề nghị</th>
-                        <th style="width: 180px; text-align: left;">Hạn nhận / Sung quỹ</th>
-                        <th style="width: 110px; text-align: left;">Trạng thái</th>
-                        <th style="width: 150px; text-align: center; min-width: 150px;">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody id="proposalsTableBody">
-                    <!-- Populated dynamically -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- PAGINATION BAR (Mandatory Rule 4) -->
-        <div class="pagination-bar" id="proposalsPagination">
-            <div class="pagination-left">
-                <span>Số dòng hiển thị:</span>
-                <select class="page-size-select" onchange="changePageSize(this.value)">
-                    <option value="5">5</option>
-                    <option value="10" selected>10</option>
-                    <option value="20">20</option>
-                </select>
-                <span>Hiển thị <span id="currentRange" style="font-weight:600;">1-5</span> trong tổng số <span
-                        id="totalCount" style="font-weight:600;">10</span> bản ghi</span>
+                <!-- Action Buttons Toolbar -->
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button class="btn btn-primary" id="btnCreateProposalTop" onclick="openCreateProposalForm()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa fa-plus"></i> Lập đề nghị</button>
+                    <button class="btn btn-secondary" onclick="exportExcelKinhPhi()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                </div>
             </div>
-            <div class="pagination-pages" id="paginationPages">
-                <!-- Built dynamically by script -->
+
+            <!-- DATA TABLE -->
+            <div class="table-container">
+                <table class="custom-table" id="proposalsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 44px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('stt')" title="Sắp xếp theo STT">STT <i class="fa-solid fa-sort" id="sortIcon_stt" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 105px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('code')" title="Sắp xếp theo Mã đề nghị">Mã đề nghị <i class="fa-solid fa-sort" id="sortIcon_code" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 135px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('type')" title="Sắp xếp theo Loại đề nghị">Loại đề nghị <i class="fa-solid fa-sort" id="sortIcon_type" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 105px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('ycbtCode')" title="Sắp xếp theo Mã vụ việc">Mã vụ việc <i class="fa-solid fa-sort" id="sortIcon_ycbtCode" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="min-width: 140px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('nycName')" title="Sắp xếp theo Người yêu cầu">Tên người yêu cầu <i class="fa-solid fa-sort" id="sortIcon_nycName" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 135px; text-align: left;">Tư cách NYC</th>
+                            <th style="width: 135px; text-align: right; cursor: pointer;" onclick="sortKinhPhiTable('amount')" title="Sắp xếp theo Số tiền đề nghị">Số tiền đề nghị (VNĐ) <i class="fa-solid fa-sort" id="sortIcon_amount" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 120px; text-align: left;">Cán bộ xử lý</th>
+                            <th style="width: 95px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('date')" title="Sắp xếp theo Ngày đề nghị">Ngày đề nghị <i class="fa-solid fa-sort" id="sortIcon_date" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 145px; text-align: left;">Hạn nhận / Sung quỹ</th>
+                            <th style="width: 125px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('status')" title="Sắp xếp theo Trạng thái">Trạng thái <i class="fa-solid fa-sort" id="sortIcon_status" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 120px; text-align: center; min-width: 120px;" id="thProposalActions">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="proposalsTableBody">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION BAR (Mandatory Rule 4) -->
+            <div class="pagination-bar" id="proposalsPagination">
+                <div class="pagination-left">
+                    <span>Số dòng hiển thị:</span>
+                    <select class="page-size-select" onchange="changePageSize(this.value)">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                    <span>Hiển thị <span id="currentRange" style="font-weight:600;">1-10</span> trong tổng số <span
+                            id="totalCount" style="font-weight:600;">10</span> bản ghi</span>
+                </div>
+                <div class="pagination-pages" id="paginationPages">
+                    <!-- Built dynamically by script -->
+                </div>
             </div>
         </div>
     </div>
