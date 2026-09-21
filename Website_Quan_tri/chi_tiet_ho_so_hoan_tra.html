@@ -4029,6 +4029,8 @@
                         detail: 'Quyết định số QĐ-123/QĐ-UBND đã được ký số và ban hành chính thức.'
                     });
                     showToast('Lãnh đạo đã phê duyệt ký số Quyết định thành lập Hội đồng thành công!', 'success');
+                    // Ký số xong, quyền tác nghiệp trả lại cho Cán bộ xử lý ở bước tiếp theo
+                    restoreStaffPerspective();
                     switchSimulatorState(2);
                 } else if (pendingLeaderSignTarget === 'refundDecision') {
                     currentPerspective = 'leader';
@@ -4040,8 +4042,20 @@
                         text: 'Lãnh đạo phê duyệt ký số Quyết định hoàn trả. Quyết định chính thức có hiệu lực thi hành.'
                     });
                     showToast('Lãnh đạo đã phê duyệt ký số Quyết định hoàn trả thành công! Hồ sơ chuyển sang trạng thái Đang thi hành.', 'success');
+                    // Ký số xong, quyền tác nghiệp trả lại cho Cán bộ xử lý ở bước tiếp theo
+                    restoreStaffPerspective();
                     switchSimulatorState(4);
                 }
+            }
+
+            // Sau khi Lãnh đạo ký số xong, trả quyền tác nghiệp về Cán bộ xử lý để tiếp tục bước sau.
+            // Nếu giữ nguyên vai trò Lãnh đạo, Bước 2 và Bước 4 sẽ bị khóa và không cập nhật được.
+            function restoreStaffPerspective() {
+                currentPerspective = 'staff';
+                isViewMode = false;
+                currentMode = 'edit';
+                const perspSelect = document.getElementById('perspectiveSelect');
+                if (perspSelect) perspSelect.value = 'staff';
             }
 
             function handleRejectFileAttached(input) {
@@ -4757,6 +4771,8 @@
                 });
 
                 showToast('Lãnh đạo đã từ chối phê duyệt Quyết định thành lập. Lý do đã lưu vào lịch sử xử lý.', 'warning');
+                 // Trả quyền tác nghiệp về Cán bộ xử lý để chỉnh sửa lại hồ sơ bị từ chối
+                 restoreStaffPerspective();
                 switchSimulatorState(1.3);
             }
 
@@ -4773,6 +4789,8 @@
                     text: `Lãnh đạo từ chối phê duyệt dự thảo Quyết định hoàn trả. Lý do: ${reason}`
                 });
                 showToast('Dự thảo Quyết định đã bị từ chối. Cán bộ có thể chỉnh sửa và trình ký lại.', 'warning');
+                 // Trả quyền tác nghiệp về Cán bộ xử lý để chỉnh sửa lại hồ sơ bị từ chối
+                 restoreStaffPerspective();
                 switchSimulatorState(3.2);
             }
 
@@ -5669,6 +5687,8 @@
                     text: 'Lãnh đạo phê duyệt ký số Quyết định hoàn trả. Quyết định chính thức có hiệu lực và chuyển sang giai đoạn Đang thi hành.'
                 });
                 showToast('Lãnh đạo đã phê duyệt ký số. Quyết định hoàn trả chuyển sang trạng thái Đang thi hành.', 'success');
+                // Ký số xong, quyền tác nghiệp trả lại cho Cán bộ xử lý ở bước tiếp theo
+                restoreStaffPerspective();
                 switchSimulatorState(4);
             }
 
@@ -7002,6 +7022,8 @@
                 });
                 
                 showToast("Lãnh đạo đã phê duyệt ký số Quyết định thành công!", "success");
+                // Ký số xong, quyền tác nghiệp trả lại cho Cán bộ xử lý ở bước tiếp theo
+                restoreStaffPerspective();
                 switchSimulatorState(2);
             }
 
