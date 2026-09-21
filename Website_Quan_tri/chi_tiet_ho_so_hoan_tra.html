@@ -1337,20 +1337,36 @@
                 <div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-gavel"></i> Kết luận của Hội đồng xem xét trách nhiệm hoàn trả</div>
             </div>
             <div class="card-body">
-                <div class="grid-2-cols" style="gap:20px; margin-bottom:16px;">
-                    <div class="form-group">
-                        <span class="form-label">Kết luận của Hội đồng <span style="color:red;">*</span></span>
-                        <select class="form-control" id="s2Conclusion" onchange="updateS2ConclusionUI()" style="height:38px; font-weight:600;">
-                            <option value="co_loi">Có lỗi - Kiến nghị hoàn trả</option>
-                            <option value="khong_co_loi">Không xem xét - Người thi hành công vụ không có lỗi</option>
-                            <option value="da_chet">Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả</option>
-                        </select>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <span class="form-label">Kết luận của Hội đồng <span style="color:red;">*</span></span>
+                    <div style="display:flex; flex-direction:column; gap:10px; margin-top:6px;">
+                        <label
+                            style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
+                            <input type="radio" name="s2ConclusionRadio" value="co_loi" checked
+                                onchange="onS2ConclusionChange(this.value)" style="margin-top:2px;">
+                            <span style="font-size:13.5px; line-height:1.5;"><strong>Có lỗi - Kiến nghị hoàn trả</strong></span>
+                        </label>
+                        <label
+                            style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
+                            <input type="radio" name="s2ConclusionRadio" value="khong_co_loi"
+                                onchange="onS2ConclusionChange(this.value)" style="margin-top:2px;">
+                            <span style="font-size:13.5px; line-height:1.5;"><strong>Không xem xét</strong> - Người thi
+                                hành công vụ không có lỗi</span>
+                        </label>
+                        <label
+                            style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
+                            <input type="radio" name="s2ConclusionRadio" value="da_chet"
+                                onchange="onS2ConclusionChange(this.value)" style="margin-top:2px;">
+                            <span style="font-size:13.5px; line-height:1.5;"><strong>Không xem xét</strong> - Người thi
+                                hành công vụ đã chết trước khi ra quyết định hoàn trả</span>
+                        </label>
                     </div>
-                    <div class="form-group">
-                        <span class="form-label">Ngày họp / Lập biên bản kiến nghị <span style="color:red;">*</span></span>
-                        <input type="text" class="form-control" id="s2ConclusionDate" placeholder="dd/mm/yyyy" style="height:38px;">
-                        <span class="invalid-feedback" id="s2DateError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
-                    </div>
+                    <input type="hidden" id="s2Conclusion" value="co_loi">
+                </div>
+                <div class="form-group" style="max-width:420px; margin-bottom:16px;">
+                    <span class="form-label">Ngày họp / Lập biên bản kiến nghị <span style="color:red;">*</span></span>
+                    <input type="text" class="form-control" id="s2ConclusionDate" placeholder="dd/mm/yyyy" style="height:38px;">
+                    <span class="invalid-feedback" id="s2DateError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                     <span class="form-label">Biên bản kiến nghị/kết luận đính kèm</span>
@@ -5055,8 +5071,8 @@
             function renderStep2() {
                 const conclusionSelect = document.getElementById('s2Conclusion');
                 if (conclusionSelect) {
-                    conclusionSelect.value = activeDossier.conclusionType || 'co_loi';
-                    updateS2ConclusionUI();
+                    setS2Conclusion(activeDossier.conclusionType || 'co_loi');
+
                 }
 
                 const dateInput = document.getElementById('s2ConclusionDate');
@@ -5065,7 +5081,8 @@
                 }
 
                 const isStepReadonly = isReadonlyStep(2) || currentPerspective === 'leader';
-                if (conclusionSelect) conclusionSelect.disabled = isStepReadonly;
+                // Khóa nhóm Radio Kết luận của Hội đồng khi bước đã chốt hoặc ở chế độ chỉ xem
+                document.querySelectorAll('input[name="s2ConclusionRadio"]').forEach(r => { r.disabled = isStepReadonly; });
                 if (dateInput) dateInput.disabled = isStepReadonly;
 
                 const addBtn = document.getElementById('s2AddOfficerBtn');
@@ -5150,6 +5167,30 @@
                 });
             }
 
+            // Kết luận của Hội đồng hiển thị dạng Radio button
+            const S2_CONCLUSION_LABELS = {
+                co_loi: 'Có lỗi - Kiến nghị hoàn trả',
+                khong_co_loi: 'Không xem xét - Người thi hành công vụ không có lỗi',
+                da_chet: 'Không xem xét - Người thi hành công vụ đã chết trước khi ra quyết định hoàn trả'
+            };
+
+            function getS2ConclusionLabel(value) {
+                return S2_CONCLUSION_LABELS[value] || S2_CONCLUSION_LABELS.co_loi;
+            }
+
+            function onS2ConclusionChange(value) {
+                document.getElementById('s2Conclusion').value = value;
+                updateS2ConclusionUI();
+            }
+
+            function setS2Conclusion(value) {
+                const conclusion = value || 'co_loi';
+                document.querySelectorAll('input[name="s2ConclusionRadio"]').forEach(r => {
+                    r.checked = r.value === conclusion;
+                });
+                onS2ConclusionChange(conclusion);
+            }
+
             function updateS2ConclusionUI() {
                 const val = document.getElementById('s2Conclusion').value;
                 const isCoLoi = val === 'co_loi';
@@ -5204,8 +5245,7 @@
                 dateErr.style.display = 'none';
 
                 const conclusion = document.getElementById('s2Conclusion').value;
-                const conclusionSelect = document.getElementById('s2Conclusion');
-                const conclusionLabel = conclusionSelect.options[conclusionSelect.selectedIndex].innerText;
+                const conclusionLabel = getS2ConclusionLabel(conclusion);
 
                 activeDossier.conclusionType = conclusion;
                 activeDossier.conclusionDate = dateVal;
