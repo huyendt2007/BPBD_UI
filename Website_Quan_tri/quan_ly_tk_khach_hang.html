@@ -703,15 +703,98 @@
             overflow-wrap: break-word;
         }
         .detail-item.span-2 { grid-column: span 2; }
+
+        /* ===== Tinh gọn khối Bộ lọc tìm kiếm, nhường diện tích cho lưới danh sách ===== */
+        #search-card {
+            padding: 12px 15px !important;
+            margin-bottom: 12px !important;
+        }
+
+        /* 12 tiêu chí xếp 6 cột trên màn rộng để chỉ còn 2 hàng */
+        #search-card .grid-4 {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 10px 12px;
+        }
+
+        @media (max-width: 1600px) {
+            #search-card .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 1200px) {
+            #search-card .grid-4 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 860px) {
+            #search-card .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        #search-card .form-group {
+            margin-bottom: 0;
+        }
+
+        #search-card .form-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        #search-card .form-control,
+        #search-card .form-select {
+            height: 32px;
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+
+        #search-card .btn {
+            height: 32px;
+            padding: 0 14px;
+            font-size: 13px;
+        }
+
+        /* Tiêu đề khối lọc, bấm để thu gọn */
+        #search-card .filter-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            color: var(--primary-color);
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #search-card .filter-head .toggle-caret {
+            font-size: 12px;
+            transition: transform .18s ease;
+        }
+
+        #search-card.collapsed .filter-head {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        #search-card.collapsed .filter-head .toggle-caret {
+            transform: rotate(-90deg);
+        }
+
+        #search-card.collapsed form {
+            display: none;
+        }
     </style>
 </head>
 <body>
 <div class="container">
 
     <!-- BỘ LỌC TÌM KIẾM (MH01) -->
-    <div class="card-section">
-        <div class="section-title">
+    <div class="card-section" id="search-card">
+        <div class="filter-head" onclick="toggleFilterCard()" title="Bấm để thu gọn hoặc mở rộng bộ lọc">
             <span><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</span>
+            <i class="fa-solid fa-chevron-down toggle-caret"></i>
         </div>
 
         <form id="searchFilterForm" onsubmit="event.preventDefault(); handleSearch();">
@@ -2834,6 +2917,12 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3500);
     }
+
+        // Thu gon / mo rong khoi Bo loc tim kiem
+        function toggleFilterCard() {
+            const c = document.getElementById('search-card');
+            if (c) c.classList.toggle('collapsed');
+        }
 </script>
 </body>
 </html>
