@@ -800,6 +800,106 @@
             font-size: 15px;
             margin-top: 2px;
         }
+
+        /* ===== Tinh gọn khối hiển thị: dồn diện tích cho lưới danh sách ===== */
+        .header-section {
+            margin-bottom: 12px;
+        }
+
+        .header-title {
+            font-size: 18px;
+        }
+
+        .header-desc {
+            font-size: 12.5px;
+            margin-top: 2px;
+        }
+
+        /* Khối bộ lọc: 5 cột trên màn rộng để 5 tiêu chí nằm gọn 1 hàng */
+        #filterSection .form-grid-3 {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px 14px;
+        }
+
+        @media (max-width: 1450px) {
+            #filterSection .form-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 900px) {
+            #filterSection .form-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        #filterSection .form-group {
+            margin-bottom: 0;
+        }
+
+        #filterSection .form-group label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+            display: block;
+        }
+
+        #filterSection .input-control {
+            height: 32px;
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+
+        #filterSection .btn {
+            height: 32px;
+            padding: 0 14px;
+            font-size: 13px;
+        }
+
+        /* Tiêu đề khối bộ lọc, bấm để thu gọn */
+        .filter-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            color: var(--primary-color);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .filter-head .toggle-caret {
+            font-size: 12px;
+            transition: transform .18s ease;
+        }
+
+        #filterSection.collapsed .filter-head {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        #filterSection.collapsed .filter-head .toggle-caret {
+            transform: rotate(-90deg);
+        }
+
+        #filterSection.collapsed .filter-body {
+            display: none;
+        }
+
+        /* Tiêu đề lưới gộp chung hàng với nhóm nút chức năng */
+        .section-title {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .section-title .title-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -816,8 +916,13 @@
     </div>
 
     <!-- 1. SEARCH/FILTER SECTION (Quy chuẩn Thiết kế Khối lọc tìm kiếm) -->
-    <div class="card-section"
-        style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
+    <div class="card-section" id="filterSection"
+        style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 12px 15px; margin-bottom: 12px; border-radius: var(--border-radius-md);">
+        <div class="filter-head" onclick="toggleFilterSection()" title="Bấm để thu gọn hoặc mở rộng bộ lọc">
+            <span><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</span>
+            <i class="fa-solid fa-chevron-down toggle-caret"></i>
+        </div>
+        <div class="filter-body">
         <div class="form-grid-3">
             <div class="form-group">
                 <label for="searchKeyword">Từ khóa tìm kiếm</label>
@@ -866,7 +971,7 @@
 
         <!-- Nút thao tác lọc tìm kiếm -->
         <div
-            style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+            style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;">
             <button class="btn btn-outline-primary" onclick="resetFilters()">
                 <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
             </button>
@@ -874,25 +979,25 @@
                 <i class="fa fa-search"></i> Tìm kiếm
             </button>
         </div>
+        </div>
     </div>
 
     <!-- 2. ACTION TOOLBAR & RESULTS -->
     <div class="card-section">
         <div class="section-title">
             <span>Danh sách cấu hình biểu phí hệ thống</span>
-            <div style="font-size: 13px; font-weight: normal; color: var(--text-muted);">
-                Áp dụng quy chuẩn Thông tư 64/2025/TT-BTC và Thông tư 61/2023/TT-BTC
+            <!-- Nút chức năng gộp chung hàng với tiêu đề để tiết kiệm diện tích -->
+            <div class="title-actions">
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fa fa-plus"></i> Thêm mới
+                </button>
+                <button class="btn btn-outline-success" onclick="exportExcel()">
+                    <i class="fa-solid fa-file-excel"></i> Kết xuất Excel
+                </button>
             </div>
         </div>
-
-        <!-- Quy tắc 11: Nút chức năng phía trên lưới, nằm bên PHẢI -->
-        <div class="action-toolbar">
-            <button class="btn btn-primary" onclick="openAddModal()">
-                <i class="fa fa-plus"></i> Thêm mới
-            </button>
-            <button class="btn btn-outline-success" onclick="exportExcel()">
-                <i class="fa-solid fa-file-excel"></i> Kết xuất Excel
-            </button>
+        <div style="font-size: 12.5px; color: var(--text-muted); margin: -6px 0 10px;">
+            Áp dụng quy chuẩn Thông tư 64/2025/TT-BTC và Thông tư 61/2023/TT-BTC
         </div>
 
         <!-- 3. DATA GRID -->
@@ -1960,6 +2065,12 @@
             feeList = [...rawMockData];
             closeDeleteConfirm();
             renderTable();
+        }
+
+        // Thu gon / mo rong khoi Bo loc tim kiem de nhuong dien tich cho luoi danh sach
+        function toggleFilterSection() {
+            const sec = document.getElementById('filterSection');
+            if (sec) sec.classList.toggle('collapsed');
         }
     </script>
     <script src="admin-ui-standardizer.js"></script>
