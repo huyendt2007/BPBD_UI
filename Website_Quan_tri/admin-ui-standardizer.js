@@ -168,18 +168,40 @@
         }
     }
 
-    function normalizeActionButton(control) {
+    // usedIcons: tap hop icon da dung trong CUNG mot o Thao tac.
+    // Khong bao gio ap dung mot anh xa lam sinh ra 2 icon giong nhau tren cung 1 ban ghi:
+    // vi du "Sua" va "Cap nhat ket qua" cung khop luat dau tien va cung ra fa-pen-to-square.
+    function normalizeActionButton(control, usedIcons) {
         if (control.dataset.adminIconNormalized === '1') return;
         const text = normalizeKey(control.textContent || control.getAttribute('title') || control.getAttribute('aria-label'));
         const map = actionIconMap.find(item => item.test.test(text));
-        if (!map) return;
+        if (!map) {
+            rememberExistingIcon(control, usedIcons);
+            return;
+        }
+        if (usedIcons && usedIcons.has(map.icon)) {
+            // Icon nay da co tren cung dong -> giu nguyen icon goc cua nut
+            control.dataset.adminIconNormalized = '1';
+            rememberExistingIcon(control, usedIcons);
+            return;
+        }
 
         control.dataset.adminIconNormalized = '1';
         control.classList.add('icon-btn', map.cls);
         control.setAttribute('title', control.getAttribute('title') || map.title);
         control.setAttribute('aria-label', control.getAttribute('aria-label') || map.title);
         control.innerHTML = `<i class="${map.icon}"></i>`;
+        if (usedIcons) usedIcons.add(map.icon);
         if (control.disabled || control.getAttribute('aria-disabled') === 'true') control.classList.add('disabled');
+    }
+
+    // Ghi nhan icon san co cua nut de cac nut sau khong bi trung
+    function rememberExistingIcon(control, usedIcons) {
+        if (!usedIcons) return;
+        const i = control.querySelector('i');
+        if (!i) return;
+        const cls = Array.from(i.classList).filter(c => c.indexOf('fa-') === 0).sort().join(' ');
+        if (cls) usedIcons.add(cls);
     }
 
     function getCustomerColumnIndex(table) {
@@ -230,9 +252,11 @@
                     const viewControls = controls.filter(isViewControl);
                     const firstView = viewControls[0];
 
+                    // Moi o Thao tac co mot tap icon rieng de tranh trung icon tren cung 1 dong
+                    const usedIcons = new Set();
                     controls.forEach(control => {
                         control.addEventListener('click', event => event.stopPropagation());
-                        if (!isViewControl(control)) normalizeActionButton(control);
+                        if (!isViewControl(control)) normalizeActionButton(control, usedIcons);
                     });
 
                     if (firstView && !row.__adminViewHandler) {
