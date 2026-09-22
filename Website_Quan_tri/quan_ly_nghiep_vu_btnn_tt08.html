@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -349,6 +349,82 @@
             min-width: 760px;
         }
 
+        /* Pagination Bar (Rule 4) */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f8fafc;
+            border-top: 1px solid var(--border-color);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            margin-top: 10px;
+            font-size: 12.5px;
+        }
+
+        .pagination-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .page-size-select {
+            height: 28px;
+            padding: 2px 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            font-size: 12px;
+            background: white;
+        }
+
+        .pagination-pages {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-item {
+            min-width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: white;
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .page-item:hover:not(.disabled) {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: #eff6ff;
+        }
+
+        .page-item.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-item.disabled {
+            color: #cbd5e1;
+            background-color: #f8fafc;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+            pointer-events: none;
+        }
+
         .footer-actions {
             display: flex;
             justify-content: flex-end;
@@ -440,9 +516,21 @@
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:12px; color:var(--text-muted); font-size:12.5px;">
-            <span id="resultCount">Hiển thị 0 bản ghi</span>
-            <span>20 bản ghi/trang</span>
+        <!-- PAGINATION BAR (Mandatory Rule 4) -->
+        <div class="pagination-bar" id="paginationBar">
+            <div class="pagination-left">
+                <span>Số dòng hiển thị:</span>
+                <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize(this.value)">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+                <span>Hiển thị <span id="currentRange" style="font-weight:600;">0-0</span> trong tổng số <span id="totalCount" style="font-weight:600;">0</span> bản ghi</span>
+            </div>
+            <div class="pagination-pages" id="paginationPages">
+                <!-- Dynamically rendered -->
+            </div>
         </div>
     </div>
 
@@ -552,9 +640,20 @@
                 mainContentLabel: 'Nội dung đề nghị',
                 resultLabel: 'Nội dung hướng dẫn/giải đáp',
                 rows: [
-                    ['HD-BTNN-2026-001', 'Sở Tư pháp Hà Nội', 'Hướng dẫn nghiệp vụ', 'Văn bản', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
+                    ['HD-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Hướng dẫn nghiệp vụ', 'Văn bản', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
                     ['HD-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Giải đáp vướng mắc', 'Hòm thư điện tử', '31/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
-                    ['HD-BTNN-2026-003', 'Cục Thi hành án dân sự Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Họp liên ngành', '25/07/2026', 'Nguyễn Văn Cán Bộ', 'Lưu nháp']
+                    ['HD-BTNN-2026-003', 'Cục THADS TP. Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Họp liên ngành', '25/07/2026', 'Nguyễn Văn Cán Bộ', 'Lưu nháp'],
+                    ['HD-BTNN-2026-004', 'Sở Tư pháp TP. Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Văn bản', '22/07/2026', 'Lê Văn Nam', 'Hoàn thành'],
+                    ['HD-BTNN-2026-005', 'UBND tỉnh Đồng Nai', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '18/07/2026', 'Trần Thị Minh', 'Đang xử lý'],
+                    ['HD-BTNN-2026-006', 'Sở Tư pháp tỉnh Quảng Ninh', 'Hướng dẫn nghiệp vụ', 'Trực tiếp', '15/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
+                    ['HD-BTNN-2026-007', 'TAND tỉnh Nghệ An', 'Giải đáp vướng mắc', 'Văn bản', '10/07/2026', 'Lê Văn Nam', 'Đang xử lý'],
+                    ['HD-BTNN-2026-008', 'UBND TP. Đà Nẵng', 'Hướng dẫn nghiệp vụ', 'Hòm thư điện tử', '05/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
+                    ['HD-BTNN-2026-009', 'Sở Tư pháp tỉnh Thanh Hóa', 'Giải đáp vướng mắc', 'Họp liên ngành', '28/06/2026', 'Nguyễn Văn Cán Bộ', 'Lưu nháp'],
+                    ['HD-BTNN-2026-010', 'Cục THADS TP. Cần Thơ', 'Hướng dẫn nghiệp vụ', 'Văn bản', '20/06/2026', 'Lê Văn Nam', 'Hoàn thành'],
+                    ['HD-BTNN-2026-011', 'Sở Tư pháp tỉnh Bình Dương', 'Giải đáp vướng mắc', 'Trực tiếp', '15/06/2026', 'Trần Thị Minh', 'Đang xử lý'],
+                    ['HD-BTNN-2026-012', 'UBND tỉnh Bắc Ninh', 'Hướng dẫn nghiệp vụ', 'Cổng thông tin điện tử', '10/06/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
+                    ['HD-BTNN-2026-013', 'Sở Tư pháp tỉnh Thừa Thiên Huế', 'Giải đáp vướng mắc', 'Văn bản', '02/06/2026', 'Lê Văn Nam', 'Hoàn thành'],
+                    ['HD-BTNN-2026-014', 'Ông Lê Văn Hoàng (Công dân)', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '28/05/2026', 'Trần Thị Minh', 'Đang xử lý']
                 ]
             },
             theo_doi_don_doc: {
@@ -587,9 +686,20 @@
                 mainContentLabel: 'Nội dung cần theo dõi/đôn đốc',
                 resultLabel: 'Nội dung phản hồi/kết quả thực hiện',
                 rows: [
-                    ['TDDD-BTNN-2026-001', 'Sở Tư pháp Hà Nội', 'Giải quyết yêu cầu bồi thường', '15/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Giải quyết yêu cầu bồi thường', '15/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Xác định và thực hiện trách nhiệm hoàn trả', '20/08/2026', 'Trần Thị Minh', 'Đã gửi'],
-                    ['TDDD-BTNN-2026-003', 'Sở Tư pháp Hải Phòng', 'Quản lý nhà nước về công tác BTNN', '—', 'Nguyễn Văn Cán Bộ', 'Lưu nháp']
+                    ['TDDD-BTNN-2026-003', 'Sở Tư pháp TP. Hải Phòng', 'Quản lý nhà nước về công tác BTNN', '—', 'Nguyễn Văn Cán Bộ', 'Lưu nháp'],
+                    ['TDDD-BTNN-2026-004', 'UBND TP. Hồ Chí Minh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', '25/08/2026', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-005', 'Sở Tư pháp tỉnh Đồng Nai', 'Phục hồi danh dự', '30/08/2026', 'Trần Thị Minh', 'Hoàn thành'],
+                    ['TDDD-BTNN-2026-006', 'TAND tỉnh Bình Thuận', 'Giải quyết yêu cầu bồi thường', '10/09/2026', 'Nguyễn Văn Cán Bộ', 'Đã gửi'],
+                    ['TDDD-BTNN-2026-007', 'UBND tỉnh Bà Rịa - Vũng Tàu', 'Xử lý kỷ luật', '15/09/2026', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-008', 'Sở Tư pháp tỉnh Nghệ An', 'Xác định và thực hiện trách nhiệm hoàn trả', '05/08/2026', 'Trần Thị Minh', 'Hoàn thành'],
+                    ['TDDD-BTNN-2026-009', 'Cục THADS tỉnh Thanh Hóa', 'Giải quyết yêu cầu bồi thường', '18/09/2026', 'Nguyễn Văn Cán Bộ', 'Đã gửi'],
+                    ['TDDD-BTNN-2026-010', 'UBND TP. Đà Nẵng', 'Quản lý nhà nước về công tác BTNN', '—', 'Lê Văn Nam', 'Lưu nháp'],
+                    ['TDDD-BTNN-2026-011', 'Sở Tư pháp tỉnh Quảng Nam', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', '22/09/2026', 'Trần Thị Minh', 'Đang theo dõi phản hồi'],
+                    ['TDDD-BTNN-2026-012', 'UBND tỉnh Thái Bình', 'Giải quyết yêu cầu bồi thường', '12/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
+                    ['TDDD-BTNN-2026-013', 'Sở Tư pháp tỉnh Khánh Hòa', 'Phục hồi danh dự', '28/09/2026', 'Lê Văn Nam', 'Đã gửi'],
+                    ['TDDD-BTNN-2026-014', 'UBND tỉnh Phú Thọ', 'Xác định và thực hiện trách nhiệm hoàn trả', '05/10/2026', 'Trần Thị Minh', 'Đang theo dõi phản hồi']
                 ]
             },
             kiem_tra: {
@@ -624,9 +734,20 @@
                 mainContentLabel: 'Phạm vi kiểm tra',
                 resultLabel: 'Biên bản/Kết luận/Kết quả xử lý sau kiểm tra',
                 rows: [
-                    ['KT-BTNN-2026-001', 'Sở Tư pháp Hà Nội', 'Kiểm tra định kỳ', '12/08/2026 - 14/08/2026', 'Lê Minh Châu', 'Lưu nháp'],
+                    ['KT-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Kiểm tra định kỳ', '12/08/2026 - 14/08/2026', 'Lê Minh Châu', 'Lưu nháp'],
                     ['KT-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Kiểm tra đột xuất', '20/08/2026 - 21/08/2026', 'Nguyễn Văn Bình', 'Đang thực hiện kiểm tra'],
-                    ['KT-BTNN-2026-003', 'Sở Tư pháp Hải Phòng', 'Kiểm tra định kỳ', '05/09/2026 - 06/09/2026', 'Phạm Thị Hoa', 'Theo dõi xử lý sau kiểm tra']
+                    ['KT-BTNN-2026-003', 'Sở Tư pháp TP. Hải Phòng', 'Kiểm tra định kỳ', '05/09/2026 - 06/09/2026', 'Phạm Thị Hoa', 'Theo dõi xử lý sau kiểm tra'],
+                    ['KT-BTNN-2026-004', 'UBND tỉnh Đồng Nai', 'Kiểm tra đột xuất', '15/07/2026 - 16/07/2026', 'Lê Minh Châu', 'Hoàn thành'],
+                    ['KT-BTNN-2026-005', 'Sở Tư pháp TP. Hồ Chí Minh', 'Kiểm tra định kỳ', '10/09/2026 - 12/09/2026', 'Nguyễn Văn Bình', 'Đang thực hiện kiểm tra'],
+                    ['KT-BTNN-2026-006', 'UBND tỉnh Quảng Ninh', 'Kiểm tra định kỳ', '18/09/2026 - 19/09/2026', 'Phạm Thị Hoa', 'Theo dõi xử lý sau kiểm tra'],
+                    ['KT-BTNN-2026-007', 'Sở Tư pháp tỉnh Nghệ An', 'Kiểm tra đột xuất', '25/09/2026 - 26/09/2026', 'Lê Minh Châu', 'Lưu nháp'],
+                    ['KT-BTNN-2026-008', 'UBND TP. Cần Thơ', 'Kiểm tra định kỳ', '01/07/2026 - 03/07/2026', 'Nguyễn Văn Bình', 'Hoàn thành'],
+                    ['KT-BTNN-2026-009', 'Sở Tư pháp tỉnh Bình Dương', 'Kiểm tra định kỳ', '02/10/2026 - 04/10/2026', 'Phạm Thị Hoa', 'Đang thực hiện kiểm tra'],
+                    ['KT-BTNN-2026-010', 'UBND tỉnh Thanh Hóa', 'Kiểm tra đột xuất', '08/10/2026 - 09/10/2026', 'Lê Minh Châu', 'Theo dõi xử lý sau kiểm tra'],
+                    ['KT-BTNN-2026-011', 'Sở Tư pháp TP. Đà Nẵng', 'Kiểm tra định kỳ', '15/06/2026 - 17/06/2026', 'Nguyễn Văn Bình', 'Hoàn thành'],
+                    ['KT-BTNN-2026-012', 'UBND tỉnh Bắc Giang', 'Kiểm tra định kỳ', '15/10/2026 - 16/10/2026', 'Phạm Thị Hoa', 'Lưu nháp'],
+                    ['KT-BTNN-2026-013', 'Sở Tư pháp tỉnh Vĩnh Phúc', 'Kiểm tra đột xuất', '22/10/2026 - 23/10/2026', 'Lê Minh Châu', 'Đang thực hiện kiểm tra'],
+                    ['KT-BTNN-2026-014', 'UBND tỉnh Thái Nguyên', 'Kiểm tra định kỳ', '20/05/2026 - 22/05/2026', 'Phạm Thị Hoa', 'Hoàn thành']
                 ]
             },
             khieu_nai: {
@@ -662,8 +783,19 @@
                 resultLabel: 'Kết quả xác minh/xử lý và biện pháp xử lý/khắc phục',
                 rows: [
                     ['KNTC-BTNN-2026-001', 'Ông Nguyễn Văn D', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-012', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-002', 'Sở Tư pháp Hà Nội', 'Kiến nghị', 'Kiểm tra công tác BTNN', '—', '01/08/2026', 'Trần Thị Minh', 'Đang xử lý'],
-                    ['KNTC-BTNN-2026-003', 'Công dân phản ánh qua Cổng TTĐT', 'Phản ánh', 'Đôn đốc công tác BTNN', 'BT-2026-021', '28/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành']
+                    ['KNTC-BTNN-2026-002', 'Sở Tư pháp TP. Hà Nội', 'Kiến nghị', 'Kiểm tra công tác BTNN', '—', '01/08/2026', 'Trần Thị Minh', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-003', 'Công dân phản ánh qua Cổng TTĐT', 'Phản ánh', 'Đôn đốc công tác BTNN', 'BT-2026-021', '28/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-004', 'Bà Lê Thị Hương', 'Tố cáo', 'Xử lý kỷ luật', 'BT-2026-008', '25/07/2026', 'Lê Văn Nam', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-005', 'Công ty TNHH Hưng Phát', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-015', '20/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-006', 'Ông Vũ Đình Trọng', 'Phản ánh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-025', '15/07/2026', 'Nguyễn Văn Cán Bộ', 'Lưu nháp'],
+                    ['KNTC-BTNN-2026-007', 'Sở Tư pháp tỉnh Bình Thuận', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '10/07/2026', 'Lê Văn Nam', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-008', 'Bà Phạm Thị Mai', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-030', '05/07/2026', 'Trần Thị Minh', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-009', 'UBND huyện Đan Phượng', 'Xử lý vi phạm', 'Giải quyết yêu cầu bồi thường', 'BT-2026-018', '28/06/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-010', 'Ông Đỗ Quốc Cường', 'Tố cáo', 'Phục hồi danh dự', 'BT-2026-022', '22/06/2026', 'Lê Văn Nam', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-011', 'Công ty CP Đầu tư Vĩnh An', 'Khiếu nại', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-019', '18/06/2026', 'Trần Thị Minh', 'Lưu nháp'],
+                    ['KNTC-BTNN-2026-012', 'Công dân gửi đơn qua Bưu điện', 'Phản ánh', 'Giải quyết yêu cầu bồi thường', 'BT-2026-014', '12/06/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
+                    ['KNTC-BTNN-2026-013', 'Ông Hoàng Minh Tuấn', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-027', '05/06/2026', 'Lê Văn Nam', 'Đang xử lý'],
+                    ['KNTC-BTNN-2026-014', 'Bà Nguyễn Thu Trang', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '01/06/2026', 'Trần Thị Minh', 'Hoàn thành']
                 ]
             }
         };
@@ -722,6 +854,60 @@
             `;
         }
 
+        let currentPage = 1;
+        let pageSize = 10;
+
+        function changePageSize(val) {
+            pageSize = parseInt(val, 10);
+            currentPage = 1;
+            renderTable();
+        }
+
+        function goPage(page) {
+            const total = parseInt(document.getElementById('totalCount')?.innerText) || 0;
+            const maxPages = Math.ceil(total / pageSize) || 1;
+            if (page === 'last') {
+                currentPage = maxPages;
+            } else {
+                currentPage = Math.max(1, Math.min(page, maxPages));
+            }
+            renderTable();
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        }
+
+        function nextPage() {
+            const total = parseInt(document.getElementById('totalCount')?.innerText) || 0;
+            const maxPages = Math.ceil(total / pageSize) || 1;
+            if (currentPage < maxPages) {
+                currentPage++;
+                renderTable();
+            }
+        }
+
+        function renderPaginationPages(maxPages) {
+            const container = document.getElementById('paginationPages');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const firstPage = `<span class="page-item ${currentPage === 1 ? 'disabled' : ''}" onclick="goPage(1)" title="Đầu">&verbar;&lt;&lt;</span>`;
+            const prevPage = `<span class="page-item ${currentPage === 1 ? 'disabled' : ''}" onclick="prevPage()" title="Trước">&lt;</span>`;
+            container.innerHTML += firstPage + prevPage;
+
+            for (let i = 1; i <= maxPages; i++) {
+                container.innerHTML += `<span class="page-item ${currentPage === i ? 'active' : ''}" onclick="goPage(${i})">${i}</span>`;
+            }
+
+            const nextPage = `<span class="page-item ${currentPage === maxPages ? 'disabled' : ''}" onclick="nextPage()" title="Sau">&gt;</span>`;
+            const lastPage = `<span class="page-item ${currentPage === maxPages ? 'disabled' : ''}" onclick="goPage('last')" title="Cuối">&gt;&gt;&verbar;</span>`;
+            container.innerHTML += nextPage + lastPage;
+        }
+
         function renderTable() {
             const head = document.getElementById('tableHead');
             const body = document.getElementById('tableBody');
@@ -731,7 +917,7 @@
             const keyword = (document.getElementById('filter_keyword')?.value || '').trim().toLowerCase();
             const agency = (document.getElementById('filter_agency')?.value || '').trim().toLowerCase();
             const status = document.getElementById('filter_status')?.value || '';
-            let rows = workingRows.filter(row => {
+            let filtered = workingRows.filter(row => {
                 const joined = row.join(' ').toLowerCase();
                 if (keyword && !joined.includes(keyword)) return false;
                 if (agency && !joined.includes(agency)) return false;
@@ -739,9 +925,31 @@
                 return true;
             });
 
-            body.innerHTML = rows.map((row, index) => `
+            const total = filtered.length;
+            const maxPages = Math.ceil(total / pageSize) || 1;
+            if (currentPage > maxPages) currentPage = maxPages;
+
+            const totalCountEl = document.getElementById('totalCount');
+            const currentRangeEl = document.getElementById('currentRange');
+
+            if (total === 0) {
+                body.innerHTML = `<tr><td colspan="${currentConfig.columns.length + 1}" style="text-align:center; color:var(--text-muted); padding:26px;">Không có bản ghi phù hợp.</td></tr>`;
+                if (totalCountEl) totalCountEl.innerText = '0';
+                if (currentRangeEl) currentRangeEl.innerText = '0-0';
+                renderPaginationPages(1);
+                return;
+            }
+
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, total);
+            if (totalCountEl) totalCountEl.innerText = total;
+            if (currentRangeEl) currentRangeEl.innerText = `${startIdx + 1}-${endIdx}`;
+
+            const pageRows = filtered.slice(startIdx, endIdx);
+
+            body.innerHTML = pageRows.map((row, index) => `
                 <tr onclick="openForm('view', '${row[0]}')">
-                    <td style="text-align:center;">${index + 1}</td>
+                    <td style="text-align:center;">${startIdx + index + 1}</td>
                     ${row.map((cell, cellIndex) => {
                         const isStatus = cellIndex === row.length - 1;
                         const isCode = cellIndex === 0;
@@ -751,10 +959,7 @@
                 </tr>
             `).join('');
 
-            if (rows.length === 0) {
-                body.innerHTML = `<tr><td colspan="${currentConfig.columns.length + 1}" style="text-align:center; color:var(--text-muted); padding:26px;">Không có bản ghi phù hợp.</td></tr>`;
-            }
-            document.getElementById('resultCount').innerText = `Hiển thị ${rows.length} bản ghi`;
+            renderPaginationPages(maxPages);
         }
 
         function renderDocuments() {
@@ -860,11 +1065,13 @@
                 const el = document.getElementById(`filter_${id}`);
                 if (el) el.value = '';
             });
+            currentPage = 1;
             renderTable();
         }
 
         function switchTab(tab) {
             currentTab = tab;
+            currentPage = 1;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
             renderTable();
         }
@@ -890,6 +1097,7 @@
                 tabs.innerHTML = currentConfig.tabs.map(tab => `<button class="tab-btn ${tab === currentTab ? 'active' : ''}" data-tab="${tab}" onclick="switchTab('${tab}')">${tab}</button>`).join('');
             }
 
+            currentPage = 1;
             renderTable();
         }
 
