@@ -412,3 +412,161 @@ Bảo đảm có đủ bản ghi minh họa cho từng trạng thái để kiể
 - Trường `Tổng số tiền bồi thường bằng chữ` đã bổ sung trên giao diện nhưng chưa có trong bảng mô tả thông tin của SRS.
 - Danh mục thông báo còn 14 mã `MSG-*-BTNN-KP-*` được tham chiếu nhưng chưa định nghĩa.
 - Liên kết `#433116-phu-luc-mau-email-he-thong` trong tài liệu Giải quyết yêu cầu bồi thường đang trỏ tới mục không tồn tại.
+
+---
+
+# 9. Xây dựng Module Quản lý nội dung (CMS) thuộc Quản trị hệ thống
+
+**Mục tiêu:** Toàn bộ nội dung hiển thị trên Website khách hàng do Quản trị viên chủ động cấu hình, không phải sửa mã nguồn. Phạm vi phủ đủ 10 mã chức năng `520` – `529` trong tài liệu nghiệm thu.
+
+## 9.1. Hiện trạng khảo sát Website khách hàng
+
+Đã rà soát `HomePage_KH.html`, `ho_tro_khach_hang_main.html`, `chi_tiet_faq.html`, `chi_tiet_van_ban.html`, `dang_nhap_khach_hang.html`, `style.css`. Kết quả:
+
+| Nhóm nội dung | Hiện trạng | Số mục |
+| :--- | :--- | :--- |
+| Đầu trang: logo, tên cơ quan, khẩu hiệu, đường dây nóng, email | Hard-code | 6 vùng |
+| Menu chính | Hard-code | 4 mục + 1 dropdown |
+| Menu Liên kết (link ngoài) | Hard-code | 2 link |
+| Banner/slider trang chủ | Hard-code, ảnh trỏ host ngoài | 4 slide + 4 khối dự phòng |
+| Khối nghiệp vụ trang chủ (Tra cứu/Đăng ký/Hỗ trợ) | Hard-code rich text | 3 khối |
+| Thông tin liên hệ, Trung tâm đăng ký | Hard-code, **lặp ở 5 vị trí** | 4 nhóm + 3 trung tâm |
+| Văn bản quy phạm pháp luật | Hard-code trong JS, **2 schema lệch nhau** | 10 văn bản, 17 tệp, 3 media |
+| Câu hỏi thường gặp (FAQ) | Hard-code trong JS, **2 schema lệch nhau** | 10 câu hỏi |
+| Chân trang: 3 cột, bản quyền, thông tin pháp lý | Hard-code | 3 link + 2 đoạn |
+| Nhận diện thương hiệu (màu, font) | Biến CSS khai báo lại trong từng file | 5 file |
+
+**Bốn rủi ro phải xử lý trước khi làm CMS:**
+
+1. **Dữ liệu liên hệ bị nhân bản 5 nơi**, địa chỉ trụ sở có 2 phiên bản mâu thuẫn, tên cơ quan chủ quản có 3 biến thể khác nhau. Phải quy về một nguồn dữ liệu duy nhất.
+2. **Bộ 10 FAQ và bộ 10 văn bản mỗi bộ tồn tại ở 2 file với schema khác nhau** (bản chi tiết có thêm `answer`, `signer`, `body`). Phải hợp nhất thành một schema đầy đủ.
+3. **`style.css` không được nạp bởi 5 file chính**, mỗi file tự khai báo lại khối `:root`. Muốn cấu hình màu/font/logo toàn site thì phải gom về một nguồn CSS dùng chung trước.
+4. Ảnh banner đang trỏ sang host ngoài `dktructuyen.moj.gov.vn`. Cần thư viện media nội bộ.
+
+## 9.2. Phương án kiến trúc: tách 2 lớp
+
+Không xây mỗi màn hình quản trị cho một vùng nội dung. Thay vào đó tách thành 2 lớp để mở rộng được về sau:
+
+- **Lớp 1 — Khối nội dung (Content Block):** đơn vị nội dung nhỏ nhất, dùng lại được ở nhiều nơi. Mỗi khối có một `Loại khối` quy định bộ trường nhập liệu.
+- **Lớp 2 — Trang nội dung (Content Page) và Vùng hiển thị (Zone):** khai báo trang nào có những vùng nào, mỗi vùng gắn khối nội dung nào, theo thứ tự nào.
+
+Nhờ tách lớp, khối *Thông tin liên hệ* chỉ nhập một lần nhưng hiển thị được đồng thời ở Trang hỗ trợ, Chân trang và Đầu trang — giải quyết đúng vấn đề nhân bản 5 nơi nêu ở mục 9.1.
+
+**Danh mục Loại khối đề xuất:**
+
+| Mã loại | Tên loại khối | Bộ trường chính |
+| :--- | :--- | :--- |
+| `BANNER` | Biểu ngữ / Slider | Ảnh, Tiêu đề, Tiêu đề phụ, Mô tả, Link đích, Thứ tự, Hiệu lực từ/đến |
+| `RICHTEXT` | Khối văn bản | Tiêu đề, Nội dung (trình soạn thảo), Ảnh minh họa |
+| `LINKLIST` | Danh sách liên kết | Danh sách: Icon, Nhãn, URL, Mở tab mới, Thứ tự |
+| `CONTACT` | Thông tin liên hệ | Tên đơn vị, Địa chỉ, Điện thoại theo bộ phận, Fax, Email |
+| `FAQ` | Câu hỏi thường gặp | Lĩnh vực, Tiêu đề, Tóm tắt, Nội dung câu hỏi, Nội dung trả lời |
+| `DOCUMENT` | Văn bản quy phạm pháp luật | Số hiệu, Loại VB, Cơ quan ban hành, Ngày ban hành, Ngày hiệu lực, Trạng thái hiệu lực, Lĩnh vực, Người ký, Chức danh, Trích yếu, Toàn văn, Tệp đính kèm, Media hướng dẫn |
+| `NOTICE` | Thông báo nổi bật | Nội dung, Kiểu hiển thị, Hiệu lực từ/đến |
+| `FILE` | Biểu mẫu tải về | Tên biểu mẫu, Tệp, Dung lượng, Năm cập nhật, Mô tả |
+
+**Danh mục Trang và Vùng hiển thị đề xuất:**
+
+| Trang | Các vùng hiển thị |
+| :--- | :--- |
+| Dùng chung toàn site | Đầu trang, Menu chính, Menu Liên kết, Chân trang |
+| Trang chủ | Slider, Lời chào mừng, Khối nghiệp vụ, Thông báo đường dây nóng |
+| Hỗ trợ khách hàng | Thông tin liên hệ, Trung tâm đăng ký, Văn bản QPPL, FAQ, Khối kêu gọi tạo yêu cầu |
+| Đăng nhập | Banner cơ quan, Khẩu hiệu, Thẻ phương thức đăng nhập |
+| Hướng dẫn thanh toán, thu phí | Nội dung hướng dẫn, Liên hệ thanh toán, Biểu phí |
+
+## 9.3. Quy trình biên tập và duyệt
+
+Bám đúng 3 chức năng `520` Tạo / `521` Biên tập / `522` Duyệt (áp dụng cho khối nội dung) và `523` / `524` / `525` (áp dụng cho trang nội dung):
+
+`Lưu nháp` → `Chờ duyệt` → `Đã xuất bản`, kèm nhánh `Bị từ chối` và `Ngừng xuất bản`.
+
+- Chỉ bản ghi ở trạng thái `Đã xuất bản` mới hiển thị ra Website khách hàng.
+- Khi biên tập lại nội dung đang xuất bản, hệ thống tạo **phiên bản nháp mới**, bản đang chạy giữ nguyên cho tới khi phiên bản mới được duyệt.
+- Lưu vết phiên bản, cho phép **xem trước** và **khôi phục về phiên bản trước**.
+- Hỗ trợ **hẹn giờ xuất bản** qua cặp trường Hiệu lực từ/đến (phục vụ banner theo đợt).
+
+## 9.4. Danh sách màn hình đề xuất
+
+Menu `Quản trị hệ thống → Quản lý nội dung (CMS)` hiện đang trỏ `temp_placeholder.html`. Cây menu quản trị chỉ hỗ trợ 2 cấp, nên gom toàn bộ CMS vào **một màn hình có thanh tab**, mỗi tab là một nghiệp vụ.
+
+| Tab | Màn hình | Mã chức năng phủ |
+| :--- | :--- | :--- |
+| Khối nội dung | MH01 Danh sách · MH02 Tạo/Biên tập · MH03 Xem chi tiết & Duyệt | 520, 521, 522 |
+| Trang nội dung | MH04 Danh sách · MH05 Biên tập bố cục trang · MH06 Xem chi tiết & Duyệt | 523, 524, 525 |
+| Thành phần trang tin | MH07 Cấu hình thành phần của trang tin | 526 |
+| Biểu ngữ, Đầu trang, Chân trang | MH08 Quản lý Banner/Header/Footer | 527 |
+| Thông tin liên kết | MH09 Quản lý danh sách liên kết | 528 |
+| Hỗ trợ người dùng | MH10 Quản lý nội dung hỗ trợ (FAQ, Văn bản, Liên hệ, Hướng dẫn) | 529 |
+| Thư viện media | MH11 Quản lý ảnh, video, tệp biểu mẫu | phục vụ 520, 523, 527 |
+
+**MH01 — Danh sách khối nội dung.** Bộ lọc: Mã khối, Tên khối, Loại khối, Trang sử dụng, Trạng thái, Người cập nhật, Khoảng ngày cập nhật. Lưới: STT · Mã khối · Tên khối · Loại khối · Vị trí đang hiển thị · Phiên bản · Trạng thái · Người cập nhật · Ngày cập nhật · Thao tác. Thao tác: Xem chi tiết (click dòng) · Cập nhật · Xóa · Trình duyệt · Nhân bản.
+
+**MH02 — Tạo/Biên tập khối nội dung.** Chọn `Loại khối` trước, hệ thống tự đổi bộ trường nhập liệu bên dưới. Có trình soạn thảo rich text cho loại `RICHTEXT`, `FAQ`, `DOCUMENT`; có nút `Đính kèm tệp` (mã 520) và nút `Xem trước` hiển thị đúng như trên Website khách hàng.
+
+**MH03 — Xem chi tiết & Duyệt khối nội dung.** Hiển thị song song *Nội dung đang xuất bản* và *Nội dung chờ duyệt* để người duyệt đối chiếu. Thao tác `Duyệt` / `Từ chối` kèm ý kiến.
+
+**MH05 — Biên tập bố cục trang.** Cột trái là danh sách Vùng hiển thị của trang, cột phải là kho khối nội dung; gắn khối vào vùng, sắp thứ tự, bật/tắt hiển thị. Có `Xem trước toàn trang`.
+
+**MH07 — Cấu hình thành phần của trang tin.** Bật/tắt và đặt thứ tự các thành phần: Slider, Lời chào, Khối nghiệp vụ, Thông báo, Menu, Chân trang. Kèm cấu hình nhận diện: Logo, Màu chủ đạo, Font, Cỡ chữ.
+
+**MH10 — Quản lý nội dung hỗ trợ người dùng.** Gom 4 nhóm con: `Câu hỏi thường gặp` · `Văn bản quy phạm pháp luật` · `Thông tin liên hệ và Trung tâm đăng ký` · `Hướng dẫn thanh toán, thu phí, sử dụng CSDL`. Mỗi nhóm là một lưới theo mẫu MH01.
+
+## 9.5. Thứ tự triển khai đề xuất
+
+1. Dựng khung màn hình CMS với 7 tab, thay `temp_placeholder.html` trong menu Quản trị hệ thống.
+2. Làm trước tab **Hỗ trợ người dùng** (mã 529) vì đây là nhóm nội dung nhiều nhất và đang bị nhân bản nặng nhất.
+3. Làm tab **Biểu ngữ, Đầu trang, Chân trang** (mã 527) và **Thông tin liên kết** (mã 528).
+4. Làm tab **Khối nội dung** và **Trang nội dung** kèm quy trình duyệt (mã 520 – 525).
+5. Làm tab **Thành phần trang tin** (mã 526) và **Thư viện media**.
+6. Sau cùng mới đấu nối Website khách hàng đọc dữ liệu từ CMS.
+
+## 9.6. Các quyết định đã chốt
+
+| # | Nội dung | Quyết định |
+| :--- | :--- | :--- |
+| 1 | Phạm vi lần này | **Chỉ dựng giao diện quản trị và dữ liệu giả lập.** Chưa đấu nối Website khách hàng đọc dữ liệu động từ CMS. |
+| 2 | Quy trình duyệt | **Có bước `Chờ duyệt`, tách riêng người biên tập và người duyệt.** Việc gán quyền Biên tập / Duyệt thực hiện tại Module Quản lý vai trò, không làm trong CMS. |
+| 3 | Đa ngôn ngữ | **Có.** Mọi trường nội dung hiển thị ra Website khách hàng phải nhập được cả **Tiếng Việt** và **Tiếng Anh**. |
+| 4 | Dữ liệu trùng lặp | **Hợp nhất.** Thông tin liên hệ quy về một khối dùng chung; hợp nhất 2 schema FAQ và 2 schema Văn bản thành một schema đầy đủ. |
+| 5 | Menu chính và Sidebar nghiệp vụ | **Không cấu hình động** — hiển thị theo phân quyền. Nhưng **cho phép cấu hình bật/tắt hiển thị** từng thành phần như `Hỗ trợ khách hàng`, `Liên kết`. |
+| 6 | Cấu hình nhận diện (logo, màu, font) | **Không làm trong lần này.** Do đó chưa cần gom `:root` của 5 file về một nguồn CSS dùng chung. |
+
+## 9.7. Điều chỉnh phương án theo các quyết định trên
+
+**Đa ngôn ngữ (theo quyết định 3).** Mỗi màn hình biên tập bố trí **tab `Tiếng Việt` / `Tiếng Anh`** ngay trong khối nhập liệu. Các trường mang nội dung hiển thị (Tiêu đề, Mô tả, Nội dung, Nhãn liên kết, Trích yếu, Câu hỏi, Câu trả lời) tách thành 2 bản. Các trường mang tính dữ liệu (Số hiệu văn bản, Ngày ban hành, Điện thoại, Email, URL, Thứ tự) chỉ nhập một lần, dùng chung cho cả 2 ngôn ngữ. Lưới danh sách bổ sung cột `Ngôn ngữ đã nhập` dạng badge `VI` / `EN` để biết bản ghi nào còn thiếu bản dịch.
+
+**Phân vai biên tập và duyệt (theo quyết định 2).** Màn hình CMS có ô **giả lập vai trò** gồm `Cán bộ biên tập` và `Cán bộ duyệt nội dung`, tương tự cách đã làm ở Module Quyết định giải quyết bồi thường:
+
+| Vai trò | Thao tác được hiển thị |
+| :--- | :--- |
+| Cán bộ biên tập | `Thêm mới`, `Cập nhật`, `Xóa`, `Trình duyệt`, `Nhân bản`, `Xem trước` |
+| Cán bộ duyệt nội dung | `Duyệt`, `Từ chối`, `Ngừng xuất bản`, `Xem trước` |
+
+Thao tác không thỏa điều kiện thì **ẩn hoàn toàn**, không hiển thị dạng mờ.
+
+**Bỏ cấu hình nhận diện (theo quyết định 6).** MH07 thu hẹp lại, chỉ còn bật/tắt và sắp thứ tự các thành phần của trang tin, bỏ phần Logo / Màu chủ đạo / Font / Cỡ chữ.
+
+**Cấu hình ẩn hiện thành phần (theo quyết định 5).** MH07 quản lý bảng thành phần với các trường: `Tên thành phần` · `Trang áp dụng` · `Hiển thị` (bật/tắt) · `Thứ tự` · `Ghi chú`. Danh sách thành phần giả lập:
+
+- Trang chủ: `Slider biểu ngữ`, `Lời chào mừng`, `Khối nghiệp vụ Tra cứu`, `Khối nghiệp vụ Đăng ký`, `Khối nghiệp vụ Hỗ trợ`, `Thông báo đường dây nóng`
+- Dùng chung: `Menu Hỗ trợ khách hàng`, `Menu Liên kết`, `Thanh đường dây nóng đầu trang`, `Chuyển ngôn ngữ`, `Chân trang - Liên kết hữu ích`, `Chân trang - Thông tin pháp lý`
+
+**Loại khối `MENU` bị loại bỏ** khỏi danh mục Loại khối tại mục 9.2, vì menu chính và sidebar không cấu hình động. Danh mục còn lại 8 loại khối.
+
+## 9.8. Kết quả thực thi
+
+| Hạng mục | Trạng thái |
+| :--- | :--- |
+| Dựng màn hình `Website_Quan_tri/quan_ly_noi_dung_cms.html` với 7 tab nghiệp vụ | Đã thực hiện |
+| Thay `temp_placeholder.html` tại menu `Quản trị hệ thống → Quản lý nội dung (CMS)` | Đã thực hiện |
+| Giả lập 2 vai trò Cán bộ biên tập / Cán bộ duyệt nội dung, thao tác không thỏa điều kiện thì ẩn hoàn toàn | Đã thực hiện |
+| Quy trình `Lưu nháp → Chờ duyệt → Đã xuất bản`, kèm `Bị từ chối` và `Ngừng xuất bản` | Đã thực hiện |
+| Popup Duyệt nội dung đối chiếu song song bản đang xuất bản và bản chờ duyệt | Đã thực hiện |
+| Nhập song ngữ Tiếng Việt / Tiếng Anh, lưới hiển thị badge `VI` / `EN` để biết bản ghi còn thiếu bản dịch | Đã thực hiện |
+| Hợp nhất dữ liệu trùng lặp: thông tin liên hệ, FAQ, Văn bản QPPL quy về một schema chung | Đã thực hiện |
+| Cấu hình bật/tắt hiển thị 12 thành phần trang tin, gồm `Menu Hỗ trợ khách hàng` và `Menu Liên kết` | Đã thực hiện |
+| Xem trước nội dung và xem trước bố cục trang, mở tại tab trình duyệt mới | Đã thực hiện |
+| Dữ liệu giả lập: 13 khối nội dung đủ 5 trạng thái, 4 trang, 12 thành phần, 3 liên kết, 6 tệp media | Đã thực hiện |
+
+**Ghi chú phạm vi:** Đúng theo quyết định tại mục 9.6, lần này **chưa đấu nối Website khách hàng đọc dữ liệu động từ CMS** và **chưa làm cấu hình nhận diện** (logo, màu, font). Website khách hàng vẫn hiển thị nội dung tĩnh như hiện trạng.
