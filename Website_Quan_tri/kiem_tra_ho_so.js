@@ -1705,7 +1705,7 @@ function renderFilterPanel() {
                     </div>
                 </div>
             </div>
-            <div style="text-align: right; margin-top: 15px;">
+            <div style="text-align: right; margin-top: 10px;">
                 <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
@@ -1824,7 +1824,7 @@ function renderFilterPanel() {
                     </div>
                 </div>
             </div>
-            <div style="text-align: right; margin-top: 15px;">
+            <div style="text-align: right; margin-top: 10px;">
                 <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
@@ -4230,3 +4230,10 @@ closeDetail = function () {
     UC028_BASE.closeDetail();
     syncOfficerWorkTabs();
 };
+
+// Thu gọn / mở rộng khối Bộ lọc tìm kiếm để nhường diện tích cho lưới danh sách
+function toggleFilterSection() {
+    const sec = document.getElementById('filter-section');
+    if (!sec) return;
+    sec.classList.toggle('collapsed');
+}

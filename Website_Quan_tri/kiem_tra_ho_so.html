@@ -825,6 +825,110 @@
         .custom-table tbody tr:hover {
             background-color: #F0F9FF !important;
         }
+
+        /* ===== Thu gọn khối Bộ lọc tìm kiếm để nhường diện tích cho lưới danh sách ===== */
+        #filter-section {
+            padding: 12px 16px;
+            margin-bottom: 12px;
+        }
+
+        #filter-section .section-title {
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #filter-section .section-title .toggle-caret {
+            transition: transform .18s ease;
+            font-size: 12px;
+        }
+
+        #filter-section.collapsed .section-title {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        #filter-section.collapsed .section-title .toggle-caret {
+            transform: rotate(-90deg);
+        }
+
+        #filter-section.collapsed #filter-card-container {
+            display: none;
+        }
+
+        /* 5 cột trên màn rộng để giảm số hàng của bộ lọc */
+        #filter-card-container .grid-4-cols {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px 14px;
+        }
+
+        @media (max-width: 1500px) {
+            #filter-card-container .grid-4-cols { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 1150px) {
+            #filter-card-container .grid-4-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 820px) {
+            #filter-card-container .grid-4-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        #filter-card-container .form-group {
+            margin-bottom: 0;
+        }
+
+        #filter-card-container .form-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        #filter-card-container .form-control,
+        #filter-card-container .form-select {
+            height: 32px;
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+
+        /* Hàng nút Tìm kiếm / Xóa bộ lọc sát vào lưới bộ lọc */
+        #filter-card-container > div[style*="text-align: right"] {
+            margin-top: 10px !important;
+        }
+
+        #filter-card-container .btn {
+            height: 32px;
+            padding: 0 14px;
+            font-size: 13px;
+        }
+
+        /* Thu gọn thanh tab và tiêu đề trang để lưới danh sách được nhiều diện tích hơn */
+        .nav-tabs {
+            margin-bottom: 12px;
+        }
+
+        .nav-tab {
+            padding: 10px 16px;
+            font-size: 13.5px;
+        }
+
+        .page-heading {
+            margin-bottom: 12px;
+        }
+
+        .page-heading h2 {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .page-heading p {
+            font-size: 12.5px;
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -850,8 +954,8 @@
             </div>
 
             <!-- Bộ lọc tìm kiếm -->
-            <div class="card-section">
-                <div class="section-title"><span><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</span></div>
+            <div class="card-section" id="filter-section">
+                <div class="section-title" onclick="toggleFilterSection()" title="Bấm để thu gọn hoặc mở rộng bộ lọc"><span><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</span><i class="fa-solid fa-chevron-down toggle-caret"></i></div>
                 <div id="filter-card-container">
                     <!-- Bộ lọc được dựng động theo từng tab -->
                 </div>
