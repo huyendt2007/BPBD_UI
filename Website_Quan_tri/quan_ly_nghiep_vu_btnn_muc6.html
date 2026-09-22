@@ -1601,8 +1601,8 @@
             if (config.simple) {
                 return `
                     <div style="display:flex; gap:6px; justify-content:center;">
-                        <button data-admin-icon-normalized="1" class="icon-btn" title="Chỉnh sửa" onclick="event.stopPropagation(); openForm('edit', ${index})"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button data-admin-icon-normalized="1" class="icon-btn" title="Xóa" onclick="event.stopPropagation(); confirmDelete(${index})"><i class="fa-solid fa-trash"></i></button>
+                        <button data-admin-icon-normalized="1" class="icon-btn edit" title="Chỉnh sửa" onclick="event.stopPropagation(); openForm('edit', ${index})"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button data-admin-icon-normalized="1" class="icon-btn delete" title="Xóa" onclick="event.stopPropagation(); confirmDelete(${index})"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
             }
@@ -1613,10 +1613,10 @@
             const responseDisabled = canRespond ? '' : 'disabled';
             return `
                 <div style="display:flex; gap:6px; justify-content:center;">
-                    <button data-admin-icon-normalized="1" class="icon-btn ${editDisabled}" ${editDisabled} title="Chỉnh sửa" onclick="event.stopPropagation(); openForm('edit', ${index})"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button data-admin-icon-normalized="1" class="icon-btn ${editDisabled}" ${editDisabled} title="Xóa" onclick="event.stopPropagation(); confirmDelete(${index})"><i class="fa-solid fa-trash"></i></button>
-                    <button data-admin-icon-normalized="1" class="icon-btn ${editDisabled}" ${editDisabled} title="${config.sendLabel || 'Gửi kiến nghị'}" onclick="event.stopPropagation(); sendWorkflow(${index})"><i class="fa-solid fa-paper-plane"></i></button>
-                    <button data-admin-icon-normalized="1" class="icon-btn ${responseDisabled}" ${responseDisabled} title="Cập nhật phản hồi" onclick="event.stopPropagation(); openResponseModal(${index})"><i class="fa-solid fa-reply"></i></button>
+                    <button data-admin-icon-normalized="1" class="icon-btn edit ${editDisabled}" ${editDisabled} title="Chỉnh sửa" onclick="event.stopPropagation(); openForm('edit', ${index})"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button data-admin-icon-normalized="1" class="icon-btn delete ${editDisabled}" ${editDisabled} title="Xóa" onclick="event.stopPropagation(); confirmDelete(${index})"><i class="fa-solid fa-trash"></i></button>
+                    <button data-admin-icon-normalized="1" class="icon-btn submit ${editDisabled}" ${editDisabled} title="${config.sendLabel || 'Gửi kiến nghị'}" onclick="event.stopPropagation(); sendWorkflow(${index})"><i class="fa-solid fa-paper-plane"></i></button>
+                    <button data-admin-icon-normalized="1" class="icon-btn sign ${responseDisabled}" ${responseDisabled} title="Cập nhật phản hồi" onclick="event.stopPropagation(); openResponseModal(${index})"><i class="fa-solid fa-reply"></i></button>
                 </div>
             `;
         }

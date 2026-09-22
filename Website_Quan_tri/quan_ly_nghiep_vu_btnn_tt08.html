@@ -847,9 +847,9 @@
             const canFinish = status.includes('Đang') || status === 'Đã gửi' || status === 'Theo dõi xử lý sau kiểm tra';
             return `
                 <div style="display:flex; gap:6px; justify-content:center;">
-                    <button data-admin-icon-normalized="1" class="icon-btn ${canEdit ? '' : 'disabled'}" title="Sửa" onclick="event.stopPropagation(); openForm('edit', '${row[0]}')"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button data-admin-icon-normalized="1" class="icon-btn ${canUpdate ? '' : 'disabled'}" title="${moduleKey === 'khieu_nai' ? 'Cập nhật kết quả' : moduleKey === 'theo_doi_don_doc' ? 'Cập nhật phản hồi' : 'Cập nhật kết quả'}" onclick="event.stopPropagation(); openForm('update', '${row[0]}')"><i class="fa-solid fa-clipboard-check"></i></button>
-                    <button data-admin-icon-normalized="1" class="icon-btn ${canFinish ? '' : 'disabled'}" title="Hoàn thành" onclick="event.stopPropagation(); finishRow('${row[0]}')"><i class="fa-solid fa-circle-check"></i></button>
+                    <button data-admin-icon-normalized="1" class="icon-btn edit ${canEdit ? '' : 'disabled'}" title="Sửa" onclick="event.stopPropagation(); openForm('edit', '${row[0]}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button data-admin-icon-normalized="1" class="icon-btn submit ${canUpdate ? '' : 'disabled'}" title="${moduleKey === 'khieu_nai' ? 'Cập nhật kết quả' : moduleKey === 'theo_doi_don_doc' ? 'Cập nhật phản hồi' : 'Cập nhật kết quả'}" onclick="event.stopPropagation(); openForm('update', '${row[0]}')"><i class="fa-solid fa-clipboard-check"></i></button>
+                    <button data-admin-icon-normalized="1" class="icon-btn sign ${canFinish ? '' : 'disabled'}" title="Hoàn thành" onclick="event.stopPropagation(); finishRow('${row[0]}')"><i class="fa-solid fa-circle-check"></i></button>
                 </div>
             `;
         }
